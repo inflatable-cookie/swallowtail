@@ -213,6 +213,7 @@ pub struct ClaudeAgentSdkSessionProfile {
     admitted: u8,
     permission_mode: ClaudeAgentSdkPermissionMode,
     effort: Option<ClaudeAgentSdkEffort>,
+    persist_session: bool,
 }
 
 const READ_ONLY_ADMITTED: u8 = ClaudeAgentSdkTool::Read.bit()
@@ -232,6 +233,7 @@ impl ClaudeAgentSdkSessionProfile {
             admitted: READ_ONLY_ADMITTED,
             permission_mode: ClaudeAgentSdkPermissionMode::Default,
             effort: None,
+            persist_session: false,
         }
     }
 
@@ -247,6 +249,7 @@ impl ClaudeAgentSdkSessionProfile {
                 | ClaudeAgentSdkTool::MultiEdit.bit(),
             permission_mode,
             effort: None,
+            persist_session: false,
         }
     }
 
@@ -278,6 +281,7 @@ impl ClaudeAgentSdkSessionProfile {
             admitted,
             permission_mode,
             effort: None,
+            persist_session: false,
         })
     }
 
@@ -340,6 +344,24 @@ impl ClaudeAgentSdkSessionProfile {
     #[must_use]
     pub const fn with_effort(mut self, effort: ClaudeAgentSdkEffort) -> Self {
         self.effort = Some(effort);
+        self
+    }
+
+    /// Returns whether the provider may retain this session for later resume.
+    ///
+    /// Retention is disabled by default. When enabled, the provider owns the
+    /// retained store; Swallowtail never reads or rewrites that store.
+    #[must_use]
+    pub const fn persist_session(&self) -> bool {
+        self.persist_session
+    }
+
+    /// Enables or disables provider-owned session persistence for this profile.
+    ///
+    /// The default remains disabled, preserving the existing sidecar behavior.
+    #[must_use]
+    pub const fn with_persist_session(mut self, persist_session: bool) -> Self {
+        self.persist_session = persist_session;
         self
     }
 

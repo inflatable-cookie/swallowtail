@@ -14,7 +14,7 @@ use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
     BoxFuture, CancellationControl, CleanupOutcome, CredentialLease, HostServices,
     InteractiveSessionHandle, JoinedTask, RequestId, ResourceLease, RuntimeFailure,
-    RuntimeSessionId, ScopeId, TurnHandle, TurnRequest,
+    RuntimeSessionId, ScopeId, SessionResumeBinding, TurnHandle, TurnRequest, WorkingResourceRef,
 };
 
 mod close;
@@ -57,6 +57,11 @@ pub struct ClaudeAgentSdkSessionHandle {
     pub(super) services: HostServices,
     pub(super) resource: Option<ResourceLease>,
     pub(super) credential: Option<CredentialLease>,
+    pub(super) plan: swallowtail_core::PreflightPlan,
+    pub(super) working_resource: WorkingResourceRef,
+    pub(super) access_policy: swallowtail_core::SessionAccessPolicy,
+    pub(super) provider_session_ref: Option<swallowtail_core::SessionRef>,
+    pub(super) resume_binding: Option<SessionResumeBinding>,
     pub(super) readiness: SessionReadiness,
     pub(super) active: ActiveSlot,
     /// The last mode the sidecar confirmed, starting at the one it echoed at
@@ -78,11 +83,11 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
     }
 
     fn provider_session_ref(&self) -> Option<&swallowtail_core::SessionRef> {
-        None
+        self.provider_session_ref.as_ref()
     }
 
     fn resume_binding(&self) -> Option<&swallowtail_runtime::SessionResumeBinding> {
-        None
+        self.resume_binding.as_ref()
     }
 
     fn start_turn<'a>(
@@ -171,6 +176,13 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                     if let Err(error) = self.readiness.confirm_first_turn(response.data.as_ref()) {
                         return Err(self.reject_turn(&turn, error));
                     }
+                    if let Some(provider_session_ref) =
+                        self.readiness.provider_session_ref().cloned()
+                    {
+                        let binding = self.make_resume_binding(provider_session_ref.clone())?;
+                        self.provider_session_ref = Some(provider_session_ref);
+                        self.resume_binding = Some(binding);
+                    }
                     Ok(Box::new(ClaudeAgentSdkTurnHandle::new(
                         request.turn_id().clone(),
                         events,
@@ -189,9 +201,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                 }
                 Ok(response) => Err(self.reject_turn(
                     &turn,
-                    command_rejected(
-                        "swallowtail.claude-agent.sdk.query_rejected",
-                        "Claude Agent SDK sidecar rejected the query before acceptance",
+                    self.query_rejected(
                         response
                             .failure_code
                             .expect("a rejected response carries its fixed sidecar code"),
@@ -465,6 +475,59 @@ impl ClaudeAgentSdkSessionHandle {
             .expect("SDK sidecar active lock poisoned")
             .take();
         error
+    }
+
+    fn query_rejected(&self, code: crate::sdk::wire::ClaudeAgentSdkFailureCode) -> RuntimeFailure {
+        match code {
+            crate::sdk::wire::ClaudeAgentSdkFailureCode::ResumeCwdMismatch => failure(
+                "swallowtail.claude-agent.sdk.resume_cwd_mismatch",
+                "Claude Agent SDK resume init did not report the leased working directory",
+            ),
+            crate::sdk::wire::ClaudeAgentSdkFailureCode::ResumeAccountMismatch => failure(
+                "swallowtail.claude-agent.sdk.resume_account_mismatch",
+                "Claude Agent SDK resume init did not report the verified first-party account",
+            ),
+            crate::sdk::wire::ClaudeAgentSdkFailureCode::ResumeSessionUnknown => failure(
+                "swallowtail.claude-agent.sdk.resume_session_unknown",
+                "Claude Agent SDK could not identify the bound provider session",
+            ),
+            crate::sdk::wire::ClaudeAgentSdkFailureCode::ResumeBoundaryInvalid => failure(
+                "swallowtail.claude-agent.sdk.resume_boundary_invalid",
+                "Claude Agent SDK rejected the resume message boundary",
+            ),
+            _ => command_rejected(
+                "swallowtail.claude-agent.sdk.query_rejected",
+                "Claude Agent SDK sidecar rejected the query before acceptance",
+                code,
+            ),
+        }
+    }
+
+    fn make_resume_binding(
+        &self,
+        provider_session_ref: swallowtail_core::SessionRef,
+    ) -> Result<SessionResumeBinding, RuntimeFailure> {
+        let route_id = self.plan.model_route_id().cloned().ok_or_else(|| {
+            failure(
+                "swallowtail.claude-agent.sdk.resume_route_missing",
+                "Claude Agent SDK resumed session has no bound model route",
+            )
+        })?;
+        let model_id = self.plan.model_id().cloned().ok_or_else(|| {
+            failure(
+                "swallowtail.claude-agent.sdk.resume_model_missing",
+                "Claude Agent SDK resumed session has no bound model",
+            )
+        })?;
+        Ok(SessionResumeBinding::new(
+            provider_session_ref,
+            self.plan.instance_id().clone(),
+            self.execution_host_id.clone(),
+            route_id,
+            model_id,
+            self.working_resource.clone(),
+            self.access_policy.clone(),
+        ))
     }
 }
 

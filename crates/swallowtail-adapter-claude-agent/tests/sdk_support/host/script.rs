@@ -88,10 +88,31 @@ pub(super) fn respond(
         "interrupt" => interrupt(scenario, state, &id),
         "set_permission_mode" => set_permission_mode(scenario, state, &id, &command["params"]),
         "set_model" => set_model(scenario, state, &id, &command["params"]),
+        "list_sessions" => list_sessions(scenario, state, &id, &command["params"]),
         "close" => close(scenario, state, &id),
         _ => return Err(super::super::host::fixture_failure()),
     }
     Ok(())
+}
+
+fn list_sessions(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Value) {
+    if scenario != SdkScenario::SessionListing {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "list_sessions", "success": false,
+                   "failure": {"code": "listing_failed",
+                               "message": "sidecar command failed: listing_failed"}}),
+        );
+        return;
+    }
+    push(
+        state,
+        json!({"type": "response", "id": id, "command": "list_sessions", "success": true,
+        "data": {"cwd": params["cwd"], "sessions": [
+            {"sessionId": "session-1", "cwd": params["cwd"], "createdAt": 100,
+             "lastModified": 200, "title": "Fixture session"}
+        ]}}),
+    );
 }
 
 fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Value) {
@@ -120,6 +141,11 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         "requestedModel": FIXTURE_MODEL,
         "supportedModels": [FIXTURE_MODEL],
         "readiness": "requested-with-supported-list",
+        "persistSession": params
+            .get("persistSession")
+            .and_then(Value::as_bool)
+            .unwrap_or(false),
+        "resuming": params.get("resume").is_some_and(|value| !value.is_null()),
         "capabilities": [],
         "account": {
             "apiProvider": "firstParty",
@@ -141,6 +167,7 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
                 .insert("subscriptionTypePresent".to_owned(), json!(false));
         }
         SdkScenario::AccountNotFirstParty => data["account"]["apiProvider"] = json!("bedrock"),
+        SdkScenario::ResumeAccountMismatch => data["account"]["apiProvider"] = json!("bedrock"),
         SdkScenario::AccountIdentityLeak => {
             data["account"]["email"] = json!("person@example.test");
         }
@@ -207,6 +234,33 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         );
         return;
     }
+    if matches!(scenario, SdkScenario::ResumeCwdMismatch) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "query", "success": false,
+                   "failure": {"code": "resume_cwd_mismatch",
+                               "message": "sidecar command failed: resume_cwd_mismatch"}}),
+        );
+        return;
+    }
+    if matches!(scenario, SdkScenario::ResumeSessionUnknown) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "query", "success": false,
+                   "failure": {"code": "resume_session_unknown",
+                               "message": "sidecar command failed: resume_session_unknown"}}),
+        );
+        return;
+    }
+    if matches!(scenario, SdkScenario::ResumeBoundaryRejected) {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "query", "success": false,
+                   "failure": {"code": "resume_boundary_invalid",
+                               "message": "sidecar command failed: resume_boundary_invalid"}}),
+        );
+        return;
+    }
     if matches!(scenario, SdkScenario::MissingModel) {
         push(
             state,
@@ -241,7 +295,18 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         "cwd": FIXTURE_CWD,
         "requestedModel": FIXTURE_MODEL,
         "model": effective_model,
+        "sessionId": "session-1",
         "capabilities": capabilities});
+    if matches!(
+        scenario,
+        SdkScenario::ResumeComplete
+            | SdkScenario::ResumeCwdMismatch
+            | SdkScenario::ResumeSessionUnknown
+            | SdkScenario::ResumeBoundaryRejected
+    ) {
+        init["account"] = json!({"apiProvider": "firstParty"});
+        init["accountVerified"] = json!(true);
+    }
     if scenario == SdkScenario::EffortConfirmed {
         init["effort"] = effort.unwrap_or(Value::Null);
     }

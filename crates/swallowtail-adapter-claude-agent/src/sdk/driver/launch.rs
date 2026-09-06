@@ -90,7 +90,7 @@ impl ClaudeAgentSdkDriver {
             plan.instance_target_ref(),
         ))
         .with_environment([self.environment.clone()])
-        .with_working_resource(working_resource);
+        .with_working_resource(working_resource.clone());
         let process: Arc<dyn ProcessHandle> = Arc::from(
             services
                 .process()
@@ -120,6 +120,8 @@ impl ClaudeAgentSdkDriver {
             connection,
             services,
             leased_cwd,
+            working_resource,
+            access_policy: access_policy.clone(),
             close_guardian: Some(close_guardian),
         })
     }

@@ -11,13 +11,24 @@ use crate::sdk::selection::{
 use crate::sdk::wire::ClaudeAgentSdkCommand;
 use crate::sdk::{CLAUDE_AGENT_SDK_BEHAVIOR, CLAUDE_AGENT_SDK_PACKAGE, CLAUDE_AGENT_SDK_WIRE};
 use serde_json::{Value, json};
-use swallowtail_core::PreflightPlan;
+use swallowtail_core::{PreflightPlan, SessionRef};
 use swallowtail_runtime::RuntimeFailure;
 
 const MAXIMUM_CAPABILITIES: usize = 64;
 const MAXIMUM_CAPABILITY_BYTES: usize = 96;
 const READINESS_REQUESTED: &str = "requested-with-supported-list";
 const READINESS_CONFIRMED: &str = "confirmed";
+const MAXIMUM_LISTING_PAGE: usize = 1_000;
+const MAXIMUM_LISTING_TEXT_BYTES: usize = 16 * 1024;
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct SessionListing {
+    pub(crate) provider_session_ref: SessionRef,
+    pub(crate) cwd: String,
+    pub(crate) created_at_unix_milliseconds: Option<u64>,
+    pub(crate) last_modified_unix_milliseconds: u64,
+    pub(crate) title: Option<String>,
+}
 
 /// Runtime-advertised readiness observed at open. Capabilities are the only
 /// axis that is runtime behavior rather than declaration, so nothing here is
@@ -35,6 +46,9 @@ pub(crate) struct SessionReadiness {
     node_version_posture: NodeVersionPosture,
     profile: ClaudeAgentSdkSessionProfile,
     permission_mode: ClaudeAgentSdkPermissionMode,
+    resuming: bool,
+    expected_provider_session_ref: Option<SessionRef>,
+    provider_session_ref: Option<SessionRef>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -82,6 +96,10 @@ impl SessionReadiness {
         self.permission_mode
     }
 
+    pub(crate) fn provider_session_ref(&self) -> Option<&SessionRef> {
+        self.provider_session_ref.as_ref()
+    }
+
     pub(crate) fn requested_model(&self) -> &str {
         &self.requested_model
     }
@@ -117,17 +135,59 @@ impl SessionReadiness {
         if text(data, "readiness") != Some(READINESS_CONFIRMED) {
             return Err(init_missing());
         }
+        let provider_session_ref = if self.profile.persist_session() || self.resuming {
+            text(data, "sessionId")
+                .filter(|session_id| !session_id.is_empty())
+                .map(SessionRef::new)
+                .transpose()
+                .map_err(|_| {
+                    if self.resuming {
+                        resume_session_unknown()
+                    } else {
+                        init_missing()
+                    }
+                })?
+        } else {
+            None
+        };
+        if self.profile.persist_session() && provider_session_ref.is_none() {
+            return Err(resume_session_unknown());
+        }
+        if self.resuming
+            && provider_session_ref.as_ref() != self.expected_provider_session_ref.as_ref()
+        {
+            return Err(resume_session_unknown());
+        }
         if text(data, "cwd") != Some(self.cwd.as_str()) {
-            return Err(failure(
-                "swallowtail.claude-agent.sdk.cwd_mismatch",
-                "Claude Agent SDK sidecar first-turn init did not report the leased working directory",
-            ));
+            return Err(if self.resuming {
+                failure(
+                    "swallowtail.claude-agent.sdk.resume_cwd_mismatch",
+                    "Claude Agent SDK resume init did not report the leased working directory",
+                )
+            } else {
+                failure(
+                    "swallowtail.claude-agent.sdk.cwd_mismatch",
+                    "Claude Agent SDK sidecar first-turn init did not report the leased working directory",
+                )
+            });
         }
         if text(data, "requestedModel") != Some(self.requested_model.as_str()) {
             return Err(failure(
                 "swallowtail.claude-agent.sdk.open_mismatch",
                 "Claude Agent SDK sidecar first-turn init changed the requested model",
             ));
+        }
+        if self.resuming {
+            if data.get("accountVerified").and_then(Value::as_bool) != Some(true) {
+                return Err(resume_account_mismatch());
+            }
+            if data
+                .get("account")
+                .and_then(|account| text(account, "apiProvider"))
+                != Some("firstParty")
+            {
+                return Err(resume_account_mismatch());
+            }
         }
         let effective_model = text(data, "model")
             .filter(|model| !model.is_empty())
@@ -164,6 +224,7 @@ impl SessionReadiness {
         self.capabilities = capabilities(data)?;
         self.effort = effort;
         self.readiness = ReadinessState::Confirmed;
+        self.provider_session_ref = provider_session_ref;
         Ok(())
     }
 
@@ -188,6 +249,108 @@ pub(crate) async fn open(
     leased_cwd: &str,
     profile: ClaudeAgentSdkSessionProfile,
 ) -> Result<SessionReadiness, RuntimeFailure> {
+    start(connection, plan, leased_cwd, profile, None, None).await
+}
+
+pub(crate) async fn resume(
+    connection: &SdkConnection,
+    plan: &PreflightPlan,
+    leased_cwd: &str,
+    profile: ClaudeAgentSdkSessionProfile,
+    provider_session_ref: &SessionRef,
+    resume_session_at: Option<&str>,
+) -> Result<SessionReadiness, RuntimeFailure> {
+    start(
+        connection,
+        plan,
+        leased_cwd,
+        profile,
+        Some(provider_session_ref),
+        resume_session_at,
+    )
+    .await
+}
+
+pub(crate) async fn list(
+    connection: &SdkConnection,
+    request_id: &str,
+    leased_cwd: &str,
+    limit: usize,
+    offset: usize,
+) -> Result<Vec<SessionListing>, RuntimeFailure> {
+    let response = connection
+        .command(
+            format!("list-sessions:{request_id}"),
+            ClaudeAgentSdkCommand::ListSessions,
+            json!({"cwd": leased_cwd, "limit": limit, "offset": offset}),
+        )
+        .await?;
+    if !response.success {
+        return Err(command_rejected(
+            "swallowtail.claude-agent.sdk.listing_failed",
+            "Claude Agent SDK sidecar rejected session listing",
+            response
+                .failure_code
+                .expect("a rejected response carries its fixed sidecar code"),
+        ));
+    }
+    let data = response.data.as_ref().ok_or_else(listing_invalid)?;
+    if text(data, "cwd") != Some(leased_cwd) {
+        return Err(listing_invalid());
+    }
+    let entries = data
+        .get("sessions")
+        .and_then(Value::as_array)
+        .ok_or_else(listing_invalid)?;
+    if entries.len() > limit || entries.len() > MAXIMUM_LISTING_PAGE {
+        return Err(listing_invalid());
+    }
+    entries
+        .iter()
+        .map(|entry| project_listing(entry, leased_cwd))
+        .collect()
+}
+
+fn project_listing(value: &Value, leased_cwd: &str) -> Result<SessionListing, RuntimeFailure> {
+    let provider_session_ref =
+        SessionRef::new(text(value, "sessionId").ok_or_else(listing_invalid)?)
+            .map_err(|_| listing_invalid())?;
+    let last_modified = value
+        .get("lastModified")
+        .and_then(Value::as_u64)
+        .ok_or_else(listing_invalid)?;
+    let created_at = match value.get("createdAt") {
+        None | Some(Value::Null) => None,
+        Some(value) => Some(value.as_u64().ok_or_else(listing_invalid)?),
+    };
+    let title = match value.get("title") {
+        None | Some(Value::Null) => None,
+        Some(Value::String(title))
+            if !title.is_empty()
+                && title.len() <= MAXIMUM_LISTING_TEXT_BYTES
+                && !title.chars().any(char::is_control) =>
+        {
+            Some(title.clone())
+        }
+        Some(_) => return Err(listing_invalid()),
+    };
+    Ok(SessionListing {
+        provider_session_ref,
+        cwd: leased_cwd.to_owned(),
+        created_at_unix_milliseconds: created_at,
+        last_modified_unix_milliseconds: last_modified,
+        title,
+    })
+}
+
+async fn start(
+    connection: &SdkConnection,
+    plan: &PreflightPlan,
+    leased_cwd: &str,
+    profile: ClaudeAgentSdkSessionProfile,
+    provider_session_ref: Option<&SessionRef>,
+    resume_session_at: Option<&str>,
+) -> Result<SessionReadiness, RuntimeFailure> {
     let model = plan
         .model_id()
         .expect("validated sidecar model route")
@@ -203,6 +366,15 @@ pub(crate) async fn open(
         "tools": tools,
         "permissionMode": profile.permission_mode().as_str(),
     });
+    if profile.persist_session() {
+        params["persistSession"] = json!(true);
+    }
+    if let Some(provider_session_ref) = provider_session_ref {
+        params["resume"] = json!(provider_session_ref.as_provider_value());
+    }
+    if let Some(resume_session_at) = resume_session_at {
+        params["resumeSessionAt"] = json!(resume_session_at);
+    }
     if let Some(effort) = profile.effort() {
         params["effort"] = json!(effort.as_str());
     }
@@ -210,13 +382,18 @@ pub(crate) async fn open(
         .command("open-1".to_owned(), ClaudeAgentSdkCommand::Open, params)
         .await?;
     if !response.success {
-        return Err(command_rejected(
-            "swallowtail.claude-agent.sdk.open_rejected",
-            "Claude Agent SDK sidecar rejected its restrictive open",
-            response
-                .failure_code
-                .expect("a rejected response carries its fixed sidecar code"),
-        ));
+        let code = response
+            .failure_code
+            .expect("a rejected response carries its fixed sidecar code");
+        return Err(if provider_session_ref.is_some() {
+            resume_rejected(code)
+        } else {
+            command_rejected(
+                "swallowtail.claude-agent.sdk.open_rejected",
+                "Claude Agent SDK sidecar rejected its restrictive open",
+                code,
+            )
+        });
     }
     let expected = Expectation {
         cwd: leased_cwd,
@@ -226,6 +403,8 @@ pub(crate) async fn open(
         native_version: &bound_version(plan, CLAUDE_AGENT_SDK_NATIVE_AXIS),
         node_version: &bound_version(plan, CLAUDE_AGENT_SDK_NODE_AXIS),
         wire_version: &bound_version(plan, CLAUDE_AGENT_SDK_WIRE_AXIS),
+        resuming: provider_session_ref.is_some(),
+        expected_provider_session_ref: provider_session_ref,
     };
     readiness(response.data.as_ref(), &expected)
 }
@@ -247,6 +426,8 @@ struct Expectation<'a> {
     native_version: &'a str,
     node_version: &'a str,
     wire_version: &'a str,
+    resuming: bool,
+    expected_provider_session_ref: Option<&'a SessionRef>,
 }
 
 fn readiness(
@@ -266,6 +447,9 @@ fn readiness(
             && tools_match(data, expected.profile)
             && text(data, "permissionMode") == Some(expected.profile.permission_mode().as_str())
             && effort_matches(data, expected.profile)
+            && data.get("persistSession").and_then(Value::as_bool)
+                == Some(expected.profile.persist_session())
+            && data.get("resuming").and_then(Value::as_bool) == Some(expected.resuming)
     });
     if !identity_matches {
         return Err(failure(
@@ -296,7 +480,7 @@ fn readiness(
                 "Claude Agent SDK sidecar Node runtime was older than the qualified point",
             )
         })?;
-    account_ready(data)?;
+    account_ready(data, expected.resuming)?;
     Ok(SessionReadiness {
         // Capabilities are runtime evidence from first-turn system/init, not
         // an initialize-response claim.
@@ -314,24 +498,41 @@ fn readiness(
         node_version_posture,
         profile: expected.profile,
         permission_mode: expected.profile.permission_mode(),
+        resuming: expected.resuming,
+        expected_provider_session_ref: expected.expected_provider_session_ref.cloned(),
+        provider_session_ref: None,
     })
 }
 
 /// Accepts only a first-party session. An API-key or delegated cloud
 /// provenance label fails closed rather than silently running the route on a
 /// different access profile. Subscription evidence remains observational.
-fn account_ready(data: &Value) -> Result<(), RuntimeFailure> {
-    let account = data.get("account").ok_or_else(account_mismatch)?;
+fn account_ready(data: &Value, resuming: bool) -> Result<(), RuntimeFailure> {
+    let account = data.get("account").ok_or_else(|| {
+        if resuming {
+            resume_account_mismatch()
+        } else {
+            account_mismatch()
+        }
+    })?;
     if text(account, "apiProvider") != Some("firstParty") {
-        return Err(failure(
-            "swallowtail.claude-agent.sdk.account_not_first_party",
-            "Claude Agent SDK sidecar did not report a first-party account",
-        ));
+        return Err(if resuming {
+            resume_account_mismatch()
+        } else {
+            failure(
+                "swallowtail.claude-agent.sdk.account_not_first_party",
+                "Claude Agent SDK sidecar did not report a first-party account",
+            )
+        });
     }
     // Readiness is provenance labels only; no email, organization, or token
     // material is admitted even if a future sidecar offered it.
     if account.get("email").is_some() || account.get("organization").is_some() {
-        return Err(account_mismatch());
+        return Err(if resuming {
+            resume_account_mismatch()
+        } else {
+            account_mismatch()
+        });
     }
     Ok(())
 }
@@ -475,6 +676,53 @@ fn account_mismatch() -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.account_not_ready",
         "Claude Agent SDK sidecar did not report a first-party subscription session",
+    )
+}
+
+fn resume_rejected(code: crate::sdk::wire::ClaudeAgentSdkFailureCode) -> RuntimeFailure {
+    match code {
+        crate::sdk::wire::ClaudeAgentSdkFailureCode::ResumeCwdMismatch => failure(
+            "swallowtail.claude-agent.sdk.resume_cwd_mismatch",
+            "Claude Agent SDK resume did not use the leased working directory",
+        ),
+        crate::sdk::wire::ClaudeAgentSdkFailureCode::ResumeAccountMismatch => failure(
+            "swallowtail.claude-agent.sdk.resume_account_mismatch",
+            "Claude Agent SDK resume did not use the verified first-party account",
+        ),
+        crate::sdk::wire::ClaudeAgentSdkFailureCode::ResumeSessionUnknown => failure(
+            "swallowtail.claude-agent.sdk.resume_session_unknown",
+            "Claude Agent SDK could not identify the bound provider session",
+        ),
+        crate::sdk::wire::ClaudeAgentSdkFailureCode::ResumeBoundaryInvalid => failure(
+            "swallowtail.claude-agent.sdk.resume_boundary_invalid",
+            "Claude Agent SDK rejected the resume message boundary",
+        ),
+        other => command_rejected(
+            "swallowtail.claude-agent.sdk.resume_rejected",
+            "Claude Agent SDK sidecar rejected resume",
+            other,
+        ),
+    }
+}
+
+fn resume_session_unknown() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.resume_session_unknown",
+        "Claude Agent SDK did not report the bound provider session",
+    )
+}
+
+fn resume_account_mismatch() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.resume_account_mismatch",
+        "Claude Agent SDK resume did not report the verified first-party account",
+    )
+}
+
+fn listing_invalid() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.listing_invalid",
+        "Claude Agent SDK sidecar returned invalid session listing metadata",
     )
 }
 

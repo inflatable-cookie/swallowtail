@@ -40,7 +40,7 @@ pub(super) fn prepare(
     // binds `ResourceAccess::ReadWrite` here, and the host's own lease must
     // agree at open, so no write reaches a read-only working resource.
     let resource_access = input.profile.resource_access();
-    let capability_requirements = vec![
+    let mut capability_requirements = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
         CapabilityRequirement::new(Capability::ToolCalls, []),
@@ -58,6 +58,13 @@ pub(super) fn prepare(
             ],
         ),
     ];
+    if input.profile.persist_session() {
+        capability_requirements.push(CapabilityRequirement::new(Capability::Resume, []));
+        capability_requirements.push(CapabilityRequirement::new(
+            Capability::ProviderDurableRetention,
+            [],
+        ));
+    }
     let capabilities = CapabilityProfile::new(capability_requirements.clone());
     let versions = [
         claude_agent_sdk_package_binding(CLAUDE_AGENT_SDK_VERSION),
@@ -122,6 +129,11 @@ pub(super) fn prepare(
         HostServiceKind::WorkingResource,
         HostServiceKind::Time,
     ];
+    let provider_state_policy = if input.profile.persist_session() {
+        SessionProviderStatePolicy::DurableProviderSessionPreserved
+    } else {
+        SessionProviderStatePolicy::Prohibited
+    };
     let requirements = OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::InteractiveSession,
@@ -142,7 +154,7 @@ pub(super) fn prepare(
     .with_interface_versions(versions)
     .with_harness_rpc_policy(rpc_policy)
     .with_session_access_policy(SessionAccessPolicy::ambient_harness(resource_access))
-    .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited)
+    .with_session_provider_state_policy(provider_state_policy)
     .require_model_route();
     let plan = swallowtail_runtime::build_plan(
         &descriptor,

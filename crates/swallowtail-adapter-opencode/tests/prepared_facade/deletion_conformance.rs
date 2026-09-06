@@ -211,7 +211,7 @@ fn denied_endpoint_and_expired_request_stop_before_delete() {
 
 #[test]
 fn deadline_after_dispatch_is_joined_unconfirmed_and_releases_access() {
-    let fixture = PreparedFixture::new_with_fixture(
+    let mut fixture = PreparedFixture::new_with_fixture(
         "opencode.delete.deadline",
         "1.18.4",
         StreamFixture::DeleteGated,
@@ -224,7 +224,7 @@ fn deadline_after_dispatch_is_joined_unconfirmed_and_releases_access() {
                 RequestId::new("delete-deadline").expect("request id"),
                 binding,
             )
-            .with_deadline(fixture.deadline_after(Duration::from_secs(1))),
+            .with_deadline(fixture.manual_deadline()),
         )
         .expect("delete prepares");
     let deadline = fixture.arm_manual_deadline();
@@ -249,6 +249,7 @@ fn deadline_after_dispatch_is_joined_unconfirmed_and_releases_access() {
             .any(|request| request.starts_with("DELETE "))
     );
     assert_eq!(fixture.releases.load(Ordering::SeqCst), 3);
+    fixture.server.shutdown();
 }
 
 fn prepared_delete(

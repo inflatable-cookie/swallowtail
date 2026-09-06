@@ -15,11 +15,12 @@ shape.
 
 ## Next Task
 
-Implement [g05.029 card 105](g05/batch-cards/105-claude-sdk-termination-cause-propagation.md):
-surface the Claude SDK sidecar's termination cause to the consumer
-(consumer-critical, `v0.4.3` content), ahead of card 083 in the shared crate.
-Cards 085, 086, 088, and 104 run alongside from their manifests. Card 102 stays open only for the
-tag-pinned Bovine smoke result as consumer evidence; it holds nothing.
+Implement [g05.034 card 109](g05/batch-cards/109-release-gate-order-and-hosted-delegation.md):
+the release lane simplification lead, with cards 110-113 from the g05.034
+manifest. `v0.4.3` is tagged at `cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`
+(card 105 shipped); card 107 records the consumer result. The g05.029 runway
+(cards 083, 085, 086, 088, then 084 and 087) and g05.031 card 104 resume in
+parallel; the merge freeze is lifted.
 
 ## Standing Lanes
 

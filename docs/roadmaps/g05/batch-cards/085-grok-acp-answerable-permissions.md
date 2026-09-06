@@ -60,3 +60,8 @@ and abandons pending requests on cancellation, timeout, failure, or close.
 Provider-free ACP fixtures cover both one-shot options, persistent-option
 withholding, malformed input, bounds, abandonment, timeout, and no active turn.
 Ready for exact-head independent review after push.
+
+The stable solution feature matrix intentionally retains `permission_exchange`
+as `No`: the shared route-contract inventory still classifies the Grok cell as
+`upstream_unsupported`. The route guide and prepared facade document the
+explicit opt-in exchange without changing that stable solution disposition.

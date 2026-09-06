@@ -362,9 +362,12 @@ No. Stop for exact-head review; the `v0.4.2` prepare follows.
   `claude-agent-sdk`, the pinned SDK/native artifacts, the existing empty
   throwaway cwd, the read-only `Read`/`Glob`/`Grep` default profile, and one
   fixed one-word no-tool prompt. The capture wrapper terminated before it
-  emitted its sanitized record. No recoverable open readiness or rejection
-  subcode, first SDK message, cwd/model/capability evidence, result-field
-  projection, stderr tail, SessionInput/close timeline, native exit evidence,
-  `TerminalStatus`, or `CleanupOutcome` remains. This is a harness-capture
-  failure, not evidence of a route or provider outcome; no acceptance box is
-  ticked and no retry was run. The disposable cwd remained empty afterward.
+  emitted its sanitized record. The required lines are therefore: open
+  readiness/rejection subcode: unavailable; first yielded message: unavailable;
+  canonical cwd: unavailable; effective model: unavailable; capabilities:
+  unavailable; SDK result-field presence plus subtype/is_error/num_turns/
+  duration_ms: unavailable; redacted native stderr tail: unavailable; exact
+  SessionInput/close exit path: unavailable; `TerminalStatus`: unavailable;
+  `CleanupOutcome`: unavailable. This is a harness-capture failure, not
+  evidence of a route or provider outcome; no acceptance box is ticked and no
+  retry was run. The disposable cwd remained empty afterward.

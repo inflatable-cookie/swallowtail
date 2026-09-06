@@ -5,6 +5,8 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-09-06
+
 ### Added
 - publish Contract 061 candidate K across the Mistral Vibe, Muse Code, Oh
   My Pi, and Qwen adapters. Prepared facades emit the exact 52-row tranche;
@@ -41,7 +43,12 @@ annotated Git tags from the canonical repository.
   first query requires `system/init` before publishing effective model and
   capabilities. Canonical effective models remain distinct from requested
   aliases, and floor-passing newer Node runtimes are recorded as
-  `UnverifiedNewer`. Provider-free fake-SDK fixtures cover each path. g05.032
+  `UnverifiedNewer`. Provider-free fake-SDK fixtures cover each path. The live
+  editing turn remains unresolved: after readiness, `system/init`, canonical
+  cwd, and effective-model evidence, the SDK returned `subtype: success` with
+  `is_error: true` and no error text; Swallowtail records typed
+  `ProviderFailed` code `swallowtail.claude-agent.sdk.provider_failed` with
+  native exit code `1`. Card 102 owns the real consumer editing proof. g05.032
   card 100.
 
 ## [0.4.1] - 2026-09-05

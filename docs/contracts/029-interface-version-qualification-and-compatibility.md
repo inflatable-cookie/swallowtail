@@ -246,6 +246,14 @@ observations carry the latest-qualified boundary and the
 adapter-private behavior revision available for a forward attempt. Discovery
 does not install, upgrade, downgrade, authenticate, or choose another driver.
 
+Discovery may carry **install guidance** on an absent-executable outcome:
+a provider-neutral text value holding the harness display name, the vendor's
+own recommended install command, the vendor documentation URL, and the date
+the guidance was frozen. Guidance is descriptive only. It is never executed,
+never inferred from a package manager, and never a classification; a
+present executable carries none. Adapters source it from the vendor page
+they cite. (Amended 2026-09-06 for g05.029 card 088.)
+
 Contract 057 may derive an instance update observation from these claims and
 from Contract 032 observations. It does not create a second currentness
 system, install, or authenticate.

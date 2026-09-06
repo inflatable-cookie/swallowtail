@@ -1,18 +1,56 @@
 # 083 Claude SDK Resume And Session Listing
 
-Status: planned; gated behind completed card 080
+Status: ready; serial after card 082's merge
 Owner: Tom
 Created: 2026-09-04
-Updated: 2026-09-04
+Updated: 2026-09-06
 Milestone: `../029-claude-sdk-interactive-parity.md`
-Depends on: completed card 080; Contract 017 load and resume rules
+Depends on: card 082 merged; Contract 017 (new, load, resume, recovery attachment); Research 280 (`0.3.259`)
 
 ## Goal
 
-Resume and `resumeSessionAt` on `claude-agent.sdk` with cwd and account rebinding checks, plus session listing for the consumer's transcript store; fork optional.
+Resume and `resumeSessionAt` on `claude-agent.sdk` as Contract 017 **resume** (attach without replay), with cwd and account rebinding verified from the host lease and init evidence, plus a session listing for the consumer's transcript store. Fork optional, only if the SDK proves it on `0.3.259`.
 
-## Readiness
+## Scope
 
-Planned in the consumer's priority order under g05.029. Chatterbox makes
-this card ready with a full scope, manifest, oracle, and validation tier
-when its gate is satisfied. It carries no execution authority now.
+1. Freeze first, from the pinned `0.3.259` package tree (Research 280 method): the exact option and function surface for `resume`, `resumeSessionAt`, `forkSession`, `persistSession`, and any session-listing or session-message export. Record it in the card Result with file anchors before writing Rust. If listing is absent or unstable on `0.3.259`, listing stays out and the Result says so.
+2. Persistence is currently forced off (`persistSession: false` in the sidecar). Resume requires provider-stored session state. Make persistence an explicit per-profile opt-in on the prepared session (`ClaudeAgentSdkSessionProfile`), default unchanged (off). Record where the provider stores it; Swallowtail never reads or rewrites that store.
+3. Implement `resume_session` on the SDK driver (today `unsupported("session resume")`, `sdk/driver.rs`) as Contract 017 resume: attach to the bound provider session by `SessionResumeBinding`; no replay; cwd re-derived only from the resolved host lease (never from list metadata or the provider store); account rebinding verified against `accountInfo` and `system/init` evidence from the initialize-first path; mismatch fails typed (`resume_cwd_mismatch`, `resume_account_mismatch`, `resume_session_unknown`).
+4. `resumeSessionAt` as the same operation with the message boundary as an additive request input; boundary outside the session fails typed.
+5. Session listing, if frozen as available: a route-local prepared query returning provider session ids, cwd, timestamps, and title only; no message bodies; never a resume authority on its own.
+6. Fake-SDK proofs: resume attaches and the first turn continues context; wrong cwd and wrong account fail closed before any turn; listing round-trips; persistence-off sessions cannot be resumed and say why.
+7. Guide section, `claude-agent.sdk` matrix cells (the "not applicable (27)" listing row moves for this route), changelog `[Unreleased]`, additive baseline in the working baseline directory.
+
+## Out Of Scope
+
+Load with replay (Contract 017 load); recovery attachment; consumer transcript reconstruction; any change to the default profile; MCP; version pins.
+
+## Acceptance Criteria
+
+- [ ] the `0.3.259` resume/listing surface is frozen with anchors before implementation
+- [ ] persistence is opt-in per profile and the default profile is byte-identical in behaviour
+- [ ] resume rebinding takes cwd only from the host lease and fails typed on cwd or account mismatch
+- [ ] no replay is claimed; the operation is documented as Contract 017 resume
+- [ ] fake-SDK proofs cover attach, both mismatches, unknown session, and persistence-off
+- [ ] guide, matrix, changelog, additive baseline; one PR
+
+## Validation
+
+- `cargo fmt -p swallowtail-adapter-claude-agent -- --check`
+- `effigy validate:focused swallowtail-adapter-claude-agent`
+- `effigy package:verify-affected swallowtail-adapter-claude-agent`
+- `effigy package:api`
+- `effigy qa:northstar`
+- `git diff --check`
+
+## Review Oracle
+
+Invariant: a resumed session runs in exactly the leased cwd under exactly the verified account, or does not run. Smallest counterexample: a resume whose cwd came from the provider's stored session record.
+
+## Stop Conditions
+
+The SDK cannot report the session's account or cwd on resume in any observable way (record; return to Chatterbox rather than trust the store).
+
+## Auto-Continuation
+
+No. Stop for exact-head review.

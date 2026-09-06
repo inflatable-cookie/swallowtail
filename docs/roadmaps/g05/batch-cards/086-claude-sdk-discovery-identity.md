@@ -1,18 +1,47 @@
 # 086 Claude SDK Discovery Identity
 
-Status: planned; gated behind Research 280
+Status: ready
 Owner: Tom
 Created: 2026-09-04
-Updated: 2026-09-04
+Updated: 2026-09-06
 Milestone: `../029-claude-sdk-interactive-parity.md`
-Depends on: Research 280; Contract 029 identity-before-claim
+Depends on: Research 280; the SDK discovery in `sdk/selection.rs` and `sdk/asset.rs`; Contract 029
 
 ## Goal
 
-Freeze evidence on running the SDK sidecar against a discovered locally installed native Claude Code and a discovered or minimally bundled Node, including wrapper-to-native compatibility across published points, without changing a claim.
+Freeze evidence on running the SDK sidecar against a discovered host-installed native Claude Code and against discovered or minimally bundled Node, across published points, without changing any claim. The output is a research document that card 087 can act on.
 
-## Readiness
+## Scope
 
-Planned in the consumer's priority order under g05.029. Chatterbox makes
-this card ready with a full scope, manifest, oracle, and validation tier
-when its gate is satisfied. It carries no execution authority now.
+1. Today the sidecar passes `pathToClaudeCodeExecutable: nativeBinary`, the SDK-bundled native. Probe three configurations with initialize-only sessions (no prompt, no turn): bundled native; host-installed `claude` at the current stable; host `claude` at each published point in `2.1.227..=2.1.259`. Record `system/init`, `supportedModels`, `harnessSchema`, and any refusal, per configuration.
+2. Node: host `/opt/homebrew/bin/node` 26.x, `~/.local/bin/node` 22.x, and the pinned `22.23.2`; record which the sidecar accepts at open and which the SDK's own `engines` admits.
+3. Classify each (wrapper, native, node) triple as compatible, refused-with-code, or surface-changed, with the exact evidence line. This is the admitted range candidate for card 087.
+4. Write `docs/research/2xx-claude-agent-sdk-discovery-identity.md` in the Research 280 shape (question, method, inventory, invariants, decision, falsification, withheld). No claim, guide, matrix, or pin changes.
+
+## Out Of Scope
+
+Any code change; any claim change; any live turn. Initialize-only probes are not turns; if a probe would send a prompt, stop.
+
+## Acceptance Criteria
+
+- [ ] every probed triple recorded with evidence lines; none inferred
+- [ ] the decision section names the candidate admitted ranges per axis and the incompatible reasons
+- [ ] no source, claim, or pin changed
+- [ ] research doc indexed in `docs/research/README.md`
+
+## Validation
+
+- `effigy qa:docs`
+- `git diff --check`
+
+## Review Oracle
+
+Invariant: every compatibility statement in the research cites a probe line. Smallest counterexample: a range asserted from a changelog.
+
+## Stop Conditions
+
+A probe requires a live turn or credentials beyond the operator's existing subscription (stop; operator authorization via Chatterbox).
+
+## Auto-Continuation
+
+No. Stop for exact-head review.

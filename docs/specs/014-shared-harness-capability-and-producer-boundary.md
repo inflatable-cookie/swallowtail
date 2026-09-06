@@ -123,6 +123,7 @@ Opening a server lease binds:
 - execution host;
 - configured instance and prepared plan;
 - Desktop process incarnation and opaque admitted task/session/attempt;
+- admitted workspace generation, task generation, and revocation state;
 - the one-to-one Swallowtail operation/turn attempt and lease generation;
 - exact registration revision and selected tools;
 - transport generation and negotiated protocol version; and
@@ -131,11 +132,16 @@ Opening a server lease binds:
 The authenticated Desktop host binding supplies identity; model arguments,
 provider session IDs, tool arguments, and PID never do. PID is diagnostic only.
 The Desktop process incarnation plus Swallowtail lease generation is instance
-authority. The lease reaches ready before provider dispatch. Close freezes admission,
-abandons or completes issued calls, joins callbacks and transport readers,
+authority. Before host work, Swallowtail validates that incarnation, workspace
+and task generations, revocation state, admitted task/session/attempt binding,
+and lease generation. The lease reaches ready before provider dispatch. Close
+freezes admission, abandons or completes issued calls, joins callbacks and transport readers,
 releases the linked dispatch binding and resources, then releases credential
 leases. Desktop owns application startup/shutdown; Swallowtail owns bridge
 lifetime inside that host. Drop is defensive cleanup, never success evidence.
+Production and development control profiles remain distinct. The Longhorn
+Contract 022 development loopback is not a registered-tool profile and cannot
+enter a release build through this bridge, host binding, or feature selection.
 
 ### Transport And Reconnect
 
@@ -157,6 +163,9 @@ The consumer must explicitly retry a call whose execution outcome is unknown.
 Every retry that may dispatch provider work uses a fresh Desktop attempt and a
 fresh Swallowtail operation binding. Mutating or indeterminate calls never
 replay.
+Recovery never revives an old lease. Every Desktop startup creates a fresh,
+non-reused process incarnation, and private lease authority cannot survive a
+restart.
 
 Every call has a caller identity, server/tool identity, call id, task, session,
 turn, attempt, deadline, cancellation state, and transport generation. Late,
@@ -275,6 +284,8 @@ filesystem inventory. Model-visible paths are workspace-relative. Every field,
 record, page, and aggregate payload has a positive Desktop-declared bound that
 Swallowtail enforces; concrete numeric limits are producer-settleable protocol
 evidence, not a generic operator gate.
+Content is untrusted data. Its text, metadata, links, and embedded instructions
+cannot broaden registered tool authority, admission, or app-context disclosure.
 
 ### Scheduling And Continuation
 

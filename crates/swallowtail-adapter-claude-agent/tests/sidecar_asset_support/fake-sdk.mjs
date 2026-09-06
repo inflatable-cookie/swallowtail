@@ -135,7 +135,10 @@ function modelRows(options) {
     ];
   }
   if (SCENARIO === "model-change-rejected") {
-    return [{ value: options.model, displayName: "Fixture model" }];
+    return [
+      { value: options.model, displayName: "Fixture model" },
+      { value: "claude-opus-5", displayName: "Fixture alternate" },
+    ];
   }
   return [{ value: options.model, displayName: "Fixture model" }];
 }

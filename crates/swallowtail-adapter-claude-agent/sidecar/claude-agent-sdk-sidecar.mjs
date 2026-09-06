@@ -1130,7 +1130,10 @@ async function handleSetModel(params) {
   try {
     confirmed = await state.query.setModel(model);
   } catch {
-    throw new SidecarFailure("model_change_failed");
+    // A provider rejection supplies no effective-model confirmation. Keep the
+    // route's contract typed as unconfirmed rather than reporting a requested
+    // value or a provider-specific rejection as success.
+    throw new SidecarFailure("model_change_unconfirmed");
   }
   if (typeof confirmed !== "string" || confirmed !== model) {
     throw new SidecarFailure("model_change_unconfirmed");

@@ -361,6 +361,24 @@ fn supported_models_drive_confirmed_and_unconfirmed_model_changes() {
 }
 
 #[test]
+fn a_fake_sdk_rejection_is_typed_unconfirmed_after_query_set_model() {
+    let mut rejected = SidecarProcess::start_scenario("model-change-rejected");
+    rejected.command(
+        "open-1",
+        "open",
+        json!({"cwd": rejected.cwd(), "model": "m-1"}),
+    );
+    rejected.command("query-1", "query", json!({"text": "first turn"}));
+    let response = rejected.command("model-1", "set_model", json!({"model": "claude-opus-5"}));
+    assert_eq!(
+        response["success"], false,
+        "provider rejection is not confirmation: {response}"
+    );
+    assert_eq!(response["failure"]["code"], "model_change_unconfirmed");
+    assert_eq!(rejected.observed_model_set_calls(), vec!["claude-opus-5"]);
+}
+
+#[test]
 fn the_sidecar_rejects_a_model_before_query_set_model() {
     let mut sidecar = SidecarProcess::start();
     sidecar.command(

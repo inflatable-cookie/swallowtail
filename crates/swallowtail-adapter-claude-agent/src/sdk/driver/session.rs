@@ -8,7 +8,7 @@ use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::{command_rejected, failure};
 use crate::sdk::profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile};
 use crate::sdk::turn::SdkActiveTurn;
-use crate::sdk::wire::{ClaudeAgentSdkCommand, ClaudeAgentSdkFailureCode};
+use crate::sdk::wire::ClaudeAgentSdkCommand;
 use serde_json::json;
 use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
@@ -340,17 +340,13 @@ impl ClaudeAgentSdkSessionHandle {
             };
             let response = response?;
             if !response.success {
-                let code = response
+                // A supported request that the SDK or sidecar rejects has no
+                // effective-model confirmation. Preserve the prior effective
+                // model and expose the same typed outcome as a void response.
+                let _code = response
                     .failure_code
                     .expect("a rejected response carries its fixed sidecar code");
-                if code == ClaudeAgentSdkFailureCode::ModelChangeUnconfirmed {
-                    return Err(model_change_unconfirmed());
-                }
-                return Err(command_rejected(
-                    "swallowtail.claude-agent.sdk.model_change_rejected",
-                    "Claude Agent SDK sidecar rejected the model change",
-                    code,
-                ));
+                return Err(model_change_unconfirmed());
             }
             let confirmed = response
                 .data

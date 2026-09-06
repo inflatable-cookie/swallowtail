@@ -4,7 +4,6 @@
 
 - [104-post-tag-determinism-sweep.md](./104-post-tag-determinism-sweep.md) — ready; retire card 094's deferred timing and leak surfaces in kimi-platform and host-local; concurrent with the g05.029 runway
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; branch-only until the `v0.4.2` tag; set_model with confirmed values, supported_models and effort at open
-- [102-v0-4-2-consumer-proof-and-tag-gate.md](./102-v0-4-2-consumer-proof-and-tag-gate.md) — ready; candidate `f94dd16f` merged; Bovine editing session as the smoke
 
 ## Planned
 
@@ -22,6 +21,7 @@
 ## Completed
 
 - [101-v0-4-2-candidate-preparation.md](./101-v0-4-2-candidate-preparation.md) — complete; PR 240 merged at candidate `f94dd16f`; exact-SHA workflow run `34019752262` green; no tag
+- [102-v0-4-2-consumer-proof-and-tag-gate.md](./102-v0-4-2-consumer-proof-and-tag-gate.md) — complete; tagged smoke inconclusive pre-window; Desktop owns visibility follow-up
 - [103-opencode-cancellation-cleanup-delete-dispatch.md](./103-opencode-cancellation-cleanup-delete-dispatch.md) — complete; fixture-only; merged at `d7b483dd`
 - [100-claude-sdk-open-diagnostics-and-live-open-repair.md](./100-claude-sdk-open-diagnostics-and-live-open-repair.md) — complete; surface sidecar codes, effective model from init evidence, Node newer-allowed at open, one live open; the v0.4.2 fix for Bovine's open_rejected
 - [095-ci-gate-restructure.md](./095-ci-gate-restructure.md) — complete; PR 230 merged as `ba8275eb`; PR gate 9m14s to 4m48s

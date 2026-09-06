@@ -1,6 +1,6 @@
 # g05.032 v0.4.2 Release Readiness
 
-Status: ready; tagged `v0.4.2` at `f94dd16f`; card 100 merged at `ffc263107343b30cda7a0efde840f84f47a361ec`; card 103 complete; card 101 merged; card 102 serial consumer proof
+Status: complete; tagged `v0.4.2` at `f94dd16f`; card 100 merged at `ffc263107343b30cda7a0efde840f84f47a361ec`; card 103 complete; card 101 merged; card 102 complete with inconclusive Desktop pre-window smoke
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -50,7 +50,7 @@ mutation.
 - [103 OpenCode Cancellation Cleanup DELETE Dispatch](batch-cards/103-opencode-cancellation-cleanup-delete-dispatch.md) — complete; fixture-only, merged at `d7b483dd9d850fb0f6f3f04e4297e1bf7662333b`
 - [100 Claude SDK Open Diagnostics And Live-Open Repair](batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md) — complete; merged through PR 237 at `ffc263107343b30cda7a0efde840f84f47a361ec`
 - [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — complete; PR 240 merged at candidate SHA `f94dd16f`; tagged as `v0.4.2`
-- [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — ready; released tag `v0.4.2` and Bovine editing session as the smoke
+- [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — complete; released tag `v0.4.2` smoke inconclusive pre-window; Desktop owns visibility follow-up
 
 ## Dispatch Manifest
 
@@ -77,7 +77,7 @@ Promoted planning commit: the `main` commit that introduces this file.
 - [ ] Bovine's `read_write(AcceptEdits)` open succeeds on the candidate and
       a multi-turn edit lands in the leased cwd
 - [ ] every open failure names its sidecar code
-- [ ] `v0.4.2` tagged on the operator's exact-SHA authorization
+- [x] `v0.4.2` tagged on the operator's exact-SHA authorization
 
 ### Card 103 Manifest
 

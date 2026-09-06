@@ -10,6 +10,11 @@
 
 ## Planned
 
+- [109-release-gate-order-and-hosted-delegation.md](./109-release-gate-order-and-hosted-delegation.md) — planned; cheap gates first, hosted run stands for clippy and tests; after the `v0.4.3` tag
+- [110-version-derived-release-scripts-and-baseline-roles.md](./110-version-derived-release-scripts-and-baseline-roles.md) — planned; no version literals in gate scripts; baseline roles documented; after the tag
+- [111-docs-check-on-push-and-closeout-grammar.md](./111-docs-check-on-push-and-closeout-grammar.md) — planned; pre-push docs check; drift checker grammar documented; after the tag
+- [112-integration-test-binary-consolidation.md](./112-integration-test-binary-consolidation.md) — planned; 370 test binaries to a handful per crate; may start now
+- [113-ci-critical-path.md](./113-ci-critical-path.md) — planned; MSRV to Linux clippy-only on PRs, shard rebalance, cache audit; may start now
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — planned; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
 - [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — planned; ready on card 105's merge
 - [107-v0-4-3-consumer-proof-and-tag-capsule.md](./107-v0-4-3-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.3` tag

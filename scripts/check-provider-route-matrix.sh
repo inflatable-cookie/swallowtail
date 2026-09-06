@@ -43,8 +43,8 @@ from pathlib import Path
 root = Path(sys.argv[1])
 current_route_file = Path(sys.argv[2])
 historical_route_file = root / "release-baselines/production-routes-0.3.3.txt"
-immutable_route_file = root / "release-baselines/production-routes-0.4.0.txt"
-candidate_route_file = root / "release-baselines/production-routes-0.4.1.txt"
+immutable_route_file = root / "release-baselines/production-routes-0.4.1.txt"
+candidate_route_file = root / "release-baselines/production-routes-0.4.2.txt"
 ledger_file = root / (
     "docs/research/281-v0-4-0-compatibility-and-freeze-audit/"
     "route-behavior-ledger.tsv"
@@ -72,14 +72,14 @@ historical_routes = {
 }
 if len(immutable_routes) != 49:
     fail(
-        "immutable v0.4.0 route inventory must contain exactly 49 rows: "
+        "immutable v0.4.1 route inventory must contain exactly 49 rows: "
         f"{len(immutable_routes)}"
     )
 if len(current_routes) != 49:
     fail(f"current route inventory must contain exactly 49 rows: {len(current_routes)}")
 if current_routes != immutable_routes:
     fail(
-        "current route inventory must equal immutable v0.4.0 exactly: "
+        "current route inventory must equal immutable v0.4.1 exactly: "
         f"added={sorted(current_routes - immutable_routes)}, "
         f"missing={sorted(immutable_routes - current_routes)}"
     )
@@ -91,7 +91,7 @@ candidate_routes = {
 }
 if candidate_routes != current_routes:
     fail(
-        "v0.4.1 candidate route baseline must equal the current 49-route set: "
+        "v0.4.2 candidate route baseline must equal the current 49-route set: "
         f"added={sorted(candidate_routes - current_routes)}, "
         f"missing={sorted(current_routes - candidate_routes)}"
     )
@@ -225,4 +225,4 @@ python3 "$route_matrix_repo_root/scripts/provider_route_matrix/validate.py" \
 
 python3 "$route_matrix_repo_root/scripts/check-provider-activity-matrix.py"
 
-printf 'provider route, lifecycle, 41-solution/49-route feature, activity, immutable v0.4.0 candidate, and Card050 historical ledger boundary checks passed (49 immutable/current; 47 historical yes; exact no set pi.sdk-sidecar, claude-agent.sdk)\n'
+printf 'provider route, lifecycle, 41-solution/49-route feature, activity, immutable v0.4.1 candidate, and Card050 historical ledger boundary checks passed (49 immutable/current; 47 historical yes; exact no set pi.sdk-sidecar, claude-agent.sdk)\n'

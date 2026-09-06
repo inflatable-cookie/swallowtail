@@ -18,14 +18,15 @@ merges.
 
 ## Result
 
-The candidate preparation stopped at a third real release-gate defect after
-the coordinator corrected the first two. The worker branch was rebased onto
-the coordinator's `origin/main` at `fb66092b7a428ee866bf9ecb0689eda75e102548`,
-which includes the corrected Card 103 status text. The preserved release note,
-release index entry, and Card 101 Result remain scoped to this card.
+The fourth prepare transaction completed green after the coordinator corrected
+the third QA defect. The worker branch was rebased onto the coordinator's
+`origin/main` at `d3304577a9a9cb00194000995a345a4d0c3d598e`, which includes the
+Card 103 complete status, fixture-only Result, and completed roadmap indexes.
+The preserved release note, release index entry, and Card 101 Result remain
+scoped to this card.
 
 The fresh read-only status report is retained at
-`.effigy/reports/release/status-0.4.2-attempt-3.json` (SHA-256
+`.effigy/reports/release/status-0.4.2-attempt-4.json` (SHA-256
 `877bc5a44916c195b6300a6d432a0757d769503d209b087ad34205a5148e13c4`). It
 inferred `0.4.2` as a patch from current `0.4.1`, with 40 locked workspace
 packages, 11 configured gates, `ready: true`, and `checked: false`.
@@ -91,9 +92,29 @@ third-attempt per-gate logs and the environment are retained under
 shared Card 103 roadmap index surface, so the worker performs no further
 prepare attempt and does not edit that card or index.
 
+Attempt 4 (fresh attempt after the Card 103 index reconciliation) ran exactly
+the same authorized command once. Its JSON is retained at
+`.effigy/reports/release/prepare-0.4.2-attempt-4.json` (SHA-256
+`bb41cdc943c39359a9ba5e7eb3a28de9574f620bc0f9f778c9123ea9124dfe64`). All 11
+gates passed: `fmt`, `lint`, `lint:no-features`, `test`, `qa`, `docs`,
+`metadata`, `api`, `security`, `floor`, and `source`. The locked test gate ran
+3130 tests across 274 binaries with 24 skipped. Effigy wrote
+`.release-prepared.json` for `0.4.2`; its source fingerprint records the
+prepared worker head before post-prepare release-surface edits.
+
+The fourth-attempt per-gate logs and environment are retained under
+`.effigy/reports/release/attempt-4-gates/`: `fmt.log`, `lint.log`,
+`lint:no-features.log`, `test.log`, `qa.log`, `docs.log`, `metadata.log`,
+`api.log`, `security.log`, `floor.log`, `source.log`, and `environment.json`.
+No frozen-tree rerun was performed.
+
 Effigy rolled back its three prepare mutations (`Cargo.toml`, `CHANGELOG.md`,
-and `Cargo.lock`) on all three attempts; `.release-prepared.json` was not
-written.
+and `Cargo.lock`) on the first three attempts; the fourth attempt retained the
+prepared `Cargo.toml`, `CHANGELOG.md`, and `Cargo.lock`. The generated 0.4.2
+baselines contain 40 API package files plus `packages.txt`, 49 production
+routes, and 88 internal dependency edges. The four versioned validation
+references, consumer front door, and root release posture now point at
+`0.4.2` while retaining the `v0.4.1` immutable baseline boundary.
 Card 103 remains fixture-only and merged at
 `d7b483dd9d850fb0f6f3f04e4297e1bf7662333b`. Card 100's live editing outcome
 remains explicitly typed unresolved `ProviderFailed` evidence in the release
@@ -106,7 +127,7 @@ Desktop-owned and is not Card 101/102 content; remaining `0.153.3` is
 `UnverifiedNewer` against the `0.152.1` ceiling.
 
 No 0.4.2 candidate PR/head SHA, workflow-dispatch run ID, merge SHA, or tag
-SHA exists. No baseline generation, script repoint, candidate PR, review, CI
-dispatch, merge, tag, or push-to-tag action was performed. The lane stops here
-pending correction of the Card 103 roadmap index bucket and a new coordinator
-dispatch.
+SHA exists yet. Candidate PR creation, independent review, and exact-SHA CI
+dispatch are the remaining worker-loop steps. No tag, push-to-tag action,
+Desktop request, Card 082 merge, credential/auth/permission change, consumer
+pin, feature-code change, or workflow edit was performed.

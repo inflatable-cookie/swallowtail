@@ -5,6 +5,8 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-09-06
+
 ### Added
 - publish Contract 061 candidate K across the Mistral Vibe, Muse Code, Oh
   My Pi, and Qwen adapters. Prepared facades emit the exact 52-row tranche;

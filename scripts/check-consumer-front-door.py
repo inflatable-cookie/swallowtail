@@ -16,7 +16,7 @@ from provider_route_matrix.route_inventory import (  # noqa: E402
     production_routes as inventory_production_routes,
 )
 REPOSITORY = "https://github.com/inflatable-cookie/swallowtail"
-RELEASE_TAG = "v0.4.1"
+RELEASE_TAG = "v0.4.2"
 
 
 def fail(message: str) -> None:
@@ -40,7 +40,7 @@ def section(document: str, start: str, end: str) -> str:
 
 
 readme = read("README.md")
-release = read("docs/releases/0.4.1.md")
+release = read("docs/releases/0.4.2.md")
 changelog = read("CHANGELOG.md")
 
 for required in ("SECURITY.md", "SUPPORT.md", "CONTRIBUTING.md", "LICENSE"):
@@ -81,17 +81,17 @@ if set(dependencies) != expected_dependencies:
     fail("source-install example does not contain the expected direct package set")
 
 expected_packages = set(
-    read("release-baselines/public-api-0.4.1/packages.txt").splitlines()
+    read("release-baselines/public-api-0.4.2/packages.txt").splitlines()
 )
 release_package_section = section(release, "## Package Set", "## Production Routes")
 documented_packages = set(re.findall(r"`(swallowtail-[a-z0-9-]+)`", release_package_section))
 if not documented_packages:
     if (
-        "The 40-package set is unchanged from `v0.4.0`." not in release_package_section
-        or "packages listed in the `v0.4.0` release note." not in release_package_section
+        "The 40-package set is unchanged from `v0.4.1`." not in release_package_section
+        or "packages listed in the `v0.4.1` release note." not in release_package_section
     ):
         fail("release package section has no package inventory or unchanged-set evidence")
-    prior_release = read("docs/releases/0.4.0.md")
+    prior_release = read("docs/releases/0.4.1.md")
     prior_package_section = section(
         prior_release, "## Package Set", "## Production Routes"
     )
@@ -104,7 +104,7 @@ if documented_packages != expected_packages:
     fail(f"release package inventory drifted; missing={missing}, extra={extra}")
 
 current_routes = set(inventory_production_routes())
-expected_routes = set(read("release-baselines/production-routes-0.4.1.txt").splitlines())
+expected_routes = set(read("release-baselines/production-routes-0.4.2.txt").splitlines())
 if current_routes != expected_routes:
     missing = sorted(expected_routes - current_routes)
     extra = sorted(current_routes - expected_routes)
@@ -113,13 +113,13 @@ release_route_section = section(release, "## Production Routes", "## Highlights"
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if not documented_routes:
     if (
-        "The 49-route candidate inventory is unchanged from `v0.4.0`, including"
+        "The 49-route candidate inventory is unchanged from `v0.4.1`, including"
         not in release_route_section
         or "Research 286 confirms that no route" not in release_route_section
         or "was renamed or removed." not in release_route_section
     ):
         fail("release route section has no route inventory or unchanged-set evidence")
-    prior_release = read("docs/releases/0.4.0.md")
+    prior_release = read("docs/releases/0.4.1.md")
     prior_route_section = section(
         prior_release, "## Production Routes", "## Highlights"
     )
@@ -133,15 +133,15 @@ if documented_routes != expected_routes:
 
 for relative, document in (
     ("README.md", readme),
-    ("docs/releases/0.4.1.md", release),
+    ("docs/releases/0.4.2.md", release),
 ):
     if REPOSITORY not in document or RELEASE_TAG not in document:
         fail(f"{relative} omits the canonical repository or exact release tag")
 
-if "docs/releases/0.4.1.md" not in changelog and not re.search(
-    r"^## \[0\.4\.1\](?: - .*)?$", changelog, re.MULTILINE
+if "docs/releases/0.4.2.md" not in changelog and not re.search(
+    r"^## \[0\.4\.2\](?: - .*)?$", changelog, re.MULTILINE
 ):
-    fail("CHANGELOG.md does not reference the 0.4.1 release notes")
+    fail("CHANGELOG.md does not reference the 0.4.2 release notes")
 if "security/advisories/new" not in read("SECURITY.md"):
     fail("SECURITY.md does not name the private reporting path")
 

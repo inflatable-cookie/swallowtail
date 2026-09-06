@@ -16,7 +16,7 @@ from provider_route_matrix.route_inventory import (  # noqa: E402
     production_routes as inventory_production_routes,
 )
 REPOSITORY = "https://github.com/inflatable-cookie/swallowtail"
-RELEASE_TAG = "v0.4.2"
+RELEASE_TAG = "v0.4.3"
 
 
 def fail(message: str) -> None:
@@ -40,7 +40,7 @@ def section(document: str, start: str, end: str) -> str:
 
 
 readme = read("README.md")
-release = read("docs/releases/0.4.2.md")
+release = read("docs/releases/0.4.3.md")
 changelog = read("CHANGELOG.md")
 
 for required in ("SECURITY.md", "SUPPORT.md", "CONTRIBUTING.md", "LICENSE"):
@@ -81,7 +81,7 @@ if set(dependencies) != expected_dependencies:
     fail("source-install example does not contain the expected direct package set")
 
 expected_packages = set(
-    read("release-baselines/public-api-0.4.2/packages.txt").splitlines()
+    read("release-baselines/public-api-0.4.3/packages.txt").splitlines()
 )
 release_package_section = section(release, "## Package Set", "## Production Routes")
 documented_packages = set(re.findall(r"`(swallowtail-[a-z0-9-]+)`", release_package_section))
@@ -104,7 +104,7 @@ if documented_packages != expected_packages:
     fail(f"release package inventory drifted; missing={missing}, extra={extra}")
 
 current_routes = set(inventory_production_routes())
-expected_routes = set(read("release-baselines/production-routes-0.4.2.txt").splitlines())
+expected_routes = set(read("release-baselines/production-routes-0.4.3.txt").splitlines())
 if current_routes != expected_routes:
     missing = sorted(expected_routes - current_routes)
     extra = sorted(current_routes - expected_routes)
@@ -133,15 +133,15 @@ if documented_routes != expected_routes:
 
 for relative, document in (
     ("README.md", readme),
-    ("docs/releases/0.4.2.md", release),
+    ("docs/releases/0.4.3.md", release),
 ):
     if REPOSITORY not in document or RELEASE_TAG not in document:
         fail(f"{relative} omits the canonical repository or exact release tag")
 
-if "docs/releases/0.4.2.md" not in changelog and not re.search(
-    r"^## \[0\.4\.2\](?: - .*)?$", changelog, re.MULTILINE
+if "docs/releases/0.4.3.md" not in changelog and not re.search(
+    r"^## \[0\.4\.3\](?: - .*)?$", changelog, re.MULTILINE
 ):
-    fail("CHANGELOG.md does not reference the 0.4.2 release notes")
+    fail("CHANGELOG.md does not reference the 0.4.3 release notes")
 if "security/advisories/new" not in read("SECURITY.md"):
     fail("SECURITY.md does not name the private reporting path")
 

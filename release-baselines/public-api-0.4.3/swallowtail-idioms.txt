@@ -1,0 +1,176 @@
+pub mod swallowtail_idioms
+pub enum swallowtail_idioms::IdiomConstraint
+pub swallowtail_idioms::IdiomConstraint::Command(swallowtail_idioms::BoundedText)
+pub swallowtail_idioms::IdiomConstraint::File(swallowtail_idioms::BoundedText)
+pub swallowtail_idioms::IdiomConstraint::Text(swallowtail_idioms::BoundedText)
+pub swallowtail_idioms::IdiomConstraint::Tool(swallowtail_idioms::BoundedText)
+impl swallowtail_idioms::IdiomConstraint
+pub fn swallowtail_idioms::IdiomConstraint::command(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+pub fn swallowtail_idioms::IdiomConstraint::file(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+pub fn swallowtail_idioms::IdiomConstraint::text(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+pub fn swallowtail_idioms::IdiomConstraint::tool(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+pub enum swallowtail_idioms::IdiomErrorKind
+pub swallowtail_idioms::IdiomErrorKind::BlankText
+pub swallowtail_idioms::IdiomErrorKind::ConfidenceOutOfRange
+pub swallowtail_idioms::IdiomErrorKind::TextTooLong
+pub swallowtail_idioms::IdiomErrorKind::ZeroHalfLife
+pub enum swallowtail_idioms::IdiomScope
+pub swallowtail_idioms::IdiomScope::Package(swallowtail_idioms::BoundedText)
+pub swallowtail_idioms::IdiomScope::Project
+pub swallowtail_idioms::IdiomScope::User
+impl swallowtail_idioms::IdiomScope
+pub fn swallowtail_idioms::IdiomScope::package(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+pub enum swallowtail_idioms::LintReason
+pub swallowtail_idioms::LintReason::ConfidenceOutOfRange
+pub swallowtail_idioms::LintReason::IdBlank
+pub swallowtail_idioms::LintReason::PackageNameBlank
+pub swallowtail_idioms::LintReason::PackageRefBlank
+pub swallowtail_idioms::LintReason::PatternBlank
+pub swallowtail_idioms::LintReason::SourceBlank
+pub swallowtail_idioms::LintReason::ZeroHalfLife
+pub enum swallowtail_idioms::MergeOutcome
+pub swallowtail_idioms::MergeOutcome::Lowered
+pub swallowtail_idioms::MergeOutcome::New
+pub swallowtail_idioms::MergeOutcome::Raised
+pub swallowtail_idioms::MergeOutcome::Unchanged
+pub enum swallowtail_idioms::Provenance
+pub swallowtail_idioms::Provenance::Imported
+pub swallowtail_idioms::Provenance::Imported::merge_base: swallowtail_idioms::MonotonicInstant
+pub swallowtail_idioms::Provenance::Imported::package_ref: swallowtail_idioms::BoundedText
+pub swallowtail_idioms::Provenance::Learned
+pub swallowtail_idioms::Provenance::Learned::last_signal: swallowtail_idioms::MonotonicInstant
+pub swallowtail_idioms::Provenance::Learned::signal_count: u64
+pub swallowtail_idioms::Provenance::Static(swallowtail_idioms::BoundedText)
+pub enum swallowtail_idioms::SignalKind
+pub swallowtail_idioms::SignalKind::Accept
+pub swallowtail_idioms::SignalKind::Edit
+pub swallowtail_idioms::SignalKind::Reject
+pub struct swallowtail_idioms::BoundedText
+impl swallowtail_idioms::BoundedText
+pub fn swallowtail_idioms::BoundedText::as_str(&self) -> &str
+pub fn swallowtail_idioms::BoundedText::is_empty(&self) -> bool
+pub fn swallowtail_idioms::BoundedText::len(&self) -> usize
+pub fn swallowtail_idioms::BoundedText::new(impl core::convert::Into<alloc::string::String>, usize) -> core::result::Result<Self, swallowtail_idioms::bounded::BoundedTextError>
+pub struct swallowtail_idioms::Confidence
+impl swallowtail_idioms::Confidence
+pub const fn swallowtail_idioms::Confidence::as_of(self) -> swallowtail_idioms::MonotonicInstant
+pub fn swallowtail_idioms::Confidence::effective(self, swallowtail_idioms::MonotonicInstant) -> u8
+pub const fn swallowtail_idioms::Confidence::half_life_ticks(self) -> u64
+pub fn swallowtail_idioms::Confidence::new(u8, swallowtail_idioms::MonotonicInstant, u64) -> core::result::Result<Self, swallowtail_idioms::confidence::ConfidenceErrorKind>
+pub const fn swallowtail_idioms::Confidence::value(self) -> u8
+pub struct swallowtail_idioms::Idiom
+impl swallowtail_idioms::Idiom
+pub const fn swallowtail_idioms::Idiom::confidence(&self) -> swallowtail_idioms::Confidence
+pub const fn swallowtail_idioms::Idiom::constraint(&self) -> &swallowtail_idioms::IdiomConstraint
+pub fn swallowtail_idioms::Idiom::effective_confidence(&self, swallowtail_idioms::MonotonicInstant) -> u8
+pub const fn swallowtail_idioms::Idiom::id(&self) -> &swallowtail_idioms::IdiomId
+pub fn swallowtail_idioms::Idiom::new(swallowtail_idioms::IdiomId, swallowtail_idioms::IdiomScope, swallowtail_idioms::IdiomConstraint, u8, swallowtail_idioms::MonotonicInstant, swallowtail_idioms::Provenance) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+pub const fn swallowtail_idioms::Idiom::provenance(&self) -> &swallowtail_idioms::Provenance
+pub const fn swallowtail_idioms::Idiom::scope(&self) -> &swallowtail_idioms::IdiomScope
+pub fn swallowtail_idioms::Idiom::with_half_life(swallowtail_idioms::IdiomId, swallowtail_idioms::IdiomScope, swallowtail_idioms::IdiomConstraint, u8, swallowtail_idioms::MonotonicInstant, u64, swallowtail_idioms::Provenance) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+pub struct swallowtail_idioms::IdiomContext
+impl swallowtail_idioms::IdiomContext
+pub const fn swallowtail_idioms::IdiomContext::at(&self) -> swallowtail_idioms::MonotonicInstant
+pub const fn swallowtail_idioms::IdiomContext::maximum(&self) -> usize
+pub fn swallowtail_idioms::IdiomContext::new(swallowtail_idioms::IdiomScope, swallowtail_idioms::MonotonicInstant, usize) -> Self
+pub const fn swallowtail_idioms::IdiomContext::scope(&self) -> &swallowtail_idioms::IdiomScope
+pub struct swallowtail_idioms::IdiomError
+impl swallowtail_idioms::IdiomError
+pub const fn swallowtail_idioms::IdiomError::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
+pub const fn swallowtail_idioms::IdiomError::failure_classification(&self) -> swallowtail_core::failure::FailureClassification
+pub const fn swallowtail_idioms::IdiomError::kind(&self) -> swallowtail_idioms::IdiomErrorKind
+impl core::error::Error for swallowtail_idioms::IdiomError
+impl core::fmt::Display for swallowtail_idioms::IdiomError
+pub fn swallowtail_idioms::IdiomError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_idioms::IdiomId(_)
+impl swallowtail_idioms::IdiomId
+pub fn swallowtail_idioms::IdiomId::as_str(&self) -> &str
+pub fn swallowtail_idioms::IdiomId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+pub struct swallowtail_idioms::IdiomRecorder
+impl swallowtail_idioms::IdiomRecorder
+pub const fn swallowtail_idioms::IdiomRecorder::none() -> Self
+pub fn swallowtail_idioms::IdiomRecorder::record(&self, swallowtail_idioms::IdiomSignal)
+pub fn swallowtail_idioms::IdiomRecorder::with(impl swallowtail_idioms::IdiomSink + 'static) -> Self
+impl core::default::Default for swallowtail_idioms::IdiomRecorder
+pub fn swallowtail_idioms::IdiomRecorder::default() -> Self
+pub struct swallowtail_idioms::IdiomSet
+impl swallowtail_idioms::IdiomSet
+pub fn swallowtail_idioms::IdiomSet::idioms(&self) -> &[swallowtail_idioms::Idiom]
+pub fn swallowtail_idioms::IdiomSet::is_empty(&self) -> bool
+pub const fn swallowtail_idioms::IdiomSet::is_truncated(&self) -> bool
+pub fn swallowtail_idioms::IdiomSet::len(&self) -> usize
+pub fn swallowtail_idioms::IdiomSet::new(alloc::vec::Vec<swallowtail_idioms::Idiom>, bool) -> Self
+impl core::default::Default for swallowtail_idioms::IdiomSet
+pub fn swallowtail_idioms::IdiomSet::default() -> Self
+pub struct swallowtail_idioms::IdiomSignal
+impl swallowtail_idioms::IdiomSignal
+pub fn swallowtail_idioms::IdiomSignal::correlation(&self) -> &str
+pub const fn swallowtail_idioms::IdiomSignal::kind(&self) -> swallowtail_idioms::SignalKind
+pub fn swallowtail_idioms::IdiomSignal::new(swallowtail_idioms::SignalKind, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, swallowtail_idioms::IdiomScope, u64, swallowtail_idioms::MonotonicInstant) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+pub const fn swallowtail_idioms::IdiomSignal::observed_at(&self) -> swallowtail_idioms::MonotonicInstant
+pub const fn swallowtail_idioms::IdiomSignal::scope(&self) -> &swallowtail_idioms::IdiomScope
+pub const fn swallowtail_idioms::IdiomSignal::sequence(&self) -> u64
+pub fn swallowtail_idioms::IdiomSignal::target(&self) -> &str
+pub struct swallowtail_idioms::LintIssue
+impl swallowtail_idioms::LintIssue
+pub const fn swallowtail_idioms::LintIssue::index(&self) -> usize
+pub const fn swallowtail_idioms::LintIssue::reason(&self) -> swallowtail_idioms::LintReason
+pub struct swallowtail_idioms::MergeSummary
+pub swallowtail_idioms::MergeSummary::lowered: usize
+pub swallowtail_idioms::MergeSummary::new: usize
+pub swallowtail_idioms::MergeSummary::raised: usize
+pub swallowtail_idioms::MergeSummary::unchanged: usize
+impl swallowtail_idioms::MergeSummary
+pub const fn swallowtail_idioms::MergeSummary::empty() -> Self
+pub struct swallowtail_idioms::MonotonicInstant(_)
+impl swallowtail_idioms::MonotonicInstant
+pub const fn swallowtail_idioms::MonotonicInstant::from_ticks(u64) -> Self
+pub const fn swallowtail_idioms::MonotonicInstant::ticks(self) -> u64
+pub struct swallowtail_idioms::RegistryMergeOutcome
+impl swallowtail_idioms::RegistryMergeOutcome
+pub const fn swallowtail_idioms::RegistryMergeOutcome::new(alloc::vec::Vec<swallowtail_idioms::Idiom>, swallowtail_idioms::MergeSummary) -> Self
+pub fn swallowtail_idioms::RegistryMergeOutcome::store(&self) -> &[swallowtail_idioms::Idiom]
+pub const fn swallowtail_idioms::RegistryMergeOutcome::summary(&self) -> swallowtail_idioms::MergeSummary
+pub struct swallowtail_idioms::RegistryNamespace(_)
+impl swallowtail_idioms::RegistryNamespace
+pub fn swallowtail_idioms::RegistryNamespace::as_str(&self) -> &str
+pub fn swallowtail_idioms::RegistryNamespace::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+pub struct swallowtail_idioms::RegistryPackage
+impl swallowtail_idioms::RegistryPackage
+pub fn swallowtail_idioms::RegistryPackage::new(swallowtail_idioms::RegistryPackageRef, alloc::vec::Vec<swallowtail_idioms::Idiom>) -> core::result::Result<Self, swallowtail_idioms::LintIssue>
+pub fn swallowtail_idioms::RegistryPackage::records(&self) -> &[swallowtail_idioms::Idiom]
+pub const fn swallowtail_idioms::RegistryPackage::reference(&self) -> &swallowtail_idioms::RegistryPackageRef
+pub struct swallowtail_idioms::RegistryPackageRef
+impl swallowtail_idioms::RegistryPackageRef
+pub fn swallowtail_idioms::RegistryPackageRef::name(&self) -> &str
+pub const fn swallowtail_idioms::RegistryPackageRef::namespace(&self) -> &swallowtail_idioms::RegistryNamespace
+pub fn swallowtail_idioms::RegistryPackageRef::new(swallowtail_idioms::RegistryNamespace, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_idioms::IdiomError>
+impl core::fmt::Display for swallowtail_idioms::RegistryPackageRef
+pub fn swallowtail_idioms::RegistryPackageRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_idioms::StaticRulesSource
+impl swallowtail_idioms::StaticRulesSource
+pub fn swallowtail_idioms::StaticRulesSource::from_store(&[swallowtail_idioms::Idiom]) -> Self
+pub fn swallowtail_idioms::StaticRulesSource::new(alloc::vec::Vec<swallowtail_idioms::Idiom>) -> Self
+pub fn swallowtail_idioms::StaticRulesSource::records(&self) -> &[swallowtail_idioms::Idiom]
+impl swallowtail_idioms::IdiomSource for swallowtail_idioms::StaticRulesSource
+pub fn swallowtail_idioms::StaticRulesSource::select(&self, &swallowtail_idioms::IdiomContext) -> swallowtail_idioms::IdiomSet
+pub const swallowtail_idioms::DEFAULT_DECAY_HALF_LIFE_TICKS: u64
+pub const swallowtail_idioms::DEFAULT_MAX_CORRELATION_BYTES: usize
+pub const swallowtail_idioms::DEFAULT_MAX_ID_BYTES: usize
+pub const swallowtail_idioms::DEFAULT_MAX_PATTERN_BYTES: usize
+pub const swallowtail_idioms::DEFAULT_MAX_SOURCE_BYTES: usize
+pub const swallowtail_idioms::DEFAULT_MAX_TARGET_BYTES: usize
+pub const swallowtail_idioms::MAX_DECAY_HALVINGS: u32
+pub trait swallowtail_idioms::IdiomSink: core::marker::Send + core::marker::Sync
+pub fn swallowtail_idioms::IdiomSink::record(&self, &swallowtail_idioms::IdiomSignal)
+pub trait swallowtail_idioms::IdiomSource: core::marker::Send + core::marker::Sync
+pub fn swallowtail_idioms::IdiomSource::select(&self, &swallowtail_idioms::IdiomContext) -> swallowtail_idioms::IdiomSet
+impl swallowtail_idioms::IdiomSource for swallowtail_idioms::StaticRulesSource
+pub fn swallowtail_idioms::StaticRulesSource::select(&self, &swallowtail_idioms::IdiomContext) -> swallowtail_idioms::IdiomSet
+pub fn swallowtail_idioms::lint_idiom(&swallowtail_idioms::Idiom) -> alloc::vec::Vec<swallowtail_idioms::LintReason>
+pub fn swallowtail_idioms::lint_store(&[swallowtail_idioms::Idiom]) -> alloc::vec::Vec<swallowtail_idioms::LintIssue>
+pub fn swallowtail_idioms::merge(core::option::Option<&swallowtail_idioms::Idiom>, swallowtail_idioms::Idiom, swallowtail_idioms::MonotonicInstant) -> (swallowtail_idioms::Idiom, swallowtail_idioms::MergeOutcome)
+pub fn swallowtail_idioms::prepare_session_idioms(&dyn swallowtail_idioms::IdiomSource, swallowtail_idioms::IdiomScope, swallowtail_idioms::MonotonicInstant, usize) -> swallowtail_idioms::IdiomSet
+pub fn swallowtail_idioms::pull_package(&[swallowtail_idioms::Idiom], &swallowtail_idioms::RegistryPackage, swallowtail_idioms::MonotonicInstant) -> swallowtail_idioms::RegistryMergeOutcome
+pub fn swallowtail_idioms::push_merge(&[swallowtail_idioms::Idiom], &[swallowtail_idioms::Idiom], swallowtail_idioms::MonotonicInstant) -> swallowtail_idioms::RegistryMergeOutcome
+pub fn swallowtail_idioms::select_bounded(alloc::vec::Vec<swallowtail_idioms::Idiom>, swallowtail_idioms::MonotonicInstant, usize) -> swallowtail_idioms::IdiomSet

@@ -1,0 +1,1702 @@
+pub mod swallowtail_core
+pub enum swallowtail_core::ActivityContentStream
+pub swallowtail_core::ActivityContentStream::CommandOutput
+pub swallowtail_core::ActivityContentStream::FileChangeOutput
+pub swallowtail_core::ActivityContentStream::FinalAnswerText
+pub swallowtail_core::ActivityContentStream::IntermediateAssistantText
+pub swallowtail_core::ActivityContentStream::NormalizedSummary
+pub swallowtail_core::ActivityContentStream::PlanText
+pub swallowtail_core::ActivityContentStream::ProviderToolDisplay
+pub swallowtail_core::ActivityContentStream::ReasoningSummaryText
+pub enum swallowtail_core::ActivityCorrelationKind
+pub swallowtail_core::ActivityCorrelationKind::Callback
+pub swallowtail_core::ActivityCorrelationKind::DirectToolCall
+pub swallowtail_core::ActivityCorrelationKind::ProviderRequest
+pub enum swallowtail_core::ActivityDisclosure
+pub swallowtail_core::ActivityDisclosure::AdapterNormalizedSummary
+pub swallowtail_core::ActivityDisclosure::IdentityAndLifecycleOnly
+pub swallowtail_core::ActivityDisclosure::ProviderDisplayContent
+pub swallowtail_core::ActivityDisclosure::Unavailable
+pub enum swallowtail_core::ActivityKindClass
+pub swallowtail_core::ActivityKindClass::AssistantMessage
+pub swallowtail_core::ActivityKindClass::CommandExecution
+pub swallowtail_core::ActivityKindClass::ConsumerOwnedTool
+pub swallowtail_core::ActivityKindClass::ContextCompaction
+pub swallowtail_core::ActivityKindClass::ExternalSearch
+pub swallowtail_core::ActivityKindClass::FileChange
+pub swallowtail_core::ActivityKindClass::Hook
+pub swallowtail_core::ActivityKindClass::HostWatcher
+pub swallowtail_core::ActivityKindClass::ImageView
+pub swallowtail_core::ActivityKindClass::Plan
+pub swallowtail_core::ActivityKindClass::ProviderOwnedTool
+pub swallowtail_core::ActivityKindClass::ReasoningSummary
+pub swallowtail_core::ActivityKindClass::ReviewTransition
+pub swallowtail_core::ActivityKindClass::SubagentOrCollaboration
+pub swallowtail_core::ActivityKindClass::Task
+pub swallowtail_core::ActivityKindClass::Unknown
+pub swallowtail_core::ActivityKindClass::WarningOrError
+pub enum swallowtail_core::ActivityLifecycleFidelity
+pub swallowtail_core::ActivityLifecycleFidelity::CompleteLifecycle
+pub swallowtail_core::ActivityLifecycleFidelity::CompletionOnly
+pub swallowtail_core::ActivityLifecycleFidelity::Unavailable
+pub swallowtail_core::ActivityLifecycleFidelity::UpdateAndCompletion
+pub enum swallowtail_core::ActivityUnknownEventPosture
+pub swallowtail_core::ActivityUnknownEventPosture::FailClosed
+pub swallowtail_core::ActivityUnknownEventPosture::PreserveNamespaced
+pub enum swallowtail_core::AddableRouteAvailability
+pub swallowtail_core::AddableRouteAvailability::Available
+pub swallowtail_core::AddableRouteAvailability::Unavailable(swallowtail_core::AddableRouteMissingRequirement)
+pub swallowtail_core::AddableRouteAvailability::Unsupported
+pub enum swallowtail_core::AddableRouteMissingRequirement
+pub swallowtail_core::AddableRouteMissingRequirement::HostService
+pub swallowtail_core::AddableRouteMissingRequirement::Install
+pub swallowtail_core::AddableRouteMissingRequirement::Runtime
+pub enum swallowtail_core::AttachedModelObservationScope
+pub swallowtail_core::AttachedModelObservationScope::InstalledInventory
+pub swallowtail_core::AttachedModelObservationScope::RunningInventory
+pub swallowtail_core::AttachedModelObservationScope::SelectedModelDetail
+pub enum swallowtail_core::AttachedRuntimeResidency
+pub swallowtail_core::AttachedRuntimeResidency::RuntimeManaged
+pub enum swallowtail_core::AudioEncoding
+pub swallowtail_core::AudioEncoding::Pcm16LittleEndian
+pub enum swallowtail_core::CancellationScope
+pub swallowtail_core::CancellationScope::ActiveResponse
+pub swallowtail_core::CancellationScope::ActiveTurn
+pub swallowtail_core::CancellationScope::DiscoveryProbe
+pub swallowtail_core::CancellationScope::InteractiveSession
+pub swallowtail_core::CancellationScope::OwnedServingInstance
+pub swallowtail_core::CancellationScope::ProviderRecoveredResourceCleanup
+pub swallowtail_core::CancellationScope::ProviderRunReconciliation
+pub swallowtail_core::CancellationScope::ProviderSessionCatalogue
+pub swallowtail_core::CancellationScope::ProviderSessionHistory
+pub swallowtail_core::CancellationScope::ProviderSessionImport
+pub swallowtail_core::CancellationScope::ProviderSessionManagement
+pub swallowtail_core::CancellationScope::ProviderSessionReconciliation
+pub swallowtail_core::CancellationScope::StructuredRun
+pub enum swallowtail_core::Capability
+pub swallowtail_core::Capability::ActiveOperationDetachment
+pub swallowtail_core::Capability::Attachments
+pub swallowtail_core::Capability::BilledCostReporting
+pub swallowtail_core::Capability::DirectToolContinuation
+pub swallowtail_core::Capability::ExternalSearch
+pub swallowtail_core::Capability::HarnessModeSelection
+pub swallowtail_core::Capability::IdiomsSessionOption
+pub swallowtail_core::Capability::InteractiveSession
+pub swallowtail_core::Capability::Interruption
+pub swallowtail_core::Capability::LoadSession
+pub swallowtail_core::Capability::ModelCatalog
+pub swallowtail_core::Capability::ObservableActivity
+pub swallowtail_core::Capability::OutputTokenLimit
+pub swallowtail_core::Capability::OwnedRemoteResourceDeletion
+pub swallowtail_core::Capability::PlannedConnectionRollover
+pub swallowtail_core::Capability::ProviderBackgroundExecution
+pub swallowtail_core::Capability::ProviderDurableRetention
+pub swallowtail_core::Capability::ProviderExternalNetwork
+pub swallowtail_core::Capability::ProviderManagedInferenceCache
+pub swallowtail_core::Capability::ProviderManagedRecovery
+pub swallowtail_core::Capability::ProviderNativeSessionClose
+pub swallowtail_core::Capability::ProviderRecoveredResourceCleanup
+pub swallowtail_core::Capability::ProviderRunReconciliation
+pub swallowtail_core::Capability::ProviderSessionArchive
+pub swallowtail_core::Capability::ProviderSessionAttachmentRecovery
+pub swallowtail_core::Capability::ProviderSessionCatalogue
+pub swallowtail_core::Capability::ProviderSessionDelete
+pub swallowtail_core::Capability::ProviderSessionHistory
+pub swallowtail_core::Capability::ProviderSessionImport
+pub swallowtail_core::Capability::ProviderSessionReconciliation
+pub swallowtail_core::Capability::ProviderSessionRestore
+pub swallowtail_core::Capability::ProviderTemporaryRetention
+pub swallowtail_core::Capability::RealtimeMedia
+pub swallowtail_core::Capability::ReasoningSelection
+pub swallowtail_core::Capability::Resume
+pub swallowtail_core::Capability::StreamReattachment
+pub swallowtail_core::Capability::StreamingEvents
+pub swallowtail_core::Capability::StructuredOutput
+pub swallowtail_core::Capability::StructuredRun
+pub swallowtail_core::Capability::ToolCalls
+pub swallowtail_core::Capability::UsageReporting
+pub swallowtail_core::Capability::WorkingResource
+pub swallowtail_core::Capability::WorkingResourceTextWrite
+pub enum swallowtail_core::CapabilityConstraint
+pub swallowtail_core::CapabilityConstraint::AttachmentMaximumBytes(u64)
+pub swallowtail_core::CapabilityConstraint::AttachmentMaximumCount(u32)
+pub swallowtail_core::CapabilityConstraint::AttachmentMediaType(alloc::string::String)
+pub swallowtail_core::CapabilityConstraint::CancellationScope(swallowtail_core::CancellationScope)
+pub swallowtail_core::CapabilityConstraint::ContextLimit(u64)
+pub swallowtail_core::CapabilityConstraint::HarnessMode(swallowtail_core::HarnessMode)
+pub swallowtail_core::CapabilityConstraint::MaximumConcurrency(u32)
+pub swallowtail_core::CapabilityConstraint::MaximumInferenceAttempts(u32)
+pub swallowtail_core::CapabilityConstraint::MaximumToolCalls(u32)
+pub swallowtail_core::CapabilityConstraint::MaximumTurns(u32)
+pub swallowtail_core::CapabilityConstraint::Named(swallowtail_core::NamedCapabilityConstraint)
+pub swallowtail_core::CapabilityConstraint::ObservableActivityContentStream(swallowtail_core::ActivityKindClass, swallowtail_core::ActivityContentStream)
+pub swallowtail_core::CapabilityConstraint::ObservableActivityCorrelation(swallowtail_core::ActivityKindClass, swallowtail_core::ActivityCorrelationKind)
+pub swallowtail_core::CapabilityConstraint::ObservableActivityDisclosure(swallowtail_core::ActivityKindClass, swallowtail_core::ActivityDisclosure)
+pub swallowtail_core::CapabilityConstraint::ObservableActivityKind(swallowtail_core::ActivityKindClass)
+pub swallowtail_core::CapabilityConstraint::ObservableActivityLifecycle(swallowtail_core::ActivityKindClass, swallowtail_core::ActivityLifecycleFidelity)
+pub swallowtail_core::CapabilityConstraint::ObservableActivityTaskListSnapshots(swallowtail_core::ActivityKindClass)
+pub swallowtail_core::CapabilityConstraint::ObservableActivityUnknownEventPosture(swallowtail_core::ActivityUnknownEventPosture)
+pub swallowtail_core::CapabilityConstraint::ObservableSubagentControlAction(swallowtail_core::SubagentControlActionKind)
+pub swallowtail_core::CapabilityConstraint::ObservableSubagentObservation(swallowtail_core::SubagentObservationFidelity)
+pub swallowtail_core::CapabilityConstraint::OperationDetachmentScope(swallowtail_core::OperationDetachmentScope)
+pub swallowtail_core::CapabilityConstraint::OutputTokenMaximum(u64)
+pub swallowtail_core::CapabilityConstraint::OwnedRemoteResource(swallowtail_core::OwnedRemoteResourceKind)
+pub swallowtail_core::CapabilityConstraint::PlannedConnectionRolloverMaximumCount(u32)
+pub swallowtail_core::CapabilityConstraint::PrivateContinuationMaximumBytes(u64)
+pub swallowtail_core::CapabilityConstraint::PrivateHistoryMaximumBytes(u64)
+pub swallowtail_core::CapabilityConstraint::RealtimeMediaFormat(swallowtail_core::MediaDirection, swallowtail_core::MediaFormat)
+pub swallowtail_core::CapabilityConstraint::RealtimeMediaMaximumChunkBytes(u64)
+pub swallowtail_core::CapabilityConstraint::ReasoningMode(swallowtail_core::ReasoningMode)
+pub swallowtail_core::CapabilityConstraint::ReattachmentMaximumCount(u32)
+pub swallowtail_core::CapabilityConstraint::RecoveredOutputMaximumBytes(u64)
+pub swallowtail_core::CapabilityConstraint::ReplayMaximumBytes(u64)
+pub swallowtail_core::CapabilityConstraint::ReplayMaximumItems(u32)
+pub swallowtail_core::CapabilityConstraint::ResourceAccess(swallowtail_core::ResourceAccess)
+pub swallowtail_core::CapabilityConstraint::ResourceRepresentation(swallowtail_core::ResourceRepresentation)
+pub swallowtail_core::CapabilityConstraint::SchemaDialect(alloc::string::String)
+pub swallowtail_core::CapabilityConstraint::StreamRecordMaximumCount(u32)
+pub swallowtail_core::CapabilityConstraint::StructuredOutputEnforcement(swallowtail_core::StructuredOutputEnforcement)
+pub swallowtail_core::CapabilityConstraint::ToolArgumentMaximumBytes(u64)
+pub swallowtail_core::CapabilityConstraint::ToolMaximumCount(u32)
+pub swallowtail_core::CapabilityConstraint::ToolMaximumSchemaBytes(u64)
+pub swallowtail_core::CapabilityConstraint::ToolResultMaximumBytes(u64)
+pub swallowtail_core::CapabilityConstraint::ToolSchemaDialect(alloc::string::String)
+pub swallowtail_core::CapabilityConstraint::WorkingResourceMaximumBytes(u64)
+impl swallowtail_core::CapabilityConstraint
+pub fn swallowtail_core::CapabilityConstraint::attachment_media_type(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub const fn swallowtail_core::CapabilityConstraint::harness_mode(swallowtail_core::HarnessMode) -> Self
+pub const fn swallowtail_core::CapabilityConstraint::reasoning_mode(swallowtail_core::ReasoningMode) -> Self
+pub fn swallowtail_core::CapabilityConstraint::schema_dialect(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub fn swallowtail_core::CapabilityConstraint::tool_schema_dialect(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub enum swallowtail_core::CatalogObservation<T>
+pub swallowtail_core::CatalogObservation::Known(T)
+pub swallowtail_core::CatalogObservation::ProviderDefined(swallowtail_core::ProviderCatalogValue)
+pub enum swallowtail_core::ConfigFieldKind
+pub swallowtail_core::ConfigFieldKind::ApiEndpoint
+pub swallowtail_core::ConfigFieldKind::BinaryPath
+pub swallowtail_core::ConfigFieldKind::Environment
+pub enum swallowtail_core::CredentialFieldVisibility
+pub swallowtail_core::CredentialFieldVisibility::Public
+pub swallowtail_core::CredentialFieldVisibility::Secret
+pub enum swallowtail_core::CredentialMechanism
+pub swallowtail_core::CredentialMechanism::ApiKey
+pub swallowtail_core::CredentialMechanism::AutomationToken
+pub swallowtail_core::CredentialMechanism::CloudProviderIdentity
+pub swallowtail_core::CredentialMechanism::DeviceOauth
+pub swallowtail_core::CredentialMechanism::GatewayHelper
+pub swallowtail_core::CredentialMechanism::InteractiveOauth
+pub swallowtail_core::CredentialMechanism::LocalUnauthenticated
+pub swallowtail_core::CredentialMechanism::ProviderSpecific(swallowtail_core::ExtensionNamespace)
+pub swallowtail_core::CredentialMechanism::Unauthenticated
+pub swallowtail_core::CredentialMechanism::WorkloadIdentity
+pub enum swallowtail_core::CredentialState
+pub swallowtail_core::CredentialState::Expired
+pub swallowtail_core::CredentialState::NotRequired
+pub swallowtail_core::CredentialState::Ready
+pub swallowtail_core::CredentialState::Rejected
+pub swallowtail_core::CredentialState::Required
+pub swallowtail_core::CredentialState::Unknown
+pub enum swallowtail_core::DirectAttemptTransport
+pub swallowtail_core::DirectAttemptTransport::Buffered
+pub swallowtail_core::DirectAttemptTransport::ServerSentEvents
+pub enum swallowtail_core::DirectToolSelection
+pub swallowtail_core::DirectToolSelection::ProviderAutomatic
+pub enum swallowtail_core::DiscoveryAction
+pub swallowtail_core::DiscoveryAction::Probe
+pub swallowtail_core::DiscoveryAction::Refresh
+pub enum swallowtail_core::DiscoveryStatus
+pub swallowtail_core::DiscoveryStatus::Absent
+pub swallowtail_core::DiscoveryStatus::Cancelled
+pub swallowtail_core::DiscoveryStatus::CleanupFailed
+pub swallowtail_core::DiscoveryStatus::Discovered
+pub swallowtail_core::DiscoveryStatus::Failed
+pub swallowtail_core::DiscoveryStatus::Incompatible
+pub swallowtail_core::DiscoveryStatus::Malformed
+pub swallowtail_core::DiscoveryStatus::TimedOut
+pub enum swallowtail_core::DriverRole
+pub swallowtail_core::DriverRole::Discovery
+pub swallowtail_core::DriverRole::InteractiveSession
+pub swallowtail_core::DriverRole::ModelCatalog
+pub swallowtail_core::DriverRole::ProviderRecoveredResourceCleanup
+pub swallowtail_core::DriverRole::ProviderRunReconciliation
+pub swallowtail_core::DriverRole::ProviderSessionCatalogue
+pub swallowtail_core::DriverRole::ProviderSessionHistory
+pub swallowtail_core::DriverRole::ProviderSessionImport
+pub swallowtail_core::DriverRole::ProviderSessionManagement
+pub swallowtail_core::DriverRole::ProviderSessionReconciliation
+pub swallowtail_core::DriverRole::RealtimeMediaSession
+pub swallowtail_core::DriverRole::ServingInstanceLifecycle
+pub swallowtail_core::DriverRole::StructuredRun
+pub enum swallowtail_core::EndpointAuthorization
+pub swallowtail_core::EndpointAuthorization::Allowed
+pub swallowtail_core::EndpointAuthorization::Denied
+pub swallowtail_core::EndpointAuthorization::Unknown
+pub enum swallowtail_core::EntitlementMetering
+pub swallowtail_core::EntitlementMetering::BundledCredits
+pub swallowtail_core::EntitlementMetering::CloudAccountBilling
+pub swallowtail_core::EntitlementMetering::LocalCompute
+pub swallowtail_core::EntitlementMetering::PayAsYouGo
+pub swallowtail_core::EntitlementMetering::PrepaidCredits
+pub swallowtail_core::EntitlementMetering::ProviderSpecific(swallowtail_core::ExtensionNamespace)
+pub swallowtail_core::EntitlementMetering::SubscriptionAllowance
+pub swallowtail_core::EntitlementMetering::Unknown
+pub enum swallowtail_core::EntitlementState
+pub swallowtail_core::EntitlementState::Available
+pub swallowtail_core::EntitlementState::Exhausted
+pub swallowtail_core::EntitlementState::Restricted
+pub swallowtail_core::EntitlementState::Unavailable
+pub swallowtail_core::EntitlementState::Unknown
+pub enum swallowtail_core::EventKind
+pub swallowtail_core::EventKind::Completed
+pub swallowtail_core::EventKind::Failed
+pub swallowtail_core::EventKind::Interrupted
+pub swallowtail_core::EventKind::OutputAvailable
+pub swallowtail_core::EventKind::Progress
+pub swallowtail_core::EventKind::Started
+pub swallowtail_core::EventKind::ToolCallRequested
+pub enum swallowtail_core::ExecutionLayer
+pub swallowtail_core::ExecutionLayer::DirectModelInference
+pub swallowtail_core::ExecutionLayer::HarnessInteraction
+pub enum swallowtail_core::ExtensionPolicy
+pub swallowtail_core::ExtensionPolicy::Preserve
+pub swallowtail_core::ExtensionPolicy::Reject
+pub enum swallowtail_core::ExternalNetworkPolicy
+pub swallowtail_core::ExternalNetworkPolicy::AmbientHost
+pub swallowtail_core::ExternalNetworkPolicy::Denied
+pub swallowtail_core::ExternalNetworkPolicy::HostApproved
+pub enum swallowtail_core::ExternalSearchPolicy
+pub swallowtail_core::ExternalSearchPolicy::Disabled
+pub swallowtail_core::ExternalSearchPolicy::Enabled
+#[non_exhaustive] pub enum swallowtail_core::FailureKind
+pub swallowtail_core::FailureKind::AuthenticationRejected
+pub swallowtail_core::FailureKind::AuthenticationRequired
+pub swallowtail_core::FailureKind::AuthorizationDenied
+pub swallowtail_core::FailureKind::ContextLimitExceeded
+pub swallowtail_core::FailureKind::EntitlementUnavailable
+pub swallowtail_core::FailureKind::HarnessIncompatible
+pub swallowtail_core::FailureKind::HarnessUnavailable
+pub swallowtail_core::FailureKind::HostServiceUnavailable
+pub swallowtail_core::FailureKind::InputLimitExceeded
+pub swallowtail_core::FailureKind::InvalidRequest
+pub swallowtail_core::FailureKind::MalformedData
+pub swallowtail_core::FailureKind::ModelUnavailable
+pub swallowtail_core::FailureKind::ProtocolIncompatible
+pub swallowtail_core::FailureKind::ProviderUnavailable
+pub swallowtail_core::FailureKind::QuotaExhausted
+pub swallowtail_core::FailureKind::RateLimited
+pub swallowtail_core::FailureKind::ResourceNotFound
+pub swallowtail_core::FailureKind::ResourceStale
+pub swallowtail_core::FailureKind::RuntimeInvariant
+pub swallowtail_core::FailureKind::TransportInterrupted
+pub swallowtail_core::FailureKind::Unknown
+#[non_exhaustive] pub enum swallowtail_core::FailureOrigin
+pub swallowtail_core::FailureOrigin::Harness
+pub swallowtail_core::FailureOrigin::Host
+pub swallowtail_core::FailureOrigin::Protocol
+pub swallowtail_core::FailureOrigin::Provider
+pub swallowtail_core::FailureOrigin::Runtime
+pub swallowtail_core::FailureOrigin::Transport
+pub swallowtail_core::FailureOrigin::Unknown
+#[non_exhaustive] pub enum swallowtail_core::FailureRecovery
+pub swallowtail_core::FailureRecovery::ConfigurationChangeRequired
+pub swallowtail_core::FailureRecovery::HarnessUpdateRequired
+pub swallowtail_core::FailureRecovery::InputChangeRequired
+pub swallowtail_core::FailureRecovery::ReauthenticationRequired
+pub swallowtail_core::FailureRecovery::RetryMaySucceed
+pub swallowtail_core::FailureRecovery::SameRequestNotRetryable
+pub swallowtail_core::FailureRecovery::Unknown
+pub enum swallowtail_core::FilesystemBoundary
+pub swallowtail_core::FilesystemBoundary::WorkingResource
+pub enum swallowtail_core::HarnessBackgroundAction
+pub swallowtail_core::HarnessBackgroundAction::AutomaticRetry
+pub swallowtail_core::HarnessBackgroundAction::PackageMutation
+pub swallowtail_core::HarnessBackgroundAction::Telemetry
+pub swallowtail_core::HarnessBackgroundAction::UpdateCheck
+pub enum swallowtail_core::HarnessConfigurationPosture
+pub swallowtail_core::HarnessConfigurationPosture::Ambient
+pub swallowtail_core::HarnessConfigurationPosture::HostScoped
+pub swallowtail_core::HarnessConfigurationPosture::ProviderSuppressed
+pub enum swallowtail_core::HarnessConfigurationSource
+pub swallowtail_core::HarnessConfigurationSource::ContextFiles
+pub swallowtail_core::HarnessConfigurationSource::Extensions
+pub swallowtail_core::HarnessConfigurationSource::PromptTemplates
+pub swallowtail_core::HarnessConfigurationSource::Skills
+pub enum swallowtail_core::HarnessIsolation
+pub swallowtail_core::HarnessIsolation::AmbientHost
+pub swallowtail_core::HarnessIsolation::HostEnforced
+pub swallowtail_core::HarnessIsolation::ProviderEnforced
+pub enum swallowtail_core::HarnessMessageClass
+pub swallowtail_core::HarnessMessageClass::FollowUp
+pub swallowtail_core::HarnessMessageClass::Prompt
+pub swallowtail_core::HarnessMessageClass::Steering
+#[non_exhaustive] pub enum swallowtail_core::HarnessMode
+pub swallowtail_core::HarnessMode::Plan
+pub enum swallowtail_core::HostServiceKind
+pub swallowtail_core::HostServiceKind::Attachment
+pub swallowtail_core::HostServiceKind::BlockingWork
+pub swallowtail_core::HostServiceKind::Credential
+pub swallowtail_core::HostServiceKind::DeviceCodeDisplay
+pub swallowtail_core::HostServiceKind::DiagnosticObserver
+pub swallowtail_core::HostServiceKind::IdiomRecorder
+pub swallowtail_core::HostServiceKind::IdiomSource
+pub swallowtail_core::HostServiceKind::LoopbackCallback
+pub swallowtail_core::HostServiceKind::ModelArtifact
+pub swallowtail_core::HostServiceKind::Network
+pub swallowtail_core::HostServiceKind::Process
+pub swallowtail_core::HostServiceKind::Schema
+pub swallowtail_core::HostServiceKind::ServingEndpoint
+pub swallowtail_core::HostServiceKind::Task
+pub swallowtail_core::HostServiceKind::Time
+pub swallowtail_core::HostServiceKind::UrlOpen
+pub swallowtail_core::HostServiceKind::Watcher
+pub swallowtail_core::HostServiceKind::WatcherBridge
+pub swallowtail_core::HostServiceKind::WorkingResource
+pub swallowtail_core::HostServiceKind::WorkingResourceIo
+pub enum swallowtail_core::InstalledExecutableCompatibility
+pub swallowtail_core::InstalledExecutableCompatibility::Incompatible
+pub swallowtail_core::InstalledExecutableCompatibility::Qualified(swallowtail_core::InterfaceCompatibilityMatch)
+pub swallowtail_core::InstalledExecutableCompatibility::UnverifiedNewer(swallowtail_core::InterfaceUnverifiedNewer)
+pub enum swallowtail_core::InstanceEnablement
+pub swallowtail_core::InstanceEnablement::Disabled
+pub swallowtail_core::InstanceEnablement::Enabled
+pub enum swallowtail_core::InstanceOwnership
+pub swallowtail_core::InstanceOwnership::ExternalAttached
+pub swallowtail_core::InstanceOwnership::HostOwnedEphemeral
+pub swallowtail_core::InstanceOwnership::HostOwnedPersistent
+pub enum swallowtail_core::InterfaceCompatibilityAssessment
+pub swallowtail_core::InterfaceCompatibilityAssessment::Incompatible
+pub swallowtail_core::InterfaceCompatibilityAssessment::Qualified(swallowtail_core::InterfaceCompatibilityMatch)
+pub swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(swallowtail_core::InterfaceUnverifiedNewer)
+impl swallowtail_core::InterfaceCompatibilityAssessment
+pub const fn swallowtail_core::InterfaceCompatibilityAssessment::behavior_revision(&self) -> core::option::Option<&swallowtail_core::InterfaceBehaviorRevision>
+pub const fn swallowtail_core::InterfaceCompatibilityAssessment::is_permitted(&self) -> bool
+pub enum swallowtail_core::InterfaceNewerVersionPosture
+pub swallowtail_core::InterfaceNewerVersionPosture::AllowUnverified
+pub swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly
+pub enum swallowtail_core::InterfaceSupportStatus
+pub swallowtail_core::InterfaceSupportStatus::Deprecated
+pub swallowtail_core::InterfaceSupportStatus::Maintained
+pub enum swallowtail_core::InterfaceVersionScheme
+pub swallowtail_core::InterfaceVersionScheme::CalendarDate
+pub swallowtail_core::InterfaceVersionScheme::Integer
+pub swallowtail_core::InterfaceVersionScheme::Opaque
+pub swallowtail_core::InterfaceVersionScheme::Semantic
+pub enum swallowtail_core::InvalidProviderSessionCatalogueRecordKind
+pub swallowtail_core::InvalidProviderSessionCatalogueRecordKind::EmptyContent
+pub swallowtail_core::InvalidProviderSessionCatalogueRecordKind::InvalidBounds
+pub swallowtail_core::InvalidProviderSessionCatalogueRecordKind::LimitExceeded
+pub enum swallowtail_core::MediaDirection
+pub swallowtail_core::MediaDirection::Input
+pub swallowtail_core::MediaDirection::Output
+pub enum swallowtail_core::MediaKind
+pub swallowtail_core::MediaKind::Audio
+pub enum swallowtail_core::ModelCustomizationType
+pub swallowtail_core::ModelCustomizationType::ContinuedPreTraining
+pub swallowtail_core::ModelCustomizationType::Distillation
+pub swallowtail_core::ModelCustomizationType::FineTuning
+pub enum swallowtail_core::ModelInferenceType
+pub swallowtail_core::ModelInferenceType::OnDemand
+pub swallowtail_core::ModelInferenceType::Provisioned
+pub enum swallowtail_core::ModelLifecycleStatus
+pub swallowtail_core::ModelLifecycleStatus::Active
+pub swallowtail_core::ModelLifecycleStatus::Legacy
+pub enum swallowtail_core::ModelLifecycleTransition
+pub swallowtail_core::ModelLifecycleTransition::EndOfLife
+pub swallowtail_core::ModelLifecycleTransition::Legacy
+pub swallowtail_core::ModelLifecycleTransition::PublicExtendedAccess
+pub swallowtail_core::ModelLifecycleTransition::StartOfLife
+pub enum swallowtail_core::ModelModality
+pub swallowtail_core::ModelModality::Embedding
+pub swallowtail_core::ModelModality::Image
+pub swallowtail_core::ModelModality::Text
+pub enum swallowtail_core::ObservableActivityAvailability
+pub swallowtail_core::ObservableActivityAvailability::Available
+pub swallowtail_core::ObservableActivityAvailability::NotApplicable
+pub swallowtail_core::ObservableActivityAvailability::Unavailable
+pub enum swallowtail_core::OperationDetachmentScope
+pub swallowtail_core::OperationDetachmentScope::ActiveTurn
+pub swallowtail_core::OperationDetachmentScope::StructuredRun
+pub enum swallowtail_core::OperationShape
+pub swallowtail_core::OperationShape::InteractiveSession
+pub swallowtail_core::OperationShape::ProviderRecoveredResourceCleanup
+pub swallowtail_core::OperationShape::ProviderRunReconciliation
+pub swallowtail_core::OperationShape::ProviderSessionCatalogue
+pub swallowtail_core::OperationShape::ProviderSessionHistory
+pub swallowtail_core::OperationShape::ProviderSessionImport
+pub swallowtail_core::OperationShape::ProviderSessionManagement
+pub swallowtail_core::OperationShape::ProviderSessionReconciliation
+pub swallowtail_core::OperationShape::StructuredRun
+pub enum swallowtail_core::OwnedRemoteResourceKind
+pub swallowtail_core::OwnedRemoteResourceKind::Conversation
+pub swallowtail_core::OwnedRemoteResourceKind::ConversationItems
+pub swallowtail_core::OwnedRemoteResourceKind::Environment
+pub swallowtail_core::OwnedRemoteResourceKind::Response
+pub swallowtail_core::OwnedRemoteResourceKind::Session
+pub enum swallowtail_core::PlannedConnectionRolloverPolicy
+pub swallowtail_core::PlannedConnectionRolloverPolicy::Bounded(core::num::nonzero::NonZeroU32)
+pub swallowtail_core::PlannedConnectionRolloverPolicy::Disabled
+impl swallowtail_core::PlannedConnectionRolloverPolicy
+pub const fn swallowtail_core::PlannedConnectionRolloverPolicy::maximum_count(self) -> core::option::Option<core::num::nonzero::NonZeroU32>
+pub enum swallowtail_core::PreflightDimension
+pub swallowtail_core::PreflightDimension::Access
+pub swallowtail_core::PreflightDimension::AttachedRuntime
+pub swallowtail_core::PreflightDimension::Capability
+pub swallowtail_core::PreflightDimension::Constraint
+pub swallowtail_core::PreflightDimension::DirectContinuation
+pub swallowtail_core::PreflightDimension::Driver
+pub swallowtail_core::PreflightDimension::ExecutionLayer
+pub swallowtail_core::PreflightDimension::Extension
+pub swallowtail_core::PreflightDimension::HarnessConfiguration
+pub swallowtail_core::PreflightDimension::HarnessIsolation
+pub swallowtail_core::PreflightDimension::HarnessRpcPolicy
+pub swallowtail_core::PreflightDimension::HostService
+pub swallowtail_core::PreflightDimension::Instance
+pub swallowtail_core::PreflightDimension::InterfaceVersion
+pub swallowtail_core::PreflightDimension::ModelArtifact
+pub swallowtail_core::PreflightDimension::ModelRoute
+pub swallowtail_core::PreflightDimension::OperationShape
+pub swallowtail_core::PreflightDimension::Ownership
+pub swallowtail_core::PreflightDimension::PlannedConnectionRollover
+pub swallowtail_core::PreflightDimension::RealtimeMedia
+pub swallowtail_core::PreflightDimension::Role
+pub swallowtail_core::PreflightDimension::SessionAccess
+pub swallowtail_core::PreflightDimension::SessionProviderState
+pub swallowtail_core::PreflightDimension::SupportAuthority
+pub swallowtail_core::PreflightDimension::Topology
+pub enum swallowtail_core::ProviderApprovalPolicy
+pub swallowtail_core::ProviderApprovalPolicy::ConsumerMediated
+pub swallowtail_core::ProviderApprovalPolicy::Never
+pub enum swallowtail_core::ProviderInferenceCachePolicy
+pub swallowtail_core::ProviderInferenceCachePolicy::AcceptedWithoutManagementAuthority
+pub swallowtail_core::ProviderInferenceCachePolicy::Prohibited
+impl swallowtail_core::ProviderInferenceCachePolicy
+pub const fn swallowtail_core::ProviderInferenceCachePolicy::accepts_provider_cache(self) -> bool
+pub const fn swallowtail_core::ProviderInferenceCachePolicy::permits_management(self) -> bool
+pub enum swallowtail_core::ProviderRecoveredResourceCleanupEffect
+pub swallowtail_core::ProviderRecoveredResourceCleanupEffect::Applied
+pub swallowtail_core::ProviderRecoveredResourceCleanupEffect::FailedBeforeEffect
+pub swallowtail_core::ProviderRecoveredResourceCleanupEffect::PartiallyApplied
+pub swallowtail_core::ProviderRecoveredResourceCleanupEffect::RejectedActiveOrUnknown
+pub swallowtail_core::ProviderRecoveredResourceCleanupEffect::UnconfirmedAfterEffect
+impl swallowtail_core::ProviderRecoveredResourceCleanupEffect
+pub const fn swallowtail_core::ProviderRecoveredResourceCleanupEffect::is_complete(self) -> bool
+pub enum swallowtail_core::ProviderRequestHandling
+pub swallowtail_core::ProviderRequestHandling::Exchange
+pub swallowtail_core::ProviderRequestHandling::ObserveAndStop
+pub swallowtail_core::ProviderRequestHandling::Reject
+pub enum swallowtail_core::ProviderRequestRepresentation
+pub swallowtail_core::ProviderRequestRepresentation::SignedInteger
+pub swallowtail_core::ProviderRequestRepresentation::Text
+pub enum swallowtail_core::ProviderSessionActivityEvidence
+pub swallowtail_core::ProviderSessionActivityEvidence::CallerAssertedInactive
+pub enum swallowtail_core::ProviderSessionActivityState
+pub swallowtail_core::ProviderSessionActivityState::Active
+pub swallowtail_core::ProviderSessionActivityState::Inactive
+pub swallowtail_core::ProviderSessionActivityState::Unknown
+pub enum swallowtail_core::ProviderSessionAffectedScope
+pub swallowtail_core::ProviderSessionAffectedScope::ProviderDefinedDescendants
+pub swallowtail_core::ProviderSessionAffectedScope::TargetOnly
+pub enum swallowtail_core::ProviderSessionBindingOrigin
+pub swallowtail_core::ProviderSessionBindingOrigin::Created
+pub swallowtail_core::ProviderSessionBindingOrigin::ExplicitlyImported
+pub swallowtail_core::ProviderSessionBindingOrigin::Loaded
+pub swallowtail_core::ProviderSessionBindingOrigin::Resumed
+pub enum swallowtail_core::ProviderSessionCancellationPosture
+pub swallowtail_core::ProviderSessionCancellationPosture::BeforeDispatchOnly
+pub swallowtail_core::ProviderSessionCancellationPosture::ProviderNative
+pub enum swallowtail_core::ProviderSessionDeletionStrength
+pub swallowtail_core::ProviderSessionDeletionStrength::HistoryRemoved
+pub swallowtail_core::ProviderSessionDeletionStrength::ProviderDataDeleted
+pub swallowtail_core::ProviderSessionDeletionStrength::ProviderHardDeleted
+pub enum swallowtail_core::ProviderSessionDiscoveryScope
+pub swallowtail_core::ProviderSessionDiscoveryScope::WorkingResource
+pub enum swallowtail_core::ProviderSessionEffectTruth
+pub swallowtail_core::ProviderSessionEffectTruth::AlreadyInTargetState
+pub swallowtail_core::ProviderSessionEffectTruth::Applied
+pub swallowtail_core::ProviderSessionEffectTruth::FailedBeforeEffect
+pub swallowtail_core::ProviderSessionEffectTruth::TargetAlreadyAbsent
+pub swallowtail_core::ProviderSessionEffectTruth::UnconfirmedAfterEffect
+pub enum swallowtail_core::ProviderSessionImportAvailability
+pub swallowtail_core::ProviderSessionImportAvailability::Available
+pub swallowtail_core::ProviderSessionImportAvailability::Unavailable(swallowtail_core::ProviderSessionImportUnavailableReason)
+pub enum swallowtail_core::ProviderSessionImportUnavailableReason
+pub swallowtail_core::ProviderSessionImportUnavailableReason::Active
+pub swallowtail_core::ProviderSessionImportUnavailableReason::Archived
+pub swallowtail_core::ProviderSessionImportUnavailableReason::IncompatibleInterface
+pub swallowtail_core::ProviderSessionImportUnavailableReason::IncompleteHistory
+pub swallowtail_core::ProviderSessionImportUnavailableReason::ProviderReportedUnavailable
+pub swallowtail_core::ProviderSessionImportUnavailableReason::ResourceMismatch
+pub enum swallowtail_core::ProviderSessionInitialStateRequirement
+pub swallowtail_core::ProviderSessionInitialStateRequirement::Archived
+pub swallowtail_core::ProviderSessionInitialStateRequirement::Unarchived
+pub swallowtail_core::ProviderSessionInitialStateRequirement::UnarchivedOrArchived
+pub enum swallowtail_core::ProviderSessionLifecycleState
+pub swallowtail_core::ProviderSessionLifecycleState::Archived
+pub swallowtail_core::ProviderSessionLifecycleState::Deleted
+pub swallowtail_core::ProviderSessionLifecycleState::Unarchived
+pub enum swallowtail_core::ProviderSessionManagementAction
+pub swallowtail_core::ProviderSessionManagementAction::Archive
+pub swallowtail_core::ProviderSessionManagementAction::Delete(swallowtail_core::ProviderSessionDeletionStrength)
+pub swallowtail_core::ProviderSessionManagementAction::Restore
+impl swallowtail_core::ProviderSessionManagementAction
+pub const fn swallowtail_core::ProviderSessionManagementAction::deletion_strength(self) -> core::option::Option<swallowtail_core::ProviderSessionDeletionStrength>
+pub const fn swallowtail_core::ProviderSessionManagementAction::required_capability(self) -> swallowtail_core::Capability
+pub const fn swallowtail_core::ProviderSessionManagementAction::target_state(self) -> swallowtail_core::ProviderSessionLifecycleState
+pub enum swallowtail_core::RemoteAcpAffinityPolicy
+pub swallowtail_core::RemoteAcpAffinityPolicy::ConnectionScopedCookies
+pub swallowtail_core::RemoteAcpAffinityPolicy::ConnectionScopedCookies::maximum_cookie_bytes: core::num::nonzero::NonZeroU64
+pub swallowtail_core::RemoteAcpAffinityPolicy::ConnectionScopedCookies::maximum_cookie_count: core::num::nonzero::NonZeroU32
+pub swallowtail_core::RemoteAcpAffinityPolicy::None
+impl swallowtail_core::RemoteAcpAffinityPolicy
+pub const fn swallowtail_core::RemoteAcpAffinityPolicy::maximum_cookie_bytes(self) -> core::option::Option<core::num::nonzero::NonZeroU64>
+pub const fn swallowtail_core::RemoteAcpAffinityPolicy::maximum_cookie_count(self) -> core::option::Option<core::num::nonzero::NonZeroU32>
+pub enum swallowtail_core::RemoteAcpRfdStatus
+pub swallowtail_core::RemoteAcpRfdStatus::Active
+pub enum swallowtail_core::RemoteAcpTransport
+pub swallowtail_core::RemoteAcpTransport::StreamableHttpSse
+pub swallowtail_core::RemoteAcpTransport::WebSocket
+pub enum swallowtail_core::ResourceAccess
+pub swallowtail_core::ResourceAccess::Read
+pub swallowtail_core::ResourceAccess::ReadWrite
+pub enum swallowtail_core::ResourceRepresentation
+pub swallowtail_core::ResourceRepresentation::BoundedBytes
+pub swallowtail_core::ResourceRepresentation::Filesystem
+pub swallowtail_core::ResourceRepresentation::Stream
+pub swallowtail_core::ResourceRepresentation::TemporaryFile
+pub enum swallowtail_core::RouteTopology
+pub swallowtail_core::RouteTopology::Hosted
+pub swallowtail_core::RouteTopology::Installed
+pub swallowtail_core::RouteTopology::LocalRuntime
+pub enum swallowtail_core::RuntimeReadiness
+pub swallowtail_core::RuntimeReadiness::Degraded
+pub swallowtail_core::RuntimeReadiness::Ready
+pub swallowtail_core::RuntimeReadiness::Unavailable
+pub swallowtail_core::RuntimeReadiness::Unknown
+pub enum swallowtail_core::SessionProviderStatePolicy
+pub swallowtail_core::SessionProviderStatePolicy::DurableConversationDeleteOnClose
+pub swallowtail_core::SessionProviderStatePolicy::DurableProviderSessionPreserved
+pub swallowtail_core::SessionProviderStatePolicy::Prohibited
+impl swallowtail_core::SessionProviderStatePolicy
+pub const fn swallowtail_core::SessionProviderStatePolicy::permits_durable_conversation(self) -> bool
+pub const fn swallowtail_core::SessionProviderStatePolicy::requires_delete_on_close(self) -> bool
+pub enum swallowtail_core::SignInAction
+pub swallowtail_core::SignInAction::DelegateToHarness
+pub swallowtail_core::SignInAction::DeviceAuthorization
+pub swallowtail_core::SignInAction::Interactive
+pub enum swallowtail_core::StructuredOutputEnforcement
+pub swallowtail_core::StructuredOutputEnforcement::HarnessValidated
+pub swallowtail_core::StructuredOutputEnforcement::ProviderNative
+pub enum swallowtail_core::SubagentControlActionKind
+pub swallowtail_core::SubagentControlActionKind::Close
+pub swallowtail_core::SubagentControlActionKind::Resume
+pub swallowtail_core::SubagentControlActionKind::SendInput
+pub swallowtail_core::SubagentControlActionKind::Spawn
+pub swallowtail_core::SubagentControlActionKind::Wait
+pub enum swallowtail_core::SubagentObservationFidelity
+pub swallowtail_core::SubagentObservationFidelity::AttributedActivity
+pub swallowtail_core::SubagentObservationFidelity::IdentityAndLifecycle
+pub swallowtail_core::SubagentObservationFidelity::ParentAndMetadata
+pub enum swallowtail_core::SubjectDisclosure
+pub swallowtail_core::SubjectDisclosure::Absent
+pub swallowtail_core::SubjectDisclosure::Redacted
+pub swallowtail_core::SubjectDisclosure::Revealed(alloc::string::String)
+impl swallowtail_core::SubjectDisclosure
+pub const fn swallowtail_core::SubjectDisclosure::is_revealed(&self) -> bool
+pub fn swallowtail_core::SubjectDisclosure::revealed_text(&self) -> core::option::Option<&str>
+pub const fn swallowtail_core::SubjectDisclosure::without_revealed_text(&self) -> Self
+impl core::fmt::Debug for swallowtail_core::SubjectDisclosure
+pub fn swallowtail_core::SubjectDisclosure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub enum swallowtail_core::SupportAuthority
+pub swallowtail_core::SupportAuthority::ExperimentalObserved
+pub swallowtail_core::SupportAuthority::IntegrationMaintainerSupported
+pub swallowtail_core::SupportAuthority::Prohibited
+pub swallowtail_core::SupportAuthority::ProviderSupported
+pub enum swallowtail_core::WatcherCleanupCause
+pub swallowtail_core::WatcherCleanupCause::Cancelled
+pub swallowtail_core::WatcherCleanupCause::Failed
+pub swallowtail_core::WatcherCleanupCause::Stopped
+pub swallowtail_core::WatcherCleanupCause::TimedOut
+impl swallowtail_core::WatcherCleanupCause
+pub const fn swallowtail_core::WatcherCleanupCause::as_str(self) -> &'static str
+pub const fn swallowtail_core::WatcherCleanupCause::terminal_cause(self) -> swallowtail_core::WatcherTerminalCause
+impl core::fmt::Display for swallowtail_core::WatcherCleanupCause
+pub fn swallowtail_core::WatcherCleanupCause::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub enum swallowtail_core::WatcherLifecyclePhase
+pub swallowtail_core::WatcherLifecyclePhase::Accepted
+pub swallowtail_core::WatcherLifecyclePhase::Joined
+pub swallowtail_core::WatcherLifecyclePhase::Running
+pub swallowtail_core::WatcherLifecyclePhase::Terminal
+impl swallowtail_core::WatcherLifecyclePhase
+pub const fn swallowtail_core::WatcherLifecyclePhase::is_joined(self) -> bool
+pub const fn swallowtail_core::WatcherLifecyclePhase::is_terminal(self) -> bool
+pub enum swallowtail_core::WatcherRequester
+pub swallowtail_core::WatcherRequester::Model
+pub swallowtail_core::WatcherRequester::Operator
+impl swallowtail_core::WatcherRequester
+pub const fn swallowtail_core::WatcherRequester::as_str(self) -> &'static str
+pub enum swallowtail_core::WatcherTerminalCause
+pub swallowtail_core::WatcherTerminalCause::Cancelled
+pub swallowtail_core::WatcherTerminalCause::Completed
+pub swallowtail_core::WatcherTerminalCause::Failed
+pub swallowtail_core::WatcherTerminalCause::Stopped
+pub swallowtail_core::WatcherTerminalCause::TimedOut
+impl swallowtail_core::WatcherTerminalCause
+pub const fn swallowtail_core::WatcherTerminalCause::as_str(self) -> &'static str
+impl core::fmt::Display for swallowtail_core::WatcherTerminalCause
+pub fn swallowtail_core::WatcherTerminalCause::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::AccessProfile
+impl swallowtail_core::AccessProfile
+pub const fn swallowtail_core::AccessProfile::credential_mechanism(&self) -> &swallowtail_core::CredentialMechanism
+pub const fn swallowtail_core::AccessProfile::credential_reference(&self) -> core::option::Option<&swallowtail_core::CredentialRef>
+pub const fn swallowtail_core::AccessProfile::endpoint_audience(&self) -> &swallowtail_core::EndpointAudience
+pub const fn swallowtail_core::AccessProfile::entitlement_metering(&self) -> &swallowtail_core::EntitlementMetering
+pub const fn swallowtail_core::AccessProfile::id(&self) -> &swallowtail_core::AccessProfileId
+pub const fn swallowtail_core::AccessProfile::new(swallowtail_core::AccessProfileId, swallowtail_core::CredentialMechanism, swallowtail_core::EntitlementMetering, swallowtail_core::EndpointAudience, swallowtail_core::SupportAuthority) -> Self
+pub const fn swallowtail_core::AccessProfile::support_authority(&self) -> swallowtail_core::SupportAuthority
+pub fn swallowtail_core::AccessProfile::with_credential_reference(self, swallowtail_core::CredentialRef) -> Self
+pub struct swallowtail_core::AccessProfileId(_)
+impl swallowtail_core::AccessProfileId
+pub fn swallowtail_core::AccessProfileId::as_str(&self) -> &str
+pub fn swallowtail_core::AccessProfileId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::AccessRequirement
+impl swallowtail_core::AccessRequirement
+pub fn swallowtail_core::AccessRequirement::accepts_credential(&self, swallowtail_core::CredentialState) -> bool
+pub fn swallowtail_core::AccessRequirement::accepts_endpoint_authorization(&self, swallowtail_core::EndpointAuthorization) -> bool
+pub fn swallowtail_core::AccessRequirement::accepts_entitlement(&self, swallowtail_core::EntitlementState) -> bool
+pub fn swallowtail_core::AccessRequirement::accepts_runtime_readiness(&self, swallowtail_core::RuntimeReadiness) -> bool
+pub fn swallowtail_core::AccessRequirement::accepts_support_authority(&self, swallowtail_core::SupportAuthority) -> bool
+pub fn swallowtail_core::AccessRequirement::new(swallowtail_core::AccessProfileId) -> Self
+pub const fn swallowtail_core::AccessRequirement::profile_id(&self) -> &swallowtail_core::AccessProfileId
+pub fn swallowtail_core::AccessRequirement::with_credential_states(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::CredentialState>) -> Self
+pub fn swallowtail_core::AccessRequirement::with_endpoint_authorizations(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::EndpointAuthorization>) -> Self
+pub fn swallowtail_core::AccessRequirement::with_entitlement_states(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::EntitlementState>) -> Self
+pub fn swallowtail_core::AccessRequirement::with_runtime_readiness(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::RuntimeReadiness>) -> Self
+pub fn swallowtail_core::AccessRequirement::with_support_authorities(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::SupportAuthority>) -> Self
+pub struct swallowtail_core::AccessStatus
+impl swallowtail_core::AccessStatus
+pub const fn swallowtail_core::AccessStatus::credential(&self) -> swallowtail_core::CredentialState
+pub const fn swallowtail_core::AccessStatus::endpoint_authorization(&self) -> swallowtail_core::EndpointAuthorization
+pub const fn swallowtail_core::AccessStatus::entitlement(&self) -> swallowtail_core::EntitlementState
+pub const fn swallowtail_core::AccessStatus::new(swallowtail_core::AccessProfileId, swallowtail_core::CredentialState, swallowtail_core::EntitlementState, swallowtail_core::EndpointAuthorization, swallowtail_core::RuntimeReadiness, swallowtail_core::SupportAuthority) -> Self
+pub const fn swallowtail_core::AccessStatus::profile_id(&self) -> &swallowtail_core::AccessProfileId
+pub const fn swallowtail_core::AccessStatus::runtime_readiness(&self) -> swallowtail_core::RuntimeReadiness
+pub const fn swallowtail_core::AccessStatus::support_authority(&self) -> swallowtail_core::SupportAuthority
+pub struct swallowtail_core::ActivityInterfaceBasis
+impl swallowtail_core::ActivityInterfaceBasis
+pub const fn swallowtail_core::ActivityInterfaceBasis::axis(&self) -> &swallowtail_core::InterfaceVersionAxis
+pub const fn swallowtail_core::ActivityInterfaceBasis::behavior_revision(&self) -> &swallowtail_core::InterfaceBehaviorRevision
+pub const fn swallowtail_core::ActivityInterfaceBasis::new(swallowtail_core::InterfaceVersionAxis, swallowtail_core::InterfaceBehaviorRevision) -> Self
+pub struct swallowtail_core::ActivityKindProfile
+impl swallowtail_core::ActivityKindProfile
+pub fn swallowtail_core::ActivityKindProfile::content_streams(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::ActivityContentStream> + '_
+pub fn swallowtail_core::ActivityKindProfile::correlations(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::ActivityCorrelationKind> + '_
+pub const fn swallowtail_core::ActivityKindProfile::disclosure(&self) -> swallowtail_core::ActivityDisclosure
+pub const fn swallowtail_core::ActivityKindProfile::kind(&self) -> swallowtail_core::ActivityKindClass
+pub const fn swallowtail_core::ActivityKindProfile::lifecycle(&self) -> swallowtail_core::ActivityLifecycleFidelity
+pub fn swallowtail_core::ActivityKindProfile::new(swallowtail_core::ActivityKindClass, swallowtail_core::ActivityLifecycleFidelity, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ActivityContentStream>, swallowtail_core::ActivityDisclosure, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ActivityCorrelationKind>) -> core::result::Result<Self, swallowtail_core::InvalidObservableActivityProfile>
+pub fn swallowtail_core::ActivityKindProfile::subagent_control_actions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::SubagentControlActionKind> + '_
+pub const fn swallowtail_core::ActivityKindProfile::subagent_observation(&self) -> core::option::Option<swallowtail_core::SubagentObservationFidelity>
+pub const fn swallowtail_core::ActivityKindProfile::task_list_snapshots(&self) -> bool
+pub fn swallowtail_core::ActivityKindProfile::with_subagent_control_actions(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::SubagentControlActionKind>) -> core::result::Result<Self, swallowtail_core::InvalidObservableActivityProfile>
+pub fn swallowtail_core::ActivityKindProfile::with_subagent_observation(self, swallowtail_core::SubagentObservationFidelity) -> core::result::Result<Self, swallowtail_core::InvalidObservableActivityProfile>
+pub fn swallowtail_core::ActivityKindProfile::with_task_list_snapshots(self) -> core::result::Result<Self, swallowtail_core::InvalidObservableActivityProfile>
+pub struct swallowtail_core::AdapterId(_)
+impl swallowtail_core::AdapterId
+pub fn swallowtail_core::AdapterId::as_str(&self) -> &str
+pub fn swallowtail_core::AdapterId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::AdapterIdentity
+impl swallowtail_core::AdapterIdentity
+pub const fn swallowtail_core::AdapterIdentity::id(&self) -> &swallowtail_core::AdapterId
+pub const fn swallowtail_core::AdapterIdentity::new(swallowtail_core::AdapterId, swallowtail_core::AdapterVersion) -> Self
+pub const fn swallowtail_core::AdapterIdentity::version(&self) -> &swallowtail_core::AdapterVersion
+pub struct swallowtail_core::AdapterVersion(_)
+impl swallowtail_core::AdapterVersion
+pub fn swallowtail_core::AdapterVersion::as_str(&self) -> &str
+pub fn swallowtail_core::AdapterVersion::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::AddableRouteDescriptor
+impl swallowtail_core::AddableRouteDescriptor
+pub const fn swallowtail_core::AddableRouteDescriptor::availability(&self) -> swallowtail_core::AddableRouteAvailability
+pub fn swallowtail_core::AddableRouteDescriptor::config_field(&self, &swallowtail_core::ConfigFieldId) -> core::option::Option<&swallowtail_core::ConfigFieldDescriptor>
+pub fn swallowtail_core::AddableRouteDescriptor::config_fields(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::ConfigFieldDescriptor>
+pub fn swallowtail_core::AddableRouteDescriptor::credential_field(&self, &swallowtail_core::CredentialFieldId) -> core::option::Option<&swallowtail_core::CredentialFieldDescriptor>
+pub fn swallowtail_core::AddableRouteDescriptor::credential_fields(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::CredentialFieldDescriptor>
+pub const fn swallowtail_core::AddableRouteDescriptor::driver(&self) -> &swallowtail_core::AdapterIdentity
+pub const fn swallowtail_core::AddableRouteDescriptor::id(&self) -> &swallowtail_core::AddableRouteId
+pub fn swallowtail_core::AddableRouteDescriptor::new(swallowtail_core::AddableRouteId, swallowtail_core::AdapterIdentity, swallowtail_core::RouteTopology, swallowtail_core::AddableRouteAvailability) -> Self
+pub fn swallowtail_core::AddableRouteDescriptor::sign_in_actions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::SignInAction>
+pub const fn swallowtail_core::AddableRouteDescriptor::topology(&self) -> swallowtail_core::RouteTopology
+pub fn swallowtail_core::AddableRouteDescriptor::with_config_fields(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ConfigFieldDescriptor>) -> Self
+pub fn swallowtail_core::AddableRouteDescriptor::with_credential_fields(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::CredentialFieldDescriptor>) -> Self
+pub fn swallowtail_core::AddableRouteDescriptor::with_sign_in_actions(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::SignInAction>) -> Self
+pub struct swallowtail_core::AddableRouteId(_)
+impl swallowtail_core::AddableRouteId
+pub fn swallowtail_core::AddableRouteId::as_str(&self) -> &str
+pub fn swallowtail_core::AddableRouteId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::AdmittedInstanceRecord
+impl swallowtail_core::AdmittedInstanceRecord
+pub const fn swallowtail_core::AdmittedInstanceRecord::access_status(&self) -> core::option::Option<&swallowtail_core::AccessStatus>
+pub fn swallowtail_core::AdmittedInstanceRecord::config_ref(&self, &swallowtail_core::ConfigFieldId) -> core::option::Option<&swallowtail_core::ConfigFieldRef>
+pub fn swallowtail_core::AdmittedInstanceRecord::config_refs(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (&swallowtail_core::ConfigFieldId, &swallowtail_core::ConfigFieldRef)>
+pub fn swallowtail_core::AdmittedInstanceRecord::credential_ref(&self, &swallowtail_core::CredentialFieldId) -> core::option::Option<&swallowtail_core::CredentialRef>
+pub fn swallowtail_core::AdmittedInstanceRecord::credential_refs(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (&swallowtail_core::CredentialFieldId, &swallowtail_core::CredentialRef)>
+pub const fn swallowtail_core::AdmittedInstanceRecord::driver(&self) -> &swallowtail_core::AdapterIdentity
+pub const fn swallowtail_core::AdmittedInstanceRecord::enablement(&self) -> swallowtail_core::InstanceEnablement
+pub const fn swallowtail_core::AdmittedInstanceRecord::family(&self) -> &swallowtail_core::IntegrationFamilyId
+pub const fn swallowtail_core::AdmittedInstanceRecord::id(&self) -> &swallowtail_core::ConfiguredInstanceId
+pub const fn swallowtail_core::AdmittedInstanceRecord::label(&self) -> core::option::Option<&swallowtail_core::InstanceLabel>
+pub fn swallowtail_core::AdmittedInstanceRecord::new(swallowtail_core::ConfiguredInstanceId, swallowtail_core::IntegrationFamilyId, swallowtail_core::AddableRouteId, swallowtail_core::AdapterIdentity, swallowtail_core::RouteTopology) -> Self
+pub const fn swallowtail_core::AdmittedInstanceRecord::route_id(&self) -> &swallowtail_core::AddableRouteId
+pub const fn swallowtail_core::AdmittedInstanceRecord::topology(&self) -> swallowtail_core::RouteTopology
+pub fn swallowtail_core::AdmittedInstanceRecord::with_access_status(self, swallowtail_core::AccessStatus) -> Self
+pub fn swallowtail_core::AdmittedInstanceRecord::with_config_refs(self, impl core::iter::traits::collect::IntoIterator<Item = (swallowtail_core::ConfigFieldId, swallowtail_core::ConfigFieldRef)>) -> Self
+pub fn swallowtail_core::AdmittedInstanceRecord::with_credential_refs(self, impl core::iter::traits::collect::IntoIterator<Item = (swallowtail_core::CredentialFieldId, swallowtail_core::CredentialRef)>) -> Self
+pub const fn swallowtail_core::AdmittedInstanceRecord::with_enablement(self, swallowtail_core::InstanceEnablement) -> Self
+pub fn swallowtail_core::AdmittedInstanceRecord::with_label(self, swallowtail_core::InstanceLabel) -> Self
+pub struct swallowtail_core::AttachedModelObservation
+impl swallowtail_core::AttachedModelObservation
+pub const fn swallowtail_core::AttachedModelObservation::execution_host_id(&self) -> &swallowtail_core::ExecutionHostId
+pub const fn swallowtail_core::AttachedModelObservation::instance_id(&self) -> &swallowtail_core::ConfiguredInstanceId
+pub const fn swallowtail_core::AttachedModelObservation::manifest_digest(&self) -> core::option::Option<&swallowtail_core::ModelManifestDigest>
+pub const fn swallowtail_core::AttachedModelObservation::model_tag(&self) -> &swallowtail_core::AttachedModelTag
+pub const fn swallowtail_core::AttachedModelObservation::new(swallowtail_core::AttachedModelObservationScope, swallowtail_core::ConfiguredInstanceId, swallowtail_core::ExecutionHostId, swallowtail_core::InterfaceVersionBinding, swallowtail_core::CatalogTimestamp, swallowtail_core::AttachedModelTag) -> Self
+pub const fn swallowtail_core::AttachedModelObservation::observed_at(&self) -> swallowtail_core::CatalogTimestamp
+pub const fn swallowtail_core::AttachedModelObservation::runtime_version(&self) -> &swallowtail_core::InterfaceVersionBinding
+pub const fn swallowtail_core::AttachedModelObservation::scope(&self) -> swallowtail_core::AttachedModelObservationScope
+pub fn swallowtail_core::AttachedModelObservation::with_manifest_digest(self, swallowtail_core::ModelManifestDigest) -> Self
+pub struct swallowtail_core::AttachedModelTag(_)
+impl swallowtail_core::AttachedModelTag
+pub fn swallowtail_core::AttachedModelTag::as_str(&self) -> &str
+pub fn swallowtail_core::AttachedModelTag::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidAttachedRuntimeRecord>
+pub struct swallowtail_core::AttachedRuntimeRequirements
+impl swallowtail_core::AttachedRuntimeRequirements
+pub const fn swallowtail_core::AttachedRuntimeRequirements::manifest_digest(&self) -> &swallowtail_core::ModelManifestDigest
+pub const fn swallowtail_core::AttachedRuntimeRequirements::model_id(&self) -> &swallowtail_core::ModelId
+pub const fn swallowtail_core::AttachedRuntimeRequirements::model_tag(&self) -> &swallowtail_core::AttachedModelTag
+pub const fn swallowtail_core::AttachedRuntimeRequirements::new(swallowtail_core::InterfaceVersionBinding, swallowtail_core::ModelId, swallowtail_core::AttachedModelTag, swallowtail_core::ModelManifestDigest, swallowtail_core::AttachedRuntimeResidency) -> Self
+pub const fn swallowtail_core::AttachedRuntimeRequirements::residency(&self) -> swallowtail_core::AttachedRuntimeResidency
+pub const fn swallowtail_core::AttachedRuntimeRequirements::runtime_version(&self) -> &swallowtail_core::InterfaceVersionBinding
+pub struct swallowtail_core::AuthenticatedSubjectObservation
+impl swallowtail_core::AuthenticatedSubjectObservation
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::email(&self) -> &swallowtail_core::SubjectDisclosure
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::is_redacted(&self) -> bool
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::login(&self) -> &swallowtail_core::SubjectDisclosure
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::plan(&self) -> &swallowtail_core::SubjectDisclosure
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::redacted() -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::reveal_email(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub fn swallowtail_core::AuthenticatedSubjectObservation::reveal_login(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub fn swallowtail_core::AuthenticatedSubjectObservation::reveal_plan(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::undisclosed() -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_email_absent(self) -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_email_disclosed(self) -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_login_absent(self) -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_login_disclosed(self) -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_plan_absent(self) -> Self
+pub fn swallowtail_core::AuthenticatedSubjectObservation::with_plan_disclosed(self) -> Self
+pub const fn swallowtail_core::AuthenticatedSubjectObservation::without_revealed_text(&self) -> Self
+impl core::default::Default for swallowtail_core::AuthenticatedSubjectObservation
+pub fn swallowtail_core::AuthenticatedSubjectObservation::default() -> Self
+pub struct swallowtail_core::CapabilityManifest
+impl swallowtail_core::CapabilityManifest
+pub fn swallowtail_core::CapabilityManifest::iter(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::Capability> + '_
+pub fn swallowtail_core::CapabilityManifest::new(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::Capability>) -> Self
+pub fn swallowtail_core::CapabilityManifest::require(&self, swallowtail_core::Capability) -> core::result::Result<(), swallowtail_core::UnsupportedCapability>
+pub fn swallowtail_core::CapabilityManifest::supports(&self, swallowtail_core::Capability) -> bool
+pub struct swallowtail_core::CapabilityProfile
+impl swallowtail_core::CapabilityProfile
+pub fn swallowtail_core::CapabilityProfile::iter(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (swallowtail_core::Capability, &alloc::collections::btree::set::BTreeSet<swallowtail_core::CapabilityConstraint>)>
+pub fn swallowtail_core::CapabilityProfile::new(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::CapabilityRequirement>) -> Self
+pub fn swallowtail_core::CapabilityProfile::supports(&self, swallowtail_core::Capability) -> bool
+pub fn swallowtail_core::CapabilityProfile::supports_constraint(&self, swallowtail_core::Capability, &swallowtail_core::CapabilityConstraint) -> bool
+pub struct swallowtail_core::CapabilityRequirement
+impl swallowtail_core::CapabilityRequirement
+pub const fn swallowtail_core::CapabilityRequirement::capability(&self) -> swallowtail_core::Capability
+pub fn swallowtail_core::CapabilityRequirement::constraints(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::CapabilityConstraint>
+pub fn swallowtail_core::CapabilityRequirement::new(swallowtail_core::Capability, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::CapabilityConstraint>) -> Self
+pub struct swallowtail_core::CatalogTimestamp
+impl swallowtail_core::CatalogTimestamp
+pub const fn swallowtail_core::CatalogTimestamp::epoch_seconds(&self) -> i64
+pub fn swallowtail_core::CatalogTimestamp::new(i64, u32) -> core::result::Result<Self, swallowtail_core::InvalidCatalogObservation>
+pub const fn swallowtail_core::CatalogTimestamp::subsecond_nanos(&self) -> u32
+pub struct swallowtail_core::ConfigFieldDescriptor
+impl swallowtail_core::ConfigFieldDescriptor
+pub const fn swallowtail_core::ConfigFieldDescriptor::id(&self) -> &swallowtail_core::ConfigFieldId
+pub const fn swallowtail_core::ConfigFieldDescriptor::kind(&self) -> swallowtail_core::ConfigFieldKind
+pub const fn swallowtail_core::ConfigFieldDescriptor::label(&self) -> &swallowtail_core::FieldLabel
+pub const fn swallowtail_core::ConfigFieldDescriptor::new(swallowtail_core::ConfigFieldId, swallowtail_core::FieldLabel, swallowtail_core::ConfigFieldKind) -> Self
+pub struct swallowtail_core::ConfigFieldId(_)
+impl swallowtail_core::ConfigFieldId
+pub fn swallowtail_core::ConfigFieldId::as_str(&self) -> &str
+pub fn swallowtail_core::ConfigFieldId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ConfigFieldRef(_)
+impl swallowtail_core::ConfigFieldRef
+pub fn swallowtail_core::ConfigFieldRef::as_host_value(&self) -> &str
+pub fn swallowtail_core::ConfigFieldRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+impl core::fmt::Debug for swallowtail_core::ConfigFieldRef
+pub fn swallowtail_core::ConfigFieldRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::ConfiguredInstance
+impl swallowtail_core::ConfiguredInstance
+pub const fn swallowtail_core::ConfiguredInstance::access_profile_id(&self) -> &swallowtail_core::AccessProfileId
+pub const fn swallowtail_core::ConfiguredInstance::capabilities(&self) -> &swallowtail_core::CapabilityProfile
+pub const fn swallowtail_core::ConfiguredInstance::driver_id(&self) -> &swallowtail_core::AdapterId
+pub const fn swallowtail_core::ConfiguredInstance::execution_host_id(&self) -> &swallowtail_core::ExecutionHostId
+pub const fn swallowtail_core::ConfiguredInstance::harness_configuration_posture(&self) -> core::option::Option<swallowtail_core::HarnessConfigurationPosture>
+pub const fn swallowtail_core::ConfiguredInstance::harness_rpc_policy(&self) -> core::option::Option<&swallowtail_core::HarnessRpcPolicy>
+pub fn swallowtail_core::ConfiguredInstance::has_interface_version(&self, &swallowtail_core::InterfaceVersionBinding) -> bool
+pub const fn swallowtail_core::ConfiguredInstance::id(&self) -> &swallowtail_core::ConfiguredInstanceId
+pub fn swallowtail_core::ConfiguredInstance::interface_versions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::InterfaceVersionBinding>
+pub const fn swallowtail_core::ConfiguredInstance::new(swallowtail_core::ConfiguredInstanceId, swallowtail_core::InstanceRevision, swallowtail_core::AdapterId, swallowtail_core::ExecutionHostId, swallowtail_core::InstanceTargetRef, swallowtail_core::InstanceOwnership, swallowtail_core::AccessProfileId, swallowtail_core::SupportAuthority, swallowtail_core::ProtocolFacadeId, swallowtail_core::InstancePolicyId, swallowtail_core::CapabilityProfile) -> Self
+pub const fn swallowtail_core::ConfiguredInstance::ownership(&self) -> swallowtail_core::InstanceOwnership
+pub const fn swallowtail_core::ConfiguredInstance::policy_id(&self) -> &swallowtail_core::InstancePolicyId
+pub const fn swallowtail_core::ConfiguredInstance::protocol_facade_id(&self) -> &swallowtail_core::ProtocolFacadeId
+pub const fn swallowtail_core::ConfiguredInstance::provider_agent(&self) -> core::option::Option<&swallowtail_core::ProviderAgentBinding>
+pub const fn swallowtail_core::ConfiguredInstance::revision(&self) -> &swallowtail_core::InstanceRevision
+pub const fn swallowtail_core::ConfiguredInstance::support_authority(&self) -> swallowtail_core::SupportAuthority
+pub const fn swallowtail_core::ConfiguredInstance::target_reference(&self) -> &swallowtail_core::InstanceTargetRef
+pub const fn swallowtail_core::ConfiguredInstance::with_harness_configuration_posture(self, swallowtail_core::HarnessConfigurationPosture) -> Self
+pub fn swallowtail_core::ConfiguredInstance::with_harness_rpc_policy(self, swallowtail_core::HarnessRpcPolicy) -> Self
+pub fn swallowtail_core::ConfiguredInstance::with_interface_versions(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::InterfaceVersionBinding>) -> Self
+pub fn swallowtail_core::ConfiguredInstance::with_provider_agent(self, swallowtail_core::ProviderAgentBinding) -> Self
+pub struct swallowtail_core::ConfiguredInstanceId(_)
+impl swallowtail_core::ConfiguredInstanceId
+pub fn swallowtail_core::ConfiguredInstanceId::as_str(&self) -> &str
+pub fn swallowtail_core::ConfiguredInstanceId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::CredentialFieldDescriptor
+impl swallowtail_core::CredentialFieldDescriptor
+pub const fn swallowtail_core::CredentialFieldDescriptor::environment_name(&self) -> core::option::Option<&swallowtail_core::EnvironmentVariableName>
+pub const fn swallowtail_core::CredentialFieldDescriptor::id(&self) -> &swallowtail_core::CredentialFieldId
+pub const fn swallowtail_core::CredentialFieldDescriptor::label(&self) -> &swallowtail_core::FieldLabel
+pub const fn swallowtail_core::CredentialFieldDescriptor::new(swallowtail_core::CredentialFieldId, swallowtail_core::FieldLabel, swallowtail_core::CredentialFieldVisibility) -> Self
+pub const fn swallowtail_core::CredentialFieldDescriptor::visibility(&self) -> swallowtail_core::CredentialFieldVisibility
+pub fn swallowtail_core::CredentialFieldDescriptor::with_environment_name(self, swallowtail_core::EnvironmentVariableName) -> Self
+pub struct swallowtail_core::CredentialFieldId(_)
+impl swallowtail_core::CredentialFieldId
+pub fn swallowtail_core::CredentialFieldId::as_str(&self) -> &str
+pub fn swallowtail_core::CredentialFieldId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::CredentialRef(_)
+impl swallowtail_core::CredentialRef
+pub fn swallowtail_core::CredentialRef::as_host_value(&self) -> &str
+pub fn swallowtail_core::CredentialRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+impl core::fmt::Debug for swallowtail_core::CredentialRef
+pub fn swallowtail_core::CredentialRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::Diagnostic
+impl swallowtail_core::Diagnostic
+pub fn swallowtail_core::Diagnostic::internal_detail(&self) -> core::option::Option<&str>
+pub const fn swallowtail_core::Diagnostic::new(swallowtail_core::SafeDiagnostic) -> Self
+pub const fn swallowtail_core::Diagnostic::safe(&self) -> &swallowtail_core::SafeDiagnostic
+pub fn swallowtail_core::Diagnostic::with_internal_detail(self, impl core::convert::Into<alloc::string::String>) -> Self
+impl core::fmt::Debug for swallowtail_core::Diagnostic
+pub fn swallowtail_core::Diagnostic::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::Diagnostic
+pub fn swallowtail_core::Diagnostic::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::DirectContinuationConfig
+impl swallowtail_core::DirectContinuationConfig
+pub fn swallowtail_core::DirectContinuationConfig::capability_requirements(&self) -> alloc::vec::Vec<swallowtail_core::CapabilityRequirement>
+pub const fn swallowtail_core::DirectContinuationConfig::continued_attempt_transport(&self) -> swallowtail_core::DirectAttemptTransport
+pub const fn swallowtail_core::DirectContinuationConfig::initial_attempt_transport(&self) -> swallowtail_core::DirectAttemptTransport
+pub const fn swallowtail_core::DirectContinuationConfig::maximum_declared_tools(&self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::DirectContinuationConfig::maximum_inference_attempts(&self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::DirectContinuationConfig::maximum_output_tokens_per_attempt(&self) -> core::num::nonzero::NonZeroU64
+pub const fn swallowtail_core::DirectContinuationConfig::maximum_private_continuation_bytes(&self) -> core::num::nonzero::NonZeroU64
+pub const fn swallowtail_core::DirectContinuationConfig::maximum_private_history_bytes(&self) -> core::num::nonzero::NonZeroU64
+pub const fn swallowtail_core::DirectContinuationConfig::maximum_returned_tool_calls(&self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::DirectContinuationConfig::maximum_stream_records_per_attempt(&self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::DirectContinuationConfig::maximum_tool_argument_bytes(&self) -> core::num::nonzero::NonZeroU64
+pub const fn swallowtail_core::DirectContinuationConfig::maximum_tool_result_bytes(&self) -> core::num::nonzero::NonZeroU64
+pub const fn swallowtail_core::DirectContinuationConfig::maximum_user_turns(&self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::DirectContinuationConfig::new(core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU64, core::num::nonzero::NonZeroU64, core::num::nonzero::NonZeroU64, core::num::nonzero::NonZeroU64, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU64, swallowtail_core::DirectAttemptTransport, swallowtail_core::DirectAttemptTransport, swallowtail_core::DirectToolSelection, swallowtail_core::ProviderInferenceCachePolicy) -> Self
+pub const fn swallowtail_core::DirectContinuationConfig::provider_cache_policy(&self) -> swallowtail_core::ProviderInferenceCachePolicy
+pub const fn swallowtail_core::DirectContinuationConfig::tool_selection(&self) -> swallowtail_core::DirectToolSelection
+pub struct swallowtail_core::DirectContinuationRequirements
+impl swallowtail_core::DirectContinuationRequirements
+pub const fn swallowtail_core::DirectContinuationRequirements::config(&self) -> &swallowtail_core::DirectContinuationConfig
+pub const fn swallowtail_core::DirectContinuationRequirements::model_id(&self) -> &swallowtail_core::ModelId
+pub const fn swallowtail_core::DirectContinuationRequirements::new(swallowtail_core::ModelId, swallowtail_core::DirectContinuationConfig) -> Self
+pub struct swallowtail_core::DiscoveryOutcome
+impl swallowtail_core::DiscoveryOutcome
+pub const fn swallowtail_core::DiscoveryOutcome::diagnostic(&self) -> core::option::Option<&swallowtail_core::SafeDiagnostic>
+pub fn swallowtail_core::DiscoveryOutcome::installed_executable(swallowtail_core::InstalledExecutableObservation) -> Self
+pub const fn swallowtail_core::DiscoveryOutcome::installed_executable_observation(&self) -> core::option::Option<&swallowtail_core::InstalledExecutableObservation>
+pub const fn swallowtail_core::DiscoveryOutcome::new(swallowtail_core::DiscoveryStatus, core::option::Option<swallowtail_core::SafeDiagnostic>) -> Self
+pub const fn swallowtail_core::DiscoveryOutcome::status(&self) -> swallowtail_core::DiscoveryStatus
+pub struct swallowtail_core::DriverDescriptor
+impl swallowtail_core::DriverDescriptor
+pub fn swallowtail_core::DriverDescriptor::assess_interface_version(&self, &swallowtail_core::InterfaceVersionBinding) -> swallowtail_core::InterfaceCompatibilityAssessment
+pub fn swallowtail_core::DriverDescriptor::classify_interface_version(&self, &swallowtail_core::InterfaceVersionBinding) -> core::option::Option<swallowtail_core::InterfaceCompatibilityMatch>
+pub fn swallowtail_core::DriverDescriptor::discovery_actions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::DiscoveryAction> + '_
+pub const fn swallowtail_core::DriverDescriptor::identity(&self) -> &swallowtail_core::AdapterIdentity
+pub const fn swallowtail_core::DriverDescriptor::integration_family(&self) -> &swallowtail_core::IntegrationFamilyId
+pub fn swallowtail_core::DriverDescriptor::interface_compatibility(&self, &swallowtail_core::InterfaceVersionAxis) -> core::option::Option<&swallowtail_core::InterfaceCompatibilityClaim>
+pub fn swallowtail_core::DriverDescriptor::new(swallowtail_core::AdapterIdentity, swallowtail_core::IntegrationFamilyId, swallowtail_core::TransportFamilyId) -> Self
+pub fn swallowtail_core::DriverDescriptor::permits_interface_version(&self, &swallowtail_core::InterfaceVersionBinding) -> bool
+pub fn swallowtail_core::DriverDescriptor::required_host_services(&self, swallowtail_core::DriverRole) -> impl core::iter::traits::iterator::Iterator<Item = swallowtail_core::HostServiceKind> + '_
+pub fn swallowtail_core::DriverDescriptor::sign_in_actions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::SignInAction> + '_
+pub fn swallowtail_core::DriverDescriptor::supports_execution_layer(&self, swallowtail_core::ExecutionLayer) -> bool
+pub fn swallowtail_core::DriverDescriptor::supports_extension(&self, &swallowtail_core::ExtensionNamespace) -> bool
+pub fn swallowtail_core::DriverDescriptor::supports_interface_version(&self, &swallowtail_core::InterfaceVersionBinding) -> bool
+pub fn swallowtail_core::DriverDescriptor::supports_operation_shape(&self, swallowtail_core::OperationShape) -> bool
+pub fn swallowtail_core::DriverDescriptor::supports_role(&self, swallowtail_core::DriverRole) -> bool
+pub const fn swallowtail_core::DriverDescriptor::transport_family(&self) -> &swallowtail_core::TransportFamilyId
+pub fn swallowtail_core::DriverDescriptor::with_discovery_actions(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::DiscoveryAction>) -> Self
+pub fn swallowtail_core::DriverDescriptor::with_execution_layers(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ExecutionLayer>) -> Self
+pub fn swallowtail_core::DriverDescriptor::with_extension_namespaces(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ExtensionNamespace>) -> Self
+pub fn swallowtail_core::DriverDescriptor::with_interface_compatibility(self, swallowtail_core::InterfaceCompatibilityClaim) -> Self
+pub fn swallowtail_core::DriverDescriptor::with_operation_shapes(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::OperationShape>) -> Self
+pub fn swallowtail_core::DriverDescriptor::with_required_host_services(self, swallowtail_core::DriverRole, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::HostServiceKind>) -> Self
+pub fn swallowtail_core::DriverDescriptor::with_roles(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::DriverRole>) -> Self
+pub fn swallowtail_core::DriverDescriptor::with_sign_in_actions(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::SignInAction>) -> Self
+pub struct swallowtail_core::EndpointAudience(_)
+impl swallowtail_core::EndpointAudience
+pub fn swallowtail_core::EndpointAudience::as_str(&self) -> &str
+pub fn swallowtail_core::EndpointAudience::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::EnvironmentVariableName(_)
+impl swallowtail_core::EnvironmentVariableName
+pub fn swallowtail_core::EnvironmentVariableName::as_str(&self) -> &str
+pub fn swallowtail_core::EnvironmentVariableName::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::EventEnvelope
+impl swallowtail_core::EventEnvelope
+pub fn swallowtail_core::EventEnvelope::apply_extension_policy(self, swallowtail_core::ExtensionPolicy) -> core::result::Result<Self, swallowtail_core::ExtensionRejected>
+pub const fn swallowtail_core::EventEnvelope::common(u64, swallowtail_core::EventKind) -> Self
+pub const fn swallowtail_core::EventEnvelope::extension(&self) -> core::option::Option<&swallowtail_core::ProviderExtension>
+pub const fn swallowtail_core::EventEnvelope::kind(&self) -> swallowtail_core::EventKind
+pub const fn swallowtail_core::EventEnvelope::sequence(&self) -> u64
+pub const fn swallowtail_core::EventEnvelope::with_extension(u64, swallowtail_core::EventKind, swallowtail_core::ProviderExtension) -> Self
+pub struct swallowtail_core::ExecutionHostId(_)
+impl swallowtail_core::ExecutionHostId
+pub fn swallowtail_core::ExecutionHostId::as_str(&self) -> &str
+pub fn swallowtail_core::ExecutionHostId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ExtensionNamespace(_)
+impl swallowtail_core::ExtensionNamespace
+pub fn swallowtail_core::ExtensionNamespace::as_str(&self) -> &str
+pub fn swallowtail_core::ExtensionNamespace::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ExtensionRejected
+impl swallowtail_core::ExtensionRejected
+pub const fn swallowtail_core::ExtensionRejected::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+pub const fn swallowtail_core::ExtensionRejected::namespace(&self) -> &swallowtail_core::ExtensionNamespace
+impl core::error::Error for swallowtail_core::ExtensionRejected
+impl core::fmt::Display for swallowtail_core::ExtensionRejected
+pub fn swallowtail_core::ExtensionRejected::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::FailureClassification
+impl swallowtail_core::FailureClassification
+pub const fn swallowtail_core::FailureClassification::is_unknown(self) -> bool
+pub const fn swallowtail_core::FailureClassification::kind(self) -> swallowtail_core::FailureKind
+pub const fn swallowtail_core::FailureClassification::new(swallowtail_core::FailureOrigin, swallowtail_core::FailureKind, swallowtail_core::FailureRecovery) -> Self
+pub const fn swallowtail_core::FailureClassification::origin(self) -> swallowtail_core::FailureOrigin
+pub const fn swallowtail_core::FailureClassification::recovery(self) -> swallowtail_core::FailureRecovery
+pub const fn swallowtail_core::FailureClassification::unknown() -> Self
+impl core::default::Default for swallowtail_core::FailureClassification
+pub fn swallowtail_core::FailureClassification::default() -> Self
+pub struct swallowtail_core::FieldLabel(_)
+impl swallowtail_core::FieldLabel
+pub fn swallowtail_core::FieldLabel::as_str(&self) -> &str
+pub fn swallowtail_core::FieldLabel::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::HarnessRpcPolicy
+impl swallowtail_core::HarnessRpcPolicy
+pub fn swallowtail_core::HarnessRpcPolicy::permits_background_action(&self, swallowtail_core::HarnessBackgroundAction) -> bool
+pub fn swallowtail_core::HarnessRpcPolicy::permits_configuration_source(&self, swallowtail_core::HarnessConfigurationSource) -> bool
+pub fn swallowtail_core::HarnessRpcPolicy::restrictive(swallowtail_core::HarnessSchedulingBounds) -> Self
+pub const fn swallowtail_core::HarnessRpcPolicy::scheduling(&self) -> swallowtail_core::HarnessSchedulingBounds
+pub fn swallowtail_core::HarnessRpcPolicy::with_background_actions(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::HarnessBackgroundAction>) -> Self
+pub fn swallowtail_core::HarnessRpcPolicy::with_configuration_sources(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::HarnessConfigurationSource>) -> Self
+pub struct swallowtail_core::HarnessSchedulingBounds
+impl swallowtail_core::HarnessSchedulingBounds
+pub const fn swallowtail_core::HarnessSchedulingBounds::maximum_active_operations(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::HarnessSchedulingBounds::maximum_completed_prompts(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::HarnessSchedulingBounds::maximum_pending_follow_up(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::HarnessSchedulingBounds::maximum_pending_steering(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::HarnessSchedulingBounds::new(core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32) -> Self
+pub struct swallowtail_core::IncompatibleSessionAccessPolicy
+impl swallowtail_core::IncompatibleSessionAccessPolicy
+pub const fn swallowtail_core::IncompatibleSessionAccessPolicy::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::IncompatibleSessionAccessPolicy
+impl core::fmt::Display for swallowtail_core::IncompatibleSessionAccessPolicy
+pub fn swallowtail_core::IncompatibleSessionAccessPolicy::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InstalledExecutableObservation
+impl swallowtail_core::InstalledExecutableObservation
+pub const fn swallowtail_core::InstalledExecutableObservation::claim_id(&self) -> &swallowtail_core::InterfaceCompatibilityClaimId
+pub fn swallowtail_core::InstalledExecutableObservation::classify(swallowtail_core::ExecutionHostId, swallowtail_core::InterfaceVersionBinding, &swallowtail_core::InterfaceCompatibilityClaim) -> core::result::Result<Self, swallowtail_core::InvalidInstalledExecutableObservation>
+pub const fn swallowtail_core::InstalledExecutableObservation::compatibility(&self) -> &swallowtail_core::InstalledExecutableCompatibility
+pub const fn swallowtail_core::InstalledExecutableObservation::execution_host_id(&self) -> &swallowtail_core::ExecutionHostId
+pub const fn swallowtail_core::InstalledExecutableObservation::is_permitted(&self) -> bool
+pub const fn swallowtail_core::InstalledExecutableObservation::is_qualified(&self) -> bool
+pub const fn swallowtail_core::InstalledExecutableObservation::version(&self) -> &swallowtail_core::InterfaceVersionBinding
+pub struct swallowtail_core::InstanceLabel(_)
+impl swallowtail_core::InstanceLabel
+pub fn swallowtail_core::InstanceLabel::as_str(&self) -> &str
+pub fn swallowtail_core::InstanceLabel::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::InstancePolicyId(_)
+impl swallowtail_core::InstancePolicyId
+pub fn swallowtail_core::InstancePolicyId::as_str(&self) -> &str
+pub fn swallowtail_core::InstancePolicyId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::InstanceRevision(_)
+impl swallowtail_core::InstanceRevision
+pub fn swallowtail_core::InstanceRevision::as_str(&self) -> &str
+pub fn swallowtail_core::InstanceRevision::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::InstanceTargetRef(_)
+impl swallowtail_core::InstanceTargetRef
+pub fn swallowtail_core::InstanceTargetRef::as_host_value(&self) -> &str
+pub fn swallowtail_core::InstanceTargetRef::from_config_field(&swallowtail_core::ConfigFieldRef) -> Self
+pub fn swallowtail_core::InstanceTargetRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+impl core::fmt::Debug for swallowtail_core::InstanceTargetRef
+pub fn swallowtail_core::InstanceTargetRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InstanceUpdateObservation
+impl swallowtail_core::InstanceUpdateObservation
+pub const fn swallowtail_core::InstanceUpdateObservation::claim_id(&self) -> &swallowtail_core::InterfaceCompatibilityClaimId
+pub const fn swallowtail_core::InstanceUpdateObservation::compatibility(&self) -> core::option::Option<&swallowtail_core::InstalledExecutableCompatibility>
+pub fn swallowtail_core::InstanceUpdateObservation::from_claim(&swallowtail_core::InterfaceCompatibilityClaim, core::option::Option<swallowtail_core::InstalledExecutableObservation>) -> core::result::Result<Self, swallowtail_core::InvalidInstanceUpdateObservation>
+pub const fn swallowtail_core::InstanceUpdateObservation::installed(&self) -> core::option::Option<&swallowtail_core::InstalledExecutableObservation>
+pub const fn swallowtail_core::InstanceUpdateObservation::is_unobserved(&self) -> bool
+pub struct swallowtail_core::IntegrationFamilyId(_)
+impl swallowtail_core::IntegrationFamilyId
+pub fn swallowtail_core::IntegrationFamilyId::as_str(&self) -> &str
+pub fn swallowtail_core::IntegrationFamilyId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::InterfaceBehaviorRevision(_)
+impl swallowtail_core::InterfaceBehaviorRevision
+pub fn swallowtail_core::InterfaceBehaviorRevision::as_str(&self) -> &str
+pub fn swallowtail_core::InterfaceBehaviorRevision::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::InterfaceCompatibilityClaim
+impl swallowtail_core::InterfaceCompatibilityClaim
+pub fn swallowtail_core::InterfaceCompatibilityClaim::assess(&self, &swallowtail_core::InterfaceVersion) -> swallowtail_core::InterfaceCompatibilityAssessment
+pub const fn swallowtail_core::InterfaceCompatibilityClaim::axis(&self) -> &swallowtail_core::InterfaceVersionAxis
+pub fn swallowtail_core::InterfaceCompatibilityClaim::baseline(&self) -> &swallowtail_core::InterfaceVersion
+pub fn swallowtail_core::InterfaceCompatibilityClaim::classify(&self, &swallowtail_core::InterfaceVersion) -> core::option::Option<swallowtail_core::InterfaceCompatibilityMatch>
+pub fn swallowtail_core::InterfaceCompatibilityClaim::exclusions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::InterfaceVersion>
+pub const fn swallowtail_core::InterfaceCompatibilityClaim::id(&self) -> &swallowtail_core::InterfaceCompatibilityClaimId
+pub fn swallowtail_core::InterfaceCompatibilityClaim::latest_qualified(&self) -> &swallowtail_core::InterfaceVersion
+pub fn swallowtail_core::InterfaceCompatibilityClaim::milestones(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::InterfaceVersionSegment>
+pub fn swallowtail_core::InterfaceCompatibilityClaim::new(swallowtail_core::InterfaceCompatibilityClaimId, swallowtail_core::InterfaceVersionAxis, swallowtail_core::InterfaceVersionScheme, swallowtail_core::InterfaceNewerVersionPosture, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::InterfaceVersionSegment>, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::InterfaceVersion>) -> core::result::Result<Self, swallowtail_core::InvalidInterfaceCompatibilityClaim>
+pub const fn swallowtail_core::InterfaceCompatibilityClaim::newer_version_posture(&self) -> swallowtail_core::InterfaceNewerVersionPosture
+pub fn swallowtail_core::InterfaceCompatibilityClaim::permits(&self, &swallowtail_core::InterfaceVersion) -> bool
+pub const fn swallowtail_core::InterfaceCompatibilityClaim::scheme(&self) -> swallowtail_core::InterfaceVersionScheme
+pub fn swallowtail_core::InterfaceCompatibilityClaim::supports(&self, &swallowtail_core::InterfaceVersion) -> bool
+pub struct swallowtail_core::InterfaceCompatibilityClaimId(_)
+impl swallowtail_core::InterfaceCompatibilityClaimId
+pub fn swallowtail_core::InterfaceCompatibilityClaimId::as_str(&self) -> &str
+pub fn swallowtail_core::InterfaceCompatibilityClaimId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::InterfaceCompatibilityMatch
+impl swallowtail_core::InterfaceCompatibilityMatch
+pub const fn swallowtail_core::InterfaceCompatibilityMatch::behavior_revision(&self) -> &swallowtail_core::InterfaceBehaviorRevision
+pub const fn swallowtail_core::InterfaceCompatibilityMatch::support_status(&self) -> swallowtail_core::InterfaceSupportStatus
+pub struct swallowtail_core::InterfaceUnverifiedNewer
+impl swallowtail_core::InterfaceUnverifiedNewer
+pub const fn swallowtail_core::InterfaceUnverifiedNewer::behavior_revision(&self) -> &swallowtail_core::InterfaceBehaviorRevision
+pub const fn swallowtail_core::InterfaceUnverifiedNewer::latest_qualified(&self) -> &swallowtail_core::InterfaceVersion
+pub const fn swallowtail_core::InterfaceUnverifiedNewer::version(&self) -> &swallowtail_core::InterfaceVersion
+pub struct swallowtail_core::InterfaceVersion(_)
+impl swallowtail_core::InterfaceVersion
+pub fn swallowtail_core::InterfaceVersion::as_str(&self) -> &str
+pub fn swallowtail_core::InterfaceVersion::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::InterfaceVersionAxis(_)
+impl swallowtail_core::InterfaceVersionAxis
+pub fn swallowtail_core::InterfaceVersionAxis::as_str(&self) -> &str
+pub fn swallowtail_core::InterfaceVersionAxis::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::InterfaceVersionBinding
+impl swallowtail_core::InterfaceVersionBinding
+pub const fn swallowtail_core::InterfaceVersionBinding::axis(&self) -> &swallowtail_core::InterfaceVersionAxis
+pub const fn swallowtail_core::InterfaceVersionBinding::new(swallowtail_core::InterfaceVersionAxis, swallowtail_core::InterfaceVersion) -> Self
+pub const fn swallowtail_core::InterfaceVersionBinding::version(&self) -> &swallowtail_core::InterfaceVersion
+pub struct swallowtail_core::InterfaceVersionSegment
+impl swallowtail_core::InterfaceVersionSegment
+pub const fn swallowtail_core::InterfaceVersionSegment::behavior_revision(&self) -> &swallowtail_core::InterfaceBehaviorRevision
+pub fn swallowtail_core::InterfaceVersionSegment::exact(swallowtail_core::InterfaceVersion, swallowtail_core::InterfaceBehaviorRevision, swallowtail_core::InterfaceSupportStatus) -> Self
+pub const fn swallowtail_core::InterfaceVersionSegment::maximum(&self) -> &swallowtail_core::InterfaceVersion
+pub const fn swallowtail_core::InterfaceVersionSegment::minimum(&self) -> &swallowtail_core::InterfaceVersion
+pub const fn swallowtail_core::InterfaceVersionSegment::new(swallowtail_core::InterfaceVersion, swallowtail_core::InterfaceVersion, swallowtail_core::InterfaceBehaviorRevision, swallowtail_core::InterfaceSupportStatus) -> Self
+pub const fn swallowtail_core::InterfaceVersionSegment::support_status(&self) -> swallowtail_core::InterfaceSupportStatus
+pub struct swallowtail_core::InvalidAttachedRuntimeRecord
+impl swallowtail_core::InvalidAttachedRuntimeRecord
+pub const fn swallowtail_core::InvalidAttachedRuntimeRecord::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::InvalidAttachedRuntimeRecord
+impl core::fmt::Display for swallowtail_core::InvalidAttachedRuntimeRecord
+pub fn swallowtail_core::InvalidAttachedRuntimeRecord::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidCatalogObservation
+impl swallowtail_core::InvalidCatalogObservation
+pub const fn swallowtail_core::InvalidCatalogObservation::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::InvalidCatalogObservation
+impl core::fmt::Display for swallowtail_core::InvalidCatalogObservation
+pub fn swallowtail_core::InvalidCatalogObservation::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidInstalledExecutableObservation
+impl swallowtail_core::InvalidInstalledExecutableObservation
+pub const fn swallowtail_core::InvalidInstalledExecutableObservation::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::InvalidInstalledExecutableObservation
+impl core::fmt::Display for swallowtail_core::InvalidInstalledExecutableObservation
+pub fn swallowtail_core::InvalidInstalledExecutableObservation::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidInstanceUpdateObservation
+impl swallowtail_core::InvalidInstanceUpdateObservation
+pub const fn swallowtail_core::InvalidInstanceUpdateObservation::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::InvalidInstanceUpdateObservation
+impl core::fmt::Display for swallowtail_core::InvalidInstanceUpdateObservation
+pub fn swallowtail_core::InvalidInstanceUpdateObservation::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidInterfaceCompatibilityClaim
+impl swallowtail_core::InvalidInterfaceCompatibilityClaim
+pub const fn swallowtail_core::InvalidInterfaceCompatibilityClaim::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::convert::From<core::num::error::ParseIntError> for swallowtail_core::InvalidInterfaceCompatibilityClaim
+pub fn swallowtail_core::InvalidInterfaceCompatibilityClaim::from(core::num::error::ParseIntError) -> Self
+impl core::convert::From<semver::parse::Error> for swallowtail_core::InvalidInterfaceCompatibilityClaim
+pub fn swallowtail_core::InvalidInterfaceCompatibilityClaim::from(semver::parse::Error) -> Self
+impl core::error::Error for swallowtail_core::InvalidInterfaceCompatibilityClaim
+impl core::fmt::Display for swallowtail_core::InvalidInterfaceCompatibilityClaim
+pub fn swallowtail_core::InvalidInterfaceCompatibilityClaim::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidObservableActivityProfile
+impl swallowtail_core::InvalidObservableActivityProfile
+pub const fn swallowtail_core::InvalidObservableActivityProfile::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::InvalidObservableActivityProfile
+impl core::fmt::Display for swallowtail_core::InvalidObservableActivityProfile
+pub fn swallowtail_core::InvalidObservableActivityProfile::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidProviderActivityRef
+impl swallowtail_core::InvalidProviderActivityRef
+pub const fn swallowtail_core::InvalidProviderActivityRef::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::InvalidProviderActivityRef
+impl core::fmt::Display for swallowtail_core::InvalidProviderActivityRef
+pub fn swallowtail_core::InvalidProviderActivityRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidProviderSessionCatalogueRecord
+impl swallowtail_core::InvalidProviderSessionCatalogueRecord
+pub const fn swallowtail_core::InvalidProviderSessionCatalogueRecord::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+pub const fn swallowtail_core::InvalidProviderSessionCatalogueRecord::kind(&self) -> swallowtail_core::InvalidProviderSessionCatalogueRecordKind
+impl core::error::Error for swallowtail_core::InvalidProviderSessionCatalogueRecord
+impl core::fmt::Display for swallowtail_core::InvalidProviderSessionCatalogueRecord
+pub fn swallowtail_core::InvalidProviderSessionCatalogueRecord::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidRemoteAcpRequirements
+impl swallowtail_core::InvalidRemoteAcpRequirements
+pub const fn swallowtail_core::InvalidRemoteAcpRequirements::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::InvalidRemoteAcpRequirements
+impl core::fmt::Display for swallowtail_core::InvalidRemoteAcpRequirements
+pub fn swallowtail_core::InvalidRemoteAcpRequirements::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InvalidWatcherRecord
+impl swallowtail_core::InvalidWatcherRecord
+pub const fn swallowtail_core::InvalidWatcherRecord::message(self) -> &'static str
+impl core::error::Error for swallowtail_core::InvalidWatcherRecord
+impl core::fmt::Display for swallowtail_core::InvalidWatcherRecord
+pub fn swallowtail_core::InvalidWatcherRecord::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::MediaFormat
+impl swallowtail_core::MediaFormat
+pub const fn swallowtail_core::MediaFormat::audio(swallowtail_core::AudioEncoding, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU16) -> Self
+pub const fn swallowtail_core::MediaFormat::channels(&self) -> core::num::nonzero::NonZeroU16
+pub const fn swallowtail_core::MediaFormat::encoding(&self) -> swallowtail_core::AudioEncoding
+pub const fn swallowtail_core::MediaFormat::kind(&self) -> swallowtail_core::MediaKind
+pub const fn swallowtail_core::MediaFormat::sample_rate_hz(&self) -> core::num::nonzero::NonZeroU32
+pub struct swallowtail_core::ModelArtifactBinding
+impl swallowtail_core::ModelArtifactBinding
+pub const fn swallowtail_core::ModelArtifactBinding::descriptor(&self) -> &swallowtail_core::ModelArtifactDescriptor
+pub const fn swallowtail_core::ModelArtifactBinding::new(swallowtail_core::ModelArtifactRef, swallowtail_core::ModelArtifactDescriptor) -> Self
+pub const fn swallowtail_core::ModelArtifactBinding::reference(&self) -> &swallowtail_core::ModelArtifactRef
+pub struct swallowtail_core::ModelArtifactDescriptor
+impl swallowtail_core::ModelArtifactDescriptor
+pub const fn swallowtail_core::ModelArtifactDescriptor::digest(&self) -> &swallowtail_core::ModelArtifactDigest
+pub const fn swallowtail_core::ModelArtifactDescriptor::format(&self) -> &swallowtail_core::ModelArtifactFormat
+pub const fn swallowtail_core::ModelArtifactDescriptor::id(&self) -> &swallowtail_core::ModelArtifactId
+pub const fn swallowtail_core::ModelArtifactDescriptor::new(swallowtail_core::ModelArtifactId, swallowtail_core::ModelArtifactFormat, swallowtail_core::ModelArtifactRevision, swallowtail_core::ModelArtifactDigest) -> Self
+pub fn swallowtail_core::ModelArtifactDescriptor::quantization(&self) -> core::option::Option<&str>
+pub const fn swallowtail_core::ModelArtifactDescriptor::revision(&self) -> &swallowtail_core::ModelArtifactRevision
+pub fn swallowtail_core::ModelArtifactDescriptor::with_quantization(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ModelArtifactDigest(_)
+impl swallowtail_core::ModelArtifactDigest
+pub fn swallowtail_core::ModelArtifactDigest::as_str(&self) -> &str
+pub fn swallowtail_core::ModelArtifactDigest::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ModelArtifactFormat(_)
+impl swallowtail_core::ModelArtifactFormat
+pub fn swallowtail_core::ModelArtifactFormat::as_str(&self) -> &str
+pub fn swallowtail_core::ModelArtifactFormat::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ModelArtifactId(_)
+impl swallowtail_core::ModelArtifactId
+pub fn swallowtail_core::ModelArtifactId::as_str(&self) -> &str
+pub fn swallowtail_core::ModelArtifactId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ModelArtifactRef(_)
+impl swallowtail_core::ModelArtifactRef
+pub fn swallowtail_core::ModelArtifactRef::as_host_value(&self) -> &str
+pub fn swallowtail_core::ModelArtifactRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+impl core::fmt::Debug for swallowtail_core::ModelArtifactRef
+pub fn swallowtail_core::ModelArtifactRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::ModelArtifactRevision(_)
+impl swallowtail_core::ModelArtifactRevision
+pub fn swallowtail_core::ModelArtifactRevision::as_str(&self) -> &str
+pub fn swallowtail_core::ModelArtifactRevision::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ModelCatalogEntry
+impl swallowtail_core::ModelCatalogEntry
+pub const fn swallowtail_core::ModelCatalogEntry::id(&self) -> &swallowtail_core::ModelId
+pub const fn swallowtail_core::ModelCatalogEntry::metadata(&self) -> &swallowtail_core::ModelMetadata
+pub const fn swallowtail_core::ModelCatalogEntry::new(swallowtail_core::ModelId, swallowtail_core::ModelMetadata) -> Self
+pub const fn swallowtail_core::ModelCatalogEntry::provider_id(&self) -> core::option::Option<&swallowtail_core::ProviderId>
+pub fn swallowtail_core::ModelCatalogEntry::with_provider_id(self, swallowtail_core::ProviderId) -> Self
+pub struct swallowtail_core::ModelCatalogObservations
+impl swallowtail_core::ModelCatalogObservations
+pub const fn swallowtail_core::ModelCatalogObservations::customization_types(&self) -> core::option::Option<&alloc::collections::btree::set::BTreeSet<swallowtail_core::CatalogObservation<swallowtail_core::ModelCustomizationType>>>
+pub const fn swallowtail_core::ModelCatalogObservations::inference_types(&self) -> core::option::Option<&alloc::collections::btree::set::BTreeSet<swallowtail_core::CatalogObservation<swallowtail_core::ModelInferenceType>>>
+pub const fn swallowtail_core::ModelCatalogObservations::input_modalities(&self) -> core::option::Option<&alloc::collections::btree::set::BTreeSet<swallowtail_core::CatalogObservation<swallowtail_core::ModelModality>>>
+pub const fn swallowtail_core::ModelCatalogObservations::lifecycle(&self) -> core::option::Option<&swallowtail_core::ModelLifecycleObservation>
+pub fn swallowtail_core::ModelCatalogObservations::new(swallowtail_core::IntegrationFamilyId) -> Self
+pub const fn swallowtail_core::ModelCatalogObservations::output_modalities(&self) -> core::option::Option<&alloc::collections::btree::set::BTreeSet<swallowtail_core::CatalogObservation<swallowtail_core::ModelModality>>>
+pub fn swallowtail_core::ModelCatalogObservations::provider_display_name(&self) -> core::option::Option<&str>
+pub const fn swallowtail_core::ModelCatalogObservations::reasoning_supported(&self) -> core::option::Option<bool>
+pub const fn swallowtail_core::ModelCatalogObservations::response_streaming_supported(&self) -> core::option::Option<bool>
+pub const fn swallowtail_core::ModelCatalogObservations::source(&self) -> &swallowtail_core::IntegrationFamilyId
+pub const fn swallowtail_core::ModelCatalogObservations::tool_calling_supported(&self) -> core::option::Option<bool>
+pub fn swallowtail_core::ModelCatalogObservations::with_customization_types(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::CatalogObservation<swallowtail_core::ModelCustomizationType>>) -> Self
+pub fn swallowtail_core::ModelCatalogObservations::with_inference_types(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::CatalogObservation<swallowtail_core::ModelInferenceType>>) -> Self
+pub fn swallowtail_core::ModelCatalogObservations::with_input_modalities(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::CatalogObservation<swallowtail_core::ModelModality>>) -> Self
+pub fn swallowtail_core::ModelCatalogObservations::with_lifecycle(self, swallowtail_core::ModelLifecycleObservation) -> Self
+pub fn swallowtail_core::ModelCatalogObservations::with_output_modalities(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::CatalogObservation<swallowtail_core::ModelModality>>) -> Self
+pub fn swallowtail_core::ModelCatalogObservations::with_provider_display_name(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub const fn swallowtail_core::ModelCatalogObservations::with_reasoning_supported(self, bool) -> Self
+pub const fn swallowtail_core::ModelCatalogObservations::with_response_streaming_supported(self, bool) -> Self
+pub const fn swallowtail_core::ModelCatalogObservations::with_tool_calling_supported(self, bool) -> Self
+pub struct swallowtail_core::ModelId(_)
+impl swallowtail_core::ModelId
+pub fn swallowtail_core::ModelId::as_str(&self) -> &str
+pub fn swallowtail_core::ModelId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ModelLifecycleObservation
+impl swallowtail_core::ModelLifecycleObservation
+pub fn swallowtail_core::ModelLifecycleObservation::new(swallowtail_core::CatalogObservation<swallowtail_core::ModelLifecycleStatus>) -> Self
+pub const fn swallowtail_core::ModelLifecycleObservation::status(&self) -> &swallowtail_core::CatalogObservation<swallowtail_core::ModelLifecycleStatus>
+pub fn swallowtail_core::ModelLifecycleObservation::transition(&self, swallowtail_core::ModelLifecycleTransition) -> core::option::Option<swallowtail_core::CatalogTimestamp>
+pub fn swallowtail_core::ModelLifecycleObservation::transitions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = (&swallowtail_core::ModelLifecycleTransition, &swallowtail_core::CatalogTimestamp)>
+pub fn swallowtail_core::ModelLifecycleObservation::with_transition(self, swallowtail_core::ModelLifecycleTransition, swallowtail_core::CatalogTimestamp) -> Self
+pub struct swallowtail_core::ModelManifestDigest(_)
+impl swallowtail_core::ModelManifestDigest
+pub fn swallowtail_core::ModelManifestDigest::as_str(&self) -> &str
+pub fn swallowtail_core::ModelManifestDigest::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidAttachedRuntimeRecord>
+pub struct swallowtail_core::ModelMetadata
+impl swallowtail_core::ModelMetadata
+pub fn swallowtail_core::ModelMetadata::attached_model_observations(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::AttachedModelObservation>
+pub const fn swallowtail_core::ModelMetadata::catalog_observations(&self) -> core::option::Option<&swallowtail_core::ModelCatalogObservations>
+pub fn swallowtail_core::ModelMetadata::description(&self) -> core::option::Option<&str>
+pub fn swallowtail_core::ModelMetadata::display_name(&self) -> core::option::Option<&str>
+pub const fn swallowtail_core::ModelMetadata::is_default(&self) -> bool
+pub const fn swallowtail_core::ModelMetadata::reasoning(&self) -> core::option::Option<&swallowtail_core::ReasoningMetadata>
+pub const fn swallowtail_core::ModelMetadata::token_limits(&self) -> core::option::Option<swallowtail_core::ModelTokenLimits>
+pub fn swallowtail_core::ModelMetadata::with_attached_model_observations(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::AttachedModelObservation>) -> Self
+pub fn swallowtail_core::ModelMetadata::with_catalog_observations(self, swallowtail_core::ModelCatalogObservations) -> Self
+pub const fn swallowtail_core::ModelMetadata::with_default(self, bool) -> Self
+pub fn swallowtail_core::ModelMetadata::with_description(self, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub fn swallowtail_core::ModelMetadata::with_display_name(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub fn swallowtail_core::ModelMetadata::with_reasoning(self, swallowtail_core::ReasoningMetadata) -> Self
+pub const fn swallowtail_core::ModelMetadata::with_token_limits(self, swallowtail_core::ModelTokenLimits) -> Self
+pub struct swallowtail_core::ModelRoute
+impl swallowtail_core::ModelRoute
+pub const fn swallowtail_core::ModelRoute::capabilities(&self) -> &swallowtail_core::CapabilityProfile
+pub const fn swallowtail_core::ModelRoute::id(&self) -> &swallowtail_core::ModelRouteId
+pub const fn swallowtail_core::ModelRoute::instance_id(&self) -> &swallowtail_core::ConfiguredInstanceId
+pub const fn swallowtail_core::ModelRoute::model_id(&self) -> &swallowtail_core::ModelId
+pub const fn swallowtail_core::ModelRoute::new(swallowtail_core::ModelRouteId, swallowtail_core::ModelRouteRevision, swallowtail_core::ConfiguredInstanceId, swallowtail_core::ModelId, swallowtail_core::CapabilityProfile) -> Self
+pub const fn swallowtail_core::ModelRoute::provider_id(&self) -> core::option::Option<&swallowtail_core::ProviderId>
+pub const fn swallowtail_core::ModelRoute::revision(&self) -> &swallowtail_core::ModelRouteRevision
+pub fn swallowtail_core::ModelRoute::with_provider_id(self, swallowtail_core::ProviderId) -> Self
+pub struct swallowtail_core::ModelRouteId(_)
+impl swallowtail_core::ModelRouteId
+pub fn swallowtail_core::ModelRouteId::as_str(&self) -> &str
+pub fn swallowtail_core::ModelRouteId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ModelRouteRevision(_)
+impl swallowtail_core::ModelRouteRevision
+pub fn swallowtail_core::ModelRouteRevision::as_str(&self) -> &str
+pub fn swallowtail_core::ModelRouteRevision::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ModelTokenLimits
+impl swallowtail_core::ModelTokenLimits
+pub const fn swallowtail_core::ModelTokenLimits::maximum_input_tokens(&self) -> core::option::Option<u64>
+pub const fn swallowtail_core::ModelTokenLimits::maximum_output_tokens(&self) -> core::option::Option<u64>
+pub const fn swallowtail_core::ModelTokenLimits::new(core::option::Option<u64>, core::option::Option<u64>) -> Self
+pub struct swallowtail_core::NamedCapabilityConstraint
+impl swallowtail_core::NamedCapabilityConstraint
+pub fn swallowtail_core::NamedCapabilityConstraint::name(&self) -> &str
+pub const fn swallowtail_core::NamedCapabilityConstraint::namespace(&self) -> &swallowtail_core::ExtensionNamespace
+pub fn swallowtail_core::NamedCapabilityConstraint::new(swallowtail_core::ExtensionNamespace, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ObservableActivityProfile
+impl swallowtail_core::ObservableActivityProfile
+pub const fn swallowtail_core::ObservableActivityProfile::availability(&self) -> swallowtail_core::ObservableActivityAvailability
+pub fn swallowtail_core::ObservableActivityProfile::available(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ActivityInterfaceBasis>, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ActivityKindProfile>, swallowtail_core::ActivityUnknownEventPosture) -> core::result::Result<Self, swallowtail_core::InvalidObservableActivityProfile>
+pub fn swallowtail_core::ObservableActivityProfile::capability_requirement(&self) -> core::option::Option<swallowtail_core::CapabilityRequirement>
+pub fn swallowtail_core::ObservableActivityProfile::disclosure(&self, swallowtail_core::ActivityKindClass) -> swallowtail_core::ActivityDisclosure
+pub fn swallowtail_core::ObservableActivityProfile::interface_basis(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::ActivityInterfaceBasis> + '_
+pub fn swallowtail_core::ObservableActivityProfile::kind(&self, swallowtail_core::ActivityKindClass) -> core::option::Option<&swallowtail_core::ActivityKindProfile>
+pub fn swallowtail_core::ObservableActivityProfile::kinds(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::ActivityKindProfile>
+pub fn swallowtail_core::ObservableActivityProfile::lifecycle(&self, swallowtail_core::ActivityKindClass) -> swallowtail_core::ActivityLifecycleFidelity
+pub fn swallowtail_core::ObservableActivityProfile::not_applicable() -> Self
+pub fn swallowtail_core::ObservableActivityProfile::supports(&self, &swallowtail_core::CapabilityRequirement) -> bool
+pub fn swallowtail_core::ObservableActivityProfile::unavailable(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ActivityInterfaceBasis>) -> core::result::Result<Self, swallowtail_core::InvalidObservableActivityProfile>
+pub const fn swallowtail_core::ObservableActivityProfile::unknown_event_posture(&self) -> swallowtail_core::ActivityUnknownEventPosture
+pub struct swallowtail_core::OperationRequirements
+impl swallowtail_core::OperationRequirements
+pub fn swallowtail_core::OperationRequirements::accepts_ownership(&self, swallowtail_core::InstanceOwnership) -> bool
+pub const fn swallowtail_core::OperationRequirements::access(&self) -> &swallowtail_core::AccessRequirement
+pub fn swallowtail_core::OperationRequirements::capabilities(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::CapabilityRequirement>
+pub const fn swallowtail_core::OperationRequirements::driver_role(&self) -> swallowtail_core::DriverRole
+pub const fn swallowtail_core::OperationRequirements::execution_host_id(&self) -> &swallowtail_core::ExecutionHostId
+pub const fn swallowtail_core::OperationRequirements::execution_layer(&self) -> swallowtail_core::ExecutionLayer
+pub fn swallowtail_core::OperationRequirements::extension_namespaces(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::ExtensionNamespace>
+pub fn swallowtail_core::OperationRequirements::host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::HostServiceKind> + '_
+pub const fn swallowtail_core::OperationRequirements::model_route_required(&self) -> bool
+pub fn swallowtail_core::OperationRequirements::new(swallowtail_core::ExecutionLayer, swallowtail_core::OperationShape, swallowtail_core::DriverRole, swallowtail_core::ExecutionHostId, swallowtail_core::AccessRequirement) -> Self
+pub const fn swallowtail_core::OperationRequirements::operation_shape(&self) -> swallowtail_core::OperationShape
+pub const fn swallowtail_core::OperationRequirements::require_model_route(self) -> Self
+pub fn swallowtail_core::OperationRequirements::with_capabilities(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::CapabilityRequirement>) -> Self
+pub fn swallowtail_core::OperationRequirements::with_extension_namespaces(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ExtensionNamespace>) -> Self
+pub fn swallowtail_core::OperationRequirements::with_host_services(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::HostServiceKind>) -> Self
+pub fn swallowtail_core::OperationRequirements::with_ownership_modes(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::InstanceOwnership>) -> Self
+impl swallowtail_core::OperationRequirements
+pub const fn swallowtail_core::OperationRequirements::attached_runtime(&self) -> core::option::Option<&swallowtail_core::AttachedRuntimeRequirements>
+pub const fn swallowtail_core::OperationRequirements::direct_continuation(&self) -> core::option::Option<&swallowtail_core::DirectContinuationRequirements>
+pub const fn swallowtail_core::OperationRequirements::harness_configuration_posture(&self) -> core::option::Option<swallowtail_core::HarnessConfigurationPosture>
+pub const fn swallowtail_core::OperationRequirements::harness_isolation(&self) -> core::option::Option<swallowtail_core::HarnessIsolation>
+pub const fn swallowtail_core::OperationRequirements::harness_rpc_policy(&self) -> core::option::Option<&swallowtail_core::HarnessRpcPolicy>
+pub fn swallowtail_core::OperationRequirements::interface_versions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::InterfaceVersionBinding>
+pub const fn swallowtail_core::OperationRequirements::planned_connection_rollover(&self) -> swallowtail_core::PlannedConnectionRolloverPolicy
+pub const fn swallowtail_core::OperationRequirements::realtime_media(&self) -> core::option::Option<&swallowtail_core::RealtimeMediaRequirements>
+pub const fn swallowtail_core::OperationRequirements::remote_acp(&self) -> core::option::Option<&swallowtail_core::RemoteAcpRequirements>
+pub const fn swallowtail_core::OperationRequirements::session_access_policy(&self) -> core::option::Option<&swallowtail_core::SessionAccessPolicy>
+pub const fn swallowtail_core::OperationRequirements::session_provider_state_policy(&self) -> core::option::Option<swallowtail_core::SessionProviderStatePolicy>
+pub fn swallowtail_core::OperationRequirements::with_attached_runtime(self, swallowtail_core::AttachedRuntimeRequirements) -> Self
+pub fn swallowtail_core::OperationRequirements::with_direct_continuation(self, swallowtail_core::DirectContinuationRequirements) -> Self
+pub const fn swallowtail_core::OperationRequirements::with_harness_configuration_posture(self, swallowtail_core::HarnessConfigurationPosture) -> Self
+pub const fn swallowtail_core::OperationRequirements::with_harness_isolation(self, swallowtail_core::HarnessIsolation) -> Self
+pub fn swallowtail_core::OperationRequirements::with_harness_rpc_policy(self, swallowtail_core::HarnessRpcPolicy) -> Self
+pub fn swallowtail_core::OperationRequirements::with_interface_versions(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::InterfaceVersionBinding>) -> Self
+pub const fn swallowtail_core::OperationRequirements::with_planned_connection_rollover(self, swallowtail_core::PlannedConnectionRolloverPolicy) -> Self
+pub fn swallowtail_core::OperationRequirements::with_realtime_media(self, swallowtail_core::RealtimeMediaRequirements) -> Self
+pub fn swallowtail_core::OperationRequirements::with_remote_acp(self, swallowtail_core::RemoteAcpRequirements) -> Self
+pub fn swallowtail_core::OperationRequirements::with_session_access_policy(self, swallowtail_core::SessionAccessPolicy) -> Self
+pub const fn swallowtail_core::OperationRequirements::with_session_provider_state_policy(self, swallowtail_core::SessionProviderStatePolicy) -> Self
+pub struct swallowtail_core::OverlayMarker
+impl swallowtail_core::OverlayMarker
+pub const fn swallowtail_core::OverlayMarker::consumer_default(&self) -> bool
+pub const fn swallowtail_core::OverlayMarker::favourite(&self) -> bool
+pub const fn swallowtail_core::OverlayMarker::hidden(&self) -> bool
+pub const fn swallowtail_core::OverlayMarker::instance_id(&self) -> &swallowtail_core::ConfiguredInstanceId
+pub const fn swallowtail_core::OverlayMarker::model_id(&self) -> &swallowtail_core::ModelId
+pub const fn swallowtail_core::OverlayMarker::new(swallowtail_core::ConfiguredInstanceId, swallowtail_core::ProviderId, swallowtail_core::ModelId) -> Self
+pub const fn swallowtail_core::OverlayMarker::ordinal(&self) -> core::option::Option<u32>
+pub const fn swallowtail_core::OverlayMarker::provider_id(&self) -> core::option::Option<&swallowtail_core::ProviderId>
+pub const fn swallowtail_core::OverlayMarker::with_consumer_default(self, bool) -> Self
+pub const fn swallowtail_core::OverlayMarker::with_favourite(self, bool) -> Self
+pub const fn swallowtail_core::OverlayMarker::with_hidden(self, bool) -> Self
+pub const fn swallowtail_core::OverlayMarker::with_ordinal(self, core::option::Option<u32>) -> Self
+pub const fn swallowtail_core::OverlayMarker::without_provider(swallowtail_core::ConfiguredInstanceId, swallowtail_core::ModelId) -> Self
+pub struct swallowtail_core::PreflightContext<'a>
+impl<'a> swallowtail_core::PreflightContext<'a>
+pub fn swallowtail_core::PreflightContext<'a>::new(&'a swallowtail_core::DriverDescriptor, &'a swallowtail_core::ConfiguredInstance, &'a swallowtail_core::AccessProfile, &'a swallowtail_core::AccessStatus, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::HostServiceKind>) -> Self
+pub const fn swallowtail_core::PreflightContext<'a>::with_attached_model_observation(self, &'a swallowtail_core::AttachedModelObservation) -> Self
+pub const fn swallowtail_core::PreflightContext<'a>::with_model_route(self, &'a swallowtail_core::ModelRoute) -> Self
+impl<'a> swallowtail_core::PreflightContext<'a>
+pub const fn swallowtail_core::PreflightContext<'a>::with_model_artifact(self, &'a swallowtail_core::ModelArtifactBinding) -> Self
+pub struct swallowtail_core::PreflightFailure
+impl swallowtail_core::PreflightFailure
+pub const fn swallowtail_core::PreflightFailure::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+pub const fn swallowtail_core::PreflightFailure::dimension(&self) -> swallowtail_core::PreflightDimension
+impl core::error::Error for swallowtail_core::PreflightFailure
+impl core::fmt::Display for swallowtail_core::PreflightFailure
+pub fn swallowtail_core::PreflightFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::PreflightPlan
+impl swallowtail_core::PreflightPlan
+pub const fn swallowtail_core::PreflightPlan::access_profile_id(&self) -> &swallowtail_core::AccessProfileId
+pub const fn swallowtail_core::PreflightPlan::access_status(&self) -> &swallowtail_core::AccessStatus
+pub fn swallowtail_core::PreflightPlan::assess_interface_version(&self, &swallowtail_core::InterfaceVersionBinding) -> swallowtail_core::InterfaceCompatibilityAssessment
+pub const fn swallowtail_core::PreflightPlan::attached_model_observation(&self) -> core::option::Option<&swallowtail_core::AttachedModelObservation>
+pub fn swallowtail_core::PreflightPlan::classify_interface_version(&self, &swallowtail_core::InterfaceVersionBinding) -> core::option::Option<swallowtail_core::InterfaceCompatibilityMatch>
+pub const fn swallowtail_core::PreflightPlan::credential_mechanism(&self) -> &swallowtail_core::CredentialMechanism
+pub const fn swallowtail_core::PreflightPlan::credential_reference(&self) -> core::option::Option<&swallowtail_core::CredentialRef>
+pub const fn swallowtail_core::PreflightPlan::driver_identity(&self) -> &swallowtail_core::AdapterIdentity
+pub const fn swallowtail_core::PreflightPlan::endpoint_audience(&self) -> &swallowtail_core::EndpointAudience
+pub const fn swallowtail_core::PreflightPlan::execution_host_id(&self) -> &swallowtail_core::ExecutionHostId
+pub const fn swallowtail_core::PreflightPlan::harness_configuration_posture(&self) -> core::option::Option<swallowtail_core::HarnessConfigurationPosture>
+pub const fn swallowtail_core::PreflightPlan::harness_rpc_policy(&self) -> core::option::Option<&swallowtail_core::HarnessRpcPolicy>
+pub const fn swallowtail_core::PreflightPlan::instance_id(&self) -> &swallowtail_core::ConfiguredInstanceId
+pub const fn swallowtail_core::PreflightPlan::instance_policy_id(&self) -> &swallowtail_core::InstancePolicyId
+pub const fn swallowtail_core::PreflightPlan::instance_revision(&self) -> &swallowtail_core::InstanceRevision
+pub const fn swallowtail_core::PreflightPlan::instance_target_ref(&self) -> &swallowtail_core::InstanceTargetRef
+pub const fn swallowtail_core::PreflightPlan::integration_family(&self) -> &swallowtail_core::IntegrationFamilyId
+pub fn swallowtail_core::PreflightPlan::interface_versions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::InterfaceVersionBinding>
+pub fn swallowtail_core::PreflightPlan::model_id(&self) -> core::option::Option<&swallowtail_core::ModelId>
+pub fn swallowtail_core::PreflightPlan::model_route_id(&self) -> core::option::Option<&swallowtail_core::ModelRouteId>
+pub fn swallowtail_core::PreflightPlan::model_route_revision(&self) -> core::option::Option<&swallowtail_core::ModelRouteRevision>
+pub const fn swallowtail_core::PreflightPlan::ownership(&self) -> swallowtail_core::InstanceOwnership
+pub const fn swallowtail_core::PreflightPlan::protocol_facade_id(&self) -> &swallowtail_core::ProtocolFacadeId
+pub const fn swallowtail_core::PreflightPlan::provider_agent(&self) -> core::option::Option<&swallowtail_core::ProviderAgentBinding>
+pub fn swallowtail_core::PreflightPlan::provider_id(&self) -> core::option::Option<&swallowtail_core::ProviderId>
+pub const fn swallowtail_core::PreflightPlan::requirements(&self) -> &swallowtail_core::OperationRequirements
+pub fn swallowtail_core::PreflightPlan::supports_capability_requirement(&self, &swallowtail_core::CapabilityRequirement) -> bool
+pub const fn swallowtail_core::PreflightPlan::transport_family(&self) -> &swallowtail_core::TransportFamilyId
+pub fn swallowtail_core::PreflightPlan::validate_current(&self, &swallowtail_core::PreflightContext<'_>) -> core::result::Result<(), swallowtail_core::StalePreflightPlan>
+impl swallowtail_core::PreflightPlan
+pub fn swallowtail_core::PreflightPlan::model_artifact_binding(&self) -> core::option::Option<&swallowtail_core::ModelArtifactBinding>
+pub fn swallowtail_core::PreflightPlan::model_artifact_descriptor(&self) -> core::option::Option<&swallowtail_core::ModelArtifactDescriptor>
+pub fn swallowtail_core::PreflightPlan::model_artifact_reference(&self) -> core::option::Option<&swallowtail_core::ModelArtifactRef>
+pub struct swallowtail_core::ProtocolFacadeId(_)
+impl swallowtail_core::ProtocolFacadeId
+pub fn swallowtail_core::ProtocolFacadeId::as_str(&self) -> &str
+pub fn swallowtail_core::ProtocolFacadeId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ProviderActivityRef(_)
+impl swallowtail_core::ProviderActivityRef
+pub fn swallowtail_core::ProviderActivityRef::as_provider_value(&self) -> &str
+pub fn swallowtail_core::ProviderActivityRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidProviderActivityRef>
+impl core::fmt::Debug for swallowtail_core::ProviderActivityRef
+pub fn swallowtail_core::ProviderActivityRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::ProviderActivityRef
+pub fn swallowtail_core::ProviderActivityRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::ProviderAgentBinding
+impl swallowtail_core::ProviderAgentBinding
+pub const fn swallowtail_core::ProviderAgentBinding::id(&self) -> &swallowtail_core::ProviderAgentId
+pub const fn swallowtail_core::ProviderAgentBinding::new(swallowtail_core::ProviderAgentId, swallowtail_core::ProviderAgentVersion) -> Self
+pub const fn swallowtail_core::ProviderAgentBinding::version(&self) -> &swallowtail_core::ProviderAgentVersion
+impl core::fmt::Debug for swallowtail_core::ProviderAgentBinding
+pub fn swallowtail_core::ProviderAgentBinding::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::ProviderAgentId(_)
+impl swallowtail_core::ProviderAgentId
+pub fn swallowtail_core::ProviderAgentId::as_str(&self) -> &str
+pub fn swallowtail_core::ProviderAgentId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+impl core::fmt::Debug for swallowtail_core::ProviderAgentId
+pub fn swallowtail_core::ProviderAgentId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::ProviderAgentVersion(_)
+impl swallowtail_core::ProviderAgentVersion
+pub fn swallowtail_core::ProviderAgentVersion::as_str(&self) -> &str
+pub fn swallowtail_core::ProviderAgentVersion::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+impl core::fmt::Debug for swallowtail_core::ProviderAgentVersion
+pub fn swallowtail_core::ProviderAgentVersion::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::ProviderCatalogValue
+impl swallowtail_core::ProviderCatalogValue
+pub fn swallowtail_core::ProviderCatalogValue::as_str(&self) -> &str
+pub fn swallowtail_core::ProviderCatalogValue::new(swallowtail_core::IntegrationFamilyId, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidCatalogObservation>
+pub const fn swallowtail_core::ProviderCatalogValue::source(&self) -> &swallowtail_core::IntegrationFamilyId
+pub struct swallowtail_core::ProviderExtension
+impl swallowtail_core::ProviderExtension
+pub const fn swallowtail_core::ProviderExtension::namespace(&self) -> &swallowtail_core::ExtensionNamespace
+pub const fn swallowtail_core::ProviderExtension::new(swallowtail_core::ExtensionNamespace, alloc::vec::Vec<u8>) -> Self
+pub fn swallowtail_core::ProviderExtension::payload(&self) -> &[u8]
+impl core::fmt::Debug for swallowtail_core::ProviderExtension
+pub fn swallowtail_core::ProviderExtension::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::ProviderId(_)
+impl swallowtail_core::ProviderId
+pub fn swallowtail_core::ProviderId::as_str(&self) -> &str
+pub fn swallowtail_core::ProviderId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::ProviderRequestPolicy
+impl swallowtail_core::ProviderRequestPolicy
+pub fn swallowtail_core::ProviderRequestPolicy::exchange(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ExtensionNamespace>) -> Self
+pub fn swallowtail_core::ProviderRequestPolicy::exchanged_extensions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::ExtensionNamespace>
+pub fn swallowtail_core::ProviderRequestPolicy::handling_for(&self, &swallowtail_core::ExtensionNamespace) -> swallowtail_core::ProviderRequestHandling
+pub fn swallowtail_core::ProviderRequestPolicy::observe_and_exchange(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ExtensionNamespace>, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ExtensionNamespace>) -> Self
+pub fn swallowtail_core::ProviderRequestPolicy::observe_and_stop(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ExtensionNamespace>) -> Self
+pub fn swallowtail_core::ProviderRequestPolicy::observed_extensions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::ExtensionNamespace>
+pub fn swallowtail_core::ProviderRequestPolicy::reject_all() -> Self
+pub struct swallowtail_core::ProviderRequestRef
+impl swallowtail_core::ProviderRequestRef
+pub fn swallowtail_core::ProviderRequestRef::as_provider_value(&self) -> &str
+pub fn swallowtail_core::ProviderRequestRef::from_signed_integer(i64) -> Self
+pub fn swallowtail_core::ProviderRequestRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub const fn swallowtail_core::ProviderRequestRef::representation(&self) -> swallowtail_core::ProviderRequestRepresentation
+impl core::fmt::Debug for swallowtail_core::ProviderRequestRef
+pub fn swallowtail_core::ProviderRequestRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::ProviderSessionCatalogueBounds
+impl swallowtail_core::ProviderSessionCatalogueBounds
+pub const fn swallowtail_core::ProviderSessionCatalogueBounds::maximum_content_bytes(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::ProviderSessionCatalogueBounds::maximum_cursor_bytes(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::ProviderSessionCatalogueBounds::maximum_page_size(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::ProviderSessionCatalogueBounds::maximum_provider_reference_bytes(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::ProviderSessionCatalogueBounds::maximum_total_candidates(self) -> core::num::nonzero::NonZeroU32
+pub fn swallowtail_core::ProviderSessionCatalogueBounds::new(core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32) -> core::result::Result<Self, swallowtail_core::InvalidProviderSessionCatalogueRecord>
+pub struct swallowtail_core::ProviderSessionDisplayContent
+impl swallowtail_core::ProviderSessionDisplayContent
+pub fn swallowtail_core::ProviderSessionDisplayContent::byte_len(&self) -> usize
+pub const fn swallowtail_core::ProviderSessionDisplayContent::empty() -> Self
+pub fn swallowtail_core::ProviderSessionDisplayContent::new(core::option::Option<alloc::string::String>, core::option::Option<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidProviderSessionCatalogueRecord>
+pub fn swallowtail_core::ProviderSessionDisplayContent::preview(&self) -> core::option::Option<&str>
+pub fn swallowtail_core::ProviderSessionDisplayContent::title(&self) -> core::option::Option<&str>
+impl core::fmt::Debug for swallowtail_core::ProviderSessionDisplayContent
+pub fn swallowtail_core::ProviderSessionDisplayContent::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::ProviderSessionInterfaceCompatibility
+impl swallowtail_core::ProviderSessionInterfaceCompatibility
+pub const fn swallowtail_core::ProviderSessionInterfaceCompatibility::assessment(&self) -> &swallowtail_core::InterfaceCompatibilityAssessment
+pub const fn swallowtail_core::ProviderSessionInterfaceCompatibility::binding(&self) -> &swallowtail_core::InterfaceVersionBinding
+pub const fn swallowtail_core::ProviderSessionInterfaceCompatibility::new(swallowtail_core::InterfaceVersionBinding, swallowtail_core::InterfaceCompatibilityAssessment) -> Self
+pub struct swallowtail_core::ProviderSessionManagementEffect
+impl swallowtail_core::ProviderSessionManagementEffect
+pub const fn swallowtail_core::ProviderSessionManagementEffect::action(self) -> swallowtail_core::ProviderSessionManagementAction
+pub const fn swallowtail_core::ProviderSessionManagementEffect::affected_scope(self) -> core::option::Option<swallowtail_core::ProviderSessionAffectedScope>
+pub const fn swallowtail_core::ProviderSessionManagementEffect::already_archived(swallowtail_core::ProviderSessionAffectedScope) -> Self
+pub const fn swallowtail_core::ProviderSessionManagementEffect::already_unarchived(swallowtail_core::ProviderSessionAffectedScope) -> Self
+pub const fn swallowtail_core::ProviderSessionManagementEffect::applied(swallowtail_core::ProviderSessionManagementAction, swallowtail_core::ProviderSessionAffectedScope) -> Self
+pub const fn swallowtail_core::ProviderSessionManagementEffect::confirmed_deletion_strength(self) -> core::option::Option<swallowtail_core::ProviderSessionDeletionStrength>
+pub const fn swallowtail_core::ProviderSessionManagementEffect::failed_before_effect(swallowtail_core::ProviderSessionManagementAction) -> Self
+pub const fn swallowtail_core::ProviderSessionManagementEffect::resulting_state(self) -> core::option::Option<swallowtail_core::ProviderSessionLifecycleState>
+pub const fn swallowtail_core::ProviderSessionManagementEffect::target_already_absent(swallowtail_core::ProviderSessionDeletionStrength, swallowtail_core::ProviderSessionAffectedScope) -> Self
+pub const fn swallowtail_core::ProviderSessionManagementEffect::truth(self) -> swallowtail_core::ProviderSessionEffectTruth
+pub const fn swallowtail_core::ProviderSessionManagementEffect::unconfirmed_after_effect(swallowtail_core::ProviderSessionManagementAction) -> Self
+pub struct swallowtail_core::RealtimeMediaConfig
+impl swallowtail_core::RealtimeMediaConfig
+pub fn swallowtail_core::RealtimeMediaConfig::capability_requirement(&self) -> swallowtail_core::CapabilityRequirement
+pub const fn swallowtail_core::RealtimeMediaConfig::input_format(&self) -> swallowtail_core::MediaFormat
+pub const fn swallowtail_core::RealtimeMediaConfig::maximum_chunk_bytes(&self) -> core::num::nonzero::NonZeroU64
+pub const fn swallowtail_core::RealtimeMediaConfig::maximum_turns(&self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::RealtimeMediaConfig::new(swallowtail_core::MediaFormat, swallowtail_core::MediaFormat, core::num::nonzero::NonZeroU64, core::num::nonzero::NonZeroU32) -> Self
+pub const fn swallowtail_core::RealtimeMediaConfig::output_format(&self) -> swallowtail_core::MediaFormat
+pub struct swallowtail_core::RealtimeMediaRequirements
+impl swallowtail_core::RealtimeMediaRequirements
+pub const fn swallowtail_core::RealtimeMediaRequirements::config(&self) -> &swallowtail_core::RealtimeMediaConfig
+pub const fn swallowtail_core::RealtimeMediaRequirements::model_id(&self) -> &swallowtail_core::ModelId
+pub const fn swallowtail_core::RealtimeMediaRequirements::new(swallowtail_core::ModelId, swallowtail_core::RealtimeMediaConfig) -> Self
+pub struct swallowtail_core::ReasoningMetadata
+impl swallowtail_core::ReasoningMetadata
+pub const fn swallowtail_core::ReasoningMetadata::default_mode(&self) -> core::option::Option<&swallowtail_core::ReasoningMode>
+pub fn swallowtail_core::ReasoningMetadata::new(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ReasoningMode>, core::option::Option<swallowtail_core::ReasoningMode>) -> Self
+pub fn swallowtail_core::ReasoningMetadata::supported_modes(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::ReasoningMode>
+pub fn swallowtail_core::ReasoningMetadata::supports(&self, &swallowtail_core::ReasoningMode) -> bool
+pub struct swallowtail_core::ReasoningMode(_)
+impl swallowtail_core::ReasoningMode
+pub fn swallowtail_core::ReasoningMode::as_str(&self) -> &str
+pub fn swallowtail_core::ReasoningMode::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::RemoteAcpConnectionBounds
+impl swallowtail_core::RemoteAcpConnectionBounds
+pub const fn swallowtail_core::RemoteAcpConnectionBounds::maximum_connection_stream_events(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::RemoteAcpConnectionBounds::maximum_frame_bytes(self) -> core::num::nonzero::NonZeroU64
+pub const fn swallowtail_core::RemoteAcpConnectionBounds::maximum_pending_callbacks(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::RemoteAcpConnectionBounds::maximum_pending_requests(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::RemoteAcpConnectionBounds::maximum_session_stream_events(self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::RemoteAcpConnectionBounds::new(core::num::nonzero::NonZeroU64, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32, core::num::nonzero::NonZeroU32) -> Self
+pub struct swallowtail_core::RemoteAcpCoreSdkVersion(_)
+impl swallowtail_core::RemoteAcpCoreSdkVersion
+pub fn swallowtail_core::RemoteAcpCoreSdkVersion::as_str(&self) -> &str
+pub fn swallowtail_core::RemoteAcpCoreSdkVersion::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::RemoteAcpRequirements
+impl swallowtail_core::RemoteAcpRequirements
+pub const fn swallowtail_core::RemoteAcpRequirements::affinity(&self) -> swallowtail_core::RemoteAcpAffinityPolicy
+pub const fn swallowtail_core::RemoteAcpRequirements::bounds(&self) -> swallowtail_core::RemoteAcpConnectionBounds
+pub const fn swallowtail_core::RemoteAcpRequirements::maximum_active_sessions(&self) -> core::num::nonzero::NonZeroU32
+pub const fn swallowtail_core::RemoteAcpRequirements::maximum_connections(&self) -> core::num::nonzero::NonZeroU32
+pub fn swallowtail_core::RemoteAcpRequirements::new(swallowtail_core::RemoteAcpTransport, swallowtail_core::RemoteAcpAffinityPolicy, swallowtail_core::RemoteAcpConnectionBounds, swallowtail_core::RemoteAcpVersionEvidence) -> core::result::Result<Self, swallowtail_core::InvalidRemoteAcpRequirements>
+pub const fn swallowtail_core::RemoteAcpRequirements::permits_pooling_or_multiplexing(&self) -> bool
+pub const fn swallowtail_core::RemoteAcpRequirements::permits_reconnect(&self) -> bool
+pub const fn swallowtail_core::RemoteAcpRequirements::permits_redirect(&self) -> bool
+pub const fn swallowtail_core::RemoteAcpRequirements::permits_replay_or_resumption(&self) -> bool
+pub const fn swallowtail_core::RemoteAcpRequirements::permits_retry(&self) -> bool
+pub const fn swallowtail_core::RemoteAcpRequirements::permits_transport_fallback(&self) -> bool
+pub const fn swallowtail_core::RemoteAcpRequirements::transport(&self) -> swallowtail_core::RemoteAcpTransport
+pub const fn swallowtail_core::RemoteAcpRequirements::versions(&self) -> &swallowtail_core::RemoteAcpVersionEvidence
+pub struct swallowtail_core::RemoteAcpRfdRevision(_)
+impl swallowtail_core::RemoteAcpRfdRevision
+pub fn swallowtail_core::RemoteAcpRfdRevision::as_str(&self) -> &str
+pub fn swallowtail_core::RemoteAcpRfdRevision::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::RemoteAcpTransportSdkVersion(_)
+impl swallowtail_core::RemoteAcpTransportSdkVersion
+pub fn swallowtail_core::RemoteAcpTransportSdkVersion::as_str(&self) -> &str
+pub fn swallowtail_core::RemoteAcpTransportSdkVersion::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::RemoteAcpVersionEvidence
+impl swallowtail_core::RemoteAcpVersionEvidence
+pub const fn swallowtail_core::RemoteAcpVersionEvidence::core_sdk_version(&self) -> &swallowtail_core::RemoteAcpCoreSdkVersion
+pub const fn swallowtail_core::RemoteAcpVersionEvidence::new(core::num::nonzero::NonZeroU32, swallowtail_core::RemoteAcpRfdRevision, swallowtail_core::RemoteAcpRfdStatus, swallowtail_core::RemoteAcpTransportSdkVersion, swallowtail_core::RemoteAcpCoreSdkVersion) -> Self
+pub const fn swallowtail_core::RemoteAcpVersionEvidence::rfd_revision(&self) -> &swallowtail_core::RemoteAcpRfdRevision
+pub const fn swallowtail_core::RemoteAcpVersionEvidence::rfd_status(&self) -> swallowtail_core::RemoteAcpRfdStatus
+pub const fn swallowtail_core::RemoteAcpVersionEvidence::transport_sdk_version(&self) -> &swallowtail_core::RemoteAcpTransportSdkVersion
+pub const fn swallowtail_core::RemoteAcpVersionEvidence::wire_version(&self) -> core::num::nonzero::NonZeroU32
+pub struct swallowtail_core::RunRef(_)
+impl swallowtail_core::RunRef
+pub fn swallowtail_core::RunRef::as_provider_value(&self) -> &str
+pub fn swallowtail_core::RunRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+impl core::fmt::Debug for swallowtail_core::RunRef
+pub fn swallowtail_core::RunRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::SafeDiagnostic
+impl swallowtail_core::SafeDiagnostic
+pub const fn swallowtail_core::SafeDiagnostic::code(&self) -> &'static str
+pub const fn swallowtail_core::SafeDiagnostic::failure_classification(&self) -> swallowtail_core::FailureClassification
+pub fn swallowtail_core::SafeDiagnostic::message(&self) -> &str
+pub fn swallowtail_core::SafeDiagnostic::new(&'static str, impl core::convert::Into<alloc::string::String>) -> Self
+pub const fn swallowtail_core::SafeDiagnostic::with_failure_classification(self, swallowtail_core::FailureClassification) -> Self
+impl core::fmt::Display for swallowtail_core::SafeDiagnostic
+pub fn swallowtail_core::SafeDiagnostic::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::SessionAccessPolicy
+impl swallowtail_core::SessionAccessPolicy
+pub fn swallowtail_core::SessionAccessPolicy::ambient_harness(swallowtail_core::ResourceAccess) -> Self
+pub fn swallowtail_core::SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(swallowtail_core::ResourceAccess, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ExtensionNamespace>) -> Self
+pub const fn swallowtail_core::SessionAccessPolicy::approval_policy(&self) -> swallowtail_core::ProviderApprovalPolicy
+pub fn swallowtail_core::SessionAccessPolicy::bounded_workspace(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::ExtensionNamespace>) -> Self
+pub const fn swallowtail_core::SessionAccessPolicy::external_network(&self) -> swallowtail_core::ExternalNetworkPolicy
+pub const fn swallowtail_core::SessionAccessPolicy::external_search(&self) -> swallowtail_core::ExternalSearchPolicy
+pub const fn swallowtail_core::SessionAccessPolicy::filesystem_boundary(&self) -> core::option::Option<swallowtail_core::FilesystemBoundary>
+pub const fn swallowtail_core::SessionAccessPolicy::harness_isolation(&self) -> core::option::Option<swallowtail_core::HarnessIsolation>
+pub fn swallowtail_core::SessionAccessPolicy::new(swallowtail_core::ResourceAccess, swallowtail_core::FilesystemBoundary, swallowtail_core::HarnessIsolation, swallowtail_core::ProviderApprovalPolicy, swallowtail_core::ExternalNetworkPolicy, swallowtail_core::ExternalSearchPolicy, swallowtail_core::ProviderRequestPolicy) -> core::result::Result<Self, swallowtail_core::IncompatibleSessionAccessPolicy>
+pub const fn swallowtail_core::SessionAccessPolicy::provider_requests(&self) -> &swallowtail_core::ProviderRequestPolicy
+pub fn swallowtail_core::SessionAccessPolicy::read_only() -> Self
+pub const fn swallowtail_core::SessionAccessPolicy::resource_access(&self) -> core::option::Option<swallowtail_core::ResourceAccess>
+pub fn swallowtail_core::SessionAccessPolicy::resource_free() -> Self
+pub fn swallowtail_core::SessionAccessPolicy::with_provider_requests(self, swallowtail_core::ProviderRequestPolicy) -> Self
+impl core::default::Default for swallowtail_core::SessionAccessPolicy
+pub fn swallowtail_core::SessionAccessPolicy::default() -> Self
+pub struct swallowtail_core::SessionRef(_)
+impl swallowtail_core::SessionRef
+pub fn swallowtail_core::SessionRef::as_provider_value(&self) -> &str
+pub fn swallowtail_core::SessionRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+impl core::fmt::Debug for swallowtail_core::SessionRef
+pub fn swallowtail_core::SessionRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::StalePreflightPlan
+impl swallowtail_core::StalePreflightPlan
+pub const fn swallowtail_core::StalePreflightPlan::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::StalePreflightPlan
+impl core::fmt::Display for swallowtail_core::StalePreflightPlan
+pub fn swallowtail_core::StalePreflightPlan::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::TransportFamilyId(_)
+impl swallowtail_core::TransportFamilyId
+pub fn swallowtail_core::TransportFamilyId::as_str(&self) -> &str
+pub fn swallowtail_core::TransportFamilyId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+pub struct swallowtail_core::TurnRef(_)
+impl swallowtail_core::TurnRef
+pub fn swallowtail_core::TurnRef::as_provider_value(&self) -> &str
+pub fn swallowtail_core::TurnRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::ValueRequired>
+impl core::fmt::Debug for swallowtail_core::TurnRef
+pub fn swallowtail_core::TurnRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::UnsupportedCapability
+impl swallowtail_core::UnsupportedCapability
+pub const fn swallowtail_core::UnsupportedCapability::capability(&self) -> swallowtail_core::Capability
+pub const fn swallowtail_core::UnsupportedCapability::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+impl core::error::Error for swallowtail_core::UnsupportedCapability
+impl core::fmt::Display for swallowtail_core::UnsupportedCapability
+pub fn swallowtail_core::UnsupportedCapability::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::ValueRequired
+impl swallowtail_core::ValueRequired
+pub const fn swallowtail_core::ValueRequired::diagnostic(&self) -> &swallowtail_core::SafeDiagnostic
+pub const fn swallowtail_core::ValueRequired::field(&self) -> &'static str
+impl core::error::Error for swallowtail_core::ValueRequired
+impl core::fmt::Display for swallowtail_core::ValueRequired
+pub fn swallowtail_core::ValueRequired::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::WatcherId(_)
+impl swallowtail_core::WatcherId
+pub fn swallowtail_core::WatcherId::as_str(&self) -> &str
+pub fn swallowtail_core::WatcherId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidWatcherRecord>
+impl core::fmt::Debug for swallowtail_core::WatcherId
+pub fn swallowtail_core::WatcherId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::WatcherId
+pub fn swallowtail_core::WatcherId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::WatcherOperationData(_)
+impl swallowtail_core::WatcherOperationData
+pub fn swallowtail_core::WatcherOperationData::as_str(&self) -> &str
+pub fn swallowtail_core::WatcherOperationData::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidWatcherRecord>
+impl core::fmt::Debug for swallowtail_core::WatcherOperationData
+pub fn swallowtail_core::WatcherOperationData::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::WatcherOperationData
+pub fn swallowtail_core::WatcherOperationData::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::WatcherOwningTurn(_)
+impl swallowtail_core::WatcherOwningTurn
+pub fn swallowtail_core::WatcherOwningTurn::as_str(&self) -> &str
+pub fn swallowtail_core::WatcherOwningTurn::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidWatcherRecord>
+impl core::fmt::Debug for swallowtail_core::WatcherOwningTurn
+pub fn swallowtail_core::WatcherOwningTurn::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::WatcherOwningTurn
+pub fn swallowtail_core::WatcherOwningTurn::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::WatcherRevision(_)
+impl swallowtail_core::WatcherRevision
+pub const fn swallowtail_core::WatcherRevision::get(self) -> u64
+pub const fn swallowtail_core::WatcherRevision::initial() -> Self
+pub const fn swallowtail_core::WatcherRevision::new(u64) -> core::option::Option<Self>
+pub const fn swallowtail_core::WatcherRevision::next(self) -> Self
+impl core::fmt::Debug for swallowtail_core::WatcherRevision
+pub fn swallowtail_core::WatcherRevision::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::WatcherRevision
+pub fn swallowtail_core::WatcherRevision::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::WatcherSummary(_)
+impl swallowtail_core::WatcherSummary
+pub fn swallowtail_core::WatcherSummary::as_str(&self) -> &str
+pub fn swallowtail_core::WatcherSummary::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_core::InvalidWatcherRecord>
+impl core::fmt::Debug for swallowtail_core::WatcherSummary
+pub fn swallowtail_core::WatcherSummary::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for swallowtail_core::WatcherSummary
+pub fn swallowtail_core::WatcherSummary::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub const swallowtail_core::DEFAULT_MAX_WATCHERS_PER_TURN: usize
+pub const swallowtail_core::MAX_WATCHER_ID_BYTES: usize
+pub const swallowtail_core::MAX_WATCHER_OPERATION_DATA_BYTES: usize
+pub const swallowtail_core::MAX_WATCHER_OWNING_TURN_BYTES: usize
+pub const swallowtail_core::MAX_WATCHER_SUMMARY_BYTES: usize
+pub const swallowtail_core::REMOTE_ACP_WIRE_VERSION: u32
+pub fn swallowtail_core::preflight(&swallowtail_core::PreflightContext<'_>, &swallowtail_core::OperationRequirements) -> core::result::Result<swallowtail_core::PreflightPlan, swallowtail_core::PreflightFailure>

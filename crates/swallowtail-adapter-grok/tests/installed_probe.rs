@@ -74,8 +74,32 @@ fn exact_and_unverified_versions_probe_only_the_approved_target_on_both_topologi
             assert!(captured.working_resource.is_none());
             assert!(state.stdin_closed());
             assert!(state.waited());
+            assert!(outcome.install_guidance().is_none());
         }
     }
+}
+
+#[test]
+fn missing_grok_executable_is_absent_with_guidance() {
+    let host = swallowtail_testkit::ExecutionTopologyFixture::local();
+    let (process, state) = FakeProcessService::missing_executable();
+    let outcome = block_on(
+        driver().discover_installed_executable(
+            request(
+                host.execution_host_id().clone(),
+                ExecutableRef::new("grok-build.missing.fixture.executable")
+                    .expect("valid missing executable"),
+                DiscoveryCancellation::new(),
+            ),
+            services(host.execution_host_id().clone(), process),
+        ),
+    )
+    .expect("missing executable discovery completes");
+    assert_eq!(outcome.status(), DiscoveryStatus::Absent);
+    let guidance = outcome.install_guidance().expect("Grok guidance");
+    assert_eq!(guidance.display_name(), "Grok Build");
+    assert_eq!(guidance.frozen_on(), "2026-09-06");
+    assert!(!state.started());
 }
 
 #[test]

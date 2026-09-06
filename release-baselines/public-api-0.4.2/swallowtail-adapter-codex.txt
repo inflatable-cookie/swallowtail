@@ -13,6 +13,8 @@ pub swallowtail_adapter_codex::CodexPreparedSessionKind::BoundedWorkspace
 pub swallowtail_adapter_codex::CodexPreparedSessionKind::ReadOnly
 pub struct swallowtail_adapter_codex::CodexAppServerDriver
 impl swallowtail_adapter_codex::CodexAppServerDriver
+pub const fn swallowtail_adapter_codex::CodexAppServerDriver::install_guidance() -> swallowtail_core::registration::discovery::InstallGuidance
+impl swallowtail_adapter_codex::CodexAppServerDriver
 pub const fn swallowtail_adapter_codex::CodexAppServerDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_codex::CodexAppServerDriver
 pub fn swallowtail_adapter_codex::CodexAppServerDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -36,6 +38,8 @@ pub fn swallowtail_adapter_codex::CodexAppServerDriver::restore_session(&self, s
 impl swallowtail_runtime::roles::ProviderSessionReconciliationDriver for swallowtail_adapter_codex::CodexAppServerDriver
 pub fn swallowtail_adapter_codex::CodexAppServerDriver::reconcile_provider_session(&self, swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationPlan, swallowtail_runtime::provider_session_reconciliation::ProviderSessionReconciliationRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_reconciliation::outcome::ProviderSessionReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_codex::CodexExecDriver
+impl swallowtail_adapter_codex::CodexExecDriver
+pub const fn swallowtail_adapter_codex::CodexExecDriver::install_guidance() -> swallowtail_core::registration::discovery::InstallGuidance
 impl swallowtail_adapter_codex::CodexExecDriver
 pub const fn swallowtail_adapter_codex::CodexExecDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
 pub const fn swallowtail_adapter_codex::CodexExecDriver::with_model_verbosity(self, swallowtail_adapter_codex::CodexModelVerbosity) -> Self

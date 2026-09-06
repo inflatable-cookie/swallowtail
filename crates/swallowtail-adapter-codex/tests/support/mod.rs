@@ -20,7 +20,9 @@ use std::collections::VecDeque;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
-use swallowtail_core::{ExecutionHostId, HarnessConfigurationPosture, HostServiceKind};
+use swallowtail_core::{
+    ExecutionHostId, HarnessConfigurationPosture, HostServiceKind, SafeDiagnostic,
+};
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices,
     InteractiveSessionHandle, JoinedTask, MonotonicInstant, ProcessExit, ProcessHandle,
@@ -122,6 +124,7 @@ pub struct FakeProcessService {
     cleanup_failure: bool,
     exit_success: bool,
     exit_code: Option<i32>,
+    missing_executable: bool,
 }
 
 impl FakeProcessService {
@@ -141,6 +144,23 @@ impl FakeProcessService {
 
     pub fn held_open() -> (Arc<Self>, Arc<ProcessState>) {
         Self::new([], true, false, false, true, Some(0))
+    }
+
+    pub fn missing_executable() -> (Arc<Self>, Arc<ProcessState>) {
+        let state = Arc::new(ProcessState::default());
+        (
+            Arc::new(Self {
+                state: Arc::clone(&state),
+                output: Mutex::new(Some(VecDeque::new())),
+                hold_open: false,
+                read_failure: false,
+                cleanup_failure: false,
+                exit_success: false,
+                exit_code: None,
+                missing_executable: true,
+            }),
+            state,
+        )
     }
 
     pub fn failed_exit() -> (Arc<Self>, Arc<ProcessState>) {
@@ -186,6 +206,7 @@ impl FakeProcessService {
                 cleanup_failure,
                 exit_success,
                 exit_code,
+                missing_executable: false,
             }),
             state,
         )
@@ -198,6 +219,14 @@ impl ProcessService for FakeProcessService {
         _scope: ScopeId,
         request: ProcessRequest,
     ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        if self.missing_executable {
+            return Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "swallowtail.local_process.executable_not_found",
+                    "Local executable was not found",
+                )))
+            });
+        }
         *self
             .state
             .request

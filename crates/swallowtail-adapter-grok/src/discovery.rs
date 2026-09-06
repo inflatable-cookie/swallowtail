@@ -2,8 +2,8 @@ use futures_channel::oneshot;
 use std::future::poll_fn;
 use std::task::Poll;
 use swallowtail_core::{
-    CredentialRef, DiscoveryOutcome, DiscoveryStatus, InstalledExecutableObservation,
-    InterfaceCompatibilityClaim, SafeDiagnostic,
+    CredentialRef, DiscoveryOutcome, DiscoveryStatus, InstallGuidance,
+    InstalledExecutableObservation, InterfaceCompatibilityClaim, SafeDiagnostic,
 };
 use swallowtail_runtime::{
     BoxFuture, DiscoveryDriver, DiscoveryRequest, EnvironmentRef, HostServices,
@@ -23,6 +23,19 @@ const QUALIFIED_SOURCE_REVISIONS: [(&str, &str); 6] = [
     ("1.0.4", "d846eb93d94d"),
     ("1.0.5", "5115b46bc909"),
 ];
+
+// Vendor source: https://docs.x.ai/build/overview (frozen 2026-09-06).
+// This text is descriptive only; discovery never executes the install command.
+const GROK_BUILD_INSTALL_GUIDANCE: InstallGuidance = InstallGuidance::new(
+    "Grok Build",
+    "curl -fsSL https://x.ai/cli/install.sh | bash",
+    "https://docs.x.ai/build/overview",
+    "2026-09-06",
+);
+
+fn attach_install_guidance(outcome: DiscoveryOutcome) -> DiscoveryOutcome {
+    outcome.with_install_guidance(GROK_BUILD_INSTALL_GUIDANCE)
+}
 
 /// Low-level installed discovery and ACP operation driver for Grok Build.
 pub struct GrokAcpDriver {
@@ -51,6 +64,12 @@ impl GrokAcpDriver {
     pub const fn credential(&self) -> &CredentialRef {
         &self.credential
     }
+
+    #[must_use]
+    /// Returns the descriptive vendor guidance used for an absent executable.
+    pub const fn install_guidance() -> InstallGuidance {
+        GROK_BUILD_INSTALL_GUIDANCE
+    }
 }
 
 impl DiscoveryDriver for GrokAcpDriver {
@@ -72,7 +91,11 @@ impl DiscoveryDriver for GrokAcpDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(probe_joined(request, services, grok_build_acp_claim()))
+        Box::pin(async move {
+            probe_joined(request, services, grok_build_acp_claim())
+                .await
+                .map(attach_install_guidance)
+        })
     }
 }
 
@@ -134,7 +157,15 @@ async fn probe_process(
         .await
     {
         Ok(process) => process,
-        Err(_) => return Ok(outcome(DiscoveryStatus::Failed)),
+        Err(error) => {
+            let status =
+                if error.diagnostic().code() == "swallowtail.local_process.executable_not_found" {
+                    DiscoveryStatus::Absent
+                } else {
+                    DiscoveryStatus::Failed
+                };
+            return Ok(outcome(status));
+        }
     };
     if process.close_stdin().await.is_err() {
         return Ok(stop_and_classify(process.as_ref(), DiscoveryStatus::Failed).await);
@@ -283,7 +314,33 @@ const fn status_code(status: DiscoveryStatus) -> &'static str {
 
 #[cfg(test)]
 mod tests {
-    use super::parse_version;
+    use super::{GROK_BUILD_INSTALL_GUIDANCE, attach_install_guidance, parse_version};
+    use swallowtail_core::{DiscoveryOutcome, DiscoveryStatus};
+
+    #[test]
+    fn absent_guidance_is_frozen_and_present_outcomes_have_none() {
+        let absent = attach_install_guidance(DiscoveryOutcome::new(DiscoveryStatus::Absent, None));
+        let guidance = absent.install_guidance().expect("absent guidance");
+        assert_eq!(guidance, &GROK_BUILD_INSTALL_GUIDANCE);
+        assert_eq!(
+            super::GrokAcpDriver::install_guidance(),
+            GROK_BUILD_INSTALL_GUIDANCE
+        );
+        assert_eq!(guidance.display_name(), "Grok Build");
+        assert_eq!(
+            guidance.command(),
+            "curl -fsSL https://x.ai/cli/install.sh | bash"
+        );
+        assert_eq!(
+            guidance.documentation_url(),
+            "https://docs.x.ai/build/overview"
+        );
+        assert_eq!(guidance.frozen_on(), "2026-09-06");
+
+        let present =
+            attach_install_guidance(DiscoveryOutcome::new(DiscoveryStatus::Discovered, None));
+        assert!(present.install_guidance().is_none());
+    }
 
     #[test]
     fn parser_requires_stable_channel_and_every_exact_qualified_revision() {

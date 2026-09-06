@@ -2,6 +2,7 @@ use super::validation::reject_env_shebang_without_interpreter;
 use crate::child::{LocalProcessHandle, LocalProcessParts};
 use crate::host::LocalProcessHost;
 use crate::output::failure;
+use std::io;
 use std::process::{Child, Command, Stdio};
 use swallowtail_runtime::{ProcessHandle, ProcessRequest, RuntimeFailure, ScopeId};
 
@@ -67,12 +68,20 @@ impl LocalProcessHost {
         }
         let mut child = match command.spawn() {
             Ok(child) => child,
-            Err(_) => {
+            Err(error) => {
                 discard_process_group_owner(group_owner.take());
-                return Err(failure(
-                    "swallowtail.local_process.spawn_failed",
-                    "Local process could not be started",
-                ));
+                let diagnostic = if error.kind() == io::ErrorKind::NotFound {
+                    failure(
+                        "swallowtail.local_process.executable_not_found",
+                        "Local executable was not found",
+                    )
+                } else {
+                    failure(
+                        "swallowtail.local_process.spawn_failed",
+                        "Local process could not be started",
+                    )
+                };
+                return Err(diagnostic);
             }
         };
         let stdin = match child.stdin.take() {

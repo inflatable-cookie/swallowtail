@@ -5,11 +5,21 @@ use swallowtail_runtime::{
     installed_probe_codes, probe_installed_executable_version,
 };
 
+use crate::claude_code_discovery::CLAUDE_CODE_INSTALL_GUIDANCE;
+use crate::claude_code_discovery::attach_install_guidance;
 use crate::claude_code_response::ClaudeCodeResponseOnlyDriver;
 use crate::failure::failure;
 
 const PROBE_CODES: InstalledProbeCodes =
     installed_probe_codes!("swallowtail.claude_code.response_only");
+
+impl ClaudeCodeResponseOnlyDriver {
+    #[must_use]
+    /// Returns the descriptive vendor guidance used for an absent executable.
+    pub const fn install_guidance() -> swallowtail_core::InstallGuidance {
+        CLAUDE_CODE_INSTALL_GUIDANCE
+    }
+}
 
 impl DiscoveryDriver for ClaudeCodeResponseOnlyDriver {
     fn discover(
@@ -30,14 +40,18 @@ impl DiscoveryDriver for ClaudeCodeResponseOnlyDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(probe_installed_executable_version(
-            request,
-            services,
-            crate::claude_code_response_only_claim(),
-            parse_version,
-            PROBE_CODES,
-            "Claude Code response-only",
-        ))
+        Box::pin(async move {
+            probe_installed_executable_version(
+                request,
+                services,
+                crate::claude_code_response_only_claim(),
+                parse_version,
+                PROBE_CODES,
+                "Claude Code response-only",
+            )
+            .await
+            .map(attach_install_guidance)
+        })
     }
 }
 
@@ -50,7 +64,26 @@ fn parse_version(output: &[u8]) -> Option<swallowtail_core::InterfaceVersionBind
 
 #[cfg(test)]
 mod tests {
-    use super::parse_version;
+    use super::{CLAUDE_CODE_INSTALL_GUIDANCE, parse_version};
+    use crate::claude_code_discovery::attach_install_guidance;
+    use crate::claude_code_response::ClaudeCodeResponseOnlyDriver;
+    use swallowtail_core::{DiscoveryOutcome, DiscoveryStatus};
+
+    #[test]
+    fn absent_guidance_is_frozen_and_present_outcomes_have_none() {
+        let absent = attach_install_guidance(DiscoveryOutcome::new(DiscoveryStatus::Absent, None));
+        assert_eq!(
+            absent.install_guidance(),
+            Some(&CLAUDE_CODE_INSTALL_GUIDANCE)
+        );
+        assert_eq!(
+            ClaudeCodeResponseOnlyDriver::install_guidance(),
+            CLAUDE_CODE_INSTALL_GUIDANCE
+        );
+        let present =
+            attach_install_guidance(DiscoveryOutcome::new(DiscoveryStatus::Discovered, None));
+        assert!(present.install_guidance().is_none());
+    }
 
     #[test]
     fn parser_accepts_only_strict_stable_version_output() {

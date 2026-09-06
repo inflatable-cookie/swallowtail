@@ -14,7 +14,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 mod discovery;
 
-pub use discovery::{DiscoveryOutcome, DiscoveryStatus};
+pub use discovery::{DiscoveryOutcome, DiscoveryStatus, InstallGuidance};
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 /// Discovery operation supported by a driver.

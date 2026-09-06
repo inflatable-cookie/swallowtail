@@ -50,3 +50,23 @@ A vendor publishes no stable install command (record the absence; ship the other
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+- implemented additive core `InstallGuidance` on absent discovery outcomes
+- attached vendor-frozen guidance to Claude Code, Codex CLI, and Grok Build
+  discovery; source comments and matrix entries record URL and 2026-09-06
+- added absent/present coverage and present-probe assertions proving install
+  text is not executed or passed to the process service
+- widened the production start-failure paths so missing-executable probes
+  classify `Absent` in the shared runtime, Codex, and Grok drivers; added
+  driver-through-missing-path proofs for Claude Code, Codex, and Grok
+- bounded the host emitter's missing-executable diagnostic to
+  `io::ErrorKind::NotFound`; host-level tests pin the NotFound and a
+  non-NotFound spawn failure while the three driver proofs remain
+- escaped the three install-command pipes in the route matrix so its table
+  remains two columns
+- added the route-matrix note, changelog entry, and four additive v0.4.2 API
+  baselines
+- synchronized the same additive API rows into the current main v0.4.3
+  baselines so the post-tag package API gate remains green

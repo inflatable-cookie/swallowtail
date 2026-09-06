@@ -97,6 +97,18 @@ for these headless routes, `low_level_driver` are omitted per the
 prepared-facade authoring guide's recorded omissions (antigravity, cursor,
 muse, command-code).
 
+### Install guidance
+
+An absent installed-executable discovery outcome may carry descriptive vendor
+guidance. The command is text only: Swallowtail never executes it, infers a
+package manager, or attaches guidance to a present executable.
+
+| Route(s) | Install guidance |
+| --- | --- |
+| <code>claude-code.headless</code>, <code>claude-code.response-only</code> | <code>curl -fsSL https://claude.ai/install.sh &#124; bash</code> — [Claude Code installation](https://code.claude.com/docs/en/getting-started), frozen 2026-09-06 |
+| <code>codex.exec</code>, <code>codex.app-server</code> | <code>curl -fsSL https://chatgpt.com/codex/install.sh &#124; sh</code> — [Codex CLI installation](https://github.com/openai/codex/blob/main/README.md#installing-and-running-codex-cli), frozen 2026-09-06 |
+| <code>grok-build.acp</code> | <code>curl -fsSL https://x.ai/cli/install.sh &#124; bash</code> — [Grok Build installation](https://docs.x.ai/build/overview), frozen 2026-09-06 |
+
 ## Attached Harness Network
 
 | Route | Crate and driver | Role and transport | Explicit target and access | Version axis | Prepared path | Low-level escape hatch |

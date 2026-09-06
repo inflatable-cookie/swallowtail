@@ -1,7 +1,7 @@
 use futures_executor::block_on;
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
-use swallowtail_core::ExecutionHostId;
+use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
 use swallowtail_runtime::{
     BoxFuture, Deadline, DeadlineObservation, HostServices, JoinedTask, MonotonicInstant,
     ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ProcessOutputStream,
@@ -25,6 +25,7 @@ pub struct ObservedProcess {
 pub struct FixtureHost {
     output: Arc<Mutex<Option<VecDeque<ProcessOutputChunk>>>>,
     process: Arc<Mutex<Option<ObservedProcess>>>,
+    missing_executable: bool,
 }
 
 impl FixtureHost {
@@ -39,7 +40,14 @@ impl FixtureHost {
                 .collect(),
             ))),
             process: Arc::new(Mutex::new(None)),
+            missing_executable: false,
         }
+    }
+
+    #[allow(dead_code)]
+    pub fn with_missing_executable(mut self) -> Self {
+        self.missing_executable = true;
+        self
     }
 
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
@@ -57,6 +65,11 @@ impl FixtureHost {
             .expect("process observed")
     }
 
+    #[allow(dead_code)]
+    pub fn process_started(&self) -> bool {
+        self.process.lock().expect("process lock").is_some()
+    }
+
     pub const fn credential_acquires(&self) -> usize {
         0
     }
@@ -68,6 +81,14 @@ impl ProcessService for FixtureHost {
         _scope: ScopeId,
         request: ProcessRequest,
     ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        if self.missing_executable {
+            return Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "swallowtail.local_process.executable_not_found",
+                    "Local executable was not found",
+                )))
+            });
+        }
         *self.process.lock().expect("process lock") = Some(ObservedProcess {
             executable: request.executable().as_host_value().to_owned(),
             arguments: request.arguments().map(str::to_owned).collect(),

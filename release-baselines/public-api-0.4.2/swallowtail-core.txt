@@ -914,10 +914,12 @@ pub const fn swallowtail_core::DirectContinuationRequirements::new(swallowtail_c
 pub struct swallowtail_core::DiscoveryOutcome
 impl swallowtail_core::DiscoveryOutcome
 pub const fn swallowtail_core::DiscoveryOutcome::diagnostic(&self) -> core::option::Option<&swallowtail_core::SafeDiagnostic>
+pub const fn swallowtail_core::DiscoveryOutcome::install_guidance(&self) -> core::option::Option<&swallowtail_core::InstallGuidance>
 pub fn swallowtail_core::DiscoveryOutcome::installed_executable(swallowtail_core::InstalledExecutableObservation) -> Self
 pub const fn swallowtail_core::DiscoveryOutcome::installed_executable_observation(&self) -> core::option::Option<&swallowtail_core::InstalledExecutableObservation>
 pub const fn swallowtail_core::DiscoveryOutcome::new(swallowtail_core::DiscoveryStatus, core::option::Option<swallowtail_core::SafeDiagnostic>) -> Self
 pub const fn swallowtail_core::DiscoveryOutcome::status(&self) -> swallowtail_core::DiscoveryStatus
+pub const fn swallowtail_core::DiscoveryOutcome::with_install_guidance(self, swallowtail_core::InstallGuidance) -> Self
 pub struct swallowtail_core::DriverDescriptor
 impl swallowtail_core::DriverDescriptor
 pub fn swallowtail_core::DriverDescriptor::assess_interface_version(&self, &swallowtail_core::InterfaceVersionBinding) -> swallowtail_core::InterfaceCompatibilityAssessment
@@ -1010,6 +1012,13 @@ pub const fn swallowtail_core::IncompatibleSessionAccessPolicy::diagnostic(&self
 impl core::error::Error for swallowtail_core::IncompatibleSessionAccessPolicy
 impl core::fmt::Display for swallowtail_core::IncompatibleSessionAccessPolicy
 pub fn swallowtail_core::IncompatibleSessionAccessPolicy::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_core::InstallGuidance
+impl swallowtail_core::InstallGuidance
+pub const fn swallowtail_core::InstallGuidance::command(self) -> &'static str
+pub const fn swallowtail_core::InstallGuidance::display_name(self) -> &'static str
+pub const fn swallowtail_core::InstallGuidance::documentation_url(self) -> &'static str
+pub const fn swallowtail_core::InstallGuidance::frozen_on(self) -> &'static str
+pub const fn swallowtail_core::InstallGuidance::new(&'static str, &'static str, &'static str, &'static str) -> Self
 pub struct swallowtail_core::InstalledExecutableObservation
 impl swallowtail_core::InstalledExecutableObservation
 pub const fn swallowtail_core::InstalledExecutableObservation::claim_id(&self) -> &swallowtail_core::InterfaceCompatibilityClaimId

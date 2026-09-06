@@ -15,6 +15,12 @@ annotated Git tags from the canonical repository.
   default and provider-free proofs cover attach, mismatch, unknown-session,
   boundary, listing, and persistence-off paths. g05.029 card 083.
 
+### Added
+- add provider-sourced install guidance to absent discovery outcomes for Claude
+  Code, Codex CLI, and Grok Build. Guidance carries only the harness name,
+  vendor command, source URL, and freeze date; present outcomes carry none and
+  discovery never executes the command. g05.029 card 088.
+
 ## [0.4.3] - 2026-09-06
 
 ### Added

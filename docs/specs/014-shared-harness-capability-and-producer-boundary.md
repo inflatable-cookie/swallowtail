@@ -3,7 +3,7 @@
 Status: draft; operator-confirmed direction, independent review required before promotion
 Owner: Tom
 Updated: 2026-09-07
-Evidence: Research 288; Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062
+Evidence: Research 288; Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; Desktop Spec 010 at `30a338f2`; Longhorn PR 22 at `2c27fec8`
 
 ## Purpose
 
@@ -19,11 +19,11 @@ rules are reviewed and promoted.
 
 ## Ownership
 
-| Owner | Owns | Does not own |
-| --- | --- | --- |
-| Swallowtail | portable registration records; server leases; transport and version negotiation; prepared-plan binding; callback/result correlation; safe lifecycle and diagnostics; route adapters; conformance | tool business logic, product task policy, UX, durable product state, provider fallback |
-| Longhorn | server implementation, namespaced tool semantics, input/output schemas, business validation, execution, domain errors | provider session selection, Desktop context policy, Swallowtail transport lifecycle |
-| Desktop | repository and skill discovery choice, required-reference selection, app-context assembly, task/session persistence, queue policy and UX, final Allow/Deny policy, consumer receipts | provider wire, reusable transport, server process supervision inside Swallowtail leases |
+| Owner | Owns | Does not own | Governing evidence |
+| --- | --- | --- | --- |
+| Swallowtail | sole namespaced registration snapshot; operation bridge listener/transport, lease, correlation, generation, lifecycle, prepared-plan binding, route adapters, safe diagnostics, and conformance | domain tool names or schemas, business/effect policy, durable product identity, admission issuance, packaged host startup | [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md), amended only after review |
+| Longhorn | transport-neutral typed host dispatch/validation library and generic safe result/error envelopes | registry authority, listener, lease, correlation kernel, admission identity, domain names/schemas/policy, standalone daemon in slice 1 | [PR 22](https://github.com/inflatable-cookie/longhorn/pull/22), whose [`Contract 023`](https://github.com/inflatable-cookie/longhorn/blob/2c27fec883d5e1fd39258da48675e4498a70b180/docs/contracts/023-production-contextual-agent-tool-boundary.md) and [`Spec 002`](https://github.com/inflatable-cookie/longhorn/blob/2c27fec883d5e1fd39258da48675e4498a70b180/docs/specs/002-production-contextual-agent-tool-boundary.md) require revision |
+| Desktop | domain tool names and input/output schemas; effects/business/tool policy; bounded app-context disclosure; durable task/session/attempt admission issuance; final Allow/Deny policy; packaging, distribution, startup, queue/UX, and receipts | provider wire, registration snapshot ownership, bridge transport/listener/lease/correlation lifetime | [`Spec 010` at `30a338f2`](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md) |
 
 Other consumers may reuse the Swallowtail boundary. They do not inherit
 Desktop or Longhorn semantics.
@@ -34,8 +34,9 @@ Desktop or Longhorn semantics.
 kernel with closed profiles, not independent watcher and registered-server
 stacks. `docs/architecture/repository-authority-map.md` must keep bridge
 lifecycle in Swallowtail, watcher semantics in the existing watcher service,
-Longhorn tool semantics outside the bridge, and Desktop selection/policy
-outside all producer services. The architecture promotion must point to
+Longhorn generic dispatch outside the bridge, and Desktop domain semantics,
+schema, admission, disclosure, packaging, selection, and policy outside all
+producer services. The architecture promotion must point to
 Contract 060 for the realized watcher profile and to the new registered-server
 contract for the additional profile. Neither spec text nor a new service name
 may silently replace that dependency direction.
@@ -44,11 +45,13 @@ may silently replace that dependency direction.
 
 ```text
 Desktop task/context/skill selection
-  -> immutable consumer request and exact registered capability selection
+  -> Desktop-issued admission plus domain tool/schema declarations
+  -> Swallowtail immutable registration snapshot and capability selection
   -> adapter prepared plan
-  -> Swallowtail registered-server lease on the selected execution host
+  -> Swallowtail operation bridge lease inside the Desktop host
   -> route-specific native tool callback or private MCP attachment
-  -> exact Longhorn server method
+  -> linked Longhorn typed validation/dispatch
+  -> exact Desktop tool implementation and policy
   -> typed result or safe failure through the same operation binding
   -> provider turn terminal
   -> callback/server/transport/process/resource teardown and consumer receipt
@@ -63,7 +66,8 @@ adapter registry or global service locator.
 The immutable registration snapshot must contain:
 
 - stable server identity and revision;
-- stable namespaced tool identity: producer namespace plus local tool name;
+- stable namespaced tool identity supplied by Desktop: producer namespace plus
+  local tool name;
 - schema namespace, media type, dialect, revision, bounded bytes, and digest;
 - native client-tool, MCP, app-tool, or provider-owned execution kind;
 - supported transports and exact protocol/version ranges;
@@ -71,7 +75,8 @@ The immutable registration snapshot must contain:
 - credential-reference requirements without credential material;
 - process/environment recipe references without raw executable paths or env;
 - positive call, byte, concurrency, deadline, and result bounds;
-- mutability, replay, retry, reconnect, and teardown posture; and
+- Desktop-declared effect/retry posture plus Swallowtail-enforced no-replay,
+  reconnect, and teardown posture; and
 - source identity and freshness suitable for Contract 061 projection.
 
 Within one registration snapshot, one namespaced tool identity binds exactly
@@ -85,6 +90,10 @@ dispatch, event, result, and receipt paths.
 Discovery returns descriptions only. Selection binds one exact registration
 revision and schema digest into a prepared plan. Registration cannot choose a
 provider, model, route, tool, credential, or server for the consumer.
+Desktop owns the domain name and schema content; Swallowtail alone owns the
+immutable snapshot that carries their bounded revision/digest to a prepared
+operation. Longhorn consumes that snapshot for generic validation and dispatch
+and cannot mint, mutate, or shadow it with a callable catalogue.
 
 ### Contract 060 Bridge Kernel And Server Lease
 
@@ -97,46 +106,57 @@ profile over that kernel. Its reserved methods, watcher authority, completion
 barrier, safe records, omission behavior, and released `claude-code` behavior
 do not widen.
 
-Extend `HostServices` with one registered tool/server profile backed by that
-same kernel, not a sibling lease manager or loopback runtime. Reuse existing
-`WatcherBridge`, `ProcessService`, `CredentialService`,
+Extend `HostServices` with one registered tool bridge profile backed by that
+same kernel, not a sibling lease manager or loopback runtime. Desktop mounts a
+linked Longhorn dispatch/validation implementation behind the typed host seam.
+Reuse existing `WatcherBridge`, `CredentialService`,
 `WorkingResourceService`, `SchemaService`, `TimeService`, and scoped-task
-ownership. The registered-server profile has a separate protocol namespace,
-registration authority, tool dispatch, result vocabulary, and optional stdio
-carrier. It cannot call Contract 059 watcher methods unless selected through
-the existing watcher profile. Do not encode credentials, executable paths,
-complete environment, or server endpoints in public requests.
+ownership. The registered-tool profile has a separate protocol namespace,
+Swallowtail registration authority, Longhorn generic dispatch, and safe result
+vocabulary. It cannot call Contract 059 watcher methods unless selected through
+the existing watcher profile. Slice 1 starts no Longhorn process or daemon.
+Do not encode credentials, executable paths, complete environment, or server
+endpoints in public requests.
 
 Opening a server lease binds:
 
 - execution host;
 - configured instance and prepared plan;
-- consumer task and runtime session;
-- runtime turn and attempt when one exists;
+- Desktop process incarnation and opaque admitted task/session/attempt;
+- the one-to-one Swallowtail operation/turn attempt and lease generation;
 - exact registration revision and selected tools;
 - transport generation and negotiated protocol version; and
 - deadline, cancellation, and maximum concurrency.
 
-The lease reaches ready before provider dispatch. Close freezes admission,
+The authenticated Desktop host binding supplies identity; model arguments,
+provider session IDs, tool arguments, and PID never do. PID is diagnostic only.
+The Desktop process incarnation plus Swallowtail lease generation is instance
+authority. The lease reaches ready before provider dispatch. Close freezes admission,
 abandons or completes issued calls, joins callbacks and transport readers,
-stops owned server processes, releases resources, then releases credential
-leases. Drop is defensive cleanup, never success evidence.
+releases the linked dispatch binding and resources, then releases credential
+leases. Desktop owns application startup/shutdown; Swallowtail owns bridge
+lifetime inside that host. Drop is defensive cleanup, never success evidence.
 
 ### Transport And Reconnect
 
-The first transport set is bounded stdio JSON-RPC plus Contract 060's existing
-private loopback HTTP carrier extended with the minimum registered-server MCP
+The slice-1 transport is Contract 060's existing private loopback HTTP carrier
+extended with the minimum registered-tool MCP
 profile and, only if required by frozen protocol evidence, bounded SSE. The
 loopback listener, bearer, ready barrier, generation checks, admission freeze,
 and joined tasks remain one implementation. SSE must not create another
 listener or lifecycle. Unix sockets, WebSocket, remote public HTTP, and
 attached ambient servers remain out until separately qualified.
+Stdio, remote hosts, and standalone server distribution are later profiles;
+the linked Longhorn slice cannot infer them.
 
 Initialization negotiates one exact protocol version and server identity.
 Unsupported or substituted values fail before provider work. Reconnect may
 replace transport only while retaining the same registration, host, task,
 session, turn/attempt, and server generation. It never replays a mutating call.
 The consumer must explicitly retry a call whose execution outcome is unknown.
+Every retry that may dispatch provider work uses a fresh Desktop attempt and a
+fresh Swallowtail operation binding. Mutating or indeterminate calls never
+replay.
 
 Every call has a caller identity, server/tool identity, call id, task, session,
 turn, attempt, deadline, cancellation state, and transport generation. Late,
@@ -190,8 +210,8 @@ Tool kind survives registration, events, callbacks, results, and receipts:
 
 | Kind | Executor | Swallowtail role |
 | --- | --- | --- |
-| native client tool | Longhorn or another consumer-selected executor | declare through provider wire; correlate call/result |
-| MCP tool | Longhorn MCP server | own private server lease and route attachment or mediate the call |
+| native client tool | linked Longhorn dispatcher to Desktop implementation | declare through provider wire; correlate call/result |
+| MCP tool | linked Longhorn dispatcher to Desktop implementation | own private bridge lease and route attachment or mediate the call |
 | app tool | Desktop/consumer service | transport through exact callback; no MCP identity inferred |
 | provider-owned tool | provider/harness | observe only unless an exact permission request is exposed |
 
@@ -235,8 +255,8 @@ Keep four inputs distinct:
 3. an immutable selected-skill bundle derived from Contract 062 inventory; and
 4. bounded required references resolved by opaque host references.
 
-Desktop chooses the skill and references. Longhorn may define a tool whose
-business semantics consume them. Swallowtail validates identity, bounds,
+Desktop chooses the skill and references and defines any tool whose business
+semantics consume them. Swallowtail validates identity, bounds,
 digest, lifecycle, and transport; it does not discover repositories, decide
 relevance, generate product prompts, or claim the provider followed the skill.
 
@@ -245,6 +265,16 @@ declared required-reference descriptors, provenance, and bounded resolved
 content or opaque references. Missing, changed, oversized, inaccessible, or
 foreign references fail before provider work. Raw client paths and unrelated
 repository content never cross the public boundary.
+
+Desktop app context is deny-by-default and limited to the admitted workspace:
+stable entity IDs, relevant hierarchy, selected reader/passage and filters,
+source revision, and separately labelled live-viewing versus immutable task
+scope. It excludes unrelated workspaces, other-thread transcripts/drafts,
+hidden settings, credentials, endpoint/environment material, and arbitrary
+filesystem inventory. Model-visible paths are workspace-relative. Every field,
+record, page, and aggregate payload has a positive Desktop-declared bound that
+Swallowtail enforces; concrete numeric limits are producer-settleable protocol
+evidence, not a generic operator gate.
 
 ### Scheduling And Continuation
 
@@ -300,10 +330,10 @@ runtime card becomes ready:
 1. **Registered tool and server capability contract** — immutable namespaced
    registration, schema discovery, kinds, selection, bounds, projection, and
    no execution authority from discovery.
-2. **Contract 060 amendment and registered server host/transport contract** —
+2. **Contract 060 amendment and registered tool bridge contract** —
    factor one reusable private-operation bridge kernel while preserving the
    released `WatcherBridge` profile and Claude Code behavior; add the distinct
-   registered-server profile, stdio and bounded HTTP/SSE MCP, negotiation,
+   linked-host profile and bounded HTTP/SSE MCP, negotiation,
    reconnect, correlation, progress, cancellation, concurrency, migration,
    compatibility, and joined teardown. No second lease/listener lifecycle.
 3. **Tool execution and permission amendment** to Contract 041 — native/MCP/
@@ -400,22 +430,23 @@ retry, or resume semantic is breaking before 1.0 and requires an explicit
 operator decision. Version qualification remains one exact interface family
 at a time under Contract 029.
 
-## Cross-Repo Decisions Still Open
+## Bilateral Decision And Counterpart Alignment
 
-Only these require Desktop Chatterbox rather than Swallowtail repository
-evidence:
+Desktop's canonical decision is
+[`docs/specs/010-contextual-chat-and-task-queue.md` at `30a338f2`](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md).
+The counterpart is [Longhorn PR 22](https://github.com/inflatable-cookie/longhorn/pull/22),
+reviewed at `2c27fec883d5e1fd39258da48675e4498a70b180` with contradictory
+registry/schema ownership. This spec adopts Desktop's table. Promotion remains
+blocked until Longhorn removes its registry, listener, lease, correlation,
+admission-issuer, domain-schema, and standalone-daemon claims and both revised
+plans pass independent exact-head review.
 
-1. the stable Desktop task/session/attempt identifiers that Longhorn must echo
-   at its API boundary, and whether Desktop already has a single canonical
-   attempt identity;
-2. the exact Longhorn server distribution and startup authority: Desktop-owned
-   process recipe, separately installed service, or an already-running
-   endpoint; and
-3. the Desktop app-context disclosure policy and maximum bounded payload the
-   operator accepts for provider-visible context.
-
-Everything else above is a producer contract, route evidence, or implementation
-decision owned by Swallowtail planning.
+No generic operator decision remains. Swallowtail settles protocol versions,
+transport and concurrency/deadline/byte limits, route mappings, and Contract
+060 compatibility evidence. Longhorn settles its generic validation/dispatch
+API and safe errors. Desktop supplies opaque IDs, schema declarations,
+disclosure bounds, linked packaging, startup incarnation, and policy. These are
+producer inputs and evidence gates, not authority to implement or release.
 
 ## Promotion Targets
 
@@ -430,6 +461,6 @@ decision owned by Swallowtail planning.
 ## Spec Exit
 
 Archive this spec only after independent review accepts the architecture,
-every implementation-governing rule is promoted, the three cross-repo answers
-are recorded, and the roadmap is recompiled with a ready first implementation
+every implementation-governing rule is promoted, both producer plans align
+with Desktop `30a338f2`, and the roadmap is recompiled with a ready first implementation
 batch. Until then g05.035 remains planned and blocked from runtime work.

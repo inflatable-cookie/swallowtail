@@ -21,6 +21,9 @@ Research 288 preserves the released capability audit. Spec 014 records the
 operator-confirmed ownership split and first concrete architecture. No durable
 architecture or contract has been promoted from the spec. Implementation is
 blocked. Existing Desktop baseline and rehearsal lanes continue independently.
+Desktop Spec 010 at `30a338f2` now settles the bilateral ownership split;
+Longhorn PR 22 at reviewed head `2c27fec8` is the counterpart and must remove
+its conflicting registry/schema/transport authority before either plan promotes.
 The replacement Card 084 branch `g05-card084-claude-client-mcp-1` at committed
 head `80e004b4` is the sole active Claude SDK client-MCP implementation-evidence
 owner; its uncommitted WIP is not released evidence. The preserved old branch
@@ -32,7 +35,7 @@ must not duplicate or disturb that work. Since `80e004b4` is current
 ## Execution Plan
 
 - [ ] **Batch A — architecture and contract promotion.** Independently review
-      Spec 014; answer the three cross-repo questions; promote repository
+      Spec 014; verify Longhorn PR 22 alignment with Desktop `30a338f2`; promote repository
       ownership, registered capability, the Contract 060 common-kernel and
       compatibility amendment, server profile/transport, unique tool kind,
       progress, Allow/Deny, skill/reference, and projection rules. Recompile
@@ -41,10 +44,11 @@ must not duplicate or disturb that work. Since `80e004b4` is current
       registration snapshot, schema namespace/digest, and registered-server
       profile by extending Contract 060's existing operation lease and private
       loopback lifecycle; retain the compatible closed `WatcherBridge` profile;
-      add stdio and any qualified bounded SSE carrier, ordered progress, safe
+      mount the Desktop-linked Longhorn dispatch/validation seam, add any
+      qualified bounded SSE carrier, ordered progress, safe
       diagnostics, projection rows, and exhaustive provider-free race,
-      migration, compatibility, and teardown fixtures. No adapter change and
-      no second lease/listener implementation.
+      migration, compatibility, and teardown fixtures. No adapter change,
+      stdio/daemon startup, or second registry/lease/listener implementation.
 - [ ] **Batch C — Claude routes.** Finish exact Claude SDK client-MCP evidence
       and integrate it behind the common lease; retain ACP empty-MCP truth
       unless its separate gate passes; prove options, fresh-session limits,
@@ -55,8 +59,8 @@ must not duplicate or disturb that work. Since `80e004b4` is current
       MCP withheld without evidence. Grok maps exact one-shot permission and
       provider-tool observation; consumer tools/MCP remain withheld unless its
       surface gate passes.
-- [ ] **Batch E — real acceptance and consumer sequence.** Longhorn supplies a
-      disposable server; Desktop binds context, skills, references, and product
+- [ ] **Batch E — real acceptance and consumer sequence.** Desktop packages a
+      disposable linked Longhorn host; Desktop binds context, skills, references, and product
       receipts. Run the six real acceptance classes per route. Update route and
       feature matrices, guides, public API baselines, source consumer, and
       exact-SHA CI. Release/tag remains separately authorized.
@@ -70,8 +74,8 @@ must not duplicate or disturb that work. Since `80e004b4` is current
 | C | Claude route support matching its exact direct or mediated mechanism | Codex/Grok parity or generic steering |
 | D1 Codex | dynamic-tool integration and exact failure/lifecycle evidence | provider-direct MCP |
 | D2 Grok | exact permission integration and an honest MCP/tool disposition | consumer tool support from provider activity |
-| E1 Longhorn | disposable server and schema contract | provider/session authority |
-| E2 Desktop | context/skill selection and UX integration | Swallowtail or Longhorn policy ownership |
+| E1 Longhorn | transport-neutral validation/dispatch library and generic errors | registry, listener, admission, domain schema/policy, daemon |
+| E2 Desktop | linked host packaging, domain names/schemas/implementations, admission, context/skill selection, UX | provider wire or bridge lifetime |
 
 Batch C, D1, and D2 can run in parallel after Batch B when their contract and
 route-evidence gates pass. Other production routes reuse Batch B later and do
@@ -81,6 +85,10 @@ not delay Claude/Codex/Grok.
 
 - [ ] one central registered capability and server lease replaces no existing
       registry and introduces no generic executor
+- [ ] Desktop-issued task+attempt maps one-to-one to a Swallowtail operation/
+      turn attempt through authenticated host binding, never model arguments
+- [ ] Desktop process incarnation plus Swallowtail lease generation is instance
+      authority; PID remains diagnostic only
 - [ ] native client, MCP, app, and provider-owned tools retain exact identity
 - [ ] one namespaced tool identity binds exactly one tool kind per snapshot
 - [ ] Contract 060's released watcher profile and Claude Code attachment retain
@@ -88,6 +96,7 @@ not delay Claude/Codex/Grok.
 - [ ] every call and result remains bound to task, session, turn, attempt,
       registration, transport generation, deadline, and cancellation
 - [ ] reconnect never replays mutating work and stale callbacks fail closed
+- [ ] every dispatch retry creates a fresh Desktop attempt and operation binding
 - [ ] exact Allow/Deny behavior is documented per Claude, Codex, and Grok route
 - [ ] skill/reference transport composes Contract 062 without claiming model
       compliance
@@ -98,6 +107,8 @@ not delay Claude/Codex/Grok.
 
 - [ ] Batch A promotions are accepted in independent review before Batch B is
       marked ready
+- [ ] Longhorn and Swallowtail ownership tables cite Desktop `30a338f2`, align,
+      and pass separate exact-head reviews before either contract promotes
 - [ ] shared provider-free conformance proves every lifecycle and security
       counterexample in Spec 014
 - [ ] Contract 060 compatibility fixtures prove unchanged watcher admission,
@@ -129,7 +140,8 @@ authorized, one route at a time, after deterministic conformance passes.
 ## Stop Conditions
 
 - a required architecture or contract rule remains only in Spec 014;
-- Longhorn or Desktop authority is assumed without a recorded answer;
+- Longhorn PR 22 retains registry, listener, lease, correlation, admission,
+  domain-schema, or standalone-daemon authority;
 - a route needs raw credentials, paths, environment, broad shell, ambient
   configuration mutation, or unrelated client content;
 - provider-direct MCP cannot preserve the common lease and exact per-call
@@ -143,7 +155,7 @@ authorized, one route at a time, after deterministic conformance passes.
 
 ## Next Planning Gate
 
-Independent review of Research 288 and Spec 014. Chatterbox then records the
-three cross-repo answers, promotes accepted architecture/contracts, and
-recompiles this roadmap into exact ready batch cards. Implementation authority
-is currently **no**.
+Independent review of Research 288 and Spec 014, plus an independently accepted
+Longhorn counterpart aligned to Desktop `30a338f2`. Chatterbox may then promote
+accepted architecture/contracts and recompile this roadmap into exact ready
+batch cards. Implementation authority is currently **no**.

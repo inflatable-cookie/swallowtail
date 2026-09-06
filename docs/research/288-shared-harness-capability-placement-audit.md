@@ -5,6 +5,7 @@ Owner: Tom
 Date: 2026-09-07
 Audited baseline: `v0.4.3` at `cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`; current planning base `80e004b4aa1f43da9dd9d39bed5274e9e773c216`
 Consumer intake: Desktop `docs/roadmaps/dispatch-manifest.md` at `d4e56c5acb86bb084f5377cfaa516a03cfda76c3`, section `Swallowtail shared harness capability lane` (operator-confirmed; object is not present in this repository)
+Ownership decision: Desktop `docs/specs/010-contextual-chat-and-task-queue.md` at `30a338f2` ([exact source](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md)); counterpart planning: [Longhorn PR 22](https://github.com/inflatable-cookie/longhorn/pull/22) at reviewed head `2c27fec883d5e1fd39258da48675e4498a70b180`
 
 ## Question
 
@@ -88,11 +89,13 @@ review; do not inspect, stage, move, overwrite, or duplicate its WIP.
 
 ## Placement Verdict
 
-Centralize reusable registration, lease, transport, correlation, admission,
-and lifecycle machinery in Swallowtail. Keep route translation in each
-adapter. Keep server implementation and business semantics in Longhorn. Keep
-skill discovery selection, context assembly, task policy, queue UX, and
-product persistence in Desktop.
+Centralize the namespaced registration snapshot and reusable bridge lease,
+listener, transport, correlation, and operation lifecycle in Swallowtail. Keep
+route translation in each adapter. Longhorn owns only a transport-neutral typed
+host dispatch/validation library. Desktop owns domain tool names and schemas,
+effects and business policy, app-context disclosure, durable admission IDs,
+and packaging/startup. Desktop links the Longhorn library; slice 1 has no
+standalone Longhorn daemon.
 
 Do not build a second provider registry, operation lease, or private loopback
 lifecycle. Amend Contract 060 to factor its existing operation-scoped bridge
@@ -101,6 +104,13 @@ as the compatible closed watcher profile over that kernel; registered tool
 servers use a distinct profile and protocol namespace and never inherit
 watcher authority. A new service composes through `HostServices`, immutable
 prepared plans, `CallbackExchange`, and Contract 061 projection.
+
+Desktop issues opaque durable task/session/attempt admission through an
+authenticated host binding. One Desktop task+attempt maps to one Swallowtail
+operation/turn attempt. Model arguments and provider IDs carry no identity
+authority. Desktop process incarnation plus Swallowtail lease generation is
+the instance authority; PID is diagnostic only. A dispatch retry creates a
+fresh Desktop attempt, and mutating or indeterminate calls never replay.
 
 ## Evidence
 

@@ -290,12 +290,12 @@ Promoted planning commit: the `main` commit that introduces this section.
 
 | Field | Card 088 |
 | --- | --- |
-| Readiness | ready |
+| Readiness | ready; PR 242 approved as written with a blocking gap; the widened scope below completes it after the `v0.4.3` tag (freeze) |
 | Prerequisites | Contract 029 Install Guidance amendment on `main` (promoted with this manifest) |
-| Completion conditions | additive core value; three adapters with vendor-sourced guidance, URL and date; absent/present tests; matrix, changelog, four additive baselines; one PR |
-| Owned mutable paths | `crates/swallowtail-core/src/registration/discovery*`; `crates/swallowtail-adapter-claude-agent/src/*discovery*`; `crates/swallowtail-adapter-codex/src/discovery*`; `crates/swallowtail-adapter-grok/src/discovery*`; matching tests; `release-baselines/public-api-0.4.2/{swallowtail-core,swallowtail-adapter-claude-agent,swallowtail-adapter-codex,swallowtail-adapter-grok}.txt` additively; `docs/guides/provider-route-matrix.md` guidance column; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Completion conditions | a genuinely missing executable classifies `Absent` (not `Failed`) on every driver and carries the guidance, proved by driving each driver against a missing path; matrix table cells escape the pipe; additive core value; three adapters with vendor-sourced guidance, URL and date; absent/present tests; matrix, changelog, four additive baselines; one PR |
+| Owned mutable paths | `crates/swallowtail-runtime/src/installed_discovery.rs` (missing-executable classification to `Absent`); `crates/swallowtail-adapter-codex/src/discovery/outcome.rs` and `crates/swallowtail-adapter-grok/src/discovery.rs` (same classification); `crates/swallowtail-core/src/lib.rs` and `src/registration.rs` re-export lines; `crates/swallowtail-core/src/registration/discovery*`; `crates/swallowtail-adapter-claude-agent/src/*discovery*`; `crates/swallowtail-adapter-codex/src/discovery*`; `crates/swallowtail-adapter-grok/src/discovery*`; matching tests; `release-baselines/public-api-0.4.2/{swallowtail-core,swallowtail-adapter-claude-agent,swallowtail-adapter-codex,swallowtail-adapter-grok}.txt` additively; `docs/guides/provider-route-matrix.md` guidance column; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
 | Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | every non-discovery module in those crates; sidecar; `sdk/**`; Grok `turn.rs` and `connection/**` (card 085 owns them); contracts; every other crate |
+| Forbidden paths | every non-discovery module in those crates beyond the named files; sidecar; `sdk/**`; Grok `turn.rs` and `connection/**` (card 085 owns them); contracts; every other crate |
 | Approved concurrent siblings | cards 083, 084, 085, 086, 104 |
 | Serial edges | none |
 | Worker capability class | Rust implementation worker; no credentials; no network beyond reading vendor pages |

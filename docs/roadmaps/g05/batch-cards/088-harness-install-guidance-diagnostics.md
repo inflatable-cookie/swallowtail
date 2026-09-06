@@ -1,6 +1,6 @@
 # 088 Harness Install Guidance Diagnostics
 
-Status: ready
+Status: ready; PR 242 approved as written; widened to own the `Absent` classification; completes after the `v0.4.3` tag
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-06
@@ -24,6 +24,7 @@ Installing, upgrading, or shelling out; guidance for any other harness; changing
 
 ## Acceptance Criteria
 
+- [ ] a missing executable classifies `Absent` on the Claude Code, Codex, and Grok drivers and carries the guidance end to end (PR 242 review finding: `Absent` was never constructed in production; runtime and adapter probes classified a missing executable as `Failed`)
 - [ ] core value additive, provider-neutral, text-only
 - [ ] three adapters carry vendor-sourced guidance with URL and date
 - [ ] tests for absent and present per adapter

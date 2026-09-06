@@ -897,4 +897,3 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   fixture signal, as cards 093 and 094 did elsewhere. Card 104 owns the
   sweep.
 - Surface: `crates/swallowtail-adapter-anthropic/tests/managed_driver/`.
-

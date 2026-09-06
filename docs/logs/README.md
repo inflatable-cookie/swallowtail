@@ -25,6 +25,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-06 g05.029 Card 082 Closeout](./2026-09-06-g05-029-card-082-closeout.md) — Claude SDK model and effort card accepted and merged through PR 239 as `c8512290`; g05.029 runway is active
+
 - [2026-09-06 g05.032 Card 102 Closeout](./2026-09-06-g05-032-card-102-closeout.md) — tagged `v0.4.2` Bovine smoke was inconclusive before the Desktop window appeared; no Swallowtail defect or v0.4.3 lane was indicated
 - [2026-09-06 v0.4.2 Source Release](./2026-09-06-v0-4-2-source-release.md) — operator-authorized annotated `v0.4.2` tagged at `f94dd16f`; tag object `927d14ec`; source-only release with Card 100's typed unresolved `ProviderFailed` live editing outcome retained for Card 102
 - [2026-09-06 g05.032 Card 103 Closeout](./2026-09-06-g05-032-card-103-closeout.md) — Card 103 found the OpenCode cancellation-cleanup issue fixture-only; no production change was required and the card merged at `d7b483dd`

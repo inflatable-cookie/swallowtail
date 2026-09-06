@@ -1,9 +1,9 @@
 # 082 Claude SDK Mid-Session Model And Effort
 
-Status: ready
+Status: complete; merged in PR 239 as `c8512290ae552056d8e0d5c4ef7a1b5c5db406e7`
 Owner: Tom
 Created: 2026-09-04
-Updated: 2026-09-05
+Updated: 2026-09-06
 Milestone: `../029-claude-sdk-interactive-parity.md`
 Depends on: cards 080 and 081 merged; Research 278 §4 and §8 layer 2; the Bovine requirement item 4
 
@@ -61,12 +61,12 @@ version pins; live Claude calls.
 
 ## Acceptance Criteria
 
-- [ ] a model change reports a confirmed effective model or a typed
+- [x] a model change reports a confirmed effective model or a typed
       unconfirmed outcome; never an assumed value
-- [ ] unsupported models are rejected before the SDK call
-- [ ] effort is selectable at open with the admitted levels only
-- [ ] no effort setter is exposed unless the SDK evidence supports it
-- [ ] default profile unchanged; API diff additive
+- [x] unsupported models are rejected before the SDK call
+- [x] effort is selectable at open with the admitted levels only
+- [x] no effort setter is exposed unless the SDK evidence supports it
+- [x] default profile unchanged; API diff additive
 
 ## Validation
 
@@ -93,7 +93,8 @@ No. Stop after one reviewable PR for exact-head review.
 
 ## Result
 
-Implemented on the Card082 branch after rebasing onto `origin/main` at
+Implemented and merged through PR 239 at `c8512290ae552056d8e0d5c4ef7a1b5c5db406e7`.
+The accepted head was `7d708eb40037a5554c6e187155bd62ed8421af5e`, rebased onto
 `ba78e5279307425696ff0565a54fd9274f28f0d8`, with Card100 merge
 `ffc263107343b30cda7a0efde840f84f47a361ec` in history. Open evidence now
 exposes bounded `Query.supportedModels` values; `set_model` calls
@@ -109,5 +110,7 @@ diff checks pass. The 0.4.2 Claude baseline absorbs exactly the 18 Card082 API
 additions; the 0.4.1 Claude baseline remains immutable, and the stale
 `public-api-unreleased` file is restored byte-for-byte to main. The Card082
 changelog entry is under `[Unreleased]`. Matrix aggregate dispositions remain
-frozen; the owned Claude SDK notes carry the new evidence. Exact-head review is
-ready; the v0.4.2 merge gate stays closed.
+frozen; the owned Claude SDK notes carry the new evidence. Independent exact-head
+review approved the corrected baseline placement and changelog, and hosted/package
+gates passed. Card 082 is complete. The g05.029 runway is now active; cards 083-088
+remain subject to their manifest serial edges.

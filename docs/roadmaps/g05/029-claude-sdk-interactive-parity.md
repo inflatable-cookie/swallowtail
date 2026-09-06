@@ -1,9 +1,9 @@
 # g05.029 Claude SDK Interactive Parity
 
-Status: ready; cards 080 and 081 delivered; card 082 model and effort is ready; cards 083-088 queued in priority order
+Status: active; cards 080-082 delivered; cards 083-088 dispatch from their manifest serial edges
 Owner: Tom
 Created: 2026-09-04
-Updated: 2026-09-04
+Updated: 2026-09-06
 Depends on: Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; completed g05.022 and g05.023; tagged `v0.4.0`
 Vision tags: Claude route, consumer parity, interactive session, discovery
 
@@ -69,7 +69,7 @@ forces a minor.
 - [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — delivered; PR 221 permission policy and PR 224 ambient read-write editing
 - [089 Core Preflight Tool Exclusion Scoped To Bounded Profiles](batch-cards/089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md) — ready; core and testkit only; operator ruling 2026-09-04
 - [081 Claude SDK Bash Under Mediation](batch-cards/081-claude-sdk-bash-under-mediation.md) — complete; bounded command view on the callback; PR 233 merged at `97f37e4d`
-- [082 Claude SDK Mid-Session Model And Effort](batch-cards/082-claude-sdk-mid-session-model-and-effort.md) — ready; confirmed values only; effort at open
+- [082 Claude SDK Mid-Session Model And Effort](batch-cards/082-claude-sdk-mid-session-model-and-effort.md) — complete; PR 239 merged at `c8512290`
 - [083 Claude SDK Resume And Session Listing](batch-cards/083-claude-sdk-resume-and-session-listing.md) — planned; after 080
 - [084 Claude SDK Client MCP Servers](batch-cards/084-claude-sdk-client-mcp-servers.md) — planned; after 080
 - [085 Grok ACP Answerable Permissions](batch-cards/085-grok-acp-answerable-permissions.md) — planned; independent crate

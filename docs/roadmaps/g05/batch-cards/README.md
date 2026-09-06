@@ -3,7 +3,6 @@
 ## Ready
 
 - [104-post-tag-determinism-sweep.md](./104-post-tag-determinism-sweep.md) — ready; retire card 094's deferred timing and leak surfaces in kimi-platform and host-local; concurrent with the g05.029 runway
-- [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; branch-only until the `v0.4.2` tag; set_model with confirmed values, supported_models and effort at open
 
 ## Planned
 
@@ -13,6 +12,10 @@
 - [086-claude-sdk-discovery-identity.md](./086-claude-sdk-discovery-identity.md) — planned; g05.029 priority 7
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — planned; g05.029 priority 8
 - [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — planned; g05.029 priority 9
+
+## Completed
+
+- [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — complete; PR 239 merged at `c8512290`; 18 additive API lines absorbed by the 0.4.2 working baseline
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; `0.41.0` claim; gated behind card 062 admitting a Contract 029 segment
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005

@@ -103,13 +103,18 @@ After:
 | 34057557650 | workflow dispatch | 5m53s | MSRV clippy 1m38s then test 3m51s in series |
 | 34057905516 | workflow dispatch | 4m25s | after the split; MSRV tests 4m20s on a cold key |
 | 34058205228 | pull request | 2m40s | green; shards 2m11s and 2m05s, macOS process job 2m15s |
-| RUN_B | pull request | RUN_B_TIME | green |
+| 34058373009 | pull request | 2m23s | green; shards 2m18s each, macOS process job 1m43s |
 
-Target met: two consecutive green PR runs under 3 minutes (34058205228,
-RUN_B)
+Target met: two consecutive green PR runs under 3 minutes (34058205228
+at 2m40s and 34058373009 at 2m23s)
 and a green workflow-dispatch run at 4m25s. The macOS runner queue that
 cost the baseline dispatch about 3 minutes largely went away with the
 macOS job count down from four to one.
+
+The commit that records these numbers gets a run of its own; it is the
+exact-head run for review and is expected to sit in the same band. Every
+timing above is the run's own `createdAt` to `updatedAt`, so queue time is
+counted.
 
 ### Flake surfaced, not owned here
 

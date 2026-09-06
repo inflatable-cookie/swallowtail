@@ -186,3 +186,22 @@ They are not part of ordinary provider-neutral bridge conformance.
   skill, event, or capability claim
 - no generic MCP, network, process, container, daemon, or consumer-tool
   authority enters the portable surface
+
+## Registered-Tool Kernel Amendment — 2026-09-07
+
+[Contract063](063-registered-tool-operation-bridge.md) adds a distinct opt-in
+registered-tool profile. Its implementation factors the internal lease/listener,
+authentication, generation and joined teardown kernel already realized here.
+It does not widen this contract's WatcherBridge surface. All closed-protocol
+exclusions above remain binding for WatcherBridge, including the exclusion of
+consumer tools. Generic tools require the separate Contract063 profile.
+
+Keep existing WatcherBridgeHostService methods, request/lease constructors,
+HostServices omission and provider attachment behavior source-compatible.
+Add no required trait method or field to an existing public constructible type.
+An operation using both profiles shares one kernel lifecycle; profile selection
+cannot expose watcher methods to registered-tool authority or vice versa.
+Preserve existing watcher completion-gate ordering and private material rules.
+All existing watcher/provider conformance fixtures must pass unchanged; add
+both-profile namespace, cross-lease, terminal-race and teardown fixtures.
+Kernel extraction is contracted here but remains unrealized until card114 lands.

@@ -10,6 +10,12 @@
 
 ## Planned
 
+- [114-registered-tool-kernel.md](./114-registered-tool-kernel.md) — planned; ready after Batch A planning review/promotion
+- [115-selected-skill-transport.md](./115-selected-skill-transport.md) — planned; waits for card114 merges
+- [116-claude-registered-tool-adoption.md](./116-claude-registered-tool-adoption.md) — planned; waits for cards114-115 merge and exact route transport corpus is frozen
+- [117-codex-registered-tool-adoption.md](./117-codex-registered-tool-adoption.md) — planned; waits for cards114-115 merge
+- [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — planned; waits for cards114-115 merge and consumer-tool protocol evidence exists
+
 - [109-release-gate-order-and-hosted-delegation.md](./109-release-gate-order-and-hosted-delegation.md) — planned; cheap gates first, hosted run stands for clippy and tests; after the `v0.4.3` tag
 - [111-docs-check-on-push-and-closeout-grammar.md](./111-docs-check-on-push-and-closeout-grammar.md) — planned; pre-push docs check; drift checker grammar documented; after the tag
 - [112-integration-test-binary-consolidation.md](./112-integration-test-binary-consolidation.md) — planned; 370 test binaries to a handful per crate; may start now

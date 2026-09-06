@@ -353,3 +353,12 @@ Portable and route fixtures must prove:
   separate
 - a provider-free implementation can proceed without a new product-policy
   decision
+
+## Selected Bundle Transport — 2026-09-07
+
+Contract063 owns transport of explicitly selected skill bundles and required
+references. This inventory contract retains discovery/description authority;
+it does not select a skill, read an entire repository into a turn or prove model
+compliance. Bundle identity/revision/digest and all required references must
+validate before provider dispatch. Missing or stale required content is a typed
+failure; omission remains unchanged when no bundle is selected.

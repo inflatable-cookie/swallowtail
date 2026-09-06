@@ -68,3 +68,5 @@ Updated: 2026-08-31
 | [060 Operation-Scoped Watcher HTTP Bridge](060-operation-scoped-watcher-http-bridge.md) | active | Closed host-owned operation bridge from qualified harness watcher calls to the exact turn-owned registry, with private authority and joined cleanup |
 | [061 Consumer Route Feature And Control Projection](061-consumer-route-feature-and-control-projection.md) | active | Composing descriptive projection of route, model, and operation features and lifecycle-scoped controls over 037/047/057 evidence, with immutable snapshots, bounded safe reasons, and fail-closed composition |
 | [062 Bounded Skill Inventory](062-bounded-skill-inventory.md) | active | Explicit host-approved global, project-bound, and harness-distribution descriptor inventory with fixed traversal bounds, immutable completeness-aware snapshots, and no inferred effective visibility |
+
+| [063 Registered Tool Operation Bridge](063-registered-tool-operation-bridge.md) | active; implementation pending | Single snapshot, linked host admission, shared bridge lifecycle, skill transport and route gates |

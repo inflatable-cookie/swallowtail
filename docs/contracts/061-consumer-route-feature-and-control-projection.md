@@ -336,3 +336,14 @@ architecture.
 - completed provider-session catalogue and history observations remain
   distinct from preparation and active-session state, and a failed or absent
   outcome publishes no provider-operation row
+
+## Registered Capability Projection — 2026-09-07
+
+Contract063 adds descriptive fields for registration revision/schema digest,
+execution kind, native-mediated versus private-MCP transport, one-shot permission
+strength, progress mode, skill/reference delivery and scheduling lifecycle.
+Preserve support/availability/prepared/effective distinctions. A registered
+capability without a qualified adapter is unavailable, never supported by
+inference. No route row becomes supported through this planning promotion.
+Projection exposes safe IDs and limits, never tool arguments/results, prompt or
+skill/reference bodies, credentials, endpoint or host path material.

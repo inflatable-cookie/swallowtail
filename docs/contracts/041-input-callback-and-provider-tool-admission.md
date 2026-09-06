@@ -269,3 +269,13 @@ required by default QA.
 - search requires explicit provider network, access, model, and tool evidence
 - version and model capability cannot be inferred or silently flattened
 - every terminal path abandons callbacks and joins cleanup
+
+## Registered Tool Admission — 2026-09-07
+
+Contract063 preserves NativeClient/Mcp/App/ProviderOwned execution kind from
+registration through callback, result and receipt. One identity has one kind.
+A host-mediated call reaches consumer policy only with its validated operation
+binding. Allow authorizes one exact call; Deny uses the qualified provider
+response, otherwise cancellation/failure. No simulated acknowledgement,
+persistent permission or automatic mutating/indeterminate replay is admitted.
+Existing route denial behavior remains unchanged without route-specific proof.

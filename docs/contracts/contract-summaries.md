@@ -316,3 +316,5 @@ contract file owns the exact rules.
   and delegated login distinct from add-connection sign-in; update
   observation reusing 029/032; preparation after admission; 047 remaining a
   snapshot without emails, tokens, targets, or overlay-changed readiness.
+
+- **063** owns the additive registered-tool profile and shared operation kernel, trusted consumer admission, linked dispatch, bounded skill/reference transport and exact route evidence gates. Implementation is pending.

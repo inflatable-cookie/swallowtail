@@ -44,3 +44,14 @@ diffs, review, receipts, and UI.
 An observed provider approval or user-input request crosses the seam only as a
 bounded correlated runtime observation. It grants neither repository authority
 nor product mutation authority.
+
+## Contracted Registered-Tool Boundary — 2026-09-07
+
+Contract063 and the Contract060 amendment define the next implementation seam;
+this section records ownership, not realized generic MCP support. Swallowtail
+owns the sole immutable registration snapshot and operation bridge kernel.
+Longhorn supplies linked transport-neutral validation/dispatch; consumers own
+domain schemas/policy, durable admission IDs, bounded context and app startup.
+One internal kernel serves distinct watcher and registered-tool profiles.
+Existing WatcherBridge remains closed and source-compatible. No second listener,
+registry authority, daemon or product schema enters the producer runtime.

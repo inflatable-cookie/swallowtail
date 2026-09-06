@@ -2193,3 +2193,14 @@ Realized sections name only implemented and validated structure. A separately
 labelled contracted section may record an active contract and dependency
 direction before implementation. It must state the realization gap and owning
 roadmap.
+
+## Contracted Registered-Tool Boundary — 2026-09-07
+
+Contract063 and the Contract060 amendment define the next implementation seam;
+this section records ownership, not realized generic MCP support. Swallowtail
+owns the sole immutable registration snapshot and operation bridge kernel.
+Longhorn supplies linked transport-neutral validation/dispatch; consumers own
+domain schemas/policy, durable admission IDs, bounded context and app startup.
+One internal kernel serves distinct watcher and registered-tool profiles.
+Existing WatcherBridge remains closed and source-compatible. No second listener,
+registry authority, daemon or product schema enters the producer runtime.

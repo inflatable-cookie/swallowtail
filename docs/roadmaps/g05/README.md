@@ -423,7 +423,7 @@ identity.
 
 ## Milestones
 
-- [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; independent review and contract promotion required before implementation
+- [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; Batch A promoted; card114 leads shared kernel implementation
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze
 - [033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy
 - [032 v0.4.2 Release Readiness](./032-v0-4-2-release-readiness.md) — complete; `v0.4.2` tagged at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window

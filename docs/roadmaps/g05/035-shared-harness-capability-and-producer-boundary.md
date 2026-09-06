@@ -1,6 +1,6 @@
 # g05.035 Shared Harness Capability And Producer Boundary
 
-Status: planned; architecture and contract promotion required before implementation
+Status: planned; Batch A promoted; card114 ready after inherited docs gate repair
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-07
@@ -17,21 +17,14 @@ Swallowtail.
 
 ## Current State
 
-Research 288 preserves the released capability audit. Spec 014 records the
-operator-confirmed ownership split and first concrete architecture. No durable
-architecture or contract has been promoted from the spec. Implementation is
-blocked. Existing Desktop baseline and rehearsal lanes continue independently.
-Desktop Spec 010 at `30a338f2` now settles the bilateral ownership split;
-Longhorn PR 22 is aligned and independently passed at head `6ce4aa1b`.
-Bilateral ownership alignment is complete; Swallowtail promotion gates remain.
-Card 084 merged through PR 255 at `8a377c1b` after independent review of
-`f52c48c6`. It is merged, untagged stdio-only Claude SDK evidence, not released
-`v0.4.3` behavior or centralized bridge delivery. The old branch at `7cb08b1f`
-remains archival history. No duplicate Card 084 or producer lane is allowed.
+Batch A promotes Contract063 and amendments041/060/061/062. Bilateral ownership
+is settled at Desktop30a338f2, Longhorn edc21078 and Swallowtail6fa6266b.
+Implementation remains unshipped. Card084's stdio-only SDK support is merged
+untagged prior art and is reused, not recreated.
 
 ## Execution Plan
 
-- [ ] **Batch A — architecture and contract promotion.** Independently review
+- [x] **Batch A — architecture and contract promotion.** Independently review
       Spec 014; retain Longhorn PR 22 alignment at PASS head `6ce4aa1b`;
       promote repository ownership, registered capability, the Contract 060
       common-kernel and compatibility amendment, server profile/transport, unique tool kind,
@@ -151,9 +144,44 @@ authorized, one route at a time, after deterministic conformance passes.
 - a batch would alter release, provider, global configuration, or consumer
   state without separate authority.
 
-## Next Planning Gate
+## Dispatch Manifest
 
-Independent review of Research 288 and Spec 014. Longhorn PR 22 is already
-aligned and independently accepted at `6ce4aa1b`. Chatterbox may then promote
-accepted architecture/contracts and recompile this roadmap into exact ready
-batch cards. Implementation authority is currently **no**.
+Batch A must have independent planning acceptance recorded before dispatch.
+One Swallowtail Coordinator owns this frontier; Desktop Coordinator supplies
+consumer requirements and must not create a competing producer worker.
+
+| Card | Readiness | Ownership and parallelism | Completion |
+| --- | --- | --- | --- |
+| [114](batch-cards/114-registered-tool-kernel.md) | ready after canonical Batch A promotion | one runtime/host-local/testkit integrator; independent from disjoint release/docs lanes | exact-head review, provider-free conformance, existing watcher compatibility, API checks and merge |
+| [115](batch-cards/115-selected-skill-transport.md) | waits for114 | same shared runtime lease or explicit transfer | bounded bundle/projection tests and merge |
+| [116](batch-cards/116-claude-registered-tool-adoption.md) | waits for114/115 and route corpus | retained Claude owner; parallel with117/118 on disjoint adapters | exact route evidence and reviewed merge |
+| [117](batch-cards/117-codex-registered-tool-adoption.md) | waits for114/115 | Codex adapter owner | dynamic-tool real binding evidence and reviewed merge |
+| [118](batch-cards/118-grok-registered-capability-qualification.md) | waits for114/115 and missing surface evidence | Grok adapter owner | qualified implementation or explicit unsupported disposition |
+
+Workers require runtime/lifecycle capability; route cards require exact provider
+protocol experience. Independent reviewers test adverse lifecycle cases.
+Coordinator compiles Longhorn linked-host and Desktop consumer acceptance
+handoffs after the API lands; neither needs a second registry or listener.
+Release remains exact-SHA operator-gated under Contract036. No current next-task
+pointer or unrelated active owner is evidence that this frontier is blocked.
+
+Route116/118 read-only evidence preparation is ready now under the same retained
+route owners. It must not wait for the evidence it is tasked to obtain. Runtime
+adoption remains gated as shown in the table; negative evidence returns to
+Chatterbox without inventing support or closing the full integration goal.
+
+## Batch A Planning Acceptance — 2026-09-07
+
+Independent read-only planning review accepted the revised design after fixes
+for explicit opt-in/dispatch APIs, live admission linearization, retained cleanup
+ownership on timeout, and immediately ready route evidence preparation. The
+requested dispatch(call, context) signature is present;116/118 status headers
+separate ready research from gated runtime. No operator product decision remains.
+The first canonical implementation frontier is114;115-118 follow the manifest.
+Doctor reported existing oversized-file and graph/generated-source findings;
+those are orientation findings, not evidence of new runtime validation.
+
+Validation limitation: qa:northstar and diff checks pass. qa:docs reaches the
+pre-existing card087 stopped-status/index grammar defect. Coordinator owns the
+bounded checker/index repair; card114 dispatch waits for that mechanical gate,
+not another product or architecture decision.

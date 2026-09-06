@@ -1,32 +1,25 @@
-# 014 Shared Harness Capability And Producer Boundary
+# 063 Registered Tool Operation Bridge
 
-Status: promoted; durable rules in Contract063 and amendments 041/060/061/062; runtime pending
+Status: active; implementation pending cards 114-117
 Owner: Tom
-Updated: 2026-09-07
-Evidence: Research 288; Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; Desktop Spec 010 at `30a338f2`; Longhorn PR 22 PASS at `6ce4aa1b`
+Created: 2026-09-07
 
-## Purpose
-
-Define one reusable producer boundary for tool and MCP registration, exact
-schema discovery, host-mediated execution, provider attachment, contextual
-instructions, repository skills and references, and qualified scheduling
-across Claude, Codex, and Grok. Preserve exact route behavior and consumer
-authority.
-
-This spec preserves planning provenance. Contract063 and amendments041/060/061/062 now govern implementation; this file grants no additional authority or route support.
+This is implementation authority, not a claim of realized runtime support.
+Promoted from independently reviewed Spec014 and the bilateral ownership
+decision at Desktop `30a338f2`, Longhorn `edc21078`, Swallowtail `6fa6266b`.
 
 ## Ownership
 
 | Owner | Owns | Does not own | Governing evidence |
 | --- | --- | --- | --- |
-| Swallowtail | sole namespaced registration snapshot; operation bridge listener/transport, lease, correlation, generation, lifecycle, prepared-plan binding, route adapters, safe diagnostics, and conformance | domain tool names or schemas, business/effect policy, durable product identity, admission issuance, packaged host startup | [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md), amended only after review |
+| Swallowtail | sole namespaced registration snapshot; operation bridge listener/transport, lease, correlation, generation, lifecycle, prepared-plan binding, route adapters, safe diagnostics, and conformance | domain tool names or schemas, business/effect policy, durable product identity, admission issuance, packaged host startup | [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md), amended by this promotion |
 | Longhorn | transport-neutral typed host dispatch/validation library and generic safe result/error envelopes | registry authority, listener, lease, correlation kernel, admission identity, domain names/schemas/policy, standalone daemon in slice 1 | [PR 22](https://github.com/inflatable-cookie/longhorn/pull/22), whose aligned [`Contract 023`](https://github.com/inflatable-cookie/longhorn/blob/6ce4aa1beafad6748af238d19fb47ffaa1ad342f/docs/contracts/023-production-contextual-agent-tool-boundary.md) and [`Spec 002`](https://github.com/inflatable-cookie/longhorn/blob/6ce4aa1beafad6748af238d19fb47ffaa1ad342f/docs/specs/002-production-contextual-agent-tool-boundary.md) independently passed at `6ce4aa1b` |
 | Desktop | domain tool names and input/output schemas; effects/business/tool policy; bounded app-context disclosure; durable task/session/attempt admission issuance; final Allow/Deny policy; packaging, distribution, startup, queue/UX, and receipts | provider wire, registration snapshot ownership, bridge transport/listener/lease/correlation lifetime | [`Spec 010` at `30a338f2`](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md) |
 
 Other consumers may reuse the Swallowtail boundary. They do not inherit
 Desktop or Longhorn semantics.
 
-### Architecture Promotion Shape
+### Architecture Boundary
 
 `docs/architecture/system-architecture.md` must record one operation-bridge
 kernel with closed profiles, not independent watcher and registered-server
@@ -39,7 +32,7 @@ Contract 060 for the realized watcher profile and to the new registered-server
 contract for the additional profile. Neither spec text nor a new service name
 may silently replace that dependency direction.
 
-## Proposed Architecture
+## Contracted Architecture
 
 ```text
 Desktop task/context/skill selection
@@ -95,8 +88,7 @@ and cannot mint, mutate, or shadow it with a callable catalogue.
 
 ### Contract 060 Bridge Kernel And Server Lease
 
-Contract 060 is live prior art, not a pattern to copy. Amend it during Batch A
-to factor its existing operation-scoped lease, private bearer, execution-host
+Contract 060 is live prior art, not a pattern to copy. The implementation must factor its existing operation-scoped lease, private bearer, execution-host
 binding, ready-before-provider ordering, correlation, admission freeze, and
 joined listener/task/resource teardown into one reusable private-operation
 bridge kernel. `WatcherBridge` remains the source-compatible closed watcher
@@ -299,41 +291,6 @@ Until all pass, `schedule_harness_message` stays unsupported or rejected.
 Load, resume, reconnect, replay, and steering remain separate. Reconnect never
 replays a mutating tool call or message.
 
-## Capability Matrix And Readiness
-
-Legend: `R` means the exact cell behavior is released at audited tag `v0.4.3`,
-including any stated route-local restriction; it never means generic parity.
-`M` is merged after that tag but untagged and unreleased; `P` is proposed but
-unimplemented; `W` is withheld pending route evidence; `—` means the
-capability does not apply to that route shape. An upstream feature
-without an adapter plan, facade, acknowledgement, and proof is `W`.
-
-| Capability | Claude Code | Claude SDK | Claude ACP | Codex app-server | Grok ACP | Common producer gate |
-| --- | --- | --- | --- | --- | --- | --- |
-| bounded per-turn text | R structured run | R | R | R | R | unchanged `TurnRequest` |
-| session instructions | R opt-in operation assets | W | R subset | R | W | exact setup/resume lifecycle |
-| durable session | — | R | R | R | R provider-owned | exact binding and cleanup |
-| load/resume | — | route-qualified R | R | R | W | no raw id; no mutating replay |
-| native consumer tools | W | route-local R | W | R | W | registration, schema, exact result |
-| one-shot Allow/Deny | W generic; closed watcher host admission R | route-local R | R subset | tool result/question; approval W | R subset | exact provider response or typed cancel/fail |
-| persistent permission | W | W | W | W | W | separate explicit contract |
-| provider-direct MCP | R watcher-only | M declared stdio only; common bridge P | W | W | W | Contract 060 kernel plus real server/result |
-| host-mediated tool server | W | P | P | P | P after consumer-tool evidence | common host service and callback binding |
-| tool progress/partial | W notifications; R queried watcher state | W | W | R provider-owned MCP display progress | W | bounded correlation, order, cancellation, stale generation |
-| skill/reference bundle | R watcher skill only | P | P | P | P | Contract 062 selection plus opaque refs |
-| consumer app context | W | P | P | P | P | Desktop-owned composition, bounded transport |
-| between-turn queue | — | Desktop-owned | Desktop-owned | Desktop-owned | Desktop-owned | next turn after terminal close |
-| mid-turn steering | W | W | W | W | W | exact route contract and real acknowledgement |
-| reconnect | W | P transport-only | P transport-only | P transport-only | P transport-only | same binding/generation; no mutating replay |
-
-## Promotion Disposition
-
-The six promotion requirements are settled by Contract063, its explicit additive
-API/state machine/limits/conformance sections, and amendments041/060/061/062.
-Scheduling is deliberately unchanged: no route passes a new Contract028 gate
-through this promotion. Architecture records contracted ownership separately
-from realized runtime. g05.035 compiles card114 as the first ready implementation
-batch; later cards retain exact dependencies and route qualification gates.
 
 ## Real Acceptance
 
@@ -362,7 +319,8 @@ For each route:
 No test may silently enable ambient shell, outside-path write, persistent
 permission, provider fallback, or client-content authority.
 
-## Public API And Compatibility
+
+## Compatibility
 
 The public API is additive and provider-neutral. Existing `SessionOptions`,
 `TurnRequest`, `CallbackExchange`, prepared facades, and low-level drivers stay
@@ -377,37 +335,161 @@ retry, or resume semantic is breaking before 1.0 and requires an explicit
 operator decision. Version qualification remains one exact interface family
 at a time under Contract 029.
 
-## Bilateral Decision And Counterpart Alignment
 
-Desktop's canonical decision is
-[`docs/specs/010-contextual-chat-and-task-queue.md` at `30a338f2`](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md).
-The counterpart is [Longhorn PR 22](https://github.com/inflatable-cookie/longhorn/pull/22),
-aligned and independently passed at
-`6ce4aa1beafad6748af238d19fb47ffaa1ad342f` in
-[review comment 5563025824](https://github.com/inflatable-cookie/longhorn/pull/22#issuecomment-5563025824).
-Its Contract 023 and Spec 002 now adopt Desktop's table. Bilateral alignment is
-complete. Batch A promotes the durable rules after independent planning review. Runtime
-readiness is determined by the recompiled g05.035 manifest.
+## Additive API And State Machine
 
-No generic operator decision remains. Swallowtail settles protocol versions,
-transport and concurrency/deadline/byte limits, route mappings, and Contract
-060 compatibility evidence. Longhorn settles its generic validation/dispatch
-API and safe errors. Desktop supplies opaque IDs, schema declarations,
-disclosure bounds, linked packaging, startup incarnation, and policy. These are
-producer inputs and evidence gates, not authority to implement or release.
+The following new public types belong in swallowtail-runtime. Constructors
+validate positive bounds and identity; fields are private with typed accessors.
+Schema/body wrappers expose contents only through explicit execution accessors,
+never Debug/Display/diagnostics. No new required field is added to existing
+SessionOptions, TurnRequest, watcher records or public constructible structs.
 
-## Promotion Targets
+| Type | Required fields or semantics |
+| --- | --- |
+| RegisteredToolSnapshot | Immutable server ID/revision; unique namespaced tool IDs/kinds; schemas/digests; effect declarations; limits; no runtime resource |
+| RegisteredToolSelection | Snapshot reference, selected IDs, exact transport/protocol, effective bounds; immutable after prepare |
+| ConsumerAdmissionBinding | Trusted opaque incarnation, workspace/task generations, session/task/attempt IDs and live revocation source; no serialized bearer |
+| RegisteredToolOpenRequest | Configured/prepared identity, operation scope/turn, selection, admission binding, deadline |
+| RegisteredToolBridgeLease | Non-Clone scoped kernel token, safe binding accessors, driver-private endpoint/auth; nonserializable; defensive Drop |
+| RegisteredToolCall | Validated binding, unique call ID, selected tool, bounded arguments and deadline |
+| RegisteredToolProgress | Same binding/call plus monotonic sequence and bounded payload |
+| RegisteredToolOutcome | Exactly one correlated bounded result or typed failure, with known/unknown execution disposition |
+| RegisteredToolCompletionState | Admission state and bounded outstanding-call/cleanup truth |
+| RegisteredToolCleanupCause | Completion, cancellation, deadline, provider failure, transport failure or explicit close |
 
-- `docs/architecture/system-architecture.md`
-- `docs/architecture/repository-authority-map.md`
-- new contracts and amendments named above
-- Contract 061 projection vocabulary and adapter rows
-- `docs/roadmaps/g05/035-shared-harness-capability-and-producer-boundary.md`
-- route guides, matrices, release notes, and consumer handoffs only after
-  implementation and evidence
+The new optional port follows existing object-safe BoxFuture conventions:
 
-## Spec Exit
+```rust
+trait RegisteredToolBridgeHostService: Send + Sync {
+    fn open(&self, request: RegisteredToolOpenRequest)
+        -> BoxFuture<'_, Result<RegisteredToolBridgeLease, RuntimeFailure>>;
+    fn completion_gate(&self, lease: &RegisteredToolBridgeLease)
+        -> BoxFuture<'_, Result<RegisteredToolCompletionState, RuntimeFailure>>;
+    fn close(&self, lease: RegisteredToolBridgeLease, cause: RegisteredToolCleanupCause)
+        -> BoxFuture<'_, Result<CleanupOutcome, RuntimeFailure>>;
+}
+```
 
-Promoted rules live in Contract063 and the linked amendments. Retain this spec
-as evidence provenance until runtime and route closeout; it is not a competing
-implementation authority. Release and real provider support remain unclaimed.
+HostServices adds a private optional Arc port, with_registered_tool_bridge and
+registered_tool_bridge getter. HostServiceKind is currently exhaustive: do NOT
+add a variant in this slice. A separate typed registered-profile preflight
+checks port availability and selected topology before provider work. Existing
+HostServiceKind projections stay unchanged. A later enum change requires an
+explicit compatibility decision, not a claim that adding a variant is harmless.
+
+A RegisteredToolDispatcher object-safe host port provides dispatch(call, context) ->
+BoxFuture<Result<RegisteredToolOutcome, RuntimeFailure>>. The local composition
+builder receives this Arc port; portable crates never depend on Longhorn.
+Only the kernel can mint the live validated binding passed to dispatch. The
+host admission port revalidates revocation immediately before dispatch and
+result delivery; an open-time snapshot is insufficient. Schema and consumer
+policy checks are distinct from transport authentication, not a second issuer.
+Progress is a bounded lease-associated channel and must obey the same live check.
+
+Lifecycle: registered (no resources) -> prepared -> opening -> ready ->
+call-pending -> ready -> frozen -> closing -> closed. Any opening failure joins
+partial resources. Cancellation/deadline/terminal freeze admission before
+settling or abandoning calls; completion_gate observes and freezes when clear,
+never silently waits or turns provider-terminal into success. Reconnect is
+allowed only within the same live bound attempt and cannot unfreeze a lease.
+Dispatch/result/progress/revocation races have one serialized admission point.
+Duplicate results are rejected; exactly-once acceptance does not claim exactly-
+once remote execution. Cleanup failure is visible and never a successful close.
+
+## First Implementation Limits And Protocol Qualification
+
+Maximum one outstanding call per lease; 64 selected tools; 64 KiB per schema;
+1 MiB aggregate schema bytes; 256 KiB arguments or result; 64 KiB progress item;
+32 queued progress items; 64 KiB total selected skill/reference content.
+Consumer limits may narrow these ceilings. Calls expire at the earlier of their
+operation deadline or 60 seconds; opening and joined cleanup are bounded by
+10 seconds each and the parent lifecycle budget. Reject overflow before work,
+never silently truncate required content. Tests use virtual clocks where feasible.
+
+Protocol versions are an explicit nonempty subset of frozen qualified route
+artifacts; no latest/default negotiation or production route is enabled by
+card114. Provider-free fixtures negotiate an explicitly named test version.
+HTTP carries the registered profile only when its route corpus qualifies it;
+SSE remains withheld until such evidence exists. Native callback mediation can
+consume the same binding without a listener. Card084's stdio SDK support is
+retained separately; this contract does not pretend it proves HTTP support.
+
+## Implementation Conformance Oracle
+
+Falsify kind/schema substitution, missing service, stale incarnation/generation,
+revocation racing dispatch/result, post-cancel/reordered progress, duplicate
+result, deadline/terminal races, disconnect with unknown execution, concurrency
+and byte overflow, and partial-open/close failures. Count listener and resource
+owners when both profiles are selected; retain all existing watcher fixtures
+unchanged. No Longhorn dependency or consumer domain type enters portable crates.
+No scheduling amendment is promoted: Contract028 gates remain unchanged for all
+three target routes. Descriptive Contract061 fields grant no runtime support.
+
+## Trusted Admission Port
+
+ConsumerAdmissionHostService is a Send + Sync object-safe port with
+validate(binding, phase) -> BoxFuture<Result<AdmissionVerdict, RuntimeFailure>>.
+AdmissionPhase is BeforeDispatch or BeforeDelivery; AdmissionVerdict is Current
+or Revoked with a bounded reason code. The immutable binding carries a private
+Arc to this consumer-supplied port. Constructors require the trusted host to
+supply it; provider input cannot create the binding. The kernel checks fixed
+identity equality and the live verdict at its serialized admission point.
+Revocation freezes future dispatch/delivery; an already executing side effect
+may finish indeterminately and is reported honestly rather than rolled back by
+claim. Cancellation handles remain bound to that exact call and lease.
+
+A consumer does not reissue identity during validation. A new generation needs
+a new admitted attempt/binding. Longhorn's dispatcher validates schema and
+invokes consumer policy using the already validated call token; it never checks
+an independent bearer or constructs a second admission model.
+
+## Selection And Dispatch Context
+
+RegisteredToolPreparation::new(snapshot, selection, admission, limits) creates
+an immutable opt-in request without opening resources. Its prepare(hosts,
+configured_identity, operation_scope, turn, deadline) returns
+Result<PreparedRegisteredToolBinding, RuntimeFailure> after identity, limits,
+port and topology checks. The prepared binding exposes safe descriptions only;
+its open() delegates to the bound RegisteredToolBridgeHostService and returns
+the scoped lease. Construction cannot choose or start a provider. It composes
+beside existing prepared facades rather than wrapping them in a generic runner.
+Route cards add an optional with_registered_tools(preparation) builder to the
+exact route preparation object; absence preserves all previous behavior.
+Card114 proves this public compositional path with a consumer fixture. Adapter
+builder wiring follows in116/117 only; no current provider support is inferred.
+
+SelectedSkillBundle::new(identity, revision, digest, references, bounds) and
+RequiredReferenceDescriptor identify immutable selected content or opaque host
+references. SelectedSkillBundle::resolve(host_resources) returns
+Result<ResolvedSkillBundle, RuntimeFailure>; all required digests and aggregate
+bounds validate before prepare. Route preparation's optional
+with_selected_skill_bundle(resolved_bundle) carries it separately from session
+instructions and verbatim TurnRequest. Card115 implements producer vocabulary;
+route builders and exact transport are the adapter cards' responsibility.
+
+RegisteredToolDispatcher::dispatch receives both RegisteredToolCall and
+RegisteredToolDispatchContext, returning BoxFuture<Result<RegisteredToolOutcome,
+RuntimeFailure>>. DispatchContext owns a call-bound cancellation observation
+handle and a bounded RegisteredToolProgressSink. The sink's
+publish(sequence, bounded_payload) returns Result<(), RuntimeFailure> after
+kernel identity/generation/live admission checks; revoked, out-of-order or full
+queues fail explicitly. The handle cannot cancel another call or extend the
+lease. The kernel owns cancellation signaling and progress queue lifetime;
+terminal close joins dispatch futures and drops the sink only after admission
+is frozen. A dispatcher cannot mint validated tokens or publish on another call.
+
+## Admission Linearization And Failed Cleanup
+
+A successful live validation verdict is committed at the kernel's serialized
+admission point before dispatch. Revocation committed earlier prevents dispatch;
+revocation after admission may encounter executing work and freezes subsequent
+calls/progress/results. This is not a claim to undo an already-started effect.
+
+Dispatcher implementations must cooperate with cancellation and settle within
+the declared deadline. The ten-second cleanup budget bounds the normal join
+attempt, not a license to detach an uncooperative future. Timeout reports failed
+cleanup; the lease stays frozen and its resources remain under the existing
+host shutdown/reap owner until joined or explicitly accounted as unreaped under
+the host contract. It never reports Closed/Clean, returns credentials for reuse,
+or allows a new attempt to inherit the failed lease. Tests include a deliberately
+uncooperative dispatcher and prove retained ownership plus visible failure.

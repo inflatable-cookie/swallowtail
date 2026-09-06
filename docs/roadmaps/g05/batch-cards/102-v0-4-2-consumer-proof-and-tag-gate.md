@@ -44,3 +44,14 @@ Disposition: consumer smoke inconclusive for the route, with no Swallowtail
 defect indicated. The accepted working-application smoke remains the v0.4.1
 smoke. The Desktop window-visibility issue belongs to the Acowtancy lane; this
 card is closed and no v0.4.3 lane opens from this result.
+
+### Amendment 2026-09-06: third Desktop attempt
+
+Desktop branch `worker/desktop-swallowtail-v042-smoke` at `0cd3c165`, all six
+crates pinned to tag `v0.4.2` (tag object `927d14ec`, peeled `f94dd16f`).
+The app built, launched isolated, and reached page-ready with restore
+complete. It then failed the Desktop's strict app-identity gate: discovery
+returned the packaged primary workspace, not the smoke root. No session,
+sidecar, `open_rejected`, or turn. Third pre-Swallowtail failure, each on a
+different Desktop-side gate. Verdict unchanged: inconclusive for the route;
+no Swallowtail defect indicated. The Desktop lane owns its smoke harness.

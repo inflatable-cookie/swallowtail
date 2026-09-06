@@ -1,5 +1,6 @@
 use crate::safe_excerpt::sanitize_stderr;
 use swallowtail_core::{DiscoveryOutcome, DiscoveryStatus, SafeDiagnostic};
+use swallowtail_runtime::RuntimeFailure;
 
 pub(super) fn outcome(status: DiscoveryStatus) -> DiscoveryOutcome {
     DiscoveryOutcome::new(
@@ -25,6 +26,22 @@ pub(super) fn spawn_failed() -> DiscoveryOutcome {
         "swallowtail.codex.discovery_spawn_failed",
         "Codex version probe could not start",
     )
+}
+
+pub(super) fn missing_executable() -> DiscoveryOutcome {
+    staged_outcome(
+        DiscoveryStatus::Absent,
+        "swallowtail.codex.discovery_absent",
+        "Codex executable was not found",
+    )
+}
+
+pub(super) fn process_start_failed(error: &RuntimeFailure) -> DiscoveryOutcome {
+    if error.diagnostic().code() == "swallowtail.local_process.spawn_failed" {
+        missing_executable()
+    } else {
+        spawn_failed()
+    }
 }
 
 pub(super) fn output_failed() -> DiscoveryOutcome {

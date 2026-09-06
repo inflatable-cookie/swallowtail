@@ -5,6 +5,7 @@ use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 use swallowtail_core::{
     CredentialRef, EndpointAudience, ExecutionHostId, ResourceAccess, ResourceRepresentation,
+    SafeDiagnostic,
 };
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, CredentialLease, CredentialService, Deadline, DeadlineObservation,
@@ -62,6 +63,7 @@ pub struct FakeProcessService {
     output: Mutex<Option<VecDeque<ProcessOutputChunk>>>,
     exit: ProcessExit,
     hold_open: bool,
+    missing_executable: bool,
 }
 
 impl FakeProcessService {
@@ -71,6 +73,20 @@ impl FakeProcessService {
 
     pub fn held_open() -> (Arc<Self>, Arc<ProcessState>) {
         Self::new("", ProcessExit::new(false, Some(130)), true)
+    }
+
+    pub fn missing_executable() -> (Arc<Self>, Arc<ProcessState>) {
+        let state = Arc::new(ProcessState::default());
+        (
+            Arc::new(Self {
+                state: Arc::clone(&state),
+                output: Mutex::new(Some(VecDeque::new())),
+                exit: ProcessExit::new(false, None),
+                hold_open: false,
+                missing_executable: true,
+            }),
+            state,
+        )
     }
 
     fn new(output: &str, exit: ProcessExit, hold_open: bool) -> (Arc<Self>, Arc<ProcessState>) {
@@ -91,6 +107,7 @@ impl FakeProcessService {
                 output: Mutex::new(Some(chunks)),
                 exit,
                 hold_open,
+                missing_executable: false,
             }),
             state,
         )
@@ -103,6 +120,14 @@ impl ProcessService for FakeProcessService {
         _scope: ScopeId,
         request: ProcessRequest,
     ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        if self.missing_executable {
+            return Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "swallowtail.local_process.spawn_failed",
+                    "Local process could not be started",
+                )))
+            });
+        }
         *self.state.request.lock().expect("request lock") = Some(ObservedProcessRequest {
             executable: request.executable().as_host_value().to_owned(),
             arguments: request.arguments().map(str::to_owned).collect(),

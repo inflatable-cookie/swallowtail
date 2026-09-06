@@ -105,9 +105,9 @@ package manager, or attaches guidance to a present executable.
 
 | Route(s) | Install guidance |
 | --- | --- |
-| `claude-code.headless`, `claude-code.response-only` | `curl -fsSL https://claude.ai/install.sh | bash` — [Claude Code installation](https://code.claude.com/docs/en/getting-started), frozen 2026-09-06 |
-| `codex.exec`, `codex.app-server` | `curl -fsSL https://chatgpt.com/codex/install.sh | sh` — [Codex CLI installation](https://github.com/openai/codex/blob/main/README.md#installing-and-running-codex-cli), frozen 2026-09-06 |
-| `grok-build.acp` | `curl -fsSL https://x.ai/cli/install.sh | bash` — [Grok Build installation](https://docs.x.ai/build/overview), frozen 2026-09-06 |
+| `claude-code.headless`, `claude-code.response-only` | <code>curl -fsSL https://claude.ai/install.sh &#124; bash</code> — [Claude Code installation](https://code.claude.com/docs/en/getting-started), frozen 2026-09-06 |
+| `codex.exec`, `codex.app-server` | <code>curl -fsSL https://chatgpt.com/codex/install.sh &#124; sh</code> — [Codex CLI installation](https://github.com/openai/codex/blob/main/README.md#installing-and-running-codex-cli), frozen 2026-09-06 |
+| `grok-build.acp` | <code>curl -fsSL https://x.ai/cli/install.sh &#124; bash</code> — [Grok Build installation](https://docs.x.ai/build/overview), frozen 2026-09-06 |
 
 ## Attached Harness Network
 

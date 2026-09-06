@@ -292,6 +292,8 @@ pub const fn swallowtail_adapter_claude_agent::ClaudeAgentSessionProfileInput::n
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentSessionProfileInput::with_consumer_mediated_permissions(self) -> Self
 pub struct swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver
 impl swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver
+pub const fn swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver::install_guidance() -> swallowtail_core::registration::discovery::InstallGuidance
+impl swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver
 pub fn swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -350,6 +352,8 @@ pub struct swallowtail_adapter_claude_agent::ClaudeCodeResponseModelSelection
 impl swallowtail_adapter_claude_agent::ClaudeCodeResponseModelSelection
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeResponseModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
 pub struct swallowtail_adapter_claude_agent::ClaudeCodeResponseOnlyDriver
+impl swallowtail_adapter_claude_agent::ClaudeCodeResponseOnlyDriver
+pub const fn swallowtail_adapter_claude_agent::ClaudeCodeResponseOnlyDriver::install_guidance() -> swallowtail_core::registration::discovery::InstallGuidance
 impl swallowtail_adapter_claude_agent::ClaudeCodeResponseOnlyDriver
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeResponseOnlyDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_claude_agent::ClaudeCodeResponseOnlyDriver

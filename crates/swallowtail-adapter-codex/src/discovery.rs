@@ -3,7 +3,9 @@ use crate::{CodexAppServerDriver, CodexExecDriver};
 #[path = "discovery/outcome.rs"]
 mod outcome_result;
 use futures_channel::oneshot;
-use outcome_result::{exit_failed, outcome, output_failed, output_limit, spawn_failed};
+use outcome_result::{
+    exit_failed, outcome, output_failed, output_limit, process_start_failed, spawn_failed,
+};
 use std::future::poll_fn;
 use std::task::Poll;
 use swallowtail_core::{
@@ -156,7 +158,7 @@ async fn probe_process(
         .await
     {
         Ok(process) => process,
-        Err(_) => return Ok(spawn_failed()),
+        Err(error) => return Ok(process_start_failed(&error)),
     };
     if process.close_stdin().await.is_err() {
         return Ok(stop_and_classify(process.as_ref(), exit_failed(None, &[], false)).await);

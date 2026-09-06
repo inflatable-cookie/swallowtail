@@ -105,6 +105,52 @@ fn claude_code_routes_probe_without_executing_install_guidance() {
 }
 
 #[test]
+fn missing_claude_code_executable_is_absent_with_guidance() {
+    let host_id = ExecutionHostId::new("fixture.host.claude-code.missing").expect("valid host");
+    let headless_host = FixtureHost::new(Scenario::Version, "unused").with_missing_executable();
+    let headless = block_on(
+        ClaudeCodeHeadlessDriver::new(
+            EnvironmentRef::new("claude-code.fixture.environment").expect("environment"),
+        )
+        .discover_installed_executable(
+            request_for_axis_and_executable(
+                host_id.clone(),
+                CLAUDE_CODE_HEADLESS_AXIS,
+                "claude-code.missing.fixture.executable",
+            ),
+            headless_host.services(host_id.clone()),
+        ),
+    )
+    .expect("headless discovery completes");
+    assert_eq!(headless.status(), DiscoveryStatus::Absent);
+    let headless_guidance = headless.install_guidance().expect("headless guidance");
+    assert_eq!(headless_guidance.display_name(), "Claude Code");
+    assert_eq!(headless_guidance.frozen_on(), "2026-09-06");
+    assert!(!headless_host.process_started());
+
+    let response_host = FixtureHost::new(Scenario::Version, "unused").with_missing_executable();
+    let response = block_on(
+        ClaudeCodeResponseOnlyDriver::new(
+            EnvironmentRef::new("claude-code.fixture.environment").expect("environment"),
+        )
+        .discover_installed_executable(
+            request_for_axis_and_executable(
+                host_id.clone(),
+                CLAUDE_CODE_RESPONSE_ONLY_AXIS,
+                "claude-code.missing.fixture.executable",
+            ),
+            response_host.services(host_id),
+        ),
+    )
+    .expect("response-only discovery completes");
+    assert_eq!(response.status(), DiscoveryStatus::Absent);
+    let response_guidance = response.install_guidance().expect("response-only guidance");
+    assert_eq!(response_guidance.display_name(), "Claude Code");
+    assert_eq!(response_guidance.frozen_on(), "2026-09-06");
+    assert!(!response_host.process_started());
+}
+
+#[test]
 fn excluded_and_incompatible_versions_remain_distinct() {
     for version in ["0.52.0", "0.58.0"] {
         let host_id = ExecutionHostId::new("fixture.host.incompatible").expect("valid host");
@@ -128,12 +174,20 @@ fn request(host: ExecutionHostId) -> InstalledExecutableDiscoveryRequest {
 }
 
 fn request_for_axis(host: ExecutionHostId, axis: &str) -> InstalledExecutableDiscoveryRequest {
+    request_for_axis_and_executable(host, axis, "claude-agent.fixture.executable")
+}
+
+fn request_for_axis_and_executable(
+    host: ExecutionHostId,
+    axis: &str,
+    executable: &str,
+) -> InstalledExecutableDiscoveryRequest {
     InstalledExecutableDiscoveryRequest::new(
         RequestId::new("claude-agent-version-probe").expect("valid request"),
         ScopeId::new("claude-agent-version-probe").expect("valid scope"),
         host,
         InstalledExecutableTarget::new(
-            ExecutableRef::new("claude-agent.fixture.executable").expect("valid executable"),
+            ExecutableRef::new(executable).expect("valid executable"),
             InterfaceVersionAxis::new(axis).expect("valid axis"),
         ),
         Deadline::at(MonotonicInstant::from_ticks(100)),

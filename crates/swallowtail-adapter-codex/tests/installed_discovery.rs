@@ -59,6 +59,23 @@ fn both_drivers_probe_only_the_explicit_target_and_classify_independently() {
 }
 
 #[test]
+fn missing_codex_executable_is_absent_with_guidance_for_both_drivers() {
+    for driver in [Driver::Exec(exec_driver()), Driver::App(app_driver())] {
+        let (process, state) = FakeProcessService::missing_executable();
+        let outcome = block_on(driver.probe(
+            missing_request(DiscoveryCancellation::new()),
+            services(process),
+        ))
+        .expect("missing executable discovery completes");
+        assert_eq!(outcome.status(), DiscoveryStatus::Absent);
+        let guidance = outcome.install_guidance().expect("Codex guidance");
+        assert_eq!(guidance.display_name(), "Codex CLI");
+        assert_eq!(guidance.frozen_on(), "2026-09-06");
+        assert!(!state.started());
+    }
+}
+
+#[test]
 fn exact_observation_distinguishes_incompatible_malformed_and_cancelled() {
     let (process, _) = FakeProcessService::completed("codex-cli 0.108.0\n");
     let incompatible =
@@ -239,6 +256,14 @@ fn request(cancellation: DiscoveryCancellation) -> InstalledExecutableDiscoveryR
     request_for(
         ExecutionHostId::new("host.local").unwrap(),
         ExecutableRef::new("codex-executable").unwrap(),
+        cancellation,
+    )
+}
+
+fn missing_request(cancellation: DiscoveryCancellation) -> InstalledExecutableDiscoveryRequest {
+    request_for(
+        ExecutionHostId::new("host.local").unwrap(),
+        ExecutableRef::new("codex.missing.fixture.executable").unwrap(),
         cancellation,
     )
 }

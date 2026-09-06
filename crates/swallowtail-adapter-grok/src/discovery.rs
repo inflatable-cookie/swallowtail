@@ -157,7 +157,14 @@ async fn probe_process(
         .await
     {
         Ok(process) => process,
-        Err(_) => return Ok(outcome(DiscoveryStatus::Failed)),
+        Err(error) => {
+            let status = if error.diagnostic().code() == "swallowtail.local_process.spawn_failed" {
+                DiscoveryStatus::Absent
+            } else {
+                DiscoveryStatus::Failed
+            };
+            return Ok(outcome(status));
+        }
     };
     if process.close_stdin().await.is_err() {
         return Ok(stop_and_classify(process.as_ref(), DiscoveryStatus::Failed).await);

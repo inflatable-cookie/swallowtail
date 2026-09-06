@@ -185,8 +185,13 @@ async fn probe_process(
         .await
     {
         Ok(process) => process,
-        Err(_) => {
-            return Ok(outcome(&services, codes, solution, DiscoveryStatus::Failed));
+        Err(error) => {
+            let status = if error.diagnostic().code() == "swallowtail.local_process.spawn_failed" {
+                DiscoveryStatus::Absent
+            } else {
+                DiscoveryStatus::Failed
+            };
+            return Ok(outcome(&services, codes, solution, status));
         }
     };
     if process.close_stdin().await.is_err() {

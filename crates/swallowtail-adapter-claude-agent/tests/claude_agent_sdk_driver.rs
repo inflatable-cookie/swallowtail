@@ -12,6 +12,7 @@ mod claude_agent_sdk_driver {
     pub mod framing;
     pub mod guardian;
     pub mod lifecycle;
+    pub mod mcp;
     pub mod model;
     pub mod permission;
     pub mod readiness;

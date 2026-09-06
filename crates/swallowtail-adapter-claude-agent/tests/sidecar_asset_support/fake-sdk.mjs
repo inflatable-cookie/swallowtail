@@ -38,6 +38,7 @@ const observed = {
   listSessions: null,
   writes: [],
   bash: [],
+  mcpHits: [],
 };
 
 function sanitizedEnvironment(environment) {
@@ -232,6 +233,9 @@ export function query({ prompt, options }) {
   if (SCENARIO === "bash") {
     return bashSession(prompt, options, child);
   }
+  if (SCENARIO === "mcp") {
+    return mcpSession(prompt, options, child);
+  }
 
   let settled = false;
   let rateStep = 0;
@@ -392,6 +396,10 @@ export function query({ prompt, options }) {
       observeControl("supportedModels");
       return modelRows(options);
     },
+    async mcpServerStatus() {
+      observeControl("mcpServerStatus");
+      return mcpStatusRows(options);
+    },
     async interrupt() {
       releaseRateInterrupt();
       return { received: true };
@@ -532,6 +540,10 @@ function bashSession(prompt, options, child) {
     observeControl("supportedModels");
     return modelRows(options);
   };
+  iterator.mcpServerStatus = async () => {
+    observeControl("mcpServerStatus");
+    return mcpStatusRows(options);
+  };
   iterator.interrupt = async () => ({ received: true });
   iterator.setPermissionMode = async (mode) => {
     state.permissionMode = mode;
@@ -614,6 +626,10 @@ function editingSession(prompt, options, child) {
     observeControl("supportedModels");
     return modelRows(options);
   };
+  iterator.mcpServerStatus = async () => {
+    observeControl("mcpServerStatus");
+    return mcpStatusRows(options);
+  };
   iterator.interrupt = async () => ({ received: true });
   iterator.setPermissionMode = async (mode) => {
     state.permissionMode = mode;
@@ -624,6 +640,72 @@ function editingSession(prompt, options, child) {
     observed.closeCalls += 1;
     record();
     // Deliberately inert, exactly like the read-only path.
+    void child;
+  };
+  return iterator;
+}
+
+function mcpStatusRows(options) {
+  const names = Object.keys(options.mcpServers ?? {});
+  const status =
+    SCENARIO === "mcp-required-fail" || SCENARIO === "mcp-optional-fail"
+      ? "failed"
+      : "connected";
+  return names.map((name) => ({ name, status }));
+}
+
+/// One admitted MCP tool and one undeclared sibling. The sibling is offered
+/// through `canUseTool` so a deny that never hits the fake server is visible.
+function mcpSession(prompt, options, child) {
+  async function admit(name, input) {
+    const decision = await options.canUseTool(name, input);
+    observed.admissions[name] = decision;
+    if (decision.behavior === "allow") {
+      observed.mcpHits.push(name);
+    }
+    record();
+  }
+
+  async function* messages() {
+    let first = true;
+    for await (const message of prompt) {
+      if (first) {
+        first = false;
+        yield initMessage(options);
+      }
+      void message;
+      await admit("mcp__fixture__search", { query: "alpha" });
+      await admit("mcp__fixture__echo", { text: "nope" });
+      yield { type: "result", subtype: "success", is_error: false };
+    }
+  }
+
+  const iterator = messages();
+  iterator.accountInfo = async () => {
+    observeControl("accountInfo");
+    return accountInfo();
+  };
+  iterator.initializationResult = async () => {
+    observeControl("initializationResult");
+    return initializeResponse(options);
+  };
+  iterator.supportedModels = async () => {
+    observeControl("supportedModels");
+    return modelRows(options);
+  };
+  iterator.mcpServerStatus = async () => {
+    observeControl("mcpServerStatus");
+    return mcpStatusRows(options);
+  };
+  iterator.interrupt = async () => ({ received: true });
+  iterator.setPermissionMode = async (mode) => {
+    state.permissionMode = mode;
+    observed.permissionModes.push(mode);
+    record();
+  };
+  iterator.close = () => {
+    observed.closeCalls += 1;
+    record();
     void child;
   };
   return iterator;

@@ -123,6 +123,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                 Arc::downgrade(&self.connection),
                 Some(deadline),
                 self.readiness.profile(),
+                self.readiness.admitted_mcp_tools().to_vec(),
             )?;
             self.connection.set_active_turn(Arc::clone(&turn))?;
             // The host deadline races real completion. On expiry it interrupts
@@ -400,6 +401,15 @@ impl ClaudeAgentSdkSessionHandle {
     #[must_use]
     pub const fn permission_mode(&self) -> ClaudeAgentSdkPermissionMode {
         self.permission_mode
+    }
+
+    /// Returns per-server MCP connection evidence observed at open.
+    ///
+    /// Empty when the session was prepared without declared servers. Provider
+    /// error text, URLs, and config objects never appear here.
+    #[must_use]
+    pub fn mcp_server_status(&self) -> &[crate::sdk::mcp::ClaudeAgentSdkMcpServerStatus] {
+        self.readiness.mcp_server_status()
     }
 
     /// Changes the permission mode of this live session and returns the mode

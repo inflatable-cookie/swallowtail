@@ -37,7 +37,7 @@
       "symbol": "Settings.managedMcpServers",
       "kind": "added_settings_key",
       "mapped": false,
-      "why_unmapped": "managed-settings tier only; the route passes settingSources: [] and strictMcpConfig with no MCP servers, so no settings source is loaded."
+      "why_unmapped": "managed-settings tier only; the route still passes settingSources: [] so managedMcpServers is never loaded. Consumer-declared stdio MCP is a separate Options.mcpServers mapping and does not enable this settings key."
     },
     {
       "symbol": "Settings.allowedMcpServers / managedSourcesBehavior",

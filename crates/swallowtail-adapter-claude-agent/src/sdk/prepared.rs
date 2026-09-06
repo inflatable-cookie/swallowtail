@@ -10,6 +10,7 @@
 mod build;
 
 use super::driver::{ClaudeAgentSdkDriver, ClaudeAgentSdkSessionHandle};
+use super::mcp::{ClaudeAgentSdkMcpBinding, ClaudeAgentSdkMcpServer};
 use super::profile::ClaudeAgentSdkSessionProfile;
 use swallowtail_core::{
     AccessProfileId, ConfigFieldId, ConfiguredInstanceId, CredentialFieldId, CredentialRef,
@@ -43,6 +44,7 @@ pub struct ClaudeAgentSdkSessionPreparation {
     pub(crate) request_id: RequestId,
     pub(crate) deadline: Deadline,
     pub(crate) profile: ClaudeAgentSdkSessionProfile,
+    pub(crate) mcp_servers: Vec<ClaudeAgentSdkMcpServer>,
 }
 
 impl ClaudeAgentSdkSessionPreparation {
@@ -80,6 +82,7 @@ impl ClaudeAgentSdkSessionPreparation {
             request_id,
             deadline,
             profile: ClaudeAgentSdkSessionProfile::read_only(),
+            mcp_servers: Vec::new(),
         }
     }
 
@@ -93,6 +96,14 @@ impl ClaudeAgentSdkSessionPreparation {
     #[must_use]
     pub const fn with_session_profile(mut self, profile: ClaudeAgentSdkSessionProfile) -> Self {
         self.profile = profile;
+        self
+    }
+
+    /// Binds declared stdio MCP servers alongside the Copy session profile.
+    #[must_use]
+    pub fn with_mcp_binding(mut self, binding: ClaudeAgentSdkMcpBinding) -> Self {
+        self.profile = binding.session_profile();
+        self.mcp_servers = binding.servers().to_vec();
         self
     }
 
@@ -230,6 +241,7 @@ pub struct ClaudeAgentSdkPreparedSession {
     environment: EnvironmentRef,
     credential: CredentialRef,
     profile: ClaudeAgentSdkSessionProfile,
+    mcp_servers: Vec<ClaudeAgentSdkMcpServer>,
 }
 
 impl ClaudeAgentSdkPreparedSession {
@@ -256,11 +268,18 @@ impl ClaudeAgentSdkPreparedSession {
         self.profile
     }
 
+    /// Returns the declared stdio MCP servers this session was prepared with.
+    #[must_use]
+    pub fn mcp_servers(&self) -> &[ClaudeAgentSdkMcpServer] {
+        &self.mcp_servers
+    }
+
     /// Creates the low-level sidecar driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> ClaudeAgentSdkDriver {
         ClaudeAgentSdkDriver::new(self.environment.clone(), self.credential.clone())
             .with_session_profile(self.profile)
+            .with_mcp_servers(self.mcp_servers.clone())
     }
 
     /// Opens a fresh provider session with caller-supplied host services.
@@ -391,6 +410,7 @@ pub(super) fn build_prepared(
     environment: EnvironmentRef,
     credential: CredentialRef,
     profile: ClaudeAgentSdkSessionProfile,
+    mcp_servers: Vec<ClaudeAgentSdkMcpServer>,
 ) -> ClaudeAgentSdkPreparedSession {
     ClaudeAgentSdkPreparedSession {
         plan,
@@ -398,6 +418,7 @@ pub(super) fn build_prepared(
         environment,
         credential,
         profile,
+        mcp_servers,
     }
 }
 

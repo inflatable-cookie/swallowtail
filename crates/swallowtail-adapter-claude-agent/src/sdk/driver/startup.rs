@@ -1,5 +1,9 @@
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::{command_rejected, failure};
+use crate::sdk::mcp::{
+    ClaudeAgentSdkMcpServer, ClaudeAgentSdkMcpServerStatus, ClaudeAgentSdkMcpServerStatusKind,
+    admitted_tool_names,
+};
 use crate::sdk::profile::{
     ClaudeAgentSdkEffort, ClaudeAgentSdkEffortOutcome, ClaudeAgentSdkPermissionMode,
     ClaudeAgentSdkSessionProfile,
@@ -49,6 +53,8 @@ pub(crate) struct SessionReadiness {
     resuming: bool,
     expected_provider_session_ref: Option<SessionRef>,
     provider_session_ref: Option<SessionRef>,
+    mcp_server_status: Vec<ClaudeAgentSdkMcpServerStatus>,
+    admitted_mcp_tools: Vec<String>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -94,6 +100,14 @@ impl SessionReadiness {
     /// The effective permission mode the sidecar confirmed at open.
     pub(crate) const fn permission_mode(&self) -> ClaudeAgentSdkPermissionMode {
         self.permission_mode
+    }
+
+    pub(crate) fn mcp_server_status(&self) -> &[ClaudeAgentSdkMcpServerStatus] {
+        &self.mcp_server_status
+    }
+
+    pub(crate) fn admitted_mcp_tools(&self) -> &[String] {
+        &self.admitted_mcp_tools
     }
 
     pub(crate) fn provider_session_ref(&self) -> Option<&SessionRef> {
@@ -248,8 +262,18 @@ pub(crate) async fn open(
     plan: &PreflightPlan,
     leased_cwd: &str,
     profile: ClaudeAgentSdkSessionProfile,
+    mcp_servers: &[ClaudeAgentSdkMcpServer],
 ) -> Result<SessionReadiness, RuntimeFailure> {
-    start(connection, plan, leased_cwd, profile, None, None).await
+    start(
+        connection,
+        plan,
+        leased_cwd,
+        profile,
+        mcp_servers,
+        None,
+        None,
+    )
+    .await
 }
 
 pub(crate) async fn resume(
@@ -257,6 +281,7 @@ pub(crate) async fn resume(
     plan: &PreflightPlan,
     leased_cwd: &str,
     profile: ClaudeAgentSdkSessionProfile,
+    mcp_servers: &[ClaudeAgentSdkMcpServer],
     provider_session_ref: &SessionRef,
     resume_session_at: Option<&str>,
 ) -> Result<SessionReadiness, RuntimeFailure> {
@@ -265,6 +290,7 @@ pub(crate) async fn resume(
         plan,
         leased_cwd,
         profile,
+        mcp_servers,
         Some(provider_session_ref),
         resume_session_at,
     )
@@ -348,6 +374,7 @@ async fn start(
     plan: &PreflightPlan,
     leased_cwd: &str,
     profile: ClaudeAgentSdkSessionProfile,
+    mcp_servers: &[ClaudeAgentSdkMcpServer],
     provider_session_ref: Option<&SessionRef>,
     resume_session_at: Option<&str>,
 ) -> Result<SessionReadiness, RuntimeFailure> {
@@ -356,10 +383,7 @@ async fn start(
         .expect("validated sidecar model route")
         .as_str()
         .to_owned();
-    let tools: Vec<&str> = profile
-        .tools()
-        .map(crate::sdk::profile::ClaudeAgentSdkTool::as_str)
-        .collect();
+    let tools = admitted_tool_names(&profile, mcp_servers);
     let mut params = json!({
         "cwd": leased_cwd,
         "model": model,
@@ -377,6 +401,9 @@ async fn start(
     }
     if let Some(effort) = profile.effort() {
         params["effort"] = json!(effort.as_str());
+    }
+    if !mcp_servers.is_empty() {
+        params["mcpServers"] = mcp_servers_params(mcp_servers);
     }
     let response = connection
         .command("open-1".to_owned(), ClaudeAgentSdkCommand::Open, params)
@@ -399,6 +426,8 @@ async fn start(
         cwd: leased_cwd,
         requested_model: &model,
         profile,
+        admitted_tools: tools,
+        mcp_servers,
         sdk_version: &bound_version(plan, CLAUDE_AGENT_SDK_PACKAGE_AXIS),
         native_version: &bound_version(plan, CLAUDE_AGENT_SDK_NATIVE_AXIS),
         node_version: &bound_version(plan, CLAUDE_AGENT_SDK_NODE_AXIS),
@@ -422,6 +451,8 @@ struct Expectation<'a> {
     cwd: &'a str,
     requested_model: &'a str,
     profile: ClaudeAgentSdkSessionProfile,
+    admitted_tools: Vec<String>,
+    mcp_servers: &'a [ClaudeAgentSdkMcpServer],
     sdk_version: &'a str,
     native_version: &'a str,
     node_version: &'a str,
@@ -444,11 +475,12 @@ fn readiness(
             && text(data, "nodeVersion").is_some()
             && text(data, "cwd") == Some(expected.cwd)
             && text(data, "requestedModel") == Some(expected.requested_model)
-            && tools_match(data, expected.profile)
+            && tools_match(data, &expected.admitted_tools)
             && text(data, "permissionMode") == Some(expected.profile.permission_mode().as_str())
             && effort_matches(data, expected.profile)
             && data.get("persistSession").and_then(Value::as_bool)
                 == Some(expected.profile.persist_session())
+            && mcp_status_present(data, expected.mcp_servers)
             && data.get("resuming").and_then(Value::as_bool) == Some(expected.resuming)
     });
     if !identity_matches {
@@ -481,6 +513,7 @@ fn readiness(
             )
         })?;
     account_ready(data, expected.resuming)?;
+    let mcp_server_status = mcp_server_status(data, expected.mcp_servers)?;
     Ok(SessionReadiness {
         // Capabilities are runtime evidence from first-turn system/init, not
         // an initialize-response claim.
@@ -501,6 +534,8 @@ fn readiness(
         resuming: expected.resuming,
         expected_provider_session_ref: expected.expected_provider_session_ref.cloned(),
         provider_session_ref: None,
+        mcp_server_status,
+        admitted_mcp_tools: crate::sdk::mcp::admitted_mcp_tool_names(expected.mcp_servers),
     })
 }
 
@@ -649,16 +684,106 @@ fn capabilities(data: &Value) -> Result<Vec<String>, RuntimeFailure> {
 
 /// The sidecar's echo must be the admitted set exactly: same tools, same
 /// order, no additions. A widened echo is a substitution, not a convenience.
-fn tools_match(data: &Value, profile: ClaudeAgentSdkSessionProfile) -> bool {
+fn tools_match(data: &Value, admitted: &[String]) -> bool {
     data.get("tools")
         .and_then(Value::as_array)
         .is_some_and(|tools| {
-            tools.len() == profile.tools().count()
+            tools.len() == admitted.len()
                 && tools
                     .iter()
-                    .zip(profile.tools())
+                    .zip(admitted)
                     .all(|(tool, expected)| tool.as_str() == Some(expected.as_str()))
         })
+}
+
+fn mcp_status_present(data: &Value, servers: &[ClaudeAgentSdkMcpServer]) -> bool {
+    match data.get("mcpServerStatus") {
+        None => servers.is_empty(),
+        Some(value) => value
+            .as_array()
+            .is_some_and(|statuses| !servers.is_empty() && statuses.len() == servers.len()),
+    }
+}
+
+fn mcp_servers_params(servers: &[ClaudeAgentSdkMcpServer]) -> Value {
+    Value::Array(
+        servers
+            .iter()
+            .map(|server| {
+                json!({
+                    "name": server.name(),
+                    "command": server.command(),
+                    "args": server.args(),
+                    "envAllowlistKeys": server.env_allowlist_keys(),
+                    "tools": server.tools(),
+                    "optional": server.is_optional(),
+                })
+            })
+            .collect(),
+    )
+}
+
+fn mcp_server_status(
+    data: &Value,
+    servers: &[ClaudeAgentSdkMcpServer],
+) -> Result<Vec<ClaudeAgentSdkMcpServerStatus>, RuntimeFailure> {
+    if servers.is_empty() {
+        return Ok(Vec::new());
+    }
+    let statuses = data
+        .get("mcpServerStatus")
+        .and_then(Value::as_array)
+        .ok_or_else(mcp_status_invalid)?;
+    if statuses.len() != servers.len() {
+        return Err(mcp_status_invalid());
+    }
+    let mut projected = Vec::with_capacity(servers.len());
+    for (server, value) in servers.iter().zip(statuses) {
+        if text(value, "name") != Some(server.name()) {
+            return Err(mcp_status_invalid());
+        }
+        if value.get("error").is_some()
+            || value.get("url").is_some()
+            || value.get("config").is_some()
+        {
+            return Err(mcp_status_invalid());
+        }
+        let kind = text(value, "status").ok_or_else(mcp_status_invalid)?;
+        projected.push(match kind {
+            "connected" => ClaudeAgentSdkMcpServerStatus::connected(server.name()),
+            "pending" => ClaudeAgentSdkMcpServerStatus::pending(server.name()),
+            "failed" => ClaudeAgentSdkMcpServerStatus::failed(
+                server.name(),
+                "swallowtail.claude-agent.sdk.mcp_server_failed",
+            ),
+            "needs-auth" => ClaudeAgentSdkMcpServerStatus::failed(
+                server.name(),
+                "swallowtail.claude-agent.sdk.mcp_server_needs_auth",
+            ),
+            _ => return Err(mcp_status_invalid()),
+        });
+        if !server.is_optional()
+            && projected
+                .last()
+                .is_some_and(|status| status.kind() != ClaudeAgentSdkMcpServerStatusKind::Connected)
+        {
+            return Err(failure(
+                projected
+                    .last()
+                    .and_then(ClaudeAgentSdkMcpServerStatus::failure_code)
+                    .unwrap_or("swallowtail.claude-agent.sdk.mcp_server_failed"),
+                "Claude Agent SDK required MCP server did not connect",
+            ));
+        }
+    }
+    Ok(projected)
+}
+
+fn mcp_status_invalid() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.mcp_status_invalid",
+        "Claude Agent SDK sidecar returned invalid MCP server status evidence",
+    )
 }
 
 fn effort_matches(data: &Value, profile: ClaudeAgentSdkSessionProfile) -> bool {

@@ -365,6 +365,20 @@ impl ClaudeAgentSdkSessionProfile {
         self
     }
 
+    /// Returns this Copy profile with an owned set of declared stdio MCP
+    /// servers.
+    ///
+    /// MCP servers cannot live inside this type without dropping `Copy` and
+    /// the `v0.4.2` `const fn` accessors. The binding is the additive prepared
+    /// input: native admission stays on the profile, and declared servers
+    /// travel beside it.
+    pub fn with_mcp_servers(
+        self,
+        servers: impl IntoIterator<Item = super::mcp::ClaudeAgentSdkMcpServer>,
+    ) -> Result<super::mcp::ClaudeAgentSdkMcpBinding, PreparationFailure> {
+        super::mcp::ClaudeAgentSdkMcpBinding::from_parts(self, servers.into_iter().collect())
+    }
+
     /// Returns the exact working-resource lease access this profile requires.
     ///
     /// A write tool without a read-write lease is refused: preparation binds

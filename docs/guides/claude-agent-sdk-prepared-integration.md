@@ -19,12 +19,13 @@ output, identity-and-lifecycle activity, consumer-mediated tool admission, a
 permission mode selected at open and changeable mid-session, a supported-model
 catalogue, confirmed-or-typed-fail model changes, optional open-time effort,
 optional provider-owned persistence with replay-free resume, bounded session
-listing, interrupt, and a host-owned descendant-tree close. The default profile
+listing, interrupt, optional consumer-declared stdio MCP servers, and a host-owned descendant-tree close. The default profile
 is read-only and non-persistent; an explicit profile may admit writes or Bash
-only with a read-write working resource lease. Reject it when the application
+only with a read-write working resource lease, and may bind declared stdio MCP
+servers beside the Copy session profile. Reject it when the application
 cannot provision the Node runtime, sidecar asset, SDK package, and platform
 binary, or needs load with replay, fork, provider-session management, usage
-detail, thinking control, MCP, hooks, plugins, skills, subagents, checkpoints,
+detail, thinking control, managed or SSE/HTTP MCP, MCP resources or prompts, hooks, plugins, skills, subagents, checkpoints,
 or terminal execution. Those are
 later layers or separate routes, not withheld defaults.
 
@@ -278,7 +279,8 @@ stages because no caller deadline exists there.
 Ambient behavior is suppressed by construction rather than by omission:
 setting sources are empty, skills are an explicit empty list (omission is
 documented *not* to mean "skills off"), session persistence is disabled unless
-the prepared profile opts in, and MCP servers, plugins, hooks, subagents, and
+the prepared profile opts in, MCP servers are empty unless the prepared
+binding declares stdio servers, and plugins, hooks, subagents, and
 system prompts are all set explicitly.
 
 Runtime-advertised capabilities are recorded and then enforced. An interrupt
@@ -445,6 +447,38 @@ title. Provider paths, message bodies, and raw store records never cross the
 sidecar. A listing is display evidence only: it is not a resume binding or
 attachment authority, and it never opens a live provider session or replays
 transcript content.
+
+## Client MCP Servers
+
+The pinned `0.3.259` SDK exposes `Options.mcpServers`, `strictMcpConfig`, and
+`Query.mcpServerStatus()`. This route maps only consumer-declared **stdio**
+servers. SSE and HTTP configs carry URLs and optional headers; in-process
+`sdk` servers execute callbacks inside the sidecar. Neither shape is
+representable. Managed MCP (`managedMcpServers`) stays withheld: the route
+still passes `settingSources: []`.
+
+`ClaudeAgentSdkSessionProfile` stays `Copy`. Declared servers live on
+`ClaudeAgentSdkMcpBinding`, produced by `with_mcp_servers`. Preparation takes
+that binding through `with_mcp_binding`. Omitting it keeps the empty set, so
+the default open omits `mcpServers` and never calls `mcpServerStatus`.
+
+Each server names a command, args, env allowlist keys, and the server-local
+tools that join the admitted set as `mcp__<name>__<tool>`. Env is built from
+the same deny-by-default child allowlist as the native binary: an explicit
+object, never omitted `process.env`. Keys outside that allowlist fail at
+profile construction. The reserved watcher name `swallowtail-watchers` is
+rejected there too.
+
+`strictMcpConfig` stays true. Required servers set `alwaysLoad: true` so open
+waits for connect; a required server that is not `connected` fails open typed.
+Optional servers record `pending` or `failed` in open evidence instead.
+`needs-auth` is typed failure: OAuth-backed remote servers are out of scope.
+Status evidence carries name, kind, and a typed failure code only.
+
+Every admitted MCP call goes through `canUseTool` exactly like `Edit` or
+`Bash`. `Options.allowedTools` is never set, including under `acceptEdits`.
+An unadmitted MCP name is denied inside the sidecar before the host sees it.
+An undeclared `mcp__` tool name is refused before the SDK is constructed.
 
 ## Close And The Descendant Tree
 

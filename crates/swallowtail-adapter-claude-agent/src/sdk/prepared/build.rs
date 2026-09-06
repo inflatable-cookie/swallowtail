@@ -178,6 +178,7 @@ pub(super) fn prepare(
         input.environment,
         input.credential,
         input.profile,
+        input.mcp_servers,
     ))
 }
 

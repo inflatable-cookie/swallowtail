@@ -52,3 +52,33 @@ The SDK auto-allows MCP tools in a way `canUseTool` cannot intercept (record; re
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Static freeze completed before implementation from
+`@anthropic-ai/claude-agent-sdk@0.3.259`, npm package shasum
+`daf465f8231392ab99e1c7fc7f1e14c3d25ea012`.
+
+Frozen anchors in `sdk.d.ts`:
+
+- `Options.mcpServers?: Record<string, McpServerConfig>` at line 1802.
+- `strictMcpConfig?: boolean` at line 2119.
+- `Query.mcpServerStatus(): Promise<McpServerStatus[]>` at line 2750.
+- `McpStdioServerConfig` at line 1209: `type?: 'stdio'`, `command`, `args?`,
+  `env?`, `timeout?`, `alwaysLoad?`.
+- `McpSSEServerConfig` / `McpHttpServerConfig`: `url` plus optional `headers`.
+- `McpSdkServerConfig` in-process callback servers.
+- `McpServerStatus.status`: `'connected' | 'failed' | 'needs-auth' | 'pending' | 'disabled'`.
+- `setMcpServers` / `reconnectMcpServer` / `toggleMcpServer` exist; this card
+  is open-only.
+
+Decision: stdio servers only. SSE/HTTP need extra credentials or headers.
+In-process `sdk` servers execute callbacks inside the sidecar, which this route
+does not grant. Managed MCP stays withheld. `ClaudeAgentSdkSessionProfile`
+stays `Copy`; declared servers travel on `ClaudeAgentSdkMcpBinding`. Server env
+is always an explicit child-allowlist object. Every admitted `mcp__` tool call
+goes through `canUseTool`. Required connect failure fails open typed. The
+default profile omits `mcpServers` and never queries status. Fake-SDK proofs
+cover connect, mediation, deny-never-reaches-server, undeclared-before-construct,
+required failure, and optional failure. No live Claude call, credentials, or
+tag action.

@@ -21,5 +21,5 @@ pub use host::{CleanupEvent, SdkFixtureHost, SdkScenario, Stall};
 #[allow(unused_imports)]
 pub use selection::{
     cleanup_request, expired_cleanup_request, preparation, prepared_session, prepared_session_for,
-    prepared_session_with, turn_request,
+    prepared_session_with, prepared_session_with_mcp, turn_request,
 };

@@ -708,6 +708,11 @@ fn the_asset_restricts_availability_without_auto_allowing_anything() {
     assert_eq!(options["settingSources"], json!([]));
     assert_eq!(options["skills"], json!([]));
     assert_eq!(options["persistSession"], json!(false));
+    assert_eq!(options["mcpServers"], json!({}));
+    assert_eq!(
+        options["strictMcpConfig"], true,
+        "strict MCP config stays on even when no servers are declared"
+    );
     assert_eq!(
         options["env"]["keys"],
         json!([
@@ -1155,4 +1160,156 @@ fn a_native_child_alive_at_the_bound_is_reported_as_a_survivor() {
     assert_eq!(close["data"]["nativeExitSignal"], Value::Null);
     assert_eq!(close["data"]["sdkTransportCloseRan"], true);
     assert_eq!(sidecar.observed_close_calls(), 1);
+}
+
+fn fixture_mcp_server() -> Value {
+    json!({
+        "name": "fixture",
+        "command": "/usr/bin/node",
+        "args": ["server.mjs"],
+        "envAllowlistKeys": ["PATH", "HOME"],
+        "tools": ["search"],
+        "optional": false
+    })
+}
+
+fn fixture_mcp_open(cwd: &str, extra_tools: &[&str], optional: bool) -> Value {
+    let mut server = fixture_mcp_server();
+    server["optional"] = json!(optional);
+    let mut tools = vec!["Read", "Glob", "Grep"];
+    tools.extend_from_slice(extra_tools);
+    json!({
+        "cwd": cwd,
+        "model": "m-1",
+        "tools": tools,
+        "permissionMode": "default",
+        "mcpServers": [server]
+    })
+}
+
+#[test]
+fn a_declared_stdio_mcp_server_connects_and_its_tool_is_mediated() {
+    let mut sidecar = SidecarProcess::start_scenario("mcp");
+    let cwd = sidecar.cwd();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        fixture_mcp_open(&cwd, &["mcp__fixture__search"], false),
+    );
+    assert_eq!(open["success"], true, "MCP open response: {open}");
+    assert_eq!(
+        open["data"]["mcpServerStatus"],
+        json!([{"name": "fixture", "status": "connected"}])
+    );
+    assert_eq!(
+        open["data"]["tools"],
+        json!(["Read", "Glob", "Grep", "mcp__fixture__search"])
+    );
+    let options = sidecar.observed_options();
+    assert_eq!(options["strictMcpConfig"], true);
+    assert!(
+        options.get("allowedTools").is_none(),
+        "MCP must never be auto-allowed: {options}"
+    );
+    let server = &options["mcpServers"]["fixture"];
+    assert_eq!(server["type"], "stdio");
+    assert_eq!(server["command"], "/usr/bin/node");
+    assert_eq!(server["alwaysLoad"], true);
+    assert!(
+        server["env"].is_object(),
+        "MCP env must be an explicit object, never inherited process.env: {server}"
+    );
+    let env_keys: Vec<_> = server["env"]
+        .as_object()
+        .expect("MCP env is an object")
+        .keys()
+        .cloned()
+        .collect();
+    for key in ["PATH", "HOME"] {
+        assert!(
+            env_keys.iter().any(|existing| existing == key),
+            "{key} must be copied into the explicit MCP env"
+        );
+    }
+    assert!(
+        !env_keys.iter().any(|key| key == "ANTHROPIC_API_KEY"),
+        "credentials must not reach MCP env: {server}"
+    );
+    assert!(
+        sidecar
+            .observed_control_calls()
+            .contains(&"mcpServerStatus".to_owned())
+    );
+
+    sidecar.command("query-1", "query", json!({"text": "search it"}));
+    let request = sidecar.next_callback();
+    assert_eq!(request["toolName"], "mcp__fixture__search");
+    sidecar.respond_callback(request["id"].as_str().expect("callback id"), "allow");
+    let admissions = sidecar.admissions(&["mcp__fixture__search", "mcp__fixture__echo"]);
+    assert_eq!(admissions["mcp__fixture__search"]["behavior"], "allow");
+    assert_eq!(admissions["mcp__fixture__echo"]["behavior"], "deny");
+    assert_eq!(
+        sidecar.callback_tool_names(),
+        vec!["mcp__fixture__search".to_owned()],
+        "an unadmitted MCP tool must never reach the host"
+    );
+    assert_eq!(
+        sidecar.observed_mcp_hits(),
+        vec!["mcp__fixture__search".to_owned()],
+        "a denied MCP call must never reach the server"
+    );
+}
+
+#[test]
+fn an_undeclared_mcp_server_name_is_rejected_before_the_sdk_is_constructed() {
+    let mut sidecar = SidecarProcess::start();
+    let cwd = sidecar.cwd();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({
+            "cwd": cwd,
+            "model": "m-1",
+            "tools": ["Read", "Glob", "Grep", "mcp__secret__search"],
+            "permissionMode": "default"
+        }),
+    );
+    assert_eq!(open["success"], false, "undeclared MCP open: {open}");
+    assert_eq!(open["failure"]["code"], "mcp_server_undeclared");
+    assert!(!sidecar.sdk_was_constructed());
+}
+
+#[test]
+fn a_failing_required_mcp_server_fails_open() {
+    let mut sidecar = SidecarProcess::start_scenario("mcp-required-fail");
+    let cwd = sidecar.cwd();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        fixture_mcp_open(&cwd, &["mcp__fixture__search"], false),
+    );
+    assert_eq!(open["success"], false, "required MCP failure: {open}");
+    assert_eq!(open["failure"]["code"], "mcp_server_failed");
+}
+
+#[test]
+fn an_optional_mcp_server_failure_is_recorded_without_failing_open() {
+    let mut sidecar = SidecarProcess::start_scenario("mcp-optional-fail");
+    let cwd = sidecar.cwd();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        fixture_mcp_open(&cwd, &["mcp__fixture__search"], true),
+    );
+    assert_eq!(open["success"], true, "optional MCP failure open: {open}");
+    assert_eq!(
+        open["data"]["mcpServerStatus"],
+        json!([{
+            "name": "fixture",
+            "status": "failed",
+            "failureCode": "mcp_server_failed"
+        }])
+    );
+    let options = sidecar.observed_options();
+    assert_eq!(options["mcpServers"]["fixture"]["alwaysLoad"], false);
 }

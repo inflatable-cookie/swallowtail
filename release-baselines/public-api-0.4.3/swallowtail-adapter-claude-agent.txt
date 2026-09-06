@@ -39,6 +39,12 @@ pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffortOutcome
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffortOutcome::Confirmed(swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort)
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffortOutcome::NotRequested
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffortOutcome::RequestedOnly(swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort)
+pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind::Connected
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind::Failed
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind::Pending
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind::as_str(self) -> &'static str
 pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode::AcceptEdits
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode::Default
@@ -67,15 +73,38 @@ pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::resume_route
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::session_profile(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::with_mcp_servers(self, alloc::vec::Vec<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer>) -> Self
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::with_session_profile(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile) -> Self
 impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::load_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding::admitted_tool_names(&self) -> alloc::vec::Vec<alloc::string::String>
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding::servers(&self) -> &[swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer]
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding::session_profile(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer::admitted_tool_names(&self) -> alloc::vec::Vec<alloc::string::String>
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer::args(&self) -> &[alloc::string::String]
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer::command(&self) -> &str
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer::env_allowlist_keys(&self) -> &[alloc::string::String]
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer::is_optional(&self) -> bool
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer::name(&self) -> &str
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer::optional(self) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer::stdio(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::iter::traits::collect::IntoIterator<Item = impl core::convert::Into<alloc::string::String>>, impl core::iter::traits::collect::IntoIterator<Item = impl core::convert::Into<alloc::string::String>>, impl core::iter::traits::collect::IntoIterator<Item = impl core::convert::Into<alloc::string::String>>) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer::tools(&self) -> &[alloc::string::String]
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatus
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatus
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatus::failure_code(&self) -> core::option::Option<&'static str>
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatus::kind(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatus::name(&self) -> &str
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::list_sessions(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionListing>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::low_level_driver(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::mcp_servers(&self) -> &[swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer]
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::open_route_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
@@ -88,6 +117,7 @@ pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::effective_model(&self) -> &str
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::effort(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffortOutcome
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::mcp_server_status(&self) -> &[swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatus]
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::node_version(&self) -> &str
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::node_version_posture(&self) -> &'static str
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle::permission_mode(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode
@@ -118,6 +148,7 @@ pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparati
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId, swallowtail_runtime::time::Deadline) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId, swallowtail_runtime::time::Deadline) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_mcp_binding(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding) -> Self
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_session_profile(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile) -> Self
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
@@ -133,6 +164,7 @@ pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::resource_access(&self) -> swallowtail_core::session_access::ResourceAccess
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::tools(&self) -> impl core::iter::traits::iterator::Iterator<Item = swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkTool> + '_
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::with_effort(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::with_mcp_servers(self, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer>) -> core::result::Result<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::with_permission_mode(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode) -> Self
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::with_persist_session(self, bool) -> Self
 impl core::default::Default for swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile

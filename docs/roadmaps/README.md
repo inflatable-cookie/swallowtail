@@ -15,11 +15,13 @@ shape.
 
 ## Next Task
 
-Implement [g05.032 card 103](g05/batch-cards/103-opencode-cancellation-cleanup-delete-dispatch.md):
-settle the OpenCode cancellation cleanup DELETE dispatch and fixture teardown
-race before the `v0.4.2` candidate. Card 100 is merged at
-`ffc263107343b30cda7a0efde840f84f47a361ec`; Card 101 waits for Card 103's
-verdict. Card 082 resumes as branch work (rebase onto Card 100's merge); its merge gate holds until the `v0.4.2` tag.
+Implement [g05.032 card 102](g05/batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md):
+the `v0.4.2` consumer proof and tag gate. The candidate is merged at
+`f94dd16f2e4db79c5b7c4440cc1eb2d20f8b6af8` (prepare commit
+`d5887929c4baaf84f0fd8c16c74375370945bd43`); Bovine Desktop runs the smoke
+from the Acowtancy packet, then the operator authorizes the tag by exact SHA.
+Card 082 stays branch-only until the tag; its baseline edits move to
+`public-api-unreleased`.
 
 ## Standing Lanes
 

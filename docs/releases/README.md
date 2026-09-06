@@ -6,9 +6,8 @@ mutations.
 
 ## Current Release
 
-- [Swallowtail 0.4.2](0.4.2.md) — candidate; not tagged; intended additive
-  patch over the tagged `v0.4.1`; tag creation, publication, provider work,
-  consumer mutation, and merge remain separately gated
+- [Swallowtail 0.4.2](0.4.2.md) — tagged at `f94dd16f`; source-only additive
+  patch over immutable `v0.4.1`; no registry or GitHub Release publication
 
 Earlier immutable releases remain documented at [`v0.4.1`](0.4.1.md),
 [`v0.4.0`](0.4.0.md),

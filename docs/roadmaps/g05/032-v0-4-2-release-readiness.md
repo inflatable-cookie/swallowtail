@@ -1,6 +1,6 @@
 # g05.032 v0.4.2 Release Readiness
 
-Status: ready; card 100 merged at `ffc263107343b30cda7a0efde840f84f47a361ec`; card 103 gates card 101; feature freeze active
+Status: ready; tagged `v0.4.2` at `f94dd16f`; card 100 merged at `ffc263107343b30cda7a0efde840f84f47a361ec`; card 103 complete; card 101 merged; card 102 serial consumer proof
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -37,7 +37,7 @@ fix ships as `v0.4.3` under the same patch rules, with the code named.
    Effigy prepare transaction with per-gate logs under the updated Effigy,
    candidate PR with review and exact-SHA CI in parallel, merge.
 3. Card 102 runs the source consumer and one Bovine Desktop editing session
-   on the candidate, then stops for the operator tag decision.
+   on the released `v0.4.2` tag.
 
 ## Release Boundary
 
@@ -49,8 +49,8 @@ mutation.
 
 - [103 OpenCode Cancellation Cleanup DELETE Dispatch](batch-cards/103-opencode-cancellation-cleanup-delete-dispatch.md) — complete; fixture-only, merged at `d7b483dd9d850fb0f6f3f04e4297e1bf7662333b`
 - [100 Claude SDK Open Diagnostics And Live-Open Repair](batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md) — complete; merged through PR 237 at `ffc263107343b30cda7a0efde840f84f47a361ec`
-- [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — complete; PR 240 merged at candidate SHA `f94dd16f`
-- [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — ready; exact candidate SHA `f94dd16f` and Bovine editing session as the smoke
+- [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — complete; PR 240 merged at candidate SHA `f94dd16f`; tagged as `v0.4.2`
+- [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — ready; released tag `v0.4.2` and Bovine editing session as the smoke
 
 ## Dispatch Manifest
 
@@ -120,7 +120,7 @@ Chatterbox round trip. Operator prepare authorization was granted
 | Serial edges | card 102 follows the merged candidate with green exact-SHA CI and the Bovine packet |
 | Worker capability class | release-preparation worker with Effigy release discipline; no credentials; no tag authority |
 | Acceptance evidence | read-only status output; prepare JSON report with all gates green and per-gate logs; the `0.4.2` baseline files; PR head and merged SHA; workflow-dispatch run id at that SHA |
-| Review oracle | one exact tree supports every candidate statement; release note status line reads `Status: candidate; not tagged` |
+| Review oracle | one exact tree supports every release statement; release note status line records tagged `v0.4.2` identity |
 | Stop conditions | a gate fails (Effigy rolls back; report with the captured gate log; a transient renewed by Chatterbox under the standing grant; a real defect stops); release status infers anything but `0.4.2`; an open feature PR |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
 

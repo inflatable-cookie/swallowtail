@@ -326,6 +326,28 @@ gates.
 The gate performs no authenticated provider work and no external release
 mutation.
 
+## Hosted Gate Delegation
+
+`lint`, `lint:no-features`, and `test` are satisfied for a candidate by a
+green hosted `CI` run at the exact candidate SHA: the same run the candidate
+PR already requires. Local prepare either runs those three gates or records
+that run id. The release note names the run.
+
+Cheap gates still run locally, in this order: `fmt`, `qa`, `docs`,
+`metadata`, `api`, `security`, `floor`, `source`. A docs-index failure must
+fail before clippy and the workspace tests.
+
+Effigy v0.12.1 preserves `[release.gates]` declaration order and cannot skip
+a configured gate from hosted evidence. Until Effigy grows that skip, the
+default table omits the three delegated gates. Operators invoke the
+local-heavy profile in `config/release.toml` only when no exact-SHA hosted
+run exists. Native skip remains an Effigy Chatterbox request.
+
+The lane, expected clocks, actors, and tag-request template live in
+[the release playbook](../guides/release-playbook.md). The tag request goes
+to the operator the moment those gates are green. Consumer smoke runs on the
+tag afterwards and does not hold the tag.
+
 ## Release Authority
 
 No manifest version, passing gate, changelog, clean commit, or generated

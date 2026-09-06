@@ -60,6 +60,7 @@ impl CancellationControl for TurnCancellation {
 struct GrokTurnHandle {
     runtime_id: swallowtail_runtime::RuntimeTurnId,
     events: Option<BoxEventStream>,
+    callbacks: Option<swallowtail_runtime::CallbackExchange>,
     terminal: Option<BoxFuture<'static, TerminalOutcome>>,
     cancellation: TurnCancellation,
     active: ActiveSlot,
@@ -76,6 +77,10 @@ impl TurnHandle for GrokTurnHandle {
 
     fn take_events(&mut self) -> Option<BoxEventStream> {
         self.events.take()
+    }
+
+    fn take_callbacks(&mut self) -> Option<swallowtail_runtime::CallbackExchange> {
+        self.callbacks.take()
     }
 
     fn cancellation(&self) -> &dyn CancellationControl {

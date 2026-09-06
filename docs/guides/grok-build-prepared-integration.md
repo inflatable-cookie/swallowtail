@@ -5,9 +5,11 @@ separate from xAI's hosted Responses WebSocket route.
 New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 The route is `grok-build.acp`, driver ID `swallowtail.grok-build.acp`, over
-ACP v1 stdio. Choose it for the installed subscription harness and reject it
-when the application needs hosted xAI inference, answerable permissions,
-usage, or public provider-session management.
+ACP v1 stdio. Choose it for the installed subscription harness. It can expose
+answerable one-shot permissions on an explicitly opted-in interactive session;
+structured runs and the default session profile reject permission requests.
+Reject it when the application needs hosted xAI inference, usage, or public
+provider-session management.
 
 ## Route And Operation Shapes
 
@@ -95,9 +97,18 @@ For every prompt, take and poll events and terminal concurrently, then close
 the turn. Cancellation stops the active turn. Session close joins local ACP,
 process, credential, and working-resource work while preserving Grok state.
 
-Provider permission requests are observable but not answerable. They stop the
-turn. Do not treat observation as approval, ambient permission, or sandbox
-evidence.
+Provider permission requests are rejected and cancel the turn by default. An
+interactive session may opt in with
+`GrokSessionProfileInput::with_consumer_mediated_permissions()`. The prepared
+plan then binds the exact `acp/session/request-permission` namespace and the
+session turn exposes a `CallbackExchange`. Each callback carries the bounded
+tool-call view and only the offered `allow_once` and `reject_once` choices;
+persistent choices are withheld. A successful consumer response selects one
+offered option, while consumer failure maps to the offered one-shot rejection.
+The callback uses the turn deadline, permits only one outstanding request, and
+abandonment on cancellation, timeout, failure, or close rejects the pending
+exchange. Silence never grants access. Structured runs retain the default
+reject-and-cancel behavior.
 
 An exact existing binding may use `prepare_working_state_restoration` for
 bounded attachment recovery after process loss. This reattaches the durable
@@ -126,8 +137,8 @@ to infer retry or authentication policy.
 ## Unsupported
 
 The route has no usage or billed-cost evidence, reasoning control, structured
-output, attachments, consumer tools, permission/question response, external
-search, provider-session management, or provider-managed retry.
+output, attachments, consumer tools, question response, external search,
+provider-session management, or provider-managed retry.
 
 Promotion requires an exact Grok Build surface and release, prepared-plan and
 access binding, bounded ACP fixtures, lifecycle tests, and route-matrix

@@ -52,6 +52,49 @@ impl FixtureHost {
             .writes
             .clone()
     }
+
+    fn wait_for_write<F>(&self, predicate: F) -> bool
+    where
+        F: Fn(&[Value]) -> bool,
+    {
+        let mut state = self.agent.state.lock().expect("agent lock poisoned");
+        while !predicate(&state.writes) && !state.stopped {
+            state = self
+                .agent
+                .changed
+                .wait(state)
+                .expect("agent wait lock poisoned");
+        }
+        predicate(&state.writes)
+    }
+
+    fn emit_permission_without_turn(&self) {
+        let mut state = self.agent.state.lock().expect("agent lock poisoned");
+        Agent::enqueue(
+            &mut state,
+            json!({
+                "jsonrpc": "2.0",
+                "id": 902,
+                "method": "session/request_permission",
+                "params": {
+                    "sessionId": "grok-fixture-session",
+                    "toolCall": {"toolCallId": "no-active-turn"},
+                    "options": [{
+                        "optionId": "reject-once",
+                        "name": "Reject once",
+                        "kind": "reject_once"
+                    }]
+                }
+            }),
+        );
+        self.agent.changed.notify_all();
+    }
+
+    fn release_deadline(&self) {
+        let mut state = self.agent.state.lock().expect("agent lock poisoned");
+        state.deadline_released = true;
+        self.agent.changed.notify_all();
+    }
 }
 
 impl TimeService for FixtureHost {
@@ -62,6 +105,18 @@ impl TimeService for FixtureHost {
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
         if matches!(self.agent.scenario, Scenario::Deadline) {
             Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
+        } else if matches!(self.agent.scenario, Scenario::PermissionTimeout) {
+            let agent = Arc::clone(&self.agent);
+            Box::pin(async move {
+                let mut state = agent.state.lock().expect("agent lock poisoned");
+                while (!state.permission_emitted || !state.deadline_released) && !state.stopped {
+                    state = agent
+                        .changed
+                        .wait(state)
+                        .expect("agent wait lock poisoned");
+                }
+                DeadlineObservation::new(deadline, deadline.instant())
+            })
         } else {
             Box::pin(std::future::pending())
         }

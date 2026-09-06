@@ -37,8 +37,9 @@ fn operation_requirements(
 fn session_requirements(
     prepared: &GrokPreparedIntegration,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    permission_handling: GrokPermissionHandling,
 ) -> OperationRequirements {
-    operation_requirements(
+    let requirements = operation_requirements(
         prepared,
         OperationShape::InteractiveSession,
         swallowtail_core::DriverRole::InteractiveSession,
@@ -50,10 +51,21 @@ fn session_requirements(
             HostServiceKind::WorkingResource,
             HostServiceKind::WorkingResourceIo,
         ],
-    )
-    .with_session_access_policy(SessionAccessPolicy::ambient_harness(
-        ResourceAccess::ReadWrite,
-    ))
+    );
+    match permission_handling {
+        GrokPermissionHandling::RejectAndCancel => requirements
+            .with_session_access_policy(SessionAccessPolicy::ambient_harness(
+                ResourceAccess::ReadWrite,
+            )),
+        GrokPermissionHandling::ConsumerMediated => requirements
+            .with_extension_namespaces([crate::grok_build_permission_namespace()])
+            .with_session_access_policy(
+                SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+                    ResourceAccess::ReadWrite,
+                    [crate::grok_build_permission_namespace()],
+                ),
+            ),
+    }
     .with_session_provider_state_policy(SessionProviderStatePolicy::DurableProviderSessionPreserved)
 }
 

@@ -12,6 +12,7 @@ struct GrokSessionHandle {
     provider_id: String,
     binding: SessionResumeBinding,
     model_options: NegotiatedSessionModelOptions,
+    permission_handling: crate::GrokPermissionHandling,
     execution_host_id: swallowtail_core::ExecutionHostId,
     connection: Arc<AcpConnection>,
     cancellation: SessionCancellation,
@@ -63,8 +64,16 @@ impl InteractiveSessionHandle for GrokSessionHandle {
                     "Grok Build session already has an active turn",
                 ));
             }
-            let (turn, events, terminal) =
-                ActiveTurn::new(request.turn_id().clone(), self.provider_id.clone())?;
+            let (turn, events, callbacks, terminal) = ActiveTurn::new(
+                request.turn_id().clone(),
+                self.provider_id.clone(),
+                request.deadline(),
+                matches!(
+                    self.permission_handling,
+                    crate::GrokPermissionHandling::ConsumerMediated
+                ),
+                Arc::downgrade(&self.connection),
+            )?;
             self.connection.set_active_turn(Arc::clone(&turn))?;
             let connection = Arc::clone(&self.connection);
             let prompt_turn = Arc::clone(&turn);
@@ -152,6 +161,7 @@ impl InteractiveSessionHandle for GrokSessionHandle {
             Ok(Box::new(GrokTurnHandle {
                 runtime_id: request.turn_id().clone(),
                 events: Some(events),
+                callbacks,
                 terminal: Some(Box::pin(terminal)),
                 cancellation: TurnCancellation {
                     connection: Arc::clone(&self.connection),

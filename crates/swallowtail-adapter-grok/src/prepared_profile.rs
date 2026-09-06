@@ -47,6 +47,17 @@ pub struct GrokSessionProfileInput {
     model: GrokModelSelection,
     working_resource: WorkingResourceRef,
     options: SessionOptions,
+    permission_handling: GrokPermissionHandling,
+}
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+/// Policy for permission requests emitted by Grok Build ACP.
+pub enum GrokPermissionHandling {
+    /// Reject the request, cancel the provider turn, and preserve the current default.
+    #[default]
+    RejectAndCancel,
+    /// Expose one-shot permission choices through the exact consumer exchange.
+    ConsumerMediated,
 }
 
 impl GrokSessionProfileInput {
@@ -63,7 +74,15 @@ impl GrokSessionProfileInput {
             model,
             working_resource,
             options,
+            permission_handling: GrokPermissionHandling::RejectAndCancel,
         }
+    }
+
+    /// Enables exact consumer-mediated one-shot permission callbacks.
+    #[must_use]
+    pub const fn with_consumer_mediated_permissions(mut self) -> Self {
+        self.permission_handling = GrokPermissionHandling::ConsumerMediated;
+        self
     }
 }
 
@@ -234,7 +253,11 @@ impl GrokPreparedIntegration {
             input.model.model_id,
             capabilities.clone(),
         );
-        let requirements = session_requirements(self, profile_requirements(&capabilities));
+        let requirements = session_requirements(
+            self,
+            profile_requirements(&capabilities),
+            input.permission_handling,
+        );
         let plan = build_plan(self, &instance, &route, &requirements)?;
         let request =
             OpenSessionRequest::from_plan(&plan, input.request_id, input.working_resource, None)?

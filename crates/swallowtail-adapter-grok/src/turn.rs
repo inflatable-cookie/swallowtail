@@ -2,13 +2,14 @@ use crate::activity::{AcpActivityProjection, text_content};
 use crate::failure::{failure, malformed};
 use serde_json::Value;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{Arc, Mutex};
-use swallowtail_core::{ExtensionNamespace, ProviderRequestRef};
+use std::sync::{Arc, Mutex, Weak};
+use swallowtail_core::ProviderRequestRef;
 use swallowtail_protocol_acp::{AcpMessageRole, AcpSessionUpdate};
 use swallowtail_runtime::{
-    BoxEventStream, CleanupOutcome, OperationContent, ProviderRequestObservation, RuntimeEvent,
-    RuntimeEventKind, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalOutcomeFuture,
-    TerminalOutcomeSender, TerminalStatus, runtime_event_channel, terminal_outcome_channel,
+    BoxEventStream, CallbackAbandonment, CallbackExchange, CleanupOutcome, Deadline,
+    OperationContent, ProviderRequestObservation, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
+    RuntimeTurnId, TerminalOutcome, TerminalOutcomeFuture, TerminalOutcomeSender, TerminalStatus,
+    runtime_event_channel, terminal_outcome_channel,
 };
 
 const EVENT_CAPACITY: usize = 128;
@@ -22,6 +23,8 @@ pub(crate) struct ActiveTurn {
     sequence: AtomicU64,
     output: Mutex<String>,
     activity: Mutex<AcpActivityProjection>,
+    deadline: Option<Deadline>,
+    callbacks: Option<crate::permission::CallbackHub>,
     provider_observation: Mutex<Option<ProviderRequestObservation>>,
     cancelled: AtomicBool,
     timed_out: AtomicBool,
@@ -32,10 +35,27 @@ impl ActiveTurn {
     pub(crate) fn new(
         runtime_id: RuntimeTurnId,
         session_id: String,
-    ) -> Result<(Arc<Self>, BoxEventStream, TerminalOutcomeFuture), RuntimeFailure> {
+        deadline: Option<Deadline>,
+        exchanges_permissions: bool,
+        connection: Weak<crate::connection::AcpConnection>,
+    ) -> Result<
+        (
+            Arc<Self>,
+            BoxEventStream,
+            Option<CallbackExchange>,
+            TerminalOutcomeFuture,
+        ),
+        RuntimeFailure,
+    > {
         let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
         events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
         let (terminal, future) = terminal_outcome_channel();
+        let (callbacks, callback_exchange) = if exchanges_permissions {
+            let (callbacks, exchange) = crate::permission::CallbackHub::new(connection, true);
+            (Some(callbacks), Some(exchange))
+        } else {
+            (None, None)
+        };
         Ok((
             Arc::new(Self {
                 runtime_id: runtime_id.clone(),
@@ -45,12 +65,15 @@ impl ActiveTurn {
                 sequence: AtomicU64::new(1),
                 output: Mutex::new(String::new()),
                 activity: Mutex::new(AcpActivityProjection::new(runtime_id)),
+                deadline,
+                callbacks,
                 provider_observation: Mutex::new(None),
                 cancelled: AtomicBool::new(false),
                 timed_out: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
             }),
             Box::pin(stream),
+            callback_exchange,
             future,
         ))
     }
@@ -65,11 +88,14 @@ impl ActiveTurn {
 
     pub(crate) fn mark_cancelled(&self) {
         self.cancelled.store(true, Ordering::SeqCst);
+        if let Some(callbacks) = &self.callbacks {
+            callbacks.abandon(CallbackAbandonment::TurnCancelled);
+        }
     }
 
     pub(crate) fn timeout(&self) {
         self.timed_out.store(true, Ordering::SeqCst);
-        self.finish(TerminalStatus::TimedOut);
+        self.finish_with_abandonment(TerminalStatus::TimedOut, CallbackAbandonment::TimedOut);
     }
 
     pub(crate) fn observe_permission(
@@ -90,8 +116,7 @@ impl ActiveTurn {
         .map_err(|_| malformed())?;
         let observation = ProviderRequestObservation::new(
             callback_id,
-            ExtensionNamespace::new("acp/session/request-permission")
-                .expect("static namespace is valid"),
+            crate::grok_build_permission_namespace(),
             provider_request_ref.clone(),
         );
         *self
@@ -105,6 +130,37 @@ impl ActiveTurn {
             ),
             None,
         )
+    }
+
+    pub(crate) fn exchanges_permissions(&self) -> bool {
+        self.callbacks
+            .as_ref()
+            .is_some_and(|callbacks| callbacks.exchanges_permissions())
+    }
+
+    pub(crate) fn exchange_permission(
+        &self,
+        provider_request_id: &Value,
+        params: &Value,
+    ) -> Result<(), RuntimeFailure> {
+        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
+        let callbacks = self.callbacks.as_ref().ok_or_else(|| {
+            failure(
+                "swallowtail.grok.acp.permission_exchange_unavailable",
+                "Grok Build permission exchange was not enabled for this turn",
+            )
+        })?;
+        let callback_id = callbacks.enqueue_permission(
+            &self.runtime_id,
+            sequence,
+            self.deadline,
+            provider_request_id,
+            params,
+        )?;
+        self.events.send(RuntimeEvent::new(
+            sequence,
+            RuntimeEventKind::CallbackRequested(callback_id),
+        ))
     }
 
     pub(crate) fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
@@ -183,8 +239,15 @@ impl ActiveTurn {
     }
 
     fn finish(&self, status: TerminalStatus) {
+        self.finish_with_abandonment(status, CallbackAbandonment::TurnTerminated);
+    }
+
+    fn finish_with_abandonment(&self, status: TerminalStatus, reason: CallbackAbandonment) {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
+        }
+        if let Some(callbacks) = &self.callbacks {
+            callbacks.abandon(reason);
         }
         if let Ok(observations) = self
             .activity

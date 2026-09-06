@@ -1,4 +1,7 @@
 pub mod swallowtail_adapter_grok
+pub enum swallowtail_adapter_grok::GrokPermissionHandling
+pub swallowtail_adapter_grok::GrokPermissionHandling::ConsumerMediated
+pub swallowtail_adapter_grok::GrokPermissionHandling::RejectAndCancel
 pub enum swallowtail_adapter_grok::GrokProjectionOpenFailure
 pub swallowtail_adapter_grok::GrokProjectionOpenFailure::Runtime(swallowtail_runtime::failure::RuntimeFailure)
 impl swallowtail_adapter_grok::GrokProjectionOpenFailure
@@ -82,6 +85,7 @@ pub const fn swallowtail_adapter_grok::GrokRunProfileInput::new(swallowtail_runt
 pub struct swallowtail_adapter_grok::GrokSessionProfileInput
 impl swallowtail_adapter_grok::GrokSessionProfileInput
 pub const fn swallowtail_adapter_grok::GrokSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_grok::GrokModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
+pub const fn swallowtail_adapter_grok::GrokSessionProfileInput::with_consumer_mediated_permissions(self) -> Self
 pub const swallowtail_adapter_grok::GROK_BUILD_ACP_AXIS: &str
 pub const swallowtail_adapter_grok::GROK_BUILD_ACP_BASELINE_VERSION: &str
 pub const swallowtail_adapter_grok::GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str
@@ -92,6 +96,7 @@ pub fn swallowtail_adapter_grok::grok_build_acp_claim() -> swallowtail_core::int
 pub fn swallowtail_adapter_grok::grok_build_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
 pub fn swallowtail_adapter_grok::grok_build_model_for_behavior(&str) -> core::option::Option<&'static str>
 pub fn swallowtail_adapter_grok::grok_build_model_for_version(&swallowtail_core::interface_version::InterfaceVersion) -> core::option::Option<&'static str>
+pub fn swallowtail_adapter_grok::grok_build_permission_namespace() -> swallowtail_core::event::ExtensionNamespace
 pub fn swallowtail_adapter_grok::grok_build_subscription_access_profile(swallowtail_core::runtime_identity::CredentialRef) -> swallowtail_core::access::AccessProfile
 pub async fn swallowtail_adapter_grok::prepare_grok_build(swallowtail_adapter_grok::GrokPreparationInput, swallowtail_adapter_grok::GrokPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_grok::GrokPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
 pub type swallowtail_adapter_grok::GrokPreparedRunFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>

@@ -2,6 +2,9 @@
 enum Scenario {
     Success,
     Permission,
+    PermissionTimeout,
+    PermissionMalformed,
+    PermissionWithoutTurn,
     Cancellation,
     Deadline,
     Disconnect,
@@ -20,6 +23,8 @@ struct AgentState {
     output: VecDeque<ProcessOutputChunk>,
     writes: Vec<Value>,
     prompt_id: Option<u64>,
+    permission_emitted: bool,
+    deadline_released: bool,
     stopped: bool,
 }
 
@@ -123,14 +128,16 @@ impl Agent {
                     "result": {"providerPrivateAccountMetadata": "must-be-discarded"}
                 }),
             ),
-            Some("session/new") => Self::enqueue(
-                &mut state,
-                json!({
-                    "jsonrpc": "2.0",
-                    "id": id,
-                    "result": {"sessionId": "grok-fixture-session"}
-                }),
-            ),
+            Some("session/new") => {
+                Self::enqueue(
+                    &mut state,
+                    json!({
+                        "jsonrpc": "2.0",
+                        "id": id,
+                        "result": {"sessionId": "grok-fixture-session"}
+                    }),
+                );
+            }
             Some("session/load") => match self.scenario {
                 Scenario::RecoveryForeign => Self::enqueue(
                     &mut state,
@@ -221,29 +228,21 @@ impl Agent {
                 state.prompt_id = id;
                 match self.scenario {
                     Scenario::Success => self.success(&mut state, id),
-                    Scenario::Permission => Self::enqueue(
-                        &mut state,
-                        json!({
-                            "jsonrpc": "2.0",
-                            "id": 900,
-                            "method": "session/request_permission",
-                            "params": {
-                                "sessionId": "grok-fixture-session",
-                                "toolCall": {"toolCallId": "fixture-tool"},
-                                "options": [{
-                                    "optionId": "allow-once",
-                                    "name": "Allow once",
-                                    "kind": "allow_once"
-                                }]
-                            }
-                        }),
-                    ),
+                    Scenario::Permission | Scenario::PermissionTimeout => {
+                        state.permission_emitted = true;
+                        Self::permission_request(&mut state, false);
+                    }
+                    Scenario::PermissionMalformed => {
+                        state.permission_emitted = true;
+                        Self::permission_request(&mut state, true);
+                    }
                     Scenario::Cancellation | Scenario::Deadline => {}
                     Scenario::Disconnect => {
                         state.stopped = true;
                     }
                     Scenario::Malformed => unreachable!("malformed initialization stops first"),
-                    Scenario::RecoveryForeign
+                    Scenario::PermissionWithoutTurn
+                    | Scenario::RecoveryForeign
                     | Scenario::RecoveryCallback
                     | Scenario::RecoveryMalformed
                     | Scenario::RecoveryOversized
@@ -266,7 +265,12 @@ impl Agent {
                     );
                 }
             }
-            None if matches!(id, Some(900 | 901)) => {}
+            None if id == Some(900) => {
+                if message["result"]["outcome"]["outcome"] == "selected" {
+                    self.complete_permission(&mut state);
+                }
+            }
+            None if matches!(id, Some(901 | 902)) => {}
             _ => return Err(fixture_failure()),
         }
         self.changed.notify_all();
@@ -311,6 +315,58 @@ impl Agent {
             Self::update(state, update);
         }
         state.prompt_id = None;
+        Self::enqueue(
+            state,
+            json!({
+                "jsonrpc": "2.0",
+                "id": id,
+                "result": {"stopReason": "end_turn"}
+            }),
+        );
+    }
+
+    fn permission_request(state: &mut AgentState, malformed: bool) {
+        Self::enqueue(
+            state,
+            if malformed {
+                json!({
+                    "jsonrpc": "2.0",
+                    "id": 900,
+                    "method": "session/request_permission",
+                    "params": {
+                        "sessionId": "grok-fixture-session",
+                        "toolCall": {},
+                        "options": [{
+                            "optionId": "reject-once",
+                            "name": "Reject once",
+                            "kind": "reject_once"
+                        }]
+                    }
+                })
+            } else {
+                json!({
+                    "jsonrpc": "2.0",
+                    "id": 900,
+                    "method": "session/request_permission",
+                    "params": {
+                        "sessionId": "grok-fixture-session",
+                        "toolCall": {"toolCallId": "fixture-tool"},
+                        "options": [
+                            {"optionId": "allow-once", "name": "Allow once", "kind": "allow_once"},
+                            {"optionId": "reject-once", "name": "Reject once", "kind": "reject_once"},
+                            {"optionId": "allow-always", "name": "Allow always", "kind": "allow_always"},
+                            {"optionId": "reject-always", "name": "Reject always", "kind": "reject_always"}
+                        ]
+                    }
+                })
+            },
+        );
+    }
+
+    fn complete_permission(&self, state: &mut AgentState) {
+        let Some(id) = state.prompt_id.take() else {
+            return;
+        };
         Self::enqueue(
             state,
             json!({

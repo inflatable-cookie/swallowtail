@@ -13,6 +13,19 @@ fn run_selection(host: ExecutionHostId, version: &str) -> FixtureSelection {
 }
 
 fn selection_for(host: ExecutionHostId, version: &str, structured: bool) -> FixtureSelection {
+    selection_for_with_permission(host, version, structured, false)
+}
+
+fn selection_for_permission(host: ExecutionHostId) -> FixtureSelection {
+    selection_for_with_permission(host, "0.2.114", false, true)
+}
+
+fn selection_for_with_permission(
+    host: ExecutionHostId,
+    version: &str,
+    structured: bool,
+    consumer_mediated: bool,
+) -> FixtureSelection {
     let descriptor = grok_build_acp_descriptor();
     let credential = CredentialRef::new("grok.fixture.credential").expect("credential");
     let access = grok_build_subscription_access_profile(credential.clone());
@@ -144,6 +157,18 @@ fn selection_for(host: ExecutionHostId, version: &str, structured: bool) -> Fixt
     .require_model_route();
     let requirements = if structured {
         requirements
+    } else if consumer_mediated {
+        requirements
+            .with_extension_namespaces([swallowtail_adapter_grok::grok_build_permission_namespace()])
+            .with_session_access_policy(
+                SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+                    ResourceAccess::ReadWrite,
+                    [swallowtail_adapter_grok::grok_build_permission_namespace()],
+                ),
+            )
+            .with_session_provider_state_policy(
+                SessionProviderStatePolicy::DurableProviderSessionPreserved,
+            )
     } else {
         requirements
             .with_session_access_policy(SessionAccessPolicy::ambient_harness(
@@ -228,20 +253,53 @@ fn open(
     HostServices,
     Box<dyn swallowtail_runtime::InteractiveSessionHandle>,
 ) {
+    open_with_permission(scenario, false)
+}
+
+fn open_consumer(
+    scenario: Scenario,
+) -> (
+    FixtureHost,
+    HostServices,
+    Box<dyn swallowtail_runtime::InteractiveSessionHandle>,
+) {
+    open_with_permission(scenario, true)
+}
+
+fn open_with_permission(
+    scenario: Scenario,
+    consumer_mediated: bool,
+) -> (
+    FixtureHost,
+    HostServices,
+    Box<dyn swallowtail_runtime::InteractiveSessionHandle>,
+) {
     let host_id = ExecutionHostId::new("fixture.host.grok").expect("host");
-    let selected = selection(host_id.clone());
+    let selected = if consumer_mediated {
+        selection_for_permission(host_id.clone())
+    } else {
+        selection(host_id.clone())
+    };
     let host = FixtureHost::new(scenario);
     let services = host.services(host_id);
     let driver = GrokAcpDriver::new(
         EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
         selected.credential,
     );
+    let access_policy = if consumer_mediated {
+        SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+            ResourceAccess::ReadWrite,
+            [swallowtail_adapter_grok::grok_build_permission_namespace()],
+        )
+    } else {
+        SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite)
+    };
     let request = OpenSessionRequest::new(
         RequestId::new("grok-open").expect("request"),
         selected.resource,
         None,
         SessionPlanAgreement::explicit(
-            SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite),
+            access_policy,
             Some(SessionProviderStatePolicy::DurableProviderSessionPreserved),
             Some(HarnessConfigurationPosture::Ambient),
         ),
@@ -256,13 +314,23 @@ fn start(
     services: HostServices,
     id: &str,
 ) -> Box<dyn swallowtail_runtime::TurnHandle> {
-    block_on(session.start_turn(
-        TurnRequest::new(
-            RuntimeTurnId::new(id).expect("turn"),
-            OperationContent::new("private fixture prompt").expect("prompt"),
-        ),
-        services,
-    ))
+    start_with_deadline(session, services, id, None)
+}
+
+fn start_with_deadline(
+    session: &mut dyn swallowtail_runtime::InteractiveSessionHandle,
+    services: HostServices,
+    id: &str,
+    deadline: Option<Deadline>,
+) -> Box<dyn swallowtail_runtime::TurnHandle> {
+    let mut request = TurnRequest::new(
+        RuntimeTurnId::new(id).expect("turn"),
+        OperationContent::new("private fixture prompt").expect("prompt"),
+    );
+    if let Some(deadline) = deadline {
+        request = request.with_deadline(deadline);
+    }
+    block_on(session.start_turn(request, services))
     .expect("turn starts")
 }
 

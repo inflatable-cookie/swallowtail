@@ -11,7 +11,8 @@ use swallowtail_core::{
     AccessStatus, ConfiguredInstanceId, CredentialState, DiscoveryStatus, EndpointAuthorization,
     EntitlementState, ExecutionHostId, HarnessConfigurationPosture,
     InstalledExecutableCompatibility, InstanceRevision, InterfaceVersionAxis, ModelId,
-    ModelRouteId, ModelRouteRevision, RuntimeReadiness, SessionRef, SupportAuthority,
+    ModelRouteId, ModelRouteRevision, ResourceAccess, RuntimeReadiness, SessionAccessPolicy,
+    SessionRef, SupportAuthority,
 };
 use swallowtail_runtime::{
     CancellationControl, Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef,
@@ -240,6 +241,29 @@ fn prepared_discovery_binds_exact_instance_access_and_ambient_posture() {
         assert_eq!(
             session.plan().model_id().expect("model").as_str(),
             "grok-4.5"
+        );
+        let consumer_session = prepared
+            .prepare_session(
+                GrokSessionProfileInput::new(
+                    RequestId::new("grok-consumer-session").expect("request"),
+                    GrokModelSelection::new(
+                        ModelRouteId::new("grok.fixture.consumer-route").expect("route"),
+                        ModelRouteRevision::new("grok.fixture.consumer-route-r1")
+                            .expect("route revision"),
+                        ModelId::new("grok-4.5").expect("model"),
+                    ),
+                    WorkingResourceRef::new("grok.fixture.workspace").expect("workspace"),
+                    SessionOptions::default(),
+                )
+                .with_consumer_mediated_permissions(),
+            )
+            .expect("consumer-mediated prepared session succeeds");
+        assert_eq!(
+            consumer_session.request().access_policy(),
+            &SessionAccessPolicy::ambient_harness_with_consumer_mediated_requests(
+                ResourceAccess::ReadWrite,
+                [swallowtail_adapter_grok::grok_build_permission_namespace()],
+            )
         );
         assert_eq!(
             session.request().provider_state_policy(),

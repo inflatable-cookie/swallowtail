@@ -66,6 +66,7 @@ forces a minor.
 
 ## Batch Cards
 
+- [108 Claude Code Response-Only Project Location](batch-cards/108-claude-code-response-only-project-location.md) — planned; after the `v0.4.3` tag; manifest promoted then
 - [105 Claude SDK Termination Cause Propagation](batch-cards/105-claude-sdk-termination-cause-propagation.md) — ready; consumer-critical; the tagged driver discards the sidecar's terminal code and result fields; `v0.4.3` content; precedes card 083 in the shared crate
 - [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — delivered; PR 221 permission policy and PR 224 ambient read-write editing
 - [089 Core Preflight Tool Exclusion Scoped To Bounded Profiles](batch-cards/089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md) — ready; core and testkit only; operator ruling 2026-09-04

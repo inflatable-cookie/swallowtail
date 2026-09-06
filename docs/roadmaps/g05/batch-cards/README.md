@@ -10,6 +10,7 @@
 
 ## Planned
 
+- [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — planned; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
 - [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — planned; ready on card 105's merge
 - [107-v0-4-3-consumer-proof-and-tag-capsule.md](./107-v0-4-3-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.3` tag
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — planned; waits for cards 084 and 086

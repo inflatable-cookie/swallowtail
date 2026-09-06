@@ -37,10 +37,11 @@ See the g05.034 manifest row.
 ## Result
 
 PR 253. Chatterbox co-signed the Contract 036 clause on two bounded
-conditions, applied on this delta: `floor` joins the hosted-delegated
-set; a hosted run counts only at the SHA to tag or a commit with an identical
-tree, otherwise `CI` dispatches at the merge SHA before the tag request.
-Stopped for delta re-review. No merge.
+conditions, then required this event qualifier: `floor` joins the
+hosted-delegated set; evidence is a green hosted `CI` run triggered by
+`workflow_dispatch` (or a push to `main`) at the SHA to tag or at a commit
+with an identical tree; pull-request runs do not qualify because the MSRV
+floor skips its tests there. Stopped for final delta review. No merge.
 
 ## Auto-Continuation
 

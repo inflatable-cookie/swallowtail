@@ -328,16 +328,17 @@ mutation.
 
 ## Hosted Gate Delegation
 
-`lint`, `lint:no-features`, `test`, and `floor` are satisfied for a candidate
-by a green hosted `CI` run at the SHA to tag, or at a commit with an
-identical tree. `floor` is the pinned-MSRV clippy and test pass already
-represented by that board; repeating it locally re-runs a heavy gate the
-hosted run already proved.
+`lint`, `lint:no-features`, `test`, and `floor` are satisfied for a candidate by
+a green hosted `CI` run triggered by `workflow_dispatch` (or a push to `main`)
+at the SHA to tag or at a commit with an identical tree; pull-request runs do
+not qualify because the MSRV floor skips its tests there. `floor` is the
+pinned-MSRV clippy and test pass already represented by that board; repeating
+it locally re-runs a heavy gate the hosted run already proved.
 
 A hosted run at another SHA does not count unless that commit's tree is
 identical. If merge produces a new SHA whose tree is not identical to a
-green run, dispatch `CI` at the merge SHA and wait for green before the tag
-request.
+green qualifying run, dispatch `CI` with `workflow_dispatch` at the merge
+SHA and wait for green before the tag request.
 
 Local prepare either runs those four gates or records the qualifying run
 id. The release note names the run.

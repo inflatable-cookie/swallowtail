@@ -13,8 +13,10 @@ initial-tag-current-version = true
 # Local release gates are credential-free. Cheap gates run first in
 # declaration order so a docs or metadata failure costs seconds, not a
 # clippy-and-test cycle. `lint`, `lint:no-features`, `test`, and `floor` are
-# omitted from this table: Contract 036 treats a green hosted CI run at the
-# SHA to tag, or at a commit with an identical tree, as their evidence.
+# omitted from this table: Contract 036 treats a green hosted `CI` run
+# triggered by `workflow_dispatch` (or a push to `main`) at the SHA to tag
+# or at a commit with an identical tree as their evidence; pull-request
+# runs do not qualify because the MSRV floor skips its tests there.
 # `floor` is the pinned-MSRV clippy and test pass already on that board.
 # Effigy v0.12.1 preserves order but cannot skip a configured gate and has
 # no `--hosted` flag; native skip is an Effigy Chatterbox request. Until

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-04
+Updated: 2026-09-06
 
 ## Scope
 
@@ -50,3 +50,8 @@ These rules apply to all Swallowtail work before v1.0.
 
 State what changed, current state, failed or material validation, and the next
 move. Keep one active Next Task pointer in `docs/roadmaps/README.md`.
+
+A closeout commit that touches `docs/**`, `PAPERCUTS.md`, or `CHANGELOG.md`
+runs `effigy qa:docs` before push. The git pre-push hook is the enforcement;
+this rule is the authority. Install the hook once with `effigy hooks:install`
+(`effigy bootstrap` and `effigy doctor` run that task).

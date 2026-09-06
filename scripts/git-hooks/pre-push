@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# Refuse a push that changes docs, PAPERCUTS.md, or CHANGELOG.md when
+# `effigy qa:docs` fails. Contract 001 is the authority; this hook is the
+# enforcement. Install once with `effigy hooks:install`.
+set -euo pipefail
+
+repo_root=$(git rev-parse --show-toplevel)
+cd "$repo_root"
+
+remote_name=${1:-}
+zero_oid=0000000000000000000000000000000000000000
+docs_touched=0
+
+path_is_checked() {
+  local changed_path=$1
+  case "$changed_path" in
+    docs|docs/*|PAPERCUTS.md|CHANGELOG.md) return 0 ;;
+  esac
+  return 1
+}
+
+collect_changed_paths() {
+  local local_oid=$1
+  local remote_oid=$2
+  local merge_base
+  if [[ "$remote_oid" == "$zero_oid" ]]; then
+    if merge_base=$(git merge-base "$local_oid" "${remote_name}/HEAD" 2>/dev/null); then
+      git diff --name-only "$merge_base" "$local_oid"
+    elif merge_base=$(git merge-base "$local_oid" origin/main 2>/dev/null); then
+      git diff --name-only "$merge_base" "$local_oid"
+    else
+      git diff-tree --no-commit-id --name-only -r "$local_oid"
+    fi
+  else
+    git diff --name-only "$remote_oid" "$local_oid"
+  fi
+}
+
+while read -r _local_ref local_oid _remote_ref remote_oid; do
+  if [[ -z "${local_oid:-}" ]]; then
+    continue
+  fi
+  if [[ "$local_oid" == "$zero_oid" ]]; then
+    continue
+  fi
+  while IFS= read -r changed_path; do
+    if [[ -z "$changed_path" ]]; then
+      continue
+    fi
+    if path_is_checked "$changed_path"; then
+      docs_touched=1
+      break
+    fi
+  done < <(collect_changed_paths "$local_oid" "$remote_oid")
+  if [[ "$docs_touched" -eq 1 ]]; then
+    break
+  fi
+done
+
+if [[ "$docs_touched" -ne 1 ]]; then
+  exit 0
+fi
+
+if ! command -v effigy >/dev/null 2>&1; then
+  printf 'pre-push: effigy is not on PATH; cannot run qa:docs\n' >&2
+  exit 1
+fi
+
+printf 'pre-push: docs, PAPERCUTS.md, or CHANGELOG.md in this push; running effigy qa:docs\n' >&2
+if ! effigy qa:docs; then
+  printf 'pre-push: effigy qa:docs failed; refusing push (Contract 001 closeout rule)\n' >&2
+  exit 1
+fi

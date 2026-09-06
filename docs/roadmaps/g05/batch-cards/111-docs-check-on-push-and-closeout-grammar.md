@@ -19,9 +19,9 @@ Stop closeouts from landing index drift on `main`: three of four `v0.4.2` prepar
 
 ## Acceptance Criteria
 
-- [ ] a deliberately broken index is rejected at push time
-- [ ] the checker's grammar is documented in its header and every failure names a line
-- [ ] Contract 001 updated
+- [x] a deliberately broken index is rejected at push time
+- [x] the checker's grammar is documented in its header and every failure names a line
+- [x] Contract 001 updated
 
 ## Validation
 
@@ -34,3 +34,23 @@ See the g05.034 manifest row.
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Pre-push `effigy qa:docs` when the push changes `docs/**`, `PAPERCUTS.md`, or
+`CHANGELOG.md`. `scripts/install-git-hooks.sh` sets local `core.hooksPath` to
+`scripts/git-hooks`. `effigy hooks:install` is wired into `[bootstrap]` and
+`health`, so `effigy bootstrap` and `effigy doctor` install it once.
+
+The status checker header now owns first-token grammar: split on the first `;`,
+recognised set, batch-card section matching. Annotation primaries no longer
+scan later detail for `stopped`/`blocked`. Every failure names `path:line`.
+
+Contract 001 closeout: the docs check is the authority; the hook is
+enforcement.
+
+Validation: `effigy qa:docs` passed; `git diff --check` clean. Throwaway clone
+push of card 111 listed under `## Ready` was refused:
+`docs/roadmaps/g05/batch-cards/README.md:5`. A planned annotation containing
+later `stopped` now passes. `scripts/README.md` is owned by card 110; the new
+scripts are not listed there.

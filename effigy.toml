@@ -87,6 +87,7 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "qa:docs:roadmaps:numbers:test" = "bash scripts/tests/roadmap-number-collision.sh"
 "qa:docs:next-action:roadmaps" = "effigy docs check next-action --policy roadmaps"
 "qa:docs:agent-defaults" = "effigy docs check forbidden AGENTS.md README.md docs/README.md --forbid '--repo .'"
+"hooks:install" = "bash scripts/install-git-hooks.sh"
 "qa:guides" = "python3 scripts/check-integration-guide-coverage.py"
 "qa:consumer-docs" = "python3 scripts/check-consumer-front-door.py"
 "qa:code:version-expects" = "python3 scripts/check-literal-version-expects.py"
@@ -193,6 +194,12 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 # Cheap orientation for `effigy doctor`. Full board is `effigy qa`.
 # Never alias health to qa (or qa:northstar).
 "health" = [
+  { task = "hooks:install" },
   { task = "qa:docs:agent-defaults" },
   { task = "format:check" },
+]
+
+[bootstrap]
+run = [
+  { task = "hooks:install" },
 ]

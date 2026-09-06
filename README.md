@@ -19,17 +19,16 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`v0.4.3` is the current source-candidate identity. Releases are distributed as
+`v0.4.3` is the current source tag. Releases are distributed as
 annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
-installer in this release line. The last tagged release remains `v0.4.2` until
-the operator authorizes the annotated `v0.4.3` tag.
+installer in this release line.
 
 The 40 packages share coordinated version `0.4.3` and provide 49 production
-routes, including `pi.sdk-sidecar` and `claude-agent.sdk` after immutable
-`v0.4.1`. OpenHands remains a package without a production route. The candidate
-preserves the Rust `1.95.0` floor and is not an API 1.0 promise.
+routes, including `pi.sdk-sidecar` and `claude-agent.sdk`. OpenHands remains a
+package without a production route. The current tag preserves the Rust `1.95.0`
+floor and is not an API 1.0 promise.
 
 ## Choose A Route First
 
@@ -147,7 +146,7 @@ Before 1.0:
   identity, or weakening lifecycle and authority truth is breaking
 
 See [Contract 036](docs/contracts/036-crate-release-and-compatibility-boundary.md)
-and the [v0.4.3 candidate release notes](docs/releases/0.4.3.md).
+and the [v0.4.3 release notes](docs/releases/0.4.3.md).
 
 ## Development
 

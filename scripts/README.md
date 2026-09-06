@@ -20,7 +20,9 @@ Normal validation scripts:
   traceability behind `effigy qa:guides`
 - `check-consumer-front-door.py` — source-install TOML, canonical Git identity,
   release package and route inventories, and support-policy presence behind
-  `effigy qa:consumer-docs`
+  `effigy qa:consumer-docs`. Current tag and inventories come from
+  `workspace.package.version` and the matching baseline directories; prepare
+  does not repoint this script.
 - `check-roadmap-status-drift.py` — batch-card section, milestone annotation,
   and generation-index ready/completed/stop counts against Status frontmatter
   behind `effigy qa:docs:roadmaps:status`. Accepted Status buckets and census
@@ -53,8 +55,14 @@ Normal validation scripts:
 
 Release-preparation scripts:
 
+- `release-version-identity.sh` — current version from
+  `workspace.package.version`; previous is the greatest tagged `public-api-*`
+  directory strictly older than current. Sourced or executed by the four gate
+  scripts and the consumer front door. Prepare does not repoint those scripts.
+  Hermetic fixtures: `bash scripts/tests/release-version-identity.sh`
 - `check-package-metadata.sh` — Contract 036 metadata, package set, MSRV, and
-  dependency topology
+  dependency topology against `public-api-<current>` and
+  `internal-dependencies-<current>.tsv`
 - `check-release-floor.sh` — lockfile-read-only, warnings-denied Clippy and full
   tests for the unified Rust 1.95 package floor; accepted Effigy release sync
   owns package-aware workspace-member lock updates before gates
@@ -63,9 +71,12 @@ Release-preparation scripts:
   use an explicitly reported synthetic Git snapshot
 - `generate-public-api-baseline.sh` — generate the reviewed semantic Rust API
   inventory with pinned `cargo-public-api` and nightly versions
-- `check-public-api.sh` — compare the 40-package `v0.4.3` API baseline, while
-  forbidding removals from immutable `v0.4.1`. Historical `v0.3.3` and earlier
-  files stay immutable
+- `check-public-api.sh` — compare the live API to `public-api-<current>` and
+  forbid removals from immutable `public-api-<previous>`. Historical tagged
+  directories stay immutable
+- `check-provider-route-matrix.sh` — production route, lifecycle, feature, and
+  activity matrices against current and previous route inventories, behind
+  `effigy qa:routes`
 - `check-msrv.sh` — unified Rust 1.95 floor and current stable checks
 
 Archived registry-candidate scripts:

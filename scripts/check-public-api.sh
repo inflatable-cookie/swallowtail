@@ -4,10 +4,23 @@ set -euo pipefail
 release_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$release_repo_root"
 
-release_immutable_baseline_dir=release-baselines/public-api-0.4.1
-release_baseline_dir=release-baselines/public-api-0.4.3
+# shellcheck source=scripts/release-version-identity.sh
+source "$release_repo_root/scripts/release-version-identity.sh"
+release_load_version_identity
+
+release_immutable_baseline_dir=release-baselines/public-api-$release_previous_version
+release_baseline_dir=release-baselines/public-api-$release_current_version
 release_toolchain=nightly-2026-08-05
 release_tool_version='cargo-public-api 0.52.0'
+
+if [[ ! -d $release_baseline_dir ]]; then
+  printf 'missing working baseline directory %s\n' "$release_baseline_dir" >&2
+  exit 1
+fi
+if [[ ! -d $release_immutable_baseline_dir ]]; then
+  printf 'missing immutable baseline directory %s\n' "$release_immutable_baseline_dir" >&2
+  exit 1
+fi
 
 if ! command -v cargo-public-api >/dev/null 2>&1; then
   printf 'cargo-public-api 0.52.0 is required; install it with cargo install cargo-public-api --version 0.52.0 --locked\n' >&2
@@ -31,6 +44,8 @@ trap 'rm -rf "$release_actual_dir"' EXIT
 bash scripts/generate-public-api-baseline.sh "$release_actual_dir"
 release_expected_packages="$release_baseline_dir/packages.txt"
 diff -u "$release_expected_packages" "$release_actual_dir/packages.txt"
+release_package_count=$(wc -l < "$release_expected_packages" | tr -d ' ')
+release_immutable_count=$(wc -l < "$release_immutable_baseline_dir/packages.txt" | tr -d ' ')
 while IFS= read -r release_package; do
   release_api="$release_baseline_dir/$release_package.txt"
   if [[ -f "$release_immutable_baseline_dir/$release_package.txt" ]]; then
@@ -39,8 +54,8 @@ while IFS= read -r release_package; do
       "$release_immutable_baseline_dir/$release_package.txt" \
       > "$release_removed_api" || true
     if [[ -s "$release_removed_api" ]]; then
-      printf 'v0.4.3 release API removes an immutable v0.4.1 item: %s\n' \
-        "$release_package" >&2
+      printf 'v%s release API removes an immutable v%s item: %s\n' \
+        "$release_current_version" "$release_previous_version" "$release_package" >&2
       cat "$release_removed_api" >&2
       exit 1
     fi
@@ -49,4 +64,6 @@ while IFS= read -r release_package; do
     "$release_api" \
     "$release_actual_dir/$release_package.txt"
 done < "$release_expected_packages"
-printf 'semantic API passed: 40 packages at v0.4.3; immutable v0.4.1 remains 40; no API removals are permitted in this patch\n'
+printf 'semantic API passed: %s packages at v%s; immutable v%s remains %s; no API removals are permitted in this patch\n' \
+  "$release_package_count" "$release_current_version" \
+  "$release_previous_version" "$release_immutable_count"

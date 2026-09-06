@@ -72,3 +72,24 @@ Promoted planning commit: the `main` commit that introduces this table.
 - [ ] every test that ran before still runs somewhere on every PR
 - [ ] the required-check set for merge is documented and unchanged in
       strength
+
+## Card 104 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Ready now; concurrent with the g05.029 runway.
+
+| Field | Card 104 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | `v0.4.2` tagged; cards 094 and 103 merged |
+| Completion conditions | four surfaces classified and fixed at the class; 20+ loaded runs per binary clean; card 094's list annotated |
+| Owned mutable paths | `crates/swallowtail-adapter-kimi-platform/tests/**`; `crates/swallowtail-host-local/tests/**`; `crates/swallowtail-host-local/src/watcher_service/**` and `crates/swallowtail-adapter-kimi-platform/src/**` ONLY for a disclosed real leak; `docs/roadmaps/g05/batch-cards/094-*.md` deferred list annotation; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
+| Forbidden paths | `swallowtail-adapter-claude-agent` (g05.029 runway owns it); every other crate; baselines; contracts |
+| Approved concurrent siblings | g05.029 cards 082 to 088 |
+| Serial edges | none |
+| Worker capability class | Rust worker with concurrency discipline; frontier-tier |
+| Acceptance evidence | loaded-run logs; classification table with anchors |
+| Review oracle | the card's invariant |
+| Stop conditions | a real leak needs a shared runtime change (return to Chatterbox) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

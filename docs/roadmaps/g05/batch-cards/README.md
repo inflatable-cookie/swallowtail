@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [104-post-tag-determinism-sweep.md](./104-post-tag-determinism-sweep.md) — ready; retire card 094's deferred timing and leak surfaces in kimi-platform and host-local; concurrent with the g05.029 runway
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; branch-only until the `v0.4.2` tag; set_model with confirmed values, supported_models and effort at open
 - [102-v0-4-2-consumer-proof-and-tag-gate.md](./102-v0-4-2-consumer-proof-and-tag-gate.md) — ready; candidate `f94dd16f` merged; Bovine editing session as the smoke
 

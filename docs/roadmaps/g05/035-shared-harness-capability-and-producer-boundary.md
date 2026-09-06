@@ -22,8 +22,8 @@ operator-confirmed ownership split and first concrete architecture. No durable
 architecture or contract has been promoted from the spec. Implementation is
 blocked. Existing Desktop baseline and rehearsal lanes continue independently.
 Desktop Spec 010 at `30a338f2` now settles the bilateral ownership split;
-Longhorn PR 22 at reviewed head `2c27fec8` is the counterpart and must remove
-its conflicting registry/schema/transport authority before either plan promotes.
+Longhorn PR 22 is aligned and independently passed at head `6ce4aa1b`.
+Bilateral ownership alignment is complete; Swallowtail promotion gates remain.
 The replacement Card 084 branch `g05-card084-claude-client-mcp-1` at committed
 head `80e004b4` is the sole active Claude SDK client-MCP implementation-evidence
 owner; its uncommitted WIP is not released evidence. The preserved old branch
@@ -35,7 +35,7 @@ must not duplicate or disturb that work. Since `80e004b4` is current
 ## Execution Plan
 
 - [ ] **Batch A — architecture and contract promotion.** Independently review
-      Spec 014; verify Longhorn PR 22 alignment with Desktop `30a338f2`; promote repository
+      Spec 014; retain Longhorn PR 22 alignment at PASS head `6ce4aa1b`; promote repository
       ownership, registered capability, the Contract 060 common-kernel and
       compatibility amendment, server profile/transport, unique tool kind,
       progress, Allow/Deny, skill/reference, and projection rules. Recompile
@@ -140,8 +140,7 @@ authorized, one route at a time, after deterministic conformance passes.
 ## Stop Conditions
 
 - a required architecture or contract rule remains only in Spec 014;
-- Longhorn PR 22 retains registry, listener, lease, correlation, admission,
-  domain-schema, or standalone-daemon authority;
+- either producer plan drifts from the independently reviewed bilateral split;
 - a route needs raw credentials, paths, environment, broad shell, ambient
   configuration mutation, or unrelated client content;
 - provider-direct MCP cannot preserve the common lease and exact per-call
@@ -155,7 +154,7 @@ authorized, one route at a time, after deterministic conformance passes.
 
 ## Next Planning Gate
 
-Independent review of Research 288 and Spec 014, plus an independently accepted
-Longhorn counterpart aligned to Desktop `30a338f2`. Chatterbox may then promote
+Independent review of Research 288 and Spec 014. Longhorn PR 22 is already
+aligned and independently accepted at `6ce4aa1b`. Chatterbox may then promote
 accepted architecture/contracts and recompile this roadmap into exact ready
 batch cards. Implementation authority is currently **no**.

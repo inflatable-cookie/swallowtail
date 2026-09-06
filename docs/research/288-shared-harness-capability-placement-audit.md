@@ -5,7 +5,7 @@ Owner: Tom
 Date: 2026-09-07
 Audited baseline: `v0.4.3` at `cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`; current planning base `80e004b4aa1f43da9dd9d39bed5274e9e773c216`
 Consumer intake: Desktop `docs/roadmaps/dispatch-manifest.md` at `d4e56c5acb86bb084f5377cfaa516a03cfda76c3`, section `Swallowtail shared harness capability lane` (operator-confirmed; object is not present in this repository)
-Ownership decision: Desktop `docs/specs/010-contextual-chat-and-task-queue.md` at `30a338f2` ([exact source](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md)); counterpart planning: [Longhorn PR 22](https://github.com/inflatable-cookie/longhorn/pull/22) at reviewed head `2c27fec883d5e1fd39258da48675e4498a70b180`
+Ownership decision: Desktop `docs/specs/010-contextual-chat-and-task-queue.md` at `30a338f2` ([exact source](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md)); counterpart planning: [Longhorn PR 22](https://github.com/inflatable-cookie/longhorn/pull/22) independently passed at aligned head `6ce4aa1beafad6748af238d19fb47ffaa1ad342f` ([review](https://github.com/inflatable-cookie/longhorn/pull/22#issuecomment-5563025824))
 
 ## Question
 

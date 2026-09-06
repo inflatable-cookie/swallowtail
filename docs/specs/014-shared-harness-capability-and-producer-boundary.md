@@ -3,7 +3,7 @@
 Status: draft; operator-confirmed direction, independent review required before promotion
 Owner: Tom
 Updated: 2026-09-07
-Evidence: Research 288; Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; Desktop Spec 010 at `30a338f2`; Longhorn PR 22 at `2c27fec8`
+Evidence: Research 288; Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; Desktop Spec 010 at `30a338f2`; Longhorn PR 22 PASS at `6ce4aa1b`
 
 ## Purpose
 
@@ -22,7 +22,7 @@ rules are reviewed and promoted.
 | Owner | Owns | Does not own | Governing evidence |
 | --- | --- | --- | --- |
 | Swallowtail | sole namespaced registration snapshot; operation bridge listener/transport, lease, correlation, generation, lifecycle, prepared-plan binding, route adapters, safe diagnostics, and conformance | domain tool names or schemas, business/effect policy, durable product identity, admission issuance, packaged host startup | [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md), amended only after review |
-| Longhorn | transport-neutral typed host dispatch/validation library and generic safe result/error envelopes | registry authority, listener, lease, correlation kernel, admission identity, domain names/schemas/policy, standalone daemon in slice 1 | [PR 22](https://github.com/inflatable-cookie/longhorn/pull/22), whose [`Contract 023`](https://github.com/inflatable-cookie/longhorn/blob/2c27fec883d5e1fd39258da48675e4498a70b180/docs/contracts/023-production-contextual-agent-tool-boundary.md) and [`Spec 002`](https://github.com/inflatable-cookie/longhorn/blob/2c27fec883d5e1fd39258da48675e4498a70b180/docs/specs/002-production-contextual-agent-tool-boundary.md) require revision |
+| Longhorn | transport-neutral typed host dispatch/validation library and generic safe result/error envelopes | registry authority, listener, lease, correlation kernel, admission identity, domain names/schemas/policy, standalone daemon in slice 1 | [PR 22](https://github.com/inflatable-cookie/longhorn/pull/22), whose aligned [`Contract 023`](https://github.com/inflatable-cookie/longhorn/blob/6ce4aa1beafad6748af238d19fb47ffaa1ad342f/docs/contracts/023-production-contextual-agent-tool-boundary.md) and [`Spec 002`](https://github.com/inflatable-cookie/longhorn/blob/6ce4aa1beafad6748af238d19fb47ffaa1ad342f/docs/specs/002-production-contextual-agent-tool-boundary.md) independently passed at `6ce4aa1b` |
 | Desktop | domain tool names and input/output schemas; effects/business/tool policy; bounded app-context disclosure; durable task/session/attempt admission issuance; final Allow/Deny policy; packaging, distribution, startup, queue/UX, and receipts | provider wire, registration snapshot ownership, bridge transport/listener/lease/correlation lifetime | [`Spec 010` at `30a338f2`](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md) |
 
 Other consumers may reuse the Swallowtail boundary. They do not inherit
@@ -446,11 +446,12 @@ at a time under Contract 029.
 Desktop's canonical decision is
 [`docs/specs/010-contextual-chat-and-task-queue.md` at `30a338f2`](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md).
 The counterpart is [Longhorn PR 22](https://github.com/inflatable-cookie/longhorn/pull/22),
-reviewed at `2c27fec883d5e1fd39258da48675e4498a70b180` with contradictory
-registry/schema ownership. This spec adopts Desktop's table. Promotion remains
-blocked until Longhorn removes its registry, listener, lease, correlation,
-admission-issuer, domain-schema, and standalone-daemon claims and both revised
-plans pass independent exact-head review.
+aligned and independently passed at
+`6ce4aa1beafad6748af238d19fb47ffaa1ad342f` in
+[review comment 5563025824](https://github.com/inflatable-cookie/longhorn/pull/22#issuecomment-5563025824).
+Its Contract 023 and Spec 002 now adopt Desktop's table. Bilateral alignment is
+complete. Promotion remains blocked on this Swallowtail exact-head review and
+the existing architecture/contract promotion gates.
 
 No generic operator decision remains. Swallowtail settles protocol versions,
 transport and concurrency/deadline/byte limits, route mappings, and Contract

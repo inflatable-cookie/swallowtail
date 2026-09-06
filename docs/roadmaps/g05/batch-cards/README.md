@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [103-opencode-cancellation-cleanup-delete-dispatch.md](./103-opencode-cancellation-cleanup-delete-dispatch.md) — ready; is the missing lease-release DELETE under cancellation a production race or a fixture ordering; Drop must never abort
 - [100-claude-sdk-open-diagnostics-and-live-open-repair.md](./100-claude-sdk-open-diagnostics-and-live-open-repair.md) — ready; surface sidecar codes, effective model from init evidence, Node newer-allowed at open, one live open; the v0.4.2 fix for Bovine's open_rejected
 - [082-claude-sdk-mid-session-model-and-effort.md](./082-claude-sdk-mid-session-model-and-effort.md) — ready; paused behind card 100 (shared sidecar); resumes on its merge; set_model with confirmed values, supported_models and effort at open
 

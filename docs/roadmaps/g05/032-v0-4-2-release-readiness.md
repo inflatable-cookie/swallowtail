@@ -45,6 +45,7 @@ mutation.
 
 ## Batch Cards
 
+- [103 OpenCode Cancellation Cleanup DELETE Dispatch](batch-cards/103-opencode-cancellation-cleanup-delete-dispatch.md) — ready; release-lane investigation; card 101 waits for its verdict
 - [100 Claude SDK Open Diagnostics And Live-Open Repair](batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md) — ready
 - [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — planned; serial after card 100; operator prepare authorization granted 2026-09-05 on the standing-grant pattern
 - [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — planned; serial after card 101; Bovine editing session as the smoke
@@ -76,6 +77,27 @@ Promoted planning commit: the `main` commit that introduces this file.
 - [ ] every open failure names its sidecar code
 - [ ] `v0.4.2` tagged on the operator's exact-SHA authorization
 
+### Card 103 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Concurrent with card 100's merge; card 101 waits for card 103's verdict.
+
+| Field | Card 103 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | the CI logs named in the card; current `main` |
+| Completion conditions | production-or-fixture answer with anchors; no `resume_unwind` in OpenCode test `Drop`; 20+ loaded runs with zero aborts; if production, a disclosed fix with a race-forcing fixture |
+| Owned mutable paths | `crates/swallowtail-adapter-opencode/tests/**`; `crates/swallowtail-adapter-opencode/src/**` ONLY if a production defect is found and disclosed in the card result; `CHANGELOG.md` `[Unreleased]` in that case; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
+| Forbidden paths | every other crate; baselines; contracts |
+| Approved concurrent siblings | card 100's merge and closeout |
+| Serial edges | card 101 follows card 103's verdict |
+| Worker capability class | Rust worker with concurrency discipline; frontier-tier |
+| Acceptance evidence | the loaded-run log; code anchors for the answer |
+| Review oracle | the card's invariant |
+| Stop conditions | the answer needs a shared runtime change (return to Chatterbox) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
 ### Card 101 Manifest
 
 Promoted planning commit: the `main` commit that introduces this section.
@@ -86,7 +108,7 @@ Chatterbox round trip. Operator prepare authorization was granted
 
 | Field | Card 101 |
 | --- | --- |
-| Readiness | ready on card 100's merge (operator ship decision 2026-09-06) |
+| Readiness | ready on card 100's merge AND card 103's verdict (a production defect in the OpenCode release path becomes candidate content first) |
 | Prerequisites | card 100 merged with the live turn recorded (system/init first, truthful close); Effigy local install at or beyond the per-gate-log fix; clean canonical base; no open feature PR |
 | Completion conditions | `docs/releases/0.4.2.md` and index entry authored from card 100's result, the merged Contract 061 tranches (candidates B, K, L and the 767/767 completion), card 081's Bash mediation, and cards 093/094/095; patch class stated from the semantic API diff (all changes since `v0.4.1` are additive: card 100 adds 5 baseline lines, the tranches add contribution methods); read-only release status inferring `0.4.2` with the three-mutation plan; lock in sync before the first `--locked` gate; exactly one `effigy --json release prepare --yes --check-gates --version 0.4.2` with the per-gate logs kept as evidence; NO separate frozen-tree rerun; distinct `0.4.2` semantic baseline, route inventory, and dependency graph without touching `0.4.1` files; the four gate scripts and the consumer front-door script repointed to `0.4.2` exactly as card 091 did; candidate PR; independent review and workflow-dispatch CI in parallel; merge on both green |
 | Owned mutable paths | as card 091's amended manifest, with `0.4.2` in place of `0.4.1`: workspace `Cargo.toml` versions through the prepare transaction; `Cargo.lock` workspace entries; `CHANGELOG.md` promotion; `docs/releases/0.4.2.md`; `docs/releases/README.md` current entry; `release-baselines/public-api-0.4.2/**`, `production-routes-0.4.2.txt`, `internal-dependencies-0.4.2.tsv`; `.release-prepared.json`; `scripts/check-public-api.sh`, `scripts/check-package-metadata.sh`, `scripts/check-provider-route-matrix.sh`, `scripts/check-consumer-front-door.py`, `scripts/README.md`; root `README.md` release-posture lines; this card's `## Result`; `PAPERCUTS.md` append only |

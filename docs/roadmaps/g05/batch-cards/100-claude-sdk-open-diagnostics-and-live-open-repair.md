@@ -133,8 +133,9 @@ is proven live and provider-free; the end-to-end editing turn moves to card
       (fixture and live)
 - [ ] canonical cwd comparison and effective model from init evidence
       (fixture and live)
-- [ ] every sidecar rejection reaches the consumer with its code (fixture;
-      live: `open_rejected: <code>` observed)
+- [ ] every sidecar rejection reaches the consumer with its code (fixture
+      proven; live: `open_rejected` observed, its subcode emitted by
+      construction but lost to the harness capture on that attempt)
 - [ ] Node newer than the pin passes open as `UnverifiedNewer` (fixture)
 - [ ] cleanup reports `Degraded` with `close_root_only_degraded` on a joined
       root exit (route-level proof)

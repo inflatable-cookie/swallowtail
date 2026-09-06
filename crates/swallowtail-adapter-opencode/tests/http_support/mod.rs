@@ -1,9 +1,10 @@
 use futures_channel::oneshot;
 use futures_executor::block_on;
+use std::any::Any;
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, PoisonError};
 use std::thread::{self, JoinHandle};
 use std::time::{Duration, Instant};
 use swallowtail_runtime::{
@@ -55,6 +56,7 @@ pub struct FixtureServer {
     stop: Arc<AtomicBool>,
     delete_gate: DeleteResponseGate,
     thread: Option<JoinHandle<()>>,
+    server_panic: Arc<Mutex<Option<Box<dyn Any + Send>>>>,
 }
 
 struct HandleState {
@@ -151,6 +153,7 @@ impl FixtureServer {
             stop,
             delete_gate,
             thread: Some(thread),
+            server_panic: Arc::new(Mutex::new(None)),
         }
     }
 
@@ -173,17 +176,65 @@ impl FixtureServer {
     pub(crate) fn delete_response_gate(&self) -> DeleteResponseGate {
         self.delete_gate.clone()
     }
-}
 
-impl Drop for FixtureServer {
-    fn drop(&mut self) {
+    /// Explicit non-`Drop` teardown: stops the server, joins its thread, and
+    /// resumes any recorded fixture-thread panic. Tests that drive the fixture
+    /// gate call this so a fixture defect is still a loud test failure; `Drop`
+    /// itself can never do this without risking an abort.
+    pub fn shutdown(&mut self) {
+        self.stop_and_join();
+        if let Some(payload) = self.take_server_panic()
+            && !thread::panicking()
+        {
+            std::panic::resume_unwind(payload);
+        }
+    }
+
+    fn stop_and_join(&mut self) {
         self.stop.store(true, Ordering::SeqCst);
         self.delete_gate.release();
         let _ = TcpStream::connect(self.endpoint.trim_start_matches("http://"));
-        if let Some(thread) = self.thread.take() {
-            join_fixture_thread(thread);
+        if let Some(thread) = self.thread.take()
+            && let Err(payload) = thread.join()
+        {
+            *self
+                .server_panic
+                .lock()
+                .unwrap_or_else(PoisonError::into_inner) = Some(payload);
         }
     }
+
+    fn take_server_panic(&self) -> Option<Box<dyn Any + Send>> {
+        self.server_panic
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .take()
+    }
+}
+
+impl Drop for FixtureServer {
+    /// Never panics. A fixture-thread panic is recorded, not resumed: this
+    /// `Drop` runs during test unwinding, where any panic is non-unwinding and
+    /// aborts the whole binary. `shutdown` is the asserting teardown.
+    fn drop(&mut self) {
+        self.stop_and_join();
+        if let Some(payload) = self.take_server_panic() {
+            let message = panic_message(&*payload);
+            eprintln!("fixture server thread panicked during teardown: {message}");
+        }
+    }
+}
+
+fn panic_message(payload: &(dyn Any + Send)) -> String {
+    payload.downcast_ref::<&str>().map_or_else(
+        || {
+            payload
+                .downcast_ref::<String>()
+                .cloned()
+                .unwrap_or_else(|| "unknown fixture panic payload".to_owned())
+        },
+        |message| (*message).to_owned(),
+    )
 }
 
 fn join_fixture_thread(handle: JoinHandle<()>) {

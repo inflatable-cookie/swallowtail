@@ -1,6 +1,6 @@
 # 103 OpenCode Cancellation Cleanup DELETE Dispatch
 
-Status: ready
+Status: review; fixture-only verdict, no `v0.4.2` content
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06
@@ -45,10 +45,10 @@ Other crates; the release candidate; card 094's other surfaces.
 
 ## Acceptance Criteria
 
-- [ ] the production-or-fixture question is answered with anchors
-- [ ] no `resume_unwind` remains in any OpenCode test `Drop`
-- [ ] 20+ loaded runs with zero aborts and zero failures
-- [ ] production source unchanged unless a real defect was found, in which
+- [x] the production-or-fixture question is answered with anchors
+- [x] no `resume_unwind` remains in any OpenCode test `Drop`
+- [x] 20+ loaded runs with zero aborts and zero failures
+- [x] production source unchanged unless a real defect was found, in which
       case the fix is disclosed and separately reviewed
 
 ## Validation

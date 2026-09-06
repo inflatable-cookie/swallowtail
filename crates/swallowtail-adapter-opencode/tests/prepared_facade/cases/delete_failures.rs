@@ -1,6 +1,6 @@
 #[test]
 fn post_dispatch_cancellation_is_joined_and_unconfirmed() {
-    let fixture = PreparedFixture::new_with_fixture(
+    let mut fixture = PreparedFixture::new_with_fixture(
         "opencode.prepared.delete.cancel",
         "1.18.4",
         crate::http_support::StreamFixture::DeleteGated,
@@ -39,6 +39,7 @@ fn post_dispatch_cancellation_is_joined_and_unconfirmed() {
         outcome.effect().truth(),
         ProviderSessionEffectTruth::UnconfirmedAfterEffect
     );
+    fixture.server.shutdown();
 }
 
 #[test]

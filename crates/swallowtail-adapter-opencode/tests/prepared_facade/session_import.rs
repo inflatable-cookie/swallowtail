@@ -3,7 +3,6 @@ use crate::http_support::StreamFixture;
 use futures_executor::block_on;
 use std::num::{NonZeroU32, NonZeroU64};
 use std::sync::Arc;
-use std::time::Duration;
 use swallowtail_adapter_opencode::{
     OpenCodeSessionCatalogueInput, OpenCodeSessionProfileInput, OpenCodeSessionReconciliationInput,
 };
@@ -244,7 +243,7 @@ fn changed_candidate_issues_no_import_binding() {
 
 #[test]
 fn cancellation_deadline_and_cleanup_release_leases_without_owning_the_server() {
-    let fixture = PreparedFixture::new_with_fixture(
+    let mut fixture = PreparedFixture::new_with_fixture(
         "opencode.import.lifecycle",
         "1.18.10",
         StreamFixture::ImportGated,
@@ -281,8 +280,9 @@ fn cancellation_deadline_and_cleanup_release_leases_without_owning_the_server() 
         fixture.prepared().server().is_qualified(),
         "attached server survives cancellation"
     );
+    fixture.server.shutdown();
 
-    let deadline_fixture = PreparedFixture::new_with_fixture(
+    let mut deadline_fixture = PreparedFixture::new_with_fixture(
         "opencode.import.deadline",
         "1.18.10",
         StreamFixture::ImportGated,
@@ -296,7 +296,7 @@ fn cancellation_deadline_and_cleanup_release_leases_without_owning_the_server() 
                 deadline_fixture.resource.clone(),
                 bounds(),
             )
-            .with_deadline(deadline_fixture.deadline_after(Duration::from_millis(10))),
+            .with_deadline(deadline_fixture.manual_deadline()),
         )
         .unwrap();
     let deadline_trigger = deadline_fixture.arm_manual_deadline();
@@ -314,8 +314,9 @@ fn cancellation_deadline_and_cleanup_release_leases_without_owning_the_server() 
         failure.stage(),
         ProviderSessionOperationFailureStage::TimedOut
     );
+    deadline_fixture.server.shutdown();
 
-    let clean_fixture = PreparedFixture::new("opencode.import.cleanup", "1.18.10");
+    let mut clean_fixture = PreparedFixture::new("opencode.import.cleanup", "1.18.10");
     let clean_prepared = clean_fixture.prepared();
     let catalogue = clean_prepared
         .prepare_session_catalogue(OpenCodeSessionCatalogueInput::new(
@@ -336,4 +337,5 @@ fn cancellation_deadline_and_cleanup_release_leases_without_owning_the_server() 
         clean_fixture.prepared().server().is_qualified(),
         "attached server survives cleanup failure"
     );
+    clean_fixture.server.shutdown();
 }

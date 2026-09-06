@@ -210,6 +210,14 @@ impl PreparedFixture {
         self.clock.arm_manual_deadline()
     }
 
+    /// Deadline for operations whose expiry is driven by an armed manual
+    /// trigger. The wall-clock budget is never reached, so the driver's
+    /// pre-dispatch expiry check cannot win the race against reaching the
+    /// fixture gate on a loaded host; only the trigger expires it.
+    pub(super) fn manual_deadline(&self) -> Deadline {
+        self.deadline_after(Duration::from_secs(3_600))
+    }
+
     pub(super) fn model(&self) -> OpenCodeModelSelection {
         OpenCodeModelSelection::new(
             ModelRouteId::new("opencode.prepared.route").unwrap(),

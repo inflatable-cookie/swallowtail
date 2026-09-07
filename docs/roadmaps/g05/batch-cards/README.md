@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [138-codex-permission-exchange-cell-reconciliation.md](./138-codex-permission-exchange-cell-reconciliation.md) — ready; the matrix calls Codex permission_exchange a provider limitation while the Desktop capsule called it answerable; settle it with anchors
 - [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — ready; provider-free seam under Research 289's mapping; live gate separate; waits for cards114-115 merge and consumer-tool protocol evidence exists
 - [137-grok-probe-conforming-acp-client.md](./137-grok-probe-conforming-acp-client.md) — ready; the probe never answers client requests during session/new, so Grok waits and the session never opens; diagnose from captured frames at no quota cost
 - [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — ready; serial after 125; resolved skill bundle as the distinct third input

@@ -75,9 +75,10 @@ def anchored_line(root: Path, ref: str, label: str) -> tuple[Path, int, list[str
 
 
 def evidence_ledger(root: Path, row_route: str, feature: str, ref: str) -> None:
-    if not EVIDENCE_DOC.is_file():
+    evidence_doc = root / EVIDENCE_DOC
+    if not evidence_doc.is_file():
         fail(f"frozen evidence document is missing: {EVIDENCE_DOC}")
-    if not any(line.startswith("Status: complete") for line in EVIDENCE_DOC.read_text(encoding="utf-8").splitlines()):
+    if not any(line.startswith("Status: complete") for line in evidence_doc.read_text(encoding="utf-8").splitlines()):
         fail(f"frozen evidence document is not complete: {EVIDENCE_DOC}")
     path, line_number, lines = anchored_line(root, ref, "provider_limitation")
     if path != root / EVIDENCE_LEDGER:

@@ -19,6 +19,7 @@ import process from "node:process";
 const OBSERVATIONS = process.env.FAKE_SDK_OBSERVATIONS;
 const TEMP_OBSERVATIONS = `${OBSERVATIONS}.${process.pid}.tmp`;
 const NATIVE_LIFETIME_MS = Number(process.env.FAKE_SDK_NATIVE_LIFETIME_MS ?? "50");
+const MODEL_EVIDENCE_VALUE = process.env.FAKE_SDK_MODEL_EVIDENCE_VALUE;
 // "read-only" reproduces the layer-1 shape exactly. "editing" drives a
 // multi-turn write session so the host's admission decision can be checked
 // against the filesystem itself.
@@ -93,6 +94,10 @@ function initMessage(options) {
   } else if (SCENARIO === "unsupported-model") {
     message.model = "claude-sonnet-5-20250929";
     message.supportedModels = ["claude-opus-5"];
+  } else if (SCENARIO === "model-evidence-requested") {
+    message.model = "fixture-effective";
+  } else if (SCENARIO === "model-evidence-effective") {
+    message.model = MODEL_EVIDENCE_VALUE;
   } else if (
     ["alias-only", "canonical-only", "both-ids", "neither-ids", "diagnostic-write-failure"].includes(
       SCENARIO,
@@ -152,6 +157,12 @@ function modelRows(options) {
   }
   if (SCENARIO === "diagnostic-write-failure") {
     return [{ value: options.model, displayName: "Fixture alias" }];
+  }
+  if (SCENARIO === "model-evidence-requested") {
+    return [{ value: "fixture-supported", displayName: "Fixture supported" }];
+  }
+  if (SCENARIO === "model-evidence-effective") {
+    return [{ value: options.model, displayName: "Fixture requested" }];
   }
   if (SCENARIO === "canonical-model") {
     return [

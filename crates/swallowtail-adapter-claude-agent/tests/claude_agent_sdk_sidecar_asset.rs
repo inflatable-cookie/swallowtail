@@ -12,6 +12,8 @@ mod sidecar_asset_support;
 use serde_json::{Value, json};
 use sidecar_asset_support::SidecarProcess;
 
+const EVIDENCE_BOUNDS: &str = include_str!("fixtures/claude-agent-sdk/model-evidence-bounds.json");
+
 #[test]
 fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
     let mut sidecar = SidecarProcess::start_scenario("sdk-identity-match");
@@ -51,6 +53,54 @@ fn mismatching_sdk_package_identity_fails_before_sdk_construction_with_bounded_e
 }
 
 #[test]
+fn sdk_identity_fields_match_the_shared_boundary_and_control_table() {
+    let cases: Value =
+        serde_json::from_str(EVIDENCE_BOUNDS).expect("evidence bounds fixture is valid JSON");
+    for case in cases
+        .as_array()
+        .expect("evidence bounds fixture is an array")
+    {
+        let name = case["name"].as_str().expect("fixture case name");
+        let unit = case["unit"].as_str().expect("fixture unit");
+        let repeat = case["repeat"]
+            .as_u64()
+            .and_then(|value| usize::try_from(value).ok())
+            .expect("fixture repeat is a usize");
+        let value = unit.repeat(repeat);
+        let valid = case["valid"].as_bool().expect("fixture validity");
+
+        for field in ["loadedSdkPackage", "loadedSdkVersion"] {
+            let mut sidecar = SidecarProcess::start_sdk_identity_case(field, &value);
+            let open = sidecar.command(
+                "open-1",
+                "open",
+                json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+            );
+            let expected_code = if valid {
+                "sdk_version_mismatch"
+            } else {
+                "sdk_identity_unverifiable"
+            };
+            assert_eq!(
+                open["failure"]["code"], expected_code,
+                "sidecar identity classification for {name}/{field}: {open}"
+            );
+            assert!(
+                !sidecar.sdk_was_constructed(),
+                "SDK query ran for {name}/{field}"
+            );
+            if valid {
+                assert_eq!(
+                    sidecar.next_diagnostic()["evidence"][field],
+                    json!(value.clone()),
+                    "sidecar identity evidence for {name}/{field}"
+                );
+            }
+        }
+    }
+}
+
+#[test]
 fn missing_sdk_package_identity_is_typed_before_sdk_construction() {
     let mut sidecar = SidecarProcess::start_scenario("sdk-identity-missing");
     let open = sidecar.command(
@@ -64,6 +114,94 @@ fn missing_sdk_package_identity_is_typed_before_sdk_construction() {
     );
     assert_eq!(open["failure"]["code"], "sdk_identity_unverifiable");
     assert!(!sidecar.sdk_was_constructed());
+}
+
+#[test]
+fn package_identity_stays_bound_to_the_nested_sdk_package_root() {
+    let mut sidecar = SidecarProcess::start_scenario("sdk-identity-nested-match");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(
+        open["success"], true,
+        "nested package identity opens: {open}"
+    );
+    assert_eq!(open["data"]["sdkPackage"], "@anthropic-ai/claude-agent-sdk");
+    assert_eq!(open["data"]["sdkVersion"], "0.3.259");
+    assert!(sidecar.sdk_was_constructed());
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true);
+}
+
+#[test]
+fn unrelated_ancestor_identity_is_unverifiable_before_sdk_construction() {
+    for scenario in [
+        "sdk-identity-unrelated-ancestor",
+        "sdk-identity-malformed",
+        "sdk-identity-unreadable",
+        "sdk-identity-ambiguous",
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(
+            open["failure"]["code"], "sdk_identity_unverifiable",
+            "identity failure classification for {scenario}: {open}"
+        );
+        assert!(
+            !sidecar.sdk_was_constructed(),
+            "SDK query ran for {scenario}"
+        );
+    }
+}
+
+#[test]
+fn model_evidence_bounds_and_controls_match_the_shared_fixture_table() {
+    let cases: Value =
+        serde_json::from_str(EVIDENCE_BOUNDS).expect("model evidence bounds fixture is valid JSON");
+    for case in cases
+        .as_array()
+        .expect("model evidence fixture is an array")
+    {
+        let name = case["name"].as_str().expect("fixture case name");
+        let unit = case["unit"].as_str().expect("fixture unit");
+        let repeat = case["repeat"]
+            .as_u64()
+            .and_then(|value| usize::try_from(value).ok())
+            .expect("fixture repeat is a usize");
+        let value = unit.repeat(repeat);
+        let valid = case["valid"].as_bool().expect("fixture validity");
+
+        for scenario in ["model-evidence-requested", "model-evidence-effective"] {
+            let mut sidecar = SidecarProcess::start_model_evidence_case(scenario, &value);
+            let requested_model = if scenario == "model-evidence-requested" {
+                value.clone()
+            } else {
+                "fixture-requested".to_owned()
+            };
+            let open = sidecar.command(
+                "open-1",
+                "open",
+                json!({"cwd": sidecar.cwd(), "model": requested_model}),
+            );
+            assert_eq!(open["success"], true, "fixture open for {name}/{scenario}");
+            let response = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+            assert_eq!(response["failure"]["code"], "supported_model_rejected");
+            let diagnostic = sidecar.next_diagnostic();
+            assert_eq!(
+                diagnostic.get("evidence").is_some(),
+                valid,
+                "sidecar predicate for {name}/{scenario}"
+            );
+            let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+            assert_eq!(close["success"], true);
+        }
+    }
 }
 
 #[test]

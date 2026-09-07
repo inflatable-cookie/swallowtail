@@ -1,0 +1,12 @@
+[
+  {"name": "ascii-at-byte-limit", "unit": "x", "repeat": 128, "valid": true},
+  {"name": "ascii-over-byte-limit", "unit": "x", "repeat": 129, "valid": false},
+  {"name": "utf8-at-byte-limit", "unit": "\u00a0", "repeat": 64, "valid": true},
+  {"name": "utf8-over-byte-limit", "unit": "\u00a0", "repeat": 65, "valid": false},
+  {"name": "c0-control", "unit": "\u001f", "repeat": 1, "valid": false},
+  {"name": "c0-printable-boundary", "unit": " ", "repeat": 1, "valid": true},
+  {"name": "del-control", "unit": "\u007f", "repeat": 1, "valid": false},
+  {"name": "del-printable-boundary", "unit": "~", "repeat": 1, "valid": true},
+  {"name": "c1-control", "unit": "\u009f", "repeat": 1, "valid": false},
+  {"name": "c1-printable-boundary", "unit": "\u00a0", "repeat": 1, "valid": true}
+]

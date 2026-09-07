@@ -32,6 +32,17 @@ the scope until card 128's probe settles the upstream question or the
 operator decides the fallback. Desktop live acceptance is the release gate;
 producer merges are not.
 
+### Grok Gate Blocked On Provisioning — 2026-09-07
+
+Desktop preflight found cached npm archives for the exact `1.0.4` and `1.0.5`
+segments but no runnable binaries and no authorized isolated `GROK_HOME`. The
+card 128 probe did not run, so there is no verdict and the four
+`grok-build.acp` cells stay `evidence_pending`. The release gate is unresolved
+in both directions: nothing says Grok supports client MCP, and nothing says it
+cannot. Provisioning an isolated authenticated Grok is an operator decision;
+substituting a different version (for example `1.0.13`) is refused because it
+is a different evidence segment. Producer lanes continue meanwhile.
+
 ## Runway
 
 1. Cards 119 (merged `cfb0b106`), 120 (merged `4a27676d`), 121, and 124 merge on exact-head review.

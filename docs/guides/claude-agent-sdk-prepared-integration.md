@@ -572,15 +572,19 @@ fixture is `tests/fixtures/claude-agent-sdk-v1/selected-skill-bundle-card126.jso
 
 The pinned `0.3.259` sidecar has no ambient skill loading: it sends
 `settingSources: []` and `skills: []` explicitly. When the selected bundle is
-present, the sidecar uses the frozen `Options.systemPrompt` preset/append
+present, the sidecar uses the frozen `Options.systemPrompt` plain-string
 surface to carry one labelled JSON envelope under
-`<swallowtail-selected-skill-bundle>`. That mapping is anchored by the
+`<swallowtail-selected-skill-bundle>`. The omitted `systemPrompt` default is
+empty, so this mapping adds only that labelled envelope and does not select the
+provider-owned `claude_code` preset. The choice is anchored by the
 `systemPrompt` evidence in
-`docs/research/278-claude-agent-sdk-route-evidence.md` and implemented at
+`docs/research/278-claude-agent-sdk-route-evidence.md` (line 406), the
+Card-126 plain-string asset assertion in
+`tests/claude_agent_sdk_sidecar_asset.rs`, and the implementation at
 `src/sdk/selected_skill.rs`, `src/sdk/driver/startup.rs`, and
 `sidecar/claude-agent-sdk-sidecar.mjs`. A tampered, oversized, foreign, or
 non-text bundle fails closed; continuation and session listing do not
-redeclaration-bind a selected bundle.
+redeclare-bind a selected bundle.
 
 Contract 061 publishes `registered-tool.selected-skill-bundle` as a
 session-start row only for this exact prepared Claude route. That transport

@@ -1445,15 +1445,11 @@ async function handleOpen(params) {
       },
     };
     if (selectedSkill !== undefined) {
-      // The SDK's explicit system-prompt preset append is the frozen 0.3.259
-      // carrier for resolved text. It does not load files or enable ambient
-      // skills, and the private wire label remains distinct from instructions
-      // and per-turn user text.
-      options.options.systemPrompt = {
-        type: "preset",
-        preset: "claude_code",
-        append: selectedSkillSystemPrompt(selectedSkill),
-      };
+      // The plain-string systemPrompt is the frozen 0.3.259 carrier for
+      // resolved text. The omitted default is empty, so this adds only the
+      // private wire label: it does not select the provider's ambient preset,
+      // load files, enable ambient skills, or merge with per-turn user text.
+      options.options.systemPrompt = selectedSkillSystemPrompt(selectedSkill);
     }
     if (effort !== undefined) {
       options.options.effort = effort;

@@ -29,7 +29,8 @@ use swallowtail_runtime::{
     ConsumerRouteProjectionSourceIdentity, ConsumerRouteProjectionSourceKind,
     ConsumerRouteRowIdentity, ConsumerRouteSafeReason, ConsumerRouteSourceClass,
     ConsumerRouteStateSupport, ConsumerRouteSupportPosture, ConsumerRouteValueDomain,
-    ConsumerRouteValueKind, RegisteredCapabilityProjectionInput, RegisteredToolReadiness,
+    ConsumerRouteValueKind, REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION,
+    RegisteredCapabilityProjectionInput, RegisteredToolProtocolVersion, RegisteredToolReadiness,
     RegisteredToolRouteQualification, ResolvedSkillBundle, SELECTED_SKILL_BUNDLE_SEMANTIC_ID,
     registered_capability_control_id, registered_capability_feature_id,
 };
@@ -109,24 +110,18 @@ pub fn project_claude_agent_sdk_registered_tool_with_selected_skill_from_source(
         source_id,
         ConsumerRouteProjectionSourceKind::AdapterContribution,
     );
-    let capability = swallowtail_runtime::project_registered_capability(
-        RegisteredCapabilityProjectionInput::new(
-            applicability.clone(),
-            source.clone(),
-            carrier.selection(),
-            readiness,
-        )
-        .with_route_qualification(claude_agent_sdk_registered_tool_qualification()),
-    )?;
+    let mut projection_input = RegisteredCapabilityProjectionInput::new(
+        applicability.clone(),
+        source.clone(),
+        carrier.selection(),
+        readiness,
+    )
+    .with_route_qualification(claude_agent_sdk_registered_tool_qualification());
+    if let Some(bundle) = selected_skill {
+        projection_input = projection_input.with_resolved_skill_bundle(bundle);
+    }
+    let capability = swallowtail_runtime::project_registered_capability(projection_input)?;
     let mediation = mediation_kind_row(applicability, carrier, &source)?;
-    let session_start_rows = capability.session_start_rows().filter(|row| {
-        !row.identity()
-            .namespaced_extension()
-            .is_some_and(|extension| extension.semantic_id() == SELECTED_SKILL_BUNDLE_SEMANTIC_ID)
-    });
-    let selected_skill_row = selected_skill
-        .map(|bundle| selected_skill_row(applicability, carrier, readiness, &source, bundle))
-        .transpose()?;
     ConsumerRouteProjectionContribution::new(
         applicability.clone(),
         capability.sources().cloned(),
@@ -134,21 +129,40 @@ pub fn project_claude_agent_sdk_registered_tool_with_selected_skill_from_source(
             .selection_rows()
             .cloned()
             .chain(std::iter::once(mediation)),
-        session_start_rows.cloned().chain(selected_skill_row),
+        capability.session_start_rows().cloned(),
         capability.active_session_rows().cloned(),
     )
 }
 
+/// Projects a selected bundle for a prepared session that did not opt into
+/// registered-tool mediation. The shared registered-capability builder needs
+/// a real selection to publish its carrier rows; this path publishes only the
+/// direct prepared input and therefore cannot imply Card 125 qualification.
+pub(crate) fn project_claude_agent_sdk_selected_skill_from_source(
+    applicability: &ConsumerRouteApplicability,
+    source_id: ConsumerRouteProjectionSourceId,
+    bundle: &ResolvedSkillBundle,
+) -> Result<ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure> {
+    let source = ConsumerRouteProjectionSourceIdentity::new(
+        source_id,
+        ConsumerRouteProjectionSourceKind::AdapterContribution,
+    );
+    let protocol_version =
+        RegisteredToolProtocolVersion::new(REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION)
+            .expect("static registered-tool protocol version is valid");
+    let row = selected_skill_row(applicability, &protocol_version, &source, bundle)?;
+    ConsumerRouteProjectionContribution::new(applicability.clone(), [source], [], [row], [])
+}
+
 fn selected_skill_row(
     applicability: &ConsumerRouteApplicability,
-    carrier: &ClaudeAgentSdkRegisteredToolCarrier,
-    readiness: &RegisteredToolReadiness,
+    protocol_version: &RegisteredToolProtocolVersion,
     source: &ConsumerRouteProjectionSourceIdentity,
     bundle: &ResolvedSkillBundle,
 ) -> Result<ConsumerRouteProjectionRow, ConsumerRouteProjectionFailure> {
     let identity = ConsumerRouteRowIdentity::Control(registered_capability_control_id(
         applicability.protocol_facade_id().as_str(),
-        carrier.selection().protocol_version(),
+        protocol_version,
         SELECTED_SKILL_BUNDLE_SEMANTIC_ID,
     )?);
     let values = ConsumerRouteEnumeratedValues::new([
@@ -183,7 +197,6 @@ fn selected_skill_row(
         ConsumerRouteValueDomain::Enumerated(values),
         ConsumerRouteOmissionSemantics::PreservesRouteBehavior,
     ));
-    let _ = readiness;
     Ok(row)
 }
 

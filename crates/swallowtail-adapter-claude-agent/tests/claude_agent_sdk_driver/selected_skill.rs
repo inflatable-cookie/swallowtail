@@ -24,9 +24,9 @@ use swallowtail_core::{
     SessionAccessPolicy, SessionRef,
 };
 use swallowtail_runtime::{
-    ConsumerRouteAvailability, ConsumerRouteEnumerableValue, ConsumerRouteValueDomain,
-    InteractiveSessionHandle, MAX_SELECTED_SKILL_CONTENT_BYTES, RegisteredServerId,
-    RegisteredServerRevision, RegisteredToolBounds, RegisteredToolDeclaration,
+    ConsumerRouteAvailability, ConsumerRouteEnumerableValue, ConsumerRouteProjectionSourceId,
+    ConsumerRouteValueDomain, InteractiveSessionHandle, MAX_SELECTED_SKILL_CONTENT_BYTES,
+    RegisteredServerId, RegisteredServerRevision, RegisteredToolBounds, RegisteredToolDeclaration,
     RegisteredToolEffectPosture, RegisteredToolExecutionKind, RegisteredToolId,
     RegisteredToolLocalName, RegisteredToolNamespace, RegisteredToolProtocolVersion,
     RegisteredToolReadiness, RegisteredToolRetryPosture, RegisteredToolSchema,
@@ -338,6 +338,39 @@ fn selected_skill_projection_is_available_without_qualifying_registered_tools() 
         }),
         "registered-tool rows retain the Unqualified/live-gate posture"
     );
+}
+
+#[test]
+fn selected_skill_projection_is_published_for_a_prepared_session_without_registered_tools() {
+    let host = host_id("claude-agent-sdk.fixture.selected-skill-only-projection");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete);
+    let prepared = prepare_claude_agent_sdk_session(
+        preparation(host.clone()).with_selected_skill_bundle(resolved_bundle()),
+        swallowtail_runtime::SessionOptions::default(),
+    )
+    .expect("selected-only preparation succeeds");
+    let services = fixture.services(host);
+    let contribution = prepared
+        .registered_capability_projection_contribution(
+            ConsumerRouteProjectionSourceId::new("claude-agent.sdk.selected-skill-prepared-input")
+                .expect("source id"),
+            &services,
+        )
+        .expect("selected-only contribution is published")
+        .expect("selected-only projection succeeds");
+    let row = contribution
+        .session_start_rows()
+        .find(|row| {
+            row.identity()
+                .namespaced_extension()
+                .is_some_and(|extension| {
+                    extension.semantic_id()
+                        == swallowtail_runtime::SELECTED_SKILL_BUNDLE_SEMANTIC_ID
+                })
+        })
+        .expect("selected skill row");
+    assert_eq!(row.availability(), ConsumerRouteAvailability::Available);
+    assert!(contribution.selection_rows().next().is_none());
 }
 
 fn projection_selection() -> RegisteredToolSelection {

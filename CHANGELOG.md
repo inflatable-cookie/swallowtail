@@ -19,8 +19,8 @@ annotated Git tags from the canonical repository.
 - bind one resolved Contract 063 selected-skill bundle to a fresh Claude Agent
   SDK session through the additive `ClaudeAgentSdkSessionProfile` binding,
   preparation, and driver surfaces. The bundle crosses as one labelled
-  `selectedSkillBundle` input through the pinned sidecar's explicit
-  `systemPrompt` preset/append surface, while fixed instructions, per-turn
+  `selectedSkillBundle` input through the pinned sidecar's explicit plain-string
+  `systemPrompt` surface, while fixed instructions, per-turn
   user text, workspace writes, ambient skills, and raw reference paths stay
   separate. Digest, bounds, reference, and text-encoding failures fail closed
   before SDK construction; resume and listing refuse redeclaration. The

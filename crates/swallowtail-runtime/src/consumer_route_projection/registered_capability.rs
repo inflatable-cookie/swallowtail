@@ -152,6 +152,8 @@ pub enum RegisteredToolRouteQualification {
 enum RowSupportEvidence {
     /// No adapter has qualified this capability; support stays unknown.
     Unqualified,
+    /// A prepared operation directly carries this bounded session-start input.
+    PreparedSupported,
     /// A qualified adapter proved this exact dimension is not supported.
     QualifiedUnsupported,
     /// A qualified adapter proved this exact dimension is supported.
@@ -172,8 +174,10 @@ impl RowSupportEvidence {
     const fn support(self) -> ConsumerRouteSupportPosture {
         match self {
             Self::Unqualified => ConsumerRouteSupportPosture::Unknown,
+            Self::PreparedSupported | Self::QualifiedSupported => {
+                ConsumerRouteSupportPosture::Supported
+            }
             Self::QualifiedUnsupported => ConsumerRouteSupportPosture::Unsupported,
-            Self::QualifiedSupported => ConsumerRouteSupportPosture::Supported,
         }
     }
 
@@ -181,7 +185,9 @@ impl RowSupportEvidence {
     const fn evidence_strength(self) -> ConsumerRouteEvidenceStrength {
         match self {
             Self::Unqualified => ConsumerRouteEvidenceStrength::RuntimeType,
-            Self::QualifiedUnsupported | Self::QualifiedSupported => {
+            Self::PreparedSupported
+            | Self::QualifiedUnsupported
+            | Self::QualifiedSupported => {
                 ConsumerRouteEvidenceStrength::RouteValidation
             }
         }
@@ -480,7 +486,15 @@ fn skill_bundle_row(
     } else {
         ConsumerRouteOmissionSemantics::NotSelectable
     };
-    let evidence = RowSupportEvidence::of(qualified.is_some(), carried);
+    // A selected bundle is a direct prepared input, independent of whether
+    // this route's separate registered-tool carrier is qualified or ready.
+    // Without a bundle, retain the registered-tool route's qualification
+    // posture so Card 125's live gate cannot be inferred from this row.
+    let evidence = if input.bundle.is_some() {
+        RowSupportEvidence::PreparedSupported
+    } else {
+        RowSupportEvidence::of(qualified.is_some(), carried)
+    };
     let mut row = ConsumerRouteProjectionRow::new(
         control_identity(input, SELECTED_SKILL_BUNDLE_SEMANTIC_ID)?,
         input.applicability.clone(),
@@ -496,7 +510,7 @@ fn skill_bundle_row(
         domain,
         omission,
     ));
-    if carried && input.bundle.is_some() {
+    if input.bundle.is_some() {
         row = row
             .with_actor_posture(ConsumerRouteActorPosture::ConsumerSelectable)
             .with_state_support(ConsumerRouteStateSupport::descriptor_only().with_prepared())
@@ -548,7 +562,10 @@ fn availability(
     input: &RegisteredCapabilityProjectionInput<'_>,
     evidence: RowSupportEvidence,
 ) -> ConsumerRouteAvailability {
-    if matches!(evidence, RowSupportEvidence::QualifiedSupported) && input.readiness.is_ready() {
+    if matches!(evidence, RowSupportEvidence::PreparedSupported)
+        || (matches!(evidence, RowSupportEvidence::QualifiedSupported)
+            && input.readiness.is_ready())
+    {
         ConsumerRouteAvailability::Available
     } else {
         ConsumerRouteAvailability::Unavailable
@@ -567,6 +584,7 @@ fn unavailable_reason(
     evidence: RowSupportEvidence,
 ) -> Result<Option<ConsumerRouteSafeReason>, ConsumerRouteProjectionFailure> {
     let (dimension, diagnostic) = match evidence {
+        RowSupportEvidence::PreparedSupported => return Ok(None),
         RowSupportEvidence::Unqualified => (
             ConsumerRouteAvailabilityDimension::SupportAuthority,
             SafeDiagnostic::new(

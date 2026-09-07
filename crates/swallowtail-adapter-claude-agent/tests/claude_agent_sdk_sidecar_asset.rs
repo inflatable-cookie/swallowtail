@@ -33,7 +33,7 @@ fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
 }
 
 #[test]
-fn card126_selected_skill_is_labelled_and_presented_through_the_frozen_prompt_append() {
+fn card126_selected_skill_is_labelled_and_presented_through_the_frozen_plain_string_prompt() {
     let selected_skill: Value =
         serde_json::from_str(CARD126_SELECTED_SKILL).expect("Card 126 fixture is valid JSON");
     let mut sidecar = SidecarProcess::start();
@@ -50,15 +50,17 @@ fn card126_selected_skill_is_labelled_and_presented_through_the_frozen_prompt_ap
     let options = sidecar.observed_options();
     assert_eq!(options["settingSources"], json!([]));
     assert_eq!(options["skills"], json!([]));
-    assert_eq!(options["systemPrompt"]["type"], "preset");
-    assert_eq!(options["systemPrompt"]["preset"], "claude_code");
-    assert!(
-        options["systemPrompt"]["append"]
-            .as_str()
-            .expect("prompt append")
-            .contains("<swallowtail-selected-skill-bundle>"),
-        "the SDK receives an explicit labelled append"
+    let system_prompt = options["systemPrompt"]
+        .as_str()
+        .expect("plain-string system prompt");
+    assert_eq!(
+        system_prompt,
+        format!(
+            "<swallowtail-selected-skill-bundle>\n{}\n</swallowtail-selected-skill-bundle>",
+            serde_json::to_string(&selected_skill).expect("fixture serializes")
+        )
     );
+    assert!(!system_prompt.contains("claude_code"));
     assert_eq!(
         open["data"]["selectedSkillBundle"],
         serde_json::from_str::<Value>(CARD126_SELECTED_SKILL).expect("fixture JSON")

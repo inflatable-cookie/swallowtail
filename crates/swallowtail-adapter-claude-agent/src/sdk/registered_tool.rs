@@ -46,6 +46,7 @@ pub use mediation::{
     ClaudeAgentSdkMcpReply, ClaudeAgentSdkRegisteredToolDecision,
     ClaudeAgentSdkRegisteredToolMediator,
 };
+pub(crate) use projection::project_claude_agent_sdk_selected_skill_from_source;
 pub use projection::{
     CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID, CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_SOURCE, claude_agent_sdk_registered_tool_qualification,

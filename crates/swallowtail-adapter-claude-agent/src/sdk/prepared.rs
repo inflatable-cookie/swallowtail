@@ -357,7 +357,8 @@ impl ClaudeAgentSdkPreparedSession {
     }
 
     /// Emits the Contract 061 registered-capability rows for this exact
-    /// prepared route, when registered-tool mediation was selected.
+    /// prepared route, when registered-tool mediation or a selected bundle
+    /// was selected.
     ///
     /// Registered-tool rows remain `Unqualified` until the separately
     /// authorized real-route gate passes. A selected-skill row, when present,
@@ -372,18 +373,29 @@ impl ClaudeAgentSdkPreparedSession {
             swallowtail_runtime::ConsumerRouteProjectionFailure,
         >,
     > {
-        let binding = self.registered_tools.as_ref()?;
-        let readiness =
-            swallowtail_runtime::RegisteredToolReadiness::evaluate(services, binding.selection());
-        Some(
-            super::registered_tool::project_claude_agent_sdk_registered_tool_with_selected_skill_from_source(
-                &swallowtail_runtime::ConsumerRouteApplicability::from_plan(&self.plan),
+        let applicability = swallowtail_runtime::ConsumerRouteApplicability::from_plan(&self.plan);
+        if let Some(binding) = self.registered_tools.as_ref() {
+            let readiness = swallowtail_runtime::RegisteredToolReadiness::evaluate(
+                services,
+                binding.selection(),
+            );
+            return Some(
+                super::registered_tool::project_claude_agent_sdk_registered_tool_with_selected_skill_from_source(
+                    &applicability,
+                    source_id,
+                    binding.carrier(),
+                    &readiness,
+                    self.selected_skill.as_ref(),
+                ),
+            );
+        }
+        self.selected_skill.as_ref().map(|bundle| {
+            super::registered_tool::project_claude_agent_sdk_selected_skill_from_source(
+                &applicability,
                 source_id,
-                binding.carrier(),
-                &readiness,
-                self.selected_skill.as_ref(),
+                bundle,
             )
-        )
+        })
     }
 
     /// Creates the low-level sidecar driver bound to this session.

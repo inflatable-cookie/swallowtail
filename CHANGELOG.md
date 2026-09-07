@@ -13,6 +13,25 @@ annotated Git tags from the canonical repository.
   Codex OAuth model-id filtering changed. Research 292. g05.037 cards 135-136.
 
 ### Added
+- bind one Contract 063 `RegisteredToolPreparation` into `grok-build.acp` open
+  through `GrokRegisteredToolBinding::qualify` plus
+  `GrokPreparedSession::open_registered_session` and
+  `GrokAcpDriver::with_registered_tools`. The Swallowtail-owned mediated-stdio
+  courier is declared as one reserved entry in the ACP `session/new`
+  `mcpServers` list, with the host-resolved courier path, the fixed wire tag
+  and its one-shot rendezvous, and the allowlisted environment as ACP's
+  `{name, value}` list; Grok spawns that child and Swallowtail never holds its
+  `ProcessHandle`. Ready follows the kernel-observed authenticated connect, and
+  close joins the lease and the shared listener. Omission is byte-identical: an
+  open without a binding still sends `mcpServers: []`. Contract 061 stays
+  `Unqualified / real_route_gate_pending` with the reason "callable seam
+  present; live gate pending", and no feature-matrix cell moves. Provider-free
+  fixtures only, over the real courier, kernel, lease, and dispatcher: courier
+  declaration, namespaced `tools/list` identity and schema, one mediated
+  round-trip, revoked-before-dispatch, unknown tool name, cancel, close, and
+  fail-closed transport, kind, identity, host, deadline, and unspawnable-command
+  paths. No live Grok, credential, provider call, or support claim. g05.035
+  card 118.
 - bind one Contract 063 `RegisteredToolPreparation` into `claude-agent.sdk`
   open through `ClaudeAgentSdkSessionPreparation::with_registered_tools`
   (host-resolved courier path and Card 084 env) and

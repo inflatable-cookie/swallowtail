@@ -20,6 +20,7 @@ struct GrokSessionHandle {
     services: HostServices,
     resource: Option<ResourceLease>,
     credential: Option<CredentialLease>,
+    registered: Option<crate::registered_tool::GrokRegisteredToolSession>,
     active: ActiveSlot,
 }
 
@@ -219,6 +220,18 @@ impl InteractiveSessionHandle for GrokSessionHandle {
                 },
                 None => CleanupOutcome::NotApplicable,
             };
+            // The registered lease closes before the route's own leases: its
+            // completion gate and joined listener teardown are the Contract 063
+            // cleanup evidence, and a failed close must retain ownership rather
+            // than be masked by a later clean release.
+            close_registered_lease(
+                self.registered.as_mut().and_then(
+                    crate::registered_tool::GrokRegisteredToolSession::take_lease,
+                ),
+                &self.services,
+                RegisteredToolCleanupCause::ExplicitClose,
+            )
+            .await;
             let resource = release_resource(self.resource.take(), &self.services).await;
             let credential = release_credential(self.credential.take(), &self.services).await;
                 merge_cleanup(merge_cleanup(task, resource), credential)

@@ -14,6 +14,7 @@ struct GrokSessionInput {
     binding: SessionResumeBinding,
     model_options: NegotiatedSessionModelOptions,
     permission_handling: crate::GrokPermissionHandling,
+    registered: Option<crate::registered_tool::GrokRegisteredToolSession>,
 }
 
 impl GrokAcpDriver {
@@ -166,6 +167,7 @@ impl PendingAttachment {
             services: services.clone(),
             resource: self.resource.take(),
             credential: self.credential.take(),
+            registered: input.registered,
             active: Arc::new(Mutex::new(None)),
         }
     }

@@ -26,6 +26,7 @@ struct AgentState {
     permission_emitted: bool,
     deadline_released: bool,
     stopped: bool,
+    spawned_mcp: Vec<Arc<SpawnedMcpChild>>,
 }
 
 struct Agent {
@@ -129,6 +130,14 @@ impl Agent {
                 }),
             ),
             Some("session/new") => {
+                // Grok spawns every client-declared MCP server from session
+                // setup. The fixture does exactly that before answering, so the
+                // courier is a provider child and never a Swallowtail spawn.
+                let spawned = spawn_declared_mcp_servers(
+                    message.get("params").unwrap_or(&Value::Null),
+                )
+                .map_err(|()| fixture_failure())?;
+                state.spawned_mcp.extend(spawned);
                 Self::enqueue(
                     &mut state,
                     json!({

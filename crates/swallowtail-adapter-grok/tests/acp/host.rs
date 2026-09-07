@@ -90,6 +90,17 @@ impl FixtureHost {
         self.agent.changed.notify_all();
     }
 
+    /// Returns the courier Grok spawned from the declared ACP MCP server.
+    fn spawned_registered_courier(&self) -> Option<Arc<SpawnedMcpChild>> {
+        self.agent
+            .state
+            .lock()
+            .expect("agent lock poisoned")
+            .spawned_mcp
+            .first()
+            .map(Arc::clone)
+    }
+
     fn release_deadline(&self) {
         let mut state = self.agent.state.lock().expect("agent lock poisoned");
         state.deadline_released = true;
@@ -166,6 +177,9 @@ impl FixtureProcess {
     fn stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         let mut state = self.0.state.lock().expect("agent lock poisoned");
         state.stopped = true;
+        for child in state.spawned_mcp.drain(..) {
+            child.kill();
+        }
         self.0.changed.notify_all();
         Box::pin(async { Ok(()) })
     }

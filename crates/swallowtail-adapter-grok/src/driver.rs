@@ -13,13 +13,14 @@ use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
     CredentialLease, ExecutableRef, HostServices, InteractiveSessionDriver,
     InteractiveSessionHandle, JoinedTask, NegotiatedSessionModelOption,
-    NegotiatedSessionModelOptions, OpenSessionRequest, ProcessHandle, ProcessRequest, RequestId,
-    ResourceLease, ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId,
-    SessionCleanupRequest, SessionResumeBinding, TerminalOutcome, TurnHandle, TurnRequest,
-    validate_session_plan_agreement, validate_session_resource_lease,
+    NegotiatedSessionModelOptions, OpenSessionRequest, ProcessHandle, ProcessRequest,
+    RegisteredToolCleanupCause, RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure,
+    RuntimeSessionId, ScopeId, SessionCleanupRequest, SessionResumeBinding, TerminalOutcome,
+    TurnHandle, TurnRequest, validate_session_plan_agreement, validate_session_resource_lease,
 };
 
 use crate::GrokAcpDriver;
+use crate::registered_tool::{PendingRegisteredOpen, close_registered_lease, prepare_registered};
 
 const DRIVER_ID: &str = "swallowtail.grok-build.acp";
 const AUTH_METHOD: &str = "cached_token";
@@ -176,6 +177,7 @@ impl InteractiveSessionDriver for GrokAcpDriver {
                             binding: request.resume_binding().clone(),
                             model_options,
                             permission_handling,
+                            registered: None,
                         },
                         &services,
                     )) as Box<dyn InteractiveSessionHandle>)
@@ -205,7 +207,16 @@ impl GrokAcpDriver {
             .expect("validated working resource")
             .clone();
         let access_policy = request.access_policy().clone();
-        let mut attachment = self
+        // The lease, listener, and rendezvous are minted before the provider
+        // process starts, so a registered open that cannot be admitted never
+        // reaches a Grok spawn and has nothing to abort.
+        let mut registered = match self.registered_tools() {
+            Some(binding) => {
+                Some(prepare_registered(binding, plan, request.request_id(), services).await?)
+            }
+            None => None,
+        };
+        let mut attachment = match self
             .start_attachment(
                 plan,
                 request.request_id(),
@@ -213,17 +224,30 @@ impl GrokAcpDriver {
                 &access_policy,
                 services,
             )
-            .await?;
+            .await
+        {
+            Ok(attachment) => attachment,
+            Err(error) => {
+                abandon_registered(registered.take(), services).await;
+                return Err(error);
+            }
+        };
         let opened = async {
             let initialize = attachment.connection.initialize().await?;
             let model_options =
                 validate_initialize(&initialize, selected.version(), selected.expected_model())?;
             attachment.connection.activate_cached_token().await?;
+            // Omission stays byte-identical: without a registered binding this
+            // is the same empty list the merged route sends.
+            let mcp_servers = registered.as_ref().map_or_else(
+                || json!([]),
+                |pending| json!([pending.declaration().to_acp_value()]),
+            );
             let response = attachment
                 .connection
                 .request(
                     "session/new",
-                    json!({"cwd": attachment.cwd, "mcpServers": []}),
+                    json!({"cwd": attachment.cwd, "mcpServers": mcp_servers}),
                 )
                 .await?;
             let provider_id = response
@@ -231,6 +255,11 @@ impl GrokAcpDriver {
                 .and_then(Value::as_str)
                 .ok_or_else(malformed)?
                 .to_owned();
+            // Grok spawns the declared courier from `session/new`, so readiness
+            // is only observable after the provider answered it.
+            if let Some(pending) = registered.as_mut() {
+                pending.wait_until_ready()?;
+            }
             Ok::<_, RuntimeFailure>((provider_id, model_options))
         }
         .await;
@@ -238,6 +267,7 @@ impl GrokAcpDriver {
             Ok(opened) => opened,
             Err(error) => {
                 let _ = attachment.abort(services).await;
+                abandon_registered(registered.take(), services).await;
                 return Err(error);
             }
         };
@@ -253,6 +283,7 @@ impl GrokAcpDriver {
             Ok(identities) => identities,
             Err(error) => {
                 let _ = attachment.abort(services).await;
+                abandon_registered(registered.take(), services).await;
                 return Err(error);
             }
         };
@@ -274,9 +305,22 @@ impl GrokAcpDriver {
                 binding,
                 model_options,
                 permission_handling,
+                registered: registered.map(PendingRegisteredOpen::claim),
             },
             services,
         ))
+    }
+}
+
+/// Closes a registered lease that never reached an open session.
+async fn abandon_registered(pending: Option<PendingRegisteredOpen>, services: &HostServices) {
+    if let Some(pending) = pending {
+        close_registered_lease(
+            pending.into_unclaimed_lease(),
+            services,
+            RegisteredToolCleanupCause::ProviderFailure,
+        )
+        .await;
     }
 }
 

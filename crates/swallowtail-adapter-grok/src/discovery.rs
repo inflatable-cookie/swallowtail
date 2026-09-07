@@ -41,6 +41,7 @@ fn attach_install_guidance(outcome: DiscoveryOutcome) -> DiscoveryOutcome {
 pub struct GrokAcpDriver {
     ambient_environment: EnvironmentRef,
     credential: CredentialRef,
+    registered_tools: Option<crate::registered_tool::GrokRegisteredToolBinding>,
 }
 
 impl GrokAcpDriver {
@@ -50,7 +51,29 @@ impl GrokAcpDriver {
         Self {
             ambient_environment,
             credential,
+            registered_tools: None,
         }
+    }
+
+    /// Binds one qualified registered-tool selection to this driver.
+    ///
+    /// A driver without a binding opens exactly as before: `session/new`
+    /// carries `mcpServers: []` and no lease, listener, or courier exists.
+    #[must_use]
+    pub fn with_registered_tools(
+        mut self,
+        binding: crate::registered_tool::GrokRegisteredToolBinding,
+    ) -> Self {
+        self.registered_tools = Some(binding);
+        self
+    }
+
+    /// Returns the bound registered-tool selection, when one was opted into.
+    #[must_use]
+    pub const fn registered_tools(
+        &self,
+    ) -> Option<&crate::registered_tool::GrokRegisteredToolBinding> {
+        self.registered_tools.as_ref()
     }
 
     /// Returns the approved ambient execution environment.

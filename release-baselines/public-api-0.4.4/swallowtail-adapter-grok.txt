@@ -1,4 +1,45 @@
 pub mod swallowtail_adapter_grok
+pub mod swallowtail_adapter_grok::registered_tool
+pub struct swallowtail_adapter_grok::registered_tool::GrokAcpMcpServerDeclaration
+impl swallowtail_adapter_grok::registered_tool::GrokAcpMcpServerDeclaration
+pub fn swallowtail_adapter_grok::registered_tool::GrokAcpMcpServerDeclaration::arguments(&self) -> &[alloc::string::String]
+pub fn swallowtail_adapter_grok::registered_tool::GrokAcpMcpServerDeclaration::command(&self) -> &str
+pub fn swallowtail_adapter_grok::registered_tool::GrokAcpMcpServerDeclaration::environment(&self) -> &[(alloc::string::String, alloc::string::String)]
+pub const fn swallowtail_adapter_grok::registered_tool::GrokAcpMcpServerDeclaration::name(&self) -> &'static str
+pub struct swallowtail_adapter_grok::registered_tool::GrokRegisteredTool
+impl swallowtail_adapter_grok::registered_tool::GrokRegisteredTool
+pub fn swallowtail_adapter_grok::registered_tool::GrokRegisteredTool::courier_tool_name(&self) -> &str
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredTool::id(&self) -> &swallowtail_runtime::registered_tool::identity::RegisteredToolId
+pub struct swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding
+impl swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::carrier(&self) -> &swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::host(&self) -> core::option::Option<&swallowtail_host_local::services::LocalHostServices>
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::open_deadline(&self) -> core::option::Option<swallowtail_runtime::time::Deadline>
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::preparation(&self) -> &swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation
+pub fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::selection(&self) -> &swallowtail_runtime::registered_tool::selection::RegisteredToolSelection
+pub fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::with_host(self, swallowtail_host_local::services::LocalHostServices) -> Self
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::with_open_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier
+impl swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier::mediation_kind(&self) -> &'static str
+pub fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier::new(&swallowtail_runtime::registered_tool::selection::RegisteredToolSelection) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier::resolve_courier_tool(&self, &str) -> core::option::Option<&swallowtail_adapter_grok::registered_tool::GrokRegisteredTool>
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier::selection(&self) -> &swallowtail_runtime::registered_tool::selection::RegisteredToolSelection
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier::server_name(&self) -> &'static str
+pub fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier::tools(&self) -> &[swallowtail_adapter_grok::registered_tool::GrokRegisteredTool]
+pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_MEDIATION_KIND_SEMANTIC_ID: &str
+pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE: &str
+pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_CARRIER_AXIS: &str
+pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_CARRIER_REVISION: &str
+pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_MCP_PROTOCOL_VERSION: &str
+pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_MEDIATION: &str
+pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_SERVER: &str
+pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_SOURCE: &str
+pub fn swallowtail_adapter_grok::registered_tool::grok_acp_registered_tool_carrier_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_grok::registered_tool::grok_acp_registered_tool_carrier_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub const fn swallowtail_adapter_grok::registered_tool::grok_build_acp_registered_tool_qualification() -> swallowtail_runtime::consumer_route_projection::registered_capability::RegisteredToolRouteQualification
+pub fn swallowtail_adapter_grok::registered_tool::project_grok_build_acp_registered_tool(&swallowtail_runtime::consumer_route_projection::applicability::ConsumerRouteApplicability, &swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier, &swallowtail_runtime::registered_tool::readiness::RegisteredToolReadiness) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub enum swallowtail_adapter_grok::GrokPermissionHandling
 pub swallowtail_adapter_grok::GrokPermissionHandling::ConsumerMediated
 pub swallowtail_adapter_grok::GrokPermissionHandling::RejectAndCancel
@@ -12,6 +53,8 @@ pub const fn swallowtail_adapter_grok::GrokAcpDriver::ambient_environment(&self)
 pub const fn swallowtail_adapter_grok::GrokAcpDriver::credential(&self) -> &swallowtail_core::runtime_identity::CredentialRef
 pub const fn swallowtail_adapter_grok::GrokAcpDriver::install_guidance() -> swallowtail_core::registration::discovery::InstallGuidance
 pub const fn swallowtail_adapter_grok::GrokAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+pub const fn swallowtail_adapter_grok::GrokAcpDriver::registered_tools(&self) -> core::option::Option<&swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding>
+pub fn swallowtail_adapter_grok::GrokAcpDriver::with_registered_tools(self, swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_grok::GrokAcpDriver
 pub fn swallowtail_adapter_grok::GrokAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_grok::GrokAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
@@ -67,6 +110,7 @@ pub fn swallowtail_adapter_grok::GrokPreparedSession::attachment_recovery_reques
 pub const fn swallowtail_adapter_grok::GrokPreparedSession::evidence(&self) -> &swallowtail_adapter_grok::GrokPreparedEvidence
 pub fn swallowtail_adapter_grok::GrokPreparedSession::into_parts(self) -> (swallowtail_adapter_grok::GrokPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest)
 pub fn swallowtail_adapter_grok::GrokPreparedSession::low_level_driver(&self) -> swallowtail_adapter_grok::GrokAcpDriver
+pub fn swallowtail_adapter_grok::GrokPreparedSession::open_registered_session(&self, swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_grok::GrokPreparedSessionFuture
 pub fn swallowtail_adapter_grok::GrokPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_grok::GrokPreparedSessionFuture
 pub const fn swallowtail_adapter_grok::GrokPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub fn swallowtail_adapter_grok::GrokPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::identity::RuntimeTurnId) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>

@@ -708,7 +708,7 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
     )?;
     next_id += 1;
 
-    if request_succeeded(&capture.frames, initialize_id) {
+    if request_succeeded(&capture.frames, initialize_id, "initialize") {
         let authenticate_id = next_id;
         exchange(
             peer,
@@ -719,7 +719,7 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
             LIVE_WAIT,
         )?;
         next_id += 1;
-        if request_succeeded(&capture.frames, authenticate_id) {
+        if request_succeeded(&capture.frames, authenticate_id, "authenticate") {
             let session_new_id = next_id;
             exchange(
                 peer,
@@ -930,12 +930,20 @@ fn session_new_no_response_cause(
     frames: &[GrokAcpClientMcpFrame],
     session_new_at: usize,
 ) -> VerdictDecision {
-    let unanswered = frames.iter().skip(session_new_at + 1).any(|frame| {
-        !frame.is_outbound()
-            && method_of(&frame.message).is_some()
-            && frame.message.get("id").is_some_and(|id| !id.is_null())
-            && !request_was_answered(frames, frame.message.get("id").expect("id present"))
-    });
+    let unanswered = frames
+        .iter()
+        .enumerate()
+        .skip(session_new_at + 1)
+        .any(|(request_at, frame)| {
+            !frame.is_outbound()
+                && method_of(&frame.message).is_some()
+                && frame.message.get("id").is_some_and(|id| !id.is_null())
+                && !request_was_answered(
+                    frames,
+                    request_at,
+                    frame.message.get("id").expect("id present"),
+                )
+        });
     if unanswered {
         inconclusive(InconclusiveCause::SessionNewUnanswered)
     } else {
@@ -943,9 +951,15 @@ fn session_new_no_response_cause(
     }
 }
 
-/// Returns whether any outbound frame answers `id` with a result or error.
-fn request_was_answered(frames: &[GrokAcpClientMcpFrame], id: &Value) -> bool {
-    frames.iter().any(|frame| {
+/// Returns whether an outbound frame after the inbound request at
+/// `request_at` answers `id` with a result or error. An answer captured
+/// before the request it responds to is never correlated.
+fn request_was_answered(
+    frames: &[GrokAcpClientMcpFrame],
+    request_at: usize,
+    id: &Value,
+) -> bool {
+    frames[request_at + 1..].iter().any(|frame| {
         frame.is_outbound()
             && frame.message.get("id") == Some(id)
             && (frame.message.get("result").is_some() || frame.message.get("error").is_some())
@@ -1863,9 +1877,21 @@ fn method_of(message: &Value) -> Option<&str> {
     message.get("method").and_then(Value::as_str)
 }
 
-fn response_result(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<&Value> {
+/// Returns the result carried by the reply to the outbound `method` request
+/// `id`. Only a reply that follows the outbound request is correlated: a
+/// response captured before the request it resolves is never accepted.
+fn response_result<'a>(
+    frames: &'a [GrokAcpClientMcpFrame],
+    id: u64,
+    method: &str,
+) -> Option<&'a Value> {
     let id = json!(id);
-    frames.iter().find_map(|frame| {
+    let request_at = frames.iter().rposition(|frame| {
+        frame.is_outbound()
+            && method_of(&frame.message) == Some(method)
+            && frame.message.get("id") == Some(&id)
+    })?;
+    frames[request_at + 1..].iter().find_map(|frame| {
         if frame.is_outbound() || frame.message.get("id") != Some(&id) {
             None
         } else {
@@ -1874,9 +1900,19 @@ fn response_result(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<&Value> 
     })
 }
 
-fn response_error(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<&Value> {
+/// Same as [`response_result`] for an error reply.
+fn response_error<'a>(
+    frames: &'a [GrokAcpClientMcpFrame],
+    id: u64,
+    method: &str,
+) -> Option<&'a Value> {
     let id = json!(id);
-    frames.iter().find_map(|frame| {
+    let request_at = frames.iter().rposition(|frame| {
+        frame.is_outbound()
+            && method_of(&frame.message) == Some(method)
+            && frame.message.get("id") == Some(&id)
+    })?;
+    frames[request_at + 1..].iter().find_map(|frame| {
         if frame.is_outbound() || frame.message.get("id") != Some(&id) {
             None
         } else {
@@ -1885,20 +1921,12 @@ fn response_error(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<&Value> {
     })
 }
 
-fn request_succeeded(frames: &[GrokAcpClientMcpFrame], id: u64) -> bool {
-    response_error(frames, id).is_none() && response_result(frames, id).is_some()
+fn request_succeeded(frames: &[GrokAcpClientMcpFrame], id: u64, method: &str) -> bool {
+    response_error(frames, id, method).is_none() && response_result(frames, id, method).is_some()
 }
 
 fn session_id_from(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<String> {
-    // Only a reply that follows the outbound `session/new` can resolve it.
-    let request_at = frames.iter().rposition(|frame| {
-        frame.is_outbound() && method_of(&frame.message) == Some("session/new")
-    })?;
-    frames[request_at + 1..]
-        .iter()
-        .find(|frame| !frame.is_outbound() && frame.message.get("id") == Some(&json!(id)))?
-        .message
-        .get("result")?
+    response_result(frames, id, "session/new")?
         .get("sessionId")
         .and_then(Value::as_str)
         .map(str::to_owned)
@@ -1984,22 +2012,31 @@ fn prompt_turn_observation(frames: &[GrokAcpClientMcpFrame]) -> (bool, Option<St
 }
 
 fn permission_was_rejected(frames: &[GrokAcpClientMcpFrame]) -> bool {
-    frames.iter().any(|frame| {
+    frames.iter().enumerate().any(|(request_at, frame)| {
         !frame.is_outbound()
             && method_of(&frame.message) == Some("session/request_permission")
-            && permission_response_rejected(frames, frame.message.get("id"), &frame.message)
+            && permission_response_rejected(
+                frames,
+                request_at,
+                frame.message.get("id"),
+                &frame.message,
+            )
     })
 }
 
+/// Rejection is decided only from the probe's reply after the inbound
+/// permission request: an answer captured before the request is never
+/// correlated.
 fn permission_response_rejected(
     frames: &[GrokAcpClientMcpFrame],
+    request_at: usize,
     id: Option<&Value>,
     request: &Value,
 ) -> bool {
     let Some(id) = id else {
         return false;
     };
-    let Some(response) = frames.iter().find(|frame| {
+    let Some(response) = frames[request_at + 1..].iter().find(|frame| {
         frame.is_outbound()
             && frame.message.get("id") == Some(id)
             && frame.message.get("result").is_some()
@@ -2335,6 +2372,7 @@ mod tests {
             assert!(
                 request_was_answered(
                     capsule.frames(),
+                    answer_at,
                     capsule.frames()[answer_at]
                         .message()
                         .get("id")
@@ -2365,14 +2403,19 @@ mod tests {
             capsule.inconclusive_cause(),
             Some(InconclusiveCause::SessionNewBoundExceeded)
         );
-        let answered_request = capsule.frames().iter().any(|frame| {
-            !frame.is_outbound()
-                && method_of(frame.message()) == Some("session/request_permission")
-                && request_was_answered(
-                    capsule.frames(),
-                    frame.message().get("id").expect("request id"),
-                )
-        });
+        let answered_request = capsule
+            .frames()
+            .iter()
+            .enumerate()
+            .any(|(request_at, frame)| {
+                !frame.is_outbound()
+                    && method_of(frame.message()) == Some("session/request_permission")
+                    && request_was_answered(
+                        capsule.frames(),
+                        request_at,
+                        frame.message().get("id").expect("request id"),
+                    )
+            });
         assert!(
             answered_request,
             "the recorded answer must be on the capsule"

@@ -138,6 +138,25 @@ and `git diff --check` all pass. No Grok process, no live probe, no quota
 spend. The exact one-rerun-per-segment gate, the four `evidence_pending`
 matrix cells, and the no-support-claim posture are unchanged.
 
+**Correlation completion.** The reviewer's follow-up asked that a response be
+accepted only after its matching outbound request, not only for
+`session/new`. `response_result` and `response_error` now locate the outbound
+request by method and id and correlate only later frames; they gate
+`initialize`/`authenticate` and resolve `session_id_from`, whose bespoke
+search is removed for one convention. `request_was_answered` and
+`permission_response_rejected` require the probe's answer to follow the
+inbound request it answers. Public API, capsule shape, and verdicts for
+conforming captures are unchanged.
+
+**Hosted CI diagnosis (head `3a08560b`).** The `Stable process-spawning
+nextest` job failed once on
+`claude_agent_sdk_driver::registered_tool_route::close_joins_the_registered_listener`,
+panicking at sidecar fixture session-open (`fixture.claude_agent_sdk.failed`,
+classification `Unknown`). Unrelated flake, not a branch defect: the branch
+touches no adapter code, and the identical job passed on first head
+`63886503` and on `026d1d3a`, which carries every branch change plus the same
+adapter sources. No card action follows; the job is green on the pushed head.
+
 ## Auto-Continuation
 
 No. Stop for exact-head review.

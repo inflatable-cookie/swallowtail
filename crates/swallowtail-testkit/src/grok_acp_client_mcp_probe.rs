@@ -603,7 +603,7 @@ pub fn grok_acp_client_mcp_verdict(
         .get("params")
         .and_then(|params| params.get("mcpServers"))
         .and_then(Value::as_array);
-    if !servers.is_some_and(|list| !list.is_empty()) {
+    if servers.is_none_or(|list| list.is_empty()) {
         return ClientMcpVerdict::Inconclusive;
     }
     let Some(id) = session_new.message.get("id").cloned() else {

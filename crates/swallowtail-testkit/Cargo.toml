@@ -35,11 +35,3 @@ path = "tests/conformance_suite.rs"
 [[test]]
 name = "grok_acp_client_mcp_probe"
 path = "tests/grok_acp_client_mcp_probe.rs"
-
-[[bin]]
-name = "grok-acp-client-mcp-probe"
-path = "src/bin/grok_acp_client_mcp_probe.rs"
-
-[[bin]]
-name = "grok-acp-echo-mcp"
-path = "src/bin/grok_acp_echo_mcp.rs"

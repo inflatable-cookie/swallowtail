@@ -83,6 +83,7 @@ swallowtail-runtime	swallowtail-core	^0.4.4
 swallowtail-runtime	swallowtail-idioms	^0.4.4
 swallowtail-testkit	swallowtail-core	^0.4.4
 swallowtail-testkit	swallowtail-idioms	^0.4.4
+swallowtail-testkit	swallowtail-protocol-acp	^0.4.4
 swallowtail-testkit	swallowtail-runtime	^0.4.4
 swallowtail-transport-acp-remote	swallowtail-core	^0.4.4
 swallowtail-transport-acp-remote	swallowtail-protocol-acp	^0.4.4

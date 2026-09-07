@@ -151,7 +151,7 @@ fn spawned_echo_server_records_transcript_from_args() {
     let exe = grok_acp_echo_mcp_bin();
     assert!(
         exe.is_file(),
-        "grok-acp-echo-mcp was not built next to the test executable: {}",
+        "grok-acp-echo-mcp example was not built at {}",
         exe.display()
     );
     let mut child = Command::new(&exe)
@@ -208,7 +208,26 @@ fn grok_acp_echo_mcp_bin() -> std::path::PathBuf {
     if path.ends_with("deps") {
         path.pop();
     }
+    path.push("examples");
     path.push("grok-acp-echo-mcp");
+    if !path.is_file() {
+        let status = std::process::Command::new(env!("CARGO"))
+            .args([
+                "build",
+                "--offline",
+                "--locked",
+                "-p",
+                "swallowtail-testkit",
+                "--example",
+                "grok-acp-echo-mcp",
+            ])
+            .status()
+            .expect("build grok-acp-echo-mcp example");
+        assert!(
+            status.success(),
+            "cargo build --example grok-acp-echo-mcp failed"
+        );
+    }
     path
 }
 

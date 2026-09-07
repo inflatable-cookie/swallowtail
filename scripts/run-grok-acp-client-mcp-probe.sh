@@ -75,8 +75,8 @@ probe_cleanup() {
 trap probe_cleanup EXIT
 
 if [[ -z $probe_echo_mcp ]]; then
-  cargo build --offline --locked -p swallowtail-testkit --bin grok-acp-echo-mcp
-  probe_echo_source="$probe_repo_root/target/debug/grok-acp-echo-mcp"
+  cargo build --offline --locked -p swallowtail-testkit --example grok-acp-echo-mcp
+  probe_echo_source="$probe_repo_root/target/debug/examples/grok-acp-echo-mcp"
   probe_output_dir=$(dirname "$probe_output_path")
   mkdir -p "$probe_output_dir"
   probe_echo_mcp=$(cd "$probe_output_dir" && pwd)/grok-acp-echo-mcp
@@ -90,7 +90,7 @@ if [[ -z ${GROK_HOME:-} ]]; then
   export GROK_HOME="$probe_isolated_home"
 fi
 
-cargo run --offline --locked -p swallowtail-testkit --bin grok-acp-client-mcp-probe -- \
+cargo run --offline --locked -p swallowtail-testkit --example grok-acp-client-mcp-probe -- \
   --live \
   --version "$probe_version" \
   --grok-executable "$probe_grok_executable" \

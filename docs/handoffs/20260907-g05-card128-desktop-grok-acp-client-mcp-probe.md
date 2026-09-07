@@ -56,13 +56,13 @@ stray run cannot mutate host Grok state or treat the operator home as the
 workspace root. Cargo keeps the host `HOME`. Auth is whatever that isolated
 environment already has.
 
-The live binary also refuses unless
+The live example also refuses unless
 `SWALLOWTAIL_DESKTOP_GROK_ACP_CLIENT_MCP_PROBE=1`.
 
 Provider-free four-verdict proof (no Grok process):
 
 ```sh
-cargo run --offline --locked -p swallowtail-testkit --bin grok-acp-client-mcp-probe -- \
+cargo run --offline --locked -p swallowtail-testkit --example grok-acp-client-mcp-probe -- \
   --fixture accepts_client_mcp --version 1.0.5
 ```
 

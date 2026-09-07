@@ -133,10 +133,15 @@ def portable_feature_inventory() -> set[str]:
         raise CoverageFailure("provider solution feature metadata headers changed")
     if not headers or headers[-1] != "notes":
         raise CoverageFailure("provider solution feature matrix must end with notes")
-    feature_headers = headers[len(FEATURE_METADATA_HEADERS) : -1]
-    if len(feature_headers) != 34:
+    if headers[-3:-1] != ["cross_kind", "cross_ref"]:
         raise CoverageFailure(
-            f"provider solution feature matrix contains {len(feature_headers)} feature columns instead of 34"
+            "provider solution feature matrix must place cross_kind and "
+            "cross_ref immediately before notes"
+        )
+    feature_headers = headers[len(FEATURE_METADATA_HEADERS) : -3]
+    if len(feature_headers) != 39:
+        raise CoverageFailure(
+            f"provider solution feature matrix contains {len(feature_headers)} feature columns instead of 39"
         )
     duplicates = sorted(
         feature for feature, count in Counter(feature_headers).items() if count > 1

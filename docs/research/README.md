@@ -11,6 +11,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 ### Harness Skills And Watchers
 
 - [289 Grok ACP Registered-Capability Corpus Preparation](./289-grok-acp-registered-capability-corpus-preparation.md) — preparation artifact; no production claim
+- [290 Card129 Feature Matrix Cross Evidence](./290-feature-matrix-cross-evidence.md) — complete frozen cell-level evidence ledger; no live/provider claim
 - [288 Shared Harness Capability Placement Audit](./288-shared-harness-capability-placement-audit.md) — complete placement evidence for centralized registration, server/tool lifecycle, context, skills, permissions, and honest Claude/Codex/Grok gaps; no production claim
 - [259 Process Containment Backend Evidence](./259-process-containment-backend-evidence.md) — promoted; macOS hard-containment limit retained as an explicit non-claim, not a watcher prerequisite
 - [260 Claude Code Watcher Bridge Transport Evidence](./260-claude-code-watcher-bridge-transport.md) — evidence stop promoted into Contract 060; card 016 owns the provider-neutral HTTP bridge while Claude cards 010-011 remain planned

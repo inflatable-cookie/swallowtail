@@ -1,6 +1,6 @@
 # Provider Route Matrix
 
-This is the integration front door for Swallowtail's 47 production routes.
+This is the integration front door for Swallowtail's 49 production routes.
 Choose one row explicitly. Swallowtail does not select a provider, driver,
 model, target, endpoint, credential, billing arrangement, execution host, or
 fallback route.
@@ -17,7 +17,7 @@ a clean close or a route-specific timeout.
 The companion
 [provider and feature CSV](provider-solution-feature-matrix.csv) groups
 complementary routes where one public solution facade exists, then compares
-runtime posture, version posture, and qualified feature coverage across all 47
+runtime posture, version posture, and qualified feature coverage across all 49
 routes. Composite-row notes name the branch that owns each route-specific
 capability; the cells remain a solution-conversion scoreboard. Permission
 exchange and question exchange are separate columns: authorization stays
@@ -26,7 +26,7 @@ runtime contract.
 
 ### Feature Matrix Value Vocabulary
 
-The 34 feature columns use three plain values plus exact exceptions:
+The 39 feature columns use three plain values plus exact exceptions:
 
 - `yes` — the solution supports the feature
 - `no` — the solution does not support the feature
@@ -40,6 +40,28 @@ The exceptions are deliberate and never generalize:
   where only part of the feature is qualified
 - `persistent_session_posture` uses sentence values that name the exact
   posture; treat each as its own truth, not a `yes` or `no`
+
+The five shared-harness capability columns are deliberately separate:
+
+| Column | Meaning |
+| --- | --- |
+| registered_tools | a prepared route binds consumer-registered tools through its qualified route mechanism |
+| client_mcp_servers | the consumer can declare MCP servers for the selected route; provider-owned tool activity does not count |
+| selected_skill_bundle | one immutable, resolved skill/reference bundle is carried as a distinct prepared input |
+| persistent_permission_grants | permission decisions survive one call or turn; one-shot Allow/Deny exchange is not a grant |
+| pre_session_model_catalogue | a model catalogue is available before opening the session; open-time negotiated options do not count |
+
+`cross_kind` and `cross_ref` are JSON objects immediately before `notes` in
+the CSV. Their keys are the unavailable feature columns in that row. Each
+value is either `provider_limitation` with an anchored row in the Card129
+[frozen evidence ledger](../research/290-feature-matrix-cross-evidence.md),
+whose basis is itself an anchored Research 281 route-ledger line, or
+`producer_gap` with an existing non-complete g05 batch-card path. Prepared
+integration guides are not frozen evidence. Producer-gap rows carry an
+explicit `Card129 producer-gap reasons:` marker in `notes`; a withheld cell
+uses the same producer-gap path and reason. The route-matrix check rejects
+missing, extra, stale, unanchored, guide-only, insufficient, or complete-card
+references.
 
 Every row has two public paths:
 

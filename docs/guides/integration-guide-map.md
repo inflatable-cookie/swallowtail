@@ -90,12 +90,13 @@ conflicts or when you are qualifying a new claim.
 
 | Feature family | Matrix columns and portable surfaces | Current guide | Coverage |
 | --- | --- | --- | --- |
-| route and configured-instance selection | `model_catalog`, `prepared_facade`, `configured_provider_instance_catalogue` | [selection and preparation](provider-selection-and-preparation.md) | complete |
+| route and configured-instance selection | `model_catalog`, `pre_session_model_catalogue`, `prepared_facade`, `configured_provider_instance_catalogue` | [selection and preparation](provider-selection-and-preparation.md) | complete |
 | ordinary operation shapes | `structured_run`, `interactive_session` | [ordinary lifecycle](ordinary-operation-lifecycle.md) | complete |
 | realtime sessions | `realtime_media_session`, `planned_connection_rollover` | [realtime routes](realtime-prepared-integration.md) | complete |
 | events and accounting | `streaming_events`, `usage_evidence`, `billed_cost_evidence` | [ordinary lifecycle](ordinary-operation-lifecycle.md), [observable activity](observable-activity.md) | complete |
 | generation controls | `output_token_limit`, `reasoning_selection`, `structured_output` | [generation controls and input authority](generation-controls-and-input-authority.md) | complete |
-| inputs and authority | `attachments`, `consumer_tool_exchange`, `permission_exchange`, `question_exchange`, `working_resource`, `bounded_workspace_text_write`, `external_search` | [generation controls and input authority](generation-controls-and-input-authority.md) | complete |
+| inputs and authority | `attachments`, `consumer_tool_exchange`, `registered_tools`, `client_mcp_servers`, `permission_exchange`, `persistent_permission_grants`, `question_exchange`, `working_resource`, `bounded_workspace_text_write`, `external_search` | [generation controls and input authority](generation-controls-and-input-authority.md) | complete |
+| selected context | `selected_skill_bundle` | [selection and preparation](provider-selection-and-preparation.md) | complete |
 | operation control | `cancellation_or_interruption`, terminal status, cleanup | [ordinary lifecycle](ordinary-operation-lifecycle.md) | complete |
 | session continuation | `load_session`, `resume_session`, `persistent_session_posture`, native close | [provider state and resources](provider-state-and-resource-lifecycle.md) | complete |
 | provider history browse | `provider_session_history` | [session history pages](provider-session-history.md) | complete |

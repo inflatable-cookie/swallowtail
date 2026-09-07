@@ -18,6 +18,7 @@
 
 ## Planned
 
+- [130-persistent-permission-grant-admission.md](./130-persistent-permission-grant-admission.md) — planned backlog stub only; no dispatch authorization; owns a future persistent-grant producer seam if promoted
 - [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — planned; ready on card 124's merge; first lane on the simplified shape
 - [123-v0-4-4-consumer-proof-and-tag-capsule.md](./123-v0-4-4-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.4` tag
 - [114-registered-tool-kernel.md](./114-registered-tool-kernel.md) — planned; ready after Batch A planning review/promotion

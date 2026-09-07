@@ -34,8 +34,11 @@ is the docs-index check that used to fail after that prologue.
 `lint`, `lint:no-features`, `test`, and `floor` are satisfied by a green
 hosted `CI` run triggered by `workflow_dispatch` (or a push to `main`) at
 the SHA to tag or at a commit with an identical tree; pull-request runs do
-not qualify because the MSRV floor skips its tests there. Local prepare
-records that run id. The release note names it. If no qualifying hosted run
+not qualify because the MSRV floor skips its tests there. Two run ids, two jobs, no circularity: the release note (inside the tree)
+names the run that proved the prepared candidate content; the tag request
+names the final qualifying `workflow_dispatch` run at the SHA to tag, run
+after the last docs-only commit and recorded in the PR closeout comment and
+the card Result, never by another tree mutation. If no qualifying hosted run
 exists, invoke the local-heavy profile in `config/release.toml` (the four
 commented keys, in that order) and rerun `effigy --json release gates`.
 

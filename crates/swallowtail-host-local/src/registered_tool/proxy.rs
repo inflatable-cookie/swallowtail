@@ -12,11 +12,11 @@ use futures_executor::block_on;
 use serde_json::{Map, Value, json};
 use std::fs::{self, File, OpenOptions};
 use std::io::Write;
-use std::net::{Shutdown, SocketAddr, TcpListener, TcpStream};
+use std::net::{Shutdown, SocketAddr, TcpStream};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
-use std::thread::{self, JoinHandle};
+use std::thread::JoinHandle;
 use std::time::{Duration, Instant};
 use swallowtail_runtime::{
     Deadline, RegisteredToolBridgeLease, RegisteredToolCallId, RegisteredToolCallRequest,
@@ -55,7 +55,7 @@ impl RegisteredToolProxyServer {
         time: Arc<dyn TimeService>,
         deadline: Deadline,
     ) -> Result<Self, RuntimeFailure> {
-        let (listener, endpoint) = crate::watcher_bridge::bind_loopback()?;
+        let (listener, endpoint) = crate::operation_bridge::bind_loopback()?;
         let state = Arc::new(ProxyState {
             endpoint,
             bearer: generate_operation_secret()?,
@@ -70,16 +70,26 @@ impl RegisteredToolProxyServer {
             ready: Mutex::new(false),
             ready_changed: Condvar::new(),
         });
-        let accept_state = Arc::clone(&state);
-        let thread = thread::Builder::new()
-            .name("swallowtail-registered-tool-proxy".to_owned())
-            .spawn(move || accept_loop(accept_state, listener))
-            .map_err(|_| {
-                failure(
-                    "swallowtail.registered_tool.proxy_spawn_failed",
-                    "Registered tool proxy could not start its listener",
-                )
-            })?;
+        let should_close_state = Arc::clone(&state);
+        let should_close = Arc::new(move || should_close_state.closed.load(Ordering::Acquire));
+        let handler_state = Arc::clone(&state);
+        let handler = Arc::new(move |stream: TcpStream| {
+            if handler_state
+                .connection_claimed
+                .swap(true, Ordering::AcqRel)
+            {
+                drop(stream);
+                return;
+            }
+            handle_connection(&handler_state, stream);
+        });
+        let thread = crate::operation_bridge::spawn_accept_loop(
+            listener,
+            "swallowtail-registered-tool-proxy",
+            should_close,
+            true,
+            handler,
+        )?;
         Ok(Self {
             state,
             thread: Mutex::new(Some(thread)),
@@ -176,7 +186,7 @@ impl RegisteredToolProxyServer {
         self.state.closed.store(true, Ordering::Release);
         self.expire_rendezvous();
         self.state.ready_changed.notify_all();
-        crate::watcher_bridge::wake_accept(self.state.endpoint);
+        crate::operation_bridge::wake_accept(self.state.endpoint);
         if let Some(thread) = self
             .thread
             .lock()
@@ -275,23 +285,6 @@ impl RendezvousState {
     fn expire(&self) {
         if !self.expired.swap(true, Ordering::AcqRel) {
             remove_rendezvous(&self.path, &self.directory);
-        }
-    }
-}
-
-fn accept_loop(state: Arc<ProxyState>, listener: TcpListener) {
-    while !state.closed.load(Ordering::Acquire) {
-        match listener.accept() {
-            Ok((stream, _)) => {
-                if state.connection_claimed.swap(true, Ordering::AcqRel) {
-                    drop(stream);
-                    break;
-                }
-                handle_connection(&state, stream);
-                break;
-            }
-            Err(error) if error.kind() == std::io::ErrorKind::Interrupted => continue,
-            Err(_) => break,
         }
     }
 }

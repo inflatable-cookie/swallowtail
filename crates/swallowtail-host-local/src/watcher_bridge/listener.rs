@@ -5,88 +5,47 @@ use super::protocol::{
     error_http_status, error_message, jsonrpc_error, recoverable_request_id,
 };
 use super::state::LiveLease;
-use crate::output::failure;
-use std::io::ErrorKind;
 use std::net::{TcpListener, TcpStream};
 use std::sync::Arc;
 use std::thread;
-use std::time::Duration;
 use swallowtail_runtime::RuntimeFailure;
-
-pub(crate) fn bind_loopback() -> Result<(TcpListener, std::net::SocketAddr), RuntimeFailure> {
-    let listener = TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, 0)).map_err(|_| {
-        failure(
-            "swallowtail.watcher_bridge.bind_failed",
-            "Watcher bridge could not bind a loopback listener",
-        )
-    })?;
-    listener.set_nonblocking(false).map_err(|_| {
-        failure(
-            "swallowtail.watcher_bridge.bind_failed",
-            "Watcher bridge could not bind a loopback listener",
-        )
-    })?;
-    let addr = listener.local_addr().map_err(|_| {
-        failure(
-            "swallowtail.watcher_bridge.bind_failed",
-            "Watcher bridge could not bind a loopback listener",
-        )
-    })?;
-    Ok((listener, addr))
-}
-
-pub(crate) fn wake_accept(addr: std::net::SocketAddr) {
-    let _ = TcpStream::connect_timeout(&addr, Duration::from_millis(100));
-}
 
 pub(super) fn spawn_accept(
     live: Arc<LiveLease>,
     listener: TcpListener,
 ) -> Result<(), RuntimeFailure> {
     let accept_live = Arc::clone(&live);
-    let thread = thread::Builder::new()
-        .name("swallowtail-watcher-bridge".to_owned())
-        .spawn(move || accept_loop(accept_live, listener))
-        .map_err(|_| {
-            failure(
-                "swallowtail.watcher_bridge.spawn_failed",
-                "Watcher bridge could not start its listener",
-            )
-        })?;
+    let should_close = Arc::new(move || accept_live.is_closed());
+    let handler_live = Arc::clone(&live);
+    let handler = Arc::new(move |stream: TcpStream| {
+        if handler_live.is_closed() {
+            return;
+        }
+        if handler_live.admit_connection().is_err() {
+            drop(stream);
+            return;
+        }
+        let connection_live = Arc::clone(&handler_live);
+        match thread::Builder::new()
+            .name("swallowtail-watcher-bridge-conn".to_owned())
+            .spawn(move || handle_connection(connection_live, stream))
+        {
+            Ok(thread) => handler_live.retain_connection(thread),
+            Err(_) => handler_live.release_connection(),
+        }
+    });
+    let thread = crate::operation_bridge::spawn_accept_loop(
+        listener,
+        "swallowtail-watcher-bridge",
+        should_close,
+        false,
+        handler,
+    )?;
     *live
         .accept_thread
         .lock()
         .expect("watcher bridge accept thread lock poisoned") = Some(thread);
     Ok(())
-}
-
-fn accept_loop(live: Arc<LiveLease>, listener: TcpListener) {
-    loop {
-        if live.is_closed() {
-            break;
-        }
-        match listener.accept() {
-            Ok((stream, _)) => {
-                if live.is_closed() {
-                    break;
-                }
-                if live.admit_connection().is_err() {
-                    drop(stream);
-                    continue;
-                }
-                let handler_live = Arc::clone(&live);
-                match thread::Builder::new()
-                    .name("swallowtail-watcher-bridge-conn".to_owned())
-                    .spawn(move || handle_connection(handler_live, stream))
-                {
-                    Ok(thread) => live.retain_connection(thread),
-                    Err(_) => live.release_connection(),
-                }
-            }
-            Err(error) if error.kind() == ErrorKind::Interrupted => continue,
-            Err(_) => break,
-        }
-    }
 }
 
 fn handle_connection(live: Arc<LiveLease>, mut stream: TcpStream) {

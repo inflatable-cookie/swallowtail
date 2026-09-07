@@ -7,10 +7,12 @@
 //! secret source, or lifecycle authority.
 
 mod join;
+mod listener;
 mod registry;
 mod secret;
 
 pub(crate) use join::join_within;
+pub(crate) use listener::{bind_loopback, spawn_accept_loop, wake_accept};
 pub use registry::OperationBridgeCleanupCause;
 pub(crate) use registry::{BridgeLease, BridgeLeaseOwner, BridgeProfile, OperationBridgeRegistry};
 pub(crate) use secret::generate_operation_secret;

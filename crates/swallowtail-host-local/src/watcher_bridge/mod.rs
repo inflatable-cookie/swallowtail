@@ -24,7 +24,6 @@ use failure::{closed_failure, foreign_failure, identity_failure};
 pub(crate) use http::{
     configure_stream, constant_time_eq, read_request as read_private_request, write_response,
 };
-pub(crate) use listener::{bind_loopback, wake_accept};
 use listener::{endpoint_url, spawn_accept};
 use proof::ProofLog;
 use state::{Gate, LiveLease, ProofArchive, RequestBounds, SessionPhase};
@@ -130,7 +129,7 @@ impl LocalWatcherBridgeHostService {
         &self,
         request: WatcherBridgeOpenRequest,
     ) -> Result<WatcherBridgeLease, RuntimeFailure> {
-        let (listener, addr) = bind_loopback()?;
+        let (listener, addr) = crate::operation_bridge::bind_loopback()?;
         let bearer = generate_operation_secret()?;
         let token_secret = generate_operation_secret()?;
         let endpoint = endpoint_url(addr);

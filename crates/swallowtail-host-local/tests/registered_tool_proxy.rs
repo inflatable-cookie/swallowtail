@@ -1,18 +1,23 @@
 use futures_executor::block_on;
 use std::future::ready;
+use std::io::{Read, Write};
+use std::net::TcpStream;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::time::Duration;
 use swallowtail_core::{ConfiguredInstanceId, ExecutionHostId};
 use swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument;
-use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits, RegisteredToolProxyLaunch};
+use swallowtail_host_local::{
+    LocalHostServices, LocalProcessHost, LocalProcessLimits, RegisteredToolProxyLaunch,
+};
 use swallowtail_runtime::{
     BoxFuture, Deadline, EnvironmentRef, ExecutableRef, ProcessHandle, ProcessInputChunk,
     ProcessOutputStream, ProcessService, REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION,
     RegisteredServerId, RegisteredServerRevision, RegisteredToolAttachment, RegisteredToolBounds,
-    RegisteredToolCall, RegisteredToolCallId, RegisteredToolCallRequest, RegisteredToolDeclaration,
-    RegisteredToolDispatchContext, RegisteredToolDispatcher, RegisteredToolEffectPosture,
-    RegisteredToolExecutionKind, RegisteredToolId, RegisteredToolLocalName,
-    RegisteredToolNamespace, RegisteredToolOutcome, RegisteredToolPayload,
+    RegisteredToolBridgeLease, RegisteredToolCall, RegisteredToolCallId, RegisteredToolCallRequest,
+    RegisteredToolDeclaration, RegisteredToolDispatchContext, RegisteredToolDispatcher,
+    RegisteredToolEffectPosture, RegisteredToolExecutionKind, RegisteredToolId,
+    RegisteredToolLocalName, RegisteredToolNamespace, RegisteredToolOutcome, RegisteredToolPayload,
     RegisteredToolPreparation, RegisteredToolProtocolVersion, RegisteredToolProxyRecipe,
     RegisteredToolResult, RegisteredToolRetryPosture, RegisteredToolSchemaDialect,
     RegisteredToolSchemaDigest, RegisteredToolSchemaDocument, RegisteredToolSchemaMediaType,
@@ -188,6 +193,243 @@ fn real_courier_and_sdk_shaped_process_reach_the_kernel_dispatcher() {
             ),
     )
     .expect("close joins listener and kernel");
+}
+
+/// The raw mounted fixture drives the same listener without a fixture-local
+/// response. It covers adverse wire cases that a provider SDK would hide.
+struct RawMountedProxy {
+    local: LocalHostServices,
+    lease: RegisteredToolBridgeLease,
+    launch: RegisteredToolProxyLaunch,
+    document: RegisteredToolProxyRendezvousDocument,
+    calls: Arc<AtomicUsize>,
+}
+
+fn mount_raw_proxy() -> RawMountedProxy {
+    let courier = COURIER.expect("feature-gated courier binary is built");
+    let host_id = ExecutionHostId::new("fixture.host.mediated-stdio-raw").expect("host id");
+    let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
+    let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let snapshot = Arc::new(snapshot(&host_id, executable.clone(), environment.clone()));
+    let recipe = RegisteredToolProxyRecipe::new(
+        executable.clone(),
+        environment.clone(),
+        swallowtail_runtime::REGISTERED_TOOL_PROXY_WIRE_TAG,
+    )
+    .expect("fixed recipe wire");
+    let selection = RegisteredToolSelection::new(
+        Arc::clone(&snapshot),
+        [tool_id()],
+        RegisteredToolTransport::PrivateLoopbackHttp,
+        RegisteredToolProtocolVersion::new(REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION)
+            .expect("protocol"),
+    )
+    .expect("selection")
+    .with_attachment(RegisteredToolAttachment::MediatedStdioProxy)
+    .with_proxy_recipe(recipe);
+    let calls = Arc::new(AtomicUsize::new(0));
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable, courier)
+        .approve_environment(environment, [("PATH".into(), "/usr/bin".into())])
+        .with_registered_tool_dispatcher(Arc::new(Dispatcher {
+            calls: Arc::clone(&calls),
+        }))
+        .build_services(host_id.clone());
+    let admission = swallowtail_testkit::fixture_admission(Arc::new(
+        swallowtail_testkit::ScriptedAdmissionPort::current(),
+    ));
+    let preparation = RegisteredToolPreparation::new(
+        Arc::clone(&snapshot),
+        selection,
+        admission,
+        swallowtail_runtime::RegisteredToolLimits::ceiling(),
+    );
+    let lease = block_on(
+        preparation
+            .prepare(
+                local.services(),
+                ConfiguredInstanceId::new("fixture.instance.raw").expect("instance"),
+                ScopeId::new("fixture.scope.raw").expect("scope"),
+                RuntimeTurnId::new("fixture.turn.raw").expect("turn"),
+                Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
+                    1_000_000_000_000,
+                )),
+            )
+            .expect("prepared")
+            .open(),
+    )
+    .expect("open binds the mounted listener");
+    let launch = local
+        .registered_tool_proxy_launch(&lease)
+        .expect("host materializes the rendezvous");
+    let document = RegisteredToolProxyRendezvousDocument::decode(
+        &std::fs::read(launch.rendezvous_path()).expect("rendezvous body"),
+    )
+    .expect("rendezvous wire");
+    RawMountedProxy {
+        local,
+        lease,
+        launch,
+        document,
+        calls,
+    }
+}
+
+impl RawMountedProxy {
+    fn close(self) {
+        block_on(
+            self.local
+                .services()
+                .registered_tool_bridge()
+                .expect("registered bridge")
+                .close(
+                    self.lease,
+                    swallowtail_runtime::RegisteredToolCleanupCause::Completion,
+                ),
+        )
+        .expect("mounted proxy closes cleanly");
+    }
+}
+
+#[test]
+fn mounted_proxy_rejects_foreign_auth_and_tool_identity() {
+    let fixture = mount_raw_proxy();
+    assert!(fixture.launch.rendezvous_path().exists());
+    let mut stream = connect_raw(&fixture.document);
+    let not_ready = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","method":"notifications/initialized"}"#,
+    );
+    assert_eq!(not_ready.0, 200);
+    assert!(String::from_utf8_lossy(&not_ready.1).contains("-32006"));
+    let initialized = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert_eq!(initialized.0, 200);
+    assert!(String::from_utf8_lossy(&initialized.1).contains("2025-11-25"));
+    assert!(!fixture.launch.rendezvous_path().exists());
+
+    let foreign = raw_post(
+        &mut stream,
+        "foreign-bearer",
+        br#"{"jsonrpc":"2.0","id":2,"method":"tools/list"}"#,
+    );
+    assert_eq!(foreign.0, 401);
+    let unknown = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"foreign.tool","arguments":{}}}"#,
+    );
+    assert_eq!(unknown.0, 200);
+    assert!(String::from_utf8_lossy(&unknown.1).contains("-32602"));
+    let first = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"swallowtail.conformance/reconcile","arguments":{"path":"workspace/file"}}}"#,
+    );
+    assert_eq!(first.0, 200);
+    assert!(String::from_utf8_lossy(&first.1).contains("from-dispatcher"));
+    let duplicate = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"swallowtail.conformance/reconcile","arguments":{"path":"workspace/file"}}}"#,
+    );
+    assert_eq!(duplicate.0, 200);
+    assert!(String::from_utf8_lossy(&duplicate.1).contains("-32000"));
+    assert_eq!(fixture.calls.load(Ordering::SeqCst), 1);
+    drop(stream);
+    fixture.close();
+}
+
+#[test]
+fn mounted_proxy_drops_oversized_and_partial_transport_without_dispatch() {
+    let fixture = mount_raw_proxy();
+    let mut partial = connect_raw(&fixture.document);
+    partial
+        .write_all(b"POST /mcp HTTP/1.1\r\nContent-Length: 2\r\n")
+        .expect("partial request");
+    partial.flush().expect("partial request flush");
+    drop(partial);
+    assert_eq!(fixture.calls.load(Ordering::SeqCst), 0);
+    fixture.close();
+
+    let fixture = mount_raw_proxy();
+    let mut stream = connect_raw(&fixture.document);
+    stream
+        .set_read_timeout(Some(Duration::from_millis(250)))
+        .expect("read timeout");
+    let oversized =
+        vec![b'x'; swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_MAX_RECORD_BYTES + 1];
+    let header = format!(
+        "POST /mcp HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n\r\n",
+        fixture.document.bearer,
+        oversized.len()
+    );
+    stream
+        .write_all(header.as_bytes())
+        .expect("oversized header");
+    stream.write_all(&oversized).expect("oversized body");
+    stream.flush().expect("oversized request");
+    let mut discarded = [0_u8; 1];
+    let _ = stream.read(&mut discarded);
+    drop(stream);
+    assert_eq!(fixture.calls.load(Ordering::SeqCst), 0);
+    fixture.close();
+}
+
+fn connect_raw(document: &RegisteredToolProxyRendezvousDocument) -> TcpStream {
+    let authority = document
+        .endpoint
+        .strip_prefix("http://127.0.0.1:")
+        .expect("loopback endpoint");
+    let port = authority
+        .split_once('/')
+        .expect("endpoint path")
+        .0
+        .parse::<u16>()
+        .expect("endpoint port");
+    TcpStream::connect_timeout(
+        &format!("127.0.0.1:{port}").parse().expect("socket address"),
+        Duration::from_secs(1),
+    )
+    .expect("mounted listener accepts")
+}
+
+fn raw_post(stream: &mut TcpStream, bearer: &str, body: &[u8]) -> (u16, Vec<u8>) {
+    let header = format!(
+        "POST /mcp HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {bearer}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: keep-alive\r\n\r\n",
+        body.len()
+    );
+    stream.write_all(header.as_bytes()).expect("request header");
+    stream.write_all(body).expect("request body");
+    stream.flush().expect("request flush");
+    let mut header = Vec::new();
+    let mut byte = [0_u8; 1];
+    loop {
+        stream.read_exact(&mut byte).expect("response header");
+        header.push(byte[0]);
+        if header.ends_with(b"\r\n\r\n") {
+            break;
+        }
+    }
+    let text = std::str::from_utf8(&header[..header.len() - 4]).expect("response headers");
+    let mut lines = text.split("\r\n");
+    let status = lines
+        .next()
+        .and_then(|line| line.split_whitespace().nth(1))
+        .and_then(|value| value.parse::<u16>().ok())
+        .expect("response status");
+    let length = lines
+        .filter_map(|line| line.split_once(':'))
+        .find(|(name, _)| name.eq_ignore_ascii_case("content-length"))
+        .and_then(|(_, value)| value.trim().parse::<usize>().ok())
+        .expect("response length");
+    let mut response = vec![0_u8; length];
+    stream.read_exact(&mut response).expect("response body");
+    (status, response)
 }
 
 struct FakeSdk {

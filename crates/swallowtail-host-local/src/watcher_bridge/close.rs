@@ -1,4 +1,3 @@
-use super::listener::wake_accept;
 use super::state::{LiveLease, ProofArchive, drive};
 use crate::operation_bridge::{BridgeProfile, OperationBridgeRegistry};
 use std::sync::{Arc, Mutex};
@@ -21,7 +20,7 @@ pub(super) fn shutdown_live(
         gate.admission = WatcherBridgeAdmission::Closed;
     }
     drop(live.cancel.request());
-    wake_accept(live.bind_addr);
+    crate::operation_bridge::wake_accept(live.bind_addr);
     let accept = live
         .accept_thread
         .lock()

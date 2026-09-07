@@ -36,24 +36,10 @@ pub(super) fn busy_failure() -> RuntimeFailure {
     )
 }
 
-pub(super) fn unauthorized_failure() -> RuntimeFailure {
-    failure(
-        "swallowtail.watcher_bridge.unauthorized",
-        "Watcher bridge request was not authenticated",
-    )
-}
-
 pub(super) fn malformed_failure() -> RuntimeFailure {
     failure(
         "swallowtail.watcher_bridge.malformed",
         "Watcher bridge request was malformed",
-    )
-}
-
-pub(super) fn oversized_failure() -> RuntimeFailure {
-    failure(
-        "swallowtail.watcher_bridge.oversized",
-        "Watcher bridge request exceeded its positive bound",
     )
 }
 

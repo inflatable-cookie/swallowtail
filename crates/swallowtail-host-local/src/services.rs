@@ -1,5 +1,5 @@
 use crate::operation_bridge::{OperationBridgeCleanupCause, OperationBridgeRegistry};
-use crate::registered_tool::LocalRegisteredToolBridgeHostService;
+use crate::registered_tool::{LocalRegisteredToolBridgeHostService, RegisteredToolProxyLaunch};
 use crate::task::LocalTaskReaperOwner;
 use crate::watcher::LocalWatcherHostService;
 use crate::watcher_bridge::{LocalWatcherBridgeHostService, WatcherBridgeProofKind};
@@ -8,8 +8,8 @@ use std::sync::Arc;
 use std::time::Duration;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
-    CleanupOutcome, Deadline, HostServices, MonotonicInstant, RegisteredToolMountedTopology,
-    RuntimeFailure, RuntimeTurnId, TimeService,
+    CleanupOutcome, Deadline, HostServices, MonotonicInstant, RegisteredToolBridgeLease,
+    RegisteredToolMountedTopology, RuntimeFailure, RuntimeTurnId, TimeService,
 };
 
 /// Inspectable host-owned local service composition for one execution host.
@@ -153,6 +153,26 @@ impl LocalHostServices {
             .map_or(0, |bridge| bridge.live_lease_count())
     }
 
+    /// Materializes one operation-scoped mediated-stdio courier launch.
+    ///
+    /// The returned launch is one-shot. Its process arguments contain only the
+    /// fixed wire tag and a non-authoritative rendezvous path; endpoint,
+    /// bearer, and generations remain in the private rendezvous file.
+    pub fn registered_tool_proxy_launch(
+        &self,
+        lease: &RegisteredToolBridgeLease,
+    ) -> Result<RegisteredToolProxyLaunch, RuntimeFailure> {
+        self.registered_tool_bridge
+            .as_ref()
+            .ok_or_else(|| {
+                RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                    "swallowtail.registered_tool.missing_host_service",
+                    "Registered tool bridge is not mounted",
+                ))
+            })?
+            .proxy_launch(lease)
+    }
+
     /// Returns how many operation-bridge leases both profiles share.
     ///
     /// There is one lease owner for the whole composition, so this count spans
@@ -160,6 +180,12 @@ impl LocalHostServices {
     #[must_use]
     pub fn operation_bridge_lease_count(&self) -> usize {
         self.operation_bridges.lease_count()
+    }
+
+    /// Returns how many operation-owned loopback listeners are live.
+    #[must_use]
+    pub fn operation_bridge_listener_count(&self) -> usize {
+        self.operation_bridges.listener_count()
     }
 
     /// Returns every profile and shared generation owned for one turn.

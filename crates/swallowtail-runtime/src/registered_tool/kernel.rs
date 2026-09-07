@@ -12,6 +12,7 @@
 //! never claims exactly-once remote execution.
 
 use super::admission::AdmissionPhase;
+use super::attachment::RegisteredToolAttachment;
 use super::call::{
     RegisteredToolCall, RegisteredToolCallRequest, RegisteredToolExecutionDisposition,
     RegisteredToolOutcome, RegisteredToolProgress, ValidatedRegisteredToolBinding,
@@ -23,7 +24,8 @@ use super::dispatch::{
 use super::failure::{RegisteredToolFailureKind, fail, reject};
 use super::gate::{AdmissionGate, AdmissionPermit};
 use super::identity::{
-    RegisteredToolCallId, RegisteredToolLeaseGeneration, RegisteredToolTransportGeneration,
+    RegisteredToolCallId, RegisteredToolExecutionKind, RegisteredToolLeaseGeneration,
+    RegisteredToolTransportGeneration,
 };
 use super::lease::{
     RegisteredToolAdmissionState, RegisteredToolBridgeLease, RegisteredToolCompletionState,
@@ -151,7 +153,13 @@ impl RegisteredToolOperationKernel {
             operation_deadline: request.deadline(),
             state: Mutex::new(KernelState {
                 admission: RegisteredToolAdmissionState::Open,
-                lifecycle: RegisteredToolLifecycleState::Ready,
+                lifecycle: if request.selection().attachment()
+                    == super::attachment::RegisteredToolAttachment::MediatedStdioProxy
+                {
+                    RegisteredToolLifecycleState::Prepared
+                } else {
+                    RegisteredToolLifecycleState::Ready
+                },
                 revoked: false,
                 cleanup_failed: false,
                 active: None,
@@ -215,6 +223,28 @@ impl RegisteredToolOperationKernel {
         }
         state.progress.clear();
         state.bump_epoch();
+    }
+
+    /// Completes the mediated transport ready barrier.
+    ///
+    /// Host-mediated callback leases are ready at open. A mediated stdio
+    /// lease stays prepared until its courier has authenticated and completed
+    /// the fixed MCP negotiation, so no provider call can enter the kernel
+    /// before that barrier.
+    pub fn mark_ready(&self) -> Result<(), RuntimeFailure> {
+        let mut state = self.locked();
+        if state.admission != RegisteredToolAdmissionState::Open {
+            return Err(fail(RegisteredToolFailureKind::PostTerminalCorrelation));
+        }
+        match state.lifecycle {
+            RegisteredToolLifecycleState::Prepared => {
+                state.lifecycle = RegisteredToolLifecycleState::Ready;
+                state.bump_epoch();
+                Ok(())
+            }
+            RegisteredToolLifecycleState::Ready => Ok(()),
+            _ => Err(fail(RegisteredToolFailureKind::NotReady)),
+        }
     }
 
     /// Marks the kernel closing after admission has frozen.
@@ -452,6 +482,9 @@ impl RegisteredToolOperationKernel {
             }
             RegisteredToolAdmissionState::Open => {}
         }
+        if state.lifecycle == RegisteredToolLifecycleState::Prepared {
+            return Err(fail(RegisteredToolFailureKind::NotReady));
+        }
         if reached(now, expires_at) {
             return Err(fail(RegisteredToolFailureKind::DeadlineExceeded));
         }
@@ -510,6 +543,11 @@ impl RegisteredToolOperationKernel {
             .filter(|_| self.selection.contains(request.tool()))
             .ok_or_else(|| fail(RegisteredToolFailureKind::UnsupportedTool))?;
         let kind = declaration.kind();
+        if self.selection.attachment() == RegisteredToolAttachment::MediatedStdioProxy
+            && kind != RegisteredToolExecutionKind::Mcp
+        {
+            return Err(fail(RegisteredToolFailureKind::UnsupportedTool));
+        }
         if !kind.is_host_dispatchable() {
             return Err(fail(RegisteredToolFailureKind::UnsupportedTool));
         }

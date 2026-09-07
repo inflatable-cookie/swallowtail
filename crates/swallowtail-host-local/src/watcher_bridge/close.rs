@@ -1,4 +1,3 @@
-use super::listener::wake_accept;
 use super::state::{LiveLease, ProofArchive, drive};
 use crate::operation_bridge::{BridgeProfile, OperationBridgeRegistry};
 use std::sync::{Arc, Mutex};
@@ -21,24 +20,12 @@ pub(super) fn shutdown_live(
         gate.admission = WatcherBridgeAdmission::Closed;
     }
     drop(live.cancel.request());
-    wake_accept(live.bind_addr);
-    let accept = live
-        .accept_thread
-        .lock()
-        .expect("watcher bridge accept thread lock poisoned")
-        .take();
-    if let Some(accept) = accept {
-        let _ = accept.join();
-    }
-    let connections = std::mem::take(
-        &mut *live
-            .connections
+    drop(
+        live.route
             .lock()
-            .expect("watcher bridge connection lock poisoned"),
+            .expect("watcher route lock poisoned")
+            .take(),
     );
-    for connection in connections {
-        let _ = connection.join();
-    }
     let turn = live.turn.clone();
     let generation = live.generation;
     let kinds = live.proof.snapshot();
@@ -47,6 +34,7 @@ pub(super) fn shutdown_live(
         .expect("watcher bridge proof archive lock poisoned")
         .retire_proof(turn.clone(), kinds);
     registry.forget(BridgeProfile::Watcher, &turn, generation.get());
+    registry.close_listener_if_idle(&turn);
     let outcome = match drive(live.watcher.stop_and_join_all(turn.clone(), cause)) {
         Ok((_, outcome)) => Ok(outcome),
         Err(error)

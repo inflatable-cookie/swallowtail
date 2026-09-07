@@ -6,6 +6,11 @@ use std::collections::BTreeMap;
 use std::sync::{Arc, Mutex, MutexGuard};
 use swallowtail_runtime::{CleanupOutcome, RuntimeFailure, RuntimeTurnId};
 
+use super::listener::{
+    OperationBridgeListener, OperationBridgeRoute, OperationBridgeRouteSpec,
+    namespace_registered_tool, namespace_watcher,
+};
+
 /// Closed profile one operation-bridge lease belongs to.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum BridgeProfile {
@@ -74,6 +79,7 @@ struct RegistryState {
     next_generation: u64,
     by_turn: BTreeMap<(RuntimeTurnId, BridgeProfile), u64>,
     owned: BTreeMap<u64, OwnedLease>,
+    listeners: BTreeMap<RuntimeTurnId, Arc<OperationBridgeListener>>,
 }
 
 /// One private-operation bridge registry for every closed profile.
@@ -93,6 +99,7 @@ impl Default for OperationBridgeRegistry {
                 next_generation: 1,
                 by_turn: BTreeMap::new(),
                 owned: BTreeMap::new(),
+                listeners: BTreeMap::new(),
             }),
         }
     }
@@ -139,6 +146,44 @@ impl OperationBridgeRegistry {
         );
     }
 
+    /// Returns the one listener bound for this operation, binding it on the
+    /// first profile lease open and reusing it for every closed profile.
+    pub(crate) fn listener_for_turn(
+        &self,
+        turn: &RuntimeTurnId,
+    ) -> Result<Arc<OperationBridgeListener>, RuntimeFailure> {
+        let mut state = self.locked();
+        if let Some(listener) = state.listeners.get(turn) {
+            return Ok(Arc::clone(listener));
+        }
+        let listener = OperationBridgeListener::bind()?;
+        state.listeners.insert(turn.clone(), Arc::clone(&listener));
+        Ok(listener)
+    }
+
+    /// Registers a profile route on the operation-owned listener. The route
+    /// carries the exact generation and lease identity into the authenticated
+    /// frame delivered to the profile handler.
+    pub(crate) fn register_route(
+        &self,
+        profile: BridgeProfile,
+        turn: &RuntimeTurnId,
+        generation: u64,
+        spec: OperationBridgeRouteSpec,
+    ) -> Result<OperationBridgeRoute, RuntimeFailure> {
+        let listener = self.locked().listeners.get(turn).cloned().ok_or_else(|| {
+            RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.operation_bridge.listener_missing",
+                "Operation bridge listener is not bound for this operation",
+            ))
+        })?;
+        let namespace = match profile {
+            BridgeProfile::Watcher => namespace_watcher(),
+            BridgeProfile::RegisteredTool => namespace_registered_tool(),
+        };
+        listener.register(namespace, generation, spec)
+    }
+
     /// Returns the live watcher lease for one exact shared generation.
     pub(crate) fn watcher_lease(&self, generation: u64) -> Option<Arc<LiveWatcherLease>> {
         match self
@@ -174,9 +219,33 @@ impl OperationBridgeRegistry {
         state.owned.remove(&generation);
     }
 
+    /// Closes and removes the operation listener once no profile lease remains.
+    pub(crate) fn close_listener_if_idle(&self, turn: &RuntimeTurnId) {
+        let listener = {
+            let mut state = self.locked();
+            if state
+                .by_turn
+                .keys()
+                .any(|(owned_turn, _)| owned_turn == turn)
+                || state.owned.values().any(|owned| &owned.turn == turn)
+            {
+                return;
+            }
+            state.listeners.remove(turn)
+        };
+        if let Some(listener) = listener {
+            listener.close();
+        }
+    }
+
     /// Returns how many live leases this registry owns across both profiles.
     pub(crate) fn lease_count(&self) -> usize {
         self.locked().owned.len()
+    }
+
+    /// Returns how many operation-owned listener resources are live.
+    pub(crate) fn listener_count(&self) -> usize {
+        self.locked().listeners.len()
     }
 
     /// Returns how many live leases one profile owns.
@@ -226,6 +295,9 @@ impl OperationBridgeRegistry {
         let mut outcome = CleanupOutcome::NotApplicable;
         for owner in &owners {
             outcome = combine(outcome, owner.join_and_release(cause)?);
+        }
+        if !matches!(outcome, CleanupOutcome::Failed(_)) {
+            self.close_listener_if_idle(turn);
         }
         Ok(outcome)
     }

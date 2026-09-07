@@ -8,7 +8,7 @@ pub(super) use decode::{
 };
 pub(super) use encode::{error_http_status, error_message, jsonrpc_error};
 
-use super::failure::{closed_failure, malformed_failure, unauthorized_failure, unknown_failure};
+use super::failure::{closed_failure, malformed_failure, unknown_failure};
 use super::proof::WatcherBridgeProofKind;
 use super::state::{LiveLease, drive, owning_turn};
 use decode::DecodedRequest as Request;
@@ -55,28 +55,6 @@ pub(super) fn dispatch(
             Ok(Some(jsonrpc_result(id, result)))
         }
     }
-}
-
-pub(super) fn authenticate(
-    live: &LiveLease,
-    presented: Option<&str>,
-) -> Result<(), RuntimeFailure> {
-    let presented = presented.ok_or_else(unauthorized_failure)?;
-    if constant_time_eq(live.bearer.as_bytes(), presented.as_bytes()) {
-        Ok(())
-    } else {
-        Err(unauthorized_failure())
-    }
-}
-
-fn constant_time_eq(left: &[u8], right: &[u8]) -> bool {
-    if left.len() != right.len() {
-        return false;
-    }
-    left.iter()
-        .zip(right)
-        .fold(0_u8, |acc, (a, b)| acc | (a ^ b))
-        == 0
 }
 
 fn dispatch_tool(

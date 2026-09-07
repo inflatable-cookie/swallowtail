@@ -13,6 +13,9 @@ autotests = false
 [lib]
 doctest = false
 
+[features]
+mediated-stdio-proxy = []
+
 [dependencies]
 futures-executor = "0.3"
 getrandom = "0.2"
@@ -43,3 +46,13 @@ path = "tests/local_process.rs"
 [[test]]
 name = "watcher_service"
 path = "tests/watcher_service.rs"
+
+[[test]]
+name = "registered_tool_proxy"
+path = "tests/registered_tool_proxy.rs"
+required-features = ["mediated-stdio-proxy"]
+
+[[bin]]
+name = "swallowtail-registered-tool-courier"
+path = "src/bin/registered_tool_courier.rs"
+required-features = ["mediated-stdio-proxy"]

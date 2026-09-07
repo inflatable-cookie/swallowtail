@@ -1,4 +1,53 @@
 pub mod swallowtail_host_local
+pub mod swallowtail_host_local::wire
+pub enum swallowtail_host_local::wire::RegisteredToolProxyRequest
+pub swallowtail_host_local::wire::RegisteredToolProxyRequest::Initialize
+pub swallowtail_host_local::wire::RegisteredToolProxyRequest::Initialize::id: serde_json::value::Value
+pub swallowtail_host_local::wire::RegisteredToolProxyRequest::Initialize::protocol_version: alloc::string::String
+pub swallowtail_host_local::wire::RegisteredToolProxyRequest::Initialized
+pub swallowtail_host_local::wire::RegisteredToolProxyRequest::ToolsCall
+pub swallowtail_host_local::wire::RegisteredToolProxyRequest::ToolsCall::arguments: serde_json::map::Map<alloc::string::String, serde_json::value::Value>
+pub swallowtail_host_local::wire::RegisteredToolProxyRequest::ToolsCall::id: serde_json::value::Value
+pub swallowtail_host_local::wire::RegisteredToolProxyRequest::ToolsCall::name: alloc::string::String
+pub swallowtail_host_local::wire::RegisteredToolProxyRequest::ToolsList
+pub swallowtail_host_local::wire::RegisteredToolProxyRequest::ToolsList::id: serde_json::value::Value
+impl core::fmt::Debug for swallowtail_host_local::wire::RegisteredToolProxyRequest
+pub fn swallowtail_host_local::wire::RegisteredToolProxyRequest::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub enum swallowtail_host_local::wire::RegisteredToolProxyWireError
+pub swallowtail_host_local::wire::RegisteredToolProxyWireError::Malformed
+pub swallowtail_host_local::wire::RegisteredToolProxyWireError::MissingField
+pub swallowtail_host_local::wire::RegisteredToolProxyWireError::Unsupported
+impl core::error::Error for swallowtail_host_local::wire::RegisteredToolProxyWireError
+impl core::fmt::Display for swallowtail_host_local::wire::RegisteredToolProxyWireError
+pub fn swallowtail_host_local::wire::RegisteredToolProxyWireError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument
+pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::bearer: alloc::string::String
+pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::connect_timeout_ms: u64
+pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::endpoint: alloc::string::String
+pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::lease_generation: u64
+pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::protocol_version: alloc::string::String
+pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::server_name: alloc::string::String
+pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::transport_generation: u64
+pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::wire_tag: alloc::string::String
+impl swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument
+pub fn swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::decode(&[u8]) -> core::result::Result<Self, swallowtail_host_local::wire::RegisteredToolProxyWireError>
+pub fn swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::encode(&self) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_host_local::wire::RegisteredToolProxyWireError>
+pub fn swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::new(alloc::string::String, alloc::string::String, u64, u64, &swallowtail_runtime::registered_tool::identity::RegisteredToolProtocolVersion, u64) -> Self
+impl core::fmt::Debug for swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument
+pub fn swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub const swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_HTTP_PATH: &str
+pub const swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_JSONRPC_VERSION: &str
+pub const swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_MAX_RECORD_BYTES: usize
+pub const swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION: &str
+pub const swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_SERVER_NAME: &str
+pub const swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_WIRE_TAG: &str
+pub fn swallowtail_host_local::wire::decode_request(&[u8]) -> core::result::Result<swallowtail_host_local::wire::RegisteredToolProxyRequest, swallowtail_host_local::wire::RegisteredToolProxyWireError>
+pub fn swallowtail_host_local::wire::error(core::option::Option<serde_json::value::Value>, i64, &'static str) -> alloc::vec::Vec<u8>
+pub fn swallowtail_host_local::wire::initialize_result() -> serde_json::value::Value
+pub fn swallowtail_host_local::wire::result(serde_json::value::Value, serde_json::value::Value) -> alloc::vec::Vec<u8>
+pub fn swallowtail_host_local::wire::tool_result(&[u8], bool) -> serde_json::value::Value
+pub fn swallowtail_host_local::wire::tools_list_result(alloc::vec::Vec<serde_json::value::Value>) -> serde_json::value::Value
+pub const fn swallowtail_host_local::wire::transport() -> swallowtail_runtime::registered_tool::identity::RegisteredToolTransport
 pub enum swallowtail_host_local::LocalSignInCall
 pub swallowtail_host_local::LocalSignInCall::DeviceDisplay
 pub swallowtail_host_local::LocalSignInCall::DeviceMaterialize
@@ -49,8 +98,10 @@ pub fn swallowtail_host_local::LocalHostServices::close_operation_bridges(&self,
 pub fn swallowtail_host_local::LocalHostServices::deadline_after(&self, core::time::Duration) -> swallowtail_runtime::time::Deadline
 pub fn swallowtail_host_local::LocalHostServices::operation_bridge_generations(&self, &swallowtail_runtime::identity::RuntimeTurnId) -> alloc::vec::Vec<(&'static str, u64)>
 pub fn swallowtail_host_local::LocalHostServices::operation_bridge_lease_count(&self) -> usize
+pub fn swallowtail_host_local::LocalHostServices::operation_bridge_listener_count(&self) -> usize
 pub const fn swallowtail_host_local::LocalHostServices::process_host(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalProcessHost>
 pub fn swallowtail_host_local::LocalHostServices::registered_tool_lease_count(&self) -> usize
+pub fn swallowtail_host_local::LocalHostServices::registered_tool_proxy_launch(&self, &swallowtail_runtime::registered_tool::lease::RegisteredToolBridgeLease) -> core::result::Result<swallowtail_host_local::RegisteredToolProxyLaunch, swallowtail_runtime::failure::RuntimeFailure>
 pub const fn swallowtail_host_local::LocalHostServices::services(&self) -> &swallowtail_runtime::host_registry::HostServices
 pub fn swallowtail_host_local::LocalHostServices::shutdown_task_reapers(&self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
 pub const fn swallowtail_host_local::LocalHostServices::task_service(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalScopedTaskService>
@@ -173,3 +224,8 @@ pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::list_instances(&s
 pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::list_overlay_markers(&self) -> core::result::Result<alloc::vec::Vec<swallowtail_core::connection_lifecycle::records::OverlayMarker>, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
 pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::put_instance(&self, swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord) -> core::result::Result<(), swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
 pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::put_overlay_marker(&self, swallowtail_core::connection_lifecycle::records::OverlayMarker) -> core::result::Result<(), swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub struct swallowtail_host_local::RegisteredToolProxyLaunch
+impl swallowtail_host_local::RegisteredToolProxyLaunch
+pub const fn swallowtail_host_local::RegisteredToolProxyLaunch::process_request(&self) -> &swallowtail_runtime::process_input::ProcessRequest
+pub fn swallowtail_host_local::RegisteredToolProxyLaunch::rendezvous_path(&self) -> &std::path::Path
+pub fn swallowtail_host_local::RegisteredToolProxyLaunch::wait_until_ready(&mut self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>

@@ -590,6 +590,12 @@ pub const fn swallowtail_runtime::RegisteredToolAdmissionState::admits_new_work(
 pub const fn swallowtail_runtime::RegisteredToolAdmissionState::as_str(self) -> &'static str
 impl core::fmt::Display for swallowtail_runtime::RegisteredToolAdmissionState
 pub fn swallowtail_runtime::RegisteredToolAdmissionState::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub enum swallowtail_runtime::RegisteredToolAttachment
+pub swallowtail_runtime::RegisteredToolAttachment::HostMediated
+pub swallowtail_runtime::RegisteredToolAttachment::MediatedStdioProxy
+impl swallowtail_runtime::RegisteredToolAttachment
+pub const fn swallowtail_runtime::RegisteredToolAttachment::as_str(self) -> &'static str
+pub const fn swallowtail_runtime::RegisteredToolAttachment::transport(self) -> swallowtail_runtime::RegisteredToolTransport
 pub enum swallowtail_runtime::RegisteredToolCleanupCause
 pub swallowtail_runtime::RegisteredToolCleanupCause::Cancellation
 pub swallowtail_runtime::RegisteredToolCleanupCause::Completion
@@ -2767,6 +2773,12 @@ pub fn swallowtail_runtime::RegisteredServerRevision::as_str(&self) -> &str
 pub fn swallowtail_runtime::RegisteredServerRevision::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
 impl core::fmt::Display for swallowtail_runtime::RegisteredServerRevision
 pub fn swallowtail_runtime::RegisteredServerRevision::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::RegisteredToolAttachmentDescriptor
+impl swallowtail_runtime::RegisteredToolAttachmentDescriptor
+pub const fn swallowtail_runtime::RegisteredToolAttachmentDescriptor::attachment(&self) -> swallowtail_runtime::RegisteredToolAttachment
+pub const fn swallowtail_runtime::RegisteredToolAttachmentDescriptor::new(swallowtail_runtime::RegisteredToolAttachment, swallowtail_runtime::RegisteredToolTransport) -> Self
+pub const fn swallowtail_runtime::RegisteredToolAttachmentDescriptor::transport(&self) -> swallowtail_runtime::RegisteredToolTransport
+pub const fn swallowtail_runtime::RegisteredToolAttachmentDescriptor::wire_tag(&self) -> core::option::Option<&'static str>
 pub struct swallowtail_runtime::RegisteredToolBounds
 impl swallowtail_runtime::RegisteredToolBounds
 pub const fn swallowtail_runtime::RegisteredToolBounds::ceiling() -> Self
@@ -2924,6 +2936,7 @@ pub fn swallowtail_runtime::RegisteredToolOperationKernel::effective_call_deadli
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::expired_call_pending(&self) -> bool
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::freeze(&self)
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::issue<'kernel>(&'kernel alloc::sync::Arc<Self>, swallowtail_runtime::RegisteredToolCallRequest) -> swallowtail_runtime::BoxFuture<'kernel, core::result::Result<swallowtail_runtime::RegisteredToolOutcome, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::RegisteredToolOperationKernel::mark_ready(&self) -> core::result::Result<(), swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::observe(&self) -> swallowtail_runtime::RegisteredToolCompletionState
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::observe_and_freeze_when_clear(&self) -> swallowtail_runtime::RegisteredToolCompletionState
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::open(swallowtail_runtime::RegisteredToolOpenRequest, &swallowtail_runtime::RegisteredToolTopologyProof, alloc::sync::Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>, alloc::sync::Arc<dyn swallowtail_runtime::TimeService>, swallowtail_runtime::RegisteredToolLeaseGeneration, swallowtail_runtime::RegisteredToolTransportGeneration) -> core::result::Result<(alloc::sync::Arc<Self>, swallowtail_runtime::RegisteredToolBridgeLease), swallowtail_runtime::RuntimeFailure>
@@ -2981,6 +2994,12 @@ pub fn swallowtail_runtime::RegisteredToolProtocolVersion::as_str(&self) -> &str
 pub fn swallowtail_runtime::RegisteredToolProtocolVersion::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
 impl core::fmt::Display for swallowtail_runtime::RegisteredToolProtocolVersion
 pub fn swallowtail_runtime::RegisteredToolProtocolVersion::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::RegisteredToolProxyRecipe
+impl swallowtail_runtime::RegisteredToolProxyRecipe
+pub const fn swallowtail_runtime::RegisteredToolProxyRecipe::environment(&self) -> &swallowtail_runtime::EnvironmentRef
+pub const fn swallowtail_runtime::RegisteredToolProxyRecipe::executable(&self) -> &swallowtail_runtime::ExecutableRef
+pub fn swallowtail_runtime::RegisteredToolProxyRecipe::new(swallowtail_runtime::ExecutableRef, swallowtail_runtime::EnvironmentRef, impl core::convert::AsRef<str>) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
+pub const fn swallowtail_runtime::RegisteredToolProxyRecipe::wire_tag(&self) -> &'static str
 pub struct swallowtail_runtime::RegisteredToolQualifiedRoute
 impl swallowtail_runtime::RegisteredToolQualifiedRoute
 pub const fn swallowtail_runtime::RegisteredToolQualifiedRoute::new(swallowtail_runtime::RegisteredToolPermissionStrength, swallowtail_runtime::RegisteredToolProgressMode, swallowtail_runtime::RegisteredToolSkillDelivery) -> Self
@@ -2989,6 +3008,7 @@ pub const fn swallowtail_runtime::RegisteredToolQualifiedRoute::progress(self) -
 pub const fn swallowtail_runtime::RegisteredToolQualifiedRoute::skill_delivery(self) -> swallowtail_runtime::RegisteredToolSkillDelivery
 pub struct swallowtail_runtime::RegisteredToolReadiness
 impl swallowtail_runtime::RegisteredToolReadiness
+pub const fn swallowtail_runtime::RegisteredToolReadiness::attachment_qualified(&self) -> bool
 pub fn swallowtail_runtime::RegisteredToolReadiness::evaluate(&swallowtail_runtime::HostServices, &swallowtail_runtime::RegisteredToolSelection) -> Self
 pub const fn swallowtail_runtime::RegisteredToolReadiness::execution_host_matches(&self) -> bool
 pub fn swallowtail_runtime::RegisteredToolReadiness::for_topology(&swallowtail_runtime::RegisteredToolMountedTopology, &swallowtail_runtime::RegisteredToolSelection) -> Self
@@ -3055,13 +3075,18 @@ impl core::fmt::Display for swallowtail_runtime::RegisteredToolSchemaNamespace
 pub fn swallowtail_runtime::RegisteredToolSchemaNamespace::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::RegisteredToolSelection
 impl swallowtail_runtime::RegisteredToolSelection
+pub const fn swallowtail_runtime::RegisteredToolSelection::attachment(&self) -> swallowtail_runtime::RegisteredToolAttachment
+pub const fn swallowtail_runtime::RegisteredToolSelection::attachment_descriptor(&self) -> swallowtail_runtime::RegisteredToolAttachmentDescriptor
 pub fn swallowtail_runtime::RegisteredToolSelection::contains(&self, &swallowtail_runtime::RegisteredToolId) -> bool
 pub const fn swallowtail_runtime::RegisteredToolSelection::effective_bounds(&self) -> swallowtail_runtime::RegisteredToolBounds
 pub fn swallowtail_runtime::RegisteredToolSelection::new(alloc::sync::Arc<swallowtail_runtime::RegisteredToolSnapshot>, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::RegisteredToolId>, swallowtail_runtime::RegisteredToolTransport, swallowtail_runtime::RegisteredToolProtocolVersion) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
 pub const fn swallowtail_runtime::RegisteredToolSelection::protocol_version(&self) -> &swallowtail_runtime::RegisteredToolProtocolVersion
+pub const fn swallowtail_runtime::RegisteredToolSelection::proxy_recipe(&self) -> core::option::Option<&swallowtail_runtime::RegisteredToolProxyRecipe>
 pub fn swallowtail_runtime::RegisteredToolSelection::selected(&self) -> &[swallowtail_runtime::RegisteredToolId]
 pub fn swallowtail_runtime::RegisteredToolSelection::snapshot(&self) -> &alloc::sync::Arc<swallowtail_runtime::RegisteredToolSnapshot>
 pub const fn swallowtail_runtime::RegisteredToolSelection::transport(&self) -> swallowtail_runtime::RegisteredToolTransport
+pub fn swallowtail_runtime::RegisteredToolSelection::with_attachment(self, swallowtail_runtime::RegisteredToolAttachment) -> Self
+pub fn swallowtail_runtime::RegisteredToolSelection::with_proxy_recipe(self, swallowtail_runtime::RegisteredToolProxyRecipe) -> Self
 pub struct swallowtail_runtime::RegisteredToolSnapshot
 impl swallowtail_runtime::RegisteredToolSnapshot
 pub const fn swallowtail_runtime::RegisteredToolSnapshot::bounds(&self) -> swallowtail_runtime::RegisteredToolBounds
@@ -3870,6 +3895,7 @@ pub const swallowtail_runtime::REGISTERED_TOOL_MAX_CALL_DURATION: core::time::Du
 pub const swallowtail_runtime::REGISTERED_TOOL_OPEN_BUDGET: core::time::Duration
 pub const swallowtail_runtime::REGISTERED_TOOL_PERMISSION_SEMANTIC_ID: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_PROGRESS_SEMANTIC_ID: &str
+pub const swallowtail_runtime::REGISTERED_TOOL_PROXY_WIRE_TAG: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_QUALIFIED_TRANSPORTS: &[swallowtail_runtime::RegisteredToolTransport]
 pub const swallowtail_runtime::REGISTERED_TOOL_SCHEDULING_SEMANTIC_ID: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_TRANSPORT_SEMANTIC_ID: &str

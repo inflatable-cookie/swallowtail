@@ -42,6 +42,31 @@ impl SpawnedMcpChild {
     fn kill(&self) {
         let _ = self.child.lock().expect("mcp child lock").kill();
     }
+
+    /// Writes one framed record directly, without an executor.
+    ///
+    /// The provider side runs inside the driver's own `block_on`, so it cannot
+    /// nest another executor to reach these futures.
+    fn write_line_sync(&self, bytes: &[u8]) -> Result<(), ()> {
+        use std::io::Write;
+        let mut stdin = self.stdin.lock().expect("mcp stdin lock");
+        stdin
+            .as_mut()
+            .ok_or(())?
+            .write_all(bytes)
+            .map_err(|_| ())?;
+        stdin.as_mut().ok_or(())?.flush().map_err(|_| ())
+    }
+
+    /// Reads one framed record directly, without an executor.
+    fn read_line_sync(&self) -> Result<Vec<u8>, ()> {
+        use std::io::BufRead;
+        let mut stdout = self.stdout.lock().expect("mcp stdout lock");
+        let reader = stdout.as_mut().ok_or(())?;
+        let mut line = Vec::new();
+        let read = reader.read_until(b'\n', &mut line).map_err(|_| ())?;
+        if read == 0 { Err(()) } else { Ok(line) }
+    }
 }
 
 impl ProcessHandle for SpawnedMcpChild {
@@ -134,4 +159,24 @@ fn spawn_declared_mcp_servers(params: &Value) -> Result<Vec<Arc<SpawnedMcpChild>
         spawned.push(SpawnedMcpChild::spawn(command, &args, &env)?);
     }
     Ok(spawned)
+}
+
+/// Handshakes the spawned courier and fires one call it will not answer yet.
+///
+/// This is the provider side: Grok connects the MCP server it spawned and
+/// calls a tool on it. The response is deliberately not read, so the call stays
+/// outstanding while the fixture drives the rest of the lifecycle.
+fn drive_courier_call(child: &Arc<SpawnedMcpChild>) -> Result<(), ()> {
+    let initialize = format!(
+        "{{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{{\"protocolVersion\":\"{}\"}}}}\n",
+        swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_MCP_PROTOCOL_VERSION
+    );
+    child.write_line_sync(initialize.as_bytes())?;
+    child.read_line_sync()?;
+    child.write_line_sync(b"{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}\n")?;
+    // The response is deliberately not read: the call stays outstanding while
+    // the fixture drives the rest of the lifecycle.
+    child.write_line_sync(
+        b"{\"jsonrpc\":\"2.0\",\"id\":7,\"method\":\"tools/call\",\"params\":{\"name\":\"desktop/reconcile\",\"arguments\":{}}}\n",
+    )
 }

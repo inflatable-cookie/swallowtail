@@ -17,6 +17,7 @@ enum Scenario {
     RecoveryDisconnect,
     RecoveryResponseMismatch,
     RegisteredOpenUnanswered,
+    RegisteredOpenBlockedCall,
     RegisteredTurn,
 }
 
@@ -29,6 +30,7 @@ struct AgentState {
     deadline_released: bool,
     stopped: bool,
     spawned_mcp: Vec<Arc<SpawnedMcpChild>>,
+    session_new_seen: bool,
 }
 
 struct Agent {
@@ -140,10 +142,23 @@ impl Agent {
                 )
                 .map_err(|()| fixture_failure())?;
                 state.spawned_mcp.extend(spawned);
+                // Grok connects the server it spawned and may call it. This
+                // scenario does exactly that, then never answers session setup,
+                // so an outstanding registered call exists while the open is
+                // still in flight.
+                if matches!(self.scenario, Scenario::RegisteredOpenBlockedCall)
+                    && let Some(child) = state.spawned_mcp.first().cloned()
+                {
+                    drive_courier_call(&child).map_err(|()| fixture_failure())?;
+                }
+                state.session_new_seen = true;
                 // A provider that holds stdio open without ever answering
                 // session setup. Nothing is enqueued; the open must be bounded
                 // by its own deadline rather than waiting forever.
-                if !matches!(self.scenario, Scenario::RegisteredOpenUnanswered) {
+                if !matches!(
+                    self.scenario,
+                    Scenario::RegisteredOpenUnanswered | Scenario::RegisteredOpenBlockedCall
+                ) {
                     Self::enqueue(
                         &mut state,
                         json!({
@@ -260,6 +275,7 @@ impl Agent {
                     }
                     Scenario::Malformed => unreachable!("malformed initialization stops first"),
                     Scenario::RegisteredOpenUnanswered
+                    | Scenario::RegisteredOpenBlockedCall
                     | Scenario::PermissionWithoutTurn
                     | Scenario::RecoveryForeign
                     | Scenario::RecoveryCallback

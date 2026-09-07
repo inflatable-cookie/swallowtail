@@ -37,33 +37,21 @@ impl GrokRegisteredToolSession {
         &self.turn
     }
 
-    /// Reports whether the lease has already been settled and closed.
-    pub(crate) fn is_settled(&self) -> bool {
-        self.settled
-            .lock()
-            .expect("registered settle lock poisoned")
-            .is_some()
-    }
-
-    /// Freezes admission without closing, ahead of settling or abandoning.
+    /// Reports whether the lease settled and released everything it held.
     ///
-    /// Contract 063 requires cancellation, deadline, and terminal to freeze
-    /// admission first. The completion gate is the only freeze point; it
-    /// observes outstanding work and never silently waits.
-    pub(crate) async fn freeze(&self, services: &HostServices) {
-        let Some(bridge) = services.registered_tool_bridge() else {
-            return;
-        };
-        let frozen = {
-            let lease = self.lease.lock().expect("registered lease lock poisoned");
-            lease.as_ref().map(|lease| bridge.completion_gate(lease))
-        };
-        if let Some(frozen) = frozen {
-            let _ = frozen.await;
-        }
+    /// A failed settlement is not clean: the host still retains the lease and
+    /// whatever work it could not join, so the operation is not over.
+    pub(crate) fn settled_clean(&self) -> bool {
+        matches!(
+            self.settled
+                .lock()
+                .expect("registered settle lock poisoned")
+                .as_ref(),
+            Some(CleanupOutcome::Clean | CleanupOutcome::NotApplicable)
+        )
     }
 
-    /// Freezes, joins, and closes this lease with its exact cause.
+    /// Freezes admission, joins issued work, and closes with its exact cause.
     ///
     /// The cleanup truth is retained, not discarded: a failed close is
     /// reported by [`Self::cleanup_outcome`] and never becomes a clean session
@@ -83,8 +71,10 @@ impl GrokRegisteredToolSession {
         };
         let outcome = match services.registered_tool_bridge() {
             Some(bridge) => {
-                // Freeze first: the gate observes outstanding work and never
-                // turns provider-terminal into success.
+                // The gate is an observation, not the freeze: it freezes only
+                // when the lease is already clear. The close that follows is
+                // what unconditionally freezes admission, signals cancellation
+                // to any issued call, and joins.
                 let _ = bridge.completion_gate(&lease).await;
                 match bridge.close(lease, cause).await {
                     Ok(outcome) => outcome,
@@ -103,6 +93,17 @@ impl GrokRegisteredToolSession {
             .lock()
             .expect("registered settle lock poisoned") = Some(outcome.clone());
         outcome
+    }
+
+    /// Reports whether a joined cleanup attempt already failed.
+    pub(crate) fn cleanup_failed(&self) -> bool {
+        matches!(
+            self.settled
+                .lock()
+                .expect("registered settle lock poisoned")
+                .as_ref(),
+            Some(CleanupOutcome::Failed(_) | CleanupOutcome::Degraded(_))
+        )
     }
 
     /// Returns the retained cleanup truth of this lease.

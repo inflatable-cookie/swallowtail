@@ -23,26 +23,34 @@ annotated Git tags from the canonical repository.
   `{name, value}` list; Grok spawns that child and Swallowtail never holds its
   `ProcessHandle`. The lease is bound to one exact ACP turn attempt named by
   `with_turn`, which is Contract 063's one active provider turn per server
-  lease: while that lease is live no other turn may start, cancellation and the
-  session-cancel path freeze admission first, and turn terminal, cancellation,
-  or deadline settles the lease with its exact cause before the consumer sees
-  the terminal outcome, so no call dispatches under a finished turn. The whole
-  registered open is bounded by `with_open_deadline`, so a provider that holds
-  stdio open without answering `session/new` cannot strand a minted lease or
-  its listener. Every failure after the lease is minted closes it explicitly
-  and reports its cleanup truth: a failed registered close is never a clean
-  session close and retains the working resource and credential rather than
-  returning them for reuse. Omission is byte-identical: an open without a
+  lease: while that lease is live no other turn may start. Cancellation settles
+  the lease rather than only observing it, so an outstanding call is cancelled
+  instead of being left free to dispatch, and turn terminal, cancellation, or
+  deadline settles with the exact cause before the consumer sees the terminal
+  outcome — including the transport-failure path, where the protocol pump is
+  the terminal publisher. A lease the host could not join fails its own turn,
+  is never masked by a normal completion, and refuses every later turn while it
+  stays retained. `with_open_deadline` bounds every step of the minted-open
+  lifecycle, credential acquisition, resource resolution, and process startup
+  included, with each step raced individually so a step that owns partial
+  resources still runs its own cleanup. Every failure after the lease is minted
+  closes it explicitly and reports its cleanup truth: a failed registered close
+  is never a clean session close, and both the session-close and the
+  open-abort paths retain the working resource and credential rather than
+  returning them for reuse beside work that may still execute. Omission is byte-identical: an open without a
   binding still sends `mcpServers: []`. Contract 061 stays
   `Unqualified / real_route_gate_pending` with the reason "callable seam
   present; live gate pending", and no feature-matrix cell moves. Provider-free
   fixtures only, over the real courier, kernel, lease, and dispatcher: courier
   declaration, namespaced `tools/list` identity and schema, one mediated
   round-trip inside a mounted ACP turn, revoked-before-dispatch, unknown tool
-  name, post-terminal and post-cancel refusal, unbound-turn refusal, unanswered
-  open bounded by its deadline, retained lease on unjoined cleanup, close, and
-  fail-closed transport, kind, identity, host, turn, deadline, and
-  unspawnable-command paths. No live Grok, credential, provider call, or
+  name, cancellation of an in-flight call, settlement completed before terminal
+  on both the prompt and the transport-failure paths, post-terminal and
+  post-cancel refusal, unbound-turn and retained-lease refusal, an unanswered
+  open that reaches `session/new` and expires on its deadline, retained
+  resource and credential on unjoined cleanup at both session close and open
+  abort, close, and fail-closed transport, kind, identity, host, turn,
+  deadline, and unspawnable-command paths. No live Grok, credential, provider call, or
   support claim. g05.035 card 118.
 - bind one Contract 063 `RegisteredToolPreparation` into `claude-agent.sdk`
   open through `ClaudeAgentSdkSessionPreparation::with_registered_tools`

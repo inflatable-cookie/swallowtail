@@ -5,6 +5,7 @@ struct FixtureHost {
     credential_acquires: Arc<AtomicUsize>,
     credential_releases: Arc<AtomicUsize>,
     resource_releases: Arc<AtomicUsize>,
+    deadline_gate: Arc<Mutex<Option<Arc<std::sync::atomic::AtomicBool>>>>,
 }
 
 #[derive(Clone, Debug)]
@@ -31,7 +32,16 @@ impl FixtureHost {
             credential_acquires: Arc::new(AtomicUsize::new(0)),
             credential_releases: Arc::new(AtomicUsize::new(0)),
             resource_releases: Arc::new(AtomicUsize::new(0)),
+            deadline_gate: Arc::new(Mutex::new(None)),
         }
+    }
+
+    /// Holds the registered-open deadline until this flag is set.
+    ///
+    /// Without it a deadline that is ready immediately can expire during
+    /// `initialize` and never reach the case the test names.
+    fn fire_deadline_when(&self, gate: Arc<std::sync::atomic::AtomicBool>) {
+        *self.deadline_gate.lock().expect("deadline gate lock") = Some(gate);
     }
 
     fn services(&self, host: ExecutionHostId) -> HostServices {
@@ -130,11 +140,64 @@ impl TimeService for FixtureHost {
     }
 
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
-        if matches!(
-            self.agent.scenario,
-            Scenario::Deadline | Scenario::RegisteredOpenUnanswered
-        ) {
+        if matches!(self.agent.scenario, Scenario::Deadline) {
             Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
+        } else if matches!(
+            self.agent.scenario,
+            Scenario::RegisteredOpenUnanswered | Scenario::RegisteredOpenBlockedCall
+        ) {
+            // The registered-open deadline fires only once the provider has
+            // actually received `session/new` and, when a test asks for it,
+            // once its registered call is outstanding. A deadline that expired
+            // during `initialize` would not exercise the named case.
+            //
+            // The waiting happens on its own thread: the bounded open polls
+            // this future from its very first step, on the same thread that
+            // must later send `session/new`, so blocking inside the poll would
+            // deadlock the open it is meant to bound.
+            let agent = Arc::clone(&self.agent);
+            let gate = self
+                .deadline_gate
+                .lock()
+                .expect("deadline gate lock")
+                .clone();
+            let fired = Arc::new(std::sync::atomic::AtomicBool::new(false));
+            let started = Arc::new(std::sync::atomic::AtomicBool::new(false));
+            Box::pin(async move {
+                std::future::poll_fn(move |context| {
+                    if fired.load(Ordering::SeqCst) {
+                        return std::task::Poll::Ready(());
+                    }
+                    if !started.swap(true, Ordering::SeqCst) {
+                        let waker = context.waker().clone();
+                        let agent = Arc::clone(&agent);
+                        let gate = gate.clone();
+                        let fired = Arc::clone(&fired);
+                        std::thread::spawn(move || {
+                            {
+                                let mut state =
+                                    agent.state.lock().expect("agent lock poisoned");
+                                while !state.session_new_seen && !state.stopped {
+                                    state = agent
+                                        .changed
+                                        .wait(state)
+                                        .expect("agent wait lock poisoned");
+                                }
+                            }
+                            if let Some(gate) = gate {
+                                while !gate.load(Ordering::SeqCst) {
+                                    std::thread::sleep(std::time::Duration::from_millis(5));
+                                }
+                            }
+                            fired.store(true, Ordering::SeqCst);
+                            waker.wake();
+                        });
+                    }
+                    std::task::Poll::Pending
+                })
+                .await;
+                DeadlineObservation::new(deadline, deadline.instant())
+            })
         } else if matches!(self.agent.scenario, Scenario::PermissionTimeout) {
             let agent = Arc::clone(&self.agent);
             Box::pin(async move {

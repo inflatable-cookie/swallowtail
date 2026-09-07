@@ -58,13 +58,23 @@ impl InteractiveSessionHandle for GrokSessionHandle {
             // turn it was bound to may start; any other turn would run beside
             // a connected courier under a binding its own turn never made.
             if let Some(registered) = self.registered.as_ref()
-                && !registered.is_settled()
-                && request.turn_id() != registered.turn()
+                && !registered.settled_clean()
             {
-                return Err(failure(
-                    "swallowtail.grok.acp.registered_tool.turn_mismatch",
-                    "Grok Build ACP admits only the bound registered turn while its registered lease is live",
-                ));
+                // A lease that failed to settle is still held by the host with
+                // work it could not join, so the operation is not over and no
+                // turn may follow it.
+                if registered.cleanup_failed() {
+                    return Err(failure(
+                        "swallowtail.grok.acp.registered_tool.turn_retained",
+                        "Grok Build ACP cannot start a turn while a registered lease it could not join is retained",
+                    ));
+                }
+                if request.turn_id() != registered.turn() {
+                    return Err(failure(
+                        "swallowtail.grok.acp.registered_tool.turn_mismatch",
+                        "Grok Build ACP admits only the bound registered turn while its registered lease is live",
+                    ));
+                }
             }
             reap_finished(&self.active).await?;
             if self
@@ -149,10 +159,20 @@ impl InteractiveSessionHandle for GrokSessionHandle {
                     // this turn's terminal outcome, so no registered call can
                     // dispatch under a finished turn. The cleanup truth is
                     // retained on the lease and reported by session close.
-                    if let Some(registered) = registered_turn.as_ref() {
-                        registered.freeze(&registered_services).await;
-                        let cause = registered_cleanup_cause(&prompt_turn, result.as_ref());
-                        let _ = registered.settle(&registered_services, cause).await;
+                    let registered_cleanup = match registered_turn.as_ref() {
+                        Some(registered) => {
+                            let cause = registered_cleanup_cause(&prompt_turn, result.as_ref());
+                            registered.settle(&registered_services, cause).await
+                        }
+                        None => CleanupOutcome::NotApplicable,
+                    };
+                    // A registered lease the host could not join is not a
+                    // completed turn. The cleanup failure replaces the terminal
+                    // status rather than being reported beside a success.
+                    if let CleanupOutcome::Failed(diagnostic) = registered_cleanup {
+                        prompt_turn.fail(&RuntimeFailure::new(diagnostic));
+                        connection.clear_active_turn(&prompt_turn);
+                        return;
                     }
                     match result {
                         Some(Ok(response)) => finish_prompt_response(&prompt_turn, &response),
@@ -251,7 +271,6 @@ impl InteractiveSessionHandle for GrokSessionHandle {
             // ownership rather than being masked by a later clean release.
             let registered = match self.registered.as_ref() {
                 Some(registered) => {
-                    registered.freeze(&self.services).await;
                     registered
                         .settle(&self.services, RegisteredToolCleanupCause::ExplicitClose)
                         .await

@@ -1085,11 +1085,13 @@ fn the_bound_registered_turn_settles_its_lease_at_the_turn_terminal() {
             .expect("the turn publishes one terminal outcome"),
     );
     assert_eq!(terminal.status(), &TerminalStatus::Completed);
-    // Terminal settled the lease: the listener is joined and a later call
-    // cannot dispatch under the finished turn.
-    wait_until(
-        || opened.local.registered_tool_lease_count() == 0,
-        "the registered lease settling at turn terminal",
+    // Settlement completes before terminal is published, so this is asserted
+    // the instant the consumer observes terminal, with no wait that could hide
+    // a late close.
+    assert_eq!(
+        opened.local.registered_tool_lease_count(),
+        0,
+        "the lease must already be settled when terminal is observed"
     );
     assert_eq!(opened.local.operation_bridge_listener_count(), 0);
     let after_terminal = opened
@@ -1129,9 +1131,10 @@ fn cancelling_the_bound_registered_turn_freezes_admission_and_settles_cancelled(
             .expect("the cancelled turn publishes one terminal outcome"),
     );
     assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
-    wait_until(
-        || opened.local.registered_tool_lease_count() == 0,
-        "the registered lease settling at turn cancellation",
+    assert_eq!(
+        opened.local.registered_tool_lease_count(),
+        0,
+        "the lease must already be settled when the cancelled terminal is observed"
     );
     let after_cancel = opened
         .courier
@@ -1291,4 +1294,265 @@ fn a_failed_registered_cleanup_is_never_a_clean_session_close() {
     );
     blocking.release();
     call.join();
+}
+
+/// A dispatcher that blocks until cancelled or released.
+///
+/// Unlike [`BlockingDispatcher`] it cooperates: it observes the kernel's
+/// call-bound cancellation and settles, which is what a freeze must actually
+/// deliver to an outstanding call.
+struct CancellableDispatcher {
+    entered: Arc<std::sync::atomic::AtomicBool>,
+    cancelled: Arc<std::sync::atomic::AtomicBool>,
+}
+
+impl swallowtail_runtime::RegisteredToolDispatcher for CancellableDispatcher {
+    fn dispatch(
+        &self,
+        _call: swallowtail_runtime::RegisteredToolCall,
+        context: swallowtail_runtime::RegisteredToolDispatchContext,
+    ) -> BoxFuture<'_, Result<swallowtail_runtime::RegisteredToolOutcome, RuntimeFailure>> {
+        let entered = Arc::clone(&self.entered);
+        let observed = Arc::clone(&self.cancelled);
+        let cancellation = context.cancellation().clone();
+        let started = Arc::new(std::sync::atomic::AtomicBool::new(false));
+        Box::pin(std::future::poll_fn(move |context| {
+            use std::task::Poll;
+            entered.store(true, Ordering::SeqCst);
+            if cancellation.is_cancelled() {
+                observed.store(true, Ordering::SeqCst);
+                return Poll::Ready(Err(fixture_failure()));
+            }
+            if !started.swap(true, Ordering::SeqCst) {
+                // The kernel sets the flag; nothing wakes this future, so the
+                // fixture polls for it exactly as a real dispatcher would have
+                // to observe an out-of-band cancellation.
+                let waker = context.waker().clone();
+                let cancellation = cancellation.clone();
+                std::thread::spawn(move || {
+                    while !cancellation.is_cancelled() {
+                        std::thread::sleep(std::time::Duration::from_millis(5));
+                    }
+                    waker.wake();
+                });
+            }
+            Poll::Pending
+        }))
+    }
+}
+
+#[test]
+fn cancelling_a_turn_with_an_outstanding_call_cancels_that_call() {
+    let cancelled = Arc::new(std::sync::atomic::AtomicBool::new(false));
+    let dispatcher = Arc::new(CancellableDispatcher {
+        entered: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        cancelled: Arc::clone(&cancelled),
+    });
+    let entered = Arc::clone(&dispatcher.entered);
+    let mut opened = open_registered_route_for(
+        "fixture.host.grok.registered-cancel-outstanding",
+        Scenario::RegisteredTurn,
+        Arc::clone(&dispatcher) as Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        None,
+    );
+    opened.courier.handshake();
+    let turn = start(
+        opened.session.as_mut(),
+        opened.services.clone(),
+        REGISTERED_TURN,
+    );
+    let call = OutstandingCall::issue(&opened.courier);
+    wait_until(
+        || entered.load(Ordering::SeqCst),
+        "the dispatcher entering its call",
+    );
+    // Cancellation must reach the call itself, not only future admission.
+    block_on(turn.cancellation().request()).expect("turn cancellation requested");
+    assert!(
+        cancelled.load(Ordering::SeqCst),
+        "an outstanding call must observe cancellation, not stay free to settle"
+    );
+    assert_eq!(
+        opened.local.registered_tool_lease_count(),
+        0,
+        "cancellation settles the lease it froze"
+    );
+    call.join();
+    close_registered_route(opened);
+}
+
+#[test]
+fn a_transport_failure_settles_the_lease_before_it_publishes_terminal() {
+    let calls = Arc::new(AtomicUsize::new(0));
+    let mut opened = open_registered_route_for(
+        "fixture.host.grok.registered-transport-terminal",
+        Scenario::Disconnect,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        None,
+    );
+    opened.courier.handshake();
+    let mut turn = start(
+        opened.session.as_mut(),
+        opened.services.clone(),
+        REGISTERED_TURN,
+    );
+    // The pump is the terminal publisher on this path, not the prompt task.
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("the failed turn publishes one terminal outcome"),
+    );
+    assert!(
+        matches!(terminal.status(), TerminalStatus::RuntimeFailed(_)),
+        "a transport failure is a failed turn: {:?}",
+        terminal.status()
+    );
+    assert_eq!(
+        opened.local.registered_tool_lease_count(),
+        0,
+        "the pump must settle the lease before it publishes terminal"
+    );
+    let after_terminal = opened
+        .courier
+        .try_call_tool(&registered_tool_id().to_string(), r#"{"path":"post-transport"}"#);
+    assert!(
+        after_terminal
+            .as_deref()
+            .is_none_or(|answer| !answer.contains("from-dispatcher")),
+        "a call after transport terminal must not dispatch: {after_terminal:?}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 0);
+    close_registered_route(opened);
+}
+
+#[test]
+fn a_failed_settlement_refuses_every_later_turn_and_fails_its_own() {
+    let blocking = Arc::new(BlockingDispatcher {
+        entered: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        release: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        waker: Arc::new(Mutex::new(None)),
+    });
+    let mut opened = open_registered_route_for(
+        "fixture.host.grok.registered-settle-failed",
+        Scenario::RegisteredTurn,
+        Arc::clone(&blocking) as Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        Some(std::time::Duration::from_millis(50)),
+    );
+    opened.courier.handshake();
+    let mut turn = start(
+        opened.session.as_mut(),
+        opened.services.clone(),
+        REGISTERED_TURN,
+    );
+    let call = OutstandingCall::issue(&opened.courier);
+    wait_until(
+        || blocking.entered.load(Ordering::SeqCst),
+        "the dispatcher entering its blocking call",
+    );
+    opened.fixture.complete_turn();
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("the turn publishes one terminal outcome"),
+    );
+    // A lease the host could not join is not a completed turn.
+    assert!(
+        matches!(terminal.status(), TerminalStatus::RuntimeFailed(_)),
+        "an unjoined registered lease must fail its turn, not complete it: {:?}",
+        terminal.status()
+    );
+    assert_eq!(
+        opened.local.registered_tool_lease_count(),
+        1,
+        "the host retains the lease it could not join"
+    );
+    // The operation is not over, so no later turn may run beside it.
+    let request = TurnRequest::new(
+        RuntimeTurnId::new("grok-turn-after-failure").expect("turn"),
+        OperationContent::new("private fixture prompt").expect("prompt"),
+    );
+    let Err(error) = block_on(opened.session.start_turn(request, opened.services.clone())) else {
+        panic!("a retained registered lease must refuse every later turn");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.grok.acp.registered_tool.turn_retained"
+    );
+    blocking.release();
+    call.join();
+}
+
+#[test]
+fn a_failed_registered_cleanup_during_open_retains_the_route_leases() {
+    let blocking = Arc::new(BlockingDispatcher {
+        entered: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        release: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        waker: Arc::new(Mutex::new(None)),
+    });
+    let host_id =
+        ExecutionHostId::new("fixture.host.grok.registered-open-retained").expect("host");
+    let selected = selection(host_id.clone());
+    // The provider spawns the courier, calls it, and then never answers
+    // session setup, so the open expires with one call still executing.
+    let fixture = FixtureHost::new(Scenario::RegisteredOpenBlockedCall);
+    fixture.fire_deadline_when(Arc::clone(&blocking.entered));
+    let executable =
+        swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
+    let environment =
+        EnvironmentRef::new("grok.fixture.registered-environment").expect("environment");
+    let (local, services) = registered_route_services_with_budget(
+        &host_id,
+        &fixture,
+        Arc::clone(&blocking) as Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+        courier_binary(),
+        &executable,
+        &environment,
+        Some(std::time::Duration::from_millis(50)),
+    );
+    let preparation = registered_preparation(
+        host_id,
+        swallowtail_testkit::fixture_admission(Arc::new(
+            swallowtail_testkit::ScriptedAdmissionPort::current(),
+        )),
+        executable,
+        environment,
+        RegisteredFixtureInput::default(),
+    );
+    let binding =
+        swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
+            .expect("mediated stdio selection qualifies")
+            .with_host(local.clone())
+            .with_open_deadline(registered_open_deadline())
+            .with_turn(registered_turn_id());
+    let driver = GrokAcpDriver::new(
+        EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
+        selected.credential,
+    )
+    .with_registered_tools(binding);
+    let Err(error) = block_on(driver.open_session(
+        selected.plan,
+        registered_open_request(selected.resource),
+        services,
+    )) else {
+        panic!("an unanswered registered open must fail");
+    };
+    assert!(
+        matches!(error.diagnostic().code(), code if code.starts_with("swallowtail.registered_tool.")
+            || code == "swallowtail.grok.acp.registered_tool.open_deadline"),
+        "the failure surfaces the retained lease or the expired open: {}",
+        error.diagnostic().code()
+    );
+    assert_eq!(
+        local.registered_tool_lease_count(),
+        1,
+        "the host retains the lease it could not join"
+    );
+    // Ownership, not just the diagnostic: a credential returned for reuse
+    // beside executing work is the defect this guards.
+    assert_eq!(fixture.credential_releases.load(Ordering::SeqCst), 0);
+    assert_eq!(fixture.resource_releases.load(Ordering::SeqCst), 0);
+    blocking.release();
 }

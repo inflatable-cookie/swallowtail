@@ -31,11 +31,14 @@ impl CancellationControl for SessionCancellation {
             if already {
                 Ok(CancellationAcknowledgement::AlreadyRequested)
             } else {
-                // Cancellation freezes registered admission before the
-                // provider is asked to stop, so no further call is admitted
-                // while the turn settles.
+                // Cancellation freezes registered admission and signals any
+                // issued call before the provider is asked to stop. Only the
+                // close path does that unconditionally, so cancellation
+                // settles the lease here rather than merely observing it.
                 if let Some(registered) = self.registered.as_ref() {
-                    registered.freeze(&self.services).await;
+                    let _ = registered
+                        .settle(&self.services, RegisteredToolCleanupCause::Cancellation)
+                        .await;
                 }
                 self.connection.cancel_session().await?;
                 Ok(CancellationAcknowledgement::Requested)
@@ -65,10 +68,13 @@ impl CancellationControl for TurnCancellation {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
             self.turn.mark_cancelled();
-            // Freeze before the provider is told to cancel: admission closes
-            // ahead of settling, never after the turn has already stopped.
+            // Freeze and signal before the provider is told to cancel, so an
+            // outstanding call is cancelled rather than left free to dispatch
+            // while the turn is stopping.
             if let Some(registered) = self.registered.as_ref() {
-                registered.freeze(&self.services).await;
+                let _ = registered
+                    .settle(&self.services, RegisteredToolCleanupCause::Cancellation)
+                    .await;
             }
             self.connection
                 .notify("session/cancel", json!({"sessionId": self.session_id}))

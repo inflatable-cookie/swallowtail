@@ -136,6 +136,7 @@ impl InteractiveSessionDriver for GrokAcpDriver {
                     request.working_resource(),
                     request.access_policy(),
                     &services,
+                    &mut OpenBound::unbounded(),
                 )
                 .await?;
             let recovered = async {
@@ -223,6 +224,19 @@ impl GrokAcpDriver {
             }
             None => None,
         };
+        // One bound covers the whole minted-open lifecycle, not just the ACP
+        // exchanges: credential acquisition, resource resolution, and process
+        // startup are inside it too, so nothing can stay pending forever while
+        // a lease and its listener are already held.
+        let mut bound = match registered_deadline {
+            Some(deadline) => OpenBound::until(
+                services
+                    .time()
+                    .expect("validated registered-tool time service")
+                    .wait_until(deadline),
+            ),
+            None => OpenBound::unbounded(),
+        };
         let mut attachment = match self
             .start_attachment(
                 plan,
@@ -230,61 +244,48 @@ impl GrokAcpDriver {
                 &working_resource,
                 &access_policy,
                 services,
+                &mut bound,
             )
             .await
         {
             Ok(attachment) => attachment,
             Err(error) => {
-                let cleanup = abandon_registered(
-                    registered.take(),
-                    services,
-                    RegisteredToolCleanupCause::ProviderFailure,
-                )
-                .await;
+                let cleanup =
+                    abandon_registered(registered.take(), services, cause_for(&error)).await;
                 return Err(surface_cleanup_failure(error, cleanup));
             }
         };
-        let opened = bounded_open(
-            registered_deadline.map(|deadline| {
-                services
-                    .time()
-                    .expect("validated registered-tool time service")
-                    .wait_until(deadline)
-            }),
-            async {
-                let initialize = attachment.connection.initialize().await?;
-                let model_options = validate_initialize(
-                    &initialize,
-                    selected.version(),
-                    selected.expected_model(),
-                )?;
-                attachment.connection.activate_cached_token().await?;
-                // Omission stays byte-identical: without a registered binding this
-                // is the same empty list the merged route sends.
-                let mcp_servers = registered.as_ref().map_or_else(
-                    || json!([]),
-                    |pending| json!([pending.declaration().to_acp_value()]),
-                );
-                let response = attachment
-                    .connection
-                    .request(
-                        "session/new",
-                        json!({"cwd": attachment.cwd, "mcpServers": mcp_servers}),
-                    )
-                    .await?;
-                let provider_id = response
-                    .get("sessionId")
-                    .and_then(Value::as_str)
-                    .ok_or_else(malformed)?
-                    .to_owned();
-                // Grok spawns the declared courier from `session/new`, so readiness
-                // is only observable after the provider answered it.
-                if let Some(pending) = registered.as_mut() {
-                    pending.wait_until_ready()?;
-                }
-                Ok::<_, RuntimeFailure>((provider_id, model_options))
-            },
-        )
+        let opened = async {
+            let initialize = bound.run(attachment.connection.initialize()).await?;
+            let model_options =
+                validate_initialize(&initialize, selected.version(), selected.expected_model())?;
+            bound
+                .run(attachment.connection.activate_cached_token())
+                .await?;
+            // Omission stays byte-identical: without a registered binding this
+            // is the same empty list the merged route sends.
+            let mcp_servers = registered.as_ref().map_or_else(
+                || json!([]),
+                |pending| json!([pending.declaration().to_acp_value()]),
+            );
+            let response = bound
+                .run(attachment.connection.request(
+                    "session/new",
+                    json!({"cwd": attachment.cwd, "mcpServers": mcp_servers}),
+                ))
+                .await?;
+            let provider_id = response
+                .get("sessionId")
+                .and_then(Value::as_str)
+                .ok_or_else(malformed)?
+                .to_owned();
+            // Grok spawns the declared courier from `session/new`, so readiness
+            // is only observable after the provider answered it.
+            if let Some(pending) = registered.as_mut() {
+                pending.wait_until_ready()?;
+            }
+            Ok::<_, RuntimeFailure>((provider_id, model_options))
+        }
         .await;
         let (provider_id, model_options) = match opened {
             Ok(opened) => opened,
@@ -294,7 +295,7 @@ impl GrokAcpDriver {
                 // resource or credential release.
                 let cleanup =
                     abandon_registered(registered.take(), services, cause_for(&error)).await;
-                let _ = attachment.abort(services).await;
+                abort_after_registered(&mut attachment, services, &cleanup).await;
                 return Err(surface_cleanup_failure(error, cleanup));
             }
         };
@@ -315,7 +316,7 @@ impl GrokAcpDriver {
                     RegisteredToolCleanupCause::ProviderFailure,
                 )
                 .await;
-                let _ = attachment.abort(services).await;
+                abort_after_registered(&mut attachment, services, &cleanup).await;
                 return Err(surface_cleanup_failure(error, cleanup));
             }
         };
@@ -353,6 +354,26 @@ async fn abandon_registered(
     match pending {
         Some(pending) => pending.abandon(services, cause).await,
         None => CleanupOutcome::NotApplicable,
+    }
+}
+
+/// Aborts the attachment, retaining its leases when registered cleanup failed.
+///
+/// A retained bridge lease means the host still holds work it could not join.
+/// Reporting that diagnostic is not enough: the working resource and the
+/// credential must stay held rather than be returned for reuse.
+async fn abort_after_registered(
+    attachment: &mut PendingAttachment,
+    services: &HostServices,
+    cleanup: &CleanupOutcome,
+) {
+    if matches!(
+        cleanup,
+        CleanupOutcome::Failed(_) | CleanupOutcome::Degraded(_)
+    ) {
+        let _ = attachment.abort_retaining(services).await;
+    } else {
+        let _ = attachment.abort(services).await;
     }
 }
 
@@ -403,34 +424,72 @@ fn validate_registered_open(
     Ok(deadline)
 }
 
-/// Races one open sequence against the registered-open deadline.
+/// One deadline shared by every step of a bounded open.
 ///
-/// Without a registered binding there is no deadline and the sequence is
-/// awaited exactly as the merged route awaits it.
-async fn bounded_open<T>(
-    deadline: Option<swallowtail_runtime::BoxFuture<'_, swallowtail_runtime::DeadlineObservation>>,
-    opened: impl std::future::Future<Output = Result<T, RuntimeFailure>>,
-) -> Result<T, RuntimeFailure> {
-    let Some(mut deadline) = deadline else {
-        return opened.await;
-    };
-    let mut opened = Box::pin(opened);
-    std::future::poll_fn(|context| {
-        use std::task::Poll;
-        if let Poll::Ready(result) = opened.as_mut().poll(context) {
-            Poll::Ready(result)
-        } else if deadline.as_mut().poll(context).is_ready() {
-            Poll::Ready(Err(RuntimeFailure::new(
-                swallowtail_core::SafeDiagnostic::new(
-                    REGISTERED_OPEN_DEADLINE_CODE,
-                    "Grok Build ACP registered-tool open exceeded its deadline",
-                ),
-            )))
-        } else {
-            Poll::Pending
+/// Each step is raced individually rather than the whole sequence being
+/// dropped on expiry, so a step that owns partial resources still runs its own
+/// cleanup instead of being cancelled mid-flight. Without a registered binding
+/// there is no deadline and every step is awaited exactly as the merged route
+/// awaits it.
+struct OpenBound {
+    deadline:
+        Option<swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::DeadlineObservation>>,
+    expired: bool,
+}
+
+impl OpenBound {
+    const fn unbounded() -> Self {
+        Self {
+            deadline: None,
+            expired: false,
         }
-    })
-    .await
+    }
+
+    const fn until(
+        deadline: swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
+    ) -> Self {
+        Self {
+            deadline: Some(deadline),
+            expired: false,
+        }
+    }
+
+    async fn run<T>(
+        &mut self,
+        step: impl std::future::Future<Output = Result<T, RuntimeFailure>>,
+    ) -> Result<T, RuntimeFailure> {
+        if self.expired {
+            return Err(registered_open_expired());
+        }
+        let Some(deadline) = self.deadline.as_mut() else {
+            return step.await;
+        };
+        let mut step = std::pin::pin!(step);
+        let mut fired = false;
+        let result = std::future::poll_fn(|context| {
+            use std::task::Poll;
+            if let Poll::Ready(result) = step.as_mut().poll(context) {
+                Poll::Ready(Some(result))
+            } else if deadline.as_mut().poll(context).is_ready() {
+                fired = true;
+                Poll::Ready(None)
+            } else {
+                Poll::Pending
+            }
+        })
+        .await;
+        if fired {
+            self.expired = true;
+        }
+        result.unwrap_or_else(|| Err(registered_open_expired()))
+    }
+}
+
+fn registered_open_expired() -> RuntimeFailure {
+    RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+        REGISTERED_OPEN_DEADLINE_CODE,
+        "Grok Build ACP registered-tool open exceeded its deadline",
+    ))
 }
 
 include!("driver/attachment.rs");

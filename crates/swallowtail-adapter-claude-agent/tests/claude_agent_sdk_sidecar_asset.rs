@@ -535,6 +535,32 @@ fn model_rejection_evidence_is_bounded_and_does_not_change_the_failure_response(
 }
 
 #[test]
+fn diagnostic_write_failure_keeps_the_supported_model_rejection() {
+    let mut sidecar = SidecarProcess::start_scenario("diagnostic-write-failure");
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    let response = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(
+        response,
+        json!({
+            "type": "response",
+            "id": "query-1",
+            "command": "query",
+            "success": false,
+            "failure": {
+                "code": "supported_model_rejected",
+                "message": "sidecar command failed: supported_model_rejected"
+            }
+        })
+    );
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true);
+}
+
+#[test]
 fn canonicalized_first_turn_cwd_is_accepted_but_a_different_path_is_rejected() {
     let mut sidecar = SidecarProcess::start_scenario("canonical-cwd");
     let open = sidecar.command(

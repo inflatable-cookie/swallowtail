@@ -329,16 +329,22 @@ async function respondFailure(id, command, code) {
 }
 
 async function emitDiagnostic(level, code, evidence) {
-  const record = {
-    type: "diagnostic",
-    level,
-    code,
-    message: `sidecar diagnostic: ${code}`,
-  };
-  if (evidence !== undefined) {
-    record.evidence = evidence;
+  try {
+    const record = {
+      type: "diagnostic",
+      level,
+      code,
+      message: `sidecar diagnostic: ${code}`,
+    };
+    if (evidence !== undefined) {
+      record.evidence = evidence;
+    }
+    await writeRecord(record);
+  } catch {
+    // Debug evidence is best-effort. Restore the queue so a following public
+    // response keeps its existing code and shape after a failed diagnostic.
+    writes = Promise.resolve();
   }
-  await writeRecord(record);
 }
 
 async function emitEvent(event) {
@@ -810,9 +816,6 @@ function supportedModelValues(values) {
       }
     }
   }
-  if (models.length > MAXIMUM_SUPPORTED_MODELS) {
-    throw new SidecarFailure("initialization_failed");
-  }
   return models;
 }
 
@@ -834,9 +837,18 @@ function modelCatalogueDigest(models) {
 }
 
 function modelQualificationEvidence(effectiveModel) {
+  const requestedModel = boundedModelEvidence(state.requestedModel);
+  const boundedEffectiveModel = boundedModelEvidence(effectiveModel);
+  if (
+    requestedModel === null ||
+    boundedEffectiveModel === null ||
+    state.supportedModels.length > MAXIMUM_SUPPORTED_MODELS
+  ) {
+    return undefined;
+  }
   return {
-    requestedModel: boundedModelEvidence(state.requestedModel),
-    effectiveModel: boundedModelEvidence(effectiveModel),
+    requestedModel,
+    effectiveModel: boundedEffectiveModel,
     catalogueSize: state.supportedModels.length,
     catalogueDigest: modelCatalogueDigest(state.supportedModels),
     requestedMembership: state.supportedModels.includes(state.requestedModel),

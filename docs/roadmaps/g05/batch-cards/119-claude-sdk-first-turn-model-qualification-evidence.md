@@ -49,3 +49,20 @@ Explaining a rejection needs the full catalogue or raw error text (return to Cha
 ## Auto-Continuation
 
 No. Stop for exact-head review. No live tier; a later live gate needs fixtures first and separate operator authority; never read or replay the Desktop candidate.
+
+## Result
+
+Implemented on [PR 268](https://github.com/inflatable-cookie/swallowtail/pull/268).
+The sidecar now emits bounded model-qualification evidence best-effort and the
+pump forwards valid evidence to the existing `InterfaceVersion` observer path.
+Invalid evidence is omitted or rejected privately; the existing
+`supported_model_rejected` predicate, code, order, and failure response remain
+unchanged. Provider-free alias-only, canonical-only, both-id, neither-id, and
+diagnostic-write-failure proofs cover the accepted and fail-soft paths. Decoder
+negative coverage rejects bad digests, oversized ids/counts, shape drift,
+wrong source/phase, and evidence paired with the wrong diagnostic code.
+
+Focused, affected-package, API, Northstar, formatting, diff, and docs checks
+pass. No provider/native launch, credentials or auth state, live turn, Desktop
+candidate, Card120/121 work, release, or tag action was taken. Exact-head review
+remains the stop condition.

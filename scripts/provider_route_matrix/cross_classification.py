@@ -20,6 +20,10 @@ PINNED_CONSUMERS = (
 )
 ROUTE_SPLIT = re.compile(r"\s*(?:;|\+)\s*")
 CARD_STATUS = re.compile(r"^Status:\s*(.+)$", re.MULTILINE)
+REASON_MARKER = "Card129 producer-gap reasons:"
+EVIDENCE_LEDGER = Path("docs/research/290-feature-matrix-cross-evidence.tsv")
+EVIDENCE_DOC = Path("docs/research/290-feature-matrix-cross-evidence.md")
+LINE_REF = re.compile(r"^(?P<path>[^#]+)#L(?P<line>[1-9][0-9]*)$")
 
 
 def fail(message: str) -> None:
@@ -50,23 +54,72 @@ def feature_columns(headers: list[str]) -> list[str]:
     return headers[13:first_cross]
 
 
-def route_guide_evidence(root: Path, ref: str) -> None:
-    path = root / ref
+def anchored_line(root: Path, ref: str, label: str) -> tuple[Path, int, list[str]]:
+    match = LINE_REF.fullmatch(ref)
+    if match is None:
+        fail(f"{label} must use an anchored #L<line> citation: {ref}")
+    path = root / match.group("path")
+    line_number = int(match.group("line"))
     if not path.is_file():
-        fail(f"provider_limitation reference does not exist: {ref}")
+        fail(f"{label} reference does not exist: {ref}")
     try:
         relative = path.relative_to(root)
     except ValueError:
-        fail(f"provider_limitation reference escapes the repository: {ref}")
-    if relative.parts[:2] not in {
-        ("docs", "guides"),
-        ("docs", "research"),
-        ("docs", "contracts"),
-    }:
+        fail(f"{label} reference escapes the repository: {ref}")
+    if relative.parts[:2] not in {("docs", "research"), ("docs", "contracts")}:
+        fail(f"{label} reference must cite frozen docs/research or docs/contracts: {ref}")
+    lines = path.read_text(encoding="utf-8").splitlines()
+    if line_number > len(lines):
+        fail(f"{label} citation is past EOF: {ref}")
+    return path, line_number, lines
+
+
+def evidence_ledger(root: Path, row_route: str, feature: str, ref: str) -> None:
+    if not EVIDENCE_DOC.is_file():
+        fail(f"frozen evidence document is missing: {EVIDENCE_DOC}")
+    if not any(line.startswith("Status: complete") for line in EVIDENCE_DOC.read_text(encoding="utf-8").splitlines()):
+        fail(f"frozen evidence document is not complete: {EVIDENCE_DOC}")
+    path, line_number, lines = anchored_line(root, ref, "provider_limitation")
+    if path != root / EVIDENCE_LEDGER:
         fail(
-            "provider_limitation reference must be frozen docs/research, "
-            f"docs/contracts, or docs/guides evidence: {ref}"
+            "provider_limitation must cite the Card129 frozen evidence ledger, "
+            f"not {path.relative_to(root)}"
         )
+    if line_number == 1:
+        fail(f"provider_limitation cannot cite the evidence-ledger header: {ref}")
+    fields = lines[line_number - 1].split("\t")
+    if len(fields) != 5:
+        fail(f"provider_limitation evidence row is malformed: {ref}")
+    evidence_route, evidence_feature, evidence_kind, basis, finding = fields
+    if (evidence_route, evidence_feature, evidence_kind) != (
+        row_route,
+        feature,
+        "provider_limitation",
+    ):
+        fail(f"provider_limitation citation does not match {row_route} {feature}: {ref}")
+    if not finding.startswith("qualified route unavailable:"):
+        fail(f"provider_limitation evidence lacks an explicit unavailable finding: {ref}")
+    _, basis_line, basis_lines = anchored_line(root, basis, "provider_limitation basis")
+    basis_fields = basis_lines[basis_line - 1].split("\t")
+    if not basis_fields or basis_fields[0].strip("`") not in ROUTE_SPLIT.split(row_route):
+        fail(f"provider_limitation basis does not name {row_route}: {ref}")
+
+
+def producer_gap_reasons(notes: str, row_route: str) -> dict[str, str]:
+    if REASON_MARKER not in notes:
+        return {}
+    raw = notes.split(REASON_MARKER, 1)[1].strip().rstrip(".")
+    if not raw:
+        fail(f"{row_route} has an empty producer-gap reason marker")
+    reasons: dict[str, str] = {}
+    for entry in raw.split(" || "):
+        feature, separator, reason = entry.partition("=")
+        if not separator or not feature.strip() or not reason.strip():
+            fail(f"{row_route} has a malformed producer-gap reason: {entry!r}")
+        if feature.strip() in reasons:
+            fail(f"{row_route} repeats a producer-gap reason: {feature.strip()}")
+        reasons[feature.strip()] = reason.strip()
+    return reasons
 
 
 def producer_card(root: Path, ref: str) -> None:
@@ -113,11 +166,19 @@ def load_matrix(root: Path, matrix: Path) -> tuple[list[dict[str, str]], list[st
             if not ref:
                 fail(f"{route} {feature} has an empty cross_ref")
             if kind == "provider_limitation":
-                route_guide_evidence(root, ref)
+                evidence_ledger(root, route, feature, ref)
             else:
                 producer_card(root, ref)
             if row[feature].strip().casefold() == "withheld" and kind != "producer_gap":
                 fail(f"{route} {feature} is withheld but is not a producer_gap")
+        reasons = producer_gap_reasons(row["notes"], route)
+        producer_features = {feature for feature, kind in kinds.items() if kind == "producer_gap"}
+        if set(reasons) != producer_features:
+            fail(
+                f"{route} producer-gap reasons mismatch: "
+                f"missing={sorted(producer_features - set(reasons))} "
+                f"extra={sorted(set(reasons) - producer_features)}"
+            )
     return rows, features
 
 
@@ -130,6 +191,7 @@ def backlog(rows: list[dict[str, str]], features: list[str]) -> list[tuple[str, 
     for row in rows:
         kinds = json.loads(row["cross_kind"])
         refs = json.loads(row["cross_ref"])
+        reasons = producer_gap_reasons(row["notes"], row["route_id"])
         for route in ROUTE_SPLIT.split(row["route_id"]):
             consumers = route_to_consumers.get(route)
             if consumers is None:
@@ -138,7 +200,7 @@ def backlog(rows: list[dict[str, str]], features: list[str]) -> list[tuple[str, 
                 for feature in features:
                     if kinds.get(feature) != "producer_gap":
                         continue
-                    result.append((consumer, route, feature, refs[feature], row["notes"]))
+                    result.append((consumer, route, feature, refs[feature], reasons[feature]))
     result.sort(key=lambda item: (consumer_order[item[0]], item[1], item[2], item[3]))
     return result
 
@@ -158,10 +220,10 @@ def main() -> None:
     )
     gaps = backlog(rows, features)
     if args.backlog:
-        print("consumer | route | feature | producer card")
-        print("--- | --- | --- | ---")
-        for consumer, route, feature, ref, _notes in gaps:
-            print(f"{consumer} | `{route}` | `{feature}` | `{ref}`")
+        print("consumer | route | feature | producer card | reason")
+        print("--- | --- | --- | --- | ---")
+        for consumer, route, feature, ref, reason in gaps:
+            print(f"{consumer} | `{route}` | `{feature}` | `{ref}` | {reason}")
     else:
         print(
             f"feature-matrix cross classification passed: {len(rows)} solution rows, "

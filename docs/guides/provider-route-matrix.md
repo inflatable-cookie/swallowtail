@@ -53,11 +53,15 @@ The five shared-harness capability columns are deliberately separate:
 
 `cross_kind` and `cross_ref` are JSON objects immediately before `notes` in
 the CSV. Their keys are the unavailable feature columns in that row. Each
-value is either `provider_limitation` with a frozen route guide, research, or
-contract path, or `producer_gap` with an existing non-complete g05 batch-card
-path. A withheld cell is therefore recorded as `producer_gap`, never as a
-third disposition. The route-matrix check rejects missing, extra, stale, or
-complete-card references.
+value is either `provider_limitation` with an anchored row in the Card129
+[frozen evidence ledger](../research/290-feature-matrix-cross-evidence.md),
+whose basis is itself an anchored Research 281 route-ledger line, or
+`producer_gap` with an existing non-complete g05 batch-card path. Prepared
+integration guides are not frozen evidence. Producer-gap rows carry an
+explicit `Card129 producer-gap reasons:` marker in `notes`; a withheld cell
+uses the same producer-gap path and reason. The route-matrix check rejects
+missing, extra, stale, unanchored, guide-only, insufficient, or complete-card
+references.
 
 Every row has two public paths:
 

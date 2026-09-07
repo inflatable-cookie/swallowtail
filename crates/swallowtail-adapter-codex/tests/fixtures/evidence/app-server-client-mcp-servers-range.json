@@ -1,0 +1,87 @@
+{
+  "axis": "codex.cli",
+  "route": "codex.app-server",
+  "observed_at": "2026-09-07",
+  "card": "g05.035/131",
+  "research": "291",
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "host_install_changed": false,
+  "downloaded_binaries_executed": false,
+  "qualified_range": [
+    "0.80.0..=0.81.0",
+    "0.84.0..=0.107.0",
+    "0.110.0..=0.152.1"
+  ],
+  "segments": [
+    {
+      "id": "legacy-selected-methods",
+      "range": "0.80.0..=0.81.0 and 0.84.0..=0.107.0",
+      "corpus": "crates/swallowtail-adapter-codex/tests/fixtures/compatibility/legacy-app-server-releases.json",
+      "selected_methods": [
+        "initialize",
+        "model/list",
+        "thread/start",
+        "thread/resume",
+        "turn/start",
+        "turn/interrupt"
+      ],
+      "client_mcp_declaration_fields": []
+    },
+    {
+      "id": "current-experimental-thread-fields",
+      "range": "0.110.0..=0.152.1",
+      "corpus": "crates/swallowtail-adapter-codex/tests/fixtures/compatibility/app-server-releases.json",
+      "experimental_thread_fields_union": [
+        "allowProviderModelFallback",
+        "dynamicTools",
+        "runtimeWorkspaceRoots"
+      ],
+      "client_mcp_declaration_fields": []
+    },
+    {
+      "id": "identity-protocol-methods",
+      "range": "0.148.0..=0.152.1",
+      "corpus": "crates/swallowtail-adapter-codex/tests/fixtures/codex-cli-0.148.0/protocol.json through codex-cli-0.152.1/protocol.json",
+      "methods_present": [
+        "initialize",
+        "model/list",
+        "thread/list",
+        "thread/read",
+        "thread/start",
+        "thread/resume",
+        "thread/archive",
+        "thread/delete",
+        "turn/start",
+        "turn/interrupt",
+        "item/started",
+        "item/completed",
+        "item/plan/delta",
+        "subAgentActivity",
+        "collabAgentToolCall"
+      ],
+      "client_mcp_declaration_fields": []
+    }
+  ],
+  "not_client_mcp_declaration": {
+    "thread_resume_config_overlay": "untyped ambient config overlay; configuration-owned MCP; Research 229",
+    "mcpToolCall_observation": "crates/swallowtail-adapter-codex/tests/fixtures/activity/app-server.jsonl case mcp-tool; provider_owned_tool",
+    "unused_mcp_deltas": [
+      "optional MCP grace",
+      "MCP package-style names",
+      "MCP output_token_limit"
+    ]
+  },
+  "supported_consumer_tool_path": {
+    "card": "117",
+    "mechanism": "host-mediated dynamic native tools",
+    "experimental_field": "dynamicTools"
+  },
+  "withheld": {
+    "provider_direct_mcp_registration": "swallowtail.codex.app_server.registered_mcp_withheld"
+  },
+  "fake_transcript": null,
+  "binding_card": null,
+  "decision": "provider_limitation",
+  "deliver_now_row_count": 0
+}

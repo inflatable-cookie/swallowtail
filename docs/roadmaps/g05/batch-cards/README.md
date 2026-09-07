@@ -2,7 +2,7 @@
 
 ## Ready
 
-- [131-codex-app-server-client-mcp-servers-evidence.md](./131-codex-app-server-client-mcp-servers-evidence.md) — ready; settle the Codex client_mcp_servers cross as limitation or gap with anchors; replaces the stale card 114 reference
+- [131-codex-app-server-client-mcp-servers-evidence.md](./131-codex-app-server-client-mcp-servers-evidence.md) — ready; evidence recorded: Codex client_mcp_servers is a provider limitation; card 117 remains the qualified consumer-tool path; awaiting exact-head review
 - [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — ready; serial after 125; resolved skill bundle as the distinct third input
 - [124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md](./124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — ready; serial after 121; bounded manifest lookup and one model-id predicate; precedes the `v0.4.4` candidate
 - [119-claude-sdk-first-turn-model-qualification-evidence.md](./119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; bounded observer evidence for the first-turn model rejection; lead of the producer-diagnosis trio

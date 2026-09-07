@@ -1,6 +1,6 @@
 # 131 Codex App-Server Client MCP Servers Evidence
 
-Status: ready
+Status: ready; evidence recorded; awaiting exact-head review
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07
@@ -35,9 +35,9 @@ Runtime changes; live Codex; configuration-owned MCP as a route.
 
 ## Acceptance Criteria
 
-- [ ] the cross is classified with anchored evidence or a real binding card
-- [ ] the matrix check passes with the new reference
-- [ ] card 117's native path is named as the qualified alternative
+- [x] the cross is classified with anchored evidence or a real binding card
+- [x] the matrix check passes with the new reference
+- [x] card 117's native path is named as the qualified alternative
 
 ## Validation
 
@@ -51,3 +51,18 @@ counterexample: a citation to a guide instead of the corpus.
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+Provider limitation. Frozen app-server corpus on the qualified CLI range has
+no client-declared MCP server request or per-thread field distinct from
+configuration-owned MCP. No fake transcript. No binding card.
+
+Evidence: [Research 291](../../../research/291-codex-app-server-client-mcp-servers-evidence.md)
+and `crates/swallowtail-adapter-codex/tests/fixtures/evidence/app-server-client-mcp-servers-range.json`.
+Matrix cell `codex.app-server; codex.exec` / `client_mcp_servers` is `No` /
+`provider_limitation` citing
+`docs/research/290-feature-matrix-cross-evidence.tsv#L672` (basis Research
+291). Card 117 native host-mediated registered tools remain the qualified
+consumer-tool path. Provider-direct MCP stays withheld. No runtime, live
+Codex, credential, config, Desktop, tag, or release action.

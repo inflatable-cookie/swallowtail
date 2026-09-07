@@ -55,7 +55,9 @@ The five shared-harness capability columns are deliberately separate:
 the CSV. Their keys are the unavailable feature columns in that row. Each
 value is exactly one of: `provider_limitation` with an anchored row in the
 Card129 [frozen evidence ledger](../research/290-feature-matrix-cross-evidence.md),
-whose basis is itself an anchored Research 281 route-ledger line;
+whose basis is an anchored `docs/research` or `docs/contracts` line that names
+the route (Research 281 for the Card129 census; Research 291 for the Codex
+`client_mcp_servers` cell);
 `producer_gap` with an existing non-complete g05 batch-card path; or
 `evidence_pending` with a live hand-off packet under `docs/handoffs/` —
 never a card, because cards complete. An evidence-pending packet must name

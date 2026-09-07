@@ -2,7 +2,11 @@ use serde_json::Value;
 use std::collections::BTreeSet;
 
 const EXEC_RELEASES: &str = include_str!("fixtures/compatibility/exec-releases.json");
+const LEGACY_APP_SERVER_RELEASES: &str =
+    include_str!("fixtures/compatibility/legacy-app-server-releases.json");
 const APP_SERVER_RELEASES: &str = include_str!("fixtures/compatibility/app-server-releases.json");
+const APP_SERVER_CLIENT_MCP_RANGE: &str =
+    include_str!("fixtures/evidence/app-server-client-mcp-servers-range.json");
 const APP_SERVER_GATES: &str = include_str!("fixtures/compatibility/app-server-gate-cases.json");
 const APP_SERVER_TRANSCRIPT: &str = include_str!("fixtures/compatibility/app-server-core.jsonl");
 const APP_SERVER_THREAD_CATALOGUE: &str =
@@ -19,6 +23,7 @@ const CODEX_0_152_1_RANGE: &str = include_str!("fixtures/compatibility/codex-0-1
 
 include!("compatibility_corpus/exec.rs");
 include!("compatibility_corpus/app_server.rs");
+include!("compatibility_corpus/client_mcp.rs");
 include!("compatibility_corpus/thread.rs");
 include!("compatibility_corpus/support.rs");
 include!("compatibility_corpus/range_0_147.rs");

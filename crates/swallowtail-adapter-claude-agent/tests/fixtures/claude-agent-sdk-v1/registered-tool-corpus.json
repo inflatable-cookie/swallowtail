@@ -3,6 +3,12 @@
   "status": "evidence-preparation-only",
   "card": "g05.035/116",
   "base": "6c52b9f970b38838f8e4918d32b536dc26fb0823",
+  "revalidation": {
+    "origin_main": "7090917257e1a6504545d8d30fc9b43e142162c8",
+    "cards_merged": ["114", "115"],
+    "card117_surface_touched": false,
+    "runtime_or_provider_claim_added": false
+  },
   "artifact": {
     "package": "@anthropic-ai/claude-agent-sdk",
     "version": "0.3.259",
@@ -21,19 +27,19 @@
     },
     {
       "id": "canUseTool",
-      "shape": "tool-name-and-input -> allow-or-deny",
+      "shape": "CanUseTool(toolName,input,{signal,toolUseID,requestId,metadata}) -> PermissionResult|null",
       "classification": "permission-admission-only",
-      "disposition": "preserve-existing-sidecar-callback"
+      "disposition": "preserve-existing-sidecar-callback; no dispatch/result mapping"
     },
     {
       "id": "sdk-mcp-handler",
-      "shape": "tool-and-createSdkMcpServer-in-process-handler",
+      "shape": "SdkMcpToolDefinition(name,description,inputSchema,handler(args,extra)->CallToolResult)",
       "classification": "sidecar-local-callback",
       "disposition": "withhold-unqualified-private-carrier"
     },
     {
       "id": "mcpServerStatus",
-      "shape": "connected-failed-needs-auth-pending-disabled",
+      "shape": "name,status,serverInfo?,error?,config?,scope?,tools?",
       "classification": "bounded-observation",
       "disposition": "do-not-treat-as-dispatch-or-cleanup-proof"
     },
@@ -59,12 +65,165 @@
     "reserved-swallowtail-watchers-name-and-closed-WatcherBridge-remain-separate"
   ],
   "missing_evidence": [
-    "card114-registered-tool-kernel-and-lease-conformance",
-    "card115-selected-skill-reference-transport",
+    "claude-adapter-mapping-to-merged-card114-card115-types",
     "fake-sdk-central-snapshot-to-dispatch-result-corpus",
+    "exact-mcp-initialize-tools-list-tools-call-transcript",
+    "typed-result-failure-progress-cancellation-and-generation-carrier",
+    "exact-sdk-peer-route-version-and-capability-artifact",
     "exact-private-callback-carrier-or-pinned-http-sse-corpus",
     "exact-head-mounted-wiring-review-and-later-disposable-route-gate"
   ],
+  "gap_capsule": [
+    {
+      "id": "REG-01",
+      "required": "snapshot server identity, revision, execution host, source identity and freshness",
+      "missing": "mcpServers has provider config only",
+      "authority": "Contract063 registry; runtime registered_tool/snapshot.rs",
+      "smallest_read_only_action": "Map one fake descriptor into the merged snapshot type and assert identity/freshness; no provider"
+    },
+    {
+      "id": "REG-02",
+      "required": "namespaced tool identity bound to exactly one execution kind",
+      "missing": "mcp__server__tool spelling has no RegisteredToolId/kind proof",
+      "authority": "Contract063 tool-kind rules; runtime declaration.rs and identity.rs",
+      "smallest_read_only_action": "Static fake tools/list mapping with alias/kind rejection"
+    },
+    {
+      "id": "REG-03",
+      "required": "input/output schema namespace, media type/dialect, revision, bounds and digest",
+      "missing": "SDK input schema and CallToolResult are not bound to a Contract063 schema digest",
+      "authority": "Contract063 schema rules; runtime schema.rs; frozen sdk.d.ts SdkMcpToolDefinition",
+      "smallest_read_only_action": "Static schema metadata plus fake call/result digest and bound checks"
+    },
+    {
+      "id": "REG-04",
+      "required": "effect/retry posture and call/result/concurrency/deadline bounds",
+      "missing": "SDK timeout/Card084 bounds are not the Contract063 declaration or no-replay posture",
+      "authority": "Contract063 results/concurrency; runtime declaration.rs and limits.rs",
+      "smallest_read_only_action": "Reuse merged provider-free bounds fixture with a fake stdio descriptor"
+    },
+    {
+      "id": "REG-05",
+      "required": "transport set and exact protocol-version subset",
+      "missing": "SDK exposes transports, but peer MCP and registered route protocol are not pinned",
+      "authority": "Contract063 transport/version; runtime snapshot.rs and readiness.rs; package.json",
+      "smallest_read_only_action": "Static route carrier/version fixture with rejection of unlisted versions"
+    },
+    {
+      "id": "REG-06",
+      "required": "required host services, credential refs and opaque process/environment recipes",
+      "missing": "SDK command/args/env/URL/headers are provider attachment fields, not host refs",
+      "authority": "Contract063 host/credential boundary; Card084 env rules; runtime snapshot.rs",
+      "smallest_read_only_action": "Fake opaque references and negative raw-material assertions"
+    },
+    {
+      "id": "SEL-01",
+      "required": "exact snapshot revision, selected tools, carrier, version and effective bounds",
+      "missing": "tools/disallowedTools select provider names, not an immutable prepared selection",
+      "authority": "runtime selection.rs and readiness.rs",
+      "smallest_read_only_action": "Provider-free exact selection plus one version rejection case"
+    },
+    {
+      "id": "LEASE-01",
+      "required": "host, instance, scope/turn, admission, lease/transport generation, deadline and cancellation binding",
+      "missing": "Query session controls do not carry a Contract063 lease",
+      "authority": "Contract060/063; runtime call.rs and kernel.rs",
+      "smallest_read_only_action": "Existing fake registered-tool host binding assertion before fake call"
+    },
+    {
+      "id": "CALL-01",
+      "required": "call id, tool id, kind, bounded arguments, deadline and bound lease",
+      "missing": "provider tool_use ids are projected only as tool_started; arguments and binding are absent",
+      "authority": "Contract063 call fields; runtime RegisteredToolCallRequest/RegisteredToolCall",
+      "smallest_read_only_action": "Synthetic provider call mapped to Card114 request with bound rejection cases"
+    },
+    {
+      "id": "CB-01",
+      "required": "dispatch callback carrying the bound call and returning a typed host outcome",
+      "missing": "CanUseTool has signal/toolUseID/requestId but returns only PermissionResult|null",
+      "authority": "frozen sdk.d.ts CanUseTool; official approval docs; existing permission.rs/fake-sdk.mjs",
+      "smallest_read_only_action": "Provider-free allow -> dispatcher request -> typed outcome corpus"
+    },
+    {
+      "id": "CB-02",
+      "required": "permission/result separation and route-supported Deny",
+      "missing": "Card084 proves deny-never-reaches-fake-server, not central dispatch result",
+      "authority": "Card084 result/tests; Contract063 permission rules",
+      "smallest_read_only_action": "Separate expected dispatch-not-called-on-deny record"
+    },
+    {
+      "id": "MCP-01",
+      "required": "initialize/version handshake with JSON-RPC id, protocolVersion, capabilities, implementation info and initialized",
+      "missing": "No exact 0.3.259 MCP wire transcript or negotiated version",
+      "authority": "MCP lifecycle/schema specification; package peer metadata",
+      "smallest_read_only_action": "Bounded fake stdio initialize/initialized transcript plus version mismatch"
+    },
+    {
+      "id": "MCP-02",
+      "required": "tools/list cursor, tool name/description/input schema/annotations and list-change behavior",
+      "missing": "Status may project metadata, but fake SDK has no tools/list response or schema digest",
+      "authority": "MCP tools/schema specification; frozen McpServerStatus.tools",
+      "smallest_read_only_action": "Static deterministic tools/list fixture"
+    },
+    {
+      "id": "MCP-03",
+      "required": "tools/call request id/name/arguments and content/structuredContent/isError/error result",
+      "missing": "In-process handler is sidecar-local; current fake emits only empty final SDK result",
+      "authority": "MCP schema; frozen SdkMcpToolDefinition.handler; sidecar projectMessage",
+      "smallest_read_only_action": "Provider-free success/error/malformed/unknown-id call-result transcript"
+    },
+    {
+      "id": "RESULT-01",
+      "required": "bounded RegisteredToolResult with output digest and exactly-one RegisteredToolOutcome",
+      "missing": "SDK result/tool_result observations have no Contract063 digest or disposition",
+      "authority": "runtime call.rs; Contract063 result rules",
+      "smallest_read_only_action": "Static CallToolResult mapped to one opaque result and one settlement"
+    },
+    {
+      "id": "RESULT-02",
+      "required": "safe failure taxonomy including unknown/stale/duplicate/foreign/post-close",
+      "missing": "sidecar failure codes and isError do not map one-to-one to Contract063 outcomes",
+      "authority": "Contract063 results/errors; runtime failure.rs and call.rs",
+      "smallest_read_only_action": "Provider-free synthetic disposition matrix"
+    },
+    {
+      "id": "PROG-01",
+      "required": "correlated non-terminal progress with binding/kind/generation and monotonic sequence",
+      "missing": "sidecar progress is unqualified and MCP progress is not captured",
+      "authority": "Contract063 progress; runtime RegisteredToolProgress; MCP progress schema",
+      "smallest_read_only_action": "Static duplicate/regressive/foreign/stale progress rejection records"
+    },
+    {
+      "id": "CANCEL-01",
+      "required": "call cancellation/deadline and unknown-execution outcome with no mutating replay",
+      "missing": "CanUseTool signal is approval-scoped; Query.interrupt is turn-scoped",
+      "authority": "frozen CanUseTool/Query; Contract063 cancellation; runtime execution disposition",
+      "smallest_read_only_action": "Held fake call with cancellation/timeout/transport-loss outcomes and no replay"
+    },
+    {
+      "id": "LIFE-01",
+      "required": "generation checks, admission freeze, joined cleanup, stale/late/duplicate rejection",
+      "missing": "SDK controls and private wire have no registered-call generation/result carrier",
+      "authority": "Contract060 lifecycle; Contract063 reconnect/teardown; runtime kernel/host lease tests",
+      "smallest_read_only_action": "Synthetic old-generation replay against merged kernel"
+    },
+    {
+      "id": "VER-01",
+      "required": "exact adapter/MCP peer/native/SDK/harness/feature version tuple",
+      "missing": "SDK/native/harness/private wire are frozen, but MCP peer and registered capability transcript are not",
+      "authority": "Card084; Research 278/280; package manifest; runtime conformance version",
+      "smallest_read_only_action": "Static exact tuple plus synthetic capability response"
+    }
+  ],
+  "alternative": {
+    "name": "card084-qualified-route-local-native-stdio-mediation",
+    "current_claim": "prior-art-only; not Contract063 registered-tool support",
+    "required_mapping": "MCP tools/list and tools/call -> Card114 RegisteredToolCallRequest/RegisteredToolOutcome; canUseTool remains permission only",
+    "contract_mapping": "Contract063 MCP kind plus an explicitly qualified stdio transport/version entry; retain one central snapshot/lease/listener",
+    "card_mapping": "Card116 adapter evidence followed by the later Batch C disposable server/result gate",
+    "watcherbridge_effect": "none; do not widen WatcherBridge or create a second registry/lease/listener"
+  },
+  "chatterbox_decision_question": "Should Card116 qualify route-local stdio mediation as the Claude SDK mapping for Contract063, or keep dispatch withheld until a provider-neutral host-mediated callback carrier is exposed directly by the adapter?",
   "credential_or_provider_use": {
     "provider_process": false,
     "live_prompt": false,

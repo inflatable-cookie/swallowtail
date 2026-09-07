@@ -8,6 +8,11 @@ Base: `6c52b9f970b38838f8e4918d32b536dc26fb0823`
 Authority: Card116; the g05.035 dispatch manifest; Contracts 060, 061, and
 063; Card084; Research 278, 280, and 288
 
+Continuation revalidation: current `origin/main` is
+`7090917257e1a6504545d8d30fc9b43e142162c8`, with Cards114-115 merged. This
+refresh remains Card116 evidence preparation and does not change the original
+artifact base or imply Claude route support.
+
 This record is intentionally fixture-local. The g05.035 manifest reserves
 documentation front doors for coordinator closeout; this route-owned surface
 holds the exact evidence and machine-readable index without changing those
@@ -65,6 +70,16 @@ flag. That is a provider-facing in-process server callback. It does not expose
 a Swallowtail host service, operation lease, consumer admission binding, or
 Longhorn result path.
 
+The complete frozen declaration gives `CanUseTool` more provider context than
+the existing route wire forwards: `toolName`, input, an abort `signal`,
+`toolUseID`, `requestId`, and optional prompt metadata (`suggestions`,
+`blockedPath`, `decisionReason`, `title`, `displayName`, `description`,
+`agentID`, and `matchedAskRule`). It returns `PermissionResult | null`, not a
+`RegisteredToolOutcome`. The sidecar deliberately forwards only its own
+bounded callback id, `toolName`, and the existing Bash view. That is correct
+for the current permission-only route, but it leaves the provider call
+correlation and typed result carrier unqualified.
+
 The official documentation records these provider-facing rules:
 
 - MCP names use `mcp__<server-name>__<tool-name>`.
@@ -78,8 +93,11 @@ The official documentation records these provider-facing rules:
   status query rather than a completion or result authority.
 
 Sources: [Agent SDK MCP documentation](https://code.claude.com/docs/en/agent-sdk/mcp),
-[custom tools](https://code.claude.com/docs/en/agent-sdk/custom-tools), and
-[approval handling](https://code.claude.com/docs/en/agent-sdk/user-input).
+[custom tools](https://code.claude.com/docs/en/agent-sdk/custom-tools),
+[approval handling](https://code.claude.com/docs/en/agent-sdk/user-input),
+[MCP lifecycle](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle),
+[MCP schema](https://modelcontextprotocol.io/specification/2025-11-25/schema), and
+[MCP tools](https://modelcontextprotocol.io/specification/draft/server/tools).
 
 ## Contract063 mapping
 
@@ -98,6 +116,71 @@ Sources: [Agent SDK MCP documentation](https://code.claude.com/docs/en/agent-sdk
 The important negative result is exact: the SDK has provider-facing MCP and
 permission surfaces, but no public callback that is equivalent to
 `RegisteredToolDispatcher::dispatch(call, context)`.
+
+## Contract063 gap capsule
+
+This is the independent Card116 result after re-reading the frozen 0.3.259
+package declarations/source, Card084, the current official vendor docs, the
+existing fake SDK, and the merged provider-free Card114 kernel. “Missing” means
+that no current Claude SDK field, callback, result, or exact artifact proves
+the Contract063 requirement. Card114 now supplies the provider-neutral types
+and conformance vocabulary; it does not supply a Claude adapter carrier.
+
+| ID | Required Contract063 artifact | What 0.3.259/Card084 currently proves | Authoritative source or provider-free probe | Smallest permitted acquisition action |
+| --- | --- | --- | --- | --- |
+| REG-01 | Immutable snapshot: server identity, revision, execution host, source identity/freshness | `mcpServers` is only a provider config map; no snapshot identity or freshness | Contract063 registry section; `runtime/src/registered_tool/snapshot.rs` | Build one route-owned fake declaration against the merged snapshot type and assert identity/freshness survive mapping; no provider process |
+| REG-02 | Namespaced tool identity and exactly one execution kind | Provider spelling is `mcp__<server>__<tool>`; no Contract063 `RegisteredToolId`/kind binding | Contract063 tool-kind rules; Card114 `declaration.rs` and `identity.rs` | Provider-free fake `tools/list` fixture with one namespaced mapping; reject alias/kind mismatch |
+| REG-03 | Input/output schema namespace, media type/dialect, revision, bounded bytes, digest | `SdkMcpToolDefinition` has a Zod input schema and `CallToolResult`; the current route records neither schema digest nor output schema | Contract063 registry/schema rules; Card114 `schema.rs`/`declaration.rs`; frozen `sdk.d.ts` `SdkMcpToolDefinition` | Add static schema metadata to the fixture and assert digest/bounds against a fake call/result; no SDK execution |
+| REG-04 | Effect posture, retry posture, call/result/concurrency/deadline bounds | SDK has per-server timeout and Card084 has local bounds; neither is the Contract063 declaration or no-replay posture | Contract063 results/concurrency rules; Card114 `declaration.rs`/`limits.rs` | Reuse Card114 provider-free bounds fixture with a fake stdio descriptor; do not infer provider limits |
+| REG-05 | Transport set and exact protocol-version subset | Package exposes stdio/SSE/HTTP/SDK configs; package peer metadata does not pin the MCP peer or route protocol | Contract063 transport/version rules; Card114 `snapshot.rs`/`readiness.rs`; package `package.json` | Record one explicit route-local carrier/version fixture and reject every unlisted version before any provider work |
+| REG-06 | Required host services, credential references, opaque process/environment recipes | SDK config accepts command, args, env, URL, and headers; those are provider attachment fields, not opaque host references | Contract063 host/credential boundary; Card084 sidecar env rules; Card114 `snapshot.rs` | Map only opaque fake recipe/reference ids and assert raw command, URL, headers, and credential material never enter the public snapshot |
+| SEL-01 | Exact selection: snapshot revision, selected namespaced tools, carrier, negotiated version, effective bounds | `tools` and `disallowedTools` select provider names only; no immutable prepared selection | Card114 `selection.rs`/`readiness.rs`; Contract063 prepared-plan rule | Provider-free selection fixture with one exact version and one rejection case; no adapter wiring |
+| LEASE-01 | Open binding: host, configured instance, scope/turn, admission, lease generation, transport generation, deadline, cancellation, concurrency | SDK `query()`/`Query` has session controls but no Contract063 lease binding | Card114 `call.rs`/`kernel.rs` and Contract060 lease rules | Mount the existing fake registered-tool host and assert the binding fields before a fake call; no Claude sidecar |
+| CALL-01 | Typed call envelope: call id, tool id, execution kind, bounded arguments, deadline, bound lease | SDK tool activity exposes provider `tool_use` ids, while the current sidecar projects only `tool_started` and no arguments | Contract063 call fields; Card114 `RegisteredToolCallRequest`/`RegisteredToolCall` | Capture one synthetic provider call record and map it to a Card114 request; prove bounds and identity rejection only |
+| CB-01 | Dispatch callback carrying the bound call and returning a host-owned typed outcome | Frozen `CanUseTool(toolName,input,options)` returns allow/deny; `options` has `toolUseID`, `requestId`, and `signal`, but no host dispatcher/result | Frozen `sdk.d.ts` `CanUseTool`; official approval docs; existing `permission.rs` and `fake-sdk.mjs` | Extend only a provider-free fake corpus to show allow → dispatcher request → typed outcome; do not change the sidecar/runtime |
+| CB-02 | Permission/result separation, including provider-supported Deny semantics | Card084 proves `canUseTool` allow/deny and deny-never-reaches-fake-server; it does not prove a central dispatch result | Card084 result/tests; Contract063 permission rules | Preserve current admission fixture and add a separate expected “dispatch not called on deny” record; no provider turn |
+| MCP-01 | Exact MCP initialize/version handshake: JSON-RPC id, `protocolVersion`, capabilities, client/server implementation info, `initialized` notification | `mcpServers` declarations and status are present; no exact 0.3.259 MCP wire transcript or negotiated version is frozen | MCP lifecycle/schema specification; package peer metadata; Card084 route source | Create a bounded fake stdio transcript with initialize/initialized and one version mismatch; do not start a server |
+| MCP-02 | Tool catalogue: `tools/list` request/cursor, tool name/description/input schema/annotations, optional list-change behavior | SDK status may project tool names/descriptions/annotations; the current fake supplies neither an MCP tools/list response nor schema digest | MCP tools/schema specification; frozen `McpServerStatus.tools`; Card084 fake boundary | Add a static tools/list fixture with one deterministic order and schema digest; no live MCP server |
+| MCP-03 | Tool call/result carrier: JSON-RPC request id, `tools/call` name/arguments, content blocks, structured content, `isError`, protocol errors | In-process `handler` returns `CallToolResult`; the sidecar never receives a host-owned result, and current fake emits only an empty final SDK result | MCP schema; frozen `SdkMcpToolDefinition.handler`; current `projectMessage`/fake SDK | Add one provider-free call/result transcript covering success, `isError`, malformed result, and unknown id; do not run the SDK |
+| RESULT-01 | `RegisteredToolResult` payload plus output-schema digest and exactly-one `RegisteredToolOutcome` | SDK final `result`/`tool_result` observations carry provider status only; no Contract063 output digest or outcome disposition | Card114 `call.rs`; Contract063 result rules; current sidecar tool-ended projection | Map static fake `CallToolResult` content to a bounded opaque result and assert one settlement; no runtime change |
+| RESULT-02 | Safe failure taxonomy: unsupported, host/process/readiness, Deny, provider rejection, cancellation, timeout, server failure, invalid result, transport loss, unknown, stale/duplicate/foreign/post-close | Current route has sidecar failure codes and `isError`, but no one-to-one Contract063 outcome taxonomy | Contract063 results/errors; Card114 `failure.rs` and `call.rs` | Build a provider-free disposition matrix from synthetic records; leave unmapped cases explicitly withheld |
+| PROG-01 | Non-terminal progress with call/binding/kind/transport generation and monotonic sequence | Sidecar emits an unqualified `{event: "progress"}`; MCP progress is not captured in the fake or route wire | Contract063 progress rules; Card114 `RegisteredToolProgress`; MCP progress schema | Add static progress records with duplicate/regressive/foreign/stale cases and assert rejection; no provider execution |
+| CANCEL-01 | Call-scoped cancellation, deadline, and unknown-execution outcome; no automatic mutating replay | `CanUseTool.options.signal` covers approval; `Query.interrupt()` is turn-level; neither returns a typed registered-call disposition | Frozen `CanUseTool`/`Query` declarations; Contract063 cancellation rules; Card114 `RegisteredToolExecutionDisposition` | Hold a fake dispatcher call, inject cancellation/timeout/transport loss, and record `Cancelled`/`Unknown` without replay; provider-free only |
+| LIFE-01 | Reconnect/close generation checks, admission freeze, joined readers/callbacks/resources, stale/late/duplicate rejection | SDK has `mcpServerStatus`, `reconnectMcpServer`, `reinitialize`, and `close`; the current private wire has no registered-call generation or joined dispatch carrier | Contract060 lifecycle; Contract063 reconnect/teardown; Card114 `kernel.rs`/host lease tests | Replay synthetic old-generation records against the merged kernel and assert fail-closed close; no sidecar mutation |
+| VER-01 | Exact version artifact for the registered route: adapter wire, MCP peer, native CLI, SDK wrapper, harness schema, and feature capability | SDK wrapper `0.3.259`, native `2.1.259`, harness schema `1`, and private wire `...-v1` are frozen; MCP peer is only a range and no registered-tool capability transcript exists | Card084 result; Research 278/280; package manifest; Card114 conformance version | Record the exact package/peer/route version tuple and a synthetic capability response; do not call a provider |
+
+The capsule is exhaustive at the Contract063 boundary: configuration and
+permission are present, while snapshot/selection/lease binding, dispatch
+callback, MCP call/result carrier, safe outcome mapping, progress, cancellation,
+reconnect/close, and exact route-version evidence remain unqualified. The
+merged Card114 kernel closes the provider-neutral half of those gaps; it does
+not make the Claude SDK surface callable.
+
+### Exact alternative if the common SDK route is impossible
+
+The frozen artifacts do not expose a public common consumer-dispatch callback.
+The exact evidence-backed alternative is Card084's qualified native stdio
+attachment: a declared local stdio MCP server, explicit child environment,
+`strictMcpConfig`, bounded status, and per-call `canUseTool` mediation. This is
+route-local prior art, not current Contract063 registered-tool support.
+
+To qualify it as registered-tool dispatch, Card116 would need a separate
+route-local stdio mediation profile: the provider's MCP `tools/list` and
+`tools/call` records must map one-to-one to Card114's
+`RegisteredToolCallRequest` and `RegisteredToolOutcome`, while the host owns
+the Contract063 snapshot, lease, generation, schema digest, bounds, cancellation,
+and result validation. `canUseTool` remains permission admission only. The
+mapping would be Contract063 MCP kind plus an explicitly qualified stdio
+transport/version entry, Card116 adapter evidence, and the later Batch C
+disposable server/result gate. It must not widen `WatcherBridge` or create a
+second registry/lease/listener.
+
+### Chatterbox decision question
+
+Should Card116 qualify that exact route-local stdio mediation profile as the
+Claude SDK mapping for Contract063, or keep registered-tool dispatch withheld
+until a provider-neutral host-mediated callback carrier is exposed directly by
+the adapter?
 
 ## Transport disposition
 
@@ -142,27 +225,28 @@ Local evidence anchors:
 
 The prep result is a bounded missing-evidence list, not a support claim:
 
-1. Card114 must prove the reusable Contract060-derived registered-tool kernel,
-   including registration snapshot, lease, live admission, correlation,
-   bounded result, progress, reconnect, no-replay, cancellation, and joined
-   teardown fixtures.
-2. Card115 must prove the selected skill/reference transport without changing
-   the route's exact operation binding.
-3. The Claude lane needs a provider-free fake-SDK fixture for one exact
+1. Cards114-115 now provide the provider-neutral registered-tool kernel and
+   selected skill/reference types on current `origin/main`; this Claude lane
+   still lacks the adapter-side mapping and exact carrier evidence listed in
+   the gap capsule above.
+2. The Claude lane needs a provider-free fake-SDK/MCP fixture for one exact
    Contract063 registered MCP selection: snapshot-to-provider name mapping,
    admission, dispatch, typed result, denial, cancellation, unknown outcome,
    duplicate/late result rejection, and cleanup.
-4. If the route uses an SDK MCP handler as the carrier, a pinned 0.3.259
+3. If the route uses an SDK MCP handler as the carrier, a pinned 0.3.259
    artifact fixture must prove the sidecar callback can send and receive the
    exact bound call without exposing raw credentials, paths, endpoints, or
    provider content. Static declarations do not prove this.
-5. If the route uses HTTP/SSE, a pinned route corpus must identify the exact
+4. If the route uses HTTP/SSE, a pinned route corpus must identify the exact
    protocol/version, auth boundary, startup/status timing, call/result bounds,
    cancellation, reconnect, and joined cleanup. Current docs alone are not
    enough.
-6. After114/115, one exact-head review must inspect the mounted/callable path,
-   not only type fixtures. A real disposable server/result remains a later,
-   separately authorized route gate.
+5. One exact-head review must inspect the mounted/callable path after the
+   route carrier is implemented, not only type fixtures. A real disposable
+   server/result remains a later, separately authorized route gate.
+
+The remaining gap is therefore route evidence and adapter mapping, not another
+shared-kernel producer. No Card117 surface or producer is dispatched here.
 
 ## Falsification
 
@@ -184,7 +268,9 @@ mapping is:
 - do not treat `canUseTool` as Contract063 dispatch;
 - withhold in-process SDK callback, HTTP, and SSE integration until their
   exact private-carrier or pinned transport corpus exists; and
-- wait for cards114-115 before any adapter wiring or support disposition.
+- consume the merged cards114-115 types only through a route-owned, separately
+  qualified carrier; no adapter wiring or support disposition is authorized by
+  this preparation.
 
 No runtime source, public API baseline, guide, route matrix, contract, claim,
 WatcherBridge path, Claude Code behavior, credential, or provider state changed

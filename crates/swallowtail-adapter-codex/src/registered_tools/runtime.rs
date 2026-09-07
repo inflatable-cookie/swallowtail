@@ -9,12 +9,13 @@
 use super::binding::CodexRegisteredToolBinding;
 use super::turn::CodexRegisteredTurn;
 use crate::rpc::{RpcConnection, failure};
-use std::collections::BTreeSet;
+use serde_json::Value;
 use std::sync::{Arc, Weak};
 use swallowtail_core::ConfiguredInstanceId;
 use swallowtail_runtime::{
-    Deadline, HostServices, MonotonicInstant, RegisteredToolBridgeHostService, RuntimeFailure,
-    RuntimeTurnId, ScopeId, ScopedTaskService,
+    Deadline, HostServices, MonotonicInstant, RegisteredToolBridgeHostService,
+    RegisteredToolFailure, RegisteredToolReadiness, RuntimeFailure, RuntimeTurnId, ScopeId,
+    ScopedTaskService,
 };
 
 /// Registered-tool state carried by one prepared and opened Codex session.
@@ -27,30 +28,20 @@ pub(crate) struct CodexRegisteredToolRuntime {
 impl CodexRegisteredToolRuntime {
     /// Binds one qualified selection to the session's host services.
     ///
-    /// `declared` is the exact dynamic tool set the session transported. A
-    /// registered tool that never reached the provider declaration is refused
-    /// here rather than dispatching against a tool the model cannot call.
+    /// `transported` is the exact dynamic tool payload this session is about to
+    /// send. It must reproduce the qualified registration, and the selection
+    /// must pass the typed readiness gate against this exact host topology.
+    /// Both checks run before any process, connection, or provider work, so a
+    /// substituted schema or an unready topology never reaches the provider.
     pub(crate) fn bind(
         binding: CodexRegisteredToolBinding,
-        declared: &BTreeSet<String>,
+        transported: &[Value],
         services: &HostServices,
     ) -> Result<Self, RuntimeFailure> {
-        let mut registered = 0_usize;
-        for name in binding.wire_names() {
-            if !declared.contains(name) {
-                return Err(failure(
-                    "swallowtail.codex.app_server.registered_declaration_missing",
-                    "Codex session did not declare every registered dynamic tool",
-                ));
-            }
-            registered += 1;
-        }
-        if registered != declared.len() {
-            return Err(failure(
-                "swallowtail.codex.app_server.registered_declaration_mixed",
-                "Codex registered sessions cannot mix registered and unregistered dynamic tools",
-            ));
-        }
+        binding.verify_transported(transported)?;
+        RegisteredToolReadiness::evaluate(services, binding.selection())
+            .require_ready()
+            .map_err(RegisteredToolFailure::into_runtime_failure)?;
         let port = services.registered_tool_bridge().cloned().ok_or_else(|| {
             failure(
                 "swallowtail.codex.app_server.registered_bridge_missing",

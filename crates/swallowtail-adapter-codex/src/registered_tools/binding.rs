@@ -1,12 +1,14 @@
 //! Qualification of one registered selection against the Codex tool seam.
 
 use crate::rpc::failure;
-use std::collections::BTreeMap;
+use crate::session_input::translate_tool;
+use serde_json::Value;
+use std::collections::{BTreeMap, BTreeSet};
 use swallowtail_runtime::{
-    RegisteredToolExecutionKind, RegisteredToolId, RegisteredToolPreparation,
-    RegisteredToolProgressMode, RegisteredToolQualifiedRoute, RegisteredToolSelection,
-    RegisteredToolSkillDelivery, RegisteredToolTransport, RuntimeFailure, SchemaDocument,
-    ToolDeclaration,
+    RegisteredServerId, RegisteredServerRevision, RegisteredToolExecutionKind, RegisteredToolId,
+    RegisteredToolPreparation, RegisteredToolProgressMode, RegisteredToolQualifiedRoute,
+    RegisteredToolSchemaDigest, RegisteredToolSelection, RegisteredToolSkillDelivery,
+    RegisteredToolTransport, RuntimeFailure, SchemaDocument, ToolDeclaration,
 };
 
 /// Separator that joins a producer namespace to its local tool name.
@@ -34,6 +36,26 @@ const JSON_SCHEMA_MEDIA_TYPE: &str = "application/schema+json";
 /// Longest dynamic tool name the Codex function-tool wire accepts.
 const MAX_WIRE_NAME_BYTES: usize = 64;
 
+/// Exact registration evidence one transported dynamic tool must reproduce.
+///
+/// The declaration a session transports is what the model is told it may call.
+/// The snapshot is what dispatch validates against. These are only the same
+/// thing if the transported declaration reproduces this exact evidence, so the
+/// evidence carries identity, kind, carrier, server and schema revision, and
+/// the canonical schema digest alongside the derived declaration.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct CodexRegisteredToolEvidence {
+    wire_name: String,
+    tool: RegisteredToolId,
+    kind: RegisteredToolExecutionKind,
+    transport: RegisteredToolTransport,
+    server_id: RegisteredServerId,
+    server_revision: RegisteredServerRevision,
+    schema_revision: RegisteredServerRevision,
+    schema_digest: RegisteredToolSchemaDigest,
+    declaration: ToolDeclaration,
+}
+
 /// One registered selection qualified for the Codex dynamic native tool seam.
 ///
 /// Qualification happens at preparation, before any process, connection, or
@@ -41,6 +63,7 @@ const MAX_WIRE_NAME_BYTES: usize = 64;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CodexRegisteredToolBinding {
     preparation: RegisteredToolPreparation,
+    evidence: Vec<CodexRegisteredToolEvidence>,
     declarations: Vec<ToolDeclaration>,
     wire_names: BTreeMap<String, RegisteredToolId>,
 }
@@ -53,59 +76,18 @@ impl CodexRegisteredToolBinding {
     /// app, or provider-owned tool, an unqualified carrier, or an identity the
     /// Codex wire cannot express fails here rather than at dispatch.
     pub fn qualify(preparation: RegisteredToolPreparation) -> Result<Self, RuntimeFailure> {
-        let selection = preparation.selection();
-        if selection.transport() != RegisteredToolTransport::HostMediatedCallback {
-            return Err(unsupported_transport(selection.transport()));
-        }
-        let snapshot = selection.snapshot();
-        let mut declarations = Vec::with_capacity(selection.selected().len());
-        let mut wire_names = BTreeMap::new();
-        for id in selection.selected() {
-            let declaration = snapshot.declaration(id).ok_or_else(|| {
-                failure(
-                    "swallowtail.codex.app_server.registered_tool_unknown",
-                    "Codex registered selection names a tool the snapshot does not declare",
-                )
-            })?;
-            require_native_kind(declaration.kind())?;
-            let schema = declaration.input_schema();
-            if schema.media_type().as_str() != JSON_SCHEMA_MEDIA_TYPE {
-                return Err(failure(
-                    "swallowtail.codex.app_server.registered_schema_unsupported",
-                    "Codex registered tools require a JSON Schema input document",
-                ));
-            }
-            let body = schema.document().expose_for_execution();
-            if serde_json::from_str::<serde_json::Value>(body).is_err() {
-                return Err(failure(
-                    "swallowtail.codex.app_server.registered_schema_invalid",
-                    "Codex registered tool schema is not valid JSON",
-                ));
-            }
-            let name = wire_name(id)?;
-            if wire_names.insert(name.clone(), id.clone()).is_some() {
-                return Err(failure(
-                    "swallowtail.codex.app_server.registered_identity_unsupported",
-                    "Codex registered tools collide on one dynamic tool name",
-                ));
-            }
-            declarations.push(
-                ToolDeclaration::new(
-                    name,
-                    SchemaDocument::Inline(body.as_bytes().to_vec()),
-                    JSON_SCHEMA_MEDIA_TYPE,
-                    schema.dialect().as_str(),
-                )
-                .map_err(|_| {
-                    failure(
-                        "swallowtail.codex.app_server.registered_identity_unsupported",
-                        "Codex registered tool declaration is not transportable",
-                    )
-                })?,
-            );
-        }
+        let evidence = derive_evidence(preparation.selection())?;
+        let declarations = evidence
+            .iter()
+            .map(|entry| entry.declaration.clone())
+            .collect();
+        let wire_names = evidence
+            .iter()
+            .map(|entry| (entry.wire_name.clone(), entry.tool.clone()))
+            .collect();
         Ok(Self {
             preparation,
+            evidence,
             declarations,
             wire_names,
         })
@@ -135,10 +117,126 @@ impl CodexRegisteredToolBinding {
         self.wire_names.get(wire_name)
     }
 
-    /// Returns every Codex dynamic tool name this binding declares.
-    pub(crate) fn wire_names(&self) -> impl Iterator<Item = &str> {
-        self.wire_names.keys().map(String::as_str)
+    /// Verifies the exact dynamic tools a session is about to transport.
+    ///
+    /// The comparison is against freshly derived evidence, not a cached list,
+    /// and it is made on the rendered wire values the provider will receive.
+    /// A same-name declaration carrying another schema, dialect, description,
+    /// or snapshot revision is refused here, before any process, connection, or
+    /// provider work, because dispatch would otherwise validate one
+    /// registration while the model was shown another.
+    pub(crate) fn verify_transported(&self, transported: &[Value]) -> Result<(), RuntimeFailure> {
+        // Re-deriving proves the transported set and the dispatch authority
+        // come from one exact selection revision, not from a stale rendering.
+        if derive_evidence(self.selection())? != self.evidence {
+            return Err(failure(
+                "swallowtail.codex.app_server.registered_registration_drift",
+                "Codex registered declarations no longer match their qualified registration",
+            ));
+        }
+        if transported.len() != self.evidence.len() {
+            return Err(mixed_declarations());
+        }
+        let mut seen = BTreeSet::new();
+        for value in transported {
+            let name = value.get("name").and_then(Value::as_str).ok_or_else(|| {
+                failure(
+                    "swallowtail.codex.app_server.registered_declaration_unnamed",
+                    "Codex transported a dynamic tool without a name",
+                )
+            })?;
+            let Some(entry) = self.evidence.iter().find(|entry| entry.wire_name == name) else {
+                return Err(mixed_declarations());
+            };
+            if value != &translate_tool(&entry.declaration)? {
+                return Err(failure(
+                    "swallowtail.codex.app_server.registered_declaration_substituted",
+                    "Codex transported a dynamic tool that is not its registered declaration",
+                ));
+            }
+            seen.insert(entry.wire_name.as_str());
+        }
+        if seen.len() != self.evidence.len() {
+            return Err(failure(
+                "swallowtail.codex.app_server.registered_declaration_missing",
+                "Codex session did not declare every registered dynamic tool",
+            ));
+        }
+        Ok(())
     }
+}
+
+fn mixed_declarations() -> RuntimeFailure {
+    failure(
+        "swallowtail.codex.app_server.registered_declaration_mixed",
+        "Codex registered sessions cannot mix registered and unregistered dynamic tools",
+    )
+}
+
+/// Derives the exact registration evidence one selection admits.
+fn derive_evidence(
+    selection: &RegisteredToolSelection,
+) -> Result<Vec<CodexRegisteredToolEvidence>, RuntimeFailure> {
+    if selection.transport() != RegisteredToolTransport::HostMediatedCallback {
+        return Err(unsupported_transport(selection.transport()));
+    }
+    let snapshot = selection.snapshot();
+    let mut evidence: Vec<CodexRegisteredToolEvidence> =
+        Vec::with_capacity(selection.selected().len());
+    for id in selection.selected() {
+        let declaration = snapshot.declaration(id).ok_or_else(|| {
+            failure(
+                "swallowtail.codex.app_server.registered_tool_unknown",
+                "Codex registered selection names a tool the snapshot does not declare",
+            )
+        })?;
+        require_native_kind(declaration.kind())?;
+        let schema = declaration.input_schema();
+        if schema.media_type().as_str() != JSON_SCHEMA_MEDIA_TYPE {
+            return Err(failure(
+                "swallowtail.codex.app_server.registered_schema_unsupported",
+                "Codex registered tools require a JSON Schema input document",
+            ));
+        }
+        let body = schema.document().expose_for_execution();
+        if serde_json::from_str::<Value>(body).is_err() {
+            return Err(failure(
+                "swallowtail.codex.app_server.registered_schema_invalid",
+                "Codex registered tool schema is not valid JSON",
+            ));
+        }
+        let name = wire_name(id)?;
+        if evidence.iter().any(|entry| entry.wire_name == name) {
+            return Err(failure(
+                "swallowtail.codex.app_server.registered_identity_unsupported",
+                "Codex registered tools collide on one dynamic tool name",
+            ));
+        }
+        let transported = ToolDeclaration::new(
+            name.clone(),
+            SchemaDocument::Inline(body.as_bytes().to_vec()),
+            JSON_SCHEMA_MEDIA_TYPE,
+            schema.dialect().as_str(),
+        )
+        .map_err(|_| {
+            failure(
+                "swallowtail.codex.app_server.registered_identity_unsupported",
+                "Codex registered tool declaration is not transportable",
+            )
+        })?;
+        evidence.push(CodexRegisteredToolEvidence {
+            wire_name: name,
+            tool: id.clone(),
+            kind: declaration.kind(),
+            transport: selection.transport(),
+            server_id: snapshot.server_id().clone(),
+            server_revision: snapshot.revision().clone(),
+            schema_revision: schema.revision().clone(),
+            schema_digest: schema.digest().clone(),
+            declaration: transported,
+        });
+    }
+    Ok(evidence)
 }
 
 fn require_native_kind(kind: RegisteredToolExecutionKind) -> Result<(), RuntimeFailure> {

@@ -144,7 +144,7 @@ impl CodexSessionInput {
     ) -> Result<Self, RuntimeFailure> {
         self.registered = Some(Arc::new(CodexRegisteredToolRuntime::bind(
             binding,
-            &self.declared_tools,
+            &self.dynamic_tools,
             services,
         )?));
         Ok(self)
@@ -277,7 +277,7 @@ fn validate_tools(plan: &PreflightPlan, tools: &[&ToolDeclaration]) -> Result<()
     Ok(())
 }
 
-fn translate_tool(tool: &ToolDeclaration) -> Result<Value, RuntimeFailure> {
+pub(crate) fn translate_tool(tool: &ToolDeclaration) -> Result<Value, RuntimeFailure> {
     let SchemaDocument::Inline(bytes) = tool.input_schema() else {
         return Err(unsupported("referenced dynamic tool schemas"));
     };

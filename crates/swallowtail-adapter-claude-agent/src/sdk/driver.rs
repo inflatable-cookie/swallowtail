@@ -11,7 +11,7 @@ pub use self::session::ClaudeAgentSdkSessionHandle;
 use self::validation::{validate_open, validate_resume};
 use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
-use crate::sdk::failure::failure;
+use crate::sdk::failure::{failure, unsupported};
 use crate::sdk::guardian::OpenGuard;
 use crate::sdk::prepared::ClaudeAgentSdkSessionListing;
 use std::sync::{Arc, Mutex};
@@ -25,6 +25,7 @@ use swallowtail_runtime::{
 mod descriptor;
 mod handle;
 mod launch;
+pub(in crate::sdk) mod registered;
 mod session;
 mod startup;
 mod validation;
@@ -39,6 +40,7 @@ pub struct ClaudeAgentSdkDriver {
     credential: swallowtail_core::CredentialRef,
     profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
     mcp_servers: Vec<crate::sdk::mcp::ClaudeAgentSdkMcpServer>,
+    registered: Option<crate::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding>,
 }
 
 impl ClaudeAgentSdkDriver {
@@ -54,6 +56,7 @@ impl ClaudeAgentSdkDriver {
             credential,
             profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile::read_only(),
             mcp_servers: Vec::new(),
+            registered: None,
         }
     }
 
@@ -82,6 +85,20 @@ impl ClaudeAgentSdkDriver {
         servers: Vec<crate::sdk::mcp::ClaudeAgentSdkMcpServer>,
     ) -> Self {
         self.mcp_servers = servers;
+        self
+    }
+
+    /// Binds one qualified registered selection to new sidecar sessions.
+    ///
+    /// Absence preserves every previous open, including the empty `mcpServers`
+    /// omission. Resume and listing refuse a bound selection: the courier is
+    /// minted at fresh open and is not redeclared onto a retained thread.
+    #[must_use]
+    pub fn with_registered_tools(
+        mut self,
+        binding: crate::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding,
+    ) -> Self {
+        self.registered = Some(binding);
         self
     }
 
@@ -128,11 +145,12 @@ pub(super) struct PendingSession {
     /// The enclosing cleanup guardian, started before the first acquisition so
     /// activating it at close cannot fail while the session holds live state.
     pub(super) close_guardian: Option<crate::sdk::guardian::SessionGuardian>,
+    pub(super) registered: Option<registered::ClaudeAgentSdkRegisteredToolSession>,
 }
 
 impl PendingSession {
     pub(in crate::sdk::driver) fn into_handle(
-        self,
+        mut self,
         plan: &PreflightPlan,
         readiness: startup::SessionReadiness,
         acquired: crate::sdk::guardian::Acquisitions,
@@ -167,6 +185,7 @@ impl PendingSession {
             permission_mode_changes: 0,
             model_changes: 0,
             first_turn_rejection: None,
+            registered: self.registered.take(),
         }
     }
 }
@@ -269,6 +288,9 @@ impl ClaudeAgentSdkDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Vec<ClaudeAgentSdkSessionListing>, RuntimeFailure>> {
         Box::pin(async move {
+            if self.registered.is_some() {
+                return Err(unsupported("registered tools on session listing"));
+            }
             let request = OpenSessionRequest::from_plan(
                 &plan,
                 request_id.clone(),
@@ -387,6 +409,9 @@ impl ClaudeAgentSdkDriver {
                     binding,
                     resume_session_at,
                 } => {
+                    if self.registered.is_some() {
+                        return Err(unsupported("registered tools on resumed sessions"));
+                    }
                     let resume = ResumeSessionRequest::from_plan(
                         &plan,
                         request.request_id().clone(),
@@ -541,7 +566,7 @@ impl ClaudeAgentSdkDriver {
         // Held for exactly this future's lifetime, including an early return or
         // a drop at the caller's deadline.
         let _recording = lease;
-        let pending = self
+        let mut pending = self
             .spawn_session(
                 plan,
                 SessionLaunch {
@@ -557,17 +582,35 @@ impl ClaudeAgentSdkDriver {
                 guard,
             )
             .await?;
+        let mut registered_pending = None;
+        let mut registered_courier = None;
+        if let Some(binding) = &self.registered {
+            let pending_registered =
+                registered::prepare_registered(binding, plan, request, &pending.services).await?;
+            registered_courier = Some(pending_registered.declaration());
+            registered_pending = Some(pending_registered);
+        }
         let readiness = match start {
-            SessionStart::Fresh => {
-                startup::open(
-                    &pending.connection,
-                    plan,
-                    &pending.leased_cwd,
-                    self.profile,
-                    &self.mcp_servers,
-                )
-                .await?
-            }
+            SessionStart::Fresh => match startup::open(
+                &pending.connection,
+                plan,
+                &pending.leased_cwd,
+                self.profile,
+                &self.mcp_servers,
+                registered_courier,
+            )
+            .await
+            {
+                Ok(readiness) => readiness,
+                Err(error) => {
+                    if let Some(pending_registered) = registered_pending.take()
+                        && let Some(lease) = pending_registered.into_unclaimed_lease()
+                    {
+                        guard.ledger().record_registered(lease);
+                    }
+                    return Err(error);
+                }
+            },
             SessionStart::Resume {
                 binding,
                 resume_session_at,
@@ -578,12 +621,22 @@ impl ClaudeAgentSdkDriver {
                     &pending.leased_cwd,
                     self.profile,
                     &self.mcp_servers,
+                    None,
                     binding.provider_session_ref(),
                     resume_session_at.as_deref(),
                 )
                 .await?
             }
         };
+        if let Some(mut pending_registered) = registered_pending.take() {
+            if let Err(error) = pending_registered.wait_until_ready() {
+                if let Some(lease) = pending_registered.into_unclaimed_lease() {
+                    guard.ledger().record_registered(lease);
+                }
+                return Err(error);
+            }
+            pending.registered = Some(pending_registered.claim());
+        }
         Ok((pending, readiness))
     }
 

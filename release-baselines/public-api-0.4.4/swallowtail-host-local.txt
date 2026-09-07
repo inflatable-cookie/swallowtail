@@ -94,6 +94,8 @@ impl core::fmt::Debug for swallowtail_host_local::LocalExecutableLaunch
 pub fn swallowtail_host_local::LocalExecutableLaunch::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_host_local::LocalHostServices
 impl swallowtail_host_local::LocalHostServices
+pub fn swallowtail_host_local::LocalHostServices::approved_environment(&self, &swallowtail_runtime::host_reference::EnvironmentRef) -> core::option::Option<&[(std::ffi::os_str::OsString, std::ffi::os_str::OsString)]>
+pub fn swallowtail_host_local::LocalHostServices::approved_executable_path(&self, &swallowtail_runtime::host_reference::ExecutableRef) -> core::option::Option<&std::path::Path>
 pub fn swallowtail_host_local::LocalHostServices::close_operation_bridges(&self, &swallowtail_runtime::identity::RuntimeTurnId, swallowtail_host_local::OperationBridgeCleanupCause) -> core::result::Result<swallowtail_runtime::outcome::CleanupOutcome, swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_host_local::LocalHostServices::deadline_after(&self, core::time::Duration) -> swallowtail_runtime::time::Deadline
 pub fn swallowtail_host_local::LocalHostServices::operation_bridge_generations(&self, &swallowtail_runtime::identity::RuntimeTurnId) -> alloc::vec::Vec<(&'static str, u64)>
@@ -115,6 +117,8 @@ impl core::default::Default for swallowtail_host_local::LocalMaterializationLimi
 pub fn swallowtail_host_local::LocalMaterializationLimits::default() -> Self
 pub struct swallowtail_host_local::LocalProcessHost
 impl swallowtail_host_local::LocalProcessHost
+pub fn swallowtail_host_local::LocalProcessHost::approved_environment(&self, &swallowtail_runtime::host_reference::EnvironmentRef) -> core::option::Option<&[(std::ffi::os_str::OsString, std::ffi::os_str::OsString)]>
+pub fn swallowtail_host_local::LocalProcessHost::approved_executable_path(&self, &swallowtail_runtime::host_reference::ExecutableRef) -> core::option::Option<&std::path::Path>
 pub fn swallowtail_host_local::LocalProcessHost::builder(swallowtail_host_local::LocalProcessLimits) -> swallowtail_host_local::LocalProcessHostBuilder
 impl swallowtail_runtime::host_traits::AttachmentService for swallowtail_host_local::LocalProcessHost
 pub fn swallowtail_host_local::LocalProcessHost::materialize_file(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::attachment::AttachmentDescriptor) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::host_traits::AttachmentFileLease, swallowtail_runtime::failure::RuntimeFailure>>

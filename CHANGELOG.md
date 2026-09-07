@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Added
+- bind one Contract 063 `RegisteredToolPreparation` into `claude-agent.sdk`
+  open through `ClaudeAgentSdkSessionPreparation::with_registered_tools`
+  (host-resolved courier path and Card 084 env) and
+  `ClaudeAgentSdkSessionProfile::qualify`. The provider spawns the declared
+  courier; Swallowtail never holds that `ProcessHandle`. Ready is the
+  kernel-observed authenticated connect. Contract 061 stays
+  `Unqualified / real_route_gate_pending` with the reason "callable seam
+  present; live gate pending". Provider-free fake-SDK proofs cover
+  declaration, one mediated round-trip, deny, cancel, close, omission,
+  second-read, ready-after-connect, and unspawnable command. g05.035 card 125.
 - bind a resolved selected-skill bundle to a prepared Codex app-server session
   through the additive `CodexSessionProfileInput::with_selected_skill_bundle`.
   The bundle crosses as one distinct labelled `selectedSkillBundle` input on

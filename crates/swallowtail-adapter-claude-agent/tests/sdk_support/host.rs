@@ -9,13 +9,14 @@ use std::collections::VecDeque;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
 use std::task::Waker;
-use swallowtail_runtime::{ProcessOutputChunk, ProcessRequest};
+use swallowtail_runtime::{ProcessHandle, ProcessOutputChunk, ProcessRequest};
 pub use task_service::FixtureReaper;
 
 mod authority;
 mod scenario;
 
 pub use scenario::{SdkScenario, Stall};
+mod mcp_child;
 mod process;
 mod script;
 mod services;
@@ -57,6 +58,9 @@ pub(super) struct Shared {
     /// The fixture's outer reaper owner, so a test can act as the host
     /// lifecycle that joins transferred work.
     pub(super) reaper: Mutex<Option<Arc<FixtureReaper>>>,
+    /// Provider-spawned stdio MCP children the fake SDK started from the
+    /// declared `command`/`args`/`env`. Swallowtail does not hold these.
+    pub(super) spawned_mcp: Mutex<Vec<Arc<mcp_child::SpawnedMcpChild>>>,
 }
 
 #[derive(Default)]
@@ -96,6 +100,7 @@ impl SdkFixtureHost {
                 }),
                 relinquished: Mutex::new(None),
                 reaper: Mutex::new(None),
+                spawned_mcp: Mutex::new(Vec::new()),
             }),
             scenario,
             exit_observable: true,
@@ -226,6 +231,16 @@ impl SdkFixtureHost {
         self.shared.changed.notify_all();
     }
 
+    /// Returns the courier the fake SDK spawned from the declared stdio config.
+    pub fn spawned_registered_courier(&self) -> Option<Arc<dyn ProcessHandle>> {
+        self.shared
+            .spawned_mcp
+            .lock()
+            .expect("spawned mcp lock")
+            .first()
+            .map(|child| Arc::clone(child) as Arc<dyn ProcessHandle>)
+    }
+
     pub fn inputs(&self) -> Vec<Value> {
         self.shared
             .process
@@ -276,6 +291,12 @@ impl SdkFixtureHost {
             .expect("SDK fixture state lock poisoned");
         script::push(&mut state, record);
         self.shared.changed.notify_all();
+    }
+}
+
+impl Drop for Shared {
+    fn drop(&mut self) {
+        mcp_child::kill_spawned(self);
     }
 }
 

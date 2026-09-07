@@ -7,7 +7,7 @@ use crate::model_artifact::{LocalModelArtifactApproval, LocalModelArtifactLeaseS
 use crate::serving_endpoint::LocalServingEndpointState;
 use std::collections::HashMap;
 use std::ffi::OsString;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use swallowtail_core::{
@@ -233,6 +233,31 @@ pub struct LocalProcessHost {
 }
 
 impl LocalProcessHost {
+    /// Returns the approved native program path for one executable reference.
+    ///
+    /// Interpreted launches with a nonempty prefix are not one spawnable
+    /// command path and stay unresolved here.
+    #[must_use]
+    pub fn approved_executable_path(&self, reference: &ExecutableRef) -> Option<&Path> {
+        let launch = self.approvals.executables.get(reference)?;
+        if !launch.prefix_arguments().is_empty() {
+            return None;
+        }
+        Some(launch.program())
+    }
+
+    /// Returns the approved environment bindings for one environment reference.
+    #[must_use]
+    pub fn approved_environment(
+        &self,
+        reference: &EnvironmentRef,
+    ) -> Option<&[(OsString, OsString)]> {
+        self.approvals
+            .environments
+            .get(reference)
+            .map(Vec::as_slice)
+    }
+
     /// Starts a builder with explicit process limits and conservative defaults.
     #[must_use]
     pub fn builder(limits: LocalProcessLimits) -> LocalProcessHostBuilder {

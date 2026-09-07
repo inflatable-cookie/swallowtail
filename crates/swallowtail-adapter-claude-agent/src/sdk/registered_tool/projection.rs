@@ -132,7 +132,7 @@ fn mediation_kind_row(
         source.id().clone(),
         SafeDiagnostic::new(
             CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE,
-            "Route-local registered-tool MCP mediation awaits its separately authorized disposable real-route gate",
+            "callable seam present; live gate pending",
         ),
     )?))
 }

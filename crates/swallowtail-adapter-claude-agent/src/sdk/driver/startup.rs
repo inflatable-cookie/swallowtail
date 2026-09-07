@@ -2,7 +2,8 @@ use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::{command_rejected, failure};
 use crate::sdk::mcp::{
     ClaudeAgentSdkMcpServer, ClaudeAgentSdkMcpServerStatus, ClaudeAgentSdkMcpServerStatusKind,
-    admitted_tool_names,
+    OpenStdioMcpServer, admitted_open_mcp_tool_names, admitted_open_tool_names,
+    combine_open_servers,
 };
 use crate::sdk::profile::{
     ClaudeAgentSdkEffort, ClaudeAgentSdkEffortOutcome, ClaudeAgentSdkPermissionMode,
@@ -263,6 +264,7 @@ pub(crate) async fn open(
     leased_cwd: &str,
     profile: ClaudeAgentSdkSessionProfile,
     mcp_servers: &[ClaudeAgentSdkMcpServer],
+    registered_courier: Option<OpenStdioMcpServer>,
 ) -> Result<SessionReadiness, RuntimeFailure> {
     start(
         connection,
@@ -270,18 +272,21 @@ pub(crate) async fn open(
         leased_cwd,
         profile,
         mcp_servers,
+        registered_courier,
         None,
         None,
     )
     .await
 }
 
+#[allow(clippy::too_many_arguments)]
 pub(crate) async fn resume(
     connection: &SdkConnection,
     plan: &PreflightPlan,
     leased_cwd: &str,
     profile: ClaudeAgentSdkSessionProfile,
     mcp_servers: &[ClaudeAgentSdkMcpServer],
+    registered_courier: Option<OpenStdioMcpServer>,
     provider_session_ref: &SessionRef,
     resume_session_at: Option<&str>,
 ) -> Result<SessionReadiness, RuntimeFailure> {
@@ -291,6 +296,7 @@ pub(crate) async fn resume(
         leased_cwd,
         profile,
         mcp_servers,
+        registered_courier,
         Some(provider_session_ref),
         resume_session_at,
     )
@@ -369,12 +375,14 @@ fn project_listing(value: &Value, leased_cwd: &str) -> Result<SessionListing, Ru
     })
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn start(
     connection: &SdkConnection,
     plan: &PreflightPlan,
     leased_cwd: &str,
     profile: ClaudeAgentSdkSessionProfile,
     mcp_servers: &[ClaudeAgentSdkMcpServer],
+    registered_courier: Option<OpenStdioMcpServer>,
     provider_session_ref: Option<&SessionRef>,
     resume_session_at: Option<&str>,
 ) -> Result<SessionReadiness, RuntimeFailure> {
@@ -383,7 +391,8 @@ async fn start(
         .expect("validated sidecar model route")
         .as_str()
         .to_owned();
-    let tools = admitted_tool_names(&profile, mcp_servers);
+    let open_servers = combine_open_servers(mcp_servers, registered_courier);
+    let tools = admitted_open_tool_names(&profile, &open_servers);
     let mut params = json!({
         "cwd": leased_cwd,
         "model": model,
@@ -402,8 +411,8 @@ async fn start(
     if let Some(effort) = profile.effort() {
         params["effort"] = json!(effort.as_str());
     }
-    if !mcp_servers.is_empty() {
-        params["mcpServers"] = mcp_servers_params(mcp_servers);
+    if !open_servers.is_empty() {
+        params["mcpServers"] = mcp_servers_params(&open_servers);
     }
     let response = connection
         .command("open-1".to_owned(), ClaudeAgentSdkCommand::Open, params)
@@ -427,7 +436,7 @@ async fn start(
         requested_model: &model,
         profile,
         admitted_tools: tools,
-        mcp_servers,
+        mcp_servers: &open_servers,
         sdk_version: &bound_version(plan, CLAUDE_AGENT_SDK_PACKAGE_AXIS),
         native_version: &bound_version(plan, CLAUDE_AGENT_SDK_NATIVE_AXIS),
         node_version: &bound_version(plan, CLAUDE_AGENT_SDK_NODE_AXIS),
@@ -452,7 +461,7 @@ struct Expectation<'a> {
     requested_model: &'a str,
     profile: ClaudeAgentSdkSessionProfile,
     admitted_tools: Vec<String>,
-    mcp_servers: &'a [ClaudeAgentSdkMcpServer],
+    mcp_servers: &'a [OpenStdioMcpServer],
     sdk_version: &'a str,
     native_version: &'a str,
     node_version: &'a str,
@@ -535,7 +544,7 @@ fn readiness(
         expected_provider_session_ref: expected.expected_provider_session_ref.cloned(),
         provider_session_ref: None,
         mcp_server_status,
-        admitted_mcp_tools: crate::sdk::mcp::admitted_mcp_tool_names(expected.mcp_servers),
+        admitted_mcp_tools: admitted_open_mcp_tool_names(expected.mcp_servers),
     })
 }
 
@@ -696,7 +705,7 @@ fn tools_match(data: &Value, admitted: &[String]) -> bool {
         })
 }
 
-fn mcp_status_present(data: &Value, servers: &[ClaudeAgentSdkMcpServer]) -> bool {
+fn mcp_status_present(data: &Value, servers: &[OpenStdioMcpServer]) -> bool {
     match data.get("mcpServerStatus") {
         None => servers.is_empty(),
         Some(value) => value
@@ -705,19 +714,29 @@ fn mcp_status_present(data: &Value, servers: &[ClaudeAgentSdkMcpServer]) -> bool
     }
 }
 
-fn mcp_servers_params(servers: &[ClaudeAgentSdkMcpServer]) -> Value {
+fn mcp_servers_params(servers: &[OpenStdioMcpServer]) -> Value {
     Value::Array(
         servers
             .iter()
             .map(|server| {
-                json!({
+                let mut value = json!({
                     "name": server.name(),
                     "command": server.command(),
                     "args": server.args(),
                     "envAllowlistKeys": server.env_allowlist_keys(),
                     "tools": server.tools(),
                     "optional": server.is_optional(),
-                })
+                });
+                if !server.env().is_empty() {
+                    value["env"] = json!(
+                        server
+                            .env()
+                            .iter()
+                            .cloned()
+                            .collect::<std::collections::BTreeMap<_, _>>()
+                    );
+                }
+                value
             })
             .collect(),
     )
@@ -725,7 +744,7 @@ fn mcp_servers_params(servers: &[ClaudeAgentSdkMcpServer]) -> Value {
 
 fn mcp_server_status(
     data: &Value,
-    servers: &[ClaudeAgentSdkMcpServer],
+    servers: &[OpenStdioMcpServer],
 ) -> Result<Vec<ClaudeAgentSdkMcpServerStatus>, RuntimeFailure> {
     if servers.is_empty() {
         return Ok(Vec::new());

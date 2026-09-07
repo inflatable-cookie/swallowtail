@@ -4,12 +4,15 @@ use crate::task::LocalTaskReaperOwner;
 use crate::watcher::LocalWatcherHostService;
 use crate::watcher_bridge::{LocalWatcherBridgeHostService, WatcherBridgeProofKind};
 use crate::{LocalProcessHost, LocalProcessHostBuilder, LocalScopedTaskService};
+use std::ffi::OsString;
+use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
-    CleanupOutcome, Deadline, HostServices, MonotonicInstant, RegisteredToolBridgeLease,
-    RegisteredToolMountedTopology, RuntimeFailure, RuntimeTurnId, TimeService,
+    CleanupOutcome, Deadline, EnvironmentRef, ExecutableRef, HostServices, MonotonicInstant,
+    RegisteredToolBridgeLease, RegisteredToolMountedTopology, RuntimeFailure, RuntimeTurnId,
+    TimeService,
 };
 
 /// Inspectable host-owned local service composition for one execution host.
@@ -151,6 +154,21 @@ impl LocalHostServices {
         self.registered_tool_bridge
             .as_ref()
             .map_or(0, |bridge| bridge.live_lease_count())
+    }
+
+    /// Returns the approved native program path for one executable reference.
+    #[must_use]
+    pub fn approved_executable_path(&self, reference: &ExecutableRef) -> Option<&Path> {
+        self.process_host.approved_executable_path(reference)
+    }
+
+    /// Returns the approved environment bindings for one environment reference.
+    #[must_use]
+    pub fn approved_environment(
+        &self,
+        reference: &EnvironmentRef,
+    ) -> Option<&[(OsString, OsString)]> {
+        self.process_host.approved_environment(reference)
     }
 
     /// Materializes one operation-scoped mediated-stdio courier launch.

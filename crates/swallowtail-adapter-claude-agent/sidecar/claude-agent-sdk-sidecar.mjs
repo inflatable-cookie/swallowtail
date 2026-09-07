@@ -501,7 +501,7 @@ function admittedMcpServers(value) {
       throw new SidecarFailure("mcp_servers_invalid");
     }
     for (const key of Object.keys(entry)) {
-      if (!["name", "command", "args", "envAllowlistKeys", "tools", "optional"].includes(key)) {
+      if (!["name", "command", "args", "envAllowlistKeys", "env", "tools", "optional"].includes(key)) {
         throw new SidecarFailure("mcp_servers_invalid");
       }
     }
@@ -520,6 +520,7 @@ function admittedMcpServers(value) {
     if (!Array.isArray(envAllowlistKeys) || envAllowlistKeys.length > MAXIMUM_MCP_ENV_KEYS || envAllowlistKeys.some((key) => typeof key !== "string" || envAllowlistKeys.indexOf(key) !== envAllowlistKeys.lastIndexOf(key))) {
       throw new SidecarFailure("mcp_servers_invalid");
     }
+    const env = admittedMcpEnv(entry.env);
     const tools = entry.tools;
     if (!Array.isArray(tools) || tools.length === 0 || tools.length > MAXIMUM_MCP_TOOLS || tools.some((tool) => !isMcpIdentifier(tool) || tools.indexOf(tool) !== tools.lastIndexOf(tool))) {
       throw new SidecarFailure("mcp_servers_invalid");
@@ -534,6 +535,7 @@ function admittedMcpServers(value) {
       command: entry.command,
       args,
       envAllowlistKeys,
+      env,
       tools,
       optional,
       admitted: tools.map((tool) => mcpToolName(name, tool)),
@@ -570,6 +572,30 @@ function admittedToolsWithMcp(values, servers) {
   return admitted;
 }
 
+function admittedMcpEnv(value) {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new SidecarFailure("mcp_servers_invalid");
+  }
+  const env = {};
+  const keys = Object.keys(value);
+  if (keys.length > MAXIMUM_MCP_ENV_KEYS) {
+    throw new SidecarFailure("mcp_servers_invalid");
+  }
+  for (const key of keys) {
+    if (!(CHILD_ENV_EXACT_KEYS.has(key) || key.startsWith("LC_")) || key.startsWith("SWALLOWTAIL_")) {
+      throw new SidecarFailure("mcp_servers_invalid");
+    }
+    if (typeof value[key] !== "string") {
+      throw new SidecarFailure("mcp_servers_invalid");
+    }
+    env[key] = value[key];
+  }
+  return env;
+}
+
 function sdkMcpServers(servers) {
   const config = {};
   for (const server of servers) {
@@ -577,7 +603,7 @@ function sdkMcpServers(servers) {
       type: "stdio",
       command: server.command,
       args: server.args,
-      env: mcpServerEnvironment(server.envAllowlistKeys),
+      env: server.env === undefined ? mcpServerEnvironment(server.envAllowlistKeys) : server.env,
       alwaysLoad: !server.optional,
     };
   }

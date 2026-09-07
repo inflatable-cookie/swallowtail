@@ -72,6 +72,7 @@ pub struct ClaudeAgentSdkSessionHandle {
     /// Correlation counter for model changes.
     pub(super) model_changes: u32,
     pub(super) first_turn_rejection: Option<ClaudeAgentSdkFailureCode>,
+    pub(super) registered: Option<super::registered::ClaudeAgentSdkRegisteredToolSession>,
 }
 
 impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
@@ -254,9 +255,10 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
         let execution_host_id = self.execution_host_id.clone();
         let deadline = request.deadline();
         // Ownership moves first. The guardian takes the connection, process,
-        // pump, remaining turn-deadline task, and both leases here, before the
-        // public cleanup future exists at all, so the runtime refusing that
-        // future or the caller dropping it cannot strand any of them.
+        // pump, remaining turn-deadline task, both leases, and the registered
+        // lease here, before the public cleanup future exists at all, so the
+        // runtime refusing that future or the caller dropping it cannot strand
+        // any of them.
         let guardian = close::activate(&mut self, deadline, true);
         let settle_services = services.clone();
         // One deadline, applied by the shared cleanup bound and again inside

@@ -157,6 +157,9 @@ consumer requirements and must not create a competing producer worker.
 | [116](batch-cards/116-claude-registered-tool-adoption.md) | waits for114/115 and route corpus | retained Claude owner; parallel with117/118 on disjoint adapters | exact route evidence and reviewed merge |
 | [117](batch-cards/117-codex-registered-tool-adoption.md) | waits for114/115 | Codex adapter owner | dynamic-tool real binding evidence and reviewed merge |
 | [118](batch-cards/118-grok-registered-capability-qualification.md) | waits for114/115 and missing surface evidence | Grok adapter owner | qualified implementation or explicit unsupported disposition |
+| [125](batch-cards/125-claude-sdk-registered-tool-route-binding.md) | ready; cards 114-116 merged | Claude adapter owner; owns `crates/swallowtail-adapter-claude-agent/**` route-binding paths, its tests, guide section, and baseline; parallel with 126 only if disjoint files, else serial 125 then 126; forbidden: kernel, host-local, contracts | provider-free route-binding fixtures on the mounted path; exact-head review; merge |
+| [126](batch-cards/126-claude-sdk-selected-skill-bundle-binding.md) | ready; card 115 merged | Claude adapter owner; profile/sidecar/tests/guide/baseline; serial after 125 on shared sidecar; forbidden: kernel, host-local, contracts | bundle transport fixtures; exact-head review; merge |
+| [127](batch-cards/127-codex-selected-skill-bundle-binding.md) | ready; cards 115 and 117 merged | Codex adapter owner; `crates/swallowtail-adapter-codex/**` profile/transport/tests/guide/baseline; parallel with 125/126 (disjoint crate); forbidden: kernel, host-local, contracts | bundle transport fixtures on the app-server fixture; exact-head review; merge |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
@@ -169,6 +172,30 @@ Route116/118 read-only evidence preparation is ready now under the same retained
 route owners. It must not wait for the evidence it is tasked to obtain. Runtime
 adoption remains gated as shown in the table; negative evidence returns to
 Chatterbox without inventing support or closing the full integration goal.
+
+## Reconciliation Against The Desktop Matrix — 2026-09-07
+
+The coordinator's read-only capsule at `cbad15a7` reconciled the Desktop
+pre-release matrix (18 cells). Merged: Claude permissions, model
+inventory/selection, cancellation, packaging; Codex native registered tools,
+answerable approval/user-input exchange, model catalogue/selection,
+cancellation, packaging; Grok one-shot permissions, negotiated model options,
+turn/permission cancellation, packaging. Absent and promoted as seams: Claude
+registered-tool route binding (card 125), Claude and Codex selected-skill
+bundle binding (cards 126, 127). Absent and dispositioned, not laned: Grok
+registered tools/MCP (`Unavailable / provider_route_evidence_absent`; native
+route is a triage lead awaiting the operator), Grok selected-skill bundle
+(`Unavailable / route_dimension_unsupported` until an ACP labelled-input
+surface is evidenced), Grok pre-session catalogue (`Unavailable /
+provider_catalogue_unavailable`), persistent permission grants on every route
+(`Unavailable / one_shot_only`), Codex provider-direct MCP and Claude
+HTTP/SSE/in-process/managed MCP (withheld by contract). Desktop-side
+corrections returned with the capsule: `PreparedRegisteredToolBinding::open`
+not `RegisteredToolPreparation::open`; courier selection binds through
+`RegisteredToolSelection::with_proxy_recipe`; Grok and Codex answers go through
+`CallbackResponder::respond`, not a `respond_permission` API; Desktop's
+`ObservedOnly` declarations on Codex and Grok are its own ceiling, not the
+producer's.
 
 ## Batch A Planning Acceptance — 2026-09-07
 

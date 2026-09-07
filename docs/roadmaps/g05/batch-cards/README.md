@@ -2,6 +2,9 @@
 
 ## Ready
 
+- [125-claude-sdk-registered-tool-route-binding.md](./125-claude-sdk-registered-tool-route-binding.md) — ready; bind RegisteredToolPreparation into claude-agent.sdk open on the Codex precedent; provider-free
+- [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — ready; serial after 125; resolved skill bundle as the distinct third input
+- [127-codex-selected-skill-bundle-binding.md](./127-codex-selected-skill-bundle-binding.md) — ready; Codex route skill bundle binding; parallel
 - [124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md](./124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — ready; serial after 121; bounded manifest lookup and one model-id predicate; precedes the `v0.4.4` candidate
 - [119-claude-sdk-first-turn-model-qualification-evidence.md](./119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; bounded observer evidence for the first-turn model rejection; lead of the producer-diagnosis trio
 - [120-claude-sdk-loaded-module-version-verification.md](./120-claude-sdk-loaded-module-version-verification.md) — ready; serial after 119; loaded SDK version verified at open
@@ -17,8 +20,6 @@
 - [123-v0-4-4-consumer-proof-and-tag-capsule.md](./123-v0-4-4-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.4` tag
 - [114-registered-tool-kernel.md](./114-registered-tool-kernel.md) — planned; ready after Batch A planning review/promotion
 - [115-selected-skill-transport.md](./115-selected-skill-transport.md) — planned; waits for card114 merges
-- [116-claude-registered-tool-adoption.md](./116-claude-registered-tool-adoption.md) — planned; waits for cards114-115 merge and exact route transport corpus is frozen
-- [117-codex-registered-tool-adoption.md](./117-codex-registered-tool-adoption.md) — planned; waits for cards114-115 merge
 - [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — planned; waits for cards114-115 merge and consumer-tool protocol evidence exists
 
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — planned; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
@@ -35,6 +36,8 @@
 
 ## Completed
 
+- [117-codex-registered-tool-adoption.md](./117-codex-registered-tool-adoption.md) — complete; waits for cards114-115 merge
+- [116-claude-registered-tool-adoption.md](./116-claude-registered-tool-adoption.md) — complete; waits for cards114-115 merge and exact route transport corpus is frozen
 - [109-release-gate-order-and-hosted-delegation.md](./109-release-gate-order-and-hosted-delegation.md) — complete; PR 253 merged at `8668b167`; cheap gates first, hosted run stands for clippy and tests; after the `v0.4.3` tag
 - [110-version-derived-release-scripts-and-baseline-roles.md](./110-version-derived-release-scripts-and-baseline-roles.md) — complete; PR 252 merged at `258574a6`; PR 252; exact-head re-review
 - [111-docs-check-on-push-and-closeout-grammar.md](./111-docs-check-on-push-and-closeout-grammar.md) — complete; PR 250 merged at `f51575c9`; pre-push docs check; drift checker grammar documented; after the tag

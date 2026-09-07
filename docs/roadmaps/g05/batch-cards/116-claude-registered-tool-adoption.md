@@ -1,6 +1,6 @@
 # 116 Claude SDK common registered-tool adoption
 
-Status: planned; evidence preparation ready; runtime blocked until cards114-115 merge and exact route transport corpus is frozen
+Status: complete; runtime PR 266 merged at `dbbcd192`; evidence PR 258 at `d74f5975`; route binding continues as card 125
 Owner: Tom
 Created: 2026-09-07
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`

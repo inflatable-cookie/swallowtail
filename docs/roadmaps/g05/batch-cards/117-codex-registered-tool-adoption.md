@@ -1,6 +1,6 @@
 # 117 Codex dynamic-tool common binding
 
-Status: planned; blocked until cards114-115 merge
+Status: complete; merged at `d7e93e55`
 Owner: Tom
 Created: 2026-09-07
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`

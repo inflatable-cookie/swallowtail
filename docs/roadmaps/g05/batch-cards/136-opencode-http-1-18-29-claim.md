@@ -1,15 +1,15 @@
-# 135 OpenCode HTTP 1.18.29 Claim
+# 136 OpenCode HTTP 1.18.29 Claim
 
 Status: complete; qualified through `1.18.29`; `1.18.30` remains `UnverifiedNewer`
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07
 Milestone: `../037-opencode-http-1-18-29-useful-newer.md`
-Depends on: completed card 134 with an admitted segment
+Depends on: completed card 135 with an admitted segment
 
 ## Goal
 
-Apply only the OpenCode HTTP compatibility segment proved by card 134, update
+Apply only the OpenCode HTTP compatibility segment proved by card 135, update
 matching tests and canonical route truth, validate, and stop for exact-head
 review.
 
@@ -36,7 +36,7 @@ Another family; new route operations; provider contact; host update; Contract
 
 ## Acceptance Criteria
 
-- only card 134's admitted segment moves
+- only card 135's admitted segment moves
 - every historical boundary and negative point survives
 - selection, fixtures, guides, matrices, architecture, changelog, and standing
   lane agree

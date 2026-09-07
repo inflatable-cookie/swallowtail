@@ -27,7 +27,7 @@ then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
 Last one-family claim: OpenCode HTTP `1.18.29` (g05.037, cards
-134-135). The existing `opencode.server` `surface-19` window extends through
+135-136). The existing `opencode.server` `surface-19` window extends through
 exact npm `1.18.29` as a compatible extension. Baseline `1.14.48` and every
 historical gap stay. Unpublished `1.18.30` stays permitted `UnverifiedNewer`.
 Host `opencode` was not on `PATH` and was not installed. Downloaded official
@@ -98,7 +98,7 @@ recorded.
 ### Latest Completed Family
 
 OpenCode HTTP `1.18.29` is a compatible extension of existing
-`opencode.http-sse.surface-19`. Research 292 and g05.037 cards 134-135 freeze
+`opencode.http-sse.surface-19`. Research 292 and g05.037 cards 135-136 freeze
 identity before the claim. Host `opencode` was not on `PATH` and was not
 installed, updated, or replaced. Official artifacts were hashed and never
 executed. Official npm and GitHub stable is `1.18.29` published
@@ -170,7 +170,7 @@ partition is 9 unchanged, 8 visible unverified-newer, 23 record-only, and 1
 material candidate. OpenCode HTTP `1.18.28` ranked first: the host is
 `1.18.18`, inside the previously qualified `1.14.48..=1.18.20` range. Card 077
 admitted all eight published hops as compatible `surface-19`; card 078 raises
-the qualified ceiling through `1.18.28`. g05.037 cards 134-135 later raise
+the qualified ceiling through `1.18.28`. g05.037 cards 135-136 later raise
 that same `surface-19` through official `1.18.29` and leave unpublished
 `1.18.30` `UnverifiedNewer` under Contract 029.
 
@@ -361,6 +361,6 @@ changed no claim.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). g05.037 cards 134-135 completed
+[roadmaps front door](README.md#next-task). g05.037 cards 135-136 completed
 the OpenCode HTTP `1.18.29` family. This file records standing lanes; the
 sole actionable pointer stays in the front door.

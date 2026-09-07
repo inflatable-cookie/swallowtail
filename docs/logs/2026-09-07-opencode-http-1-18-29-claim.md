@@ -9,7 +9,7 @@ claim id, behavior revisions, and `AllowUnverified` stay unchanged. Synthetic
 later stable `1.18.30` remains visible `UnverifiedNewer`.
 
 No public API, provider contact, install, or host change entered the claim.
-Research 292. g05.037 cards 134-135.
+Research 292. g05.037 cards 135-136.
 
 ## Validation
 

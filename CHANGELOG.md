@@ -10,7 +10,7 @@ annotated Git tags from the canonical repository.
 - Raised qualified OpenCode HTTP ceiling from `1.18.28` to official npm
   `opencode-ai` `1.18.29` on the `opencode.server` axis. Compatible-extension:
   selected HTTP/SSE route files and OpenAPI byte-identical; only unmapped
-  Codex OAuth model-id filtering changed. Research 292. g05.037 cards 134-135.
+  Codex OAuth model-id filtering changed. Research 292. g05.037 cards 135-136.
 
 ### Added
 - bind one Contract 063 `RegisteredToolPreparation` into `claude-agent.sdk`

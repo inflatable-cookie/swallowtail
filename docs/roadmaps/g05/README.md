@@ -30,7 +30,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete; the per-turn audit note awaits reserved prune | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-034 and 064-076 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | Kimi local server and Antigravity stopped honestly; card 135 qualified OpenCode HTTP `surface-19` through `1.18.29`; `1.18.30` remains `UnverifiedNewer` | Contract 029 identity-before-claim; Research 282-285 and 292; current-main validation | `g05.037` cards 134-135 |
+| Keep production route versions current one family at a time. | Kimi local server and Antigravity stopped honestly; card 136 qualified OpenCode HTTP `surface-19` through `1.18.29`; `1.18.30` remains `UnverifiedNewer` | Contract 029 identity-before-claim; Research 282-285 and 292; current-main validation | `g05.037` cards 135-136 |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
 | Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04 | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | `g05.021`, cards 050-052 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
@@ -49,7 +49,7 @@ enforcement.
 
 ## Planned Next Roadmaps
 
-- [g05.037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 135 qualified `surface-19` through `1.18.29`
+- [g05.037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 136 qualified `surface-19` through `1.18.29`
 - [g05.036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; cards 122 and 123 compiled; ready on card 121's merge and the tag; first lane on the simplified shape
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
 - [g05.034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze
@@ -105,7 +105,7 @@ C and J as promotable, while card 066 stopped on the shared observation decision
 card 068 and card 069 are merged; card 070's gate is promoted into Contract
 061 and runtime baseline card 073 is merged. Cards 074 and 075 are ready for
 Candidates I and E. Card 076's compound-acknowledgement design is complete;
-card 079 realizes it before card 034. g05.037 cards 134-135 qualified
+card 079 realizes it before card 034. g05.037 cards 135-136 qualified
 OpenCode HTTP `surface-19` through official `1.18.29`. g05.028 cards 077-078
 remain the `1.18.28` identity/claim.
 Milestone 035 is planned and blocked on independent review plus operator
@@ -427,7 +427,7 @@ identity.
 
 ## Milestones
 
-- [037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 135 qualified `surface-19` through `1.18.29`
+- [037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 136 qualified `surface-19` through `1.18.29`
 - [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; cards 122 and 123 compiled; ready on card 121's merge and the tag; first lane on the simplified shape
 - [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; Batch A promoted; card114 leads shared kernel implementation
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze

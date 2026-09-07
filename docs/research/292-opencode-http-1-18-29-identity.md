@@ -102,7 +102,7 @@ No new public operation or adapter control is required.
 - keep decoder specimen `opencode-1.14.48`; and
 - use synthetic `1.18.30` as the later `UnverifiedNewer` point after claim.
 
-This identity record changes no production claim. Serial card 135 applies
+This identity record changes no production claim. Serial card 136 applies
 the admitted segment.
 
 ## Sources

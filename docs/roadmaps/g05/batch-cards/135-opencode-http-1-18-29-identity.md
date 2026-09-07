@@ -1,6 +1,6 @@
-# 134 OpenCode HTTP 1.18.29 Identity
+# 135 OpenCode HTTP 1.18.29 Identity
 
-Status: complete; compatible extension admitted through `1.18.29`; production claims unchanged; card 135 remains serial
+Status: complete; compatible extension admitted through `1.18.29`; production claims unchanged; card 136 remains serial
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07
@@ -31,7 +31,7 @@ without changing production claims or executing provider work.
    commit. Add pre-commit stables as further hops under Contract 029; a stable
    published after the identity commit remains `UnverifiedNewer`.
 7. Record one outcome: compatible extension, private milestone, new facade, or
-   stop. Name card 135 only for an admitted segment.
+   stop. Name card 136 only for an admitted segment.
 
 ## Out Of Scope
 
@@ -66,7 +66,7 @@ production claim edited in this commit.
 
 ## Auto-Continuation
 
-Yes, to card 135 only after an admitted segment is recorded.
+Yes, to card 136 only after an admitted segment is recorded.
 
 ## Stop Conditions
 
@@ -81,5 +81,5 @@ Compatible extension admitted. Research 292 and the secret-free
 `1.18.28` → `1.18.29`, exact npm and implementation-source tree deltas, and
 unmapped Codex OAuth catalogue filtering in `plugin/openai/codex.ts`.
 Selected route declarations, handlers, and OpenAPI remain byte-identical.
-Production claims and historical fixtures are unchanged. Serial card 135 may
+Production claims and historical fixtures are unchanged. Serial card 136 may
 apply the proved `surface-19` extension.

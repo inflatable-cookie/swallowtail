@@ -101,16 +101,31 @@ sent a post-close callback.
 Frames must contain no credentials, tokens, or host paths. `1.0.4` and `1.0.5`
 are separate evidence segments; do not merge them.
 
+## Evidence gate scope
+
+Desktop (Acowtancy) is the owner who runs this gate under its existing
+isolated-testing authorization. While this packet is live, the following
+`grok-build.acp` cells are `evidence_pending` under the Feature Matrix Rule;
+no producer card is named because the probe outcome is outstanding:
+
+- grok-build.acp client_mcp_servers
+- grok-build.acp consumer_tool_exchange
+- grok-build.acp registered_tools
+- grok-build.acp selected_skill_bundle
+
 ## What to send back
 
 Return both capsules (or the named defect that blocked a rerun). Chatterbox
-applies the card 128 decision tree:
+applies the card 128 decision tree, converting each verdict into the feature
+matrix cross kind:
 
-- `accepts_client_mcp`: card 118 proceeds under Research 289
-- `ignores_client_mcp` or `rejects_client_mcp`: operator chooses native Grok
-  MCP mediation or an explicitly withheld Grok MCP/tools cell
+- `accepts_client_mcp`: `producer_gap` with card 118 under Research 289
+- `ignores_client_mcp` or `rejects_client_mcp`: `provider_limitation` with
+  the returned capsule as frozen evidence, or the operator's native Grok MCP
+  mediation or explicitly withheld-cell decision as a `producer_gap` with the
+  card that builds it
 - `inconclusive`: one authorized rerun with the named defect fixed; a second
-  inconclusive is treated as `ignores_client_mcp`
+  inconclusive is treated as `ignores_client_mcp` and follows that outcome
 
 No Swallowtail adapter, claim, contract, tag, or release action follows from
 this packet alone.

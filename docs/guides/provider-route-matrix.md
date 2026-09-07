@@ -53,15 +53,20 @@ The five shared-harness capability columns are deliberately separate:
 
 `cross_kind` and `cross_ref` are JSON objects immediately before `notes` in
 the CSV. Their keys are the unavailable feature columns in that row. Each
-value is either `provider_limitation` with an anchored row in the Card129
-[frozen evidence ledger](../research/290-feature-matrix-cross-evidence.md),
-whose basis is itself an anchored Research 281 route-ledger line, or
-`producer_gap` with an existing non-complete g05 batch-card path. Prepared
-integration guides are not frozen evidence. Producer-gap rows carry an
-explicit `Card129 producer-gap reasons:` marker in `notes`; a withheld cell
-uses the same producer-gap path and reason. The route-matrix check rejects
-missing, extra, stale, unanchored, guide-only, insufficient, or complete-card
-references.
+value is exactly one of: `provider_limitation` with an anchored row in the
+Card129 [frozen evidence ledger](../research/290-feature-matrix-cross-evidence.md),
+whose basis is itself an anchored Research 281 route-ledger line;
+`producer_gap` with an existing non-complete g05 batch-card path; or
+`evidence_pending` with a live hand-off packet under `docs/handoffs/` —
+never a card, because cards complete. An evidence-pending packet must name
+the owner who runs the gate and the decision tree converting each outcome
+into `producer_gap` or `provider_limitation`, and must list the cells it
+investigates; evidence pending is unavailable to a cell no live packet
+covers. Prepared integration guides are not frozen evidence. Producer-gap
+rows carry an explicit `Card129 producer-gap reasons:` marker in `notes`; a
+withheld cell uses the same producer-gap path and reason. The route-matrix
+check rejects missing, extra, stale, unanchored, guide-only, insufficient,
+complete-card, or non-live-packet references.
 
 Every row has two public paths:
 

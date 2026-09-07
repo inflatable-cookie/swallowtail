@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 CLASSIFICATION_COLUMNS = ("cross_kind", "cross_ref")
-ALLOWED_KINDS = {"provider_limitation", "producer_gap"}
+ALLOWED_KINDS = {"provider_limitation", "producer_gap", "evidence_pending"}
 PINNED_CONSUMERS = (
     ("Bovine Claude", "claude-agent.sdk"),
     ("Bovine Codex", "codex.app-server"),
@@ -21,6 +21,8 @@ PINNED_CONSUMERS = (
 ROUTE_SPLIT = re.compile(r"\s*(?:;|\+)\s*")
 CARD_STATUS = re.compile(r"^Status:\s*(.+)$", re.MULTILINE)
 REASON_MARKER = "Card129 producer-gap reasons:"
+HANDOFF_PACKET = re.compile(r"^docs/handoffs/[A-Za-z0-9._-]+\.md$")
+GATE_SCOPE_HEADING = "## Evidence gate scope"
 EVIDENCE_LEDGER = Path("docs/research/290-feature-matrix-cross-evidence.tsv")
 EVIDENCE_DOC = Path("docs/research/290-feature-matrix-cross-evidence.md")
 LINE_REF = re.compile(r"^(?P<path>[^#]+)#L(?P<line>[1-9][0-9]*)$")
@@ -135,6 +137,49 @@ def producer_card(root: Path, ref: str) -> None:
         fail(f"producer_gap references a complete card: {ref}")
 
 
+def evidence_packet(root: Path, ref: str, row_route: str, feature: str) -> None:
+    """Guard the evidence_pending cross kind per the Feature Matrix Rule.
+
+    The reference must be a live hand-off packet under ``docs/handoffs/`` —
+    never a card, because cards complete. That packet must name the owner who
+    runs the gate, state the decision tree converting each outcome into
+    ``producer_gap`` or ``provider_limitation``, and list the cells it
+    investigates; evidence pending is unavailable to any cell no live packet
+    covers.
+    """
+    if HANDOFF_PACKET.fullmatch(ref) is None or not (root / ref).is_file():
+        fail(f"evidence_pending must reference an existing docs/handoffs packet: {ref}")
+    text = (root / ref).read_text(encoding="utf-8")
+    status = re.search(r"(?m)^status:\s*([A-Za-z0-9_-]+)\s*$", text)
+    if status is None or status.group(1).casefold() != "ready":
+        fail(f"evidence_pending must reference a live (status: ready) packet: {ref}")
+    lowered = text.casefold()
+    if "owner" not in lowered:
+        fail(f"evidence_pending packet must name the owner who runs the gate: {ref}")
+    if "producer_gap" not in lowered or "provider_limitation" not in lowered:
+        fail(
+            "evidence_pending packet must state the outcome decision tree into "
+            f"producer_gap or provider_limitation: {ref}"
+        )
+    scoped_cells: set[tuple[str, str]] = set()
+    in_scope = False
+    for line in text.splitlines():
+        if line.startswith("## "):
+            in_scope = line.strip() == GATE_SCOPE_HEADING
+        elif in_scope and line.startswith("- "):
+            tokens = line[2:].split()
+            if len(tokens) >= 2:
+                scoped_cells.add((tokens[0], tokens[1]))
+    if not any(
+        (route_token, feature) in scoped_cells
+        for route_token in ROUTE_SPLIT.split(row_route)
+    ):
+        fail(
+            f"evidence_pending cell {row_route} {feature} is not in the "
+            f"packet gate scope: {ref}"
+        )
+
+
 def load_matrix(root: Path, matrix: Path) -> tuple[list[dict[str, str]], list[str]]:
     with matrix.open(newline="", encoding="utf-8") as source:
         reader = csv.DictReader(source)
@@ -168,8 +213,10 @@ def load_matrix(root: Path, matrix: Path) -> tuple[list[dict[str, str]], list[st
                 fail(f"{route} {feature} has an empty cross_ref")
             if kind == "provider_limitation":
                 evidence_ledger(root, route, feature, ref)
-            else:
+            elif kind == "producer_gap":
                 producer_card(root, ref)
+            else:
+                evidence_packet(root, ref, route, feature)
             if row[feature].strip().casefold() == "withheld" and kind != "producer_gap":
                 fail(f"{route} {feature} is withheld but is not a producer_gap")
         reasons = producer_gap_reasons(row["notes"], route)

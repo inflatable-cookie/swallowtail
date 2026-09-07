@@ -21,17 +21,29 @@ annotated Git tags from the canonical repository.
   `mcpServers` list, with the host-resolved courier path, the fixed wire tag
   and its one-shot rendezvous, and the allowlisted environment as ACP's
   `{name, value}` list; Grok spawns that child and Swallowtail never holds its
-  `ProcessHandle`. Ready follows the kernel-observed authenticated connect, and
-  close joins the lease and the shared listener. Omission is byte-identical: an
-  open without a binding still sends `mcpServers: []`. Contract 061 stays
+  `ProcessHandle`. The lease is bound to one exact ACP turn attempt named by
+  `with_turn`, which is Contract 063's one active provider turn per server
+  lease: while that lease is live no other turn may start, cancellation and the
+  session-cancel path freeze admission first, and turn terminal, cancellation,
+  or deadline settles the lease with its exact cause before the consumer sees
+  the terminal outcome, so no call dispatches under a finished turn. The whole
+  registered open is bounded by `with_open_deadline`, so a provider that holds
+  stdio open without answering `session/new` cannot strand a minted lease or
+  its listener. Every failure after the lease is minted closes it explicitly
+  and reports its cleanup truth: a failed registered close is never a clean
+  session close and retains the working resource and credential rather than
+  returning them for reuse. Omission is byte-identical: an open without a
+  binding still sends `mcpServers: []`. Contract 061 stays
   `Unqualified / real_route_gate_pending` with the reason "callable seam
   present; live gate pending", and no feature-matrix cell moves. Provider-free
   fixtures only, over the real courier, kernel, lease, and dispatcher: courier
   declaration, namespaced `tools/list` identity and schema, one mediated
-  round-trip, revoked-before-dispatch, unknown tool name, cancel, close, and
-  fail-closed transport, kind, identity, host, deadline, and unspawnable-command
-  paths. No live Grok, credential, provider call, or support claim. g05.035
-  card 118.
+  round-trip inside a mounted ACP turn, revoked-before-dispatch, unknown tool
+  name, post-terminal and post-cancel refusal, unbound-turn refusal, unanswered
+  open bounded by its deadline, retained lease on unjoined cleanup, close, and
+  fail-closed transport, kind, identity, host, turn, deadline, and
+  unspawnable-command paths. No live Grok, credential, provider call, or
+  support claim. g05.035 card 118.
 - bind one Contract 063 `RegisteredToolPreparation` into `claude-agent.sdk`
   open through `ClaudeAgentSdkSessionPreparation::with_registered_tools`
   (host-resolved courier path and Card 084 env) and

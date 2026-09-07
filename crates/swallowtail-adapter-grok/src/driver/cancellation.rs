@@ -1,13 +1,21 @@
 struct SessionCancellation {
     connection: Arc<AcpConnection>,
     requested: AtomicBool,
+    registered: Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>,
+    services: HostServices,
 }
 
 impl SessionCancellation {
-    fn new(connection: Arc<AcpConnection>) -> Self {
+    fn new(
+        connection: Arc<AcpConnection>,
+        registered: Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>,
+        services: HostServices,
+    ) -> Self {
         Self {
             connection,
             requested: AtomicBool::new(false),
+            registered,
+            services,
         }
     }
 }
@@ -23,6 +31,12 @@ impl CancellationControl for SessionCancellation {
             if already {
                 Ok(CancellationAcknowledgement::AlreadyRequested)
             } else {
+                // Cancellation freezes registered admission before the
+                // provider is asked to stop, so no further call is admitted
+                // while the turn settles.
+                if let Some(registered) = self.registered.as_ref() {
+                    registered.freeze(&self.services).await;
+                }
                 self.connection.cancel_session().await?;
                 Ok(CancellationAcknowledgement::Requested)
             }
@@ -35,6 +49,8 @@ struct TurnCancellation {
     session_id: String,
     turn: Arc<ActiveTurn>,
     requested: AtomicBool,
+    registered: Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>,
+    services: HostServices,
 }
 
 impl CancellationControl for TurnCancellation {
@@ -49,6 +65,11 @@ impl CancellationControl for TurnCancellation {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
             self.turn.mark_cancelled();
+            // Freeze before the provider is told to cancel: admission closes
+            // ahead of settling, never after the turn has already stopped.
+            if let Some(registered) = self.registered.as_ref() {
+                registered.freeze(&self.services).await;
+            }
             self.connection
                 .notify("session/cancel", json!({"sessionId": self.session_id}))
                 .await?;

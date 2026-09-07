@@ -41,9 +41,7 @@ pub use carrier::{
     GrokRegisteredToolCarrier,
 };
 pub use declaration::GrokAcpMcpServerDeclaration;
-pub(crate) use open::{
-    GrokRegisteredToolSession, PendingRegisteredOpen, close_registered_lease, prepare_registered,
-};
+pub(crate) use open::{GrokRegisteredToolSession, PendingRegisteredOpen, prepare_registered};
 pub use projection::{
     GROK_ACP_MEDIATION_KIND_SEMANTIC_ID, GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE,
     GROK_ACP_REGISTERED_TOOL_SOURCE, grok_build_acp_registered_tool_qualification,

@@ -9,6 +9,48 @@
 const REGISTERED_NAMESPACE: &str = "desktop";
 const REGISTERED_LOCAL_NAME: &str = "reconcile";
 const REGISTERED_OPEN_DEADLINE_TICKS: u64 = 10_000_000_000;
+const REGISTERED_TURN: &str = "grok-registered-turn";
+
+struct BlockingDispatcher {
+    entered: Arc<std::sync::atomic::AtomicBool>,
+    release: Arc<std::sync::atomic::AtomicBool>,
+    waker: Arc<Mutex<Option<std::task::Waker>>>,
+}
+
+impl swallowtail_runtime::RegisteredToolDispatcher for BlockingDispatcher {
+    fn dispatch(
+        &self,
+        _call: swallowtail_runtime::RegisteredToolCall,
+        _context: swallowtail_runtime::RegisteredToolDispatchContext,
+    ) -> BoxFuture<'_, Result<swallowtail_runtime::RegisteredToolOutcome, RuntimeFailure>> {
+        let entered = Arc::clone(&self.entered);
+        let release = Arc::clone(&self.release);
+        let waker = Arc::clone(&self.waker);
+        Box::pin(std::future::poll_fn(move |context| {
+            use std::task::Poll;
+            entered.store(true, Ordering::SeqCst);
+            if release.load(Ordering::SeqCst) {
+                return Poll::Ready(Err(fixture_failure()));
+            }
+            *waker.lock().expect("blocking dispatcher waker lock") = Some(context.waker().clone());
+            Poll::Pending
+        }))
+    }
+}
+
+impl BlockingDispatcher {
+    fn release(&self) {
+        self.release.store(true, Ordering::SeqCst);
+        if let Some(waker) = self
+            .waker
+            .lock()
+            .expect("blocking dispatcher waker lock")
+            .take()
+        {
+            waker.wake();
+        }
+    }
+}
 
 struct CountingDispatcher {
     calls: Arc<AtomicUsize>,
@@ -86,6 +128,21 @@ impl CourierClient {
             "{{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{arguments}}}}}"
         );
         self.request(request.as_bytes())
+    }
+
+    /// Issues one call that may get no answer at all.
+    ///
+    /// After the lease settles the courier may exit rather than answer, which
+    /// is still a refusal: what matters is that no result is delivered and no
+    /// dispatch happens.
+    fn try_call_tool(&self, name: &str, arguments: &str) -> Option<String> {
+        let request = format!(
+            "{{\"jsonrpc\":\"2.0\",\"id\":4,\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{arguments}}}}}"
+        );
+        let mut bytes = request.into_bytes();
+        bytes.push(b'\n');
+        block_on(self.process.write_stdin(ProcessInputChunk::new(bytes))).ok()?;
+        self.read_stdout_line()
     }
 
     fn read_stdout_line(&self) -> Option<String> {
@@ -296,6 +353,10 @@ struct OpenedRegisteredRoute {
     courier: CourierClient,
 }
 
+fn registered_turn_id() -> RuntimeTurnId {
+    RuntimeTurnId::new(REGISTERED_TURN).expect("turn")
+}
+
 fn registered_open_deadline() -> Deadline {
     Deadline::at(MonotonicInstant::from_ticks(REGISTERED_OPEN_DEADLINE_TICKS))
 }
@@ -308,14 +369,37 @@ fn registered_route_services(
     executable: &swallowtail_runtime::ExecutableRef,
     environment: &EnvironmentRef,
 ) -> (swallowtail_host_local::LocalHostServices, HostServices) {
-    let local = swallowtail_host_local::LocalProcessHost::builder(
+    registered_route_services_with_budget(
+        host_id,
+        fixture,
+        dispatcher,
+        courier_path,
+        executable,
+        environment,
+        None,
+    )
+}
+
+fn registered_route_services_with_budget(
+    host_id: &ExecutionHostId,
+    fixture: &FixtureHost,
+    dispatcher: Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+    courier_path: &std::path::Path,
+    executable: &swallowtail_runtime::ExecutableRef,
+    environment: &EnvironmentRef,
+    cleanup_budget: Option<std::time::Duration>,
+) -> (swallowtail_host_local::LocalHostServices, HostServices) {
+    let mut builder = swallowtail_host_local::LocalProcessHost::builder(
         swallowtail_host_local::LocalProcessLimits::default(),
     )
     .approve_executable(executable.clone(), courier_path)
     .approve_environment(environment.clone(), [("PATH".into(), "/usr/bin".into())])
     .with_registered_tool_dispatcher(dispatcher)
-    .with_registered_tool_clock(Arc::new(fixture.clone()))
-    .build_services(host_id.clone());
+    .with_registered_tool_clock(Arc::new(fixture.clone()));
+    if let Some(budget) = cleanup_budget {
+        builder = builder.with_registered_tool_cleanup_budget(budget);
+    }
+    let local = builder.build_services(host_id.clone());
     let services = local
         .services()
         .clone()
@@ -333,20 +417,47 @@ fn open_registered_route(
     dispatcher: Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
     admission: Arc<swallowtail_testkit::ScriptedAdmissionPort>,
 ) -> OpenedRegisteredRoute {
+    open_registered_route_for(host_name, Scenario::Success, dispatcher, admission, None)
+}
+
+fn open_registered_route_for(
+    host_name: &str,
+    scenario: Scenario,
+    dispatcher: Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+    admission: Arc<swallowtail_testkit::ScriptedAdmissionPort>,
+    cleanup_budget: Option<std::time::Duration>,
+) -> OpenedRegisteredRoute {
+    match try_open_registered_route(host_name, scenario, dispatcher, admission, cleanup_budget) {
+        Ok(opened) => opened,
+        Err(boxed) => panic!("registered session opens: {}", boxed.0.diagnostic().code()),
+    }
+}
+
+fn try_open_registered_route(
+    host_name: &str,
+    scenario: Scenario,
+    dispatcher: Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+    admission: Arc<swallowtail_testkit::ScriptedAdmissionPort>,
+    cleanup_budget: Option<std::time::Duration>,
+) -> Result<
+    OpenedRegisteredRoute,
+    Box<(RuntimeFailure, swallowtail_host_local::LocalHostServices)>,
+> {
     let host_id = ExecutionHostId::new(host_name).expect("host");
     let selected = selection(host_id.clone());
-    let fixture = FixtureHost::new(Scenario::Success);
+    let fixture = FixtureHost::new(scenario);
     let executable =
         swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
     let environment =
         EnvironmentRef::new("grok.fixture.registered-environment").expect("environment");
-    let (local, services) = registered_route_services(
+    let (local, services) = registered_route_services_with_budget(
         &host_id,
         &fixture,
         dispatcher,
         courier_binary(),
         &executable,
         &environment,
+        cleanup_budget,
     );
     let preparation = registered_preparation(
         host_id,
@@ -359,30 +470,33 @@ fn open_registered_route(
         swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
             .expect("mediated stdio selection qualifies")
             .with_host(local.clone())
-            .with_open_deadline(registered_open_deadline());
+            .with_open_deadline(registered_open_deadline())
+            .with_turn(registered_turn_id());
     let driver = GrokAcpDriver::new(
         EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
         selected.credential,
     )
     .with_registered_tools(binding);
-    let session = block_on(driver.open_session(
+    let session = match block_on(driver.open_session(
         selected.plan,
         registered_open_request(selected.resource),
         services.clone(),
-    ))
-    .expect("registered session opens");
+    )) {
+        Ok(session) => session,
+        Err(error) => return Err(Box::new((error, local))),
+    };
     let courier = CourierClient {
         process: fixture
             .spawned_registered_courier()
             .expect("Grok spawned the declared courier child"),
     };
-    OpenedRegisteredRoute {
+    Ok(OpenedRegisteredRoute {
         session,
         fixture,
         local,
         services,
         courier,
-    }
+    })
 }
 
 fn registered_open_request(resource: WorkingResourceRef) -> OpenSessionRequest {
@@ -759,7 +873,8 @@ fn a_registered_open_without_a_host_composition_fails_typed() {
     let binding =
         swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
             .expect("qualify does not require the host composition")
-            .with_open_deadline(registered_open_deadline());
+            .with_open_deadline(registered_open_deadline())
+            .with_turn(registered_turn_id());
     let driver = GrokAcpDriver::new(
         EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
         selected.credential,
@@ -813,7 +928,8 @@ fn a_registered_open_without_a_deadline_fails_typed() {
     let binding =
         swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
             .expect("qualify does not require a deadline")
-            .with_host(local);
+            .with_host(local)
+            .with_turn(registered_turn_id());
     let driver = GrokAcpDriver::new(
         EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
         selected.credential,
@@ -865,7 +981,8 @@ fn an_unspawnable_courier_command_fails_typed_before_grok_starts() {
         swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
             .expect("an unspawnable command still qualifies")
             .with_host(local)
-            .with_open_deadline(registered_open_deadline());
+            .with_open_deadline(registered_open_deadline())
+            .with_turn(registered_turn_id());
     let driver = GrokAcpDriver::new(
         EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
         selected.credential,
@@ -893,4 +1010,285 @@ fn host_started_a_process(host: &FixtureHost) -> bool {
         .lock()
         .expect("process lock poisoned")
         .is_some()
+}
+
+/// Drives one bounded courier `tools/call` on its own thread.
+///
+/// The dispatcher blocks, so the call stays outstanding while the test
+/// observes the lifecycle around it.
+struct OutstandingCall {
+    handle: std::thread::JoinHandle<()>,
+}
+
+impl OutstandingCall {
+    fn issue(courier: &CourierClient) -> Self {
+        let process = Arc::clone(&courier.process);
+        let name = registered_tool_id().to_string();
+        Self {
+            handle: std::thread::spawn(move || {
+                let client = CourierClient { process };
+                let request = format!(
+                    "{{\"jsonrpc\":\"2.0\",\"id\":9,\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{{}}}}}}"
+                );
+                let mut bytes = request.into_bytes();
+                bytes.push(b'\n');
+                if block_on(client.process.write_stdin(ProcessInputChunk::new(bytes))).is_ok() {
+                    let _ = client.read_stdout_line();
+                }
+            }),
+        }
+    }
+
+    fn join(self) {
+        let _ = self.handle.join();
+    }
+}
+
+fn wait_until(condition: impl Fn() -> bool, what: &str) {
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+    while !condition() {
+        assert!(std::time::Instant::now() < deadline, "never observed {what}");
+        std::thread::sleep(std::time::Duration::from_millis(5));
+    }
+}
+
+#[test]
+fn the_bound_registered_turn_settles_its_lease_at_the_turn_terminal() {
+    let calls = Arc::new(AtomicUsize::new(0));
+    let mut opened = open_registered_route_for(
+        "fixture.host.grok.registered-turn-terminal",
+        Scenario::RegisteredTurn,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        None,
+    );
+    opened.courier.handshake();
+    // One real ACP turn, on the exact attempt the lease was opened for.
+    let mut turn = start(
+        opened.session.as_mut(),
+        opened.services.clone(),
+        REGISTERED_TURN,
+    );
+    let called = opened
+        .courier
+        .call_tool(&registered_tool_id().to_string(), r#"{"path":"in-turn"}"#);
+    assert!(
+        called.contains("from-dispatcher"),
+        "the bound turn admits its registered call: {called}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+    opened.fixture.complete_turn();
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("the turn publishes one terminal outcome"),
+    );
+    assert_eq!(terminal.status(), &TerminalStatus::Completed);
+    // Terminal settled the lease: the listener is joined and a later call
+    // cannot dispatch under the finished turn.
+    wait_until(
+        || opened.local.registered_tool_lease_count() == 0,
+        "the registered lease settling at turn terminal",
+    );
+    assert_eq!(opened.local.operation_bridge_listener_count(), 0);
+    let after_terminal = opened
+        .courier
+        .try_call_tool(&registered_tool_id().to_string(), r#"{"path":"post-terminal"}"#);
+    assert!(
+        after_terminal
+            .as_deref()
+            .is_none_or(|answer| !answer.contains("from-dispatcher")),
+        "a post-terminal call must not dispatch: {after_terminal:?}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+    close_registered_route(opened);
+}
+
+#[test]
+fn cancelling_the_bound_registered_turn_freezes_admission_and_settles_cancelled() {
+    let calls = Arc::new(AtomicUsize::new(0));
+    let mut opened = open_registered_route_for(
+        "fixture.host.grok.registered-turn-cancel",
+        Scenario::Cancellation,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        None,
+    );
+    opened.courier.handshake();
+    let mut turn = start(
+        opened.session.as_mut(),
+        opened.services.clone(),
+        REGISTERED_TURN,
+    );
+    block_on(turn.cancellation().request()).expect("turn cancellation requested");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("the cancelled turn publishes one terminal outcome"),
+    );
+    assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
+    wait_until(
+        || opened.local.registered_tool_lease_count() == 0,
+        "the registered lease settling at turn cancellation",
+    );
+    let after_cancel = opened
+        .courier
+        .try_call_tool(&registered_tool_id().to_string(), r#"{"path":"post-cancel"}"#);
+    assert!(
+        after_cancel
+            .as_deref()
+            .is_none_or(|answer| !answer.contains("from-dispatcher")),
+        "a post-cancel call must not dispatch: {after_cancel:?}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 0);
+    close_registered_route(opened);
+}
+
+#[test]
+fn a_turn_other_than_the_bound_one_is_refused_while_the_lease_is_live() {
+    let mut opened = open_registered_route(
+        "fixture.host.grok.registered-turn-mismatch",
+        Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+    );
+    let request = TurnRequest::new(
+        RuntimeTurnId::new("grok-unbound-turn").expect("turn"),
+        OperationContent::new("private fixture prompt").expect("prompt"),
+    );
+    let Err(error) = block_on(
+        opened
+            .session
+            .start_turn(request, opened.services.clone()),
+    ) else {
+        panic!("an unbound turn must not run beside a live registered lease");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.grok.acp.registered_tool.turn_mismatch"
+    );
+    assert_eq!(opened.local.registered_tool_lease_count(), 1);
+    close_registered_route(opened);
+}
+
+#[test]
+fn a_registered_open_the_provider_never_answers_fails_on_its_own_deadline() {
+    let Err(boxed) = try_open_registered_route(
+        "fixture.host.grok.registered-open-deadline",
+        Scenario::RegisteredOpenUnanswered,
+        Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        None,
+    ) else {
+        panic!("an unanswered session/new must not hang a registered open");
+    };
+    let (error, local) = *boxed;
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.grok.acp.registered_tool.open_deadline"
+    );
+    // The bounded open joined the partial resources it created.
+    assert_eq!(local.registered_tool_lease_count(), 0);
+    assert_eq!(local.operation_bridge_listener_count(), 0);
+}
+
+#[test]
+fn a_registered_open_without_a_bound_turn_fails_typed() {
+    let host_id = ExecutionHostId::new("fixture.host.grok.registered-turn-missing").expect("host");
+    let selected = selection(host_id.clone());
+    let fixture = FixtureHost::new(Scenario::Success);
+    let executable =
+        swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
+    let environment =
+        EnvironmentRef::new("grok.fixture.registered-environment").expect("environment");
+    let (local, services) = registered_route_services(
+        &host_id,
+        &fixture,
+        Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+        courier_binary(),
+        &executable,
+        &environment,
+    );
+    let preparation = registered_preparation(
+        host_id,
+        swallowtail_testkit::fixture_admission(Arc::new(
+            swallowtail_testkit::ScriptedAdmissionPort::current(),
+        )),
+        executable,
+        environment,
+        RegisteredFixtureInput::default(),
+    );
+    let binding =
+        swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
+            .expect("qualify does not require a turn")
+            .with_host(local)
+            .with_open_deadline(registered_open_deadline());
+    let driver = GrokAcpDriver::new(
+        EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
+        selected.credential,
+    )
+    .with_registered_tools(binding);
+    let Err(error) = block_on(driver.open_session(
+        selected.plan,
+        registered_open_request(selected.resource),
+        services,
+    )) else {
+        panic!("registered open requires the exact turn its lease serves");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.grok.acp.registered_tool.turn_missing"
+    );
+    assert!(
+        !host_started_a_process(&fixture),
+        "a refused registered open never spawns Grok"
+    );
+}
+
+#[test]
+fn a_failed_registered_cleanup_is_never_a_clean_session_close() {
+    let blocking = Arc::new(BlockingDispatcher {
+        entered: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        release: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        waker: Arc::new(Mutex::new(None)),
+    });
+    let opened = open_registered_route_for(
+        "fixture.host.grok.registered-cleanup-failed",
+        Scenario::Success,
+        Arc::clone(&blocking) as Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        Some(std::time::Duration::from_millis(50)),
+    );
+    opened.courier.handshake();
+    let call = OutstandingCall::issue(&opened.courier);
+    wait_until(
+        || blocking.entered.load(Ordering::SeqCst),
+        "the dispatcher entering its blocking call",
+    );
+    let fixture = opened.fixture.clone();
+    let local = opened.local.clone();
+    let services = opened.services.clone();
+    let outcome = block_on(close_session(opened.session, services));
+    assert!(
+        matches!(outcome, CleanupOutcome::Failed(_)),
+        "an unjoined registered lease is never a clean session close: {outcome:?}"
+    );
+    // A retained bridge lease means the operation is not over: the working
+    // resource and the credential stay held rather than returned for reuse.
+    assert_eq!(fixture.resource_releases.load(Ordering::SeqCst), 0);
+    assert_eq!(fixture.credential_releases.load(Ordering::SeqCst), 0);
+    assert_eq!(
+        local.registered_tool_lease_count(),
+        1,
+        "the host retains the lease it could not join"
+    );
+    blocking.release();
+    call.join();
 }

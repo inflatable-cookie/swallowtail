@@ -20,7 +20,7 @@ struct GrokSessionHandle {
     services: HostServices,
     resource: Option<ResourceLease>,
     credential: Option<CredentialLease>,
-    registered: Option<crate::registered_tool::GrokRegisteredToolSession>,
+    registered: Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>,
     active: ActiveSlot,
 }
 
@@ -53,6 +53,19 @@ impl InteractiveSessionHandle for GrokSessionHandle {
         Box::pin(async move {
             services.require_execution_host(&self.execution_host_id)?;
             validate_turn(&request, &services)?;
+            // One active provider turn per server lease. Grok spawns the
+            // courier at session setup, so while that lease is live only the
+            // turn it was bound to may start; any other turn would run beside
+            // a connected courier under a binding its own turn never made.
+            if let Some(registered) = self.registered.as_ref()
+                && !registered.is_settled()
+                && request.turn_id() != registered.turn()
+            {
+                return Err(failure(
+                    "swallowtail.grok.acp.registered_tool.turn_mismatch",
+                    "Grok Build ACP admits only the bound registered turn while its registered lease is live",
+                ));
+            }
             reap_finished(&self.active).await?;
             if self
                 .active
@@ -108,40 +121,50 @@ impl InteractiveSessionHandle for GrokSessionHandle {
             let deadline = request
                 .deadline()
                 .map(|deadline| services.time().expect("validated time").wait_until(deadline));
+            let registered_turn = self.registered.clone();
+            let registered_services = services.clone();
             let task = match task_service.spawn(
                 scope,
                 Box::pin(async move {
-                    if let Some(mut deadline) = deadline {
-                        let mut response = Box::pin(response);
-                        let result = std::future::poll_fn(|context| {
-                            use std::future::Future;
-                            use std::task::Poll;
-                            if let Poll::Ready(response) = response.as_mut().poll(context) {
-                                Poll::Ready(Some(response))
-                            } else if deadline.as_mut().poll(context).is_ready() {
-                                Poll::Ready(None)
-                            } else {
-                                Poll::Pending
-                            }
-                        })
-                        .await;
-                        match result {
-                            Some(Ok(response)) => finish_prompt_response(&prompt_turn, &response),
-                            Some(Err(error)) => prompt_turn.fail(&error),
-                            None => {
-                                prompt_turn.timeout();
-                                let _ = connection
-                                    .notify(
-                                        "session/cancel",
-                                        json!({"sessionId": prompt_turn.session_id()}),
-                                    )
-                                    .await;
-                            }
+                    let result = match deadline {
+                        Some(mut deadline) => {
+                            let mut response = Box::pin(response);
+                            std::future::poll_fn(|context| {
+                                use std::future::Future;
+                                use std::task::Poll;
+                                if let Poll::Ready(response) = response.as_mut().poll(context) {
+                                    Poll::Ready(Some(response))
+                                } else if deadline.as_mut().poll(context).is_ready() {
+                                    Poll::Ready(None)
+                                } else {
+                                    Poll::Pending
+                                }
+                            })
+                            .await
                         }
-                    } else {
-                        match response.await {
-                            Ok(response) => finish_prompt_response(&prompt_turn, &response),
-                            Err(error) => prompt_turn.fail(&error),
+                        None => Some(response.await),
+                    };
+                    // Terminal, cancellation, and deadline freeze registered
+                    // admission and settle the lease before the consumer sees
+                    // this turn's terminal outcome, so no registered call can
+                    // dispatch under a finished turn. The cleanup truth is
+                    // retained on the lease and reported by session close.
+                    if let Some(registered) = registered_turn.as_ref() {
+                        registered.freeze(&registered_services).await;
+                        let cause = registered_cleanup_cause(&prompt_turn, result.as_ref());
+                        let _ = registered.settle(&registered_services, cause).await;
+                    }
+                    match result {
+                        Some(Ok(response)) => finish_prompt_response(&prompt_turn, &response),
+                        Some(Err(error)) => prompt_turn.fail(&error),
+                        None => {
+                            prompt_turn.timeout();
+                            let _ = connection
+                                .notify(
+                                    "session/cancel",
+                                    json!({"sessionId": prompt_turn.session_id()}),
+                                )
+                                .await;
                         }
                     }
                     connection.clear_active_turn(&prompt_turn);
@@ -169,6 +192,8 @@ impl InteractiveSessionHandle for GrokSessionHandle {
                     session_id: self.provider_id.clone(),
                     turn: Arc::clone(&turn),
                     requested: AtomicBool::new(false),
+                    registered: self.registered.clone(),
+                    services: services.clone(),
                 },
                 active: Arc::clone(&self.active),
             }) as Box<dyn TurnHandle>)
@@ -220,27 +245,56 @@ impl InteractiveSessionHandle for GrokSessionHandle {
                 },
                 None => CleanupOutcome::NotApplicable,
             };
-            // The registered lease closes before the route's own leases: its
-            // completion gate and joined listener teardown are the Contract 063
-            // cleanup evidence, and a failed close must retain ownership rather
-            // than be masked by a later clean release.
-            close_registered_lease(
-                self.registered.as_mut().and_then(
-                    crate::registered_tool::GrokRegisteredToolSession::take_lease,
-                ),
-                &self.services,
-                RegisteredToolCleanupCause::ExplicitClose,
-            )
-            .await;
+            // The registered lease settles before the route releases its own
+            // leases. Its completion gate and joined listener teardown are the
+            // Contract 063 cleanup evidence, and a failed close retains
+            // ownership rather than being masked by a later clean release.
+            let registered = match self.registered.as_ref() {
+                Some(registered) => {
+                    registered.freeze(&self.services).await;
+                    registered
+                        .settle(&self.services, RegisteredToolCleanupCause::ExplicitClose)
+                        .await
+                }
+                None => CleanupOutcome::NotApplicable,
+            };
+            if matches!(registered, CleanupOutcome::Failed(_)) {
+                // A retained bridge lease means the operation is not over. The
+                // working resource and the credential stay held rather than
+                // being returned for reuse beside work that may still execute.
+                return merge_cleanup(task, registered);
+            }
             let resource = release_resource(self.resource.take(), &self.services).await;
             let credential = release_credential(self.credential.take(), &self.services).await;
-                merge_cleanup(merge_cleanup(task, resource), credential)
+                merge_cleanup(
+                    merge_cleanup(merge_cleanup(task, registered), resource),
+                    credential,
+                )
             }),
         )
     }
 }
 
 include!("cancellation.rs");
+
+/// Maps one turn outcome onto the exact Contract 063 cleanup cause.
+fn registered_cleanup_cause(
+    turn: &ActiveTurn,
+    result: Option<&Result<Value, RuntimeFailure>>,
+) -> RegisteredToolCleanupCause {
+    if turn.was_cancelled() {
+        return RegisteredToolCleanupCause::Cancellation;
+    }
+    match result {
+        None => RegisteredToolCleanupCause::Deadline,
+        Some(Err(_)) => RegisteredToolCleanupCause::TransportFailure,
+        Some(Ok(response)) => match response.get("stopReason").and_then(Value::as_str) {
+            Some("end_turn") => RegisteredToolCleanupCause::Completion,
+            Some("cancelled") => RegisteredToolCleanupCause::Cancellation,
+            _ => RegisteredToolCleanupCause::ProviderFailure,
+        },
+    }
+}
 
 fn finish_prompt_response(turn: &ActiveTurn, response: &Value) {
     match response.get("stopReason").and_then(Value::as_str) {

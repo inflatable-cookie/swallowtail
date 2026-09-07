@@ -18,8 +18,10 @@ pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBindin
 pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::preparation(&self) -> &swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation
 pub fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::selection(&self) -> &swallowtail_runtime::registered_tool::selection::RegisteredToolSelection
+pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::turn(&self) -> core::option::Option<&swallowtail_runtime::identity::RuntimeTurnId>
 pub fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::with_host(self, swallowtail_host_local::services::LocalHostServices) -> Self
 pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::with_open_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::with_turn(self, swallowtail_runtime::identity::RuntimeTurnId) -> Self
 pub struct swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier
 impl swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier
 pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier::mediation_kind(&self) -> &'static str

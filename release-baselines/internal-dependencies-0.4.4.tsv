@@ -38,6 +38,7 @@ swallowtail-adapter-goose	swallowtail-core	^0.4.4
 swallowtail-adapter-goose	swallowtail-protocol-acp	^0.4.4
 swallowtail-adapter-goose	swallowtail-runtime	^0.4.4
 swallowtail-adapter-grok	swallowtail-core	^0.4.4
+swallowtail-adapter-grok	swallowtail-host-local	^0.4.4
 swallowtail-adapter-grok	swallowtail-protocol-acp	^0.4.4
 swallowtail-adapter-grok	swallowtail-runtime	^0.4.4
 swallowtail-adapter-kimi	swallowtail-core	^0.4.4

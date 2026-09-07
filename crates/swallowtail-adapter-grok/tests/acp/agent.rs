@@ -16,6 +16,8 @@ enum Scenario {
     RecoveryLate,
     RecoveryDisconnect,
     RecoveryResponseMismatch,
+    RegisteredOpenUnanswered,
+    RegisteredTurn,
 }
 
 #[derive(Default)]
@@ -138,14 +140,19 @@ impl Agent {
                 )
                 .map_err(|()| fixture_failure())?;
                 state.spawned_mcp.extend(spawned);
-                Self::enqueue(
-                    &mut state,
-                    json!({
-                        "jsonrpc": "2.0",
-                        "id": id,
-                        "result": {"sessionId": "grok-fixture-session"}
-                    }),
-                );
+                // A provider that holds stdio open without ever answering
+                // session setup. Nothing is enqueued; the open must be bounded
+                // by its own deadline rather than waiting forever.
+                if !matches!(self.scenario, Scenario::RegisteredOpenUnanswered) {
+                    Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "result": {"sessionId": "grok-fixture-session"}
+                        }),
+                    );
+                }
             }
             Some("session/load") => match self.scenario {
                 Scenario::RecoveryForeign => Self::enqueue(
@@ -245,12 +252,15 @@ impl Agent {
                         state.permission_emitted = true;
                         Self::permission_request(&mut state, true);
                     }
-                    Scenario::Cancellation | Scenario::Deadline => {}
+                    Scenario::Cancellation
+                    | Scenario::Deadline
+                    | Scenario::RegisteredTurn => {}
                     Scenario::Disconnect => {
                         state.stopped = true;
                     }
                     Scenario::Malformed => unreachable!("malformed initialization stops first"),
-                    Scenario::PermissionWithoutTurn
+                    Scenario::RegisteredOpenUnanswered
+                    | Scenario::PermissionWithoutTurn
                     | Scenario::RecoveryForeign
                     | Scenario::RecoveryCallback
                     | Scenario::RecoveryMalformed

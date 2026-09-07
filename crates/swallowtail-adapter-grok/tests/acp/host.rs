@@ -101,6 +101,22 @@ impl FixtureHost {
             .map(Arc::clone)
     }
 
+    /// Completes the held prompt, exactly as Grok ends a turn normally.
+    fn complete_turn(&self) {
+        let mut state = self.agent.state.lock().expect("agent lock poisoned");
+        if let Some(prompt_id) = state.prompt_id.take() {
+            Agent::enqueue(
+                &mut state,
+                json!({
+                    "jsonrpc": "2.0",
+                    "id": prompt_id,
+                    "result": {"stopReason": "end_turn"}
+                }),
+            );
+        }
+        self.agent.changed.notify_all();
+    }
+
     fn release_deadline(&self) {
         let mut state = self.agent.state.lock().expect("agent lock poisoned");
         state.deadline_released = true;
@@ -114,7 +130,10 @@ impl TimeService for FixtureHost {
     }
 
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
-        if matches!(self.agent.scenario, Scenario::Deadline) {
+        if matches!(
+            self.agent.scenario,
+            Scenario::Deadline | Scenario::RegisteredOpenUnanswered
+        ) {
             Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
         } else if matches!(self.agent.scenario, Scenario::PermissionTimeout) {
             let agent = Arc::clone(&self.agent);

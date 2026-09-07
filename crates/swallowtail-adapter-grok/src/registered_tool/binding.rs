@@ -11,7 +11,7 @@ use crate::failure::failure;
 use swallowtail_host_local::LocalHostServices;
 use swallowtail_runtime::{
     Deadline, PreparationFailure, RegisteredToolPreparation, RegisteredToolSelection,
-    RuntimeFailure,
+    RuntimeFailure, RuntimeTurnId,
 };
 
 /// One registered selection qualified for the Grok ACP courier seam.
@@ -21,6 +21,7 @@ pub struct GrokRegisteredToolBinding {
     carrier: GrokRegisteredToolCarrier,
     host: Option<LocalHostServices>,
     deadline: Option<Deadline>,
+    turn: Option<RuntimeTurnId>,
 }
 
 impl GrokRegisteredToolBinding {
@@ -36,6 +37,7 @@ impl GrokRegisteredToolBinding {
             carrier,
             host: None,
             deadline: None,
+            turn: None,
         })
     }
 
@@ -59,6 +61,19 @@ impl GrokRegisteredToolBinding {
     #[must_use]
     pub const fn with_open_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
+        self
+    }
+
+    /// Binds the exact ACP turn attempt this registered lease serves.
+    ///
+    /// Grok spawns the courier from `session/new`, before any turn exists, so
+    /// the turn cannot be discovered at open. Contract 063's first tranche
+    /// admits one active provider turn per server lease, so the consumer names
+    /// that turn here; the route refuses to start any other turn while the
+    /// lease is live, and settles the lease at that turn's terminal.
+    #[must_use]
+    pub fn with_turn(mut self, turn: RuntimeTurnId) -> Self {
+        self.turn = Some(turn);
         self
     }
 
@@ -92,11 +107,26 @@ impl GrokRegisteredToolBinding {
         self.deadline
     }
 
+    /// Returns the exact turn attempt this binding serves.
+    #[must_use]
+    pub const fn turn(&self) -> Option<&RuntimeTurnId> {
+        self.turn.as_ref()
+    }
+
     pub(crate) fn require_host(&self) -> Result<&LocalHostServices, RuntimeFailure> {
         self.host.as_ref().ok_or_else(|| {
             failure(
                 "swallowtail.grok.acp.registered_tool.host_missing",
                 "Grok Build ACP registered-tool open requires the local host composition that mints the courier rendezvous",
+            )
+        })
+    }
+
+    pub(crate) fn require_turn(&self) -> Result<&RuntimeTurnId, RuntimeFailure> {
+        self.turn.as_ref().ok_or_else(|| {
+            failure(
+                "swallowtail.grok.acp.registered_tool.turn_missing",
+                "Grok Build ACP registered-tool open requires the exact turn attempt the lease serves",
             )
         })
     }

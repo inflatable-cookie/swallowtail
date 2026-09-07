@@ -142,6 +142,7 @@ pub struct RegisteredToolReadiness {
     transport_qualified: bool,
     protocol_qualified: bool,
     attachment_qualified: bool,
+    attachment_failure: Option<RegisteredToolFailureKind>,
     proof: RegisteredToolTopologyProof,
 }
 
@@ -165,6 +166,10 @@ impl RegisteredToolReadiness {
             .copied()
             .filter(|kind| !topology.available_services.contains(kind))
             .collect();
+        let attachment_failure = selection
+            .validate_attachment()
+            .err()
+            .map(|failure| failure.kind());
         Self {
             port: if topology.port_registered {
                 RegisteredToolPortAvailability::Registered
@@ -177,7 +182,8 @@ impl RegisteredToolReadiness {
                 || (selection.attachment() == RegisteredToolAttachment::MediatedStdioProxy
                     && selection.transport() == RegisteredToolTransport::PrivateLoopbackHttp),
             protocol_qualified: protocol_is_qualified(selection.protocol_version()),
-            attachment_qualified: selection.validate_attachment().is_ok(),
+            attachment_qualified: attachment_failure.is_none(),
+            attachment_failure,
             proof: RegisteredToolTopologyProof::for_selection(selection),
         }
     }
@@ -262,8 +268,8 @@ impl RegisteredToolReadiness {
                 RegisteredToolFailureKind::UnsupportedProtocolVersion,
             ));
         }
-        if !self.attachment_qualified {
-            return Err(reject(RegisteredToolFailureKind::ProcessRecipeUnavailable));
+        if let Some(kind) = self.attachment_failure {
+            return Err(reject(kind));
         }
         Ok(self.proof.clone())
     }

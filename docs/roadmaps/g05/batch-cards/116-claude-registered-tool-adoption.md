@@ -61,3 +61,8 @@ The promoted Contract 063/060 and Chatterbox ruling are the authority where the
 original card-owned adapter wording drifted. No provider, credential, Desktop,
 release, or tag action was taken. Exact-head independent review remains the stop
 gate.
+
+F6 is load-bearing: an all-`NativeClient` mediated selection returns exact
+`unsupported_tool` before listener, lease, or dispatcher work; a mounted mixed
+snapshot exposes and dispatches only MCP while rejecting `NativeClient` without
+host dispatch.

@@ -135,7 +135,11 @@ impl RegisteredToolSelection {
                 {
                     return Err(reject(RegisteredToolFailureKind::ProcessRecipeUnavailable));
                 }
-                if self.selected.iter().any(|id| {
+                // A mixed selection is admitted so the mediated proxy can
+                // apply its defense-in-depth MCP-only exposure and dispatch
+                // filters. A selection with no MCP declaration remains an
+                // unsupported attachment before any host work is opened.
+                if self.selected.iter().all(|id| {
                     self.snapshot.declaration(id).is_none_or(|declaration| {
                         declaration.kind() != RegisteredToolExecutionKind::Mcp
                     })

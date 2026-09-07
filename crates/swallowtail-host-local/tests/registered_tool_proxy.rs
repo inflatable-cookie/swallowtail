@@ -108,12 +108,14 @@ fn mounted_mediated_attachment_rejects_wrong_kind_snapshot_before_listener() {
             .expect("protocol"),
     )
     .expect("selection construction remains provider-neutral")
+    .with_attachment(RegisteredToolAttachment::MediatedStdioProxy)
     .with_proxy_recipe(recipe);
+    let calls = Arc::new(AtomicUsize::new(0));
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
         .approve_executable(executable, COURIER.expect("courier"))
         .approve_environment(environment, [("PATH".into(), "/usr/bin".into())])
         .with_registered_tool_dispatcher(Arc::new(Dispatcher {
-            calls: Arc::new(AtomicUsize::new(0)),
+            calls: Arc::clone(&calls),
         }))
         .build_services(host_id.clone());
     let preparation = RegisteredToolPreparation::new(
@@ -137,8 +139,11 @@ fn mounted_mediated_attachment_rejects_wrong_kind_snapshot_before_listener() {
         .expect_err("mediated stdio only accepts MCP declarations");
     assert_eq!(
         error.diagnostic().code(),
-        "swallowtail.registered_tool.process_recipe_unavailable"
+        "swallowtail.registered_tool.unsupported_tool"
     );
+    assert_eq!(calls.load(Ordering::SeqCst), 0);
+    assert_eq!(local.registered_tool_lease_count(), 0);
+    assert_eq!(local.operation_bridge_listener_count(), 0);
 }
 
 impl RegisteredToolDispatcher for Dispatcher {
@@ -160,6 +165,111 @@ impl RegisteredToolDispatcher for Dispatcher {
         );
         Box::pin(ready(Ok(RegisteredToolOutcome::completed(&call, result))))
     }
+}
+
+#[test]
+fn mounted_proxy_filters_native_declaration_before_host_work() {
+    let courier = COURIER.expect("feature-gated courier binary is built");
+    let host_id = ExecutionHostId::new("fixture.host.mediated-stdio-mixed-kinds").expect("host id");
+    let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
+    let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let snapshot = Arc::new(snapshot_with_declarations(
+        &host_id,
+        executable.clone(),
+        environment.clone(),
+        [
+            (tool_id(), RegisteredToolExecutionKind::Mcp),
+            (native_tool_id(), RegisteredToolExecutionKind::NativeClient),
+        ],
+    ));
+    let recipe = RegisteredToolProxyRecipe::new(
+        executable.clone(),
+        environment.clone(),
+        swallowtail_runtime::REGISTERED_TOOL_PROXY_WIRE_TAG,
+    )
+    .expect("recipe");
+    let selection = RegisteredToolSelection::new(
+        Arc::clone(&snapshot),
+        [tool_id(), native_tool_id()],
+        RegisteredToolTransport::PrivateLoopbackHttp,
+        RegisteredToolProtocolVersion::new(REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION)
+            .expect("protocol"),
+    )
+    .expect("mixed selection is constructed")
+    .with_attachment(RegisteredToolAttachment::MediatedStdioProxy)
+    .with_proxy_recipe(recipe);
+    let calls = Arc::new(AtomicUsize::new(0));
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable, courier)
+        .approve_environment(environment, [("PATH".into(), "/usr/bin".into())])
+        .with_registered_tool_dispatcher(Arc::new(Dispatcher {
+            calls: Arc::clone(&calls),
+        }))
+        .build_services(host_id);
+    let preparation = RegisteredToolPreparation::new(
+        Arc::clone(&snapshot),
+        selection,
+        swallowtail_testkit::fixture_admission(Arc::new(
+            swallowtail_testkit::ScriptedAdmissionPort::current(),
+        )),
+        swallowtail_runtime::RegisteredToolLimits::ceiling(),
+    );
+    let prepared = preparation
+        .prepare(
+            local.services(),
+            ConfiguredInstanceId::new("fixture.instance.mixed-kinds").expect("instance"),
+            ScopeId::new("fixture.scope.mixed-kinds").expect("scope"),
+            RuntimeTurnId::new("fixture.turn.mixed-kinds").expect("turn"),
+            local.deadline_after(Duration::from_secs(10)),
+        )
+        .expect("mixed selection is ready through the mounted gate");
+    let lease = block_on(prepared.open()).expect("open mounts the real listener");
+    let mut launch = local
+        .registered_tool_proxy_launch(&lease)
+        .expect("host materializes the real courier launch");
+    let mut sdk = FakeSdk::spawn(&local, &launch, Arc::clone(&calls));
+    launch
+        .wait_until_ready()
+        .expect("real courier reaches the ready barrier");
+    let initialized = sdk.request(
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert!(initialized.contains("2025-11-25"));
+    sdk.notify(br#"{"jsonrpc":"2.0","method":"notifications/initialized"}"#);
+
+    let listed = sdk.request(br#"{"jsonrpc":"2.0","id":2,"method":"tools/list"}"#);
+    assert!(listed.contains("swallowtail.conformance/reconcile"));
+    assert!(!listed.contains("swallowtail.conformance/native-client"));
+    assert_eq!(sdk.dispatch_count(), 0);
+
+    let native_call = format!(
+        "{{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{{\"name\":{:?},\"arguments\":{{}}}}}}",
+        native_tool_id().to_string()
+    );
+    let rejected = sdk.request(native_call.as_bytes());
+    assert!(rejected.contains("Unknown registered tool"));
+    assert_eq!(sdk.dispatch_count(), 0);
+
+    let called = sdk
+        .call_tool(
+            "swallowtail.conformance/reconcile",
+            r#"{"path":"workspace/file"}"#,
+        )
+        .expect("MCP declaration remains callable");
+    assert!(called.contains("from-dispatcher"));
+    assert_eq!(sdk.dispatch_count(), 1);
+    sdk.close();
+    block_on(
+        local
+            .services()
+            .registered_tool_bridge()
+            .expect("registered bridge")
+            .close(
+                lease,
+                swallowtail_runtime::RegisteredToolCleanupCause::Completion,
+            ),
+    )
+    .expect("close joins listener and kernel");
 }
 
 #[test]
@@ -1062,6 +1172,13 @@ fn tool_id() -> RegisteredToolId {
     )
 }
 
+fn native_tool_id() -> RegisteredToolId {
+    RegisteredToolId::new(
+        RegisteredToolNamespace::new("swallowtail.conformance").expect("namespace"),
+        RegisteredToolLocalName::new("native-client").expect("local name"),
+    )
+}
+
 fn snapshot(
     host_id: &ExecutionHostId,
     executable: ExecutableRef,
@@ -1081,22 +1198,38 @@ fn snapshot_with_kind(
     environment: EnvironmentRef,
     kind: RegisteredToolExecutionKind,
 ) -> RegisteredToolSnapshot {
+    snapshot_with_declarations(host_id, executable, environment, [(tool_id(), kind)])
+}
+
+fn snapshot_with_declarations(
+    host_id: &ExecutionHostId,
+    executable: ExecutableRef,
+    environment: EnvironmentRef,
+    declarations: impl IntoIterator<Item = (RegisteredToolId, RegisteredToolExecutionKind)>,
+) -> RegisteredToolSnapshot {
     RegisteredToolSnapshot::new(RegisteredToolSnapshotInput {
         server_id: RegisteredServerId::new("swallowtail-registered-tools").expect("server"),
         revision: RegisteredServerRevision::new("fixture-1").expect("revision"),
         execution_host_id: host_id.clone(),
-        declarations: vec![
-            RegisteredToolDeclaration::new(
-                tool_id(),
-                kind,
-                schema("input", "sha256:input"),
-                schema("output", "sha256:output"),
-                RegisteredToolEffectPosture::ReadOnly,
-                RegisteredToolRetryPosture::NeverRetry,
-                RegisteredToolBounds::ceiling(),
-            )
-            .expect("declaration"),
-        ],
+        declarations: declarations
+            .into_iter()
+            .enumerate()
+            .map(|(index, (id, kind))| {
+                RegisteredToolDeclaration::new(
+                    id,
+                    kind,
+                    schema(&format!("input-{index}"), &format!("sha256:input-{index}")),
+                    schema(
+                        &format!("output-{index}"),
+                        &format!("sha256:output-{index}"),
+                    ),
+                    RegisteredToolEffectPosture::ReadOnly,
+                    RegisteredToolRetryPosture::NeverRetry,
+                    RegisteredToolBounds::ceiling(),
+                )
+                .expect("declaration")
+            })
+            .collect(),
         transports: vec![
             RegisteredToolTransportSupport::new(
                 RegisteredToolTransport::PrivateLoopbackHttp,

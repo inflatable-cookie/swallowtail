@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-04
+Updated: 2026-09-07
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -26,7 +26,16 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Last one-family claim: Codex exec and app-server `0.152.1` (g05.020, cards
+Last one-family claim: OpenCode HTTP `1.18.29` (g05.037, cards
+134-135). The existing `opencode.server` `surface-19` window extends through
+exact npm `1.18.29` as a compatible extension. Baseline `1.14.48` and every
+historical gap stay. Unpublished `1.18.30` stays permitted `UnverifiedNewer`.
+Host `opencode` was not on `PATH` and was not installed. Downloaded official
+artifacts were hashed and never executed. Selected HTTP/SSE route files and
+OpenAPI are byte-identical with `1.18.28`. The only implementation-source
+change is unmapped Codex OAuth model-id filtering. `AllowUnverified` remains.
+
+Previous one-family claim: Codex exec and app-server `0.152.1` (g05.020, cards
 048-049). The shared `codex.cli` window extends through exact npm `0.152.1`
 as a compatible extension. Unpublished `0.149.2`, `0.150.2`, and `0.151.1`
 stay incompatible. Unpublished `0.152.2` stays permitted `UnverifiedNewer`.
@@ -36,7 +45,7 @@ shipped-tree and source-tree deltas are Guardian, test, and version-bump
 bounded. Feature-specific exact sets remain on the `0.147.0..=0.149.1`
 probed points. `AllowUnverified` remains.
 
-Previous one-family claim: Claude Code `2.1.257` (g05.019, cards 046-047).
+Earlier one-family claim: Claude Code `2.1.257` (g05.019, cards 046-047).
 Headless is `2.1.220..=2.1.257` and response-only is `2.1.227..=2.1.257`.
 Unpublished `2.1.244`, `2.1.249`, and hop-skipped `2.1.253` through
 `2.1.256` stay incompatible. Official `2.1.258` is newer than the qualified
@@ -88,6 +97,26 @@ recorded.
 
 ### Latest Completed Family
 
+OpenCode HTTP `1.18.29` is a compatible extension of existing
+`opencode.http-sse.surface-19`. Research 292 and g05.037 cards 134-135 freeze
+identity before the claim. Host `opencode` was not on `PATH` and was not
+installed, updated, or replaced. Official artifacts were hashed and never
+executed. Official npm and GitHub stable is `1.18.29` published
+2026-09-04T23:46:25.653Z / 2026-09-04T23:47:16Z; the only published stable
+after `1.18.28` is `1.18.29`. npm `LICENSE`, `bin/opencode.exe`, and
+`postinstall.mjs` are byte-identical; only `package.json` changes. Selected
+HTTP/SSE route files and OpenAPI SHA-256 stay byte-identical. The only
+`packages/opencode/src` change is unmapped Codex OAuth catalogue filtering in
+`plugin/openai/codex.ts`. Baseline `1.14.48`, claim id, historical gaps, and
+`AllowUnverified` stay. Unpublished `1.18.30` remains permitted
+`UnverifiedNewer`. No provider prompt, live session, login, install, or host
+update was required.
+
+g05.028 cards 077-078 remain the `1.18.28` identity/claim. This family adds
+only the next published hop.
+
+### Previous Completed Family
+
 Codex exec and app-server `0.152.1` are compatible extensions of their
 existing maintained behaviors. Research 275 and g05.020 cards 048-049 freeze
 identity before the claim. Host `0.150.1` keeps its recorded identity and
@@ -110,7 +139,7 @@ install, or host update was required.
 Research 274 remaining family after Claude Code `2.1.257` was this family
 alone and changed no claim.
 
-### Previous Completed Family
+### Earlier Completed Family
 
 Claude Code `2.1.257` is a compatible extension of the separate headless and
 response-only stream-JSON axes. Research 273 and g05.019 cards 046-047 freeze
@@ -141,8 +170,9 @@ partition is 9 unchanged, 8 visible unverified-newer, 23 record-only, and 1
 material candidate. OpenCode HTTP `1.18.28` ranked first: the host is
 `1.18.18`, inside the previously qualified `1.14.48..=1.18.20` range. Card 077
 admitted all eight published hops as compatible `surface-19`; card 078 raises
-the qualified ceiling through `1.18.28`, keeps every historical gap, and leaves
-later stable points `UnverifiedNewer` under Contract 029.
+the qualified ceiling through `1.18.28`. g05.037 cards 134-135 later raise
+that same `surface-19` through official `1.18.29` and leave unpublished
+`1.18.30` `UnverifiedNewer` under Contract 029.
 
 Research 276 previously revalidated all 40 production families on 2026-09-02.
 Kimi Code npm and GitHub stable moved to `0.40.1`; the
@@ -331,7 +361,6 @@ changed no claim.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). g05.028 card 077 is the current
-one-family currentness lane and is approved concurrent with the Contract 061
-frontier. This file records standing lanes; the sole actionable pointer stays
-in the front door.
+[roadmaps front door](README.md#next-task). g05.037 cards 134-135 completed
+the OpenCode HTTP `1.18.29` family. This file records standing lanes; the
+sole actionable pointer stays in the front door.

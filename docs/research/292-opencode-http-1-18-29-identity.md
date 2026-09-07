@@ -1,9 +1,9 @@
-# 290 OpenCode HTTP 1.18.29 Identity
+# 292 OpenCode HTTP 1.18.29 Identity
 
 Status: promoted
 Owner: Tom
 Date: 2026-09-07
-Card: extracurricular Contract 029
+Card: g05 batch 134
 
 ## Question
 
@@ -13,7 +13,7 @@ facade, or a stop?
 
 ## Remaining Rank
 
-This extracurricular run covers only OpenCode HTTP. At observation time the
+This g05.037 run covers only OpenCode HTTP. At observation time the
 family was AllowUnverified official-newer after g05.028 / Research 285 left
 `1.18.29` as `UnverifiedNewer`.
 
@@ -102,8 +102,8 @@ No new public operation or adapter control is required.
 - keep decoder specimen `opencode-1.14.48`; and
 - use synthetic `1.18.30` as the later `UnverifiedNewer` point after claim.
 
-This identity record changes no production claim. The extracurricular claim
-in the same PR applies the admitted segment.
+This identity record changes no production claim. Serial card 135 applies
+the admitted segment.
 
 ## Sources
 

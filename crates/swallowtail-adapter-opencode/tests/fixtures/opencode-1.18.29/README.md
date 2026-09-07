@@ -16,7 +16,7 @@ files stay byte-identical. The only implementation-source change is unmapped
 Codex OAuth model-id filtering in `plugin/openai/codex.ts`.
 
 Decision: compatible extension of `surface-19` through `1.18.29`. Production
-claims remain at `1.18.28` until the extracurricular claim commit. First
+claims remain at `1.18.28` until card 135. First
 unpublished later patch: `1.18.30`.
 
 `claim.json` freezes the admitted after-state: the same claim id, baseline,

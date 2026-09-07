@@ -23,6 +23,8 @@ fn admitted_claim_fixture_matches_production_selection() {
     let claim = opencode_http_claim();
     assert_eq!(claim.id().as_str(), fixture["claim_id"]);
     assert_eq!(claim.baseline().as_str(), fixture["baseline"]);
+    assert_eq!(fixture["latest_qualified"], "1.18.28");
+    assert_eq!(fixture["unverified_newer"], "1.18.29");
     assert_exact_strings(
         &fixture["newly_qualified"],
         &[

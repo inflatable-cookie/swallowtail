@@ -11,8 +11,9 @@ Selected route and handler files are byte-identical. The only source change
 is unmapped Codex OAuth model-id filtering. Compatible `surface-19`
 extension admitted.
 
-Production claims stayed at `1.18.28` in this record. Research 290.
+Production claims stayed at `1.18.28` in this record. Research 292. g05.037
+card 134.
 
 ## Next
 
-Apply the compatible-extension decision in the extracurricular claim.
+Apply the compatible-extension decision in card 135.

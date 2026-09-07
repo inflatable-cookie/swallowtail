@@ -73,5 +73,5 @@ fn official_hop_identity_is_exact_and_identity_first() {
     assert_eq!(decision["downloaded_artifact_executed"], false);
     assert_eq!(decision["host_install_changed"], false);
     assert_eq!(decision["new_public_operation"], false);
-    assert_eq!(decision["claim_card"], "extracurricular-claim");
+    assert_eq!(decision["claim_card"], "g05 batch card 135");
 }

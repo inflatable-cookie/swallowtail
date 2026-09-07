@@ -3,7 +3,6 @@
 ## Ready
 
 - [131-codex-app-server-client-mcp-servers-evidence.md](./131-codex-app-server-client-mcp-servers-evidence.md) — ready; settle the Codex client_mcp_servers cross as limitation or gap with anchors; replaces the stale card 114 reference
-- [128-grok-acp-client-mcp-probe-harness.md](./128-grok-acp-client-mcp-probe-harness.md) — ready; provider-free probe harness Desktop runs to settle whether Grok Build accepts client-supplied ACP MCP; feeds the Grok release-scope decision
 - [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — ready; serial after 125; resolved skill bundle as the distinct third input
 - [124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md](./124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — ready; serial after 121; bounded manifest lookup and one model-id predicate; precedes the `v0.4.4` candidate
 - [119-claude-sdk-first-turn-model-qualification-evidence.md](./119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; bounded observer evidence for the first-turn model rejection; lead of the producer-diagnosis trio
@@ -36,6 +35,7 @@
 
 ## Completed
 
+- [128-grok-acp-client-mcp-probe-harness.md](./128-grok-acp-client-mcp-probe-harness.md) — complete; PR 273 merged at `63e34641`; provider-free four-verdict fake fixtures; probe targets shipped as examples; MSRV lint repair; live probe not run; packet relayed to Acowtancy Desktop
 - [125-claude-sdk-registered-tool-route-binding.md](./125-claude-sdk-registered-tool-route-binding.md) — complete; bind RegisteredToolPreparation into claude-agent.sdk open on the Codex precedent; provider-free
 - [115-selected-skill-transport.md](./115-selected-skill-transport.md) — complete; waits for card114 merges
 - [114-registered-tool-kernel.md](./114-registered-tool-kernel.md) — complete; ready after Batch A planning review/promotion

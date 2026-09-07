@@ -20,10 +20,14 @@ mod payload;
 mod preparation;
 mod readiness;
 mod schema;
+mod selected_skill;
+mod selected_skill_resolution;
 mod selection;
 mod service;
 mod snapshot;
 
+#[cfg(test)]
+mod selected_skill_tests;
 #[cfg(test)]
 mod tests;
 
@@ -50,7 +54,8 @@ pub use identity::{
     RegisteredServerRevision, RegisteredToolCallId, RegisteredToolExecutionKind, RegisteredToolId,
     RegisteredToolLeaseGeneration, RegisteredToolLocalName, RegisteredToolNamespace,
     RegisteredToolProtocolVersion, RegisteredToolReasonCode, RegisteredToolTransport,
-    RegisteredToolTransportGeneration,
+    RegisteredToolTransportGeneration, RequiredReferenceId, SelectedContentDigest, SelectedSkillId,
+    SelectedSkillRevision,
 };
 pub use kernel::{RegisteredToolOperationKernel, first_progress_sequence};
 pub use lease::{
@@ -65,9 +70,10 @@ pub use limits::{
     MAX_REGISTERED_TOOL_QUEUED_PROGRESS_ITEMS, MAX_REGISTERED_TOOL_RECIPE_REFERENCES,
     MAX_REGISTERED_TOOL_REQUIRED_SERVICES, MAX_REGISTERED_TOOL_RESULT_BYTES,
     MAX_REGISTERED_TOOL_SCHEMA_BYTES, MAX_REGISTERED_TOOL_SELECTED_TOOLS,
-    MAX_REGISTERED_TOOL_TRANSPORTS, REGISTERED_TOOL_CLEANUP_BUDGET,
-    REGISTERED_TOOL_MAX_CALL_DURATION, REGISTERED_TOOL_OPEN_BUDGET, RegisteredToolBounds,
-    RegisteredToolLimits,
+    MAX_REGISTERED_TOOL_TRANSPORTS, MAX_SELECTED_CONTENT_REFERENCE_BYTES,
+    MAX_SELECTED_SKILL_CONTENT_BYTES, MAX_SELECTED_SKILL_REQUIRED_REFERENCES,
+    REGISTERED_TOOL_CLEANUP_BUDGET, REGISTERED_TOOL_MAX_CALL_DURATION, REGISTERED_TOOL_OPEN_BUDGET,
+    RegisteredToolBounds, RegisteredToolLimits, SelectedSkillBundleBounds,
 };
 pub use payload::RegisteredToolPayload;
 pub use preparation::{PreparedRegisteredToolBinding, RegisteredToolPreparation};
@@ -79,6 +85,14 @@ pub use readiness::{
 pub use schema::{
     RegisteredToolSchema, RegisteredToolSchemaDialect, RegisteredToolSchemaDigest,
     RegisteredToolSchemaDocument, RegisteredToolSchemaMediaType, RegisteredToolSchemaNamespace,
+};
+pub use selected_skill::{
+    RequiredReferenceDescriptor, SelectedContentDescriptor, SelectedSkillBundle,
+    SelectedSkillIdentity, SelectedSkillProvenance,
+};
+pub use selected_skill_resolution::{
+    ResolvedRequiredReference, ResolvedSkillBundle, SelectedContentResolution,
+    SelectedSkillHostResources,
 };
 pub use selection::RegisteredToolSelection;
 pub use service::RegisteredToolBridgeHostService;

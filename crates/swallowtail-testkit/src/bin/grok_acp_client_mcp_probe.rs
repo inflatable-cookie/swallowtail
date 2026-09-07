@@ -7,8 +7,8 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::ExitCode;
 use swallowtail_testkit::{
-    ClientMcpVerdict, grok_acp_client_mcp_fixture_probe, open_desktop_live_grok_acp_peer,
-    run_grok_acp_client_mcp_probe,
+    ClientMcpVerdict, grok_acp_client_mcp_fixture_probe, isolated_grok_home,
+    open_desktop_live_grok_acp_peer, run_grok_acp_client_mcp_probe_with_transcript,
 };
 
 fn main() -> ExitCode {
@@ -30,12 +30,21 @@ fn run(args: Vec<String>) -> Result<(), String> {
             grok_executable,
             echo_mcp,
         } => {
-            let cwd = env::var("GROK_HOME").unwrap_or_else(|_| ".".to_owned());
+            let grok_home = isolated_grok_home().map_err(|error| error.to_string())?;
+            let cwd = grok_home.display().to_string();
+            let transcript_path = grok_home.join("echo-mcp-transcript.ndjson");
+            fs::write(&transcript_path, b"").map_err(|error| error.to_string())?;
             let echo_command = echo_mcp.display().to_string();
             let mut peer = open_desktop_live_grok_acp_peer(&grok_executable, &echo_mcp)
                 .map_err(|error| error.to_string())?;
-            run_grok_acp_client_mcp_probe(&mut peer, &parsed.version, &echo_command, &cwd)
-                .map_err(|error| error.to_string())?
+            run_grok_acp_client_mcp_probe_with_transcript(
+                &mut peer,
+                &parsed.version,
+                &echo_command,
+                &cwd,
+                Some(&transcript_path),
+            )
+            .map_err(|error| error.to_string())?
         }
     };
     let body = serde_json::to_string_pretty(&capsule.to_json()).expect("capsule serializes");

@@ -2,8 +2,12 @@
 
 #![forbid(unsafe_code)]
 
+use std::env;
 use std::io::{self, BufRead, Write};
-use swallowtail_testkit::{grok_acp_echo_mcp_reply, grok_acp_echo_mcp_stdio_frame};
+use swallowtail_testkit::{
+    ECHO_MCP_TRANSCRIPT_ENV, append_echo_mcp_transcript, grok_acp_echo_mcp_reply,
+    grok_acp_echo_mcp_stdio_frame,
+};
 
 fn main() -> io::Result<()> {
     let mut stdin = io::stdin().lock();
@@ -12,6 +16,9 @@ fn main() -> io::Result<()> {
         let Some(request) = read_mcp_value(&mut stdin)? else {
             return Ok(());
         };
+        if let Some(method) = request.get("method").and_then(serde_json::Value::as_str) {
+            record_method(method);
+        }
         if let Some(reply) = grok_acp_echo_mcp_reply(&request) {
             write_mcp_value(&mut stdout, &reply)?;
         }
@@ -58,4 +65,11 @@ fn write_mcp_value(writer: &mut impl Write, value: &serde_json::Value) -> io::Re
         .map_err(|error| io::Error::new(io::ErrorKind::InvalidData, error))?;
     writer.write_all(&body)?;
     writer.flush()
+}
+
+fn record_method(method: &str) {
+    let Ok(path) = env::var(ECHO_MCP_TRANSCRIPT_ENV) else {
+        return;
+    };
+    let _ = append_echo_mcp_transcript(std::path::Path::new(&path), method);
 }

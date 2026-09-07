@@ -1,14 +1,19 @@
 //! Provider-free Grok ACP client-MCP probe harness.
 //!
-//! Verdicts are decided from captured frames only. Crate tests drive the fake
-//! ACP fixture. The live installed-Grok entrypoint refuses to spawn unless
-//! Desktop sets [`DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE`].
+//! Verdicts are decided from captured ACP frames plus the disposable echo MCP
+//! stdio transcript. ACP v1 cannot name the client MCP server on a tool call,
+//! so `accepts_client_mcp` requires a `tools/call` on that transcript. Crate
+//! tests drive the fake ACP fixture. The live installed-Grok entrypoint
+//! refuses to spawn unless Desktop sets
+//! [`DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE`] and an isolated `GROK_HOME`
+//! directory exists.
 
 use serde_json::{Value, json};
 use std::collections::VecDeque;
 use std::fmt;
+use std::fs::{self, OpenOptions};
 use std::io::{BufRead, BufReader, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, Command, Stdio};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError};
 use std::thread;
@@ -22,6 +27,8 @@ pub const DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE: &str =
 pub const ECHO_MCP_SERVER_NAME: &str = "swallowtail-echo";
 /// Sole tool exported by the disposable MCP server.
 pub const ECHO_MCP_TOOL: &str = "echo";
+/// Env var the echo stdio server appends received method names to.
+pub const ECHO_MCP_TRANSCRIPT_ENV: &str = "SWALLOWTAIL_ECHO_MCP_TRANSCRIPT";
 
 const MAXIMUM_FRAMES: usize = 48;
 const ECHO_PROMPT: &str = "Call the echo tool with text ping and return its result.";
@@ -33,17 +40,126 @@ const LIVE_IDLE: Duration = Duration::from_millis(200);
 const LIVE_WAIT: Duration = Duration::from_secs(8);
 const LIVE_JOIN: Duration = Duration::from_secs(2);
 
-/// Frame-decided client-MCP verdict for one exact Grok version segment.
+/// Client-MCP verdict for one exact Grok version segment.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ClientMcpVerdict {
-    /// Session accepted a non-empty `mcpServers` list, discovered echo, and called it.
+    /// Session accepted a non-empty `mcpServers` list and the echo MCP server was called.
     AcceptsClientMcp,
-    /// Session accepted a non-empty `mcpServers` list and never called echo.
+    /// Session accepted a non-empty `mcpServers` list and the echo MCP server was never called.
     IgnoresClientMcp,
     /// Session setup rejected the non-empty `mcpServers` list.
     RejectsClientMcp,
     /// Frames are missing, incomplete, or contradictory.
     Inconclusive,
+}
+
+/// Methods observed by the disposable echo MCP server on its own stdio.
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct EchoMcpTranscript {
+    observed: bool,
+    initialize: bool,
+    tools_list: bool,
+    tools_call: bool,
+}
+
+impl EchoMcpTranscript {
+    /// Transcript proving Grok connected and called the echo tool.
+    #[must_use]
+    pub const fn called() -> Self {
+        Self {
+            observed: true,
+            initialize: true,
+            tools_list: true,
+            tools_call: true,
+        }
+    }
+
+    /// Transcript file existed and Grok never called echo.
+    #[must_use]
+    pub const fn observed_idle() -> Self {
+        Self {
+            observed: true,
+            initialize: false,
+            tools_list: false,
+            tools_call: false,
+        }
+    }
+
+    /// Returns whether a `tools/call` for echo was observed.
+    #[must_use]
+    pub const fn tools_call(&self) -> bool {
+        self.tools_call
+    }
+
+    fn methods(&self) -> Vec<&'static str> {
+        let mut methods = Vec::new();
+        if self.initialize {
+            methods.push("initialize");
+        }
+        if self.tools_list {
+            methods.push("tools/list");
+        }
+        if self.tools_call {
+            methods.push("tools/call");
+        }
+        methods
+    }
+}
+
+/// Appends one MCP method name to the echo-server transcript file.
+pub fn append_echo_mcp_transcript(path: &Path, method: &str) -> Result<(), GrokAcpClientMcpError> {
+    let mut file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+        .map_err(|_| GrokAcpClientMcpError {
+            kind: GrokAcpClientMcpErrorKind::Transport,
+        })?;
+    writeln!(file, "{method}").map_err(|_| GrokAcpClientMcpError {
+        kind: GrokAcpClientMcpErrorKind::Transport,
+    })
+}
+
+/// Reads method names from an echo-server transcript file.
+#[must_use]
+pub fn read_echo_mcp_transcript(path: &Path) -> EchoMcpTranscript {
+    let Ok(text) = fs::read_to_string(path) else {
+        return EchoMcpTranscript::default();
+    };
+    let mut transcript = EchoMcpTranscript {
+        observed: true,
+        ..EchoMcpTranscript::default()
+    };
+    for line in text.lines() {
+        match line.trim() {
+            "initialize" => transcript.initialize = true,
+            "tools/list" => transcript.tools_list = true,
+            "tools/call" => transcript.tools_call = true,
+            _ => {}
+        }
+    }
+    transcript
+}
+
+/// Isolated Grok home used as live `HOME` and session `cwd`. Fail closed.
+pub fn isolated_grok_home() -> Result<PathBuf, GrokAcpClientMcpError> {
+    isolated_grok_home_from(std::env::var("GROK_HOME").ok().as_deref())
+}
+
+fn isolated_grok_home_from(value: Option<&str>) -> Result<PathBuf, GrokAcpClientMcpError> {
+    let Some(value) = value.filter(|home| !home.is_empty()) else {
+        return Err(GrokAcpClientMcpError {
+            kind: GrokAcpClientMcpErrorKind::LiveIsolationMissing,
+        });
+    };
+    let path = PathBuf::from(value);
+    if path.is_dir() {
+        Ok(path)
+    } else {
+        Err(GrokAcpClientMcpError {
+            kind: GrokAcpClientMcpErrorKind::LiveIsolationMissing,
+        })
+    }
 }
 
 impl ClientMcpVerdict {
@@ -122,6 +238,7 @@ pub struct GrokAcpClientMcpCapsule {
     stale_callback_rejected: bool,
     cleanup: GrokAcpClientMcpCleanup,
     truncated: bool,
+    echo_mcp_methods: Vec<String>,
 }
 
 impl GrokAcpClientMcpCapsule {
@@ -131,7 +248,7 @@ impl GrokAcpClientMcpCapsule {
         &self.version
     }
 
-    /// Frame-decided verdict.
+    /// Frame-decided verdict, using echo MCP stdio evidence when present.
     #[must_use]
     pub const fn verdict(&self) -> ClientMcpVerdict {
         self.verdict
@@ -161,6 +278,12 @@ impl GrokAcpClientMcpCapsule {
         self.truncated
     }
 
+    /// Echo MCP methods observed on the disposable server's stdio.
+    #[must_use]
+    pub fn echo_mcp_methods(&self) -> &[String] {
+        &self.echo_mcp_methods
+    }
+
     /// Bounded redacted JSON object with exact frames and the verdict.
     #[must_use]
     pub fn to_json(&self) -> Value {
@@ -171,6 +294,7 @@ impl GrokAcpClientMcpCapsule {
             "stale_callback_rejected": self.stale_callback_rejected,
             "cleanup_joined": self.cleanup.joined,
             "truncated": self.truncated,
+            "echo_mcp_methods": self.echo_mcp_methods,
             "frames": self.frames.iter().map(|frame| {
                 json!({
                     "direction": match frame.direction {
@@ -191,6 +315,8 @@ pub enum GrokAcpClientMcpErrorKind {
     LiveProbeGated,
     /// Live executable or echo-server path was missing.
     LivePathMissing,
+    /// Live spawn was requested without an isolated `GROK_HOME` directory.
+    LiveIsolationMissing,
     /// ACP framing or JSON-RPC codec failed.
     Transport,
     /// Captured frame count exceeded the harness bound.
@@ -222,6 +348,9 @@ impl fmt::Display for GrokAcpClientMcpError {
             GrokAcpClientMcpErrorKind::LivePathMissing => {
                 "live Grok ACP client-MCP probe is missing an executable path"
             }
+            GrokAcpClientMcpErrorKind::LiveIsolationMissing => {
+                "live Grok ACP client-MCP probe requires an isolated GROK_HOME directory"
+            }
             GrokAcpClientMcpErrorKind::Transport => "ACP client-MCP probe transport failed",
             GrokAcpClientMcpErrorKind::FrameLimit => {
                 "ACP client-MCP probe exceeded the frame capture bound"
@@ -245,6 +374,10 @@ pub trait GrokAcpClientMcpPeer {
     fn close(&mut self) -> GrokAcpClientMcpCleanup;
     /// Optional post-close callback the harness must reject.
     fn stale_callback_request(&mut self) -> Option<Value>;
+    /// Echo MCP stdio methods observed for this peer. Live reads the transcript file.
+    fn echo_mcp_transcript(&mut self) -> EchoMcpTranscript {
+        EchoMcpTranscript::default()
+    }
 }
 
 /// Returns whether Desktop has opened the live installed-Grok gate.
@@ -269,15 +402,33 @@ pub fn grok_acp_client_mcp_fixture_probe(
 }
 
 /// Drives ACP initialize, non-empty `session/new`, one echo prompt, cleanup, and
-/// stale-callback rejection. The verdict is computed from the captured frames.
+/// stale-callback rejection. Verdict uses ACP frames plus the echo MCP transcript.
 pub fn run_grok_acp_client_mcp_probe(
     peer: &mut dyn GrokAcpClientMcpPeer,
     version: &str,
     echo_command: &str,
     cwd: &str,
 ) -> Result<GrokAcpClientMcpCapsule, GrokAcpClientMcpError> {
+    run_grok_acp_client_mcp_probe_with_transcript(peer, version, echo_command, cwd, None)
+}
+
+/// Same as [`run_grok_acp_client_mcp_probe`], reading echo stdio methods from `transcript`.
+pub fn run_grok_acp_client_mcp_probe_with_transcript(
+    peer: &mut dyn GrokAcpClientMcpPeer,
+    version: &str,
+    echo_command: &str,
+    cwd: &str,
+    transcript_path: Option<&Path>,
+) -> Result<GrokAcpClientMcpCapsule, GrokAcpClientMcpError> {
     let mut capture = FrameCapture::new();
     let mut next_id = 1_u64;
+    let env = match transcript_path {
+        Some(path) => json!([{
+            "name": ECHO_MCP_TRANSCRIPT_ENV,
+            "value": path.to_string_lossy()
+        }]),
+        None => json!([]),
+    };
 
     let initialize = json!({
         "protocolVersion": ACP_PROTOCOL_VERSION,
@@ -318,7 +469,7 @@ pub fn run_grok_acp_client_mcp_probe(
                         "name": ECHO_MCP_SERVER_NAME,
                         "command": echo_command,
                         "args": [],
-                        "env": []
+                        "env": env
                     }]
                 }),
             )?;
@@ -341,6 +492,10 @@ pub fn run_grok_acp_client_mcp_probe(
 
     let stale_callback_rejected = reject_stale_callback(peer, &mut capture)?;
     let cleanup = peer.close();
+    let transcript = match transcript_path {
+        Some(path) => read_echo_mcp_transcript(path),
+        None => peer.echo_mcp_transcript(),
+    };
     let truncated = capture.truncated;
     let redacted: Vec<GrokAcpClientMcpFrame> = capture
         .frames
@@ -353,7 +508,7 @@ pub fn run_grok_acp_client_mcp_probe(
     let verdict = if truncated {
         ClientMcpVerdict::Inconclusive
     } else {
-        grok_acp_client_mcp_verdict_from_frames(&redacted)
+        grok_acp_client_mcp_verdict(&redacted, &transcript)
     };
     Ok(GrokAcpClientMcpCapsule {
         version: version.to_owned(),
@@ -362,6 +517,11 @@ pub fn run_grok_acp_client_mcp_probe(
         stale_callback_rejected,
         cleanup,
         truncated,
+        echo_mcp_methods: transcript
+            .methods()
+            .into_iter()
+            .map(str::to_owned)
+            .collect(),
     })
 }
 
@@ -369,6 +529,15 @@ pub fn run_grok_acp_client_mcp_probe(
 #[must_use]
 pub fn grok_acp_client_mcp_verdict_from_frames(
     frames: &[GrokAcpClientMcpFrame],
+) -> ClientMcpVerdict {
+    grok_acp_client_mcp_verdict(frames, &EchoMcpTranscript::default())
+}
+
+/// Decides the verdict from ACP frames plus the echo MCP stdio transcript.
+#[must_use]
+pub fn grok_acp_client_mcp_verdict(
+    frames: &[GrokAcpClientMcpFrame],
+    transcript: &EchoMcpTranscript,
 ) -> ClientMcpVerdict {
     let Some(session_new) = frames
         .iter()
@@ -407,11 +576,10 @@ pub fn grok_acp_client_mcp_verdict_from_frames(
                 .and_then(Value::as_str)
                 .is_some() =>
         {
-            if echo_tool_called(frames) && echo_tool_completed(frames) {
+            if transcript.tools_call() {
                 ClientMcpVerdict::AcceptsClientMcp
-            } else if echo_tool_called(frames)
-                || echo_named_tool_called(frames)
-                || permission_was_rejected(frames)
+            } else if permission_was_rejected(frames)
+                || (!transcript.observed && echo_named_tool_called(frames))
             {
                 ClientMcpVerdict::Inconclusive
             } else if prompt_turn_completed(frames) {
@@ -520,12 +688,13 @@ pub fn open_desktop_live_grok_acp_peer(
             kind: GrokAcpClientMcpErrorKind::LiveProbeGated,
         });
     }
+    let grok_home = isolated_grok_home()?;
     if !grok_executable.is_file() || !echo_mcp.is_file() {
         return Err(GrokAcpClientMcpError {
             kind: GrokAcpClientMcpErrorKind::LivePathMissing,
         });
     }
-    LiveGrokAcpPeer::spawn(grok_executable)
+    LiveGrokAcpPeer::spawn(grok_executable, &grok_home)
 }
 
 /// Live ACP stdio child. Constructed only after the Desktop gate succeeds.
@@ -536,16 +705,15 @@ pub struct LiveGrokAcpPeer {
 }
 
 impl LiveGrokAcpPeer {
-    fn spawn(executable: &Path) -> Result<Self, GrokAcpClientMcpError> {
+    fn spawn(executable: &Path, grok_home: &Path) -> Result<Self, GrokAcpClientMcpError> {
         let mut command = Command::new(executable);
         command
             .args(["--no-auto-update", "agent", "stdio"])
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::piped());
-        if let Ok(grok_home) = std::env::var("GROK_HOME") {
-            command.env("HOME", &grok_home).env("GROK_HOME", grok_home);
-        }
+            .stderr(Stdio::piped())
+            .env("HOME", grok_home)
+            .env("GROK_HOME", grok_home);
         let mut child = command.spawn().map_err(|_| GrokAcpClientMcpError {
             kind: GrokAcpClientMcpErrorKind::Transport,
         })?;
@@ -681,66 +849,47 @@ struct FakeAcpPeer {
     inbound: VecDeque<Value>,
     closed: bool,
     prompt_id: Option<Value>,
+    emitted_echo: bool,
 }
 
 impl FakeAcpPeer {
-    fn new(scenario: ClientMcpVerdict) -> Self {
+    fn with_behavior(behavior: FakeBehavior) -> Self {
         Self {
-            behavior: FakeBehavior::Verdict(scenario),
+            behavior,
             inbound: VecDeque::new(),
             closed: false,
             prompt_id: None,
+            emitted_echo: false,
         }
+    }
+
+    fn new(scenario: ClientMcpVerdict) -> Self {
+        Self::with_behavior(FakeBehavior::Verdict(scenario))
     }
 
     #[cfg(test)]
     fn authenticate_failed() -> Self {
-        Self {
-            behavior: FakeBehavior::AuthenticateFailed,
-            inbound: VecDeque::new(),
-            closed: false,
-            prompt_id: None,
-        }
+        Self::with_behavior(FakeBehavior::AuthenticateFailed)
     }
 
     #[cfg(test)]
     fn session_unauthorized() -> Self {
-        Self {
-            behavior: FakeBehavior::SessionUnauthorized,
-            inbound: VecDeque::new(),
-            closed: false,
-            prompt_id: None,
-        }
+        Self::with_behavior(FakeBehavior::SessionUnauthorized)
     }
 
     #[cfg(test)]
     fn chatty() -> Self {
-        Self {
-            behavior: FakeBehavior::Chatty,
-            inbound: VecDeque::new(),
-            closed: false,
-            prompt_id: None,
-        }
+        Self::with_behavior(FakeBehavior::Chatty)
     }
 
     #[cfg(test)]
     fn prompt_silent() -> Self {
-        Self {
-            behavior: FakeBehavior::PromptSilent,
-            inbound: VecDeque::new(),
-            closed: false,
-            prompt_id: None,
-        }
+        Self::with_behavior(FakeBehavior::PromptSilent)
     }
 
     #[cfg(test)]
     fn asks_permission() -> Self {
-        Self {
-            behavior: FakeBehavior::AsksPermission,
-            inbound: VecDeque::new(),
-            closed: false,
-            prompt_id: None,
-        }
+        Self::with_behavior(FakeBehavior::AsksPermission)
     }
 
     fn push(&mut self, message: Value) {
@@ -748,6 +897,7 @@ impl FakeAcpPeer {
     }
 
     fn emit_echo_accept(&mut self) {
+        self.emitted_echo = true;
         let prompt_id = self.prompt_id.clone();
         self.push(json!({
             "jsonrpc": "2.0",
@@ -760,8 +910,7 @@ impl FakeAcpPeer {
                     "title": ECHO_MCP_TOOL,
                     "kind": "other",
                     "status": "in_progress",
-                    "content": [],
-                    "_meta": {"mcpServerName": ECHO_MCP_SERVER_NAME}
+                    "content": []
                 }
             }
         }));
@@ -869,8 +1018,7 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                                 "title": ECHO_MCP_TOOL,
                                 "kind": "other",
                                 "status": "in_progress",
-                                "content": [],
-                                "_meta": {"mcpServerName": ECHO_MCP_SERVER_NAME}
+                                "content": []
                             }
                         }
                     }));
@@ -1001,6 +1149,23 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
             "params": {"sessionId": FIXTURE_SESSION, "path": "/private/secret.txt"}
         }))
     }
+
+    fn echo_mcp_transcript(&mut self) -> EchoMcpTranscript {
+        if matches!(
+            self.behavior,
+            FakeBehavior::Verdict(ClientMcpVerdict::AcceptsClientMcp)
+        ) || self.emitted_echo
+        {
+            return EchoMcpTranscript::called();
+        }
+        match self.behavior {
+            FakeBehavior::Verdict(ClientMcpVerdict::IgnoresClientMcp)
+            | FakeBehavior::Chatty
+            | FakeBehavior::PromptSilent
+            | FakeBehavior::AsksPermission => EchoMcpTranscript::observed_idle(),
+            _ => EchoMcpTranscript::default(),
+        }
+    }
 }
 
 fn exchange(
@@ -1062,22 +1227,13 @@ fn reject_stale_callback(
     peer: &mut dyn GrokAcpClientMcpPeer,
     capture: &mut FrameCapture,
 ) -> Result<bool, GrokAcpClientMcpError> {
-    let request = peer
-        .stale_callback_request()
-        .unwrap_or_else(synthetic_stale_callback);
+    let Some(request) = peer.stale_callback_request() else {
+        return Ok(false);
+    };
     capture.push(FrameDirection::Inbound, request.clone());
     let id = request.get("id").cloned().unwrap_or(Value::Null);
     reject_request(peer, capture, id)?;
     Ok(true)
-}
-
-fn synthetic_stale_callback() -> Value {
-    json!({
-        "jsonrpc": "2.0",
-        "id": STALE_CALLBACK_ID,
-        "method": "fs/read_text_file",
-        "params": {"sessionId": FIXTURE_SESSION, "path": "/private/secret.txt"}
-    })
 }
 
 fn reject_request(
@@ -1177,27 +1333,6 @@ fn echo_tool_title(message: &Value) -> bool {
         .into_iter()
         .flatten()
         .any(|value| value.eq_ignore_ascii_case(ECHO_MCP_TOOL))
-}
-
-fn echo_tool_called(frames: &[GrokAcpClientMcpFrame]) -> bool {
-    frames.iter().any(|frame| {
-        !frame.is_outbound()
-            && update_kind(&frame.message) == Some("tool_call")
-            && json_contains_client_mcp_server(&frame.message)
-    })
-}
-
-fn echo_tool_completed(frames: &[GrokAcpClientMcpFrame]) -> bool {
-    frames.iter().any(|frame| {
-        !frame.is_outbound()
-            && update_kind(&frame.message) == Some("tool_call_update")
-            && frame
-                .message
-                .pointer("/params/update/status")
-                .and_then(Value::as_str)
-                == Some("completed")
-            && (json_contains_client_mcp_server(&frame.message) || echo_tool_called(frames))
-    })
 }
 
 fn update_kind(message: &Value) -> Option<&str> {
@@ -1631,7 +1766,93 @@ mod tests {
 
     #[test]
     fn native_echo_title_without_client_mcp_server_is_inconclusive() {
-        let frames = [
+        assert_eq!(
+            grok_acp_client_mcp_verdict_from_frames(&unattributed_echo_frames()),
+            ClientMcpVerdict::Inconclusive
+        );
+    }
+
+    #[test]
+    fn live_none_stale_callback_is_not_synthesized() {
+        struct SilentStale(FakeAcpPeer);
+        impl GrokAcpClientMcpPeer for SilentStale {
+            fn push_outbound(&mut self, message: Value) -> Result<(), GrokAcpClientMcpError> {
+                self.0.push_outbound(message)
+            }
+            fn take_inbound(&mut self) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+                self.0.take_inbound()
+            }
+            fn close(&mut self) -> GrokAcpClientMcpCleanup {
+                self.0.close()
+            }
+            fn stale_callback_request(&mut self) -> Option<Value> {
+                None
+            }
+        }
+        let mut peer = SilentStale(FakeAcpPeer::new(ClientMcpVerdict::IgnoresClientMcp));
+        let capsule =
+            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
+                .expect("capsule");
+        assert!(!capsule.stale_callback_rejected());
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+        assert!(!capsule.frames().iter().any(|frame| {
+            !frame.is_outbound() && method_of(frame.message()) == Some("fs/read_text_file")
+        }));
+    }
+
+    #[test]
+    fn echo_mcp_tools_call_transcript_is_accepts() {
+        let frames = unattributed_echo_frames();
+        assert_eq!(
+            grok_acp_client_mcp_verdict(&frames, &EchoMcpTranscript::called()),
+            ClientMcpVerdict::AcceptsClientMcp
+        );
+    }
+
+    #[test]
+    fn unattributed_echo_with_idle_transcript_is_ignores() {
+        let frames = unattributed_echo_frames();
+        assert_eq!(
+            grok_acp_client_mcp_verdict(&frames, &EchoMcpTranscript::observed_idle()),
+            ClientMcpVerdict::IgnoresClientMcp
+        );
+    }
+
+    #[test]
+    fn echo_mcp_transcript_records_method_names() {
+        let path = std::env::temp_dir().join(format!(
+            "swallowtail-echo-mcp-transcript-{}.ndjson",
+            std::process::id()
+        ));
+        let _ = std::fs::remove_file(&path);
+        append_echo_mcp_transcript(&path, "initialize").expect("append");
+        append_echo_mcp_transcript(&path, "tools/list").expect("append");
+        append_echo_mcp_transcript(&path, "tools/call").expect("append");
+        let transcript = read_echo_mcp_transcript(&path);
+        let _ = std::fs::remove_file(&path);
+        assert!(transcript.tools_call());
+        assert_eq!(
+            transcript.methods(),
+            ["initialize", "tools/list", "tools/call"]
+        );
+    }
+
+    #[test]
+    fn missing_isolated_grok_home_fails_closed() {
+        assert_eq!(
+            isolated_grok_home_from(None).unwrap_err().kind(),
+            GrokAcpClientMcpErrorKind::LiveIsolationMissing
+        );
+        assert_eq!(
+            isolated_grok_home_from(Some("/no/such/swallowtail-grok-home"))
+                .unwrap_err()
+                .kind(),
+            GrokAcpClientMcpErrorKind::LiveIsolationMissing
+        );
+    }
+
+    fn unattributed_echo_frames() -> [GrokAcpClientMcpFrame; 5] {
+        [
             GrokAcpClientMcpFrame {
                 direction: FrameDirection::Outbound,
                 message: json!({
@@ -1680,36 +1901,7 @@ mod tests {
                     "result": {"stopReason": "end_turn"}
                 }),
             },
-        ];
-        assert_eq!(
-            grok_acp_client_mcp_verdict_from_frames(&frames),
-            ClientMcpVerdict::Inconclusive
-        );
-    }
-
-    #[test]
-    fn live_none_stale_callback_still_records_rejection() {
-        struct SilentStale(FakeAcpPeer);
-        impl GrokAcpClientMcpPeer for SilentStale {
-            fn push_outbound(&mut self, message: Value) -> Result<(), GrokAcpClientMcpError> {
-                self.0.push_outbound(message)
-            }
-            fn take_inbound(&mut self) -> Result<Vec<Value>, GrokAcpClientMcpError> {
-                self.0.take_inbound()
-            }
-            fn close(&mut self) -> GrokAcpClientMcpCleanup {
-                self.0.close()
-            }
-            fn stale_callback_request(&mut self) -> Option<Value> {
-                None
-            }
-        }
-        let mut peer = SilentStale(FakeAcpPeer::new(ClientMcpVerdict::IgnoresClientMcp));
-        let capsule =
-            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
-                .expect("capsule");
-        assert!(capsule.stale_callback_rejected());
-        assert_eq!(capsule.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+        ]
     }
 
     #[test]

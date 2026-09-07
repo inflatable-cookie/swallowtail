@@ -35,6 +35,9 @@ The runner builds the disposable `grok-acp-echo-mcp` stdio server (one `echo`
 tool, no filesystem or network) and drives ACP `initialize`, `authenticate`
 with Grok's already-cached token method id only, and `session/new` with a
 non-empty `mcpServers` list naming that server, then one bounded echo prompt.
+The echo server appends received method names (`initialize`, `tools/list`,
+`tools/call`) to a transcript file under `GROK_HOME`. `accepts_client_mcp`
+requires that `tools/call` transcript, not an invented ACP server-name field.
 
 If Desktop already isolated `GROK_HOME`, the script leaves it in place and
 does not copy host credentials or config. If `GROK_HOME` is unset, the script
@@ -70,17 +73,19 @@ One redacted JSON capsule per exact version. Fields:
 - `stale_callback_rejected`
 - `cleanup_joined`
 - `truncated`: capture stopped at the frame bound; verdict is then `inconclusive`
+- `echo_mcp_methods`: method names observed on the disposable echo server stdio
 
 Auth that fails before `session/new`, or a `session/new` JSON-RPC error that
 does not mention `mcpServers` or the echo server name, is `inconclusive`.
 Only an explicit client-MCP rejection is `rejects_client_mcp`. Overflow does
-not abort without a capsule. `ignores_client_mcp` requires a completed
-`session/prompt` turn with no echo-named tool call. A timeout, missing prompt
-result, or a `title: "echo"` tool call without the client MCP server name is
-`inconclusive` — ACP v1 does not attribute a tool call to a client-supplied
-server, so that shape must not be published as a Grok ignore.
-Permission requests are answered with an `allow_once` `optionId` taken from
-the request's `options`, not invented by the harness.
+not abort without a capsule. `accepts_client_mcp` requires the echo MCP
+stdio transcript to contain `tools/call`. `ignores_client_mcp` requires a
+completed `session/prompt` turn and no echo `tools/call` on that transcript.
+A timeout, missing prompt result, or a `title: "echo"` tool call with no
+transcript file is `inconclusive`. Live spawn refuses unless `GROK_HOME` is
+an existing directory; session `cwd` and the Grok child `HOME` are that
+directory. `stale_callback_rejected` is true only when Grok actually sent a
+post-close callback.
 
 Frames must contain no credentials, tokens, or host paths. `1.0.4` and `1.0.5`
 are separate evidence segments; do not merge them.

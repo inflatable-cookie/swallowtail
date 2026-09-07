@@ -18,10 +18,25 @@ fn fake_acp_fixture_proves_all_four_verdicts_for_each_exact_segment() {
                 .expect("fixture probe completes");
             assert_eq!(capsule.version(), version);
             assert_eq!(capsule.verdict(), expected);
-            assert_eq!(
-                grok_acp_client_mcp_verdict_from_frames(capsule.frames()),
-                expected
-            );
+            if expected == ClientMcpVerdict::AcceptsClientMcp {
+                assert!(
+                    capsule
+                        .echo_mcp_methods()
+                        .iter()
+                        .any(|method| method == "tools/call"),
+                    "accepts_client_mcp requires the echo MCP tools/call transcript"
+                );
+                assert_eq!(
+                    grok_acp_client_mcp_verdict_from_frames(capsule.frames()),
+                    ClientMcpVerdict::Inconclusive,
+                    "ACP frames alone cannot attribute an echo tool_call"
+                );
+            } else {
+                assert_eq!(
+                    grok_acp_client_mcp_verdict_from_frames(capsule.frames()),
+                    expected
+                );
+            }
             assert!(capsule.cleanup().joined());
             assert!(capsule.stale_callback_rejected());
             assert_eq!(

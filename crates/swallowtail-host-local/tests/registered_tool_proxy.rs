@@ -224,6 +224,24 @@ fn mounted_proxy_filters_native_declaration_before_host_work() {
         )
         .expect("mixed selection is ready through the mounted gate");
     let lease = block_on(prepared.open()).expect("open mounts the real listener");
+    let direct_native_payload = RegisteredToolPayload::new(
+        RegisteredToolSchemaMediaType::new("application/json").expect("media type"),
+        br#"{}"#.to_vec(),
+        lease.selection().effective_bounds().max_argument_bytes(),
+    )
+    .expect("bounded direct native arguments");
+    let direct_native = block_on(lease.call(RegisteredToolCallRequest::new(
+        RegisteredToolCallId::new("direct-native").expect("call id"),
+        native_tool_id(),
+        direct_native_payload,
+        lease.deadline(),
+    )))
+    .expect_err("mediated lease.call rejects NativeClient before dispatch");
+    assert_eq!(
+        direct_native.diagnostic().code(),
+        "swallowtail.registered_tool.unsupported_tool"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 0);
     let mut launch = local
         .registered_tool_proxy_launch(&lease)
         .expect("host materializes the real courier launch");

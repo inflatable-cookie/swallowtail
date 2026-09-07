@@ -12,6 +12,7 @@
 //! never claims exactly-once remote execution.
 
 use super::admission::AdmissionPhase;
+use super::attachment::RegisteredToolAttachment;
 use super::call::{
     RegisteredToolCall, RegisteredToolCallRequest, RegisteredToolExecutionDisposition,
     RegisteredToolOutcome, RegisteredToolProgress, ValidatedRegisteredToolBinding,
@@ -23,7 +24,8 @@ use super::dispatch::{
 use super::failure::{RegisteredToolFailureKind, fail, reject};
 use super::gate::{AdmissionGate, AdmissionPermit};
 use super::identity::{
-    RegisteredToolCallId, RegisteredToolLeaseGeneration, RegisteredToolTransportGeneration,
+    RegisteredToolCallId, RegisteredToolExecutionKind, RegisteredToolLeaseGeneration,
+    RegisteredToolTransportGeneration,
 };
 use super::lease::{
     RegisteredToolAdmissionState, RegisteredToolBridgeLease, RegisteredToolCompletionState,
@@ -541,6 +543,11 @@ impl RegisteredToolOperationKernel {
             .filter(|_| self.selection.contains(request.tool()))
             .ok_or_else(|| fail(RegisteredToolFailureKind::UnsupportedTool))?;
         let kind = declaration.kind();
+        if self.selection.attachment() == RegisteredToolAttachment::MediatedStdioProxy
+            && kind != RegisteredToolExecutionKind::Mcp
+        {
+            return Err(fail(RegisteredToolFailureKind::UnsupportedTool));
+        }
         if !kind.is_host_dispatchable() {
             return Err(fail(RegisteredToolFailureKind::UnsupportedTool));
         }

@@ -16,6 +16,9 @@ mod failure;
 mod identity;
 mod model_binding;
 mod provider_operation_observation;
+mod registered_capability;
+#[cfg(test)]
+mod registered_capability_tests;
 mod row;
 mod semantics;
 mod text;
@@ -37,6 +40,15 @@ pub use identity::{
 pub use model_binding::ConsumerRouteModelBinding;
 pub use provider_operation_observation::{
     ConsumerRouteProviderOperationObservation, ConsumerRouteProviderOperationOutcome,
+};
+pub use registered_capability::{
+    REGISTERED_TOOL_CAPABILITY_SEMANTIC_ID, REGISTERED_TOOL_EXECUTION_KIND_SEMANTIC_ID,
+    REGISTERED_TOOL_PERMISSION_SEMANTIC_ID, REGISTERED_TOOL_PROGRESS_SEMANTIC_ID,
+    REGISTERED_TOOL_SCHEDULING_SEMANTIC_ID, REGISTERED_TOOL_TRANSPORT_SEMANTIC_ID,
+    RegisteredCapabilityProjectionInput, RegisteredToolPermissionStrength,
+    RegisteredToolProgressMode, RegisteredToolQualifiedRoute, RegisteredToolRouteQualification,
+    RegisteredToolSkillDelivery, SELECTED_SKILL_BUNDLE_SEMANTIC_ID, project_registered_capability,
+    registered_capability_control_id, registered_capability_feature_id,
 };
 pub use row::ConsumerRouteProjectionRow;
 pub use semantics::{

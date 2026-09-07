@@ -2,6 +2,7 @@
 
 use super::failure::{RegisteredToolFailure, RegisteredToolFailureKind, reject};
 use super::limits::MAX_REGISTERED_TOOL_IDENTITY_BYTES;
+use sha2::{Digest, Sha256};
 use std::fmt;
 use std::num::NonZeroU64;
 
@@ -74,6 +75,41 @@ bounded_identity!(
     RegisteredToolReasonCode,
     "Bounded safe reason code for a revocation or denial."
 );
+bounded_identity!(
+    SelectedSkillId,
+    "Stable identity of one consumer-selected skill bundle."
+);
+bounded_identity!(
+    SelectedSkillRevision,
+    "Stable revision of one consumer-selected skill bundle."
+);
+bounded_identity!(
+    RequiredReferenceId,
+    "Stable identity of one required reference declared by a skill bundle."
+);
+bounded_identity!(
+    SelectedContentDigest,
+    "Canonical Swallowtail digest of one bounded selected body."
+);
+
+/// Canonical prefix of every Swallowtail-computed selected-content digest.
+pub(super) const SELECTED_CONTENT_DIGEST_PREFIX: &str = "sha256:";
+
+impl SelectedContentDigest {
+    /// Computes the canonical digest Swallowtail enforces over these bytes.
+    ///
+    /// Swallowtail is the digest authority for transported selected content:
+    /// resolution recomputes this value and rejects any disagreement rather
+    /// than trusting a digest the host reported about its own read.
+    #[must_use]
+    pub fn of_bytes(bytes: &[u8]) -> Self {
+        let mut rendered = String::from(SELECTED_CONTENT_DIGEST_PREFIX);
+        for byte in Sha256::digest(bytes) {
+            rendered.push_str(&format!("{byte:02x}"));
+        }
+        Self(rendered)
+    }
+}
 
 /// Stable namespaced identity of exactly one registered tool.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]

@@ -629,6 +629,7 @@ pub swallowtail_runtime::RegisteredToolFailureKind::CredentialReferenceUnavailab
 pub swallowtail_runtime::RegisteredToolFailureKind::DeadlineExceeded
 pub swallowtail_runtime::RegisteredToolFailureKind::DuplicateCorrelation
 pub swallowtail_runtime::RegisteredToolFailureKind::ForeignCorrelation
+pub swallowtail_runtime::RegisteredToolFailureKind::ForeignSelectedContent
 pub swallowtail_runtime::RegisteredToolFailureKind::IdentityRejected
 pub swallowtail_runtime::RegisteredToolFailureKind::InvalidResult
 pub swallowtail_runtime::RegisteredToolFailureKind::LimitExceeded
@@ -637,7 +638,9 @@ pub swallowtail_runtime::RegisteredToolFailureKind::NotReady
 pub swallowtail_runtime::RegisteredToolFailureKind::PostTerminalCorrelation
 pub swallowtail_runtime::RegisteredToolFailureKind::ProcessRecipeUnavailable
 pub swallowtail_runtime::RegisteredToolFailureKind::ProviderRejected
+pub swallowtail_runtime::RegisteredToolFailureKind::RequiredReferenceUnavailable
 pub swallowtail_runtime::RegisteredToolFailureKind::Revoked
+pub swallowtail_runtime::RegisteredToolFailureKind::SelectedContentMismatch
 pub swallowtail_runtime::RegisteredToolFailureKind::ServerExecutionFailed
 pub swallowtail_runtime::RegisteredToolFailureKind::StaleCorrelation
 pub swallowtail_runtime::RegisteredToolFailureKind::TeardownFailed
@@ -662,16 +665,28 @@ pub swallowtail_runtime::RegisteredToolLifecycleState::Ready
 pub swallowtail_runtime::RegisteredToolLifecycleState::Registered
 impl swallowtail_runtime::RegisteredToolLifecycleState
 pub const fn swallowtail_runtime::RegisteredToolLifecycleState::as_str(self) -> &'static str
+pub enum swallowtail_runtime::RegisteredToolPermissionStrength
+pub swallowtail_runtime::RegisteredToolPermissionStrength::ExactOneShot
+pub swallowtail_runtime::RegisteredToolPermissionStrength::NotRepresented
 pub enum swallowtail_runtime::RegisteredToolPortAvailability
 pub swallowtail_runtime::RegisteredToolPortAvailability::Absent
 pub swallowtail_runtime::RegisteredToolPortAvailability::Registered
 impl swallowtail_runtime::RegisteredToolPortAvailability
 pub const fn swallowtail_runtime::RegisteredToolPortAvailability::as_str(self) -> &'static str
+pub enum swallowtail_runtime::RegisteredToolProgressMode
+pub swallowtail_runtime::RegisteredToolProgressMode::BoundedOrdered
+pub swallowtail_runtime::RegisteredToolProgressMode::NoProgress
 pub enum swallowtail_runtime::RegisteredToolRetryPosture
 pub swallowtail_runtime::RegisteredToolRetryPosture::ConsumerRetryable
 pub swallowtail_runtime::RegisteredToolRetryPosture::NeverRetry
 impl swallowtail_runtime::RegisteredToolRetryPosture
 pub const fn swallowtail_runtime::RegisteredToolRetryPosture::as_str(self) -> &'static str
+pub enum swallowtail_runtime::RegisteredToolRouteQualification
+pub swallowtail_runtime::RegisteredToolRouteQualification::Qualified(swallowtail_runtime::RegisteredToolQualifiedRoute)
+pub swallowtail_runtime::RegisteredToolRouteQualification::Unqualified
+pub enum swallowtail_runtime::RegisteredToolSkillDelivery
+pub swallowtail_runtime::RegisteredToolSkillDelivery::BoundedSelectedBundle
+pub swallowtail_runtime::RegisteredToolSkillDelivery::NotCarried
 pub enum swallowtail_runtime::RegisteredToolTransport
 pub swallowtail_runtime::RegisteredToolTransport::HostMediatedCallback
 pub swallowtail_runtime::RegisteredToolTransport::PrivateLoopbackHttp
@@ -709,6 +724,17 @@ pub fn swallowtail_runtime::SchemaDocument::inline_bytes(&self) -> core::option:
 pub const fn swallowtail_runtime::SchemaDocument::reference(swallowtail_runtime::SchemaRef) -> Self
 impl core::fmt::Debug for swallowtail_runtime::SchemaDocument
 pub fn swallowtail_runtime::SchemaDocument::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub enum swallowtail_runtime::SelectedContentResolution
+pub swallowtail_runtime::SelectedContentResolution::Inaccessible
+pub swallowtail_runtime::SelectedContentResolution::Resolved(swallowtail_runtime::RegisteredToolPayload)
+pub enum swallowtail_runtime::SelectedSkillProvenance
+pub swallowtail_runtime::SelectedSkillProvenance::HarnessDistribution
+pub swallowtail_runtime::SelectedSkillProvenance::HostApprovedGlobal
+pub swallowtail_runtime::SelectedSkillProvenance::ProjectBound
+impl swallowtail_runtime::SelectedSkillProvenance
+pub const fn swallowtail_runtime::SelectedSkillProvenance::as_str(self) -> &'static str
+impl core::fmt::Display for swallowtail_runtime::SelectedSkillProvenance
+pub fn swallowtail_runtime::SelectedSkillProvenance::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub enum swallowtail_runtime::SessionLifecycleOperation
 pub swallowtail_runtime::SessionLifecycleOperation::Load
 pub swallowtail_runtime::SessionLifecycleOperation::Open
@@ -2724,6 +2750,11 @@ pub const fn swallowtail_runtime::RealtimeMediaSessionState::is_reusable(&self) 
 pub const fn swallowtail_runtime::RealtimeMediaSessionState::new(swallowtail_runtime::RuntimeSessionId, swallowtail_core::realtime_media::RealtimeMediaConfig) -> Self
 pub fn swallowtail_runtime::RealtimeMediaSessionState::record_response_event(&mut self, &swallowtail_runtime::RealtimeMediaEvent) -> core::result::Result<(), swallowtail_runtime::RealtimeMediaFailure>
 pub const fn swallowtail_runtime::RealtimeMediaSessionState::response_active(&self) -> bool
+pub struct swallowtail_runtime::RegisteredCapabilityProjectionInput<'a>
+impl<'a> swallowtail_runtime::RegisteredCapabilityProjectionInput<'a>
+pub const fn swallowtail_runtime::RegisteredCapabilityProjectionInput<'a>::new(swallowtail_runtime::ConsumerRouteApplicability, swallowtail_runtime::ConsumerRouteProjectionSourceIdentity, &'a swallowtail_runtime::RegisteredToolSelection, &'a swallowtail_runtime::RegisteredToolReadiness) -> Self
+pub const fn swallowtail_runtime::RegisteredCapabilityProjectionInput<'a>::with_resolved_skill_bundle(self, &'a swallowtail_runtime::ResolvedSkillBundle) -> Self
+pub const fn swallowtail_runtime::RegisteredCapabilityProjectionInput<'a>::with_route_qualification(self, swallowtail_runtime::RegisteredToolRouteQualification) -> Self
 pub struct swallowtail_runtime::RegisteredServerId(_)
 impl swallowtail_runtime::RegisteredServerId
 pub fn swallowtail_runtime::RegisteredServerId::as_str(&self) -> &str
@@ -2950,6 +2981,12 @@ pub fn swallowtail_runtime::RegisteredToolProtocolVersion::as_str(&self) -> &str
 pub fn swallowtail_runtime::RegisteredToolProtocolVersion::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
 impl core::fmt::Display for swallowtail_runtime::RegisteredToolProtocolVersion
 pub fn swallowtail_runtime::RegisteredToolProtocolVersion::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::RegisteredToolQualifiedRoute
+impl swallowtail_runtime::RegisteredToolQualifiedRoute
+pub const fn swallowtail_runtime::RegisteredToolQualifiedRoute::new(swallowtail_runtime::RegisteredToolPermissionStrength, swallowtail_runtime::RegisteredToolProgressMode, swallowtail_runtime::RegisteredToolSkillDelivery) -> Self
+pub const fn swallowtail_runtime::RegisteredToolQualifiedRoute::permission(self) -> swallowtail_runtime::RegisteredToolPermissionStrength
+pub const fn swallowtail_runtime::RegisteredToolQualifiedRoute::progress(self) -> swallowtail_runtime::RegisteredToolProgressMode
+pub const fn swallowtail_runtime::RegisteredToolQualifiedRoute::skill_delivery(self) -> swallowtail_runtime::RegisteredToolSkillDelivery
 pub struct swallowtail_runtime::RegisteredToolReadiness
 impl swallowtail_runtime::RegisteredToolReadiness
 pub fn swallowtail_runtime::RegisteredToolReadiness::evaluate(&swallowtail_runtime::HostServices, &swallowtail_runtime::RegisteredToolSelection) -> Self
@@ -3092,6 +3129,31 @@ pub fn swallowtail_runtime::RequestId::as_str(&self) -> &str
 pub fn swallowtail_runtime::RequestId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RuntimeIdentityRequired>
 impl core::fmt::Debug for swallowtail_runtime::RequestId
 pub fn swallowtail_runtime::RequestId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::RequiredReferenceDescriptor
+impl swallowtail_runtime::RequiredReferenceDescriptor
+pub const fn swallowtail_runtime::RequiredReferenceDescriptor::content(&self) -> &swallowtail_runtime::SelectedContentDescriptor
+pub const fn swallowtail_runtime::RequiredReferenceDescriptor::digest(&self) -> &swallowtail_runtime::SelectedContentDigest
+pub const fn swallowtail_runtime::RequiredReferenceDescriptor::id(&self) -> &swallowtail_runtime::RequiredReferenceId
+pub const fn swallowtail_runtime::RequiredReferenceDescriptor::new(swallowtail_runtime::RequiredReferenceId, swallowtail_runtime::SelectedContentDigest, swallowtail_runtime::SelectedContentDescriptor) -> Self
+pub struct swallowtail_runtime::RequiredReferenceId(_)
+impl swallowtail_runtime::RequiredReferenceId
+pub fn swallowtail_runtime::RequiredReferenceId::as_str(&self) -> &str
+pub fn swallowtail_runtime::RequiredReferenceId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
+impl core::fmt::Display for swallowtail_runtime::RequiredReferenceId
+pub fn swallowtail_runtime::RequiredReferenceId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::ResolvedRequiredReference
+impl swallowtail_runtime::ResolvedRequiredReference
+pub const fn swallowtail_runtime::ResolvedRequiredReference::digest(&self) -> &swallowtail_runtime::SelectedContentDigest
+pub const fn swallowtail_runtime::ResolvedRequiredReference::id(&self) -> &swallowtail_runtime::RequiredReferenceId
+pub const fn swallowtail_runtime::ResolvedRequiredReference::payload(&self) -> &swallowtail_runtime::RegisteredToolPayload
+pub struct swallowtail_runtime::ResolvedSkillBundle
+impl swallowtail_runtime::ResolvedSkillBundle
+pub const fn swallowtail_runtime::ResolvedSkillBundle::body(&self) -> &swallowtail_runtime::RegisteredToolPayload
+pub const fn swallowtail_runtime::ResolvedSkillBundle::digest(&self) -> &swallowtail_runtime::SelectedContentDigest
+pub const fn swallowtail_runtime::ResolvedSkillBundle::identity(&self) -> &swallowtail_runtime::SelectedSkillIdentity
+pub fn swallowtail_runtime::ResolvedSkillBundle::references(&self) -> &[swallowtail_runtime::ResolvedRequiredReference]
+pub const fn swallowtail_runtime::ResolvedSkillBundle::resolved_content_bytes(&self) -> usize
+pub const fn swallowtail_runtime::ResolvedSkillBundle::revision(&self) -> &swallowtail_runtime::SelectedSkillRevision
 pub struct swallowtail_runtime::ResourceLease
 impl swallowtail_runtime::ResourceLease
 pub const fn swallowtail_runtime::ResourceLease::access(&self) -> swallowtail_core::session_access::ResourceAccess
@@ -3220,6 +3282,69 @@ impl core::fmt::Display for swallowtail_runtime::SecretLease
 pub fn swallowtail_runtime::SecretLease::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::ops::drop::Drop for swallowtail_runtime::SecretLease
 pub fn swallowtail_runtime::SecretLease::drop(&mut self)
+pub struct swallowtail_runtime::SelectedContentDescriptor
+impl swallowtail_runtime::SelectedContentDescriptor
+pub const fn swallowtail_runtime::SelectedContentDescriptor::declared_bytes(&self) -> usize
+pub const fn swallowtail_runtime::SelectedContentDescriptor::media_type(&self) -> &swallowtail_runtime::RegisteredToolSchemaMediaType
+pub fn swallowtail_runtime::SelectedContentDescriptor::new(swallowtail_runtime::SelectedContentRef, swallowtail_runtime::RegisteredToolSchemaMediaType, usize) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
+pub const fn swallowtail_runtime::SelectedContentDescriptor::reference(&self) -> &swallowtail_runtime::SelectedContentRef
+pub struct swallowtail_runtime::SelectedContentDigest(_)
+impl swallowtail_runtime::SelectedContentDigest
+pub fn swallowtail_runtime::SelectedContentDigest::as_str(&self) -> &str
+pub fn swallowtail_runtime::SelectedContentDigest::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
+impl swallowtail_runtime::SelectedContentDigest
+pub fn swallowtail_runtime::SelectedContentDigest::of_bytes(&[u8]) -> Self
+impl core::fmt::Display for swallowtail_runtime::SelectedContentDigest
+pub fn swallowtail_runtime::SelectedContentDigest::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::SelectedContentRef(_)
+impl swallowtail_runtime::SelectedContentRef
+pub fn swallowtail_runtime::SelectedContentRef::as_host_value(&self) -> &str
+pub fn swallowtail_runtime::SelectedContentRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::InputValueRequired>
+impl core::fmt::Debug for swallowtail_runtime::SelectedContentRef
+pub fn swallowtail_runtime::SelectedContentRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::SelectedSkillBundle
+impl swallowtail_runtime::SelectedSkillBundle
+pub const fn swallowtail_runtime::SelectedSkillBundle::bounds(&self) -> swallowtail_runtime::SelectedSkillBundleBounds
+pub fn swallowtail_runtime::SelectedSkillBundle::declared_content_bytes(&self) -> usize
+pub const fn swallowtail_runtime::SelectedSkillBundle::digest(&self) -> &swallowtail_runtime::SelectedContentDigest
+pub const fn swallowtail_runtime::SelectedSkillBundle::identity(&self) -> &swallowtail_runtime::SelectedSkillIdentity
+pub fn swallowtail_runtime::SelectedSkillBundle::new(swallowtail_runtime::SelectedSkillIdentity, swallowtail_runtime::SelectedSkillRevision, swallowtail_runtime::SelectedContentDigest, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::RequiredReferenceDescriptor>, swallowtail_runtime::SelectedSkillBundleBounds) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
+pub fn swallowtail_runtime::SelectedSkillBundle::reference(&self, &swallowtail_runtime::RequiredReferenceId) -> core::option::Option<&swallowtail_runtime::RequiredReferenceDescriptor>
+pub fn swallowtail_runtime::SelectedSkillBundle::references(&self) -> &[swallowtail_runtime::RequiredReferenceDescriptor]
+pub const fn swallowtail_runtime::SelectedSkillBundle::revision(&self) -> &swallowtail_runtime::SelectedSkillRevision
+impl swallowtail_runtime::SelectedSkillBundle
+pub fn swallowtail_runtime::SelectedSkillBundle::resolve(&self, &swallowtail_runtime::SelectedSkillHostResources) -> core::result::Result<swallowtail_runtime::ResolvedSkillBundle, swallowtail_runtime::RuntimeFailure>
+pub struct swallowtail_runtime::SelectedSkillBundleBounds
+impl swallowtail_runtime::SelectedSkillBundleBounds
+pub const fn swallowtail_runtime::SelectedSkillBundleBounds::ceiling() -> Self
+pub const fn swallowtail_runtime::SelectedSkillBundleBounds::max_aggregate_content_bytes(self) -> usize
+pub const fn swallowtail_runtime::SelectedSkillBundleBounds::max_required_references(self) -> usize
+pub fn swallowtail_runtime::SelectedSkillBundleBounds::new(usize, usize) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
+pub struct swallowtail_runtime::SelectedSkillHostResources
+impl swallowtail_runtime::SelectedSkillHostResources
+pub fn swallowtail_runtime::SelectedSkillHostResources::new() -> Self
+pub fn swallowtail_runtime::SelectedSkillHostResources::reference(&self, &swallowtail_runtime::RequiredReferenceId) -> core::option::Option<&swallowtail_runtime::SelectedContentResolution>
+pub const fn swallowtail_runtime::SelectedSkillHostResources::skill_body(&self) -> core::option::Option<&swallowtail_runtime::SelectedContentResolution>
+pub fn swallowtail_runtime::SelectedSkillHostResources::with_reference(self, swallowtail_runtime::RequiredReferenceId, swallowtail_runtime::SelectedContentResolution) -> Self
+pub fn swallowtail_runtime::SelectedSkillHostResources::with_skill_body(self, swallowtail_runtime::SelectedContentResolution) -> Self
+pub struct swallowtail_runtime::SelectedSkillId(_)
+impl swallowtail_runtime::SelectedSkillId
+pub fn swallowtail_runtime::SelectedSkillId::as_str(&self) -> &str
+pub fn swallowtail_runtime::SelectedSkillId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
+impl core::fmt::Display for swallowtail_runtime::SelectedSkillId
+pub fn swallowtail_runtime::SelectedSkillId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::SelectedSkillIdentity
+impl swallowtail_runtime::SelectedSkillIdentity
+pub const fn swallowtail_runtime::SelectedSkillIdentity::body(&self) -> &swallowtail_runtime::SelectedContentDescriptor
+pub const fn swallowtail_runtime::SelectedSkillIdentity::id(&self) -> &swallowtail_runtime::SelectedSkillId
+pub const fn swallowtail_runtime::SelectedSkillIdentity::new(swallowtail_runtime::SelectedSkillId, swallowtail_runtime::SelectedSkillProvenance, swallowtail_runtime::SelectedContentDescriptor) -> Self
+pub const fn swallowtail_runtime::SelectedSkillIdentity::provenance(&self) -> swallowtail_runtime::SelectedSkillProvenance
+pub struct swallowtail_runtime::SelectedSkillRevision(_)
+impl swallowtail_runtime::SelectedSkillRevision
+pub fn swallowtail_runtime::SelectedSkillRevision::as_str(&self) -> &str
+pub fn swallowtail_runtime::SelectedSkillRevision::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::RegisteredToolFailure>
+impl core::fmt::Display for swallowtail_runtime::SelectedSkillRevision
+pub fn swallowtail_runtime::SelectedSkillRevision::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::ServingEndpointBinding
 impl swallowtail_runtime::ServingEndpointBinding
 pub const fn swallowtail_runtime::ServingEndpointBinding::audience(&self) -> &swallowtail_core::runtime_identity::EndpointAudience
@@ -3730,13 +3855,22 @@ pub const swallowtail_runtime::MAX_REGISTERED_TOOL_RESULT_BYTES: usize
 pub const swallowtail_runtime::MAX_REGISTERED_TOOL_SCHEMA_BYTES: usize
 pub const swallowtail_runtime::MAX_REGISTERED_TOOL_SELECTED_TOOLS: usize
 pub const swallowtail_runtime::MAX_REGISTERED_TOOL_TRANSPORTS: usize
+pub const swallowtail_runtime::MAX_SELECTED_SKILL_CONTENT_BYTES: usize
+pub const swallowtail_runtime::MAX_SELECTED_SKILL_REQUIRED_REFERENCES: usize
 pub const swallowtail_runtime::MAX_VERSION_BYTES: usize
 pub const swallowtail_runtime::MAX_VERSION_OUTPUT_BYTES: usize
+pub const swallowtail_runtime::REGISTERED_TOOL_CAPABILITY_SEMANTIC_ID: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_CLEANUP_BUDGET: core::time::Duration
 pub const swallowtail_runtime::REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION: &str
+pub const swallowtail_runtime::REGISTERED_TOOL_EXECUTION_KIND_SEMANTIC_ID: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_MAX_CALL_DURATION: core::time::Duration
 pub const swallowtail_runtime::REGISTERED_TOOL_OPEN_BUDGET: core::time::Duration
+pub const swallowtail_runtime::REGISTERED_TOOL_PERMISSION_SEMANTIC_ID: &str
+pub const swallowtail_runtime::REGISTERED_TOOL_PROGRESS_SEMANTIC_ID: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_QUALIFIED_TRANSPORTS: &[swallowtail_runtime::RegisteredToolTransport]
+pub const swallowtail_runtime::REGISTERED_TOOL_SCHEDULING_SEMANTIC_ID: &str
+pub const swallowtail_runtime::REGISTERED_TOOL_TRANSPORT_SEMANTIC_ID: &str
+pub const swallowtail_runtime::SELECTED_SKILL_BUNDLE_SEMANTIC_ID: &str
 pub const swallowtail_runtime::WATCHER_BRIDGE_BEARER_BYTE_LEN: usize
 pub const swallowtail_runtime::WATCHER_BRIDGE_HTTP_PATH: &str
 pub const swallowtail_runtime::WATCHER_BRIDGE_INITIALIZED_NOTIFICATION: &str
@@ -4025,9 +4159,12 @@ pub fn swallowtail_runtime::prepare_negotiated_reasoning_setup(&swallowtail_core
 pub async fn swallowtail_runtime::probe_installed_executable_version(swallowtail_runtime::InstalledExecutableDiscoveryRequest, swallowtail_runtime::HostServices, swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim, impl core::ops::function::Fn(&[u8]) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding> + core::marker::Send + 'static, swallowtail_runtime::InstalledProbeCodes, &'static str) -> core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::probe_outcome_failure(&swallowtail_core::registration::discovery::DiscoveryOutcome, &'static str, &'static str) -> swallowtail_runtime::PreparationFailure
 pub fn swallowtail_runtime::probe_runtime_failure(&swallowtail_runtime::RuntimeFailure, &'static str) -> swallowtail_runtime::PreparationFailure
+pub fn swallowtail_runtime::project_registered_capability(swallowtail_runtime::RegisteredCapabilityProjectionInput<'_>) -> core::result::Result<swallowtail_runtime::ConsumerRouteProjectionContribution, swallowtail_runtime::ConsumerRouteProjectionFailure>
 pub fn swallowtail_runtime::project_watcher_activity(&swallowtail_runtime::RuntimeTurnId, &swallowtail_runtime::WatcherSnapshot) -> core::result::Result<swallowtail_runtime::WatcherActivityProjection, swallowtail_runtime::WatcherActivityProjectionFailure>
 pub fn swallowtail_runtime::provider_status(swallowtail_runtime::RuntimeFailure) -> swallowtail_runtime::TerminalStatus
 pub fn swallowtail_runtime::refresh_readiness(&dyn swallowtail_runtime::ConnectionLifecycleStore, swallowtail_runtime::ReadinessRefreshRequest) -> core::result::Result<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_runtime::ReadinessRefreshFailure>
+pub fn swallowtail_runtime::registered_capability_control_id(&str, &swallowtail_runtime::RegisteredToolProtocolVersion, &str) -> core::result::Result<swallowtail_runtime::ConsumerRouteControlId, swallowtail_runtime::ConsumerRouteProjectionFailure>
+pub fn swallowtail_runtime::registered_capability_feature_id(&str, &swallowtail_runtime::RegisteredToolProtocolVersion, &str) -> core::result::Result<swallowtail_runtime::ConsumerRouteFeatureId, swallowtail_runtime::ConsumerRouteProjectionFailure>
 pub fn swallowtail_runtime::resolve_idiom_instructions(&swallowtail_runtime::HostServices, &swallowtail_runtime::SessionOptions) -> core::result::Result<core::option::Option<swallowtail_runtime::OperationContent>, swallowtail_runtime::IdiomSourceUnavailable>
 pub fn swallowtail_runtime::runtime_event_channel(usize) -> core::result::Result<(swallowtail_runtime::RuntimeEventSender, swallowtail_runtime::RuntimeEventStream), swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::settled_session_plans_share_binding(&swallowtail_core::preflight::PreflightPlan, &swallowtail_core::preflight::PreflightPlan) -> bool

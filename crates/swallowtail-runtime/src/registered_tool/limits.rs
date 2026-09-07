@@ -195,3 +195,65 @@ impl RegisteredToolLimits {
         self.bounds
     }
 }
+
+/// Maximum aggregate bytes of one selected skill body and its references.
+///
+/// Contract 063 fixes 64 KiB of total selected skill/reference content. No
+/// single body may exceed the aggregate it is counted against.
+pub const MAX_SELECTED_SKILL_CONTENT_BYTES: usize = 64 * 1024;
+/// Maximum required references one selected skill bundle may declare.
+///
+/// This mirrors the Contract 062 approved-source maximum. A bundle that needs
+/// more references is rejected before provider work rather than truncated.
+pub const MAX_SELECTED_SKILL_REQUIRED_REFERENCES: usize = 32;
+
+/// Positive consumer-declared bounds for one selected skill bundle.
+///
+/// Consumer bounds may only narrow the first-tranche ceilings.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub struct SelectedSkillBundleBounds {
+    max_required_references: usize,
+    max_aggregate_content_bytes: usize,
+}
+
+impl SelectedSkillBundleBounds {
+    /// Creates positive bundle bounds that never widen the fixed ceilings.
+    pub fn new(
+        max_required_references: usize,
+        max_aggregate_content_bytes: usize,
+    ) -> Result<Self, RegisteredToolFailure> {
+        if max_aggregate_content_bytes == 0 {
+            return Err(reject(RegisteredToolFailureKind::IdentityRejected));
+        }
+        if max_required_references > MAX_SELECTED_SKILL_REQUIRED_REFERENCES
+            || max_aggregate_content_bytes > MAX_SELECTED_SKILL_CONTENT_BYTES
+        {
+            return Err(reject(RegisteredToolFailureKind::LimitExceeded));
+        }
+        Ok(Self {
+            max_required_references,
+            max_aggregate_content_bytes,
+        })
+    }
+
+    /// Returns the widest bundle bounds this slice admits.
+    #[must_use]
+    pub const fn ceiling() -> Self {
+        Self {
+            max_required_references: MAX_SELECTED_SKILL_REQUIRED_REFERENCES,
+            max_aggregate_content_bytes: MAX_SELECTED_SKILL_CONTENT_BYTES,
+        }
+    }
+
+    /// Returns the maximum required references one bundle may declare.
+    #[must_use]
+    pub const fn max_required_references(self) -> usize {
+        self.max_required_references
+    }
+
+    /// Returns the maximum aggregate selected-content bytes.
+    #[must_use]
+    pub const fn max_aggregate_content_bytes(self) -> usize {
+        self.max_aggregate_content_bytes
+    }
+}

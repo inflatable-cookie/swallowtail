@@ -62,6 +62,12 @@ pub enum RegisteredToolFailureKind {
     Revoked,
     /// A required identity value is blank, oversized, or duplicated.
     IdentityRejected,
+    /// A declared required reference is missing or host-inaccessible.
+    RequiredReferenceUnavailable,
+    /// Resolved selected content disagrees with its declared descriptor.
+    SelectedContentMismatch,
+    /// The host supplied selected content the bundle never declared.
+    ForeignSelectedContent,
 }
 
 impl RegisteredToolFailureKind {
@@ -105,6 +111,13 @@ impl RegisteredToolFailureKind {
             Self::LimitExceeded => "swallowtail.registered_tool.limit_exceeded",
             Self::Revoked => "swallowtail.registered_tool.revoked",
             Self::IdentityRejected => "swallowtail.registered_tool.identity_rejected",
+            Self::RequiredReferenceUnavailable => {
+                "swallowtail.registered_tool.required_reference_unavailable"
+            }
+            Self::SelectedContentMismatch => {
+                "swallowtail.registered_tool.selected_content_mismatch"
+            }
+            Self::ForeignSelectedContent => "swallowtail.registered_tool.foreign_selected_content",
         }
     }
 
@@ -146,6 +159,15 @@ impl RegisteredToolFailureKind {
             Self::LimitExceeded => "A positive registered-tool bound was exceeded",
             Self::Revoked => "Consumer admission is revoked for this binding",
             Self::IdentityRejected => "A required registered-tool identity was rejected",
+            Self::RequiredReferenceUnavailable => {
+                "A declared required reference is missing or inaccessible"
+            }
+            Self::SelectedContentMismatch => {
+                "Resolved selected content does not match its declared descriptor"
+            }
+            Self::ForeignSelectedContent => {
+                "The host supplied selected content this bundle did not declare"
+            }
         }
     }
 }

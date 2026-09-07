@@ -2,7 +2,6 @@
 
 ## Ready
 
-- [138-codex-permission-exchange-cell-reconciliation.md](./138-codex-permission-exchange-cell-reconciliation.md) — ready; the matrix calls Codex permission_exchange a provider limitation while the Desktop capsule called it answerable; settle it with anchors
 - [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — ready; provider-free seam under Research 289's mapping; live gate separate; waits for cards114-115 merge and consumer-tool protocol evidence exists
 - [137-grok-probe-conforming-acp-client.md](./137-grok-probe-conforming-acp-client.md) — ready; the probe never answers client requests during session/new, so Grok waits and the session never opens; diagnose from captured frames at no quota cost
 - [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — ready; serial after 125; resolved skill bundle as the distinct third input
@@ -37,6 +36,7 @@
 
 ## Completed
 
+- [138-codex-permission-exchange-cell-reconciliation.md](./138-codex-permission-exchange-cell-reconciliation.md) — complete; approvals are observable-only on app-server, typed user-input is the answerable exchange, exec has no callback surface; matrix reason corrected via Research 293; awaiting exact-head review
 - [136-opencode-http-1-18-29-claim.md](./136-opencode-http-1-18-29-claim.md) — complete; qualified OpenCode HTTP `surface-19` through `1.18.29`
 - [135-opencode-http-1-18-29-identity.md](./135-opencode-http-1-18-29-identity.md) — complete; compatible `surface-19` admitted through OpenCode HTTP `1.18.29`
 - [131-codex-app-server-client-mcp-servers-evidence.md](./131-codex-app-server-client-mcp-servers-evidence.md) — complete; evidence recorded: Codex client_mcp_servers is a provider limitation; card 117 remains the qualified consumer-tool path; awaiting exact-head review

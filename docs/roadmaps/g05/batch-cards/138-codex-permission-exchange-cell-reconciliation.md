@@ -1,6 +1,6 @@
 # 138 Codex Permission Exchange Cell Reconciliation
 
-Status: ready
+Status: complete; finding in ## Result; awaiting exact-head review
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07
@@ -57,10 +57,51 @@ Grok routes.
 
 ## Acceptance Criteria
 
-- [ ] one answer, anchored, for observe-only versus answerable
-- [ ] matrix cell, kind, and reason text agree with the adapter source
-- [ ] any combined-row ambiguity between app-server and exec is stated
-- [ ] if the capsule was wrong, the correction to Desktop is drafted for Chatterbox
+- [x] one answer, anchored, for observe-only versus answerable
+- [x] matrix cell, kind, and reason text agree with the adapter source
+- [x] any combined-row ambiguity between app-server and exec is stated
+- [x] if the capsule was wrong, the correction to Desktop is drafted for Chatterbox
+
+## Result
+
+One answer, anchored: on the qualified range a consumer can only observe a
+Codex approval request; no approval answer reaches Codex. App-server maps the
+three approval methods into the bounded
+`codex.app-server/provider-request/approval-v1` namespace; a declared
+observation is delivered once, then the exchange closes, the provider request
+is answered with a `-32001` error plus `turn/interrupt`, and the turn finishes
+`ProviderRequestObserved`. Exchange handling is qualified for the typed
+user-input namespace only, so `CallbackResponder::respond` can deliver
+`item/tool/requestUserInput` answers (that is `question_exchange=Yes`), never
+an approval decision. `codex.exec` is a one-shot structured run with no
+callback surface at all. Anchors and the full response-path trace are in
+Research 293.
+
+The combined `codex.app-server; codex.exec` cell therefore keeps
+`permission_exchange = No` / `provider_limitation` and never reports a
+stronger capability than the weaker route: exec has none, and app-server's
+extra capability inside the cell is observation only. The corrected reason
+text states app-server observation-only approvals, the separate answerable
+question exchange, and exec's missing callback surface
+(`docs/research/290-feature-matrix-cross-evidence.tsv#L562`).
+
+Changed surfaces: the Card 129 evidence row and finding text, Research 293,
+the `codex-prepared-integration` guide's `with_user_input_exchange`
+paragraph, the g05.035 Desktop reconciliation statements, and a new
+provider-free assertion that a consumer `respond` on an observed callback is
+rejected (`callback_closed`).
+
+The capsule was wrong about answerable approvals. The correction for
+Chatterbox to relay to Desktop is drafted in Research 293
+(`## Bounded Chatterbox/Desktop Correction Capsule`): Desktop's
+`ObservedOnly` posture matches the producer ceiling for Codex approvals, and
+the separately qualified question exchange remains available.
+
+Validation: `effigy qa:routes`; `effigy qa:docs`;
+`effigy validate:focused swallowtail-adapter-codex`; the route-matrix checker
+(`scripts/provider_route_matrix/validate.py` and
+`scripts/check-provider-route-matrix.sh`); `git diff --check`. The worker
+never merges.
 
 ## Validation
 

@@ -78,9 +78,10 @@ approval handling and exec's non-applicable callback surface.
 
 ## Provider-Free Fixtures
 
-- `crates/swallowtail-adapter-codex/tests/app_server_workspace.rs#L238-L318`
-  proves both approval and user-input observations terminate the turn and send
-  no approval answer.
+- `crates/swallowtail-adapter-codex/tests/app_server_workspace.rs#L238-L337`
+  proves both approval and user-input observations terminate the turn, send no
+  approval answer, and reject a consumer `respond` attempt on the observed
+  callback with `callback_closed`.
 - `crates/swallowtail-adapter-codex/tests/prepared_profile_cases/session/user_input.rs#L1-L33`
   proves the profile opt-in rejects approval exchange, while
   `crates/swallowtail-adapter-codex/tests/prepared_profile_cases/session/user_input.rs#L85-L125`

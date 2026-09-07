@@ -95,6 +95,9 @@ head ships the probe and echo targets as cargo examples — package metadata
 forbids extra bins — and repairs the MSRV clippy lint on the `none_or`
 empty-list check; the runner script and hand-off packet invoke `--example`.
 The hand-off packet is relayed to Acowtancy Desktop under its existing
-isolated-testing authorization. The live installed-Grok probe was explicitly
-not run: Swallowtail spawns no Grok process, and no adapter, claim, contract,
-or matrix disposition changes with this harness.
+isolated-testing authorization. Its metadata-only readiness receipt pins probe
+source `63e3464199d28fdae9f163c0caf567c5dfb1e39e` and separate local version
+receipts `1.0.4 = d846eb93d94d` and `1.0.5 = 5115b46bc909`; it records no
+machine path or secret. The live installed-Grok probe was explicitly not run:
+Swallowtail spawns no Grok process, and no adapter, claim, contract, matrix
+disposition, or Desktop live-acceptance count changes with offline readiness.

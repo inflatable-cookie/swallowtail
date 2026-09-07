@@ -297,6 +297,46 @@ fn consumer_limits_only_narrow_effective_bounds() {
 }
 
 #[test]
+fn consumer_limits_reach_the_kernel_that_enforces_them() {
+    let narrowed = RegisteredToolLimits::new(
+        RegisteredToolBounds::new(1, 16, 16, 16, 1, Duration::from_secs(1)).expect("narrow bounds"),
+    );
+    let request = open_request(
+        selection(),
+        Deadline::at(MonotonicInstant::from_ticks(10_000)),
+    )
+    .with_consumer_limits(narrowed);
+
+    let hosts = ready_hosts();
+    let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
+        .require_ready()
+        .expect("proof");
+    let (kernel, _lease) = RegisteredToolOperationKernel::open(
+        request,
+        &proof,
+        Arc::new(EchoDispatcher),
+        Arc::new(FixedClock::default()),
+        RegisteredToolLeaseGeneration::initial(),
+        RegisteredToolTransportGeneration::initial(),
+    )
+    .expect("open");
+
+    assert_eq!(
+        kernel
+            .binding()
+            .effective_bounds()
+            .max_queued_progress_items(),
+        1
+    );
+    assert_eq!(kernel.binding().effective_bounds().max_argument_bytes(), 16);
+    assert_eq!(
+        kernel.binding().effective_bounds().max_call_duration(),
+        Duration::from_secs(1),
+        "the kernel enforces the narrowed bounds, not the snapshot ceiling"
+    );
+}
+
+#[test]
 fn bounds_never_widen_the_first_tranche_ceiling() {
     let error = RegisteredToolBounds::new(
         1,

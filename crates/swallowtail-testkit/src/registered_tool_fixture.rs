@@ -195,10 +195,16 @@ impl TimeService for FakeClock {
 }
 
 /// Consumer admission port whose live verdict a case can script exactly.
+///
+/// A case may also hold validations pending, so it can force the exact race
+/// where one live verdict is in flight while another admission sequence tries
+/// to start.
 pub struct ScriptedAdmissionPort {
     revoke_at: Mutex<Option<AdmissionPhase>>,
     revoke_after: Mutex<Option<usize>>,
     observed: Mutex<Vec<AdmissionPhase>>,
+    held: Mutex<bool>,
+    waiters: Mutex<Vec<Waker>>,
 }
 
 impl Default for ScriptedAdmissionPort {
@@ -215,12 +221,38 @@ impl ScriptedAdmissionPort {
             revoke_at: Mutex::new(None),
             revoke_after: Mutex::new(None),
             observed: Mutex::new(Vec::new()),
+            held: Mutex::new(false),
+            waiters: Mutex::new(Vec::new()),
         }
+    }
+
+    /// Holds every later validation pending until it is released.
+    pub fn hold(&self) {
+        *self.held.lock().expect("hold lock") = true;
+    }
+
+    /// Completes every held validation.
+    pub fn release(&self) {
+        *self.held.lock().expect("hold lock") = false;
+        for waker in std::mem::take(&mut *self.waiters.lock().expect("waiter lock")) {
+            waker.wake();
+        }
+    }
+
+    /// Returns how many validations this port has been asked for.
+    #[must_use]
+    pub fn validation_count(&self) -> usize {
+        self.observed.lock().expect("observed lock").len()
     }
 
     /// Revokes from the next validation at one exact phase onwards.
     pub fn revoke_from(&self, phase: AdmissionPhase) {
         *self.revoke_at.lock().expect("revocation lock") = Some(phase);
+    }
+
+    /// Revokes every validation from now on, including any held pending one.
+    pub fn revoke_now(&self) {
+        *self.revoke_after.lock().expect("revocation lock") = Some(0);
     }
 
     /// Revokes every validation after an exact number of current verdicts.
@@ -238,17 +270,41 @@ impl ScriptedAdmissionPort {
     }
 }
 
-impl ConsumerAdmissionHostService for ScriptedAdmissionPort {
-    fn validate(
-        &self,
-        _binding: &ConsumerAdmissionBinding,
-        phase: AdmissionPhase,
-    ) -> BoxFuture<'_, Result<AdmissionVerdict, RuntimeFailure>> {
-        let seen = {
-            let mut observed = self.observed.lock().expect("observed lock");
-            observed.push(phase);
-            observed.len()
-        };
+struct ScriptedVerdict<'port> {
+    port: &'port ScriptedAdmissionPort,
+    phase: AdmissionPhase,
+    recorded: bool,
+}
+
+impl Future for ScriptedVerdict<'_> {
+    type Output = Result<AdmissionVerdict, RuntimeFailure>;
+
+    fn poll(mut self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Self::Output> {
+        if !self.recorded {
+            // The request is recorded when it is first made, so a case can see
+            // that a live verdict is in flight while it is still pending.
+            self.port
+                .observed
+                .lock()
+                .expect("observed lock")
+                .push(self.phase);
+            self.recorded = true;
+        }
+        if *self.port.held.lock().expect("hold lock") {
+            let mut waiters = self.port.waiters.lock().expect("waiter lock");
+            let waker = context.waker();
+            if !waiters.iter().any(|waiting| waiting.will_wake(waker)) {
+                waiters.push(waker.clone());
+            }
+            return Poll::Pending;
+        }
+        Poll::Ready(Ok(self.port.verdict_for(self.phase)))
+    }
+}
+
+impl ScriptedAdmissionPort {
+    fn verdict_for(&self, phase: AdmissionPhase) -> AdmissionVerdict {
+        let seen = self.observed.lock().expect("observed lock").len();
         let revoked_by_phase = matches!(
             *self.revoke_at.lock().expect("revocation lock"),
             Some(revoke_at) if revoke_at == phase
@@ -259,15 +315,27 @@ impl ConsumerAdmissionHostService for ScriptedAdmissionPort {
             *self.revoke_after.lock().expect("revocation lock"),
             Some(after) if seen > after
         );
-        let revoked = revoked_by_phase || revoked_by_count;
-        let verdict = if revoked {
+        if revoked_by_phase || revoked_by_count {
             AdmissionVerdict::Revoked(
                 RegisteredToolReasonCode::new("consumer.task_superseded").expect("reason code"),
             )
         } else {
             AdmissionVerdict::Current
-        };
-        Box::pin(ready(Ok(verdict)))
+        }
+    }
+}
+
+impl ConsumerAdmissionHostService for ScriptedAdmissionPort {
+    fn validate(
+        &self,
+        _binding: &ConsumerAdmissionBinding,
+        phase: AdmissionPhase,
+    ) -> BoxFuture<'_, Result<AdmissionVerdict, RuntimeFailure>> {
+        Box::pin(ScriptedVerdict {
+            port: self,
+            phase,
+            recorded: false,
+        })
     }
 }
 
@@ -396,4 +464,40 @@ pub fn drive_fixture<T>(future: BoxFuture<'_, T>) -> T {
 pub fn poll_fixture_once<T>(future: &mut Pin<Box<dyn Future<Output = T> + Send + '_>>) -> Poll<T> {
     let mut context = Context::from_waker(Waker::noop());
     future.as_mut().poll(&mut context)
+}
+
+/// Drives two futures round-robin so their admission sequences must interleave.
+///
+/// This forces the exact concurrency the serialized admission gate must
+/// linearize: both futures are in flight at once and neither completes before
+/// the other starts.
+///
+/// # Panics
+///
+/// Panics when either fixture future never settles.
+pub fn interleave_fixtures<T>(
+    first: &mut Pin<Box<dyn Future<Output = T> + Send + '_>>,
+    second: &mut Pin<Box<dyn Future<Output = T> + Send + '_>>,
+) -> (T, T) {
+    let mut first_done = None;
+    let mut second_done = None;
+    for _ in 0..MAX_FIXTURE_POLLS {
+        if first_done.is_none()
+            && let Poll::Ready(value) = poll_fixture_once(first)
+        {
+            first_done = Some(value);
+        }
+        if second_done.is_none()
+            && let Poll::Ready(value) = poll_fixture_once(second)
+        {
+            second_done = Some(value);
+        }
+        if first_done.is_some() && second_done.is_some() {
+            break;
+        }
+    }
+    (
+        first_done.expect("the first fixture future never settled"),
+        second_done.expect("the second fixture future never settled"),
+    )
 }

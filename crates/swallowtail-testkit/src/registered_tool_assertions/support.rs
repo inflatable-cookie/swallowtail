@@ -91,14 +91,40 @@ impl RegisteredToolHarness {
         dispatcher: Arc<dyn RegisteredToolDispatcher>,
         cleanup_budget: Duration,
     ) -> Self {
+        Self::mount_with_limits(
+            compose,
+            dispatcher,
+            cleanup_budget,
+            RegisteredToolLimits::ceiling(),
+        )
+    }
+
+    /// Mounts one host registry with consumer limits narrowed for a case.
+    #[must_use]
+    pub fn mount_with_limits(
+        compose: &ComposeRegisteredToolHost,
+        dispatcher: Arc<dyn RegisteredToolDispatcher>,
+        cleanup_budget: Duration,
+        limits: RegisteredToolLimits,
+    ) -> Self {
         let spec = RegisteredToolHostSpec::new(dispatcher, cleanup_budget);
         let clock = Arc::clone(&spec.clock);
-        Self::with_clock(compose(spec), clock)
+        Self::with_clock_and_limits(compose(spec), clock, limits)
     }
 
     /// Builds one harness over a composed host registry and its virtual clock.
     #[must_use]
     pub fn with_clock(hosts: HostServices, clock: Arc<FakeClock>) -> Self {
+        Self::with_clock_and_limits(hosts, clock, RegisteredToolLimits::ceiling())
+    }
+
+    /// Builds one harness with exact consumer limits.
+    #[must_use]
+    pub fn with_clock_and_limits(
+        hosts: HostServices,
+        clock: Arc<FakeClock>,
+        limits: RegisteredToolLimits,
+    ) -> Self {
         let admission = Arc::new(ScriptedAdmissionPort::current());
         let snapshot = Arc::new(fixture_snapshot(&conformance_host_id()));
         let selection = fixture_selection(Arc::clone(&snapshot));
@@ -106,7 +132,7 @@ impl RegisteredToolHarness {
             Arc::clone(&snapshot),
             selection.clone(),
             fixture_admission(Arc::clone(&admission)),
-            RegisteredToolLimits::ceiling(),
+            limits,
         );
         Self {
             hosts,

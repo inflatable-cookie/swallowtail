@@ -2876,11 +2876,13 @@ impl swallowtail_runtime::RegisteredToolOpenRequest
 pub const fn swallowtail_runtime::RegisteredToolOpenRequest::admission(&self) -> &swallowtail_runtime::ConsumerAdmissionBinding
 pub const fn swallowtail_runtime::RegisteredToolOpenRequest::configured_instance(&self) -> &swallowtail_core::runtime_identity::ConfiguredInstanceId
 pub const fn swallowtail_runtime::RegisteredToolOpenRequest::deadline(&self) -> swallowtail_runtime::Deadline
+pub const fn swallowtail_runtime::RegisteredToolOpenRequest::effective_bounds(&self) -> swallowtail_runtime::RegisteredToolBounds
 pub const fn swallowtail_runtime::RegisteredToolOpenRequest::execution_host_id(&self) -> &swallowtail_core::runtime_identity::ExecutionHostId
-pub const fn swallowtail_runtime::RegisteredToolOpenRequest::new(swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_runtime::ScopeId, swallowtail_runtime::RuntimeTurnId, swallowtail_runtime::RegisteredToolSelection, swallowtail_runtime::ConsumerAdmissionBinding, swallowtail_runtime::Deadline) -> Self
+pub fn swallowtail_runtime::RegisteredToolOpenRequest::new(swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_runtime::ScopeId, swallowtail_runtime::RuntimeTurnId, swallowtail_runtime::RegisteredToolSelection, swallowtail_runtime::ConsumerAdmissionBinding, swallowtail_runtime::Deadline) -> Self
 pub const fn swallowtail_runtime::RegisteredToolOpenRequest::scope(&self) -> &swallowtail_runtime::ScopeId
 pub const fn swallowtail_runtime::RegisteredToolOpenRequest::selection(&self) -> &swallowtail_runtime::RegisteredToolSelection
 pub const fn swallowtail_runtime::RegisteredToolOpenRequest::turn(&self) -> &swallowtail_runtime::RuntimeTurnId
+pub fn swallowtail_runtime::RegisteredToolOpenRequest::with_consumer_limits(self, swallowtail_runtime::RegisteredToolLimits) -> Self
 pub struct swallowtail_runtime::RegisteredToolOperationKernel
 impl swallowtail_runtime::RegisteredToolOperationKernel
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::begin_close(&self)

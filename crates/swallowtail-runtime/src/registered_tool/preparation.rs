@@ -94,6 +94,7 @@ impl RegisteredToolPreparation {
             .effective_bounds()
             .narrowed(self.limits.bounds());
         Ok(PreparedRegisteredToolBinding {
+            limits: self.limits,
             execution_host_id: hosts.execution_host_id().clone(),
             configured_identity,
             operation_scope,
@@ -111,6 +112,7 @@ impl RegisteredToolPreparation {
 /// Prepared, immutable registered-tool binding that still owns no resource.
 #[derive(Clone)]
 pub struct PreparedRegisteredToolBinding {
+    limits: RegisteredToolLimits,
     execution_host_id: ExecutionHostId,
     configured_identity: ConfiguredInstanceId,
     operation_scope: ScopeId,
@@ -174,15 +176,18 @@ impl PreparedRegisteredToolBinding {
 
     /// Opens one scoped lease through the bound registered-tool host port.
     pub fn open(&self) -> BoxFuture<'_, Result<RegisteredToolBridgeLease, RuntimeFailure>> {
-        self.port.open(RegisteredToolOpenRequest::new(
-            self.execution_host_id.clone(),
-            self.configured_identity.clone(),
-            self.operation_scope.clone(),
-            self.turn.clone(),
-            self.selection.clone(),
-            self.admission.clone(),
-            self.deadline,
-        ))
+        self.port.open(
+            RegisteredToolOpenRequest::new(
+                self.execution_host_id.clone(),
+                self.configured_identity.clone(),
+                self.operation_scope.clone(),
+                self.turn.clone(),
+                self.selection.clone(),
+                self.admission.clone(),
+                self.deadline,
+            )
+            .with_consumer_limits(self.limits),
+        )
     }
 }
 

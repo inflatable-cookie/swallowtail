@@ -7,6 +7,7 @@
 mod adversarial;
 mod integrity;
 mod lifecycle;
+mod races;
 mod registration;
 mod support;
 
@@ -68,4 +69,8 @@ pub fn assert_registered_tool_conformance(compose: &ComposeRegisteredToolHost) {
     integrity::progress_past_the_deadline_is_refused(compose);
     integrity::progress_rechecks_live_revocation(compose);
     integrity::revocation_between_dispatch_and_progress_is_linearized(compose);
+
+    races::concurrent_publishes_cannot_both_take_one_slot(compose);
+    races::revocation_during_a_pending_verdict_blocks_every_commit(compose);
+    races::concurrent_publishes_keep_exact_ordering(compose);
 }

@@ -11,6 +11,7 @@ mod call;
 mod declaration;
 mod dispatch;
 mod failure;
+mod gate;
 mod identity;
 mod kernel;
 mod lease;

@@ -350,9 +350,11 @@ pub swallowtail_testkit::RegisteredToolHarness::selection: swallowtail_runtime::
 pub swallowtail_testkit::RegisteredToolHarness::snapshot: alloc::sync::Arc<swallowtail_runtime::registered_tool::snapshot::RegisteredToolSnapshot>
 impl swallowtail_testkit::RegisteredToolHarness
 pub fn swallowtail_testkit::RegisteredToolHarness::mount(&swallowtail_testkit::ComposeRegisteredToolHost, alloc::sync::Arc<dyn swallowtail_runtime::registered_tool::dispatch::RegisteredToolDispatcher>, core::time::Duration) -> Self
+pub fn swallowtail_testkit::RegisteredToolHarness::mount_with_limits(&swallowtail_testkit::ComposeRegisteredToolHost, alloc::sync::Arc<dyn swallowtail_runtime::registered_tool::dispatch::RegisteredToolDispatcher>, core::time::Duration, swallowtail_runtime::registered_tool::limits::RegisteredToolLimits) -> Self
 pub fn swallowtail_testkit::RegisteredToolHarness::open(&self, &str) -> swallowtail_runtime::registered_tool::lease::RegisteredToolBridgeLease
 pub fn swallowtail_testkit::RegisteredToolHarness::try_open(&self, &str) -> core::result::Result<swallowtail_runtime::registered_tool::lease::RegisteredToolBridgeLease, swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_testkit::RegisteredToolHarness::with_clock(swallowtail_runtime::host_registry::HostServices, alloc::sync::Arc<swallowtail_testkit::FakeClock>) -> Self
+pub fn swallowtail_testkit::RegisteredToolHarness::with_clock_and_limits(swallowtail_runtime::host_registry::HostServices, alloc::sync::Arc<swallowtail_testkit::FakeClock>, swallowtail_runtime::registered_tool::limits::RegisteredToolLimits) -> Self
 pub struct swallowtail_testkit::RegisteredToolHostSpec
 pub swallowtail_testkit::RegisteredToolHostSpec::cleanup_budget: core::time::Duration
 pub swallowtail_testkit::RegisteredToolHostSpec::clock: alloc::sync::Arc<swallowtail_testkit::FakeClock>
@@ -380,9 +382,13 @@ pub fn swallowtail_testkit::RuntimePreflightFixture::default() -> Self
 pub struct swallowtail_testkit::ScriptedAdmissionPort
 impl swallowtail_testkit::ScriptedAdmissionPort
 pub fn swallowtail_testkit::ScriptedAdmissionPort::current() -> Self
+pub fn swallowtail_testkit::ScriptedAdmissionPort::hold(&self)
 pub fn swallowtail_testkit::ScriptedAdmissionPort::observed_phases(&self) -> alloc::vec::Vec<swallowtail_runtime::registered_tool::admission::AdmissionPhase>
+pub fn swallowtail_testkit::ScriptedAdmissionPort::release(&self)
 pub fn swallowtail_testkit::ScriptedAdmissionPort::revoke_after_validations(&self, usize)
 pub fn swallowtail_testkit::ScriptedAdmissionPort::revoke_from(&self, swallowtail_runtime::registered_tool::admission::AdmissionPhase)
+pub fn swallowtail_testkit::ScriptedAdmissionPort::revoke_now(&self)
+pub fn swallowtail_testkit::ScriptedAdmissionPort::validation_count(&self) -> usize
 impl core::default::Default for swallowtail_testkit::ScriptedAdmissionPort
 pub fn swallowtail_testkit::ScriptedAdmissionPort::default() -> Self
 impl swallowtail_runtime::registered_tool::admission::ConsumerAdmissionHostService for swallowtail_testkit::ScriptedAdmissionPort

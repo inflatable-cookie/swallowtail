@@ -21,6 +21,7 @@ use super::dispatch::{
     RegisteredToolDispatcher, RegisteredToolProgressChannel, RegisteredToolProgressSink,
 };
 use super::failure::{RegisteredToolFailureKind, fail, reject};
+use super::gate::{AdmissionGate, AdmissionPermit};
 use super::identity::{
     RegisteredToolCallId, RegisteredToolLeaseGeneration, RegisteredToolTransportGeneration,
 };
@@ -39,6 +40,12 @@ use std::sync::{Arc, Mutex};
 /// Bounded ceiling on remembered call identities for duplicate rejection.
 const MAX_REMEMBERED_CALL_IDS: usize = 256;
 
+/// One progress notification that passed every pre-verdict check.
+struct ReservedProgress {
+    sequence: u64,
+    epoch: u64,
+}
+
 struct CallSlot {
     call_id: RegisteredToolCallId,
     cancelled: Arc<AtomicBool>,
@@ -55,6 +62,18 @@ struct KernelState {
     active: Option<CallSlot>,
     seen_calls: BTreeSet<RegisteredToolCallId>,
     progress: VecDeque<RegisteredToolProgress>,
+    /// Bumped whenever admission truth changes under the gate.
+    ///
+    /// A verdict obtained against one epoch can never commit against another,
+    /// so a `Current` verdict that raced a freeze, revocation, or close is
+    /// rejected instead of applied.
+    epoch: u64,
+}
+
+impl KernelState {
+    fn bump_epoch(&mut self) {
+        self.epoch = self.epoch.saturating_add(1);
+    }
 }
 
 /// One operation-scoped registered-tool kernel.
@@ -65,6 +84,7 @@ pub struct RegisteredToolOperationKernel {
     time: Arc<dyn TimeService>,
     operation_deadline: Deadline,
     state: Mutex<KernelState>,
+    gate: AdmissionGate,
 }
 
 struct CallCancellation {
@@ -120,7 +140,7 @@ impl RegisteredToolOperationKernel {
             request.selection().transport(),
             transport_generation,
             request.selection().protocol_version().clone(),
-            request.selection().effective_bounds(),
+            request.effective_bounds(),
             request.admission().clone(),
         );
         let kernel = Arc::new(Self {
@@ -137,7 +157,9 @@ impl RegisteredToolOperationKernel {
                 active: None,
                 seen_calls: BTreeSet::new(),
                 progress: VecDeque::new(),
+                epoch: 0,
             }),
+            gate: AdmissionGate::default(),
         });
         let lease = RegisteredToolBridgeLease::mint(
             &request,
@@ -170,6 +192,7 @@ impl RegisteredToolOperationKernel {
         if state.admission == RegisteredToolAdmissionState::Open && state.active.is_none() {
             state.admission = RegisteredToolAdmissionState::Frozen;
             state.lifecycle = RegisteredToolLifecycleState::Frozen;
+            state.bump_epoch();
         }
         completion_state(&state)
     }
@@ -191,6 +214,7 @@ impl RegisteredToolOperationKernel {
             active.cancelled.store(true, Ordering::SeqCst);
         }
         state.progress.clear();
+        state.bump_epoch();
     }
 
     /// Marks the kernel closing after admission has frozen.
@@ -205,6 +229,7 @@ impl RegisteredToolOperationKernel {
         state.admission = RegisteredToolAdmissionState::Closed;
         state.lifecycle = RegisteredToolLifecycleState::Closed;
         state.progress.clear();
+        state.bump_epoch();
     }
 
     /// Records a cleanup attempt that did not join within its bounded budget.
@@ -216,6 +241,7 @@ impl RegisteredToolOperationKernel {
         state.cleanup_failed = true;
         state.admission = RegisteredToolAdmissionState::Frozen;
         state.lifecycle = RegisteredToolLifecycleState::Frozen;
+        state.bump_epoch();
     }
 
     /// Reports whether a cleanup attempt already failed for this kernel.
@@ -267,27 +293,62 @@ impl RegisteredToolOperationKernel {
     }
 
     async fn admit_progress(&self, progress: RegisteredToolProgress) -> Result<(), RuntimeFailure> {
-        let sequence = self.check_progress(&progress)?;
-        // Progress obeys the same live revocation barrier as dispatch and
-        // delivery: the verdict is taken at the kernel's serialized admission
-        // point before the notification is accepted.
-        self.require_current(AdmissionPhase::BeforeDelivery).await?;
+        // One serialized admission sequence: nothing else may admit, dispatch,
+        // deliver, or commit between the pre-verdict checks, the awaited live
+        // verdict, and the final commit.
+        let permit = self.gate.acquire().await;
+        let reserved = self.check_progress(&progress)?;
+        // The pre-verdict checks reject sequence, correlation, deadline, and
+        // bound violations before any live verdict is requested.
+        self.require_current(AdmissionPhase::BeforeDelivery, &permit)
+            .await?;
+        self.commit_progress(progress, reserved, &permit)
+    }
+
+    fn commit_progress(
+        &self,
+        progress: RegisteredToolProgress,
+        reserved: ReservedProgress,
+        permit: &AdmissionPermit<'_>,
+    ) -> Result<(), RuntimeFailure> {
+        let _ = permit;
+        let now = self.time.now();
         let mut state = self.locked();
+        // A verdict obtained against an earlier epoch never commits.
+        if state.epoch != reserved.epoch || state.revoked {
+            return Err(fail(RegisteredToolFailureKind::Revoked));
+        }
+        if state.admission != RegisteredToolAdmissionState::Open {
+            return Err(fail(RegisteredToolFailureKind::PostTerminalCorrelation));
+        }
+        if state.progress.len() >= self.binding.effective_bounds().max_queued_progress_items() {
+            return Err(fail(RegisteredToolFailureKind::LimitExceeded));
+        }
         let Some(active) = state.active.as_mut() else {
             return Err(fail(RegisteredToolFailureKind::ForeignCorrelation));
         };
         if active.call_id != *progress.call_id() || active.settled {
             return Err(fail(RegisteredToolFailureKind::ForeignCorrelation));
         }
-        if sequence <= active.last_sequence {
+        if active.cancelled.load(Ordering::SeqCst) {
+            return Err(fail(RegisteredToolFailureKind::Cancelled));
+        }
+        if reached(now, active.expires_at) {
+            active.cancelled.store(true, Ordering::SeqCst);
+            return Err(fail(RegisteredToolFailureKind::DeadlineExceeded));
+        }
+        if reserved.sequence <= active.last_sequence {
             return Err(fail(RegisteredToolFailureKind::DuplicateCorrelation));
         }
-        active.last_sequence = sequence;
+        active.last_sequence = reserved.sequence;
         state.progress.push_back(progress);
         Ok(())
     }
 
-    fn check_progress(&self, progress: &RegisteredToolProgress) -> Result<u64, RuntimeFailure> {
+    fn check_progress(
+        &self,
+        progress: &RegisteredToolProgress,
+    ) -> Result<ReservedProgress, RuntimeFailure> {
         let now = self.time.now();
         let mut state = self.locked();
         if state.revoked {
@@ -304,6 +365,7 @@ impl RegisteredToolOperationKernel {
         }
         let queued = state.progress.len();
         let bound = self.binding.effective_bounds().max_queued_progress_items();
+        let epoch = state.epoch;
         let Some(active) = state.active.as_mut() else {
             return Err(fail(RegisteredToolFailureKind::ForeignCorrelation));
         };
@@ -327,17 +389,35 @@ impl RegisteredToolOperationKernel {
         if queued >= bound {
             return Err(fail(RegisteredToolFailureKind::LimitExceeded));
         }
-        Ok(sequence)
+        Ok(ReservedProgress { sequence, epoch })
     }
 
     /// Drains admitted progress after one live before-delivery admission check.
+    ///
+    /// Delivery takes the same serialized admission sequence as dispatch and
+    /// progress, so a drain never interleaves with an in-flight verdict.
     pub async fn deliver_progress(&self) -> Result<Vec<RegisteredToolProgress>, RuntimeFailure> {
-        self.require_current(AdmissionPhase::BeforeDelivery).await?;
+        let permit = self.gate.acquire().await;
+        let epoch = self.locked().epoch;
+        self.require_current(AdmissionPhase::BeforeDelivery, &permit)
+            .await?;
         let mut state = self.locked();
+        if state.epoch != epoch || state.revoked {
+            return Err(fail(RegisteredToolFailureKind::Revoked));
+        }
         Ok(state.progress.drain(..).collect())
     }
 
-    async fn require_current(&self, phase: AdmissionPhase) -> Result<(), RuntimeFailure> {
+    /// Takes one live verdict inside an already held admission sequence.
+    ///
+    /// The permit is the proof that this await cannot interleave with another
+    /// admission sequence on the same kernel.
+    async fn require_current(
+        &self,
+        phase: AdmissionPhase,
+        permit: &AdmissionPermit<'_>,
+    ) -> Result<(), RuntimeFailure> {
+        let _ = permit;
         if self.locked().revoked {
             return Err(fail(RegisteredToolFailureKind::Revoked));
         }
@@ -352,6 +432,7 @@ impl RegisteredToolOperationKernel {
             state.lifecycle = RegisteredToolLifecycleState::Frozen;
         }
         state.progress.clear();
+        state.bump_epoch();
         Err(fail(RegisteredToolFailureKind::Revoked))
     }
 
@@ -360,7 +441,7 @@ impl RegisteredToolOperationKernel {
         request: &RegisteredToolCallRequest,
         expires_at: Deadline,
         now: MonotonicInstant,
-    ) -> Result<Arc<AtomicBool>, RuntimeFailure> {
+    ) -> Result<(Arc<AtomicBool>, u64), RuntimeFailure> {
         let mut state = self.locked();
         if state.revoked {
             return Err(fail(RegisteredToolFailureKind::Revoked));
@@ -393,7 +474,8 @@ impl RegisteredToolOperationKernel {
             settled: false,
         });
         state.lifecycle = RegisteredToolLifecycleState::CallPending;
-        Ok(cancelled)
+        let epoch = state.epoch;
+        Ok((cancelled, epoch))
     }
 
     fn release(&self) {
@@ -433,16 +515,31 @@ impl RegisteredToolOperationKernel {
         }
         let started = self.time.now();
         let expires_at = self.effective_call_deadline(request.deadline(), started);
-        let cancelled = self.reserve(&request, expires_at, started)?;
-        if let Err(error) = self.require_current(AdmissionPhase::BeforeDispatch).await {
-            self.release();
-            return Err(error);
-        }
-        if reached(self.time.now(), expires_at) {
-            cancelled.store(true, Ordering::SeqCst);
-            self.release();
-            return Err(fail(RegisteredToolFailureKind::DeadlineExceeded));
-        }
+        // The dispatch admission sequence runs under the same serialized gate.
+        // It is released before the dispatcher runs so a dispatcher publishing
+        // progress cannot deadlock against its own call.
+        let (cancelled, epoch) = {
+            let permit = self.gate.acquire().await;
+            let (cancelled, epoch) = self.reserve(&request, expires_at, started)?;
+            if let Err(error) = self
+                .require_current(AdmissionPhase::BeforeDispatch, &permit)
+                .await
+            {
+                self.release();
+                return Err(error);
+            }
+            if self.locked().epoch != epoch {
+                self.release();
+                return Err(fail(RegisteredToolFailureKind::Revoked));
+            }
+            if reached(self.time.now(), expires_at) {
+                cancelled.store(true, Ordering::SeqCst);
+                self.release();
+                return Err(fail(RegisteredToolFailureKind::DeadlineExceeded));
+            }
+            (cancelled, epoch)
+        };
+        let _ = epoch;
         let call = match RegisteredToolCall::mint(
             self.binding.clone(),
             request.call_id().clone(),
@@ -500,7 +597,11 @@ impl RegisteredToolOperationKernel {
                 RegisteredToolExecutionDisposition::Unknown,
             ));
         }
-        if let Err(error) = self.require_current(AdmissionPhase::BeforeDelivery).await {
+        let permit = self.gate.acquire().await;
+        if let Err(error) = self
+            .require_current(AdmissionPhase::BeforeDelivery, &permit)
+            .await
+        {
             let disposition = match outcome.result() {
                 Some(_) => RegisteredToolExecutionDisposition::Executed,
                 None => outcome.disposition(),

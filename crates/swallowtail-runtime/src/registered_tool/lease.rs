@@ -6,6 +6,7 @@ use super::identity::{
     RegisteredToolLeaseGeneration, RegisteredToolTransport, RegisteredToolTransportGeneration,
 };
 use super::kernel::RegisteredToolOperationKernel;
+use super::limits::{RegisteredToolBounds, RegisteredToolLimits};
 use super::selection::RegisteredToolSelection;
 use crate::{BoxFuture, Deadline, RuntimeFailure, RuntimeTurnId, ScopeId};
 use std::fmt;
@@ -186,12 +187,16 @@ pub struct RegisteredToolOpenRequest {
     selection: RegisteredToolSelection,
     admission: ConsumerAdmissionBinding,
     deadline: Deadline,
+    effective_bounds: RegisteredToolBounds,
 }
 
 impl RegisteredToolOpenRequest {
     /// Binds configured and prepared identity, selection, admission, deadline.
+    ///
+    /// The effective bounds start at the selection's bounds. A consumer
+    /// narrowing is applied with [`Self::with_consumer_limits`].
     #[must_use]
-    pub const fn new(
+    pub fn new(
         execution_host_id: ExecutionHostId,
         configured_instance: ConfiguredInstanceId,
         scope: ScopeId,
@@ -200,6 +205,7 @@ impl RegisteredToolOpenRequest {
         admission: ConsumerAdmissionBinding,
         deadline: Deadline,
     ) -> Self {
+        let effective_bounds = selection.effective_bounds();
         Self {
             execution_host_id,
             configured_instance,
@@ -208,7 +214,25 @@ impl RegisteredToolOpenRequest {
             selection,
             admission,
             deadline,
+            effective_bounds,
         }
+    }
+
+    /// Narrows the effective bounds with consumer-selected limits.
+    ///
+    /// Limits only narrow: they never widen a snapshot bound or a first-tranche
+    /// ceiling. The kernel enforces the result, so a narrowed queue,
+    /// argument, result, or call-duration bound is real, not advisory.
+    #[must_use]
+    pub fn with_consumer_limits(mut self, limits: RegisteredToolLimits) -> Self {
+        self.effective_bounds = self.effective_bounds.narrowed(limits.bounds());
+        self
+    }
+
+    /// Returns the effective bounds the kernel enforces for this lease.
+    #[must_use]
+    pub const fn effective_bounds(&self) -> RegisteredToolBounds {
+        self.effective_bounds
     }
 
     /// Returns the execution host that must own every required service.

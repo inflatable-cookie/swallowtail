@@ -19,6 +19,7 @@ mod claude_agent_sdk_driver {
     pub mod registered_tool;
     pub mod registered_tool_route;
     pub mod resume;
+    pub mod selected_skill;
     pub mod stalls;
 }
 

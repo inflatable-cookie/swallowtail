@@ -180,6 +180,7 @@ pub(super) fn prepare(
         input.profile,
         input.mcp_servers,
         input.registered_tools,
+        input.selected_skill,
     ))
 }
 

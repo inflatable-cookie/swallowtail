@@ -13,6 +13,8 @@ use serde_json::{Value, json};
 use sidecar_asset_support::SidecarProcess;
 
 const EVIDENCE_BOUNDS: &str = include_str!("fixtures/claude-agent-sdk/model-evidence-bounds.json");
+const CARD126_SELECTED_SKILL: &str =
+    include_str!("fixtures/claude-agent-sdk-v1/selected-skill-bundle-card126.json");
 
 #[test]
 fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
@@ -28,6 +30,76 @@ fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
     assert!(sidecar.sdk_was_constructed());
     let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
     assert_eq!(close["success"], true);
+}
+
+#[test]
+fn card126_selected_skill_is_labelled_and_presented_through_the_frozen_plain_string_prompt() {
+    let selected_skill: Value =
+        serde_json::from_str(CARD126_SELECTED_SKILL).expect("Card 126 fixture is valid JSON");
+    let mut sidecar = SidecarProcess::start();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({
+            "cwd": sidecar.cwd(),
+            "model": "m-1",
+            "selectedSkillBundle": selected_skill,
+        }),
+    );
+    assert_eq!(open["success"], true, "selected bundle opens: {open}");
+    let options = sidecar.observed_options();
+    assert_eq!(options["settingSources"], json!([]));
+    assert_eq!(options["skills"], json!([]));
+    let system_prompt = options["systemPrompt"]
+        .as_str()
+        .expect("plain-string system prompt");
+    assert_eq!(
+        system_prompt,
+        format!(
+            "<swallowtail-selected-skill-bundle>\n{}\n</swallowtail-selected-skill-bundle>",
+            serde_json::to_string(&selected_skill).expect("fixture serializes")
+        )
+    );
+    assert!(!system_prompt.contains("claude_code"));
+    assert_eq!(
+        open["data"]["selectedSkillBundle"],
+        serde_json::from_str::<Value>(CARD126_SELECTED_SKILL).expect("fixture JSON")
+    );
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true);
+}
+
+#[test]
+fn card126_tampered_selected_skill_digest_fails_before_sdk_construction() {
+    let mut selected_skill: Value =
+        serde_json::from_str(CARD126_SELECTED_SKILL).expect("Card 126 fixture is valid JSON");
+    selected_skill["digest"] =
+        json!("sha256:0000000000000000000000000000000000000000000000000000000000000000");
+    let mut sidecar = SidecarProcess::start();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1", "selectedSkillBundle": selected_skill}),
+    );
+    assert_eq!(open["success"], false, "tampered bundle must fail: {open}");
+    assert_eq!(open["failure"]["code"], "selected_skill_digest_mismatch");
+    assert!(!sidecar.sdk_was_constructed());
+}
+
+#[test]
+fn card126_oversized_selected_skill_body_fails_before_sdk_construction() {
+    let mut selected_skill: Value =
+        serde_json::from_str(CARD126_SELECTED_SKILL).expect("Card 126 fixture is valid JSON");
+    selected_skill["body"]["content"] = json!("x".repeat(64 * 1024 + 1));
+    let mut sidecar = SidecarProcess::start();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1", "selectedSkillBundle": selected_skill}),
+    );
+    assert_eq!(open["success"], false, "oversized bundle must fail: {open}");
+    assert_eq!(open["failure"]["code"], "selected_skill_limit_exceeded");
+    assert!(!sidecar.sdk_was_constructed());
 }
 
 #[test]
@@ -1114,6 +1186,10 @@ fn the_asset_restricts_availability_without_auto_allowing_anything() {
     );
     assert_eq!(options["settingSources"], json!([]));
     assert_eq!(options["skills"], json!([]));
+    assert!(
+        options.get("systemPrompt").is_none(),
+        "the absent bundle keeps the ambient system-prompt input absent"
+    );
     assert_eq!(options["persistSession"], json!(false));
     assert_eq!(options["mcpServers"], json!({}));
     assert_eq!(

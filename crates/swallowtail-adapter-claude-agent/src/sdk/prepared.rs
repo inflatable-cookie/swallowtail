@@ -13,6 +13,7 @@ use super::driver::{ClaudeAgentSdkDriver, ClaudeAgentSdkSessionHandle};
 use super::mcp::{ClaudeAgentSdkMcpBinding, ClaudeAgentSdkMcpServer};
 use super::profile::ClaudeAgentSdkSessionProfile;
 use super::registered_tool::ClaudeAgentSdkRegisteredToolBinding;
+use super::selected_skill::ClaudeAgentSdkSelectedSkillBinding;
 use swallowtail_core::{
     AccessProfileId, ConfigFieldId, ConfiguredInstanceId, CredentialFieldId, CredentialRef,
     Diagnostic, ExecutionHostId, InstanceRevision, InstanceTargetRef, ModelId, ModelRouteId,
@@ -48,6 +49,7 @@ pub struct ClaudeAgentSdkSessionPreparation {
     pub(crate) profile: ClaudeAgentSdkSessionProfile,
     pub(crate) mcp_servers: Vec<ClaudeAgentSdkMcpServer>,
     pub(crate) registered_tools: Option<ClaudeAgentSdkRegisteredToolBinding>,
+    pub(crate) selected_skill: Option<swallowtail_runtime::ResolvedSkillBundle>,
 }
 
 impl ClaudeAgentSdkSessionPreparation {
@@ -87,6 +89,7 @@ impl ClaudeAgentSdkSessionPreparation {
             profile: ClaudeAgentSdkSessionProfile::read_only(),
             mcp_servers: Vec::new(),
             registered_tools: None,
+            selected_skill: None,
         }
     }
 
@@ -108,6 +111,32 @@ impl ClaudeAgentSdkSessionPreparation {
     pub fn with_mcp_binding(mut self, binding: ClaudeAgentSdkMcpBinding) -> Self {
         self.profile = binding.session_profile();
         self.mcp_servers = binding.servers().to_vec();
+        self
+    }
+
+    /// Binds one already-resolved selected-skill bundle as a distinct
+    /// session-start input.
+    ///
+    /// The bundle is immutable for this prepared session. Its content is
+    /// validated again when the sidecar open input is rendered, before the
+    /// open command or SDK is contacted.
+    #[must_use]
+    pub fn with_selected_skill_bundle(
+        mut self,
+        bundle: swallowtail_runtime::ResolvedSkillBundle,
+    ) -> Self {
+        self.selected_skill = Some(bundle);
+        self
+    }
+
+    /// Binds the profile and its already-resolved selected-skill bundle.
+    #[must_use]
+    pub fn with_selected_skill_binding(
+        mut self,
+        binding: ClaudeAgentSdkSelectedSkillBinding,
+    ) -> Self {
+        self.profile = binding.session_profile();
+        self.selected_skill = Some(binding.bundle().clone());
         self
     }
 
@@ -281,6 +310,7 @@ pub struct ClaudeAgentSdkPreparedSession {
     profile: ClaudeAgentSdkSessionProfile,
     mcp_servers: Vec<ClaudeAgentSdkMcpServer>,
     registered_tools: Option<ClaudeAgentSdkRegisteredToolBinding>,
+    selected_skill: Option<swallowtail_runtime::ResolvedSkillBundle>,
 }
 
 impl ClaudeAgentSdkPreparedSession {
@@ -319,14 +349,67 @@ impl ClaudeAgentSdkPreparedSession {
         self.registered_tools.as_ref()
     }
 
+    /// Returns the immutable selected-skill bundle bound to this session, if
+    /// the caller opted in.
+    #[must_use]
+    pub const fn selected_skill_bundle(&self) -> Option<&swallowtail_runtime::ResolvedSkillBundle> {
+        self.selected_skill.as_ref()
+    }
+
+    /// Emits the Contract 061 registered-capability rows for this exact
+    /// prepared route, when registered-tool mediation or a selected bundle
+    /// was selected.
+    ///
+    /// Registered-tool rows remain `Unqualified` until the separately
+    /// authorized real-route gate passes. A selected-skill row, when present,
+    /// describes only this prepared route's bounded transport input.
+    pub fn registered_capability_projection_contribution(
+        &self,
+        source_id: swallowtail_runtime::ConsumerRouteProjectionSourceId,
+        services: &HostServices,
+    ) -> Option<
+        Result<
+            swallowtail_runtime::ConsumerRouteProjectionContribution,
+            swallowtail_runtime::ConsumerRouteProjectionFailure,
+        >,
+    > {
+        let applicability = swallowtail_runtime::ConsumerRouteApplicability::from_plan(&self.plan);
+        if let Some(binding) = self.registered_tools.as_ref() {
+            let readiness = swallowtail_runtime::RegisteredToolReadiness::evaluate(
+                services,
+                binding.selection(),
+            );
+            return Some(
+                super::registered_tool::project_claude_agent_sdk_registered_tool_with_selected_skill_from_source(
+                    &applicability,
+                    source_id,
+                    binding.carrier(),
+                    &readiness,
+                    self.selected_skill.as_ref(),
+                ),
+            );
+        }
+        self.selected_skill.as_ref().map(|bundle| {
+            super::registered_tool::project_claude_agent_sdk_selected_skill_from_source(
+                &applicability,
+                source_id,
+                bundle,
+            )
+        })
+    }
+
     /// Creates the low-level sidecar driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> ClaudeAgentSdkDriver {
         let driver = ClaudeAgentSdkDriver::new(self.environment.clone(), self.credential.clone())
             .with_session_profile(self.profile)
             .with_mcp_servers(self.mcp_servers.clone());
-        match self.registered_tools.clone() {
+        let driver = match self.registered_tools.clone() {
             Some(binding) => driver.with_registered_tools(binding),
+            None => driver,
+        };
+        match self.selected_skill.clone() {
+            Some(bundle) => driver.with_selected_skill_bundle(bundle),
             None => driver,
         }
     }
@@ -359,6 +442,13 @@ impl ClaudeAgentSdkPreparedSession {
         request_id: RequestId,
         binding: SessionResumeBinding,
     ) -> Result<ResumeSessionRequest, PreparationFailure> {
+        if self.selected_skill.is_some() {
+            return Err(preparation_failure(
+                PreparationStage::Preflight,
+                "swallowtail.claude-agent.sdk.preparation.resume_selected_skill_unsupported",
+                "Claude Agent SDK selected skill bundles cannot be redeclared on resumed sessions",
+            ));
+        }
         ResumeSessionRequest::from_plan(
             &self.plan,
             request_id,
@@ -453,6 +543,7 @@ fn failure(code: &'static str, message: &'static str) -> PreparationFailure {
     preparation_failure(PreparationStage::TargetSelection, code, message)
 }
 
+#[allow(clippy::too_many_arguments)]
 pub(super) fn build_prepared(
     plan: PreflightPlan,
     request: OpenSessionRequest,
@@ -461,6 +552,7 @@ pub(super) fn build_prepared(
     profile: ClaudeAgentSdkSessionProfile,
     mcp_servers: Vec<ClaudeAgentSdkMcpServer>,
     registered_tools: Option<ClaudeAgentSdkRegisteredToolBinding>,
+    selected_skill: Option<swallowtail_runtime::ResolvedSkillBundle>,
 ) -> ClaudeAgentSdkPreparedSession {
     ClaudeAgentSdkPreparedSession {
         plan,
@@ -470,6 +562,7 @@ pub(super) fn build_prepared(
         profile,
         mcp_servers,
         registered_tools,
+        selected_skill,
     }
 }
 

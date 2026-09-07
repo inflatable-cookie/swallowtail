@@ -1,0 +1,20 @@
+{
+  "identity": "desktop.skill.review",
+  "provenance": "project-bound",
+  "revision": "7",
+  "digest": "sha256:2f4dadc9fc62199bce32260fd287ae13e41fee41e8c6ef5ff68d1bd3de49b41e",
+  "body": {
+    "mediaType": "text/markdown",
+    "content": "# review skill\nreview the bounded workspace\n"
+  },
+  "requiredReferences": [
+    {
+      "id": "checklist",
+      "digest": "sha256:55e9468270025ee7185609a83fae9dfa993fcdd45b322c4a938f9c97bde8b4a8",
+      "content": {
+        "mediaType": "text/markdown",
+        "content": "review-checklist-body"
+      }
+    }
+  ]
+}

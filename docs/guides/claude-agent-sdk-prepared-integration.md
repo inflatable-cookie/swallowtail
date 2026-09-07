@@ -550,6 +550,51 @@ stays `Unqualified / real_route_gate_pending` with the reason
 `callable seam present; live gate pending`. The live real-route gate is a
 separate authorized pass.
 
+## Selected Skill Bundles
+
+Card 126 adds one immutable, already-resolved Contract 063 selected-skill
+bundle to a fresh Claude Agent SDK session. The Copy
+`ClaudeAgentSdkSessionProfile` carries this content through the additive
+`with_selected_skill_bundle(ResolvedSkillBundle)` binding, while preparation
+also accepts the direct `with_selected_skill_bundle` and
+`with_selected_skill_binding` forms. The low-level driver has the matching
+additive methods. Absence keeps the pre-Card-126 open shape unchanged.
+
+The bundle is a distinct labelled `selectedSkillBundle` open input. Its
+identity, provenance, revision, canonical digest, body, and bounded required
+reference descriptors cross together; the exact resolved body and reference
+bytes are preserved. The bundle is never appended to fixed developer
+instructions, per-turn user text, or the working resource, and raw reference
+paths or unrelated workspace content do not cross the sidecar. Open rechecks
+the digest, UTF-8 text encoding, reference uniqueness, and Contract 063 byte
+and count bounds before the SDK is constructed. The provider-free Card 126
+fixture is `tests/fixtures/claude-agent-sdk-v1/selected-skill-bundle-card126.json`.
+
+The pinned `0.3.259` sidecar has no ambient skill loading: it sends
+`settingSources: []` and `skills: []` explicitly. When the selected bundle is
+present, the sidecar uses the frozen `Options.systemPrompt` plain-string
+surface to carry one labelled JSON envelope under
+`<swallowtail-selected-skill-bundle>`. The omitted `systemPrompt` default is
+empty, so this mapping adds only that labelled envelope and does not select the
+provider-owned `claude_code` preset. The choice is anchored by the
+`systemPrompt` evidence in
+`docs/research/278-claude-agent-sdk-route-evidence.md` (line 406), the
+Card-126 plain-string asset assertion in
+`tests/claude_agent_sdk_sidecar_asset.rs`, and the implementation at
+`src/sdk/selected_skill.rs`, `src/sdk/driver/startup.rs`, and
+`sidecar/claude-agent-sdk-sidecar.mjs`. A tampered, oversized, foreign, or
+non-text bundle fails closed; continuation and session listing do not
+redeclare-bind a selected bundle.
+
+Contract 061 publishes `registered-tool.selected-skill-bundle` as a
+session-start row only for this exact prepared Claude route. That transport
+row is available from the provider-free route evidence; the Card 125
+provider-spawned registered-tool carrier and its mediation rows remain
+`Unqualified / real_route_gate_pending`. Card 084 consumer-declared MCP
+servers remain a separate input and topology. This row does not claim that a
+live provider followed or executed the selected content; the real route gate
+remains separately authorized.
+
 ## Close And The Descendant Tree
 
 This is the part that differs from every single-process sidecar. The route is

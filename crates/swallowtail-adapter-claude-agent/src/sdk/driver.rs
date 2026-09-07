@@ -41,6 +41,7 @@ pub struct ClaudeAgentSdkDriver {
     profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
     mcp_servers: Vec<crate::sdk::mcp::ClaudeAgentSdkMcpServer>,
     registered: Option<crate::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding>,
+    selected_skill: Option<Box<swallowtail_runtime::ResolvedSkillBundle>>,
 }
 
 impl ClaudeAgentSdkDriver {
@@ -57,6 +58,7 @@ impl ClaudeAgentSdkDriver {
             profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile::read_only(),
             mcp_servers: Vec::new(),
             registered: None,
+            selected_skill: None,
         }
     }
 
@@ -99,6 +101,33 @@ impl ClaudeAgentSdkDriver {
         binding: crate::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding,
     ) -> Self {
         self.registered = Some(binding);
+        self
+    }
+
+    /// Binds one immutable resolved selected-skill bundle to fresh sidecar
+    /// sessions.
+    ///
+    /// The bundle crosses the private wire under its own labelled input. It
+    /// is not merged into session instructions or any per-turn user text.
+    /// Resumed sessions and listings refuse a bound bundle because they do
+    /// not redeclare session-start inputs.
+    #[must_use]
+    pub fn with_selected_skill_bundle(
+        mut self,
+        bundle: swallowtail_runtime::ResolvedSkillBundle,
+    ) -> Self {
+        self.selected_skill = Some(Box::new(bundle));
+        self
+    }
+
+    /// Binds the profile and its immutable resolved selected-skill bundle.
+    #[must_use]
+    pub fn with_selected_skill_binding(
+        mut self,
+        binding: crate::sdk::selected_skill::ClaudeAgentSdkSelectedSkillBinding,
+    ) -> Self {
+        self.profile = binding.session_profile();
+        self.selected_skill = Some(Box::new(binding.bundle().clone()));
         self
     }
 
@@ -291,6 +320,9 @@ impl ClaudeAgentSdkDriver {
             if self.registered.is_some() {
                 return Err(unsupported("registered tools on session listing"));
             }
+            if self.selected_skill.is_some() {
+                return Err(unsupported("selected skill bundles on session listing"));
+            }
             let request = OpenSessionRequest::from_plan(
                 &plan,
                 request_id.clone(),
@@ -411,6 +443,9 @@ impl ClaudeAgentSdkDriver {
                 } => {
                     if self.registered.is_some() {
                         return Err(unsupported("registered tools on resumed sessions"));
+                    }
+                    if self.selected_skill.is_some() {
+                        return Err(unsupported("selected skill bundles on resumed sessions"));
                     }
                     let resume = ResumeSessionRequest::from_plan(
                         &plan,
@@ -598,6 +633,7 @@ impl ClaudeAgentSdkDriver {
                 self.profile,
                 &self.mcp_servers,
                 registered_courier,
+                self.selected_skill.as_deref(),
             )
             .await
             {

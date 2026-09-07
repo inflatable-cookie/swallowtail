@@ -441,6 +441,32 @@ fn an_unqualified_registered_capability_is_never_supported_by_inference() {
 }
 
 #[test]
+fn a_direct_selected_bundle_is_available_without_registered_tool_qualification() {
+    let selection = selection();
+    let readiness = unready(&selection);
+    let bundle = resolved_bundle();
+    let contribution = project(
+        RegisteredToolRouteQualification::Unqualified,
+        &readiness,
+        &selection,
+        Some(&bundle),
+    );
+
+    let projection = compose(&contribution);
+    let skill = skill_row(&projection);
+    assert_eq!(skill.support(), ConsumerRouteSupportPosture::Supported);
+    assert_eq!(skill.availability(), ConsumerRouteAvailability::Available);
+    assert_eq!(
+        skill.actor_posture(),
+        ConsumerRouteActorPosture::ConsumerSelectable
+    );
+    assert!(skill.mutation_authority().source().is_some());
+    for row in projection.selection_summary().rows() {
+        assert_ne!(row.availability(), ConsumerRouteAvailability::Available);
+    }
+}
+
+#[test]
 fn a_qualified_ready_capability_publishes_its_safe_registration_evidence() {
     let selection = selection();
     let readiness = ready(&selection);

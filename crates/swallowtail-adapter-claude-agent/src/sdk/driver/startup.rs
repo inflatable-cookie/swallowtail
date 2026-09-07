@@ -9,6 +9,7 @@ use crate::sdk::profile::{
     ClaudeAgentSdkEffort, ClaudeAgentSdkEffortOutcome, ClaudeAgentSdkPermissionMode,
     ClaudeAgentSdkSessionProfile,
 };
+use crate::sdk::selected_skill::render_bundle;
 use crate::sdk::selection::{
     CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_NODE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS,
     CLAUDE_AGENT_SDK_WIRE_AXIS,
@@ -265,6 +266,7 @@ pub(crate) async fn open(
     profile: ClaudeAgentSdkSessionProfile,
     mcp_servers: &[ClaudeAgentSdkMcpServer],
     registered_courier: Option<OpenStdioMcpServer>,
+    selected_skill: Option<&swallowtail_runtime::ResolvedSkillBundle>,
 ) -> Result<SessionReadiness, RuntimeFailure> {
     start(
         connection,
@@ -273,6 +275,7 @@ pub(crate) async fn open(
         profile,
         mcp_servers,
         registered_courier,
+        selected_skill,
         None,
         None,
     )
@@ -297,6 +300,7 @@ pub(crate) async fn resume(
         profile,
         mcp_servers,
         registered_courier,
+        None,
         Some(provider_session_ref),
         resume_session_at,
     )
@@ -383,6 +387,7 @@ async fn start(
     profile: ClaudeAgentSdkSessionProfile,
     mcp_servers: &[ClaudeAgentSdkMcpServer],
     registered_courier: Option<OpenStdioMcpServer>,
+    selected_skill: Option<&swallowtail_runtime::ResolvedSkillBundle>,
     provider_session_ref: Option<&SessionRef>,
     resume_session_at: Option<&str>,
 ) -> Result<SessionReadiness, RuntimeFailure> {
@@ -414,6 +419,10 @@ async fn start(
     if !open_servers.is_empty() {
         params["mcpServers"] = mcp_servers_params(&open_servers);
     }
+    let selected_skill = selected_skill.map(render_bundle).transpose()?;
+    if let Some(bundle) = &selected_skill {
+        params["selectedSkillBundle"] = bundle.clone();
+    }
     let response = connection
         .command("open-1".to_owned(), ClaudeAgentSdkCommand::Open, params)
         .await?;
@@ -437,6 +446,7 @@ async fn start(
         profile,
         admitted_tools: tools,
         mcp_servers: &open_servers,
+        selected_skill: selected_skill.as_ref(),
         sdk_version: &bound_version(plan, CLAUDE_AGENT_SDK_PACKAGE_AXIS),
         native_version: &bound_version(plan, CLAUDE_AGENT_SDK_NATIVE_AXIS),
         node_version: &bound_version(plan, CLAUDE_AGENT_SDK_NODE_AXIS),
@@ -462,6 +472,7 @@ struct Expectation<'a> {
     profile: ClaudeAgentSdkSessionProfile,
     admitted_tools: Vec<String>,
     mcp_servers: &'a [OpenStdioMcpServer],
+    selected_skill: Option<&'a Value>,
     sdk_version: &'a str,
     native_version: &'a str,
     node_version: &'a str,
@@ -490,6 +501,7 @@ fn readiness(
             && data.get("persistSession").and_then(Value::as_bool)
                 == Some(expected.profile.persist_session())
             && mcp_status_present(data, expected.mcp_servers)
+            && selected_skill_matches(data, expected.selected_skill)
             && data.get("resuming").and_then(Value::as_bool) == Some(expected.resuming)
     });
     if !identity_matches {
@@ -546,6 +558,13 @@ fn readiness(
         mcp_server_status,
         admitted_mcp_tools: admitted_open_mcp_tool_names(expected.mcp_servers),
     })
+}
+
+fn selected_skill_matches(data: &Value, expected: Option<&Value>) -> bool {
+    match expected {
+        Some(expected) => data.get("selectedSkillBundle") == Some(expected),
+        None => data.get("selectedSkillBundle").is_none(),
+    }
 }
 
 /// Accepts only a first-party session. An API-key or delegated cloud

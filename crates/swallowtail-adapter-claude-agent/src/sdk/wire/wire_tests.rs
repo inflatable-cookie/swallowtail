@@ -109,6 +109,8 @@ fn sidecar_command_failure_codes_match_the_rust_enumeration() {
         ClaudeAgentSdkFailureCode::PermissionModeRejected,
         ClaudeAgentSdkFailureCode::SdkUnavailable,
         ClaudeAgentSdkFailureCode::SdkExportMissing,
+        ClaudeAgentSdkFailureCode::SdkVersionMismatch,
+        ClaudeAgentSdkFailureCode::SdkIdentityUnverifiable,
         ClaudeAgentSdkFailureCode::NativeManifestUnavailable,
         ClaudeAgentSdkFailureCode::NativeVersionMismatch,
         ClaudeAgentSdkFailureCode::CapabilitiesOverflow,
@@ -476,6 +478,42 @@ fn model_qualification_evidence_rejects_contract_drift() {
             decode_record(&bytes).err().map(|error| error.kind()),
             Some(ClaudeAgentSdkProtocolFailureKind::InvalidDiagnostic),
             "{label} must fail closed"
+        );
+    }
+}
+
+#[test]
+fn sdk_identity_mismatch_evidence_is_bounded_and_typed() {
+    let record = json!({
+        "type": "diagnostic",
+        "level": "error",
+        "code": "sdk_version_mismatch",
+        "message": "sidecar diagnostic: sdk_version_mismatch",
+        "evidence": {
+            "declaredSdkPackage": "@anthropic-ai/claude-agent-sdk",
+            "declaredSdkVersion": "0.3.259",
+            "loadedSdkPackage": "@anthropic-ai/claude-agent-sdk",
+            "loadedSdkVersion": "0.3.258"
+        }
+    });
+    assert!(matches!(
+        decode_record(&serde_json::to_vec(&record).expect("fixture serializes")),
+        Ok(ClaudeAgentSdkRecord::Diagnostic(_))
+    ));
+
+    let mutations: [fn(&mut Value); 3] = [
+        |record: &mut Value| record["evidence"]["loadedSdkVersion"] = json!("x".repeat(129)),
+        |record: &mut Value| record["evidence"]["unexpected"] = json!(true),
+        |record: &mut Value| record["code"] = json!("query_rejected"),
+    ];
+    for mutation in mutations {
+        let mut invalid = record.clone();
+        mutation(&mut invalid);
+        assert_eq!(
+            decode_record(&serde_json::to_vec(&invalid).expect("fixture serializes"))
+                .err()
+                .map(|error| error.kind()),
+            Some(ClaudeAgentSdkProtocolFailureKind::InvalidDiagnostic)
         );
     }
 }

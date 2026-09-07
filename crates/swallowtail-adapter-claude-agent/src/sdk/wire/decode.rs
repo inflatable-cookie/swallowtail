@@ -1,7 +1,8 @@
 use super::{
     ClaudeAgentSdkBashCommandView, ClaudeAgentSdkCallback, ClaudeAgentSdkCommand,
-    ClaudeAgentSdkDiagnostic, ClaudeAgentSdkDiagnosticLevel, ClaudeAgentSdkEvent,
-    ClaudeAgentSdkFailure, ClaudeAgentSdkFailureCode, ClaudeAgentSdkModelQualificationEvidence,
+    ClaudeAgentSdkDiagnostic, ClaudeAgentSdkDiagnosticEvidence, ClaudeAgentSdkDiagnosticLevel,
+    ClaudeAgentSdkEvent, ClaudeAgentSdkFailure, ClaudeAgentSdkFailureCode,
+    ClaudeAgentSdkIdentityEvidence, ClaudeAgentSdkModelQualificationEvidence,
     ClaudeAgentSdkResponse, MAXIMUM_COMMAND_ID_BYTES, MAXIMUM_FAILURE_CODE_BYTES,
     MAXIMUM_FAILURE_MESSAGE_BYTES, MAXIMUM_MODEL_QUALIFICATION_CATALOGUE_SIZE,
     MAXIMUM_MODEL_QUALIFICATION_ID_BYTES, MAXIMUM_TEXT_BYTES, MODEL_QUALIFICATION_DIGEST,
@@ -184,7 +185,14 @@ pub(super) fn decode_diagnostic(
     let evidence = match value.get("evidence") {
         None => None,
         Some(value) if code == "supported_model_rejected" => {
-            Some(decode_model_qualification_evidence(value, invalid)?)
+            Some(ClaudeAgentSdkDiagnosticEvidence::ModelQualification(
+                decode_model_qualification_evidence(value, invalid)?,
+            ))
+        }
+        Some(value) if code == "sdk_version_mismatch" => {
+            Some(ClaudeAgentSdkDiagnosticEvidence::SdkIdentity(
+                decode_sdk_identity_evidence(value, invalid)?,
+            ))
         }
         Some(_) => return Err(failure(invalid)),
     };
@@ -192,6 +200,31 @@ pub(super) fn decode_diagnostic(
         level,
         code,
         evidence,
+    })
+}
+
+fn decode_sdk_identity_evidence(
+    value: &Value,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<ClaudeAgentSdkIdentityEvidence, ClaudeAgentSdkProtocolFailure> {
+    let object = value
+        .as_object()
+        .filter(|object| object.len() == 4)
+        .ok_or_else(|| failure(kind))?;
+    const FIELDS: [&str; 4] = [
+        "declaredSdkPackage",
+        "declaredSdkVersion",
+        "loadedSdkPackage",
+        "loadedSdkVersion",
+    ];
+    if object.keys().any(|field| !FIELDS.contains(&field.as_str())) {
+        return Err(failure(kind));
+    }
+    Ok(ClaudeAgentSdkIdentityEvidence {
+        declared_sdk_package: bounded_object_text(object, "declaredSdkPackage", kind)?,
+        declared_sdk_version: bounded_object_text(object, "declaredSdkVersion", kind)?,
+        loaded_sdk_package: bounded_object_text(object, "loadedSdkPackage", kind)?,
+        loaded_sdk_version: bounded_object_text(object, "loadedSdkVersion", kind)?,
     })
 }
 

@@ -89,6 +89,22 @@ impl SidecarProcess {
         std::fs::write(&entry, CLAUDE_AGENT_SDK_SIDECAR_SOURCE).expect("asset is written");
         std::fs::write(directory.join("fake-sdk.mjs"), include_str!("fake-sdk.mjs"))
             .expect("fake SDK is written");
+        if scenario != "sdk-identity-missing" {
+            let sdk_version = if scenario == "sdk-identity-mismatch" {
+                "0.3.258"
+            } else {
+                "0.3.259"
+            };
+            std::fs::write(
+                directory.join("package.json"),
+                json!({
+                    "name": "@anthropic-ai/claude-agent-sdk",
+                    "version": sdk_version
+                })
+                .to_string(),
+            )
+            .expect("fake SDK package identity is written");
+        }
         std::fs::write(
             directory.join("manifest.json"),
             json!({"version": "2.1.259"}).to_string(),

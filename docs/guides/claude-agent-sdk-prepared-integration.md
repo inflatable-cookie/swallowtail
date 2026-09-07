@@ -158,6 +158,15 @@ tested wrapper versions topping out at `0.3.227` inside the wrapper published
 as `0.3.259`. Only the runtime `capabilities` observed from the first-turn
 `system/init` may be treated as behavior.
 
+At open, the sidecar resolves the package manifest from the host-supplied SDK
+module path and reads its `name` and `version` before calling `sdk.query`. The
+open evidence reports that loaded package identity, so `sdkVersion` is never a
+sidecar constant. A readable identity that differs from the qualified package
+or version fails with typed `sdk_version_mismatch`; its bounded
+`InterfaceVersion` observation carries declared and loaded package/version
+labels. A missing, malformed, or otherwise unreadable manifest fails with
+typed `sdk_identity_unverifiable`, before the SDK is constructed.
+
 The point moved once already: `0.3.258` was qualified first, and Research 280
 rebound both coupled axes to `0.3.259` after a full package-tree inventory. The
 publication cadence is roughly daily, so treat the qualified point as a frozen

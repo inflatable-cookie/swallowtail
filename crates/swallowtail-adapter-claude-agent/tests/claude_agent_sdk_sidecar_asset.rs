@@ -13,6 +13,60 @@ use serde_json::{Value, json};
 use sidecar_asset_support::SidecarProcess;
 
 #[test]
+fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
+    let mut sidecar = SidecarProcess::start_scenario("sdk-identity-match");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "matching identity opens: {open}");
+    assert_eq!(open["data"]["sdkPackage"], "@anthropic-ai/claude-agent-sdk");
+    assert_eq!(open["data"]["sdkVersion"], "0.3.259");
+    assert!(sidecar.sdk_was_constructed());
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true);
+}
+
+#[test]
+fn mismatching_sdk_package_identity_fails_before_sdk_construction_with_bounded_evidence() {
+    let mut sidecar = SidecarProcess::start_scenario("sdk-identity-mismatch");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], false, "mismatch must reject: {open}");
+    assert_eq!(open["failure"]["code"], "sdk_version_mismatch");
+    assert!(!sidecar.sdk_was_constructed());
+    assert_eq!(
+        sidecar.next_diagnostic()["evidence"],
+        json!({
+            "declaredSdkPackage": "@anthropic-ai/claude-agent-sdk",
+            "declaredSdkVersion": "0.3.259",
+            "loadedSdkPackage": "@anthropic-ai/claude-agent-sdk",
+            "loadedSdkVersion": "0.3.258"
+        })
+    );
+}
+
+#[test]
+fn missing_sdk_package_identity_is_typed_before_sdk_construction() {
+    let mut sidecar = SidecarProcess::start_scenario("sdk-identity-missing");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(
+        open["success"], false,
+        "missing identity must reject: {open}"
+    );
+    assert_eq!(open["failure"]["code"], "sdk_identity_unverifiable");
+    assert!(!sidecar.sdk_was_constructed());
+}
+
+#[test]
 fn the_fake_sdk_calls_spawn_with_one_spawn_options_object() {
     let mut sidecar = SidecarProcess::start();
     let open = sidecar.command(

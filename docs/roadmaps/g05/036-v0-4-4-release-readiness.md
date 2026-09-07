@@ -26,9 +26,11 @@ unavailable-capability dispositions. CI and fixture parity are insufficient.
 Desktop Coordinator `914728cd` is the sole integration/test owner; Swallowtail
 supplies producer seams only. The candidate freeze is lifted so required
 fixes can merge; the candidate may be revised and re-prepared. Card 123
-waits. Chatterbox reconciles the producer frontier against the Desktop
-capability matrix when it arrives; cells with no seam get an explicit
-unavailable disposition, not an inferred lane.
+waits. Reconciled 2026-09-07 (g05.035): 14/18 producer cells merged, three
+more promoted (cards 125-127), Grok MCP/tools/skills withheld and blocking
+the scope until card 128's probe settles the upstream question or the
+operator decides the fallback. Desktop live acceptance is the release gate;
+producer merges are not.
 
 ## Runway
 

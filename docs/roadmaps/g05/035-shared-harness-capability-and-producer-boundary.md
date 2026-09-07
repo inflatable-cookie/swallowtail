@@ -160,6 +160,7 @@ consumer requirements and must not create a competing producer worker.
 | [125](batch-cards/125-claude-sdk-registered-tool-route-binding.md) | ready; cards 114-116 merged | Claude adapter owner; owns `crates/swallowtail-adapter-claude-agent/**` route-binding paths, its tests, guide section, and baseline; parallel with 126 only if disjoint files, else serial 125 then 126; forbidden: kernel, host-local, contracts | provider-free route-binding fixtures on the mounted path; exact-head review; merge |
 | [126](batch-cards/126-claude-sdk-selected-skill-bundle-binding.md) | ready; card 115 merged | Claude adapter owner; profile/sidecar/tests/guide/baseline; serial after 125 on shared sidecar; forbidden: kernel, host-local, contracts | bundle transport fixtures; exact-head review; merge |
 | [127](batch-cards/127-codex-selected-skill-bundle-binding.md) | ready; cards 115 and 117 merged | Codex adapter owner; `crates/swallowtail-adapter-codex/**` profile/transport/tests/guide/baseline; parallel with 125/126 (disjoint crate); forbidden: kernel, host-local, contracts | bundle transport fixtures on the app-server fixture; exact-head review; merge |
+| [128](batch-cards/128-grok-acp-client-mcp-probe-harness.md) | ready | Grok adapter/testkit owner; `crates/swallowtail-testkit/**` probe module, `scripts/` runner, hand-off packet under `docs/handoffs/`; forbidden: adapter runtime, claims, contracts | four-verdict proof on the fake ACP fixture; exact-head review; Desktop runs the real probe |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
@@ -182,12 +183,14 @@ answerable approval/user-input exchange, model catalogue/selection,
 cancellation, packaging; Grok one-shot permissions, negotiated model options,
 turn/permission cancellation, packaging. Absent and promoted as seams: Claude
 registered-tool route binding (card 125), Claude and Codex selected-skill
-bundle binding (cards 126, 127). Absent and dispositioned, not laned: Grok
-registered tools/MCP (`Unavailable / provider_route_evidence_absent`; native
-route is a triage lead awaiting the operator), Grok selected-skill bundle
-(`Unavailable / route_dimension_unsupported` until an ACP labelled-input
-surface is evidenced), Grok pre-session catalogue (`Unavailable /
-provider_catalogue_unavailable`), persistent permission grants on every route
+bundle binding (cards 126, 127). Withheld and BLOCKING the release scope (the operator requires all three
+routes including MCP/tools/skills): Grok registered tools/MCP (row
+`Unavailable / provider_route_evidence_absent`; card 128 builds the probe
+harness that settles it; the native route is the fallback decision), Grok
+selected-skill bundle (`Unavailable / route_dimension_unsupported` until an
+ACP labelled-input surface is evidenced, which the same probe records), Grok
+pre-session catalogue (`Unavailable / provider_catalogue_unavailable`;
+negotiated options at session open are the available form), persistent permission grants on every route
 (`Unavailable / one_shot_only`), Codex provider-direct MCP and Claude
 HTTP/SSE/in-process/managed MCP (withheld by contract). Desktop-side
 corrections returned with the capsule: `PreparedRegisteredToolBinding::open`
@@ -196,6 +199,16 @@ not `RegisteredToolPreparation::open`; courier selection binds through
 `CallbackResponder::respond`, not a `respond_permission` API; Desktop's
 `ObservedOnly` declarations on Codex and Grok are its own ceiling, not the
 producer's.
+
+### Acceptance Ledger — 2026-09-07
+
+Two different counts, never conflated: producer seams merged on `main`
+(14/18 cells, plus cards 125-127 in flight for three more) versus Desktop
+live acceptance of a cell (0/18 today; Desktop is the sole integration/test
+owner and its runs happen under its own isolated-testing authorization, which
+also covers the Swallowtail real-route gates so no separate Swallowtail live
+lane exists). No tag readiness is claimed until the full matrix is Desktop-
+accepted or the operator changes scope.
 
 ## Batch A Planning Acceptance — 2026-09-07
 

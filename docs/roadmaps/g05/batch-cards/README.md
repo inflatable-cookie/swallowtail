@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [128-grok-acp-client-mcp-probe-harness.md](./128-grok-acp-client-mcp-probe-harness.md) — ready; provider-free probe harness Desktop runs to settle whether Grok Build accepts client-supplied ACP MCP; feeds the Grok release-scope decision
 - [125-claude-sdk-registered-tool-route-binding.md](./125-claude-sdk-registered-tool-route-binding.md) — ready; bind RegisteredToolPreparation into claude-agent.sdk open on the Codex precedent; provider-free
 - [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — ready; serial after 125; resolved skill bundle as the distinct third input
 - [127-codex-selected-skill-bundle-binding.md](./127-codex-selected-skill-bundle-binding.md) — ready; Codex route skill bundle binding; parallel

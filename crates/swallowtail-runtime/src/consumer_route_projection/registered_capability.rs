@@ -185,9 +185,7 @@ impl RowSupportEvidence {
     const fn evidence_strength(self) -> ConsumerRouteEvidenceStrength {
         match self {
             Self::Unqualified => ConsumerRouteEvidenceStrength::RuntimeType,
-            Self::PreparedSupported
-            | Self::QualifiedUnsupported
-            | Self::QualifiedSupported => {
+            Self::PreparedSupported | Self::QualifiedUnsupported | Self::QualifiedSupported => {
                 ConsumerRouteEvidenceStrength::RouteValidation
             }
         }

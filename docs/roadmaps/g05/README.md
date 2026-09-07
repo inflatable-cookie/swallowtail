@@ -38,6 +38,7 @@ enforcement.
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
 | Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | active; cards 080-082 delivered; cards 083-088 dispatch from manifest serial edges | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | `g05.029`, cards 080-088 |
+| Ship the first-turn model rejection evidence (cards 119-121) to Bovine Desktop as patch `v0.4.4`, the first release on the simplified lane, and record its wall clock. | ready; cards 122 and 123 compiled; ready on card 121's merge and the tag; first lane on the simplified shape | Contract 036 hosted delegation; the 2026-09-07 producer diagnosis | `g05.036`, cards 119-123 |
 | Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | ready; cards 109-113 compiled; 112 and 113 may start under the freeze | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | `g05.034`, cards 109-113 |
 | Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | planned; Research 288 and Spec 014 drafted; architecture and contracts unpromoted | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; Desktop operator direction 2026-09-06 | `g05.035`, promotion before implementation |
 | Ship the Claude SDK termination cause (card 105) as patch `v0.4.3` on the compressed lane, tag request to the operator as soon as gates are green, Desktop real Send on the tag as consumer evidence. | complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy; Desktop follow-up remains Acowtancy-owned | Contract 036; the 2026-09-06 Desktop real-Send evidence | `g05.033`, cards 105-107 |
@@ -48,6 +49,7 @@ enforcement.
 
 ## Planned Next Roadmaps
 
+- [g05.036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; cards 122 and 123 compiled; ready on card 121's merge and the tag; first lane on the simplified shape
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
 - [g05.034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze
 - [g05.033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy
@@ -423,6 +425,7 @@ identity.
 
 ## Milestones
 
+- [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; cards 122 and 123 compiled; ready on card 121's merge and the tag; first lane on the simplified shape
 - [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; Batch A promoted; card114 leads shared kernel implementation
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze
 - [033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy

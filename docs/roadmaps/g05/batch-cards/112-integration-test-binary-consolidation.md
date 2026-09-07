@@ -1,6 +1,6 @@
 # 112 Integration Test Binary Consolidation
 
-Status: planned; ready now; touches no release surface
+Status: complete; PR 248 merged at `169cc199`
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06

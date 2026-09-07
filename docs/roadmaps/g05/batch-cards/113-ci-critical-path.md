@@ -1,6 +1,6 @@
 # 113 CI Critical Path
 
-Status: planned; ready now; operator workflow authority from card 095 carries
+Status: complete; PR 247 merged at `d7ed04ff`
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06

@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 35 roadmaps: 27 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and ready milestones at 029, 031, 034. Milestone 035 is
+g05 has 36 roadmaps: 27 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and ready milestones at 029, 031, 034, 036. Milestone 035 is
 planned. It holds the shared harness capability architecture
 and contract-promotion batches; it grants no runtime implementation authority.
 Milestone 034 makes the release lane short and dependable and CI fast (cards

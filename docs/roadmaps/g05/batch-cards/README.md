@@ -9,20 +9,17 @@
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — ready; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — ready; g05.029 priority 5
 - [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — ready; g05.029 priority 9
-- [110-version-derived-release-scripts-and-baseline-roles.md](./110-version-derived-release-scripts-and-baseline-roles.md) — ready; PR 252; exact-head re-review
 
 ## Planned
 
+- [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — planned; ready on card 121's merge; first lane on the simplified shape
+- [123-v0-4-4-consumer-proof-and-tag-capsule.md](./123-v0-4-4-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.4` tag
 - [114-registered-tool-kernel.md](./114-registered-tool-kernel.md) — planned; ready after Batch A planning review/promotion
 - [115-selected-skill-transport.md](./115-selected-skill-transport.md) — planned; waits for card114 merges
 - [116-claude-registered-tool-adoption.md](./116-claude-registered-tool-adoption.md) — planned; waits for cards114-115 merge and exact route transport corpus is frozen
 - [117-codex-registered-tool-adoption.md](./117-codex-registered-tool-adoption.md) — planned; waits for cards114-115 merge
 - [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — planned; waits for cards114-115 merge and consumer-tool protocol evidence exists
 
-- [109-release-gate-order-and-hosted-delegation.md](./109-release-gate-order-and-hosted-delegation.md) — planned; cheap gates first, hosted run stands for clippy and tests; after the `v0.4.3` tag
-- [111-docs-check-on-push-and-closeout-grammar.md](./111-docs-check-on-push-and-closeout-grammar.md) — planned; pre-push docs check; drift checker grammar documented; after the tag
-- [112-integration-test-binary-consolidation.md](./112-integration-test-binary-consolidation.md) — planned; 370 test binaries to a handful per crate; may start now
-- [113-ci-critical-path.md](./113-ci-critical-path.md) — planned; MSRV to Linux clippy-only on PRs, shard rebalance, cache audit; may start now
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — planned; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
 - [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — planned; ready on card 105's merge
 
@@ -37,6 +34,11 @@
 
 ## Completed
 
+- [109-release-gate-order-and-hosted-delegation.md](./109-release-gate-order-and-hosted-delegation.md) — complete; PR 253 merged at `8668b167`; cheap gates first, hosted run stands for clippy and tests; after the `v0.4.3` tag
+- [110-version-derived-release-scripts-and-baseline-roles.md](./110-version-derived-release-scripts-and-baseline-roles.md) — complete; PR 252 merged at `258574a6`; PR 252; exact-head re-review
+- [111-docs-check-on-push-and-closeout-grammar.md](./111-docs-check-on-push-and-closeout-grammar.md) — complete; PR 250 merged at `f51575c9`; pre-push docs check; drift checker grammar documented; after the tag
+- [112-integration-test-binary-consolidation.md](./112-integration-test-binary-consolidation.md) — complete; PR 248 merged at `169cc199`; 370 test binaries to a handful per crate; may start now
+- [113-ci-critical-path.md](./113-ci-critical-path.md) — complete; PR 247 merged at `d7ed04ff`; MSRV to Linux clippy-only on PRs, shard rebalance, cache audit; may start now
 - [104-post-tag-determinism-sweep.md](./104-post-tag-determinism-sweep.md) — complete; PR 251 merged; retire card 094's deferred timing and leak surfaces in kimi-platform and host-local; concurrent with the g05.029 runway
 - [107-v0-4-3-consumer-proof-and-tag-capsule.md](./107-v0-4-3-consumer-proof-and-tag-capsule.md) — complete; source consumer passed at `cbd4ddc8`; tag capsule relayed to Acowtancy
 - [085-grok-acp-answerable-permissions.md](./085-grok-acp-answerable-permissions.md) — complete; PR 243 merged at `8bbeceb4`; opt-in exchange with default reject/cancel and stable `No` disposition

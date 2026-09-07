@@ -1,6 +1,6 @@
 # 110 Version-Derived Release Scripts And Baseline Roles
 
-Status: ready; PR 252; exact-head re-review
+Status: complete; PR 252 merged at `258574a6`
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06

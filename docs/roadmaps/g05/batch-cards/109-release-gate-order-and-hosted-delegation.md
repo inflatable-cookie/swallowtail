@@ -1,6 +1,6 @@
 # 109 Release Gate Order And Hosted Delegation
 
-Status: planned; after the `v0.4.3` tag
+Status: complete; PR 253 merged at `8668b167`
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06

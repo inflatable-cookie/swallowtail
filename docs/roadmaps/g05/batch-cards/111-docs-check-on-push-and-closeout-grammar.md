@@ -1,6 +1,6 @@
 # 111 Docs Check On Push And Closeout Grammar
 
-Status: planned; after the `v0.4.3` tag
+Status: complete; PR 250 merged at `f51575c9`
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06

@@ -7,6 +7,8 @@ mod generation_control_corpus;
 mod input_callback_corpus;
 #[path = "opencode_http_1_18_28_delta_ledger.rs"]
 mod opencode_http_1_18_28_delta_ledger;
+#[path = "opencode_http_1_18_29_delta_ledger.rs"]
+mod opencode_http_1_18_29_delta_ledger;
 #[path = "protocol_fixtures.rs"]
 mod protocol_fixtures;
 #[path = "session_continuity_corpus.rs"]

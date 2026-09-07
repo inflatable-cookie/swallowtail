@@ -163,6 +163,7 @@ consumer requirements and must not create a competing producer worker.
 | [128](batch-cards/128-grok-acp-client-mcp-probe-harness.md) | ready | Grok adapter/testkit owner; `crates/swallowtail-testkit/**` probe module, `scripts/` runner, hand-off packet under `docs/handoffs/`; forbidden: adapter runtime, claims, contracts | four-verdict proof on the fake ACP fixture; exact-head review; Desktop runs the real probe |
 | [129](batch-cards/129-feature-matrix-cross-classification-audit.md) | ready | docs/matrix owner; `docs/guides/provider-solution-feature-matrix.csv`, `provider-route-matrix.md`, `scripts/check-provider-route-matrix.sh`; forbidden: crates, claims | check enforces kind+reference on every cross; ranked producer-gap backlog; exact-head review |
 | [131](batch-cards/131-codex-app-server-client-mcp-servers-evidence.md) | ready | Codex evidence owner; corpus, matrix cell, one fake transcript if a surface exists; forbidden: runtime, live Codex | anchored classification; matrix check green; exact-head review |
+| [132](batch-cards/132-claude-sdk-registered-tool-real-route-gate.md) | planned; Desktop schedules under its isolated-testing authorization | Swallowtail supplies the packet only; Desktop runs; Contract 061 row and matrix cells move only from the capsule | one real registered call under the frozen tuple |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.

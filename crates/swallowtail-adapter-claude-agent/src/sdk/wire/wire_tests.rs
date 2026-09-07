@@ -7,6 +7,9 @@ use crate::sdk::protocol::ClaudeAgentSdkProtocolFailureKind;
 use serde_json::{Value, json};
 use std::collections::BTreeSet;
 
+const MODEL_EVIDENCE_BOUNDS: &str =
+    include_str!("../../../tests/fixtures/claude-agent-sdk/model-evidence-bounds.json");
+
 #[test]
 fn commands_and_callback_responses_encode_as_lf_terminated_records() {
     let bytes = encode_command("open-1", ClaudeAgentSdkCommand::Open, json!({"cwd": "/w"}))
@@ -541,6 +544,32 @@ fn model_qualification_evidence_rejects_contract_drift() {
             Some(ClaudeAgentSdkProtocolFailureKind::InvalidDiagnostic),
             "{label} must fail closed"
         );
+    }
+}
+
+#[test]
+fn model_qualification_ids_match_the_shared_boundary_and_control_table() {
+    let cases: Value = serde_json::from_str(MODEL_EVIDENCE_BOUNDS)
+        .expect("model evidence bounds fixture is valid JSON");
+    for case in cases
+        .as_array()
+        .expect("model evidence fixture is an array")
+    {
+        let name = case["name"].as_str().expect("fixture case name");
+        let unit = case["unit"].as_str().expect("fixture unit");
+        let repeat = case["repeat"]
+            .as_u64()
+            .and_then(|value| usize::try_from(value).ok())
+            .expect("fixture repeat is a usize");
+        let value = unit.repeat(repeat);
+        let valid = case["valid"].as_bool().expect("fixture validity");
+
+        for field in ["requestedModel", "effectiveModel"] {
+            let mut record = model_qualification_record();
+            record["evidence"][field] = json!(value);
+            let decoded = decode_record(&serde_json::to_vec(&record).expect("fixture serializes"));
+            assert_eq!(decoded.is_ok(), valid, "Rust predicate for {name}/{field}");
+        }
     }
 }
 

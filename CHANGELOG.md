@@ -25,6 +25,13 @@ annotated Git tags from the canonical repository.
   genuine first-message shape failures retain `init_missing`. Provider-free
   rejection-then-retry and rejection-then-close fixtures cover cleanup and
   no-replay evidence. g05.029 card 121.
+- bound loaded SDK package identity lookup to the imported module's own package
+  boundary, so unrelated ancestor manifests remain
+  `sdk_identity_unverifiable` before SDK construction. Align sidecar model
+  evidence with Rust's C0/C1 control-character predicate while preserving the
+  existing byte, catalogue, key, digest, code, and observer bounds. Provider-
+  free nested-package and shared boundary/control fixtures cover both paths.
+  g05.029 card 124.
 - add consumer-declared stdio MCP servers on `claude-agent.sdk` open as
   additive prepared input beside the Copy session profile. `strictMcpConfig`
   stays true, server env is an explicit child-allowlist object, every

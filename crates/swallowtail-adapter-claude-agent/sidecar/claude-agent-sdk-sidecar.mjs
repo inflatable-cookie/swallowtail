@@ -826,7 +826,7 @@ function supportedModelValues(values) {
       }
       if (
         Buffer.byteLength(candidate, "utf8") > MAXIMUM_MODEL_BYTES ||
-        [...candidate].some((character) => character.charCodeAt(0) < 0x20)
+        [...candidate].some(isControlCharacter)
       ) {
         throw new SidecarFailure("initialization_failed");
       }
@@ -836,6 +836,11 @@ function supportedModelValues(values) {
     }
   }
   return models;
+}
+
+function isControlCharacter(character) {
+  const codePoint = character.codePointAt(0);
+  return codePoint <= 0x1f || (codePoint >= 0x7f && codePoint <= 0x9f);
 }
 
 function boundedIdentity(value) {
@@ -858,7 +863,13 @@ async function readSdkIdentity(modulePath) {
     throw new SidecarFailure("sdk_identity_unverifiable");
   }
 
-  let directory = path.dirname(resolvedModulePath);
+  const moduleDirectory = path.dirname(resolvedModulePath);
+  const packageBoundary = sdkPackageBoundary(moduleDirectory);
+  if (packageBoundary === null) {
+    throw new SidecarFailure("sdk_identity_unverifiable");
+  }
+
+  let directory = moduleDirectory;
   while (true) {
     let manifestText;
     try {
@@ -867,11 +878,10 @@ async function readSdkIdentity(modulePath) {
       if (error?.code !== "ENOENT") {
         throw new SidecarFailure("sdk_identity_unverifiable");
       }
-      const parent = path.dirname(directory);
-      if (parent === directory) {
+      if (directory === packageBoundary) {
         throw new SidecarFailure("sdk_identity_unverifiable");
       }
-      directory = parent;
+      directory = path.dirname(directory);
       continue;
     }
 
@@ -890,6 +900,32 @@ async function readSdkIdentity(modulePath) {
   }
 }
 
+function sdkPackageBoundary(moduleDirectory) {
+  let nodeModulesDirectory = moduleDirectory;
+  while (true) {
+    if (path.basename(nodeModulesDirectory) === "node_modules") {
+      break;
+    }
+    const parent = path.dirname(nodeModulesDirectory);
+    if (parent === nodeModulesDirectory) {
+      return moduleDirectory;
+    }
+    nodeModulesDirectory = parent;
+  }
+
+  const relative = path.relative(nodeModulesDirectory, moduleDirectory);
+  const segments = relative.split(path.sep).filter((segment) => segment.length > 0);
+  if (segments.length === 0) {
+    return null;
+  }
+  if (segments[0].startsWith("@")) {
+    return segments.length >= 2
+      ? path.join(nodeModulesDirectory, segments[0], segments[1])
+      : null;
+  }
+  return path.join(nodeModulesDirectory, segments[0]);
+}
+
 function sdkIdentityEvidence(identity) {
   return {
     declaredSdkPackage: SDK_PACKAGE,
@@ -904,7 +940,7 @@ function boundedModelEvidence(value) {
     typeof value !== "string" ||
     value.length === 0 ||
     Buffer.byteLength(value, "utf8") > MAXIMUM_MODEL_BYTES ||
-    [...value].some((character) => character.charCodeAt(0) < 0x20)
+    [...value].some(isControlCharacter)
   ) {
     return null;
   }

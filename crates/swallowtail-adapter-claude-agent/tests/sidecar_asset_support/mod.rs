@@ -6,7 +6,7 @@
 
 use serde_json::{Value, json};
 use std::io::{BufRead, BufReader, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, Command, Stdio};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::mpsc::{Receiver, RecvTimeoutError, channel};
@@ -20,6 +20,7 @@ static NEXT_TEMPORARY_DIRECTORY: AtomicUsize = AtomicUsize::new(0);
 struct Fixture {
     native_lifetime_ms: &'static str,
     scenario: &'static str,
+    model_evidence_value: Option<String>,
 }
 
 impl Default for Fixture {
@@ -27,6 +28,7 @@ impl Default for Fixture {
         Self {
             native_lifetime_ms: "50",
             scenario: "read-only",
+            model_evidence_value: None,
         }
     }
 }
@@ -51,6 +53,16 @@ impl SidecarProcess {
     pub fn start_scenario(scenario: &'static str) -> Self {
         Self::start_with(&Fixture {
             scenario,
+            ..Fixture::default()
+        })
+    }
+
+    /// Starts the sidecar with one shared model-evidence fixture value in the
+    /// fake SDK's first-turn init message.
+    pub fn start_model_evidence_case(scenario: &'static str, value: &str) -> Self {
+        Self::start_with(&Fixture {
+            scenario,
+            model_evidence_value: Some(value.to_owned()),
             ..Fixture::default()
         })
     }
@@ -87,24 +99,7 @@ impl SidecarProcess {
         let directory = temporary_directory();
         let entry = directory.join("claude-agent-sdk-sidecar.mjs");
         std::fs::write(&entry, CLAUDE_AGENT_SDK_SIDECAR_SOURCE).expect("asset is written");
-        std::fs::write(directory.join("fake-sdk.mjs"), include_str!("fake-sdk.mjs"))
-            .expect("fake SDK is written");
-        if scenario != "sdk-identity-missing" {
-            let sdk_version = if scenario == "sdk-identity-mismatch" {
-                "0.3.258"
-            } else {
-                "0.3.259"
-            };
-            std::fs::write(
-                directory.join("package.json"),
-                json!({
-                    "name": "@anthropic-ai/claude-agent-sdk",
-                    "version": sdk_version
-                })
-                .to_string(),
-            )
-            .expect("fake SDK package identity is written");
-        }
+        let sdk_module = write_sdk_fixture(&directory, scenario);
         std::fs::write(
             directory.join("manifest.json"),
             json!({"version": "2.1.259"}).to_string(),
@@ -139,10 +134,7 @@ impl SidecarProcess {
             .env("AWS_SECRET_ACCESS_KEY", "fixture-secret")
             .env("GOOGLE_API_KEY", "fixture-secret")
             .env("RANDOM_UNRELATED", "fixture-value")
-            .env(
-                "CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE",
-                directory.join("fake-sdk.mjs"),
-            )
+            .env("CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE", sdk_module)
             .env(
                 "CLAUDE_AGENT_SDK_SIDECAR_NATIVE_BINARY",
                 directory.join("claude"),
@@ -154,6 +146,12 @@ impl SidecarProcess {
             .env("FAKE_SDK_OBSERVATIONS", directory.join("observations.json"))
             .env("FAKE_SDK_NATIVE_LIFETIME_MS", lifetime_ms)
             .env("FAKE_SDK_SCENARIO", scenario)
+            .envs(
+                fixture
+                    .model_evidence_value
+                    .iter()
+                    .map(|value| ("FAKE_SDK_MODEL_EVIDENCE_VALUE", value)),
+            )
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::null())
@@ -516,4 +514,92 @@ fn temporary_directory() -> PathBuf {
     ));
     std::fs::create_dir(&path).expect("fixture directory is created without collision");
     path
+}
+
+fn write_sdk_fixture(directory: &Path, scenario: &str) -> PathBuf {
+    let nested_identity = matches!(
+        scenario,
+        "sdk-identity-nested-match"
+            | "sdk-identity-unrelated-ancestor"
+            | "sdk-identity-malformed"
+            | "sdk-identity-unreadable"
+    );
+    let ambiguous_identity = scenario == "sdk-identity-ambiguous";
+    let sdk_module = if nested_identity {
+        directory.join(
+            "node_modules/fixture-wrapper/node_modules/@anthropic-ai/claude-agent-sdk/dist/fake-sdk.mjs",
+        )
+    } else if ambiguous_identity {
+        directory.join("node_modules/@anthropic-ai/fake-sdk.mjs")
+    } else {
+        directory.join("fake-sdk.mjs")
+    };
+    std::fs::create_dir_all(sdk_module.parent().expect("SDK module has a parent"))
+        .expect("SDK module directory is created");
+    std::fs::write(&sdk_module, include_str!("fake-sdk.mjs")).expect("fake SDK is written");
+
+    let package_manifest = directory.join("package.json");
+    let correct_manifest = json!({
+        "name": "@anthropic-ai/claude-agent-sdk",
+        "version": "0.3.259"
+    })
+    .to_string();
+    let mismatch_manifest = json!({
+        "name": "fixture-consumer",
+        "version": "9.9.9"
+    })
+    .to_string();
+    match scenario {
+        "sdk-identity-missing" => {}
+        "sdk-identity-mismatch" => std::fs::write(
+            package_manifest,
+            json!({
+                "name": "@anthropic-ai/claude-agent-sdk",
+                "version": "0.3.258"
+            })
+            .to_string(),
+        )
+        .expect("mismatching SDK package identity is written"),
+        "sdk-identity-nested-match" => {
+            let root = sdk_module
+                .parent()
+                .expect("nested SDK module has a dist directory")
+                .parent()
+                .expect("nested SDK dist has a package root");
+            std::fs::write(root.join("package.json"), correct_manifest)
+                .expect("nested SDK package identity is written");
+        }
+        "sdk-identity-unrelated-ancestor" => {
+            let wrapper = directory.join("node_modules/fixture-wrapper");
+            std::fs::write(wrapper.join("package.json"), &mismatch_manifest)
+                .expect("unrelated wrapper identity is written");
+            std::fs::write(package_manifest, mismatch_manifest)
+                .expect("unrelated consumer identity is written");
+        }
+        "sdk-identity-malformed" => {
+            let root = sdk_module
+                .parent()
+                .expect("nested SDK module has a dist directory")
+                .parent()
+                .expect("nested SDK dist has a package root");
+            std::fs::write(root.join("package.json"), b"{")
+                .expect("malformed SDK package identity is written");
+        }
+        "sdk-identity-unreadable" => {
+            let root = sdk_module
+                .parent()
+                .expect("nested SDK module has a dist directory")
+                .parent()
+                .expect("nested SDK dist has a package root");
+            std::fs::create_dir(root.join("package.json"))
+                .expect("unreadable SDK package identity is created");
+        }
+        "sdk-identity-ambiguous" => {
+            std::fs::write(package_manifest, mismatch_manifest)
+                .expect("unrelated consumer identity is written");
+        }
+        _ => std::fs::write(package_manifest, correct_manifest)
+            .expect("fake SDK package identity is written"),
+    }
+    sdk_module
 }

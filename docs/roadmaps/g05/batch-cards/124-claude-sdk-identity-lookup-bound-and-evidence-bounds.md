@@ -63,3 +63,21 @@ counterexample: a manifest found above `node_modules`.
 ## Auto-Continuation
 
 No. Stop for exact-head review. No live tier.
+
+## Result
+
+Implemented the two promoted Card120 review precision fixes. The sidecar now
+resolves identity only from the imported module directory through the nearest
+`node_modules/<scope>/<name>` package boundary; unrelated ancestors,
+malformed, unreadable, missing, and ambiguous identity stay typed
+`sdk_identity_unverifiable` before `sdk.query` or provider work. A nested
+package-root fixture proves the matching loaded version still reaches open
+evidence, while the existing mismatch evidence and failure code remain
+unchanged.
+
+The sidecar model catalogue/evidence paths now use the Rust decoder's exact
+C0/C1 `char::is_control` equivalent. One shared byte/control boundary table
+drives both the provider-free sidecar requested/effective evidence checks and
+Rust wire decoder checks; existing Card119/120 evidence, digest, key, count,
+observer, rejection, loaded-version, and terminal-retry semantics remain
+unchanged. No public API baseline changed.

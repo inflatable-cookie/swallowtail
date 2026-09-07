@@ -259,6 +259,9 @@ diff -u "$route_lifecycle_posture_expected" "$route_lifecycle_posture_actual"
 python3 "$route_matrix_repo_root/scripts/provider_route_matrix/validate.py" \
   "$feature_matrix_file"
 
+python3 "$route_matrix_repo_root/scripts/provider_route_matrix/cross_classification.py" \
+  "$feature_matrix_file"
+
 python3 "$route_matrix_repo_root/scripts/check-provider-activity-matrix.py"
 
 printf 'provider route, lifecycle, feature, activity, immutable v%s, current v%s, and Card050 historical ledger boundary checks passed\n' \

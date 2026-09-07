@@ -51,6 +51,14 @@ The five shared-harness capability columns are deliberately separate:
 | persistent_permission_grants | permission decisions survive one call or turn; one-shot Allow/Deny exchange is not a grant |
 | pre_session_model_catalogue | a model catalogue is available before opening the session; open-time negotiated options do not count |
 
+On `codex.app-server`, `client_mcp_servers` is a provider limitation because
+the qualified range has no typed per-session client-declared MCP surface. MCP
+configuration reaches Codex only through the untyped ambient `config`
+overlay, which carries no per-session identity, revision, digest, or
+lifecycle. That overlay is not the feature. Card 117 native host-mediated
+registered tools remain the qualified consumer-tool path; provider-direct MCP
+stays withheld.
+
 `cross_kind` and `cross_ref` are JSON objects immediately before `notes` in
 the CSV. Their keys are the unavailable feature columns in that row. Each
 value is exactly one of: `provider_limitation` with an anchored row in the

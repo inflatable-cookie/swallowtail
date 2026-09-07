@@ -99,12 +99,13 @@ pub use consumer_route_projection_fixture::{
 pub use failure_assertions::assert_portable_failure_classification_contract;
 pub use fixture::ContractKernelFixture;
 pub use grok_acp_client_mcp_probe::{
-    ClientMcpVerdict, DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE, ECHO_MCP_SERVER_NAME, ECHO_MCP_TOOL,
-    ECHO_MCP_TRANSCRIPT_ENV, ECHO_MCP_TRANSCRIPT_FLAG, EchoMcpTranscript, GrokAcpClientMcpCapsule,
-    GrokAcpClientMcpCleanup, GrokAcpClientMcpError, GrokAcpClientMcpErrorKind,
-    GrokAcpClientMcpFrame, GrokAcpClientMcpPeer, LiveGrokAcpPeer, append_echo_mcp_transcript,
-    create_echo_mcp_transcript, desktop_grok_acp_client_mcp_probe_is_gated_open,
-    grok_acp_client_mcp_fixture_probe, grok_acp_client_mcp_verdict,
+    ClientMcpOracleShape, ClientMcpVerdict, DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE,
+    ECHO_MCP_SERVER_NAME, ECHO_MCP_TOOL, ECHO_MCP_TRANSCRIPT_ENV, ECHO_MCP_TRANSCRIPT_FLAG,
+    ECHO_PROMPT, EchoMcpTranscript, GrokAcpClientMcpCapsule, GrokAcpClientMcpCleanup,
+    GrokAcpClientMcpError, GrokAcpClientMcpErrorKind, GrokAcpClientMcpFrame, GrokAcpClientMcpPeer,
+    InconclusiveCause, LiveGrokAcpPeer, append_echo_mcp_transcript, create_echo_mcp_transcript,
+    desktop_grok_acp_client_mcp_probe_is_gated_open, grok_acp_client_mcp_fixture_probe,
+    grok_acp_client_mcp_oracle_fixture_probe, grok_acp_client_mcp_verdict,
     grok_acp_client_mcp_verdict_from_frames, grok_acp_echo_mcp_reply,
     grok_acp_echo_mcp_stdio_frame, isolated_grok_home, open_desktop_live_grok_acp_peer,
     read_echo_mcp_transcript, run_grok_acp_client_mcp_probe,

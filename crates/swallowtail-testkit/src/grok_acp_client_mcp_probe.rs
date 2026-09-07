@@ -3,8 +3,11 @@
 //! Verdicts are decided from captured ACP frames plus the disposable echo MCP
 //! stdio transcript. ACP v1 cannot name the client MCP server on a tool call,
 //! so `accepts_client_mcp` requires a `tools/call` on that transcript.
-//! `ignores_client_mcp` requires `initialize` on that transcript; an empty
-//! or missing file is not liveness. Crate tests drive the fake ACP fixture.
+//! Protocol admission (`initialize`) and tool listing (`tools/list`) are
+//! explicit capsule fields; a verdict cannot discard them. `ignores_client_mcp`
+//! is only the completed-turn case where the echo server was never reached.
+//! `inconclusive` names its cause, including `no_turn_result` versus
+//! `turn_completed_without_tool_call`. Crate tests drive the fake ACP fixture.
 //! The live installed-Grok entrypoint refuses to spawn unless Desktop sets
 //! [`DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE`] and an isolated `GROK_HOME`
 //! directory exists.
@@ -37,7 +40,8 @@ pub const ECHO_MCP_TRANSCRIPT_FLAG: &str = "--transcript";
 static ECHO_MCP_TRANSCRIPT_SEQ: AtomicU64 = AtomicU64::new(0);
 
 const MAXIMUM_FRAMES: usize = 48;
-const ECHO_PROMPT: &str = "Call the echo tool with text ping and return its result.";
+/// Directive prompt recorded verbatim on every capsule.
+pub const ECHO_PROMPT: &str = "You must call the tool named echo with argument text set to ping. Do not finish the turn until that tool call has returned.";
 const FIXTURE_SESSION: &str = "grok-fixture-session";
 const FIXTURE_CWD: &str = "<host-approved-resource>";
 const FIXTURE_COMMAND: &str = "<redacted-command>";
@@ -51,12 +55,66 @@ const LIVE_JOIN: Duration = Duration::from_secs(2);
 pub enum ClientMcpVerdict {
     /// Session accepted a non-empty `mcpServers` list and the echo MCP server was called.
     AcceptsClientMcp,
-    /// Session accepted a non-empty `mcpServers` list, echo MCP received `initialize`, and echo was never called.
+    /// Session accepted a non-empty `mcpServers` list, the prompt turn completed, and the echo server was never reached.
     IgnoresClientMcp,
     /// Session setup rejected the non-empty `mcpServers` list.
     RejectsClientMcp,
-    /// Frames are missing, incomplete, or contradictory.
+    /// Frames are missing, incomplete, or contradictory. See [`InconclusiveCause`].
     Inconclusive,
+}
+
+/// Named reason when [`ClientMcpVerdict::Inconclusive`] is scored.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum InconclusiveCause {
+    /// Outbound `session/new` is missing.
+    MissingSessionNew,
+    /// Outbound `session/new` carried an empty `mcpServers` list.
+    EmptyMcpServers,
+    /// `session/new` has no matching result.
+    SessionNewUnanswered,
+    /// `session/new` failed without naming client MCP.
+    SessionNewErrorNotClientMcp,
+    /// Capture stopped at the frame bound.
+    Truncated,
+    /// A permission request was rejected before echo could run.
+    PermissionRejected,
+    /// Prompt was missing or never returned a turn result.
+    NoTurnResult,
+    /// Turn completed after admission, but echo was never called.
+    TurnCompletedWithoutToolCall,
+    /// ACP showed an echo-titled tool call without echo MCP `initialize`.
+    NativeEchoWithoutAdmission,
+}
+
+impl InconclusiveCause {
+    /// Returns the capsule spelling for this cause.
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::MissingSessionNew => "missing_session_new",
+            Self::EmptyMcpServers => "empty_mcp_servers",
+            Self::SessionNewUnanswered => "session_new_unanswered",
+            Self::SessionNewErrorNotClientMcp => "session_new_error_not_client_mcp",
+            Self::Truncated => "truncated",
+            Self::PermissionRejected => "permission_rejected",
+            Self::NoTurnResult => "no_turn_result",
+            Self::TurnCompletedWithoutToolCall => "turn_completed_without_tool_call",
+            Self::NativeEchoWithoutAdmission => "native_echo_without_admission",
+        }
+    }
+}
+
+/// Offline oracle shapes that keep admission and invocation separate.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ClientMcpOracleShape {
+    /// Echo `initialize`, `tools/list`, and `tools/call` all observed.
+    AdmittedAndCalled,
+    /// Echo `initialize` and `tools/list` observed; turn completed; no `tools/call`.
+    AdmittedListedNotCalledCompleted,
+    /// Echo `initialize` observed; `tools/list` absent; turn completed; no `tools/call`.
+    AdmittedNotListed,
+    /// Session accepted `mcpServers`; echo never received `initialize`.
+    NoAdmission,
 }
 
 /// Methods observed by the disposable echo MCP server on its own stdio.
@@ -78,7 +136,7 @@ impl EchoMcpTranscript {
         }
     }
 
-    /// Echo MCP received `initialize` and Grok never called the tool.
+    /// Echo MCP received `initialize` and Grok never listed or called the tool.
     #[must_use]
     pub const fn observed_idle() -> Self {
         Self {
@@ -88,10 +146,26 @@ impl EchoMcpTranscript {
         }
     }
 
-    /// Returns whether echo MCP received `initialize`. That is live liveness, not file existence.
+    /// Echo MCP received `initialize` and `tools/list`, and Grok never called the tool.
+    #[must_use]
+    pub const fn admitted_listed() -> Self {
+        Self {
+            initialize: true,
+            tools_list: true,
+            tools_call: false,
+        }
+    }
+
+    /// Returns whether echo MCP received `initialize`. That is protocol admission, not a verdict.
     #[must_use]
     pub const fn initialize(&self) -> bool {
         self.initialize
+    }
+
+    /// Returns whether echo MCP received `tools/list`.
+    #[must_use]
+    pub const fn tools_list(&self) -> bool {
+        self.tools_list
     }
 
     /// Returns whether a `tools/call` for echo was observed.
@@ -275,6 +349,12 @@ impl GrokAcpClientMcpCleanup {
 pub struct GrokAcpClientMcpCapsule {
     version: String,
     verdict: ClientMcpVerdict,
+    inconclusive_cause: Option<InconclusiveCause>,
+    prompt: String,
+    prompt_turn_completed: bool,
+    stop_reason: Option<String>,
+    client_mcp_admitted: bool,
+    client_mcp_tools_listed: bool,
     frames: Vec<GrokAcpClientMcpFrame>,
     stale_callback_rejected: bool,
     cleanup: GrokAcpClientMcpCleanup,
@@ -293,6 +373,42 @@ impl GrokAcpClientMcpCapsule {
     #[must_use]
     pub const fn verdict(&self) -> ClientMcpVerdict {
         self.verdict
+    }
+
+    /// Named cause when the verdict is [`ClientMcpVerdict::Inconclusive`].
+    #[must_use]
+    pub const fn inconclusive_cause(&self) -> Option<InconclusiveCause> {
+        self.inconclusive_cause
+    }
+
+    /// Exact prompt text sent on `session/prompt`.
+    #[must_use]
+    pub fn prompt(&self) -> &str {
+        &self.prompt
+    }
+
+    /// Returns whether the prompt turn produced a result.
+    #[must_use]
+    pub const fn prompt_turn_completed(&self) -> bool {
+        self.prompt_turn_completed
+    }
+
+    /// ACP `stopReason` from the prompt result, when present.
+    #[must_use]
+    pub fn stop_reason(&self) -> Option<&str> {
+        self.stop_reason.as_deref()
+    }
+
+    /// Echo-server `initialize` observed. Independent of the verdict.
+    #[must_use]
+    pub const fn client_mcp_admitted(&self) -> bool {
+        self.client_mcp_admitted
+    }
+
+    /// Echo-server `tools/list` observed. Independent of the verdict.
+    #[must_use]
+    pub const fn client_mcp_tools_listed(&self) -> bool {
+        self.client_mcp_tools_listed
     }
 
     /// Redacted captured frames, including the `session/new` request when sent.
@@ -332,6 +448,12 @@ impl GrokAcpClientMcpCapsule {
             "route": "grok-build.acp",
             "version": self.version,
             "verdict": self.verdict.as_str(),
+            "inconclusive_cause": self.inconclusive_cause.map(InconclusiveCause::as_str),
+            "prompt": self.prompt,
+            "prompt_turn_completed": self.prompt_turn_completed,
+            "stop_reason": self.stop_reason,
+            "client_mcp_admitted": self.client_mcp_admitted,
+            "client_mcp_tools_listed": self.client_mcp_tools_listed,
             "stale_callback_rejected": self.stale_callback_rejected,
             "cleanup_joined": self.cleanup.joined,
             "truncated": self.truncated,
@@ -439,6 +561,27 @@ pub fn grok_acp_client_mcp_fixture_probe(
 ) -> Result<GrokAcpClientMcpCapsule, GrokAcpClientMcpError> {
     let mut peer = FakeAcpPeer::new(expected);
     let capsule = run_grok_acp_client_mcp_probe(&mut peer, version, FIXTURE_COMMAND, FIXTURE_CWD)?;
+    if capsule.verdict != expected {
+        return Err(GrokAcpClientMcpError {
+            kind: GrokAcpClientMcpErrorKind::InvalidVerdict,
+        });
+    }
+    Ok(capsule)
+}
+
+/// Runs the fake ACP fixture for one admission/invocation oracle shape.
+pub fn grok_acp_client_mcp_oracle_fixture_probe(
+    version: &str,
+    shape: ClientMcpOracleShape,
+) -> Result<GrokAcpClientMcpCapsule, GrokAcpClientMcpError> {
+    let mut peer = FakeAcpPeer::oracle(shape);
+    let capsule = run_grok_acp_client_mcp_probe(&mut peer, version, FIXTURE_COMMAND, FIXTURE_CWD)?;
+    let expected = match shape {
+        ClientMcpOracleShape::AdmittedAndCalled => ClientMcpVerdict::AcceptsClientMcp,
+        ClientMcpOracleShape::NoAdmission => ClientMcpVerdict::IgnoresClientMcp,
+        ClientMcpOracleShape::AdmittedListedNotCalledCompleted
+        | ClientMcpOracleShape::AdmittedNotListed => ClientMcpVerdict::Inconclusive,
+    };
     if capsule.verdict != expected {
         return Err(GrokAcpClientMcpError {
             kind: GrokAcpClientMcpErrorKind::InvalidVerdict,
@@ -558,14 +701,17 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
             message: redact_value(frame.message),
         })
         .collect();
-    let verdict = if truncated {
-        ClientMcpVerdict::Inconclusive
-    } else {
-        grok_acp_client_mcp_verdict(&redacted, &transcript)
-    };
+    let decision = grok_acp_client_mcp_verdict_decision(&redacted, &transcript, truncated);
+    let (prompt_turn_completed, stop_reason) = prompt_turn_observation(&redacted);
     Ok(GrokAcpClientMcpCapsule {
         version: version.to_owned(),
-        verdict,
+        verdict: decision.verdict,
+        inconclusive_cause: decision.inconclusive_cause,
+        prompt: ECHO_PROMPT.to_owned(),
+        prompt_turn_completed,
+        stop_reason,
+        client_mcp_admitted: transcript.initialize(),
+        client_mcp_tools_listed: transcript.tools_list(),
         frames: redacted,
         stale_callback_rejected,
         cleanup,
@@ -592,11 +738,34 @@ pub fn grok_acp_client_mcp_verdict(
     frames: &[GrokAcpClientMcpFrame],
     transcript: &EchoMcpTranscript,
 ) -> ClientMcpVerdict {
+    grok_acp_client_mcp_verdict_decision(frames, transcript, false).verdict
+}
+
+struct VerdictDecision {
+    verdict: ClientMcpVerdict,
+    inconclusive_cause: Option<InconclusiveCause>,
+}
+
+fn inconclusive(cause: InconclusiveCause) -> VerdictDecision {
+    VerdictDecision {
+        verdict: ClientMcpVerdict::Inconclusive,
+        inconclusive_cause: Some(cause),
+    }
+}
+
+fn grok_acp_client_mcp_verdict_decision(
+    frames: &[GrokAcpClientMcpFrame],
+    transcript: &EchoMcpTranscript,
+    truncated: bool,
+) -> VerdictDecision {
+    if truncated {
+        return inconclusive(InconclusiveCause::Truncated);
+    }
     let Some(session_new) = frames
         .iter()
         .find(|frame| frame.is_outbound() && method_of(&frame.message) == Some("session/new"))
     else {
-        return ClientMcpVerdict::Inconclusive;
+        return inconclusive(InconclusiveCause::MissingSessionNew);
     };
     let servers = session_new
         .message
@@ -604,21 +773,24 @@ pub fn grok_acp_client_mcp_verdict(
         .and_then(|params| params.get("mcpServers"))
         .and_then(Value::as_array);
     if servers.is_none_or(|list| list.is_empty()) {
-        return ClientMcpVerdict::Inconclusive;
+        return inconclusive(InconclusiveCause::EmptyMcpServers);
     }
     let Some(id) = session_new.message.get("id").cloned() else {
-        return ClientMcpVerdict::Inconclusive;
+        return inconclusive(InconclusiveCause::MissingSessionNew);
     };
     let response = frames
         .iter()
         .find(|frame| !frame.is_outbound() && frame.message.get("id") == Some(&id));
     match response {
-        None => ClientMcpVerdict::Inconclusive,
+        None => inconclusive(InconclusiveCause::SessionNewUnanswered),
         Some(frame) if frame.message.get("error").is_some() => {
             if error_rejects_client_mcp(frame.message.get("error").expect("error present")) {
-                ClientMcpVerdict::RejectsClientMcp
+                VerdictDecision {
+                    verdict: ClientMcpVerdict::RejectsClientMcp,
+                    inconclusive_cause: None,
+                }
             } else {
-                ClientMcpVerdict::Inconclusive
+                inconclusive(InconclusiveCause::SessionNewErrorNotClientMcp)
             }
         }
         Some(frame)
@@ -630,16 +802,30 @@ pub fn grok_acp_client_mcp_verdict(
                 .is_some() =>
         {
             if transcript.tools_call() {
-                ClientMcpVerdict::AcceptsClientMcp
-            } else if permission_was_rejected(frames) || !transcript.initialize() {
-                ClientMcpVerdict::Inconclusive
+                VerdictDecision {
+                    verdict: ClientMcpVerdict::AcceptsClientMcp,
+                    inconclusive_cause: None,
+                }
+            } else if permission_was_rejected(frames) {
+                inconclusive(InconclusiveCause::PermissionRejected)
+            } else if transcript.initialize() {
+                if prompt_turn_completed(frames) {
+                    inconclusive(InconclusiveCause::TurnCompletedWithoutToolCall)
+                } else {
+                    inconclusive(InconclusiveCause::NoTurnResult)
+                }
+            } else if echo_named_tool_called(frames) {
+                inconclusive(InconclusiveCause::NativeEchoWithoutAdmission)
             } else if prompt_turn_completed(frames) {
-                ClientMcpVerdict::IgnoresClientMcp
+                VerdictDecision {
+                    verdict: ClientMcpVerdict::IgnoresClientMcp,
+                    inconclusive_cause: None,
+                }
             } else {
-                ClientMcpVerdict::Inconclusive
+                inconclusive(InconclusiveCause::NoTurnResult)
             }
         }
-        Some(_) => ClientMcpVerdict::Inconclusive,
+        Some(_) => inconclusive(InconclusiveCause::SessionNewUnanswered),
     }
 }
 
@@ -888,6 +1074,7 @@ impl GrokAcpClientMcpPeer for LiveGrokAcpPeer {
 #[allow(dead_code)]
 enum FakeBehavior {
     Verdict(ClientMcpVerdict),
+    Oracle(ClientMcpOracleShape),
     AuthenticateFailed,
     SessionUnauthorized,
     Chatty,
@@ -916,6 +1103,10 @@ impl FakeAcpPeer {
 
     fn new(scenario: ClientMcpVerdict) -> Self {
         Self::with_behavior(FakeBehavior::Verdict(scenario))
+    }
+
+    fn oracle(shape: ClientMcpOracleShape) -> Self {
+        Self::with_behavior(FakeBehavior::Oracle(shape))
     }
 
     #[cfg(test)]
@@ -1032,6 +1223,12 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                 FakeBehavior::Verdict(
                     ClientMcpVerdict::AcceptsClientMcp | ClientMcpVerdict::IgnoresClientMcp,
                 )
+                | FakeBehavior::Oracle(
+                    ClientMcpOracleShape::AdmittedAndCalled
+                    | ClientMcpOracleShape::AdmittedListedNotCalledCompleted
+                    | ClientMcpOracleShape::AdmittedNotListed
+                    | ClientMcpOracleShape::NoAdmission,
+                )
                 | FakeBehavior::Chatty
                 | FakeBehavior::PromptSilent
                 | FakeBehavior::AsksPermission => {
@@ -1043,7 +1240,8 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                 }
             },
             Some("session/prompt") => match self.behavior {
-                FakeBehavior::Verdict(ClientMcpVerdict::AcceptsClientMcp) => {
+                FakeBehavior::Verdict(ClientMcpVerdict::AcceptsClientMcp)
+                | FakeBehavior::Oracle(ClientMcpOracleShape::AdmittedAndCalled) => {
                     self.push(json!({
                         "jsonrpc": "2.0",
                         "method": "session/update",
@@ -1095,7 +1293,12 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                         "result": {"stopReason": "end_turn"}
                     }));
                 }
-                FakeBehavior::Verdict(ClientMcpVerdict::IgnoresClientMcp) => {
+                FakeBehavior::Verdict(ClientMcpVerdict::IgnoresClientMcp)
+                | FakeBehavior::Oracle(
+                    ClientMcpOracleShape::AdmittedListedNotCalledCompleted
+                    | ClientMcpOracleShape::AdmittedNotListed
+                    | ClientMcpOracleShape::NoAdmission,
+                ) => {
                     self.push(json!({
                         "jsonrpc": "2.0",
                         "method": "session/update",
@@ -1205,15 +1408,21 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
         if matches!(
             self.behavior,
             FakeBehavior::Verdict(ClientMcpVerdict::AcceptsClientMcp)
+                | FakeBehavior::Oracle(ClientMcpOracleShape::AdmittedAndCalled)
         ) || self.emitted_echo
         {
             return EchoMcpTranscript::called();
         }
         match self.behavior {
-            FakeBehavior::Verdict(ClientMcpVerdict::IgnoresClientMcp)
+            FakeBehavior::Oracle(ClientMcpOracleShape::AdmittedListedNotCalledCompleted)
+            | FakeBehavior::PromptSilent => EchoMcpTranscript::admitted_listed(),
+            FakeBehavior::Oracle(ClientMcpOracleShape::AdmittedNotListed)
             | FakeBehavior::Chatty
-            | FakeBehavior::PromptSilent
             | FakeBehavior::AsksPermission => EchoMcpTranscript::observed_idle(),
+            FakeBehavior::Verdict(ClientMcpVerdict::IgnoresClientMcp)
+            | FakeBehavior::Oracle(ClientMcpOracleShape::NoAdmission) => {
+                EchoMcpTranscript::default()
+            }
             _ => EchoMcpTranscript::default(),
         }
     }
@@ -1365,7 +1574,6 @@ fn session_id_from(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<String> 
         .map(str::to_owned)
 }
 
-#[cfg(test)]
 fn echo_named_tool_called(frames: &[GrokAcpClientMcpFrame]) -> bool {
     frames.iter().any(|frame| {
         !frame.is_outbound()
@@ -1374,7 +1582,6 @@ fn echo_named_tool_called(frames: &[GrokAcpClientMcpFrame]) -> bool {
     })
 }
 
-#[cfg(test)]
 fn echo_tool_title(message: &Value) -> bool {
     let title = message
         .pointer("/params/update/title")
@@ -1388,7 +1595,6 @@ fn echo_tool_title(message: &Value) -> bool {
         .any(|value| value.eq_ignore_ascii_case(ECHO_MCP_TOOL))
 }
 
-#[cfg(test)]
 fn update_kind(message: &Value) -> Option<&str> {
     message
         .pointer("/params/update/sessionUpdate")
@@ -1418,20 +1624,33 @@ fn json_mentions_mcp_servers(value: &Value) -> bool {
 }
 
 fn prompt_turn_completed(frames: &[GrokAcpClientMcpFrame]) -> bool {
+    prompt_turn_observation(frames).0
+}
+
+fn prompt_turn_observation(frames: &[GrokAcpClientMcpFrame]) -> (bool, Option<String>) {
     let Some(prompt) = frames
         .iter()
         .find(|frame| frame.is_outbound() && method_of(&frame.message) == Some("session/prompt"))
     else {
-        return false;
+        return (false, None);
     };
     let Some(id) = prompt.message.get("id") else {
-        return false;
+        return (false, None);
     };
-    frames.iter().any(|frame| {
-        !frame.is_outbound()
-            && frame.message.get("id") == Some(id)
-            && frame.message.get("result").is_some()
-    })
+    let Some(result) = frames.iter().find_map(|frame| {
+        if frame.is_outbound() || frame.message.get("id") != Some(id) {
+            None
+        } else {
+            frame.message.get("result")
+        }
+    }) else {
+        return (false, None);
+    };
+    let stop_reason = result
+        .get("stopReason")
+        .and_then(Value::as_str)
+        .map(str::to_owned);
+    (true, stop_reason)
 }
 
 fn permission_was_rejected(frames: &[GrokAcpClientMcpFrame]) -> bool {
@@ -1643,6 +1862,11 @@ mod tests {
             run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
                 .expect("capsule");
         assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            capsule.inconclusive_cause(),
+            Some(InconclusiveCause::MissingSessionNew)
+        );
+        assert_eq!(capsule.prompt(), ECHO_PROMPT);
         assert!(!capsule.truncated());
         assert!(!capsule.frames().iter().any(|frame| {
             frame.is_outbound() && method_of(frame.message()) == Some("session/new")
@@ -1656,6 +1880,10 @@ mod tests {
             run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
                 .expect("capsule");
         assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            capsule.inconclusive_cause(),
+            Some(InconclusiveCause::SessionNewErrorNotClientMcp)
+        );
         assert!(capsule.frames().iter().any(|frame| {
             frame.is_outbound() && method_of(frame.message()) == Some("session/new")
         }));
@@ -1685,6 +1913,10 @@ mod tests {
                 .expect("overflow still writes a capsule");
         assert!(capsule.truncated());
         assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            capsule.inconclusive_cause(),
+            Some(InconclusiveCause::Truncated)
+        );
         assert_eq!(capsule.frames().len(), MAXIMUM_FRAMES);
         assert_eq!(capsule.to_json()["truncated"], json!(true));
     }
@@ -1714,6 +1946,11 @@ mod tests {
             grok_acp_client_mcp_verdict_from_frames(&frames),
             ClientMcpVerdict::Inconclusive
         );
+        assert_eq!(
+            grok_acp_client_mcp_verdict_decision(&frames, &EchoMcpTranscript::default(), false)
+                .inconclusive_cause,
+            Some(InconclusiveCause::NoTurnResult)
+        );
     }
 
     #[test]
@@ -1723,6 +1960,15 @@ mod tests {
             run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
                 .expect("capsule");
         assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            capsule.inconclusive_cause(),
+            Some(InconclusiveCause::NoTurnResult)
+        );
+        assert!(capsule.client_mcp_admitted());
+        assert!(capsule.client_mcp_tools_listed());
+        assert!(!capsule.prompt_turn_completed());
+        assert_eq!(capsule.stop_reason(), None);
+        assert_eq!(capsule.prompt(), ECHO_PROMPT);
         assert!(capsule.frames().iter().any(|frame| {
             frame.is_outbound() && method_of(frame.message()) == Some("session/prompt")
         }));
@@ -1816,6 +2062,11 @@ mod tests {
             grok_acp_client_mcp_verdict_from_frames(&frames),
             ClientMcpVerdict::Inconclusive
         );
+        assert_eq!(
+            grok_acp_client_mcp_verdict_decision(&frames, &EchoMcpTranscript::default(), false)
+                .inconclusive_cause,
+            Some(InconclusiveCause::PermissionRejected)
+        );
     }
 
     #[test]
@@ -1825,6 +2076,11 @@ mod tests {
         assert_eq!(
             grok_acp_client_mcp_verdict_from_frames(&frames),
             ClientMcpVerdict::Inconclusive
+        );
+        assert_eq!(
+            grok_acp_client_mcp_verdict_decision(&frames, &EchoMcpTranscript::default(), false)
+                .inconclusive_cause,
+            Some(InconclusiveCause::NativeEchoWithoutAdmission)
         );
     }
 
@@ -1869,11 +2125,17 @@ mod tests {
     }
 
     #[test]
-    fn unattributed_echo_with_idle_transcript_is_ignores() {
+    fn unattributed_echo_with_idle_transcript_is_not_ignores() {
         let frames = unattributed_echo_frames();
+        let decision = grok_acp_client_mcp_verdict_decision(
+            &frames,
+            &EchoMcpTranscript::observed_idle(),
+            false,
+        );
+        assert_eq!(decision.verdict, ClientMcpVerdict::Inconclusive);
         assert_eq!(
-            grok_acp_client_mcp_verdict(&frames, &EchoMcpTranscript::observed_idle()),
-            ClientMcpVerdict::IgnoresClientMcp
+            decision.inconclusive_cause,
+            Some(InconclusiveCause::TurnCompletedWithoutToolCall)
         );
     }
 
@@ -1895,21 +2157,88 @@ mod tests {
     }
 
     #[test]
-    fn completed_prompt_without_echo_initialize_is_inconclusive() {
+    fn completed_prompt_without_echo_initialize_is_ignores() {
         let mut peer = FakeAcpPeer::new(ClientMcpVerdict::IgnoresClientMcp);
         let capsule =
             run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
                 .expect("capsule");
         assert_eq!(capsule.verdict(), ClientMcpVerdict::IgnoresClientMcp);
-        assert!(
-            capsule
-                .echo_mcp_methods()
-                .contains(&"initialize".to_owned())
-        );
+        assert!(!capsule.client_mcp_admitted());
+        assert!(!capsule.client_mcp_tools_listed());
+        assert!(capsule.prompt_turn_completed());
+        assert_eq!(capsule.stop_reason(), Some("end_turn"));
+        assert_eq!(capsule.prompt(), ECHO_PROMPT);
         assert_eq!(
             grok_acp_client_mcp_verdict_from_frames(capsule.frames()),
-            ClientMcpVerdict::Inconclusive
+            ClientMcpVerdict::IgnoresClientMcp
         );
+    }
+
+    #[test]
+    fn review_oracle_forbids_ignores_when_echo_initialize_observed() {
+        let frames = unattributed_echo_frames();
+        assert!(EchoMcpTranscript::observed_idle().initialize());
+        assert_ne!(
+            grok_acp_client_mcp_verdict(&frames, &EchoMcpTranscript::observed_idle()),
+            ClientMcpVerdict::IgnoresClientMcp
+        );
+        assert_ne!(
+            grok_acp_client_mcp_verdict(&frames, &EchoMcpTranscript::admitted_listed()),
+            ClientMcpVerdict::IgnoresClientMcp
+        );
+    }
+
+    #[test]
+    fn oracle_shapes_keep_admission_separate_from_verdict() {
+        let called = grok_acp_client_mcp_oracle_fixture_probe(
+            "1.0.5",
+            ClientMcpOracleShape::AdmittedAndCalled,
+        )
+        .expect("called");
+        assert_eq!(called.verdict(), ClientMcpVerdict::AcceptsClientMcp);
+        assert!(called.client_mcp_admitted());
+        assert!(called.client_mcp_tools_listed());
+        assert!(called.prompt_turn_completed());
+        assert_eq!(called.stop_reason(), Some("end_turn"));
+        assert_eq!(called.prompt(), ECHO_PROMPT);
+
+        let listed = grok_acp_client_mcp_oracle_fixture_probe(
+            "1.0.5",
+            ClientMcpOracleShape::AdmittedListedNotCalledCompleted,
+        )
+        .expect("listed");
+        assert_eq!(listed.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            listed.inconclusive_cause(),
+            Some(InconclusiveCause::TurnCompletedWithoutToolCall)
+        );
+        assert!(listed.client_mcp_admitted());
+        assert!(listed.client_mcp_tools_listed());
+        assert!(listed.prompt_turn_completed());
+        assert_eq!(listed.stop_reason(), Some("end_turn"));
+        assert_ne!(listed.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+
+        let admitted = grok_acp_client_mcp_oracle_fixture_probe(
+            "1.0.5",
+            ClientMcpOracleShape::AdmittedNotListed,
+        )
+        .expect("admitted");
+        assert_eq!(admitted.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            admitted.inconclusive_cause(),
+            Some(InconclusiveCause::TurnCompletedWithoutToolCall)
+        );
+        assert!(admitted.client_mcp_admitted());
+        assert!(!admitted.client_mcp_tools_listed());
+        assert_ne!(admitted.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+
+        let ignored =
+            grok_acp_client_mcp_oracle_fixture_probe("1.0.5", ClientMcpOracleShape::NoAdmission)
+                .expect("no admission");
+        assert_eq!(ignored.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+        assert!(!ignored.client_mcp_admitted());
+        assert!(!ignored.client_mcp_tools_listed());
+        assert!(ignored.prompt_turn_completed());
     }
 
     #[test]

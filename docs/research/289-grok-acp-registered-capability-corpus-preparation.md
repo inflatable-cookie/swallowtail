@@ -42,7 +42,7 @@ door was additively updated during coordinator closeout to index this artifact.
 | [xAI Headless & Scripting](https://docs.x.ai/build/cli/headless-scripting.md) | official ACP launch and `session/new` example; example sends `mcpServers: []` | Retrieved 2026-09-07; SHA-256 `a4f39daf25f81aba5dba79265d12d0e4ec444e6b28dcbe3c2335c05401052097` |
 | [xAI MCP Servers](https://docs.x.ai/build/features/mcp-servers.md) | Grok-native MCP configuration, project scope, namespaced `search_tool`/`use_tool`, and credential-bearing transports | Retrieved 2026-09-07; SHA-256 `e0b9ce6bf03bf2979b1bbfa7d8ae54ecc1d38b32cdeb5c5dbfdb103cea9dabf1` |
 | [Grok Build MCP guide](https://raw.githubusercontent.com/xai-org/grok-build/main/crates/codegen/xai-grok-pager/docs/user-guide/07-mcp-servers.md) | later public source description of native MCP discovery, server config, and tool naming | `SOURCE_REV` `a549186d9d39311f2d3ee4208db62af8c65aa476`; guide SHA-256 `b6d5c2a0a96d8349d074e2cfc9f0ed817f892d24f2891f74b3827d721b02c2eb` |
-| [Grok shell README](https://raw.githubusercontent.com/xai-org/grok-build/main/crates/codegen/xai-grok-shell/README.md) | later public source ACP examples and architecture diagram; all shown ACP session setup lists use `mcpServers: []` | README SHA-256 `b1be9ca13c67d83b39a61c8813339aaa8a8fda983eb6967a329007471aa76988` |
+| [Grok shell README](https://raw.githubusercontent.com/xai-org/grok-build/a549186d9d39311f2d3ee4208db62af8c65aa476/crates/codegen/xai-grok-shell/README.md) | later public source ACP examples and architecture diagram; all shown ACP session setup lists use `mcpServers: []` | `SOURCE_REV` `a549186d9d39311f2d3ee4208db62af8c65aa476`; README SHA-256 `b1be9ca13c67d83b39a61c8813339aaa8a8fda983eb6967a329007471aa76988` |
 | `crates/swallowtail-adapter-grok/tests/fixtures/grok-1-0-5/compatibility.json` | exact `1.0.5` route identity, ACP v1, selected command, successful session-new fixture, empty-MCP route posture, and unmapped ACP MCP metadata | SHA-256 `948c1589afe6a037f7dc484d88e6ceb273995025ff05e81de729f5d13415651c` |
 | `crates/swallowtail-adapter-grok/tests/fixtures/grok-1-0-5-identity.json` | exact `1.0.5` package/source identity and no-prompt observation boundary | SHA-256 `c0acd39c3fddafdd57874ef3c006ad07c6310b3d1bff0d3b6cbebcf33297bbba` |
 | `docs/research/288-shared-harness-capability-placement-audit.md` | promoted planning evidence for the shared registration boundary and released Grok gap | SHA-256 `38d18686524eb971d8ef24022079a79af2ea35ba95b8a4bb22a34c8764c7f214` |
@@ -99,6 +99,15 @@ consumer-registered MCP call or result.
 | Consumer effect/retry posture plus enforced no-replay, reconnect, teardown posture | Grok fixtures prove joined ACP process cleanup and current session cancellation. They do not bind an effect declaration or registered-call retry posture. | Missing for consumer tools; current ACP process cleanup is not registered-tool teardown proof. | Contract063 declaration posture and **Transport And Reconnect**; `RegisteredToolEnforcedPosture` and `assert_registered_tool_conformance`. | Preserve the existing no-replay statement as a Contract063 requirement. Acquire no provider value under this read-only pass. |
 | Source identity/freshness for Contract061 projection | Current Grok projection sources are adapter/prepared and active-session sources for existing rows. No registered capability source exists. | Missing. | Contract061 **Snapshot Identity And Replacement** and Contract063 projection amendment; `RegisteredToolSource` plus `an_unqualified_registered_capability_is_never_supported_by_inference`. | Keep the registered-capability projection unqualified/unavailable. Do not add a Grok row or source identity. |
 | Exact selection binding: snapshot reference, selected IDs, registration revision, schema digests, carrier, protocol, effective bounds | No Grok selection or prepared facade accepts a registered-tool preparation. `grok` has no `RegisteredTool*` reference. | Missing. | Contract063 **Selection And Dispatch Context**; `fixture_selection`, `RegisteredToolSelection::new`, and `project_registered_capability`. | Use the provider-free selection fixture as the future adapter handoff shape; no route wiring is authorized here. |
+
+### Context, skills, references, and scheduling
+
+| Contract063 field or invariant | Exact Grok evidence | Gap | Authoritative source / provider-free route | Smallest evidence action under current authority |
+| --- | --- | --- | --- | --- |
+| Bounded admitted context and instructions remain separate from registered-tool authority | Existing Grok attachment/session inputs are route context for current ACP work; no registered-tool context snapshot is selected or bound to a server, call, or lease. | Missing for the registered-tool profile. Existing route context is not evidence of Contract063 context disclosure or authority. | Contract063 **Context, Instructions, Skills, And References**; `RegisteredToolPreparation::prepare` and the provider-free registered-capability projection checks. | Record the current route context as non-transferable. Use provider-free projection/preparation checks only; do not expose new Grok context or derive tool authority from it. |
+| Selected skill identity/revision/digest and declared required-reference descriptors | Current main provides `SelectedSkillBundle` vocabulary and provider-free resolution tests; the Grok adapter does not consume the bundle or bind it to a registered call. | Missing. No Grok skill-delivery or required-reference source is qualified. | Contract063 **Context, Instructions, Skills, And References**; `SelectedSkillBundle::new`, `SelectedSkillBundle::resolve`, and `selected_skill_tests.rs`. | Retain the provider-free selected-skill/reference tests as the shape check. Static-search frozen Grok artifacts for an exact selected bundle only; absent evidence stays unavailable. |
+| Resolved skill/reference bytes or opaque references, provenance, bounds, digest validation, and foreign/missing/inaccessible failure | No Grok registered route resolves or transports a selected skill/reference bundle. | Missing. No provider content may be treated as a selected bundle or reference. | Contract063 selected-bundle requirements; `selected_skill_tests.rs` and `schema_and_snapshot_hold_no_runtime_resource`. | Check only provider-free digest, bounds, and failure cases. Do not read repository paths, provider configuration, credentials, or live context. |
+| Scheduling and continuation posture: terminal-before-queue, exact route/version, acknowledgement, cancellation, overflow, and no replay | Grok starts one current turn and has route-local session cancellation; no registered-tool scheduling/continuation acknowledgement or bounded continuation lease is observed. | Missing; `schedule_harness_message` remains unsupported or rejected for Grok. | Contract063 **Scheduling And Continuation**; `profile_harness_rpc_contract::assert_scheduling_contract` and `profile_local_continuation::run` as provider-free boundary probes. | Preserve the existing unsupported/rejected posture. Run only the provider-free scheduler/continuation assertions; no Grok queue, steering, resume, or live continuation action is authorized. |
 
 ### Consumer call
 
@@ -221,10 +230,11 @@ supplied `mcpServers` list, while the exact Grok corpus shows only the empty
 case. Therefore no alternative is currently qualified or supported.
 
 If an exact installed-version probe later proves that Grok rejects or ignores
-client-supplied ACP MCP servers, the exact supported alternative to evaluate is
-a separately qualified, configuration-owned native Grok MCP mediation route.
-That is a different route authority from `grok-build.acp`; the current ACP
-route remains withheld and is not silently repurposed. The minimum mapping is:
+client-supplied ACP MCP servers, the alternative remains a separately
+qualified, configuration-owned native Grok MCP mediation route for operator
+consideration only. It is a different route authority from `grok-build.acp`;
+the current ACP route remains withheld and is not silently repurposed. The
+minimum mapping, if the operator later promotes the triage lead, is:
 
 - Contract061 emits a registered-capability row only for the new exact native
   route and its qualified version segment; otherwise the row stays
@@ -237,17 +247,18 @@ route remains withheld and is not silently repurposed. The minimum mapping is:
   service and reference requirements, bounds, permission/progress posture,
   and reconnect/teardown evidence. Swallowtail still owns the admission,
   bridge lease, call/result correlation, and safe failure boundary.
-- A new g05.035 follow-up card acquires that exact native-route corpus and
-  implements the adapter only after the same provider-free and exact-route
-  gates pass. Card118 itself records the ACP unsupported disposition and does
-  not change runtime.
+- The alternative is routed to the operator through the [main triage lead](../triage/2026-09-07-grok-native-mcp-mediation-route-lead.md)
+  recorded at `17e6eab4`; it is not a g05.035 follow-up or implementation
+  authorization. Card118 records the ACP disposition and does not change
+  runtime.
 
-### Single Chatterbox decision question
+### Chatterbox decision — resolved
 
-If the exact route probe proves ACP consumer-tool registration impossible,
-should g05.035 accept a separately qualified, configuration-owned native Grok
-MCP mediation route with a new exact route/version segment and follow-up card,
-or close the full-MCP goal as unsupported for `grok-build.acp`?
+The [main triage lead](../triage/2026-09-07-grok-native-mcp-mediation-route-lead.md)
+at `17e6eab4` resolves the conditional question: runtime remains withheld and
+no native Grok MCP mediation route is authorized under g05.035. The alternative
+is operator-only triage after an exact probe result; this research does not
+authorize a native route, implementation card, or support claim.
 
 ## Disposition
 
@@ -255,14 +266,17 @@ Evidence stop for Card118 preparation. The corpus is sufficient to preserve
 the current withheld posture and to define the missing proof, but insufficient
 to qualify Grok consumer-tool/MCP registration or to authorize runtime edits.
 Cards114-115 are merged in the current baseline; runtime remains gated on the
-exact Grok route evidence and the route gates named by g05.035.
+exact Grok route evidence and the route gates named by g05.035. No native route
+is authorized under this card.
 
-The next evidence tranche would need a deterministic exact-version, provider-
-free protocol specimen or an explicitly authorized exact-route probe that
-proves non-empty session MCP admission, server readiness, tool discovery,
-tool-call/result exchange, permission/cancellation outcomes, and joined
-cleanup. Absence of that specimen supports an explicit unsupported disposition
-later; it does not change the released claim in this preparation.
+The ordered evidence gates remain: (1) provider-free deterministic exact-version
+specimens for `1.0.4` and `1.0.5` separately, establishing whether non-empty
+session MCP input is accepted; (2) only under separate operator credential and
+turn authorization, one exact installed version at a time with the disposable
+non-mutating route probe defined above; and (3) either qualify ACP consumer
+tools from that corpus or record `grok-build.acp` unsupported and route any
+native alternative to operator triage. No gate authorizes native-route
+implementation here.
 
 ## Validation And Non-Actions
 

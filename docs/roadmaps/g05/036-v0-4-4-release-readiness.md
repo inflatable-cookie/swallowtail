@@ -44,9 +44,21 @@ authentication was performed. The operator's Grok account usage is exhausted,
 so live rows are blocked `account_quota_exhausted` and no live provider call
 was attempted.
 
+**Quota hold lifted 2026-09-07.** The operator added top-up credit and
+reported capacity restored, which is the capacity confirmation the resumption
+condition named. The two bounded live probes are authorized under the existing
+gates: exact `1.0.4` first, then `1.0.5`, as separate evidence segments, one
+bounded prompt each, run by the existing retained probe owner through the
+Desktop Coordinator with no duplicate run and no new owner. A top-up is a
+capacity report, not live acceptance. An auth or quota rejection captures a
+bounded result and stops; there are no repeated retries. The three-provider
+release gates are unchanged.
+
+The history below stands as the record of the hold.
+
 The operator subsequently completed isolated login for both segments, and
-confirmed the account remains out of usage afterwards. **Grok account quota is
-an external blocker**: it is outside the project's control, it is not a
+confirmed the account remained out of usage afterwards. **Grok account quota
+was an external blocker**: it is outside the project's control, it is not a
 planning question, and the scope decision is settled — the operator has not
 authorized narrowing the release scope, so Grok MCP/tools stay required and
 unproven rather than becoming a withheld cell. Do not re-open that choice, do
@@ -55,9 +67,9 @@ not retry, and do not request further logins.
 The card 128 probe therefore has no verdict, the four `grok-build.acp` cells
 stay `evidence_pending`, and `v0.4.4` cannot reach a tag request until the
 gate resolves. Substituting a different version (for example `1.0.13`) is
-refused because it is a different evidence segment. Bounded live Grok probes
-resume only after the operator confirms capacity, under the existing gates and
-the already self-proved harness: two bounded prompts total, one per segment.
+refused because it is a different evidence segment. Bounded live Grok probes were
+gated on that capacity confirmation, which has now arrived: two bounded
+prompts total, one per segment, on the already self-proved harness.
 Authenticated isolated homes and the offline evidence are preserved for that
 run. All other producer, review, merge, and provider-free work continues.
 Machine paths stay out of tracked docs; the retained probe owner holds the

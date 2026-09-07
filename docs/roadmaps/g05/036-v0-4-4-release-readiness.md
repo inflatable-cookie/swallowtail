@@ -34,14 +34,24 @@ producer merges are not.
 
 ### Grok Gate Blocked On Provisioning — 2026-09-07
 
-Desktop preflight found cached npm archives for the exact `1.0.4` and `1.0.5`
-segments but no runnable binaries and no authorized isolated `GROK_HOME`. The
-card 128 probe did not run, so there is no verdict and the four
-`grok-build.acp` cells stay `evidence_pending`. The release gate is unresolved
-in both directions: nothing says Grok supports client MCP, and nothing says it
-cannot. Provisioning an isolated authenticated Grok is an operator decision;
-substituting a different version (for example `1.0.13`) is refused because it
-is a different evidence segment. Producer lanes continue meanwhile.
+Isolation is provisioned and the harness is self-proved; the blocker is
+account quota. Desktop extracted the exact `1.0.4` and `1.0.5` binaries into
+per-version isolated homes from cached archives, both version identities
+verified against frozen source `63e34641`, and all four offline fixture
+capsules pass, so the probe's own four-verdict behaviour is proven before any
+live turn. Those homes are empty: no host credentials were copied and no
+authentication was performed. The operator's Grok account usage is exhausted,
+so live rows are blocked `account_quota_exhausted` and no live provider call
+was attempted.
+
+The card 128 probe therefore has no verdict, the four `grok-build.acp` cells
+stay `evidence_pending`, and the release gate is unresolved in both
+directions. Substituting a different version (for example `1.0.13`) is refused
+because it is a different evidence segment. The remaining operator choice is
+to restore Grok account capacity and run the probe, or to narrow the release
+scope and carry Grok MCP/tools as an explicitly withheld cell. Producer lanes
+continue meanwhile. Machine paths stay out of tracked docs; the retained probe
+owner holds the location receipt.
 
 ## Runway
 

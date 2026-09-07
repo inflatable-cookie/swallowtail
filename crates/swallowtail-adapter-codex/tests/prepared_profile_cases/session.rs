@@ -10,3 +10,4 @@ include!("session/tools.rs");
 include!("session/resume.rs");
 include!("session/provenance.rs");
 include!("session/registered_tools.rs");
+include!("session/selected_skill.rs");

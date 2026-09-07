@@ -1,7 +1,7 @@
 use super::{CodexPreparedSession, lifecycle_management_instance};
 use crate::prepared_profile::CodexPreparedSessionKind;
 use crate::prepared_profile::activity_profile::app_server_activity_profile;
-use crate::prepared_profile::input::CodexSessionProfileInput;
+use crate::prepared_profile::input::{CodexSessionProfileInput, CodexSessionProfileParts};
 use crate::prepared_profile::plan::{
     CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities,
     model_route, require_driver, requirements,
@@ -43,7 +43,8 @@ pub(super) fn prepare_session(
             "Prepared Codex version does not support bounded workspace roots",
         ));
     }
-    let (
+    let parts = input.into_parts();
+    let CodexSessionProfileParts {
         request_id,
         model,
         working_resource,
@@ -51,7 +52,8 @@ pub(super) fn prepare_session(
         mut options,
         user_input_exchange,
         registered_tools,
-    ) = input.into_parts();
+        selected_skill,
+    } = parts;
     // Registered declarations replace the session's tool set outright, so one
     // dynamic tool name can never mean two different things on the wire.
     let registered = match registered_tools {
@@ -142,6 +144,7 @@ pub(super) fn prepare_session(
     Ok(CodexPreparedSession {
         kind,
         registered,
+        selected_skill,
         evidence: CodexPreparedEvidence::from_prepared_with_activity_profile(
             prepared,
             plan,

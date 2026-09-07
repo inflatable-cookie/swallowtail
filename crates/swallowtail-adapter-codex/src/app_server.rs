@@ -19,14 +19,15 @@ use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, EnvironmentRef, ExecutableRef, HostServices,
     InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, LoadSessionRequest,
     LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest, ProcessHandle,
-    ProcessRequest, RequestId, ResumeSessionRequest, RuntimeFailure, ScopeId, WorkingResourceRef,
-    validate_session_plan_agreement,
+    ProcessRequest, RequestId, ResolvedSkillBundle, ResumeSessionRequest, RuntimeFailure, ScopeId,
+    WorkingResourceRef, validate_session_plan_agreement,
 };
 
 /// Low-level driver for Codex app-server sessions and thread operations.
 pub struct CodexAppServerDriver {
     environment: EnvironmentRef,
     registered: Option<Box<CodexRegisteredToolBinding>>,
+    selected_skill: Option<Box<ResolvedSkillBundle>>,
 }
 
 impl CodexAppServerDriver {
@@ -36,6 +37,7 @@ impl CodexAppServerDriver {
         Self {
             environment,
             registered: None,
+            selected_skill: None,
         }
     }
 
@@ -47,6 +49,21 @@ impl CodexAppServerDriver {
     #[must_use]
     pub fn with_registered_tools(mut self, binding: CodexRegisteredToolBinding) -> Self {
         self.registered = Some(Box::new(binding));
+        self
+    }
+
+    /// Binds one resolved selected-skill bundle to new app-server threads.
+    ///
+    /// Absence preserves every previous behavior. The bundle is delivered as
+    /// one distinct labelled input on the `thread/start` parameter surface —
+    /// the same surface the route already qualifies for
+    /// `developerInstructions` — never merged into instructions or user text,
+    /// and never written to the working resource. The current Codex protocol
+    /// cannot redeclare the bundle on a resumed or loaded thread, so those
+    /// routes refuse it.
+    #[must_use]
+    pub fn with_selected_skill_bundle(mut self, bundle: ResolvedSkillBundle) -> Self {
+        self.selected_skill = Some(Box::new(bundle));
         self
     }
 }
@@ -221,6 +238,17 @@ impl CodexAppServerDriver {
             Ok(())
         }
     }
+
+    /// Refuses a selected-skill bundle on a resumed or loaded thread.
+    fn refuse_selected_skill_continuation(&self) -> Result<(), RuntimeFailure> {
+        if self.selected_skill.is_some() {
+            Err(unsupported(
+                "selected skill bundles on resumed or loaded threads",
+            ))
+        } else {
+            Ok(())
+        }
+    }
 }
 
 fn validate_session_deadline(has_deadline: bool) -> Result<(), RuntimeFailure> {
@@ -230,7 +258,6 @@ fn validate_session_deadline(has_deadline: bool) -> Result<(), RuntimeFailure> {
         Ok(())
     }
 }
-
 fn validate_workspace_behavior(
     behavior: &CodexAppServerBehavior,
     policy: &swallowtail_core::SessionAccessPolicy,

@@ -5,7 +5,7 @@ use crate::registered_tools::CodexRegisteredToolBinding;
 use swallowtail_core::{PreflightPlan, ProviderSessionBindingOrigin};
 use swallowtail_runtime::{
     HostServices, InteractiveSessionDriver, LoadSessionRequest, OpenSessionRequest,
-    PreparationFailure, SessionResumeBinding,
+    PreparationFailure, ResolvedSkillBundle, SessionResumeBinding,
 };
 
 #[path = "session/management_handle.rs"]
@@ -21,6 +21,7 @@ mod preparation;
 pub struct CodexPreparedSession {
     kind: CodexPreparedSessionKind,
     registered: Option<CodexRegisteredToolBinding>,
+    selected_skill: Option<ResolvedSkillBundle>,
     evidence: CodexPreparedEvidence,
     request: OpenSessionRequest,
     management_instance: Option<swallowtail_core::ConfiguredInstance>,
@@ -55,8 +56,12 @@ impl CodexPreparedSession {
     #[must_use]
     pub fn low_level_driver(&self) -> CodexAppServerDriver {
         let driver = CodexAppServerDriver::new(self.evidence.environment().clone());
-        match self.registered.clone() {
+        let driver = match self.registered.clone() {
             Some(binding) => driver.with_registered_tools(binding),
+            None => driver,
+        };
+        match self.selected_skill.clone() {
+            Some(bundle) => driver.with_selected_skill_bundle(bundle),
             None => driver,
         }
     }
@@ -85,6 +90,7 @@ impl CodexPreparedSession {
         Some(crate::registered_tools::registered_capability_contribution(
             self.plan(),
             binding,
+            self.selected_skill.as_ref(),
             services,
             source_id,
         ))
@@ -124,6 +130,12 @@ impl CodexPreparedSession {
         request_id: swallowtail_runtime::RequestId,
         binding: SessionResumeBinding,
     ) -> Result<swallowtail_runtime::ResumeSessionRequest, PreparationFailure> {
+        if self.selected_skill.is_some() {
+            return Err(failure(
+                "swallowtail.codex.preparation.resume_selected_skill_unsupported",
+                "Codex resumed sessions cannot redeclare a selected skill bundle",
+            ));
+        }
         if self.request.options().tools().len() != 0 {
             return Err(failure(
                 "swallowtail.codex.preparation.resume_tools_unsupported",
@@ -153,6 +165,12 @@ impl CodexPreparedSession {
             return Err(failure(
                 "swallowtail.codex.preparation.load_tools_unsupported",
                 "Codex loaded sessions cannot redeclare dynamic tools",
+            ));
+        }
+        if self.selected_skill.is_some() {
+            return Err(failure(
+                "swallowtail.codex.preparation.load_selected_skill_unsupported",
+                "Codex loaded sessions cannot redeclare a selected skill bundle",
             ));
         }
         Ok(LoadSessionRequest::from_plan(

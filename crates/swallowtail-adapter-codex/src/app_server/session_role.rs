@@ -17,6 +17,10 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
                 }
                 None => session_input,
             };
+            let session_input = match self.selected_skill.clone() {
+                Some(bundle) => session_input.with_selected_skill_bundle(*bundle)?,
+                None => session_input,
+            };
             let deadline_planned = plan
                 .requirements()
                 .host_services()
@@ -84,6 +88,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             validate_session_deadline(request.deadline().is_some())?;
             validate_session_plan_agreement(&plan, request.plan_agreement())?;
             self.refuse_registered_continuation()?;
+            self.refuse_selected_skill_continuation()?;
             require_continuity_capabilities(&plan, Capability::LoadSession)?;
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
@@ -174,6 +179,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
             self.refuse_registered_continuation()?;
+            self.refuse_selected_skill_continuation()?;
             let session_input = CodexSessionInput::for_resume(&plan, request.options(), &services)?;
             require_continuity_capabilities(&plan, Capability::Resume)?;
             validate_attachment_binding(

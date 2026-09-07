@@ -6,9 +6,9 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     AttachmentDescriptor, Deadline, OperationContent, ProviderSessionCatalogueId,
     ProviderSessionHistoryBounds, ProviderSessionHistoryId, ProviderSessionManagementBinding,
-    ProviderSessionReconciliationBounds, RegisteredToolPreparation, RequestId, RuntimeTurnId,
-    SessionOptions, SessionResumeBinding, StructuredOutputDescriptor, ToolDeclaration,
-    WorkingResourceRef,
+    ProviderSessionReconciliationBounds, RegisteredToolPreparation, RequestId, ResolvedSkillBundle,
+    RuntimeTurnId, SessionOptions, SessionResumeBinding, StructuredOutputDescriptor,
+    ToolDeclaration, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -186,6 +186,7 @@ pub struct CodexSessionProfileInput {
     options: SessionOptions,
     user_input_exchange: bool,
     registered_tools: Option<RegisteredToolPreparation>,
+    selected_skill: Option<ResolvedSkillBundle>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -312,6 +313,7 @@ impl CodexSessionProfileInput {
             options,
             user_input_exchange: false,
             registered_tools: None,
+            selected_skill: None,
         }
     }
 
@@ -333,27 +335,42 @@ impl CodexSessionProfileInput {
         self
     }
 
-    pub(crate) fn into_parts(
-        self,
-    ) -> (
-        RequestId,
-        CodexModelSelection,
-        WorkingResourceRef,
-        Option<Deadline>,
-        SessionOptions,
-        bool,
-        Option<RegisteredToolPreparation>,
-    ) {
-        (
-            self.request_id,
-            self.model,
-            self.working_resource,
-            self.deadline,
-            self.options,
-            self.user_input_exchange,
-            self.registered_tools,
-        )
+    /// Binds one immutable resolved selected-skill bundle to this session.
+    ///
+    /// Contract 063 keeps the bundle a distinct labelled input: it never
+    /// merges into session developer instructions or per-turn user text and
+    /// never becomes a working-resource write. Absence preserves every
+    /// previous session behavior. The bundle is validated before it is
+    /// admitted here and stays immutable for the session.
+    #[must_use]
+    pub fn with_selected_skill_bundle(mut self, bundle: ResolvedSkillBundle) -> Self {
+        self.selected_skill = Some(bundle);
+        self
     }
+
+    pub(crate) fn into_parts(self) -> CodexSessionProfileParts {
+        CodexSessionProfileParts {
+            request_id: self.request_id,
+            model: self.model,
+            working_resource: self.working_resource,
+            deadline: self.deadline,
+            options: self.options,
+            user_input_exchange: self.user_input_exchange,
+            registered_tools: self.registered_tools,
+            selected_skill: self.selected_skill,
+        }
+    }
+}
+
+pub(crate) struct CodexSessionProfileParts {
+    pub request_id: RequestId,
+    pub model: CodexModelSelection,
+    pub working_resource: WorkingResourceRef,
+    pub deadline: Option<Deadline>,
+    pub options: SessionOptions,
+    pub user_input_exchange: bool,
+    pub registered_tools: Option<RegisteredToolPreparation>,
+    pub selected_skill: Option<ResolvedSkillBundle>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

@@ -310,6 +310,6 @@ fn the_published_route_claims_only_what_this_seam_proves() {
     );
     assert_eq!(
         CODEX_REGISTERED_TOOL_ROUTE.skill_delivery(),
-        RegisteredToolSkillDelivery::NotCarried
+        RegisteredToolSkillDelivery::BoundedSelectedBundle
     );
 }

@@ -17,6 +17,7 @@ pub const fn swallowtail_adapter_codex::CodexAppServerDriver::install_guidance()
 impl swallowtail_adapter_codex::CodexAppServerDriver
 pub const fn swallowtail_adapter_codex::CodexAppServerDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
 pub fn swallowtail_adapter_codex::CodexAppServerDriver::with_registered_tools(self, swallowtail_adapter_codex::CodexRegisteredToolBinding) -> Self
+pub fn swallowtail_adapter_codex::CodexAppServerDriver::with_selected_skill_bundle(self, swallowtail_runtime::registered_tool::selected_skill_resolution::ResolvedSkillBundle) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_codex::CodexAppServerDriver
 pub fn swallowtail_adapter_codex::CodexAppServerDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_codex::CodexAppServerDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
@@ -244,6 +245,7 @@ pub struct swallowtail_adapter_codex::CodexSessionProfileInput
 impl swallowtail_adapter_codex::CodexSessionProfileInput
 pub const fn swallowtail_adapter_codex::CodexSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_codex::CodexModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef, core::option::Option<swallowtail_runtime::time::Deadline>, swallowtail_runtime::session_options::SessionOptions) -> Self
 pub fn swallowtail_adapter_codex::CodexSessionProfileInput::with_registered_tools(self, swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation) -> Self
+pub fn swallowtail_adapter_codex::CodexSessionProfileInput::with_selected_skill_bundle(self, swallowtail_runtime::registered_tool::selected_skill_resolution::ResolvedSkillBundle) -> Self
 pub const fn swallowtail_adapter_codex::CodexSessionProfileInput::with_user_input_exchange(self) -> Self
 pub struct swallowtail_adapter_codex::CodexSessionReconciliationInput
 impl swallowtail_adapter_codex::CodexSessionReconciliationInput

@@ -54,16 +54,22 @@ No. Stop for exact-head review. No live tier; a later live gate needs fixtures f
 Implemented on the Card121 review branch. The sidecar now records every
 first-turn rejection as terminal state; a later query fails with bounded
 `session_rejected_terminal` correlation to the original sidecar code, without
-another SDK input or provider-work attempt. Explicit close remains available,
-and genuine first-message shape failures retain `init_missing`.
+another SDK input or provider-work attempt. The Rust handle captures the
+pre-dispatch readiness phase, so post-init `prompt_too_large`, `turn_active`,
+and `not_open` responses fail only their turn; an explicit
+`session_rejected_terminal` still terminalizes the session. Explicit close
+remains available, and genuine first-message shape failures retain
+`init_missing`.
 
 Provider-free sidecar and Rust-host fixtures cover rejection-then-retry and
 rejection-then-close, including ordered cleanup, no SDK-input replay, and no
-new credential acquisition. Card119 model-qualification evidence and its
-fail-soft observer behavior, plus Card120 loaded-module verification, remain
-green. The API baseline is unchanged.
+new credential acquisition. A successful-first-turn → oversized-prompt
+rejection → successful-next-turn fixture proves the post-init session remains
+usable, with no terminal marker, replay, or desync. Card119 model-
+qualification evidence and its fail-soft observer behavior, plus Card120
+loaded-module verification, remain green. The API baseline is unchanged.
 
-Focused validation (427/427), affected-package verification, semantic API,
+Focused validation (429/429), affected-package verification, semantic API,
 Northstar, formatting, diff, and Rust-quality closeout checks pass. The
 affected-package closeout records the repository's pre-existing unused
 `swallowtail-protocol-openai-chat` patch warning. No live SDK/provider,

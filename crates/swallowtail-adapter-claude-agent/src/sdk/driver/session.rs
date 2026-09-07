@@ -163,6 +163,10 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                 deadline,
             );
             let id = format!("query:{}", request.turn_id().as_str());
+            // Only a rejection before the first successful init confirmation
+            // makes the session terminal. Later query failures belong to the
+            // individual turn unless the sidecar explicitly says otherwise.
+            let first_turn_initialization = self.readiness.readiness_state() != "confirmed";
             let response = bounded
                 .run(self.connection.command(
                     id,
@@ -218,7 +222,13 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                         }
                         _ => (code, self.query_rejected(code)),
                     };
-                    Err(self.reject_first_turn(&turn, original_code, error))
+                    if first_turn_initialization
+                        || code == ClaudeAgentSdkFailureCode::SessionRejectedTerminal
+                    {
+                        Err(self.reject_first_turn(&turn, original_code, error))
+                    } else {
+                        Err(self.reject_turn(&turn, error))
+                    }
                 }
                 Err(error) => Err(self.reject_turn(&turn, error)),
             }

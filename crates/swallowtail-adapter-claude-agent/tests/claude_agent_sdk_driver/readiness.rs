@@ -334,6 +334,90 @@ fn first_turn_rejection_makes_retry_terminal_without_replay_or_provider_work() {
 }
 
 #[test]
+fn post_init_rejection_preserves_usable_session_without_replay_or_desync() {
+    let host = host_id("claude-agent-sdk.fixture.post-init-rejection");
+    let fixture = SdkFixtureHost::new(SdkScenario::PostInitRejected);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let cleanup_services = services.clone();
+    let mut session = block_on(prepared.open_route_session(services.clone()))
+        .expect("session opens before first-turn confirmation");
+
+    let mut first_turn =
+        block_on(session.start_turn(turn_request("turn-1", "read it"), services.clone()))
+            .expect("first turn confirms readiness");
+    let first_terminal = block_on(
+        first_turn
+            .take_terminal_outcome()
+            .expect("first turn terminal outcome exists"),
+    );
+    assert_eq!(
+        first_terminal.status(),
+        &swallowtail_runtime::TerminalStatus::Completed
+    );
+    let _ = block_on(first_turn.close());
+    assert_eq!(session.readiness_state(), "confirmed");
+    let acquisitions_after_first_turn = fixture.credential_acquisitions();
+
+    let Err(rejection) = block_on(session.start_turn(
+        turn_request("turn-2", "oversized equivalent"),
+        services.clone(),
+    )) else {
+        panic!("post-init rejection must fail its turn");
+    };
+    assert_eq!(
+        rejection.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.query_rejected"
+    );
+    assert!(
+        rejection
+            .diagnostic()
+            .message()
+            .ends_with(": prompt_too_large")
+    );
+    assert_eq!(session.readiness_state(), "confirmed");
+    assert_eq!(
+        fixture.credential_acquisitions(),
+        acquisitions_after_first_turn,
+        "post-init rejection did not reacquire provider authority"
+    );
+
+    let mut next_turn =
+        block_on(session.start_turn(turn_request("turn-3", "read it again"), services))
+            .expect("a post-init rejection must leave the session usable");
+    let next_terminal = block_on(
+        next_turn
+            .take_terminal_outcome()
+            .expect("next turn terminal outcome exists"),
+    );
+    assert_eq!(
+        next_terminal.status(),
+        &swallowtail_runtime::TerminalStatus::Completed
+    );
+    let _ = block_on(next_turn.close());
+
+    let queries = fixture
+        .inputs()
+        .into_iter()
+        .filter(|input| input["command"] == "query")
+        .collect::<Vec<_>>();
+    assert_eq!(queries.len(), 3, "the retry sequence has no replayed query");
+    assert_eq!(queries[0]["id"], "query:turn-1");
+    assert_eq!(queries[1]["id"], "query:turn-2");
+    assert_eq!(queries[2]["id"], "query:turn-3");
+
+    let outcome = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+    assert!(matches!(
+        outcome,
+        swallowtail_runtime::CleanupOutcome::Clean
+            | swallowtail_runtime::CleanupOutcome::Degraded(_)
+    ));
+    fixture.wait_for_cleanup(CleanupEvent::ResourceRelease);
+    fixture.wait_for_cleanup(CleanupEvent::CredentialRelease);
+    fixture.reaper().shutdown();
+}
+
+#[test]
 fn off_point_identity_resource_and_tool_sets_fail_closed() {
     for scenario in [
         SdkScenario::IdentityMismatch,

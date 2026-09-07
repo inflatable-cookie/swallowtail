@@ -373,6 +373,7 @@ pub(crate) struct OpenStdioMcpServer {
     command: String,
     args: Vec<String>,
     env_allowlist_keys: Vec<String>,
+    env: Vec<(String, String)>,
     tools: Vec<String>,
     optional: bool,
 }
@@ -384,6 +385,7 @@ impl OpenStdioMcpServer {
             command: server.command().to_owned(),
             args: server.args().to_vec(),
             env_allowlist_keys: server.env_allowlist_keys().to_vec(),
+            env: Vec::new(),
             tools: server.tools().to_vec(),
             optional: server.is_optional(),
         }
@@ -392,13 +394,16 @@ impl OpenStdioMcpServer {
     pub(crate) fn registered_tool_courier(
         command: String,
         args: Vec<String>,
+        env: Vec<(String, String)>,
         tools: Vec<String>,
     ) -> Self {
+        let env_allowlist_keys = env.iter().map(|(key, _)| key.clone()).collect();
         Self {
             name: CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER.to_owned(),
             command,
             args,
-            env_allowlist_keys: vec!["PATH".to_owned()],
+            env_allowlist_keys,
+            env,
             tools,
             optional: false,
         }
@@ -418,6 +423,10 @@ impl OpenStdioMcpServer {
 
     pub(crate) fn env_allowlist_keys(&self) -> &[String] {
         &self.env_allowlist_keys
+    }
+
+    pub(crate) fn env(&self) -> &[(String, String)] {
+        &self.env
     }
 
     pub(crate) fn tools(&self) -> &[String] {
@@ -477,7 +486,7 @@ pub(crate) fn mcp_tool_name(server: &str, tool: &str) -> String {
     format!("mcp__{server}__{tool}")
 }
 
-fn env_key_allowed(key: &str) -> bool {
+pub(crate) fn env_key_allowed(key: &str) -> bool {
     is_bounded_text(key, MAXIMUM_NAME_BYTES)
         && (MCP_CHILD_ENV_EXACT_KEYS.contains(&key) || key.starts_with("LC_"))
 }

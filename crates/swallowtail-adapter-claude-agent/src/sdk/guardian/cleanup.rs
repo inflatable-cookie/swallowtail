@@ -28,7 +28,7 @@ use std::sync::Arc;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
     CleanupOutcome, CredentialLease, HostServices, JoinedTask, ProcessExit, ProcessHandle,
-    ProcessTreeCompletion, ResourceLease,
+    ProcessTreeCompletion, RegisteredToolBridgeLease, RegisteredToolCleanupCause, ResourceLease,
 };
 
 /// Everything one guardian owns for the whole ordered continuation.
@@ -44,6 +44,8 @@ pub(crate) struct Owned {
     pub(crate) scoped: Vec<Box<dyn JoinedTask>>,
     pub(crate) resource: Option<ResourceLease>,
     pub(crate) credential: Option<CredentialLease>,
+    pub(crate) registered: Option<RegisteredToolBridgeLease>,
+    pub(crate) registered_cause: Option<RegisteredToolCleanupCause>,
 }
 
 impl Owned {
@@ -55,6 +57,8 @@ impl Owned {
             scoped: std::mem::take(&mut self.scoped),
             resource: self.resource.take(),
             credential: self.credential.take(),
+            registered: self.registered.take(),
+            registered_cause: self.registered_cause.take(),
         }
     }
 }
@@ -92,6 +96,17 @@ pub(crate) async fn run(
     cooperative: Cooperative,
 ) -> CleanupReport {
     let connection = owned.connection.take();
+    if let Some(lease) = owned.registered.take() {
+        crate::sdk::driver::registered::close_registered_lease(
+            Some(lease),
+            services,
+            owned
+                .registered_cause
+                .take()
+                .unwrap_or(RegisteredToolCleanupCause::ProviderFailure),
+        )
+        .await;
+    }
     let (close_evidence, cooperative_failure) = match (&connection, cooperative) {
         (Some(connection), Cooperative::Session { turn_active }) => {
             cooperative_close(connection, bounded, request_id, turn_active).await

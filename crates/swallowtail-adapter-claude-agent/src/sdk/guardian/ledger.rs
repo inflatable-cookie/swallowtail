@@ -14,7 +14,10 @@
 
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
-use swallowtail_runtime::{CredentialLease, JoinedTask, ProcessHandle, ResourceLease};
+use swallowtail_runtime::{
+    CredentialLease, JoinedTask, ProcessHandle, RegisteredToolBridgeLease,
+    RegisteredToolCleanupCause, ResourceLease,
+};
 
 use super::Signal;
 
@@ -95,6 +98,12 @@ impl GuardLedger {
         connection: Arc<super::super::connection::SdkConnection>,
     ) {
         self.lock().acquisitions.connection = Some(connection);
+    }
+
+    pub(crate) fn record_registered(&self, lease: RegisteredToolBridgeLease) {
+        let mut state = self.lock();
+        state.acquisitions.registered = Some(lease);
+        state.acquisitions.registered_cause = Some(RegisteredToolCleanupCause::ProviderFailure);
     }
 
     /// Validates the recorded credential lease in place, so a rejected lease is

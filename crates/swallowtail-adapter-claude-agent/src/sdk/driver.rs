@@ -25,7 +25,7 @@ use swallowtail_runtime::{
 mod descriptor;
 mod handle;
 mod launch;
-mod registered;
+pub(in crate::sdk) mod registered;
 mod session;
 mod startup;
 mod validation;
@@ -582,25 +582,35 @@ impl ClaudeAgentSdkDriver {
                 guard,
             )
             .await?;
+        let mut registered_pending = None;
         let mut registered_courier = None;
         if let Some(binding) = &self.registered {
-            let (session, declaration) =
-                registered::open_registered(binding, plan, request, &pending.services).await?;
-            pending.registered = Some(session);
-            registered_courier = Some(declaration);
+            let pending_registered =
+                registered::prepare_registered(binding, plan, request, &pending.services).await?;
+            registered_courier = Some(pending_registered.declaration());
+            registered_pending = Some(pending_registered);
         }
         let readiness = match start {
-            SessionStart::Fresh => {
-                startup::open(
-                    &pending.connection,
-                    plan,
-                    &pending.leased_cwd,
-                    self.profile,
-                    &self.mcp_servers,
-                    registered_courier,
-                )
-                .await?
-            }
+            SessionStart::Fresh => match startup::open(
+                &pending.connection,
+                plan,
+                &pending.leased_cwd,
+                self.profile,
+                &self.mcp_servers,
+                registered_courier,
+            )
+            .await
+            {
+                Ok(readiness) => readiness,
+                Err(error) => {
+                    if let Some(pending_registered) = registered_pending.take()
+                        && let Some(lease) = pending_registered.into_unclaimed_lease()
+                    {
+                        guard.ledger().record_registered(lease);
+                    }
+                    return Err(error);
+                }
+            },
             SessionStart::Resume {
                 binding,
                 resume_session_at,
@@ -618,6 +628,15 @@ impl ClaudeAgentSdkDriver {
                 .await?
             }
         };
+        if let Some(mut pending_registered) = registered_pending.take() {
+            if let Err(error) = pending_registered.wait_until_ready() {
+                if let Some(lease) = pending_registered.into_unclaimed_lease() {
+                    guard.ledger().record_registered(lease);
+                }
+                return Err(error);
+            }
+            pending.registered = Some(pending_registered.claim());
+        }
         Ok((pending, readiness))
     }
 

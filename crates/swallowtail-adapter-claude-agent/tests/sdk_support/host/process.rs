@@ -76,6 +76,12 @@ impl ProcessHandle for SdkFixtureProcess {
                 .expect("SDK fixture state lock poisoned");
             state.input.push(value.clone());
             if !state.holding {
+                if value["command"].as_str() == Some("open")
+                    && super::mcp_child::spawn_registered_courier(&self.shared, &value["params"])
+                        .is_err()
+                {
+                    return Err(fixture_failure());
+                }
                 respond(self.scenario, &value, &mut state)?;
             }
             self.shared.changed.notify_all();
@@ -184,6 +190,7 @@ impl SdkFixtureProcess {
             .lock()
             .expect("SDK fixture state lock poisoned")
             .stopped = true;
+        super::mcp_child::kill_spawned(&self.shared);
         self.shared.changed.notify_all();
         Box::pin(async { Ok(()) })
     }

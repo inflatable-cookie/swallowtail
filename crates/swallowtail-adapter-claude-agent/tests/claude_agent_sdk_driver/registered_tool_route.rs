@@ -13,9 +13,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::task::{Poll, Waker};
-use swallowtail_adapter_claude_agent::sdk::registered_tool::{
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER, ClaudeAgentSdkRegisteredToolBinding,
-};
+use swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
 use swallowtail_adapter_claude_agent::sdk::{
     ClaudeAgentSdkSessionPreparation, ClaudeAgentSdkSessionProfile,
     prepare_claude_agent_sdk_session,
@@ -24,8 +22,7 @@ use swallowtail_core::{ConfiguredInstanceId, ExecutionHostId};
 use swallowtail_host_local::{LocalHostServices, LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
     AdmissionPhase, BoxFuture, EnvironmentRef, ExecutableRef, HostServices,
-    InteractiveSessionHandle, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
-    ProcessOutputStream, ProcessRequest, ProcessService,
+    InteractiveSessionHandle, ProcessHandle, ProcessInputChunk, ProcessOutputStream,
     REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION, REGISTERED_TOOL_PROXY_WIRE_TAG,
     RegisteredServerId, RegisteredServerRevision, RegisteredToolAttachment, RegisteredToolBounds,
     RegisteredToolCall, RegisteredToolDispatchContext, RegisteredToolDispatcher,
@@ -37,12 +34,13 @@ use swallowtail_runtime::{
     RegisteredToolSchemaDocument, RegisteredToolSchemaMediaType, RegisteredToolSchemaNamespace,
     RegisteredToolSelection, RegisteredToolSnapshot, RegisteredToolSnapshotInput,
     RegisteredToolSource, RegisteredToolSourceId, RegisteredToolTransport,
-    RegisteredToolTransportSupport, RuntimeFailure, ScopeId,
+    RegisteredToolTransportSupport, RuntimeFailure,
 };
 use swallowtail_testkit::{ScriptedAdmissionPort, fixture_admission};
 
 const NAMESPACE: &str = "desktop";
 const RECONCILE: &str = "reconcile";
+const OPEN_DEADLINE_TICKS: u64 = 10_000_000_000;
 
 struct CountingDispatcher {
     calls: Arc<AtomicUsize>,
@@ -137,62 +135,6 @@ impl BlockingDispatcher {
             .take()
         {
             waker.wake();
-        }
-    }
-}
-
-struct SharedProcess(Arc<dyn ProcessHandle>);
-
-impl ProcessHandle for SharedProcess {
-    fn write_stdin(&self, chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.0.write_stdin(chunk)
-    }
-
-    fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.0.close_stdin()
-    }
-
-    fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
-        self.0.read_output()
-    }
-
-    fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.0.request_stop()
-    }
-
-    fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.0.force_stop()
-    }
-
-    fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
-        self.0.wait()
-    }
-}
-
-struct RouteProcessService {
-    sidecar: SdkFixtureHost,
-    local: LocalHostServices,
-    courier: ExecutableRef,
-    captured: Arc<Mutex<Option<Arc<dyn ProcessHandle>>>>,
-}
-
-impl ProcessService for RouteProcessService {
-    fn start(
-        &self,
-        scope: ScopeId,
-        request: ProcessRequest,
-    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
-        if request.executable() == &self.courier {
-            let local = Arc::clone(self.local.process_host());
-            let captured = Arc::clone(&self.captured);
-            Box::pin(async move {
-                let handle = ProcessService::start(local.as_ref(), scope, request).await?;
-                let shared: Arc<dyn ProcessHandle> = Arc::from(handle);
-                *captured.lock().expect("courier capture lock") = Some(Arc::clone(&shared));
-                Ok(Box::new(SharedProcess(shared)) as Box<dyn ProcessHandle>)
-            })
-        } else {
-            self.sidecar.start(scope, request)
         }
     }
 }
@@ -402,23 +344,16 @@ fn open_route(
     let fixture = SdkFixtureHost::new(SdkScenario::McpConnected);
     let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
     let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
-    let captured: Arc<Mutex<Option<Arc<dyn ProcessHandle>>>> = Arc::new(Mutex::new(None));
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
         .approve_executable(executable.clone(), courier_binary())
         .approve_environment(environment.clone(), [("PATH".into(), "/usr/bin".into())])
         .with_registered_tool_dispatcher(dispatcher)
         .with_registered_tool_clock(Arc::new(fixture.clone()))
         .build_services(host.clone());
-    let process = RouteProcessService {
-        sidecar: fixture.clone(),
-        local: local.clone(),
-        courier: executable.clone(),
-        captured: Arc::clone(&captured),
-    };
     let services = local
         .services()
         .clone()
-        .with_process(Arc::new(process))
+        .with_process(Arc::new(fixture.clone()))
         .with_credential(Arc::new(fixture.clone()))
         .with_working_resource(Arc::new(fixture.clone()))
         .with_time(Arc::new(fixture.clone()));
@@ -428,10 +363,6 @@ fn open_route(
         executable,
         environment,
     );
-    let binding = ClaudeAgentSdkSessionProfile::read_only()
-        .with_registered_tools(preparation)
-        .expect("profile qualifies the mediated stdio preparation")
-        .with_host(local.clone());
     let prepared = prepare_claude_agent_sdk_session(
         ClaudeAgentSdkSessionPreparation::new(
             ConfiguredInstanceId::new("claude-agent-sdk.fixture").expect("instance"),
@@ -452,20 +383,19 @@ fn open_route(
                 .expect("workspace"),
             swallowtail_runtime::RequestId::new("request-1").expect("request"),
             swallowtail_runtime::Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
-                10_000,
+                OPEN_DEADLINE_TICKS,
             )),
         )
-        .with_registered_tool_binding(binding),
+        .with_registered_tools(preparation, local.clone())
+        .expect("openable preparation binds host-resolved courier path and env"),
         swallowtail_runtime::SessionOptions::default(),
     )
     .expect("registered-tool preparation succeeds");
     let session = block_on(prepared.open_route_session(services.clone())).expect("session opens");
     let courier = CourierClient {
-        process: captured
-            .lock()
-            .expect("courier capture lock")
-            .clone()
-            .expect("driver spawned the courier through the host process port"),
+        process: fixture
+            .spawned_registered_courier()
+            .expect("fake SDK spawned the declared courier child"),
     };
     OpenedRoute {
         session,
@@ -513,7 +443,7 @@ fn open_without_a_host_composition_fails_typed() {
         executable,
         environment,
     );
-    let binding = ClaudeAgentSdkRegisteredToolBinding::qualify(preparation)
+    let binding = ClaudeAgentSdkSessionProfile::qualify(preparation)
         .expect("qualify does not require the host composition");
     let prepared = prepare_claude_agent_sdk_session(
         crate::sdk_support::preparation(host.clone()).with_registered_tool_binding(binding),
@@ -552,7 +482,24 @@ fn open_declares_the_reserved_courier_and_round_trips_one_mediated_call() {
         .expect("courier is declared");
     assert_eq!(servers.len(), 1);
     assert_eq!(servers[0]["name"], CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER);
+    assert_eq!(
+        servers[0]["command"].as_str().expect("declared command"),
+        courier_binary().to_str().expect("courier path is UTF-8"),
+        "SDK command is the resolved filesystem path, not an ExecutableRef host value"
+    );
     assert_eq!(servers[0]["args"][0], REGISTERED_TOOL_PROXY_WIRE_TAG);
+    let rendezvous = PathBuf::from(servers[0]["args"][1].as_str().expect("rendezvous path"));
+    assert!(
+        !rendezvous.exists(),
+        "ready expires the one-shot rendezvous after the courier authenticates: {rendezvous:?}"
+    );
+    assert_eq!(servers[0]["env"]["PATH"], "/usr/bin");
+    assert_eq!(
+        servers[0]["env"].as_object().expect("declared env").len(),
+        1,
+        "env is the card 084 allowlisted recipe, not a hardcoded PATH dump: {}",
+        servers[0]["env"]
+    );
     assert!(
         open["params"]["tools"]
             .as_array()
@@ -663,4 +610,102 @@ fn close_joins_the_registered_listener() {
     close_route(opened);
     assert_eq!(local.registered_tool_lease_count(), 0);
     assert_eq!(local.operation_bridge_listener_count(), 0);
+}
+
+#[test]
+fn ready_follows_kernel_authenticated_connect() {
+    let host = host_id("claude-agent-sdk.fixture.registered-ready");
+    let opened = open_route(
+        host,
+        Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+        Arc::new(ScriptedAdmissionPort::current()),
+    );
+    assert_eq!(opened.local.registered_tool_lease_count(), 1);
+    assert_eq!(opened.local.operation_bridge_listener_count(), 1);
+    assert!(
+        opened.fixture.spawned_registered_courier().is_some(),
+        "ready is observed after the fake SDK spawned the declared child"
+    );
+    close_route(opened);
+}
+
+#[test]
+fn a_second_courier_cannot_reread_an_expired_rendezvous() {
+    let host = host_id("claude-agent-sdk.fixture.registered-second-read");
+    let opened = open_route(
+        host,
+        Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+        Arc::new(ScriptedAdmissionPort::current()),
+    );
+    let open = opened
+        .fixture
+        .inputs()
+        .into_iter()
+        .find(|input| input["command"] == "open")
+        .expect("registered open is on the wire");
+    let rendezvous = open["params"]["mcpServers"][0]["args"][1]
+        .as_str()
+        .expect("declared rendezvous path");
+    assert!(
+        !Path::new(rendezvous).exists(),
+        "ready unlinks the one-shot rendezvous: {rendezvous}"
+    );
+    let status = std::process::Command::new(courier_binary())
+        .args([REGISTERED_TOOL_PROXY_WIRE_TAG, rendezvous])
+        .stderr(std::process::Stdio::null())
+        .status()
+        .expect("second courier spawn starts");
+    assert!(
+        !status.success(),
+        "a second read of the expired rendezvous must fail"
+    );
+    close_route(opened);
+}
+
+#[test]
+fn an_unspawnable_command_fails_typed() {
+    let host = host_id("claude-agent-sdk.fixture.registered-unspawnable");
+    let fixture = SdkFixtureHost::new(SdkScenario::McpConnected);
+    let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
+    let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let missing = std::env::temp_dir().join("swallowtail-card125-missing-courier");
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable.clone(), &missing)
+        .approve_environment(environment.clone(), [("PATH".into(), "/usr/bin".into())])
+        .with_registered_tool_dispatcher(Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }))
+        .with_registered_tool_clock(Arc::new(fixture.clone()))
+        .build_services(host.clone());
+    let services = local
+        .services()
+        .clone()
+        .with_process(Arc::new(fixture.clone()))
+        .with_credential(Arc::new(fixture.clone()))
+        .with_working_resource(Arc::new(fixture.clone()))
+        .with_time(Arc::new(fixture.clone()));
+    let preparation = preparation_for(
+        host.clone(),
+        fixture_admission(Arc::new(ScriptedAdmissionPort::current())),
+        executable,
+        environment,
+    );
+    let prepared = prepare_claude_agent_sdk_session(
+        crate::sdk_support::preparation(host)
+            .with_registered_tools(preparation, local)
+            .expect("unspawnable command still qualifies"),
+        swallowtail_runtime::SessionOptions::default(),
+    )
+    .expect("unspawnable command still prepares");
+    let Err(error) = block_on(prepared.open_session(services)) else {
+        panic!("open requires a spawnable courier filesystem path");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.registered_tool.command_unspawnable"
+    );
 }

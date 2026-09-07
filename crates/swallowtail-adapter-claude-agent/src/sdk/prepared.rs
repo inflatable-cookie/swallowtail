@@ -18,6 +18,7 @@ use swallowtail_core::{
     Diagnostic, ExecutionHostId, InstanceRevision, InstanceTargetRef, ModelId, ModelRouteId,
     ModelRouteRevision, PreflightPlan,
 };
+use swallowtail_host_local::LocalHostServices;
 use swallowtail_runtime::{
     BoxFuture, Deadline, EnvironmentRef, HostServices, InteractiveSessionHandle,
     OpenSessionRequest, PreparationFailure, PreparationStage, RegisteredToolPreparation, RequestId,
@@ -110,22 +111,26 @@ impl ClaudeAgentSdkSessionPreparation {
         self
     }
 
-    /// Qualifies and binds one registered-tool preparation into this session.
+    /// Qualifies one registered-tool preparation and binds the host that
+    /// resolves the approved courier path and environment.
     ///
-    /// Absence preserves every previous open. The binding is a separate path
-    /// from card 084 consumer-declared servers: neither may present the
-    /// other's reserved name.
+    /// This is the openable consumer entry. Absence preserves every previous
+    /// open. The binding is a separate path from card 084 consumer-declared
+    /// servers: neither may present the other's reserved name.
     pub fn with_registered_tools(
         mut self,
         preparation: RegisteredToolPreparation,
+        host: LocalHostServices,
     ) -> Result<Self, PreparationFailure> {
         self.registered_tools = Some(
-            ClaudeAgentSdkRegisteredToolBinding::qualify(preparation).map_err(|error| {
-                PreparationFailure::new(
-                    PreparationStage::Preflight,
-                    Diagnostic::new(error.diagnostic().clone()),
-                )
-            })?,
+            ClaudeAgentSdkRegisteredToolBinding::qualify(preparation)
+                .map_err(|error| {
+                    PreparationFailure::new(
+                        PreparationStage::Preflight,
+                        Diagnostic::new(error.diagnostic().clone()),
+                    )
+                })?
+                .with_host(host),
         );
         Ok(self)
     }

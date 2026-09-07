@@ -379,16 +379,14 @@ impl ClaudeAgentSdkSessionProfile {
         super::mcp::ClaudeAgentSdkMcpBinding::from_parts(self, servers.into_iter().collect())
     }
 
-    /// Qualifies one registered-tool preparation beside this Copy profile.
+    /// Qualifies one registered-tool preparation for this route.
     ///
     /// Native admission stays on the profile. The binding travels beside it,
     /// the same way declared MCP servers travel on `ClaudeAgentSdkMcpBinding`.
-    pub fn with_registered_tools(
-        self,
+    pub fn qualify(
         preparation: RegisteredToolPreparation,
     ) -> Result<super::registered_tool::ClaudeAgentSdkRegisteredToolBinding, PreparationFailure>
     {
-        let _ = self;
         super::registered_tool::ClaudeAgentSdkRegisteredToolBinding::qualify(preparation).map_err(
             |error| {
                 PreparationFailure::new(

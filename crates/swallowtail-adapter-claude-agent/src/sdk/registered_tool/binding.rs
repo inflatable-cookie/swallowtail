@@ -54,11 +54,12 @@ impl ClaudeAgentSdkRegisteredToolBinding {
         })
     }
 
-    /// Binds the host composition that mints the one-shot courier rendezvous.
+    /// Binds the host composition that resolves the approved courier path and
+    /// environment and mints the one-shot rendezvous.
     ///
-    /// Open uses this composition for `registered_tool_proxy_launch` only. The
-    /// courier process itself starts through the session's `HostServices`
-    /// process port, the same launcher the sidecar uses.
+    /// Open uses this composition for resolution and `registered_tool_proxy_launch`
+    /// only. The courier process itself is spawned by the provider from the
+    /// declared `McpStdioServerConfig`.
     #[must_use]
     pub fn with_host(mut self, host: LocalHostServices) -> Self {
         self.host = Some(host);
@@ -83,7 +84,7 @@ impl ClaudeAgentSdkRegisteredToolBinding {
         &self.carrier
     }
 
-    /// Returns the host composition bound for rendezvous materialization.
+    /// Returns the host composition bound for path resolution and rendezvous.
     #[must_use]
     pub const fn host(&self) -> Option<&LocalHostServices> {
         self.host.as_ref()

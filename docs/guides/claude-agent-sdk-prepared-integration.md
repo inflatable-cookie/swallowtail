@@ -518,25 +518,31 @@ An undeclared `mcp__` tool name is refused before the SDK is constructed.
 
 Card 116 already owns the carrier, mediator, and mediated-stdio proxy. This
 route now binds one `RegisteredToolPreparation` into open on the Codex
-precedent: `ClaudeAgentSdkSessionProfile::with_registered_tools`,
-`ClaudeAgentSdkSessionPreparation::with_registered_tools` (or
-`with_registered_tool_binding`), and `ClaudeAgentSdkDriver::with_registered_tools`.
+precedent: `ClaudeAgentSdkSessionProfile::qualify`,
+`ClaudeAgentSdkSessionPreparation::with_registered_tools(preparation, host)`
+(the openable entry; `with_registered_tool_binding` remains for a binding
+that already carries the host), and `ClaudeAgentSdkDriver::with_registered_tools`.
 
 The Copy profile cannot hold the binding. Qualification happens beside it,
 the same way declared MCP servers travel on `ClaudeAgentSdkMcpBinding`.
 `qualify` admits only `MediatedStdioProxy` over `PrivateLoopbackHttp` with a
 resolved `RegisteredToolProxyRecipe`. Host-mediated callback selections stay
-on the Card 116 mediator. Open then requires `with_host(LocalHostServices)`
-so the one-shot courier rendezvous can be minted; missing host fails typed
-`registered_tool.host_missing`.
+on the Card 116 mediator. Open then requires the local host composition so
+prepare can resolve the approved courier path and Card 084 environment;
+missing host fails typed `registered_tool.host_missing`.
 
-Open mints the bridge lease, materializes the rendezvous, starts the courier
-through the session process port, waits until the courier authenticates, and
-declares the reserved `swallowtail-registered-tools` stdio server under
-`strictMcpConfig`. That declaration is an internal open server, never a
-consumer `ClaudeAgentSdkMcpServer`: card 084 still rejects that reserved
+Prepare mints the bridge lease, generation, secret, and one-shot rendezvous
+without waiting, then declares the reserved `swallowtail-registered-tools`
+stdio server as a real `McpStdioServerConfig`: command is the resolved
+filesystem path, args are the fixed wire tag and rendezvous path, env is the
+allowlisted recipe. The provider (or the fake SDK) spawns that child.
+Swallowtail never starts or holds a courier `ProcessHandle`. Ready is the
+kernel-observed authenticated connect, bounded by `min(open remainder, 10s)`.
+That declaration is an internal open server, never a consumer
+`ClaudeAgentSdkMcpServer`: card 084 still rejects that reserved
 name. Every registered call still goes through `canUseTool` and the kernel's
-live verdicts. Close joins the single listener. Omitting the binding keeps
+live verdicts. Close joins the single listener; Drop hands the lease to the
+guardian and does not join on the dropping thread. Omitting the binding keeps
 the previous open, including the empty `mcpServers` omission.
 
 Resume and listing refuse a bound selection. The Contract 061 projection

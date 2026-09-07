@@ -106,8 +106,25 @@ impl RegisteredToolProxyServer {
     }
 
     /// Returns whether the courier completed the MCP ready barrier.
+    ///
+    /// The wait is wall-clock, capped at `min(open remainder, 10s)` from the
+    /// lease deadline already stored on this proxy.
     pub(crate) fn wait_until_ready(&self) -> Result<(), RuntimeFailure> {
-        let deadline = Instant::now() + READY_WAIT;
+        let remaining = Duration::from_nanos(
+            self.state
+                .deadline
+                .instant()
+                .ticks()
+                .saturating_sub(self.state.time.now().ticks()),
+        );
+        let wait_bound = remaining.min(READY_WAIT);
+        if wait_bound.is_zero() {
+            return Err(failure(
+                "swallowtail.registered_tool.proxy_not_ready",
+                "Registered tool proxy did not reach its ready barrier",
+            ));
+        }
+        let deadline = Instant::now() + wait_bound;
         let mut ready = self.state.ready.lock().expect("proxy ready lock poisoned");
         while !*ready && !self.state.closed.load(Ordering::Acquire) {
             let remaining = deadline.saturating_duration_since(Instant::now());
@@ -579,7 +596,8 @@ impl RegisteredToolProxyLaunch {
         self.rendezvous.path()
     }
 
-    /// Waits for the courier to authenticate and complete MCP initialization.
+    /// Waits for the courier to authenticate. The wait is capped at
+    /// `min(open remainder, 10s)` from the lease deadline.
     pub fn wait_until_ready(&mut self) -> Result<(), RuntimeFailure> {
         let result = self.server.wait_until_ready();
         self.rendezvous.expire();

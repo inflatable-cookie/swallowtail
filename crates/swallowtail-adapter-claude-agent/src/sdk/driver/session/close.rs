@@ -77,7 +77,17 @@ pub(super) fn activate(
         scoped: Vec::new(),
         resource: session.resource.take(),
         credential: session.credential.take(),
+        registered: session
+            .registered
+            .as_mut()
+            .and_then(super::super::registered::ClaudeAgentSdkRegisteredToolSession::take_lease),
+        registered_cause: Some(if cooperative_close {
+            swallowtail_runtime::RegisteredToolCleanupCause::ExplicitClose
+        } else {
+            swallowtail_runtime::RegisteredToolCleanupCause::ProviderFailure
+        }),
     };
+    drop(session.registered.take());
     if let Some(mut active) = active
         && let Some(task) = active.deadline_task.take()
     {

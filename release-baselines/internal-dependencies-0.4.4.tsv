@@ -7,6 +7,7 @@ swallowtail-adapter-antigravity	swallowtail-runtime	^0.4.4
 swallowtail-adapter-bedrock	swallowtail-core	^0.4.4
 swallowtail-adapter-bedrock	swallowtail-runtime	^0.4.4
 swallowtail-adapter-claude-agent	swallowtail-core	^0.4.4
+swallowtail-adapter-claude-agent	swallowtail-host-local	^0.4.4
 swallowtail-adapter-claude-agent	swallowtail-protocol-acp	^0.4.4
 swallowtail-adapter-claude-agent	swallowtail-runtime	^0.4.4
 swallowtail-adapter-cline	swallowtail-core	^0.4.4

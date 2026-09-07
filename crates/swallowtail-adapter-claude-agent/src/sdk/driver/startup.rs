@@ -719,14 +719,24 @@ fn mcp_servers_params(servers: &[OpenStdioMcpServer]) -> Value {
         servers
             .iter()
             .map(|server| {
-                json!({
+                let mut value = json!({
                     "name": server.name(),
                     "command": server.command(),
                     "args": server.args(),
                     "envAllowlistKeys": server.env_allowlist_keys(),
                     "tools": server.tools(),
                     "optional": server.is_optional(),
-                })
+                });
+                if !server.env().is_empty() {
+                    value["env"] = json!(
+                        server
+                            .env()
+                            .iter()
+                            .cloned()
+                            .collect::<std::collections::BTreeMap<_, _>>()
+                    );
+                }
+                value
             })
             .collect(),
     )

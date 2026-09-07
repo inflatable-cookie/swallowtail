@@ -15,12 +15,11 @@ doctest = false
 
 [dependencies]
 futures-core = "0.3"
+serde_json = "1"
 swallowtail-core.workspace = true
 swallowtail-idioms.workspace = true
+swallowtail-protocol-acp.workspace = true
 swallowtail-runtime.workspace = true
-
-[dev-dependencies]
-serde_json = "1"
 
 [lints]
 workspace = true
@@ -32,3 +31,15 @@ path = "tests/activity_suite.rs"
 [[test]]
 name = "conformance_profiles"
 path = "tests/conformance_suite.rs"
+
+[[test]]
+name = "grok_acp_client_mcp_probe"
+path = "tests/grok_acp_client_mcp_probe.rs"
+
+[[bin]]
+name = "grok-acp-client-mcp-probe"
+path = "src/bin/grok_acp_client_mcp_probe.rs"
+
+[[bin]]
+name = "grok-acp-echo-mcp"
+path = "src/bin/grok_acp_echo_mcp.rs"

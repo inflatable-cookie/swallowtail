@@ -1,7 +1,8 @@
 //! Deterministic conformance support for Swallowtail adapters.
 //!
-//! Fixtures and assertions operate on Swallowtail public contracts. This crate
-//! contains no execution, transport, or provider behavior.
+//! Fixtures and assertions operate on Swallowtail public contracts. Library
+//! proofs start no provider process. The Card 128 Grok ACP client-MCP live
+//! entrypoint is Desktop-gated and is never invoked by crate tests.
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
@@ -15,6 +16,7 @@ mod consumer_route_projection_fixture;
 mod direct_continuation_fixture;
 mod failure_assertions;
 mod fixture;
+mod grok_acp_client_mcp_probe;
 mod idiom_assertions;
 mod installed_executable_assertions;
 mod interface_compatibility_assertions;
@@ -96,6 +98,14 @@ pub use consumer_route_projection_fixture::{
 };
 pub use failure_assertions::assert_portable_failure_classification_contract;
 pub use fixture::ContractKernelFixture;
+pub use grok_acp_client_mcp_probe::{
+    ClientMcpVerdict, DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE, ECHO_MCP_SERVER_NAME, ECHO_MCP_TOOL,
+    GrokAcpClientMcpCapsule, GrokAcpClientMcpCleanup, GrokAcpClientMcpError,
+    GrokAcpClientMcpErrorKind, GrokAcpClientMcpFrame, GrokAcpClientMcpPeer, LiveGrokAcpPeer,
+    desktop_grok_acp_client_mcp_probe_is_gated_open, grok_acp_client_mcp_fixture_probe,
+    grok_acp_client_mcp_verdict_from_frames, grok_acp_echo_mcp_reply,
+    open_desktop_live_grok_acp_peer, run_grok_acp_client_mcp_probe,
+};
 pub use idiom_assertions::{
     assert_idiom_engine_contract, assert_idiom_static_rules_delivery_contract,
     assert_idioms_route_opt_in_contract,

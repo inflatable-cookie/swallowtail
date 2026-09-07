@@ -47,10 +47,9 @@ pub(super) fn open_binds_a_lease_without_a_listener(harness: &RegisteredToolHarn
     )
     .expect("completion gate observes a live lease");
 
-    assert!(lease.is_live());
     assert!(
-        lease.endpoint().is_none() && lease.bearer().is_none(),
-        "the host-mediated callback profile binds no listener or bearer"
+        !lease.transport().binds_listener(),
+        "the host-mediated callback profile binds no listener"
     );
     assert_eq!(state.admission(), RegisteredToolAdmissionState::Frozen);
     assert_eq!(state.lifecycle(), RegisteredToolLifecycleState::Frozen);
@@ -60,7 +59,7 @@ pub(super) fn open_binds_a_lease_without_a_listener(harness: &RegisteredToolHarn
 
 pub(super) fn one_call_settles_exactly_once(compose: &ComposeRegisteredToolHost) {
     let dispatcher = Arc::new(ScriptedRegisteredToolDispatcher::echoing());
-    let harness = RegisteredToolHarness::new(compose(dispatcher.clone(), FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher.clone(), FIXTURE_CLEANUP_BUDGET);
     let lease = harness.open("turn-call");
 
     let outcome = drive_fixture(lease.call(request("call-1", FIXTURE_NATIVE_TOOL, 8)))
@@ -90,7 +89,7 @@ pub(super) fn one_call_settles_exactly_once(compose: &ComposeRegisteredToolHost)
 
 pub(super) fn unsupported_tools_fail_before_dispatch(compose: &ComposeRegisteredToolHost) {
     let dispatcher = Arc::new(ScriptedRegisteredToolDispatcher::echoing());
-    let harness = RegisteredToolHarness::new(compose(dispatcher.clone(), FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher.clone(), FIXTURE_CLEANUP_BUDGET);
     let lease = harness.open("turn-unsupported");
 
     let provider_owned =
@@ -112,7 +111,7 @@ pub(super) fn unsupported_tools_fail_before_dispatch(compose: &ComposeRegistered
 
 pub(super) fn oversized_argument_fails_before_dispatch(compose: &ComposeRegisteredToolHost) {
     let dispatcher = Arc::new(ScriptedRegisteredToolDispatcher::echoing());
-    let harness = RegisteredToolHarness::new(compose(dispatcher.clone(), FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher.clone(), FIXTURE_CLEANUP_BUDGET);
     let lease = harness.open("turn-oversized-argument");
     let bounds = lease.selection().effective_bounds();
     let oversized = RegisteredToolPayload::new(
@@ -151,7 +150,7 @@ pub(super) fn oversized_result_is_rejected(compose: &ComposeRegisteredToolHost) 
             ))
         },
     )));
-    let harness = RegisteredToolHarness::new(compose(dispatcher, FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher, FIXTURE_CLEANUP_BUDGET);
     let lease = harness.open("turn-oversized-result");
 
     let outcome = drive_fixture(lease.call(request("call-result", FIXTURE_MCP_TOOL, 8)))
@@ -185,7 +184,7 @@ pub(super) fn server_failure_stays_typed_and_correlated(compose: &ComposeRegiste
             ))
         },
     )));
-    let harness = RegisteredToolHarness::new(compose(dispatcher, FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher, FIXTURE_CLEANUP_BUDGET);
     let lease = harness.open("turn-server-failure");
 
     let outcome = drive_fixture(lease.call(request("call-fail", FIXTURE_NATIVE_TOOL, 8)))
@@ -209,10 +208,10 @@ pub(super) fn progress_admits_only_forward_sequences(compose: &ComposeRegistered
             assert_eq!(progress.call_id(), call.call_id());
             let mut record = sink_observed.lock().expect("observed lock");
             for sequence in [1_u64, 1, 3, 2] {
-                let outcome = progress.publish(
+                let outcome = drive_fixture(progress.publish(
                     NonZeroU64::new(sequence).expect("positive sequence"),
                     fixture_payload(4, 1024),
-                );
+                ));
                 record.push(outcome.err().map(|error| match error.diagnostic().code() {
                     code if code == RegisteredToolFailureKind::DuplicateCorrelation.code() => {
                         "duplicate"
@@ -226,7 +225,7 @@ pub(super) fn progress_admits_only_forward_sequences(compose: &ComposeRegistered
             ))
         },
     )));
-    let harness = RegisteredToolHarness::new(compose(dispatcher, FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher, FIXTURE_CLEANUP_BUDGET);
     let lease = harness.open("turn-progress");
 
     drive_fixture(lease.call(request("call-progress", FIXTURE_NATIVE_TOOL, 8)))
@@ -245,20 +244,20 @@ pub(super) fn progress_queue_is_positively_bounded(compose: &ComposeRegisteredTo
         move |call, context| {
             let progress = context.progress();
             for sequence in 1..=MAX_REGISTERED_TOOL_QUEUED_PROGRESS_ITEMS {
-                progress
-                    .publish(
-                        NonZeroU64::new(sequence as u64).expect("positive sequence"),
-                        fixture_payload(1, 1024),
-                    )
-                    .expect("bounded progress is admitted");
+                drive_fixture(progress.publish(
+                    NonZeroU64::new(sequence as u64).expect("positive sequence"),
+                    fixture_payload(1, 1024),
+                ))
+                .expect("bounded progress is admitted");
             }
-            let error = progress
-                .publish(
+            let error = drive_fixture(
+                progress.publish(
                     NonZeroU64::new(MAX_REGISTERED_TOOL_QUEUED_PROGRESS_ITEMS as u64 + 1)
                         .expect("positive sequence"),
                     fixture_payload(1, 1024),
-                )
-                .expect_err("a full progress queue fails explicitly");
+                ),
+            )
+            .expect_err("a full progress queue fails explicitly");
             *sink_overflow.lock().expect("overflow lock") =
                 Some(error.diagnostic().code().to_owned());
             Ok(RegisteredToolOutcome::completed(
@@ -267,7 +266,7 @@ pub(super) fn progress_queue_is_positively_bounded(compose: &ComposeRegisteredTo
             ))
         },
     )));
-    let harness = RegisteredToolHarness::new(compose(dispatcher, FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher, FIXTURE_CLEANUP_BUDGET);
     let lease = harness.open("turn-progress-overflow");
 
     drive_fixture(lease.call(request("call-overflow", FIXTURE_NATIVE_TOOL, 8)))
@@ -281,7 +280,7 @@ pub(super) fn progress_queue_is_positively_bounded(compose: &ComposeRegisteredTo
 
 pub(super) fn terminal_barrier_and_close_are_joined(compose: &ComposeRegisteredToolHost) {
     let dispatcher = Arc::new(ScriptedRegisteredToolDispatcher::echoing());
-    let harness = RegisteredToolHarness::new(compose(dispatcher, FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher, FIXTURE_CLEANUP_BUDGET);
     let port = harness
         .hosts
         .registered_tool_bridge()
@@ -310,7 +309,7 @@ pub(super) fn terminal_barrier_and_close_are_joined(compose: &ComposeRegisteredT
 
 pub(super) fn a_closed_lease_is_not_reusable(compose: &ComposeRegisteredToolHost) {
     let dispatcher = Arc::new(ScriptedRegisteredToolDispatcher::echoing());
-    let harness = RegisteredToolHarness::new(compose(dispatcher, FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher, FIXTURE_CLEANUP_BUDGET);
     let port = harness
         .hosts
         .registered_tool_bridge()
@@ -337,5 +336,5 @@ fn assert_lease_redacts_private_material(lease: &RegisteredToolBridgeLease) {
     let rendered = format!("{lease:?}");
 
     assert!(!rendered.contains("secret"));
-    assert!(rendered.contains("<redacted>") || !rendered.contains("token: Some"));
+    assert!(rendered.contains("<private operation kernel>"));
 }

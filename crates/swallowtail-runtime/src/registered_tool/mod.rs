@@ -19,7 +19,6 @@ mod payload;
 mod preparation;
 mod readiness;
 mod schema;
-mod secrets;
 mod selection;
 mod service;
 mod snapshot;
@@ -54,9 +53,8 @@ pub use identity::{
 };
 pub use kernel::{RegisteredToolOperationKernel, first_progress_sequence};
 pub use lease::{
-    RegisteredToolAdmissionState, RegisteredToolBridgeLease, RegisteredToolCallChannel,
-    RegisteredToolCleanupCause, RegisteredToolCompletionState, RegisteredToolLifecycleState,
-    RegisteredToolOpenRequest,
+    RegisteredToolAdmissionState, RegisteredToolBridgeLease, RegisteredToolCleanupCause,
+    RegisteredToolCompletionState, RegisteredToolLifecycleState, RegisteredToolOpenRequest,
 };
 pub use limits::{
     MAX_REGISTERED_TOOL_AGGREGATE_SCHEMA_BYTES, MAX_REGISTERED_TOOL_ARGUMENT_BYTES,
@@ -74,13 +72,13 @@ pub use payload::RegisteredToolPayload;
 pub use preparation::{PreparedRegisteredToolBinding, RegisteredToolPreparation};
 pub use readiness::{
     REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION, REGISTERED_TOOL_QUALIFIED_TRANSPORTS,
-    RegisteredToolPortAvailability, RegisteredToolReadiness,
+    RegisteredToolMountedTopology, RegisteredToolPortAvailability, RegisteredToolReadiness,
+    RegisteredToolTopologyProof,
 };
 pub use schema::{
     RegisteredToolSchema, RegisteredToolSchemaDialect, RegisteredToolSchemaDigest,
     RegisteredToolSchemaDocument, RegisteredToolSchemaMediaType, RegisteredToolSchemaNamespace,
 };
-pub use secrets::{RegisteredToolBearer, RegisteredToolBridgeToken, RegisteredToolEndpoint};
 pub use selection::RegisteredToolSelection;
 pub use service::RegisteredToolBridgeHostService;
 pub use snapshot::{

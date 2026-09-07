@@ -4,19 +4,18 @@ use crate::host::LocalProcessHost;
 use crate::limits::LocalProcessLimits;
 use std::sync::Arc;
 use std::time::Duration;
-use swallowtail_runtime::{HostServices, RegisteredToolDispatcher};
+use swallowtail_runtime::HostServices;
 use swallowtail_testkit::{
-    ScriptedRegisteredToolDispatcher, UncooperativeRegisteredToolDispatcher,
-    assert_registered_tool_conformance, conformance_host_id, drive_fixture, poll_fixture_once,
+    RegisteredToolHostSpec, ScriptedRegisteredToolDispatcher,
+    UncooperativeRegisteredToolDispatcher, assert_registered_tool_conformance, conformance_host_id,
+    drive_fixture, poll_fixture_once,
 };
 
-fn compose(
-    dispatcher: Arc<dyn RegisteredToolDispatcher>,
-    cleanup_budget: Duration,
-) -> HostServices {
+fn compose(spec: RegisteredToolHostSpec) -> HostServices {
     LocalProcessHost::builder(LocalProcessLimits::default())
-        .with_registered_tool_dispatcher(dispatcher)
-        .with_registered_tool_cleanup_budget(cleanup_budget)
+        .with_registered_tool_dispatcher(spec.dispatcher)
+        .with_registered_tool_cleanup_budget(spec.cleanup_budget)
+        .with_registered_tool_clock(spec.clock)
         .build_services(conformance_host_id())
         .services()
         .clone()
@@ -41,8 +40,12 @@ fn omitting_the_dispatcher_registers_no_registered_tool_port() {
 fn a_clean_close_releases_the_lease_the_host_owned() {
     let services = LocalProcessHost::builder(LocalProcessLimits::default())
         .with_registered_tool_dispatcher(Arc::new(ScriptedRegisteredToolDispatcher::echoing()))
+        .with_registered_tool_clock(Arc::new(swallowtail_testkit::FakeClock::default()))
         .build_services(conformance_host_id());
-    let harness = swallowtail_testkit::RegisteredToolHarness::new(services.services().clone());
+    let harness = swallowtail_testkit::RegisteredToolHarness::with_clock(
+        services.services().clone(),
+        Arc::new(swallowtail_testkit::FakeClock::default()),
+    );
     let port = harness
         .hosts
         .registered_tool_bridge()
@@ -67,8 +70,12 @@ fn a_failed_cleanup_keeps_the_lease_under_host_ownership() {
     let services = LocalProcessHost::builder(LocalProcessLimits::default())
         .with_registered_tool_dispatcher(Arc::new(UncooperativeRegisteredToolDispatcher::default()))
         .with_registered_tool_cleanup_budget(Duration::from_millis(20))
+        .with_registered_tool_clock(Arc::new(swallowtail_testkit::FakeClock::default()))
         .build_services(conformance_host_id());
-    let harness = swallowtail_testkit::RegisteredToolHarness::new(services.services().clone());
+    let harness = swallowtail_testkit::RegisteredToolHarness::with_clock(
+        services.services().clone(),
+        Arc::new(swallowtail_testkit::FakeClock::default()),
+    );
     let port = harness
         .hosts
         .registered_tool_bridge()
@@ -105,9 +112,53 @@ fn a_failed_cleanup_keeps_the_lease_under_host_ownership() {
 }
 
 #[test]
-fn both_profiles_share_one_kernel_with_exactly_one_listener_owner() {
+fn a_rejected_direct_open_creates_no_lease() {
     let services = LocalProcessHost::builder(LocalProcessLimits::default())
         .with_registered_tool_dispatcher(Arc::new(ScriptedRegisteredToolDispatcher::echoing()))
+        .with_registered_tool_clock(Arc::new(swallowtail_testkit::FakeClock::default()))
+        .build_services(conformance_host_id());
+    let port = services
+        .services()
+        .registered_tool_bridge()
+        .expect("port is registered")
+        .clone();
+    let host = conformance_host_id();
+    let mut input = swallowtail_testkit::fixture_snapshot_input(&host);
+    input.required_services = [swallowtail_core::HostServiceKind::DeviceCodeDisplay]
+        .into_iter()
+        .collect();
+    let snapshot = Arc::new(
+        swallowtail_runtime::RegisteredToolSnapshot::new(input).expect("snapshot is valid"),
+    );
+
+    let error = drive_fixture(
+        port.open(swallowtail_runtime::RegisteredToolOpenRequest::new(
+            host,
+            swallowtail_testkit::conformance_instance(),
+            swallowtail_testkit::conformance_scope(),
+            swallowtail_testkit::conformance_turn("turn-direct-reject"),
+            swallowtail_testkit::fixture_selection(snapshot),
+            swallowtail_testkit::fixture_admission(Arc::new(
+                swallowtail_testkit::ScriptedAdmissionPort::current(),
+            )),
+            swallowtail_testkit::conformance_deadline(),
+        )),
+    )
+    .expect_err("the mounted port applies the typed readiness gate");
+
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.registered_tool.missing_host_service"
+    );
+    assert_eq!(services.registered_tool_lease_count(), 0);
+    assert_eq!(services.operation_bridge_lease_count(), 0);
+}
+
+#[test]
+fn both_profiles_share_one_lease_owner_and_generation_space() {
+    let services = LocalProcessHost::builder(LocalProcessLimits::default())
+        .with_registered_tool_dispatcher(Arc::new(ScriptedRegisteredToolDispatcher::echoing()))
+        .with_registered_tool_clock(Arc::new(swallowtail_testkit::FakeClock::default()))
         .build_services(conformance_host_id());
     let registry = services.services().clone();
     let watcher_port = registry.watcher_bridge().expect("watcher port").clone();
@@ -115,7 +166,10 @@ fn both_profiles_share_one_kernel_with_exactly_one_listener_owner() {
         .registered_tool_bridge()
         .expect("registered port")
         .clone();
-    let harness = swallowtail_testkit::RegisteredToolHarness::new(registry);
+    let harness = swallowtail_testkit::RegisteredToolHarness::with_clock(
+        registry,
+        Arc::new(swallowtail_testkit::FakeClock::default()),
+    );
 
     let watcher_lease = drive_fixture(watcher_port.open(
         swallowtail_runtime::WatcherBridgeOpenRequest::new(
@@ -131,10 +185,22 @@ fn both_profiles_share_one_kernel_with_exactly_one_listener_owner() {
         "the watcher profile still owns the one loopback listener"
     );
     assert!(
-        registered_lease.endpoint().is_none(),
+        !registered_lease.transport().binds_listener(),
         "the registered profile binds no second listener"
     );
     assert_eq!(services.registered_tool_lease_count(), 1);
+    assert_eq!(
+        services.operation_bridge_lease_count(),
+        2,
+        "one shared registry owns both profile leases"
+    );
+    assert_eq!(
+        services.operation_bridge_generations(&swallowtail_testkit::conformance_turn(
+            "turn-both-profiles"
+        )),
+        vec![("watcher", 1), ("registered-tool", 2)],
+        "both profiles draw from one monotonic generation space"
+    );
 
     let registered_cleanup = drive_fixture(registered_port.close(
         registered_lease,
@@ -157,4 +223,42 @@ fn both_profiles_share_one_kernel_with_exactly_one_listener_owner() {
             | swallowtail_runtime::CleanupOutcome::NotApplicable
     ));
     assert_eq!(services.registered_tool_lease_count(), 0);
+    assert_eq!(services.operation_bridge_lease_count(), 0);
+}
+
+#[test]
+fn one_joined_teardown_closes_every_selected_profile() {
+    let services = LocalProcessHost::builder(LocalProcessLimits::default())
+        .with_registered_tool_dispatcher(Arc::new(ScriptedRegisteredToolDispatcher::echoing()))
+        .with_registered_tool_clock(Arc::new(swallowtail_testkit::FakeClock::default()))
+        .build_services(conformance_host_id());
+    let registry = services.services().clone();
+    let watcher_port = registry.watcher_bridge().expect("watcher port").clone();
+    let harness = swallowtail_testkit::RegisteredToolHarness::with_clock(
+        registry,
+        Arc::new(swallowtail_testkit::FakeClock::default()),
+    );
+    let turn = swallowtail_testkit::conformance_turn("turn-joined");
+    let watcher_lease = drive_fixture(watcher_port.open(
+        swallowtail_runtime::WatcherBridgeOpenRequest::new(
+            swallowtail_testkit::conformance_scope(),
+            turn.clone(),
+        ),
+    ))
+    .expect("the watcher profile opens");
+    let registered_lease = harness.open("turn-joined");
+
+    assert_eq!(services.operation_bridge_lease_count(), 2);
+    let cleanup = services
+        .close_operation_bridges(&turn, crate::OperationBridgeCleanupCause::Completion)
+        .expect("one joined teardown closes both profiles");
+
+    assert_eq!(cleanup, swallowtail_runtime::CleanupOutcome::Clean);
+    assert_eq!(
+        services.operation_bridge_lease_count(),
+        0,
+        "one lifecycle owner released every profile lease"
+    );
+    drop(watcher_lease);
+    drop(registered_lease);
 }

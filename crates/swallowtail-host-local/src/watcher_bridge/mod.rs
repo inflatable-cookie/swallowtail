@@ -12,13 +12,18 @@ mod state;
 
 pub use proof::WatcherBridgeProofKind;
 
-use crate::operation_bridge::generate_operation_secret;
+pub(crate) use state::LiveLease as LiveWatcherLease;
+
+use crate::operation_bridge::{
+    BridgeLease, BridgeLeaseOwner, BridgeProfile, OperationBridgeCleanupCause,
+    OperationBridgeRegistry, generate_operation_secret,
+};
 use crate::output::failure;
 use close::shutdown_live;
 use failure::{closed_failure, foreign_failure, identity_failure};
 use listener::{bind_loopback, endpoint_url, spawn_accept};
 use proof::ProofLog;
-use state::{BridgeRegistry, Gate, LiveLease, RequestBounds, SessionPhase};
+use state::{Gate, LiveLease, ProofArchive, RequestBounds, SessionPhase};
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::{Arc, Condvar, Mutex};
 use std::time::Duration;
@@ -36,7 +41,45 @@ pub(crate) struct LocalWatcherBridgeHostService {
     watcher: Arc<dyn WatcherHostService>,
     time: Arc<dyn TimeService>,
     wait_bound: Duration,
-    state: Arc<Mutex<BridgeRegistry>>,
+    registry: Arc<OperationBridgeRegistry>,
+    proof_archive: Arc<Mutex<ProofArchive>>,
+}
+
+/// Watcher-profile teardown driven by the one shared registry.
+struct WatcherLeaseOwner {
+    registry: Arc<OperationBridgeRegistry>,
+    proof_archive: Arc<Mutex<ProofArchive>>,
+    live: Arc<LiveLease>,
+}
+
+impl BridgeLeaseOwner for WatcherLeaseOwner {
+    fn freeze(&self) {
+        self.live.freeze_admission();
+    }
+
+    fn join_and_release(
+        &self,
+        cause: OperationBridgeCleanupCause,
+    ) -> Result<CleanupOutcome, RuntimeFailure> {
+        shutdown_live(
+            &self.registry,
+            &self.proof_archive,
+            &self.live,
+            watcher_cause(cause),
+        )
+    }
+}
+
+pub(crate) const fn watcher_cause(cause: OperationBridgeCleanupCause) -> WatcherCleanupCause {
+    match cause {
+        OperationBridgeCleanupCause::Completion | OperationBridgeCleanupCause::ExplicitClose => {
+            WatcherCleanupCause::Stopped
+        }
+        OperationBridgeCleanupCause::Cancellation => WatcherCleanupCause::Cancelled,
+        OperationBridgeCleanupCause::Deadline => WatcherCleanupCause::TimedOut,
+        OperationBridgeCleanupCause::ProviderFailure
+        | OperationBridgeCleanupCause::TransportFailure => WatcherCleanupCause::Failed,
+    }
 }
 
 impl LocalWatcherBridgeHostService {
@@ -44,27 +87,29 @@ impl LocalWatcherBridgeHostService {
         execution_host_id: ExecutionHostId,
         watcher: Arc<dyn WatcherHostService>,
         time: Arc<dyn TimeService>,
+        registry: Arc<OperationBridgeRegistry>,
     ) -> Self {
         Self {
             execution_host_id,
             watcher,
             time,
             wait_bound: WATCHER_BRIDGE_MAX_WAIT,
-            state: Arc::new(Mutex::new(BridgeRegistry::default())),
+            registry,
+            proof_archive: Arc::new(Mutex::new(ProofArchive::default())),
         }
     }
 
     pub(crate) fn proof_facts(&self, turn: &RuntimeTurnId) -> Vec<WatcherBridgeProofKind> {
-        let registry = self
-            .state
-            .lock()
-            .expect("watcher bridge registry lock poisoned");
-        if let Some(generation) = registry.leases.generation_for_turn(turn)
-            && let Some(live) = registry.leases.get(generation)
-        {
-            return live.proof.snapshot();
+        for (profile, generation) in self.registry.generations_for_turn(turn) {
+            if profile == BridgeProfile::Watcher
+                && let Some(live) = self.registry.watcher_lease(generation)
+            {
+                return live.proof.snapshot();
+            }
         }
-        registry
+        self.proof_archive
+            .lock()
+            .expect("watcher bridge proof archive lock poisoned")
             .retired_proof
             .get(turn)
             .cloned()
@@ -85,19 +130,16 @@ impl LocalWatcherBridgeHostService {
         let bearer = generate_operation_secret()?;
         let token_secret = generate_operation_secret()?;
         let endpoint = endpoint_url(addr);
-        let generation = {
-            let mut registry = self
-                .state
-                .lock()
-                .expect("watcher bridge registry lock poisoned");
-            let reserved = registry.leases.reserve(request.turn()).ok_or_else(|| {
+        let reserved = self
+            .registry
+            .reserve(BridgeProfile::Watcher, request.turn())
+            .ok_or_else(|| {
                 failure(
                     "swallowtail.watcher_bridge.already_open",
                     "Watcher bridge already has an open lease for this turn",
                 )
             })?;
-            WatcherBridgeGeneration::new(reserved).ok_or_else(identity_failure)?
-        };
+        let generation = WatcherBridgeGeneration::new(reserved).ok_or_else(identity_failure)?;
         let live = Arc::new(LiveLease {
             execution_host_id: self.execution_host_id.clone(),
             scope: request.scope().clone(),
@@ -128,12 +170,19 @@ impl LocalWatcherBridgeHostService {
             self.forget_generation(request.turn(), generation);
             return Err(error);
         }
-        self.state
-            .lock()
-            .expect("watcher bridge registry lock poisoned")
-            .leases
-            .insert(generation.get(), Arc::clone(&live));
-        let close_state = Arc::clone(&self.state);
+        self.registry.attach(
+            generation.get(),
+            BridgeProfile::Watcher,
+            request.turn().clone(),
+            BridgeLease::Watcher(Arc::clone(&live)),
+            Arc::new(WatcherLeaseOwner {
+                registry: Arc::clone(&self.registry),
+                proof_archive: Arc::clone(&self.proof_archive),
+                live: Arc::clone(&live),
+            }),
+        );
+        let close_registry = Arc::clone(&self.registry);
+        let close_archive = Arc::clone(&self.proof_archive);
         let close_live = Arc::clone(&live);
         Ok(WatcherBridgeLease::new(
             self.execution_host_id.clone(),
@@ -146,30 +195,28 @@ impl LocalWatcherBridgeHostService {
         .bind(
             WatcherBridgeToken::new(token_secret.as_str()).map_err(|_| identity_failure())?,
             move || {
-                let _ = shutdown_live(close_state, close_live, WatcherCleanupCause::Cancelled);
+                let _ = shutdown_live(
+                    &close_registry,
+                    &close_archive,
+                    &close_live,
+                    WatcherCleanupCause::Cancelled,
+                );
             },
         ))
     }
 
     fn forget_generation(&self, turn: &RuntimeTurnId, generation: WatcherBridgeGeneration) {
-        let mut registry = self
-            .state
-            .lock()
-            .expect("watcher bridge registry lock poisoned");
-        registry.leases.forget(turn, generation.get());
+        self.registry
+            .forget(BridgeProfile::Watcher, turn, generation.get());
     }
 
     fn live_for(&self, lease: &WatcherBridgeLease) -> Result<Arc<LiveLease>, RuntimeFailure> {
         if lease.execution_host_id() != &self.execution_host_id {
             return Err(foreign_failure());
         }
-        let registry = self
-            .state
-            .lock()
-            .expect("watcher bridge registry lock poisoned");
-        let live = registry
-            .leases
-            .get(lease.generation().get())
+        let live = self
+            .registry
+            .watcher_lease(lease.generation().get())
             .ok_or_else(closed_failure)?;
         live.matches(
             lease.execution_host_id(),
@@ -189,7 +236,7 @@ impl LocalWatcherBridgeHostService {
         cause: WatcherCleanupCause,
     ) -> Result<CleanupOutcome, RuntimeFailure> {
         let live = self.live_for(&lease)?;
-        shutdown_live(Arc::clone(&self.state), live, cause)
+        shutdown_live(&self.registry, &self.proof_archive, &live, cause)
     }
 }
 

@@ -21,6 +21,7 @@ mod materialization;
 mod model_artifact;
 mod network;
 mod operation_bridge;
+pub use operation_bridge::OperationBridgeCleanupCause;
 mod output;
 mod process;
 mod process_exit;

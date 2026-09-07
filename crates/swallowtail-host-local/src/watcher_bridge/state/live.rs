@@ -100,6 +100,13 @@ impl LiveLease {
         requests.in_flight = requests.in_flight.saturating_sub(1);
     }
 
+    pub(crate) fn freeze_admission(&self) {
+        let mut gate = self.gate.lock().expect("watcher bridge gate lock poisoned");
+        if gate.admission == WatcherBridgeAdmission::Open {
+            gate.admission = WatcherBridgeAdmission::Frozen;
+        }
+    }
+
     pub(in crate::watcher_bridge) fn begin_create(&self) -> Result<(), RuntimeFailure> {
         let mut gate = self.gate.lock().expect("watcher bridge gate lock poisoned");
         if gate.admission != WatcherBridgeAdmission::Open {

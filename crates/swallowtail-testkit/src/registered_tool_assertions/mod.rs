@@ -5,13 +5,14 @@
 //! dispatches through a linked dispatcher.
 
 mod adversarial;
+mod integrity;
 mod lifecycle;
 mod registration;
 mod support;
 
 pub use support::{
-    ComposeRegisteredToolHost, RegisteredToolHarness, conformance_deadline, conformance_host_id,
-    conformance_instance, conformance_scope, conformance_turn,
+    ComposeRegisteredToolHost, RegisteredToolHarness, RegisteredToolHostSpec, conformance_deadline,
+    conformance_host_id, conformance_instance, conformance_scope, conformance_turn,
 };
 
 use crate::registered_tool_fixture::{FIXTURE_CLEANUP_BUDGET, ScriptedRegisteredToolDispatcher};
@@ -26,10 +27,11 @@ use std::sync::Arc;
 ///
 /// Panics when any registration, lifecycle, or adversarial oracle fails.
 pub fn assert_registered_tool_conformance(compose: &ComposeRegisteredToolHost) {
-    let harness = RegisteredToolHarness::new(compose(
+    let harness = RegisteredToolHarness::mount(
+        compose,
         Arc::new(ScriptedRegisteredToolDispatcher::echoing()),
         FIXTURE_CLEANUP_BUDGET,
-    ));
+    );
 
     registration::snapshot_binds_one_kind_per_identity();
     registration::snapshot_rejects_oversized_schema();
@@ -57,4 +59,13 @@ pub fn assert_registered_tool_conformance(compose: &ComposeRegisteredToolHost) {
     adversarial::a_retained_sink_fails_after_the_call_settles(compose);
     adversarial::one_outstanding_call_per_lease(compose);
     adversarial::failed_cleanup_retains_ownership(compose);
+
+    integrity::bindings_are_minted_only_by_the_kernel(compose);
+    integrity::mounted_open_enforces_typed_readiness(compose);
+    integrity::unqualified_carrier_never_opens(compose);
+    integrity::expired_calls_never_dispatch(compose);
+    integrity::a_call_that_outruns_its_deadline_is_unknown(compose);
+    integrity::progress_past_the_deadline_is_refused(compose);
+    integrity::progress_rechecks_live_revocation(compose);
+    integrity::revocation_between_dispatch_and_progress_is_linearized(compose);
 }

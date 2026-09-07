@@ -1,26 +1,25 @@
-//! One live registered-tool lease owned by the local host.
+//! One live registered-tool lease the shared operation-bridge registry owns.
 
 use super::failure::{closed_failure, foreign_failure};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
-    RegisteredToolBridgeToken, RegisteredToolLeaseGeneration, RegisteredToolOperationKernel,
-    RuntimeFailure, RuntimeTurnId, ScopeId,
+    RegisteredToolLeaseGeneration, RegisteredToolOperationKernel, RuntimeFailure, RuntimeTurnId,
+    ScopeId,
 };
 
-pub(super) struct LiveRegisteredLease {
-    pub(super) turn: RuntimeTurnId,
-    pub(super) scope: ScopeId,
-    pub(super) execution_host_id: ExecutionHostId,
-    pub(super) generation: RegisteredToolLeaseGeneration,
-    pub(super) token: RegisteredToolBridgeToken,
-    pub(super) kernel: Arc<RegisteredToolOperationKernel>,
-    pub(super) closed: AtomicBool,
+pub(crate) struct LiveRegisteredLease {
+    pub(crate) turn: RuntimeTurnId,
+    pub(crate) scope: ScopeId,
+    pub(crate) execution_host_id: ExecutionHostId,
+    pub(crate) generation: RegisteredToolLeaseGeneration,
+    pub(crate) kernel: Arc<RegisteredToolOperationKernel>,
+    pub(crate) closed: AtomicBool,
 }
 
 impl LiveRegisteredLease {
-    pub(super) fn matches(
+    pub(crate) fn matches(
         &self,
         host: &ExecutionHostId,
         scope: &ScopeId,

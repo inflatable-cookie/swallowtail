@@ -7,19 +7,19 @@ use super::identity::{
     RegisteredToolExecutionKind, RegisteredToolId, RegisteredToolLeaseGeneration,
     RegisteredToolProtocolVersion, RegisteredToolTransport, RegisteredToolTransportGeneration,
 };
-use super::lease::RegisteredToolOpenRequest;
 use super::limits::RegisteredToolBounds;
 use super::payload::RegisteredToolPayload;
 use super::schema::RegisteredToolSchemaDigest;
-use super::secrets::RegisteredToolBridgeToken;
 use crate::{Deadline, RuntimeTurnId, ScopeId};
 use std::num::NonZeroU64;
 use swallowtail_core::{ConfiguredInstanceId, ExecutionHostId};
 
 /// Live binding minted by the kernel for exactly one open lease.
 ///
-/// There is no public constructor: a binding can only be obtained from a lease
-/// the host has bound. Provider or model input can never create one.
+/// There is no public constructor and no public minting path. Only
+/// [`super::kernel::RegisteredToolOperationKernel`] creates one, and only after
+/// a matching topology proof. Provider input, model arguments, tool arguments,
+/// provider session ids, and PIDs can never create one.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ValidatedRegisteredToolBinding {
     execution_host_id: ExecutionHostId,
@@ -37,35 +37,6 @@ pub struct ValidatedRegisteredToolBinding {
 }
 
 impl ValidatedRegisteredToolBinding {
-    /// Mints one live binding for a host that already holds the lease token.
-    ///
-    /// Possession of the unforgeable host token is the minting capability.
-    /// Model arguments, provider session ids, tool arguments, and PIDs never
-    /// create a binding.
-    #[must_use]
-    pub fn for_open(
-        request: &RegisteredToolOpenRequest,
-        lease_generation: RegisteredToolLeaseGeneration,
-        transport_generation: RegisteredToolTransportGeneration,
-        _host_token: &RegisteredToolBridgeToken,
-    ) -> Self {
-        let selection = request.selection();
-        Self::mint(
-            request.execution_host_id().clone(),
-            request.configured_instance().clone(),
-            request.scope().clone(),
-            request.turn().clone(),
-            selection.snapshot().server_id().clone(),
-            selection.snapshot().revision().clone(),
-            lease_generation,
-            selection.transport(),
-            transport_generation,
-            selection.protocol_version().clone(),
-            selection.effective_bounds(),
-            request.admission().clone(),
-        )
-    }
-
     #[allow(clippy::too_many_arguments)]
     pub(super) const fn mint(
         execution_host_id: ExecutionHostId,

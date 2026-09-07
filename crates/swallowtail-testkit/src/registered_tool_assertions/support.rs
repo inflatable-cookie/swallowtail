@@ -1,7 +1,7 @@
 //! Shared harness for the registered-tool conformance oracle.
 
 use crate::registered_tool_fixture::{
-    ScriptedAdmissionPort, fixture_admission, fixture_selection, fixture_snapshot,
+    FakeClock, ScriptedAdmissionPort, fixture_admission, fixture_selection, fixture_snapshot,
 };
 use std::sync::Arc;
 use std::time::Duration;
@@ -12,9 +12,30 @@ use swallowtail_runtime::{
     RegisteredToolSnapshot, RuntimeFailure, RuntimeTurnId, ScopeId,
 };
 
+/// Exact composition inputs one conformance case asks a host to mount.
+pub struct RegisteredToolHostSpec {
+    /// Linked dispatcher the mounted port must dispatch through.
+    pub dispatcher: Arc<dyn RegisteredToolDispatcher>,
+    /// Bounded joined-cleanup budget for registered-tool leases.
+    pub cleanup_budget: Duration,
+    /// Virtual clock the mounted port enforces call deadlines against.
+    pub clock: Arc<FakeClock>,
+}
+
+impl RegisteredToolHostSpec {
+    /// Builds a spec with a fresh virtual clock at tick zero.
+    #[must_use]
+    pub fn new(dispatcher: Arc<dyn RegisteredToolDispatcher>, cleanup_budget: Duration) -> Self {
+        Self {
+            dispatcher,
+            cleanup_budget,
+            clock: Arc::new(FakeClock::default()),
+        }
+    }
+}
+
 /// Composes one host registry that mounts a linked registered-tool dispatcher.
-pub type ComposeRegisteredToolHost =
-    dyn Fn(Arc<dyn RegisteredToolDispatcher>, Duration) -> HostServices;
+pub type ComposeRegisteredToolHost = dyn Fn(RegisteredToolHostSpec) -> HostServices;
 
 /// Execution host every registered-tool conformance case uses.
 #[must_use]
@@ -58,12 +79,26 @@ pub struct RegisteredToolHarness {
     pub selection: RegisteredToolSelection,
     /// Immutable opt-in preparation.
     pub preparation: RegisteredToolPreparation,
+    /// Virtual clock the mounted port enforces call deadlines against.
+    pub clock: Arc<FakeClock>,
 }
 
 impl RegisteredToolHarness {
-    /// Builds one harness over a composed host registry.
+    /// Mounts one host registry for an exact dispatcher and cleanup budget.
     #[must_use]
-    pub fn new(hosts: HostServices) -> Self {
+    pub fn mount(
+        compose: &ComposeRegisteredToolHost,
+        dispatcher: Arc<dyn RegisteredToolDispatcher>,
+        cleanup_budget: Duration,
+    ) -> Self {
+        let spec = RegisteredToolHostSpec::new(dispatcher, cleanup_budget);
+        let clock = Arc::clone(&spec.clock);
+        Self::with_clock(compose(spec), clock)
+    }
+
+    /// Builds one harness over a composed host registry and its virtual clock.
+    #[must_use]
+    pub fn with_clock(hosts: HostServices, clock: Arc<FakeClock>) -> Self {
         let admission = Arc::new(ScriptedAdmissionPort::current());
         let snapshot = Arc::new(fixture_snapshot(&conformance_host_id()));
         let selection = fixture_selection(Arc::clone(&snapshot));
@@ -79,6 +114,7 @@ impl RegisteredToolHarness {
             snapshot,
             selection,
             preparation,
+            clock,
         }
     }
 

@@ -1,46 +1,98 @@
 //! Local Contract 063 registered-tool profile over the shared bridge kernel.
 //!
 //! Slice 1 carries the host-mediated callback profile only: it binds no
-//! listener, starts no Longhorn process or daemon, and adds no second lease
-//! manager. Lease generation, per-turn ownership, operation-private authority
-//! material, and bounded joined teardown come from the same
-//! [`crate::operation_bridge`] kernel the watcher profile uses.
+//! listener, starts no Longhorn process or daemon, and owns no second lease
+//! manager. Lease generation, per-turn ownership, live-lease registration, and
+//! joined teardown come from the one shared [`crate::operation_bridge`]
+//! registry that the watcher profile also uses.
+//!
+//! The mounted `open` applies the same typed readiness gate as `prepare`
+//! against this host's published topology. Without a matching
+//! `RegisteredToolTopologyProof` the kernel mints no binding and no lease, so a
+//! direct low-level caller cannot bypass the gate.
 
 mod failure;
 mod lease;
 
-use crate::operation_bridge::{LeaseTable, generate_operation_secret, join_within};
-use failure::{already_open_failure, closed_failure, foreign_failure, identity_failure};
-use lease::LiveRegisteredLease;
+use crate::operation_bridge::{
+    BridgeLease, BridgeLeaseOwner, BridgeProfile, OperationBridgeCleanupCause,
+    OperationBridgeRegistry, join_within,
+};
+use failure::{already_open_failure, closed_failure, foreign_failure, not_ready_failure};
+pub(crate) use lease::LiveRegisteredLease;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, OnceLock};
 use std::time::Duration;
 use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, REGISTERED_TOOL_CLEANUP_BUDGET, RegisteredToolBridgeHostService,
-    RegisteredToolBridgeLease, RegisteredToolBridgeToken, RegisteredToolCleanupCause,
-    RegisteredToolCompletionState, RegisteredToolDispatcher, RegisteredToolLeaseGeneration,
-    RegisteredToolOpenRequest, RegisteredToolOperationKernel, RegisteredToolTransport,
-    RegisteredToolTransportGeneration, RuntimeFailure, ValidatedRegisteredToolBinding,
+    RegisteredToolBridgeLease, RegisteredToolCleanupCause, RegisteredToolCompletionState,
+    RegisteredToolDispatcher, RegisteredToolLeaseGeneration, RegisteredToolMountedTopology,
+    RegisteredToolOpenRequest, RegisteredToolOperationKernel, RegisteredToolReadiness,
+    RegisteredToolTransportGeneration, RuntimeFailure, TimeService,
 };
 
 pub(crate) struct LocalRegisteredToolBridgeHostService {
     execution_host_id: ExecutionHostId,
     dispatcher: Arc<dyn RegisteredToolDispatcher>,
+    time: Arc<dyn TimeService>,
     cleanup_budget: Duration,
-    state: Arc<Mutex<LeaseTable<LiveRegisteredLease>>>,
+    registry: Arc<OperationBridgeRegistry>,
+    topology: OnceLock<RegisteredToolMountedTopology>,
+}
+
+/// Registered-profile teardown driven by the one shared registry.
+struct RegisteredLeaseOwner {
+    registry: Arc<OperationBridgeRegistry>,
+    live: Arc<LiveRegisteredLease>,
+    budget: Duration,
+}
+
+impl BridgeLeaseOwner for RegisteredLeaseOwner {
+    fn freeze(&self) {
+        self.live.kernel.freeze();
+    }
+
+    fn join_and_release(
+        &self,
+        cause: OperationBridgeCleanupCause,
+    ) -> Result<CleanupOutcome, RuntimeFailure> {
+        shutdown(
+            &self.registry,
+            &self.live,
+            registered_cause(cause),
+            self.budget,
+        )
+    }
+}
+
+const fn registered_cause(cause: OperationBridgeCleanupCause) -> RegisteredToolCleanupCause {
+    match cause {
+        OperationBridgeCleanupCause::Completion => RegisteredToolCleanupCause::Completion,
+        OperationBridgeCleanupCause::Cancellation => RegisteredToolCleanupCause::Cancellation,
+        OperationBridgeCleanupCause::Deadline => RegisteredToolCleanupCause::Deadline,
+        OperationBridgeCleanupCause::ProviderFailure => RegisteredToolCleanupCause::ProviderFailure,
+        OperationBridgeCleanupCause::TransportFailure => {
+            RegisteredToolCleanupCause::TransportFailure
+        }
+        OperationBridgeCleanupCause::ExplicitClose => RegisteredToolCleanupCause::ExplicitClose,
+    }
 }
 
 impl LocalRegisteredToolBridgeHostService {
     pub(crate) fn new(
         execution_host_id: ExecutionHostId,
         dispatcher: Arc<dyn RegisteredToolDispatcher>,
+        time: Arc<dyn TimeService>,
+        registry: Arc<OperationBridgeRegistry>,
     ) -> Self {
         Self {
             execution_host_id,
             dispatcher,
+            time,
             cleanup_budget: REGISTERED_TOOL_CLEANUP_BUDGET,
-            state: Arc::new(Mutex::new(LeaseTable::default())),
+            registry,
+            topology: OnceLock::new(),
         }
     }
 
@@ -51,43 +103,44 @@ impl LocalRegisteredToolBridgeHostService {
         self
     }
 
-    /// Returns how many live leases this service still owns.
-    pub(crate) fn live_lease_count(&self) -> usize {
-        self.locked().live_count()
+    /// Publishes the exact assembled topology this port validates against.
+    ///
+    /// Until the composition publishes it, `open` fails typed rather than
+    /// admitting an unmeasured selection.
+    pub(crate) fn publish_topology(&self, topology: RegisteredToolMountedTopology) {
+        let _ = self.topology.set(topology);
     }
 
-    fn locked(&self) -> std::sync::MutexGuard<'_, LeaseTable<LiveRegisteredLease>> {
-        self.state
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
+    /// Returns how many live registered-tool leases the shared registry owns.
+    pub(crate) fn live_lease_count(&self) -> usize {
+        self.registry.lease_count_for(BridgeProfile::RegisteredTool)
     }
 
     fn open_now(
         &self,
         request: RegisteredToolOpenRequest,
     ) -> Result<RegisteredToolBridgeLease, RuntimeFailure> {
-        if request.execution_host_id() != &self.execution_host_id
-            || request.selection().snapshot().execution_host_id() != &self.execution_host_id
-        {
+        if request.execution_host_id() != &self.execution_host_id {
             return Err(foreign_failure());
         }
-        if request.selection().transport() != RegisteredToolTransport::HostMediatedCallback {
-            return Err(failure::unsupported_transport_failure());
-        }
-        let token_secret = generate_operation_secret()?;
-        let generation = {
-            let mut table = self.locked();
-            let reserved = table
-                .reserve(request.turn())
-                .ok_or_else(already_open_failure)?;
-            RegisteredToolLeaseGeneration::new(reserved).ok_or_else(identity_failure)?
-        };
-        let transport_generation = RegisteredToolTransportGeneration::initial();
+        // The mounted low-level open applies the same typed gate as prepare.
+        let topology = self.topology.get().ok_or_else(not_ready_failure)?;
+        let readiness = RegisteredToolReadiness::for_topology(topology, request.selection());
+        let proof = readiness.require_ready()?;
+
+        let reserved = self
+            .registry
+            .reserve(BridgeProfile::RegisteredTool, request.turn())
+            .ok_or_else(already_open_failure)?;
         let turn = request.turn().clone();
-        let opened = self.finish_open(request, generation, transport_generation, &token_secret);
+        let opened = match RegisteredToolLeaseGeneration::new(reserved) {
+            Some(generation) => self.finish_open(request, &proof, generation),
+            None => Err(failure::identity_failure()),
+        };
         if opened.is_err() {
             // Any opening failure releases the partial resources it created.
-            self.locked().forget(&turn, generation.get());
+            self.registry
+                .forget(BridgeProfile::RegisteredTool, &turn, reserved);
         }
         opened
     }
@@ -95,53 +148,52 @@ impl LocalRegisteredToolBridgeHostService {
     fn finish_open(
         &self,
         request: RegisteredToolOpenRequest,
+        proof: &swallowtail_runtime::RegisteredToolTopologyProof,
         generation: RegisteredToolLeaseGeneration,
-        transport_generation: RegisteredToolTransportGeneration,
-        token_secret: &str,
     ) -> Result<RegisteredToolBridgeLease, RuntimeFailure> {
-        let host_token =
-            RegisteredToolBridgeToken::new(token_secret).map_err(|_| identity_failure())?;
-        let binding = ValidatedRegisteredToolBinding::for_open(
-            &request,
-            generation,
-            transport_generation,
-            &host_token,
-        );
-        let kernel = Arc::new(RegisteredToolOperationKernel::new(
-            binding,
-            request.selection().clone(),
+        let turn = request.turn().clone();
+        let scope = request.scope().clone();
+        // Only the kernel mints the binding and the lease, and only with a
+        // proof issued for this exact selection.
+        let (kernel, lease) = RegisteredToolOperationKernel::open(
+            request,
+            proof,
             Arc::clone(&self.dispatcher),
-        ));
+            Arc::clone(&self.time),
+            generation,
+            RegisteredToolTransportGeneration::initial(),
+        )?;
         let live = Arc::new(LiveRegisteredLease {
-            turn: request.turn().clone(),
-            scope: request.scope().clone(),
+            turn: turn.clone(),
+            scope,
             execution_host_id: self.execution_host_id.clone(),
             generation,
-            token: host_token,
             kernel: Arc::clone(&kernel),
             closed: AtomicBool::new(false),
         });
-        self.locked().insert(generation.get(), Arc::clone(&live));
-        let close_state = Arc::clone(&self.state);
+        self.registry.attach(
+            generation.get(),
+            BridgeProfile::RegisteredTool,
+            turn,
+            BridgeLease::RegisteredTool(Arc::clone(&live)),
+            Arc::new(RegisteredLeaseOwner {
+                registry: Arc::clone(&self.registry),
+                live: Arc::clone(&live),
+                budget: self.cleanup_budget,
+            }),
+        );
+        let close_registry = Arc::clone(&self.registry);
         let close_live = Arc::clone(&live);
         let budget = self.cleanup_budget;
-        let lease_token =
-            RegisteredToolBridgeToken::new(token_secret).map_err(|_| identity_failure())?;
-        Ok(
-            RegisteredToolBridgeLease::new(request, generation, transport_generation).bind(
-                lease_token,
-                kernel.call_channel(),
-                move || {
-                    // Drop is defensive cleanup, never success evidence.
-                    let _ = shutdown(
-                        &close_state,
-                        &close_live,
-                        RegisteredToolCleanupCause::Cancellation,
-                        budget,
-                    );
-                },
-            ),
-        )
+        Ok(lease.with_release(move || {
+            // Drop is defensive cleanup, never success evidence.
+            let _ = shutdown(
+                &close_registry,
+                &close_live,
+                RegisteredToolCleanupCause::Cancellation,
+                budget,
+            );
+        }))
     }
 
     fn live_for(
@@ -152,8 +204,8 @@ impl LocalRegisteredToolBridgeHostService {
             return Err(foreign_failure());
         }
         let live = self
-            .locked()
-            .get(lease.generation().get())
+            .registry
+            .registered_lease(lease.generation().get())
             .ok_or_else(closed_failure)?;
         live.matches(
             lease.execution_host_id(),
@@ -161,7 +213,9 @@ impl LocalRegisteredToolBridgeHostService {
             lease.turn(),
             lease.generation(),
         )?;
-        if !lease.binding_matches(&live.token) {
+        // The lease authenticates by kernel identity: it can only have come
+        // from the kernel this registry owns for that generation.
+        if !lease.is_bound_to(&live.kernel) {
             return Err(foreign_failure());
         }
         Ok(live)
@@ -169,7 +223,7 @@ impl LocalRegisteredToolBridgeHostService {
 }
 
 fn shutdown(
-    state: &Arc<Mutex<LeaseTable<LiveRegisteredLease>>>,
+    registry: &Arc<OperationBridgeRegistry>,
     live: &Arc<LiveRegisteredLease>,
     cause: RegisteredToolCleanupCause,
     budget: Duration,
@@ -182,8 +236,9 @@ fn shutdown(
     live.kernel.begin_close();
     let joined = join_within(budget, || live.kernel.outstanding_calls() == 0);
     if !joined {
-        // The lease stays frozen and its resources remain owned here. It never
-        // reports a clean close and can never be inherited by a new attempt.
+        // The lease stays frozen and its resources remain owned by the shared
+        // registry. It never reports a clean close and can never be inherited
+        // by a new attempt.
         live.kernel.record_cleanup_failed();
         return Ok(CleanupOutcome::Failed(SafeDiagnostic::new(
             "swallowtail.registered_tool.teardown_failed",
@@ -194,10 +249,11 @@ fn shutdown(
         return Ok(CleanupOutcome::NotApplicable);
     }
     live.kernel.record_closed();
-    state
-        .lock()
-        .unwrap_or_else(std::sync::PoisonError::into_inner)
-        .forget(&live.turn, live.generation.get());
+    registry.forget(
+        BridgeProfile::RegisteredTool,
+        &live.turn,
+        live.generation.get(),
+    );
     Ok(CleanupOutcome::Clean)
 }
 
@@ -227,7 +283,7 @@ impl RegisteredToolBridgeHostService for LocalRegisteredToolBridgeHostService {
     ) -> BoxFuture<'_, Result<CleanupOutcome, RuntimeFailure>> {
         let result = self
             .live_for(&lease)
-            .and_then(|live| shutdown(&self.state, &live, cause, self.cleanup_budget));
+            .and_then(|live| shutdown(&self.registry, &live, cause, self.cleanup_budget));
         Box::pin(async move { result })
     }
 }

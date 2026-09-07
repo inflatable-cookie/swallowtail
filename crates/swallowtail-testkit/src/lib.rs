@@ -159,13 +159,13 @@ pub use recording_host::{
     RecordedHostCall, RecordingHostServices, RecordingOutcome, poll_immediate,
 };
 pub use registered_tool_assertions::{
-    ComposeRegisteredToolHost, RegisteredToolHarness, assert_registered_tool_conformance,
-    conformance_deadline, conformance_host_id, conformance_instance, conformance_scope,
-    conformance_turn,
+    ComposeRegisteredToolHost, RegisteredToolHarness, RegisteredToolHostSpec,
+    assert_registered_tool_conformance, conformance_deadline, conformance_host_id,
+    conformance_instance, conformance_scope, conformance_turn,
 };
 pub use registered_tool_fixture::{
     FIXTURE_CLEANUP_BUDGET, FIXTURE_MCP_TOOL, FIXTURE_MEDIA_TYPE, FIXTURE_NATIVE_TOOL,
-    FIXTURE_PROVIDER_TOOL, FIXTURE_TOOL_NAMESPACE, ScriptedAdmissionPort,
+    FIXTURE_PROVIDER_TOOL, FIXTURE_TOOL_NAMESPACE, FakeClock, ScriptedAdmissionPort,
     ScriptedRegisteredToolDispatcher, UncooperativeRegisteredToolDispatcher, drive_fixture,
     fixture_admission, fixture_declaration, fixture_media_type, fixture_payload,
     fixture_protocol_version, fixture_schema, fixture_selection, fixture_snapshot,

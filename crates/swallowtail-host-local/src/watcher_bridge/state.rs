@@ -2,7 +2,6 @@ mod live;
 
 use super::failure::identity_failure;
 use super::proof::{ProofLog, WatcherBridgeProofKind};
-use crate::operation_bridge::LeaseTable;
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
@@ -18,14 +17,17 @@ use zeroize::Zeroizing;
 
 pub(super) const MAX_RETIRED_PROOFS: usize = 64;
 
+/// Bounded diagnostic archive of retired watcher-bridge proof facts.
+///
+/// This is bookkeeping only. Lease ownership, generation allocation, and joined
+/// teardown belong to the one shared `OperationBridgeRegistry`.
 #[derive(Default)]
-pub(super) struct BridgeRegistry {
-    pub(super) leases: LeaseTable<LiveLease>,
+pub(super) struct ProofArchive {
     pub(super) retired_proof: BTreeMap<RuntimeTurnId, Vec<WatcherBridgeProofKind>>,
     pub(super) retired_order: VecDeque<RuntimeTurnId>,
 }
 
-impl BridgeRegistry {
+impl ProofArchive {
     pub(super) fn retire_proof(&mut self, turn: RuntimeTurnId, kinds: Vec<WatcherBridgeProofKind>) {
         if self.retired_proof.insert(turn.clone(), kinds).is_none() {
             self.retired_order.push_back(turn);
@@ -45,7 +47,7 @@ pub(super) enum SessionPhase {
     Ready,
 }
 
-pub(super) struct LiveLease {
+pub(crate) struct LiveLease {
     pub(super) execution_host_id: ExecutionHostId,
     pub(super) scope: ScopeId,
     pub(super) turn: RuntimeTurnId,
@@ -109,13 +111,13 @@ fn reap_finished(connections: &mut Vec<JoinHandle<()>>) {
 
 #[cfg(test)]
 mod tests {
-    use super::{BridgeRegistry, MAX_RETIRED_PROOFS};
+    use super::{MAX_RETIRED_PROOFS, ProofArchive};
     use crate::watcher_bridge::WatcherBridgeProofKind;
     use swallowtail_runtime::RuntimeTurnId;
 
     #[test]
     fn retired_proof_evicts_the_oldest_turns() {
-        let mut registry = BridgeRegistry::default();
+        let mut registry = ProofArchive::default();
         for index in 0..(MAX_RETIRED_PROOFS + 8) {
             let turn = RuntimeTurnId::new(format!("turn-{index}")).expect("turn");
             registry.retire_proof(turn, vec![WatcherBridgeProofKind::Initialize]);

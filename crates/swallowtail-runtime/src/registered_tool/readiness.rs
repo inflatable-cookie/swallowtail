@@ -4,9 +4,17 @@
 //! keeps that enum exhaustive and unchanged in this slice, so registered-tool
 //! port availability and selected topology are reported through this typed
 //! readiness record instead of a new service-kind variant.
+//!
+//! Readiness is not advisory. [`RegisteredToolReadiness::require_ready`] is the
+//! only source of a [`RegisteredToolTopologyProof`], and the kernel refuses to
+//! mint a binding or open a lease without one that matches the exact selection.
+//! Every mounted open path therefore passes this gate.
 
 use super::failure::{RegisteredToolFailure, RegisteredToolFailureKind, reject};
-use super::identity::{RegisteredToolProtocolVersion, RegisteredToolTransport};
+use super::identity::{
+    RegisteredServerId, RegisteredServerRevision, RegisteredToolId, RegisteredToolProtocolVersion,
+    RegisteredToolTransport,
+};
 use super::selection::RegisteredToolSelection;
 use crate::HostServices;
 use std::collections::BTreeSet;
@@ -45,7 +53,83 @@ impl RegisteredToolPortAvailability {
     }
 }
 
-/// Typed readiness of one registered-tool selection against a host registry.
+/// Exact mounted topology a registered-tool selection is measured against.
+///
+/// A mounted host port captures this once, after its registry is assembled, so
+/// its low-level `open` can apply the same typed gate as `prepare`.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RegisteredToolMountedTopology {
+    execution_host_id: ExecutionHostId,
+    available_services: BTreeSet<HostServiceKind>,
+    port_registered: bool,
+}
+
+impl RegisteredToolMountedTopology {
+    /// Captures the exact topology one assembled host registry publishes.
+    #[must_use]
+    pub fn from_hosts(hosts: &HostServices) -> Self {
+        Self {
+            execution_host_id: hosts.execution_host_id().clone(),
+            available_services: hosts.available_kinds(),
+            port_registered: hosts.registered_tool_bridge().is_some(),
+        }
+    }
+
+    /// Returns the execution host that owns every registered service.
+    #[must_use]
+    pub const fn execution_host_id(&self) -> &ExecutionHostId {
+        &self.execution_host_id
+    }
+
+    /// Returns every host-service kind the registry exposes.
+    #[must_use]
+    pub const fn available_services(&self) -> &BTreeSet<HostServiceKind> {
+        &self.available_services
+    }
+
+    /// Reports whether the optional registered-tool port is registered.
+    #[must_use]
+    pub const fn port_registered(&self) -> bool {
+        self.port_registered
+    }
+}
+
+/// Proof that one exact selection passed the typed readiness gate.
+///
+/// There is no public constructor and no way to build one from provider input.
+/// The kernel checks it against the exact open request, so a proof taken from
+/// another selection, server revision, carrier, or host cannot be replayed.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RegisteredToolTopologyProof {
+    execution_host_id: ExecutionHostId,
+    server_id: RegisteredServerId,
+    server_revision: RegisteredServerRevision,
+    transport: RegisteredToolTransport,
+    protocol_version: RegisteredToolProtocolVersion,
+    selected: Vec<RegisteredToolId>,
+}
+
+impl RegisteredToolTopologyProof {
+    fn for_selection(selection: &RegisteredToolSelection) -> Self {
+        let snapshot = selection.snapshot();
+        Self {
+            execution_host_id: snapshot.execution_host_id().clone(),
+            server_id: snapshot.server_id().clone(),
+            server_revision: snapshot.revision().clone(),
+            transport: selection.transport(),
+            protocol_version: selection.protocol_version().clone(),
+            selected: selection.selected().to_vec(),
+        }
+    }
+
+    /// Reports whether this proof was issued for exactly this selection.
+    #[must_use]
+    pub fn matches(&self, selection: &RegisteredToolSelection) -> bool {
+        self == &Self::for_selection(selection)
+    }
+}
+
+/// Typed readiness of one registered-tool selection against a host topology.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RegisteredToolReadiness {
     port: RegisteredToolPortAvailability,
@@ -53,33 +137,40 @@ pub struct RegisteredToolReadiness {
     missing_services: BTreeSet<HostServiceKind>,
     transport_qualified: bool,
     protocol_qualified: bool,
+    proof: RegisteredToolTopologyProof,
 }
 
 impl RegisteredToolReadiness {
     /// Evaluates port availability and selected topology before provider work.
     #[must_use]
     pub fn evaluate(hosts: &HostServices, selection: &RegisteredToolSelection) -> Self {
+        Self::for_topology(&RegisteredToolMountedTopology::from_hosts(hosts), selection)
+    }
+
+    /// Evaluates one selection against an already captured mounted topology.
+    #[must_use]
+    pub fn for_topology(
+        topology: &RegisteredToolMountedTopology,
+        selection: &RegisteredToolSelection,
+    ) -> Self {
         let snapshot = selection.snapshot();
-        let available = hosts.available_kinds();
         let missing_services = snapshot
             .required_services()
             .iter()
             .copied()
-            .filter(|kind| !available.contains(kind))
+            .filter(|kind| !topology.available_services.contains(kind))
             .collect();
         Self {
-            port: if hosts.registered_tool_bridge().is_some() {
+            port: if topology.port_registered {
                 RegisteredToolPortAvailability::Registered
             } else {
                 RegisteredToolPortAvailability::Absent
             },
-            execution_host_matches: host_matches(
-                hosts.execution_host_id(),
-                snapshot.execution_host_id(),
-            ),
+            execution_host_matches: &topology.execution_host_id == snapshot.execution_host_id(),
             missing_services,
             transport_qualified: transport_is_qualified(selection.transport()),
             protocol_qualified: protocol_is_qualified(selection.protocol_version()),
+            proof: RegisteredToolTopologyProof::for_selection(selection),
         }
     }
 
@@ -123,8 +214,11 @@ impl RegisteredToolReadiness {
             && self.protocol_qualified
     }
 
-    /// Returns the first exact readiness failure, if any.
-    pub fn require_ready(&self) -> Result<(), RegisteredToolFailure> {
+    /// Returns the topology proof, or the first exact readiness failure.
+    ///
+    /// This is the only way to obtain a [`RegisteredToolTopologyProof`], and the
+    /// kernel refuses to open a lease without one.
+    pub fn require_ready(&self) -> Result<RegisteredToolTopologyProof, RegisteredToolFailure> {
         if !matches!(self.port, RegisteredToolPortAvailability::Registered) {
             return Err(reject(RegisteredToolFailureKind::MissingHostService));
         }
@@ -142,12 +236,8 @@ impl RegisteredToolReadiness {
                 RegisteredToolFailureKind::UnsupportedProtocolVersion,
             ));
         }
-        Ok(())
+        Ok(self.proof.clone())
     }
-}
-
-fn host_matches(registry: &ExecutionHostId, snapshot: &ExecutionHostId) -> bool {
-    registry == snapshot
 }
 
 fn transport_is_qualified(transport: RegisteredToolTransport) -> bool {

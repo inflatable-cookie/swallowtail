@@ -1,9 +1,15 @@
 //! The one serialized registered-tool admission, dispatch, and progress kernel.
 //!
-//! This kernel is the only place a validated call binding is minted. It
-//! serializes dispatch, result, progress, and revocation races behind one
-//! admission point, keeps exactly-once result acceptance, and never claims
-//! exactly-once remote execution.
+//! This kernel is the sole authority that mints a lease, a validated binding,
+//! and a call. There is no other constructor: [`RegisteredToolOperationKernel::open`]
+//! requires a [`RegisteredToolTopologyProof`] issued for the exact selection, so
+//! every mounted open path passes the typed readiness gate before any binding
+//! exists.
+//!
+//! It serializes dispatch, result, progress, and revocation races behind one
+//! admission point, enforces the effective call deadline at the dispatch,
+//! progress, and terminal boundaries, keeps exactly-once result acceptance, and
+//! never claims exactly-once remote execution.
 
 use super::admission::AdmissionPhase;
 use super::call::{
@@ -15,13 +21,16 @@ use super::dispatch::{
     RegisteredToolDispatcher, RegisteredToolProgressChannel, RegisteredToolProgressSink,
 };
 use super::failure::{RegisteredToolFailureKind, fail, reject};
-use super::identity::RegisteredToolCallId;
-use super::lease::{
-    RegisteredToolAdmissionState, RegisteredToolCallChannel, RegisteredToolCompletionState,
-    RegisteredToolLifecycleState,
+use super::identity::{
+    RegisteredToolCallId, RegisteredToolLeaseGeneration, RegisteredToolTransportGeneration,
 };
+use super::lease::{
+    RegisteredToolAdmissionState, RegisteredToolBridgeLease, RegisteredToolCompletionState,
+    RegisteredToolLifecycleState, RegisteredToolOpenRequest,
+};
+use super::readiness::RegisteredToolTopologyProof;
 use super::selection::RegisteredToolSelection;
-use crate::{BoxFuture, RuntimeFailure};
+use crate::{BoxFuture, Deadline, MonotonicInstant, RuntimeFailure, TimeService};
 use std::collections::{BTreeSet, VecDeque};
 use std::num::NonZeroU64;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -33,6 +42,7 @@ const MAX_REMEMBERED_CALL_IDS: usize = 256;
 struct CallSlot {
     call_id: RegisteredToolCallId,
     cancelled: Arc<AtomicBool>,
+    expires_at: Deadline,
     last_sequence: u64,
     settled: bool,
 }
@@ -52,6 +62,8 @@ pub struct RegisteredToolOperationKernel {
     binding: ValidatedRegisteredToolBinding,
     selection: RegisteredToolSelection,
     dispatcher: Arc<dyn RegisteredToolDispatcher>,
+    time: Arc<dyn TimeService>,
+    operation_deadline: Deadline,
     state: Mutex<KernelState>,
 }
 
@@ -70,23 +82,53 @@ struct ProgressGate {
 }
 
 impl RegisteredToolProgressChannel for ProgressGate {
-    fn admit(&self, progress: RegisteredToolProgress) -> Result<(), RuntimeFailure> {
-        self.kernel.admit_progress(progress)
+    fn admit(&self, progress: RegisteredToolProgress) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        let kernel = Arc::clone(&self.kernel);
+        Box::pin(async move { kernel.admit_progress(progress).await })
     }
 }
 
 impl RegisteredToolOperationKernel {
-    /// Creates one kernel bound to exactly one live validated binding.
-    #[must_use]
-    pub fn new(
-        binding: ValidatedRegisteredToolBinding,
-        selection: RegisteredToolSelection,
+    /// Opens one kernel and its lease after a matching topology proof.
+    ///
+    /// The proof is the readiness gate: an unqualified carrier, an unqualified
+    /// protocol version, a foreign execution host, a missing required service,
+    /// or an absent port cannot produce one, so no binding or lease is minted.
+    /// A proof issued for another selection is rejected here.
+    pub fn open(
+        request: RegisteredToolOpenRequest,
+        proof: &RegisteredToolTopologyProof,
         dispatcher: Arc<dyn RegisteredToolDispatcher>,
-    ) -> Self {
-        Self {
+        time: Arc<dyn TimeService>,
+        generation: RegisteredToolLeaseGeneration,
+        transport_generation: RegisteredToolTransportGeneration,
+    ) -> Result<(Arc<Self>, RegisteredToolBridgeLease), RuntimeFailure> {
+        if !proof.matches(request.selection()) {
+            return Err(fail(RegisteredToolFailureKind::UnsupportedRegistration));
+        }
+        if request.execution_host_id() != request.selection().snapshot().execution_host_id() {
+            return Err(fail(RegisteredToolFailureKind::UnsupportedRegistration));
+        }
+        let binding = ValidatedRegisteredToolBinding::mint(
+            request.execution_host_id().clone(),
+            request.configured_instance().clone(),
+            request.scope().clone(),
+            request.turn().clone(),
+            request.selection().snapshot().server_id().clone(),
+            request.selection().snapshot().revision().clone(),
+            generation,
+            request.selection().transport(),
+            transport_generation,
+            request.selection().protocol_version().clone(),
+            request.selection().effective_bounds(),
+            request.admission().clone(),
+        );
+        let kernel = Arc::new(Self {
             binding,
-            selection,
+            selection: request.selection().clone(),
             dispatcher,
+            time,
+            operation_deadline: request.deadline(),
             state: Mutex::new(KernelState {
                 admission: RegisteredToolAdmissionState::Open,
                 lifecycle: RegisteredToolLifecycleState::Ready,
@@ -96,19 +138,20 @@ impl RegisteredToolOperationKernel {
                 seen_calls: BTreeSet::new(),
                 progress: VecDeque::new(),
             }),
-        }
+        });
+        let lease = RegisteredToolBridgeLease::mint(
+            &request,
+            generation,
+            transport_generation,
+            Arc::clone(&kernel),
+        );
+        Ok((kernel, lease))
     }
 
     fn locked(&self) -> std::sync::MutexGuard<'_, KernelState> {
         self.state
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
-    }
-
-    /// Returns an object-safe call channel bound to this exact kernel.
-    #[must_use]
-    pub fn call_channel(self: &Arc<Self>) -> Arc<dyn RegisteredToolCallChannel> {
-        Arc::new(Arc::clone(self))
     }
 
     /// Returns the live validated binding this kernel owns.
@@ -181,22 +224,77 @@ impl RegisteredToolOperationKernel {
         self.locked().cleanup_failed
     }
 
+    /// Reports whether an issued call has expired against the host clock.
+    #[must_use]
+    pub fn expired_call_pending(&self) -> bool {
+        let now = self.time.now();
+        self.locked()
+            .active
+            .as_ref()
+            .is_some_and(|active| reached(now, active.expires_at))
+    }
+
     /// Returns the bounded outstanding-call count.
     #[must_use]
     pub fn outstanding_calls(&self) -> usize {
         usize::from(self.locked().active.is_some())
     }
 
-    fn admit_progress(&self, progress: RegisteredToolProgress) -> Result<(), RuntimeFailure> {
+    /// Returns the effective expiry of one call issued at an exact instant.
+    ///
+    /// A call expires at the earliest of the operation deadline, the caller's
+    /// own deadline, and the declared maximum call duration.
+    #[must_use]
+    pub fn effective_call_deadline(
+        &self,
+        requested: Deadline,
+        started: MonotonicInstant,
+    ) -> Deadline {
+        let max_duration_ticks = u64::try_from(
+            self.binding
+                .effective_bounds()
+                .max_call_duration()
+                .as_nanos(),
+        )
+        .unwrap_or(u64::MAX);
+        let bounded = Deadline::at(MonotonicInstant::from_ticks(
+            started.ticks().saturating_add(max_duration_ticks),
+        ));
+        [self.operation_deadline, requested, bounded]
+            .into_iter()
+            .min()
+            .unwrap_or(bounded)
+    }
+
+    async fn admit_progress(&self, progress: RegisteredToolProgress) -> Result<(), RuntimeFailure> {
+        let sequence = self.check_progress(&progress)?;
+        // Progress obeys the same live revocation barrier as dispatch and
+        // delivery: the verdict is taken at the kernel's serialized admission
+        // point before the notification is accepted.
+        self.require_current(AdmissionPhase::BeforeDelivery).await?;
+        let mut state = self.locked();
+        let Some(active) = state.active.as_mut() else {
+            return Err(fail(RegisteredToolFailureKind::ForeignCorrelation));
+        };
+        if active.call_id != *progress.call_id() || active.settled {
+            return Err(fail(RegisteredToolFailureKind::ForeignCorrelation));
+        }
+        if sequence <= active.last_sequence {
+            return Err(fail(RegisteredToolFailureKind::DuplicateCorrelation));
+        }
+        active.last_sequence = sequence;
+        state.progress.push_back(progress);
+        Ok(())
+    }
+
+    fn check_progress(&self, progress: &RegisteredToolProgress) -> Result<u64, RuntimeFailure> {
+        let now = self.time.now();
         let mut state = self.locked();
         if state.revoked {
             return Err(fail(RegisteredToolFailureKind::Revoked));
         }
         match state.admission {
-            RegisteredToolAdmissionState::Closed => {
-                return Err(fail(RegisteredToolFailureKind::PostTerminalCorrelation));
-            }
-            RegisteredToolAdmissionState::Frozen => {
+            RegisteredToolAdmissionState::Closed | RegisteredToolAdmissionState::Frozen => {
                 return Err(fail(RegisteredToolFailureKind::PostTerminalCorrelation));
             }
             RegisteredToolAdmissionState::Open => {}
@@ -218,6 +316,10 @@ impl RegisteredToolOperationKernel {
         if active.settled {
             return Err(fail(RegisteredToolFailureKind::PostTerminalCorrelation));
         }
+        if reached(now, active.expires_at) {
+            active.cancelled.store(true, Ordering::SeqCst);
+            return Err(fail(RegisteredToolFailureKind::DeadlineExceeded));
+        }
         let sequence = progress.sequence().get();
         if sequence <= active.last_sequence {
             return Err(fail(RegisteredToolFailureKind::DuplicateCorrelation));
@@ -225,9 +327,7 @@ impl RegisteredToolOperationKernel {
         if queued >= bound {
             return Err(fail(RegisteredToolFailureKind::LimitExceeded));
         }
-        active.last_sequence = sequence;
-        state.progress.push_back(progress);
-        Ok(())
+        Ok(sequence)
     }
 
     /// Drains admitted progress after one live before-delivery admission check.
@@ -258,19 +358,21 @@ impl RegisteredToolOperationKernel {
     fn reserve(
         &self,
         request: &RegisteredToolCallRequest,
+        expires_at: Deadline,
+        now: MonotonicInstant,
     ) -> Result<Arc<AtomicBool>, RuntimeFailure> {
         let mut state = self.locked();
         if state.revoked {
             return Err(fail(RegisteredToolFailureKind::Revoked));
         }
         match state.admission {
-            RegisteredToolAdmissionState::Closed => {
-                return Err(fail(RegisteredToolFailureKind::PostTerminalCorrelation));
-            }
-            RegisteredToolAdmissionState::Frozen => {
+            RegisteredToolAdmissionState::Closed | RegisteredToolAdmissionState::Frozen => {
                 return Err(fail(RegisteredToolFailureKind::PostTerminalCorrelation));
             }
             RegisteredToolAdmissionState::Open => {}
+        }
+        if reached(now, expires_at) {
+            return Err(fail(RegisteredToolFailureKind::DeadlineExceeded));
         }
         if state.active.is_some() {
             return Err(fail(RegisteredToolFailureKind::LimitExceeded));
@@ -286,6 +388,7 @@ impl RegisteredToolOperationKernel {
         state.active = Some(CallSlot {
             call_id: request.call_id().clone(),
             cancelled: Arc::clone(&cancelled),
+            expires_at,
             last_sequence: 0,
             settled: false,
         });
@@ -305,6 +408,15 @@ impl RegisteredToolOperationKernel {
         }
     }
 
+    /// Issues one bounded call through the kernel's serialized admission point.
+    pub fn issue<'kernel>(
+        kernel: &'kernel Arc<Self>,
+        request: RegisteredToolCallRequest,
+    ) -> BoxFuture<'kernel, Result<RegisteredToolOutcome, RuntimeFailure>> {
+        let kernel = Arc::clone(kernel);
+        Box::pin(async move { kernel.issue_now(request).await })
+    }
+
     async fn issue_now(
         self: Arc<Self>,
         request: RegisteredToolCallRequest,
@@ -319,11 +431,17 @@ impl RegisteredToolOperationKernel {
         if !kind.is_host_dispatchable() {
             return Err(fail(RegisteredToolFailureKind::UnsupportedTool));
         }
-        let cancelled = self.reserve(&request)?;
-        let committed = self.require_current(AdmissionPhase::BeforeDispatch).await;
-        if let Err(error) = committed {
+        let started = self.time.now();
+        let expires_at = self.effective_call_deadline(request.deadline(), started);
+        let cancelled = self.reserve(&request, expires_at, started)?;
+        if let Err(error) = self.require_current(AdmissionPhase::BeforeDispatch).await {
             self.release();
             return Err(error);
+        }
+        if reached(self.time.now(), expires_at) {
+            cancelled.store(true, Ordering::SeqCst);
+            self.release();
+            return Err(fail(RegisteredToolFailureKind::DeadlineExceeded));
         }
         let call = match RegisteredToolCall::mint(
             self.binding.clone(),
@@ -331,7 +449,7 @@ impl RegisteredToolOperationKernel {
             request.tool().clone(),
             kind,
             request.arguments().clone(),
-            request.deadline(),
+            expires_at,
         ) {
             Ok(call) => call,
             Err(error) => {
@@ -354,7 +472,7 @@ impl RegisteredToolOperationKernel {
             ),
         );
         let dispatched = self.dispatcher.dispatch(call.clone(), context).await;
-        let settled = self.settle(&call, dispatched).await;
+        let settled = self.settle(&call, expires_at, dispatched).await;
         self.release();
         settled
     }
@@ -362,17 +480,25 @@ impl RegisteredToolOperationKernel {
     async fn settle(
         &self,
         call: &RegisteredToolCall,
+        expires_at: Deadline,
         dispatched: Result<RegisteredToolOutcome, RuntimeFailure>,
     ) -> Result<RegisteredToolOutcome, RuntimeFailure> {
-        let outcome = match dispatched {
-            Ok(outcome) => outcome,
-            Err(error) => return Err(error),
-        };
+        let outcome = dispatched?;
         if outcome.call_id() != call.call_id()
             || outcome.tool() != call.tool()
             || outcome.kind() != call.kind()
         {
             return Err(fail(RegisteredToolFailureKind::ForeignCorrelation));
+        }
+        if reached(self.time.now(), expires_at) {
+            // The call outran its effective deadline. Whether the linked host
+            // completed the effect is not knowable here, so it is reported as
+            // unknown and never replays automatically.
+            return Ok(RegisteredToolOutcome::failed(
+                call,
+                reject(RegisteredToolFailureKind::DeadlineExceeded),
+                RegisteredToolExecutionDisposition::Unknown,
+            ));
         }
         if let Err(error) = self.require_current(AdmissionPhase::BeforeDelivery).await {
             let disposition = match outcome.result() {
@@ -399,14 +525,21 @@ impl RegisteredToolOperationKernel {
     }
 }
 
-impl RegisteredToolCallChannel for Arc<RegisteredToolOperationKernel> {
-    fn issue(
-        &self,
-        request: RegisteredToolCallRequest,
-    ) -> BoxFuture<'_, Result<RegisteredToolOutcome, RuntimeFailure>> {
-        let kernel = Arc::clone(self);
-        Box::pin(kernel.issue_now(request))
+impl std::fmt::Debug for RegisteredToolOperationKernel {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let state = self.locked();
+        formatter
+            .debug_struct("RegisteredToolOperationKernel")
+            .field("admission", &state.admission)
+            .field("lifecycle", &state.lifecycle)
+            .field("outstanding_calls", &usize::from(state.active.is_some()))
+            .field("cleanup_failed", &state.cleanup_failed)
+            .finish()
     }
+}
+
+fn reached(now: MonotonicInstant, deadline: Deadline) -> bool {
+    now.ticks() >= deadline.instant().ticks()
 }
 
 fn completion_state(state: &KernelState) -> RegisteredToolCompletionState {

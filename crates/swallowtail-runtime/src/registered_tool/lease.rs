@@ -1,14 +1,11 @@
 //! Scoped registered-tool lease, its lifecycle truth, and its call channel.
 
 use super::admission::ConsumerAdmissionBinding;
-use super::call::{
-    RegisteredToolCallRequest, RegisteredToolOutcome, ValidatedRegisteredToolBinding,
-};
-use super::failure::{RegisteredToolFailureKind, fail};
+use super::call::{RegisteredToolCallRequest, RegisteredToolOutcome};
 use super::identity::{
     RegisteredToolLeaseGeneration, RegisteredToolTransport, RegisteredToolTransportGeneration,
 };
-use super::secrets::{RegisteredToolBearer, RegisteredToolBridgeToken, RegisteredToolEndpoint};
+use super::kernel::RegisteredToolOperationKernel;
 use super::selection::RegisteredToolSelection;
 use crate::{BoxFuture, Deadline, RuntimeFailure, RuntimeTurnId, ScopeId};
 use std::fmt;
@@ -257,142 +254,64 @@ impl RegisteredToolOpenRequest {
     }
 }
 
-/// Kernel-owned channel that issues one call through the serialized point.
-pub trait RegisteredToolCallChannel: Send + Sync {
-    /// Issues one bounded call and settles exactly one correlated outcome.
-    fn issue(
-        &self,
-        request: RegisteredToolCallRequest,
-    ) -> BoxFuture<'_, Result<RegisteredToolOutcome, RuntimeFailure>>;
-}
-
 /// Non-clonable scoped token for one opened registered-tool lease.
 ///
-/// Endpoint and bearer stay driver-only. The lease is not serializable. Drop is
-/// defensive cleanup and is never success evidence.
+/// A lease exists only because [`RegisteredToolOperationKernel`] created it. It
+/// is not constructible, clonable, or serializable outside that kernel, carries
+/// no endpoint or bearer material for the host-mediated callback carrier, and
+/// exposes safe binding descriptions only. Drop is defensive cleanup and is
+/// never success evidence.
 pub struct RegisteredToolBridgeLease {
     execution_host_id: ExecutionHostId,
     configured_instance: ConfiguredInstanceId,
     scope: ScopeId,
     turn: RuntimeTurnId,
     selection: RegisteredToolSelection,
-    admission: ConsumerAdmissionBinding,
     generation: RegisteredToolLeaseGeneration,
     transport_generation: RegisteredToolTransportGeneration,
     deadline: Deadline,
-    endpoint: Option<RegisteredToolEndpoint>,
-    bearer: Option<RegisteredToolBearer>,
-    token: Option<RegisteredToolBridgeToken>,
-    channel: Option<Arc<dyn RegisteredToolCallChannel>>,
+    kernel: Arc<RegisteredToolOperationKernel>,
     release: Option<Box<dyn FnOnce() + Send + 'static>>,
 }
 
 impl RegisteredToolBridgeLease {
-    /// Creates a non-live handle for redaction and fixture use.
-    ///
-    /// This handle cannot issue a call, freeze, or close a host lease.
-    #[must_use]
-    pub fn new(
-        request: RegisteredToolOpenRequest,
+    pub(super) fn mint(
+        request: &RegisteredToolOpenRequest,
         generation: RegisteredToolLeaseGeneration,
         transport_generation: RegisteredToolTransportGeneration,
+        kernel: Arc<RegisteredToolOperationKernel>,
     ) -> Self {
-        let RegisteredToolOpenRequest {
-            execution_host_id,
-            configured_instance,
-            scope,
-            turn,
-            selection,
-            admission,
-            deadline,
-        } = request;
         Self {
-            execution_host_id,
-            configured_instance,
-            scope,
-            turn,
-            selection,
-            admission,
+            execution_host_id: request.execution_host_id().clone(),
+            configured_instance: request.configured_instance().clone(),
+            scope: request.scope().clone(),
+            turn: request.turn().clone(),
+            selection: request.selection().clone(),
             generation,
             transport_generation,
-            deadline,
-            endpoint: None,
-            bearer: None,
-            token: None,
-            channel: None,
+            deadline: request.deadline(),
+            kernel,
             release: None,
         }
     }
 
-    /// Attaches driver-private endpoint and bearer material for a carrier.
-    ///
-    /// A second attachment is ignored so drivers cannot replace private
-    /// material on a live lease.
-    #[must_use]
-    pub fn with_private_material(
-        mut self,
-        endpoint: RegisteredToolEndpoint,
-        bearer: RegisteredToolBearer,
-    ) -> Self {
-        if self.endpoint.is_none() && self.bearer.is_none() {
-            self.endpoint = Some(endpoint);
-            self.bearer = Some(bearer);
-        }
-        self
-    }
-
-    /// Binds host cleanup, the kernel call channel, and unforgeable identity.
+    /// Binds one host cleanup action to this lease.
     ///
     /// A second bind is ignored so callers cannot replace or disarm cleanup.
     #[must_use]
-    pub fn bind(
-        mut self,
-        token: RegisteredToolBridgeToken,
-        channel: Arc<dyn RegisteredToolCallChannel>,
-        release: impl FnOnce() + Send + 'static,
-    ) -> Self {
-        if self.token.is_none() && self.release.is_none() {
-            self.token = Some(token);
-            self.channel = Some(channel);
+    pub fn with_release(mut self, release: impl FnOnce() + Send + 'static) -> Self {
+        if self.release.is_none() {
             self.release = Some(Box::new(release));
         }
         self
     }
 
-    /// Reports whether this handle authenticates one live host token.
+    /// Reports whether this lease is the one that exact kernel opened.
+    ///
+    /// This is an identity comparison, never a way to rebind a lease.
     #[must_use]
-    pub fn binding_matches(&self, token: &RegisteredToolBridgeToken) -> bool {
-        self.token
-            .as_ref()
-            .is_some_and(|bound| bound.token_matches(token))
-    }
-
-    /// Reports whether this handle is bound to a live host lease.
-    #[must_use]
-    pub const fn is_live(&self) -> bool {
-        self.token.is_some()
-    }
-
-    /// Returns the live validated binding, only for a host-bound lease.
-    #[must_use]
-    pub fn validated_binding(&self) -> Option<ValidatedRegisteredToolBinding> {
-        if !self.is_live() {
-            return None;
-        }
-        Some(ValidatedRegisteredToolBinding::mint(
-            self.execution_host_id.clone(),
-            self.configured_instance.clone(),
-            self.scope.clone(),
-            self.turn.clone(),
-            self.selection.snapshot().server_id().clone(),
-            self.selection.snapshot().revision().clone(),
-            self.generation,
-            self.selection.transport(),
-            self.transport_generation,
-            self.selection.protocol_version().clone(),
-            self.selection.effective_bounds(),
-            self.admission.clone(),
-        ))
+    pub fn is_bound_to(&self, kernel: &Arc<RegisteredToolOperationKernel>) -> bool {
+        Arc::ptr_eq(&self.kernel, kernel)
     }
 
     /// Issues one bounded call through the kernel's serialized admission point.
@@ -400,10 +319,7 @@ impl RegisteredToolBridgeLease {
         &self,
         request: RegisteredToolCallRequest,
     ) -> BoxFuture<'_, Result<RegisteredToolOutcome, RuntimeFailure>> {
-        match self.channel.as_ref() {
-            Some(channel) => channel.issue(request),
-            None => Box::pin(async { Err(fail(RegisteredToolFailureKind::NotReady)) }),
-        }
+        RegisteredToolOperationKernel::issue(&self.kernel, request)
     }
 
     /// Returns the execution host bound at open.
@@ -436,12 +352,6 @@ impl RegisteredToolBridgeLease {
         &self.selection
     }
 
-    /// Returns the trusted consumer admission binding.
-    #[must_use]
-    pub const fn admission(&self) -> &ConsumerAdmissionBinding {
-        &self.admission
-    }
-
     /// Returns the lease generation bound at open.
     #[must_use]
     pub const fn generation(&self) -> RegisteredToolLeaseGeneration {
@@ -465,18 +375,6 @@ impl RegisteredToolBridgeLease {
     pub const fn deadline(&self) -> Deadline {
         self.deadline
     }
-
-    /// Returns the driver-only endpoint when a carrier bound one.
-    #[must_use]
-    pub fn endpoint(&self) -> Option<&RegisteredToolEndpoint> {
-        self.endpoint.as_ref()
-    }
-
-    /// Returns the driver-only bearer when a carrier bound one.
-    #[must_use]
-    pub fn bearer(&self) -> Option<&RegisteredToolBearer> {
-        self.bearer.as_ref()
-    }
 }
 
 impl Drop for RegisteredToolBridgeLease {
@@ -498,9 +396,7 @@ impl fmt::Debug for RegisteredToolBridgeLease {
             .field("generation", &self.generation)
             .field("transport", &self.selection.transport())
             .field("transport_generation", &self.transport_generation)
-            .field("endpoint", &self.endpoint)
-            .field("bearer", &self.bearer)
-            .field("token", &self.token.as_ref().map(|_| "<redacted>"))
+            .field("kernel", &"<private operation kernel>")
             .finish()
     }
 }

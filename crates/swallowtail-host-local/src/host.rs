@@ -15,7 +15,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     AttachmentRef, CredentialRef, EndpointRef, EnvironmentRef, ExecutableRef, ProcessRequest,
-    REGISTERED_TOOL_CLEANUP_BUDGET, RegisteredToolDispatcher, SchemaRef, WorkingResourceRef,
+    REGISTERED_TOOL_CLEANUP_BUDGET, RegisteredToolDispatcher, SchemaRef, TimeService,
+    WorkingResourceRef,
 };
 
 use crate::task::DEFAULT_TASK_REAP_CAPACITY;
@@ -46,6 +47,7 @@ pub struct LocalProcessHostBuilder {
     pub(crate) task_reap_capacity: usize,
     pub(crate) registered_tool_dispatcher: Option<Arc<dyn RegisteredToolDispatcher>>,
     pub(crate) registered_tool_cleanup_budget: Duration,
+    pub(crate) registered_tool_clock: Option<Arc<dyn TimeService>>,
 }
 
 impl LocalProcessHostBuilder {
@@ -172,6 +174,16 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Replaces the clock the registered-tool bridge enforces deadlines with.
+    ///
+    /// Deterministic conformance supplies a virtual clock here. Omitting it
+    /// keeps this host's ordinary monotonic clock.
+    #[must_use]
+    pub fn with_registered_tool_clock(mut self, clock: Arc<dyn TimeService>) -> Self {
+        self.registered_tool_clock = Some(clock);
+        self
+    }
+
     /// Replaces the default attachment and schema materialization limits.
     #[must_use]
     pub fn with_materialization_limits(mut self, limits: LocalMaterializationLimits) -> Self {
@@ -195,6 +207,7 @@ impl LocalProcessHostBuilder {
             task_reap_capacity: self.task_reap_capacity,
             registered_tool_dispatcher: self.registered_tool_dispatcher,
             registered_tool_cleanup_budget: self.registered_tool_cleanup_budget,
+            registered_tool_clock: self.registered_tool_clock,
             monotonic_origin: Instant::now(),
         }
     }
@@ -215,6 +228,7 @@ pub struct LocalProcessHost {
     pub(crate) task_reap_capacity: usize,
     pub(crate) registered_tool_dispatcher: Option<Arc<dyn RegisteredToolDispatcher>>,
     pub(crate) registered_tool_cleanup_budget: Duration,
+    pub(crate) registered_tool_clock: Option<Arc<dyn TimeService>>,
     pub(crate) monotonic_origin: Instant,
 }
 
@@ -232,6 +246,7 @@ impl LocalProcessHost {
             task_reap_capacity: DEFAULT_TASK_REAP_CAPACITY,
             registered_tool_dispatcher: None,
             registered_tool_cleanup_budget: REGISTERED_TOOL_CLEANUP_BUDGET,
+            registered_tool_clock: None,
         }
     }
 }

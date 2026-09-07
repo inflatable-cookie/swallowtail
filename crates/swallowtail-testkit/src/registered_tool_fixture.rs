@@ -13,9 +13,9 @@ use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
     AdmissionPhase, AdmissionVerdict, AdmittedAttemptId, AdmittedSessionId, AdmittedTaskId,
     BoxFuture, ConsumerAdmissionBinding, ConsumerAdmissionHostService, ConsumerProcessIncarnation,
-    ConsumerTaskGeneration, ConsumerWorkspaceGeneration, MonotonicInstant,
-    REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION, RegisteredServerId, RegisteredServerRevision,
-    RegisteredToolBounds, RegisteredToolCall, RegisteredToolDeclaration,
+    ConsumerTaskGeneration, ConsumerWorkspaceGeneration, Deadline, DeadlineObservation,
+    MonotonicInstant, REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION, RegisteredServerId,
+    RegisteredServerRevision, RegisteredToolBounds, RegisteredToolCall, RegisteredToolDeclaration,
     RegisteredToolDispatchContext, RegisteredToolDispatcher, RegisteredToolEffectPosture,
     RegisteredToolExecutionKind, RegisteredToolId, RegisteredToolLocalName,
     RegisteredToolNamespace, RegisteredToolOutcome, RegisteredToolPayload,
@@ -24,7 +24,7 @@ use swallowtail_runtime::{
     RegisteredToolSchemaDocument, RegisteredToolSchemaMediaType, RegisteredToolSchemaNamespace,
     RegisteredToolSelection, RegisteredToolSnapshot, RegisteredToolSnapshotInput,
     RegisteredToolSource, RegisteredToolSourceId, RegisteredToolTransport,
-    RegisteredToolTransportSupport, RuntimeFailure,
+    RegisteredToolTransportSupport, RuntimeFailure, TimeService,
 };
 
 /// Namespace used by every provider-free registered-tool fixture.
@@ -158,9 +158,46 @@ pub fn fixture_payload(bytes: usize, max_bytes: usize) -> RegisteredToolPayload 
         .expect("fixture payload")
 }
 
+/// Deterministic host clock a case advances by exact ticks.
+///
+/// Ticks are nanoseconds, matching the local host composition, so a case can
+/// prove deadline behavior without waiting on wall-clock time.
+#[derive(Default)]
+pub struct FakeClock {
+    ticks: Mutex<u64>,
+}
+
+impl FakeClock {
+    /// Creates a clock at an exact tick.
+    #[must_use]
+    pub fn at(ticks: u64) -> Self {
+        Self {
+            ticks: Mutex::new(ticks),
+        }
+    }
+
+    /// Advances the clock by an exact number of ticks.
+    pub fn advance(&self, ticks: u64) {
+        let mut current = self.ticks.lock().expect("fake clock lock");
+        *current = current.saturating_add(ticks);
+    }
+}
+
+impl TimeService for FakeClock {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(*self.ticks.lock().expect("fake clock lock"))
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        let observed = self.now();
+        Box::pin(ready(DeadlineObservation::new(deadline, observed)))
+    }
+}
+
 /// Consumer admission port whose live verdict a case can script exactly.
 pub struct ScriptedAdmissionPort {
     revoke_at: Mutex<Option<AdmissionPhase>>,
+    revoke_after: Mutex<Option<usize>>,
     observed: Mutex<Vec<AdmissionPhase>>,
 }
 
@@ -176,6 +213,7 @@ impl ScriptedAdmissionPort {
     pub fn current() -> Self {
         Self {
             revoke_at: Mutex::new(None),
+            revoke_after: Mutex::new(None),
             observed: Mutex::new(Vec::new()),
         }
     }
@@ -183,6 +221,14 @@ impl ScriptedAdmissionPort {
     /// Revokes from the next validation at one exact phase onwards.
     pub fn revoke_from(&self, phase: AdmissionPhase) {
         *self.revoke_at.lock().expect("revocation lock") = Some(phase);
+    }
+
+    /// Revokes every validation after an exact number of current verdicts.
+    ///
+    /// This places a revocation between dispatch and a later progress or
+    /// delivery check without any timing dependency.
+    pub fn revoke_after_validations(&self, count: usize) {
+        *self.revoke_after.lock().expect("revocation lock") = Some(count);
     }
 
     /// Returns every phase the kernel validated, in order.
@@ -198,13 +244,22 @@ impl ConsumerAdmissionHostService for ScriptedAdmissionPort {
         _binding: &ConsumerAdmissionBinding,
         phase: AdmissionPhase,
     ) -> BoxFuture<'_, Result<AdmissionVerdict, RuntimeFailure>> {
-        self.observed.lock().expect("observed lock").push(phase);
-        let revoked = matches!(
+        let seen = {
+            let mut observed = self.observed.lock().expect("observed lock");
+            observed.push(phase);
+            observed.len()
+        };
+        let revoked_by_phase = matches!(
             *self.revoke_at.lock().expect("revocation lock"),
             Some(revoke_at) if revoke_at == phase
                 || (revoke_at == AdmissionPhase::BeforeDispatch
                     && phase == AdmissionPhase::BeforeDelivery)
         );
+        let revoked_by_count = matches!(
+            *self.revoke_after.lock().expect("revocation lock"),
+            Some(after) if seen > after
+        );
+        let revoked = revoked_by_phase || revoked_by_count;
         let verdict = if revoked {
             AdmissionVerdict::Revoked(
                 RegisteredToolReasonCode::new("consumer.task_superseded").expect("reason code"),

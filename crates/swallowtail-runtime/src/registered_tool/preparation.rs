@@ -82,6 +82,9 @@ impl RegisteredToolPreparation {
         }
         let readiness = RegisteredToolReadiness::evaluate(hosts, &self.selection);
         readiness.require_ready()?;
+        // The prepared binding keeps no proof of its own: the mounted port
+        // re-derives readiness against its exact published topology at open, so
+        // a stale or forged prepared value cannot bypass the gate.
         let port = hosts
             .registered_tool_bridge()
             .cloned()

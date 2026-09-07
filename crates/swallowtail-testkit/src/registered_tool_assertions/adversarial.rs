@@ -29,7 +29,7 @@ pub(super) fn revocation_before_dispatch_never_reaches_the_dispatcher(
     compose: &ComposeRegisteredToolHost,
 ) {
     let dispatcher = Arc::new(ScriptedRegisteredToolDispatcher::echoing());
-    let harness = RegisteredToolHarness::new(compose(dispatcher.clone(), FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher.clone(), FIXTURE_CLEANUP_BUDGET);
     let lease = harness.open("turn-revoked-dispatch");
     harness
         .admission
@@ -55,7 +55,7 @@ pub(super) fn revocation_before_delivery_reports_honest_execution(
     compose: &ComposeRegisteredToolHost,
 ) {
     let dispatcher = Arc::new(ScriptedRegisteredToolDispatcher::echoing());
-    let harness = RegisteredToolHarness::new(compose(dispatcher.clone(), FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher.clone(), FIXTURE_CLEANUP_BUDGET);
     let lease = harness.open("turn-revoked-delivery");
     harness
         .admission
@@ -92,7 +92,7 @@ pub(super) fn a_retained_sink_fails_after_the_call_settles(compose: &ComposeRegi
             ))
         },
     )));
-    let harness = RegisteredToolHarness::new(compose(dispatcher, FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher, FIXTURE_CLEANUP_BUDGET);
     let lease = harness.open("turn-stale-sink");
 
     drive_fixture(lease.call(request("call-settled"))).expect("the kernel settles the call");
@@ -101,8 +101,7 @@ pub(super) fn a_retained_sink_fails_after_the_call_settles(compose: &ComposeRegi
         .expect("sink lock")
         .take()
         .expect("the dispatcher retained its sink");
-    let error = sink
-        .publish(NonZeroU64::MIN, fixture_payload(4, 1024))
+    let error = drive_fixture(sink.publish(NonZeroU64::MIN, fixture_payload(4, 1024)))
         .expect_err("a stale sink cannot publish after the call settles");
 
     assert_eq!(
@@ -113,7 +112,7 @@ pub(super) fn a_retained_sink_fails_after_the_call_settles(compose: &ComposeRegi
 
 pub(super) fn one_outstanding_call_per_lease(compose: &ComposeRegisteredToolHost) {
     let dispatcher = Arc::new(UncooperativeRegisteredToolDispatcher::default());
-    let harness = RegisteredToolHarness::new(compose(dispatcher.clone(), FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher.clone(), FIXTURE_CLEANUP_BUDGET);
     let port = harness
         .hosts
         .registered_tool_bridge()
@@ -139,7 +138,7 @@ pub(super) fn one_outstanding_call_per_lease(compose: &ComposeRegisteredToolHost
 
 pub(super) fn failed_cleanup_retains_ownership(compose: &ComposeRegisteredToolHost) {
     let dispatcher = Arc::new(UncooperativeRegisteredToolDispatcher::default());
-    let harness = RegisteredToolHarness::new(compose(dispatcher.clone(), FIXTURE_CLEANUP_BUDGET));
+    let harness = RegisteredToolHarness::mount(compose, dispatcher.clone(), FIXTURE_CLEANUP_BUDGET);
     let port = harness
         .hosts
         .registered_tool_bridge()

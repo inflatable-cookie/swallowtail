@@ -59,11 +59,13 @@ impl fmt::Debug for RegisteredToolCancellation {
 
 /// Kernel-owned bounded progress queue for one call.
 pub trait RegisteredToolProgressChannel: Send + Sync {
-    /// Admits one correlated progress notification after kernel checks.
+    /// Admits one correlated progress notification at the serialized point.
     ///
     /// Duplicate, regressive, foreign, stale-generation, post-cancel,
-    /// post-terminal, post-close, and queue-overflow notifications fail here.
-    fn admit(&self, progress: RegisteredToolProgress) -> Result<(), RuntimeFailure>;
+    /// post-terminal, post-close, expired, and queue-overflow notifications
+    /// fail here, as does a binding whose live consumer admission is revoked.
+    /// The live check is asynchronous by contract, so admission is too.
+    fn admit(&self, progress: RegisteredToolProgress) -> BoxFuture<'_, Result<(), RuntimeFailure>>;
 }
 
 /// Bounded lease-associated progress sink handed to one dispatcher.
@@ -75,18 +77,34 @@ pub struct RegisteredToolProgressSink {
 
 impl RegisteredToolProgressSink {
     /// Binds one bounded progress sink to exactly one committed call.
-    #[must_use]
-    pub fn new(call: RegisteredToolCall, channel: Arc<dyn RegisteredToolProgressChannel>) -> Self {
+    ///
+    /// Only the kernel constructs this: a dispatcher cannot fabricate a sink
+    /// for another call.
+    pub(super) fn new(
+        call: RegisteredToolCall,
+        channel: Arc<dyn RegisteredToolProgressChannel>,
+    ) -> Self {
         Self { call, channel }
     }
 
     /// Publishes one bounded ordered progress item for the bound call.
+    ///
+    /// The kernel re-checks identity, generation, order, queue bounds, the
+    /// effective call deadline, and the live consumer admission verdict before
+    /// accepting the item. Because that live check is asynchronous by contract,
+    /// publishing resolves through a future rather than returning immediately.
     pub fn publish(
         &self,
         sequence: NonZeroU64,
         payload: RegisteredToolPayload,
-    ) -> Result<(), RuntimeFailure> {
-        let progress = RegisteredToolProgress::mint(&self.call, sequence, payload)?;
+    ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        let progress = match RegisteredToolProgress::mint(&self.call, sequence, payload) {
+            Ok(progress) => progress,
+            Err(error) => {
+                let error = error.into_runtime_failure();
+                return Box::pin(async move { Err(error) });
+            }
+        };
         self.channel.admit(progress)
     }
 

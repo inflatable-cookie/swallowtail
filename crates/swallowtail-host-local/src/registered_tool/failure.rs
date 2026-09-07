@@ -31,9 +31,9 @@ pub(super) fn identity_failure() -> RuntimeFailure {
     )
 }
 
-pub(super) fn unsupported_transport_failure() -> RuntimeFailure {
+pub(super) fn not_ready_failure() -> RuntimeFailure {
     failure(
-        "swallowtail.registered_tool.unsupported_transport",
-        "Selected registered-tool transport is not qualified",
+        "swallowtail.registered_tool.not_ready",
+        "Registered tool bridge has not published its mounted topology",
     )
 }

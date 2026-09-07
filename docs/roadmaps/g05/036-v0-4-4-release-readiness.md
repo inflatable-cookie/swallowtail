@@ -54,6 +54,18 @@ capacity report, not live acceptance. An auth or quota rejection captures a
 bounded result and stops; there are no repeated retries. The three-provider
 release gates are unchanged.
 
+**First live result 2026-09-07: admission proven, invocation unproven.** Both
+segments ran exactly once and both returned `inconclusive`, but on each the
+outbound `session/new` carried a non-empty `mcpServers` list and the
+disposable echo server observed `initialize` and `tools/list`. Grok Build
+accepted the client-declared server, connected to it, and enumerated its
+tools; the model did not call it. That refutes `ignores_client_mcp` and
+`rejects_client_mcp` at the protocol level and leaves only the invocation
+question open, so the decision tree's "second inconclusive is treated as
+ignores" branch must not fire. Card 133 repairs the verdict oracle, after
+which Desktop runs the single authorized rerun per segment. The four cells
+stay `evidence_pending` until then.
+
 The history below stands as the record of the hold.
 
 The operator subsequently completed isolated login for both segments, and

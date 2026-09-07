@@ -164,6 +164,7 @@ consumer requirements and must not create a competing producer worker.
 | [129](batch-cards/129-feature-matrix-cross-classification-audit.md) | ready | docs/matrix owner; `docs/guides/provider-solution-feature-matrix.csv`, `provider-route-matrix.md`, `scripts/check-provider-route-matrix.sh`; forbidden: crates, claims | check enforces kind+reference on every cross; ranked producer-gap backlog; exact-head review |
 | [131](batch-cards/131-codex-app-server-client-mcp-servers-evidence.md) | ready | Codex evidence owner; corpus, matrix cell, one fake transcript if a surface exists; forbidden: runtime, live Codex | anchored classification; matrix check green; exact-head review |
 | [132](batch-cards/132-claude-sdk-registered-tool-real-route-gate.md) | planned; Desktop schedules under its isolated-testing authorization | Swallowtail supplies the packet only; Desktop runs; Contract 061 row and matrix cells move only from the capsule | one real registered call under the frozen tuple |
+| [133](batch-cards/133-grok-probe-verdict-oracle-repair.md) | ready | testkit owner; `crates/swallowtail-testkit/**` probe module and fixtures, the card 128 hand-off packet; forbidden: adapters, claims, matrix, contracts | extended offline fixtures pass; exact-head review; Desktop reruns once per segment after merge |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.

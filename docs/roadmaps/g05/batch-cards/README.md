@@ -4,7 +4,6 @@
 
 - [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — ready; provider-free seam under Research 289's mapping; live gate separate; waits for cards114-115 merge and consumer-tool protocol evidence exists
 - [137-grok-probe-conforming-acp-client.md](./137-grok-probe-conforming-acp-client.md) — ready; the probe never answers client requests during session/new, so Grok waits and the session never opens; diagnose from captured frames at no quota cost
-- [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — ready; serial after 125; resolved skill bundle as the distinct third input
 - [124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md](./124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — ready; serial after 121; bounded manifest lookup and one model-id predicate; precedes the `v0.4.4` candidate
 - [119-claude-sdk-first-turn-model-qualification-evidence.md](./119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; bounded observer evidence for the first-turn model rejection; lead of the producer-diagnosis trio
 - [120-claude-sdk-loaded-module-version-verification.md](./120-claude-sdk-loaded-module-version-verification.md) — ready; serial after 119; loaded SDK version verified at open
@@ -35,6 +34,8 @@
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 
 ## Completed
+
+- [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — complete; PR 279 merged at `3984f23b`; resolved skill bundle as the distinct labelled third input; provider-free
 
 - [138-codex-permission-exchange-cell-reconciliation.md](./138-codex-permission-exchange-cell-reconciliation.md) — complete; approvals are observable-only on app-server, typed user-input is the answerable exchange, exec has no callback surface; matrix reason corrected via Research 293; awaiting exact-head review
 - [136-opencode-http-1-18-29-claim.md](./136-opencode-http-1-18-29-claim.md) — complete; qualified OpenCode HTTP `surface-19` through `1.18.29`

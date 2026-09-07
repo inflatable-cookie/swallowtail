@@ -11,6 +11,12 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
             let session_input = CodexSessionInput::for_open(&plan, request.options(), &services)?;
+            let session_input = match self.registered.as_ref() {
+                Some(binding) => {
+                    session_input.with_registered_tools((**binding).clone(), &services)?
+                }
+                None => session_input,
+            };
             let deadline_planned = plan
                 .requirements()
                 .host_services()
@@ -77,6 +83,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
         Box::pin(async move {
             validate_session_deadline(request.deadline().is_some())?;
             validate_session_plan_agreement(&plan, request.plan_agreement())?;
+            self.refuse_registered_continuation()?;
             require_continuity_capabilities(&plan, Capability::LoadSession)?;
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
@@ -166,6 +173,7 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
             validate_session_plan_agreement(&plan, request.plan_agreement())?;
             let behavior = self.validate_plan(&plan)?;
             validate_workspace_behavior(&behavior, request.access_policy())?;
+            self.refuse_registered_continuation()?;
             let session_input = CodexSessionInput::for_resume(&plan, request.options(), &services)?;
             require_continuity_capabilities(&plan, Capability::Resume)?;
             validate_attachment_binding(

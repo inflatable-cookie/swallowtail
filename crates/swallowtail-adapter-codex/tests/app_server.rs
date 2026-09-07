@@ -186,3 +186,4 @@ impl TimeService for ControllableTime {
 include!("app_server/catalogue_and_session.rs");
 include!("app_server/callbacks_and_resume.rs");
 include!("app_server/failure_boundaries.rs");
+include!("app_server/registered_tools.rs");

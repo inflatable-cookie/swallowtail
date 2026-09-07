@@ -492,6 +492,7 @@ fn turn(name: &str, root_thread: &str) -> (Arc<ActiveTurn>, BoxEventStream) {
         RuntimeTurnId::new(name).expect("runtime turn id is valid"),
         None,
         BTreeSet::new(),
+        None,
         ProviderRequestPolicy::reject_all(),
         root_thread.to_owned(),
         Weak::<RpcConnection>::new(),

@@ -1,3 +1,4 @@
+use crate::registered_tools::CodexRegisteredTurn;
 use crate::rpc::{RpcConnection, failure};
 use crate::session_access::CodexSessionAccess;
 use crate::session_input::CodexSessionRuntime;
@@ -9,9 +10,9 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::{CancellationScope, SessionRef, TurnRef};
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CallbackExchange, CancellationAcknowledgement, CancellationControl,
-    CleanupOutcome, HostServices, InteractiveSessionHandle, JoinedTask, RequestId, RuntimeFailure,
-    RuntimeSessionId, RuntimeTurnId, SessionResumeBinding, TerminalOutcome, TerminalStatus,
-    TurnHandle, TurnRequest,
+    CleanupOutcome, HostServices, InteractiveSessionHandle, JoinedTask, RegisteredToolCleanupCause,
+    RequestId, RuntimeFailure, RuntimeSessionId, RuntimeTurnId, SessionResumeBinding,
+    TerminalOutcome, TerminalStatus, TurnHandle, TurnRequest,
 };
 
 pub(crate) struct SessionCancellation {
@@ -66,6 +67,9 @@ impl CancellationControl for TurnCancellation {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
             self.turn.mark_cancelled();
+            // Freeze registered admission before the interrupt: no new
+            // registered call is admitted once cancellation is requested.
+            self.turn.freeze_registered_tools().await;
             let callbacks = self
                 .connection
                 .reject_abandoned_callbacks(self.turn.take_abandoned_provider_requests())
@@ -95,6 +99,7 @@ pub(crate) struct CodexTurnHandle {
     terminal: Option<BoxFuture<'static, TerminalOutcome>>,
     cancellation: TurnCancellation,
     deadline_task: Option<Box<dyn JoinedTask>>,
+    registered: Option<Arc<CodexRegisteredTurn>>,
 }
 
 impl TurnHandle for CodexTurnHandle {
@@ -124,17 +129,30 @@ impl TurnHandle for CodexTurnHandle {
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            if !self.cancellation.turn.is_finished() {
+            let cancelled = !self.cancellation.turn.is_finished();
+            if cancelled {
                 let _ = self.cancellation.request().await;
             }
-            if let Some(task) = self.deadline_task {
+            let registered_cleanup = match self.registered {
+                Some(registered) => {
+                    let cause = if cancelled {
+                        RegisteredToolCleanupCause::Cancellation
+                    } else {
+                        RegisteredToolCleanupCause::Completion
+                    };
+                    registered.close(cause).await
+                }
+                None => CleanupOutcome::NotApplicable,
+            };
+            let task_cleanup = if let Some(task) = self.deadline_task {
                 match task.join().await {
                     Ok(()) => CleanupOutcome::NotApplicable,
                     Err(error) => CleanupOutcome::Failed(error.diagnostic().clone()),
                 }
             } else {
                 CleanupOutcome::NotApplicable
-            }
+            };
+            merge_cleanup(registered_cleanup, task_cleanup)
         })
     }
 }

@@ -1,6 +1,8 @@
+use crate::registered_tools::{CodexRegisteredToolBinding, CodexRegisteredToolRuntime};
 use crate::rpc::failure;
 use serde_json::Value;
 use std::collections::BTreeSet;
+use std::sync::Arc;
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityRequirement, HarnessMode, PreflightPlan,
     ProviderRequestPolicy,
@@ -18,12 +20,14 @@ pub(crate) struct CodexSessionInput {
     collaboration_mode: Option<Value>,
     dynamic_tools: Vec<Value>,
     declared_tools: BTreeSet<String>,
+    registered: Option<Arc<CodexRegisteredToolRuntime>>,
 }
 
 pub(crate) struct CodexSessionRuntime {
     pub(crate) reasoning_effort: Option<String>,
     pub(crate) collaboration_mode: Option<Value>,
     pub(crate) declared_tools: BTreeSet<String>,
+    pub(crate) registered: Option<Arc<CodexRegisteredToolRuntime>>,
     pub(crate) deadline_planned: bool,
     pub(crate) turn_sandbox_policy: Option<Value>,
     pub(crate) provider_requests: ProviderRequestPolicy,
@@ -125,7 +129,25 @@ impl CodexSessionInput {
             collaboration_mode,
             dynamic_tools,
             declared_tools,
+            registered: None,
         })
+    }
+
+    /// Binds one qualified registered selection to this session's tool set.
+    ///
+    /// The session must have declared exactly the registered dynamic tools;
+    /// anything else fails before the provider thread starts.
+    pub(crate) fn with_registered_tools(
+        mut self,
+        binding: CodexRegisteredToolBinding,
+        services: &HostServices,
+    ) -> Result<Self, RuntimeFailure> {
+        self.registered = Some(Arc::new(CodexRegisteredToolRuntime::bind(
+            binding,
+            &self.dynamic_tools,
+            services,
+        )?));
+        Ok(self)
     }
 
     pub(crate) fn apply_open(&self, params: &mut Value) {
@@ -172,6 +194,7 @@ impl CodexSessionInput {
             reasoning_effort: self.reasoning_effort,
             collaboration_mode: self.collaboration_mode,
             declared_tools: self.declared_tools,
+            registered: self.registered,
             deadline_planned,
             turn_sandbox_policy,
             provider_requests,
@@ -254,7 +277,7 @@ fn validate_tools(plan: &PreflightPlan, tools: &[&ToolDeclaration]) -> Result<()
     Ok(())
 }
 
-fn translate_tool(tool: &ToolDeclaration) -> Result<Value, RuntimeFailure> {
+pub(crate) fn translate_tool(tool: &ToolDeclaration) -> Result<Value, RuntimeFailure> {
     let SchemaDocument::Inline(bytes) = tool.input_schema() else {
         return Err(unsupported("referenced dynamic tool schemas"));
     };

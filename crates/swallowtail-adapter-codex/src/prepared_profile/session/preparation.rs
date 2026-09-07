@@ -9,13 +9,25 @@ use crate::prepared_profile::plan::{
 use crate::prepared_profile::session_capabilities::{
     behavior_revision, session_capabilities, supports_harness_mode,
 };
+use crate::registered_tools::CodexRegisteredToolBinding;
 use crate::selection::CODEX_APP_SERVER_WORKSPACE_BEHAVIOR;
 use crate::{CodexPreparedDriver, CodexPreparedIntegration, codex_bounded_workspace_capability};
+use swallowtail_core::Diagnostic;
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, DriverRole, HarnessConfigurationPosture,
     HostServiceKind, OperationShape, SessionProviderStatePolicy,
 };
-use swallowtail_runtime::{OpenSessionRequest, PreparationFailure};
+use swallowtail_runtime::{
+    OpenSessionRequest, PreparationFailure, PreparationStage, RuntimeFailure,
+};
+
+/// Reports one adapter qualification failure as a preparation failure.
+fn adapter_failure(error: &RuntimeFailure) -> PreparationFailure {
+    PreparationFailure::new(
+        PreparationStage::Preflight,
+        Diagnostic::new(error.diagnostic().clone()),
+    )
+}
 
 pub(super) fn prepare_session(
     prepared: &CodexPreparedIntegration,
@@ -31,8 +43,32 @@ pub(super) fn prepare_session(
             "Prepared Codex version does not support bounded workspace roots",
         ));
     }
-    let (request_id, model, working_resource, deadline, options, user_input_exchange) =
-        input.into_parts();
+    let (
+        request_id,
+        model,
+        working_resource,
+        deadline,
+        mut options,
+        user_input_exchange,
+        registered_tools,
+    ) = input.into_parts();
+    // Registered declarations replace the session's tool set outright, so one
+    // dynamic tool name can never mean two different things on the wire.
+    let registered = match registered_tools {
+        Some(preparation) => {
+            if options.tools().len() != 0 {
+                return Err(failure(
+                    "swallowtail.codex.preparation.registered_tools_conflict",
+                    "Codex registered sessions cannot also declare unregistered tools",
+                ));
+            }
+            let binding = CodexRegisteredToolBinding::qualify(preparation)
+                .map_err(|error| adapter_failure(&error))?;
+            options = options.with_tools(binding.declarations().to_vec());
+            Some(binding)
+        }
+        None => None,
+    };
     if deadline.is_some() {
         return Err(failure(
             "swallowtail.codex.preparation.session_deadline_unsupported",
@@ -105,6 +141,7 @@ pub(super) fn prepare_session(
         .with_options(options);
     Ok(CodexPreparedSession {
         kind,
+        registered,
         evidence: CodexPreparedEvidence::from_prepared_with_activity_profile(
             prepared,
             plan,

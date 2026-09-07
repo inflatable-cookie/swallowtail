@@ -1,5 +1,6 @@
 use crate::app_server_activity::AppServerActivityProjection;
 use crate::callback_exchange::CallbackHub;
+use crate::registered_tools::CodexRegisteredTurn;
 use crate::rpc::RpcConnection;
 use crate::rpc::failure;
 use serde_json::Value;
@@ -54,6 +55,7 @@ pub(crate) struct ActiveTurn {
     provider_id: Mutex<Option<String>>,
     deadline: Option<Deadline>,
     declared_tools: BTreeSet<String>,
+    registered: Option<Arc<CodexRegisteredTurn>>,
     provider_requests: swallowtail_core::ProviderRequestPolicy,
     activity: Mutex<AppServerActivityProjection>,
     admitted_child_threads: Mutex<BTreeSet<String>>,
@@ -75,6 +77,7 @@ impl ActiveTurn {
         runtime_id: RuntimeTurnId,
         deadline: Option<Deadline>,
         declared_tools: BTreeSet<String>,
+        registered: Option<Arc<CodexRegisteredTurn>>,
         provider_requests: swallowtail_core::ProviderRequestPolicy,
         provider_thread_id: String,
         connection: Weak<RpcConnection>,
@@ -104,6 +107,7 @@ impl ActiveTurn {
                 provider_id: Mutex::new(None),
                 deadline,
                 declared_tools,
+                registered,
                 provider_requests,
                 callbacks,
                 events,
@@ -170,6 +174,13 @@ impl ActiveTurn {
 
     pub(crate) fn take_abandoned_provider_requests(&self) -> Vec<Value> {
         self.callbacks.take_abandoned_provider_requests()
+    }
+
+    /// Freezes registered-tool admission when no dispatch is outstanding.
+    pub(crate) async fn freeze_registered_tools(&self) {
+        if let Some(registered) = &self.registered {
+            registered.freeze_when_clear().await;
+        }
     }
 }
 

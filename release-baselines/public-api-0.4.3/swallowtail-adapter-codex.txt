@@ -16,6 +16,7 @@ impl swallowtail_adapter_codex::CodexAppServerDriver
 pub const fn swallowtail_adapter_codex::CodexAppServerDriver::install_guidance() -> swallowtail_core::registration::discovery::InstallGuidance
 impl swallowtail_adapter_codex::CodexAppServerDriver
 pub const fn swallowtail_adapter_codex::CodexAppServerDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+pub fn swallowtail_adapter_codex::CodexAppServerDriver::with_registered_tools(self, swallowtail_adapter_codex::CodexRegisteredToolBinding) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_codex::CodexAppServerDriver
 pub fn swallowtail_adapter_codex::CodexAppServerDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_codex::CodexAppServerDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
@@ -165,6 +166,8 @@ pub fn swallowtail_adapter_codex::CodexPreparedSession::load_session(&self, swal
 pub fn swallowtail_adapter_codex::CodexPreparedSession::low_level_driver(&self) -> swallowtail_adapter_codex::CodexAppServerDriver
 pub fn swallowtail_adapter_codex::CodexPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_codex::CodexPreparedSessionFuture
 pub const fn swallowtail_adapter_codex::CodexPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_codex::CodexPreparedSession::registered_capability_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, &swallowtail_runtime::host_registry::HostServices) -> core::option::Option<core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>>
+pub const fn swallowtail_adapter_codex::CodexPreparedSession::registered_tools(&self) -> core::option::Option<&swallowtail_adapter_codex::CodexRegisteredToolBinding>
 pub const fn swallowtail_adapter_codex::CodexPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
 pub fn swallowtail_adapter_codex::CodexPreparedSession::resume_request(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding) -> core::result::Result<swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_codex::CodexPreparedSession::resume_session(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_codex::CodexPreparedSessionFuture, swallowtail_runtime::preparation::PreparationFailure>
@@ -217,6 +220,13 @@ pub fn swallowtail_adapter_codex::CodexPreparedSessionReconciliation::reconcile(
 impl swallowtail_runtime::working_state_restoration::WorkingStateRestorationOperation for swallowtail_adapter_codex::CodexPreparedSessionReconciliation
 pub fn swallowtail_adapter_codex::CodexPreparedSessionReconciliation::method(&self) -> swallowtail_runtime::working_state_restoration::WorkingStateRestorationMethod
 pub fn swallowtail_adapter_codex::CodexPreparedSessionReconciliation::restore(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::working_state_restoration::WorkingStateRestorationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_codex::CodexRegisteredToolBinding
+impl swallowtail_adapter_codex::CodexRegisteredToolBinding
+pub fn swallowtail_adapter_codex::CodexRegisteredToolBinding::declarations(&self) -> &[swallowtail_runtime::session_options::ToolDeclaration]
+pub const fn swallowtail_adapter_codex::CodexRegisteredToolBinding::preparation(&self) -> &swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation
+pub fn swallowtail_adapter_codex::CodexRegisteredToolBinding::qualify(swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
+pub const fn swallowtail_adapter_codex::CodexRegisteredToolBinding::selection(&self) -> &swallowtail_runtime::registered_tool::selection::RegisteredToolSelection
+pub fn swallowtail_adapter_codex::CodexRegisteredToolBinding::tool_for(&self, &str) -> core::option::Option<&swallowtail_runtime::registered_tool::identity::RegisteredToolId>
 pub struct swallowtail_adapter_codex::CodexSessionCatalogueInput
 impl swallowtail_adapter_codex::CodexSessionCatalogueInput
 pub const fn swallowtail_adapter_codex::CodexSessionCatalogueInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ProviderSessionCatalogueId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_core::provider_session_catalogue::ProviderSessionCatalogueBounds) -> Self
@@ -233,6 +243,7 @@ pub const fn swallowtail_adapter_codex::CodexSessionManagementInput::with_deadli
 pub struct swallowtail_adapter_codex::CodexSessionProfileInput
 impl swallowtail_adapter_codex::CodexSessionProfileInput
 pub const fn swallowtail_adapter_codex::CodexSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_codex::CodexModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef, core::option::Option<swallowtail_runtime::time::Deadline>, swallowtail_runtime::session_options::SessionOptions) -> Self
+pub fn swallowtail_adapter_codex::CodexSessionProfileInput::with_registered_tools(self, swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation) -> Self
 pub const fn swallowtail_adapter_codex::CodexSessionProfileInput::with_user_input_exchange(self) -> Self
 pub struct swallowtail_adapter_codex::CodexSessionReconciliationInput
 impl swallowtail_adapter_codex::CodexSessionReconciliationInput
@@ -248,6 +259,8 @@ pub const swallowtail_adapter_codex::CODEX_CHATGPT_SUBSCRIPTION_AUDIENCE: &str
 pub const swallowtail_adapter_codex::CODEX_CLI_AXIS: &str
 pub const swallowtail_adapter_codex::CODEX_EXEC_BASELINE_VERSION: &str
 pub const swallowtail_adapter_codex::CODEX_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_codex::CODEX_REGISTERED_TOOL_NAME_SEPARATOR: &str
+pub const swallowtail_adapter_codex::CODEX_REGISTERED_TOOL_ROUTE: swallowtail_runtime::consumer_route_projection::registered_capability::RegisteredToolQualifiedRoute
 pub fn swallowtail_adapter_codex::codex_app_server_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_adapter_codex::codex_app_server_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub fn swallowtail_adapter_codex::codex_app_server_descriptor() -> swallowtail_core::registration::DriverDescriptor

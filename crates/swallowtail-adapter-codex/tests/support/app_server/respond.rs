@@ -3,7 +3,10 @@ fn respond(&self, message: &serde_json::Value) {
         if message.get("result").is_some() {
             let provider_id = message.get("id").and_then(serde_json::Value::as_str);
             if provider_id == Some("callback-900")
-                && matches!(self.mode, AppServerMode::DynamicToolCall)
+                && matches!(
+                    self.mode,
+                    AppServerMode::DynamicToolCall | AppServerMode::RegisteredToolCall
+                )
             {
                 self.complete_turn("completed");
                 return;
@@ -315,6 +318,19 @@ fn respond(&self, message: &serde_json::Value) {
                                 "turnId": "turn-provider-1",
                                 "callId": "provider-call-1",
                                 "tool": "task_ledger",
+                                "arguments": {"operation": "list"}
+                            }
+                        }));
+                    }
+                    AppServerMode::RegisteredToolCall => {
+                        self.state.push(serde_json::json!({
+                            "id": "callback-900",
+                            "method": "item/tool/call",
+                            "params": {
+                                "threadId": thread_id,
+                                "turnId": "turn-provider-1",
+                                "callId": "provider-call-1",
+                                "tool": "desktop__task_ledger",
                                 "arguments": {"operation": "list"}
                             }
                         }));

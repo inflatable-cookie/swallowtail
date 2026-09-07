@@ -2,6 +2,7 @@
 
 pub(crate) mod app_server;
 mod preflight;
+pub(crate) mod registered;
 mod resume;
 pub(crate) mod topology;
 

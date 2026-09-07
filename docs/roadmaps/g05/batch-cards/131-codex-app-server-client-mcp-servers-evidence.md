@@ -1,6 +1,6 @@
 # 131 Codex App-Server Client MCP Servers Evidence
 
-Status: ready; evidence recorded; awaiting exact-head review
+Status: complete; PR 277 merged at `f36e1165`; Codex client MCP is a cited provider limitation
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

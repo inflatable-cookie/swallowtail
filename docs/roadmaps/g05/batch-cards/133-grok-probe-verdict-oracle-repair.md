@@ -1,6 +1,6 @@
 # 133 Grok Probe Verdict Oracle Repair
 
-Status: ready
+Status: complete; PR 280 merged at `0aeefa15`; oracle splits admission from invocation
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

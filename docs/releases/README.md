@@ -6,6 +6,8 @@ mutations.
 
 ## Current Release
 
+- [Swallowtail 0.4.4](0.4.4.md) — candidate prepared from `9281d12a`; hosted CI/review pending; tag not authorized
+
 - [Swallowtail 0.4.3](0.4.3.md) — tagged at `cbd4ddc8`; tag object
   `d8300430`; source-only additive patch over immutable `v0.4.2`; not published
 

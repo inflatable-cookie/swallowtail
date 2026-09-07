@@ -63,5 +63,7 @@ fixture runs on every docs push; the live-tree `0.4.2` assertion is gone so
 the next release lane does not fail the docs hook. Rebase onto Card 110
 `258574a6` inherited Card 104's unrecognized Status token `review`; Status
 is `complete` and the index line moved with PR 251 at `944a4285`.
-`scripts/README.md` is owned by card 110; the new scripts are not listed
-there.
+`## Stopped` is a recognised batch-card index section; `stopped` Status maps
+only to it. Card 087 stays `Status: stopped` and the index line moved out of
+Planned. `scripts/README.md` is owned by card 110; the new scripts are not
+listed there.

@@ -22,12 +22,15 @@
 - [113-ci-critical-path.md](./113-ci-critical-path.md) — planned; MSRV to Linux clippy-only on PRs, shard rebalance, cache audit; may start now
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — planned; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
 - [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — planned; ready on card 105's merge
-- [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — planned; waits for cards 084 and 086
 
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; `0.41.0` claim; gated behind card 062 admitting a Contract 029 segment
 - [006-qoder-skill-visibility-acceptance.md](./006-qoder-skill-visibility-acceptance.md) — planned; depends on card 005
 - [005-qoder-effective-skill-visibility-binding.md](./005-qoder-effective-skill-visibility-binding.md) — planned; depends on positive Research 256
+
+## Stopped
+
+- [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 
 ## Completed
 

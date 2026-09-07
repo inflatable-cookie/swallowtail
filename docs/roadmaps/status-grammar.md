@@ -34,6 +34,10 @@ Status: ready; one authorized live turn
 
 Do not write `Status: gated`.
 
+Batch-card indexes list each card once under ``## Planned``, ``## Ready``,
+``## Blocked``, ``## Stopped``, or ``## Completed``. ``stopped`` Status maps
+only to ``## Stopped``.
+
 ## Generation-Index Census
 
 The active generation's census paragraph in `generation-index.md` must carry

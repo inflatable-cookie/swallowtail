@@ -16,10 +16,14 @@ is the human copy):
   ``evidence stop`` and ``identity stop``, still only as the first field.
 - Batch-card indexes are matched as markdown list entries
   ``- [title](./NNN-file.md)`` (optional ``./``) under ``## Planned``,
-  ``## Ready``, ``## Blocked``, or ``## Completed``. One entry per card.
-  The section heading is the index bucket; the optional ``—`` annotation
-  primary must belong to that bucket.
+  ``## Ready``, ``## Blocked``, ``## Stopped``, or ``## Completed``. One
+  entry per card. The section heading is the index bucket; the optional
+  ``—`` annotation primary must belong to that bucket. ``stopped`` Status
+  maps only to ``## Stopped``.
 - Every failure names ``path:line`` of the line to fix.
+
+Tests may point the checker at a throwaway tree with
+``SWALLOWTAIL_STATUS_CHECK_ROOT``.
 
 Accepted Status buckets and generation-index census phrases are also
 documented in docs/roadmaps/status-grammar.md. Live census regexes:
@@ -31,13 +35,21 @@ documented in docs/roadmaps/status-grammar.md. Live census regexes:
 
 from __future__ import annotations
 
+import os
 import re
 import sys
 from collections import defaultdict
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parent.parent
+def repo_root() -> Path:
+    override = os.environ.get("SWALLOWTAIL_STATUS_CHECK_ROOT")
+    if override:
+        return Path(override).resolve()
+    return Path(__file__).resolve().parent.parent
+
+
+ROOT = repo_root()
 GENERATION_INDEX = ROOT / "docs/roadmaps/generation-index.md"
 
 # Longer aliases first so ``evidence stop`` wins over a later ``stopped``.
@@ -105,7 +117,10 @@ LINK_RE = re.compile(
     r"^- \[.*?\]\(\.?/?(?P<file>\d{3}-[^)\s]+\.md)\)(?:\s*—\s*(?P<ann>.*))?$",
     re.MULTILINE,
 )
-SECTION_RE = re.compile(r"^## (?P<title>Planned|Ready|Blocked|Completed)\s*$", re.MULTILINE)
+SECTION_RE = re.compile(
+    r"^## (?P<title>Planned|Ready|Blocked|Stopped|Completed)\s*$",
+    re.MULTILINE,
+)
 CARD_READY_PROSE_RE = re.compile(
     r"cards?\s+(?P<ids>(?:\d{3}(?:\s*[-–,]\s*\d{3})*)+)\s+(?:is|are)\s+ready",
     re.IGNORECASE,
@@ -124,6 +139,7 @@ SECTION_BUCKET = {
     "Planned": "planned",
     "Ready": "ready",
     "Blocked": "blocked",
+    "Stopped": "stopped",
     "Completed": "complete",
 }
 
@@ -209,7 +225,7 @@ def check_batch_cards() -> None:
     sections = list(SECTION_RE.finditer(document))
     if not sections:
         fail(
-            "batch-card index has no Planned/Ready/Blocked/Completed sections",
+            "batch-card index has no Planned/Ready/Blocked/Stopped/Completed sections",
             at=(BATCH_INDEX, 1),
         )
 

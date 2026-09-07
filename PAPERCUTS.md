@@ -910,3 +910,14 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   is recorded, or add a second gates profile / `--hosted` evidence flag.
 - Surface: Effigy `release prepare`; Swallowtail `config/release.toml`;
   Contract 036 hosted-delegation clause.
+
+### [ ] Root README still hardcodes the release version after card 110 — 2026-09-07
+- Friction: the `v0.4.4` prepare (card 122) failed its `qa` gate because root
+  `README.md` carried `v0.4.3` in the release posture, coordinated package
+  version, four source-install tags, runtime prerequisite, and release-note
+  link. Card 110 derived the gate scripts from the tree but left the README
+  literals in place, so every candidate still needs a manual README edit.
+- Fix shape: either generate those README lines from `Cargo.toml` during
+  prepare (an Effigy sync-file or a small script the cheap gate runs), or drop
+  the version literals from the README and point at the release index.
+- Surface: root `README.md`; `scripts/check-consumer-front-door.py`; card 110.

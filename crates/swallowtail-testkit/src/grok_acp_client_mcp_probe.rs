@@ -2,9 +2,10 @@
 //!
 //! Verdicts are decided from captured ACP frames plus the disposable echo MCP
 //! stdio transcript. ACP v1 cannot name the client MCP server on a tool call,
-//! so `accepts_client_mcp` requires a `tools/call` on that transcript. Crate
-//! tests drive the fake ACP fixture. The live installed-Grok entrypoint
-//! refuses to spawn unless Desktop sets
+//! so `accepts_client_mcp` requires a `tools/call` on that transcript.
+//! `ignores_client_mcp` requires `initialize` on that transcript; an empty
+//! or missing file is not liveness. Crate tests drive the fake ACP fixture.
+//! The live installed-Grok entrypoint refuses to spawn unless Desktop sets
 //! [`DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE`] and an isolated `GROK_HOME`
 //! directory exists.
 
@@ -29,6 +30,8 @@ pub const ECHO_MCP_SERVER_NAME: &str = "swallowtail-echo";
 pub const ECHO_MCP_TOOL: &str = "echo";
 /// Env var the echo stdio server appends received method names to.
 pub const ECHO_MCP_TRANSCRIPT_ENV: &str = "SWALLOWTAIL_ECHO_MCP_TRANSCRIPT";
+/// CLI flag carrying the same transcript path, so a dropped `env` is not silent.
+pub const ECHO_MCP_TRANSCRIPT_FLAG: &str = "--transcript";
 
 const MAXIMUM_FRAMES: usize = 48;
 const ECHO_PROMPT: &str = "Call the echo tool with text ping and return its result.";
@@ -45,7 +48,7 @@ const LIVE_JOIN: Duration = Duration::from_secs(2);
 pub enum ClientMcpVerdict {
     /// Session accepted a non-empty `mcpServers` list and the echo MCP server was called.
     AcceptsClientMcp,
-    /// Session accepted a non-empty `mcpServers` list and the echo MCP server was never called.
+    /// Session accepted a non-empty `mcpServers` list, echo MCP received `initialize`, and echo was never called.
     IgnoresClientMcp,
     /// Session setup rejected the non-empty `mcpServers` list.
     RejectsClientMcp,
@@ -56,7 +59,6 @@ pub enum ClientMcpVerdict {
 /// Methods observed by the disposable echo MCP server on its own stdio.
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct EchoMcpTranscript {
-    observed: bool,
     initialize: bool,
     tools_list: bool,
     tools_call: bool,
@@ -67,22 +69,26 @@ impl EchoMcpTranscript {
     #[must_use]
     pub const fn called() -> Self {
         Self {
-            observed: true,
             initialize: true,
             tools_list: true,
             tools_call: true,
         }
     }
 
-    /// Transcript file existed and Grok never called echo.
+    /// Echo MCP received `initialize` and Grok never called the tool.
     #[must_use]
     pub const fn observed_idle() -> Self {
         Self {
-            observed: true,
-            initialize: false,
+            initialize: true,
             tools_list: false,
             tools_call: false,
         }
+    }
+
+    /// Returns whether echo MCP received `initialize`. That is live liveness, not file existence.
+    #[must_use]
+    pub const fn initialize(&self) -> bool {
+        self.initialize
     }
 
     /// Returns whether a `tools/call` for echo was observed.
@@ -126,10 +132,7 @@ pub fn read_echo_mcp_transcript(path: &Path) -> EchoMcpTranscript {
     let Ok(text) = fs::read_to_string(path) else {
         return EchoMcpTranscript::default();
     };
-    let mut transcript = EchoMcpTranscript {
-        observed: true,
-        ..EchoMcpTranscript::default()
-    };
+    let mut transcript = EchoMcpTranscript::default();
     for line in text.lines() {
         match line.trim() {
             "initialize" => transcript.initialize = true,
@@ -422,12 +425,18 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
 ) -> Result<GrokAcpClientMcpCapsule, GrokAcpClientMcpError> {
     let mut capture = FrameCapture::new();
     let mut next_id = 1_u64;
-    let env = match transcript_path {
-        Some(path) => json!([{
-            "name": ECHO_MCP_TRANSCRIPT_ENV,
-            "value": path.to_string_lossy()
-        }]),
-        None => json!([]),
+    let (args, env) = match transcript_path {
+        Some(path) => {
+            let path = path.to_string_lossy();
+            (
+                json!([ECHO_MCP_TRANSCRIPT_FLAG, path]),
+                json!([{
+                    "name": ECHO_MCP_TRANSCRIPT_ENV,
+                    "value": path
+                }]),
+            )
+        }
+        None => (json!([]), json!([])),
     };
 
     let initialize = json!({
@@ -468,7 +477,7 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
                     "mcpServers": [{
                         "name": ECHO_MCP_SERVER_NAME,
                         "command": echo_command,
-                        "args": [],
+                        "args": args,
                         "env": env
                     }]
                 }),
@@ -578,9 +587,7 @@ pub fn grok_acp_client_mcp_verdict(
         {
             if transcript.tools_call() {
                 ClientMcpVerdict::AcceptsClientMcp
-            } else if permission_was_rejected(frames)
-                || (!transcript.observed && echo_named_tool_called(frames))
-            {
+            } else if permission_was_rejected(frames) || !transcript.initialize() {
                 ClientMcpVerdict::Inconclusive
             } else if prompt_turn_completed(frames) {
                 ClientMcpVerdict::IgnoresClientMcp
@@ -1314,6 +1321,7 @@ fn session_id_from(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<String> 
         .map(str::to_owned)
 }
 
+#[cfg(test)]
 fn echo_named_tool_called(frames: &[GrokAcpClientMcpFrame]) -> bool {
     frames.iter().any(|frame| {
         !frame.is_outbound()
@@ -1322,6 +1330,7 @@ fn echo_named_tool_called(frames: &[GrokAcpClientMcpFrame]) -> bool {
     })
 }
 
+#[cfg(test)]
 fn echo_tool_title(message: &Value) -> bool {
     let title = message
         .pointer("/params/update/title")
@@ -1335,6 +1344,7 @@ fn echo_tool_title(message: &Value) -> bool {
         .any(|value| value.eq_ignore_ascii_case(ECHO_MCP_TOOL))
 }
 
+#[cfg(test)]
 fn update_kind(message: &Value) -> Option<&str> {
     message
         .pointer("/params/update/sessionUpdate")
@@ -1766,8 +1776,10 @@ mod tests {
 
     #[test]
     fn native_echo_title_without_client_mcp_server_is_inconclusive() {
+        let frames = unattributed_echo_frames();
+        assert!(echo_named_tool_called(&frames));
         assert_eq!(
-            grok_acp_client_mcp_verdict_from_frames(&unattributed_echo_frames()),
+            grok_acp_client_mcp_verdict_from_frames(&frames),
             ClientMcpVerdict::Inconclusive
         );
     }
@@ -1787,6 +1799,9 @@ mod tests {
             }
             fn stale_callback_request(&mut self) -> Option<Value> {
                 None
+            }
+            fn echo_mcp_transcript(&mut self) -> EchoMcpTranscript {
+                self.0.echo_mcp_transcript()
             }
         }
         let mut peer = SilentStale(FakeAcpPeer::new(ClientMcpVerdict::IgnoresClientMcp));
@@ -1815,6 +1830,41 @@ mod tests {
         assert_eq!(
             grok_acp_client_mcp_verdict(&frames, &EchoMcpTranscript::observed_idle()),
             ClientMcpVerdict::IgnoresClientMcp
+        );
+    }
+
+    #[test]
+    fn empty_transcript_file_is_not_echo_liveness() {
+        let path = std::env::temp_dir().join(format!(
+            "swallowtail-echo-mcp-empty-{}.ndjson",
+            std::process::id()
+        ));
+        std::fs::write(&path, b"").expect("empty transcript");
+        let transcript = read_echo_mcp_transcript(&path);
+        let _ = std::fs::remove_file(&path);
+        assert!(!transcript.initialize());
+        assert!(!transcript.tools_call());
+        assert_eq!(
+            grok_acp_client_mcp_verdict(&unattributed_echo_frames(), &transcript),
+            ClientMcpVerdict::Inconclusive
+        );
+    }
+
+    #[test]
+    fn completed_prompt_without_echo_initialize_is_inconclusive() {
+        let mut peer = FakeAcpPeer::new(ClientMcpVerdict::IgnoresClientMcp);
+        let capsule =
+            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
+                .expect("capsule");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+        assert!(
+            capsule
+                .echo_mcp_methods()
+                .contains(&"initialize".to_owned())
+        );
+        assert_eq!(
+            grok_acp_client_mcp_verdict_from_frames(capsule.frames()),
+            ClientMcpVerdict::Inconclusive
         );
     }
 

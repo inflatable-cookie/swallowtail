@@ -33,7 +33,6 @@ fn run(args: Vec<String>) -> Result<(), String> {
             let grok_home = isolated_grok_home().map_err(|error| error.to_string())?;
             let cwd = grok_home.display().to_string();
             let transcript_path = grok_home.join("echo-mcp-transcript.ndjson");
-            fs::write(&transcript_path, b"").map_err(|error| error.to_string())?;
             let echo_command = echo_mcp.display().to_string();
             let mut peer = open_desktop_live_grok_acp_peer(&grok_executable, &echo_mcp)
                 .map_err(|error| error.to_string())?;

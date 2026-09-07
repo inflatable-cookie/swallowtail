@@ -36,8 +36,14 @@ tool, no filesystem or network) and drives ACP `initialize`, `authenticate`
 with Grok's already-cached token method id only, and `session/new` with a
 non-empty `mcpServers` list naming that server, then one bounded echo prompt.
 The echo server appends received method names (`initialize`, `tools/list`,
-`tools/call`) to a transcript file under `GROK_HOME`. `accepts_client_mcp`
-requires that `tools/call` transcript, not an invented ACP server-name field.
+`tools/call`) to a transcript file under `GROK_HOME`. The transcript path is
+passed both as MCP `env` (`SWALLOWTAIL_ECHO_MCP_TRANSCRIPT`) and as
+`--transcript` on `mcpServers.args`, so a Grok that drops `env` is not
+silent. The runner does not pre-create that file. `accepts_client_mcp`
+requires a `tools/call` line. `ignores_client_mcp` requires an `initialize`
+line (the echo process was actually reached) plus a completed prompt and no
+`tools/call`. An empty or missing transcript cannot separate "Grok ignored
+`mcpServers`" from a harness fault, and is `inconclusive`.
 
 If Desktop already isolated `GROK_HOME`, the script leaves it in place and
 does not copy host credentials or config. If `GROK_HOME` is unset, the script
@@ -79,10 +85,11 @@ Auth that fails before `session/new`, or a `session/new` JSON-RPC error that
 does not mention `mcpServers` or the echo server name, is `inconclusive`.
 Only an explicit client-MCP rejection is `rejects_client_mcp`. Overflow does
 not abort without a capsule. `accepts_client_mcp` requires the echo MCP
-stdio transcript to contain `tools/call`. `ignores_client_mcp` requires a
-completed `session/prompt` turn and no echo `tools/call` on that transcript.
-A timeout, missing prompt result, or a `title: "echo"` tool call with no
-transcript file is `inconclusive`. Live spawn refuses unless `GROK_HOME` is
+stdio transcript to contain `tools/call`. `ignores_client_mcp` requires
+`initialize` on that transcript, a completed `session/prompt` turn, and no
+`tools/call`. A timeout, missing prompt result, missing `initialize`, or a
+`title: "echo"` tool call without echo MCP `initialize` is `inconclusive`.
+Live spawn refuses unless `GROK_HOME` is
 an existing directory; session `cwd` and the Grok child `HOME` are that
 directory. `stale_callback_rejected` is true only when Grok actually sent a
 post-close callback.

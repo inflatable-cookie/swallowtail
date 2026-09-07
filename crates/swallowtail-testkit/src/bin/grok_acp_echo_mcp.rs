@@ -4,25 +4,39 @@
 
 use std::env;
 use std::io::{self, BufRead, Write};
+use std::path::PathBuf;
 use swallowtail_testkit::{
-    ECHO_MCP_TRANSCRIPT_ENV, append_echo_mcp_transcript, grok_acp_echo_mcp_reply,
-    grok_acp_echo_mcp_stdio_frame,
+    ECHO_MCP_TRANSCRIPT_ENV, ECHO_MCP_TRANSCRIPT_FLAG, append_echo_mcp_transcript,
+    grok_acp_echo_mcp_reply, grok_acp_echo_mcp_stdio_frame,
 };
 
 fn main() -> io::Result<()> {
+    let transcript = transcript_path();
     let mut stdin = io::stdin().lock();
     let mut stdout = io::stdout().lock();
     loop {
         let Some(request) = read_mcp_value(&mut stdin)? else {
             return Ok(());
         };
-        if let Some(method) = request.get("method").and_then(serde_json::Value::as_str) {
-            record_method(method);
+        if let Some(method) = request.get("method").and_then(serde_json::Value::as_str)
+            && let Some(path) = &transcript
+        {
+            append_echo_mcp_transcript(path, method).map_err(io::Error::other)?;
         }
         if let Some(reply) = grok_acp_echo_mcp_reply(&request) {
             write_mcp_value(&mut stdout, &reply)?;
         }
     }
+}
+
+fn transcript_path() -> Option<PathBuf> {
+    let mut args = env::args().skip(1);
+    while let Some(arg) = args.next() {
+        if arg == ECHO_MCP_TRANSCRIPT_FLAG {
+            return args.next().map(PathBuf::from);
+        }
+    }
+    env::var(ECHO_MCP_TRANSCRIPT_ENV).ok().map(PathBuf::from)
 }
 
 fn read_mcp_value(reader: &mut impl BufRead) -> io::Result<Option<serde_json::Value>> {
@@ -65,11 +79,4 @@ fn write_mcp_value(writer: &mut impl Write, value: &serde_json::Value) -> io::Re
         .map_err(|error| io::Error::new(io::ErrorKind::InvalidData, error))?;
     writer.write_all(&body)?;
     writer.flush()
-}
-
-fn record_method(method: &str) {
-    let Ok(path) = env::var(ECHO_MCP_TRANSCRIPT_ENV) else {
-        return;
-    };
-    let _ = append_echo_mcp_transcript(std::path::Path::new(&path), method);
 }

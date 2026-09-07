@@ -22,8 +22,8 @@ is the human copy):
   maps only to ``## Stopped``.
 - Every failure names ``path:line`` of the line to fix.
 
-Tests may point the checker at a throwaway tree with
-``SWALLOWTAIL_STATUS_CHECK_ROOT``.
+Hermetic tests pass ``--root`` pointing at a throwaway tree. Ambient
+environment variables cannot retarget this checker.
 
 Accepted Status buckets and generation-index census phrases are also
 documented in docs/roadmaps/status-grammar.md. Live census regexes:
@@ -35,21 +35,14 @@ documented in docs/roadmaps/status-grammar.md. Live census regexes:
 
 from __future__ import annotations
 
-import os
+import argparse
 import re
 import sys
 from collections import defaultdict
 from pathlib import Path
 
-
-def repo_root() -> Path:
-    override = os.environ.get("SWALLOWTAIL_STATUS_CHECK_ROOT")
-    if override:
-        return Path(override).resolve()
-    return Path(__file__).resolve().parent.parent
-
-
-ROOT = repo_root()
+SCRIPT_ROOT = Path(__file__).resolve().parent.parent
+ROOT = SCRIPT_ROOT
 GENERATION_INDEX = ROOT / "docs/roadmaps/generation-index.md"
 
 # Longer aliases first so ``evidence stop`` wins over a later ``stopped``.
@@ -106,11 +99,37 @@ def active_generation_id() -> str:
     return matches[0].group("generation")
 
 
-ACTIVE_GENERATION = active_generation_id()
-BATCH_DIR = ROOT / f"docs/roadmaps/{ACTIVE_GENERATION}/batch-cards"
-BATCH_INDEX = BATCH_DIR / "README.md"
-MILESTONE_DIR = ROOT / f"docs/roadmaps/{ACTIVE_GENERATION}"
-MILESTONE_INDEX = MILESTONE_DIR / "README.md"
+ACTIVE_GENERATION = ""
+BATCH_DIR = ROOT
+BATCH_INDEX = ROOT
+MILESTONE_DIR = ROOT
+MILESTONE_INDEX = ROOT
+
+
+def bind_paths(root: Path) -> None:
+    global ROOT, GENERATION_INDEX, ACTIVE_GENERATION
+    global BATCH_DIR, BATCH_INDEX, MILESTONE_DIR, MILESTONE_INDEX
+    ROOT = root.resolve()
+    GENERATION_INDEX = ROOT / "docs/roadmaps/generation-index.md"
+    ACTIVE_GENERATION = active_generation_id()
+    BATCH_DIR = ROOT / f"docs/roadmaps/{ACTIVE_GENERATION}/batch-cards"
+    BATCH_INDEX = BATCH_DIR / "README.md"
+    MILESTONE_DIR = ROOT / f"docs/roadmaps/{ACTIVE_GENERATION}"
+    MILESTONE_INDEX = MILESTONE_DIR / "README.md"
+
+
+def parse_args(argv: list[str] | None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Reject roadmap and batch-card Status drift."
+    )
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=SCRIPT_ROOT,
+        help="repository root to scan (hermetic tests; default: this checkout)",
+    )
+    return parser.parse_args(argv)
+
 
 STATUS_RE = re.compile(r"^Status:\s*(?P<raw>.+)$", re.MULTILINE)
 LINK_RE = re.compile(
@@ -394,7 +413,9 @@ def check_generation_index() -> None:
         )
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    args = parse_args(argv)
+    bind_paths(args.root)
     check_batch_cards()
     check_milestones()
     check_generation_index()

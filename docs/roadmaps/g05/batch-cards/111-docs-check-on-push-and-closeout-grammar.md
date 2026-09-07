@@ -65,5 +65,7 @@ the next release lane does not fail the docs hook. Rebase onto Card 110
 is `complete` and the index line moved with PR 251 at `944a4285`.
 `## Stopped` is a recognised batch-card index section; `stopped` Status maps
 only to it. Card 087 stays `Status: stopped` and the index line moved out of
-Planned. `scripts/README.md` is owned by card 110; the new scripts are not
+Planned. Hermetic status fixtures inject via `--root`; the checker ignores
+`SWALLOWTAIL_STATUS_CHECK_ROOT`, and pre-push unsets it before `qa:docs`.
+`scripts/README.md` is owned by card 110; the new scripts are not
 listed there.

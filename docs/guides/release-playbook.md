@@ -16,14 +16,15 @@ green. Consumer smoke runs on the tag afterwards, not as a pre-tag gate.
 | Step | Who | Clock |
 | --- | --- | --- |
 | 1. Candidate content on clean canonical `main` | worker / merge | — |
-| 2. One `effigy --json release prepare --yes --check-gates --version X.Y.Z` | worker | cheap gates; a docs-index failure dies in under a minute |
-| 3. Candidate PR | worker | — |
-| 4. Exact-head review and exact-SHA `CI` `workflow_dispatch` in parallel | reviewer; GitHub | hosted clippy, tests, and MSRV floor live here |
-| 5. Merge on both green | coordinator | — |
-| 6. If the merge SHA is not the green run's SHA and the trees differ, dispatch `CI` with `workflow_dispatch` at the merge SHA | coordinator | before the tag request |
-| 7. Tag request to the operator | Chatterbox | immediate on a qualifying green run; do not wait for consumer smoke |
-| 8. Local annotated tag and push | coordinator, after operator authority naming the exact SHA | — |
-| 9. Source-consumer and working-application smoke | consumer-proof card | after the tag |
+| 2. Preseed the three `X.Y.Z` baselines from the current tree: `bash scripts/generate-public-api-baseline.sh release-baselines/public-api-X.Y.Z`; `release-baselines/production-routes-X.Y.Z.txt` (current route inventory); `release-baselines/internal-dependencies-X.Y.Z.tsv` (workspace edges at `X.Y.Z`); update root `README.md` version lines; never touch an earlier baseline | worker | minutes; the cheap `qa` gate fails immediately if any is missing |
+| 3. One `effigy --json release prepare --yes --check-gates --version X.Y.Z` | worker | cheap gates; a docs-index failure dies in under a minute |
+| 4. Candidate PR | worker | — |
+| 5. Exact-head review and exact-SHA `CI` `workflow_dispatch` in parallel | reviewer; GitHub | hosted clippy, tests, and MSRV floor live here |
+| 6. Merge on both green | coordinator | — |
+| 7. If the merge SHA is not the green run's SHA and the trees differ, dispatch `CI` with `workflow_dispatch` at the merge SHA | coordinator | before the tag request |
+| 8. Tag request to the operator | Chatterbox | immediate on a qualifying green run; do not wait for consumer smoke |
+| 9. Local annotated tag and push | coordinator, after operator authority naming the exact SHA | — |
+| 10. Source-consumer and working-application smoke | consumer-proof card | after the tag |
 
 Cheap local gates, in order: `fmt`, `qa`, `docs`, `metadata`, `api`,
 `security`, `source`. Expected local wall clock is minutes, not the previous

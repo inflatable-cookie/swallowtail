@@ -1,5 +1,5 @@
 use super::super::CodexPreparedSessionKind;
-use super::super::input::CodexSessionProfileInput;
+use super::super::input::{CodexSessionProfileInput, CodexSessionProfileParts};
 use super::super::plan::{
     CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities,
     model_route, require_driver, requirements,
@@ -129,7 +129,8 @@ impl CodexPreparedIntegration {
                 "Prepared Codex version does not support bounded workspace roots",
             ));
         }
-        let (
+        let parts = input.into_parts();
+        let CodexSessionProfileParts {
             request_id,
             model,
             working_resource,
@@ -137,11 +138,12 @@ impl CodexPreparedIntegration {
             options,
             user_input_exchange,
             registered_tools,
-        ) = input.into_parts();
-        if options.tools().len() != 0 || registered_tools.is_some() {
+            selected_skill,
+        } = parts;
+        if options.tools().len() != 0 || registered_tools.is_some() || selected_skill.is_some() {
             return Err(failure(
                 "swallowtail.codex.preparation.import_tools_unsupported",
-                "Codex imported sessions cannot redeclare dynamic tools during load",
+                "Codex imported sessions cannot redeclare prepared session inputs during load",
             ));
         }
         if options.harness_mode().is_some() && !supports_harness_mode(self) {

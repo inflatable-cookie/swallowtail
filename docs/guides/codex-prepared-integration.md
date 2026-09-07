@@ -139,8 +139,8 @@ status composition.
 | `prepare_session_history` | app-server | history identity, exact durable binding, page/cursor/snapshot bounds, optional deadline |
 | `prepare_read_only_session_import` | app-server | one candidate from the prepared catalogue plus the future model, resource, and read-only session options |
 | `prepare_bounded_workspace_session_import` | app-server | the same explicit candidate and future session inputs plus bounded-workspace selection |
-| `prepare_read_only_session` | app-server | model route, model, working resource, instructions, reasoning, plan mode, tools, optional typed user-input exchange |
-| `prepare_bounded_workspace_session` | app-server | the same session inputs plus explicit writable-profile selection |
+| `prepare_read_only_session` | app-server | model route, model, working resource, instructions, reasoning, plan mode, tools, optional resolved selected-skill bundle, optional typed user-input exchange |
+| `prepare_bounded_workspace_session` | app-server | the same session inputs plus explicit writable-profile selection and an optional resolved selected-skill bundle |
 | `prepare_archive_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
 | `prepare_restore_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
 | `prepare_delete_session` | app-server | request identity, inactive management binding, optional deadline, explicit unverified-newer acceptance |
@@ -196,6 +196,45 @@ App-server additionally projects provider activity, plans, task lists, child
 topology, consumer-tool callbacks, and the opt-in typed question exchange when
 the selected version and profile qualify them. Provider approval observations
 do not grant response authority.
+
+## Selected Skill Bundles
+
+`CodexSessionProfileInput::with_selected_skill_bundle(bundle)` binds one
+immutable `ResolvedSkillBundle` to a prepared app-server session. Absence
+preserves every previous behavior. The bundle is Contract 063's third input:
+distinct from session developer instructions and from per-turn user text.
+
+Transport uses the labelled-input surface the route already qualifies for
+session developer instructions. The driver delivers the bundle as one
+labelled `selectedSkillBundle` object on the `thread/start` parameter
+surface — the same parameter object that carries the labelled
+`developerInstructions` input (`crates/swallowtail-adapter-codex/src/app_server/session_role.rs`,
+rendered by `CodexSessionInput::with_selected_skill_bundle` and `apply_open`
+in `crates/swallowtail-adapter-codex/src/session_input.rs`). The labelled
+input carries the skill identity, provenance, revision, body digest, the
+bounded resolved body, and every resolved required reference, byte-identical
+to what Swallowtail validated. It is never merged into instructions or user
+text, never written to the working resource, and never carries raw client
+paths.
+
+Validation happens before provider work. `SelectedSkillBundle::resolve`
+(`crates/swallowtail-runtime/src/registered_tool/selected_skill_resolution.rs`)
+fails typed on a changed digest, an oversize against a declared bound, a
+missing or inaccessible reference, and foreign content. A payload that is
+not UTF-8 text fails typed
+`swallowtail.codex.app_server.selected_skill_payload_not_text` before any
+connection starts. The bundle is immutable for the session: a resumed or
+loaded thread cannot redeclare it
+(`swallowtail.codex.preparation.resume_selected_skill_unsupported` /
+`swallowtail.codex.preparation.load_selected_skill_unsupported`, refused
+again at the driver).
+
+The Contract 061 `registered-tool.selected-skill-bundle` row is available
+for this route only (`CODEX_REGISTERED_TOOL_ROUTE` proves
+`RegisteredToolSkillDelivery::BoundedSelectedBundle`). A prepared session
+that also carries a registered-tool preparation publishes the row with the
+bundle's safe identity, provenance, revision, digest, reference count, and
+resolved byte total — never a skill or reference body.
 
 ## External Thread Import
 

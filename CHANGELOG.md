@@ -5,6 +5,19 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Added
+- bind a resolved selected-skill bundle to a prepared Codex app-server session
+  through the additive `CodexSessionProfileInput::with_selected_skill_bundle`.
+  The bundle crosses as one distinct labelled `selectedSkillBundle` input on
+  the `thread/start` parameter surface that already carries the labelled
+  `developerInstructions` input — never merged into instructions or user text,
+  never a working-resource write. Digest, bounds, reference, and text-encoding
+  failures stay typed before provider work; resumed or loaded threads refuse
+  bundle redeclaration; provider-direct MCP remains withheld. The Contract 061
+  `registered-tool.selected-skill-bundle` row becomes available for this route
+  only. Provider-free fixtures only; no live provider pass is claimed. g05.035
+  card 127.
+
 ## [0.4.4] - 2026-09-07
 
 ### Added

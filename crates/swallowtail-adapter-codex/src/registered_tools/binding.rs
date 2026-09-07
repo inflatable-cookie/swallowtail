@@ -24,12 +24,13 @@ pub const CODEX_REGISTERED_TOOL_NAME_SEPARATOR: &str = "__";
 /// The Deny path is the released dynamic-tool failure result the provider
 /// actually receives, so it is an exact route-supported denial rather than a
 /// simulated acknowledgement. Codex projects no consumer tool progress for a
-/// dynamic tool call, and this card transports no selected skill bundle.
+/// dynamic tool call. The route carries a bounded selected-skill bundle as a
+/// distinct labelled `thread/start` input beside `developerInstructions`.
 pub const CODEX_REGISTERED_TOOL_ROUTE: RegisteredToolQualifiedRoute =
     RegisteredToolQualifiedRoute::new(
         swallowtail_runtime::RegisteredToolPermissionStrength::ExactOneShot,
         RegisteredToolProgressMode::NoProgress,
-        RegisteredToolSkillDelivery::NotCarried,
+        RegisteredToolSkillDelivery::BoundedSelectedBundle,
     );
 
 const JSON_SCHEMA_MEDIA_TYPE: &str = "application/schema+json";

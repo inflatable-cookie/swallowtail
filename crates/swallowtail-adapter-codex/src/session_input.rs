@@ -8,8 +8,8 @@ use swallowtail_core::{
     ProviderRequestPolicy,
 };
 use swallowtail_runtime::{
-    HostServices, RuntimeFailure, SchemaDocument, SessionOptions, ToolDeclaration,
-    resolve_idiom_instructions,
+    HostServices, RegisteredToolPayload, ResolvedSkillBundle, RuntimeFailure, SchemaDocument,
+    SessionOptions, ToolDeclaration, resolve_idiom_instructions,
 };
 
 const JSON_SCHEMA_MEDIA_TYPE: &str = "application/schema+json";
@@ -21,6 +21,7 @@ pub(crate) struct CodexSessionInput {
     dynamic_tools: Vec<Value>,
     declared_tools: BTreeSet<String>,
     registered: Option<Arc<CodexRegisteredToolRuntime>>,
+    selected_skill: Option<Value>,
 }
 
 pub(crate) struct CodexSessionRuntime {
@@ -130,6 +131,7 @@ impl CodexSessionInput {
             dynamic_tools,
             declared_tools,
             registered: None,
+            selected_skill: None,
         })
     }
 
@@ -150,6 +152,48 @@ impl CodexSessionInput {
         Ok(self)
     }
 
+    /// Renders the resolved bundle as one distinct labelled thread/start input.
+    ///
+    /// The labelled input carries the bundle's identity, provenance, revision,
+    /// digest, and every bounded resolved content item byte-identical to what
+    /// Swallowtail validated. Rendering happens here, before any provider
+    /// connection: a non-text payload fails typed instead of reaching the
+    /// wire. The input never merges into developer instructions or user text.
+    pub(crate) fn with_selected_skill_bundle(
+        mut self,
+        bundle: ResolvedSkillBundle,
+    ) -> Result<Self, RuntimeFailure> {
+        let content = |payload: &RegisteredToolPayload| -> Result<Value, RuntimeFailure> {
+            let body = std::str::from_utf8(payload.expose_for_execution()).map_err(|_| {
+                failure(
+                    "swallowtail.codex.app_server.selected_skill_payload_not_text",
+                    "Selected skill payload is not valid UTF-8 text",
+                )
+            })?;
+            Ok(serde_json::json!({
+                "mediaType": payload.media_type().as_str(),
+                "content": body,
+            }))
+        };
+        let mut references = Vec::with_capacity(bundle.references().len());
+        for reference in bundle.references() {
+            references.push(serde_json::json!({
+                "id": reference.id().as_str(),
+                "digest": reference.digest().as_str(),
+                "content": content(reference.payload())?,
+            }));
+        }
+        self.selected_skill = Some(serde_json::json!({
+            "identity": bundle.identity().id().as_str(),
+            "provenance": bundle.identity().provenance().as_str(),
+            "revision": bundle.revision().as_str(),
+            "digest": bundle.digest().as_str(),
+            "body": content(bundle.body())?,
+            "requiredReferences": references,
+        }));
+        Ok(self)
+    }
+
     pub(crate) fn apply_open(&self, params: &mut Value) {
         let object = params
             .as_object_mut()
@@ -165,6 +209,9 @@ impl CodexSessionInput {
                 "dynamicTools".to_owned(),
                 Value::Array(self.dynamic_tools.clone()),
             );
+        }
+        if let Some(selected_skill) = &self.selected_skill {
+            object.insert("selectedSkillBundle".to_owned(), selected_skill.clone());
         }
     }
 

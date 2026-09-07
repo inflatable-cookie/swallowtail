@@ -7,8 +7,9 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::ExitCode;
 use swallowtail_testkit::{
-    ClientMcpVerdict, grok_acp_client_mcp_fixture_probe, isolated_grok_home,
-    open_desktop_live_grok_acp_peer, run_grok_acp_client_mcp_probe_with_transcript,
+    ClientMcpVerdict, create_echo_mcp_transcript, grok_acp_client_mcp_fixture_probe,
+    isolated_grok_home, open_desktop_live_grok_acp_peer,
+    run_grok_acp_client_mcp_probe_with_transcript,
 };
 
 fn main() -> ExitCode {
@@ -32,7 +33,8 @@ fn run(args: Vec<String>) -> Result<(), String> {
         } => {
             let grok_home = isolated_grok_home().map_err(|error| error.to_string())?;
             let cwd = grok_home.display().to_string();
-            let transcript_path = grok_home.join("echo-mcp-transcript.ndjson");
+            let transcript_path =
+                create_echo_mcp_transcript(&grok_home).map_err(|error| error.to_string())?;
             let echo_command = echo_mcp.display().to_string();
             let mut peer = open_desktop_live_grok_acp_peer(&grok_executable, &echo_mcp)
                 .map_err(|error| error.to_string())?;

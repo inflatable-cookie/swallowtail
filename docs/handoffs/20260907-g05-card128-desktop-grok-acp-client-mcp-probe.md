@@ -36,10 +36,13 @@ tool, no filesystem or network) and drives ACP `initialize`, `authenticate`
 with Grok's already-cached token method id only, and `session/new` with a
 non-empty `mcpServers` list naming that server, then one bounded echo prompt.
 The echo server appends received method names (`initialize`, `tools/list`,
-`tools/call`) to a transcript file under `GROK_HOME`. The transcript path is
+`tools/call`) to a unique per-run transcript file under `GROK_HOME`. The
+runner exclusive-creates that empty file and refuses if the path already
+exists, so `1.0.4` then `1.0.5` (or an authorized rerun) on the same
+authorized home cannot inherit a prior `tools/call`. The transcript path is
 passed both as MCP `env` (`SWALLOWTAIL_ECHO_MCP_TRANSCRIPT`) and as
 `--transcript` on `mcpServers.args`, so a Grok that drops `env` is not
-silent. The runner does not pre-create that file. `accepts_client_mcp`
+silent. `accepts_client_mcp`
 requires a `tools/call` line. `ignores_client_mcp` requires an `initialize`
 line (the echo process was actually reached) plus a completed prompt and no
 `tools/call`. An empty or missing transcript cannot separate "Grok ignored
@@ -89,10 +92,11 @@ stdio transcript to contain `tools/call`. `ignores_client_mcp` requires
 `initialize` on that transcript, a completed `session/prompt` turn, and no
 `tools/call`. A timeout, missing prompt result, missing `initialize`, or a
 `title: "echo"` tool call without echo MCP `initialize` is `inconclusive`.
-Live spawn refuses unless `GROK_HOME` is
-an existing directory; session `cwd` and the Grok child `HOME` are that
-directory. `stale_callback_rejected` is true only when Grok actually sent a
-post-close callback.
+Live spawn refuses unless `GROK_HOME` is an existing directory; session
+`cwd` and the Grok child `HOME` are that directory. The echo MCP transcript
+is a unique exclusive-created file in that directory; a path that already
+exists is refused. `stale_callback_rejected` is true only when Grok actually
+sent a post-close callback.
 
 Frames must contain no credentials, tokens, or host paths. `1.0.4` and `1.0.5`
 are separate evidence segments; do not merge them.

@@ -13,9 +13,10 @@ use serde_json::{Value, json};
 use std::collections::VecDeque;
 use std::fmt;
 use std::fs::{self, OpenOptions};
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufRead, BufReader, ErrorKind, Write};
 use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, Command, Stdio};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError};
 use std::thread;
 use std::time::Duration;
@@ -32,6 +33,8 @@ pub const ECHO_MCP_TOOL: &str = "echo";
 pub const ECHO_MCP_TRANSCRIPT_ENV: &str = "SWALLOWTAIL_ECHO_MCP_TRANSCRIPT";
 /// CLI flag carrying the same transcript path, so a dropped `env` is not silent.
 pub const ECHO_MCP_TRANSCRIPT_FLAG: &str = "--transcript";
+
+static ECHO_MCP_TRANSCRIPT_SEQ: AtomicU64 = AtomicU64::new(0);
 
 const MAXIMUM_FRAMES: usize = 48;
 const ECHO_PROMPT: &str = "Call the echo tool with text ping and return its result.";
@@ -124,6 +127,41 @@ pub fn append_echo_mcp_transcript(path: &Path, method: &str) -> Result<(), GrokA
     writeln!(file, "{method}").map_err(|_| GrokAcpClientMcpError {
         kind: GrokAcpClientMcpErrorKind::Transport,
     })
+}
+
+/// Exclusive empty per-run transcript under `grok_home`. Fails if that path exists.
+pub fn create_echo_mcp_transcript(grok_home: &Path) -> Result<PathBuf, GrokAcpClientMcpError> {
+    let seq = ECHO_MCP_TRANSCRIPT_SEQ.fetch_add(1, Ordering::Relaxed);
+    let path = grok_home.join(format!(
+        "echo-mcp-transcript-{}-{seq}.ndjson",
+        std::process::id()
+    ));
+    create_echo_mcp_transcript_at(&path)?;
+    Ok(path)
+}
+
+fn create_echo_mcp_transcript_at(path: &Path) -> Result<(), GrokAcpClientMcpError> {
+    match OpenOptions::new().write(true).create_new(true).open(path) {
+        Ok(_) => Ok(()),
+        Err(error) if error.kind() == ErrorKind::AlreadyExists => Err(GrokAcpClientMcpError {
+            kind: GrokAcpClientMcpErrorKind::LiveTranscriptExists,
+        }),
+        Err(_) => Err(GrokAcpClientMcpError {
+            kind: GrokAcpClientMcpErrorKind::Transport,
+        }),
+    }
+}
+
+fn refuse_nonempty_transcript(path: Option<&Path>) -> Result<(), GrokAcpClientMcpError> {
+    let Some(path) = path else {
+        return Ok(());
+    };
+    if fs::metadata(path).is_ok_and(|meta| meta.len() > 0) {
+        return Err(GrokAcpClientMcpError {
+            kind: GrokAcpClientMcpErrorKind::LiveTranscriptExists,
+        });
+    }
+    Ok(())
 }
 
 /// Reads method names from an echo-server transcript file.
@@ -320,6 +358,8 @@ pub enum GrokAcpClientMcpErrorKind {
     LivePathMissing,
     /// Live spawn was requested without an isolated `GROK_HOME` directory.
     LiveIsolationMissing,
+    /// Live transcript path already exists; a prior run must not be scored again.
+    LiveTranscriptExists,
     /// ACP framing or JSON-RPC codec failed.
     Transport,
     /// Captured frame count exceeded the harness bound.
@@ -353,6 +393,9 @@ impl fmt::Display for GrokAcpClientMcpError {
             }
             GrokAcpClientMcpErrorKind::LiveIsolationMissing => {
                 "live Grok ACP client-MCP probe requires an isolated GROK_HOME directory"
+            }
+            GrokAcpClientMcpErrorKind::LiveTranscriptExists => {
+                "live Grok ACP client-MCP probe refuses a transcript path that already exists"
             }
             GrokAcpClientMcpErrorKind::Transport => "ACP client-MCP probe transport failed",
             GrokAcpClientMcpErrorKind::FrameLimit => {
@@ -423,6 +466,7 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
     cwd: &str,
     transcript_path: Option<&Path>,
 ) -> Result<GrokAcpClientMcpCapsule, GrokAcpClientMcpError> {
+    refuse_nonempty_transcript(transcript_path)?;
     let mut capture = FrameCapture::new();
     let mut next_id = 1_u64;
     let (args, env) = match transcript_path {
@@ -1870,20 +1914,74 @@ mod tests {
 
     #[test]
     fn echo_mcp_transcript_records_method_names() {
-        let path = std::env::temp_dir().join(format!(
-            "swallowtail-echo-mcp-transcript-{}.ndjson",
-            std::process::id()
-        ));
-        let _ = std::fs::remove_file(&path);
+        let home = test_grok_home("records");
+        let path = create_echo_mcp_transcript(&home).expect("create");
         append_echo_mcp_transcript(&path, "initialize").expect("append");
         append_echo_mcp_transcript(&path, "tools/list").expect("append");
         append_echo_mcp_transcript(&path, "tools/call").expect("append");
         let transcript = read_echo_mcp_transcript(&path);
-        let _ = std::fs::remove_file(&path);
+        let _ = std::fs::remove_dir_all(&home);
         assert!(transcript.tools_call());
         assert_eq!(
             transcript.methods(),
             ["initialize", "tools/list", "tools/call"]
+        );
+    }
+
+    #[test]
+    fn exclusive_transcript_create_fails_if_present() {
+        let home = test_grok_home("exists");
+        let path = create_echo_mcp_transcript(&home).expect("create");
+        std::fs::write(&path, "initialize\ntools/call\n").expect("plant leftover");
+        assert_eq!(
+            create_echo_mcp_transcript_at(&path).unwrap_err().kind(),
+            GrokAcpClientMcpErrorKind::LiveTranscriptExists
+        );
+        let leftover = read_echo_mcp_transcript(&path);
+        let _ = std::fs::remove_dir_all(&home);
+        assert!(leftover.tools_call());
+    }
+
+    #[test]
+    fn reused_grok_home_does_not_inherit_prior_transcript() {
+        let home = test_grok_home("reuse");
+        std::fs::write(
+            home.join("echo-mcp-transcript.ndjson"),
+            "initialize\ntools/list\ntools/call\n",
+        )
+        .expect("plant constant leftover");
+        let first = create_echo_mcp_transcript(&home).expect("first run");
+        append_echo_mcp_transcript(&first, "initialize").expect("first initialize");
+        append_echo_mcp_transcript(&first, "tools/call").expect("first call");
+        let second = create_echo_mcp_transcript(&home).expect("second run");
+        assert_ne!(first, second);
+        assert_ne!(
+            second.file_name().and_then(|name| name.to_str()),
+            Some("echo-mcp-transcript.ndjson")
+        );
+        assert!(!read_echo_mcp_transcript(&second).initialize());
+        assert!(read_echo_mcp_transcript(&first).tools_call());
+        let _ = std::fs::remove_dir_all(&home);
+    }
+
+    #[test]
+    fn nonempty_transcript_path_is_refused_before_scoring() {
+        let home = test_grok_home("nonempty");
+        let leftover = home.join("leftover.ndjson");
+        std::fs::write(&leftover, "initialize\ntools/call\n").expect("plant");
+        let mut peer = FakeAcpPeer::new(ClientMcpVerdict::IgnoresClientMcp);
+        let error = run_grok_acp_client_mcp_probe_with_transcript(
+            &mut peer,
+            "1.0.5",
+            FIXTURE_COMMAND,
+            FIXTURE_CWD,
+            Some(&leftover),
+        )
+        .expect_err("leftover transcript");
+        let _ = std::fs::remove_dir_all(&home);
+        assert_eq!(
+            error.kind(),
+            GrokAcpClientMcpErrorKind::LiveTranscriptExists
         );
     }
 
@@ -1899,6 +1997,17 @@ mod tests {
                 .kind(),
             GrokAcpClientMcpErrorKind::LiveIsolationMissing
         );
+    }
+
+    fn test_grok_home(label: &str) -> PathBuf {
+        let path = std::env::temp_dir().join(format!(
+            "swallowtail-grok-home-{}-{}",
+            label,
+            std::process::id()
+        ));
+        let _ = std::fs::remove_dir_all(&path);
+        std::fs::create_dir_all(&path).expect("temp grok home");
+        path
     }
 
     fn unattributed_echo_frames() -> [GrokAcpClientMcpFrame; 5] {

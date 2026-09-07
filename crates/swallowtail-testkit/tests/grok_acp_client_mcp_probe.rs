@@ -137,17 +137,17 @@ fn disposable_echo_server_has_one_tool_and_no_resource_authority() {
 fn spawned_echo_server_records_transcript_from_args() {
     use std::io::{BufRead, BufReader, Write};
     use std::process::{Command, Stdio};
-    use swallowtail_testkit::{ECHO_MCP_TRANSCRIPT_FLAG, read_echo_mcp_transcript};
+    use swallowtail_testkit::{
+        ECHO_MCP_TRANSCRIPT_FLAG, create_echo_mcp_transcript, read_echo_mcp_transcript,
+    };
 
-    let path = std::env::temp_dir().join(format!(
-        "swallowtail-echo-mcp-spawn-{}-{}.ndjson",
-        std::process::id(),
-        std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .expect("time")
-            .as_nanos()
+    let home = std::env::temp_dir().join(format!(
+        "swallowtail-echo-mcp-spawn-home-{}",
+        std::process::id()
     ));
-    let _ = std::fs::remove_file(&path);
+    let _ = std::fs::remove_dir_all(&home);
+    std::fs::create_dir_all(&home).expect("spawn home");
+    let path = create_echo_mcp_transcript(&home).expect("exclusive transcript");
     let exe = grok_acp_echo_mcp_bin();
     assert!(
         exe.is_file(),
@@ -197,7 +197,7 @@ fn spawned_echo_server_records_transcript_from_args() {
     let status = child.wait().expect("wait");
     assert!(status.success());
     let transcript = read_echo_mcp_transcript(&path);
-    let _ = std::fs::remove_file(&path);
+    let _ = std::fs::remove_dir_all(&home);
     assert!(transcript.initialize());
     assert!(transcript.tools_call());
 }

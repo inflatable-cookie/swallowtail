@@ -930,20 +930,21 @@ fn session_new_no_response_cause(
     frames: &[GrokAcpClientMcpFrame],
     session_new_at: usize,
 ) -> VerdictDecision {
-    let unanswered = frames
-        .iter()
-        .enumerate()
-        .skip(session_new_at + 1)
-        .any(|(request_at, frame)| {
-            !frame.is_outbound()
-                && method_of(&frame.message).is_some()
-                && frame.message.get("id").is_some_and(|id| !id.is_null())
-                && !request_was_answered(
-                    frames,
-                    request_at,
-                    frame.message.get("id").expect("id present"),
-                )
-        });
+    let unanswered =
+        frames
+            .iter()
+            .enumerate()
+            .skip(session_new_at + 1)
+            .any(|(request_at, frame)| {
+                !frame.is_outbound()
+                    && method_of(&frame.message).is_some()
+                    && frame.message.get("id").is_some_and(|id| !id.is_null())
+                    && !request_was_answered(
+                        frames,
+                        request_at,
+                        frame.message.get("id").expect("id present"),
+                    )
+            });
     if unanswered {
         inconclusive(InconclusiveCause::SessionNewUnanswered)
     } else {
@@ -954,11 +955,7 @@ fn session_new_no_response_cause(
 /// Returns whether an outbound frame after the inbound request at
 /// `request_at` answers `id` with a result or error. An answer captured
 /// before the request it responds to is never correlated.
-fn request_was_answered(
-    frames: &[GrokAcpClientMcpFrame],
-    request_at: usize,
-    id: &Value,
-) -> bool {
+fn request_was_answered(frames: &[GrokAcpClientMcpFrame], request_at: usize, id: &Value) -> bool {
     frames[request_at + 1..].iter().any(|frame| {
         frame.is_outbound()
             && frame.message.get("id") == Some(id)

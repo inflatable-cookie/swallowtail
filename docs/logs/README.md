@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-07 OpenCode HTTP 1.18.29 Claim](./2026-09-07-opencode-http-1-18-29-claim.md) — qualified `opencode.server` through official `1.18.29`; preserved baseline, gaps, `surface-19`, and `AllowUnverified`
 - [2026-09-07 OpenCode HTTP 1.18.29 Identity](./2026-09-07-opencode-http-1-18-29-identity.md) — Research 290 froze official npm/GitHub `1.18.29` as a compatible `surface-19` extension; production claims unchanged
 - [2026-09-06 g05.033 Card 107 Closeout](./2026-09-06-g05-033-card-107-closeout.md) — `v0.4.3` source consumer passed at peeled `cbd4ddc8`; tag capsule relayed to Acowtancy; no Desktop/provider action performed
 - [2026-09-06 g05.029 Card 085 Closeout](./2026-09-06-g05-029-card-085-closeout.md) — Grok ACP permission exchange accepted and merged through PR 243 as `8bbeceb4`; stable matrix disposition remains `No`

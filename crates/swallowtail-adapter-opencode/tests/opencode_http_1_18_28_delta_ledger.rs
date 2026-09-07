@@ -23,10 +23,6 @@ fn admitted_claim_fixture_matches_production_selection() {
     let claim = opencode_http_claim();
     assert_eq!(claim.id().as_str(), fixture["claim_id"]);
     assert_eq!(claim.baseline().as_str(), fixture["baseline"]);
-    assert_eq!(
-        claim.latest_qualified().as_str(),
-        fixture["latest_qualified"]
-    );
     assert_exact_strings(
         &fixture["newly_qualified"],
         &[
@@ -48,11 +44,6 @@ fn admitted_claim_fixture_matches_production_selection() {
             fixture["behavior_revision"]
         );
     }
-    let later = opencode_server_binding(fixture["unverified_newer"].as_str().unwrap()).unwrap();
-    assert!(matches!(
-        claim.assess(later.version()),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
 }
 
 fn json(input: &str) -> Value {

@@ -1,4 +1,9 @@
 pub mod swallowtail_testkit
+pub enum swallowtail_testkit::ClientMcpOracleShape
+pub swallowtail_testkit::ClientMcpOracleShape::AdmittedAndCalled
+pub swallowtail_testkit::ClientMcpOracleShape::AdmittedListedNotCalledCompleted
+pub swallowtail_testkit::ClientMcpOracleShape::AdmittedNotListed
+pub swallowtail_testkit::ClientMcpOracleShape::NoAdmission
 pub enum swallowtail_testkit::ClientMcpVerdict
 pub swallowtail_testkit::ClientMcpVerdict::AcceptsClientMcp
 pub swallowtail_testkit::ClientMcpVerdict::IgnoresClientMcp
@@ -85,6 +90,18 @@ pub swallowtail_testkit::GrokAcpClientMcpErrorKind::LivePathMissing
 pub swallowtail_testkit::GrokAcpClientMcpErrorKind::LiveProbeGated
 pub swallowtail_testkit::GrokAcpClientMcpErrorKind::LiveTranscriptExists
 pub swallowtail_testkit::GrokAcpClientMcpErrorKind::Transport
+pub enum swallowtail_testkit::InconclusiveCause
+pub swallowtail_testkit::InconclusiveCause::EmptyMcpServers
+pub swallowtail_testkit::InconclusiveCause::MissingSessionNew
+pub swallowtail_testkit::InconclusiveCause::NativeEchoWithoutAdmission
+pub swallowtail_testkit::InconclusiveCause::NoTurnResult
+pub swallowtail_testkit::InconclusiveCause::PermissionRejected
+pub swallowtail_testkit::InconclusiveCause::SessionNewErrorNotClientMcp
+pub swallowtail_testkit::InconclusiveCause::SessionNewUnanswered
+pub swallowtail_testkit::InconclusiveCause::Truncated
+pub swallowtail_testkit::InconclusiveCause::TurnCompletedWithoutToolCall
+impl swallowtail_testkit::InconclusiveCause
+pub const fn swallowtail_testkit::InconclusiveCause::as_str(self) -> &'static str
 pub enum swallowtail_testkit::ManagedHarnessPreflightCase
 pub swallowtail_testkit::ManagedHarnessPreflightCase::Canonical
 pub swallowtail_testkit::ManagedHarnessPreflightCase::MissingDurableRetention
@@ -279,10 +296,12 @@ impl core::default::Default for swallowtail_testkit::ContractKernelFixture
 pub fn swallowtail_testkit::ContractKernelFixture::default() -> Self
 pub struct swallowtail_testkit::EchoMcpTranscript
 impl swallowtail_testkit::EchoMcpTranscript
+pub const fn swallowtail_testkit::EchoMcpTranscript::admitted_listed() -> Self
 pub const fn swallowtail_testkit::EchoMcpTranscript::called() -> Self
 pub const fn swallowtail_testkit::EchoMcpTranscript::initialize(&self) -> bool
 pub const fn swallowtail_testkit::EchoMcpTranscript::observed_idle() -> Self
 pub const fn swallowtail_testkit::EchoMcpTranscript::tools_call(&self) -> bool
+pub const fn swallowtail_testkit::EchoMcpTranscript::tools_list(&self) -> bool
 pub struct swallowtail_testkit::ExecutionTopologyFixture
 impl swallowtail_testkit::ExecutionTopologyFixture
 pub const fn swallowtail_testkit::ExecutionTopologyFixture::configured_instance_id(&self) -> &swallowtail_core::runtime_identity::ConfiguredInstanceId
@@ -301,9 +320,15 @@ pub fn swallowtail_testkit::FakeClock::wait_until(&self, swallowtail_runtime::ti
 pub struct swallowtail_testkit::GrokAcpClientMcpCapsule
 impl swallowtail_testkit::GrokAcpClientMcpCapsule
 pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::cleanup(&self) -> swallowtail_testkit::GrokAcpClientMcpCleanup
+pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::client_mcp_admitted(&self) -> bool
+pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::client_mcp_tools_listed(&self) -> bool
 pub fn swallowtail_testkit::GrokAcpClientMcpCapsule::echo_mcp_methods(&self) -> &[alloc::string::String]
 pub fn swallowtail_testkit::GrokAcpClientMcpCapsule::frames(&self) -> &[swallowtail_testkit::GrokAcpClientMcpFrame]
+pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::inconclusive_cause(&self) -> core::option::Option<swallowtail_testkit::InconclusiveCause>
+pub fn swallowtail_testkit::GrokAcpClientMcpCapsule::prompt(&self) -> &str
+pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::prompt_turn_completed(&self) -> bool
 pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::stale_callback_rejected(&self) -> bool
+pub fn swallowtail_testkit::GrokAcpClientMcpCapsule::stop_reason(&self) -> core::option::Option<&str>
 pub fn swallowtail_testkit::GrokAcpClientMcpCapsule::to_json(&self) -> serde_json::value::Value
 pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::truncated(&self) -> bool
 pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::verdict(&self) -> swallowtail_testkit::ClientMcpVerdict
@@ -473,6 +498,7 @@ pub const swallowtail_testkit::ECHO_MCP_SERVER_NAME: &str
 pub const swallowtail_testkit::ECHO_MCP_TOOL: &str
 pub const swallowtail_testkit::ECHO_MCP_TRANSCRIPT_ENV: &str
 pub const swallowtail_testkit::ECHO_MCP_TRANSCRIPT_FLAG: &str
+pub const swallowtail_testkit::ECHO_PROMPT: &str
 pub const swallowtail_testkit::FIXTURE_CLEANUP_BUDGET: core::time::Duration
 pub const swallowtail_testkit::FIXTURE_MCP_TOOL: &str
 pub const swallowtail_testkit::FIXTURE_MEDIA_TYPE: &str
@@ -576,6 +602,7 @@ pub fn swallowtail_testkit::fixture_snapshot(&swallowtail_core::runtime_identity
 pub fn swallowtail_testkit::fixture_snapshot_input(&swallowtail_core::runtime_identity::ExecutionHostId) -> swallowtail_runtime::registered_tool::snapshot::RegisteredToolSnapshotInput
 pub fn swallowtail_testkit::fixture_tool_id(&str) -> swallowtail_runtime::registered_tool::identity::RegisteredToolId
 pub fn swallowtail_testkit::grok_acp_client_mcp_fixture_probe(&str, swallowtail_testkit::ClientMcpVerdict) -> core::result::Result<swallowtail_testkit::GrokAcpClientMcpCapsule, swallowtail_testkit::GrokAcpClientMcpError>
+pub fn swallowtail_testkit::grok_acp_client_mcp_oracle_fixture_probe(&str, swallowtail_testkit::ClientMcpOracleShape) -> core::result::Result<swallowtail_testkit::GrokAcpClientMcpCapsule, swallowtail_testkit::GrokAcpClientMcpError>
 pub fn swallowtail_testkit::grok_acp_client_mcp_verdict(&[swallowtail_testkit::GrokAcpClientMcpFrame], &swallowtail_testkit::EchoMcpTranscript) -> swallowtail_testkit::ClientMcpVerdict
 pub fn swallowtail_testkit::grok_acp_client_mcp_verdict_from_frames(&[swallowtail_testkit::GrokAcpClientMcpFrame]) -> swallowtail_testkit::ClientMcpVerdict
 pub fn swallowtail_testkit::grok_acp_echo_mcp_reply(&serde_json::value::Value) -> core::option::Option<serde_json::value::Value>

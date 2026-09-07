@@ -137,7 +137,9 @@ bounded model qualification evidence: a requested model id and an effective
 model id (each bounded, at most 128 bytes), a catalogue size, a fixed-length
 truncated digest of the sorted de-duplicated catalogue ids, membership
 booleans for the requested and effective ids, the query source, phase, and
-declared versus loaded interface versions. A full model catalogue, prompt or
+declared versus loaded interface versions on any Contract 029 axis the route
+qualifies (for `claude-agent.sdk`: the SDK package version and the native
+Claude Code version). A full model catalogue, prompt or
 content bodies, paths, credentials, and raw provider error text are
 prohibited in this evidence. The correlated safe code must be the exact code
 raised on the public failure path, and emission never changes that path.

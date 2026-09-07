@@ -83,9 +83,9 @@ Release-preparation scripts:
   forbid removals from immutable `public-api-<previous>`. Historical tagged
   directories stay immutable
 - `check-provider-route-matrix.sh` — production route, lifecycle, feature,
-  anchored frozen-evidence cross-classification, producer-gap reasons, and
-  activity matrices against current and previous route inventories, behind
-  `effigy qa:routes`
+  anchored frozen-evidence cross-classification, producer-gap reasons,
+  evidence-pending packet guards, and activity matrices against current and
+  previous route inventories, behind `effigy qa:routes`
 - `check-msrv.sh` — unified Rust 1.95 floor and current stable checks
 
 Archived registry-candidate scripts:

@@ -1,6 +1,6 @@
 # 128 Grok ACP Client-MCP Probe Harness
 
-Status: ready
+Status: complete; merged through PR 273 as `63e3464199d28fdae9f163c0caf567c5dfb1e39e`
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07
@@ -56,10 +56,10 @@ isolated-testing authorization without a Swallowtail live lane.
 
 ## Acceptance Criteria
 
-- [ ] harness proves all four verdicts on the fake ACP fixture
-- [ ] disposable stdio server has one echo tool and no filesystem/network authority
-- [ ] capsule output is redacted and bounded; frames carry no credentials or paths
-- [ ] hand-off packet written; Desktop can run it without Swallowtail present
+- [x] harness proves all four verdicts on the fake ACP fixture
+- [x] disposable stdio server has one echo tool and no filesystem/network authority
+- [x] capsule output is redacted and bounded; frames carry no credentials or paths
+- [x] hand-off packet written; Desktop can run it without Swallowtail present
 
 ## Validation
 
@@ -81,3 +81,20 @@ Grok ACP requires a field outside ACP v1 to name a server (record; return to Cha
 ## Auto-Continuation
 
 No. Stop for exact-head review. The real run is Desktop's under its isolated-testing authorization.
+
+## Result
+
+PR 273 merged the provider-free harness at reviewed head
+`dbcf4ed6c81c23b8573d3ceaf49cf7be28216235` as
+`63e3464199d28fdae9f163c0caf567c5dfb1e39e`. The probe module and the
+disposable echo stdio MCP server live in `swallowtail-testkit`; the fake ACP
+fixture proves all four verdicts (`accepts_client_mcp`, `ignores_client_mcp`,
+`rejects_client_mcp`, `inconclusive`) with no Grok process, and crate tests
+check the redaction, frame-bound, and `session/new` oracle rules. The reviewed
+head ships the probe and echo targets as cargo examples — package metadata
+forbids extra bins — and repairs the MSRV clippy lint on the `none_or`
+empty-list check; the runner script and hand-off packet invoke `--example`.
+The hand-off packet is relayed to Acowtancy Desktop under its existing
+isolated-testing authorization. The live installed-Grok probe was explicitly
+not run: Swallowtail spawns no Grok process, and no adapter, claim, contract,
+or matrix disposition changes with this harness.

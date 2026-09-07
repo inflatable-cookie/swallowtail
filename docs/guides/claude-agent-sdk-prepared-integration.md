@@ -514,6 +514,36 @@ Every admitted MCP call goes through `canUseTool` exactly like `Edit` or
 An unadmitted MCP name is denied inside the sidecar before the host sees it.
 An undeclared `mcp__` tool name is refused before the SDK is constructed.
 
+## Registered Tools
+
+Card 116 already owns the carrier, mediator, and mediated-stdio proxy. This
+route now binds one `RegisteredToolPreparation` into open on the Codex
+precedent: `ClaudeAgentSdkSessionProfile::with_registered_tools`,
+`ClaudeAgentSdkSessionPreparation::with_registered_tools` (or
+`with_registered_tool_binding`), and `ClaudeAgentSdkDriver::with_registered_tools`.
+
+The Copy profile cannot hold the binding. Qualification happens beside it,
+the same way declared MCP servers travel on `ClaudeAgentSdkMcpBinding`.
+`qualify` admits only `MediatedStdioProxy` over `PrivateLoopbackHttp` with a
+resolved `RegisteredToolProxyRecipe`. Host-mediated callback selections stay
+on the Card 116 mediator. Open then requires `with_host(LocalHostServices)`
+so the one-shot courier rendezvous can be minted; missing host fails typed
+`registered_tool.host_missing`.
+
+Open mints the bridge lease, materializes the rendezvous, starts the courier
+through the session process port, waits until the courier authenticates, and
+declares the reserved `swallowtail-registered-tools` stdio server under
+`strictMcpConfig`. That declaration is an internal open server, never a
+consumer `ClaudeAgentSdkMcpServer`: card 084 still rejects that reserved
+name. Every registered call still goes through `canUseTool` and the kernel's
+live verdicts. Close joins the single listener. Omitting the binding keeps
+the previous open, including the empty `mcpServers` omission.
+
+Resume and listing refuse a bound selection. The Contract 061 projection
+stays `Unqualified / real_route_gate_pending` with the reason
+`callable seam present; live gate pending`. The live real-route gate is a
+separate authorized pass.
+
 ## Close And The Descendant Tree
 
 This is the part that differs from every single-process sidecar. The route is

@@ -179,6 +179,7 @@ pub(super) fn prepare(
         input.credential,
         input.profile,
         input.mcp_servers,
+        input.registered_tools,
     ))
 }
 

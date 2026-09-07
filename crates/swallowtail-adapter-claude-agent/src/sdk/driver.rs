@@ -11,7 +11,7 @@ pub use self::session::ClaudeAgentSdkSessionHandle;
 use self::validation::{validate_open, validate_resume};
 use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
-use crate::sdk::failure::failure;
+use crate::sdk::failure::{failure, unsupported};
 use crate::sdk::guardian::OpenGuard;
 use crate::sdk::prepared::ClaudeAgentSdkSessionListing;
 use std::sync::{Arc, Mutex};
@@ -25,6 +25,7 @@ use swallowtail_runtime::{
 mod descriptor;
 mod handle;
 mod launch;
+mod registered;
 mod session;
 mod startup;
 mod validation;
@@ -39,6 +40,7 @@ pub struct ClaudeAgentSdkDriver {
     credential: swallowtail_core::CredentialRef,
     profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
     mcp_servers: Vec<crate::sdk::mcp::ClaudeAgentSdkMcpServer>,
+    registered: Option<crate::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding>,
 }
 
 impl ClaudeAgentSdkDriver {
@@ -54,6 +56,7 @@ impl ClaudeAgentSdkDriver {
             credential,
             profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile::read_only(),
             mcp_servers: Vec::new(),
+            registered: None,
         }
     }
 
@@ -82,6 +85,20 @@ impl ClaudeAgentSdkDriver {
         servers: Vec<crate::sdk::mcp::ClaudeAgentSdkMcpServer>,
     ) -> Self {
         self.mcp_servers = servers;
+        self
+    }
+
+    /// Binds one qualified registered selection to new sidecar sessions.
+    ///
+    /// Absence preserves every previous open, including the empty `mcpServers`
+    /// omission. Resume and listing refuse a bound selection: the courier is
+    /// minted at fresh open and is not redeclared onto a retained thread.
+    #[must_use]
+    pub fn with_registered_tools(
+        mut self,
+        binding: crate::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding,
+    ) -> Self {
+        self.registered = Some(binding);
         self
     }
 
@@ -128,11 +145,12 @@ pub(super) struct PendingSession {
     /// The enclosing cleanup guardian, started before the first acquisition so
     /// activating it at close cannot fail while the session holds live state.
     pub(super) close_guardian: Option<crate::sdk::guardian::SessionGuardian>,
+    pub(super) registered: Option<registered::ClaudeAgentSdkRegisteredToolSession>,
 }
 
 impl PendingSession {
     pub(in crate::sdk::driver) fn into_handle(
-        self,
+        mut self,
         plan: &PreflightPlan,
         readiness: startup::SessionReadiness,
         acquired: crate::sdk::guardian::Acquisitions,
@@ -167,6 +185,7 @@ impl PendingSession {
             permission_mode_changes: 0,
             model_changes: 0,
             first_turn_rejection: None,
+            registered: self.registered.take(),
         }
     }
 }
@@ -269,6 +288,9 @@ impl ClaudeAgentSdkDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Vec<ClaudeAgentSdkSessionListing>, RuntimeFailure>> {
         Box::pin(async move {
+            if self.registered.is_some() {
+                return Err(unsupported("registered tools on session listing"));
+            }
             let request = OpenSessionRequest::from_plan(
                 &plan,
                 request_id.clone(),
@@ -387,6 +409,9 @@ impl ClaudeAgentSdkDriver {
                     binding,
                     resume_session_at,
                 } => {
+                    if self.registered.is_some() {
+                        return Err(unsupported("registered tools on resumed sessions"));
+                    }
                     let resume = ResumeSessionRequest::from_plan(
                         &plan,
                         request.request_id().clone(),
@@ -541,7 +566,7 @@ impl ClaudeAgentSdkDriver {
         // Held for exactly this future's lifetime, including an early return or
         // a drop at the caller's deadline.
         let _recording = lease;
-        let pending = self
+        let mut pending = self
             .spawn_session(
                 plan,
                 SessionLaunch {
@@ -557,6 +582,13 @@ impl ClaudeAgentSdkDriver {
                 guard,
             )
             .await?;
+        let mut registered_courier = None;
+        if let Some(binding) = &self.registered {
+            let (session, declaration) =
+                registered::open_registered(binding, plan, request, &pending.services).await?;
+            pending.registered = Some(session);
+            registered_courier = Some(declaration);
+        }
         let readiness = match start {
             SessionStart::Fresh => {
                 startup::open(
@@ -565,6 +597,7 @@ impl ClaudeAgentSdkDriver {
                     &pending.leased_cwd,
                     self.profile,
                     &self.mcp_servers,
+                    registered_courier,
                 )
                 .await?
             }
@@ -578,6 +611,7 @@ impl ClaudeAgentSdkDriver {
                     &pending.leased_cwd,
                     self.profile,
                     &self.mcp_servers,
+                    None,
                     binding.provider_session_ref(),
                     resume_session_at.as_deref(),
                 )

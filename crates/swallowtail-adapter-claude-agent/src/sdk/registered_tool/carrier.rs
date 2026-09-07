@@ -19,8 +19,8 @@
 use super::super::mcp::mcp_tool_name;
 use super::super::prepared::preparation_failure;
 use swallowtail_runtime::{
-    PreparationFailure, PreparationStage, RegisteredToolExecutionKind, RegisteredToolId,
-    RegisteredToolSelection, RegisteredToolTransport,
+    PreparationFailure, PreparationStage, RegisteredToolAttachment, RegisteredToolExecutionKind,
+    RegisteredToolId, RegisteredToolSelection, RegisteredToolTransport,
 };
 
 /// Reserved MCP server name of the Swallowtail-owned registered-tool carrier.
@@ -81,17 +81,18 @@ pub struct ClaudeAgentSdkRegisteredToolCarrier {
 impl ClaudeAgentSdkRegisteredToolCarrier {
     /// Derives the carrier from one immutable Contract 063 selection.
     ///
-    /// The selection must use the qualified listener-free carrier and may
+    /// The selection must use the listener-free host-mediated carrier or the
+    /// Contract 063 mediated-stdio proxy over private loopback HTTP, and may
     /// select MCP-kind tools only: this route presents registered tools to the
     /// provider as MCP tools, so admitting another kind here would let one
     /// namespaced identity reach the provider under a kind its snapshot never
     /// declared. Every namespace and local name must also survive the exact
     /// provider spelling without ambiguity.
     pub fn new(selection: &RegisteredToolSelection) -> Result<Self, PreparationFailure> {
-        if selection.transport() != RegisteredToolTransport::HostMediatedCallback {
+        if !admits_carrier(selection) {
             return Err(carrier_failure(
                 "swallowtail.claude-agent.sdk.registered_tool.transport_unsupported",
-                "Claude Agent SDK registered-tool mediation admits only the listener-free host-mediated carrier",
+                "Claude Agent SDK registered-tool mediation admits the listener-free host-mediated carrier or the mediated stdio proxy",
             ));
         }
         if selection.selected().len() > MAXIMUM_CARRIER_TOOLS {
@@ -204,6 +205,30 @@ fn carrier_tool_name(id: &RegisteredToolId) -> Result<String, PreparationFailure
         }
     }
     Ok(format!("{namespace}{NAMESPACE_SEPARATOR}{local_name}"))
+}
+
+fn admits_carrier(selection: &RegisteredToolSelection) -> bool {
+    match (
+        selection.attachment(),
+        selection.transport(),
+        selection.proxy_recipe().is_some(),
+    ) {
+        (
+            RegisteredToolAttachment::HostMediated,
+            RegisteredToolTransport::HostMediatedCallback,
+            false,
+        ) => true,
+        (
+            RegisteredToolAttachment::MediatedStdioProxy,
+            RegisteredToolTransport::PrivateLoopbackHttp,
+            true,
+        ) => true,
+        (
+            RegisteredToolAttachment::HostMediated | RegisteredToolAttachment::MediatedStdioProxy,
+            _,
+            _,
+        ) => false,
+    }
 }
 
 fn is_carrier_identifier(value: &str) -> bool {

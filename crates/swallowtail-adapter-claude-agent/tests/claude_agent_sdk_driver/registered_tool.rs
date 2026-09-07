@@ -21,9 +21,10 @@ use swallowtail_adapter_claude_agent::sdk::registered_tool::{
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER, ClaudeAgentSdkMcpReply,
-    ClaudeAgentSdkRegisteredToolCarrier, ClaudeAgentSdkRegisteredToolDecision,
-    ClaudeAgentSdkRegisteredToolMediator, claude_agent_sdk_mcp_protocol_version_admitted,
-    claude_agent_sdk_mcp_protocol_version_known, claude_agent_sdk_registered_tool_carrier_binding,
+    ClaudeAgentSdkRegisteredToolBinding, ClaudeAgentSdkRegisteredToolCarrier,
+    ClaudeAgentSdkRegisteredToolDecision, ClaudeAgentSdkRegisteredToolMediator,
+    claude_agent_sdk_mcp_protocol_version_admitted, claude_agent_sdk_mcp_protocol_version_known,
+    claude_agent_sdk_registered_tool_carrier_binding,
     claude_agent_sdk_registered_tool_carrier_claim, claude_agent_sdk_registered_tool_qualification,
     project_claude_agent_sdk_registered_tool,
 };
@@ -585,6 +586,12 @@ fn the_projection_publishes_route_local_mediation_and_claims_no_support() {
             .map(|reason| reason.diagnostic().code().to_owned()),
         Some(CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE.to_owned()),
     );
+    assert_eq!(
+        mediation
+            .safe_reason()
+            .map(|reason| reason.diagnostic().message().to_owned()),
+        Some("callable seam present; live gate pending".to_owned()),
+    );
     for row in contribution.selection_rows() {
         assert_ne!(
             row.availability(),
@@ -592,4 +599,22 @@ fn the_projection_publishes_route_local_mediation_and_claims_no_support() {
             "an unqualified route publishes no available registered-capability row"
         );
     }
+}
+
+#[test]
+fn qualify_rejects_the_host_mediated_callback_selection() {
+    let selection = route_selection();
+    let preparation = RegisteredToolPreparation::new(
+        Arc::clone(selection.snapshot()),
+        selection,
+        fixture_admission(Arc::new(ScriptedAdmissionPort::current())),
+        RegisteredToolLimits::ceiling(),
+    );
+    let Err(failure) = ClaudeAgentSdkRegisteredToolBinding::qualify(preparation) else {
+        panic!("route binding is the mediated stdio proxy");
+    };
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.registered_tool.transport_unsupported"
+    );
 }

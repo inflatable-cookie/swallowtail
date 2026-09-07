@@ -123,6 +123,7 @@ impl ClaudeAgentSdkDriver {
             working_resource,
             access_policy: access_policy.clone(),
             close_guardian: Some(close_guardian),
+            registered: None,
         })
     }
 }

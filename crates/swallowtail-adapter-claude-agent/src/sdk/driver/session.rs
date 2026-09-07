@@ -72,6 +72,7 @@ pub struct ClaudeAgentSdkSessionHandle {
     /// Correlation counter for model changes.
     pub(super) model_changes: u32,
     pub(super) first_turn_rejection: Option<ClaudeAgentSdkFailureCode>,
+    pub(super) registered: Option<super::registered::ClaudeAgentSdkRegisteredToolSession>,
 }
 
 impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
@@ -253,6 +254,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
     ) -> BoxFuture<'static, CleanupOutcome> {
         let execution_host_id = self.execution_host_id.clone();
         let deadline = request.deadline();
+        let registered = self.registered.take();
         // Ownership moves first. The guardian takes the connection, process,
         // pump, remaining turn-deadline task, and both leases here, before the
         // public cleanup future exists at all, so the runtime refusing that
@@ -265,7 +267,12 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
             execution_host_id,
             request,
             services,
-            Box::pin(async move { close::settle(guardian, &settle_services, deadline).await }),
+            Box::pin(async move {
+                if let Some(registered) = registered {
+                    registered.close(&settle_services).await;
+                }
+                close::settle(guardian, &settle_services, deadline).await
+            }),
         )
     }
 }
@@ -280,6 +287,9 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
 /// instead of joining it on the dropping thread.
 impl Drop for ClaudeAgentSdkSessionHandle {
     fn drop(&mut self) {
+        if let Some(registered) = self.registered.take() {
+            futures_executor::block_on(registered.close(&self.services));
+        }
         if self.close_guardian.is_none() {
             return;
         }

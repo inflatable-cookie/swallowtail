@@ -12,15 +12,16 @@ mod build;
 use super::driver::{ClaudeAgentSdkDriver, ClaudeAgentSdkSessionHandle};
 use super::mcp::{ClaudeAgentSdkMcpBinding, ClaudeAgentSdkMcpServer};
 use super::profile::ClaudeAgentSdkSessionProfile;
+use super::registered_tool::ClaudeAgentSdkRegisteredToolBinding;
 use swallowtail_core::{
     AccessProfileId, ConfigFieldId, ConfiguredInstanceId, CredentialFieldId, CredentialRef,
-    ExecutionHostId, InstanceRevision, InstanceTargetRef, ModelId, ModelRouteId,
+    Diagnostic, ExecutionHostId, InstanceRevision, InstanceTargetRef, ModelId, ModelRouteId,
     ModelRouteRevision, PreflightPlan,
 };
 use swallowtail_runtime::{
     BoxFuture, Deadline, EnvironmentRef, HostServices, InteractiveSessionHandle,
-    OpenSessionRequest, PreparationFailure, PreparationStage, RequestId, ResumeSessionRequest,
-    RuntimeFailure, SessionOptions, SessionResumeBinding, WorkingResourceRef,
+    OpenSessionRequest, PreparationFailure, PreparationStage, RegisteredToolPreparation, RequestId,
+    ResumeSessionRequest, RuntimeFailure, SessionOptions, SessionResumeBinding, WorkingResourceRef,
 };
 
 /// Explicit inputs for preparing one fresh Claude Agent SDK sidecar session.
@@ -45,6 +46,7 @@ pub struct ClaudeAgentSdkSessionPreparation {
     pub(crate) deadline: Deadline,
     pub(crate) profile: ClaudeAgentSdkSessionProfile,
     pub(crate) mcp_servers: Vec<ClaudeAgentSdkMcpServer>,
+    pub(crate) registered_tools: Option<ClaudeAgentSdkRegisteredToolBinding>,
 }
 
 impl ClaudeAgentSdkSessionPreparation {
@@ -83,6 +85,7 @@ impl ClaudeAgentSdkSessionPreparation {
             deadline,
             profile: ClaudeAgentSdkSessionProfile::read_only(),
             mcp_servers: Vec::new(),
+            registered_tools: None,
         }
     }
 
@@ -104,6 +107,36 @@ impl ClaudeAgentSdkSessionPreparation {
     pub fn with_mcp_binding(mut self, binding: ClaudeAgentSdkMcpBinding) -> Self {
         self.profile = binding.session_profile();
         self.mcp_servers = binding.servers().to_vec();
+        self
+    }
+
+    /// Qualifies and binds one registered-tool preparation into this session.
+    ///
+    /// Absence preserves every previous open. The binding is a separate path
+    /// from card 084 consumer-declared servers: neither may present the
+    /// other's reserved name.
+    pub fn with_registered_tools(
+        mut self,
+        preparation: RegisteredToolPreparation,
+    ) -> Result<Self, PreparationFailure> {
+        self.registered_tools = Some(
+            ClaudeAgentSdkRegisteredToolBinding::qualify(preparation).map_err(|error| {
+                PreparationFailure::new(
+                    PreparationStage::Preflight,
+                    Diagnostic::new(error.diagnostic().clone()),
+                )
+            })?,
+        );
+        Ok(self)
+    }
+
+    /// Binds one already-qualified registered-tool selection.
+    #[must_use]
+    pub fn with_registered_tool_binding(
+        mut self,
+        binding: ClaudeAgentSdkRegisteredToolBinding,
+    ) -> Self {
+        self.registered_tools = Some(binding);
         self
     }
 
@@ -242,6 +275,7 @@ pub struct ClaudeAgentSdkPreparedSession {
     credential: CredentialRef,
     profile: ClaudeAgentSdkSessionProfile,
     mcp_servers: Vec<ClaudeAgentSdkMcpServer>,
+    registered_tools: Option<ClaudeAgentSdkRegisteredToolBinding>,
 }
 
 impl ClaudeAgentSdkPreparedSession {
@@ -274,12 +308,22 @@ impl ClaudeAgentSdkPreparedSession {
         &self.mcp_servers
     }
 
+    /// Returns the qualified registered-tool binding, when this session opted in.
+    #[must_use]
+    pub const fn registered_tools(&self) -> Option<&ClaudeAgentSdkRegisteredToolBinding> {
+        self.registered_tools.as_ref()
+    }
+
     /// Creates the low-level sidecar driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> ClaudeAgentSdkDriver {
-        ClaudeAgentSdkDriver::new(self.environment.clone(), self.credential.clone())
+        let driver = ClaudeAgentSdkDriver::new(self.environment.clone(), self.credential.clone())
             .with_session_profile(self.profile)
-            .with_mcp_servers(self.mcp_servers.clone())
+            .with_mcp_servers(self.mcp_servers.clone());
+        match self.registered_tools.clone() {
+            Some(binding) => driver.with_registered_tools(binding),
+            None => driver,
+        }
     }
 
     /// Opens a fresh provider session with caller-supplied host services.
@@ -411,6 +455,7 @@ pub(super) fn build_prepared(
     credential: CredentialRef,
     profile: ClaudeAgentSdkSessionProfile,
     mcp_servers: Vec<ClaudeAgentSdkMcpServer>,
+    registered_tools: Option<ClaudeAgentSdkRegisteredToolBinding>,
 ) -> ClaudeAgentSdkPreparedSession {
     ClaudeAgentSdkPreparedSession {
         plan,
@@ -419,6 +464,7 @@ pub(super) fn build_prepared(
         credential,
         profile,
         mcp_servers,
+        registered_tools,
     }
 }
 

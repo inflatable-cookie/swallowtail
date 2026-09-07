@@ -362,6 +362,117 @@ pub(crate) fn admitted_mcp_tool_names(servers: &[ClaudeAgentSdkMcpServer]) -> Ve
         .collect()
 }
 
+/// Driver-owned stdio MCP declaration used at open.
+///
+/// Consumer-declared servers convert into this type. The Swallowtail-owned
+/// registered-tool courier is constructed here so it never passes through
+/// [`ClaudeAgentSdkMcpServer`], which rejects the reserved carrier name.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct OpenStdioMcpServer {
+    name: String,
+    command: String,
+    args: Vec<String>,
+    env_allowlist_keys: Vec<String>,
+    tools: Vec<String>,
+    optional: bool,
+}
+
+impl OpenStdioMcpServer {
+    pub(crate) fn from_consumer(server: &ClaudeAgentSdkMcpServer) -> Self {
+        Self {
+            name: server.name().to_owned(),
+            command: server.command().to_owned(),
+            args: server.args().to_vec(),
+            env_allowlist_keys: server.env_allowlist_keys().to_vec(),
+            tools: server.tools().to_vec(),
+            optional: server.is_optional(),
+        }
+    }
+
+    pub(crate) fn registered_tool_courier(
+        command: String,
+        args: Vec<String>,
+        tools: Vec<String>,
+    ) -> Self {
+        Self {
+            name: CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER.to_owned(),
+            command,
+            args,
+            env_allowlist_keys: vec!["PATH".to_owned()],
+            tools,
+            optional: false,
+        }
+    }
+
+    pub(crate) fn name(&self) -> &str {
+        &self.name
+    }
+
+    pub(crate) fn command(&self) -> &str {
+        &self.command
+    }
+
+    pub(crate) fn args(&self) -> &[String] {
+        &self.args
+    }
+
+    pub(crate) fn env_allowlist_keys(&self) -> &[String] {
+        &self.env_allowlist_keys
+    }
+
+    pub(crate) fn tools(&self) -> &[String] {
+        &self.tools
+    }
+
+    pub(crate) const fn is_optional(&self) -> bool {
+        self.optional
+    }
+
+    pub(crate) fn admitted_tool_names(&self) -> Vec<String> {
+        self.tools
+            .iter()
+            .map(|tool| mcp_tool_name(&self.name, tool))
+            .collect()
+    }
+}
+
+pub(crate) fn combine_open_servers(
+    servers: &[ClaudeAgentSdkMcpServer],
+    registered: Option<OpenStdioMcpServer>,
+) -> Vec<OpenStdioMcpServer> {
+    let mut open: Vec<OpenStdioMcpServer> = servers
+        .iter()
+        .map(OpenStdioMcpServer::from_consumer)
+        .collect();
+    if let Some(registered) = registered {
+        open.push(registered);
+    }
+    open
+}
+
+pub(crate) fn admitted_open_tool_names(
+    profile: &ClaudeAgentSdkSessionProfile,
+    servers: &[OpenStdioMcpServer],
+) -> Vec<String> {
+    let mut names: Vec<String> = profile
+        .tools()
+        .map(|tool| tool.as_str().to_owned())
+        .collect();
+    names.extend(
+        servers
+            .iter()
+            .flat_map(OpenStdioMcpServer::admitted_tool_names),
+    );
+    names
+}
+
+pub(crate) fn admitted_open_mcp_tool_names(servers: &[OpenStdioMcpServer]) -> Vec<String> {
+    servers
+        .iter()
+        .flat_map(OpenStdioMcpServer::admitted_tool_names)
+        .collect()
+}
+
 pub(crate) fn mcp_tool_name(server: &str, tool: &str) -> String {
     format!("mcp__{server}__{tool}")
 }

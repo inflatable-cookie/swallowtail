@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Added
+- bind one Contract 063 `RegisteredToolPreparation` into `claude-agent.sdk`
+  open through `with_registered_tools` on the Copy profile, preparation, and
+  driver. Open mints the Card 116 mediated-stdio courier and declares the
+  reserved `swallowtail-registered-tools` server; consumer-declared MCP stays
+  a separate path. Contract 061 stays `Unqualified / real_route_gate_pending`
+  with the reason "callable seam present; live gate pending". Provider-free
+  fake-SDK proofs cover declaration, one mediated round-trip through the
+  proxy into dispatch, deny, cancel, close, and omission. g05.035 card 125.
 - bind a resolved selected-skill bundle to a prepared Codex app-server session
   through the additive `CodexSessionProfileInput::with_selected_skill_bundle`.
   The bundle crosses as one distinct labelled `selectedSkillBundle` input on

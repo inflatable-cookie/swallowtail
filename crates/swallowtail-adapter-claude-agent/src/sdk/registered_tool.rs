@@ -30,12 +30,14 @@
 //! has not run, so no support disposition is published from deterministic
 //! evidence alone.
 
+mod binding;
 mod carrier;
 mod mediation;
 mod projection;
 mod version;
 mod wire;
 
+pub use binding::ClaudeAgentSdkRegisteredToolBinding;
 pub use carrier::{
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER,
     ClaudeAgentSdkRegisteredTool, ClaudeAgentSdkRegisteredToolCarrier,

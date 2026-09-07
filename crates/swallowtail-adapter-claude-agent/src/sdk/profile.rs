@@ -19,8 +19,8 @@
 //! open, so no write ever reaches a read-only working resource.
 
 use super::prepared::preparation_failure;
-use swallowtail_core::ResourceAccess;
-use swallowtail_runtime::{PreparationFailure, PreparationStage};
+use swallowtail_core::{Diagnostic, ResourceAccess};
+use swallowtail_runtime::{PreparationFailure, PreparationStage, RegisteredToolPreparation};
 
 /// One tool this route can admit on a prepared SDK sidecar session.
 ///
@@ -377,6 +377,26 @@ impl ClaudeAgentSdkSessionProfile {
         servers: impl IntoIterator<Item = super::mcp::ClaudeAgentSdkMcpServer>,
     ) -> Result<super::mcp::ClaudeAgentSdkMcpBinding, PreparationFailure> {
         super::mcp::ClaudeAgentSdkMcpBinding::from_parts(self, servers.into_iter().collect())
+    }
+
+    /// Qualifies one registered-tool preparation beside this Copy profile.
+    ///
+    /// Native admission stays on the profile. The binding travels beside it,
+    /// the same way declared MCP servers travel on `ClaudeAgentSdkMcpBinding`.
+    pub fn with_registered_tools(
+        self,
+        preparation: RegisteredToolPreparation,
+    ) -> Result<super::registered_tool::ClaudeAgentSdkRegisteredToolBinding, PreparationFailure>
+    {
+        let _ = self;
+        super::registered_tool::ClaudeAgentSdkRegisteredToolBinding::qualify(preparation).map_err(
+            |error| {
+                PreparationFailure::new(
+                    PreparationStage::Preflight,
+                    Diagnostic::new(error.diagnostic().clone()),
+                )
+            },
+        )
     }
 
     /// Returns the exact working-resource lease access this profile requires.

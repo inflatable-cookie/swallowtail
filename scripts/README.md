@@ -45,6 +45,10 @@ Normal validation scripts:
   extracted target
 - `run-with-isolated-home.sh` — run one command under an isolated `HOME` and
   named provider-home variables, restoring the host environment on exit
+- `run-grok-acp-client-mcp-probe.sh` — Desktop-only Grok ACP client-MCP live
+  runner. Refuses unless `SWALLOWTAIL_DESKTOP_GROK_ACP_CLIENT_MCP_PROBE=1`.
+  Swallowtail crate tests never invoke it. Packet:
+  `docs/handoffs/20260907-g05-card128-desktop-grok-acp-client-mcp-probe.md`
 - `validation/package-scope.sh` — shared exact package argument validation
 - `validation/path.sh` — canonical path resolution for macOS `/var` aliases
 - `validation/archive.sh` — shared archive member, manifest, and content audit

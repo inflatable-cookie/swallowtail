@@ -62,7 +62,12 @@ never a card, because cards complete. An evidence-pending packet must name
 the owner who runs the gate and the decision tree converting each outcome
 into `producer_gap` or `provider_limitation`, and must list the cells it
 investigates; evidence pending is unavailable to a cell no live packet
-covers. Prepared integration guides are not frozen evidence. Producer-gap
+covers. For Card128, `accepts_client_mcp` becomes `producer_gap` with
+Card118; `ignores_client_mcp` or `rejects_client_mcp` becomes
+`provider_limitation` with the returned capsule or follows the operator's
+native-route decision; `inconclusive` permits one authorized rerun, then
+follows `ignores_client_mcp`. Prepared integration guides are not frozen
+evidence. Producer-gap
 rows carry an explicit `Card129 producer-gap reasons:` marker in `notes`; a
 withheld cell uses the same producer-gap path and reason. The route-matrix
 check rejects missing, extra, stale, unanchored, guide-only, insufficient,

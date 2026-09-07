@@ -66,6 +66,7 @@ forces a minor.
 
 ## Batch Cards
 
+- [124 Claude SDK Identity Lookup Bound And Evidence Bounds](batch-cards/124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — ready; serial after card 121; two card 120 review precision items; precedes the `v0.4.4` candidate
 - [119 Claude SDK First-Turn Model Qualification Evidence](batch-cards/119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; observer evidence for `supported_model_rejected`; Contract 053 amended; producer diagnosis H1
 - [120 Claude SDK Loaded Module Version Verification](batch-cards/120-claude-sdk-loaded-module-version-verification.md) — ready on card 119; H2, `sdk_version_mismatch` at open
 - [121 Claude SDK First-Turn Rejection Terminal State](batch-cards/121-claude-sdk-first-turn-rejection-terminal-state.md) — ready on card 120; poisoned retry no longer misreports `init_missing`
@@ -386,4 +387,24 @@ Promoted planning commit: the `main` commit that introduces this section.
 | Acceptance evidence | rejection-then-retry and rejection-then-close fixtures |
 | Review oracle | the card's invariant |
 | Stop conditions | terminal state unrepresentable in the fixture |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+### Card 124 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+
+| Field | Card 124 |
+| --- | --- |
+| Readiness | ready on card 121's merge |
+| Prerequisites | cards 120 and 121 merged |
+| Completion conditions | lookup bounded to the module package boundary with the unrelated-ancestor fixture; one shared control-character predicate proved by a shared table; cards 119/120 fixtures unchanged; changelog; one PR |
+| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/wire/**`; `src/sdk/failure.rs`; `src/sdk/driver/startup.rs`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.3/swallowtail-adapter-claude-agent.txt` additively; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
+| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `sdk/profile*`; `claude_code_*` and ACP modules; contracts; every other crate |
+| Approved concurrent siblings | cards 084, 086, 087, 088, 116, 118 |
+| Serial edges | follows card 121; card 122 (the `v0.4.4` candidate) follows this card |
+| Worker capability class | Rust plus Node sidecar worker; no live call |
+| Acceptance evidence | the two new fixtures and the shared predicate table |
+| Review oracle | the card's invariant |
+| Stop conditions | the SDK package layout has no module-local manifest at all (record; return to Chatterbox) |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

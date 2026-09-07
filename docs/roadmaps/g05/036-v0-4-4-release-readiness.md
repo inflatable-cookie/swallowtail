@@ -17,7 +17,7 @@ consumer smoke on the tag. Its wall clock is the g05.034 acceptance measure.
 
 ## Runway
 
-1. Cards 119 (merged `cfb0b106`), 120, 121 merge on exact-head review.
+1. Cards 119 (merged `cfb0b106`), 120 (merged `4a27676d`), 121, and 124 merge on exact-head review.
 2. Card 122 prepares the `0.4.4` candidate per `docs/guides/release-playbook.md`.
 3. Chatterbox presents the exact-SHA tag request the moment the candidate
    SHA has a qualifying green run; the operator authorizes; the coordinator
@@ -34,13 +34,13 @@ mutation.
 
 ## Feature Freeze
 
-From card 121's merge until card 122's candidate merges, no other PR merges
+From card 124's merge until card 122's candidate merges, no other PR merges
 to `main`. Anything accepted and green before card 121 merges may go in
 first and becomes candidate content.
 
 ## Batch Cards
 
-- [122 v0.4.4 Candidate Preparation](batch-cards/122-v0-4-4-candidate-preparation.md) — planned; ready on card 121's merge
+- [122 v0.4.4 Candidate Preparation](batch-cards/122-v0-4-4-candidate-preparation.md) — planned; ready on card 124's merge
 - [123 v0.4.4 Consumer Proof And Tag Capsule](batch-cards/123-v0-4-4-consumer-proof-and-tag-capsule.md) — planned; ready on the tag
 
 ## Dispatch Manifest
@@ -51,8 +51,8 @@ Promoted planning commit: the `main` commit that introduces this file.
 
 | Field | Card 122 |
 | --- | --- |
-| Readiness | ready on card 121's merge; the coordinator dispatches on that notice without a Chatterbox round trip; prepare authorization under the operator's standing grant |
-| Prerequisites | card 121 merged; clean canonical `main`; freeze in force |
+| Readiness | ready on card 124's merge; the coordinator dispatches on that notice without a Chatterbox round trip; prepare authorization under the operator's standing grant |
+| Prerequisites | cards 121 and 124 merged; clean canonical `main`; freeze in force |
 | Completion conditions | `docs/releases/0.4.4.md` and index entry from cards 119-121 plus any merged additive tranches; patch class from the semantic API diff; read-only status inferring `0.4.4`; lock in sync; exactly one `effigy --json release prepare --yes --check-gates --version 0.4.4` on the cheap-gate table; the qualifying hosted `workflow_dispatch` run id recorded in the release note; candidate PR; review and hosted run in parallel; merge on both green; candidate SHA and run id reported to Chatterbox immediately; wall clock from dispatch to merge recorded in the Result |
 | Owned mutable paths | as card 106 with `0.4.4` for `0.4.3`; no gate-script version edits (card 110 derives them) |
 | Reserved shared closeout surfaces | the usual roadmap, index, generation, log, and release-index surfaces |

@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md](./124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — ready; serial after 121; bounded manifest lookup and one model-id predicate; precedes the `v0.4.4` candidate
 - [119-claude-sdk-first-turn-model-qualification-evidence.md](./119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; bounded observer evidence for the first-turn model rejection; lead of the producer-diagnosis trio
 - [120-claude-sdk-loaded-module-version-verification.md](./120-claude-sdk-loaded-module-version-verification.md) — ready; serial after 119; loaded SDK version verified at open
 - [121-claude-sdk-first-turn-rejection-terminal-state.md](./121-claude-sdk-first-turn-rejection-terminal-state.md) — ready; serial after 120; terminal state after first-turn rejection
@@ -12,7 +13,7 @@
 
 ## Planned
 
-- [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — planned; ready on card 121's merge; first lane on the simplified shape
+- [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — planned; ready on card 124's merge; first lane on the simplified shape
 - [123-v0-4-4-consumer-proof-and-tag-capsule.md](./123-v0-4-4-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.4` tag
 - [114-registered-tool-kernel.md](./114-registered-tool-kernel.md) — planned; ready after Batch A planning review/promotion
 - [115-selected-skill-transport.md](./115-selected-skill-transport.md) — planned; waits for card114 merges

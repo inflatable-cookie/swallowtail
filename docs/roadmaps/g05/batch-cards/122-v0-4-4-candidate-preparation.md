@@ -1,11 +1,11 @@
 # 122 v0.4.4 Candidate Preparation
 
-Status: planned; ready on card 121's merge
+Status: planned; ready on card 124's merge
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07
 Milestone: `../036-v0-4-4-release-readiness.md`
-Depends on: ready on card 121's merge
+Depends on: ready on card 124's merge
 
 ## Goal
 

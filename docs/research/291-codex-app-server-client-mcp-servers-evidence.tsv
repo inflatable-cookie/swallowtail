@@ -1,0 +1,2 @@
+row_route	feature	kind	basis	finding
+`codex.app-server`	client_mcp_servers	provider_limitation	docs/research/291-codex-app-server-client-mcp-servers-evidence.md#L17	qualified route unavailable: app-server ClientRequest methods and thread/turn params have no client-declared MCP server surface on the qualified range; configuration-owned MCP and observed mcpToolCall activity do not count; card 117 native dynamic tools remain the qualified consumer-tool path

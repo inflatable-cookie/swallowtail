@@ -51,11 +51,21 @@ The five shared-harness capability columns are deliberately separate:
 | persistent_permission_grants | permission decisions survive one call or turn; one-shot Allow/Deny exchange is not a grant |
 | pre_session_model_catalogue | a model catalogue is available before opening the session; open-time negotiated options do not count |
 
+On `codex.app-server`, `client_mcp_servers` is a provider limitation because
+the qualified range has no typed per-session client-declared MCP surface. MCP
+configuration reaches Codex only through the untyped ambient `config`
+overlay, which carries no per-session identity, revision, digest, or
+lifecycle. That overlay is not the feature. Card 117 native host-mediated
+registered tools remain the qualified consumer-tool path; provider-direct MCP
+stays withheld.
+
 `cross_kind` and `cross_ref` are JSON objects immediately before `notes` in
 the CSV. Their keys are the unavailable feature columns in that row. Each
 value is exactly one of: `provider_limitation` with an anchored row in the
 Card129 [frozen evidence ledger](../research/290-feature-matrix-cross-evidence.md),
-whose basis is itself an anchored Research 281 route-ledger line;
+whose basis is an anchored `docs/research` or `docs/contracts` line that names
+the route (Research 281 for the Card129 census; Research 291 for the Codex
+`client_mcp_servers` cell);
 `producer_gap` with an existing non-complete g05 batch-card path; or
 `evidence_pending` with a live hand-off packet under `docs/handoffs/` —
 never a card, because cards complete. An evidence-pending packet must name

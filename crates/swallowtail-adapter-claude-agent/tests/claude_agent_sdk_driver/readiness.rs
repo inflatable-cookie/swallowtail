@@ -11,13 +11,43 @@ use std::fs;
 use std::io;
 use std::process::{Child, Command, ExitStatus, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
-use swallowtail_runtime::{InteractiveSessionHandle, ProcessExit, SessionOptions};
+use swallowtail_core::Diagnostic;
+use swallowtail_runtime::{
+    DebugObservation, DebugObservationKind, DiagnosticObserver, InteractiveSessionHandle,
+    ProcessExit, SessionOptions,
+};
 
 const CAPTURE_CHILD_ENV: &str = "SWALLOWTAIL_CARD100_CAPTURE_CHILD";
 const CAPTURE_JOURNAL_ENV: &str = "SWALLOWTAIL_CARD100_CAPTURE_JOURNAL";
 static NEXT_CAPTURE_JOURNAL: AtomicU64 = AtomicU64::new(0);
+
+#[derive(Default)]
+struct RecordingObserver {
+    debug: Mutex<Vec<DebugObservation>>,
+}
+
+impl RecordingObserver {
+    fn observations(&self) -> Vec<DebugObservation> {
+        self.debug
+            .lock()
+            .expect("recording observer lock poisoned")
+            .clone()
+    }
+}
+
+impl DiagnosticObserver for RecordingObserver {
+    fn observe(&self, _diagnostic: &Diagnostic) {}
+
+    fn observe_debug(&self, observation: &DebugObservation) {
+        self.debug
+            .lock()
+            .expect("recording observer lock poisoned")
+            .push(observation.clone());
+    }
+}
 
 struct ReapOnDrop {
     child: Option<Child>,
@@ -321,6 +351,103 @@ fn missing_and_unsupported_effective_models_fail_closed() {
         first_turn_failure(SdkScenario::UnsupportedModel),
         "supported_model_rejected"
     );
+}
+
+#[test]
+fn model_qualification_evidence_reaches_the_recording_observer() {
+    for (scenario, rejected, requested_membership, effective_membership) in [
+        (SdkScenario::AliasOnly, true, true, false),
+        (SdkScenario::CanonicalOnly, false, false, true),
+        (SdkScenario::BothIds, false, true, true),
+        (SdkScenario::NeitherIds, true, false, false),
+    ] {
+        let host = host_id("claude-agent-sdk.fixture.model-qualification-evidence");
+        let fixture = SdkFixtureHost::new(scenario);
+        let observer = Arc::new(RecordingObserver::default());
+        let prepared = prepared_session(host.clone());
+        let services = fixture
+            .services(host)
+            .with_diagnostic_observer(observer.clone());
+        let cleanup_services = services.clone();
+        let mut session = block_on(prepared.open_route_session(services.clone()))
+            .expect("model qualification fixture opens");
+
+        if rejected {
+            let Err(error) =
+                block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+            else {
+                panic!("{scenario:?} must reject its effective model");
+            };
+            assert_eq!(
+                error.diagnostic().code(),
+                "swallowtail.claude-agent.sdk.supported_model_rejected"
+            );
+        } else {
+            let mut turn =
+                block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+                    .expect("listed effective model starts a turn");
+            let terminal = block_on(
+                turn.take_terminal_outcome()
+                    .expect("terminal outcome exists"),
+            );
+            assert_eq!(
+                terminal.status(),
+                &swallowtail_runtime::TerminalStatus::Completed
+            );
+            let _ = block_on(turn.close());
+        }
+
+        let observations = observer.observations();
+        if rejected {
+            assert_eq!(
+                observations.len(),
+                1,
+                "one qualification observation for {scenario:?}: {observations:?}"
+            );
+            let observation = &observations[0];
+            assert_eq!(observation.kind(), DebugObservationKind::InterfaceVersion);
+            assert_eq!(observation.route(), Some("claude-agent.sdk"));
+            assert_eq!(observation.stage(), Some("first-turn-model-qualification"));
+            assert_eq!(
+                observation.correlated_code(),
+                Some("supported_model_rejected")
+            );
+            assert!(!observation.detail_truncated());
+            let detail: Value =
+                serde_json::from_str(observation.detail()).expect("qualification detail is JSON");
+            assert_eq!(
+                detail,
+                serde_json::json!({
+                    "requestedModel": "claude-sonnet-5",
+                    "effectiveModel": "claude-sonnet-5-20250929",
+                    "catalogueSize": 1,
+                    "catalogueDigest": if scenario == SdkScenario::AliasOnly {
+                        "sha256:4b07d9a517e35f5852d8385b4a192070"
+                    } else {
+                        "sha256:f9ef6eedd766691f041bc3387784d8dd"
+                    },
+                    "requestedMembership": requested_membership,
+                    "effectiveMembership": effective_membership,
+                    "querySource": "sdk.query",
+                    "phase": "first-turn-model-qualification",
+                    "declaredSdkVersion": "0.3.259",
+                    "loadedSdkVersion": "0.3.259",
+                    "nativeVersion": "2.1.259"
+                })
+            );
+            let detail_text = observation.detail();
+            assert!(!detail_text.contains("read it"));
+            assert!(!detail_text.contains("fixture-secret"));
+            assert!(!detail_text.contains("/fixture/"));
+        } else {
+            assert!(
+                observations.is_empty(),
+                "accepted model qualification must not emit rejection evidence"
+            );
+        }
+
+        let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+    }
 }
 
 #[test]

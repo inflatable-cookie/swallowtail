@@ -4,7 +4,7 @@ use super::{
     encode_callback_response, encode_command,
 };
 use crate::sdk::protocol::ClaudeAgentSdkProtocolFailureKind;
-use serde_json::json;
+use serde_json::{Value, json};
 use std::collections::BTreeSet;
 
 #[test]
@@ -390,6 +390,92 @@ fn terminal_and_diagnostic_payloads_stay_bounded() {
         assert_eq!(
             decode_record(&bytes).err().map(|error| error.kind()),
             Some(expected)
+        );
+    }
+}
+
+fn model_qualification_record() -> Value {
+    json!({
+        "type": "diagnostic",
+        "level": "error",
+        "code": "supported_model_rejected",
+        "message": "sidecar diagnostic: supported_model_rejected",
+        "evidence": {
+            "requestedModel": "claude-sonnet-5",
+            "effectiveModel": "claude-sonnet-5-20250929",
+            "catalogueSize": 1,
+            "catalogueDigest": "sha256:4b07d9a517e35f5852d8385b4a192070",
+            "requestedMembership": true,
+            "effectiveMembership": false,
+            "querySource": "sdk.query",
+            "phase": "first-turn-model-qualification",
+            "declaredSdkVersion": "0.3.259",
+            "loadedSdkVersion": "0.3.259",
+            "nativeVersion": "2.1.259"
+        }
+    })
+}
+
+fn bad_digest(record: &mut Value) {
+    record["evidence"]["catalogueDigest"] = json!("sha256:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+}
+
+fn oversized_model_id(record: &mut Value) {
+    record["evidence"]["requestedModel"] = json!("x".repeat(129));
+}
+
+fn oversized_catalogue_count(record: &mut Value) {
+    record["evidence"]["catalogueSize"] = json!(65);
+}
+
+fn extra_evidence_field(record: &mut Value) {
+    record["evidence"]["unexpected"] = json!(true);
+}
+
+fn missing_evidence_field(record: &mut Value) {
+    record["evidence"]
+        .as_object_mut()
+        .expect("evidence object")
+        .remove("phase");
+}
+
+fn wrong_query_source(record: &mut Value) {
+    record["evidence"]["querySource"] = json!("sdk.initialization");
+}
+
+fn wrong_phase(record: &mut Value) {
+    record["evidence"]["phase"] = json!("open");
+}
+
+fn evidence_on_wrong_diagnostic_code(record: &mut Value) {
+    record["code"] = json!("query_rejected");
+}
+
+type EvidenceMutation = (&'static str, fn(&mut Value));
+
+#[test]
+fn model_qualification_evidence_rejects_contract_drift() {
+    let cases: [EvidenceMutation; 8] = [
+        ("bad digest", bad_digest),
+        ("model id over 128 bytes", oversized_model_id),
+        ("catalogue count over 64", oversized_catalogue_count),
+        ("extra evidence field", extra_evidence_field),
+        ("missing evidence field", missing_evidence_field),
+        ("wrong query source", wrong_query_source),
+        ("wrong phase", wrong_phase),
+        (
+            "evidence on wrong diagnostic code",
+            evidence_on_wrong_diagnostic_code,
+        ),
+    ];
+    for (label, mutate) in cases {
+        let mut record = model_qualification_record();
+        mutate(&mut record);
+        let bytes = serde_json::to_vec(&record).expect("fixture serializes");
+        assert_eq!(
+            decode_record(&bytes).err().map(|error| error.kind()),
+            Some(ClaudeAgentSdkProtocolFailureKind::InvalidDiagnostic),
+            "{label} must fail closed"
         );
     }
 }

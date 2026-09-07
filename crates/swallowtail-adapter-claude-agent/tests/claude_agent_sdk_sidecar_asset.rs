@@ -463,6 +463,104 @@ fn first_turn_init_rejections_expose_their_fixed_sidecar_code() {
 }
 
 #[test]
+fn model_rejection_evidence_is_bounded_and_does_not_change_the_failure_response() {
+    for (scenario, digest, requested_membership, effective_membership) in [
+        (
+            "alias-only",
+            "sha256:a461b472cb41a9ec3dee5c90cf8e4a78",
+            true,
+            false,
+        ),
+        (
+            "neither-ids",
+            "sha256:f9ef6eedd766691f041bc3387784d8dd",
+            false,
+            false,
+        ),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        let response = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+        assert_eq!(
+            response,
+            json!({
+                "type": "response",
+                "id": "query-1",
+                "command": "query",
+                "success": false,
+                "failure": {
+                    "code": "supported_model_rejected",
+                    "message": "sidecar command failed: supported_model_rejected"
+                }
+            }),
+            "the rejection response remains byte-identical for {scenario}"
+        );
+        let diagnostic = sidecar.next_diagnostic();
+        assert_eq!(
+            diagnostic["code"], "supported_model_rejected",
+            "diagnostic code for {scenario}"
+        );
+        assert_eq!(
+            diagnostic["message"],
+            "sidecar diagnostic: supported_model_rejected"
+        );
+        assert_eq!(
+            diagnostic["evidence"],
+            json!({
+                "requestedModel": "m-1",
+                "effectiveModel": "claude-sonnet-5-20250929",
+                "catalogueSize": 1,
+                "catalogueDigest": digest,
+                "requestedMembership": requested_membership,
+                "effectiveMembership": effective_membership,
+                "querySource": "sdk.query",
+                "phase": "first-turn-model-qualification",
+                "declaredSdkVersion": "0.3.259",
+                "loadedSdkVersion": "0.3.259",
+                "nativeVersion": "2.1.259"
+            })
+        );
+        let wire = diagnostic.to_string();
+        assert!(!wire.contains("first turn"));
+        assert!(!wire.contains("fixture-secret"));
+        assert!(!wire.contains(&sidecar.cwd()));
+        assert!(!wire.contains("Error("));
+        let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+        assert_eq!(close["success"], true);
+    }
+}
+
+#[test]
+fn diagnostic_write_failure_keeps_the_supported_model_rejection() {
+    let mut sidecar = SidecarProcess::start_scenario("diagnostic-write-failure");
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    let response = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(
+        response,
+        json!({
+            "type": "response",
+            "id": "query-1",
+            "command": "query",
+            "success": false,
+            "failure": {
+                "code": "supported_model_rejected",
+                "message": "sidecar command failed: supported_model_rejected"
+            }
+        })
+    );
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true);
+}
+
+#[test]
 fn canonicalized_first_turn_cwd_is_accepted_but_a_different_path_is_rejected() {
     let mut sidecar = SidecarProcess::start_scenario("canonical-cwd");
     let open = sidecar.command(

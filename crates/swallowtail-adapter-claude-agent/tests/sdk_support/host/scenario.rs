@@ -31,6 +31,14 @@ pub enum SdkScenario {
     CwdMismatch,
     /// Open reports a canonical effective model for the selected alias.
     CanonicalModel,
+    /// The requested alias is listed, but the canonical effective model is not.
+    AliasOnly,
+    /// Only the canonical effective model is listed.
+    CanonicalOnly,
+    /// Both the requested alias and canonical effective model are listed.
+    BothIds,
+    /// Neither the requested alias nor canonical effective model is listed.
+    NeitherIds,
     /// Open reports no effective model.
     MissingModel,
     /// Open reports an effective model outside its supported-model list.

@@ -92,6 +92,12 @@ function initMessage(options) {
   } else if (SCENARIO === "unsupported-model") {
     message.model = "claude-sonnet-5-20250929";
     message.supportedModels = ["claude-opus-5"];
+  } else if (
+    ["alias-only", "canonical-only", "both-ids", "neither-ids", "diagnostic-write-failure"].includes(
+      SCENARIO,
+    )
+  ) {
+    message.model = "claude-sonnet-5-20250929";
   } else if (SCENARIO === "resume-session-unknown") {
     message.session_id = "other-session";
   } else if (SCENARIO === "resume-cwd-mismatch") {
@@ -128,6 +134,24 @@ function modelRows(options) {
   if (SCENARIO === "unsupported-model") {
     return [{ value: "claude-opus-5", displayName: "Opus" }];
   }
+  if (SCENARIO === "alias-only") {
+    return [{ value: options.model, displayName: "Fixture alias" }];
+  }
+  if (SCENARIO === "canonical-only") {
+    return [{ value: "claude-sonnet-5-20250929", displayName: "Canonical model" }];
+  }
+  if (SCENARIO === "both-ids") {
+    return [
+      { value: options.model, displayName: "Fixture alias" },
+      { value: "claude-sonnet-5-20250929", displayName: "Canonical model" },
+    ];
+  }
+  if (SCENARIO === "neither-ids") {
+    return [{ value: "claude-opus-5", displayName: "Unrelated model" }];
+  }
+  if (SCENARIO === "diagnostic-write-failure") {
+    return [{ value: options.model, displayName: "Fixture alias" }];
+  }
   if (SCENARIO === "canonical-model") {
     return [
       {
@@ -150,6 +174,21 @@ function modelRows(options) {
     ];
   }
   return [{ value: options.model, displayName: "Fixture model" }];
+}
+
+function failNextQualificationDiagnosticWrite() {
+  const originalWrite = process.stdout.write.bind(process.stdout);
+  let failed = false;
+  process.stdout.write = (chunk, ...args) => {
+    if (!failed && String(chunk).includes('"type":"diagnostic"')) {
+      failed = true;
+      process.stdout.write = originalWrite;
+      const callback = args.find((argument) => typeof argument === "function");
+      callback?.(new Error("synthetic diagnostic write failure"));
+      return true;
+    }
+    return originalWrite(chunk, ...args);
+  };
 }
 
 function initializeResponse(options) {
@@ -208,6 +247,9 @@ async function recordPromptLifetime(promptIterator) {
 
 export function query({ prompt, options }) {
   state.permissionMode = options.permissionMode ?? "default";
+  if (SCENARIO === "diagnostic-write-failure") {
+    failNextQualificationDiagnosticWrite();
+  }
   // Only serialisable option keys are recorded; callbacks are noted by name so
   // the test can assert what was and was not passed.
   observed.options = JSON.parse(

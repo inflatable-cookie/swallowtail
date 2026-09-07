@@ -196,6 +196,14 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         SdkScenario::CanonicalModel => {
             data["supportedModels"] = json!([FIXTURE_MODEL, "claude-sonnet-5-20250929"]);
         }
+        SdkScenario::AliasOnly => data["supportedModels"] = json!([FIXTURE_MODEL]),
+        SdkScenario::CanonicalOnly => {
+            data["supportedModels"] = json!(["claude-sonnet-5-20250929"]);
+        }
+        SdkScenario::BothIds => {
+            data["supportedModels"] = json!([FIXTURE_MODEL, "claude-sonnet-5-20250929"]);
+        }
+        SdkScenario::NeitherIds => data["supportedModels"] = json!(["claude-opus-5"]),
         SdkScenario::MissingModel | SdkScenario::UnsupportedModel => {}
         SdkScenario::EmptySupportedModels => data["supportedModels"] = json!([]),
         SdkScenario::NewerNode => data["nodeVersion"] = json!("26.7.0"),
@@ -314,7 +322,14 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         );
         return;
     }
-    let effective_model = if scenario == SdkScenario::CanonicalModel {
+    let effective_model = if matches!(
+        scenario,
+        SdkScenario::CanonicalModel
+            | SdkScenario::AliasOnly
+            | SdkScenario::CanonicalOnly
+            | SdkScenario::BothIds
+            | SdkScenario::NeitherIds
+    ) {
         "claude-sonnet-5-20250929"
     } else {
         FIXTURE_MODEL
@@ -345,11 +360,19 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
     if scenario == SdkScenario::EffortConfirmed {
         init["effort"] = effort.unwrap_or(Value::Null);
     }
+    let model_rejection = model_qualification_diagnostic(scenario);
+    let model_rejection_present = model_rejection.is_some();
+    if let Some(diagnostic) = model_rejection {
+        push(state, diagnostic);
+    }
     push(
         state,
         json!({"type": "response", "id": id, "command": "query", "success": true,
                "data": init}),
     );
+    if model_rejection_present {
+        return;
+    }
     push(state, json!({"type": "event", "event": "turn_started"}));
     if let Some(code) = terminal_code(scenario) {
         let stderr = format!(
@@ -456,6 +479,34 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
             push(state, turn_ended_record(false));
         }
     }
+}
+
+fn model_qualification_diagnostic(scenario: SdkScenario) -> Option<Value> {
+    let (catalogue_size, catalogue_digest, requested_membership, effective_membership) =
+        match scenario {
+            SdkScenario::AliasOnly => (1, "sha256:4b07d9a517e35f5852d8385b4a192070", true, false),
+            SdkScenario::NeitherIds => (1, "sha256:f9ef6eedd766691f041bc3387784d8dd", false, false),
+            _ => return None,
+        };
+    Some(json!({
+        "type": "diagnostic",
+        "level": "error",
+        "code": "supported_model_rejected",
+        "message": "sidecar diagnostic: supported_model_rejected",
+        "evidence": {
+            "requestedModel": FIXTURE_MODEL,
+            "effectiveModel": "claude-sonnet-5-20250929",
+            "catalogueSize": catalogue_size,
+            "catalogueDigest": catalogue_digest,
+            "requestedMembership": requested_membership,
+            "effectiveMembership": effective_membership,
+            "querySource": "sdk.query",
+            "phase": "first-turn-model-qualification",
+            "declaredSdkVersion": "0.3.259",
+            "loadedSdkVersion": "0.3.259",
+            "nativeVersion": "2.1.259"
+        }
+    }))
 }
 
 fn set_permission_mode(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Value) {

@@ -1,0 +1,76 @@
+{
+  "kind": "card116-provider-free-corpus-index",
+  "status": "evidence-preparation-only",
+  "card": "g05.035/116",
+  "base": "6c52b9f970b38838f8e4918d32b536dc26fb0823",
+  "artifact": {
+    "package": "@anthropic-ai/claude-agent-sdk",
+    "version": "0.3.259",
+    "native_version": "2.1.259",
+    "tarball_sha256": "0c5740e44a536ab6fd32f2a7de0d508b75d34782ebc219b87aa8d834449a3f7e",
+    "wire": "swallowtail-claude-agent-sdk-jsonl-v1",
+    "behavior_revision": "claude-agent.sdk-v1",
+    "executed": false
+  },
+  "surface_index": [
+    {
+      "id": "mcpServers",
+      "shape": "Options.mcpServers -> Record<string, McpServerConfig>",
+      "classification": "provider-attachment-only",
+      "disposition": "stdio-route-local-prior-art"
+    },
+    {
+      "id": "canUseTool",
+      "shape": "tool-name-and-input -> allow-or-deny",
+      "classification": "permission-admission-only",
+      "disposition": "preserve-existing-sidecar-callback"
+    },
+    {
+      "id": "sdk-mcp-handler",
+      "shape": "tool-and-createSdkMcpServer-in-process-handler",
+      "classification": "sidecar-local-callback",
+      "disposition": "withhold-unqualified-private-carrier"
+    },
+    {
+      "id": "mcpServerStatus",
+      "shape": "connected-failed-needs-auth-pending-disabled",
+      "classification": "bounded-observation",
+      "disposition": "do-not-treat-as-dispatch-or-cleanup-proof"
+    },
+    {
+      "id": "private-wire",
+      "shape": "open-query-interrupt-set-permission-mode-set-model-list-sessions-close",
+      "classification": "Swallowtail-owned-route-wire",
+      "disposition": "no-registered-tool-call-record-yet"
+    }
+  ],
+  "transport_disposition": {
+    "stdio": "reuse-card084-route-local-support",
+    "sse": "withhold-missing-pinned-protocol-auth-lifecycle-corpus",
+    "http": "withhold-missing-pinned-protocol-auth-lifecycle-corpus",
+    "sdk": "withhold-missing-sidecar-host-carrier",
+    "managed": "withhold-no-ambient-settings-authority"
+  },
+  "preserved_invariants": [
+    "default-open-omits-mcpServers-and-status-query",
+    "allowedTools-is-never-sent",
+    "auto-approving-permission-modes-are-rejected",
+    "resume-remains-bound-to-the-existing-sidecar-session-shape",
+    "reserved-swallowtail-watchers-name-and-closed-WatcherBridge-remain-separate"
+  ],
+  "missing_evidence": [
+    "card114-registered-tool-kernel-and-lease-conformance",
+    "card115-selected-skill-reference-transport",
+    "fake-sdk-central-snapshot-to-dispatch-result-corpus",
+    "exact-private-callback-carrier-or-pinned-http-sse-corpus",
+    "exact-head-mounted-wiring-review-and-later-disposable-route-gate"
+  ],
+  "credential_or_provider_use": {
+    "provider_process": false,
+    "live_prompt": false,
+    "login": false,
+    "credential_read": false,
+    "live_mcp_server": false,
+    "consumer_operation": false
+  }
+}

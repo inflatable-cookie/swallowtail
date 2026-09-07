@@ -7,7 +7,7 @@ use crate::sdk::protocol::ClaudeAgentSdkProtocolFailureKind;
 use serde_json::{Value, json};
 use std::collections::BTreeSet;
 
-const MODEL_EVIDENCE_BOUNDS: &str =
+const EVIDENCE_BOUNDS: &str =
     include_str!("../../../tests/fixtures/claude-agent-sdk/model-evidence-bounds.json");
 
 #[test]
@@ -549,8 +549,8 @@ fn model_qualification_evidence_rejects_contract_drift() {
 
 #[test]
 fn model_qualification_ids_match_the_shared_boundary_and_control_table() {
-    let cases: Value = serde_json::from_str(MODEL_EVIDENCE_BOUNDS)
-        .expect("model evidence bounds fixture is valid JSON");
+    let cases: Value =
+        serde_json::from_str(EVIDENCE_BOUNDS).expect("model evidence bounds fixture is valid JSON");
     for case in cases
         .as_array()
         .expect("model evidence fixture is an array")
@@ -574,19 +574,41 @@ fn model_qualification_ids_match_the_shared_boundary_and_control_table() {
 }
 
 #[test]
-fn sdk_identity_mismatch_evidence_is_bounded_and_typed() {
-    let record = json!({
-        "type": "diagnostic",
-        "level": "error",
-        "code": "sdk_version_mismatch",
-        "message": "sidecar diagnostic: sdk_version_mismatch",
-        "evidence": {
-            "declaredSdkPackage": "@anthropic-ai/claude-agent-sdk",
-            "declaredSdkVersion": "0.3.259",
-            "loadedSdkPackage": "@anthropic-ai/claude-agent-sdk",
-            "loadedSdkVersion": "0.3.258"
+fn sdk_identity_fields_match_the_shared_boundary_and_control_table() {
+    let cases: Value =
+        serde_json::from_str(EVIDENCE_BOUNDS).expect("evidence bounds fixture is valid JSON");
+    for case in cases
+        .as_array()
+        .expect("evidence bounds fixture is an array")
+    {
+        let name = case["name"].as_str().expect("fixture case name");
+        let unit = case["unit"].as_str().expect("fixture unit");
+        let repeat = case["repeat"]
+            .as_u64()
+            .and_then(|value| usize::try_from(value).ok())
+            .expect("fixture repeat is a usize");
+        let value = unit.repeat(repeat);
+        let valid = case["valid"].as_bool().expect("fixture validity");
+
+        for field in ["loadedSdkPackage", "loadedSdkVersion"] {
+            let mut record = sdk_identity_record();
+            record["evidence"][field] = json!(value.clone());
+            let decoded = decode_record(&serde_json::to_vec(&record).expect("fixture serializes"));
+            assert_eq!(decoded.is_ok(), valid, "Rust predicate for {name}/{field}");
+            if !valid {
+                assert_eq!(
+                    decoded.err().map(|error| error.kind()),
+                    Some(ClaudeAgentSdkProtocolFailureKind::InvalidDiagnostic),
+                    "Rust failure classification for {name}/{field}"
+                );
+            }
         }
-    });
+    }
+}
+
+#[test]
+fn sdk_identity_mismatch_evidence_is_bounded_and_typed() {
+    let record = sdk_identity_record();
     assert!(matches!(
         decode_record(&serde_json::to_vec(&record).expect("fixture serializes")),
         Ok(ClaudeAgentSdkRecord::Diagnostic(_))
@@ -607,4 +629,19 @@ fn sdk_identity_mismatch_evidence_is_bounded_and_typed() {
             Some(ClaudeAgentSdkProtocolFailureKind::InvalidDiagnostic)
         );
     }
+}
+
+fn sdk_identity_record() -> Value {
+    json!({
+        "type": "diagnostic",
+        "level": "error",
+        "code": "sdk_version_mismatch",
+        "message": "sidecar diagnostic: sdk_version_mismatch",
+        "evidence": {
+            "declaredSdkPackage": "@anthropic-ai/claude-agent-sdk",
+            "declaredSdkVersion": "0.3.259",
+            "loadedSdkPackage": "@anthropic-ai/claude-agent-sdk",
+            "loadedSdkVersion": "0.3.258"
+        }
+    })
 }

@@ -848,7 +848,7 @@ function boundedIdentity(value) {
     typeof value !== "string" ||
     value.length === 0 ||
     Buffer.byteLength(value, "utf8") > MAXIMUM_IDENTITY_BYTES ||
-    [...value].some((character) => character.charCodeAt(0) < 0x20)
+    [...value].some(isControlCharacter)
   ) {
     return null;
   }

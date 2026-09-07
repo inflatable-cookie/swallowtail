@@ -20,6 +20,8 @@ static NEXT_TEMPORARY_DIRECTORY: AtomicUsize = AtomicUsize::new(0);
 struct Fixture {
     native_lifetime_ms: &'static str,
     scenario: &'static str,
+    identity_field: Option<&'static str>,
+    identity_value: Option<String>,
     model_evidence_value: Option<String>,
 }
 
@@ -28,6 +30,8 @@ impl Default for Fixture {
         Self {
             native_lifetime_ms: "50",
             scenario: "read-only",
+            identity_field: None,
+            identity_value: None,
             model_evidence_value: None,
         }
     }
@@ -67,6 +71,17 @@ impl SidecarProcess {
         })
     }
 
+    /// Starts the sidecar with one shared identity-boundary fixture value in
+    /// the fake SDK package manifest.
+    pub fn start_sdk_identity_case(field: &'static str, value: &str) -> Self {
+        Self::start_with(&Fixture {
+            scenario: "sdk-identity-boundary",
+            identity_field: Some(field),
+            identity_value: Some(value.to_owned()),
+            ..Fixture::default()
+        })
+    }
+
     /// Starts the asset with a fake native child that outlives any bound the
     /// test declares.
     pub fn start_with_surviving_native_child() -> Self {
@@ -99,7 +114,12 @@ impl SidecarProcess {
         let directory = temporary_directory();
         let entry = directory.join("claude-agent-sdk-sidecar.mjs");
         std::fs::write(&entry, CLAUDE_AGENT_SDK_SIDECAR_SOURCE).expect("asset is written");
-        let sdk_module = write_sdk_fixture(&directory, scenario);
+        let sdk_module = write_sdk_fixture(
+            &directory,
+            scenario,
+            fixture.identity_field,
+            fixture.identity_value.as_deref(),
+        );
         std::fs::write(
             directory.join("manifest.json"),
             json!({"version": "2.1.259"}).to_string(),
@@ -516,7 +536,12 @@ fn temporary_directory() -> PathBuf {
     path
 }
 
-fn write_sdk_fixture(directory: &Path, scenario: &str) -> PathBuf {
+fn write_sdk_fixture(
+    directory: &Path,
+    scenario: &str,
+    identity_field: Option<&str>,
+    identity_value: Option<&str>,
+) -> PathBuf {
     let nested_identity = matches!(
         scenario,
         "sdk-identity-nested-match"
@@ -597,6 +622,20 @@ fn write_sdk_fixture(directory: &Path, scenario: &str) -> PathBuf {
         "sdk-identity-ambiguous" => {
             std::fs::write(package_manifest, mismatch_manifest)
                 .expect("unrelated consumer identity is written");
+        }
+        "sdk-identity-boundary" => {
+            let manifest_field = match identity_field {
+                Some("loadedSdkPackage") => "name",
+                Some("loadedSdkVersion") => "version",
+                _ => panic!("unknown identity boundary fixture field"),
+            };
+            let mut manifest = json!({
+                "name": "@anthropic-ai/claude-agent-sdk",
+                "version": "0.3.259"
+            });
+            manifest[manifest_field] = json!(identity_value.expect("identity boundary value"));
+            std::fs::write(package_manifest, manifest.to_string())
+                .expect("identity boundary manifest is written");
         }
         _ => std::fs::write(package_manifest, correct_manifest)
             .expect("fake SDK package identity is written"),

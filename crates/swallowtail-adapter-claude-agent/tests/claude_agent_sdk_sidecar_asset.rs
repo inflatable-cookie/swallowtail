@@ -12,8 +12,7 @@ mod sidecar_asset_support;
 use serde_json::{Value, json};
 use sidecar_asset_support::SidecarProcess;
 
-const MODEL_EVIDENCE_BOUNDS: &str =
-    include_str!("fixtures/claude-agent-sdk/model-evidence-bounds.json");
+const EVIDENCE_BOUNDS: &str = include_str!("fixtures/claude-agent-sdk/model-evidence-bounds.json");
 
 #[test]
 fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
@@ -51,6 +50,54 @@ fn mismatching_sdk_package_identity_fails_before_sdk_construction_with_bounded_e
             "loadedSdkVersion": "0.3.258"
         })
     );
+}
+
+#[test]
+fn sdk_identity_fields_match_the_shared_boundary_and_control_table() {
+    let cases: Value =
+        serde_json::from_str(EVIDENCE_BOUNDS).expect("evidence bounds fixture is valid JSON");
+    for case in cases
+        .as_array()
+        .expect("evidence bounds fixture is an array")
+    {
+        let name = case["name"].as_str().expect("fixture case name");
+        let unit = case["unit"].as_str().expect("fixture unit");
+        let repeat = case["repeat"]
+            .as_u64()
+            .and_then(|value| usize::try_from(value).ok())
+            .expect("fixture repeat is a usize");
+        let value = unit.repeat(repeat);
+        let valid = case["valid"].as_bool().expect("fixture validity");
+
+        for field in ["loadedSdkPackage", "loadedSdkVersion"] {
+            let mut sidecar = SidecarProcess::start_sdk_identity_case(field, &value);
+            let open = sidecar.command(
+                "open-1",
+                "open",
+                json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+            );
+            let expected_code = if valid {
+                "sdk_version_mismatch"
+            } else {
+                "sdk_identity_unverifiable"
+            };
+            assert_eq!(
+                open["failure"]["code"], expected_code,
+                "sidecar identity classification for {name}/{field}: {open}"
+            );
+            assert!(
+                !sidecar.sdk_was_constructed(),
+                "SDK query ran for {name}/{field}"
+            );
+            if valid {
+                assert_eq!(
+                    sidecar.next_diagnostic()["evidence"][field],
+                    json!(value.clone()),
+                    "sidecar identity evidence for {name}/{field}"
+                );
+            }
+        }
+    }
 }
 
 #[test]
@@ -115,8 +162,8 @@ fn unrelated_ancestor_identity_is_unverifiable_before_sdk_construction() {
 
 #[test]
 fn model_evidence_bounds_and_controls_match_the_shared_fixture_table() {
-    let cases: Value = serde_json::from_str(MODEL_EVIDENCE_BOUNDS)
-        .expect("model evidence bounds fixture is valid JSON");
+    let cases: Value =
+        serde_json::from_str(EVIDENCE_BOUNDS).expect("model evidence bounds fixture is valid JSON");
     for case in cases
         .as_array()
         .expect("model evidence fixture is an array")

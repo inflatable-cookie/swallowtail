@@ -44,14 +44,24 @@ authentication was performed. The operator's Grok account usage is exhausted,
 so live rows are blocked `account_quota_exhausted` and no live provider call
 was attempted.
 
+The operator subsequently completed isolated login for both segments, and
+confirmed the account remains out of usage afterwards. **Grok account quota is
+an external blocker**: it is outside the project's control, it is not a
+planning question, and the scope decision is settled — the operator has not
+authorized narrowing the release scope, so Grok MCP/tools stay required and
+unproven rather than becoming a withheld cell. Do not re-open that choice, do
+not retry, and do not request further logins.
+
 The card 128 probe therefore has no verdict, the four `grok-build.acp` cells
-stay `evidence_pending`, and the release gate is unresolved in both
-directions. Substituting a different version (for example `1.0.13`) is refused
-because it is a different evidence segment. The remaining operator choice is
-to restore Grok account capacity and run the probe, or to narrow the release
-scope and carry Grok MCP/tools as an explicitly withheld cell. Producer lanes
-continue meanwhile. Machine paths stay out of tracked docs; the retained probe
-owner holds the location receipt.
+stay `evidence_pending`, and `v0.4.4` cannot reach a tag request until the
+gate resolves. Substituting a different version (for example `1.0.13`) is
+refused because it is a different evidence segment. Bounded live Grok probes
+resume only after the operator confirms capacity, under the existing gates and
+the already self-proved harness: two bounded prompts total, one per segment.
+Authenticated isolated homes and the offline evidence are preserved for that
+run. All other producer, review, merge, and provider-free work continues.
+Machine paths stay out of tracked docs; the retained probe owner holds the
+location receipt.
 
 ## Runway
 

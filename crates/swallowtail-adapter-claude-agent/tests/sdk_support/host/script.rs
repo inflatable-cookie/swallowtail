@@ -177,8 +177,14 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         // widened or reordered echo is a deliberate scenario rather than an
         // accident of the fixture.
         "tools": params["tools"].clone(),
-        "permissionMode": params["permissionMode"].clone()
+        "permissionMode": params["permissionMode"].clone(),
+        "selectedSkillBundle": params.get("selectedSkillBundle").cloned().unwrap_or(Value::Null)
     });
+    if params.get("selectedSkillBundle").is_none() {
+        data.as_object_mut()
+            .expect("open fixture data object")
+            .remove("selectedSkillBundle");
+    }
     match scenario {
         SdkScenario::AccountNotSubscription => {
             data["account"]

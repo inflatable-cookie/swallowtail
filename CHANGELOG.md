@@ -16,6 +16,18 @@ annotated Git tags from the canonical repository.
   present; live gate pending". Provider-free fake-SDK proofs cover
   declaration, one mediated round-trip, deny, cancel, close, omission,
   second-read, ready-after-connect, and unspawnable command. g05.035 card 125.
+- bind one resolved Contract 063 selected-skill bundle to a fresh Claude Agent
+  SDK session through the additive `ClaudeAgentSdkSessionProfile` binding,
+  preparation, and driver surfaces. The bundle crosses as one labelled
+  `selectedSkillBundle` input through the pinned sidecar's explicit
+  `systemPrompt` preset/append surface, while fixed instructions, per-turn
+  user text, workspace writes, ambient skills, and raw reference paths stay
+  separate. Digest, bounds, reference, and text-encoding failures fail closed
+  before SDK construction; resume and listing refuse redeclaration. The
+  Contract 061 selected-skill row is available only for this prepared route;
+  registered-tool mediation stays `Unqualified / real_route_gate_pending` and
+  Card 084 consumer MCP remains separate. Provider-free fixtures only; no
+  live provider pass is claimed. g05.035 card 126.
 - bind a resolved selected-skill bundle to a prepared Codex app-server session
   through the additive `CodexSessionProfileInput::with_selected_skill_bundle`.
   The bundle crosses as one distinct labelled `selectedSkillBundle` input on

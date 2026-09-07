@@ -26,10 +26,11 @@
 // subscription.
 //
 // Ambient behavior is suppressed by construction: empty setting sources, an
-// explicit empty skill list, MCP servers only from the host's declared stdio
-// set, no plugins, no hooks, no subagents, no system prompt, provider-owned
-// session persistence is opt-in, and an explicitly admitted tool set. Unknown
-// semantics fail closed.
+// explicit empty SDK skill list, MCP servers only from the host's declared
+// stdio set, no plugins, no hooks, no subagents, and no ambient system prompt.
+// A selected bundle, when present, is the one explicit labelled system-prompt
+// append below; provider-owned session persistence is opt-in, and the tool set
+// is explicit. Unknown semantics fail closed.
 //
 // The admitted tool set and the permission mode are decided by the host and
 // arrive on `open`. This process never widens either: an unadmitted tool is
@@ -70,6 +71,9 @@ const MAXIMUM_CAPABILITY_BYTES = 96;
 const MAXIMUM_SUPPORTED_MODELS = 64;
 const MAXIMUM_MODEL_BYTES = 128;
 const MAXIMUM_IDENTITY_BYTES = 128;
+const MAXIMUM_SELECTED_SKILL_CONTENT_BYTES = 64 * 1024;
+const MAXIMUM_SELECTED_SKILL_REQUIRED_REFERENCES = 32;
+const MAXIMUM_SELECTED_SKILL_LABEL_BYTES = 256;
 // Keep callback text aligned with the runtime's existing
 // MAX_CONSUMER_ROUTE_EXTENSION_TEXT_BYTES bound.
 const MAXIMUM_CALLBACK_TEXT_BYTES = 128;
@@ -251,6 +255,11 @@ const COMMAND_FAILURE_CODES = new Set([
   "mcp_server_failed",
   "mcp_server_needs_auth",
   "mcp_status_invalid",
+  "selected_skill_invalid",
+  "selected_skill_digest_mismatch",
+  "selected_skill_limit_exceeded",
+  "selected_skill_reference_invalid",
+  "selected_skill_payload_not_text",
   "unknown_command",
   "command_failed",
 ]);
@@ -881,6 +890,136 @@ function boundedIdentity(value) {
   return value;
 }
 
+function selectedSkillLabel(value) {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    Buffer.byteLength(value, "utf8") > MAXIMUM_SELECTED_SKILL_LABEL_BYTES ||
+    [...value].some(isControlCharacter)
+  ) {
+    throw new SidecarFailure("selected_skill_invalid");
+  }
+  return value;
+}
+
+function selectedSkillPayload(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new SidecarFailure("selected_skill_payload_not_text");
+  }
+  const keys = Object.keys(value).sort();
+  if (keys.length !== 2 || keys[0] !== "content" || keys[1] !== "mediaType") {
+    throw new SidecarFailure("selected_skill_invalid");
+  }
+  if (
+    typeof value.mediaType !== "string" ||
+    value.mediaType.length === 0 ||
+    Buffer.byteLength(value.mediaType, "utf8") > MAXIMUM_SELECTED_SKILL_LABEL_BYTES ||
+    [...value.mediaType].some(isControlCharacter)
+  ) {
+    throw new SidecarFailure("selected_skill_invalid");
+  }
+  if (typeof value.content !== "string") {
+    throw new SidecarFailure("selected_skill_payload_not_text");
+  }
+  const bytes = Buffer.byteLength(value.content, "utf8");
+  if (bytes > MAXIMUM_SELECTED_SKILL_CONTENT_BYTES) {
+    throw new SidecarFailure("selected_skill_limit_exceeded");
+  }
+  return { mediaType: value.mediaType, content: value.content, bytes };
+}
+
+function selectedSkillDigest(value) {
+  if (
+    typeof value !== "string" ||
+    value.length !== 71 ||
+    !/^sha256:[0-9a-f]{64}$/.test(value)
+  ) {
+    throw new SidecarFailure("selected_skill_invalid");
+  }
+  return value;
+}
+
+function selectedSkillBundle(value) {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new SidecarFailure("selected_skill_invalid");
+  }
+  const keys = Object.keys(value).sort();
+  if (
+    keys.length !== 6 ||
+    JSON.stringify(keys) !==
+      JSON.stringify(["body", "digest", "identity", "provenance", "requiredReferences", "revision"])
+  ) {
+    throw new SidecarFailure("selected_skill_invalid");
+  }
+  const identity = selectedSkillLabel(value.identity);
+  const revision = selectedSkillLabel(value.revision);
+  if (!["host-approved-global", "project-bound", "harness-distribution"].includes(value.provenance)) {
+    throw new SidecarFailure("selected_skill_invalid");
+  }
+  const digest = selectedSkillDigest(value.digest);
+  const body = selectedSkillPayload(value.body);
+  if (
+    digest !== `sha256:${createHash("sha256").update(body.content, "utf8").digest("hex")}`
+  ) {
+    throw new SidecarFailure("selected_skill_digest_mismatch");
+  }
+  if (!Array.isArray(value.requiredReferences) || value.requiredReferences.length > MAXIMUM_SELECTED_SKILL_REQUIRED_REFERENCES) {
+    throw new SidecarFailure("selected_skill_limit_exceeded");
+  }
+  const seen = new Set();
+  const references = [];
+  let bytes = body.bytes;
+  for (const reference of value.requiredReferences) {
+    if (!reference || typeof reference !== "object" || Array.isArray(reference)) {
+      throw new SidecarFailure("selected_skill_reference_invalid");
+    }
+    const referenceKeys = Object.keys(reference).sort();
+    if (
+      referenceKeys.length !== 3 ||
+      JSON.stringify(referenceKeys) !== JSON.stringify(["content", "digest", "id"])
+    ) {
+      throw new SidecarFailure("selected_skill_reference_invalid");
+    }
+    const id = selectedSkillLabel(reference.id);
+    if (seen.has(id)) {
+      throw new SidecarFailure("selected_skill_reference_invalid");
+    }
+    seen.add(id);
+    const referenceDigest = selectedSkillDigest(reference.digest);
+    const content = selectedSkillPayload(reference.content);
+    if (
+      referenceDigest !==
+      `sha256:${createHash("sha256").update(content.content, "utf8").digest("hex")}`
+    ) {
+      throw new SidecarFailure("selected_skill_digest_mismatch");
+    }
+    bytes += content.bytes;
+    if (bytes > MAXIMUM_SELECTED_SKILL_CONTENT_BYTES) {
+      throw new SidecarFailure("selected_skill_limit_exceeded");
+    }
+    references.push({ id, digest: referenceDigest, content: { mediaType: content.mediaType, content: content.content } });
+  }
+  return {
+    identity,
+    provenance: value.provenance,
+    revision,
+    digest,
+    body: { mediaType: body.mediaType, content: body.content },
+    requiredReferences: references,
+  };
+}
+
+function selectedSkillSystemPrompt(bundle) {
+  return [
+    "<swallowtail-selected-skill-bundle>",
+    JSON.stringify(bundle),
+    "</swallowtail-selected-skill-bundle>",
+  ].join("\n");
+}
+
 async function readSdkIdentity(modulePath) {
   let resolvedModulePath;
   try {
@@ -1235,6 +1374,7 @@ async function handleOpen(params) {
     "resume",
     "resumeSessionAt",
     "mcpServers",
+    "selectedSkillBundle",
   ]);
   const cwd = requireString(params, "cwd");
   const model = requireString(params, "model");
@@ -1255,6 +1395,7 @@ async function handleOpen(params) {
   if (resume !== undefined && !persistSession) {
     throw new SidecarFailure("resume_persistence_disabled");
   }
+  const selectedSkill = selectedSkillBundle(params.selectedSkillBundle);
   const disallowed = [
     ...NEVER_AVAILABLE_TOOLS,
     ...ADMISSIBLE_TOOLS.filter((tool) => !tools.includes(tool)),
@@ -1303,6 +1444,17 @@ async function handleOpen(params) {
         spawnClaudeCodeProcess: (options) => spawnNative(options),
       },
     };
+    if (selectedSkill !== undefined) {
+      // The SDK's explicit system-prompt preset append is the frozen 0.3.259
+      // carrier for resolved text. It does not load files or enable ambient
+      // skills, and the private wire label remains distinct from instructions
+      // and per-turn user text.
+      options.options.systemPrompt = {
+        type: "preset",
+        preset: "claude_code",
+        append: selectedSkillSystemPrompt(selectedSkill),
+      };
+    }
     if (effort !== undefined) {
       options.options.effort = effort;
     }
@@ -1383,6 +1535,7 @@ async function handleOpen(params) {
     permissionMode,
     ...(effort === undefined ? {} : { requestedEffort: effort }),
     ...(mcpServerStatus === undefined ? {} : { mcpServerStatus }),
+    ...(selectedSkill === undefined ? {} : { selectedSkillBundle: selectedSkill }),
   };
 }
 

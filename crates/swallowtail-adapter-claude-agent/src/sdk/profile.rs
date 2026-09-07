@@ -379,6 +379,20 @@ impl ClaudeAgentSdkSessionProfile {
         super::mcp::ClaudeAgentSdkMcpBinding::from_parts(self, servers.into_iter().collect())
     }
 
+    /// Returns this Copy profile plus one immutable resolved selected-skill
+    /// bundle as an additive prepared binding.
+    ///
+    /// The bundle is already resolved by Contract 062 before it reaches this
+    /// route. It stays separate from session instructions and per-turn user
+    /// text, and the binding keeps this profile's existing `Copy` surface.
+    #[must_use]
+    pub fn with_selected_skill_bundle(
+        self,
+        bundle: swallowtail_runtime::ResolvedSkillBundle,
+    ) -> super::selected_skill::ClaudeAgentSdkSelectedSkillBinding {
+        super::selected_skill::ClaudeAgentSdkSelectedSkillBinding::from_parts(self, bundle)
+    }
+
     /// Qualifies one registered-tool preparation for this route.
     ///
     /// Native admission stays on the profile. The binding travels beside it,

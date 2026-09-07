@@ -28,6 +28,7 @@ mod profile;
 pub mod protocol;
 /// Contract 063 registered-tool carrier, mediation, and projection.
 pub mod registered_tool;
+mod selected_skill;
 mod selection;
 mod turn;
 pub(crate) mod wire;
@@ -55,6 +56,7 @@ pub use profile::{
     ClaudeAgentSdkEffort, ClaudeAgentSdkEffortOutcome, ClaudeAgentSdkPermissionMode,
     ClaudeAgentSdkSessionProfile, ClaudeAgentSdkTool,
 };
+pub use selected_skill::ClaudeAgentSdkSelectedSkillBinding;
 pub use selection::{
     CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_NODE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS,
     CLAUDE_AGENT_SDK_SIDECAR_AXIS, CLAUDE_AGENT_SDK_WIRE_AXIS, claude_agent_sdk_native_binding,

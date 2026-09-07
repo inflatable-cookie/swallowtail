@@ -50,6 +50,8 @@ pub use projection::{
     CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID, CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_SOURCE, claude_agent_sdk_registered_tool_qualification,
     project_claude_agent_sdk_registered_tool,
+    project_claude_agent_sdk_registered_tool_with_selected_skill,
+    project_claude_agent_sdk_registered_tool_with_selected_skill_from_source,
 };
 pub use version::{
     CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION, CLAUDE_AGENT_SDK_MCP_SUPPORTED_PROTOCOL_VERSIONS,

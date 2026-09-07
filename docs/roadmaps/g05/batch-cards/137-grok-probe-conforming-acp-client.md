@@ -111,6 +111,16 @@ responds; scores `inconclusive`/`session_new_bound_exceeded`). A private
 foreign-request fixture proves an out-of-allowlist refusal is recorded and
 non-blocking. Packet updated.
 
+**Independent review (codex/gpt-5.6-terra).** Found one merge blocker in the
+first head: the drain loop exited after a burst carrying nothing answerable,
+so an agent that emitted a notification and then sent its request one drain
+later would never be read — a provider-shaped `session_new_bound_exceeded`
+for probe silence, violating the review oracle. Fixed by giving each exchange
+one absolute deadline (`session/new`: 60s) that answering never extends, and
+draining until the response arrives or the bound expires. Regression fixture
+`delayed_request_after_notification_is_still_answered` replays the exact
+timing shape with a stepped peer. All selectors re-run green on the fix.
+
 **Validation.** `effigy validate:focused swallowtail-testkit`,
 `effigy package:verify-affected swallowtail-testkit`,
 `effigy qa:northstar`, `scripts/check-public-api.sh` (baseline absorbed),

@@ -67,10 +67,13 @@ The probe is a conforming ACP client during every exchange, including
 agent's own `allow_once` option, and every other method — filesystem,
 terminal, anything unknown — is refused with a recorded JSON-RPC `-32601`
 error. The probe never reads or writes the filesystem, runs a shell, or
-touches the network, and no answer is silent. `session/new` waits up to
-`LIVE_SESSION_NEW_WAIT` (60 seconds) for session establishment with MCP
-servers; the other exchanges keep the previous bound. When `session/new` still
-has no response, the cause separates an inbound request the probe failed to
+touches the network, and no answer is silent. The `session/new` exchange
+waits through one absolute `LIVE_SESSION_NEW_WAIT` (60 seconds) deadline for
+session establishment with MCP servers — answering intervening requests
+never extends it, and the drain keeps reading past notification-only bursts,
+so a request delivered late in the exchange is still answered. The other
+exchanges keep the previous bound. When `session/new` still has no response,
+the cause separates an inbound request the probe failed to
 answer (`session_new_unanswered`, harness-shaped) from the agent never
 responding within the bound (`session_new_bound_exceeded`, provider-shaped).
 

@@ -1766,13 +1766,29 @@ fn exchange(
         })?;
     capture.push(FrameDirection::Outbound, outbound.clone());
     peer.push_outbound(outbound)?;
+    // One absolute deadline per exchange: answering a request never extends
+    // it, and the drain keeps running past bursts that carry nothing
+    // answerable (an agent may emit a notification before its request) until
+    // the response to this exchange arrives or the bound expires.
+    let deadline = std::time::Instant::now() + inbound_bound;
+    let response_id = json!(id);
     loop {
-        let inbound = peer.take_inbound_within(inbound_bound)?;
+        let remaining = deadline.saturating_duration_since(std::time::Instant::now());
+        let inbound = peer.take_inbound_within(remaining)?;
         if inbound.is_empty() {
+            // The bound expired (or the deterministic peer has nothing left);
+            // nothing further can be read or answered.
             return Ok(());
         }
         let mut answered = false;
+        let mut saw_response = false;
         for message in inbound {
+            if method_of(&message).is_none()
+                && message.get("id") == Some(&response_id)
+                && (message.get("result").is_some() || message.get("error").is_some())
+            {
+                saw_response = true;
+            }
             capture.push(FrameDirection::Inbound, message.clone());
             if let Some(reply) = grok_acp_client_request_reply(&message) {
                 capture.push(FrameDirection::Outbound, reply.clone());
@@ -1780,7 +1796,7 @@ fn exchange(
                 answered = true;
             }
         }
-        if !answered {
+        if saw_response && !answered {
             return Ok(());
         }
     }
@@ -2478,6 +2494,130 @@ mod tests {
     fn session_new_inbound_bound_is_realistic_for_mcp_establishment() {
         assert!(LIVE_SESSION_NEW_WAIT >= Duration::from_secs(30));
         assert!(LIVE_SESSION_NEW_WAIT > LIVE_WAIT);
+    }
+
+    #[test]
+    fn delayed_request_after_notification_is_still_answered() {
+        let mut peer = SteppedPeer::session_new_scenario();
+        let capsule =
+            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
+                .expect("delayed-request capsule");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::AcceptsClientMcp);
+        let answered = capsule.frames().iter().any(|frame| {
+            !frame.is_outbound()
+                && frame.message().get("id") == Some(&json!(850))
+                && method_of(frame.message()) == Some("fs/write_text_file")
+        }) && capsule.frames().iter().any(|frame| {
+            frame.is_outbound()
+                && frame.message().get("id") == Some(&json!(850))
+                && frame.message().get("error").is_some()
+        });
+        assert!(
+            answered,
+            "a request arriving after a notification burst must be read and answered"
+        );
+        assert!(capsule.prompt_turn_completed());
+        assert!(
+            peer.drain_bounds
+                .iter()
+                .all(|bound| *bound <= LIVE_SESSION_NEW_WAIT)
+        );
+    }
+
+    /// Deterministic peer that replays the live timing shape the review
+    /// oracle cares about: a notification burst, then the client request one
+    /// drain later, then the `session/new` response.
+    #[derive(Default)]
+    struct SteppedPeer {
+        steps: VecDeque<Vec<Value>>,
+        queued: VecDeque<Value>,
+        drain_bounds: Vec<Duration>,
+    }
+
+    impl SteppedPeer {
+        fn session_new_scenario() -> Self {
+            Self {
+                steps: VecDeque::from([
+                    vec![json!({
+                        "jsonrpc": "2.0",
+                        "method": "session/update",
+                        "params": {
+                            "sessionId": FIXTURE_SESSION,
+                            "update": {"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": "working"}}
+                        }
+                    })],
+                    vec![json!({
+                        "jsonrpc": "2.0",
+                        "id": 850,
+                        "method": "fs/write_text_file",
+                        "params": {"sessionId": FIXTURE_SESSION, "path": "<redacted>", "content": "x"}
+                    })],
+                    vec![json!({
+                        "jsonrpc": "2.0",
+                        "id": 3,
+                        "result": {"sessionId": FIXTURE_SESSION}
+                    })],
+                ]),
+                queued: VecDeque::new(),
+                drain_bounds: Vec::new(),
+            }
+        }
+    }
+
+    impl GrokAcpClientMcpPeer for SteppedPeer {
+        fn push_outbound(&mut self, message: Value) -> Result<(), GrokAcpClientMcpError> {
+            let reply = match method_of(&message) {
+                Some("initialize") => json!({
+                    "jsonrpc": "2.0",
+                    "id": message.get("id").cloned(),
+                    "result": {"protocolVersion": ACP_PROTOCOL_VERSION, "agentCapabilities": {}, "authMethods": []}
+                }),
+                Some("authenticate") => json!({
+                    "jsonrpc": "2.0",
+                    "id": message.get("id").cloned(),
+                    "result": {}
+                }),
+                Some("session/prompt") => json!({
+                    "jsonrpc": "2.0",
+                    "id": message.get("id").cloned(),
+                    "result": {"stopReason": "end_turn"}
+                }),
+                _ => return Ok(()),
+            };
+            self.queued.push_back(reply);
+            Ok(())
+        }
+
+        fn take_inbound(&mut self) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+            self.take_inbound_within(LIVE_WAIT)
+        }
+
+        fn take_inbound_within(
+            &mut self,
+            bound: Duration,
+        ) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+            self.drain_bounds.push(bound);
+            if let Some(step) = self.steps.pop_front() {
+                return Ok(step);
+            }
+            Ok(self.queued.drain(..).collect())
+        }
+
+        fn close(&mut self) -> GrokAcpClientMcpCleanup {
+            GrokAcpClientMcpCleanup { joined: true }
+        }
+
+        fn stale_callback_request(&mut self) -> Option<Value> {
+            None
+        }
+
+        fn echo_mcp_transcript(&mut self) -> EchoMcpTranscript {
+            EchoMcpTranscript::called()
+        }
+
+        fn echo_helper_live(&mut self) -> bool {
+            true
+        }
     }
 
     #[test]

@@ -3,7 +3,7 @@
 #![forbid(unsafe_code)]
 
 use std::io::{self, BufRead, Write};
-use swallowtail_testkit::grok_acp_echo_mcp_reply;
+use swallowtail_testkit::{grok_acp_echo_mcp_reply, grok_acp_echo_mcp_stdio_frame};
 
 fn main() -> io::Result<()> {
     let mut stdin = io::stdin().lock();
@@ -54,8 +54,8 @@ fn read_mcp_value(reader: &mut impl BufRead) -> io::Result<Option<serde_json::Va
 }
 
 fn write_mcp_value(writer: &mut impl Write, value: &serde_json::Value) -> io::Result<()> {
-    let body = serde_json::to_vec(value)?;
-    write!(writer, "Content-Length: {}\r\n\r\n", body.len())?;
+    let body = grok_acp_echo_mcp_stdio_frame(value)
+        .map_err(|error| io::Error::new(io::ErrorKind::InvalidData, error))?;
     writer.write_all(&body)?;
     writer.flush()
 }

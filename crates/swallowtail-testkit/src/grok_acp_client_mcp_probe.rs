@@ -121,6 +121,7 @@ pub struct GrokAcpClientMcpCapsule {
     frames: Vec<GrokAcpClientMcpFrame>,
     stale_callback_rejected: bool,
     cleanup: GrokAcpClientMcpCleanup,
+    truncated: bool,
 }
 
 impl GrokAcpClientMcpCapsule {
@@ -154,6 +155,12 @@ impl GrokAcpClientMcpCapsule {
         self.cleanup
     }
 
+    /// Returns whether capture stopped at the frame bound.
+    #[must_use]
+    pub const fn truncated(&self) -> bool {
+        self.truncated
+    }
+
     /// Bounded redacted JSON object with exact frames and the verdict.
     #[must_use]
     pub fn to_json(&self) -> Value {
@@ -163,6 +170,7 @@ impl GrokAcpClientMcpCapsule {
             "verdict": self.verdict.as_str(),
             "stale_callback_rejected": self.stale_callback_rejected,
             "cleanup_joined": self.cleanup.joined,
+            "truncated": self.truncated,
             "frames": self.frames.iter().map(|frame| {
                 json!({
                     "direction": match frame.direction {
@@ -268,7 +276,7 @@ pub fn run_grok_acp_client_mcp_probe(
     echo_command: &str,
     cwd: &str,
 ) -> Result<GrokAcpClientMcpCapsule, GrokAcpClientMcpError> {
-    let mut frames = Vec::new();
+    let mut capture = FrameCapture::new();
     let mut next_id = 1_u64;
 
     let initialize = json!({
@@ -283,70 +291,77 @@ pub fn run_grok_acp_client_mcp_probe(
             "version": "0.0.0"
         }
     });
-    exchange(peer, &mut frames, next_id, "initialize", initialize)?;
+    let initialize_id = next_id;
+    exchange(peer, &mut capture, initialize_id, "initialize", initialize)?;
     next_id += 1;
 
-    if response_error(&frames, 1).is_none() && response_result(&frames, 1).is_some() {
+    if request_succeeded(&capture.frames, initialize_id) {
+        let authenticate_id = next_id;
         exchange(
             peer,
-            &mut frames,
-            next_id,
+            &mut capture,
+            authenticate_id,
             "authenticate",
             json!({"methodId": "cached_token", "_meta": {"headless": true}}),
         )?;
         next_id += 1;
-    }
-
-    if response_error(&frames, 1).is_none() && response_result(&frames, 1).is_some() {
-        exchange(
-            peer,
-            &mut frames,
-            next_id,
-            "session/new",
-            json!({
-                "cwd": cwd,
-                "mcpServers": [{
-                    "name": ECHO_MCP_SERVER_NAME,
-                    "command": echo_command,
-                    "args": [],
-                    "env": []
-                }]
-            }),
-        )?;
-        let session_id = next_id;
-        next_id += 1;
-        if let Some(session) = session_id_from(&frames, session_id) {
-            let prompt_id = next_id;
+        if request_succeeded(&capture.frames, authenticate_id) {
+            let session_new_id = next_id;
             exchange(
                 peer,
-                &mut frames,
-                prompt_id,
-                "session/prompt",
+                &mut capture,
+                session_new_id,
+                "session/new",
                 json!({
-                    "sessionId": session,
-                    "prompt": [{"type": "text", "text": ECHO_PROMPT}]
+                    "cwd": cwd,
+                    "mcpServers": [{
+                        "name": ECHO_MCP_SERVER_NAME,
+                        "command": echo_command,
+                        "args": [],
+                        "env": []
+                    }]
                 }),
             )?;
-            answer_callbacks(peer, &mut frames, &session)?;
+            next_id += 1;
+            if let Some(session) = session_id_from(&capture.frames, session_new_id) {
+                exchange(
+                    peer,
+                    &mut capture,
+                    next_id,
+                    "session/prompt",
+                    json!({
+                        "sessionId": session,
+                        "prompt": [{"type": "text", "text": ECHO_PROMPT}]
+                    }),
+                )?;
+                answer_callbacks(peer, &mut capture, &session)?;
+            }
         }
     }
 
-    let stale_callback_rejected = reject_stale_callback(peer, &mut frames)?;
+    let stale_callback_rejected = reject_stale_callback(peer, &mut capture)?;
     let cleanup = peer.close();
-    let redacted: Vec<GrokAcpClientMcpFrame> = frames
+    let truncated = capture.truncated;
+    let redacted: Vec<GrokAcpClientMcpFrame> = capture
+        .frames
         .into_iter()
         .map(|frame| GrokAcpClientMcpFrame {
             direction: frame.direction,
             message: redact_value(frame.message),
         })
         .collect();
-    let verdict = grok_acp_client_mcp_verdict_from_frames(&redacted);
+    let verdict = if truncated {
+        ClientMcpVerdict::Inconclusive
+    } else {
+        grok_acp_client_mcp_verdict_from_frames(&redacted)
+    };
     Ok(GrokAcpClientMcpCapsule {
         version: version.to_owned(),
         verdict,
         frames: redacted,
         stale_callback_rejected,
         cleanup,
+        truncated,
     })
 }
 
@@ -377,7 +392,13 @@ pub fn grok_acp_client_mcp_verdict_from_frames(
         .find(|frame| !frame.is_outbound() && frame.message.get("id") == Some(&id));
     match response {
         None => ClientMcpVerdict::Inconclusive,
-        Some(frame) if frame.message.get("error").is_some() => ClientMcpVerdict::RejectsClientMcp,
+        Some(frame) if frame.message.get("error").is_some() => {
+            if error_rejects_client_mcp(frame.message.get("error").expect("error present")) {
+                ClientMcpVerdict::RejectsClientMcp
+            } else {
+                ClientMcpVerdict::Inconclusive
+            }
+        }
         Some(frame)
             if frame
                 .message
@@ -466,6 +487,22 @@ pub fn grok_acp_echo_mcp_reply(request: &Value) -> Option<Value> {
             "error": {"code": -32601, "message": "Method not found"}
         }),
     })
+}
+
+/// Encodes one MCP stdio frame as newline-delimited JSON.
+///
+/// MCP stdio forbids embedded newlines and does not use LSP Content-Length.
+pub fn grok_acp_echo_mcp_stdio_frame(value: &Value) -> Result<Vec<u8>, GrokAcpClientMcpError> {
+    let mut bytes = serde_json::to_vec(value).map_err(|_| GrokAcpClientMcpError {
+        kind: GrokAcpClientMcpErrorKind::Transport,
+    })?;
+    if bytes.contains(&b'\n') {
+        return Err(GrokAcpClientMcpError {
+            kind: GrokAcpClientMcpErrorKind::Transport,
+        });
+    }
+    bytes.push(b'\n');
+    Ok(bytes)
 }
 
 /// Opens a live installed-Grok ACP stdio peer. Refuses unless the Desktop gate is set.
@@ -624,8 +661,16 @@ impl GrokAcpClientMcpPeer for LiveGrokAcpPeer {
     }
 }
 
+#[allow(dead_code)]
+enum FakeBehavior {
+    Verdict(ClientMcpVerdict),
+    AuthenticateFailed,
+    SessionUnauthorized,
+    Chatty,
+}
+
 struct FakeAcpPeer {
-    scenario: ClientMcpVerdict,
+    behavior: FakeBehavior,
     inbound: VecDeque<Value>,
     closed: bool,
 }
@@ -633,7 +678,34 @@ struct FakeAcpPeer {
 impl FakeAcpPeer {
     fn new(scenario: ClientMcpVerdict) -> Self {
         Self {
-            scenario,
+            behavior: FakeBehavior::Verdict(scenario),
+            inbound: VecDeque::new(),
+            closed: false,
+        }
+    }
+
+    #[cfg(test)]
+    fn authenticate_failed() -> Self {
+        Self {
+            behavior: FakeBehavior::AuthenticateFailed,
+            inbound: VecDeque::new(),
+            closed: false,
+        }
+    }
+
+    #[cfg(test)]
+    fn session_unauthorized() -> Self {
+        Self {
+            behavior: FakeBehavior::SessionUnauthorized,
+            inbound: VecDeque::new(),
+            closed: false,
+        }
+    }
+
+    #[cfg(test)]
+    fn chatty() -> Self {
+        Self {
+            behavior: FakeBehavior::Chatty,
             inbound: VecDeque::new(),
             closed: false,
         }
@@ -657,19 +729,35 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                     "authMethods": [{"id": "cached_token", "name": "cached_token"}]
                 }
             })),
-            Some("authenticate") => self.push(json!({
-                "jsonrpc": "2.0",
-                "id": id,
-                "result": {}
-            })),
-            Some("session/new") => match self.scenario {
-                ClientMcpVerdict::RejectsClientMcp => self.push(json!({
+            Some("authenticate") => match self.behavior {
+                FakeBehavior::AuthenticateFailed => self.push(json!({
+                    "jsonrpc": "2.0",
+                    "id": id,
+                    "error": {"code": -32000, "message": "not authenticated"}
+                })),
+                _ => self.push(json!({
+                    "jsonrpc": "2.0",
+                    "id": id,
+                    "result": {}
+                })),
+            },
+            Some("session/new") => match self.behavior {
+                FakeBehavior::Verdict(ClientMcpVerdict::RejectsClientMcp) => self.push(json!({
                     "jsonrpc": "2.0",
                     "id": id,
                     "error": {"code": -32602, "message": "mcpServers are not supported"}
                 })),
-                ClientMcpVerdict::Inconclusive => {}
-                ClientMcpVerdict::AcceptsClientMcp | ClientMcpVerdict::IgnoresClientMcp => {
+                FakeBehavior::SessionUnauthorized => self.push(json!({
+                    "jsonrpc": "2.0",
+                    "id": id,
+                    "error": {"code": -32000, "message": "not authenticated"}
+                })),
+                FakeBehavior::Verdict(ClientMcpVerdict::Inconclusive)
+                | FakeBehavior::AuthenticateFailed => {}
+                FakeBehavior::Verdict(
+                    ClientMcpVerdict::AcceptsClientMcp | ClientMcpVerdict::IgnoresClientMcp,
+                )
+                | FakeBehavior::Chatty => {
                     self.push(json!({
                         "jsonrpc": "2.0",
                         "id": id,
@@ -677,8 +765,8 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                     }));
                 }
             },
-            Some("session/prompt") => match self.scenario {
-                ClientMcpVerdict::AcceptsClientMcp => {
+            Some("session/prompt") => match self.behavior {
+                FakeBehavior::Verdict(ClientMcpVerdict::AcceptsClientMcp) => {
                     self.push(json!({
                         "jsonrpc": "2.0",
                         "method": "session/update",
@@ -731,7 +819,7 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                         "result": {"stopReason": "end_turn"}
                     }));
                 }
-                ClientMcpVerdict::IgnoresClientMcp => {
+                FakeBehavior::Verdict(ClientMcpVerdict::IgnoresClientMcp) => {
                     self.push(json!({
                         "jsonrpc": "2.0",
                         "method": "session/update",
@@ -749,7 +837,31 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                         "result": {"stopReason": "end_turn"}
                     }));
                 }
-                ClientMcpVerdict::RejectsClientMcp | ClientMcpVerdict::Inconclusive => {}
+                FakeBehavior::Chatty => {
+                    for index in 0..MAXIMUM_FRAMES {
+                        self.push(json!({
+                            "jsonrpc": "2.0",
+                            "method": "session/update",
+                            "params": {
+                                "sessionId": FIXTURE_SESSION,
+                                "update": {
+                                    "sessionUpdate": "agent_message_chunk",
+                                    "content": {"type": "text", "text": index.to_string()}
+                                }
+                            }
+                        }));
+                    }
+                    self.push(json!({
+                        "jsonrpc": "2.0",
+                        "id": id,
+                        "result": {"stopReason": "end_turn"}
+                    }));
+                }
+                FakeBehavior::Verdict(
+                    ClientMcpVerdict::RejectsClientMcp | ClientMcpVerdict::Inconclusive,
+                )
+                | FakeBehavior::AuthenticateFailed
+                | FakeBehavior::SessionUnauthorized => {}
             },
             Some("session/request_permission") | Some("fs/read_text_file") => {}
             _ => {}
@@ -782,7 +894,7 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
 
 fn exchange(
     peer: &mut dyn GrokAcpClientMcpPeer,
-    frames: &mut Vec<GrokAcpClientMcpFrame>,
+    capture: &mut FrameCapture,
     id: u64,
     method: &str,
     params: Value,
@@ -794,21 +906,21 @@ fn exchange(
         serde_json::from_slice(&bytes[..bytes.len() - 1]).map_err(|_| GrokAcpClientMcpError {
             kind: GrokAcpClientMcpErrorKind::Transport,
         })?;
-    record(frames, FrameDirection::Outbound, outbound.clone())?;
+    capture.push(FrameDirection::Outbound, outbound.clone());
     peer.push_outbound(outbound)?;
-    let inbound = peer.take_inbound()?;
-    for message in inbound {
-        record(frames, FrameDirection::Inbound, message)?;
+    for message in peer.take_inbound()? {
+        capture.push(FrameDirection::Inbound, message);
     }
     Ok(())
 }
 
 fn answer_callbacks(
     peer: &mut dyn GrokAcpClientMcpPeer,
-    frames: &mut Vec<GrokAcpClientMcpFrame>,
+    capture: &mut FrameCapture,
     session: &str,
 ) -> Result<(), GrokAcpClientMcpError> {
-    let pending: Vec<Value> = frames
+    let pending: Vec<Value> = capture
+        .frames
         .iter()
         .filter(|frame| !frame.is_outbound())
         .map(|frame| frame.message.clone())
@@ -816,7 +928,7 @@ fn answer_callbacks(
     for message in pending {
         if method_of(&message) == Some("session/request_permission") {
             let id = message.get("id").cloned().unwrap_or(Value::Null);
-            let allow = json_contains_echo(&message);
+            let allow = json_contains_client_mcp_server(&message);
             let option = if allow { "allow-once" } else { "reject-once" };
             let response = json!({
                 "jsonrpc": "2.0",
@@ -828,16 +940,16 @@ fn answer_callbacks(
                     }
                 }
             });
-            record(frames, FrameDirection::Outbound, response.clone())?;
+            capture.push(FrameDirection::Outbound, response.clone());
             peer.push_outbound(response)?;
             for inbound in peer.take_inbound()? {
-                record(frames, FrameDirection::Inbound, inbound)?;
+                capture.push(FrameDirection::Inbound, inbound);
             }
         }
         if method_of(&message) == Some("fs/read_text_file") {
             reject_request(
                 peer,
-                frames,
+                capture,
                 message.get("id").cloned().unwrap_or(Value::Null),
             )?;
         }
@@ -848,20 +960,29 @@ fn answer_callbacks(
 
 fn reject_stale_callback(
     peer: &mut dyn GrokAcpClientMcpPeer,
-    frames: &mut Vec<GrokAcpClientMcpFrame>,
+    capture: &mut FrameCapture,
 ) -> Result<bool, GrokAcpClientMcpError> {
-    let Some(request) = peer.stale_callback_request() else {
-        return Ok(false);
-    };
-    record(frames, FrameDirection::Inbound, request.clone())?;
+    let request = peer
+        .stale_callback_request()
+        .unwrap_or_else(synthetic_stale_callback);
+    capture.push(FrameDirection::Inbound, request.clone());
     let id = request.get("id").cloned().unwrap_or(Value::Null);
-    reject_request(peer, frames, id)?;
+    reject_request(peer, capture, id)?;
     Ok(true)
+}
+
+fn synthetic_stale_callback() -> Value {
+    json!({
+        "jsonrpc": "2.0",
+        "id": STALE_CALLBACK_ID,
+        "method": "fs/read_text_file",
+        "params": {"sessionId": FIXTURE_SESSION, "path": "/private/secret.txt"}
+    })
 }
 
 fn reject_request(
     peer: &mut dyn GrokAcpClientMcpPeer,
-    frames: &mut Vec<GrokAcpClientMcpFrame>,
+    capture: &mut FrameCapture,
     id: Value,
 ) -> Result<(), GrokAcpClientMcpError> {
     let bytes =
@@ -872,22 +993,32 @@ fn reject_request(
         serde_json::from_slice(&bytes[..bytes.len() - 1]).map_err(|_| GrokAcpClientMcpError {
             kind: GrokAcpClientMcpErrorKind::Transport,
         })?;
-    record(frames, FrameDirection::Outbound, outbound.clone())?;
-    peer.push_outbound(outbound)
+    capture.push(FrameDirection::Outbound, outbound.clone());
+    let _ = peer.push_outbound(outbound);
+    Ok(())
 }
 
-fn record(
-    frames: &mut Vec<GrokAcpClientMcpFrame>,
-    direction: FrameDirection,
-    message: Value,
-) -> Result<(), GrokAcpClientMcpError> {
-    if frames.len() >= MAXIMUM_FRAMES {
-        return Err(GrokAcpClientMcpError {
-            kind: GrokAcpClientMcpErrorKind::FrameLimit,
-        });
+struct FrameCapture {
+    frames: Vec<GrokAcpClientMcpFrame>,
+    truncated: bool,
+}
+
+impl FrameCapture {
+    fn new() -> Self {
+        Self {
+            frames: Vec::new(),
+            truncated: false,
+        }
     }
-    frames.push(GrokAcpClientMcpFrame { direction, message });
-    Ok(())
+
+    fn push(&mut self, direction: FrameDirection, message: Value) {
+        if self.frames.len() >= MAXIMUM_FRAMES {
+            self.truncated = true;
+            return;
+        }
+        self.frames
+            .push(GrokAcpClientMcpFrame { direction, message });
+    }
 }
 
 fn method_of(message: &Value) -> Option<&str> {
@@ -916,6 +1047,10 @@ fn response_error(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<&Value> {
     })
 }
 
+fn request_succeeded(frames: &[GrokAcpClientMcpFrame], id: u64) -> bool {
+    response_error(frames, id).is_none() && response_result(frames, id).is_some()
+}
+
 fn session_id_from(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<String> {
     response_result(frames, id)?
         .get("sessionId")
@@ -927,7 +1062,7 @@ fn echo_tool_called(frames: &[GrokAcpClientMcpFrame]) -> bool {
     frames.iter().any(|frame| {
         !frame.is_outbound()
             && update_kind(&frame.message) == Some("tool_call")
-            && json_contains_echo(&frame.message)
+            && json_contains_client_mcp_server(&frame.message)
     })
 }
 
@@ -940,7 +1075,7 @@ fn echo_tool_completed(frames: &[GrokAcpClientMcpFrame]) -> bool {
                 .pointer("/params/update/status")
                 .and_then(Value::as_str)
                 == Some("completed")
-            && (json_contains_echo(&frame.message) || echo_tool_called(frames))
+            && (json_contains_client_mcp_server(&frame.message) || echo_tool_called(frames))
     })
 }
 
@@ -950,14 +1085,24 @@ fn update_kind(message: &Value) -> Option<&str> {
         .and_then(Value::as_str)
 }
 
-fn json_contains_echo(value: &Value) -> bool {
+fn json_contains_client_mcp_server(value: &Value) -> bool {
     match value {
-        Value::String(text) => {
-            let lower = text.to_ascii_lowercase();
-            lower == ECHO_MCP_TOOL || lower.contains(ECHO_MCP_SERVER_NAME)
-        }
-        Value::Array(items) => items.iter().any(json_contains_echo),
-        Value::Object(map) => map.values().any(json_contains_echo),
+        Value::String(text) => text.to_ascii_lowercase().contains(ECHO_MCP_SERVER_NAME),
+        Value::Array(items) => items.iter().any(json_contains_client_mcp_server),
+        Value::Object(map) => map.values().any(json_contains_client_mcp_server),
+        _ => false,
+    }
+}
+
+fn error_rejects_client_mcp(error: &Value) -> bool {
+    json_mentions_mcp_servers(error) || json_contains_client_mcp_server(error)
+}
+
+fn json_mentions_mcp_servers(value: &Value) -> bool {
+    match value {
+        Value::String(text) => text.to_ascii_lowercase().contains("mcpservers"),
+        Value::Array(items) => items.iter().any(json_mentions_mcp_servers),
+        Value::Object(map) => map.values().any(json_mentions_mcp_servers),
         _ => false,
     }
 }
@@ -1065,6 +1210,143 @@ mod tests {
             Ok(_) => panic!("live peer opened without the Desktop gate"),
             Err(error) => assert_eq!(error.kind(), GrokAcpClientMcpErrorKind::LiveProbeGated),
         }
+    }
+
+    #[test]
+    fn echo_stdio_frame_is_newline_delimited_json() {
+        let reply = grok_acp_echo_mcp_reply(&json!({
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "initialize",
+            "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "fixture"}}
+        }))
+        .expect("initialize reply");
+        let bytes = grok_acp_echo_mcp_stdio_frame(&reply).expect("stdio frame");
+        let text = std::str::from_utf8(&bytes).expect("utf8");
+        assert!(text.ends_with('\n'));
+        assert_eq!(text.matches('\n').count(), 1);
+        assert!(!text.to_ascii_lowercase().contains("content-length"));
+        let parsed: Value = serde_json::from_str(text.trim_end()).expect("json");
+        assert_eq!(parsed["result"]["serverInfo"]["name"], ECHO_MCP_SERVER_NAME);
+    }
+
+    #[test]
+    fn authenticate_failure_does_not_send_session_new_and_is_inconclusive() {
+        let mut peer = FakeAcpPeer::authenticate_failed();
+        let capsule =
+            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
+                .expect("capsule");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+        assert!(!capsule.truncated());
+        assert!(!capsule.frames().iter().any(|frame| {
+            frame.is_outbound() && method_of(frame.message()) == Some("session/new")
+        }));
+    }
+
+    #[test]
+    fn session_new_auth_error_without_mcp_servers_is_inconclusive() {
+        let mut peer = FakeAcpPeer::session_unauthorized();
+        let capsule =
+            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
+                .expect("capsule");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+        assert!(capsule.frames().iter().any(|frame| {
+            frame.is_outbound() && method_of(frame.message()) == Some("session/new")
+        }));
+    }
+
+    #[test]
+    fn session_new_mcp_servers_error_is_rejects() {
+        let capsule =
+            grok_acp_client_mcp_fixture_probe("1.0.5", ClientMcpVerdict::RejectsClientMcp)
+                .expect("rejects fixture");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::RejectsClientMcp);
+        let error = capsule
+            .frames()
+            .iter()
+            .find(|frame| !frame.is_outbound() && frame.message().get("error").is_some())
+            .expect("error frame");
+        assert!(error_rejects_client_mcp(
+            error.message().get("error").expect("error")
+        ));
+    }
+
+    #[test]
+    fn capture_overflow_returns_truncated_inconclusive_capsule() {
+        let mut peer = FakeAcpPeer::chatty();
+        let capsule =
+            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
+                .expect("overflow still writes a capsule");
+        assert!(capsule.truncated());
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(capsule.frames().len(), MAXIMUM_FRAMES);
+        assert_eq!(capsule.to_json()["truncated"], json!(true));
+    }
+
+    #[test]
+    fn native_echo_title_without_client_mcp_server_is_not_accepts() {
+        let frames = [
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Outbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 3,
+                    "method": "session/new",
+                    "params": {"cwd": "<host-approved-resource>", "mcpServers": [{"name": ECHO_MCP_SERVER_NAME}]}
+                }),
+            },
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Inbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 3,
+                    "result": {"sessionId": FIXTURE_SESSION}
+                }),
+            },
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Inbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "method": "session/update",
+                    "params": {
+                        "update": {
+                            "sessionUpdate": "tool_call",
+                            "title": "echo",
+                            "status": "completed"
+                        }
+                    }
+                }),
+            },
+        ];
+        assert_eq!(
+            grok_acp_client_mcp_verdict_from_frames(&frames),
+            ClientMcpVerdict::IgnoresClientMcp
+        );
+    }
+
+    #[test]
+    fn live_none_stale_callback_still_records_rejection() {
+        struct SilentStale(FakeAcpPeer);
+        impl GrokAcpClientMcpPeer for SilentStale {
+            fn push_outbound(&mut self, message: Value) -> Result<(), GrokAcpClientMcpError> {
+                self.0.push_outbound(message)
+            }
+            fn take_inbound(&mut self) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+                self.0.take_inbound()
+            }
+            fn close(&mut self) -> GrokAcpClientMcpCleanup {
+                self.0.close()
+            }
+            fn stale_callback_request(&mut self) -> Option<Value> {
+                None
+            }
+        }
+        let mut peer = SilentStale(FakeAcpPeer::new(ClientMcpVerdict::IgnoresClientMcp));
+        let capsule =
+            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
+                .expect("capsule");
+        assert!(capsule.stale_callback_rejected());
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::IgnoresClientMcp);
     }
 
     #[test]

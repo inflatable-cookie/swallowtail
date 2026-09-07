@@ -296,6 +296,7 @@ pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::cleanup(&self) -> swa
 pub fn swallowtail_testkit::GrokAcpClientMcpCapsule::frames(&self) -> &[swallowtail_testkit::GrokAcpClientMcpFrame]
 pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::stale_callback_rejected(&self) -> bool
 pub fn swallowtail_testkit::GrokAcpClientMcpCapsule::to_json(&self) -> serde_json::value::Value
+pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::truncated(&self) -> bool
 pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::verdict(&self) -> swallowtail_testkit::ClientMcpVerdict
 pub fn swallowtail_testkit::GrokAcpClientMcpCapsule::version(&self) -> &str
 pub struct swallowtail_testkit::GrokAcpClientMcpCleanup
@@ -561,6 +562,7 @@ pub fn swallowtail_testkit::fixture_tool_id(&str) -> swallowtail_runtime::regist
 pub fn swallowtail_testkit::grok_acp_client_mcp_fixture_probe(&str, swallowtail_testkit::ClientMcpVerdict) -> core::result::Result<swallowtail_testkit::GrokAcpClientMcpCapsule, swallowtail_testkit::GrokAcpClientMcpError>
 pub fn swallowtail_testkit::grok_acp_client_mcp_verdict_from_frames(&[swallowtail_testkit::GrokAcpClientMcpFrame]) -> swallowtail_testkit::ClientMcpVerdict
 pub fn swallowtail_testkit::grok_acp_echo_mcp_reply(&serde_json::value::Value) -> core::option::Option<serde_json::value::Value>
+pub fn swallowtail_testkit::grok_acp_echo_mcp_stdio_frame(&serde_json::value::Value) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_testkit::GrokAcpClientMcpError>
 pub fn swallowtail_testkit::open_desktop_live_grok_acp_peer(&std::path::Path, &std::path::Path) -> core::result::Result<swallowtail_testkit::LiveGrokAcpPeer, swallowtail_testkit::GrokAcpClientMcpError>
 pub fn swallowtail_testkit::poll_fixture_once<T>(&mut core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = T> + core::marker::Send + '_)>>) -> core::task::poll::Poll<T>
 pub fn swallowtail_testkit::poll_immediate<T>(impl core::future::future::Future<Output = T>) -> T

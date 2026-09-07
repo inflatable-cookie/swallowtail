@@ -104,7 +104,7 @@ pub use grok_acp_client_mcp_probe::{
     GrokAcpClientMcpErrorKind, GrokAcpClientMcpFrame, GrokAcpClientMcpPeer, LiveGrokAcpPeer,
     desktop_grok_acp_client_mcp_probe_is_gated_open, grok_acp_client_mcp_fixture_probe,
     grok_acp_client_mcp_verdict_from_frames, grok_acp_echo_mcp_reply,
-    open_desktop_live_grok_acp_peer, run_grok_acp_client_mcp_probe,
+    grok_acp_echo_mcp_stdio_frame, open_desktop_live_grok_acp_peer, run_grok_acp_client_mcp_probe,
 };
 pub use idiom_assertions::{
     assert_idiom_engine_contract, assert_idiom_static_rules_delivery_contract,

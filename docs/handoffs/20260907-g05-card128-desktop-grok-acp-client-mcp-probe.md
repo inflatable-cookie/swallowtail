@@ -68,6 +68,12 @@ One redacted JSON capsule per exact version. Fields:
   `session/new` with non-empty `mcpServers` when sent
 - `stale_callback_rejected`
 - `cleanup_joined`
+- `truncated`: capture stopped at the frame bound; verdict is then `inconclusive`
+
+Auth that fails before `session/new`, or a `session/new` JSON-RPC error that
+does not mention `mcpServers` or the echo server name, is `inconclusive`.
+Only an explicit client-MCP rejection is `rejects_client_mcp`. Overflow does
+not abort without a capsule.
 
 Frames must contain no credentials, tokens, or host paths. `1.0.4` and `1.0.5`
 are separate evidence segments; do not merge them.

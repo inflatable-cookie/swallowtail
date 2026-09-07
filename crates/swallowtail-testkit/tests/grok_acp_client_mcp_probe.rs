@@ -2,6 +2,7 @@ use serde_json::Value;
 use swallowtail_testkit::{
     ClientMcpVerdict, ECHO_MCP_SERVER_NAME, ECHO_MCP_TOOL, grok_acp_client_mcp_fixture_probe,
     grok_acp_client_mcp_verdict_from_frames, grok_acp_echo_mcp_reply,
+    grok_acp_echo_mcp_stdio_frame,
 };
 
 #[test]
@@ -38,6 +39,7 @@ fn fake_acp_fixture_proves_all_four_verdicts_for_each_exact_segment() {
                 );
             }
             assert_no_credentials_or_paths(&capsule.to_json());
+            assert!(!capsule.truncated());
         }
     }
 }
@@ -89,6 +91,11 @@ fn disposable_echo_server_has_one_tool_and_no_resource_authority() {
         .expect("method error");
         assert_eq!(reply["error"]["code"], serde_json::json!(-32601));
     }
+    let framed = grok_acp_echo_mcp_stdio_frame(&initialize).expect("stdio frame");
+    let text = std::str::from_utf8(&framed).expect("utf8");
+    assert!(text.ends_with('\n'));
+    assert_eq!(text.bytes().filter(|byte| *byte == b'\n').count(), 1);
+    assert!(!text.to_ascii_lowercase().contains("content-length"));
 }
 
 fn assert_no_credentials_or_paths(value: &Value) {

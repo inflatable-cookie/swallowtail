@@ -26,6 +26,8 @@ mod prepared;
 mod profile;
 /// Bounded public decoder for qualified sidecar wire record shapes.
 pub mod protocol;
+/// Contract 063 registered-tool carrier, mediation, and projection.
+pub mod registered_tool;
 mod selection;
 mod turn;
 pub(crate) mod wire;

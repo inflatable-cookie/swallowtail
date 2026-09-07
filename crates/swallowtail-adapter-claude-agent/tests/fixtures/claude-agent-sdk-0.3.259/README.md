@@ -17,7 +17,14 @@ the shipped `manifest.json` digests rather than by downloading 200 MB artifacts.
 - `sdk-declarations.d.ts` — reproducible excerpts of the pinned `sdk.d.ts`
   declarations for the streaming `query()` input, `SDKUserMessage`,
   `AccountInfo`, the initialize-control methods on `Query`, `SpawnedProcess`,
-  and `SpawnOptions`.
+  and `SpawnOptions`, followed by the Card 116 extension: the verbatim
+  `CanUseTool`, `PermissionResult`, MCP server config union, `McpServerStatus`,
+  `Options.mcpServers`, `Options.strictMcpConfig`, `Query.mcpServerStatus`,
+  `SdkMcpToolDefinition`, `tool`, and `createSdkMcpServer` declarations with
+  their exact 0.3.259 line ranges.
+- `mcp-protocol.json` — the MCP protocol-version constants the pinned bundle
+  carries, recovered from `package/sdk.mjs` by literal string search. This is
+  the carrier-qualification anchor for the registered-tool MCP profile.
 - `protocol.json` — the selected mapped subset, every classified declaration
   delta with why it stays unmapped, the unchanged implementation invariants,
   and the credential non-custody re-verification.

@@ -9,6 +9,7 @@
 
 use super::prepared::preparation_failure;
 use super::profile::ClaudeAgentSdkSessionProfile;
+use super::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
 use swallowtail_runtime::{PreparationFailure, PreparationStage};
 
 /// Exact env names the sidecar copies into the native child. MCP server env
@@ -140,6 +141,14 @@ impl ClaudeAgentSdkMcpServer {
             return Err(mcp_failure(
                 "swallowtail.claude-agent.sdk.profile.mcp_server_forbidden",
                 "Claude Agent SDK preparation rejects the reserved watcher MCP server name",
+            ));
+        }
+        // The Swallowtail-owned Contract 063 carrier is a separate path with a
+        // separate owner. A consumer-declared server may not present its name.
+        if self.name == CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER {
+            return Err(mcp_failure(
+                "swallowtail.claude-agent.sdk.profile.mcp_server_forbidden",
+                "Claude Agent SDK preparation rejects the reserved registered-tool carrier name",
             ));
         }
         if !is_bounded_text(&self.command, MAXIMUM_COMMAND_BYTES) {
@@ -385,7 +394,9 @@ fn mcp_failure(code: &'static str, message: &'static str) -> PreparationFailure 
 
 #[cfg(test)]
 mod mcp_tests {
-    use super::{ClaudeAgentSdkMcpServer, WATCHER_SERVER_NAME};
+    use super::{
+        CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER, ClaudeAgentSdkMcpServer, WATCHER_SERVER_NAME,
+    };
     use crate::sdk::profile::ClaudeAgentSdkSessionProfile;
 
     #[test]
@@ -418,6 +429,22 @@ mod mcp_tests {
             ["start"],
         )
         .expect_err("the watcher MCP family is a different route");
+        assert_eq!(
+            failure.diagnostic().safe().code(),
+            "swallowtail.claude-agent.sdk.profile.mcp_server_forbidden"
+        );
+    }
+
+    #[test]
+    fn the_reserved_registered_tool_carrier_name_is_rejected_before_construction() {
+        let failure = ClaudeAgentSdkMcpServer::stdio(
+            CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER,
+            "/usr/bin/node",
+            std::iter::empty::<String>(),
+            std::iter::empty::<String>(),
+            ["start"],
+        )
+        .expect_err("the Swallowtail-owned carrier is a different path");
         assert_eq!(
             failure.diagnostic().safe().code(),
             "swallowtail.claude-agent.sdk.profile.mcp_server_forbidden"

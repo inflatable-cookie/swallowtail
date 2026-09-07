@@ -16,6 +16,7 @@ mod claude_agent_sdk_driver {
     pub mod model;
     pub mod permission;
     pub mod readiness;
+    pub mod registered_tool;
     pub mod resume;
     pub mod stalls;
 }

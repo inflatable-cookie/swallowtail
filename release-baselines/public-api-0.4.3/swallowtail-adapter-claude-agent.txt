@@ -26,6 +26,71 @@ impl core::error::Error for swallowtail_adapter_claude_agent::sdk::protocol::Cla
 impl core::fmt::Display for swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure
 pub fn swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub fn swallowtail_adapter_claude_agent::sdk::protocol::decode_records(&[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkRecordKind>, swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailure>
+pub mod swallowtail_adapter_claude_agent::sdk::registered_tool
+pub enum swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpMethod
+pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpMethod::Cancelled
+pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpMethod::Initialize
+pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpMethod::Initialized
+pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpMethod::ToolsCall
+pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpMethod::ToolsList
+impl swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpMethod
+pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpMethod::as_str(self) -> &'static str
+pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpMethod::is_notification(self) -> bool
+pub enum swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpReply
+pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpReply::Accepted
+pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpReply::Respond(alloc::vec::Vec<u8>)
+impl swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpReply
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpReply::response_bytes(&self) -> core::option::Option<&[u8]>
+pub enum swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolDecision
+pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolDecision::Allow
+pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolDecision::Deny
+pub struct swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool
+impl swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool::carrier_tool_name(&self) -> &str
+pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool::id(&self) -> &swallowtail_runtime::registered_tool::identity::RegisteredToolId
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool::provider_tool_name(&self) -> &str
+pub struct swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier
+impl swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier::admitted_tool_names(&self) -> alloc::vec::Vec<alloc::string::String>
+pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier::mediation_kind(&self) -> &'static str
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier::new(&swallowtail_runtime::registered_tool::selection::RegisteredToolSelection) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier::resolve_carrier_tool(&self, &str) -> core::option::Option<&swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool>
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier::resolve_provider_tool(&self, &str) -> core::option::Option<&swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool>
+pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier::selection(&self) -> &swallowtail_runtime::registered_tool::selection::RegisteredToolSelection
+pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier::server_name(&self) -> &'static str
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier::tools(&self) -> &[swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool]
+pub struct swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator
+impl swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator
+pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator::carrier(&self) -> &swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier
+pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator::effective_bounds(&self) -> swallowtail_runtime::registered_tool::limits::RegisteredToolBounds
+pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator::lease(&self) -> &swallowtail_runtime::registered_tool::lease::RegisteredToolBridgeLease
+pub async fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator::mediate(&self, &[u8]) -> core::result::Result<swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcpReply, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator::new(swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier, swallowtail_runtime::registered_tool::lease::RegisteredToolBridgeLease) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator::record_admission(&self, &str, swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolDecision) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator::with_consumer_limits(self, swallowtail_runtime::registered_tool::limits::RegisteredToolLimits) -> Self
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_MCP_SUPPORTED_PROTOCOL_VERSIONS: &[&str]
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_AXIS: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SOURCE: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::MAXIMUM_MCP_RECORD_BYTES: usize
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::MCP_ERROR_INTERNAL: i64
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::MCP_ERROR_INVALID_PARAMS: i64
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::MCP_ERROR_INVALID_REQUEST: i64
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::MCP_ERROR_METHOD_NOT_FOUND: i64
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::MCP_JSONRPC_VERSION: &str
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::claude_agent_sdk_mcp_protocol_version_admitted(&str) -> bool
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::claude_agent_sdk_mcp_protocol_version_known(&str) -> bool
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::claude_agent_sdk_registered_tool_carrier_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::claude_agent_sdk_registered_tool_carrier_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::claude_agent_sdk_registered_tool_qualification() -> swallowtail_runtime::consumer_route_projection::registered_capability::RegisteredToolRouteQualification
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::project_claude_agent_sdk_registered_tool(&swallowtail_runtime::consumer_route_projection::applicability::ConsumerRouteApplicability, &swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier, &swallowtail_runtime::registered_tool::readiness::RegisteredToolReadiness) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort::High
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort::Low

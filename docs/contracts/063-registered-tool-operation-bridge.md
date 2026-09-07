@@ -142,8 +142,10 @@ loopback listener, bearer, ready barrier, generation checks, admission freeze,
 and joined tasks remain one implementation. SSE must not create another
 listener or lifecycle. Unix sockets, WebSocket, remote public HTTP, and
 attached ambient servers remain out until separately qualified.
-Stdio, remote hosts, and standalone server distribution are later profiles;
-the linked Longhorn slice cannot infer them.
+Remote hosts and standalone server distribution are later profiles; the
+linked Longhorn slice cannot infer them. Stdio is not a carrier: it is an
+attachment shape over this same loopback carrier, admitted only as the
+Mediated Stdio Proxy Attachment below.
 
 Initialization negotiates one exact protocol version and server identity.
 Unsupported or substituted values fail before provider work. Reconnect may
@@ -502,3 +504,80 @@ host shutdown/reap owner until joined or explicitly accounted as unreaped under
 the host contract. It never reports Closed/Clean, returns credentials for reuse,
 or allows a new attempt to inherit the failed lease. Tests include a deliberately
 uncooperative dispatcher and prove retained ownership plus visible failure.
+
+## Mediated Stdio Proxy Attachment — 2026-09-07
+
+Promoted from card 116 ATTACH-01 (provider-free planning capsule). Applies to
+providers that consume registered tools only through an MCP stdio server they
+spawn themselves (`claude-agent.sdk` on SDK `0.3.259`).
+
+**Shape.** Stdio is an attachment shape, not a carrier. The admitted attachment
+is `MediatedStdioProxy` over the existing `RegisteredToolTransport::PrivateLoopbackHttp`.
+A Swallowtail-authored courier process, spawned by the provider as its declared
+stdio MCP server, speaks MCP stdio toward the provider and the registered-tool
+loopback profile toward the kernel. It mints nothing. One listener, one lease,
+one generation space, one secret source, and one admission authority remain
+the kernel's. Card 084 consumer-declared servers stay a separate unchanged
+path. SSE/HTTP provider transports, in-process, managed, remote, and
+standalone distribution remain withheld.
+
+**Additive vocabulary.** `RegisteredToolAttachment { HostMediated,
+MediatedStdioProxy }`; `RegisteredToolProxyRecipe` (executable reference,
+environment reference, fixed wire tag; no raw values); a private, non-`Clone`,
+non-serializable, zeroizing `RegisteredToolProxyRendezvous`; and a safe
+`RegisteredToolAttachmentDescriptor`. Selection, topology, and readiness bind
+the exact attachment and require recipe resolution before open.
+
+**Secret handoff.** Endpoint, bearer, and generations reach the courier only
+through an operation-scoped one-shot rendezvous file: created `0600` and
+exclusive under a host-private directory (never the working resource,
+workspace, or any durable configuration), unlinked by its first reader, and
+expired at the ready barrier whether or not read. The provider's argument
+vector carries only the fixed wire tag and the non-authoritative rendezvous
+path; the child environment is the card 084 allowlisted environment with no
+`SWALLOWTAIL_*` authority and no runtime-added values. Tool credentials stay
+host-side `CredentialRef`s resolved in the dispatcher. This is the same handoff
+class Contract 060 already uses for the watcher MCP configuration file and is
+recorded there.
+
+**Lifecycle.** Prepare references and readiness → bind the existing listener →
+mint one lease and transport generation and the zeroizing secret →
+materialize the rendezvous → provider spawns the courier → courier reads and
+unlinks, connects, authenticates, negotiates → only then Ready → every call
+passes provider-side `canUseTool` mediation and the kernel's `BeforeDispatch`
+and `BeforeDelivery` verdicts → freeze or revoke → settle or abandon → close
+joins listener tasks → release the resource and zeroize. A teardown timeout is
+`TeardownFailed`: the lease stays frozen, resources are retained under the
+host reap owner, and it is never reported clean.
+
+**Slice 1 bounds.** One courier, one connection, one call in flight; no
+reconnect and no progress; connect bounded by the lesser of the open
+remainder and ten seconds; existing 256 KiB payload ceilings; the reserved
+server name `swallowtail-registered-tools`; omission byte-identical to today.
+
+**Provider-free falsifiers.** The F1–F18 set in the capsule is the conformance
+oracle: omission, ready ordering, one-shot expiry, redaction, argv and
+environment, exact kind and name mapping, correlation, deny, concurrency and
+bounds, revocation races, cancel and deadline, transport loss without
+re-authentication, stale, foreign, and late frames, exactly-once settle,
+uncooperative teardown, the shared watcher and registered listener and
+generation space, and every existing fixture unchanged.
+
+**Live gate (later, separate authority).** The exact tuple is frozen before
+any turn: `claude-agent.sdk`; SDK `0.3.259` at its recorded digest; native
+`2.1.259`; the pinned Node; JSONL v1; proxy wire `swallowtail-registered-tool-mcp-v1`;
+the exact MCP protocol version; `private-loopback-http` plus
+`mediated-stdio-proxy`; `strictMcpConfig` true; `settingSources` empty;
+`allowedTools` omitted; one disposable tool. Stop conditions: authority
+leakage, ambient MCP, lazy attach, automatic respawn or retry, `canUseTool`
+bypass, ambiguous identities, incomplete cleanup.
+
+**Ownership.** Swallowtail owns the wire specification and a feature-gated
+reference courier binary inside `swallowtail-host-local`; no new crate in
+slice 1, on the condition that the wire specification is a distinct module
+with no dependency on host-local runtime internals, so that it can move to
+its own crate without a wire change. Desktop owns packaging and placement
+and resolves the executable reference. A conforming consumer-built courier is
+admitted, bound by the wire specification and its falsifiers, never by the
+artifact. Any claim that an external courier conforms requires the wire
+module to have been promoted to its own crate with a frozen version.

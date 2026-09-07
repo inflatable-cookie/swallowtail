@@ -205,3 +205,15 @@ Preserve existing watcher completion-gate ordering and private material rules.
 All existing watcher/provider conformance fixtures must pass unchanged; add
 both-profile namespace, cross-lease, terminal-race and teardown fixtures.
 Kernel extraction is contracted here but remains unrealized until card114 lands.
+
+## Operation-Scoped Rendezvous Handoff — 2026-09-07
+
+Authentication material may reach a provider-spawned process only through a
+host-written, operation-scoped file: the watcher MCP configuration file today,
+and the Contract 063 one-shot rendezvous file for the mediated stdio proxy.
+Such a file is `0600`, created exclusively under a host-private directory,
+never placed in a working resource, workspace, or durable configuration, and
+expires at the lease's ready barrier. The rendezvous variant is additionally
+unlinked by its first reader. The path is non-authoritative; possession of the
+file contents is the only capability, and it cannot outlive the lease. The
+argument-vector and environment exclusions above stand unchanged.

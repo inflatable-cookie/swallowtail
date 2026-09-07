@@ -28,6 +28,7 @@ const observed = {
   options: null,
   controlCalls: [],
   firstInputConsumed: false,
+  queryInputCalls: 0,
   spawnHookArgument: null,
   spawnHookArgumentCount: null,
   admissions: {},
@@ -300,6 +301,8 @@ export function query({ prompt, options }) {
 
   const iterator = {
     async next() {
+      observed.queryInputCalls += 1;
+      record();
       if (!firstInputConsumed) {
         const firstInput = await promptIterator.next();
         if (firstInput.done) {

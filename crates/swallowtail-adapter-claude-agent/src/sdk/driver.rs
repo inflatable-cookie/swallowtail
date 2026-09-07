@@ -166,6 +166,7 @@ impl PendingSession {
             permission_mode,
             permission_mode_changes: 0,
             model_changes: 0,
+            first_turn_rejection: None,
         }
     }
 }

@@ -48,3 +48,24 @@ Terminal state cannot be represented without an SDK API the fixture cannot model
 ## Auto-Continuation
 
 No. Stop for exact-head review. No live tier; a later live gate needs fixtures first and separate operator authority; never read or replay the Desktop candidate.
+
+## Result
+
+Implemented on the Card121 review branch. The sidecar now records every
+first-turn rejection as terminal state; a later query fails with bounded
+`session_rejected_terminal` correlation to the original sidecar code, without
+another SDK input or provider-work attempt. Explicit close remains available,
+and genuine first-message shape failures retain `init_missing`.
+
+Provider-free sidecar and Rust-host fixtures cover rejection-then-retry and
+rejection-then-close, including ordered cleanup, no SDK-input replay, and no
+new credential acquisition. Card119 model-qualification evidence and its
+fail-soft observer behavior, plus Card120 loaded-module verification, remain
+green. The API baseline is unchanged.
+
+Focused validation (427/427), affected-package verification, semantic API,
+Northstar, formatting, diff, and Rust-quality closeout checks pass. The
+affected-package closeout records the repository's pre-existing unused
+`swallowtail-protocol-openai-chat` patch warning. No live SDK/provider,
+credentials/auth/config, Desktop candidate, Card124 work, release, tag, merge,
+or review workspace action was taken. Exact-head review remains the stop.

@@ -5,10 +5,10 @@ use super::startup::SessionReadiness;
 use super::validation::validate_turn;
 use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
-use crate::sdk::failure::{command_rejected, failure};
+use crate::sdk::failure::{command_rejected, failure, session_rejected_terminal};
 use crate::sdk::profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile};
 use crate::sdk::turn::SdkActiveTurn;
-use crate::sdk::wire::ClaudeAgentSdkCommand;
+use crate::sdk::wire::{ClaudeAgentSdkCommand, ClaudeAgentSdkFailureCode};
 use serde_json::json;
 use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
@@ -71,6 +71,7 @@ pub struct ClaudeAgentSdkSessionHandle {
     pub(super) permission_mode_changes: u32,
     /// Correlation counter for model changes.
     pub(super) model_changes: u32,
+    pub(super) first_turn_rejection: Option<ClaudeAgentSdkFailureCode>,
 }
 
 impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
@@ -97,6 +98,9 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
     ) -> BoxFuture<'a, Result<Box<dyn TurnHandle>, RuntimeFailure>> {
         Box::pin(async move {
             services.require_execution_host(&self.execution_host_id)?;
+            if let Some(original_code) = self.first_turn_rejection {
+                return Err(session_rejected_terminal(original_code));
+            }
             validate_turn(&request)?;
             let turn_deadline = request.deadline().expect("validated turn deadline");
             reap_finished(
@@ -175,7 +179,8 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
             match response {
                 Ok(response) if response.success => {
                     if let Err(error) = self.readiness.confirm_first_turn(response.data.as_ref()) {
-                        return Err(self.reject_turn(&turn, error));
+                        let original_code = first_turn_rejection_code(&error);
+                        return Err(self.reject_first_turn(&turn, original_code, error));
                     }
                     if let Some(provider_session_ref) =
                         self.readiness.provider_session_ref().cloned()
@@ -200,14 +205,21 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
                         },
                     )) as Box<dyn TurnHandle>)
                 }
-                Ok(response) => Err(self.reject_turn(
-                    &turn,
-                    self.query_rejected(
-                        response
-                            .failure_code
-                            .expect("a rejected response carries its fixed sidecar code"),
-                    ),
-                )),
+                Ok(response) => {
+                    let code = response
+                        .failure_code
+                        .expect("a rejected response carries its fixed sidecar code");
+                    let (original_code, error) = match code {
+                        ClaudeAgentSdkFailureCode::SessionRejectedTerminal => {
+                            let original_code = response
+                                .original_failure_code
+                                .expect("a terminal rejection carries its original code");
+                            (original_code, session_rejected_terminal(original_code))
+                        }
+                        _ => (code, self.query_rejected(code)),
+                    };
+                    Err(self.reject_first_turn(&turn, original_code, error))
+                }
                 Err(error) => Err(self.reject_turn(&turn, error)),
             }
         })
@@ -487,6 +499,16 @@ impl ClaudeAgentSdkSessionHandle {
         error
     }
 
+    fn reject_first_turn(
+        &mut self,
+        turn: &Arc<SdkActiveTurn>,
+        original_code: ClaudeAgentSdkFailureCode,
+        error: RuntimeFailure,
+    ) -> RuntimeFailure {
+        self.first_turn_rejection = Some(original_code);
+        self.reject_turn(turn, error)
+    }
+
     fn query_rejected(&self, code: crate::sdk::wire::ClaudeAgentSdkFailureCode) -> RuntimeFailure {
         match code {
             crate::sdk::wire::ClaudeAgentSdkFailureCode::ResumeCwdMismatch => failure(
@@ -538,6 +560,34 @@ impl ClaudeAgentSdkSessionHandle {
             self.working_resource.clone(),
             self.access_policy.clone(),
         ))
+    }
+}
+
+fn first_turn_rejection_code(error: &RuntimeFailure) -> ClaudeAgentSdkFailureCode {
+    match error.diagnostic().code() {
+        "swallowtail.claude-agent.sdk.init_missing" => ClaudeAgentSdkFailureCode::InitMissing,
+        "swallowtail.claude-agent.sdk.cwd_mismatch" => ClaudeAgentSdkFailureCode::CwdMismatch,
+        "swallowtail.claude-agent.sdk.open_mismatch" => ClaudeAgentSdkFailureCode::ModelMismatch,
+        "swallowtail.claude-agent.sdk.model_missing" => ClaudeAgentSdkFailureCode::ModelMissing,
+        "swallowtail.claude-agent.sdk.supported_model_rejected" => {
+            ClaudeAgentSdkFailureCode::SupportedModelRejected
+        }
+        "swallowtail.claude-agent.sdk.effort_unconfirmed" => {
+            ClaudeAgentSdkFailureCode::EffortUnconfirmed
+        }
+        "swallowtail.claude-agent.sdk.capabilities_invalid" => {
+            ClaudeAgentSdkFailureCode::CapabilitiesInvalid
+        }
+        "swallowtail.claude-agent.sdk.resume_cwd_mismatch" => {
+            ClaudeAgentSdkFailureCode::ResumeCwdMismatch
+        }
+        "swallowtail.claude-agent.sdk.resume_account_mismatch" => {
+            ClaudeAgentSdkFailureCode::ResumeAccountMismatch
+        }
+        "swallowtail.claude-agent.sdk.resume_session_unknown" => {
+            ClaudeAgentSdkFailureCode::ResumeSessionUnknown
+        }
+        _ => ClaudeAgentSdkFailureCode::CommandFailed,
     }
 }
 

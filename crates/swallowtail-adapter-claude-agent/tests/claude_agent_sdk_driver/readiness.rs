@@ -263,6 +263,77 @@ fn command_rejections_keep_their_fixed_sidecar_code() {
 }
 
 #[test]
+fn first_turn_rejection_makes_retry_terminal_without_replay_or_provider_work() {
+    let host = host_id("claude-agent-sdk.fixture.first-turn-terminal");
+    let fixture = SdkFixtureHost::new(SdkScenario::UnsupportedModel);
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let cleanup_services = services.clone();
+    let mut session = block_on(prepared.open_route_session(services.clone()))
+        .expect("session opens before first-turn model rejection");
+
+    let Err(first_error) =
+        block_on(session.start_turn(turn_request("turn-1", "read it"), services.clone()))
+    else {
+        panic!("unsupported model must reject the first turn");
+    };
+    assert_eq!(
+        first_error.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.query_rejected"
+    );
+    assert!(
+        first_error
+            .diagnostic()
+            .message()
+            .ends_with(": supported_model_rejected")
+    );
+    let inputs_before_retry = fixture.inputs();
+    assert_eq!(
+        inputs_before_retry
+            .iter()
+            .filter(|input| input["command"] == "query")
+            .count(),
+        1
+    );
+    let acquisitions_before_retry = fixture.credential_acquisitions();
+
+    let Err(retry_error) = block_on(session.start_turn(turn_request("turn-2", "retry"), services))
+    else {
+        panic!("a rejected session must stay terminal");
+    };
+    assert_eq!(
+        retry_error.diagnostic().code(),
+        "swallowtail.claude-agent.sdk.session_rejected_terminal"
+    );
+    assert!(
+        retry_error
+            .diagnostic()
+            .message()
+            .ends_with(": supported_model_rejected")
+    );
+    assert_eq!(
+        fixture.inputs(),
+        inputs_before_retry,
+        "retry did not replay the wire"
+    );
+    assert_eq!(
+        fixture.credential_acquisitions(),
+        acquisitions_before_retry,
+        "retry did not perform provider work"
+    );
+
+    let outcome = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
+    assert!(matches!(
+        outcome,
+        swallowtail_runtime::CleanupOutcome::Clean
+            | swallowtail_runtime::CleanupOutcome::Degraded(_)
+    ));
+    fixture.wait_for_cleanup(CleanupEvent::ResourceRelease);
+    fixture.wait_for_cleanup(CleanupEvent::CredentialRelease);
+    fixture.reaper().shutdown();
+}
+
+#[test]
 fn off_point_identity_resource_and_tool_sets_fail_closed() {
     for scenario in [
         SdkScenario::IdentityMismatch,

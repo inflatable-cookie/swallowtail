@@ -416,6 +416,12 @@ impl SidecarProcess {
         self.read_observations()["firstInputConsumed"] == true
     }
 
+    pub fn observed_query_input_calls(&self) -> usize {
+        self.read_observations()["queryInputCalls"]
+            .as_u64()
+            .expect("fake SDK recorded query input calls") as usize
+    }
+
     pub fn observed_spawn_hook_argument(&self) -> Value {
         let observations = self.read_observations();
         assert!(

@@ -865,8 +865,11 @@ fn grok_acp_client_mcp_verdict_decision(
     let Some(id) = session_new.message.get("id").cloned() else {
         return inconclusive(InconclusiveCause::MissingSessionNew);
     };
+    // The response must follow the request: never correlate an inbound
+    // frame that precedes the outbound `session/new`.
     let response = frames
         .iter()
+        .skip(session_new_at + 1)
         .find(|frame| !frame.is_outbound() && frame.message.get("id") == Some(&id));
     match response {
         None => session_new_no_response_cause(frames, session_new_at),
@@ -1887,7 +1890,15 @@ fn request_succeeded(frames: &[GrokAcpClientMcpFrame], id: u64) -> bool {
 }
 
 fn session_id_from(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<String> {
-    response_result(frames, id)?
+    // Only a reply that follows the outbound `session/new` can resolve it.
+    let request_at = frames.iter().rposition(|frame| {
+        frame.is_outbound() && method_of(&frame.message) == Some("session/new")
+    })?;
+    frames[request_at + 1..]
+        .iter()
+        .find(|frame| !frame.is_outbound() && frame.message.get("id") == Some(&json!(id)))?
+        .message
+        .get("result")?
         .get("sessionId")
         .and_then(Value::as_str)
         .map(str::to_owned)
@@ -2514,13 +2525,31 @@ mod tests {
         });
         assert!(
             answered,
-            "a request arriving after a notification burst must be read and answered"
+            "the delayed request and its recorded refusal must both be captured"
         );
         assert!(capsule.prompt_turn_completed());
         assert!(
             peer.drain_bounds
                 .iter()
                 .all(|bound| *bound <= LIVE_SESSION_NEW_WAIT)
+        );
+        let session_new_at = capsule
+            .frames()
+            .iter()
+            .position(|frame| {
+                frame.is_outbound() && method_of(frame.message()) == Some("session/new")
+            })
+            .expect("session/new frame");
+        let request_at = capsule
+            .frames()
+            .iter()
+            .position(|frame| {
+                !frame.is_outbound() && frame.message().get("id") == Some(&json!(850))
+            })
+            .expect("delayed request captured");
+        assert!(
+            request_at > session_new_at,
+            "the fs/write_text_file request must arrive after the outbound session/new"
         );
     }
 
@@ -2532,6 +2561,7 @@ mod tests {
         steps: VecDeque<Vec<Value>>,
         queued: VecDeque<Value>,
         drain_bounds: Vec<Duration>,
+        steps_active: bool,
     }
 
     impl SteppedPeer {
@@ -2560,12 +2590,19 @@ mod tests {
                 ]),
                 queued: VecDeque::new(),
                 drain_bounds: Vec::new(),
+                steps_active: false,
             }
         }
     }
 
     impl GrokAcpClientMcpPeer for SteppedPeer {
         fn push_outbound(&mut self, message: Value) -> Result<(), GrokAcpClientMcpError> {
+            if method_of(&message) == Some("session/new") {
+                // The stepped notification/request/response sequence belongs
+                // to this exchange only; earlier exchanges drain `queued`.
+                self.steps_active = true;
+                return Ok(());
+            }
             let reply = match method_of(&message) {
                 Some("initialize") => json!({
                     "jsonrpc": "2.0",
@@ -2591,13 +2628,14 @@ mod tests {
         fn take_inbound(&mut self) -> Result<Vec<Value>, GrokAcpClientMcpError> {
             self.take_inbound_within(LIVE_WAIT)
         }
-
         fn take_inbound_within(
             &mut self,
             bound: Duration,
         ) -> Result<Vec<Value>, GrokAcpClientMcpError> {
             self.drain_bounds.push(bound);
-            if let Some(step) = self.steps.pop_front() {
+            if self.steps_active
+                && let Some(step) = self.steps.pop_front()
+            {
                 return Ok(step);
             }
             Ok(self.queued.drain(..).collect())

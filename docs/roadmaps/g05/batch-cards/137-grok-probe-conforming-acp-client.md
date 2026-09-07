@@ -111,15 +111,25 @@ responds; scores `inconclusive`/`session_new_bound_exceeded`). A private
 foreign-request fixture proves an out-of-allowlist refusal is recorded and
 non-blocking. Packet updated.
 
-**Independent review (codex/gpt-5.6-terra).** Found one merge blocker in the
-first head: the drain loop exited after a burst carrying nothing answerable,
-so an agent that emitted a notification and then sent its request one drain
-later would never be read — a provider-shaped `session_new_bound_exceeded`
-for probe silence, violating the review oracle. Fixed by giving each exchange
-one absolute deadline (`session/new`: 60s) that answering never extends, and
-draining until the response arrives or the bound expires. Regression fixture
-`delayed_request_after_notification_is_still_answered` replays the exact
-timing shape with a stepped peer. All selectors re-run green on the fix.
+**Independent review (codex/gpt-5.6-terra).** Two findings, both fixed:
+
+1. First head: the drain loop exited after a burst carrying nothing
+   answerable, so an agent that emitted a notification and then sent its
+   request one drain later was never read — a provider-shaped
+   `session_new_bound_exceeded` for probe silence, violating the review
+   oracle. Fixed by giving each exchange one absolute deadline
+   (`session/new`: 60s) that answering never extends, and draining until the
+   response arrives or the bound expires.
+2. Second head: the regression fixture's steps were not gated on the
+   outbound `session/new`, so `SteppedPeer` served them during `initialize`
+   and whole-capture response lookup misattributed the early id-3 result —
+   a false proof. Fixed by activating the steps only on `session/new`,
+   asserting the request frame follows the outbound `session/new`, and
+   correlating both `session_id_from` and the verdict's response search to
+   frames after the outbound request only.
+
+`delayed_request_after_notification_is_still_answered` now replays the exact
+review-oracle timing shape behind the gate. All selectors re-run green.
 
 **Validation.** `effigy validate:focused swallowtail-testkit`,
 `effigy package:verify-affected swallowtail-testkit`,

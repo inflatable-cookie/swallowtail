@@ -4,7 +4,10 @@ Status: preparation artifact; no production claim
 Owner: Tom
 Date: 2026-09-07
 Card: g05.035 / 118
-Baseline: main `70909172` (Cards114-115 merged; Card117 not present)
+Collection baseline: main `70909172` (initial corpus and route-anchor
+collection; Cards114-115 merged; Card117 absent at collection time)
+Current rebase: main `f54695e7` (Cards116-117 merged; Grok and ACP route-anchor
+trees unchanged from the collection baseline)
 
 ## Question
 
@@ -23,11 +26,14 @@ external MCP server, prompt, tool call, or paid inference was used.
 
 The exact local route corpus remains `grok-build.acp` over ACP v1 stdio on the
 `grok-build.executable` axis. Existing exact fixtures cover maintained `1.0.4`
-and `1.0.5` identity and handshake shape. Current main also contains the
-provider-neutral Contract063 registration kernel, selected-bundle transport,
-and descriptive projection from Cards114-115. No Grok adapter consumes those
-types. The current public xAI source tree is later than those exact package
-commits and is corroboration only; it does not extend a compatibility claim.
+and `1.0.5` identity and handshake shape. The collection baseline was
+`70909172`; this evidence batch is rebased onto current main `f54695e7`.
+The Grok and ACP route-anchor trees are unchanged between those commits.
+Current main also contains the provider-neutral Contract063 registration
+kernel, selected-bundle transport, and descriptive projection from the merged
+Card114-117 work. No Grok adapter consumes those types. The current public xAI
+source tree is later than those exact package commits and is corroboration only;
+it does not extend a compatibility claim.
 
 No runtime, adapter, fixture, public API baseline, route matrix, contract,
 roadmap status, or claim was changed by this preparation. The research front
@@ -68,7 +74,7 @@ baseline. Their hashes are recorded to make the preparation reproducible:
 | Grok-native MCP | Official xAI docs describe configured stdio/HTTP/SSE servers, project-scoped config, namespaced server tools, and built-in `search_tool`/`use_tool`. | This proves a Grok-native MCP subsystem. It does not prove that the ACP client may inject a server per session, that a non-empty ACP `mcpServers` list is accepted on exact `1.0.4`/`1.0.5`, or that Swallowtail can bind the server lifecycle. |
 | ACP client-supplied MCP | ACP v1 specifies `mcpServers` on session setup, absolute stdio command shape, optional HTTP/SSE capability gates, and the expectation that an Agent connects to requested servers. | ACP protocol allowance is not Grok implementation evidence. No Grok exact-version transcript in this corpus proves connection readiness, tool discovery, or result routing for a client-supplied server. |
 | Grok official ACP examples | xAI’s official ACP examples launch `grok agent stdio` and send `mcpServers: []` on `session/new`; the later public README repeats the empty list for `session/new` and `session/load`. | The examples establish the documented path and its empty-MCP posture only. They do not show that non-empty input is rejected, ignored, or supported. |
-| Exact `1.0.5` fixture | The checked-in fixture records ACP v1, `session_new_ok`, `provider_prompt_sent: false`, `mcpCapabilities` as an unmapped initialize key, and vendor MCP notifications as unmapped observations. | The fixture has no consumer server, `tools/list`, tool-result, or per-session MCP readiness transcript. It cannot qualify registration or result dispatch. |
+| Exact `1.0.5` fixture | The checked-in fixture records ACP v1, `session_new_ok`, `provider_prompt_sent: false`, `mcpCapabilities` as an unmapped initialize key, and `_x.ai/mcp/servers_updated` plus `_x.ai/mcp_initialized` as separately unmapped vendor observations. | The fixture has no consumer server, `tools/list`, tool-result, or per-session MCP readiness transcript. It cannot qualify registration or result dispatch. |
 | Current Swallowtail open path | `driver.rs:218-227` opens ACP and sends `session/new` with `mcpServers: []`; `connection.rs:150-155` sends the same empty list during `session/load`. | There is no prepared consumer-server input or route-local registration path in the current adapter. Changing the empty list would be runtime work and is outside this preparation. |
 | Current Swallowtail callback path | `connection/dispatch.rs:49-75` handles `session/update` and vendor metadata; `:77-118` accepts only filesystem reads and `session/request_permission` as agent-to-client callbacks. | No client-to-agent registered-tool result path, server lease, schema binding, or result correlation is present in the Grok adapter. The existing permission exchange remains a separate one-shot route-local mechanism. |
 | Current projection | `consumer_route_projection.rs:198-277` emits prepared/session/model/session-option/activity rows only. The checked-in projection test expects ten emitted rows and withholds model catalogue, persistent-session posture, and negotiated-model observation. | No consumer-tool or MCP row is emitted. This is existing route truth, not a new claim or a reason to change the matrix during preparation. |
@@ -181,6 +187,136 @@ prove stale-callback rejection and joined cleanup. `1.0.4` and `1.0.5` must
 remain separate evidence segments because their package identities and
 behavior revisions are distinct. That probe is outside this preparation and
 was not run.
+
+## Provider-Free Exact-Version Specimen Results
+
+Executed 2026-09-07 without starting Grok or contacting a provider. The
+evidence is separated into a frozen-artifact track and a synthetic parser
+track; the parser track does not select or load either exact artifact.
+
+### Frozen exact-artifact track
+
+The two exact segments were checked independently:
+
+| Exact segment | Artifact result | Frozen identity/handshake facts |
+| --- | --- | --- |
+| `1.0.4` | **Unknown** for non-empty MCP acceptance. No non-empty setup, readiness, discovery, call, result, or rejection record is present. | `source_revision: d846eb93d94d`; ACP v1; `session_new_ok: true`; `provider_prompt_sent: false`. |
+| `1.0.5` | **Unknown** for non-empty MCP acceptance. No non-empty setup, readiness, discovery, call, result, or rejection record is present. | `source_revision: 5115b46bc909`; ACP v1; `session_new_ok: true`; `provider_prompt_sent: false`; `mcpCapabilities`, `_x.ai/mcp/servers_updated`, and `_x.ai/mcp_initialized` are recorded as unmapped observations. |
+
+Frozen artifact identities and file digests used by this track:
+
+| Version | Compatibility artifact SHA-256 | Identity artifact SHA-256 | Frozen source revision | Frozen executable SHA-256 |
+| --- | --- | --- | --- | --- |
+| `1.0.4` | `a1967be3e6f20608c2520e52c8ec2b713b94aa82e5e44f34b3c34350092b5f55` | `a769431be8f4d8702484c35060a6e6a2f154d7c30c99241bbd689b3bda62a744` | `d846eb93d94d` | `39366f7756a090b735cc1df8c93a8c0c3c7871555cf6cbb28f9351ca82936485` |
+| `1.0.5` | `948c1589afe6a037f7dc484d88e6ceb273995025ff05e81de729f5d13415651c` | `c0acd39c3fddafdd57874ef3c006ad07c6310b3d1bff0d3b6cbebcf33297bbba` | `5115b46bc909` | `3dfa7f04fbb5427a8fbead286591543aaecb478b3a0ab222c4329eca1a3b2f86` |
+
+Commands and observed results for the frozen track:
+
+```text
+shasum -a 256 crates/swallowtail-adapter-grok/tests/fixtures/grok-1-0-4/compatibility.json
+shasum -a 256 crates/swallowtail-adapter-grok/tests/fixtures/grok-1-0-4-identity.json
+shasum -a 256 crates/swallowtail-adapter-grok/tests/fixtures/grok-1-0-5/compatibility.json
+shasum -a 256 crates/swallowtail-adapter-grok/tests/fixtures/grok-1-0-5-identity.json
+
+cargo test --offline -p swallowtail-adapter-grok --test compatibility_corpus identity_and_handshake_qualify_1_0_4_as_same_axis_milestone -- --exact
+# 1 passed; 0 failed; 6 filtered out
+cargo test --offline -p swallowtail-adapter-grok --test compatibility_corpus identity_and_handshake_qualify_1_0_5_as_compatible_extension -- --exact
+# 1 passed; 0 failed; 6 filtered out
+```
+
+### Version-invariant synthetic ACP parser track
+
+The parser specimen is synthetic and version-invariant. Its `1.0.4` and
+`1.0.5` arguments are labels consumed only by `println!`; they select no
+fixture, load no artifact, and alter no parser branch. The result is therefore
+one invariant **Accepted** envelope round trip, not two version-specific
+acceptance results.
+
+The exact harness source is embedded below. SHA-256 is over the source bytes,
+including the final newline: `c0a5a17146a850cb39f5a46d9ffb147e0201668226ee33a123f56f685b8639e0`.
+The exact manifest bytes used by the command are also recorded; its SHA-256 is
+`b3b8e5302b60fbb057aaa8b492ba6e2897fc880135d8e870ffd48b65c3439f38`.
+The path dependency resolved against the current worktree's
+`swallowtail-protocol-acp` source tree. That tree is byte-identical to the
+current rebase `f54695e7`; the docs-only commit does not alter it. The static
+source check was `git diff --quiet f54695e7 --
+crates/swallowtail-protocol-acp/src` (exit `0`).
+
+```rust
+use serde_json::{Value, json};
+use swallowtail_protocol_acp::{Message, decode_message, encode_message};
+
+fn main() {
+    let version = std::env::args().nth(1).expect("exact Grok version");
+    let params = json!({
+        "cwd": "<host-approved-resource>",
+        "mcpServers": [{
+            "name": "fixture-server",
+            "command": "/fixture/not-invoked",
+            "args": [],
+            "env": []
+        }]
+    });
+    let frame = encode_message(&Message::Request {
+        id: json!(1),
+        method: "session/new".to_owned(),
+        params,
+    })
+    .expect("ACP frame encodes");
+    let decoded = decode_message(&frame).expect("ACP frame decodes");
+    let Message::Request { method, params, .. } = decoded else {
+        panic!("encoded frame did not round-trip as request");
+    };
+    assert_eq!(method, "session/new");
+    assert_eq!(params["mcpServers"].as_array().map(Vec::len), Some(1));
+    assert_eq!(params["mcpServers"][0]["name"], Value::String("fixture-server".into()));
+    println!("version={version} parser=envelope-accepted mcpServers=1 provider=not-contacted");
+}
+```
+
+```toml
+[package]
+name = "grok-acp-card118-specimen"
+version = "0.0.0"
+edition = "2024"
+
+[dependencies]
+serde_json = "1"
+swallowtail-protocol-acp = { path = "/Users/tom/.paseo/worktrees/2ee7rnl8/g05-card118-evidence-continuation/crates/swallowtail-protocol-acp" }
+```
+
+The command and actual output were:
+
+```text
+CARGO_TARGET_DIR=/tmp/grok-acp-card118.zuBvf4/target cargo run --offline --manifest-path /tmp/grok-acp-card118.zuBvf4/Cargo.toml -- 1.0.4
+# version=1.0.4 parser=envelope-accepted mcpServers=1 provider=not-contacted
+CARGO_TARGET_DIR=/tmp/grok-acp-card118.zuBvf4/target cargo run --offline --manifest-path /tmp/grok-acp-card118.zuBvf4/Cargo.toml -- 1.0.5
+# version=1.0.5 parser=envelope-accepted mcpServers=1 provider=not-contacted
+```
+
+The harness called only provider-neutral
+`swallowtail_protocol_acp::{encode_message, decode_message}`. The command
+path was an inert string and was never executed. The authoritative static
+anchors are `crates/swallowtail-protocol-acp/src/lib.rs::decode_frame` (ACP
+params are generic `Value`), `src/message.rs::{encode_message,decode_message}`,
+`crates/swallowtail-adapter-grok/src/driver.rs::GrokAcpDriver::start_session`,
+and `src/connection.rs::AcpConnection::recover_session_attachment`.
+
+The Grok session-setup verdict remains **Unknown / not represented** for both
+exact segments: both current emitters send `mcpServers: []`, and no provider
+endpoint was contacted. Parser acceptance is not provider or session-readiness
+evidence.
+
+### Residual live-probe blocker
+
+Only a separately authorized live probe can change the Grok session-setup
+verdict from `Unknown`: operator credential and turn authorization, one exact
+installed version at a time, one disposable non-mutating stdio server, setup
+negotiation with a non-empty server, readiness/schema capture, one bounded
+call/result, progress/permission/cancellation capture, disconnect, stale
+callback rejection, and joined cleanup. Card118 and this provider-free
+specimen do not grant that authority. Until it exists, both exact segments
+remain withheld and no Contract063 support claim or runtime change follows.
 
 ## Exact Findings
 

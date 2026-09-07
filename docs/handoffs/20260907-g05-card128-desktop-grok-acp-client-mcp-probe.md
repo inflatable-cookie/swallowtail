@@ -4,7 +4,7 @@ kind: desktop-probe-packet
 status: ready
 owner: Tom
 created: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-08
 card: docs/roadmaps/g05/batch-cards/128-grok-acp-client-mcp-probe-harness.md
 ---
 
@@ -22,8 +22,17 @@ The 2026-09-07 live capsules (`1a1f263d…`, `a0eaafb6…`) stay evidence. Both
 are `inconclusive`. They proved protocol admission (`initialize` and
 `tools/list` on the echo server) and did not prove invocation (`tools/call`
 absent). Do not reclassify the four matrix cells from those runs. Card 133
-repairs the oracle so a later authorized rerun cannot collapse admission into
+repaired the oracle so a later authorized rerun cannot collapse admission into
 `ignores_client_mcp`.
+
+The 2026-09-07 authorized rerun capsules (`21c31e50…`, `d4da8816…`) proved
+more admission (`client_mcp_admitted`, `client_mcp_tools_listed`,
+`echo_helper_live` on both segments) but bounded out with
+`session_new_unanswered`. Card 137 diagnosed that as a harness gap: the probe
+drained inbound frames without answering them during `session/new`, so any
+client request Grok issued while establishing the session went unanswered.
+The probe is now a conforming ACP client (below), and a future
+`session_new_unanswered` names a harness defect, never a provider finding.
 
 ## Command
 
@@ -51,6 +60,19 @@ authorized rerun) on the same authorized home cannot inherit a prior
 `tools/call`. The transcript path is passed both as MCP `env`
 (`SWALLOWTAIL_ECHO_MCP_TRANSCRIPT`) and as `--transcript` on
 `mcpServers.args`, so a Grok that drops `env` is not silent.
+
+The probe is a conforming ACP client during every exchange, including
+`session/new`. Inbound client requests are answered from one small allowlist
+(`grok_acp_client_request_reply`): `session/request_permission` selects the
+agent's own `allow_once` option, and every other method — filesystem,
+terminal, anything unknown — is refused with a recorded JSON-RPC `-32601`
+error. The probe never reads or writes the filesystem, runs a shell, or
+touches the network, and no answer is silent. `session/new` waits up to
+`LIVE_SESSION_NEW_WAIT` (60 seconds) for session establishment with MCP
+servers; the other exchanges keep the previous bound. When `session/new` still
+has no response, the cause separates an inbound request the probe failed to
+answer (`session_new_unanswered`, harness-shaped) from the agent never
+responding within the bound (`session_new_bound_exceeded`, provider-shaped).
 
 Admission and invocation are separate capsule fields. `client_mcp_admitted`
 is true when the echo transcript contains `initialize`.

@@ -11,6 +11,15 @@
 //! `provider_limitation`. `inconclusive` names its cause, including
 //! `no_turn_result` versus `turn_completed_without_tool_call`. Crate tests
 //! drive the fake ACP fixture.
+//!
+//! The probe is a conforming ACP client during every exchange, including
+//! `session/new`: inbound client requests are answered from a small allowlist
+//! ([`grok_acp_client_request_reply`]) and every answer is captured.
+//! `session/new` failure therefore separates an inbound request the probe
+//! failed to answer (`session_new_unanswered`, harness-shaped) from the
+//! provider never responding within [`LIVE_SESSION_NEW_WAIT`]
+//! (`session_new_bound_exceeded`).
+//!
 //! The live installed-Grok entrypoint refuses to spawn unless Desktop sets
 //! [`DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE`] and an isolated `GROK_HOME`
 //! directory exists.
@@ -51,6 +60,10 @@ const FIXTURE_COMMAND: &str = "<redacted-command>";
 const STALE_CALLBACK_ID: u64 = 9001;
 const LIVE_IDLE: Duration = Duration::from_millis(200);
 const LIVE_WAIT: Duration = Duration::from_secs(8);
+/// Inbound bound for the `session/new` exchange. Real session establishment
+/// with MCP servers spawns processes and enumerates tools; a few seconds is
+/// not a provider signal, so this exchange waits a generous minute.
+pub const LIVE_SESSION_NEW_WAIT: Duration = Duration::from_secs(60);
 const LIVE_JOIN: Duration = Duration::from_secs(2);
 const ECHO_HELPER_LIVE_WAIT: Duration = Duration::from_millis(500);
 
@@ -74,8 +87,14 @@ pub enum InconclusiveCause {
     MissingSessionNew,
     /// Outbound `session/new` carried an empty `mcpServers` list.
     EmptyMcpServers,
-    /// `session/new` has no matching result.
+    /// An inbound client request inside the `session/new` exchange was left
+    /// without any probe response. Harness-shaped: the responder must answer
+    /// every request.
     SessionNewUnanswered,
+    /// Every inbound client request in the `session/new` exchange was answered
+    /// and the agent still returned no response within
+    /// [`LIVE_SESSION_NEW_WAIT`].
+    SessionNewBoundExceeded,
     /// `session/new` failed without naming client MCP.
     SessionNewErrorNotClientMcp,
     /// Capture stopped at the frame bound.
@@ -100,6 +119,7 @@ impl InconclusiveCause {
             Self::MissingSessionNew => "missing_session_new",
             Self::EmptyMcpServers => "empty_mcp_servers",
             Self::SessionNewUnanswered => "session_new_unanswered",
+            Self::SessionNewBoundExceeded => "session_new_bound_exceeded",
             Self::SessionNewErrorNotClientMcp => "session_new_error_not_client_mcp",
             Self::Truncated => "truncated",
             Self::PermissionRejected => "permission_rejected",
@@ -124,6 +144,12 @@ pub enum ClientMcpOracleShape {
     NoAdmission,
     /// Echo helper was not spawnable; empty transcript must not score ignore.
     HelperUnspawnable,
+    /// The agent emits a client permission request inside `session/new` and
+    /// completes the session only after the probe answers it.
+    SessionNewAnswerRequired,
+    /// The agent emits a client permission request inside `session/new`, sees
+    /// the probe's recorded answer, and still never responds to `session/new`.
+    SessionNewSilentAfterAnswer,
 }
 
 /// Methods observed by the disposable echo MCP server on its own stdio.
@@ -555,6 +581,15 @@ pub trait GrokAcpClientMcpPeer {
     fn push_outbound(&mut self, message: Value) -> Result<(), GrokAcpClientMcpError>;
     /// Returns every inbound object now available.
     fn take_inbound(&mut self) -> Result<Vec<Value>, GrokAcpClientMcpError>;
+    /// Returns every inbound object now available, allowing at most `bound`
+    /// for the first message. Deterministic peers may ignore the bound.
+    fn take_inbound_within(
+        &mut self,
+        bound: Duration,
+    ) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+        let _ = bound;
+        self.take_inbound()
+    }
     /// Disconnects and reports whether the wait joined.
     fn close(&mut self) -> GrokAcpClientMcpCleanup;
     /// Optional post-close callback the harness must reject.
@@ -598,11 +633,13 @@ pub fn grok_acp_client_mcp_oracle_fixture_probe(
     let mut peer = FakeAcpPeer::oracle(shape);
     let capsule = run_grok_acp_client_mcp_probe(&mut peer, version, FIXTURE_COMMAND, FIXTURE_CWD)?;
     let expected = match shape {
-        ClientMcpOracleShape::AdmittedAndCalled => ClientMcpVerdict::AcceptsClientMcp,
+        ClientMcpOracleShape::AdmittedAndCalled
+        | ClientMcpOracleShape::SessionNewAnswerRequired => ClientMcpVerdict::AcceptsClientMcp,
         ClientMcpOracleShape::NoAdmission => ClientMcpVerdict::IgnoresClientMcp,
         ClientMcpOracleShape::AdmittedListedNotCalledCompleted
         | ClientMcpOracleShape::AdmittedNotListed
-        | ClientMcpOracleShape::HelperUnspawnable => ClientMcpVerdict::Inconclusive,
+        | ClientMcpOracleShape::HelperUnspawnable
+        | ClientMcpOracleShape::SessionNewSilentAfterAnswer => ClientMcpVerdict::Inconclusive,
     };
     if capsule.verdict != expected {
         return Err(GrokAcpClientMcpError {
@@ -661,7 +698,14 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
         }
     });
     let initialize_id = next_id;
-    exchange(peer, &mut capture, initialize_id, "initialize", initialize)?;
+    exchange(
+        peer,
+        &mut capture,
+        initialize_id,
+        "initialize",
+        initialize,
+        LIVE_WAIT,
+    )?;
     next_id += 1;
 
     if request_succeeded(&capture.frames, initialize_id) {
@@ -672,6 +716,7 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
             authenticate_id,
             "authenticate",
             json!({"methodId": "cached_token", "_meta": {"headless": true}}),
+            LIVE_WAIT,
         )?;
         next_id += 1;
         if request_succeeded(&capture.frames, authenticate_id) {
@@ -690,6 +735,7 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
                         "env": env
                     }]
                 }),
+                LIVE_SESSION_NEW_WAIT,
             )?;
             next_id += 1;
             if let Some(session) = session_id_from(&capture.frames, session_new_id) {
@@ -702,8 +748,8 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
                         "sessionId": session,
                         "prompt": [{"type": "text", "text": ECHO_PROMPT}]
                     }),
+                    LIVE_WAIT,
                 )?;
-                answer_callbacks(peer, &mut capture, &session)?;
             }
         }
     }
@@ -801,12 +847,13 @@ fn grok_acp_client_mcp_verdict_decision(
     if truncated {
         return inconclusive(InconclusiveCause::Truncated);
     }
-    let Some(session_new) = frames
+    let Some(session_new_at) = frames
         .iter()
-        .find(|frame| frame.is_outbound() && method_of(&frame.message) == Some("session/new"))
+        .position(|frame| frame.is_outbound() && method_of(&frame.message) == Some("session/new"))
     else {
         return inconclusive(InconclusiveCause::MissingSessionNew);
     };
+    let session_new = &frames[session_new_at];
     let servers = session_new
         .message
         .get("params")
@@ -822,7 +869,7 @@ fn grok_acp_client_mcp_verdict_decision(
         .iter()
         .find(|frame| !frame.is_outbound() && frame.message.get("id") == Some(&id));
     match response {
-        None => inconclusive(InconclusiveCause::SessionNewUnanswered),
+        None => session_new_no_response_cause(frames, session_new_at),
         Some(frame) if frame.message.get("error").is_some() => {
             if error_rejects_client_mcp(frame.message.get("error").expect("error present")) {
                 VerdictDecision {
@@ -869,8 +916,66 @@ fn grok_acp_client_mcp_verdict_decision(
                 inconclusive(InconclusiveCause::NoTurnResult)
             }
         }
-        Some(_) => inconclusive(InconclusiveCause::SessionNewUnanswered),
+        Some(_) => session_new_no_response_cause(frames, session_new_at),
     }
+}
+
+/// Classifies a `session/new` that never resolved. A request inside the
+/// exchange that the probe failed to answer is harness-shaped; otherwise the
+/// agent simply did not respond within [`LIVE_SESSION_NEW_WAIT`].
+fn session_new_no_response_cause(
+    frames: &[GrokAcpClientMcpFrame],
+    session_new_at: usize,
+) -> VerdictDecision {
+    let unanswered = frames.iter().skip(session_new_at + 1).any(|frame| {
+        !frame.is_outbound()
+            && method_of(&frame.message).is_some()
+            && frame.message.get("id").is_some_and(|id| !id.is_null())
+            && !request_was_answered(frames, frame.message.get("id").expect("id present"))
+    });
+    if unanswered {
+        inconclusive(InconclusiveCause::SessionNewUnanswered)
+    } else {
+        inconclusive(InconclusiveCause::SessionNewBoundExceeded)
+    }
+}
+
+/// Returns whether any outbound frame answers `id` with a result or error.
+fn request_was_answered(frames: &[GrokAcpClientMcpFrame], id: &Value) -> bool {
+    frames.iter().any(|frame| {
+        frame.is_outbound()
+            && frame.message.get("id") == Some(id)
+            && (frame.message.get("result").is_some() || frame.message.get("error").is_some())
+    })
+}
+
+/// Decides the conforming client reply for one inbound ACP request.
+///
+/// Returns `None` for notifications and non-requests. `session/request_permission`
+/// selects the agent's own `allow_once` option, or cancels when none exists.
+/// Filesystem, terminal, and every other method outside that allowlist is
+/// refused with a recorded JSON-RPC error: the probe declares no such client
+/// capability and never reads or writes the filesystem, runs a shell, or
+/// touches the network. Every inbound request leaves the probe answered, so a
+/// provider is never left waiting on probe silence.
+#[must_use]
+pub fn grok_acp_client_request_reply(request: &Value) -> Option<Value> {
+    if request.get("jsonrpc").and_then(Value::as_str) != Some("2.0") {
+        return None;
+    }
+    let id = request.get("id").cloned()?;
+    let method = request.get("method").and_then(Value::as_str)?;
+    Some(match method {
+        "session/request_permission" => permission_response(id, request),
+        _ => json!({
+            "jsonrpc": "2.0",
+            "id": id,
+            "error": {
+                "code": -32601,
+                "message": "method not in the probe client allowlist"
+            }
+        }),
+    })
 }
 
 /// Answers one JSON-RPC MCP request for the disposable echo server.
@@ -1148,8 +1253,15 @@ impl GrokAcpClientMcpPeer for LiveGrokAcpPeer {
     }
 
     fn take_inbound(&mut self) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+        self.take_inbound_within(LIVE_WAIT)
+    }
+
+    fn take_inbound_within(
+        &mut self,
+        bound: Duration,
+    ) -> Result<Vec<Value>, GrokAcpClientMcpError> {
         let mut messages = Vec::new();
-        match self.incoming.recv_timeout(LIVE_WAIT) {
+        match self.incoming.recv_timeout(bound) {
             Ok(Ok(value)) => messages.push(value),
             Ok(Err(error)) => return Err(error),
             Err(RecvTimeoutError::Timeout | RecvTimeoutError::Disconnected) => return Ok(messages),
@@ -1198,6 +1310,9 @@ enum FakeBehavior {
     Chatty,
     PromptSilent,
     AsksPermission,
+    /// Inbound `session/load` inside `session/new`; the recorded refusal
+    /// satisfies this agent, which then completes the session.
+    SessionNewForeignRequest,
 }
 
 struct FakeAcpPeer {
@@ -1206,6 +1321,7 @@ struct FakeAcpPeer {
     closed: bool,
     prompt_id: Option<Value>,
     emitted_echo: bool,
+    session_new_id: Option<Value>,
 }
 
 impl FakeAcpPeer {
@@ -1216,6 +1332,7 @@ impl FakeAcpPeer {
             closed: false,
             prompt_id: None,
             emitted_echo: false,
+            session_new_id: None,
         }
     }
 
@@ -1250,6 +1367,11 @@ impl FakeAcpPeer {
     #[cfg(test)]
     fn asks_permission() -> Self {
         Self::with_behavior(FakeBehavior::AsksPermission)
+    }
+
+    #[cfg(test)]
+    fn session_new_foreign_request() -> Self {
+        Self::with_behavior(FakeBehavior::SessionNewForeignRequest)
     }
 
     fn push(&mut self, message: Value) {
@@ -1338,6 +1460,38 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                 })),
                 FakeBehavior::Verdict(ClientMcpVerdict::Inconclusive)
                 | FakeBehavior::AuthenticateFailed => {}
+                FakeBehavior::Oracle(
+                    ClientMcpOracleShape::SessionNewAnswerRequired
+                    | ClientMcpOracleShape::SessionNewSilentAfterAnswer,
+                )
+                | FakeBehavior::SessionNewForeignRequest => {
+                    self.session_new_id = id.clone();
+                    if matches!(self.behavior, FakeBehavior::SessionNewForeignRequest) {
+                        self.push(json!({
+                            "jsonrpc": "2.0",
+                            "id": 812,
+                            "method": "session/load",
+                            "params": {"sessionId": FIXTURE_SESSION}
+                        }));
+                    } else {
+                        self.push(json!({
+                            "jsonrpc": "2.0",
+                            "id": 810,
+                            "method": "session/request_permission",
+                            "params": {
+                                "sessionId": FIXTURE_SESSION,
+                                "toolCall": {
+                                    "toolCallId": "echo-1",
+                                    "title": ECHO_MCP_TOOL
+                                },
+                                "options": [
+                                    {"optionId": "allow_once", "name": "Allow once", "kind": "allow_once"},
+                                    {"optionId": "reject_once", "name": "Reject once", "kind": "reject_once"}
+                                ]
+                            }
+                        }));
+                    }
+                }
                 FakeBehavior::Verdict(
                     ClientMcpVerdict::AcceptsClientMcp | ClientMcpVerdict::IgnoresClientMcp,
                 )
@@ -1360,7 +1514,10 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
             },
             Some("session/prompt") => match self.behavior {
                 FakeBehavior::Verdict(ClientMcpVerdict::AcceptsClientMcp)
-                | FakeBehavior::Oracle(ClientMcpOracleShape::AdmittedAndCalled) => {
+                | FakeBehavior::Oracle(
+                    ClientMcpOracleShape::AdmittedAndCalled
+                    | ClientMcpOracleShape::SessionNewAnswerRequired,
+                ) => {
                     self.push(json!({
                         "jsonrpc": "2.0",
                         "method": "session/update",
@@ -1479,22 +1636,55 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                 FakeBehavior::Verdict(
                     ClientMcpVerdict::RejectsClientMcp | ClientMcpVerdict::Inconclusive,
                 )
+                | FakeBehavior::Oracle(ClientMcpOracleShape::SessionNewSilentAfterAnswer)
                 | FakeBehavior::AuthenticateFailed
-                | FakeBehavior::SessionUnauthorized => {}
+                | FakeBehavior::SessionUnauthorized
+                | FakeBehavior::SessionNewForeignRequest => {}
             },
             Some("session/request_permission") | Some("fs/read_text_file") => {}
-            None if matches!(self.behavior, FakeBehavior::AsksPermission) => {
-                let selected = message
-                    .pointer("/result/outcome/optionId")
-                    .and_then(Value::as_str);
-                if selected == Some("allow_once") {
-                    self.emit_echo_accept();
-                } else if let Some(prompt_id) = self.prompt_id.clone() {
-                    self.push(json!({
-                        "jsonrpc": "2.0",
-                        "id": prompt_id,
-                        "result": {"stopReason": "end_turn"}
-                    }));
+            None => {
+                let answered = message.get("id").cloned();
+                match self.behavior {
+                    FakeBehavior::AsksPermission => {
+                        let selected = message
+                            .pointer("/result/outcome/optionId")
+                            .and_then(Value::as_str);
+                        if selected == Some("allow_once") {
+                            self.emit_echo_accept();
+                        } else if let Some(prompt_id) = self.prompt_id.clone() {
+                            self.push(json!({
+                                "jsonrpc": "2.0",
+                                "id": prompt_id,
+                                "result": {"stopReason": "end_turn"}
+                            }));
+                        }
+                    }
+                    FakeBehavior::Oracle(ClientMcpOracleShape::SessionNewAnswerRequired) => {
+                        if answered == Some(json!(810))
+                            && message.get("result").is_some()
+                            && let Some(session_new_id) = self.session_new_id.clone()
+                        {
+                            self.push(json!({
+                                "jsonrpc": "2.0",
+                                "id": session_new_id,
+                                "result": {"sessionId": FIXTURE_SESSION}
+                            }));
+                        }
+                    }
+                    FakeBehavior::Oracle(ClientMcpOracleShape::SessionNewSilentAfterAnswer) => {}
+                    FakeBehavior::SessionNewForeignRequest => {
+                        if answered == Some(json!(812))
+                            && message.get("error").is_some()
+                            && let Some(session_new_id) = self.session_new_id.clone()
+                        {
+                            self.push(json!({
+                                "jsonrpc": "2.0",
+                                "id": session_new_id,
+                                "result": {"sessionId": FIXTURE_SESSION}
+                            }));
+                        }
+                    }
+                    _ => {}
                 }
             }
             _ => {}
@@ -1528,7 +1718,11 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
         if matches!(
             self.behavior,
             FakeBehavior::Verdict(ClientMcpVerdict::AcceptsClientMcp)
-                | FakeBehavior::Oracle(ClientMcpOracleShape::AdmittedAndCalled)
+                | FakeBehavior::Oracle(
+                    ClientMcpOracleShape::AdmittedAndCalled
+                        | ClientMcpOracleShape::SessionNewAnswerRequired,
+                )
+                | FakeBehavior::SessionNewForeignRequest
         ) || self.emitted_echo
         {
             return EchoMcpTranscript::called();
@@ -1561,6 +1755,7 @@ fn exchange(
     id: u64,
     method: &str,
     params: Value,
+    inbound_bound: Duration,
 ) -> Result<(), GrokAcpClientMcpError> {
     let bytes = encode_request(id, method, params).map_err(|_| GrokAcpClientMcpError {
         kind: GrokAcpClientMcpErrorKind::Transport,
@@ -1571,43 +1766,24 @@ fn exchange(
         })?;
     capture.push(FrameDirection::Outbound, outbound.clone());
     peer.push_outbound(outbound)?;
-    for message in peer.take_inbound()? {
-        capture.push(FrameDirection::Inbound, message);
-    }
-    Ok(())
-}
-
-fn answer_callbacks(
-    peer: &mut dyn GrokAcpClientMcpPeer,
-    capture: &mut FrameCapture,
-    session: &str,
-) -> Result<(), GrokAcpClientMcpError> {
-    let pending: Vec<Value> = capture
-        .frames
-        .iter()
-        .filter(|frame| !frame.is_outbound())
-        .map(|frame| frame.message.clone())
-        .collect();
-    for message in pending {
-        if method_of(&message) == Some("session/request_permission") {
-            let id = message.get("id").cloned().unwrap_or(Value::Null);
-            let response = permission_response(id, &message);
-            capture.push(FrameDirection::Outbound, response.clone());
-            peer.push_outbound(response)?;
-            for inbound in peer.take_inbound()? {
-                capture.push(FrameDirection::Inbound, inbound);
+    loop {
+        let inbound = peer.take_inbound_within(inbound_bound)?;
+        if inbound.is_empty() {
+            return Ok(());
+        }
+        let mut answered = false;
+        for message in inbound {
+            capture.push(FrameDirection::Inbound, message.clone());
+            if let Some(reply) = grok_acp_client_request_reply(&message) {
+                capture.push(FrameDirection::Outbound, reply.clone());
+                peer.push_outbound(reply)?;
+                answered = true;
             }
         }
-        if method_of(&message) == Some("fs/read_text_file") {
-            reject_request(
-                peer,
-                capture,
-                message.get("id").cloned().unwrap_or(Value::Null),
-            )?;
+        if !answered {
+            return Ok(());
         }
-        let _ = session;
     }
-    Ok(())
 }
 
 fn reject_stale_callback(
@@ -2109,6 +2285,199 @@ mod tests {
                 && frame.message().get("result").is_some()
                 && frame.message().get("id") == Some(&json!(4))
         }));
+    }
+
+    #[test]
+    fn session_new_permission_request_is_answered_and_session_completes() {
+        for version in ["1.0.4", "1.0.5"] {
+            let capsule = grok_acp_client_mcp_oracle_fixture_probe(
+                version,
+                ClientMcpOracleShape::SessionNewAnswerRequired,
+            )
+            .expect("answer-required fixture completes");
+            assert_eq!(capsule.verdict(), ClientMcpVerdict::AcceptsClientMcp);
+            assert!(capsule.prompt_turn_completed());
+            let answer_at = capsule
+                .frames()
+                .iter()
+                .position(|frame| {
+                    !frame.is_outbound()
+                        && method_of(frame.message()) == Some("session/request_permission")
+                })
+                .expect("inbound session/new permission request captured");
+            assert!(
+                request_was_answered(
+                    capsule.frames(),
+                    capsule.frames()[answer_at]
+                        .message()
+                        .get("id")
+                        .expect("request id")
+                ),
+                "the probe must answer the request during session/new"
+            );
+            let selected = capsule.frames().iter().find_map(|frame| {
+                frame
+                    .is_outbound()
+                    .then(|| frame.message().pointer("/result/outcome/optionId"))
+                    .flatten()
+                    .and_then(Value::as_str)
+            });
+            assert_eq!(selected, Some("allow_once"));
+        }
+    }
+
+    #[test]
+    fn session_new_silent_after_recorded_answer_is_bound_exceeded() {
+        let capsule = grok_acp_client_mcp_oracle_fixture_probe(
+            "1.0.5",
+            ClientMcpOracleShape::SessionNewSilentAfterAnswer,
+        )
+        .expect("silent-after-answer fixture");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            capsule.inconclusive_cause(),
+            Some(InconclusiveCause::SessionNewBoundExceeded)
+        );
+        let answered_request = capsule.frames().iter().any(|frame| {
+            !frame.is_outbound()
+                && method_of(frame.message()) == Some("session/request_permission")
+                && request_was_answered(
+                    capsule.frames(),
+                    frame.message().get("id").expect("request id"),
+                )
+        });
+        assert!(
+            answered_request,
+            "the recorded answer must be on the capsule"
+        );
+        assert!(
+            !capsule.frames().iter().any(|frame| {
+                !frame.is_outbound() && frame.message().get("sessionId").is_some()
+            })
+        );
+        assert_eq!(
+            capsule.to_json()["inconclusive_cause"],
+            json!("session_new_bound_exceeded")
+        );
+    }
+
+    #[test]
+    fn session_new_silent_fixture_without_requests_scores_bound_exceeded() {
+        let capsule = grok_acp_client_mcp_fixture_probe("1.0.4", ClientMcpVerdict::Inconclusive)
+            .expect("silent fixture");
+        assert_eq!(
+            capsule.inconclusive_cause(),
+            Some(InconclusiveCause::SessionNewBoundExceeded)
+        );
+    }
+
+    #[test]
+    fn session_new_foreign_request_refusal_is_recorded_and_non_blocking() {
+        let mut peer = FakeAcpPeer::session_new_foreign_request();
+        let capsule =
+            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
+                .expect("foreign-request fixture completes");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::AcceptsClientMcp);
+        let refusal = capsule
+            .frames()
+            .iter()
+            .find(|frame| frame.is_outbound() && frame.message().get("id") == Some(&json!(812)))
+            .expect("refusal recorded on the capsule");
+        assert_eq!(refusal.message()["error"]["code"], json!(-32601));
+    }
+
+    #[test]
+    fn unanswered_request_in_session_new_window_is_harness_cause() {
+        let frames = [
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Outbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 3,
+                    "method": "session/new",
+                    "params": {"cwd": "<host-approved-resource>", "mcpServers": [{"name": ECHO_MCP_SERVER_NAME}]}
+                }),
+            },
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Inbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 800,
+                    "method": "fs/write_text_file",
+                    "params": {"sessionId": FIXTURE_SESSION, "path": "/tmp/x", "content": "x"}
+                }),
+            },
+        ];
+        let decision = grok_acp_client_mcp_verdict_decision(
+            &frames,
+            &EchoMcpTranscript::default(),
+            false,
+            true,
+        );
+        assert_eq!(decision.verdict, ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            decision.inconclusive_cause,
+            Some(InconclusiveCause::SessionNewUnanswered)
+        );
+    }
+
+    #[test]
+    fn client_request_reply_answers_permission_and_refuses_the_rest() {
+        let permission = grok_acp_client_request_reply(&json!({
+            "jsonrpc": "2.0",
+            "id": 810,
+            "method": "session/request_permission",
+            "params": {
+                "options": [
+                    {"optionId": "reject_once", "kind": "reject_once"},
+                    {"optionId": "allow_once", "kind": "allow_once"}
+                ]
+            }
+        }))
+        .expect("permission request is answered");
+        assert_eq!(
+            permission["result"]["outcome"]["optionId"],
+            json!("allow_once")
+        );
+        for method in [
+            "fs/read_text_file",
+            "fs/write_text_file",
+            "terminal/create",
+            "session/load",
+        ] {
+            let refused = grok_acp_client_request_reply(&json!({
+                "jsonrpc": "2.0",
+                "id": 900,
+                "method": method,
+                "params": {}
+            }))
+            .expect("every request leaves the probe answered");
+            assert_eq!(refused["error"]["code"], json!(-32601));
+        }
+        assert_eq!(
+            grok_acp_client_request_reply(&json!({
+                "jsonrpc": "2.0",
+                "method": "session/update",
+                "params": {}
+            })),
+            None,
+            "notifications are never answered"
+        );
+        assert_eq!(
+            grok_acp_client_request_reply(&json!({
+                "jsonrpc": "2.0",
+                "id": 4,
+                "result": {"stopReason": "end_turn"}
+            })),
+            None,
+            "agent responses are never re-answered"
+        );
+    }
+
+    #[test]
+    fn session_new_inbound_bound_is_realistic_for_mcp_establishment() {
+        assert!(LIVE_SESSION_NEW_WAIT >= Duration::from_secs(30));
+        assert!(LIVE_SESSION_NEW_WAIT > LIVE_WAIT);
     }
 
     #[test]

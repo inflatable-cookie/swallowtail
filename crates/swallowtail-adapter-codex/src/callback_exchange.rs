@@ -277,7 +277,7 @@ fn provider_result(
     }
 }
 
-fn dynamic_tool_result(success: bool, text: &str) -> Value {
+pub(crate) fn dynamic_tool_result(success: bool, text: &str) -> Value {
     serde_json::json!({
         "success": success,
         "contentItems": [{"type": "inputText", "text": text}]

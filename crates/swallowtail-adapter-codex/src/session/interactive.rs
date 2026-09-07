@@ -29,15 +29,34 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 .provider_session_ref()
                 .as_provider_value()
                 .to_owned();
+            // The registered lease reaches ready before any provider dispatch.
+            let registered = match self.runtime.registered.as_ref() {
+                Some(runtime) => Some(
+                    runtime
+                        .open_turn(
+                            &services,
+                            self.resume_binding.configured_instance_id().clone(),
+                            runtime_id.clone(),
+                            request.deadline(),
+                            Arc::downgrade(&self.connection),
+                        )
+                        .await?,
+                ),
+                None => None,
+            };
             let (turn, events, callbacks, terminal) = ActiveTurn::new(
                 runtime_id.clone(),
                 request.deadline(),
                 self.runtime.declared_tools.clone(),
+                registered.clone(),
                 self.runtime.provider_requests.clone(),
                 provider_thread_id.clone(),
                 Arc::downgrade(&self.connection),
             )?;
-            let exposes_callbacks = !self.runtime.declared_tools.is_empty()
+            // Registered tools are dispatched by the kernel, not by a consumer
+            // callback, so they never expose a callback exchange on their own.
+            let exposes_callbacks = (!self.runtime.declared_tools.is_empty()
+                && registered.is_none())
                 || self.runtime.provider_requests.observed_extensions().len() != 0
                 || self.runtime.provider_requests.exchanged_extensions().len() != 0;
             let callbacks = exposes_callbacks.then_some(callbacks);
@@ -68,6 +87,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
             let response = match response {
                 Ok(response) => response,
                 Err(error) => {
+                    close_registered(registered.as_ref()).await;
                     self.connection.clear_active_turn(&turn);
                     turn.finish(
                         TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
@@ -84,6 +104,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
             let provider_id = match provider_id {
                 Some(provider_id) => provider_id,
                 None => {
+                    close_registered(registered.as_ref()).await;
                     self.connection.clear_active_turn(&turn);
                     let error = malformed_notification();
                     turn.finish(
@@ -94,6 +115,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 }
             };
             if let Err(error) = turn.set_provider_id(&provider_id) {
+                close_registered(registered.as_ref()).await;
                 self.connection.clear_active_turn(&turn);
                 turn.finish(
                     TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
@@ -104,6 +126,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
             let provider_ref = match TurnRef::new(&provider_id) {
                 Ok(provider_ref) => provider_ref,
                 Err(_) => {
+                    close_registered(registered.as_ref()).await;
                     self.connection.clear_active_turn(&turn);
                     let error = malformed_notification();
                     turn.finish(
@@ -124,6 +147,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 Ok(task) => task,
                 Err(error) => {
                     turn.mark_cancelled();
+                    close_registered(registered.as_ref()).await;
                     let _ = self
                         .connection
                         .request_without_waiting(
@@ -156,6 +180,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                     requested: AtomicBool::new(false),
                 },
                 deadline_task,
+                registered,
             }) as Box<dyn TurnHandle>)
         })
     }
@@ -189,6 +214,14 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 merge_cleanup(process_cleanup, resource_cleanup)
             }),
         )
+    }
+}
+
+async fn close_registered(registered: Option<&Arc<crate::registered_tools::CodexRegisteredTurn>>) {
+    if let Some(registered) = registered {
+        let _ = registered
+            .close(swallowtail_runtime::RegisteredToolCleanupCause::ProviderFailure)
+            .await;
     }
 }
 

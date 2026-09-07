@@ -1,6 +1,7 @@
 use super::plan::{CodexPreparedEvidence, failure};
 use super::{CodexPreparedSessionFuture, CodexPreparedSessionKind, CodexPreparedSessionLoadFuture};
 use crate::CodexAppServerDriver;
+use crate::registered_tools::CodexRegisteredToolBinding;
 use swallowtail_core::{PreflightPlan, ProviderSessionBindingOrigin};
 use swallowtail_runtime::{
     HostServices, InteractiveSessionDriver, LoadSessionRequest, OpenSessionRequest,
@@ -19,6 +20,7 @@ mod preparation;
 /// Prepared interactive Codex app-server session.
 pub struct CodexPreparedSession {
     kind: CodexPreparedSessionKind,
+    registered: Option<CodexRegisteredToolBinding>,
     evidence: CodexPreparedEvidence,
     request: OpenSessionRequest,
     management_instance: Option<swallowtail_core::ConfiguredInstance>,
@@ -52,7 +54,40 @@ impl CodexPreparedSession {
     /// Creates the low-level app-server driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> CodexAppServerDriver {
-        CodexAppServerDriver::new(self.evidence.environment().clone())
+        let driver = CodexAppServerDriver::new(self.evidence.environment().clone());
+        match self.registered.clone() {
+            Some(binding) => driver.with_registered_tools(binding),
+            None => driver,
+        }
+    }
+
+    /// Returns the qualified registered-tool binding, when one was selected.
+    #[must_use]
+    pub const fn registered_tools(&self) -> Option<&CodexRegisteredToolBinding> {
+        self.registered.as_ref()
+    }
+
+    /// Emits the Contract 063 registered-capability rows this session proves.
+    ///
+    /// The rows are descriptive: they open no lease and grant no support. A
+    /// session without a registered-tool preparation has nothing to publish.
+    pub fn registered_capability_projection_contribution(
+        &self,
+        source_id: swallowtail_runtime::ConsumerRouteProjectionSourceId,
+        services: &HostServices,
+    ) -> Option<
+        Result<
+            swallowtail_runtime::ConsumerRouteProjectionContribution,
+            swallowtail_runtime::ConsumerRouteProjectionFailure,
+        >,
+    > {
+        let binding = self.registered.as_ref()?;
+        Some(crate::registered_tools::registered_capability_contribution(
+            self.plan(),
+            binding,
+            services,
+            source_id,
+        ))
     }
 
     /// Opens a new provider thread with caller-supplied host services.

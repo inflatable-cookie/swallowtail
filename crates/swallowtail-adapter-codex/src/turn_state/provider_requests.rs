@@ -38,6 +38,16 @@ impl ActiveTurn {
             ));
         }
         let arguments = params.get("arguments").ok_or_else(malformed_notification)?;
+        if let Some(registered) = self.registered.as_ref()
+            && let Some(tool) = registered.tool_for(tool_name)
+        {
+            return self.dispatch_registered_tool(
+                provider_request_id,
+                &provider_call_id,
+                tool,
+                arguments,
+            );
+        }
         let argument_bytes = serde_json::to_vec(arguments).map_err(|_| malformed_notification())?;
         let payload =
             CallbackPayload::new(argument_bytes, MAX_CALLBACK_ARGUMENT_BYTES).map_err(|_| {
@@ -72,6 +82,43 @@ impl ActiveTurn {
             sequence,
             RuntimeEventKind::CallbackRequested(callback_id),
         ))?;
+        self.emit(RuntimeEventKind::Activity(request_activity), None)
+    }
+
+    /// Dispatches one registered native tool through the common kernel.
+    ///
+    /// No consumer callback is exposed for a registered tool: the call is
+    /// admitted, dispatched, and settled by the registered-tool kernel, and its
+    /// exact result or denial travels back on the same provider request.
+    fn dispatch_registered_tool(
+        &self,
+        provider_request_id: Value,
+        provider_call_id: &str,
+        tool: swallowtail_runtime::RegisteredToolId,
+        arguments: &Value,
+    ) -> Result<(), RuntimeFailure> {
+        let registered = self
+            .registered
+            .as_ref()
+            .expect("registered dispatch requires a bound registered turn");
+        let provider_request = canonical_provider_request_id(&provider_request_id)?;
+        let deadline = self.deadline.unwrap_or_else(|| {
+            swallowtail_runtime::Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
+                u64::MAX,
+            ))
+        });
+        registered.dispatch(
+            provider_request_id,
+            provider_call_id,
+            tool,
+            arguments,
+            deadline,
+        )?;
+        let request_activity = self
+            .activity
+            .lock()
+            .expect("activity lock poisoned")
+            .provider_request_started(provider_request, Some(provider_call_id), "dynamicTool")?;
         self.emit(RuntimeEventKind::Activity(request_activity), None)
     }
 

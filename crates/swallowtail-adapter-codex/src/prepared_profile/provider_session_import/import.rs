@@ -129,9 +129,16 @@ impl CodexPreparedIntegration {
                 "Prepared Codex version does not support bounded workspace roots",
             ));
         }
-        let (request_id, model, working_resource, deadline, options, user_input_exchange) =
-            input.into_parts();
-        if options.tools().len() != 0 {
+        let (
+            request_id,
+            model,
+            working_resource,
+            deadline,
+            options,
+            user_input_exchange,
+            registered_tools,
+        ) = input.into_parts();
+        if options.tools().len() != 0 || registered_tools.is_some() {
             return Err(failure(
                 "swallowtail.codex.preparation.import_tools_unsupported",
                 "Codex imported sessions cannot redeclare dynamic tools during load",

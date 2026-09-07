@@ -6,8 +6,9 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     AttachmentDescriptor, Deadline, OperationContent, ProviderSessionCatalogueId,
     ProviderSessionHistoryBounds, ProviderSessionHistoryId, ProviderSessionManagementBinding,
-    ProviderSessionReconciliationBounds, RequestId, RuntimeTurnId, SessionOptions,
-    SessionResumeBinding, StructuredOutputDescriptor, ToolDeclaration, WorkingResourceRef,
+    ProviderSessionReconciliationBounds, RegisteredToolPreparation, RequestId, RuntimeTurnId,
+    SessionOptions, SessionResumeBinding, StructuredOutputDescriptor, ToolDeclaration,
+    WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -184,6 +185,7 @@ pub struct CodexSessionProfileInput {
     deadline: Option<Deadline>,
     options: SessionOptions,
     user_input_exchange: bool,
+    registered_tools: Option<RegisteredToolPreparation>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -309,6 +311,7 @@ impl CodexSessionProfileInput {
             deadline,
             options,
             user_input_exchange: false,
+            registered_tools: None,
         }
     }
 
@@ -316,6 +319,17 @@ impl CodexSessionProfileInput {
     #[must_use]
     pub const fn with_user_input_exchange(mut self) -> Self {
         self.user_input_exchange = true;
+        self
+    }
+
+    /// Selects one opt-in Contract 063 registered-tool preparation.
+    ///
+    /// Absence preserves every previous session behavior. When present, the
+    /// session declares exactly the registered native tools this preparation
+    /// selects, so it cannot also carry unregistered tool declarations.
+    #[must_use]
+    pub fn with_registered_tools(mut self, preparation: RegisteredToolPreparation) -> Self {
+        self.registered_tools = Some(preparation);
         self
     }
 
@@ -328,6 +342,7 @@ impl CodexSessionProfileInput {
         Option<Deadline>,
         SessionOptions,
         bool,
+        Option<RegisteredToolPreparation>,
     ) {
         (
             self.request_id,
@@ -336,6 +351,7 @@ impl CodexSessionProfileInput {
             self.deadline,
             self.options,
             self.user_input_exchange,
+            self.registered_tools,
         )
     }
 }

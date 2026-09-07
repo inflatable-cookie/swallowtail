@@ -20,6 +20,7 @@ mod exec_validation;
 mod model_verbosity;
 mod prepared;
 mod prepared_profile;
+mod registered_tools;
 mod rpc;
 mod safe_excerpt;
 mod selection;
@@ -53,6 +54,9 @@ pub use prepared_profile::{
     CodexPreparedSessionLoadFuture, CodexPreparedSessionReconciliation, CodexSessionCatalogueInput,
     CodexSessionHistoryInput, CodexSessionManagementInput, CodexSessionProfileInput,
     CodexSessionReconciliationInput,
+};
+pub use registered_tools::{
+    CODEX_REGISTERED_TOOL_NAME_SEPARATOR, CODEX_REGISTERED_TOOL_ROUTE, CodexRegisteredToolBinding,
 };
 pub use selection::{
     CODEX_APP_SERVER_BASELINE_VERSION, CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION,

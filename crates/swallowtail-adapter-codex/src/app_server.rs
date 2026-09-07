@@ -1,3 +1,4 @@
+use crate::registered_tools::CodexRegisteredToolBinding;
 use crate::rpc::{RpcConnection, failure};
 use crate::selection::{CodexAppServerBehavior, classify_app_server_plan, codex_app_server_claim};
 use crate::session_access::{CodexSessionAccess, codex_provider_request_extensions};
@@ -25,13 +26,28 @@ use swallowtail_runtime::{
 /// Low-level driver for Codex app-server sessions and thread operations.
 pub struct CodexAppServerDriver {
     environment: EnvironmentRef,
+    registered: Option<Box<CodexRegisteredToolBinding>>,
 }
 
 impl CodexAppServerDriver {
     /// Creates an app-server driver using the approved execution environment.
     #[must_use]
     pub const fn new(environment: EnvironmentRef) -> Self {
-        Self { environment }
+        Self {
+            environment,
+            registered: None,
+        }
+    }
+
+    /// Binds one qualified registered selection to new app-server threads.
+    ///
+    /// Absence preserves every previous behavior. The binding applies to newly
+    /// started threads only: the current Codex protocol cannot redeclare
+    /// dynamic tools on a resumed or loaded thread, so those routes refuse it.
+    #[must_use]
+    pub fn with_registered_tools(mut self, binding: CodexRegisteredToolBinding) -> Self {
+        self.registered = Some(Box::new(binding));
+        self
     }
 }
 
@@ -193,6 +209,19 @@ where
 }
 
 include!("app_server/session_role.rs");
+
+impl CodexAppServerDriver {
+    /// Refuses a registered binding on a resumed or loaded provider thread.
+    fn refuse_registered_continuation(&self) -> Result<(), RuntimeFailure> {
+        if self.registered.is_some() {
+            Err(unsupported(
+                "registered dynamic tools on resumed or loaded threads",
+            ))
+        } else {
+            Ok(())
+        }
+    }
+}
 
 fn validate_session_deadline(has_deadline: bool) -> Result<(), RuntimeFailure> {
     if has_deadline {

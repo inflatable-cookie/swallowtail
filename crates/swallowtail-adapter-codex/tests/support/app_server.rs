@@ -20,6 +20,7 @@ pub enum AppServerMode {
     ExchangeUserInputNumericRequestId,
     DynamicToolCall,
     HoldDynamicToolCall,
+    RegisteredToolCall,
     MalformedNotification,
     DisconnectTurn,
     MismatchedTurnSession,

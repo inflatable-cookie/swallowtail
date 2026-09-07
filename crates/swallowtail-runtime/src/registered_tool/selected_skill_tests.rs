@@ -317,3 +317,45 @@ fn provenance_keeps_the_three_contract_062_source_authorities() {
         "harness-distribution"
     );
 }
+
+#[test]
+fn an_opaque_reference_at_the_contract_062_bound_is_admitted() {
+    let exact = "h".repeat(MAX_SELECTED_CONTENT_REFERENCE_BYTES);
+
+    assert_eq!(exact.len(), MAX_SELECTED_CONTENT_REFERENCE_BYTES);
+    assert!(
+        SelectedContentDescriptor::new(content_ref(&exact), media_type(), SKILL_BODY.len()).is_ok(),
+        "the exact 512-byte boundary is admitted"
+    );
+}
+
+#[test]
+fn an_overflowing_opaque_reference_is_rejected_without_echoing_it() {
+    let overflow = "h".repeat(MAX_SELECTED_CONTENT_REFERENCE_BYTES + 1);
+
+    let failure =
+        SelectedContentDescriptor::new(content_ref(&overflow), media_type(), SKILL_BODY.len())
+            .expect_err("an over-long opaque reference is rejected");
+
+    assert_eq!(failure.kind(), RegisteredToolFailureKind::LimitExceeded);
+    let rendered = format!("{failure:?} {failure} {:?}", failure.diagnostic());
+    assert!(
+        !rendered.contains(&overflow),
+        "a rejected reference value never reaches the failure"
+    );
+    assert!(!rendered.contains("hhhh"));
+}
+
+#[test]
+fn an_over_long_reference_can_never_reach_a_bundle_or_resolution() {
+    let overflow = "h".repeat(MAX_SELECTED_CONTENT_REFERENCE_BYTES + 1);
+
+    // The descriptor is the only holder of an opaque reference, so rejecting it
+    // at construction is what keeps an over-long capability out of every bundle,
+    // host resolution, and projected row.
+    assert!(
+        SelectedContentDescriptor::new(content_ref(&overflow), media_type(), REFERENCE_BODY.len())
+            .is_err()
+    );
+    assert_eq!(MAX_SELECTED_CONTENT_REFERENCE_BYTES, 512);
+}

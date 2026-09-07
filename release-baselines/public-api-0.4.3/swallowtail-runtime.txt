@@ -2998,6 +2998,7 @@ pub const fn swallowtail_runtime::RegisteredToolReadiness::port(&self) -> swallo
 pub const fn swallowtail_runtime::RegisteredToolReadiness::protocol_qualified(&self) -> bool
 pub fn swallowtail_runtime::RegisteredToolReadiness::require_ready(&self) -> core::result::Result<swallowtail_runtime::RegisteredToolTopologyProof, swallowtail_runtime::RegisteredToolFailure>
 pub const fn swallowtail_runtime::RegisteredToolReadiness::transport_qualified(&self) -> bool
+pub fn swallowtail_runtime::RegisteredToolReadiness::was_evaluated_for(&self, &swallowtail_runtime::RegisteredToolSelection) -> bool
 pub struct swallowtail_runtime::RegisteredToolReasonCode(_)
 impl swallowtail_runtime::RegisteredToolReasonCode
 pub fn swallowtail_runtime::RegisteredToolReasonCode::as_str(&self) -> &str
@@ -3823,6 +3824,7 @@ pub struct swallowtail_runtime::ZeroIdiomMaximum
 impl core::error::Error for swallowtail_runtime::ZeroIdiomMaximum
 impl core::fmt::Display for swallowtail_runtime::ZeroIdiomMaximum
 pub fn swallowtail_runtime::ZeroIdiomMaximum::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub const swallowtail_runtime::ADAPTER_UNQUALIFIED_CODE: &str
 pub const swallowtail_runtime::DEBUG_DETAIL_TRUNCATED_SUFFIX: &str
 pub const swallowtail_runtime::DEFAULT_MAX_FOLD_BYTES: usize
 pub const swallowtail_runtime::MAX_CONFIGURED_PROVIDER_INSTANCES: usize
@@ -3855,6 +3857,7 @@ pub const swallowtail_runtime::MAX_REGISTERED_TOOL_RESULT_BYTES: usize
 pub const swallowtail_runtime::MAX_REGISTERED_TOOL_SCHEMA_BYTES: usize
 pub const swallowtail_runtime::MAX_REGISTERED_TOOL_SELECTED_TOOLS: usize
 pub const swallowtail_runtime::MAX_REGISTERED_TOOL_TRANSPORTS: usize
+pub const swallowtail_runtime::MAX_SELECTED_CONTENT_REFERENCE_BYTES: usize
 pub const swallowtail_runtime::MAX_SELECTED_SKILL_CONTENT_BYTES: usize
 pub const swallowtail_runtime::MAX_SELECTED_SKILL_REQUIRED_REFERENCES: usize
 pub const swallowtail_runtime::MAX_VERSION_BYTES: usize
@@ -3870,6 +3873,8 @@ pub const swallowtail_runtime::REGISTERED_TOOL_PROGRESS_SEMANTIC_ID: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_QUALIFIED_TRANSPORTS: &[swallowtail_runtime::RegisteredToolTransport]
 pub const swallowtail_runtime::REGISTERED_TOOL_SCHEDULING_SEMANTIC_ID: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_TRANSPORT_SEMANTIC_ID: &str
+pub const swallowtail_runtime::ROUTE_DIMENSION_UNSUPPORTED_CODE: &str
+pub const swallowtail_runtime::SCHEDULING_WITHHELD_CODE: &str
 pub const swallowtail_runtime::SELECTED_SKILL_BUNDLE_SEMANTIC_ID: &str
 pub const swallowtail_runtime::WATCHER_BRIDGE_BEARER_BYTE_LEN: usize
 pub const swallowtail_runtime::WATCHER_BRIDGE_HTTP_PATH: &str

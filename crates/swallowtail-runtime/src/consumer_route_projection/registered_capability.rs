@@ -37,6 +37,14 @@ use crate::registered_tool::{
 use std::collections::BTreeSet;
 use swallowtail_core::SafeDiagnostic;
 
+/// Safe reason code published when no adapter has qualified the route.
+pub const ADAPTER_UNQUALIFIED_CODE: &str = "swallowtail.registered_tool.adapter_unqualified";
+/// Safe reason code published when a qualified route lacks one dimension.
+pub const ROUTE_DIMENSION_UNSUPPORTED_CODE: &str =
+    "swallowtail.registered_tool.route_dimension_unsupported";
+/// Safe reason code published for the permanently withheld scheduling row.
+pub const SCHEDULING_WITHHELD_CODE: &str = "swallowtail.registered_tool.scheduling_withheld";
+
 /// Bounded semantic id of the registered-capability registration row.
 pub const REGISTERED_TOOL_CAPABILITY_SEMANTIC_ID: &str = "registered-tool.capability";
 /// Bounded semantic id of the selected execution-kind row.
@@ -134,6 +142,52 @@ pub enum RegisteredToolRouteQualification {
     Qualified(RegisteredToolQualifiedRoute),
 }
 
+/// What the supplied evidence proves about one row's support dimension.
+///
+/// The three states stay distinct because they carry different bounded reasons.
+/// Collapsing "no adapter has qualified this route" into "this qualified route
+/// does not support this dimension" would publish an availability claim the
+/// source never made.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum RowSupportEvidence {
+    /// No adapter has qualified this capability; support stays unknown.
+    Unqualified,
+    /// A qualified adapter proved this exact dimension is not supported.
+    QualifiedUnsupported,
+    /// A qualified adapter proved this exact dimension is supported.
+    QualifiedSupported,
+}
+
+impl RowSupportEvidence {
+    /// Maps proved support onto the exact evidence state.
+    const fn of(qualified: bool, supported: bool) -> Self {
+        match (qualified, supported) {
+            (false, _) => Self::Unqualified,
+            (true, false) => Self::QualifiedUnsupported,
+            (true, true) => Self::QualifiedSupported,
+        }
+    }
+
+    /// Returns descriptive support, which never implies availability.
+    const fn support(self) -> ConsumerRouteSupportPosture {
+        match self {
+            Self::Unqualified => ConsumerRouteSupportPosture::Unknown,
+            Self::QualifiedUnsupported => ConsumerRouteSupportPosture::Unsupported,
+            Self::QualifiedSupported => ConsumerRouteSupportPosture::Supported,
+        }
+    }
+
+    /// Returns how strongly the named source proves the row.
+    const fn evidence_strength(self) -> ConsumerRouteEvidenceStrength {
+        match self {
+            Self::Unqualified => ConsumerRouteEvidenceStrength::RuntimeType,
+            Self::QualifiedUnsupported | Self::QualifiedSupported => {
+                ConsumerRouteEvidenceStrength::RouteValidation
+            }
+        }
+    }
+}
+
 /// Exact borrowed evidence one registered-capability contribution is built from.
 #[derive(Clone, Debug)]
 pub struct RegisteredCapabilityProjectionInput<'a> {
@@ -186,6 +240,11 @@ impl<'a> RegisteredCapabilityProjectionInput<'a> {
 ///
 /// The builder is pure: it opens nothing, dispatches nothing, and never widens
 /// support beyond what the supplied qualification and readiness prove.
+///
+/// Readiness must have been evaluated for exactly this selection and topology.
+/// Mixed evidence — a ready record from another snapshot revision, tool subset,
+/// carrier, protocol version, or host — rejects the whole contribution rather
+/// than composing into an available row.
 pub fn project_registered_capability(
     input: RegisteredCapabilityProjectionInput<'_>,
 ) -> Result<ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure> {
@@ -194,6 +253,13 @@ pub fn project_registered_capability(
             ConsumerRouteProjectionFailureKind::IdentityInvalid,
             "swallowtail.consumer_route_projection.registered_capability_source_kind_rejected",
             "A registered-capability contribution must name an adapter contribution source",
+        ));
+    }
+    if !input.readiness.was_evaluated_for(input.selection) {
+        return Err(failure(
+            ConsumerRouteProjectionFailureKind::ApplicabilityDisagreement,
+            "swallowtail.consumer_route_projection.registered_capability_readiness_mismatch",
+            "Registered-capability readiness evidence belongs to another selection",
         ));
     }
     let qualified = match input.qualification {
@@ -246,7 +312,7 @@ fn capability_row(
     descriptive_row(
         input,
         feature_identity(input, REGISTERED_TOOL_CAPABILITY_SEMANTIC_ID)?,
-        qualified.map(|_| ConsumerRouteSupportPosture::Supported),
+        RowSupportEvidence::of(qualified.is_some(), true),
         ConsumerRouteValueKind::StructuredDeclarations,
         ConsumerRouteValueDomain::Enumerated(ConsumerRouteEnumeratedValues::new(values)?),
     )
@@ -272,7 +338,7 @@ fn execution_kind_row(
     descriptive_row(
         input,
         feature_identity(input, REGISTERED_TOOL_EXECUTION_KIND_SEMANTIC_ID)?,
-        qualified.map(|_| ConsumerRouteSupportPosture::Supported),
+        RowSupportEvidence::of(qualified.is_some(), true),
         ConsumerRouteValueKind::BoundedEnumeration,
         ConsumerRouteValueDomain::Enumerated(ConsumerRouteEnumeratedValues::new(values)?),
     )
@@ -293,7 +359,7 @@ fn transport_row(
     descriptive_row(
         input,
         feature_identity(input, REGISTERED_TOOL_TRANSPORT_SEMANTIC_ID)?,
-        qualified.map(|_| support_for(qualified_transport(transport))),
+        RowSupportEvidence::of(qualified.is_some(), qualified_transport(transport)),
         ConsumerRouteValueKind::BoundedEnumeration,
         ConsumerRouteValueDomain::Enumerated(ConsumerRouteEnumeratedValues::new(values)?),
     )
@@ -313,12 +379,13 @@ fn permission_row(
     descriptive_row(
         input,
         feature_identity(input, REGISTERED_TOOL_PERMISSION_SEMANTIC_ID)?,
-        strength.map(|value| {
-            support_for(matches!(
-                value,
-                RegisteredToolPermissionStrength::ExactOneShot
-            ))
-        }),
+        RowSupportEvidence::of(
+            qualified.is_some(),
+            matches!(
+                strength,
+                Some(RegisteredToolPermissionStrength::ExactOneShot)
+            ),
+        ),
         ConsumerRouteValueKind::CapabilityState,
         ConsumerRouteValueDomain::Enumerated(ConsumerRouteEnumeratedValues::new([value(label)?])?),
     )
@@ -338,7 +405,10 @@ fn progress_row(
     descriptive_row(
         input,
         feature_identity(input, REGISTERED_TOOL_PROGRESS_SEMANTIC_ID)?,
-        mode.map(|value| support_for(matches!(value, RegisteredToolProgressMode::BoundedOrdered))),
+        RowSupportEvidence::of(
+            qualified.is_some(),
+            matches!(mode, Some(RegisteredToolProgressMode::BoundedOrdered)),
+        ),
         ConsumerRouteValueKind::CapabilityState,
         ConsumerRouteValueDomain::Enumerated(ConsumerRouteEnumeratedValues::new([value(label)?])?),
     )
@@ -372,7 +442,7 @@ fn scheduling_row(
         ConsumerRouteAvailabilityDimension::SupportAuthority,
         input.source.id().clone(),
         SafeDiagnostic::new(
-            "swallowtail.registered_tool.scheduling_withheld",
+            SCHEDULING_WITHHELD_CODE,
             "Mid-turn steering and provider queueing remain withheld for every route",
         ),
     )?);
@@ -410,22 +480,17 @@ fn skill_bundle_row(
     } else {
         ConsumerRouteOmissionSemantics::NotSelectable
     };
+    let evidence = RowSupportEvidence::of(qualified.is_some(), carried);
     let mut row = ConsumerRouteProjectionRow::new(
         control_identity(input, SELECTED_SKILL_BUNDLE_SEMANTIC_ID)?,
         input.applicability.clone(),
         input.source.clone(),
         ConsumerRouteSourceClass::AdapterPreparedInput,
-        evidence_strength(qualified),
+        evidence.evidence_strength(),
         ConsumerRouteLifecycle::SessionStartOnly,
     )
-    .with_support(match delivery {
-        Some(value) => support_for(matches!(
-            value,
-            RegisteredToolSkillDelivery::BoundedSelectedBundle
-        )),
-        None => ConsumerRouteSupportPosture::Unknown,
-    })
-    .with_availability(availability(input, qualified.is_some() && carried))
+    .with_support(evidence.support())
+    .with_availability(availability(input, evidence))
     .with_control_value(ConsumerRouteControlValue::new(
         ConsumerRouteValueKind::StructuredContent,
         domain,
@@ -439,7 +504,7 @@ fn skill_bundle_row(
                 input.source.id().clone(),
             ));
     }
-    if let Some(reason) = unavailable_reason(input, qualified.is_some() && carried)? {
+    if let Some(reason) = unavailable_reason(input, evidence)? {
         row = row.with_safe_reason(reason);
     }
     Ok(row)
@@ -449,47 +514,41 @@ fn skill_bundle_row(
 fn descriptive_row(
     input: &RegisteredCapabilityProjectionInput<'_>,
     identity: ConsumerRouteRowIdentity,
-    support: Option<ConsumerRouteSupportPosture>,
+    evidence: RowSupportEvidence,
     kind: ConsumerRouteValueKind,
     domain: ConsumerRouteValueDomain,
 ) -> Result<ConsumerRouteProjectionRow, ConsumerRouteProjectionFailure> {
-    let qualified = support.is_some();
     let mut row = ConsumerRouteProjectionRow::new(
         identity,
         input.applicability.clone(),
         input.source.clone(),
         ConsumerRouteSourceClass::AdapterPreparedInput,
-        evidence_strength_for(qualified),
+        evidence.evidence_strength(),
         ConsumerRouteLifecycle::SelectionSummary,
     )
-    .with_support(support.unwrap_or(ConsumerRouteSupportPosture::Unknown))
-    .with_availability(availability(
-        input,
-        matches!(support, Some(ConsumerRouteSupportPosture::Supported)),
-    ))
+    .with_support(evidence.support())
+    .with_availability(availability(input, evidence))
     .with_actor_posture(ConsumerRouteActorPosture::Informational)
     .with_control_value(ConsumerRouteControlValue::new(
         kind,
         domain,
         ConsumerRouteOmissionSemantics::NotSelectable,
     ));
-    if let Some(reason) = unavailable_reason(
-        input,
-        matches!(support, Some(ConsumerRouteSupportPosture::Supported)),
-    )? {
+    if let Some(reason) = unavailable_reason(input, evidence)? {
         row = row.with_safe_reason(reason);
     }
     Ok(row)
 }
 
 /// Availability is separate from support and never inferred from it alone.
+///
+/// Only a dimension a qualified adapter proved supported can become available,
+/// and only when readiness for this exact selection also passes.
 fn availability(
     input: &RegisteredCapabilityProjectionInput<'_>,
-    supported: bool,
+    evidence: RowSupportEvidence,
 ) -> ConsumerRouteAvailability {
-    if !supported {
-        ConsumerRouteAvailability::Unavailable
-    } else if input.readiness.is_ready() {
+    if matches!(evidence, RowSupportEvidence::QualifiedSupported) && input.readiness.is_ready() {
         ConsumerRouteAvailability::Available
     } else {
         ConsumerRouteAvailability::Unavailable
@@ -497,48 +556,40 @@ fn availability(
 }
 
 /// Names why an unavailable row is unavailable, without inventing a reason.
+///
+/// Each state carries the dimension its own source supplied: absent support
+/// authority when no adapter has qualified the route, a route capability
+/// constraint when a qualified adapter proved that exact dimension
+/// unsupported, and the typed readiness diagnostic when a supported dimension
+/// is not currently ready. A ready supported row carries no reason at all.
 fn unavailable_reason(
     input: &RegisteredCapabilityProjectionInput<'_>,
-    supported: bool,
+    evidence: RowSupportEvidence,
 ) -> Result<Option<ConsumerRouteSafeReason>, ConsumerRouteProjectionFailure> {
-    let diagnostic = if !supported {
-        SafeDiagnostic::new(
-            "swallowtail.registered_tool.adapter_unqualified",
-            "No qualified adapter proves this registered capability for the exact route",
-        )
-    } else if let Err(readiness_failure) = input.readiness.require_ready() {
-        readiness_failure.diagnostic()
-    } else {
-        return Ok(None);
-    };
-    let dimension = if supported {
-        ConsumerRouteAvailabilityDimension::RuntimeReadiness
-    } else {
-        ConsumerRouteAvailabilityDimension::SupportAuthority
+    let (dimension, diagnostic) = match evidence {
+        RowSupportEvidence::Unqualified => (
+            ConsumerRouteAvailabilityDimension::SupportAuthority,
+            SafeDiagnostic::new(
+                ADAPTER_UNQUALIFIED_CODE,
+                "No qualified adapter proves this registered capability for the exact route",
+            ),
+        ),
+        RowSupportEvidence::QualifiedUnsupported => (
+            ConsumerRouteAvailabilityDimension::CapabilityConstraint,
+            SafeDiagnostic::new(
+                ROUTE_DIMENSION_UNSUPPORTED_CODE,
+                "The qualified route does not support this registered-capability dimension",
+            ),
+        ),
+        RowSupportEvidence::QualifiedSupported => match input.readiness.require_ready() {
+            Ok(_) => return Ok(None),
+            Err(readiness_failure) => (
+                ConsumerRouteAvailabilityDimension::RuntimeReadiness,
+                readiness_failure.diagnostic(),
+            ),
+        },
     };
     ConsumerRouteSafeReason::new(dimension, input.source.id().clone(), diagnostic).map(Some)
-}
-
-const fn evidence_strength(
-    qualified: Option<RegisteredToolQualifiedRoute>,
-) -> ConsumerRouteEvidenceStrength {
-    evidence_strength_for(qualified.is_some())
-}
-
-const fn evidence_strength_for(qualified: bool) -> ConsumerRouteEvidenceStrength {
-    if qualified {
-        ConsumerRouteEvidenceStrength::RouteValidation
-    } else {
-        ConsumerRouteEvidenceStrength::RuntimeType
-    }
-}
-
-const fn support_for(supported: bool) -> ConsumerRouteSupportPosture {
-    if supported {
-        ConsumerRouteSupportPosture::Supported
-    } else {
-        ConsumerRouteSupportPosture::Unsupported
-    }
 }
 
 /// Reuses the one qualified-carrier list the readiness gate enforces.

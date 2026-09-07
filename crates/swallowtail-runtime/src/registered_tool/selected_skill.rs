@@ -11,7 +11,7 @@ use super::failure::{RegisteredToolFailure, RegisteredToolFailureKind, reject};
 use super::identity::{
     RequiredReferenceId, SelectedContentDigest, SelectedSkillId, SelectedSkillRevision,
 };
-use super::limits::SelectedSkillBundleBounds;
+use super::limits::{MAX_SELECTED_CONTENT_REFERENCE_BYTES, SelectedSkillBundleBounds};
 use super::schema::RegisteredToolSchemaMediaType;
 use crate::host_reference::SelectedContentRef;
 use std::collections::BTreeSet;
@@ -51,8 +51,9 @@ impl fmt::Display for SelectedSkillProvenance {
 
 /// One opaque host reference plus the exact bound its content must respect.
 ///
-/// The reference is a capability, not a path. It never enters `Debug`,
-/// diagnostics, or projected rows.
+/// The reference is a capability, not a path. It is bounded to Contract 062's
+/// 512-byte opaque-reference maximum at construction, and it never enters
+/// `Debug`, diagnostics, failures, or projected rows.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SelectedContentDescriptor {
     reference: SelectedContentRef,
@@ -62,6 +63,8 @@ pub struct SelectedContentDescriptor {
 
 impl SelectedContentDescriptor {
     /// Binds one opaque reference to its media type and positive byte bound.
+    /// The rejection carries only its safe failure class: an over-long or
+    /// otherwise rejected reference value is never echoed back to the caller.
     pub fn new(
         reference: SelectedContentRef,
         media_type: RegisteredToolSchemaMediaType,
@@ -70,7 +73,9 @@ impl SelectedContentDescriptor {
         if declared_bytes == 0 {
             return Err(reject(RegisteredToolFailureKind::IdentityRejected));
         }
-        if declared_bytes > SelectedSkillBundleBounds::ceiling().max_aggregate_content_bytes() {
+        if reference.as_host_value().len() > MAX_SELECTED_CONTENT_REFERENCE_BYTES
+            || declared_bytes > SelectedSkillBundleBounds::ceiling().max_aggregate_content_bytes()
+        {
             return Err(reject(RegisteredToolFailureKind::LimitExceeded));
         }
         Ok(Self {

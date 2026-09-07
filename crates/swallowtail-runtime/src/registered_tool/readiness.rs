@@ -214,6 +214,17 @@ impl RegisteredToolReadiness {
             && self.protocol_qualified
     }
 
+    /// Reports whether this record was evaluated for exactly this selection.
+    ///
+    /// Readiness is evidence about one exact selection and topology. A consumer
+    /// or projection that holds a readiness record from another selection must
+    /// fail closed rather than compose it, so this check is available whether
+    /// or not the record is ready. It exposes no proof and mints none.
+    #[must_use]
+    pub fn was_evaluated_for(&self, selection: &RegisteredToolSelection) -> bool {
+        self.proof.matches(selection)
+    }
+
     /// Returns the topology proof, or the first exact readiness failure.
     ///
     /// This is the only way to obtain a [`RegisteredToolTopologyProof`], and the

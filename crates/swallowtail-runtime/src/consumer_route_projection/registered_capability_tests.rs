@@ -662,3 +662,293 @@ fn every_row_names_its_exact_route_and_qualified_version_segment() {
     expected.sort();
     assert_eq!(semantic_ids, expected);
 }
+
+/// A second selection over a different snapshot revision of the same server.
+fn other_selection() -> RegisteredToolSelection {
+    let declaration = RegisteredToolDeclaration::new(
+        RegisteredToolId::new(
+            RegisteredToolNamespace::new("desktop.tools").expect("namespace"),
+            RegisteredToolLocalName::new("apply-edit").expect("local name"),
+        ),
+        RegisteredToolExecutionKind::NativeClient,
+        schema("sha256:input"),
+        schema("sha256:output"),
+        RegisteredToolEffectPosture::Mutating,
+        RegisteredToolRetryPosture::NeverRetry,
+        RegisteredToolBounds::ceiling(),
+    )
+    .expect("declaration");
+    let snapshot = RegisteredToolSnapshot::new(RegisteredToolSnapshotInput {
+        server_id: RegisteredServerId::new("desktop.server").expect("server id"),
+        revision: RegisteredServerRevision::new("12").expect("revision"),
+        execution_host_id: host(),
+        declarations: vec![declaration.clone()],
+        transports: vec![
+            RegisteredToolTransportSupport::new(
+                RegisteredToolTransport::HostMediatedCallback,
+                [protocol_version()],
+            )
+            .expect("transport support"),
+        ],
+        required_services: [HostServiceKind::Time].into_iter().collect(),
+        credential_references: Vec::new(),
+        executable_recipes: Vec::new(),
+        environment_recipes: Vec::new(),
+        bounds: RegisteredToolBounds::ceiling(),
+        source: RegisteredToolSource::new(
+            RegisteredToolSourceId::new("desktop.registration").expect("source id"),
+            MonotonicInstant::from_ticks(1),
+        ),
+    })
+    .expect("snapshot");
+    RegisteredToolSelection::new(
+        Arc::new(snapshot),
+        [declaration.id().clone()],
+        RegisteredToolTransport::HostMediatedCallback,
+        protocol_version(),
+    )
+    .expect("selection")
+}
+
+#[test]
+fn ready_evidence_from_another_selection_cannot_compose_into_available() {
+    let projected = selection();
+    let foreign = other_selection();
+    let foreign_readiness = ready(&foreign);
+    assert!(
+        foreign_readiness.is_ready(),
+        "the adversarial record is ready, so only its binding can reject it"
+    );
+    assert!(!foreign_readiness.was_evaluated_for(&projected));
+
+    let fixture = RouteFixture::new();
+    let failure = project_registered_capability(
+        RegisteredCapabilityProjectionInput::new(
+            fixture.applicability(),
+            adapter_source(),
+            &projected,
+            &foreign_readiness,
+        )
+        .with_route_qualification(qualified()),
+    )
+    .expect_err("mixed readiness evidence fails closed");
+
+    assert_eq!(
+        failure.kind(),
+        ConsumerRouteProjectionFailureKind::ApplicabilityDisagreement
+    );
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.consumer_route_projection.registered_capability_readiness_mismatch"
+    );
+}
+
+#[test]
+fn unready_evidence_from_another_selection_also_fails_closed() {
+    let projected = selection();
+    let foreign = other_selection();
+    let foreign_readiness = unready(&foreign);
+    assert!(!foreign_readiness.is_ready());
+
+    let fixture = RouteFixture::new();
+    let failure = project_registered_capability(RegisteredCapabilityProjectionInput::new(
+        fixture.applicability(),
+        adapter_source(),
+        &projected,
+        &foreign_readiness,
+    ))
+    .expect_err("mixed readiness evidence fails closed whether or not it is ready");
+
+    assert_eq!(
+        failure.kind(),
+        ConsumerRouteProjectionFailureKind::ApplicabilityDisagreement
+    );
+}
+
+#[test]
+fn each_unavailable_state_carries_its_own_bounded_reason() {
+    let selection = selection();
+
+    // 1. No adapter has qualified the route at all.
+    let unqualified = compose(&project(
+        RegisteredToolRouteQualification::Unqualified,
+        &ready(&selection),
+        &selection,
+        None,
+    ));
+    let row = selection_row(&unqualified, REGISTERED_TOOL_PERMISSION_SEMANTIC_ID);
+    assert_eq!(row.support(), ConsumerRouteSupportPosture::Unknown);
+    let reason = row.safe_reason().expect("reason");
+    assert_eq!(
+        reason.dimension(),
+        ConsumerRouteAvailabilityDimension::SupportAuthority
+    );
+    assert_eq!(reason.diagnostic().code(), ADAPTER_UNQUALIFIED_CODE);
+
+    // 2. A qualified adapter proved this exact dimension unsupported.
+    let constrained = compose(&project(
+        RegisteredToolRouteQualification::Qualified(RegisteredToolQualifiedRoute::new(
+            RegisteredToolPermissionStrength::NotRepresented,
+            RegisteredToolProgressMode::NoProgress,
+            RegisteredToolSkillDelivery::NotCarried,
+        )),
+        &ready(&selection),
+        &selection,
+        None,
+    ));
+    for semantic_id in [
+        REGISTERED_TOOL_PERMISSION_SEMANTIC_ID,
+        REGISTERED_TOOL_PROGRESS_SEMANTIC_ID,
+    ] {
+        let row = selection_row(&constrained, semantic_id);
+        assert_eq!(row.support(), ConsumerRouteSupportPosture::Unsupported);
+        let reason = row.safe_reason().expect("reason");
+        assert_eq!(
+            reason.dimension(),
+            ConsumerRouteAvailabilityDimension::CapabilityConstraint
+        );
+        assert_eq!(
+            reason.diagnostic().code(),
+            ROUTE_DIMENSION_UNSUPPORTED_CODE,
+            "a qualified-but-unsupported dimension is never reported as unqualified"
+        );
+    }
+    let skill = skill_row(&constrained);
+    assert_eq!(skill.support(), ConsumerRouteSupportPosture::Unsupported);
+    assert_eq!(
+        skill.safe_reason().expect("reason").diagnostic().code(),
+        ROUTE_DIMENSION_UNSUPPORTED_CODE
+    );
+
+    // 3. A supported dimension whose readiness has not passed.
+    let not_ready = compose(&project(
+        qualified(),
+        &unready(&selection),
+        &selection,
+        None,
+    ));
+    let row = selection_row(&not_ready, REGISTERED_TOOL_PERMISSION_SEMANTIC_ID);
+    assert_eq!(row.support(), ConsumerRouteSupportPosture::Supported);
+    let reason = row.safe_reason().expect("reason");
+    assert_eq!(
+        reason.dimension(),
+        ConsumerRouteAvailabilityDimension::RuntimeReadiness
+    );
+    assert_eq!(
+        reason.diagnostic().code(),
+        RegisteredToolFailureKind::MissingHostService.code()
+    );
+
+    // 4. A supported, ready dimension invents no reason at all.
+    let available = compose(&project(qualified(), &ready(&selection), &selection, None));
+    let row = selection_row(&available, REGISTERED_TOOL_PERMISSION_SEMANTIC_ID);
+    assert_eq!(row.availability(), ConsumerRouteAvailability::Available);
+    assert!(row.safe_reason().is_none());
+
+    // 5. Scheduling stays withheld under its own support-authority reason.
+    let scheduling = selection_row(&available, REGISTERED_TOOL_SCHEDULING_SEMANTIC_ID);
+    let reason = scheduling.safe_reason().expect("reason");
+    assert_eq!(
+        reason.dimension(),
+        ConsumerRouteAvailabilityDimension::SupportAuthority
+    );
+    assert_eq!(reason.diagnostic().code(), SCHEDULING_WITHHELD_CODE);
+}
+
+/// A selection whose declared carrier is not qualified in this slice.
+fn unqualified_transport_selection() -> RegisteredToolSelection {
+    let declaration = RegisteredToolDeclaration::new(
+        RegisteredToolId::new(
+            RegisteredToolNamespace::new("desktop.tools").expect("namespace"),
+            RegisteredToolLocalName::new("apply-edit").expect("local name"),
+        ),
+        RegisteredToolExecutionKind::Mcp,
+        schema("sha256:input"),
+        schema("sha256:output"),
+        RegisteredToolEffectPosture::Mutating,
+        RegisteredToolRetryPosture::NeverRetry,
+        RegisteredToolBounds::ceiling(),
+    )
+    .expect("declaration");
+    let snapshot = RegisteredToolSnapshot::new(RegisteredToolSnapshotInput {
+        server_id: RegisteredServerId::new("desktop.server").expect("server id"),
+        revision: RegisteredServerRevision::new("11").expect("revision"),
+        execution_host_id: host(),
+        declarations: vec![declaration.clone()],
+        transports: vec![
+            RegisteredToolTransportSupport::new(
+                RegisteredToolTransport::PrivateLoopbackHttp,
+                [protocol_version()],
+            )
+            .expect("transport support"),
+        ],
+        required_services: [HostServiceKind::Time].into_iter().collect(),
+        credential_references: Vec::new(),
+        executable_recipes: Vec::new(),
+        environment_recipes: Vec::new(),
+        bounds: RegisteredToolBounds::ceiling(),
+        source: RegisteredToolSource::new(
+            RegisteredToolSourceId::new("desktop.registration").expect("source id"),
+            MonotonicInstant::from_ticks(1),
+        ),
+    })
+    .expect("snapshot");
+    RegisteredToolSelection::new(
+        Arc::new(snapshot),
+        [declaration.id().clone()],
+        RegisteredToolTransport::PrivateLoopbackHttp,
+        protocol_version(),
+    )
+    .expect("selection")
+}
+
+#[test]
+fn an_unqualified_carrier_is_a_capability_constraint_not_an_unqualified_adapter() {
+    let selection = unqualified_transport_selection();
+    let readiness = ready(&selection);
+    assert!(!readiness.is_ready(), "the carrier is not qualified");
+    let contribution = project(qualified(), &readiness, &selection, None);
+
+    let projection = compose(&contribution);
+    let transport = selection_row(&projection, REGISTERED_TOOL_TRANSPORT_SEMANTIC_ID);
+    assert_eq!(
+        transport.support(),
+        ConsumerRouteSupportPosture::Unsupported
+    );
+    assert_eq!(
+        transport.availability(),
+        ConsumerRouteAvailability::Unavailable
+    );
+    let reason = transport.safe_reason().expect("reason");
+    assert_eq!(
+        reason.dimension(),
+        ConsumerRouteAvailabilityDimension::CapabilityConstraint
+    );
+    assert_eq!(reason.diagnostic().code(), ROUTE_DIMENSION_UNSUPPORTED_CODE);
+    assert_eq!(
+        domain_values(transport),
+        vec![
+            "private-loopback-http".to_owned(),
+            "private-mcp-attachment".to_owned(),
+        ]
+    );
+
+    // The same contribution keeps a supported-but-unready dimension distinct.
+    let capability = selection_row(&projection, REGISTERED_TOOL_CAPABILITY_SEMANTIC_ID);
+    assert_eq!(capability.support(), ConsumerRouteSupportPosture::Supported);
+    assert_eq!(
+        capability
+            .safe_reason()
+            .expect("reason")
+            .diagnostic()
+            .code(),
+        RegisteredToolFailureKind::UnsupportedTransport.code()
+    );
+    assert_eq!(
+        domain_values(selection_row(
+            &projection,
+            REGISTERED_TOOL_EXECUTION_KIND_SEMANTIC_ID
+        )),
+        vec!["mcp".to_owned()]
+    );
+}

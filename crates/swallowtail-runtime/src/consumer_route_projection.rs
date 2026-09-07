@@ -42,13 +42,15 @@ pub use provider_operation_observation::{
     ConsumerRouteProviderOperationObservation, ConsumerRouteProviderOperationOutcome,
 };
 pub use registered_capability::{
-    REGISTERED_TOOL_CAPABILITY_SEMANTIC_ID, REGISTERED_TOOL_EXECUTION_KIND_SEMANTIC_ID,
-    REGISTERED_TOOL_PERMISSION_SEMANTIC_ID, REGISTERED_TOOL_PROGRESS_SEMANTIC_ID,
-    REGISTERED_TOOL_SCHEDULING_SEMANTIC_ID, REGISTERED_TOOL_TRANSPORT_SEMANTIC_ID,
+    ADAPTER_UNQUALIFIED_CODE, REGISTERED_TOOL_CAPABILITY_SEMANTIC_ID,
+    REGISTERED_TOOL_EXECUTION_KIND_SEMANTIC_ID, REGISTERED_TOOL_PERMISSION_SEMANTIC_ID,
+    REGISTERED_TOOL_PROGRESS_SEMANTIC_ID, REGISTERED_TOOL_SCHEDULING_SEMANTIC_ID,
+    REGISTERED_TOOL_TRANSPORT_SEMANTIC_ID, ROUTE_DIMENSION_UNSUPPORTED_CODE,
     RegisteredCapabilityProjectionInput, RegisteredToolPermissionStrength,
     RegisteredToolProgressMode, RegisteredToolQualifiedRoute, RegisteredToolRouteQualification,
-    RegisteredToolSkillDelivery, SELECTED_SKILL_BUNDLE_SEMANTIC_ID, project_registered_capability,
-    registered_capability_control_id, registered_capability_feature_id,
+    RegisteredToolSkillDelivery, SCHEDULING_WITHHELD_CODE, SELECTED_SKILL_BUNDLE_SEMANTIC_ID,
+    project_registered_capability, registered_capability_control_id,
+    registered_capability_feature_id,
 };
 pub use row::ConsumerRouteProjectionRow;
 pub use semantics::{

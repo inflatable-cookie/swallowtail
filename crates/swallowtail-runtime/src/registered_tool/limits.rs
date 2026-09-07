@@ -201,6 +201,13 @@ impl RegisteredToolLimits {
 /// Contract 063 fixes 64 KiB of total selected skill/reference content. No
 /// single body may exceed the aggregate it is counted against.
 pub const MAX_SELECTED_SKILL_CONTENT_BYTES: usize = 64 * 1024;
+/// Maximum UTF-8 bytes of one opaque selected-content reference.
+///
+/// Contract 062 fixes 512 bytes for an opaque reference. The bound is enforced
+/// where a reference is declared, before prepare and before any provider work,
+/// so an over-long capability can never reach a host resolution or a projected
+/// row.
+pub const MAX_SELECTED_CONTENT_REFERENCE_BYTES: usize = 512;
 /// Maximum required references one selected skill bundle may declare.
 ///
 /// This mirrors the Contract 062 approved-source maximum. A bundle that needs

@@ -1,9 +1,10 @@
 use serde_json::Value;
 use swallowtail_testkit::{
     ClientMcpOracleShape, ClientMcpVerdict, ECHO_MCP_SERVER_NAME, ECHO_MCP_TOOL, ECHO_PROMPT,
-    InconclusiveCause, grok_acp_client_mcp_fixture_probe, grok_acp_client_mcp_oracle_fixture_probe,
-    grok_acp_client_mcp_verdict_from_frames, grok_acp_echo_mcp_reply,
-    grok_acp_echo_mcp_stdio_frame,
+    EchoMcpTranscript, InconclusiveCause, echo_mcp_helper_is_live,
+    grok_acp_client_mcp_fixture_probe, grok_acp_client_mcp_oracle_fixture_probe,
+    grok_acp_client_mcp_verdict_from_frames, grok_acp_client_mcp_verdict_with_helper,
+    grok_acp_echo_mcp_reply, grok_acp_echo_mcp_stdio_frame,
 };
 
 #[test]
@@ -45,6 +46,10 @@ fn fake_acp_fixture_proves_all_four_verdicts_for_each_exact_segment() {
                 );
                 assert!(!capsule.client_mcp_tools_listed());
                 assert!(
+                    capsule.echo_helper_live(),
+                    "ignores_client_mcp requires proven echo helper liveness"
+                );
+                assert!(
                     !capsule
                         .echo_mcp_methods()
                         .iter()
@@ -55,6 +60,15 @@ fn fake_acp_fixture_proves_all_four_verdicts_for_each_exact_segment() {
                 assert_eq!(capsule.stop_reason(), Some("end_turn"));
                 assert_eq!(
                     grok_acp_client_mcp_verdict_from_frames(capsule.frames()),
+                    ClientMcpVerdict::Inconclusive,
+                    "frames alone cannot prove helper liveness"
+                );
+                assert_eq!(
+                    grok_acp_client_mcp_verdict_with_helper(
+                        capsule.frames(),
+                        &EchoMcpTranscript::default(),
+                        true
+                    ),
                     ClientMcpVerdict::IgnoresClientMcp
                 );
             } else if expected == ClientMcpVerdict::Inconclusive {
@@ -169,9 +183,25 @@ fn fake_acp_oracle_shapes_cover_admission_and_invocation() {
             grok_acp_client_mcp_oracle_fixture_probe(version, ClientMcpOracleShape::NoAdmission)
                 .expect("no admission");
         assert_eq!(ignored.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+        assert!(ignored.echo_helper_live());
         assert!(!ignored.client_mcp_admitted());
         assert!(!ignored.client_mcp_tools_listed());
         assert!(ignored.prompt_turn_completed());
+
+        let dead = grok_acp_client_mcp_oracle_fixture_probe(
+            version,
+            ClientMcpOracleShape::HelperUnspawnable,
+        )
+        .expect("helper unspawnable");
+        assert_eq!(dead.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            dead.inconclusive_cause(),
+            Some(InconclusiveCause::EchoLivenessUnproven)
+        );
+        assert!(!dead.echo_helper_live());
+        assert!(!dead.client_mcp_admitted());
+        assert!(dead.prompt_turn_completed());
+        assert_ne!(dead.verdict(), ClientMcpVerdict::IgnoresClientMcp);
     }
 }
 
@@ -280,6 +310,25 @@ fn spawned_echo_server_records_transcript_from_args() {
     let _ = std::fs::remove_dir_all(&home);
     assert!(transcript.initialize());
     assert!(transcript.tools_call());
+}
+
+#[test]
+fn echo_helper_liveness_self_check_distinguishes_healthy_from_dead() {
+    let exe = grok_acp_echo_mcp_bin();
+    assert!(
+        exe.is_file(),
+        "grok-acp-echo-mcp example was not built at {}",
+        exe.display()
+    );
+    assert!(
+        echo_mcp_helper_is_live(&exe),
+        "healthy echo example must prove liveness"
+    );
+    assert!(!echo_mcp_helper_is_live(std::path::Path::new("/bin/false")));
+    assert!(!echo_mcp_helper_is_live(std::path::Path::new("/bin/true")));
+    assert!(!echo_mcp_helper_is_live(std::path::Path::new(
+        "/no/such/swallowtail-echo-helper"
+    )));
 }
 
 fn grok_acp_echo_mcp_bin() -> std::path::PathBuf {

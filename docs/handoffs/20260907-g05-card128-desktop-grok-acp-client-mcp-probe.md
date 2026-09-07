@@ -55,13 +55,17 @@ authorized rerun) on the same authorized home cannot inherit a prior
 Admission and invocation are separate capsule fields. `client_mcp_admitted`
 is true when the echo transcript contains `initialize`.
 `client_mcp_tools_listed` is true when it contains `tools/list`.
+`echo_helper_live` is true when this run proved the copied echo helper
+spawnable with a provider-free `initialize` self-check. That check does not
+write the probe transcript and does not spawn Grok.
 `accepts_client_mcp` still requires a `tools/call` line.
-`ignores_client_mcp` requires a completed prompt, no echo `initialize`, and
-no `tools/call`. A run that admits the server but does not call it is
-`inconclusive` and must name `turn_completed_without_tool_call` or
-`no_turn_result`. An empty transcript cannot score `ignores_client_mcp`
-unless the prompt turn completed and ACP did not show an unattributed echo
-tool call.
+`ignores_client_mcp` requires a completed prompt, no echo `initialize`, no
+`tools/call`, and `echo_helper_live`. A run that admits the server but does
+not call it is `inconclusive` and must name `turn_completed_without_tool_call`
+or `no_turn_result`. An empty transcript cannot score `ignores_client_mcp`
+unless the helper was proven live, the prompt turn completed, and ACP did
+not show an unattributed echo tool call. An unproven or unspawnable helper
+is `inconclusive` with `echo_liveness_unproven`.
 
 If Desktop already isolated `GROK_HOME`, the script leaves it in place and
 does not copy host credentials or config. If `GROK_HOME` is unset, the script
@@ -85,7 +89,7 @@ cargo run --offline --locked -p swallowtail-testkit --example grok-acp-client-mc
 `--fixture` accepts `accepts_client_mcp`, `ignores_client_mcp`,
 `rejects_client_mcp`, or `inconclusive`. Crate tests also drive
 admitted-and-called, admitted-listed-not-called-with-completed-turn,
-admitted-not-listed, and no-admission.
+admitted-not-listed, no-admission, and helper-unspawnable.
 
 ## Expected artefacts
 
@@ -98,13 +102,16 @@ One redacted JSON capsule per exact version. Fields:
 - `inconclusive_cause`: named cause when `verdict` is `inconclusive`;
   otherwise null. `no_turn_result` means the prompt had no result.
   `turn_completed_without_tool_call` means the turn finished after admission
-  without echo `tools/call`. Other named causes cover missing `session/new`,
-  truncation, permission rejection, and an unattributed ACP echo title
+  without echo `tools/call`. `echo_liveness_unproven` means the echo helper
+  was not proven spawnable, so an empty transcript cannot score ignore.
+  Other named causes cover missing `session/new`, truncation, permission
+  rejection, and an unattributed ACP echo title
 - `prompt`: the exact directive text sent on `session/prompt`
 - `prompt_turn_completed`
 - `stop_reason`: ACP prompt `stopReason` when the turn returned a result
 - `client_mcp_admitted`: echo-server `initialize` observed
 - `client_mcp_tools_listed`: echo-server `tools/list` observed
+- `echo_helper_live`: this run proved the echo helper spawnable
 - `frames`: bounded redacted ACP JSON-RPC objects, including the outbound
   `session/new` with non-empty `mcpServers` when sent
 - `stale_callback_rejected`
@@ -117,16 +124,18 @@ does not mention `mcpServers` or the echo server name, is `inconclusive`.
 Only an explicit client-MCP rejection is `rejects_client_mcp`. Overflow does
 not abort without a capsule. `accepts_client_mcp` requires the echo MCP
 stdio transcript to contain `tools/call`. `ignores_client_mcp` requires a
-completed `session/prompt` turn and no echo `initialize`. A timeout or
-missing prompt result is `inconclusive` with `no_turn_result`. Admission
-without a call on a completed turn is `inconclusive` with
-`turn_completed_without_tool_call`. A `title: "echo"` tool call without echo
-MCP `initialize` is `inconclusive`. Live spawn refuses unless `GROK_HOME` is
-an existing directory; session `cwd` and the Grok child `HOME` are that
-directory. The echo MCP transcript is a unique exclusive-created file in
-that directory; a path that already exists is refused.
-`stale_callback_rejected` is true only when Grok actually sent a post-close
-callback.
+completed `session/prompt` turn, no echo `initialize`, and
+`echo_helper_live`. A timeout or missing prompt result is `inconclusive`
+with `no_turn_result`. Admission without a call on a completed turn is
+`inconclusive` with `turn_completed_without_tool_call`. A `title: "echo"`
+tool call without echo MCP `initialize` is `inconclusive`. A helper that
+fails the per-run spawn self-check is `inconclusive` with
+`echo_liveness_unproven`; that is not a provider finding. Live spawn refuses
+unless `GROK_HOME` is an existing directory; session `cwd` and the Grok child
+`HOME` are that directory. The echo MCP transcript is a unique
+exclusive-created file in that directory; a path that already exists is
+refused. `stale_callback_rejected` is true only when Grok actually sent a
+post-close callback.
 
 Frames must contain no credentials, tokens, or host paths. `1.0.4` and `1.0.5`
 are separate evidence segments; do not merge them.
@@ -155,13 +164,16 @@ matrix cross kind. Admission fields constrain the tree:
   the returned capsule as frozen evidence, or the operator's native Grok MCP
   mediation or explicitly withheld-cell decision as a `producer_gap` with the
   card that builds it. `ignores_client_mcp` is forbidden when
-  `client_mcp_admitted` is true; an `initialize` line on the echo transcript
-  refutes ignore
+  `client_mcp_admitted` is true or `echo_helper_live` is false; an
+  `initialize` line on the echo transcript refutes ignore, and a helper spawn
+  failure must not freeze `provider_limitation`
 - `inconclusive`: one authorized rerun with the named `inconclusive_cause`
-  fixed. A second inconclusive is treated as `ignores_client_mcp` only when
-  `client_mcp_admitted` is false. If admission is already proven, that branch
-  must not fire; keep the cells `evidence_pending` until invocation is
-  proven or the operator names a different cell kind
+  fixed. `echo_liveness_unproven` is a harness defect, not a provider
+  finding. A second inconclusive is treated as `ignores_client_mcp` only when
+  `client_mcp_admitted` is false and `echo_helper_live` is true. If admission
+  is already proven, or helper liveness is unproven, that branch must not
+  fire; keep the cells `evidence_pending` until invocation is proven or the
+  operator names a different cell kind
 
 No Swallowtail adapter, claim, contract, tag, or release action follows from
 this packet alone.

@@ -5,9 +5,12 @@
 //! so `accepts_client_mcp` requires a `tools/call` on that transcript.
 //! Protocol admission (`initialize`) and tool listing (`tools/list`) are
 //! explicit capsule fields; a verdict cannot discard them. `ignores_client_mcp`
-//! is only the completed-turn case where the echo server was never reached.
-//! `inconclusive` names its cause, including `no_turn_result` versus
-//! `turn_completed_without_tool_call`. Crate tests drive the fake ACP fixture.
+//! is only the completed-turn case where a proven-spawnable echo helper was
+//! never reached. An unproven or unspawnable helper is `inconclusive` with
+//! `echo_liveness_unproven`, so a copy/chmod failure cannot freeze
+//! `provider_limitation`. `inconclusive` names its cause, including
+//! `no_turn_result` versus `turn_completed_without_tool_call`. Crate tests
+//! drive the fake ACP fixture.
 //! The live installed-Grok entrypoint refuses to spawn unless Desktop sets
 //! [`DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE`] and an isolated `GROK_HOME`
 //! directory exists.
@@ -49,13 +52,14 @@ const STALE_CALLBACK_ID: u64 = 9001;
 const LIVE_IDLE: Duration = Duration::from_millis(200);
 const LIVE_WAIT: Duration = Duration::from_secs(8);
 const LIVE_JOIN: Duration = Duration::from_secs(2);
+const ECHO_HELPER_LIVE_WAIT: Duration = Duration::from_millis(500);
 
 /// Client-MCP verdict for one exact Grok version segment.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ClientMcpVerdict {
     /// Session accepted a non-empty `mcpServers` list and the echo MCP server was called.
     AcceptsClientMcp,
-    /// Session accepted a non-empty `mcpServers` list, the prompt turn completed, and the echo server was never reached.
+    /// Session accepted a non-empty `mcpServers` list, the prompt turn completed, the echo helper was proven spawnable, and the echo server was never reached.
     IgnoresClientMcp,
     /// Session setup rejected the non-empty `mcpServers` list.
     RejectsClientMcp,
@@ -84,6 +88,8 @@ pub enum InconclusiveCause {
     TurnCompletedWithoutToolCall,
     /// ACP showed an echo-titled tool call without echo MCP `initialize`.
     NativeEchoWithoutAdmission,
+    /// Echo helper was not proven spawnable; empty transcript cannot score ignore.
+    EchoLivenessUnproven,
 }
 
 impl InconclusiveCause {
@@ -100,6 +106,7 @@ impl InconclusiveCause {
             Self::NoTurnResult => "no_turn_result",
             Self::TurnCompletedWithoutToolCall => "turn_completed_without_tool_call",
             Self::NativeEchoWithoutAdmission => "native_echo_without_admission",
+            Self::EchoLivenessUnproven => "echo_liveness_unproven",
         }
     }
 }
@@ -113,8 +120,10 @@ pub enum ClientMcpOracleShape {
     AdmittedListedNotCalledCompleted,
     /// Echo `initialize` observed; `tools/list` absent; turn completed; no `tools/call`.
     AdmittedNotListed,
-    /// Session accepted `mcpServers`; echo never received `initialize`.
+    /// Session accepted `mcpServers`; a spawnable helper never received `initialize`.
     NoAdmission,
+    /// Echo helper was not spawnable; empty transcript must not score ignore.
+    HelperUnspawnable,
 }
 
 /// Methods observed by the disposable echo MCP server on its own stdio.
@@ -355,6 +364,7 @@ pub struct GrokAcpClientMcpCapsule {
     stop_reason: Option<String>,
     client_mcp_admitted: bool,
     client_mcp_tools_listed: bool,
+    echo_helper_live: bool,
     frames: Vec<GrokAcpClientMcpFrame>,
     stale_callback_rejected: bool,
     cleanup: GrokAcpClientMcpCleanup,
@@ -411,6 +421,12 @@ impl GrokAcpClientMcpCapsule {
         self.client_mcp_tools_listed
     }
 
+    /// Returns whether this run proved the echo helper spawnable before scoring.
+    #[must_use]
+    pub const fn echo_helper_live(&self) -> bool {
+        self.echo_helper_live
+    }
+
     /// Redacted captured frames, including the `session/new` request when sent.
     #[must_use]
     pub fn frames(&self) -> &[GrokAcpClientMcpFrame] {
@@ -454,6 +470,7 @@ impl GrokAcpClientMcpCapsule {
             "stop_reason": self.stop_reason,
             "client_mcp_admitted": self.client_mcp_admitted,
             "client_mcp_tools_listed": self.client_mcp_tools_listed,
+            "echo_helper_live": self.echo_helper_live,
             "stale_callback_rejected": self.stale_callback_rejected,
             "cleanup_joined": self.cleanup.joined,
             "truncated": self.truncated,
@@ -546,6 +563,10 @@ pub trait GrokAcpClientMcpPeer {
     fn echo_mcp_transcript(&mut self) -> EchoMcpTranscript {
         EchoMcpTranscript::default()
     }
+    /// Whether this run proved the echo helper spawnable. Default is unproven.
+    fn echo_helper_live(&mut self) -> bool {
+        false
+    }
 }
 
 /// Returns whether Desktop has opened the live installed-Grok gate.
@@ -580,7 +601,8 @@ pub fn grok_acp_client_mcp_oracle_fixture_probe(
         ClientMcpOracleShape::AdmittedAndCalled => ClientMcpVerdict::AcceptsClientMcp,
         ClientMcpOracleShape::NoAdmission => ClientMcpVerdict::IgnoresClientMcp,
         ClientMcpOracleShape::AdmittedListedNotCalledCompleted
-        | ClientMcpOracleShape::AdmittedNotListed => ClientMcpVerdict::Inconclusive,
+        | ClientMcpOracleShape::AdmittedNotListed
+        | ClientMcpOracleShape::HelperUnspawnable => ClientMcpVerdict::Inconclusive,
     };
     if capsule.verdict != expected {
         return Err(GrokAcpClientMcpError {
@@ -692,6 +714,7 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
         Some(path) => read_echo_mcp_transcript(path),
         None => peer.echo_mcp_transcript(),
     };
+    let echo_helper_live = peer.echo_helper_live();
     let truncated = capture.truncated;
     let redacted: Vec<GrokAcpClientMcpFrame> = capture
         .frames
@@ -701,7 +724,8 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
             message: redact_value(frame.message),
         })
         .collect();
-    let decision = grok_acp_client_mcp_verdict_decision(&redacted, &transcript, truncated);
+    let decision =
+        grok_acp_client_mcp_verdict_decision(&redacted, &transcript, truncated, echo_helper_live);
     let (prompt_turn_completed, stop_reason) = prompt_turn_observation(&redacted);
     Ok(GrokAcpClientMcpCapsule {
         version: version.to_owned(),
@@ -712,6 +736,7 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
         stop_reason,
         client_mcp_admitted: transcript.initialize(),
         client_mcp_tools_listed: transcript.tools_list(),
+        echo_helper_live,
         frames: redacted,
         stale_callback_rejected,
         cleanup,
@@ -725,6 +750,8 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
 }
 
 /// Decides the verdict from redacted frames. Missing `session/new` is inconclusive.
+/// Frames alone cannot prove echo helper liveness, so a completed empty
+/// transcript cannot score [`ClientMcpVerdict::IgnoresClientMcp`].
 #[must_use]
 pub fn grok_acp_client_mcp_verdict_from_frames(
     frames: &[GrokAcpClientMcpFrame],
@@ -733,12 +760,24 @@ pub fn grok_acp_client_mcp_verdict_from_frames(
 }
 
 /// Decides the verdict from ACP frames plus the echo MCP stdio transcript.
+/// Helper liveness is unproven; use [`grok_acp_client_mcp_verdict_with_helper`]
+/// to score ignore.
 #[must_use]
 pub fn grok_acp_client_mcp_verdict(
     frames: &[GrokAcpClientMcpFrame],
     transcript: &EchoMcpTranscript,
 ) -> ClientMcpVerdict {
-    grok_acp_client_mcp_verdict_decision(frames, transcript, false).verdict
+    grok_acp_client_mcp_verdict_decision(frames, transcript, false, false).verdict
+}
+
+/// Same as [`grok_acp_client_mcp_verdict`], with per-run echo helper liveness.
+#[must_use]
+pub fn grok_acp_client_mcp_verdict_with_helper(
+    frames: &[GrokAcpClientMcpFrame],
+    transcript: &EchoMcpTranscript,
+    echo_helper_live: bool,
+) -> ClientMcpVerdict {
+    grok_acp_client_mcp_verdict_decision(frames, transcript, false, echo_helper_live).verdict
 }
 
 struct VerdictDecision {
@@ -757,6 +796,7 @@ fn grok_acp_client_mcp_verdict_decision(
     frames: &[GrokAcpClientMcpFrame],
     transcript: &EchoMcpTranscript,
     truncated: bool,
+    echo_helper_live: bool,
 ) -> VerdictDecision {
     if truncated {
         return inconclusive(InconclusiveCause::Truncated);
@@ -817,9 +857,13 @@ fn grok_acp_client_mcp_verdict_decision(
             } else if echo_named_tool_called(frames) {
                 inconclusive(InconclusiveCause::NativeEchoWithoutAdmission)
             } else if prompt_turn_completed(frames) {
-                VerdictDecision {
-                    verdict: ClientMcpVerdict::IgnoresClientMcp,
-                    inconclusive_cause: None,
+                if echo_helper_live {
+                    VerdictDecision {
+                        verdict: ClientMcpVerdict::IgnoresClientMcp,
+                        inconclusive_cause: None,
+                    }
+                } else {
+                    inconclusive(InconclusiveCause::EchoLivenessUnproven)
                 }
             } else {
                 inconclusive(InconclusiveCause::NoTurnResult)
@@ -915,6 +959,69 @@ pub fn grok_acp_echo_mcp_stdio_frame(value: &Value) -> Result<Vec<u8>, GrokAcpCl
     Ok(bytes)
 }
 
+/// Spawns `echo_mcp` and requires an `initialize` reply. Does not touch the
+/// probe transcript, spawn Grok, or require the Desktop gate.
+#[must_use]
+pub fn echo_mcp_helper_is_live(echo_mcp: &Path) -> bool {
+    if !echo_mcp.is_file() {
+        return false;
+    }
+    let Ok(mut child) = Command::new(echo_mcp)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+    else {
+        return false;
+    };
+    let live = echo_mcp_helper_initialize_replies(&mut child);
+    let _ = child.kill();
+    let _ = child.wait();
+    live
+}
+
+fn echo_mcp_helper_initialize_replies(child: &mut Child) -> bool {
+    let Some(mut stdin) = child.stdin.take() else {
+        return false;
+    };
+    let Some(stdout) = child.stdout.take() else {
+        return false;
+    };
+    let request = json!({
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {},
+            "clientInfo": {"name": "swallowtail-echo-liveness"}
+        }
+    });
+    let Ok(frame) = grok_acp_echo_mcp_stdio_frame(&request) else {
+        return false;
+    };
+    if stdin.write_all(&frame).is_err() || stdin.flush().is_err() {
+        return false;
+    }
+    let (sender, incoming) = mpsc::channel();
+    thread::spawn(move || {
+        let mut reader = BufReader::new(stdout);
+        let mut line = String::new();
+        let _ = reader.read_line(&mut line);
+        let _ = sender.send(line);
+    });
+    let Ok(line) = incoming.recv_timeout(ECHO_HELPER_LIVE_WAIT) else {
+        return false;
+    };
+    let Ok(reply) = serde_json::from_str::<Value>(line.trim()) else {
+        return false;
+    };
+    reply
+        .pointer("/result/serverInfo/name")
+        .and_then(Value::as_str)
+        == Some(ECHO_MCP_SERVER_NAME)
+}
+
 /// Opens a live installed-Grok ACP stdio peer. Refuses unless the Desktop gate is set.
 pub fn open_desktop_live_grok_acp_peer(
     grok_executable: &Path,
@@ -931,7 +1038,8 @@ pub fn open_desktop_live_grok_acp_peer(
             kind: GrokAcpClientMcpErrorKind::LivePathMissing,
         });
     }
-    LiveGrokAcpPeer::spawn(grok_executable, &grok_home)
+    let echo_helper_live = echo_mcp_helper_is_live(echo_mcp);
+    LiveGrokAcpPeer::spawn(grok_executable, &grok_home, echo_helper_live)
 }
 
 /// Live ACP stdio child. Constructed only after the Desktop gate succeeds.
@@ -939,10 +1047,15 @@ pub struct LiveGrokAcpPeer {
     child: Child,
     stdin: Option<ChildStdin>,
     incoming: Receiver<Result<Value, GrokAcpClientMcpError>>,
+    echo_helper_live: bool,
 }
 
 impl LiveGrokAcpPeer {
-    fn spawn(executable: &Path, grok_home: &Path) -> Result<Self, GrokAcpClientMcpError> {
+    fn spawn(
+        executable: &Path,
+        grok_home: &Path,
+        echo_helper_live: bool,
+    ) -> Result<Self, GrokAcpClientMcpError> {
         let mut command = Command::new(executable);
         command
             .args(["--no-auto-update", "agent", "stdio"])
@@ -1012,6 +1125,7 @@ impl LiveGrokAcpPeer {
             child,
             stdin: Some(stdin),
             incoming,
+            echo_helper_live,
         })
     }
 }
@@ -1068,6 +1182,10 @@ impl GrokAcpClientMcpPeer for LiveGrokAcpPeer {
 
     fn stale_callback_request(&mut self) -> Option<Value> {
         None
+    }
+
+    fn echo_helper_live(&mut self) -> bool {
+        self.echo_helper_live
     }
 }
 
@@ -1227,7 +1345,8 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                     ClientMcpOracleShape::AdmittedAndCalled
                     | ClientMcpOracleShape::AdmittedListedNotCalledCompleted
                     | ClientMcpOracleShape::AdmittedNotListed
-                    | ClientMcpOracleShape::NoAdmission,
+                    | ClientMcpOracleShape::NoAdmission
+                    | ClientMcpOracleShape::HelperUnspawnable,
                 )
                 | FakeBehavior::Chatty
                 | FakeBehavior::PromptSilent
@@ -1297,7 +1416,8 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                 | FakeBehavior::Oracle(
                     ClientMcpOracleShape::AdmittedListedNotCalledCompleted
                     | ClientMcpOracleShape::AdmittedNotListed
-                    | ClientMcpOracleShape::NoAdmission,
+                    | ClientMcpOracleShape::NoAdmission
+                    | ClientMcpOracleShape::HelperUnspawnable,
                 ) => {
                     self.push(json!({
                         "jsonrpc": "2.0",
@@ -1420,11 +1540,18 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
             | FakeBehavior::Chatty
             | FakeBehavior::AsksPermission => EchoMcpTranscript::observed_idle(),
             FakeBehavior::Verdict(ClientMcpVerdict::IgnoresClientMcp)
-            | FakeBehavior::Oracle(ClientMcpOracleShape::NoAdmission) => {
-                EchoMcpTranscript::default()
-            }
+            | FakeBehavior::Oracle(
+                ClientMcpOracleShape::NoAdmission | ClientMcpOracleShape::HelperUnspawnable,
+            ) => EchoMcpTranscript::default(),
             _ => EchoMcpTranscript::default(),
         }
+    }
+
+    fn echo_helper_live(&mut self) -> bool {
+        !matches!(
+            self.behavior,
+            FakeBehavior::Oracle(ClientMcpOracleShape::HelperUnspawnable)
+        )
     }
 }
 
@@ -1947,8 +2074,13 @@ mod tests {
             ClientMcpVerdict::Inconclusive
         );
         assert_eq!(
-            grok_acp_client_mcp_verdict_decision(&frames, &EchoMcpTranscript::default(), false)
-                .inconclusive_cause,
+            grok_acp_client_mcp_verdict_decision(
+                &frames,
+                &EchoMcpTranscript::default(),
+                false,
+                false,
+            )
+            .inconclusive_cause,
             Some(InconclusiveCause::NoTurnResult)
         );
     }
@@ -2063,8 +2195,13 @@ mod tests {
             ClientMcpVerdict::Inconclusive
         );
         assert_eq!(
-            grok_acp_client_mcp_verdict_decision(&frames, &EchoMcpTranscript::default(), false)
-                .inconclusive_cause,
+            grok_acp_client_mcp_verdict_decision(
+                &frames,
+                &EchoMcpTranscript::default(),
+                false,
+                false,
+            )
+            .inconclusive_cause,
             Some(InconclusiveCause::PermissionRejected)
         );
     }
@@ -2078,8 +2215,13 @@ mod tests {
             ClientMcpVerdict::Inconclusive
         );
         assert_eq!(
-            grok_acp_client_mcp_verdict_decision(&frames, &EchoMcpTranscript::default(), false)
-                .inconclusive_cause,
+            grok_acp_client_mcp_verdict_decision(
+                &frames,
+                &EchoMcpTranscript::default(),
+                false,
+                false,
+            )
+            .inconclusive_cause,
             Some(InconclusiveCause::NativeEchoWithoutAdmission)
         );
     }
@@ -2102,6 +2244,9 @@ mod tests {
             }
             fn echo_mcp_transcript(&mut self) -> EchoMcpTranscript {
                 self.0.echo_mcp_transcript()
+            }
+            fn echo_helper_live(&mut self) -> bool {
+                self.0.echo_helper_live()
             }
         }
         let mut peer = SilentStale(FakeAcpPeer::new(ClientMcpVerdict::IgnoresClientMcp));
@@ -2131,6 +2276,7 @@ mod tests {
             &frames,
             &EchoMcpTranscript::observed_idle(),
             false,
+            true,
         );
         assert_eq!(decision.verdict, ClientMcpVerdict::Inconclusive);
         assert_eq!(
@@ -2163,6 +2309,7 @@ mod tests {
             run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
                 .expect("capsule");
         assert_eq!(capsule.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+        assert!(capsule.echo_helper_live());
         assert!(!capsule.client_mcp_admitted());
         assert!(!capsule.client_mcp_tools_listed());
         assert!(capsule.prompt_turn_completed());
@@ -2170,8 +2317,72 @@ mod tests {
         assert_eq!(capsule.prompt(), ECHO_PROMPT);
         assert_eq!(
             grok_acp_client_mcp_verdict_from_frames(capsule.frames()),
+            ClientMcpVerdict::Inconclusive
+        );
+        assert_eq!(
+            grok_acp_client_mcp_verdict_with_helper(
+                capsule.frames(),
+                &EchoMcpTranscript::default(),
+                true
+            ),
             ClientMcpVerdict::IgnoresClientMcp
         );
+    }
+
+    #[test]
+    fn frames_only_empty_transcript_cannot_score_ignores() {
+        let capsule =
+            grok_acp_client_mcp_fixture_probe("1.0.5", ClientMcpVerdict::IgnoresClientMcp)
+                .expect("ignores fixture");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+        assert!(capsule.echo_helper_live());
+        let decision = grok_acp_client_mcp_verdict_decision(
+            capsule.frames(),
+            &EchoMcpTranscript::default(),
+            false,
+            false,
+        );
+        assert_eq!(decision.verdict, ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            decision.inconclusive_cause,
+            Some(InconclusiveCause::EchoLivenessUnproven)
+        );
+        assert_eq!(
+            grok_acp_client_mcp_verdict_from_frames(capsule.frames()),
+            ClientMcpVerdict::Inconclusive
+        );
+    }
+
+    #[test]
+    fn unspawnable_helper_is_echo_liveness_unproven() {
+        let capsule = grok_acp_client_mcp_oracle_fixture_probe(
+            "1.0.5",
+            ClientMcpOracleShape::HelperUnspawnable,
+        )
+        .expect("unspawnable helper");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            capsule.inconclusive_cause(),
+            Some(InconclusiveCause::EchoLivenessUnproven)
+        );
+        assert!(!capsule.echo_helper_live());
+        assert!(!capsule.client_mcp_admitted());
+        assert!(capsule.prompt_turn_completed());
+        assert_ne!(capsule.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+        assert_eq!(capsule.to_json()["echo_helper_live"], json!(false));
+        assert_eq!(
+            capsule.to_json()["inconclusive_cause"],
+            json!("echo_liveness_unproven")
+        );
+    }
+
+    #[test]
+    fn dead_echo_helper_paths_are_not_live() {
+        assert!(!echo_mcp_helper_is_live(Path::new(
+            "/no/such/swallowtail-echo-helper"
+        )));
+        assert!(!echo_mcp_helper_is_live(Path::new("/bin/false")));
+        assert!(!echo_mcp_helper_is_live(Path::new("/bin/true")));
     }
 
     #[test]
@@ -2236,9 +2447,23 @@ mod tests {
             grok_acp_client_mcp_oracle_fixture_probe("1.0.5", ClientMcpOracleShape::NoAdmission)
                 .expect("no admission");
         assert_eq!(ignored.verdict(), ClientMcpVerdict::IgnoresClientMcp);
+        assert!(ignored.echo_helper_live());
         assert!(!ignored.client_mcp_admitted());
         assert!(!ignored.client_mcp_tools_listed());
         assert!(ignored.prompt_turn_completed());
+
+        let dead = grok_acp_client_mcp_oracle_fixture_probe(
+            "1.0.5",
+            ClientMcpOracleShape::HelperUnspawnable,
+        )
+        .expect("helper unspawnable");
+        assert_eq!(dead.verdict(), ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            dead.inconclusive_cause(),
+            Some(InconclusiveCause::EchoLivenessUnproven)
+        );
+        assert!(!dead.echo_helper_live());
+        assert_ne!(dead.verdict(), ClientMcpVerdict::IgnoresClientMcp);
     }
 
     #[test]

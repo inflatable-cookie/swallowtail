@@ -3,6 +3,7 @@ pub enum swallowtail_testkit::ClientMcpOracleShape
 pub swallowtail_testkit::ClientMcpOracleShape::AdmittedAndCalled
 pub swallowtail_testkit::ClientMcpOracleShape::AdmittedListedNotCalledCompleted
 pub swallowtail_testkit::ClientMcpOracleShape::AdmittedNotListed
+pub swallowtail_testkit::ClientMcpOracleShape::HelperUnspawnable
 pub swallowtail_testkit::ClientMcpOracleShape::NoAdmission
 pub enum swallowtail_testkit::ClientMcpVerdict
 pub swallowtail_testkit::ClientMcpVerdict::AcceptsClientMcp
@@ -91,6 +92,7 @@ pub swallowtail_testkit::GrokAcpClientMcpErrorKind::LiveProbeGated
 pub swallowtail_testkit::GrokAcpClientMcpErrorKind::LiveTranscriptExists
 pub swallowtail_testkit::GrokAcpClientMcpErrorKind::Transport
 pub enum swallowtail_testkit::InconclusiveCause
+pub swallowtail_testkit::InconclusiveCause::EchoLivenessUnproven
 pub swallowtail_testkit::InconclusiveCause::EmptyMcpServers
 pub swallowtail_testkit::InconclusiveCause::MissingSessionNew
 pub swallowtail_testkit::InconclusiveCause::NativeEchoWithoutAdmission
@@ -322,6 +324,7 @@ impl swallowtail_testkit::GrokAcpClientMcpCapsule
 pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::cleanup(&self) -> swallowtail_testkit::GrokAcpClientMcpCleanup
 pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::client_mcp_admitted(&self) -> bool
 pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::client_mcp_tools_listed(&self) -> bool
+pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::echo_helper_live(&self) -> bool
 pub fn swallowtail_testkit::GrokAcpClientMcpCapsule::echo_mcp_methods(&self) -> &[alloc::string::String]
 pub fn swallowtail_testkit::GrokAcpClientMcpCapsule::frames(&self) -> &[swallowtail_testkit::GrokAcpClientMcpFrame]
 pub const fn swallowtail_testkit::GrokAcpClientMcpCapsule::inconclusive_cause(&self) -> core::option::Option<swallowtail_testkit::InconclusiveCause>
@@ -349,6 +352,7 @@ pub const fn swallowtail_testkit::GrokAcpClientMcpFrame::message(&self) -> &serd
 pub struct swallowtail_testkit::LiveGrokAcpPeer
 impl swallowtail_testkit::GrokAcpClientMcpPeer for swallowtail_testkit::LiveGrokAcpPeer
 pub fn swallowtail_testkit::LiveGrokAcpPeer::close(&mut self) -> swallowtail_testkit::GrokAcpClientMcpCleanup
+pub fn swallowtail_testkit::LiveGrokAcpPeer::echo_helper_live(&mut self) -> bool
 pub fn swallowtail_testkit::LiveGrokAcpPeer::echo_mcp_transcript(&mut self) -> swallowtail_testkit::EchoMcpTranscript
 pub fn swallowtail_testkit::LiveGrokAcpPeer::push_outbound(&mut self, serde_json::value::Value) -> core::result::Result<(), swallowtail_testkit::GrokAcpClientMcpError>
 pub fn swallowtail_testkit::LiveGrokAcpPeer::stale_callback_request(&mut self) -> core::option::Option<serde_json::value::Value>
@@ -510,12 +514,14 @@ pub const swallowtail_testkit::REMOTE_ACP_RFD_REVISION: &str
 pub const swallowtail_testkit::REMOTE_ACP_TRANSPORT_SDK_VERSION: &str
 pub trait swallowtail_testkit::GrokAcpClientMcpPeer
 pub fn swallowtail_testkit::GrokAcpClientMcpPeer::close(&mut self) -> swallowtail_testkit::GrokAcpClientMcpCleanup
+pub fn swallowtail_testkit::GrokAcpClientMcpPeer::echo_helper_live(&mut self) -> bool
 pub fn swallowtail_testkit::GrokAcpClientMcpPeer::echo_mcp_transcript(&mut self) -> swallowtail_testkit::EchoMcpTranscript
 pub fn swallowtail_testkit::GrokAcpClientMcpPeer::push_outbound(&mut self, serde_json::value::Value) -> core::result::Result<(), swallowtail_testkit::GrokAcpClientMcpError>
 pub fn swallowtail_testkit::GrokAcpClientMcpPeer::stale_callback_request(&mut self) -> core::option::Option<serde_json::value::Value>
 pub fn swallowtail_testkit::GrokAcpClientMcpPeer::take_inbound(&mut self) -> core::result::Result<alloc::vec::Vec<serde_json::value::Value>, swallowtail_testkit::GrokAcpClientMcpError>
 impl swallowtail_testkit::GrokAcpClientMcpPeer for swallowtail_testkit::LiveGrokAcpPeer
 pub fn swallowtail_testkit::LiveGrokAcpPeer::close(&mut self) -> swallowtail_testkit::GrokAcpClientMcpCleanup
+pub fn swallowtail_testkit::LiveGrokAcpPeer::echo_helper_live(&mut self) -> bool
 pub fn swallowtail_testkit::LiveGrokAcpPeer::echo_mcp_transcript(&mut self) -> swallowtail_testkit::EchoMcpTranscript
 pub fn swallowtail_testkit::LiveGrokAcpPeer::push_outbound(&mut self, serde_json::value::Value) -> core::result::Result<(), swallowtail_testkit::GrokAcpClientMcpError>
 pub fn swallowtail_testkit::LiveGrokAcpPeer::stale_callback_request(&mut self) -> core::option::Option<serde_json::value::Value>
@@ -585,6 +591,7 @@ pub fn swallowtail_testkit::consumer_route_projection_source(&str, swallowtail_r
 pub fn swallowtail_testkit::create_echo_mcp_transcript(&std::path::Path) -> core::result::Result<std::path::PathBuf, swallowtail_testkit::GrokAcpClientMcpError>
 pub fn swallowtail_testkit::desktop_grok_acp_client_mcp_probe_is_gated_open() -> bool
 pub fn swallowtail_testkit::drive_fixture<T>(swallowtail_runtime::async_types::BoxFuture<'_, T>) -> T
+pub fn swallowtail_testkit::echo_mcp_helper_is_live(&std::path::Path) -> bool
 pub fn swallowtail_testkit::fixture_admission(alloc::sync::Arc<swallowtail_testkit::ScriptedAdmissionPort>) -> swallowtail_runtime::registered_tool::admission::ConsumerAdmissionBinding
 pub fn swallowtail_testkit::fixture_declaration(&str, swallowtail_runtime::registered_tool::identity::RegisteredToolExecutionKind) -> swallowtail_runtime::registered_tool::declaration::RegisteredToolDeclaration
 pub fn swallowtail_testkit::fixture_hosted_available_descriptor() -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
@@ -605,6 +612,7 @@ pub fn swallowtail_testkit::grok_acp_client_mcp_fixture_probe(&str, swallowtail_
 pub fn swallowtail_testkit::grok_acp_client_mcp_oracle_fixture_probe(&str, swallowtail_testkit::ClientMcpOracleShape) -> core::result::Result<swallowtail_testkit::GrokAcpClientMcpCapsule, swallowtail_testkit::GrokAcpClientMcpError>
 pub fn swallowtail_testkit::grok_acp_client_mcp_verdict(&[swallowtail_testkit::GrokAcpClientMcpFrame], &swallowtail_testkit::EchoMcpTranscript) -> swallowtail_testkit::ClientMcpVerdict
 pub fn swallowtail_testkit::grok_acp_client_mcp_verdict_from_frames(&[swallowtail_testkit::GrokAcpClientMcpFrame]) -> swallowtail_testkit::ClientMcpVerdict
+pub fn swallowtail_testkit::grok_acp_client_mcp_verdict_with_helper(&[swallowtail_testkit::GrokAcpClientMcpFrame], &swallowtail_testkit::EchoMcpTranscript, bool) -> swallowtail_testkit::ClientMcpVerdict
 pub fn swallowtail_testkit::grok_acp_echo_mcp_reply(&serde_json::value::Value) -> core::option::Option<serde_json::value::Value>
 pub fn swallowtail_testkit::grok_acp_echo_mcp_stdio_frame(&serde_json::value::Value) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_testkit::GrokAcpClientMcpError>
 pub fn swallowtail_testkit::isolated_grok_home() -> core::result::Result<std::path::PathBuf, swallowtail_testkit::GrokAcpClientMcpError>

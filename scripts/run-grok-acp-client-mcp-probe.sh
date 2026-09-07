@@ -9,6 +9,10 @@ set -euo pipefail
 # is created and exported so the Grok child cannot mutate host Grok state.
 # Desktop may export an already-authorized isolated GROK_HOME instead.
 #
+# The copied echo helper is not assumed live. The Rust live peer proves helper
+# liveness before scoring; a dead or unspawnable copy is echo_liveness_unproven,
+# not ignores_client_mcp, and must not freeze provider_limitation.
+#
 # Usage:
 #   SWALLOWTAIL_DESKTOP_GROK_ACP_CLIENT_MCP_PROBE=1 \
 #     scripts/run-grok-acp-client-mcp-probe.sh \

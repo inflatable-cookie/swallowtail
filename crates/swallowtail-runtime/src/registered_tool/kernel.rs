@@ -597,21 +597,27 @@ impl RegisteredToolOperationKernel {
                 RegisteredToolExecutionDisposition::Unknown,
             ));
         }
+        // The terminal commit runs as one serialized admission sequence, exactly
+        // like dispatch, progress, and delivery: the epoch and terminal truth
+        // are snapshotted under the permit, the live verdict is awaited under
+        // the same permit, and the result is revalidated before it is accepted.
         let permit = self.gate.acquire().await;
+        let epoch = self.locked().epoch;
         if let Err(error) = self
             .require_current(AdmissionPhase::BeforeDelivery, &permit)
             .await
         {
-            let disposition = match outcome.result() {
-                Some(_) => RegisteredToolExecutionDisposition::Executed,
-                None => outcome.disposition(),
-            };
             let _ = error;
             return Ok(RegisteredToolOutcome::failed(
                 call,
                 reject(RegisteredToolFailureKind::Revoked),
-                disposition,
+                self.honest_disposition(&outcome),
             ));
+        }
+        if let Some(stale) =
+            self.terminal_commit_failure(call, epoch, expires_at, &outcome, &permit)
+        {
+            return Ok(stale);
         }
         if let Some(result) = outcome.result()
             && result.payload().byte_len() > self.binding.effective_bounds().max_result_bytes()
@@ -623,6 +629,101 @@ impl RegisteredToolOperationKernel {
             ));
         }
         Ok(outcome)
+    }
+
+    /// Reports the honest disposition of an outcome that cannot be accepted.
+    ///
+    /// A dispatcher that produced a result demonstrably executed. Otherwise the
+    /// dispatcher's own disposition stands, and it never becomes a claim that
+    /// the effect did not happen.
+    fn honest_disposition(
+        &self,
+        outcome: &RegisteredToolOutcome,
+    ) -> RegisteredToolExecutionDisposition {
+        match outcome.result() {
+            Some(_) => RegisteredToolExecutionDisposition::Executed,
+            None => outcome.disposition(),
+        }
+    }
+
+    /// Revalidates terminal truth after the awaited verdict, under the permit.
+    ///
+    /// A stale successful outcome never commits: an epoch change, freeze,
+    /// revocation, close, failed cleanup, prior settlement, cancellation,
+    /// correlation change, or an effective deadline that elapsed during the
+    /// verdict all reject it. The reported disposition stays honest, so a call
+    /// whose effect may have landed is never reported as not executed.
+    fn terminal_commit_failure(
+        &self,
+        call: &RegisteredToolCall,
+        epoch: u64,
+        expires_at: Deadline,
+        outcome: &RegisteredToolOutcome,
+        permit: &AdmissionPermit<'_>,
+    ) -> Option<RegisteredToolOutcome> {
+        let _ = permit;
+        let now = self.time.now();
+        let state = self.locked();
+        let disposition = self.honest_disposition(outcome);
+        if state.revoked {
+            return Some(RegisteredToolOutcome::failed(
+                call,
+                reject(RegisteredToolFailureKind::Revoked),
+                disposition,
+            ));
+        }
+        if state.cleanup_failed {
+            return Some(RegisteredToolOutcome::failed(
+                call,
+                reject(RegisteredToolFailureKind::TeardownFailed),
+                disposition,
+            ));
+        }
+        if state.admission != RegisteredToolAdmissionState::Open {
+            return Some(RegisteredToolOutcome::failed(
+                call,
+                reject(RegisteredToolFailureKind::PostTerminalCorrelation),
+                disposition,
+            ));
+        }
+        let Some(active) = state.active.as_ref() else {
+            return Some(RegisteredToolOutcome::failed(
+                call,
+                reject(RegisteredToolFailureKind::ForeignCorrelation),
+                disposition,
+            ));
+        };
+        if active.call_id != *call.call_id() || active.settled {
+            return Some(RegisteredToolOutcome::failed(
+                call,
+                reject(RegisteredToolFailureKind::ForeignCorrelation),
+                disposition,
+            ));
+        }
+        if active.cancelled.load(Ordering::SeqCst) {
+            return Some(RegisteredToolOutcome::failed(
+                call,
+                reject(RegisteredToolFailureKind::Cancelled),
+                disposition,
+            ));
+        }
+        if reached(now, active.expires_at) || reached(now, expires_at) {
+            return Some(RegisteredToolOutcome::failed(
+                call,
+                reject(RegisteredToolFailureKind::DeadlineExceeded),
+                RegisteredToolExecutionDisposition::Unknown,
+            ));
+        }
+        if state.epoch != epoch {
+            // Terminal truth changed under a verdict taken against an earlier
+            // epoch. The outcome is stale and never commits.
+            return Some(RegisteredToolOutcome::failed(
+                call,
+                reject(RegisteredToolFailureKind::PostTerminalCorrelation),
+                disposition,
+            ));
+        }
+        None
     }
 }
 

@@ -7,6 +7,220 @@ use std::sync::Arc;
 use std::time::Duration;
 use swallowtail_core::{ConfiguredInstanceId, ExecutionHostId, HostServiceKind};
 
+/// Admission port that holds one exact validation pending until released.
+///
+/// `hold_from(n)` suspends the nth live verdict and every later one, so a test
+/// can stop the kernel precisely inside its terminal verdict.
+#[derive(Default)]
+struct HoldableAdmission {
+    hold_from: std::sync::Mutex<Option<usize>>,
+    waiters: std::sync::Mutex<Vec<std::task::Waker>>,
+    requests: std::sync::Mutex<usize>,
+}
+
+impl HoldableAdmission {
+    fn hold_from(&self, index: usize) {
+        *self.hold_from.lock().expect("hold lock") = Some(index);
+    }
+
+    fn release(&self) {
+        *self.hold_from.lock().expect("hold lock") = None;
+        for waker in std::mem::take(&mut *self.waiters.lock().expect("waiter lock")) {
+            waker.wake();
+        }
+    }
+
+    fn requests(&self) -> usize {
+        *self.requests.lock().expect("request lock")
+    }
+}
+
+struct HeldVerdict<'port> {
+    port: &'port HoldableAdmission,
+    index: Option<usize>,
+}
+
+impl Future for HeldVerdict<'_> {
+    type Output = Result<AdmissionVerdict, crate::RuntimeFailure>;
+
+    fn poll(
+        mut self: std::pin::Pin<&mut Self>,
+        context: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Self::Output> {
+        let index = match self.index {
+            Some(index) => index,
+            None => {
+                let mut requests = self.port.requests.lock().expect("request lock");
+                *requests += 1;
+                let index = *requests;
+                drop(requests);
+                self.index = Some(index);
+                index
+            }
+        };
+        let held = matches!(
+            *self.port.hold_from.lock().expect("hold lock"),
+            Some(from) if index >= from
+        );
+        if held {
+            let mut waiters = self.port.waiters.lock().expect("waiter lock");
+            let waker = context.waker();
+            if !waiters.iter().any(|waiting| waiting.will_wake(waker)) {
+                waiters.push(waker.clone());
+            }
+            return std::task::Poll::Pending;
+        }
+        std::task::Poll::Ready(Ok(AdmissionVerdict::Current))
+    }
+}
+
+impl ConsumerAdmissionHostService for HoldableAdmission {
+    fn validate(
+        &self,
+        _binding: &ConsumerAdmissionBinding,
+        _phase: AdmissionPhase,
+    ) -> crate::BoxFuture<'_, Result<AdmissionVerdict, crate::RuntimeFailure>> {
+        Box::pin(HeldVerdict {
+            port: self,
+            index: None,
+        })
+    }
+}
+
+fn holdable_admission(port: Arc<HoldableAdmission>) -> ConsumerAdmissionBinding {
+    ConsumerAdmissionBinding::new(
+        ConsumerProcessIncarnation::new("incarnation").expect("incarnation"),
+        ConsumerWorkspaceGeneration::initial(),
+        ConsumerTaskGeneration::initial(),
+        AdmittedTaskId::new("task").expect("task"),
+        AdmittedSessionId::new("session").expect("session"),
+        AdmittedAttemptId::new("attempt").expect("attempt"),
+        port,
+    )
+}
+
+/// Opens one kernel whose live verdicts a test controls exactly.
+fn held_kernel(
+    port: &Arc<HoldableAdmission>,
+    clock: &Arc<FixedClock>,
+    deadline: Deadline,
+) -> (
+    Arc<RegisteredToolOperationKernel>,
+    RegisteredToolBridgeLease,
+) {
+    let hosts = ready_hosts();
+    let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
+        .require_ready()
+        .expect("proof");
+    let request = RegisteredToolOpenRequest::new(
+        host(),
+        ConfiguredInstanceId::new("instance").expect("instance"),
+        ScopeId::new("scope").expect("scope"),
+        RuntimeTurnId::new("turn").expect("turn"),
+        selection(),
+        holdable_admission(Arc::clone(port)),
+        deadline,
+    );
+    RegisteredToolOperationKernel::open(
+        request,
+        &proof,
+        Arc::new(EchoDispatcher),
+        Arc::clone(clock) as Arc<dyn TimeService>,
+        RegisteredToolLeaseGeneration::initial(),
+        RegisteredToolTransportGeneration::initial(),
+    )
+    .expect("open")
+}
+
+/// Suspends one call precisely inside its terminal verdict.
+///
+/// The dispatch verdict completes, the dispatcher settles, and the second live
+/// verdict — the terminal `BeforeDelivery` check — is left in flight.
+fn suspend_at_terminal_verdict<'call>(
+    call: &mut crate::BoxFuture<'call, Result<RegisteredToolOutcome, crate::RuntimeFailure>>,
+    port: &HoldableAdmission,
+) {
+    let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+    assert!(
+        call.as_mut().poll(&mut context).is_pending(),
+        "the call is suspended inside its terminal verdict, not settled"
+    );
+    assert_eq!(
+        port.requests(),
+        2,
+        "the dispatch verdict completed and the terminal verdict is pending"
+    );
+}
+
+#[test]
+fn a_freeze_during_the_terminal_verdict_rejects_a_stale_success() {
+    let port = Arc::new(HoldableAdmission::default());
+    let clock = Arc::new(FixedClock::default());
+    let (kernel, lease) = held_kernel(
+        &port,
+        &clock,
+        Deadline::at(MonotonicInstant::from_ticks(10_000)),
+    );
+    // Let the dispatch verdict through and hold the terminal one.
+    port.hold_from(2);
+    let mut call = lease.call(call_request("frozen-terminal"));
+    suspend_at_terminal_verdict(&mut call, &port);
+
+    // A concurrent terminal freeze lands while that verdict is pending.
+    kernel.freeze();
+    port.release();
+    let outcome = block(call).expect("the kernel settles the call");
+
+    assert!(
+        outcome.result().is_none(),
+        "a stale success never commits after a terminal freeze"
+    );
+    assert_eq!(
+        outcome.failure().map(RegisteredToolFailure::kind),
+        Some(RegisteredToolFailureKind::PostTerminalCorrelation)
+    );
+    assert_eq!(
+        outcome.disposition(),
+        RegisteredToolExecutionDisposition::Executed,
+        "the dispatcher produced a result, so the disposition stays honest"
+    );
+    assert!(!outcome.permits_explicit_retry());
+}
+
+#[test]
+fn a_deadline_elapsing_during_the_terminal_verdict_rejects_a_stale_success() {
+    let port = Arc::new(HoldableAdmission::default());
+    let clock = Arc::new(FixedClock::default());
+    let (_kernel, lease) = held_kernel(
+        &port,
+        &clock,
+        Deadline::at(MonotonicInstant::from_ticks(10_000)),
+    );
+    port.hold_from(2);
+    let mut call = lease.call(call_request("expired-terminal"));
+    suspend_at_terminal_verdict(&mut call, &port);
+
+    // The effective deadline elapses while the terminal verdict is pending.
+    clock.set(10_001);
+    port.release();
+    let outcome = block(call).expect("the kernel settles the call");
+
+    assert!(
+        outcome.result().is_none(),
+        "a stale success never commits after the deadline elapses"
+    );
+    assert_eq!(
+        outcome.failure().map(RegisteredToolFailure::kind),
+        Some(RegisteredToolFailureKind::DeadlineExceeded)
+    );
+    assert_eq!(
+        outcome.disposition(),
+        RegisteredToolExecutionDisposition::Unknown,
+        "an expired terminal never claims the effect did or did not land"
+    );
+    assert!(!outcome.permits_explicit_retry());
+}
+
 struct AlwaysCurrent;
 
 impl ConsumerAdmissionHostService for AlwaysCurrent {

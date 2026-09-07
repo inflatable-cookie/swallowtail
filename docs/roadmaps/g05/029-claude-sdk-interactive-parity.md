@@ -66,6 +66,9 @@ forces a minor.
 
 ## Batch Cards
 
+- [119 Claude SDK First-Turn Model Qualification Evidence](batch-cards/119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; observer evidence for `supported_model_rejected`; Contract 053 amended; producer diagnosis H1
+- [120 Claude SDK Loaded Module Version Verification](batch-cards/120-claude-sdk-loaded-module-version-verification.md) — ready on card 119; H2, `sdk_version_mismatch` at open
+- [121 Claude SDK First-Turn Rejection Terminal State](batch-cards/121-claude-sdk-first-turn-rejection-terminal-state.md) — ready on card 120; poisoned retry no longer misreports `init_missing`
 - [108 Claude Code Response-Only Project Location](batch-cards/108-claude-code-response-only-project-location.md) — planned; after the `v0.4.3` tag; manifest promoted then
 - [105 Claude SDK Termination Cause Propagation](batch-cards/105-claude-sdk-termination-cause-propagation.md) — ready; consumer-critical; the tagged driver discards the sidecar's terminal code and result fields; `v0.4.3` content; precedes card 083 in the shared crate
 - [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — delivered; PR 221 permission policy and PR 224 ambient read-write editing
@@ -323,4 +326,64 @@ Consumer-critical: it takes the SDK crate ahead of card 083.
 | Acceptance evidence | fake-SDK proofs per terminal code and per `turn_ended` field; additive API diff |
 | Review oracle | the card's invariant |
 | Stop conditions | actionability needs provider error text (return to Chatterbox) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+### Card 119 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+
+| Field | Card 119 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | current `main`; Contract 053 amendment on `main` |
+| Completion conditions | bounded evidence body on the sidecar diagnostic record; pump forwards to `DebugObservation`; four new fixtures plus two unchanged; predicate and failure shape byte-identical; guide, changelog, baseline; one PR |
+| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/connection/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/wire/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/failure.rs`; `crates/swallowtail-adapter-claude-agent/src/sdk/driver/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.3/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `sdk/profile*`; `claude_code_*` and ACP modules; Contract 053 (Chatterbox-owned); contracts; every other crate |
+| Approved concurrent siblings | cards 084, 086, 087, 088, 116, 118, 104 |
+| Serial edges | cards 120 and 121 follow this card (shared sidecar) |
+| Worker capability class | Rust plus Node sidecar worker; frontier-tier; no credentials; no live Claude call |
+| Acceptance evidence | recording-observer fixtures; additive API diff |
+| Review oracle | the card's invariant |
+| Stop conditions | evidence needs the full catalogue or raw error text (return to Chatterbox) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+### Card 120 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+
+| Field | Card 120 |
+| --- | --- |
+| Readiness | ready on card 119's merge |
+| Prerequisites | card 119 merged |
+| Completion conditions | loaded `package.json` verified at open; `sdk_version_mismatch` and `sdk_identity_unverifiable` typed; open evidence carries the loaded version; three fixtures; guide, changelog, baseline; one PR |
+| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/connection/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/wire/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/failure.rs`; `crates/swallowtail-adapter-claude-agent/src/sdk/driver/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.3/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `sdk/profile*`; `claude_code_*` and ACP modules; Contract 053 (Chatterbox-owned); contracts; every other crate |
+| Approved concurrent siblings | cards 084, 086, 087, 088, 116, 118 |
+| Serial edges | follows card 119; card 121 follows this card |
+| Worker capability class | Rust plus Node sidecar worker; no live call |
+| Acceptance evidence | fixtures for match, mismatch, missing manifest |
+| Review oracle | the card's invariant |
+| Stop conditions | no readable manifest at the module path |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+### Card 121 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+
+| Field | Card 121 |
+| --- | --- |
+| Readiness | ready on card 120's merge |
+| Prerequisites | cards 119 and 120 merged |
+| Completion conditions | session terminal after first-turn rejection; retry fails `session_rejected_terminal` naming the original code; `init_missing` reserved; fixtures; guide, changelog, baseline; one PR |
+| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/connection/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/wire/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/failure.rs`; `crates/swallowtail-adapter-claude-agent/src/sdk/driver/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.3/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `sdk/profile*`; `claude_code_*` and ACP modules; Contract 053 (Chatterbox-owned); contracts; every other crate |
+| Approved concurrent siblings | cards 084, 086, 087, 088, 116, 118 |
+| Serial edges | follows card 120 |
+| Worker capability class | Rust plus Node sidecar worker; no live call |
+| Acceptance evidence | rejection-then-retry and rejection-then-close fixtures |
+| Review oracle | the card's invariant |
+| Stop conditions | terminal state unrepresentable in the fixture |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

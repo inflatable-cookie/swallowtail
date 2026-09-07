@@ -2,6 +2,9 @@
 
 ## Ready
 
+- [119-claude-sdk-first-turn-model-qualification-evidence.md](./119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; bounded observer evidence for the first-turn model rejection; lead of the producer-diagnosis trio
+- [120-claude-sdk-loaded-module-version-verification.md](./120-claude-sdk-loaded-module-version-verification.md) — ready; serial after 119; loaded SDK version verified at open
+- [121-claude-sdk-first-turn-rejection-terminal-state.md](./121-claude-sdk-first-turn-rejection-terminal-state.md) — ready; serial after 120; terminal state after first-turn rejection
 - [105-claude-sdk-termination-cause-propagation.md](./105-claude-sdk-termination-cause-propagation.md) — ready; consumer-critical; surface the sidecar terminal code, result fields, close evidence, and stderr tail; precedes card 083
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — ready; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — ready; g05.029 priority 5

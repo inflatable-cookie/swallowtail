@@ -129,3 +129,18 @@ compiling through a defaulted or compatibility-preserving trait shape.
 - guides state host opt-in wiring without requiring observer registration for
   ordinary integration
 - focused validation passes without live provider work
+
+## Model Qualification Evidence — 2026-09-07
+
+Under the interface-version-or-qualification kind, an observation may carry
+bounded model qualification evidence: a requested model id and an effective
+model id (each bounded, at most 128 bytes), a catalogue size, a fixed-length
+truncated digest of the sorted de-duplicated catalogue ids, membership
+booleans for the requested and effective ids, the query source, phase, and
+declared versus loaded interface versions. A full model catalogue, prompt or
+content bodies, paths, credentials, and raw provider error text are
+prohibited in this evidence. The correlated safe code must be the exact code
+raised on the public failure path, and emission never changes that path.
+Contract 020 governs the model identity vocabulary itself; this amendment
+only admits its bounded projection into debug observations. (Promoted with
+g05.029 card 119.)

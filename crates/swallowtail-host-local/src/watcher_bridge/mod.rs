@@ -1,6 +1,5 @@
 //! Local Contract 060 watcher HTTP bridge.
 
-mod bearer;
 mod close;
 mod failure;
 mod http;
@@ -13,8 +12,8 @@ mod state;
 
 pub use proof::WatcherBridgeProofKind;
 
+use crate::operation_bridge::generate_operation_secret;
 use crate::output::failure;
-use bearer::generate_bearer;
 use close::shutdown_live;
 use failure::{closed_failure, foreign_failure, identity_failure};
 use listener::{bind_loopback, endpoint_url, spawn_accept};
@@ -60,8 +59,8 @@ impl LocalWatcherBridgeHostService {
             .state
             .lock()
             .expect("watcher bridge registry lock poisoned");
-        if let Some(generation) = registry.by_turn.get(turn)
-            && let Some(live) = registry.live.get(generation)
+        if let Some(generation) = registry.leases.generation_for_turn(turn)
+            && let Some(live) = registry.leases.get(generation)
         {
             return live.proof.snapshot();
         }
@@ -83,25 +82,21 @@ impl LocalWatcherBridgeHostService {
         request: WatcherBridgeOpenRequest,
     ) -> Result<WatcherBridgeLease, RuntimeFailure> {
         let (listener, addr) = bind_loopback()?;
-        let bearer = generate_bearer()?;
-        let token_secret = generate_bearer()?;
+        let bearer = generate_operation_secret()?;
+        let token_secret = generate_operation_secret()?;
         let endpoint = endpoint_url(addr);
         let generation = {
             let mut registry = self
                 .state
                 .lock()
                 .expect("watcher bridge registry lock poisoned");
-            if registry.by_turn.contains_key(request.turn()) {
-                return Err(failure(
+            let reserved = registry.leases.reserve(request.turn()).ok_or_else(|| {
+                failure(
                     "swallowtail.watcher_bridge.already_open",
                     "Watcher bridge already has an open lease for this turn",
-                ));
-            }
-            let generation = WatcherBridgeGeneration::new(registry.next_generation)
-                .ok_or_else(identity_failure)?;
-            registry.next_generation = registry.next_generation.saturating_add(1);
-            registry.by_turn.insert(request.turn().clone(), generation);
-            generation
+                )
+            })?;
+            WatcherBridgeGeneration::new(reserved).ok_or_else(identity_failure)?
         };
         let live = Arc::new(LiveLease {
             execution_host_id: self.execution_host_id.clone(),
@@ -136,8 +131,8 @@ impl LocalWatcherBridgeHostService {
         self.state
             .lock()
             .expect("watcher bridge registry lock poisoned")
-            .live
-            .insert(generation, Arc::clone(&live));
+            .leases
+            .insert(generation.get(), Arc::clone(&live));
         let close_state = Arc::clone(&self.state);
         let close_live = Arc::clone(&live);
         Ok(WatcherBridgeLease::new(
@@ -161,8 +156,7 @@ impl LocalWatcherBridgeHostService {
             .state
             .lock()
             .expect("watcher bridge registry lock poisoned");
-        registry.by_turn.remove(turn);
-        registry.live.remove(&generation);
+        registry.leases.forget(turn, generation.get());
     }
 
     fn live_for(&self, lease: &WatcherBridgeLease) -> Result<Arc<LiveLease>, RuntimeFailure> {
@@ -174,9 +168,8 @@ impl LocalWatcherBridgeHostService {
             .lock()
             .expect("watcher bridge registry lock poisoned");
         let live = registry
-            .live
-            .get(&lease.generation())
-            .cloned()
+            .leases
+            .get(lease.generation().get())
             .ok_or_else(closed_failure)?;
         live.matches(
             lease.execution_host_id(),

@@ -58,6 +58,7 @@ mod provider_session_management;
 mod provider_session_operation;
 mod provider_session_reconciliation;
 mod realtime_media;
+mod registered_tool;
 mod registration;
 mod roles;
 mod run_loop;
@@ -311,6 +312,41 @@ pub use realtime_media::{
     MediaChunk, MediaInputCommit, MediaTranscript, OpenRealtimeMediaSessionRequest,
     RealtimeMediaEvent, RealtimeMediaEventKind, RealtimeMediaFailure, RealtimeMediaFailureKind,
     RealtimeMediaResponseStatus, RealtimeMediaSessionState,
+};
+pub use registered_tool::{
+    AdmissionPhase, AdmissionVerdict, AdmittedAttemptId, AdmittedSessionId, AdmittedTaskId,
+    ConsumerAdmissionBinding, ConsumerAdmissionHostService, ConsumerProcessIncarnation,
+    ConsumerTaskGeneration, ConsumerWorkspaceGeneration,
+    MAX_REGISTERED_TOOL_AGGREGATE_SCHEMA_BYTES, MAX_REGISTERED_TOOL_ARGUMENT_BYTES,
+    MAX_REGISTERED_TOOL_CREDENTIAL_REFERENCES, MAX_REGISTERED_TOOL_DECLARATIONS,
+    MAX_REGISTERED_TOOL_IDENTITY_BYTES, MAX_REGISTERED_TOOL_OUTSTANDING_CALLS,
+    MAX_REGISTERED_TOOL_PROGRESS_ITEM_BYTES, MAX_REGISTERED_TOOL_PROTOCOL_VERSIONS,
+    MAX_REGISTERED_TOOL_QUEUED_PROGRESS_ITEMS, MAX_REGISTERED_TOOL_RECIPE_REFERENCES,
+    MAX_REGISTERED_TOOL_REQUIRED_SERVICES, MAX_REGISTERED_TOOL_RESULT_BYTES,
+    MAX_REGISTERED_TOOL_SCHEMA_BYTES, MAX_REGISTERED_TOOL_SELECTED_TOOLS,
+    MAX_REGISTERED_TOOL_TRANSPORTS, PreparedRegisteredToolBinding, REGISTERED_TOOL_CLEANUP_BUDGET,
+    REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION, REGISTERED_TOOL_MAX_CALL_DURATION,
+    REGISTERED_TOOL_OPEN_BUDGET, REGISTERED_TOOL_QUALIFIED_TRANSPORTS, RegisteredServerId,
+    RegisteredServerRevision, RegisteredToolAdmissionState, RegisteredToolBearer,
+    RegisteredToolBounds, RegisteredToolBridgeHostService, RegisteredToolBridgeLease,
+    RegisteredToolBridgeToken, RegisteredToolCall, RegisteredToolCallChannel, RegisteredToolCallId,
+    RegisteredToolCallRequest, RegisteredToolCancellation, RegisteredToolCancellationSource,
+    RegisteredToolCleanupCause, RegisteredToolCompletionState, RegisteredToolDeclaration,
+    RegisteredToolDispatchContext, RegisteredToolDispatcher, RegisteredToolEffectPosture,
+    RegisteredToolEndpoint, RegisteredToolEnforcedPosture, RegisteredToolExecutionDisposition,
+    RegisteredToolExecutionKind, RegisteredToolFailure, RegisteredToolFailureKind,
+    RegisteredToolId, RegisteredToolLeaseGeneration, RegisteredToolLifecycleState,
+    RegisteredToolLimits, RegisteredToolLocalName, RegisteredToolNamespace,
+    RegisteredToolOpenRequest, RegisteredToolOperationKernel, RegisteredToolOutcome,
+    RegisteredToolPayload, RegisteredToolPortAvailability, RegisteredToolPreparation,
+    RegisteredToolProgress, RegisteredToolProgressChannel, RegisteredToolProgressSink,
+    RegisteredToolProtocolVersion, RegisteredToolReadiness, RegisteredToolReasonCode,
+    RegisteredToolResult, RegisteredToolRetryPosture, RegisteredToolSchema,
+    RegisteredToolSchemaDialect, RegisteredToolSchemaDigest, RegisteredToolSchemaDocument,
+    RegisteredToolSchemaMediaType, RegisteredToolSchemaNamespace, RegisteredToolSelection,
+    RegisteredToolSnapshot, RegisteredToolSnapshotInput, RegisteredToolSource,
+    RegisteredToolSourceId, RegisteredToolTransport, RegisteredToolTransportGeneration,
+    RegisteredToolTransportSupport, ValidatedRegisteredToolBinding, first_progress_sequence,
 };
 pub use registration::{DriverRegistration, RegistrationFailure};
 pub use roles::{

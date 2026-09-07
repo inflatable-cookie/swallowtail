@@ -9,13 +9,13 @@ use std::collections::HashMap;
 use std::ffi::OsString;
 use std::path::PathBuf;
 use std::sync::Arc;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use swallowtail_core::{
     DEFAULT_MAX_WATCHERS_PER_TURN, ExecutionHostId, ModelArtifactRef, WatcherOperationData,
 };
 use swallowtail_runtime::{
     AttachmentRef, CredentialRef, EndpointRef, EnvironmentRef, ExecutableRef, ProcessRequest,
-    SchemaRef, WorkingResourceRef,
+    REGISTERED_TOOL_CLEANUP_BUDGET, RegisteredToolDispatcher, SchemaRef, WorkingResourceRef,
 };
 
 use crate::task::DEFAULT_TASK_REAP_CAPACITY;
@@ -44,6 +44,8 @@ pub struct LocalProcessHostBuilder {
     pub(crate) approvals: LocalApprovals,
     pub(crate) watcher_capacity: usize,
     pub(crate) task_reap_capacity: usize,
+    pub(crate) registered_tool_dispatcher: Option<Arc<dyn RegisteredToolDispatcher>>,
+    pub(crate) registered_tool_cleanup_budget: Duration,
 }
 
 impl LocalProcessHostBuilder {
@@ -147,6 +149,29 @@ impl LocalProcessHostBuilder {
         self
     }
 
+    /// Mounts one linked Contract 063 dispatch and validation implementation.
+    ///
+    /// Omitting the dispatcher leaves the optional registered-tool bridge port
+    /// unregistered and preserves every previous composition behavior.
+    #[must_use]
+    pub fn with_registered_tool_dispatcher(
+        mut self,
+        dispatcher: Arc<dyn RegisteredToolDispatcher>,
+    ) -> Self {
+        self.registered_tool_dispatcher = Some(dispatcher);
+        self
+    }
+
+    /// Replaces the bounded joined-cleanup budget for registered-tool leases.
+    ///
+    /// The budget bounds one normal join attempt. It is never a licence to
+    /// detach an uncooperative dispatcher.
+    #[must_use]
+    pub fn with_registered_tool_cleanup_budget(mut self, budget: Duration) -> Self {
+        self.registered_tool_cleanup_budget = budget;
+        self
+    }
+
     /// Replaces the default attachment and schema materialization limits.
     #[must_use]
     pub fn with_materialization_limits(mut self, limits: LocalMaterializationLimits) -> Self {
@@ -168,6 +193,8 @@ impl LocalProcessHostBuilder {
             execution_host_id: self.execution_host_id,
             watcher_capacity: self.watcher_capacity,
             task_reap_capacity: self.task_reap_capacity,
+            registered_tool_dispatcher: self.registered_tool_dispatcher,
+            registered_tool_cleanup_budget: self.registered_tool_cleanup_budget,
             monotonic_origin: Instant::now(),
         }
     }
@@ -186,6 +213,8 @@ pub struct LocalProcessHost {
     pub(crate) execution_host_id: Option<ExecutionHostId>,
     pub(crate) watcher_capacity: usize,
     pub(crate) task_reap_capacity: usize,
+    pub(crate) registered_tool_dispatcher: Option<Arc<dyn RegisteredToolDispatcher>>,
+    pub(crate) registered_tool_cleanup_budget: Duration,
     pub(crate) monotonic_origin: Instant,
 }
 
@@ -201,6 +230,8 @@ impl LocalProcessHost {
             approvals: LocalApprovals::default(),
             watcher_capacity: DEFAULT_MAX_WATCHERS_PER_TURN,
             task_reap_capacity: DEFAULT_TASK_REAP_CAPACITY,
+            registered_tool_dispatcher: None,
+            registered_tool_cleanup_budget: REGISTERED_TOOL_CLEANUP_BUDGET,
         }
     }
 }

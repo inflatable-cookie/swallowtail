@@ -40,6 +40,7 @@ pub struct swallowtail_host_local::LocalHostServices
 impl swallowtail_host_local::LocalHostServices
 pub fn swallowtail_host_local::LocalHostServices::deadline_after(&self, core::time::Duration) -> swallowtail_runtime::time::Deadline
 pub const fn swallowtail_host_local::LocalHostServices::process_host(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalProcessHost>
+pub fn swallowtail_host_local::LocalHostServices::registered_tool_lease_count(&self) -> usize
 pub const fn swallowtail_host_local::LocalHostServices::services(&self) -> &swallowtail_runtime::host_registry::HostServices
 pub fn swallowtail_host_local::LocalHostServices::shutdown_task_reapers(&self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
 pub const fn swallowtail_host_local::LocalHostServices::task_service(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalScopedTaskService>
@@ -95,6 +96,8 @@ pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_watcher_operatio
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_working_resource(self, swallowtail_runtime::host_reference::WorkingResourceRef, impl core::convert::Into<std::path::PathBuf>) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::build(self) -> swallowtail_host_local::LocalProcessHost
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_materialization_limits(self, swallowtail_host_local::LocalMaterializationLimits) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::with_registered_tool_cleanup_budget(self, core::time::Duration) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::with_registered_tool_dispatcher(self, alloc::sync::Arc<dyn swallowtail_runtime::registered_tool::dispatch::RegisteredToolDispatcher>) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_task_reap_capacity(self, usize) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_watcher_capacity(self, usize) -> Self
 impl swallowtail_host_local::LocalProcessHostBuilder

@@ -2,6 +2,7 @@ mod live;
 
 use super::failure::identity_failure;
 use super::proof::{ProofLog, WatcherBridgeProofKind};
+use crate::operation_bridge::LeaseTable;
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
@@ -17,24 +18,11 @@ use zeroize::Zeroizing;
 
 pub(super) const MAX_RETIRED_PROOFS: usize = 64;
 
+#[derive(Default)]
 pub(super) struct BridgeRegistry {
-    pub(super) next_generation: u64,
-    pub(super) by_turn: BTreeMap<RuntimeTurnId, WatcherBridgeGeneration>,
-    pub(super) live: BTreeMap<WatcherBridgeGeneration, Arc<LiveLease>>,
+    pub(super) leases: LeaseTable<LiveLease>,
     pub(super) retired_proof: BTreeMap<RuntimeTurnId, Vec<WatcherBridgeProofKind>>,
     pub(super) retired_order: VecDeque<RuntimeTurnId>,
-}
-
-impl Default for BridgeRegistry {
-    fn default() -> Self {
-        Self {
-            next_generation: 1,
-            by_turn: BTreeMap::new(),
-            live: BTreeMap::new(),
-            retired_proof: BTreeMap::new(),
-            retired_order: VecDeque::new(),
-        }
-    }
 }
 
 impl BridgeRegistry {

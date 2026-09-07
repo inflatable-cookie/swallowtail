@@ -23,6 +23,9 @@ swallowtail-core.workspace = true
 swallowtail-runtime.workspace = true
 zeroize = "1"
 
+[dev-dependencies]
+swallowtail-testkit.workspace = true
+
 [target.'cfg(unix)'.dependencies]
 nix = { version = "0.31.3", default-features = false, features = ["fs", "signal"] }
 

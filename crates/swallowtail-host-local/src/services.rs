@@ -1,3 +1,4 @@
+use crate::registered_tool::LocalRegisteredToolBridgeHostService;
 use crate::task::LocalTaskReaperOwner;
 use crate::watcher::LocalWatcherHostService;
 use crate::watcher_bridge::{LocalWatcherBridgeHostService, WatcherBridgeProofKind};
@@ -19,6 +20,7 @@ pub struct LocalHostServices {
     task_service: Arc<LocalScopedTaskService>,
     task_reaper_owner: LocalTaskReaperOwner,
     watcher_bridge: Arc<LocalWatcherBridgeHostService>,
+    registered_tool_bridge: Option<Arc<LocalRegisteredToolBridgeHostService>>,
     services: HostServices,
 }
 
@@ -43,6 +45,19 @@ impl LocalHostServices {
             watcher.clone(),
             process_host.clone(),
         ));
+        let registered_tool_bridge =
+            process_host
+                .registered_tool_dispatcher
+                .clone()
+                .map(|dispatcher| {
+                    Arc::new(
+                        LocalRegisteredToolBridgeHostService::new(
+                            execution_host_id.clone(),
+                            dispatcher,
+                        )
+                        .with_cleanup_budget(process_host.registered_tool_cleanup_budget),
+                    )
+                });
         let services = HostServices::new(execution_host_id)
             .with_task(task_service.clone())
             .with_time(process_host.clone())
@@ -57,11 +72,16 @@ impl LocalHostServices {
             .with_schema(process_host.clone())
             .with_watcher(watcher)
             .with_watcher_bridge(watcher_bridge.clone());
+        let services = match registered_tool_bridge.as_ref() {
+            Some(bridge) => services.with_registered_tool_bridge(bridge.clone()),
+            None => services,
+        };
         Self {
             process_host,
             task_service,
             task_reaper_owner,
             watcher_bridge,
+            registered_tool_bridge,
             services,
         }
     }
@@ -101,6 +121,17 @@ impl LocalHostServices {
     #[must_use]
     pub fn watcher_bridge_proof(&self, turn: &RuntimeTurnId) -> Vec<WatcherBridgeProofKind> {
         self.watcher_bridge.proof_facts(turn)
+    }
+
+    /// Returns how many registered-tool leases this composition still owns.
+    ///
+    /// A failed cleanup retains its lease here; it is never detached and never
+    /// inherited by a later attempt.
+    #[must_use]
+    pub fn registered_tool_lease_count(&self) -> usize {
+        self.registered_tool_bridge
+            .as_ref()
+            .map_or(0, |bridge| bridge.live_lease_count())
     }
 
     /// Derives one deadline from this composition's monotonic clock and an

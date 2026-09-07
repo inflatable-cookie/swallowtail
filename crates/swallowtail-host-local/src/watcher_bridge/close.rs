@@ -43,8 +43,7 @@ pub(super) fn shutdown_live(
     {
         let mut registry = state.lock().expect("watcher bridge registry lock poisoned");
         registry.retire_proof(turn.clone(), kinds);
-        registry.by_turn.remove(&turn);
-        registry.live.remove(&generation);
+        registry.leases.forget(&turn, generation.get());
     }
     let outcome = match drive(live.watcher.stop_and_join_all(turn.clone(), cause)) {
         Ok((_, outcome)) => Ok(outcome),

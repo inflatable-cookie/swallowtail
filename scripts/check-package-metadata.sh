@@ -66,10 +66,17 @@ jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" \
          .name == "swallowtail-adapter-zcode" or
          .name == "swallowtail-adapter-pi" or
          .name == "swallowtail-adapter-qwen") and
-        .features == {"live-probes":[]}
+        .features == {"live-probes":[]} or
+        (.name == "swallowtail-host-local" and
+         .features == {"mediated-stdio-proxy":[]})
       )
     ) and
-    all(.targets[]; all(.kind[]; . == "lib" or . == "test" or . == "example"))
+    all(.targets[];
+      all(.kind[]; . == "lib" or . == "test" or . == "example") or
+      (.name == "swallowtail-registered-tool-courier" and
+       .kind == ["bin"] and
+       ."required-features" == ["mediated-stdio-proxy"])
+    )
   ) and
   all(.packages[]; .rust_version == $rust_msrv) and
   all(.packages[].dependencies[];

@@ -898,6 +898,23 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   sweep.
 - Surface: `crates/swallowtail-adapter-anthropic/tests/managed_driver/`.
 
+### [ ] Claude registered-tool close/join fixture flakes in the process-spawning shard — 2026-09-08
+
+- Friction: PR 285 run 34169972936 failed
+  `claude_agent_sdk_driver::registered_tool_route::close_joins_the_registered_listener`
+  at session open with `fixture.claude_agent_sdk.failed`; the same adapter
+  sources passed on the branch's earlier and later heads.
+- Impact: scope comparison excludes Card 137's testkit-only change as the
+  cause, but the fixture failure was not root-caused. A green rerun is weak
+  evidence for the close-and-join path used by the pending Claude live gate.
+- Fix shape: make sidecar startup and listener readiness observable through
+  deterministic fixture signals, retain bounded process output on setup
+  failure, and prove the close/join case repeatedly under the isolated
+  process-spawning selector without relying on a rerun.
+- Surface:
+  `claude_agent_sdk_driver::registered_tool_route::close_joins_the_registered_listener`
+  and the Claude SDK registered-tool sidecar fixture startup path.
+
 ### [ ] Effigy cannot skip release gates from hosted exact-SHA evidence — 2026-09-06
 - Friction: Card 109 needs `lint`, `lint:no-features`, `test`, and `floor`
   satisfied by a green hosted run at the SHA to tag, or at a commit with an

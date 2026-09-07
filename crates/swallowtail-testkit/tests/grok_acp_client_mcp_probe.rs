@@ -206,6 +206,74 @@ fn fake_acp_oracle_shapes_cover_admission_and_invocation() {
 }
 
 #[test]
+fn session_new_client_answer_gate_completes_the_session() {
+    for version in ["1.0.4", "1.0.5"] {
+        let capsule = grok_acp_client_mcp_oracle_fixture_probe(
+            version,
+            ClientMcpOracleShape::SessionNewAnswerRequired,
+        )
+        .expect("answer-gate fixture completes");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::AcceptsClientMcp);
+        assert!(capsule.prompt_turn_completed());
+        assert_eq!(capsule.stop_reason(), Some("end_turn"));
+        assert!(capsule.client_mcp_admitted());
+        assert!(capsule.client_mcp_tools_listed());
+        let request = capsule
+            .frames()
+            .iter()
+            .find(|frame| {
+                !frame.is_outbound() && frame.message()["method"] == "session/request_permission"
+            })
+            .expect("agent asked inside session/new");
+        let request_id = request.message()["id"].clone();
+        let answered = capsule.frames().iter().any(|frame| {
+            frame.is_outbound()
+                && frame.message()["id"] == request_id
+                && frame.message().get("result").is_some()
+        });
+        assert!(
+            answered,
+            "the probe's answer must be recorded during session/new"
+        );
+        assert_no_credentials_or_paths(&capsule.to_json());
+    }
+}
+
+#[test]
+fn session_new_bound_exceeded_names_the_silence_after_recorded_answers() {
+    let capsule = grok_acp_client_mcp_oracle_fixture_probe(
+        "1.0.5",
+        ClientMcpOracleShape::SessionNewSilentAfterAnswer,
+    )
+    .expect("silent-after-answer fixture");
+    assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+    assert_eq!(
+        capsule.inconclusive_cause(),
+        Some(InconclusiveCause::SessionNewBoundExceeded)
+    );
+    let request = capsule
+        .frames()
+        .iter()
+        .find(|frame| {
+            !frame.is_outbound() && frame.message()["method"] == "session/request_permission"
+        })
+        .expect("agent asked inside session/new");
+    let request_id = request.message()["id"].clone();
+    assert!(
+        capsule.frames().iter().any(|frame| {
+            frame.is_outbound()
+                && frame.message()["id"] == request_id
+                && frame.message().get("result").is_some()
+        }),
+        "the recorded answer must be on the capsule"
+    );
+    assert_eq!(
+        capsule.to_json()["inconclusive_cause"],
+        serde_json::json!("session_new_bound_exceeded")
+    );
+}
+
+#[test]
 fn disposable_echo_server_has_one_tool_and_no_resource_authority() {
     let initialize = grok_acp_echo_mcp_reply(&serde_json::json!({
         "jsonrpc": "2.0",

@@ -149,6 +149,14 @@ through the repo skill `version-currentness` at
 `.cursor/skills/version-currentness/`. Sequencing lives in
 `docs/roadmaps/standing-lanes.md`.
 
+## Feature Matrix Rule
+
+An unavailable cell in the feature matrix is either a provider limitation
+with a citation to frozen evidence, or a producer gap with the card that
+builds it. A cross with neither is a matrix defect. "Withheld" is a producer
+gap with a reason, never a finished result. Reconcile consumer requirements
+against required cells, not against truthful reporting.
+
 ## Planning Ambiguity Rule
 
 When the authority surfaces do not settle a direction, ask the operator rather

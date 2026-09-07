@@ -28,7 +28,8 @@ is later than those exact package commits and is corroboration only; it does
 not extend a compatibility claim.
 
 No runtime, adapter, fixture, public API baseline, route matrix, contract,
-roadmap status, research front door, or claim was changed by this preparation.
+roadmap status, or claim was changed by this preparation. The research front
+door was additively updated during coordinator closeout to index this artifact.
 
 ## Corpus Index
 
@@ -127,5 +128,6 @@ later; it does not change the released claim in this preparation.
 - No provider/live credentials, runtime edits, public API baseline update,
   route/feature claim change, tag, release, consumer mutation, or competing
   producer dispatch was performed.
-- The research front door and roadmap/card status remain untouched because the
-  manifest reserves those shared surfaces for coordinator closeout.
+- The research front door was additively updated during coordinator closeout to
+  link Research 289; roadmap/card status remains untouched because the
+  manifest reserves that shared surface.

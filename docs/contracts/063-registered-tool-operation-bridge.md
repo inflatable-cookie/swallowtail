@@ -462,7 +462,12 @@ SelectedSkillBundle::new(identity, revision, digest, references, bounds) and
 RequiredReferenceDescriptor identify immutable selected content or opaque host
 references. SelectedSkillBundle::resolve(host_resources) returns
 Result<ResolvedSkillBundle, RuntimeFailure>; all required digests and aggregate
-bounds validate before prepare. Route preparation's optional
+bounds validate before prepare. Swallowtail is the digest authority for
+transported selected content: it computes the canonical digest (`sha256:` plus
+lowercase hex over the exact bounded transported bytes, after bounds checks)
+and fails on mismatch with the declared digest before provider work; a
+host-reported digest is an input claim, never the verification (ruled
+2026-09-07, card 115 PR 261). Route preparation's optional
 with_selected_skill_bundle(resolved_bundle) carries it separately from session
 instructions and verbatim TurnRequest. Card115 implements producer vocabulary;
 route builders and exact transport are the adapter cards' responsibility.

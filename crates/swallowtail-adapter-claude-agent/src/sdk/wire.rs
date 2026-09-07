@@ -127,6 +127,8 @@ pub(crate) enum ClaudeAgentSdkFailureCode {
     PermissionModeRejected,
     SdkUnavailable,
     SdkExportMissing,
+    SdkVersionMismatch,
+    SdkIdentityUnverifiable,
     NativeManifestUnavailable,
     NativeVersionMismatch,
     CapabilitiesOverflow,
@@ -195,6 +197,8 @@ impl ClaudeAgentSdkFailureCode {
             Self::PermissionModeRejected => "permission_mode_rejected",
             Self::SdkUnavailable => "sdk_unavailable",
             Self::SdkExportMissing => "sdk_export_missing",
+            Self::SdkVersionMismatch => "sdk_version_mismatch",
+            Self::SdkIdentityUnverifiable => "sdk_identity_unverifiable",
             Self::NativeManifestUnavailable => "native_manifest_unavailable",
             Self::NativeVersionMismatch => "native_version_mismatch",
             Self::CapabilitiesOverflow => "capabilities_overflow",
@@ -261,6 +265,8 @@ impl ClaudeAgentSdkFailureCode {
             "permission_mode_rejected" => Self::PermissionModeRejected,
             "sdk_unavailable" => Self::SdkUnavailable,
             "sdk_export_missing" => Self::SdkExportMissing,
+            "sdk_version_mismatch" => Self::SdkVersionMismatch,
+            "sdk_identity_unverifiable" => Self::SdkIdentityUnverifiable,
             "native_manifest_unavailable" => Self::NativeManifestUnavailable,
             "native_version_mismatch" => Self::NativeVersionMismatch,
             "capabilities_overflow" => Self::CapabilitiesOverflow,
@@ -324,7 +330,12 @@ pub(crate) struct ClaudeAgentSdkDiagnostic {
     #[allow(dead_code)]
     pub(crate) level: ClaudeAgentSdkDiagnosticLevel,
     pub(crate) code: String,
-    pub(crate) evidence: Option<ClaudeAgentSdkModelQualificationEvidence>,
+    pub(crate) evidence: Option<ClaudeAgentSdkDiagnosticEvidence>,
+}
+
+pub(crate) enum ClaudeAgentSdkDiagnosticEvidence {
+    ModelQualification(ClaudeAgentSdkModelQualificationEvidence),
+    SdkIdentity(ClaudeAgentSdkIdentityEvidence),
 }
 
 pub(crate) struct ClaudeAgentSdkModelQualificationEvidence {
@@ -339,6 +350,13 @@ pub(crate) struct ClaudeAgentSdkModelQualificationEvidence {
     pub(crate) declared_sdk_version: String,
     pub(crate) loaded_sdk_version: String,
     pub(crate) native_version: String,
+}
+
+pub(crate) struct ClaudeAgentSdkIdentityEvidence {
+    pub(crate) declared_sdk_package: String,
+    pub(crate) declared_sdk_version: String,
+    pub(crate) loaded_sdk_package: String,
+    pub(crate) loaded_sdk_version: String,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

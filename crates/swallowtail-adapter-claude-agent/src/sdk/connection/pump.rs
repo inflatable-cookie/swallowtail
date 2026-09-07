@@ -2,8 +2,8 @@ use super::{CommandResult, SdkConnection};
 use crate::sdk::failure::{failure, protocol_failure};
 use crate::sdk::turn::AdmissionDisposition;
 use crate::sdk::wire::{
-    ClaudeAgentSdkDecoder, ClaudeAgentSdkDiagnostic, ClaudeAgentSdkRecord,
-    ClaudeAgentSdkToolDecision,
+    ClaudeAgentSdkDecoder, ClaudeAgentSdkDiagnostic, ClaudeAgentSdkDiagnosticEvidence,
+    ClaudeAgentSdkRecord, ClaudeAgentSdkToolDecision,
 };
 use serde_json::json;
 use std::sync::Arc;
@@ -175,9 +175,17 @@ impl SdkConnection {
             }
             // Diagnostics are bounded, redacted, and observation-only.
             ClaudeAgentSdkRecord::Diagnostic(diagnostic) => {
-                self.emit_model_qualification_debug(diagnostic);
+                self.emit_diagnostic_debug(diagnostic);
                 Ok(())
             }
+        }
+    }
+
+    fn emit_diagnostic_debug(&self, diagnostic: ClaudeAgentSdkDiagnostic) {
+        match diagnostic.code.as_str() {
+            "supported_model_rejected" => self.emit_model_qualification_debug(diagnostic),
+            "sdk_version_mismatch" => self.emit_sdk_identity_debug(diagnostic),
+            _ => {}
         }
     }
 
@@ -185,7 +193,9 @@ impl SdkConnection {
         if diagnostic.code != "supported_model_rejected" {
             return;
         }
-        let Some(evidence) = diagnostic.evidence else {
+        let Some(ClaudeAgentSdkDiagnosticEvidence::ModelQualification(evidence)) =
+            diagnostic.evidence
+        else {
             return;
         };
         let detail = json!({
@@ -207,6 +217,29 @@ impl SdkConnection {
                 .with_route("claude-agent.sdk")
                 .with_stage("first-turn-model-qualification")
                 .with_correlated_code("supported_model_rejected"),
+        );
+    }
+
+    fn emit_sdk_identity_debug(&self, diagnostic: ClaudeAgentSdkDiagnostic) {
+        if diagnostic.code != "sdk_version_mismatch" {
+            return;
+        }
+        let Some(ClaudeAgentSdkDiagnosticEvidence::SdkIdentity(evidence)) = diagnostic.evidence
+        else {
+            return;
+        };
+        let detail = json!({
+            "declaredSdkPackage": evidence.declared_sdk_package,
+            "declaredSdkVersion": evidence.declared_sdk_version,
+            "loadedSdkPackage": evidence.loaded_sdk_package,
+            "loadedSdkVersion": evidence.loaded_sdk_version,
+        })
+        .to_string();
+        self.services.emit_debug_observation(
+            &DebugObservation::new(DebugObservationKind::InterfaceVersion, detail)
+                .with_route("claude-agent.sdk")
+                .with_stage("open-sdk-identity")
+                .with_correlated_code("sdk_version_mismatch"),
         );
     }
 

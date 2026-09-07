@@ -48,3 +48,15 @@ The SDK package layout has no readable manifest at the module path (record; retu
 ## Auto-Continuation
 
 No. Stop for exact-head review. No live tier; a later live gate needs fixtures first and separate operator authority; never read or replay the Desktop candidate.
+
+## Result
+
+Implemented on the Card120 review branch. The sidecar now resolves and reads
+the package manifest from the host-supplied SDK module path before calling
+`sdk.query`; matching identity is carried into open evidence, mismatches emit
+bounded declared/loaded identity evidence and fail `sdk_version_mismatch`, and
+unreadable identity fails `sdk_identity_unverifiable`. Rust decodes both typed
+codes and forwards mismatch evidence through the existing interface-version
+observer path. Provider-free sidecar fixtures cover matching, mismatching, and
+missing identity while Card119's model predicate, evidence, observer
+forwarding, response shape, and fail-soft diagnostic write remain unchanged.

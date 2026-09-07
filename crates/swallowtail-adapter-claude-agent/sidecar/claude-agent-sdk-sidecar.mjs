@@ -69,6 +69,7 @@ const MAXIMUM_CAPABILITIES = 64;
 const MAXIMUM_CAPABILITY_BYTES = 96;
 const MAXIMUM_SUPPORTED_MODELS = 64;
 const MAXIMUM_MODEL_BYTES = 128;
+const MAXIMUM_IDENTITY_BYTES = 128;
 // Keep callback text aligned with the runtime's existing
 // MAX_CONSUMER_ROUTE_EXTENSION_TEXT_BYTES bound.
 const MAXIMUM_CALLBACK_TEXT_BYTES = 128;
@@ -205,6 +206,8 @@ const COMMAND_FAILURE_CODES = new Set([
   "permission_mode_rejected",
   "sdk_unavailable",
   "sdk_export_missing",
+  "sdk_version_mismatch",
+  "sdk_identity_unverifiable",
   "native_manifest_unavailable",
   "native_version_mismatch",
   "capabilities_overflow",
@@ -295,6 +298,8 @@ const state = {
   resumeSessionAt: null,
   providerSessionId: null,
   account: null,
+  loadedSdkPackage: null,
+  loadedSdkVersion: null,
 };
 
 let writes = Promise.resolve();
@@ -618,11 +623,18 @@ function projectMcpStatuses(reported, servers) {
 }
 
 async function importSdk() {
+  const modulePath = requireEnvironment(ENV_SDK_MODULE);
+  const identity = await readSdkIdentity(modulePath);
+  if (identity.name !== SDK_PACKAGE || identity.version !== SDK_VERSION) {
+    await emitDiagnostic("error", "sdk_version_mismatch", sdkIdentityEvidence(identity));
+    throw new SidecarFailure("sdk_version_mismatch");
+  }
+
   let sdk;
   try {
     // The default entry point only. `/bridge` and `/browser` declare raw
     // credential parameters and are never reachable from this process.
-    sdk = await import(pathToFileURL(requireEnvironment(ENV_SDK_MODULE)).href);
+    sdk = await import(pathToFileURL(modulePath).href);
   } catch (error) {
     if (error instanceof SidecarFailure) {
       throw error;
@@ -632,7 +644,7 @@ async function importSdk() {
   if (typeof sdk.query !== "function") {
     throw new SidecarFailure("sdk_export_missing");
   }
-  return sdk;
+  return { module: sdk, identity };
 }
 
 async function readNativeVersion() {
@@ -819,6 +831,67 @@ function supportedModelValues(values) {
   return models;
 }
 
+function boundedIdentity(value) {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    Buffer.byteLength(value, "utf8") > MAXIMUM_IDENTITY_BYTES ||
+    [...value].some((character) => character.charCodeAt(0) < 0x20)
+  ) {
+    return null;
+  }
+  return value;
+}
+
+async function readSdkIdentity(modulePath) {
+  let resolvedModulePath;
+  try {
+    resolvedModulePath = realpathSync.native(modulePath);
+  } catch {
+    throw new SidecarFailure("sdk_identity_unverifiable");
+  }
+
+  let directory = path.dirname(resolvedModulePath);
+  while (true) {
+    let manifestText;
+    try {
+      manifestText = await readFile(path.join(directory, "package.json"), "utf8");
+    } catch (error) {
+      if (error?.code !== "ENOENT") {
+        throw new SidecarFailure("sdk_identity_unverifiable");
+      }
+      const parent = path.dirname(directory);
+      if (parent === directory) {
+        throw new SidecarFailure("sdk_identity_unverifiable");
+      }
+      directory = parent;
+      continue;
+    }
+
+    let manifest;
+    try {
+      manifest = JSON.parse(manifestText);
+    } catch {
+      throw new SidecarFailure("sdk_identity_unverifiable");
+    }
+    const name = boundedIdentity(manifest?.name);
+    const version = boundedIdentity(manifest?.version);
+    if (name === null || version === null) {
+      throw new SidecarFailure("sdk_identity_unverifiable");
+    }
+    return { name, version };
+  }
+}
+
+function sdkIdentityEvidence(identity) {
+  return {
+    declaredSdkPackage: SDK_PACKAGE,
+    declaredSdkVersion: SDK_VERSION,
+    loadedSdkPackage: identity.name,
+    loadedSdkVersion: identity.version,
+  };
+}
+
 function boundedModelEvidence(value) {
   if (
     typeof value !== "string" ||
@@ -839,9 +912,11 @@ function modelCatalogueDigest(models) {
 function modelQualificationEvidence(effectiveModel) {
   const requestedModel = boundedModelEvidence(state.requestedModel);
   const boundedEffectiveModel = boundedModelEvidence(effectiveModel);
+  const loadedSdkVersion = boundedIdentity(state.loadedSdkVersion);
   if (
     requestedModel === null ||
     boundedEffectiveModel === null ||
+    loadedSdkVersion === null ||
     state.supportedModels.length > MAXIMUM_SUPPORTED_MODELS
   ) {
     return undefined;
@@ -856,9 +931,7 @@ function modelQualificationEvidence(effectiveModel) {
     querySource: MODEL_QUALIFICATION_SOURCE,
     phase: MODEL_QUALIFICATION_PHASE,
     declaredSdkVersion: SDK_VERSION,
-    // Card120 owns verification of the loaded module identity. This is the
-    // current sidecar identity projection only; it does not inspect a module.
-    loadedSdkVersion: SDK_VERSION,
+    loadedSdkVersion,
     nativeVersion: NATIVE_VERSION,
   };
 }
@@ -1125,8 +1198,11 @@ async function handleOpen(params) {
   }
   const nativeBinary = requireEnvironment(ENV_NATIVE_BINARY);
   const nativeVersion = await readNativeVersion();
-  const sdk = await importSdk();
+  const loadedSdk = await importSdk();
+  const sdk = loadedSdk.module;
   state.sdk = sdk;
+  state.loadedSdkPackage = loadedSdk.identity.name;
+  state.loadedSdkVersion = loadedSdk.identity.version;
 
   let query;
   try {
@@ -1221,8 +1297,8 @@ async function handleOpen(params) {
   return {
     wire: WIRE,
     behavior: BEHAVIOR,
-    sdkPackage: SDK_PACKAGE,
-    sdkVersion: SDK_VERSION,
+    sdkPackage: state.loadedSdkPackage,
+    sdkVersion: state.loadedSdkVersion,
     nativeVersion,
     nodeVersion: process.versions.node,
     cwd,
@@ -1441,7 +1517,7 @@ async function handleListSessions(params) {
   if (!Number.isSafeInteger(offset) || offset < 0 || offset > 10_000) {
     throw new SidecarFailure("listing_invalid");
   }
-  const sdk = state.sdk ?? (await importSdk());
+  const sdk = state.sdk ?? (await importSdk()).module;
   if (typeof sdk.listSessions !== "function") {
     throw new SidecarFailure("sdk_export_missing");
   }

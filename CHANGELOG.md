@@ -13,6 +13,12 @@ annotated Git tags from the canonical repository.
   labels. Failure predicates, codes, messages, order, and response shape stay
   unchanged; provider-free fixtures cover alias-only, canonical-only, both-id,
   and neither-id catalogues. g05.029 card 119.
+- verify the loaded `@anthropic-ai/claude-agent-sdk` package manifest at open
+  before `sdk.query` is constructed. Open evidence carries the loaded package
+  version; mismatches fail typed `sdk_version_mismatch` with bounded declared
+  and loaded identity evidence, while missing or unreadable identity fails
+  typed `sdk_identity_unverifiable`. Provider-free matching, mismatching, and
+  missing-manifest fixtures cover the gate. g05.029 card 120.
 - add consumer-declared stdio MCP servers on `claude-agent.sdk` open as
   additive prepared input beside the Copy session profile. `strictMcpConfig`
   stays true, server env is an explicit child-allowlist object, every

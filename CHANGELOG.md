@@ -7,6 +7,12 @@ annotated Git tags from the canonical repository.
 
 ### Added
 
+- add bounded first-turn model-qualification evidence to the opt-in debug
+  observer for `supported_model_rejected`: requested/effective ids, catalogue
+  size and digest, membership, phase/source, and declared/loaded identity
+  labels. Failure predicates, codes, messages, order, and response shape stay
+  unchanged; provider-free fixtures cover alias-only, canonical-only, both-id,
+  and neither-id catalogues. g05.029 card 119.
 - add consumer-declared stdio MCP servers on `claude-agent.sdk` open as
   additive prepared input beside the Copy session profile. `strictMcpConfig`
   stays true, server env is an explicit child-allowlist object, every

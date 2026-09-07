@@ -270,6 +270,17 @@ impl SidecarProcess {
         record
     }
 
+    /// Reads the next bounded diagnostic record, retaining the sidecar's
+    /// record ordering so callers can compare it with the following response.
+    pub fn next_diagnostic(&mut self) -> Value {
+        let record = self.next_record();
+        assert_eq!(
+            record["type"], "diagnostic",
+            "expected diagnostic: {record}"
+        );
+        record
+    }
+
     /// Sends a query and returns the terminal record emitted for an unmapped
     /// fake-SDK message. The raw message type is never part of that record.
     pub fn terminal_after_query(&mut self, id: &str, params: Value) -> Value {

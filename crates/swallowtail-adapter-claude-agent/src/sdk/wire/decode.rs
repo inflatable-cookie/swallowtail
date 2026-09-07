@@ -1,9 +1,11 @@
 use super::{
     ClaudeAgentSdkBashCommandView, ClaudeAgentSdkCallback, ClaudeAgentSdkCommand,
     ClaudeAgentSdkDiagnostic, ClaudeAgentSdkDiagnosticLevel, ClaudeAgentSdkEvent,
-    ClaudeAgentSdkFailure, ClaudeAgentSdkFailureCode, ClaudeAgentSdkResponse,
-    MAXIMUM_COMMAND_ID_BYTES, MAXIMUM_FAILURE_CODE_BYTES, MAXIMUM_FAILURE_MESSAGE_BYTES,
-    MAXIMUM_TEXT_BYTES, bounded_text, failure, required_bool,
+    ClaudeAgentSdkFailure, ClaudeAgentSdkFailureCode, ClaudeAgentSdkModelQualificationEvidence,
+    ClaudeAgentSdkResponse, MAXIMUM_COMMAND_ID_BYTES, MAXIMUM_FAILURE_CODE_BYTES,
+    MAXIMUM_FAILURE_MESSAGE_BYTES, MAXIMUM_MODEL_QUALIFICATION_CATALOGUE_SIZE,
+    MAXIMUM_MODEL_QUALIFICATION_ID_BYTES, MAXIMUM_TEXT_BYTES, MODEL_QUALIFICATION_DIGEST,
+    MODEL_QUALIFICATION_DIGEST_HEX_BYTES, bounded_text, failure, required_bool,
 };
 use crate::sdk::protocol::{ClaudeAgentSdkProtocolFailure, ClaudeAgentSdkProtocolFailureKind};
 use serde_json::Value;
@@ -178,10 +180,157 @@ pub(super) fn decode_diagnostic(
         _ => return Err(failure(invalid)),
     };
     bounded_text(value, "message", MAXIMUM_FAILURE_MESSAGE_BYTES, invalid)?;
+    let code = bounded_text(value, "code", MAXIMUM_FAILURE_CODE_BYTES, invalid)?.to_owned();
+    let evidence = match value.get("evidence") {
+        None => None,
+        Some(value) if code == "supported_model_rejected" => {
+            Some(decode_model_qualification_evidence(value, invalid)?)
+        }
+        Some(_) => return Err(failure(invalid)),
+    };
     Ok(ClaudeAgentSdkDiagnostic {
         level,
-        code: bounded_text(value, "code", MAXIMUM_FAILURE_CODE_BYTES, invalid)?.to_owned(),
+        code,
+        evidence,
     })
+}
+
+fn decode_model_qualification_evidence(
+    value: &Value,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<ClaudeAgentSdkModelQualificationEvidence, ClaudeAgentSdkProtocolFailure> {
+    let object = value
+        .as_object()
+        .filter(|object| object.len() == 11)
+        .ok_or_else(|| failure(kind))?;
+    const FIELDS: [&str; 11] = [
+        "requestedModel",
+        "effectiveModel",
+        "catalogueSize",
+        "catalogueDigest",
+        "requestedMembership",
+        "effectiveMembership",
+        "querySource",
+        "phase",
+        "declaredSdkVersion",
+        "loadedSdkVersion",
+        "nativeVersion",
+    ];
+    if object.keys().any(|field| !FIELDS.contains(&field.as_str())) {
+        return Err(failure(kind));
+    }
+    let requested_model = optional_bounded_text(
+        object,
+        "requestedModel",
+        MAXIMUM_MODEL_QUALIFICATION_ID_BYTES,
+        kind,
+    )?;
+    let effective_model = optional_bounded_text(
+        object,
+        "effectiveModel",
+        MAXIMUM_MODEL_QUALIFICATION_ID_BYTES,
+        kind,
+    )?;
+    let catalogue_size = object
+        .get("catalogueSize")
+        .and_then(Value::as_u64)
+        .and_then(|size| usize::try_from(size).ok())
+        .filter(|size| *size <= MAXIMUM_MODEL_QUALIFICATION_CATALOGUE_SIZE)
+        .ok_or_else(|| failure(kind))?;
+    let catalogue_digest = bounded_digest(object, kind)?;
+    let requested_membership = object
+        .get("requestedMembership")
+        .and_then(Value::as_bool)
+        .ok_or_else(|| failure(kind))?;
+    let effective_membership = object
+        .get("effectiveMembership")
+        .and_then(Value::as_bool)
+        .ok_or_else(|| failure(kind))?;
+    let query_source = exact_text(object, "querySource", "sdk.query", kind)?;
+    let phase = exact_text(object, "phase", "first-turn-model-qualification", kind)?;
+    let declared_sdk_version = bounded_object_text(object, "declaredSdkVersion", kind)?;
+    let loaded_sdk_version = bounded_object_text(object, "loadedSdkVersion", kind)?;
+    let native_version = bounded_object_text(object, "nativeVersion", kind)?;
+    Ok(ClaudeAgentSdkModelQualificationEvidence {
+        requested_model,
+        effective_model,
+        catalogue_size,
+        catalogue_digest,
+        requested_membership,
+        effective_membership,
+        query_source,
+        phase,
+        declared_sdk_version,
+        loaded_sdk_version,
+        native_version,
+    })
+}
+
+fn optional_bounded_text(
+    object: &serde_json::Map<String, Value>,
+    field: &str,
+    maximum: usize,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<Option<String>, ClaudeAgentSdkProtocolFailure> {
+    let value = object.get(field).ok_or_else(|| failure(kind))?;
+    if value.is_null() {
+        return Ok(None);
+    }
+    Ok(Some(
+        value
+            .as_str()
+            .filter(|text| !text.is_empty())
+            .filter(|text| text.len() <= maximum && !text.chars().any(char::is_control))
+            .ok_or_else(|| failure(kind))?
+            .to_owned(),
+    ))
+}
+
+fn bounded_object_text(
+    object: &serde_json::Map<String, Value>,
+    field: &str,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<String, ClaudeAgentSdkProtocolFailure> {
+    let value = object.get(field).ok_or_else(|| failure(kind))?;
+    let text = value
+        .as_str()
+        .filter(|text| !text.is_empty())
+        .filter(|text| {
+            text.len() <= MAXIMUM_MODEL_QUALIFICATION_ID_BYTES
+                && !text.chars().any(char::is_control)
+        })
+        .ok_or_else(|| failure(kind))?;
+    Ok(text.to_owned())
+}
+
+fn exact_text(
+    object: &serde_json::Map<String, Value>,
+    field: &str,
+    expected: &str,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<String, ClaudeAgentSdkProtocolFailure> {
+    let text = bounded_object_text(object, field, kind)?;
+    if text != expected {
+        return Err(failure(kind));
+    }
+    Ok(text)
+}
+
+fn bounded_digest(
+    object: &serde_json::Map<String, Value>,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<String, ClaudeAgentSdkProtocolFailure> {
+    let digest = bounded_object_text(object, "catalogueDigest", kind)?;
+    let expected_length = MODEL_QUALIFICATION_DIGEST.len() + MODEL_QUALIFICATION_DIGEST_HEX_BYTES;
+    if digest.len() != expected_length
+        || !digest.starts_with(MODEL_QUALIFICATION_DIGEST)
+        || !digest[MODEL_QUALIFICATION_DIGEST.len()..]
+            .bytes()
+            .all(|byte| byte.is_ascii_hexdigit() && !byte.is_ascii_uppercase())
+    {
+        return Err(failure(kind));
+    }
+    Ok(digest)
 }
 
 fn decode_failure(

@@ -47,6 +47,7 @@
 // termination authority; it is never a slow success.
 
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import { realpathSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -85,6 +86,8 @@ const MAXIMUM_JOIN_BOUND_MS = 60_000;
 const SDK_CONTROL_BOUND_MS = 60_000;
 const READINESS_REQUESTED = "requested-with-supported-list";
 const READINESS_CONFIRMED = "confirmed";
+const MODEL_QUALIFICATION_PHASE = "first-turn-model-qualification";
+const MODEL_QUALIFICATION_SOURCE = "sdk.query";
 
 // Every tool this route can admit, in the exact order the host sends them.
 // Background shells, terminal, notebook, and network tools stay outside this
@@ -325,13 +328,17 @@ async function respondFailure(id, command, code) {
   });
 }
 
-async function emitDiagnostic(level, code) {
-  await writeRecord({
+async function emitDiagnostic(level, code, evidence) {
+  const record = {
     type: "diagnostic",
     level,
     code,
     message: `sidecar diagnostic: ${code}`,
-  });
+  };
+  if (evidence !== undefined) {
+    record.evidence = evidence;
+  }
+  await writeRecord(record);
 }
 
 async function emitEvent(event) {
@@ -803,7 +810,45 @@ function supportedModelValues(values) {
       }
     }
   }
+  if (models.length > MAXIMUM_SUPPORTED_MODELS) {
+    throw new SidecarFailure("initialization_failed");
+  }
   return models;
+}
+
+function boundedModelEvidence(value) {
+  if (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    Buffer.byteLength(value, "utf8") > MAXIMUM_MODEL_BYTES ||
+    [...value].some((character) => character.charCodeAt(0) < 0x20)
+  ) {
+    return null;
+  }
+  return value;
+}
+
+function modelCatalogueDigest(models) {
+  const canonical = [...new Set(models)].sort().join("\n");
+  return `sha256:${createHash("sha256").update(canonical, "utf8").digest("hex").slice(0, 32)}`;
+}
+
+function modelQualificationEvidence(effectiveModel) {
+  return {
+    requestedModel: boundedModelEvidence(state.requestedModel),
+    effectiveModel: boundedModelEvidence(effectiveModel),
+    catalogueSize: state.supportedModels.length,
+    catalogueDigest: modelCatalogueDigest(state.supportedModels),
+    requestedMembership: state.supportedModels.includes(state.requestedModel),
+    effectiveMembership: state.supportedModels.includes(effectiveModel),
+    querySource: MODEL_QUALIFICATION_SOURCE,
+    phase: MODEL_QUALIFICATION_PHASE,
+    declaredSdkVersion: SDK_VERSION,
+    // Card120 owns verification of the loaded module identity. This is the
+    // current sidecar identity projection only; it does not inspect a module.
+    loadedSdkVersion: SDK_VERSION,
+    nativeVersion: NATIVE_VERSION,
+  };
 }
 
 function boundedCallbackText(value) {
@@ -1326,6 +1371,11 @@ async function handleQuery(params) {
     }
     if (state.supportedModelsAvailable && !state.supportedModels.includes(system.model)) {
       state.turnActive = false;
+      await emitDiagnostic(
+        "error",
+        "supported_model_rejected",
+        modelQualificationEvidence(system.model),
+      );
       throw new SidecarFailure("supported_model_rejected");
     }
     const capabilities = boundedCapabilities(system.capabilities);

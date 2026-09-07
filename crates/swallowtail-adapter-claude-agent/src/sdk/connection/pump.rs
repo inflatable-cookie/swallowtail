@@ -1,10 +1,16 @@
 use super::{CommandResult, SdkConnection};
 use crate::sdk::failure::{failure, protocol_failure};
 use crate::sdk::turn::AdmissionDisposition;
-use crate::sdk::wire::{ClaudeAgentSdkDecoder, ClaudeAgentSdkRecord, ClaudeAgentSdkToolDecision};
+use crate::sdk::wire::{
+    ClaudeAgentSdkDecoder, ClaudeAgentSdkDiagnostic, ClaudeAgentSdkRecord,
+    ClaudeAgentSdkToolDecision,
+};
+use serde_json::json;
 use std::sync::Arc;
 use std::sync::atomic::Ordering;
-use swallowtail_runtime::{ProcessOutputStream, RuntimeFailure};
+use swallowtail_runtime::{
+    DebugObservation, DebugObservationKind, ProcessOutputStream, RuntimeFailure,
+};
 
 impl SdkConnection {
     /// Drains the sidecar stdout wire until it ends or fails, then joins the
@@ -168,8 +174,40 @@ impl SdkConnection {
                 Err(crate::sdk::failure::terminal_failure(terminal.code))
             }
             // Diagnostics are bounded, redacted, and observation-only.
-            ClaudeAgentSdkRecord::Diagnostic(_) => Ok(()),
+            ClaudeAgentSdkRecord::Diagnostic(diagnostic) => {
+                self.emit_model_qualification_debug(diagnostic);
+                Ok(())
+            }
         }
+    }
+
+    fn emit_model_qualification_debug(&self, diagnostic: ClaudeAgentSdkDiagnostic) {
+        if diagnostic.code != "supported_model_rejected" {
+            return;
+        }
+        let Some(evidence) = diagnostic.evidence else {
+            return;
+        };
+        let detail = json!({
+            "requestedModel": evidence.requested_model,
+            "effectiveModel": evidence.effective_model,
+            "catalogueSize": evidence.catalogue_size,
+            "catalogueDigest": evidence.catalogue_digest,
+            "requestedMembership": evidence.requested_membership,
+            "effectiveMembership": evidence.effective_membership,
+            "querySource": evidence.query_source,
+            "phase": evidence.phase,
+            "declaredSdkVersion": evidence.declared_sdk_version,
+            "loadedSdkVersion": evidence.loaded_sdk_version,
+            "nativeVersion": evidence.native_version,
+        })
+        .to_string();
+        self.services.emit_debug_observation(
+            &DebugObservation::new(DebugObservationKind::InterfaceVersion, detail)
+                .with_route("claude-agent.sdk")
+                .with_stage("first-turn-model-qualification")
+                .with_correlated_code("supported_model_rejected"),
+        );
     }
 
     fn fail_pending(&self, error: RuntimeFailure) {

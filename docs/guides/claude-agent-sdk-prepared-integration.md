@@ -190,6 +190,24 @@ Command-level sidecar rejections preserve their fixed failure code in the
 route diagnostic. Only that bounded code is exposed: sidecar message text,
 paths, and account values are discarded.
 
+### Diagnosing a first-turn model rejection
+
+When the first `system/init` model is outside a non-empty supported-model
+catalogue, the sidecar emits an opt-in `DiagnosticObserver` debug observation
+with kind `InterfaceVersion`, stage `first-turn-model-qualification`, and
+correlated code `supported_model_rejected`. Its restricted JSON detail body
+contains only the requested and effective model ids (each capped at 128 bytes),
+catalogue size, a fixed-length digest of sorted and deduplicated catalogue ids,
+requested/effective membership booleans, `sdk.query` as the query source, the
+qualification phase, and declared/loaded SDK plus native identity labels.
+
+The digest is a bounded projection, not a catalogue export. Prompts, content,
+paths, credentials, full catalogues, and raw SDK error text never enter the
+observation. The existing rejection predicate, safe code/message, record
+order, and failure response shape are unchanged. Without a registered
+observer, the evidence is discarded; it is not persisted. Loaded-module
+verification belongs to the later version-identity qualification step.
+
 The query prompt is a session-lifetime async input stream. Each `query`
 command queues one `SDKUserMessage` and resolves the next waiting consumer;
 the source remains open between turns and ends only during the explicit close

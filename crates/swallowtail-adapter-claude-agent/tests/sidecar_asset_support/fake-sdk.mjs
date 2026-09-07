@@ -92,6 +92,8 @@ function initMessage(options) {
   } else if (SCENARIO === "unsupported-model") {
     message.model = "claude-sonnet-5-20250929";
     message.supportedModels = ["claude-opus-5"];
+  } else if (["alias-only", "canonical-only", "both-ids", "neither-ids"].includes(SCENARIO)) {
+    message.model = "claude-sonnet-5-20250929";
   } else if (SCENARIO === "resume-session-unknown") {
     message.session_id = "other-session";
   } else if (SCENARIO === "resume-cwd-mismatch") {
@@ -127,6 +129,21 @@ function modelRows(options) {
   }
   if (SCENARIO === "unsupported-model") {
     return [{ value: "claude-opus-5", displayName: "Opus" }];
+  }
+  if (SCENARIO === "alias-only") {
+    return [{ value: options.model, displayName: "Fixture alias" }];
+  }
+  if (SCENARIO === "canonical-only") {
+    return [{ value: "claude-sonnet-5-20250929", displayName: "Canonical model" }];
+  }
+  if (SCENARIO === "both-ids") {
+    return [
+      { value: options.model, displayName: "Fixture alias" },
+      { value: "claude-sonnet-5-20250929", displayName: "Canonical model" },
+    ];
+  }
+  if (SCENARIO === "neither-ids") {
+    return [{ value: "claude-opus-5", displayName: "Unrelated model" }];
   }
   if (SCENARIO === "canonical-model") {
     return [

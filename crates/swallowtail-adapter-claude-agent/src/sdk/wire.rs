@@ -18,6 +18,10 @@ pub(crate) const MAXIMUM_COMMAND_ID_BYTES: usize = 128;
 pub(crate) const MAXIMUM_FAILURE_CODE_BYTES: usize = 96;
 pub(crate) const MAXIMUM_FAILURE_MESSAGE_BYTES: usize = 512;
 pub(crate) const MAXIMUM_TEXT_BYTES: usize = 4096;
+pub(crate) const MAXIMUM_MODEL_QUALIFICATION_ID_BYTES: usize = 128;
+pub(crate) const MAXIMUM_MODEL_QUALIFICATION_CATALOGUE_SIZE: usize = 64;
+pub(crate) const MODEL_QUALIFICATION_DIGEST: &str = "sha256:";
+pub(crate) const MODEL_QUALIFICATION_DIGEST_HEX_BYTES: usize = 32;
 
 pub(crate) struct ClaudeAgentSdkDecoder {
     buffer: Vec<u8>,
@@ -316,10 +320,25 @@ impl ClaudeAgentSdkFailureCode {
     }
 }
 
-#[allow(dead_code)]
 pub(crate) struct ClaudeAgentSdkDiagnostic {
+    #[allow(dead_code)]
     pub(crate) level: ClaudeAgentSdkDiagnosticLevel,
     pub(crate) code: String,
+    pub(crate) evidence: Option<ClaudeAgentSdkModelQualificationEvidence>,
+}
+
+pub(crate) struct ClaudeAgentSdkModelQualificationEvidence {
+    pub(crate) requested_model: Option<String>,
+    pub(crate) effective_model: Option<String>,
+    pub(crate) catalogue_size: usize,
+    pub(crate) catalogue_digest: String,
+    pub(crate) requested_membership: bool,
+    pub(crate) effective_membership: bool,
+    pub(crate) query_source: String,
+    pub(crate) phase: String,
+    pub(crate) declared_sdk_version: String,
+    pub(crate) loaded_sdk_version: String,
+    pub(crate) native_version: String,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

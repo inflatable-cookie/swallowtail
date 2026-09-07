@@ -151,11 +151,19 @@ through the repo skill `version-currentness` at
 
 ## Feature Matrix Rule
 
-An unavailable cell in the feature matrix is either a provider limitation
-with a citation to frozen evidence, or a producer gap with the card that
-builds it. A cross with neither is a matrix defect. "Withheld" is a producer
-gap with a reason, never a finished result. Reconcile consumer requirements
+An unavailable cell in the feature matrix is exactly one of: a provider
+limitation with a citation to frozen evidence; a producer gap with the card
+that builds it; or evidence pending, where the provider's capability is
+genuinely unproven and a named, scheduled evidence gate owns the answer. A
+cross with none of the three is a matrix defect. "Withheld" is a producer gap
+with a reason, never a finished result. Reconcile consumer requirements
 against required cells, not against truthful reporting.
+
+Evidence pending is the narrow case and carries guards, so it can never
+become a shrug: it references a live hand-off packet under `docs/handoffs/`
+(not a card, which completes); that packet names the owner who runs the gate
+and the decision tree converting each outcome into one of the other two
+kinds; and it is unavailable to any cell nobody is currently investigating.
 
 ## Planning Ambiguity Rule
 

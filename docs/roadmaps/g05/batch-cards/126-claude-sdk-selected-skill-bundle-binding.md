@@ -59,16 +59,21 @@ bundle crosses as one distinct labelled `selectedSkillBundle` open input
 through the pinned `0.3.259` sidecar's explicit plain-string `systemPrompt`
 surface under the `<swallowtail-selected-skill-bundle>` envelope
 (`settingSources` stays empty, `skills` stays explicit); it is never session
-instructions or per-turn user text. Open re-verifies body and reference
-digests, UTF-8 text, duplicate ids, the reference-count bound, and the
-aggregate content bound before provider work; oversize, tampered digest,
-foreign references, and non-text payloads fail typed
-`swallowtail.claude-agent.sdk.selected_skill_*`; identity, provenance,
-revision, and digest render verbatim from the immutable resolved bundle.
+instructions or per-turn user text.
+Resolution fails foreign content, declared-bound oversize, and missing or
+inaccessible references typed under `swallowtail.registered_tool.*` before a
+session exists. Open then re-verifies body and reference digests, UTF-8 text,
+duplicate ids, the reference-count bound, and the aggregate content bound
+before provider work under `swallowtail.claude-agent.sdk.selected_skill_*`
+(`selected_skill_digest_mismatch`, `selected_skill_limit_exceeded`,
+`selected_skill_reference_invalid`, `selected_skill_payload_not_text`);
+identity, provenance, revision, and digest render verbatim from the immutable
+resolved bundle.
 Absence keeps the open shape unchanged; resume and session listing refuse
 redeclaration. Contract 061 publishes the
 `registered-tool.selected-skill-bundle` row as Available for this route from
 prepared-route evidence alone, without implying Card 125's live registered-tool
-gate. Matrix cell, cross objects, and the producer-gap reason reconciled to
-that truth. No live provider action; the real-route gate stays under separate
+gate. Matrix cell, cross objects, producer-gap reason, and capability-audit
+line reconciled to that truth.
+No live provider action; the real-route gate stays under separate
 operator authority.

@@ -73,7 +73,10 @@ One redacted JSON capsule per exact version. Fields:
 Auth that fails before `session/new`, or a `session/new` JSON-RPC error that
 does not mention `mcpServers` or the echo server name, is `inconclusive`.
 Only an explicit client-MCP rejection is `rejects_client_mcp`. Overflow does
-not abort without a capsule.
+not abort without a capsule. `ignores_client_mcp` requires a completed
+`session/prompt` turn; a timeout or missing prompt result is `inconclusive`.
+Permission requests are answered with an `allow_once` `optionId` taken from
+the request's `options`, not invented by the harness.
 
 Frames must contain no credentials, tokens, or host paths. `1.0.4` and `1.0.5`
 are separate evidence segments; do not merge them.

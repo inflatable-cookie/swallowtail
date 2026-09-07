@@ -409,10 +409,12 @@ pub fn grok_acp_client_mcp_verdict_from_frames(
         {
             if echo_tool_called(frames) && echo_tool_completed(frames) {
                 ClientMcpVerdict::AcceptsClientMcp
-            } else if echo_tool_called(frames) {
+            } else if echo_tool_called(frames) || permission_was_rejected(frames) {
                 ClientMcpVerdict::Inconclusive
-            } else {
+            } else if prompt_turn_completed(frames) {
                 ClientMcpVerdict::IgnoresClientMcp
+            } else {
+                ClientMcpVerdict::Inconclusive
             }
         }
         Some(_) => ClientMcpVerdict::Inconclusive,
@@ -667,12 +669,15 @@ enum FakeBehavior {
     AuthenticateFailed,
     SessionUnauthorized,
     Chatty,
+    PromptSilent,
+    AsksPermission,
 }
 
 struct FakeAcpPeer {
     behavior: FakeBehavior,
     inbound: VecDeque<Value>,
     closed: bool,
+    prompt_id: Option<Value>,
 }
 
 impl FakeAcpPeer {
@@ -681,6 +686,7 @@ impl FakeAcpPeer {
             behavior: FakeBehavior::Verdict(scenario),
             inbound: VecDeque::new(),
             closed: false,
+            prompt_id: None,
         }
     }
 
@@ -690,6 +696,7 @@ impl FakeAcpPeer {
             behavior: FakeBehavior::AuthenticateFailed,
             inbound: VecDeque::new(),
             closed: false,
+            prompt_id: None,
         }
     }
 
@@ -699,6 +706,7 @@ impl FakeAcpPeer {
             behavior: FakeBehavior::SessionUnauthorized,
             inbound: VecDeque::new(),
             closed: false,
+            prompt_id: None,
         }
     }
 
@@ -708,11 +716,75 @@ impl FakeAcpPeer {
             behavior: FakeBehavior::Chatty,
             inbound: VecDeque::new(),
             closed: false,
+            prompt_id: None,
+        }
+    }
+
+    #[cfg(test)]
+    fn prompt_silent() -> Self {
+        Self {
+            behavior: FakeBehavior::PromptSilent,
+            inbound: VecDeque::new(),
+            closed: false,
+            prompt_id: None,
+        }
+    }
+
+    #[cfg(test)]
+    fn asks_permission() -> Self {
+        Self {
+            behavior: FakeBehavior::AsksPermission,
+            inbound: VecDeque::new(),
+            closed: false,
+            prompt_id: None,
         }
     }
 
     fn push(&mut self, message: Value) {
         self.inbound.push_back(message);
+    }
+
+    fn emit_echo_accept(&mut self) {
+        let prompt_id = self.prompt_id.clone();
+        self.push(json!({
+            "jsonrpc": "2.0",
+            "method": "session/update",
+            "params": {
+                "sessionId": FIXTURE_SESSION,
+                "update": {
+                    "sessionUpdate": "tool_call",
+                    "toolCallId": "echo-1",
+                    "title": ECHO_MCP_TOOL,
+                    "kind": "other",
+                    "status": "in_progress",
+                    "content": [],
+                    "_meta": {"mcpServerName": ECHO_MCP_SERVER_NAME}
+                }
+            }
+        }));
+        self.push(json!({
+            "jsonrpc": "2.0",
+            "method": "session/update",
+            "params": {
+                "sessionId": FIXTURE_SESSION,
+                "update": {
+                    "sessionUpdate": "tool_call_update",
+                    "toolCallId": "echo-1",
+                    "status": "completed",
+                    "content": [{
+                        "type": "content",
+                        "content": {"type": "text", "text": "ping"}
+                    }]
+                }
+            }
+        }));
+        if let Some(id) = prompt_id {
+            self.push(json!({
+                "jsonrpc": "2.0",
+                "id": id,
+                "result": {"stopReason": "end_turn"}
+            }));
+        }
     }
 }
 
@@ -757,7 +829,9 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                 FakeBehavior::Verdict(
                     ClientMcpVerdict::AcceptsClientMcp | ClientMcpVerdict::IgnoresClientMcp,
                 )
-                | FakeBehavior::Chatty => {
+                | FakeBehavior::Chatty
+                | FakeBehavior::PromptSilent
+                | FakeBehavior::AsksPermission => {
                     self.push(json!({
                         "jsonrpc": "2.0",
                         "id": id,
@@ -857,6 +931,26 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                         "result": {"stopReason": "end_turn"}
                     }));
                 }
+                FakeBehavior::PromptSilent => {}
+                FakeBehavior::AsksPermission => {
+                    self.prompt_id = id.clone();
+                    self.push(json!({
+                        "jsonrpc": "2.0",
+                        "id": 900,
+                        "method": "session/request_permission",
+                        "params": {
+                            "sessionId": FIXTURE_SESSION,
+                            "toolCall": {
+                                "toolCallId": "echo-1",
+                                "title": ECHO_MCP_TOOL
+                            },
+                            "options": [
+                                {"optionId": "allow_once", "name": "Allow once", "kind": "allow_once"},
+                                {"optionId": "reject_once", "name": "Reject once", "kind": "reject_once"}
+                            ]
+                        }
+                    }));
+                }
                 FakeBehavior::Verdict(
                     ClientMcpVerdict::RejectsClientMcp | ClientMcpVerdict::Inconclusive,
                 )
@@ -864,6 +958,20 @@ impl GrokAcpClientMcpPeer for FakeAcpPeer {
                 | FakeBehavior::SessionUnauthorized => {}
             },
             Some("session/request_permission") | Some("fs/read_text_file") => {}
+            None if matches!(self.behavior, FakeBehavior::AsksPermission) => {
+                let selected = message
+                    .pointer("/result/outcome/optionId")
+                    .and_then(Value::as_str);
+                if selected == Some("allow_once") {
+                    self.emit_echo_accept();
+                } else if let Some(prompt_id) = self.prompt_id.clone() {
+                    self.push(json!({
+                        "jsonrpc": "2.0",
+                        "id": prompt_id,
+                        "result": {"stopReason": "end_turn"}
+                    }));
+                }
+            }
             _ => {}
         }
         Ok(())
@@ -928,18 +1036,7 @@ fn answer_callbacks(
     for message in pending {
         if method_of(&message) == Some("session/request_permission") {
             let id = message.get("id").cloned().unwrap_or(Value::Null);
-            let allow = json_contains_client_mcp_server(&message);
-            let option = if allow { "allow-once" } else { "reject-once" };
-            let response = json!({
-                "jsonrpc": "2.0",
-                "id": id,
-                "result": {
-                    "outcome": {
-                        "outcome": "selected",
-                        "optionId": option
-                    }
-                }
-            });
+            let response = permission_response(id, &message);
             capture.push(FrameDirection::Outbound, response.clone());
             peer.push_outbound(response)?;
             for inbound in peer.take_inbound()? {
@@ -1105,6 +1202,102 @@ fn json_mentions_mcp_servers(value: &Value) -> bool {
         Value::Object(map) => map.values().any(json_mentions_mcp_servers),
         _ => false,
     }
+}
+
+fn prompt_turn_completed(frames: &[GrokAcpClientMcpFrame]) -> bool {
+    let Some(prompt) = frames
+        .iter()
+        .find(|frame| frame.is_outbound() && method_of(&frame.message) == Some("session/prompt"))
+    else {
+        return false;
+    };
+    let Some(id) = prompt.message.get("id") else {
+        return false;
+    };
+    frames.iter().any(|frame| {
+        !frame.is_outbound()
+            && frame.message.get("id") == Some(id)
+            && frame.message.get("result").is_some()
+    })
+}
+
+fn permission_was_rejected(frames: &[GrokAcpClientMcpFrame]) -> bool {
+    frames.iter().any(|frame| {
+        !frame.is_outbound()
+            && method_of(&frame.message) == Some("session/request_permission")
+            && permission_response_rejected(frames, frame.message.get("id"), &frame.message)
+    })
+}
+
+fn permission_response_rejected(
+    frames: &[GrokAcpClientMcpFrame],
+    id: Option<&Value>,
+    request: &Value,
+) -> bool {
+    let Some(id) = id else {
+        return false;
+    };
+    let Some(response) = frames.iter().find(|frame| {
+        frame.is_outbound()
+            && frame.message.get("id") == Some(id)
+            && frame.message.get("result").is_some()
+    }) else {
+        return false;
+    };
+    let Some(option_id) = response
+        .message
+        .pointer("/result/outcome/optionId")
+        .and_then(Value::as_str)
+    else {
+        return response
+            .message
+            .pointer("/result/outcome/outcome")
+            .and_then(Value::as_str)
+            == Some("cancelled");
+    };
+    request
+        .pointer("/params/options")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .any(|option| {
+            option.get("optionId").and_then(Value::as_str) == Some(option_id)
+                && option
+                    .get("kind")
+                    .and_then(Value::as_str)
+                    .is_some_and(|kind| kind.starts_with("reject"))
+        })
+}
+
+fn permission_response(id: Value, request: &Value) -> Value {
+    match permission_option_id(request) {
+        Some(option_id) => json!({
+            "jsonrpc": "2.0",
+            "id": id,
+            "result": {
+                "outcome": {
+                    "outcome": "selected",
+                    "optionId": option_id
+                }
+            }
+        }),
+        None => json!({
+            "jsonrpc": "2.0",
+            "id": id,
+            "result": {"outcome": {"outcome": "cancelled"}}
+        }),
+    }
+}
+
+fn permission_option_id(request: &Value) -> Option<&str> {
+    let options = request
+        .pointer("/params/options")
+        .and_then(Value::as_array)?;
+    options.iter().find_map(|option| {
+        (option.get("kind").and_then(Value::as_str) == Some("allow_once"))
+            .then(|| option.get("optionId").and_then(Value::as_str))
+            .flatten()
+    })
 }
 
 fn redact_value(value: Value) -> Value {
@@ -1284,6 +1477,135 @@ mod tests {
     }
 
     #[test]
+    fn session_new_without_prompt_is_inconclusive() {
+        let frames = [
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Outbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 3,
+                    "method": "session/new",
+                    "params": {"cwd": "<host-approved-resource>", "mcpServers": [{"name": ECHO_MCP_SERVER_NAME}]}
+                }),
+            },
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Inbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 3,
+                    "result": {"sessionId": FIXTURE_SESSION}
+                }),
+            },
+        ];
+        assert_eq!(
+            grok_acp_client_mcp_verdict_from_frames(&frames),
+            ClientMcpVerdict::Inconclusive
+        );
+    }
+
+    #[test]
+    fn prompt_timeout_without_result_is_inconclusive() {
+        let mut peer = FakeAcpPeer::prompt_silent();
+        let capsule =
+            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
+                .expect("capsule");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::Inconclusive);
+        assert!(capsule.frames().iter().any(|frame| {
+            frame.is_outbound() && method_of(frame.message()) == Some("session/prompt")
+        }));
+        assert!(!capsule.frames().iter().any(|frame| {
+            !frame.is_outbound()
+                && frame.message().get("result").is_some()
+                && frame.message().get("id") == Some(&json!(4))
+        }));
+    }
+
+    #[test]
+    fn permission_allow_uses_request_option_id() {
+        let mut peer = FakeAcpPeer::asks_permission();
+        let capsule =
+            run_grok_acp_client_mcp_probe(&mut peer, "1.0.5", FIXTURE_COMMAND, FIXTURE_CWD)
+                .expect("capsule");
+        assert_eq!(capsule.verdict(), ClientMcpVerdict::AcceptsClientMcp);
+        let selected = capsule.frames().iter().find_map(|frame| {
+            frame
+                .is_outbound()
+                .then(|| frame.message().pointer("/result/outcome/optionId"))
+                .flatten()
+                .and_then(Value::as_str)
+        });
+        assert_eq!(selected, Some("allow_once"));
+        assert!(!capsule.to_json().to_string().contains("allow-once"));
+    }
+
+    #[test]
+    fn rejected_permission_without_echo_is_inconclusive() {
+        let frames = [
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Outbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 3,
+                    "method": "session/new",
+                    "params": {"cwd": "<host-approved-resource>", "mcpServers": [{"name": ECHO_MCP_SERVER_NAME}]}
+                }),
+            },
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Inbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 3,
+                    "result": {"sessionId": FIXTURE_SESSION}
+                }),
+            },
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Outbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 4,
+                    "method": "session/prompt",
+                    "params": {"sessionId": FIXTURE_SESSION}
+                }),
+            },
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Inbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 900,
+                    "method": "session/request_permission",
+                    "params": {
+                        "toolCall": {"toolCallId": "echo-1", "title": "echo"},
+                        "options": [
+                            {"optionId": "allow_once", "kind": "allow_once"},
+                            {"optionId": "reject_once", "kind": "reject_once"}
+                        ]
+                    }
+                }),
+            },
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Outbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 900,
+                    "result": {"outcome": {"outcome": "selected", "optionId": "reject_once"}}
+                }),
+            },
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Inbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 4,
+                    "result": {"stopReason": "end_turn"}
+                }),
+            },
+        ];
+        assert_eq!(
+            grok_acp_client_mcp_verdict_from_frames(&frames),
+            ClientMcpVerdict::Inconclusive
+        );
+    }
+
+    #[test]
     fn native_echo_title_without_client_mcp_server_is_not_accepts() {
         let frames = [
             GrokAcpClientMcpFrame {
@@ -1304,6 +1626,15 @@ mod tests {
                 }),
             },
             GrokAcpClientMcpFrame {
+                direction: FrameDirection::Outbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 4,
+                    "method": "session/prompt",
+                    "params": {"sessionId": FIXTURE_SESSION, "prompt": [{"type": "text", "text": "x"}]}
+                }),
+            },
+            GrokAcpClientMcpFrame {
                 direction: FrameDirection::Inbound,
                 message: json!({
                     "jsonrpc": "2.0",
@@ -1315,6 +1646,14 @@ mod tests {
                             "status": "completed"
                         }
                     }
+                }),
+            },
+            GrokAcpClientMcpFrame {
+                direction: FrameDirection::Inbound,
+                message: json!({
+                    "jsonrpc": "2.0",
+                    "id": 4,
+                    "result": {"stopReason": "end_turn"}
                 }),
             },
         ];

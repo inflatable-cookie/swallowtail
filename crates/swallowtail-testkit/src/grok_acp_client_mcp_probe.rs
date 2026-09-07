@@ -409,7 +409,10 @@ pub fn grok_acp_client_mcp_verdict_from_frames(
         {
             if echo_tool_called(frames) && echo_tool_completed(frames) {
                 ClientMcpVerdict::AcceptsClientMcp
-            } else if echo_tool_called(frames) || permission_was_rejected(frames) {
+            } else if echo_tool_called(frames)
+                || echo_named_tool_called(frames)
+                || permission_was_rejected(frames)
+            {
                 ClientMcpVerdict::Inconclusive
             } else if prompt_turn_completed(frames) {
                 ClientMcpVerdict::IgnoresClientMcp
@@ -1155,6 +1158,27 @@ fn session_id_from(frames: &[GrokAcpClientMcpFrame], id: u64) -> Option<String> 
         .map(str::to_owned)
 }
 
+fn echo_named_tool_called(frames: &[GrokAcpClientMcpFrame]) -> bool {
+    frames.iter().any(|frame| {
+        !frame.is_outbound()
+            && update_kind(&frame.message) == Some("tool_call")
+            && echo_tool_title(&frame.message)
+    })
+}
+
+fn echo_tool_title(message: &Value) -> bool {
+    let title = message
+        .pointer("/params/update/title")
+        .and_then(Value::as_str);
+    let name = message
+        .pointer("/params/update/name")
+        .and_then(Value::as_str);
+    [title, name]
+        .into_iter()
+        .flatten()
+        .any(|value| value.eq_ignore_ascii_case(ECHO_MCP_TOOL))
+}
+
 fn echo_tool_called(frames: &[GrokAcpClientMcpFrame]) -> bool {
     frames.iter().any(|frame| {
         !frame.is_outbound()
@@ -1606,7 +1630,7 @@ mod tests {
     }
 
     #[test]
-    fn native_echo_title_without_client_mcp_server_is_not_accepts() {
+    fn native_echo_title_without_client_mcp_server_is_inconclusive() {
         let frames = [
             GrokAcpClientMcpFrame {
                 direction: FrameDirection::Outbound,
@@ -1659,7 +1683,7 @@ mod tests {
         ];
         assert_eq!(
             grok_acp_client_mcp_verdict_from_frames(&frames),
-            ClientMcpVerdict::IgnoresClientMcp
+            ClientMcpVerdict::Inconclusive
         );
     }
 

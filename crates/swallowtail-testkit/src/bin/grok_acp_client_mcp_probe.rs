@@ -30,7 +30,7 @@ fn run(args: Vec<String>) -> Result<(), String> {
             grok_executable,
             echo_mcp,
         } => {
-            let cwd = env::var("HOME").unwrap_or_else(|_| ".".to_owned());
+            let cwd = env::var("GROK_HOME").unwrap_or_else(|_| ".".to_owned());
             let echo_command = echo_mcp.display().to_string();
             let mut peer = open_desktop_live_grok_acp_peer(&grok_executable, &echo_mcp)
                 .map_err(|error| error.to_string())?;

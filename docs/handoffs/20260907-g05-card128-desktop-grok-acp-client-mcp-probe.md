@@ -39,8 +39,9 @@ non-empty `mcpServers` list naming that server, then one bounded echo prompt.
 If Desktop already isolated `GROK_HOME`, the script leaves it in place and
 does not copy host credentials or config. If `GROK_HOME` is unset, the script
 creates an empty isolated directory and exports it as `GROK_HOME`; the Grok
-child uses that directory as `HOME` so a stray run cannot mutate host Grok
-state. Cargo keeps the host `HOME`. Auth is whatever that isolated
+child uses that directory as `HOME` and as the ACP `session/new` `cwd` so a
+stray run cannot mutate host Grok state or treat the operator home as the
+workspace root. Cargo keeps the host `HOME`. Auth is whatever that isolated
 environment already has.
 
 The live binary also refuses unless
@@ -74,7 +75,10 @@ Auth that fails before `session/new`, or a `session/new` JSON-RPC error that
 does not mention `mcpServers` or the echo server name, is `inconclusive`.
 Only an explicit client-MCP rejection is `rejects_client_mcp`. Overflow does
 not abort without a capsule. `ignores_client_mcp` requires a completed
-`session/prompt` turn; a timeout or missing prompt result is `inconclusive`.
+`session/prompt` turn with no echo-named tool call. A timeout, missing prompt
+result, or a `title: "echo"` tool call without the client MCP server name is
+`inconclusive` — ACP v1 does not attribute a tool call to a client-supplied
+server, so that shape must not be published as a Grok ignore.
 Permission requests are answered with an `allow_once` `optionId` taken from
 the request's `options`, not invented by the harness.
 

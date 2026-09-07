@@ -19,6 +19,12 @@ annotated Git tags from the canonical repository.
   and loaded identity evidence, while missing or unreadable identity fails
   typed `sdk_identity_unverifiable`. Provider-free matching, mismatching, and
   missing-manifest fixtures cover the gate. g05.029 card 120.
+- make sessions terminal after any first-turn rejection. A retry fails typed
+  `session_rejected_terminal` with the bounded original sidecar code, without
+  replaying SDK input or provider work; explicit close remains available, and
+  genuine first-message shape failures retain `init_missing`. Provider-free
+  rejection-then-retry and rejection-then-close fixtures cover cleanup and
+  no-replay evidence. g05.029 card 121.
 - add consumer-declared stdio MCP servers on `claude-agent.sdk` open as
   additive prepared input beside the Copy session profile. `strictMcpConfig`
   stays true, server env is an explicit child-allowlist object, every

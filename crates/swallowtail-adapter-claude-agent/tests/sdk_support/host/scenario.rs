@@ -61,6 +61,8 @@ pub enum SdkScenario {
     OpenRejected,
     /// The sidecar rejects query and reports its fixed turn-active code.
     QueryRejected,
+    /// The first query succeeds, the second rejects, and later queries succeed.
+    PostInitRejected,
     /// The sidecar rejects interrupt and reports its fixed interrupt code.
     InterruptRejected,
     /// The sidecar rejects close and reports its fixed invalid-command code.

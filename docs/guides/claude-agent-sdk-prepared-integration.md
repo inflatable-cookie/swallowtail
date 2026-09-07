@@ -199,6 +199,13 @@ Command-level sidecar rejections preserve their fixed failure code in the
 route diagnostic. Only that bounded code is exposed: sidecar message text,
 paths, and account values are discarded.
 
+Any rejection during this first-turn exchange makes the open session terminal.
+The original bounded sidecar code remains the first-turn diagnostic; a later
+turn fails with `session_rejected_terminal` and names that same code, without
+consuming another SDK message or doing provider work. Explicit `close` remains
+available for cleanup. The `init_missing` code is reserved for a genuine
+first-message shape failure and is never substituted for a recorded rejection.
+
 ### Diagnosing a first-turn model rejection
 
 When the first `system/init` model is outside a non-empty supported-model

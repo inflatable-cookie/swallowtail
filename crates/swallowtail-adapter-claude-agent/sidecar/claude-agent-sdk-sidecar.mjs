@@ -221,6 +221,7 @@ const COMMAND_FAILURE_CODES = new Set([
   "construction_failed",
   "initialization_failed",
   "init_missing",
+  "session_rejected_terminal",
   "cwd_mismatch",
   "model_mismatch",
   "model_missing",
@@ -262,9 +263,10 @@ console.warn = console.log;
 console.error = console.log;
 
 class SidecarFailure extends Error {
-  constructor(code) {
+  constructor(code, originalCode = null) {
     super(code);
     this.code = code;
+    this.originalCode = originalCode;
   }
 }
 
@@ -300,6 +302,7 @@ const state = {
   account: null,
   loadedSdkPackage: null,
   loadedSdkVersion: null,
+  firstTurnRejection: null,
 };
 
 let writes = Promise.resolve();
@@ -325,12 +328,16 @@ async function respond(id, command, success, body) {
   await writeRecord(record);
 }
 
-async function respondFailure(id, command, code) {
+async function respondFailure(id, command, code, originalCode = null) {
   const safeCode = COMMAND_FAILURE_CODES.has(code) ? code : "command_failed";
-  await respond(id, command, false, {
+  const failure = {
     code: safeCode,
     message: `sidecar command failed: ${safeCode}`,
-  });
+  };
+  if (safeCode === "session_rejected_terminal" && COMMAND_FAILURE_CODES.has(originalCode)) {
+    failure.originalCode = originalCode;
+  }
+  await respond(id, command, false, failure);
 }
 
 async function emitDiagnostic(level, code, evidence) {
@@ -1281,6 +1288,7 @@ async function handleOpen(params) {
   state.requestedModel = model;
   state.capabilities = [];
   state.initialized = false;
+  state.firstTurnRejection = null;
   state.effectiveModel = null;
   state.supportedModels = supportedModels;
   state.supportedModelsAvailable = supportedModels.length > 0;
@@ -1405,6 +1413,9 @@ async function handleQuery(params) {
   if (state.turnActive) {
     throw new SidecarFailure("turn_active");
   }
+  if (state.firstTurnRejection !== null) {
+    throw new SidecarFailure("session_rejected_terminal", state.firstTurnRejection);
+  }
   requireExactParams(params, ["text"]);
   const text = requireString(params, "text");
   if (text.length > MAXIMUM_PROMPT_BYTES) {
@@ -1418,74 +1429,76 @@ async function handleQuery(params) {
     session_id: "",
   });
   if (!state.initialized) {
-    let first;
     try {
-      first = await state.query.next();
-    } catch {
-      state.turnActive = false;
-      throw new SidecarFailure(state.resuming ? "resume_session_unknown" : "initialization_failed");
-    }
-    const system = first?.value;
-    if (first?.done === true || system?.type !== "system" || system.subtype !== "init") {
-      state.turnActive = false;
-      throw new SidecarFailure(state.resuming ? "resume_session_unknown" : "init_missing");
-    }
-    if (typeof system.cwd !== "string" || !cwdMatches(state.cwd, system.cwd)) {
-      state.turnActive = false;
-      throw new SidecarFailure(state.resuming ? "resume_cwd_mismatch" : "cwd_mismatch");
-    }
-    if (
-      state.resuming &&
-      system.apiKeySource !== "oauth" &&
-      system.apiKeySource !== "none"
-    ) {
-      state.turnActive = false;
-      throw new SidecarFailure("resume_account_mismatch");
-    }
-    if (
-      state.resuming &&
-      (typeof system.session_id !== "string" || system.session_id.length === 0)
-    ) {
-      state.turnActive = false;
-      throw new SidecarFailure("resume_session_unknown");
-    }
-    if (state.resuming && system.session_id !== state.resumeSessionId) {
-      state.turnActive = false;
-      throw new SidecarFailure("resume_session_unknown");
-    }
-    if (typeof system.model !== "string" || system.model.length === 0) {
-      state.turnActive = false;
-      throw new SidecarFailure("model_missing");
-    }
-    if (state.supportedModelsAvailable && !state.supportedModels.includes(system.model)) {
-      state.turnActive = false;
-      await emitDiagnostic(
-        "error",
-        "supported_model_rejected",
-        modelQualificationEvidence(system.model),
-      );
-      throw new SidecarFailure("supported_model_rejected");
-    }
-    const capabilities = boundedCapabilities(system.capabilities);
-    const reportedEffort = system.effort;
-    if (reportedEffort !== undefined) {
-      admittedEffort(reportedEffort);
-      if (state.requestedEffort === null || reportedEffort !== state.requestedEffort) {
-        state.turnActive = false;
-        throw new SidecarFailure("effort_unconfirmed");
+      let first;
+      try {
+        first = await state.query.next();
+      } catch {
+        throw new SidecarFailure(
+          state.resuming ? "resume_session_unknown" : "initialization_failed",
+        );
       }
-      state.effectiveEffort = reportedEffort;
+      const system = first?.value;
+      if (first?.done === true || system?.type !== "system" || system.subtype !== "init") {
+        throw new SidecarFailure(state.resuming ? "resume_session_unknown" : "init_missing");
+      }
+      if (typeof system.cwd !== "string" || !cwdMatches(state.cwd, system.cwd)) {
+        throw new SidecarFailure(state.resuming ? "resume_cwd_mismatch" : "cwd_mismatch");
+      }
+      if (
+        state.resuming &&
+        system.apiKeySource !== "oauth" &&
+        system.apiKeySource !== "none"
+      ) {
+        throw new SidecarFailure("resume_account_mismatch");
+      }
+      if (
+        state.resuming &&
+        (typeof system.session_id !== "string" || system.session_id.length === 0)
+      ) {
+        throw new SidecarFailure("resume_session_unknown");
+      }
+      if (state.resuming && system.session_id !== state.resumeSessionId) {
+        throw new SidecarFailure("resume_session_unknown");
+      }
+      if (typeof system.model !== "string" || system.model.length === 0) {
+        throw new SidecarFailure("model_missing");
+      }
+      if (state.supportedModelsAvailable && !state.supportedModels.includes(system.model)) {
+        await emitDiagnostic(
+          "error",
+          "supported_model_rejected",
+          modelQualificationEvidence(system.model),
+        );
+        throw new SidecarFailure("supported_model_rejected");
+      }
+      const capabilities = boundedCapabilities(system.capabilities);
+      const reportedEffort = system.effort;
+      if (reportedEffort !== undefined) {
+        admittedEffort(reportedEffort);
+        if (state.requestedEffort === null || reportedEffort !== state.requestedEffort) {
+          throw new SidecarFailure("effort_unconfirmed");
+        }
+        state.effectiveEffort = reportedEffort;
+      }
+      state.initialized = true;
+      state.effectiveModel = system.model;
+      state.providerSessionId =
+        (state.persistSession || state.resuming) &&
+        typeof system.session_id === "string" &&
+        system.session_id.length > 0
+          ? system.session_id
+          : null;
+      state.capabilities = capabilities;
+      state.reader = drainQuery();
+    } catch (error) {
+      state.turnActive = false;
+      state.firstTurnRejection =
+        error instanceof SidecarFailure && COMMAND_FAILURE_CODES.has(error.code)
+          ? error.code
+          : "command_failed";
+      throw error;
     }
-    state.initialized = true;
-    state.effectiveModel = system.model;
-    state.providerSessionId =
-      (state.persistSession || state.resuming) &&
-      typeof system.session_id === "string" &&
-      system.session_id.length > 0
-        ? system.session_id
-        : null;
-    state.capabilities = capabilities;
-    state.reader = drainQuery();
   }
   await emitEvent({ event: "turn_started" });
   return {
@@ -1785,7 +1798,7 @@ async function dispatch(record) {
     await respond(id, command, true, data);
   } catch (error) {
     if (error instanceof SidecarFailure) {
-      await respondFailure(id, command, error.code);
+      await respondFailure(id, command, error.code, error.originalCode);
     } else {
       await respondFailure(id, command, "command_failed");
     }

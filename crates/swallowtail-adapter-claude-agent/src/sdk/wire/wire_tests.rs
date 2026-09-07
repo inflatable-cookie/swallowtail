@@ -67,6 +67,7 @@ fn command_rejection_keeps_only_its_fixed_code() {
         response.failure_code,
         Some(ClaudeAgentSdkFailureCode::ConstructionFailed)
     );
+    assert_eq!(response.original_failure_code, None);
     assert!(response.data.is_none());
 
     let unknown = serde_json::to_vec(&json!({
@@ -81,6 +82,58 @@ fn command_rejection_keeps_only_its_fixed_code() {
         decode_record(&unknown).err().map(|error| error.kind()),
         Some(ClaudeAgentSdkProtocolFailureKind::InvalidResponse)
     );
+}
+
+#[test]
+fn terminal_session_rejection_keeps_only_a_bounded_original_code() {
+    let bytes = serde_json::to_vec(&json!({
+        "type": "response",
+        "id": "query-2",
+        "command": "query",
+        "success": false,
+        "failure": {
+            "code": "session_rejected_terminal",
+            "message": "sidecar command failed: session_rejected_terminal",
+            "originalCode": "supported_model_rejected"
+        }
+    }))
+    .expect("fixture serializes");
+    let ClaudeAgentSdkRecord::Response(response) =
+        decode_record(&bytes).expect("terminal rejection decodes")
+    else {
+        panic!("response expected");
+    };
+    assert_eq!(
+        response.failure_code,
+        Some(ClaudeAgentSdkFailureCode::SessionRejectedTerminal)
+    );
+    assert_eq!(
+        response.original_failure_code,
+        Some(ClaudeAgentSdkFailureCode::SupportedModelRejected)
+    );
+
+    for original_code in [None, Some("provider_secret")] {
+        let mut failure = json!({
+            "code": "session_rejected_terminal",
+            "message": "sidecar command failed: session_rejected_terminal"
+        });
+        if let Some(original_code) = original_code {
+            failure["originalCode"] = json!(original_code);
+        }
+        let invalid = json!({
+            "type": "response",
+            "id": "query-2",
+            "command": "query",
+            "success": false,
+            "failure": failure
+        });
+        assert_eq!(
+            decode_record(&serde_json::to_vec(&invalid).expect("fixture serializes"))
+                .err()
+                .map(|error| error.kind()),
+            Some(ClaudeAgentSdkProtocolFailureKind::InvalidResponse)
+        );
+    }
 }
 
 #[test]
@@ -122,6 +175,7 @@ fn sidecar_command_failure_codes_match_the_rust_enumeration() {
         ClaudeAgentSdkFailureCode::ConstructionFailed,
         ClaudeAgentSdkFailureCode::InitializationFailed,
         ClaudeAgentSdkFailureCode::InitMissing,
+        ClaudeAgentSdkFailureCode::SessionRejectedTerminal,
         ClaudeAgentSdkFailureCode::CwdMismatch,
         ClaudeAgentSdkFailureCode::ModelMismatch,
         ClaudeAgentSdkFailureCode::ModelMissing,
@@ -385,6 +439,14 @@ fn terminal_and_diagnostic_payloads_stay_bounded() {
         ),
         (
             json!({"type": "terminal", "failure": {"code": "a"}}),
+            ClaudeAgentSdkProtocolFailureKind::InvalidTerminal,
+        ),
+        (
+            json!({"type": "terminal", "failure": {
+                "code": "session_rejected_terminal",
+                "message": "sidecar command failed: session_rejected_terminal",
+                "originalCode": "supported_model_rejected"
+            }}),
             ClaudeAgentSdkProtocolFailureKind::InvalidTerminal,
         ),
     ] {

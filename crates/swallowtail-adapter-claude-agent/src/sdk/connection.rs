@@ -34,6 +34,7 @@ pub(crate) struct CommandResult {
     pub(crate) success: bool,
     pub(crate) data: Option<Value>,
     pub(crate) failure_code: Option<ClaudeAgentSdkFailureCode>,
+    pub(crate) original_failure_code: Option<ClaudeAgentSdkFailureCode>,
 }
 
 pub(crate) struct SdkConnection {

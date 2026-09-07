@@ -259,6 +259,22 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         );
         return;
     }
+    if matches!(scenario, SdkScenario::PostInitRejected)
+        && state
+            .input
+            .iter()
+            .filter(|input| input["command"] == "query")
+            .count()
+            == 2
+    {
+        push(
+            state,
+            json!({"type": "response", "id": id, "command": "query", "success": false,
+                   "failure": {"code": "prompt_too_large",
+                               "message": "sidecar command failed: prompt_too_large"}}),
+        );
+        return;
+    }
     if matches!(scenario, SdkScenario::InitMissing) {
         push(
             state,

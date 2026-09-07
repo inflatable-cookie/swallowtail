@@ -20,6 +20,18 @@ pub(crate) fn command_rejected(
     failure(route_code, format!("{message}: {}", sidecar_code.as_str()))
 }
 
+pub(crate) fn session_rejected_terminal(
+    original_code: ClaudeAgentSdkFailureCode,
+) -> RuntimeFailure {
+    failure(
+        "swallowtail.claude-agent.sdk.session_rejected_terminal",
+        format!(
+            "Claude Agent SDK session is terminal after first-turn rejection: {}",
+            original_code.as_str()
+        ),
+    )
+}
+
 pub(crate) fn terminal_failure(code: ClaudeAgentSdkFailureCode) -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.sidecar_terminated",

@@ -36,6 +36,7 @@ pub(super) fn decode_response(
                 success,
                 data,
                 failure_code: None,
+                original_failure_code: None,
             })
         }
         (false, None, Some(record)) => {
@@ -46,6 +47,7 @@ pub(super) fn decode_response(
                 success,
                 data: None,
                 failure_code: Some(failure.code),
+                original_failure_code: failure.original_code,
             })
         }
         _ => Err(failure(invalid)),
@@ -167,7 +169,11 @@ pub(super) fn decode_terminal(
     let record = value
         .get("failure")
         .ok_or_else(|| failure(ClaudeAgentSdkProtocolFailureKind::InvalidTerminal))?;
-    decode_failure(record, ClaudeAgentSdkProtocolFailureKind::InvalidTerminal)
+    let decoded = decode_failure(record, ClaudeAgentSdkProtocolFailureKind::InvalidTerminal)?;
+    if decoded.original_code.is_some() {
+        return Err(failure(ClaudeAgentSdkProtocolFailureKind::InvalidTerminal));
+    }
+    Ok(decoded)
 }
 
 pub(super) fn decode_diagnostic(
@@ -373,7 +379,24 @@ fn decode_failure(
     bounded_text(value, "message", MAXIMUM_FAILURE_MESSAGE_BYTES, kind)?;
     let code = bounded_text(value, "code", MAXIMUM_FAILURE_CODE_BYTES, kind)?;
     let code = ClaudeAgentSdkFailureCode::parse(code).ok_or_else(|| failure(kind))?;
-    Ok(ClaudeAgentSdkFailure { code })
+    let original_code = match value.get("originalCode") {
+        None => None,
+        Some(original_code) => {
+            let original_code = original_code
+                .as_str()
+                .filter(|value| value.len() <= MAXIMUM_FAILURE_CODE_BYTES)
+                .and_then(ClaudeAgentSdkFailureCode::parse)
+                .ok_or_else(|| failure(kind))?;
+            Some(original_code)
+        }
+    };
+    if (code == ClaudeAgentSdkFailureCode::SessionRejectedTerminal) != original_code.is_some() {
+        return Err(failure(kind));
+    }
+    Ok(ClaudeAgentSdkFailure {
+        code,
+        original_code,
+    })
 }
 
 fn nullable_label(

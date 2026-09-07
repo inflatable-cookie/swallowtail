@@ -117,6 +117,7 @@ impl SdkConnection {
                     success: response.success,
                     data: response.data,
                     failure_code: response.failure_code,
+                    original_failure_code: response.original_failure_code,
                 }));
                 Ok(())
             }

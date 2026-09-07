@@ -96,6 +96,7 @@ pub(crate) struct ClaudeAgentSdkResponse {
     pub(crate) success: bool,
     pub(crate) data: Option<Value>,
     pub(crate) failure_code: Option<ClaudeAgentSdkFailureCode>,
+    pub(crate) original_failure_code: Option<ClaudeAgentSdkFailureCode>,
 }
 
 pub(crate) struct ClaudeAgentSdkCallback {
@@ -114,6 +115,7 @@ pub(crate) struct ClaudeAgentSdkBashCommandView {
 
 pub(crate) struct ClaudeAgentSdkFailure {
     pub(crate) code: ClaudeAgentSdkFailureCode,
+    pub(crate) original_code: Option<ClaudeAgentSdkFailureCode>,
 }
 
 /// Fixed sidecar failure vocabulary. Only these bounded labels may cross the
@@ -142,6 +144,7 @@ pub(crate) enum ClaudeAgentSdkFailureCode {
     ConstructionFailed,
     InitializationFailed,
     InitMissing,
+    SessionRejectedTerminal,
     CwdMismatch,
     ModelMismatch,
     ModelMissing,
@@ -210,6 +213,7 @@ impl ClaudeAgentSdkFailureCode {
             Self::ConstructionFailed => "construction_failed",
             Self::InitializationFailed => "initialization_failed",
             Self::InitMissing => "init_missing",
+            Self::SessionRejectedTerminal => "session_rejected_terminal",
             Self::CwdMismatch => "cwd_mismatch",
             Self::ModelMismatch => "model_mismatch",
             Self::ModelMissing => "model_missing",
@@ -278,6 +282,7 @@ impl ClaudeAgentSdkFailureCode {
             "construction_failed" => Self::ConstructionFailed,
             "initialization_failed" => Self::InitializationFailed,
             "init_missing" => Self::InitMissing,
+            "session_rejected_terminal" => Self::SessionRejectedTerminal,
             "cwd_mismatch" => Self::CwdMismatch,
             "model_mismatch" => Self::ModelMismatch,
             "model_missing" => Self::ModelMissing,

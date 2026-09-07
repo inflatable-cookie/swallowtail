@@ -228,6 +228,58 @@ fn session_input_stays_open_until_close_and_early_eof_is_an_error_result() {
 }
 
 #[test]
+fn post_init_oversized_prompt_rejection_keeps_sidecar_usable_without_replay() {
+    let mut sidecar = SidecarProcess::start_scenario("between-turns");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true, "open response: {open}");
+
+    let first = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(first["success"], true, "first query response: {first}");
+    sidecar.wait_for_turn_end();
+    let barrier = sidecar.command(
+        "barrier-1",
+        "set_permission_mode",
+        json!({"mode": "default"}),
+    );
+    assert_eq!(
+        barrier["success"], true,
+        "first-turn drain barrier: {barrier}"
+    );
+    let input_calls_before_rejection = sidecar.observed_query_input_calls();
+
+    let rejection = sidecar.command(
+        "query-2",
+        "query",
+        json!({"text": "x".repeat(256 * 1024 + 1)}),
+    );
+    assert_eq!(
+        rejection["success"], false,
+        "oversized prompt response: {rejection}"
+    );
+    assert_eq!(rejection["failure"]["code"], "prompt_too_large");
+    assert_eq!(
+        sidecar.observed_query_input_calls(),
+        input_calls_before_rejection,
+        "sidecar rejected the oversized prompt before SDK input consumption"
+    );
+
+    let next = sidecar.command("query-3", "query", json!({"text": "next turn"}));
+    assert_eq!(next["success"], true, "next query response: {next}");
+    sidecar.wait_for_turn_end();
+    assert!(
+        sidecar.observed_query_input_calls() > input_calls_before_rejection,
+        "the valid next turn reached the SDK exactly after the local rejection"
+    );
+
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(close["success"], true, "close response: {close}");
+}
+
+#[test]
 fn an_unmapped_message_stays_terminal_without_crossing_its_type_or_error_text() {
     let mut sidecar = SidecarProcess::start_scenario("unknown-message");
     let open = sidecar.command(
@@ -514,6 +566,71 @@ fn first_turn_init_rejections_expose_their_fixed_sidecar_code() {
         );
         assert_eq!(response["failure"]["code"], expected);
     }
+}
+
+#[test]
+fn first_turn_rejection_makes_retry_terminal_without_replaying_sdk_input() {
+    let mut sidecar = SidecarProcess::start_scenario("unsupported-model");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true);
+
+    let first_turn = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(first_turn["success"], false);
+    assert_eq!(first_turn["failure"]["code"], "supported_model_rejected");
+    assert_eq!(
+        sidecar.next_diagnostic()["code"],
+        "supported_model_rejected"
+    );
+    assert_eq!(sidecar.observed_query_input_calls(), 1);
+
+    let retry = sidecar.command("query-2", "query", json!({"text": "retry"}));
+    assert_eq!(retry["success"], false);
+    assert_eq!(retry["failure"]["code"], "session_rejected_terminal");
+    assert_eq!(retry["failure"]["originalCode"], "supported_model_rejected");
+    assert_eq!(
+        retry["failure"]["message"],
+        "sidecar command failed: session_rejected_terminal"
+    );
+    assert_eq!(sidecar.observed_query_input_calls(), 1);
+
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(
+        close["success"], true,
+        "terminal rejection remains closable"
+    );
+    assert_eq!(close["data"]["nativeExitObserved"], true);
+    assert_eq!(close["data"]["sdkTransportCloseRan"], true);
+    assert_eq!(sidecar.observed_close_calls(), 1);
+}
+
+#[test]
+fn first_turn_rejection_can_close_without_retry_or_replay() {
+    let mut sidecar = SidecarProcess::start_scenario("init-missing");
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    assert_eq!(open["success"], true);
+
+    let first_turn = sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(first_turn["success"], false);
+    assert_eq!(first_turn["failure"]["code"], "init_missing");
+    assert_eq!(sidecar.observed_query_input_calls(), 1);
+
+    let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    assert_eq!(
+        close["success"], true,
+        "init shape rejection remains closable"
+    );
+    assert_eq!(close["data"]["nativeExitObserved"], true);
+    assert_eq!(close["data"]["sdkTransportCloseRan"], true);
+    assert_eq!(sidecar.observed_query_input_calls(), 1);
+    assert_eq!(sidecar.observed_close_calls(), 1);
 }
 
 #[test]

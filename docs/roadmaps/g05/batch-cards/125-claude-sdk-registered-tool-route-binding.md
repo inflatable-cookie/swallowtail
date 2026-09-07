@@ -1,6 +1,6 @@
 # 125 Claude SDK Registered-Tool Route Binding
 
-Status: ready
+Status: complete; PR 275 merged at `1cbc21ad`; provider-spawned courier topology per the Chatterbox ruling
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

@@ -1,6 +1,6 @@
 # 115 Selected skill/reference transport and projection
 
-Status: planned; blocked until card114 merges
+Status: complete; PR 261 merged at `70909172`
 Owner: Tom
 Created: 2026-09-07
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`

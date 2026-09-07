@@ -1,6 +1,6 @@
 # 127 Codex App-Server Selected-Skill Bundle Binding
 
-Status: ready
+Status: complete; PR 274 merged at `7db98bf0`
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

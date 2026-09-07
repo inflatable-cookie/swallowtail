@@ -162,6 +162,7 @@ consumer requirements and must not create a competing producer worker.
 | [127](batch-cards/127-codex-selected-skill-bundle-binding.md) | ready; cards 115 and 117 merged | Codex adapter owner; `crates/swallowtail-adapter-codex/**` profile/transport/tests/guide/baseline; parallel with 125/126 (disjoint crate); forbidden: kernel, host-local, contracts | bundle transport fixtures on the app-server fixture; exact-head review; merge |
 | [128](batch-cards/128-grok-acp-client-mcp-probe-harness.md) | ready | Grok adapter/testkit owner; `crates/swallowtail-testkit/**` probe module, `scripts/` runner, hand-off packet under `docs/handoffs/`; forbidden: adapter runtime, claims, contracts | four-verdict proof on the fake ACP fixture; exact-head review; Desktop runs the real probe |
 | [129](batch-cards/129-feature-matrix-cross-classification-audit.md) | ready | docs/matrix owner; `docs/guides/provider-solution-feature-matrix.csv`, `provider-route-matrix.md`, `scripts/check-provider-route-matrix.sh`; forbidden: crates, claims | check enforces kind+reference on every cross; ranked producer-gap backlog; exact-head review |
+| [131](batch-cards/131-codex-app-server-client-mcp-servers-evidence.md) | ready | Codex evidence owner; corpus, matrix cell, one fake transcript if a surface exists; forbidden: runtime, live Codex | anchored classification; matrix check green; exact-head review |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
@@ -210,6 +211,19 @@ owner and its runs happen under its own isolated-testing authorization, which
 also covers the Swallowtail real-route gates so no separate Swallowtail live
 lane exists). No tag readiness is claimed until the full matrix is Desktop-
 accepted or the operator changes scope.
+
+### Card 129 Backlog Disposition — 2026-09-07
+
+Ranks 1, 3, 4 (Claude registered tools, consumer-tool exchange, skill bundle):
+cards 125 and 126, in flight. Ranks 7, 8, 10, 11 (Grok): card 128's probe
+gates them; the fallback is the operator's native-route decision. Ranks 5
+and 12 (Codex `client_mcp_servers`): card 131 settles limitation versus gap;
+card 114 is complete and is not a valid reference. Ranks 2, 6, 9, 13
+(persistent permission grants): card 130 stays a planned producer seam; in
+the meantime the one-shot exchange is answerable on every route, so a
+consumer may implement persistence as its own policy over
+`CallbackResponder::respond`, and Claude's `permissionMode` already exposes
+the provider's own durable modes. Desktop is told so.
 
 ## Batch A Planning Acceptance — 2026-09-07
 

@@ -1,6 +1,6 @@
 # 129 Feature Matrix Cross Classification Audit
 
-Status: ready
+Status: complete; PR 276 merged at `97fd58f5`; ranked backlog in Result
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

@@ -1,6 +1,6 @@
 # 114 Shared registration and operation bridge kernel
 
-Status: planned; ready after Batch A planning review/promotion
+Status: complete; PR 260 merged at `c214ac5e`
 Owner: Tom
 Created: 2026-09-07
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`

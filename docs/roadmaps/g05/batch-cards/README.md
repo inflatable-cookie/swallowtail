@@ -2,11 +2,9 @@
 
 ## Ready
 
-- [129-feature-matrix-cross-classification-audit.md](./129-feature-matrix-cross-classification-audit.md) — ready; every cross becomes provider-limitation-with-evidence or producer-gap-with-card; check enforces it; ranked backlog for pinned routes
+- [131-codex-app-server-client-mcp-servers-evidence.md](./131-codex-app-server-client-mcp-servers-evidence.md) — ready; settle the Codex client_mcp_servers cross as limitation or gap with anchors; replaces the stale card 114 reference
 - [128-grok-acp-client-mcp-probe-harness.md](./128-grok-acp-client-mcp-probe-harness.md) — ready; provider-free probe harness Desktop runs to settle whether Grok Build accepts client-supplied ACP MCP; feeds the Grok release-scope decision
-- [125-claude-sdk-registered-tool-route-binding.md](./125-claude-sdk-registered-tool-route-binding.md) — ready; bind RegisteredToolPreparation into claude-agent.sdk open on the Codex precedent; provider-free
 - [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — ready; serial after 125; resolved skill bundle as the distinct third input
-- [127-codex-selected-skill-bundle-binding.md](./127-codex-selected-skill-bundle-binding.md) — ready; Codex route skill bundle binding; parallel
 - [124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md](./124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — ready; serial after 121; bounded manifest lookup and one model-id predicate; precedes the `v0.4.4` candidate
 - [119-claude-sdk-first-turn-model-qualification-evidence.md](./119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; bounded observer evidence for the first-turn model rejection; lead of the producer-diagnosis trio
 - [120-claude-sdk-loaded-module-version-verification.md](./120-claude-sdk-loaded-module-version-verification.md) — ready; serial after 119; loaded SDK version verified at open
@@ -21,8 +19,6 @@
 - [130-persistent-permission-grant-admission.md](./130-persistent-permission-grant-admission.md) — planned backlog stub only; no dispatch authorization; owns a future persistent-grant producer seam if promoted
 - [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — planned; ready on card 124's merge; first lane on the simplified shape
 - [123-v0-4-4-consumer-proof-and-tag-capsule.md](./123-v0-4-4-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.4` tag
-- [114-registered-tool-kernel.md](./114-registered-tool-kernel.md) — planned; ready after Batch A planning review/promotion
-- [115-selected-skill-transport.md](./115-selected-skill-transport.md) — planned; waits for card114 merges
 - [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — planned; waits for cards114-115 merge and consumer-tool protocol evidence exists
 
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — planned; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
@@ -39,6 +35,11 @@
 
 ## Completed
 
+- [125-claude-sdk-registered-tool-route-binding.md](./125-claude-sdk-registered-tool-route-binding.md) — complete; bind RegisteredToolPreparation into claude-agent.sdk open on the Codex precedent; provider-free
+- [115-selected-skill-transport.md](./115-selected-skill-transport.md) — complete; waits for card114 merges
+- [114-registered-tool-kernel.md](./114-registered-tool-kernel.md) — complete; ready after Batch A planning review/promotion
+- [129-feature-matrix-cross-classification-audit.md](./129-feature-matrix-cross-classification-audit.md) — complete; every cross becomes provider-limitation-with-evidence or producer-gap-with-card; check enforces it; ranked backlog for pinned routes
+- [127-codex-selected-skill-bundle-binding.md](./127-codex-selected-skill-bundle-binding.md) — complete; Codex route skill bundle binding; parallel
 - [117-codex-registered-tool-adoption.md](./117-codex-registered-tool-adoption.md) — complete; waits for cards114-115 merge
 - [116-claude-registered-tool-adoption.md](./116-claude-registered-tool-adoption.md) — complete; waits for cards114-115 merge and exact route transport corpus is frozen
 - [109-release-gate-order-and-hosted-delegation.md](./109-release-gate-order-and-hosted-delegation.md) — complete; PR 253 merged at `8668b167`; cheap gates first, hosted run stands for clippy and tests; after the `v0.4.3` tag

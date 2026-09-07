@@ -1,0 +1,97 @@
+pub mod swallowtail_protocol_openai_chat
+pub enum swallowtail_protocol_openai_chat::Payload
+pub swallowtail_protocol_openai_chat::Payload::Chunk(swallowtail_protocol_openai_chat::Chunk)
+pub swallowtail_protocol_openai_chat::Payload::Error(swallowtail_protocol_openai_chat::ErrorEnvelope)
+pub enum swallowtail_protocol_openai_chat::ProtocolErrorKind
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::BufferLimitExceeded
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::ChoiceLimitExceeded
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::FieldLimitExceeded
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::IncompleteRecord
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::InvalidJson
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::InvalidStructure
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::InvalidUtf8
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::MessageLimitExceeded
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::SerializationFailed
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::StringLimitExceeded
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::UnsupportedSseField
+pub swallowtail_protocol_openai_chat::ProtocolErrorKind::WireLimitExceeded
+pub enum swallowtail_protocol_openai_chat::SseRecord
+pub swallowtail_protocol_openai_chat::SseRecord::Data(alloc::vec::Vec<u8>)
+pub swallowtail_protocol_openai_chat::SseRecord::Done
+pub struct swallowtail_protocol_openai_chat::ChatMessage
+impl swallowtail_protocol_openai_chat::ChatMessage
+pub fn swallowtail_protocol_openai_chat::ChatMessage::insert_extension(&mut self, impl core::convert::Into<alloc::string::String>, serde_json::value::Value) -> core::result::Result<(), swallowtail_protocol_openai_chat::ProtocolError>
+pub fn swallowtail_protocol_openai_chat::ChatMessage::new(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn swallowtail_protocol_openai_chat::ChatMessage::without_content(impl core::convert::Into<alloc::string::String>) -> Self
+pub struct swallowtail_protocol_openai_chat::ChatRequest
+impl swallowtail_protocol_openai_chat::ChatRequest
+pub fn swallowtail_protocol_openai_chat::ChatRequest::insert_extension(&mut self, impl core::convert::Into<alloc::string::String>, serde_json::value::Value) -> core::result::Result<(), swallowtail_protocol_openai_chat::ProtocolError>
+pub fn swallowtail_protocol_openai_chat::ChatRequest::new(impl core::convert::Into<alloc::string::String>, alloc::vec::Vec<swallowtail_protocol_openai_chat::ChatMessage>, bool, bool) -> Self
+pub struct swallowtail_protocol_openai_chat::Choice
+pub swallowtail_protocol_openai_chat::Choice::delta: swallowtail_protocol_openai_chat::Delta
+pub swallowtail_protocol_openai_chat::Choice::finish_reason: core::option::Option<alloc::string::String>
+pub swallowtail_protocol_openai_chat::Choice::index: u64
+pub swallowtail_protocol_openai_chat::Choice::unknown_fields: alloc::vec::Vec<swallowtail_protocol_openai_chat::UnknownField>
+pub struct swallowtail_protocol_openai_chat::Chunk
+pub swallowtail_protocol_openai_chat::Chunk::choices: alloc::vec::Vec<swallowtail_protocol_openai_chat::Choice>
+pub swallowtail_protocol_openai_chat::Chunk::created: core::option::Option<u64>
+pub swallowtail_protocol_openai_chat::Chunk::id: core::option::Option<alloc::string::String>
+pub swallowtail_protocol_openai_chat::Chunk::model: core::option::Option<alloc::string::String>
+pub swallowtail_protocol_openai_chat::Chunk::object: core::option::Option<alloc::string::String>
+pub swallowtail_protocol_openai_chat::Chunk::unknown_fields: alloc::vec::Vec<swallowtail_protocol_openai_chat::UnknownField>
+pub swallowtail_protocol_openai_chat::Chunk::usage: core::option::Option<swallowtail_protocol_openai_chat::Usage>
+pub struct swallowtail_protocol_openai_chat::CodecLimits
+impl swallowtail_protocol_openai_chat::CodecLimits
+pub const fn swallowtail_protocol_openai_chat::CodecLimits::maximum_choices(self) -> usize
+pub const fn swallowtail_protocol_openai_chat::CodecLimits::maximum_fields(self) -> usize
+pub const fn swallowtail_protocol_openai_chat::CodecLimits::maximum_messages(self) -> usize
+pub const fn swallowtail_protocol_openai_chat::CodecLimits::maximum_string_bytes(self) -> usize
+pub const fn swallowtail_protocol_openai_chat::CodecLimits::maximum_wire_bytes(self) -> usize
+pub const fn swallowtail_protocol_openai_chat::CodecLimits::new(usize, usize, usize, usize, usize) -> Self
+impl core::default::Default for swallowtail_protocol_openai_chat::CodecLimits
+pub fn swallowtail_protocol_openai_chat::CodecLimits::default() -> Self
+pub struct swallowtail_protocol_openai_chat::Delta
+pub swallowtail_protocol_openai_chat::Delta::content: core::option::Option<alloc::string::String>
+pub swallowtail_protocol_openai_chat::Delta::role: core::option::Option<alloc::string::String>
+pub swallowtail_protocol_openai_chat::Delta::unknown_fields: alloc::vec::Vec<swallowtail_protocol_openai_chat::UnknownField>
+pub struct swallowtail_protocol_openai_chat::ErrorEnvelope
+pub swallowtail_protocol_openai_chat::ErrorEnvelope::error: swallowtail_protocol_openai_chat::ProviderError
+pub swallowtail_protocol_openai_chat::ErrorEnvelope::unknown_fields: alloc::vec::Vec<swallowtail_protocol_openai_chat::UnknownField>
+pub struct swallowtail_protocol_openai_chat::ProtocolError
+impl swallowtail_protocol_openai_chat::ProtocolError
+pub const fn swallowtail_protocol_openai_chat::ProtocolError::kind(self) -> swallowtail_protocol_openai_chat::ProtocolErrorKind
+impl core::error::Error for swallowtail_protocol_openai_chat::ProtocolError
+impl core::fmt::Display for swallowtail_protocol_openai_chat::ProtocolError
+pub fn swallowtail_protocol_openai_chat::ProtocolError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_protocol_openai_chat::ProviderError
+pub swallowtail_protocol_openai_chat::ProviderError::code: core::option::Option<serde_json::value::Value>
+pub swallowtail_protocol_openai_chat::ProviderError::kind: alloc::string::String
+pub swallowtail_protocol_openai_chat::ProviderError::message: alloc::string::String
+pub swallowtail_protocol_openai_chat::ProviderError::unknown_fields: alloc::vec::Vec<swallowtail_protocol_openai_chat::UnknownField>
+impl core::fmt::Debug for swallowtail_protocol_openai_chat::ProviderError
+pub fn swallowtail_protocol_openai_chat::ProviderError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_protocol_openai_chat::SseDecoder
+impl swallowtail_protocol_openai_chat::SseDecoder
+pub fn swallowtail_protocol_openai_chat::SseDecoder::finish(self) -> core::result::Result<(), swallowtail_protocol_openai_chat::ProtocolError>
+pub fn swallowtail_protocol_openai_chat::SseDecoder::new(swallowtail_protocol_openai_chat::CodecLimits) -> Self
+pub fn swallowtail_protocol_openai_chat::SseDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_protocol_openai_chat::SseRecord>, swallowtail_protocol_openai_chat::ProtocolError>
+impl core::default::Default for swallowtail_protocol_openai_chat::SseDecoder
+pub fn swallowtail_protocol_openai_chat::SseDecoder::default() -> Self
+pub struct swallowtail_protocol_openai_chat::UnknownField
+impl swallowtail_protocol_openai_chat::UnknownField
+pub fn swallowtail_protocol_openai_chat::UnknownField::name(&self) -> &str
+pub const fn swallowtail_protocol_openai_chat::UnknownField::value(&self) -> &serde_json::value::Value
+impl core::fmt::Debug for swallowtail_protocol_openai_chat::UnknownField
+pub fn swallowtail_protocol_openai_chat::UnknownField::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_protocol_openai_chat::Usage
+pub swallowtail_protocol_openai_chat::Usage::completion_tokens: core::option::Option<u64>
+pub swallowtail_protocol_openai_chat::Usage::prompt_tokens: core::option::Option<u64>
+pub swallowtail_protocol_openai_chat::Usage::total_tokens: core::option::Option<u64>
+pub swallowtail_protocol_openai_chat::Usage::unknown_fields: alloc::vec::Vec<swallowtail_protocol_openai_chat::UnknownField>
+pub const swallowtail_protocol_openai_chat::DEFAULT_MAX_CHOICES: usize
+pub const swallowtail_protocol_openai_chat::DEFAULT_MAX_FIELDS: usize
+pub const swallowtail_protocol_openai_chat::DEFAULT_MAX_MESSAGES: usize
+pub const swallowtail_protocol_openai_chat::DEFAULT_MAX_STRING_BYTES: usize
+pub const swallowtail_protocol_openai_chat::DEFAULT_MAX_WIRE_BYTES: usize
+pub fn swallowtail_protocol_openai_chat::decode_payload(&[u8], swallowtail_protocol_openai_chat::CodecLimits) -> core::result::Result<swallowtail_protocol_openai_chat::Payload, swallowtail_protocol_openai_chat::ProtocolError>
+pub fn swallowtail_protocol_openai_chat::encode_request(&swallowtail_protocol_openai_chat::ChatRequest, swallowtail_protocol_openai_chat::CodecLimits) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_protocol_openai_chat::ProtocolError>

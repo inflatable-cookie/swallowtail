@@ -5,8 +5,15 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
-### Added
+## [0.4.4] - 2026-09-07
 
+### Added
+- add the provider-neutral Contract 063 registered-tool and operation-bridge
+  vocabulary with bounded selected skill/reference transport and provider-free
+  lifecycle checks. Claude's route-local mediated stdio proxy and Codex's
+  dynamic native-tool binding remain exact, while Grok consumer-MCP support is
+  unqualified; these surfaces do not constitute a live provider pass. g05.035
+  cards 114-118.
 - add bounded first-turn model-qualification evidence to the opt-in debug
   observer for `supported_model_rejected`: requested/effective ids, catalogue
   size and digest, membership, phase/source, and declared/loaded identity
@@ -42,7 +49,6 @@ annotated Git tags from the canonical repository.
   g05.029 card 084.
 
 ### Added
-
 - add opt-in provider-owned Claude Agent SDK session persistence with
   replay-free `resume` and `resumeSessionAt` attachment. Resume rebinds the
   host-leased cwd, first-party account, and exact `SessionResumeBinding`, while

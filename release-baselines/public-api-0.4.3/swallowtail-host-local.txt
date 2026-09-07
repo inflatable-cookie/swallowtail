@@ -22,6 +22,7 @@ impl core::fmt::Display for swallowtail_host_local::wire::RegisteredToolProxyWir
 pub fn swallowtail_host_local::wire::RegisteredToolProxyWireError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument
 pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::bearer: alloc::string::String
+pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::connect_timeout_ms: u64
 pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::endpoint: alloc::string::String
 pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::lease_generation: u64
 pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::protocol_version: alloc::string::String
@@ -31,7 +32,7 @@ pub swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::wire_ta
 impl swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument
 pub fn swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::decode(&[u8]) -> core::result::Result<Self, swallowtail_host_local::wire::RegisteredToolProxyWireError>
 pub fn swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::encode(&self) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_host_local::wire::RegisteredToolProxyWireError>
-pub fn swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::new(alloc::string::String, alloc::string::String, u64, u64, &swallowtail_runtime::registered_tool::identity::RegisteredToolProtocolVersion) -> Self
+pub fn swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::new(alloc::string::String, alloc::string::String, u64, u64, &swallowtail_runtime::registered_tool::identity::RegisteredToolProtocolVersion, u64) -> Self
 impl core::fmt::Debug for swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument
 pub fn swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub const swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_HTTP_PATH: &str

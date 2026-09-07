@@ -4,7 +4,10 @@ use super::attachment::{
     RegisteredToolAttachment, RegisteredToolAttachmentDescriptor, RegisteredToolProxyRecipe,
 };
 use super::failure::{RegisteredToolFailure, RegisteredToolFailureKind, reject};
-use super::identity::{RegisteredToolId, RegisteredToolProtocolVersion, RegisteredToolTransport};
+use super::identity::{
+    RegisteredToolExecutionKind, RegisteredToolId, RegisteredToolProtocolVersion,
+    RegisteredToolTransport,
+};
 use super::limits::{MAX_REGISTERED_TOOL_SELECTED_TOOLS, RegisteredToolBounds};
 use super::snapshot::RegisteredToolSnapshot;
 use std::collections::BTreeSet;
@@ -131,6 +134,13 @@ impl RegisteredToolSelection {
                         .any(|reference| reference == recipe.environment())
                 {
                     return Err(reject(RegisteredToolFailureKind::ProcessRecipeUnavailable));
+                }
+                if self.selected.iter().any(|id| {
+                    self.snapshot.declaration(id).is_none_or(|declaration| {
+                        declaration.kind() != RegisteredToolExecutionKind::Mcp
+                    })
+                }) {
+                    return Err(reject(RegisteredToolFailureKind::UnsupportedTool));
                 }
                 Ok(())
             }

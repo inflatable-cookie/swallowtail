@@ -13,7 +13,7 @@ use std::thread;
 use std::time::Duration;
 use swallowtail_runtime::RuntimeFailure;
 
-pub(super) fn bind_loopback() -> Result<(TcpListener, std::net::SocketAddr), RuntimeFailure> {
+pub(crate) fn bind_loopback() -> Result<(TcpListener, std::net::SocketAddr), RuntimeFailure> {
     let listener = TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, 0)).map_err(|_| {
         failure(
             "swallowtail.watcher_bridge.bind_failed",
@@ -35,7 +35,7 @@ pub(super) fn bind_loopback() -> Result<(TcpListener, std::net::SocketAddr), Run
     Ok((listener, addr))
 }
 
-pub(super) fn wake_accept(addr: std::net::SocketAddr) {
+pub(crate) fn wake_accept(addr: std::net::SocketAddr) {
     let _ = TcpStream::connect_timeout(&addr, Duration::from_millis(100));
 }
 
@@ -94,7 +94,7 @@ fn handle_connection(live: Arc<LiveLease>, mut stream: TcpStream) {
     if configure_stream(&stream).is_err() {
         return;
     }
-    let request = match read_request(&mut stream) {
+    let request = match read_request(&mut stream, swallowtail_runtime::WATCHER_BRIDGE_HTTP_PATH) {
         Ok(request) => request,
         Err(HttpReject::Oversized) => {
             let _ = write_failure(&mut stream, &oversized_failure(), None);

@@ -11,6 +11,8 @@ use swallowtail_host_local::wire::{
     REGISTERED_TOOL_PROXY_WIRE_TAG, RegisteredToolProxyRendezvousDocument,
 };
 
+const COURIER_IO_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(10);
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut args = env::args_os();
     let _program = args.next();
@@ -22,8 +24,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let path = Path::new(&rendezvous_path);
     let document = read_once(path)?;
     let (host, port) = loopback_endpoint(&document.endpoint)?;
-    let mut stream = TcpStream::connect((host.as_str(), port))?;
+    let connect_timeout = std::time::Duration::from_millis(document.connect_timeout_ms);
+    let mut stream = TcpStream::connect_timeout(
+        &format!("{host}:{port}").parse()?,
+        connect_timeout.min(COURIER_IO_TIMEOUT),
+    )?;
     stream.set_nodelay(true)?;
+    stream.set_read_timeout(Some(COURIER_IO_TIMEOUT))?;
+    stream.set_write_timeout(Some(COURIER_IO_TIMEOUT))?;
     negotiate(&mut stream, &document.bearer)?;
     let stdin = std::io::stdin();
     let mut input = BufReader::new(stdin.lock());

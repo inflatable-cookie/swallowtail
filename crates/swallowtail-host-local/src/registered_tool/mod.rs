@@ -174,6 +174,7 @@ impl LocalRegisteredToolBridgeHostService {
             Some(Arc::new(RegisteredToolProxyServer::bind(
                 Arc::clone(&kernel),
                 proxy_selection,
+                Arc::clone(&self.time),
                 lease.deadline(),
             )?))
         } else {

@@ -115,6 +115,8 @@ pub struct RegisteredToolProxyRendezvousDocument {
     pub transport_generation: u64,
     /// Exact selected Contract 063 protocol version.
     pub protocol_version: String,
+    /// Host-computed connect budget: the open remainder, capped at ten seconds.
+    pub connect_timeout_ms: u64,
     /// Reserved server name.
     pub server_name: String,
 }
@@ -129,6 +131,7 @@ impl fmt::Debug for RegisteredToolProxyRendezvousDocument {
             .field("lease_generation", &self.lease_generation)
             .field("transport_generation", &self.transport_generation)
             .field("protocol_version", &self.protocol_version)
+            .field("connect_timeout_ms", &self.connect_timeout_ms)
             .field("server_name", &self.server_name)
             .finish()
     }
@@ -143,6 +146,7 @@ impl RegisteredToolProxyRendezvousDocument {
         lease_generation: u64,
         transport_generation: u64,
         protocol_version: &RegisteredToolProtocolVersion,
+        connect_timeout_ms: u64,
     ) -> Self {
         Self {
             wire_tag: REGISTERED_TOOL_PROXY_WIRE_TAG.to_owned(),
@@ -151,6 +155,7 @@ impl RegisteredToolProxyRendezvousDocument {
             lease_generation,
             transport_generation,
             protocol_version: protocol_version.as_str().to_owned(),
+            connect_timeout_ms,
             server_name: REGISTERED_TOOL_PROXY_SERVER_NAME.to_owned(),
         }
     }
@@ -164,6 +169,7 @@ impl RegisteredToolProxyRendezvousDocument {
             "lease_generation": self.lease_generation,
             "transport_generation": self.transport_generation,
             "protocol_version": self.protocol_version,
+            "connect_timeout_ms": self.connect_timeout_ms,
             "server_name": self.server_name,
         }))
         .map_err(|_| RegisteredToolProxyWireError::Malformed)
@@ -186,6 +192,7 @@ impl RegisteredToolProxyRendezvousDocument {
             "lease_generation",
             "transport_generation",
             "protocol_version",
+            "connect_timeout_ms",
             "server_name",
         ];
         if object.keys().any(|key| !allowed.contains(&key.as_str())) {
@@ -209,6 +216,11 @@ impl RegisteredToolProxyRendezvousDocument {
             .and_then(Value::as_u64)
             .filter(|value| *value != 0)
             .ok_or(RegisteredToolProxyWireError::MissingField)?;
+        let connect_timeout_ms = object
+            .get("connect_timeout_ms")
+            .and_then(Value::as_u64)
+            .filter(|value| (1..=10_000).contains(value))
+            .ok_or(RegisteredToolProxyWireError::MissingField)?;
         let document = Self {
             wire_tag: text("wire_tag")?,
             endpoint: text("endpoint")?,
@@ -216,6 +228,7 @@ impl RegisteredToolProxyRendezvousDocument {
             lease_generation,
             transport_generation,
             protocol_version: text("protocol_version")?,
+            connect_timeout_ms,
             server_name: text("server_name")?,
         };
         if document.wire_tag != REGISTERED_TOOL_PROXY_WIRE_TAG

@@ -11,7 +11,7 @@ use crate::output::failure;
 use futures_executor::block_on;
 use serde_json::{Map, Value, json};
 use std::fs::{self, File, OpenOptions};
-use std::io::{Read, Write};
+use std::io::Write;
 use std::net::{Shutdown, SocketAddr, TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -20,14 +20,12 @@ use std::thread::{self, JoinHandle};
 use std::time::{Duration, Instant};
 use swallowtail_runtime::{
     Deadline, RegisteredToolBridgeLease, RegisteredToolCallId, RegisteredToolCallRequest,
-    RegisteredToolOperationKernel, RegisteredToolPayload, RegisteredToolSchemaMediaType,
-    RegisteredToolSelection, RuntimeFailure,
+    RegisteredToolExecutionKind, RegisteredToolOperationKernel, RegisteredToolPayload,
+    RegisteredToolSchemaMediaType, RegisteredToolSelection, RuntimeFailure, TimeService,
 };
 use zeroize::Zeroizing;
 
 const READY_WAIT: Duration = Duration::from_secs(10);
-const MAX_HEADER_BYTES: usize = 64 * 1024;
-
 /// One opened private HTTP carrier owned by the registered-tool lease.
 pub(crate) struct RegisteredToolProxyServer {
     state: Arc<ProxyState>,
@@ -39,8 +37,11 @@ struct ProxyState {
     bearer: Zeroizing<String>,
     kernel: Arc<RegisteredToolOperationKernel>,
     selection: RegisteredToolSelection,
+    time: Arc<dyn TimeService>,
     deadline: Deadline,
     connection_claimed: AtomicBool,
+    rendezvous_claimed: AtomicBool,
+    rendezvous: Mutex<Option<Arc<RendezvousState>>>,
     closed: AtomicBool,
     ready: Mutex<bool>,
     ready_changed: Condvar,
@@ -51,33 +52,20 @@ impl RegisteredToolProxyServer {
     pub(crate) fn bind(
         kernel: Arc<RegisteredToolOperationKernel>,
         selection: RegisteredToolSelection,
+        time: Arc<dyn TimeService>,
         deadline: Deadline,
     ) -> Result<Self, RuntimeFailure> {
-        let listener = TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, 0)).map_err(|_| {
-            failure(
-                "swallowtail.registered_tool.proxy_bind_failed",
-                "Registered tool proxy could not bind a loopback listener",
-            )
-        })?;
-        listener.set_nonblocking(false).map_err(|_| {
-            failure(
-                "swallowtail.registered_tool.proxy_bind_failed",
-                "Registered tool proxy could not configure its listener",
-            )
-        })?;
-        let endpoint = listener.local_addr().map_err(|_| {
-            failure(
-                "swallowtail.registered_tool.proxy_bind_failed",
-                "Registered tool proxy could not inspect its listener",
-            )
-        })?;
+        let (listener, endpoint) = crate::watcher_bridge::bind_loopback()?;
         let state = Arc::new(ProxyState {
             endpoint,
             bearer: generate_operation_secret()?,
             kernel,
             selection,
+            time,
             deadline,
             connection_claimed: AtomicBool::new(false),
+            rendezvous_claimed: AtomicBool::new(false),
+            rendezvous: Mutex::new(None),
             closed: AtomicBool::new(false),
             ready: Mutex::new(false),
             ready_changed: Condvar::new(),
@@ -133,6 +121,7 @@ impl RegisteredToolProxyServer {
             }
         }
         if *ready {
+            self.expire_rendezvous();
             Ok(())
         } else {
             Err(failure(
@@ -147,21 +136,47 @@ impl RegisteredToolProxyServer {
         &self,
         lease: &RegisteredToolBridgeLease,
     ) -> Result<RegisteredToolProxyRendezvous, RuntimeFailure> {
+        if self.state.rendezvous_claimed.swap(true, Ordering::AcqRel) {
+            return Err(failure(
+                "swallowtail.registered_tool.proxy_rendezvous_unavailable",
+                "Registered tool proxy already has a courier launch",
+            ));
+        }
         let document = RegisteredToolProxyRendezvousDocument::new(
             self.endpoint(),
             self.state.bearer.to_string(),
             lease.generation().get(),
             lease.transport_generation().get(),
             lease.selection().protocol_version(),
+            connect_timeout_millis(self.state.deadline, self.state.time.now()),
         );
-        RegisteredToolProxyRendezvous::create(document)
+        let rendezvous = RegisteredToolProxyRendezvous::create(document)?;
+        *self
+            .state
+            .rendezvous
+            .lock()
+            .expect("proxy rendezvous lock poisoned") = Some(Arc::clone(&rendezvous.state));
+        Ok(rendezvous)
+    }
+
+    fn expire_rendezvous(&self) {
+        if let Some(rendezvous) = self
+            .state
+            .rendezvous
+            .lock()
+            .expect("proxy rendezvous lock poisoned")
+            .as_ref()
+        {
+            rendezvous.expire();
+        }
     }
 
     /// Freezes the listener and joins the accept/connection thread.
     pub(crate) fn close(&self) {
         self.state.closed.store(true, Ordering::Release);
+        self.expire_rendezvous();
         self.state.ready_changed.notify_all();
-        let _ = TcpStream::connect_timeout(&self.state.endpoint, Duration::from_millis(100));
+        crate::watcher_bridge::wake_accept(self.state.endpoint);
         if let Some(thread) = self
             .thread
             .lock()
@@ -184,9 +199,13 @@ impl Drop for RegisteredToolProxyServer {
 /// The file is never serializable or cloneable. Its contents are removed by a
 /// courier's first reader and the path is removed again at drop or expiry.
 pub struct RegisteredToolProxyRendezvous {
+    state: Arc<RendezvousState>,
+}
+
+struct RendezvousState {
     directory: PathBuf,
     path: PathBuf,
-    expired: bool,
+    expired: AtomicBool,
 }
 
 impl RegisteredToolProxyRendezvous {
@@ -215,16 +234,18 @@ impl RegisteredToolProxyRendezvous {
             return Err(rendezvous_failure());
         }
         Ok(Self {
-            directory,
-            path,
-            expired: false,
+            state: Arc::new(RendezvousState {
+                directory,
+                path,
+                expired: AtomicBool::new(false),
+            }),
         })
     }
 
     /// Returns the non-authoritative path passed to the courier.
     #[must_use]
     pub fn path(&self) -> &Path {
-        &self.path
+        &self.state.path
     }
 
     /// Returns exactly the fixed wire tag and rendezvous path arguments.
@@ -232,15 +253,14 @@ impl RegisteredToolProxyRendezvous {
     pub fn courier_arguments(&self) -> [String; 2] {
         [
             swallowtail_runtime::REGISTERED_TOOL_PROXY_WIRE_TAG.to_owned(),
-            self.path.to_string_lossy().into_owned(),
+            self.state.path.to_string_lossy().into_owned(),
         ]
     }
 
     /// Expires the rendezvous at the ready barrier.
-    pub fn expire(&mut self) {
-        if !self.expired {
-            self.expired = true;
-            remove_rendezvous(&self.path, &self.directory);
+    pub fn expire(&self) {
+        if !self.state.expired.swap(true, Ordering::AcqRel) {
+            remove_rendezvous(&self.state.path, &self.state.directory);
         }
     }
 }
@@ -248,6 +268,14 @@ impl RegisteredToolProxyRendezvous {
 impl Drop for RegisteredToolProxyRendezvous {
     fn drop(&mut self) {
         self.expire();
+    }
+}
+
+impl RendezvousState {
+    fn expire(&self) {
+        if !self.expired.swap(true, Ordering::AcqRel) {
+            remove_rendezvous(&self.path, &self.directory);
+        }
     }
 }
 
@@ -269,25 +297,33 @@ fn accept_loop(state: Arc<ProxyState>, listener: TcpListener) {
 }
 
 fn handle_connection(state: &Arc<ProxyState>, mut stream: TcpStream) {
+    if crate::watcher_bridge::configure_stream(&stream).is_err() {
+        return;
+    }
     let _ = stream.set_read_timeout(Some(Duration::from_millis(100)));
     while !state.closed.load(Ordering::Acquire) {
-        let request = match read_http_request(&mut stream) {
-            Ok(Some(request)) => request,
-            Ok(None) => break,
+        let request = match crate::watcher_bridge::read_private_request(
+            &mut stream,
+            REGISTERED_TOOL_PROXY_HTTP_PATH,
+        ) {
+            Ok(request) => request,
             Err(_) => break,
         };
-        let (mut status, mut body) = match authenticate(state, request.authorization.as_deref()) {
-            Ok(()) if request.path == REGISTERED_TOOL_PROXY_HTTP_PATH => {
-                dispatch_request(state, &request.body)
-            }
-            Ok(()) => (
-                404,
-                error(None, -32601, "Unknown registered-tool proxy path"),
-            ),
-            Err(_) => (
+        let (mut status, mut body) = if crate::watcher_bridge::constant_time_eq(
+            state.bearer.as_bytes(),
+            request
+                .bearer
+                .as_deref()
+                .map(String::as_str)
+                .unwrap_or_default()
+                .as_bytes(),
+        ) {
+            dispatch_request(state, &request.body)
+        } else {
+            (
                 401,
                 error(None, -32001, "Unauthorized registered-tool proxy request"),
-            ),
+            )
         };
         if body.len() > REGISTERED_TOOL_PROXY_MAX_RECORD_BYTES {
             status = 413;
@@ -297,107 +333,38 @@ fn handle_connection(state: &Arc<ProxyState>, mut stream: TcpStream) {
                 "Registered tool proxy response exceeds its bound",
             );
         }
-        if write_http_response(&mut stream, status, &body).is_err() {
+        if crate::watcher_bridge::write_response(
+            &mut stream,
+            status,
+            response_reason(status),
+            &body,
+            "keep-alive",
+        )
+        .is_err()
+        {
             break;
         }
     }
     let _ = stream.shutdown(Shutdown::Both);
 }
 
-struct HttpRequest {
-    path: String,
-    authorization: Option<String>,
-    body: Vec<u8>,
-}
-
-fn read_http_request(stream: &mut TcpStream) -> Result<Option<HttpRequest>, ()> {
-    let mut header = Vec::with_capacity(1024);
-    let mut byte = [0_u8; 1];
-    loop {
-        match stream.read(&mut byte) {
-            Ok(0) => return Ok(None),
-            Ok(1) => {
-                header.push(byte[0]);
-                if header.ends_with(b"\r\n\r\n") {
-                    break;
-                }
-                if header.len() > MAX_HEADER_BYTES {
-                    return Err(());
-                }
-            }
-            Err(error)
-                if matches!(
-                    error.kind(),
-                    std::io::ErrorKind::WouldBlock | std::io::ErrorKind::TimedOut
-                ) =>
-            {
-                continue;
-            }
-            Err(_) => return Err(()),
-            _ => return Err(()),
-        }
-    }
-    let header_text = std::str::from_utf8(&header[..header.len() - 4]).map_err(|_| ())?;
-    let mut lines = header_text.split("\r\n");
-    let request_line = lines.next().ok_or(())?;
-    let mut request_parts = request_line.split_whitespace();
-    if request_parts.next() != Some("POST") {
-        return Err(());
-    }
-    let path = request_parts.next().ok_or(())?.to_owned();
-    if request_parts.next().is_none() {
-        return Err(());
-    }
-    let mut authorization = None;
-    let mut content_length = None;
-    for line in lines {
-        let (name, value) = line.split_once(':').ok_or(())?;
-        if name.eq_ignore_ascii_case("authorization") {
-            authorization = Some(value.trim().to_owned());
-        } else if name.eq_ignore_ascii_case("content-length") {
-            content_length = Some(value.trim().parse::<usize>().map_err(|_| ())?);
-        }
-    }
-    let length = content_length.ok_or(())?;
-    if length > REGISTERED_TOOL_PROXY_MAX_RECORD_BYTES {
-        return Err(());
-    }
-    let mut body = vec![0_u8; length];
-    stream.read_exact(&mut body).map_err(|_| ())?;
-    Ok(Some(HttpRequest {
-        path,
-        authorization,
-        body,
-    }))
-}
-
-fn write_http_response(stream: &mut TcpStream, status: u16, body: &[u8]) -> Result<(), ()> {
-    let reason = match status {
+fn response_reason(status: u16) -> &'static str {
+    match status {
         200 => "OK",
         202 => "Accepted",
         400 => "Bad Request",
         401 => "Unauthorized",
         413 => "Payload Too Large",
         _ => "Error",
-    };
-    let header = format!(
-        "HTTP/1.1 {status} {reason}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: keep-alive\r\n\r\n",
-        body.len()
-    );
-    stream.write_all(header.as_bytes()).map_err(|_| ())?;
-    stream.write_all(body).map_err(|_| ())?;
-    stream.flush().map_err(|_| ())
+    }
 }
 
-fn authenticate(state: &ProxyState, value: Option<&str>) -> Result<(), ()> {
-    let Some(value) = value.and_then(|value| value.strip_prefix("Bearer ")) else {
-        return Err(());
-    };
-    if constant_time_eq(state.bearer.as_bytes(), value.as_bytes()) {
-        Ok(())
-    } else {
-        Err(())
-    }
+fn connect_timeout_millis(deadline: Deadline, now: swallowtail_runtime::MonotonicInstant) -> u64 {
+    let remaining_nanos = deadline.instant().ticks().saturating_sub(now.ticks());
+    remaining_nanos
+        .saturating_add(999_999)
+        .saturating_div(1_000_000)
+        .clamp(1, 10_000)
 }
 
 fn dispatch_request(state: &Arc<ProxyState>, body: &[u8]) -> (u16, Vec<u8>) {
@@ -421,9 +388,23 @@ fn dispatch_request(state: &Arc<ProxyState>, body: &[u8]) -> (u16, Vec<u8>) {
                     error(Some(id), -32602, "Unsupported MCP protocol version"),
                 );
             }
+            if state.kernel.mark_ready().is_err() {
+                return (
+                    200,
+                    error(Some(id), -32006, "Registered-tool proxy is not ready"),
+                );
+            }
             let mut ready = state.ready.lock().expect("proxy ready lock poisoned");
             *ready = true;
             state.ready_changed.notify_all();
+            if let Some(rendezvous) = state
+                .rendezvous
+                .lock()
+                .expect("proxy rendezvous lock poisoned")
+                .as_ref()
+            {
+                rendezvous.expire();
+            }
             (200, result(id, initialize_result()))
         }
         RegisteredToolProxyRequest::Initialized => {
@@ -471,6 +452,9 @@ fn tools_list(state: &ProxyState) -> Value {
         .iter()
         .filter_map(|id| {
             let declaration = state.selection.snapshot().declaration(id)?;
+            if declaration.kind() != RegisteredToolExecutionKind::Mcp {
+                return None;
+            }
             let schema = serde_json::from_str::<Value>(
                 declaration.input_schema().document().expose_for_execution(),
             )
@@ -500,6 +484,14 @@ fn dispatch_tool(
     else {
         return (200, error(Some(id), -32602, "Unknown registered tool"));
     };
+    if state
+        .selection
+        .snapshot()
+        .declaration(&tool)
+        .is_none_or(|declaration| declaration.kind() != RegisteredToolExecutionKind::Mcp)
+    {
+        return (200, error(Some(id), -32602, "Unknown registered tool"));
+    }
     let call_id = RegisteredToolCallId::new(courier_call_id(&id));
     let Ok(call_id) = call_id else {
         return (
@@ -566,15 +558,6 @@ fn dispatch_tool(
     }
 }
 
-fn constant_time_eq(left: &[u8], right: &[u8]) -> bool {
-    left.len() == right.len()
-        && left
-            .iter()
-            .zip(right)
-            .fold(0_u8, |acc, (left, right)| acc | (left ^ right))
-            == 0
-}
-
 fn courier_call_id(id: &Value) -> String {
     match id {
         Value::String(value) => format!("stdio-string:{value}"),
@@ -634,6 +617,7 @@ fn rendezvous_failure() -> RuntimeFailure {
 
 fn remove_rendezvous(path: &Path, directory: &Path) {
     let _ = fs::remove_file(path);
+    let _ = fs::remove_file(path.with_extension("claimed"));
     let _ = fs::remove_dir(directory);
 }
 

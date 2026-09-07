@@ -3,20 +3,20 @@ use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::time::Duration;
 use swallowtail_runtime::{
-    RuntimeFailure, WATCHER_BRIDGE_HTTP_PATH, WATCHER_BRIDGE_MAX_BODY_BYTES,
-    WATCHER_BRIDGE_MAX_HEADER_BYTES, WATCHER_BRIDGE_MAX_HEADER_COUNT,
+    RuntimeFailure, WATCHER_BRIDGE_MAX_BODY_BYTES, WATCHER_BRIDGE_MAX_HEADER_BYTES,
+    WATCHER_BRIDGE_MAX_HEADER_COUNT,
 };
 use zeroize::Zeroizing;
 
 const READ_TIMEOUT: Duration = Duration::from_secs(5);
 const HEADER_TERMINATOR: &[u8] = b"\r\n\r\n";
 
-pub(super) struct HttpRequest {
-    pub(super) bearer: Option<Zeroizing<String>>,
-    pub(super) body: Vec<u8>,
+pub(crate) struct HttpRequest {
+    pub(crate) bearer: Option<Zeroizing<String>>,
+    pub(crate) body: Vec<u8>,
 }
 
-pub(super) fn configure_stream(stream: &TcpStream) -> Result<(), RuntimeFailure> {
+pub(crate) fn configure_stream(stream: &TcpStream) -> Result<(), RuntimeFailure> {
     stream.set_nodelay(true).map_err(|_| transport_failure())?;
     stream
         .set_read_timeout(Some(READ_TIMEOUT))
@@ -27,7 +27,10 @@ pub(super) fn configure_stream(stream: &TcpStream) -> Result<(), RuntimeFailure>
     Ok(())
 }
 
-pub(super) fn read_request(stream: &mut TcpStream) -> Result<HttpRequest, HttpReject> {
+pub(crate) fn read_request(
+    stream: &mut TcpStream,
+    expected_path: &str,
+) -> Result<HttpRequest, HttpReject> {
     let mut buffer = Vec::new();
     let mut chunk = [0_u8; 512];
     let header_end = loop {
@@ -60,7 +63,7 @@ pub(super) fn read_request(stream: &mut TcpStream) -> Result<HttpRequest, HttpRe
     if method != "POST" {
         return Err(HttpReject::Method);
     }
-    if path != WATCHER_BRIDGE_HTTP_PATH {
+    if path != expected_path {
         return Err(HttpReject::Malformed);
     }
     if version != "HTTP/1.0" && version != "HTTP/1.1" {
@@ -117,25 +120,36 @@ pub(super) fn read_request(stream: &mut TcpStream) -> Result<HttpRequest, HttpRe
     Ok(HttpRequest { bearer, body })
 }
 
-pub(super) fn write_json(
+pub(crate) fn write_json(
     stream: &mut TcpStream,
     status: u16,
     reason: &str,
     body: &str,
 ) -> Result<(), RuntimeFailure> {
+    write_response(stream, status, reason, body.as_bytes(), "close")
+}
+
+pub(crate) fn write_response(
+    stream: &mut TcpStream,
+    status: u16,
+    reason: &str,
+    body: &[u8],
+    connection: &str,
+) -> Result<(), RuntimeFailure> {
     let response = format!(
-        "HTTP/1.1 {status} {reason}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
-        body.len()
+        "HTTP/1.1 {status} {reason}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: {connection}\r\n\r\n",
+        body.len(),
     );
     stream
         .write_all(response.as_bytes())
         .map_err(|_| transport_failure())?;
+    stream.write_all(body).map_err(|_| transport_failure())?;
     let _ = stream.flush();
     Ok(())
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(super) enum HttpReject {
+pub(crate) enum HttpReject {
     Malformed,
     Oversized,
     Method,
@@ -147,6 +161,15 @@ fn parse_bearer(value: &str) -> Result<Zeroizing<String>, HttpReject> {
         return Err(HttpReject::Malformed);
     }
     Ok(Zeroizing::new(secret.to_owned()))
+}
+
+pub(crate) fn constant_time_eq(left: &[u8], right: &[u8]) -> bool {
+    left.len() == right.len()
+        && left
+            .iter()
+            .zip(right)
+            .fold(0_u8, |acc, (left, right)| acc | (left ^ right))
+            == 0
 }
 
 fn parse_content_length(value: &str) -> Result<usize, HttpReject> {

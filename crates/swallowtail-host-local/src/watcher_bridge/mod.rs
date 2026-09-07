@@ -21,7 +21,11 @@ use crate::operation_bridge::{
 use crate::output::failure;
 use close::shutdown_live;
 use failure::{closed_failure, foreign_failure, identity_failure};
-use listener::{bind_loopback, endpoint_url, spawn_accept};
+pub(crate) use http::{
+    configure_stream, constant_time_eq, read_request as read_private_request, write_response,
+};
+pub(crate) use listener::{bind_loopback, wake_accept};
+use listener::{endpoint_url, spawn_accept};
 use proof::ProofLog;
 use state::{Gate, LiveLease, ProofArchive, RequestBounds, SessionPhase};
 use std::sync::atomic::{AtomicBool, AtomicUsize};

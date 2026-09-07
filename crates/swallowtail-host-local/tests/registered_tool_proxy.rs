@@ -9,16 +9,17 @@ use swallowtail_runtime::{
     BoxFuture, Deadline, EnvironmentRef, ExecutableRef, ProcessHandle, ProcessInputChunk,
     ProcessOutputStream, ProcessService, REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION,
     RegisteredServerId, RegisteredServerRevision, RegisteredToolAttachment, RegisteredToolBounds,
-    RegisteredToolCall, RegisteredToolDeclaration, RegisteredToolDispatchContext,
-    RegisteredToolDispatcher, RegisteredToolEffectPosture, RegisteredToolExecutionKind,
-    RegisteredToolId, RegisteredToolLocalName, RegisteredToolNamespace, RegisteredToolOutcome,
-    RegisteredToolPayload, RegisteredToolPreparation, RegisteredToolProtocolVersion,
-    RegisteredToolProxyRecipe, RegisteredToolResult, RegisteredToolRetryPosture,
-    RegisteredToolSchemaDialect, RegisteredToolSchemaDigest, RegisteredToolSchemaDocument,
-    RegisteredToolSchemaMediaType, RegisteredToolSchemaNamespace, RegisteredToolSelection,
-    RegisteredToolSnapshot, RegisteredToolSnapshotInput, RegisteredToolSource,
-    RegisteredToolSourceId, RegisteredToolTransport, RegisteredToolTransportSupport,
-    RuntimeFailure, RuntimeTurnId, ScopeId,
+    RegisteredToolCall, RegisteredToolCallId, RegisteredToolCallRequest, RegisteredToolDeclaration,
+    RegisteredToolDispatchContext, RegisteredToolDispatcher, RegisteredToolEffectPosture,
+    RegisteredToolExecutionKind, RegisteredToolId, RegisteredToolLocalName,
+    RegisteredToolNamespace, RegisteredToolOutcome, RegisteredToolPayload,
+    RegisteredToolPreparation, RegisteredToolProtocolVersion, RegisteredToolProxyRecipe,
+    RegisteredToolResult, RegisteredToolRetryPosture, RegisteredToolSchemaDialect,
+    RegisteredToolSchemaDigest, RegisteredToolSchemaDocument, RegisteredToolSchemaMediaType,
+    RegisteredToolSchemaNamespace, RegisteredToolSelection, RegisteredToolSnapshot,
+    RegisteredToolSnapshotInput, RegisteredToolSource, RegisteredToolSourceId,
+    RegisteredToolTransport, RegisteredToolTransportSupport, RuntimeFailure, RuntimeTurnId,
+    ScopeId,
 };
 
 const COURIER: Option<&str> = option_env!("CARGO_BIN_EXE_swallowtail-registered-tool-courier");
@@ -100,9 +101,23 @@ fn real_courier_and_sdk_shaped_process_reach_the_kernel_dispatcher() {
         )
         .expect("mediated selection is ready");
     let lease = block_on(prepared.open()).expect("open binds the real listener and kernel");
+    let pre_ready_payload = RegisteredToolPayload::new(
+        RegisteredToolSchemaMediaType::new("application/json").expect("media type"),
+        br#"{}"#.to_vec(),
+        lease.selection().effective_bounds().max_argument_bytes(),
+    )
+    .expect("bounded pre-ready arguments");
+    let pre_ready = block_on(lease.call(RegisteredToolCallRequest::new(
+        RegisteredToolCallId::new("pre-ready").expect("call id"),
+        tool_id(),
+        pre_ready_payload,
+        lease.deadline(),
+    )));
+    assert!(pre_ready.is_err(), "calls must wait for courier readiness");
     let mut launch = local
         .registered_tool_proxy_launch(&lease)
         .expect("host materializes one proxy launch");
+    assert!(local.registered_tool_proxy_launch(&lease).is_err());
     let rendezvous_path = launch.rendezvous_path().to_path_buf();
     let rendezvous = RegisteredToolProxyRendezvousDocument::decode(
         &std::fs::read(&rendezvous_path).expect("rendezvous is materialized before spawn"),

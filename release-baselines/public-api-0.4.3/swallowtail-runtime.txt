@@ -2936,6 +2936,7 @@ pub fn swallowtail_runtime::RegisteredToolOperationKernel::effective_call_deadli
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::expired_call_pending(&self) -> bool
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::freeze(&self)
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::issue<'kernel>(&'kernel alloc::sync::Arc<Self>, swallowtail_runtime::RegisteredToolCallRequest) -> swallowtail_runtime::BoxFuture<'kernel, core::result::Result<swallowtail_runtime::RegisteredToolOutcome, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::RegisteredToolOperationKernel::mark_ready(&self) -> core::result::Result<(), swallowtail_runtime::RuntimeFailure>
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::observe(&self) -> swallowtail_runtime::RegisteredToolCompletionState
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::observe_and_freeze_when_clear(&self) -> swallowtail_runtime::RegisteredToolCompletionState
 pub fn swallowtail_runtime::RegisteredToolOperationKernel::open(swallowtail_runtime::RegisteredToolOpenRequest, &swallowtail_runtime::RegisteredToolTopologyProof, alloc::sync::Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>, alloc::sync::Arc<dyn swallowtail_runtime::TimeService>, swallowtail_runtime::RegisteredToolLeaseGeneration, swallowtail_runtime::RegisteredToolTransportGeneration) -> core::result::Result<(alloc::sync::Arc<Self>, swallowtail_runtime::RegisteredToolBridgeLease), swallowtail_runtime::RuntimeFailure>

@@ -35,6 +35,8 @@
 
 ## Completed
 
+- [136-opencode-http-1-18-29-claim.md](./136-opencode-http-1-18-29-claim.md) — complete; qualified OpenCode HTTP `surface-19` through `1.18.29`
+- [135-opencode-http-1-18-29-identity.md](./135-opencode-http-1-18-29-identity.md) — complete; compatible `surface-19` admitted through OpenCode HTTP `1.18.29`
 - [131-codex-app-server-client-mcp-servers-evidence.md](./131-codex-app-server-client-mcp-servers-evidence.md) — complete; evidence recorded: Codex client_mcp_servers is a provider limitation; card 117 remains the qualified consumer-tool path; awaiting exact-head review
 - [133-grok-probe-verdict-oracle-repair.md](./133-grok-probe-verdict-oracle-repair.md) — complete; the live probes proved client-MCP admission but the oracle could not say so; split admission from invocation before the one authorized rerun
 - [128-grok-acp-client-mcp-probe-harness.md](./128-grok-acp-client-mcp-probe-harness.md) — complete; PR 273 merged at `63e34641`; provider-free four-verdict fake fixtures; probe targets shipped as examples; MSRV lint repair; live probe not run; packet relayed to Acowtancy Desktop

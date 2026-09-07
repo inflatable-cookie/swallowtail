@@ -1,0 +1,43 @@
+{
+  "axis": "opencode.server",
+  "version": "1.18.29",
+  "observed_at": "2026-09-07",
+  "npm_package": "opencode-ai",
+  "npm_latest": true,
+  "github_latest_tag": "v1.18.29",
+  "official_channels_agree": true,
+  "host": {
+    "present": false,
+    "on_path": false
+  },
+  "published_stables_from_previous_ceiling": [
+    "1.18.29"
+  ],
+  "unpublished_gap_in_1_18_28_through_1_18_29": false,
+  "unpublished_next": "1.18.30",
+  "official_hops": [
+    {"version":"1.18.28","npm_published_at":"2026-09-04T15:40:40.661Z","npm_integrity":"sha512-T7FvoXv0gT0fKuEdiomQuke2KbIFb8B8xj9L/4ZFnMIt70GnU1uUj0y/OkhDZ2dCgterQLdRXrdhrLLZ4lyv6Q==","npm_shasum":"32b51b0e9e5054d2ea62b7c9983904234d3dcf5e","npm_tarball_sha256":"ae46e3653cb85edb4eab36127f289ba71833d70c0efb56992f99eca2940117c4","github_tag_commit":"22006d97652839999596a34a48ff6be7dbb40c6e","github_release_published_at":"2026-09-04T15:38:23Z","source_archive_sha256":"8eea501a6a00cbebe524af7c3248c0bfc56290f444671903e32aa6b799ee6616"},
+    {"version":"1.18.29","npm_published_at":"2026-09-04T23:46:25.653Z","npm_integrity":"sha512-syIDVwlrYTgTOXzZe9SkInJWethbq6l3SNC762UeXyO0a9V0wGfd+U4yACvppwNBnhIsl0j2QPYYCyLpNaSomg==","npm_shasum":"e7d5d249b55f6e138f195e5b81f67cb58efd5af5","npm_tarball_sha256":"bec74d1c33582ac16489e524d947f4f1f02ee0eadc6053577d66b32f7034a5be","github_tag_commit":"16747470f976aca3d362ad730bcd3fe82ecc2c9a","github_release_published_at":"2026-09-04T23:47:16Z","source_archive_sha256":"8fd2a4e179a6a001e68f1f0986e6687be524a9a28239b8997c6b7e9a72033231"}
+  ],
+  "claim_at_observation": {
+    "baseline": "1.14.48",
+    "latest_qualified": "1.18.28",
+    "posture": "allow_unverified",
+    "classification_of_1_18_29": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "keep_surface_19": true,
+    "add_private_surface": null,
+    "raise_latest_qualified_to": "1.18.29",
+    "keep_baseline": "1.14.48",
+    "keep_historical_segments_and_gaps": true,
+    "new_public_operation": false,
+    "provider_prompt_sent": false,
+    "live_server_started": false,
+    "downloaded_artifact_executed": false,
+    "host_install_changed": false,
+    "claim_changed_in_identity_card": false,
+    "claim_card": "g05 batch card 136"
+  }
+}

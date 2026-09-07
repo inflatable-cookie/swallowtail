@@ -1,21 +1,20 @@
 use std::collections::BTreeSet;
 
 use serde_json::{Map, Value};
-
-#[path = "opencode_http_1_18_28_delta_ledger/identity.rs"]
-mod identity;
-#[path = "opencode_http_1_18_28_delta_ledger/inventory.rs"]
-mod inventory;
-#[path = "opencode_http_1_18_28_delta_ledger/protocol.rs"]
-mod protocol;
-
 use swallowtail_adapter_opencode::{opencode_http_claim, opencode_server_binding};
 use swallowtail_core::InterfaceCompatibilityAssessment;
 
-const IDENTITY: &str = include_str!("fixtures/opencode-1.18.28/identity.json");
-const PROTOCOL: &str = include_str!("fixtures/opencode-1.18.28/protocol.json");
-const INVENTORY: &str = include_str!("fixtures/opencode-1.18.28/dist-inventory.json");
-const CLAIM: &str = include_str!("fixtures/opencode-1.18.28/claim.json");
+#[path = "opencode_http_1_18_29_delta_ledger/identity.rs"]
+mod identity;
+#[path = "opencode_http_1_18_29_delta_ledger/inventory.rs"]
+mod inventory;
+#[path = "opencode_http_1_18_29_delta_ledger/protocol.rs"]
+mod protocol;
+
+const IDENTITY: &str = include_str!("fixtures/opencode-1.18.29/identity.json");
+const PROTOCOL: &str = include_str!("fixtures/opencode-1.18.29/protocol.json");
+const INVENTORY: &str = include_str!("fixtures/opencode-1.18.29/dist-inventory.json");
+const CLAIM: &str = include_str!("fixtures/opencode-1.18.29/claim.json");
 
 #[test]
 fn admitted_claim_fixture_matches_production_selection() {
@@ -23,14 +22,11 @@ fn admitted_claim_fixture_matches_production_selection() {
     let claim = opencode_http_claim();
     assert_eq!(claim.id().as_str(), fixture["claim_id"]);
     assert_eq!(claim.baseline().as_str(), fixture["baseline"]);
-    assert_eq!(fixture["latest_qualified"], "1.18.28");
-    assert_eq!(fixture["unverified_newer"], "1.18.29");
-    assert_exact_strings(
-        &fixture["newly_qualified"],
-        &[
-            "1.18.21", "1.18.22", "1.18.23", "1.18.24", "1.18.25", "1.18.26", "1.18.27", "1.18.28",
-        ],
+    assert_eq!(
+        claim.latest_qualified().as_str(),
+        fixture["latest_qualified"]
     );
+    assert_exact_strings(&fixture["newly_qualified"], &["1.18.29"]);
     for version in fixture["newly_qualified"]
         .as_array()
         .expect("version array")
@@ -46,6 +42,11 @@ fn admitted_claim_fixture_matches_production_selection() {
             fixture["behavior_revision"]
         );
     }
+    let later = opencode_server_binding(fixture["unverified_newer"].as_str().unwrap()).unwrap();
+    assert!(matches!(
+        claim.assess(later.version()),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
 }
 
 fn json(input: &str) -> Value {

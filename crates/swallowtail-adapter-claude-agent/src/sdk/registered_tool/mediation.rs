@@ -427,10 +427,7 @@ fn call_tool_result(
 /// can never become an invalid provider record.
 fn result_text(result: &RegisteredToolResult) -> String {
     std::str::from_utf8(result.payload().expose_for_execution())
-        .map_or_else(
-            |_| RegisteredToolFailureKind::InvalidResult.code(),
-            |text| text,
-        )
+        .unwrap_or_else(|_| RegisteredToolFailureKind::InvalidResult.code())
         .to_owned()
 }
 

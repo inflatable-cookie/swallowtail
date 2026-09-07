@@ -16,9 +16,10 @@ use swallowtail_core::{
     ConfiguredInstanceId, DriverRole, ExecutionHostId, HostServiceKind, InstanceTargetRef,
 };
 use swallowtail_runtime::{
-    CallbackRequestKind, CleanupOutcome, EnvironmentRef, InteractiveSessionDriver,
-    OpenSessionRequest, OperationContent, ProviderRequestObservation, RequestId, RuntimeTurnId,
-    SessionAccessPolicy, TerminalStatus, TurnRequest,
+    CallbackPayload, CallbackRequestKind, CallbackResponse, CallbackResult, CleanupOutcome,
+    EnvironmentRef, InteractiveSessionDriver, OpenSessionRequest, OperationContent,
+    ProviderRequestObservation, RequestId, RuntimeTurnId, SessionAccessPolicy, TerminalStatus,
+    TurnRequest,
 };
 use swallowtail_testkit::{
     ExecutionTopologyFixture, RecordedHostCall, RecordingHostServices, RecordingOutcome,
@@ -311,6 +312,23 @@ fn declared_approval_and_user_input_requests_are_observed_then_stop() {
             message.get("id").and_then(serde_json::Value::as_str) == Some(provider_id)
                 && message.get("error").is_some()
         }));
+        let refusal = block_on(
+            callbacks.responder().respond(CallbackResponse::new(
+                request.callback_id().clone(),
+                request
+                    .turn_id()
+                    .expect("observed callback keeps its turn")
+                    .clone(),
+                CallbackResult::Success(
+                    CallbackPayload::new(b"approved".to_vec(), 16).expect("payload is bounded"),
+                ),
+            )),
+        )
+        .expect_err("an observed provider request cannot be answered");
+        assert_eq!(
+            refusal.diagnostic().code(),
+            "swallowtail.codex.app_server.callback_closed"
+        );
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
         assert_eq!(
             block_on(support::close_session(session, services)),

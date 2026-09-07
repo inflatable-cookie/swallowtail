@@ -1,0 +1,2 @@
+row_route	feature	kind	basis	finding
+`codex.app-server`	permission_exchange	provider_limitation	docs/research/293-codex-permission-exchange-reconciliation.md#L16	qualified route unavailable: app-server approval callbacks are observable and terminate the turn, not answerable; typed user-input exchange is a separate question_exchange path; codex.exec has no interactive callback surface

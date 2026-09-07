@@ -185,8 +185,9 @@ Chatterbox without inventing support or closing the full integration goal.
 The coordinator's read-only capsule at `cbad15a7` reconciled the Desktop
 pre-release matrix (18 cells). Merged: Claude permissions, model
 inventory/selection, cancellation, packaging; Codex native registered tools,
-answerable approval/user-input exchange, model catalogue/selection,
-cancellation, packaging; Grok one-shot permissions, negotiated model options,
+answerable typed user-input exchange with observe-only approvals (corrected
+2026-09-07 by card 138; Research 293), model catalogue/selection, cancellation,
+packaging; Grok one-shot permissions, negotiated model options,
 turn/permission cancellation, packaging. Absent and promoted as seams: Claude
 registered-tool route binding (card 125), Claude and Codex selected-skill
 bundle binding (cards 126, 127). Withheld and BLOCKING the release scope (the operator requires all three
@@ -224,10 +225,13 @@ gates them; the fallback is the operator's native-route decision. Ranks 5
 and 12 (Codex `client_mcp_servers`): card 131 settles limitation versus gap;
 card 114 is complete and is not a valid reference. Ranks 2, 6, 9, 13
 (persistent permission grants): card 130 stays a planned producer seam; in
-the meantime the one-shot exchange is answerable on every route, so a
-consumer may implement persistence as its own policy over
-`CallbackResponder::respond`, and Claude's `permissionMode` already exposes
-the provider's own durable modes. Desktop is told so.
+the meantime the one-shot permission exchange is answerable on the Claude and
+Grok routes, while on Codex the answerable one-shot exchange is typed
+user-input only and approvals are observed, then stop the turn (card 138;
+Research 293), so a consumer may implement persistence as its own policy over
+`CallbackResponder::respond` only where that permission exchange exists, and
+Claude's `permissionMode` already exposes the provider's own durable modes.
+Desktop is told so; the correction capsule is Research 293.
 
 ## Batch A Planning Acceptance — 2026-09-07
 

@@ -347,7 +347,9 @@ or management. See
   callbacks but never executes the tools.
 - `CodexSessionProfileInput::with_user_input_exchange()` opts a session into
   app-server question callbacks. Each turn can expose ordered typed questions
-  and accepts correlated typed answers. It does not enable approval requests.
+  and accepts correlated typed answers. It does not enable answerable approval
+  requests; qualified bounded-workspace sessions may observe namespaced
+  approvals, then stop the turn without granting authority.
 - `SessionOptions::with_harness_mode(HarnessMode::Plan)` opts the whole
   app-server session into Codex plan mode. The adapter retains the choice and
   sends the exact collaboration-mode preset on every turn. This is qualified

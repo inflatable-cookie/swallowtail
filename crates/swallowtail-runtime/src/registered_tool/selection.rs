@@ -1,5 +1,8 @@
 //! Immutable selection binding one snapshot revision into a prepared plan.
 
+use super::attachment::{
+    RegisteredToolAttachment, RegisteredToolAttachmentDescriptor, RegisteredToolProxyRecipe,
+};
 use super::failure::{RegisteredToolFailure, RegisteredToolFailureKind, reject};
 use super::identity::{RegisteredToolId, RegisteredToolProtocolVersion, RegisteredToolTransport};
 use super::limits::{MAX_REGISTERED_TOOL_SELECTED_TOOLS, RegisteredToolBounds};
@@ -15,6 +18,8 @@ pub struct RegisteredToolSelection {
     transport: RegisteredToolTransport,
     protocol_version: RegisteredToolProtocolVersion,
     effective_bounds: RegisteredToolBounds,
+    attachment: RegisteredToolAttachment,
+    proxy_recipe: Option<RegisteredToolProxyRecipe>,
 }
 
 impl RegisteredToolSelection {
@@ -61,7 +66,75 @@ impl RegisteredToolSelection {
             transport,
             protocol_version,
             effective_bounds,
+            attachment: RegisteredToolAttachment::HostMediated,
+            proxy_recipe: None,
         })
+    }
+
+    /// Selects the exact attachment shape without opening a resource.
+    #[must_use]
+    pub fn with_attachment(mut self, attachment: RegisteredToolAttachment) -> Self {
+        self.attachment = attachment;
+        self
+    }
+
+    /// Binds the host-approved courier recipe and selects mediated stdio.
+    #[must_use]
+    pub fn with_proxy_recipe(mut self, recipe: RegisteredToolProxyRecipe) -> Self {
+        self.attachment = RegisteredToolAttachment::MediatedStdioProxy;
+        self.proxy_recipe = Some(recipe);
+        self
+    }
+
+    /// Returns the exact selected attachment shape.
+    #[must_use]
+    pub const fn attachment(&self) -> RegisteredToolAttachment {
+        self.attachment
+    }
+
+    /// Returns the host-approved courier recipe, when selected.
+    #[must_use]
+    pub const fn proxy_recipe(&self) -> Option<&RegisteredToolProxyRecipe> {
+        self.proxy_recipe.as_ref()
+    }
+
+    /// Returns a descriptor safe to carry into route projection.
+    #[must_use]
+    pub const fn attachment_descriptor(&self) -> RegisteredToolAttachmentDescriptor {
+        RegisteredToolAttachmentDescriptor::new(self.attachment, self.transport)
+    }
+
+    /// Validates attachment/carrier and host-recipe binding before open.
+    pub(super) fn validate_attachment(&self) -> Result<(), RegisteredToolFailure> {
+        if self.attachment.transport() != self.transport {
+            return Err(reject(RegisteredToolFailureKind::UnsupportedTransport));
+        }
+        match self.attachment {
+            RegisteredToolAttachment::HostMediated if self.proxy_recipe.is_none() => Ok(()),
+            RegisteredToolAttachment::HostMediated => {
+                Err(reject(RegisteredToolFailureKind::ProcessRecipeUnavailable))
+            }
+            RegisteredToolAttachment::MediatedStdioProxy => {
+                let recipe = self
+                    .proxy_recipe
+                    .as_ref()
+                    .ok_or_else(|| reject(RegisteredToolFailureKind::ProcessRecipeUnavailable))?;
+                if !self
+                    .snapshot
+                    .executable_recipes()
+                    .iter()
+                    .any(|reference| reference == recipe.executable())
+                    || !self
+                        .snapshot
+                        .environment_recipes()
+                        .iter()
+                        .any(|reference| reference == recipe.environment())
+                {
+                    return Err(reject(RegisteredToolFailureKind::ProcessRecipeUnavailable));
+                }
+                Ok(())
+            }
+        }
     }
 
     /// Returns the exact snapshot this selection binds.

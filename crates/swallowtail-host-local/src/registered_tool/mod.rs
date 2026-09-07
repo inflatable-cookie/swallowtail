@@ -13,6 +13,8 @@
 
 mod failure;
 mod lease;
+mod proxy;
+pub mod wire;
 
 use crate::operation_bridge::{
     BridgeLease, BridgeLeaseOwner, BridgeProfile, OperationBridgeCleanupCause,
@@ -20,6 +22,8 @@ use crate::operation_bridge::{
 };
 use failure::{already_open_failure, closed_failure, foreign_failure, not_ready_failure};
 pub(crate) use lease::LiveRegisteredLease;
+pub use proxy::RegisteredToolProxyLaunch;
+use proxy::RegisteredToolProxyServer;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, OnceLock};
 use std::time::Duration;
@@ -153,6 +157,9 @@ impl LocalRegisteredToolBridgeHostService {
     ) -> Result<RegisteredToolBridgeLease, RuntimeFailure> {
         let turn = request.turn().clone();
         let scope = request.scope().clone();
+        let mediated_stdio = request.selection().attachment()
+            == swallowtail_runtime::RegisteredToolAttachment::MediatedStdioProxy;
+        let proxy_selection = request.selection().clone();
         // Only the kernel mints the binding and the lease, and only with a
         // proof issued for this exact selection.
         let (kernel, lease) = RegisteredToolOperationKernel::open(
@@ -163,12 +170,22 @@ impl LocalRegisteredToolBridgeHostService {
             generation,
             RegisteredToolTransportGeneration::initial(),
         )?;
+        let proxy = if mediated_stdio {
+            Some(Arc::new(RegisteredToolProxyServer::bind(
+                Arc::clone(&kernel),
+                proxy_selection,
+                lease.deadline(),
+            )?))
+        } else {
+            None
+        };
         let live = Arc::new(LiveRegisteredLease {
             turn: turn.clone(),
             scope,
             execution_host_id: self.execution_host_id.clone(),
             generation,
             kernel: Arc::clone(&kernel),
+            proxy,
             closed: AtomicBool::new(false),
         });
         self.registry.attach(
@@ -220,6 +237,34 @@ impl LocalRegisteredToolBridgeHostService {
         }
         Ok(live)
     }
+
+    pub(crate) fn proxy_launch(
+        &self,
+        lease: &RegisteredToolBridgeLease,
+    ) -> Result<RegisteredToolProxyLaunch, RuntimeFailure> {
+        let live = self.live_for(lease)?;
+        let proxy = live.proxy.as_ref().ok_or_else(|| {
+            RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.registered_tool.proxy_unavailable",
+                "This registered-tool lease does not select mediated stdio",
+            ))
+        })?;
+        let recipe = lease.selection().proxy_recipe().ok_or_else(|| {
+            RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.registered_tool.process_recipe_unavailable",
+                "The mediated stdio lease has no resolved courier recipe",
+            ))
+        })?;
+        let rendezvous = proxy.rendezvous(lease)?;
+        let request = swallowtail_runtime::ProcessRequest::new(recipe.executable().clone())
+            .with_arguments(rendezvous.courier_arguments())
+            .with_environment([recipe.environment().clone()]);
+        Ok(RegisteredToolProxyLaunch::new(
+            request,
+            rendezvous,
+            Arc::clone(proxy),
+        ))
+    }
 }
 
 fn shutdown(
@@ -249,6 +294,9 @@ fn shutdown(
         return Ok(CleanupOutcome::NotApplicable);
     }
     live.kernel.record_closed();
+    if let Some(proxy) = live.proxy.as_ref() {
+        proxy.close();
+    }
     registry.forget(
         BridgeProfile::RegisteredTool,
         &live.turn,

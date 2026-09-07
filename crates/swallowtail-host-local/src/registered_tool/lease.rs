@@ -1,6 +1,7 @@
 //! One live registered-tool lease the shared operation-bridge registry owns.
 
 use super::failure::{closed_failure, foreign_failure};
+use super::proxy::RegisteredToolProxyServer;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::ExecutionHostId;
@@ -15,6 +16,7 @@ pub(crate) struct LiveRegisteredLease {
     pub(crate) execution_host_id: ExecutionHostId,
     pub(crate) generation: RegisteredToolLeaseGeneration,
     pub(crate) kernel: Arc<RegisteredToolOperationKernel>,
+    pub(crate) proxy: Option<Arc<RegisteredToolProxyServer>>,
     pub(crate) closed: AtomicBool,
 }
 

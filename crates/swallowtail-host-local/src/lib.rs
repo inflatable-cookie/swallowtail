@@ -27,6 +27,7 @@ mod process;
 mod process_exit;
 mod process_reader;
 mod registered_tool;
+pub use registered_tool::{RegisteredToolProxyLaunch, wire};
 mod schema;
 mod services;
 mod serving_endpoint;

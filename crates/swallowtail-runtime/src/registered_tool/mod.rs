@@ -7,6 +7,7 @@
 //! [`RegisteredToolReadiness`] preflight instead of a new service-kind variant.
 
 mod admission;
+mod attachment;
 mod call;
 mod declaration;
 mod dispatch;
@@ -34,6 +35,10 @@ mod tests;
 pub use admission::{
     AdmissionPhase, AdmissionVerdict, AdmittedAttemptId, AdmittedSessionId, AdmittedTaskId,
     ConsumerAdmissionBinding, ConsumerAdmissionHostService, ConsumerProcessIncarnation,
+};
+pub use attachment::{
+    REGISTERED_TOOL_PROXY_WIRE_TAG, RegisteredToolAttachment, RegisteredToolAttachmentDescriptor,
+    RegisteredToolProxyRecipe,
 };
 pub use call::{
     RegisteredToolCall, RegisteredToolCallRequest, RegisteredToolExecutionDisposition,

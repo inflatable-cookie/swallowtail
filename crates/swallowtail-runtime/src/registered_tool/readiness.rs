@@ -10,6 +10,7 @@
 //! mint a binding or open a lease without one that matches the exact selection.
 //! Every mounted open path therefore passes this gate.
 
+use super::attachment::RegisteredToolAttachment;
 use super::failure::{RegisteredToolFailure, RegisteredToolFailureKind, reject};
 use super::identity::{
     RegisteredServerId, RegisteredServerRevision, RegisteredToolId, RegisteredToolProtocolVersion,
@@ -23,7 +24,8 @@ use swallowtail_core::{ExecutionHostId, HostServiceKind};
 /// Carriers this slice qualifies for the registered-tool profile.
 ///
 /// Host-mediated callback dispatch binds no listener. The private loopback HTTP
-/// and SSE carriers stay withheld until a route corpus qualifies them.
+/// and SSE carriers remain withheld unless a separately qualified attachment
+/// selects the mediated-stdio HTTP wire.
 pub const REGISTERED_TOOL_QUALIFIED_TRANSPORTS: &[RegisteredToolTransport] =
     &[RegisteredToolTransport::HostMediatedCallback];
 
@@ -106,6 +108,7 @@ pub struct RegisteredToolTopologyProof {
     server_revision: RegisteredServerRevision,
     transport: RegisteredToolTransport,
     protocol_version: RegisteredToolProtocolVersion,
+    attachment: RegisteredToolAttachment,
     selected: Vec<RegisteredToolId>,
 }
 
@@ -118,6 +121,7 @@ impl RegisteredToolTopologyProof {
             server_revision: snapshot.revision().clone(),
             transport: selection.transport(),
             protocol_version: selection.protocol_version().clone(),
+            attachment: selection.attachment(),
             selected: selection.selected().to_vec(),
         }
     }
@@ -137,6 +141,7 @@ pub struct RegisteredToolReadiness {
     missing_services: BTreeSet<HostServiceKind>,
     transport_qualified: bool,
     protocol_qualified: bool,
+    attachment_qualified: bool,
     proof: RegisteredToolTopologyProof,
 }
 
@@ -168,8 +173,11 @@ impl RegisteredToolReadiness {
             },
             execution_host_matches: &topology.execution_host_id == snapshot.execution_host_id(),
             missing_services,
-            transport_qualified: transport_is_qualified(selection.transport()),
+            transport_qualified: transport_is_qualified(selection.transport())
+                || (selection.attachment() == RegisteredToolAttachment::MediatedStdioProxy
+                    && selection.transport() == RegisteredToolTransport::PrivateLoopbackHttp),
             protocol_qualified: protocol_is_qualified(selection.protocol_version()),
+            attachment_qualified: selection.validate_attachment().is_ok(),
             proof: RegisteredToolTopologyProof::for_selection(selection),
         }
     }
@@ -204,6 +212,12 @@ impl RegisteredToolReadiness {
         self.protocol_qualified
     }
 
+    /// Reports whether the attachment matches the carrier and recipe policy.
+    #[must_use]
+    pub const fn attachment_qualified(&self) -> bool {
+        self.attachment_qualified
+    }
+
     /// Reports whether every readiness dimension passed.
     #[must_use]
     pub fn is_ready(&self) -> bool {
@@ -212,6 +226,7 @@ impl RegisteredToolReadiness {
             && self.missing_services.is_empty()
             && self.transport_qualified
             && self.protocol_qualified
+            && self.attachment_qualified
     }
 
     /// Reports whether this record was evaluated for exactly this selection.
@@ -246,6 +261,9 @@ impl RegisteredToolReadiness {
             return Err(reject(
                 RegisteredToolFailureKind::UnsupportedProtocolVersion,
             ));
+        }
+        if !self.attachment_qualified {
+            return Err(reject(RegisteredToolFailureKind::ProcessRecipeUnavailable));
         }
         Ok(self.proof.clone())
     }

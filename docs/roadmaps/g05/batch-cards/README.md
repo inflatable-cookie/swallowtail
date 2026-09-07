@@ -2,6 +2,8 @@
 
 ## Ready
 
+- [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — ready; provider-free seam under Research 289's mapping; live gate separate; waits for cards114-115 merge and consumer-tool protocol evidence exists
+- [137-grok-probe-conforming-acp-client.md](./137-grok-probe-conforming-acp-client.md) — ready; the probe never answers client requests during session/new, so Grok waits and the session never opens; diagnose from captured frames at no quota cost
 - [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — ready; serial after 125; resolved skill bundle as the distinct third input
 - [124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md](./124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — ready; serial after 121; bounded manifest lookup and one model-id predicate; precedes the `v0.4.4` candidate
 - [119-claude-sdk-first-turn-model-qualification-evidence.md](./119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; bounded observer evidence for the first-turn model rejection; lead of the producer-diagnosis trio
@@ -19,7 +21,6 @@
 - [130-persistent-permission-grant-admission.md](./130-persistent-permission-grant-admission.md) — planned backlog stub only; no dispatch authorization; owns a future persistent-grant producer seam if promoted
 - [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — planned; ready on card 124's merge; first lane on the simplified shape
 - [123-v0-4-4-consumer-proof-and-tag-capsule.md](./123-v0-4-4-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.4` tag
-- [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — planned; waits for cards114-115 merge and consumer-tool protocol evidence exists
 
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — planned; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
 - [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — planned; ready on card 105's merge

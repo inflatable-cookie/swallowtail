@@ -1,9 +1,26 @@
 # 118 Grok common capability qualification
 
-Status: planned; evidence preparation ready; runtime blocked until cards114-115 merge and consumer-tool protocol evidence exists
+Status: ready for provider-free implementation; live gate separate; admission evidence recorded 2026-09-07
 Owner: Tom
 Created: 2026-09-07
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`
+
+## Admission Evidence — 2026-09-07
+
+Four live attempts across `1.0.4` and `1.0.5` (two on card 128's harness, two
+on card 133's repaired oracle) all recorded `client_mcp_admitted` true,
+`client_mcp_tools_listed` true, and on the reruns `echo_helper_live` true.
+Grok Build accepts a client-supplied ACP `mcpServers` declaration, spawns the
+server, connects it, and enumerates its tools. No attempt has produced a
+`tools/call`, and the reruns did not establish a session at all
+(`session_new_unanswered`), which card 137 attributes to the probe not
+answering client requests during `session/new`.
+
+That is sufficient to build the route-local seam provider-free under Research
+289's adapter mapping, in the same posture cards 116 and 125 used for Claude:
+a callable seam with the Contract 061 row held `Unqualified` until a real
+route gate passes. It is not sufficient to claim support, and no matrix cell
+moves on it.
 
 ## Goal
 

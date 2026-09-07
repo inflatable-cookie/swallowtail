@@ -59,6 +59,8 @@ mod provider_session_management_assertions;
 mod provider_session_management_fixture;
 mod realtime_media_fixture;
 mod recording_host;
+mod registered_tool_assertions;
+mod registered_tool_fixture;
 mod remote_acp_fixture;
 mod runtime_assertions;
 mod session_access_assertions;
@@ -155,6 +157,19 @@ pub use provider_session_management_fixture::{
 pub use realtime_media_fixture::{RealtimeMediaPreflightCase, RealtimeMediaPreflightFixture};
 pub use recording_host::{
     RecordedHostCall, RecordingHostServices, RecordingOutcome, poll_immediate,
+};
+pub use registered_tool_assertions::{
+    ComposeRegisteredToolHost, RegisteredToolHarness, RegisteredToolHostSpec,
+    assert_registered_tool_conformance, conformance_deadline, conformance_host_id,
+    conformance_instance, conformance_scope, conformance_turn,
+};
+pub use registered_tool_fixture::{
+    FIXTURE_CLEANUP_BUDGET, FIXTURE_MCP_TOOL, FIXTURE_MEDIA_TYPE, FIXTURE_NATIVE_TOOL,
+    FIXTURE_PROVIDER_TOOL, FIXTURE_TOOL_NAMESPACE, FakeClock, ScriptedAdmissionPort,
+    ScriptedRegisteredToolDispatcher, UncooperativeRegisteredToolDispatcher, drive_fixture,
+    fixture_admission, fixture_declaration, fixture_media_type, fixture_payload,
+    fixture_protocol_version, fixture_schema, fixture_selection, fixture_snapshot,
+    fixture_snapshot_input, fixture_tool_id, poll_fixture_once,
 };
 pub use remote_acp_fixture::{
     REMOTE_ACP_CORE_SDK_VERSION, REMOTE_ACP_RFD_REVISION, REMOTE_ACP_TRANSPORT_SDK_VERSION,

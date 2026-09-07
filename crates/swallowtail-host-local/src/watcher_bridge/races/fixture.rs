@@ -211,7 +211,12 @@ pub(super) fn fixture(label: &str) -> (LocalWatcherBridgeHostService, Arc<Contro
         wait_override: Mutex::new(None),
     });
     (
-        LocalWatcherBridgeHostService::new(host_id, watcher.clone(), process),
+        LocalWatcherBridgeHostService::new(
+            host_id,
+            watcher.clone(),
+            process,
+            std::sync::Arc::new(crate::operation_bridge::OperationBridgeRegistry::default()),
+        ),
         watcher,
     )
 }

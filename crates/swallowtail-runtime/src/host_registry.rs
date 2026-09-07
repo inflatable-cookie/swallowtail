@@ -4,9 +4,9 @@ use crate::debug_observation::{DebugObservation, DebugObservationKind, failure_d
 use crate::{
     AttachmentService, BlockingWorkService, CredentialService, DeviceCodeDisplayService,
     DiagnosticObserver, LoopbackCallbackService, ModelArtifactService, NetworkPolicyService,
-    ProcessService, RuntimeFailure, SchemaService, ScopedTaskService, ServingEndpointService,
-    TimeService, UrlOpenService, WatcherBridgeHostService, WatcherHostService,
-    WorkingResourceIoService, WorkingResourceService,
+    ProcessService, RegisteredToolBridgeHostService, RuntimeFailure, SchemaService,
+    ScopedTaskService, ServingEndpointService, TimeService, UrlOpenService,
+    WatcherBridgeHostService, WatcherHostService, WorkingResourceIoService, WorkingResourceService,
 };
 use std::collections::BTreeSet;
 use std::panic::{AssertUnwindSafe, catch_unwind};
@@ -42,6 +42,7 @@ pub struct HostServices {
     device_code_display: Option<Arc<dyn DeviceCodeDisplayService>>,
     watcher: Option<Arc<dyn WatcherHostService>>,
     watcher_bridge: Option<Arc<dyn WatcherBridgeHostService>>,
+    registered_tool_bridge: Option<Arc<dyn RegisteredToolBridgeHostService>>,
 }
 
 impl HostServices {
@@ -70,6 +71,7 @@ impl HostServices {
             device_code_display: None,
             watcher: None,
             watcher_bridge: None,
+            registered_tool_bridge: None,
         }
     }
 
@@ -231,6 +233,20 @@ impl HostServices {
         self
     }
 
+    /// Registers the optional Contract 063 registered-tool bridge port.
+    ///
+    /// Registration binds no transport, starts no work, and adds no
+    /// `HostServiceKind` variant. Availability is reported through the typed
+    /// registered-profile readiness preflight.
+    #[must_use]
+    pub fn with_registered_tool_bridge(
+        mut self,
+        service: Arc<dyn RegisteredToolBridgeHostService>,
+    ) -> Self {
+        self.registered_tool_bridge = Some(service);
+        self
+    }
+
     /// Returns the scoped task service when registered.
     #[must_use]
     pub fn task(&self) -> Option<&Arc<dyn ScopedTaskService>> {
@@ -351,6 +367,15 @@ impl HostServices {
         self.watcher_bridge.as_ref()
     }
 
+    /// Returns the registered-tool bridge port when registered.
+    ///
+    /// Absence is not a failure: the registered-tool profile is opt-in and is
+    /// absent by default.
+    #[must_use]
+    pub fn registered_tool_bridge(&self) -> Option<&Arc<dyn RegisteredToolBridgeHostService>> {
+        self.registered_tool_bridge.as_ref()
+    }
+
     /// Records one idiom signal to the registered recorder, or no-ops when
     /// absent or when the recorder panics.
     pub fn record_idiom_signal(&self, signal: IdiomSignal) {
@@ -456,6 +481,8 @@ impl HostServices {
         if self.watcher_bridge.is_some() {
             kinds.insert(HostServiceKind::WatcherBridge);
         }
+        // `HostServiceKind` stays exhaustive under Contract 063: the optional
+        // registered-tool bridge port deliberately projects no new variant.
         kinds
     }
 }

@@ -8,6 +8,13 @@ pub swallowtail_host_local::LocalSignInCall::LoopbackMaterialize
 pub swallowtail_host_local::LocalSignInCall::LoopbackPoll
 pub swallowtail_host_local::LocalSignInCall::LoopbackRelease
 pub swallowtail_host_local::LocalSignInCall::UrlOpen
+pub enum swallowtail_host_local::OperationBridgeCleanupCause
+pub swallowtail_host_local::OperationBridgeCleanupCause::Cancellation
+pub swallowtail_host_local::OperationBridgeCleanupCause::Completion
+pub swallowtail_host_local::OperationBridgeCleanupCause::Deadline
+pub swallowtail_host_local::OperationBridgeCleanupCause::ExplicitClose
+pub swallowtail_host_local::OperationBridgeCleanupCause::ProviderFailure
+pub swallowtail_host_local::OperationBridgeCleanupCause::TransportFailure
 pub enum swallowtail_host_local::WatcherBridgeProofKind
 pub swallowtail_host_local::WatcherBridgeProofKind::CompletionGateActive
 pub swallowtail_host_local::WatcherBridgeProofKind::CompletionGateIdle
@@ -38,8 +45,12 @@ impl core::fmt::Debug for swallowtail_host_local::LocalExecutableLaunch
 pub fn swallowtail_host_local::LocalExecutableLaunch::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_host_local::LocalHostServices
 impl swallowtail_host_local::LocalHostServices
+pub fn swallowtail_host_local::LocalHostServices::close_operation_bridges(&self, &swallowtail_runtime::identity::RuntimeTurnId, swallowtail_host_local::OperationBridgeCleanupCause) -> core::result::Result<swallowtail_runtime::outcome::CleanupOutcome, swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_host_local::LocalHostServices::deadline_after(&self, core::time::Duration) -> swallowtail_runtime::time::Deadline
+pub fn swallowtail_host_local::LocalHostServices::operation_bridge_generations(&self, &swallowtail_runtime::identity::RuntimeTurnId) -> alloc::vec::Vec<(&'static str, u64)>
+pub fn swallowtail_host_local::LocalHostServices::operation_bridge_lease_count(&self) -> usize
 pub const fn swallowtail_host_local::LocalHostServices::process_host(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalProcessHost>
+pub fn swallowtail_host_local::LocalHostServices::registered_tool_lease_count(&self) -> usize
 pub const fn swallowtail_host_local::LocalHostServices::services(&self) -> &swallowtail_runtime::host_registry::HostServices
 pub fn swallowtail_host_local::LocalHostServices::shutdown_task_reapers(&self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
 pub const fn swallowtail_host_local::LocalHostServices::task_service(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalScopedTaskService>
@@ -95,6 +106,9 @@ pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_watcher_operatio
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_working_resource(self, swallowtail_runtime::host_reference::WorkingResourceRef, impl core::convert::Into<std::path::PathBuf>) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::build(self) -> swallowtail_host_local::LocalProcessHost
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_materialization_limits(self, swallowtail_host_local::LocalMaterializationLimits) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::with_registered_tool_cleanup_budget(self, core::time::Duration) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::with_registered_tool_clock(self, alloc::sync::Arc<dyn swallowtail_runtime::host_traits::TimeService>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::with_registered_tool_dispatcher(self, alloc::sync::Arc<dyn swallowtail_runtime::registered_tool::dispatch::RegisteredToolDispatcher>) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_task_reap_capacity(self, usize) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::with_watcher_capacity(self, usize) -> Self
 impl swallowtail_host_local::LocalProcessHostBuilder

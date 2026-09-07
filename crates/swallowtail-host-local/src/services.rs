@@ -1,3 +1,5 @@
+use crate::operation_bridge::{OperationBridgeCleanupCause, OperationBridgeRegistry};
+use crate::registered_tool::LocalRegisteredToolBridgeHostService;
 use crate::task::LocalTaskReaperOwner;
 use crate::watcher::LocalWatcherHostService;
 use crate::watcher_bridge::{LocalWatcherBridgeHostService, WatcherBridgeProofKind};
@@ -5,7 +7,10 @@ use crate::{LocalProcessHost, LocalProcessHostBuilder, LocalScopedTaskService};
 use std::sync::Arc;
 use std::time::Duration;
 use swallowtail_core::ExecutionHostId;
-use swallowtail_runtime::{Deadline, HostServices, MonotonicInstant, RuntimeTurnId, TimeService};
+use swallowtail_runtime::{
+    CleanupOutcome, Deadline, HostServices, MonotonicInstant, RegisteredToolMountedTopology,
+    RuntimeFailure, RuntimeTurnId, TimeService,
+};
 
 /// Inspectable host-owned local service composition for one execution host.
 ///
@@ -19,6 +24,8 @@ pub struct LocalHostServices {
     task_service: Arc<LocalScopedTaskService>,
     task_reaper_owner: LocalTaskReaperOwner,
     watcher_bridge: Arc<LocalWatcherBridgeHostService>,
+    registered_tool_bridge: Option<Arc<LocalRegisteredToolBridgeHostService>>,
+    operation_bridges: Arc<OperationBridgeRegistry>,
     services: HostServices,
 }
 
@@ -38,11 +45,32 @@ impl LocalHostServices {
             task_service.clone(),
             process_host.watcher_capacity,
         ));
+        // One shared lease, generation, and lifecycle owner for every profile.
+        let operation_bridges = Arc::new(OperationBridgeRegistry::default());
         let watcher_bridge = Arc::new(LocalWatcherBridgeHostService::new(
             execution_host_id.clone(),
             watcher.clone(),
             process_host.clone(),
+            Arc::clone(&operation_bridges),
         ));
+        let registered_tool_bridge =
+            process_host
+                .registered_tool_dispatcher
+                .clone()
+                .map(|dispatcher| {
+                    Arc::new(
+                        LocalRegisteredToolBridgeHostService::new(
+                            execution_host_id.clone(),
+                            dispatcher,
+                            process_host
+                                .registered_tool_clock
+                                .clone()
+                                .unwrap_or_else(|| process_host.clone()),
+                            Arc::clone(&operation_bridges),
+                        )
+                        .with_cleanup_budget(process_host.registered_tool_cleanup_budget),
+                    )
+                });
         let services = HostServices::new(execution_host_id)
             .with_task(task_service.clone())
             .with_time(process_host.clone())
@@ -57,11 +85,22 @@ impl LocalHostServices {
             .with_schema(process_host.clone())
             .with_watcher(watcher)
             .with_watcher_bridge(watcher_bridge.clone());
+        let services = match registered_tool_bridge.as_ref() {
+            Some(bridge) => services.with_registered_tool_bridge(bridge.clone()),
+            None => services,
+        };
+        if let Some(bridge) = registered_tool_bridge.as_ref() {
+            // The mounted port measures every low-level open against the exact
+            // topology this composition assembled.
+            bridge.publish_topology(RegisteredToolMountedTopology::from_hosts(&services));
+        }
         Self {
             process_host,
             task_service,
             task_reaper_owner,
             watcher_bridge,
+            registered_tool_bridge,
+            operation_bridges,
             services,
         }
     }
@@ -101,6 +140,52 @@ impl LocalHostServices {
     #[must_use]
     pub fn watcher_bridge_proof(&self, turn: &RuntimeTurnId) -> Vec<WatcherBridgeProofKind> {
         self.watcher_bridge.proof_facts(turn)
+    }
+
+    /// Returns how many registered-tool leases this composition still owns.
+    ///
+    /// A failed cleanup retains its lease here; it is never detached and never
+    /// inherited by a later attempt.
+    #[must_use]
+    pub fn registered_tool_lease_count(&self) -> usize {
+        self.registered_tool_bridge
+            .as_ref()
+            .map_or(0, |bridge| bridge.live_lease_count())
+    }
+
+    /// Returns how many operation-bridge leases both profiles share.
+    ///
+    /// There is one lease owner for the whole composition, so this count spans
+    /// the watcher and registered-tool profiles.
+    #[must_use]
+    pub fn operation_bridge_lease_count(&self) -> usize {
+        self.operation_bridges.lease_count()
+    }
+
+    /// Returns every profile and shared generation owned for one turn.
+    ///
+    /// Both profiles draw from one monotonic generation space, so a generation
+    /// is never reused across profiles or attempts.
+    #[must_use]
+    pub fn operation_bridge_generations(&self, turn: &RuntimeTurnId) -> Vec<(&'static str, u64)> {
+        self.operation_bridges
+            .generations_for_turn(turn)
+            .into_iter()
+            .map(|(profile, generation)| (profile.as_str(), generation))
+            .collect()
+    }
+
+    /// Freezes and joins every profile lease this operation owns for one turn.
+    ///
+    /// Admission freezes across both profiles first, then each lease joins under
+    /// the one sequence. A failed join dominates the reported outcome and keeps
+    /// its lease owned here.
+    pub fn close_operation_bridges(
+        &self,
+        turn: &RuntimeTurnId,
+        cause: OperationBridgeCleanupCause,
+    ) -> Result<CleanupOutcome, RuntimeFailure> {
+        self.operation_bridges.close_turn(turn, cause)
     }
 
     /// Derives one deadline from this composition's monotonic clock and an

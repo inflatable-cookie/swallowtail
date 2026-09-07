@@ -1,5 +1,6 @@
 use super::listener::wake_accept;
-use super::state::{BridgeRegistry, LiveLease, drive};
+use super::state::{LiveLease, ProofArchive, drive};
+use crate::operation_bridge::{BridgeProfile, OperationBridgeRegistry};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::WatcherCleanupCause;
 use swallowtail_runtime::{
@@ -7,8 +8,9 @@ use swallowtail_runtime::{
 };
 
 pub(super) fn shutdown_live(
-    state: Arc<Mutex<BridgeRegistry>>,
-    live: Arc<LiveLease>,
+    registry: &Arc<OperationBridgeRegistry>,
+    proof_archive: &Arc<Mutex<ProofArchive>>,
+    live: &Arc<LiveLease>,
     cause: WatcherCleanupCause,
 ) -> Result<CleanupOutcome, RuntimeFailure> {
     if live.closed.swap(true, std::sync::atomic::Ordering::SeqCst) {
@@ -40,12 +42,11 @@ pub(super) fn shutdown_live(
     let turn = live.turn.clone();
     let generation = live.generation;
     let kinds = live.proof.snapshot();
-    {
-        let mut registry = state.lock().expect("watcher bridge registry lock poisoned");
-        registry.retire_proof(turn.clone(), kinds);
-        registry.by_turn.remove(&turn);
-        registry.live.remove(&generation);
-    }
+    proof_archive
+        .lock()
+        .expect("watcher bridge proof archive lock poisoned")
+        .retire_proof(turn.clone(), kinds);
+    registry.forget(BridgeProfile::Watcher, &turn, generation.get());
     let outcome = match drive(live.watcher.stop_and_join_all(turn.clone(), cause)) {
         Ok((_, outcome)) => Ok(outcome),
         Err(error)

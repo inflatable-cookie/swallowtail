@@ -15,12 +15,12 @@ shape.
 
 ## Next Task
 
-Implement [g05.035 card114](g05/batch-cards/114-registered-tool-kernel.md) after
-its Batch A independent planning acceptance. The [g05.035 manifest](g05/035-shared-harness-capability-and-producer-boundary.md)
-owns the shared capability frontier and downstream115-118. Preserve all active
-g05.029/g05.031/g05.034 owners and disjoint WIP; this does not redispatch merged
-cards or authorize tags. Existing release and route maintenance can continue
-on non-overlapping paths.
+Implement [g05.029 card 124](g05/batch-cards/124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md)
+and the rest of the resumed frontier (cards 084, 086, 087, 088, 116, 118 from
+their manifests). The `v0.4.4` candidate `0673541d` is prepared and held: the
+operator widened release scope on 2026-09-07 to linked Desktop evidence across
+all three Bovine routes (see g05.036); no tag request stands. Chatterbox
+reconciles the producer frontier against the Desktop capability matrix.
 
 ## Standing Lanes
 

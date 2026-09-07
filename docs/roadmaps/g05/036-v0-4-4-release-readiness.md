@@ -1,6 +1,6 @@
 # g05.036 v0.4.4 Release Readiness
 
-Status: ready; cards 122 and 123 compiled; ready on card 121's merge and the tag
+Status: ready; candidate `0673541d` prepared and held; tag withheld by operator scope change 2026-09-07; card 123 does not run until the Desktop capability matrix is covered
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07
@@ -14,6 +14,21 @@ which pins tags, as patch `v0.4.4`. This is the first lane run on the
 simplified shape: cheap local gates only, the hosted `workflow_dispatch` run
 as the heavy evidence, tag request in the same turn the candidate SHA exists,
 consumer smoke on the tag. Its wall clock is the g05.034 acceptance measure.
+
+## Operator Scope Change — 2026-09-07
+
+The operator withdrew tag authorization for the prepared `0.4.4` candidate
+(`0673541d`, run `34135201752`). The next Swallowtail release must be
+covered by linked Bovine Desktop evidence across the Claude, Codex, and Grok
+routes for MCP/tools, permissions, skills, model inventory/selection,
+cancellation/reconciliation, and packaging, with explicit
+unavailable-capability dispositions. CI and fixture parity are insufficient.
+Desktop Coordinator `914728cd` is the sole integration/test owner; Swallowtail
+supplies producer seams only. The candidate freeze is lifted so required
+fixes can merge; the candidate may be revised and re-prepared. Card 123
+waits. Chatterbox reconciles the producer frontier against the Desktop
+capability matrix when it arrives; cells with no seam get an explicit
+unavailable disposition, not an inferred lane.
 
 ## Runway
 

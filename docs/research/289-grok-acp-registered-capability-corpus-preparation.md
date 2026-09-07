@@ -182,6 +182,72 @@ remain separate evidence segments because their package identities and
 behavior revisions are distinct. That probe is outside this preparation and
 was not run.
 
+## Provider-Free Exact-Version Specimen Results
+
+Executed 2026-09-07 on the frozen `1.0.4` and `1.0.5` records, separately,
+without starting Grok or contacting a provider. The specimen has two verdict
+layers. The generic ACP JSON-RPC envelope parser accepts a non-empty
+`mcpServers` value. Grok semantic acceptance remains `Unknown`: neither exact
+artifact contains a non-empty setup transcript, and the current Grok setup
+emitter sends only `mcpServers: []`. Parser acceptance is not provider or
+session readiness evidence.
+
+| Exact segment | Frozen artifact evidence | Offline ACP parser specimen | Grok session-setup verdict |
+| --- | --- | --- | --- |
+| `1.0.4` | `session_new_ok: true`, ACP v1, `provider_prompt_sent: false`; no non-empty MCP setup, readiness, discovery, call, result, or rejection record | **Accepted**: one `session/new` envelope with one non-empty server round-tripped through `encode_message`/`decode_message` | **Unknown / not represented**: `GrokAcpDriver::start_session` emits `mcpServers: []`; no endpoint was contacted |
+| `1.0.5` | Same handshake boundary; `mcpCapabilities` and `_x.ai/mcp/*` observations remain unmapped; no non-empty MCP setup, readiness, discovery, call, result, or rejection record | **Accepted**: same envelope-only round trip, run as a separate version argument | **Unknown / not represented**: same empty-list emitter; no endpoint was contacted |
+
+Frozen artifact identities and file digests used by the specimen:
+
+| Version | Compatibility artifact SHA-256 | Identity artifact SHA-256 | Frozen source revision | Frozen executable SHA-256 |
+| --- | --- | --- | --- | --- |
+| `1.0.4` | `a1967be3e6f20608c2520e52c8ec2b713b94aa82e5e44f34b3c34350092b5f55` | `a769431be8f4d8702484c35060a6e6a2f154d7c30c99241bbd689b3bda62a744` | `d846eb93d94d` | `39366f7756a090b735cc1df8c93a8c0c3c7871555cf6cbb28f9351ca82936485` |
+| `1.0.5` | `948c1589afe6a037f7dc484d88e6ceb273995025ff05e81de729f5d13415651c` | `c0acd39c3fddafdd57874ef3c006ad07c6310b3d1bff0d3b6cbebcf33297bbba` | `5115b46bc909` | `3dfa7f04fbb5427a8fbead286591543aaecb478b3a0ab222c4329eca1a3b2f86` |
+
+Commands and observed results:
+
+```text
+shasum -a 256 crates/swallowtail-adapter-grok/tests/fixtures/grok-1-0-4/compatibility.json
+shasum -a 256 crates/swallowtail-adapter-grok/tests/fixtures/grok-1-0-4-identity.json
+shasum -a 256 crates/swallowtail-adapter-grok/tests/fixtures/grok-1-0-5/compatibility.json
+shasum -a 256 crates/swallowtail-adapter-grok/tests/fixtures/grok-1-0-5-identity.json
+
+cargo test --offline -p swallowtail-adapter-grok --test compatibility_corpus identity_and_handshake_qualify_1_0_4_as_same_axis_milestone -- --exact
+# 1 passed; 0 failed; 6 filtered out
+cargo test --offline -p swallowtail-adapter-grok --test compatibility_corpus identity_and_handshake_qualify_1_0_5_as_compatible_extension -- --exact
+# 1 passed; 0 failed; 6 filtered out
+```
+
+The offline parser harness used the exact bounded specimen
+`{"cwd":"<host-approved-resource>","mcpServers":[{"name":"fixture-server","command":"/fixture/not-invoked","args":[],"env":[]}]}`
+and ran separately as:
+
+```text
+CARGO_TARGET_DIR=/tmp/grok-acp-card118.zuBvf4/target cargo run --offline --manifest-path /tmp/grok-acp-card118.zuBvf4/Cargo.toml -- 1.0.4
+# version=1.0.4 parser=envelope-accepted mcpServers=1 provider=not-contacted
+CARGO_TARGET_DIR=/tmp/grok-acp-card118.zuBvf4/target cargo run --offline --manifest-path /tmp/grok-acp-card118.zuBvf4/Cargo.toml -- 1.0.5
+# version=1.0.5 parser=envelope-accepted mcpServers=1 provider=not-contacted
+```
+
+The temporary harness called only provider-neutral
+`swallowtail_protocol_acp::{encode_message, decode_message}`. The command
+path was an inert string and was never executed. The authoritative static
+anchors are `crates/swallowtail-protocol-acp/src/lib.rs::decode_frame` (ACP
+params are generic `Value`), `src/message.rs::{encode_message,decode_message}`,
+`crates/swallowtail-adapter-grok/src/driver.rs::GrokAcpDriver::start_session`,
+and `src/connection.rs::AcpConnection::recover_session_attachment`.
+
+### Residual live-probe blocker
+
+Only a separately authorized live probe can change the Grok session-setup
+verdict from `Unknown`: operator credential and turn authorization, one exact
+installed version at a time, one disposable non-mutating stdio server, setup
+negotiation with a non-empty server, readiness/schema capture, one bounded
+call/result, progress/permission/cancellation capture, disconnect, stale
+callback rejection, and joined cleanup. Card118 and this provider-free
+specimen do not grant that authority. Until it exists, both exact segments
+remain withheld and no Contract063 support claim or runtime change follows.
+
 ## Exact Findings
 
 1. The common protocol surface exists in ACP v1: a client can describe an

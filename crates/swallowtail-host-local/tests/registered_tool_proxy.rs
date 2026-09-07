@@ -4,9 +4,12 @@ use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::task::{Poll, Waker};
 use std::time::Duration;
-use swallowtail_core::{ConfiguredInstanceId, ExecutionHostId};
-use swallowtail_host_local::wire::RegisteredToolProxyRendezvousDocument;
+use swallowtail_core::{ConfiguredInstanceId, ExecutionHostId, WatcherCleanupCause};
+use swallowtail_host_local::wire::{
+    REGISTERED_TOOL_PROXY_HTTP_PATH, RegisteredToolProxyRendezvousDocument,
+};
 use swallowtail_host_local::{
     LocalHostServices, LocalProcessHost, LocalProcessLimits, RegisteredToolProxyLaunch,
 };
@@ -24,13 +27,118 @@ use swallowtail_runtime::{
     RegisteredToolSchemaNamespace, RegisteredToolSelection, RegisteredToolSnapshot,
     RegisteredToolSnapshotInput, RegisteredToolSource, RegisteredToolSourceId,
     RegisteredToolTransport, RegisteredToolTransportSupport, RuntimeFailure, RuntimeTurnId,
-    ScopeId,
+    ScopeId, WatcherBridgeOpenRequest,
 };
 
 const COURIER: Option<&str> = option_env!("CARGO_BIN_EXE_swallowtail-registered-tool-courier");
 
 struct Dispatcher {
     calls: Arc<AtomicUsize>,
+}
+
+struct BlockingDispatcher {
+    entered: Arc<std::sync::atomic::AtomicBool>,
+    release: Arc<std::sync::atomic::AtomicBool>,
+    waker: Arc<std::sync::Mutex<Option<Waker>>>,
+}
+
+impl RegisteredToolDispatcher for BlockingDispatcher {
+    fn dispatch(
+        &self,
+        _call: RegisteredToolCall,
+        _context: RegisteredToolDispatchContext,
+    ) -> BoxFuture<'_, Result<RegisteredToolOutcome, RuntimeFailure>> {
+        let entered = Arc::clone(&self.entered);
+        let release = Arc::clone(&self.release);
+        let waker = Arc::clone(&self.waker);
+        Box::pin(std::future::poll_fn(move |context| {
+            entered.store(true, Ordering::SeqCst);
+            if release.load(Ordering::SeqCst) {
+                Poll::Ready(Err(RuntimeFailure::new(
+                    swallowtail_core::SafeDiagnostic::new(
+                        "fixture.blocking_dispatcher.released",
+                        "fixture blocking dispatcher released",
+                    ),
+                )))
+            } else {
+                *waker.lock().expect("blocking dispatcher waker lock") =
+                    Some(context.waker().clone());
+                Poll::Pending
+            }
+        }))
+    }
+}
+
+impl BlockingDispatcher {
+    fn release(&self) {
+        self.release.store(true, Ordering::SeqCst);
+        if let Some(waker) = self
+            .waker
+            .lock()
+            .expect("blocking dispatcher waker lock")
+            .take()
+        {
+            waker.wake();
+        }
+    }
+}
+
+#[test]
+fn mounted_mediated_attachment_rejects_wrong_kind_snapshot_before_listener() {
+    let host_id = ExecutionHostId::new("fixture.host.mediated-stdio-wrong-kind").expect("host id");
+    let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
+    let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let snapshot = Arc::new(snapshot_with_kind(
+        &host_id,
+        executable.clone(),
+        environment.clone(),
+        RegisteredToolExecutionKind::NativeClient,
+    ));
+    let recipe = RegisteredToolProxyRecipe::new(
+        executable.clone(),
+        environment.clone(),
+        swallowtail_runtime::REGISTERED_TOOL_PROXY_WIRE_TAG,
+    )
+    .expect("recipe");
+    let selection = RegisteredToolSelection::new(
+        Arc::clone(&snapshot),
+        [tool_id()],
+        RegisteredToolTransport::PrivateLoopbackHttp,
+        RegisteredToolProtocolVersion::new(REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION)
+            .expect("protocol"),
+    )
+    .expect("selection construction remains provider-neutral")
+    .with_proxy_recipe(recipe);
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable, COURIER.expect("courier"))
+        .approve_environment(environment, [("PATH".into(), "/usr/bin".into())])
+        .with_registered_tool_dispatcher(Arc::new(Dispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }))
+        .build_services(host_id.clone());
+    let preparation = RegisteredToolPreparation::new(
+        snapshot,
+        selection,
+        swallowtail_testkit::fixture_admission(Arc::new(
+            swallowtail_testkit::ScriptedAdmissionPort::current(),
+        )),
+        swallowtail_runtime::RegisteredToolLimits::ceiling(),
+    );
+    let error = preparation
+        .prepare(
+            local.services(),
+            ConfiguredInstanceId::new("fixture.instance.wrong-kind").expect("instance"),
+            ScopeId::new("fixture.scope.wrong-kind").expect("scope"),
+            RuntimeTurnId::new("fixture.turn.wrong-kind").expect("turn"),
+            Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
+                1_000_000_000_000,
+            )),
+        )
+        .expect_err("mediated stdio only accepts MCP declarations");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.registered_tool.process_recipe_unavailable"
+    );
 }
 
 impl RegisteredToolDispatcher for Dispatcher {
@@ -206,6 +314,47 @@ struct RawMountedProxy {
 }
 
 fn mount_raw_proxy() -> RawMountedProxy {
+    mount_raw_proxy_with_admission(Arc::new(
+        swallowtail_testkit::ScriptedAdmissionPort::current(),
+    ))
+}
+
+fn mount_raw_proxy_with_admission(
+    admission: Arc<swallowtail_testkit::ScriptedAdmissionPort>,
+) -> RawMountedProxy {
+    let calls = Arc::new(AtomicUsize::new(0));
+    mount_raw_proxy_with_dispatcher(
+        admission,
+        Arc::new(Dispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Duration::from_secs(10),
+        Arc::clone(&calls),
+    )
+}
+
+fn mount_raw_proxy_with_dispatcher(
+    admission: Arc<swallowtail_testkit::ScriptedAdmissionPort>,
+    dispatcher: Arc<dyn RegisteredToolDispatcher>,
+    cleanup_budget: Duration,
+    calls: Arc<AtomicUsize>,
+) -> RawMountedProxy {
+    mount_raw_proxy_with_deadline(
+        admission,
+        dispatcher,
+        cleanup_budget,
+        calls,
+        Duration::from_secs(10),
+    )
+}
+
+fn mount_raw_proxy_with_deadline(
+    admission: Arc<swallowtail_testkit::ScriptedAdmissionPort>,
+    dispatcher: Arc<dyn RegisteredToolDispatcher>,
+    cleanup_budget: Duration,
+    calls: Arc<AtomicUsize>,
+    open_duration: Duration,
+) -> RawMountedProxy {
     let courier = COURIER.expect("feature-gated courier binary is built");
     let host_id = ExecutionHostId::new("fixture.host.mediated-stdio-raw").expect("host id");
     let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
@@ -227,23 +376,20 @@ fn mount_raw_proxy() -> RawMountedProxy {
     .expect("selection")
     .with_attachment(RegisteredToolAttachment::MediatedStdioProxy)
     .with_proxy_recipe(recipe);
-    let calls = Arc::new(AtomicUsize::new(0));
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
         .approve_executable(executable, courier)
         .approve_environment(environment, [("PATH".into(), "/usr/bin".into())])
-        .with_registered_tool_dispatcher(Arc::new(Dispatcher {
-            calls: Arc::clone(&calls),
-        }))
+        .with_registered_tool_dispatcher(dispatcher)
+        .with_registered_tool_cleanup_budget(cleanup_budget)
         .build_services(host_id.clone());
-    let admission = swallowtail_testkit::fixture_admission(Arc::new(
-        swallowtail_testkit::ScriptedAdmissionPort::current(),
-    ));
+    let admission_binding = swallowtail_testkit::fixture_admission(Arc::clone(&admission));
     let preparation = RegisteredToolPreparation::new(
         Arc::clone(&snapshot),
         selection,
-        admission,
+        admission_binding,
         swallowtail_runtime::RegisteredToolLimits::ceiling(),
     );
+    let deadline = local.deadline_after(open_duration);
     let lease = block_on(
         preparation
             .prepare(
@@ -251,9 +397,7 @@ fn mount_raw_proxy() -> RawMountedProxy {
                 ConfiguredInstanceId::new("fixture.instance.raw").expect("instance"),
                 ScopeId::new("fixture.scope.raw").expect("scope"),
                 RuntimeTurnId::new("fixture.turn.raw").expect("turn"),
-                Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
-                    1_000_000_000_000,
-                )),
+                deadline,
             )
             .expect("prepared")
             .open(),
@@ -345,11 +489,374 @@ fn mounted_proxy_rejects_foreign_auth_and_tool_identity() {
 }
 
 #[test]
+fn mounted_proxy_denies_through_kernel_admission_before_dispatch() {
+    let admission = Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current());
+    let fixture = mount_raw_proxy_with_admission(Arc::clone(&admission));
+    let mut stream = connect_raw(&fixture.document);
+    let initialized = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert_eq!(initialized.0, 200);
+    admission.revoke_now();
+    let denied = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"swallowtail.conformance/reconcile","arguments":{}}}"#,
+    );
+    assert_eq!(denied.0, 200);
+    assert!(String::from_utf8_lossy(&denied.1).contains("-32000"));
+    assert_eq!(fixture.calls.load(Ordering::SeqCst), 0);
+    drop(stream);
+    fixture.close();
+}
+
+#[test]
+fn mounted_proxy_revocation_between_dispatch_and_delivery_is_reported_without_replay() {
+    let admission = Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current());
+    admission.revoke_after_validations(1);
+    let fixture = mount_raw_proxy_with_admission(Arc::clone(&admission));
+    let mut stream = connect_raw(&fixture.document);
+    assert_eq!(
+        raw_post(
+            &mut stream,
+            &fixture.document.bearer,
+            br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+        )
+        .0,
+        200
+    );
+    let result = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"swallowtail.conformance/reconcile","arguments":{}}}"#,
+    );
+    assert_eq!(result.0, 200);
+    assert!(String::from_utf8_lossy(&result.1).contains("isError"));
+    assert_eq!(fixture.calls.load(Ordering::SeqCst), 1);
+    drop(stream);
+    fixture.close();
+}
+
+#[test]
+fn mounted_proxy_expired_deadline_rejects_the_callable_frame_before_dispatch() {
+    let calls = Arc::new(AtomicUsize::new(0));
+    let fixture = mount_raw_proxy_with_deadline(
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        Arc::new(Dispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Duration::from_secs(10),
+        Arc::clone(&calls),
+        Duration::ZERO,
+    );
+    let mut stream = connect_raw(&fixture.document);
+    assert_eq!(
+        raw_post(
+            &mut stream,
+            &fixture.document.bearer,
+            br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+        )
+        .0,
+        200
+    );
+    let result = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"swallowtail.conformance/reconcile","arguments":{}}}"#,
+    );
+    assert_eq!(result.0, 200);
+    assert!(String::from_utf8_lossy(&result.1).contains("-32000"));
+    assert_eq!(calls.load(Ordering::SeqCst), 0);
+    drop(stream);
+    fixture.close();
+}
+
+#[test]
+fn mounted_proxy_cancellation_closes_the_shared_listener_before_late_transport() {
+    let fixture = mount_raw_proxy();
+    let document = fixture.document.clone();
+    let local = fixture.local.clone();
+    let cleanup = block_on(
+        local
+            .services()
+            .registered_tool_bridge()
+            .expect("registered bridge")
+            .close(
+                fixture.lease,
+                swallowtail_runtime::RegisteredToolCleanupCause::Cancellation,
+            ),
+    )
+    .expect("cancellation joins the operation listener");
+    assert_eq!(cleanup, swallowtail_runtime::CleanupOutcome::Clean);
+    assert_eq!(local.operation_bridge_listener_count(), 0);
+    let close_deadline = std::time::Instant::now() + Duration::from_secs(1);
+    let mut listener_closed = false;
+    while std::time::Instant::now() < close_deadline {
+        if TcpStream::connect_timeout(&socket_addr(&document), Duration::from_millis(50)).is_err() {
+            listener_closed = true;
+            break;
+        }
+        std::thread::sleep(Duration::from_millis(5));
+    }
+    assert!(listener_closed);
+    drop(fixture.launch);
+}
+
+#[test]
+fn mounted_proxy_rejects_stale_foreign_and_late_generations_without_reauth() {
+    let fixture = mount_raw_proxy();
+    assert!((1..=10_000).contains(&fixture.document.connect_timeout_ms));
+    let mut stream = connect_raw(&fixture.document);
+    let stale = raw_post_with_identity(
+        &mut stream,
+        &fixture.document.bearer,
+        99,
+        1,
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert_eq!(stale.0, 409);
+    let foreign = raw_post_with_identity(
+        &mut stream,
+        &fixture.document.bearer,
+        1,
+        99,
+        br#"{"jsonrpc":"2.0","id":2,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert_eq!(foreign.0, 409);
+    let initialized = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":3,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert_eq!(initialized.0, 200);
+    drop(stream);
+
+    let mut second_connection = connect_raw(&fixture.document);
+    let late = raw_post(
+        &mut second_connection,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":4,"method":"tools/list"}"#,
+    );
+    assert_eq!(
+        late.0, 409,
+        "transport loss does not re-authenticate a courier"
+    );
+    drop(second_connection);
+    let document = fixture.document.clone();
+    fixture.close();
+    assert!(
+        TcpStream::connect_timeout(&socket_addr(&document), Duration::from_millis(100)).is_err()
+    );
+}
+
+#[test]
+fn mounted_proxy_second_real_courier_cannot_claim_one_rendezvous_or_connection() {
+    let fixture = mount_raw_proxy();
+    let mut first = FakeSdk::spawn(&fixture.local, &fixture.launch, Arc::clone(&fixture.calls));
+    let mut launch = fixture.launch;
+    launch
+        .wait_until_ready()
+        .expect("first real courier reaches ready");
+    let second = block_on(fixture.local.process_host().start(
+        ScopeId::new("fixture.scope.second-courier").expect("scope"),
+        launch.process_request().clone(),
+    ))
+    .expect("second real courier process starts");
+    assert!(
+        !block_on(second.wait())
+            .expect("second courier joins")
+            .success()
+    );
+    first.close();
+    let local = fixture.local;
+    let lease = fixture.lease;
+    block_on(
+        local
+            .services()
+            .registered_tool_bridge()
+            .expect("registered bridge")
+            .close(
+                lease,
+                swallowtail_runtime::RegisteredToolCleanupCause::Completion,
+            ),
+    )
+    .expect("one listener joins after both courier attempts");
+}
+
+#[test]
+fn mounted_proxy_concurrency_rejects_a_second_connection_while_dispatch_is_in_flight() {
+    let blocking = Arc::new(BlockingDispatcher {
+        entered: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        release: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        waker: Arc::new(std::sync::Mutex::new(None)),
+    });
+    let fixture = mount_raw_proxy_with_dispatcher(
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        Arc::clone(&blocking) as Arc<dyn RegisteredToolDispatcher>,
+        Duration::from_secs(10),
+        Arc::new(AtomicUsize::new(0)),
+    );
+    let mut first = connect_raw(&fixture.document);
+    assert_eq!(
+        raw_post(
+            &mut first,
+            &fixture.document.bearer,
+            br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+        )
+        .0,
+        200
+    );
+    let call_body = br#"{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"swallowtail.conformance/reconcile","arguments":{}}}"#;
+    let (sender, receiver) = std::sync::mpsc::channel();
+    let bearer = fixture.document.bearer.clone();
+    std::thread::spawn(move || {
+        sender
+            .send(raw_post(&mut first, &bearer, call_body))
+            .expect("call result")
+    });
+    let wait_until = std::time::Instant::now() + Duration::from_secs(2);
+    while !blocking.entered.load(Ordering::SeqCst) && std::time::Instant::now() < wait_until {
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    assert!(blocking.entered.load(Ordering::SeqCst));
+    let mut second = connect_raw(&fixture.document);
+    let second_result = raw_post(
+        &mut second,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":3,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert_eq!(second_result.0, 409);
+    blocking.release();
+    assert_eq!(receiver.recv().expect("first call result").0, 200);
+    drop(second);
+    fixture.close();
+}
+
+#[test]
+fn mounted_proxy_uncooperative_teardown_reports_failure_and_retains_resources() {
+    let blocking = Arc::new(BlockingDispatcher {
+        entered: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        release: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        waker: Arc::new(std::sync::Mutex::new(None)),
+    });
+    let fixture = mount_raw_proxy_with_dispatcher(
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        Arc::clone(&blocking) as Arc<dyn RegisteredToolDispatcher>,
+        Duration::from_millis(20),
+        Arc::new(AtomicUsize::new(0)),
+    );
+    let mut stream = connect_raw(&fixture.document);
+    assert_eq!(
+        raw_post(
+            &mut stream,
+            &fixture.document.bearer,
+            br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+        )
+        .0,
+        200
+    );
+    let (sender, receiver) = std::sync::mpsc::channel();
+    let bearer = fixture.document.bearer.clone();
+    std::thread::spawn(move || {
+        sender
+            .send(raw_post(
+                &mut stream,
+                &bearer,
+                br#"{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"swallowtail.conformance/reconcile","arguments":{}}}"#,
+            ))
+            .expect("blocked call result");
+    });
+    let wait_until = std::time::Instant::now() + Duration::from_secs(2);
+    while !blocking.entered.load(Ordering::SeqCst) && std::time::Instant::now() < wait_until {
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    assert!(blocking.entered.load(Ordering::SeqCst));
+    let turn = fixture.lease.turn().clone();
+    let cleanup = block_on(
+        fixture
+            .local
+            .services()
+            .registered_tool_bridge()
+            .expect("registered bridge")
+            .close(
+                fixture.lease,
+                swallowtail_runtime::RegisteredToolCleanupCause::Deadline,
+            ),
+    )
+    .expect("teardown reports its bounded result");
+    assert!(matches!(
+        cleanup,
+        swallowtail_runtime::CleanupOutcome::Failed(_)
+    ));
+    assert_eq!(fixture.local.registered_tool_lease_count(), 1);
+    assert_eq!(fixture.local.operation_bridge_listener_count(), 1);
+    assert_eq!(
+        fixture.local.operation_bridge_generations(&turn),
+        vec![("registered-tool", 1)]
+    );
+    blocking.release();
+    assert_eq!(receiver.recv().expect("released call result").0, 200);
+    drop(fixture.launch);
+}
+
+#[test]
+fn mounted_both_profiles_demux_through_one_listener_and_one_resource_owner() {
+    let fixture = mount_raw_proxy();
+    let local = fixture.local.clone();
+    let turn = fixture.lease.turn().clone();
+    let watcher = block_on(
+        fixture
+            .local
+            .services()
+            .watcher_bridge()
+            .expect("watcher bridge")
+            .open(WatcherBridgeOpenRequest::new(
+                ScopeId::new("fixture.scope.watcher").expect("scope"),
+                turn.clone(),
+            )),
+    )
+    .expect("watcher route registers on the existing operation listener");
+    assert_eq!(fixture.local.operation_bridge_listener_count(), 1);
+    assert_eq!(fixture.local.operation_bridge_lease_count(), 2);
+    assert_eq!(
+        fixture.local.operation_bridge_generations(&turn),
+        vec![("watcher", 2), ("registered-tool", 1)]
+    );
+    let watcher_endpoint = watcher.endpoint().expose().to_owned();
+    let watcher_bearer = watcher.bearer().expose().to_owned();
+    let mut watcher_stream = connect_endpoint(&watcher_endpoint);
+    let watcher_initialized = watcher_post(
+        &mut watcher_stream,
+        &watcher_bearer,
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26"}}"#,
+    );
+    assert_eq!(watcher_initialized.0, 200);
+    assert!(String::from_utf8_lossy(&watcher_initialized.1).contains("swallowtail-watcher-bridge"));
+    drop(watcher_stream);
+    let watcher_port = fixture
+        .local
+        .services()
+        .watcher_bridge()
+        .expect("watcher bridge")
+        .clone();
+    block_on(watcher_port.close(watcher, WatcherCleanupCause::Stopped))
+        .expect("watcher route teardown joins without closing registered route");
+    assert_eq!(fixture.local.operation_bridge_listener_count(), 1);
+    fixture.close();
+    assert_eq!(local.operation_bridge_listener_count(), 0);
+}
+
+#[test]
 fn mounted_proxy_drops_oversized_and_partial_transport_without_dispatch() {
     let fixture = mount_raw_proxy();
     let mut partial = connect_raw(&fixture.document);
     partial
-        .write_all(b"POST /mcp HTTP/1.1\r\nContent-Length: 2\r\n")
+        .write_all(
+            format!("POST {REGISTERED_TOOL_PROXY_HTTP_PATH} HTTP/1.1\r\nContent-Length: 2\r\n")
+                .as_bytes(),
+        )
         .expect("partial request");
     partial.flush().expect("partial request flush");
     drop(partial);
@@ -364,7 +871,7 @@ fn mounted_proxy_drops_oversized_and_partial_transport_without_dispatch() {
     let oversized =
         vec![b'x'; swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_MAX_RECORD_BYTES + 1];
     let header = format!(
-        "POST /mcp HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n\r\n",
+        "POST {REGISTERED_TOOL_PROXY_HTTP_PATH} HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n\r\n",
         fixture.document.bearer,
         oversized.len()
     );
@@ -381,8 +888,12 @@ fn mounted_proxy_drops_oversized_and_partial_transport_without_dispatch() {
 }
 
 fn connect_raw(document: &RegisteredToolProxyRendezvousDocument) -> TcpStream {
-    let authority = document
-        .endpoint
+    TcpStream::connect_timeout(&socket_addr(document), Duration::from_secs(1))
+        .expect("mounted listener accepts")
+}
+
+fn connect_endpoint(endpoint: &str) -> TcpStream {
+    let authority = endpoint
         .strip_prefix("http://127.0.0.1:")
         .expect("loopback endpoint");
     let port = authority
@@ -398,14 +909,53 @@ fn connect_raw(document: &RegisteredToolProxyRendezvousDocument) -> TcpStream {
     .expect("mounted listener accepts")
 }
 
+fn socket_addr(document: &RegisteredToolProxyRendezvousDocument) -> std::net::SocketAddr {
+    let authority = document
+        .endpoint
+        .strip_prefix("http://127.0.0.1:")
+        .expect("loopback endpoint");
+    let port = authority
+        .split_once('/')
+        .expect("endpoint path")
+        .0
+        .parse::<u16>()
+        .expect("endpoint port");
+    format!("127.0.0.1:{port}").parse().expect("socket address")
+}
+
 fn raw_post(stream: &mut TcpStream, bearer: &str, body: &[u8]) -> (u16, Vec<u8>) {
+    raw_post_with_identity(stream, bearer, 1, 1, body)
+}
+
+fn raw_post_with_identity(
+    stream: &mut TcpStream,
+    bearer: &str,
+    lease_generation: u64,
+    transport_generation: u64,
+    body: &[u8],
+) -> (u16, Vec<u8>) {
     let header = format!(
-        "POST /mcp HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {bearer}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: keep-alive\r\n\r\n",
-        body.len()
+        "POST {REGISTERED_TOOL_PROXY_HTTP_PATH} HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {bearer}\r\nX-Swallowtail-Lease-Generation: {lease_generation}\r\nX-Swallowtail-Transport-Generation: {transport_generation}\r\nX-Swallowtail-Server-Name: swallowtail-registered-tools\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: keep-alive\r\n\r\n",
+        body.len(),
     );
     stream.write_all(header.as_bytes()).expect("request header");
     stream.write_all(body).expect("request body");
     stream.flush().expect("request flush");
+    read_response(stream)
+}
+
+fn watcher_post(stream: &mut TcpStream, bearer: &str, body: &[u8]) -> (u16, Vec<u8>) {
+    let header = format!(
+        "POST /mcp HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {bearer}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        body.len(),
+    );
+    stream.write_all(header.as_bytes()).expect("request header");
+    stream.write_all(body).expect("request body");
+    stream.flush().expect("request flush");
+    read_response(stream)
+}
+
+fn read_response(stream: &mut TcpStream) -> (u16, Vec<u8>) {
     let mut header = Vec::new();
     let mut byte = [0_u8; 1];
     loop {
@@ -517,6 +1067,20 @@ fn snapshot(
     executable: ExecutableRef,
     environment: EnvironmentRef,
 ) -> RegisteredToolSnapshot {
+    snapshot_with_kind(
+        host_id,
+        executable,
+        environment,
+        RegisteredToolExecutionKind::Mcp,
+    )
+}
+
+fn snapshot_with_kind(
+    host_id: &ExecutionHostId,
+    executable: ExecutableRef,
+    environment: EnvironmentRef,
+    kind: RegisteredToolExecutionKind,
+) -> RegisteredToolSnapshot {
     RegisteredToolSnapshot::new(RegisteredToolSnapshotInput {
         server_id: RegisteredServerId::new("swallowtail-registered-tools").expect("server"),
         revision: RegisteredServerRevision::new("fixture-1").expect("revision"),
@@ -524,7 +1088,7 @@ fn snapshot(
         declarations: vec![
             RegisteredToolDeclaration::new(
                 tool_id(),
-                RegisteredToolExecutionKind::Mcp,
+                kind,
                 schema("input", "sha256:input"),
                 schema("output", "sha256:output"),
                 RegisteredToolEffectPosture::ReadOnly,

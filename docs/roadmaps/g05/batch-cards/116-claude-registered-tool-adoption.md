@@ -47,3 +47,17 @@ now, before114/115. Publish exact surface evidence and proposed adapter mapping;
 no runtime edits, live credential mutation or support claim in that preparation.
 Runtime adoption waits for114/115 and a qualified surface. Missing evidence is
 the preparation outcome to resolve, not a prerequisite for starting research.
+
+## Result
+
+Implementation is provider-free and feature-gated. The mounted/callable fixture
+uses the real courier binary, kernel listener, lease/generation authority,
+dispatcher, and SDK-shaped process launcher. Validation is named explicitly so
+the feature path cannot remain dark:
+
+`effigy validate:card116-mediated-stdio`
+
+The promoted Contract 063/060 and Chatterbox ruling are the authority where the
+original card-owned adapter wording drifted. No provider, credential, Desktop,
+release, or tag action was taken. Exact-head independent review remains the stop
+gate.

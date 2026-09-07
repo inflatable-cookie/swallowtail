@@ -98,6 +98,7 @@ pub fn swallowtail_host_local::LocalHostServices::close_operation_bridges(&self,
 pub fn swallowtail_host_local::LocalHostServices::deadline_after(&self, core::time::Duration) -> swallowtail_runtime::time::Deadline
 pub fn swallowtail_host_local::LocalHostServices::operation_bridge_generations(&self, &swallowtail_runtime::identity::RuntimeTurnId) -> alloc::vec::Vec<(&'static str, u64)>
 pub fn swallowtail_host_local::LocalHostServices::operation_bridge_lease_count(&self) -> usize
+pub fn swallowtail_host_local::LocalHostServices::operation_bridge_listener_count(&self) -> usize
 pub const fn swallowtail_host_local::LocalHostServices::process_host(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalProcessHost>
 pub fn swallowtail_host_local::LocalHostServices::registered_tool_lease_count(&self) -> usize
 pub fn swallowtail_host_local::LocalHostServices::registered_tool_proxy_launch(&self, &swallowtail_runtime::registered_tool::lease::RegisteredToolBridgeLease) -> core::result::Result<swallowtail_host_local::RegisteredToolProxyLaunch, swallowtail_runtime::failure::RuntimeFailure>

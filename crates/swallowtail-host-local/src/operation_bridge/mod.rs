@@ -12,7 +12,10 @@ mod registry;
 mod secret;
 
 pub(crate) use join::join_within;
-pub(crate) use listener::{bind_loopback, spawn_accept_loop, wake_accept};
+pub(crate) use listener::{
+    OperationBridgeFrame, OperationBridgeListener, OperationBridgeResponse, OperationBridgeRoute,
+    OperationBridgeRouteSpec, namespace_registered_tool,
+};
 pub use registry::OperationBridgeCleanupCause;
 pub(crate) use registry::{BridgeLease, BridgeLeaseOwner, BridgeProfile, OperationBridgeRegistry};
 pub(crate) use secret::generate_operation_secret;

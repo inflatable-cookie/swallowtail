@@ -2,21 +2,24 @@
 
 use super::wire::{
     REGISTERED_TOOL_PROXY_HTTP_PATH, REGISTERED_TOOL_PROXY_MAX_RECORD_BYTES,
-    REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION, RegisteredToolProxyRendezvousDocument,
-    RegisteredToolProxyRequest, decode_request, error, initialize_result, result, tool_result,
-    tools_list_result,
+    REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION, REGISTERED_TOOL_PROXY_SERVER_NAME,
+    RegisteredToolProxyRendezvousDocument, RegisteredToolProxyRequest, decode_request, error,
+    initialize_result, result, tool_result, tools_list_result,
 };
 use crate::operation_bridge::generate_operation_secret;
+use crate::operation_bridge::{
+    OperationBridgeFrame, OperationBridgeListener, OperationBridgeResponse, OperationBridgeRoute,
+    OperationBridgeRouteSpec, namespace_registered_tool,
+};
 use crate::output::failure;
 use futures_executor::block_on;
 use serde_json::{Map, Value, json};
 use std::fs::{self, File, OpenOptions};
 use std::io::Write;
-use std::net::{Shutdown, SocketAddr, TcpStream};
+use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
-use std::thread::JoinHandle;
 use std::time::{Duration, Instant};
 use swallowtail_runtime::{
     Deadline, RegisteredToolBridgeLease, RegisteredToolCallId, RegisteredToolCallRequest,
@@ -29,7 +32,7 @@ const READY_WAIT: Duration = Duration::from_secs(10);
 /// One opened private HTTP carrier owned by the registered-tool lease.
 pub(crate) struct RegisteredToolProxyServer {
     state: Arc<ProxyState>,
-    thread: Mutex<Option<JoinHandle<()>>>,
+    route: Mutex<Option<OperationBridgeRoute>>,
 }
 
 struct ProxyState {
@@ -39,7 +42,7 @@ struct ProxyState {
     selection: RegisteredToolSelection,
     time: Arc<dyn TimeService>,
     deadline: Deadline,
-    connection_claimed: AtomicBool,
+    connection_claimed: std::sync::atomic::AtomicU64,
     rendezvous_claimed: AtomicBool,
     rendezvous: Mutex<Option<Arc<RendezvousState>>>,
     closed: AtomicBool,
@@ -50,49 +53,46 @@ struct ProxyState {
 impl RegisteredToolProxyServer {
     /// Binds the one shared operation listener and starts its joined reader.
     pub(crate) fn bind(
+        listener: Arc<OperationBridgeListener>,
         kernel: Arc<RegisteredToolOperationKernel>,
         selection: RegisteredToolSelection,
         time: Arc<dyn TimeService>,
         deadline: Deadline,
     ) -> Result<Self, RuntimeFailure> {
-        let (listener, endpoint) = crate::operation_bridge::bind_loopback()?;
+        let endpoint = listener.endpoint();
+        let bearer = listener.bearer();
+        let generation = kernel.binding().lease_generation().get();
+        let transport_generation = kernel.binding().transport_generation().get();
         let state = Arc::new(ProxyState {
             endpoint,
-            bearer: generate_operation_secret()?,
+            bearer,
             kernel,
             selection,
             time,
             deadline,
-            connection_claimed: AtomicBool::new(false),
+            connection_claimed: AtomicU64::new(0),
             rendezvous_claimed: AtomicBool::new(false),
             rendezvous: Mutex::new(None),
             closed: AtomicBool::new(false),
             ready: Mutex::new(false),
             ready_changed: Condvar::new(),
         });
-        let should_close_state = Arc::clone(&state);
-        let should_close = Arc::new(move || should_close_state.closed.load(Ordering::Acquire));
         let handler_state = Arc::clone(&state);
-        let handler = Arc::new(move |stream: TcpStream| {
-            if handler_state
-                .connection_claimed
-                .swap(true, Ordering::AcqRel)
-            {
-                drop(stream);
-                return;
-            }
-            handle_connection(&handler_state, stream);
-        });
-        let thread = crate::operation_bridge::spawn_accept_loop(
-            listener,
-            "swallowtail-registered-tool-proxy",
-            should_close,
-            true,
-            handler,
+        let handler =
+            Arc::new(move |frame: OperationBridgeFrame| handle_frame(&handler_state, frame));
+        let route = listener.register(
+            namespace_registered_tool(),
+            generation,
+            OperationBridgeRouteSpec {
+                path: REGISTERED_TOOL_PROXY_HTTP_PATH,
+                transport_generation: Some(transport_generation),
+                server_name: Some(REGISTERED_TOOL_PROXY_SERVER_NAME),
+                handler,
+            },
         )?;
         Ok(Self {
             state,
-            thread: Mutex::new(Some(thread)),
+            route: Mutex::new(Some(route)),
         })
     }
 
@@ -181,20 +181,18 @@ impl RegisteredToolProxyServer {
         }
     }
 
-    /// Freezes the listener and joins the accept/connection thread.
+    /// Freezes this profile route. The operation owner joins the listener and
+    /// every accepted connection exactly once after all profile leases close.
     pub(crate) fn close(&self) {
         self.state.closed.store(true, Ordering::Release);
         self.expire_rendezvous();
         self.state.ready_changed.notify_all();
-        crate::operation_bridge::wake_accept(self.state.endpoint);
-        if let Some(thread) = self
-            .thread
-            .lock()
-            .expect("proxy thread lock poisoned")
-            .take()
-        {
-            let _ = thread.join();
-        }
+        drop(
+            self.route
+                .lock()
+                .expect("proxy thread lock poisoned")
+                .take(),
+        );
     }
 }
 
@@ -289,56 +287,44 @@ impl RendezvousState {
     }
 }
 
-fn handle_connection(state: &Arc<ProxyState>, mut stream: TcpStream) {
-    if crate::watcher_bridge::configure_stream(&stream).is_err() {
-        return;
+fn handle_frame(state: &Arc<ProxyState>, frame: OperationBridgeFrame) -> OperationBridgeResponse {
+    if state.closed.load(Ordering::Acquire) {
+        return OperationBridgeResponse::close(
+            410,
+            "Gone",
+            error(None, -32006, "Registered tool proxy is closed"),
+        );
     }
-    let _ = stream.set_read_timeout(Some(Duration::from_millis(100)));
-    while !state.closed.load(Ordering::Acquire) {
-        let request = match crate::watcher_bridge::read_private_request(
-            &mut stream,
-            REGISTERED_TOOL_PROXY_HTTP_PATH,
-        ) {
-            Ok(request) => request,
-            Err(_) => break,
-        };
-        let (mut status, mut body) = if crate::watcher_bridge::constant_time_eq(
-            state.bearer.as_bytes(),
-            request
-                .bearer
-                .as_deref()
-                .map(String::as_str)
-                .unwrap_or_default()
-                .as_bytes(),
-        ) {
-            dispatch_request(state, &request.body)
-        } else {
-            (
-                401,
-                error(None, -32001, "Unauthorized registered-tool proxy request"),
-            )
-        };
-        if body.len() > REGISTERED_TOOL_PROXY_MAX_RECORD_BYTES {
-            status = 413;
-            body = error(
-                None,
-                -32600,
-                "Registered tool proxy response exceeds its bound",
-            );
-        }
-        if crate::watcher_bridge::write_response(
-            &mut stream,
-            status,
-            response_reason(status),
-            &body,
-            "keep-alive",
-        )
-        .is_err()
-        {
-            break;
-        }
+    let claimed = state.connection_claimed.load(Ordering::Acquire);
+    if claimed == 0
+        && state
+            .connection_claimed
+            .compare_exchange(0, frame.connection_id, Ordering::AcqRel, Ordering::Acquire)
+            .is_err()
+    {
+        return OperationBridgeResponse::close(
+            409,
+            "Conflict",
+            error(None, -32005, "Registered tool proxy allows one connection"),
+        );
     }
-    let _ = stream.shutdown(Shutdown::Both);
+    if state.connection_claimed.load(Ordering::Acquire) != frame.connection_id {
+        return OperationBridgeResponse::close(
+            409,
+            "Conflict",
+            error(None, -32005, "Registered tool proxy allows one connection"),
+        );
+    }
+    let (mut status, mut body) = dispatch_request(state, &frame.body);
+    if body.len() > REGISTERED_TOOL_PROXY_MAX_RECORD_BYTES {
+        status = 413;
+        body = error(
+            None,
+            -32600,
+            "Registered tool proxy response exceeds its bound",
+        );
+    }
+    OperationBridgeResponse::keep_alive(status, response_reason(status), body)
 }
 
 fn response_reason(status: u16) -> &'static str {

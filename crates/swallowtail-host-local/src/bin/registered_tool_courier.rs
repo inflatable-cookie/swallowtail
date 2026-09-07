@@ -32,7 +32,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     stream.set_nodelay(true)?;
     stream.set_read_timeout(Some(COURIER_IO_TIMEOUT))?;
     stream.set_write_timeout(Some(COURIER_IO_TIMEOUT))?;
-    negotiate(&mut stream, &document.bearer)?;
+    negotiate(&mut stream, &document)?;
     let stdin = std::io::stdin();
     let mut input = BufReader::new(stdin.lock());
     let stdout = std::io::stdout();
@@ -55,7 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if record.is_empty() {
             continue;
         }
-        let response = post(&mut stream, &document.bearer, &record)?;
+        let response = post(&mut stream, &document, &record)?;
         if !response.is_empty() {
             output.write_all(&response)?;
             output.write_all(b"\n")?;
@@ -65,14 +65,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn negotiate(stream: &mut TcpStream, bearer: &str) -> Result<(), Box<dyn std::error::Error>> {
+fn negotiate(
+    stream: &mut TcpStream,
+    document: &RegisteredToolProxyRendezvousDocument,
+) -> Result<(), Box<dyn std::error::Error>> {
     let request = serde_json::to_vec(&json!({
         "jsonrpc": "2.0",
         "id": "swallowtail-courier",
         "method": "initialize",
         "params": { "protocolVersion": "2025-11-25" },
     }))?;
-    let response = post(stream, bearer, &request)?;
+    let response = post(stream, document, &request)?;
     let response = serde_json::from_slice::<Value>(&response)?;
     if response
         .get("result")
@@ -123,12 +126,16 @@ fn loopback_endpoint(endpoint: &str) -> Result<(String, u16), Box<dyn std::error
 
 fn post(
     stream: &mut TcpStream,
-    bearer: &str,
+    document: &RegisteredToolProxyRendezvousDocument,
     body: &[u8],
 ) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let request = format!(
-        "POST {REGISTERED_TOOL_PROXY_HTTP_PATH} HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {bearer}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: keep-alive\r\n\r\n",
-        body.len()
+        "POST {REGISTERED_TOOL_PROXY_HTTP_PATH} HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {}\r\nX-Swallowtail-Lease-Generation: {}\r\nX-Swallowtail-Transport-Generation: {}\r\nX-Swallowtail-Server-Name: {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: keep-alive\r\n\r\n",
+        document.bearer,
+        document.lease_generation,
+        document.transport_generation,
+        document.server_name,
+        body.len(),
     );
     stream.write_all(request.as_bytes())?;
     stream.write_all(body)?;

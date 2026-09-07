@@ -182,6 +182,12 @@ impl LocalHostServices {
         self.operation_bridges.lease_count()
     }
 
+    /// Returns how many operation-owned loopback listeners are live.
+    #[must_use]
+    pub fn operation_bridge_listener_count(&self) -> usize {
+        self.operation_bridges.listener_count()
+    }
+
     /// Returns every profile and shared generation owned for one turn.
     ///
     /// Both profiles draw from one monotonic generation space, so a generation

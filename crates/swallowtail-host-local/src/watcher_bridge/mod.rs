@@ -2,8 +2,7 @@
 
 mod close;
 mod failure;
-mod http;
-mod listener;
+mod frame;
 mod proof;
 mod protocol;
 #[cfg(test)]
@@ -16,15 +15,11 @@ pub(crate) use state::LiveLease as LiveWatcherLease;
 
 use crate::operation_bridge::{
     BridgeLease, BridgeLeaseOwner, BridgeProfile, OperationBridgeCleanupCause,
-    OperationBridgeRegistry, generate_operation_secret,
+    OperationBridgeRegistry, OperationBridgeRouteSpec, generate_operation_secret,
 };
 use crate::output::failure;
 use close::shutdown_live;
 use failure::{closed_failure, foreign_failure, identity_failure};
-pub(crate) use http::{
-    configure_stream, constant_time_eq, read_request as read_private_request, write_response,
-};
-use listener::{endpoint_url, spawn_accept};
 use proof::ProofLog;
 use state::{Gate, LiveLease, ProofArchive, RequestBounds, SessionPhase};
 use std::sync::atomic::{AtomicBool, AtomicUsize};
@@ -129,10 +124,6 @@ impl LocalWatcherBridgeHostService {
         &self,
         request: WatcherBridgeOpenRequest,
     ) -> Result<WatcherBridgeLease, RuntimeFailure> {
-        let (listener, addr) = crate::operation_bridge::bind_loopback()?;
-        let bearer = generate_operation_secret()?;
-        let token_secret = generate_operation_secret()?;
-        let endpoint = endpoint_url(addr);
         let reserved = self
             .registry
             .reserve(BridgeProfile::Watcher, request.turn())
@@ -142,16 +133,32 @@ impl LocalWatcherBridgeHostService {
                     "Watcher bridge already has an open lease for this turn",
                 )
             })?;
+        let turn = request.turn().clone();
+        let listener = match self.registry.listener_for_turn(&turn) {
+            Ok(listener) => listener,
+            Err(error) => {
+                self.registry
+                    .forget(BridgeProfile::Watcher, &turn, reserved);
+                return Err(error);
+            }
+        };
+        let addr = listener.endpoint();
+        let bearer = listener.bearer();
+        let token_secret = generate_operation_secret()?;
+        let token =
+            WatcherBridgeToken::new(token_secret.as_str()).map_err(|_| identity_failure())?;
+        let endpoint = format!(
+            "http://127.0.0.1:{}{}",
+            addr.port(),
+            swallowtail_runtime::WATCHER_BRIDGE_HTTP_PATH
+        );
         let generation = WatcherBridgeGeneration::new(reserved).ok_or_else(identity_failure)?;
         let live = Arc::new(LiveLease {
             execution_host_id: self.execution_host_id.clone(),
             scope: request.scope().clone(),
             turn: request.turn().clone(),
             generation,
-            bind_addr: addr,
-            bearer: bearer.clone(),
-            token: WatcherBridgeToken::new(token_secret.as_str())
-                .map_err(|_| identity_failure())?,
+            token,
             watcher: Arc::clone(&self.watcher),
             closed: AtomicBool::new(false),
             connection_count: AtomicUsize::new(0),
@@ -165,18 +172,34 @@ impl LocalWatcherBridgeHostService {
             creating_changed: Condvar::new(),
             requests: Mutex::new(RequestBounds::default()),
             session: Mutex::new(SessionPhase::New),
-            connections: Mutex::new(Vec::new()),
-            accept_thread: Mutex::new(None),
+            route: Mutex::new(None),
             proof: ProofLog::new(),
         });
-        if let Err(error) = spawn_accept(Arc::clone(&live), listener) {
-            self.forget_generation(request.turn(), generation);
-            return Err(error);
-        }
+        let route_live = Arc::clone(&live);
+        let route = match self.registry.register_route(
+            BridgeProfile::Watcher,
+            &turn,
+            generation.get(),
+            OperationBridgeRouteSpec {
+                path: swallowtail_runtime::WATCHER_BRIDGE_HTTP_PATH,
+                transport_generation: None,
+                server_name: None,
+                handler: Arc::new(move |frame| frame::handle_frame(&route_live, frame)),
+            },
+        ) {
+            Ok(route) => route,
+            Err(error) => {
+                self.registry
+                    .forget(BridgeProfile::Watcher, &turn, generation.get());
+                self.registry.close_listener_if_idle(&turn);
+                return Err(error);
+            }
+        };
+        *live.route.lock().expect("watcher route lock poisoned") = Some(route);
         self.registry.attach(
             generation.get(),
             BridgeProfile::Watcher,
-            request.turn().clone(),
+            turn.clone(),
             BridgeLease::Watcher(Arc::clone(&live)),
             Arc::new(WatcherLeaseOwner {
                 registry: Arc::clone(&self.registry),
@@ -190,7 +213,7 @@ impl LocalWatcherBridgeHostService {
         Ok(WatcherBridgeLease::new(
             self.execution_host_id.clone(),
             request.scope().clone(),
-            request.turn().clone(),
+            turn.clone(),
             generation,
             WatcherBridgeEndpoint::new(endpoint).map_err(|_| identity_failure())?,
             WatcherBridgeBearer::new(bearer.as_str()).map_err(|_| identity_failure())?,
@@ -206,11 +229,6 @@ impl LocalWatcherBridgeHostService {
                 );
             },
         ))
-    }
-
-    fn forget_generation(&self, turn: &RuntimeTurnId, generation: WatcherBridgeGeneration) {
-        self.registry
-            .forget(BridgeProfile::Watcher, turn, generation.get());
     }
 
     fn live_for(&self, lease: &WatcherBridgeLease) -> Result<Arc<LiveLease>, RuntimeFailure> {

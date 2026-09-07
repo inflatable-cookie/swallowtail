@@ -145,6 +145,7 @@ impl LocalRegisteredToolBridgeHostService {
             // Any opening failure releases the partial resources it created.
             self.registry
                 .forget(BridgeProfile::RegisteredTool, &turn, reserved);
+            self.registry.close_listener_if_idle(&turn);
         }
         opened
     }
@@ -171,7 +172,9 @@ impl LocalRegisteredToolBridgeHostService {
             RegisteredToolTransportGeneration::initial(),
         )?;
         let proxy = if mediated_stdio {
+            let listener = self.registry.listener_for_turn(&turn)?;
             Some(Arc::new(RegisteredToolProxyServer::bind(
+                listener,
                 Arc::clone(&kernel),
                 proxy_selection,
                 Arc::clone(&self.time),
@@ -303,6 +306,7 @@ fn shutdown(
         &live.turn,
         live.generation.get(),
     );
+    registry.close_listener_if_idle(&live.turn);
     Ok(CleanupOutcome::Clean)
 }
 

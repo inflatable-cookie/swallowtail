@@ -3,17 +3,14 @@ mod live;
 use super::failure::identity_failure;
 use super::proof::{ProofLog, WatcherBridgeProofKind};
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
-use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::{Arc, Condvar, Mutex};
-use std::thread::JoinHandle;
 use std::time::Duration;
 use swallowtail_core::{ExecutionHostId, WatcherOwningTurn};
 use swallowtail_runtime::{
     BoxFuture, ImmediateCancellation, RuntimeFailure, RuntimeTurnId, ScopeId, TimeService,
     WatcherBridgeAdmission, WatcherBridgeGeneration, WatcherBridgeToken, WatcherHostService,
 };
-use zeroize::Zeroizing;
 
 pub(super) const MAX_RETIRED_PROOFS: usize = 64;
 
@@ -52,8 +49,6 @@ pub(crate) struct LiveLease {
     pub(super) scope: ScopeId,
     pub(super) turn: RuntimeTurnId,
     pub(super) generation: WatcherBridgeGeneration,
-    pub(super) bind_addr: SocketAddr,
-    pub(super) bearer: Zeroizing<String>,
     pub(super) token: WatcherBridgeToken,
     pub(super) watcher: Arc<dyn WatcherHostService>,
     pub(super) closed: AtomicBool,
@@ -65,8 +60,7 @@ pub(crate) struct LiveLease {
     pub(super) creating_changed: Condvar,
     pub(super) requests: Mutex<RequestBounds>,
     pub(super) session: Mutex<SessionPhase>,
-    pub(super) connections: Mutex<Vec<JoinHandle<()>>>,
-    pub(super) accept_thread: Mutex<Option<JoinHandle<()>>>,
+    pub(super) route: Mutex<Option<crate::operation_bridge::OperationBridgeRoute>>,
     pub(super) proof: ProofLog,
 }
 
@@ -94,18 +88,6 @@ pub(super) fn owning_turn(turn: &RuntimeTurnId) -> Result<WatcherOwningTurn, Run
 impl LiveLease {
     pub(super) fn record_proof(&self, kind: WatcherBridgeProofKind) {
         self.proof.record(kind);
-    }
-}
-
-fn reap_finished(connections: &mut Vec<JoinHandle<()>>) {
-    let mut index = 0;
-    while index < connections.len() {
-        if connections[index].is_finished() {
-            let handle = connections.swap_remove(index);
-            let _ = handle.join();
-        } else {
-            index += 1;
-        }
     }
 }
 

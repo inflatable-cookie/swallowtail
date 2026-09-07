@@ -22,7 +22,7 @@ pub const REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION: &str = "2025-11-25";
 /// Reserved server name for this attachment.
 pub const REGISTERED_TOOL_PROXY_SERVER_NAME: &str = "swallowtail-registered-tools";
 /// Private loopback path used by the registered-tool HTTP profile.
-pub const REGISTERED_TOOL_PROXY_HTTP_PATH: &str = "/mcp";
+pub const REGISTERED_TOOL_PROXY_HTTP_PATH: &str = "/registered-tools";
 /// Maximum one JSON-RPC record on either wire.
 pub const REGISTERED_TOOL_PROXY_MAX_RECORD_BYTES: usize = 256 * 1024;
 

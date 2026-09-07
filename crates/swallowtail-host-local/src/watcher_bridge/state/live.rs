@@ -1,10 +1,9 @@
-use super::{LiveLease, SessionPhase, drive, owning_turn, reap_finished};
+use super::{LiveLease, SessionPhase, drive, owning_turn};
 use crate::watcher_bridge::failure::{
     busy_failure, closed_failure, duplicate_failure, foreign_failure, frozen_failure,
     handshake_failure,
 };
 use std::sync::atomic::Ordering;
-use std::thread::JoinHandle;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
     RuntimeFailure, RuntimeTurnId, ScopeId, WATCHER_BRIDGE_MAX_CONCURRENT_CONNECTIONS,
@@ -58,15 +57,6 @@ impl LiveLease {
 
     pub(in crate::watcher_bridge) fn release_connection(&self) {
         self.connection_count.fetch_sub(1, Ordering::SeqCst);
-    }
-
-    pub(in crate::watcher_bridge) fn retain_connection(&self, handle: JoinHandle<()>) {
-        let mut connections = self
-            .connections
-            .lock()
-            .expect("watcher bridge connection lock poisoned");
-        reap_finished(&mut connections);
-        connections.push(handle);
     }
 
     pub(in crate::watcher_bridge) fn admit_request(

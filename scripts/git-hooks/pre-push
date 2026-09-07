@@ -102,8 +102,11 @@ fi
 
 # Hook GIT_* vars pin nested git to this repo. qa:docs runs throwaway
 # git (roadmap number collision tests) and must see a clean environment.
+# Drop the retired status-checker root override so an ambient export cannot
+# retarget qa:docs:roadmaps:status away from this worktree.
 unset -v GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_OBJECT_DIRECTORY \
-  GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_QUARANTINE_PATH GIT_PREFIX
+  GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_QUARANTINE_PATH GIT_PREFIX \
+  SWALLOWTAIL_STATUS_CHECK_ROOT
 
 printf 'pre-push: docs, PAPERCUTS.md, or CHANGELOG.md in this push; running effigy qa:docs\n' >&2
 if ! effigy qa:docs; then

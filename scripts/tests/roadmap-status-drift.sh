@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Hermetic fixtures for batch-card Stopped section mapping.
-# Does not read the live checkout's roadmap indexes.
+# Injects via --root; does not read the live checkout's roadmap indexes.
 set -euo pipefail
 
 status_tests_dir=$(cd "$(dirname "$0")" && pwd)
@@ -10,7 +10,7 @@ status_scratch=$(mktemp -d)
 trap 'rm -rf "$status_scratch"' EXIT
 
 status_run() {
-  SWALLOWTAIL_STATUS_CHECK_ROOT=$1 "${status_checker[@]}"
+  "${status_checker[@]}" --root "$1"
 }
 
 status_expect_pass() {
@@ -158,5 +158,47 @@ status_write_index "$status_tree" Stopped complete
 status_expect_failure \
   "Status bucket is 'complete' but index lists it under 'stopped'" \
   "$status_tree"
+
+status_passing=$status_scratch/passing
+status_failing=$status_scratch/failing
+mkdir -p "$status_passing" "$status_failing"
+status_seed_cards "$status_passing"
+status_write_index "$status_passing" Stopped
+status_seed_cards "$status_failing"
+status_write_index "$status_failing" Planned
+
+status_env_output=$(
+  SWALLOWTAIL_STATUS_CHECK_ROOT=$status_passing \
+    "${status_checker[@]}" --root "$status_failing" 2>&1
+) && {
+  printf 'ambient status-check root hid fixture drift\n%s\n' "$status_env_output" >&2
+  exit 1
+}
+if [[ "$status_env_output" != *"Status bucket is 'stopped' but index lists it under 'planned'"* ]]; then
+  printf 'status checker failure changed under ambient root:\n%s\n' "$status_env_output" >&2
+  exit 1
+fi
+
+status_env_pass=$(
+  SWALLOWTAIL_STATUS_CHECK_ROOT=$status_failing \
+    "${status_checker[@]}" --root "$status_passing" 2>&1
+) || {
+  printf 'ambient status-check root overrode --root\n%s\n' "$status_env_pass" >&2
+  exit 1
+}
+
+if ! SWALLOWTAIL_STATUS_CHECK_ROOT=$status_failing "${status_checker[@]}" >/dev/null; then
+  printf 'production argv honored ambient status-check root\n' >&2
+  exit 1
+fi
+
+if grep -q SWALLOWTAIL_STATUS_CHECK_ROOT "$status_checker_root/scripts/check-roadmap-status-drift.py"; then
+  printf 'status checker must not read SWALLOWTAIL_STATUS_CHECK_ROOT\n' >&2
+  exit 1
+fi
+if ! grep -q SWALLOWTAIL_STATUS_CHECK_ROOT "$status_checker_root/scripts/git-hooks/pre-push"; then
+  printf 'pre-push must drop SWALLOWTAIL_STATUS_CHECK_ROOT\n' >&2
+  exit 1
+fi
 
 printf 'roadmap status drift tests passed\n'

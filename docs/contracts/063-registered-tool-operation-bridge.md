@@ -471,9 +471,13 @@ RegisteredToolDispatcher::dispatch receives both RegisteredToolCall and
 RegisteredToolDispatchContext, returning BoxFuture<Result<RegisteredToolOutcome,
 RuntimeFailure>>. DispatchContext owns a call-bound cancellation observation
 handle and a bounded RegisteredToolProgressSink. The sink's
-publish(sequence, bounded_payload) returns Result<(), RuntimeFailure> after
-kernel identity/generation/live admission checks; revoked, out-of-order or full
-queues fail explicitly. The handle cannot cancel another call or extend the
+publish(sequence, bounded_payload) returns BoxFuture<Result<(), RuntimeFailure>>
+resolved after the kernel's identity/generation checks and the live
+BeforeDelivery admission verdict at the serialized admission point; revoked,
+out-of-order or full queues fail explicitly. Publish is asynchronous because
+the live verdict comes from ConsumerAdmissionHostService::validate, itself a
+future; a synchronous publish could only consult a snapshot, which this
+contract rejects (ruled 2026-09-07, card 114 PR 260). The handle cannot cancel another call or extend the
 lease. The kernel owns cancellation signaling and progress queue lifetime;
 terminal close joins dispatch futures and drops the sink only after admission
 is frozen. A dispatcher cannot mint validated tokens or publish on another call.

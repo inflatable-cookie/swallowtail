@@ -1,0 +1,51 @@
+{
+  "record": "claude-agent-sdk 0.3.259 bundled MCP protocol constants",
+  "card": "g05.035 Card116",
+  "purpose": "Carrier-qualification anchor for the route-local registered-tool MCP profile. This records what the pinned bundle carries; it claims no route support and no provider turn.",
+  "package": "@anthropic-ai/claude-agent-sdk",
+  "version": "0.3.259",
+  "tarball_sha256": "0c5740e44a536ab6fd32f2a7de0d508b75d34782ebc219b87aa8d834449a3f7e",
+  "source_file": "package/sdk.mjs",
+  "source_file_sha256": "7fa7c212361864544e775e7551519e790515f95d4bb6a4831b0b05f5b368a0c5",
+  "source_file_bytes": 1524467,
+  "executed": false,
+  "credential_or_provider_use": {
+    "provider_process": false,
+    "login_or_credential_read": false,
+    "live_mcp_server": false,
+    "network_beyond_npm_registry_tarball": false
+  },
+  "method": "The bundled MCP TypeScript SDK constants are minified into one literal. They were recovered by searching the extracted file for the exact byte sequence below. Nothing was imported, evaluated, or run.",
+  "literal": "var eI=\"2025-11-25\";var ZZ=[eI,\"2025-06-18\",\"2025-03-26\",\"2024-11-05\",\"2024-10-07\"]",
+  "literal_byte_offset": 1121014,
+  "reproduce": [
+    "npm pack @anthropic-ai/claude-agent-sdk@0.3.259",
+    "shasum -a 256 anthropic-ai-claude-agent-sdk-0.3.259.tgz",
+    "tar xzf anthropic-ai-claude-agent-sdk-0.3.259.tgz",
+    "shasum -a 256 package/sdk.mjs",
+    "grep -c 'var eI=\"2025-11-25\";var ZZ=\\[eI,\"2025-06-18\",\"2025-03-26\",\"2024-11-05\",\"2024-10-07\"\\]' package/sdk.mjs"
+  ],
+  "latest_protocol_version": "2025-11-25",
+  "supported_protocol_versions": [
+    "2025-11-25",
+    "2025-06-18",
+    "2025-03-26",
+    "2024-11-05",
+    "2024-10-07"
+  ],
+  "jsonrpc_version": "2.0",
+  "observed_method_literals": {
+    "initialize": 4,
+    "notifications/initialized": 1,
+    "tools/list": 2,
+    "tools/call": 4,
+    "notifications/progress": 2,
+    "notifications/cancelled": 3
+  },
+  "reading": "The pinned bundle offers `2025-11-25` first and accepts any member of `supported_protocol_versions` from a server. A Swallowtail-owned carrier therefore answers `initialize` with exactly `2025-11-25` and rejects every other negotiated value before provider work.",
+  "withheld": [
+    "This records only the versions the bundle carries. It is not a captured live handshake with the native binary, and it is not a real-route qualification.",
+    "SSE, streamable HTTP, in-process SDK, and managed/ambient MCP stay withheld: no pinned transport corpus exists for them.",
+    "The final disposable real-route gate is separately authorized and was not run."
+  ]
+}

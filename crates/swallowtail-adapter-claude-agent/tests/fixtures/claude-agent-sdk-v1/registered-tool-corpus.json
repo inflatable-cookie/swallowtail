@@ -5,7 +5,10 @@
   "base": "6c52b9f970b38838f8e4918d32b536dc26fb0823",
   "revalidation": {
     "origin_main": "7090917257e1a6504545d8d30fc9b43e142162c8",
-    "cards_merged": ["114", "115"],
+    "cards_merged": [
+      "114",
+      "115"
+    ],
     "card117_surface_touched": false,
     "runtime_or_provider_claim_added": false
   },
@@ -231,5 +234,55 @@
     "credential_read": false,
     "live_mcp_server": false,
     "consumer_operation": false
+  },
+  "chatterbox_decision_answer": {
+    "ruled_on": "2026-09-07",
+    "ruling": "Card116 is authorized to qualify route-local stdio MCP mediation as this route's Contract063 carrier.",
+    "bounds": [
+      "Swallowtail-owned carrier under the private bridge lease, separate from card084 consumer-declared servers",
+      "every call through the common kernel live admission and canUseTool",
+      "namespaced identities preserved, one identity to one execution kind",
+      "Contract061 labels it route-local stdio mediation, never common dispatch",
+      "HTTP, SSE, in-process SDK, and managed MCP withheld"
+    ]
+  },
+  "card116_runtime_adoption": {
+    "status": "implemented; capability projected Unqualified pending the separately authorized disposable real-route gate",
+    "gates": {
+      "frozen_declarations_extended": true,
+      "frozen_provider_free_mcp_transcript": true,
+      "typed_contract063_mapping_and_adversarial_fixtures": true,
+      "carrier_sdk_native_version_qualification": true,
+      "disposable_real_route_gate": false
+    },
+    "artifacts": [
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.259/sdk-declarations.d.ts",
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.259/mcp-protocol.json",
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v1/registered-tool-mcp.jsonl",
+      "crates/swallowtail-adapter-claude-agent/src/sdk/registered_tool.rs",
+      "crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/registered_tool.rs"
+    ],
+    "carrier": {
+      "reserved_server_name": "swallowtail-registered-tools",
+      "mediation_kind": "route-local-stdio-mcp-mediation",
+      "carrier_revision": "swallowtail-claude-agent-sdk-registered-tool-mcp-v1",
+      "carrier_axis": "claude-agent.sdk.registered-tool-carrier",
+      "mcp_protocol_version": "2025-11-25",
+      "sdk_version": "0.3.259",
+      "native_version": "2.1.259",
+      "selected_contract063_transport": "host-mediated-callback",
+      "presented_execution_kind": "mcp",
+      "provider_spelling": "mcp__swallowtail-registered-tools__<namespace>_<local>"
+    },
+    "remaining_gap": {
+      "id": "ATTACH-01",
+      "required": "A back-channel from the provider-spawned stdio MCP child to the Swallowtail kernel in the sidecar process.",
+      "missing": "McpStdioServerConfig expresses only command, args, and env. An inherited extra file descriptor is not representable; a Unix socket is out under Contract063 until separately qualified; a private loopback listener is the withheld HTTP carrier rather than the listener-free host-mediated one this profile selects; McpSdkServerConfigWithInstance is withheld by the authorization.",
+      "consequence": "The typed mediation is complete and callable. The provider attachment step is not, so this route claims no registered-tool support.",
+      "smallest_next_action": "Qualify one withheld carrier from an exact pinned transport corpus, or qualify a host-local process/back-channel profile under Contract063's transport rules. Do not invent a sidecar option or private wire record."
+    },
+    "runtime_or_provider_claim_added": false,
+    "card084_consumer_declared_servers_changed": false,
+    "watcher_bridge_or_claude_code_changed": false
   }
 }

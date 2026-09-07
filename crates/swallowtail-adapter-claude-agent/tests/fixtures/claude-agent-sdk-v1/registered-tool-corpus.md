@@ -1,6 +1,6 @@
 # 289 Claude Agent SDK registered-tool transport corpus
 
-Status: evidence preparation; no runtime or support claim
+Status: evidence preparation plus card116 runtime adoption; no support claim (see Card 116 runtime adoption)
 Owner: Tom
 Date: 2026-09-07
 Card: g05.035 Card116
@@ -275,3 +275,82 @@ mapping is:
 No runtime source, public API baseline, guide, route matrix, contract, claim,
 WatcherBridge path, Claude Code behavior, credential, or provider state changed
 for this preparation.
+
+## Card 116 runtime adoption — 2026-09-07
+
+The Chatterbox decision question above is answered. Route-local stdio MCP
+mediation is authorized as this route's Contract 063 carrier, under exact
+bounds: a Swallowtail-owned carrier under the private bridge lease, separate
+from card 084's consumer-declared servers; every call through the common kernel
+live admission and `canUseTool`; namespaced identities; Contract 061 labelling
+it route-local stdio mediation and never common dispatch; HTTP, SSE, in-process
+SDK, and managed MCP withheld. This section records what the runtime lane then
+did against those bounds.
+
+### Evidence gates, in the order the authorization names
+
+| Gate | State | Where |
+| --- | --- | --- |
+| Frozen declarations extended with the cited REG-03/CB-01/MCP-02/MCP-03 shapes | done | `../claude-agent-sdk-0.3.259/sdk-declarations.d.ts` Card 116 extension, with exact 0.3.259 line ranges and a reproduce recipe. Closes the declaration-anchor finding: `CanUseTool`'s thirteen option fields, `McpServerStatus.tools`, and `SdkMcpToolDefinition` are now reproducible from this repository. |
+| Frozen provider-free MCP transcript | done | `./registered-tool-mcp.jsonl`, 23 cases. It is the test oracle, not a description. |
+| Typed Contract 063 mapping and adversarial fixtures | done | `../../../src/sdk/registered_tool.rs` and `../../claude_agent_sdk_driver/registered_tool.rs`. Each case runs against a real mounted `swallowtail-host-local` composition and a real Contract 063 lease. |
+| Carrier, SDK, and native version qualification | done | `../claude-agent-sdk-0.3.259/mcp-protocol.json` plus the qualified-only carrier axis in `src/sdk/registered_tool/version.rs`. |
+| Disposable real-route gate | **not run** | Separately authorized. It is deliberately absent, and the Contract 061 projection publishes the capability `Unqualified` because of it. |
+
+### What the runtime lane proves
+
+- The carrier is Swallowtail-owned and reserved. `swallowtail-registered-tools`
+  joins `swallowtail-watchers` as a name a consumer-declared server may not
+  take, so card 084's path and this one cannot present each other's identity.
+  Card 084 behavior is otherwise unchanged.
+- The provider spelling is reversible. Namespace and local name are restricted
+  to `[A-Za-z0-9][A-Za-z0-9-]*` and joined by one `_`, so
+  `mcp__swallowtail-registered-tools__<namespace>_<local>` resolves to exactly
+  one `RegisteredToolId`. An identity that cannot be spelled unambiguously fails
+  before provider work rather than colliding on the wire.
+- Only MCP-kind identities are presented. A native-client, app, or
+  provider-owned identity is refused by the carrier, so one namespaced identity
+  can never reach the provider under a kind its snapshot did not declare.
+- Every admitted `tools/call` becomes one `RegisteredToolCallRequest` issued
+  through `RegisteredToolBridgeLease::call`. Live before-dispatch and
+  before-delivery admission, correlation, the effective deadline, exactly-once
+  settlement, and the honest execution disposition all remain the kernel's.
+- `canUseTool` remains permission admission only. An absent decision is a
+  denial, not a default allow; an allow authorizes exactly one call; a denial
+  never reaches the linked dispatcher. The transcript proves the dispatch count
+  for each case.
+- The MCP handshake answers exactly `2025-11-25`. There is no latest or default
+  negotiation, and a version the pinned bundle does not carry is refused.
+
+### The one remaining gap: provider process attachment
+
+This is the honest negative result of the runtime lane, recorded rather than
+worked around.
+
+`McpStdioServerConfig` gives the provider a `command`, `args`, and `env`. The
+child it spawns speaks MCP on its own stdio, so it needs a back-channel to reach
+the Swallowtail kernel in the sidecar's process. The pinned surface offers no
+way to express one: an inherited extra file descriptor is not representable in
+that config, a Unix socket is out under Contract 063 until separately qualified,
+and a private loopback listener is the withheld HTTP carrier rather than the
+listener-free host-mediated one this profile selects. The in-process
+`McpSdkServerConfigWithInstance` alternative is withheld by the authorization.
+
+The mediation itself is therefore complete and callable, and the attachment step
+is not. It needs either an exact pinned corpus qualifying one of the withheld
+carriers, or a host-local process/back-channel profile qualified under
+Contract 063's transport rules. No sidecar option, private wire record, or
+provider claim was invented to paper over it.
+
+### Non-blocking notes for the coordinator
+
+- `RegisteredToolBridgeLease` publishes its selection but not the effective
+  bounds it was opened under, so a route cannot read the consumer narrowing
+  back. The mediator takes it explicitly through `with_consumer_limits`, which
+  only ever narrows, and the kernel stays authoritative. A future card 114
+  accessor would remove the restatement.
+- `protocol.json` still lists five wire commands against the seven the route
+  implements. Pre-existing fixture staleness; the record remains the accurate
+  side.
+- This record still titles itself research `289` without a `docs/research/`
+  index entry.

@@ -15,3 +15,16 @@ no provider session, login, or downloaded binary was ever run.
 - `unknown.jsonl`, `malformed.jsonl`, `disconnect.jsonl` — fail-closed
   negatives: an unqualified event name, invalid JSON, and a truncated stream
   whose final record has no LF delimiter.
+
+## Card 116 registered-tool records
+
+- `registered-tool-corpus.md`, `registered-tool-corpus.json` — the read-only
+  Contract 063 surface record and gap capsule, plus the Card 116 runtime
+  continuation.
+- `registered-tool-mcp.jsonl` — the frozen provider-free MCP transcript for the
+  Swallowtail-owned registered-tool carrier. Each line names its setup, its
+  recorded `canUseTool` decisions, the exact record the provider sends, and the
+  exact reply the carrier must produce. It is the oracle
+  `tests/claude_agent_sdk_driver/registered_tool.rs` replays against a real
+  mounted host composition and a real Contract 063 lease. No provider process,
+  credential, network call, or live MCP server is involved.

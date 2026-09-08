@@ -15,19 +15,18 @@ shape.
 
 ## Next Task
 
-Claude [card 145](g05/batch-cards/145-claude-sdk-credit-exhaustion-diagnostic.md)
-is complete. Its single open stopped before provider readiness at bounded
-`mcp_status_invalid`; no quota state, turn, tool call, control, or retry was
-observed. Run provider-free
-[card 146](g05/batch-cards/146-claude-sdk-mcp-status-projection-repair.md):
-reconcile exact SDK `0.3.259` MCP-status rows with the strict sidecar projection
-and repair only a confirmed safe mismatch. The credited qualification suite
-waits for Card 146, the operator's top-up confirmation, and separate authority
-before any fresh candidate decision under
-[g05.036](g05/036-v0-4-4-release-readiness.md). The parked candidate
-`0673541d` remains untaggable and no tag request stands. Research 294 ranks
-Cursor Agent `2026.09.02` next for Contract 029, but no family lane is
-dispatched until Chatterbox promotes it.
+Card 146 is complete: PR 296 was independently accepted at reviewed head
+`58847bb00e4d15285af503c7023ff8750d1f1a7f` and merged into `main` as
+`13dee542e5ef4ab967cb4f0934cc11c35a8768c2`. The provider-free exact SDK
+`0.3.259` MCP-status projection repair passed its named validation; no live
+attempt or qualification followed. The matrix `consumer_tool_exchange`
+repoint currently uses card 146 as a temporary bridge and needs a future
+live-gate owner or Feature Matrix Rule reclassification before the card's
+completion state makes that producer-gap reference invalid. Planning direction
+is needed from Chatterbox for the next canonical task; no new lane is inferred
+here. The credited qualification suite still needs the operator's top-up
+confirmation and separate live authority under
+[g05.036](g05/036-v0-4-4-release-readiness.md).
 
 ## Standing Lanes
 

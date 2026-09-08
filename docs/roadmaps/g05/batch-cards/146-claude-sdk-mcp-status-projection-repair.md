@@ -1,6 +1,6 @@
 # 146 Claude SDK MCP-Status Projection Diagnosis And Repair
 
-Status: ready; operator authorized promotion and queue dispatch on 2026-09-08
+Status: complete; PR 296 merged at `13dee542e5ef4ab967cb4f0934cc11c35a8768c2`; reviewed head `58847bb00e4d15285af503c7023ff8750d1f1a7f`
 Owner: Claude SDK adapter owner
 Created: 2026-09-08
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`
@@ -92,9 +92,10 @@ No. Stop at exact-head independent review. The queue owns merge and closeout.
 
 ## Result
 
-Implemented and pushed for exact-head independent review. The queue owns
-merge and canonical closeout; the closeout log records the accepted head and
-merge identity.
+Implemented, independently accepted, and merged through PR 296. The exact
+reviewed head was `58847bb00e4d15285af503c7023ff8750d1f1a7f`; review comment
+`5590924478` marked it ready to merge, and the merge landed on `main` as
+`13dee542e5ef4ab967cb4f0934cc11c35a8768c2`.
 
 **Root cause (confirmed).** The exact `0.3.259` `McpServerStatus` declaration
 (`package/sdk.d.ts:1114-1158`, frozen in `mcp-status-rows.json`) permits
@@ -146,3 +147,12 @@ appended `PAPERCUTS.md` entry. Regression corpus:
 `card-145-desktop-diagnostic-tuple.json` and `mcp-status-rows.json` with
 guard tests, sidecar-asset tests for every status/metadata variant, and
 non-leak assertions over all open responses.
+
+**Deferred closeout obligation.** The matrix `consumer_tool_exchange`
+`cross_ref` was repointed from completed card 144 to card 146 in
+`ccd58ca6`, which made the final routes check pass. That is a temporary bridge:
+once card 146 is marked complete, the matrix producer-gap rule will reject a
+reference to a completed card. Queue/Chatterbox must promote the next
+live-gate owner or reclassify the cell under the Feature Matrix Rule before or
+at the relevant closeout. No live attempt ran, both Contract 061 cells remain
+unqualified, and no release or qualification authority follows.

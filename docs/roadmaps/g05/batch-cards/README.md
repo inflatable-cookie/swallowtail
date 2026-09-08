@@ -2,8 +2,6 @@
 
 ## Ready
 
-- [146-claude-sdk-mcp-status-projection-repair.md](./146-claude-sdk-mcp-status-projection-repair.md) — ready; provider-free exact `0.3.259` MCP-status projection diagnosis and bounded repair; no live attempt or qualification
-
 ## Planned
 
 - [134-registered-tool-adoption-remaining-acp-routes.md](./134-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub carrying the client_mcp_servers gap for the six remaining ACP routes; no dispatch authorization
@@ -21,6 +19,8 @@
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 
 ## Completed
+
+- [146-claude-sdk-mcp-status-projection-repair.md](./146-claude-sdk-mcp-status-projection-repair.md) — complete; PR 296 merged at `13dee542`; reviewed head `58847bb0`; exact `0.3.259` MCP-status projection repair accepted; no live attempt or qualification
 
 - [145-claude-sdk-credit-exhaustion-diagnostic.md](./145-claude-sdk-credit-exhaustion-diagnostic.md) — complete; Desktop PR 172 returned bounded `mcp_status_invalid` before provider readiness; one open, zero turns, cleanup confirmed; Research 297 and card 146 own the contradiction
 - [144-claude-sdk-registered-tool-open-rejection-diagnosis.md](./144-claude-sdk-registered-tool-open-rejection-diagnosis.md) — complete; PR 294 merged at `cc53c81a`; structured failed-open receipt and provider-free Card 132 reproduction accepted, with the live cause still unresolved

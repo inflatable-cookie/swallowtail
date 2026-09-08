@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom
 created: 2026-09-08
 updated: 2026-09-08
@@ -74,3 +74,20 @@ evidence, root cause, accepted and rejected row shapes, validation, and whether
 the Card 145 tuple is deterministically repaired. The queue owns review,
 merge, canonical closeout, and blocker return. Do not launch a live gate, merge,
 release, or tag.
+
+## Handoff Closeout
+
+This handoff is merged. PR 296 was independently accepted at exact reviewed
+head `58847bb00e4d15285af503c7023ff8750d1f1a7f`, with review comment
+`5590924478`, and published on `main` as
+`13dee542e5ef4ab967cb4f0934cc11c35a8768c2`. The final provider-free
+validation passed, including focused package validation, affected-package
+verification, mediated-stdio validation, route/docs/Northstar QA, formatting,
+and diff checks. No live attempt ran and both Contract 061 cells remain
+unqualified.
+
+The matrix `consumer_tool_exchange` repoint in `ccd58ca6` is recorded as a
+temporary closeout bridge. Queue/Chatterbox must promote the next live-gate
+owner or reclassify the cell under the Feature Matrix Rule before the completed
+card can remain its producer-gap reference. The Next Task pointer now records
+that planning direction is needed; no new direction was invented here.

@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-08 g05.035 Card 146 Closeout](./2026-09-08-g05-035-card-146-closeout.md) — exact `0.3.259` MCP-status projection repair accepted at reviewed head `58847bb0` and merged through PR 296 as `13dee542`; final named validation passed; no live attempt or qualification; matrix owner remains a closeout obligation
 - [2026-09-08 g05.035 Card 145 Return And Card 146 Promotion](./2026-09-08-g05-035-card-145-return-and-card-146-promotion.md) — exhausted-credit diagnostic stopped before provider readiness at bounded `mcp_status_invalid`; cleanup confirmed; provider-free card 146 promoted
 - [2026-09-08 g05.035 Card 144 Closeout](./2026-09-08-g05-035-card-144-closeout.md) — structured Claude SDK failed-open receipt and provider-free Card 132 reproduction merged at `cc53c81a`; exact-head review and named validation passed; live cause remains unresolved
 - [2026-09-08 g05.035 Card 143 Closeout](./2026-09-08-g05-035-card-143-closeout.md) — Grok registered tools qualified on exact maintained `1.0.4..=1.0.5`; PR 293 merged at `7d2dcb16`; exact-head review and named validation passed

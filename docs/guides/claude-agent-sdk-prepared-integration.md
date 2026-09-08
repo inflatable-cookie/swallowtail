@@ -123,6 +123,13 @@ environment, credential, access profile, model route, model, working-resource
 reference, request identity, and the open deadline. This layer admits no
 session options.
 
+The compile-tested
+[`admitted_claude_agent_sdk` example](../../crates/swallowtail-adapter-claude-agent/examples/admitted_claude_agent_sdk.rs)
+walks the whole composition: admit the route with the three opaque references
+above, lift the record with `from_admitted`, bind the mediated-stdio
+registered-tool preparation through the card 125 entry, and open. It spends
+no live route.
+
 Swallowtail does not choose the model, account, credential, workspace, Node
 runtime, SDK package, native binary, or fallback route, and never installs,
 vendors, updates, repairs, or redistributes any of them.
@@ -701,7 +708,13 @@ this behavior; they do not establish the cause of a particular live failure.
 
 ## Normal Path
 
-See the [prepared SDK sidecar
-example](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_agent_sdk.rs)
-for the exact call sequence: prepare, open, start one turn, admit tool use,
-observe the terminal outcome, then close and read the cleanup outcome.
+See the [admitted `claude-agent.sdk`
+example](../../crates/swallowtail-adapter-claude-agent/examples/admitted_claude_agent_sdk.rs)
+for the full path a consumer runs: admit the route with the three opaque
+references, lift the record with `from_admitted`, bind the mediated-stdio
+registered-tool preparation with its proxy recipe, then prepare, open, start
+one turn, admit tool use, observe the terminal outcome, and close and read the
+cleanup outcome. The route-map
+[`prepared_claude_agent_sdk` example](../../crates/swallowtail-adapter-claude-agent/examples/prepared_claude_agent_sdk.rs)
+keeps the compact call sequence that starts from an already-constructed
+preparation.

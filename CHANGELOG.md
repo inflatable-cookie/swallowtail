@@ -78,6 +78,17 @@ annotated Git tags from the canonical repository.
   abort, close, and fail-closed transport, kind, identity, host, turn,
   deadline, and unspawnable-command paths. No live Grok, credential, provider call, or
   support claim. g05.035 card 118.
+- ship the executable `admitted_claude_agent_sdk` worked example for
+  `claude-agent.sdk`: admit the addable route with the three opaque
+  host-owned references (interpreted-script launch recipe, sidecar
+  environment, delegated subscription credential), lift the
+  `AdmittedInstanceRecord` with `ClaudeAgentSdkSessionPreparation::from_admitted`,
+  build the mediated-stdio registered-tool preparation over the
+  private-loopback carrier with the courier proxy recipe, bind it through
+  `with_registered_tools`, prepare, open, run one admitted turn, and close
+  with the cleanup outcome. The guide's Explicit Inputs and Normal Path
+  sections and the card 132 Desktop packet now point at it; nothing runs a
+  live route. g05.035 card 142.
 - bind one Contract 063 `RegisteredToolPreparation` into `claude-agent.sdk`
   open through `ClaudeAgentSdkSessionPreparation::with_registered_tools`
   (host-resolved courier path and Card 084 env) and

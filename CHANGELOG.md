@@ -13,6 +13,18 @@ annotated Git tags from the canonical repository.
   Codex OAuth model-id filtering changed. Research 292. g05.037 cards 135-136.
 
 ### Added
+- let `claude-code.response-only` bind one optional host-approved `Read`
+  working resource as the native child's project location through
+  `ClaudeCodeResponseProfileInput::with_working_resource`; the bound resource
+  reaches the child process request and the host applies it as the child
+  working directory, absence keeps today's inherited-directory behaviour, a
+  scratch-directory fixture freezes the child-side view — the child runs in
+  the leased directory, tools stay suppressed from its own argv, and
+  cwd-relative resolution anchors there — while the native CLI's recorded
+  cwd-relative ambient behaviour (project settings, upward `CLAUDE.md`
+  discovery, git context) is recorded in the guide as ambient provider
+  evidence, and no isolation or boundary claim is added; the route remains
+  `AmbientHost`. g05.029 card 108.
 - bind one Contract 063 `RegisteredToolPreparation` into `grok-build.acp` open
   through `GrokRegisteredToolBinding::qualify` plus
   `GrokPreparedSession::open_registered_session` and

@@ -33,7 +33,16 @@ pub(super) fn instance_with_capabilities(
 pub(super) fn requirements(
     prepared: &ClaudeCodeResponsePreparedIntegration,
     capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+    working_resource: bool,
 ) -> OperationRequirements {
+    let mut host_services = vec![
+        HostServiceKind::Task,
+        HostServiceKind::Process,
+        HostServiceKind::Time,
+    ];
+    if working_resource {
+        host_services.push(HostServiceKind::WorkingResource);
+    }
     OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::StructuredRun,
@@ -47,11 +56,7 @@ pub(super) fn requirements(
             .with_support_authorities([prepared.access_profile().support_authority()]),
     )
     .with_ownership_modes([prepared.instance().ownership()])
-    .with_host_services([
-        HostServiceKind::Task,
-        HostServiceKind::Process,
-        HostServiceKind::Time,
-    ])
+    .with_host_services(host_services)
     .with_capabilities(capabilities)
     .with_interface_versions([prepared.observation().version().clone()])
     .with_harness_isolation(HarnessIsolation::AmbientHost)

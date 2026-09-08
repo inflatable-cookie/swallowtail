@@ -1239,10 +1239,16 @@ mod capture_lifecycle {
     /// already read. This is the case that would catch a return to buffering
     /// privately until end of stream, which the expired-collection test above
     /// cannot: that one finishes reading before collection begins.
+    ///
+    /// The reader announces that it has entered its second read before the
+    /// collection starts, so this proves the property rather than the
+    /// scheduler. A card about removing timing dependence has no business
+    /// introducing one.
     #[test]
     fn a_blocked_reader_does_not_withhold_what_it_already_read() {
         struct GatedReader {
             delivered: bool,
+            entered: std::sync::mpsc::Sender<()>,
             release: Arc<(Mutex<bool>, std::sync::Condvar)>,
         }
 
@@ -1256,6 +1262,9 @@ mod capture_lifecycle {
                 }
                 let (lock, changed) = &*self.release;
                 let mut released = lock.lock().expect("gate");
+                // Announced under the gate lock, so the waiter cannot observe
+                // entry before this read can be released.
+                let _ = self.entered.send(());
                 while !*released {
                     released = changed.wait(released).expect("gate wait");
                 }
@@ -1265,26 +1274,40 @@ mod capture_lifecycle {
 
         let capture = Arc::new(Mutex::new(StreamCapture::default()));
         let release = Arc::new((Mutex::new(false), std::sync::Condvar::new()));
-        let (send, recv) = std::sync::mpsc::channel();
+        let (send_entered, entered) = std::sync::mpsc::channel();
+        let (send_done, done) = std::sync::mpsc::channel();
         let reader_capture = Arc::clone(&capture);
         let reader_release = Arc::clone(&release);
         let reader = std::thread::spawn(move || {
             read_bounded(
                 GatedReader {
                     delivered: false,
+                    entered: send_entered,
                     release: reader_release,
                 },
                 &reader_capture,
             );
-            send.send(())
+            send_done.send(())
         });
-        // Collect while the reader is still blocked on its next chunk.
+        entered
+            .recv_timeout(Duration::from_secs(30))
+            .expect("the reader delivers its chunk and enters its second read");
+        // Collect while the reader is known to be blocked on that second read.
         let collected = collect_bounded(
-            &recv,
+            &done,
             &capture,
             "stderr",
             std::time::Instant::now() + Duration::from_millis(50),
         );
+        // Release and join before asserting: a failing assertion must not
+        // strand the reader on its gate.
+        let (lock, changed) = &*release;
+        *lock.lock().expect("gate") = true;
+        changed.notify_all();
+        reader
+            .join()
+            .expect("reader thread ends")
+            .expect("reader reports");
         assert!(
             collected.contains("ROOT CAUSE: read before the block"),
             "a blocked reader's earlier output is still reported: {collected}"
@@ -1293,10 +1316,6 @@ mod capture_lifecycle {
             collected.contains("still open"),
             "and the capture is marked incomplete: {collected}"
         );
-        let (lock, changed) = &*release;
-        *lock.lock().expect("gate") = true;
-        changed.notify_all();
-        let _ = reader.join();
     }
 
     #[test]

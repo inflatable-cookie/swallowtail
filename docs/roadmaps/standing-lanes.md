@@ -165,6 +165,13 @@ family alone and changed no claim.
 
 ### Latest Checkpoint
 
+Research 294 revalidated all 41 production solution rows on 2026-09-08. The
+partition is 10 unchanged, 8 visible unverified-newer, and 23 record-only.
+Cursor Agent `2026.09.02` ranks as the next one-family candidate, but the
+checkpoint dispatches nothing and changes no claim, version pin, or route
+matrix cell. Existing Gemini, Kimi, Antigravity, watcher, and exact-pin stops
+remain. PR 286 merged the research-only record as `2c67f128`.
+
 Research 284 revalidated all 41 production solution rows on 2026-09-04. The
 partition is 9 unchanged, 8 visible unverified-newer, 23 record-only, and 1
 material candidate. OpenCode HTTP `1.18.28` ranked first: the host is

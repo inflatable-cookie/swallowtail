@@ -59,6 +59,8 @@ mod claude_code_headless_watcher_seam_identity;
 mod claude_code_response_only;
 #[path = "../claude_code_response_only_identity.rs"]
 mod claude_code_response_only_identity;
+#[path = "../claude_code_response_only_project_location.rs"]
+mod claude_code_response_only_project_location;
 #[path = "../claude_code_watcher_admission_identity.rs"]
 mod claude_code_watcher_admission_identity;
 #[path = "../claude_code_watcher_isolation_identity.rs"]

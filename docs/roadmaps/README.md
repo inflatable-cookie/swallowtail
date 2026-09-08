@@ -15,11 +15,13 @@ shape.
 
 ## Next Task
 
-No implementation card is Ready. The `v0.4.4` candidate `0673541d` is prepared
-and held while linked Desktop runs the exact Claude and Grok gates required by
-[g05.036](g05/036-v0-4-4-release-readiness.md); no tag request stands. Planned
-cards 130, 132, and 134 remain gated or unauthorized. Chatterbox promotes the
-next producer card only from concrete consumer evidence or operator direction.
+Close provider-free [card 139](g05/batch-cards/139-claude-registered-tool-fixture-startup-determinism.md)
+and [card 140](g05/batch-cards/140-grok-probe-live-bounds.md), both currently at
+review. The `v0.4.4` candidate `0673541d` remains prepared and held while linked
+Desktop runs the exact Claude and Grok gates required by
+[g05.036](g05/036-v0-4-4-release-readiness.md); no tag request stands. Research
+294 ranks Cursor Agent `2026.09.02` next for Contract 029, but no family lane is
+dispatched until Chatterbox promotes it.
 
 ## Standing Lanes
 

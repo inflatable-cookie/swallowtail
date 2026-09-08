@@ -558,6 +558,21 @@ reconnect and no progress; connect bounded by the lesser of the open
 remainder and ten seconds; existing 256 KiB payload ceilings; the reserved
 server name `swallowtail-registered-tools`; omission byte-identical to today.
 
+**Failed-open evidence (claude-agent.sdk).** A rejected Claude SDK prepared
+open — registered or plain — keeps its exact stable route failure and gains
+one additive observation-derived receipt beside it: the underlying route
+code, the open stage, the exact bounded sidecar subcode when the sidecar
+rejected the open command, whether provider readiness was reached, and the
+observed cleanup disposition — resource and credential release, the
+owned-tree survivor posture, and, when a registered lease was opened, its
+bridge close (admission frozen, joined calls, listener and registry
+release). An unconfirmed cleanup reports itself as unconfirmed and stages no
+stronger observation. The receipt carries no paths, bearer material,
+credentials, environment values, provider content, or sidecar stderr, and it
+is never a support, qualification, availability, or release claim; both
+Contract 061 registered-tool cells stay owned by the producer gap until a
+separately authorized passing live capsule exists.
+
 **Provider-free falsifiers.** The F1–F18 set in the capsule is the conformance
 oracle: omission, ready ordering, one-shot expiry, redaction, argv and
 environment, exact kind and name mapping, correlation, deny, concurrency and

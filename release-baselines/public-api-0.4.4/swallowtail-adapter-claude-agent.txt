@@ -1,5 +1,74 @@
 pub mod swallowtail_adapter_claude_agent
 pub mod swallowtail_adapter_claude_agent::sdk
+pub mod swallowtail_adapter_claude_agent::sdk::open_receipt
+pub enum swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage::Admission
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage::Deadline
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage::ReadinessValidation
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage::RegisteredAdmission
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage::RegisteredReadiness
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage::SidecarExchange
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage::SidecarRejected
+pub enum swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::AccountNotFirstParty
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::AccountUnavailable
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::AlreadyOpen
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::CapabilitiesInvalid
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::CapabilitiesOverflow
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::ConstructionFailed
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::EffortUnconfirmed
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::InitializationFailed
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::InvalidCommand
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::McpServerFailed
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::McpServerNeedsAuth
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::McpServerUndeclared
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::McpServersInvalid
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::McpStatusInvalid
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::MissingEnvironment
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::ModelMissing
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::NativeChildUnavailable
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::NativeManifestUnavailable
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::NativeVersionMismatch
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::NodeRuntimeUnsupported
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::Other(&'static str)
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::PermissionModeInvalid
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::ResumeAccountMismatch
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::ResumeBoundaryInvalid
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::ResumeCwdMismatch
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::ResumePersistenceDisabled
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::ResumeSessionUnknown
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::SdkExportMissing
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::SdkIdentityUnverifiable
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::SdkUnavailable
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::SdkVersionMismatch
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::SelectedSkillDigestMismatch
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::SelectedSkillInvalid
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::SelectedSkillLimitExceeded
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::SelectedSkillPayloadNotText
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::SelectedSkillReferenceInvalid
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::SupportedModelRejected
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::ToolsInvalid
+impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::as_str(self) -> &'static str
+pub struct swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup
+impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::confirmed(&self) -> bool
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::credential(&self) -> &swallowtail_runtime::outcome::CleanupOutcome
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::registered_lease(&self) -> core::option::Option<&swallowtail_runtime::outcome::CleanupOutcome>
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::resource(&self) -> &swallowtail_runtime::outcome::CleanupOutcome
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::survivor_posture(&self) -> core::option::Option<swallowtail_runtime::process_io::ProcessTreeCompletion>
+pub struct swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt
+impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt::cleanup(&self) -> &swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt::provider_readiness_reached(&self) -> bool
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt::route_code(&self) -> &str
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt::sidecar_code(&self) -> core::option::Option<swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode>
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt::stage(&self) -> swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage
+pub struct swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection
+impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection::failure(&self) -> &swallowtail_runtime::failure::RuntimeFailure
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection::into_failure(self) -> swallowtail_runtime::failure::RuntimeFailure
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection::receipt(&self) -> &swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt
 pub mod swallowtail_adapter_claude_agent::sdk::protocol
 pub enum swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind
 pub swallowtail_adapter_claude_agent::sdk::protocol::ClaudeAgentSdkProtocolFailureKind::EmptyRecord
@@ -120,6 +189,55 @@ pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind::Fa
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind::Pending
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind::as_str(self) -> &'static str
+pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage::Admission
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage::Deadline
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage::ReadinessValidation
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage::RegisteredAdmission
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage::RegisteredReadiness
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage::SidecarExchange
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage::SidecarRejected
+pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::AccountNotFirstParty
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::AccountUnavailable
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::AlreadyOpen
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::CapabilitiesInvalid
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::CapabilitiesOverflow
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::ConstructionFailed
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::EffortUnconfirmed
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::InitializationFailed
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::InvalidCommand
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::McpServerFailed
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::McpServerNeedsAuth
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::McpServerUndeclared
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::McpServersInvalid
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::McpStatusInvalid
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::MissingEnvironment
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::ModelMissing
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::NativeChildUnavailable
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::NativeManifestUnavailable
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::NativeVersionMismatch
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::NodeRuntimeUnsupported
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::Other(&'static str)
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::PermissionModeInvalid
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::ResumeAccountMismatch
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::ResumeBoundaryInvalid
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::ResumeCwdMismatch
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::ResumePersistenceDisabled
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::ResumeSessionUnknown
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SdkExportMissing
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SdkIdentityUnverifiable
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SdkUnavailable
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SdkVersionMismatch
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SelectedSkillDigestMismatch
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SelectedSkillInvalid
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SelectedSkillLimitExceeded
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SelectedSkillPayloadNotText
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SelectedSkillReferenceInvalid
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SupportedModelRejected
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::ToolsInvalid
+impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::as_str(self) -> &'static str
 pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode::AcceptEdits
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode::Default
@@ -157,6 +275,20 @@ impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapte
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::load_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::LoadSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::roles::LoadedSession, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkFailedOpenCleanup
+impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::confirmed(&self) -> bool
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::credential(&self) -> &swallowtail_runtime::outcome::CleanupOutcome
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::registered_lease(&self) -> core::option::Option<&swallowtail_runtime::outcome::CleanupOutcome>
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::resource(&self) -> &swallowtail_runtime::outcome::CleanupOutcome
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::survivor_posture(&self) -> core::option::Option<swallowtail_runtime::process_io::ProcessTreeCompletion>
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkFailedOpenReceipt
+impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt::cleanup(&self) -> &swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt::provider_readiness_reached(&self) -> bool
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt::route_code(&self) -> &str
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt::sidecar_code(&self) -> core::option::Option<swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode>
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt::stage(&self) -> swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding::admitted_tool_names(&self) -> alloc::vec::Vec<alloc::string::String>
@@ -178,12 +310,18 @@ impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatus
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatus::failure_code(&self) -> core::option::Option<&'static str>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatus::kind(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatus::name(&self) -> &str
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenRejection
+impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection::failure(&self) -> &swallowtail_runtime::failure::RuntimeFailure
+pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection::into_failure(self) -> swallowtail_runtime::failure::RuntimeFailure
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection::receipt(&self) -> &swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::list_sessions(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionListing>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::low_level_driver(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::mcp_servers(&self) -> &[swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer]
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::open_route_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::open_route_session_with_receipt(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle, swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection>>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::registered_capability_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, &swallowtail_runtime::host_registry::HostServices) -> core::option::Option<core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>>

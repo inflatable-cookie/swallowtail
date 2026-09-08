@@ -3,11 +3,12 @@
 use crate::sdk::failure::failure;
 use crate::sdk::mcp::{OpenStdioMcpServer, env_key_allowed};
 use crate::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding;
-use swallowtail_core::PreflightPlan;
+use swallowtail_core::{PreflightPlan, SafeDiagnostic};
 use swallowtail_host_local::RegisteredToolProxyLaunch;
 use swallowtail_runtime::{
-    HostServices, OpenSessionRequest, RegisteredToolBridgeLease, RegisteredToolCleanupCause,
-    RegisteredToolFailure, RegisteredToolReadiness, RuntimeFailure, RuntimeTurnId,
+    CleanupOutcome, HostServices, OpenSessionRequest, RegisteredToolBridgeLease,
+    RegisteredToolCleanupCause, RegisteredToolFailure, RegisteredToolReadiness, RuntimeFailure,
+    RuntimeTurnId,
 };
 
 /// Live registered-tool lease bound to one open sidecar session.
@@ -73,11 +74,21 @@ pub(in crate::sdk) async fn close_registered_lease(
     lease: Option<RegisteredToolBridgeLease>,
     services: &HostServices,
     cause: RegisteredToolCleanupCause,
-) {
-    if let Some(lease) = lease
-        && let Some(bridge) = services.registered_tool_bridge()
-    {
-        let _ = bridge.close(lease, cause).await;
+) -> Option<CleanupOutcome> {
+    match lease {
+        Some(lease) => match services.registered_tool_bridge() {
+            Some(bridge) => Some(match bridge.close(lease, cause).await {
+                Ok(outcome) => outcome,
+                Err(error) => CleanupOutcome::Failed(error.diagnostic().clone()),
+            }),
+            // A lease without its bridge service can never report a release:
+            // saying so is the honest observation.
+            None => Some(CleanupOutcome::Failed(SafeDiagnostic::new(
+                "swallowtail.claude-agent.sdk.registered_tool_bridge_unavailable",
+                "Claude Agent SDK registered-tool bridge service was unavailable during cleanup",
+            ))),
+        },
+        None => None,
     }
 }
 

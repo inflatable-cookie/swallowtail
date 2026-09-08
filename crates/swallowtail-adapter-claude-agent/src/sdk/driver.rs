@@ -22,6 +22,8 @@ use swallowtail_runtime::{
     RuntimeSessionId, SessionResumeBinding,
 };
 
+use crate::sdk::open_receipt::{ClaudeAgentSdkOpenRejection, OpenFailure, open_rejection};
+
 mod descriptor;
 mod handle;
 mod launch;
@@ -265,6 +267,23 @@ impl ClaudeAgentSdkDriver {
         request: OpenSessionRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<ClaudeAgentSdkSessionHandle, RuntimeFailure>> {
+        Box::pin(async move {
+            self.open_route_session_with_receipt(plan, request, services)
+                .await
+                .map_err(ClaudeAgentSdkOpenRejection::into_failure)
+        })
+    }
+
+    /// Opens the same fresh session and reports one structured failed-open
+    /// receipt when the open fails. The carried failure is byte-identical to
+    /// what [`Self::open_route_session`] returns; only the error shape
+    /// differs.
+    pub(crate) fn open_route_session_with_receipt(
+        &self,
+        plan: PreflightPlan,
+        request: OpenSessionRequest,
+        services: HostServices,
+    ) -> BoxFuture<'_, Result<ClaudeAgentSdkSessionHandle, ClaudeAgentSdkOpenRejection>> {
         self.open_with_start(plan, request, services, SessionStart::Fresh)
     }
 
@@ -302,6 +321,7 @@ impl ClaudeAgentSdkDriver {
                 },
             )
             .await
+            .map_err(ClaudeAgentSdkOpenRejection::into_failure)
         })
     }
 
@@ -385,7 +405,7 @@ impl ClaudeAgentSdkDriver {
             let (pending, listing) = match started {
                 Some(Ok(value)) => value,
                 Some(Err(error)) => {
-                    let cleaned = guard.fire(&bounded, &services).await;
+                    let cleaned = guard.fire(&bounded, &services).await.is_some();
                     return Err(if cleaned {
                         error
                     } else {
@@ -396,7 +416,7 @@ impl ClaudeAgentSdkDriver {
                     });
                 }
                 None => {
-                    let cleaned = guard.fire(&bounded, &services).await;
+                    let cleaned = guard.fire(&bounded, &services).await.is_some();
                     return Err(if cleaned {
                         failure(
                             "swallowtail.claude-agent.sdk.listing_timed_out",
@@ -411,7 +431,7 @@ impl ClaudeAgentSdkDriver {
                 }
             };
             pending.connection.begin_close().await;
-            let cleaned = guard.fire(&bounded, &services).await;
+            let cleaned = guard.fire(&bounded, &services).await.is_some();
             if !cleaned {
                 return Err(failure(
                     "swallowtail.claude-agent.sdk.listing_cleanup_unconfirmed",
@@ -431,21 +451,32 @@ impl ClaudeAgentSdkDriver {
         request: OpenSessionRequest,
         services: HostServices,
         start: SessionStart,
-    ) -> BoxFuture<'_, Result<ClaudeAgentSdkSessionHandle, RuntimeFailure>> {
+    ) -> BoxFuture<'_, Result<ClaudeAgentSdkSessionHandle, ClaudeAgentSdkOpenRejection>> {
         Box::pin(async move {
             match &start {
                 SessionStart::Fresh => {
-                    validate_open(&plan, &request, &services, &self.credential, self.profile)?;
+                    validate_open(&plan, &request, &services, &self.credential, self.profile)
+                        .map_err(OpenFailure::admission)?;
                 }
                 SessionStart::Resume {
                     binding,
                     resume_session_at,
                 } => {
                     if self.registered.is_some() {
-                        return Err(unsupported("registered tools on resumed sessions"));
+                        return Err(open_rejection(
+                            OpenFailure::admission(unsupported(
+                                "registered tools on resumed sessions",
+                            )),
+                            None,
+                        ));
                     }
                     if self.selected_skill.is_some() {
-                        return Err(unsupported("selected skill bundles on resumed sessions"));
+                        return Err(open_rejection(
+                            OpenFailure::admission(unsupported(
+                                "selected skill bundles on resumed sessions",
+                            )),
+                            None,
+                        ));
                     }
                     let resume = ResumeSessionRequest::from_plan(
                         &plan,
@@ -459,9 +490,12 @@ impl ClaudeAgentSdkDriver {
                     )
                     .map(|resume| resume.with_options(request.options().clone()))
                     .map_err(|_| {
-                        failure(
-                            "swallowtail.claude-agent.sdk.resume_binding_mismatch",
-                            "Claude Agent SDK resume request could not be reconstructed from its bound plan",
+                        open_rejection(
+                            OpenFailure::admission(failure(
+                                "swallowtail.claude-agent.sdk.resume_binding_mismatch",
+                                "Claude Agent SDK resume request could not be reconstructed from its bound plan",
+                            )),
+                            None,
                         )
                     })?;
                     validate_resume(
@@ -471,7 +505,8 @@ impl ClaudeAgentSdkDriver {
                         &self.credential,
                         self.profile,
                         resume_session_at.as_deref(),
-                    )?;
+                    )
+                    .map_err(OpenFailure::admission)?;
                 }
             }
             let deadline = request.deadline().expect("validated open deadline");
@@ -483,7 +518,7 @@ impl ClaudeAgentSdkDriver {
                 deadline,
             );
             if bounded.expired() {
-                return Err(open_deadline_elapsed());
+                return Err(open_rejection(OpenFailure::deadline(false), None));
             }
             // Reap authority first, before anything else exists. An
             // unsupported, closing, or capacity-exhausted host refuses here,
@@ -491,12 +526,18 @@ impl ClaudeAgentSdkDriver {
             // started, no task spawned, and no provider contact. Both
             // guardians this session can ever need are admitted now, so
             // neither later transfer can be refused while its work is live.
-            let open_scope = guard_scope("open-guard", request.request_id().as_str())?;
-            let close_scope = guard_scope("close-guard", request.request_id().as_str())?;
-            let session_scope = guard_scope("session", request.request_id().as_str())?;
-            let open_reservation = crate::sdk::guardian::reserve_reap(&services, &open_scope)?;
-            let close_reservation = crate::sdk::guardian::reserve_reap(&services, &close_scope)?;
-            let pump_reservation = crate::sdk::guardian::reserve_reap(&services, &session_scope)?;
+            let open_scope = guard_scope("open-guard", request.request_id().as_str())
+                .map_err(OpenFailure::admission)?;
+            let close_scope = guard_scope("close-guard", request.request_id().as_str())
+                .map_err(OpenFailure::admission)?;
+            let session_scope = guard_scope("session", request.request_id().as_str())
+                .map_err(OpenFailure::admission)?;
+            let open_reservation = crate::sdk::guardian::reserve_reap(&services, &open_scope)
+                .map_err(OpenFailure::admission)?;
+            let close_reservation = crate::sdk::guardian::reserve_reap(&services, &close_scope)
+                .map_err(OpenFailure::admission)?;
+            let pump_reservation = crate::sdk::guardian::reserve_reap(&services, &session_scope)
+                .map_err(OpenFailure::admission)?;
             // Starting a host worker is the fallible half, and it is done here
             // as well: the enclosing cleanup guardian exists before the first
             // acquisition, so activating it at close can never fail while a
@@ -506,7 +547,8 @@ impl ClaudeAgentSdkDriver {
                 close_reservation,
                 close_scope,
                 request.request_id().as_str(),
-            )?;
+            )
+            .map_err(OpenFailure::admission)?;
             // Armed before the first acquisition. From here on, every lease,
             // process, and task the open path takes is recorded in the guard,
             // so the caller's deadline can drop this future at any point
@@ -520,7 +562,8 @@ impl ClaudeAgentSdkDriver {
                 open_scope,
                 request.request_id().as_str(),
                 deadline,
-            )?;
+            )
+            .map_err(OpenFailure::admission)?;
             let opened = bounded
                 .run(self.acquire_and_start(
                     &plan,
@@ -548,36 +591,48 @@ impl ClaudeAgentSdkDriver {
                     // atomic transition. What this open acquired is already
                     // being terminated, so reporting success would be a lie.
                     None => {
-                        let cleaned = guard.fire(&bounded, &services).await;
-                        Err(if cleaned {
-                            open_deadline_elapsed()
-                        } else {
-                            open_cleanup_unconfirmed()
-                        })
+                        let report = guard.fire(&bounded, &services).await;
+                        Err(open_rejection(
+                            if report.is_some() {
+                                OpenFailure::deadline(true)
+                            } else {
+                                OpenFailure::deadline_unconfirmed_cleanup(true)
+                            },
+                            report.as_ref(),
+                        ))
                     }
                 },
-                Some(Err(error)) => {
+                Some(Err(failure)) => {
                     // A failure that only happened because the guard already
                     // terminated at the deadline is reported as the deadline,
                     // not as whatever the collapsing connection said next.
                     let expired = bounded.expired() || guard.deadline_fired();
-                    let cleaned = guard.fire(&bounded, &services).await;
-                    Err(match (expired, cleaned) {
-                        (_, false) => open_cleanup_unconfirmed(),
-                        (true, true) => open_deadline_elapsed(),
-                        (false, true) => error,
+                    let report = guard.fire(&bounded, &services).await;
+                    Err(match (expired, report.is_some()) {
+                        (_, false) => open_rejection(
+                            failure.with_replaced_error(open_cleanup_unconfirmed()),
+                            None,
+                        ),
+                        (true, true) => open_rejection(
+                            failure.with_replaced_error(open_deadline_elapsed()),
+                            report.as_ref(),
+                        ),
+                        (false, true) => open_rejection(failure, report.as_ref()),
                     })
                 }
                 None => {
                     // The bound expired inside acquisition or startup. The
                     // guard still terminates and releases under host ownership;
                     // this future returns now either way.
-                    let cleaned = guard.fire(&bounded, &services).await;
-                    Err(if cleaned {
-                        open_deadline_elapsed()
-                    } else {
-                        open_cleanup_unconfirmed()
-                    })
+                    let report = guard.fire(&bounded, &services).await;
+                    Err(open_rejection(
+                        if report.is_some() {
+                            OpenFailure::deadline(false)
+                        } else {
+                            OpenFailure::deadline_unconfirmed_cleanup(false)
+                        },
+                        report.as_ref(),
+                    ))
                 }
             }
         })
@@ -597,9 +652,8 @@ impl ClaudeAgentSdkDriver {
         guard: &OpenGuard,
         lease: crate::sdk::guardian::RecordingLease,
         reservations: Reservations,
-    ) -> Result<(PendingSession, startup::SessionReadiness), RuntimeFailure> {
+    ) -> Result<(PendingSession, startup::SessionReadiness), OpenFailure> {
         // Held for exactly this future's lifetime, including an early return or
-        // a drop at the caller's deadline.
         let _recording = lease;
         let mut pending = self
             .spawn_session(
@@ -616,12 +670,15 @@ impl ClaudeAgentSdkDriver {
                 services,
                 guard,
             )
-            .await?;
+            .await
+            .map_err(OpenFailure::admission)?;
         let mut registered_pending = None;
         let mut registered_courier = None;
         if let Some(binding) = &self.registered {
             let pending_registered =
-                registered::prepare_registered(binding, plan, request, &pending.services).await?;
+                registered::prepare_registered(binding, plan, request, &pending.services)
+                    .await
+                    .map_err(OpenFailure::registered_admission)?;
             registered_courier = Some(pending_registered.declaration());
             registered_pending = Some(pending_registered);
         }
@@ -669,7 +726,7 @@ impl ClaudeAgentSdkDriver {
                 if let Some(lease) = pending_registered.into_unclaimed_lease() {
                     guard.ledger().record_registered(lease);
                 }
-                return Err(error);
+                return Err(OpenFailure::after_readiness(error));
             }
             pending.registered = Some(pending_registered.claim());
         }
@@ -731,7 +788,7 @@ impl SessionStart {
     }
 }
 
-fn open_deadline_elapsed() -> RuntimeFailure {
+pub(in crate::sdk) fn open_deadline_elapsed() -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.open_deadline_elapsed",
         "Claude Agent SDK sidecar session reached its host deadline before readiness",
@@ -741,7 +798,7 @@ fn open_deadline_elapsed() -> RuntimeFailure {
 /// The open failed and its cleanup could not finish inside the same caller
 /// bound. Termination was requested; completion is unconfirmed, and saying so
 /// is the honest report.
-fn open_cleanup_unconfirmed() -> RuntimeFailure {
+pub(in crate::sdk) fn open_cleanup_unconfirmed() -> RuntimeFailure {
     failure(
         "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed",
         "Claude Agent SDK sidecar termination was requested, but cleanup did not complete inside \

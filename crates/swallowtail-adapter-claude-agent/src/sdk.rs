@@ -21,6 +21,8 @@ mod driver;
 mod failure;
 mod guardian;
 mod mcp;
+/// Structured failed-open evidence for one rejected prepared-route open.
+pub mod open_receipt;
 mod permission;
 mod prepared;
 mod profile;
@@ -46,6 +48,10 @@ pub use driver::{ClaudeAgentSdkDriver, ClaudeAgentSdkSessionHandle, claude_agent
 pub use mcp::{
     ClaudeAgentSdkMcpBinding, ClaudeAgentSdkMcpServer, ClaudeAgentSdkMcpServerStatus,
     ClaudeAgentSdkMcpServerStatusKind,
+};
+pub use open_receipt::{
+    ClaudeAgentSdkFailedOpenCleanup, ClaudeAgentSdkFailedOpenReceipt, ClaudeAgentSdkOpenRejection,
+    ClaudeAgentSdkOpenStage, ClaudeAgentSdkOpenSubcode,
 };
 pub use permission::claude_agent_sdk_tool_admission_namespace;
 pub use prepared::{

@@ -141,12 +141,23 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         // No response and no exit: only the host deadline can end this.
         return;
     }
-    if matches!(scenario, SdkScenario::OpenRejected) {
+    if matches!(
+        scenario,
+        SdkScenario::OpenRejected
+            | SdkScenario::OpenInitializationRejected
+            | SdkScenario::OpenAccountRejected
+    ) {
+        let code = match scenario {
+            SdkScenario::OpenRejected => "construction_failed",
+            SdkScenario::OpenInitializationRejected => "initialization_failed",
+            SdkScenario::OpenAccountRejected => "account_unavailable",
+            _ => unreachable!("scenario filtered above"),
+        };
         push(
             state,
             json!({"type": "response", "id": id, "command": "open", "success": false,
-                   "failure": {"code": "construction_failed",
-                               "message": "sidecar command failed: construction_failed"}}),
+                   "failure": {"code": code,
+                               "message": format!("sidecar command failed: {code}")}}),
         );
         return;
     }

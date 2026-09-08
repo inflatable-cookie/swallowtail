@@ -59,6 +59,10 @@ pub enum SdkScenario {
     InitializationFailed,
     /// The sidecar rejects open and reports its fixed construction code.
     OpenRejected,
+    /// The sidecar rejects open and reports its fixed initialization code.
+    OpenInitializationRejected,
+    /// The sidecar rejects open because it cannot read the account evidence.
+    OpenAccountRejected,
     /// The sidecar rejects query and reports its fixed turn-active code.
     QueryRejected,
     /// The first query succeeds, the second rejects, and later queries succeed.

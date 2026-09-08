@@ -14,6 +14,9 @@ use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::task::{Poll, Waker};
 use std::time::{Duration, Instant};
+use swallowtail_adapter_claude_agent::sdk::open_receipt::{
+    ClaudeAgentSdkOpenStage, ClaudeAgentSdkOpenSubcode,
+};
 use swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
 use swallowtail_adapter_claude_agent::sdk::{
     ClaudeAgentSdkSessionPreparation, ClaudeAgentSdkSessionProfile,
@@ -22,20 +25,21 @@ use swallowtail_adapter_claude_agent::sdk::{
 use swallowtail_core::{ConfiguredInstanceId, ExecutionHostId};
 use swallowtail_host_local::{LocalHostServices, LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
-    AdmissionPhase, BoxFuture, EnvironmentRef, ExecutableRef, HostServices,
+    AdmissionPhase, BoxFuture, CleanupOutcome, EnvironmentRef, ExecutableRef, HostServices,
     InteractiveSessionHandle, ProcessHandle, ProcessInputChunk, ProcessOutputStream,
-    REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION, REGISTERED_TOOL_PROXY_WIRE_TAG,
-    RegisteredServerId, RegisteredServerRevision, RegisteredToolAttachment, RegisteredToolBounds,
-    RegisteredToolCall, RegisteredToolDispatchContext, RegisteredToolDispatcher,
-    RegisteredToolEffectPosture, RegisteredToolExecutionKind, RegisteredToolId,
-    RegisteredToolLimits, RegisteredToolLocalName, RegisteredToolNamespace, RegisteredToolOutcome,
-    RegisteredToolPayload, RegisteredToolPreparation, RegisteredToolProtocolVersion,
-    RegisteredToolProxyRecipe, RegisteredToolResult, RegisteredToolRetryPosture,
-    RegisteredToolSchema, RegisteredToolSchemaDialect, RegisteredToolSchemaDigest,
-    RegisteredToolSchemaDocument, RegisteredToolSchemaMediaType, RegisteredToolSchemaNamespace,
-    RegisteredToolSelection, RegisteredToolSnapshot, RegisteredToolSnapshotInput,
-    RegisteredToolSource, RegisteredToolSourceId, RegisteredToolTransport,
-    RegisteredToolTransportSupport, RuntimeFailure,
+    ProcessTreeCompletion, REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION,
+    REGISTERED_TOOL_PROXY_WIRE_TAG, RegisteredServerId, RegisteredServerRevision,
+    RegisteredToolAttachment, RegisteredToolBounds, RegisteredToolCall,
+    RegisteredToolDispatchContext, RegisteredToolDispatcher, RegisteredToolEffectPosture,
+    RegisteredToolExecutionKind, RegisteredToolId, RegisteredToolLimits, RegisteredToolLocalName,
+    RegisteredToolNamespace, RegisteredToolOutcome, RegisteredToolPayload,
+    RegisteredToolPreparation, RegisteredToolProtocolVersion, RegisteredToolProxyRecipe,
+    RegisteredToolResult, RegisteredToolRetryPosture, RegisteredToolSchema,
+    RegisteredToolSchemaDialect, RegisteredToolSchemaDigest, RegisteredToolSchemaDocument,
+    RegisteredToolSchemaMediaType, RegisteredToolSchemaNamespace, RegisteredToolSelection,
+    RegisteredToolSnapshot, RegisteredToolSnapshotInput, RegisteredToolSource,
+    RegisteredToolSourceId, RegisteredToolTransport, RegisteredToolTransportSupport,
+    RuntimeFailure,
 };
 use swallowtail_testkit::{ScriptedAdmissionPort, fixture_admission};
 
@@ -598,7 +602,19 @@ fn open_route(
     dispatcher: Arc<dyn RegisteredToolDispatcher>,
     admission: Arc<ScriptedAdmissionPort>,
 ) -> OpenedRoute {
-    let fixture = SdkFixtureHost::new(SdkScenario::McpConnected);
+    open_route_with_scenario(host, dispatcher, admission, SdkScenario::McpConnected)
+}
+
+/// Card 144: opens the registered route against an arbitrary sidecar
+/// scenario, so the exact Card 132 registered-open request can be reproduced
+/// against the frozen fake sidecar.
+fn open_route_with_scenario(
+    host: ExecutionHostId,
+    dispatcher: Arc<dyn RegisteredToolDispatcher>,
+    admission: Arc<ScriptedAdmissionPort>,
+    scenario: SdkScenario,
+) -> OpenedRoute {
+    let fixture = SdkFixtureHost::new(scenario);
     let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
     let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
@@ -1137,6 +1153,130 @@ fn a_courier_that_dies_at_startup_reports_its_own_stderr() {
     assert!(
         message.contains("exit status: 3"),
         "the observed exit reaches the failure: {message}"
+    );
+}
+/// Card 144: the exact Card 132 registered-open request, reproduced
+/// provider-free against the frozen fake `0.3.259` sidecar. Research 296
+/// froze the live capsule (SHA-256 `e0460a54776a5644ff2c54bc412a52d8
+/// 1b0d84f04ee34f56971b78181e501433`) and its tuple — SDK `0.3.259`, native
+/// `2.1.259`, Node `22.23.2`, sidecar source tag `0.4.4`, carrier
+/// `swallowtail-claude-agent-sdk-registered-tool-mcp-v1`,
+/// `private-loopback-http` plus `mediated-stdio-proxy`, MCP `2025-11-25`,
+/// model `claude-sonnet-5`, default permission, persistence false, strict
+/// MCP configuration, empty setting sources, omitted `allowedTools` — but
+/// the capsule could not distinguish the bounded rejection class. The
+/// producer receipt can.
+#[test]
+fn the_card_132_registered_open_request_yields_a_typed_failed_open_receipt() {
+    let host = host_id("claude-agent-sdk.fixture.registered-card132");
+    let calls = Arc::new(AtomicUsize::new(0));
+    let admission = Arc::new(ScriptedAdmissionPort::current());
+    let fixture = SdkFixtureHost::new(SdkScenario::OpenRejected);
+    let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
+    let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable.clone(), courier_binary())
+        .approve_environment(environment.clone(), [("PATH".into(), "/usr/bin".into())])
+        .with_registered_tool_dispatcher(Arc::new(CountingDispatcher { calls }))
+        .with_registered_tool_clock(Arc::new(fixture.clone()))
+        .build_services(host.clone());
+    let services = local
+        .services()
+        .clone()
+        .with_process(Arc::new(fixture.clone()))
+        .with_credential(Arc::new(fixture.clone()))
+        .with_working_resource(Arc::new(fixture.clone()))
+        .with_time(Arc::new(fixture.clone()));
+    let preparation = preparation_for(
+        host.clone(),
+        fixture_admission(Arc::clone(&admission)),
+        executable,
+        environment,
+    );
+    let prepared = prepare_claude_agent_sdk_session(
+        crate::sdk_support::preparation(host)
+            .with_registered_tools(preparation, local)
+            .expect("registered preparation binds the host"),
+        swallowtail_runtime::SessionOptions::default(),
+    )
+    .expect("registered preparation succeeds");
+    let Err(rejection) = block_on(prepared.open_route_session_with_receipt(services)) else {
+        panic!("the card 132 reproduction must fail the open");
+    };
+
+    // The ordinary failure is unchanged, bounded subcode still in the safe
+    // message, and no forbidden material anywhere in it.
+    assert_eq!(
+        rejection.failure().diagnostic().code(),
+        "swallowtail.claude-agent.sdk.open_rejected"
+    );
+    let message = rejection.failure().diagnostic().message();
+    assert!(
+        message.ends_with(": construction_failed"),
+        "bounded subcode stays in the message: {message}"
+    );
+    for forbidden in ["/fixture/", "@example", "token", "organization"] {
+        assert!(
+            !message.contains(forbidden),
+            "{forbidden} leaked: {message}"
+        );
+    }
+
+    // The typed receipt distinguishes what the immutable capsule could not:
+    // stage, exact bounded subcode, readiness truth, and cleanup truth.
+    let receipt = rejection.receipt();
+    assert_eq!(receipt.stage(), ClaudeAgentSdkOpenStage::SidecarRejected);
+    assert_eq!(
+        receipt.sidecar_code(),
+        Some(ClaudeAgentSdkOpenSubcode::ConstructionFailed)
+    );
+    assert!(!receipt.provider_readiness_reached());
+    let cleanup = receipt.cleanup();
+    assert!(cleanup.confirmed(), "cleanup joins: {cleanup:?}");
+    assert_eq!(cleanup.resource(), &CleanupOutcome::NotApplicable);
+    assert_eq!(cleanup.credential(), &CleanupOutcome::Clean);
+    assert_eq!(cleanup.registered_lease(), Some(&CleanupOutcome::Clean));
+    assert_eq!(
+        cleanup.survivor_posture(),
+        Some(ProcessTreeCompletion::RootOnly)
+    );
+
+    // The wire request carries the Card 132 tuple: one reserved required
+    // courier entry, default permission, persistence false, no allowedTools.
+    let open = fixture
+        .inputs()
+        .into_iter()
+        .find(|input| input["command"] == "open")
+        .expect("registered open is on the wire");
+    assert_eq!(open["params"]["model"], "claude-sonnet-5");
+    assert_eq!(open["params"]["permissionMode"], "default");
+    assert!(
+        open["params"]
+            .get("persistSession")
+            .is_none_or(|value| value.as_bool() == Some(false)),
+        "card 132 ran persistence false: {}",
+        open["params"]
+    );
+    assert!(
+        open["params"].get("allowedTools").is_none(),
+        "allowedTools is never set: {}",
+        open["params"]
+    );
+    let servers = open["params"]["mcpServers"]
+        .as_array()
+        .expect("courier is declared");
+    assert_eq!(servers.len(), 1);
+    assert_eq!(servers[0]["name"], CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER);
+    assert_eq!(servers[0]["optional"], false);
+    assert!(
+        open["params"]["tools"]
+            .as_array()
+            .expect("tools")
+            .iter()
+            .any(|tool| tool.as_str()
+                == Some("mcp__swallowtail-registered-tools__desktop_reconcile")),
+        "admitted tools include the carrier spelling: {}",
+        open["params"]["tools"]
     );
 }
 

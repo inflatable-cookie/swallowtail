@@ -103,3 +103,56 @@ retry from this card.
 ## Auto-Continuation
 
 No. Stop at exact-head independent review. The queue owns merge and closeout.
+
+## Result
+
+Status: ready for review.
+
+**What shipped.** One additive Claude SDK prepared-route open surface,
+`ClaudeAgentSdkPreparedSession::open_route_session_with_receipt`, returning
+the unchanged stable open failure plus a structured failed-open receipt
+(`sdk/open_receipt.rs`): route code, open stage (`Admission`,
+`RegisteredAdmission`, `SidecarRejected`, `ReadinessValidation`,
+`RegisteredReadiness`, `SidecarExchange`, `Deadline`), the exact bounded
+sidecar subcode on a sidecar rejection, provider-readiness truth, and the
+observed cleanup disposition — resource and credential release, owned-tree
+survivor posture (read only after the pump joined), and, when a registered
+lease was opened, its bridge close outcome. The open guard now retains its
+ordered cleanup report (`CleanupReport` gained the registered close
+observation) instead of a bare completion bool. No forbidden material is
+reachable from the receipt; unconfirmed cleanup reports `confirmed: false`
+and stages nothing.
+
+**Card 132 reproduction.** The exact registered-open request was reproduced
+provider-free against the frozen fake `0.3.259` sidecar
+(`the_card_132_registered_open_request_yields_a_typed_failed_open_receipt`):
+the wire request matches the frozen tuple (one required reserved courier
+entry, model `claude-sonnet-5`, default permission, persistence false, no
+`allowedTools`, carrier-spelled admitted tools), the failure keeps the stable
+`open_rejected` code with the bounded subcode in the safe message, and the
+receipt separates stage, subcode, readiness, and cleanup truth. Receipt
+fixtures cover construction, initialization, account, and MCP-status sidecar
+rejections, readiness-validation failure, deadline with unconfirmed cleanup,
+and joined cleanup.
+
+**Producer defect verdict.** The deterministic route identifies no producer
+defect: the request path is faithful to the frozen tuple and every bounded
+rejection class produces precise typed evidence. The live `construction`-class
+cause therefore stays unresolved and live-only — this is the narrowed
+boundary. A future authorized live gate must collect the receipt fields
+(stage, sidecar subcode, readiness, cleanup disposition) so its capsule can
+distinguish the bounded rejection class and positively record cleanup
+without prose parsing.
+
+**Cell posture.** `registered_tools` and `consumer_tool_exchange` remain
+`No`, owned by this producer gap; the matrix cross references already name
+this card. No qualification, availability, release, or parity claim changed.
+
+**Validation.** `cargo fmt -p swallowtail-adapter-claude-agent -- --check`;
+`effigy validate:focused swallowtail-adapter-claude-agent`;
+`effigy package:verify-affected swallowtail-adapter-claude-agent`;
+`effigy validate:card116-mediated-stdio`; `effigy package:api` (baseline
+regenerated additively: 138 added lines, `swallowtail-adapter-claude-agent`
+only); `effigy qa:routes`; `effigy qa:docs`; `effigy qa:northstar`;
+`git diff --check`. One pre-existing environment-sensitive test flake was
+reproduced on the clean base head and recorded in `PAPERCUTS.md`.

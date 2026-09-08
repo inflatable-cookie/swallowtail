@@ -31,6 +31,22 @@ annotated Git tags from the canonical repository.
   g05.035 card 143.
 
 ### Added
+- add an additive Claude Agent SDK prepared-route open surface,
+  `ClaudeAgentSdkPreparedSession::open_route_session_with_receipt`, that
+  returns the unchanged stable open failure plus one structured failed-open
+  receipt: the underlying route code, the observation-derived open stage, the
+  exact bounded sidecar subcode when the sidecar rejected the open command,
+  whether provider readiness was reached, and the observed cleanup
+  disposition — resource and credential release, the owned-tree survivor
+  posture, and, for registered opens, the bridge lease close (admission
+  frozen, joined calls, listener and registry release). Provider-free
+  fixtures cover construction, initialization, account, and MCP-status
+  rejections, readiness validation, deadline, joined cleanup, and unconfirmed
+  cleanup, and reproduce the exact Card 132 registered-open request against
+  the frozen fake `0.3.259` sidecar; the deterministic route identifies no
+  producer defect, so the live rejection cause stays unresolved with the
+  narrowed boundary recorded, both Contract 061 registered-tool cells remain
+  unqualified, and no live retry was run. Research 296. g05.035 card 144.
 - let `claude-code.response-only` bind one optional host-approved `Read`
   working resource as the native child's project location through
   `ClaudeCodeResponseProfileInput::with_working_resource`; the bound resource

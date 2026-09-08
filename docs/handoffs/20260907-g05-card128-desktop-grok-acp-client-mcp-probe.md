@@ -75,17 +75,21 @@ backlog; and a burst that lands just before the deadline is still captured but
 never answered, so processing it cannot write back past the bound. An agent
 that never pauses therefore cannot hold an exchange open. The receive and
 cleanup budget is the sum of the bounds — 480 seconds of exchanges, plus the
-5-second helper self-check and the 10-second join, so 495 seconds. The one
-path outside it is a blocking write to a child that has stopped reading its
-stdin; that would hang the probe rather than score anything, and Desktop
-should report it as a harness defect.
+5-second helper self-check and the 10-second join, so 495 seconds. Once the
+deadline passes, the exchange keeps one frame to record that a late burst
+existed and abandons the rest of that batch unread, so neither writing back
+nor processing a large burst can extend it. The one path outside the budget is
+a blocking write to a child that has stopped reading its stdin; that would
+hang the probe rather than score anything, and Desktop should report it as a
+harness defect.
 
-Frame capture holds 512 frames. That capacity is spent on streaming chatter
-only: at capacity the oldest non-decisive frame is evicted so the incoming
-frame still lands. The outbound `session/new` and `session/prompt` requests,
-every correlated response, every inbound agent request and the probe's
-recorded answer, the `tool_call` and `tool_call_update` updates, and the turn
-result are never evicted. ACP lets an agent refine one tool call many times,
+Frame capture targets 512 frames, and eviction runs in tiers so that what
+yields is always the least load-bearing thing left. Streaming chatter goes
+first, and while the capsule is at its target nothing else is touched: the
+outbound `session/new` and `session/prompt` requests, every correlated
+response, every inbound agent request and the probe's recorded answer, the
+`tool_call` and `tool_call_update` updates, and the turn result all survive.
+ACP lets an agent refine one tool call many times,
 and those updates are partial, so a later update is not assumed to repeat what
 an earlier one carried: the only elidable decisive frame is a bare progress
 tick — a `tool_call_update` that a later update for the same call follows and
@@ -212,10 +216,13 @@ One redacted JSON capsule per exact version. Fields:
   `session/new` with non-empty `mcpServers` when sent
 - `stale_callback_rejected`
 - `cleanup_joined`
-- `truncated`: non-decisive middle frames were elided to stay under the
-  512-frame capture bound. Decisive frames survive truncation, so this does
-  not change the verdict; only a capacity filled entirely by decisive frames
-  scores `inconclusive` with cause `truncated`
+- `truncated`: middle frames were elided to hold the capsule near its
+  512-frame target. Eviction runs in tiers — chatter, then superseded bare
+  progress ticks, then at the 8192 ceiling bulk tool-call history, then
+  answered request/answer pairs — so what the verdict reads survives and this
+  does not change the verdict. Only a capture whose whole ceiling is exchange
+  anchors scores `inconclusive` with cause `truncated`, which is a harness
+  bound and never a provider finding
 - `echo_mcp_methods`: method names observed on the disposable echo server stdio
 
 Auth that fails before `session/new`, or a `session/new` JSON-RPC error that

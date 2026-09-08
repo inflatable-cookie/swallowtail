@@ -251,6 +251,38 @@ and all fixed:
    both the cause's doc and the packet's decision tree say plainly that it is
    a harness bound, never a provider finding.
 
+**Fourth review round (same reviewer, head `856e89d1`).** Three more, all
+real and all fixed:
+
+10. The structural tier could manufacture a false provider finding. Eviction
+    at the ceiling could take an opening `tool_call`, and
+    `native_echo_without_admission` is a verdict guard over exactly those
+    frames — so an early native echo call, evicted, turned an `inconclusive`
+    into `ignores_client_mcp`. That is the worst class of defect this card
+    can produce: not a lost answer but a wrong one, attributed to Grok. The
+    observation is now a monotonic fact recorded at capture
+    (`native_echo_observed`) and never read back out of the capsule, so no
+    eviction can reach it.
+    `an_evicted_native_echo_call_still_blocks_ignores_client_mcp` evicts the
+    frame and asserts the cause holds.
+11. Bounding writes did not bound work. `exchange` still cloned, captured,
+    and evicted every message of an arbitrarily large burst that landed just
+    inside the deadline. It now keeps one frame to record that the burst
+    existed and abandons the rest of the batch unread.
+12. Structural-only overflow was still reachable: ~4,093 answered
+    request/reply pairs fill the ceiling with structure. A fourth tier now
+    evicts the oldest *answered pair* — request and answer together, so
+    eviction can never invent `session_new_unanswered` — and the four
+    exchange anchors are never part of a pair, so they always survive.
+    `answered_request_pairs_yield_before_the_exchange_anchors` builds the
+    shape and asserts the anchors, the turn result, and the verdict.
+
+The reviewer's remaining note is accepted as residual and not fixed:
+retaining `locations` on an elided progress tick would be forensic hardening,
+not verdict correctness. The allowlist was otherwise confirmed sound, and the
+retention-ceiling seam confirmed unable to drift from production, since
+`FrameCapture::new` is the only constructor outside tests.
+
 The reviewer's test-cost objection is taken: `FrameCapture` carries its
 retention ceiling as a field so tests reach it without building 8192 frames,
 with `frame_capture_ceiling_matches_the_module_constant` pinning production to

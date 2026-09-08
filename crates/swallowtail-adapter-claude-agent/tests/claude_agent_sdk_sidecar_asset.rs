@@ -1684,6 +1684,7 @@ fn a_declared_stdio_mcp_server_connects_and_its_tool_is_mediated() {
         open["data"]["mcpServerStatus"],
         json!([{"name": "fixture", "status": "connected"}])
     );
+    assert_no_mcp_metadata_leak(&open);
     assert_eq!(
         open["data"]["tools"],
         json!(["Read", "Glob", "Grep", "mcp__fixture__search"])
@@ -1764,6 +1765,10 @@ fn an_undeclared_mcp_server_name_is_rejected_before_the_sdk_is_constructed() {
 
 #[test]
 fn a_failing_required_mcp_server_fails_open() {
+    // The fake row now carries the declared `error` and the rest of the
+    // declared optional metadata (Card 146). Before the projection repair
+    // this shape returned `mcp_status_invalid` instead of the bounded
+    // `mcp_server_failed`, exactly the Card 145 contradiction class.
     let mut sidecar = SidecarProcess::start_scenario("mcp-required-fail");
     let cwd = sidecar.cwd();
     let open = sidecar.command(
@@ -1773,6 +1778,7 @@ fn a_failing_required_mcp_server_fails_open() {
     );
     assert_eq!(open["success"], false, "required MCP failure: {open}");
     assert_eq!(open["failure"]["code"], "mcp_server_failed");
+    assert_no_mcp_metadata_leak(&open);
 }
 
 #[test]
@@ -1793,6 +1799,154 @@ fn an_optional_mcp_server_failure_is_recorded_without_failing_open() {
             "failureCode": "mcp_server_failed"
         }])
     );
+    assert_no_mcp_metadata_leak(&open);
     let options = sidecar.observed_options();
     assert_eq!(options["mcpServers"]["fixture"]["alwaysLoad"], false);
+}
+
+/// The fake's faithful `0.3.259` status rows carry fixture-only marker values
+/// in every declared optional field (`serverInfo`, `error`, `config`, `scope`,
+/// `tools`). None of that metadata may cross the safe projection into any
+/// sidecar response; its absence is the Card 146 non-leak oracle.
+fn assert_no_mcp_metadata_leak(value: &Value) {
+    let text = value.to_string();
+    assert!(
+        !text.contains("fixture-only"),
+        "declared MCP-status metadata crossed the projection: {text}"
+    );
+}
+
+#[test]
+fn a_required_needs_auth_row_fails_open_with_the_typed_auth_code() {
+    let mut sidecar = SidecarProcess::start_scenario("mcp-needs-auth");
+    let cwd = sidecar.cwd();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        fixture_mcp_open(&cwd, &["mcp__fixture__search"], false),
+    );
+    assert_eq!(open["success"], false, "required needs-auth open: {open}");
+    assert_eq!(open["failure"]["code"], "mcp_server_needs_auth");
+    assert_no_mcp_metadata_leak(&open);
+}
+
+#[test]
+fn an_optional_needs_auth_row_is_recorded_as_a_bounded_needs_auth_failure() {
+    let mut sidecar = SidecarProcess::start_scenario("mcp-needs-auth");
+    let cwd = sidecar.cwd();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        fixture_mcp_open(&cwd, &["mcp__fixture__search"], true),
+    );
+    assert_eq!(open["success"], true, "optional needs-auth open: {open}");
+    assert_eq!(
+        open["data"]["mcpServerStatus"],
+        json!([{
+            "name": "fixture",
+            "status": "failed",
+            "failureCode": "mcp_server_needs_auth"
+        }])
+    );
+    assert_no_mcp_metadata_leak(&open);
+}
+
+#[test]
+fn a_disabled_optional_server_is_recorded_as_a_bounded_failure() {
+    let mut sidecar = SidecarProcess::start_scenario("mcp-disabled");
+    let cwd = sidecar.cwd();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        fixture_mcp_open(&cwd, &["mcp__fixture__search"], true),
+    );
+    assert_eq!(open["success"], true, "optional disabled open: {open}");
+    assert_eq!(
+        open["data"]["mcpServerStatus"],
+        json!([{
+            "name": "fixture",
+            "status": "failed",
+            "failureCode": "mcp_server_failed"
+        }])
+    );
+    assert_no_mcp_metadata_leak(&open);
+}
+
+#[test]
+fn a_pending_optional_server_is_recorded_pending_and_a_required_one_fails_bounded() {
+    let mut optional = SidecarProcess::start_scenario("mcp-pending");
+    let cwd = optional.cwd();
+    let open = optional.command(
+        "open-1",
+        "open",
+        fixture_mcp_open(&cwd, &["mcp__fixture__search"], true),
+    );
+    assert_eq!(open["success"], true, "optional pending open: {open}");
+    assert_eq!(
+        open["data"]["mcpServerStatus"],
+        json!([{"name": "fixture", "status": "pending"}])
+    );
+    assert_no_mcp_metadata_leak(&open);
+
+    let mut required = SidecarProcess::start_scenario("mcp-pending");
+    let cwd = required.cwd();
+    let open = required.command(
+        "open-1",
+        "open",
+        fixture_mcp_open(&cwd, &["mcp__fixture__search"], false),
+    );
+    assert_eq!(open["success"], false, "required pending open: {open}");
+    assert_eq!(open["failure"]["code"], "mcp_server_failed");
+    assert_no_mcp_metadata_leak(&open);
+}
+
+#[test]
+fn an_unknown_status_row_stays_invalid_even_with_declared_metadata() {
+    let mut sidecar = SidecarProcess::start_scenario("mcp-unknown-status");
+    let cwd = sidecar.cwd();
+    let open = sidecar.command(
+        "open-1",
+        "open",
+        fixture_mcp_open(&cwd, &["mcp__fixture__search"], true),
+    );
+    assert_eq!(open["success"], false, "unknown status open: {open}");
+    assert_eq!(open["failure"]["code"], "mcp_status_invalid");
+    assert_no_mcp_metadata_leak(&open);
+}
+
+#[test]
+fn undeclared_top_level_row_fields_stay_invalid() {
+    // `url` and `headers` are config members in 0.3.259, never top-level
+    // `McpServerStatus` row fields; an undeclared top-level key stays
+    // fail-closed even though every declared optional field is now admitted.
+    for scenario in ["mcp-undeclared-url", "mcp-undeclared-headers"] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let cwd = sidecar.cwd();
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            fixture_mcp_open(&cwd, &["mcp__fixture__search"], true),
+        );
+        assert_eq!(open["success"], false, "{scenario} open: {open}");
+        assert_eq!(open["failure"]["code"], "mcp_status_invalid");
+    }
+}
+
+#[test]
+fn extra_malformed_and_foreign_rows_stay_invalid() {
+    for scenario in [
+        "mcp-count-mismatch",
+        "mcp-malformed-row",
+        "mcp-foreign-name",
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let cwd = sidecar.cwd();
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            fixture_mcp_open(&cwd, &["mcp__fixture__search"], true),
+        );
+        assert_eq!(open["success"], false, "{scenario} open: {open}");
+        assert_eq!(open["failure"]["code"], "mcp_status_invalid");
+    }
 }

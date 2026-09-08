@@ -578,6 +578,25 @@ support, qualification, availability, or release claim; both Contract 061
 registered-tool cells stay owned by the producer gap until a separately
 authorized passing live capsule exists.
 
+**Bounded MCP-status evidence (claude-agent.sdk).** Card 146 reconciled the
+exact SDK `0.3.259` status shape with the sidecar projection. The
+`McpServerStatus` declaration (`package/sdk.d.ts:1114-1158`) permits optional
+`serverInfo`, `error`, `config`, `scope`, and `tools` on every row, and the
+shipped `mcpServerStatus` query passes the native `mcp_status` rows through
+unchanged, so every declared optional-field combination is lawful producer
+output. The projection admits those rows and discards the metadata: a
+required connected server stays admitted, and `failed`, `needs-auth`,
+`disabled`, and required `pending` rows reach their bounded failure codes
+rather than collapsing to `mcp_status_invalid`. Raw error text,
+configuration, URLs, headers, paths, and tool descriptions never cross the
+projection, and rows with an undeclared top-level key, unknown status,
+missing/foreign/duplicate names, a non-object entry, or a count mismatch stay
+fail-closed. The Card 145 Desktop diagnostic tuple (Research 297) and the
+row-shape corpus are frozen in the adapter's bounded regression fixtures;
+whether a real native row ever carries an undeclared top-level field is the
+one shape the frozen artifacts cannot settle and remains an unresolved live
+observation needing separate authority.
+
 **Provider-free falsifiers.** The F1–F18 set in the capsule is the conformance
 oracle: omission, ready ordering, one-shot expiry, redaction, argv and
 environment, exact kind and name mapping, correlation, deny, concurrency and

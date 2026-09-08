@@ -1,0 +1,81 @@
+{
+  "sdk": {
+    "package": "@anthropic-ai/claude-agent-sdk",
+    "version": "0.3.259",
+    "mcp_server_status_declaration": "package/sdk.d.ts:1114-1158",
+    "mcp_server_status_impl": "sdk.mjs 0.3.259: query.mcpServerStatus() returns (await request({subtype:\"mcp_status\"})).response.mcpServers",
+    "mcp_server_status_docs": "status rows are native mcp_status passthrough; docs gate serverInfo/tools to connected and error to failed"
+  },
+  "card": "g05 card 146",
+  "card_145_return": "bounded mcp_status_invalid before provider readiness on the frozen Desktop tuple; no prompt, tool, control, retry, reconnect, or respawn; cleanup confirmed",
+  "declared_row_fields": ["name", "status", "serverInfo", "error", "config", "scope", "tools"],
+  "row_statuses": ["connected", "pending", "failed", "needs-auth", "disabled"],
+  "fixture_fidelity": "every fake-SDK row carries all five declared optional fields with fixture-only marker values; the type gates no optional field by status, so any declared combination must project identically",
+  "projection": {
+    "retained": ["name", "canonical status kind", "failureCode on failed rows only"],
+    "discarded": ["serverInfo", "error", "config", "scope", "tools"],
+    "rejected": [
+      "row count not equal to the declared server count",
+      "row that is not an object",
+      "row whose name is not a declared server",
+      "duplicate or missing declared names",
+      "undeclared top-level row key (e.g. url, headers)",
+      "status string outside the five declared values"
+    ]
+  },
+  "evidence_by_status": {
+    "connected": {
+      "evidence": { "name": "fixture", "status": "connected" },
+      "required_server": "open admitted",
+      "optional_server": "open admitted"
+    },
+    "pending": {
+      "evidence": { "name": "fixture", "status": "pending" },
+      "required_server": "bounded failure mcp_server_failed",
+      "optional_server": "open admitted with pending evidence"
+    },
+    "failed": {
+      "evidence": { "name": "fixture", "status": "failed", "failureCode": "mcp_server_failed" },
+      "required_server": "bounded failure mcp_server_failed",
+      "optional_server": "open admitted with failed evidence"
+    },
+    "needs-auth": {
+      "evidence": { "name": "fixture", "status": "failed", "failureCode": "mcp_server_needs_auth" },
+      "required_server": "bounded failure mcp_server_needs_auth",
+      "optional_server": "open admitted with failed evidence"
+    },
+    "disabled": {
+      "evidence": { "name": "fixture", "status": "failed", "failureCode": "mcp_server_failed" },
+      "required_server": "bounded failure mcp_server_failed",
+      "optional_server": "open admitted with failed evidence"
+    }
+  },
+  "accepted_row": {
+    "name": "fixture",
+    "status": "connected",
+    "serverInfo": { "name": "fixture-only-server-fixture", "version": "fixture-0.3.259" },
+    "error": "fixture-only failure detail for fixture",
+    "config": {
+      "type": "stdio",
+      "command": "/usr/bin/node",
+      "args": ["server.mjs"],
+      "url": "http://127.0.0.1:65000/fixture-only-mcp"
+    },
+    "scope": "fixture-only-scope",
+    "tools": [
+      {
+        "name": "search",
+        "description": "fixture-only tool description",
+        "annotations": { "readOnly": false, "destructive": false, "openWorld": false }
+      }
+    ]
+  },
+  "rejected_row_shapes": [
+    { "shape": "undeclared top-level url", "row": { "name": "fixture", "status": "connected", "url": "http://127.0.0.1:65001/fixture-only-undeclared" } },
+    { "shape": "undeclared top-level headers", "row": { "name": "fixture", "status": "connected", "headers": { "x-fixture-token": "fixture-only-undeclared-token" } } },
+    { "shape": "status outside the declared union", "row": { "name": "fixture", "status": "fixture-future" } },
+    { "shape": "non-object row entry", "row": ["fixture-only-string-row"] },
+    { "shape": "row naming a server that was never declared", "row": { "name": "fixture-only-other", "status": "connected", "serverInfo": { "name": "fixture-only-server-other", "version": "fixture-0.3.259" }, "scope": "fixture-only-scope" } }
+  ],
+  "unresolved_live_observation": "whether a real native mcp_status row ever carries an undeclared top-level field is not settled by the 0.3.259 artifacts; such a row remains fail-closed and would need one separately authorized future open to name"
+}

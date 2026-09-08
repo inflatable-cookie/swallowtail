@@ -15,14 +15,12 @@ shape.
 
 ## Next Task
 
-[Card 147](g05/batch-cards/147-claude-sdk-repaired-zero-credit-diagnostic.md)
-is ready. The operator confirmed Claude usage credit remains zero and
-explicitly authorized exactly one repaired diagnostic open against exact
-source-linked Swallowtail `0d120067cd260b1f5127835cab0b1a3ad020a29d`.
-Desktop uses `claude-sonnet-5` and sends no prompt, turn, tool, permission, or
-control action. No retry or automatic continuation is allowed. Both Contract
-061 cells remain unqualified; top-up and the credited qualification suite stay
-separate.
+[Card 148](g05/batch-cards/148-claude-sdk-degraded-cleanup-oracle.md) is
+ready. Card 147's one zero-credit open succeeded, then immediate close returned
+the Contract 019-qualified ordinary macOS `Degraded` posture with joined
+reapers and zero survivors. Desktop's runner incorrectly classified every
+non-clean close as unconfirmed. Card 148 repairs that proof oracle
+provider-free. No live run follows; both Contract 061 cells remain unqualified.
 
 ## Standing Lanes
 

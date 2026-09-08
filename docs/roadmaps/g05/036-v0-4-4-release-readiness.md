@@ -167,6 +167,13 @@ successful open closes immediately. This diagnostic does not qualify either
 Contract 061 cell and grants no candidate, tag, release, top-up, or credited
 suite authority.
 
+Card 147 completed through Desktop PR 174. Open reached ready/connected state
+while credit remained zero; no prompt ran. Immediate close returned the
+Contract 019-qualified ordinary macOS `Degraded` posture with joined reapers
+and zero survivors, but Desktop's runner classified every non-clean close as
+unconfirmed. Card 148 repairs that oracle provider-free. The credited suite
+remains held for restored credit and separate live authority.
+
 ### Candidate Source Disposition — 2026-09-08
 
 The prepared candidate `0673541d` is PARKED, not abandoned and not current.

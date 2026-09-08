@@ -1,6 +1,6 @@
 # 147 Claude SDK Repaired Zero-Credit Diagnostic
 
-Status: ready; one live open explicitly authorized while Claude usage credit remains exhausted
+Status: complete; Desktop PR 174 merged at `7646db459d3fb8f194729a46b56acdfa49d41fb2`
 Owner: Desktop live-evidence owner
 Created: 2026-09-08
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`
@@ -69,4 +69,19 @@ qualification suite remains a later, separate action after credit restoration.
 
 ## Result
 
-Pending.
+Desktop task `22fa30cb-a2da-4120-94cb-be260c433923` completed through PR 174.
+Accepted head `a935727e3f25e7df0b11325bd60ba5b7d0fba5da`; review comment
+`5591728802`; merge `7646db459d3fb8f194729a46b56acdfa49d41fb2`; canonical
+Desktop closeout `1a8652b64c22415e6c3a9499f8cd2b7d434816af`.
+
+The single open reached ready/connected state while credit remained zero, then
+closed immediately. Counts are one open and zero prompts, turns, tools,
+permission callbacks, controls, retries, reconnects, or respawns. Capsule
+SHA-256 is
+`9f6af32bc0011e01f2d84071c5990a9a657e660b9d90d31e802f13755799cf33`.
+
+Close reported `Degraded`, with joined reapers and zero leases, listeners, or
+survivors. Research 298 identifies the Desktop runner defect: it rejected the
+Contract 019-qualified ordinary macOS degraded posture because it accepted
+only `Clean | NotApplicable`. Card 148 owns the provider-free oracle repair.
+The capsule stays immutable. Both Contract 061 cells remain unqualified.

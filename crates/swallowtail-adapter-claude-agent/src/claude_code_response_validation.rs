@@ -2,7 +2,7 @@ use crate::failure::failure;
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
     HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceOwnership,
-    InterfaceVersionBinding, PreflightPlan,
+    InterfaceVersionBinding, PreflightPlan, ResourceAccess, ResourceRepresentation,
 };
 use swallowtail_runtime::{
     ExternalNetworkPolicy, ExternalSearchPolicy, HostServices, ProviderExecutionPolicy,
@@ -66,8 +66,28 @@ pub(crate) fn validate(
             CapabilityConstraint::ReasoningMode(reasoning.clone()),
         )?;
     }
-    if request.working_resource().is_some() || request.deadline().is_none() {
-        return Err(unsupported("working resource or missing host deadline"));
+    if request.deadline().is_none() {
+        return Err(unsupported("missing host deadline"));
+    }
+    if request.working_resource().is_some() {
+        require_service(
+            plan,
+            services.working_resource().is_some(),
+            HostServiceKind::WorkingResource,
+            "working resource",
+        )?;
+        require_constraint(
+            plan,
+            Capability::WorkingResource,
+            CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+        )?;
+        require_constraint(
+            plan,
+            Capability::WorkingResource,
+            CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+        )?;
+    } else {
+        reject_capability(plan, Capability::WorkingResource)?;
     }
     if request.attachments().len() != 0
         || request.tools().len() != 0
@@ -86,7 +106,6 @@ pub(crate) fn validate(
         require_capability(plan, required)?;
     }
     for forbidden in [
-        Capability::WorkingResource,
         Capability::StructuredOutput,
         Capability::HarnessModeSelection,
     ] {

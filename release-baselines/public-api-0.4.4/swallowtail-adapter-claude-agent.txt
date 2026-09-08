@@ -523,6 +523,7 @@ pub struct swallowtail_adapter_claude_agent::ClaudeCodeResponseProfileInput
 impl swallowtail_adapter_claude_agent::ClaudeCodeResponseProfileInput
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeResponseProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_claude_agent::ClaudeCodeResponseModelSelection, swallowtail_runtime::content::OperationContent, swallowtail_runtime::time::Deadline) -> Self
 pub fn swallowtail_adapter_claude_agent::ClaudeCodeResponseProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub fn swallowtail_adapter_claude_agent::ClaudeCodeResponseProfileInput::with_working_resource(self, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
 pub struct swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput
 impl swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeRunProfileInput::maximum_turns(&self) -> core::option::Option<swallowtail_adapter_claude_agent::ClaudeCodeMaximumTurns>

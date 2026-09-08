@@ -137,11 +137,14 @@ impl ClaudeCodeResponseOnlyDriver {
             .with_stage("response-only.run.start"),
         );
         let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
-        let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
+        let mut process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
         ))
         .with_arguments(arguments(&model, request.policy().reasoning_mode()))
         .with_environment([self.environment.clone()]);
+        if let Some(working_resource) = request.working_resource() {
+            process_request = process_request.with_working_resource(working_resource.clone());
+        }
         let process: Arc<dyn ProcessHandle> = Arc::from(
             process_service
                 .start(scope.clone(), process_request)

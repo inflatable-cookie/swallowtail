@@ -87,6 +87,17 @@ run. All other producer, review, merge, and provider-free work continues.
 Machine paths stay out of tracked docs; the retained probe owner holds the
 location receipt.
 
+### Candidate Source Disposition — 2026-09-08
+
+The prepared candidate `0673541d` is PARKED, not abandoned and not current.
+It remains the candidate of record this roadmap and the release note name,
+and the Desktop pre-release integration checkout pins it, so it is preserved
+rather than deleted. It is also stale: `main` has advanced well past it with
+cards 118, 125, 126, 137, 138 and more, so the eventual release will prepare
+a fresh candidate at a newer SHA under card 122's successor rather than
+tagging this one. Nothing is tagged from a parked candidate. Card 122 itself
+is complete; its closeout thread has no remaining work.
+
 ## Runway
 
 1. Cards 119 (merged `cfb0b106`), 120 (merged `4a27676d`), 121, and 124 merge on exact-head review.

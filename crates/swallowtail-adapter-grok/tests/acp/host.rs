@@ -40,6 +40,16 @@ impl FixtureHost {
         }
     }
 
+    /// Returns this host's task service, including any scenario-specific hold
+    /// on the ready-barrier task.
+    fn task_service(&self) -> ThreadTaskService {
+        ThreadTaskService(
+            Arc::clone(&self.spawned_scopes),
+            matches!(self.agent.scenario, Scenario::RegisteredReadyBlockedCall)
+                .then(|| std::time::Duration::from_millis(200)),
+        )
+    }
+
     /// Returns every deadline the route asked this host to wait on.
     fn observed_deadlines(&self) -> Vec<Deadline> {
         self.observed_deadlines
@@ -58,7 +68,7 @@ impl FixtureHost {
 
     fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
-            .with_task(Arc::new(ThreadTaskService(Arc::clone(&self.spawned_scopes))))
+            .with_task(Arc::new(self.task_service()))
             .with_time(Arc::new(self.clone()))
             .with_process(Arc::new(self.clone()))
             .with_credential(Arc::new(self.clone()))
@@ -163,6 +173,7 @@ impl TimeService for FixtureHost {
             Scenario::RegisteredOpenUnanswered
                 | Scenario::RegisteredOpenBlockedCall
                 | Scenario::RegisteredReadyUnreached
+                | Scenario::RegisteredReadyBlockedCall
         ) {
             // The registered-open deadline fires only once the provider has
             // actually received `session/new` and, when a test asks for it,
@@ -397,7 +408,9 @@ impl WorkingResourceIoService for FixtureHost {
     }
 }
 
-struct ThreadTaskService(Arc<Mutex<Vec<String>>>);
+/// Records spawned scopes, and can hold the ready-barrier task back so a test
+/// can make the opening deadline win that race by construction.
+struct ThreadTaskService(Arc<Mutex<Vec<String>>>, Option<std::time::Duration>);
 struct ThreadTask(Option<JoinHandle<()>>);
 
 impl ScopedTaskService for ThreadTaskService {
@@ -410,7 +423,13 @@ impl ScopedTaskService for ThreadTaskService {
             .lock()
             .expect("spawned scope lock")
             .push(scope.as_str().to_owned());
+        let delay = self
+            .1
+            .filter(|_| scope.as_str().contains("registered-ready"));
         Ok(Box::new(ThreadTask(Some(std::thread::spawn(move || {
+            if let Some(delay) = delay {
+                std::thread::sleep(delay);
+            }
             block_on(task);
         })))))
     }

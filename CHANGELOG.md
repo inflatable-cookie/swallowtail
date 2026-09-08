@@ -41,7 +41,9 @@ annotated Git tags from the canonical repository.
   runs on a scoped task under that same bound and is joined on every path.
   Each step is raced individually so a step that owns partial resources still
   runs its own cleanup, and the success boundary is checked against the ceiling
-  too, so opening can never succeed past it. Every failure after the lease is minted
+  too, so opening can never succeed past it. A cleanup that fails while the
+  barrier is being abandoned keeps its truth through abandonment, so the
+  working resource and credential stay held there as well. Every failure after the lease is minted
   closes it explicitly and reports its cleanup truth: a failed registered close
   is never a clean session close, and both the session-close and the
   open-abort paths retain the working resource and credential rather than
@@ -55,7 +57,8 @@ annotated Git tags from the canonical repository.
   name, cancellation of an in-flight call, settlement completed before terminal
   on both the prompt and the transport-failure paths, post-terminal and
   post-cancel refusal, refusal after a failed turn start, one shared cleanup
-  truth across concurrent settlement synchronized on the kernel freeze, the
+  truth across concurrent settlement, retained leases when cleanup fails at the
+  ready barrier, the
   ten-second ceiling capping a generous caller budget and bounding the ready
   barrier, unbound-turn and retained-lease refusal, an unanswered
   open that reaches `session/new` and expires on its deadline, retained

@@ -403,7 +403,7 @@ fn registered_route_services_with_budget(
     let services = local
         .services()
         .clone()
-        .with_task(Arc::new(ThreadTaskService(Arc::clone(&fixture.spawned_scopes))))
+        .with_task(Arc::new(fixture.task_service()))
         .with_time(Arc::new(fixture.clone()))
         .with_process(Arc::new(fixture.clone()))
         .with_credential(Arc::new(fixture.clone()))
@@ -1847,4 +1847,78 @@ fn the_courier_ready_barrier_runs_inside_the_opening_deadline() {
     );
     assert_eq!(local.registered_tool_lease_count(), 0);
     assert_eq!(local.operation_bridge_listener_count(), 0);
+}
+
+#[test]
+fn a_failed_cleanup_at_the_ready_barrier_retains_the_route_leases() {
+    // The provider spawns the courier, connects it, and starts a call the
+    // dispatcher will never settle, then answers session setup. The opening
+    // deadline wins the ready-barrier race, so the lease is settled there —
+    // and that settlement fails, because the host cannot join the call.
+    //
+    // The truth of that failed close must survive into the abandonment that
+    // follows: discarding it releases the working resource and the credential
+    // beside work the host is still holding.
+    let blocking = Arc::new(BlockingDispatcher {
+        entered: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        release: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        waker: Arc::new(Mutex::new(None)),
+    });
+    let host_id =
+        ExecutionHostId::new("fixture.host.grok.registered-ready-retained").expect("host");
+    let selected = selection(host_id.clone());
+    let fixture = FixtureHost::new(Scenario::RegisteredReadyBlockedCall);
+    fixture.fire_deadline_when(Arc::clone(&blocking.entered));
+    let executable =
+        swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
+    let environment =
+        EnvironmentRef::new("grok.fixture.registered-environment").expect("environment");
+    let (local, services) = registered_route_services_with_budget(
+        &host_id,
+        &fixture,
+        Arc::clone(&blocking) as Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+        courier_binary(),
+        &executable,
+        &environment,
+        Some(std::time::Duration::from_millis(50)),
+    );
+    let preparation = registered_preparation(
+        host_id,
+        swallowtail_testkit::fixture_admission(Arc::new(
+            swallowtail_testkit::ScriptedAdmissionPort::current(),
+        )),
+        executable,
+        environment,
+        RegisteredFixtureInput::default(),
+    );
+    let binding =
+        swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
+            .expect("mediated stdio selection qualifies")
+            .with_host(local.clone())
+            .with_open_deadline(registered_open_deadline())
+            .with_turn(registered_turn_id());
+    let driver = GrokAcpDriver::new(
+        EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
+        selected.credential,
+    )
+    .with_registered_tools(binding);
+    let Err(_) = block_on(driver.open_session(
+        selected.plan,
+        registered_open_request(selected.resource),
+        services,
+    )) else {
+        panic!("an open whose ready barrier expires must fail");
+    };
+    assert_eq!(
+        local.registered_tool_lease_count(),
+        1,
+        "the host retains the lease it could not join"
+    );
+    assert_eq!(
+        fixture.credential_releases.load(Ordering::SeqCst),
+        0,
+        "a failed registered cleanup at the ready barrier must not return the credential"
+    );
+    assert_eq!(fixture.resource_releases.load(Ordering::SeqCst), 0);
+    blocking.release();
 }

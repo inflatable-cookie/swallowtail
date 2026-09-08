@@ -156,6 +156,7 @@ pub(crate) struct PendingRegisteredOpen {
     launch: Option<RegisteredToolProxyLaunch>,
     declaration: GrokAcpMcpServerDeclaration,
     turn: RuntimeTurnId,
+    settled: Option<CleanupOutcome>,
     claimed: bool,
 }
 
@@ -192,7 +193,14 @@ impl PendingRegisteredOpen {
         services: &HostServices,
         cause: RegisteredToolCleanupCause,
     ) -> CleanupOutcome {
-        close_registered_lease(self.lease.take(), services, cause).await
+        let outcome = close_registered_lease(self.lease.take(), services, cause).await;
+        // Retained, not discarded: the abandonment that follows must report
+        // this truth so a failed close still retains the route's own leases.
+        self.settled = Some(match self.settled.take() {
+            Some(recorded) => worst_cleanup(recorded, outcome.clone()),
+            None => outcome.clone(),
+        });
+        outcome
     }
 
     /// Closes a lease that never reached an open session, with its truth.
@@ -203,7 +211,11 @@ impl PendingRegisteredOpen {
     ) -> CleanupOutcome {
         self.claimed = true;
         drop(self.launch.take());
-        close_registered_lease(self.lease.take(), services, cause).await
+        let closed = close_registered_lease(self.lease.take(), services, cause).await;
+        match self.settled.take() {
+            Some(recorded) => worst_cleanup(recorded, closed),
+            None => closed,
+        }
     }
 }
 
@@ -227,6 +239,22 @@ pub(crate) async fn close_registered_lease(
         return CleanupOutcome::NotApplicable;
     };
     close_lease(lease, services, cause).await
+}
+
+/// Reports the more serious of two cleanup truths.
+fn worst_cleanup(left: CleanupOutcome, right: CleanupOutcome) -> CleanupOutcome {
+    match (left, right) {
+        (CleanupOutcome::Failed(diagnostic), _) | (_, CleanupOutcome::Failed(diagnostic)) => {
+            CleanupOutcome::Failed(diagnostic)
+        }
+        (CleanupOutcome::Degraded(diagnostic), _) | (_, CleanupOutcome::Degraded(diagnostic)) => {
+            CleanupOutcome::Degraded(diagnostic)
+        }
+        (CleanupOutcome::Clean, _) | (_, CleanupOutcome::Clean) => CleanupOutcome::Clean,
+        (CleanupOutcome::NotApplicable, CleanupOutcome::NotApplicable) => {
+            CleanupOutcome::NotApplicable
+        }
+    }
 }
 
 async fn close_lease(
@@ -331,6 +359,7 @@ pub(crate) async fn prepare_registered(
         launch: Some(launch),
         declaration,
         turn,
+        settled: None,
         claimed: false,
     })
 }
@@ -377,4 +406,258 @@ fn registered_identity_rejected() -> RuntimeFailure {
         "swallowtail.grok.acp.registered_tool.identity_rejected",
         "Grok Build ACP registered-tool open could not bind its scope and turn identity",
     )
+}
+
+#[cfg(test)]
+mod tests_support {
+    use super::*;
+    use std::sync::Arc;
+    use swallowtail_core::{ConfiguredInstanceId, ExecutionHostId};
+    use swallowtail_runtime::{
+        BoxFuture, CleanupOutcome, Deadline, MonotonicInstant, RegisteredServerId,
+        RegisteredServerRevision, RegisteredToolBounds, RegisteredToolCall,
+        RegisteredToolDeclaration, RegisteredToolDispatchContext, RegisteredToolDispatcher,
+        RegisteredToolEffectPosture, RegisteredToolExecutionKind, RegisteredToolId,
+        RegisteredToolLimits, RegisteredToolLocalName, RegisteredToolNamespace,
+        RegisteredToolOutcome, RegisteredToolPreparation, RegisteredToolProtocolVersion,
+        RegisteredToolRetryPosture, RegisteredToolSchema, RegisteredToolSchemaDialect,
+        RegisteredToolSchemaDigest, RegisteredToolSchemaDocument, RegisteredToolSchemaMediaType,
+        RegisteredToolSchemaNamespace, RegisteredToolSelection, RegisteredToolSnapshot,
+        RegisteredToolSnapshotInput, RegisteredToolSource, RegisteredToolSourceId,
+        RegisteredToolTransport, RegisteredToolTransportSupport, RuntimeFailure, RuntimeTurnId,
+        ScopeId,
+    };
+
+    struct UnusedDispatcher;
+
+    impl RegisteredToolDispatcher for UnusedDispatcher {
+        fn dispatch(
+            &self,
+            _call: RegisteredToolCall,
+            _context: RegisteredToolDispatchContext,
+        ) -> BoxFuture<'_, Result<RegisteredToolOutcome, RuntimeFailure>> {
+            Box::pin(async { Err(super::tests::fixture_failure()) })
+        }
+    }
+
+    fn schema() -> RegisteredToolSchema {
+        RegisteredToolSchema::new(
+            RegisteredToolSchemaNamespace::new("desktop.schema").expect("namespace"),
+            RegisteredToolSchemaMediaType::new("application/json").expect("media type"),
+            RegisteredToolSchemaDialect::new("json-schema-2020-12").expect("dialect"),
+            RegisteredServerRevision::new("1").expect("revision"),
+            RegisteredToolSchemaDigest::new("sha256:fixture").expect("digest"),
+            RegisteredToolSchemaDocument::new("{\"type\":\"object\"}").expect("document"),
+        )
+    }
+
+    /// Opens one real lease, then binds it to a bridge the test can hold open.
+    ///
+    /// Only the kernel can mint a lease, so the lease is genuine; the close it
+    /// is settled through is the held fixture bridge.
+    pub(super) fn held_session() -> (
+        GrokRegisteredToolSession,
+        HostServices,
+        futures_channel::oneshot::Sender<CleanupOutcome>,
+    ) {
+        let host = ExecutionHostId::new("grok.unit.registered-host").expect("host");
+        let tool = RegisteredToolId::new(
+            RegisteredToolNamespace::new("desktop").expect("namespace"),
+            RegisteredToolLocalName::new("reconcile").expect("local name"),
+        );
+        let snapshot = Arc::new(
+            RegisteredToolSnapshot::new(RegisteredToolSnapshotInput {
+                server_id: RegisteredServerId::new("desktop.registered-tools").expect("server"),
+                revision: RegisteredServerRevision::new("1").expect("revision"),
+                execution_host_id: host.clone(),
+                declarations: vec![
+                    RegisteredToolDeclaration::new(
+                        tool.clone(),
+                        RegisteredToolExecutionKind::Mcp,
+                        schema(),
+                        schema(),
+                        RegisteredToolEffectPosture::ReadOnly,
+                        RegisteredToolRetryPosture::ConsumerRetryable,
+                        RegisteredToolBounds::ceiling(),
+                    )
+                    .expect("declaration"),
+                ],
+                transports: vec![
+                    RegisteredToolTransportSupport::new(
+                        RegisteredToolTransport::HostMediatedCallback,
+                        [RegisteredToolProtocolVersion::new(
+                            swallowtail_runtime::REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION,
+                        )
+                        .expect("protocol")],
+                    )
+                    .expect("transport"),
+                ],
+                required_services: [].into_iter().collect(),
+                credential_references: Vec::new(),
+                executable_recipes: Vec::new(),
+                environment_recipes: Vec::new(),
+                bounds: RegisteredToolBounds::ceiling(),
+                source: RegisteredToolSource::new(
+                    RegisteredToolSourceId::new("desktop.registration.1").expect("source"),
+                    MonotonicInstant::from_ticks(1),
+                ),
+            })
+            .expect("snapshot"),
+        );
+        let selection = RegisteredToolSelection::new(
+            Arc::clone(&snapshot),
+            [tool],
+            RegisteredToolTransport::HostMediatedCallback,
+            RegisteredToolProtocolVersion::new(
+                swallowtail_runtime::REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION,
+            )
+            .expect("protocol"),
+        )
+        .expect("selection");
+        let preparation = RegisteredToolPreparation::new(
+            snapshot,
+            selection,
+            swallowtail_testkit::fixture_admission(Arc::new(
+                swallowtail_testkit::ScriptedAdmissionPort::current(),
+            )),
+            RegisteredToolLimits::ceiling(),
+        );
+        let local = swallowtail_host_local::LocalProcessHost::builder(
+            swallowtail_host_local::LocalProcessLimits::default(),
+        )
+        .with_registered_tool_dispatcher(Arc::new(UnusedDispatcher))
+        .build_services(host.clone());
+        let lease = futures_executor::block_on(
+            preparation
+                .prepare(
+                    local.services(),
+                    ConfiguredInstanceId::new("grok.unit.instance").expect("instance"),
+                    ScopeId::new("grok.unit.scope").expect("scope"),
+                    RuntimeTurnId::new("grok.unit.turn").expect("turn"),
+                    Deadline::at(MonotonicInstant::from_ticks(10_000_000_000)),
+                )
+                .expect("prepared registration")
+                .open(),
+        )
+        .expect("lease opens");
+        let (sender, receiver) = futures_channel::oneshot::channel();
+        let services = HostServices::new(host).with_registered_tool_bridge(Arc::new(
+            super::tests::HeldBridge {
+                release: std::sync::Mutex::new(Some(receiver)),
+            },
+        ));
+        (
+            GrokRegisteredToolSession::new(
+                lease,
+                RuntimeTurnId::new("grok.unit.turn").expect("turn"),
+            ),
+            services,
+            sender,
+        )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::future::Future;
+    use std::task::Context;
+    use swallowtail_runtime::{
+        BoxFuture, CleanupOutcome, RegisteredToolAdmissionState, RegisteredToolBridgeHostService,
+        RegisteredToolCompletionState, RegisteredToolLifecycleState, RegisteredToolOpenRequest,
+        RuntimeFailure,
+    };
+
+    /// A bridge whose close finishes only when the test releases it.
+    ///
+    /// This is what makes the overlap a construction rather than a race: the
+    /// first settlement provably cannot complete until the second caller has
+    /// already been polled into its waiting path.
+    pub(super) struct HeldBridge {
+        pub(super) release:
+            std::sync::Mutex<Option<futures_channel::oneshot::Receiver<CleanupOutcome>>>,
+    }
+
+    impl RegisteredToolBridgeHostService for HeldBridge {
+        fn open(
+            &self,
+            _request: RegisteredToolOpenRequest,
+        ) -> BoxFuture<'_, Result<RegisteredToolBridgeLease, RuntimeFailure>> {
+            Box::pin(async { Err(fixture_failure()) })
+        }
+
+        fn completion_gate(
+            &self,
+            _lease: &RegisteredToolBridgeLease,
+        ) -> BoxFuture<'_, Result<RegisteredToolCompletionState, RuntimeFailure>> {
+            Box::pin(async {
+                Ok(RegisteredToolCompletionState::new(
+                    RegisteredToolAdmissionState::Frozen,
+                    RegisteredToolLifecycleState::Frozen,
+                    1,
+                    false,
+                ))
+            })
+        }
+
+        fn close(
+            &self,
+            _lease: RegisteredToolBridgeLease,
+            _cause: RegisteredToolCleanupCause,
+        ) -> BoxFuture<'_, Result<CleanupOutcome, RuntimeFailure>> {
+            let receiver = self
+                .release
+                .lock()
+                .expect("held bridge lock")
+                .take()
+                .expect("close is called once");
+            Box::pin(async move { Ok(receiver.await.unwrap_or(CleanupOutcome::NotApplicable)) })
+        }
+    }
+
+    pub(super) fn fixture_failure() -> RuntimeFailure {
+        RuntimeFailure::new(SafeDiagnostic::new(
+            "fixture.grok.registered_tool.unused",
+            "fixture bridge entry point is not exercised",
+        ))
+    }
+
+    /// Two settlers overlap by construction, not by timing.
+    ///
+    /// The second caller is polled while the first is provably still inside
+    /// its close, so it must take the waiting path. Both must then observe the
+    /// same cleanup truth: a caller that read a not-yet-recorded outcome could
+    /// publish a clean terminal or release a credential beside retained work.
+    #[test]
+    fn a_second_settler_awaits_the_first_and_sees_the_same_truth() {
+        let (session, services, release) = super::tests_support::held_session();
+        let waker = futures_util::task::noop_waker();
+        let mut context = Context::from_waker(&waker);
+        let mut first =
+            Box::pin(session.settle(&services, RegisteredToolCleanupCause::Cancellation));
+        let mut second =
+            Box::pin(session.settle(&services, RegisteredToolCleanupCause::ExplicitClose));
+        assert!(
+            first.as_mut().poll(&mut context).is_pending(),
+            "the first settler enters the held close"
+        );
+        assert!(
+            second.as_mut().poll(&mut context).is_pending(),
+            "the second settler must wait while the first close is in flight"
+        );
+        let failed = CleanupOutcome::Failed(SafeDiagnostic::new(
+            "fixture.grok.registered_tool.retained",
+            "fixture close retained its lease",
+        ));
+        release.send(failed.clone()).expect("release is delivered");
+        let first = futures_executor::block_on(first);
+        let second = futures_executor::block_on(second);
+        assert_eq!(first, failed);
+        assert_eq!(
+            second, failed,
+            "a concurrent settler must observe the first close's truth, never a default"
+        );
+        assert!(!session.settled_clean());
+        assert!(session.cleanup_failed());
+    }
 }

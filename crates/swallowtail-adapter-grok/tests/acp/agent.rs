@@ -19,6 +19,7 @@ enum Scenario {
     RegisteredOpenUnanswered,
     RegisteredOpenBlockedCall,
     RegisteredReadyUnreached,
+    RegisteredReadyBlockedCall,
     RegisteredTurn,
 }
 
@@ -151,8 +152,10 @@ impl Agent {
                 // scenario does exactly that, then never answers session setup,
                 // so an outstanding registered call exists while the open is
                 // still in flight.
-                if matches!(self.scenario, Scenario::RegisteredOpenBlockedCall)
-                    && let Some(child) = state.spawned_mcp.first().cloned()
+                if matches!(
+                    self.scenario,
+                    Scenario::RegisteredOpenBlockedCall | Scenario::RegisteredReadyBlockedCall
+                ) && let Some(child) = state.spawned_mcp.first().cloned()
                 {
                     drive_courier_call(&child).map_err(|()| fixture_failure())?;
                 }
@@ -282,6 +285,7 @@ impl Agent {
                     Scenario::RegisteredOpenUnanswered
                     | Scenario::RegisteredOpenBlockedCall
                     | Scenario::RegisteredReadyUnreached
+                    | Scenario::RegisteredReadyBlockedCall
                     | Scenario::PermissionWithoutTurn
                     | Scenario::RecoveryForeign
                     | Scenario::RecoveryCallback

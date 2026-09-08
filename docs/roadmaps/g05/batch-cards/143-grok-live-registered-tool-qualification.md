@@ -54,18 +54,18 @@ claims.
 
 ## Acceptance Criteria
 
-- [ ] the registered-tool projection is qualified only for exact maintained
+- [x] the registered-tool projection is qualified only for exact maintained
       Grok Build `1.0.4..=1.0.5`, with `NotRepresented` registered permission,
       `NoProgress`, and selected-skill delivery matching what this card proves
-- [ ] deterministic tests bind the qualification to the accepted live capsule
+- [x] deterministic tests bind the qualification to the accepted live capsule
       identities and retain byte-identical registered-tool omission
-- [ ] `client_mcp_servers`, `registered_tools`, and `consumer_tool_exchange`
+- [x] `client_mcp_servers`, `registered_tools`, and `consumer_tool_exchange`
       reconcile to available from the live call evidence, without widening any
       other route or segment
-- [ ] selected-skill delivery is either implemented through a separate bounded
+- [x] selected-skill delivery is either implemented through a separate bounded
       frozen ACP surface or closed as a cited route limitation; no user-prompt
       concatenation and no claim from the echo capsule
-- [ ] guide, Contract 063, feature matrix, changelog, and additive API baseline
+- [x] guide, Contract 063, feature matrix, changelog, and additive API baseline
       agree with the exact result
 
 ## Validation
@@ -101,3 +101,46 @@ does not undo the independently proved MCP/tool qualification.
 ## Auto-Continuation
 
 No. Stop at exact-head independent review. The queue owns merge and closeout.
+
+## Result
+
+The route is qualified. `grok_build_acp_registered_tool_qualification()` now
+returns `Qualified(GROK_ACP_REGISTERED_TOOL_ROUTE)` with exactly the dimensions
+the accepted Card 128 capsules proved: `NotRepresented` one-shot Deny strength
+(the provider-owned permission exchange stays a separate channel), `NoProgress`,
+and `NotCarried` selected-skill delivery. The route-local mediation-kind row
+moved from `Unknown`/`Unavailable` with `real_route_gate_pending` to
+`Supported`/`Available` at `RouteValidation`. `GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE`
+is gone; the unreleased 0.4.4 API baseline swaps it for
+`GROK_ACP_REGISTERED_TOOL_ROUTE`, and no item of the immutable 0.4.3 surface
+was removed.
+
+Route tests freeze Research 295's identities: source-linked Swallowtail
+`04e9b2dd`, Desktop task `10bdda2b`, PR 169 head `77bced72`, review `5586043120`,
+merge `6b22c829`, closeout `c495b6a6`, and per-segment version receipts and
+capsule SHA-256s for exact `1.0.4` and `1.0.5`. The capsule test asserts both
+segments assess `Maintained` on `grok-build.executable` with `grok-4.6`, that
+`1.0.5` is the maintained endpoint, that `1.0.3`/`1.0.6` carry no qualified
+claim, and that the projected capability, mediation, permission, progress, and
+skill rows publish the exact qualified truth. Omission stays byte-identical:
+an open without a binding still sends `mcpServers: []`.
+
+Selected-skill delivery settled as a cited route limitation, independent of the
+echo capsule. Frozen ACP v1 session setup (`session/new`/`session/load`/
+`session/resume`) carries `cwd` and `mcpServers` only; the frozen Grok identity
+and capability corpora (Research 289's static search, Research 204/219/247)
+name no session-scoped, distinctly labelled skill input; the accepted capsules
+carried none; Grok-native skills are ambient configuration, and `_meta` or
+user-prompt concatenation are inadmissible. `selected_skill_bundle` therefore
+stays `no` as a `provider_limitation` with a new Card129 ledger row; the three
+MCP/tool cells (`client_mcp_servers`, `consumer_tool_exchange`, `registered_tools`)
+reconcile to `yes` with their producer-gap entries removed, leaving only the
+card 130 `persistent_permission_grants` gap on this route. Contract 063's Grok
+placement row and progress paragraph, the route guide (new Consumer Registered
+Tools section), and `[Unreleased]` record the same result.
+
+Validation: `cargo fmt -p swallowtail-adapter-grok -- --check`,
+`effigy validate:focused swallowtail-adapter-grok`,
+`effigy package:verify-affected swallowtail-adapter-grok`,
+`effigy package:api`, `effigy qa:routes`, `effigy qa:docs`,
+`effigy qa:northstar`, and `git diff --check` pass at the reported head.

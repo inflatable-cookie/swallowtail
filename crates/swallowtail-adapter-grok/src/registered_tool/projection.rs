@@ -1,34 +1,39 @@
 //! Contract 061 projection of this route's registered-tool mediation.
 //!
 //! The rows are descriptive. They authorize no dispatch, open no lease, and
-//! claim no support. The route-local mediation kind is published as its own
+//! add no runtime work. The route-local mediation kind is published as its own
 //! bounded namespaced row so a consumer reads
 //! `route-local-acp-client-mcp-courier` rather than inferring common dispatch
 //! from the portable carrier enum: Grok exposes no host-dispatch callback, so
 //! no such claim exists to make.
 //!
-//! The registered capability itself is published `Unqualified`. The typed
-//! mapping and the provider-free callable proof are present, and the exact
-//! route was observed admitting a client-supplied ACP MCP server, but the
-//! disposable real-route gate — one real Grok turn calling a real registered
-//! tool through a real courier — is separately authorized and has not run.
-//! Missing evidence stays a blocked capability rather than an inferred one.
+//! The registered capability itself is published
+//! [`RegisteredToolRouteQualification::Qualified`] on the strength of the
+//! accepted Card 128 live gate: exact Grok Build `1.0.4` and `1.0.5` each
+//! admitted the Swallowtail-owned mediated-stdio courier, listed its tools,
+//! and completed one registered call through it (Research 295). The qualified
+//! dimensions are exactly what those capsules proved — the provider cannot
+//! represent a consumer Deny, the route delivers no consumer tool progress,
+//! and the capsules carried no selected skill bundle. Versions outside the
+//! maintained `1.0.4..=1.0.5` executable segments never reach this projection:
+//! the carrier claim is admissible only alongside the already qualified
+//! `grok-build.executable` claim.
 
 use super::carrier::{GROK_ACP_REGISTERED_TOOL_MEDIATION, GrokRegisteredToolCarrier};
 use super::version::GROK_ACP_REGISTERED_TOOL_MCP_PROTOCOL_VERSION;
-use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
     ConsumerRouteActorPosture, ConsumerRouteApplicability, ConsumerRouteAvailability,
-    ConsumerRouteAvailabilityDimension, ConsumerRouteControlValue, ConsumerRouteEnumerableValue,
-    ConsumerRouteEnumeratedValues, ConsumerRouteEvidenceStrength, ConsumerRouteLifecycle,
-    ConsumerRouteMutationAuthority, ConsumerRouteOmissionSemantics,
-    ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure,
-    ConsumerRouteProjectionRow, ConsumerRouteProjectionSourceId,
+    ConsumerRouteControlValue, ConsumerRouteEnumerableValue, ConsumerRouteEnumeratedValues,
+    ConsumerRouteEvidenceStrength, ConsumerRouteLifecycle, ConsumerRouteMutationAuthority,
+    ConsumerRouteOmissionSemantics, ConsumerRouteProjectionContribution,
+    ConsumerRouteProjectionFailure, ConsumerRouteProjectionRow, ConsumerRouteProjectionSourceId,
     ConsumerRouteProjectionSourceIdentity, ConsumerRouteProjectionSourceKind,
-    ConsumerRouteRowIdentity, ConsumerRouteSafeReason, ConsumerRouteSourceClass,
-    ConsumerRouteStateSupport, ConsumerRouteSupportPosture, ConsumerRouteValueDomain,
-    ConsumerRouteValueKind, RegisteredCapabilityProjectionInput, RegisteredToolReadiness,
-    RegisteredToolRouteQualification, registered_capability_feature_id,
+    ConsumerRouteRowIdentity, ConsumerRouteSourceClass, ConsumerRouteStateSupport,
+    ConsumerRouteSupportPosture, ConsumerRouteValueDomain, ConsumerRouteValueKind,
+    RegisteredCapabilityProjectionInput, RegisteredToolPermissionStrength,
+    RegisteredToolProgressMode, RegisteredToolQualifiedRoute, RegisteredToolReadiness,
+    RegisteredToolRouteQualification, RegisteredToolSkillDelivery,
+    registered_capability_feature_id,
 };
 
 /// Bounded source id of this route's registered-tool contribution.
@@ -37,19 +42,31 @@ pub const GROK_ACP_REGISTERED_TOOL_SOURCE: &str = "grok-build.acp.registered-too
 /// Bounded semantic id of the route-local mediation-kind row.
 pub const GROK_ACP_MEDIATION_KIND_SEMANTIC_ID: &str = "registered-tool.mediation-kind";
 
-/// Safe reason published while the disposable real-route gate has not run.
-pub const GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE: &str =
-    "swallowtail.grok.acp.registered_tool.real_route_gate_pending";
+/// The exact registered-capability dimensions the accepted live gate proved.
+///
+/// Research 295 freezes the evidence: on exact Grok Build `1.0.4` and `1.0.5`
+/// the courier was admitted, its tools were listed, one registered call
+/// completed, and the turn reached `end_turn`. The provider-owned one-shot
+/// permission exchange is a separate channel, so a consumer Deny is
+/// `NotRepresented`; no consumer tool progress was delivered (`NoProgress`);
+/// and no capsule carried a selected skill, whose ACP v1 surface does not
+/// exist (`NotCarried`).
+pub const GROK_ACP_REGISTERED_TOOL_ROUTE: RegisteredToolQualifiedRoute =
+    RegisteredToolQualifiedRoute::new(
+        RegisteredToolPermissionStrength::NotRepresented,
+        RegisteredToolProgressMode::NoProgress,
+        RegisteredToolSkillDelivery::NotCarried,
+    );
 
 /// Returns this route's registered-tool qualification.
 ///
-/// It stays [`RegisteredToolRouteQualification::Unqualified`] until the
-/// separately authorized disposable real-route gate passes. A callable seam,
-/// provider-free fixtures, and an admitted client-supplied MCP declaration do
-/// not qualify a route.
+/// [`RegisteredToolRouteQualification::Qualified`] rests only on the accepted
+/// live capsules for exact Grok Build `1.0.4` and `1.0.5`; a callable seam,
+/// provider-free fixtures, and an admitted client-supplied MCP declaration
+/// never qualified a route on their own.
 #[must_use]
 pub const fn grok_build_acp_registered_tool_qualification() -> RegisteredToolRouteQualification {
-    RegisteredToolRouteQualification::Unqualified
+    RegisteredToolRouteQualification::Qualified(GROK_ACP_REGISTERED_TOOL_ROUTE)
 }
 
 /// Projects the route-local registered-tool mediation as a Contract 061
@@ -90,6 +107,11 @@ pub fn project_grok_build_acp_registered_tool(
 }
 
 /// Publishes the exact route-local mediation kind and its carrier identities.
+///
+/// The mediation is the mechanism the qualified route itself uses: the
+/// accepted live capsules ran one registered call through this exact courier
+/// shape, so the row publishes route-validation support instead of the
+/// unknown posture it carried while the gate was pending.
 fn mediation_kind_row(
     applicability: &ConsumerRouteApplicability,
     carrier: &GrokRegisteredToolCarrier,
@@ -112,11 +134,11 @@ fn mediation_kind_row(
         applicability.clone(),
         source.clone(),
         ConsumerRouteSourceClass::AdapterPreparedInput,
-        ConsumerRouteEvidenceStrength::RuntimeType,
+        ConsumerRouteEvidenceStrength::RouteValidation,
         ConsumerRouteLifecycle::SelectionSummary,
     )
-    .with_support(ConsumerRouteSupportPosture::Unknown)
-    .with_availability(ConsumerRouteAvailability::Unavailable)
+    .with_support(ConsumerRouteSupportPosture::Supported)
+    .with_availability(ConsumerRouteAvailability::Available)
     .with_actor_posture(ConsumerRouteActorPosture::Informational)
     .with_state_support(ConsumerRouteStateSupport::descriptor_only())
     .with_mutation_authority(ConsumerRouteMutationAuthority::Absent)
@@ -124,13 +146,5 @@ fn mediation_kind_row(
         ConsumerRouteValueKind::BoundedEnumeration,
         ConsumerRouteValueDomain::Enumerated(values),
         ConsumerRouteOmissionSemantics::NotSelectable,
-    ))
-    .with_safe_reason(ConsumerRouteSafeReason::new(
-        ConsumerRouteAvailabilityDimension::SupportAuthority,
-        source.id().clone(),
-        SafeDiagnostic::new(
-            GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE,
-            "callable seam present; live gate pending",
-        ),
-    )?))
+    )))
 }

@@ -8,6 +8,8 @@ The route is `grok-build.acp`, driver ID `swallowtail.grok-build.acp`, over
 ACP v1 stdio. Choose it for the installed subscription harness. It can expose
 answerable one-shot permissions on an explicitly opted-in interactive session;
 structured runs and the default session profile reject permission requests.
+On the maintained `1.0.4..=1.0.5` segments it also carries consumer registered
+tools through the Swallowtail-owned courier.
 Reject it when the application needs hosted xAI inference, usage, or public
 provider-session management.
 
@@ -115,6 +117,30 @@ bounded attachment recovery after process loss. This reattaches the durable
 provider session without claiming transcript replay or interrupted-turn
 reconciliation. There is no public load or resume operation.
 
+## Consumer Registered Tools
+
+On the maintained `1.0.4..=1.0.5` segments the route carries consumer
+registered tools. `GrokRegisteredToolBinding::qualify` binds one Contract 063
+`RegisteredToolPreparation`, and an interactive session opens with
+`GrokPreparedSession::open_registered_session`. The Swallowtail-owned
+mediated-stdio courier is then declared as one reserved entry in the ACP
+`session/new` `mcpServers` list; Grok spawns that child, and every admitted
+call settles through the Contract 063 kernel. The lease is bound to one exact
+turn and settles at its terminal or on cancellation.
+
+The qualified truth is exact: Grok Build admits the client-declared server and
+calls its tools, but it cannot represent a consumer Deny (the provider's
+one-shot permission exchange is a separate channel), and the route delivers no
+consumer tool progress. A session that opens without a registered binding is
+byte-identical to the plain route: `session/new` still carries `mcpServers:
+[]`.
+
+Selected-skill bundles are not carried. ACP v1 session setup has no
+session-scoped, distinctly labelled skill input, the frozen Grok artifacts name
+none, and the accepted live capsules carried none; Grok-native skills are
+ambient configuration, which is not an opted-in bundle. Appending skill text
+to the user prompt is not an admissible substitute.
+
 Both operation shapes are shown in
 [`prepared_grok_build_acp`](../../crates/swallowtail-adapter-grok/examples/prepared_grok_build_acp.rs).
 
@@ -137,8 +163,12 @@ to infer retry or authentication policy.
 ## Unsupported
 
 The route has no usage or billed-cost evidence, reasoning control, structured
-output, attachments, consumer tools, question response, external search,
-provider-session management, or provider-managed retry.
+output, attachments, selected-skill bundles (see above), question response,
+external search, provider-session management, or provider-managed retry.
+Consumer registered tools are qualified on the maintained `1.0.4..=1.0.5`
+segments only, with the exact Deny and progress bounds stated above; no
+registered-tool claim extends to deprecated `0.2.x` segments or unverified
+newer points.
 
 Promotion requires an exact Grok Build surface and release, prepared-plan and
 access binding, bounded ACP fixtures, lifecycle tests, and route-matrix

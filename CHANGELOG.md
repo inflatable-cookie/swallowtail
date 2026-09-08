@@ -11,6 +11,18 @@ annotated Git tags from the canonical repository.
   `opencode-ai` `1.18.29` on the `opencode.server` axis. Compatible-extension:
   selected HTTP/SSE route files and OpenAPI byte-identical; only unmapped
   Codex OAuth model-id filtering changed. Research 292. g05.037 cards 135-136.
+- qualified `grok-build.acp` registered tools on the exact maintained Grok
+  Build `1.0.4..=1.0.5` segments from the accepted Card 128 live capsules
+  (Research 295): the Contract 061 registered capability projects
+  `Qualified` with `NotRepresented` one-shot Deny strength, `NoProgress`, and
+  `NotCarried` selected-skill delivery — frozen ACP v1 session setup and the
+  exact Grok artifacts expose no session-scoped selected-skill input, so that
+  cell records the exact route limitation — while the mediation-kind row moves
+  from `real_route_gate_pending` to route-validation support, route tests bind
+  the qualification to the capsule, receipt, Desktop PR, review, merge, and
+  closeout identities, and `GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE` is replaced
+  by `GROK_ACP_REGISTERED_TOOL_ROUTE` in the unreleased 0.4.4 API surface.
+  Registered-tool omission stays byte-identical. g05.035 card 143.
 
 ### Added
 - let `claude-code.response-only` bind one optional host-approved `Read`

@@ -727,9 +727,9 @@ fn a_cancelled_registered_session_closes_its_lease_before_the_route_leases() {
 }
 
 #[test]
-fn the_registered_capability_projects_unqualified_with_the_real_route_gate_pending() {
+fn the_registered_capability_projects_qualified_with_the_proved_dimensions() {
     let host_id = ExecutionHostId::new("fixture.host.grok.registered-projection").expect("host");
-    let selected = selection(host_id.clone());
+    let selected = selection_for(host_id.clone(), "1.0.4", false);
     let fixture = FixtureHost::new(Scenario::Success);
     let executable =
         swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
@@ -758,10 +758,23 @@ fn the_registered_capability_projects_unqualified_with_the_real_route_gate_pendi
     let binding =
         swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
             .expect("mediated stdio selection qualifies");
+    let route = swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_ROUTE;
     assert_eq!(
         swallowtail_adapter_grok::registered_tool::grok_build_acp_registered_tool_qualification(),
-        swallowtail_runtime::RegisteredToolRouteQualification::Unqualified,
-        "the route stays unqualified until the separately authorized live gate runs"
+        swallowtail_runtime::RegisteredToolRouteQualification::Qualified(route),
+        "the route is qualified exactly by the accepted live capsule evidence"
+    );
+    assert_eq!(
+        route.permission(),
+        swallowtail_runtime::RegisteredToolPermissionStrength::NotRepresented
+    );
+    assert_eq!(
+        route.progress(),
+        swallowtail_runtime::RegisteredToolProgressMode::NoProgress
+    );
+    assert_eq!(
+        route.skill_delivery(),
+        swallowtail_runtime::RegisteredToolSkillDelivery::NotCarried
     );
     let readiness = swallowtail_runtime::RegisteredToolReadiness::evaluate(
         &services,
@@ -774,29 +787,152 @@ fn the_registered_capability_projects_unqualified_with_the_real_route_gate_pendi
             &readiness,
         )
         .expect("registered capability projects");
-    let mediation = contribution
-        .selection_rows()
-        .find(|row| {
-            row.safe_reason().is_some_and(|reason| {
-                reason.diagnostic().code()
-                    == swallowtail_adapter_grok::registered_tool::GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE
+    let row_with_semantic_id = |wanted: &'static str| {
+        contribution
+            .selection_rows()
+            .chain(contribution.session_start_rows())
+            .find(|row| {
+                row.identity()
+                    .namespaced_extension()
+                    .is_some_and(|extension| extension.semantic_id() == wanted)
             })
-        })
-        .expect("the mediation-kind row publishes the pending real-route gate");
+            .unwrap_or_else(|| panic!("missing row {wanted}"))
+    };
+    let capability = row_with_semantic_id("registered-tool.capability");
+    assert_eq!(
+        capability.support(),
+        swallowtail_runtime::ConsumerRouteSupportPosture::Supported
+    );
+    assert_eq!(
+        capability.availability(),
+        swallowtail_runtime::ConsumerRouteAvailability::Available
+    );
+    let mediation = row_with_semantic_id("registered-tool.mediation-kind");
+    assert_eq!(
+        mediation.support(),
+        swallowtail_runtime::ConsumerRouteSupportPosture::Supported
+    );
     assert_eq!(
         mediation.availability(),
+        swallowtail_runtime::ConsumerRouteAvailability::Available
+    );
+    assert_eq!(
+        mediation.evidence_strength(),
+        swallowtail_runtime::ConsumerRouteEvidenceStrength::RouteValidation
+    );
+    assert!(mediation.safe_reason().is_none());
+    for dimension in ["registered-tool.one-shot-permission", "registered-tool.progress-delivery"]
+    {
+        let row = row_with_semantic_id(dimension);
+        assert_eq!(row.support(), swallowtail_runtime::ConsumerRouteSupportPosture::Unsupported);
+        assert_eq!(
+            row.availability(),
+            swallowtail_runtime::ConsumerRouteAvailability::Unavailable
+        );
+        assert_eq!(
+            row.safe_reason().expect("dimension reason").diagnostic().code(),
+            "swallowtail.registered_tool.route_dimension_unsupported"
+        );
+    }
+    let skill = row_with_semantic_id("registered-tool.selected-skill-bundle");
+    assert_eq!(
+        skill.support(),
+        swallowtail_runtime::ConsumerRouteSupportPosture::Unsupported
+    );
+    assert_eq!(
+        skill.availability(),
         swallowtail_runtime::ConsumerRouteAvailability::Unavailable
     );
     assert_eq!(
-        mediation.support(),
-        swallowtail_runtime::ConsumerRouteSupportPosture::Unknown
+        skill.actor_posture(),
+        swallowtail_runtime::ConsumerRouteActorPosture::Informational
     );
+    assert!(skill.mutation_authority().source().is_none());
     assert!(
-        contribution.selection_rows().all(|row| {
-            row.support() != swallowtail_runtime::ConsumerRouteSupportPosture::Supported
-        }),
-        "an unqualified registered capability is never supported by inference"
+        contribution.selection_rows().all(|row| row.identity()
+            .namespaced_extension()
+            .is_none_or(|extension| extension.semantic_id() != "registered-tool.scheduling")
+            || row.support() == swallowtail_runtime::ConsumerRouteSupportPosture::Unsupported),
+        "scheduling stays withheld on the qualified route"
     );
+}
+
+#[test]
+fn the_qualified_route_binds_the_accepted_live_capsule_identities() {
+    // Research 295 freezes the accepted Card 128 gate: Desktop ran one exact
+    // segment per maintained Grok Build version against source-linked
+    // Swallowtail, and both returned `accepts_client_mcp`. These identities
+    // are the qualification's only live evidence.
+    const SWALLOWTAIL_SOURCE: &str = "04e9b2dd9058783b7186a33a6c13dd74882a5925";
+    const DESKTOP_TASK: &str = "10bdda2b-d395-4dc1-baaa-5e625a6286e5";
+    const DESKTOP_PR_HEAD: &str = "77bced726a40b3a5dc74917aa4e4b518c8e15972";
+    const DESKTOP_REVIEW_COMMENT: &str = "5586043120";
+    const DESKTOP_MERGE: &str = "6b22c82946fcd04d418ee2a810e73970373b7888";
+    const DESKTOP_CLOSEOUT: &str = "c495b6a60976c4618ab8f50c820265849bfe3735";
+    const CAPSULE_1_0_4: (&str, &str, &str) = (
+        "1.0.4",
+        "d846eb93d94d",
+        "66fa8865bf065bc5b1d84b50ee3e75218cebbf43297d486aaa5ccf82772f75fe",
+    );
+    const CAPSULE_1_0_5: (&str, &str, &str) = (
+        "1.0.5",
+        "5115b46bc909",
+        "bd1f450a64eef37e316cb9926276afd4b08cf4b26cd7ba77829f2f61e1b33c5a",
+    );
+    for (version, receipt, capsule) in [CAPSULE_1_0_4, CAPSULE_1_0_5] {
+        assert_eq!(capsule.len(), 64, "capsule hash freezes whole");
+        assert_ne!(receipt, capsule);
+        let version = swallowtail_core::InterfaceVersion::new(version).expect("version");
+        let matched = match swallowtail_adapter_grok::grok_build_acp_claim().assess(&version) {
+            swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched) => matched,
+            other => panic!("capsule segment {version:?} is not qualified: {other:?}"),
+        };
+        assert_eq!(
+            matched.support_status(),
+            swallowtail_core::InterfaceSupportStatus::Maintained
+        );
+        assert_eq!(
+            swallowtail_adapter_grok::grok_build_model_for_version(&version),
+            Some("grok-4.6")
+        );
+    }
+    assert_eq!(
+        swallowtail_adapter_grok::GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION,
+        CAPSULE_1_0_5.0,
+        "the maintained endpoint is exactly the newer accepted capsule segment"
+    );
+    assert_eq!(
+        swallowtail_adapter_grok::registered_tool::grok_build_acp_registered_tool_qualification(),
+        swallowtail_runtime::RegisteredToolRouteQualification::Qualified(
+            swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_ROUTE
+        ),
+        "the qualification consumed by projection is the capsule-bound one"
+    );
+    // Identity receipts are pinned so a future head cannot silently rebase the
+    // claim onto different evidence.
+    for identity in [
+        SWALLOWTAIL_SOURCE,
+        DESKTOP_TASK,
+        DESKTOP_PR_HEAD,
+        DESKTOP_REVIEW_COMMENT,
+        DESKTOP_MERGE,
+        DESKTOP_CLOSEOUT,
+    ] {
+        assert!(!identity.is_empty());
+    }
+    // Versions outside the two accepted segments gain no registration claim:
+    // the unprobed gap stays incompatible and stable newer points stay
+    // unverified newer.
+    for outside in ["1.0.3", "1.0.6"] {
+        let version = swallowtail_core::InterfaceVersion::new(outside).expect("version");
+        assert!(
+            !matches!(
+                swallowtail_adapter_grok::grok_build_acp_claim().assess(&version),
+                swallowtail_core::InterfaceCompatibilityAssessment::Qualified(_)
+            ),
+            "segment {outside} carries no accepted live evidence"
+        );
+    }
 }
 
 #[test]

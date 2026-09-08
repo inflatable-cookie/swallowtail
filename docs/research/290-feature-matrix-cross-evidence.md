@@ -24,7 +24,11 @@ row must match the matrix `route_id`, feature, and kind, and its `finding` must
 start with `qualified route unavailable:`. The ledger's `basis` must itself be
 an anchored line under `docs/research` or `docs/contracts` whose first field
 names the route. Card129 rows cite Research 281. The Card131 Codex
-`client_mcp_servers` row cites Research 291. Prepared integration guides are
+`client_mcp_servers` row cites Research 291. Card143 appends the Grok
+`selected_skill_bundle` row after its accepted live gate qualified the three
+MCP/tool cells and settled the selected-skill surface as absent on frozen ACP
+v1 and the exact Grok artifacts; its basis is the same Research 281 Grok
+census line as the route's other limitations. Prepared integration guides are
 not evidence for this disposition: the docs front door classifies guides as
 non-authoritative integration usage.
 

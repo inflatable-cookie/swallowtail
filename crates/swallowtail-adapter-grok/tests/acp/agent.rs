@@ -16,6 +16,11 @@ enum Scenario {
     RecoveryLate,
     RecoveryDisconnect,
     RecoveryResponseMismatch,
+    RegisteredOpenUnanswered,
+    RegisteredOpenBlockedCall,
+    RegisteredReadyUnreached,
+    RegisteredReadyBlockedCall,
+    RegisteredTurn,
 }
 
 #[derive(Default)]
@@ -26,6 +31,8 @@ struct AgentState {
     permission_emitted: bool,
     deadline_released: bool,
     stopped: bool,
+    spawned_mcp: Vec<Arc<SpawnedMcpChild>>,
+    session_new_seen: bool,
 }
 
 struct Agent {
@@ -129,14 +136,46 @@ impl Agent {
                 }),
             ),
             Some("session/new") => {
-                Self::enqueue(
-                    &mut state,
-                    json!({
-                        "jsonrpc": "2.0",
-                        "id": id,
-                        "result": {"sessionId": "grok-fixture-session"}
-                    }),
-                );
+                // Grok spawns every client-declared MCP server from session
+                // setup. The fixture does exactly that before answering, so the
+                // courier is a provider child and never a Swallowtail spawn.
+                // The provider answers setup but never starts the declared
+                // server, so its ready barrier is never reached.
+                if !matches!(self.scenario, Scenario::RegisteredReadyUnreached) {
+                    let spawned = spawn_declared_mcp_servers(
+                        message.get("params").unwrap_or(&Value::Null),
+                    )
+                    .map_err(|()| fixture_failure())?;
+                    state.spawned_mcp.extend(spawned);
+                }
+                // Grok connects the server it spawned and may call it. This
+                // scenario does exactly that, then never answers session setup,
+                // so an outstanding registered call exists while the open is
+                // still in flight.
+                if matches!(
+                    self.scenario,
+                    Scenario::RegisteredOpenBlockedCall | Scenario::RegisteredReadyBlockedCall
+                ) && let Some(child) = state.spawned_mcp.first().cloned()
+                {
+                    drive_courier_call(&child).map_err(|()| fixture_failure())?;
+                }
+                state.session_new_seen = true;
+                // A provider that holds stdio open without ever answering
+                // session setup. Nothing is enqueued; the open must be bounded
+                // by its own deadline rather than waiting forever.
+                if !matches!(
+                    self.scenario,
+                    Scenario::RegisteredOpenUnanswered | Scenario::RegisteredOpenBlockedCall
+                ) {
+                    Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "result": {"sessionId": "grok-fixture-session"}
+                        }),
+                    );
+                }
             }
             Some("session/load") => match self.scenario {
                 Scenario::RecoveryForeign => Self::enqueue(
@@ -236,12 +275,18 @@ impl Agent {
                         state.permission_emitted = true;
                         Self::permission_request(&mut state, true);
                     }
-                    Scenario::Cancellation | Scenario::Deadline => {}
+                    Scenario::Cancellation
+                    | Scenario::Deadline
+                    | Scenario::RegisteredTurn => {}
                     Scenario::Disconnect => {
                         state.stopped = true;
                     }
                     Scenario::Malformed => unreachable!("malformed initialization stops first"),
-                    Scenario::PermissionWithoutTurn
+                    Scenario::RegisteredOpenUnanswered
+                    | Scenario::RegisteredOpenBlockedCall
+                    | Scenario::RegisteredReadyUnreached
+                    | Scenario::RegisteredReadyBlockedCall
+                    | Scenario::PermissionWithoutTurn
                     | Scenario::RecoveryForeign
                     | Scenario::RecoveryCallback
                     | Scenario::RecoveryMalformed

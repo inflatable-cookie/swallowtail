@@ -44,6 +44,7 @@ pub(crate) struct AcpConnection {
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
     session_id: Mutex<Option<String>>,
     active_turn: Mutex<Option<Arc<ActiveTurn>>>,
+    registered: Mutex<Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>>,
     attachment_recovery: Mutex<Option<AttachmentRecoveryPhase>>,
     closed: AtomicBool,
     cleanup: Mutex<Option<CleanupOutcome>>,
@@ -65,10 +66,30 @@ impl AcpConnection {
             pending: Mutex::new(BTreeMap::new()),
             session_id: Mutex::new(None),
             active_turn: Mutex::new(None),
+            registered: Mutex::new(None),
             attachment_recovery: Mutex::new(None),
             closed: AtomicBool::new(false),
             cleanup: Mutex::new(None),
         })
+    }
+
+    /// Binds the registered lease this connection must settle on transport
+    /// failure, before it publishes the turn's terminal outcome.
+    pub(crate) fn set_registered_session(
+        &self,
+        registered: Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>,
+    ) {
+        *self
+            .registered
+            .lock()
+            .expect("ACP registered lock poisoned") = registered;
+    }
+
+    fn registered_session(&self) -> Option<Arc<crate::registered_tool::GrokRegisteredToolSession>> {
+        self.registered
+            .lock()
+            .expect("ACP registered lock poisoned")
+            .clone()
     }
 
     pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {

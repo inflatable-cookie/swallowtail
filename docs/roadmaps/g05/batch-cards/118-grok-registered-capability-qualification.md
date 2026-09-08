@@ -1,6 +1,6 @@
 # 118 Grok common capability qualification
 
-Status: ready for provider-free implementation; live gate separate; admission evidence recorded 2026-09-07
+Status: complete; PR 281; provider-free callable seam built on the merged Card114/115 kernel; Contract 061 row stays Unqualified with real_route_gate_pending and the live gate remains separate
 Owner: Tom
 Created: 2026-09-07
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`
@@ -64,3 +64,36 @@ now, before114/115. Publish exact surface evidence and proposed adapter mapping;
 no runtime edits, live credential mutation or support claim in that preparation.
 Runtime adoption waits for114/115 and a qualified surface. Missing evidence is
 the preparation outcome to resolve, not a prerequisite for starting research.
+
+## Result
+
+The route-local seam is callable and provider-free. `GrokRegisteredToolBinding`
+qualifies one selection, and the Swallowtail-owned mediated-stdio courier is
+declared as one reserved entry in the ACP `session/new` `mcpServers` list. Grok
+spawns that child; this route owns the bridge lease only.
+
+The lease is bound to one exact turn attempt, which is Contract 063's one active
+provider turn per server lease. Cancellation settles rather than observes, so an
+outstanding call is cancelled; terminal, cancellation, deadline, and the
+transport-failure path all settle before the consumer sees terminal; a lease the
+host cannot join fails its own turn and refuses every later one. Settlement is
+serialized, so concurrent settlers share one cleanup truth. Opening is bounded
+by the lesser of the caller's deadline and Contract 063's ten-second ceiling,
+including the courier ready barrier. A failed registered cleanup never becomes a
+clean close and retains the working resource and credential at session close, at
+open abort, and at the ready barrier.
+
+Omission is byte-identical: an open without a binding still sends
+`mcpServers: []` and creates no lease, listener, or courier.
+
+Nothing here claims support. Contract 061 stays `Unqualified` with
+`real_route_gate_pending`, no feature-matrix cell moves, and the four Card 128
+`evidence_pending` cells are untouched. The disposable real-route gate is
+separately authorized and has not run.
+
+Five exact-head cross-model review rounds raised twelve blockers, all repaired:
+turn-lifecycle binding, cleanup-truth propagation and ownership retention,
+bounded open including the ready barrier, failed-start settlement, and
+serialized settlement. Three of those rounds corrected the evidence rather than
+the implementation, so the concurrency guarantee is now a unit test that drives
+both settlements by hand with no scheduling in it.

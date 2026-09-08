@@ -1,13 +1,21 @@
 struct SessionCancellation {
     connection: Arc<AcpConnection>,
     requested: AtomicBool,
+    registered: Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>,
+    services: HostServices,
 }
 
 impl SessionCancellation {
-    fn new(connection: Arc<AcpConnection>) -> Self {
+    fn new(
+        connection: Arc<AcpConnection>,
+        registered: Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>,
+        services: HostServices,
+    ) -> Self {
         Self {
             connection,
             requested: AtomicBool::new(false),
+            registered,
+            services,
         }
     }
 }
@@ -23,6 +31,15 @@ impl CancellationControl for SessionCancellation {
             if already {
                 Ok(CancellationAcknowledgement::AlreadyRequested)
             } else {
+                // Cancellation freezes registered admission and signals any
+                // issued call before the provider is asked to stop. Only the
+                // close path does that unconditionally, so cancellation
+                // settles the lease here rather than merely observing it.
+                if let Some(registered) = self.registered.as_ref() {
+                    let _ = registered
+                        .settle(&self.services, RegisteredToolCleanupCause::Cancellation)
+                        .await;
+                }
                 self.connection.cancel_session().await?;
                 Ok(CancellationAcknowledgement::Requested)
             }
@@ -35,6 +52,8 @@ struct TurnCancellation {
     session_id: String,
     turn: Arc<ActiveTurn>,
     requested: AtomicBool,
+    registered: Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>,
+    services: HostServices,
 }
 
 impl CancellationControl for TurnCancellation {
@@ -49,6 +68,14 @@ impl CancellationControl for TurnCancellation {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
             self.turn.mark_cancelled();
+            // Freeze and signal before the provider is told to cancel, so an
+            // outstanding call is cancelled rather than left free to dispatch
+            // while the turn is stopping.
+            if let Some(registered) = self.registered.as_ref() {
+                let _ = registered
+                    .settle(&self.services, RegisteredToolCleanupCause::Cancellation)
+                    .await;
+            }
             self.connection
                 .notify("session/cancel", json!({"sessionId": self.session_id}))
                 .await?;

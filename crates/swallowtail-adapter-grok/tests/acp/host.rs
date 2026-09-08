@@ -5,6 +5,10 @@ struct FixtureHost {
     credential_acquires: Arc<AtomicUsize>,
     credential_releases: Arc<AtomicUsize>,
     resource_releases: Arc<AtomicUsize>,
+    deadline_gate: Arc<Mutex<Option<Arc<std::sync::atomic::AtomicBool>>>>,
+    observed_deadlines: Arc<Mutex<Vec<Deadline>>>,
+    spawned_scopes: Arc<Mutex<Vec<String>>>,
+    ready_hold: Arc<Mutex<Option<Arc<std::sync::atomic::AtomicBool>>>>,
 }
 
 #[derive(Clone, Debug)]
@@ -31,12 +35,59 @@ impl FixtureHost {
             credential_acquires: Arc::new(AtomicUsize::new(0)),
             credential_releases: Arc::new(AtomicUsize::new(0)),
             resource_releases: Arc::new(AtomicUsize::new(0)),
+            deadline_gate: Arc::new(Mutex::new(None)),
+            observed_deadlines: Arc::new(Mutex::new(Vec::new())),
+            spawned_scopes: Arc::new(Mutex::new(Vec::new())),
+            ready_hold: Arc::new(Mutex::new(None)),
         }
+    }
+
+    /// Returns this host's task service, including any explicit hold on the
+    /// ready-barrier task.
+    fn task_service(&self) -> ThreadTaskService {
+        ThreadTaskService(
+            Arc::clone(&self.spawned_scopes),
+            self.ready_hold.lock().expect("ready hold lock").clone(),
+        )
+    }
+
+    /// Holds the ready-barrier task until `release` is set.
+    ///
+    /// The task's scope is recorded when it is spawned, so the deadline can be
+    /// delivered on confirmed entry while the barrier itself provably has not
+    /// run. That makes expiry during the ready step a construction rather than
+    /// a race.
+    fn hold_ready_barrier_until(&self, release: Arc<std::sync::atomic::AtomicBool>) {
+        *self.ready_hold.lock().expect("ready hold lock") = Some(release);
+    }
+
+    /// Returns every scope the route asked this host to spawn.
+    fn spawned_scopes(&self) -> Vec<String> {
+        self.spawned_scopes
+            .lock()
+            .expect("spawned scope lock")
+            .clone()
+    }
+
+    /// Returns every deadline the route asked this host to wait on.
+    fn observed_deadlines(&self) -> Vec<Deadline> {
+        self.observed_deadlines
+            .lock()
+            .expect("observed deadline lock")
+            .clone()
+    }
+
+    /// Holds the registered-open deadline until this flag is set.
+    ///
+    /// Without it a deadline that is ready immediately can expire during
+    /// `initialize` and never reach the case the test names.
+    fn fire_deadline_when(&self, gate: Arc<std::sync::atomic::AtomicBool>) {
+        *self.deadline_gate.lock().expect("deadline gate lock") = Some(gate);
     }
 
     fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
-            .with_task(Arc::new(ThreadTaskService))
+            .with_task(Arc::new(self.task_service()))
             .with_time(Arc::new(self.clone()))
             .with_process(Arc::new(self.clone()))
             .with_credential(Arc::new(self.clone()))
@@ -90,6 +141,33 @@ impl FixtureHost {
         self.agent.changed.notify_all();
     }
 
+    /// Returns the courier Grok spawned from the declared ACP MCP server.
+    fn spawned_registered_courier(&self) -> Option<Arc<SpawnedMcpChild>> {
+        self.agent
+            .state
+            .lock()
+            .expect("agent lock poisoned")
+            .spawned_mcp
+            .first()
+            .map(Arc::clone)
+    }
+
+    /// Completes the held prompt, exactly as Grok ends a turn normally.
+    fn complete_turn(&self) {
+        let mut state = self.agent.state.lock().expect("agent lock poisoned");
+        if let Some(prompt_id) = state.prompt_id.take() {
+            Agent::enqueue(
+                &mut state,
+                json!({
+                    "jsonrpc": "2.0",
+                    "id": prompt_id,
+                    "result": {"stopReason": "end_turn"}
+                }),
+            );
+        }
+        self.agent.changed.notify_all();
+    }
+
     fn release_deadline(&self) {
         let mut state = self.agent.state.lock().expect("agent lock poisoned");
         state.deadline_released = true;
@@ -103,8 +181,98 @@ impl TimeService for FixtureHost {
     }
 
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        self.observed_deadlines
+            .lock()
+            .expect("observed deadline lock")
+            .push(deadline);
         if matches!(self.agent.scenario, Scenario::Deadline) {
             Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
+        } else if matches!(
+            self.agent.scenario,
+            Scenario::RegisteredOpenUnanswered
+                | Scenario::RegisteredOpenBlockedCall
+                | Scenario::RegisteredReadyUnreached
+                | Scenario::RegisteredReadyBlockedCall
+        ) {
+            // The registered-open deadline fires only once the provider has
+            // actually received `session/new` and, when a test asks for it,
+            // once its registered call is outstanding. A deadline that expired
+            // during `initialize` would not exercise the named case.
+            //
+            // The waiting happens on its own thread: the bounded open polls
+            // this future from its very first step, on the same thread that
+            // must later send `session/new`, so blocking inside the poll would
+            // deadlock the open it is meant to bound.
+            let agent = Arc::clone(&self.agent);
+            let gate = self
+                .deadline_gate
+                .lock()
+                .expect("deadline gate lock")
+                .clone();
+            // Both readiness scenarios gate delivery on the ready task's own
+            // scope, so the deadline cannot expire during an earlier ACP
+            // exchange and pass through a different abandonment path.
+            let ready_barrier = matches!(
+                self.agent.scenario,
+                Scenario::RegisteredReadyUnreached | Scenario::RegisteredReadyBlockedCall
+            )
+            .then(|| Arc::clone(&self.spawned_scopes));
+            let fired = Arc::new(std::sync::atomic::AtomicBool::new(false));
+            let started = Arc::new(std::sync::atomic::AtomicBool::new(false));
+            Box::pin(async move {
+                std::future::poll_fn(move |context| {
+                    if fired.load(Ordering::SeqCst) {
+                        return std::task::Poll::Ready(());
+                    }
+                    if !started.swap(true, Ordering::SeqCst) {
+                        let waker = context.waker().clone();
+                        let agent = Arc::clone(&agent);
+                        let gate = gate.clone();
+                        let ready_barrier = ready_barrier.clone();
+                        let fired = Arc::clone(&fired);
+                        std::thread::spawn(move || {
+                            {
+                                let mut state =
+                                    agent.state.lock().expect("agent lock poisoned");
+                                while !state.session_new_seen && !state.stopped {
+                                    state = agent
+                                        .changed
+                                        .wait(state)
+                                        .expect("agent wait lock poisoned");
+                                }
+                            }
+                            if let Some(gate) = gate {
+                                while !gate.load(Ordering::SeqCst) {
+                                    std::thread::sleep(std::time::Duration::from_millis(5));
+                                }
+                            }
+                            // Fire only once the ready barrier is actually in
+                            // flight, so the case under test is the barrier and
+                            // not an earlier ACP exchange.
+                            if let Some(scopes) = ready_barrier {
+                                loop {
+                                    let started = scopes
+                                        .lock()
+                                        .expect("spawned scope lock")
+                                        .iter()
+                                        .any(|scope| scope.contains("registered-ready"));
+                                    if started {
+                                        break;
+                                    }
+                                    std::thread::sleep(
+                                        std::time::Duration::from_millis(2),
+                                    );
+                                }
+                            }
+                            fired.store(true, Ordering::SeqCst);
+                            waker.wake();
+                        });
+                    }
+                    std::task::Poll::Pending
+                })
+                .await;
+                DeadlineObservation::new(deadline, deadline.instant())
+            })
         } else if matches!(self.agent.scenario, Scenario::PermissionTimeout) {
             let agent = Arc::clone(&self.agent);
             Box::pin(async move {
@@ -166,6 +334,9 @@ impl FixtureProcess {
     fn stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         let mut state = self.0.state.lock().expect("agent lock poisoned");
         state.stopped = true;
+        for child in state.spawned_mcp.drain(..) {
+            child.kill();
+        }
         self.0.changed.notify_all();
         Box::pin(async { Ok(()) })
     }
@@ -259,16 +430,36 @@ impl WorkingResourceIoService for FixtureHost {
     }
 }
 
-struct ThreadTaskService;
+/// Records spawned scopes, and can hold the ready-barrier task back so a test
+/// can make the opening deadline win that race by construction.
+/// Records spawned scopes, and can hold the ready-barrier task on an explicit
+/// release flag so a test can order the open deadline against it.
+struct ThreadTaskService(
+    Arc<Mutex<Vec<String>>>,
+    Option<Arc<std::sync::atomic::AtomicBool>>,
+);
 struct ThreadTask(Option<JoinHandle<()>>);
 
 impl ScopedTaskService for ThreadTaskService {
     fn spawn(
         &self,
-        _scope: ScopeId,
+        scope: ScopeId,
         task: BoxFuture<'static, ()>,
     ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+        self.0
+            .lock()
+            .expect("spawned scope lock")
+            .push(scope.as_str().to_owned());
+        let hold = self
+            .1
+            .clone()
+            .filter(|_| scope.as_str().contains("registered-ready"));
         Ok(Box::new(ThreadTask(Some(std::thread::spawn(move || {
+            if let Some(hold) = hold {
+                while !hold.load(Ordering::SeqCst) {
+                    std::thread::sleep(std::time::Duration::from_millis(2));
+                }
+            }
             block_on(task);
         })))))
     }

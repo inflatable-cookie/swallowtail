@@ -13,6 +13,7 @@ mod failure;
 mod permission;
 mod prepared;
 mod prepared_profile;
+pub mod registered_tool;
 mod selection;
 mod turn;
 

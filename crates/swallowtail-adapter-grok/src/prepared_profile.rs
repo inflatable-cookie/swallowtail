@@ -190,6 +190,22 @@ impl GrokPreparedSession {
         Box::pin(async move { driver.open_session(plan, request, services).await })
     }
 
+    /// Opens the prepared session with one qualified registered-tool binding.
+    ///
+    /// This is the only path that declares the Swallowtail-owned courier in the
+    /// ACP `mcpServers` list. [`Self::open_session`] stays byte-identical: it
+    /// sends the same empty list and opens no lease, listener, or courier.
+    pub fn open_registered_session(
+        &self,
+        binding: crate::registered_tool::GrokRegisteredToolBinding,
+        services: HostServices,
+    ) -> GrokPreparedSessionFuture {
+        let driver = self.low_level_driver().with_registered_tools(binding);
+        let plan = self.plan().clone();
+        let request = self.request.clone();
+        Box::pin(async move { driver.open_session(plan, request, services).await })
+    }
+
     /// Builds an exact provider-session attachment recovery request.
     pub fn attachment_recovery_request(
         &self,

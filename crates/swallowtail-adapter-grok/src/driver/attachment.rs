@@ -14,6 +14,7 @@ struct GrokSessionInput {
     binding: SessionResumeBinding,
     model_options: NegotiatedSessionModelOptions,
     permission_handling: crate::GrokPermissionHandling,
+    registered: Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>,
 }
 
 impl GrokAcpDriver {
@@ -24,6 +25,7 @@ impl GrokAcpDriver {
         working_resource: &swallowtail_runtime::WorkingResourceRef,
         access_policy: &SessionAccessPolicy,
         services: &HostServices,
+        bound: &mut OpenBound,
     ) -> Result<PendingAttachment, RuntimeFailure> {
         let scope = ScopeId::new(format!(
             "grok-acp:session:{}",
@@ -38,12 +40,12 @@ impl GrokAcpDriver {
             .credential_reference()
             .expect("validated credential")
             .clone();
-        let credential = credential_service
-            .acquire(
+        let credential = bound
+            .run(credential_service.acquire(
                 scope.clone(),
                 credential_ref.clone(),
                 plan.endpoint_audience().clone(),
-            )
+            ))
             .await?;
         if credential.scope() != &scope
             || credential.reference() != &credential_ref
@@ -61,13 +63,13 @@ impl GrokAcpDriver {
             .working_resource()
             .cloned()
             .expect("validated working-resource service");
-        let resource = match resource_service
-            .resolve(
+        let resource = match bound
+            .run(resource_service.resolve(
                 scope.clone(),
                 working_resource.clone(),
                 ResourceAccess::ReadWrite,
                 ResourceRepresentation::Filesystem,
-            )
+            ))
             .await
         {
             Ok(resource) => resource,
@@ -98,10 +100,13 @@ impl GrokAcpDriver {
         ])
         .with_environment([self.ambient_environment().clone()])
         .with_working_resource(working_resource);
-        let process: Arc<dyn ProcessHandle> = match services
-            .process()
-            .expect("validated process service")
-            .start(scope.clone(), process_request)
+        let process: Arc<dyn ProcessHandle> = match bound
+            .run(
+                services
+                    .process()
+                    .expect("validated process service")
+                    .start(scope.clone(), process_request),
+            )
             .await
         {
             Ok(process) => Arc::from(process),
@@ -151,6 +156,8 @@ impl PendingAttachment {
         input: GrokSessionInput,
         services: &HostServices,
     ) -> GrokSessionHandle {
+        self.connection
+            .set_registered_session(input.registered.clone());
         GrokSessionHandle {
             request_id: input.request_id,
             runtime_id: input.runtime_id,
@@ -161,16 +168,35 @@ impl PendingAttachment {
             permission_handling: input.permission_handling,
             execution_host_id: services.execution_host_id().clone(),
             connection: Arc::clone(&self.connection),
-            cancellation: SessionCancellation::new(Arc::clone(&self.connection)),
+            cancellation: SessionCancellation::new(
+                Arc::clone(&self.connection),
+                input.registered.clone(),
+                services.clone(),
+            ),
             pump_task: self.pump_task.take(),
             services: services.clone(),
             resource: self.resource.take(),
             credential: self.credential.take(),
+            registered: input.registered,
             active: Arc::new(Mutex::new(None)),
         }
     }
 
     async fn abort(&mut self, services: &HostServices) -> CleanupOutcome {
+        self.abort_inner(services, true).await
+    }
+
+    /// Aborts the attachment while retaining the working resource and the
+    /// credential.
+    ///
+    /// Used when registered cleanup failed: the host still holds a lease and
+    /// work it could not join, so returning the credential for reuse would
+    /// hand it out beside work that may still execute.
+    async fn abort_retaining(&mut self, services: &HostServices) -> CleanupOutcome {
+        self.abort_inner(services, false).await
+    }
+
+    async fn abort_inner(&mut self, services: &HostServices, release: bool) -> CleanupOutcome {
         self.connection.begin_close().await;
         let task = match self.pump_task.take() {
             Some(task) => match task.join().await {
@@ -182,6 +208,9 @@ impl PendingAttachment {
             },
             None => CleanupOutcome::NotApplicable,
         };
+        if !release {
+            return task;
+        }
         let resource = release_resource(self.resource.take(), services).await;
         let credential = release_credential(self.credential.take(), services).await;
         merge_cleanup(merge_cleanup(task, resource), credential)

@@ -31,6 +31,7 @@ use swallowtail_runtime::{
     WorkingResourceService, WorkingResourceText, WorkingResourceWriteRequest,
 };
 
+include!("mcp_child.rs");
 include!("agent.rs");
 include!("host.rs");
 include!("selection.rs");

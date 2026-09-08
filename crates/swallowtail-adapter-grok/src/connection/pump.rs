@@ -63,6 +63,18 @@ impl AcpConnection {
             )
         });
         self.fail_attachment_recovery(error.clone());
+        // The pump is a second terminal publisher: on EOF or protocol failure
+        // it fails the active turn directly, before `fail_pending` wakes the
+        // prompt task that would otherwise settle. Settle here first, so no
+        // registered call can be admitted after the consumer sees terminal.
+        if let Some(registered) = self.registered_session() {
+            let _ = registered
+                .settle(
+                    &self.services,
+                    swallowtail_runtime::RegisteredToolCleanupCause::TransportFailure,
+                )
+                .await;
+        }
         if let Some(turn) = self
             .active_turn
             .lock()

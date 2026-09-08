@@ -86,6 +86,10 @@ impl ActiveTurn {
         self.finished.load(Ordering::SeqCst)
     }
 
+    pub(crate) fn was_cancelled(&self) -> bool {
+        self.cancelled.load(Ordering::SeqCst)
+    }
+
     pub(crate) fn mark_cancelled(&self) {
         self.cancelled.store(true, Ordering::SeqCst);
         if let Some(callbacks) = &self.callbacks {

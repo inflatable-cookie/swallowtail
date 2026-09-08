@@ -3,7 +3,6 @@
 ## Ready
 
 - [139-claude-registered-tool-fixture-startup-determinism.md](./139-claude-registered-tool-fixture-startup-determinism.md) — ready; root-cause the close/join fixture flake before Desktop runs the Claude live gate on that exact path
-- [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — ready; optional Read working resource as the response-only child cwd; no isolation claim; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
 
 ## Planned
 
@@ -23,6 +22,7 @@
 
 ## Completed
 
+- [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — complete; PR 289; optional read-only working resource selects the response-only child's project location; absence byte-identical; cwd-relative ambient CLI behaviour frozen from the scratch-directory fixture; no isolation claim
 - [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — complete; PR 281 merged at `98543d0b`; route-local callable registered-tool seam over the proven ACP client-MCP admission; Contract 061 stays Unqualified with real_route_gate_pending and no matrix cell moves
 - [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — complete; PR 272 merged at `0673541d`; candidate prepared; release scope widened
 - [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — complete; PR 246 merged at `cbd4ddc8`

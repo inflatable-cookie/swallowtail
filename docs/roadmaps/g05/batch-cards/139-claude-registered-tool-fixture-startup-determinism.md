@@ -1,6 +1,6 @@
 # 139 Claude Registered-Tool Fixture Startup Determinism
 
-Status: complete; PR PRNUM; courier startup is an observed event with named causes; 24 loaded runs clean; the operation-bridge close bound is disclosed, not fixed
+Status: complete; PR 287; courier startup is an observed event with named causes; 24 loaded runs clean; the operation-bridge close bound is disclosed, not fixed
 Owner: Tom
 Created: 2026-09-08
 Updated: 2026-09-08

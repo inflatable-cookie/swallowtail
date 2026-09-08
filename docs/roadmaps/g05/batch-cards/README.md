@@ -2,7 +2,6 @@
 
 ## Ready
 
-- [143-grok-live-registered-tool-qualification.md](./143-grok-live-registered-tool-qualification.md) — ready; accepted Desktop `1.0.4` and `1.0.5` capsules qualify the existing MCP/tool seam; selected-skill delivery settles independently
 - [144-claude-sdk-registered-tool-open-rejection-diagnosis.md](./144-claude-sdk-registered-tool-open-rejection-diagnosis.md) — ready; Card 132 stopped at typed open rejection; add structured failed-open evidence and diagnose provider-free before any new gate
 
 ## Planned
@@ -23,6 +22,7 @@
 
 ## Completed
 
+- [143-grok-live-registered-tool-qualification.md](./143-grok-live-registered-tool-qualification.md) — complete; PR 293 merged at `7d2dcb16`; exact maintained Grok `1.0.4..=1.0.5` registered-tool qualification accepted, selected-skill limitation retained
 - [141-operation-bridge-close-latency.md](./141-operation-bridge-close-latency.md) — complete; PR 292 merged at `b68a1ccc`; registered-tool close wakes accepted reads instead of paying the fixed 5s timeout; watcher timings and teardown guarantees preserved
 - [142-claude-sdk-admitted-instance-worked-example.md](./142-claude-sdk-admitted-instance-worked-example.md) — complete; PR 291 merged at `d0f2ea31`; provider-free admitted-instance and registered-tool worked example accepted at exact head
 - [139-claude-registered-tool-fixture-startup-determinism.md](./139-claude-registered-tool-fixture-startup-determinism.md) — complete; PR 287 merged at `4b1e369c`; a concurrent nested build removes and recreates the shared courier path, so a spawn landing in that window became the bare fixture code; startup is now an observed event with named causes and 24 loaded runs clean

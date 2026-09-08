@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom
 created: 2026-09-08
 updated: 2026-09-08
@@ -43,8 +43,22 @@ merge `6b22c82946fcd04d418ee2a810e73970373b7888`, closeout
 `c495b6a60976c4618ab8f50c820265849bfe3735`, and source-linked Swallowtail
 `04e9b2dd9058783b7186a33a6c13dd74882a5925`. Both exact segments returned
 `accepts_client_mcp`; hashes and version receipts are in Research 295. Card 118
-is complete at `98543d0b`, but its projection still deliberately returns
-`Unqualified` with `real_route_gate_pending`.
+is complete at `98543d0b`. Card 143 closed through PR 293.
+
+- **Queue state:** closed after merge; PR 293 merged into `main` as
+  `7d2dcb169dbee348567fd8308ed9c41fd5bf2d03`.
+- **Reviewed head:** `5e7914424a8defb3dea164c150bd0d5ea806f3e9`.
+- **Review:** independent exact-head review accepted with no blocking findings;
+  comment `5587601711` carries the `ready_to_merge` verdict and Northstar
+  identity marker.
+- **Validation:** named formatting, focused validation, affected-package
+  verification, semantic API, route, docs, Northstar, and diff checks passed;
+  hosted PR checks passed apart from the configured skipped MSRV floor tests
+  job.
+- **Deferred:** no Card 143 validation failure. The selected-skill provider
+  limitation, Card 130 persistent-permission gap, stopped Claude Card 132
+  gate and Card 144 diagnosis, release/tag work, and consumer-repository
+  changes remain outside this handoff.
 
 ## Boundaries
 
@@ -78,3 +92,11 @@ Stop at exact-head independent review. Report exact head, validation, the three
 live-evidence cell dispositions, and the independent selected-skill result.
 The queue owns review, merge gate, canonical closeout, and any blocker return
 to Chatterbox. Do not merge, tag, release, or touch Desktop from the worker.
+
+## Handoff Closeout
+
+This handoff is merged. The implementation was accepted at exact head
+`5e7914424a8defb3dea164c150bd0d5ea806f3e9` and published on `main` as
+`7d2dcb169dbee348567fd8308ed9c41fd5bf2d03`. No named validation failure was
+deferred. The active Next Task pointer was preserved; no new planning direction
+was introduced.

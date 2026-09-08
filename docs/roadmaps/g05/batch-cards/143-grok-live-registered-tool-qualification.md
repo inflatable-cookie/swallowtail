@@ -1,8 +1,9 @@
 # 143 Grok Live Registered-Tool Qualification
 
-Status: ready; operator directed Chatterbox to apply the Card 128 decision tree
+Status: complete; PR 293 merged at `7d2dcb169dbee348567fd8308ed9c41fd5bf2d03` (reviewed head `5e7914424a8defb3dea164c150bd0d5ea806f3e9`)
 Owner: Tom
 Created: 2026-09-08
+Updated: 2026-09-08
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`
 Depends on: card 118 merged at `98543d0b`; Research 295; accepted Desktop capsules for exact Grok Build `1.0.4` and `1.0.5`
 
@@ -102,6 +103,8 @@ does not undo the independently proved MCP/tool qualification.
 
 No. Stop at exact-head independent review. The queue owns merge and closeout.
 
+## Result
+
 The route is qualified, and the qualification is version-scoped.
 `grok_build_acp_registered_tool_qualification(&InterfaceVersion)` returns
 `Qualified(GROK_ACP_REGISTERED_TOOL_ROUTE)` only for the maintained executable
@@ -148,3 +151,17 @@ Validation: `cargo fmt -p swallowtail-adapter-grok -- --check`,
 `effigy package:verify-affected swallowtail-adapter-grok`,
 `effigy package:api`, `effigy qa:routes`, `effigy qa:docs`,
 `effigy qa:northstar`, and `git diff --check` pass at the reported head.
+
+PR 293 was independently accepted at exact head
+`5e7914424a8defb3dea164c150bd0d5ea806f3e9`; review comment `5587601711`
+found no blocking findings and resolved the earlier version-scope and rustdoc
+findings. It merged into `main` as
+`7d2dcb169dbee348567fd8308ed9c41fd5bf2d03`. Hosted PR checks passed; the
+configured Pinned MSRV floor tests job was skipped. No named Card 143
+validation failure was deferred.
+
+The selected-skill provider limitation, the Card 130 persistent-permission
+gap, the stopped Claude Card 132 gate and Card 144 diagnosis, release/tag
+work, and consumer-repository changes remain separately owned or authorized.
+The active Next Task pointer remains unchanged; no new planning direction was
+introduced.

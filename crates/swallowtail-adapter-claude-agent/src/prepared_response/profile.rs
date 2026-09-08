@@ -6,13 +6,14 @@ use super::instance::{REASONING_MODES, run_capabilities};
 use crate::claude_code_response_activity::{activity_profile, with_activity};
 use plan::{build_plan, instance_with_capabilities, requirements};
 use swallowtail_core::{
-    CapabilityRequirement, HarnessConfigurationPosture, HarnessIsolation, ModelId, ModelRoute,
-    ModelRouteId, ModelRouteRevision, PreflightPlan, ReasoningMode,
+    Capability, CapabilityConstraint, CapabilityRequirement, HarnessConfigurationPosture,
+    HarnessIsolation, ModelId, ModelRoute, ModelRouteId, ModelRouteRevision, PreflightPlan,
+    ReasoningMode, ResourceAccess, ResourceRepresentation,
 };
 use swallowtail_runtime::{
     BoxFuture, Deadline, HostServices, OperationContent, OperationPolicy, PreparationFailure,
     PreparedOperationEvidence, ProviderRetentionPolicy, RequestId, RunHandle, RuntimeFailure,
-    StructuredRunDriver, StructuredRunRequest,
+    StructuredRunDriver, StructuredRunRequest, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -51,6 +52,7 @@ pub struct ClaudeCodeResponseProfileInput {
     content: OperationContent,
     deadline: Deadline,
     reasoning_mode: Option<ReasoningMode>,
+    working_resource: Option<WorkingResourceRef>,
 }
 
 impl ClaudeCodeResponseProfileInput {
@@ -68,6 +70,7 @@ impl ClaudeCodeResponseProfileInput {
             content,
             deadline,
             reasoning_mode: None,
+            working_resource: None,
         }
     }
 
@@ -75,6 +78,15 @@ impl ClaudeCodeResponseProfileInput {
     #[must_use]
     pub fn with_reasoning_mode(mut self, reasoning_mode: ReasoningMode) -> Self {
         self.reasoning_mode = Some(reasoning_mode);
+        self
+    }
+
+    /// Selects one host-approved working resource as the native child's
+    /// project location. The resource selects the child working directory
+    /// only; it is never an isolation or containment boundary.
+    #[must_use]
+    pub fn with_working_resource(mut self, working_resource: WorkingResourceRef) -> Self {
+        self.working_resource = Some(working_resource);
         self
     }
 
@@ -86,6 +98,7 @@ impl ClaudeCodeResponseProfileInput {
         OperationContent,
         Deadline,
         Option<ReasoningMode>,
+        Option<WorkingResourceRef>,
     ) {
         (
             self.request_id,
@@ -93,6 +106,7 @@ impl ClaudeCodeResponseProfileInput {
             self.content,
             self.deadline,
             self.reasoning_mode,
+            self.working_resource,
         )
     }
 }
@@ -214,7 +228,8 @@ impl ClaudeCodeResponsePreparedIntegration {
         &self,
         input: ClaudeCodeResponseProfileInput,
     ) -> Result<ClaudeCodeResponsePreparedRun, PreparationFailure> {
-        let (request_id, model, content, deadline, reasoning) = input.into_parts();
+        let (request_id, model, content, deadline, reasoning, working_resource) =
+            input.into_parts();
         if reasoning
             .as_ref()
             .is_some_and(|mode| !REASONING_MODES.contains(&mode.as_str()))
@@ -225,10 +240,13 @@ impl ClaudeCodeResponsePreparedIntegration {
             ));
         }
         let activity = activity_profile(self)?;
-        let capabilities = with_activity(run_capabilities(), &activity);
+        let mut capabilities = with_activity(run_capabilities(), &activity);
+        if working_resource.is_some() {
+            capabilities = with_working_resource_capability(capabilities);
+        }
         let instance = instance_with_capabilities(self, capabilities.clone());
         let operation_capabilities = operation_capabilities(&capabilities, reasoning.as_ref());
-        let requirements = requirements(self, operation_capabilities);
+        let requirements = requirements(self, operation_capabilities, working_resource.is_some());
         let (route_id, route_revision, model_id) = model.into_parts();
         let route = ModelRoute::new(
             route_id,
@@ -245,8 +263,11 @@ impl ClaudeCodeResponsePreparedIntegration {
         if let Some(reasoning) = reasoning {
             policy = policy.with_reasoning_mode(reasoning);
         }
-        let request =
+        let mut request =
             StructuredRunRequest::new(request_id, content, policy).with_deadline(deadline);
+        if let Some(working_resource) = working_resource {
+            request = request.with_working_resource(working_resource);
+        }
         Ok(ClaudeCodeResponsePreparedRun {
             evidence: ClaudeCodeResponsePreparedEvidence::from_prepared(self, plan, activity)?,
             request,
@@ -274,4 +295,23 @@ fn operation_capabilities(
         ));
     }
     capabilities
+}
+
+fn with_working_resource_capability(
+    capabilities: swallowtail_core::CapabilityProfile,
+) -> swallowtail_core::CapabilityProfile {
+    let mut requirements = capabilities
+        .iter()
+        .map(|(capability, constraints)| {
+            CapabilityRequirement::new(capability, constraints.iter().cloned())
+        })
+        .collect::<Vec<_>>();
+    requirements.push(CapabilityRequirement::new(
+        Capability::WorkingResource,
+        [
+            CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
+            CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
+        ],
+    ));
+    swallowtail_core::CapabilityProfile::new(requirements)
 }

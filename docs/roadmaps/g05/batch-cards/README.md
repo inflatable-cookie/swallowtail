@@ -23,7 +23,7 @@
 
 ## Completed
 
-- [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — complete; PR 289; optional read-only working resource selects the response-only child's project location; absence byte-identical; cwd-relative ambient CLI behaviour frozen from the scratch-directory fixture; no isolation claim
+- [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — complete; PR 289 merged at `8e6669c8`; optional read-only working resource selects the response-only child's project location; absence byte-identical; cwd-relative ambient CLI behaviour frozen from the scratch-directory fixture; no isolation claim
 - [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — complete; PR 281 merged at `98543d0b`; route-local callable registered-tool seam over the proven ACP client-MCP admission; Contract 061 stays Unqualified with real_route_gate_pending and no matrix cell moves
 - [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — complete; PR 272 merged at `0673541d`; candidate prepared; release scope widened
 - [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — complete; PR 246 merged at `cbd4ddc8`

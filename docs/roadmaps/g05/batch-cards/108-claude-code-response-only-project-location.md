@@ -1,6 +1,6 @@
 # 108 Claude Code Response-Only Project Location
 
-Status: complete; PR 289; optional read-only working resource as the response-only child project location; absence byte-identical; cwd-relative ambient CLI behaviour frozen from the scratch-directory fixture; no isolation claim; route stays AmbientHost
+Status: complete; PR 289 merged at `8e6669c8`; optional read-only working resource as the response-only child project location; absence byte-identical; cwd-relative ambient CLI behaviour frozen from the scratch-directory fixture; no isolation claim; route stays AmbientHost
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-08

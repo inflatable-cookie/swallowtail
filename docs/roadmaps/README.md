@@ -15,14 +15,15 @@ shape.
 
 ## Next Task
 
-Run the two disjoint producer lanes in parallel: Grok
-[card 143](g05/batch-cards/143-grok-live-registered-tool-qualification.md)
-qualifies the accepted exact-segment MCP/tool seam and settles selected-skill
-delivery independently; Claude
-[card 144](g05/batch-cards/144-claude-sdk-registered-tool-open-rejection-diagnosis.md)
-turns Card 132's typed open rejection into structured failed-open evidence and
-a provider-free diagnosis. Card 144 cannot run another live gate. Both lanes
-return to Chatterbox before any fresh candidate decision under
+Grok [card 143](g05/batch-cards/143-grok-live-registered-tool-qualification.md)
+and Claude [card 144](g05/batch-cards/144-claude-sdk-registered-tool-open-rejection-diagnosis.md)
+are complete. Run Claude
+[card 145](g05/batch-cards/145-claude-sdk-credit-exhaustion-diagnostic.md):
+one operator-authorized exhausted-credit open through the Card 144 receipt,
+using the cheapest already-admitted Sonnet model and no prompt, tool call,
+control, or retry. Return the capsule to Chatterbox. The credited qualification
+suite waits for the operator's top-up confirmation and separate authority
+before any fresh candidate decision under
 [g05.036](g05/036-v0-4-4-release-readiness.md). The parked candidate
 `0673541d` remains untaggable and no tag request stands. Research 294 ranks
 Cursor Agent `2026.09.02` next for Contract 029, but no family lane is

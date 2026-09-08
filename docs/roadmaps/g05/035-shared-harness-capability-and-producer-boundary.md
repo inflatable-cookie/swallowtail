@@ -171,6 +171,7 @@ consumer requirements and must not create a competing producer worker.
 | [138](batch-cards/138-codex-permission-exchange-cell-reconciliation.md) | ready | Codex evidence owner; matrix cell, reason text, research anchor; forbidden: runtime, live Codex | anchored observe-versus-answer finding; matrix and consumer statement agree; exact-head review |
 | [143](batch-cards/143-grok-live-registered-tool-qualification.md) | complete; PR 293 merged at `7d2dcb169dbee348567fd8308ed9c41fd5bf2d03` (reviewed head `5e7914424a8defb3dea164c150bd0d5ea806f3e9`) | Grok adapter owner; route qualification plus independent selected-skill settlement; no live run, consumer edit, version extension, tag, or release | exact live-evidence qualification for MCP/tools; selected skill implemented from separate frozen evidence or closed honestly; exact-head review and merge |
 | [144](batch-cards/144-claude-sdk-registered-tool-open-rejection-diagnosis.md) | complete; PR 294 merged at `cc53c81ad903a562830d721b39a669aee010d037` (reviewed head `67e69e577518fdf0486998d47720e045a541bd7e`) | Claude SDK adapter owner; structured failed-open evidence and provider-free diagnosis; no live retry, consumer edit, qualification, tag, or release | exact rejection subcode/stage and cleanup receipt; deterministic request reproduction; repaired producer defect or narrowed live-only boundary; exact-head review and merge |
+| [145](batch-cards/145-claude-sdk-credit-exhaustion-diagnostic.md) | ready; operator authorized one exhausted-credit diagnostic open | Desktop live-evidence owner; existing Card 132 runner; exact Swallowtail source link; one open, zero turns, cheapest admitted Sonnet model; no qualification or release | bounded account/usage signal or exact generic contradiction; Card 144 receipt, cleanup, redaction, and one-attempt proof; independent review |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
@@ -202,6 +203,18 @@ provider-free diagnosis and an additive observation-derived failed-open
 receipt. It is disjoint from Grok card 143 and may run in parallel. Another
 live gate remains an operator decision after diagnosis; no tag, release,
 feature classification, or broader acceptance follows.
+
+## Claude Credit-Exhaustion Diagnostic — 2026-09-08
+
+The operator confirmed the Claude account is out of usage credit and authorized
+one diagnostic open before adding top-up credit. Card 145 uses the merged Card
+144 receipt through Desktop's existing runner, exact source-linked Swallowtail
+`6a93f1d916945aa2b402df7329dc994570e005c8`, and
+`claude-sonnet-5`, the cheapest model in Desktop's admitted Sonnet/Opus
+inventory. It runs no prompt, tool call, or control attempt. Any result remains
+diagnostic and leaves both Contract 061 cells unqualified. The later credited
+qualification suite remains separately authorized after the operator confirms
+top-up.
 
 Route116/118 read-only evidence preparation is ready now under the same retained
 route owners. It must not wait for the evidence it is tasked to obtain. Runtime

@@ -132,6 +132,18 @@ provider-free diagnosis and structured failed-open evidence. Another live gate
 requires separate operator authorization after that result. No candidate, tag,
 release, feature classification, or broader acceptance follows.
 
+### Claude Exhausted-Credit Diagnostic Authorized — 2026-09-08
+
+The operator confirmed the Claude account is currently out of usage credit and
+authorized Card 145 to capture that state before top-up. Desktop may run one
+fresh open against exact source-linked Swallowtail
+`6a93f1d916945aa2b402df7329dc994570e005c8`, using Card 144's structured
+receipt and `claude-sonnet-5`, the cheapest model in its already-admitted
+Sonnet/Opus inventory. No prompt, tool call, control attempt, retry, or
+qualification is authorized. A credited qualification suite remains a later,
+separate authorization after the operator confirms top-up. No candidate, tag,
+or release authority follows from this diagnostic.
+
 ### Candidate Source Disposition — 2026-09-08
 
 The prepared candidate `0673541d` is PARKED, not abandoned and not current.

@@ -2,6 +2,8 @@
 
 ## Ready
 
+- [145-claude-sdk-credit-exhaustion-diagnostic.md](./145-claude-sdk-credit-exhaustion-diagnostic.md) — ready; one operator-authorized exhausted-credit open, cheapest admitted Sonnet model, zero turns and no qualification
+
 ## Planned
 
 - [134-registered-tool-adoption-remaining-acp-routes.md](./134-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub carrying the client_mcp_servers gap for the six remaining ACP routes; no dispatch authorization

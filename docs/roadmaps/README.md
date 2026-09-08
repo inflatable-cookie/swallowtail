@@ -15,13 +15,18 @@ shape.
 
 ## Next Task
 
-Close provider-free [card 139](g05/batch-cards/139-claude-registered-tool-fixture-startup-determinism.md)
-and [card 140](g05/batch-cards/140-grok-probe-live-bounds.md), both currently at
-review. The `v0.4.4` candidate `0673541d` remains prepared and held while linked
-Desktop runs the exact Claude and Grok gates required by
-[g05.036](g05/036-v0-4-4-release-readiness.md); no tag request stands. Research
-294 ranks Cursor Agent `2026.09.02` next for Contract 029, but no family lane is
-dispatched until Chatterbox promotes it.
+Prove the remaining `v0.4.4` consumer routes through the approved exact-SHA
+linked Desktop gates in [g05.036](g05/036-v0-4-4-release-readiness.md): Claude
+[card 132](g05/batch-cards/132-claude-sdk-registered-tool-real-route-gate.md)
+through the consumer-owned registered-tool runner, and Grok `1.0.4` then
+`1.0.5` as two separate one-prompt segments. Cards 139-142 are complete; no
+provider-free producer card remains ahead of these gates. Both capsules return
+to Chatterbox. The parked candidate `0673541d` remains untaggable and no tag
+request stands; after both capsules are accepted, promote a fresh candidate
+under the existing release-preparation authority while preserving g05.036's
+exact-tree evidence binding. Research 294 ranks Cursor Agent `2026.09.02` next
+for Contract 029, but no family lane is dispatched until Chatterbox promotes
+it.
 
 ## Standing Lanes
 

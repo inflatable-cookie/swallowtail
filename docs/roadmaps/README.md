@@ -15,18 +15,14 @@ shape.
 
 ## Next Task
 
-Card 146 is complete: PR 296 was independently accepted at reviewed head
-`58847bb00e4d15285af503c7023ff8750d1f1a7f` and merged into `main` as
-`13dee542e5ef4ab967cb4f0934cc11c35a8768c2`. The provider-free exact SDK
-`0.3.259` MCP-status projection repair passed its named validation; no live
-attempt or qualification followed. The matrix `consumer_tool_exchange`
-repoint currently uses card 146 as a temporary bridge and needs a future
-live-gate owner or Feature Matrix Rule reclassification before the card's
-completion state makes that producer-gap reference invalid. Planning direction
-is needed from Chatterbox for the next canonical task; no new lane is inferred
-here. The credited qualification suite still needs the operator's top-up
-confirmation and separate live authority under
-[g05.036](g05/036-v0-4-4-release-readiness.md).
+[Card 147](g05/batch-cards/147-claude-sdk-repaired-zero-credit-diagnostic.md)
+is ready. The operator confirmed Claude usage credit remains zero and
+explicitly authorized exactly one repaired diagnostic open against exact
+source-linked Swallowtail `0d120067cd260b1f5127835cab0b1a3ad020a29d`.
+Desktop uses `claude-sonnet-5` and sends no prompt, turn, tool, permission, or
+control action. No retry or automatic continuation is allowed. Both Contract
+061 cells remain unqualified; top-up and the credited qualification suite stay
+separate.
 
 ## Standing Lanes
 

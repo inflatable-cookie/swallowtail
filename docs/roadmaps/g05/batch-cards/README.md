@@ -2,6 +2,8 @@
 
 ## Ready
 
+- [147-claude-sdk-repaired-zero-credit-diagnostic.md](./147-claude-sdk-repaired-zero-credit-diagnostic.md) — ready; exactly one repaired live open while credit remains zero; no prompt, retry, qualification, or release
+
 ## Planned
 
 - [134-registered-tool-adoption-remaining-acp-routes.md](./134-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub carrying the client_mcp_servers gap for the six remaining ACP routes; no dispatch authorization

@@ -156,6 +156,17 @@ and the operator separately confirms credit restoration and live authority.
 Both Contract 061 cells remain unqualified. No candidate, tag, or release
 authority follows.
 
+### Claude Repaired Zero-Credit Diagnostic Authorized — 2026-09-08
+
+Card 146 repaired the pre-readiness MCP-status projection mismatch and closed
+at exact Swallowtail `0d120067cd260b1f5127835cab0b1a3ad020a29d`. The
+operator confirmed Claude credit remains zero and authorized Card 147 to run
+exactly one open with `claude-sonnet-5`. It sends no prompt and permits no
+turn, tool, permission callback, control, retry, reconnect, or respawn. A
+successful open closes immediately. This diagnostic does not qualify either
+Contract 061 cell and grants no candidate, tag, release, top-up, or credited
+suite authority.
+
 ### Candidate Source Disposition — 2026-09-08
 
 The prepared candidate `0673541d` is PARKED, not abandoned and not current.

@@ -9,11 +9,7 @@
 - [134-registered-tool-adoption-remaining-acp-routes.md](./134-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub carrying the client_mcp_servers gap for the six remaining ACP routes; no dispatch authorization
 - [132-claude-sdk-registered-tool-real-route-gate.md](./132-claude-sdk-registered-tool-real-route-gate.md) — planned; the live tuple Desktop runs to qualify the card 125 seam; matrix crosses for Claude registered tools point here
 - [130-persistent-permission-grant-admission.md](./130-persistent-permission-grant-admission.md) — planned backlog stub only; no dispatch authorization; owns a future persistent-grant producer seam if promoted
-- [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — planned; ready on card 124's merge; first lane on the simplified shape
-- [123-v0-4-4-consumer-proof-and-tag-capsule.md](./123-v0-4-4-consumer-proof-and-tag-capsule.md) — planned; ready on the `v0.4.4` tag
-
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — planned; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
-- [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — planned; ready on card 105's merge
 
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; `0.41.0` claim; gated behind card 062 admitting a Contract 029 segment
@@ -22,10 +18,13 @@
 
 ## Stopped
 
+- [123-v0-4-4-consumer-proof-and-tag-capsule.md](./123-v0-4-4-consumer-proof-and-tag-capsule.md) — cancelled; operator widened the release scope before any `v0.4.4` tag
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 
 ## Completed
 
+- [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — complete; PR 272 merged at `0673541d`; candidate prepared; release scope widened
+- [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — complete; PR 246 merged at `cbd4ddc8`
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — complete; PR 244 merged at `7cb08b1f`; g05.029 priority 4
 - [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — complete; PR 255 merged at `8a377c1b`; g05.029 priority 5
 - [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — complete; PR 242 merged at `80e004b4`; g05.029 priority 9
@@ -37,10 +36,10 @@
 - [137-grok-probe-conforming-acp-client.md](./137-grok-probe-conforming-acp-client.md) — complete; PR 285 merged at `56ea6008`; the probe never answers client requests during session/new, so Grok waits and the session never opens; diagnose from captured frames at no quota cost
 - [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — complete; PR 279 merged at `3984f23b`; resolved skill bundle as the distinct labelled third input; provider-free
 
-- [138-codex-permission-exchange-cell-reconciliation.md](./138-codex-permission-exchange-cell-reconciliation.md) — complete; approvals are observable-only on app-server, typed user-input is the answerable exchange, exec has no callback surface; matrix reason corrected via Research 293; awaiting exact-head review
+- [138-codex-permission-exchange-cell-reconciliation.md](./138-codex-permission-exchange-cell-reconciliation.md) — complete; PR 282 merged at `a4b04134`; approvals are observable-only on app-server, typed user-input is the answerable exchange, exec has no callback surface
 - [136-opencode-http-1-18-29-claim.md](./136-opencode-http-1-18-29-claim.md) — complete; qualified OpenCode HTTP `surface-19` through `1.18.29`
 - [135-opencode-http-1-18-29-identity.md](./135-opencode-http-1-18-29-identity.md) — complete; compatible `surface-19` admitted through OpenCode HTTP `1.18.29`
-- [131-codex-app-server-client-mcp-servers-evidence.md](./131-codex-app-server-client-mcp-servers-evidence.md) — complete; evidence recorded: Codex client_mcp_servers is a provider limitation; card 117 remains the qualified consumer-tool path; awaiting exact-head review
+- [131-codex-app-server-client-mcp-servers-evidence.md](./131-codex-app-server-client-mcp-servers-evidence.md) — complete; PR 277 merged at `f36e1165`; Codex client MCP is a cited provider limitation
 - [133-grok-probe-verdict-oracle-repair.md](./133-grok-probe-verdict-oracle-repair.md) — complete; the live probes proved client-MCP admission but the oracle could not say so; split admission from invocation before the one authorized rerun
 - [128-grok-acp-client-mcp-probe-harness.md](./128-grok-acp-client-mcp-probe-harness.md) — complete; PR 273 merged at `63e34641`; provider-free four-verdict fake fixtures; probe targets shipped as examples; MSRV lint repair; live probe not run; packet relayed to Acowtancy Desktop
 - [125-claude-sdk-registered-tool-route-binding.md](./125-claude-sdk-registered-tool-route-binding.md) — complete; bind RegisteredToolPreparation into claude-agent.sdk open on the Codex precedent; provider-free

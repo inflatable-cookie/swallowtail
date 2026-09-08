@@ -1,6 +1,6 @@
 # 138 Codex Permission Exchange Cell Reconciliation
 
-Status: complete; finding in ## Result; awaiting exact-head review
+Status: complete; PR 282 merged at `a4b04134`
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

@@ -1,6 +1,6 @@
 # 106 v0.4.3 Candidate Preparation
 
-Status: planned; ready on card 105's merge
+Status: complete; PR 246 merged at `cbd4ddc8`
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06

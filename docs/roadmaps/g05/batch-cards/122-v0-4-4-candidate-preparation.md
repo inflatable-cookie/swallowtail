@@ -1,6 +1,6 @@
 # 122 v0.4.4 Candidate Preparation
 
-Status: planned; candidate prepared; hosted CI and independent review pending
+Status: complete; PR 272 merged at `0673541d`; candidate prepared; release scope widened
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07
@@ -62,6 +62,12 @@ first stop at `2026-09-07T15:08:52+0100` and the second stop at
 passed. The successful JSON capture is retained at
 `.effigy/reports/release/prepare-0.4.4-success.json` with SHA-256
 `da037b70f979f072b062d624c011ab859b370c03fd96f7d2a68c8e6e874ce69c`;
-per-gate evidence is under `.effigy/reports/release/gates/`. Candidate PR, hosted
-`workflow_dispatch`, and same-workspace independent review remain pending;
-there is no merge or tag authority.
+per-gate evidence is under `.effigy/reports/release/gates/`. PR 272 merged the
+prepared candidate at `0673541d` after same-workspace independent review.
+Candidate-proof run `34133887294` passed at the pre-closeout tree; final
+qualifying `workflow_dispatch` run `34135201752` passed at reviewed head
+`0e5100f6`, whose tree was byte-identical to the merge. Wall clock from the
+first dispatch to the tag request was 47m58s. The operator withdrew the tag
+request on 2026-09-07 and widened the release scope to linked Desktop evidence
+across all three routes. The candidate remains prepared and untagged; this card
+is complete as candidate preparation, not release authorization.

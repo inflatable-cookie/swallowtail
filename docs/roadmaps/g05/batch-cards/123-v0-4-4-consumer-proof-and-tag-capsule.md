@@ -1,6 +1,6 @@
 # 123 v0.4.4 Consumer Proof And Tag Capsule
 
-Status: planned; ready when the operator-authorized `v0.4.4` tag exists
+Status: stopped; cancelled when the operator widened the release scope before any `v0.4.4` tag
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

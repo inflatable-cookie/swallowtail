@@ -402,7 +402,15 @@ fn surface_cleanup_failure(error: RuntimeFailure, cleanup: CleanupOutcome) -> Ru
 /// Safe code reported when the registered-open deadline expires.
 const REGISTERED_OPEN_DEADLINE_CODE: &str = "swallowtail.grok.acp.registered_tool.open_deadline";
 
+/// Contract 063 bounds opening by ten seconds and the parent lifecycle budget.
+const REGISTERED_OPEN_CEILING_TICKS: u64 = 10_000_000_000;
+
 /// Requires the services and unelapsed deadline a bounded registered open needs.
+///
+/// The returned deadline is the lesser of the caller's budget and the
+/// Contract 063 ten-second opening ceiling, so a generous parent deadline can
+/// never leave a minted lease, its listener, and the route's resources open
+/// past that ceiling.
 fn validate_registered_open(
     binding: &crate::registered_tool::GrokRegisteredToolBinding,
     services: &HostServices,
@@ -415,13 +423,22 @@ fn validate_registered_open(
             "Grok Build ACP registered-tool open requires a host time service to bound it",
         )
     })?;
-    if time.now() >= deadline.instant() {
+    let now = time.now();
+    if now >= deadline.instant() {
         return Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
             REGISTERED_OPEN_DEADLINE_CODE,
             "Grok Build ACP registered-tool deadline elapsed before provider work",
         )));
     }
-    Ok(deadline)
+    let ceiling =
+        swallowtail_runtime::Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
+            now.ticks().saturating_add(REGISTERED_OPEN_CEILING_TICKS),
+        ));
+    Ok(if ceiling.instant() < deadline.instant() {
+        ceiling
+    } else {
+        deadline
+    })
 }
 
 /// One deadline shared by every step of a bounded open.

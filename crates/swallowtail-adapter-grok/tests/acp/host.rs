@@ -6,6 +6,7 @@ struct FixtureHost {
     credential_releases: Arc<AtomicUsize>,
     resource_releases: Arc<AtomicUsize>,
     deadline_gate: Arc<Mutex<Option<Arc<std::sync::atomic::AtomicBool>>>>,
+    observed_deadlines: Arc<Mutex<Vec<Deadline>>>,
 }
 
 #[derive(Clone, Debug)]
@@ -33,7 +34,16 @@ impl FixtureHost {
             credential_releases: Arc::new(AtomicUsize::new(0)),
             resource_releases: Arc::new(AtomicUsize::new(0)),
             deadline_gate: Arc::new(Mutex::new(None)),
+            observed_deadlines: Arc::new(Mutex::new(Vec::new())),
         }
+    }
+
+    /// Returns every deadline the route asked this host to wait on.
+    fn observed_deadlines(&self) -> Vec<Deadline> {
+        self.observed_deadlines
+            .lock()
+            .expect("observed deadline lock")
+            .clone()
     }
 
     /// Holds the registered-open deadline until this flag is set.
@@ -140,6 +150,10 @@ impl TimeService for FixtureHost {
     }
 
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        self.observed_deadlines
+            .lock()
+            .expect("observed deadline lock")
+            .push(deadline);
         if matches!(self.agent.scenario, Scenario::Deadline) {
             Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
         } else if matches!(

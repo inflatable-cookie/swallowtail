@@ -123,6 +123,15 @@ impl InteractiveSessionHandle for GrokSessionHandle {
             {
                 Ok(response) => response,
                 Err(error) => {
+                    // The connection survives an encode or send failure, so the
+                    // courier stays connected. Settle before the attempt is
+                    // reported failed, or a later call would dispatch under a
+                    // turn that never started.
+                    if let Some(registered) = self.registered.as_ref() {
+                        let _ = registered
+                            .settle(&services, RegisteredToolCleanupCause::TransportFailure)
+                            .await;
+                    }
                     self.connection.clear_active_turn(&turn);
                     turn.fail(&error);
                     return Err(error);
@@ -192,6 +201,12 @@ impl InteractiveSessionHandle for GrokSessionHandle {
             ) {
                 Ok(task) => task,
                 Err(error) => {
+                    // No task will settle this lease, so the failed start must.
+                    if let Some(registered) = self.registered.as_ref() {
+                        let _ = registered
+                            .settle(&services, RegisteredToolCleanupCause::ProviderFailure)
+                            .await;
+                    }
                     self.connection.clear_active_turn(&turn);
                     turn.fail(&error);
                     let _ = self.connection.cancel_session().await;

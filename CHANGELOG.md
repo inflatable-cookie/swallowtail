@@ -30,10 +30,15 @@ annotated Git tags from the canonical repository.
   outcome — including the transport-failure path, where the protocol pump is
   the terminal publisher. A lease the host could not join fails its own turn,
   is never masked by a normal completion, and refuses every later turn while it
-  stays retained. `with_open_deadline` bounds every step of the minted-open
-  lifecycle, credential acquisition, resource resolution, and process startup
-  included, with each step raced individually so a step that owns partial
-  resources still runs its own cleanup. Every failure after the lease is minted
+  stays retained, and a turn whose start fails before any task exists settles
+  before it reports the failed attempt. Settlement is serialized: one caller
+  closes and every concurrent caller awaits that same completion, so a
+  cancellation still joining can never be read as a clean result by the turn
+  or by session close. Opening is bounded by the lesser of the caller's
+  `with_open_deadline` and Contract 063's ten-second opening ceiling, across
+  every step of the minted-open lifecycle including credential acquisition,
+  resource resolution, and process startup, with each step raced individually
+  so a step that owns partial resources still runs its own cleanup. Every failure after the lease is minted
   closes it explicitly and reports its cleanup truth: a failed registered close
   is never a clean session close, and both the session-close and the
   open-abort paths retain the working resource and credential rather than
@@ -46,7 +51,9 @@ annotated Git tags from the canonical repository.
   round-trip inside a mounted ACP turn, revoked-before-dispatch, unknown tool
   name, cancellation of an in-flight call, settlement completed before terminal
   on both the prompt and the transport-failure paths, post-terminal and
-  post-cancel refusal, unbound-turn and retained-lease refusal, an unanswered
+  post-cancel refusal, refusal after a failed turn start, one shared cleanup
+  truth across concurrent settlement, the ten-second ceiling capping a generous
+  caller budget, unbound-turn and retained-lease refusal, an unanswered
   open that reaches `session/new` and expires on its deadline, retained
   resource and credential on unjoined cleanup at both session close and open
   abort, close, and fail-closed transport, kind, identity, host, turn,

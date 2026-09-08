@@ -25,13 +25,47 @@ use swallowtail_runtime::{
 };
 
 /// Live registered-tool lease bound to one open ACP session and one turn.
+///
+/// Settlement is serialized: exactly one caller closes the lease, and every
+/// concurrent caller awaits that same completion instead of reading a
+/// not-yet-recorded outcome. Cancellation, turn terminal, transport failure,
+/// and session close all race for this, and a caller that saw
+/// `NotApplicable` while a close was still joining could publish terminal or
+/// release the credential beside work the host had not finished.
 pub(crate) struct GrokRegisteredToolSession {
-    lease: Mutex<Option<RegisteredToolBridgeLease>>,
+    state: Mutex<SettleState>,
     turn: RuntimeTurnId,
-    settled: Mutex<Option<CleanupOutcome>>,
+}
+
+#[derive(Default)]
+struct SettleState {
+    lease: Option<RegisteredToolBridgeLease>,
+    outcome: Option<CleanupOutcome>,
+    settling: bool,
+    waiters: Vec<futures_channel::oneshot::Sender<CleanupOutcome>>,
+}
+
+/// What one `settle` caller must do to obtain the exact cleanup truth.
+///
+/// The lease is boxed only to keep the variants comparable in size; exactly
+/// one caller ever receives it.
+enum SettleStep {
+    Recorded(CleanupOutcome),
+    Await(futures_channel::oneshot::Receiver<CleanupOutcome>),
+    Close(Box<RegisteredToolBridgeLease>),
 }
 
 impl GrokRegisteredToolSession {
+    fn new(lease: RegisteredToolBridgeLease, turn: RuntimeTurnId) -> Self {
+        Self {
+            state: Mutex::new(SettleState {
+                lease: Some(lease),
+                ..SettleState::default()
+            }),
+            turn,
+        }
+    }
+
     /// Returns the exact turn attempt this lease was opened for.
     pub(crate) fn turn(&self) -> &RuntimeTurnId {
         &self.turn
@@ -39,80 +73,80 @@ impl GrokRegisteredToolSession {
 
     /// Reports whether the lease settled and released everything it held.
     ///
-    /// A failed settlement is not clean: the host still retains the lease and
-    /// whatever work it could not join, so the operation is not over.
+    /// A settlement still in flight is not clean, and neither is a failed one:
+    /// in both cases the host may still hold the lease and work it could not
+    /// join, so the operation is not over.
     pub(crate) fn settled_clean(&self) -> bool {
-        matches!(
-            self.settled
-                .lock()
-                .expect("registered settle lock poisoned")
-                .as_ref(),
-            Some(CleanupOutcome::Clean | CleanupOutcome::NotApplicable)
-        )
-    }
-
-    /// Freezes admission, joins issued work, and closes with its exact cause.
-    ///
-    /// The cleanup truth is retained, not discarded: a failed close is
-    /// reported by [`Self::cleanup_outcome`] and never becomes a clean session
-    /// close. Settling twice is a no-op that keeps the first outcome.
-    pub(crate) async fn settle(
-        &self,
-        services: &HostServices,
-        cause: RegisteredToolCleanupCause,
-    ) -> CleanupOutcome {
-        let taken = self
-            .lease
-            .lock()
-            .expect("registered lease lock poisoned")
-            .take();
-        let Some(lease) = taken else {
-            return self.cleanup_outcome();
-        };
-        let outcome = match services.registered_tool_bridge() {
-            Some(bridge) => {
-                // The gate is an observation, not the freeze: it freezes only
-                // when the lease is already clear. The close that follows is
-                // what unconditionally freezes admission, signals cancellation
-                // to any issued call, and joins.
-                let _ = bridge.completion_gate(&lease).await;
-                match bridge.close(lease, cause).await {
-                    Ok(outcome) => outcome,
-                    Err(error) => CleanupOutcome::Failed(error.diagnostic().clone()),
-                }
-            }
-            // The lease exists only because the bridge minted it. A bridge
-            // that disappeared cannot be a clean close.
-            None => CleanupOutcome::Failed(SafeDiagnostic::new(
-                "swallowtail.grok.acp.registered_tool.bridge_missing",
-                "Grok Build registered-tool bridge disappeared during cleanup",
-            )),
-        };
-        *self
-            .settled
-            .lock()
-            .expect("registered settle lock poisoned") = Some(outcome.clone());
-        outcome
+        let state = self.locked();
+        !state.settling
+            && matches!(
+                state.outcome.as_ref(),
+                Some(CleanupOutcome::Clean | CleanupOutcome::NotApplicable)
+            )
     }
 
     /// Reports whether a joined cleanup attempt already failed.
     pub(crate) fn cleanup_failed(&self) -> bool {
         matches!(
-            self.settled
-                .lock()
-                .expect("registered settle lock poisoned")
-                .as_ref(),
+            self.locked().outcome.as_ref(),
             Some(CleanupOutcome::Failed(_) | CleanupOutcome::Degraded(_))
         )
     }
 
-    /// Returns the retained cleanup truth of this lease.
-    pub(crate) fn cleanup_outcome(&self) -> CleanupOutcome {
-        self.settled
+    /// Freezes admission, joins issued work, and closes with its exact cause.
+    ///
+    /// The first caller performs the close; every other caller awaits its
+    /// result and receives the same cleanup truth. A settled lease reports its
+    /// retained outcome rather than closing twice.
+    pub(crate) async fn settle(
+        &self,
+        services: &HostServices,
+        cause: RegisteredToolCleanupCause,
+    ) -> CleanupOutcome {
+        let step = {
+            let mut state = self.locked();
+            if let Some(outcome) = state.outcome.clone() {
+                SettleStep::Recorded(outcome)
+            } else if state.settling {
+                let (sender, receiver) = futures_channel::oneshot::channel();
+                state.waiters.push(sender);
+                SettleStep::Await(receiver)
+            } else if let Some(lease) = state.lease.take() {
+                state.settling = true;
+                SettleStep::Close(Box::new(lease))
+            } else {
+                SettleStep::Recorded(CleanupOutcome::NotApplicable)
+            }
+        };
+        match step {
+            SettleStep::Recorded(outcome) => outcome,
+            // A settlement whose result cannot be observed is never clean.
+            SettleStep::Await(receiver) => receiver.await.unwrap_or_else(|_| {
+                CleanupOutcome::Failed(SafeDiagnostic::new(
+                    "swallowtail.grok.acp.registered_tool.cleanup_unobserved",
+                    "Grok Build registered-tool cleanup result was not observed",
+                ))
+            }),
+            SettleStep::Close(lease) => {
+                let outcome = close_lease(*lease, services, cause).await;
+                let waiters = {
+                    let mut state = self.locked();
+                    state.outcome = Some(outcome.clone());
+                    state.settling = false;
+                    std::mem::take(&mut state.waiters)
+                };
+                for waiter in waiters {
+                    let _ = waiter.send(outcome.clone());
+                }
+                outcome
+            }
+        }
+    }
+
+    fn locked(&self) -> std::sync::MutexGuard<'_, SettleState> {
+        self.state
             .lock()
-            .expect("registered settle lock poisoned")
-            .clone()
-            .unwrap_or(CleanupOutcome::NotApplicable)
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
     }
 }
 
@@ -140,13 +174,10 @@ impl PendingRegisteredOpen {
     pub(crate) fn claim(mut self) -> GrokRegisteredToolSession {
         self.claimed = true;
         drop(self.launch.take());
-        GrokRegisteredToolSession {
-            lease: Mutex::new(Some(
-                self.lease.take().expect("registered lease is present"),
-            )),
-            turn: self.turn.clone(),
-            settled: Mutex::new(None),
-        }
+        GrokRegisteredToolSession::new(
+            self.lease.take().expect("registered lease is present"),
+            self.turn.clone(),
+        )
     }
 
     /// Closes a lease that never reached an open session, with its truth.
@@ -180,6 +211,14 @@ pub(crate) async fn close_registered_lease(
     let Some(lease) = lease else {
         return CleanupOutcome::NotApplicable;
     };
+    close_lease(lease, services, cause).await
+}
+
+async fn close_lease(
+    lease: RegisteredToolBridgeLease,
+    services: &HostServices,
+    cause: RegisteredToolCleanupCause,
+) -> CleanupOutcome {
     match services.registered_tool_bridge() {
         Some(bridge) => {
             let _ = bridge.completion_gate(&lease).await;

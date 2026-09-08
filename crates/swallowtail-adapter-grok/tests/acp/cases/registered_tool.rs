@@ -443,6 +443,27 @@ fn try_open_registered_route(
     OpenedRegisteredRoute,
     Box<(RuntimeFailure, swallowtail_host_local::LocalHostServices)>,
 > {
+    try_open_registered_route_with_deadline(
+        host_name,
+        scenario,
+        dispatcher,
+        admission,
+        cleanup_budget,
+        registered_open_deadline(),
+    )
+}
+
+fn try_open_registered_route_with_deadline(
+    host_name: &str,
+    scenario: Scenario,
+    dispatcher: Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+    admission: Arc<swallowtail_testkit::ScriptedAdmissionPort>,
+    cleanup_budget: Option<std::time::Duration>,
+    open_deadline: Deadline,
+) -> Result<
+    OpenedRegisteredRoute,
+    Box<(RuntimeFailure, swallowtail_host_local::LocalHostServices)>,
+> {
     let host_id = ExecutionHostId::new(host_name).expect("host");
     let selected = selection(host_id.clone());
     let fixture = FixtureHost::new(scenario);
@@ -470,7 +491,7 @@ fn try_open_registered_route(
         swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
             .expect("mediated stdio selection qualifies")
             .with_host(local.clone())
-            .with_open_deadline(registered_open_deadline())
+            .with_open_deadline(open_deadline)
             .with_turn(registered_turn_id());
     let driver = GrokAcpDriver::new(
         EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
@@ -1555,4 +1576,186 @@ fn a_failed_registered_cleanup_during_open_retains_the_route_leases() {
     assert_eq!(fixture.credential_releases.load(Ordering::SeqCst), 0);
     assert_eq!(fixture.resource_releases.load(Ordering::SeqCst), 0);
     blocking.release();
+}
+
+#[test]
+fn a_generous_caller_deadline_is_capped_at_the_ten_second_open_ceiling() {
+    // Contract 063 bounds opening by ten seconds and the parent budget. A five
+    // minute caller deadline must not keep a minted lease, its listener, and
+    // the route's resources open for five minutes.
+    let far = Deadline::at(MonotonicInstant::from_ticks(300_000_000_000));
+    let Err(boxed) = try_open_registered_route_with_deadline(
+        "fixture.host.grok.registered-open-ceiling",
+        Scenario::RegisteredOpenUnanswered,
+        Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        None,
+        far,
+    ) else {
+        panic!("an unanswered registered open must fail");
+    };
+    let (error, local) = *boxed;
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.grok.acp.registered_tool.open_deadline"
+    );
+    assert_eq!(local.registered_tool_lease_count(), 0);
+    assert_eq!(local.operation_bridge_listener_count(), 0);
+}
+
+#[test]
+fn the_open_bound_uses_the_ten_second_ceiling_not_the_caller_budget() {
+    let host_id = ExecutionHostId::new("fixture.host.grok.registered-ceiling-value").expect("host");
+    let selected = selection(host_id.clone());
+    let fixture = FixtureHost::new(Scenario::RegisteredOpenUnanswered);
+    let executable =
+        swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
+    let environment =
+        EnvironmentRef::new("grok.fixture.registered-environment").expect("environment");
+    let (local, services) = registered_route_services(
+        &host_id,
+        &fixture,
+        Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+        courier_binary(),
+        &executable,
+        &environment,
+    );
+    let preparation = registered_preparation(
+        host_id,
+        swallowtail_testkit::fixture_admission(Arc::new(
+            swallowtail_testkit::ScriptedAdmissionPort::current(),
+        )),
+        executable,
+        environment,
+        RegisteredFixtureInput::default(),
+    );
+    let binding =
+        swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
+            .expect("mediated stdio selection qualifies")
+            .with_host(local)
+            .with_open_deadline(Deadline::at(MonotonicInstant::from_ticks(300_000_000_000)))
+            .with_turn(registered_turn_id());
+    let driver = GrokAcpDriver::new(
+        EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
+        selected.credential,
+    )
+    .with_registered_tools(binding);
+    let _ = block_on(driver.open_session(
+        selected.plan,
+        registered_open_request(selected.resource),
+        services,
+    ));
+    // The exact bound the route asked the host to wait on is the ceiling, not
+    // the five minute caller budget.
+    let observed = fixture.observed_deadlines();
+    assert_eq!(
+        observed.first().map(|deadline| deadline.instant().ticks()),
+        Some(REGISTERED_OPEN_DEADLINE_TICKS),
+        "open must be bounded by the ten second ceiling: {observed:?}"
+    );
+}
+
+#[test]
+fn a_failed_turn_start_settles_before_it_reports_the_failed_attempt() {
+    let calls = Arc::new(AtomicUsize::new(0));
+    let mut opened = open_registered_route_for(
+        "fixture.host.grok.registered-turn-start-failed",
+        Scenario::RegisteredTurn,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        None,
+    );
+    opened.courier.handshake();
+    // One prompt past the ACP frame ceiling: turn validation admits it, the
+    // request fails to encode, and the connection and courier both survive.
+    let request = TurnRequest::new(
+        registered_turn_id(),
+        OperationContent::new("x".repeat(96 * 1024)).expect("oversized prompt"),
+    );
+    let Err(error) = block_on(opened.session.start_turn(request, opened.services.clone())) else {
+        panic!("an unencodable prompt must fail the turn start");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.grok.acp.protocol_failed"
+    );
+    assert_eq!(
+        opened.local.registered_tool_lease_count(),
+        0,
+        "a failed turn start must settle before it reports the failed attempt"
+    );
+    let after_failure = opened
+        .courier
+        .try_call_tool(&registered_tool_id().to_string(), r#"{"path":"post-start-failure"}"#);
+    assert!(
+        after_failure
+            .as_deref()
+            .is_none_or(|answer| !answer.contains("from-dispatcher")),
+        "a call after a failed turn start must not dispatch: {after_failure:?}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 0);
+    close_registered_route(opened);
+}
+
+#[test]
+fn concurrent_settlement_reports_one_shared_cleanup_truth() {
+    // Cancellation begins closing a lease the host cannot join while the turn
+    // reaches terminal. The second settler must await the first, not read a
+    // not-yet-recorded outcome and publish a clean completion.
+    let blocking = Arc::new(BlockingDispatcher {
+        entered: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        release: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        waker: Arc::new(Mutex::new(None)),
+    });
+    let mut opened = open_registered_route_for(
+        "fixture.host.grok.registered-concurrent-settle",
+        Scenario::RegisteredTurn,
+        Arc::clone(&blocking) as Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        Some(std::time::Duration::from_millis(300)),
+    );
+    opened.courier.handshake();
+    let mut turn = start(
+        opened.session.as_mut(),
+        opened.services.clone(),
+        REGISTERED_TURN,
+    );
+    let call = OutstandingCall::issue(&opened.courier);
+    wait_until(
+        || blocking.entered.load(Ordering::SeqCst),
+        "the dispatcher entering its blocking call",
+    );
+    // Race the prompt task's settlement into the window where cancellation's
+    // close is still joining.
+    let fixture = opened.fixture.clone();
+    let racer = std::thread::spawn(move || {
+        std::thread::sleep(std::time::Duration::from_millis(30));
+        fixture.complete_turn();
+    });
+    block_on(turn.cancellation().request()).expect("turn cancellation requested");
+    racer.join().expect("racing thread joins");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("the turn publishes one terminal outcome"),
+    );
+    // Both settlers observe the same failed cleanup, so the turn is never
+    // published as a clean completion beside a lease the host still holds.
+    assert!(
+        matches!(terminal.status(), TerminalStatus::RuntimeFailed(_)),
+        "a concurrently settled failed cleanup must not publish a clean terminal: {:?}",
+        terminal.status()
+    );
+    assert_eq!(
+        opened.local.registered_tool_lease_count(),
+        1,
+        "the host retains the lease it could not join"
+    );
+    blocking.release();
+    call.join();
 }

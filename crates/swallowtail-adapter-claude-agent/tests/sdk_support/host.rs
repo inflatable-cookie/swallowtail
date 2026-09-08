@@ -263,7 +263,9 @@ impl SdkFixtureHost {
             .expect("spawned mcp lock")
             .iter()
         {
-            lines.push(child.evidence());
+            // These children may still be running, so the snapshot must not
+            // wait for an end of pipe that a live writer will not reach.
+            lines.push(child.evidence_snapshot());
         }
         if lines.is_empty() {
             "no provider-spawned child was recorded".to_owned()

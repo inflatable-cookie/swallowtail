@@ -239,37 +239,37 @@ fn courier_binary() -> &'static Path {
 /// because the artifact is transiently absent, never permanently wrong.
 fn acquire_built_courier(workspace: &Path, nested_target: &Path, binary: &Path) -> Vec<u8> {
     const ATTEMPTS: usize = 5;
-    let mut failures = Vec::new();
+    let mut absences = Vec::new();
     for attempt in 1..=ATTEMPTS {
-        let built = std::process::Command::new("cargo")
-            .args([
-                "build",
-                "-p",
-                "swallowtail-host-local",
-                "--features",
-                "mediated-stdio-proxy",
-                "--bin",
-                "swallowtail-registered-tool-courier",
-            ])
-            .env("CARGO_TARGET_DIR", nested_target)
-            .current_dir(workspace)
-            .output()
-            .expect("courier build starts");
-        // Card 139: a failed setup step names its own cause. A bare exit code
-        // here is the counterexample the fixture is meant to make impossible.
-        if !built.status.success() {
-            failures.push(format!(
-                "attempt {attempt}: build failed: {}; stdout: {}; stderr: {}",
-                built.status,
-                bounded(&built.stdout),
-                bounded(&built.stderr)
-            ));
-            continue;
-        }
+        let built = run_bounded(
+            std::process::Command::new("cargo")
+                .args([
+                    "build",
+                    "-p",
+                    "swallowtail-host-local",
+                    "--features",
+                    "mediated-stdio-proxy",
+                    "--bin",
+                    "swallowtail-registered-tool-courier",
+                ])
+                .env("CARGO_TARGET_DIR", nested_target)
+                .current_dir(workspace),
+        );
+        // Card 139: only the measured transient failure is retried. A build
+        // that fails is a real defect and fails here with its own output;
+        // retrying it would let an intermittent compiler error or a killed
+        // rustc pass as clean validation on a later attempt.
+        assert!(
+            built.status.success(),
+            "courier binary failed to build on attempt {attempt}: {}\nstdout: {}\nstderr: {}",
+            built.status,
+            built.stdout,
+            built.stderr
+        );
         match std::fs::read(binary) {
             Ok(bytes) if !bytes.is_empty() => return bytes,
-            Ok(_) => failures.push(format!("attempt {attempt}: built courier read as empty")),
-            Err(error) => failures.push(format!(
+            Ok(_) => absences.push(format!("attempt {attempt}: built courier read as empty")),
+            Err(error) => absences.push(format!(
                 "attempt {attempt}: reading {binary:?} failed: {error} ({}, kind {:?})",
                 error.raw_os_error().map_or_else(
                     || "no os code".to_owned(),
@@ -280,19 +280,67 @@ fn acquire_built_courier(workspace: &Path, nested_target: &Path, binary: &Path) 
         }
     }
     panic!(
-        "courier binary could not be acquired in {ATTEMPTS} attempts:\n{}",
-        failures.join("\n")
+        "courier binary was absent on all {ATTEMPTS} acquisition attempts:\n{}",
+        absences.join("\n")
     );
 }
 
-/// Republishes the built courier under a content-addressed path that is
-/// written once and never rewritten.
+/// One command's exit plus its output, with each stream bounded as it is read.
+struct BoundedOutput {
+    status: std::process::ExitStatus,
+    stdout: String,
+    stderr: String,
+}
+
+/// Runs `command`, capping each captured stream instead of buffering all of
+/// it. Both streams are drained so the child cannot block on a full pipe.
+fn run_bounded(command: &mut std::process::Command) -> BoundedOutput {
+    let mut child = command
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .expect("courier build starts");
+    let stdout = child.stdout.take().expect("build stdout pipe");
+    let stderr = child.stderr.take().expect("build stderr pipe");
+    let stdout = std::thread::spawn(move || read_bounded(stdout));
+    let stderr = std::thread::spawn(move || read_bounded(stderr));
+    let status = child.wait().expect("courier build completes");
+    BoundedOutput {
+        status,
+        stdout: stdout.join().expect("build stdout reader"),
+        stderr: stderr.join().expect("build stderr reader"),
+    }
+}
+
+/// Reads a stream to its end, retaining only its last `OUTPUT_CAP` bytes.
 ///
-/// Card 139: every test process in the process-spawning shard runs the nested
-/// build, and a concurrent nested build that re-uplifts the shared
-/// `debug/` path kills a courier already executing from it — observed as
-/// `signal: 9 (SIGKILL)` before the courier claimed its rendezvous. Spawning
-/// a copy no builder ever touches removes the race at its source.
+/// A build's diagnosis is at the end of its output, behind however much
+/// progress noise the run produced, so the tail is the part worth keeping.
+fn read_bounded(mut stream: impl std::io::Read) -> String {
+    const OUTPUT_CAP: usize = 4_096;
+    let mut retained: std::collections::VecDeque<u8> = std::collections::VecDeque::new();
+    let mut dropped = 0_usize;
+    let mut buffer = [0_u8; 1_024];
+    while let Ok(read) = stream.read(&mut buffer) {
+        if read == 0 {
+            break;
+        }
+        retained.extend(&buffer[..read]);
+        while retained.len() > OUTPUT_CAP {
+            retained.pop_front();
+            dropped += 1;
+        }
+    }
+    let bytes = retained.into_iter().collect::<Vec<_>>();
+    let text = String::from_utf8_lossy(&bytes).into_owned();
+    if dropped == 0 {
+        text
+    } else {
+        format!("(earlier {dropped} bytes dropped)… {text}")
+    }
+}
+
 fn publish_write_once(bytes: &[u8], nested_target: &Path) -> PathBuf {
     let mut hasher = std::collections::hash_map::DefaultHasher::new();
     std::hash::Hasher::write(&mut hasher, bytes);
@@ -331,17 +379,6 @@ fn set_executable(path: &Path) {
 
 #[cfg(not(unix))]
 fn set_executable(_path: &Path) {}
-
-/// Bounds one retained process output stream for a failure message.
-fn bounded(bytes: &[u8]) -> String {
-    const CAP: usize = 4_096;
-    let text = String::from_utf8_lossy(&bytes[..bytes.len().min(CAP)]);
-    if bytes.len() > CAP {
-        format!("{text}… (+{} bytes)", bytes.len() - CAP)
-    } else {
-        text.into_owned()
-    }
-}
 
 #[cfg(unix)]
 fn is_executable(path: &Path) -> bool {

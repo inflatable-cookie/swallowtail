@@ -84,11 +84,13 @@ uplift is not atomic: a sibling test process rebuilding into the same nested
 target removes and recreates
 `target/card125-courier/debug/swallowtail-registered-tool-courier`. A probe
 holding that path open across eight rebuilds recorded 42 `ENOENT`
-observations. Every one of the 117 test processes in this binary runs that
-nested build, so a spawn of the same path lands in that window, returns
-`ENOENT`, and — under the old helper — became a bare
-`fixture.claude_agent_sdk.failed` at session open. That is PR 285's exact
-symptom, and nothing in the adapter or the route is involved.
+observations. Every test process reaching `courier_binary()` runs that nested
+build, so a spawn of the same path can land in that window, return `ENOENT`,
+and — under the old helper — become a bare `fixture.claude_agent_sdk.failed`
+at session open. That is a measured mechanism which produces PR 285's exact
+diagnostic; attributing that one historical run to it remains an inference,
+since the failing run kept no evidence of its own. Nothing in the adapter or
+the route is involved either way.
 
 A second startup death appeared during the loaded reproduction: run 2 of 22
 under the isolated process-spawning selector with sixteen CPU burners failed
@@ -147,8 +149,8 @@ it does not make the case flaky.
 
 ### Review
 
-Cross-model review at the first exact head returned changes required, and it
-was right on every count. Three defects are fixed here: the artifact was still
+Two cross-model review rounds returned changes required, and both were right
+on every count. Three defects are fixed here: the artifact was still
 read from the volatile path without retry, so publication inherited the race
 it was meant to remove; the new regression test used one machine-wide
 temporary filename, which is the shared mutable state this card exists to
@@ -158,11 +160,24 @@ claim above was rewritten because the original overstated SIGKILL as proof of
 the PR 285 chain. Evidence retention is now bounded per note, and a malformed
 declaration is named by its shape rather than echoing declared `env` values.
 
+The second round found that the drain fix had introduced its own defects.
+Cleanup rendered evidence before killing the child, so a healthy courier held
+its pipe open for the whole drain bound and cleanup still kept only a
+non-blocking exit check; close measured 7.09s against roughly five before.
+Cleanup now kills and reaps first, and live children are inspected through an
+explicit non-waiting snapshot. The drain flag was also read after the
+rendering was unlocked, so a final append could certify a stale rendering as
+complete; completion is now read under the same lock as the rendering.
+Acquisition retried every non-zero Cargo exit, which would let an intermittent
+build failure pass as clean on a later attempt; only the measured transient
+absence is retried, and a failing build fails with its own bounded output.
+Build output is bounded as it is read rather than buffered whole.
+
 ### Proof
 
 - 24 runs of the isolated process-spawning selector under sixteen CPU burners,
-  117 tests each, zero failures, at the first head.
-- 32 concurrent instances of the two scratch-executable tests: all pass. The
+  118 tests each, zero failures.
+- 64 concurrent instances of the two scratch-executable tests: all pass. The
   same probe failed 24 of 32 before the per-invocation directory fix.
 - 16 concurrent test processes against continuous courier rebuild churn: all
   pass, exercising the acquisition retry and the hard-linked publish.

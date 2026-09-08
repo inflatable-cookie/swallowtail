@@ -99,8 +99,27 @@ impl StderrEvidence {
                 guard = next;
             }
         }
-        let rendered = self.capture.lock().expect("courier stderr lock").describe();
-        if self.drained.load(Ordering::Acquire) {
+        self.render()
+    }
+
+    /// Renders without waiting, for a child that is still running and so has
+    /// no end of pipe to wait for.
+    fn describe_snapshot(&self) -> String {
+        self.render()
+    }
+
+    /// Renders the capture and its completion status under one lock.
+    ///
+    /// The reader appends under `capture` and only then sets `drained`, so a
+    /// completion observed while holding `capture` covers every byte in this
+    /// rendering. Reading the flag after unlocking would let a final append
+    /// certify an older rendering as complete.
+    fn render(&self) -> String {
+        let capture = self.capture.lock().expect("courier stderr lock");
+        let complete = self.drained.load(Ordering::Acquire);
+        let rendered = capture.describe();
+        drop(capture);
+        if complete {
             rendered
         } else {
             format!("{rendered} (drain incomplete after {DRAIN_BOUND:?})")
@@ -196,6 +215,12 @@ impl SpawnedMcpChild {
         let _ = self.child.lock().expect("mcp child lock").kill();
     }
 
+    /// Waits for an already-killed child, so its stderr pipe is closed and the
+    /// drain completes instead of expiring against a live writer.
+    fn reap(&self) {
+        let _ = self.child.lock().expect("mcp child lock").wait();
+    }
+
     /// Returns the child's observed exit, or `None` while it is still running.
     fn exit_status(&self) -> Option<String> {
         match self.child.lock().expect("mcp child lock").try_wait() {
@@ -205,12 +230,29 @@ impl SpawnedMcpChild {
         }
     }
 
-    /// Bounded process output and exit evidence for this child.
+    /// Bounded process output and exit evidence for a child that has ended.
+    ///
+    /// Waits for end of pipe, so a child's final output cannot be lost. Only
+    /// call this once the child has exited or been reaped; a live writer keeps
+    /// the pipe open and would cost the whole drain bound.
     pub(in crate::sdk_support) fn evidence(&self) -> String {
         let exit = self
             .exit_status()
             .unwrap_or_else(|| "still running".to_owned());
         let stderr = self.stderr.describe_drained();
+        format!(
+            "courier {:?} args {:?}: {exit}; {stderr}",
+            self.command, self.arguments
+        )
+    }
+
+    /// The same evidence for a child that may still be running, taken without
+    /// waiting for a drain that a live writer will not complete.
+    pub(in crate::sdk_support) fn evidence_snapshot(&self) -> String {
+        let exit = self
+            .exit_status()
+            .unwrap_or_else(|| "still running".to_owned());
+        let stderr = self.stderr.describe_snapshot();
         format!(
             "courier {:?} args {:?}: {exit}; {stderr}",
             self.command, self.arguments
@@ -356,7 +398,7 @@ fn await_rendezvous_claim(
             return Err(format!(
                 "courier never claimed its rendezvous {} within {STARTUP_BOUND:?}: {}",
                 rendezvous.display(),
-                child.evidence()
+                child.evidence_snapshot()
             ));
         }
         std::thread::sleep(STARTUP_STEP);
@@ -371,14 +413,12 @@ pub(super) fn kill_spawned(shared: &Shared) {
         .drain(..)
         .collect::<Vec<_>>();
     for child in children {
-        record_evidence(shared, &child.evidence());
+        // Card 139: kill and reap before rendering evidence. Waiting for end
+        // of pipe while the child still holds it open costs the whole drain
+        // bound and still misses whatever the child writes on its way out.
         child.kill();
-        record_evidence(
-            shared,
-            &child
-                .exit_status()
-                .unwrap_or_else(|| "kill requested; exit not yet observed".to_owned()),
-        );
+        child.reap();
+        record_evidence(shared, &child.evidence());
     }
 }
 

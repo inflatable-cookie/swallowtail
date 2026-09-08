@@ -277,6 +277,36 @@ real and all fixed:
     `answered_request_pairs_yield_before_the_exchange_anchors` builds the
     shape and asserts the anchors, the turn result, and the verdict.
 
+**Fifth review round (same reviewer, head `85cf3f7b`).** Two blockers, both
+fixed:
+
+13. The same class as finding 10, one guard along. Tier-four pair eviction
+    takes any answered inbound request, and a refused
+    `session/request_permission` is exactly such a pair, so an early refusal
+    followed by enough traffic to reach the ceiling scored
+    `ignores_client_mcp` instead of `inconclusive`/`permission_rejected` —
+    again a provider finding we did not earn. Rather than patch one more
+    guard, the pattern is now explicit: `CaptureFacts` holds every verdict
+    fact that eviction can reach — `decisive_frame_lost`,
+    `native_echo_observed`, `permission_rejected_observed` — latched at
+    capture and never read back out of the capsule. The decision takes that
+    struct instead of a growing argument list.
+    `an_evicted_permission_refusal_still_blocks_ignores_client_mcp` evicts the
+    pair and asserts the cause holds.
+14. Post-deadline work was still unbounded. `drain_within` stopped receiving
+    on time but accumulated an unbounded `Vec`, so even breaking out of the
+    batch left an arbitrarily large drop to pay for after the deadline.
+    `MAXIMUM_DRAIN_BATCH` (512) now bounds what one read hands back; the
+    remainder stays queued for a pass that re-checks the deadline first.
+    `drain_hands_back_a_bounded_batch` pins it. The packet no longer claims a
+    stalled write is the only path outside 495 seconds: freeing what the
+    reader thread queued but never handed over is the other, and both hang or
+    slow the probe rather than scoring anything.
+
+The reviewer confirmed the native-echo latch is correct for the live runner,
+that every other scorer input survives all four tiers, and that
+`decisive_frame_lost` is no longer reachable from a conforming ACP turn.
+
 The reviewer's remaining note is accepted as residual and not fixed:
 retaining `locations` on an elided progress tick would be forensic hardening,
 not verdict correctness. The allowlist was otherwise confirmed sound, and the

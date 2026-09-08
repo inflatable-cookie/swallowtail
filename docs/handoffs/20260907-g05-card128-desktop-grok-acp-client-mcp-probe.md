@@ -77,11 +77,13 @@ that never pauses therefore cannot hold an exchange open. The receive and
 cleanup budget is the sum of the bounds — 480 seconds of exchanges, plus the
 5-second helper self-check and the 10-second join, so 495 seconds. Once the
 deadline passes, the exchange keeps one frame to record that a late burst
-existed and abandons the rest of that batch unread, so neither writing back
-nor processing a large burst can extend it. The one path outside the budget is
-a blocking write to a child that has stopped reading its stdin; that would
-hang the probe rather than score anything, and Desktop should report it as a
-harness defect.
+existed and abandons the rest of that batch unread, and one read hands back at
+most 512 frames however hard the child streams, so neither writing back nor
+processing a burst can extend the budget. Two paths sit outside it, and both
+hang or slow the probe rather than scoring anything: a blocking write to a
+child that has stopped reading its stdin, and freeing whatever the reader
+thread queued but never handed to an exchange. Desktop should report either as
+a harness defect.
 
 Frame capture targets 512 frames, and eviction runs in tiers so that what
 yields is always the least load-bearing thing left. Streaming chatter goes
@@ -213,7 +215,10 @@ One redacted JSON capsule per exact version. Fields:
 - `client_mcp_tools_listed`: echo-server `tools/list` observed
 - `echo_helper_live`: this run proved the echo helper spawnable
 - `frames`: bounded redacted ACP JSON-RPC objects, including the outbound
-  `session/new` with non-empty `mcpServers` when sent
+  `session/new` with non-empty `mcpServers` when sent. Frames are evidence,
+  not the verdict's only source: a guard eviction could reach — a native echo
+  tool call, a refused permission — is latched when captured, so a truncated
+  capsule still scores what the run actually showed
 - `stale_callback_rejected`
 - `cleanup_joined`
 - `truncated`: middle frames were elided to hold the capsule near its

@@ -82,6 +82,14 @@ const MAXIMUM_FRAMES: usize = 512;
 /// is the only shape left that can score
 /// [`InconclusiveCause::Truncated`].
 const MAXIMUM_RETAINED_FRAMES: usize = 8_192;
+/// Most frames one inbound read returns at once.
+///
+/// The budget bounds how long a drain waits; this bounds how much it hands
+/// back. Without it a child that streams hard fills an unbounded batch, and
+/// the work of capturing — or merely freeing — that batch runs after the
+/// deadline however promptly the drain stopped receiving. Whatever is left
+/// stays queued for the next pass, which re-checks the deadline first.
+const MAXIMUM_DRAIN_BATCH: usize = 512;
 /// Directive prompt recorded verbatim on every capsule.
 pub const ECHO_PROMPT: &str = "You must call the tool named echo with argument text set to ping. Do not finish the turn until that tool call has returned.";
 /// Session id used by the offline fixtures. Never sent to a provider.
@@ -849,8 +857,7 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
     };
     let echo_helper_live = peer.echo_helper_live();
     let truncated = capture.truncated;
-    let decisive_frame_lost = capture.decisive_frame_lost;
-    let native_echo_observed = capture.native_echo_observed;
+    let facts = capture.facts;
     let redacted: Vec<GrokAcpClientMcpFrame> = capture
         .frames
         .into_iter()
@@ -859,13 +866,8 @@ pub fn run_grok_acp_client_mcp_probe_with_transcript(
             message: redact_value(frame.message),
         })
         .collect();
-    let decision = grok_acp_client_mcp_verdict_decision(
-        &redacted,
-        &transcript,
-        decisive_frame_lost,
-        echo_helper_live,
-        native_echo_observed,
-    );
+    let decision =
+        grok_acp_client_mcp_verdict_decision(&redacted, &transcript, facts, echo_helper_live);
     let (prompt_turn_completed, stop_reason) = prompt_turn_observation(&redacted);
     Ok(GrokAcpClientMcpCapsule {
         version: version.to_owned(),
@@ -907,7 +909,7 @@ pub fn grok_acp_client_mcp_verdict(
     frames: &[GrokAcpClientMcpFrame],
     transcript: &EchoMcpTranscript,
 ) -> ClientMcpVerdict {
-    grok_acp_client_mcp_verdict_decision(frames, transcript, false, false, false).verdict
+    grok_acp_client_mcp_verdict_decision(frames, transcript, CaptureFacts::default(), false).verdict
 }
 
 /// Same as [`grok_acp_client_mcp_verdict`], with per-run echo helper liveness.
@@ -917,7 +919,13 @@ pub fn grok_acp_client_mcp_verdict_with_helper(
     transcript: &EchoMcpTranscript,
     echo_helper_live: bool,
 ) -> ClientMcpVerdict {
-    grok_acp_client_mcp_verdict_decision(frames, transcript, false, echo_helper_live, false).verdict
+    grok_acp_client_mcp_verdict_decision(
+        frames,
+        transcript,
+        CaptureFacts::default(),
+        echo_helper_live,
+    )
+    .verdict
 }
 
 struct VerdictDecision {
@@ -935,10 +943,14 @@ fn inconclusive(cause: InconclusiveCause) -> VerdictDecision {
 fn grok_acp_client_mcp_verdict_decision(
     frames: &[GrokAcpClientMcpFrame],
     transcript: &EchoMcpTranscript,
-    decisive_frame_lost: bool,
+    facts: CaptureFacts,
     echo_helper_live: bool,
-    native_echo_observed: bool,
 ) -> VerdictDecision {
+    let CaptureFacts {
+        decisive_frame_lost,
+        native_echo_observed,
+        permission_rejected_observed,
+    } = facts;
     // Eliding chatter is not a failure to answer. Only a capture that could
     // not retain a frame the verdict depends on is scored `truncated`.
     if decisive_frame_lost {
@@ -993,7 +1005,7 @@ fn grok_acp_client_mcp_verdict_decision(
                     verdict: ClientMcpVerdict::AcceptsClientMcp,
                     inconclusive_cause: None,
                 }
-            } else if permission_was_rejected(frames) {
+            } else if permission_rejected_observed || permission_was_rejected(frames) {
                 inconclusive(InconclusiveCause::PermissionRejected)
             } else if transcript.initialize() {
                 if prompt_turn_completed(frames) {
@@ -1419,6 +1431,9 @@ fn drain_within(
         Err(RecvTimeoutError::Timeout | RecvTimeoutError::Disconnected) => return Ok(messages),
     }
     loop {
+        if messages.len() >= MAXIMUM_DRAIN_BATCH {
+            break;
+        }
         let remaining = deadline.saturating_duration_since(std::time::Instant::now());
         if remaining.is_zero() {
             break;
@@ -2002,12 +2017,25 @@ fn reject_request(
     Ok(())
 }
 
+/// Verdict facts latched when a frame is captured.
+///
+/// Eviction repeatedly proved able to erase a guard the verdict reads out of
+/// the frames — a native echo tool call, a rejected permission — and turn an
+/// `inconclusive` into a provider finding we did not earn. Anything a verdict
+/// guards on that eviction can reach is recorded here instead, once, and
+/// never read back out of the capsule.
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+struct CaptureFacts {
+    decisive_frame_lost: bool,
+    native_echo_observed: bool,
+    permission_rejected_observed: bool,
+}
+
 struct FrameCapture {
     frames: Vec<GrokAcpClientMcpFrame>,
     truncated: bool,
-    decisive_frame_lost: bool,
     retention_ceiling: usize,
-    native_echo_observed: bool,
+    facts: CaptureFacts,
 }
 
 /// Returns whether the verdict can be decided without this frame.
@@ -2045,9 +2073,8 @@ impl FrameCapture {
         Self {
             frames: Vec::new(),
             truncated: false,
-            decisive_frame_lost: false,
             retention_ceiling,
-            native_echo_observed: false,
+            facts: CaptureFacts::default(),
         }
     }
 
@@ -2071,7 +2098,10 @@ impl FrameCapture {
         // never read back out of the capsule. Losing the frame must not lose
         // the guard: without it an evicted native echo scores
         // `ignores_client_mcp`, a provider finding we did not earn.
-        self.native_echo_observed = self.native_echo_observed || frame_is_native_echo_call(&frame);
+        self.facts.native_echo_observed =
+            self.facts.native_echo_observed || frame_is_native_echo_call(&frame);
+        self.facts.permission_rejected_observed = self.facts.permission_rejected_observed
+            || frame_answers_permission_with_refusal(&self.frames, &frame);
         if self.frames.len() < MAXIMUM_FRAMES {
             self.frames.push(frame);
             return;
@@ -2118,7 +2148,7 @@ impl FrameCapture {
         }
         self.truncated = true;
         if frame_is_decisive(&frame) {
-            self.decisive_frame_lost = true;
+            self.facts.decisive_frame_lost = true;
         }
     }
 }
@@ -2136,6 +2166,30 @@ fn frame_is_structural(frame: &GrokAcpClientMcpFrame) -> bool {
 ///
 /// This is the observation `native_echo_without_admission` guards on, so it is
 /// recorded when captured rather than searched for later.
+/// Returns whether this outbound frame is the probe's own refusal of a
+/// permission request already captured.
+///
+/// The pair is still whole when the answer is pushed — pair eviction only
+/// ever takes the oldest — so the fact is latched here and survives the
+/// eviction that later removes both frames.
+fn frame_answers_permission_with_refusal(
+    frames: &[GrokAcpClientMcpFrame],
+    answer: &GrokAcpClientMcpFrame,
+) -> bool {
+    if !answer.is_outbound() || answer.message.get("result").is_none() {
+        return false;
+    }
+    let Some(id) = answer.message.get("id").filter(|id| !id.is_null()) else {
+        return false;
+    };
+    frames.iter().rev().any(|frame| {
+        !frame.is_outbound()
+            && method_of(&frame.message) == Some("session/request_permission")
+            && frame.message.get("id") == Some(id)
+            && permission_answer_rejects(&frame.message, &answer.message)
+    })
+}
+
 fn frame_is_native_echo_call(frame: &GrokAcpClientMcpFrame) -> bool {
     !frame.is_outbound()
         && update_kind(&frame.message) == Some("tool_call")
@@ -2417,13 +2471,18 @@ fn permission_response_rejected(
     }) else {
         return false;
     };
-    let Some(option_id) = response
-        .message
+    permission_answer_rejects(request, &response.message)
+}
+
+/// Returns whether `answer` refuses the permission `request`: either the
+/// probe cancelled, or it selected an option the request itself marks as a
+/// rejection.
+fn permission_answer_rejects(request: &Value, answer: &Value) -> bool {
+    let Some(option_id) = answer
         .pointer("/result/outcome/optionId")
         .and_then(Value::as_str)
     else {
-        return response
-            .message
+        return answer
             .pointer("/result/outcome/outcome")
             .and_then(Value::as_str)
             == Some("cancelled");
@@ -2726,7 +2785,7 @@ mod tests {
             );
         }
         assert!(capture.truncated);
-        assert!(!capture.decisive_frame_lost);
+        assert!(!capture.facts.decisive_frame_lost);
         assert_eq!(capture.frames.len(), MAXIMUM_FRAMES);
         assert_eq!(capture.frames[0].message, decisive);
     }
@@ -2742,14 +2801,13 @@ mod tests {
             );
         }
         assert!(capture.truncated);
-        assert!(capture.decisive_frame_lost);
+        assert!(capture.facts.decisive_frame_lost);
         assert_eq!(
             grok_acp_client_mcp_verdict_decision(
                 &capture.frames,
                 &EchoMcpTranscript::called(),
-                capture.decisive_frame_lost,
-                true,
-                capture.native_echo_observed
+                capture.facts,
+                true
             )
             .inconclusive_cause,
             Some(InconclusiveCause::Truncated)
@@ -2785,8 +2843,7 @@ mod tests {
             grok_acp_client_mcp_verdict_decision(
                 &frames,
                 &EchoMcpTranscript::default(),
-                false,
-                false,
+                CaptureFacts::default(),
                 false,
             )
             .inconclusive_cause,
@@ -2950,9 +3007,8 @@ mod tests {
         let decision = grok_acp_client_mcp_verdict_decision(
             &frames,
             &EchoMcpTranscript::default(),
-            false,
+            CaptureFacts::default(),
             true,
-            false,
         );
         assert_eq!(decision.verdict, ClientMcpVerdict::Inconclusive);
         assert_eq!(
@@ -3398,7 +3454,7 @@ mod tests {
 
         assert!(capture.truncated);
         assert!(
-            !capture.decisive_frame_lost,
+            !capture.facts.decisive_frame_lost,
             "a superseded refinement must be evicted before the answer"
         );
         assert_eq!(capture.frames.len(), MAXIMUM_FRAMES);
@@ -3475,7 +3531,7 @@ mod tests {
             capture.frames.iter().any(|frame| frame.message == result),
             "an update carrying the tool result is never elided"
         );
-        assert!(!capture.decisive_frame_lost);
+        assert!(!capture.facts.decisive_frame_lost);
     }
 
     #[test]
@@ -3546,7 +3602,7 @@ mod tests {
 
         assert!(capture.truncated);
         assert!(
-            !capture.decisive_frame_lost,
+            !capture.facts.decisive_frame_lost,
             "tool-call history must yield before the answer does"
         );
         assert_eq!(capture.frames.len(), ceiling);
@@ -3566,9 +3622,8 @@ mod tests {
             grok_acp_client_mcp_verdict_decision(
                 &capture.frames,
                 &EchoMcpTranscript::called(),
-                capture.decisive_frame_lost,
-                true,
-                capture.native_echo_observed
+                capture.facts,
+                true
             )
             .verdict,
             ClientMcpVerdict::AcceptsClientMcp
@@ -3684,7 +3739,7 @@ mod tests {
         let answer = json!({"jsonrpc": "2.0", "id": 4, "result": {"stopReason": "end_turn"}});
         capture.push(FrameDirection::Inbound, answer.clone());
 
-        assert!(!capture.decisive_frame_lost);
+        assert!(!capture.facts.decisive_frame_lost);
         assert!(capture.frames.len() > MAXIMUM_FRAMES);
         assert!(capture.frames.len() <= MAXIMUM_RETAINED_FRAMES);
         assert_eq!(
@@ -3695,9 +3750,8 @@ mod tests {
             grok_acp_client_mcp_verdict_decision(
                 &capture.frames,
                 &EchoMcpTranscript::called(),
-                capture.decisive_frame_lost,
-                true,
-                capture.native_echo_observed
+                capture.facts,
+                true
             )
             .inconclusive_cause,
             None
@@ -3926,13 +3980,12 @@ mod tests {
             !echo_named_tool_called(&capture.frames),
             "the fixture must actually evict the native echo frame"
         );
-        assert!(capture.native_echo_observed);
+        assert!(capture.facts.native_echo_observed);
         let decision = grok_acp_client_mcp_verdict_decision(
             &capture.frames,
             &EchoMcpTranscript::default(),
-            capture.decisive_frame_lost,
+            capture.facts,
             true,
-            capture.native_echo_observed,
         );
         assert_eq!(decision.verdict, ClientMcpVerdict::Inconclusive);
         assert_eq!(
@@ -3990,7 +4043,7 @@ mod tests {
 
         assert!(capture.truncated);
         assert!(
-            !capture.decisive_frame_lost,
+            !capture.facts.decisive_frame_lost,
             "answered pairs must yield before the turn result does"
         );
         assert_eq!(
@@ -4023,12 +4076,112 @@ mod tests {
             grok_acp_client_mcp_verdict_decision(
                 &capture.frames,
                 &EchoMcpTranscript::called(),
-                capture.decisive_frame_lost,
-                true,
-                capture.native_echo_observed
+                capture.facts,
+                true
             )
             .verdict,
             ClientMcpVerdict::AcceptsClientMcp
+        );
+    }
+
+    #[test]
+    fn an_evicted_permission_refusal_still_blocks_ignores_client_mcp() {
+        // Tier four takes whole request/answer pairs, and a rejected
+        // permission is exactly such a pair. Reading the guard back out of
+        // the capsule would turn an inconclusive into `ignores_client_mcp`.
+        let ceiling = MAXIMUM_FRAMES + 8;
+        let mut capture = FrameCapture::with_retention_ceiling(ceiling);
+        capture.push(
+            FrameDirection::Outbound,
+            json!({
+                "jsonrpc": "2.0",
+                "id": 3,
+                "method": "session/new",
+                "params": {"cwd": FIXTURE_CWD, "mcpServers": [{"name": ECHO_MCP_SERVER_NAME}]}
+            }),
+        );
+        capture.push(
+            FrameDirection::Inbound,
+            json!({"jsonrpc": "2.0", "id": 3, "result": {"sessionId": FIXTURE_SESSION}}),
+        );
+        capture.push(
+            FrameDirection::Outbound,
+            json!({"jsonrpc": "2.0", "id": 4, "method": "session/prompt"}),
+        );
+        let permission = json!({
+            "jsonrpc": "2.0",
+            "id": 900,
+            "method": "session/request_permission",
+            "params": {
+                "sessionId": FIXTURE_SESSION,
+                "toolCall": {"toolCallId": "echo-1", "title": ECHO_MCP_TOOL},
+                "options": [{"optionId": "reject_once", "name": "Reject", "kind": "reject_once"}]
+            }
+        });
+        capture.push(FrameDirection::Inbound, permission.clone());
+        capture.push(
+            FrameDirection::Outbound,
+            grok_acp_client_request_reply(&permission).expect("refusal"),
+        );
+        for index in 0..ceiling {
+            let id = 5_000 + index;
+            capture.push(
+                FrameDirection::Inbound,
+                json!({
+                    "jsonrpc": "2.0",
+                    "id": id,
+                    "method": "fs/read_text_file",
+                    "params": {"sessionId": FIXTURE_SESSION, "path": "<redacted>"}
+                }),
+            );
+            capture.push(
+                FrameDirection::Outbound,
+                json!({
+                    "jsonrpc": "2.0",
+                    "id": id,
+                    "error": {"code": -32601, "message": "method not in the probe client allowlist"}
+                }),
+            );
+        }
+        capture.push(
+            FrameDirection::Inbound,
+            json!({"jsonrpc": "2.0", "id": 4, "result": {"stopReason": "end_turn"}}),
+        );
+
+        assert!(
+            !permission_was_rejected(&capture.frames),
+            "the fixture must actually evict the permission pair"
+        );
+        assert!(capture.facts.permission_rejected_observed);
+        let decision = grok_acp_client_mcp_verdict_decision(
+            &capture.frames,
+            &EchoMcpTranscript::default(),
+            capture.facts,
+            true,
+        );
+        assert_eq!(decision.verdict, ClientMcpVerdict::Inconclusive);
+        assert_eq!(
+            decision.inconclusive_cause,
+            Some(InconclusiveCause::PermissionRejected),
+            "an evicted refusal must never become ignores_client_mcp"
+        );
+    }
+
+    #[test]
+    fn drain_hands_back_a_bounded_batch() {
+        // The budget bounds how long a drain waits; the batch cap bounds how
+        // much it hands back, so capturing or freeing one burst is bounded
+        // work. The remainder stays queued for a pass that re-checks the
+        // deadline first.
+        let (sender, incoming) = mpsc::channel();
+        for index in 0..MAXIMUM_DRAIN_BATCH * 3 {
+            sender.send(Ok(json!({"chunk": index}))).expect("queued");
+        }
+        let messages = drain_within(&incoming, Duration::from_millis(500)).expect("drain");
+        assert_eq!(messages.len(), MAXIMUM_DRAIN_BATCH);
+        assert!(
+            incoming.try_recv().is_ok(),
+            "the remainder stays queued rather than being handed back at once"
         );
     }
 
@@ -4119,8 +4272,7 @@ mod tests {
             grok_acp_client_mcp_verdict_decision(
                 &frames,
                 &EchoMcpTranscript::default(),
-                false,
-                false,
+                CaptureFacts::default(),
                 false,
             )
             .inconclusive_cause,
@@ -4140,8 +4292,7 @@ mod tests {
             grok_acp_client_mcp_verdict_decision(
                 &frames,
                 &EchoMcpTranscript::default(),
-                false,
-                false,
+                CaptureFacts::default(),
                 false,
             )
             .inconclusive_cause,
@@ -4198,9 +4349,8 @@ mod tests {
         let decision = grok_acp_client_mcp_verdict_decision(
             &frames,
             &EchoMcpTranscript::observed_idle(),
-            false,
+            CaptureFacts::default(),
             true,
-            false,
         );
         assert_eq!(decision.verdict, ClientMcpVerdict::Inconclusive);
         assert_eq!(
@@ -4263,8 +4413,7 @@ mod tests {
         let decision = grok_acp_client_mcp_verdict_decision(
             capsule.frames(),
             &EchoMcpTranscript::default(),
-            false,
-            false,
+            CaptureFacts::default(),
             false,
         );
         assert_eq!(decision.verdict, ClientMcpVerdict::Inconclusive);

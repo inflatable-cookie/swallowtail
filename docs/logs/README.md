@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-08 g05.031 Card 141 Closeout](./2026-09-08-g05-031-card-141-closeout.md) — registered-tool close no longer waits on the fixed operation-bridge read timeout; PR 292 merged at `b68a1ccc`; exact-head review and named validation passed
 - [2026-09-08 g05.035 Card 142 Closeout](./2026-09-08-g05-035-card-142-closeout.md) — provider-free Claude SDK admitted-instance worked example merged through PR 291 at `d0f2ea3`; exact-head review and focused validation passed
 - [2026-09-07 OpenCode HTTP 1.18.29 Claim](./2026-09-07-opencode-http-1-18-29-claim.md) — qualified `opencode.server` through official `1.18.29`; preserved baseline, gaps, `surface-19`, and `AllowUnverified`; g05.037 card 136
 - [2026-09-07 OpenCode HTTP 1.18.29 Identity](./2026-09-07-opencode-http-1-18-29-identity.md) — Research 292 froze official npm/GitHub `1.18.29` as a compatible `surface-19` extension; production claims unchanged; g05.037 card 135

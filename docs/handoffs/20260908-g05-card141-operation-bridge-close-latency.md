@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom
 created: 2026-09-08
 updated: 2026-09-08
@@ -35,9 +35,20 @@ teardown pays that five seconds today.
 
 Card 139 merged at `4b1e369c` and disclosed this rather than fixing
 it, because its manifest forbade `swallowtail-host-local`; it is recorded in
-`PAPERCUTS.md`. Card 141 is promoted and ready on `main` with its manifest
-row in `docs/roadmaps/g05/031-ci-latency.md`. No work has started. There are
-no open Swallowtail pull requests.
+`PAPERCUTS.md`. Card 141 closed the defect through PR 292.
+
+- **Queue state:** closed after merge; PR 292 merged into `main` as
+  `b68a1ccc757eb6adf768fb7ae3d330c5daef1547`.
+- **Reviewed head:** `8572ebb556aa7fbc4a83165f35ff70467f1d6f9f`.
+- **Review:** independent exact-head review accepted; comment `5585250665`
+  carries the `ready_to_merge` verdict and Northstar identity marker.
+- **Validation:** named formatting, focused validation (609/609), affected
+  package verification, Northstar QA, and diff checks passed; hosted PR checks
+  passed apart from the configured skipped MSRV floor test job.
+- **Deferred:** no Card 141 validation failure. The unrelated Card 139
+  nextest leak papercut, live provider/consumer acceptance, the Card 132
+  real-route gate, release/tag work, and consumer-repository changes remain
+  outside this handoff with their existing owners and authority.
 
 ## Boundaries
 
@@ -82,3 +93,11 @@ anything found but deliberately not changed. The card at
 `docs/roadmaps/g05/batch-cards/141-operation-bridge-close-latency.md` and its manifest row bind: owned paths,
 forbidden paths, acceptance criteria, and stop conditions are as written
 there.
+
+## Handoff Closeout
+
+This handoff is merged. The implementation was accepted at exact head
+`8572ebb556aa7fbc4a83165f35ff70467f1d6f9f` and published on `main` as
+`b68a1ccc757eb6adf768fb7ae3d330c5daef1547`. No named validation failure was
+deferred. The active Next Task pointer was preserved; no new planning
+direction was introduced.

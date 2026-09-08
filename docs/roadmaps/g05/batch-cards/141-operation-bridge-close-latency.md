@@ -1,6 +1,6 @@
 # 141 Operation Bridge Close Latency
 
-Status: ready
+Status: complete; PR 292 merged at `b68a1ccc757eb6adf768fb7ae3d330c5daef1547` (reviewed head `8572ebb556aa7fbc4a83165f35ff70467f1d6f9f`)
 Owner: Tom
 Created: 2026-09-08
 Updated: 2026-09-08
@@ -46,11 +46,11 @@ change to what close reports.
 
 ## Acceptance Criteria
 
-- [ ] registered-tool close no longer pays a fixed timeout; measured before and after
-- [ ] watcher profile close behaviour and timings unchanged
-- [ ] all existing teardown, race, and both-profile fixtures pass unchanged
-- [ ] `TeardownFailed` still fires on a real unresponsive peer, with the lease retained
-- [ ] the card 139 papercut entry is retired
+- [x] registered-tool close no longer pays a fixed timeout; measured before and after
+- [x] watcher profile close behaviour and timings unchanged
+- [x] all existing teardown, race, and both-profile fixtures pass unchanged
+- [x] `TeardownFailed` still fires on a real unresponsive peer, with the lease retained
+- [x] the card 139 papercut entry is retired
 
 ## Validation
 
@@ -124,6 +124,17 @@ the `teardown_failed` budget gate sit in the kernel join path ahead of
 a real budget overrun with the lease retained. The card 139 papercut entry is
 retired. Waking the read required no topology change, so the stop condition
 did not trigger.
+
+### Closeout
+
+PR 292 was independently accepted at exact head
+`8572ebb556aa7fbc4a83165f35ff70467f1d6f9f` and merged into `main` as
+`b68a1ccc757eb6adf768fb7ae3d330c5daef1547`. The accepted review comment is
+`5585250665`; it found no required changes. The configured hosted MSRV floor
+test job was skipped, while the other required PR checks passed; this is not a
+Card 141 validation failure. No named validation failure was deferred. The
+unrelated Card 139 nextest leak papercut and the live provider/consumer gates
+remain separately owned. The active Next Task pointer remains unchanged.
 
 ## Auto-Continuation
 

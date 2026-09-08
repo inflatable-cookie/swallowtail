@@ -116,7 +116,7 @@ Ready now; concurrent with the g05.029 runway.
 
 | Field | Card 141 |
 | --- | --- |
-| Readiness | ready |
+| Readiness | complete; PR 292 merged at `b68a1ccc757eb6adf768fb7ae3d330c5daef1547` |
 | Prerequisites | card 139 merged; current `main` |
 | Completion conditions | close no longer pays a fixed `IO_TIMEOUT`; before/after measurements recorded; watcher behaviour unchanged; every teardown guarantee preserved; papercut retired |
 | Owned mutable paths | `crates/swallowtail-host-local/src/operation_bridge/**`; `crates/swallowtail-host-local/src/watcher_bridge/**` only where the shared listener requires it; `crates/swallowtail-host-local/tests/**`; `crates/swallowtail-adapter-claude-agent/tests/**` timing assertions only; `PAPERCUTS.md`; this card's `## Result` |

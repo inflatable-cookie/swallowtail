@@ -255,6 +255,13 @@ impl GrokAcpDriver {
                 return Err(surface_cleanup_failure(error, cleanup));
             }
         };
+        // Rendered before the open sequence so it borrows nothing across an
+        // await. Omission stays byte-identical: without a registered binding
+        // this is the same empty list the merged route sends.
+        let mcp_servers = registered.as_ref().map_or_else(
+            || json!([]),
+            |pending| json!([pending.declaration().to_acp_value()]),
+        );
         let opened = async {
             let initialize = bound.run(attachment.connection.initialize()).await?;
             let model_options =
@@ -262,12 +269,6 @@ impl GrokAcpDriver {
             bound
                 .run(attachment.connection.activate_cached_token())
                 .await?;
-            // Omission stays byte-identical: without a registered binding this
-            // is the same empty list the merged route sends.
-            let mcp_servers = registered.as_ref().map_or_else(
-                || json!([]),
-                |pending| json!([pending.declaration().to_acp_value()]),
-            );
             let response = bound
                 .run(attachment.connection.request(
                     "session/new",
@@ -279,11 +280,6 @@ impl GrokAcpDriver {
                 .and_then(Value::as_str)
                 .ok_or_else(malformed)?
                 .to_owned();
-            // Grok spawns the declared courier from `session/new`, so readiness
-            // is only observable after the provider answered it.
-            if let Some(pending) = registered.as_mut() {
-                pending.wait_until_ready()?;
-            }
             Ok::<_, RuntimeFailure>((provider_id, model_options))
         }
         .await;
@@ -299,6 +295,26 @@ impl GrokAcpDriver {
                 return Err(surface_cleanup_failure(error, cleanup));
             }
         };
+        // Grok spawns the declared courier from `session/new`, so readiness is
+        // only observable after the provider answered it. The barrier blocks,
+        // so it runs on a scoped task under the same opening deadline; opening
+        // is never allowed to succeed past that ceiling.
+        if let Some(pending) = registered.as_mut() {
+            let ready = Self::await_registered_ready(
+                pending,
+                request.request_id(),
+                services,
+                &mut bound,
+                registered_deadline,
+            )
+            .await;
+            if let Err(error) = ready {
+                let cleanup =
+                    abandon_registered(registered.take(), services, cause_for(&error)).await;
+                abort_after_registered(&mut attachment, services, &cleanup).await;
+                return Err(surface_cleanup_failure(error, cleanup));
+            }
+        }
         let identities = (|| {
             attachment.connection.set_session_id(provider_id.clone())?;
             let provider_ref = SessionRef::new(&provider_id).map_err(|_| malformed())?;
@@ -354,6 +370,73 @@ async fn abandon_registered(
     match pending {
         Some(pending) => pending.abandon(services, cause).await,
         None => CleanupOutcome::NotApplicable,
+    }
+}
+
+impl GrokAcpDriver {
+    /// Waits for the courier ready barrier inside the opening deadline.
+    ///
+    /// The barrier is joined on every path. On expiry the lease settles first,
+    /// which closes the proxy and releases the barrier, so the task never
+    /// outlives the open that started it.
+    async fn await_registered_ready(
+        pending: &mut PendingRegisteredOpen,
+        request_id: &RequestId,
+        services: &HostServices,
+        bound: &mut OpenBound,
+        deadline: Option<swallowtail_runtime::Deadline>,
+    ) -> Result<(), RuntimeFailure> {
+        let Some(mut launch) = pending.take_launch() else {
+            return Err(failure(
+                "swallowtail.grok.acp.registered_tool.ready_unavailable",
+                "Grok Build ACP registered-tool open lost its courier ready barrier",
+            ));
+        };
+        let (sender, receiver) = futures_channel::oneshot::channel();
+        let scope = ScopeId::new(format!("grok-acp:registered-ready:{}", request_id.as_str()))
+            .map_err(|_| malformed())?;
+        let task = services.task().expect("validated task service").spawn(
+            scope,
+            Box::pin(async move {
+                let _ = sender.send(launch.wait_until_ready());
+            }),
+        )?;
+        let raced = bound
+            .run(async move {
+                Ok(receiver.await.unwrap_or_else(|_| {
+                    Err(failure(
+                        "swallowtail.grok.acp.registered_tool.ready_unobserved",
+                        "Grok Build ACP registered-tool ready barrier reported no result",
+                    ))
+                }))
+            })
+            .await;
+        let outcome = match raced {
+            Ok(ready) => ready,
+            // The bound expired. Closing the proxy releases the barrier, so the
+            // lease settles before the task is joined.
+            Err(expired) => {
+                let _ = pending
+                    .settle_in_place(services, RegisteredToolCleanupCause::Deadline)
+                    .await;
+                Err(expired)
+            }
+        };
+        let joined = task.join().await;
+        outcome?;
+        joined?;
+        // The success boundary is the ceiling too: a barrier that returned just
+        // after it must not be reported as an open that succeeded in time.
+        if let Some(deadline) = deadline
+            && services
+                .time()
+                .expect("validated registered-tool time service")
+                .now()
+                >= deadline.instant()
+        {
+            return Err(registered_open_expired());
+        }
+        Ok(())
     }
 }
 

@@ -37,8 +37,11 @@ annotated Git tags from the canonical repository.
   or by session close. Opening is bounded by the lesser of the caller's
   `with_open_deadline` and Contract 063's ten-second opening ceiling, across
   every step of the minted-open lifecycle including credential acquisition,
-  resource resolution, and process startup, with each step raced individually
-  so a step that owns partial resources still runs its own cleanup. Every failure after the lease is minted
+  resource resolution, process startup, and the courier ready barrier, which
+  runs on a scoped task under that same bound and is joined on every path.
+  Each step is raced individually so a step that owns partial resources still
+  runs its own cleanup, and the success boundary is checked against the ceiling
+  too, so opening can never succeed past it. Every failure after the lease is minted
   closes it explicitly and reports its cleanup truth: a failed registered close
   is never a clean session close, and both the session-close and the
   open-abort paths retain the working resource and credential rather than
@@ -52,8 +55,9 @@ annotated Git tags from the canonical repository.
   name, cancellation of an in-flight call, settlement completed before terminal
   on both the prompt and the transport-failure paths, post-terminal and
   post-cancel refusal, refusal after a failed turn start, one shared cleanup
-  truth across concurrent settlement, the ten-second ceiling capping a generous
-  caller budget, unbound-turn and retained-lease refusal, an unanswered
+  truth across concurrent settlement synchronized on the kernel freeze, the
+  ten-second ceiling capping a generous caller budget and bounding the ready
+  barrier, unbound-turn and retained-lease refusal, an unanswered
   open that reaches `session/new` and expires on its deadline, retained
   resource and credential on unjoined cleanup at both session close and open
   abort, close, and fail-closed transport, kind, identity, host, turn,

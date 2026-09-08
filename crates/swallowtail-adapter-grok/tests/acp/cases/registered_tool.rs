@@ -403,7 +403,7 @@ fn registered_route_services_with_budget(
     let services = local
         .services()
         .clone()
-        .with_task(Arc::new(ThreadTaskService))
+        .with_task(Arc::new(ThreadTaskService(Arc::clone(&fixture.spawned_scopes))))
         .with_time(Arc::new(fixture.clone()))
         .with_process(Arc::new(fixture.clone()))
         .with_credential(Arc::new(fixture.clone()))
@@ -1322,6 +1322,50 @@ fn a_failed_registered_cleanup_is_never_a_clean_session_close() {
 /// Unlike [`BlockingDispatcher`] it cooperates: it observes the kernel's
 /// call-bound cancellation and settles, which is what a freeze must actually
 /// deliver to an outstanding call.
+/// Blocks forever, but reports the exact moment the kernel froze its lease.
+///
+/// The freeze is the first step of `close`, and the join that follows spins for
+/// the cleanup budget. Observing it is therefore a precise signal that a
+/// settlement is in flight, which is what a concurrency fixture needs instead
+/// of a sleep.
+struct FreezeObservingDispatcher {
+    entered: Arc<std::sync::atomic::AtomicBool>,
+    froze: Arc<std::sync::atomic::AtomicBool>,
+}
+
+impl swallowtail_runtime::RegisteredToolDispatcher for FreezeObservingDispatcher {
+    fn dispatch(
+        &self,
+        _call: swallowtail_runtime::RegisteredToolCall,
+        context: swallowtail_runtime::RegisteredToolDispatchContext,
+    ) -> BoxFuture<'_, Result<swallowtail_runtime::RegisteredToolOutcome, RuntimeFailure>> {
+        let entered = Arc::clone(&self.entered);
+        let froze = Arc::clone(&self.froze);
+        let cancellation = context.cancellation().clone();
+        let started = Arc::new(std::sync::atomic::AtomicBool::new(false));
+        Box::pin(std::future::poll_fn(move |context| {
+            entered.store(true, Ordering::SeqCst);
+            if cancellation.is_cancelled() {
+                froze.store(true, Ordering::SeqCst);
+            }
+            if !started.swap(true, Ordering::SeqCst) {
+                let waker = context.waker().clone();
+                let cancellation = cancellation.clone();
+                let froze = Arc::clone(&froze);
+                std::thread::spawn(move || {
+                    while !cancellation.is_cancelled() {
+                        std::thread::sleep(std::time::Duration::from_millis(2));
+                    }
+                    froze.store(true, Ordering::SeqCst);
+                    waker.wake();
+                });
+            }
+            // Never settles: the close must time out and report failed cleanup.
+            std::task::Poll::Pending
+        }))
+    }
+}
+
 struct CancellableDispatcher {
     entered: Arc<std::sync::atomic::AtomicBool>,
     cancelled: Arc<std::sync::atomic::AtomicBool>,
@@ -1708,17 +1752,24 @@ fn concurrent_settlement_reports_one_shared_cleanup_truth() {
     // Cancellation begins closing a lease the host cannot join while the turn
     // reaches terminal. The second settler must await the first, not read a
     // not-yet-recorded outcome and publish a clean completion.
-    let blocking = Arc::new(BlockingDispatcher {
+    //
+    // The overlap is synchronized, not timed: the dispatcher reports the
+    // kernel freeze, which is the first step of `close`, and the racing
+    // settlement is released only after that freeze is observed. The close
+    // then spins for its whole cleanup budget, so the second settler is
+    // guaranteed to arrive while the settlement is still in flight.
+    let dispatcher = Arc::new(FreezeObservingDispatcher {
         entered: Arc::new(std::sync::atomic::AtomicBool::new(false)),
-        release: Arc::new(std::sync::atomic::AtomicBool::new(false)),
-        waker: Arc::new(Mutex::new(None)),
+        froze: Arc::new(std::sync::atomic::AtomicBool::new(false)),
     });
+    let entered = Arc::clone(&dispatcher.entered);
+    let froze = Arc::clone(&dispatcher.froze);
     let mut opened = open_registered_route_for(
         "fixture.host.grok.registered-concurrent-settle",
         Scenario::RegisteredTurn,
-        Arc::clone(&blocking) as Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+        Arc::clone(&dispatcher) as Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
         Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
-        Some(std::time::Duration::from_millis(300)),
+        Some(std::time::Duration::from_millis(500)),
     );
     opened.courier.handshake();
     let mut turn = start(
@@ -1728,14 +1779,20 @@ fn concurrent_settlement_reports_one_shared_cleanup_truth() {
     );
     let call = OutstandingCall::issue(&opened.courier);
     wait_until(
-        || blocking.entered.load(Ordering::SeqCst),
+        || entered.load(Ordering::SeqCst),
         "the dispatcher entering its blocking call",
     );
-    // Race the prompt task's settlement into the window where cancellation's
-    // close is still joining.
     let fixture = opened.fixture.clone();
     let racer = std::thread::spawn(move || {
-        std::thread::sleep(std::time::Duration::from_millis(30));
+        // Only once the freeze is observed is a settlement provably in flight.
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+        while !froze.load(Ordering::SeqCst) {
+            assert!(
+                std::time::Instant::now() < deadline,
+                "never observed the kernel freeze that proves settlement started"
+            );
+            std::thread::sleep(std::time::Duration::from_millis(2));
+        }
         fixture.complete_turn();
     });
     block_on(turn.cancellation().request()).expect("turn cancellation requested");
@@ -1756,6 +1813,38 @@ fn concurrent_settlement_reports_one_shared_cleanup_truth() {
         1,
         "the host retains the lease it could not join"
     );
-    blocking.release();
+    // Closing the session stops the provider child, which releases the reader
+    // waiting on a call the dispatcher will never settle.
+    close_registered_route(opened);
     call.join();
+}
+
+#[test]
+fn the_courier_ready_barrier_runs_inside_the_opening_deadline() {
+    // The provider answers `session/new` but never starts the declared server,
+    // so the ready barrier is pending when the opening deadline expires.
+    //
+    // Before the barrier was bounded it ran outside the deadline and reported
+    // its own `proxy_not_ready` after a further wall-clock wait; open could
+    // therefore outlive its ceiling. The deadline must win instead.
+    let Err(boxed) = try_open_registered_route_with_deadline(
+        "fixture.host.grok.registered-ready-bounded",
+        Scenario::RegisteredReadyUnreached,
+        Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        None,
+        Deadline::at(MonotonicInstant::from_ticks(300_000_000_000)),
+    ) else {
+        panic!("an unreachable ready barrier must not open a session");
+    };
+    let (error, local) = *boxed;
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.grok.acp.registered_tool.open_deadline",
+        "the ready barrier must be bounded by the opening deadline, not its own wait"
+    );
+    assert_eq!(local.registered_tool_lease_count(), 0);
+    assert_eq!(local.operation_bridge_listener_count(), 0);
 }

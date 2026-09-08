@@ -7,6 +7,7 @@ struct FixtureHost {
     resource_releases: Arc<AtomicUsize>,
     deadline_gate: Arc<Mutex<Option<Arc<std::sync::atomic::AtomicBool>>>>,
     observed_deadlines: Arc<Mutex<Vec<Deadline>>>,
+    spawned_scopes: Arc<Mutex<Vec<String>>>,
 }
 
 #[derive(Clone, Debug)]
@@ -35,6 +36,7 @@ impl FixtureHost {
             resource_releases: Arc::new(AtomicUsize::new(0)),
             deadline_gate: Arc::new(Mutex::new(None)),
             observed_deadlines: Arc::new(Mutex::new(Vec::new())),
+            spawned_scopes: Arc::new(Mutex::new(Vec::new())),
         }
     }
 
@@ -56,7 +58,7 @@ impl FixtureHost {
 
     fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
-            .with_task(Arc::new(ThreadTaskService))
+            .with_task(Arc::new(ThreadTaskService(Arc::clone(&self.spawned_scopes))))
             .with_time(Arc::new(self.clone()))
             .with_process(Arc::new(self.clone()))
             .with_credential(Arc::new(self.clone()))
@@ -158,7 +160,9 @@ impl TimeService for FixtureHost {
             Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
         } else if matches!(
             self.agent.scenario,
-            Scenario::RegisteredOpenUnanswered | Scenario::RegisteredOpenBlockedCall
+            Scenario::RegisteredOpenUnanswered
+                | Scenario::RegisteredOpenBlockedCall
+                | Scenario::RegisteredReadyUnreached
         ) {
             // The registered-open deadline fires only once the provider has
             // actually received `session/new` and, when a test asks for it,
@@ -175,6 +179,11 @@ impl TimeService for FixtureHost {
                 .lock()
                 .expect("deadline gate lock")
                 .clone();
+            let ready_barrier = matches!(
+                self.agent.scenario,
+                Scenario::RegisteredReadyUnreached
+            )
+            .then(|| Arc::clone(&self.spawned_scopes));
             let fired = Arc::new(std::sync::atomic::AtomicBool::new(false));
             let started = Arc::new(std::sync::atomic::AtomicBool::new(false));
             Box::pin(async move {
@@ -186,6 +195,7 @@ impl TimeService for FixtureHost {
                         let waker = context.waker().clone();
                         let agent = Arc::clone(&agent);
                         let gate = gate.clone();
+                        let ready_barrier = ready_barrier.clone();
                         let fired = Arc::clone(&fired);
                         std::thread::spawn(move || {
                             {
@@ -201,6 +211,24 @@ impl TimeService for FixtureHost {
                             if let Some(gate) = gate {
                                 while !gate.load(Ordering::SeqCst) {
                                     std::thread::sleep(std::time::Duration::from_millis(5));
+                                }
+                            }
+                            // Fire only once the ready barrier is actually in
+                            // flight, so the case under test is the barrier and
+                            // not an earlier ACP exchange.
+                            if let Some(scopes) = ready_barrier {
+                                loop {
+                                    let started = scopes
+                                        .lock()
+                                        .expect("spawned scope lock")
+                                        .iter()
+                                        .any(|scope| scope.contains("registered-ready"));
+                                    if started {
+                                        break;
+                                    }
+                                    std::thread::sleep(
+                                        std::time::Duration::from_millis(2),
+                                    );
                                 }
                             }
                             fired.store(true, Ordering::SeqCst);
@@ -369,15 +397,19 @@ impl WorkingResourceIoService for FixtureHost {
     }
 }
 
-struct ThreadTaskService;
+struct ThreadTaskService(Arc<Mutex<Vec<String>>>);
 struct ThreadTask(Option<JoinHandle<()>>);
 
 impl ScopedTaskService for ThreadTaskService {
     fn spawn(
         &self,
-        _scope: ScopeId,
+        scope: ScopeId,
         task: BoxFuture<'static, ()>,
     ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+        self.0
+            .lock()
+            .expect("spawned scope lock")
+            .push(scope.as_str().to_owned());
         Ok(Box::new(ThreadTask(Some(std::thread::spawn(move || {
             block_on(task);
         })))))

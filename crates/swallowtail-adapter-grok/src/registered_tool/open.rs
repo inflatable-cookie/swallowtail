@@ -164,11 +164,14 @@ impl PendingRegisteredOpen {
         &self.declaration
     }
 
-    pub(crate) fn wait_until_ready(&mut self) -> Result<(), RuntimeFailure> {
-        self.launch
-            .as_mut()
-            .expect("registered launch is present until claimed")
-            .wait_until_ready()
+    /// Takes the courier launch so its blocking ready barrier can be bounded.
+    ///
+    /// The barrier is wall-clock and blocking, so open runs it on a scoped task
+    /// and races it against the same opening deadline as every other step.
+    /// Settling the lease closes the proxy, which releases a waiting barrier,
+    /// so the task always joins promptly.
+    pub(crate) fn take_launch(&mut self) -> Option<RegisteredToolProxyLaunch> {
+        self.launch.take()
     }
 
     pub(crate) fn claim(mut self) -> GrokRegisteredToolSession {
@@ -178,6 +181,18 @@ impl PendingRegisteredOpen {
             self.lease.take().expect("registered lease is present"),
             self.turn.clone(),
         )
+    }
+
+    /// Settles the still-unclaimed lease in place, keeping this open usable.
+    ///
+    /// Used when the ready barrier expires: the close releases the barrier so
+    /// its task can join, and the caller then abandons the rest of the open.
+    pub(crate) async fn settle_in_place(
+        &mut self,
+        services: &HostServices,
+        cause: RegisteredToolCleanupCause,
+    ) -> CleanupOutcome {
+        close_registered_lease(self.lease.take(), services, cause).await
     }
 
     /// Closes a lease that never reached an open session, with its truth.

@@ -18,6 +18,7 @@ enum Scenario {
     RecoveryResponseMismatch,
     RegisteredOpenUnanswered,
     RegisteredOpenBlockedCall,
+    RegisteredReadyUnreached,
     RegisteredTurn,
 }
 
@@ -137,11 +138,15 @@ impl Agent {
                 // Grok spawns every client-declared MCP server from session
                 // setup. The fixture does exactly that before answering, so the
                 // courier is a provider child and never a Swallowtail spawn.
-                let spawned = spawn_declared_mcp_servers(
-                    message.get("params").unwrap_or(&Value::Null),
-                )
-                .map_err(|()| fixture_failure())?;
-                state.spawned_mcp.extend(spawned);
+                // The provider answers setup but never starts the declared
+                // server, so its ready barrier is never reached.
+                if !matches!(self.scenario, Scenario::RegisteredReadyUnreached) {
+                    let spawned = spawn_declared_mcp_servers(
+                        message.get("params").unwrap_or(&Value::Null),
+                    )
+                    .map_err(|()| fixture_failure())?;
+                    state.spawned_mcp.extend(spawned);
+                }
                 // Grok connects the server it spawned and may call it. This
                 // scenario does exactly that, then never answers session setup,
                 // so an outstanding registered call exists while the open is
@@ -276,6 +281,7 @@ impl Agent {
                     Scenario::Malformed => unreachable!("malformed initialization stops first"),
                     Scenario::RegisteredOpenUnanswered
                     | Scenario::RegisteredOpenBlockedCall
+                    | Scenario::RegisteredReadyUnreached
                     | Scenario::PermissionWithoutTurn
                     | Scenario::RecoveryForeign
                     | Scenario::RecoveryCallback

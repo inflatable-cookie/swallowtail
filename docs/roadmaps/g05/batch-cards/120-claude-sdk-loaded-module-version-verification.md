@@ -1,6 +1,6 @@
 # 120 Claude SDK Loaded Module Version Verification
 
-Status: ready
+Status: complete; PR 269 merged at `4a27676d`
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

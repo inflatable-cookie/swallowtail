@@ -1,6 +1,6 @@
 # 084 Claude SDK Client MCP Servers
 
-Status: ready; serial after card 083's merge
+Status: complete; PR 255 merged at `8a377c1b`
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-06

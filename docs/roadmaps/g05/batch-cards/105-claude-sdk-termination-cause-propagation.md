@@ -1,6 +1,6 @@
 # 105 Claude SDK Termination Cause Propagation
 
-Status: ready
+Status: complete; PR 245 merged at `217de072`
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06

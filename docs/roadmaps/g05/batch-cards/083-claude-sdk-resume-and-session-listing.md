@@ -1,6 +1,6 @@
 # 083 Claude SDK Resume And Session Listing
 
-Status: ready; serial after card 082's merge
+Status: complete; PR 244 merged at `7cb08b1f`
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-06

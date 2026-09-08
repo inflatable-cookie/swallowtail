@@ -1,6 +1,6 @@
 # 121 Claude SDK First-Turn Rejection Terminal State
 
-Status: ready
+Status: complete; PR 270 merged at `8cf1fe9f`
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

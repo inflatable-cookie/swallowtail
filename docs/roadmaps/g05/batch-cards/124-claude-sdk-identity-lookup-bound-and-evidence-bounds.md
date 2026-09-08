@@ -1,6 +1,6 @@
 # 124 Claude SDK Identity Lookup Bound And Evidence Bounds
 
-Status: ready; serial after card 121; precedes the `v0.4.4` candidate
+Status: complete; PR 271 merged at `02003ecb`
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

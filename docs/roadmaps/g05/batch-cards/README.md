@@ -3,15 +3,6 @@
 ## Ready
 
 - [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — ready; provider-free seam under Research 289's mapping; live gate separate; waits for cards114-115 merge and consumer-tool protocol evidence exists
-- [137-grok-probe-conforming-acp-client.md](./137-grok-probe-conforming-acp-client.md) — ready; the probe never answers client requests during session/new, so Grok waits and the session never opens; diagnose from captured frames at no quota cost
-- [124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md](./124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — ready; serial after 121; bounded manifest lookup and one model-id predicate; precedes the `v0.4.4` candidate
-- [119-claude-sdk-first-turn-model-qualification-evidence.md](./119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; bounded observer evidence for the first-turn model rejection; lead of the producer-diagnosis trio
-- [120-claude-sdk-loaded-module-version-verification.md](./120-claude-sdk-loaded-module-version-verification.md) — ready; serial after 119; loaded SDK version verified at open
-- [121-claude-sdk-first-turn-rejection-terminal-state.md](./121-claude-sdk-first-turn-rejection-terminal-state.md) — ready; serial after 120; terminal state after first-turn rejection
-- [105-claude-sdk-termination-cause-propagation.md](./105-claude-sdk-termination-cause-propagation.md) — ready; consumer-critical; surface the sidecar terminal code, result fields, close evidence, and stderr tail; precedes card 083
-- [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — ready; g05.029 priority 4
-- [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — ready; g05.029 priority 5
-- [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — ready; g05.029 priority 9
 
 ## Planned
 
@@ -35,6 +26,15 @@
 
 ## Completed
 
+- [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — complete; PR 244 merged at `7cb08b1f`; g05.029 priority 4
+- [084-claude-sdk-client-mcp-servers.md](./084-claude-sdk-client-mcp-servers.md) — complete; PR 255 merged at `8a377c1b`; g05.029 priority 5
+- [088-harness-install-guidance-diagnostics.md](./088-harness-install-guidance-diagnostics.md) — complete; PR 242 merged at `80e004b4`; g05.029 priority 9
+- [105-claude-sdk-termination-cause-propagation.md](./105-claude-sdk-termination-cause-propagation.md) — complete; PR 245 merged at `217de072`; consumer-critical; surface the sidecar terminal code, result fields, close evidence, and stderr tail; precedes card 083
+- [119-claude-sdk-first-turn-model-qualification-evidence.md](./119-claude-sdk-first-turn-model-qualification-evidence.md) — complete; PR 268 merged at `cfb0b106`; bounded observer evidence for the first-turn model rejection; lead of the producer-diagnosis trio
+- [120-claude-sdk-loaded-module-version-verification.md](./120-claude-sdk-loaded-module-version-verification.md) — complete; PR 269 merged at `4a27676d`; serial after 119; loaded SDK version verified at open
+- [121-claude-sdk-first-turn-rejection-terminal-state.md](./121-claude-sdk-first-turn-rejection-terminal-state.md) — complete; PR 270 merged at `8cf1fe9f`; serial after 120; terminal state after first-turn rejection
+- [124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md](./124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — complete; PR 271 merged at `02003ecb`; serial after 121; bounded manifest lookup and one model-id predicate; precedes the `v0.4.4` candidate
+- [137-grok-probe-conforming-acp-client.md](./137-grok-probe-conforming-acp-client.md) — complete; PR 285 merged at `56ea6008`; the probe never answers client requests during session/new, so Grok waits and the session never opens; diagnose from captured frames at no quota cost
 - [126-claude-sdk-selected-skill-bundle-binding.md](./126-claude-sdk-selected-skill-bundle-binding.md) — complete; PR 279 merged at `3984f23b`; resolved skill bundle as the distinct labelled third input; provider-free
 
 - [138-codex-permission-exchange-cell-reconciliation.md](./138-codex-permission-exchange-cell-reconciliation.md) — complete; approvals are observable-only on app-server, typed user-input is the answerable exchange, exec has no callback surface; matrix reason corrected via Research 293; awaiting exact-head review

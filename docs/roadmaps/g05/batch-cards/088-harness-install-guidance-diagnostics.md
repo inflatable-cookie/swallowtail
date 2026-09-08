@@ -1,6 +1,6 @@
 # 088 Harness Install Guidance Diagnostics
 
-Status: ready; PR 242 approved as written; widened to own the `Absent` classification; completes after the `v0.4.3` tag
+Status: complete; PR 242 merged at `80e004b4`
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-06

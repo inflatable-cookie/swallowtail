@@ -1,6 +1,6 @@
 # 137 Grok Probe Conforming ACP Client
 
-Status: ready
+Status: complete; PR 285 merged at `56ea6008`
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

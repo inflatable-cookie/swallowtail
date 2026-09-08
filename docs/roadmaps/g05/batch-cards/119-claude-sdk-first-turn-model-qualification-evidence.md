@@ -1,6 +1,6 @@
 # 119 Claude SDK First-Turn Model Qualification Evidence
 
-Status: ready
+Status: complete; PR 268 merged at `cfb0b106`
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07

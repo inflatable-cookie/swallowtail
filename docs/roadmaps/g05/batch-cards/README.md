@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [141-operation-bridge-close-latency.md](./141-operation-bridge-close-latency.md) — ready; every registered-tool close pays a fixed 5s IO_TIMEOUT that card 139 measured and could not fix in its scope
 No batch card is ready. Cards 139 and 140 are complete; the next producer
 card is promoted from consumer evidence or operator direction.
 

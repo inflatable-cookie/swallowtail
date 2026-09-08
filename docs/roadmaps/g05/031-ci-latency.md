@@ -111,3 +111,21 @@ Ready now; concurrent with the g05.029 runway.
 | Review oracle | the card's invariant |
 | Stop conditions | the cause is in shared runtime (return to Chatterbox) |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+## Card 141 Manifest
+
+| Field | Card 141 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | card 139 merged; current `main` |
+| Completion conditions | close no longer pays a fixed `IO_TIMEOUT`; before/after measurements recorded; watcher behaviour unchanged; every teardown guarantee preserved; papercut retired |
+| Owned mutable paths | `crates/swallowtail-host-local/src/operation_bridge/**`; `crates/swallowtail-host-local/src/watcher_bridge/**` only where the shared listener requires it; `crates/swallowtail-host-local/tests/**`; `crates/swallowtail-adapter-claude-agent/tests/**` timing assertions only; `PAPERCUTS.md`; this card's `## Result` |
+| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
+| Forbidden paths | adapters beyond the named test timings; contracts; baselines; the live gate |
+| Approved concurrent siblings | anything outside `swallowtail-host-local` |
+| Serial edges | none |
+| Worker capability class | Rust worker with concurrency discipline; frontier-tier |
+| Acceptance evidence | before/after close measurements on registered and watcher cases |
+| Review oracle | the card's invariant |
+| Stop conditions | waking the read requires a change to the single-listener topology (return to Chatterbox) |
+| Escalation owner | operator via Chatterbox |

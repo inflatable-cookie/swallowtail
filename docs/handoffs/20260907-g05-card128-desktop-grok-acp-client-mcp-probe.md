@@ -69,12 +69,16 @@ request delivered late in an exchange is still answered.
   `echo_liveness_unproven`
 
 Each bound is a total budget, not a per-message one: one inbound read returns
-when its budget is spent even if the agent is still streaming, and an exchange
+when its budget is spent even if the agent is still streaming; an exchange
 whose deadline has passed stops rather than taking another pass over a
-backlog. An agent that never pauses therefore cannot hold an exchange open.
-Worst-case probe wall clock is the sum of the bounds — 480 seconds of
-exchanges, plus the 5-second helper self-check and the 10-second join, so 495
-seconds — and one run cannot exceed that.
+backlog; and a burst that lands just before the deadline is still captured but
+never answered, so processing it cannot write back past the bound. An agent
+that never pauses therefore cannot hold an exchange open. The receive and
+cleanup budget is the sum of the bounds — 480 seconds of exchanges, plus the
+5-second helper self-check and the 10-second join, so 495 seconds. The one
+path outside it is a blocking write to a child that has stopped reading its
+stdin; that would hang the probe rather than score anything, and Desktop
+should report it as a harness defect.
 
 Frame capture holds 512 frames. That capacity is spent on streaming chatter
 only: at capacity the oldest non-decisive frame is evicted so the incoming
@@ -84,17 +88,27 @@ recorded answer, the `tool_call` and `tool_call_update` updates, and the turn
 result are never evicted. ACP lets an agent refine one tool call many times,
 and those updates are partial, so a later update is not assumed to repeat what
 an earlier one carried: the only elidable decisive frame is a bare progress
-tick — a `tool_call_update` with no `content` and no settled `status` that a
-later update for the same call follows. Anything carrying a result or a
-settled status is kept whatever comes after it.
+tick — a `tool_call_update` that a later update for the same call follows and
+whose every field is inert (`sessionUpdate`, `toolCallId`, `status`, `title`,
+`kind`, `locations`) with an in-flight status. The test is an allowlist, so
+`content`, `rawOutput`, an unknown status, or a field ACP adds later all count
+as evidence and are kept whatever comes after them.
 
 When nothing is elidable the capsule grows past 512 rather than dropping
-evidence, up to a hard ceiling of 8192 retained frames that exists only to
-bound memory. A session making many distinct tool calls, each with its own
-result, therefore keeps all of them. `truncated` on a capsule means
-"uninteresting middle frames were elided" and is not a verdict; a truncated
-capsule still scores its real verdict. The `truncated` inconclusive cause
-needs thousands of distinct requests and tool calls inside one probe turn.
+evidence, up to a ceiling of 8192 retained frames that exists only to bound
+memory. A session making many distinct tool calls, each with its own result,
+keeps all of them. At that ceiling bulk tool-call history yields before
+session structure: the verdict is decided from the `session/new` and
+`session/prompt` exchanges, the agent's own requests and our recorded answers,
+and the echo transcript file, never from the count of tool calls, so those
+survive while the oldest tool-call frames go.
+
+`truncated` on a capsule means "uninteresting middle frames were elided" and
+is not a verdict; a truncated capsule still scores its real verdict. The
+`truncated` inconclusive cause now needs thousands of requests and responses
+in one turn to fill the ceiling with structure alone. Like
+`echo_liveness_unproven`, it is a harness bound and never a provider finding:
+it does not convert to a matrix cell kind.
 
 ## Command
 
@@ -253,7 +267,8 @@ matrix cross kind. Admission fields constrain the tree:
   `initialize` line on the echo transcript refutes ignore, and a helper spawn
   failure must not freeze `provider_limitation`
 - `inconclusive`: one authorized rerun with the named `inconclusive_cause`
-  fixed. `echo_liveness_unproven` is a harness defect, not a provider
+  fixed. `echo_liveness_unproven` and `truncated` are harness defects, not
+  provider
   finding. A second inconclusive is treated as `ignores_client_mcp` only when
   `client_mcp_admitted` is false and `echo_helper_live` is true. If admission
   is already proven, or helper liveness is unproven, that branch must not

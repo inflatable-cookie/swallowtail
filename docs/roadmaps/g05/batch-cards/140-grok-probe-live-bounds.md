@@ -213,6 +213,49 @@ forms and that a missing id is safely irreplaceable, accepted the
 lacked a start barrier so a pre-fix drain could pass on an already-exhausted
 channel. The barrier is added.
 
+**Third review round (same reviewer, head `09f5edb8`).** Three more, all real
+and all fixed:
+
+7. Capping the drain did not cap the exchange. `drain_within` stopped
+   receiving on time but returned the whole accumulated burst, and `exchange`
+   then processed every message and wrote replies without rechecking the
+   deadline, so a burst queued just before it ran past the bound. A late
+   burst is now still captured — that costs no provider I/O — but nothing is
+   written back once the bound is spent, and the exchange returns.
+   `exchange_writes_nothing_back_after_its_bound_is_spent` pins it. The claim
+   is corrected with it: 495 seconds is the receive-and-cleanup budget, not
+   an absolute ceiling. The one path outside it is a blocking write to a
+   child that has stopped reading its stdin, which hangs rather than scores,
+   and the packet names it as a harness defect for Desktop to report.
+8. `rawOutput` was still elidable. The evidence test was a denylist covering
+   `content` and settled statuses, so an in-progress update carrying
+   `rawOutput` followed by a title update was treated as a bare progress
+   tick. It is an allowlist now: an update is elidable only when every field
+   it carries is inert (`sessionUpdate`, `toolCallId`, `status`, `title`,
+   `kind`, `locations`) and its status is in-flight, so `rawOutput`,
+   `rawInput`, an unknown status, and any field ACP adds later all count as
+   evidence. `a_raw_output_update_is_never_a_bare_progress_tick` covers all
+   three shapes.
+9. The 8192 ceiling was still a reachable chosen cap: about 4,092 completed
+   distinct tool-call pairs fill it, needing only ~13.6 calls/s across the
+   prompt window, and the next opening call cost the turn result. Growth
+   alone was the wrong answer. There is now a third eviction tier: at the
+   ceiling, bulk tool-call history yields before session structure. The
+   verdict is decided from the `session/new` and `session/prompt` exchanges,
+   the agent's requests and our recorded answers, and the echo transcript
+   file — never from the count of tool calls — so losing the oldest of
+   thousands of them costs nothing.
+   `tool_call_history_yields_before_session_structure_at_the_ceiling` builds
+   the shape and asserts it still scores `accepts_client_mcp`. Reaching
+   `truncated` now takes thousands of requests and responses in one turn, and
+   both the cause's doc and the packet's decision tree say plainly that it is
+   a harness bound, never a provider finding.
+
+The reviewer's test-cost objection is taken: `FrameCapture` carries its
+retention ceiling as a field so tests reach it without building 8192 frames,
+with `frame_capture_ceiling_matches_the_module_constant` pinning production to
+the constant. This module's lib tests went from ~8.5s to ~0.7s.
+
 **Validation.** `effigy validate:focused swallowtail-testkit`,
 `effigy package:verify-affected swallowtail-testkit`, `effigy qa:northstar`,
 `scripts/check-public-api.sh` (one added const, `LIVE_PROMPT_WAIT`, absorbed

@@ -177,8 +177,10 @@ pub enum InconclusiveCause {
     /// `session/new` failed without naming client MCP.
     SessionNewErrorNotClientMcp,
     /// A frame the verdict depends on could not be retained. Reached only
-    /// when [`MAXIMUM_FRAMES`] is filled by decisive frames alone; eliding
-    /// non-decisive middle frames never scores this.
+    /// when [`MAXIMUM_RETAINED_FRAMES`] is filled by session structure
+    /// alone; eliding chatter, superseded progress ticks, or bulk tool-call
+    /// history never scores this. It is a harness bound, never a provider
+    /// finding.
     Truncated,
     /// A permission request was rejected before echo could run.
     PermissionRejected,
@@ -1932,6 +1934,7 @@ fn exchange(
         }
         let mut answered = false;
         let mut saw_response = false;
+        let mut expired = false;
         for message in inbound {
             if method_of(&message).is_none()
                 && message.get("id") == Some(&response_id)
@@ -1940,13 +1943,24 @@ fn exchange(
                 saw_response = true;
             }
             capture.push(FrameDirection::Inbound, message.clone());
+            // A burst queued just before the deadline is still captured —
+            // that costs no provider I/O — but nothing is written back once
+            // the bound is spent, so processing a large batch cannot run the
+            // exchange past its budget.
+            expired = expired
+                || deadline
+                    .saturating_duration_since(std::time::Instant::now())
+                    .is_zero();
+            if expired {
+                continue;
+            }
             if let Some(reply) = grok_acp_client_request_reply(&message) {
                 capture.push(FrameDirection::Outbound, reply.clone());
                 peer.push_outbound(reply)?;
                 answered = true;
             }
         }
-        if saw_response && !answered {
+        if expired || (saw_response && !answered) {
             return Ok(());
         }
     }
@@ -1987,6 +2001,7 @@ struct FrameCapture {
     frames: Vec<GrokAcpClientMcpFrame>,
     truncated: bool,
     decisive_frame_lost: bool,
+    retention_ceiling: usize,
 }
 
 /// Returns whether the verdict can be decided without this frame.
@@ -2013,10 +2028,19 @@ fn frame_is_decisive(frame: &GrokAcpClientMcpFrame) -> bool {
 
 impl FrameCapture {
     fn new() -> Self {
+        Self::with_retention_ceiling(MAXIMUM_RETAINED_FRAMES)
+    }
+
+    /// The ceiling is a field so tests can reach it without building
+    /// [`MAXIMUM_RETAINED_FRAMES`] frames; production always uses the
+    /// constant, which `frame_capture_ceiling_matches_the_module_constant`
+    /// pins.
+    fn with_retention_ceiling(retention_ceiling: usize) -> Self {
         Self {
             frames: Vec::new(),
             truncated: false,
             decisive_frame_lost: false,
+            retention_ceiling,
         }
     }
 
@@ -2028,8 +2052,10 @@ impl FrameCapture {
     /// When nothing is evictable the capsule grows to
     /// [`MAXIMUM_RETAINED_FRAMES`] rather than dropping evidence, so no
     /// ordinary session — however many distinct tool calls it makes — can
-    /// cost us the answer. Only past that ceiling is a frame lost, and a
-    /// decisive one then sets `decisive_frame_lost`, the sole route to
+    /// cost us the answer. At that ceiling bulk tool-call history yields
+    /// before session structure does, so losing a frame takes a capture whose
+    /// whole ceiling is structural: thousands of requests and responses in
+    /// one turn. Only then is `decisive_frame_lost` set, the sole route to
     /// [`InconclusiveCause::Truncated`].
     fn push(&mut self, direction: FrameDirection, message: Value) {
         let frame = GrokAcpClientMcpFrame { direction, message };
@@ -2043,7 +2069,23 @@ impl FrameCapture {
             self.frames.push(frame);
             return;
         }
-        if self.frames.len() < MAXIMUM_RETAINED_FRAMES {
+        if self.frames.len() < self.retention_ceiling {
+            self.frames.push(frame);
+            return;
+        }
+        // At the ceiling the capsule gives up bulk tool-call history before it
+        // gives up structure. The verdict is decided from the `session/new`
+        // and `session/prompt` exchanges, the agent's own requests and our
+        // answers, and the echo transcript file — never from the count of
+        // tool calls — so dropping the oldest of thousands of them keeps the
+        // answer while bounding memory.
+        if let Some(evict_at) = self
+            .frames
+            .iter()
+            .position(|held| !frame_is_structural(held))
+        {
+            self.frames.remove(evict_at);
+            self.truncated = true;
             self.frames.push(frame);
             return;
         }
@@ -2052,6 +2094,15 @@ impl FrameCapture {
             self.decisive_frame_lost = true;
         }
     }
+}
+
+/// Returns whether this frame carries session structure the verdict reads
+/// directly: our own outbound requests and recorded answers, the responses
+/// correlated to them, and the agent's own requests. Tool-call activity is
+/// decisive evidence but not structure — at the retention ceiling it is the
+/// bulk that yields.
+fn frame_is_structural(frame: &GrokAcpClientMcpFrame) -> bool {
+    frame.is_outbound() || frame.message.get("id").is_some_and(|id| !id.is_null())
 }
 
 /// Returns the oldest frame overflow is allowed to drop.
@@ -2094,26 +2145,42 @@ fn tool_call_progress_tick_is_superseded(
     })
 }
 
+/// Fields a bare progress tick may carry. Anything else — `content`,
+/// `rawInput`, `rawOutput`, or a field ACP adds later — is outcome evidence a
+/// following update is not assumed to repeat.
+const TOOL_CALL_PROGRESS_TICK_FIELDS: [&str; 6] = [
+    "sessionUpdate",
+    "toolCallId",
+    "status",
+    "title",
+    "kind",
+    "locations",
+];
+
 /// Returns whether this `tool_call_update` carries something a later update
-/// for the same call may not repeat: any non-empty `content`, or a `status`
-/// that is not an in-flight one. Unknown statuses count as evidence, so the
-/// conservative answer is always "keep".
+/// for the same call may not repeat.
+///
+/// The test is an allowlist, not a denylist: an update is a bare progress tick
+/// only when every field it carries is inert and its `status` is still
+/// in-flight. An unknown field or an unknown status is evidence, so a frame is
+/// only ever elided when we can name every part of it.
 fn tool_call_update_carries_evidence(message: &Value) -> bool {
-    let update = message.pointer("/params/update");
-    let carries_content = update
-        .and_then(|update| update.get("content"))
-        .is_some_and(|content| match content {
-            Value::Null => false,
-            Value::Array(items) => !items.is_empty(),
-            _ => true,
-        });
-    let settled_status = update
-        .and_then(|update| update.get("status"))
-        .and_then(Value::as_str)
-        .is_some_and(|status| {
+    let Some(Value::Object(update)) = message.pointer("/params/update") else {
+        return true;
+    };
+    if update
+        .keys()
+        .any(|field| !TOOL_CALL_PROGRESS_TICK_FIELDS.contains(&field.as_str()))
+    {
+        return true;
+    }
+    match update.get("status") {
+        None => false,
+        Some(Value::String(status)) => {
             !status.eq_ignore_ascii_case("pending") && !status.eq_ignore_ascii_case("in_progress")
-        });
-    carries_content || settled_status
+        }
+        Some(_) => true,
+    }
 }
 
 fn tool_call_id(message: &Value) -> Option<&str> {
@@ -2607,9 +2674,10 @@ mod tests {
     }
 
     #[test]
-    fn capture_full_of_decisive_frames_names_the_lost_frame() {
-        let mut capture = FrameCapture::new();
-        for index in 0..=MAXIMUM_RETAINED_FRAMES {
+    fn capture_full_of_structural_frames_names_the_lost_frame() {
+        let ceiling = MAXIMUM_FRAMES + 8;
+        let mut capture = FrameCapture::with_retention_ceiling(ceiling);
+        for index in 0..=ceiling {
             capture.push(
                 FrameDirection::Outbound,
                 json!({"jsonrpc": "2.0", "id": index, "method": "session/prompt"}),
@@ -3350,6 +3418,151 @@ mod tests {
     }
 
     #[test]
+    fn frame_capture_ceiling_matches_the_module_constant() {
+        let capture = FrameCapture::new();
+        assert_eq!(capture.retention_ceiling, MAXIMUM_RETAINED_FRAMES);
+        const { assert!(MAXIMUM_RETAINED_FRAMES > MAXIMUM_FRAMES) };
+    }
+
+    #[test]
+    fn tool_call_history_yields_before_session_structure_at_the_ceiling() {
+        // Past the ceiling the capsule must still carry the exchanges the
+        // verdict is decided from, even though it can no longer carry every
+        // tool call.
+        let ceiling = MAXIMUM_FRAMES + 8;
+        let mut capture = FrameCapture::with_retention_ceiling(ceiling);
+        let session_new = json!({
+            "jsonrpc": "2.0",
+            "id": 3,
+            "method": "session/new",
+            "params": {"cwd": FIXTURE_CWD, "mcpServers": [{"name": ECHO_MCP_SERVER_NAME}]}
+        });
+        capture.push(FrameDirection::Outbound, session_new.clone());
+        capture.push(
+            FrameDirection::Inbound,
+            json!({"jsonrpc": "2.0", "id": 3, "result": {"sessionId": FIXTURE_SESSION}}),
+        );
+        capture.push(
+            FrameDirection::Outbound,
+            json!({"jsonrpc": "2.0", "id": 4, "method": "session/prompt"}),
+        );
+        for call in 0..ceiling {
+            let id = format!("echo-{call}");
+            capture.push(
+                FrameDirection::Inbound,
+                json!({
+                    "jsonrpc": "2.0",
+                    "method": "session/update",
+                    "params": {
+                        "sessionId": FIXTURE_SESSION,
+                        "update": {
+                            "sessionUpdate": "tool_call",
+                            "toolCallId": id,
+                            "title": ECHO_MCP_TOOL
+                        }
+                    }
+                }),
+            );
+            capture.push(
+                FrameDirection::Inbound,
+                json!({
+                    "jsonrpc": "2.0",
+                    "method": "session/update",
+                    "params": {
+                        "sessionId": FIXTURE_SESSION,
+                        "update": {
+                            "sessionUpdate": "tool_call_update",
+                            "toolCallId": id,
+                            "status": "completed",
+                            "content": [{"type": "content", "content": {"type": "text", "text": "ping"}}]
+                        }
+                    }
+                }),
+            );
+        }
+        let answer = json!({"jsonrpc": "2.0", "id": 4, "result": {"stopReason": "end_turn"}});
+        capture.push(FrameDirection::Inbound, answer.clone());
+
+        assert!(capture.truncated);
+        assert!(
+            !capture.decisive_frame_lost,
+            "tool-call history must yield before the answer does"
+        );
+        assert_eq!(capture.frames.len(), ceiling);
+        assert_eq!(
+            capture
+                .frames
+                .first()
+                .expect("session/new retained")
+                .message,
+            session_new
+        );
+        assert_eq!(
+            capture.frames.last().expect("answer retained").message,
+            answer
+        );
+        assert_eq!(
+            grok_acp_client_mcp_verdict_decision(
+                &capture.frames,
+                &EchoMcpTranscript::called(),
+                capture.decisive_frame_lost,
+                true
+            )
+            .verdict,
+            ClientMcpVerdict::AcceptsClientMcp
+        );
+    }
+
+    #[test]
+    fn a_raw_output_update_is_never_a_bare_progress_tick() {
+        // ACP carries tool outcomes in `rawOutput` as well as `content`, and
+        // a field ACP adds later must not silently become elidable.
+        for extra in ["rawOutput", "rawInput", "someFutureField"] {
+            let mut capture = FrameCapture::with_retention_ceiling(MAXIMUM_FRAMES + 4);
+            let evidence = json!({
+                "jsonrpc": "2.0",
+                "method": "session/update",
+                "params": {
+                    "sessionId": FIXTURE_SESSION,
+                    "update": {
+                        "sessionUpdate": "tool_call_update",
+                        "toolCallId": "echo-1",
+                        "status": "in_progress",
+                        extra: {"text": "ping"}
+                    }
+                }
+            });
+            assert!(
+                tool_call_update_carries_evidence(&evidence),
+                "{extra} must count as evidence"
+            );
+            capture.push(FrameDirection::Inbound, evidence.clone());
+            for _ in 0..MAXIMUM_FRAMES * 2 {
+                capture.push(
+                    FrameDirection::Inbound,
+                    json!({
+                        "jsonrpc": "2.0",
+                        "method": "session/update",
+                        "params": {
+                            "sessionId": FIXTURE_SESSION,
+                            "update": {
+                                "sessionUpdate": "tool_call_update",
+                                "toolCallId": "echo-1",
+                                "status": "in_progress",
+                                "title": ECHO_MCP_TOOL
+                            }
+                        }
+                    }),
+                );
+            }
+            assert!(
+                capture.frames.iter().any(|frame| frame.message == evidence),
+                "the {extra} update is never elided"
+            );
+        }
+    }
+
+    #[test]
     fn many_distinct_tool_calls_do_not_cost_the_turn_result() {
         // Nothing limits an agent to one echo invocation, and each call has
         // its own id, so a capacity of irreplaceable frames must grow rather
@@ -3502,6 +3715,85 @@ mod tests {
         assert!(
             elapsed < Duration::from_secs(2),
             "the exchange spent {elapsed:?} against a {bound:?} bound"
+        );
+    }
+
+    #[test]
+    fn exchange_writes_nothing_back_after_its_bound_is_spent() {
+        // A provider can queue a large burst just before the deadline.
+        // Capturing it is free; answering it is provider I/O that would run
+        // the exchange past its budget.
+        #[derive(Default)]
+        struct LateBurstPeer {
+            sent: Vec<Value>,
+            burst: bool,
+        }
+
+        impl GrokAcpClientMcpPeer for LateBurstPeer {
+            fn push_outbound(&mut self, message: Value) -> Result<(), GrokAcpClientMcpError> {
+                self.sent.push(message);
+                Ok(())
+            }
+
+            fn take_inbound(&mut self) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+                self.take_inbound_within(LIVE_PROTOCOL_WAIT)
+            }
+
+            fn take_inbound_within(
+                &mut self,
+                bound: Duration,
+            ) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+                if self.burst {
+                    return Ok(Vec::new());
+                }
+                self.burst = true;
+                // The whole budget goes by, then the burst lands.
+                thread::sleep(bound);
+                Ok((0..8)
+                    .map(|index| {
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": 900 + index,
+                            "method": "fs/read_text_file",
+                            "params": {"sessionId": FIXTURE_SESSION, "path": "<redacted>"}
+                        })
+                    })
+                    .collect())
+            }
+
+            fn close(&mut self) -> GrokAcpClientMcpCleanup {
+                GrokAcpClientMcpCleanup { joined: true }
+            }
+
+            fn stale_callback_request(&mut self) -> Option<Value> {
+                None
+            }
+        }
+
+        let mut peer = LateBurstPeer::default();
+        let mut capture = FrameCapture::new();
+        exchange(
+            &mut peer,
+            &mut capture,
+            1,
+            "session/prompt",
+            json!({"sessionId": FIXTURE_SESSION}),
+            Duration::from_millis(50),
+        )
+        .expect("exchange returns");
+        assert_eq!(
+            peer.sent.len(),
+            1,
+            "only the outbound request itself may be written"
+        );
+        assert_eq!(
+            capture
+                .frames
+                .iter()
+                .filter(|frame| !frame.is_outbound())
+                .count(),
+            8,
+            "the late burst is still captured as evidence"
         );
     }
 

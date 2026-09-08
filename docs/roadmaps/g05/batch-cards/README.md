@@ -2,6 +2,7 @@
 
 ## Ready
 
+- [140-grok-probe-live-bounds.md](./140-grok-probe-live-bounds.md) — ready; the reruns died on our own 8s prompt bound and 48-frame capture, not on Grok; re-derive every bound for live use in one pass
 - [139-claude-registered-tool-fixture-startup-determinism.md](./139-claude-registered-tool-fixture-startup-determinism.md) — ready; root-cause the close/join fixture flake before Desktop runs the Claude live gate on that exact path
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — ready; optional Read working resource as the response-only child cwd; no isolation claim; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
 

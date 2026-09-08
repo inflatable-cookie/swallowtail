@@ -169,6 +169,7 @@ consumer requirements and must not create a competing producer worker.
 | [140](batch-cards/140-grok-probe-live-bounds.md) | ready | testkit owner; probe module bounds, fixtures, packet; forbidden: adapters, claims, matrix, contracts | slow-turn and overflow fixtures pass; every bound justified; exact-head review |
 | [142](batch-cards/142-claude-sdk-admitted-instance-worked-example.md) | complete; PR 291 merged at `d0f2ea3170950629dd2b73866218ae903db0e287` | Claude adapter owner; `examples/`, guide admission section, card 132 packet cross-reference; forbidden: admission API changes, live runs | executable example composing admission plus registered tools; accepted exact-head review; provider-free validation passed |
 | [138](batch-cards/138-codex-permission-exchange-cell-reconciliation.md) | ready | Codex evidence owner; matrix cell, reason text, research anchor; forbidden: runtime, live Codex | anchored observe-versus-answer finding; matrix and consumer statement agree; exact-head review |
+| [143](batch-cards/143-grok-live-registered-tool-qualification.md) | ready; Desktop returned accepted exact `1.0.4` and `1.0.5` capsules and the operator directed Chatterbox to apply Card 128 | Grok adapter owner; route qualification plus independent selected-skill settlement; no live run, consumer edit, version extension, tag, or release | exact live-evidence qualification for MCP/tools; selected skill implemented from separate frozen evidence or closed honestly; exact-head review and merge |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
@@ -176,6 +177,18 @@ Coordinator compiles Longhorn linked-host and Desktop consumer acceptance
 handoffs after the API lands; neither needs a second registry or listener.
 Release remains exact-SHA operator-gated under Contract036. No current next-task
 pointer or unrelated active owner is evidence that this frontier is blocked.
+
+## Grok Card 128 Return — 2026-09-08
+
+Desktop's exact `1.0.4` and `1.0.5` capsules both returned
+`accepts_client_mcp`. Research 295 freezes the source-linked Swallowtail SHA,
+version receipts, capsule hashes, and Desktop review/merge/closeout chain.
+Card 128's decision tree therefore converts its four pending cells to producer
+gaps. Card 118 cannot own them because it is complete; card 143 is the live
+successor. MCP admission, registered invocation, and consumer exchange are
+directly evidenced. Selected-skill delivery was not in the echo probe and must
+settle on its own transport evidence. No tag, release, parity, or unrelated
+matrix inference follows.
 
 Route116/118 read-only evidence preparation is ready now under the same retained
 route owners. It must not wait for the evidence it is tasked to obtain. Runtime

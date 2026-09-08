@@ -111,6 +111,16 @@ runs independently under its own fresh budget; both capsules return to
 Chatterbox; then the candidate is prepared at the proved SHA and the tag
 request goes to the operator.
 
+### Grok Gate Accepted — 2026-09-08
+
+Desktop returned exact source-linked `1.0.4` and `1.0.5` capsules, each from one
+separate prompt segment, and both scored `accepts_client_mcp`. Research 295
+holds the immutable identities. This closes the Card 128 live evidence gate
+but does not itself complete the producer: Card 143 qualifies the already
+merged Card 118 seam and settles selected-skill delivery independently. The
+Claude Card 132 gate remains outstanding. No candidate, tag, or release
+authority follows from the Grok return.
+
 ### Candidate Source Disposition — 2026-09-08
 
 The prepared candidate `0673541d` is PARKED, not abandoned and not current.

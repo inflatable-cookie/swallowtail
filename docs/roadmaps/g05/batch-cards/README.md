@@ -2,8 +2,7 @@
 
 ## Ready
 
-No batch card is ready. Cards 139-142 are complete; the next producer
-card is promoted from consumer evidence or operator direction.
+- [143-grok-live-registered-tool-qualification.md](./143-grok-live-registered-tool-qualification.md) — ready; accepted Desktop `1.0.4` and `1.0.5` capsules qualify the existing MCP/tool seam; selected-skill delivery settles independently
 
 ## Planned
 

@@ -1,7 +1,7 @@
 ---
 title: g05.035 Card 128 Desktop Grok ACP client-MCP probe packet
 kind: desktop-probe-packet
-status: ready
+status: complete
 owner: Tom
 created: 2026-09-07
 updated: 2026-09-08
@@ -293,3 +293,20 @@ matrix cross kind. Admission fields constrain the tree:
 
 No Swallowtail adapter, claim, contract, tag, or release action follows from
 this packet alone.
+
+## Accepted return — 2026-09-08
+
+Desktop returned one exact `1.0.4` segment followed by one exact `1.0.5`
+segment. Both scored `accepts_client_mcp`: the client MCP server was admitted,
+tools were listed, the echo helper was live, `tools/call` appeared, and the
+prompt completed with `stop_reason: end_turn`, no truncation, and joined
+cleanup. Neither segment retried or hit authentication/quota rejection. No
+stale callback arrived, so the capsule field remains false rather than proving
+a stale-callback exercise.
+
+Research 295 records the exact source, Desktop lifecycle, version receipts,
+and capsule hashes. Chatterbox applied the decision tree: all four packet cells
+become producer gaps owned by card 143 because card 118 already closed after
+building the seam. The first three carry direct live MCP/tool evidence; the
+selected-skill cell remains a separate implementation or honest-limitation
+obligation. This packet is no longer a live `evidence_pending` owner.

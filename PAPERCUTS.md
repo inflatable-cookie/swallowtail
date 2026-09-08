@@ -1028,3 +1028,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   stays `producer_gap` and both Contract 061 cells stay unqualified.
 - Surface: `docs/guides/provider-solution-feature-matrix.csv` claude-agent.sdk
   row; queue closeout or Chatterbox promotion owns the edit.
+- Closed: 2026-09-08 origin/main `ccd58ca6` repointed the
+  `consumer_tool_exchange` cross_ref producer-gap path to card 146;
+  `effigy qa:routes` passes on heads that include that commit.

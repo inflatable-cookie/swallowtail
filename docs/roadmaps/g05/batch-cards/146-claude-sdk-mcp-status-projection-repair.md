@@ -136,13 +136,13 @@ cells stay unqualified.
 
 **Validation.** `cargo fmt` check, package-scoped focused validation (489
 tests), affected-package verify, the card 116 mediated-stdio selector,
-`qa:docs`, `qa:northstar`, and `git diff --check` all passed on the reviewed
-head. `effigy qa:routes` FAILS on the reviewed head with the pre-existing
+`qa:routes`, `qa:docs`, `qa:northstar`, and `git diff --check` all pass on
+the final head. Earlier heads failed `effigy qa:routes` on the pre-existing
 card-144 stale producer-gap cross classification (the `claude-agent.sdk`
-matrix `cross_ref` still names completed card 144 for
-`consumer_tool_exchange`); it reproduces on the clean dispatch head and is
-recorded in the appended `PAPERCUTS.md` entry for queue closeout, because
-matrix edits sit outside this card's owned paths. Regression corpus:
+matrix `cross_ref` named completed card 144 for `consumer_tool_exchange`);
+origin/main `ccd58ca6` repointed that reference to card 146, so the final
+merged head passes the routes gate, and the resolution is recorded in the
+appended `PAPERCUTS.md` entry. Regression corpus:
 `card-145-desktop-diagnostic-tuple.json` and `mcp-status-rows.json` with
 guard tests, sidecar-asset tests for every status/metadata variant, and
 non-leak assertions over all open responses.

@@ -65,6 +65,9 @@ pub(in crate::sdk_support) struct StderrEvidence {
     drained: AtomicBool,
     drain_changed: Condvar,
     drain_gate: Mutex<()>,
+    /// Why the reader stopped, when it stopped for any reason other than
+    /// reaching end of pipe. A failed read is not a complete capture.
+    fault: Mutex<Option<String>>,
 }
 
 impl StderrEvidence {
@@ -75,8 +78,20 @@ impl StderrEvidence {
             .push(chunk);
     }
 
+    /// Records end of pipe: the capture is complete.
     fn finish(&self) {
         self.drained.store(true, Ordering::Release);
+        let _guard = self.drain_gate.lock().expect("courier drain lock");
+        self.drain_changed.notify_all();
+    }
+
+    /// Records that the reader stopped without reaching end of pipe.
+    ///
+    /// The wait is released, because no further bytes are coming, but the
+    /// capture is never marked complete: a read that failed cannot certify
+    /// that it saw everything the child wrote.
+    fn fault(&self, reason: String) {
+        *self.fault.lock().expect("courier fault lock") = Some(reason);
         let _guard = self.drain_gate.lock().expect("courier drain lock");
         self.drain_changed.notify_all();
     }
@@ -84,10 +99,10 @@ impl StderrEvidence {
     /// Renders the capture after waiting, up to `DRAIN_BOUND`, for the reader
     /// to reach end of pipe. A wait that expires says so.
     fn describe_drained(&self) -> String {
-        if !self.drained.load(Ordering::Acquire) {
+        if !self.settled() {
             let deadline = Instant::now() + DRAIN_BOUND;
             let mut guard = self.drain_gate.lock().expect("courier drain lock");
-            while !self.drained.load(Ordering::Acquire) {
+            while !self.settled() {
                 let remaining = deadline.saturating_duration_since(Instant::now());
                 if remaining.is_zero() {
                     break;
@@ -99,13 +114,19 @@ impl StderrEvidence {
                 guard = next;
             }
         }
-        self.render()
+        self.render(true)
+    }
+
+    /// Whether the reader has stopped, either at end of pipe or on a fault.
+    fn settled(&self) -> bool {
+        self.drained.load(Ordering::Acquire)
+            || self.fault.lock().expect("courier fault lock").is_some()
     }
 
     /// Renders without waiting, for a child that is still running and so has
     /// no end of pipe to wait for.
     fn describe_snapshot(&self) -> String {
-        self.render()
+        self.render(false)
     }
 
     /// Renders the capture and its completion status under one lock.
@@ -114,15 +135,20 @@ impl StderrEvidence {
     /// completion observed while holding `capture` covers every byte in this
     /// rendering. Reading the flag after unlocking would let a final append
     /// certify an older rendering as complete.
-    fn render(&self) -> String {
+    fn render(&self, waited: bool) -> String {
         let capture = self.capture.lock().expect("courier stderr lock");
         let complete = self.drained.load(Ordering::Acquire);
+        let fault = self.fault.lock().expect("courier fault lock").clone();
         let rendered = capture.describe();
         drop(capture);
-        if complete {
-            rendered
-        } else {
-            format!("{rendered} (drain incomplete after {DRAIN_BOUND:?})")
+        match (complete, fault) {
+            (_, Some(reason)) => format!("{rendered} (capture incomplete: {reason})"),
+            (true, None) => rendered,
+            // A snapshot that never waited must not claim an expired wait.
+            (false, None) if waited => {
+                format!("{rendered} (drain incomplete after {DRAIN_BOUND:?})")
+            }
+            (false, None) => format!("{rendered} (snapshot; drain pending)"),
         }
     }
 }
@@ -189,14 +215,24 @@ impl SpawnedMcpChild {
             let retained = Arc::clone(&stderr);
             std::thread::spawn(move || {
                 let mut buffer = [0_u8; 1_024];
-                while let Ok(read) = handle.read(&mut buffer) {
-                    if read == 0 {
-                        break;
+                loop {
+                    match handle.read(&mut buffer) {
+                        // End of pipe. Evidence may now be rendered completely.
+                        Ok(0) => {
+                            retained.finish();
+                            return;
+                        }
+                        Ok(read) => retained.push(&buffer[..read]),
+                        Err(error) if error.kind() == std::io::ErrorKind::Interrupted => {}
+                        // A failed read is not an end of pipe. Ending the loop
+                        // here as though it were would certify a capture that
+                        // may be missing whatever the child wrote next.
+                        Err(error) => {
+                            retained.fault(format!("stderr read failed: {error}"));
+                            return;
+                        }
                     }
-                    retained.push(&buffer[..read]);
                 }
-                // End of pipe. Evidence may now be rendered completely.
-                retained.finish();
             });
         } else {
             stderr.finish();

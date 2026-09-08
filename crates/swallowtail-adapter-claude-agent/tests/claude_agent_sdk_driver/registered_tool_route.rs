@@ -13,6 +13,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::task::{Poll, Waker};
+use std::time::{Duration, Instant};
 use swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
 use swallowtail_adapter_claude_agent::sdk::{
     ClaudeAgentSdkSessionPreparation, ClaudeAgentSdkSessionProfile,
@@ -269,14 +270,24 @@ fn acquire_built_courier(workspace: &Path, nested_target: &Path, binary: &Path) 
         match std::fs::read(binary) {
             Ok(bytes) if !bytes.is_empty() => return bytes,
             Ok(_) => absences.push(format!("attempt {attempt}: built courier read as empty")),
-            Err(error) => absences.push(format!(
-                "attempt {attempt}: reading {binary:?} failed: {error} ({}, kind {:?})",
+            // Only the measured transient absence is recoverable. A denied or
+            // otherwise failing read is a real defect, and retrying it would
+            // let it pass as clean validation on a later attempt.
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => absences.push(format!(
+                "attempt {attempt}: {binary:?} was absent: {error} ({})",
+                error.raw_os_error().map_or_else(
+                    || "no os code".to_owned(),
+                    |code| format!("os error {code}")
+                )
+            )),
+            Err(error) => panic!(
+                "reading the built courier at {binary:?} failed on attempt {attempt}: {error} ({}, kind {:?})",
                 error.raw_os_error().map_or_else(
                     || "no os code".to_owned(),
                     |code| format!("os error {code}")
                 ),
                 error.kind()
-            )),
+            ),
         }
     }
     panic!(
@@ -292,8 +303,16 @@ struct BoundedOutput {
     stderr: String,
 }
 
+/// Bound on collecting build output after the build itself has exited.
+///
+/// Card 139: a surviving descendant can hold an inherited pipe open after the
+/// build exits. Joining the readers outright would withhold an exit status
+/// already observed, for as long as that descendant lives.
+const BUILD_DRAIN_BOUND: Duration = Duration::from_secs(5);
+
 /// Runs `command`, capping each captured stream instead of buffering all of
-/// it. Both streams are drained so the child cannot block on a full pipe.
+/// it. Both streams are drained so the child cannot block on a full pipe, and
+/// collection after exit is bounded so an observed failure is always reported.
 fn run_bounded(command: &mut std::process::Command) -> BoundedOutput {
     let mut child = command
         .stdin(std::process::Stdio::null())
@@ -303,13 +322,34 @@ fn run_bounded(command: &mut std::process::Command) -> BoundedOutput {
         .expect("courier build starts");
     let stdout = child.stdout.take().expect("build stdout pipe");
     let stderr = child.stderr.take().expect("build stderr pipe");
-    let stdout = std::thread::spawn(move || read_bounded(stdout));
-    let stderr = std::thread::spawn(move || read_bounded(stderr));
+    let (send_out, recv_out) = std::sync::mpsc::channel();
+    let (send_err, recv_err) = std::sync::mpsc::channel();
+    std::thread::spawn(move || send_out.send(read_bounded(stdout)));
+    std::thread::spawn(move || send_err.send(read_bounded(stderr)));
     let status = child.wait().expect("courier build completes");
+    // The exit is already known; collecting output may not withhold it.
+    let deadline = Instant::now() + BUILD_DRAIN_BOUND;
     BoundedOutput {
         status,
-        stdout: stdout.join().expect("build stdout reader"),
-        stderr: stderr.join().expect("build stderr reader"),
+        stdout: collect_bounded(&recv_out, deadline, "stdout"),
+        stderr: collect_bounded(&recv_err, deadline, "stderr"),
+    }
+}
+
+/// Takes one reader's result, or reports that it never finished.
+///
+/// The reader thread is left running rather than joined: it ends when its
+/// pipe closes, and nothing here may wait on a descendant to do that.
+fn collect_bounded(
+    reader: &std::sync::mpsc::Receiver<String>,
+    deadline: Instant,
+    stream: &str,
+) -> String {
+    match reader.recv_timeout(deadline.saturating_duration_since(Instant::now())) {
+        Ok(text) => text,
+        Err(_) => format!(
+            "(capture incomplete: build {stream} still open {BUILD_DRAIN_BOUND:?} after exit)"
+        ),
     }
 }
 
@@ -322,22 +362,34 @@ fn read_bounded(mut stream: impl std::io::Read) -> String {
     let mut retained: std::collections::VecDeque<u8> = std::collections::VecDeque::new();
     let mut dropped = 0_usize;
     let mut buffer = [0_u8; 1_024];
-    while let Ok(read) = stream.read(&mut buffer) {
-        if read == 0 {
-            break;
-        }
-        retained.extend(&buffer[..read]);
-        while retained.len() > OUTPUT_CAP {
-            retained.pop_front();
-            dropped += 1;
+    let mut fault = None;
+    loop {
+        match stream.read(&mut buffer) {
+            Ok(0) => break,
+            Ok(read) => {
+                retained.extend(&buffer[..read]);
+                while retained.len() > OUTPUT_CAP {
+                    retained.pop_front();
+                    dropped += 1;
+                }
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::Interrupted => {}
+            // A failed read is not an end of stream, and reporting it as one
+            // would present a truncated build log as the whole story.
+            Err(error) => {
+                fault = Some(format!("read failed: {error}"));
+                break;
+            }
         }
     }
     let bytes = retained.into_iter().collect::<Vec<_>>();
-    let text = String::from_utf8_lossy(&bytes).into_owned();
-    if dropped == 0 {
-        text
-    } else {
-        format!("(earlier {dropped} bytes dropped)… {text}")
+    let mut text = String::from_utf8_lossy(&bytes).into_owned();
+    if dropped > 0 {
+        text = format!("(earlier {dropped} bytes dropped)… {text}");
+    }
+    match fault {
+        Some(reason) => format!("{text} (capture incomplete: {reason})"),
+        None => text,
     }
 }
 

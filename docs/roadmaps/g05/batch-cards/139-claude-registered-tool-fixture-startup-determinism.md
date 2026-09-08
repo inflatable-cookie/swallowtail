@@ -149,8 +149,8 @@ it does not make the case flaky.
 
 ### Review
 
-Two cross-model review rounds returned changes required, and both were right
-on every count. Three defects are fixed here: the artifact was still
+Three cross-model review rounds returned changes required, and all three were
+right on every count. Three defects are fixed here: the artifact was still
 read from the volatile path without retry, so publication inherited the race
 it was meant to remove; the new regression test used one machine-wide
 temporary filename, which is the shared mutable state this card exists to
@@ -173,12 +173,26 @@ build failure pass as clean on a later attempt; only the measured transient
 absence is retried, and a failing build fails with its own bounded output.
 Build output is bounded as it is read rather than buffered whole.
 
+The third round found that both readers still ended their loop on any read
+error exactly as they ended it at end of pipe, and the courier reader then
+certified the capture complete — evidence silently lost while presenting
+itself as whole. End of pipe and a failed read are now distinct: a fault is
+recorded, the wait is released because no further bytes are coming, and the
+capture is never marked complete. `EINTR` retries rather than ending the
+read. Collecting build output after the build exits is bounded too: joining
+the readers made an already-observed failure wait on a descendant holding an
+inherited pipe, unbounded if that descendant never exits. A snapshot no
+longer claims an expired wait it never made, and acquisition retries only a
+`NotFound` read rather than every read error.
+
 ### Proof
 
 - 24 runs of the isolated process-spawning selector under sixteen CPU burners,
   118 tests each, zero failures.
 - 64 concurrent instances of the two scratch-executable tests: all pass. The
   same probe failed 24 of 32 before the per-invocation directory fix.
+- The build-failure path is exercised by breaking the courier source: it fails
+  on its first attempt and reports the compiler's own error.
 - 16 concurrent test processes against continuous courier rebuild churn: all
   pass, exercising the acquisition retry and the hard-linked publish.
 - `cargo fmt`, `validate:focused`, `package:verify-affected`, and

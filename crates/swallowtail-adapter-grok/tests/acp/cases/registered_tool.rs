@@ -1851,24 +1851,28 @@ fn the_courier_ready_barrier_runs_inside_the_opening_deadline() {
 
 #[test]
 fn a_failed_cleanup_at_the_ready_barrier_retains_the_route_leases() {
-    // The provider spawns the courier, connects it, and starts a call the
-    // dispatcher will never settle, then answers session setup. The opening
-    // deadline wins the ready-barrier race, so the lease is settled there —
-    // and that settlement fails, because the host cannot join the call.
+    // The provider spawns and connects the courier, starts a call the
+    // dispatcher never settles, and answers session setup. The open then
+    // expires at the ready barrier, and that settlement fails because the host
+    // cannot join the call. Its truth must survive into abandonment: losing it
+    // releases the working resource and the credential beside retained work.
     //
-    // The truth of that failed close must survive into the abandonment that
-    // follows: discarding it releases the working resource and the credential
-    // beside work the host is still holding.
-    let blocking = Arc::new(BlockingDispatcher {
+    // Expiring during `session/new` instead would exercise a different
+    // abandonment path, so the ordering is constructed, not raced. The
+    // deadline is delivered only once the ready task's own scope is recorded,
+    // and that task is held until the dispatcher observes the kernel freeze —
+    // which only happens inside the close that this repair is about. The ready
+    // step therefore cannot have completed when the deadline is delivered.
+    let dispatcher = Arc::new(FreezeObservingDispatcher {
         entered: Arc::new(std::sync::atomic::AtomicBool::new(false)),
-        release: Arc::new(std::sync::atomic::AtomicBool::new(false)),
-        waker: Arc::new(Mutex::new(None)),
+        froze: Arc::new(std::sync::atomic::AtomicBool::new(false)),
     });
     let host_id =
         ExecutionHostId::new("fixture.host.grok.registered-ready-retained").expect("host");
     let selected = selection(host_id.clone());
     let fixture = FixtureHost::new(Scenario::RegisteredReadyBlockedCall);
-    fixture.fire_deadline_when(Arc::clone(&blocking.entered));
+    fixture.fire_deadline_when(Arc::clone(&dispatcher.entered));
+    fixture.hold_ready_barrier_until(Arc::clone(&dispatcher.froze));
     let executable =
         swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
     let environment =
@@ -1876,7 +1880,7 @@ fn a_failed_cleanup_at_the_ready_barrier_retains_the_route_leases() {
     let (local, services) = registered_route_services_with_budget(
         &host_id,
         &fixture,
-        Arc::clone(&blocking) as Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
+        Arc::clone(&dispatcher) as Arc<dyn swallowtail_runtime::RegisteredToolDispatcher>,
         courier_binary(),
         &executable,
         &environment,
@@ -1902,13 +1906,34 @@ fn a_failed_cleanup_at_the_ready_barrier_retains_the_route_leases() {
         selected.credential,
     )
     .with_registered_tools(binding);
-    let Err(_) = block_on(driver.open_session(
+    let Err(error) = block_on(driver.open_session(
         selected.plan,
         registered_open_request(selected.resource),
         services,
     )) else {
         panic!("an open whose ready barrier expires must fail");
     };
+    // The named branch was reached: session setup was answered and the ready
+    // task was entered before the open failed.
+    assert!(
+        fixture
+            .writes()
+            .iter()
+            .any(|write| write["method"] == "session/new"),
+        "the provider must have received session setup"
+    );
+    assert!(
+        fixture
+            .spawned_scopes()
+            .iter()
+            .any(|scope| scope.contains("registered-ready")),
+        "the open must have reached the ready barrier, not expired before it"
+    );
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.registered_tool.teardown_failed",
+        "the retained cleanup truth is what surfaces, not the bare expiry"
+    );
     assert_eq!(
         local.registered_tool_lease_count(),
         1,
@@ -1920,5 +1945,4 @@ fn a_failed_cleanup_at_the_ready_barrier_retains_the_route_leases() {
         "a failed registered cleanup at the ready barrier must not return the credential"
     );
     assert_eq!(fixture.resource_releases.load(Ordering::SeqCst), 0);
-    blocking.release();
 }

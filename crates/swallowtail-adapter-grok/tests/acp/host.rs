@@ -8,6 +8,7 @@ struct FixtureHost {
     deadline_gate: Arc<Mutex<Option<Arc<std::sync::atomic::AtomicBool>>>>,
     observed_deadlines: Arc<Mutex<Vec<Deadline>>>,
     spawned_scopes: Arc<Mutex<Vec<String>>>,
+    ready_hold: Arc<Mutex<Option<Arc<std::sync::atomic::AtomicBool>>>>,
 }
 
 #[derive(Clone, Debug)]
@@ -37,17 +38,35 @@ impl FixtureHost {
             deadline_gate: Arc::new(Mutex::new(None)),
             observed_deadlines: Arc::new(Mutex::new(Vec::new())),
             spawned_scopes: Arc::new(Mutex::new(Vec::new())),
+            ready_hold: Arc::new(Mutex::new(None)),
         }
     }
 
-    /// Returns this host's task service, including any scenario-specific hold
-    /// on the ready-barrier task.
+    /// Returns this host's task service, including any explicit hold on the
+    /// ready-barrier task.
     fn task_service(&self) -> ThreadTaskService {
         ThreadTaskService(
             Arc::clone(&self.spawned_scopes),
-            matches!(self.agent.scenario, Scenario::RegisteredReadyBlockedCall)
-                .then(|| std::time::Duration::from_millis(200)),
+            self.ready_hold.lock().expect("ready hold lock").clone(),
         )
+    }
+
+    /// Holds the ready-barrier task until `release` is set.
+    ///
+    /// The task's scope is recorded when it is spawned, so the deadline can be
+    /// delivered on confirmed entry while the barrier itself provably has not
+    /// run. That makes expiry during the ready step a construction rather than
+    /// a race.
+    fn hold_ready_barrier_until(&self, release: Arc<std::sync::atomic::AtomicBool>) {
+        *self.ready_hold.lock().expect("ready hold lock") = Some(release);
+    }
+
+    /// Returns every scope the route asked this host to spawn.
+    fn spawned_scopes(&self) -> Vec<String> {
+        self.spawned_scopes
+            .lock()
+            .expect("spawned scope lock")
+            .clone()
     }
 
     /// Returns every deadline the route asked this host to wait on.
@@ -190,9 +209,12 @@ impl TimeService for FixtureHost {
                 .lock()
                 .expect("deadline gate lock")
                 .clone();
+            // Both readiness scenarios gate delivery on the ready task's own
+            // scope, so the deadline cannot expire during an earlier ACP
+            // exchange and pass through a different abandonment path.
             let ready_barrier = matches!(
                 self.agent.scenario,
-                Scenario::RegisteredReadyUnreached
+                Scenario::RegisteredReadyUnreached | Scenario::RegisteredReadyBlockedCall
             )
             .then(|| Arc::clone(&self.spawned_scopes));
             let fired = Arc::new(std::sync::atomic::AtomicBool::new(false));
@@ -410,7 +432,12 @@ impl WorkingResourceIoService for FixtureHost {
 
 /// Records spawned scopes, and can hold the ready-barrier task back so a test
 /// can make the opening deadline win that race by construction.
-struct ThreadTaskService(Arc<Mutex<Vec<String>>>, Option<std::time::Duration>);
+/// Records spawned scopes, and can hold the ready-barrier task on an explicit
+/// release flag so a test can order the open deadline against it.
+struct ThreadTaskService(
+    Arc<Mutex<Vec<String>>>,
+    Option<Arc<std::sync::atomic::AtomicBool>>,
+);
 struct ThreadTask(Option<JoinHandle<()>>);
 
 impl ScopedTaskService for ThreadTaskService {
@@ -423,12 +450,15 @@ impl ScopedTaskService for ThreadTaskService {
             .lock()
             .expect("spawned scope lock")
             .push(scope.as_str().to_owned());
-        let delay = self
+        let hold = self
             .1
+            .clone()
             .filter(|_| scope.as_str().contains("registered-ready"));
         Ok(Box::new(ThreadTask(Some(std::thread::spawn(move || {
-            if let Some(delay) = delay {
-                std::thread::sleep(delay);
+            if let Some(hold) = hold {
+                while !hold.load(Ordering::SeqCst) {
+                    std::thread::sleep(std::time::Duration::from_millis(2));
+                }
             }
             block_on(task);
         })))))

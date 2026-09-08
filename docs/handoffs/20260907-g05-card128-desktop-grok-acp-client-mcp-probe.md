@@ -34,6 +34,51 @@ client request Grok issued while establishing the session went unanswered.
 The probe is now a conforming ACP client (below), and a future
 `session_new_unanswered` names a harness defect, never a provider finding.
 
+The 2026-09-08 decoupled rerun capsules (`51a2d094…` on `1.0.4`,
+`02720b85…` on `1.0.5`) established the session and again recorded
+`client_mcp_admitted`, `client_mcp_tools_listed`, and `echo_helper_live`
+true on both segments — the sixth and seventh consecutive live observations
+that Grok Build admits a client-declared MCP server, spawns it, connects,
+and enumerates its tools. Both still ended `inconclusive`, and both causes
+were harness bounds, not Grok: `1.0.5` returned `no_turn_result` because the
+prompt exchange used the eight-second protocol bound, and `1.0.4` returned
+`truncated` because capture stopped at 48 frames. Card 140 re-derived every
+bound in the module for live use (below). No matrix cell moves and no claim
+follows from those capsules.
+
+## Bounds
+
+Every bound is sized for a live model and justified in the module. Each
+exchange holds one absolute deadline: answering an intervening request never
+extends it, and the drain keeps reading past notification-only bursts, so a
+request delivered late in an exchange is still answered.
+
+- `initialize` and `authenticate`: `LIVE_PROTOCOL_WAIT`, 30 seconds. Pure
+  protocol round trips with no inference behind them; the allowance covers a
+  cold agent process still loading its runtime, not a model turn
+- `session/new`: `LIVE_SESSION_NEW_WAIT`, 120 seconds. Establishment spawns
+  every declared MCP server and enumerates its tools before answering
+- `session/prompt`: `LIVE_PROMPT_WAIT`, 300 seconds. The only exchange that
+  waits on a live model reasoning, calling the echo tool, and finishing the
+  turn. A protocol-scale bound here is what produced the 2026-09-08 `1.0.5`
+  `no_turn_result`
+- child exit after stdin close: 10 seconds, so a Node agent flushing session
+  state on shutdown is not killed and reported as unjoined cleanup
+- echo helper `initialize` self-check: 5 seconds. Local and immediate, with
+  margin so a cold first spawn cannot produce a false
+  `echo_liveness_unproven`
+
+Frame capture holds 512 frames. That capacity is spent on streaming chatter
+only: at capacity the oldest non-decisive frame is evicted so the incoming
+frame still lands. The outbound `session/new` and `session/prompt` requests,
+every correlated response, every inbound agent request and the probe's
+recorded answer, the `tool_call` and `tool_call_update` updates, and the turn
+result are never evicted. `truncated` on a capsule therefore means
+"uninteresting middle frames were elided" and is not a verdict; the
+`truncated` inconclusive cause is reachable only if the whole capacity is
+filled by decisive frames, which no ACP session shape reaches. A truncated
+capsule still scores its real verdict.
+
 ## Command
 
 From a Swallowtail checkout, one exact version at a time (`1.0.4` then
@@ -67,15 +112,10 @@ The probe is a conforming ACP client during every exchange, including
 agent's own `allow_once` option, and every other method — filesystem,
 terminal, anything unknown — is refused with a recorded JSON-RPC `-32601`
 error. The probe never reads or writes the filesystem, runs a shell, or
-touches the network, and no answer is silent. The `session/new` exchange
-waits through one absolute `LIVE_SESSION_NEW_WAIT` (60 seconds) deadline for
-session establishment with MCP servers — answering intervening requests
-never extends it, and the drain keeps reading past notification-only bursts,
-so a request delivered late in the exchange is still answered. The other
-exchanges keep the previous bound. When `session/new` still has no response,
-the cause separates an inbound request the probe failed to
-answer (`session_new_unanswered`, harness-shaped) from the agent never
-responding within the bound (`session_new_bound_exceeded`, provider-shaped).
+touches the network, and no answer is silent. When `session/new` has no
+response, the cause separates an inbound request the probe failed to answer
+(`session_new_unanswered`, harness-shaped) from the agent never responding
+within the bound (`session_new_bound_exceeded`, provider-shaped).
 
 Admission and invocation are separate capsule fields. `client_mcp_admitted`
 is true when the echo transcript contains `initialize`.
@@ -129,8 +169,8 @@ One redacted JSON capsule per exact version. Fields:
   `turn_completed_without_tool_call` means the turn finished after admission
   without echo `tools/call`. `echo_liveness_unproven` means the echo helper
   was not proven spawnable, so an empty transcript cannot score ignore.
-  Other named causes cover missing `session/new`, truncation, permission
-  rejection, and an unattributed ACP echo title
+  Other named causes cover missing `session/new`, a lost decisive frame,
+  permission rejection, and an unattributed ACP echo title
 - `prompt`: the exact directive text sent on `session/prompt`
 - `prompt_turn_completed`
 - `stop_reason`: ACP prompt `stopReason` when the turn returned a result
@@ -141,7 +181,10 @@ One redacted JSON capsule per exact version. Fields:
   `session/new` with non-empty `mcpServers` when sent
 - `stale_callback_rejected`
 - `cleanup_joined`
-- `truncated`: capture stopped at the frame bound; verdict is then `inconclusive`
+- `truncated`: non-decisive middle frames were elided to stay under the
+  512-frame capture bound. Decisive frames survive truncation, so this does
+  not change the verdict; only a capacity filled entirely by decisive frames
+  scores `inconclusive` with cause `truncated`
 - `echo_mcp_methods`: method names observed on the disposable echo server stdio
 
 Auth that fails before `session/new`, or a `session/new` JSON-RPC error that

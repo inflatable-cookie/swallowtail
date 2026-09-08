@@ -60,11 +60,11 @@ another Grok version.
 
 ## Acceptance Criteria
 
-- [ ] the prompt exchange bound is minutes-scale and separately justified
-- [ ] every bound in the module is justified against live use, in comments
-- [ ] truncation preserves session/new, tool-call, tool-result, and turn-result frames
-- [ ] fixtures cover a slow turn and an overflowing capture, both scoring correctly
-- [ ] packet updated
+- [x] the prompt exchange bound is minutes-scale and separately justified
+- [x] every bound in the module is justified against live use, in comments
+- [x] truncation preserves session/new, tool-call, tool-result, and turn-result frames
+- [x] fixtures cover a slow turn and an overflowing capture, both scoring correctly
+- [x] packet updated
 
 ## Validation
 
@@ -78,6 +78,69 @@ another Grok version.
 Invariant: the probe outlives a real model turn and never discards the frame
 that carries the answer. Smallest counterexample: an `inconclusive` whose
 cause is a limit we chose.
+
+## Result — 2026-09-08 (worker lane g05-card140, provider-free)
+
+**Bounds re-derived in one pass.** The prompt exchange has its own bound,
+`LIVE_PROMPT_WAIT`, at 300 seconds: it is the only exchange that waits on a
+live model reasoning, calling the echo tool, and finishing the turn, and a
+protocol-scale bound there scores our own impatience as `no_turn_result`.
+`LIVE_WAIT` is gone. `initialize` and `authenticate` — the only genuinely
+immediate exchanges, with no inference behind them — take
+`LIVE_PROTOCOL_WAIT` at 30 seconds, sized for a cold agent process still
+loading its runtime rather than for a warm round trip. `session/new` rises to
+120 seconds because establishment spawns every declared MCP server and
+enumerates its tools; establishment succeeding inside the previous minute is
+not evidence that a minute suffices on the slowest host. Child-exit grace
+rises to 10 seconds so a Node agent flushing session state on shutdown is not
+killed and the kill reported as cleanup evidence. The echo helper self-check
+rises to 5 seconds, because a false negative there turns a real provider
+result into `echo_liveness_unproven`. `LIVE_IDLE` stays at 200ms with its
+role named: it ends one burst, and since `exchange` holds an absolute
+deadline and re-enters the drain, a longer gap only splits a burst across two
+reads. `STALE_CALLBACK_ID` and the three fixture strings are documented as
+what they are — a sentinel that cannot collide with the four probe request
+ids, and placeholders already in redacted spelling. Every constant in the
+module now carries its justification in a comment.
+
+**Truncation cannot lose the answer.** Capture capacity rises from 48 to 512
+and is spent on chatter only. `FrameCapture::push` evicts the oldest
+non-decisive frame to make room for an incoming one, so the outbound
+`session/new` and `session/prompt` requests, every correlated response, every
+inbound agent request with the probe's recorded answer, `tool_call` and
+`tool_call_update` updates, and the turn result all survive overflow.
+`truncated` on a capsule now means "uninteresting middle frames were elided"
+and no longer decides anything: the verdict is scored normally. The
+`truncated` inconclusive cause survives for the one case that can still lose
+an answer — a capacity filled entirely by decisive frames — and is driven by
+a separate `decisive_frame_lost` signal.
+
+**Fixtures.** `SlowTurnPeer` releases its turn frames only when the exchange
+offers at least 45 seconds and otherwise returns the empty drain a real
+timeout produces; it scores `accepts_client_mcp` and spends no wall clock,
+and shrinking the prompt bound back to protocol scale reproduces the
+2026-09-08 `1.0.5` `no_turn_result`. The chatty fixture now streams past the
+capture bound on both sides of a real echo tool call and scores
+`accepts_client_mcp` while `truncated` is true, asserting each decisive frame
+by name. Two `FrameCapture` unit tests pin the eviction order and the
+decisive-only overflow that still names `truncated`. A bound-ordering test
+pins `LIVE_PROMPT_WAIT` minutes-scale and above every protocol bound.
+
+**Live observations (no new spend).** The 2026-09-08 decoupled reruns
+recorded `client_mcp_admitted`, `client_mcp_tools_listed`, and
+`echo_helper_live` true on both segments. Those are the sixth and seventh
+consecutive live admission observations that Grok Build admits a
+client-declared MCP server, spawns it, connects, and enumerates its tools.
+Invocation remains unproven. The four `grok-build.acp` cells stay
+`evidence_pending`, no claim moves, and no matrix, contract, adapter, or
+release action follows. The packet carries the new bounds and the new meaning
+of `truncated`.
+
+**Validation.** `effigy validate:focused swallowtail-testkit`,
+`effigy package:verify-affected swallowtail-testkit`, `effigy qa:northstar`,
+`scripts/check-public-api.sh` (one added const, `LIVE_PROMPT_WAIT`, absorbed
+into the working baseline), and `git diff --check` all pass. No Grok process,
+no live probe, no quota spend.
 
 ## Auto-Continuation
 

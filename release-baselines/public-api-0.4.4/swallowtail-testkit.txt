@@ -513,6 +513,7 @@ pub const swallowtail_testkit::FIXTURE_MEDIA_TYPE: &str
 pub const swallowtail_testkit::FIXTURE_NATIVE_TOOL: &str
 pub const swallowtail_testkit::FIXTURE_PROVIDER_TOOL: &str
 pub const swallowtail_testkit::FIXTURE_TOOL_NAMESPACE: &str
+pub const swallowtail_testkit::LIVE_PROMPT_WAIT: core::time::Duration
 pub const swallowtail_testkit::LIVE_SESSION_NEW_WAIT: core::time::Duration
 pub const swallowtail_testkit::REMOTE_ACP_CORE_SDK_VERSION: &str
 pub const swallowtail_testkit::REMOTE_ACP_RFD_REVISION: &str

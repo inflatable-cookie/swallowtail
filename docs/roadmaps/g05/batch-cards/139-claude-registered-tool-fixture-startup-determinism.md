@@ -149,8 +149,9 @@ it does not make the case flaky.
 
 ### Review
 
-Four cross-model review rounds returned changes required, and all four were
-right on every count. Every finding after the first round was in the evidence
+Five cross-model review rounds ran at exact heads. The first four returned
+changes required and were right on every count; the fifth returned no material
+findings. Every finding after the first round was in the evidence
 and lifetime paths, and most were seeded by the previous round's own fix. None
 were reachable from a failing test, which is why the loaded runs never saw
 them. Three defects are fixed here: the artifact was still
@@ -197,7 +198,13 @@ a stream still open. Four deterministic tests under `capture_lifecycle` now
 drive these paths directly — interrupted read retried, failed read faulted
 rather than ended, expired collection preserving its diagnostic, vanished
 reader not reported as an open pipe — because this code only runs when
-something else has already failed and no route test reaches it.
+something else has already failed and no route test reaches it. A fifth covers
+the case the others cannot: collecting while the reader is still blocked on
+its next chunk, which is what would catch a return to buffering privately
+until end of stream. The post-exit collection also went back to one shared
+deadline; splitting it per stream was an unforced change that doubled the
+worst-case wait without preserving one extra byte, since a stream left with no
+remaining wait still reports everything it read.
 
 One observation stays open rather than closed. The shard reports a leaky test
 about once in 24 full-binary runs. Running with `--status-level leak` names it
@@ -210,7 +217,7 @@ owned by card 095, not this one.
 ### Proof
 
 - 24 runs of the isolated process-spawning selector under sixteen CPU burners,
-  122 tests each, zero failures, with leak reporting enabled.
+  123 tests each, zero failures and no leak, with leak reporting enabled.
 - 64 concurrent instances of the two scratch-executable tests: all pass. The
   same probe failed 24 of 32 before the per-invocation directory fix.
 - The build-failure path is exercised by breaking the courier source: it fails

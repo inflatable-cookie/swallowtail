@@ -13,7 +13,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::task::{Poll, Waker};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
 use swallowtail_adapter_claude_agent::sdk::{
     ClaudeAgentSdkSessionPreparation, ClaudeAgentSdkSessionProfile,
@@ -337,13 +337,15 @@ fn run_bounded(command: &mut std::process::Command) -> BoundedOutput {
         send_err.send(())
     });
     let status = child.wait().expect("courier build completes");
-    // The exit is already known; collecting output may not withhold it. Each
-    // stream gets its own bound, so a slow first stream cannot consume the
-    // second one's.
+    // The exit is already known; collecting output may not withhold it. One
+    // deadline covers both streams: a stream left with no remaining wait still
+    // reports everything it read, so per-stream bounds would only double the
+    // worst-case delay without preserving one extra byte.
+    let deadline = Instant::now() + BUILD_DRAIN_BOUND;
     BoundedOutput {
         status,
-        stdout: collect_bounded(&recv_out, &out_capture, "stdout", BUILD_DRAIN_BOUND),
-        stderr: collect_bounded(&recv_err, &err_capture, "stderr", BUILD_DRAIN_BOUND),
+        stdout: collect_bounded(&recv_out, &out_capture, "stdout", deadline),
+        stderr: collect_bounded(&recv_err, &err_capture, "stderr", deadline),
     }
 }
 
@@ -358,13 +360,13 @@ fn collect_bounded(
     finished: &std::sync::mpsc::Receiver<()>,
     capture: &Arc<Mutex<StreamCapture>>,
     stream: &str,
-    bound: Duration,
+    deadline: Instant,
 ) -> String {
-    let ending = match finished.recv_timeout(bound) {
+    let ending = match finished.recv_timeout(deadline.saturating_duration_since(Instant::now())) {
         Ok(()) => None,
-        Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
-            Some(format!("build {stream} still open {bound:?} after exit"))
-        }
+        Err(std::sync::mpsc::RecvTimeoutError::Timeout) => Some(format!(
+            "build {stream} still open {BUILD_DRAIN_BOUND:?} after exit"
+        )),
         // A dropped sender is a reader that ended without reporting, which is
         // not the same as a stream that is still producing.
         Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
@@ -1217,7 +1219,12 @@ mod capture_lifecycle {
         );
         // The reader never reports: a descendant still holds the pipe.
         let (_send, recv) = std::sync::mpsc::channel();
-        let collected = collect_bounded(&recv, &capture, "stderr", Duration::from_millis(50));
+        let collected = collect_bounded(
+            &recv,
+            &capture,
+            "stderr",
+            std::time::Instant::now() + Duration::from_millis(50),
+        );
         assert!(
             collected.contains("ROOT CAUSE: it failed here"),
             "an expired bound keeps the diagnostic it already had: {collected}"
@@ -1228,13 +1235,82 @@ mod capture_lifecycle {
         );
     }
 
+    /// A reader still blocked on its next chunk must not hide what it has
+    /// already read. This is the case that would catch a return to buffering
+    /// privately until end of stream, which the expired-collection test above
+    /// cannot: that one finishes reading before collection begins.
+    #[test]
+    fn a_blocked_reader_does_not_withhold_what_it_already_read() {
+        struct GatedReader {
+            delivered: bool,
+            release: Arc<(Mutex<bool>, std::sync::Condvar)>,
+        }
+
+        impl Read for GatedReader {
+            fn read(&mut self, buffer: &mut [u8]) -> std::io::Result<usize> {
+                if !self.delivered {
+                    self.delivered = true;
+                    let bytes = b"ROOT CAUSE: read before the block";
+                    buffer[..bytes.len()].copy_from_slice(bytes);
+                    return Ok(bytes.len());
+                }
+                let (lock, changed) = &*self.release;
+                let mut released = lock.lock().expect("gate");
+                while !*released {
+                    released = changed.wait(released).expect("gate wait");
+                }
+                Ok(0)
+            }
+        }
+
+        let capture = Arc::new(Mutex::new(StreamCapture::default()));
+        let release = Arc::new((Mutex::new(false), std::sync::Condvar::new()));
+        let (send, recv) = std::sync::mpsc::channel();
+        let reader_capture = Arc::clone(&capture);
+        let reader_release = Arc::clone(&release);
+        let reader = std::thread::spawn(move || {
+            read_bounded(
+                GatedReader {
+                    delivered: false,
+                    release: reader_release,
+                },
+                &reader_capture,
+            );
+            send.send(())
+        });
+        // Collect while the reader is still blocked on its next chunk.
+        let collected = collect_bounded(
+            &recv,
+            &capture,
+            "stderr",
+            std::time::Instant::now() + Duration::from_millis(50),
+        );
+        assert!(
+            collected.contains("ROOT CAUSE: read before the block"),
+            "a blocked reader's earlier output is still reported: {collected}"
+        );
+        assert!(
+            collected.contains("still open"),
+            "and the capture is marked incomplete: {collected}"
+        );
+        let (lock, changed) = &*release;
+        *lock.lock().expect("gate") = true;
+        changed.notify_all();
+        let _ = reader.join();
+    }
+
     #[test]
     fn a_vanished_reader_is_not_reported_as_an_open_pipe() {
         let capture = Arc::new(Mutex::new(StreamCapture::default()));
         read_bounded(scripted(vec![Ok(b"partial".to_vec())]), &capture);
         let (send, recv) = std::sync::mpsc::channel::<()>();
         drop(send);
-        let collected = collect_bounded(&recv, &capture, "stdout", Duration::from_secs(30));
+        let collected = collect_bounded(
+            &recv,
+            &capture,
+            "stdout",
+            std::time::Instant::now() + Duration::from_secs(30),
+        );
         assert!(
             collected.contains("ended without reporting"),
             "a dropped reader is named as such, not as a live stream: {collected}"

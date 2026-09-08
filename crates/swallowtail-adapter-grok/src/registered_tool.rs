@@ -3,8 +3,16 @@
 //! ACP v1 lets a client describe MCP servers at session setup, and the exact
 //! Grok route was observed on 2026-09-07 to admit a non-empty `mcpServers`
 //! declaration, spawn the described server, connect to it, and enumerate its
-//! tools. That admission evidence is enough to build one callable route-local
-//! seam; it is not enough to claim support, and nothing here publishes one.
+//! tools. The accepted Card 128 live gate then ran one real registered call
+//! through this exact courier on each maintained segment — Grok Build `1.0.4`
+//! and `1.0.5` (Research 295) — so
+//! [`grok_build_acp_registered_tool_qualification`] returns
+//! `swallowtail_runtime::RegisteredToolRouteQualification::Qualified` with the
+//! dimensions the capsules proved for exactly those executable versions. A
+//! plan bound to any other `grok-build.executable` version — deprecated
+//! `0.2.x`, the unprobed gap, or an unverified-newer point — projects the
+//! unqualified truth and refuses a registered open before any host, lease, or
+//! provider work.
 //!
 //! Exact bounds of this seam:
 //!
@@ -17,16 +25,19 @@
 //!   puts them. This route adds no second registry, lease, or dispatcher;
 //! - the provider-owned ACP `session/update` tool activity and the one-shot
 //!   `session/request_permission` exchange are separate channels. Neither is
-//!   relabelled as a consumer registration, result, or progress record;
+//!   relabelled as a consumer registration, result, or progress record. A
+//!   consumer Deny is not represented to the provider, and the route delivers
+//!   no consumer tool progress;
 //! - tool identities stay namespaced, and the courier spelling is reversible,
 //!   so one wire name resolves to exactly one identity or fails closed; and
 //! - a route that opens without a registered preparation is byte-identical to
 //!   the merged route: `session/new` still carries `mcpServers: []`.
 //!
-//! What this module does not claim: the registered capability is projected
-//! `Unqualified` with `real_route_gate_pending`. The disposable real-route
-//! gate is separately authorized and has not run, so no support disposition
-//! and no matrix cell follows from deterministic evidence alone.
+//! What this module does not claim: selected-skill delivery. Frozen ACP v1
+//! session setup has no session-scoped, distinctly labelled skill input, the
+//! frozen Grok artifacts name none, and the accepted capsules carried none, so
+//! the capability projects `NotCarried` and the matrix cell records the exact
+//! route limitation.
 
 mod binding;
 mod carrier;
@@ -43,9 +54,9 @@ pub use carrier::{
 pub use declaration::GrokAcpMcpServerDeclaration;
 pub(crate) use open::{GrokRegisteredToolSession, PendingRegisteredOpen, prepare_registered};
 pub use projection::{
-    GROK_ACP_MEDIATION_KIND_SEMANTIC_ID, GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE,
-    GROK_ACP_REGISTERED_TOOL_SOURCE, grok_build_acp_registered_tool_qualification,
-    project_grok_build_acp_registered_tool,
+    GROK_ACP_MEDIATION_KIND_SEMANTIC_ID, GROK_ACP_REGISTERED_TOOL_ROUTE,
+    GROK_ACP_REGISTERED_TOOL_SOURCE, GROK_ACP_REGISTERED_TOOL_VERSION_NOT_ADMITTED_CODE,
+    grok_build_acp_registered_tool_qualification, project_grok_build_acp_registered_tool,
 };
 pub use version::{
     GROK_ACP_REGISTERED_TOOL_CARRIER_AXIS, GROK_ACP_REGISTERED_TOOL_CARRIER_REVISION,

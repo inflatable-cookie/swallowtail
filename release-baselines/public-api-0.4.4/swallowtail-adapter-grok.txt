@@ -31,17 +31,18 @@ pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrie
 pub const fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier::server_name(&self) -> &'static str
 pub fn swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier::tools(&self) -> &[swallowtail_adapter_grok::registered_tool::GrokRegisteredTool]
 pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_MEDIATION_KIND_SEMANTIC_ID: &str
-pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE: &str
 pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_CARRIER_AXIS: &str
 pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_CARRIER_REVISION: &str
 pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_MCP_PROTOCOL_VERSION: &str
 pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_MEDIATION: &str
+pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_ROUTE: swallowtail_runtime::consumer_route_projection::registered_capability::RegisteredToolQualifiedRoute
 pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_SERVER: &str
 pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_SOURCE: &str
+pub const swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_VERSION_NOT_ADMITTED_CODE: &str
 pub fn swallowtail_adapter_grok::registered_tool::grok_acp_registered_tool_carrier_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_grok::registered_tool::grok_acp_registered_tool_carrier_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
-pub const fn swallowtail_adapter_grok::registered_tool::grok_build_acp_registered_tool_qualification() -> swallowtail_runtime::consumer_route_projection::registered_capability::RegisteredToolRouteQualification
-pub fn swallowtail_adapter_grok::registered_tool::project_grok_build_acp_registered_tool(&swallowtail_runtime::consumer_route_projection::applicability::ConsumerRouteApplicability, &swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier, &swallowtail_runtime::registered_tool::readiness::RegisteredToolReadiness) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+pub fn swallowtail_adapter_grok::registered_tool::grok_build_acp_registered_tool_qualification(&swallowtail_core::interface_version::InterfaceVersion) -> swallowtail_runtime::consumer_route_projection::registered_capability::RegisteredToolRouteQualification
+pub fn swallowtail_adapter_grok::registered_tool::project_grok_build_acp_registered_tool(&swallowtail_runtime::consumer_route_projection::applicability::ConsumerRouteApplicability, &swallowtail_adapter_grok::registered_tool::GrokRegisteredToolCarrier, &swallowtail_runtime::registered_tool::readiness::RegisteredToolReadiness, &swallowtail_core::interface_version::InterfaceVersion) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
 pub enum swallowtail_adapter_grok::GrokPermissionHandling
 pub swallowtail_adapter_grok::GrokPermissionHandling::ConsumerMediated
 pub swallowtail_adapter_grok::GrokPermissionHandling::RejectAndCancel

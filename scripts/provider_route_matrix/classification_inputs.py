@@ -278,7 +278,6 @@ input_callback_classifications = {
     ("permission_exchange", "xai.responses-websocket"): "upstream_unsupported",
     ("external_search", "xai.responses-websocket"): "ready_operator_hold",
     ("attachments", "grok-build.acp"): "contract_or_corpus_required",
-    ("consumer_tool_exchange", "grok-build.acp"): "upstream_unsupported",
     ("permission_exchange", "grok-build.acp"): "upstream_unsupported",
     ("external_search", "grok-build.acp"): "contract_or_corpus_required",
     ("question_exchange", "qwen.headless"): "upstream_unsupported",

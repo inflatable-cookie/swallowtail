@@ -181,8 +181,11 @@ app-server already projects `item/mcpToolCall/progress` as provider-owned tool
 display progress; that released observation remains provider activity, not
 evidence of consumer MCP registration or result authority. Claude Code's
 watcher bridge exposes only its closed watcher protocol and completion state.
-Claude SDK, Claude ACP, and Grok gain no common tool-progress claim until an
-exact route mapping and evidence gate passes. Unsupported progress may be
+Claude SDK and Claude ACP gain no common tool-progress claim until an exact
+route mapping and evidence gate passes. Grok's accepted live gate proved the
+opposite disposition: the route delivers no consumer tool progress at all, and
+the qualified projection records exactly that (`NoProgress`), never a partial
+or implied progress channel. Unsupported progress may be
 dropped only before prepare by selecting a no-progress profile, never silently
 after an operation begins.
 
@@ -230,7 +233,7 @@ did not receive.
 | `claude-agent.sdk` | merged consumer-declared stdio MCP attachment, then common-bridge integration | PR 255 proves strict declared stdio configuration, explicit child env, per-call mediation, bounded status, typed required-connect failure, and unchanged omission; it does not prove SSE/HTTP/in-process/managed MCP, a real provider turn, the centralized snapshot, or Contract 060 integration |
 | `claude-agent.acp` | host-mediated native callbacks only; MCP withheld | current ACP sends an empty server list and has no MCP input facade; add direct MCP only after exact bridge schema, version, permission, and lifecycle evidence |
 | `codex.app-server` | host-mediated dynamic native tools | this is already the qualified execution seam; observed MCP activity is not registration or result authority; provider-direct MCP needs a separate app-server surface and corpus |
-| `grok-build.acp` | host-mediated permission and provider-tool observation; MCP withheld | current route sends an empty server list and exposes no consumer tools; direct MCP waits for exact ACP and Grok version evidence |
+| `grok-build.acp` | route-local ACP client-MCP courier through the Contract 063 mediated-stdio kernel, scoped to exact maintained `1.0.4..=1.0.5` | the accepted Card 128 live gate ran exact Grok Build `1.0.4` and `1.0.5` each admitting the Swallowtail-owned courier, listing its tools, and completing one registered call (Research 295); the qualification is version-scoped — other executable versions project unqualified rows and a registered open refuses with `version_not_admitted` before any host, lease, or provider work — the consumer Deny stays unrepresented, progress stays undelivered, selected skills stay `NotCarried` for want of any ACP skill input, and omission still sends `mcpServers: []` |
 
 The common API must not promise that every route accepts MCP. A route publishes
 the exact attachment or mediation kind through Contract 061.

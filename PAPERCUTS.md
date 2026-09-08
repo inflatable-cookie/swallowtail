@@ -1010,3 +1010,21 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   or a lazy dedicated test that runs alone).
 - Surface: `crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/readiness.rs`;
   `registered_tool_route.rs` courier acquisition.
+
+### [ ] Route matrix still names completed card 144 as the producer gap — 2026-09-08
+- Friction: `effigy qa:routes` fails on the clean dispatch head for card 146
+  (reproduced with all card work stashed at `555c517e`):
+  `check-provider-route-matrix.sh` reports "feature matrix cross
+  classification: producer_gap references a complete card:
+  docs/roadmaps/g05/batch-cards/144-claude-sdk-registered-tool-open-rejection-diagnosis.md".
+  The claude-agent.sdk `cross_ref` cell still names completed card 144 as the
+  producer gap for `consumer_tool_exchange`.
+- Impact: the routes QA gate fails on `main` independent of any branch, so
+  every PR's named validation that includes `qa:routes` reports the same
+  pre-existing failure until the reference is repointed.
+- Fix shape: repoint the `consumer_tool_exchange` cross_ref producer-gap path
+  (and the matching `notes` wording) to the next non-complete card that owns
+  the live-gate diagnosis or qualification once one is promoted; the cell
+  stays `producer_gap` and both Contract 061 cells stay unqualified.
+- Surface: `docs/guides/provider-solution-feature-matrix.csv` claude-agent.sdk
+  row; queue closeout or Chatterbox promotion owns the edit.

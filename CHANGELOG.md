@@ -7,6 +7,25 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- repaired the Claude Agent SDK sidecar's strict MCP-status projection to
+  admit and discard every optional field the exact `0.3.259`
+  `McpServerStatus` declaration (`package/sdk.d.ts:1114-1158`) permits —
+  `serverInfo`, `error`, `config`, `scope`, and `tools` — instead of
+  rejecting rows that carry them: a required connected server stays admitted
+  however much declared metadata its row carries, and `failed`, `needs-auth`,
+  and `disabled` rows reach their bounded failure codes rather than
+  collapsing to `mcp_status_invalid`. Rows with an undeclared top-level key,
+  unknown status, missing/foreign/duplicate names, a non-object entry, or a
+  count mismatch stay fail-closed, and no raw error text, configuration,
+  URL, header, path, or tool description ever crosses the projection. The
+  fake SDK's status rows now carry all five declared optional fields with
+  fixture-only markers, and the adapter's bounded regression corpus freezes
+  the row-shape table plus the Card 145 Desktop diagnostic tuple (Research
+  297), whose one authorized open stopped at the pre-repair bounded
+  `mcp_status_invalid` before provider readiness with cleanup confirmed. No
+  qualification, matrix, candidate, tag, or release consequence follows and
+  both Contract 061 `claude-agent.sdk` cells stay unqualified. g05.035 card
+  146.
 - Raised qualified OpenCode HTTP ceiling from `1.18.28` to official npm
   `opencode-ai` `1.18.29` on the `opencode.server` axis. Compatible-extension:
   selected HTTP/SSE route files and OpenAPI byte-identical; only unmapped

@@ -619,6 +619,24 @@ function sdkMcpServers(servers) {
   return config;
 }
 
+// Exact 0.3.259 `McpServerStatus` rows (package/sdk.d.ts:1114-1158) carry
+// `name` and `status` plus declared optional `serverInfo`, `error`, `config`,
+// `scope`, and `tools`. The shipped 0.3.259 `mcpServerStatus` is a passthrough
+// of the native `mcp_status` rows, so any declared combination is lawful
+// producer output. Card 146: the safe projection admits every declared key
+// and discards the metadata; any row key the declaration does not permit
+// stays fail-closed (`mcp_status_invalid`), so an unknown shape is never
+// accepted.
+const MCP_STATUS_DECLARED_KEYS = new Set([
+  "name",
+  "status",
+  "serverInfo",
+  "error",
+  "config",
+  "scope",
+  "tools",
+]);
+
 function projectMcpStatuses(reported, servers) {
   if (!Array.isArray(reported) || reported.length !== servers.length) {
     throw new SidecarFailure("mcp_status_invalid");
@@ -629,8 +647,10 @@ function projectMcpStatuses(reported, servers) {
     if (!row || typeof row !== "object") {
       throw new SidecarFailure("mcp_status_invalid");
     }
-    if (row.error !== undefined || row.url !== undefined || row.config !== undefined || row.headers !== undefined) {
-      throw new SidecarFailure("mcp_status_invalid");
+    for (const key of Object.keys(row)) {
+      if (!MCP_STATUS_DECLARED_KEYS.has(key)) {
+        throw new SidecarFailure("mcp_status_invalid");
+      }
     }
     const status = row.status;
     let kind;

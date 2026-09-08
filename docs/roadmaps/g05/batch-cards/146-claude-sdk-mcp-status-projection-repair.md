@@ -92,4 +92,52 @@ No. Stop at exact-head independent review. The queue owns merge and closeout.
 
 ## Result
 
-Pending implementation.
+Implemented and pushed for exact-head independent review. The queue owns
+merge and canonical closeout; the closeout log records the accepted head and
+merge identity.
+
+**Root cause (confirmed).** The exact `0.3.259` `McpServerStatus` declaration
+(`package/sdk.d.ts:1114-1158`, frozen in `mcp-status-rows.json`) permits
+optional `serverInfo`, `error`, `config`, `scope`, and `tools` on every row,
+and the shipped `0.3.259` implementation
+(`sdk.mjs`: `mcpServerStatus()` returns `(await request({subtype:
+"mcp_status"})).response.mcpServers`, verified against the frozen
+`dist-inventory.json` digest `7fa7c212…`) passes native `mcp_status` rows
+through unchanged. The sidecar projection rejected any row carrying `error`
+or `config` (and the fake SDK emitted only `{name, status}`, hiding the
+mismatch). Faithful fixtures that carry all five declared optional fields
+deterministically reproduce the Card 145 bounded `mcp_status_invalid` on the
+pre-repair sidecar and pass as bounded outcomes after repair — the
+producer-vs-projection contradiction is confirmed, not speculative.
+
+**Repair.** `projectMcpStatuses` now admits exactly the seven declared row
+keys and discards the five optional metadata fields; every other key, an
+unknown status, a wrong row count, a non-object entry, and a
+missing/foreign/duplicate name stay fail-closed. Evidence still carries only
+`name`, the canonical status kind, and the fixed local failure code. Rust
+readiness validation and the projected wire are unchanged; no public surface
+moved.
+
+**Accepted row shapes.** `connected`, `pending`, `failed`, `needs-auth`, and
+`disabled`, each with any subset or all of the declared optional metadata:
+required connected is admitted; required `pending`/`failed`/`disabled` fail
+bounded `mcp_server_failed`; required `needs-auth` fails bounded
+`mcp_server_needs_auth`; optional rows are admitted with bounded evidence.
+**Rejected shapes.** undeclared top-level `url`/`headers`, unknown status
+strings, malformed rows, foreign names, duplicate/missing rows, and count
+mismatches — all `mcp_status_invalid` or the existing typed failure, never
+leaking metadata.
+
+**Card 145 tuple.** Repaired for every declared row shape. The frozen
+artifacts cannot settle whether a real native row ever carries an undeclared
+top-level field; such a row remains fail-closed, and naming it would need one
+separately authorized future open. No live attempt ran; both Contract 061
+cells stay unqualified.
+
+**Validation.** `cargo fmt` check, package-scoped focused validation,
+affected-package verify, the card 116 mediated-stdio selector, `qa:routes`,
+`qa:docs`, `qa:northstar`, and `git diff --check` all passed on the reviewed
+head (see the queue closeout for exact selector output). Regression corpus:
+`card-145-desktop-diagnostic-tuple.json` and `mcp-status-rows.json` with
+guard tests, sidecar-asset tests for every status/metadata variant, and
+non-leak assertions over all open responses.

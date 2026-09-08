@@ -516,6 +516,23 @@ Optional servers record `pending` or `failed` in open evidence instead.
 `needs-auth` is typed failure: OAuth-backed remote servers are out of scope.
 Status evidence carries name, kind, and a typed failure code only.
 
+The status rows themselves are the native `mcp_status` rows the pinned SDK
+passes through unchanged, and the exact 0.3.259 declaration
+(`package/sdk.d.ts:1114-1158`) lets every row carry optional `serverInfo`,
+`error`, `config`, `scope`, and `tools` beside `name` and `status`. Card 146
+reconciled that shape with the projection: the sidecar admits every declared
+optional field and discards it, so a required connected server stays admitted
+however much declared metadata its row carries, and `failed`, `needs-auth`,
+and `disabled` rows reach their bounded failure codes instead of collapsing
+into `mcp_status_invalid`. Raw error text, configuration, URLs, headers,
+paths, and tool descriptions never cross into open evidence, and any row key
+the declaration does not permit — or a row count, name, or status outside the
+declared set — still fails the open. The pre-repair contradiction is frozen
+with the full Card 145 Desktop diagnostic tuple and the row-shape corpus in
+the adapter's bounded regression fixtures; the only shape the frozen
+artifacts cannot settle is whether a real native row ever carries an
+undeclared top-level field, which stays fail-closed.
+
 Every admitted MCP call goes through `canUseTool` exactly like `Edit` or
 `Bash`. `Options.allowedTools` is never set, including under `acceptEdits`.
 An unadmitted MCP name is denied inside the sidecar before the host sees it.

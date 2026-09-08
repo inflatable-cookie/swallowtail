@@ -701,13 +701,69 @@ function editingSession(prompt, options, child) {
   return iterator;
 }
 
+// Card 146 faithful rows. The exact 0.3.259 `McpServerStatus` declaration
+// (package/sdk.d.ts:1114-1158) permits optional `serverInfo`, `error`,
+// `config`, `scope`, and `tools` on every row, and the shipped
+// `mcpServerStatus` query passes native `mcp_status` rows through unchanged.
+// The fake therefore emits all five declared optional fields on every row —
+// with fixture-only marker values the sidecar must never project — instead of
+// only `{name, status}`. The remaining scenarios keep the bounded axis
+// honest: each distinct status drives the same declared metadata, and the
+// undeclared-shape scenarios prove those rows stay fail-closed.
 function mcpStatusRows(options) {
   const names = Object.keys(options.mcpServers ?? {});
-  const status =
-    SCENARIO === "mcp-required-fail" || SCENARIO === "mcp-optional-fail"
-      ? "failed"
-      : "connected";
-  return names.map((name) => ({ name, status }));
+  const scenarioStatus = {
+    "mcp-required-fail": "failed",
+    "mcp-optional-fail": "failed",
+    "mcp-needs-auth": "needs-auth",
+    "mcp-disabled": "disabled",
+    "mcp-pending": "pending",
+    "mcp-unknown-status": "fixture-future",
+  };
+  const status = scenarioStatus[SCENARIO] ?? "connected";
+  const rows = names.map((name) => ({
+    name,
+    status,
+    serverInfo: { name: `fixture-only-server-${name}`, version: "fixture-0.3.259" },
+    error: `fixture-only failure detail for ${name}`,
+    config: {
+      type: "stdio",
+      command: "/usr/bin/node",
+      args: ["server.mjs"],
+      url: "http://127.0.0.1:65000/fixture-only-mcp",
+    },
+    scope: "fixture-only-scope",
+    tools: [
+      {
+        name: "search",
+        description: "fixture-only tool description",
+        annotations: { readOnly: false, destructive: false, openWorld: false },
+      },
+    ],
+  }));
+  if (SCENARIO === "mcp-undeclared-url") {
+    rows.forEach((row) => {
+      row.url = "http://127.0.0.1:65001/fixture-only-undeclared";
+    });
+  } else if (SCENARIO === "mcp-undeclared-headers") {
+    rows.forEach((row) => {
+      row.headers = { "x-fixture-token": "fixture-only-undeclared-token" };
+    });
+  } else if (SCENARIO === "mcp-count-mismatch") {
+    rows.push({ name: "fixture-only-undeclared", status: "connected" });
+  } else if (SCENARIO === "mcp-malformed-row") {
+    return ["fixture-only-string-row"];
+  } else if (SCENARIO === "mcp-foreign-name") {
+    return [
+      {
+        name: "fixture-only-other",
+        status: "connected",
+        serverInfo: { name: "fixture-only-server-other", version: "fixture-0.3.259" },
+        scope: "fixture-only-scope",
+      },
+    ];
+  }
+  return rows;
 }
 
 /// One admitted MCP tool and one undeclared sibling. The sibling is offered

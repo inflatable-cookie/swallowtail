@@ -1,0 +1,47 @@
+{
+  "kind": "card-145-desktop-diagnostic-tuple",
+  "research": 297,
+  "card": 145,
+  "card_146": "provider-free MCP-status projection diagnosis and repair against exact SDK 0.3.259 rows",
+  "desktop_task_id": "9dc9b50f-5bb2-4912-be7d-a6159e8c758d",
+  "desktop_pr": {
+    "number": 172,
+    "accepted_head": "8ac46df322bec428e744adb5d22fba3a6ad9a7cc",
+    "review_comment": "5589754115"
+  },
+  "merge": "117e09e02dafd505d9f1d6e2b1380b56bbb22a19",
+  "closeout": "5d7f1681222222d6f1586176c05733c6f1daf7c3",
+  "capsule_sha256": "81cb0fd6c5a717e9ca66b73c7a746e66870219ebf2c1330081dfd76549608569",
+  "swallowtail_source": "6a93f1d916945aa2b402df7329dc994570e005c8",
+  "tuple": {
+    "sdk": "@anthropic-ai/claude-agent-sdk@0.3.259",
+    "native": "2.1.259 Darwin arm64",
+    "native_sha256": "884baa38fe1a624be25c4a91568bf5a08b5cf4e7d7acf29b7760e3525d964898",
+    "node": "22.23.2",
+    "sidecar_source_tag": "swallowtail-claude-agent-sdk-sidecar@0.4.4",
+    "transport": "mediated stdio / private loopback",
+    "mcp_protocol": "2025-11-25",
+    "model": "claude-sonnet-5",
+    "permission": "default",
+    "persistence": false,
+    "strict_mcp_config": true,
+    "setting_sources": [],
+    "allowed_tools": "omitted"
+  },
+  "bounded_outcome": {
+    "opens": 1,
+    "stage": "sidecar_rejected",
+    "subcode": "mcp_status_invalid",
+    "route_code": "swallowtail.claude-agent.sdk.open_rejected",
+    "provider_readiness_reached": false,
+    "prompt_turns": 0,
+    "tool_dispatches": 0,
+    "permission_callbacks": 0,
+    "controls": 0,
+    "retries": 0,
+    "reconnects": 0,
+    "respawns": 0,
+    "cleanup": "confirmed"
+  },
+  "disposition": "no quota inference; no qualification, matrix, candidate, tag, or release consequence; both Contract 061 claude-agent.sdk cells remain unqualified"
+}

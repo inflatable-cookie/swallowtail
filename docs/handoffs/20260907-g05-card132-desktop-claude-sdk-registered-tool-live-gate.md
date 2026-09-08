@@ -105,6 +105,14 @@ effigy validate:card116-mediated-stdio
 
 Desktop then invokes its existing isolated host runner through the prepared
 `claude-agent.sdk` facade with the frozen tuple above and writes one capsule.
+The composition reference for that facade is the compile-tested
+[`admitted_claude_agent_sdk`
+example](../../crates/swallowtail-adapter-claude-agent/examples/admitted_claude_agent_sdk.rs):
+construct the admitted `claude-agent.sdk` record from the three opaque
+host-owned references, lift it with `ClaudeAgentSdkSessionPreparation::from_admitted`,
+select the mediated-stdio proxy attachment with the courier proxy recipe over
+the private-loopback carrier, bind the `RegisteredToolPreparation`, and open.
+It spends no live route.
 This repository contains no live Claude runner, so the consumer-owned command
 name is deliberately not invented here. The runner command is valid only when
 Desktop binds its own existing executable/entry point to this exact request:

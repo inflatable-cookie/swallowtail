@@ -3,7 +3,6 @@
 ## Ready
 
 - [140-grok-probe-live-bounds.md](./140-grok-probe-live-bounds.md) — ready; the reruns died on our own 8s prompt bound and 48-frame capture, not on Grok; re-derive every bound for live use in one pass
-- [139-claude-registered-tool-fixture-startup-determinism.md](./139-claude-registered-tool-fixture-startup-determinism.md) — ready; root-cause the close/join fixture flake before Desktop runs the Claude live gate on that exact path
 
 ## Planned
 
@@ -23,6 +22,7 @@
 
 ## Completed
 
+- [139-claude-registered-tool-fixture-startup-determinism.md](./139-claude-registered-tool-fixture-startup-determinism.md) — complete; PR 287; a concurrent nested build removes and recreates the shared courier path, so a spawn landing in that window became the bare fixture code; startup is now an observed event with named causes and 24 loaded runs clean
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — complete; PR 289 merged at `8e6669c8`; optional read-only working resource selects the response-only child's project location; absence byte-identical; cwd-relative ambient CLI behaviour frozen from the scratch-directory fixture; no isolation claim
 - [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — complete; PR 281 merged at `98543d0b`; route-local callable registered-tool seam over the proven ACP client-MCP admission; Contract 061 stays Unqualified with real_route_gate_pending and no matrix cell moves
 - [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — complete; PR 272 merged at `0673541d`; candidate prepared; release scope widened

@@ -898,7 +898,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   sweep.
 - Surface: `crates/swallowtail-adapter-anthropic/tests/managed_driver/`.
 
-### [ ] Claude registered-tool close/join fixture flakes in the process-spawning shard — 2026-09-08
+### [x] Claude registered-tool close/join fixture flakes in the process-spawning shard — 2026-09-08
 
 - Friction: PR 285 run 34169972936 failed
   `claude_agent_sdk_driver::registered_tool_route::close_joins_the_registered_listener`
@@ -914,6 +914,59 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface:
   `claude_agent_sdk_driver::registered_tool_route::close_joins_the_registered_listener`
   and the Claude SDK registered-tool sidecar fixture startup path.
+- Closed: 2026-09-08 card 139. At session open the only fixture path that can
+  produce `fixture.claude_agent_sdk.failed` is the provider-side courier
+  spawn, which discarded its `io::Error`. The mechanism is Cargo's non-atomic
+  uplift: a sibling test process rebuilding into the same nested target
+  removes and recreates the shared courier path, measured at 42 `ENOENT`
+  observations across eight rebuilds, and a spawn landing in that window
+  became the bare code. The courier is now acquired with a bounded
+  build-and-read retry and spawned from a hard-linked, content-addressed copy
+  no builder touches. The fixture names the command, arguments,
+  operating-system cause, drained bounded child stderr, and observed exit, and
+  waits on the courier's own rendezvous-claim event. 24 loaded runs of the
+  isolated process-spawning selector are clean.
+
+### [ ] Nextest reports a rare leak for a test that spawns nothing — 2026-09-08
+- Friction: `claude_agent_sdk_driver` occasionally reports `118 passed
+  (1 leaky)` in the process shard. Card 139 captured the name by running with
+  `--status-level leak`: it is always
+  `registered_tool_route::open_without_a_host_composition_fails_typed`, at
+  roughly one occurrence in 24 full-binary runs. That test spawns no child
+  process at all — no courier, no nested build, no `LocalProcessHost` — so no
+  descendant can be holding the inherited stdout/stderr that nextest's leak
+  detection keys on.
+- Impact: a leak annotation nobody can act on, in the shard whose determinism
+  card 139 was opened to establish. It does not fail the run, but it is
+  exactly the kind of unexplained signal that makes the next real one easy to
+  wave through.
+- Fix shape: most likely the default 100ms `leak-timeout` expiring during
+  process teardown under load rather than a held pipe; `.config/nextest.toml`
+  sets no `leak-timeout`. Confirm by raising it and re-running loaded, then
+  either set it or explain the held descriptor. Keeping `--status-level leak`
+  on the shard would stop the name being hidden again.
+- Surface: `.config/nextest.toml`; the `ci-process` profile. Card 139's owned
+  paths exclude that file, which card 095 owns.
+
+### [ ] Registered-tool close waits out the operation bridge read timeout — 2026-09-08
+- Friction: closing a registered-tool route measured 5.00s on every
+  registered case. Card 139 measured it on
+  `close_joins_the_registered_listener` and confirmed the source by narrowing
+  `IO_TIMEOUT` in
+  `crates/swallowtail-host-local/src/operation_bridge/listener.rs` from 5s to
+  2s, which moved the close to a flat 2.00s. `OperationBridgeListener::close`
+  joins each accepted connection thread, and that thread waits out its read
+  timeout instead of being woken.
+- Impact: every registered-tool case in the process-spawning shard pays five
+  seconds of pure wall clock, on both the Claude and Grok routes, and the
+  close/join path is bound by a timer rather than by an event. Guardian
+  cleanup closes the registered lease before the provider close reaches the
+  wire, so a fixture-side child teardown at close lands too late to shorten
+  it; this is not a fixture effect.
+- Fix shape: shut down accepted streams (or carry a close signal into the
+  connection loop) before joining, so close ends on an event.
+- Surface: `crates/swallowtail-host-local/src/operation_bridge/listener.rs`;
+  disclosed by card 139, whose owned paths exclude that crate.
 
 ### [ ] Effigy cannot skip release gates from hosted exact-SHA evidence — 2026-09-06
 - Friction: Card 109 needs `lint`, `lint:no-features`, `test`, and `floor`

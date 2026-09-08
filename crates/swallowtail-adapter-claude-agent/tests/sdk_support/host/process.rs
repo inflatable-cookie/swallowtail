@@ -69,20 +69,39 @@ impl ProcessHandle for SdkFixtureProcess {
                 .strip_suffix(b"\n")
                 .ok_or_else(fixture_failure)?;
             let value: Value = serde_json::from_slice(line).map_err(|_| fixture_failure())?;
-            let mut state = self
-                .shared
-                .process
-                .lock()
-                .expect("SDK fixture state lock poisoned");
-            state.input.push(value.clone());
-            if !state.holding {
-                if value["command"].as_str() == Some("open")
-                    && super::mcp_child::spawn_registered_courier(&self.shared, &value["params"])
-                        .is_err()
-                {
-                    return Err(fixture_failure());
+            let holding = {
+                let mut state = self
+                    .shared
+                    .process
+                    .lock()
+                    .expect("SDK fixture state lock poisoned");
+                state.input.push(value.clone());
+                state.holding
+            };
+            if !holding {
+                let command = value["command"].as_str().unwrap_or_default().to_owned();
+                if command == "open" {
+                    // The spawn and its startup event happen outside the state
+                    // lock, so the pump stays live while the courier starts.
+                    super::mcp_child::spawn_registered_courier(&self.shared, &value["params"])
+                        .map_err(|reason| {
+                            super::mcp_child::record_evidence(&self.shared, &reason);
+                            super::super::host::courier_startup_failure(&reason)
+                        })?;
                 }
+                let mut state = self
+                    .shared
+                    .process
+                    .lock()
+                    .expect("SDK fixture state lock poisoned");
                 respond(self.scenario, &value, &mut state)?;
+                drop(state);
+                if command == "close" {
+                    // The real SDK tears its stdio MCP children down with the
+                    // session, so the fixture does too, and the child's exit is
+                    // recorded as evidence before the process handle stops.
+                    super::mcp_child::kill_spawned(&self.shared);
+                }
             }
             self.shared.changed.notify_all();
             Ok(())

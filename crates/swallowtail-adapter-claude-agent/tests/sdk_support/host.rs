@@ -61,6 +61,9 @@ pub(super) struct Shared {
     /// Provider-spawned stdio MCP children the fake SDK started from the
     /// declared `command`/`args`/`env`. Swallowtail does not hold these.
     pub(super) spawned_mcp: Mutex<Vec<Arc<mcp_child::SpawnedMcpChild>>>,
+    /// Bounded startup, output, and exit evidence for those children, retained
+    /// so a setup failure names its own cause instead of a bare code.
+    pub(super) courier_notes: Mutex<Vec<String>>,
 }
 
 #[derive(Default)]
@@ -101,6 +104,7 @@ impl SdkFixtureHost {
                 relinquished: Mutex::new(None),
                 reaper: Mutex::new(None),
                 spawned_mcp: Mutex::new(Vec::new()),
+                courier_notes: Mutex::new(Vec::new()),
             }),
             scenario,
             exit_observable: true,
@@ -241,6 +245,33 @@ impl SdkFixtureHost {
             .map(|child| Arc::clone(child) as Arc<dyn ProcessHandle>)
     }
 
+    /// Returns the bounded process output and exit evidence the fixture kept
+    /// for every provider-spawned child, live or already reaped.
+    ///
+    /// A setup failure reported without this is the card 139 counterexample.
+    pub fn courier_evidence(&self) -> String {
+        let mut lines = self
+            .shared
+            .courier_notes
+            .lock()
+            .expect("courier notes lock")
+            .clone();
+        for child in self
+            .shared
+            .spawned_mcp
+            .lock()
+            .expect("spawned mcp lock")
+            .iter()
+        {
+            lines.push(child.evidence());
+        }
+        if lines.is_empty() {
+            "no provider-spawned child was recorded".to_owned()
+        } else {
+            lines.join("\n")
+        }
+    }
+
     pub fn inputs(&self) -> Vec<Value> {
         self.shared
             .process
@@ -298,6 +329,20 @@ impl Drop for Shared {
     fn drop(&mut self) {
         mcp_child::kill_spawned(self);
     }
+}
+
+/// Names a courier startup failure with the child's own cause.
+///
+/// The generic `fixture_failure` code stays for wire defects; setup failures
+/// carry their evidence in the message so the next occurrence is readable
+/// from the failing run alone.
+pub(super) fn courier_startup_failure(detail: &str) -> swallowtail_runtime::RuntimeFailure {
+    swallowtail_runtime::RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+        "fixture.claude_agent_sdk.registered_courier_startup_failed",
+        format!(
+            "Claude Agent SDK fixture could not start the declared registered-tool courier: {detail}"
+        ),
+    ))
 }
 
 pub(super) fn fixture_failure() -> swallowtail_runtime::RuntimeFailure {

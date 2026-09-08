@@ -213,7 +213,7 @@ fn courier_binary() -> &'static Path {
             .to_path_buf();
         // Nested cargo must not share the outer `cargo test` target lock.
         let nested_target = workspace.join("target").join("card125-courier");
-        let status = std::process::Command::new("cargo")
+        let built = std::process::Command::new("cargo")
             .args([
                 "build",
                 "-p",
@@ -225,15 +225,89 @@ fn courier_binary() -> &'static Path {
             ])
             .env("CARGO_TARGET_DIR", &nested_target)
             .current_dir(&workspace)
-            .status()
+            .output()
             .expect("courier build starts");
-        assert!(status.success(), "courier binary failed to build");
+        // Card 139: a failed setup step names its own cause. A bare exit code
+        // here is the counterexample the fixture is meant to make impossible.
+        assert!(
+            built.status.success(),
+            "courier binary failed to build: {}\nstdout: {}\nstderr: {}",
+            built.status,
+            bounded(&built.stdout),
+            bounded(&built.stderr)
+        );
         let binary = nested_target
             .join("debug")
             .join("swallowtail-registered-tool-courier");
         assert!(binary.is_file(), "missing courier binary at {binary:?}");
-        binary
+        let published = publish_write_once(&binary, &nested_target);
+        assert!(
+            is_executable(&published),
+            "courier binary at {published:?} is not executable, so every later spawn would fail"
+        );
+        published
     })
+}
+
+/// Republishes the built courier under a content-addressed path that is
+/// written once and never rewritten.
+///
+/// Card 139: every test process in the process-spawning shard runs the nested
+/// build, and a concurrent nested build that re-uplifts the shared
+/// `debug/` path kills a courier already executing from it — observed as
+/// `signal: 9 (SIGKILL)` before the courier claimed its rendezvous. Spawning
+/// a copy no builder ever touches removes the race at its source.
+fn publish_write_once(built: &Path, nested_target: &Path) -> PathBuf {
+    let bytes = std::fs::read(built).expect("built courier is readable");
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    std::hash::Hasher::write(&mut hasher, &bytes);
+    let digest = std::hash::Hasher::finish(&hasher);
+    let directory = nested_target.join("write-once");
+    std::fs::create_dir_all(&directory).expect("write-once courier directory");
+    let published = directory.join(format!("swallowtail-registered-tool-courier-{digest:016x}"));
+    if published.is_file() {
+        return published;
+    }
+    let staged = directory.join(format!("staged-{}-{digest:016x}", std::process::id()));
+    std::fs::write(&staged, &bytes).expect("staged courier is written");
+    set_executable(&staged);
+    // Rename is atomic, so a concurrent publisher of the same content sees
+    // either its own staged name or the finished one, never a partial file,
+    // and an already running courier keeps the inode it started from.
+    std::fs::rename(&staged, &published).expect("published courier is installed");
+    published
+}
+
+#[cfg(unix)]
+fn set_executable(path: &Path) {
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o755))
+        .expect("published courier is executable");
+}
+
+#[cfg(not(unix))]
+fn set_executable(_path: &Path) {}
+
+/// Bounds one retained process output stream for a failure message.
+fn bounded(bytes: &[u8]) -> String {
+    const CAP: usize = 4_096;
+    let text = String::from_utf8_lossy(&bytes[..bytes.len().min(CAP)]);
+    if bytes.len() > CAP {
+        format!("{text}… (+{} bytes)", bytes.len() - CAP)
+    } else {
+        text.into_owned()
+    }
+}
+
+#[cfg(unix)]
+fn is_executable(path: &Path) -> bool {
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::metadata(path).is_ok_and(|data| data.permissions().mode() & 0o111 != 0)
+}
+
+#[cfg(not(unix))]
+fn is_executable(path: &Path) -> bool {
+    path.is_file()
 }
 
 fn tool_id() -> RegisteredToolId {
@@ -391,7 +465,16 @@ fn open_route(
         swallowtail_runtime::SessionOptions::default(),
     )
     .expect("registered-tool preparation succeeds");
-    let session = block_on(prepared.open_route_session(services.clone())).expect("session opens");
+    // Card 139: an open failure reports the courier's own bounded output and
+    // exit evidence, so the next occurrence is readable from the failing run.
+    let session = block_on(prepared.open_route_session(services.clone())).unwrap_or_else(|error| {
+        panic!(
+            "registered session did not open: {} ({})\n{}",
+            error.diagnostic().code(),
+            error.diagnostic().message(),
+            fixture.courier_evidence()
+        )
+    });
     let courier = CourierClient {
         process: fixture
             .spawned_registered_courier()
@@ -628,6 +711,13 @@ fn ready_follows_kernel_authenticated_connect() {
         opened.fixture.spawned_registered_courier().is_some(),
         "ready is observed after the fake SDK spawned the declared child"
     );
+    // The fixture answered `open` only after the courier claimed its one-shot
+    // rendezvous, so startup is an observed event and the child is live here.
+    let evidence = opened.fixture.courier_evidence();
+    assert!(
+        evidence.contains("still running"),
+        "startup evidence names a live courier: {evidence}"
+    );
     close_route(opened);
 }
 
@@ -707,5 +797,73 @@ fn an_unspawnable_command_fails_typed() {
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.claude-agent.sdk.registered_tool.command_unspawnable"
+    );
+}
+
+/// A courier that exists but cannot be executed is the smallest setup failure
+/// the fixture used to report as a bare `fixture.claude_agent_sdk.failed`.
+#[cfg(unix)]
+#[test]
+fn a_courier_that_cannot_exec_names_its_own_cause() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let host = host_id("claude-agent-sdk.fixture.registered-unexecutable");
+    let fixture = SdkFixtureHost::new(SdkScenario::McpConnected);
+    let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
+    let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let unexecutable = std::env::temp_dir().join("swallowtail-card139-unexecutable-courier");
+    std::fs::write(&unexecutable, b"#!/bin/sh\nexit 0\n").expect("courier stand-in is written");
+    std::fs::set_permissions(&unexecutable, std::fs::Permissions::from_mode(0o600))
+        .expect("courier stand-in is not executable");
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable.clone(), &unexecutable)
+        .approve_environment(environment.clone(), [("PATH".into(), "/usr/bin".into())])
+        .with_registered_tool_dispatcher(Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }))
+        .with_registered_tool_clock(Arc::new(fixture.clone()))
+        .build_services(host.clone());
+    let services = local
+        .services()
+        .clone()
+        .with_process(Arc::new(fixture.clone()))
+        .with_credential(Arc::new(fixture.clone()))
+        .with_working_resource(Arc::new(fixture.clone()))
+        .with_time(Arc::new(fixture.clone()));
+    let preparation = preparation_for(
+        host.clone(),
+        fixture_admission(Arc::new(ScriptedAdmissionPort::current())),
+        executable,
+        environment,
+    );
+    let prepared = prepare_claude_agent_sdk_session(
+        crate::sdk_support::preparation(host)
+            .with_registered_tools(preparation, local)
+            .expect("an unexecutable courier still qualifies"),
+        swallowtail_runtime::SessionOptions::default(),
+    )
+    .expect("an unexecutable courier still prepares");
+    let outcome = block_on(prepared.open_session(services));
+    let _ = std::fs::remove_file(&unexecutable);
+    let Err(error) = outcome else {
+        panic!("an unexecutable courier cannot open a registered session");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "fixture.claude_agent_sdk.registered_courier_startup_failed"
+    );
+    let message = error.diagnostic().message();
+    assert!(
+        message.contains(unexecutable.to_str().expect("path is UTF-8")),
+        "the failure names the command it tried to start: {message}"
+    );
+    assert!(
+        message.contains("os error 13"),
+        "the failure carries the operating system cause: {message}"
+    );
+    assert!(
+        fixture.courier_evidence().contains("os error 13"),
+        "the fixture retains the same evidence for the report: {}",
+        fixture.courier_evidence()
     );
 }

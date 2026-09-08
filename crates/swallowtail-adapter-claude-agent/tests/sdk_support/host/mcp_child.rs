@@ -4,12 +4,19 @@
 //! This fixture does the same for the reserved registered-tool courier so
 //! Swallowtail never intercepts `ProcessService::start` to stand in for the
 //! provider child. Card 084 consumer-declared servers stay unspawned echoes.
+//!
+//! Card 139: every startup step keeps bounded process output and exit
+//! evidence, and the fixture answers `open` only after the courier has
+//! claimed its one-shot rendezvous, so startup is an observed event rather
+//! than a wall-clock hope.
 
 use super::super::host::Shared;
 use serde_json::Value;
 use std::io::{BufRead, BufReader, Read, Write};
+use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
 use swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
 use swallowtail_runtime::{
     BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
@@ -18,14 +25,63 @@ use swallowtail_runtime::{
 
 const REGISTERED_TOOL_SERVER: &str = CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
 
+/// Bound on retained child stderr. Evidence must be useful without becoming
+/// an unbounded fixture buffer.
+const STDERR_EVIDENCE_CAP: usize = 4_096;
+
+/// Named bound on the courier startup event. Expiry is a broken startup
+/// contract, so it reports the child's own exit and output instead of
+/// leaving the caller to read a bare failure code.
+const STARTUP_BOUND: Duration = Duration::from_secs(30);
+
+/// Poll step for the rendezvous claim. The wait ends on the claim event or on
+/// child exit, whichever happens first; this only bounds how quickly either
+/// is noticed.
+const STARTUP_STEP: Duration = Duration::from_millis(2);
+
+/// Bounded capture of one child's stderr.
+#[derive(Default)]
+pub(in crate::sdk_support) struct BoundedStderr {
+    bytes: Vec<u8>,
+    dropped: usize,
+}
+
+impl BoundedStderr {
+    fn push(&mut self, chunk: &[u8]) {
+        let room = STDERR_EVIDENCE_CAP.saturating_sub(self.bytes.len());
+        let taken = room.min(chunk.len());
+        self.bytes.extend_from_slice(&chunk[..taken]);
+        self.dropped += chunk.len() - taken;
+    }
+
+    fn describe(&self) -> String {
+        if self.bytes.is_empty() && self.dropped == 0 {
+            return "stderr empty".to_owned();
+        }
+        let text = String::from_utf8_lossy(&self.bytes);
+        if self.dropped == 0 {
+            format!("stderr {text:?}")
+        } else {
+            format!("stderr {text:?} (+{} bytes dropped)", self.dropped)
+        }
+    }
+}
+
 pub(in crate::sdk_support) struct SpawnedMcpChild {
+    command: String,
+    arguments: Vec<String>,
     stdin: Mutex<Option<ChildStdin>>,
     stdout: Mutex<Option<BufReader<ChildStdout>>>,
     child: Mutex<Child>,
+    stderr: Arc<Mutex<BoundedStderr>>,
 }
 
 impl SpawnedMcpChild {
-    fn spawn(command: &str, args: &[String], env: &[(String, String)]) -> Result<Arc<Self>, ()> {
+    fn spawn(
+        command: &str,
+        args: &[String],
+        env: &[(String, String)],
+    ) -> Result<Arc<Self>, String> {
         let mut launched = Command::new(command);
         launched
             .args(args)
@@ -36,24 +92,66 @@ impl SpawnedMcpChild {
         for (key, value) in env {
             launched.env(key, value);
         }
-        let mut child = launched.spawn().map_err(|_| ())?;
-        let stdin = child.stdin.take().ok_or(())?;
-        let stdout = child.stdout.take().ok_or(())?;
-        if let Some(mut stderr) = child.stderr.take() {
+        let mut child = launched
+            .spawn()
+            .map_err(|error| describe_spawn_error(command, args, &error))?;
+        let stdin = child
+            .stdin
+            .take()
+            .ok_or_else(|| format!("courier {command:?} exposed no stdin pipe"))?;
+        let stdout = child
+            .stdout
+            .take()
+            .ok_or_else(|| format!("courier {command:?} exposed no stdout pipe"))?;
+        let stderr = Arc::new(Mutex::new(BoundedStderr::default()));
+        if let Some(mut handle) = child.stderr.take() {
+            let retained = Arc::clone(&stderr);
             std::thread::spawn(move || {
-                let mut discarded = Vec::new();
-                let _ = stderr.read_to_end(&mut discarded);
+                let mut buffer = [0_u8; 1_024];
+                while let Ok(read) = handle.read(&mut buffer) {
+                    if read == 0 {
+                        break;
+                    }
+                    retained
+                        .lock()
+                        .expect("courier stderr lock")
+                        .push(&buffer[..read]);
+                }
             });
         }
         Ok(Arc::new(Self {
+            command: command.to_owned(),
+            arguments: args.to_vec(),
             stdin: Mutex::new(Some(stdin)),
             stdout: Mutex::new(Some(BufReader::new(stdout))),
             child: Mutex::new(child),
+            stderr,
         }))
     }
 
     fn kill(&self) {
         let _ = self.child.lock().expect("mcp child lock").kill();
+    }
+
+    /// Returns the child's observed exit, or `None` while it is still running.
+    fn exit_status(&self) -> Option<String> {
+        match self.child.lock().expect("mcp child lock").try_wait() {
+            Ok(Some(status)) => Some(format!("exited {status}")),
+            Ok(None) => None,
+            Err(error) => Some(format!("exit unobservable: {error}")),
+        }
+    }
+
+    /// Bounded process output and exit evidence for this child.
+    pub(in crate::sdk_support) fn evidence(&self) -> String {
+        let exit = self
+            .exit_status()
+            .unwrap_or_else(|| "still running".to_owned());
+        let stderr = self.stderr.lock().expect("courier stderr lock").describe();
+        format!(
+            "courier {:?} args {:?}: {exit}; {stderr}",
+            self.command, self.arguments
+        )
     }
 }
 
@@ -115,7 +213,7 @@ impl ProcessHandle for SpawnedMcpChild {
     }
 }
 
-pub(super) fn spawn_registered_courier(shared: &Shared, params: &Value) -> Result<(), ()> {
+pub(super) fn spawn_registered_courier(shared: &Shared, params: &Value) -> Result<(), String> {
     let Some(servers) = params.get("mcpServers").and_then(Value::as_array) else {
         return Ok(());
     };
@@ -123,12 +221,19 @@ pub(super) fn spawn_registered_courier(shared: &Shared, params: &Value) -> Resul
         if server["name"].as_str() != Some(REGISTERED_TOOL_SERVER) {
             continue;
         }
-        let command = server["command"].as_str().ok_or(())?;
+        let command = server["command"]
+            .as_str()
+            .ok_or_else(|| declaration_defect(server, "command is not a string"))?;
         let args = server["args"]
             .as_array()
-            .ok_or(())?
+            .ok_or_else(|| declaration_defect(server, "args is not an array"))?
             .iter()
-            .map(|value| value.as_str().map(str::to_owned).ok_or(()))
+            .map(|value| {
+                value
+                    .as_str()
+                    .map(str::to_owned)
+                    .ok_or_else(|| declaration_defect(server, "an argument is not a string"))
+            })
             .collect::<Result<Vec<_>, _>>()?;
         let env = match server.get("env") {
             None | Some(Value::Null) => Vec::new(),
@@ -138,19 +243,61 @@ pub(super) fn spawn_registered_courier(shared: &Shared, params: &Value) -> Resul
                     value
                         .as_str()
                         .map(|value| (key.clone(), value.to_owned()))
-                        .ok_or(())
+                        .ok_or_else(|| declaration_defect(server, "an env value is not a string"))
                 })
                 .collect::<Result<Vec<_>, _>>()?,
-            Some(_) => return Err(()),
+            Some(_) => return Err(declaration_defect(server, "env is not an object")),
         };
+        let rendezvous = args.get(1).map(PathBuf::from);
         let child = SpawnedMcpChild::spawn(command, &args, &env)?;
         shared
             .spawned_mcp
             .lock()
             .expect("spawned mcp lock")
-            .push(child);
+            .push(Arc::clone(&child));
+        await_rendezvous_claim(&child, rendezvous.as_deref())?;
     }
     Ok(())
+}
+
+/// Waits for the courier's own startup event: the one-shot rendezvous is
+/// claimed and unlinked before it connects, so its disappearance is a
+/// positive observation that the child started and read its authority.
+///
+/// The wait ends early on child exit, and every ending that is not the claim
+/// carries the child's bounded output and exit evidence.
+fn await_rendezvous_claim(
+    child: &SpawnedMcpChild,
+    rendezvous: Option<&Path>,
+) -> Result<(), String> {
+    let Some(rendezvous) = rendezvous else {
+        return Ok(());
+    };
+    let deadline = Instant::now() + STARTUP_BOUND;
+    loop {
+        if !rendezvous.exists() {
+            return Ok(());
+        }
+        if let Some(exit) = child.exit_status() {
+            // One last look: the claim and the exit can land together.
+            if !rendezvous.exists() {
+                return Ok(());
+            }
+            return Err(format!(
+                "courier exited before claiming its rendezvous {}: {exit}; {}",
+                rendezvous.display(),
+                child.stderr.lock().expect("courier stderr lock").describe()
+            ));
+        }
+        if Instant::now() >= deadline {
+            return Err(format!(
+                "courier never claimed its rendezvous {} within {STARTUP_BOUND:?}: {}",
+                rendezvous.display(),
+                child.evidence()
+            ));
+        }
+        std::thread::sleep(STARTUP_STEP);
+    }
 }
 
 pub(super) fn kill_spawned(shared: &Shared) {
@@ -161,8 +308,38 @@ pub(super) fn kill_spawned(shared: &Shared) {
         .drain(..)
         .collect::<Vec<_>>();
     for child in children {
+        record_evidence(shared, &child.evidence());
         child.kill();
+        record_evidence(
+            shared,
+            &child
+                .exit_status()
+                .unwrap_or_else(|| "kill requested; exit not yet observed".to_owned()),
+        );
     }
+}
+
+/// Retains one bounded evidence line for a later setup failure report.
+pub(super) fn record_evidence(shared: &Shared, line: &str) {
+    let mut notes = shared.courier_notes.lock().expect("courier notes lock");
+    if notes.len() < 32 {
+        notes.push(line.to_owned());
+    }
+}
+
+fn declaration_defect(server: &Value, reason: &str) -> String {
+    format!("declared courier server is malformed ({reason}): {server}")
+}
+
+fn describe_spawn_error(command: &str, args: &[String], error: &std::io::Error) -> String {
+    let raw = error.raw_os_error().map_or_else(
+        || "no os code".to_owned(),
+        |code| format!("os error {code}"),
+    );
+    format!(
+        "spawn of courier {command:?} args {args:?} failed: {error} ({raw}, kind {:?})",
+        error.kind()
+    )
 }
 
 fn mcp_closed() -> RuntimeFailure {

@@ -66,6 +66,65 @@ Invariant: close waits for work, not for a clock, and every teardown
 guarantee survives. Smallest counterexample: a close that returns before its
 listener thread is joined.
 
+## Result
+
+### Mechanism
+
+`OperationBridgeListener` now records a `try_clone` of every accepted stream
+next to its join handle. `close` shuts down the read side of each live
+connection's clone before joining, so an idle connection thread wakes on
+end-of-stream instead of waiting out `IO_TIMEOUT`; the write side stays open,
+so a handler already in flight still delivers its response. The connection
+thread retires its own registry entry when its loop returns, so the clone's
+descriptor closes with the connection and a peer's end-of-stream lands exactly
+where it did before. `IO_TIMEOUT` is unchanged and remains the backstop for a
+genuinely unresponsive peer and for a stream whose clone could not be taken.
+
+Self-connect was rejected: `wake_accept` can only end a blocked `accept`, not
+the per-connection blocking reads. Carrying a close signal into the loop would
+have required restructuring the blocking read. Read-only shutdown of the
+accepted streams is the least invasive against the single-listener topology
+cards 116 and 125 settled: one listener, one accept loop, joined tasks, and
+unchanged watcher-profile behaviour.
+
+### Measurements
+
+- Registered idle keep-alive close, new fixture
+  `close_joins_an_idle_keep_alive_connection_without_paying_the_read_timeout`
+  (bounds close under two seconds permanently): 5.001s before, 0.21ms after.
+- `claude_agent_sdk_driver::registered_tool_route::close_joins_the_registered_listener`
+  (card 139's instrument, whole test): 11.87s before, 1.54s after; the flat
+  5.00s close portion is gone.
+- Watcher in-flight close, `retired_proof_retains_an_in_flight_wait`: 0.11s
+  before, 0.11s after; the in-flight response is still delivered.
+- Watcher `cross_lease_bearer_fails_and_close_releases_the_listener`: 5.00s
+  before, 5.00s after. Its five seconds are live-phase (the client waits for
+  end-of-stream after a 401 keep-alive while the connection thread serves its
+  read-timeout backstop), not close latency; the unchanged timing is the
+  live-phase-semantics-unchanged evidence, not a remaining defect.
+
+### Found and fixed during implementation
+
+The first cut held the wake clone in the registry until `close`, which pinned
+the socket open after a connection thread exited and removed the peer's
+end-of-stream at the live-phase read timeout;
+`cross_lease_bearer_fails_and_close_releases_the_listener` failed at 13.00s
+and named it. Connection-thread self-retirement of the registry entry
+restored the exact socket lifetime.
+
+### Guarantees
+
+One listener and one accept loop are untouched. Spawn registration, the
+closed re-check, and the push now share one lock section, so a concurrent
+close either sees the connection in the registry or observes `closed` before
+spawning; every spawned connection is joined — this closes the previous small
+spawn/push window rather than widening it. Admission freeze before settle and
+the `teardown_failed` budget gate sit in the kernel join path ahead of
+`close_listener_if_idle` and are unchanged, so `TeardownFailed` still fires on
+a real budget overrun with the lease retained. The card 139 papercut entry is
+retired. Waking the read required no topology change, so the stop condition
+did not trigger.
+
 ## Auto-Continuation
 
 No. Stop for exact-head review.

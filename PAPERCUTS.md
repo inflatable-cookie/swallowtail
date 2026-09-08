@@ -948,7 +948,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface: `.config/nextest.toml`; the `ci-process` profile. Card 139's owned
   paths exclude that file, which card 095 owns.
 
-### [ ] Registered-tool close waits out the operation bridge read timeout — 2026-09-08
+### [x] Registered-tool close waits out the operation bridge read timeout — 2026-09-08
 - Friction: closing a registered-tool route measured 5.00s on every
   registered case. Card 139 measured it on
   `close_joins_the_registered_listener` and confirmed the source by narrowing
@@ -967,6 +967,12 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   connection loop) before joining, so close ends on an event.
 - Surface: `crates/swallowtail-host-local/src/operation_bridge/listener.rs`;
   disclosed by card 139, whose owned paths exclude that crate.
+- Closed: 2026-09-08 card 141. `OperationBridgeListener::close` now shuts down
+  the read side of every live accepted stream (a `try_clone` held per
+  connection, dropped when the connection loop exits so peer end-of-stream
+  semantics are unchanged) before joining, so close ends on an event. The
+  idle-connection close measured 0.21ms against 5.00s before; the watcher
+  profile's live-phase timings are unchanged.
 
 ### [ ] Effigy cannot skip release gates from hosted exact-SHA evidence — 2026-09-06
 - Friction: Card 109 needs `lint`, `lint:no-features`, `test`, and `floor`

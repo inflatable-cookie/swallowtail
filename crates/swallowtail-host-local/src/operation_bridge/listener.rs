@@ -102,6 +102,21 @@ impl Drop for OperationBridgeRoute {
     }
 }
 
+/// One accepted connection's join handle and its shutdown wake.
+///
+/// The wake is a `try_clone` of the accepted stream. Shutting its read side
+/// down ends the connection loop's blocking read on an event instead of on
+/// `IO_TIMEOUT`; the write side stays open so a handler already in flight
+/// still delivers its response before the loop exits. The entry lives only
+/// while the thread runs: the thread removes it on exit so the clone's file
+/// descriptor never outlives the connection and a peer's end-of-stream still
+/// lands exactly when the connection loop returns.
+struct AcceptedConnection {
+    connection_id: u64,
+    thread: JoinHandle<()>,
+    wake: Option<TcpStream>,
+}
+
 /// One listener and one accept loop for one operation.
 pub(crate) struct OperationBridgeListener {
     listener_addr: SocketAddr,
@@ -110,7 +125,7 @@ pub(crate) struct OperationBridgeListener {
     routes: Mutex<BTreeMap<String, Route>>,
     closed: AtomicBool,
     accept_thread: Mutex<Option<JoinHandle<()>>>,
-    connections: Mutex<Vec<JoinHandle<()>>>,
+    connections: Mutex<Vec<AcceptedConnection>>,
     next_connection_id: AtomicU64,
 }
 
@@ -209,6 +224,21 @@ impl OperationBridgeListener {
         if self.closed.swap(true, Ordering::AcqRel) {
             return;
         }
+        // Wake every accepted connection's blocking read so the joins below
+        // wait for work, not for `IO_TIMEOUT`. Read-only shutdown keeps the
+        // write side of each socket open, so a handler already in flight
+        // still writes its response before its loop exits. The read timeout
+        // remains the backstop for a peer that resists shutdown, and for a
+        // stream whose clone could not be taken.
+        for wake in self
+            .connections
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .iter()
+            .filter_map(|connection| connection.wake.as_ref())
+        {
+            let _ = wake.shutdown(Shutdown::Read);
+        }
         wake_accept(self.listener_addr);
         if let Some(thread) = self
             .accept_thread
@@ -230,7 +260,10 @@ impl OperationBridgeListener {
                 .unwrap_or_else(std::sync::PoisonError::into_inner),
         );
         for connection in connections {
-            let _ = connection.join();
+            if let Some(wake) = connection.wake.as_ref() {
+                let _ = wake.shutdown(Shutdown::Read);
+            }
+            let _ = connection.thread.join();
         }
     }
 
@@ -251,26 +284,43 @@ impl OperationBridgeListener {
             };
             match accepted {
                 Ok((stream, _)) => {
+                    // Registration, the closed re-check, and the spawn share
+                    // one lock section so a concurrent close either sees this
+                    // connection in the registry or observes `closed` before
+                    // spawning; a spawned connection is always joined.
+                    let mut connections = self
+                        .connections
+                        .lock()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner);
                     if self.closed.load(Ordering::Acquire) {
                         drop(stream);
                         break;
                     }
                     let connection_owner = Arc::clone(&self);
+                    let connection_id = self.next_connection_id.fetch_add(1, Ordering::Relaxed);
+                    let wake = stream.try_clone().ok();
+                    let exit_owner = Arc::clone(&self);
                     if let Ok(thread) = thread::Builder::new()
                         .name("swallowtail-operation-bridge-conn".to_owned())
                         .spawn(move || {
-                            let connection_id = connection_owner
-                                .next_connection_id
-                                .fetch_add(1, Ordering::Relaxed);
                             connection_owner.connection_loop(stream, connection_id);
+                            // Retire this entry so the wake clone's descriptor
+                            // closes with the connection instead of pinning
+                            // the socket open until close().
+                            let mut connections = exit_owner
+                                .connections
+                                .lock()
+                                .unwrap_or_else(std::sync::PoisonError::into_inner);
+                            connections
+                                .retain(|connection| connection.connection_id != connection_id);
                         })
                     {
-                        let mut connections = self
-                            .connections
-                            .lock()
-                            .unwrap_or_else(std::sync::PoisonError::into_inner);
-                        connections.retain(|connection| !connection.is_finished());
-                        connections.push(thread);
+                        connections.retain(|connection| !connection.thread.is_finished());
+                        connections.push(AcceptedConnection {
+                            connection_id,
+                            thread,
+                            wake,
+                        });
                     }
                 }
                 Err(error) if error.kind() == std::io::ErrorKind::Interrupted => continue,

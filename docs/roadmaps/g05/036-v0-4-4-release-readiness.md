@@ -144,6 +144,18 @@ qualification is authorized. A credited qualification suite remains a later,
 separate authorization after the operator confirms top-up. No candidate, tag,
 or release authority follows from this diagnostic.
 
+### Claude MCP-Status Repair Gate — 2026-09-08
+
+Card 145 completed through Desktop PR 172 but stopped before provider readiness
+at bounded `mcp_status_invalid`; it observed no quota state. One open ran, no
+turn/tool/control/retry followed, and cleanup was confirmed. Research 297
+freezes the return. Card 146 now owns provider-free reconciliation of exact SDK
+`0.3.259` MCP-status rows against the strict sidecar projection. Do not top up
+for or run the credited qualification suite until that producer gate completes
+and the operator separately confirms credit restoration and live authority.
+Both Contract 061 cells remain unqualified. No candidate, tag, or release
+authority follows.
+
 ### Candidate Source Disposition — 2026-09-08
 
 The prepared candidate `0673541d` is PARKED, not abandoned and not current.

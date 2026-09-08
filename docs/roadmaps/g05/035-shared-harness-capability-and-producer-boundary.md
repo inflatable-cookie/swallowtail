@@ -171,7 +171,8 @@ consumer requirements and must not create a competing producer worker.
 | [138](batch-cards/138-codex-permission-exchange-cell-reconciliation.md) | ready | Codex evidence owner; matrix cell, reason text, research anchor; forbidden: runtime, live Codex | anchored observe-versus-answer finding; matrix and consumer statement agree; exact-head review |
 | [143](batch-cards/143-grok-live-registered-tool-qualification.md) | complete; PR 293 merged at `7d2dcb169dbee348567fd8308ed9c41fd5bf2d03` (reviewed head `5e7914424a8defb3dea164c150bd0d5ea806f3e9`) | Grok adapter owner; route qualification plus independent selected-skill settlement; no live run, consumer edit, version extension, tag, or release | exact live-evidence qualification for MCP/tools; selected skill implemented from separate frozen evidence or closed honestly; exact-head review and merge |
 | [144](batch-cards/144-claude-sdk-registered-tool-open-rejection-diagnosis.md) | complete; PR 294 merged at `cc53c81ad903a562830d721b39a669aee010d037` (reviewed head `67e69e577518fdf0486998d47720e045a541bd7e`) | Claude SDK adapter owner; structured failed-open evidence and provider-free diagnosis; no live retry, consumer edit, qualification, tag, or release | exact rejection subcode/stage and cleanup receipt; deterministic request reproduction; repaired producer defect or narrowed live-only boundary; exact-head review and merge |
-| [145](batch-cards/145-claude-sdk-credit-exhaustion-diagnostic.md) | ready; operator authorized one exhausted-credit diagnostic open | Desktop live-evidence owner; existing Card 132 runner; exact Swallowtail source link; one open, zero turns, cheapest admitted Sonnet model; no qualification or release | bounded account/usage signal or exact generic contradiction; Card 144 receipt, cleanup, redaction, and one-attempt proof; independent review |
+| [145](batch-cards/145-claude-sdk-credit-exhaustion-diagnostic.md) | complete; Desktop PR 172 merged at `117e09e0` | Desktop live-evidence owner; one open, zero turns, cheapest admitted Sonnet model; no qualification or release | bounded `mcp_status_invalid` before provider readiness; cleanup confirmed; Research 297 |
+| [146](batch-cards/146-claude-sdk-mcp-status-projection-repair.md) | ready; operator authorized queue dispatch | Claude SDK adapter owner; provider-free exact `0.3.259` status-shape diagnosis; no live run, consumer edit, qualification, tag, or release | exact artifact reconciliation; faithful optional-metadata fixtures; smallest safe projection repair or precise unresolved boundary; exact-head review and merge |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
@@ -215,6 +216,24 @@ inventory. It runs no prompt, tool call, or control attempt. Any result remains
 diagnostic and leaves both Contract 061 cells unqualified. The later credited
 qualification suite remains separately authorized after the operator confirms
 top-up.
+
+## Claude Card 145 Return — 2026-09-08
+
+Desktop's single diagnostic open returned `typed_failure` at
+`sidecar_rejected`, bounded subcode `mcp_status_invalid`, before provider
+readiness. Research 297 freezes the exact source, tuple, capsule, PR, review,
+merge, and closeout identities. No prompt, tool dispatch, permission callback,
+control, retry, reconnect, or respawn occurred; cleanup was confirmed. The
+exhausted-credit state was not reached and no quota inference follows.
+
+The outcome exposes a producer contradiction: exact SDK `0.3.259` permits
+optional metadata on MCP-status rows, while the strict sidecar rejects part of
+that declared shape and the fake SDK does not exercise it. Card 146 owns exact
+artifact reconciliation and the smallest safe provider-free repair. The
+credited live suite remains held until Card 146 completes, the operator
+confirms top-up, and separate live authority is granted. Both Contract 061
+cells remain unqualified; no candidate, tag, release, or broader acceptance
+follows.
 
 Route116/118 read-only evidence preparation is ready now under the same retained
 route owners. It must not wait for the evidence it is tasked to obtain. Runtime

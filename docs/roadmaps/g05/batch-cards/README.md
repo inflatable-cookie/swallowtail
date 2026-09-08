@@ -2,7 +2,7 @@
 
 ## Ready
 
-- [145-claude-sdk-credit-exhaustion-diagnostic.md](./145-claude-sdk-credit-exhaustion-diagnostic.md) — ready; one operator-authorized exhausted-credit open, cheapest admitted Sonnet model, zero turns and no qualification
+- [146-claude-sdk-mcp-status-projection-repair.md](./146-claude-sdk-mcp-status-projection-repair.md) — ready; provider-free exact `0.3.259` MCP-status projection diagnosis and bounded repair; no live attempt or qualification
 
 ## Planned
 
@@ -22,6 +22,7 @@
 
 ## Completed
 
+- [145-claude-sdk-credit-exhaustion-diagnostic.md](./145-claude-sdk-credit-exhaustion-diagnostic.md) — complete; Desktop PR 172 returned bounded `mcp_status_invalid` before provider readiness; one open, zero turns, cleanup confirmed; Research 297 and card 146 own the contradiction
 - [144-claude-sdk-registered-tool-open-rejection-diagnosis.md](./144-claude-sdk-registered-tool-open-rejection-diagnosis.md) — complete; PR 294 merged at `cc53c81a`; structured failed-open receipt and provider-free Card 132 reproduction accepted, with the live cause still unresolved
 - [143-grok-live-registered-tool-qualification.md](./143-grok-live-registered-tool-qualification.md) — complete; PR 293 merged at `7d2dcb16`; exact maintained Grok `1.0.4..=1.0.5` registered-tool qualification accepted, selected-skill limitation retained
 - [141-operation-bridge-close-latency.md](./141-operation-bridge-close-latency.md) — complete; PR 292 merged at `b68a1ccc`; registered-tool close wakes accepted reads instead of paying the fixed 5s timeout; watcher timings and teardown guarantees preserved

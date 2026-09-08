@@ -1,6 +1,6 @@
 # 145 Claude SDK Credit-Exhaustion Diagnostic
 
-Status: ready; operator authorized one exhausted-credit diagnostic open on 2026-09-08
+Status: complete; Desktop PR 172 merged at `117e09e02dafd505d9f1d6e2b1380b56bbb22a19`
 Owner: Desktop live-evidence owner
 Created: 2026-09-08
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`
@@ -39,11 +39,11 @@ environment values in the capsule.
 
 ## Acceptance Criteria
 
-- [ ] one and only one fresh live open is attempted while usage credit is still operator-confirmed exhausted
-- [ ] `claude-sonnet-5` is used and no prompt, tool call, or control attempt runs
-- [ ] the redacted capsule carries the exact Card 144 receipt fields and source/artifact tuple
-- [ ] cleanup is observed without inference and no automatic retry/reconnect/respawn occurs
-- [ ] the outcome is classified only as observed account/usage rejection, generic live-only rejection, or successful-open-without-turn
+- [x] one and only one fresh live open is attempted while usage credit is still operator-confirmed exhausted
+- [x] `claude-sonnet-5` is used and no prompt, tool call, or control attempt runs
+- [x] the redacted capsule carries the exact Card 144 receipt fields and source/artifact tuple
+- [x] cleanup is observed without inference and no automatic retry/reconnect/respawn occurs
+- [x] the outcome is preserved as bounded non-account `mcp_status_invalid`; no quota inference follows
 
 ## Validation
 
@@ -71,4 +71,23 @@ that credit was restored and separate live authority.
 
 ## Result
 
-Pending Desktop capsule.
+Desktop task `9dc9b50f-5bb2-4912-be7d-a6159e8c758d` completed through PR 172.
+Independent review accepted head
+`8ac46df322bec428e744adb5d22fba3a6ad9a7cc`; review comment `5589754115`;
+merge `117e09e02dafd505d9f1d6e2b1380b56bbb22a19`; canonical Desktop closeout
+`5d7f1681222222d6f1586176c05733c6f1daf7c3`.
+
+The immutable capsule SHA-256 is
+`81cb0fd6c5a717e9ca66b73c7a746e66870219ebf2c1330081dfd76549608569`.
+It records exactly one open and zero prompt turns, tool dispatches, permission
+callbacks, controls, retries, reconnects, or respawns. The route returned
+`typed_failure` at `sidecar_rejected`, bounded subcode `mcp_status_invalid`,
+before provider readiness. Cleanup was confirmed with joined task reapers,
+zero survivors, listeners, and registered leases.
+
+This did not observe the exhausted-credit state. It exposed a pre-readiness
+MCP-status contradiction outside the three expected decision-tree outcomes.
+Research 297 freezes the return. Card 146 owns provider-free diagnosis and
+repair before any credited live suite. Both Contract 061 cells remain
+unqualified. No quota, qualification, candidate, tag, or release inference
+follows.

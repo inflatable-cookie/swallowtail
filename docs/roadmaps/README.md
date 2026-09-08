@@ -15,14 +15,14 @@ shape.
 
 ## Next Task
 
-Grok [card 143](g05/batch-cards/143-grok-live-registered-tool-qualification.md)
-and Claude [card 144](g05/batch-cards/144-claude-sdk-registered-tool-open-rejection-diagnosis.md)
-are complete. Run Claude
-[card 145](g05/batch-cards/145-claude-sdk-credit-exhaustion-diagnostic.md):
-one operator-authorized exhausted-credit open through the Card 144 receipt,
-using the cheapest already-admitted Sonnet model and no prompt, tool call,
-control, or retry. Return the capsule to Chatterbox. The credited qualification
-suite waits for the operator's top-up confirmation and separate authority
+Claude [card 145](g05/batch-cards/145-claude-sdk-credit-exhaustion-diagnostic.md)
+is complete. Its single open stopped before provider readiness at bounded
+`mcp_status_invalid`; no quota state, turn, tool call, control, or retry was
+observed. Run provider-free
+[card 146](g05/batch-cards/146-claude-sdk-mcp-status-projection-repair.md):
+reconcile exact SDK `0.3.259` MCP-status rows with the strict sidecar projection
+and repair only a confirmed safe mismatch. The credited qualification suite
+waits for Card 146, the operator's top-up confirmation, and separate authority
 before any fresh candidate decision under
 [g05.036](g05/036-v0-4-4-release-readiness.md). The parked candidate
 `0673541d` remains untaggable and no tag request stands. Research 294 ranks

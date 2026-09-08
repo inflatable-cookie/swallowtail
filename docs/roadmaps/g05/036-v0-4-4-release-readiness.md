@@ -121,6 +121,17 @@ merged Card 118 seam and settles selected-skill delivery independently. The
 Claude Card 132 gate remains outstanding. No candidate, tag, or release
 authority follows from the Grok return.
 
+### Claude Gate Stopped — 2026-09-08
+
+Desktop's single authorized primary open used the exact source-linked Card 132
+tuple and returned typed
+`open.failed.swallowtail.claude-agent.sdk.open_rejected`. No turn, registered
+tool, control attempt, or retry ran. Research 296 freezes the capsule and
+Desktop lifecycle; both Contract 061 cells remain unqualified. Card 144 owns
+provider-free diagnosis and structured failed-open evidence. Another live gate
+requires separate operator authorization after that result. No candidate, tag,
+release, feature classification, or broader acceptance follows.
+
 ### Candidate Source Disposition — 2026-09-08
 
 The prepared candidate `0673541d` is PARKED, not abandoned and not current.

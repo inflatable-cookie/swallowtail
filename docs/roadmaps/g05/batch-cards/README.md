@@ -3,11 +3,11 @@
 ## Ready
 
 - [143-grok-live-registered-tool-qualification.md](./143-grok-live-registered-tool-qualification.md) — ready; accepted Desktop `1.0.4` and `1.0.5` capsules qualify the existing MCP/tool seam; selected-skill delivery settles independently
+- [144-claude-sdk-registered-tool-open-rejection-diagnosis.md](./144-claude-sdk-registered-tool-open-rejection-diagnosis.md) — ready; Card 132 stopped at typed open rejection; add structured failed-open evidence and diagnose provider-free before any new gate
 
 ## Planned
 
 - [134-registered-tool-adoption-remaining-acp-routes.md](./134-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub carrying the client_mcp_servers gap for the six remaining ACP routes; no dispatch authorization
-- [132-claude-sdk-registered-tool-real-route-gate.md](./132-claude-sdk-registered-tool-real-route-gate.md) — planned; the live tuple Desktop runs to qualify the card 125 seam; matrix crosses for Claude registered tools point here
 - [130-persistent-permission-grant-admission.md](./130-persistent-permission-grant-admission.md) — planned backlog stub only; no dispatch authorization; owns a future persistent-grant producer seam if promoted
 
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
@@ -17,6 +17,7 @@
 
 ## Stopped
 
+- [132-claude-sdk-registered-tool-real-route-gate.md](./132-claude-sdk-registered-tool-real-route-gate.md) — stopped; the single authorized open returned typed `open_rejected`; both cells remain unqualified; Research 296 and card 144 own diagnosis
 - [123-v0-4-4-consumer-proof-and-tag-capsule.md](./123-v0-4-4-consumer-proof-and-tag-capsule.md) — cancelled; operator widened the release scope before any `v0.4.4` tag
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 

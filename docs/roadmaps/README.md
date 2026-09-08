@@ -15,16 +15,18 @@ shape.
 
 ## Next Task
 
-Implement Grok [card 143](g05/batch-cards/143-grok-live-registered-tool-qualification.md)
-from the accepted exact `1.0.4` and `1.0.5` Desktop capsules while the remaining
-Claude [card 132](g05/batch-cards/132-claude-sdk-registered-tool-real-route-gate.md)
-consumer gate proceeds independently. Card 143 qualifies the existing
-MCP/tool seam and settles selected-skill delivery from its own evidence; the
-echo call does not prove a skill bundle. Both lanes return to Chatterbox before
-a fresh candidate is promoted under [g05.036](g05/036-v0-4-4-release-readiness.md).
-The parked candidate `0673541d` remains untaggable and no tag request stands.
-Research 294 ranks Cursor Agent `2026.09.02` next for Contract 029, but no
-family lane is dispatched until Chatterbox promotes it.
+Run the two disjoint producer lanes in parallel: Grok
+[card 143](g05/batch-cards/143-grok-live-registered-tool-qualification.md)
+qualifies the accepted exact-segment MCP/tool seam and settles selected-skill
+delivery independently; Claude
+[card 144](g05/batch-cards/144-claude-sdk-registered-tool-open-rejection-diagnosis.md)
+turns Card 132's typed open rejection into structured failed-open evidence and
+a provider-free diagnosis. Card 144 cannot run another live gate. Both lanes
+return to Chatterbox before any fresh candidate decision under
+[g05.036](g05/036-v0-4-4-release-readiness.md). The parked candidate
+`0673541d` remains untaggable and no tag request stands. Research 294 ranks
+Cursor Agent `2026.09.02` next for Contract 029, but no family lane is
+dispatched until Chatterbox promotes it.
 
 ## Standing Lanes
 

@@ -1,6 +1,6 @@
 # 132 Claude SDK Registered-Tool Real-Route Gate
 
-Status: planned; ready when Desktop schedules it under its isolated-testing authorization
+Status: stopped; Desktop returned typed `open_rejected`; no turn, tool dispatch, control attempt, retry, or qualification; Research 296 promotes card 144
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-07
@@ -49,3 +49,20 @@ a row qualified from the fixture.
 ## Auto-Continuation
 
 No.
+
+## Result
+
+Desktop ran the single authorized primary open against source-linked
+Swallowtail `04e9b2dd9058783b7186a33a6c13dd74882a5925`. It returned
+`typed_failure` at open with
+`open.failed.swallowtail.claude-agent.sdk.open_rejected`. No turn,
+registered-tool dispatch, control attempt, or retry occurred. Failed-open
+identity capture was unavailable and cleanup was unconfirmed in the immutable
+capsule, so neither fact is inferred. Both Contract 061 cells remain
+unqualified.
+
+Research 296 freezes the exact tuple, capsule digest, and Desktop
+review/merge/closeout chain. Card 144 owns provider-free rejection diagnosis
+and structured failed-open evidence. Any new live gate needs separate operator
+authorization after that producer result. No tag, release, feature
+classification, or broader acceptance follows.

@@ -10,6 +10,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ### Harness Skills And Watchers
 
+- [296 Claude SDK Registered-Tool Live Open Rejection](./296-claude-sdk-registered-tool-live-open-rejection.md) — complete; the exact Card 132 tuple stopped at typed `open_rejected`; no turn, tool dispatch, controls, retry, qualification, or release inference; promoted as card 144
 - [295 Grok ACP Client-MCP Live Acceptance](./295-grok-acp-client-mcp-live-acceptance.md) — complete; exact `1.0.4` and `1.0.5` Desktop capsules both accept client MCP and invoke the echo tool; promoted as card 143; no tag or selected-skill inference
 - [289 Grok ACP Registered-Capability Corpus Preparation](./289-grok-acp-registered-capability-corpus-preparation.md) — preparation artifact; no production claim
 - [290 Card129 Feature Matrix Cross Evidence](./290-feature-matrix-cross-evidence.md) — complete frozen cell-level evidence ledger; no live/provider claim

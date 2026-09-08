@@ -15,12 +15,12 @@ shape.
 
 ## Next Task
 
-[Card 148](g05/batch-cards/148-claude-sdk-degraded-cleanup-oracle.md) is
-ready. Card 147's one zero-credit open succeeded, then immediate close returned
-the Contract 019-qualified ordinary macOS `Degraded` posture with joined
-reapers and zero survivors. Desktop's runner incorrectly classified every
-non-clean close as unconfirmed. Card 148 repairs that proof oracle
-provider-free. No live run follows; both Contract 061 cells remain unqualified.
+[Card 149](g05/batch-cards/149-claude-sdk-zero-credit-first-turn-diagnostic.md)
+is ready and operator-authorized. Card 148/313 repaired the cleanup oracle
+provider-free. Desktop now prepares a distinct one-turn diagnostic, proves it
+offline, then runs one open and one cheapest-model prompt while credit remains
+zero. No retry, tool/control action, qualification, top-up, candidate, tag, or
+release follows automatically.
 
 ## Standing Lanes
 

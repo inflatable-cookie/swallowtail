@@ -1,6 +1,6 @@
 # 148 Claude SDK Degraded-Cleanup Oracle Reconciliation
 
-Status: ready; provider-free Desktop proof-oracle repair
+Status: complete; Desktop PR 175 merged at `f8bff5a2b927eaf23e0220ac4a0640835e4a2dfd`
 Owner: Desktop live-evidence harness owner
 Created: 2026-09-08
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`
@@ -37,11 +37,11 @@ changes.
 
 ## Acceptance Criteria
 
-- [ ] the oracle accepts route-qualified `Degraded` only with every companion cleanup invariant satisfied
-- [ ] accepted `Degraded` remains distinguishable from `Clean` and never implies `OwnedTreeEmpty`
-- [ ] Failed, surviving-resource, unjoined-reaper, dispatcher, and missing-evidence fixtures remain defects
-- [ ] Card 312's immutable capsule and digest remain byte-identical
-- [ ] no live attempt occurs and both Contract 061 cells remain unqualified
+- [x] the oracle accepts route-qualified `Degraded` only with every companion cleanup invariant satisfied
+- [x] accepted `Degraded` remains distinguishable from `Clean` and never implies `OwnedTreeEmpty`
+- [x] Failed, surviving-resource, unjoined-reaper, dispatcher, and missing-evidence fixtures remain defects
+- [x] Card 312's immutable capsule and digest remain byte-identical
+- [x] no live attempt occurs and both Contract 061 cells remain unqualified
 
 ## Validation
 
@@ -69,4 +69,13 @@ restored credit and separate live authority.
 
 ## Result
 
-Pending.
+Desktop task `bd2791d2-5bc6-4764-aa34-ada94d3a2aa0` completed through PR 175.
+Accepted head `dff630578b6e3cedf163916ae07e5e3f1a30b997`; review comment
+`5592097198`; merge `f8bff5a2b927eaf23e0220ac4a0640835e4a2dfd`; canonical
+Desktop closeout `71d1b295423b4ef3eaf26959d8e84e66dd79df34`.
+
+Provider-free checks passed 12/12. The repaired oracle accepts only bounded
+code `swallowtail.claude-agent.sdk.close_root_only_degraded` with joined
+reapers and zero leases, listeners, survivors, or dispatcher calls. Foreign
+degraded codes, `Failed`, residue, and unjoined reapers remain defects. Card
+312's capsule stayed byte-identical and no provider process ran.

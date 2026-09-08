@@ -168,11 +168,12 @@ Contract 061 cell and grants no candidate, tag, release, top-up, or credited
 suite authority.
 
 Card 147 completed through Desktop PR 174. Open reached ready/connected state
-while credit remained zero; no prompt ran. Immediate close returned the
-Contract 019-qualified ordinary macOS `Degraded` posture with joined reapers
-and zero survivors, but Desktop's runner classified every non-clean close as
-unconfirmed. Card 148 repairs that oracle provider-free. The credited suite
-remains held for restored credit and separate live authority.
+while credit remained zero; no prompt ran. Card 148 then completed through
+Desktop PR 175 and repaired the exact Contract 019 degraded-cleanup oracle
+provider-free. Because the SDK initializes its query generator only on the
+first prompt, Card 149 owns one final zero-credit first-turn diagnostic before
+top-up. It runs one open and one cheapest-model prompt with no retry, tool, or
+control action. The credited qualification suite remains separate.
 
 ### Candidate Source Disposition — 2026-09-08
 

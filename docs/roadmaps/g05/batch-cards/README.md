@@ -2,7 +2,7 @@
 
 ## Ready
 
-- [148-claude-sdk-degraded-cleanup-oracle.md](./148-claude-sdk-degraded-cleanup-oracle.md) — ready; provider-free Desktop runner repair for Contract 019-qualified degraded cleanup; no live run
+- [149-claude-sdk-zero-credit-first-turn-diagnostic.md](./149-claude-sdk-zero-credit-first-turn-diagnostic.md) — ready; exactly one first prompt while credit remains zero; no retry or qualification
 
 ## Planned
 
@@ -21,6 +21,8 @@
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 
 ## Completed
+
+- [148-claude-sdk-degraded-cleanup-oracle.md](./148-claude-sdk-degraded-cleanup-oracle.md) — complete; Desktop PR 175 merged at `f8bff5a2`; exact route-qualified degraded cleanup accepted provider-free; prior capsule immutable
 
 - [147-claude-sdk-repaired-zero-credit-diagnostic.md](./147-claude-sdk-repaired-zero-credit-diagnostic.md) — complete; Desktop PR 174 merged at `7646db45`; successful zero-credit open, immediate degraded close, zero prompt/tool/control/retry; Research 298 and card 148 own the oracle mismatch
 

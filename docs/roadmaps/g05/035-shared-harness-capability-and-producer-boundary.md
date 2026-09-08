@@ -174,7 +174,8 @@ consumer requirements and must not create a competing producer worker.
 | [145](batch-cards/145-claude-sdk-credit-exhaustion-diagnostic.md) | complete; Desktop PR 172 merged at `117e09e0` | Desktop live-evidence owner; one open, zero turns, cheapest admitted Sonnet model; no qualification or release | bounded `mcp_status_invalid` before provider readiness; cleanup confirmed; Research 297 |
 | [146](batch-cards/146-claude-sdk-mcp-status-projection-repair.md) | complete; PR 296 merged at `13dee542e5ef4ab967cb4f0934cc11c35a8768c2` (reviewed head `58847bb00e4d15285af503c7023ff8750d1f1a7f`) | Claude SDK adapter owner; provider-free exact `0.3.259` status-shape diagnosis; no live run, consumer edit, qualification, tag, or release | exact artifact reconciliation; faithful optional-metadata fixtures; smallest safe projection repair; exact-head review and merge |
 | [147](batch-cards/147-claude-sdk-repaired-zero-credit-diagnostic.md) | complete; Desktop PR 174 merged at `7646db45` | Desktop live-evidence owner; repaired zero-credit open only | open reached ready/connected; immediate degraded close; one open and zero other actions; Research 298 |
-| [148](batch-cards/148-claude-sdk-degraded-cleanup-oracle.md) | ready; provider-free | Desktop proof-harness owner; cleanup classification and fixtures only; no live run or qualification | accept exact Contract 019 degraded posture without calling it clean; adverse cleanup stays defect; exact-head review |
+| [148](batch-cards/148-claude-sdk-degraded-cleanup-oracle.md) | complete; Desktop PR 175 merged at `f8bff5a2` | Desktop proof-harness owner; cleanup classification and fixtures only; no live run or qualification | exact Contract 019 degraded posture accepted without calling it clean; adverse cleanup stays defect |
+| [149](batch-cards/149-claude-sdk-zero-credit-first-turn-diagnostic.md) | ready; operator-authorized | Desktop live-evidence owner; provider-free one-turn mode then one open plus one cheapest-model prompt; no retry or qualification | bounded first-turn error/success, exact counts, redaction and cleanup; exact-head review and merge |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
@@ -248,9 +249,12 @@ retry. Successful open closes immediately. Every outcome keeps both Contract
 
 Card 147 returned a successful ready/connected open and immediate `Degraded`
 close with joined reapers and zero survivors. Research 298 freezes the result.
-Contract 019 already qualifies this root-only macOS posture; Desktop's runner
-incorrectly required `Clean | NotApplicable`. Card 148 repairs the proof oracle
-provider-free. No second live attempt is authorized.
+Card 148 completed through Desktop PR 175 and repaired the proof oracle
+provider-free without changing the capsule. The operator confirmed the balance
+remains zero and authorized Card 149 as the fourth and final diagnostic attempt:
+prove a separate one-turn mode offline, then run one open and exactly one
+`claude-sonnet-5` prompt. No retry, tool/control action, qualification, top-up,
+candidate, tag, or release follows automatically.
 
 Route116/118 read-only evidence preparation is ready now under the same retained
 route owners. It must not wait for the evidence it is tasked to obtain. Runtime

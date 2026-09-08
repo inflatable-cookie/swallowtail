@@ -1,7 +1,7 @@
 ---
 title: g05.035 Card 132 Desktop Claude SDK registered-tool real-route gate packet
 kind: desktop-probe-packet
-status: ready
+status: complete
 owner: Tom
 created: 2026-09-07
 updated: 2026-09-08
@@ -332,3 +332,18 @@ Desktop returns the one redacted capsule or the named setup defect. Chatterbox
 reviews it against Card 132, Contract 061, and Contract 063. Swallowtail does
 not run the live gate and this packet authorizes no provider, credential,
 machine, tag, release, or consumer-repository action.
+
+## Typed-failure return — 2026-09-08
+
+Desktop returned one immutable capsule for the single authorized primary open.
+The exact tuple passed preflight, then open returned
+`open.failed.swallowtail.claude-agent.sdk.open_rejected`. No turn,
+registered-tool dispatch, control attempt, or retry occurred. Failed-open
+identity capture was unavailable and joined cleanup was unconfirmed in that
+capsule. Both Contract 061 cells remain unqualified.
+
+Research 296 records the source-linked SHA, tuple, artifact identities,
+capsule digest, and Desktop lifecycle. Chatterbox applied this packet's typed
+failure mapping: no matrix availability or qualification moves, no replay is
+permitted, and card 144 owns the provider-free producer diagnosis. A fresh live
+gate is a later operator decision, not an auto-continuation.

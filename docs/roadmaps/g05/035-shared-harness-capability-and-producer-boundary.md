@@ -170,6 +170,7 @@ consumer requirements and must not create a competing producer worker.
 | [142](batch-cards/142-claude-sdk-admitted-instance-worked-example.md) | complete; PR 291 merged at `d0f2ea3170950629dd2b73866218ae903db0e287` | Claude adapter owner; `examples/`, guide admission section, card 132 packet cross-reference; forbidden: admission API changes, live runs | executable example composing admission plus registered tools; accepted exact-head review; provider-free validation passed |
 | [138](batch-cards/138-codex-permission-exchange-cell-reconciliation.md) | ready | Codex evidence owner; matrix cell, reason text, research anchor; forbidden: runtime, live Codex | anchored observe-versus-answer finding; matrix and consumer statement agree; exact-head review |
 | [143](batch-cards/143-grok-live-registered-tool-qualification.md) | ready; Desktop returned accepted exact `1.0.4` and `1.0.5` capsules and the operator directed Chatterbox to apply Card 128 | Grok adapter owner; route qualification plus independent selected-skill settlement; no live run, consumer edit, version extension, tag, or release | exact live-evidence qualification for MCP/tools; selected skill implemented from separate frozen evidence or closed honestly; exact-head review and merge |
+| [144](batch-cards/144-claude-sdk-registered-tool-open-rejection-diagnosis.md) | ready; Card 132 returned typed `open_rejected` and the operator directed Chatterbox to apply its decision tree | Claude SDK adapter owner; structured failed-open evidence and provider-free diagnosis; parallel with card 143 on disjoint crates; no live retry, consumer edit, qualification, tag, or release | exact rejection subcode/stage and cleanup receipt; deterministic request reproduction; repaired producer defect or narrowed live-only boundary; exact-head review and merge |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
@@ -189,6 +190,18 @@ successor. MCP admission, registered invocation, and consumer exchange are
 directly evidenced. Selected-skill delivery was not in the echo probe and must
 settle on its own transport evidence. No tag, release, parity, or unrelated
 matrix inference follows.
+
+## Claude Card 132 Return — 2026-09-08
+
+Desktop's single authorized exact-tuple primary open returned typed
+`open.failed.swallowtail.claude-agent.sdk.open_rejected` before any turn,
+registered-tool dispatch, control attempt, or retry. Research 296 freezes the
+source-linked SHA, capsule, artifact tuple, and Desktop lifecycle. Card 132 is
+stopped and both Contract 061 cells remain unqualified. Card 144 owns the
+provider-free diagnosis and an additive observation-derived failed-open
+receipt. It is disjoint from Grok card 143 and may run in parallel. Another
+live gate remains an operator decision after diagnosis; no tag, release,
+feature classification, or broader acceptance follows.
 
 Route116/118 read-only evidence preparation is ready now under the same retained
 route owners. It must not wait for the evidence it is tasked to obtain. Runtime

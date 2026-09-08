@@ -30,10 +30,13 @@ Planning, dispatch, and implementation are separate threads:
 - **Chatterbox** owns planning with the operator. It reconciles
   `docs/triage/` and promotes canonical docs on `main` after explicit
   operator confirmation. It never edits runtime code.
-- **Coordinator** consumes the dispatch manifest published in the ready
-  roadmap, launches the whole approved frontier, places independent
-  cross-model review, owns the merge gate, and closes out the reserved shared
-  surfaces. It does not design lanes.
+- **Dispatch** runs through the `northstar-queue` Paseo plugin. Chatterbox
+  commits a worker handoff on `main` carrying the queue frontmatter and the
+  actual operator approval, submits it, and the queue owns launch, independent
+  review, the merge gate, and closeout. There is no standing coordinator
+  thread: the queue selects a coordinator when one is needed. A blocked task
+  stays an open obligation and returns to Chatterbox for a planning ruling; it
+  is never removed to quieten the board.
 - **Worker** mode is explicit: it exists only when a coordinator handoff under
   `docs/handoffs/` declares worker mode and orchestrator dispatch authority.
   Never infer worker mode from a branch, worktree path, or harness. A worker

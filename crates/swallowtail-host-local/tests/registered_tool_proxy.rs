@@ -733,6 +733,32 @@ fn mounted_proxy_cancellation_closes_the_shared_listener_before_late_transport()
 }
 
 #[test]
+fn close_joins_an_idle_keep_alive_connection_without_paying_the_read_timeout() {
+    let fixture = mount_raw_proxy();
+    let mut stream = connect_raw(&fixture.document);
+    let initialized = raw_post(
+        &mut stream,
+        &fixture.document.bearer,
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert_eq!(initialized.0, 200);
+    // The keep-alive connection now sits idle in the listener's read. Close
+    // must join it on an event, not by waiting out the read-timeout backstop
+    // that card 139 measured as a flat 5.00s per close.
+    let local = fixture.local.clone();
+    let started = std::time::Instant::now();
+    fixture.close();
+    let elapsed = started.elapsed();
+    println!("registered idle-connection close: {elapsed:?}");
+    assert!(
+        elapsed < Duration::from_secs(2),
+        "close waited on the read timeout instead of waking the idle read: {elapsed:?}"
+    );
+    assert_eq!(local.operation_bridge_listener_count(), 0);
+    drop(stream);
+}
+
+#[test]
 fn mounted_proxy_rejects_stale_foreign_and_late_generations_without_reauth() {
     let fixture = mount_raw_proxy();
     assert!((1..=10_000).contains(&fixture.document.connect_timeout_ms));

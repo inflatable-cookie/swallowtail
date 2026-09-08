@@ -34,6 +34,92 @@ client request Grok issued while establishing the session went unanswered.
 The probe is now a conforming ACP client (below), and a future
 `session_new_unanswered` names a harness defect, never a provider finding.
 
+The 2026-09-08 decoupled rerun capsules (`51a2d094…` on `1.0.4`,
+`02720b85…` on `1.0.5`) established the session and again recorded
+`client_mcp_admitted`, `client_mcp_tools_listed`, and `echo_helper_live`
+true on both segments — the sixth and seventh consecutive live observations
+that Grok Build admits a client-declared MCP server, spawns it, connects,
+and enumerates its tools. Both still ended `inconclusive`, and both causes
+were harness bounds, not Grok: `1.0.5` returned `no_turn_result` because the
+prompt exchange used the eight-second protocol bound, and `1.0.4` returned
+`truncated` because capture stopped at 48 frames. Card 140 re-derived every
+bound in the module for live use (below). No matrix cell moves and no claim
+follows from those capsules.
+
+## Bounds
+
+Every bound is sized for a live model and justified in the module. Each
+exchange holds one absolute deadline: answering an intervening request never
+extends it, and the drain keeps reading past notification-only bursts, so a
+request delivered late in an exchange is still answered.
+
+- `initialize` and `authenticate`: `LIVE_PROTOCOL_WAIT`, 30 seconds. Pure
+  protocol round trips with no inference behind them; the allowance covers a
+  cold agent process still loading its runtime, not a model turn
+- `session/new`: `LIVE_SESSION_NEW_WAIT`, 120 seconds. Establishment spawns
+  every declared MCP server and enumerates its tools before answering
+- `session/prompt`: `LIVE_PROMPT_WAIT`, 300 seconds. The only exchange that
+  waits on a live model reasoning, calling the echo tool, and finishing the
+  turn. A protocol-scale bound here is what produced the 2026-09-08 `1.0.5`
+  `no_turn_result`
+- child exit after stdin close: 10 seconds, so a Node agent flushing session
+  state on shutdown is not killed and reported as unjoined cleanup
+- echo helper `initialize` self-check: 5 seconds. Local and immediate, with
+  margin so a cold first spawn cannot produce a false
+  `echo_liveness_unproven`
+
+Each bound is a total budget, not a per-message one: one inbound read returns
+when its budget is spent even if the agent is still streaming; an exchange
+whose deadline has passed stops rather than taking another pass over a
+backlog; and a burst that lands just before the deadline is still captured but
+never answered, so processing it cannot write back past the bound. An agent
+that never pauses therefore cannot hold an exchange open. The receive and
+cleanup budget is the sum of the bounds — 480 seconds of exchanges, plus the
+5-second helper self-check and the 10-second join, so 495 seconds. Once the
+deadline passes, the exchange keeps one frame to record that a late burst
+existed and abandons the rest of that batch unread, and one read hands back at
+most 512 frames however hard the child streams, so neither writing back nor
+processing a burst can extend the budget. Two paths sit outside it, and both
+hang or slow the probe rather than scoring anything: a blocking write to a
+child that has stopped reading its stdin, and freeing whatever the reader
+thread queued but never handed to an exchange. Desktop should report either as
+a harness defect.
+
+Frame capture targets 512 frames, and eviction runs in tiers so that what
+yields is always the least load-bearing thing left. Streaming chatter goes
+first, and while the capsule is at its target nothing else is touched: the
+outbound `session/new` and `session/prompt` requests, every correlated
+response, every inbound agent request and the probe's recorded answer, the
+`tool_call` and `tool_call_update` updates, and the turn result all survive.
+The deeper tiers, reached only past the 8192 ceiling, do take bulk tool-call
+history and then whole request/answer pairs — so the two verdict guards those
+could erase, a native echo tool call and a refused permission, are latched
+when captured and never read back out of the frames. The exchange anchors are
+never evicted at any tier. ACP lets an agent refine one tool call many times,
+and those updates are partial, so a later update is not assumed to repeat what
+an earlier one carried: the only elidable decisive frame is a bare progress
+tick — a `tool_call_update` that a later update for the same call follows and
+whose every field is inert (`sessionUpdate`, `toolCallId`, `status`, `title`,
+`kind`, `locations`) with an in-flight status. The test is an allowlist, so
+`content`, `rawOutput`, an unknown status, or a field ACP adds later all count
+as evidence and are kept whatever comes after them.
+
+When nothing is elidable the capsule grows past 512 rather than dropping
+evidence, up to a ceiling of 8192 retained frames that exists only to bound
+memory. A session making many distinct tool calls, each with its own result,
+keeps all of them. At that ceiling bulk tool-call history yields before
+session structure: the verdict is decided from the `session/new` and
+`session/prompt` exchanges, the agent's own requests and our recorded answers,
+and the echo transcript file, never from the count of tool calls, so those
+survive while the oldest tool-call frames go.
+
+`truncated` on a capsule means "uninteresting middle frames were elided" and
+is not a verdict; a truncated capsule still scores its real verdict. The
+`truncated` inconclusive cause now needs thousands of requests and responses
+in one turn to fill the ceiling with structure alone. Like
+`echo_liveness_unproven`, it is a harness bound and never a provider finding:
+it does not convert to a matrix cell kind.
+
 ## Command
 
 From a Swallowtail checkout, one exact version at a time (`1.0.4` then
@@ -67,15 +153,10 @@ The probe is a conforming ACP client during every exchange, including
 agent's own `allow_once` option, and every other method — filesystem,
 terminal, anything unknown — is refused with a recorded JSON-RPC `-32601`
 error. The probe never reads or writes the filesystem, runs a shell, or
-touches the network, and no answer is silent. The `session/new` exchange
-waits through one absolute `LIVE_SESSION_NEW_WAIT` (60 seconds) deadline for
-session establishment with MCP servers — answering intervening requests
-never extends it, and the drain keeps reading past notification-only bursts,
-so a request delivered late in the exchange is still answered. The other
-exchanges keep the previous bound. When `session/new` still has no response,
-the cause separates an inbound request the probe failed to
-answer (`session_new_unanswered`, harness-shaped) from the agent never
-responding within the bound (`session_new_bound_exceeded`, provider-shaped).
+touches the network, and no answer is silent. When `session/new` has no
+response, the cause separates an inbound request the probe failed to answer
+(`session_new_unanswered`, harness-shaped) from the agent never responding
+within the bound (`session_new_bound_exceeded`, provider-shaped).
 
 Admission and invocation are separate capsule fields. `client_mcp_admitted`
 is true when the echo transcript contains `initialize`.
@@ -129,8 +210,8 @@ One redacted JSON capsule per exact version. Fields:
   `turn_completed_without_tool_call` means the turn finished after admission
   without echo `tools/call`. `echo_liveness_unproven` means the echo helper
   was not proven spawnable, so an empty transcript cannot score ignore.
-  Other named causes cover missing `session/new`, truncation, permission
-  rejection, and an unattributed ACP echo title
+  Other named causes cover missing `session/new`, a lost decisive frame,
+  permission rejection, and an unattributed ACP echo title
 - `prompt`: the exact directive text sent on `session/prompt`
 - `prompt_turn_completed`
 - `stop_reason`: ACP prompt `stopReason` when the turn returned a result
@@ -138,10 +219,19 @@ One redacted JSON capsule per exact version. Fields:
 - `client_mcp_tools_listed`: echo-server `tools/list` observed
 - `echo_helper_live`: this run proved the echo helper spawnable
 - `frames`: bounded redacted ACP JSON-RPC objects, including the outbound
-  `session/new` with non-empty `mcpServers` when sent
+  `session/new` with non-empty `mcpServers` when sent. Frames are evidence,
+  not the verdict's only source: a guard eviction could reach — a native echo
+  tool call, a refused permission — is latched when captured, so a truncated
+  capsule still scores what the run actually showed
 - `stale_callback_rejected`
 - `cleanup_joined`
-- `truncated`: capture stopped at the frame bound; verdict is then `inconclusive`
+- `truncated`: middle frames were elided to hold the capsule near its
+  512-frame target. Eviction runs in tiers — chatter, then superseded bare
+  progress ticks, then at the 8192 ceiling bulk tool-call history, then
+  answered request/answer pairs — so what the verdict reads survives and this
+  does not change the verdict. Only a capture whose whole ceiling is exchange
+  anchors scores `inconclusive` with cause `truncated`, which is a harness
+  bound and never a provider finding
 - `echo_mcp_methods`: method names observed on the disposable echo server stdio
 
 Auth that fails before `session/new`, or a `session/new` JSON-RPC error that
@@ -193,7 +283,8 @@ matrix cross kind. Admission fields constrain the tree:
   `initialize` line on the echo transcript refutes ignore, and a helper spawn
   failure must not freeze `provider_limitation`
 - `inconclusive`: one authorized rerun with the named `inconclusive_cause`
-  fixed. `echo_liveness_unproven` is a harness defect, not a provider
+  fixed. `echo_liveness_unproven` and `truncated` are harness defects, not
+  provider
   finding. A second inconclusive is treated as `ignores_client_mcp` only when
   `client_mcp_admitted` is false and `echo_helper_live` is true. If admission
   is already proven, or helper liveness is unproven, that branch must not

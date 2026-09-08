@@ -87,6 +87,30 @@ run. All other producer, review, merge, and provider-free work continues.
 Machine paths stay out of tracked docs; the retained probe owner holds the
 location receipt.
 
+### Evidence Policy: Prove Before Tag — 2026-09-08
+
+Operator ruling. Both consumer gates are proven against exact-SHA
+source-linked local Swallowtail main before any tag, not after it. Desktop
+resolves the crates through `effigy deps link` against local source, so a
+runner can be built and preflighted at an exact SHA without a tag and without
+an untagged consumer pin; the committed consumer manifest stays on its
+released pin and the linked lock is machine-local and never committed.
+
+This keeps the operator's three-route scope intact rather than narrowing it,
+and it inverts the pattern that cost `v0.4.2` and `v0.4.3`, where the tag came
+first and the consumer defect came after.
+
+Binding condition: the eventual tag must sit at the exact SHA the gates
+proved, or at a commit with an identical tree. Otherwise the evidence does not
+transfer to what is tagged. This is the same rule the release playbook already
+applies to the qualifying hosted run.
+
+Sequence: Desktop builds the runner under its own operator authority (card 305
+excludes it); the Claude gate runs on the exact linked SHA; the Grok rerun
+runs independently under its own fresh budget; both capsules return to
+Chatterbox; then the candidate is prepared at the proved SHA and the tag
+request goes to the operator.
+
 ### Candidate Source Disposition — 2026-09-08
 
 The prepared candidate `0673541d` is PARKED, not abandoned and not current.

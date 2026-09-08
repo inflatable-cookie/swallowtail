@@ -12,6 +12,10 @@ updated: 2026-09-08
 base_required: pushed-main
 queue_dispatch: northstar-queue
 queue_approval: "Tom returned accepted Desktop Grok capsules and explicitly directed Swallowtail Chatterbox to apply the Card 128 decision tree on 2026-09-08; that tree sends accepts_client_mcp to producer implementation without another operator decision."
+queue:
+  capability: complex
+  skipPRReview: false
+  notifyOriginOnCloseout: true
 tags: [coordination, handoff, worker, grok, acp, mcp, registered-tools, selected-skill]
 ---
 

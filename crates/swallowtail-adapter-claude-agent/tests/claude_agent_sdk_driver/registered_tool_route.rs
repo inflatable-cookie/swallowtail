@@ -213,6 +213,34 @@ fn courier_binary() -> &'static Path {
             .to_path_buf();
         // Nested cargo must not share the outer `cargo test` target lock.
         let nested_target = workspace.join("target").join("card125-courier");
+        let binary = nested_target
+            .join("debug")
+            .join("swallowtail-registered-tool-courier");
+        let bytes = acquire_built_courier(&workspace, &nested_target, &binary);
+        let published = publish_write_once(&bytes, &nested_target);
+        assert!(
+            is_executable(&published),
+            "courier binary at {published:?} is not executable, so every later spawn would fail"
+        );
+        published
+    })
+}
+
+/// Builds the courier and reads the completed artifact, retrying the pair
+/// until the read succeeds.
+///
+/// Card 139: Cargo's uplift is not atomic and its build lock does not cover
+/// the window after the build returns. A sibling test process rebuilding into
+/// the same nested target removes and recreates
+/// `debug/swallowtail-registered-tool-courier`, so both a read and a spawn of
+/// that path can transiently fail with `ENOENT` — measured at 42 such
+/// observations across eight rebuilds. That transient absence is the spawn
+/// failure the fixture used to report as a bare code. Reading is retried
+/// because the artifact is transiently absent, never permanently wrong.
+fn acquire_built_courier(workspace: &Path, nested_target: &Path, binary: &Path) -> Vec<u8> {
+    const ATTEMPTS: usize = 5;
+    let mut failures = Vec::new();
+    for attempt in 1..=ATTEMPTS {
         let built = std::process::Command::new("cargo")
             .args([
                 "build",
@@ -223,30 +251,38 @@ fn courier_binary() -> &'static Path {
                 "--bin",
                 "swallowtail-registered-tool-courier",
             ])
-            .env("CARGO_TARGET_DIR", &nested_target)
-            .current_dir(&workspace)
+            .env("CARGO_TARGET_DIR", nested_target)
+            .current_dir(workspace)
             .output()
             .expect("courier build starts");
         // Card 139: a failed setup step names its own cause. A bare exit code
         // here is the counterexample the fixture is meant to make impossible.
-        assert!(
-            built.status.success(),
-            "courier binary failed to build: {}\nstdout: {}\nstderr: {}",
-            built.status,
-            bounded(&built.stdout),
-            bounded(&built.stderr)
-        );
-        let binary = nested_target
-            .join("debug")
-            .join("swallowtail-registered-tool-courier");
-        assert!(binary.is_file(), "missing courier binary at {binary:?}");
-        let published = publish_write_once(&binary, &nested_target);
-        assert!(
-            is_executable(&published),
-            "courier binary at {published:?} is not executable, so every later spawn would fail"
-        );
-        published
-    })
+        if !built.status.success() {
+            failures.push(format!(
+                "attempt {attempt}: build failed: {}; stdout: {}; stderr: {}",
+                built.status,
+                bounded(&built.stdout),
+                bounded(&built.stderr)
+            ));
+            continue;
+        }
+        match std::fs::read(binary) {
+            Ok(bytes) if !bytes.is_empty() => return bytes,
+            Ok(_) => failures.push(format!("attempt {attempt}: built courier read as empty")),
+            Err(error) => failures.push(format!(
+                "attempt {attempt}: reading {binary:?} failed: {error} ({}, kind {:?})",
+                error.raw_os_error().map_or_else(
+                    || "no os code".to_owned(),
+                    |code| format!("os error {code}")
+                ),
+                error.kind()
+            )),
+        }
+    }
+    panic!(
+        "courier binary could not be acquired in {ATTEMPTS} attempts:\n{}",
+        failures.join("\n")
+    );
 }
 
 /// Republishes the built courier under a content-addressed path that is
@@ -257,10 +293,9 @@ fn courier_binary() -> &'static Path {
 /// `debug/` path kills a courier already executing from it — observed as
 /// `signal: 9 (SIGKILL)` before the courier claimed its rendezvous. Spawning
 /// a copy no builder ever touches removes the race at its source.
-fn publish_write_once(built: &Path, nested_target: &Path) -> PathBuf {
-    let bytes = std::fs::read(built).expect("built courier is readable");
+fn publish_write_once(bytes: &[u8], nested_target: &Path) -> PathBuf {
     let mut hasher = std::collections::hash_map::DefaultHasher::new();
-    std::hash::Hasher::write(&mut hasher, &bytes);
+    std::hash::Hasher::write(&mut hasher, bytes);
     let digest = std::hash::Hasher::finish(&hasher);
     let directory = nested_target.join("write-once");
     std::fs::create_dir_all(&directory).expect("write-once courier directory");
@@ -269,12 +304,21 @@ fn publish_write_once(built: &Path, nested_target: &Path) -> PathBuf {
         return published;
     }
     let staged = directory.join(format!("staged-{}-{digest:016x}", std::process::id()));
-    std::fs::write(&staged, &bytes).expect("staged courier is written");
+    std::fs::write(&staged, bytes).expect("staged courier is written");
     set_executable(&staged);
-    // Rename is atomic, so a concurrent publisher of the same content sees
-    // either its own staged name or the finished one, never a partial file,
-    // and an already running courier keeps the inode it started from.
-    std::fs::rename(&staged, &published).expect("published courier is installed");
+    // Hard link, not rename: rename replaces an existing destination, so a
+    // concurrent publisher could swap the file another process is about to
+    // spawn. Linking fails when the name already exists, which makes the
+    // published path literally write-once.
+    match std::fs::hard_link(&staged, &published) {
+        Ok(()) => {}
+        Err(error) if published.is_file() => {
+            // A concurrent publisher of identical content won the race.
+            let _ = error;
+        }
+        Err(error) => panic!("published courier could not be installed at {published:?}: {error}"),
+    }
+    let _ = std::fs::remove_file(&staged);
     published
 }
 
@@ -811,7 +855,10 @@ fn a_courier_that_cannot_exec_names_its_own_cause() {
     let fixture = SdkFixtureHost::new(SdkScenario::McpConnected);
     let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
     let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
-    let unexecutable = std::env::temp_dir().join("swallowtail-card139-unexecutable-courier");
+    // Card 139: one directory per invocation. A machine-wide fixture filename
+    // is the shared mutable state this card exists to remove, not to add.
+    let scratch = scratch_directory("unexecutable");
+    let unexecutable = scratch.join("courier");
     std::fs::write(&unexecutable, b"#!/bin/sh\nexit 0\n").expect("courier stand-in is written");
     std::fs::set_permissions(&unexecutable, std::fs::Permissions::from_mode(0o600))
         .expect("courier stand-in is not executable");
@@ -844,7 +891,7 @@ fn a_courier_that_cannot_exec_names_its_own_cause() {
     )
     .expect("an unexecutable courier still prepares");
     let outcome = block_on(prepared.open_session(services));
-    let _ = std::fs::remove_file(&unexecutable);
+    let _ = std::fs::remove_dir_all(&scratch);
     let Err(error) = outcome else {
         panic!("an unexecutable courier cannot open a registered session");
     };
@@ -865,5 +912,91 @@ fn a_courier_that_cannot_exec_names_its_own_cause() {
         fixture.courier_evidence().contains("os error 13"),
         "the fixture retains the same evidence for the report: {}",
         fixture.courier_evidence()
+    );
+}
+
+/// One private directory per invocation, so no two fixture runs can remove or
+/// overwrite each other's scratch executable.
+#[cfg(unix)]
+fn scratch_directory(label: &str) -> PathBuf {
+    static NEXT: AtomicUsize = AtomicUsize::new(0);
+    let unique = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("clock is after the epoch")
+        .as_nanos();
+    let directory = std::env::temp_dir().join(format!(
+        "swallowtail-card139-{label}-{}-{unique}-{}",
+        std::process::id(),
+        NEXT.fetch_add(1, Ordering::Relaxed)
+    ));
+    std::fs::create_dir_all(&directory).expect("scratch directory is created");
+    directory
+}
+
+/// A courier that writes to stderr and exits immediately must not be reported
+/// as `stderr empty`: observing the exit does not mean the pipe was drained.
+#[cfg(unix)]
+#[test]
+fn a_courier_that_dies_at_startup_reports_its_own_stderr() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let host = host_id("claude-agent-sdk.fixture.registered-startup-stderr");
+    let fixture = SdkFixtureHost::new(SdkScenario::McpConnected);
+    let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
+    let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let scratch = scratch_directory("startup-stderr");
+    let dying = scratch.join("courier");
+    std::fs::write(
+        &dying,
+        b"#!/bin/sh\necho 'courier could not reach its rendezvous' >&2\nexit 3\n",
+    )
+    .expect("dying courier is written");
+    std::fs::set_permissions(&dying, std::fs::Permissions::from_mode(0o755))
+        .expect("dying courier is executable");
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable.clone(), &dying)
+        .approve_environment(environment.clone(), [("PATH".into(), "/usr/bin".into())])
+        .with_registered_tool_dispatcher(Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }))
+        .with_registered_tool_clock(Arc::new(fixture.clone()))
+        .build_services(host.clone());
+    let services = local
+        .services()
+        .clone()
+        .with_process(Arc::new(fixture.clone()))
+        .with_credential(Arc::new(fixture.clone()))
+        .with_working_resource(Arc::new(fixture.clone()))
+        .with_time(Arc::new(fixture.clone()));
+    let preparation = preparation_for(
+        host.clone(),
+        fixture_admission(Arc::new(ScriptedAdmissionPort::current())),
+        executable,
+        environment,
+    );
+    let prepared = prepare_claude_agent_sdk_session(
+        crate::sdk_support::preparation(host)
+            .with_registered_tools(preparation, local)
+            .expect("a dying courier still qualifies"),
+        swallowtail_runtime::SessionOptions::default(),
+    )
+    .expect("a dying courier still prepares");
+    let outcome = block_on(prepared.open_session(services));
+    let _ = std::fs::remove_dir_all(&scratch);
+    let Err(error) = outcome else {
+        panic!("a courier that exits at startup cannot open a registered session");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "fixture.claude_agent_sdk.registered_courier_startup_failed"
+    );
+    let message = error.diagnostic().message();
+    assert!(
+        message.contains("courier could not reach its rendezvous"),
+        "the drained child stderr reaches the failure: {message}"
+    );
+    assert!(
+        message.contains("exit status: 3"),
+        "the observed exit reaches the failure: {message}"
     );
 }

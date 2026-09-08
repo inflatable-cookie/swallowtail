@@ -15,7 +15,8 @@ use serde_json::Value;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
-use std::sync::{Arc, Mutex};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Condvar, Mutex};
 use std::time::{Duration, Instant};
 use swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
 use swallowtail_runtime::{
@@ -39,11 +40,72 @@ const STARTUP_BOUND: Duration = Duration::from_secs(30);
 /// is noticed.
 const STARTUP_STEP: Duration = Duration::from_millis(2);
 
-/// Bounded capture of one child's stderr.
+/// Bound on waiting for the stderr reader to reach end of pipe. Observing a
+/// child's exit does not establish that its output has been drained, so
+/// evidence waits for the drain rather than racing it. Expiry is reported
+/// rather than hidden.
+const DRAIN_BOUND: Duration = Duration::from_secs(2);
+
+/// Bound on one retained evidence line, so 32 notes cannot become unbounded
+/// fixture memory.
+const NOTE_CAP: usize = 2_048;
+
+/// Bounded capture of one child's stderr, with an explicit end-of-pipe
+/// signal so evidence is never rendered from a half-drained buffer.
 #[derive(Default)]
 pub(in crate::sdk_support) struct BoundedStderr {
     bytes: Vec<u8>,
     dropped: usize,
+}
+
+/// The retained capture plus its drain-completion signal.
+#[derive(Default)]
+pub(in crate::sdk_support) struct StderrEvidence {
+    capture: Mutex<BoundedStderr>,
+    drained: AtomicBool,
+    drain_changed: Condvar,
+    drain_gate: Mutex<()>,
+}
+
+impl StderrEvidence {
+    fn push(&self, chunk: &[u8]) {
+        self.capture
+            .lock()
+            .expect("courier stderr lock")
+            .push(chunk);
+    }
+
+    fn finish(&self) {
+        self.drained.store(true, Ordering::Release);
+        let _guard = self.drain_gate.lock().expect("courier drain lock");
+        self.drain_changed.notify_all();
+    }
+
+    /// Renders the capture after waiting, up to `DRAIN_BOUND`, for the reader
+    /// to reach end of pipe. A wait that expires says so.
+    fn describe_drained(&self) -> String {
+        if !self.drained.load(Ordering::Acquire) {
+            let deadline = Instant::now() + DRAIN_BOUND;
+            let mut guard = self.drain_gate.lock().expect("courier drain lock");
+            while !self.drained.load(Ordering::Acquire) {
+                let remaining = deadline.saturating_duration_since(Instant::now());
+                if remaining.is_zero() {
+                    break;
+                }
+                let (next, _) = self
+                    .drain_changed
+                    .wait_timeout(guard, remaining)
+                    .expect("courier drain wait");
+                guard = next;
+            }
+        }
+        let rendered = self.capture.lock().expect("courier stderr lock").describe();
+        if self.drained.load(Ordering::Acquire) {
+            rendered
+        } else {
+            format!("{rendered} (drain incomplete after {DRAIN_BOUND:?})")
+        }
+    }
 }
 
 impl BoundedStderr {
@@ -73,7 +135,7 @@ pub(in crate::sdk_support) struct SpawnedMcpChild {
     stdin: Mutex<Option<ChildStdin>>,
     stdout: Mutex<Option<BufReader<ChildStdout>>>,
     child: Mutex<Child>,
-    stderr: Arc<Mutex<BoundedStderr>>,
+    stderr: Arc<StderrEvidence>,
 }
 
 impl SpawnedMcpChild {
@@ -103,7 +165,7 @@ impl SpawnedMcpChild {
             .stdout
             .take()
             .ok_or_else(|| format!("courier {command:?} exposed no stdout pipe"))?;
-        let stderr = Arc::new(Mutex::new(BoundedStderr::default()));
+        let stderr = Arc::new(StderrEvidence::default());
         if let Some(mut handle) = child.stderr.take() {
             let retained = Arc::clone(&stderr);
             std::thread::spawn(move || {
@@ -112,12 +174,13 @@ impl SpawnedMcpChild {
                     if read == 0 {
                         break;
                     }
-                    retained
-                        .lock()
-                        .expect("courier stderr lock")
-                        .push(&buffer[..read]);
+                    retained.push(&buffer[..read]);
                 }
+                // End of pipe. Evidence may now be rendered completely.
+                retained.finish();
             });
+        } else {
+            stderr.finish();
         }
         Ok(Arc::new(Self {
             command: command.to_owned(),
@@ -147,7 +210,7 @@ impl SpawnedMcpChild {
         let exit = self
             .exit_status()
             .unwrap_or_else(|| "still running".to_owned());
-        let stderr = self.stderr.lock().expect("courier stderr lock").describe();
+        let stderr = self.stderr.describe_drained();
         format!(
             "courier {:?} args {:?}: {exit}; {stderr}",
             self.command, self.arguments
@@ -286,7 +349,7 @@ fn await_rendezvous_claim(
             return Err(format!(
                 "courier exited before claiming its rendezvous {}: {exit}; {}",
                 rendezvous.display(),
-                child.stderr.lock().expect("courier stderr lock").describe()
+                child.stderr.describe_drained()
             ));
         }
         if Instant::now() >= deadline {
@@ -323,12 +386,30 @@ pub(super) fn kill_spawned(shared: &Shared) {
 pub(super) fn record_evidence(shared: &Shared, line: &str) {
     let mut notes = shared.courier_notes.lock().expect("courier notes lock");
     if notes.len() < 32 {
-        notes.push(line.to_owned());
+        let mut line = line.to_owned();
+        if line.len() > NOTE_CAP {
+            line.truncate(
+                (0..=NOTE_CAP)
+                    .rev()
+                    .find(|index| line.is_char_boundary(*index))
+                    .unwrap_or(0),
+            );
+            line.push_str("… (truncated)");
+        }
+        notes.push(line);
     }
 }
 
+/// Names a malformed declaration by its shape, never by its values: the
+/// declared `env` carries host-approved recipe values that no failure message
+/// needs to echo.
 fn declaration_defect(server: &Value, reason: &str) -> String {
-    format!("declared courier server is malformed ({reason}): {server}")
+    let name = server["name"].as_str().unwrap_or("<unnamed>");
+    let keys = server
+        .as_object()
+        .map(|object| object.keys().cloned().collect::<Vec<_>>().join(", "))
+        .unwrap_or_else(|| "<not an object>".to_owned());
+    format!("declared courier server {name:?} is malformed ({reason}); declared fields: {keys}")
 }
 
 fn describe_spawn_error(command: &str, args: &[String], error: &std::io::Error) -> String {

@@ -44,10 +44,10 @@ live gate itself; other crates.
 
 ## Acceptance Criteria
 
-- [x] the failure is reproduced under load, or its impossibility explained with anchors
-- [x] setup failure surfaces bounded process output and exit evidence, not a bare code
-- [x] startup and listener readiness are deterministic signals, not timing
-- [x] 20+ loaded runs clean; the papercut entry is retired
+- [ ] the failure is reproduced under load, or its impossibility explained with anchors
+- [ ] setup failure surfaces bounded process output and exit evidence, not a bare code
+- [ ] startup and listener readiness are deterministic signals, not timing
+- [ ] 20+ loaded runs clean; the papercut entry is retired
 
 ## Validation
 
@@ -78,20 +78,34 @@ At session open the fixture has exactly one path to
 `sdk_support/host/process.rs` require a malformed wire line, which would fail
 every run rather than one. That spawn mapped every `io::Error` to `()`.
 
-The loaded reproduction ran the isolated process-spawning selector
-(`--profile ci-process -E 'binary(claude_agent_sdk_driver)'`) with sixteen CPU
-burners. Run 2 of 22 failed
-`registered_tool_route::ready_follows_kernel_authenticated_connect`, and the
-new evidence named the cause outright: the courier
-`exited signal: 9 (SIGKILL)` before claiming its rendezvous. Each of the 117
-test processes runs the nested courier build, and a concurrent nested build
-that re-uplifts the shared `target/card125-courier/debug/` path kills a courier
-already executing from it. That is the load-dependent, opaque setup failure
-PR 285 hit; nothing in the adapter or the route is involved.
+The mechanism is Cargo's uplift, and it is measured rather than inferred.
+Cargo's build lock does not cover the window after a build returns, and the
+uplift is not atomic: a sibling test process rebuilding into the same nested
+target removes and recreates
+`target/card125-courier/debug/swallowtail-registered-tool-courier`. A probe
+holding that path open across eight rebuilds recorded 42 `ENOENT`
+observations. Every one of the 117 test processes in this binary runs that
+nested build, so a spawn of the same path lands in that window, returns
+`ENOENT`, and — under the old helper — became a bare
+`fixture.claude_agent_sdk.failed` at session open. That is PR 285's exact
+symptom, and nothing in the adapter or the route is involved.
 
-The fix is to stop spawning the volatile path. `courier_binary()` now
-republishes the built binary under a content-addressed, write-once path that no
-builder ever touches, staged and installed by atomic rename.
+A second startup death appeared during the loaded reproduction: run 2 of 22
+under the isolated process-spawning selector with sixteen CPU burners failed
+`ready_follows_kernel_authenticated_connect` with the courier
+`exited signal: 9 (SIGKILL)` before claiming its rendezvous. What is proved
+there is post-spawn death, not who sent the signal; a concurrent build
+replacing a mapped executable is the plausible reading, and it stays labelled
+as a reading. It is a distinct failure mode from the one above — the old code
+would have reported it as the proxy's own `proxy_not_ready` after a ten-second
+wait, not as the fixture code PR 285 saw. Both modes end at the same fix.
+
+The fix is to stop spawning the volatile path at all. `courier_binary()`
+acquires the completed artifact with a bounded build-and-read retry, because
+the artifact is transiently absent rather than permanently wrong, and
+republishes it under a content-addressed path installed by hard link, which
+fails rather than replaces when the name exists. No builder ever touches the
+file that is spawned.
 
 ### Evidence, not codes
 
@@ -120,16 +134,37 @@ live at that point. The fixture also tears its stdio children down when the
 
 ### Disclosed, not fixed
 
-Closing a registered-tool route costs a flat 5.00s. It is
-`OperationBridgeListener::close` joining an accepted connection thread that
-waits out `IO_TIMEOUT`; narrowing that constant to two seconds moves the close
-to a flat 2.00s. Killing the provider-side child first does not shorten it, so
-it is not a fixture effect. It is in `swallowtail-host-local`, which this
-card's manifest forbids, so it is recorded in `PAPERCUTS.md` and left for
-Chatterbox. It bounds close latency; it does not make the case flaky.
+Closing a registered-tool route measured 5.00s on every registered case here.
+It is `OperationBridgeListener::close` joining an accepted connection thread
+that waits out `IO_TIMEOUT` without waking its read; narrowing that constant
+to two seconds moved the close to 2.00s. Guardian cleanup closes the
+registered lease before the provider close reaches the wire, so this card's
+close-command child teardown lands too late to shorten it — it is not a
+fixture effect. The bound is the timeout, not a guaranteed constant. It is in
+`swallowtail-host-local`, which this card's manifest forbids, so it is
+recorded in `PAPERCUTS.md` and left for Chatterbox. It bounds close latency;
+it does not make the case flaky.
+
+### Review
+
+Cross-model review at the first exact head returned changes required, and it
+was right on every count. Three defects are fixed here: the artifact was still
+read from the volatile path without retry, so publication inherited the race
+it was meant to remove; the new regression test used one machine-wide
+temporary filename, which is the shared mutable state this card exists to
+remove rather than add; and the stderr reader was detached, so evidence could
+render `stderr empty` before a dying child's output had drained. The causal
+claim above was rewritten because the original overstated SIGKILL as proof of
+the PR 285 chain. Evidence retention is now bounded per note, and a malformed
+declaration is named by its shape rather than echoing declared `env` values.
 
 ### Proof
 
-24 runs of the isolated process-spawning selector under sixteen CPU burners,
-117 tests each, zero failures. `cargo fmt`, `validate:focused`,
-`package:verify-affected`, and `qa:northstar` are clean.
+- 24 runs of the isolated process-spawning selector under sixteen CPU burners,
+  117 tests each, zero failures, at the first head.
+- 32 concurrent instances of the two scratch-executable tests: all pass. The
+  same probe failed 24 of 32 before the per-invocation directory fix.
+- 16 concurrent test processes against continuous courier rebuild churn: all
+  pass, exercising the acquisition retry and the hard-linked publish.
+- `cargo fmt`, `validate:focused`, `package:verify-affected`, and
+  `qa:northstar` are clean.

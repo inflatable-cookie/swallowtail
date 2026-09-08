@@ -916,25 +916,32 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   and the Claude SDK registered-tool sidecar fixture startup path.
 - Closed: 2026-09-08 card 139. At session open the only fixture path that can
   produce `fixture.claude_agent_sdk.failed` is the provider-side courier
-  spawn, which discarded its `io::Error`. The fixture now names the command,
-  arguments, operating-system cause, bounded child stderr, and observed exit,
-  waits on the courier's own rendezvous-claim event instead of returning
-  before the child has started, and the test reports that evidence when open
-  fails. 22 loaded runs of the isolated process-spawning selector are clean.
+  spawn, which discarded its `io::Error`. The mechanism is Cargo's non-atomic
+  uplift: a sibling test process rebuilding into the same nested target
+  removes and recreates the shared courier path, measured at 42 `ENOENT`
+  observations across eight rebuilds, and a spawn landing in that window
+  became the bare code. The courier is now acquired with a bounded
+  build-and-read retry and spawned from a hard-linked, content-addressed copy
+  no builder touches. The fixture names the command, arguments,
+  operating-system cause, drained bounded child stderr, and observed exit, and
+  waits on the courier's own rendezvous-claim event. 24 loaded runs of the
+  isolated process-spawning selector are clean.
 
 ### [ ] Registered-tool close waits out the operation bridge read timeout — 2026-09-08
-- Friction: closing a registered-tool route costs a flat 5.00s. Card 139
-  measured it on `close_joins_the_registered_listener` and confirmed the
-  source by narrowing `IO_TIMEOUT` in
+- Friction: closing a registered-tool route measured 5.00s on every
+  registered case. Card 139 measured it on
+  `close_joins_the_registered_listener` and confirmed the source by narrowing
+  `IO_TIMEOUT` in
   `crates/swallowtail-host-local/src/operation_bridge/listener.rs` from 5s to
   2s, which moved the close to a flat 2.00s. `OperationBridgeListener::close`
   joins each accepted connection thread, and that thread waits out its read
   timeout instead of being woken.
 - Impact: every registered-tool case in the process-spawning shard pays five
   seconds of pure wall clock, on both the Claude and Grok routes, and the
-  close/join path is bound by a timer rather than by an event. Killing the
-  provider-side child first does not shorten it, so it is not a fixture
-  effect.
+  close/join path is bound by a timer rather than by an event. Guardian
+  cleanup closes the registered lease before the provider close reaches the
+  wire, so a fixture-side child teardown at close lands too late to shorten
+  it; this is not a fixture effect.
 - Fix shape: shut down accepted streams (or carry a close signal into the
   connection loop) before joining, so close ends on an event.
 - Surface: `crates/swallowtail-host-local/src/operation_bridge/listener.rs`;

@@ -5,6 +5,7 @@ use crate::sdk::mcp::{
     OpenStdioMcpServer, admitted_open_mcp_tool_names, admitted_open_tool_names,
     combine_open_servers,
 };
+use crate::sdk::open_receipt::OpenFailure;
 use crate::sdk::profile::{
     ClaudeAgentSdkEffort, ClaudeAgentSdkEffortOutcome, ClaudeAgentSdkPermissionMode,
     ClaudeAgentSdkSessionProfile,
@@ -267,7 +268,7 @@ pub(crate) async fn open(
     mcp_servers: &[ClaudeAgentSdkMcpServer],
     registered_courier: Option<OpenStdioMcpServer>,
     selected_skill: Option<&swallowtail_runtime::ResolvedSkillBundle>,
-) -> Result<SessionReadiness, RuntimeFailure> {
+) -> Result<SessionReadiness, OpenFailure> {
     start(
         connection,
         plan,
@@ -292,7 +293,7 @@ pub(crate) async fn resume(
     registered_courier: Option<OpenStdioMcpServer>,
     provider_session_ref: &SessionRef,
     resume_session_at: Option<&str>,
-) -> Result<SessionReadiness, RuntimeFailure> {
+) -> Result<SessionReadiness, OpenFailure> {
     start(
         connection,
         plan,
@@ -390,7 +391,7 @@ async fn start(
     selected_skill: Option<&swallowtail_runtime::ResolvedSkillBundle>,
     provider_session_ref: Option<&SessionRef>,
     resume_session_at: Option<&str>,
-) -> Result<SessionReadiness, RuntimeFailure> {
+) -> Result<SessionReadiness, OpenFailure> {
     let model = plan
         .model_id()
         .expect("validated sidecar model route")
@@ -419,23 +420,30 @@ async fn start(
     if !open_servers.is_empty() {
         params["mcpServers"] = mcp_servers_params(&open_servers);
     }
-    let selected_skill = selected_skill.map(render_bundle).transpose()?;
+    let selected_skill = selected_skill
+        .map(render_bundle)
+        .transpose()
+        .map_err(OpenFailure::admission)?;
     if let Some(bundle) = &selected_skill {
         params["selectedSkillBundle"] = bundle.clone();
     }
     let response = connection
         .command("open-1".to_owned(), ClaudeAgentSdkCommand::Open, params)
-        .await?;
+        .await
+        .map_err(OpenFailure::sidecar_exchange)?;
     if !response.success {
         let code = response
             .failure_code
             .expect("a rejected response carries its fixed sidecar code");
         return Err(if provider_session_ref.is_some() {
-            resume_rejected(code)
+            OpenFailure::sidecar_rejection(resume_rejected(code), code)
         } else {
-            command_rejected(
-                "swallowtail.claude-agent.sdk.open_rejected",
-                "Claude Agent SDK sidecar rejected its restrictive open",
+            OpenFailure::sidecar_rejection(
+                command_rejected(
+                    "swallowtail.claude-agent.sdk.open_rejected",
+                    "Claude Agent SDK sidecar rejected its restrictive open",
+                    code,
+                ),
                 code,
             )
         });
@@ -454,7 +462,7 @@ async fn start(
         resuming: provider_session_ref.is_some(),
         expected_provider_session_ref: provider_session_ref,
     };
-    readiness(response.data.as_ref(), &expected)
+    readiness(response.data.as_ref(), &expected).map_err(OpenFailure::readiness_validation)
 }
 
 fn bound_version(plan: &PreflightPlan, axis: &str) -> String {

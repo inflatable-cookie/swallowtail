@@ -557,6 +557,52 @@ stays `Unqualified / real_route_gate_pending` with the reason
 `callable seam present; live gate pending`. The live real-route gate is a
 separate authorized pass.
 
+## Failed-Open Receipts
+
+Card 144 turns Card 132's opaque live `open_rejected` into typed producer
+evidence. `ClaudeAgentSdkPreparedSession::open_route_session_with_receipt`
+returns the same failure as `open_route_session` plus one
+`ClaudeAgentSdkFailedOpenReceipt`: the underlying route code, the
+observation-derived open stage, the exact bounded sidecar subcode when the
+sidecar rejected the open command, whether provider readiness was reached,
+and what the ordered cleanup observed — resource and credential release, the
+owned-tree survivor posture, and, for registered opens, the bridge lease
+close (admission frozen, joined calls, listener and registry release). Every
+field is an observation, and the cleanup disposition is three-way: a failure
+before anything was acquired reports `NotAcquired`, a completed continuation
+reports `Confirmed` with its staged observations, and an unconfirmed cleanup
+reports `Unconfirmed` with every staged observation absent rather than
+invented. Nothing carries paths, endpoints, bearer material, credentials,
+environment values, provider content, or sidecar stderr, and none of it is a
+support, qualification, or availability claim.
+
+The frozen Card 132 identities stay the reference reproduction (Research
+296). Swallowtail source `04e9b2dd9058783b7186a33a6c13dd74882a5925`; Bovine
+Desktop Northstar task `0a594fd5-a966-4192-aeb6-fa98f5493d1d`, PR 170
+restacked head `bd83f6b038151afd7e51ca19b944b22e9db72799`, independent review
+comment `5586693748`, merge `4cf8049762d5e7891d8b1c8c458af0ef85ed97d6`,
+closeout `ee47e160ac8e3ec5db1fa5f0444999e5cd630b2d`; capsule SHA-256
+`e0460a54776a5644ff2c54bc412a52d81b0d84f04ee34f56971b78181e501433`. Tuple:
+SDK `0.3.259`, native `2.1.259`, Node `22.23.2`, sidecar source tag
+`swallowtail-claude-agent-sdk-sidecar@0.4.4`, carrier
+`swallowtail-claude-agent-sdk-registered-tool-mcp-v1`, `private-loopback-http`
+plus `mediated-stdio-proxy`, MCP `2025-11-25`, model `claude-sonnet-5`,
+default permission, persistence false, `strictMcpConfig: true`, empty setting
+sources, omitted `allowedTools`.
+
+The live capsule could not distinguish construction, initialization, account,
+or MCP-status rejection. The provider-free reproduction
+(`the_card_132_registered_open_request_yields_a_typed_failed_open_receipt` in
+`tests/claude_agent_sdk_driver/registered_tool_route.rs`, with the receipt
+shapes in `tests/claude_agent_sdk_driver/open_receipt.rs`) proves the
+registered-open request matches that tuple and that the typed receipt
+separates every bounded rejection class, deadline, joined cleanup, and
+unconfirmed cleanup. The deterministic route identifies no producer defect,
+so the live rejection cause stays unresolved without a separately authorized
+gate; a future live capsule must record the receipt fields instead of prose.
+Both Contract 061 registered-tool cells remain `No`, owned by this producer
+gap.
+
 ## Selected Skill Bundles
 
 Card 126 adds one immutable, already-resolved Contract 063 selected-skill

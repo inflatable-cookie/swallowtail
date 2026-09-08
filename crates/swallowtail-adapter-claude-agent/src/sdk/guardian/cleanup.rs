@@ -75,6 +75,9 @@ pub(crate) struct CleanupReport {
     pub(crate) root_exit: Option<ProcessTreeCompletion>,
     pub(crate) resource: CleanupOutcome,
     pub(crate) credential: CleanupOutcome,
+    /// What the registered-tool bridge lease close observed, present only
+    /// when a registered lease was owned.
+    pub(crate) registered: Option<CleanupOutcome>,
 }
 
 /// Whether the guardian first tries the sidecar's own cooperative close.
@@ -96,17 +99,20 @@ pub(crate) async fn run(
     cooperative: Cooperative,
 ) -> CleanupReport {
     let connection = owned.connection.take();
-    if let Some(lease) = owned.registered.take() {
-        crate::sdk::driver::registered::close_registered_lease(
-            Some(lease),
-            services,
-            owned
-                .registered_cause
-                .take()
-                .unwrap_or(RegisteredToolCleanupCause::ProviderFailure),
-        )
-        .await;
-    }
+    let registered = match owned.registered.take() {
+        Some(lease) => {
+            crate::sdk::driver::registered::close_registered_lease(
+                Some(lease),
+                services,
+                owned
+                    .registered_cause
+                    .take()
+                    .unwrap_or(RegisteredToolCleanupCause::ProviderFailure),
+            )
+            .await
+        }
+        None => None,
+    };
     let (close_evidence, cooperative_failure) = match (&connection, cooperative) {
         (Some(connection), Cooperative::Session { turn_active }) => {
             cooperative_close(connection, bounded, request_id, turn_active).await
@@ -155,6 +161,7 @@ pub(crate) async fn run(
         root_exit,
         resource,
         credential,
+        registered,
     }
 }
 

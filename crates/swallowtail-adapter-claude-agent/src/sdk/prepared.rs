@@ -11,6 +11,7 @@ mod build;
 
 use super::driver::{ClaudeAgentSdkDriver, ClaudeAgentSdkSessionHandle};
 use super::mcp::{ClaudeAgentSdkMcpBinding, ClaudeAgentSdkMcpServer};
+use super::open_receipt::ClaudeAgentSdkOpenRejection;
 use super::profile::ClaudeAgentSdkSessionProfile;
 use super::registered_tool::ClaudeAgentSdkRegisteredToolBinding;
 use super::selected_skill::ClaudeAgentSdkSelectedSkillBinding;
@@ -434,6 +435,26 @@ impl ClaudeAgentSdkPreparedSession {
         let plan = self.plan.clone();
         let request = self.request.clone();
         Box::pin(async move { driver.open_route_session(plan, request, services).await })
+    }
+
+    /// Opens the same fresh session and reports one structured failed-open
+    /// receipt when the open fails. The carried failure is byte-identical to
+    /// what [`Self::open_route_session`] returns; only the error shape
+    /// differs, so the caller can read the bounded rejection stage, the
+    /// sidecar subcode, the provider-readiness truth, and the observed
+    /// cleanup disposition from typed fields without parsing any message.
+    pub fn open_route_session_with_receipt(
+        &self,
+        services: HostServices,
+    ) -> BoxFuture<'static, Result<ClaudeAgentSdkSessionHandle, ClaudeAgentSdkOpenRejection>> {
+        let driver = self.low_level_driver();
+        let plan = self.plan.clone();
+        let request = self.request.clone();
+        Box::pin(async move {
+            driver
+                .open_route_session_with_receipt(plan, request, services)
+                .await
+        })
     }
 
     /// Builds an exact Contract 017 resume request without replay.

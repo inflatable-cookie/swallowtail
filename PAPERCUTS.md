@@ -997,3 +997,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   prepare (an Effigy sync-file or a small script the cheap gate runs), or drop
   the version literals from the README and point at the release index.
 - Surface: root `README.md`; `scripts/check-consumer-front-door.py`; card 110.
+
+### [ ] Cold nested courier target starves the capture wrapper test budget — 2026-09-08
+- Friction: `readiness::wrapper_death_preserves_partial_capture_journal`
+  allows five seconds for its child wrapper to persist the journal, but when
+  `target/card125-courier` is cold the parallel `courier_binary()` build runs
+  a nested `cargo build` while all driver tests execute, and the starved child
+  missed the budget twice on this machine. Reproduced once on the clean base
+  head with a cold nested target; warm runs pass repeatedly.
+- Fix shape: either raise the child budget to cover a cold sibling build, or
+  build the courier outside the parallel test set (an Effigy before-task step
+  or a lazy dedicated test that runs alone).
+- Surface: `crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/readiness.rs`;
+  `registered_tool_route.rs` courier acquisition.

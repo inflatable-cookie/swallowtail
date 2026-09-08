@@ -90,12 +90,12 @@ pub(crate) struct OpenGuard {
     ledger: Arc<GuardLedger>,
     signal: Arc<Signal>,
     deadline: Arc<DeadlineFlag>,
-    /// Completion of the guard's *ordered* cleanup, which is the evidence the
-    /// caller reports. It is deliberately separate from the guard task's join
-    /// handle: what matters is that termination, the scoped-work join, and both
-    /// lease releases happened in order, not that this future observed the task
-    /// end.
+    /// Triggered when the ordered cleanup continuation has run to its end.
     cleaned: Arc<Signal>,
+    /// Set once the guard task finished its ordered cleanup, so the failure
+    /// path can report what the continuation actually observed instead of
+    /// only whether it completed.
+    report: Arc<Mutex<Option<cleanup::CleanupReport>>>,
     // Behind a mutex so the guard stays `Sync`: the open future holds a
     // reference to it across awaits.
     task: Mutex<Option<Box<dyn JoinedTask>>>,
@@ -128,6 +128,8 @@ impl OpenGuard {
         let cleaned = Arc::new(Signal::default());
         let task_cleaned = Arc::clone(&cleaned);
         let task_time = time.clone();
+        let task_report = Arc::new(Mutex::new(None));
+        let task_report_fill = Arc::clone(&task_report);
         let task = joins::spawn_reserved(
             services,
             reservation,
@@ -156,7 +158,7 @@ impl OpenGuard {
                 // No readiness was reached, so there is no agreed protocol
                 // state to close cooperatively: the guardian goes straight
                 // to the host termination request and the ordered release.
-                cleanup::run(
+                let report = cleanup::run(
                     acquired,
                     &task_services,
                     &bounded,
@@ -164,6 +166,9 @@ impl OpenGuard {
                     Cooperative::None,
                 )
                 .await;
+                *task_report_fill
+                    .lock()
+                    .expect("SDK open-guard report lock poisoned") = Some(report);
                 task_cleaned.trigger();
             }),
         )?;
@@ -176,6 +181,7 @@ impl OpenGuard {
                 signal,
                 deadline: fired,
                 cleaned,
+                report: task_report,
                 task: Mutex::new(Some(task)),
             },
             lease,
@@ -204,9 +210,9 @@ impl OpenGuard {
     }
 
     /// Releases the guard on a failure path and waits, inside the caller's
-    /// bound, for its ordered cleanup to finish. Returns whether that cleanup
-    /// completed; `false` means unconfirmed, and the guard still owns the whole
-    /// ordered sequence.
+    /// bound, for its ordered cleanup to finish. `Some(report)` carries what
+    /// the ordered continuation observed; `None` means unconfirmed, and the
+    /// guard still owns the whole ordered sequence.
     ///
     /// The handle is joined or, at expiry, handed to its owning host. Neither
     /// outcome changes the answer: only the ordered cleanup's own completion
@@ -215,7 +221,7 @@ impl OpenGuard {
         &self,
         bounded: &super::bounded::HostBound,
         services: &HostServices,
-    ) -> bool {
+    ) -> Option<cleanup::CleanupReport> {
         self.signal.trigger();
         let cleaned = bounded.run(self.cleaned.future()).await.is_some();
         let task = self
@@ -227,7 +233,14 @@ impl OpenGuard {
             let owner = TaskOwner::new(services, &self.execution_host_id, &self.scope);
             bounded_join(bounded, &owner, task).await;
         }
-        cleaned
+        if cleaned {
+            self.report
+                .lock()
+                .expect("SDK open-guard report lock poisoned")
+                .take()
+        } else {
+            None
+        }
     }
 }
 

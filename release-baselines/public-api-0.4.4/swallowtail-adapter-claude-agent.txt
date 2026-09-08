@@ -1,6 +1,10 @@
 pub mod swallowtail_adapter_claude_agent
 pub mod swallowtail_adapter_claude_agent::sdk
 pub mod swallowtail_adapter_claude_agent::sdk::open_receipt
+pub enum swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenCleanupDisposition
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenCleanupDisposition::Confirmed
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenCleanupDisposition::NotAcquired
+pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenCleanupDisposition::Unconfirmed
 pub enum swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage
 pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage::Admission
 pub swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenStage::Deadline
@@ -52,10 +56,10 @@ impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubc
 pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::as_str(self) -> &'static str
 pub struct swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup
 impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup
-pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::confirmed(&self) -> bool
-pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::credential(&self) -> &swallowtail_runtime::outcome::CleanupOutcome
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::credential(&self) -> core::option::Option<&swallowtail_runtime::outcome::CleanupOutcome>
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::disposition(&self) -> swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenCleanupDisposition
 pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::registered_lease(&self) -> core::option::Option<&swallowtail_runtime::outcome::CleanupOutcome>
-pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::resource(&self) -> &swallowtail_runtime::outcome::CleanupOutcome
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::resource(&self) -> core::option::Option<&swallowtail_runtime::outcome::CleanupOutcome>
 pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::survivor_posture(&self) -> core::option::Option<swallowtail_runtime::process_io::ProcessTreeCompletion>
 pub struct swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt
 impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt
@@ -189,6 +193,10 @@ pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind::Fa
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind::Pending
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServerStatusKind::as_str(self) -> &'static str
+pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenCleanupDisposition
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenCleanupDisposition::Confirmed
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenCleanupDisposition::NotAcquired
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenCleanupDisposition::Unconfirmed
 pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage::Admission
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenStage::Deadline
@@ -277,10 +285,10 @@ pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::open_session
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkFailedOpenCleanup
 impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup
-pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::confirmed(&self) -> bool
-pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::credential(&self) -> &swallowtail_runtime::outcome::CleanupOutcome
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::credential(&self) -> core::option::Option<&swallowtail_runtime::outcome::CleanupOutcome>
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::disposition(&self) -> swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenCleanupDisposition
 pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::registered_lease(&self) -> core::option::Option<&swallowtail_runtime::outcome::CleanupOutcome>
-pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::resource(&self) -> &swallowtail_runtime::outcome::CleanupOutcome
+pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::resource(&self) -> core::option::Option<&swallowtail_runtime::outcome::CleanupOutcome>
 pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenCleanup::survivor_posture(&self) -> core::option::Option<swallowtail_runtime::process_io::ProcessTreeCompletion>
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkFailedOpenReceipt
 impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt

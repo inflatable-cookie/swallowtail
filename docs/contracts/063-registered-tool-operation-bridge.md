@@ -563,15 +563,20 @@ open — registered or plain — keeps its exact stable route failure and gains
 one additive observation-derived receipt beside it: the underlying route
 code, the open stage, the exact bounded sidecar subcode when the sidecar
 rejected the open command, whether provider readiness was reached, and the
-observed cleanup disposition — resource and credential release, the
-owned-tree survivor posture, and, when a registered lease was opened, its
-bridge close (admission frozen, joined calls, listener and registry
-release). An unconfirmed cleanup reports itself as unconfirmed and stages no
-stronger observation. The receipt carries no paths, bearer material,
-credentials, environment values, provider content, or sidecar stderr, and it
-is never a support, qualification, availability, or release claim; both
-Contract 061 registered-tool cells stay owned by the producer gap until a
-separately authorized passing live capsule exists.
+observed cleanup disposition. The cleanup disposition is three-way and
+mutually exclusive: a failure before anything was acquired reports
+`NotAcquired`; a completed ordered continuation reports `Confirmed` with its
+staged observations (resource and credential release, the owned-tree
+survivor posture, and, when a registered lease was opened, its bridge close
+— admission frozen, joined calls, listener and registry release); and an
+unconfirmed cleanup reports `Unconfirmed` with every staged observation
+absent. When the deadline or an unconfirmed cleanup replaces the returned
+error, the receipt still carries the underlying failure's route code and
+facts. The receipt carries no paths, bearer material, credentials,
+environment values, provider content, or sidecar stderr, and it is never a
+support, qualification, availability, or release claim; both Contract 061
+registered-tool cells stay owned by the producer gap until a separately
+authorized passing live capsule exists.
 
 **Provider-free falsifiers.** The F1–F18 set in the capsule is the conformance
 oracle: omission, ready ordering, one-shot expiry, redaction, argv and

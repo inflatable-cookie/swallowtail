@@ -219,36 +219,67 @@ impl ClaudeAgentSdkOpenSubcode {
     }
 }
 
-/// The positively observed cleanup disposition of one failed open.
+/// Whether the failed open owed cleanup, and whether that cleanup was
+/// observed.
 ///
-/// Every field is what the ordered cleanup continuation actually observed.
-/// An unconfirmed cleanup reports `confirmed: false` and leaves the staged
-/// observations absent; it never reports a stronger posture than the host
-/// saw.
+/// The three states are exhaustive and mutually exclusive; the receipt never
+/// reports a stronger posture than the host actually observed.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ClaudeAgentSdkOpenCleanupDisposition {
+    /// Nothing had been acquired when the open failed — the failure happened
+    /// before the guard owned any credential, resource, process, pump, or
+    /// lease — so no cleanup was owed.
+    NotAcquired,
+    /// The ordered cleanup continuation completed inside the caller's bound,
+    /// and the staged observations below carry what it saw.
+    Confirmed,
+    /// Termination was requested, but the continuation did not finish inside
+    /// the caller's bound and the guard still owns it. Staged observations
+    /// stay absent rather than being invented.
+    Unconfirmed,
+}
+
+/// The observed cleanup disposition of one failed open.
+///
+/// Every staged field is what the ordered cleanup continuation actually
+/// observed; a disposition of [`NotAcquired`](ClaudeAgentSdkOpenCleanupDisposition::NotAcquired)
+/// or [`Unconfirmed`](ClaudeAgentSdkOpenCleanupDisposition::Unconfirmed)
+/// leaves them absent.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ClaudeAgentSdkFailedOpenCleanup {
-    confirmed: bool,
-    resource: CleanupOutcome,
-    credential: CleanupOutcome,
+    disposition: ClaudeAgentSdkOpenCleanupDisposition,
+    resource: Option<CleanupOutcome>,
+    credential: Option<CleanupOutcome>,
     survivor_posture: Option<ProcessTreeCompletion>,
     registered_lease: Option<CleanupOutcome>,
 }
 
 impl ClaudeAgentSdkFailedOpenCleanup {
-    pub(crate) fn from_report(report: Option<&CleanupReport>) -> Self {
-        let Some(report) = report else {
-            return Self {
-                confirmed: false,
-                resource: CleanupOutcome::NotApplicable,
-                credential: CleanupOutcome::NotApplicable,
-                survivor_posture: None,
-                registered_lease: None,
-            };
-        };
+    pub(crate) const fn not_acquired() -> Self {
         Self {
-            confirmed: true,
-            resource: report.resource.clone(),
-            credential: report.credential.clone(),
+            disposition: ClaudeAgentSdkOpenCleanupDisposition::NotAcquired,
+            resource: None,
+            credential: None,
+            survivor_posture: None,
+            registered_lease: None,
+        }
+    }
+
+    pub(crate) const fn unconfirmed() -> Self {
+        Self {
+            disposition: ClaudeAgentSdkOpenCleanupDisposition::Unconfirmed,
+            resource: None,
+            credential: None,
+            survivor_posture: None,
+            registered_lease: None,
+        }
+    }
+
+    pub(crate) fn from_report(report: &CleanupReport) -> Self {
+        Self {
+            disposition: ClaudeAgentSdkOpenCleanupDisposition::Confirmed,
+            resource: Some(report.resource.clone()),
+            credential: Some(report.credential.clone()),
             // Root truth is only readable once the pump that records it was
             // joined; the same rule the session-close decision applies.
             survivor_posture: if report.pump_joined {
@@ -260,24 +291,25 @@ impl ClaudeAgentSdkFailedOpenCleanup {
         }
     }
 
-    /// Whether the ordered cleanup continuation completed inside the caller's
-    /// bound. `false` means termination was requested but completion is
-    /// unconfirmed.
+    /// The cleanup disposition: whether cleanup was owed at all, and whether
+    /// the ordered continuation was observed to completion.
     #[must_use]
-    pub const fn confirmed(&self) -> bool {
-        self.confirmed
+    pub const fn disposition(&self) -> ClaudeAgentSdkOpenCleanupDisposition {
+        self.disposition
     }
 
-    /// Working-resource lease release observation.
+    /// Working-resource lease release observation, present only when the
+    /// ordered cleanup completed.
     #[must_use]
-    pub fn resource(&self) -> &CleanupOutcome {
-        &self.resource
+    pub const fn resource(&self) -> Option<&CleanupOutcome> {
+        self.resource.as_ref()
     }
 
-    /// Credential lease release observation.
+    /// Credential lease release observation, present only when the ordered
+    /// cleanup completed.
     #[must_use]
-    pub fn credential(&self) -> &CleanupOutcome {
-        &self.credential
+    pub const fn credential(&self) -> Option<&CleanupOutcome> {
+        self.credential.as_ref()
     }
 
     /// The owned process tree's survivor posture, observed after the protocol
@@ -291,10 +323,10 @@ impl ClaudeAgentSdkFailedOpenCleanup {
     }
 
     /// The registered-tool bridge lease close observation, present only when
-    /// a registered lease had been opened. `Clean` means bridge admission was
-    /// frozen, every outstanding courier call joined, and the listener and
-    /// registry slot released; a `Failed` outcome names the bounded teardown
-    /// truth.
+    /// the ordered cleanup completed and a registered lease had been opened.
+    /// `Clean` means bridge admission was frozen, every outstanding courier
+    /// call joined, and the listener and registry slot released; a `Failed`
+    /// outcome names the bounded teardown truth.
     #[must_use]
     pub fn registered_lease(&self) -> Option<&CleanupOutcome> {
         self.registered_lease.as_ref()
@@ -384,7 +416,12 @@ impl ClaudeAgentSdkOpenRejection {
 }
 
 /// A classified open failure, produced at the exact failure site.
+///
+/// `route_code` is pinned from the failure's own diagnostic at construction,
+/// so a deadline or unconfirmed-cleanup replacement of the returned error
+/// never overwrites the documented underlying route code.
 pub(crate) struct OpenFailure {
+    route_code: String,
     error: RuntimeFailure,
     stage: ClaudeAgentSdkOpenStage,
     sidecar_code: Option<ClaudeAgentSdkFailureCode>,
@@ -398,6 +435,7 @@ impl OpenFailure {
         sidecar_code: Option<ClaudeAgentSdkFailureCode>,
     ) -> Self {
         Self {
+            route_code: error.diagnostic().code().to_owned(),
             error,
             stage,
             sidecar_code,
@@ -422,23 +460,23 @@ impl OpenFailure {
     }
 
     pub(crate) fn deadline(provider_readiness_reached: bool) -> Self {
-        Self {
-            error: crate::sdk::driver::open_deadline_elapsed(),
-            stage: ClaudeAgentSdkOpenStage::Deadline,
-            sidecar_code: None,
-            provider_readiness_reached,
-        }
+        Self::new(
+            crate::sdk::driver::open_deadline_elapsed(),
+            ClaudeAgentSdkOpenStage::Deadline,
+            None,
+        )
+        .with_readiness(provider_readiness_reached)
     }
 
     /// The open ended on the deadline and its cleanup could not be confirmed
     /// inside the same bound.
     pub(crate) fn deadline_unconfirmed_cleanup(provider_readiness_reached: bool) -> Self {
-        Self {
-            error: crate::sdk::driver::open_cleanup_unconfirmed(),
-            stage: ClaudeAgentSdkOpenStage::Deadline,
-            sidecar_code: None,
-            provider_readiness_reached,
-        }
+        Self::new(
+            crate::sdk::driver::open_cleanup_unconfirmed(),
+            ClaudeAgentSdkOpenStage::Deadline,
+            None,
+        )
+        .with_readiness(provider_readiness_reached)
     }
 
     pub(crate) fn sidecar_rejection(
@@ -454,16 +492,20 @@ impl OpenFailure {
 
     /// A failure observed after the sidecar reached provider readiness.
     pub(crate) fn after_readiness(error: RuntimeFailure) -> Self {
-        Self {
-            provider_readiness_reached: true,
-            ..Self::new(error, ClaudeAgentSdkOpenStage::RegisteredReadiness, None)
-        }
+        Self::new(error, ClaudeAgentSdkOpenStage::RegisteredReadiness, None).with_readiness(true)
+    }
+
+    fn with_readiness(mut self, provider_readiness_reached: bool) -> Self {
+        self.provider_readiness_reached = provider_readiness_reached;
+        self
     }
 
     /// The same failure facts under a replacement error (deadline or
-    /// unconfirmed cleanup), keeping the underlying observation intact.
+    /// unconfirmed cleanup). The underlying route code and every staged
+    /// observation survive the replacement untouched.
     pub(crate) fn with_replaced_error(&self, error: RuntimeFailure) -> Self {
         Self {
+            route_code: self.route_code.clone(),
             error,
             stage: self.stage,
             sidecar_code: self.sidecar_code,
@@ -472,15 +514,15 @@ impl OpenFailure {
     }
 
     fn route_code(&self) -> &str {
-        self.error.diagnostic().code()
+        &self.route_code
     }
 }
 
-/// Builds one open rejection from its classified failure and the guard's
-/// cleanup report.
+/// Builds one open rejection from its classified failure and the observed
+/// cleanup disposition.
 pub(crate) fn open_rejection(
     failure: OpenFailure,
-    report: Option<&CleanupReport>,
+    cleanup: ClaudeAgentSdkFailedOpenCleanup,
 ) -> ClaudeAgentSdkOpenRejection {
     let receipt = ClaudeAgentSdkFailedOpenReceipt {
         route_code: failure.route_code().to_owned(),
@@ -489,13 +531,102 @@ pub(crate) fn open_rejection(
             .sidecar_code
             .map(ClaudeAgentSdkOpenSubcode::from_wire),
         provider_readiness_reached: failure.provider_readiness_reached,
-        cleanup: ClaudeAgentSdkFailedOpenCleanup::from_report(report),
+        cleanup,
     };
     ClaudeAgentSdkOpenRejection::new(failure.error, receipt)
 }
 
 impl From<OpenFailure> for ClaudeAgentSdkOpenRejection {
     fn from(failure: OpenFailure) -> Self {
-        open_rejection(failure, None)
+        // The `?` conversion is only reachable before the guard arms, so the
+        // open has acquired nothing and owes no cleanup.
+        open_rejection(failure, ClaudeAgentSdkFailedOpenCleanup::not_acquired())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// The deadline and unconfirmed-cleanup replacements rewrite only the
+    /// returned error. The receipt's route code, stage, and subcode stay
+    /// pinned to the underlying failure at its failure site.
+    #[test]
+    fn a_replaced_error_keeps_the_underlying_route_code_stage_and_subcode() {
+        let failure = OpenFailure::sidecar_rejection(
+            crate::sdk::failure::command_rejected(
+                "swallowtail.claude-agent.sdk.open_rejected",
+                "Claude Agent SDK sidecar rejected its restrictive open",
+                ClaudeAgentSdkFailureCode::ConstructionFailed,
+            ),
+            ClaudeAgentSdkFailureCode::ConstructionFailed,
+        );
+        assert_eq!(
+            failure.route_code(),
+            "swallowtail.claude-agent.sdk.open_rejected"
+        );
+
+        let unconfirmed =
+            failure.with_replaced_error(crate::sdk::driver::open_cleanup_unconfirmed());
+        assert_eq!(
+            unconfirmed.error.diagnostic().code(),
+            "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed"
+        );
+        assert_eq!(
+            unconfirmed.route_code(),
+            "swallowtail.claude-agent.sdk.open_rejected",
+            "the replacement must not overwrite the underlying route code"
+        );
+        assert_eq!(unconfirmed.stage, ClaudeAgentSdkOpenStage::SidecarRejected);
+        assert_eq!(
+            unconfirmed.sidecar_code,
+            Some(ClaudeAgentSdkFailureCode::ConstructionFailed)
+        );
+
+        let rejection = open_rejection(unconfirmed, ClaudeAgentSdkFailedOpenCleanup::unconfirmed());
+        assert_eq!(
+            rejection.failure().diagnostic().code(),
+            "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed"
+        );
+        assert_eq!(
+            rejection.receipt().route_code(),
+            "swallowtail.claude-agent.sdk.open_rejected"
+        );
+        assert_eq!(
+            rejection.receipt().sidecar_code(),
+            Some(ClaudeAgentSdkOpenSubcode::ConstructionFailed)
+        );
+        assert_eq!(
+            rejection.receipt().cleanup().disposition(),
+            ClaudeAgentSdkOpenCleanupDisposition::Unconfirmed
+        );
+    }
+
+    /// A deadline that replaces a sidecar rejection keeps the rejection's
+    /// route code and subcode in the receipt too.
+    #[test]
+    fn a_deadline_replacement_keeps_the_underlying_rejection() {
+        let failure = OpenFailure::sidecar_rejection(
+            crate::sdk::failure::command_rejected(
+                "swallowtail.claude-agent.sdk.open_rejected",
+                "Claude Agent SDK sidecar rejected its restrictive open",
+                ClaudeAgentSdkFailureCode::InitializationFailed,
+            ),
+            ClaudeAgentSdkFailureCode::InitializationFailed,
+        )
+        .with_replaced_error(crate::sdk::driver::open_deadline_elapsed());
+        let rejection = open_rejection(failure, ClaudeAgentSdkFailedOpenCleanup::not_acquired());
+        assert_eq!(
+            rejection.failure().diagnostic().code(),
+            "swallowtail.claude-agent.sdk.open_deadline_elapsed"
+        );
+        assert_eq!(
+            rejection.receipt().route_code(),
+            "swallowtail.claude-agent.sdk.open_rejected"
+        );
+        assert_eq!(
+            rejection.receipt().sidecar_code(),
+            Some(ClaudeAgentSdkOpenSubcode::InitializationFailed)
+        );
     }
 }

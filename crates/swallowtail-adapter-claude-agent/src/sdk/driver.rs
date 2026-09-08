@@ -22,7 +22,9 @@ use swallowtail_runtime::{
     RuntimeSessionId, SessionResumeBinding,
 };
 
-use crate::sdk::open_receipt::{ClaudeAgentSdkOpenRejection, OpenFailure, open_rejection};
+use crate::sdk::open_receipt::{
+    ClaudeAgentSdkFailedOpenCleanup, ClaudeAgentSdkOpenRejection, OpenFailure, open_rejection,
+};
 
 mod descriptor;
 mod handle;
@@ -467,7 +469,7 @@ impl ClaudeAgentSdkDriver {
                             OpenFailure::admission(unsupported(
                                 "registered tools on resumed sessions",
                             )),
-                            None,
+                            ClaudeAgentSdkFailedOpenCleanup::not_acquired(),
                         ));
                     }
                     if self.selected_skill.is_some() {
@@ -475,7 +477,7 @@ impl ClaudeAgentSdkDriver {
                             OpenFailure::admission(unsupported(
                                 "selected skill bundles on resumed sessions",
                             )),
-                            None,
+                            ClaudeAgentSdkFailedOpenCleanup::not_acquired(),
                         ));
                     }
                     let resume = ResumeSessionRequest::from_plan(
@@ -495,7 +497,7 @@ impl ClaudeAgentSdkDriver {
                                 "swallowtail.claude-agent.sdk.resume_binding_mismatch",
                                 "Claude Agent SDK resume request could not be reconstructed from its bound plan",
                             )),
-                            None,
+                            ClaudeAgentSdkFailedOpenCleanup::not_acquired(),
                         )
                     })?;
                     validate_resume(
@@ -518,7 +520,11 @@ impl ClaudeAgentSdkDriver {
                 deadline,
             );
             if bounded.expired() {
-                return Err(open_rejection(OpenFailure::deadline(false), None));
+                // Nothing was armed or acquired, so no cleanup was owed.
+                return Err(open_rejection(
+                    OpenFailure::deadline(false),
+                    ClaudeAgentSdkFailedOpenCleanup::not_acquired(),
+                ));
             }
             // Reap authority first, before anything else exists. An
             // unsupported, closing, or capacity-exhausted host refuses here,
@@ -592,13 +598,17 @@ impl ClaudeAgentSdkDriver {
                     // being terminated, so reporting success would be a lie.
                     None => {
                         let report = guard.fire(&bounded, &services).await;
+                        let cleanup = report.as_ref().map_or_else(
+                            ClaudeAgentSdkFailedOpenCleanup::unconfirmed,
+                            ClaudeAgentSdkFailedOpenCleanup::from_report,
+                        );
                         Err(open_rejection(
                             if report.is_some() {
                                 OpenFailure::deadline(true)
                             } else {
                                 OpenFailure::deadline_unconfirmed_cleanup(true)
                             },
-                            report.as_ref(),
+                            cleanup,
                         ))
                     }
                 },
@@ -608,16 +618,23 @@ impl ClaudeAgentSdkDriver {
                     // not as whatever the collapsing connection said next.
                     let expired = bounded.expired() || guard.deadline_fired();
                     let report = guard.fire(&bounded, &services).await;
+                    let cleanup = report.as_ref().map_or_else(
+                        ClaudeAgentSdkFailedOpenCleanup::unconfirmed,
+                        ClaudeAgentSdkFailedOpenCleanup::from_report,
+                    );
                     Err(match (expired, report.is_some()) {
+                        // Cleanup is still outstanding: the underlying route
+                        // code and observations stay, the error says the
+                        // termination could not be confirmed.
                         (_, false) => open_rejection(
                             failure.with_replaced_error(open_cleanup_unconfirmed()),
-                            None,
+                            cleanup,
                         ),
                         (true, true) => open_rejection(
                             failure.with_replaced_error(open_deadline_elapsed()),
-                            report.as_ref(),
+                            cleanup,
                         ),
-                        (false, true) => open_rejection(failure, report.as_ref()),
+                        (false, true) => open_rejection(failure, cleanup),
                     })
                 }
                 None => {
@@ -625,13 +642,17 @@ impl ClaudeAgentSdkDriver {
                     // guard still terminates and releases under host ownership;
                     // this future returns now either way.
                     let report = guard.fire(&bounded, &services).await;
+                    let cleanup = report.as_ref().map_or_else(
+                        ClaudeAgentSdkFailedOpenCleanup::unconfirmed,
+                        ClaudeAgentSdkFailedOpenCleanup::from_report,
+                    );
                     Err(open_rejection(
                         if report.is_some() {
                             OpenFailure::deadline(false)
                         } else {
                             OpenFailure::deadline_unconfirmed_cleanup(false)
                         },
-                        report.as_ref(),
+                        cleanup,
                     ))
                 }
             }

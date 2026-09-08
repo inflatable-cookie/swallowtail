@@ -15,7 +15,7 @@ use std::sync::{Arc, Mutex, OnceLock};
 use std::task::{Poll, Waker};
 use std::time::{Duration, Instant};
 use swallowtail_adapter_claude_agent::sdk::open_receipt::{
-    ClaudeAgentSdkOpenStage, ClaudeAgentSdkOpenSubcode,
+    ClaudeAgentSdkOpenCleanupDisposition, ClaudeAgentSdkOpenStage, ClaudeAgentSdkOpenSubcode,
 };
 use swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
 use swallowtail_adapter_claude_agent::sdk::{
@@ -1232,9 +1232,13 @@ fn the_card_132_registered_open_request_yields_a_typed_failed_open_receipt() {
     );
     assert!(!receipt.provider_readiness_reached());
     let cleanup = receipt.cleanup();
-    assert!(cleanup.confirmed(), "cleanup joins: {cleanup:?}");
-    assert_eq!(cleanup.resource(), &CleanupOutcome::NotApplicable);
-    assert_eq!(cleanup.credential(), &CleanupOutcome::Clean);
+    assert_eq!(
+        cleanup.disposition(),
+        ClaudeAgentSdkOpenCleanupDisposition::Confirmed,
+        "cleanup joins: {cleanup:?}"
+    );
+    assert_eq!(cleanup.resource(), Some(&CleanupOutcome::NotApplicable));
+    assert_eq!(cleanup.credential(), Some(&CleanupOutcome::Clean));
     assert_eq!(cleanup.registered_lease(), Some(&CleanupOutcome::Clean));
     assert_eq!(
         cleanup.survivor_posture(),

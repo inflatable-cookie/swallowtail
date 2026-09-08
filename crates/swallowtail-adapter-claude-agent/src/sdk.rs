@@ -50,8 +50,9 @@ pub use mcp::{
     ClaudeAgentSdkMcpServerStatusKind,
 };
 pub use open_receipt::{
-    ClaudeAgentSdkFailedOpenCleanup, ClaudeAgentSdkFailedOpenReceipt, ClaudeAgentSdkOpenRejection,
-    ClaudeAgentSdkOpenStage, ClaudeAgentSdkOpenSubcode,
+    ClaudeAgentSdkFailedOpenCleanup, ClaudeAgentSdkFailedOpenReceipt,
+    ClaudeAgentSdkOpenCleanupDisposition, ClaudeAgentSdkOpenRejection, ClaudeAgentSdkOpenStage,
+    ClaudeAgentSdkOpenSubcode,
 };
 pub use permission::claude_agent_sdk_tool_admission_namespace;
 pub use prepared::{

@@ -16,11 +16,12 @@
 
 use crate::host_id;
 use crate::sdk_support::{
-    CleanupEvent, SdkFixtureHost, SdkScenario, cleanup_request, prepared_session,
+    CleanupEvent, SdkFixtureHost, SdkScenario, Stall, cleanup_request, prepared_session,
 };
 use futures_executor::block_on;
 use swallowtail_adapter_claude_agent::sdk::{
-    ClaudeAgentSdkOpenRejection, ClaudeAgentSdkOpenStage, ClaudeAgentSdkOpenSubcode,
+    ClaudeAgentSdkOpenCleanupDisposition, ClaudeAgentSdkOpenRejection, ClaudeAgentSdkOpenStage,
+    ClaudeAgentSdkOpenSubcode,
 };
 use swallowtail_runtime::{CleanupOutcome, InteractiveSessionHandle, ProcessTreeCompletion};
 
@@ -55,11 +56,14 @@ fn a_construction_rejection_reports_its_typed_receipt() {
     );
     assert!(!receipt.provider_readiness_reached());
     let cleanup = receipt.cleanup();
-    assert!(cleanup.confirmed(), "fixture cleanup joins: {cleanup:?}");
+    assert_eq!(
+        cleanup.disposition(),
+        ClaudeAgentSdkOpenCleanupDisposition::Confirmed
+    );
     // The fixture working-resource service releases with no applicable
     // action by design; the credential lease release is Clean.
-    assert_eq!(cleanup.resource(), &CleanupOutcome::NotApplicable);
-    assert_eq!(cleanup.credential(), &CleanupOutcome::Clean);
+    assert_eq!(cleanup.resource(), Some(&CleanupOutcome::NotApplicable));
+    assert_eq!(cleanup.credential(), Some(&CleanupOutcome::Clean));
     assert_eq!(
         cleanup.survivor_posture(),
         Some(ProcessTreeCompletion::RootOnly)
@@ -111,7 +115,10 @@ fn an_initialization_rejection_reports_its_typed_receipt() {
         Some(ClaudeAgentSdkOpenSubcode::InitializationFailed)
     );
     assert!(!receipt.provider_readiness_reached());
-    assert!(receipt.cleanup().confirmed());
+    assert_eq!(
+        receipt.cleanup().disposition(),
+        ClaudeAgentSdkOpenCleanupDisposition::Confirmed
+    );
 }
 
 #[test]
@@ -136,7 +143,10 @@ fn an_mcp_status_rejection_reports_its_typed_receipt() {
         Some(ClaudeAgentSdkOpenSubcode::McpServerFailed)
     );
     assert!(!receipt.provider_readiness_reached());
-    assert!(receipt.cleanup().confirmed());
+    assert_eq!(
+        receipt.cleanup().disposition(),
+        ClaudeAgentSdkOpenCleanupDisposition::Confirmed
+    );
 }
 
 #[test]
@@ -152,7 +162,10 @@ fn an_account_readiness_validation_failure_names_its_stage() {
     );
     assert_eq!(receipt.sidecar_code(), None);
     assert!(!receipt.provider_readiness_reached());
-    assert!(receipt.cleanup().confirmed());
+    assert_eq!(
+        receipt.cleanup().disposition(),
+        ClaudeAgentSdkOpenCleanupDisposition::Confirmed
+    );
 }
 
 #[test]
@@ -177,16 +190,91 @@ fn a_deadline_open_reports_the_deadline_stage_and_unconfirmed_cleanup() {
     assert_eq!(receipt.sidecar_code(), None);
     assert!(!receipt.provider_readiness_reached());
     let cleanup = receipt.cleanup();
-    assert!(!cleanup.confirmed());
+    assert_eq!(
+        cleanup.disposition(),
+        ClaudeAgentSdkOpenCleanupDisposition::Unconfirmed
+    );
     assert_eq!(cleanup.survivor_posture(), None);
-    assert_eq!(cleanup.resource(), &CleanupOutcome::NotApplicable);
-    assert_eq!(cleanup.credential(), &CleanupOutcome::NotApplicable);
+    assert_eq!(cleanup.resource(), None);
+    assert_eq!(cleanup.credential(), None);
     // The guard still owns the termination request even though this future
     // returned.
     fixture.wait_for_cleanup(CleanupEvent::ProcessWait);
     fixture.release_process_hold();
     fixture.wait_for_cleanup(CleanupEvent::CredentialRelease);
     fixture.reaper().shutdown();
+}
+
+/// A failure refused before anything was acquired owes no cleanup, and the
+/// receipt must not report unconfirmed cleanup for it.
+#[test]
+fn an_open_refused_after_its_deadline_owes_no_cleanup() {
+    let host = host_id("claude-agent-sdk.fixture.open-receipt-elapsed");
+    let fixture = SdkFixtureHost::new(SdkScenario::Complete);
+    // The clock is already past the open deadline, so the route refuses the
+    // open before arming its guard: nothing is acquired, nothing is owed.
+    fixture.advance_time();
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let Err(rejection) = block_on(prepared.open_route_session_with_receipt(services)) else {
+        panic!("an elapsed open deadline must refuse the open");
+    };
+    assert_eq!(
+        rejection.failure().diagnostic().code(),
+        "swallowtail.claude-agent.sdk.open_deadline_elapsed"
+    );
+    let receipt = rejection.receipt();
+    // No replacement happened, so the receipt's route code is the returned
+    // failure's own code.
+    assert_eq!(
+        receipt.route_code(),
+        "swallowtail.claude-agent.sdk.open_deadline_elapsed"
+    );
+    assert_eq!(receipt.stage(), ClaudeAgentSdkOpenStage::Deadline);
+    assert_eq!(
+        receipt.cleanup().disposition(),
+        ClaudeAgentSdkOpenCleanupDisposition::NotAcquired
+    );
+    assert_eq!(receipt.cleanup().resource(), None);
+    assert_eq!(receipt.cleanup().credential(), None);
+    assert_eq!(receipt.cleanup().survivor_posture(), None);
+}
+
+/// When the deadline ends an open whose sidecar never answered, the receipt
+/// names the deadline-and-unconfirmed-cleanup truth itself: no rejection
+/// arrived, so none may be claimed.
+#[test]
+fn a_deadline_ended_open_never_claims_an_unarrived_rejection() {
+    let host = host_id("claude-agent-sdk.fixture.receipt-replaced");
+    let fixture = SdkFixtureHost::new(SdkScenario::OpenRejected)
+        .stalling(Stall::ForceStop)
+        .with_immediate_time();
+    let prepared = prepared_session(host.clone());
+    let services = fixture.services(host);
+    let Err(rejection) = block_on(prepared.open_route_session_with_receipt(services)) else {
+        panic!("the stalled open must fail on the host deadline");
+    };
+    assert_eq!(
+        rejection.failure().diagnostic().code(),
+        "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed"
+    );
+    let receipt = rejection.receipt();
+    assert_eq!(
+        receipt.route_code(),
+        "swallowtail.claude-agent.sdk.open_cleanup_unconfirmed"
+    );
+    assert_eq!(receipt.stage(), ClaudeAgentSdkOpenStage::Deadline);
+    assert_eq!(receipt.sidecar_code(), None);
+    assert!(!receipt.provider_readiness_reached());
+    let cleanup = receipt.cleanup();
+    assert_eq!(
+        cleanup.disposition(),
+        ClaudeAgentSdkOpenCleanupDisposition::Unconfirmed
+    );
+    assert_eq!(cleanup.resource(), None);
+    assert_eq!(cleanup.credential(), None);
+    // The guard still owns the termination request.
+    fixture.wait_for_cleanup(CleanupEvent::ProcessForceStop);
 }
 
 /// A prepared session that survives to close keeps the ordinary surface

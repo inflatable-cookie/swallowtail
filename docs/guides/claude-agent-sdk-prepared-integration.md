@@ -568,11 +568,13 @@ sidecar rejected the open command, whether provider readiness was reached,
 and what the ordered cleanup observed — resource and credential release, the
 owned-tree survivor posture, and, for registered opens, the bridge lease
 close (admission frozen, joined calls, listener and registry release). Every
-field is an observation: an unconfirmed cleanup reports `confirmed: false`
-and leaves the rest absent rather than inventing posture. Nothing carries
-paths, endpoints, bearer material, credentials, environment values, provider
-content, or sidecar stderr, and none of it is a support, qualification, or
-availability claim.
+field is an observation, and the cleanup disposition is three-way: a failure
+before anything was acquired reports `NotAcquired`, a completed continuation
+reports `Confirmed` with its staged observations, and an unconfirmed cleanup
+reports `Unconfirmed` with every staged observation absent rather than
+invented. Nothing carries paths, endpoints, bearer material, credentials,
+environment values, provider content, or sidecar stderr, and none of it is a
+support, qualification, or availability claim.
 
 The frozen Card 132 identities stay the reference reproduction (Research
 296). Swallowtail source `04e9b2dd9058783b7186a33a6c13dd74882a5925`; Bovine

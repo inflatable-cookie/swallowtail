@@ -115,13 +115,21 @@ the unchanged stable open failure plus a structured failed-open receipt
 `RegisteredAdmission`, `SidecarRejected`, `ReadinessValidation`,
 `RegisteredReadiness`, `SidecarExchange`, `Deadline`), the exact bounded
 sidecar subcode on a sidecar rejection, provider-readiness truth, and the
-observed cleanup disposition — resource and credential release, owned-tree
-survivor posture (read only after the pump joined), and, when a registered
-lease was opened, its bridge close outcome. The open guard now retains its
-ordered cleanup report (`CleanupReport` gained the registered close
-observation) instead of a bare completion bool. No forbidden material is
-reachable from the receipt; unconfirmed cleanup reports `confirmed: false`
-and stages nothing.
+observed cleanup disposition — a three-way truth (`NotAcquired`, `Confirmed`,
+`Unconfirmed`) with resource and credential release, owned-tree survivor
+posture (read only after the pump joined), and, when a registered lease was
+opened, its bridge close outcome staged only under `Confirmed`. The
+underlying route code is pinned at the failure site, so a deadline or
+unconfirmed-cleanup replacement of the returned error never overwrites it.
+The open guard now retains its ordered cleanup report (`CleanupReport`
+gained the registered close observation) instead of a bare completion bool.
+No forbidden material is reachable from the receipt.
+
+**Review round 1.** Both blocking receipt-correctness findings are fixed:
+replacement failures keep the documented underlying route code (pinned in
+`OpenFailure`, covered by inline unit tests), and pre-cleanup
+admission/deadline failures report `NotAcquired` instead of a false
+unconfirmed-cleanup claim (covered by the elapsed-deadline behavioral test).
 
 **Card 132 reproduction.** The exact registered-open request was reproduced
 provider-free against the frozen fake `0.3.259` sidecar

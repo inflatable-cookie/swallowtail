@@ -562,9 +562,15 @@ impl GrokAcpClientMcpCapsule {
         self.cleanup
     }
 
-    /// Returns whether non-decisive middle frames were elided to stay under
-    /// the capture bound. Decisive frames survive truncation, so this is not
-    /// by itself a verdict.
+    /// Returns whether middle frames were elided to hold the capsule near its
+    /// capture target.
+    ///
+    /// Not a verdict. Eviction runs in tiers and never reaches what the
+    /// verdict rests on: the exchange anchors survive every tier, and the two
+    /// guards the deepest tiers could reach — a native echo tool call, a
+    /// refused permission — are latched when captured rather than read back
+    /// out of the frames. A truncated capsule still scores what the run
+    /// showed.
     #[must_use]
     pub const fn truncated(&self) -> bool {
         self.truncated

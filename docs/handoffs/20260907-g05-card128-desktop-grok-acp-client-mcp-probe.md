@@ -91,7 +91,11 @@ first, and while the capsule is at its target nothing else is touched: the
 outbound `session/new` and `session/prompt` requests, every correlated
 response, every inbound agent request and the probe's recorded answer, the
 `tool_call` and `tool_call_update` updates, and the turn result all survive.
-ACP lets an agent refine one tool call many times,
+The deeper tiers, reached only past the 8192 ceiling, do take bulk tool-call
+history and then whole request/answer pairs — so the two verdict guards those
+could erase, a native echo tool call and a refused permission, are latched
+when captured and never read back out of the frames. The exchange anchors are
+never evicted at any tier. ACP lets an agent refine one tool call many times,
 and those updates are partial, so a later update is not assumed to repeat what
 an earlier one carried: the only elidable decisive frame is a bare progress
 tick — a `tool_call_update` that a later update for the same call follows and

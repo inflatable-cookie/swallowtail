@@ -307,11 +307,34 @@ The reviewer confirmed the native-echo latch is correct for the live runner,
 that every other scorer input survives all four tiers, and that
 `decisive_frame_lost` is no longer reachable from a conforming ACP turn.
 
-The reviewer's remaining note is accepted as residual and not fixed:
-retaining `locations` on an elided progress tick would be forensic hardening,
-not verdict correctness. The allowlist was otherwise confirmed sound, and the
-retention-ceiling seam confirmed unable to drift from production, since
-`FrameCapture::new` is the only constructor outside tests.
+**Sixth review round (same reviewer, head `953a1e97`): no blockers.** The
+reviewer walked every branch of the decision and every predicate it calls
+against all four eviction tiers and reported the enumeration closed —
+`decisive_frame_lost` latched; `session/new`, its response, and the prompt
+result structural anchors; transcript admission and helper liveness outside
+frame capture entirely; permission refusal and native echo latched before the
+tiers that could reach them; `session_new_no_response_cause` safe because pair
+eviction only removes complete pairs. A response past drain item 512 is read
+on the next pass while time remains, and the 495-second arithmetic holds as a
+receive-and-cleanup budget. Two documentation inaccuracies it found are fixed
+in this head: the packet's tier description omitted fourth-tier pair eviction,
+and the `truncated()` doc claimed decisive frames always survive.
+
+**Accepted residuals, not fixed.** None affects the authorized live runner's
+verdict:
+
+- the public frame-only verdict helpers deliberately pass default facts, so
+  they must not be used to re-score a truncated capsule; `capsule.verdict()`
+  is the answer that run produced
+- a malformed permission request carrying `id: null` is not latched and could
+  be elided. The repository ACP decoder defines a valid request id as a string
+  or integer, so this is outside a conforming run
+- retaining `locations` on an elided progress tick is forensic hardening, not
+  verdict correctness
+
+The allowlist was confirmed sound, and the retention-ceiling seam confirmed
+unable to drift from production, since `FrameCapture::new` is the only
+constructor outside tests.
 
 The reviewer's test-cost objection is taken: `FrameCapture` carries its
 retention ceiling as a field so tests reach it without building 8192 frames,

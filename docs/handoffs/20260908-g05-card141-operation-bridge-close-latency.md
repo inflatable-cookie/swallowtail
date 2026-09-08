@@ -11,64 +11,74 @@ created: 2026-09-08
 updated: 2026-09-08
 base_required: pushed-main
 queue_dispatch: northstar-queue
-queue_approval: "Tom authorized the switch to northstar-queue dispatch and retirement of the Swallowtail coordinator thread in the Chatterbox conversation on 2026-09-08, and has standing direction to keep promoted ready cards moving."
+queue_approval: "Tom authorized the switch to northstar-queue dispatch and retirement of the Swallowtail coordinator in the Chatterbox conversation on 2026-09-08, with standing direction to keep promoted ready cards moving."
 tags: [coordination, handoff, worker, host-local, teardown, latency]
 ---
 
-## Objective
+## What This Thread Was Doing
 
-Remove the fixed timeout cost from registered-tool route close. Card 139
-measured every registered-tool close at exactly 5.00 seconds:
+Implementing g05 card 141: remove the fixed timeout cost from
+registered-tool route close in `swallowtail-host-local`.
+
+## Why It Matters
+
+Card 139 measured every registered-tool close at exactly 5.00 seconds.
 `OperationBridgeListener::close` joins an accepted connection thread that
-waits out `IO_TIMEOUT` without its read being woken. Narrowing that constant
+waits out `IO_TIMEOUT` without its read being woken; narrowing that constant
 to two seconds moved the close to 2.00 seconds, so the cost is the timeout,
-not work.
+not work. Contract 063 allows a ten-second cleanup budget, so a fixed
+five-second wait spends half of it on every close and narrows the margin
+before a slow host trips `TeardownFailed`. Every Bovine Desktop session
+teardown pays that five seconds today.
 
 ## Current State
 
-Card 139 merged at `4b1e369c` and disclosed this rather than fixing it,
-because its manifest forbade `swallowtail-host-local`. It is recorded in
-`PAPERCUTS.md`. Contract 063 allows a ten-second cleanup budget, so a fixed
-five-second wait spends half of it on every close and narrows the margin
-before a slow host trips `TeardownFailed`. A Desktop session teardown pays
-that five seconds today.
+Card 139 merged at `4b1e369c` and disclosed this rather than fixing
+it, because its manifest forbade `swallowtail-host-local`; it is recorded in
+`PAPERCUTS.md`. Card 141 is promoted and ready on `main` with its manifest
+row in `docs/roadmaps/g05/031-ci-latency.md`. No work has started. There are
+no open Swallowtail pull requests.
 
-## Scope
+## Boundaries
 
-Wake the accepted connection thread's read on close instead of waiting out
-`IO_TIMEOUT`: a socket shutdown signal, a self-connect wake, or the existing
-`wake_accept` mechanism extended to accepted connections, whichever is least
-invasive against the single-listener topology cards 116 and 125 settled.
-Preserve every teardown guarantee exactly: one listener, one accept loop,
-joined tasks, admission frozen before settle, `TeardownFailed` on a genuine
-timeout with the lease retained and never reported clean, and unchanged
-watcher-profile behaviour. Keep `IO_TIMEOUT` as the backstop for a genuinely
-unresponsive peer.
+Owned and forbidden paths are the card 141 manifest row and they
+bind. Preserve every teardown guarantee exactly: one listener, one accept
+loop, joined tasks, admission frozen before settle, `TeardownFailed` on a
+genuine timeout with the lease retained and never reported clean, and
+unchanged watcher-profile behaviour. Keep `IO_TIMEOUT` as the backstop for a
+genuinely unresponsive peer. Do not add a second listener, lease manager, or
+loopback runtime; the single-listener topology was settled by cards 116 and
+125. No adapter changes beyond named test timings, no contract edits, no live
+provider work.
 
-## Acceptance
+## Important Context
 
-Registered-tool close no longer pays a fixed timeout, measured before and
-after and recorded in the card Result; watcher close behaviour and timings
-unchanged; all existing teardown, race, and both-profile fixtures pass
-unchanged; `TeardownFailed` still fires on a real unresponsive peer with the
-lease retained; the card 139 papercut entry is retired.
+The mechanism to fix is the wake, not the constant: wake the accepted
+connection thread's read on close rather than waiting the timeout out. A
+socket shutdown signal, a self-connect wake, or extending the existing
+`wake_accept` mechanism to accepted connections are all plausible; choose the
+least invasive against the single-listener topology and say why in the card
+Result. Guardian cleanup closes the registered lease before the provider close
+reaches the wire, so a child-teardown change cannot shorten this; card 139
+already proved that.
 
-## Stop Conditions
+## Suggested Next Move
 
-Waking the read would require changing the single-listener topology: stop and
-return to Chatterbox rather than adding a second listener or lease manager.
-
-## Validation
-
-- `cargo fmt -p swallowtail-host-local -- --check`
-- `effigy validate:focused swallowtail-host-local swallowtail-adapter-claude-agent`
-- `effigy package:verify-affected swallowtail-host-local swallowtail-adapter-claude-agent`
-- `effigy qa:northstar`
-- `git diff --check`
+Reproduce and measure the current close on both the registered-tool
+and watcher cases, implement the wake, then measure both again and record
+before and after in the card Result. Retire the card 139 papercut entry.
+Named validation: `cargo fmt -p swallowtail-host-local -- --check`;
+`effigy validate:focused swallowtail-host-local swallowtail-adapter-claude-agent`;
+`effigy package:verify-affected swallowtail-host-local swallowtail-adapter-claude-agent`;
+`effigy qa:northstar`; `git diff --check`. If waking the read would require
+changing the single-listener topology, stop and escalate to Chatterbox
+rather than working around it.
 
 ## Completion Protocol
 
 Stop at exact-head review. Do not merge, tag, release, or touch any consumer
-repository. Report the exact head SHA, the validation output, and anything you
-found but did not change. The card is `docs/roadmaps/g05/batch-cards/141-operation-bridge-close-latency.md`;
-its manifest row carries the owned and forbidden paths and they bind.
+repository. Report the exact head SHA, the named validation output, and
+anything found but deliberately not changed. The card at
+`docs/roadmaps/g05/batch-cards/141-operation-bridge-close-latency.md` and its manifest row bind: owned paths,
+forbidden paths, acceptance criteria, and stop conditions are as written
+there.

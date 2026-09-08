@@ -11,65 +11,74 @@ created: 2026-09-08
 updated: 2026-09-08
 base_required: pushed-main
 queue_dispatch: northstar-queue
-queue_approval: "Tom authorized the switch to northstar-queue dispatch and retirement of the Swallowtail coordinator thread in the Chatterbox conversation on 2026-09-08, and has standing direction to keep promoted ready cards moving."
+queue_approval: "Tom authorized the switch to northstar-queue dispatch and retirement of the Swallowtail coordinator in the Chatterbox conversation on 2026-09-08, with standing direction to keep promoted ready cards moving."
 tags: [coordination, handoff, worker, claude-agent-sdk, examples, admission]
 ---
 
-## Objective
+## What This Thread Was Doing
 
-Ship an executable `claude-agent.sdk` example that composes an
-`AdmittedInstanceRecord` from opaque host-owned references, lifts it with
+Implementing g05 card 142: ship an executable `claude-agent.sdk`
+example that composes an `AdmittedInstanceRecord`, lifts it with
 `ClaudeAgentSdkSessionPreparation::from_admitted`, and continues through the
 card 125 registered-tool binding, mediated stdio proxy attachment, and proxy
 recipe.
 
+## Why It Matters
+
+Bovine Desktop needs exactly this composition to build the runner for
+the card 132 Claude registered-tool live gate, which is one of the two
+consumer gates blocking the release scope. Swallowtail ships no example of it,
+and Desktop has been told not to work around the gap.
+
 ## Current State
 
-Bovine Desktop needs exactly this composition to build the runner for the
-card 132 live gate, and Swallowtail ships no example of it.
-`examples/prepared_claude_agent_sdk.rs` documents the inputs in prose and then
-accepts an already-constructed preparation; it never builds the admitted
-record and never calls `from_admitted`. The only example that constructs
-admission is `examples/connection_lifecycle.rs`, which is `claude-agent.acp`,
-a different route with different inputs. The guide's Explicit Inputs section
-names `from_admitted` correctly, so the gap is the executable example.
-Desktop has been told not to work around it.
+`examples/prepared_claude_agent_sdk.rs` documents the inputs in prose
+and then accepts an already-constructed preparation; it never builds the
+admitted record and never calls `from_admitted`. The only example that
+constructs admission is `examples/connection_lifecycle.rs`, which is
+`claude-agent.acp`, a different route with different inputs. The guide's
+Explicit Inputs section names `from_admitted` correctly, so the gap is the
+executable example rather than the prose. Card 125 merged the registered-tool
+route binding at `1cbc21ad`. No work has started.
 
-## Scope
+## Boundaries
 
-Add the example under `crates/swallowtail-adapter-claude-agent/examples/`:
-the interpreted-script launch recipe binding the approved Node runtime and the
-source-tagged sidecar entry, the environment reference carrying
-`CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE`, `_NATIVE_BINARY`, and `_MANIFEST`, the
-delegated subscription credential reference, the model route, and the open
-deadline; then `from_admitted`; then the registered-tool preparation,
-attachment, and proxy recipe through to open. Cross-reference it from
-`docs/guides/claude-agent-sdk-prepared-integration.md`'s admission section and
-from `docs/handoffs/20260907-g05-card132-desktop-claude-sdk-registered-tool-live-gate.md`.
+Owned and forbidden paths are the card 142 manifest row and they
+bind. Provider-free only: the example demonstrates composition and types as
+the existing examples do, and spends no live route. Do not change the
+admission API, the ACP example, or any claim, matrix cell, or contract.
 
-## Acceptance
+## Important Context
 
-An executable `claude-agent.sdk` example constructs `AdmittedInstanceRecord`
-and calls `from_admitted`; it continues through the registered-tool binding,
-attachment, and proxy recipe; the guide and the card 132 packet point at it;
-it is provider-free and spends no live route.
+The composition is: an interpreted-script launch recipe binding the
+approved Node runtime and the source-tagged sidecar entry; an environment
+reference carrying `CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE`, `_NATIVE_BINARY`,
+and `_MANIFEST`; a delegated subscription credential reference; a model route;
+and the open deadline. Swallowtail never installs, vendors, or updates the
+Node runtime, the SDK package, or the native binary; the consumer provisions
+them and passes opaque host-owned references. Cross-reference the finished
+example from the admission section of
+`docs/guides/claude-agent-sdk-prepared-integration.md` and from
+`docs/handoffs/20260907-g05-card132-desktop-claude-sdk-registered-tool-live-gate.md`,
+replacing the incorrect pointer to `prepared_claude_agent_sdk.rs`.
 
-## Stop Conditions
+## Suggested Next Move
 
-The composition cannot be expressed without changing the admission API: stop
-and return to Chatterbox rather than changing that API in an example card.
-
-## Validation
-
-- `cargo fmt -p swallowtail-adapter-claude-agent -- --check`
-- `effigy validate:focused swallowtail-adapter-claude-agent`
-- `effigy package:verify-affected swallowtail-adapter-claude-agent`
-- `effigy qa:northstar`
-- `git diff --check`
+Write the example, then continue it through the registered-tool
+preparation, attachment, and proxy recipe to open, so it covers the exact
+composition the card 132 packet requires. Named validation:
+`cargo fmt -p swallowtail-adapter-claude-agent -- --check`;
+`effigy validate:focused swallowtail-adapter-claude-agent`;
+`effigy package:verify-affected swallowtail-adapter-claude-agent`;
+`effigy qa:northstar`; `git diff --check`. If the composition cannot be
+expressed without changing the admission API, stop and escalate to Chatterbox
+rather than changing that API in an example card.
 
 ## Completion Protocol
 
 Stop at exact-head review. Do not merge, tag, release, or touch any consumer
-repository. Report the exact head SHA, the validation output, and anything you
-found but did not change. The card is `docs/roadmaps/g05/batch-cards/142-claude-sdk-admitted-instance-worked-example.md`;
-its manifest row carries the owned and forbidden paths and they bind.
+repository. Report the exact head SHA, the named validation output, and
+anything found but deliberately not changed. The card at
+`docs/roadmaps/g05/batch-cards/142-claude-sdk-admitted-instance-worked-example.md` and its manifest row bind: owned paths,
+forbidden paths, acceptance criteria, and stop conditions are as written
+there.

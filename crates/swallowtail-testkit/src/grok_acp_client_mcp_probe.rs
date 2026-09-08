@@ -654,8 +654,10 @@ pub trait GrokAcpClientMcpPeer {
     fn push_outbound(&mut self, message: Value) -> Result<(), GrokAcpClientMcpError>;
     /// Returns every inbound object now available.
     fn take_inbound(&mut self) -> Result<Vec<Value>, GrokAcpClientMcpError>;
-    /// Returns every inbound object now available, allowing at most `bound`
-    /// for the first message. Deterministic peers may ignore the bound.
+    /// Returns every inbound object now available, spending at most `bound`
+    /// in total. A peer that keeps streaming must still return by then, so an
+    /// exchange deadline cannot be outlived. Deterministic peers may ignore
+    /// the bound.
     fn take_inbound_within(
         &mut self,
         bound: Duration,
@@ -1354,20 +1356,7 @@ impl GrokAcpClientMcpPeer for LiveGrokAcpPeer {
         &mut self,
         bound: Duration,
     ) -> Result<Vec<Value>, GrokAcpClientMcpError> {
-        let mut messages = Vec::new();
-        match self.incoming.recv_timeout(bound) {
-            Ok(Ok(value)) => messages.push(value),
-            Ok(Err(error)) => return Err(error),
-            Err(RecvTimeoutError::Timeout | RecvTimeoutError::Disconnected) => return Ok(messages),
-        }
-        loop {
-            match self.incoming.recv_timeout(LIVE_IDLE) {
-                Ok(Ok(value)) => messages.push(value),
-                Ok(Err(error)) => return Err(error),
-                Err(RecvTimeoutError::Timeout | RecvTimeoutError::Disconnected) => break,
-            }
-        }
-        Ok(messages)
+        drain_within(&self.incoming, bound)
     }
 
     fn close(&mut self) -> GrokAcpClientMcpCleanup {
@@ -1394,6 +1383,38 @@ impl GrokAcpClientMcpPeer for LiveGrokAcpPeer {
     fn echo_helper_live(&mut self) -> bool {
         self.echo_helper_live
     }
+}
+
+/// Reads one inbound burst, spending at most `bound` in total.
+///
+/// The first message may take the whole budget; after that [`LIVE_IDLE`]
+/// ends the burst. The budget is a hard ceiling on both: an agent that
+/// streams without pause cannot hold the drain open past the deadline its
+/// exchange set, so the probe's worst-case wall clock is the sum of the
+/// exchange bounds and nothing else.
+fn drain_within(
+    incoming: &Receiver<Result<Value, GrokAcpClientMcpError>>,
+    bound: Duration,
+) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+    let deadline = std::time::Instant::now() + bound;
+    let mut messages = Vec::new();
+    match incoming.recv_timeout(bound) {
+        Ok(Ok(value)) => messages.push(value),
+        Ok(Err(error)) => return Err(error),
+        Err(RecvTimeoutError::Timeout | RecvTimeoutError::Disconnected) => return Ok(messages),
+    }
+    loop {
+        let remaining = deadline.saturating_duration_since(std::time::Instant::now());
+        if remaining.is_zero() {
+            break;
+        }
+        match incoming.recv_timeout(LIVE_IDLE.min(remaining)) {
+            Ok(Ok(value)) => messages.push(value),
+            Ok(Err(error)) => return Err(error),
+            Err(RecvTimeoutError::Timeout | RecvTimeoutError::Disconnected) => break,
+        }
+    }
+    Ok(messages)
 }
 
 #[allow(dead_code)]
@@ -1960,8 +1981,7 @@ struct FrameCapture {
 /// agent's own requests such as `session/request_permission`), and the
 /// tool-call and tool-result session updates. What is left over is the
 /// streaming chatter — `agent_message_chunk`, thought chunks, plan
-/// notifications — which no verdict depends on and which is the only class
-/// overflow is allowed to elide.
+/// notifications — which no verdict depends on and is evicted first.
 fn frame_is_decisive(frame: &GrokAcpClientMcpFrame) -> bool {
     if frame.is_outbound() {
         return true;
@@ -1986,12 +2006,13 @@ impl FrameCapture {
 
     /// Captures one frame, keeping the capsule under [`MAXIMUM_FRAMES`].
     ///
-    /// At capacity the oldest non-decisive frame is evicted so the incoming
-    /// frame still lands: `truncated` then means "uninteresting middle frames
-    /// were elided", never "the answer was dropped". Only a capture whose
-    /// entire capacity is decisive can lose a decisive frame, and that sets
-    /// `decisive_frame_lost`, the sole remaining route to
-    /// [`InconclusiveCause::Truncated`].
+    /// At capacity the oldest evictable frame goes so the incoming frame
+    /// still lands, and `truncated` records that middle frames were elided.
+    /// Nothing irreplaceable is evictable, so this never drops the answer.
+    /// `decisive_frame_lost` — the sole remaining route to
+    /// [`InconclusiveCause::Truncated`] — needs a capture whose whole
+    /// capacity is irreplaceable, which means hundreds of distinct requests
+    /// and tool calls inside one probe turn.
     fn push(&mut self, direction: FrameDirection, message: Value) {
         let frame = GrokAcpClientMcpFrame { direction, message };
         if self.frames.len() < MAXIMUM_FRAMES {
@@ -1999,7 +2020,7 @@ impl FrameCapture {
             return;
         }
         self.truncated = true;
-        if let Some(evict_at) = self.frames.iter().position(|held| !frame_is_decisive(held)) {
+        if let Some(evict_at) = evictable_at(&self.frames) {
             self.frames.remove(evict_at);
             self.frames.push(frame);
             return;
@@ -2008,6 +2029,49 @@ impl FrameCapture {
             self.decisive_frame_lost = true;
         }
     }
+}
+
+/// Returns the oldest frame overflow is allowed to drop.
+///
+/// Chatter goes first. After that the only evictable decisive frame is a
+/// `tool_call_update` a later update for the same `toolCallId` has already
+/// superseded: ACP lets an agent refine one tool call many times, and only
+/// the latest update for a call carries its outcome, so an earlier one is
+/// middle progress. Everything else — outbound requests and recorded
+/// answers, correlated responses, inbound agent requests, the opening
+/// `tool_call`, and the newest update for every call — is irreplaceable and
+/// is never returned here.
+fn evictable_at(frames: &[GrokAcpClientMcpFrame]) -> Option<usize> {
+    if let Some(at) = frames.iter().position(|held| !frame_is_decisive(held)) {
+        return Some(at);
+    }
+    frames
+        .iter()
+        .enumerate()
+        .position(|(at, frame)| tool_call_update_is_superseded(frames, at, frame))
+}
+
+fn tool_call_update_is_superseded(
+    frames: &[GrokAcpClientMcpFrame],
+    at: usize,
+    frame: &GrokAcpClientMcpFrame,
+) -> bool {
+    if update_kind(&frame.message) != Some("tool_call_update") {
+        return false;
+    }
+    let Some(call) = tool_call_id(&frame.message) else {
+        return false;
+    };
+    frames[at + 1..].iter().any(|later| {
+        update_kind(&later.message) == Some("tool_call_update")
+            && tool_call_id(&later.message) == Some(call)
+    })
+}
+
+fn tool_call_id(message: &Value) -> Option<&str> {
+    message
+        .pointer("/params/update/toolCallId")
+        .and_then(Value::as_str)
 }
 
 fn method_of(message: &Value) -> Option<&str> {
@@ -2953,7 +3017,12 @@ mod tests {
     /// [`SLOW_TURN_LATENCY`], and otherwise reports the empty drain a real
     /// timeout produces. Shrink the prompt bound back to protocol scale and
     /// this fixture scores `no_turn_result`, exactly as the 2026-09-08 `1.0.5`
-    /// rerun did. It spends no wall clock: the bound offered is the signal.
+    /// rerun did.
+    ///
+    /// It pins the wiring, not the clock: the bound offered is the signal, so
+    /// it spends no wall clock and cannot observe how a drain spends its
+    /// budget. `drain_within_returns_inside_its_budget_under_a_continuous_stream`
+    /// covers that on a real clock.
     #[derive(Default)]
     struct SlowTurnPeer {
         queued: VecDeque<Value>,
@@ -3073,6 +3142,112 @@ mod tests {
         assert!(
             prompt_bound >= SLOW_TURN_LATENCY,
             "the prompt exchange must outlive a turn that reasons before answering"
+        );
+    }
+
+    #[test]
+    fn drain_within_returns_inside_its_budget_under_a_continuous_stream() {
+        // An agent that never pauses must not hold the drain open past the
+        // deadline its exchange set: without a total budget, `LIVE_IDLE`
+        // alone keeps re-arming and the exchange bound means nothing.
+        let (sender, incoming) = mpsc::channel();
+        let stream = thread::spawn(move || {
+            for index in 0..100 {
+                if sender.send(Ok(json!({"chunk": index}))).is_err() {
+                    return;
+                }
+                thread::sleep(Duration::from_millis(20));
+            }
+        });
+        let budget = Duration::from_millis(100);
+        let started = std::time::Instant::now();
+        let messages = drain_within(&incoming, budget).expect("drain");
+        let elapsed = started.elapsed();
+        assert!(
+            elapsed < Duration::from_millis(1_000),
+            "drain spent {elapsed:?} against a {budget:?} budget"
+        );
+        assert!(!messages.is_empty(), "the stream was read, not skipped");
+        drop(incoming);
+        let _ = stream.join();
+    }
+
+    #[test]
+    fn capture_evicts_superseded_tool_call_updates_before_the_answer() {
+        // ACP lets one tool call be refined many times. A capacity filled
+        // with those refinements must not cost us the turn result.
+        let mut capture = FrameCapture::new();
+        capture.push(
+            FrameDirection::Outbound,
+            json!({"jsonrpc": "2.0", "id": 3, "method": "session/new"}),
+        );
+        capture.push(
+            FrameDirection::Inbound,
+            json!({
+                "jsonrpc": "2.0",
+                "method": "session/update",
+                "params": {
+                    "sessionId": FIXTURE_SESSION,
+                    "update": {"sessionUpdate": "tool_call", "toolCallId": "echo-1"}
+                }
+            }),
+        );
+        for index in 0..MAXIMUM_FRAMES * 2 {
+            capture.push(
+                FrameDirection::Inbound,
+                json!({
+                    "jsonrpc": "2.0",
+                    "method": "session/update",
+                    "params": {
+                        "sessionId": FIXTURE_SESSION,
+                        "update": {
+                            "sessionUpdate": "tool_call_update",
+                            "toolCallId": "echo-1",
+                            "status": "in_progress",
+                            "content": [{"type": "content", "content": {"type": "text", "text": index.to_string()}}]
+                        }
+                    }
+                }),
+            );
+        }
+        let answer = json!({"jsonrpc": "2.0", "id": 4, "result": {"stopReason": "end_turn"}});
+        capture.push(FrameDirection::Inbound, answer.clone());
+
+        assert!(capture.truncated);
+        assert!(
+            !capture.decisive_frame_lost,
+            "a superseded refinement must be evicted before the answer"
+        );
+        assert_eq!(capture.frames.len(), MAXIMUM_FRAMES);
+        assert_eq!(
+            capture.frames.last().expect("answer retained").message,
+            answer
+        );
+        assert!(
+            capture
+                .frames
+                .iter()
+                .any(|frame| { update_kind(&frame.message) == Some("tool_call") }),
+            "the opening tool call is never evicted"
+        );
+        assert!(
+            capture.frames.iter().any(
+                |frame| frame.is_outbound() && method_of(&frame.message) == Some("session/new")
+            ),
+            "the session/new request is never evicted"
+        );
+        let newest_update = capture
+            .frames
+            .iter()
+            .rfind(|frame| update_kind(&frame.message) == Some("tool_call_update"))
+            .expect("an update survives");
+        assert_eq!(
+            newest_update
+                .message
+                .pointer("/params/update/content/0/content/text")
+                .and_then(Value::as_str),
+            Some((MAXIMUM_FRAMES * 2 - 1).to_string().as_str()),
+            "the newest update for the call must be the one retained"
         );
     }
 

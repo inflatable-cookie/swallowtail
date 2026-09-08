@@ -68,16 +68,25 @@ request delivered late in an exchange is still answered.
   margin so a cold first spawn cannot produce a false
   `echo_liveness_unproven`
 
+Each bound is a total budget, not a per-message one: one inbound read returns
+when its budget is spent even if the agent is still streaming, so an agent
+that never pauses cannot hold an exchange open. Worst-case probe wall clock is
+therefore the sum of the bounds, about eight and a half minutes, and one run
+of the probe cannot exceed that.
+
 Frame capture holds 512 frames. That capacity is spent on streaming chatter
 only: at capacity the oldest non-decisive frame is evicted so the incoming
 frame still lands. The outbound `session/new` and `session/prompt` requests,
 every correlated response, every inbound agent request and the probe's
 recorded answer, the `tool_call` and `tool_call_update` updates, and the turn
-result are never evicted. `truncated` on a capsule therefore means
-"uninteresting middle frames were elided" and is not a verdict; the
-`truncated` inconclusive cause is reachable only if the whole capacity is
-filled by decisive frames, which no ACP session shape reaches. A truncated
-capsule still scores its real verdict.
+result are never evicted. ACP lets an agent refine one tool call many times;
+only the newest update for a call carries its outcome, so an earlier
+superseded update is evicted after chatter and before anything
+irreplaceable. `truncated` on a capsule therefore means "uninteresting middle
+frames were elided" and is not a verdict; a truncated capsule still scores its
+real verdict. The `truncated` inconclusive cause is reachable only when the
+whole capacity is irreplaceable — hundreds of distinct requests and distinct
+tool calls inside one probe turn.
 
 ## Command
 

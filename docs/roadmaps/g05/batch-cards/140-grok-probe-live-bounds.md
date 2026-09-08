@@ -136,6 +136,45 @@ Invocation remains unproven. The four `grok-build.acp` cells stay
 release action follows. The packet carries the new bounds and the new meaning
 of `truncated`.
 
+**Independent review (codex/gpt-5.6-terra, exact head `97ecab4e`).** Three
+findings, two real and both fixed:
+
+1. The exchange deadline was not absolute. `take_inbound_within` drained
+   while frames kept arriving inside `LIVE_IDLE` and never consulted the
+   `remaining` budget `exchange` passed it, so an agent streaming without
+   pause could outlive the 300-second prompt bound indefinitely: probe wall
+   clock was unbounded, which is the same class of defect as the bounds this
+   card was opened to fix. The drain is now `drain_within`, a free function
+   holding its own absolute deadline and capping each idle wait at the
+   remaining budget. Worst-case probe wall clock is now exactly the sum of
+   the exchange bounds, about eight and a half minutes.
+2. A capacity filled entirely by decisive frames still dropped the answer.
+   ACP lets an agent refine one tool call many times, so 505
+   `tool_call_update` frames plus the setup frames could evict nothing, and
+   the terminal turn result was lost to a harness-caused `truncated` —
+   directly against the review oracle. Eviction is now ordered: chatter
+   first, then a `tool_call_update` that a later update for the same
+   `toolCallId` has superseded, and never the opening `tool_call`, the newest
+   update for a call, a correlated response, an agent request, or an outbound
+   frame. `truncated` as a cause now needs hundreds of *distinct* requests
+   and tool calls in one turn, and the packet says so instead of claiming no
+   session shape reaches it.
+3. The reviewer noted `SlowTurnPeer` derives its behaviour from the bound it
+   is offered rather than from wall clock, so it could not have caught
+   finding 1. Accepted as stated. It is kept for what it does pin — which
+   bound reaches the prompt exchange, which is exactly what regressed — and
+   its doc comment now says that plainly. The clock-shaped gap is closed by
+   `drain_within_returns_inside_its_budget_under_a_continuous_stream`, which
+   runs a real 20ms-cadence stream against a 100ms budget and fails on the
+   pre-fix drain. The reviewer also observed that the chatty fixture's echo
+   transcript is injected by the fake peer rather than earned; that is the
+   module's existing offline design, where the transcript is a file the live
+   helper writes, and is unchanged by this card.
+
+The reviewer found no droppable frame class the scorers read, and confirmed
+middle eviction preserves the relative ordering the indexed request/response
+correlations depend on.
+
 **Validation.** `effigy validate:focused swallowtail-testkit`,
 `effigy package:verify-affected swallowtail-testkit`, `effigy qa:northstar`,
 `scripts/check-public-api.sh` (one added const, `LIVE_PROMPT_WAIT`, absorbed

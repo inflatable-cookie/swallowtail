@@ -63,15 +63,25 @@ pub const ECHO_MCP_TRANSCRIPT_FLAG: &str = "--transcript";
 
 static ECHO_MCP_TRANSCRIPT_SEQ: AtomicU64 = AtomicU64::new(0);
 
-/// Retained-frame capacity for one capsule.
+/// Target frame count for one capsule.
 ///
 /// A live turn streams one `session/update` notification per output chunk, so
 /// a real session emits far more frames than a hand-reviewable capsule should
-/// carry. This bound is spent on the chatter, never on the answer:
-/// [`FrameCapture::push`] evicts the oldest non-decisive frame to make room
-/// and only ever drops a decisive frame when the whole capacity is already
-/// decisive, which no ACP session shape reaches.
+/// carry. This budget is spent on the elidable frames only:
+/// [`FrameCapture::push`] evicts the oldest of those to make room, and when
+/// none is left the capsule grows instead of dropping evidence.
 const MAXIMUM_FRAMES: usize = 512;
+/// Hard ceiling on retained frames, guarding memory when nothing in the
+/// capture may be dropped.
+///
+/// [`MAXIMUM_FRAMES`] is the capsule's target shape, not a licence to lose
+/// evidence: a session whose frames are all irreplaceable — many distinct
+/// tool calls, each with its own result — grows past that target rather than
+/// discarding the answer. This ceiling bounds that growth. Reaching it needs
+/// thousands of distinct requests and tool calls inside one probe turn, which
+/// is the only shape left that can score
+/// [`InconclusiveCause::Truncated`].
+const MAXIMUM_RETAINED_FRAMES: usize = 8_192;
 /// Directive prompt recorded verbatim on every capsule.
 pub const ECHO_PROMPT: &str = "You must call the tool named echo with argument text set to ping. Do not finish the turn until that tool call has returned.";
 /// Session id used by the offline fixtures. Never sent to a provider.
@@ -1908,6 +1918,12 @@ fn exchange(
     let response_id = json!(id);
     loop {
         let remaining = deadline.saturating_duration_since(std::time::Instant::now());
+        if remaining.is_zero() {
+            // The bound is spent. A backlog must not buy further passes: a
+            // zero-budget drain still returns an already-queued frame, so
+            // without this the loop reads one frame per pass forever.
+            return Ok(());
+        }
         let inbound = peer.take_inbound_within(remaining)?;
         if inbound.is_empty() {
             // The bound expired (or the deterministic peer has nothing left);
@@ -2004,27 +2020,34 @@ impl FrameCapture {
         }
     }
 
-    /// Captures one frame, keeping the capsule under [`MAXIMUM_FRAMES`].
+    /// Captures one frame, holding the capsule at [`MAXIMUM_FRAMES`] by
+    /// eliding frames nothing depends on.
     ///
-    /// At capacity the oldest evictable frame goes so the incoming frame
+    /// At the target the oldest evictable frame goes so the incoming frame
     /// still lands, and `truncated` records that middle frames were elided.
-    /// Nothing irreplaceable is evictable, so this never drops the answer.
-    /// `decisive_frame_lost` — the sole remaining route to
-    /// [`InconclusiveCause::Truncated`] — needs a capture whose whole
-    /// capacity is irreplaceable, which means hundreds of distinct requests
-    /// and tool calls inside one probe turn.
+    /// When nothing is evictable the capsule grows to
+    /// [`MAXIMUM_RETAINED_FRAMES`] rather than dropping evidence, so no
+    /// ordinary session — however many distinct tool calls it makes — can
+    /// cost us the answer. Only past that ceiling is a frame lost, and a
+    /// decisive one then sets `decisive_frame_lost`, the sole route to
+    /// [`InconclusiveCause::Truncated`].
     fn push(&mut self, direction: FrameDirection, message: Value) {
         let frame = GrokAcpClientMcpFrame { direction, message };
         if self.frames.len() < MAXIMUM_FRAMES {
             self.frames.push(frame);
             return;
         }
-        self.truncated = true;
         if let Some(evict_at) = evictable_at(&self.frames) {
             self.frames.remove(evict_at);
+            self.truncated = true;
             self.frames.push(frame);
             return;
         }
+        if self.frames.len() < MAXIMUM_RETAINED_FRAMES {
+            self.frames.push(frame);
+            return;
+        }
+        self.truncated = true;
         if frame_is_decisive(&frame) {
             self.decisive_frame_lost = true;
         }
@@ -2033,14 +2056,15 @@ impl FrameCapture {
 
 /// Returns the oldest frame overflow is allowed to drop.
 ///
-/// Chatter goes first. After that the only evictable decisive frame is a
-/// `tool_call_update` a later update for the same `toolCallId` has already
-/// superseded: ACP lets an agent refine one tool call many times, and only
-/// the latest update for a call carries its outcome, so an earlier one is
-/// middle progress. Everything else — outbound requests and recorded
-/// answers, correlated responses, inbound agent requests, the opening
-/// `tool_call`, and the newest update for every call — is irreplaceable and
-/// is never returned here.
+/// Chatter goes first. After that the only elidable decisive frame is a
+/// `tool_call_update` that carries no evidence of its own and is followed by
+/// another update for the same `toolCallId` — a bare progress tick. ACP
+/// updates are partial refinements, so a later update does not necessarily
+/// repeat what an earlier one carried; anything holding `content` or a
+/// settled `status` is kept whatever follows it. Everything else — outbound
+/// requests and recorded answers, correlated responses, inbound agent
+/// requests, and the opening `tool_call` — is irreplaceable and is never
+/// returned here.
 fn evictable_at(frames: &[GrokAcpClientMcpFrame]) -> Option<usize> {
     if let Some(at) = frames.iter().position(|held| !frame_is_decisive(held)) {
         return Some(at);
@@ -2048,15 +2072,17 @@ fn evictable_at(frames: &[GrokAcpClientMcpFrame]) -> Option<usize> {
     frames
         .iter()
         .enumerate()
-        .position(|(at, frame)| tool_call_update_is_superseded(frames, at, frame))
+        .position(|(at, frame)| tool_call_progress_tick_is_superseded(frames, at, frame))
 }
 
-fn tool_call_update_is_superseded(
+fn tool_call_progress_tick_is_superseded(
     frames: &[GrokAcpClientMcpFrame],
     at: usize,
     frame: &GrokAcpClientMcpFrame,
 ) -> bool {
-    if update_kind(&frame.message) != Some("tool_call_update") {
+    if update_kind(&frame.message) != Some("tool_call_update")
+        || tool_call_update_carries_evidence(&frame.message)
+    {
         return false;
     }
     let Some(call) = tool_call_id(&frame.message) else {
@@ -2066,6 +2092,28 @@ fn tool_call_update_is_superseded(
         update_kind(&later.message) == Some("tool_call_update")
             && tool_call_id(&later.message) == Some(call)
     })
+}
+
+/// Returns whether this `tool_call_update` carries something a later update
+/// for the same call may not repeat: any non-empty `content`, or a `status`
+/// that is not an in-flight one. Unknown statuses count as evidence, so the
+/// conservative answer is always "keep".
+fn tool_call_update_carries_evidence(message: &Value) -> bool {
+    let update = message.pointer("/params/update");
+    let carries_content = update
+        .and_then(|update| update.get("content"))
+        .is_some_and(|content| match content {
+            Value::Null => false,
+            Value::Array(items) => !items.is_empty(),
+            _ => true,
+        });
+    let settled_status = update
+        .and_then(|update| update.get("status"))
+        .and_then(Value::as_str)
+        .is_some_and(|status| {
+            !status.eq_ignore_ascii_case("pending") && !status.eq_ignore_ascii_case("in_progress")
+        });
+    carries_content || settled_status
 }
 
 fn tool_call_id(message: &Value) -> Option<&str> {
@@ -2561,7 +2609,7 @@ mod tests {
     #[test]
     fn capture_full_of_decisive_frames_names_the_lost_frame() {
         let mut capture = FrameCapture::new();
-        for index in 0..=MAXIMUM_FRAMES {
+        for index in 0..=MAXIMUM_RETAINED_FRAMES {
             capture.push(
                 FrameDirection::Outbound,
                 json!({"jsonrpc": "2.0", "id": index, "method": "session/prompt"}),
@@ -3151,7 +3199,12 @@ mod tests {
         // deadline its exchange set: without a total budget, `LIVE_IDLE`
         // alone keeps re-arming and the exchange bound means nothing.
         let (sender, incoming) = mpsc::channel();
+        // The stream must still be running when the drain starts, or a
+        // pre-fix drain could pass by finding the channel already exhausted.
+        let barrier = std::sync::Arc::new(std::sync::Barrier::new(2));
+        let stream_barrier = std::sync::Arc::clone(&barrier);
         let stream = thread::spawn(move || {
+            stream_barrier.wait();
             for index in 0..100 {
                 if sender.send(Ok(json!({"chunk": index}))).is_err() {
                     return;
@@ -3159,6 +3212,7 @@ mod tests {
                 thread::sleep(Duration::from_millis(20));
             }
         });
+        barrier.wait();
         let budget = Duration::from_millis(100);
         let started = std::time::Instant::now();
         let messages = drain_within(&incoming, budget).expect("drain");
@@ -3204,7 +3258,7 @@ mod tests {
                             "sessionUpdate": "tool_call_update",
                             "toolCallId": "echo-1",
                             "status": "in_progress",
-                            "content": [{"type": "content", "content": {"type": "text", "text": index.to_string()}}]
+                            "title": index.to_string()
                         }
                     }
                 }),
@@ -3244,10 +3298,210 @@ mod tests {
         assert_eq!(
             newest_update
                 .message
-                .pointer("/params/update/content/0/content/text")
+                .pointer("/params/update/title")
                 .and_then(Value::as_str),
             Some((MAXIMUM_FRAMES * 2 - 1).to_string().as_str()),
-            "the newest update for the call must be the one retained"
+            "the newest progress tick for the call must be the one retained"
+        );
+    }
+
+    #[test]
+    fn a_result_carrying_update_survives_a_later_partial_update() {
+        // ACP updates are partial: a later `{toolCallId, title}` refinement
+        // does not repeat the content an earlier one carried, so the earlier
+        // frame is not superseded by it.
+        let mut capture = FrameCapture::new();
+        let result = json!({
+            "jsonrpc": "2.0",
+            "method": "session/update",
+            "params": {
+                "sessionId": FIXTURE_SESSION,
+                "update": {
+                    "sessionUpdate": "tool_call_update",
+                    "toolCallId": "echo-1",
+                    "status": "completed",
+                    "content": [{"type": "content", "content": {"type": "text", "text": "ping"}}]
+                }
+            }
+        });
+        capture.push(FrameDirection::Inbound, result.clone());
+        for _ in 0..MAXIMUM_FRAMES * 2 {
+            capture.push(
+                FrameDirection::Inbound,
+                json!({
+                    "jsonrpc": "2.0",
+                    "method": "session/update",
+                    "params": {
+                        "sessionId": FIXTURE_SESSION,
+                        "update": {
+                            "sessionUpdate": "tool_call_update",
+                            "toolCallId": "echo-1",
+                            "title": ECHO_MCP_TOOL
+                        }
+                    }
+                }),
+            );
+        }
+        assert!(
+            capture.frames.iter().any(|frame| frame.message == result),
+            "an update carrying the tool result is never elided"
+        );
+        assert!(!capture.decisive_frame_lost);
+    }
+
+    #[test]
+    fn many_distinct_tool_calls_do_not_cost_the_turn_result() {
+        // Nothing limits an agent to one echo invocation, and each call has
+        // its own id, so a capacity of irreplaceable frames must grow rather
+        // than discard the answer.
+        let mut capture = FrameCapture::new();
+        capture.push(
+            FrameDirection::Outbound,
+            json!({
+                "jsonrpc": "2.0",
+                "id": 3,
+                "method": "session/new",
+                "params": {"cwd": FIXTURE_CWD, "mcpServers": [{"name": ECHO_MCP_SERVER_NAME}]}
+            }),
+        );
+        capture.push(
+            FrameDirection::Inbound,
+            json!({"jsonrpc": "2.0", "id": 3, "result": {"sessionId": FIXTURE_SESSION}}),
+        );
+        capture.push(
+            FrameDirection::Outbound,
+            json!({"jsonrpc": "2.0", "id": 4, "method": "session/prompt"}),
+        );
+        for call in 0..MAXIMUM_FRAMES {
+            let id = format!("echo-{call}");
+            capture.push(
+                FrameDirection::Inbound,
+                json!({
+                    "jsonrpc": "2.0",
+                    "method": "session/update",
+                    "params": {
+                        "sessionId": FIXTURE_SESSION,
+                        "update": {
+                            "sessionUpdate": "tool_call",
+                            "toolCallId": id,
+                            "title": ECHO_MCP_TOOL
+                        }
+                    }
+                }),
+            );
+            capture.push(
+                FrameDirection::Inbound,
+                json!({
+                    "jsonrpc": "2.0",
+                    "method": "session/update",
+                    "params": {
+                        "sessionId": FIXTURE_SESSION,
+                        "update": {
+                            "sessionUpdate": "tool_call_update",
+                            "toolCallId": id,
+                            "status": "completed",
+                            "content": [{"type": "content", "content": {"type": "text", "text": "ping"}}]
+                        }
+                    }
+                }),
+            );
+        }
+        let answer = json!({"jsonrpc": "2.0", "id": 4, "result": {"stopReason": "end_turn"}});
+        capture.push(FrameDirection::Inbound, answer.clone());
+
+        assert!(!capture.decisive_frame_lost);
+        assert!(capture.frames.len() > MAXIMUM_FRAMES);
+        assert!(capture.frames.len() <= MAXIMUM_RETAINED_FRAMES);
+        assert_eq!(
+            capture.frames.last().expect("answer retained").message,
+            answer
+        );
+        assert_eq!(
+            grok_acp_client_mcp_verdict_decision(
+                &capture.frames,
+                &EchoMcpTranscript::called(),
+                capture.decisive_frame_lost,
+                true
+            )
+            .inconclusive_cause,
+            None
+        );
+    }
+
+    #[test]
+    fn exchange_stops_when_its_bound_is_spent_even_with_a_backlog() {
+        // A zero-budget drain still returns an already-queued frame, so an
+        // exchange that keeps looping on a spent deadline reads one frame per
+        // pass forever.
+        #[derive(Default)]
+        struct BacklogPeer {
+            drains: usize,
+        }
+
+        impl GrokAcpClientMcpPeer for BacklogPeer {
+            fn push_outbound(&mut self, _message: Value) -> Result<(), GrokAcpClientMcpError> {
+                Ok(())
+            }
+
+            fn take_inbound(&mut self) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+                self.take_inbound_within(LIVE_PROTOCOL_WAIT)
+            }
+
+            fn take_inbound_within(
+                &mut self,
+                _bound: Duration,
+            ) -> Result<Vec<Value>, GrokAcpClientMcpError> {
+                self.drains += 1;
+                if self.drains > 5_000 {
+                    return Ok(Vec::new());
+                }
+                // A backlog always has the next frame ready, whatever budget
+                // it is offered; the small sleep is the read cost.
+                thread::sleep(Duration::from_millis(1));
+                Ok(vec![json!({
+                    "jsonrpc": "2.0",
+                    "method": "session/update",
+                    "params": {
+                        "sessionId": FIXTURE_SESSION,
+                        "update": {
+                            "sessionUpdate": "agent_message_chunk",
+                            "content": {"type": "text", "text": "streaming"}
+                        }
+                    }
+                })])
+            }
+
+            fn close(&mut self) -> GrokAcpClientMcpCleanup {
+                GrokAcpClientMcpCleanup { joined: true }
+            }
+
+            fn stale_callback_request(&mut self) -> Option<Value> {
+                None
+            }
+        }
+
+        let mut peer = BacklogPeer::default();
+        let mut capture = FrameCapture::new();
+        let bound = Duration::from_millis(50);
+        let started = std::time::Instant::now();
+        exchange(
+            &mut peer,
+            &mut capture,
+            1,
+            "session/prompt",
+            json!({"sessionId": FIXTURE_SESSION}),
+            bound,
+        )
+        .expect("exchange returns");
+        let elapsed = started.elapsed();
+        assert!(
+            peer.drains < 1_000,
+            "the exchange kept draining past its bound: {} passes",
+            peer.drains
+        );
+        assert!(
+            elapsed < Duration::from_secs(2),
+            "the exchange spent {elapsed:?} against a {bound:?} bound"
         );
     }
 

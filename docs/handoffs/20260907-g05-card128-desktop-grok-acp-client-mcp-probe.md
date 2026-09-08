@@ -69,24 +69,32 @@ request delivered late in an exchange is still answered.
   `echo_liveness_unproven`
 
 Each bound is a total budget, not a per-message one: one inbound read returns
-when its budget is spent even if the agent is still streaming, so an agent
-that never pauses cannot hold an exchange open. Worst-case probe wall clock is
-therefore the sum of the bounds, about eight and a half minutes, and one run
-of the probe cannot exceed that.
+when its budget is spent even if the agent is still streaming, and an exchange
+whose deadline has passed stops rather than taking another pass over a
+backlog. An agent that never pauses therefore cannot hold an exchange open.
+Worst-case probe wall clock is the sum of the bounds — 480 seconds of
+exchanges, plus the 5-second helper self-check and the 10-second join, so 495
+seconds — and one run cannot exceed that.
 
 Frame capture holds 512 frames. That capacity is spent on streaming chatter
 only: at capacity the oldest non-decisive frame is evicted so the incoming
 frame still lands. The outbound `session/new` and `session/prompt` requests,
 every correlated response, every inbound agent request and the probe's
 recorded answer, the `tool_call` and `tool_call_update` updates, and the turn
-result are never evicted. ACP lets an agent refine one tool call many times;
-only the newest update for a call carries its outcome, so an earlier
-superseded update is evicted after chatter and before anything
-irreplaceable. `truncated` on a capsule therefore means "uninteresting middle
-frames were elided" and is not a verdict; a truncated capsule still scores its
-real verdict. The `truncated` inconclusive cause is reachable only when the
-whole capacity is irreplaceable — hundreds of distinct requests and distinct
-tool calls inside one probe turn.
+result are never evicted. ACP lets an agent refine one tool call many times,
+and those updates are partial, so a later update is not assumed to repeat what
+an earlier one carried: the only elidable decisive frame is a bare progress
+tick — a `tool_call_update` with no `content` and no settled `status` that a
+later update for the same call follows. Anything carrying a result or a
+settled status is kept whatever comes after it.
+
+When nothing is elidable the capsule grows past 512 rather than dropping
+evidence, up to a hard ceiling of 8192 retained frames that exists only to
+bound memory. A session making many distinct tool calls, each with its own
+result, therefore keeps all of them. `truncated` on a capsule means
+"uninteresting middle frames were elided" and is not a verdict; a truncated
+capsule still scores its real verdict. The `truncated` inconclusive cause
+needs thousands of distinct requests and tool calls inside one probe turn.
 
 ## Command
 

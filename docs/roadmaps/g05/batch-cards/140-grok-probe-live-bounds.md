@@ -175,6 +175,44 @@ The reviewer found no droppable frame class the scorers read, and confirmed
 middle eviction preserves the relative ordering the indexed request/response
 correlations depend on.
 
+**Second review round (same reviewer, head `b7dc4ed4`).** Three more
+findings, all real and all fixed:
+
+4. The deadline was still bypassable. `exchange` called
+   `take_inbound_within(Duration::ZERO)` once its budget was spent, and a
+   zero-budget drain still returns an already-queued frame, so a backlog or a
+   fast producer bought one frame per pass indefinitely — the first fix
+   capped the helper but not the enclosing loop. `exchange` now returns as
+   soon as `remaining` is zero, pinned by
+   `exchange_stops_when_its_bound_is_spent_even_with_a_backlog`, which drives
+   a peer that always has the next frame ready. The reviewer's wall-clock
+   arithmetic is adopted: 495 seconds, not 480 — 480 of exchanges plus the
+   5-second helper self-check and the 10-second join.
+5. "A later update with the same id" did not make the earlier one
+   disposable. ACP `tool_call_update` fields are optional refinements, so a
+   result-carrying update followed by a bare `{toolCallId, title}` update was
+   evictable even though the newer frame replaced nothing. Only a bare
+   progress tick — no `content`, no settled `status`, followed by another
+   update for the same call — is elidable now; unknown statuses count as
+   evidence, so the conservative answer is always "keep".
+   `a_result_carrying_update_survives_a_later_partial_update` covers it.
+6. Decisive-only overflow was still reachable by an ordinary shape: nothing
+   limits the agent to one echo invocation, and 253 distinct tool
+   call/result pairs fill 512 irreplaceable frames. The fix drops the
+   assumption that 512 can hold every session. `MAXIMUM_FRAMES` is now the
+   capsule's target shape, not a licence to lose evidence: when nothing is
+   elidable the capture grows to `MAXIMUM_RETAINED_FRAMES` (8192), a ceiling
+   that exists only to bound memory and needs thousands of distinct requests
+   and tool calls in one turn to reach.
+   `many_distinct_tool_calls_do_not_cost_the_turn_result` builds the
+   reviewer's shape and asserts it scores.
+
+The reviewer also confirmed the `toolCallId` pointer is right for both update
+forms and that a missing id is safely irreplaceable, accepted the
+`SlowTurnPeer` clarification as resolved, and flagged that the drain test
+lacked a start barrier so a pre-fix drain could pass on an already-exhausted
+channel. The barrier is added.
+
 **Validation.** `effigy validate:focused swallowtail-testkit`,
 `effigy package:verify-affected swallowtail-testkit`, `effigy qa:northstar`,
 `scripts/check-public-api.sh` (one added const, `LIVE_PROMPT_WAIT`, absorbed

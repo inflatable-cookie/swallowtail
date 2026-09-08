@@ -1,6 +1,6 @@
 # 140 Grok Probe Live Bounds
 
-Status: ready
+Status: complete; PR 288
 Owner: Tom
 Created: 2026-09-08
 Updated: 2026-09-08

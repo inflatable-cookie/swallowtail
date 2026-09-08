@@ -134,10 +134,15 @@ top-level field; such a row remains fail-closed, and naming it would need one
 separately authorized future open. No live attempt ran; both Contract 061
 cells stay unqualified.
 
-**Validation.** `cargo fmt` check, package-scoped focused validation,
-affected-package verify, the card 116 mediated-stdio selector, `qa:routes`,
+**Validation.** `cargo fmt` check, package-scoped focused validation (489
+tests), affected-package verify, the card 116 mediated-stdio selector,
 `qa:docs`, `qa:northstar`, and `git diff --check` all passed on the reviewed
-head (see the queue closeout for exact selector output). Regression corpus:
+head. `effigy qa:routes` FAILS on the reviewed head with the pre-existing
+card-144 stale producer-gap cross classification (the `claude-agent.sdk`
+matrix `cross_ref` still names completed card 144 for
+`consumer_tool_exchange`); it reproduces on the clean dispatch head and is
+recorded in the appended `PAPERCUTS.md` entry for queue closeout, because
+matrix edits sit outside this card's owned paths. Regression corpus:
 `card-145-desktop-diagnostic-tuple.json` and `mcp-status-rows.json` with
 guard tests, sidecar-asset tests for every status/metadata variant, and
 non-leak assertions over all open responses.

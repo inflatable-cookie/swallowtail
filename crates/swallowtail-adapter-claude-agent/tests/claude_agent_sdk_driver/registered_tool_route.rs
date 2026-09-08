@@ -13,7 +13,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::task::{Poll, Waker};
-use std::time::{Duration, Instant};
+use std::time::Duration;
 use swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
 use swallowtail_adapter_claude_agent::sdk::{
     ClaudeAgentSdkSessionPreparation, ClaudeAgentSdkSessionProfile,
@@ -322,74 +322,122 @@ fn run_bounded(command: &mut std::process::Command) -> BoundedOutput {
         .expect("courier build starts");
     let stdout = child.stdout.take().expect("build stdout pipe");
     let stderr = child.stderr.take().expect("build stderr pipe");
+    let out_capture = Arc::new(Mutex::new(StreamCapture::default()));
+    let err_capture = Arc::new(Mutex::new(StreamCapture::default()));
     let (send_out, recv_out) = std::sync::mpsc::channel();
     let (send_err, recv_err) = std::sync::mpsc::channel();
-    std::thread::spawn(move || send_out.send(read_bounded(stdout)));
-    std::thread::spawn(move || send_err.send(read_bounded(stderr)));
+    let out_writer = Arc::clone(&out_capture);
+    let err_writer = Arc::clone(&err_capture);
+    std::thread::spawn(move || {
+        read_bounded(stdout, &out_writer);
+        send_out.send(())
+    });
+    std::thread::spawn(move || {
+        read_bounded(stderr, &err_writer);
+        send_err.send(())
+    });
     let status = child.wait().expect("courier build completes");
-    // The exit is already known; collecting output may not withhold it.
-    let deadline = Instant::now() + BUILD_DRAIN_BOUND;
+    // The exit is already known; collecting output may not withhold it. Each
+    // stream gets its own bound, so a slow first stream cannot consume the
+    // second one's.
     BoundedOutput {
         status,
-        stdout: collect_bounded(&recv_out, deadline, "stdout"),
-        stderr: collect_bounded(&recv_err, deadline, "stderr"),
+        stdout: collect_bounded(&recv_out, &out_capture, "stdout", BUILD_DRAIN_BOUND),
+        stderr: collect_bounded(&recv_err, &err_capture, "stderr", BUILD_DRAIN_BOUND),
     }
 }
 
-/// Takes one reader's result, or reports that it never finished.
+/// Takes one reader's capture, whether or not the reader finished.
 ///
 /// The reader thread is left running rather than joined: it ends when its
-/// pipe closes, and nothing here may wait on a descendant to do that.
+/// pipe closes, and nothing here may wait on a descendant to do that. The
+/// capture is shared rather than sent, so a bound that expires still reports
+/// every byte read so far instead of discarding the diagnostic it was meant
+/// to preserve.
 fn collect_bounded(
-    reader: &std::sync::mpsc::Receiver<String>,
-    deadline: Instant,
+    finished: &std::sync::mpsc::Receiver<()>,
+    capture: &Arc<Mutex<StreamCapture>>,
     stream: &str,
+    bound: Duration,
 ) -> String {
-    match reader.recv_timeout(deadline.saturating_duration_since(Instant::now())) {
-        Ok(text) => text,
-        Err(_) => format!(
-            "(capture incomplete: build {stream} still open {BUILD_DRAIN_BOUND:?} after exit)"
-        ),
+    let ending = match finished.recv_timeout(bound) {
+        Ok(()) => None,
+        Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+            Some(format!("build {stream} still open {bound:?} after exit"))
+        }
+        // A dropped sender is a reader that ended without reporting, which is
+        // not the same as a stream that is still producing.
+        Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
+            Some(format!("build {stream} reader ended without reporting"))
+        }
+    };
+    let capture = capture.lock().expect("build capture lock");
+    let rendered = capture.describe();
+    let fault = capture.fault.clone();
+    drop(capture);
+    match (ending, fault) {
+        (None, None) => rendered,
+        (ending, fault) => {
+            let reasons = [ending, fault]
+                .into_iter()
+                .flatten()
+                .collect::<Vec<_>>()
+                .join("; ");
+            format!("{rendered} (capture incomplete: {reasons})")
+        }
     }
 }
 
-/// Reads a stream to its end, retaining only its last `OUTPUT_CAP` bytes.
+/// One bounded stream capture, readable while its reader is still running.
+#[derive(Default)]
+struct StreamCapture {
+    retained: std::collections::VecDeque<u8>,
+    dropped: usize,
+    fault: Option<String>,
+}
+
+impl StreamCapture {
+    fn describe(&self) -> String {
+        let bytes = self.retained.iter().copied().collect::<Vec<_>>();
+        let text = String::from_utf8_lossy(&bytes).into_owned();
+        if self.dropped == 0 {
+            text
+        } else {
+            format!("(earlier {} bytes dropped)… {text}", self.dropped)
+        }
+    }
+}
+
+/// Reads a stream to its end into `capture`, retaining only its last
+/// `OUTPUT_CAP` bytes.
 ///
 /// A build's diagnosis is at the end of its output, behind however much
 /// progress noise the run produced, so the tail is the part worth keeping.
-fn read_bounded(mut stream: impl std::io::Read) -> String {
+/// Bytes land in the shared capture as they are read, so a caller whose bound
+/// expires still sees everything read up to that point.
+fn read_bounded(mut stream: impl std::io::Read, capture: &Arc<Mutex<StreamCapture>>) {
     const OUTPUT_CAP: usize = 4_096;
-    let mut retained: std::collections::VecDeque<u8> = std::collections::VecDeque::new();
-    let mut dropped = 0_usize;
     let mut buffer = [0_u8; 1_024];
-    let mut fault = None;
     loop {
         match stream.read(&mut buffer) {
-            Ok(0) => break,
+            Ok(0) => return,
             Ok(read) => {
-                retained.extend(&buffer[..read]);
-                while retained.len() > OUTPUT_CAP {
-                    retained.pop_front();
-                    dropped += 1;
+                let mut capture = capture.lock().expect("build capture lock");
+                capture.retained.extend(&buffer[..read]);
+                while capture.retained.len() > OUTPUT_CAP {
+                    capture.retained.pop_front();
+                    capture.dropped += 1;
                 }
             }
             Err(error) if error.kind() == std::io::ErrorKind::Interrupted => {}
             // A failed read is not an end of stream, and reporting it as one
             // would present a truncated build log as the whole story.
             Err(error) => {
-                fault = Some(format!("read failed: {error}"));
-                break;
+                capture.lock().expect("build capture lock").fault =
+                    Some(format!("read failed: {error}"));
+                return;
             }
         }
-    }
-    let bytes = retained.into_iter().collect::<Vec<_>>();
-    let mut text = String::from_utf8_lossy(&bytes).into_owned();
-    if dropped > 0 {
-        text = format!("(earlier {dropped} bytes dropped)… {text}");
-    }
-    match fault {
-        Some(reason) => format!("{text} (capture incomplete: {reason})"),
-        None => text,
     }
 }
 
@@ -1088,4 +1136,112 @@ fn a_courier_that_dies_at_startup_reports_its_own_stderr() {
         message.contains("exit status: 3"),
         "the observed exit reaches the failure: {message}"
     );
+}
+
+/// Deterministic proofs for the capture lifecycle itself.
+///
+/// Card 139: every defect three review rounds found lived here, in code that
+/// only runs when something else has already gone wrong, and none of it was
+/// reachable from a failing route test. These drive the fault paths directly.
+mod capture_lifecycle {
+    use super::{StreamCapture, collect_bounded, read_bounded};
+    use std::io::{Error, ErrorKind, Read};
+    use std::sync::{Arc, Mutex};
+    use std::time::Duration;
+
+    /// A reader that replays a fixed script of read outcomes.
+    struct ScriptedReader(Vec<Result<Vec<u8>, ErrorKind>>);
+
+    impl Read for ScriptedReader {
+        fn read(&mut self, buffer: &mut [u8]) -> std::io::Result<usize> {
+            match self.0.pop() {
+                None => Ok(0),
+                Some(Ok(bytes)) => {
+                    buffer[..bytes.len()].copy_from_slice(&bytes);
+                    Ok(bytes.len())
+                }
+                Some(Err(kind)) => Err(Error::new(kind, "scripted read outcome")),
+            }
+        }
+    }
+
+    fn scripted(mut outcomes: Vec<Result<Vec<u8>, ErrorKind>>) -> ScriptedReader {
+        outcomes.reverse();
+        ScriptedReader(outcomes)
+    }
+
+    #[test]
+    fn an_interrupted_read_is_retried_rather_than_ending_the_stream() {
+        let capture = Arc::new(Mutex::new(StreamCapture::default()));
+        read_bounded(
+            scripted(vec![
+                Ok(b"progress".to_vec()),
+                Err(ErrorKind::Interrupted),
+                Ok(b" then the diagnostic".to_vec()),
+            ]),
+            &capture,
+        );
+        let capture = capture.lock().expect("capture");
+        assert_eq!(capture.describe(), "progress then the diagnostic");
+        assert!(
+            capture.fault.is_none(),
+            "an interruption is not a capture fault"
+        );
+    }
+
+    #[test]
+    fn a_failed_read_is_not_an_end_of_stream() {
+        let capture = Arc::new(Mutex::new(StreamCapture::default()));
+        read_bounded(
+            scripted(vec![
+                Ok(b"what was read".to_vec()),
+                Err(ErrorKind::BrokenPipe),
+            ]),
+            &capture,
+        );
+        let capture = capture.lock().expect("capture");
+        assert_eq!(capture.describe(), "what was read");
+        let fault = capture.fault.as_ref().expect("a failed read is a fault");
+        assert!(
+            fault.contains("read failed"),
+            "the fault names itself: {fault}"
+        );
+    }
+
+    #[test]
+    fn an_expired_collection_still_reports_what_was_already_read() {
+        let capture = Arc::new(Mutex::new(StreamCapture::default()));
+        read_bounded(
+            scripted(vec![Ok(b"ROOT CAUSE: it failed here".to_vec())]),
+            &capture,
+        );
+        // The reader never reports: a descendant still holds the pipe.
+        let (_send, recv) = std::sync::mpsc::channel();
+        let collected = collect_bounded(&recv, &capture, "stderr", Duration::from_millis(50));
+        assert!(
+            collected.contains("ROOT CAUSE: it failed here"),
+            "an expired bound keeps the diagnostic it already had: {collected}"
+        );
+        assert!(
+            collected.contains("still open"),
+            "and says the capture is incomplete: {collected}"
+        );
+    }
+
+    #[test]
+    fn a_vanished_reader_is_not_reported_as_an_open_pipe() {
+        let capture = Arc::new(Mutex::new(StreamCapture::default()));
+        read_bounded(scripted(vec![Ok(b"partial".to_vec())]), &capture);
+        let (send, recv) = std::sync::mpsc::channel::<()>();
+        drop(send);
+        let collected = collect_bounded(&recv, &capture, "stdout", Duration::from_secs(30));
+        assert!(
+            collected.contains("ended without reporting"),
+            "a dropped reader is named as such, not as a live stream: {collected}"
+        );
+        assert!(
+            !collected.contains("still open"),
+            "and is never reported as an open pipe: {collected}"
+        );
+    }
 }

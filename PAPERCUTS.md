@@ -927,6 +927,27 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   waits on the courier's own rendezvous-claim event. 24 loaded runs of the
   isolated process-spawning selector are clean.
 
+### [ ] Nextest reports a rare leak for a test that spawns nothing — 2026-09-08
+- Friction: `claude_agent_sdk_driver` occasionally reports `118 passed
+  (1 leaky)` in the process shard. Card 139 captured the name by running with
+  `--status-level leak`: it is always
+  `registered_tool_route::open_without_a_host_composition_fails_typed`, at
+  roughly one occurrence in 24 full-binary runs. That test spawns no child
+  process at all — no courier, no nested build, no `LocalProcessHost` — so no
+  descendant can be holding the inherited stdout/stderr that nextest's leak
+  detection keys on.
+- Impact: a leak annotation nobody can act on, in the shard whose determinism
+  card 139 was opened to establish. It does not fail the run, but it is
+  exactly the kind of unexplained signal that makes the next real one easy to
+  wave through.
+- Fix shape: most likely the default 100ms `leak-timeout` expiring during
+  process teardown under load rather than a held pipe; `.config/nextest.toml`
+  sets no `leak-timeout`. Confirm by raising it and re-running loaded, then
+  either set it or explain the held descriptor. Keeping `--status-level leak`
+  on the shard would stop the name being hidden again.
+- Surface: `.config/nextest.toml`; the `ci-process` profile. Card 139's owned
+  paths exclude that file, which card 095 owns.
+
 ### [ ] Registered-tool close waits out the operation bridge read timeout — 2026-09-08
 - Friction: closing a registered-tool route measured 5.00s on every
   registered case. Card 139 measured it on

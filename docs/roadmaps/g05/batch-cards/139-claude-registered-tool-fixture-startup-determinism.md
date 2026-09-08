@@ -149,8 +149,11 @@ it does not make the case flaky.
 
 ### Review
 
-Three cross-model review rounds returned changes required, and all three were
-right on every count. Three defects are fixed here: the artifact was still
+Four cross-model review rounds returned changes required, and all four were
+right on every count. Every finding after the first round was in the evidence
+and lifetime paths, and most were seeded by the previous round's own fix. None
+were reachable from a failing test, which is why the loaded runs never saw
+them. Three defects are fixed here: the artifact was still
 read from the volatile path without retry, so publication inherited the race
 it was meant to remove; the new regression test used one machine-wide
 temporary filename, which is the shared mutable state this card exists to
@@ -185,10 +188,29 @@ inherited pipe, unbounded if that descendant never exits. A snapshot no
 longer claims an expired wait it never made, and acquisition retries only a
 `NotFound` read rather than every read error.
 
+The fourth round found that bounded collection discarded what it had already
+read: a build printing its diagnosis and then leaving a descendant on the pipe
+kept its exit status but lost the diagnosis to a timeout marker. The capture is
+now shared rather than sent, so an expired bound reports every byte read so far
+alongside the marker, and a reader that vanished is named as such instead of as
+a stream still open. Four deterministic tests under `capture_lifecycle` now
+drive these paths directly — interrupted read retried, failed read faulted
+rather than ended, expired collection preserving its diagnostic, vanished
+reader not reported as an open pipe — because this code only runs when
+something else has already failed and no route test reaches it.
+
+One observation stays open rather than closed. The shard reports a leaky test
+about once in 24 full-binary runs. Running with `--status-level leak` names it
+every time as `open_without_a_host_composition_fails_typed`, which spawns no
+child process, so no descendant can hold the inherited output nextest keys on.
+It is recorded in `PAPERCUTS.md` with the likely cause — the default 100ms
+`leak-timeout` expiring under load — and the file that would settle it is
+owned by card 095, not this one.
+
 ### Proof
 
 - 24 runs of the isolated process-spawning selector under sixteen CPU burners,
-  118 tests each, zero failures.
+  122 tests each, zero failures, with leak reporting enabled.
 - 64 concurrent instances of the two scratch-executable tests: all pass. The
   same probe failed 24 of 32 before the per-invocation directory fix.
 - The build-failure path is exercised by breaking the courier source: it fails

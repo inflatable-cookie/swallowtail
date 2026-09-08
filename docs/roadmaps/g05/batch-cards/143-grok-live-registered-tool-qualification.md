@@ -102,18 +102,22 @@ does not undo the independently proved MCP/tool qualification.
 
 No. Stop at exact-head independent review. The queue owns merge and closeout.
 
-## Result
-
-The route is qualified. `grok_build_acp_registered_tool_qualification()` now
-returns `Qualified(GROK_ACP_REGISTERED_TOOL_ROUTE)` with exactly the dimensions
-the accepted Card 128 capsules proved: `NotRepresented` one-shot Deny strength
-(the provider-owned permission exchange stays a separate channel), `NoProgress`,
-and `NotCarried` selected-skill delivery. The route-local mediation-kind row
-moved from `Unknown`/`Unavailable` with `real_route_gate_pending` to
-`Supported`/`Available` at `RouteValidation`. `GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE`
-is gone; the unreleased 0.4.4 API baseline swaps it for
-`GROK_ACP_REGISTERED_TOOL_ROUTE`, and no item of the immutable 0.4.3 surface
-was removed.
+The route is qualified, and the qualification is version-scoped.
+`grok_build_acp_registered_tool_qualification(&InterfaceVersion)` returns
+`Qualified(GROK_ACP_REGISTERED_TOOL_ROUTE)` only for the maintained executable
+segment the accepted Card 128 capsules ran — exact Grok Build `1.0.4..=1.0.5` —
+with exactly the dimensions those capsules proved: `NotRepresented` one-shot
+Deny strength (the provider-owned permission exchange stays a separate
+channel), `NoProgress`, and `NotCarried` selected-skill delivery. Deprecated
+`0.2.x`, the unprobed gap, and unverified-newer points return `Unqualified`;
+`project_grok_build_acp_registered_tool` scopes every row to the caller's
+version, and `prepare_registered` refuses a registered open outside the
+accepted segments with `version_not_admitted` before any host, lease, or
+provider work. The route-local mediation-kind row carries route-validation
+support on admitted versions and the exact version reason elsewhere.
+`GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE` is gone; the unreleased 0.4.4 API
+baseline swaps it for `GROK_ACP_REGISTERED_TOOL_ROUTE` and the version-scoped
+signatures, and no item of the immutable 0.4.3 surface was removed.
 
 Route tests freeze Research 295's identities: source-linked Swallowtail
 `04e9b2dd`, Desktop task `10bdda2b`, PR 169 head `77bced72`, review `5586043120`,

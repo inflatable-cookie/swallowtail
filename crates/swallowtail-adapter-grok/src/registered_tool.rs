@@ -5,9 +5,14 @@
 //! declaration, spawn the described server, connect to it, and enumerate its
 //! tools. The accepted Card 128 live gate then ran one real registered call
 //! through this exact courier on each maintained segment — Grok Build `1.0.4`
-//! and `1.0.5` (Research 295) — so the route projects
-//! [`RegisteredToolRouteQualification::Qualified`] with the dimensions the
-//! capsules proved.
+//! and `1.0.5` (Research 295) — so
+//! [`grok_build_acp_registered_tool_qualification`] returns
+//! `swallowtail_runtime::RegisteredToolRouteQualification::Qualified` with the
+//! dimensions the capsules proved for exactly those executable versions. A
+//! plan bound to any other `grok-build.executable` version — deprecated
+//! `0.2.x`, the unprobed gap, or an unverified-newer point — projects the
+//! unqualified truth and refuses a registered open before any host, lease, or
+//! provider work.
 //!
 //! Exact bounds of this seam:
 //!
@@ -50,8 +55,8 @@ pub use declaration::GrokAcpMcpServerDeclaration;
 pub(crate) use open::{GrokRegisteredToolSession, PendingRegisteredOpen, prepare_registered};
 pub use projection::{
     GROK_ACP_MEDIATION_KIND_SEMANTIC_ID, GROK_ACP_REGISTERED_TOOL_ROUTE,
-    GROK_ACP_REGISTERED_TOOL_SOURCE, grok_build_acp_registered_tool_qualification,
-    project_grok_build_acp_registered_tool,
+    GROK_ACP_REGISTERED_TOOL_SOURCE, GROK_ACP_REGISTERED_TOOL_VERSION_NOT_ADMITTED_CODE,
+    grok_build_acp_registered_tool_qualification, project_grok_build_acp_registered_tool,
 };
 pub use version::{
     GROK_ACP_REGISTERED_TOOL_CARRIER_AXIS, GROK_ACP_REGISTERED_TOOL_CARRIER_REVISION,

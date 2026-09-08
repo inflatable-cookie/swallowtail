@@ -128,12 +128,16 @@ mediated-stdio courier is then declared as one reserved entry in the ACP
 call settles through the Contract 063 kernel. The lease is bound to one exact
 turn and settles at its terminal or on cancellation.
 
-The qualified truth is exact: Grok Build admits the client-declared server and
-calls its tools, but it cannot represent a consumer Deny (the provider's
-one-shot permission exchange is a separate channel), and the route delivers no
-consumer tool progress. A session that opens without a registered binding is
-byte-identical to the plain route: `session/new` still carries `mcpServers:
-[]`.
+Registered-tool qualification is version-scoped: a session opened with a
+registered binding on any executable version outside exact maintained
+`1.0.4..=1.0.5` fails typed with `version_not_admitted` before any host,
+lease, or provider work, and the projection publishes the unqualified truth
+for those versions. On an admitted version Grok Build admits the
+client-declared server and calls its tools, but it cannot represent a consumer
+Deny (the provider's one-shot permission exchange is a separate channel), and
+the route delivers no consumer tool progress. A session that opens without a
+registered binding is byte-identical to the plain route: `session/new` still
+carries `mcpServers: []`.
 
 Selected-skill bundles are not carried. ACP v1 session setup has no
 session-scoped, distinctly labelled skill input, the frozen Grok artifacts name

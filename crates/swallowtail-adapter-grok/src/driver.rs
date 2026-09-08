@@ -219,9 +219,16 @@ impl GrokAcpDriver {
         // process starts, so a registered open that cannot be admitted never
         // reaches a Grok spawn and has nothing to abort.
         let mut registered = match self.registered_tools() {
-            Some(binding) => {
-                Some(prepare_registered(binding, plan, request.request_id(), services).await?)
-            }
+            Some(binding) => Some(
+                prepare_registered(
+                    binding,
+                    selected.version(),
+                    plan,
+                    request.request_id(),
+                    services,
+                )
+                .await?,
+            ),
             None => None,
         };
         // One bound covers the whole minted-open lifecycle, not just the ACP

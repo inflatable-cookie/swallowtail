@@ -465,8 +465,8 @@ fn try_open_registered_route_with_deadline(
     Box<(RuntimeFailure, swallowtail_host_local::LocalHostServices)>,
 > {
     let host_id = ExecutionHostId::new(host_name).expect("host");
-    let selected = selection(host_id.clone());
-    let fixture = FixtureHost::new(scenario);
+    let selected = selection_for(host_id.clone(), "1.0.4", false);
+    let fixture = FixtureHost::with_version(scenario, "1.0.4");
     let executable =
         swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
     let environment =
@@ -759,8 +759,11 @@ fn the_registered_capability_projects_qualified_with_the_proved_dimensions() {
         swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
             .expect("mediated stdio selection qualifies");
     let route = swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_ROUTE;
+    let admitted = swallowtail_core::InterfaceVersion::new("1.0.4").expect("version");
     assert_eq!(
-        swallowtail_adapter_grok::registered_tool::grok_build_acp_registered_tool_qualification(),
+        swallowtail_adapter_grok::registered_tool::grok_build_acp_registered_tool_qualification(
+            &admitted
+        ),
         swallowtail_runtime::RegisteredToolRouteQualification::Qualified(route),
         "the route is qualified exactly by the accepted live capsule evidence"
     );
@@ -785,6 +788,7 @@ fn the_registered_capability_projects_qualified_with_the_proved_dimensions() {
             &swallowtail_runtime::ConsumerRouteApplicability::from_plan(&selected.plan),
             binding.carrier(),
             &readiness,
+            &admitted,
         )
         .expect("registered capability projects");
     let row_with_semantic_id = |wanted: &'static str| {
@@ -902,7 +906,9 @@ fn the_qualified_route_binds_the_accepted_live_capsule_identities() {
         "the maintained endpoint is exactly the newer accepted capsule segment"
     );
     assert_eq!(
-        swallowtail_adapter_grok::registered_tool::grok_build_acp_registered_tool_qualification(),
+        swallowtail_adapter_grok::registered_tool::grok_build_acp_registered_tool_qualification(
+            &swallowtail_core::InterfaceVersion::new(CAPSULE_1_0_4.0).expect("version"),
+        ),
         swallowtail_runtime::RegisteredToolRouteQualification::Qualified(
             swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_ROUTE
         ),
@@ -920,19 +926,121 @@ fn the_qualified_route_binds_the_accepted_live_capsule_identities() {
     ] {
         assert!(!identity.is_empty());
     }
-    // Versions outside the two accepted segments gain no registration claim:
-    // the unprobed gap stays incompatible and stable newer points stay
-    // unverified newer.
-    for outside in ["1.0.3", "1.0.6"] {
+    // Registered-tool evidence never leaves the two accepted segments:
+    // deprecated 0.2.x and unverified-newer points stay unqualified even
+    // where the executable axis itself is permitted.
+    for outside in ["0.2.114", "0.2.117", "1.0.3", "1.0.6"] {
         let version = swallowtail_core::InterfaceVersion::new(outside).expect("version");
-        assert!(
-            !matches!(
-                swallowtail_adapter_grok::grok_build_acp_claim().assess(&version),
-                swallowtail_core::InterfaceCompatibilityAssessment::Qualified(_)
+        assert_eq!(
+            swallowtail_adapter_grok::registered_tool::grok_build_acp_registered_tool_qualification(
+                &version
             ),
-            "segment {outside} carries no accepted live evidence"
+            swallowtail_runtime::RegisteredToolRouteQualification::Unqualified,
+            "version {outside} carries no accepted registered-tool evidence"
         );
     }
+    // The executable-axis segments stay distinct: 1.0.3 is incompatible and
+    // 1.0.6 is unverified newer.
+    for (outside, expected) in [
+        ("1.0.3", "incompatible"),
+        ("1.0.6", "unverified-newer"),
+    ] {
+        let version = swallowtail_core::InterfaceVersion::new(outside).expect("version");
+        let assessment = swallowtail_adapter_grok::grok_build_acp_claim().assess(&version);
+        match (expected, assessment) {
+            ("incompatible", swallowtail_core::InterfaceCompatibilityAssessment::Incompatible) => {}
+            (
+                "unverified-newer",
+                swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_),
+            ) => {}
+            (expected, assessment) => {
+                panic!("segment {outside} assessed unexpected: expected {expected}, got {assessment:?}")
+            }
+        }
+    }
+}
+
+#[test]
+fn a_version_outside_the_accepted_segments_never_projects_or_opens() {
+    let host_id = ExecutionHostId::new("fixture.host.grok.registered-version").expect("host");
+    let selected = selection_for(host_id.clone(), "0.2.114", false);
+    let fixture = FixtureHost::new(Scenario::Success);
+    let executable =
+        swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
+    let environment =
+        EnvironmentRef::new("grok.fixture.registered-environment").expect("environment");
+    let (local, services) = registered_route_services(
+        &host_id,
+        &fixture,
+        Arc::new(CountingDispatcher {
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+        courier_binary(),
+        &executable,
+        &environment,
+    );
+    let _ = local;
+    let preparation = registered_preparation(
+        host_id,
+        swallowtail_testkit::fixture_admission(Arc::new(
+            swallowtail_testkit::ScriptedAdmissionPort::current(),
+        )),
+        executable,
+        environment,
+        RegisteredFixtureInput::default(),
+    );
+    let binding =
+        swallowtail_adapter_grok::registered_tool::GrokRegisteredToolBinding::qualify(preparation)
+            .expect("mediated stdio selection qualifies");
+    let readiness =
+        swallowtail_runtime::RegisteredToolReadiness::evaluate(&services, binding.selection());
+    let deprecated = swallowtail_core::InterfaceVersion::new("0.2.114").expect("version");
+    let contribution =
+        swallowtail_adapter_grok::registered_tool::project_grok_build_acp_registered_tool(
+            &swallowtail_runtime::ConsumerRouteApplicability::from_plan(&selected.plan),
+            binding.carrier(),
+            &readiness,
+            &deprecated,
+        )
+        .expect("an unqualified version still projects the unqualified truth");
+    assert!(contribution.selection_rows().all(|row| {
+        row.support() != swallowtail_runtime::ConsumerRouteSupportPosture::Supported
+    }));
+    let mediation = contribution
+        .selection_rows()
+        .find(|row| {
+            row.safe_reason().is_some_and(|reason| {
+                reason.diagnostic().code()
+                    == swallowtail_adapter_grok::registered_tool::
+                        GROK_ACP_REGISTERED_TOOL_VERSION_NOT_ADMITTED_CODE
+            })
+        })
+        .expect("mediation row names the exact version reason");
+    assert_eq!(
+        mediation.availability(),
+        swallowtail_runtime::ConsumerRouteAvailability::Unavailable
+    );
+    let binding = binding
+        .with_host(local.clone())
+        .with_open_deadline(registered_open_deadline())
+        .with_turn(registered_turn_id());
+    let driver = GrokAcpDriver::new(
+        EnvironmentRef::new("grok.fixture.ambient").expect("environment"),
+        selected.credential,
+    )
+    .with_registered_tools(binding);
+    match block_on(driver.open_session(
+        selected.plan,
+        registered_open_request(selected.resource),
+        services.clone(),
+    )) {
+        Ok(_) => panic!("a deprecated version must not open a registered session"),
+        Err(error) => assert_eq!(
+            error.diagnostic().code(),
+            swallowtail_adapter_grok::registered_tool::GROK_ACP_REGISTERED_TOOL_VERSION_NOT_ADMITTED_CODE
+        ),
+    }
+    assert!(!host_started_a_process(&fixture));
 }
 
 #[test]
@@ -1016,7 +1124,7 @@ fn an_identity_the_courier_cannot_spell_is_refused_before_any_provider_work() {
 #[test]
 fn a_registered_open_without_a_host_composition_fails_typed() {
     let host_id = ExecutionHostId::new("fixture.host.grok.registered-host-missing").expect("host");
-    let selected = selection(host_id.clone());
+    let selected = selection_for(host_id.clone(), "1.0.4", false);
     let fixture = FixtureHost::new(Scenario::Success);
     let preparation = registered_preparation(
         host_id.clone(),
@@ -1057,7 +1165,7 @@ fn a_registered_open_without_a_host_composition_fails_typed() {
 #[test]
 fn a_registered_open_without_a_deadline_fails_typed() {
     let host_id = ExecutionHostId::new("fixture.host.grok.registered-deadline").expect("host");
-    let selected = selection(host_id.clone());
+    let selected = selection_for(host_id.clone(), "1.0.4", false);
     let fixture = FixtureHost::new(Scenario::Success);
     let executable =
         swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
@@ -1108,7 +1216,7 @@ fn a_registered_open_without_a_deadline_fails_typed() {
 #[test]
 fn an_unspawnable_courier_command_fails_typed_before_grok_starts() {
     let host_id = ExecutionHostId::new("fixture.host.grok.registered-unspawnable").expect("host");
-    let selected = selection(host_id.clone());
+    let selected = selection_for(host_id.clone(), "1.0.4", false);
     let fixture = FixtureHost::new(Scenario::Success);
     let executable =
         swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
@@ -1360,7 +1468,7 @@ fn a_registered_open_the_provider_never_answers_fails_on_its_own_deadline() {
 #[test]
 fn a_registered_open_without_a_bound_turn_fails_typed() {
     let host_id = ExecutionHostId::new("fixture.host.grok.registered-turn-missing").expect("host");
-    let selected = selection(host_id.clone());
+    let selected = selection_for(host_id.clone(), "1.0.4", false);
     let fixture = FixtureHost::new(Scenario::Success);
     let executable =
         swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
@@ -1695,10 +1803,10 @@ fn a_failed_registered_cleanup_during_open_retains_the_route_leases() {
     });
     let host_id =
         ExecutionHostId::new("fixture.host.grok.registered-open-retained").expect("host");
-    let selected = selection(host_id.clone());
+    let selected = selection_for(host_id.clone(), "1.0.4", false);
     // The provider spawns the courier, calls it, and then never answers
     // session setup, so the open expires with one call still executing.
-    let fixture = FixtureHost::new(Scenario::RegisteredOpenBlockedCall);
+    let fixture = FixtureHost::with_version(Scenario::RegisteredOpenBlockedCall, "1.0.4");
     fixture.fire_deadline_when(Arc::clone(&blocking.entered));
     let executable =
         swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
@@ -1788,8 +1896,8 @@ fn a_generous_caller_deadline_is_capped_at_the_ten_second_open_ceiling() {
 #[test]
 fn the_open_bound_uses_the_ten_second_ceiling_not_the_caller_budget() {
     let host_id = ExecutionHostId::new("fixture.host.grok.registered-ceiling-value").expect("host");
-    let selected = selection(host_id.clone());
-    let fixture = FixtureHost::new(Scenario::RegisteredOpenUnanswered);
+    let selected = selection_for(host_id.clone(), "1.0.4", false);
+    let fixture = FixtureHost::with_version(Scenario::RegisteredOpenUnanswered, "1.0.4");
     let executable =
         swallowtail_runtime::ExecutableRef::new("grok.fixture.registered-courier").expect("exe");
     let environment =
@@ -2005,8 +2113,8 @@ fn a_failed_cleanup_at_the_ready_barrier_retains_the_route_leases() {
     });
     let host_id =
         ExecutionHostId::new("fixture.host.grok.registered-ready-retained").expect("host");
-    let selected = selection(host_id.clone());
-    let fixture = FixtureHost::new(Scenario::RegisteredReadyBlockedCall);
+    let selected = selection_for(host_id.clone(), "1.0.4", false);
+    let fixture = FixtureHost::with_version(Scenario::RegisteredReadyBlockedCall, "1.0.4");
     fixture.fire_deadline_when(Arc::clone(&dispatcher.entered));
     fixture.hold_ready_barrier_until(Arc::clone(&dispatcher.froze));
     let executable =

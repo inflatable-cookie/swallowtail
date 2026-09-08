@@ -14,9 +14,10 @@
 
 use super::binding::GrokRegisteredToolBinding;
 use super::declaration::GrokAcpMcpServerDeclaration;
+use super::projection::GROK_ACP_REGISTERED_TOOL_VERSION_NOT_ADMITTED_CODE;
 use crate::failure::failure;
 use std::sync::Mutex;
-use swallowtail_core::{PreflightPlan, SafeDiagnostic};
+use swallowtail_core::{InterfaceVersion, PreflightPlan, SafeDiagnostic};
 use swallowtail_host_local::RegisteredToolProxyLaunch;
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, RegisteredToolBridgeLease, RegisteredToolCleanupCause,
@@ -279,10 +280,20 @@ async fn close_lease(
 
 pub(crate) async fn prepare_registered(
     binding: &GrokRegisteredToolBinding,
+    version: &InterfaceVersion,
     plan: &PreflightPlan,
     request_id: &RequestId,
     services: &HostServices,
 ) -> Result<PendingRegisteredOpen, RuntimeFailure> {
+    if !matches!(
+        super::projection::grok_build_acp_registered_tool_qualification(version),
+        swallowtail_runtime::RegisteredToolRouteQualification::Qualified(_)
+    ) {
+        return Err(failure(
+            GROK_ACP_REGISTERED_TOOL_VERSION_NOT_ADMITTED_CODE,
+            "Grok Build registered-tool open requires an executable version inside the accepted live segments (exact maintained 1.0.4..=1.0.5)",
+        ));
+    }
     let host = binding.require_host()?;
     let deadline = binding.require_deadline()?;
     let turn = binding.require_turn()?.clone();

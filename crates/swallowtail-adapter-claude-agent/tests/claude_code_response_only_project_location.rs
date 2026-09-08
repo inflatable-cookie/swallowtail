@@ -1,10 +1,13 @@
 //! Card 108: the response-only route accepts one optional `Read` working
 //! resource as the native child's project location. The scratch-directory
-//! fixture freezes the child-side view: the child runs in the leased
-//! directory with tools suppressed, and the CLI's cwd-relative ambient
-//! behaviour (project settings, `CLAUDE.md` discovery, git context) anchors
-//! at that directory. Nothing here claims the directory is a boundary; the
-//! route stays `AmbientHost`.
+//! fixture freezes the Swallowtail-owned half of the child-side view: the
+//! child runs in the leased directory with tools suppressed, and
+//! cwd-relative resolution anchors there — project settings from the
+//! directory itself, `CLAUDE.md` discovery and git context resolving upward
+//! from it. The recorded native CLI behaviour is provider evidence (the
+//! Desktop card 297 gap report, 2026-09-06, this card's dependency); the
+//! fixture does not re-run the native CLI. Nothing here claims the directory
+//! is a boundary; the route stays `AmbientHost`.
 
 use crate::claude_code_support::{
     FakeProcessService, PendingTimeService, host_services, response_fixture,
@@ -189,8 +192,7 @@ fn scratch_directory_fixture_freezes_the_child_project_location() {
 
     // The native child ran inside the leased directory.
     let child_cwd = read_trimmed(&fixture.scratch.join("cwd.txt"));
-    let leased = fs::canonicalize(&fixture.scratch).expect("scratch directory resolves");
-    let leased = leased.to_string_lossy().trim().to_owned();
+    let leased = canonical(&fixture.scratch);
     assert_eq!(child_cwd, leased);
 
     // Tool suppression holds from the child's own argv view.
@@ -216,10 +218,12 @@ fn scratch_directory_fixture_freezes_the_child_project_location() {
             .any(|value| value == "--no-session-persistence")
     );
 
-    // Ambient cwd-relative CLI behaviour anchors at the leased directory:
-    // project settings and upward CLAUDE.md discovery resolve there, and git
-    // context derives from it (none, because the scratch directory is not a
-    // repository). These are recorded ambient behaviours, not a boundary.
+    // Cwd-relative resolution anchors at the leased directory: project
+    // settings resolve from the directory itself, while `CLAUDE.md`
+    // discovery and git context walk upward from it and resolve in the
+    // ancestor anchor, never at the host process's own working directory.
+    // These exhibit the recorded native CLI behaviours; they are ambient,
+    // not a boundary.
     let findings = fs::read_to_string(fixture.scratch.join("findings.txt"))
         .expect("cwd-relative findings are recorded");
     assert_eq!(
@@ -228,38 +232,52 @@ fn scratch_directory_fixture_freezes_the_child_project_location() {
     );
     assert_eq!(
         finding(&findings, "claude-md:"),
-        format!("{leased}/CLAUDE.md")
+        format!("{}/CLAUDE.md", canonical(&fixture.anchor))
     );
-    assert_eq!(finding(&findings, "git:"), "none");
+    assert_eq!(finding(&findings, "git:"), canonical(&fixture.anchor));
 
-    fs::remove_dir_all(&fixture.scratch).expect("scratch directory is removable");
+    fs::remove_dir_all(&fixture.anchor).expect("fixture tree is removable");
 }
 
 struct ProjectFixture {
     local: LocalHostServices,
+    /// Ancestor anchor directory: holds the git repository root and the
+    /// `CLAUDE.md` marker that upward discovery must resolve.
+    anchor: PathBuf,
+    /// The leased directory bound as the working resource.
     scratch: PathBuf,
     resource: WorkingResourceRef,
 }
 
 /// Builds one local host whose approved working resource is a fresh scratch
-/// directory and whose approved executable is a scripted stand-in that
-/// records its own cwd, argv, and cwd-relative findings before emitting the
-/// frozen response-only stream.
+/// directory inside an ancestor anchor that carries a git repository root
+/// and a `CLAUDE.md` marker. The approved executable is a scripted stand-in
+/// that records its own cwd, argv, and cwd-relative findings before
+/// emitting the frozen response-only stream.
 fn project_fixture(label: &str) -> ProjectFixture {
     let sequence = SCRATCH_SEQUENCE.fetch_add(1, Ordering::Relaxed);
-    let scratch = std::env::temp_dir().join(format!(
-        "swallowtail-claude-code-response-location-{}-{label}-{sequence}",
+    let anchor = std::env::temp_dir().join(format!(
+        "swallowtail-claude-code-response-anchor-{}-{label}-{sequence}",
         std::process::id()
     ));
+    let scratch = anchor.join("project");
     fs::create_dir_all(scratch.join(".claude")).expect("scratch .claude is created");
     fs::write(scratch.join(".claude/settings.json"), "{}\n").expect("project settings seeded");
-    fs::write(scratch.join("CLAUDE.md"), "# scratch project\n").expect("project memory seeded");
+    fs::write(anchor.join("CLAUDE.md"), "# ancestor project memory\n")
+        .expect("ancestor CLAUDE.md seeded");
+    let git_init = std::process::Command::new("git")
+        .arg("init")
+        .arg("-q")
+        .arg(&anchor)
+        .status()
+        .expect("git runs");
+    assert!(git_init.success(), "the ancestor anchor git-initialises");
     fs::write(
         scratch.join("stream.jsonl"),
         response_fixture("response-complete.jsonl"),
     )
     .expect("response stream seeded");
-    let script = scratch.join("claude-fixture.sh");
+    let script = anchor.join("claude-fixture.sh");
     fs::write(&script, script_body(&scratch)).expect("fixture script is written");
     fs::set_permissions(&script, fs::Permissions::from_mode(0o755))
         .expect("fixture script is executable");
@@ -283,6 +301,7 @@ fn project_fixture(label: &str) -> ProjectFixture {
         );
     ProjectFixture {
         local,
+        anchor,
         scratch,
         resource,
     }
@@ -374,6 +393,14 @@ fn profile(
     prepared
         .prepare_run(profile_input(label, working_resource))
         .expect("response-only run prepares")
+}
+
+fn canonical(path: &Path) -> String {
+    fs::canonicalize(path)
+        .expect("fixture path resolves")
+        .to_string_lossy()
+        .trim()
+        .to_owned()
 }
 
 fn read_trimmed(path: &Path) -> String {

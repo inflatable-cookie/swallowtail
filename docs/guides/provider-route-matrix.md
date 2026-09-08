@@ -140,14 +140,19 @@ prepared-facade authoring guide's recorded omissions (antigravity, cursor,
 muse, command-code).
 
 `claude-code.response-only` binds an optional host-approved read-only working
-resource solely as the native child's working directory. With tools
-suppressed, the native CLI still behaves cwd-relatively inside that directory:
-it resolves project settings from the working directory, discovers
-`CLAUDE.md` upward from it, and derives git context from it. A
-scratch-directory fixture freezes this child-side view
-(`claude_code_response_only_project_location`). Per Contract 013, the working
-resource selects a project location; it is never an isolation or containment
-boundary, and the route remains `AmbientHost`.
+resource solely as the native child's working directory. Recorded provider
+evidence — the Desktop card 297 gap report (2026-09-06), this card's
+dependency — shows that with tools suppressed the native CLI still behaves
+cwd-relatively: it resolves project settings from the working directory,
+discovers `CLAUDE.md` upward from it, and derives git context from it. The
+scratch-directory fixture (`claude_code_response_only_project_location`)
+freezes the Swallowtail-owned half of that posture under the card's
+no-live-call constraint: the child runs in the leased directory, tools stay
+suppressed from the child's own argv, and cwd-relative resolution anchors at
+that directory, with upward `CLAUDE.md` and git resolution exercised against
+an ancestor anchor. Upward resolution may read above the leased directory,
+which is one reason this is a location, never a boundary (Contract 013); the
+route remains `AmbientHost`.
 
 ### Install guidance
 

@@ -1,8 +1,9 @@
 # 144 Claude SDK Registered-Tool Open-Rejection Diagnosis
 
-Status: ready; Card 132 returned a typed open failure and the operator directed Chatterbox to apply its decision tree
+Status: complete; PR 294 merged at `cc53c81ad903a562830d721b39a669aee010d037` (reviewed head `67e69e577518fdf0486998d47720e045a541bd7e`)
 Owner: Tom
 Created: 2026-09-08
+Updated: 2026-09-08
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`
 Depends on: card 125 merged at `1cbc21ad`; card 132 stopped with Research 296; Desktop PR 170 accepted and merged
 
@@ -56,16 +57,16 @@ acceptance claims.
 
 ## Acceptance Criteria
 
-- [ ] existing open APIs remain source-compatible and preserve their exact
+- [x] existing open APIs remain source-compatible and preserve their exact
       stable outer codes
-- [ ] an additive route-specific surface returns the bounded sidecar subcode,
+- [x] an additive route-specific surface returns the bounded sidecar subcode,
       open stage, readiness posture, and positively observed cleanup evidence
       without message parsing or forbidden material
-- [ ] provider-free fixtures cover construction, initialization, account/MCP
+- [x] provider-free fixtures cover construction, initialization, account/MCP
       readiness, deadline, joined cleanup, and unconfirmed cleanup
-- [ ] the exact Card 132 request is reproduced provider-free and either yields
+- [x] the exact Card 132 request is reproduced provider-free and either yields
       a repaired producer defect or a precise unresolved boundary
-- [ ] both Contract 061 cells remain unqualified; guide, contract, changelog,
+- [x] both Contract 061 cells remain unqualified; guide, contract, changelog,
       matrix producer-gap ownership, and API baseline agree
 
 ## Validation
@@ -106,7 +107,7 @@ No. Stop at exact-head independent review. The queue owns merge and closeout.
 
 ## Result
 
-Status: ready for review.
+Status: complete.
 
 **What shipped.** One additive Claude SDK prepared-route open surface,
 `ClaudeAgentSdkPreparedSession::open_route_session_with_receipt`, returning
@@ -164,3 +165,24 @@ regenerated additively: 138 added lines, `swallowtail-adapter-claude-agent`
 only); `effigy qa:routes`; `effigy qa:docs`; `effigy qa:northstar`;
 `git diff --check`. One pre-existing environment-sensitive test flake was
 reproduced on the clean base head and recorded in `PAPERCUTS.md`.
+
+PR 294 was independently accepted at exact head
+`67e69e577518fdf0486998d47720e045a541bd7e`; review comment `5588499602`
+resolved both round-one receipt findings: the underlying route code remains
+pinned when the outward failure is replaced, and pre-acquisition failures
+report `NotAcquired` instead of unconfirmed cleanup. It merged into `main` as
+`cc53c81ad903a562830d721b39a669aee010d037`. Hosted PR checks passed; the
+configured Pinned MSRV floor tests job was skipped. No blocking review finding
+or named Card 144 acceptance failure was deferred.
+
+The pre-existing environment-sensitive
+`wrapper_death_preserves_partial_capture_journal` flake was reproduced on the
+clean base and remains recorded in `PAPERCUTS.md`; it was not introduced by
+Card 144 and stays outside this closeout. The semantic API check retained its
+previously noted non-blocking redundant-link rustdoc warning.
+
+The live construction-class cause remains unresolved and live-only. Both
+Contract 061 cells remain `No` and owned by the producer gap; no live retry,
+qualification, availability, release, or broader acceptance follows. The
+active Next Task pointer remains unchanged and no new planning direction was
+introduced.

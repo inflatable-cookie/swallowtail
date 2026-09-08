@@ -2,8 +2,6 @@
 
 ## Ready
 
-- [144-claude-sdk-registered-tool-open-rejection-diagnosis.md](./144-claude-sdk-registered-tool-open-rejection-diagnosis.md) — ready; Card 132 stopped at typed open rejection; add structured failed-open evidence and diagnose provider-free before any new gate
-
 ## Planned
 
 - [134-registered-tool-adoption-remaining-acp-routes.md](./134-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub carrying the client_mcp_servers gap for the six remaining ACP routes; no dispatch authorization
@@ -22,6 +20,7 @@
 
 ## Completed
 
+- [144-claude-sdk-registered-tool-open-rejection-diagnosis.md](./144-claude-sdk-registered-tool-open-rejection-diagnosis.md) — complete; PR 294 merged at `cc53c81a`; structured failed-open receipt and provider-free Card 132 reproduction accepted, with the live cause still unresolved
 - [143-grok-live-registered-tool-qualification.md](./143-grok-live-registered-tool-qualification.md) — complete; PR 293 merged at `7d2dcb16`; exact maintained Grok `1.0.4..=1.0.5` registered-tool qualification accepted, selected-skill limitation retained
 - [141-operation-bridge-close-latency.md](./141-operation-bridge-close-latency.md) — complete; PR 292 merged at `b68a1ccc`; registered-tool close wakes accepted reads instead of paying the fixed 5s timeout; watcher timings and teardown guarantees preserved
 - [142-claude-sdk-admitted-instance-worked-example.md](./142-claude-sdk-admitted-instance-worked-example.md) — complete; PR 291 merged at `d0f2ea31`; provider-free admitted-instance and registered-tool worked example accepted at exact head

@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom
 created: 2026-09-08
 updated: 2026-09-08
@@ -82,3 +82,24 @@ provider-free rejection shape, cleanup evidence, and whether a producer defect
 was repaired or the cause remains live-only. The queue owns review, merge,
 canonical closeout, and blocker return. Do not merge, release, tag, or start a
 new live gate from the worker.
+
+## Handoff Closeout
+
+This handoff is merged. The implementation was independently accepted at exact
+head `67e69e577518fdf0486998d47720e045a541bd7e`; review comment `5588499602`
+resolved both round-one receipt findings and found no blocking issue. PR 294
+merged into `main` as
+`cc53c81ad903a562830d721b39a669aee010d037`.
+
+Named formatting, focused validation (477 tests), affected-package
+verification, mediated-stdio validation (15/15), semantic API, route, docs,
+Northstar, and diff checks passed. Hosted PR checks passed except for the
+configured skipped Pinned MSRV floor tests job. The pre-existing
+`wrapper_death_preserves_partial_capture_journal` environment-sensitive flake
+remains recorded in `PAPERCUTS.md`; it was reproduced on the clean base and is
+outside this card's acceptance failure set.
+
+The live construction-class cause remains unresolved and live-only. Both
+Contract 061 cells remain unqualified; no live retry or qualification was
+performed. The active Next Task pointer was preserved and no new planning
+direction was introduced.

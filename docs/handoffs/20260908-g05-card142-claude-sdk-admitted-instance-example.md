@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom
 created: 2026-09-08
 updated: 2026-09-08
@@ -32,14 +32,22 @@ and Desktop has been told not to work around the gap.
 
 ## Current State
 
-`examples/prepared_claude_agent_sdk.rs` documents the inputs in prose
-and then accepts an already-constructed preparation; it never builds the
-admitted record and never calls `from_admitted`. The only example that
-constructs admission is `examples/connection_lifecycle.rs`, which is
-`claude-agent.acp`, a different route with different inputs. The guide's
-Explicit Inputs section names `from_admitted` correctly, so the gap is the
-executable example rather than the prose. Card 125 merged the registered-tool
-route binding at `1cbc21ad`. No work has started.
+`examples/prepared_claude_agent_sdk.rs` documented the inputs in prose
+and accepted an already-constructed preparation; it never built the admitted
+record or called `from_admitted`. Card 125 merged the registered-tool route
+binding at `1cbc21ad`. Card 142 closed the example gap through PR 291.
+
+- **Queue state:** closed after merge; PR 291 merged into `main` as
+  `d0f2ea3170950629dd2b73866218ae903db0e287`.
+- **Reviewed head:** `2ec8ea8bbbf07b81b2fa77408094221a233fe61d`.
+- **Review:** independent exact-head review accepted with no findings;
+  comment `5585016640` carries the `ready_to_merge` verdict.
+- **Validation:** formatting, example compilation, focused validation
+  (469/469), affected-package verification, Northstar QA, and diff checks
+  passed.
+- **Deferred:** no validation failure; live provider/consumer acceptance,
+  the Card 132 real-route gate, release/tag work, and consumer-repository
+  changes remain outside this handoff.
 
 ## Boundaries
 
@@ -82,3 +90,10 @@ anything found but deliberately not changed. The card at
 `docs/roadmaps/g05/batch-cards/142-claude-sdk-admitted-instance-worked-example.md` and its manifest row bind: owned paths,
 forbidden paths, acceptance criteria, and stop conditions are as written
 there.
+
+## Handoff Closeout
+
+This handoff is merged. The implementation was accepted at exact head
+`2ec8ea8bbbf07b81b2fa77408094221a233fe61d` and published on `main` as
+`d0f2ea3170950629dd2b73866218ae903db0e287`. The active Next Task pointer was
+preserved; no new planning direction was introduced.

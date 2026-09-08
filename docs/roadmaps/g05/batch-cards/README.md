@@ -2,7 +2,6 @@
 
 ## Ready
 
-- [142-claude-sdk-admitted-instance-worked-example.md](./142-claude-sdk-admitted-instance-worked-example.md) — ready; Desktop cannot compose an SDK admitted instance with registered tools from anything we ship; the example I cited is for a different route
 - [141-operation-bridge-close-latency.md](./141-operation-bridge-close-latency.md) — ready; every registered-tool close pays a fixed 5s IO_TIMEOUT that card 139 measured and could not fix in its scope
 No batch card is ready. Cards 139 and 140 are complete; the next producer
 card is promoted from consumer evidence or operator direction.
@@ -25,6 +24,7 @@ card is promoted from consumer evidence or operator direction.
 
 ## Completed
 
+- [142-claude-sdk-admitted-instance-worked-example.md](./142-claude-sdk-admitted-instance-worked-example.md) — complete; PR 291 merged at `d0f2ea31`; provider-free admitted-instance and registered-tool worked example accepted at exact head
 - [139-claude-registered-tool-fixture-startup-determinism.md](./139-claude-registered-tool-fixture-startup-determinism.md) — complete; PR 287 merged at `4b1e369c`; a concurrent nested build removes and recreates the shared courier path, so a spawn landing in that window became the bare fixture code; startup is now an observed event with named causes and 24 loaded runs clean
 - [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — complete; PR 289 merged at `8e6669c8`; optional read-only working resource selects the response-only child's project location; absence byte-identical; cwd-relative ambient CLI behaviour frozen from the scratch-directory fixture; no isolation claim
 - [140-grok-probe-live-bounds.md](./140-grok-probe-live-bounds.md) — complete; PR 288 merged at `735eab70`; every probe bound re-derived for a live model, and truncation elides chatter instead of the answer

@@ -1,6 +1,6 @@
 # 142 Claude SDK Admitted-Instance Worked Example
 
-Status: ready
+Status: complete; PR 291 merged at `d0f2ea3170950629dd2b73866218ae903db0e287` (reviewed head `2ec8ea8bbbf07b81b2fa77408094221a233fe61d`)
 Owner: Tom
 Created: 2026-09-08
 Updated: 2026-09-08
@@ -50,10 +50,10 @@ Any live run; changing the admission API; the ACP example.
 
 ## Acceptance Criteria
 
-- [ ] an executable `claude-agent.sdk` example constructs `AdmittedInstanceRecord` and calls `from_admitted`
-- [ ] it continues through the registered-tool binding, attachment, and proxy recipe
-- [ ] guide and card 132 packet point at it
-- [ ] provider-free; no live route spent
+- [x] an executable `claude-agent.sdk` example constructs `AdmittedInstanceRecord` and calls `from_admitted`
+- [x] it continues through the registered-tool binding, attachment, and proxy recipe
+- [x] guide and card 132 packet point at it
+- [x] provider-free; no live route spent
 
 ## Validation
 
@@ -72,3 +72,25 @@ an already-constructed preparation.
 ## Auto-Continuation
 
 No. Stop for exact-head review.
+
+## Result
+
+PR 291 was independently accepted at exact head
+`2ec8ea8bbbf07b81b2fa77408094221a233fe61d` and merged into `main` as
+`d0f2ea3170950629dd2b73866218ae903db0e287`. The executable example now
+constructs admission, lifts it with `from_admitted`, binds the mediated
+registered-tool path and proxy recipe, and shows the provider-free
+open/turn/close composition. The guide and Card 132 packet point at the
+worked example.
+
+The accepted review found no required changes. Named validation passed:
+`cargo fmt -p swallowtail-adapter-claude-agent -- --check`,
+`cargo check -p swallowtail-adapter-claude-agent --examples`,
+`effigy validate:focused swallowtail-adapter-claude-agent` (469/469),
+`effigy package:verify-affected swallowtail-adapter-claude-agent`,
+`effigy qa:northstar`, and `git diff --check`.
+
+No validation failure was deferred. Live provider/consumer acceptance, the
+Card 132 real-route gate, release/tag work, and consumer-repository changes
+remain outside this card and retain their existing owners and authority. The
+active Next Task pointer remains unchanged.

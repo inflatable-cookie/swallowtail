@@ -10,6 +10,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ### Harness Skills And Watchers
 
+- [299 Claude SDK Live MCP Startup Failure](./299-claude-sdk-live-mcp-startup-failure.md) — complete; Card 149 stopped at `mcp_server_failed` before its prompt; Card 150 owns provider-free courier/startup diagnosis and repair
 - [298 Claude SDK Zero-Credit Degraded Cleanup](./298-claude-sdk-zero-credit-degraded-cleanup.md) — complete; open succeeded while credit was zero, immediate close matched the Contract 019-qualified degraded macOS posture, and Desktop's clean-only oracle is promoted as card 148
 - [297 Claude SDK Credit Diagnostic MCP-Status Rejection](./297-claude-sdk-credit-diagnostic-mcp-status-rejection.md) — complete; one exhausted-credit diagnostic open stopped before provider readiness at bounded `mcp_status_invalid`; no quota inference; promoted as card 146
 - [296 Claude SDK Registered-Tool Live Open Rejection](./296-claude-sdk-registered-tool-live-open-rejection.md) — complete; the exact Card 132 tuple stopped at typed `open_rejected`; no turn, tool dispatch, controls, retry, qualification, or release inference; promoted as card 144

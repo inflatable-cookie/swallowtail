@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-09 g05.035 Card 149 Return And Card 150 Promotion](./2026-09-09-g05-035-card-149-return-and-card-150-promotion.md) — Card 149 stopped at MCP startup before its prompt; provider-free courier artifact/startup diagnosis promoted without removing MCP
 - [2026-09-08 g05.035 Card 148 Return And Card 149 Promotion](./2026-09-08-g05-035-card-148-return-and-card-149-promotion.md) — Desktop's degraded-cleanup oracle repair accepted; one zero-credit first-turn diagnostic authorized with provider-free-first and no-retry bounds
 - [2026-09-08 g05.035 Card 147 Return And Card 148 Promotion](./2026-09-08-g05-035-card-147-return-and-card-148-promotion.md) — zero-credit open reached ready/connected, immediate close matched Contract 019 degraded posture, Desktop clean-only oracle promoted to provider-free card 148
 - [2026-09-08 g05.035 Card 147 Zero-Credit Diagnostic Authorization](./2026-09-08-g05-035-card-147-zero-credit-diagnostic-authorization.md) — one repaired Claude SDK open authorized while credit remains zero; exact source `0d120067`; no prompt, retry, qualification, or release

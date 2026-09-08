@@ -15,12 +15,12 @@ shape.
 
 ## Next Task
 
-[Card 149](g05/batch-cards/149-claude-sdk-zero-credit-first-turn-diagnostic.md)
-is ready and operator-authorized. Card 148/313 repaired the cleanup oracle
-provider-free. Desktop now prepares a distinct one-turn diagnostic, proves it
-offline, then runs one open and one cheapest-model prompt while credit remains
-zero. No retry, tool/control action, qualification, top-up, candidate, tag, or
-release follows automatically.
+[Card 150](g05/batch-cards/150-claude-sdk-mcp-courier-startup-determinism.md)
+is ready. Card 149 stopped before provider readiness at typed
+`mcp_server_failed`; its prompt was never submitted. Desktop now diagnoses and
+repairs the registered courier startup path provider-free under concurrent
+build churn. No Claude call, top-up, MCP removal, qualification, candidate,
+tag, or release follows.
 
 ## Standing Lanes
 

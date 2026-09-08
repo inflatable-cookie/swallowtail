@@ -2,7 +2,7 @@
 
 ## Ready
 
-- [149-claude-sdk-zero-credit-first-turn-diagnostic.md](./149-claude-sdk-zero-credit-first-turn-diagnostic.md) — ready; exactly one first prompt while credit remains zero; no retry or qualification
+- [150-claude-sdk-mcp-courier-startup-determinism.md](./150-claude-sdk-mcp-courier-startup-determinism.md) — ready; provider-free diagnosis and repair of Card 149's `mcp_server_failed`; live work held
 
 ## Planned
 
@@ -16,6 +16,7 @@
 
 ## Stopped
 
+- [149-claude-sdk-zero-credit-first-turn-diagnostic.md](./149-claude-sdk-zero-credit-first-turn-diagnostic.md) — stopped; PR 177 merged its valid capsule, but MCP startup rejected before provider readiness or prompt submission; Research 299 and Card 150 own the defect
 - [132-claude-sdk-registered-tool-real-route-gate.md](./132-claude-sdk-registered-tool-real-route-gate.md) — stopped; the single authorized open returned typed `open_rejected`; both cells remain unqualified; Research 296 and card 144 own diagnosis
 - [123-v0-4-4-consumer-proof-and-tag-capsule.md](./123-v0-4-4-consumer-proof-and-tag-capsule.md) — cancelled; operator widened the release scope before any `v0.4.4` tag
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged

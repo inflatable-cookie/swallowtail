@@ -173,7 +173,10 @@ Desktop PR 175 and repaired the exact Contract 019 degraded-cleanup oracle
 provider-free. Because the SDK initializes its query generator only on the
 first prompt, Card 149 owns one final zero-credit first-turn diagnostic before
 top-up. It runs one open and one cheapest-model prompt with no retry, tool, or
-control action. The credited qualification suite remains separate.
+control action. Card 149 stopped at `mcp_server_failed` before provider
+readiness or prompt submission. Card 150 now repairs the registered-MCP startup
+path provider-free. The credited qualification suite remains separate, and MCP
+will not be removed to bypass the failure.
 
 ### Candidate Source Disposition — 2026-09-08
 

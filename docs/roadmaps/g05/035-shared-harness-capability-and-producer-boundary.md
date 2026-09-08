@@ -175,7 +175,8 @@ consumer requirements and must not create a competing producer worker.
 | [146](batch-cards/146-claude-sdk-mcp-status-projection-repair.md) | complete; PR 296 merged at `13dee542e5ef4ab967cb4f0934cc11c35a8768c2` (reviewed head `58847bb00e4d15285af503c7023ff8750d1f1a7f`) | Claude SDK adapter owner; provider-free exact `0.3.259` status-shape diagnosis; no live run, consumer edit, qualification, tag, or release | exact artifact reconciliation; faithful optional-metadata fixtures; smallest safe projection repair; exact-head review and merge |
 | [147](batch-cards/147-claude-sdk-repaired-zero-credit-diagnostic.md) | complete; Desktop PR 174 merged at `7646db45` | Desktop live-evidence owner; repaired zero-credit open only | open reached ready/connected; immediate degraded close; one open and zero other actions; Research 298 |
 | [148](batch-cards/148-claude-sdk-degraded-cleanup-oracle.md) | complete; Desktop PR 175 merged at `f8bff5a2` | Desktop proof-harness owner; cleanup classification and fixtures only; no live run or qualification | exact Contract 019 degraded posture accepted without calling it clean; adverse cleanup stays defect |
-| [149](batch-cards/149-claude-sdk-zero-credit-first-turn-diagnostic.md) | ready; operator-authorized | Desktop live-evidence owner; provider-free one-turn mode then one open plus one cheapest-model prompt; no retry or qualification | bounded first-turn error/success, exact counts, redaction and cleanup; exact-head review and merge |
+| [149](batch-cards/149-claude-sdk-zero-credit-first-turn-diagnostic.md) | stopped; Desktop PR 177 merged at `f29eb0c0` | Desktop live-evidence owner; one open rejected at MCP startup before prompt | valid bounded capsule; no credit inference; Research 299 |
+| [150](batch-cards/150-claude-sdk-mcp-courier-startup-determinism.md) | ready; provider-free | Desktop proof-harness owner; courier build/acquisition/startup diagnosis and repair; no live run | reproduce or falsify mutable-artifact race; 24+ churned opens; exact-head review |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
@@ -255,6 +256,15 @@ remains zero and authorized Card 149 as the fourth and final diagnostic attempt:
 prove a separate one-turn mode offline, then run one open and exactly one
 `claude-sonnet-5` prompt. No retry, tool/control action, qualification, top-up,
 candidate, tag, or release follows automatically.
+
+Card 149 then stopped before provider readiness: the single open returned
+`mcp_server_failed`, and the prompt was never submitted. Research 299 freezes
+the capsule and treats this as a material registered-MCP startup defect. Card
+150 owns provider-free diagnosis across courier build, immutable artifact
+acquisition, provider spawn, authenticated connect, and MCP-status projection.
+The leading mutable-target race is a hypothesis from Card 139's measured
+mechanism, not yet the Card 149 cause. No further live attempt or top-up is
+authorized by this repair.
 
 Route116/118 read-only evidence preparation is ready now under the same retained
 route owners. It must not wait for the evidence it is tasked to obtain. Runtime

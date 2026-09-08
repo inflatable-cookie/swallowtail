@@ -1,6 +1,6 @@
 # 149 Claude SDK Zero-Credit First-Turn Diagnostic
 
-Status: ready; one bounded Desktop live attempt authorized
+Status: stopped; Desktop PR 177 merged; MCP startup rejected before the prompt
 Owner: Desktop live-evidence harness owner
 Created: 2026-09-08
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`
@@ -70,4 +70,21 @@ reports that this capsule is merged and preserved.
 
 ## Result
 
-Pending.
+Desktop task `d76fe0f1-3a54-4116-80f8-1b55c2ed2d39` completed through PR 177.
+Accepted head `ff3a28c23ab90924b195edb2e7d42e6071dcb6b9`; review comment
+`5592884677`; merge `f29eb0c01ce682da626c7e365a519d23b2c52ca6`; canonical
+Desktop closeout `5323e088bb6d9781293e7a1a8497bb3f7d1f03d1`.
+
+Provider-free checks passed 22/22. The single live open returned
+`swallowtail.claude-agent.sdk.open_rejected` at `sidecar_rejected`, subcode
+`mcp_server_failed`, before provider readiness or a turn handle. The prompt
+digest was recorded but the prompt was never submitted. All retry, tool,
+permission, control, reconnect, and respawn counts were zero; cleanup was
+confirmed with joined reapers and zero leases, listeners, survivors, or
+dispatcher calls. Capsule SHA-256:
+`f9cd0b6f73c1ab89d322ae6d15d46808121db180937f42328ecc47dc0e428877`.
+
+No credit or billing inference follows. The MCP startup failure is a release
+blocker, not an acceptable zero-credit result. Research 299 and Card 150 own
+the provider-free courier/startup diagnosis and repair before another live
+decision.

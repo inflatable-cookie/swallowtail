@@ -2,13 +2,14 @@
 
 ## Ready
 
+- [139-claude-registered-tool-fixture-startup-determinism.md](./139-claude-registered-tool-fixture-startup-determinism.md) — ready; root-cause the close/join fixture flake before Desktop runs the Claude live gate on that exact path
+- [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — ready; optional Read working resource as the response-only child cwd; no isolation claim; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
 
 ## Planned
 
 - [134-registered-tool-adoption-remaining-acp-routes.md](./134-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub carrying the client_mcp_servers gap for the six remaining ACP routes; no dispatch authorization
 - [132-claude-sdk-registered-tool-real-route-gate.md](./132-claude-sdk-registered-tool-real-route-gate.md) — planned; the live tuple Desktop runs to qualify the card 125 seam; matrix crosses for Claude registered tools point here
 - [130-persistent-permission-grant-admission.md](./130-persistent-permission-grant-admission.md) — planned backlog stub only; no dispatch authorization; owns a future persistent-grant producer seam if promoted
-- [108-claude-code-response-only-project-location.md](./108-claude-code-response-only-project-location.md) — planned; optional Read working resource as response-only cwd; after the `v0.4.3` tag; no isolation claim
 
 - [072-antigravity-1-1-26-claim.md](./072-antigravity-1-1-26-claim.md) — planned; gated behind card 071 admitting a Contract 029 segment
 - [063-kimi-code-local-server-0-40-1-claim.md](./063-kimi-code-local-server-0-40-1-claim.md) — planned; `0.41.0` claim; gated behind card 062 admitting a Contract 029 segment

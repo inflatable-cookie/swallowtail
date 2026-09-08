@@ -93,3 +93,21 @@ Ready now; concurrent with the g05.029 runway.
 | Review oracle | the card's invariant |
 | Stop conditions | a real leak needs a shared runtime change (return to Chatterbox) |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+## Card 139 Manifest
+
+| Field | Card 139 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | the 2026-09-08 papercut; current `main` |
+| Completion conditions | reproduction under load or an anchored explanation; bounded process output and exit evidence on fixture setup failure; deterministic startup and listener readiness signals; 20+ loaded runs clean; papercut retired |
+| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/tests/**`; `crates/swallowtail-adapter-claude-agent/src/**` only for a disclosed real defect; `PAPERCUTS.md`; this card's `## Result` |
+| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
+| Forbidden paths | every other crate; baselines; contracts; the live gate |
+| Approved concurrent siblings | card 108; the standing currentness lane |
+| Serial edges | none |
+| Worker capability class | Rust worker with concurrency discipline; frontier-tier |
+| Acceptance evidence | the loaded-run log; the failure's own cause named |
+| Review oracle | the card's invariant |
+| Stop conditions | the cause is in shared runtime (return to Chatterbox) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

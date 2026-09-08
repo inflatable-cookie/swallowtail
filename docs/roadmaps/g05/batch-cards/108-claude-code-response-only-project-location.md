@@ -1,6 +1,6 @@
 # 108 Claude Code Response-Only Project Location
 
-Status: planned; ready after the `v0.4.3` tag
+Status: ready; the `v0.4.3` tag exists, so its gate is satisfied
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-06

@@ -408,3 +408,24 @@ Promoted planning commit: the `main` commit that introduces this section.
 | Review oracle | the card's invariant |
 | Stop conditions | the SDK package layout has no module-local manifest at all (record; return to Chatterbox) |
 | Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+
+### Card 108 Manifest
+
+Promoted planning commit: the `main` commit that introduces this section.
+Its gate (the `v0.4.3` tag) is satisfied.
+
+| Field | Card 108 |
+| --- | --- |
+| Readiness | ready |
+| Prerequisites | `v0.4.3` tagged; Contract 013 Ambient Harness |
+| Completion conditions | optional `Read` working resource sets the response-only child cwd; absence unchanged; the CLI's cwd-relative behaviour with tools suppressed frozen from a scratch-directory fixture; no isolation or boundary claim anywhere; guide, matrix cell, changelog, additive baseline; one PR |
+| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/src/claude_code_response*.rs` and its response-only modules; `crates/swallowtail-adapter-claude-agent/tests/**` response-only fixtures; `release-baselines/public-api-0.4.4/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/provider-route-matrix.md` response-only row; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
+| Forbidden paths | `sdk/**`; sidecar; `claude_code_headless*`; ACP modules; contracts; every other crate |
+| Approved concurrent siblings | card 139 and the standing currentness lane |
+| Serial edges | none |
+| Worker capability class | Rust worker; no credentials; no live Claude call |
+| Acceptance evidence | scratch-directory fixture output; additive API diff |
+| Review oracle | the card's invariant |
+| Stop conditions | the CLI reads or writes outside the given cwd with tools suppressed (record; return to Chatterbox) |
+| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |

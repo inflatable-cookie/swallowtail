@@ -15,12 +15,11 @@ shape.
 
 ## Next Task
 
-Implement [g05.029 card 124](g05/batch-cards/124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md)
-and the rest of the resumed frontier (cards 084, 086, 087, 088, 116, 118 from
-their manifests). The `v0.4.4` candidate `0673541d` is prepared and held: the
-operator widened release scope on 2026-09-07 to linked Desktop evidence across
-all three Bovine routes (see g05.036); no tag request stands. Chatterbox
-reconciles the producer frontier against the Desktop capability matrix.
+No implementation card is Ready. The `v0.4.4` candidate `0673541d` is prepared
+and held while linked Desktop runs the exact Claude and Grok gates required by
+[g05.036](g05/036-v0-4-4-release-readiness.md); no tag request stands. Planned
+cards 130, 132, and 134 remain gated or unauthorized. Chatterbox promotes the
+next producer card only from concrete consumer evidence or operator direction.
 
 ## Standing Lanes
 

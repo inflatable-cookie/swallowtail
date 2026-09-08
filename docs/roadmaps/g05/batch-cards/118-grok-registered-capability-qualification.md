@@ -1,6 +1,6 @@
 # 118 Grok common capability qualification
 
-Status: complete; PR 281; provider-free callable seam built on the merged Card114/115 kernel; Contract 061 row stays Unqualified with real_route_gate_pending and the live gate remains separate
+Status: complete; PR 281 merged at `98543d0b`; provider-free callable seam built on the merged Card114/115 kernel; Contract 061 row stays Unqualified with real_route_gate_pending and the live gate remains separate
 Owner: Tom
 Created: 2026-09-07
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`

@@ -22,7 +22,7 @@
 
 ## Completed
 
-- [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — complete; PR 281; route-local callable registered-tool seam over the proven ACP client-MCP admission; Contract 061 stays Unqualified with real_route_gate_pending and no matrix cell moves
+- [118-grok-registered-capability-qualification.md](./118-grok-registered-capability-qualification.md) — complete; PR 281 merged at `98543d0b`; route-local callable registered-tool seam over the proven ACP client-MCP admission; Contract 061 stays Unqualified with real_route_gate_pending and no matrix cell moves
 - [122-v0-4-4-candidate-preparation.md](./122-v0-4-4-candidate-preparation.md) — complete; PR 272 merged at `0673541d`; candidate prepared; release scope widened
 - [106-v0-4-3-candidate-preparation.md](./106-v0-4-3-candidate-preparation.md) — complete; PR 246 merged at `cbd4ddc8`
 - [083-claude-sdk-resume-and-session-listing.md](./083-claude-sdk-resume-and-session-listing.md) — complete; PR 244 merged at `7cb08b1f`; g05.029 priority 4

@@ -1,6 +1,6 @@
 # 140 Grok Probe Live Bounds
 
-Status: complete; PR 288
+Status: complete; PR 288 merged at `735eab70`
 Owner: Tom
 Created: 2026-09-08
 Updated: 2026-09-08

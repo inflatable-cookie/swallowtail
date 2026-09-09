@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom
 created: 2026-09-09
 updated: 2026-09-09
@@ -67,3 +67,21 @@ identity, dispatch/control counts, cleanup wording, omission, matrix scope,
 and API compatibility. Return accepted head, review comment, merge, exact
 qualified tuple, validation results, and canonical closeout. No automatic
 candidate or release action follows.
+
+## Handoff Closeout
+
+This handoff is merged. PR 298 was independently re-reviewed and accepted at
+exact head `34ef6c322134a2b19dacb747b0e8724b1f702415` in review comment
+`5600461068`, then published on `main` as
+`b35e4c385746f2dc1145630d8ce2076f5dbb7b0f`. The provider-free validation set
+passed: formatting, focused validation (500 tests), affected-package
+verification, semantic API, route, docs, Northstar, and diff checks. Hosted PR
+checks passed; the configured Pinned MSRV floor tests job was skipped.
+
+The initial hosted format/lint and pinned-MSRV failures were fixed before the
+accepted head by moving one Darwin-arm64-gated test constant reference to a
+fully qualified path; no named Card 153 validation failure was deferred. No
+provider run, candidate, tag, release, Desktop change, or consumer-repository
+change followed. The Card 130 persistent-permission gap remains separately
+planned. The sole Next Task pointer now records that planning direction is
+needed; no new direction was introduced here.

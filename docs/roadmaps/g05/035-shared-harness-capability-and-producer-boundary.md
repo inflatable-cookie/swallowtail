@@ -3,7 +3,7 @@
 Status: planned; Batch A promoted; card114 ready after inherited docs gate repair
 Owner: Tom
 Created: 2026-09-06
-Updated: 2026-09-07
+Updated: 2026-09-09
 Depends on: Research 288; Spec 014; Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; g05.029 card 084 evidence
 Vision tags: consumer integration, tools, MCP, skills, context, permissions, sessions
 
@@ -177,7 +177,7 @@ consumer requirements and must not create a competing producer worker.
 | [148](batch-cards/148-claude-sdk-degraded-cleanup-oracle.md) | complete; Desktop PR 175 merged at `f8bff5a2` | Desktop proof-harness owner; cleanup classification and fixtures only; no live run or qualification | exact Contract 019 degraded posture accepted without calling it clean; adverse cleanup stays defect |
 | [149](batch-cards/149-claude-sdk-zero-credit-first-turn-diagnostic.md) | stopped; Desktop PR 177 merged at `f29eb0c0` | Desktop live-evidence owner; one open rejected at MCP startup before prompt | valid bounded capsule; no credit inference; Research 299 |
 | [150](batch-cards/150-claude-sdk-mcp-courier-startup-determinism.md) | ready; provider-free | Desktop proof-harness owner; courier build/acquisition/startup diagnosis and repair; no live run | reproduce or falsify mutable-artifact race; 24+ churned opens; exact-head review |
-| [153](batch-cards/153-claude-sdk-live-registered-tool-qualification.md) | ready; Research 301 and Desktop Card 318 accepted | Claude SDK adapter owner; provider-free route qualification, exact evidence binding, two matrix cells; no provider or release work | exact-tuple qualified projection; deterministic evidence fixtures; package, route, docs, API validation; exact-head review and merge |
+| [153](batch-cards/153-claude-sdk-live-registered-tool-qualification.md) | complete; PR 298 merged at `b35e4c38`; reviewed head `34ef6c32` | Claude SDK adapter owner; provider-free route qualification, exact evidence binding, two matrix cells; no provider or release work | exact-tuple qualified projection; deterministic evidence fixtures; package, route, docs, API validation; exact-head review and merge |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.

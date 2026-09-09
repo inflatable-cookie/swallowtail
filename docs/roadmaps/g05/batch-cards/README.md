@@ -2,8 +2,6 @@
 
 ## Ready
 
-- [153-claude-sdk-live-registered-tool-qualification.md](./153-claude-sdk-live-registered-tool-qualification.md) — ready; consume accepted Desktop Card 318 capsule provider-free, qualify the exact tuple, and reconcile two matrix cells; no live run or release authority
-
 ## Planned
 
 - [134-registered-tool-adoption-remaining-acp-routes.md](./134-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub carrying the client_mcp_servers gap for the six remaining ACP routes; no dispatch authorization
@@ -22,6 +20,8 @@
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 
 ## Completed
+
+- [153-claude-sdk-live-registered-tool-qualification.md](./153-claude-sdk-live-registered-tool-qualification.md) — complete; PR 298 merged at `b35e4c38`; exact Claude SDK tuple qualification and two-cell matrix reconciliation accepted provider-free; no provider run or release authority
 
 - [152-claude-sdk-structured-provider-failure.md](./152-claude-sdk-structured-provider-failure.md) — complete; PR 297 merged at `24f88fb8`; reviewed head `5d85cc93`; provider-free structured failure projection accepted; no provider run
 

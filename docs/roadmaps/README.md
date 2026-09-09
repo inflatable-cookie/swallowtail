@@ -15,11 +15,8 @@ shape.
 
 ## Next Task
 
-[Card 153](g05/batch-cards/153-claude-sdk-live-registered-tool-qualification.md)
-is ready. Consume Research 301 and the accepted Desktop Card 318 capsule
-provider-free, qualify only the exact `claude-agent.sdk` tuple, and reconcile
-the two registered-tool matrix cells. No provider call, candidate, tag, or
-release authority follows.
+Card 153 is complete and merged. Planning direction is needed before another
+implementation task is named; this closeout introduces no new direction.
 
 ## Standing Lanes
 

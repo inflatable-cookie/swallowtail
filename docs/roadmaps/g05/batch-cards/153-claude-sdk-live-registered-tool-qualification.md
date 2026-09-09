@@ -1,6 +1,6 @@
 # 153 Claude SDK Live Registered-Tool Qualification
 
-Status: ready
+Status: complete; PR 298 merged at `b35e4c385746f2dc1145630d8ce2076f5dbb7b0f` (reviewed head `34ef6c322134a2b19dacb747b0e8724b1f702415`)
 Owner: Claude Agent SDK adapter worker
 Created: 2026-09-09
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`

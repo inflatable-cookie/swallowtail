@@ -26,6 +26,13 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
+Current promoted family: Pi RPC `0.85.1` (g05.044). Official npm and GitHub
+stable agree on `0.85.1`; published hops after qualified `0.84.4` are
+`0.85.0` and `0.85.1`; the installed host reports `0.85.1`. Identity must land
+before any claim change. `pi.sdk-sidecar` stays exact `0.84.2`. No provider
+call, login, install, host update, sidecar widening, or second family is
+authorized.
+
 Last one-family claim: OpenCode HTTP `1.18.29` (g05.037, cards
 135-136). The existing `opencode.server` `surface-19` window extends through
 exact npm `1.18.29` as a compatible extension. Baseline `1.14.48` and every

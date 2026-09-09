@@ -30,7 +30,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete; the per-turn audit note is reserved for Chatterbox's prune | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | g05.008; g05.009 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | g05.010 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | g05.011 |
-| Keep production route versions current one family at a time. | Kimi local server and Antigravity stopped honestly; card 136 qualified OpenCode HTTP `surface-19` through `1.18.29`; `1.18.30` remains `UnverifiedNewer` | Contract 029 identity-before-claim; Research 282-285 and 292; current-main validation | g05.037 |
+| Keep production route versions current one family at a time. | Pi RPC `0.85.1` ready as the operator-named family; identity must cover published `0.85.0` and `0.85.1` before any claim edit; sidecar stays exact `0.84.2` | Contract 029 identity-before-claim; Research 268; qualified Pi `0.84.4`; current official/host observations | g05.044 |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | g05.017 |
 | Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04 | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | g05.021 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | g05.022 |
@@ -52,6 +52,7 @@ enforcement.
 Only ready and planned tasks are actionable. Completed and stopped tasks live
 in [## Tasks](#tasks) below.
 
+- [g05.044 Pi RPC 0.85.1 Useful Newer](./044-pi-rpc-0-85-1-useful-newer.md) — ready; operator-named one-family qualification; exact `0.85.0` and `0.85.1` identity first
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
 - [g05.034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 complete; acceptance awaits the lane wall-clock record
 - [g05.031 CI Latency](./031-ci-latency.md) — ready; card-095 gate work complete; operator workflow authority granted
@@ -61,14 +62,14 @@ in [## Tasks](#tasks) below.
 - [g05.041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; operator promotion absent; no dispatch authorization
 - [g05.042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; consumer requirement and operator direction absent; no dispatch authorization
 
-g05 has forty-three numbered tasks: 30 complete including
+g05 has forty-four numbered tasks: 31 complete including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, and 037, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
 at 022, and shared
 lifecycle closure at 023-025; honest
 evidence stops at 002, 003, 007, and 011; ready tasks at 029, 031, 034, and
-036; one planned task at 035; and four preserved tasks at 039-042.
+044; planned tasks at 035, 039, 040, 041, and 042.
 g05.020 is complete: Codex
 qualifies official `0.152.1`. g05.026 is complete as an evidence stop:
 card 062 froze Kimi
@@ -408,6 +409,7 @@ identity.
 
 ### Ready
 
+- [044 Pi RPC 0.85.1 Useful Newer](./044-pi-rpc-0-85-1-useful-newer.md) — ready; freeze official `0.85.0` and `0.85.1` before any claim edit; sidecar remains exact `0.84.2`
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 complete; acceptance awaits the lane wall-clock record
 - [031 CI Latency](./031-ci-latency.md) — ready; card-095 gate work complete; operator workflow authority granted
 - [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; cards 080-088 delivered (folded g05.038); qualified-ranges widening held at the stopped 087 gate

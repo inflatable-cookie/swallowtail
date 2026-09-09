@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 43 tasks: 31 completed tasks, honest evidence stops at 002,
-003, 007, and 011, ready tasks at 029, 031, and 034, and planned
+g05 has 44 tasks: 31 completed tasks, honest evidence stops at 002,
+003, 007, and 011, ready tasks at 029, 031, 034, and 044, and planned
 tasks at 035, 039, 040, 041, and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
@@ -163,6 +163,9 @@ passed all 11 jobs; g05.036 is complete. No publication authority follows.
 g05.043 completed through PR #302 at merged head `8ae707d5`; its exact-head
 review and documentation validation passed, with no validation failure
 deferred.
+g05.044 is ready for the operator-named Pi RPC `0.85.1` one-family currentness
+run. It preserves identity-before-claim across exact published `0.85.0` and
+`0.85.1` and keeps `pi.sdk-sidecar` exact `0.84.2`.
 g05.034 makes the release lane short and dependable and CI fast (cards
 109-113 complete; acceptance awaits the lane wall-clock record). g05.033 completed the `v0.4.3` patch release; Card107's source
 consumer passed at `cbd4ddc8` and its tag capsule was relayed to Acowtancy.

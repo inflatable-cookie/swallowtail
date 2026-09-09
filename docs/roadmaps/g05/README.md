@@ -20,110 +20,88 @@ enforcement.
 
 ## Generation Runway
 
-| Goal | State | Governing refs | First milestone |
+| Goal | State | Governing refs | First task |
 | --- | --- | --- | --- |
-| Inventory exact prompt-free skill-discovery and background-process surfaces across production harness routes. | evidence complete | Research 255; Contracts 013, 017, 023, 029, 034, 041, 044, 047, 052 | `g05.001` card 001 |
-| Settle vocabulary, provenance, privacy, process ownership, watcher lifecycle, and turn-completion policy. | operator decisions recorded | Research 255; current architecture; Contracts 013, 017, 041, 044 | `g05.001` card 002 |
-| Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | `g05.001` card 003; `g05.003` card 016 |
-| Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; card 020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006 card 019; g05.007 card 020 | `g05.002`, `g05.003`, `g05.006`, and `g05.007` |
+| Inventory exact prompt-free skill-discovery and background-process surfaces across production harness routes. | evidence complete | Research 255; Contracts 013, 017, 023, 029, 034, 041, 044, 047, 052 | g05.001 |
+| Settle vocabulary, provenance, privacy, process ownership, watcher lifecycle, and turn-completion policy. | operator decisions recorded | Research 255; current architecture; Contracts 013, 017, 041, 044 | g05.001 |
+| Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | g05.001; g05.003 |
+| Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; the card-020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006; g05.007 | g05.002, g05.003, g05.006, and g05.007 |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
-| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete; the per-turn audit note awaits reserved prune | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | `g05.008` card 021; `g05.009` cards 022-034 and 064-076 |
-| Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | `g05.010` card 025 |
-| Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | `g05.011` cards 026 and 029 |
-| Keep production route versions current one family at a time. | Kimi local server and Antigravity stopped honestly; card 136 qualified OpenCode HTTP `surface-19` through `1.18.29`; `1.18.30` remains `UnverifiedNewer` | Contract 029 identity-before-claim; Research 282-285 and 292; current-main validation | `g05.037` cards 135-136 |
-| Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | `g05.017`, card 043 |
-| Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04 | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | `g05.021`, cards 050-052 |
-| Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | `g05.022`, cards 053-056 |
-| Supply the shared lifecycle evidence required by the Claude SDK route. | completed; card 058 delivered caller-bounded close, card 059 proved macOS tree emptiness unavailable under ordinary authority, and the operator accepted exact root-only degraded cleanup | Contracts 010 and 019; cards 057-059; 2026-09-03 operator decision | `g05.023`, cards 057-059 |
-| Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
-| Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
-| Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | active; cards 080-082 delivered; cards 083-088 dispatch from manifest serial edges | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | `g05.029`, cards 080-088 |
-| Ship the first-turn model rejection evidence to Bovine Desktop as patch `v0.4.4` on one exact candidate tree. | complete; Card 154 merged candidate `49c9e3b2`; dependent exact-tree Desktop gate remains; no tag authority | Contract 036 hosted delegation; Card 154 closeout | `g05.036`, card 154 |
-| Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | ready; cards 109-113 compiled; 112 and 113 may start under the freeze | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | `g05.034`, cards 109-113 |
-| Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | active; shared kernel and route bindings delivered; Grok qualified; Card 153's exact Claude SDK tuple qualification merged provider-free; Card 130 remains a planned producer seam | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-063; Research 288, 295, 301 | `g05.035`, card 153 |
-| Ship the Claude SDK termination cause (card 105) as patch `v0.4.3` on the compressed lane, tag request to the operator as soon as gates are green, Desktop real Send on the tag as consumer evidence. | complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy; Desktop follow-up remains Acowtancy-owned | Contract 036; the 2026-09-06 Desktop real-Send evidence | `g05.033`, cards 105-107 |
-| Repair the Claude SDK live-open failure Bovine Desktop hit on `v0.4.1` and ship it as patch `v0.4.2` with cards 100 and 103 closed, card 101 candidate preparation complete, and card 102 ready. | complete; `v0.4.2` at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window; Desktop owns visibility follow-up | Contract 036; the 2026-09-05 Bovine report | `g05.032`, cards 100-103 |
-| Prepare a bounded `v0.4.1` patch candidate carrying the Claude SDK editing session without crossing the release-execution or tag gate. | completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted | Contract 036; `v0.4.0` precedent; Research 286; source-consumer evidence | `g05.030`, cards 090-092 |
-| Qualify or stop Kimi Code local server `0.41.0` (retargeted from `0.40.1` on 2026-09-04) as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | complete; evidence stop at card 062; ceiling remains `0.38.0`; card 063 is gated | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | `g05.026`, cards 062-063 |
-| Qualify Antigravity through official `1.1.26` on the catalogue and headless axes, recomputing the parked PR 182 evidence rather than trusting it. | complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated | Contract 029; Research 276; parked PR 182 evidence | `g05.027`, cards 071-072 |
+| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete; the per-turn audit note is reserved for Chatterbox's prune | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | g05.008; g05.009 |
+| Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | g05.010 |
+| Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | g05.011 |
+| Keep production route versions current one family at a time. | Kimi local server and Antigravity stopped honestly; card 136 qualified OpenCode HTTP `surface-19` through `1.18.29`; `1.18.30` remains `UnverifiedNewer` | Contract 029 identity-before-claim; Research 282-285 and 292; current-main validation | g05.037 |
+| Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | g05.017 |
+| Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04 | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | g05.021 |
+| Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | g05.022 |
+| Supply the shared lifecycle evidence required by the Claude SDK route. | completed; card 058 delivered caller-bounded close, card 059 proved macOS tree emptiness unavailable under ordinary authority, and the operator accepted exact root-only degraded cleanup | Contracts 010 and 019; cards 057-059; 2026-09-03 operator decision | g05.023 |
+| Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | g05.024 |
+| Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | g05.025 |
+| Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | ready; cards 080-088 delivered (folded g05.038); remaining scope dispatches from the task's serial edges | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | g05.029 |
+| Ship the first-turn model rejection evidence to Bovine Desktop as patch `v0.4.4` on one exact candidate tree. | complete; v0.4.4 candidate `49c9e3b2` merged (card 154 folded); Desktop exact-tree acceptance passed 2026-09-09 under Card 323 (evidence in g05.036); exact-SHA tag decision remains with the operator, no tag authority | Contract 036 hosted delegation; Card 154 closeout; Desktop Card 323 closeout | g05.036 |
+| Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | ready; cards 109-113 complete; acceptance awaits the lane wall-clock record | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | g05.034 |
+| Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | planned; shared kernel and route bindings delivered; card-153 exact Claude SDK tuple qualification merged provider-free; g05.041 remains a planned producer seam | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-063; Research 288, 295, 301 | g05.035 |
+| Ship the Claude SDK termination cause (card 105) as patch `v0.4.3` on the compressed lane, tag request to the operator as soon as gates are green, Desktop real Send on the tag as consumer evidence. | complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy; Desktop follow-up remains Acowtancy-owned | Contract 036; the 2026-09-06 Desktop real-Send evidence | g05.033 |
+| Repair the Claude SDK live-open failure Bovine Desktop hit on `v0.4.1` and ship it as patch `v0.4.2` with cards 100 and 103 closed, card 101 candidate preparation complete, and card 102 ready. | complete; `v0.4.2` at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window; Desktop owns visibility follow-up | Contract 036; the 2026-09-05 Bovine report | g05.032 |
+| Prepare a bounded `v0.4.1` patch candidate carrying the Claude SDK editing session without crossing the release-execution or tag gate. | completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted | Contract 036; `v0.4.0` precedent; Research 286; source-consumer evidence | g05.030 |
+| Qualify or stop Kimi Code local server `0.41.0` (retargeted from `0.40.1` on 2026-09-04) as the first post-release currentness family, treating the `0.40.0` Bash `cwd` restriction removal as an authority question first. | complete; evidence stop at card 062; ceiling remains `0.38.0`; follow-on claim gated (former card 063 retired; parent holds the gate) | Contract 029; Contracts 017 and 023; Research 270 and 276; the A2 ACP precedent | g05.026 |
+| Qualify Antigravity through official `1.1.26` on the catalogue and headless axes, recomputing the parked PR 182 evidence rather than trusting it. | complete; evidence stop at card 071; ceiling remains `1.1.17`; follow-on claim gated (former card 072 retired; parent holds the gate) | Contract 029; Research 276; parked PR 182 evidence | g05.027 |
 
-## Planned Next Roadmaps
+## Frontier
+
+Only ready and planned tasks are actionable. Completed and stopped tasks live
+in [## Tasks](#tasks) below.
 
 - [g05.038 Flattened Task Switchover](./038-flattened-task-switchover.md) — ready; one-time documentation and checker migration to the installed generation-plus-task model
-
-- [g05.037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 136 qualified `surface-19` through `1.18.29`
-- [g05.036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; Card 154 merged candidate `49c9e3b2`; dependent exact-tree Desktop acceptance remains
+- [g05.036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; v0.4.4 candidate `49c9e3b2` merged (card 154 folded); Desktop exact-tree acceptance passed 2026-09-09 under Card 323; exact-SHA tag decision remains with the operator
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
-- [g05.034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze
-- [g05.033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy
-- [g05.032 v0.4.2 Release Readiness](./032-v0-4-2-release-readiness.md) — complete; `v0.4.2` tagged at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window; Desktop owns visibility follow-up
-- [g05.031 CI Latency](./031-ci-latency.md) — ready; card 095 restructures the PR gate; operator workflow authority granted
-- [g05.030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted
-- [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — active; cards 080-082 delivered, cards 083-088 dispatch from manifest serial edges
-- [g05.028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`
-- [g05.027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated
-- [g05.026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; `0.41.0` identity frozen, ceiling remains `0.38.0`; card 063 claim remains gated
-- [g05.025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 shared-runtime reservation, cancellation-safe join, and shutdown-race proof merged at `53153af1` and consumed by the restored SDK route
-- [g05.024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
-- [g05.023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; caller-bounded close plus accepted macOS root-only degraded cleanup posture
-- [g05.022 Claude Agent Dual-Route Parity](022-claude-agent-dual-route-parity.md) — completed; ACP card 056 delivered; SDK card 055 restored on card 061 reservations and merged through PR 196 at `493f8194`
-- [g05.021 v0.4.0 Release Readiness](021-v0-4-0-release-readiness.md) — completed; cards 050-052 passed against immutable candidate `56f3913a`; exact-SHA CI, source consumer, and one-attempt authenticated Nucleus Agent Chat smoke passed; annotated `v0.4.0` tagged 2026-09-04
-- [g05.020 Codex 0.152.1 Useful Newer](020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official npm `0.152.1`
+- [g05.034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 complete; acceptance awaits the lane wall-clock record
+- [g05.031 CI Latency](./031-ci-latency.md) — ready; card-095 gate work complete; operator workflow authority granted
+- [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; cards 080-088 delivered (folded g05.038); qualified-ranges widening held at the stopped 087 gate
+- [g05.039 Qoder Effective Skill Visibility Binding](./039-qoder-effective-skill-visibility-binding.md) — planned; gated on a non-empty Research 256 deliver-now disposition
+- [g05.040 Qoder Skill Visibility Acceptance](./040-qoder-skill-visibility-acceptance.md) — planned; serial after g05.039
+- [g05.041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; backlog stub only; no dispatch authorization
+- [g05.042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub only; no dispatch authorization
 
-- [g05.019 Claude Code 2.1.257 Useful Newer](019-claude-code-2-1-257-useful-newer.md) — completed; Research 273; cards 046-047; official npm `2.1.257`
-- [g05.018 Claude Agent ACP 0.73.0 Useful Newer](018-claude-agent-acp-0-73-0-useful-newer.md) — completed; Research 272; cards 044-045; official npm `0.73.0`
-- [g05.017 Kimi Code ACP 0.39.x Containment Gate](017-kimi-code-acp-0-39-containment-gate.md) — completed; operator selected A2; card 043 capped `kimi-code.acp` at `QualifiedOnly` with one artifact-level reopen trigger
-- [g05.016 Kimi Code 0.39.1 Useful Newer](016-kimi-code-0-39-1-useful-newer.md) — completed; Research 270; cards 041-042; headless v2 corrected to `0.33.0..=0.39.1` and v1 to `0.29.0..=0.32.0`; the ACP axis holds its `0.38.0` ceiling and excludes exact `0.39.0` and `0.39.1`
-- [g05.015 Pi RPC 0.84.4 Useful Newer](015-pi-rpc-0-84-4-useful-newer.md) — completed; Research 268; cards 039-040; official npm `0.84.4`
-- [g05.014 Claude Code 2.1.252 Useful Newer](014-claude-code-2-1-252-useful-newer.md) — completed; Research 266; cards 037-038; official npm `2.1.252`
-- [g05.013 Codex 0.152.0 Useful Newer](013-codex-0-152-0-useful-newer.md) — completed; Research 264; cards 035-036; official npm `0.152.0`
-- [g05.012 Codex 0.151.0 Useful Newer](012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
-- [g05.011 Watcher Route Admission Recovery](011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
-- [g05.010 Bounded Skill Inventory And Effective Visibility](010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; Spec 013 archived; implementation unplanned
-- [g05.009 Contract 061 Consumer Projection Realization](009-contract-061-consumer-projection-realization.md) — complete; 767 rows proved; cards 097-099 closed; card 096's audit note remains for reserved prune
-- [g05.008 Consumer Route Feature And Control Projection](008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
-- [g05.007 Claude Watcher Live Acceptance](007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; ordered recorder kept only JoinedZero; claims withheld
-- [g05.006 Watcher Proof Repair](006-watcher-proof-repair.md) — merged through PR 126 at `c8691e84`; card 019 credential-free lifecycle feed and Stop-reentry oracle; no live claim
-- [g05.005 Claude Code 2.1.251 Useful Newer](005-claude-code-2-1-251-useful-newer.md) — completed standing currentness; Research 261; cards 017-018; prerequisite to watcher card 010 reassessment
-- [g05.004 Qwen Headless 0.22.3 Useful Newer](004-qwen-headless-0-22-3-useful-newer.md) — completed standing currentness
-- [g05.003 Operation-Scoped Watcher Proof](003-operation-scoped-watcher-proof.md) — stopped after live evidence; exact Haiku never created a host watcher; first route claim withheld
-- [g05.002 Effective Harness Skill Visibility Proof](002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; cards 005-006 remain planned
-- [g05.001 Harness Skill And Watcher Surface Inventory](001-harness-skill-and-watcher-surface-inventory.md) — completed; Research 255, operator decisions, Contracts 058-059, and proof dispositions closed
-
-g05 has thirty-seven numbered roadmaps: 28 completed milestones including
+g05 has forty-two numbered tasks: 28 complete including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
-028, and 037, the A2 ACP cap at 017, contract promotion at 008 and 010, dual-route parity
+028, and 037, the A2 ACP cap at 017, contract promotion at 008 and 010,
+dual-route parity
 at 022, and shared
 lifecycle closure at 023-025; honest
-evidence stops at 002, 003, 007, and 011. Milestone 020 is complete: Codex
-qualifies official `0.152.1`. Milestone 026 is complete as an evidence stop:
+evidence stops at 002, 003, 007, and 011; ready tasks at 029, 031, 034, 036,
+and 038; one planned task at 035; and four preserved tasks at 039-042.
+g05.020 is complete: Codex
+qualifies official `0.152.1`. g05.026 is complete as an evidence stop:
 card 062 froze Kimi
 Code local server identity first, retargeted to official `0.41.0` after latest
-moved during its first run. Milestone 027 is complete as an evidence stop:
+moved during its first run; the follow-on claim stays gated with former card
+063 retired. g05.027 is complete as an evidence stop:
 card 071 froze Antigravity identity through official `1.1.26`, stopping at
-`1.1.22` with a `1.1.17` ceiling. Milestone 009 is ready with four
-planning-only breadth audits (cards 064-067); cards 064 and 067 closed candidates
+`1.1.22` with a `1.1.17` ceiling; the follow-on claim stays gated with former
+card 072 retired. g05.009 is complete with
+four planning-only breadth audits (cards 064-067); cards 064 and 067 closed candidates
 C and J as promotable, while card 066 stopped on the shared observation decision;
 card 068 and card 069 are merged; card 070's gate is promoted into Contract
-061 and runtime baseline card 073 is merged. Cards 074 and 075 are ready for
+061 and runtime baseline card 073 is merged. Cards 074 and 075 completed
 Candidates I and E. Card 076's compound-acknowledgement design is complete;
-card 079 realizes it before card 034. g05.037 cards 135-136 qualified
+card 079 realized it before card 034. g05.037 cards 135-136 qualified
 OpenCode HTTP `surface-19` through official `1.18.29`. g05.028 cards 077-078
 remain the `1.18.28` identity/claim.
-Milestone 035 is active. The shared kernel and route bindings are delivered;
+g05.035 is planned. The shared kernel and route bindings are delivered;
 Card 153's provider-free Claude SDK exact-tuple qualification is complete at
-merged head `b35e4c38`; Card 130 remains a planned persistent-permission
-producer seam. No provider or release authority followed this card.
-Milestone 021 is complete; the exact-head review accepted Research 281 through
+merged head `b35e4c38`; g05.041 remains a planned persistent-permission
+producer seam and g05.042 the remaining-ACP-routes seam. No provider or release authority followed this card.
+g05.021 is complete; the exact-head review accepted Research 281 through
 PR 198 head `2f4923b8`, merged as `835fe9ff`; card 051 is complete after PR
 201 exact head `10d9b7a0` merged as candidate `56f3913a` and canonical
 workflow-dispatch run 33853812785 passed all six jobs at that exact SHA. Card
 052 passed the exact source consumer and one-attempt authenticated Nucleus
 Agent Chat smoke against that candidate; the operator tagged and pushed
 annotated `v0.4.0` on 2026-09-04 and the freeze is lifted.
-Milestone 022 is
+g05.022 is
 completed: card 055 restored the SDK route on card 061 reservations and merged
-through PR 196 at `493f8194`. Milestone 023 is complete after
+through PR 196 at `493f8194`. g05.023 is complete after
 delivering card 057's tree-completion vocabulary and card 058's caller-bounded
 close seam. Card 059 attacked the remaining boundary and stopped: four native
 counterexamples falsify
@@ -134,8 +112,8 @@ so the host stays root-only and adds no unsafe; entitlement or system-extension
 mechanisms are out of scope. The operator accepted bounded root-only degraded
 cleanup on ordinary macOS: only `OwnedTreeEmpty` supports `Clean`; confirmed
 root completion is `Degraded`; unconfirmed root or observed survivor is
-`Failed`. Exact-head review then found the task-handle ownership gap. Milestone
-024/card 060 returns unfinished task ownership to the exact host reaper without
+`Failed`. Exact-head review then found the task-handle ownership gap. g05.024
+returns unfinished task ownership to the exact host reaper without
 blocking the caller or claiming a join. PR 188 nevertheless merged despite
 rejected exact-head review, and PR 193 withdrew its route. g05.025/card 061
 added the pre-effect reservation, non-fallible exact-host/scope handoff, and
@@ -428,45 +406,58 @@ rather than joining it. The route is restored and merged through PR 196 at
 useful portable route rather than an approximation hidden behind the SDK
 identity.
 
-## Milestones
+## Tasks
+
+### Ready
 
 - [038 Flattened Task Switchover](./038-flattened-task-switchover.md) — ready; one-time planning hierarchy migration
+- [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; v0.4.4 candidate `49c9e3b2` merged (card 154 folded); Desktop exact-tree acceptance passed 2026-09-09 under Card 323; exact-SHA tag decision remains with the operator
+- [034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 complete; acceptance awaits the lane wall-clock record
+- [031 CI Latency](./031-ci-latency.md) — ready; card-095 gate work complete; operator workflow authority granted
+- [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; cards 080-088 delivered (folded g05.038); qualified-ranges widening held at the stopped 087 gate
+
+### Planned
+
+- [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; Batch A promoted (card 114 complete); former stubs 130/134 preserved as g05.041/g05.042
+- [039 Qoder Effective Skill Visibility Binding](./039-qoder-effective-skill-visibility-binding.md) — planned; gated on a non-empty Research 256 deliver-now disposition
+- [040 Qoder Skill Visibility Acceptance](./040-qoder-skill-visibility-acceptance.md) — planned; serial after g05.039
+- [041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; backlog stub only; no dispatch authorization
+- [042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub only; no dispatch authorization
+
+### Stopped
+
+- [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
+- [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
+- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — stopped after live evidence; exact Haiku never created a host watcher; prototype unmerged
+- [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; Qoder binding and acceptance preserved as g05.039 and g05.040
+
+### Completed
 
 - [037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 136 qualified `surface-19` through `1.18.29`
-- [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; Card 154 merged candidate `49c9e3b2`; dependent exact-tree Desktop acceptance remains
-- [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; Batch A promoted; card114 leads shared kernel implementation
-- [034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze
 - [033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy
 - [032 v0.4.2 Release Readiness](./032-v0-4-2-release-readiness.md) — complete; `v0.4.2` tagged at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window
-- [031 CI Latency](./031-ci-latency.md) — ready; card 095
 - [030 v0.4.1 Release Readiness](./030-v0-4-1-release-readiness.md) — completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted
-- [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; card 080 delivered; cards 081-088 queued
 - [028 OpenCode HTTP 1.18.28 Useful Newer](./028-opencode-http-1-18-28-useful-newer.md) — complete; card 078 qualified `surface-19` through `1.18.28`
-- [027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — complete; evidence stop at card 071; ceiling remains `1.1.17`; card 072 is gated
-- [026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; retargeted to `0.41.0`; card 063 claim gated behind an admitted segment
-- [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 merged at `53153af1`; pre-effect reservation, cancellation-safe join, non-fallible exact-host/scope handoff, and real local-host shutdown-race proof
-- [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; card 060; exact-host/scope accepted-for-reap and autonomous local host reaping
-- [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; cards 057-059 plus accepted macOS root-only degraded cleanup posture
+- [027 Antigravity 1.1.26 Useful Newer](./027-antigravity-1-1-26-useful-newer.md) — complete; evidence stop at card 071; ceiling remains `1.1.17`; follow-on claim gated (former card 072 retired)
+- [026 Kimi Code Local Server 0.41.0 Useful Newer](./026-kimi-code-local-server-0-40-1-useful-newer.md) — complete; evidence stop; `0.41.0` identity frozen, ceiling remains `0.38.0`; follow-on claim gated (former card 063 retired)
+- [025 Reserved Reapable Task Lifecycle](./025-reserved-reapable-task-lifecycle.md) — completed; card 061 shared-runtime reservation, cancellation-safe join, and shutdown-race proof merged at `53153af1` and consumed by the restored SDK route
+- [024 Scoped Task Relinquishment](./024-scoped-task-relinquishment.md) — completed; exact-host/scope ownership transfer and autonomous local reap
+- [023 Claude SDK Shared Lifecycle Prerequisites](./023-claude-sdk-shared-lifecycle-prerequisites.md) — completed; caller-bounded close plus accepted macOS root-only degraded cleanup posture
 - [022 Claude Agent Dual-Route Parity](./022-claude-agent-dual-route-parity.md) — completed; ACP card 056 delivered; SDK card 055 restored and merged through PR 196 at `493f8194`
 - [021 v0.4.0 Release Readiness](./021-v0-4-0-release-readiness.md) — completed; annotated `v0.4.0` tagged 2026-09-04 at `56f3913a`; exact-SHA CI, source consumer, and one-attempt authenticated Nucleus Agent Chat smoke passed; publication stays unauthorized
 - [020 Codex 0.152.1 Useful Newer](./020-codex-0-152-1-useful-newer.md) — completed; Research 275; cards 048-049; official `0.152.1`
-
 - [019 Claude Code 2.1.257 Useful Newer](./019-claude-code-2-1-257-useful-newer.md) — completed; Research 273; cards 046-047; official `2.1.257`
 - [018 Claude Agent ACP 0.73.0 Useful Newer](./018-claude-agent-acp-0-73-0-useful-newer.md) — completed; Research 272; cards 044-045; official `0.73.0`
-- [017 Kimi Code ACP 0.39.x Containment Gate](./017-kimi-code-acp-0-39-containment-gate.md) — completed; operator selected A2; card 043
-- [016 Kimi Code 0.39.1 Useful Newer](./016-kimi-code-0-39-1-useful-newer.md) — completed; Research 270; cards 041-042; headless v2 `0.33.0..=0.39.1`, headless v1 `0.29.0..=0.32.0`, ACP ceiling held at `0.38.0` with `0.39.0` and `0.39.1` excluded
-- [015 Pi RPC 0.84.4 Useful Newer](./015-pi-rpc-0-84-4-useful-newer.md) — completed; Research 268; cards 039-040; official `0.84.4`
+- [017 Kimi Code ACP 0.39.x Containment Gate](./017-kimi-code-acp-0-39-containment-gate.md) — completed; operator selected A2; card 043 capped `kimi-code.acp` at `QualifiedOnly` with one artifact-level reopen trigger
+- [016 Kimi Code 0.39.1 Useful Newer](./016-kimi-code-0-39-1-useful-newer.md) — completed; Research 270; cards 041-042; headless v2 corrected to `0.33.0..=0.39.1` and v1 to `0.29.0..=0.32.0`; the ACP axis holds its `0.38.0` ceiling and excludes exact `0.39.0` and `0.39.1`
+- [015 Pi RPC 0.84.4 Useful Newer](./015-pi-rpc-0-84-4-useful-newer.md) — completed; Research 268; cards 039-040; official npm `0.84.4`
 - [014 Claude Code 2.1.252 Useful Newer](./014-claude-code-2-1-252-useful-newer.md) — completed; Research 266; cards 037-038; official `2.1.252`
 - [013 Codex 0.152.0 Useful Newer](./013-codex-0-152-0-useful-newer.md) — completed; Research 264; cards 035-036; official `0.152.0`
-- [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028; Research 262; official `0.151.0`
-- [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
-- [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; card 025; implementation unplanned
+- [012 Codex 0.151.0 Useful Newer](./012-codex-0-151-0-useful-newer.md) — completed through PR 130 at `3360d497`; cards 027-028 preserve identity-before-claim and qualify official `0.151.0`
+- [010 Bounded Skill Inventory And Effective Visibility](./010-bounded-skill-inventory-and-effective-visibility.md) — completed; Contract 062 active; Spec 013 archived; implementation unplanned
 - [009 Contract 061 Consumer Projection Realization](./009-contract-061-consumer-projection-realization.md) — complete; all 767 rows proved; cards 097-099 closed; audit note retained for reserved prune
 - [008 Consumer Route Feature And Control Projection](./008-consumer-route-feature-and-control-projection.md) — completed; card 021 promoted Spec 012 into Contract 061; implementation unplanned
-- [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
 - [006 Watcher Proof Repair](./006-watcher-proof-repair.md) — completed and merged through PR 126 at `c8691e84`; card 019; no provider authorization; claims unpublished
 - [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
-- [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — stopped after live evidence; exact Haiku never created a host watcher; prototype unmerged
-- [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — stopped after evidence; card 004 complete; cards 005-006 planned
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed

@@ -4,8 +4,8 @@ Status: promoted
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
-Roadmap: [g04.078 llama.cpp Owned Reasoning Controls](../roadmaps/g04/078-llama-cpp-owned-reasoning-controls.md)
-Card: [216 llama.cpp Owned Reasoning Controls Evidence](../roadmaps/g04/batch-cards/216-llama-cpp-owned-reasoning-controls-evidence.md)
+Roadmap: [g04.078 llama.cpp Owned Reasoning Controls](../roadmaps/archive/g04.md)
+Card: [216 llama.cpp Owned Reasoning Controls Evidence](../roadmaps/archive/g04.md)
 
 ## Question
 

@@ -1,43 +1,20 @@
 #!/usr/bin/env python3
-"""Fail when roadmap/batch-card indexes disagree with Status frontmatter.
+"""Fail when task indexes disagree with Status frontmatter.
 
-Grammar (this file is authority for the live parse; docs/roadmaps/status-grammar.md
-is the human copy):
-
-- First recognised token wins. A Status line or index annotation is split on
-  the first ``;`` or newline. Only the first field is parsed. Later fields are
-  free-form detail and cannot change the bucket, even when they contain words
-  such as ``stopped`` or ``blocked``.
-- Recognised Status tokens, matched at the start of that first field:
-  ``planned``, ``ready``, ``blocked``, ``stopped``, ``complete``,
-  ``completed``, ``done``. Those collapse to buckets planned, ready, blocked,
-  stopped, and complete.
-- Index annotations accept the same tokens plus complete aliases
-  ``evidence stop`` and ``identity stop``, still only as the first field.
-- Batch-card indexes are matched as markdown list entries
-  ``- [title](./NNN-file.md)`` (optional ``./``) under ``## Planned``,
-  ``## Ready``, ``## Blocked``, ``## Stopped``, or ``## Completed``. One
-  entry per card. The section heading is the index bucket; the optional
-  ``—`` annotation primary must belong to that bucket. ``stopped`` Status
-  maps only to ``## Stopped``.
-- Every failure names ``path:line`` of the line to fix.
-
-Hermetic tests pass ``--root`` pointing at a throwaway tree. Ambient
-environment variables cannot retarget this checker.
-
-Accepted Status buckets and generation-index census phrases are also
-documented in docs/roadmaps/status-grammar.md. Live census regexes:
-
-- completed: ``N completed milestones``
-- stops: ``honest evidence stops at …`` or ``no honest evidence stops``
-- ready: ``one ready milestone at`` / ``ready milestone(s) at``
+Task model (g05.038): ``docs/roadmaps/gNN/NNN-<slug>.md`` files are the sole
+executable planning unit. The generation README lists each task once under
+``### Planned`` / ``### Ready`` / ``### Blocked`` / ``### Stopped`` /
+``### Completed`` beneath ``## Tasks``. There is no nested card level: any
+``batch-cards/`` directory or link, ``## Batch Cards`` section, ``Milestone:``
+pointer, ``execute card`` verb, card-budget table, allowed-runway table, or
+``First milestone`` / ``Next milestone`` column in a current planning surface
+is a migration defect.
 """
 
 from __future__ import annotations
 
 import argparse
 import re
-import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -74,53 +51,47 @@ def line_at(document: str, offset: int) -> int:
 
 def fail(message: str, *, at: tuple[Path, int]) -> None:
     rel = at[0].relative_to(ROOT) if at[0].is_absolute() else at[0]
-    print(
-        f"roadmap status drift check failed: {rel}:{at[1]}: {message}",
-        file=sys.stderr,
-    )
+    print(f"roadmap status drift check failed: {message} ({rel}:{at[1]})")
     raise SystemExit(1)
 
 
 def active_generation_id() -> str:
     document = GENERATION_INDEX.read_text(encoding="utf-8")
-    matches = list(
-        re.finditer(
-            r"^\| `(?P<generation>g\d{2})` \| active \|",
-            document,
-            re.MULTILINE,
-        )
+    matches = re.findall(
+        r"^\| `(g\d{2})` \| active \|", document, re.MULTILINE
     )
     if len(matches) != 1:
-        line = line_at(document, matches[0].start()) if matches else 1
         fail(
-            "generation index must name exactly one active generation",
-            at=(GENERATION_INDEX, line),
+            "generation-index must name exactly one active generation",
+            at=(GENERATION_INDEX, 1),
         )
-    return matches[0].group("generation")
+    return matches[0]
 
 
 ACTIVE_GENERATION = ""
-BATCH_DIR = ROOT
-BATCH_INDEX = ROOT
-MILESTONE_DIR = ROOT
-MILESTONE_INDEX = ROOT
+TASK_DIR = ROOT
+TASK_INDEX = ROOT
 
 
 def bind_paths(root: Path) -> None:
     global ROOT, GENERATION_INDEX, ACTIVE_GENERATION
-    global BATCH_DIR, BATCH_INDEX, MILESTONE_DIR, MILESTONE_INDEX
+    global TASK_DIR, TASK_INDEX
     ROOT = root.resolve()
     GENERATION_INDEX = ROOT / "docs/roadmaps/generation-index.md"
     ACTIVE_GENERATION = active_generation_id()
-    BATCH_DIR = ROOT / f"docs/roadmaps/{ACTIVE_GENERATION}/batch-cards"
-    BATCH_INDEX = BATCH_DIR / "README.md"
-    MILESTONE_DIR = ROOT / f"docs/roadmaps/{ACTIVE_GENERATION}"
-    MILESTONE_INDEX = MILESTONE_DIR / "README.md"
+    TASK_DIR = ROOT / f"docs/roadmaps/{ACTIVE_GENERATION}"
+    TASK_INDEX = TASK_DIR / "README.md"
+    legacy = TASK_DIR / "batch-cards"
+    if legacy.is_dir():
+        fail(
+            f"legacy nested dispatch level remains: {legacy.relative_to(ROOT)}",
+            at=(TASK_INDEX, 1),
+        )
 
 
-def parse_args(argv: list[str] | None) -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Reject roadmap and batch-card Status drift."
+        description="Reject roadmap task Status drift and nested dispatch."
     )
     parser.add_argument(
         "--root",
@@ -137,22 +108,27 @@ LINK_RE = re.compile(
     re.MULTILINE,
 )
 SECTION_RE = re.compile(
-    r"^## (?P<title>Planned|Ready|Blocked|Stopped|Completed)\s*$",
+    r"^#{2,3} (?P<title>Planned|Ready|Blocked|Stopped|Completed)\s*$",
     re.MULTILINE,
 )
-CARD_READY_PROSE_RE = re.compile(
-    r"cards?\s+(?P<ids>(?:\d{3}(?:\s*[-–,]\s*\d{3})*)+)\s+(?:is|are)\s+ready",
+TASK_READY_PROSE_RE = re.compile(
+    r"tasks?\s+(?P<ids>(?:\d{3}(?:\s*[-–,]\s*\d{3})*)+)\s+(?:is|are)\s+ready",
     re.IGNORECASE,
 )
 STOPPED_LIST_RE = re.compile(
     r"honest evidence\s+stops at\s+(?P<ids>[\d,\s]+(?:and\s+\d+)?)",
     re.IGNORECASE,
 )
-COMPLETED_COUNT_RE = re.compile(r"(?P<count>\d+)\s+completed milestones", re.IGNORECASE)
-READY_MILESTONE_RE = re.compile(
-    r"(?:one ready milestone at|ready milestones? at)\s+(?P<ids>\d{3}(?:\s*,\s*\d{3})*)",
+COMPLETED_COUNT_RE = re.compile(r"(?P<count>\d+)\s+completed tasks?", re.IGNORECASE)
+READY_TASK_RE = re.compile(
+    r"(?:one ready task at|ready\s+tasks?\s+at)\s+(?P<ids>\d{3}(?:\s*,\s*\d{3})*(?:\s*,?\s*and\s+\d{3})?)",
     re.IGNORECASE,
 )
+PLANNED_TASK_RE = re.compile(
+    r"(?:one planned task at|planned\s+tasks?\s+at)\s+(?P<ids>\d{3}(?:\s*,\s*\d{3})*(?:\s*,?\s*and\s+\d{3})?)",
+    re.IGNORECASE,
+)
+NO_PLANNED_RE = re.compile(r"\bno planned tasks\b", re.IGNORECASE)
 
 SECTION_BUCKET = {
     "Planned": "planned",
@@ -161,7 +137,6 @@ SECTION_BUCKET = {
     "Stopped": "stopped",
     "Completed": "complete",
 }
-
 ANNOTATION_ALLOWED = {
     "planned": {"planned"},
     "ready": {"ready"},
@@ -169,6 +144,29 @@ ANNOTATION_ALLOWED = {
     "complete": {"complete", "completed", "done", "evidence stop", "identity stop"},
     "stopped": {"stopped"},
 }
+
+# Nested-dispatch structures rejected in current planning surfaces.
+LEGACY_LINK_RE = re.compile(r"\]\([^)]*batch-cards/")
+LEGACY_PATTERNS = (
+    re.compile(r"^## Batch Cards\s*$", re.MULTILINE),
+    re.compile(r"^Milestone:\s*`", re.MULTILINE),
+    re.compile(r"execute card", re.IGNORECASE),
+    re.compile(r"Remaining card budget"),
+    re.compile(r"Allowed runway"),
+    re.compile(r"[Ff]irst milestone"),
+    re.compile(r"[Nn]ext milestone"),
+    re.compile(r"Ready cards, in order"),
+    re.compile(r"^\| Card \|", re.MULTILINE),
+)
+# Surfaces that may name retired structures without dispatching them: the
+# migration task itself (it specifies the removal) and the grammar that
+# defines the rejection rule.
+LEGACY_SCAN_EXEMPT = frozenset(
+    {
+        "docs/roadmaps/g05/038-flattened-task-switchover.md",
+        "docs/roadmaps/status-grammar.md",
+    }
+)
 
 
 def read(path: Path) -> str:
@@ -239,13 +237,13 @@ def parse_id_list(text: str, *, at: tuple[Path, int]) -> set[str]:
     return ids
 
 
-def check_batch_cards() -> None:
-    document = read(BATCH_INDEX)
+def check_tasks() -> None:
+    document = read(TASK_INDEX)
     sections = list(SECTION_RE.finditer(document))
     if not sections:
         fail(
-            "batch-card index has no Planned/Ready/Blocked/Stopped/Completed sections",
-            at=(BATCH_INDEX, 1),
+            "task index has no Planned/Ready/Blocked/Stopped/Completed sections",
+            at=(TASK_INDEX, 1),
         )
 
     indexed: dict[str, list[tuple[str, str | None, int]]] = defaultdict(list)
@@ -259,56 +257,56 @@ def check_batch_cards() -> None:
             line = line_at(document, start + link.start())
             indexed[link.group("file")].append((bucket, link.group("ann"), line))
 
-    card_files = sorted(
-        path for path in BATCH_DIR.glob("*.md") if path.name != "README.md"
+    task_files = sorted(
+        path for path in TASK_DIR.glob("*.md") if path.name != "README.md"
     )
-    for path in card_files:
+    for path in task_files:
         expected, status_line = frontmatter_status(path)
         entries = indexed.get(path.name, [])
         if not entries:
             fail(
-                f"batch card {path.name} is not indexed in {BATCH_INDEX.relative_to(ROOT)}",
+                f"task {path.name} is not indexed in {TASK_INDEX.relative_to(ROOT)}",
                 at=(path, status_line),
             )
         if len(entries) > 1:
             places = ", ".join(f"{bucket} at line {line}" for bucket, _, line in entries)
             fail(
-                f"batch card {path.name} is indexed more than once ({places})",
-                at=(BATCH_INDEX, entries[0][2]),
+                f"task {path.name} is indexed more than once ({places})",
+                at=(TASK_INDEX, entries[0][2]),
             )
         section_bucket, annotation, index_line = entries[0]
         if section_bucket != expected:
             fail(
-                f"batch card {path.name} Status bucket is {expected!r} but index lists it under {section_bucket!r}",
-                at=(BATCH_INDEX, index_line),
+                f"task {path.name} Status bucket is {expected!r} but index lists it under {section_bucket!r}",
+                at=(TASK_INDEX, index_line),
             )
         primary = annotation_primary(annotation)
         if primary is not None:
             allowed = ANNOTATION_ALLOWED[expected]
             if primary not in allowed:
                 fail(
-                    f"batch card {path.name} annotation primary {primary!r} does not match Status bucket {expected!r}",
-                    at=(BATCH_INDEX, index_line),
+                    f"task {path.name} annotation primary {primary!r} does not match Status bucket {expected!r}",
+                    at=(TASK_INDEX, index_line),
                 )
 
     for name, entries in sorted(indexed.items()):
-        if not (BATCH_DIR / name).is_file():
+        if not (TASK_DIR / name).is_file():
             fail(
-                f"batch-card index links missing file {name}",
-                at=(BATCH_INDEX, entries[0][2]),
+                f"task index links missing file {name}",
+                at=(TASK_INDEX, entries[0][2]),
             )
 
 
-def check_milestones() -> None:
-    document = read(MILESTONE_INDEX)
-    milestone_files = {
+def check_task_annotations() -> None:
+    document = read(TASK_INDEX)
+    task_files = {
         path.name: path
-        for path in MILESTONE_DIR.glob("*.md")
+        for path in TASK_DIR.glob("*.md")
         if path.name != "README.md" and re.match(r"^\d{3}-", path.name)
     }
     for link in LINK_RE.finditer(document):
         name = link.group("file")
-        path = milestone_files.get(name)
+        path = task_files.get(name)
         if path is None:
             continue
         expected, _status_line = frontmatter_status(path)
@@ -318,8 +316,8 @@ def check_milestones() -> None:
         allowed = ANNOTATION_ALLOWED[expected]
         if primary not in allowed:
             fail(
-                f"milestone {name} annotation primary {primary!r} does not match Status bucket {expected!r}",
-                at=(MILESTONE_INDEX, line_at(document, link.start())),
+                f"task {name} annotation primary {primary!r} does not match Status bucket {expected!r}",
+                at=(TASK_INDEX, line_at(document, link.start())),
             )
 
 
@@ -340,52 +338,68 @@ def active_generation_census(document: str) -> tuple[str, int]:
 def check_generation_index() -> None:
     document = read(GENERATION_INDEX)
     buckets: dict[str, set[str]] = defaultdict(set)
-    for path in MILESTONE_DIR.glob("*.md"):
+    for path in TASK_DIR.glob("*.md"):
         if path.name == "README.md" or not re.match(r"^\d{3}-", path.name):
             continue
         number = path.name[:3]
         bucket, _status_line = frontmatter_status(path)
         buckets[bucket].add(number)
 
-    for match in CARD_READY_PROSE_RE.finditer(document):
+    for match in TASK_READY_PROSE_RE.finditer(document):
         line = line_at(document, match.start())
         for number in parse_id_list(match.group("ids"), at=(GENERATION_INDEX, line)):
-            path = next(BATCH_DIR.glob(f"{number}-*.md"), None)
+            path = next(TASK_DIR.glob(f"{number}-*.md"), None)
             if path is None:
                 fail(
-                    f"generation-index claims card {number} is ready but the card file is missing",
+                    f"generation-index claims task {number} is ready but the task file is missing",
                     at=(GENERATION_INDEX, line),
                 )
             actual, _status_line = frontmatter_status(path)
             if actual != "ready":
                 fail(
-                    f"generation-index claims card {number} is ready but Status bucket is {actual!r}",
+                    f"generation-index claims task {number} is ready but Status bucket is {actual!r}",
                     at=(GENERATION_INDEX, line),
                 )
 
     census, census_line = active_generation_census(document)
     ready_claimed: set[str] = set()
-    for match in READY_MILESTONE_RE.finditer(census):
+    for match in READY_TASK_RE.finditer(census):
         ready_line = census_line + line_at(census, match.start()) - 1
         ready_claimed.update(parse_id_list(match.group("ids"), at=(GENERATION_INDEX, ready_line)))
     if ready_claimed != buckets["ready"]:
         fail(
-            "generation-index ready milestone set "
+            "generation-index ready task set "
             f"{sorted(ready_claimed)} disagrees with frontmatter {sorted(buckets['ready'])}",
+            at=(GENERATION_INDEX, census_line),
+        )
+
+    planned_claimed: set[str] = set()
+    for match in PLANNED_TASK_RE.finditer(census):
+        planned_line = census_line + line_at(census, match.start()) - 1
+        planned_claimed.update(parse_id_list(match.group("ids"), at=(GENERATION_INDEX, planned_line)))
+    if not PLANNED_TASK_RE.search(census) and not NO_PLANNED_RE.search(census):
+        fail(
+            f"generation-index {ACTIVE_GENERATION} census omits planned task disposition",
+            at=(GENERATION_INDEX, census_line),
+        )
+    if planned_claimed != buckets["planned"]:
+        fail(
+            "generation-index planned task set "
+            f"{sorted(planned_claimed)} disagrees with frontmatter {sorted(buckets['planned'])}",
             at=(GENERATION_INDEX, census_line),
         )
 
     completed_match = COMPLETED_COUNT_RE.search(census)
     if completed_match is None:
         fail(
-            f"generation-index {ACTIVE_GENERATION} census omits completed milestone count",
+            f"generation-index {ACTIVE_GENERATION} census omits completed task count",
             at=(GENERATION_INDEX, census_line),
         )
     claimed = int(completed_match.group("count"))
     actual = len(buckets["complete"])
     if claimed != actual:
         fail(
-            f"generation-index claims {claimed} completed milestones but frontmatter has {actual}",
+            f"generation-index claims {claimed} completed tasks but frontmatter has {actual}",
             at=(
                 GENERATION_INDEX,
                 census_line + line_at(census, completed_match.start()) - 1,
@@ -413,12 +427,44 @@ def check_generation_index() -> None:
         )
 
 
+def legacy_scan_roots() -> list[Path]:
+    roots = [x for x in (ROOT / "docs" / "roadmaps").rglob("*.md")]
+    roots.append(ROOT / "docs" / "contracts" / "001-working-rules.md")
+    roots.append(ROOT / "AGENTS.md")
+    return sorted(set(roots))
+
+
+def check_no_legacy_dispatch() -> None:
+    for path in legacy_scan_roots():
+        if not path.is_file():
+            continue
+        try:
+            relative = path.relative_to(ROOT).as_posix()
+        except ValueError:
+            continue
+        if relative in LEGACY_SCAN_EXEMPT:
+            continue
+        if "/archive/" in relative:
+            continue
+        document = path.read_text(encoding="utf-8")
+        if LEGACY_LINK_RE.search(document):
+            fail("nested batch-cards/ link remains", at=(path, 1))
+        for pattern in LEGACY_PATTERNS:
+            match = pattern.search(document)
+            if match is not None:
+                fail(
+                    f"legacy dispatch structure remains: {match.group(0).strip()!r}",
+                    at=(path, line_at(document, match.start())),
+                )
+
+
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     bind_paths(args.root)
-    check_batch_cards()
-    check_milestones()
+    check_tasks()
+    check_task_annotations()
     check_generation_index()
+    check_no_legacy_dispatch()
     print("roadmap status drift check passed")
 
 

@@ -29,11 +29,6 @@ claim.
 One family only. No provider prompt, login, install, host update, live session,
 feature-façade, watcher, skill, papercut, release, or feature-specific widening.
 
-## Batch Cards
-
-- [035 Codex 0.152.0 Identity](batch-cards/035-codex-0-152-0-identity.md) — completed
-- [036 Codex 0.152.0 Claim](batch-cards/036-codex-0-152-0-claim.md) — completed
-
 ## Acceptance
 
 - [x] exact official identity is reproducible

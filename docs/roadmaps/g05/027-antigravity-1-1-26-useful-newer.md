@@ -1,6 +1,6 @@
 # g05.027 Antigravity 1.1.26 Useful Newer
 
-Status: complete; evidence stop at card 071; card 072 claim remains gated behind an admitted segment
+Status: complete; evidence stop at card 071; follow-on claim remains gated behind an admitted segment (former card 072 retired without dispatch; this stopped parent holds the gate)
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-04
@@ -40,9 +40,8 @@ later stable stays `UnverifiedNewer`.
 2. Stop if a selected surface changed without a deterministic mapping,
    identity disagrees, an authority boundary widened, or a new driver or
    facade revision is required.
-3. Continue to card 072 only for an admitted Contract 029 segment.
-4. Card 072 changes only the proved range and exact downstream truth, then
-   stops for exact-head review.
+3. Former card 072 retired without dispatch; no admitted Contract 029 segment was recorded.
+4. No proved range reached the claim; the evidence stop stands.
 
 ## Boundary
 
@@ -51,11 +50,6 @@ session, execution of downloaded binaries, Gemini deferral lift, Claude Code
 reopen, ACP-registry `antigravity-acp` flattening, or feature-specific
 widening. Card 069's Contract 061 projection code in the Antigravity crate is
 out of scope and must not be edited.
-
-## Batch Cards
-
-- [071 Antigravity 1.1.26 Identity](batch-cards/071-antigravity-1-1-26-identity.md) — complete; evidence stop at `1.1.22`; ceiling remains `1.1.17`
-- [072 Antigravity 1.1.26 Claim](batch-cards/072-antigravity-1-1-26-claim.md) — planned; gated behind card 071
 
 ## Dispatch Manifest
 
@@ -66,21 +60,18 @@ Promoted planning commit: the `main` commit that introduces this file.
 | Readiness | ready |
 | Prerequisites | g05.026 closed at `43033f75`; frozen `antigravity-cli-1.1.17` fixtures on `main`; PR 182 branch reachable on origin as evidence input |
 | Completion conditions | Research 283 committed with exact identity for every hop `1.1.18..=1.1.26`, recomputed `1.1.17` corpus, hop-by-hop selected-surface ledger, authority trace, and one named outcome; production claims byte-identical in that commit; card `## Result` filled; focused and Northstar gates green |
-| Owned mutable paths | `docs/research/283-*.md`; `docs/research/README.md` (one index line); `crates/swallowtail-adapter-antigravity/tests/**` fixtures and delta-ledger tests only; `docs/roadmaps/g05/batch-cards/071-*.md` result and status; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, `docs/roadmaps/g05/027-*.md`, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/roadmaps/standing-lanes.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
+| Owned mutable paths | `docs/research/283-*.md`; `docs/research/README.md` (one index line); `crates/swallowtail-adapter-antigravity/tests/**` fixtures and delta-ledger tests only; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, `docs/roadmaps/g05/027-*.md`, `docs/roadmaps/generation-index.md`, `docs/roadmaps/standing-lanes.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
 | Forbidden paths | `crates/swallowtail-adapter-antigravity/src/**` (including `selection.rs` and `consumer_route_projection.rs`), every other crate, route/feature matrices, guides, `CHANGELOG.md`, `docs/contracts/**`, `docs/architecture/**`, the PR 182 branch itself |
 | Approved concurrent siblings | g05.009 cards 070 and 065 |
-| Serial edges | card 072 follows card 071 only on an admitted segment |
+| Serial edges | former card 072 retired without dispatch |
 | Worker capability class | evidence-first identity worker; artifact download and hashing; Rust fixture authoring; no provider credentials |
 | Acceptance evidence | GitHub release, tag commit, tarball, and extracted-binary digests per hop; recomputed `1.1.17` corpus; in-binary version literals; selected-flag presence per hop; mutation-sensitive delta ledger |
 | Review oracle | one commit contains identity evidence and zero claim edits; the smallest counterexample is a changed selection constant, a hop taken from PR 182 without recomputation, or a surface verdict without an artifact anchor |
 | Stop conditions | an added hop changes a selected surface, capability, or authority (latest moving before the identity commit is a hop extension, not a stop); identity disagreement; a selected surface or authority change without deterministic mapping; new revision required |
 | Escalation owner | operator (Tom) via Chatterbox for policy or authority questions; coordinator for mechanical blockers |
 
-Card 072 enters the manifest only after the coordinator records card 071's
-admitted segment at closeout; its owned paths add `selection.rs`, the
-Antigravity prepared guide, the route and feature matrix cells,
-`CHANGELOG.md` `[Unreleased]`, and the standing-lane claim paragraph.
+Former card 072 retired without dispatch; no admitted segment was recorded at closeout, so its planned claim paths (`selection.rs`, the Antigravity prepared guide, the route and feature matrix cells, `CHANGELOG.md` `[Unreleased]`, and the standing-lane claim paragraph) stayed untouched.
 
 ## Acceptance
 

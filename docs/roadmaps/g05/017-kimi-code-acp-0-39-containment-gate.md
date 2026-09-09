@@ -76,10 +76,6 @@ it cannot be selected without B or an upstream change; the gate records B+C and
 C-plus-upstream as later designs only. The gate's review oracle holds every one
 of these rejections.
 
-## Batch Cards
-
-- [043 Kimi Code ACP QualifiedOnly Cap](batch-cards/043-kimi-code-acp-qualified-only-cap.md) — completed; operator A2
-
 ## Acceptance
 
 - [x] the authority failure path is re-derived from current source, not

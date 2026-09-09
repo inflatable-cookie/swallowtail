@@ -119,7 +119,8 @@ state.
 
 ## Next task
 
-Return to Chatterbox after merge. If Desktop Card 323 has completed, reconcile
-its exact-tree acceptance into `g05.036` and present the separate exact-SHA tag
-decision. Otherwise keep `g05.036` waiting and resume only the approved
-flattened frontier.
+Return to Chatterbox after merge. Desktop Card 323 completed during this
+migration (2026-09-09); its exact-tree acceptance is reconciled into g05.036
+in this batch. Present the separate exact-SHA tag decision: no tag follows
+without explicit operator authority naming the exact SHA. Until then resume
+only the approved flattened frontier.

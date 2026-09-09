@@ -33,11 +33,6 @@ No provider prompt, login, install, host update, feature-façade work, watcher
 work, skill work, bulk version bump, or second family belongs to this
 milestone.
 
-## Batch Cards
-
-- [027 Codex 0.151.0 Identity Restack](batch-cards/027-codex-0-151-0-identity-restack.md) — completed
-- [028 Codex 0.151.0 Claim Restack](batch-cards/028-codex-0-151-0-claim-restack.md) — completed
-
 ## Acceptance
 
 - [x] exact official identity remains current and corroborated

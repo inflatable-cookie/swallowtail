@@ -66,9 +66,10 @@ Card129 [frozen evidence ledger](../research/290-feature-matrix-cross-evidence.m
 whose basis is an anchored `docs/research` or `docs/contracts` line that names
 the route (Research 281 for the Card129 census; Research 291 for the Codex
 `client_mcp_servers` cell);
-`producer_gap` with an existing non-complete g05 batch-card path; or
+`producer_gap` with an existing non-complete g05 task path (a `g05.NNN` file
+directly under `docs/roadmaps/g05/`); or
 `evidence_pending` with a live hand-off packet under `docs/handoffs/` —
-never a card, because cards complete. An evidence-pending packet must name
+never a task file, because task completion closes its gate. An evidence-pending packet must name
 the owner who runs the gate and the decision tree converting each outcome
 into `producer_gap` or `provider_limitation`, and must list the cells it
 investigates; evidence pending is unavailable to a cell no live packet
@@ -81,7 +82,7 @@ evidence. Producer-gap
 rows carry an explicit `Card129 producer-gap reasons:` marker in `notes`; a
 withheld cell uses the same producer-gap path and reason. The route-matrix
 check rejects missing, extra, stale, unanchored, guide-only, insufficient,
-complete-card, or non-live-packet references.
+complete-task, or non-live-packet references.
 
 Every row has two public paths:
 

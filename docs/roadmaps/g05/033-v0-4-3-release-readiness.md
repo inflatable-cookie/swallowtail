@@ -44,11 +44,6 @@ to `main`. Open feature PRs (cards 083, 085, 086, 088, 104) hold at review
 and rebase after the candidate; if one is accepted and green before card
 105 merges, it may go in first and becomes candidate content.
 
-## Batch Cards
-
-- [106 v0.4.3 Candidate Preparation](batch-cards/106-v0-4-3-candidate-preparation.md) — planned; ready on card 105's merge
-- [107 v0.4.3 Consumer Proof And Tag Capsule](batch-cards/107-v0-4-3-consumer-proof-and-tag-capsule.md) — complete; source consumer passed at `cbd4ddc8`; tag capsule relayed to Acowtancy
-
 ## Dispatch Manifest
 
 Promoted planning commit: the `main` commit that introduces this file.
@@ -62,7 +57,7 @@ Card 105's manifest lives in g05.029.
 | Prerequisites | card 105 merged; clean canonical base; freeze in force |
 | Completion conditions | `docs/releases/0.4.3.md` and index entry from card 105's result plus merged tranches; patch class from the semantic API diff (additive only); read-only status inferring `0.4.3`; lock in sync; exactly one `effigy --json release prepare --yes --check-gates --version 0.4.3` with per-gate logs; no frozen-tree rerun; distinct `0.4.3` baseline, route inventory, dependency graph; `0.4.2` files untouched; gate scripts and consumer front-door repointed to `0.4.3`; candidate PR; review and workflow-dispatch CI in parallel; merge on both green; candidate SHA reported to Chatterbox immediately |
 | Owned mutable paths | as card 101's manifest with `0.4.3` for `0.4.2`: workspace `Cargo.toml` versions via prepare; `Cargo.lock`; `CHANGELOG.md` promotion; `docs/releases/0.4.3.md`; `docs/releases/README.md` current entry; `release-baselines/public-api-0.4.3/**`, `production-routes-0.4.3.txt`, `internal-dependencies-0.4.3.tsv`; `.release-prepared.json`; the four gate scripts, `scripts/check-consumer-front-door.py`, `scripts/README.md`; root `README.md` posture lines; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, `docs/releases/README.md` historical lines |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, `docs/releases/README.md` historical lines |
 | Forbidden paths | every `crates/**` source and test path; every `0.4.2` and earlier baseline; contracts; guides; matrices; claims |
 | Approved concurrent siblings | none; freeze |
 | Serial edges | the operator's tag decision follows the merged candidate; card 107 follows the tag |

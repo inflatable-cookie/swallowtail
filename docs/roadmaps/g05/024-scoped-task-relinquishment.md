@@ -26,10 +26,6 @@ reapers. This adds no adapter-global registry, parking lot, follow-up call, or
 weakened `LocalJoinedTask` drop/join rule. Rejection leaves the caller's handle
 intact.
 
-## Batch Card
-
-- [060 Scoped Task Relinquishment And Host Reap](batch-cards/060-scoped-task-relinquishment-and-host-reap.md) — complete; shared runtime seam, local reaper, deterministic authority/liveness proof
-
 ## Acceptance
 
 - relinquishment returns before an unfinished task completes

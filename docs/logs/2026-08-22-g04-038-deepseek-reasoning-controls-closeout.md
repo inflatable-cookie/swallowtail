@@ -37,7 +37,7 @@ balance, or live-model behavior.
 
 - Research: [186 DeepSeek Reasoning Control Evidence](../research/186-deepseek-reasoning-control-evidence.md)
 - Guide: [DeepSeek Prepared Integration](../guides/deepseek-prepared-integration.md)
-- Cards: [104 evidence](../roadmaps/g04/batch-cards/104-deepseek-reasoning-evidence.md), [105 binding](../roadmaps/g04/batch-cards/105-deepseek-reasoning-binding.md), [106 acceptance](../roadmaps/g04/batch-cards/106-deepseek-reasoning-acceptance.md)
+- Cards: [104 evidence](../roadmaps/archive/g04.md), [105 binding](../roadmaps/archive/g04.md), [106 acceptance](../roadmaps/archive/g04.md)
 - Official API: <https://api-docs.deepseek.com/api/create-chat-completion/> (`452902008200767f318c8353cc225fca241777d8cd3f0b764fb94ffa7a612dea`)
 - Official Thinking Mode: <https://api-docs.deepseek.com/guides/thinking_mode/> (`d9c7bf018583b542431aa91c995ee64a8c7aa3df32286c10634a04d2e1661982`)
 - Official Tool Calls: <https://api-docs.deepseek.com/guides/tool_calls/> (`d50d330bc0e1f30b84ee804d77f1ad3f7073e5d2557a6a80545d2d2696ea2471`)

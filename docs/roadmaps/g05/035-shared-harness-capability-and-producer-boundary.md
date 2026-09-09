@@ -1,6 +1,6 @@
 # g05.035 Shared Harness Capability And Producer Boundary
 
-Status: planned; Batch A promoted; card114 ready after inherited docs gate repair
+Status: planned; Batch A promoted (card 114 complete through the folded ledger below); former stubs 130/134 preserved as g05.041/g05.042
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-09
@@ -144,42 +144,48 @@ authorized, one route at a time, after deterministic conformance passes.
 - a batch would alter release, provider, global configuration, or consumer
   state without separate authority.
 
-## Dispatch Manifest
+## Retired Card Dispatch (g05.038)
 
-Batch A must have independent planning acceptance recorded before dispatch.
-One Swallowtail Coordinator owns this frontier; Desktop Coordinator supplies
-consumer requirements and must not create a competing producer worker.
+Batch A has independent planning acceptance recorded (see Batch A Planning
+Acceptance below). One Swallowtail Coordinator owns this frontier; Desktop
+Coordinator supplies consumer requirements and must not create a competing
+producer worker. Card-level dispatch is retired: every card below is complete
+or stopped, and serial edges are now owned by this task. Former backlog stubs
+130 and 134 are preserved as g05.041 and g05.042.
 
-| Card | Readiness | Ownership and parallelism | Completion |
-| --- | --- | --- | --- |
-| [114](batch-cards/114-registered-tool-kernel.md) | ready after canonical Batch A promotion | one runtime/host-local/testkit integrator; independent from disjoint release/docs lanes | exact-head review, provider-free conformance, existing watcher compatibility, API checks and merge |
-| [115](batch-cards/115-selected-skill-transport.md) | waits for114 | same shared runtime lease or explicit transfer | bounded bundle/projection tests and merge |
-| [116](batch-cards/116-claude-registered-tool-adoption.md) | waits for114/115 and route corpus | retained Claude owner; parallel with117/118 on disjoint adapters | exact route evidence and reviewed merge |
-| [117](batch-cards/117-codex-registered-tool-adoption.md) | waits for114/115 | Codex adapter owner | dynamic-tool real binding evidence and reviewed merge |
-| [118](batch-cards/118-grok-registered-capability-qualification.md) | waits for114/115 and missing surface evidence | Grok adapter owner | qualified implementation or explicit unsupported disposition |
-| [125](batch-cards/125-claude-sdk-registered-tool-route-binding.md) | ready; cards 114-116 merged | Claude adapter owner; owns `crates/swallowtail-adapter-claude-agent/**` route-binding paths, its tests, guide section, and baseline; parallel with 126 only if disjoint files, else serial 125 then 126; forbidden: kernel, host-local, contracts | provider-free route-binding fixtures on the mounted path; exact-head review; merge |
-| [126](batch-cards/126-claude-sdk-selected-skill-bundle-binding.md) | ready; card 115 merged | Claude adapter owner; profile/sidecar/tests/guide/baseline; serial after 125 on shared sidecar; forbidden: kernel, host-local, contracts | bundle transport fixtures; exact-head review; merge |
-| [127](batch-cards/127-codex-selected-skill-bundle-binding.md) | ready; cards 115 and 117 merged | Codex adapter owner; `crates/swallowtail-adapter-codex/**` profile/transport/tests/guide/baseline; parallel with 125/126 (disjoint crate); forbidden: kernel, host-local, contracts | bundle transport fixtures on the app-server fixture; exact-head review; merge |
-| [128](batch-cards/128-grok-acp-client-mcp-probe-harness.md) | ready | Grok adapter/testkit owner; `crates/swallowtail-testkit/**` probe module, `scripts/` runner, hand-off packet under `docs/handoffs/`; forbidden: adapter runtime, claims, contracts | four-verdict proof on the fake ACP fixture; exact-head review; Desktop runs the real probe |
-| [129](batch-cards/129-feature-matrix-cross-classification-audit.md) | ready | docs/matrix owner; `docs/guides/provider-solution-feature-matrix.csv`, `provider-route-matrix.md`, `scripts/check-provider-route-matrix.sh`; forbidden: crates, claims | check enforces kind+reference on every cross; ranked producer-gap backlog; exact-head review |
-| [131](batch-cards/131-codex-app-server-client-mcp-servers-evidence.md) | ready | Codex evidence owner; corpus, matrix cell, one fake transcript if a surface exists; forbidden: runtime, live Codex | anchored classification; matrix check green; exact-head review |
-| [132](batch-cards/132-claude-sdk-registered-tool-real-route-gate.md) | planned; Desktop schedules under its isolated-testing authorization | Swallowtail supplies the packet only; Desktop runs; Contract 061 row and matrix cells move only from the capsule | one real registered call under the frozen tuple |
-| [133](batch-cards/133-grok-probe-verdict-oracle-repair.md) | ready | testkit owner; `crates/swallowtail-testkit/**` probe module and fixtures, the card 128 hand-off packet; forbidden: adapters, claims, matrix, contracts | extended offline fixtures pass; exact-head review; Desktop reruns once per segment after merge |
-| [137](batch-cards/137-grok-probe-conforming-acp-client.md) | ready | testkit owner; probe module, fixtures, packet; forbidden: adapters, claims, matrix, contracts | unanswered method named from existing capsules; answer-during-session/new fixtures pass; exact-head review |
-| [140](batch-cards/140-grok-probe-live-bounds.md) | ready | testkit owner; probe module bounds, fixtures, packet; forbidden: adapters, claims, matrix, contracts | slow-turn and overflow fixtures pass; every bound justified; exact-head review |
-| [142](batch-cards/142-claude-sdk-admitted-instance-worked-example.md) | complete; PR 291 merged at `d0f2ea3170950629dd2b73866218ae903db0e287` | Claude adapter owner; `examples/`, guide admission section, card 132 packet cross-reference; forbidden: admission API changes, live runs | executable example composing admission plus registered tools; accepted exact-head review; provider-free validation passed |
-| [138](batch-cards/138-codex-permission-exchange-cell-reconciliation.md) | ready | Codex evidence owner; matrix cell, reason text, research anchor; forbidden: runtime, live Codex | anchored observe-versus-answer finding; matrix and consumer statement agree; exact-head review |
-| [143](batch-cards/143-grok-live-registered-tool-qualification.md) | complete; PR 293 merged at `7d2dcb169dbee348567fd8308ed9c41fd5bf2d03` (reviewed head `5e7914424a8defb3dea164c150bd0d5ea806f3e9`) | Grok adapter owner; route qualification plus independent selected-skill settlement; no live run, consumer edit, version extension, tag, or release | exact live-evidence qualification for MCP/tools; selected skill implemented from separate frozen evidence or closed honestly; exact-head review and merge |
-| [144](batch-cards/144-claude-sdk-registered-tool-open-rejection-diagnosis.md) | complete; PR 294 merged at `cc53c81ad903a562830d721b39a669aee010d037` (reviewed head `67e69e577518fdf0486998d47720e045a541bd7e`) | Claude SDK adapter owner; structured failed-open evidence and provider-free diagnosis; no live retry, consumer edit, qualification, tag, or release | exact rejection subcode/stage and cleanup receipt; deterministic request reproduction; repaired producer defect or narrowed live-only boundary; exact-head review and merge |
-| [145](batch-cards/145-claude-sdk-credit-exhaustion-diagnostic.md) | complete; Desktop PR 172 merged at `117e09e0` | Desktop live-evidence owner; one open, zero turns, cheapest admitted Sonnet model; no qualification or release | bounded `mcp_status_invalid` before provider readiness; cleanup confirmed; Research 297 |
-| [146](batch-cards/146-claude-sdk-mcp-status-projection-repair.md) | complete; PR 296 merged at `13dee542e5ef4ab967cb4f0934cc11c35a8768c2` (reviewed head `58847bb00e4d15285af503c7023ff8750d1f1a7f`) | Claude SDK adapter owner; provider-free exact `0.3.259` status-shape diagnosis; no live run, consumer edit, qualification, tag, or release | exact artifact reconciliation; faithful optional-metadata fixtures; smallest safe projection repair; exact-head review and merge |
-| [147](batch-cards/147-claude-sdk-repaired-zero-credit-diagnostic.md) | complete; Desktop PR 174 merged at `7646db45` | Desktop live-evidence owner; repaired zero-credit open only | open reached ready/connected; immediate degraded close; one open and zero other actions; Research 298 |
-| [148](batch-cards/148-claude-sdk-degraded-cleanup-oracle.md) | complete; Desktop PR 175 merged at `f8bff5a2` | Desktop proof-harness owner; cleanup classification and fixtures only; no live run or qualification | exact Contract 019 degraded posture accepted without calling it clean; adverse cleanup stays defect |
-| [149](batch-cards/149-claude-sdk-zero-credit-first-turn-diagnostic.md) | stopped; Desktop PR 177 merged at `f29eb0c0` | Desktop live-evidence owner; one open rejected at MCP startup before prompt | valid bounded capsule; no credit inference; Research 299 |
-| [150](batch-cards/150-claude-sdk-mcp-courier-startup-determinism.md) | ready; provider-free | Desktop proof-harness owner; courier build/acquisition/startup diagnosis and repair; no live run | reproduce or falsify mutable-artifact race; 24+ churned opens; exact-head review |
-| [153](batch-cards/153-claude-sdk-live-registered-tool-qualification.md) | complete; PR 298 merged at `b35e4c38`; reviewed head `34ef6c32` | Claude SDK adapter owner; provider-free route qualification, exact evidence binding, two matrix cells; no provider or release work | exact-tuple qualified projection; deterministic evidence fixtures; package, route, docs, API validation; exact-head review and merge |
+### Folded Card Evidence
 
-Workers require runtime/lifecycle capability; route cards require exact provider
+- 114 — complete; shared kernel; Batch A promotion gate.
+- 115 — complete; bounded bundle/projection transport.
+- 116 — complete; Claude route evidence and reviewed merge.
+- 117 — complete; Codex dynamic-tool real binding evidence and reviewed merge.
+- 118 — complete; qualified implementation or explicit unsupported disposition.
+- 125 — complete; provider-free route-binding fixtures on the mounted path.
+- 126 — complete; bundle transport fixtures.
+- 127 — complete; bundle transport fixtures on the app-server fixture.
+- 128 — complete; PR 273 merged at `63e34641`; provider-free four-verdict fake fixtures; live probe not run; packet relayed to Acowtancy Desktop.
+- 129 — complete; every cross is provider-limitation-with-evidence or producer-gap-with-task; check enforces it; ranked backlog for pinned routes.
+- 131 — complete; PR 277 merged at `f36e1165`; Codex client MCP is a cited provider limitation.
+- 133 — complete; admission/invocation split; offline fixtures pass.
+- 137 — complete; PR 285 merged at `56ea6008`; unanswered method named from existing capsules.
+- 138 — complete; PR 282 merged at `a4b04134`; approvals observable-only on app-server, typed user-input is the answerable exchange.
+- 140 — complete; PR 288 merged at `735eab70`; every probe bound re-derived for a live model.
+- 142 — complete; PR 291 merged at `d0f2ea3170950629dd2b73866218ae903db0e287`; executable admitted-instance and registered-tool worked example at exact head.
+- 143 — complete; PR 293 merged at `7d2dcb169dbee348567fd8308ed9c41fd5bf2d03` (reviewed head `5e7914424a8defb3dea164c150bd0d5ea806f3e9`); exact live-evidence qualification for MCP/tools.
+- 144 — complete; PR 294 merged at `cc53c81ad903a562830d721b39a669aee010d037` (reviewed head `67e69e577518fdf0486998d47720e045a541bd7e`); structured failed-open evidence and provider-free diagnosis of stopped card 132.
+- 145 — complete; Desktop PR 172 merged at `117e09e0`; bounded `mcp_status_invalid` before provider readiness; Research 297.
+- 146 — complete; PR 296 merged at `13dee542e5ef4ab967cb4f0934cc11c35a8768c2` (reviewed head `58847bb00e4d15285af503c7023ff8750d1f1a7f`); exact `0.3.259` MCP-status projection repair.
+- 147 — complete; Desktop PR 174 merged at `7646db45`; successful zero-credit open, immediate degraded close; Research 298.
+- 148 — complete; Desktop PR 175 merged at `f8bff5a2`; exact route-qualified degraded cleanup accepted provider-free.
+- 150 — complete; Desktop PR 178 merged at `dfc9c6a6`; mutable courier race reproduced and repaired; 24/24 churned opens pass.
+- 153 — complete; PR 298 merged at `b35e4c38`; reviewed head `34ef6c32`; exact-tuple qualified projection; two matrix cells.
+
+### Held Gates
+
+- Real-route gate (from stopped card 132): Swallowtail supplies the packet only; Desktop runs under its isolated-testing authorization; Contract 061 row and matrix cells move only from the capsule; goal is one real registered call under the frozen tuple.
+- First-turn diagnostic (from stopped card 149): Desktop PR 177 merged its valid capsule at `f29eb0c0` (open rejected at MCP startup before prompt; no credit inference; Research 299); card 150 owns the defect provider-free.
+
+Workers require runtime/lifecycle capability; route work requires exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
 Coordinator compiles Longhorn linked-host and Desktop consumer acceptance
 handoffs after the API lands; neither needs a second registry or listener.
@@ -279,12 +285,9 @@ fallback, reconnect, or respawn occurred.
 
 Card 153 consumes this evidence provider-free and may qualify only the exact
 `registered_tools` and `consumer_tool_exchange` projections. No further live
-run, adjacent tuple claim, candidate, tag, release, or unrelated matrix
-inference follows.
-
 Route116/118 read-only evidence preparation is ready now under the same retained
 route owners. It must not wait for the evidence it is tasked to obtain. Runtime
-adoption remains gated as shown in the table; negative evidence returns to
+adoption remains gated as recorded in the folded ledger above; negative evidence returns to
 Chatterbox without inventing support or closing the full integration goal.
 
 ## Reconciliation Against The Desktop Matrix — 2026-09-07
@@ -299,8 +302,8 @@ turn/permission cancellation, packaging. Absent and promoted as seams: Claude
 registered-tool route binding (card 125), Claude and Codex selected-skill
 bundle binding (cards 126, 127). Withheld and BLOCKING the release scope (the operator requires all three
 routes including MCP/tools/skills): Grok registered tools/MCP (row
-`Unavailable / provider_route_evidence_absent`; card 128 builds the probe
-harness that settles it; the native route is the fallback decision), Grok
+`Unavailable / provider_route_evidence_absent`; card 128 built the probe
+harness that settled it; the native route is the fallback decision), Grok
 selected-skill bundle (`Unavailable / route_dimension_unsupported` until an
 ACP labelled-input surface is evidenced, which the same probe records), Grok
 pre-session catalogue (`Unavailable / provider_catalogue_unavailable`;
@@ -317,8 +320,8 @@ producer's.
 ### Acceptance Ledger — 2026-09-07
 
 Two different counts, never conflated: producer seams merged on `main`
-(14/18 cells, plus cards 125-127 in flight for three more) versus Desktop
-live acceptance of a cell (0/18 today; Desktop is the sole integration/test
+(14/18 cells, plus 125-127 since delivered) versus Desktop
+live acceptance of a cell (0/18 on 2026-09-07; Desktop is the sole integration/test
 owner and its runs happen under its own isolated-testing authorization, which
 also covers the Swallowtail real-route gates so no separate Swallowtail live
 lane exists). No tag readiness is claimed until the full matrix is Desktop-
@@ -327,11 +330,11 @@ accepted or the operator changes scope.
 ### Card 129 Backlog Disposition — 2026-09-07
 
 Ranks 1, 3, 4 (Claude registered tools, consumer-tool exchange, skill bundle):
-cards 125 and 126, in flight. Ranks 7, 8, 10, 11 (Grok): card 128's probe
-gates them; the fallback is the operator's native-route decision. Ranks 5
-and 12 (Codex `client_mcp_servers`): card 131 settles limitation versus gap;
+cards 125 and 126, since delivered. Ranks 7, 8, 10, 11 (Grok): card 128's probe
+gated them; the fallback is the operator's native-route decision. Ranks 5
+and 12 (Codex `client_mcp_servers`): card 131 settled limitation versus gap;
 card 114 is complete and is not a valid reference. Ranks 2, 6, 9, 13
-(persistent permission grants): card 130 stays a planned producer seam; in
+(persistent permission grants): g05.041 stays a planned producer seam; in
 the meantime the one-shot permission exchange is answerable on the Claude and
 Grok routes, while on Codex the answerable one-shot exchange is typed
 user-input only and approvals are observed, then stop the turn (card 138;
@@ -347,11 +350,11 @@ for explicit opt-in/dispatch APIs, live admission linearization, retained cleanu
 ownership on timeout, and immediately ready route evidence preparation. The
 requested dispatch(call, context) signature is present;116/118 status headers
 separate ready research from gated runtime. No operator product decision remains.
-The first canonical implementation frontier is114;115-118 follow the manifest.
+The first canonical implementation frontier was 114; 115-118 followed the retired manifest (all complete).
 Doctor reported existing oversized-file and graph/generated-source findings;
 those are orientation findings, not evidence of new runtime validation.
 
-Validation limitation: qa:northstar and diff checks pass. qa:docs reaches the
-pre-existing card087 stopped-status/index grammar defect. Coordinator owns the
-bounded checker/index repair; card114 dispatch waits for that mechanical gate,
+Validation limitation: qa:northstar and diff checks pass. qa:docs reached the
+pre-existing former-card-087 stopped-status/index grammar defect. The g05.038
+migration owns the bounded checker/index repair; card 114's dispatch waited for that mechanical gate,
 not another product or architecture decision.

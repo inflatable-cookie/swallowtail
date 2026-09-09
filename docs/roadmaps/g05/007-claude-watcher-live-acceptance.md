@@ -28,7 +28,7 @@ record one sanitized evidence stop and keep every watcher claim withheld.
 
 ### Batch 7.1 — Exact Live Acceptance
 
-- [x] execute ready card 020 from current pushed `main` through its single new
+- [x] Claude Code Watcher Live Acceptance delivered (former card 020) from current pushed `main` through its single new
       committed manual worker handoff
 - [x] repair and credential-free prove the per-platform digest selection,
       commit it, then validate the clean repair head and exact Linux identity
@@ -72,10 +72,6 @@ attempt without fresh authorization.
 - review would require a second provider request, a probe change beyond the
   authorized platform repair, raw/private evidence, a wider version/model
   claim, or a new product or contract decision
-
-## Batch Cards
-
-- [020 Claude Code Watcher Live Acceptance](batch-cards/020-claude-code-watcher-live-acceptance.md)
 
 ## References
 

@@ -33,11 +33,6 @@ One family only. No provider prompt, login, install, host update, live
 session, Claude Code flattening, watcher change, skill, papercut,
 g05.009 card 034, release, or execution of downloaded official binaries.
 
-## Batch Cards
-
-- [044 Claude Agent ACP 0.73.0 Identity](batch-cards/044-claude-agent-acp-0-73-0-identity.md) — completed
-- [045 Claude Agent ACP 0.73.0 Claim](batch-cards/045-claude-agent-acp-0-73-0-claim.md) — completed
-
 ## Acceptance
 
 - [x] exact official identity is reproducible

@@ -19,7 +19,7 @@ PINNED_CONSUMERS = (
     ("Nucleus", "codex.app-server"),
 )
 ROUTE_SPLIT = re.compile(r"\s*(?:;|\+)\s*")
-CARD_STATUS = re.compile(r"^Status:\s*(.+)$", re.MULTILINE)
+TASK_STATUS = re.compile(r"^Status:\s*(.+)$", re.MULTILINE)
 REASON_MARKER = "Card129 producer-gap reasons:"
 HANDOFF_PACKET = re.compile(r"^docs/handoffs/[A-Za-z0-9._-]+\.md$")
 GATE_SCOPE_HEADING = "## Evidence gate scope"
@@ -125,27 +125,27 @@ def producer_gap_reasons(notes: str, row_route: str) -> dict[str, str]:
     return reasons
 
 
-def producer_card(root: Path, ref: str) -> None:
+def producer_task(root: Path, ref: str) -> None:
     path = root / ref
-    if not path.is_file() or path.parent != root / "docs/roadmaps/g05/batch-cards":
-        fail(f"producer_gap reference must be an existing g05 batch card: {ref}")
-    match = CARD_STATUS.search(path.read_text(encoding="utf-8"))
+    if not path.is_file() or path.parent != root / "docs/roadmaps/g05":
+        fail(f"producer_gap reference must be an existing non-complete g05 task: {ref}")
+    match = TASK_STATUS.search(path.read_text(encoding="utf-8"))
     if match is None:
-        fail(f"producer_gap card lacks a Status line: {ref}")
+        fail(f"producer_gap task lacks a Status line: {ref}")
     status = match.group(1).strip().casefold()
     if status.startswith("complete") or status.startswith("completed"):
-        fail(f"producer_gap references a complete card: {ref}")
+        fail(f"producer_gap references a complete task: {ref}")
 
 
 def evidence_packet(root: Path, ref: str, row_route: str, feature: str) -> None:
     """Guard the evidence_pending cross kind per the Feature Matrix Rule.
 
     The reference must be a live hand-off packet under ``docs/handoffs/`` —
-    never a card, because cards complete. That packet must name the owner who
-    runs the gate, state the decision tree converting each outcome into
-    ``producer_gap`` or ``provider_limitation``, and list the cells it
-    investigates; evidence pending is unavailable to any cell no live packet
-    covers.
+    never a task file, because task completion closes its gate. That packet
+    must name the owner who runs the gate, state the decision tree converting
+    each outcome into ``producer_gap`` or ``provider_limitation``, and list
+    the cells it investigates; evidence pending is unavailable to any cell no
+    live packet covers.
     """
     if HANDOFF_PACKET.fullmatch(ref) is None or not (root / ref).is_file():
         fail(f"evidence_pending must reference an existing docs/handoffs packet: {ref}")
@@ -214,7 +214,7 @@ def load_matrix(root: Path, matrix: Path) -> tuple[list[dict[str, str]], list[st
             if kind == "provider_limitation":
                 evidence_ledger(root, route, feature, ref)
             elif kind == "producer_gap":
-                producer_card(root, ref)
+                producer_task(root, ref)
             else:
                 evidence_packet(root, ref, route, feature)
             if row[feature].strip().casefold() == "withheld" and kind != "producer_gap":
@@ -268,7 +268,7 @@ def main() -> None:
     )
     gaps = backlog(rows, features)
     if args.backlog:
-        print("consumer | route | feature | producer card | reason")
+        print("consumer | route | feature | producer task | reason")
         print("--- | --- | --- | --- | ---")
         for consumer, route, feature, ref, reason in gaps:
             print(f"{consumer} | `{route}` | `{feature}` | `{ref}` | {reason}")

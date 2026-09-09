@@ -4,9 +4,9 @@
 collision_rewrite_subject=$collision_scratch/rewrite-subject
 collision_git "$collision_scratch" clone -q --no-tags \
   "$collision_fork" "$collision_rewrite_subject"
-collision_write_card \
+collision_write_task \
   "$collision_rewrite_subject" \
-  docs/roadmaps/g04/batch-cards/076-claude-code-2-1-238-identity.md \
+  docs/roadmaps/g04/076-claude-code-2-1-238-identity.md \
   '# 076 Claude Code identity'
 collision_git "$collision_rewrite_subject" add docs
 collision_git "$collision_rewrite_subject" commit -q -m '076 against malicious 075-only fork'

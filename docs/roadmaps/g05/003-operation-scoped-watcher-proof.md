@@ -27,9 +27,9 @@ after their independent gates close.
 
 ### Batch 3.1 — Parallel Core And Route Evidence
 
-- [x] execute ready card 007 for exact Claude MCP, hook, skill, and completion
+- [x] Claude Code Watcher Seam Evidence delivered (former card 007) for exact Claude MCP, hook, skill, and completion
       evidence
-- [x] execute ready card 008 for provider-neutral records, ownership, state
+- [x] Portable Watcher Lifecycle Core delivered (former card 008) for provider-neutral records, ownership, state
       transitions, control roles, and activity projection
 
 ### Batch 3.2 — Host Registry
@@ -45,18 +45,18 @@ owns the pre-1.0 repair.
 
 ### Batch 3.3 — Host-Process Supervision Repair
 
-- [x] execute ready card 014 against the ordinary host-local process service
+- [x] Host-Process Watcher Supervision delivered (former card 014) against the ordinary host-local process service
 - [x] replace containment-only admission with honest managed-process lifecycle,
       cleanup, and join semantics
 
 ### Batch 3.4 — Claude Bridge Transport Evidence
 
-- [x] execute card 015 to settle the host-owned MCP/IPC bridge,
+- [x] Claude Code Watcher Bridge Transport Evidence delivered (former card 015) to settle the host-owned MCP/IPC bridge,
       current-version segment, and live same-turn acceptance gate
 
 ### Batch 3.5 — Provider-Neutral HTTP Bridge Core
 
-- [x] execute ready card 016 for the Contract 060 host service, private
+- [x] Operation-Scoped Watcher HTTP Bridge Core delivered (former card 016) for the Contract 060 host service, private
       authority, closed HTTP/MCP surface, terminal barrier, and joined cleanup
 - [x] return one PR; do not continue into Claude wiring
 
@@ -64,9 +64,9 @@ owns the pre-1.0 repair.
 
 - [x] complete g05.005 cards 017-018 for the base Claude Code `2.1.251`
       currentness prerequisite; do not map watcher behavior in that lane
-- [x] execute ready card 010 for exact `2.1.251` credential-free binding and
+- [x] Claude Code Watcher Bridge delivered (former card 010) for exact `2.1.251` credential-free binding and
       deterministic provider-free fixtures
-- [x] execute ready card 011 through its manual worker handoff using the one
+- [x] Watcher Acceptance And Consumer Projection delivered (former card 011) through its manual worker handoff using the one
       authorized exact Haiku live turn
 - [ ] publish the first route claim only after card 011's live and deterministic
       acceptance pass
@@ -108,17 +108,6 @@ oracle.
 - raw output is required for correctness
 - route binding would advertise watcher support without owned, joined host
   process supervision
-
-## Batch Cards
-
-- [007 Claude Code Watcher Seam Evidence](batch-cards/007-claude-code-watcher-seam-evidence.md)
-- [008 Portable Watcher Lifecycle Core](batch-cards/008-portable-watcher-lifecycle-core.md)
-- [009 Host-Local Watcher Registry](batch-cards/009-host-local-watcher-registry.md)
-- [010 Claude Code Watcher Bridge](batch-cards/010-claude-code-watcher-bridge.md)
-- [011 Watcher Acceptance And Consumer Projection](batch-cards/011-watcher-acceptance-and-consumer-projection.md)
-- [014 Host-Process Watcher Supervision](batch-cards/014-host-process-watcher-supervision.md)
-- [015 Claude Code Watcher Bridge Transport Evidence](batch-cards/015-claude-code-watcher-bridge-transport-evidence.md)
-- [016 Operation-Scoped Watcher HTTP Bridge Core](batch-cards/016-operation-scoped-watcher-http-bridge-core.md)
 
 ## References
 

@@ -35,5 +35,5 @@ architecture, contracts, roadmaps, or logs.
 ## Support
 
 - [Master Spec Template](templates/master-spec-template.md)
-- [Batch Card Template](templates/batch-card-template.md)
+- [Task Template](../roadmaps/templates/task-template.md) — the sole executable planning unit `gNN.NNN`
 - [Archive](archive/README.md)

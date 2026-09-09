@@ -44,11 +44,6 @@ catalogue or session work, install, host update, live probe, local-server
 claim change, Kimi Platform Chat, second family, Gemini, skill, papercut,
 g05.009 card 034, release, or execution of downloaded official binaries.
 
-## Batch Cards
-
-- [041 Kimi Code 0.39.1 Identity](batch-cards/041-kimi-code-0-39-1-identity.md) — completed
-- [042 Kimi Code 0.39.1 Claim](batch-cards/042-kimi-code-0-39-1-claim.md) — completed
-
 ## Acceptance
 
 - [x] exact official identity is reproducible through independent channels

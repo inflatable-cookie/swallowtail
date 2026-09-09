@@ -55,8 +55,8 @@ honest stop. Per-turn and breadth candidates remain later bands.
 
 ## Authority
 
-- [card 024](../roadmaps/g05/batch-cards/024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md)
-- [card 030](../roadmaps/g05/batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md)
+- [card 024](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
+- [card 030](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [Batch 9.4 checkpoint](../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)

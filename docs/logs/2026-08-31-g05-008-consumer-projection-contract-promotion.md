@@ -64,5 +64,5 @@ public API work is authorized by this promotion.
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
 - [Spec 012](../specs/archive/012-consumer-route-feature-and-control-projection.md)
 - [g05.008](../roadmaps/g05/008-consumer-route-feature-and-control-projection.md)
-- [card 021](../roadmaps/g05/batch-cards/021-consumer-route-feature-and-control-projection-contract.md)
+- [card 021](../roadmaps/g05/008-consumer-route-feature-and-control-projection.md)
 - [Projection triage and census synthesis](../triage/2026-08-30-consumer-route-feature-and-option-projection.md)

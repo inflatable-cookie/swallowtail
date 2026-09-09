@@ -8,7 +8,7 @@ Depends on: completed g05.001; Contract 058
 Vision tags: harness skills, selected-session truth, consumer integration
 Contract refs: 020, 029, 032, 033, 037, 041, 047, 058
 Research: 256 promoted
-Planning state: card 004 complete; cards 005-006 remain planned behind Research 256's empty disposition
+Planning state: card 004 complete (folded g05.038); Qoder binding and acceptance preserved as g05.039 and g05.040 behind Research 256's empty disposition
 
 ## Problem
 
@@ -28,16 +28,16 @@ Bind it only if exact evidence closes every Contract 058 gate.
 
 ### Batch 2.1 — Exact Evidence
 
-- [x] execute ready card 004
+- [x] Qoder Effective Skill Roster Evidence delivered (former card 004)
 - [x] freeze init timing, roster source, completeness, provenance, freshness,
       and prompt/auth/mutation behavior
 - [x] return a closed positive row or honest empty set in Research 256
 
 ### Batch 2.2 — Conditional Binding
 
-- [ ] execute card 005 only after a non-empty deliver-now disposition
+- [ ] g05.039 binds the roster only after a non-empty deliver-now disposition (from card 005)
 - [ ] expose the bounded observation without widening the Qoder run
-- [ ] execute card 006 for route, guide, and consumer acceptance
+- [ ] g05.040 closes route, guide, and consumer acceptance (from card 006)
 
 ## Acceptance Criteria
 
@@ -55,12 +55,6 @@ Bind it only if exact evidence closes every Contract 058 gate.
 - a project or global row requires Swallowtail or adapter scanning instead of
   the exact harness roster surface
 - exact `1.1.25` source cannot bind the field semantics
-
-## Batch Cards
-
-- [004 Qoder Effective Skill Roster Evidence](batch-cards/004-qoder-effective-skill-roster-evidence.md)
-- [005 Qoder Effective Skill Visibility Binding](batch-cards/005-qoder-effective-skill-visibility-binding.md)
-- [006 Qoder Skill Visibility Acceptance](batch-cards/006-qoder-skill-visibility-acceptance.md)
 
 ## References
 

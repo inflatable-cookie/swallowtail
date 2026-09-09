@@ -28,10 +28,6 @@ No ambient home or project scan, provider contact, skill mutation, install,
 execution, arbitrary body disclosure, or inferred effective winner belongs to
 this milestone. The contract card does not implement Rust.
 
-## Batch Cards
-
-- [025 Bounded Skill Inventory Contract Promotion](batch-cards/025-bounded-skill-inventory-contract-promotion.md) — complete; Contract 062 active; implementation unplanned
-
 ## Acceptance
 
 - [x] one dedicated contract owns inventory without weakening Contract 058

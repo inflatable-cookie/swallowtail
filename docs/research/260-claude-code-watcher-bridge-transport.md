@@ -252,5 +252,5 @@ and the exact omission fixture in the adapter tests.
 - [Contract 059 — Operation-Scoped Process Watchers](../contracts/059-operation-scoped-process-watchers.md)
 - [Contract 060 — Operation-Scoped Watcher HTTP Bridge](../contracts/060-operation-scoped-watcher-http-bridge.md)
 - [Research 257 — Claude Code Watcher Seam Evidence](257-claude-code-watcher-seam-evidence.md)
-- [g05.003 card 015](../roadmaps/g05/batch-cards/015-claude-code-watcher-bridge-transport-evidence.md)
-- [g05.003 card 010](../roadmaps/g05/batch-cards/010-claude-code-watcher-bridge.md)
+- [g05.003 card 015](../roadmaps/g05/003-operation-scoped-watcher-proof.md)
+- [g05.003 card 010](../roadmaps/g05/003-operation-scoped-watcher-proof.md)

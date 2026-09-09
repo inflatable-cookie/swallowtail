@@ -20,8 +20,8 @@ These rules apply to all Swallowtail work before v1.0.
 - Do not import consumer product concepts into portable crates.
 - Keep external source repositories as evidence, not hidden build inputs.
 - Keep each roadmap generation as a long-lived container for roughly 30-50
-  numbered roadmaps. Phase changes alone do not authorize rollover; batch cards
-  do not count toward the generation range.
+  numbered tasks (`gNN.NNN` files directly under `gNN/`). Phase changes alone
+  do not authorize rollover. There is no nested card level.
 - Run all-route version currentness as a named Contract 029 checkpoint. It is
   a standing lane, not a generation runway goal. Do not extend a
   compatibility claim from registry `latest` or local `--version` alone.
@@ -38,7 +38,7 @@ These rules apply to all Swallowtail work before v1.0.
 - A worker exists only through a coordinator-dispatched handoff under
   `docs/handoffs/` whose frontmatter names worker mode and orchestrator
   dispatch authority. Do not infer worker mode from a branch, path, or
-  harness. A worker edits only the paths its card and manifest own.
+  harness. A worker edits only the paths its task and manifest own.
 - Triage notes are intake, never execution authority. Papercuts in
   `PAPERCUTS.md` are observations for later triage, never an automatic
   backlog.

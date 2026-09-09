@@ -64,7 +64,7 @@ merge occurred.
 
 ## Authority
 
-- [card 058](../roadmaps/g05/batch-cards/058-caller-bounded-interactive-session-cleanup.md)
+- [card 058](../roadmaps/g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
 - [g05.023](../roadmaps/g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
 - [Contract 010](../contracts/010-execution-host-services-and-inputs.md)
 - [Contract 019](../contracts/019-embedded-sdk-and-cloud-client-boundary.md)

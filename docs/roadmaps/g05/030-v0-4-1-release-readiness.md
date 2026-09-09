@@ -72,14 +72,6 @@ exact-head review, canonical merge, or exact-SHA CI returns to card 091.
   with named reopen conditions; Gemini remains deferred; the watcher stays
   exact `2.1.251`
 
-## Batch Cards
-
-- [094 Deadline Fixture Determinism Sweep](batch-cards/094-deadline-fixture-determinism-sweep.md) — complete; Pi lifecycle race plus workspace sweep merged through PR 227 as `3506d9a5`
-- [093 Claude SDK Sidecar Fixture Determinism](batch-cards/093-claude-sdk-sidecar-fixture-determinism.md) — complete; PR 226 merged as `4bb00dab`; deterministic sidecar-asset fixture proven under load
-- [090 v0.4.0 To Candidate Compatibility Audit](batch-cards/090-v0-4-0-to-candidate-compatibility-audit.md) — accepted and merged as `3dcf4f12`
-- [091 v0.4.1 Candidate Preparation And Exact-SHA CI](batch-cards/091-v0-4-1-candidate-preparation-and-exact-sha-ci.md) — complete; merged candidate `c3cce750`; tagged `v0.4.1`
-- [092 v0.4.1 Consumer Proof And Operator Tag Gate](batch-cards/092-v0-4-1-consumer-proof-and-operator-tag-gate.md) — complete; source consumer passed; operator-authorized tag pushed
-
 ## Dispatch Manifest
 
 Promoted planning commit: the `main` commit that introduces this file.
@@ -90,7 +82,7 @@ Promoted planning commit: the `main` commit that introduces this file.
 | Prerequisites | immutable `v0.4.0` at `56f3913a`; card 080's second PR merged at `23d3cd8d`; card 034 merged at `404fa068`; no open feature PR |
 | Completion conditions | Research 286 with the complete `v0.4.0..HEAD` package, dependency, route, semantic API, and guaranteed-behaviour ledgers; every change classified compatible or breaking with evidence; immutable `v0.4.0` baselines byte-identical; patch class confirmed or a stop recorded; card result filled; docs and Northstar gates green |
 | Owned mutable paths | `docs/research/286-*.md`; `docs/research/README.md` one index line; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
 | Forbidden paths | every `crates/**` path; `Cargo.toml`, `Cargo.lock`; `CHANGELOG.md`; `release-baselines/**`; `docs/releases/**`; contracts; version claims |
 | Approved concurrent siblings | none; the currentness and Contract 061 lanes are quiet and the release lane freezes feature merges until card 092 stops |
 | Serial edges | card 091 follows an accepted card 090; card 092 follows card 091's candidate merge and exact-SHA CI |
@@ -113,7 +105,7 @@ authorization of 2026-09-05 applies.
 | Prerequisites | card 090 merged; Research 286 on `main`; clean canonical base with no open feature or currentness PR; `Cargo.lock` in sync before the first `--locked` gate (the `v0.4.0` lock-sync precedent) |
 | Completion conditions | `docs/releases/0.4.1.md` and index entry authored from Research 286 before any mutation; read-only release status infers `0.4.1` with the three-mutation plan; exactly one prepare transaction applies coordinated `0.4.1` versions, promotes the changelog, and syncs the workspace-only lock; all 11 local gates pass on the frozen tree; the exact promoted changelog is extracted; distinct `0.4.1` semantic baseline, route inventory, and dependency graph are generated without touching any `0.4.0` file; one candidate PR; exact-head review; canonical merge; workflow-dispatch CI green at the merged SHA |
 | Owned mutable paths | every workspace `Cargo.toml` version and internal requirement through the prepare transaction only; `Cargo.lock` workspace entries only; `CHANGELOG.md` promotion only; `docs/releases/0.4.1.md`; `docs/releases/README.md` current-release entry; `release-baselines/public-api-0.4.1/**`, `production-routes-0.4.1.txt`, `internal-dependencies-0.4.1.tsv`; `.release-prepared.json`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, the `docs/releases/README.md` historical lines |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, the `docs/releases/README.md` historical lines |
 | Forbidden paths | every `crates/**/src` and test path; every `release-baselines/*0.4.0*` and earlier file; contracts; architecture; guides; matrices; version claims; any feature change. Amended 2026-09-05: the release gate scripts `scripts/check-public-api.sh`, `scripts/check-package-metadata.sh`, `scripts/check-provider-route-matrix.sh`, and `scripts/README.md` are owned, exactly as the `v0.4.0` candidate commit `10d9b7a0` updated them, so the gates validate the `0.4.1` baselines (immutable baseline becomes `0.4.0`; no approved removals for a patch). Further amended the same day: `scripts/check-consumer-front-door.py` and, only if that gate requires it, the root `README.md` release-posture lines, again exactly as `10d9b7a0` did. The candidate release note status line is `Status: candidate; not tagged`, the `v0.4.0` wording |
 | Approved concurrent siblings | none; feature freeze |
 | Serial edges | card 092 follows the merged candidate with green exact-SHA CI and the completed smoke packet |
@@ -229,7 +221,7 @@ Promoted planning commit: the `main` commit that introduces this section.
 | Prerequisites | card 091's attempt-4 floor excerpt; card 093 merged at `4bb00dab`; current `main` |
 | Completion conditions | Pi lifecycle test deterministic via explicit process control; sweep ledger classifying every candidate test; each fixed binary proved 20+ runs under load with zero failures; full pinned-toolchain workspace test green; production source unchanged; one PR |
 | Owned mutable paths | `crates/*/tests/**` only; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
 | Forbidden paths | every `crates/**/src` path; sidecar production scripts; Cargo files; `CHANGELOG.md`; `release-baselines/**`; contracts |
 | Approved concurrent siblings | none |
 | Serial edges | card 091's fifth prepare follows card 094's merge |
@@ -249,7 +241,7 @@ Promoted planning commit: the `main` commit that introduces this section.
 | Prerequisites | card 091's frozen-gates log naming the two tests; current `main` |
 | Completion conditions | fixture reads observations after the wire record that guarantees them; no passing test depends on a bound; loop-under-load proof with zero failures recorded; production sidecar and adapter source unchanged; named validation green under stable and `1.95.0`; one PR |
 | Owned mutable paths | `crates/swallowtail-adapter-claude-agent/tests/**` (including `sidecar_asset_support/fake-sdk.mjs` and `mod.rs`); this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
 | Forbidden paths | `crates/swallowtail-adapter-claude-agent/src/**` and `sidecar/**`; every other crate; Cargo files; `CHANGELOG.md`; `release-baselines/**`; contracts |
 | Approved concurrent siblings | none |
 | Serial edges | card 091's fourth prepare follows card 093's merge |

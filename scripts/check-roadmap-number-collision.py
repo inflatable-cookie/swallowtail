@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail when numbered roadmap or batch-card files collide.
+"""Fail when numbered roadmap task files collide.
 
 Canonical pushed-main authority is
 ``https://github.com/inflatable-cookie/swallowtail.git`` ``refs/heads/main``.
@@ -43,8 +43,7 @@ SCRIPT_ROOT = Path(__file__).resolve().parent.parent
 NUMBERED_NAME = re.compile(r"^(?P<number>\d{3})-.+\.md$")
 GENERATION_DIR = re.compile(r"^g\d{2}$")
 NUMBERED_PATH = re.compile(
-    r"^docs/roadmaps/(?P<generation>g\d{2})/"
-    r"(?:(?P<card_dir>batch-cards/)?(?P<name>\d{3}-[^/]+\.md))$"
+    r"^docs/roadmaps/(?P<generation>g\d{2})/(?P<name>\d{3}-[^/]+\.md)$"
 )
 
 
@@ -54,14 +53,16 @@ def fail(message: str) -> None:
 
 
 def classify(relative: str) -> tuple[str, str, str] | None:
+    if "batch-cards/" in relative:
+        # Retired nested level: never occupancy, on HEAD or on base.
+        return None
     match = NUMBERED_PATH.fullmatch(relative)
     if match is None:
         return None
     name_match = NUMBERED_NAME.fullmatch(match.group("name"))
     if name_match is None:
         return None
-    kind = "card" if match.group("card_dir") else "milestone"
-    return match.group("generation"), kind, name_match.group("number")
+    return match.group("generation"), "task", name_match.group("number")
 
 
 def occupancy_from_paths(paths: list[str], source: str) -> dict[tuple[str, str, str], str]:
@@ -95,12 +96,11 @@ def working_tree_paths(root: Path) -> list[str]:
         for child in generation_dir.glob("*.md"):
             if NUMBERED_NAME.fullmatch(child.name):
                 paths.append(child.relative_to(root).as_posix())
-        cards = generation_dir / "batch-cards"
-        if not cards.is_dir():
-            continue
-        for child in cards.glob("*.md"):
-            if NUMBERED_NAME.fullmatch(child.name):
-                paths.append(child.relative_to(root).as_posix())
+        if (generation_dir / "batch-cards").is_dir():
+            fail(
+                "legacy nested dispatch level remains: "
+                f"{(generation_dir / 'batch-cards').relative_to(root).as_posix()}"
+            )
     return sorted(paths)
 
 
@@ -187,7 +187,7 @@ def check_against_base(
 
 def parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Reject colliding numbered roadmap and batch-card files."
+        description="Reject colliding numbered roadmap task files."
     )
     parser.add_argument(
         "--root",
@@ -241,7 +241,7 @@ def main(argv: list[str] | None = None) -> None:
     check_against_base(head, base_paths, base_label)
     print(
         "roadmap number collision check passed: "
-        f"{len(head)} numbered milestone/card files unique against {base_label} "
+        f"{len(head)} numbered task files unique against {base_label} "
         f"at {base_sha[:12]}"
     )
 

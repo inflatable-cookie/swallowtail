@@ -51,11 +51,6 @@ Claim:
 - Gemini, skill cards 005-006, or the open consumer feature-projection triage
 - workspace QA, MSRV, consumer checks, release work, or merge
 
-## Batch Cards
-
-- [017 Claude Code 2.1.251 Identity](batch-cards/017-claude-code-2-1-251-identity.md) — completed
-- [018 Claude Code 2.1.251 Claim](batch-cards/018-claude-code-2-1-251-claim.md) — completed
-
 ## References
 
 - [Contract 029 Interface Version Qualification And Compatibility](../../contracts/029-interface-version-qualification-and-compatibility.md)

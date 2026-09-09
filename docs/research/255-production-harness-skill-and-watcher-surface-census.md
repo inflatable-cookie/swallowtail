@@ -5,7 +5,7 @@ Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-28
 Question source: g05.001 production harness skill and watcher surface census
-Assigned card: [g05.001](../roadmaps/g05/batch-cards/001-production-harness-skill-and-watcher-surface-census.md)
+Assigned card: [g05.001](../roadmaps/g05/001-harness-skill-and-watcher-surface-inventory.md)
 
 ## Question
 

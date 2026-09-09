@@ -113,7 +113,7 @@ After qualification, `0.149.1` (unpublished) remains `UnverifiedNewer`.
 
 No new milestone. No decoder update. No provider work.
 
-Claim card: [g04 batch 069](../roadmaps/g04/batch-cards/069-codex-0-149-0-claim.md)
+Claim card: [g04 batch 069](../roadmaps/archive/g04.md)
 
 ## Sources
 

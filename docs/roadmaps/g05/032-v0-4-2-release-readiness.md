@@ -45,13 +45,6 @@ No card creates or pushes a tag. The operator authorizes the exact SHA. No
 publication, GitHub Release, binaries, sidecars, installers, or consumer
 mutation.
 
-## Batch Cards
-
-- [103 OpenCode Cancellation Cleanup DELETE Dispatch](batch-cards/103-opencode-cancellation-cleanup-delete-dispatch.md) — complete; fixture-only, merged at `d7b483dd9d850fb0f6f3f04e4297e1bf7662333b`
-- [100 Claude SDK Open Diagnostics And Live-Open Repair](batch-cards/100-claude-sdk-open-diagnostics-and-live-open-repair.md) — complete; merged through PR 237 at `ffc263107343b30cda7a0efde840f84f47a361ec`
-- [101 v0.4.2 Candidate Preparation](batch-cards/101-v0-4-2-candidate-preparation.md) — complete; PR 240 merged at candidate SHA `f94dd16f`; tagged as `v0.4.2`
-- [102 v0.4.2 Consumer Proof And Tag Gate](batch-cards/102-v0-4-2-consumer-proof-and-tag-gate.md) — complete; released tag `v0.4.2` smoke inconclusive pre-window; Desktop owns visibility follow-up
-
 ## Dispatch Manifest
 
 Promoted planning commit: the `main` commit that introduces this file.
@@ -62,7 +55,7 @@ Promoted planning commit: the `main` commit that introduces this file.
 | Prerequisites | `v0.4.1` on `main`; the Bovine report; card 082 paused in its workspace |
 | Completion conditions | (re-cut 2026-09-06 by the operator's ship decision: close on the proven scope; the live editing turn is card 102's acceptance) spawn hook takes the SDK's single `SpawnOptions` object with `signal` forwarded; account projection verified against the frozen 0.3.259 `sdk.d.ts`; fake SDK calls the hook and returns `accountInfo()` in the real shape; sidecar codes surfaced on every rejection; effective model published from init evidence; Node newer-allowed at open with an `UnverifiedNewer` record; provider-free fixtures for all three; one live open recorded with the real `system.model` and account projection; guide, matrices, changelog, additive baseline; one PR |
 | Owned mutable paths | `crates/swallowtail-adapter-claude-agent/src/sdk/**`; `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.1/swallowtail-adapter-claude-agent.txt` regenerated additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; the `claude-agent.sdk` matrix cells; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
 | Forbidden paths | every other crate; `claude_code_*` and ACP modules; contracts; the SDK wrapper and native pins (only the Node open check changes); card 082's model-change surfaces |
 | Approved concurrent siblings | g05.009 cards 097-099; card 094 remainder. Card 082 is paused, not concurrent, because it shares the sidecar |
 | Serial edges | card 082 rebases and resumes after card 100 merges; card 101 follows card 100 |
@@ -114,7 +107,7 @@ Chatterbox round trip. Operator prepare authorization was granted
 | Prerequisites | card 100 merged with the live turn recorded (system/init first, truthful close); Effigy local install at or beyond the per-gate-log fix; clean canonical base; no open feature PR |
 | Completion conditions | `docs/releases/0.4.2.md` and index entry authored from card 100's result, the merged Contract 061 tranches (candidates B, K, L and the 767/767 completion), card 081's Bash mediation, and cards 093/094/095; patch class stated from the semantic API diff (all changes since `v0.4.1` are additive: card 100 adds 5 baseline lines, the tranches add contribution methods); read-only release status inferring `0.4.2` with the three-mutation plan; lock in sync before the first `--locked` gate; exactly one `effigy --json release prepare --yes --check-gates --version 0.4.2` with the per-gate logs kept as evidence; NO separate frozen-tree rerun; distinct `0.4.2` semantic baseline, route inventory, and dependency graph without touching `0.4.1` files; the four gate scripts and the consumer front-door script repointed to `0.4.2` exactly as card 091 did; candidate PR; independent review and workflow-dispatch CI in parallel; merge on both green |
 | Owned mutable paths | as card 091's amended manifest, with `0.4.2` in place of `0.4.1`: workspace `Cargo.toml` versions through the prepare transaction; `Cargo.lock` workspace entries; `CHANGELOG.md` promotion; `docs/releases/0.4.2.md`; `docs/releases/README.md` current entry; `release-baselines/public-api-0.4.2/**`, `production-routes-0.4.2.txt`, `internal-dependencies-0.4.2.tsv`; `.release-prepared.json`; `scripts/check-public-api.sh`, `scripts/check-package-metadata.sh`, `scripts/check-provider-route-matrix.sh`, `scripts/check-consumer-front-door.py`, `scripts/README.md`; root `README.md` release-posture lines; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, the `docs/releases/README.md` historical lines |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, the `docs/releases/README.md` historical lines |
 | Forbidden paths | every `crates/**/src` and test path; every `0.4.1` and earlier baseline; contracts; architecture; guides; matrices; version claims; any feature change |
 | Approved concurrent siblings | none; feature freeze from card 100's merge until card 102 stops (card 082 stays paused) |
 | Serial edges | card 102 follows the merged candidate with green exact-SHA CI and the Bovine packet |
@@ -139,7 +132,7 @@ consumer in parallel. No further Chatterbox promotion is needed to start.
 | Prerequisites | merged `0.4.2` candidate SHA; the Bovine Desktop smoke packet at `/Users/tom/Dev/projects/acowtancy/docs/handoffs/20260905-desktop-swallowtail-v042-smoke-packet.md` with the SHA filled in; the operator's host Node step (present `~/.local/bin/node` 22.23.2 first for the run) |
 | Completion conditions | `effigy package:source-consumer` passes from a clean detached checkout of the merged SHA; one Bovine Desktop editing turn on `claude-agent.sdk` with the `read_write(AcceptEdits)` profile on a smoke branch pinned to the SHA: session opens with init evidence and no `open_rejected`, the in-workspace file lands with no per-edit prompt, the outside-workspace write is refused in the transcript, and the close is clean under card 100's instrumentation; the tag decision request compiled with the exact SHA |
 | Owned mutable paths | this card's `## Result`; `PAPERCUTS.md` append only. The Desktop smoke branch and its one log are the Acowtancy lane's, never merged there |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, the release note status line at tag time |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`, the release note status line at tag time |
 | Forbidden paths | every crate; every baseline; the candidate itself after merge; any Swallowtail edit beyond the result |
 | Approved concurrent siblings | none; feature freeze holds until this card stops |
 | Serial edges | the operator's exact-SHA tag decision follows |

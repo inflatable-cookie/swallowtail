@@ -43,7 +43,7 @@ contract authority, or selecting an implementation tranche.
 
 ### Batch 8.1 — Composing Contract Promotion
 
-- [x] Execute ready card 021.
+- [x] Consumer Route Feature And Control Projection Contract delivered (former card 021).
 - [x] create Contract 061 with the three projection views, exact source and
       snapshot binding, lifecycle truth, safe-reason posture, and fail-closed
       composition rules
@@ -73,10 +73,6 @@ contract authority, or selecting an implementation tranche.
   schema, or execution authority is introduced.
 - Stop if contract review cannot identify the failure point for a stale,
   cross-boundary, or observation-as-mutation counterexample.
-
-## Batch Cards
-
-- [021 Consumer Route Feature And Control Projection Contract](batch-cards/021-consumer-route-feature-and-control-projection-contract.md)
 
 ## Outcome
 

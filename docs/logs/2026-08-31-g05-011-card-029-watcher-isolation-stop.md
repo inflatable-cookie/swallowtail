@@ -32,7 +32,7 @@ argv stayed unchanged.
 
 ## Authority
 
-- [card 029](../roadmaps/g05/batch-cards/029-claude-watcher-credential-preserving-isolation.md)
+- [card 029](../roadmaps/g05/011-watcher-route-admission-recovery.md)
 - [g05.011](../roadmaps/g05/011-watcher-route-admission-recovery.md)
 - [mechanism triage](../triage/2026-08-31-claude-watcher-instruction-isolation-mechanism.md)
 - [Contract 059](../contracts/059-operation-scoped-process-watchers.md)

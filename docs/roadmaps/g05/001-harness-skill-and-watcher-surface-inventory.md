@@ -29,21 +29,21 @@ promotion.
 
 ### Batch 1.1 — Surface Inventory
 
-- [x] execute card 001
+- [x] Production Harness Skill And Watcher Surface Census delivered (former card 001)
 - [x] inventory exact route/version official listing, manifest, protocol, and
       process-control surfaces
 - [x] promote Research 255 with a closed evidence matrix
 
 ### Batch 1.2 — Boundary And Decision Packet
 
-- [x] execute card 002 after Research 255 promotion
+- [x] Boundary Classification And Operator Decision Packet delivered (former card 002) after Research 255 promotion
 - [x] classify portable, provider-local, host-owned, consumer-owned, unsafe,
       and unknown seams
 - [x] return unresolved policy choices to the operator
 
 ### Batch 1.3 — Promotion And Runway Selection
 
-- [x] execute card 003 after recorded operator decisions
+- [x] Promotion And Proof-Route Selection delivered (former card 003) after recorded operator decisions
 - [x] select architecture, contract, research, or stop dispositions
 - [x] compile proof routes only from promoted testable boundaries
 
@@ -72,12 +72,6 @@ promotion.
 - arbitrary PID inspection or kill authority
 - consumer UI design or raw log streaming
 - new routes, currentness, parked Bedrock work, release, or publication
-
-## Batch Cards
-
-- [001 Production Harness Skill And Watcher Surface Census](batch-cards/001-production-harness-skill-and-watcher-surface-census.md)
-- [002 Boundary Classification And Operator Decision Packet](batch-cards/002-boundary-classification-and-operator-decision-packet.md)
-- [003 Promotion And Proof-Route Selection](batch-cards/003-promotion-and-proof-route-selection.md)
 
 ## References
 

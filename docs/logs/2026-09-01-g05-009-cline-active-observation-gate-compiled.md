@@ -54,7 +54,7 @@ for orchestrator review before reassessing another Batch 9.4 candidate.
 
 ## Authority
 
-- [card 032](../roadmaps/g05/batch-cards/032-contract-061-cline-command-code-copilot-goose-package-completion.md)
+- [card 032](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [public-baseline gate](../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
 - [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [Batch 9.4 package expansion](../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)

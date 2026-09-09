@@ -40,10 +40,10 @@ Planning, dispatch, and implementation are separate threads:
 - **Worker** mode is explicit: it exists only when a coordinator handoff under
   `docs/handoffs/` declares worker mode and orchestrator dispatch authority.
   Never infer worker mode from a branch, worktree path, or harness. A worker
-  edits only the paths its card and manifest own and stops at exact-head
+  edits only the paths its task and manifest own and stops at exact-head
   review; it never merges.
 
-Normal-mode agents use the current checkout and follow the card named in
+Normal-mode agents use the current checkout and follow the task named in
 `docs/roadmaps/README.md`. `docs/triage/` is a buffer of leads to promote or
 remove, never execution authority. Small solvable friction goes in
 `PAPERCUTS.md` without stopping the task. Full rules:
@@ -102,19 +102,19 @@ relevant contracts are clear enough to test.
 
 ## Continuation Rule
 
-In a strict Northstar lane, a bare `continue` resumes the ready card named by
+In a strict Northstar lane, a bare `continue` resumes the ready task named by
 the previous closeout and `docs/roadmaps/README.md`. The coordinator does not
 wait for `continue`: it dispatches every ready lane in the manifest and moves
-through merge, closeout, and the next ready card on its own.
+through merge, closeout, and the next ready task on its own.
 
 Keep the active `## Next Task` pointer only in `docs/roadmaps/README.md`.
-When several lanes are ready, the pointer names the lead card and the
+When several lanes are ready, the pointer names the lead task and the
 roadmap holding the manifest for the rest.
 
 ## Batch Size Rule
 
-Work in meaningful batches. Inspect the ready card and nearby runway before
-editing. Group related cards when one validation round can cover them. Stop and
+Work in meaningful batches. Inspect the ready task and nearby runway before
+editing. Group related tasks when one validation round can cover them. Stop and
 re-scope if work becomes atomic churn.
 
 ## Validation Tier Rule
@@ -129,12 +129,12 @@ effigy package:verify-affected swallowtail-adapter-codex
 Both selectors accept one to four exact workspace package names. Do not infer
 scope from changed files. Run broad `qa`, workspace tests, package checks,
 candidate checks, consumer checks, MSRV checks, or live probes only when the
-accepting card names that evidence tier.
+accepting task names that evidence tier.
 
 ## Roadmap Generation Rule
 
 A roadmap generation is a long planning container, normally holding 30-50
-numbered roadmap files. Batch cards do not count toward that range. Do not roll
+numbered task files (`gNN.NNN` directly under `gNN/`). There is no nested card level. Do not roll
 to a new generation because a phase, contract set, or implementation layer
 changes. Extend the active generation until it approaches that range or the
 operator explicitly authorizes a structural rollover.
@@ -155,7 +155,7 @@ through the repo skill `version-currentness` at
 ## Feature Matrix Rule
 
 An unavailable cell in the feature matrix is exactly one of: a provider
-limitation with a citation to frozen evidence; a producer gap with the card
+limitation with a citation to frozen evidence; a producer gap with the task
 that builds it; or evidence pending, where the provider's capability is
 genuinely unproven and a named, scheduled evidence gate owns the answer. A
 cross with none of the three is a matrix defect. "Withheld" is a producer gap

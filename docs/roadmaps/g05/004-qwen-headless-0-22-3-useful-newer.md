@@ -32,9 +32,7 @@ Claim:
 Do not run workspace `qa`, broad `qa:docs`, live probes, MSRV, or
 consumer checks.
 
-Do not edit `docs/roadmaps/README.md` Next Task. Index this milestone
-in `docs/roadmaps/g05/README.md`, `docs/roadmaps/g05/batch-cards/README.md`,
-and `docs/roadmaps/generation-index.md`. Do not displace g05.001-g05.003.
+Do not edit docs/roadmaps/README.md Next Task. Index this task in docs/roadmaps/g05/README.md and docs/roadmaps/generation-index.md. Do not displace g05.001-g05.003.
 
 ## Out Of Scope
 
@@ -49,11 +47,6 @@ and `docs/roadmaps/generation-index.md`. Do not displace g05.001-g05.003.
 - Next Task or generation-pointer changes
 - Architecture or contract ceiling rewrites
 - Editing `docs/roadmaps/g04/README.md`
-
-## Batch Cards
-
-- [012-qwen-headless-0-22-3-identity.md](batch-cards/012-qwen-headless-0-22-3-identity.md) — completed
-- [013-qwen-headless-0-22-3-claim.md](batch-cards/013-qwen-headless-0-22-3-claim.md) — completed
 
 ## References
 

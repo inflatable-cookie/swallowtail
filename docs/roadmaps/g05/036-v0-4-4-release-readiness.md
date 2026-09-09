@@ -1,6 +1,6 @@
 # g05.036 v0.4.4 Release Readiness
 
-Status: ready; Card 154 merged candidate `49c9e3b2`; dependent exact-tree Desktop acceptance remains; old candidate `0673541d` remains parked
+Status: ready; v0.4.4 candidate `49c9e3b2` merged (card 154 folded); dependent exact-tree Desktop acceptance passed 2026-09-09 under Card 323; old candidate `0673541d` remains parked; exact-SHA tag decision remains with the operator
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-09
@@ -240,14 +240,42 @@ nondeterministic validation failure is deferred without candidate change or a
 prepare retry. The dependent Desktop gate must use merge SHA
 `49c9e3b291609c9ebf5b35a284c08302f3b8d5e3`; no tag is inferred.
 
+### Desktop Card 323 Acceptance — 2026-09-09
+
+Desktop queue task `e8bca18b-5689-4974-b5a2-503e5aaad73a` is DONE. PR #186
+accepted reviewed head `977a4f291ad92b11aadf6b730fba65139872560e`
+(independent review comment `5602628180`) and merged as
+`32344306fe30043e2d08dd9ac4e3a216b320c81f`; canonical Desktop closeout is
+`da9edb8dc2fd7958a5fa5cde974a13ca36487079`.
+
+Swallowtail candidate remains exact merge
+`49c9e3b291609c9ebf5b35a284c08302f3b8d5e3` and tree
+`1a9db12742b68e839dfebe42f0633f5d1aa0265b`, which passed the unique 18-cell
+ledger. Fresh capsule SHA-256 values: Grok `1.0.4`
+`669310b5a47df11a3ceb9cfe15eee92615186b3e7075d266d98e3b132c63814f`; Grok
+`1.0.5`
+`9d46d5912835c0928a6ab3f2e89cc37d0bafbc6d8140bf9640aae8bcfd906c64`; Claude
+`bf40f96107fc35b3ceea1b29da779230f031de2c487e3534a79ba23b59316343`.
+
+Counts: two Grok prompts; four Claude opens and four turns on
+`claude-sonnet-5`; one Allow dispatch; zero control dispatches,
+retries, reconnects, respawns, model changes, Codex calls, and survivors.
+Verdicts: both Grok segments `accepts_client_mcp`; Claude pass.
+Provider-free evidence: Claude 36/36, mediated stdio 15/15, testkit 160/160,
+route matrix pass. The Desktop dependency is accepted.
+
+No tag, publication, repin, candidate change, or release-state change follows.
+The operator exact-SHA tag decision remains separate and explicit.
+
 ## Runway
 
 1. Card 154 prepared and merged one final candidate per the release playbook,
    with exact-tree review and qualifying hosted CI.
-2. The dependent Desktop task links that exact merge SHA and runs the bounded
-   final release-matrix acceptance. A failure stops without retry or tag.
-3. Chatterbox presents the exact-SHA tag request only when both gates bind to
-   the same candidate tree. The operator then decides whether to tag and push.
+2. The dependent Desktop task (Card 323, done) linked that exact merge SHA and ran
+   the bounded final release-matrix acceptance. A failure would have stopped without retry or tag.
+3. Both gates now bind to the same candidate tree; the exact-SHA tag decision
+   is presented to the operator, who decides whether to tag and push. No tag
+   authority follows from this task.
 4. A successor to cancelled Card 123 runs source-consumer and Desktop repin
    evidence after the tag.
 
@@ -263,69 +291,15 @@ From Card 154's planning promotion until the operator's tag decision, no other
 Swallowtail implementation PR merges to `main`. Queue closeout documentation
 may advance the branch, but the candidate merge SHA remains the release target.
 
-## Batch Cards
+## Folded card evidence (g05.038)
 
-- [154 v0.4.4 Final Candidate Preparation](batch-cards/154-v0-4-4-final-candidate-preparation.md) — ready; operator authorized 2026-09-09
-- [122 v0.4.4 Candidate Preparation](batch-cards/122-v0-4-4-candidate-preparation.md) — complete; parked candidate `0673541d`
-- [123 v0.4.4 Consumer Proof And Tag Capsule](batch-cards/123-v0-4-4-consumer-proof-and-tag-capsule.md) — cancelled after the scope change; successor follows an authorized tag
+- 154 v0.4.4 Final Candidate Preparation — complete; operator-authorized 2026-09-09; PR 300 merged candidate `49c9e3b2`; dependent Desktop exact-tree acceptance passed 2026-09-09 (Card 323); no tag authority
+- 122 v0.4.4 Candidate Preparation — complete; parked candidate `0673541d`
+- 123 v0.4.4 Consumer Proof And Tag Capsule — cancelled after the scope change; successor follows an authorized tag
 
-## Dispatch Manifest
-
-Promoted planning commit: the `main` commit that introduces this file.
-
-### Card 154 Manifest
-
-| Field | Card 154 |
-| --- | --- |
-| Readiness | complete; PR 300 merged candidate `49c9e3b2`; dependent Desktop exact-tree acceptance remains; no tag authority |
-| Prerequisites | no active Swallowtail implementation worker; release freeze in force |
-| Completion conditions | current release note and all three `0.4.4` baselines; patch status; exactly one new prepare transaction; candidate PR; exact-head independent review; qualifying hosted CI; merge SHA/tree and run ID returned; no tag |
-| Owned mutable paths | the exact release/version, README, changelog, `0.4.4` baseline, release-note, and card Result surfaces named by Card 154 |
-| Reserved shared closeout surfaces | roadmap, generation/index, handoff, log, and release-index closeout surfaces |
-| Forbidden paths | Rust source/tests; earlier baselines; provider or Desktop work; dependency currentness; tag/publication/artifact/consumer mutation |
-| Approved concurrent siblings | none in Swallowtail; Desktop Card 321 may proceed independently before the dependent live gate |
-| Serial edges | dependent Desktop exact-tree acceptance follows the candidate merge; exact-SHA operator tag decision follows its accepted return |
-| Worker capability class | general release-preparation worker; automatic adequate pool; no provider credentials or tag authority |
-| Acceptance evidence | status JSON; prepare JSON/digest; baseline inventory; accepted head/merge/tree; hosted run ID; wall clock |
-| Review oracle | one immutable tree supports release content, baselines, exact-head review, hosted CI, and the later Desktop source link |
-| Stop conditions | dirty start; non-patch status; consumed prepare failure; freeze violation; review/CI tree mismatch |
-| Escalation owner | operator through Chatterbox; queue coordinator for mechanical blockers |
-
-### Card 122 Manifest
-
-| Field | Card 122 |
-| --- | --- |
-| Readiness | ready on card 124's merge; the coordinator dispatches on that notice without a Chatterbox round trip; prepare authorization under the operator's standing grant |
-| Prerequisites | cards 121 and 124 merged; clean canonical `main`; freeze in force |
-| Completion conditions | `docs/releases/0.4.4.md` and index entry from cards 119-121 plus any merged additive tranches; patch class from the semantic API diff; read-only status inferring `0.4.4`; lock in sync; exactly one `effigy --json release prepare --yes --check-gates --version 0.4.4` on the cheap-gate table; the qualifying hosted `workflow_dispatch` run id recorded in the release note; candidate PR; review and hosted run in parallel; merge on both green; candidate SHA and run id reported to Chatterbox immediately; wall clock from dispatch to merge recorded in the Result |
-| Owned mutable paths | as card 106 with `0.4.4` for `0.4.3`; no gate-script version edits (card 110 derives them) |
-| Reserved shared closeout surfaces | the usual roadmap, index, generation, log, and release-index surfaces |
-| Forbidden paths | every `crates/**` source and test path; every `0.4.3` and earlier baseline; contracts; guides other than the release note; claims |
-| Approved concurrent siblings | none; freeze |
-| Serial edges | the operator's tag decision follows; card 123 follows the tag |
-| Worker capability class | release-preparation worker with the playbook; no credentials; no tag authority |
-| Acceptance evidence | status output; prepare JSON; the `0.4.4` baseline files; PR head, merged SHA, qualifying run id; wall clock |
-| Review oracle | one exact tree supports every release statement; the qualifying run is `workflow_dispatch` at the SHA to tag or an identical tree |
-| Stop conditions | a cheap gate fails on a real defect; status infers anything but `0.4.4`; no qualifying run can be obtained |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 123 Manifest
-
-| Field | Card 123 |
-| --- | --- |
-| Readiness | ready when the operator-authorized `v0.4.4` tag exists |
-| Prerequisites | the tag; peeled SHA verified by Chatterbox |
-| Completion conditions | `effigy package:source-consumer` passes from a clean detached checkout of the tag; capsule (tag, object, peeled SHA, message, run id) relayed to the Acowtancy coordinator; release note status flipped to tagged; Contract 036 identity updated; the Desktop real-Send result with card 119's observer evidence attached when it arrives |
-| Owned mutable paths | this card's `## Result`; release note status line; Contract 036 tagged identity lines; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
-| Forbidden paths | every crate; every baseline; the candidate |
-| Approved concurrent siblings | held feature PRs resume merging after the tag |
-| Serial edges | none |
-| Worker capability class | release-evidence worker; the Desktop side runs under the Acowtancy coordinator |
-| Acceptance evidence | source-consumer output at the tag; the Desktop capsule |
-| Review oracle | both proofs use the exact tagged SHA |
-| Stop conditions | the Desktop turn fails on a further route defect (typed code plus observer evidence; next patch, never a retag) |
-| Escalation owner | operator via Chatterbox; Acowtancy coordinator for the Desktop run |
+Card 122 was ready on card 124's merge under the operator's standing grant.
+Card 123's tag-gated source-consumer and Desktop repin evidence carries to its
+successor after an authorized tag.
 
 ## Acceptance
 

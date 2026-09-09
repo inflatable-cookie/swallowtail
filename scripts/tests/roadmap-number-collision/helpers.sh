@@ -10,7 +10,7 @@ collision_git() {
     "$@"
 }
 
-collision_write_card() {
+collision_write_task() {
   local collision_cwd=$1
   local collision_file=$2
   local collision_body=$3
@@ -20,11 +20,11 @@ collision_write_card() {
 
 collision_seed_work() {
   local collision_cwd=$1
-  mkdir -p "$collision_cwd/docs/roadmaps/g04/batch-cards"
+  mkdir -p "$collision_cwd/docs/roadmaps/g04"
   collision_git "$collision_cwd" init -q -b main
-  collision_write_card \
+  collision_write_task \
     "$collision_cwd" \
-    docs/roadmaps/g04/batch-cards/075-ollama-0-32-15-claim.md \
+    docs/roadmaps/g04/075-ollama-0-32-15-claim.md \
     '# 075 Ollama'
   collision_git "$collision_cwd" add docs
   collision_git "$collision_cwd" commit -q -m '075 on planning base'

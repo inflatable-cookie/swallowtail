@@ -33,11 +33,6 @@ One family only. No provider prompt, login, install, host update, live
 session, watcher authorization widening, skill, papercut, Research 213,
 release, or feature-specific exact-set widening.
 
-## Batch Cards
-
-- [037 Claude Code 2.1.252 Identity](batch-cards/037-claude-code-2-1-252-identity.md) — completed
-- [038 Claude Code 2.1.252 Claim](batch-cards/038-claude-code-2-1-252-claim.md) — completed
-
 ## Acceptance
 
 - [x] exact official identity is reproducible

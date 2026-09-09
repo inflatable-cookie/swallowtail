@@ -197,7 +197,7 @@ stable `1.0.13` are visible newer observations. PR 182 is closed/unmerged;
 its Antigravity branch/evidence is parked post-release and is not merged
 qualification. Codex remains closed at qualified `0.152.1`; watcher stays exact
 `2.1.251`; Gemini remains deferred. The checkpoint changes no claim and opens
-no roadmap or batch card.
+no roadmap task.
 
 ### Post-v0.4.0 Queue
 
@@ -224,7 +224,7 @@ next currentness step is the all-route checkpoint below.
 ### Checkpoint Manifest: Research 284
 
 Promoted planning commit: the `main` commit that introduces this section.
-This is a standing-lane checkpoint, not a numbered card; it opens no
+This is a standing-lane checkpoint, not a numbered task; it opens no
 roadmap and changes no claim.
 
 | Field | Research 284 checkpoint |

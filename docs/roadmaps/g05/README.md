@@ -49,6 +49,8 @@ enforcement.
 
 ## Planned Next Roadmaps
 
+- [g05.038 Flattened Task Switchover](./038-flattened-task-switchover.md) — ready; one-time documentation and checker migration to the installed generation-plus-task model
+
 - [g05.037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 136 qualified `surface-19` through `1.18.29`
 - [g05.036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; Card 154 merged candidate `49c9e3b2`; dependent exact-tree Desktop acceptance remains
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
@@ -427,6 +429,8 @@ useful portable route rather than an approximation hidden behind the SDK
 identity.
 
 ## Milestones
+
+- [038 Flattened Task Switchover](./038-flattened-task-switchover.md) — ready; one-time planning hierarchy migration
 
 - [037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 136 qualified `surface-19` through `1.18.29`
 - [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; Card 154 merged candidate `49c9e3b2`; dependent exact-tree Desktop acceptance remains

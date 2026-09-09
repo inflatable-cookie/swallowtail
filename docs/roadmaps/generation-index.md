@@ -144,9 +144,10 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 37 roadmaps: 28 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and ready milestones at 029, 031, 034, 036. Milestone 035 is
-active. Its shared registered-tool kernel and route bindings are delivered;
+g05 has 38 roadmaps: 28 completed milestones, honest evidence stops at 002,
+003, 007, and 011, and ready milestones at 029, 031, 034, 036, 038.
+Milestone 035 is active. Its shared registered-tool kernel and route bindings
+are delivered;
 Card 153's provider-free Claude SDK exact-tuple qualification is complete at
 merged head `b35e4c38`; Card 154 is complete with candidate merge
 `49c9e3b2`; Card 130 remains a planned producer seam. The dependent Desktop
@@ -418,6 +419,7 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Validate the dependent Desktop exact-tree acceptance gate against Card 154's
-candidate merge `49c9e3b2`; this index records generation status, and the
-canonical actionable pointer stays in the front door.
+Adopt Northstar's generation-plus-task model once through
+[g05.038](g05/038-flattened-task-switchover.md). The separate Desktop exact-tree
+acceptance remains bound to candidate merge `49c9e3b2`; no release authority
+follows from the migration.

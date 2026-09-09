@@ -15,11 +15,11 @@ shape.
 
 ## Next Task
 
-Card 154 is complete and merged as candidate `49c9e3b2`. The approved
-dependent Desktop gate runs against exact merge SHA
-`49c9e3b291609c9ebf5b35a284c08302f3b8d5e3`; no tag follows without a separate
-exact-SHA operator decision, and no new Swallowtail implementation task is
-named here.
+[g05.038 Flattened Task Switchover](g05/038-flattened-task-switchover.md) is
+ready under the operator's one-time migration authority. It changes planning,
+instruction, template, and local-checker surfaces only. The independent Desktop
+exact-tree gate continues against candidate merge `49c9e3b2`; no tag follows
+without a separate exact-SHA operator decision.
 
 ## Standing Lanes
 

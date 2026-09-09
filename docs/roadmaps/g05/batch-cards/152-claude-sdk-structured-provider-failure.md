@@ -1,6 +1,6 @@
 # 152 Claude SDK Structured Provider Failure
 
-Status: ready; provider-free production repair
+Status: complete; PR 297 merged at `24f88fb8a1328aa0e85b9c91989962ba32b9c590` (reviewed head `5d85cc93fd08cedbf8089ad171e35c88d3691ad2`)
 Owner: Claude Agent SDK adapter worker
 Created: 2026-09-09
 Milestone: `../036-v0-4-4-release-readiness.md`
@@ -48,13 +48,13 @@ release, or unrelated dependency changes.
 
 ## Acceptance Criteria
 
-- [ ] numeric API status, bounded terminal reason, and fixed rate state survive end to end
-- [ ] `402` produces a billing/entitlement-specific safe diagnostic and classification
-- [ ] `400` and `429` remain explicitly ambiguous and never claim quota exhaustion
-- [ ] malformed, absent, unknown, idle, and cross-turn cases fail closed or remain generic
-- [ ] raw provider text and sensitive fields never cross the sidecar wire
-- [ ] no result authorizes automatic retry or fallback
-- [ ] existing success/generic failure and MCP behavior remain intact
+- [x] numeric API status, bounded terminal reason, and fixed rate state survive end to end
+- [x] `402` produces a billing/entitlement-specific safe diagnostic and classification
+- [x] `400` and `429` remain explicitly ambiguous and never claim quota exhaustion
+- [x] malformed, absent, unknown, idle, and cross-turn cases fail closed or remain generic
+- [x] raw provider text and sensitive fields never cross the sidecar wire
+- [x] no result authorizes automatic retry or fallback
+- [x] existing success/generic failure and MCP behavior remain intact
 
 ## Validation
 
@@ -107,5 +107,14 @@ package:verify-affected swallowtail-adapter-claude-agent` passed; `effigy
 qa:docs` passed; `git diff --check` clean. New fixtures: wire decode,
 classification, malformed-value, redaction, turn-reset, and unknown-status
 cases in `wire_tests.rs`, driver `framing.rs`, sidecar-asset tests with five
-new fake-SDK scenarios, and `events.jsonl`. Exact-head independent review
-pending; no provider run.
+new fake-SDK scenarios, and `events.jsonl`. Exact-head independent re-review
+was accepted at `5d85cc93fd08cedbf8089ad171e35c88d3691ad2` in review comment
+`5598151018`; PR 297 merged into `main` as
+`24f88fb8a1328aa0e85b9c91989962ba32b9c590`. Hosted PR checks passed; the
+configured Pinned MSRV floor tests job was skipped. No provider run occurred,
+and no qualification, release, tag, or Desktop diagnostic followed.
+
+The known pre-existing
+`readiness::wrapper_death_preserves_partial_capture_journal` flake remains
+deferred and recorded in `PAPERCUTS.md`; it reproduced on the clean base and
+was not introduced by Card 152.

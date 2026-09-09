@@ -191,7 +191,9 @@ and the provider returned a typed failure. The immutable capsule proves
 their values. The operator authorized Card 152's provider-free structured-
 failure projection repair and one later zero-credit diagnostic if the balance
 has not been topped up. Neither task qualifies a Contract 061 cell or crosses
-the release gate.
+the release gate. Card 152 then completed through PR 297, with the structured
+projection and safe classification accepted at exact-head review and merged
+into `main` as `24f88fb8`; no provider run or later Desktop diagnostic occurred.
 
 ### Candidate Source Disposition — 2026-09-08
 

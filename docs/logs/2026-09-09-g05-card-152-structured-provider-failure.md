@@ -45,5 +45,25 @@ provider-free. Research 300 proved Card 316's capsule carried present
   retries; caught by `first_turn_rejection_...` tests, guard restored,
   deletion audit across all touched files clean.
 
-Exact-head independent review and merge pending; no Desktop one-shot follows
-until this merge supplies its SHA.
+Exact-head independent re-review was accepted at
+`5d85cc93fd08cedbf8089ad171e35c88d3691ad2` in review comment `5598151018`,
+then PR 297 merged into `main` as
+`24f88fb8a1328aa0e85b9c91989962ba32b9c590`. Hosted PR checks passed; the
+configured Pinned MSRV floor tests job was skipped. No provider run occurred,
+and no qualification, release, tag, or Desktop diagnostic followed.
+
+## Closeout
+
+The integration checkout was clean on `main` and synchronized with
+`origin/main` at the merge commit before this closeout.
+
+Final provider-free evidence remained truthful: `effigy
+validate:focused swallowtail-adapter-claude-agent` passed with 498 tests;
+`effigy package:verify-affected swallowtail-adapter-claude-agent` passed;
+`effigy qa:docs` passed; and `git diff --check` was clean.
+
+The known pre-existing
+`readiness::wrapper_death_preserves_partial_capture_journal` flake remains
+deferred and recorded in `PAPERCUTS.md`; it reproduced on the clean base and
+was not introduced by Card 152. The sole Next Task pointer now records that
+planning direction is needed; no new direction was introduced here.

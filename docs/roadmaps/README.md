@@ -15,12 +15,11 @@ shape.
 
 ## Next Task
 
-[Card 152](g05/batch-cards/152-claude-sdk-structured-provider-failure.md)
-is ready and operator-authorized. Card 151 reached a real MCP-authenticated
-first turn, but the sidecar discarded the values of present structured API
-status and terminal-reason fields. Card 152 repairs that projection
-provider-free and classifies only unambiguous outcomes. No provider call,
-qualification, candidate, tag, or release follows.
+[Card 152](g05/batch-cards/152-claude-sdk-structured-provider-failure.md) is
+complete: PR 297 merged at `24f88fb8a1328aa0e85b9c91989962ba32b9c590` after
+independent exact-head review at `5d85cc93fd08cedbf8089ad171e35c88d3691ad2`.
+Planning direction is needed for the next task; this closeout promotes no new
+card or product direction.
 
 ## Standing Lanes
 

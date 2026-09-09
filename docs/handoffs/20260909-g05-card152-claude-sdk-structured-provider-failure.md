@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 handoff: single-file-path-only
-status: ready-to-launch
+status: merged
 owner: Tom
 created: 2026-09-09
 updated: 2026-09-09
@@ -70,3 +70,20 @@ non-authority, and unchanged MCP/success behavior. Return accepted head, review
 comment, merge, exact structured mappings, validation counts, and canonical
 closeout. No provider runs. The later Desktop one-shot is separate queue work
 under the same operator authorization after this merge supplies an exact SHA.
+
+## Handoff Closeout
+
+This handoff is merged. PR 297 was independently re-reviewed and accepted at
+exact head `5d85cc93fd08cedbf8089ad171e35c88d3691ad2` in review comment
+`5598151018`, then published on `main` as
+`24f88fb8a1328aa0e85b9c91989962ba32b9c590`. The final provider-free evidence
+passed: focused validation reported 498 tests, affected-package verification
+passed, `effigy qa:docs` passed, and `git diff --check` was clean. Hosted PR
+checks passed with the configured Pinned MSRV floor tests job skipped.
+
+No provider run or later Desktop diagnostic occurred; no qualification,
+release, or tag authority followed. The known pre-existing
+`readiness::wrapper_death_preserves_partial_capture_journal` flake remains
+deferred in `PAPERCUTS.md` and was not introduced by this card. The active
+Next Task pointer now records that planning direction is needed; no new
+planning direction was introduced here.

@@ -2,7 +2,7 @@
 
 ## Ready
 
-- [152-claude-sdk-structured-provider-failure.md](./152-claude-sdk-structured-provider-failure.md) — ready; provider-free projection of numeric API status, bounded terminal reason, and fixed rate state; no provider work
+None.
 
 ## Planned
 
@@ -22,6 +22,8 @@
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 
 ## Completed
+
+- [152-claude-sdk-structured-provider-failure.md](./152-claude-sdk-structured-provider-failure.md) — complete; PR 297 merged at `24f88fb8`; reviewed head `5d85cc93`; provider-free structured failure projection accepted; no provider run
 
 - [151-claude-sdk-repaired-mcp-zero-credit-first-turn.md](./151-claude-sdk-repaired-mcp-zero-credit-first-turn.md) — complete; Desktop PR 179 merged at `d7d0fb12`; MCP-authenticated first turn returned typed provider failure; structured status values were discarded and Card 152 owns repair
 

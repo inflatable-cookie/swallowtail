@@ -6,7 +6,7 @@ mutations.
 
 ## Current Release
 
-- [Swallowtail 0.4.4](0.4.4.md) — exact candidate `49c9e3b2`; annotated tag creation and push authorized after exact-SHA CI run `34350208617` passed all 11 jobs; execution pending; no publication authority
+- [Swallowtail 0.4.4](0.4.4.md) — tagged `v0.4.4` at `49c9e3b2`; tag object `41da6c1a`; tagged 2026-09-09; source-only additive patch over immutable `v0.4.3`; not published
 
 - [Swallowtail 0.4.3](0.4.3.md) — tagged at `cbd4ddc8`; tag object
   `d8300430`; source-only additive patch over immutable `v0.4.2`; not published

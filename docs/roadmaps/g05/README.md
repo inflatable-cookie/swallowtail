@@ -38,7 +38,7 @@ enforcement.
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | g05.024 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | g05.025 |
 | Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | ready; cards 080-088 delivered (folded g05.038); remaining scope dispatches from the task's serial edges | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | g05.029 |
-| Ship the first-turn model rejection evidence to Bovine Desktop as patch `v0.4.4` on one exact candidate tree. | ready for tag execution; exact-SHA tag creation and push authorized after CI run `34350208617` passed all 11 jobs; candidate `49c9e3b2`; Desktop Card 323 accepted; no publication authority | Contract 036 hosted delegation; Card 154 closeout; Desktop Card 323 closeout; operator tag authorization 2026-09-09 | g05.036 |
+| Ship the first-turn model rejection evidence to Bovine Desktop as patch `v0.4.4` on one exact candidate tree. | complete; `v0.4.4` tagged at `49c9e3b2` 2026-09-09 (tag object `41da6c1a`); Desktop Card 323 accepted; no publication authority | Contract 036 hosted delegation; Card 154 closeout; Desktop Card 323 closeout; operator tag authorization 2026-09-09 | g05.036 |
 | Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | ready; cards 109-113 complete; acceptance awaits the lane wall-clock record | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | g05.034 |
 | Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | planned; shared kernel and route bindings delivered; card-153 exact Claude SDK tuple qualification merged provider-free; g05.041 remains a planned producer seam | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-063; Research 288, 295, 301 | g05.035 |
 | Ship the Claude SDK termination cause (card 105) as patch `v0.4.3` on the compressed lane, tag request to the operator as soon as gates are green, Desktop real Send on the tag as consumer evidence. | complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy; Desktop follow-up remains Acowtancy-owned | Contract 036; the 2026-09-06 Desktop real-Send evidence | g05.033 |
@@ -52,7 +52,6 @@ enforcement.
 Only ready and planned tasks are actionable. Completed and stopped tasks live
 in [## Tasks](#tasks) below.
 
-- [g05.036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; exact-SHA annotated tag and push authorized after green CI run `34350208617`; candidate `49c9e3b2`; Desktop Card 323 accepted; no publication authority
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
 - [g05.034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 complete; acceptance awaits the lane wall-clock record
 - [g05.031 CI Latency](./031-ci-latency.md) — ready; card-095 gate work complete; operator workflow authority granted
@@ -409,7 +408,6 @@ identity.
 
 ### Ready
 
-- [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; exact-SHA annotated tag and push authorized after green CI run `34350208617`; candidate `49c9e3b2`; Desktop Card 323 accepted; no publication authority
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 complete; acceptance awaits the lane wall-clock record
 - [031 CI Latency](./031-ci-latency.md) — ready; card-095 gate work complete; operator workflow authority granted
 - [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; cards 080-088 delivered (folded g05.038); qualified-ranges widening held at the stopped 087 gate
@@ -431,6 +429,7 @@ identity.
 
 ### Completed
 
+- [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — complete; `v0.4.4` tagged at `49c9e3b2` 2026-09-09 (tag object `41da6c1a`); Desktop Card 323 accepted all 18 ledger cells
 - [043 Roadmap Backlog Retirement](./043-roadmap-backlog-retirement.md) — complete; PR #302 merged at `8ae707d5`; nine-item disposition applied and the duplicate intake surface removed with no product or tag authority
 - [038 Flattened Task Switchover](./038-flattened-task-switchover.md) — complete; PR #301 merged at `8dc1f161`; 42-task generation-plus-task migration and Card 323 reconciliation closed
 - [037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 136 qualified `surface-19` through `1.18.29`

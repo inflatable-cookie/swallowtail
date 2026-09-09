@@ -10,6 +10,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ### Harness Skills And Watchers
 
+- [300 Claude SDK Structured Provider Failure Evidence](./300-claude-sdk-structured-provider-failure-evidence.md) — complete; Card 316 proved numeric API status and terminal reason are present but discarded; Contract 019 and Card 152 own safe projection and exact ambiguity
 - [299 Claude SDK Live MCP Startup Failure](./299-claude-sdk-live-mcp-startup-failure.md) — complete; Card 150 reproduced and repaired the mutable courier race through Desktop PR 178; Card 151 owns the separately authorized zero-credit first-turn rerun
 - [298 Claude SDK Zero-Credit Degraded Cleanup](./298-claude-sdk-zero-credit-degraded-cleanup.md) — complete; open succeeded while credit was zero, immediate close matched the Contract 019-qualified degraded macOS posture, and Desktop's clean-only oracle is promoted as card 148
 - [297 Claude SDK Credit Diagnostic MCP-Status Rejection](./297-claude-sdk-credit-diagnostic-mcp-status-rejection.md) — complete; one exhausted-credit diagnostic open stopped before provider readiness at bounded `mcp_status_invalid`; no quota inference; promoted as card 146

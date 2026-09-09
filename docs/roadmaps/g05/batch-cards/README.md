@@ -2,7 +2,7 @@
 
 ## Ready
 
-- [151-claude-sdk-repaired-mcp-zero-credit-first-turn.md](./151-claude-sdk-repaired-mcp-zero-credit-first-turn.md) — ready; one authorized registered-MCP open and first prompt while balance remains zero; no retry
+- [152-claude-sdk-structured-provider-failure.md](./152-claude-sdk-structured-provider-failure.md) — ready; provider-free projection of numeric API status, bounded terminal reason, and fixed rate state; no provider work
 
 ## Planned
 
@@ -22,6 +22,8 @@
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 
 ## Completed
+
+- [151-claude-sdk-repaired-mcp-zero-credit-first-turn.md](./151-claude-sdk-repaired-mcp-zero-credit-first-turn.md) — complete; Desktop PR 179 merged at `d7d0fb12`; MCP-authenticated first turn returned typed provider failure; structured status values were discarded and Card 152 owns repair
 
 - [150-claude-sdk-mcp-courier-startup-determinism.md](./150-claude-sdk-mcp-courier-startup-determinism.md) — complete; Desktop PR 178 merged at `dfc9c6a6`; mutable courier race reproduced and repaired; 24/24 churned opens pass with MCP retained
 

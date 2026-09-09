@@ -247,6 +247,15 @@ Typed SDK events are still provider events. The adapter must:
   stable diagnostics
 - join all SDK and projection work before reporting clean close
 
+When an embedded harness result exposes a numeric provider HTTP status, a
+bounded terminal reason, or a fixed-enum quota/rate state, the adapter may
+project those exact values without forwarding the error body. Classification
+must follow the provider's documented ambiguity rather than a convenient
+label. For the Claude Agent SDK route, `402` is billing-specific; `400` is
+invalid-request-or-spend-limit; `429` is rate-or-spend-limit. Neither mixed
+status may become `QuotaExhausted` without a separate structured cause. Raw
+result/error prose is never parsed for policy, classification, or retry.
+
 ## Service And Catalogue Separation
 
 A cloud SDK may publish separate clients for runtime inference, model

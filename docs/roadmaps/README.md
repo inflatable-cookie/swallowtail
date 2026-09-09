@@ -15,12 +15,12 @@ shape.
 
 ## Next Task
 
-[Card 151](g05/batch-cards/151-claude-sdk-repaired-mcp-zero-credit-first-turn.md)
-is ready and operator-authorized. Card 150 proved and repaired Card 149's
-mutable courier race through Desktop PR 178; 24/24 churned registered opens now
-pass with MCP retained. Desktop may run exactly one zero-credit open and first
-prompt through that repaired path. No retry, top-up, qualification, candidate,
-tag, or release follows.
+[Card 152](g05/batch-cards/152-claude-sdk-structured-provider-failure.md)
+is ready and operator-authorized. Card 151 reached a real MCP-authenticated
+first turn, but the sidecar discarded the values of present structured API
+status and terminal-reason fields. Card 152 repairs that projection
+provider-free and classifies only unambiguous outcomes. No provider call,
+qualification, candidate, tag, or release follows.
 
 ## Standing Lanes
 

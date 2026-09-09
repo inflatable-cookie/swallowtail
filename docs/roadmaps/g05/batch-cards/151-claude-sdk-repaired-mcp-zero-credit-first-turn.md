@@ -1,6 +1,6 @@
 # 151 Claude SDK Repaired-MCP Zero-Credit First Turn
 
-Status: ready; operator-authorized one-shot Desktop live evidence
+Status: complete; Desktop PR 179 merged at `d7d0fb12`
 Owner: Desktop live-evidence harness owner
 Created: 2026-09-09
 Milestone: `../036-v0-4-4-release-readiness.md`
@@ -79,4 +79,17 @@ No. Top-up waits for this capsule to merge and return to Chatterbox.
 
 ## Result
 
-Pending.
+Desktop Card 316 reached provider readiness with MCP connected through the
+immutable courier, submitted exactly one prompt, and ended with typed
+`swallowtail.claude-agent.sdk.provider_failed`. The result exposed
+`api_error_status` and `terminal_reason` as present fields, but the current
+sidecar retained presence only. Zero tools, callbacks, controls, retries, or
+reconnects occurred; cleanup matched the route-qualified degraded macOS
+posture. Capsule SHA-256:
+`d16b7f8d86513633704a82a6901746dba0cf8dd57d36a5948f1f43e007aa4c28`.
+
+PR 179 accepted head `b129d3bbb0170aaed6e34071acf2a537234f45c8`
+merged at `d7d0fb1288f325869d2f3596d646d13fa1936188` after independent
+review comment `5596986943`; Desktop canonical closeout is
+`6a9ba2c5fc02ee3f1613dada2b9a47ae57b3deb4`. Both Contract 061 cells remain
+unqualified. Research 300 and Card 152 own the lost structured failure facts.

@@ -185,6 +185,14 @@ confirmed Card 151 may now run exactly one zero-credit open and first prompt
 through the repaired path. No retry, top-up, qualification, candidate, tag, or
 release follows from that diagnostic.
 
+Card 151 completed through Desktop PR 179: MCP authenticated, one prompt ran,
+and the provider returned a typed failure. The immutable capsule proves
+`api_error_status` and `terminal_reason` were present, but the sidecar discarded
+their values. The operator authorized Card 152's provider-free structured-
+failure projection repair and one later zero-credit diagnostic if the balance
+has not been topped up. Neither task qualifies a Contract 061 cell or crosses
+the release gate.
+
 ### Candidate Source Disposition — 2026-09-08
 
 The prepared candidate `0673541d` is PARKED, not abandoned and not current.

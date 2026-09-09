@@ -2,6 +2,8 @@
 
 ## Ready
 
+- [154-v0-4-4-final-candidate-preparation.md](./154-v0-4-4-final-candidate-preparation.md) — ready; one fresh candidate tree, exact-head review and hosted CI; stops before tag
+
 ## Planned
 
 - [134-registered-tool-adoption-remaining-acp-routes.md](./134-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub carrying the client_mcp_servers gap for the six remaining ACP routes; no dispatch authorization

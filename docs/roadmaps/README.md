@@ -15,8 +15,10 @@ shape.
 
 ## Next Task
 
-Card 153 is complete and merged. Planning direction is needed before another
-implementation task is named; this closeout introduces no new direction.
+[Card 154](g05/batch-cards/154-v0-4-4-final-candidate-preparation.md)
+prepares the one final `v0.4.4` candidate tree. The dependent Desktop gate runs
+against its exact merge SHA; no tag follows without a separate exact-SHA
+operator decision.
 
 ## Standing Lanes
 

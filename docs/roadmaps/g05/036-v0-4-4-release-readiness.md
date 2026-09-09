@@ -1,9 +1,9 @@
 # g05.036 v0.4.4 Release Readiness
 
-Status: ready; candidate `0673541d` prepared and held; tag withheld by operator scope change 2026-09-07; card 123 does not run until the Desktop capability matrix is covered
+Status: ready; Card 154 prepares the final candidate before exact-tree Desktop acceptance; old candidate `0673541d` remains parked
 Owner: Tom
 Created: 2026-09-07
-Updated: 2026-09-07
+Updated: 2026-09-09
 Depends on: Contract 036 with the Hosted Gate Delegation clause; immutable `v0.4.3` at `cbd4ddc8`; cards 119, 120, 121; the release playbook (card 109)
 Vision tags: source release, consumer proof, Claude route
 
@@ -212,16 +212,27 @@ a fresh candidate at a newer SHA under card 122's successor rather than
 tagging this one. Nothing is tagged from a parked candidate. Card 122 itself
 is complete; its closeout thread has no remaining work.
 
+### Final Exact-Tree Qualification — 2026-09-09
+
+Card 153 completed the exact Claude SDK qualification, but the accepted live
+capsules do not transfer to a new candidate: Grok used Swallowtail `04e9b2dd`,
+Claude used `24f88fb8`, and current `main` has a third, materially different
+tree. The operator authorized one consolidated final-candidate qualification
+batch. Card 154 therefore freezes and merges the candidate first. The linked
+Desktop gate then reruns the bounded release acceptance against that exact
+merge SHA. Candidate preparation, Desktop provider execution, and tag creation
+remain distinct queue and operator boundaries. No tag is inferred.
+
 ## Runway
 
-1. Cards 119 (merged `cfb0b106`), 120 (merged `4a27676d`), 121, and 124 merge on exact-head review.
-2. Card 122 prepares the `0.4.4` candidate per `docs/guides/release-playbook.md`.
-3. Chatterbox presents the exact-SHA tag request the moment the candidate
-   SHA has a qualifying green run; the operator authorizes; the coordinator
-   tags and pushes.
-4. Card 123 runs the source consumer on the tag and relays the capsule to
-   Acowtancy for the Desktop repin and one real Send with the observer
-   registered; the result attaches as consumer evidence and holds nothing.
+1. Card 154 prepares and merges one final candidate per the release playbook,
+   with exact-tree review and qualifying hosted CI.
+2. The dependent Desktop task links that exact merge SHA and runs the bounded
+   final release-matrix acceptance. A failure stops without retry or tag.
+3. Chatterbox presents the exact-SHA tag request only when both gates bind to
+   the same candidate tree. The operator then decides whether to tag and push.
+4. A successor to cancelled Card 123 runs source-consumer and Desktop repin
+   evidence after the tag.
 
 ## Release Boundary
 
@@ -231,18 +242,37 @@ mutation.
 
 ## Feature Freeze
 
-From card 124's merge until card 122's candidate merges, no other PR merges
-to `main`. Anything accepted and green before card 121 merges may go in
-first and becomes candidate content.
+From Card 154's planning promotion until the operator's tag decision, no other
+Swallowtail implementation PR merges to `main`. Queue closeout documentation
+may advance the branch, but the candidate merge SHA remains the release target.
 
 ## Batch Cards
 
-- [122 v0.4.4 Candidate Preparation](batch-cards/122-v0-4-4-candidate-preparation.md) — planned; ready on card 124's merge
-- [123 v0.4.4 Consumer Proof And Tag Capsule](batch-cards/123-v0-4-4-consumer-proof-and-tag-capsule.md) — planned; ready on the tag
+- [154 v0.4.4 Final Candidate Preparation](batch-cards/154-v0-4-4-final-candidate-preparation.md) — ready; operator authorized 2026-09-09
+- [122 v0.4.4 Candidate Preparation](batch-cards/122-v0-4-4-candidate-preparation.md) — complete; parked candidate `0673541d`
+- [123 v0.4.4 Consumer Proof And Tag Capsule](batch-cards/123-v0-4-4-consumer-proof-and-tag-capsule.md) — cancelled after the scope change; successor follows an authorized tag
 
 ## Dispatch Manifest
 
 Promoted planning commit: the `main` commit that introduces this file.
+
+### Card 154 Manifest
+
+| Field | Card 154 |
+| --- | --- |
+| Readiness | ready; Card 153 complete; clean pushed `main`; operator authorized the consolidated final-candidate qualification batch on 2026-09-09 |
+| Prerequisites | no active Swallowtail implementation worker; release freeze in force |
+| Completion conditions | current release note and all three `0.4.4` baselines; patch status; exactly one new prepare transaction; candidate PR; exact-head independent review; qualifying hosted CI; merge SHA/tree and run ID returned; no tag |
+| Owned mutable paths | the exact release/version, README, changelog, `0.4.4` baseline, release-note, and card Result surfaces named by Card 154 |
+| Reserved shared closeout surfaces | roadmap, generation/index, handoff, log, and release-index closeout surfaces |
+| Forbidden paths | Rust source/tests; earlier baselines; provider or Desktop work; dependency currentness; tag/publication/artifact/consumer mutation |
+| Approved concurrent siblings | none in Swallowtail; Desktop Card 321 may proceed independently before the dependent live gate |
+| Serial edges | dependent Desktop exact-tree acceptance follows the candidate merge; exact-SHA operator tag decision follows its accepted return |
+| Worker capability class | general release-preparation worker; automatic adequate pool; no provider credentials or tag authority |
+| Acceptance evidence | status JSON; prepare JSON/digest; baseline inventory; accepted head/merge/tree; hosted run ID; wall clock |
+| Review oracle | one immutable tree supports release content, baselines, exact-head review, hosted CI, and the later Desktop source link |
+| Stop conditions | dirty start; non-patch status; consumed prepare failure; freeze violation; review/CI tree mismatch |
+| Escalation owner | operator through Chatterbox; queue coordinator for mechanical blockers |
 
 ### Card 122 Manifest
 

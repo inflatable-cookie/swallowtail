@@ -148,8 +148,9 @@ g05 has 37 roadmaps: 28 completed milestones, honest evidence stops at 002,
 003, 007, and 011, and ready milestones at 029, 031, 034, 036. Milestone 035 is
 active. Its shared registered-tool kernel and route bindings are delivered;
 Card 153's provider-free Claude SDK exact-tuple qualification is complete at
-merged head `b35e4c38`; Card 130 remains a planned producer seam. No provider
-or release authority followed Card 153.
+merged head `b35e4c38`; Card 130 remains a planned producer seam. The operator
+authorized Card 154's consolidated final-candidate qualification batch on
+2026-09-09. No tag authority follows.
 Milestone 034 makes the release lane short and dependable and CI fast (cards
 109-113). Milestone 033 completed the `v0.4.3` patch release; Card107's source
 consumer passed at `cbd4ddc8` and its tag capsule was relayed to Acowtancy.
@@ -417,7 +418,6 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Reassess planning direction after Card 153's merge; the [roadmaps front
-door](README.md#next-task) records that no new implementation task is named.
-This index records generation status; the canonical actionable pointer stays in
-the front door.
+Implement Card 154 to prepare the fresh `v0.4.4` candidate and return its exact
+merge tree for the dependent Desktop acceptance gate. This index records
+generation status; the canonical actionable pointer stays in the front door.

@@ -1,6 +1,6 @@
 # g05.034 Release Lane Simplification
 
-Status: ready; simplification scope compiled and delivered (cards 109-113 complete through PRs 247, 248, 250, 252, 253); acceptance awaits the v0.4.4 or v0.5.0 lane wall-clock record.
+Status: ready; v0.4.4 acceptance audit recorded as an honest evidence stop (coordinator closeout)
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-09
@@ -60,8 +60,8 @@ target.
 
 ## Acceptance
 
-The `v0.4.4` or `v0.5.0` lane, whichever comes first, runs on the new shape
-and records its wall clock against the target.
+The `v0.4.4` lane ran on the new shape and recorded its wall clock against
+the target. It missed the all-green outcome. See Result.
 
 ## Acceptance Audit Dispatch
 
@@ -91,3 +91,24 @@ same candidate and failed its MSRV-floor test. PR run `34348370780` completed
 in 2m32s and therefore meets the under-three-minute PR target. The audit must
 measure the remaining boundaries exactly or as explicit bounds, then close
 this task as an honest evidence stop unless every original target is proved.
+
+## Result
+
+Honest evidence stop. Log:
+`docs/logs/2026-09-09-g05-034-release-lane-acceptance-audit.md`.
+
+| Clause | Verdict |
+| --- | --- |
+| Under 30 minutes from gates green on `main` to tag request presented | fail. Conservative start `2026-09-09T12:21:26Z` (push-to-`main` run `34350208617` 11/11 green at SHA `49c9e3b2`). Tag-request lower bound `14:40:49Z` (PR #302 merge; migrations before request) = 2h 19m 23s. Desktop-only lower bound `13:39:37Z` = 1h 18m 11s. Upper bound tag-auth commit `15:46:22Z` / tag-task submit `15:47:25.593Z`. Exact Chatterbox request time unavailable; the lower bound alone fails the clause |
+| One prepare attempt | pass. One authorized prepare at `11:17:50Z`; receipt digest `04a89847e14fc351bbcfdef2b48cb1d8c90282b3ea638db48043d1e8f6ab8feb` |
+| One hosted run | fail. Workflow-dispatch `34345060452` green at `1fb5b16c`; repeated workflow-dispatch `34348374964` failed at the same SHA; push-to-`main` `34350208617` also qualifying. PR run `34348370780` is not a hosted gate |
+| PR gate under 3 minutes | pass. `34348370780` `11:58:24Z`–`12:00:56Z` = 2m 32s |
+| No rerun-to-green | not a clean pass. Green came from the first workflow-dispatch. The second same-SHA run failed Pinned MSRV floor tests (`structured_run::cancellation_and_deadline_stop_the_turn_then_join_operation_cleanup`) and was not repaired into green |
+
+The 47-minute Card 154 interval (`11:08:09.240Z` submit → `11:55:20.297Z`
+worker completion_received) is candidate handoff, not the 30-minute clock.
+
+Desktop Card 323 and g05.038/g05.043 migrations sit inside the end-to-end
+interval and are separated in the log; they are not subtracted. Coordinator
+closeout sets `Status: stopped` and reconciles reserved indexes. No repair
+task is opened here.

@@ -178,6 +178,13 @@ readiness or prompt submission. Card 150 now repairs the registered-MCP startup
 path provider-free. The credited qualification suite remains separate, and MCP
 will not be removed to bypass the failure.
 
+Card 150 completed through Desktop PR 178. The mutable Cargo target-path race
+was reproduced and repaired with an immutable content-addressed per-run courier;
+24/24 registered opens passed under churn with MCP retained. The operator
+confirmed Card 151 may now run exactly one zero-credit open and first prompt
+through the repaired path. No retry, top-up, qualification, candidate, tag, or
+release follows from that diagnostic.
+
 ### Candidate Source Disposition — 2026-09-08
 
 The prepared candidate `0673541d` is PARKED, not abandoned and not current.

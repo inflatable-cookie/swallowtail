@@ -2,7 +2,7 @@
 
 ## Ready
 
-- [150-claude-sdk-mcp-courier-startup-determinism.md](./150-claude-sdk-mcp-courier-startup-determinism.md) — ready; provider-free diagnosis and repair of Card 149's `mcp_server_failed`; live work held
+- [151-claude-sdk-repaired-mcp-zero-credit-first-turn.md](./151-claude-sdk-repaired-mcp-zero-credit-first-turn.md) — ready; one authorized registered-MCP open and first prompt while balance remains zero; no retry
 
 ## Planned
 
@@ -22,6 +22,8 @@
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 
 ## Completed
+
+- [150-claude-sdk-mcp-courier-startup-determinism.md](./150-claude-sdk-mcp-courier-startup-determinism.md) — complete; Desktop PR 178 merged at `dfc9c6a6`; mutable courier race reproduced and repaired; 24/24 churned opens pass with MCP retained
 
 - [148-claude-sdk-degraded-cleanup-oracle.md](./148-claude-sdk-degraded-cleanup-oracle.md) — complete; Desktop PR 175 merged at `f8bff5a2`; exact route-qualified degraded cleanup accepted provider-free; prior capsule immutable
 

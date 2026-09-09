@@ -1,6 +1,6 @@
 # 150 Claude SDK MCP Courier Startup Determinism
 
-Status: ready; provider-free Desktop diagnosis and repair
+Status: complete; Desktop PR 178 merged at `dfc9c6a6`
 Owner: Desktop live-evidence harness owner
 Created: 2026-09-08
 Milestone: `../035-shared-harness-capability-and-producer-boundary.md`
@@ -77,4 +77,19 @@ this provider-free repair is accepted.
 
 ## Result
 
-Pending.
+Desktop Card 315 reproduced the mutable Cargo target-path race provider-free:
+24 churned opens produced zero passes and included Card 149's exact
+`open_rejected` / `sidecar_rejected` / `mcp_server_failed` shape. Desktop now
+publishes the completed courier to a read-only, content-addressed per-run path,
+re-verifies its digest, and passes that exact path to the runner. The repaired
+path passed 24/24 churned registered opens, 28/28 focused fixtures, and 15/15
+Swallowtail mediated-stdio checks at exact source pin `0d120067`.
+
+PR 178 merged at `dfc9c6a6e6f29c56751278d39fd025febdd8d917`
+after accepted independent review comment `5593574653`; Desktop canonical
+closeout is `d2b23bbca0c0c602a188478a722a3763cd0df656`. Reproduction evidence SHA-256:
+`0e006e3a195443e52373810e873dbe3e13771e6cabbbcb2634694d7de3d442b2`.
+Passing proof SHA-256:
+`8191d143eb2620844f10c5c81651b0238a9dbf600b7f8f4099f4298359b366ec`.
+No provider ran and both Contract 061 cells remain unqualified. Card 151 owns
+the separately authorized zero-credit first-turn rerun.

@@ -15,11 +15,11 @@ shape.
 
 ## Next Task
 
-[Card 150](g05/batch-cards/150-claude-sdk-mcp-courier-startup-determinism.md)
-is ready. Card 149 stopped before provider readiness at typed
-`mcp_server_failed`; its prompt was never submitted. Desktop now diagnoses and
-repairs the registered courier startup path provider-free under concurrent
-build churn. No Claude call, top-up, MCP removal, qualification, candidate,
+[Card 151](g05/batch-cards/151-claude-sdk-repaired-mcp-zero-credit-first-turn.md)
+is ready and operator-authorized. Card 150 proved and repaired Card 149's
+mutable courier race through Desktop PR 178; 24/24 churned registered opens now
+pass with MCP retained. Desktop may run exactly one zero-credit open and first
+prompt through that repaired path. No retry, top-up, qualification, candidate,
 tag, or release follows.
 
 ## Standing Lanes

@@ -73,7 +73,7 @@ fn find<'a>(
 
 fn pi_prepared() -> swallowtail_adapter_pi::PiPreparedIntegration {
     let host_id = super::ExecutionHostId::new("pi.projection.host").unwrap();
-    let discovery = FixtureHost::version_probe("0.84.4");
+    let discovery = FixtureHost::version_probe("0.85.1");
     futures_executor::block_on(prepare_pi_rpc(
         super::preparation_input(host_id.clone()),
         super::probe(),

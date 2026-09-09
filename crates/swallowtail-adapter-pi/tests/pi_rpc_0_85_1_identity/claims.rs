@@ -34,7 +34,7 @@ fn identity_names_compatible_extension_before_the_claim_edit() {
         "unverified_newer"
     );
     assert_eq!(PI_PACKAGE_BASELINE_VERSION, "0.80.10");
-    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "0.84.4");
+    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "0.85.1");
 
     let claim = pi_rpc_claim();
     assert!(matches!(
@@ -44,7 +44,9 @@ fn identity_names_compatible_extension_before_the_claim_edit() {
                 && matched.behavior_revision().as_str()
                     == "pi.rpc.strict-lf-v0.83.0-bash-extension-hook"
     ));
-    for candidate in ["0.84.0", "0.84.1", "0.84.2", "0.84.3", "0.84.4"] {
+    for candidate in [
+        "0.84.0", "0.84.1", "0.84.2", "0.84.3", "0.84.4", "0.85.0", "0.85.1",
+    ] {
         assert!(matches!(
             claim.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Qualified(matched)
@@ -54,7 +56,7 @@ fn identity_names_compatible_extension_before_the_claim_edit() {
         ));
     }
     assert!(matches!(
-        claim.assess(&version("0.85.1")),
+        claim.assess(&version("0.85.2")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
@@ -94,8 +96,9 @@ fn unpublished_gaps_and_later_0_85_2_stay_classified() {
     );
     let claim = pi_rpc_claim();
     assert!(!claim.permits(&version("0.83.1")));
+    assert!(!claim.permits(&version("0.84.5")));
     assert!(matches!(
-        claim.assess(&version("0.85.1")),
+        claim.assess(&version("0.85.2")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(!claim.permits(&version("0.85.2-rc.1")));

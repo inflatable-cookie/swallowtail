@@ -42,7 +42,9 @@ follow-up beside g05.029 without rewriting its historical stopped audit.
   satisfy this task.
 - `acceptEdits` cannot prove pre-effect consumer mediation. The accepted
   capsule must show SDK `default` mode and an ordered Desktop decision before
-  every native tool starts or changes the file.
+  dispatch, result, or filesystem effect. A streamed tool-use proposal or
+  activity-start observation may precede that decision; visibility is not
+  execution.
 - Swallowtail performs no second provider call. One source-linked external
   capsule plus a provider-free deterministic binding is the evidence chain.
 
@@ -94,7 +96,7 @@ follow-up beside g05.029 without rewriting its historical stopped audit.
 | Desktop is the consumer | a standalone Swallowtail proof binary drives the SDK | capsule producer and call path resolve to the merged Desktop agent service |
 | One multi-turn session | two one-turn opens or a hidden reconnect | exactly one open/provider session identity and two ordered user-turn identities |
 | Both turns edit | one editing turn plus one text-only turn | one successful `Edit`, `Write`, or `MultiEdit` effect in each turn and both frozen file transitions |
-| Every call is mediated first | `acceptEdits`, inline observation after start, or one uncorrelated call | SDK `default`; for every native tool, ordered callback observation and exact Desktop allow/deny precede tool start and any filesystem effect |
+| Every call is mediated first | `acceptEdits`, dispatch/result/effect before allow, or one uncorrelated call | SDK `default`; for every native tool, exact Desktop allow/deny precedes dispatch, result, and filesystem effect; a preceding proposal/activity row is retained but not misclassified as execution |
 | Scope stays bounded | Bash, Git, web, MCP, outside path, content repository, fallback, retry, or third turn | capsule counters/events and isolated-root digests prove zero forbidden effects |
 | Evidence belongs to released source | local checkout or mismatched lock/tag | Desktop lock and capsule resolve all Swallowtail crates to `v0.4.4` commit `49c9e3b291609c9ebf5b35a284c08302f3b8d5e3` |
 | Cost and lifecycle are bounded | Opus/fallback, extra attempt, or unclosed session | requested/effective admitted `claude-sonnet-5`, one session, two turns, and accepted cleanup verdict |
@@ -111,6 +113,15 @@ follow-up beside g05.029 without rewriting its historical stopped audit.
   mutation.
 - Return to Chatterbox with the exact failed row. Any repair or second live
   attempt needs fresh operator authority.
+
+## Operator ruling — corrected ordering oracle
+
+The second Desktop capsule exposed `ordering.tool_start_before_decision` after
+the SDK streamed a tool-use proposal/activity row. Tom confirmed on 2026-09-09
+that the acceptance boundary is execution, not visibility: Desktop's decision
+must precede dispatch, result, and effect, while the proposed call may already
+be visible. He authorized one final Desktop two-turn Sonnet session under that
+oracle. Both prior capsules remain immutable, and no further retry follows.
 
 ## Evidence
 

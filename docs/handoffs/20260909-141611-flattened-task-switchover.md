@@ -9,6 +9,7 @@ base_required: pushed-main
 queue_dispatch: northstar-queue
 queue_approval: "Tom supplied the Northstar flattened-task switchover authority on 2026-09-09; it explicitly authorizes bounded documentation, planning, instruction, template, and local-checker migration."
 queue:
+  dependsOn: [d3390475-778e-4850-bcee-7b2ff91e487a]
   capability: general
   skipPRReview: false
   notifyOriginOnCloseout: true

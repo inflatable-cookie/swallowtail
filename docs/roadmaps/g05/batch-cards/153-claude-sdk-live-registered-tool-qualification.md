@@ -46,13 +46,13 @@ behavior; unrelated matrix claims; candidate preparation; tag; release.
 
 ## Acceptance Criteria
 
-- [ ] the registered-tool projection is qualified only for the exact accepted tuple
-- [ ] deterministic tests bind the claim to every Research 301 evidence identity
-- [ ] Allow proves one unchanged `{}` dispatch and correlated `{"ok":true}` result
-- [ ] Deny, cancellation, and stale/foreign controls remain zero-dispatch evidence
-- [ ] route-qualified degraded cleanup is recorded truthfully and never renamed clean
-- [ ] only `registered_tools` and `consumer_tool_exchange` become available
-- [ ] omission and every unrelated capability remain byte-identical in meaning
+- [x] the registered-tool projection is qualified only for the exact accepted tuple
+- [x] deterministic tests bind the claim to every Research 301 evidence identity
+- [x] Allow proves one unchanged `{}` dispatch and correlated `{"ok":true}` result
+- [x] Deny, cancellation, and stale/foreign controls remain zero-dispatch evidence
+- [x] route-qualified degraded cleanup is recorded truthfully and never renamed clean
+- [x] only `registered_tools` and `consumer_tool_exchange` become available
+- [x] omission and every unrelated capability remain byte-identical in meaning
 
 ## Validation
 
@@ -89,4 +89,57 @@ closeout. Candidate preparation and release remain separate operator gates.
 
 ## Result
 
-Pending.
+The route is qualified. `claude_agent_sdk_registered_tool_qualification()` now
+returns `Qualified(CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE)` with exactly the
+dimensions the accepted Card 318 capsules proved: `ExactOneShot` one-shot
+permission (one Allow dispatched `desktop/reconcile` exactly once with
+unchanged `{}` and correlated its fixed `{"ok":true}` result; one Deny
+completed with zero dispatches; the cancellation and stale/foreign controls
+dispatched zero times and ended provider-failed as pass evidence),
+`NoProgress`, and `NotCarried` selected-skill delivery. The mediation-kind row
+moved from `Unknown`/`Unavailable` with `real_route_gate_pending` to
+`Supported`/`Available` at `RouteValidation`.
+
+The tuple cannot widen. This route pins SDK `0.3.259`, native `2.1.259`, Node
+`22.23.2`, the `0.4.4` sidecar source tag, the carrier revision, and MCP
+`2025-11-25` exactly, so the one axis a compiled route can vary is its
+platform: qualification is scoped to the Darwin arm64 target the capsules ran
+on, and every other target projects the unqualified truth with the new
+`platform_not_admitted` reason. Off-platform targets keep the exact pre-card
+omission and row shape.
+
+Route tests freeze Research 301's identities: source-linked Swallowtail
+`24f88fb8`, Desktop task `4356b461`, PR 181 head `18b70c91`, review comment
+`5599408741`, merge `807f7a3f`, closeout `03e71e90`, capsule SHA-256
+`c4de15a8`, courier `sha256:12db9fe3`, and the native Darwin arm64 binary
+digest `884baa38`, plus the four-attempt, one-Allow-dispatch, zero-control-
+dispatch counts, the `claude-sonnet-5` default-permission persistence-off
+tuple, and the route-qualified degraded macOS cleanup posture (never
+`Clean`). The frozen transcript gains the exact live Allow case: one dispatch
+of the unchanged empty arguments object and the correlated `{"ok":true}`
+result, and a dedicated test captures the dispatched payload bytes as exactly
+`{}`. The existing zero-dispatch Deny, cancellation, stale-replay, and
+foreign-lease cases are unchanged and still pass.
+
+`registered_tools` and `consumer_tool_exchange` reconcile to `yes` with their
+completed Card 152 producer-gap entries and reasons removed (the pinned
+cross-classification board passes again; only the card 130
+`persistent_permission_grants` gap remains on this route). Every other cell,
+cross classification, and TSV row is untouched. Contract 063's claude-agent.sdk placement
+row, its failed-open paragraph, and its live-gate paragraph now record the
+run; the guide's Registered Tools, Failed-Open Receipts, and Selected Skill
+Bundles sections carry the same result; `[Unreleased]` records it; the
+unreleased 0.4.4 API baseline adds `CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE`
+and `CLAUDE_AGENT_SDK_REGISTERED_TOOL_PLATFORM_NOT_ADMITTED_CODE`.
+
+One deviation worth naming: `CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE`
+could not be deleted. Unlike Grok's card 143, this route's pending code
+predates the immutable v0.4.3 public surface, and `effigy package:api` rightly
+refuses its removal. The constant stays as documented dead vocabulary — no
+row publishes it — and only additive items joined the 0.4.4 surface.
+
+Validation: `cargo fmt -p swallowtail-adapter-claude-agent -- --check`,
+`effigy validate:focused swallowtail-adapter-claude-agent` (500 tests),
+`effigy package:verify-affected swallowtail-adapter-claude-agent`,
+`effigy package:api`, `effigy qa:routes`, `effigy qa:docs`,
+`effigy qa:northstar`, and `git diff --check` all pass at the reported head.

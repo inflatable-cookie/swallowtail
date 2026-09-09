@@ -157,6 +157,8 @@ pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_S
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_PLATFORM_NOT_ADMITTED_CODE: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE: swallowtail_runtime::consumer_route_projection::registered_capability::RegisteredToolQualifiedRoute
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_SOURCE: &str

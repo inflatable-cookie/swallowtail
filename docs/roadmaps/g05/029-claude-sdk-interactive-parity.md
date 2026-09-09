@@ -3,7 +3,7 @@
 Status: ready; runway items delivered (cards 080-086, 088, 089, 105, 108, 119-121, 124 complete); qualified-ranges widening held at the stopped 087 gate; card-level dispatch retired by g05.038
 Owner: Tom
 Created: 2026-09-04
-Updated: 2026-09-06
+Updated: 2026-09-09
 Depends on: Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; completed g05.022 and g05.023; tagged `v0.4.0`
 Vision tags: Claude route, consumer parity, interactive session, discovery
 
@@ -100,6 +100,23 @@ scope, recorded as a held gate at the end of this file.
 - [ ] the read-only default and `v0.4.0` behaviour are unchanged
 - [ ] later scope lands in priority order without reopening the card-080 seam
 - [ ] `v0.4.1` carried card 080's items on the Contract 036 gates
+
+## Dispatch
+
+| Field | g05.029 acceptance audit |
+| --- | --- |
+| Readiness | ready; every implementation item is complete or stopped and the exact card, release, live-capsule, PR, and Git history can score the parent task without new provider work |
+| Prerequisites | Contracts 017, 019, 023, 029, 036, and 041; Research 278, 280, 286, 287, and 301; folded cards 080-089, 105, 108, 119-121, 124, and 153; tags `v0.4.0..v0.4.4`; Desktop Cards 318 and 323 plus their immutable capsules |
+| Completion conditions | one source-linked ledger scores all five Acceptance clauses independently; distinguish provider-free capability/mediation proof from an actual consumer-driven multi-turn editing session; prove open and mid-session permission selection plus bypass rejection; compare the default profile and guaranteed behavior at `v0.4.0`, `v0.4.1`, and current main; reconstruct launch, PR-merge, and dependency order for later runway items and identify any reopening of the Card 080 seam; prove the exact Card 080 content and gates present at the `v0.4.1` tag; update this task and one log |
+| Owned mutable paths | this task; one new `docs/logs/2026-09-09-g05-029-*.md`; one `docs/logs/README.md` index line; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, and `docs/roadmaps/generation-index.md`; queue coordinator edits these after merge |
+| Forbidden paths | Rust and tests; Cargo manifests and lockfile; sidecar assets; baselines; guides and matrices; contracts, architecture, specs, research, and release notes; tags; every other task body; all Desktop paths |
+| Approved concurrent siblings | none; this is the last ready generation task and owns task-level closeout |
+| Worker capability class | evidence-only cross-history acceptance audit; Git, GitHub, queue, tagged-source, and immutable consumer-capsule correlation; documentation only |
+| Acceptance evidence | exact tag peels and trees; PR heads, merges, reviews, and ancestry; provider-free mediation and permission-mode tests already recorded at accepted heads; release baselines and notes; Desktop capsule prompts/verdicts; current guide/matrix claims as corroboration only |
+| Review oracle | “a consumer drives” requires an observed consumer operation, not a fake SDK or compile test; multi-turn, editing, and pre-effect mediation must coexist in one admissible evidence chain; delivery order is scored from durable dependency and merge chronology rather than card-number prose; default preservation compares behavior and selection, not only API shape; Card 087's stopped no-range result is preserved and does not silently become acceptance or new scope |
+| Stop conditions | source identities disagree; a clause cannot be proved without a new provider call, consumer mutation, runtime change, release mutation, or reopening Card 087; consumer evidence lacks the exact Swallowtail source identity or required prompt/tool/turn observations |
+| Escalation owner | Chatterbox for acceptance semantics or follow-up planning; operator for any new live-provider, consumer, compatibility-range, or release authority |
 
 ## Card 080 Stop And Ruling
 

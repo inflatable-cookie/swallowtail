@@ -1,6 +1,6 @@
 # g05.029 Claude SDK Interactive Parity
 
-Status: ready; runway items delivered (cards 080-086, 088, 089, 105, 108, 119-121, 124 complete); qualified-ranges widening held at the stopped 087 gate; card-level dispatch retired by g05.038
+Status: ready; Claude SDK interactive-parity acceptance audit recorded as an honest evidence stop (coordinator closeout)
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-09
@@ -94,12 +94,8 @@ scope, recorded as a held gate at the end of this file.
 
 ## Acceptance
 
-- [ ] a consumer drives a multi-turn editing session on the SDK route with
-      every tool call mediated before it runs
-- [ ] permission mode is selectable at open and changeable mid-session
-- [ ] the read-only default and `v0.4.0` behaviour are unchanged
-- [ ] later scope lands in priority order without reopening the card-080 seam
-- [ ] `v0.4.1` carried card 080's items on the Contract 036 gates
+The folded cards ran. The original five-clause target is not fully proven.
+See Result.
 
 ## Dispatch
 
@@ -117,6 +113,24 @@ scope, recorded as a held gate at the end of this file.
 | Review oracle | “a consumer drives” requires an observed consumer operation, not a fake SDK or compile test; multi-turn, editing, and pre-effect mediation must coexist in one admissible evidence chain; delivery order is scored from durable dependency and merge chronology rather than card-number prose; default preservation compares behavior and selection, not only API shape; Card 087's stopped no-range result is preserved and does not silently become acceptance or new scope |
 | Stop conditions | source identities disagree; a clause cannot be proved without a new provider call, consumer mutation, runtime change, release mutation, or reopening Card 087; consumer evidence lacks the exact Swallowtail source identity or required prompt/tool/turn observations |
 | Escalation owner | Chatterbox for acceptance semantics or follow-up planning; operator for any new live-provider, consumer, compatibility-range, or release authority |
+
+## Result
+
+Honest evidence stop. Log:
+`docs/logs/2026-09-09-g05-029-claude-sdk-interactive-parity-acceptance-audit.md`.
+
+| Clause | Verdict |
+| --- | --- |
+| A consumer drives a multi-turn editing session on the SDK route with every tool call mediated before it runs | fail. Provider-free tests prove write mediation. Live Card 318/323 capsules are four independent one-turn registered-tool controls on `desktop/reconcile`, not `Edit`/`Write`/`MultiEdit`, and not two user turns in one session. `v0.4.1` had no pre-tag application drive; the first Desktop open failed; the `v0.4.2` smoke never reached Chat |
+| Permission mode is selectable at open and changeable mid-session | pass. PR 221 provider-free tests at accepted head `16ad903b` / merge `80d69dc6`: selected mode on open, confirmed mid-session `plan` then `default`, bypass/`auto`/`dontAsk` rejected. Live capsules used `permissionMode: default` only |
+| The read-only default and `v0.4.0` behaviour are unchanged | pass. Default constructor remains `read_only()`: `Read`/`Glob`/`Grep`, `default` mode, read lease across `v0.4.0`, `v0.4.1`, and current main. Later additive fields stay omitted unless opted in |
+| Later scope lands in priority order without reopening the card-080 seam | pass. Merge ancestry respects promoted serial edges (`0acba239`). Concurrent 085/086/088 PR numbers are not landing order. Later profile/session edits are additive; `read_write()` still excludes Bash |
+| `v0.4.1` carried card 080's items on the Contract 036 gates | pass. PRs 221 and 224 are ancestors of tagged `c3cce750`. Research 286 patch class; PR 229; workflow-dispatch `33969131592` six jobs; source consumer. Operator compression dropped the Bovine editing smoke; the release note states no application drove the candidate |
+
+Card 087 remains a stopped no-range gate (PR 256 `54153c68`; five exact
+`QualifiedOnly` pins). Coordinator closeout sets `Status: stopped` and
+reconciles reserved indexes. No repair, live probe, range widening,
+release, or tag is opened here.
 
 ## Card 080 Stop And Ruling
 

@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-09 g05.029 Claude SDK Interactive Parity Acceptance Audit](./2026-09-09-g05-029-claude-sdk-interactive-parity-acceptance-audit.md) — consumer multi-turn editing session fail; permission-mode, default preservation, later-scope landing, and v0.4.1 Contract 036 carrier pass; Card 087 no-range gate preserved
 - [2026-09-09 g05.031 CI Latency Acceptance Audit](./2026-09-09-g05-031-ci-latency-acceptance-audit.md) — PR-gate median 2m43s pass; literal macOS pinned floor fail (Linux); every-PR test population pass; required-check set unproven; honest evidence stop
 - [2026-09-09 g05.034 Release Lane Acceptance Audit](./2026-09-09-g05-034-release-lane-acceptance-audit.md) — `v0.4.4` missed the all-green target; 30-minute tag-request clock and one-hosted-run failed; one prepare and PR gate under 3 minutes passed; honest evidence stop
 - [2026-09-09 Pi RPC 0.85.1 Claim](./2026-09-09-pi-rpc-0-85-1-claim.md) — qualified `pi.package` through official `0.85.1`; preserved baseline, gaps, message-update-delta, and `AllowUnverified`; g05.044

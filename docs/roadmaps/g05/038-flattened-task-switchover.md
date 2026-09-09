@@ -1,6 +1,6 @@
 # g05.038 Flattened Task Switchover
 
-Status: ready
+Status: complete; PR #301 merged as `8dc1f161`
 Owner: Northstar documentation migration worker
 Created: 2026-09-09
 Governing refs: Contract 001; installed Northstar project-refresh, lifecycle-maintenance, and compile-roadmaps procedures; operator switchover authority of 2026-09-09
@@ -117,10 +117,35 @@ manifest, old/new active map, changed/deleted files, validation, reviewed exact
 head, PR, merge, retained exceptions, new frontier, and dispatch-resumption
 state.
 
+## Result
+
+- The frozen preservation manifest and old/new task map were applied. Closed
+  generations `g01`–`g04` are compacted, `g05` has 42 top-level tasks, and
+  former cards `005`, `006`, `130`, and `134` are preserved as `g05.039`–
+  `g05.042`.
+- PR #301 was independently accepted at exact head
+  `67432708f092c517e50cc577b791007f264f04eb`; review comment `5603203437`
+  carried the accepted `ready_to_merge` marker and reported no blocking
+  findings. It merged through the queue as
+  `8dc1f161b35ca5620441f6d9d30bb8808721c68d`.
+- `effigy qa:docs`, the feature-matrix cross-classification check, the
+  roadmap status and number-collision fixtures, and `git diff --check` passed.
+  The configured Pinned MSRV floor tests job was skipped; no migration failure
+  was deferred.
+- The Desktop Card 323 exact-tree acceptance remains reconciled in `g05.036`.
+  Candidate merge `49c9e3b291609c9ebf5b35a284c08302f3b8d5e3`, tree
+  `1a9db12742b68e839dfebe42f0633f5d1aa0265b`, tags, releases, and consumer
+  pins are unchanged. The exact-SHA `v0.4.4` tag decision remains with the
+  operator.
+- The integration checkout is synchronized at
+  `8dc1f161b35ca5620441f6d9d30bb8808721c68d`. No new dispatch is authorized
+  by this closeout; planning direction is needed before selecting the next
+  task.
+
 ## Next task
 
 Return to Chatterbox after merge. Desktop Card 323 completed during this
 migration (2026-09-09); its exact-tree acceptance is reconciled into g05.036
 in this batch. Present the separate exact-SHA tag decision: no tag follows
-without explicit operator authority naming the exact SHA. Until then resume
-only the approved flattened frontier.
+without explicit operator authority naming the exact SHA. Planning direction
+is needed before selecting the next task.

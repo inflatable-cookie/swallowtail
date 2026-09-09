@@ -144,9 +144,12 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 42 tasks: 28 completed tasks, honest evidence stops at 002,
-003, 007, and 011, ready tasks at 029, 031, 034, 036, and 038, and planned
+g05 has 42 tasks: 29 completed tasks, honest evidence stops at 002,
+003, 007, and 011, ready tasks at 029, 031, 034, and 036, and planned
 tasks at 035, 039, 040, 041, and 042.
+g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
+review and documentation validation passed, with no migration failure
+deferred. The exact-SHA `v0.4.4` tag decision remains operator-owned.
 g05.035 is planned. Its shared registered-tool kernel and route bindings
 are delivered;
 Card 153's provider-free Claude SDK exact-tuple qualification is complete at
@@ -421,7 +424,7 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Adopt Northstar's generation-plus-task model once through
-[g05.038](g05/038-flattened-task-switchover.md). The separate Desktop exact-tree
-acceptance remains bound to candidate merge `49c9e3b2`; no release authority
-follows from the migration.
+Define planning direction with Chatterbox before selecting the next task; the g05.038
+generation-plus-task migration is complete through PR #301 at `8dc1f161`.
+The separate Desktop exact-tree acceptance remains bound to candidate merge
+`49c9e3b2`; no release authority follows from the migration.

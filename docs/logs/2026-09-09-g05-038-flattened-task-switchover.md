@@ -1,6 +1,6 @@
 # 2026-09-09 g05.038 Flattened Task Switchover Migration
 
-Status: migrated, unmerged
+Status: complete; PR #301 merged at `8dc1f161`
 Owner: Northstar documentation migration worker
 Task: `docs/roadmaps/g05/038-flattened-task-switchover.md`
 Manifest: `docs/roadmaps/archive/preservation-manifest.md`
@@ -22,8 +22,8 @@ now speak tasks.
 
 ## Current State
 
-- Frontier: ready tasks `029`, `031`, `034`, `036`, `038`; planned `035`,
-  `039`–`042`; stops at `002`, `003`, `007`, `011`; 28 complete.
+- Frontier: ready tasks `029`, `031`, `034`, `036`; planned `035`, `039`–`042`;
+  stops at `002`, `003`, `007`, `011`; 29 complete including this task.
 - Desktop Card 323 completed exact-tree acceptance of candidate merge
   `49c9e3b2` on 2026-09-09 (PR #186, review `5602628180`, merge
   `32344306fe30043e2d08dd9ac4e3a216b320c81f`, closeout `da9edb8d...`); the
@@ -32,6 +32,21 @@ now speak tasks.
   follows from the migration.
 - Candidate, tree (`1a9db127…`), tags, releases, Card 323 ownership, and
   consumer/provider state are unchanged.
+
+## Review, Merge, And Closeout
+
+PR #301 was independently accepted at exact reviewed head
+`67432708f092c517e50cc577b791007f264f04eb`; review comment `5603203437`
+reported no blocking findings and carried the Northstar `ready_to_merge`
+marker. The queue merged it into `main` as
+`8dc1f161b35ca5620441f6d9d30bb8808721c68d` and synchronized the integration
+checkout at that exact SHA.
+
+The review verified all six acceptance-oracle invariants, the preserved
+`g05.039`–`g05.042` contracts, the frozen preservation manifest, the singular
+frontier, unchanged candidate/release state, and the direct task-level
+migration. The configured Pinned MSRV floor tests job was skipped; no
+migration validation failure was deferred and no retry or scope change follows.
 
 ## Validation
 
@@ -43,7 +58,8 @@ now speak tasks.
   fixtures).
 - `bash scripts/check-provider-route-matrix.sh` — passed (41 rows, 719
   unavailable cells, 4 pinned producer gaps on tasks `041`/`042`).
-- `effigy qa:docs` — full docs board (record result at PR time).
+- `effigy qa:docs` — full docs board passed at the reviewed PR head; the
+  configured Pinned MSRV floor tests job was skipped.
 - `git diff --check` — clean.
 
 ## Retained Exceptions
@@ -60,6 +76,7 @@ now speak tasks.
 
 ## Next Move
 
-Review this migration at its exact head, merge through the queue, synchronize
-`main`, and return to Chatterbox. After merge, present the separate exact-SHA
-`v0.4.4` tag decision; resume only the approved flattened frontier.
+The migration is merged and closed. Return to Chatterbox for planning
+direction before selecting the next task. Present the separate exact-SHA
+`v0.4.4` tag decision; no tag, publication, repin, or product continuation
+follows from this closeout.

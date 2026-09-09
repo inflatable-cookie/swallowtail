@@ -52,7 +52,6 @@ enforcement.
 Only ready and planned tasks are actionable. Completed and stopped tasks live
 in [## Tasks](#tasks) below.
 
-- [g05.038 Flattened Task Switchover](./038-flattened-task-switchover.md) — ready; one-time documentation and checker migration to the installed generation-plus-task model
 - [g05.036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; v0.4.4 candidate `49c9e3b2` merged (card 154 folded); Desktop exact-tree acceptance passed 2026-09-09 under Card 323; exact-SHA tag decision remains with the operator
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
 - [g05.034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 complete; acceptance awaits the lane wall-clock record
@@ -63,14 +62,14 @@ in [## Tasks](#tasks) below.
 - [g05.041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; backlog stub only; no dispatch authorization
 - [g05.042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub only; no dispatch authorization
 
-g05 has forty-two numbered tasks: 28 complete including
+g05 has forty-two numbered tasks: 29 complete including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, and 037, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
 at 022, and shared
 lifecycle closure at 023-025; honest
-evidence stops at 002, 003, 007, and 011; ready tasks at 029, 031, 034, 036,
-and 038; one planned task at 035; and four preserved tasks at 039-042.
+evidence stops at 002, 003, 007, and 011; ready tasks at 029, 031, 034, and
+036; one planned task at 035; and four preserved tasks at 039-042.
 g05.020 is complete: Codex
 qualifies official `0.152.1`. g05.026 is complete as an evidence stop:
 card 062 froze Kimi
@@ -410,7 +409,6 @@ identity.
 
 ### Ready
 
-- [038 Flattened Task Switchover](./038-flattened-task-switchover.md) — ready; one-time planning hierarchy migration
 - [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; v0.4.4 candidate `49c9e3b2` merged (card 154 folded); Desktop exact-tree acceptance passed 2026-09-09 under Card 323; exact-SHA tag decision remains with the operator
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 complete; acceptance awaits the lane wall-clock record
 - [031 CI Latency](./031-ci-latency.md) — ready; card-095 gate work complete; operator workflow authority granted
@@ -433,6 +431,7 @@ identity.
 
 ### Completed
 
+- [038 Flattened Task Switchover](./038-flattened-task-switchover.md) — complete; PR #301 merged at `8dc1f161`; 42-task generation-plus-task migration and Card 323 reconciliation closed
 - [037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 136 qualified `surface-19` through `1.18.29`
 - [033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy
 - [032 v0.4.2 Release Readiness](./032-v0-4-2-release-readiness.md) — complete; `v0.4.2` tagged at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window

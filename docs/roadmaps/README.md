@@ -16,11 +16,12 @@ Closed generations live only as roll-ups under
 ## Next Task
 
 [g05.038 Flattened Task Switchover](g05/038-flattened-task-switchover.md) is
-ready under the operator's one-time migration authority. It changes planning,
-instruction, template, and local-checker surfaces only. Desktop Card 323
-completed exact-tree acceptance of candidate merge `49c9e3b2` on 2026-09-09
-(evidence in g05.036); the exact-SHA tag decision remains a separate explicit
-operator decision with no tag authority from the migration.
+complete; PR #301 merged at `8dc1f161`. It changed planning, instruction,
+template, and local-checker surfaces only. Desktop Card 323 completed exact-
+tree acceptance of candidate merge `49c9e3b2` on 2026-09-09 (evidence in
+g05.036). Planning direction is needed before selecting the next task; the
+exact-SHA tag decision remains a separate explicit operator decision with no
+tag authority from the migration.
 
 ## Standing Lanes
 

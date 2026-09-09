@@ -230,7 +230,7 @@ did not receive.
 | Route | First placement | Reason and gate |
 | --- | --- | --- |
 | `claude-code` | existing provider-direct private watcher MCP through Contract 060 | released `--mcp-config`/`--strict-mcp-config` carries only `swallowtail-watchers`; reuse proves the common bridge kernel while its closed protocol, operation scope, and omission behavior remain unchanged; it is not generic tool registration |
-| `claude-agent.sdk` | merged consumer-declared stdio MCP attachment, then common-bridge integration | PR 255 proves strict declared stdio configuration, explicit child env, per-call mediation, bounded status, typed required-connect failure, and unchanged omission; it does not prove SSE/HTTP/in-process/managed MCP, a real provider turn, the centralized snapshot, or Contract 060 integration |
+| `claude-agent.sdk` | route-local mediated-stdio MCP carrier through the Contract 063 kernel | the accepted Card 318 live gate ran the Swallowtail-owned courier against source-linked Swallowtail `24f88fb8` (Research 301): one exact Allow dispatched once with unchanged `{}` and correlated its `{"ok":true}` result, Deny and the cancellation and stale/foreign controls dispatched zero times, and cleanup joined with no survivors; the qualification is scoped to the exact tuple — SDK `0.3.259`, native `2.1.259` Darwin arm64, Node `22.23.2`, sidecar tag `0.4.4`, private-loopback mediated-stdio, MCP `2025-11-25` — and omission still sends `mcpServers: []`; SSE/HTTP/in-process/managed MCP stay withheld |
 | `claude-agent.acp` | host-mediated native callbacks only; MCP withheld | current ACP sends an empty server list and has no MCP input facade; add direct MCP only after exact bridge schema, version, permission, and lifecycle evidence |
 | `codex.app-server` | host-mediated dynamic native tools | this is already the qualified execution seam; observed MCP activity is not registration or result authority; provider-direct MCP needs a separate app-server surface and corpus |
 | `grok-build.acp` | route-local ACP client-MCP courier through the Contract 063 mediated-stdio kernel, scoped to exact maintained `1.0.4..=1.0.5` | the accepted Card 128 live gate ran exact Grok Build `1.0.4` and `1.0.5` each admitting the Swallowtail-owned courier, listing its tools, and completing one registered call (Research 295); the qualification is version-scoped — other executable versions project unqualified rows and a registered open refuses with `version_not_admitted` before any host, lease, or provider work — the consumer Deny stays unrepresented, progress stays undelivered, selected skills stay `NotCarried` for want of any ACP skill input, and omission still sends `mcpServers: []` |
@@ -574,9 +574,10 @@ absent. When the deadline or an unconfirmed cleanup replaces the returned
 error, the receipt still carries the underlying failure's route code and
 facts. The receipt carries no paths, bearer material, credentials,
 environment values, provider content, or sidecar stderr, and it is never a
-support, qualification, availability, or release claim; both Contract 061
-registered-tool cells stay owned by the producer gap until a separately
-authorized passing live capsule exists.
+support, qualification, availability, or release claim. The Card 318 passing
+live capsule (Research 301) has since qualified both Contract 061
+registered-tool cells on the exact tuple; the receipt stays the typed
+producer-evidence surface for any future failed open.
 
 **Bounded MCP-status evidence (claude-agent.sdk).** Card 146 reconciled the
 exact SDK `0.3.259` status shape with the sidecar projection. The
@@ -605,12 +606,19 @@ re-authentication, stale, foreign, and late frames, exactly-once settle,
 uncooperative teardown, the shared watcher and registered listener and
 generation space, and every existing fixture unchanged.
 
-**Live gate (later, separate authority).** The exact tuple is frozen before
-any turn: `claude-agent.sdk`; SDK `0.3.259` at its recorded digest; native
-`2.1.259`; the pinned Node; JSONL v1; proxy wire `swallowtail-registered-tool-mcp-v1`;
-the exact MCP protocol version; `private-loopback-http` plus
+**Live gate (run; accepted).** The exact tuple was frozen before any turn:
+`claude-agent.sdk`; SDK `0.3.259` at its recorded digest; native
+`2.1.259` Darwin arm64 at digest
+`884baa38fe1a624be25c4a91568bf5a08b5cf4e7d7acf29b7760e3525d964898`; Node
+`22.23.2`; JSONL v1; proxy wire `swallowtail-registered-tool-mcp-v1`; the
+exact MCP protocol version `2025-11-25`; `private-loopback-http` plus
 `mediated-stdio-proxy`; `strictMcpConfig` true; `settingSources` empty;
-`allowedTools` omitted; one disposable tool. Stop conditions: authority
+`allowedTools` omitted; one disposable tool. Desktop Card 318 ran that tuple
+against source-linked Swallowtail `24f88fb8` with no stop condition met:
+exactly four fresh opens and four prompt turns, one correlated Allow dispatch,
+zero control dispatches, and route-qualified degraded cleanup. Research 301
+freezes the evidence chain, and the route projects the qualified truth for
+exactly that tuple. Stop conditions for any future gate remain: authority
 leakage, ambient MCP, lazy attach, automatic respawn or retry, `canUseTool`
 bypass, ambiguous identities, incomplete cleanup.
 

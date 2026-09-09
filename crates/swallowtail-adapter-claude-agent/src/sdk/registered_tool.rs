@@ -25,10 +25,11 @@
 //! - SSE, streamable HTTP, in-process SDK, and managed/ambient MCP stay
 //!   withheld: no pinned transport corpus qualifies them.
 //!
-//! What this module does not claim: the registered capability is projected
-//! `Unqualified`. The disposable real-route gate is separately authorized and
-//! has not run, so no support disposition is published from deterministic
-//! evidence alone.
+//! What this module claims: the registered capability is qualified only for
+//! the exact accepted Card 318 live tuple (Research 301), and only on the
+//! Darwin arm64 target the capsules ran on — every other target projects
+//! `Unqualified`. The deterministic fixtures and the frozen transcript bind
+//! the evidence identities; they never widen the tuple.
 
 mod binding;
 mod carrier;
@@ -49,8 +50,9 @@ pub use mediation::{
 pub(crate) use projection::project_claude_agent_sdk_selected_skill_from_source;
 pub use projection::{
     CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID, CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_SOURCE, claude_agent_sdk_registered_tool_qualification,
-    project_claude_agent_sdk_registered_tool,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_PLATFORM_NOT_ADMITTED_CODE,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SOURCE,
+    claude_agent_sdk_registered_tool_qualification, project_claude_agent_sdk_registered_tool,
     project_claude_agent_sdk_registered_tool_with_selected_skill,
     project_claude_agent_sdk_registered_tool_with_selected_skill_from_source,
 };

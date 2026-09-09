@@ -121,7 +121,6 @@ generation_control_classifications = {
 }
 input_callback_classifications = {
     ("attachments", "claude-agent.sdk"): "selected_surface_absence",
-    ("consumer_tool_exchange", "claude-agent.sdk"): "selected_surface_absence",
     ("question_exchange", "claude-agent.sdk"): "selected_surface_absence",
     ("external_search", "claude-agent.sdk"): "selected_surface_absence",
     ("attachments", "muse-code.headless"): "selected_surface_absence",

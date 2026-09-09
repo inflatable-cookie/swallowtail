@@ -7,6 +7,28 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- qualified `claude-agent.sdk` registered tools on the exact accepted Card 318
+  live tuple (Research 301): the Contract 061 registered capability projects
+  `Qualified` with `ExactOneShot` one-shot permission (one Allow dispatched
+  `desktop/reconcile` exactly once with unchanged `{}` and correlated its fixed
+  `{"ok":true}` result; Deny, cancellation, and stale/foreign controls
+  dispatched zero times as pass evidence), `NoProgress`, and `NotCarried`
+  selected-skill delivery, and the mediation-kind row moved from
+  `real_route_gate_pending` to route-validation support. The route pins SDK
+  `0.3.259`, native `2.1.259`, Node `22.23.2`, and the `0.4.4` sidecar tag
+  exactly, so the compiled platform is the one variable axis: only the Darwin
+  arm64 target the capsules ran on projects the qualified truth, and every
+  other target publishes the unqualified truth with `platform_not_admitted`.
+  The capsule's cleanup stays the accepted Contract 019 route-qualified
+  degraded macOS posture, never renamed `Clean`. Route tests freeze the
+  source, task, capsule, Desktop PR, review, merge, closeout, courier,
+  attempt, dispatch, and correlation identities, and the frozen transcript
+  gains the exact live Allow shape. The retired
+  `CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE` stays on the immutable 0.4.3
+  surface but is published by no row; the unreleased 0.4.4 API surface adds
+  `CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE` and
+  `CLAUDE_AGENT_SDK_REGISTERED_TOOL_PLATFORM_NOT_ADMITTED_CODE`. Registered
+  tool omission stays byte-identical. g05 batch card 153.
 - retained the Claude Agent SDK's structured provider-failure facts end to end
   instead of collapsing them to generic `provider_failed`: the sidecar now
   projects the validated numeric `api_error_status`, the bounded

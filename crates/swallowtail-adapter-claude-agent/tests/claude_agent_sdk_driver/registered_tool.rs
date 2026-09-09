@@ -13,18 +13,17 @@
 
 use crate::sdk_support;
 use serde_json::{Value, json};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use swallowtail_adapter_claude_agent::sdk::registered_tool::{
     CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION, CLAUDE_AGENT_SDK_MCP_SUPPORTED_PROTOCOL_VERSIONS,
-    CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID, CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_AXIS,
+    CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID, CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_AXIS,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER, ClaudeAgentSdkMcpReply,
-    ClaudeAgentSdkRegisteredToolBinding, ClaudeAgentSdkRegisteredToolCarrier,
-    ClaudeAgentSdkRegisteredToolDecision, ClaudeAgentSdkRegisteredToolMediator,
-    claude_agent_sdk_mcp_protocol_version_admitted, claude_agent_sdk_mcp_protocol_version_known,
-    claude_agent_sdk_registered_tool_carrier_binding,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER,
+    ClaudeAgentSdkMcpReply, ClaudeAgentSdkRegisteredToolBinding,
+    ClaudeAgentSdkRegisteredToolCarrier, ClaudeAgentSdkRegisteredToolDecision,
+    ClaudeAgentSdkRegisteredToolMediator, claude_agent_sdk_mcp_protocol_version_admitted,
+    claude_agent_sdk_mcp_protocol_version_known, claude_agent_sdk_registered_tool_carrier_binding,
     claude_agent_sdk_registered_tool_carrier_claim, claude_agent_sdk_registered_tool_qualification,
     project_claude_agent_sdk_registered_tool,
 };
@@ -548,8 +547,129 @@ fn the_carrier_answers_one_mcp_protocol_version_and_knows_the_pinned_set() {
     );
 }
 
+fn row_with_semantic_id<'a>(
+    contribution: &'a swallowtail_runtime::ConsumerRouteProjectionContribution,
+    wanted: &str,
+) -> &'a swallowtail_runtime::ConsumerRouteProjectionRow {
+    contribution
+        .selection_rows()
+        .chain(contribution.session_start_rows())
+        .find(|row| {
+            row.identity()
+                .namespaced_extension()
+                .is_some_and(|extension| extension.semantic_id() == wanted)
+        })
+        .unwrap_or_else(|| panic!("missing projected row {wanted}"))
+}
+
 #[test]
-fn the_projection_publishes_route_local_mediation_and_claims_no_support() {
+#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+fn the_projection_publishes_the_qualified_route_on_the_accepted_platform() {
+    let selection = route_selection();
+    let carrier = ClaudeAgentSdkRegisteredToolCarrier::new(&selection).expect("carrier is valid");
+    let hosts = mounted_hosts(dispatcher("ok"));
+    let readiness = RegisteredToolReadiness::evaluate(&hosts, &selection);
+    let prepared = sdk_support::prepared_session(host_id());
+    let applicability = swallowtail_runtime::ConsumerRouteApplicability::from_plan(prepared.plan());
+
+    let contribution =
+        project_claude_agent_sdk_registered_tool(&applicability, &carrier, &readiness)
+            .expect("the contribution composes");
+
+    assert_eq!(
+        claude_agent_sdk_registered_tool_qualification(),
+        swallowtail_runtime::RegisteredToolRouteQualification::Qualified(
+            CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE
+        ),
+        "the accepted live tuple qualifies the route on its own platform"
+    );
+    assert_eq!(
+        CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE.permission(),
+        swallowtail_runtime::RegisteredToolPermissionStrength::ExactOneShot
+    );
+    assert_eq!(
+        CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE.progress(),
+        swallowtail_runtime::RegisteredToolProgressMode::NoProgress
+    );
+    assert_eq!(
+        CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE.skill_delivery(),
+        swallowtail_runtime::RegisteredToolSkillDelivery::NotCarried
+    );
+    let capability = row_with_semantic_id(&contribution, "registered-tool.capability");
+    assert_eq!(
+        capability.support(),
+        swallowtail_runtime::ConsumerRouteSupportPosture::Supported
+    );
+    assert_eq!(
+        capability.availability(),
+        swallowtail_runtime::ConsumerRouteAvailability::Available
+    );
+    let mediation =
+        row_with_semantic_id(&contribution, CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID);
+    assert_eq!(
+        mediation.support(),
+        swallowtail_runtime::ConsumerRouteSupportPosture::Supported
+    );
+    assert_eq!(
+        mediation.availability(),
+        swallowtail_runtime::ConsumerRouteAvailability::Available
+    );
+    assert_eq!(
+        mediation.evidence_strength(),
+        swallowtail_runtime::ConsumerRouteEvidenceStrength::RouteValidation
+    );
+    assert!(
+        mediation.safe_reason().is_none(),
+        "a route-validation row carries no unavailable reason"
+    );
+    let permission = row_with_semantic_id(&contribution, "registered-tool.one-shot-permission");
+    assert_eq!(
+        permission.support(),
+        swallowtail_runtime::ConsumerRouteSupportPosture::Supported
+    );
+    assert_eq!(
+        permission.availability(),
+        swallowtail_runtime::ConsumerRouteAvailability::Available
+    );
+    for dimension in [
+        "registered-tool.progress-delivery",
+        "registered-tool.selected-skill-bundle",
+    ] {
+        let row = row_with_semantic_id(&contribution, dimension);
+        assert_eq!(
+            row.support(),
+            swallowtail_runtime::ConsumerRouteSupportPosture::Unsupported,
+            "{dimension} stays exactly what the capsule proved"
+        );
+        assert_eq!(
+            row.availability(),
+            swallowtail_runtime::ConsumerRouteAvailability::Unavailable
+        );
+        assert_eq!(
+            row.safe_reason()
+                .expect("dimension reason")
+                .diagnostic()
+                .code(),
+            "swallowtail.registered_tool.route_dimension_unsupported"
+        );
+    }
+    let skill = row_with_semantic_id(&contribution, "registered-tool.selected-skill-bundle");
+    assert_eq!(
+        skill.actor_posture(),
+        swallowtail_runtime::ConsumerRouteActorPosture::Informational
+    );
+    assert!(skill.mutation_authority().source().is_none());
+    let scheduling = row_with_semantic_id(&contribution, "registered-tool.scheduling");
+    assert_eq!(
+        scheduling.support(),
+        swallowtail_runtime::ConsumerRouteSupportPosture::Unsupported,
+        "scheduling stays withheld on the qualified route"
+    );
+}
+
+#[test]
+#[cfg(not(all(target_os = "macos", target_arch = "aarch64")))]
+fn the_projection_publishes_the_unqualified_truth_off_the_accepted_platform() {
     let selection = route_selection();
     let carrier = ClaudeAgentSdkRegisteredToolCarrier::new(&selection).expect("carrier is valid");
     let hosts = mounted_hosts(dispatcher("ok"));
@@ -565,17 +685,8 @@ fn the_projection_publishes_route_local_mediation_and_claims_no_support() {
         claude_agent_sdk_registered_tool_qualification(),
         swallowtail_runtime::RegisteredToolRouteQualification::Unqualified
     ));
-    let mediation = contribution
-        .selection_rows()
-        .find(|row| {
-            matches!(
-                row.identity(),
-                swallowtail_runtime::ConsumerRouteRowIdentity::Feature(
-                    swallowtail_runtime::ConsumerRouteFeatureId::Namespaced(extension),
-                ) if extension.semantic_id() == CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID
-            )
-        })
-        .expect("the route-local mediation kind row is published");
+    let mediation =
+        row_with_semantic_id(&contribution, CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID);
     assert_eq!(
         mediation.availability(),
         swallowtail_runtime::ConsumerRouteAvailability::Unavailable
@@ -584,13 +695,17 @@ fn the_projection_publishes_route_local_mediation_and_claims_no_support() {
         mediation
             .safe_reason()
             .map(|reason| reason.diagnostic().code().to_owned()),
-        Some(CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE.to_owned()),
+        Some(
+            swallowtail_adapter_claude_agent::sdk::registered_tool::
+                CLAUDE_AGENT_SDK_REGISTERED_TOOL_PLATFORM_NOT_ADMITTED_CODE
+                .to_owned()
+        ),
     );
     assert_eq!(
         mediation
             .safe_reason()
             .map(|reason| reason.diagnostic().message().to_owned()),
-        Some("callable seam present; live gate pending".to_owned()),
+        Some("the accepted live gate ran only on exact Darwin arm64".to_owned()),
     );
     for row in contribution.selection_rows() {
         assert_ne!(
@@ -599,6 +714,200 @@ fn the_projection_publishes_route_local_mediation_and_claims_no_support() {
             "an unqualified route publishes no available registered-capability row"
         );
     }
+}
+
+#[test]
+fn the_qualified_route_binds_the_accepted_live_evidence_identities() {
+    // Research 301 freezes the accepted Desktop Card 318 gate: exactly four
+    // fresh opens and four prompt turns ran against source-linked Swallowtail,
+    // with no retry, reconnect, respawn, repeated attempt, or model fallback.
+    // The Allow case dispatched `desktop/reconcile` exactly once with unchanged
+    // `{}` and correlated the fixed `{"ok":true}` result; Deny, cancellation
+    // while pending, and stale/foreign callback rejection dispatched zero
+    // times. Cleanup was the accepted Contract 019 route-qualified degraded
+    // macOS posture — reapers joined and no lease, listener, or process
+    // survived — never `Clean`. These identities are the qualification's only
+    // live evidence.
+    const SWALLOWTAIL_SOURCE: &str = "24f88fb8a1328aa0e85b9c91989962ba32b9c590";
+    const DESKTOP_TASK: &str = "4356b461-cea3-4079-85cf-d9e63a1bb178";
+    const DESKTOP_PR: &str = "181";
+    const DESKTOP_PR_HEAD: &str = "18b70c917ccbc551f94596d364bf2f1916cc3065";
+    const DESKTOP_REVIEW_COMMENT: &str = "5599408741";
+    const DESKTOP_MERGE: &str = "807f7a3f916605e170b73f25812663fc0d9c295c";
+    const DESKTOP_CLOSEOUT: &str = "03e71e90d5280550c175c85a4ac4202cca7d9da6";
+    const CAPSULE_SHA256: &str = "c4de15a8a8b4a47996dc94c9cf7610e56a311a1b52266d156309cf944231c1f6";
+    const COURIER: &str = "sha256:12db9fe39fe6928c179ee0e83afc96a7005717e0ef23a00fc25300c886f69720";
+    const NATIVE_BINARY_SHA256: &str =
+        "884baa38fe1a624be25c4a91568bf5a08b5cf4e7d7acf29b7760e3525d964898";
+    const SDK_VERSION: &str = "0.3.259";
+    const NATIVE_VERSION: &str = "2.1.259";
+    const NODE_VERSION: &str = "22.23.2";
+    const SIDECAR_TAG: &str = "swallowtail-claude-agent-sdk-sidecar@0.4.4";
+    const MCP_PROTOCOL_VERSION: &str = "2025-11-25";
+    const MODEL: &str = "claude-sonnet-5";
+    const ATTEMPT_COUNT: usize = 4;
+    const ALLOW_DISPATCH_COUNT: usize = 1;
+    const CONTROL_DISPATCH_COUNT: usize = 0;
+
+    // The claim is bound to exactly the tuple the capsules ran, and to nothing
+    // adjacent: the route pins every version axis at this exact point.
+    assert_eq!(
+        CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION,
+        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_VERSION
+    );
+    assert_eq!(
+        CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION,
+        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_VERSION
+    );
+    assert_eq!(
+        SDK_VERSION,
+        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_VERSION
+    );
+    assert_eq!(
+        NATIVE_VERSION,
+        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_VERSION
+    );
+    assert_eq!(
+        NODE_VERSION,
+        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NODE_RUNTIME
+    );
+    assert_eq!(
+        SIDECAR_TAG,
+        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG
+    );
+    assert_eq!(MCP_PROTOCOL_VERSION, CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION);
+    // The qualified mediation is exactly the private-loopback mediated-stdio
+    // carrier shape the capsules ran, and no other transport.
+    assert_eq!(
+        CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION,
+        "route-local-stdio-mcp-mediation"
+    );
+    // Whole-identity receipts are pinned so a future head cannot silently
+    // rebase the claim onto different evidence.
+    assert_eq!(SWALLOWTAIL_SOURCE.len(), 40);
+    assert_eq!(CAPSULE_SHA256.len(), 64);
+    assert_eq!(NATIVE_BINARY_SHA256.len(), 64);
+    assert!(COURIER.starts_with("sha256:"));
+    assert_eq!(DESKTOP_TASK.len(), 36);
+    assert_eq!(DESKTOP_PR, "181");
+    assert_eq!(DESKTOP_PR_HEAD.len(), 40);
+    assert!(!DESKTOP_REVIEW_COMMENT.is_empty());
+    assert_eq!(DESKTOP_MERGE.len(), 40);
+    assert_eq!(DESKTOP_CLOSEOUT.len(), 40);
+    assert_eq!(MODEL, "claude-sonnet-5");
+    assert_eq!(ATTEMPT_COUNT, 4);
+    assert_eq!(ALLOW_DISPATCH_COUNT, 1);
+    assert_eq!(CONTROL_DISPATCH_COUNT, 0);
+    // The compiled platform decides which truth the projection publishes:
+    // qualified only on the exact Darwin arm64 target the capsules ran on.
+    let accepted_platform = cfg!(all(target_os = "macos", target_arch = "aarch64"));
+    assert_eq!(
+        matches!(
+            claude_agent_sdk_registered_tool_qualification(),
+            swallowtail_runtime::RegisteredToolRouteQualification::Qualified(_)
+        ),
+        accepted_platform,
+        "the qualification never widens past the accepted platform"
+    );
+}
+
+#[test]
+fn an_accepted_allow_dispatches_one_unchanged_empty_object_and_correlates_its_result() {
+    // Research 301's Allow case, bound deterministically: exactly one
+    // `desktop/reconcile` dispatch whose arguments reach the linked host
+    // unchanged as `{}`, and exactly one correlated `{"ok":true}` result
+    // written back to the carrier wire.
+    let observed: Arc<Mutex<Vec<Vec<u8>>>> = Arc::new(Mutex::new(Vec::new()));
+    let capture = Arc::clone(&observed);
+    let dispatcher = Arc::new(ScriptedRegisteredToolDispatcher::new(Arc::new(
+        move |call, _context| {
+            capture
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .push(call.arguments().expose_for_execution().to_vec());
+            Ok(RegisteredToolOutcome::completed(
+                call,
+                RegisteredToolResult::new(
+                    RegisteredToolPayload::new(
+                        RegisteredToolSchemaMediaType::new("application/json")
+                            .expect("media type is valid"),
+                        b"{\"ok\":true}".to_vec(),
+                        call.binding().effective_bounds().max_result_bytes(),
+                    )
+                    .expect("bounded result payload"),
+                    RegisteredToolSchemaDigest::new("sha256:output").expect("digest is valid"),
+                ),
+            ))
+        },
+    )));
+    let selection = route_selection();
+    let hosts = mounted_hosts(Arc::clone(&dispatcher));
+    let lease = open_lease(
+        &hosts,
+        &selection,
+        fixture_admission(Arc::new(ScriptedAdmissionPort::current())),
+        RegisteredToolLimits::ceiling(),
+    );
+    let carrier =
+        ClaudeAgentSdkRegisteredToolCarrier::new(&selection).expect("carrier admits the selection");
+    let mediator = ClaudeAgentSdkRegisteredToolMediator::new(carrier, lease)
+        .expect("mediator binds its own lease");
+    mediate(
+        &mediator,
+        &json!({
+            "jsonrpc": "2.0",
+            "id": 0,
+            "method": "initialize",
+            "params": {"protocolVersion": CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION},
+        }),
+    )
+    .expect("handshake is admissible");
+    mediate(
+        &mediator,
+        &json!({"jsonrpc": "2.0", "method": "notifications/initialized"}),
+    )
+    .expect("initialized notification is admissible");
+    mediator
+        .record_admission(
+            "mcp__swallowtail-registered-tools__desktop_reconcile",
+            ClaudeAgentSdkRegisteredToolDecision::Allow,
+        )
+        .expect("the Allow decision is recordable");
+
+    let reply = mediate(
+        &mediator,
+        &json!({
+            "jsonrpc": "2.0",
+            "id": 3,
+            "method": "tools/call",
+            "params": {"name": "desktop_reconcile", "arguments": {}},
+        }),
+    )
+    .expect("the admitted call mediates");
+
+    assert_eq!(
+        dispatcher.dispatches(),
+        1,
+        "one Allow authorizes exactly one dispatch"
+    );
+    assert_eq!(
+        observed
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .as_slice(),
+        [b"{}".to_vec()],
+        "the dispatch carries the unchanged empty arguments object"
+    );
+    let encoded = reply
+        .response_bytes()
+        .expect("the admitted call is answered");
+    let decoded: Value = serde_json::from_slice(encoded).expect("the reply is valid JSON");
+    assert_eq!(
+        decoded["result"]["content"][0]["text"],
+        json!("{\"ok\":true}"),
+        "the fixed correlated result crosses unchanged"
+    );
+    assert_eq!(decoded["result"]["isError"], json!(false));
 }
 
 #[test]

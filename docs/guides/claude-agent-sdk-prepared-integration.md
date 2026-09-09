@@ -569,10 +569,28 @@ live verdicts. Close joins the single listener; Drop hands the lease to the
 guardian and does not join on the dropping thread. Omitting the binding keeps
 the previous open, including the empty `mcpServers` omission.
 
-Resume and listing refuse a bound selection. The Contract 061 projection
-stays `Unqualified / real_route_gate_pending` with the reason
-`callable seam present; live gate pending`. The live real-route gate is a
-separate authorized pass.
+Resume and listing refuse a bound selection. The Contract 061 projection is
+qualified on the exact accepted Card 318 live tuple (Research 301): SDK
+`0.3.259`, native `2.1.259`, Node `22.23.2`, the `0.4.4` sidecar source tag,
+carrier `swallowtail-claude-agent-sdk-registered-tool-mcp-v1`,
+`private-loopback-http` plus `mediated-stdio-proxy`, and MCP `2025-11-25`.
+Every one of those axes is pinned exactly by this route's one-point claims, so
+the compiled platform is the one axis a build can vary: only the Darwin arm64
+target the capsules ran on projects the qualified truth, and every other
+target publishes the unqualified truth with the reason `platform_not_admitted`.
+The qualified dimensions are exactly what the capsule proved: `ExactOneShot`
+one-shot permission (one Allow dispatched `desktop/reconcile` exactly once
+with unchanged `{}` and correlated its fixed `{"ok":true}` result; one Deny
+completed with zero dispatches; the cancellation and stale/foreign controls
+dispatched zero times and ended provider-failed as pass evidence),
+`NoProgress`, and `NotCarried` selected-skill delivery. The mediation-kind row
+moved from `Unknown`/`Unavailable` to route-validation support on the accepted
+platform. The capsule's cleanup was the accepted Contract 019 route-qualified
+degraded macOS posture — reapers joined and no lease, listener, or process
+survived — and it is never renamed `Clean`. Deterministic route tests freeze
+the source, task, capsule, PR, review, merge, closeout, courier, attempt,
+dispatch, and correlation identities; the frozen transcript reproduces the
+Allow shape and every zero-dispatch control exactly.
 
 ## Failed-Open Receipts
 
@@ -617,8 +635,10 @@ separates every bounded rejection class, deadline, joined cleanup, and
 unconfirmed cleanup. The deterministic route identifies no producer defect,
 so the live rejection cause stays unresolved without a separately authorized
 gate; a future live capsule must record the receipt fields instead of prose.
-Both Contract 061 registered-tool cells remain `No`, owned by this producer
-gap.
+That gate has since run and passed: the Card 318 capsule (Research 301)
+qualified both Contract 061 registered-tool cells on the exact tuple above,
+and this receipt stays the typed producer-evidence surface for any future
+failed open.
 
 ## Selected Skill Bundles
 
@@ -658,12 +678,14 @@ redeclare-bind a selected bundle.
 
 Contract 061 publishes `registered-tool.selected-skill-bundle` as a
 session-start row only for this exact prepared Claude route. That transport
-row is available from the provider-free route evidence; the Card 125
-provider-spawned registered-tool carrier and its mediation rows remain
-`Unqualified / real_route_gate_pending`. Card 084 consumer-declared MCP
-servers remain a separate input and topology. This row does not claim that a
-live provider followed or executed the selected content; the real route gate
-remains separately authorized.
+row is available from the provider-free route evidence and stays independent
+of the registered-tool route qualification. The Card 125 provider-spawned
+registered-tool carrier and its mediation rows are now qualified for the
+exact Card 318 tuple (see Registered Tools), but the accepted capsule carried
+no selected skill bundle, so the qualified route records `NotCarried` skill
+delivery. Card 084 consumer-declared MCP servers remain a separate input and
+topology. This row still does not claim that a live provider followed or
+executed the selected content.
 
 ## Close And The Descendant Tree
 

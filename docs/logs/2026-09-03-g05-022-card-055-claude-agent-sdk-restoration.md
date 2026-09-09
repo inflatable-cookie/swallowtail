@@ -162,7 +162,7 @@ merged at `493f8194` after independent exact-head review, unpausing the
 ## Authority
 
 - [g05.022](../roadmaps/g05/022-claude-agent-dual-route-parity.md)
-- [card 055](../roadmaps/g05/batch-cards/055-claude-agent-sdk-provider-free-foundation.md)
+- [card 055](../roadmaps/g05/022-claude-agent-dual-route-parity.md)
 - [Contract 009](../contracts/009-async-operation-lifecycle.md)
 - [Contract 010](../contracts/010-execution-host-services-and-inputs.md)
 - [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md)

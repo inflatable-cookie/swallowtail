@@ -99,7 +99,7 @@ provider, or compile Batch 9.5.
 ## Authority
 
 - [stopped gate](../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
-- [planned card 034](../roadmaps/g05/batch-cards/034-contract-061-kimi-package-completion.md)
+- [planned card 034](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [Batch 9.4 package expansion](../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)

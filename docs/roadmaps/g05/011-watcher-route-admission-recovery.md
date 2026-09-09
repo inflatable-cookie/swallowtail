@@ -31,11 +31,6 @@ Contracts 059-060 are not redesigned. No capability claim, provider contact,
 login, paid work, credential read, or new live attempt belongs to either
 recovery card.
 
-## Batch Cards
-
-- [026 Claude Watcher Tool Admission Evidence And Repair](batch-cards/026-claude-watcher-tool-admission-evidence-and-repair.md) — complete; hypothesis rejected; `--bare` blocker named
-- [029 Claude Watcher Credential-Preserving Isolation](batch-cards/029-claude-watcher-credential-preserving-isolation.md) — complete; evidence stop; no candidate; no production behavior change
-
 ## Acceptance
 
 - [x] exact watcher MCP tool admission is proved provider-free

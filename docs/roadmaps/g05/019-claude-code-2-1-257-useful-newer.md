@@ -35,11 +35,6 @@ session, watcher authorization widening, skill, papercut, Research 213,
 g05.009 card 034, release, feature-specific exact-set widening, or
 execution of downloaded official binaries.
 
-## Batch Cards
-
-- [046 Claude Code 2.1.257 Identity](batch-cards/046-claude-code-2-1-257-identity.md) — completed
-- [047 Claude Code 2.1.257 Claim](batch-cards/047-claude-code-2-1-257-claim.md) — completed
-
 ## Acceptance
 
 - [x] exact official identity is reproducible

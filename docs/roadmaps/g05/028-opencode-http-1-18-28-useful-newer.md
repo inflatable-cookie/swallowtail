@@ -40,11 +40,6 @@ One family only. No OpenCode provider contact, prompt, login, live server,
 install, host update, new operation, web-search reopening, Contract 061
 Candidate L projection, Gemini deferral lift, or release work.
 
-## Batch Cards
-
-- [077 OpenCode HTTP 1.18.28 Identity](batch-cards/077-opencode-http-1-18-28-identity.md) — complete; compatible `surface-19` admitted
-- [078 OpenCode HTTP 1.18.28 Claim](batch-cards/078-opencode-http-1-18-28-claim.md) — complete; qualified through `1.18.28`
-
 ## Dispatch Manifest
 
 Promoted planning commit: the `main` commit that introduces this file.
@@ -55,7 +50,7 @@ Promoted planning commit: the `main` commit that introduces this file.
 | Prerequisites | Research 284; frozen `opencode-1.18.20` and historical compatibility corpora; current `main`; npm/GitHub consensus on official `1.18.28` |
 | Completion conditions | Research 285 with official identity for every hop `1.18.21..=1.18.28`, host observation, deterministic mapped artifact-tree ledger, one segment outcome, and zero claim edits; card result filled; named validation green |
 | Owned mutable paths | `docs/research/285-*.md`; `docs/research/README.md` one index line; `crates/swallowtail-adapter-opencode/tests/**` identity fixtures and delta-ledger tests only; card 077 result/status; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/roadmaps/standing-lanes.md`, `docs/logs/README.md`; coordinator edits these at closeout |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/generation-index.md`, `docs/roadmaps/standing-lanes.md`, `docs/logs/README.md`; coordinator edits these at closeout |
 | Forbidden paths | `crates/swallowtail-adapter-opencode/src/**`; existing historical fixture contents; every other crate; route/feature matrices; guides; `CHANGELOG.md`; contracts; architecture; Candidate L projection surfaces |
 | Approved concurrent siblings | g05.009 cards 074, 075, and 076 |
 | Serial edges | card 078 follows only after card 077 records an admitted segment |
@@ -77,7 +72,7 @@ Research 285, so card 078 is the serial follow-on.
 | Prerequisites | card 077 merged at `99e91aa8` with the admitted `surface-19` extension; Research 285 and the `opencode-1.18.28` corpus on `main` |
 | Completion conditions | `OPENCODE_LATEST_QUALIFIED_VERSION` raised only to the admitted ceiling; every published hop `1.18.21..=1.18.28` plus the first later unverified point tested; claim fixtures, route and feature matrices, prepared guide, architecture ceilings, `CHANGELOG.md` `[Unreleased]`, standing-lane claim text, and one claim log updated; identity and claim as two commits in one PR; pre-push official-latest recheck applied under Contract 029's In-Run Latest Movement rule without reopening the frozen identity segment |
 | Owned mutable paths | `crates/swallowtail-adapter-opencode/src/selection.rs` and its selection tests; `crates/swallowtail-adapter-opencode/tests/**` claim fixtures; `docs/guides/opencode-http-prepared-integration.md`; `docs/guides/provider-route-matrix.md` and `provider-solution-feature-matrix.csv` OpenCode cells only; architecture ceiling lines naming this bound; `CHANGELOG.md` `[Unreleased]`; the standing-lane OpenCode claim paragraph; one new `docs/logs/` claim entry plus its index line; card 078 result and status; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, the rest of `docs/roadmaps/standing-lanes.md`; coordinator edits these at closeout |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/generation-index.md`, the rest of `docs/roadmaps/standing-lanes.md`; coordinator edits these at closeout |
 | Forbidden paths | OpenCode Contract 061 projection surfaces and Candidate L rows; web-search work; every other crate; contracts; historical fixture contents; any public API change |
 | Approved concurrent siblings | g05.009 cards 074, 075, and 076 |
 | Serial edges | none after card 077 |

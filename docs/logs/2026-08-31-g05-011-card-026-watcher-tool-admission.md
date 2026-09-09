@@ -41,8 +41,8 @@ skills, MCP servers, or settings.
 
 ## Authority
 
-- [card 026](../roadmaps/g05/batch-cards/026-claude-watcher-tool-admission-evidence-and-repair.md)
-- [card 029](../roadmaps/g05/batch-cards/029-claude-watcher-credential-preserving-isolation.md)
+- [card 026](../roadmaps/g05/011-watcher-route-admission-recovery.md)
+- [card 029](../roadmaps/g05/011-watcher-route-admission-recovery.md)
 - [g05.011](../roadmaps/g05/011-watcher-route-admission-recovery.md)
 - [Contract 059](../contracts/059-operation-scoped-process-watchers.md)
 - [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md)

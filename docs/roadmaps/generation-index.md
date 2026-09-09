@@ -144,44 +144,48 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 38 roadmaps: 28 completed milestones, honest evidence stops at 002,
-003, 007, and 011, and ready milestones at 029, 031, 034, 036, 038.
-Milestone 035 is active. Its shared registered-tool kernel and route bindings
+g05 has 42 tasks: 28 completed tasks, honest evidence stops at 002,
+003, 007, and 011, ready tasks at 029, 031, 034, 036, and 038, and planned
+tasks at 035, 039, 040, 041, and 042.
+g05.035 is planned. Its shared registered-tool kernel and route bindings
 are delivered;
 Card 153's provider-free Claude SDK exact-tuple qualification is complete at
 merged head `b35e4c38`; Card 154 is complete with candidate merge
-`49c9e3b2`; Card 130 remains a planned producer seam. The dependent Desktop
-exact-tree acceptance gate follows; no tag authority follows.
-Milestone 034 makes the release lane short and dependable and CI fast (cards
-109-113). Milestone 033 completed the `v0.4.3` patch release; Card107's source
+`49c9e3b2`; g05.041 remains a planned persistent-permission producer seam and
+g05.042 the remaining-ACP-routes seam. The dependent Desktop
+exact-tree acceptance passed 2026-09-09 under Card 323 (evidence in g05.036);
+the exact-SHA tag decision remains with the operator and no tag authority follows.
+g05.034 makes the release lane short and dependable and CI fast (cards
+109-113 complete; acceptance awaits the lane wall-clock record). g05.033 completed the `v0.4.3` patch release; Card107's source
 consumer passed at `cbd4ddc8` and its tag capsule was relayed to Acowtancy.
-Milestone 030 completed the
+g05.030 completed the
 `v0.4.1` patch release carrying the Claude SDK editing session; cards 090-092
-are complete and `v0.4.1` is tagged at `c3cce750`. Milestone 029 makes
+are complete and `v0.4.1` is tagged at `c3cce750`. g05.029 makes
 `claude-agent.sdk` a full editing harness in the consumer's priority order;
 cards 080, 081, and 082 delivered the `v0.4.1` carrier, Bash mediation, and
-model/effort control; cards 083, 085, 086, 088, and 105 are ready and cards 084
-and 087 are planned behind their serial edges. Milestone 027 completed
+model/effort control; cards 083-086, 088, and 105 delivered (complete) and the
+qualified-ranges widening is held at the stopped 087 gate. g05.027 completed
 the Antigravity `1.1.26` identity run as an evidence stop after the Kimi stop;
-card 071 is complete at a `1.1.17` ceiling and card 072 is gated. Milestone 009
-has all 767 proved rows; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete. Milestone 028 is complete: card 077 admitted compatible
+card 071 is complete at a `1.1.17` ceiling and the follow-on claim stays gated
+with former card 072 retired. g05.009
+has all 767 proved rows; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete. g05.028 is complete: card 077 admitted compatible
 OpenCode HTTP `surface-19` and card 078 qualified that segment through
-`1.18.28`. Milestone 037 later raised the same `surface-19` through official
-`1.18.29`; unpublished `1.18.30` remains `UnverifiedNewer`. Milestones
+`1.18.28`. g05.037 later raised the same `surface-19` through official
+`1.18.29`; unpublished `1.18.30` remains `UnverifiedNewer`. Tasks
 004, 005, 012, 013, 014, 015, 016, 018, 019, 020, 028, and 037 are completed standing
 currentness. Research 276 records Kimi Code local server `0.40.1` as the first
 post-release standing candidate; g05.026 compiles that family, retargeted on
 2026-09-04 to official `0.41.0` after latest moved mid-run, and card 062 is
-complete as an evidence stop; card 063 is gated behind an admitted segment.
-Codex `0.152.1` was already frozen and qualified by g05.020 cards 048-049.
-Milestone 021 is complete; Research 281's fresh exact `b7f804b5` audit was
+complete as an evidence stop; the follow-on claim stays gated with former card
+063 retired behind an admitted segment.
+g05.021 is complete; Research 281's fresh exact `b7f804b5` audit was
 accepted through PR 198 head `2f4923b8`, merged as `835fe9ff`. Its 49-route
 candidate boundary includes both current-only routes. Candidate `56f3913a`
 passed exact-SHA CI, the external source consumer, and one operator-authorized
-authenticated Nucleus Agent Chat smoke on attempt one. Milestone 022
+authenticated Nucleus Agent Chat smoke on attempt one. g05.022
 is completed: card 055 restored the `claude-agent.sdk` route on card 061's
 pre-effect reap reservations with one enclosing cleanup guardian and merged
-through PR 196 at `493f8194`. Milestone 023 is completed: card 057 landed the
+through PR 196 at `493f8194`. g05.023 is completed: card 057 landed the
 provider-neutral root-exit versus owned-tree-empty distinction, card 058
 completed the breaking caller-bounded close seam, and card 059 stopped at an
 evidence stop after four native counterexamples falsified the candidate
@@ -192,12 +196,12 @@ stays root-only and adds no unsafe; entitlement or system-extension mechanisms
 are out of scope, not proved nonexistent. The operator accepted bounded
 root-only degraded cleanup on ordinary macOS: only `OwnedTreeEmpty` supports
 `Clean`; confirmed root completion is `Degraded`; unconfirmed root or an
-observed survivor is `Failed`. Milestone 024/card 060 then closes the narrower
+observed survivor is `Failed`. g05.024 then closes the narrower
 exact-head ownership gap: an unfinished joined task can transfer back to its
 exact selected host and scope for autonomous reap without blocking the caller
 or implying joined cleanup. PR 188 nevertheless merged despite rejected
 exact-head review, and PR 193 withdrew its route pending provider-neutral
-shared-runtime reservation/reapable-task authority. Milestone 025/card 061
+shared-runtime reservation/reapable-task authority. g05.025
 granted that authority before operation effects, made later valid
 exact-host/scope handoff immune to shutdown and capacity races, and proved the
 real local-host lifecycle without changing ordinary task ownership; it merged at
@@ -217,15 +221,14 @@ workflow-dispatch run 33853812785 passed all six jobs at that exact SHA. Card
 that SHA. The operator authorized and executed the annotated `v0.4.0` tag and
 push on 2026-09-04; tag-push CI run 33870017023 passed at the same SHA. The
 feature/currentness freeze is lifted. Publication stays unauthorized.
-Milestone 017 is
-completed operator A2 with card 043. Milestone 006 is completed
-credential-free repair. Milestone 008 is completed contract promotion.
-Milestone 010 is completed contract promotion with implementation unplanned.
-g05.001 is
-completed: it closed Research 255, the
+g05.017 is
+completed operator A2 with card 043. g05.006 is completed
+credential-free repair. g05.008 is completed contract promotion.
+g05.010 is completed contract promotion with implementation unplanned.
+g05.001 is completed: it closed Research 255, the
 operator decision packet, Contracts 058-059, and first-route dispositions.
-g05.002 stopped after Research 256's honest empty Qoder roster; cards 005-006
-remain planned. g05.003 has closed cards 007-009 and 014-016. Research 259 keeps hard
+g05.002 stopped after Research 256's honest empty Qoder roster; Qoder binding
+and acceptance are preserved as g05.039 and g05.040 behind that disposition.
 containment evidence but no longer imposes a hard-containment product gate:
 the operator clarified that watchers supervise ordinary host-managed processes
 and publish lifecycle rather than sandbox hostile descendants. Card 009's
@@ -339,7 +342,7 @@ post-open session semantics. The compound acknowledgement item retains its
 unresolved generic half-to-state and terminal not-observed corrections; no
 replacement shape is selected. The corrected interim 89-row ledger remains 74
 emitted, 14 withheld, and 1 undecided as reassessment evidence only. Candidate F is not promoted,
-card 034 is planned; not ready; blocked by the provider-operation observation
+card 034 is complete and folded into g05.009's evidence ledger; the Kimi follow-on scope stays held at the task-owned gate behind the provider-operation observation
 public-baseline decision. On 2026-09-04 the operator deferred that decision
 behind the candidate C audit and compiled planning-only audits 064-067 for
 breadth candidates C, E, I, and J; cards 064 and 067 are complete and
@@ -366,8 +369,7 @@ a promoted candidate; the later accepted `claude-agent.acp` gate led to card
 031, now complete through PR 141. The accepted Cline route-local gate promoted
 candidate G as card 032; PR 144 completed it at `18a6907e`. Card 033 then
 closed as an evidence stop without promoting candidate F or changing Rust, and
-the `kimi-code.acp` operator gate remains queued behind card 034, which is
-planned and not ready. g05.013 cards 035-036 qualify Codex exec and
+the `kimi-code.acp` operator gate remains held at g05.009's task-owned gate (former card 034 complete and folded). g05.013 cards 035-036 qualify Codex exec and
 app-server through official `0.152.0`. Research 265 selected Claude Code
 `2.1.252`. g05.014 cards 037-038 qualify both Claude Code axes through official
 `2.1.252` while keeping watcher exact `2.1.251`. Research 267 selected Pi
@@ -406,7 +408,7 @@ carrier routes, the operator chose on 2026-09-04 to compile one shared
 provider-operation observation gate; card 070 is complete as planning evidence,
 Chatterbox promoted it into Contract 061 on 2026-09-04, and runtime baseline
 card 073 is merged. Candidate I is promoted as card 074 and Candidate E Path A
-as card 075. Cards 074 and 075 are complete at 481 proved rows. Card 076 settled the Kimi compound acknowledgement design and Card 079 realized the shared baseline; Card 034 awaits readiness. Research 284 compiled g05.028 card 077 for OpenCode HTTP
+as card 075. Cards 074 and 075 are complete at 481 proved rows. Card 076 settled the Kimi compound acknowledgement design and Card 079 realized the shared baseline; card 034 is complete and folded, and the Kimi follow-on scope awaits readiness at g05.009's task-owned gate. Research 284 compiled g05.028 card 077 for OpenCode HTTP
 `1.18.28` identity-first currentness; g05.037 later qualified official `1.18.29`.
 
 ## Rollover Rule

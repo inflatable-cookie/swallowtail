@@ -24,9 +24,9 @@ collision_assert_no_imported_release_tags "$collision_iso_pass" 'successful isol
 collision_iso_fail=$collision_scratch/iso-fail
 collision_git "$collision_scratch" clone -q --no-tags \
   "$collision_fork" "$collision_iso_fail"
-collision_write_card \
+collision_write_task \
   "$collision_iso_fail" \
-  docs/roadmaps/g04/batch-cards/076-claude-code-2-1-238-identity.md \
+  docs/roadmaps/g04/076-claude-code-2-1-238-identity.md \
   '# 076 Claude Code identity'
 collision_git "$collision_iso_fail" add docs
 collision_git "$collision_iso_fail" commit -q -m 'stale currentness allocates 076'

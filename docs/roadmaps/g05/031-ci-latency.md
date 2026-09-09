@@ -1,6 +1,6 @@
 # g05.031 CI Latency
 
-Status: ready; `v0.4.1` is tagged; card 095 is ready; operator workflow authority granted 2026-09-05
+Status: ready; `v0.4.1` is tagged; card 095 work complete (PR 230 merged as `ba8275eb`); operator workflow authority granted 2026-09-05
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-05
@@ -25,44 +25,34 @@ configuration it needs, and nothing else.
 
 ## Runway
 
-1. Card 095 restructures CI: split the stable job into parallel jobs sharing
-   the rust-cache; make the pinned MSRV job clippy-only on pull requests and
+1. Card 095 restructured CI: split the stable job into parallel jobs sharing
+   the rust-cache; made the pinned MSRV job clippy-only on pull requests and
    full-test on `main` pushes and workflow-dispatch (release candidates);
-   shard nextest across runners; isolate the process-spawning sidecar suites
-   into their own shard; move every check that is not Apple Silicon
+   sharded nextest across runners; isolated the process-spawning sidecar suites
+   into their own shard; moved every check that is not Apple Silicon
    verified-target evidence to Linux runners.
+
+Folded evidence (g05.038): card 095 work complete through PR 230 merged as `ba8275eb`.
 
 ## Boundary
 
 The release floor keeps its full macOS pinned clippy-plus-test run on
 `main` pushes and release-candidate dispatches. Required-check names used by
-the merge gate change only with the coordinator's agreement in the same
-card. No test is removed or weakened; no gate command in
-`config/release.toml` changes.
+the merge gate change only with the coordinator's agreement. No test is
+removed or weakened; no gate command in `config/release.toml` changes.
 
-## Batch Cards
+## Folded card evidence (g05.038)
 
-- [095 CI Gate Restructure](batch-cards/095-ci-gate-restructure.md) — ready
-
-## Dispatch Manifest
-
-Promoted planning commit: the `main` commit that introduces this table.
-
-| Field | Card 095 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | `v0.4.1` tagged at `c3cce750`; operator workflow authority of 2026-09-05 |
-| Completion conditions | parallel stable jobs; nextest sharded with the process-spawning suites isolated; MSRV clippy-only on pull requests with the full pinned run on `main` pushes and workflow-dispatch; non-target checks on Linux; every prior step still runs on every PR; before-and-after timings recorded; required-check names documented and agreed with the coordinator before any branch-protection change |
-| Owned mutable paths | `.github/workflows/ci.yml`; `.config/nextest.toml`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | every `crates/**` path; `config/release.toml` and `scripts/`; contracts; test content |
-| Approved concurrent siblings | card 094's remaining sweep (PR 227 and follow-ups) |
-| Serial edges | none |
-| Worker capability class | CI and workflow engineer with GitHub Actions and nextest experience; no credentials beyond the repo workflow |
-| Acceptance evidence | the card's own PR runs green under the new layout; timing comparison on one representative PR |
-| Review oracle | no step removed; release floor intact on `main` pushes and dispatches |
-| Stop conditions | a required check cannot be preserved in strength; branch protection needs a change the coordinator does not agree to |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+Card 095 completed against `v0.4.1` tagged at `c3cce750` under the operator
+workflow authority of 2026-09-05, through PR 230 merged as `ba8275eb`.
+Delivered: parallel stable jobs sharing the rust-cache; nextest sharded with
+the process-spawning suites isolated; MSRV clippy-only on pull requests with
+the full pinned run on `main` pushes and workflow-dispatch; non-target checks
+on Linux; every prior step still running on every PR; before-and-after timings
+recorded on one representative PR; required-check names documented and agreed
+with the coordinator before any branch-protection change. Card 094's remaining
+sweep (PR 227 and follow-ups) ran as the approved concurrent sibling. No step
+removed; release floor intact on `main` pushes and dispatches.
 
 ## Acceptance
 
@@ -73,59 +63,31 @@ Promoted planning commit: the `main` commit that introduces this table.
 - [ ] the required-check set for merge is documented and unchanged in
       strength
 
-## Card 104 Manifest
+### Card 104 held gate (task-owned)
 
-Promoted planning commit: the `main` commit that introduces this section.
-Ready now; concurrent with the g05.029 runway.
+Card 104 stopped as a task-owned held gate; it was ready concurrent with the
+g05.029 runway. Recorded basis: `v0.4.2` tagged with cards 094 and 103 merged.
+Scope: four surfaces classified and fixed at the class; 20+ loaded runs per
+binary clean; card 094's list annotated; loaded-run logs and classification
+table with anchors as evidence. `swallowtail-adapter-claude-agent` stays with
+the g05.029 runway; every other crate, baselines, and contracts stay out. A
+real leak needing a shared runtime change stops the gate.
 
-| Field | Card 104 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | `v0.4.2` tagged; cards 094 and 103 merged |
-| Completion conditions | four surfaces classified and fixed at the class; 20+ loaded runs per binary clean; card 094's list annotated |
-| Owned mutable paths | `crates/swallowtail-adapter-kimi-platform/tests/**`; `crates/swallowtail-host-local/tests/**`; `crates/swallowtail-host-local/src/watcher_service/**` and `crates/swallowtail-adapter-kimi-platform/src/**` ONLY for a disclosed real leak; `docs/roadmaps/g05/batch-cards/094-*.md` deferred list annotation; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
-| Forbidden paths | `swallowtail-adapter-claude-agent` (g05.029 runway owns it); every other crate; baselines; contracts |
-| Approved concurrent siblings | g05.029 cards 082 to 088 |
-| Serial edges | none |
-| Worker capability class | Rust worker with concurrency discipline; frontier-tier |
-| Acceptance evidence | loaded-run logs; classification table with anchors |
-| Review oracle | the card's invariant |
-| Stop conditions | a real leak needs a shared runtime change (return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+### Card 139 held gate (task-owned)
 
-## Card 139 Manifest
+Card 139 stopped as a task-owned held gate. Recorded basis: the 2026-09-08
+papercut on current `main`. Scope: reproduction under load or an anchored
+explanation; bounded process output and exit evidence on fixture setup failure;
+deterministic startup and listener readiness signals; 20+ loaded runs clean;
+papercut retired; the loaded-run log naming the failure's own cause as
+evidence. Every other crate, baselines, contracts, and the live gate stay out.
+A cause in shared runtime stops the gate.
 
-| Field | Card 139 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | the 2026-09-08 papercut; current `main` |
-| Completion conditions | reproduction under load or an anchored explanation; bounded process output and exit evidence on fixture setup failure; deterministic startup and listener readiness signals; 20+ loaded runs clean; papercut retired |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/tests/**`; `crates/swallowtail-adapter-claude-agent/src/**` only for a disclosed real defect; `PAPERCUTS.md`; this card's `## Result` |
-| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
-| Forbidden paths | every other crate; baselines; contracts; the live gate |
-| Approved concurrent siblings | card 108; the standing currentness lane |
-| Serial edges | none |
-| Worker capability class | Rust worker with concurrency discipline; frontier-tier |
-| Acceptance evidence | the loaded-run log; the failure's own cause named |
-| Review oracle | the card's invariant |
-| Stop conditions | the cause is in shared runtime (return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+### Card 141 completed (folded)
 
-## Card 141 Manifest
-
-| Field | Card 141 |
-| --- | --- |
-| Readiness | complete; PR 292 merged at `b68a1ccc757eb6adf768fb7ae3d330c5daef1547` |
-| Prerequisites | card 139 merged; current `main` |
-| Completion conditions | close no longer pays a fixed `IO_TIMEOUT`; before/after measurements recorded; watcher behaviour unchanged; every teardown guarantee preserved; papercut retired |
-| Owned mutable paths | `crates/swallowtail-host-local/src/operation_bridge/**`; `crates/swallowtail-host-local/src/watcher_bridge/**` only where the shared listener requires it; `crates/swallowtail-host-local/tests/**`; `crates/swallowtail-adapter-claude-agent/tests/**` timing assertions only; `PAPERCUTS.md`; this card's `## Result` |
-| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
-| Forbidden paths | adapters beyond the named test timings; contracts; baselines; the live gate |
-| Approved concurrent siblings | anything outside `swallowtail-host-local` |
-| Serial edges | none |
-| Worker capability class | Rust worker with concurrency discipline; frontier-tier |
-| Acceptance evidence | before/after close measurements on registered and watcher cases |
-| Review oracle | the card's invariant |
-| Stop conditions | waking the read requires a change to the single-listener topology (return to Chatterbox) |
-| Escalation owner | operator via Chatterbox |
+Card 141 completed through PR 292 merged at
+`b68a1ccc757eb6adf768fb7ae3d330c5daef1547`, on card 139 merged and current
+`main`. Delivered: close no longer pays a fixed `IO_TIMEOUT`;
+before/after measurements recorded; watcher behaviour unchanged; every teardown
+guarantee preserved; papercut retired. Evidence: before/after close
+measurements on registered and watcher cases.

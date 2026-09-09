@@ -142,12 +142,6 @@ different SHA is accepted.
 - source-only distribution includes no crates.io publication, GitHub Release,
   binaries, sidecars, installers, or model artifacts
 
-## Batch Cards
-
-- [050 v0.3.3 To Candidate Compatibility And Freeze Audit](batch-cards/050-v0-3-3-to-candidate-compatibility-and-freeze-audit.md) — completed at exact `b7f804b5`; accepted via PR 198 exact head `2f4923b8`, merged as `835fe9ff`
-- [051 v0.4.0 Candidate Preparation And Exact-SHA CI](batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md) — complete; PR 201 exact head `10d9b7a0` accepted and merged as immutable candidate `56f3913a`; canonical workflow-dispatch CI run 33853812785 passed all six jobs at that exact SHA; no release execution or tag authority
-- [052 v0.4.0 Consumer Proof And Operator Tag Gate](batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md) — complete; exact source consumer and one-attempt authenticated Nucleus Agent Chat smoke passed against candidate `56f3913a`; operator tagged `v0.4.0` on 2026-09-04
-
 ## Acceptance
 
 - every semantic API and guaranteed-behavior delta from `v0.3.3` is inventoried

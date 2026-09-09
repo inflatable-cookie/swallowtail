@@ -129,11 +129,11 @@ Neither gate grants Kimi authority.
 
 ## Authority
 
-- [completed card 033](../roadmaps/g05/batch-cards/033-contract-061-card-032-closeout-and-kimi-reassessment.md)
-- [completed card 032](../roadmaps/g05/batch-cards/032-contract-061-cline-command-code-copilot-goose-package-completion.md)
+- [completed card 033](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
+- [completed card 032](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [Batch 9.4 checkpoint](../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
-- [card 030 acknowledgement reassessment](../roadmaps/g05/batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md)
+- [card 030 acknowledgement reassessment](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [Cline active-observation gate](../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
 - [reviewed census](../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)

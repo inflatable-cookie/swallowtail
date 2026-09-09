@@ -63,7 +63,7 @@ No provider, live, release, tag, or merge work.
 
 ## Authority
 
-- [card 056](../roadmaps/g05/batch-cards/056-claude-agent-acp-negotiated-model-options-observation.md)
+- [card 056](../roadmaps/g05/022-claude-agent-dual-route-parity.md)
 - [Research 279](../research/279-claude-agent-acp-capability-census-and-tranche-selection.md)
 - [ACP parity delivery gate](../triage/2026-09-02-claude-agent-acp-parity-gate.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)

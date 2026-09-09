@@ -1,7 +1,7 @@
 # g04.024 Kimi Platform Cards Compiled
 
 Date: 2026-08-21
-Roadmap: `../roadmaps/g04/024-hosted-api-key-kimi-platform-chat.md`
+Roadmap: `../roadmaps/archive/g04.md`
 Cards: `../roadmaps/g04/batch-cards/076-kimi-platform-chat-addable-descriptor.md`,
 `../roadmaps/g04/batch-cards/077-kimi-platform-chat-admission-and-prepare.md`,
 `../roadmaps/g04/batch-cards/078-kimi-platform-chat-refresh-catalogue-and-047.md`

@@ -125,8 +125,8 @@ merge.
 
 ## Authority
 
-- [card 059](../roadmaps/g05/batch-cards/059-unix-owned-tree-attestation.md)
-- [card 057](../roadmaps/g05/batch-cards/057-owned-process-tree-completion-evidence.md)
+- [card 059](../roadmaps/g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
+- [card 057](../roadmaps/g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
 - [g05.023](../roadmaps/g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
 - [Contract 010](../contracts/010-execution-host-services-and-inputs.md)
 - [Contract 019](../contracts/019-embedded-sdk-and-cloud-client-boundary.md)

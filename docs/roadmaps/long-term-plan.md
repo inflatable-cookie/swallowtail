@@ -26,7 +26,7 @@ Updated: 2026-08-20
 10. **Release discipline** — compatibility policy, versioning, and consumer
     upgrade evidence after the API earns stability.
 
-Each stage requires its own promoted contracts and bounded roadmap cards.
+Each stage requires its own promoted contracts and bounded tasks.
 
 The first cross-adapter tranche and xAI follow-up are complete: OpenCode attached HTTP/SSE,
 Anthropic direct HTTP/SSE, Gemini CLI ACP, and llama.cpp attached self-hosted
@@ -157,9 +157,9 @@ release span. Exact baseline, behavior milestones, exclusions, and
 latest-qualified points need frozen evidence before any descriptor range is
 published.
 
-These stages normally become numbered roadmaps inside the active generation.
+These stages normally become numbered tasks inside the active generation.
 They do not each create a generation. A generation rolls over near the 30-50
-roadmap range or through explicit operator-authorized restructuring.
+task range or through explicit operator-authorized restructuring.
 
 ## g01 Disposition
 
@@ -273,7 +273,7 @@ inventory. That inventory ends with 83 closed dispositions and two parked
 Bedrock items. Contract 029 currentness remains standing.
 
 g05 starts with harness skill visibility and dependable process observability.
-The first milestone inventories exact prompt-free production-harness surfaces.
+The first task inventories exact prompt-free production-harness surfaces.
 Later work must separate distribution membership, host configuration, model
 visibility, watcher lifecycle, process authority, activity projection, and
 turn-completion enforcement before contracts or implementation. New routes,
@@ -284,4 +284,4 @@ stay outside the programme.
 
 Implement the active task named by the [roadmaps front door](README.md#next-task).
 The long-term plan stays the staged adoption sequence; it does not own the
-current batch pointer.
+current task pointer.

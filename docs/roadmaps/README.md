@@ -5,21 +5,22 @@ shape.
 
 ## Current Generation
 
-- [g05 Agent Runtime Surfaces And Route Truth](g05/README.md) — active
-- [g04 Route Readiness And Connection Admission](g04/README.md) — completed
-- [g03 Compatibility Maintenance And Consumer-Proven Hardening](g03/README.md) — completed
-- [g02 Swallowtail Stabilization And Release Discipline](g02/README.md) — completed
-- [g01 Swallowtail Foundation](g01/README.md) — completed
+- [g05 Agent Runtime Surfaces And Route Truth](g05/README.md) — active; the sole expanded generation
 - [Generation Index](generation-index.md)
 - [Long-Term Plan](long-term-plan.md)
+
+Closed generations live only as roll-ups under
+[archive/](archive/): [g04](archive/g04.md), [g03](archive/g03.md),
+[g02](archive/g02.md), [g01](archive/g01.md).
 
 ## Next Task
 
 [g05.038 Flattened Task Switchover](g05/038-flattened-task-switchover.md) is
 ready under the operator's one-time migration authority. It changes planning,
-instruction, template, and local-checker surfaces only. The independent Desktop
-exact-tree gate continues against candidate merge `49c9e3b2`; no tag follows
-without a separate exact-SHA operator decision.
+instruction, template, and local-checker surfaces only. Desktop Card 323
+completed exact-tree acceptance of candidate merge `49c9e3b2` on 2026-09-09
+(evidence in g05.036); the exact-SHA tag decision remains a separate explicit
+operator decision with no tag authority from the migration.
 
 ## Standing Lanes
 
@@ -33,25 +34,25 @@ first standing lane. It does not keep a generation open.
 - [status-grammar.md](./status-grammar.md) — Status buckets and census phrases
   for `qa:docs:roadmaps:status`
 - [long-term-plan.md](./long-term-plan.md) — staged multi-consumer adoption
-- [per-route-feature-completion.md](g04/per-route-feature-completion.md) —
-  route-local feature delivery programme
-- [per-route-feature-inventory.md](g04/per-route-feature-inventory.md) — live
-  disposition counts and parallel qualification queue
+- [archive/per-route-feature-completion.md](archive/per-route-feature-completion.md) —
+  route-local feature delivery programme (retained with the g04 roll-up)
+- [archive/per-route-feature-inventory.md](archive/per-route-feature-inventory.md) —
+  past disposition counts and parallel qualification queue (retained with the g04 roll-up)
 - [standing-lanes.md](standing-lanes.md) — generation-independent lanes
 - [backlog/README.md](backlog/README.md) — deferred work and promotion gates
-- [g01/README.md](g01/README.md) — completed foundation generation
-- [g02/README.md](g02/README.md) — completed stabilization, provider-wide
-  facade, activity, compatibility, and lifecycle generation
-- [g03/README.md](g03/README.md) — completed compatibility-maintenance and
-  consumer-proven hardening generation
-- [g04/README.md](g04/README.md) — completed route-readiness and
-  connection-admission generation
+- [archive/g01.md](archive/g01.md) — completed foundation generation roll-up
+- [archive/g02.md](archive/g02.md) — completed stabilization, provider-wide
+  facade, activity, compatibility, and lifecycle generation roll-up
+- [archive/g03.md](archive/g03.md) — completed compatibility-maintenance and
+  consumer-proven hardening generation roll-up
+- [archive/g04.md](archive/g04.md) — completed route-readiness and
+  connection-admission generation roll-up
 - [g05/README.md](g05/README.md) — active watchers, bounded skill inventory,
   feature projection, and route-currentness generation
 
 ## Status And Census
 
-Batch-card and milestone `Status:` lines, plus the active generation census in
+Task `Status:` lines, plus the active generation census in
 `generation-index.md`, must match
 [status-grammar.md](./status-grammar.md). That note names the live regexes in
 `scripts/check-roadmap-status-drift.py`. `gated` is detail after an accepted
@@ -59,6 +60,6 @@ bucket, not a status by itself.
 
 ## Generation Shape
 
-Generations normally collect 30-50 numbered roadmaps. Batch cards sit inside
-those roadmaps and do not count toward the generation range. A phase boundary
+Generations normally collect 30-50 numbered tasks (`gNN.NNN` files directly
+under `gNN/`). There is no nested card level. A phase boundary
 does not imply a generation rollover.

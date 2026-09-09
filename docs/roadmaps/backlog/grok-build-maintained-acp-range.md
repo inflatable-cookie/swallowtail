@@ -20,15 +20,14 @@ separate private task-control behavior revision.
 
 ## Preserved Evidence
 
-- [source roadmap g01.047](../g01/047-grok-build-maintained-acp-range.md)
-- [card 137 exact corpus](../g01/batch-cards/137-grok-build-range-corpus.md)
-- [card 138 authentication gate](../g01/batch-cards/138-grok-delegated-authentication-and-access-qualification.md)
-- [card 139 discovery and dispatch](../g01/batch-cards/139-grok-installed-discovery-and-dispatch.md)
-- [card 140 production driver](../g01/batch-cards/140-grok-acp-production-driver.md)
-- [card 141 conformance](../g01/batch-cards/141-grok-range-conformance-and-closeout.md)
+- [source roadmap g01.047](../archive/g01.md) (g01 compacted g05.038; full tree in git history)
+- cards 137-141 (corpus, authentication gate, discovery and dispatch, production driver, conformance): planned under g01.047, superseded by the Promotion Result below; no separate files survive
 - [archived Spec 003](../../specs/archive/003-delegated-acp-authentication-activation.md)
 
 ## Proposed Approach
+
+Superseded: roadmap g02.043 and cards 142-145 replaced the held g01 execution
+plan (see Promotion Result). Retained for the record:
 
 Resume card 138 first. Prove activation-only delegated subscription access
 against the frozen exact artifact without login, API-key fallback, prompt, or

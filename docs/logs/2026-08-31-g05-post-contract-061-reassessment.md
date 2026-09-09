@@ -82,5 +82,5 @@ readiness rubric without invented architecture or scope.
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
 - [g05 roadmap](../roadmaps/g05/README.md)
 - [g05.008 closeout](../roadmaps/g05/008-consumer-route-feature-and-control-projection.md)
-- [card 021](../roadmaps/g05/batch-cards/021-consumer-route-feature-and-control-projection-contract.md)
+- [card 021](../roadmaps/g05/008-consumer-route-feature-and-control-projection.md)
 - [consumer projection census synthesis](../triage/2026-08-30-consumer-route-feature-and-option-projection.md)

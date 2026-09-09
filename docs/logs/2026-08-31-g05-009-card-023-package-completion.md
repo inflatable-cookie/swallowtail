@@ -69,7 +69,7 @@ facade, ledger, withholding, validation, and stop boundary is closed.
 
 - [PR 133](https://github.com/inflatable-cookie/swallowtail/pull/133)
 - [exact-head review](https://github.com/inflatable-cookie/swallowtail/pull/133#issuecomment-5479727867)
-- [card 023](../roadmaps/g05/batch-cards/023-contract-061-codex-openai-package-completion.md)
+- [card 023](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [Batch 9.4 package expansion](../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)

@@ -84,7 +84,7 @@ and unpausing g05.021 with card 050 ready.
 ## Authority
 
 - [g05.025](../roadmaps/g05/025-reserved-reapable-task-lifecycle.md)
-- [card 061](../roadmaps/g05/batch-cards/061-reserved-reapable-task-runtime.md)
+- [card 061](../roadmaps/g05/025-reserved-reapable-task-lifecycle.md)
 - [Contract 009](../contracts/009-async-operation-lifecycle.md)
 - [Contract 010](../contracts/010-execution-host-services-and-inputs.md)
 - [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md)

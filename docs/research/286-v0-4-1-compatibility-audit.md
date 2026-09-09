@@ -736,7 +736,7 @@ A	docs/roadmaps/g05/028-opencode-http-1-18-28-useful-newer.md
 A	docs/roadmaps/g05/029-claude-sdk-interactive-parity.md
 A	docs/roadmaps/g05/030-v0-4-1-release-readiness.md
 M	docs/roadmaps/g05/README.md
-M	docs/roadmaps/g05/batch-cards/034-contract-061-kimi-package-completion.md
+M	docs/roadmaps/g05/009-contract-061-consumer-projection-realization.md
 M	docs/roadmaps/g05/batch-cards/051-v0-4-0-candidate-preparation-and-exact-sha-ci.md
 M	docs/roadmaps/g05/batch-cards/052-v0-4-0-consumer-proof-and-operator-tag-gate.md
 A	docs/roadmaps/g05/batch-cards/062-kimi-code-local-server-0-40-1-identity.md

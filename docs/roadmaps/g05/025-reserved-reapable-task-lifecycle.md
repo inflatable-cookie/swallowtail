@@ -55,10 +55,6 @@ caller deadline can never fall back to blocking task drop.
 - Do not restore `claude-agent.sdk`, merge, tag, publish, run a provider session,
   or resume release readiness in this milestone's first batch.
 
-## Batch Card
-
-- [061 Reserved Reapable Task Runtime](batch-cards/061-reserved-reapable-task-runtime.md) — complete; merged at `53153af1`; provider-neutral reservation, cancellation-safe join, real local-host lifecycle, and shutdown-race proof
-
 ## Adapter Re-entry Dependency
 
 g05.022 card 055 was the sole adapter implementation card. It was blocked until

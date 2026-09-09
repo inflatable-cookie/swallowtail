@@ -1,6 +1,6 @@
 # g05.029 Claude SDK Interactive Parity
 
-Status: ready; cards 080-082 delivered; cards 083-088 promoted with manifests 2026-09-06
+Status: ready; runway items delivered (cards 080-086, 088, 089, 105, 108, 119-121, 124 complete); qualified-ranges widening held at the stopped 087 gate; card-level dispatch retired by g05.038
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-06
@@ -34,22 +34,22 @@ visibility holds only in `default` and `plan`; the guide states this.
 
 ## Runway (priority order from the consumer requirement)
 
-1. Card 080: read-write session (`Edit`, `Write`, `MultiEdit`) through
+1. Read-write session (delivered as card 080): (`Edit`, `Write`, `MultiEdit`) through
    per-call admission on a read-write lease, `permissionMode` at open, and
    `setPermissionMode` mid-session. Carrier for `v0.4.1`.
-2. Card 081: Bash under mediation with intact tool input — delivered through PR 233 at `97f37e4d`.
-3. Card 082: mid-session model and effort change with confirmed values.
-4. Card 083: resume, `resumeSessionAt`, and session listing; fork optional.
-5. Card 084: client MCP servers on open.
-6. Card 085: Grok `grok-build.acp` answerable permission requests, or an
-   explicit labelled activity-only posture.
-7. Card 086: identity research on discovered native Claude Code and
-   discovered or minimally bundled Node against the SDK wrapper; then card
-   087 moves the five SDK axes from qualified-only exact pins to Codex-style
-   qualified ranges with stable-newer allowed.
-8. Card 088: install guidance surfaced through discovery diagnostics for
+2. Bash under mediation with intact tool input (delivered as card 081 through PR 233 at `97f37e4d`).
+3. Mid-session model and effort change with confirmed values (delivered as card 082).
+4. Resume, `resumeSessionAt`, and session listing; fork optional (delivered as card 083: resume as Contract 017 resume with lease cwd and account checks).
+5. Client MCP servers on open (delivered as card 084: declared MCP servers, mediated MCP tools, per-server status).
+6. Grok `grok-build.acp` answerable permission requests, or an
+   explicit labelled activity-only posture (delivered as card 085; stable matrix disposition remains `No`).
+7. Identity research on discovered native Claude Code and
+   discovered or minimally bundled Node against the SDK wrapper (delivered as card 086);
+   then the five SDK axes move from qualified-only exact pins to Codex-style
+   qualified ranges with stable-newer allowed (held at the stopped card 087 gate: Research 287 admits no range).
+8. Install guidance surfaced through discovery diagnostics for
    Claude Code, Codex, and Grok, after one provider-neutral vocabulary
-   amendment.
+   amendment (delivered as card 088).
 
 Out of scope for the whole roadmap: hosted OAuth in the application, API-key
 routes, Bedrock.
@@ -58,51 +58,39 @@ routes, Bedrock.
 
 Items 1 and 2 are additive under Contract 036 (default unchanged, opt-in per
 profile, no public item removed), so they ship as patch `v0.4.1`. When card
-080 merges, Chatterbox compiles a `v0.4.1` release-readiness roadmap on the
+080 merged, Chatterbox compiled the `v0.4.1` release-readiness roadmap (g05.030) on the
 `v0.4.0` precedent: exact-head review, the eleven local gates, exact-SHA CI,
 the external source consumer, and one operator-authorized Bovine smoke.
-Cards 081-084 target `v0.4.2`; 085-088 follow their evidence. Nothing here
+Cards 081-084 targeted `v0.4.2`; 085-088 followed their evidence. Nothing here
 forces a minor.
 
-## Batch Cards
+## Folded Card Evidence (g05.038)
 
-- [124 Claude SDK Identity Lookup Bound And Evidence Bounds](batch-cards/124-claude-sdk-identity-lookup-bound-and-evidence-bounds.md) — ready; serial after card 121; two card 120 review precision items; precedes the `v0.4.4` candidate
-- [119 Claude SDK First-Turn Model Qualification Evidence](batch-cards/119-claude-sdk-first-turn-model-qualification-evidence.md) — ready; observer evidence for `supported_model_rejected`; Contract 053 amended; producer diagnosis H1
-- [120 Claude SDK Loaded Module Version Verification](batch-cards/120-claude-sdk-loaded-module-version-verification.md) — ready on card 119; H2, `sdk_version_mismatch` at open
-- [121 Claude SDK First-Turn Rejection Terminal State](batch-cards/121-claude-sdk-first-turn-rejection-terminal-state.md) — ready on card 120; poisoned retry no longer misreports `init_missing`
-- [108 Claude Code Response-Only Project Location](batch-cards/108-claude-code-response-only-project-location.md) — planned; after the `v0.4.3` tag; manifest promoted then
-- [105 Claude SDK Termination Cause Propagation](batch-cards/105-claude-sdk-termination-cause-propagation.md) — ready; consumer-critical; the tagged driver discards the sidecar's terminal code and result fields; `v0.4.3` content; precedes card 083 in the shared crate
-- [080 Claude SDK Read-Write Session And Permission Policy](batch-cards/080-claude-sdk-read-write-session-and-permission-policy.md) — delivered; PR 221 permission policy and PR 224 ambient read-write editing
-- [089 Core Preflight Tool Exclusion Scoped To Bounded Profiles](batch-cards/089-core-preflight-tool-exclusion-scoped-to-bounded-profiles.md) — ready; core and testkit only; operator ruling 2026-09-04
-- [081 Claude SDK Bash Under Mediation](batch-cards/081-claude-sdk-bash-under-mediation.md) — complete; bounded command view on the callback; PR 233 merged at `97f37e4d`
-- [082 Claude SDK Mid-Session Model And Effort](batch-cards/082-claude-sdk-mid-session-model-and-effort.md) — complete; PR 239 merged at `c8512290`
-- [083 claude sdk resume and session listing](batch-cards/083-claude-sdk-resume-and-session-listing.md) — resume as Contract 017 resume with lease cwd and account checks; listing if frozen
-- [084 claude sdk client mcp servers](batch-cards/084-claude-sdk-client-mcp-servers.md) — declared MCP servers, mediated MCP tools, per-server status
-- [085 grok acp answerable permissions](batch-cards/085-grok-acp-answerable-permissions.md) — complete; PR 243 merged at `8bbeceb4`; stable matrix disposition remains `No`
-- [086 claude sdk discovery identity](batch-cards/086-claude-sdk-discovery-identity.md) — complete; PR 241 merged at `d127837f`; no claim change
-- [087 claude sdk qualified ranges](batch-cards/087-claude-sdk-qualified-ranges.md) — Codex-style qualified ranges from card 086 evidence
-- [088 harness install guidance diagnostics](batch-cards/088-harness-install-guidance-diagnostics.md) — vendor install guidance on absent discovery, three harnesses
+- 080 — delivered; PR 221 permission policy and PR 224 ambient read-write editing.
+- 081 — complete; bounded command view on the callback; PR 233 merged at `97f37e4d`.
+- 082 — complete; PR 239 merged at `c8512290`.
+- 083 — complete; PR 244 merged at `7cb08b1f`.
+- 084 — complete; PR 255 merged at `8a377c1b`.
+- 085 — complete; PR 243 merged at `8bbeceb4`; stable matrix disposition remains `No`.
+- 086 — complete; PR 241 merged at `d127837f`; no claim change.
+- 087 — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged.
+- 088 — complete; PR 242 merged at `80e004b4`.
+- 089 — complete; bounded-profile exclusion retained; PR 223 merged as `e4399790`.
+- 105 — complete; PR 245 merged at `217de072`; consumer-critical terminal code and result fields.
+- 108 — complete; PR 289 merged at `8e6669c8`; optional read-only working resource for the response-only child.
+- 119 — complete; PR 268 merged at `cfb0b106`; bounded observer evidence for the first-turn model rejection.
+- 120 — complete; PR 269 merged at `4a27676d`; loaded SDK version verified at open.
+- 121 — complete; PR 270 merged at `8cf1fe9f`; terminal state after first-turn rejection.
+- 124 — complete; PR 271 merged at `02003ecb`; bounded manifest lookup and one model-id predicate.
 
-## Dispatch Manifest
+## Retired Card Dispatch (g05.038)
 
-Promoted planning commit: the `main` commit that introduces this file.
-Card 080 is approved concurrent with g05.009 cards 074, 075, 076, and 079.
-
-| Field | Card 080 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | `v0.4.0` `claude-agent.sdk` route on `main`; Research 278 §8 layer 2; the fake-SDK sidecar fixture harness |
-| Completion conditions | prepared profile admits an explicit write-tool set and permission mode; sidecar passes the admitted set as `tools` (never `allowedTools`), honours `permissionMode` at open, and exposes a `set_permission_mode` wire command; `canUseTool` forwards intact tool name and input for every write call; read-write lease required for any write tool; `bypassPermissions` rejected before launch; default profile byte-identical in behaviour; guide, changelog, and fixtures updated; provider-free proof that a multi-turn session edits a file in the leased cwd with every call admitted first; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/src/sdk/**`; `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.0/swallowtail-adapter-claude-agent.txt` regenerated additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; the `claude-agent.sdk` cells of the route and feature matrices; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | every other crate; `claude_code_*` and ACP modules of the Claude Agent crate; `docs/contracts/**`; version claims and SDK selection pins; Bash, MCP, resume, and model-change surfaces (later cards) |
-| Approved concurrent siblings | g05.009 cards 074, 075, 076, 079 |
-| Serial edges | cards 081-084 follow card 080; the `v0.4.1` release roadmap follows card 080's merge |
-| Worker capability class | Rust plus Node sidecar implementation worker with process-authority discipline; frontier-tier; no provider credentials; no live Claude call |
-| Acceptance evidence | provider-free fake-SDK proofs; fixture showing `tools` set and `allowedTools` absent; rejection proofs for bypass and for write tools without a read-write lease; focused and package-affected validation; additive API diff |
-| Review oracle | no tool is ever auto-allowed by the sidecar; the smallest counterexample is `allowedTools` set, a write admitted on a read-only lease, `bypassPermissions` reaching the SDK, or a default profile whose behaviour changed |
-| Stop conditions | the SDK cannot change permission mode mid-session without reopening (record and return to Chatterbox); any write path that bypasses `canUseTool`; a required Contract 017 or 023 reinterpretation |
-| Escalation owner | operator via Chatterbox for posture questions; coordinator for mechanical blockers |
+Promoted planning commit: the `main` commit that introduced this file.
+Card 080 was approved concurrent with g05.009 cards 074, 075, 076, and 079 (all complete).
+Card-level dispatch is retired: every card above is complete or stopped, and
+serial edges are now owned by this task. The per-card manifests below are
+folded into the evidence ledger above; only the stopped 087 gate keeps future
+scope, recorded as a held gate at the end of this file.
 
 ## Acceptance
 
@@ -110,8 +98,8 @@ Card 080 is approved concurrent with g05.009 cards 074, 075, 076, and 079.
       every tool call mediated before it runs
 - [ ] permission mode is selectable at open and changeable mid-session
 - [ ] the read-only default and `v0.4.0` behaviour are unchanged
-- [ ] later cards land in priority order without reopening card 080's seam
-- [ ] `v0.4.1` carries card 080's items on the Contract 036 gates
+- [ ] later scope lands in priority order without reopening the card-080 seam
+- [ ] `v0.4.1` carried card 080's items on the Contract 036 gates
 
 ## Card 080 Stop And Ruling
 
@@ -124,308 +112,15 @@ two PRs: PR 221 merges as it stands (permission modes, typed write refusal,
 proved write mediation), then the same worker lifts the refusal after card
 089 merges. Both ride `v0.4.1`.
 
-### Card 089 Manifest
+### Held Gate 087 — Qualified Ranges (from stopped card 087)
 
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 089 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | Contract 013 clarified on `main`; PR 221's stop record |
-| Completion conditions | guard keyed on the boundary claim; new portable assertion; all existing plans preflight unchanged; named validation green; one PR |
-| Owned mutable paths | `crates/swallowtail-core/src/preflight/**`; `crates/swallowtail-testkit/**`; core and testkit API baseline files if changed; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | every adapter crate; runtime; contracts; the session policy public type (no new dimension) |
-| Approved concurrent siblings | g05.009 card 034; card 080's PR 221 review and merge |
-| Serial edges | card 080's second PR follows card 089's merge |
-| Worker capability class | Rust core worker with preflight discipline; no provider credentials |
-| Acceptance evidence | the new assertion; unchanged adapter fixture results; focused and package-affected validation |
-| Review oracle | the card's invariant |
-| Stop conditions | any adapter plan changes outcome; a new policy dimension seems needed (return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 081 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Card 081 is approved concurrent with g05.031 card 095 and the card 094
-remainder.
-
-| Field | Card 081 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | `v0.4.1` tagged with card 080's seam; the fake-SDK fixture on `main` with card 093/094 determinism |
-| Completion conditions | `Bash` admissible only with a read-write lease and only through a host `allow` on every call under every mode; bounded command view on the callback record for `Bash`; provider-free proofs including truncation; guide, matrices, changelog, and additive API baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/src/sdk/**`; `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.1/swallowtail-adapter-claude-agent.txt` regenerated additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; the `claude-agent.sdk` matrix cells; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | every other crate; `claude_code_*` and ACP modules; contracts; SDK version pins; background-shell tools; model, resume, and MCP surfaces (later cards) |
-| Approved concurrent siblings | g05.031 card 095; card 094 remainder |
-| Serial edges | cards 082-084 follow card 081 |
-| Worker capability class | Rust plus Node sidecar implementation worker with process-authority discipline; frontier-tier; no provider credentials; no live Claude call |
-| Acceptance evidence | provider-free fake-SDK proofs; rejection proofs; truncation proof; focused and package-affected validation; additive API diff |
-| Review oracle | the card's invariant |
-| Stop conditions | the card's stop list |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 082 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Card 082 is approved concurrent with g05.009 cards 097-099 and the card 094
-remainder.
-
-| Field | Card 082 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | card 081 merged at `97f37e4d`; the fake-SDK fixture on `main` |
-| Completion conditions | `supported_models` in open evidence; `set_model` with confirmed-or-typed-unconfirmed outcome and pre-call rejection of unsupported models; `effort` at open with the five admitted levels; no invented effort setter; fixture proofs; guide, matrices, changelog, additive baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/src/sdk/**`; `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.1/swallowtail-adapter-claude-agent.txt` regenerated additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; the `claude-agent.sdk` matrix cells; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | every other crate; `claude_code_*` and ACP modules; contracts; SDK version pins; resume, listing, and MCP surfaces |
-| Approved concurrent siblings | g05.009 cards 097, 098, 099; card 094 remainder |
-| Serial edges | card 083 follows card 082 |
-| Worker capability class | Rust plus Node sidecar implementation worker; frontier-tier; no credentials; no live Claude call |
-| Acceptance evidence | provider-free fake-SDK proofs for confirmed, unconfirmed, and rejected paths; additive API diff |
-| Review oracle | the card's invariant |
-| Stop conditions | the SDK confirms nothing for `setModel` in any observable way (record; return to Chatterbox rather than assume) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 083 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 083 |
-| --- | --- |
-| Readiness | ready on card 082's merge |
-| Prerequisites | card 082 merged; `v0.4.2` tagged |
-| Completion conditions | frozen `0.3.259` resume surface; opt-in persistence; typed resume with lease-derived cwd and account verification; optional listing; fake-SDK proofs; guide, matrix, changelog, additive baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent`/src/sdk/**` except `selection.rs` and `asset.rs`; `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.2/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; the `claude-agent.sdk` matrix cells; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `claude_code_*` and ACP modules; SDK version pins; contracts; every other crate |
-| Approved concurrent siblings | cards 085, 086, 088, and g05.031 card 104 |
-| Serial edges | card 084 follows card 083; card 087 follows card 086 |
-| Worker capability class | Rust plus Node sidecar implementation worker; frontier-tier; no credentials; no live Claude call |
-| Acceptance evidence | fake-SDK proofs for attach, both mismatches, unknown session, persistence-off; additive API diff |
-| Review oracle | the card's invariant |
-| Stop conditions | the SDK cannot expose account or cwd on resume (return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 084 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 084 |
-| --- | --- |
-| Readiness | ready on card 083's merge |
-| Prerequisites | card 083 merged |
-| Completion conditions | frozen `mcpServers` and status surfaces; declared servers as additive profile input; mediated MCP tools; per-server status in open evidence; fake-SDK proofs; guide, matrix, changelog, additive baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent`/src/sdk/**` except `selection.rs` and `asset.rs`; `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.2/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; the `claude-agent.sdk` matrix cells; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `claude_code_*` and ACP modules; managed MCP; contracts; every other crate |
-| Approved concurrent siblings | cards 085, 086, 088, 104 |
-| Serial edges | follows card 083 |
-| Worker capability class | Rust plus Node sidecar implementation worker; frontier-tier; no credentials; no live Claude call |
-| Acceptance evidence | fake-SDK proofs including a fake stdio MCP server; additive API diff |
-| Review oracle | the card's invariant |
-| Stop conditions | the SDK auto-allows MCP tools outside `canUseTool` (return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 085 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 085 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | current `main` |
-| Completion conditions | exchange path on the `claude-agent.acp` precedent with default unchanged, bounds, fixture proofs, or the labelled activity-only posture with evidence; guide, matrix, changelog, additive baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-grok/src/**` except `discovery*`; `crates/swallowtail-adapter-grok/tests/**`; `release-baselines/public-api-0.4.2/swallowtail-adapter-grok.txt` additively; the `grok-build.acp` matrix cells; `docs/guides/` Grok section; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | Grok discovery modules (card 088 owns them); any Claude crate; contracts; every other crate |
-| Approved concurrent siblings | cards 083, 084, 086, 088, 104 |
-| Serial edges | none |
-| Worker capability class | Rust implementation worker; frontier-tier; no credentials; no live Grok call |
-| Acceptance evidence | fake ACP fixture proofs for each option kind, timeout, abandonment, malformed, no-turn |
-| Review oracle | the card's invariant |
-| Stop conditions | Grok ACP needs a method outside Contract 015 (return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 086 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 086 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | Research 280 on `main`; host `claude` and Node installs as found (no installs by the worker) |
-| Completion conditions | research document in the Research 280 shape with every probed triple evidenced and a decision naming candidate ranges; no source, claim, or pin change |
-| Owned mutable paths | `docs/research/2xx-claude-agent-sdk-discovery-identity.md` (next free number); `docs/research/README.md` index line; probe scripts under `/tmp` only; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | every crate; guides; matrices; baselines; contracts; every other crate |
-| Approved concurrent siblings | cards 083, 084, 085, 088, 104 |
-| Serial edges | card 087 follows this card |
-| Worker capability class | research worker with Node and Rust literacy; no credentials beyond the operator's existing subscription; initialize-only probes, no turns |
-| Acceptance evidence | probe transcripts with `system/init`, `supportedModels`, `harnessSchema` per triple |
-| Review oracle | the card's invariant |
-| Stop conditions | a probe needs a live turn (stop; operator authorization via Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 087 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 087 |
-| --- | --- |
-| Readiness | planned; ready after cards 084 and 086 |
-| Prerequisites | card 086 research promoted; card 084 merged (shared crate) |
-| Completion conditions | five axes on the Codex range shape with cited endpoints and explicit gaps; boundary identity tests; guide, matrix, changelog, additive baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent`/src/sdk/selection.rs`; `crates/swallowtail-adapter-claude-agent/src/sdk/asset.rs`; `crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_*identity*.rs`; `release-baselines/public-api-0.4.2/swallowtail-adapter-claude-agent.txt` additively; guide and matrix version cells; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | the rest of `sdk/**`; sidecar; `claude_code_*` and ACP modules; contracts; every other crate |
-| Approved concurrent siblings | cards 085, 088, 104 |
-| Serial edges | follows cards 084 and 086 |
-| Worker capability class | Rust implementation worker; frontier-tier; no live call |
-| Acceptance evidence | identity tests at each boundary citing card 086 lines |
-| Review oracle | the card's invariant |
-| Stop conditions | card 086 shows a surface change inside the range (return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 088 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 088 |
-| --- | --- |
-| Readiness | ready; PR 242 approved as written with a blocking gap; the widened scope below completes it after the `v0.4.3` tag (freeze) |
-| Prerequisites | Contract 029 Install Guidance amendment on `main` (promoted with this manifest) |
-| Completion conditions | a genuinely missing executable classifies `Absent` (not `Failed`) on every driver and carries the guidance, proved by driving each driver against a missing path; matrix table cells escape the pipe; additive core value; three adapters with vendor-sourced guidance, URL and date; absent/present tests; matrix, changelog, four additive baselines; one PR |
-| Owned mutable paths | `crates/swallowtail-runtime/src/installed_discovery.rs` (missing-executable classification to `Absent`); `crates/swallowtail-adapter-codex/src/discovery/outcome.rs` and `crates/swallowtail-adapter-grok/src/discovery.rs` (same classification); `crates/swallowtail-core/src/lib.rs` and `src/registration.rs` re-export lines; `crates/swallowtail-core/src/registration/discovery*`; `crates/swallowtail-adapter-claude-agent/src/*discovery*`; `crates/swallowtail-adapter-codex/src/discovery*`; `crates/swallowtail-adapter-grok/src/discovery*`; matching tests; `release-baselines/public-api-0.4.2/{swallowtail-core,swallowtail-adapter-claude-agent,swallowtail-adapter-codex,swallowtail-adapter-grok}.txt` additively; `docs/guides/provider-route-matrix.md` guidance column; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | every non-discovery module in those crates beyond the named files; sidecar; `sdk/**`; Grok `turn.rs` and `connection/**` (card 085 owns them); contracts; every other crate |
-| Approved concurrent siblings | cards 083, 084, 085, 086, 104 |
-| Serial edges | none |
-| Worker capability class | Rust implementation worker; no credentials; no network beyond reading vendor pages |
-| Acceptance evidence | tests per adapter; vendor URL and date in source |
-| Review oracle | the card's invariant |
-| Stop conditions | a vendor publishes no stable command (record; ship the rest) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 105 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Consumer-critical: it takes the SDK crate ahead of card 083.
-
-| Field | Card 105 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | `v0.4.2` tagged; current `main` |
-| Completion conditions | terminal code, `turn_ended` fields, close evidence, and stderr tail reach the consumer bounded; `unknown_message` policy ruled; fixture proofs; guide; changelog; additive baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/src/sdk/wire/**`; `src/sdk/connection/**`; `src/sdk/turn/**` and `turn.rs`; `src/sdk/close.rs`; `src/sdk/failure.rs`; `sidecar/**` only for the stderr tail and close evidence; `tests/**`; `release-baselines/public-api-0.4.2/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `sdk/prepared*`; `sdk/profile*`; `claude_code_*` and ACP modules; contracts; every other crate |
-| Approved concurrent siblings | cards 085, 086, 088, 104 |
-| Serial edges | card 083 follows card 105's merge (shared sidecar and connection); if card 083 already started, it rebases onto card 105 |
-| Worker capability class | Rust plus Node sidecar implementation worker; frontier-tier; no credentials; no live Claude call |
-| Acceptance evidence | fake-SDK proofs per terminal code and per `turn_ended` field; additive API diff |
-| Review oracle | the card's invariant |
-| Stop conditions | actionability needs provider error text (return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 119 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 119 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | current `main`; Contract 053 amendment on `main` |
-| Completion conditions | bounded evidence body on the sidecar diagnostic record; pump forwards to `DebugObservation`; four new fixtures plus two unchanged; predicate and failure shape byte-identical; guide, changelog, baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/connection/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/wire/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/failure.rs`; `crates/swallowtail-adapter-claude-agent/src/sdk/driver/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.3/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `sdk/profile*`; `claude_code_*` and ACP modules; Contract 053 (Chatterbox-owned); contracts; every other crate |
-| Approved concurrent siblings | cards 084, 086, 087, 088, 116, 118, 104 |
-| Serial edges | cards 120 and 121 follow this card (shared sidecar) |
-| Worker capability class | Rust plus Node sidecar worker; frontier-tier; no credentials; no live Claude call |
-| Acceptance evidence | recording-observer fixtures; additive API diff |
-| Review oracle | the card's invariant |
-| Stop conditions | evidence needs the full catalogue or raw error text (return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 120 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 120 |
-| --- | --- |
-| Readiness | ready on card 119's merge |
-| Prerequisites | card 119 merged |
-| Completion conditions | loaded `package.json` verified at open; `sdk_version_mismatch` and `sdk_identity_unverifiable` typed; open evidence carries the loaded version; three fixtures; guide, changelog, baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/connection/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/wire/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/failure.rs`; `crates/swallowtail-adapter-claude-agent/src/sdk/driver/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.3/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `sdk/profile*`; `claude_code_*` and ACP modules; Contract 053 (Chatterbox-owned); contracts; every other crate |
-| Approved concurrent siblings | cards 084, 086, 087, 088, 116, 118 |
-| Serial edges | follows card 119; card 121 follows this card |
-| Worker capability class | Rust plus Node sidecar worker; no live call |
-| Acceptance evidence | fixtures for match, mismatch, missing manifest |
-| Review oracle | the card's invariant |
-| Stop conditions | no readable manifest at the module path |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 121 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 121 |
-| --- | --- |
-| Readiness | ready on card 120's merge |
-| Prerequisites | cards 119 and 120 merged |
-| Completion conditions | session terminal after first-turn rejection; retry fails `session_rejected_terminal` naming the original code; `init_missing` reserved; fixtures; guide, changelog, baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/connection/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/wire/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/failure.rs`; `crates/swallowtail-adapter-claude-agent/src/sdk/driver/**`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.3/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/claude-agent-sdk-prepared-integration.md`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `sdk/profile*`; `claude_code_*` and ACP modules; Contract 053 (Chatterbox-owned); contracts; every other crate |
-| Approved concurrent siblings | cards 084, 086, 087, 088, 116, 118 |
-| Serial edges | follows card 120 |
-| Worker capability class | Rust plus Node sidecar worker; no live call |
-| Acceptance evidence | rejection-then-retry and rejection-then-close fixtures |
-| Review oracle | the card's invariant |
-| Stop conditions | terminal state unrepresentable in the fixture |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 124 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-
-| Field | Card 124 |
-| --- | --- |
-| Readiness | ready on card 121's merge |
-| Prerequisites | cards 120 and 121 merged |
-| Completion conditions | lookup bounded to the module package boundary with the unrelated-ancestor fixture; one shared control-character predicate proved by a shared table; cards 119/120 fixtures unchanged; changelog; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/sidecar/**`; `crates/swallowtail-adapter-claude-agent/src/sdk/wire/**`; `src/sdk/failure.rs`; `src/sdk/driver/startup.rs`; `crates/swallowtail-adapter-claude-agent/tests/**`; `release-baselines/public-api-0.4.3/swallowtail-adapter-claude-agent.txt` additively; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
-| Forbidden paths | `sdk/selection.rs`; `sdk/asset.rs`; `sdk/profile*`; `claude_code_*` and ACP modules; contracts; every other crate |
-| Approved concurrent siblings | cards 084, 086, 087, 088, 116, 118 |
-| Serial edges | follows card 121; card 122 (the `v0.4.4` candidate) follows this card |
-| Worker capability class | Rust plus Node sidecar worker; no live call |
-| Acceptance evidence | the two new fixtures and the shared predicate table |
-| Review oracle | the card's invariant |
-| Stop conditions | the SDK package layout has no module-local manifest at all (record; return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 108 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Its gate (the `v0.4.3` tag) is satisfied.
-
-| Field | Card 108 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | `v0.4.3` tagged; Contract 013 Ambient Harness |
-| Completion conditions | optional `Read` working resource sets the response-only child cwd; absence unchanged; the CLI's cwd-relative behaviour with tools suppressed frozen from a scratch-directory fixture; no isolation or boundary claim anywhere; guide, matrix cell, changelog, additive baseline; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-claude-agent/src/claude_code_response*.rs` and its response-only modules; `crates/swallowtail-adapter-claude-agent/tests/**` response-only fixtures; `release-baselines/public-api-0.4.4/swallowtail-adapter-claude-agent.txt` additively; `docs/guides/provider-route-matrix.md` response-only row; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | the usual roadmap, index, generation, and log surfaces |
-| Forbidden paths | `sdk/**`; sidecar; `claude_code_headless*`; ACP modules; contracts; every other crate |
-| Approved concurrent siblings | card 139 and the standing currentness lane |
-| Serial edges | none |
-| Worker capability class | Rust worker; no credentials; no live Claude call |
-| Acceptance evidence | scratch-directory fixture output; additive API diff |
-| Review oracle | the card's invariant |
-| Stop conditions | the CLI reads or writes outside the given cwd with tools suppressed (record; return to Chatterbox) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
+Readiness was planned; ready after cards 084 and 086 (both complete).
+Prerequisites were card 086 research promoted and card 084 merged. If Chatterbox
+reopens this scope, the completion conditions are: five axes on the Codex range
+shape with cited endpoints and explicit gaps; boundary identity tests; guide,
+matrix, changelog, additive baseline; one PR. Owned paths would be
+`crates/swallowtail-adapter-claude-agent/src/sdk/selection.rs`,
+`src/sdk/asset.rs`, `tests/claude_agent_sdk_*identity*.rs`, the additive
+baseline, guide and matrix version cells, and `CHANGELOG.md [Unreleased]`.
+Acceptance evidence is identity tests at each boundary citing card 086 lines.
+Stop if card 086 shows a surface change inside the range (return to Chatterbox).

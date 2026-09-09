@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: complete; 767 rows proved; card 096 ruled the existing vocabulary sufficient; cards 097, 098, and 099 are complete; the per-turn audit note remains for Chatterbox's reserved prune
+Status: complete; 767 rows proved; card 096 ruled the existing vocabulary sufficient; cards 097, 098, and 099 are complete; the per-turn audit note remains for this task's reserved prune
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04
@@ -186,13 +186,13 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 - [x] complete candidate C as the exact 94-row Antigravity, Bedrock, and
       Cursor tranche across seven routes (card 069; PR 209 merged as `d2d8ae8b`)
 - [x] settle the provider-operation observation vocabulary once for the
-      recurring rows on `kimi-code.acp`, `deepseek-harness.local-server`, and
-      `opencode.http` through gate card 070 (operator chose the gate on
-      2026-09-04); Contract 061 is amended and runtime baseline card 073 is
-      ready; candidate I completion and the reopened card 034 follow its merge
+  recurring rows on `kimi-code.acp`, `deepseek-harness.local-server`, and
+  `opencode.http` through gate card 070 (operator chose the gate on
+  2026-09-04); Contract 061 is amended and runtime baseline card 073 is
+  complete; candidate I completion and the reopened card 034 followed its merge
 - [ ] report from the candidate C audit whether provider-operation
-      observation recurs on the three catalogue routes; that report is the
-      reopen trigger for the deferred Kimi decision
+  observation recurs on the three catalogue routes; that report was the
+  reopen trigger for the deferred Kimi decision
 - [ ] preserve exact route, operation shape, semantic ID, lifecycle, value
       domain, omission, applicability, and evidence strength for every added
       row
@@ -302,38 +302,47 @@ card 079 is the shared runtime/testkit baseline before card 034.
   card 073 runtime/testkit support
 - later runway: 286 rows remain; Card 034 is the next package realization
   after the landed shared baseline
-- next strategy checkpoint: Chatterbox reopens Card 034 from the accepted Card
-  076 design and landed Card 079 baseline
+- next strategy checkpoint: Card 034 is a task-owned held gate on the accepted
+  Card 076 design and landed Card 079 baseline
 
-## Batch Cards
+## Folded card evidence (g05.038)
 
-- [022 Contract 061 Composer And Two-Route Vertical](batch-cards/022-contract-061-composer-and-two-route-vertical.md)
-  — complete; repaired runtime/testkit composer plus the exact 36-row Codex
-  and 15-row OpenAI Realtime proof merged through PR 131 at `fdd2b018`
-- [023 Contract 061 Codex And OpenAI Package Completion](batch-cards/023-contract-061-codex-openai-package-completion.md)
-  — complete; exact 35-row `codex.exec` plus 24-row `openai.background`
-  provider-free tranche merged through PR 133 at `58be7122`
-- [024 Contract 061 Deep Agents, Kiro, Qoder, And ZCode Package Completion](batch-cards/024-contract-061-deepagents-kiro-qoder-zcode-package-completion.md)
-  — complete; exact candidate H 9/9/8/12-row proof merged through PR 138 at
-  `8b295e6b`
-- [030 Contract 061 Acknowledgement Candidate Reassessment](batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md)
-  — complete; evidence stop; D, F, and G all fail rubric item 2 on current
-  `main` because each acknowledgement route discards its confirmation; no
-  candidate promoted and no Rust changed
-- [031 Contract 061 Claude Agent Package And Acknowledgement](batch-cards/031-contract-061-claude-agent-package-and-acknowledgement.md)
-  — complete; exact candidate D 30/12/11-row proof merged through PR 141 at
-  `5d1f173a`
-- [032 Contract 061 Cline, Command Code, Copilot CLI, And Goose Package Completion](batch-cards/032-contract-061-cline-command-code-copilot-goose-package-completion.md)
-  — complete; exact candidate G 11/8/11/9/9-row proof merged through PR 144 at
-  `18a6907e`
-- [033 Contract 061 Card 032 Closeout And Kimi Reassessment](batch-cards/033-contract-061-card-032-closeout-and-kimi-reassessment.md)
-  — complete; evidence stop; card 032 bound to `e50e3f46`/`18a6907e`, coverage
-  reconciled to 249/518, and candidate F left unpromoted behind a named
-  `kimi-code.acp` gate; no Rust changed
-- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md)
-  — planned; not ready; blocked on card 076 and any shared baseline it admits;
-  corrected 25/20/31/13-row evidence targets 75 emitted and 14 withheld; no
-  rows counted as proved yet
+### Completed
+
+- 022 Contract 061 Composer And Two-Route Vertical — complete; repaired runtime/testkit composer plus the exact 36-row Codex and 15-row OpenAI Realtime proof merged through PR 131 at `fdd2b018`
+- 023 Contract 061 Codex And OpenAI Package Completion — complete; exact 35-row `codex.exec` plus 24-row `openai.background` provider-free tranche merged through PR 133 at `58be7122`
+- 024 Contract 061 Deep Agents, Kiro, Qoder, And ZCode Package Completion — complete; exact candidate H 9/9/8/12-row proof merged through PR 138 at `8b295e6b`
+- 031 Contract 061 Claude Agent Package And Acknowledgement — complete; exact candidate D 30/12/11-row proof merged through PR 141 at `5d1f173a`
+- 032 Contract 061 Cline, Command Code, Copilot CLI, And Goose Package Completion — complete; exact candidate G 11/8/11/9/9-row proof merged through PR 144 at `18a6907e`
+- 064 Contract 061 Candidate C Breadth Audit — complete; 94 rows; 51 emitted and 43 withheld; promotable three-package tranche; PR 204 exact head `ee5e76ab` merged as `1903f715`; catalogue routes did not reopen the Kimi gate
+- 065 Contract 061 Candidate E Breadth Audit — complete; 56 rows; PR 205 merged as `1b9fae10`; promoted as card 075 Path A
+- 067 Contract 061 Candidate J Breadth Audit — complete; 35 rows; 32 emitted and 3 withheld; promotable two-package tranche; PR 206 exact head `0030b846` merged as `8cbf6064`
+- 068 Contract 061 llama.cpp And Ollama Package Completion — complete; 35 rows; 32 emitted and 3 withheld; PR 208 exact head `b92b13d0` merged as `c5cca28d`
+- 069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion — complete; candidate C; 94 rows, 51 emitted and 43 withheld; PR 209 merged as `d2d8ae8b`
+- 070 Contract 061 Provider-Operation Observation Public-Baseline Gate — complete; promoted into Contract 061 and card 073
+- 073 Contract 061 Provider-Operation Observation Runtime Baseline — complete; PR 214 merged as `e39e0aa8`
+- 074 Contract 061 DeepSeek And DeepSeek Harness Package Completion — complete; Candidate I; 41 emitted / 6 withheld / 47 reconciled; PR 217 merged as `8cb811f2`
+- 075 Contract 061 Gemini And Grok Package Completion — complete; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled; PR 215 merged as `9978f9fd`
+- 076 Contract 061 Kimi Compound Acknowledgement Gate — complete; planning-only; PR 218 merged at `602e466f`; card 079 is serial before card 034
+- 079 Contract 061 Compound Acknowledgement Runtime Baseline — complete; runtime/testkit only; PR 220 merged as `4258f526`; card 034 may now be reconsidered
+- 096 Contract 061 Per-Turn Authority Audit — complete; existing vocabulary suffices; B, K, L promotable; PR 232 merged as `b874df63`; compiled against card 095 merged at `ba8275eb`
+- 097 Contract 061 OpenCode And Pi Package Completion — complete; candidate L; 69 rows, 64 emitted and 5 withheld; PR 234 merged as `f4e707f0`; 2026-09-05 review correction: no production plan widening; three sidecar rows withheld with anchors
+- 098 Contract 061 Alibaba, Anthropic, And xAI Package Completion — complete; candidate B; 76 rows, 74 emitted and 2 withheld; PR 236 merged as `921ee00c`
+- 099 Contract 061 Mistral Vibe, Muse, Oh My Pi, And Qwen Package Completion — complete; candidate K; 52 rows, all emitted; PR 235 merged as `c2f46b6e`
+
+### Evidence stops
+
+- 030 Contract 061 Acknowledgement Candidate Reassessment — complete; evidence stop; D, F, and G all fail rubric item 2 on current `main` because each acknowledgement route discards its confirmation; no candidate promoted and no Rust changed
+- 033 Contract 061 Card 032 Closeout And Kimi Reassessment — complete; evidence stop; card 032 bound to `e50e3f46`/`18a6907e`, coverage reconciled to 249/518, and candidate F left unpromoted behind a named `kimi-code.acp` gate; no Rust changed
+- 066 Contract 061 Candidate I Breadth Audit — complete; 47 rows; evidence stop on two post-open provider-operation rows requiring the deferred shared observation decision; PR 207 exact head `21ba9396` merged as `85221307`
+- 034 Contract 061 Kimi And Kimi Platform Package Completion — task-owned held gate; ready; candidate F; 89 rows, 75 emitted and 14 withheld; two packages; both shared baselines merged. Earlier recorded as planned; not ready; blocked on card 076 and any shared baseline it admits; corrected 25/20/31/13-row evidence targets 75 emitted and 14 withheld; no rows counted as proved yet. Provider-operation and compound-acknowledgement baselines have since landed (cards 073 and 079); promotion is task-owned.
+
+Folded manifest ledger: cards 064-067 audited as one approved concurrent group
+(also concurrent with g05.026 card 062); card 096 ruled no shared change needed
+and all three candidates pass; card 034 became ready when card 079 merged at
+`4258f526` with card 073 already merged. The audit note served as the ledger
+evidence cards 097-099 owned; `CHANGELOG.md` `[Unreleased]` was shared across
+the three, each card appending its own entry.
 
 ## References
 
@@ -350,259 +359,3 @@ card 079 is the shared runtime/testkit baseline before card 034.
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Contract 047 Configured Provider Instance Catalogue](../../contracts/047-configured-provider-instance-catalogue.md)
 - [Contract 057 Route Readiness And Connection Admission](../../contracts/057-route-readiness-and-connection-admission.md)
-
-## Batch Cards In Flight
-
-- [097 Contract 061 OpenCode And Pi Package Completion](batch-cards/097-contract-061-opencode-pi-package-completion.md) — complete; candidate L; 69 rows, 64 emitted and 5 withheld; PR 234 merged as `f4e707f0`
-- [098 Contract 061 Alibaba, Anthropic, And xAI Package Completion](batch-cards/098-contract-061-alibaba-anthropic-xai-package-completion.md) — complete; candidate B; 76 rows, 74 emitted and 2 withheld; PR 236 merged as `921ee00c`
-- [099 Contract 061 Mistral Vibe, Muse, Oh My Pi, And Qwen Package Completion](batch-cards/099-contract-061-mistral-muse-oh-my-pi-qwen-package-completion.md) — complete; candidate K; 52 rows, all emitted; PR 235 merged as `c2f46b6e`
-- [096 Contract 061 Per-Turn Authority Audit](batch-cards/096-contract-061-per-turn-authority-audit.md) — complete; existing vocabulary suffices; B, K, L promotable; PR 232 merged as `b874df63`
-- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — ready; candidate F; 89 rows, 75 emitted and 14 withheld; two packages; both shared baselines merged
-- [079 Contract 061 Compound Acknowledgement Runtime Baseline](batch-cards/079-contract-061-compound-acknowledgement-baseline.md) — complete; runtime/testkit only; PR 220 merged as `4258f526`; card 034 may now be reconsidered
-- [074 Contract 061 DeepSeek And DeepSeek Harness Package Completion](batch-cards/074-contract-061-deepseek-package-completion.md) — complete; Candidate I; 41 emitted / 6 withheld / 47 reconciled; PR 217 merged as `8cb811f2`
-- [075 Contract 061 Gemini And Grok Package Completion](batch-cards/075-contract-061-gemini-grok-package-completion.md) — complete; Candidate E Path A; 39 emitted / 17 withheld / 56 reconciled; PR 215 merged as `9978f9fd`
-- [076 Contract 061 Kimi Compound Acknowledgement Gate](batch-cards/076-contract-061-kimi-compound-acknowledgement-gate.md) — complete; planning-only; PR 218 merged at `602e466f`; card 079 is serial before card 034
-- [073 Contract 061 Provider-Operation Observation Runtime Baseline](batch-cards/073-contract-061-provider-operation-observation-baseline.md) — complete; PR 214 merged as `e39e0aa8`
-- [070 Contract 061 Provider-Operation Observation Public-Baseline Gate](batch-cards/070-contract-061-provider-operation-observation-gate.md) — complete; promoted into Contract 061 and card 073
-- [069 Contract 061 Antigravity, Bedrock, And Cursor Package Completion](batch-cards/069-contract-061-antigravity-bedrock-cursor-package-completion.md) — complete; candidate C; 94 rows, 51 emitted and 43 withheld; PR 209 merged as `d2d8ae8b`
-- [065 Contract 061 Candidate E Breadth Audit](batch-cards/065-contract-061-candidate-e-breadth-audit.md) — complete; 56 rows; PR 205 merged as `1b9fae10`; promoted as card 075 Path A
-- [034 Contract 061 Kimi And Kimi Platform Package Completion](batch-cards/034-contract-061-kimi-package-completion.md) — planned; not ready; provider-operation and compound-acknowledgement baselines are landed; awaits Chatterbox readiness promotion
-
-## Batch Cards Completed
-
-- [068 Contract 061 llama.cpp And Ollama Package Completion](batch-cards/068-contract-061-llama-cpp-ollama-package-completion.md) — complete; 35 rows; 32 emitted and 3 withheld; PR 208 exact head `b92b13d0` merged as `c5cca28d`
-- [066 Contract 061 Candidate I Breadth Audit](batch-cards/066-contract-061-candidate-i-breadth-audit.md) — complete; 47 rows; evidence stop on two post-open provider-operation rows requiring the deferred shared observation decision; PR 207 exact head `21ba9396` merged as `85221307`
-- [064 Contract 061 Candidate C Breadth Audit](batch-cards/064-contract-061-candidate-c-breadth-audit.md) — complete; 94 rows; 51 emitted and 43 withheld; promotable three-package tranche; PR 204 exact head `ee5e76ab` merged as `1903f715`; catalogue routes did not reopen the Kimi gate
-- [067 Contract 061 Candidate J Breadth Audit](batch-cards/067-contract-061-candidate-j-breadth-audit.md) — complete; 35 rows; 32 emitted and 3 withheld; promotable two-package tranche; PR 206 exact head `0030b846` merged as `8cbf6064`
-
-## Dispatch Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Cards 064-067 are one approved concurrent group and are also approved
-concurrent with g05.026 card 062.
-
-| Field | Cards 064, 065, 066, 067 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | Contract 061 active; Batch 9.4 checkpoint note; cards 022-024 and 031-033 merged; current `main` |
-| Completion conditions | one new unique `docs/triage/` gate note per card with exact row reconciliation, facade and source-identity map, withholding rules, rubric verdict per item, and one recommended disposition; card `## Result` filled; docs QA and Northstar gates green; zero Rust |
-| Owned mutable paths | the card's own file under `docs/roadmaps/g05/batch-cards/`; exactly one new `docs/triage/YYYYMMDD-HHMMSS-contract-061-candidate-<x>-audit.md`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
-| Forbidden paths | every `crates/**` path; `docs/contracts/**`; `docs/architecture/**`; the Batch 9.4 checkpoint note; the Kimi gate note; other candidates' notes; census CSV |
-| Approved concurrent siblings | 064, 065, 066, 067, and g05.026 card 062 |
-| Serial edges | Chatterbox reconciles the four notes and promotes at most one implementation card per passing candidate; card 034 and the Kimi decision reopen only from card 064's catalogue-route finding |
-| Worker capability class | planning-only census and code-reading auditor; Rust reading, no Rust writing; no provider credentials |
-| Acceptance evidence | rows reconcile to 94, 56, 47, or 35 without filters; every prepared or active facade and source-identity kind is named or its absence proved on current `main`; rubric items 1-6 each answered with evidence |
-| Review oracle | the note is evidence, not authority; the smallest counterexample is a row counted as proved, a facade asserted without a code reference, or a rubric item marked closed by omission |
-| Stop conditions | census total does not reconcile; a candidate needs a new shared public type or contract amendment (record it, do not design it); current `main` moves under the audit in the owned adapter packages |
-| Escalation owner | operator (Tom) via Chatterbox for any public-baseline or vocabulary question; coordinator for mechanical blockers |
-
-### Card 068 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Card 068 is approved concurrent with audits 064-066 and g05.026 card 062.
-
-| Field | Card 068 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | card 067 merged at `8cbf6064`; the candidate J audit note; current `main` |
-| Completion conditions | three per-route ledgers prove 32 emitted / 3 withheld across exactly 35 tuples; named validation green; god-file scan within the accepted baseline; one reviewable PR; no public baseline or contract change |
-| Owned mutable paths | `crates/swallowtail-adapter-llama-cpp/**`; `crates/swallowtail-adapter-ollama/**`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
-| Forbidden paths | `crates/swallowtail-core/**`, `crates/swallowtail-runtime/**`, `crates/swallowtail-testkit/**`, every other adapter crate, `docs/contracts/**`, `docs/architecture/**`, the census CSV, the audit note |
-| Approved concurrent siblings | 064, 065, 066, and g05.026 card 062 |
-| Serial edges | none; later candidates enter only through their own audits |
-| Worker capability class | Rust implementation worker with fixture authoring; no provider credentials |
-| Acceptance evidence | ledger fixtures per route and per Ollama shape; withheld-row assertions; focused and package-affected validation; semantic API unchanged |
-| Review oracle | the card's counterexample list; smallest counterexample is one row emitted from the wrong shape, from documentation, or from an unretained profile |
-| Stop conditions | the card's stop list; any need for a shared public type or contract amendment returns to Chatterbox |
-| Escalation owner | operator (Tom) via Chatterbox for public-baseline questions; coordinator for mechanical blockers |
-
-### Card 069 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Card 069 is approved concurrent with card 068, audit 065, and g05.026 card
-062.
-
-| Field | Card 069 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | card 064 merged at `1903f715`; the candidate C audit note; current `main` |
-| Completion conditions | seven per-route ledgers prove 51 emitted / 43 withheld across exactly 94 tuples; four no-control audits stay negative coverage; named validation green; god-file scan within the accepted baseline; one reviewable PR; no public baseline or contract change |
-| Owned mutable paths | `crates/swallowtail-adapter-antigravity/**`; `crates/swallowtail-adapter-bedrock/**`; `crates/swallowtail-adapter-cursor/**`; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
-| Forbidden paths | `crates/swallowtail-core/**`, `crates/swallowtail-runtime/**`, `crates/swallowtail-testkit/**`, every other adapter crate (card 068 owns llama.cpp and Ollama), `docs/contracts/**`, `docs/architecture/**`, the census CSV, the audit note, Antigravity version claims and corpora |
-| Approved concurrent siblings | 068, 065, and g05.026 card 062 |
-| Serial edges | none; the Antigravity `1.1.24` currentness family is a separate later lane and must not ride on this card |
-| Worker capability class | Rust implementation worker with fixture authoring; no provider credentials |
-| Acceptance evidence | ledger fixtures per route; withheld-row and no-control assertions; focused and package-affected validation; semantic API unchanged |
-| Review oracle | the card's counterexample list; smallest counterexample is one row emitted from a catalogue operation, from documentation, or from an unrequested profile |
-| Stop conditions | the card's stop list; any need for a shared public type or contract amendment returns to Chatterbox |
-| Escalation owner | operator (Tom) via Chatterbox for public-baseline questions; coordinator for mechanical blockers |
-
-### Card 070 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Card 070 is approved concurrent with card 069, audit 065, and g05.026 card
-062.
-
-| Field | Card 070 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | the Kimi active-observation gate note and the candidate I audit note on `main`; current `main` |
-| Completion conditions | one new triage gate note with exact additive names, admission, composition, maxima, both consumer anchors, drafted Contract 061 amendment and testkit assertions, and a rubric verdict; card `## Result` filled; docs QA and Northstar gates green; zero Rust |
-| Owned mutable paths | this card's file; exactly one new `docs/triage/YYYYMMDD-HHMMSS-contract-061-provider-operation-observation-gate.md`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
-| Forbidden paths | every `crates/**` path; `docs/contracts/**`; `docs/architecture/**`; the Kimi gate note; the candidate I note; the census CSV; other triage notes |
-| Approved concurrent siblings | 069, 065, and g05.026 card 062 |
-| Serial edges | Chatterbox promotes the note into a Contract 061 amendment and one runtime baseline card; candidate I completion and card 034 reopen only after that baseline merges |
-| Worker capability class | planning-only public-API designer with strong Rust reading; no Rust writing; no provider credentials; prefer a frontier-tier model for this card |
-| Acceptance evidence | the note's proposals resolve to exact current-`main` code references; the rubric verdict lists every open decision |
-| Review oracle | the card's invariant; smallest counterexample is a reinterpreted existing name or a prepared plan admitted as observation |
-| Stop conditions | a proposal cannot stay additive; the two consumers need different vocabularies; the operator must choose between materially different shapes (record the fork, do not pick) |
-| Escalation owner | operator (Tom) via Chatterbox; coordinator for mechanical blockers |
-
-### Card 073 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Card 073 is approved concurrent with audit 065 and g05.027 card 071.
-
-| Field | Card 073 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | Contract 061 amended on `main`; the accepted gate note; card 022's composer and testkit suite on `main` |
-| Completion conditions | all gate names, admission, composer pass, maximum, diagnostics, and six assertions realized verbatim; semantic API diff additive only; named validation green; god-file scan within the accepted baseline; one reviewable PR |
-| Owned mutable paths | `crates/swallowtail-runtime/**`; `crates/swallowtail-testkit/**`; `CHANGELOG.md` `[Unreleased]`; runtime and testkit public API baseline evidence; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`; the coordinator edits these at closeout |
-| Forbidden paths | every `crates/swallowtail-adapter-*/**`; `crates/swallowtail-core/**`; `docs/contracts/**`; `docs/architecture/**`; the gate note; the census |
-| Approved concurrent siblings | audit 065; g05.027 card 071 (under review) |
-| Serial edges | candidate I completion and card 034 compile only after card 073 merges |
-| Worker capability class | Rust implementation worker with strong public-API discipline; frontier-tier preferred because it changes shared runtime vocabulary; no provider credentials |
-| Acceptance evidence | the six assertions; semantic API baseline diff; focused and package-affected validation |
-| Review oracle | the card's counterexample list; smallest counterexample is one reinterpreted existing name or one prepared plan admitted as observation |
-| Stop conditions | the card's stop list; any deviation from the gate's exact names returns to Chatterbox |
-| Escalation owner | operator (Tom) via Chatterbox for vocabulary questions; coordinator for mechanical blockers |
-
-### Cards 074-076 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Cards 074, 075, and 076 are approved concurrent with one another and with
-g05.028 card 077.
-
-| Field | Card 074 | Card 075 | Card 076 |
-| --- | --- | --- | --- |
-| Readiness | ready | ready | ready |
-| Outcome | complete Candidate I across DeepSeek and DeepSeek Harness | complete Candidate E Path A across Gemini and Grok | settle Kimi compound acknowledgement generically |
-| Prerequisites | cards 066 and 073 complete; accepted Candidate I note | card 065/PR 205 complete; card 032 precedent | cards 033, 070, and 073 complete; retained Kimi gate |
-| Completion conditions | exact 41 emitted / 6 withheld / 47 ledger; two outcome-backed operation observations; census-source corrections; one PR | exact 39 emitted / 17 withheld / 56 ledger; additive Gemini/Grok projected-open seams; one PR | one exact additive generic half-state design; contract/runtime impact named; zero Rust; one planning PR |
-| Owned mutable paths | `crates/swallowtail-adapter-deepseek/**`; `crates/swallowtail-adapter-deepseek-harness/**`; `release-baselines/public-api-0.4.0/swallowtail-adapter-deepseek.txt` and `swallowtail-adapter-deepseek-harness.txt` regenerated through `scripts/generate-public-api-baseline.sh` (additive only, per cards 068, 069, and 073); `docs/triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv` source-reference corrections only; card result; `PAPERCUTS.md` append only | `crates/swallowtail-adapter-gemini/**`; `crates/swallowtail-adapter-grok/**`; `release-baselines/public-api-0.4.0/swallowtail-adapter-gemini.txt` and `swallowtail-adapter-grok.txt` regenerated the same way; card result; `PAPERCUTS.md` append only | card 076 result; retained Kimi gate note; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `CHANGELOG.md` `[Unreleased]`; `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, batch-card index, generation index, logs index | same | same |
-| Forbidden paths | shared runtime/core/testkit; other adapters; contracts; architecture; other triage notes; version claims | shared runtime/core/testkit; other adapters; contracts; architecture; Gemini version claims; other triage notes | every `crates/**`; contracts and architecture; card 034 implementation; provider-operation redesign; other triage notes |
-| Approved concurrent siblings | 075, 076, g05.028 card 077 | 074, 076, g05.028 card 077 | 074, 075, g05.028 card 077 |
-| Serial edges | none | none | Chatterbox promotion, any required shared baseline, then card 034 |
-| Worker capability class | Rust implementation worker with outcome-admission discipline; no provider credentials | Rust implementation worker with active-session lifecycle discipline; no provider credentials | planning-only public-API designer with strong Rust reading; frontier tier; no Rust writing |
-| Acceptance evidence | exact route ledgers; operation outcome/source separation; focused and affected-package validation; public API additive only with the owned baseline files regenerated in the PR; `effigy package:api` green | exact route ledgers as complete per-package tuple universes (every emitted and every withheld tuple asserted, duplicate-sensitive) whose totals sum to 39/17/56; old/new open parity; retained-option observation; applicability proof; focused and affected-package validation; public API additive only with the owned baseline files regenerated in the PR; no dependency edge between adapter crates, including dev-dependencies or `#[path]` test includes | reachability matrix; verbatim public shape; bounds/admission/composition/testkit proposal; docs/Northstar gates |
-| Review oracle | no prepared evidence masquerades as completed operation | no configured value masquerades as post-open observation | no row-level ambiguity or invented pending state |
-| Stop conditions | new shared vocabulary, changed provider work, or ledger mismatch | shared baseline need, changed open lifecycle, or ledger mismatch | multiple material shapes, non-additive design, or operator policy gap |
-| Escalation owner | operator via Chatterbox for semantics; coordinator for mechanics | operator via Chatterbox for semantics; coordinator for mechanics | operator via Chatterbox; coordinator for mechanics |
-
-Candidate I and Candidate E audit notes remain live evidence until cards 074
-and 075 close, then Chatterbox prunes them. The provider-operation gate note
-remains until its two proving consumers close. Card 034 is not part of this
-frontier.
-
-### Card 079 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-The operator accepted card 076's compound acknowledgement design on
-2026-09-04 and Contract 061 is amended. Card 079 is approved concurrent with
-cards 074, 075, and 076's planning PR, and with g05.029 card 080.
-
-| Field | Card 079 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | Contract 061 amended on `main`; card 076's result (its planning PR may still be in review; the design text is the operator-accepted authority) |
-| Completion conditions | names, constructors, diagnostic, admission, and six assertions realized verbatim; API baseline regenerated additively; named validation green; one reviewable PR |
-| Owned mutable paths | `crates/swallowtail-runtime/**`; `crates/swallowtail-testkit/**`; `release-baselines/public-api-0.4.0/swallowtail-runtime.txt` and `swallowtail-testkit.txt` regenerated additively; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | every adapter crate; `crates/swallowtail-core/**`; `docs/contracts/**`; card 034 |
-| Approved concurrent siblings | 074, 075, 076, g05.029 card 080 |
-| Serial edges | card 034 compiles only after card 079 merges |
-| Worker capability class | Rust implementation worker with public-API discipline; frontier-tier preferred |
-| Acceptance evidence | the six assertions; additive semantic API diff; focused and package-affected validation |
-| Review oracle | the card's invariant |
-| Stop conditions | any deviation from card 076's exact names returns to Chatterbox |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Card 034 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Card 034 became ready when card 079 merged at `4258f526`; card 073 had
-already merged the provider-operation baseline.
-
-| Field | Card 034 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | cards 073 and 079 on `main`; the retained Kimi gate note; card 076's accepted design; the reviewed census |
-| Completion conditions | exact 25/20/31/13 ledgers prove 75 emitted and 14 withheld across 89 tuples; `open_session_with_projection`, the outcome-backed catalogue seam, and the compound acknowledgement value land as the retained scope fixes; named validation green; one reviewable PR |
-| Owned mutable paths | `crates/swallowtail-adapter-kimi/**`; `crates/swallowtail-adapter-kimi-platform/**`; `release-baselines/public-api-0.4.0/swallowtail-adapter-kimi.txt` and `swallowtail-adapter-kimi-platform.txt` regenerated additively; `CHANGELOG.md` `[Unreleased]`; this card's `## Result`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | shared runtime, testkit, and core; every other adapter; contracts; architecture; the Kimi gate note; the census; Kimi version claims and `selection.rs` ranges |
-| Approved concurrent siblings | g05.029 card 080 and its successor lanes |
-| Serial edges | none |
-| Worker capability class | Rust implementation worker with acknowledgement and outcome-admission discipline; frontier-tier; no provider credentials |
-| Acceptance evidence | four per-route ledger fixtures; compound half-state fixtures for effective/rejected/not-dispatched pairings; outcome-backed catalogue proof; case 2 and case 4 failure proofs; focused and package-affected validation; additive API diff |
-| Review oracle | no prepared evidence masquerades as completed operation, no pending half is invented, no adapter downcast is needed to read a half state, and `open_session` is byte-identical in behaviour |
-| Stop conditions | the card's Stop Conditions; any need for a shared type or contract change returns to Chatterbox |
-| Escalation owner | operator via Chatterbox for semantics; coordinator for mechanical blockers |
-
-### Card 096 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Card 096 is approved concurrent with g05.029 card 081 and the card 094
-remainder.
-
-| Field | Card 096 |
-| --- | --- |
-| Readiness | ready |
-| Prerequisites | card 095 merged at `ba8275eb`; Batch 9.4 checkpoint note; Contracts 041 and 061; cards 022-034 and 068-079 on `main` |
-| Completion conditions | one new triage note classifying every B, K, and L per-turn and attachment row with code anchors; one ruling on vocabulary sufficiency or one drafted additive baseline; rubric verdict per candidate; recommended first promotion; card result filled; docs and Northstar gates green; zero Rust |
-| Owned mutable paths | this card's file; exactly one new `docs/triage/YYYYMMDD-HHMMSS-contract-061-per-turn-authority-audit.md`; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` |
-| Forbidden paths | every `crates/**` path; contracts; architecture; the Batch 9.4 note; the census; other triage notes |
-| Approved concurrent siblings | g05.029 card 081; card 094 remainder |
-| Serial edges | Chatterbox promotes the ruling and at most one implementation card per passing candidate |
-| Worker capability class | planning-only auditor with strong Rust reading and Contract 041 familiarity; frontier-tier; no credentials |
-| Acceptance evidence | code-anchored row ledger; explicit ruling; rubric verdicts |
-| Review oracle | the card's invariant |
-| Stop conditions | a row needs a production change to be honest (record, do not design beyond the drafted baseline) |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers |
-
-### Cards 097-099 Manifest
-
-Promoted planning commit: the `main` commit that introduces this section.
-Card 096 (PR 232, merged `b874df63`) ruled that no shared change is needed
-and all three candidates pass the rubric. The three cards own disjoint
-packages and are one approved concurrent group, also concurrent with
-g05.029 card 081 and the card 094 remainder. They complete the 767-row
-census.
-
-| Field | Card 097 (L) | Card 098 (B) | Card 099 (K) |
-| --- | --- | --- | --- |
-| Readiness | ready | ready | ready |
-| Prerequisites | card 096 merged; the audit note; current `main` | same | same |
-| Completion conditions | exact 35/15/19 ledgers, 64 emitted / 5 withheld after the 2026-09-05 review correction (no production plan widening; three sidecar rows withheld with anchors); ledgers bound to real contributions in both directions; six per-turn rows on retained plan evidence; one PR | exact 19/17/23/17 ledgers, 74 emitted / 2 withheld; one per-turn row; one PR | exact 8/10/18/16 ledgers, 52 emitted; one per-turn attachment row; one PR |
-| Owned mutable paths | `crates/swallowtail-adapter-opencode/**`; `crates/swallowtail-adapter-pi/**`; their `release-baselines/public-api-0.4.1/*.txt` regenerated additively; `CHANGELOG.md` `[Unreleased]`; card result; `PAPERCUTS.md` append only | `crates/swallowtail-adapter-alibaba-model-studio/**`; `crates/swallowtail-adapter-anthropic/**`; `crates/swallowtail-adapter-xai/**`; their API baseline files; `CHANGELOG.md` `[Unreleased]`; card result; `PAPERCUTS.md` append only | `crates/swallowtail-adapter-mistral-vibe/**`; `crates/swallowtail-adapter-muse/**`; `crates/swallowtail-adapter-oh-my-pi/**`; `crates/swallowtail-adapter-qwen/**`; their API baseline files; `CHANGELOG.md` `[Unreleased]`; card result; `PAPERCUTS.md` append only |
-| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, this roadmap, `docs/roadmaps/g05/batch-cards/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md` | same | same |
-| Forbidden paths | shared runtime, testkit, core; every other adapter; contracts; architecture; the audit note; the census; version claims | same | same |
-| Approved concurrent siblings | 098, 099, g05.029 card 081, card 094 remainder | 097, 099, card 081, card 094 remainder | 097, 098, card 081, card 094 remainder |
-| Serial edges | none | none | none |
-| Worker capability class | Rust implementation worker with per-turn authority discipline; no credentials | same | same |
-| Acceptance evidence | per-route ledgers; per-turn authority proofs; mixed-assembly rejection; focused and package-affected validation; additive API diff | same | same |
-| Review oracle | the card's invariant | same | same |
-| Stop conditions | any need for a shared type or contract change returns to Chatterbox; a per-turn row without retained plan evidence | same | same |
-| Escalation owner | operator via Chatterbox; coordinator for mechanical blockers | same | same |
-
-The audit note stays as the ledger evidence these three cards own and is
-pruned when the last of them closes. `CHANGELOG.md` `[Unreleased]` is shared
-across the three; each card appends its own entry and rebases on conflict.

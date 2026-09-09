@@ -32,11 +32,6 @@ One family only. No provider prompt, login, install, host update, live
 session, sidecar pin change, Oh My Pi, Gemini, skill, papercut, g05.009
 card 034, release, or execution of downloaded official binaries.
 
-## Batch Cards
-
-- [039 Pi RPC 0.84.4 Identity](batch-cards/039-pi-rpc-0-84-4-identity.md) — completed
-- [040 Pi RPC 0.84.4 Claim](batch-cards/040-pi-rpc-0-84-4-claim.md) — completed
-
 ## Acceptance
 
 - [x] exact official identity is reproducible

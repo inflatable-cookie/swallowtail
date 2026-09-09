@@ -27,7 +27,7 @@ counterexample. Do not run Claude or publish a watcher capability.
 
 ### Batch 6.1 — Credential-Free Repair
 
-- [x] execute ready card 019 from current pushed `main`
+- [x] Watcher Proof Oracle And Activity Delivery Repair delivered (former card 019) from current pushed `main`
 - [x] retain safe deterministic fixtures and binding work from `49f2692f`
       selectively; do not merge or cherry-pick the whole prototype commit
 - [x] return one PR with no provider contact, claim, or live authorization
@@ -60,10 +60,6 @@ counterexample. Do not run Claude or publish a watcher capability.
 - salvaging the prototype would preserve terminal-only activity or its
   terminal local rejection as successful same-turn evidence
 - a public generic HTTP/MCP, process, event-bus, or consumer facade is required
-
-## Batch Cards
-
-- [019 Watcher Proof Oracle And Activity Delivery Repair](batch-cards/019-watcher-proof-oracle-and-activity-delivery-repair.md)
 
 ## References
 

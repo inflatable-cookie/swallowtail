@@ -3,7 +3,7 @@
 Status: ready; `v0.4.1` is tagged; card 095 work complete (PR 230 merged as `ba8275eb`); operator workflow authority granted 2026-09-05
 Owner: Tom
 Created: 2026-09-05
-Updated: 2026-09-05
+Updated: 2026-09-09
 Depends on: Contract 036 (workflow edits need explicit operator request; granted); the `v0.4.1` tag
 Vision tags: delivery, validation, CI
 
@@ -62,6 +62,23 @@ removed; release floor intact on `main` pushes and dispatches.
 - [ ] every test that ran before still runs somewhere on every PR
 - [ ] the required-check set for merge is documented and unchanged in
       strength
+
+## Dispatch
+
+| Field | g05.031 acceptance audit |
+| --- | --- |
+| Readiness | ready; Card 095 implementation merged through PR 230 at `ba8275eb`; current evidence is sufficient to score the original target without another workflow mutation |
+| Prerequisites | Contract 036; PR 230 and its exact-head review; current `.github/workflows/ci.yml` and `.config/nextest.toml`; PR and Actions history through PR 305; g05.034 audit evidence for workflow-dispatch and push-to-`main` runs |
+| Completion conditions | one source-linked audit scores each Acceptance clause independently; latency uses the latest 20 merged PRs through PR 305 with a completed pull-request `CI` run at the accepted head, extending backward only when a named exclusion leaves fewer than 10 observations; report median, p75, range, and code/docs strata; compare the pre-Card-095 command/test inventory with current PR coverage; verify current push-to-`main` and workflow-dispatch floor execution; verify required-check names and strength from durable repository/GitHub evidence; record contradictions rather than rewriting the target; update this task and one log |
+| Owned mutable paths | this task; one new `docs/logs/2026-09-09-g05-031-*.md`; one `docs/logs/README.md` index line; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, and `docs/roadmaps/generation-index.md`; queue coordinator edits these after merge |
+| Forbidden paths | `.github/workflows/**`; `.config/nextest.toml`; Rust; Cargo manifests and lockfile; Effigy configuration; release configuration and scripts; contracts; release notes and tags; every other task body |
+| Approved concurrent siblings | g05.029 only when queue serialization protects shared closeout surfaces; implementation paths do not overlap |
+| Worker capability class | evidence-only CI acceptance audit; GitHub Actions/PR and Git history correlation; documentation only |
+| Acceptance evidence | exact Actions run/job timestamps and conclusions; event and accepted-head identity; pre/post workflow command mapping; current trigger and runner conditions; PR 230 review/merge evidence; branch-protection or equivalent durable required-check evidence |
+| Review oracle | no cherry-picked timing sample or hidden exclusion; “typical” is scored from the median against about five minutes while p75 and outliers remain visible; every pre-Card-095 PR command/test has one current PR execution path; the literal macOS floor clause is not weakened to platform-neutral after the fact; missing required-check visibility is reported as unproven, not assumed |
+| Stop conditions | evidence identity or ordering conflicts; GitHub cannot expose enough accepted-head runs to score latency; an Acceptance clause needs a workflow, policy, branch-protection, release, or runtime mutation |
+| Escalation owner | Chatterbox for clock/sample semantics or follow-up planning; operator for workflow, branch-protection, release-policy, or target changes |
 
 ### Card 104 held gate (task-owned)
 

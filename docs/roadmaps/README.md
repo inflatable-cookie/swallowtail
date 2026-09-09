@@ -38,7 +38,6 @@ first standing lane. It does not keep a generation open.
 - [archive/per-route-feature-inventory.md](archive/per-route-feature-inventory.md) —
   past disposition counts and parallel qualification queue (retained with the g04 roll-up)
 - [standing-lanes.md](standing-lanes.md) — generation-independent lanes
-- [backlog/README.md](backlog/README.md) — deferred work and promotion gates
 - [archive/g01.md](archive/g01.md) — completed foundation generation roll-up
 - [archive/g02.md](archive/g02.md) — completed stabilization, provider-wide
   facade, activity, compatibility, and lifecycle generation roll-up

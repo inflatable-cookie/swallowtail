@@ -5,6 +5,18 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Added
+- raise the Pi RPC qualified ceiling from `0.84.4` to official npm
+  `@earendil-works/pi-coding-agent` `0.85.1`. Compatible extension of
+  `pi.rpc.strict-lf-v0.84.0-message-update-delta`: selected mapped commands
+  and argv stay; published `0.85.0` is also qualified. `0.85.0` experimental
+  server/client packaging, `PI_SERVER_*` help, persistent Claude thinking
+  effort, in-memory session restore, and GPT-6 Astra stay unmapped. Abort
+  still waits for idle; compaction cancel is a bugfix of already-mapped
+  abort covering unmapped `compact`. Unpublished `0.83.1` and `0.84.5` stay
+  incompatible; unpublished `0.85.2` remains visible `UnverifiedNewer`.
+  `pi.sdk-sidecar` stays exact `0.84.2`. Research 302, g05.044.
+
 ## [0.4.4] - 2026-09-09
 
 ### Added

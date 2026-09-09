@@ -7,27 +7,30 @@ use swallowtail_adapter_pi::{
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus};
 
 #[test]
-fn identity_and_claim_qualify_0_84_4_as_compatible_extension() {
+fn identity_names_compatible_extension_before_the_claim_edit() {
     let identity = json(IDENTITY);
     let decision = &identity["identity_decision"];
     assert_eq!(decision["shape"], "compatible-extension");
     assert_eq!(decision["keep_v0_83_0_exact"], true);
-    assert_eq!(decision["extend_private_v0_84_0"], "0.84.0..=0.84.4");
+    assert_eq!(
+        decision["extend_private_v0_84_0"],
+        "0.84.0..=0.84.4 and 0.85.0..=0.85.1"
+    );
     assert_eq!(
         decision["v0_84_0_behavior"],
         "pi.rpc.strict-lf-v0.84.0-message-update-delta"
     );
-    assert_eq!(decision["raise_latest_qualified_to"], "0.84.4");
+    assert_eq!(decision["raise_latest_qualified_to"], "0.85.1");
     assert_eq!(decision["keep_baseline"], "0.80.10");
     assert_eq!(decision["new_milestone"], false);
     assert_eq!(decision["flatten_to_oh_my_pi"], false);
     assert_eq!(decision["raise_sdk_sidecar"], false);
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
-        "0.84.3"
+        "0.84.4"
     );
     assert_eq!(
-        identity["claim_at_observation"]["classification_of_0_84_4"],
+        identity["claim_at_observation"]["classification_of_0_85_1"],
         "unverified_newer"
     );
     assert_eq!(PI_PACKAGE_BASELINE_VERSION, "0.80.10");
@@ -52,13 +55,12 @@ fn identity_and_claim_qualify_0_84_4_as_compatible_extension() {
                         == "pi.rpc.strict-lf-v0.84.0-message-update-delta"
         ));
     }
-    assert!(!claim.permits(&version("0.84.5")));
     assert!(matches!(
         claim.assess(&version("0.85.2")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
-        pi_package_binding("0.84.4")
+        pi_package_binding("0.85.1")
             .expect("version binds")
             .axis()
             .as_str(),
@@ -67,21 +69,26 @@ fn identity_and_claim_qualify_0_84_4_as_compatible_extension() {
 }
 
 #[test]
-fn unpublished_gaps_and_later_0_84_5_stay_classified() {
+fn unpublished_gaps_and_later_0_85_2_stay_classified() {
     let identity = json(IDENTITY);
     assert_eq!(
         strings(&identity["published_stables_from_previous_ceiling"]),
-        ["0.84.4"]
+        ["0.85.0", "0.85.1"]
     );
     assert_eq!(identity["unpublished_0_83_1"], true);
     assert_eq!(identity["unpublished_0_84_5"], true);
+    assert_eq!(identity["unpublished_0_85_2"], true);
     assert_eq!(
         identity["identity_decision"]["keep_unpublished_0_83_1"],
         true
     );
     assert_eq!(
+        identity["identity_decision"]["keep_unpublished_0_84_5"],
+        true
+    );
+    assert_eq!(
         identity["identity_decision"]["later_unverified_after_qualification"],
-        "0.84.5"
+        "0.85.2"
     );
     assert_eq!(
         identity["identity_decision"]["later_unverified_published"],
@@ -113,9 +120,9 @@ fn sdk_sidecar_stays_exact_0_84_2() {
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
-    assert!(!sidecar.permits(&version("0.84.4")));
+    assert!(!sidecar.permits(&version("0.85.1")));
     assert!(!matches!(
-        sidecar.assess(&version("0.84.4")),
+        sidecar.assess(&version("0.85.1")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

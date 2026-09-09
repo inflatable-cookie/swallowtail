@@ -1,6 +1,6 @@
 # g05.044 Pi RPC 0.85.1 Useful Newer
 
-Status: ready; operator named Pi RPC `0.85.1` for support
+Status: ready; identity and claim landed, awaiting exact-head review
 Owner: Tom
 Created: 2026-09-09
 Updated: 2026-09-09
@@ -91,11 +91,20 @@ execute downloaded official artifacts.
 
 ## Acceptance
 
-- [ ] official identity is reproducible for both published hops
-- [ ] every changed shipped file feeding selected behavior is classified
-- [ ] identity evidence lands before any production claim edit
-- [ ] only the admitted segment changes the claim; a stop changes no claim
-- [ ] historical segments and gaps, claim ID, `AllowUnverified`, and unrelated
+- [x] official identity is reproducible for both published hops
+- [x] every changed shipped file feeding selected behavior is classified
+- [x] identity evidence lands before any production claim edit
+- [x] only the admitted segment changes the claim; a stop changes no claim
+- [x] historical segments and gaps, claim ID, `AllowUnverified`, and unrelated
       Pi surfaces survive
-- [ ] `pi.sdk-sidecar` remains exact `0.84.2`
-- [ ] official latest is rechecked at both required boundaries
+- [x] `pi.sdk-sidecar` remains exact `0.84.2`
+- [x] official latest is rechecked at both required boundaries
+
+## Result
+
+Compatible extension. Identity commit froze Research 302 and
+`pi-rpc-0.85.1` before any `selection.rs` edit. Claim raises latest
+qualified to `0.85.1` on the existing message-update-delta revision,
+qualifies published `0.85.0`, keeps unpublished `0.83.1` and `0.84.5`
+incompatible, and leaves unpublished `0.85.2` `UnverifiedNewer`. Sidecar
+stays exact `0.84.2`. Review and merge remain queue-owned.

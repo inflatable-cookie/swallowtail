@@ -18,12 +18,12 @@ use swallowtail_adapter_claude_agent::sdk::registered_tool::{
     CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION, CLAUDE_AGENT_SDK_MCP_SUPPORTED_PROTOCOL_VERSIONS,
     CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID, CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_AXIS,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER,
-    ClaudeAgentSdkMcpReply, ClaudeAgentSdkRegisteredToolBinding,
-    ClaudeAgentSdkRegisteredToolCarrier, ClaudeAgentSdkRegisteredToolDecision,
-    ClaudeAgentSdkRegisteredToolMediator, claude_agent_sdk_mcp_protocol_version_admitted,
-    claude_agent_sdk_mcp_protocol_version_known, claude_agent_sdk_registered_tool_carrier_binding,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER, ClaudeAgentSdkMcpReply,
+    ClaudeAgentSdkRegisteredToolBinding, ClaudeAgentSdkRegisteredToolCarrier,
+    ClaudeAgentSdkRegisteredToolDecision, ClaudeAgentSdkRegisteredToolMediator,
+    claude_agent_sdk_mcp_protocol_version_admitted, claude_agent_sdk_mcp_protocol_version_known,
+    claude_agent_sdk_registered_tool_carrier_binding,
     claude_agent_sdk_registered_tool_carrier_claim, claude_agent_sdk_registered_tool_qualification,
     project_claude_agent_sdk_registered_tool,
 };
@@ -576,23 +576,23 @@ fn the_projection_publishes_the_qualified_route_on_the_accepted_platform() {
         project_claude_agent_sdk_registered_tool(&applicability, &carrier, &readiness)
             .expect("the contribution composes");
 
+    let route = swallowtail_adapter_claude_agent::sdk::registered_tool::
+        CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE;
     assert_eq!(
         claude_agent_sdk_registered_tool_qualification(),
-        swallowtail_runtime::RegisteredToolRouteQualification::Qualified(
-            CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE
-        ),
+        swallowtail_runtime::RegisteredToolRouteQualification::Qualified(route),
         "the accepted live tuple qualifies the route on its own platform"
     );
     assert_eq!(
-        CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE.permission(),
+        route.permission(),
         swallowtail_runtime::RegisteredToolPermissionStrength::ExactOneShot
     );
     assert_eq!(
-        CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE.progress(),
+        route.progress(),
         swallowtail_runtime::RegisteredToolProgressMode::NoProgress
     );
     assert_eq!(
-        CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE.skill_delivery(),
+        route.skill_delivery(),
         swallowtail_runtime::RegisteredToolSkillDelivery::NotCarried
     );
     let capability = row_with_semantic_id(&contribution, "registered-tool.capability");

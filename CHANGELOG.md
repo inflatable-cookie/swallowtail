@@ -5,86 +5,7 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
-### Changed
-
-- qualified `claude-agent.sdk` registered tools on the exact accepted Card 318
-  live tuple (Research 301): the Contract 061 registered capability projects
-  `Qualified` with `ExactOneShot` one-shot permission (one Allow dispatched
-  `desktop/reconcile` exactly once with unchanged `{}` and correlated its fixed
-  `{"ok":true}` result; Deny, cancellation, and stale/foreign controls
-  dispatched zero times as pass evidence), `NoProgress`, and `NotCarried`
-  selected-skill delivery, and the mediation-kind row moved from
-  `real_route_gate_pending` to route-validation support. The route pins SDK
-  `0.3.259`, native `2.1.259`, Node `22.23.2`, and the `0.4.4` sidecar tag
-  exactly, so the compiled platform is the one variable axis: only the Darwin
-  arm64 target the capsules ran on projects the qualified truth, and every
-  other target publishes the unqualified truth with `platform_not_admitted`.
-  The capsule's cleanup stays the accepted Contract 019 route-qualified
-  degraded macOS posture, never renamed `Clean`. Route tests freeze the
-  source, task, capsule, Desktop PR, review, merge, closeout, courier,
-  attempt, dispatch, and correlation identities, and the frozen transcript
-  gains the exact live Allow shape. The retired
-  `CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE` stays on the immutable 0.4.3
-  surface but is published by no row; the unreleased 0.4.4 API surface adds
-  `CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE` and
-  `CLAUDE_AGENT_SDK_REGISTERED_TOOL_PLATFORM_NOT_ADMITTED_CODE`. Registered
-  tool omission stays byte-identical. g05 batch card 153.
-- retained the Claude Agent SDK's structured provider-failure facts end to end
-  instead of collapsing them to generic `provider_failed`: the sidecar now
-  projects the validated numeric `api_error_status`, the bounded
-  `terminal_reason`, and the latest active-turn `rateLimitStatus` through the
-  strict wire into the failed terminal diagnostic, rejecting malformed present
-  values and resetting rate state at each turn boundary so idle or prior-turn
-  notices never contaminate the next result. Only the documented `402`
-  classifies billing-specific (`provider_billing_unavailable`,
-  `EntitlementUnavailable`, configuration change required); `400` and `429`
-  keep distinct explicitly mixed route codes without ever becoming
-  `QuotaExhausted`, and absent or unlisted statuses stay generic. No status or
-  rate notice authorizes retry, fallback, replay, or account mutation, and no
-  provider prose, quota payload, or credential ever crosses the wire. No
-  qualification, matrix, candidate, tag, or release consequence follows.
-  g05 batch card 152.
-- repaired the Claude Agent SDK sidecar's strict MCP-status projection to
-  admit and discard every optional field the exact `0.3.259`
-  `McpServerStatus` declaration (`package/sdk.d.ts:1114-1158`) permits —
-  `serverInfo`, `error`, `config`, `scope`, and `tools` — instead of
-  rejecting rows that carry them: a required connected server stays admitted
-  however much declared metadata its row carries, and `failed`, `needs-auth`,
-  and `disabled` rows reach their bounded failure codes rather than
-  collapsing to `mcp_status_invalid`. Rows with an undeclared top-level key,
-  unknown status, missing/foreign/duplicate names, a non-object entry, or a
-  count mismatch stay fail-closed, and no raw error text, configuration,
-  URL, header, path, or tool description ever crosses the projection. The
-  fake SDK's status rows now carry all five declared optional fields with
-  fixture-only markers, and the adapter's bounded regression corpus freezes
-  the row-shape table plus the Card 145 Desktop diagnostic tuple (Research
-  297), whose one authorized open stopped at the pre-repair bounded
-  `mcp_status_invalid` before provider readiness with cleanup confirmed. No
-  qualification, matrix, candidate, tag, or release consequence follows and
-  both Contract 061 `claude-agent.sdk` cells stay unqualified. g05.035 card
-  146.
-- Raised qualified OpenCode HTTP ceiling from `1.18.28` to official npm
-  `opencode-ai` `1.18.29` on the `opencode.server` axis. Compatible-extension:
-  selected HTTP/SSE route files and OpenAPI byte-identical; only unmapped
-  Codex OAuth model-id filtering changed. Research 292. g05.037 cards 135-136.
-- qualified `grok-build.acp` registered tools on the exact maintained Grok
-  Build `1.0.4..=1.0.5` segments from the accepted Card 128 live capsules
-  (Research 295), version-scoped: `grok_build_acp_registered_tool_qualification`
-  now takes the executable version and returns `Qualified` with
-  `NotRepresented` one-shot Deny strength, `NoProgress`, and `NotCarried`
-  selected-skill delivery only inside that maintained segment — deprecated
-  `0.2.x`, the unprobed gap, and unverified-newer points project the
-  unqualified truth and a registered open refuses with `version_not_admitted`
-  before any host, lease, or provider work. Frozen ACP v1 session setup and
-  the exact Grok artifacts expose no session-scoped selected-skill input, so
-  that cell records the exact route limitation. The mediation-kind row moves
-  from `real_route_gate_pending` to route-validation support on admitted
-  versions, route tests bind the qualification to the capsule, receipt,
-  Desktop PR, review, merge, and closeout identities, and
-  `GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE` is replaced by
-  `GROK_ACP_REGISTERED_TOOL_ROUTE` and the version-scoped signatures in the
-  unreleased 0.4.4 API surface. Registered-tool omission stays byte-identical.
-  g05.035 card 143.
+## [0.4.4] - 2026-09-09
 
 ### Added
 - add an additive Claude Agent SDK prepared-route open surface,
@@ -213,8 +134,6 @@ annotated Git tags from the canonical repository.
   only. Provider-free fixtures only; no live provider pass is claimed. g05.035
   card 127.
 
-## [0.4.4] - 2026-09-07
-
 ### Added
 - add the provider-neutral Contract 063 registered-tool and operation-bridge
   vocabulary with bounded selected skill/reference transport and provider-free
@@ -270,6 +189,86 @@ annotated Git tags from the canonical repository.
   Code, Codex CLI, and Grok Build. Guidance carries only the harness name,
   vendor command, source URL, and freeze date; present outcomes carry none and
   discovery never executes the command. g05.029 card 088.
+
+### Changed
+- qualified `claude-agent.sdk` registered tools on the exact accepted Card 318
+  live tuple (Research 301): the Contract 061 registered capability projects
+  `Qualified` with `ExactOneShot` one-shot permission (one Allow dispatched
+  `desktop/reconcile` exactly once with unchanged `{}` and correlated its fixed
+  `{"ok":true}` result; Deny, cancellation, and stale/foreign controls
+  dispatched zero times as pass evidence), `NoProgress`, and `NotCarried`
+  selected-skill delivery, and the mediation-kind row moved from
+  `real_route_gate_pending` to route-validation support. The route pins SDK
+  `0.3.259`, native `2.1.259`, Node `22.23.2`, and the `0.4.4` sidecar tag
+  exactly, so the compiled platform is the one variable axis: only the Darwin
+  arm64 target the capsules ran on projects the qualified truth, and every
+  other target publishes the unqualified truth with `platform_not_admitted`.
+  The capsule's cleanup stays the accepted Contract 019 route-qualified
+  degraded macOS posture, never renamed `Clean`. Route tests freeze the
+  source, task, capsule, Desktop PR, review, merge, closeout, courier,
+  attempt, dispatch, and correlation identities, and the frozen transcript
+  gains the exact live Allow shape. The retired
+  `CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE` stays on the immutable 0.4.3
+  surface but is published by no row; the unreleased 0.4.4 API surface adds
+  `CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE` and
+  `CLAUDE_AGENT_SDK_REGISTERED_TOOL_PLATFORM_NOT_ADMITTED_CODE`. Registered
+  tool omission stays byte-identical. g05 batch card 153.
+- retained the Claude Agent SDK's structured provider-failure facts end to end
+  instead of collapsing them to generic `provider_failed`: the sidecar now
+  projects the validated numeric `api_error_status`, the bounded
+  `terminal_reason`, and the latest active-turn `rateLimitStatus` through the
+  strict wire into the failed terminal diagnostic, rejecting malformed present
+  values and resetting rate state at each turn boundary so idle or prior-turn
+  notices never contaminate the next result. Only the documented `402`
+  classifies billing-specific (`provider_billing_unavailable`,
+  `EntitlementUnavailable`, configuration change required); `400` and `429`
+  keep distinct explicitly mixed route codes without ever becoming
+  `QuotaExhausted`, and absent or unlisted statuses stay generic. No status or
+  rate notice authorizes retry, fallback, replay, or account mutation, and no
+  provider prose, quota payload, or credential ever crosses the wire. No
+  qualification, matrix, candidate, tag, or release consequence follows.
+  g05 batch card 152.
+- repaired the Claude Agent SDK sidecar's strict MCP-status projection to
+  admit and discard every optional field the exact `0.3.259`
+  `McpServerStatus` declaration (`package/sdk.d.ts:1114-1158`) permits —
+  `serverInfo`, `error`, `config`, `scope`, and `tools` — instead of
+  rejecting rows that carry them: a required connected server stays admitted
+  however much declared metadata its row carries, and `failed`, `needs-auth`,
+  and `disabled` rows reach their bounded failure codes rather than
+  collapsing to `mcp_status_invalid`. Rows with an undeclared top-level key,
+  unknown status, missing/foreign/duplicate names, a non-object entry, or a
+  count mismatch stay fail-closed, and no raw error text, configuration,
+  URL, header, path, or tool description ever crosses the projection. The
+  fake SDK's status rows now carry all five declared optional fields with
+  fixture-only markers, and the adapter's bounded regression corpus freezes
+  the row-shape table plus the Card 145 Desktop diagnostic tuple (Research
+  297), whose one authorized open stopped at the pre-repair bounded
+  `mcp_status_invalid` before provider readiness with cleanup confirmed. No
+  qualification, matrix, candidate, tag, or release consequence follows and
+  both Contract 061 `claude-agent.sdk` cells stay unqualified. g05.035 card
+  146.
+- Raised qualified OpenCode HTTP ceiling from `1.18.28` to official npm
+  `opencode-ai` `1.18.29` on the `opencode.server` axis. Compatible-extension:
+  selected HTTP/SSE route files and OpenAPI byte-identical; only unmapped
+  Codex OAuth model-id filtering changed. Research 292. g05.037 cards 135-136.
+- qualified `grok-build.acp` registered tools on the exact maintained Grok
+  Build `1.0.4..=1.0.5` segments from the accepted Card 128 live capsules
+  (Research 295), version-scoped: `grok_build_acp_registered_tool_qualification`
+  now takes the executable version and returns `Qualified` with
+  `NotRepresented` one-shot Deny strength, `NoProgress`, and `NotCarried`
+  selected-skill delivery only inside that maintained segment — deprecated
+  `0.2.x`, the unprobed gap, and unverified-newer points project the
+  unqualified truth and a registered open refuses with `version_not_admitted`
+  before any host, lease, or provider work. Frozen ACP v1 session setup and
+  the exact Grok artifacts expose no session-scoped selected-skill input, so
+  that cell records the exact route limitation. The mediation-kind row moves
+  from `real_route_gate_pending` to route-validation support on admitted
+  versions, route tests bind the qualification to the capsule, receipt,
+  Desktop PR, review, merge, and closeout identities, and
+  `GROK_ACP_REAL_ROUTE_GATE_PENDING_CODE` is replaced by
+  `GROK_ACP_REGISTERED_TOOL_ROUTE` and the version-scoped signatures in the
+  unreleased 0.4.4 API surface. Registered-tool omission stays byte-identical.
+  g05.035 card 143.
 
 ## [0.4.3] - 2026-09-06
 

@@ -15,11 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Validate g05.045 after Desktop g02.049 completes. Desktop owns the single
-authorized live Claude session; Swallowtail consumes its merged capsule
-provider-free and must not repeat the call. g05.029 remains an honest
-historical evidence stop until that follow-up is accepted. No release, tag,
-range, or second provider authority follows.
+Reconcile g05.045 after Desktop g02.049 closes its native-mediation evidence
+stop. Swallowtail consumes all three merged capsules provider-free, records
+the exact SDK limitation, and must not repeat the call. Desktop g02.051 owns
+the separate provider-free registered-tool editing implementation. No live
+acceptance, release, tag, or range authority follows.
 
 ## Standing Lanes
 

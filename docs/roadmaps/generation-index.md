@@ -435,8 +435,9 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Validate g05.045 after immutable Desktop task
-`bc4acd98-91a3-4e14-86e0-38376b037da7`. Desktop owns one authorized
-two-turn Claude editing session. Swallowtail consumes only its exact merged
-capsule, provider-free, against the stopped g05.029 oracle. No second provider
-call, range widening, release, or tag authority follows.
+Validate g05.045 as a provider-limitation reconciliation after Desktop task
+`bc4acd98-91a3-4e14-86e0-38376b037da7` closes. Desktop lands three immutable
+negative capsules; Swallowtail records the exact native `canUseTool`
+limitation provider-free. Desktop g02.051 owns the separate registered-tool
+editing implementation. No provider call, range widening, release, or tag
+authority follows.

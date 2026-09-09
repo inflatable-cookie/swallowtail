@@ -1,6 +1,6 @@
 # 2026-09-09 g05.043 Roadmap Backlog Retirement
 
-Status: complete (worker batch; review and merge through Northstar Queue)
+Status: complete; PR #302 merged at `8ae707d5`
 Task: `docs/roadmaps/g05/043-roadmap-backlog-retirement.md`
 Handoff: `docs/handoffs/20260909-151758-roadmap-backlog-retirement.md`
 Base: clean synchronized `main` at `2e11aca8` (planning head `2e11aca81df148526968f1a0af4cd7332c55b29e`).
@@ -83,8 +83,13 @@ intake), and generic "backlog" wording inside assessed research/triage notes.
 
 ## Review / Merge
 
-PR: #302 (`ns-b7c6d92e-a326-4796-84fe-976777d835e6` → `main`). Reviewed head,
-merge identity, and synchronized `main` head: recorded at closeout.
+PR #302 (`ns-b7c6d92e-a326-4796-84fe-976777d835e6` → `main`) was
+independently accepted at exact head
+`52423f055e7579a91b5b005d17662c04bf80c271`; review comment `5603707134`
+reported no blocking findings and carried the Northstar `ready_to_merge`
+marker. The queue merged it into `main` as
+`8ae707d5c367d24c566a8ad26c800cc159b2a44e` and synchronized the integration
+checkout at that exact SHA. No validation failure was deferred.
 
 ## Unchanged Frontier
 

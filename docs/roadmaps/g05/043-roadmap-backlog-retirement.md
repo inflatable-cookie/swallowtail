@@ -1,6 +1,6 @@
 # g05.043 Roadmap Backlog Retirement
 
-Status: ready
+Status: complete; PR #302 merged as `8ae707d5`
 Owner: Northstar documentation cleanup worker
 Created: 2026-09-09
 Governing refs: Contract 001; installed Northstar Chatterbox and roadmap-backlog retirement procedures; operator cleanup authority of 2026-09-09
@@ -119,8 +119,37 @@ On completion record the nine-item manifest, new triage destination, deleted
 and repaired paths, retained historical exceptions, validation actually run,
 reviewed exact head, PR, merge, synchronized integration head, and unchanged
 frontier.
+## Result
+
+- The frozen nine-item disposition manifest was applied. Binding persistence
+  moved to the deferred triage note
+  `docs/triage/20260909-151758-provider-session-management-binding-persistence.md`;
+  the Aider, Hosted Interactive OAuth, Kiro, and OpenHands stubs were removed
+  behind `docs/triage/2026-08-21-deferred-route-surfaces.md`; Gemini and Grok
+  behind the standing Contract 029 lane and compacted evidence; Pi RPC
+  continuity behind `pi.sdk-sidecar` with the fresh-only boundary retained;
+  Python Kimi declined behind Research 068. `docs/roadmaps/backlog/` is
+  deleted with no aliases, stubs, or empty directory, and live scaffolding is
+  removed from `effigy.toml` and the roadmaps index.
+- PR #302 was independently accepted at exact head
+  `52423f055e7579a91b5b005d17662c04bf80c271`; review comment `5603707134`
+  carried the accepted `ready_to_merge` marker and reported no blocking
+  findings. It merged through the queue as
+  `8ae707d5c367d24c566a8ad26c800cc159b2a44e`.
+- `effigy qa:docs`, `effigy qa:northstar`, `git diff --check`, the backlog
+  directory inventory, and the live `roadmaps/backlog` string inventory
+  passed. No validation failure was deferred.
+- Candidate `49c9e3b2`, tree `1a9db127`, and g05.036 are untouched. No tag,
+  release, consumer pin, candidate, generation rollover, or product scope
+  change. The exact-SHA `v0.4.4` tag decision remains with the operator.
+- The integration checkout is synchronized at
+  `8ae707d5c367d24c566a8ad26c800cc159b2a44e`. No new dispatch is authorized
+  by this closeout; planning direction is needed before selecting the next
+  task.
 
 ## Next task
 
-Return to Chatterbox after merge. The separate exact-SHA `v0.4.4` tag decision
-remains operator-owned; this cleanup grants no tag authority.
+Return to Chatterbox after merge. The retirement is complete through PR #302
+at `8ae707d5`; planning direction is needed before selecting the next task.
+The separate exact-SHA `v0.4.4` tag decision remains operator-owned; this
+cleanup grants no tag authority.

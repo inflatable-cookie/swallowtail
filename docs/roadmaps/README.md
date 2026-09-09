@@ -16,10 +16,10 @@ Closed generations live only as roll-ups under
 ## Next Task
 
 [g05.043 Roadmap Backlog Retirement](g05/043-roadmap-backlog-retirement.md) is
-ready after the completed flattened-task migration. It applies the operator-
-approved one-time documentation cleanup and preserves the existing product
-frontier. The exact-SHA `v0.4.4` tag decision remains separate and receives no
-authority from this task.
+complete; PR #302 merged at `8ae707d5`. The duplicate backlog intake layer is
+retired with every item dispositioned. Planning direction is needed before
+selecting the next task; the exact-SHA `v0.4.4` tag decision remains separate
+with no authority from this cleanup.
 
 ## Standing Lanes
 

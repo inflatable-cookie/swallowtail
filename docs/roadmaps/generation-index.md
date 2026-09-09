@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 43 tasks: 29 completed tasks, honest evidence stops at 002,
-003, 007, and 011, ready tasks at 029, 031, 034, 036, and 043, and planned
+g05 has 43 tasks: 30 completed tasks, honest evidence stops at 002,
+003, 007, and 011, ready tasks at 029, 031, 034, and 036, and planned
 tasks at 035, 039, 040, 041, and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
@@ -158,9 +158,9 @@ merged head `b35e4c38`; Card 154 is complete with candidate merge
 g05.042 the remaining-ACP-routes seam. The dependent Desktop
 exact-tree acceptance passed 2026-09-09 under Card 323 (evidence in g05.036);
 the exact-SHA tag decision remains with the operator and no tag authority follows.
-g05.043 is the operator-approved one-time roadmap-backlog retirement. Its
-nine-item disposition manifest is frozen; it changes documentation intake and
-checker surfaces only and grants no product or release authority.
+g05.043 completed through PR #302 at merged head `8ae707d5`; its exact-head
+review and documentation validation passed, with no validation failure
+deferred. The exact-SHA `v0.4.4` tag decision remains operator-owned.
 g05.034 makes the release lane short and dependable and CI fast (cards
 109-113 complete; acceptance awaits the lane wall-clock record). g05.033 completed the `v0.4.3` patch release; Card107's source
 consumer passed at `cbd4ddc8` and its tag capsule was relayed to Acowtancy.
@@ -427,7 +427,7 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Define planning direction with Chatterbox before selecting the next task; the g05.038
-generation-plus-task migration is complete through PR #301 at `8dc1f161`.
+Define planning direction with Chatterbox before selecting the next task; the g05.043
+roadmap-backlog retirement is complete through PR #302 at `8ae707d5`.
 The separate Desktop exact-tree acceptance remains bound to candidate merge
-`49c9e3b2`; no release authority follows from the migration.
+`49c9e3b2`; no release authority follows from the retirement.

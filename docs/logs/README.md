@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-09 Pi RPC 0.85.1 Identity](./2026-09-09-pi-rpc-0-85-1-identity.md) — Research 302 froze official npm/GitHub `0.85.1` as a compatible message-update-delta extension; production claims unchanged; g05.044
 - [2026-09-09 v0.4.4 Annotated Tag](./2026-09-09-v0-4-4-annotated-tag.md) — operator-authorized annotated tag `v0.4.4` created and pushed at exact candidate `49c9e3b2` (tag object `41da6c1a`); local and remote agree; source-only with no publication
 - [2026-09-09 g05.043 Roadmap Backlog Retirement](./2026-09-09-g05-043-roadmap-backlog-retirement.md) — complete; PR #302 merged at `8ae707d5`; frozen nine-item disposition applied, `docs/roadmaps/backlog/` deleted with no aliases or stubs, binding persistence moved to a deferred triage note, Pi continuity duplicate pruned behind `pi.sdk-sidecar`, and live scaffolding removed from `effigy.toml` and the roadmaps index
 - [2026-09-09 g05.038 Flattened Task Switchover Migration](./2026-09-09-g05-038-flattened-task-switchover.md) — complete; PR #301 merged at `8dc1f161`; generation-plus-task migration closed with g01–g04 compacted, g05 flattened to 42 tasks, and Card 323 acceptance reconciled into g05.036

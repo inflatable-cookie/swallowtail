@@ -177,6 +177,7 @@ consumer requirements and must not create a competing producer worker.
 | [148](batch-cards/148-claude-sdk-degraded-cleanup-oracle.md) | complete; Desktop PR 175 merged at `f8bff5a2` | Desktop proof-harness owner; cleanup classification and fixtures only; no live run or qualification | exact Contract 019 degraded posture accepted without calling it clean; adverse cleanup stays defect |
 | [149](batch-cards/149-claude-sdk-zero-credit-first-turn-diagnostic.md) | stopped; Desktop PR 177 merged at `f29eb0c0` | Desktop live-evidence owner; one open rejected at MCP startup before prompt | valid bounded capsule; no credit inference; Research 299 |
 | [150](batch-cards/150-claude-sdk-mcp-courier-startup-determinism.md) | ready; provider-free | Desktop proof-harness owner; courier build/acquisition/startup diagnosis and repair; no live run | reproduce or falsify mutable-artifact race; 24+ churned opens; exact-head review |
+| [153](batch-cards/153-claude-sdk-live-registered-tool-qualification.md) | ready; Research 301 and Desktop Card 318 accepted | Claude SDK adapter owner; provider-free route qualification, exact evidence binding, two matrix cells; no provider or release work | exact-tuple qualified projection; deterministic evidence fixtures; package, route, docs, API validation; exact-head review and merge |
 
 Workers require runtime/lifecycle capability; route cards require exact provider
 protocol experience. Independent reviewers test adverse lifecycle cases.
@@ -265,6 +266,21 @@ acquisition, provider spawn, authenticated connect, and MCP-status projection.
 The leading mutable-target race is a hypothesis from Card 139's measured
 mechanism, not yet the Card 149 cause. No further live attempt or top-up is
 authorized by this repair.
+
+## Claude Card 318 Return — 2026-09-09
+
+Desktop's funded four-control suite passed against exact source-linked
+Swallowtail `24f88fb8`. Research 301 freezes the exact SDK/native/Node/sidecar,
+transport, MCP, model, capsule, courier, task, PR, review, merge, closeout,
+dispatch-count, correlation, and cleanup identities. Allow dispatched the
+registered tool exactly once and correlated its result; Deny, cancellation,
+and stale/foreign callback rejection dispatched zero times. No retry,
+fallback, reconnect, or respawn occurred.
+
+Card 153 consumes this evidence provider-free and may qualify only the exact
+`registered_tools` and `consumer_tool_exchange` projections. No further live
+run, adjacent tuple claim, candidate, tag, release, or unrelated matrix
+inference follows.
 
 Route116/118 read-only evidence preparation is ready now under the same retained
 route owners. It must not wait for the evidence it is tasked to obtain. Runtime

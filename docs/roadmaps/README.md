@@ -15,11 +15,11 @@ shape.
 
 ## Next Task
 
-[Card 152](g05/batch-cards/152-claude-sdk-structured-provider-failure.md) is
-complete: PR 297 merged at `24f88fb8a1328aa0e85b9c91989962ba32b9c590` after
-independent exact-head review at `5d85cc93fd08cedbf8089ad171e35c88d3691ad2`.
-Planning direction is needed for the next task; this closeout promotes no new
-card or product direction.
+[Card 153](g05/batch-cards/153-claude-sdk-live-registered-tool-qualification.md)
+is ready. Consume Research 301 and the accepted Desktop Card 318 capsule
+provider-free, qualify only the exact `claude-agent.sdk` tuple, and reconcile
+the two registered-tool matrix cells. No provider call, candidate, tag, or
+release authority follows.
 
 ## Standing Lanes
 

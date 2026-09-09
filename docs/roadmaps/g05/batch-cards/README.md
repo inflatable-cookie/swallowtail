@@ -2,7 +2,7 @@
 
 ## Ready
 
-None.
+- [153-claude-sdk-live-registered-tool-qualification.md](./153-claude-sdk-live-registered-tool-qualification.md) — ready; consume accepted Desktop Card 318 capsule provider-free, qualify the exact tuple, and reconcile two matrix cells; no live run or release authority
 
 ## Planned
 

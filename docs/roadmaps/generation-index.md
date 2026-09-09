@@ -146,8 +146,9 @@ goal and does not keep g04 or any later generation open. See
 
 g05 has 37 roadmaps: 28 completed milestones, honest evidence stops at 002,
 003, 007, and 011, and ready milestones at 029, 031, 034, 036. Milestone 035 is
-planned. It holds the shared harness capability architecture
-and contract-promotion batches; it grants no runtime implementation authority.
+active. Its shared registered-tool kernel and route bindings are delivered;
+Research 301 promotes Card 153 as the ready provider-free Claude SDK
+exact-tuple qualification. It grants no provider or release authority.
 Milestone 034 makes the release lane short and dependable and CI fast (cards
 109-113). Milestone 033 completed the `v0.4.3` patch release; Card107's source
 consumer passed at `cbd4ddc8` and its tag capsule was relayed to Acowtancy.
@@ -416,7 +417,7 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). g05.034 card 109 is the lead of
-the approved release-lane simplification manifest; cards 110-113 remain in
-that manifest. This index records generation status; the canonical actionable
+[roadmaps front door](README.md#next-task). Card 153 is the approved
+provider-free Claude SDK exact-tuple qualification and two-cell matrix
+reconciliation. This index records generation status; the canonical actionable
 pointer stays in the front door.

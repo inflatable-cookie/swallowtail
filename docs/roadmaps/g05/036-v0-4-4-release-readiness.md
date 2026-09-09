@@ -195,6 +195,12 @@ the release gate. Card 152 then completed through PR 297, with the structured
 projection and safe classification accepted at exact-head review and merged
 into `main` as `24f88fb8`; no provider run or later Desktop diagnostic occurred.
 
+The later funded Desktop Card 318 suite passed all four independent controls
+against that exact source. Research 301 freezes the accepted capsule and
+review/merge/closeout chain. Card 153 is the provider-free Swallowtail
+qualification and two-cell matrix reconciliation. It authorizes no additional
+provider use, candidate preparation, tag, or release.
+
 ### Candidate Source Disposition — 2026-09-08
 
 The prepared candidate `0673541d` is PARKED, not abandoned and not current.

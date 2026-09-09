@@ -3,7 +3,7 @@
 Status: active
 Owner: Tom
 Created: 2026-08-28
-Updated: 2026-09-07
+Updated: 2026-09-09
 
 ## Purpose
 
@@ -40,7 +40,7 @@ enforcement.
 | Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | active; cards 080-082 delivered; cards 083-088 dispatch from manifest serial edges | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | `g05.029`, cards 080-088 |
 | Ship the first-turn model rejection evidence (cards 119-121) to Bovine Desktop as patch `v0.4.4`, the first release on the simplified lane, and record its wall clock. | ready; cards 122 and 123 compiled; ready on card 121's merge and the tag; first lane on the simplified shape | Contract 036 hosted delegation; the 2026-09-07 producer diagnosis | `g05.036`, cards 119-123 |
 | Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | ready; cards 109-113 compiled; 112 and 113 may start under the freeze | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | `g05.034`, cards 109-113 |
-| Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | planned; Research 288 and Spec 014 drafted; architecture and contracts unpromoted | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; Desktop operator direction 2026-09-06 | `g05.035`, promotion before implementation |
+| Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | active; shared kernel and route bindings delivered; Grok qualified; Research 301 promotes ready Claude SDK exact-tuple qualification Card 153 | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-063; Research 288, 295, 301 | `g05.035`, card 153 |
 | Ship the Claude SDK termination cause (card 105) as patch `v0.4.3` on the compressed lane, tag request to the operator as soon as gates are green, Desktop real Send on the tag as consumer evidence. | complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy; Desktop follow-up remains Acowtancy-owned | Contract 036; the 2026-09-06 Desktop real-Send evidence | `g05.033`, cards 105-107 |
 | Repair the Claude SDK live-open failure Bovine Desktop hit on `v0.4.1` and ship it as patch `v0.4.2` with cards 100 and 103 closed, card 101 candidate preparation complete, and card 102 ready. | complete; `v0.4.2` at `f94dd16f`; cards 100-103 closed; Card102 smoke inconclusive pre-window; Desktop owns visibility follow-up | Contract 036; the 2026-09-05 Bovine report | `g05.032`, cards 100-103 |
 | Prepare a bounded `v0.4.1` patch candidate carrying the Claude SDK editing session without crossing the release-execution or tag gate. | completed; `v0.4.1` tagged at `c3cce750`; cards 090-092 closed; feature freeze lifted | Contract 036; `v0.4.0` precedent; Research 286; source-consumer evidence | `g05.030`, cards 090-092 |
@@ -108,9 +108,9 @@ Candidates I and E. Card 076's compound-acknowledgement design is complete;
 card 079 realizes it before card 034. g05.037 cards 135-136 qualified
 OpenCode HTTP `surface-19` through official `1.18.29`. g05.028 cards 077-078
 remain the `1.18.28` identity/claim.
-Milestone 035 is planned and blocked on independent review plus operator
-promotion of the shared harness capability contracts; it grants no runtime
-implementation authority.
+Milestone 035 is active. The shared kernel and route bindings are delivered;
+Research 301 promotes Card 153 as the ready provider-free Claude SDK
+exact-tuple qualification. It grants no provider or release authority.
 Milestone 021 is complete; the exact-head review accepted Research 281 through
 PR 198 head `2f4923b8`, merged as `835fe9ff`; card 051 is complete after PR
 201 exact head `10d9b7a0` merged as candidate `56f3913a` and canonical

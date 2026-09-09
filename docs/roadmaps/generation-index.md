@@ -144,9 +144,10 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 44 tasks: 32 completed tasks, honest evidence stops at 002,
-003, 007, 011, 029, 031, and 034, no ready tasks remain, and planned
-tasks at 035, 039, 040, 041, and 042.
+g05 has 45 tasks: 32 completed tasks, honest evidence stops at 002,
+003, 007, 011, 029, 031, and 034, one ready task at 045 waiting on its
+immutable Desktop queue dependency, and planned tasks at 035, 039, 040, 041,
+and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
 deferred.
@@ -434,7 +435,8 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Define planning direction with Chatterbox before selecting the next task; the g05.043
-roadmap-backlog retirement is complete through PR #302 at `8ae707d5`.
-The separate Desktop exact-tree acceptance remains bound to candidate merge
-`49c9e3b2`; no release authority follows from the retirement.
+Validate g05.045 after immutable Desktop task
+`bc4acd98-91a3-4e14-86e0-38376b037da7`. Desktop owns one authorized
+two-turn Claude editing session. Swallowtail consumes only its exact merged
+capsule, provider-free, against the stopped g05.029 oracle. No second provider
+call, range widening, release, or tag authority follows.

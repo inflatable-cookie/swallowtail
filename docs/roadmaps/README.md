@@ -15,10 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-No ready generation task remains. g05.029 closed 2026-09-09 as an honest
-evidence stop (audit PR 307 merged as `55595c38`); the g05 runway is empty
-and Chatterbox owns the next planning direction. No release or tag
-authority follows.
+Validate g05.045 after Desktop g02.049 completes. Desktop owns the single
+authorized live Claude session; Swallowtail consumes its merged capsule
+provider-free and must not repeat the call. g05.029 remains an honest
+historical evidence stop until that follow-up is accepted. No release, tag,
+range, or second provider authority follows.
 
 ## Standing Lanes
 

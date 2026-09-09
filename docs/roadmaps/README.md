@@ -15,13 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g05.038 Flattened Task Switchover](g05/038-flattened-task-switchover.md) is
-complete; PR #301 merged at `8dc1f161`. It changed planning, instruction,
-template, and local-checker surfaces only. Desktop Card 323 completed exact-
-tree acceptance of candidate merge `49c9e3b2` on 2026-09-09 (evidence in
-g05.036). Planning direction is needed before selecting the next task; the
-exact-SHA tag decision remains a separate explicit operator decision with no
-tag authority from the migration.
+[g05.043 Roadmap Backlog Retirement](g05/043-roadmap-backlog-retirement.md) is
+ready after the completed flattened-task migration. It applies the operator-
+approved one-time documentation cleanup and preserves the existing product
+frontier. The exact-SHA `v0.4.4` tag decision remains separate and receives no
+authority from this task.
 
 ## Standing Lanes
 

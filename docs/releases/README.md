@@ -6,7 +6,7 @@ mutations.
 
 ## Current Release
 
-- [Swallowtail 0.4.4](0.4.4.md) — candidate prepared from `031d049a`; candidate-proof run `34133887294` green at `9373476a`; final qualifying run belongs in the PR closeout and Card122 Result; tag not authorized
+- [Swallowtail 0.4.4](0.4.4.md) — fresh candidate prepared at the post-Card-153 tree from base `894e858f`; parked `0673541d` stays untagged; qualifying hosted run belongs in the PR closeout and Card154 Result; tag not authorized
 
 - [Swallowtail 0.4.3](0.4.3.md) — tagged at `cbd4ddc8`; tag object
   `d8300430`; source-only additive patch over immutable `v0.4.2`; not published

@@ -3,7 +3,7 @@
 Status: ready; simplification scope compiled and delivered (cards 109-113 complete through PRs 247, 248, 250, 252, 253); acceptance awaits the v0.4.4 or v0.5.0 lane wall-clock record.
 Owner: Tom
 Created: 2026-09-06
-Updated: 2026-09-06
+Updated: 2026-09-09
 Depends on: Contract 036; the v0.4.1, v0.4.2, and v0.4.3 lane records (g05.030, g05.032, g05.033); completed cards 093, 094, 103, 104; the operator direction of 2026-09-06
 Vision tags: release, CI, dependability
 
@@ -62,3 +62,32 @@ target.
 
 The `v0.4.4` or `v0.5.0` lane, whichever comes first, runs on the new shape
 and records its wall clock against the target.
+
+## Acceptance Audit Dispatch
+
+Operator `Continue` on 2026-09-09 authorizes the bounded `v0.4.4` measurement
+and closeout. This task does not repair release mechanics or reinterpret a
+missed target as success.
+
+| Field | g05.034 acceptance audit |
+| --- | --- |
+| Readiness | ready; `v0.4.4` is tagged and the candidate, queue, CI, review, merge, and tag records are durable |
+| Prerequisites | completed g05.036; Card 154 queue detail and closeout; PR #300 and Actions runs `34345060452`, `34348370780`, `34348374964`, and `34350208617`; tag task `a4962ded-607f-4165-8a4d-a7dc34368f79` |
+| Completion conditions | one UTC event ledger defines each measured boundary and source; each target receives an independent pass/fail; exceptional pre-tag Desktop qualification and unrelated planning migrations are separated from core release mechanics without removing them from end-to-end time; this task and one log record the result; current indexes and Next Task are reconciled |
+| Owned mutable paths | this task; one new `docs/logs/2026-09-09-g05-034-*.md`; one `docs/logs/README.md` index line; `PAPERCUTS.md` append only |
+| Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, and `docs/roadmaps/generation-index.md`; queue coordinator edits these after merge |
+| Forbidden paths | Rust, workflows, Effigy configuration, release scripts, contracts, release notes, tags, consumers, providers, historical queue evidence, and every other task body |
+| Approved concurrent siblings | g05.031 and g05.029 only when queue serialization protects shared closeout surfaces; no implementation paths overlap |
+| Worker capability class | evidence-only release timing audit; Git, GitHub, and queue event correlation; documentation only |
+| Acceptance evidence | exact queue event timestamps; Git commit times; GitHub PR/merge and Actions timestamps; the recorded 47-minute Card 154 worker interval; exact run conclusions and job critical paths |
+| Review oracle | no clock starts before its stated prerequisite or ends after its stated outcome; queue delay, CI duration, review recovery, merge, Desktop gate, planning migration, operator latency, and tag execution stay distinct; missing exact chat timestamps become bounded intervals, not invented precision |
+| Stop conditions | sources disagree on ordering or identity; an exact boundary cannot be established or honestly bounded; completing the audit would require changing code, workflows, release policy, a tag, or a consumer |
+| Escalation owner | Chatterbox for clock semantics or follow-up planning; operator for release-policy changes |
+
+The durable evidence already falsifies the all-green acceptance outcome: Card
+154 records about 47 minutes from 12:08 to 12:55 BST through candidate
+handoff; more than one hosted run occurred; and run `34348374964` repeated the
+same candidate and failed its MSRV-floor test. PR run `34348370780` completed
+in 2m32s and therefore meets the under-three-minute PR target. The audit must
+measure the remaining boundaries exactly or as explicit bounds, then close
+this task as an honest evidence stop unless every original target is proved.

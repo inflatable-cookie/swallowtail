@@ -107,6 +107,9 @@ fn failed_turn_end_carries_all_sanitized_fields_without_error_text() {
         "durationMs=7",
         "errorTextPresent=true",
         "errorTextType=string",
+        "apiErrorStatus=<null>",
+        "terminalReason=<null>",
+        "rateLimitStatus=<null>",
         "error=true",
         "is_error=true",
         "num_turns=true",
@@ -117,12 +120,142 @@ fn failed_turn_end_carries_all_sanitized_fields_without_error_text() {
             diagnostic.message()
         );
     }
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude-agent.sdk.provider_failed"
+    );
     assert!(
         diagnostic
             .message()
             .contains("stderr: <redacted> failed result stderr")
     );
     assert!(!diagnostic.message().contains("provider error text"));
+}
+
+#[test]
+fn billing_status_produces_an_entitlement_specific_diagnostic() {
+    use swallowtail_core::{FailureKind, FailureOrigin, FailureRecovery};
+    let status = terminal_status(SdkScenario::TurnEndedBilling402);
+    let TerminalStatus::ProviderFailed(diagnostic) = status else {
+        panic!("billing turn end must be provider failure, got {status:?}");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude-agent.sdk.provider_billing_unavailable"
+    );
+    for field in [
+        "apiErrorStatus=402",
+        "terminalReason=api_error",
+        "rateLimitStatus=rejected",
+    ] {
+        assert!(
+            diagnostic.message().contains(field),
+            "billing diagnostic omitted {field}: {}",
+            diagnostic.message()
+        );
+    }
+    assert!(
+        diagnostic.message().contains("stderr: <redacted>"),
+        "billing diagnostic must carry its redacted stderr tail: {}",
+        diagnostic.message()
+    );
+    assert!(!diagnostic.message().contains("private rejection detail"));
+    let classification = diagnostic.failure_classification();
+    assert_eq!(classification.origin(), FailureOrigin::Provider);
+    assert_eq!(classification.kind(), FailureKind::EntitlementUnavailable);
+    assert_eq!(
+        classification.recovery(),
+        FailureRecovery::ConfigurationChangeRequired
+    );
+}
+
+#[test]
+fn mixed_statuses_stay_explicitly_ambiguous_without_quota_claims() {
+    use swallowtail_core::{FailureKind, FailureOrigin, FailureRecovery};
+    for (scenario, code, summary, status_field) in [
+        (
+            SdkScenario::TurnEndedMixed400,
+            "swallowtail.claude-agent.sdk.provider_invalid_request_or_spend_limit",
+            "invalid request or spend limit",
+            "apiErrorStatus=400",
+        ),
+        (
+            SdkScenario::TurnEndedMixed429,
+            "swallowtail.claude-agent.sdk.provider_rate_or_spend_limit",
+            "rate or spend limit",
+            "apiErrorStatus=429",
+        ),
+    ] {
+        let status = terminal_status(scenario);
+        let TerminalStatus::ProviderFailed(diagnostic) = status else {
+            panic!("{scenario:?} must be provider failure, got {status:?}");
+        };
+        assert_eq!(diagnostic.code(), code);
+        assert!(
+            diagnostic.message().contains(summary),
+            "{scenario:?} must name its ambiguity: {}",
+            diagnostic.message()
+        );
+        assert!(
+            diagnostic.message().contains(status_field),
+            "{scenario:?} must carry its status: {}",
+            diagnostic.message()
+        );
+        assert!(
+            diagnostic.message().contains("terminalReason=api_error"),
+            "{scenario:?} must carry its terminal reason: {}",
+            diagnostic.message()
+        );
+        let classification = diagnostic.failure_classification();
+        assert_eq!(classification.origin(), FailureOrigin::Provider);
+        assert_eq!(classification.kind(), FailureKind::Unknown);
+        assert_eq!(classification.recovery(), FailureRecovery::Unknown);
+    }
+}
+
+#[test]
+fn unlisted_status_stays_generic_without_new_evidence() {
+    use swallowtail_core::{FailureKind, FailureOrigin, FailureRecovery};
+    let status = terminal_status(SdkScenario::TurnEndedUnknownStatus);
+    let TerminalStatus::ProviderFailed(diagnostic) = status else {
+        panic!("unlisted status must be provider failure, got {status:?}");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude-agent.sdk.provider_failed"
+    );
+    assert!(
+        diagnostic.message().contains("apiErrorStatus=503"),
+        "unlisted status must still be visible: {}",
+        diagnostic.message()
+    );
+    let classification = diagnostic.failure_classification();
+    assert_eq!(classification.origin(), FailureOrigin::Provider);
+    assert_eq!(classification.kind(), FailureKind::Unknown);
+    assert_eq!(classification.recovery(), FailureRecovery::Unknown);
+}
+
+#[test]
+fn malformed_structured_facts_fail_closed_without_provider_prose() {
+    for scenario in [
+        SdkScenario::TurnEndedMalformedStatus,
+        SdkScenario::TurnEndedMalformedReason,
+    ] {
+        let status = terminal_status(scenario);
+        let TerminalStatus::RuntimeFailed(diagnostic) = &status else {
+            panic!("{scenario:?} must fail closed, got {status:?}");
+        };
+        assert!(
+            !diagnostic.message().contains("API Error"),
+            "{scenario:?} diagnostic must not carry provider prose: {}",
+            diagnostic.message()
+        );
+        assert!(
+            !diagnostic.message().contains("402"),
+            "{scenario:?} diagnostic must not carry the rejected value: {}",
+            diagnostic.message()
+        );
+    }
 }
 
 #[test]

@@ -7,6 +7,21 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 
+- retained the Claude Agent SDK's structured provider-failure facts end to end
+  instead of collapsing them to generic `provider_failed`: the sidecar now
+  projects the validated numeric `api_error_status`, the bounded
+  `terminal_reason`, and the latest active-turn `rateLimitStatus` through the
+  strict wire into the failed terminal diagnostic, rejecting malformed present
+  values and resetting rate state at each turn boundary so idle or prior-turn
+  notices never contaminate the next result. Only the documented `402`
+  classifies billing-specific (`provider_billing_unavailable`,
+  `EntitlementUnavailable`, configuration change required); `400` and `429`
+  keep distinct explicitly mixed route codes without ever becoming
+  `QuotaExhausted`, and absent or unlisted statuses stay generic. No status or
+  rate notice authorizes retry, fallback, replay, or account mutation, and no
+  provider prose, quota payload, or credential ever crosses the wire. No
+  qualification, matrix, candidate, tag, or release consequence follows.
+  g05 batch card 152.
 - repaired the Claude Agent SDK sidecar's strict MCP-status projection to
   admit and discard every optional field the exact `0.3.259`
   `McpServerStatus` declaration (`package/sdk.d.ts:1114-1158`) permits —

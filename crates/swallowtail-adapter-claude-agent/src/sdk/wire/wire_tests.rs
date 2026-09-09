@@ -368,6 +368,9 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
         error_text_present,
         error_text_type,
         result_field_presence,
+        api_error_status,
+        terminal_reason,
+        rate_limit_status,
     }) = decode_record(&bytes).expect("turn end decodes")
     else {
         panic!("turn_ended expected");
@@ -381,6 +384,9 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
     assert_eq!(error_text_type, "string");
     assert!(result_field_presence["error"]);
     assert!(result_field_presence["num_turns"]);
+    assert_eq!(api_error_status, None);
+    assert_eq!(terminal_reason, None);
+    assert_eq!(rate_limit_status, None);
 
     let null_metadata = serde_json::to_vec(&json!({
         "type": "event", "event": "turn_ended", "subtype": null,
@@ -413,6 +419,102 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
         Some(ClaudeAgentSdkProtocolFailureKind::InvalidEvent),
         "record {invalid} must fail closed"
     );
+}
+
+#[test]
+fn turn_end_decodes_validated_structured_provider_failure_facts() {
+    use super::ClaudeAgentSdkRateLimitStatus;
+    let bytes = serde_json::to_vec(&json!({
+        "type": "event",
+        "event": "turn_ended",
+        "subtype": "error_during_execution",
+        "stopReason": "error_during_execution",
+        "isError": true,
+        "numTurns": 1,
+        "durationMs": 9,
+        "errorTextPresent": true,
+        "errorTextType": "array",
+        "resultFieldPresence": {"api_error_status": true, "terminal_reason": true},
+        "apiErrorStatus": 402,
+        "terminalReason": "api_error",
+        "rateLimitStatus": "rejected",
+    }))
+    .expect("fixture serializes");
+    let ClaudeAgentSdkRecord::Event(ClaudeAgentSdkEvent::TurnEnded {
+        api_error_status,
+        terminal_reason,
+        rate_limit_status,
+        ..
+    }) = decode_record(&bytes).expect("structured turn end decodes")
+    else {
+        panic!("turn_ended expected");
+    };
+    assert_eq!(api_error_status, Some(402));
+    assert_eq!(terminal_reason.as_deref(), Some("api_error"));
+    assert_eq!(
+        rate_limit_status,
+        Some(ClaudeAgentSdkRateLimitStatus::Rejected)
+    );
+
+    // Explicit nulls classify the same as absent: no proven fact.
+    let bytes = serde_json::to_vec(&json!({
+        "type": "event", "event": "turn_ended", "subtype": null,
+        "stopReason": "", "isError": false, "numTurns": null,
+        "durationMs": null, "errorTextPresent": false,
+        "errorTextType": "absent", "resultFieldPresence": {},
+        "apiErrorStatus": null, "terminalReason": null, "rateLimitStatus": null,
+    }))
+    .expect("fixture serializes");
+    assert!(matches!(
+        decode_record(&bytes),
+        Ok(ClaudeAgentSdkRecord::Event(
+            ClaudeAgentSdkEvent::TurnEnded {
+                api_error_status: None,
+                terminal_reason: None,
+                rate_limit_status: None,
+                ..
+            }
+        ))
+    ));
+}
+
+#[test]
+fn turn_end_rejects_malformed_structured_provider_failure_facts() {
+    for invalid in [
+        // Non-numeric, non-integer, and out-of-range statuses prove nothing.
+        json!({"apiErrorStatus": "402"}),
+        json!({"apiErrorStatus": 402.5}),
+        json!({"apiErrorStatus": 99}),
+        json!({"apiErrorStatus": 600}),
+        json!({"apiErrorStatus": -1}),
+        json!({"apiErrorStatus": true}),
+        // Unbounded or non-string terminal reasons could carry provider prose.
+        json!({"terminalReason": "api error"}),
+        json!({"terminalReason": ""}),
+        json!({"terminalReason": "API Error: overloaded"}),
+        json!({"terminalReason": 7}),
+        json!({"terminalReason": "a".repeat(97)}),
+        // Unknown rate states are not projectable.
+        json!({"rateLimitStatus": "over_quota"}),
+        json!({"rateLimitStatus": "ALLOWED"}),
+        json!({"rateLimitStatus": 7}),
+    ] {
+        let mut record = json!({
+            "type": "event", "event": "turn_ended", "subtype": null,
+            "stopReason": "", "isError": false, "numTurns": null,
+            "durationMs": null, "errorTextPresent": false,
+            "errorTextType": "absent", "resultFieldPresence": {},
+        });
+        for (field, value) in invalid.as_object().expect("object fixture") {
+            record[field] = value.clone();
+        }
+        let bytes = serde_json::to_vec(&record).expect("fixture serializes");
+        assert_eq!(
+            decode_record(&bytes).err().map(|error| error.kind()),
+            Some(ClaudeAgentSdkProtocolFailureKind::InvalidEvent),
+            "record {record} must fail closed"
+        );
+    }
 }
 
 #[test]

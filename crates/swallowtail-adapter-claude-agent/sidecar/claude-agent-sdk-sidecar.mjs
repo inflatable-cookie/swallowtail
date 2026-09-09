@@ -297,6 +297,10 @@ const state = {
   requestedEffort: null,
   effectiveEffort: null,
   turnActive: false,
+  // Latest validated `rate_limit_event` status observed while a turn owns it.
+  // Reset at each turn boundary; idle notifications never set it, so one
+  // turn's advisory state cannot contaminate the next result.
+  activeTurnRateLimitStatus: null,
   pending: new Map(),
   usedIds: new Set(),
   callbacks: new Map(),
@@ -1288,8 +1292,32 @@ function projectMessage(message) {
         typeof message.subtype === "string" && /^[A-Za-z0-9_.-]{1,96}$/.test(message.subtype)
           ? message.subtype
           : null;
-      // SDKResultError uses errors[]; SDKResultSuccess with is_error carries
-      // error text in result. Retain the singular observation for older records.
+      // Structured provider-failure facts. Only the safe numeric status, the
+      // bounded terminal reason, and the already-validated active-turn rate
+      // state cross the wire; provider prose and every other payload stay
+      // behind. A present but malformed value fails closed like any unmapped
+      // message. Absent (or explicitly null) stays null and classifies
+      // generic downstream.
+      let apiErrorStatus = null;
+      if (Object.prototype.hasOwnProperty.call(message, "api_error_status")) {
+        const status = message.api_error_status;
+        if (status !== null) {
+          if (!Number.isSafeInteger(status) || status < 100 || status > 599) {
+            return "unknown";
+          }
+          apiErrorStatus = status;
+        }
+      }
+      let terminalReason = null;
+      if (Object.prototype.hasOwnProperty.call(message, "terminal_reason")) {
+        const reason = message.terminal_reason;
+        if (reason !== null) {
+          if (typeof reason !== "string" || !/^[A-Za-z0-9_.-]{1,96}$/.test(reason)) {
+            return "unknown";
+          }
+          terminalReason = reason;
+        }
+      }
       const errorField = Object.prototype.hasOwnProperty.call(message, "errors")
         ? "errors"
         : Object.prototype.hasOwnProperty.call(message, "error")
@@ -1327,6 +1355,9 @@ function projectMessage(message) {
           errorTextPresent,
           errorTextType,
           resultFieldPresence,
+          apiErrorStatus,
+          terminalReason,
+          rateLimitStatus: state.activeTurnRateLimitStatus,
           // Keep the existing route field while making the SDK result fields
           // explicit and separately inspectable. Never forward error text.
           stopReason: subtype ?? "",
@@ -1348,8 +1379,13 @@ function projectMessage(message) {
         return "unknown";
       }
       // The iterator is session-long. Validate idle notifications too, but
-      // never send a turn-scoped event when no turn owns it.
-      return state.turnActive ? [{ event: "progress" }] : [];
+      // never send a turn-scoped event when no turn owns it, and never let
+      // idle state contaminate the next turn's result.
+      if (!state.turnActive) {
+        return [];
+      }
+      state.activeTurnRateLimitStatus = info.status;
+      return [{ event: "progress" }];
     }
     case "stream_event":
     case "system":
@@ -1653,6 +1689,9 @@ async function handleQuery(params) {
     throw new SidecarFailure("prompt_too_large");
   }
   state.turnActive = true;
+  // A new turn owns no advisory state until its own rate notices arrive.
+  // Idle or prior-turn state never attaches to this result.
+  state.activeTurnRateLimitStatus = null;
   pushInput({
     type: "user",
     message: { role: "user", content: [{ type: "text", text }] },

@@ -3,9 +3,10 @@ use super::{
     ClaudeAgentSdkDiagnostic, ClaudeAgentSdkDiagnosticEvidence, ClaudeAgentSdkDiagnosticLevel,
     ClaudeAgentSdkEvent, ClaudeAgentSdkFailure, ClaudeAgentSdkFailureCode,
     ClaudeAgentSdkIdentityEvidence, ClaudeAgentSdkModelQualificationEvidence,
-    ClaudeAgentSdkResponse, MAXIMUM_COMMAND_ID_BYTES, MAXIMUM_FAILURE_CODE_BYTES,
-    MAXIMUM_FAILURE_MESSAGE_BYTES, MAXIMUM_MODEL_QUALIFICATION_CATALOGUE_SIZE,
-    MAXIMUM_MODEL_QUALIFICATION_ID_BYTES, MAXIMUM_TEXT_BYTES, MODEL_QUALIFICATION_DIGEST,
+    ClaudeAgentSdkRateLimitStatus, ClaudeAgentSdkResponse, MAXIMUM_COMMAND_ID_BYTES,
+    MAXIMUM_FAILURE_CODE_BYTES, MAXIMUM_FAILURE_MESSAGE_BYTES,
+    MAXIMUM_MODEL_QUALIFICATION_CATALOGUE_SIZE, MAXIMUM_MODEL_QUALIFICATION_ID_BYTES,
+    MAXIMUM_TERMINAL_REASON_BYTES, MAXIMUM_TEXT_BYTES, MODEL_QUALIFICATION_DIGEST,
     MODEL_QUALIFICATION_DIGEST_HEX_BYTES, bounded_text, failure, required_bool,
 };
 use crate::sdk::protocol::{ClaudeAgentSdkProtocolFailure, ClaudeAgentSdkProtocolFailureKind};
@@ -90,6 +91,9 @@ pub(super) fn decode_event(
             let error_text_type =
                 bounded_label(value, "errorTextType", MAXIMUM_TEXT_BYTES, invalid)?.to_owned();
             let result_field_presence = result_field_presence(value, invalid)?;
+            let api_error_status = nullable_http_status(value, "apiErrorStatus", invalid)?;
+            let terminal_reason = nullable_terminal_reason(value, "terminalReason", invalid)?;
+            let rate_limit_status = nullable_rate_limit_status(value, "rateLimitStatus", invalid)?;
             Ok(ClaudeAgentSdkEvent::TurnEnded {
                 stop_reason,
                 failed,
@@ -99,6 +103,9 @@ pub(super) fn decode_event(
                 error_text_present,
                 error_text_type,
                 result_field_presence,
+                api_error_status,
+                terminal_reason,
+                rate_limit_status,
             })
         }
         Some(_) => Err(failure(ClaudeAgentSdkProtocolFailureKind::UnknownRecord)),
@@ -423,6 +430,65 @@ fn nullable_nonnegative_integer(
         return Ok(None);
     }
     value.as_u64().ok_or_else(|| failure(kind)).map(Some)
+}
+/// Optional numeric provider HTTP status from exact SDK `0.3.259`
+/// `api_error_status`. Absent or null stays `None`; a present non-null value
+/// outside `100..=599` fails closed.
+fn nullable_http_status(
+    value: &Value,
+    field: &str,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<Option<u64>, ClaudeAgentSdkProtocolFailure> {
+    let Some(present) = value.get(field) else {
+        return Ok(None);
+    };
+    if present.is_null() {
+        return Ok(None);
+    }
+    match present.as_u64() {
+        Some(status) if (100..=599).contains(&status) => Ok(Some(status)),
+        _ => Err(failure(kind)),
+    }
+}
+
+/// Optional bounded terminal reason from exact SDK `0.3.259`
+/// `terminal_reason`. Absent or null stays `None`; a present non-null value
+/// outside the safe label domain fails closed.
+fn nullable_terminal_reason(
+    value: &Value,
+    field: &str,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<Option<String>, ClaudeAgentSdkProtocolFailure> {
+    let Some(present) = value.get(field) else {
+        return Ok(None);
+    };
+    if present.is_null() {
+        return Ok(None);
+    }
+    let reason = present.as_str().ok_or_else(|| failure(kind))?;
+    if reason.is_empty() || !is_safe_label(reason, MAXIMUM_TERMINAL_REASON_BYTES) {
+        return Err(failure(kind));
+    }
+    Ok(Some(reason.to_owned()))
+}
+
+/// Optional latest active-turn rate-limit status. Absent or null stays `None`;
+/// a present non-null value outside the exact three-value enum fails closed.
+fn nullable_rate_limit_status(
+    value: &Value,
+    field: &str,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<Option<ClaudeAgentSdkRateLimitStatus>, ClaudeAgentSdkProtocolFailure> {
+    let Some(present) = value.get(field) else {
+        return Ok(None);
+    };
+    if present.is_null() {
+        return Ok(None);
+    }
+    let status = present.as_str().ok_or_else(|| failure(kind))?;
+    ClaudeAgentSdkRateLimitStatus::parse(status)
+        .map(Some)
+        .ok_or_else(|| failure(kind))
 }
 
 fn result_field_presence(

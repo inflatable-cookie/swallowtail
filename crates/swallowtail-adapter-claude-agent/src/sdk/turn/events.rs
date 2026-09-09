@@ -40,6 +40,9 @@ impl SdkActiveTurn {
                 error_text_present,
                 error_text_type,
                 result_field_presence,
+                api_error_status,
+                terminal_reason,
+                rate_limit_status,
             } => {
                 let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
                     (TerminalStatus::TimedOut, ActivityStatus::Failed)
@@ -55,6 +58,9 @@ impl SdkActiveTurn {
                                 error_text_present,
                                 error_text_type,
                                 result_field_presence,
+                                api_error_status,
+                                terminal_reason,
+                                rate_limit_status,
                             }),
                         )),
                         ActivityStatus::Failed,

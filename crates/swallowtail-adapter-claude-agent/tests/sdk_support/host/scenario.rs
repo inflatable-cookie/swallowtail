@@ -119,6 +119,22 @@ pub enum SdkScenario {
     TerminalUnknownMessage,
     /// The sidecar reports a failed SDK result with all sanitized fields.
     TurnEndedError,
+    /// A failed `turn_ended` carrying validated `402`/`api_error`/`rejected`
+    /// structured facts: the only billing-specific classification.
+    TurnEndedBilling402,
+    /// A failed `turn_ended` carrying validated `400` structured facts:
+    /// explicitly mixed, never quota exhaustion.
+    TurnEndedMixed400,
+    /// A failed `turn_ended` carrying validated `429` structured facts:
+    /// explicitly mixed, never quota exhaustion.
+    TurnEndedMixed429,
+    /// A failed `turn_ended` carrying an unlisted numeric status: generic.
+    TurnEndedUnknownStatus,
+    /// A `turn_ended` carrying a non-numeric status: strict decode fails closed.
+    TurnEndedMalformedStatus,
+    /// A `turn_ended` carrying an unbounded terminal reason: strict decode
+    /// fails closed without forwarding provider prose.
+    TurnEndedMalformedReason,
     /// A tool ends without ever starting.
     ToolOrderingDrift,
     /// The sidecar writes an admission request that the turn's own end raced.

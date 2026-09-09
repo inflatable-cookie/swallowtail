@@ -70,6 +70,12 @@ pub struct SanitizedWireCapture {
     pub result_error_text_present: Option<bool>,
     /// Type label for error text; the text itself is never retained.
     pub result_error_text_type: Option<String>,
+    /// Validated numeric provider HTTP status, if the wire carried one.
+    pub result_api_error_status: Option<u64>,
+    /// Bounded terminal reason, if the wire carried one.
+    pub result_terminal_reason: Option<String>,
+    /// Latest validated active-turn rate-limit status, if the wire carried one.
+    pub result_rate_limit_status: Option<String>,
     /// Redacted stderr-tail posture.
     pub stderr_tail: Option<String>,
     /// Exact bounded close labels.
@@ -140,6 +146,9 @@ impl SanitizedCaptureJournal {
             "resultDurationMs": capture.result_duration_ms,
             "resultErrorTextPresent": capture.result_error_text_present,
             "resultErrorTextType": capture.result_error_text_type,
+            "resultApiErrorStatus": capture.result_api_error_status,
+            "resultTerminalReason": capture.result_terminal_reason,
+            "resultRateLimitStatus": capture.result_rate_limit_status,
             "stderrTailPresent": capture.stderr_tail.is_some(),
             "closeTimeline": capture.close_timeline,
             "nativeExitEvent": capture.native_exit_event,
@@ -368,6 +377,15 @@ fn project_record(record: &Value, capture: &Arc<Mutex<SanitizedWireCapture>>) {
                 record.get("errorTextPresent").and_then(Value::as_bool);
             capture.result_error_text_type = record
                 .get("errorTextType")
+                .and_then(Value::as_str)
+                .map(str::to_owned);
+            capture.result_api_error_status = record.get("apiErrorStatus").and_then(Value::as_u64);
+            capture.result_terminal_reason = record
+                .get("terminalReason")
+                .and_then(Value::as_str)
+                .map(str::to_owned);
+            capture.result_rate_limit_status = record
+                .get("rateLimitStatus")
                 .and_then(Value::as_str)
                 .map(str::to_owned);
         }

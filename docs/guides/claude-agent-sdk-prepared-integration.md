@@ -742,13 +742,29 @@ example `unknown_message`, `callback_invalid`, or `internal_error`. The sidecar
 message field is validated but never surfaced.
 
 A failed `turn_ended` carries the sanitized fields `subtype`, `stopReason`,
-`isError`, `numTurns`, `durationMs`, `errorTextPresent`, `errorTextType`, and
-the fixed result-field presence map. `errorTextPresent` and `errorTextType`
+`isError`, `numTurns`, `durationMs`, `errorTextPresent`, `errorTextType`,
+the validated structured facts `apiErrorStatus`, `terminalReason`, and
+`rateLimitStatus`, and the fixed result-field presence map.
+`errorTextPresent` and `errorTextType`
 describe `errors`, legacy `error`, or `result` when `is_error` is true, in
-that precedence order; the text itself never crosses the sidecar wire. A bounded stderr tail may follow the same diagnostic. It uses the route's
+that precedence order; the text itself never crosses the sidecar wire. A present
+but malformed `api_error_status` or `terminal_reason` fails closed as
+`unknown_message`, exactly like an unmapped message type. A bounded stderr tail may follow the same diagnostic. It uses the route's
 fixed diagnostic-word allowlist; all other words and paths are redacted. It
 contains only stderr consumed before the terminal record, not a guaranteed
 complete native stderr drain or a retry instruction.
+
+Only the documented numeric status classifies. `402` is a
+billing/entitlement failure (`provider_billing_unavailable`,
+`EntitlementUnavailable`, configuration change required) because the provider
+documents `402` as billing-specific. `400` and `429` each mix spend-limit and
+non-billing causes, so they keep distinct explicitly mixed route codes
+(`provider_invalid_request_or_spend_limit`,
+`provider_rate_or_spend_limit`) with no quota classification: neither ever
+becomes `QuotaExhausted`. Absent or unlisted statuses stay generic
+`provider_failed`. The terminal reason is bounded evidence in the message
+only, the rate status is advisory only, and no status or rate notice
+authorizes retry, fallback, replay, or account mutation.
 
 Cleanup is independent from the turn. On a degraded or failed
 `CleanupOutcome`, its diagnostic includes the sidecar's bounded
@@ -759,7 +775,10 @@ the absence of one is not permission to infer missing evidence.
 The pinned SDK's `rate_limit_event` is an information update. A valid required
 envelope with status `allowed`, `allowed_warning`, or `rejected` projects only
 progress only while a turn is active; between turns it is validated without
-emitting a turn event. Quota, account, timing and session fields are not forwarded. The
+emitting a turn event. The latest validated active-turn status also attaches
+to that turn's `turn_ended` as `rateLimitStatus`; the state resets at each
+turn boundary, so idle or prior-turn notices never contaminate the next
+result. Quota, account, timing and session fields are not forwarded. The
 SDK's result or query error remains authoritative for turn completion/failure,
 so a following provider rejection still fails the turn. The notification itself
 does not kill a valid turn or manufacture a retry instruction.

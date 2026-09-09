@@ -1,6 +1,6 @@
 # g05.036 v0.4.4 Release Readiness
 
-Status: ready; Card 154 prepares the final candidate before exact-tree Desktop acceptance; old candidate `0673541d` remains parked
+Status: ready; Card 154 merged candidate `49c9e3b2`; dependent exact-tree Desktop acceptance remains; old candidate `0673541d` remains parked
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-09
@@ -223,9 +223,26 @@ Desktop gate then reruns the bounded release acceptance against that exact
 merge SHA. Candidate preparation, Desktop provider execution, and tag creation
 remain distinct queue and operator boundaries. No tag is inferred.
 
+### Card 154 Candidate Merged — 2026-09-09
+
+Card 154 completed the final-candidate preparation. PR 300 was independently
+accepted at exact head `1fb5b16ceccbc1451c6b044dc2b8fabd13a194c6`, tree
+`1a9db12742b68e839dfebe42f0633f5d1aa0265b`, and merged as
+`49c9e3b291609c9ebf5b35a284c08302f3b8d5e3` with the same tree. Read-only
+status inferred patch `0.4.4`; the one authorized prepare passed all cheap
+gates; hosted run `34345060452` passed all 11 jobs; and the preparation receipt
+digest was
+`04a89847e14fc351bbcfdef2b48cb1d8c90282b3ea638db48043d1e8f6ab8feb`.
+
+A later same-SHA hosted rerun, `34348374964`, failed only the Pinned MSRV
+floor test twice. The qualifying run and local validation stayed green. This
+nondeterministic validation failure is deferred without candidate change or a
+prepare retry. The dependent Desktop gate must use merge SHA
+`49c9e3b291609c9ebf5b35a284c08302f3b8d5e3`; no tag is inferred.
+
 ## Runway
 
-1. Card 154 prepares and merges one final candidate per the release playbook,
+1. Card 154 prepared and merged one final candidate per the release playbook,
    with exact-tree review and qualifying hosted CI.
 2. The dependent Desktop task links that exact merge SHA and runs the bounded
    final release-matrix acceptance. A failure stops without retry or tag.
@@ -260,7 +277,7 @@ Promoted planning commit: the `main` commit that introduces this file.
 
 | Field | Card 154 |
 | --- | --- |
-| Readiness | ready; Card 153 complete; clean pushed `main`; operator authorized the consolidated final-candidate qualification batch on 2026-09-09 |
+| Readiness | complete; PR 300 merged candidate `49c9e3b2`; dependent Desktop exact-tree acceptance remains; no tag authority |
 | Prerequisites | no active Swallowtail implementation worker; release freeze in force |
 | Completion conditions | current release note and all three `0.4.4` baselines; patch status; exactly one new prepare transaction; candidate PR; exact-head independent review; qualifying hosted CI; merge SHA/tree and run ID returned; no tag |
 | Owned mutable paths | the exact release/version, README, changelog, `0.4.4` baseline, release-note, and card Result surfaces named by Card 154 |

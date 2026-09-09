@@ -38,7 +38,7 @@ enforcement.
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | `g05.024`, card 060 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | `g05.025`, card 061 |
 | Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | active; cards 080-082 delivered; cards 083-088 dispatch from manifest serial edges | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | `g05.029`, cards 080-088 |
-| Ship the first-turn model rejection evidence to Bovine Desktop as patch `v0.4.4` on one exact candidate tree. | ready; Card 154 prepares the fresh candidate before the dependent exact-tree Desktop gate; no tag authority | Contract 036 hosted delegation; 2026-09-09 operator authorization | `g05.036`, card 154 |
+| Ship the first-turn model rejection evidence to Bovine Desktop as patch `v0.4.4` on one exact candidate tree. | complete; Card 154 merged candidate `49c9e3b2`; dependent exact-tree Desktop gate remains; no tag authority | Contract 036 hosted delegation; Card 154 closeout | `g05.036`, card 154 |
 | Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | ready; cards 109-113 compiled; 112 and 113 may start under the freeze | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | `g05.034`, cards 109-113 |
 | Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | active; shared kernel and route bindings delivered; Grok qualified; Card 153's exact Claude SDK tuple qualification merged provider-free; Card 130 remains a planned producer seam | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-063; Research 288, 295, 301 | `g05.035`, card 153 |
 | Ship the Claude SDK termination cause (card 105) as patch `v0.4.3` on the compressed lane, tag request to the operator as soon as gates are green, Desktop real Send on the tag as consumer evidence. | complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy; Desktop follow-up remains Acowtancy-owned | Contract 036; the 2026-09-06 Desktop real-Send evidence | `g05.033`, cards 105-107 |
@@ -50,7 +50,7 @@ enforcement.
 ## Planned Next Roadmaps
 
 - [g05.037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 136 qualified `surface-19` through `1.18.29`
-- [g05.036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; Card 154 freezes the final candidate before exact-tree Desktop acceptance
+- [g05.036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; Card 154 merged candidate `49c9e3b2`; dependent exact-tree Desktop acceptance remains
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
 - [g05.034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze
 - [g05.033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy
@@ -429,7 +429,7 @@ identity.
 ## Milestones
 
 - [037 OpenCode HTTP 1.18.29 Useful Newer](./037-opencode-http-1-18-29-useful-newer.md) — complete; card 136 qualified `surface-19` through `1.18.29`
-- [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; Card 154 freezes the final candidate before exact-tree Desktop acceptance
+- [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — ready; Card 154 merged candidate `49c9e3b2`; dependent exact-tree Desktop acceptance remains
 - [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; Batch A promoted; card114 leads shared kernel implementation
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — ready; cards 109-113 compiled; 112 and 113 may start under the freeze
 - [033 v0.4.3 Release Readiness](./033-v0-4-3-release-readiness.md) — complete; `v0.4.3` tagged at `cbd4ddc8`; Card107 source consumer passed; tag capsule relayed to Acowtancy

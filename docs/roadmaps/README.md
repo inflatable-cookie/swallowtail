@@ -15,10 +15,11 @@ shape.
 
 ## Next Task
 
-[Card 154](g05/batch-cards/154-v0-4-4-final-candidate-preparation.md)
-prepares the one final `v0.4.4` candidate tree. The dependent Desktop gate runs
-against its exact merge SHA; no tag follows without a separate exact-SHA
-operator decision.
+Card 154 is complete and merged as candidate `49c9e3b2`. The approved
+dependent Desktop gate runs against exact merge SHA
+`49c9e3b291609c9ebf5b35a284c08302f3b8d5e3`; no tag follows without a separate
+exact-SHA operator decision, and no new Swallowtail implementation task is
+named here.
 
 ## Standing Lanes
 

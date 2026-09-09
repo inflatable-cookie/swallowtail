@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-09 g05 Card 154 Closeout](./2026-09-09-g05-card-154-closeout.md) — PR 300 merged the exact reviewed `v0.4.4` candidate at `49c9e3b2`; hosted run `34345060452` passed all 11 jobs; a later same-SHA Pinned MSRV-floor rerun failure is deferred; dependent Desktop acceptance remains
 - [2026-09-09 g05.035 Card 153 Closeout](./2026-09-09-g05-035-card-153-closeout.md) — PR 298 merged at `b35e4c38`; exact Claude SDK registered-tool tuple qualification and two matrix cells accepted provider-free; hosted checks passed with the configured Pinned MSRV floor tests job skipped
 - [2026-09-09 g05 Card 152 Structured Provider Failure Implementation](./2026-09-09-g05-card-152-structured-provider-failure.md) — PR 297 merged at `24f88fb8`; exact-head review accepted at `5d85cc93`; provider-free sidecar/wire/diagnostic repair retaining validated status, terminal reason, and active-turn rate state with billing-only classification; no provider run
 - [2026-09-09 g05.035 Card 149 Return And Card 150 Promotion](./2026-09-09-g05-035-card-149-return-and-card-150-promotion.md) — Card 149 stopped at MCP startup before its prompt; provider-free courier artifact/startup diagnosis promoted without removing MCP

@@ -2,7 +2,6 @@
 
 ## Ready
 
-- [154-v0-4-4-final-candidate-preparation.md](./154-v0-4-4-final-candidate-preparation.md) — ready; one fresh candidate tree, exact-head review and hosted CI; stops before tag
 
 ## Planned
 
@@ -22,6 +21,8 @@
 - [087-claude-sdk-qualified-ranges.md](./087-claude-sdk-qualified-ranges.md) — stopped; Research 287 admits no range; five exact QualifiedOnly pins unchanged
 
 ## Completed
+
+- [154-v0-4-4-final-candidate-preparation.md](./154-v0-4-4-final-candidate-preparation.md) — complete; PR 300 merged candidate `49c9e3b2`; exact-head review and hosted CI accepted; no tag
 
 - [153-claude-sdk-live-registered-tool-qualification.md](./153-claude-sdk-live-registered-tool-qualification.md) — complete; PR 298 merged at `b35e4c38`; exact Claude SDK tuple qualification and two-cell matrix reconciliation accepted provider-free; no provider run or release authority
 

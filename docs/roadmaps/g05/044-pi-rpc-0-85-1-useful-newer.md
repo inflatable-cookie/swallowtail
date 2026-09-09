@@ -1,6 +1,6 @@
 # g05.044 Pi RPC 0.85.1 Useful Newer
 
-Status: ready; identity and claim landed, awaiting exact-head review
+Status: complete; PR 304 merged as `eeb44e86` after independent exact-head review `5605968732` with no findings
 Owner: Tom
 Created: 2026-09-09
 Updated: 2026-09-09
@@ -107,4 +107,6 @@ Compatible extension. Identity commit froze Research 302 and
 qualified to `0.85.1` on the existing message-update-delta revision,
 qualifies published `0.85.0`, keeps unpublished `0.83.1` and `0.84.5`
 incompatible, and leaves unpublished `0.85.2` `UnverifiedNewer`. Sidecar
-stays exact `0.84.2`. Review and merge remain queue-owned.
+stays exact `0.84.2`. PR 304 merged 2026-09-09 as `eeb44e86` after
+independent exact-head review `5605968732` with no findings. The Next Task
+pointer returns to g05.034; no second family follows.

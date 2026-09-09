@@ -15,10 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g05.044 Pi RPC 0.85.1 Useful Newer](g05/044-pi-rpc-0-85-1-useful-newer.md)
-runs one Contract 029 family from qualified `0.84.4` through current official
-`0.85.1`. Freeze both published hops before any claim change. Keep
-`pi.sdk-sidecar` exact `0.84.2`; no provider call or host change is authorized.
+[g05.034 Release Lane Simplification](g05/034-release-lane-simplification.md)
+records the `v0.4.4` lane wall clock (`v0.4.4` tagged at `49c9e3b2`
+2026-09-09; g05.036 complete). The Card 123 successor runs post-tag
+source-consumer and Desktop repin evidence. No publication or consumer
+mutation is authorized.
 
 ## Standing Lanes
 

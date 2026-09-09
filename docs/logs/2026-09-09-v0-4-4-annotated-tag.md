@@ -32,6 +32,15 @@ roadmap and generation front doors, and this log now describe the tagged
 state. The feature freeze is lifted. No consumer, provider, GitHub Release,
 registry, binary, or publication work follows automatically.
 
+## Merge
+
+Documentation PR [#303](https://github.com/inflatable-cookie/swallowtail/pull/303)
+merged 2026-09-09 as `741e33e423c591eb8a88fa4b68f7c24a2f811be4`.
+Independent exact-head review `5604826466` recorded no findings: tag
+identity, annotation bytes, CI claims, version, and docs consistency all
+verified, with clean `git diff --check`, `effigy qa:docs`, and
+`effigy qa:northstar` at head `5b89df24599cf45343ebfacd8c78ef074cffbf32`.
+
 ## Next
 
 g05.034 records the lane wall clock. A successor to cancelled Card 123 runs

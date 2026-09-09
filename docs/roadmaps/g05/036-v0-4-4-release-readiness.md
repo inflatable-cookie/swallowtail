@@ -350,5 +350,7 @@ successor after an authorized tag.
 
 `v0.4.4` tagged 2026-09-09 at exact SHA `49c9e3b2` carrying cards 119-121;
 tag object `41da6c1afe60380d248275bd0780c2e8f79e5ab9`; local and remote
-agree. The lane's wall clock is recorded against the g05.034 target of
-thirty minutes from gates green to tag request.
+agree. Documentation PR 303 merged 2026-09-09 as `741e33e4` after
+independent exact-head review with no findings. The lane's wall clock is
+recorded against the g05.034 target of thirty minutes from gates green to
+tag request.

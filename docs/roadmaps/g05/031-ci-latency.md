@@ -1,6 +1,6 @@
 # g05.031 CI Latency
 
-Status: ready; `v0.4.1` is tagged; card 095 work complete (PR 230 merged as `ba8275eb`); operator workflow authority granted 2026-09-05
+Status: ready; CI latency acceptance audit recorded as an honest evidence stop (coordinator closeout)
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-09
@@ -56,12 +56,8 @@ removed; release floor intact on `main` pushes and dispatches.
 
 ## Acceptance
 
-- [ ] a typical pull request reaches all-green in about five minutes
-- [ ] `main` pushes and release-candidate dispatches still run the full
-      macOS pinned floor
-- [ ] every test that ran before still runs somewhere on every PR
-- [ ] the required-check set for merge is documented and unchanged in
-      strength
+The Card 095 PR-gate work ran. The original four-clause target is not fully
+proven. See Result.
 
 ## Dispatch
 
@@ -79,6 +75,21 @@ removed; release floor intact on `main` pushes and dispatches.
 | Review oracle | no cherry-picked timing sample or hidden exclusion; “typical” is scored from the median against about five minutes while p75 and outliers remain visible; every pre-Card-095 PR command/test has one current PR execution path; the literal macOS floor clause is not weakened to platform-neutral after the fact; missing required-check visibility is reported as unproven, not assumed |
 | Stop conditions | evidence identity or ordering conflicts; GitHub cannot expose enough accepted-head runs to score latency; an Acceptance clause needs a workflow, policy, branch-protection, release, or runtime mutation |
 | Escalation owner | Chatterbox for clock/sample semantics or follow-up planning; operator for workflow, branch-protection, release-policy, or target changes |
+
+## Result
+
+Honest evidence stop. Log:
+`docs/logs/2026-09-09-g05-031-ci-latency-acceptance-audit.md`.
+
+| Clause | Verdict |
+| --- | --- |
+| Typical PR all-green in about five minutes | pass. Median 2m 43s over the latest 20 merged PRs through #305 with a completed pull-request `CI` run at the accepted head. p75 2m 46s. Range 2m 30s–4m 49s. No merged-PR exclusions |
+| Full macOS pinned floor on `main` pushes and release-candidate dispatches | fail. Current pinned clippy and pinned tests both run on `ubuntu-latest`. Reused g05.034 dispatch/main/tag runs execute that floor on Linux. Process-spawning nextest on `macos-latest` is not the pinned floor |
+| Every test that ran before still runs somewhere on every PR | pass. Pre-Card-095 nextest default suite maps to current `ci` shards ∪ `ci-process`. Skipped PR `cargo +MSRV test` is a pinned duplicate of that population |
+| Required-check set documented and unchanged in strength | unproven. `GET /branches/main/protection` 404; rulesets empty. Card 095 documented names; GitHub does not enforce them; names drifted (3 shards → 2) |
+
+Coordinator closeout sets `Status: stopped` and reconciles reserved indexes.
+No workflow, branch-protection, or target repair is opened here.
 
 ### Card 104 held gate (task-owned)
 

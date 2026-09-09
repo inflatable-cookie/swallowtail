@@ -1,6 +1,6 @@
 # g05.034 Release Lane Simplification
 
-Status: ready; v0.4.4 acceptance audit recorded as an honest evidence stop (coordinator closeout)
+Status: stopped; v0.4.4 lane missed the all-green target — 30-minute clock fail, one-hosted-run fail, no-rerun-to-green not a clean pass; one-prepare pass, PR-gate pass; audit PR 305 merged as `94d8ef07` after independent exact-head review `5606467481` with no follow-ups
 Owner: Tom
 Created: 2026-09-06
 Updated: 2026-09-09
@@ -110,5 +110,6 @@ worker completion_received) is candidate handoff, not the 30-minute clock.
 
 Desktop Card 323 and g05.038/g05.043 migrations sit inside the end-to-end
 interval and are separated in the log; they are not subtracted. Coordinator
-closeout sets `Status: stopped` and reconciles reserved indexes. No repair
-task is opened here.
+closeout 2026-09-09 sets `Status: stopped`: PR 305 merged as `94d8ef07`
+after independent exact-head review `5606467481` (ready to merge, no
+follow-ups). No repair task is opened here.

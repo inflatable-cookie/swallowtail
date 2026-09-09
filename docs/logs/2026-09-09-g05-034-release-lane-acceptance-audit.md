@@ -176,8 +176,18 @@ No source disagreement on identity or ordering. The only loosened figures
 are the planning handoff's `~11:23:19Z` run-completion rounding and the
 unreproduced "twice" in the MSRV-failure prose.
 
+## Merge
+
+PR [#305](https://github.com/inflatable-cookie/swallowtail/pull/305)
+merged 2026-09-09 as `94d8ef0753dd814445544a91cfba952c361487f8` (head
+`d0f1b828`). Independent exact-head review `5606467481` recorded ready to
+merge at that head with no follow-ups: three owned files only, forbidden
+and reserved surfaces untouched, BST→UTC conversions and all durations
+rechecked mechanically, clause scores honest, `effigy qa:docs` and `effigy
+qa:northstar` passing with a clean `git diff --check`.
+
 ## Next
 
-Coordinator closeout: set g05.034 `Status: stopped`, move the generation
-index entry, and advance Next Task to the next already-ready canonical task.
-Do not invent repair scope from this audit.
+Closed. g05.034 is `stopped`; the generation index entry moves with it and
+Next Task advances to the next already-ready canonical task. No repair
+scope follows from this audit.

@@ -15,11 +15,10 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g05.034 Release Lane Simplification](g05/034-release-lane-simplification.md)
-records the `v0.4.4` lane wall clock (`v0.4.4` tagged at `49c9e3b2`
-2026-09-09; g05.036 complete). The Card 123 successor runs post-tag
-source-consumer and Desktop repin evidence. No publication or consumer
-mutation is authorized.
+[g05.031 CI Latency](g05/031-ci-latency.md)
+cuts the pull-request gate from ten-to-fifteen minutes to four or five
+(card 095 gate work complete through PR 230 at `ba8275eb`; operator
+workflow authority granted 2026-09-05). No release or tag authority follows.
 
 ## Standing Lanes
 

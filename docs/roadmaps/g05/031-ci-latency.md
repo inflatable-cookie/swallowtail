@@ -1,6 +1,6 @@
 # g05.031 CI Latency
 
-Status: ready; CI latency acceptance audit recorded as an honest evidence stop (coordinator closeout)
+Status: stopped; honest evidence stop — PR-gate median pass, literal macOS pinned floor fail, every-PR test population pass, required-check set unproven; audit PR 306 merged as `3b4f5378` after independent exact-head review `5606858468` with no follow-ups
 Owner: Tom
 Created: 2026-09-05
 Updated: 2026-09-09
@@ -88,8 +88,8 @@ Honest evidence stop. Log:
 | Every test that ran before still runs somewhere on every PR | pass. Pre-Card-095 nextest default suite maps to current `ci` shards ∪ `ci-process`. Skipped PR `cargo +MSRV test` is a pinned duplicate of that population |
 | Required-check set documented and unchanged in strength | unproven. `GET /branches/main/protection` 404; rulesets empty. Card 095 documented names; GitHub does not enforce them; names drifted (3 shards → 2) |
 
-Coordinator closeout sets `Status: stopped` and reconciles reserved indexes.
-No workflow, branch-protection, or target repair is opened here.
+Coordinator closeout 2026-09-09 sets `Status: stopped`: PR 306 merged as `3b4f5378`
+after independent exact-head review `5606858468` (ready to merge, no follow-ups). No workflow, branch-protection, or target repair is opened here.
 
 ### Card 104 held gate (task-owned)
 

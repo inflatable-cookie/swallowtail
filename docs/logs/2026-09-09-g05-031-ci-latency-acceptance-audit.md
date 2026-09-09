@@ -210,9 +210,18 @@ a coordinator procedure after green checks.
 
 No identity or ordering conflict among those sources.
 
+## Merge
+
+PR [#306](https://github.com/inflatable-cookie/swallowtail/pull/306)
+merged 2026-09-09 as `3b4f53788bb8f28f713cbeb016df5b1cdb7c2ef0` (head
+`0523da4e`). Independent exact-head review `5606858468` recorded ready to
+merge at that head with no follow-ups: three owned files only, forbidden
+and reserved surfaces untouched, runner/trigger spot-checks corroborate the
+load-bearing claims, `effigy qa:docs` and `effigy qa:northstar` passing
+with a clean `git diff --check`.
+
 ## Next
 
-Closed as an honest evidence stop. Coordinator sets the task `stopped`,
-moves the generation index with it, and advances Next Task to the next
-already-ready canonical task. No workflow, branch-protection, or target
-repair follows from this audit.
+Closed. g05.031 is `stopped`; the generation index entry moves with it and
+Next Task advances to g05.029, the remaining ready canonical task. No
+workflow, branch-protection, or target repair follows from this audit.

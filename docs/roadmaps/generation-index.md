@@ -145,7 +145,7 @@ goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
 g05 has 44 tasks: 32 completed tasks, honest evidence stops at 002,
-003, 007, 011, and 034, ready tasks at 029, 031, and planned
+003, 007, 011, 031, and 034, ready tasks at 029, and planned
 tasks at 035, 039, 040, 041, and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
@@ -167,7 +167,7 @@ g05.044 is complete through PR #304 at merged head `eeb44e86`; its exact-head
 review and documentation validation passed, with no validation failure
 deferred.
 g05.034 stopped as an honest evidence stop: the v0.4.4 lane missed the
-all-green target (30-minute fail, one-hosted-run fail, no-rerun-to-green not clean; one-prepare and PR-gate pass); audit PR #305 merged at `94d8ef07` after exact-head review with no follow-ups. g05.033 completed the `v0.4.3` patch release; Card107's source
+all-green target (30-minute fail, one-hosted-run fail, no-rerun-to-green not clean; one-prepare and PR-gate pass); audit PR #305 merged at `94d8ef07` after exact-head review with no follow-ups. g05.031 stopped as an honest evidence stop: PR-gate median 2m43s pass, literal macOS pinned floor fail, every-PR test population pass, required-check set unproven; audit PR #306 merged at `3b4f5378` after exact-head review with no follow-ups. g05.033 completed the `v0.4.3` patch release; Card107's source
 consumer passed at `cbd4ddc8` and its tag capsule was relayed to Acowtancy.
 g05.030 completed the
 `v0.4.1` patch release carrying the Claude SDK editing session; cards 090-092

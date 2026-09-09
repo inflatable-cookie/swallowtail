@@ -53,7 +53,6 @@ Only ready and planned tasks are actionable. Completed and stopped tasks live
 in [## Tasks](#tasks) below.
 
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
-- [g05.031 CI Latency](./031-ci-latency.md) — ready; card-095 gate work complete; operator workflow authority granted
 - [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; cards 080-088 delivered (folded g05.038); qualified-ranges widening held at the stopped 087 gate
 - [g05.039 Qoder Effective Skill Visibility Binding](./039-qoder-effective-skill-visibility-binding.md) — planned; gated on a non-empty Research 256 deliver-now disposition
 - [g05.040 Qoder Skill Visibility Acceptance](./040-qoder-skill-visibility-acceptance.md) — planned; serial after g05.039
@@ -66,7 +65,7 @@ standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 dual-route parity
 at 022, and shared
 lifecycle closure at 023-025; honest
-evidence stops at 002, 003, 007, 011, and 034; ready tasks at 029, 031;
+evidence stops at 002, 003, 007, 011, 031, and 034; ready tasks at 029;
 planned tasks at 035, 039, 040, 041, and 042.
 g05.020 is complete: Codex
 qualifies official `0.152.1`. g05.026 is complete as an evidence stop:
@@ -407,7 +406,6 @@ identity.
 
 ### Ready
 
-- [031 CI Latency](./031-ci-latency.md) — ready; card-095 gate work complete; operator workflow authority granted
 - [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; cards 080-088 delivered (folded g05.038); qualified-ranges widening held at the stopped 087 gate
 
 ### Planned
@@ -425,6 +423,7 @@ identity.
 - [003 Operation-Scoped Watcher Proof](./003-operation-scoped-watcher-proof.md) — stopped after live evidence; exact Haiku never created a host watcher; prototype unmerged
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; Qoder binding and acceptance preserved as g05.039 and g05.040
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — stopped; v0.4.4 lane missed all-green (30-minute fail, one-hosted-run fail, no-rerun-to-green not clean); audit PR 305 merged at `94d8ef07`
+- [031 CI Latency](./031-ci-latency.md) — stopped; honest evidence stop (PR-gate median 2m43s pass, literal macOS pinned floor fail, every-PR test population pass, required-check set unproven); audit PR 306 merged at `3b4f5378`
 
 ### Completed
 

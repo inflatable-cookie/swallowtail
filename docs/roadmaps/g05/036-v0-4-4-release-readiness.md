@@ -1,6 +1,6 @@
 # g05.036 v0.4.4 Release Readiness
 
-Status: ready; exact-SHA `v0.4.4` annotated-tag creation and push authorized after green CI; candidate `49c9e3b2`; Desktop Card 323 accepted; old candidate `0673541d` remains parked
+Status: complete; `v0.4.4` annotated tag created and pushed 2026-09-09 at exact candidate `49c9e3b2`; tag object `41da6c1a`; Desktop Card 323 accepted; old candidate `0673541d` remains parked
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-09
@@ -293,17 +293,36 @@ message after push, then record the tag-triggered CI result. No GitHub Release,
 registry publication, binary, consumer, provider, or other release mutation is
 authorized.
 
+### Annotated Tag — 2026-09-09
+
+Preflight held on every invariant: clean worker checkout at planning
+`a160008e`; candidate commit `49c9e3b291609c9ebf5b35a284c08302f3b8d5e3` with
+tree `1a9db12742b68e839dfebe42f0633f5d1aa0265b`, ancestor of `main`;
+workspace version `0.4.4` at both candidate and checkout; local and remote
+`v0.4.4` refs absent; exact-SHA push run `34350208617` completed `success`
+with all 11 jobs green; prior tag identities untouched; canonical remote
+`git@github.com:inflatable-cookie/swallowtail.git`.
+
+Created annotated tag `v0.4.4` at the frozen candidate with the exact
+approved annotation, then pushed only `refs/tags/v0.4.4` to `origin`.
+Tag object `41da6c1afe60380d248275bd0780c2e8f79e5ab9`; local and remote
+refs agree and both peel to the exact candidate; annotation bytes equal the
+approved text. No GitHub Release, registry publication, binary, consumer,
+provider, or other release mutation is authorized. Tag-triggered CI run
+`34372646295` completed `success` with all 11 jobs green, including Pinned
+MSRV floor and Pinned MSRV floor tests.
+
 ## Runway
 
 1. Card 154 prepared and merged one final candidate per the release playbook,
    with exact-tree review and qualifying hosted CI.
 2. The dependent Desktop task (Card 323, done) linked that exact merge SHA and ran
    the bounded final release-matrix acceptance. A failure would have stopped without retry or tag.
-3. Both gates bind to the same candidate tree. The operator authorized exact-
-   SHA annotated-tag creation and push after confirming green CI; the tag task
-   may now execute once under the boundary above.
+3. Both gates bound to the same candidate tree. The operator authorized exact-
+   SHA annotated-tag creation and push after confirming green CI; the tag was
+   created and pushed 2026-09-09 as tag object `41da6c1a`.
 4. A successor to cancelled Card 123 runs source-consumer and Desktop repin
-   evidence after the tag.
+   evidence on the tag.
 
 ## Release Boundary
 
@@ -329,6 +348,7 @@ successor after an authorized tag.
 
 ## Acceptance
 
-`v0.4.4` tagged by the operator at an exact SHA carrying cards 119-121; the
-lane's wall clock recorded against the g05.034 target of thirty minutes from
-gates green to tag request.
+`v0.4.4` tagged 2026-09-09 at exact SHA `49c9e3b2` carrying cards 119-121;
+tag object `41da6c1afe60380d248275bd0780c2e8f79e5ab9`; local and remote
+agree. The lane's wall clock is recorded against the g05.034 target of
+thirty minutes from gates green to tag request.

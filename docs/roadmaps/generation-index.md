@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 43 tasks: 30 completed tasks, honest evidence stops at 002,
-003, 007, and 011, ready tasks at 029, 031, 034, and 036, and planned
+g05 has 43 tasks: 31 completed tasks, honest evidence stops at 002,
+003, 007, and 011, ready tasks at 029, 031, and 034, and planned
 tasks at 035, 039, 040, 041, and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
@@ -157,8 +157,9 @@ merged head `b35e4c38`; Card 154 is complete with candidate merge
 `49c9e3b2`; g05.041 remains a planned persistent-permission producer seam and
 g05.042 the remaining-ACP-routes seam. The dependent Desktop
 exact-tree acceptance passed 2026-09-09 under Card 323 (evidence in g05.036);
-the operator authorized exact-SHA `v0.4.4` annotated-tag creation and push
-after CI run `34350208617` passed all 11 jobs. No publication authority follows.
+operator-authorized annotated tag `v0.4.4` was created and pushed 2026-09-09
+at the exact candidate (tag object `41da6c1a`) after CI run `34350208617`
+passed all 11 jobs; g05.036 is complete. No publication authority follows.
 g05.043 completed through PR #302 at merged head `8ae707d5`; its exact-head
 review and documentation validation passed, with no validation failure
 deferred.

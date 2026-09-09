@@ -15,11 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g05.036 v0.4.4 Release Readiness](g05/036-v0-4-4-release-readiness.md) is
-ready for the operator-authorized annotated tag and push at exact candidate
-`49c9e3b291609c9ebf5b35a284c08302f3b8d5e3`. Exact-SHA push CI run
-`34350208617` passed all 11 jobs. No publication or consumer mutation is
-authorized.
+[g05.034 Release Lane Simplification](g05/034-release-lane-simplification.md)
+records the `v0.4.4` lane wall clock (`v0.4.4` tagged at `49c9e3b2`
+2026-09-09; g05.036 complete). The Card 123 successor runs post-tag
+source-consumer and Desktop repin evidence. No publication or consumer
+mutation is authorized.
 
 ## Standing Lanes
 

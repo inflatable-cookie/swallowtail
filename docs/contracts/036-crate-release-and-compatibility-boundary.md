@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-06
+Updated: 2026-09-09
 
 ## Purpose
 
@@ -363,8 +363,10 @@ tag afterwards and does not hold the tag.
 No manifest version, passing gate, changelog, clean commit, or generated
 candidate grants authority to mutate external state.
 
-Current tagged identity is `v0.4.3` at
-`cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`, tag object
+Current tagged identity is `v0.4.4` at
+`49c9e3b291609c9ebf5b35a284c08302f3b8d5e3`, tag object
+`41da6c1afe60380d248275bd0780c2e8f79e5ab9`, tagged 2026-09-09. Immutable
+`v0.4.3` remains at `cbd4ddc8f9d6aa55bd947b92a55ea3a779582b79`, tag object
 `d83004302801222258c3496791de1e3305571860`, tagged 2026-09-06. Immutable
 `v0.4.2` remains at
 `f94dd16f2e4db79c5b7c4440cc1eb2d20f8b6af8`, tag object

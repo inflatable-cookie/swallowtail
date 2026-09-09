@@ -15,11 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g05.043 Roadmap Backlog Retirement](g05/043-roadmap-backlog-retirement.md) is
-complete; PR #302 merged at `8ae707d5`. The duplicate backlog intake layer is
-retired with every item dispositioned. Planning direction is needed before
-selecting the next task; the exact-SHA `v0.4.4` tag decision remains separate
-with no authority from this cleanup.
+[g05.036 v0.4.4 Release Readiness](g05/036-v0-4-4-release-readiness.md) is
+ready for the operator-authorized annotated tag and push at exact candidate
+`49c9e3b291609c9ebf5b35a284c08302f3b8d5e3`. Exact-SHA push CI run
+`34350208617` passed all 11 jobs. No publication or consumer mutation is
+authorized.
 
 ## Standing Lanes
 

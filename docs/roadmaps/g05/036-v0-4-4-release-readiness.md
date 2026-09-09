@@ -1,6 +1,6 @@
 # g05.036 v0.4.4 Release Readiness
 
-Status: ready; v0.4.4 candidate `49c9e3b2` merged (card 154 folded); dependent exact-tree Desktop acceptance passed 2026-09-09 under Card 323; old candidate `0673541d` remains parked; exact-SHA tag decision remains with the operator
+Status: ready; exact-SHA `v0.4.4` annotated-tag creation and push authorized after green CI; candidate `49c9e3b2`; Desktop Card 323 accepted; old candidate `0673541d` remains parked
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-09
@@ -267,15 +267,41 @@ route matrix pass. The Desktop dependency is accepted.
 No tag, publication, repin, candidate change, or release-state change follows.
 The operator exact-SHA tag decision remains separate and explicit.
 
+### Operator Tag Authorization — 2026-09-09
+
+The operator authorized both local annotated-tag creation and tag push for
+`v0.4.4` at exact candidate SHA
+`49c9e3b291609c9ebf5b35a284c08302f3b8d5e3`, conditional on green CI. Exact-
+SHA push run `34350208617` is green: all 11 jobs passed, including Pinned MSRV
+floor and Pinned MSRV floor tests. The condition is satisfied.
+
+The operator separately approved this exact annotation:
+
+```text
+Swallowtail v0.4.4
+
+Additive registered-tool qualification and Claude failure diagnostics. Canonical hosted CI run 34350208617 passed against 49c9e3b291609c9ebf5b35a284c08302f3b8d5e3.
+
+The source-only release contains no crates.io publication, GitHub Release object, binary, sidecar, installer, or model artifact.
+```
+
+Execution is one-shot. Recheck local/remote tag absence, exact commit/tree,
+version, canonical remote, CI identity and job conclusions immediately before
+mutation. Create the annotated tag at the frozen candidate and push only that
+tag ref. Do not re-run candidate preparation. Verify tag object, peel and
+message after push, then record the tag-triggered CI result. No GitHub Release,
+registry publication, binary, consumer, provider, or other release mutation is
+authorized.
+
 ## Runway
 
 1. Card 154 prepared and merged one final candidate per the release playbook,
    with exact-tree review and qualifying hosted CI.
 2. The dependent Desktop task (Card 323, done) linked that exact merge SHA and ran
    the bounded final release-matrix acceptance. A failure would have stopped without retry or tag.
-3. Both gates now bind to the same candidate tree; the exact-SHA tag decision
-   is presented to the operator, who decides whether to tag and push. No tag
-   authority follows from this task.
+3. Both gates bind to the same candidate tree. The operator authorized exact-
+   SHA annotated-tag creation and push after confirming green CI; the tag task
+   may now execute once under the boundary above.
 4. A successor to cancelled Card 123 runs source-consumer and Desktop repin
    evidence after the tag.
 

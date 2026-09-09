@@ -149,7 +149,7 @@ g05 has 43 tasks: 30 completed tasks, honest evidence stops at 002,
 tasks at 035, 039, 040, 041, and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
-deferred. The exact-SHA `v0.4.4` tag decision remains operator-owned.
+deferred.
 g05.035 is planned. Its shared registered-tool kernel and route bindings
 are delivered;
 Card 153's provider-free Claude SDK exact-tuple qualification is complete at
@@ -157,10 +157,11 @@ merged head `b35e4c38`; Card 154 is complete with candidate merge
 `49c9e3b2`; g05.041 remains a planned persistent-permission producer seam and
 g05.042 the remaining-ACP-routes seam. The dependent Desktop
 exact-tree acceptance passed 2026-09-09 under Card 323 (evidence in g05.036);
-the exact-SHA tag decision remains with the operator and no tag authority follows.
+the operator authorized exact-SHA `v0.4.4` annotated-tag creation and push
+after CI run `34350208617` passed all 11 jobs. No publication authority follows.
 g05.043 completed through PR #302 at merged head `8ae707d5`; its exact-head
 review and documentation validation passed, with no validation failure
-deferred. The exact-SHA `v0.4.4` tag decision remains operator-owned.
+deferred.
 g05.034 makes the release lane short and dependable and CI fast (cards
 109-113 complete; acceptance awaits the lane wall-clock record). g05.033 completed the `v0.4.3` patch release; Card107's source
 consumer passed at `cbd4ddc8` and its tag capsule was relayed to Acowtancy.

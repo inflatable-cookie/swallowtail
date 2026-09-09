@@ -1,6 +1,6 @@
 # g05.029 Claude SDK Interactive Parity
 
-Status: ready; Claude SDK interactive-parity acceptance audit recorded as an honest evidence stop (coordinator closeout)
+Status: stopped; honest evidence stop — consumer multi-turn editing session unproven (clause 1 fail); permission modes, default preservation, landing order, and v0.4.1 carrier pass; audit PR 307 merged as `55595c38` after independent exact-head review `5607443298` with no follow-ups
 Owner: Tom
 Created: 2026-09-04
 Updated: 2026-09-09
@@ -128,9 +128,10 @@ Honest evidence stop. Log:
 | `v0.4.1` carried card 080's items on the Contract 036 gates | pass. PRs 221 and 224 are ancestors of tagged `c3cce750`. Research 286 patch class; PR 229; workflow-dispatch `33969131592` six jobs; source consumer. Operator compression dropped the Bovine editing smoke; the release note states no application drove the candidate |
 
 Card 087 remains a stopped no-range gate (PR 256 `54153c68`; five exact
-`QualifiedOnly` pins). Coordinator closeout sets `Status: stopped` and
-reconciles reserved indexes. No repair, live probe, range widening,
-release, or tag is opened here.
+`QualifiedOnly` pins). Coordinator closeout 2026-09-09 sets `Status:
+stopped`: PR 307 merged as `55595c38` after independent exact-head review
+`5607443298` (ready to merge, no follow-ups). No repair, live probe,
+range widening, release, or tag is opened here.
 
 ## Card 080 Stop And Ruling
 

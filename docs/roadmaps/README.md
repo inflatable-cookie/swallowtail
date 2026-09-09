@@ -15,10 +15,10 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g05.029 Claude SDK Interactive Parity](g05/029-claude-sdk-interactive-parity.md)
-continues the `claude-agent.sdk` full editing harness (cards 080-088
-delivered; qualified-ranges widening held at the stopped 087 gate). No
-release or tag authority follows.
+No ready generation task remains. g05.029 closed 2026-09-09 as an honest
+evidence stop (audit PR 307 merged as `55595c38`); the g05 runway is empty
+and Chatterbox owns the next planning direction. No release or tag
+authority follows.
 
 ## Standing Lanes
 

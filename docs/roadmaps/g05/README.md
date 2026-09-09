@@ -37,7 +37,7 @@ enforcement.
 | Supply the shared lifecycle evidence required by the Claude SDK route. | completed; card 058 delivered caller-bounded close, card 059 proved macOS tree emptiness unavailable under ordinary authority, and the operator accepted exact root-only degraded cleanup | Contracts 010 and 019; cards 057-059; 2026-09-03 operator decision | g05.023 |
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | g05.024 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | g05.025 |
-| Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | ready; cards 080-088 delivered (folded g05.038); remaining scope dispatches from the task's serial edges | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | g05.029 |
+| Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | stopped; honest evidence stop — consumer multi-turn editing session unproven; audit PR 307 merged at `55595c38` | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | g05.029 |
 | Ship the first-turn model rejection evidence to Bovine Desktop as patch `v0.4.4` on one exact candidate tree. | complete; `v0.4.4` tagged at `49c9e3b2` 2026-09-09 (tag object `41da6c1a`); Desktop Card 323 accepted; no publication authority | Contract 036 hosted delegation; Card 154 closeout; Desktop Card 323 closeout; operator tag authorization 2026-09-09 | g05.036 |
 | Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | stopped; v0.4.4 lane missed all-green (30-minute fail, one-hosted-run fail, no-rerun-to-green not clean; one-prepare and PR-gate pass); audit PR 305 merged at `94d8ef07` | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | g05.034 |
 | Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | planned; shared kernel and route bindings delivered; card-153 exact Claude SDK tuple qualification merged provider-free; g05.041 remains a planned producer seam | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-063; Research 288, 295, 301 | g05.035 |
@@ -53,7 +53,6 @@ Only ready and planned tasks are actionable. Completed and stopped tasks live
 in [## Tasks](#tasks) below.
 
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
-- [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; cards 080-088 delivered (folded g05.038); qualified-ranges widening held at the stopped 087 gate
 - [g05.039 Qoder Effective Skill Visibility Binding](./039-qoder-effective-skill-visibility-binding.md) — planned; gated on a non-empty Research 256 deliver-now disposition
 - [g05.040 Qoder Skill Visibility Acceptance](./040-qoder-skill-visibility-acceptance.md) — planned; serial after g05.039
 - [g05.041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; operator promotion absent; no dispatch authorization
@@ -65,8 +64,8 @@ standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 dual-route parity
 at 022, and shared
 lifecycle closure at 023-025; honest
-evidence stops at 002, 003, 007, 011, 031, and 034; ready tasks at 029;
-planned tasks at 035, 039, 040, 041, and 042.
+evidence stops at 002, 003, 007, 011, 029, 031, and 034; no ready tasks
+remain; planned tasks at 035, 039, 040, 041, and 042.
 g05.020 is complete: Codex
 qualifies official `0.152.1`. g05.026 is complete as an evidence stop:
 card 062 froze Kimi
@@ -406,7 +405,8 @@ identity.
 
 ### Ready
 
-- [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; cards 080-088 delivered (folded g05.038); qualified-ranges widening held at the stopped 087 gate
+No ready tasks remain; the generation runway is empty and Chatterbox owns
+the next planning direction.
 
 ### Planned
 
@@ -424,6 +424,7 @@ identity.
 - [002 Effective Harness Skill Visibility Proof](./002-effective-harness-skill-visibility-proof.md) — stopped after Research 256; card 004 complete; Qoder binding and acceptance preserved as g05.039 and g05.040
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — stopped; v0.4.4 lane missed all-green (30-minute fail, one-hosted-run fail, no-rerun-to-green not clean); audit PR 305 merged at `94d8ef07`
 - [031 CI Latency](./031-ci-latency.md) — stopped; honest evidence stop (PR-gate median 2m43s pass, literal macOS pinned floor fail, every-PR test population pass, required-check set unproven); audit PR 306 merged at `3b4f5378`
+- [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — stopped; honest evidence stop (consumer multi-turn editing session unproven; permission modes, default, landing order, and v0.4.1 carrier pass); audit PR 307 merged at `55595c38`
 
 ### Completed
 

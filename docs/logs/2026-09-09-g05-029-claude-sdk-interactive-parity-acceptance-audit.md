@@ -24,9 +24,9 @@ A consumer never drove a multi-turn editing session on `claude-agent.sdk`.
 | Later scope lands in priority order without reopening the card-080 seam | **pass**. Merge ancestry respects the promoted serial edges. Concurrent 085/086/088 PR numbers do not follow the numbered list and are not scored as landing order. Later profile/session edits are additive bindings; `read_write()` still excludes Bash |
 | `v0.4.1` carried card 080's items on the Contract 036 gates | **pass**. PRs 221 and 224 are ancestors of tagged `c3cce750`. Research 286 classified the tree patch-compatible. Candidate PR 229 merged after local gates, exact-head review, and workflow-dispatch `33969131592` (six jobs). Source consumer passed. Operator compression dropped the Bovine editing smoke; the release note states no application drove the candidate before the tag |
 
-Coordinator closeout sets `Status: stopped` and reconciles reserved
-indexes. Card 087's stopped no-range gate is preserved. This audit invents
-no repair, live probe, range widening, release, or tag.
+Coordinator closeout 2026-09-09 sets `Status: stopped` and reconciles
+reserved indexes. Card 087's stopped no-range gate is preserved. This
+audit invents no repair, live probe, range widening, release, or tag.
 
 ## Frozen Identities
 
@@ -272,3 +272,18 @@ No runtime, test, sidecar, baseline, guide, matrix, contract, research,
 release, tag, or Desktop edit. No provider contact. No follow-up task is
 opened here; Chatterbox owns any later live editing session, range
 reopening, or default-profile reinterpretation.
+
+## Merge
+
+PR [#307](https://github.com/inflatable-cookie/swallowtail/pull/307)
+merged 2026-09-09 as `55595c38fa644b4e2a4111ecef4d5fbfb58fb733` (head
+`c6f5dfd2`). Independent exact-head review `5607443298` recorded ready to
+merge at that head with no follow-ups: three owned files only, forbidden
+and reserved surfaces untouched, tag-peel/ancestry/merge-SHA spot-checks
+corroborate the load-bearing claims, `effigy qa:docs` and `effigy
+qa:northstar` passing with a clean `git diff --check`.
+
+Closed. g05.029 is `stopped`; the generation index entry moves with it
+and the generation runway is empty — no ready task remains, so Chatterbox
+owns the next planning direction. No repair, live probe, range widening,
+release, or tag follows from this audit.

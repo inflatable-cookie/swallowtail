@@ -145,7 +145,7 @@ goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
 g05 has 44 tasks: 32 completed tasks, honest evidence stops at 002,
-003, 007, 011, 031, and 034, ready tasks at 029, and planned
+003, 007, 011, 029, 031, and 034, no ready tasks remain, and planned
 tasks at 035, 039, 040, 041, and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
@@ -171,11 +171,13 @@ all-green target (30-minute fail, one-hosted-run fail, no-rerun-to-green not cle
 consumer passed at `cbd4ddc8` and its tag capsule was relayed to Acowtancy.
 g05.030 completed the
 `v0.4.1` patch release carrying the Claude SDK editing session; cards 090-092
-are complete and `v0.4.1` is tagged at `c3cce750`. g05.029 makes
-`claude-agent.sdk` a full editing harness in the consumer's priority order;
-cards 080, 081, and 082 delivered the `v0.4.1` carrier, Bash mediation, and
-model/effort control; cards 083-086, 088, and 105 delivered (complete) and the
-qualified-ranges widening is held at the stopped 087 gate. g05.027 completed
+are complete and `v0.4.1` is tagged at `c3cce750`. g05.029 stopped as an
+honest evidence stop: cards 080, 081, and 082 delivered the `v0.4.1`
+carrier, Bash mediation, and model/effort control; cards 083-086, 088,
+and 105 delivered (complete) and the qualified-ranges widening is held at
+the stopped 087 gate, but no consumer ever drove a multi-turn editing
+session; audit PR #307 merged at `55595c38` after exact-head review with
+no follow-ups. g05.027 completed
 the Antigravity `1.1.26` identity run as an evidence stop after the Kimi stop;
 card 071 is complete at a `1.1.17` ceiling and the follow-on claim stays gated
 with former card 072 retired. g05.009

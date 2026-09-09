@@ -54,7 +54,7 @@ attached and owned.
 **Adapters that exist without a production row.**
 `swallowtail-adapter-openhands` is deferred. Live HTTP/WebSocket stays
 unwired. Research 155 and
-`docs/roadmaps/backlog/openhands-agent-server-production-wiring.md`.
+`docs/triage/2026-08-21-deferred-route-surfaces.md`.
 
 **Already inventoried, not production.** Research 143 selected the
 primary/secondary waves. Research 153/158 closed the watchlist. Backlog

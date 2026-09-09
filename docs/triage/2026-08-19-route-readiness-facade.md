@@ -85,7 +85,7 @@ llama.cpp attached. g04.016 is merged (PR 13, `fa33de15`). g04.018 is merged (PR
 `349c6eba`). g04.019 is merged (PR 16, `576184e9`). The second-proof
 addable-route expansion is complete. Operator parked hosted OAuth until a
 named production route requires URL-open plus loopback
-(`docs/roadmaps/backlog/hosted-interactive-oauth.md`). Contract 029
+(`docs/triage/2026-08-21-deferred-route-surfaces.md`). Contract 029
 currentness is a standing lane (`docs/roadmaps/standing-lanes.md`), not a
 g04 goal. Operator: do not roll g04 at 19 roadmaps; continue toward 30-50.
 g04.020 is merged (PR 17, `3d761655`). g04.021 is merged (PR 18,

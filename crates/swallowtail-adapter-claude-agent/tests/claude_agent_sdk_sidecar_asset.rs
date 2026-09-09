@@ -683,6 +683,95 @@ fn pinned_result_error_fields_report_presence_without_provider_text() {
 }
 
 #[test]
+fn structured_provider_failure_facts_cross_the_wire_without_prose() {
+    for (scenario, status) in [
+        ("structured-402", 402),
+        ("structured-400", 400),
+        ("structured-429", 429),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], true);
+        sidecar.command("query-1", "query", json!({"text": "first turn"}));
+        let ended = sidecar.wait_for_turn_end_record();
+        assert_eq!(ended["isError"], true);
+        assert_eq!(ended["apiErrorStatus"], status);
+        assert_eq!(ended["terminalReason"], "api_error");
+        assert_eq!(ended["resultFieldPresence"]["api_error_status"], true);
+        assert_eq!(ended["resultFieldPresence"]["terminal_reason"], true);
+        assert!(!ended.to_string().contains("private provider detail"));
+        sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+    }
+}
+
+#[test]
+fn malformed_structured_provider_facts_stay_terminal() {
+    for scenario in ["structured-malformed-status", "structured-malformed-reason"] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], true);
+        let terminal = sidecar.terminal_after_query("query-1", json!({"text": "first turn"}));
+        assert_eq!(terminal["failure"]["code"], "unknown_message");
+        assert!(!terminal.to_string().contains("private provider detail"));
+        assert!(!terminal.to_string().contains("API Error"));
+    }
+}
+
+#[test]
+fn active_turn_rate_state_attaches_to_its_result_only() {
+    // A turn that observes a rate notice carries its latest status.
+    let mut sidecar = SidecarProcess::start_scenario("rate-allowed");
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    assert_eq!(sidecar.next_event()["event"], "progress");
+    assert_eq!(sidecar.next_event()["event"], "output_delta");
+    let ended = sidecar.next_event();
+    assert_eq!(ended["event"], "turn_ended");
+    assert_eq!(ended["rateLimitStatus"], "allowed");
+    sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+
+    // Idle notices never attach: the turn after idle traffic carries null.
+    let mut sidecar = SidecarProcess::start_scenario("between-turns");
+    sidecar.command(
+        "open-1",
+        "open",
+        json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+    );
+    sidecar.command("query-1", "query", json!({"text": "first turn"}));
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    assert_eq!(sidecar.next_event()["event"], "output_delta");
+    let first = sidecar.next_event();
+    assert_eq!(first["event"], "turn_ended");
+    assert_eq!(first["rateLimitStatus"], Value::Null);
+    let barrier = sidecar.command(
+        "idle-barrier",
+        "set_permission_mode",
+        json!({"mode": "default"}),
+    );
+    assert_eq!(barrier["success"], true);
+    sidecar.command("query-2", "query", json!({"text": "second turn"}));
+    assert_eq!(sidecar.next_event()["event"], "turn_started");
+    assert_eq!(sidecar.next_event()["event"], "output_delta");
+    let second = sidecar.next_event();
+    assert_eq!(second["event"], "turn_ended");
+    assert_eq!(second["rateLimitStatus"], Value::Null);
+    sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+}
+
+#[test]
 fn open_rejections_expose_only_the_fixed_sidecar_code() {
     for (scenario, expected) in [("account-not-first-party", "account_not_first_party")] {
         let mut sidecar = SidecarProcess::start_scenario(scenario);

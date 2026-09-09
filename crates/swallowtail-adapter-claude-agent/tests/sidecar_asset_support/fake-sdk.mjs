@@ -214,7 +214,7 @@ function initializeResponse(options) {
   };
 }
 
-function resultMessage({ subtype = "success", isError = false, error } = {}) {
+function resultMessage({ subtype = "success", isError = false, error, apiErrorStatus, terminalReason } = {}) {
   const result = {
     type: "result",
     subtype,
@@ -224,6 +224,14 @@ function resultMessage({ subtype = "success", isError = false, error } = {}) {
   };
   if (error !== undefined) {
     result.error = error;
+  }
+  // Structured provider-failure facts use the exact SDK snake_case names.
+  // Fixture-only values; the sidecar must project only the validated facts.
+  if (apiErrorStatus !== undefined) {
+    result.api_error_status = apiErrorStatus;
+  }
+  if (terminalReason !== undefined) {
+    result.terminal_reason = terminalReason;
   }
   return result;
 }
@@ -397,6 +405,21 @@ export function query({ prompt, options }) {
         }
         if (SCENARIO === "pinned-success-error") {
           return { value: { ...resultMessage({ isError: true }), result: "private provider detail" }, done: false };
+        }
+        if (SCENARIO === "structured-402") {
+          return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true, apiErrorStatus: 402, terminalReason: "api_error" }), errors: ["private provider detail"] }, done: false };
+        }
+        if (SCENARIO === "structured-400") {
+          return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true, apiErrorStatus: 400, terminalReason: "api_error" }), errors: ["private provider detail"] }, done: false };
+        }
+        if (SCENARIO === "structured-429") {
+          return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true, apiErrorStatus: 429, terminalReason: "api_error" }), errors: ["private provider detail"] }, done: false };
+        }
+        if (SCENARIO === "structured-malformed-status") {
+          return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true, apiErrorStatus: "402", terminalReason: "api_error" }), errors: ["private provider detail"] }, done: false };
+        }
+        if (SCENARIO === "structured-malformed-reason") {
+          return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true, apiErrorStatus: 402, terminalReason: "API Error: overloaded" }), errors: ["private provider detail"] }, done: false };
         }
         if (SCENARIO === "unknown-message") {
           return { value: { type: "fixture_unknown_message" }, done: false };

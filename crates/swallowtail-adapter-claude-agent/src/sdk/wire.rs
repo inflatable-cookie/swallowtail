@@ -18,6 +18,9 @@ pub(crate) const MAXIMUM_COMMAND_ID_BYTES: usize = 128;
 pub(crate) const MAXIMUM_FAILURE_CODE_BYTES: usize = 96;
 pub(crate) const MAXIMUM_FAILURE_MESSAGE_BYTES: usize = 512;
 pub(crate) const MAXIMUM_TEXT_BYTES: usize = 4096;
+/// Maximum bytes for a projected SDK `terminal_reason` label. Matches the
+/// sidecar's `/^[A-Za-z0-9_.-]{1,96}$/` projection bound.
+pub(crate) const MAXIMUM_TERMINAL_REASON_BYTES: usize = 96;
 pub(crate) const MAXIMUM_MODEL_QUALIFICATION_ID_BYTES: usize = 128;
 pub(crate) const MAXIMUM_MODEL_QUALIFICATION_CATALOGUE_SIZE: usize = 64;
 pub(crate) const MODEL_QUALIFICATION_DIGEST: &str = "sha256:";
@@ -407,8 +410,47 @@ pub(crate) enum ClaudeAgentSdkEvent {
         error_text_present: bool,
         error_text_type: String,
         result_field_presence: BTreeMap<String, bool>,
+        /// Validated numeric provider HTTP status from exact SDK
+        /// `0.3.259` `api_error_status`, if the result carried one.
+        /// Absent stays `None` and classifies generic downstream.
+        api_error_status: Option<u64>,
+        /// Bounded terminal reason from exact SDK `0.3.259`
+        /// `terminal_reason`, if the result carried one.
+        terminal_reason: Option<String>,
+        /// Latest validated active-turn rate-limit status observed before
+        /// this result, if any turn-owned notice arrived.
+        rate_limit_status: Option<ClaudeAgentSdkRateLimitStatus>,
     },
     TurnFailed,
+}
+
+/// Fixed rate-limit vocabulary the sidecar projects from exact SDK `0.3.259`
+/// `rate_limit_event` notices. Advisory only: it never authorizes retry,
+/// fallback, replay, or account mutation.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum ClaudeAgentSdkRateLimitStatus {
+    Allowed,
+    AllowedWarning,
+    Rejected,
+}
+
+impl ClaudeAgentSdkRateLimitStatus {
+    pub(crate) const fn as_str(self) -> &'static str {
+        match self {
+            Self::Allowed => "allowed",
+            Self::AllowedWarning => "allowed_warning",
+            Self::Rejected => "rejected",
+        }
+    }
+
+    pub(crate) fn parse(value: &str) -> Option<Self> {
+        Some(match value {
+            "allowed" => Self::Allowed,
+            "allowed_warning" => Self::AllowedWarning,
+            "rejected" => Self::Rejected,
+            _ => return None,
+        })
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

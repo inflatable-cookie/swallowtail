@@ -63,6 +63,13 @@ pub(super) struct TurnEndedDiagnostic {
     pub(super) error_text_present: bool,
     pub(super) error_text_type: String,
     pub(super) result_field_presence: BTreeMap<String, bool>,
+    /// Validated numeric provider HTTP status, if the result carried one.
+    pub(super) api_error_status: Option<u64>,
+    /// Bounded terminal reason, if the result carried one.
+    pub(super) terminal_reason: Option<String>,
+    /// Latest validated active-turn rate-limit status, if any turn-owned
+    /// notice arrived before this result. Advisory only.
+    pub(super) rate_limit_status: Option<super::wire::ClaudeAgentSdkRateLimitStatus>,
 }
 
 impl SdkActiveTurn {
@@ -359,7 +366,6 @@ pub(super) fn provider_diagnostic() -> SafeDiagnostic {
         FailureRecovery::Unknown,
     ))
 }
-
 pub(super) fn provider_turn_ended_diagnostic(fields: TurnEndedDiagnostic) -> SafeDiagnostic {
     let TurnEndedDiagnostic {
         stop_reason,
@@ -370,6 +376,9 @@ pub(super) fn provider_turn_ended_diagnostic(fields: TurnEndedDiagnostic) -> Saf
         error_text_present,
         error_text_type,
         result_field_presence,
+        api_error_status,
+        terminal_reason,
+        rate_limit_status,
     } = fields;
     let fields = result_field_presence
         .into_iter()
@@ -377,22 +386,69 @@ pub(super) fn provider_turn_ended_diagnostic(fields: TurnEndedDiagnostic) -> Saf
         .collect::<Vec<_>>()
         .join(",");
     let subtype = subtype.as_deref().unwrap_or("<null>");
-    provider_diagnostic_with_message(format!(
-        "Claude Agent SDK sidecar reported a downstream provider failure; turn_ended: subtype={subtype}; stopReason={stop_reason}; isError={failed}; numTurns={}; durationMs={}; errorTextPresent={error_text_present}; errorTextType={error_text_type}; resultFieldPresence=[{fields}]",
-        optional_number(num_turns),
-        optional_number(duration_ms),
-    ))
+    let terminal_reason = terminal_reason.as_deref().unwrap_or("<null>");
+    let rate_limit_status = rate_limit_status
+        .map(|status| status.as_str().to_owned())
+        .unwrap_or_else(|| "<null>".to_owned());
+    let (code, summary) = provider_status_summary(api_error_status);
+    SafeDiagnostic::new(
+        code,
+        format!(
+            "{summary}; turn_ended: subtype={subtype}; stopReason={stop_reason}; isError={failed}; numTurns={}; durationMs={}; errorTextPresent={error_text_present}; errorTextType={error_text_type}; apiErrorStatus={}; terminalReason={terminal_reason}; rateLimitStatus={rate_limit_status}; resultFieldPresence=[{fields}]",
+            optional_number(num_turns),
+            optional_number(duration_ms),
+            optional_number(api_error_status),
+        ),
+    )
+    .with_failure_classification(provider_status_classification(api_error_status))
+}
+
+/// Stable route code and human summary for one validated provider HTTP
+/// status. Only `402` proves a billing/entitlement outcome under the
+/// provider's documented error contract; `400` and `429` each mix
+/// spend-limit and non-billing causes, so they keep distinct mixed route
+/// codes but no quota classification. Absent or unlisted statuses stay
+/// generic. No status authorizes retry, fallback, replay, or account
+/// mutation.
+fn provider_status_summary(api_error_status: Option<u64>) -> (&'static str, &'static str) {
+    match api_error_status {
+        Some(402) => (
+            "swallowtail.claude-agent.sdk.provider_billing_unavailable",
+            "Claude Agent SDK sidecar reported a downstream provider billing/entitlement failure",
+        ),
+        Some(400) => (
+            "swallowtail.claude-agent.sdk.provider_invalid_request_or_spend_limit",
+            "Claude Agent SDK sidecar reported a downstream provider failure: invalid request or spend limit",
+        ),
+        Some(429) => (
+            "swallowtail.claude-agent.sdk.provider_rate_or_spend_limit",
+            "Claude Agent SDK sidecar reported a downstream provider failure: rate or spend limit",
+        ),
+        _ => (
+            "swallowtail.claude-agent.sdk.provider_failed",
+            "Claude Agent SDK sidecar reported a downstream provider failure",
+        ),
+    }
+}
+
+/// Portable classification for one validated provider HTTP status. Only the
+/// documented `402` billing status classifies beyond generic provider
+/// failure; mixed and unknown statuses never become `QuotaExhausted`.
+fn provider_status_classification(api_error_status: Option<u64>) -> FailureClassification {
+    match api_error_status {
+        Some(402) => FailureClassification::new(
+            FailureOrigin::Provider,
+            FailureKind::EntitlementUnavailable,
+            FailureRecovery::ConfigurationChangeRequired,
+        ),
+        _ => FailureClassification::new(
+            FailureOrigin::Provider,
+            FailureKind::Unknown,
+            FailureRecovery::Unknown,
+        ),
+    }
 }
 
 fn optional_number(value: Option<u64>) -> String {
     value.map_or_else(|| "<null>".to_owned(), |value| value.to_string())
-}
-
-fn provider_diagnostic_with_message(message: String) -> SafeDiagnostic {
-    SafeDiagnostic::new("swallowtail.claude-agent.sdk.provider_failed", message)
-        .with_failure_classification(FailureClassification::new(
-            FailureOrigin::Provider,
-            FailureKind::Unknown,
-            FailureRecovery::Unknown,
-        ))
 }

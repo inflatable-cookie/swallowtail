@@ -69,6 +69,52 @@ fn turn_ended_record(failed: bool) -> Value {
         "errorTextPresent": failed,
         "errorTextType": if failed { "string" } else { "absent" },
         "resultFieldPresence": result_field_presence,
+        "apiErrorStatus": null,
+        "terminalReason": null,
+        "rateLimitStatus": null,
+    })
+}
+
+/// A failed `turn_ended` carrying validated structured provider-failure
+/// facts. Values are already wire-shaped: the strict decoder still owns
+/// malformed rejection, which the malformed scenarios below exercise with
+/// raw records.
+fn structured_turn_ended_record(
+    api_error_status: Value,
+    terminal_reason: Value,
+    rate_limit_status: Value,
+) -> Value {
+    let mut result_field_presence = serde_json::Map::new();
+    for field in super::super::capture::SDK_RESULT_FIELD_NAMES {
+        result_field_presence.insert(
+            (*field).to_owned(),
+            json!(matches!(
+                *field,
+                "type"
+                    | "subtype"
+                    | "duration_ms"
+                    | "is_error"
+                    | "num_turns"
+                    | "api_error_status"
+                    | "terminal_reason"
+            )),
+        );
+    }
+    result_field_presence.insert("error".to_owned(), json!(true));
+    json!({
+        "type": "event",
+        "event": "turn_ended",
+        "subtype": "error_during_execution",
+        "stopReason": "error_during_execution",
+        "isError": true,
+        "numTurns": 1,
+        "durationMs": 7,
+        "errorTextPresent": true,
+        "errorTextType": "array",
+        "resultFieldPresence": result_field_presence,
+        "apiErrorStatus": api_error_status,
+        "terminalReason": terminal_reason,
+        "rateLimitStatus": rate_limit_status,
     })
 }
 
@@ -474,6 +520,47 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         SdkScenario::TurnEndedError => {
             push_stderr(state, b"fixture failed result stderr");
             push(state, turn_ended_record(true));
+        }
+        SdkScenario::TurnEndedBilling402 => {
+            push_stderr(state, b"fixture billing failure stderr");
+            push(
+                state,
+                structured_turn_ended_record(json!(402), json!("api_error"), json!("rejected")),
+            );
+        }
+        SdkScenario::TurnEndedMixed400 => {
+            push(
+                state,
+                structured_turn_ended_record(json!(400), json!("api_error"), Value::Null),
+            );
+        }
+        SdkScenario::TurnEndedMixed429 => {
+            push(
+                state,
+                structured_turn_ended_record(
+                    json!(429),
+                    json!("api_error"),
+                    json!("allowed_warning"),
+                ),
+            );
+        }
+        SdkScenario::TurnEndedUnknownStatus => {
+            push(
+                state,
+                structured_turn_ended_record(json!(503), Value::Null, Value::Null),
+            );
+        }
+        SdkScenario::TurnEndedMalformedStatus => {
+            let mut record =
+                structured_turn_ended_record(json!(402), json!("api_error"), Value::Null);
+            record["apiErrorStatus"] = json!("402");
+            push(state, record);
+        }
+        SdkScenario::TurnEndedMalformedReason => {
+            let mut record =
+                structured_turn_ended_record(json!(402), json!("api_error"), Value::Null);
+            record["terminalReason"] = json!("API Error: overloaded");
+            push(state, record);
         }
         // The turn ends first, then an admission request the sidecar had
         // already written arrives. The wire order is what a real interrupt or

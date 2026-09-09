@@ -85,4 +85,27 @@ source SHA if the balance remains zero.
 
 ## Result
 
-Pending.
+Implemented provider-free. The sidecar projects validated `apiErrorStatus`
+(`100..=599`), `terminalReason` (`/^[A-Za-z0-9_.-]{1,96}$/`), and the latest
+active-turn `rateLimitStatus` (`allowed`/`allowed_warning`/`rejected`) on
+`turn_ended`; malformed present values fail closed as `unknown_message`;
+rate state resets at each turn boundary and idle notices never attach. The
+strict wire decodes the three facts (absent/null stays generic) into the
+failed terminal diagnostic: `402` →
+`swallowtail.claude-agent.sdk.provider_billing_unavailable` with
+`(Provider, EntitlementUnavailable, ConfigurationChangeRequired)`; `400` →
+`provider_invalid_request_or_spend_limit` and `429` →
+`provider_rate_or_spend_limit`, both `(Provider, Unknown, Unknown)` and never
+`QuotaExhausted`; unlisted/absent stays generic `provider_failed`. No status
+or rate notice authorizes retry; no prose, quota, account, or credential
+crosses the wire; one-attempt, redaction, MCP, cleanup, and absent-field
+behavior preserved.
+
+Validation (provider-free): `effigy validate:focused
+swallowtail-adapter-claude-agent` 498 passed; `effigy
+package:verify-affected swallowtail-adapter-claude-agent` passed; `effigy
+qa:docs` passed; `git diff --check` clean. New fixtures: wire decode,
+classification, malformed-value, redaction, turn-reset, and unknown-status
+cases in `wire_tests.rs`, driver `framing.rs`, sidecar-asset tests with five
+new fake-SDK scenarios, and `events.jsonl`. Exact-head independent review
+pending; no provider run.

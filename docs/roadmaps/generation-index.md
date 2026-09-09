@@ -19,16 +19,16 @@ Updated: 2026-09-09
 A generation normally contains 30-50 numbered roadmap files. Batch cards do
 not count toward that range.
 
-g01 closed at 49 roadmaps: 48 completed milestones and one backlog move. g02
-closed at 49 roadmaps: 48 completed roadmaps, including roadmap 049's
-disposition and cutover, plus one backlog move. Roadmap g02.029 and cards
-097-098 remain recoverable as shared backlog evidence behind the Pi cwd-bound
-attachment gate.
+g01 closed at 49 roadmaps: 48 completed milestones and one deferred-intake
+move. g02 closed at 49 roadmaps: 48 completed roadmaps, including roadmap
+049's disposition and cutover, plus one deferred-intake move. Roadmap g02.029
+and cards 097-098 remain recoverable as historical evidence behind the Pi
+cwd-bound attachment gate.
 
 g03 closed at 106 roadmaps after operator-authorized rollover. Compatibility
 maintenance, consumer-proven hardening, recovery, source tags, harness
 expansion, and the currentness sweep are complete or rehomed. Aider headless,
-Kiro headless, and OpenHands production wiring join the shared backlog.
+Kiro headless, and OpenHands production wiring moved to parked triage.
 Gemini enterprise API-key requalification and Pi SDK continuity are complete.
 Binding persistence stays deferred.
 

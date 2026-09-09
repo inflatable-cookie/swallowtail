@@ -1,6 +1,6 @@
 # g05.041 Persistent Permission Grant Admission
 
-Status: planned; backlog stub only; no dispatch authorization
+Status: planned; no dispatch authorization
 Owner: coordinator
 Created: 2026-09-07
 Updated: 2026-09-09
@@ -29,7 +29,7 @@ evidence gates, not task decisions.
 
 ## Dispatch manifest
 
-- **State:** planned backlog stub; not in any dispatch manifest; no worker, no siblings, no concurrency.
+- **State:** planned; not in any dispatch manifest; no worker, no siblings, no concurrency.
 - **Completion:** an explicit producer-owned grant boundary and route capability per admitted route, with consumer policy, provider identity, exact admission, revocation, expiry, and audit semantics preserved; each route qualified independently before any matrix cell changes.
 - **Owned mutable paths:** none until promoted; on promotion, the exact producer seam paths Chatterbox compiles.
 - **Reserved closeout surfaces:** `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`.
@@ -59,7 +59,7 @@ evidence gates, not task decisions.
 ## Out Of Scope
 
 No dispatch, runtime implementation, provider probe, consumer policy, release,
-or matrix claim change is authorized by this stub. Its presence only gives a
+or matrix claim change is authorized by this task. Its presence only gives a
 future producer gap a durable task reference.
 
 ## Review Oracle

@@ -59,8 +59,8 @@ in [## Tasks](#tasks) below.
 - [g05.029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — ready; cards 080-088 delivered (folded g05.038); qualified-ranges widening held at the stopped 087 gate
 - [g05.039 Qoder Effective Skill Visibility Binding](./039-qoder-effective-skill-visibility-binding.md) — planned; gated on a non-empty Research 256 deliver-now disposition
 - [g05.040 Qoder Skill Visibility Acceptance](./040-qoder-skill-visibility-acceptance.md) — planned; serial after g05.039
-- [g05.041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; backlog stub only; no dispatch authorization
-- [g05.042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub only; no dispatch authorization
+- [g05.041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; operator promotion absent; no dispatch authorization
+- [g05.042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; consumer requirement and operator direction absent; no dispatch authorization
 
 g05 has forty-three numbered tasks: 30 complete including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
@@ -419,8 +419,8 @@ identity.
 - [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; Batch A promoted (card 114 complete); former stubs 130/134 preserved as g05.041/g05.042
 - [039 Qoder Effective Skill Visibility Binding](./039-qoder-effective-skill-visibility-binding.md) — planned; gated on a non-empty Research 256 deliver-now disposition
 - [040 Qoder Skill Visibility Acceptance](./040-qoder-skill-visibility-acceptance.md) — planned; serial after g05.039
-- [041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; backlog stub only; no dispatch authorization
-- [042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; backlog stub only; no dispatch authorization
+- [041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; operator promotion absent; no dispatch authorization
+- [042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; consumer requirement and operator direction absent; no dispatch authorization
 
 ### Stopped
 

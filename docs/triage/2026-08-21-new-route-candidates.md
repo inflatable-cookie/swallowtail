@@ -21,7 +21,7 @@ translating arbitrary UI labels into provider strings.
 
 Method: repo inventory first (route matrix, feature CSV, guide map,
 prepared guides, `crates/swallowtail-adapter-*`, Research 143/153/158/170/171,
-backlog). Then official vendor docs, CLIs, and the 2026-08-21 ACP
+triage, and active tasks). Then official vendor docs, CLIs, and the 2026-08-21 ACP
 registry snapshot. No executable was installed. No provider account,
 login, prompt, or live session was used. Observed versions are not
 qualified claims. If a surface cannot be confirmed from an official
@@ -944,7 +944,8 @@ answer for the operator, and do not change the matrix.
 or flag work follows from this note.
 
 **Already inventoried (24).** Cite Research 143/153/158, Research
-170/171, and the backlog. Official status has not clearly changed
+170/171, and the existing triage dispositions. Official status has not clearly
+changed
 except stronger first-party docs for Devin, Factory Droid, Auggie,
 and Junie, plus CodeBuddy version drift. Those remain watchlist /
 named-roadmap-after-review, not new discoveries. OpenHands, Aider,
@@ -1012,7 +1013,7 @@ The candidates separate into three later decision tiers:
    Engine, and the SDK/framework surfaces. These need a selected consumer
    need and boundary work before identity compilation.
 
-The 24 already-inventoried surfaces keep their existing backlog or watchlist
+The 24 already-inventoried surfaces keep their existing triage or watchlist
 dispositions. Antigravity ACP waits for official integration documentation.
 Windsurf Cascade, the Codex SDK flatten, and Chat Completions remain closed
 from this pass.

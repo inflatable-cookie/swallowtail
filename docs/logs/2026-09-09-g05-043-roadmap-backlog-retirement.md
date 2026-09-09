@@ -73,13 +73,18 @@ reordered.
 
 Unchanged per the retirement procedure (provenance, not live authority, no
 current broken link): `docs/roadmaps/archive/*` roll-ups and preservation
-manifest, `docs/roadmaps/long-term-plan.md` generation-disposition prose,
-`docs/roadmaps/generation-index.md` closure counts, closed handoffs (incl.
-`20260821-155507-g04-033-pi-sdk-sidecar.md:303`, now pointing at the removed
-resolved triage duplicate), `docs/logs/*`, PAPERCUTS observations, g05.041 /
-g05.042 "backlog stub" status wording (separate operator decisions),
-Contract 001 "never an automatic backlog" (papercut routing, not roadmap
-intake), and generic "backlog" wording inside assessed research/triage notes.
+manifest, historical `docs/logs/*`, closed handoffs without broken current
+links, PAPERCUTS observations, and generic non-roadmap uses of “backlog” in
+research, feature-ranking code, and quoted evidence.
+
+## Post-Closeout Correction
+
+Chatterbox's 2026-09-09 follow-up removed residual duplicate-intake wording
+from current task, roadmap, contract, generation, long-term-plan, and triage
+surfaces. It also repointed the closed Pi handoff from the removed resolved
+triage note to Research 181. This corrected the two exceptions that should not
+have been retained by the reviewed cleanup; product, frontier, candidate, and
+release state did not change.
 
 ## Review / Merge
 

@@ -169,9 +169,9 @@ materially different harness and direct routes, SDK and ACP transports,
 self-hosted runtime shapes, compatibility ranges, and visible
 unverified-newer execution.
 
-The remaining Grok Build lane is deferred for unavailable delegated-
-authentication evidence. It did not justify roadmap 050 and now lives in the
-shared roadmap backlog.
+At g01 close, the remaining Grok Build lane was deferred for unavailable
+delegated-authentication evidence. It did not justify roadmap 050 and moved to
+deferred intake; later generations completed the qualified range.
 
 The operator closed g01 and selected API stabilization, release discipline,
 packaging, and consumer upgrade support as the primary g02 programme.
@@ -187,10 +187,12 @@ feature-matrix closure, observable activity, consumer handoffs, structural
 stabilization, validation routing, child-work topology, and Claude typed form
 elicitation.
 
-Pi RPC load and resume moved to the shared backlog behind the unchanged
-maintained public cwd-bound attachment gate. Provider-session binding
-persistence remains deferred. Registry publication remains outside the active
-roadmap until the operator revisits it after sustained application usage.
+At g02 close, Pi RPC load and resume moved to deferred planning behind the
+unchanged maintained public cwd-bound attachment gate. The later Pi SDK
+sidecar resolved continuity while `pi.rpc` stayed fresh-only. Provider-session
+binding persistence remains deferred in triage. Registry publication remains
+outside the active roadmap until the operator revisits it after sustained
+application usage.
 
 g03 prioritizes compatibility maintenance and consumer-proven hardening. It
 starts with installed harnesses and shared protocols because their release
@@ -201,7 +203,7 @@ point is not denied solely for being newer.
 
 Registry publication was later removed from the active runway. Local package
 and compatibility evidence continues, but publication does not return as a
-ready, paused, or backlog item. A future lane requires a new operator decision
+ready, paused, or planned task. A future lane requires a new operator decision
 after months of working-application usage evidence.
 
 Research 092 and Contract 046 add explicit discovery and import of
@@ -251,10 +253,10 @@ g03 closed at 106 roadmaps after operator-authorized rollover. Compatibility
 maintenance, consumer-proven hardening, recovery facades, source tags, harness
 expansion, and the recurring currentness sweep are complete or rehomed.
 
-Aider headless, Kiro headless, and OpenHands production wiring moved to the
-shared backlog. Gemini requalification, Pi RPC continuity, and provider-session
-management binding persistence remain deferred. Registry publication remains
-outside the active roadmap.
+Aider headless, Kiro headless, and OpenHands production wiring moved to parked
+triage. Gemini requalification and Pi SDK continuity later completed;
+provider-session management binding persistence remains deferred in triage.
+Registry publication remains outside the active roadmap.
 
 g04 prioritizes a portable route-readiness and connection-admission library
 surface. Consuming applications should be able to list addable routes, collect

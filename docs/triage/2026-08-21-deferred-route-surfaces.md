@@ -5,8 +5,9 @@ Owner: Tom
 
 ## Operator Disposition
 
-These surfaces are not backlog work and should not appear in active roadmap
-summaries, continuation envelopes, or routine orchestrator closeouts:
+These surfaces are not executable roadmap tasks and should not appear in
+active roadmap summaries, continuation envelopes, or routine orchestrator
+closeouts:
 
 - hosted interactive OAuth
 - OpenHands Agent Server production wiring

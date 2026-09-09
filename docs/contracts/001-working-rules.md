@@ -41,7 +41,7 @@ These rules apply to all Swallowtail work before v1.0.
   harness. A worker edits only the paths its task and manifest own.
 - Triage notes are intake, never execution authority. Papercuts in
   `PAPERCUTS.md` are observations for later triage, never an automatic
-  backlog.
+  triage note or roadmap task.
 - Release mutations (tag, push, publication, GitHub Release, consumer or
   provider changes) need explicit operator authority under Contract 036. A
   green gate, changelog, or closeout commit grants none.

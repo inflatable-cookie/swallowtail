@@ -150,8 +150,8 @@ Batch A has independent planning acceptance recorded (see Batch A Planning
 Acceptance below). One Swallowtail Coordinator owns this frontier; Desktop
 Coordinator supplies consumer requirements and must not create a competing
 producer worker. Card-level dispatch is retired: every card below is complete
-or stopped, and serial edges are now owned by this task. Former backlog stubs
-130 and 134 are preserved as g05.041 and g05.042.
+or stopped, and serial edges are now owned by this task. Former unpromoted
+task stubs 130 and 134 are preserved as g05.041 and g05.042.
 
 ### Folded Card Evidence
 
@@ -164,7 +164,7 @@ or stopped, and serial edges are now owned by this task. Former backlog stubs
 - 126 — complete; bundle transport fixtures.
 - 127 — complete; bundle transport fixtures on the app-server fixture.
 - 128 — complete; PR 273 merged at `63e34641`; provider-free four-verdict fake fixtures; live probe not run; packet relayed to Acowtancy Desktop.
-- 129 — complete; every cross is provider-limitation-with-evidence or producer-gap-with-task; check enforces it; ranked backlog for pinned routes.
+- 129 — complete; every cross is provider-limitation-with-evidence or producer-gap-with-task; check enforces it; ranked producer-gap list for pinned routes.
 - 131 — complete; PR 277 merged at `f36e1165`; Codex client MCP is a cited provider limitation.
 - 133 — complete; admission/invocation split; offline fixtures pass.
 - 137 — complete; PR 285 merged at `56ea6008`; unanswered method named from existing capsules.

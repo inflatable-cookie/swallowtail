@@ -1,6 +1,6 @@
 # g05.042 Registered-Tool Adoption For Remaining ACP Routes
 
-Status: planned; backlog stub only; no dispatch authorization
+Status: planned; no dispatch authorization
 Owner: Tom
 Created: 2026-09-07
 Updated: 2026-09-09
@@ -36,7 +36,7 @@ were promoted.
 
 ## Dispatch manifest
 
-- **State:** planned backlog stub; not in any dispatch manifest; no worker, no siblings, no concurrency.
+- **State:** planned; not in any dispatch manifest; no worker, no siblings, no concurrency.
 - **Completion (if a route is promoted):** exact ACP MCP declaration surface and version segment frozen for that route; mapped to the shared snapshot and bridge without a second registry or lease; proved provider-free; then a real-route gate under the consumer's own test authority.
 - **Owned mutable paths:** none until promoted; on promotion, that route's adapter paths, fixtures, guide section, and matrix cell.
 - **Reserved closeout surfaces:** `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, `docs/roadmaps/generation-index.md`, `docs/logs/README.md`.
@@ -60,7 +60,7 @@ were promoted.
 
 ## Out Of Scope
 
-This stub authorizes no dispatch, runtime, probe, claim, or matrix change.
+This task authorizes no dispatch, runtime, probe, claim, or matrix change.
 Its only function is to give those crosses a reference that names who owes
 the work and why it is unbuilt. Promotion requires a consumer requirement and
 the operator's direction.

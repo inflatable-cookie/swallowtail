@@ -1,6 +1,6 @@
 # g05.045 Claude SDK Consumer Multi-Turn Editing Acceptance
 
-Status: ready; provider-limitation recorded from merged Desktop g02.049; awaiting exact-head review
+Status: completed; provider-limitation reconciliation merged as PR 308 (`05f1a3a1`) after independent exact-head review `5610583309` with no follow-ups
 Owner: Tom
 Created: 2026-09-09
 Depends on: Contracts 017, 019, 023, 029, 041, and 063; stopped g05.029
@@ -149,11 +149,13 @@ cleanup degraded accepted. Binding:
 Retained non-claims: `permission_exchange=Yes` for SDK-emitted callbacks;
 registered MCP still Contract 063-mediated; bounded workspace writing still
 `No`; no matrix Yes/No, version, range, runtime, release, or tag change.
-Swallowtail review and merge belong to the queue.
+Swallowtail review `5610583309` and merge `05f1a3a1` are recorded above.
 
-## Next task
-
-Close g05.045 as a provider-limitation reconciliation. Desktop g02.051 builds
-the registered-tool editing route provider-free. Any later live acceptance
+Closed 2026-09-10 as a provider-limitation reconciliation. PR
+[#308](https://github.com/inflatable-cookie/swallowtail/pull/308) merged as
+`05f1a3a1f1bf354b2d3db7a17c0b8065841f64b6` (head `b9ee93e5`) after
+independent exact-head review `5610583309` (ready to merge, no follow-ups).
+g05.046 adds the registered-only session profile provider-free; Desktop
+g02.051 owns the registered-tool editing route. Any later live acceptance
 requires a separate operator gate; no provider rerun, range work, release, or
 tag follows automatically.

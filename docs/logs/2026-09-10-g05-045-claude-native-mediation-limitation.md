@@ -50,7 +50,23 @@ Research 303. Fixture
 and focused test. Guide native-mediation note. Claude matrix-row notes
 only. g05.029 follow-up subsection. This log.
 
-## Next
+Coordinator closeout 2026-09-10 sets `Status: completed` and reconciles
+reserved indexes. No repair, live probe, range widening, release, or tag is
+opened here; g05.046 owns the registered-only session profile.
 
-Independent exact-head review, then queue merge and reserved-index
-closeout. Desktop g02.051 owns the registered-tool editing route.
+## Merge
+
+PR [#308](https://github.com/inflatable-cookie/swallowtail/pull/308)
+merged 2026-09-10 as `05f1a3a1f1bf354b2d3db7a17c0b8065841f64b6` (head
+`b9ee93e535883218b78e3841974d79d976c21090`). Independent exact-head review
+`5610583309` recorded ready to merge at that head with no follow-ups:
+claim correctness, capsule/Desktop identity consistency, wording-only matrix
+discipline, deterministic provider-free test, no secrets, owned paths only.
+Reviewer-run validation on the exact head passed (`effigy validate:focused
+swallowtail-adapter-claude-agent` with 503 tests, `effigy
+package:verify-affected swallowtail-adapter-claude-agent`, `effigy qa:docs`,
+`effigy qa:northstar`) with a clean `git diff --check`.
+
+Closed. g05.045 is `completed`; g05.046 is ready and unblocked. No provider
+call, compatibility change, release, or tag follows from this
+reconciliation.

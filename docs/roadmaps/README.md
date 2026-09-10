@@ -15,12 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Reconcile g05.045 after Desktop g02.049 closes its native-mediation evidence
-stop. Swallowtail consumes all three merged capsules provider-free, records
-the exact SDK limitation, and must not repeat the call. g05.046 is queued
-serially behind it to add the provider-free registered-only session profile
-Desktop g02.051 exposed as missing. No live acceptance, release, tag, or range
-authority follows.
+[g05.046 Claude SDK Registered-Only Session Profile](g05/046-claude-sdk-registered-only-session-profile.md)
+adds the provider-free registered-only session profile Desktop g02.051
+exposed as missing, unblocked by completed g05.045 (PR 308 merged as
+`05f1a3a1`; native-mediation provider limitation recorded with no
+follow-ups). No live acceptance, release, tag, or range authority follows.
 
 ## Standing Lanes
 

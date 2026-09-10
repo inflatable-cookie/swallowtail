@@ -38,8 +38,8 @@ enforcement.
 | Return unfinished scoped-task ownership to the selected host without breaking caller deadlines. | completed; card 060 adds exact-host/scope acceptance for autonomous reap and keeps accepted-for-reap distinct from joined cleanup | Contracts 009, 010, and 019; PR 188 exact-head finding | g05.024 |
 | Reserve guaranteed host reap before effects and close the shutdown race. | completed; card 061 merged at `53153af1` with pre-effect exact-host/scope reservation, non-fallible later handoff, cancellation-safe reserved join, and real local-host lifecycle proof | Contracts 009, 010, 017, 019, and 047; rejected PR 188 review; PR 193 containment | g05.025 |
 | Make `claude-agent.sdk` a full editing harness matching Paseo and T3 Code for consumers: read-write session, permission policy, Bash, model and effort, resume, MCP, Grok permissions, discovery ranges, install guidance. | stopped; honest evidence stop — consumer multi-turn editing session unproven; audit PR 307 merged at `55595c38` | Contracts 017, 019, 023, 029, 036, 041; Research 278 and 280; the 2026-09-04 Bovine requirement | g05.029 |
-| Reconcile the missing Claude SDK consumer editing evidence without repeating provider work. | ready; Desktop g02.049 lands three negative capsules, then Swallowtail records the native mediation limitation provider-free | stopped g05.029 audit; released `v0.4.4`; Desktop queue task `bc4acd98-91a3-4e14-86e0-38376b037da7`; 2026-09-10 operator disposition | g05.045 |
-| Make a strict registered-tool Claude SDK session representable without a native tool remainder. | ready; provider-free and serial after g05.045 | Desktop g02.051 blocked capsule; Contracts 013, 017, 019, 041, and 063; 2026-09-10 operator direction | g05.046 |
+| Reconcile the missing Claude SDK consumer editing evidence without repeating provider work. | completed; PR 308 merged at `05f1a3a1` after independent exact-head review `5610583309` with no follow-ups; native mediation limitation recorded provider-free | stopped g05.029 audit; released `v0.4.4`; Desktop queue task `bc4acd98-91a3-4e14-86e0-38376b037da7`; 2026-09-10 operator disposition | g05.045 |
+| Make a strict registered-tool Claude SDK session representable without a native tool remainder. | ready; provider-free; unblocked by completed g05.045 | Desktop g02.051 blocked capsule; Contracts 013, 017, 019, 041, and 063; 2026-09-10 operator direction | g05.046 |
 | Ship the first-turn model rejection evidence to Bovine Desktop as patch `v0.4.4` on one exact candidate tree. | complete; `v0.4.4` tagged at `49c9e3b2` 2026-09-09 (tag object `41da6c1a`); Desktop Card 323 accepted; no publication authority | Contract 036 hosted delegation; Card 154 closeout; Desktop Card 323 closeout; operator tag authorization 2026-09-09 | g05.036 |
 | Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | stopped; v0.4.4 lane missed all-green (30-minute fail, one-hosted-run fail, no-rerun-to-green not clean; one-prepare and PR-gate pass); audit PR 305 merged at `94d8ef07` | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | g05.034 |
 | Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | planned; shared kernel and route bindings delivered; card-153 exact Claude SDK tuple qualification merged provider-free; g05.041 remains a planned producer seam | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-063; Research 288, 295, 301 | g05.035 |
@@ -59,19 +59,18 @@ in [## Tasks](#tasks) below.
 - [g05.040 Qoder Skill Visibility Acceptance](./040-qoder-skill-visibility-acceptance.md) — planned; serial after g05.039
 - [g05.041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; operator promotion absent; no dispatch authorization
 - [g05.042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; consumer requirement and operator direction absent; no dispatch authorization
-- [g05.045 Claude SDK Consumer Multi-Turn Editing Acceptance](./045-claude-sdk-consumer-multi-turn-editing-acceptance.md) — ready; provider-free native-mediation limitation reconciliation behind Desktop g02.049
-- [g05.046 Claude SDK Registered-Only Session Profile](./046-claude-sdk-registered-only-session-profile.md) — ready; provider-free and queued serially after g05.045
+- [g05.046 Claude SDK Registered-Only Session Profile](./046-claude-sdk-registered-only-session-profile.md) — ready; provider-free; unblocked by completed g05.045
 
-g05 has forty-six numbered tasks: 32 complete including
+g05 has forty-six numbered tasks: 33 complete including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, 037, and 044, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
-at 022, and shared
-lifecycle closure at 023-025; honest
-evidence stops at 002, 003, 007, 011, 029, 031, and 034; g05.045 is ready for
-provider-limitation reconciliation behind its Desktop queue dependency, and
-g05.046 is queued serially for the resulting registered-only profile repair;
-planned tasks remain at 035, 039, 040,
+at 022, shared
+lifecycle closure at 023-025, and provider-limitation reconciliation at 045;
+honest
+evidence stops at 002, 003, 007, 011, 029, 031, and 034; one ready task at
+046 for the resulting registered-only profile repair; planned tasks remain
+at 035, 039, 040,
 041, and 042.
 g05.020 is complete: Codex
 qualifies official `0.152.1`. g05.026 is complete as an evidence stop:
@@ -412,8 +411,7 @@ identity.
 
 ### Ready
 
-- [045 Claude SDK Consumer Multi-Turn Editing Acceptance](./045-claude-sdk-consumer-multi-turn-editing-acceptance.md) — ready to record the native mediation limitation behind Desktop task `bc4acd98-91a3-4e14-86e0-38376b037da7`; no Swallowtail provider call
-- [046 Claude SDK Registered-Only Session Profile](./046-claude-sdk-registered-only-session-profile.md) — ready behind g05.045; zero native tools with explicit registered-route resource access; provider-free
+- [046 Claude SDK Registered-Only Session Profile](./046-claude-sdk-registered-only-session-profile.md) — ready; unblocked by completed g05.045; zero native tools with explicit registered-route resource access; provider-free
 
 ### Planned
 
@@ -435,6 +433,7 @@ identity.
 
 ### Completed
 
+- [045 Claude SDK Consumer Multi-Turn Editing Acceptance](./045-claude-sdk-consumer-multi-turn-editing-acceptance.md) — completed; provider-limitation reconciliation; PR #308 merged at `05f1a3a1` after independent exact-head review `5610583309` with no follow-ups
 - [044 Pi RPC 0.85.1 Useful Newer](./044-pi-rpc-0-85-1-useful-newer.md) — complete; PR #304 merged at `eeb44e86`; qualified `pi.package` through official `0.85.1`; sidecar stays exact `0.84.2`
 - [036 v0.4.4 Release Readiness](./036-v0-4-4-release-readiness.md) — complete; `v0.4.4` tagged at `49c9e3b2` 2026-09-09 (tag object `41da6c1a`); Desktop Card 323 accepted all 18 ledger cells
 - [043 Roadmap Backlog Retirement](./043-roadmap-backlog-retirement.md) — complete; PR #302 merged at `8ae707d5`; nine-item disposition applied and the duplicate intake surface removed with no product or tag authority

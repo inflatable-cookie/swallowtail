@@ -382,11 +382,32 @@ the change. It is not an independent observation of provider-effective policy,
 and this route does not claim one.
 
 **The `acceptEdits` caveat.** `acceptEdits` auto-approves edits to the working
-directory, so edits run without a per-call consumer decision while every other
-admitted tool, including Bash, still goes through `canUseTool`. That is a consumer-chosen
-narrowing of mediation, not a default: under `default` mode every admitted call
-is offered first. Choose `acceptEdits` only when the consumer accepts that it
+directory, so edits run without a per-call consumer decision. Bash and other
+SDK-emitted permission requests still go through `canUseTool`. That is a
+consumer-chosen narrowing of write mediation. It is not the only gap: under
+`default`, default-allowed in-workspace native reads may complete without
+`canUseTool`. Choose `acceptEdits` only when the consumer accepts that it
 will not see each edit before it runs.
+
+### Native mediation limitation
+
+`canUseTool` is a permission request, not a universal pre-tool hook.
+Swallowtail still withholds `allowedTools` and still answers every callback
+the SDK emits. That does not make every admitted native tool answerable.
+
+Research 303 binds Desktop g02.049's merged successor capsule (SHA-256
+`4f23e55c548469ae61666052266497ae70b864566e0e3cc7de1c3a208a777dba`) on SDK
+`0.3.259` / native `2.1.259` / Node `22.23.2` / sidecar `0.4.4` / source
+`v0.4.4` (`49c9e3b2`). One open under `default` proposed native `Read`, then
+a completed activity arrived with zero recorded `canUseTool` callbacks or
+allow/deny decisions. The fixture digest stayed
+`sha256:b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060`.
+Universal native-tool mediation is unavailable on this tuple.
+
+`permission_exchange` stays Yes for the callbacks the SDK actually offers.
+Registered MCP calls remain separately qualified through the Contract 063
+before-dispatch bridge. This note does not change matrix Yes/No values,
+versions, or ranges.
 
 ### Write Tools And The Read-Write Lease
 

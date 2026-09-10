@@ -133,6 +133,21 @@ stopped`: PR 307 merged as `55595c38` after independent exact-head review
 `5607443298` (ready to merge, no follow-ups). No repair, live probe,
 range widening, release, or tag is opened here.
 
+## Follow-up evidence
+
+g05.045 / Research 303 consumed Desktop g02.049's three merged capsules
+provider-free after PR #205 merged at `e0217483`. The historical clause-1
+fail stands. The successor capsule additionally proves the native route
+cannot close that every-call clause: in-workspace native `Read` completed
+under SDK `default` with zero `canUseTool` decisions while the fixture
+digest stayed
+`sha256:b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060`
+(capsule SHA-256
+`4f23e55c548469ae61666052266497ae70b864566e0e3cc7de1c3a208a777dba`).
+Universal native mediation is a provider limitation on the qualified tuple.
+Registered MCP calls remain the separately qualified strict before-dispatch
+route. No fourth Claude call, matrix Yes/No change, or repair belongs here.
+
 ## Card 080 Stop And Ruling
 
 Card 080's first PR (221) hit the card's stop: shared preflight refused

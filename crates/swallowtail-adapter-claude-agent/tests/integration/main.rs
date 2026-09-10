@@ -45,6 +45,8 @@ mod claude_agent_sdk_0_3_259_identity;
 mod claude_agent_sdk_identity;
 #[path = "../claude_agent_sdk_mcp_status_rows.rs"]
 mod claude_agent_sdk_mcp_status_rows;
+#[path = "../claude_agent_sdk_native_read_mediation_limitation.rs"]
+mod claude_agent_sdk_native_read_mediation_limitation;
 #[path = "../claude_code_2_1_252_identity.rs"]
 mod claude_code_2_1_252_identity;
 #[path = "../claude_code_2_1_257_identity.rs"]

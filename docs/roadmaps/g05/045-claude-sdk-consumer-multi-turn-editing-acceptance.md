@@ -1,6 +1,6 @@
 # g05.045 Claude SDK Consumer Multi-Turn Editing Acceptance
 
-Status: ready; provider-limitation reconciliation behind Desktop g02.049
+Status: ready; provider-limitation recorded from merged Desktop g02.049; awaiting exact-head review
 Owner: Tom
 Created: 2026-09-09
 Depends on: Contracts 017, 019, 023, 029, 041, and 063; stopped g05.029
@@ -120,11 +120,36 @@ route. No fourth Claude call belongs to this task.
 
 ## Evidence
 
-On completion record the Desktop task/PR/head/review/merge/closeout, all three
-capsule paths and SHA-256 values, released Swallowtail identity, exact tuple
-and model, final proposal/result/callback/decision counts, fixture digest,
-cleanup verdict, provider-free tests, Swallowtail PR/review/merge, and every
-retained non-claim.
+Desktop g02.049 task `bc4acd98-91a3-4e14-86e0-38376b037da7`; PR #205 accepted
+head `8002833f45a66e63df1071f5bb99053d6bf85922`; independent exact-head
+review `5610373055`; merge `e0217483ed8584ddca1bc4f4fdfedce53bcbaa76`;
+closeout `941dfcdb5361d673dfd5c7adb54950cacbbbe478`.
+
+Capsules recomputed from the merged Desktop tree:
+
+- `docs/proofs/claude-mediated-multi-turn-editing.capsule.json` SHA-256
+  `10b77ede7a85b68831967731e6d5636c0d44b72a56b1774b29938ed4fd519cd6`
+- `docs/proofs/claude-mediated-multi-turn-editing-renewed.capsule.json`
+  SHA-256
+  `8921fa5edc0ba869a8d565e2834fd9e138178dd87bd0bbec8e1561205ffc1386`
+- `docs/proofs/claude-mediated-multi-turn-editing-successor.capsule.json`
+  SHA-256
+  `4f23e55c548469ae61666052266497ae70b864566e0e3cc7de1c3a208a777dba`
+
+Released Swallowtail `v0.4.4` peel
+`49c9e3b291609c9ebf5b35a284c08302f3b8d5e3`. Tuple: SDK `0.3.259`, native
+`2.1.259` darwin-arm64, Node `22.23.2`, sidecar `0.4.4`,
+`permissionMode` `default`, `claude-sonnet-5`. Successor: one open, one
+stopped turn, zero retries/fallbacks/reconnects; chain is one native `Read`
+proposal; allow 0, deny 0; no `canUseTool` field; fixture digest stayed
+`sha256:b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060`;
+cleanup degraded accepted. Binding:
+`crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.259/native-read-mediation-limitation.json`.
+
+Retained non-claims: `permission_exchange=Yes` for SDK-emitted callbacks;
+registered MCP still Contract 063-mediated; bounded workspace writing still
+`No`; no matrix Yes/No, version, range, runtime, release, or tag change.
+Swallowtail review and merge belong to the queue.
 
 ## Next task
 

@@ -1,0 +1,124 @@
+{
+  "schema": "swallowtail.claude-agent-sdk.native-read-mediation-limitation.v1",
+  "research": "303",
+  "task": "g05.045",
+  "limitation": "universal native-tool canUseTool mediation is unavailable on the qualified tuple",
+  "desktop": {
+    "repository": "acowtancy/bovine-accelerator-desktop",
+    "task": "bc4acd98-91a3-4e14-86e0-38376b037da7",
+    "pr": "205",
+    "pr_head": "8002833f45a66e63df1071f5bb99053d6bf85922",
+    "review": "5610373055",
+    "merge": "e0217483ed8584ddca1bc4f4fdfedce53bcbaa76",
+    "closeout": "941dfcdb5361d673dfd5c7adb54950cacbbbe478"
+  },
+  "source": {
+    "sha": "49c9e3b291609c9ebf5b35a284c08302f3b8d5e3",
+    "tag": "v0.4.4",
+    "tree": "1a9db12742b68e839dfebe42f0633f5d1aa0265b"
+  },
+  "tuple": {
+    "sdk": "0.3.259",
+    "native": "2.1.259",
+    "native_platform": "darwin-arm64",
+    "native_sha256": "884baa38fe1a624be25c4a91568bf5a08b5cf4e7d7acf29b7760e3525d964898",
+    "node": "22.23.2",
+    "sidecar_source_tag": "swallowtail-claude-agent-sdk-sidecar@0.4.4",
+    "sidecar_wire": "swallowtail-claude-agent-sdk-jsonl-v1",
+    "permission_mode": "default",
+    "model": "claude-sonnet-5",
+    "allowed_tools": "omitted",
+    "persist_session": false,
+    "tools": ["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit"]
+  },
+  "capsules": [
+    {
+      "path": "docs/proofs/claude-mediated-multi-turn-editing.capsule.json",
+      "sha256": "10b77ede7a85b68831967731e6d5636c0d44b72a56b1774b29938ed4fd519cd6",
+      "failure_code": "open.model_or_mode_not_admitted",
+      "opens": 1,
+      "retries": 0,
+      "turns": 2,
+      "session_empty": true,
+      "proves_native_read_completion": false
+    },
+    {
+      "path": "docs/proofs/claude-mediated-multi-turn-editing-renewed.capsule.json",
+      "sha256": "8921fa5edc0ba869a8d565e2834fd9e138178dd87bd0bbec8e1561205ffc1386",
+      "failure_code": "ordering.tool_start_before_decision",
+      "opens": 1,
+      "retries": 0,
+      "turns": 0,
+      "session_empty": true,
+      "proves_native_read_completion": false
+    },
+    {
+      "path": "docs/proofs/claude-mediated-multi-turn-editing-successor.capsule.json",
+      "sha256": "4f23e55c548469ae61666052266497ae70b864566e0e3cc7de1c3a208a777dba",
+      "failure_code": "ordering.tool_result_before_decision",
+      "opens": 1,
+      "retries": 0,
+      "turns": 1,
+      "session_empty": false,
+      "proves_native_read_completion": true
+    }
+  ],
+  "successor": {
+    "verdict": "typed_failure",
+    "failure_code": "ordering.tool_result_before_decision",
+    "observer": "biased_callback_first",
+    "opens": 1,
+    "retries": 0,
+    "fallbacks": 0,
+    "reconnects": 0,
+    "turn_ceiling": 2,
+    "turns_started": 1,
+    "turns_completed": 0,
+    "chain": [
+      {
+        "kind": "tool_proposal",
+        "tool": "Read",
+        "phase": "started",
+        "preceding_decision": false
+      }
+    ],
+    "frames": [
+      "sidecar:started",
+      "sidecar:progress",
+      "sidecar:progress",
+      "sidecar:activity",
+      "sidecar:activity"
+    ],
+    "allow_count": 0,
+    "deny_count": 0,
+    "write_successes": 0,
+    "can_use_tool_field_present": false,
+    "can_use_tool_callbacks": 0,
+    "can_use_tool_decisions": 0,
+    "fixture_name": "note.txt",
+    "initial_digest": "sha256:b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+    "before_digest": "sha256:b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+    "last_digest": "sha256:b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+    "fixture_unchanged": true,
+    "cleanup": "degraded",
+    "cleanup_accepted": true,
+    "operation_bridge_listeners": 0,
+    "registered_tool_leases": 0,
+    "task_reapers_joined": true
+  },
+  "retained": {
+    "permission_exchange": "Yes",
+    "permission_exchange_scope": "SDK-emitted canUseTool callbacks only",
+    "registered_tools": "Yes",
+    "registered_tools_mediation": "Contract 063 before-dispatch on the qualified MCP carrier",
+    "bounded_workspace_text_write": "No"
+  },
+  "non_claims": [
+    "universal native-tool canUseTool mediation",
+    "bounded workspace writing",
+    "native multi-turn editing acceptance",
+    "version or range change",
+    "release or tag",
+    "fourth Claude call"
+  ]
+}

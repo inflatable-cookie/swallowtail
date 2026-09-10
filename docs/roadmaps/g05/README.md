@@ -41,6 +41,7 @@ enforcement.
 | Reconcile the missing Claude SDK consumer editing evidence without repeating provider work. | completed; PR 308 merged at `05f1a3a1` after independent exact-head review `5610583309` with no follow-ups; native mediation limitation recorded provider-free | stopped g05.029 audit; released `v0.4.4`; Desktop queue task `bc4acd98-91a3-4e14-86e0-38376b037da7`; 2026-09-10 operator disposition | g05.045 |
 | Make a strict registered-tool Claude SDK session representable without a native tool remainder. | completed; PR 309 merged at `7736a358` after independent exact-head review `5610982422` with no follow-ups; registered-only binding with explicit access landed provider-free | Desktop g02.051 blocked capsule; Contracts 013, 017, 019, 041, and 063; 2026-09-10 operator direction | g05.046 |
 | Prepare the post-`v0.4.4` source as one reviewed `v0.5.0` candidate without crossing the tag gate. | completed; PR 310 merged at `31375966` after independent exact-head review `5615719889`; candidate tree frozen, tag withheld; merge-SHA push CI green except one deferred MSRV floor timing failure | Contract 036; g05.044-046; 2026-09-10 operator version decision | g05.047 |
+| Remove the recurring pinned-MSRV deadline/cleanup race before the `v0.5.0` tag decision. | ready; deterministic repair and one new qualifying hosted gate authorized; tag withheld | g05.047 closeout; runs 34348374964 and 34456800235; 2026-09-10 operator continuation | g05.048 |
 | Ship the first-turn model rejection evidence to Bovine Desktop as patch `v0.4.4` on one exact candidate tree. | complete; `v0.4.4` tagged at `49c9e3b2` 2026-09-09 (tag object `41da6c1a`); Desktop Card 323 accepted; no publication authority | Contract 036 hosted delegation; Card 154 closeout; Desktop Card 323 closeout; operator tag authorization 2026-09-09 | g05.036 |
 | Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | stopped; v0.4.4 lane missed all-green (30-minute fail, one-hosted-run fail, no-rerun-to-green not clean; one-prepare and PR-gate pass); audit PR 305 merged at `94d8ef07` | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | g05.034 |
 | Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | planned; shared kernel and route bindings delivered; card-153 exact Claude SDK tuple qualification merged provider-free; g05.041 remains a planned producer seam | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-063; Research 288, 295, 301 | g05.035 |
@@ -61,8 +62,9 @@ in [## Tasks](#tasks) below.
 - [g05.041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; operator promotion absent; no dispatch authorization
 - [g05.042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; consumer requirement and operator direction absent; no dispatch authorization
 - [g05.047 v0.5.0 Release Candidate](./047-v0-5-0-release-candidate.md) — completed; PR #310 merged at `31375966`; tag withheld pending a qualifying green run
+- [g05.048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — ready; deterministic test/fixture repair and qualifying hosted gate; no tag authority
 
-g05 has forty-seven numbered tasks: 35 complete including
+g05 has forty-eight numbered tasks: 35 complete including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, 037, and 044, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
@@ -70,7 +72,7 @@ at 022, shared
 lifecycle closure at 023-025, provider-limitation reconciliation at 045, the
 registered-only session profile at 046, and the `v0.5.0` candidate at 047;
 honest
-evidence stops at 002, 003, 007, 011, 029, 031, and 034; no ready tasks;
+evidence stops at 002, 003, 007, 011, 029, 031, and 034; g05.048 is ready;
 planned tasks remain
 at 035, 039, 040,
 041, and 042.
@@ -410,6 +412,10 @@ useful portable route rather than an approximation hidden behind the SDK
 identity.
 
 ## Tasks
+
+### Ready
+
+- [048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — ready; separate operation and cleanup deadline observations, prove under pinned MSRV, and restore an all-green hosted gate; no tag
 
 ### Planned
 

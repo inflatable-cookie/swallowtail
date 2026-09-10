@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 47 tasks: 35 completed tasks, honest evidence stops at 002,
-003, 007, 011, 029, 031, and 034, no ready tasks, and planned tasks at
+g05 has 48 tasks: 35 completed tasks, honest evidence stops at 002,
+003, 007, 011, 029, 031, and 034, one ready task at 048, and planned tasks at
 035, 039, 040, 041, and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
@@ -434,8 +434,7 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Define the post-g05.047 tag decision through Tom/Chatterbox planning.
-g05.047 closed 2026-09-10 (PR #310 merged at `31375966` after independent
-exact-head review `5615719889`); the merge-SHA push run is green except one
-deferred timing-sensitive pinned-MSRV floor failure. No tag request until a
-qualifying green run. No ready tasks remain.
+Prove g05.048 by separating operation timeout from cleanup-deadline expiry,
+removing the recurring pinned-MSRV scheduling race, and obtaining one new
+qualifying all-green hosted run on the repaired `0.5.0` source. Preserve all
+release surfaces and stop before any tag.

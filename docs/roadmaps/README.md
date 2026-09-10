@@ -15,14 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Closed g05.047 on 2026-09-10 (PR #310 merged as `31375966` after
-independent exact-head review `5615719889`; merge tree identical to the
-reviewed head). The merge-SHA push run is green except pinned-MSRV floor
-tests (one timing-sensitive deadline failure, deferred to Chatterbox); no
-tag request until a qualifying green run. No ready tasks remain; the
-exact-SHA tag decision and any further planning direction belong to
-Tom/Chatterbox. No provider call, Desktop mutation, publication, or tag
-authority follows.
+Prove g05.048 by removing the recurring pinned-MSRV deadline/cleanup race and
+obtaining one qualifying all-green hosted run on the repaired `0.5.0` source.
+Preserve the production cleanup contract and every release surface. Stop
+before release prepare, provider contact, Desktop mutation, publication, or
+tag creation.
 
 ## Standing Lanes
 

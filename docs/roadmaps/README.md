@@ -15,12 +15,15 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Close g05.049 by creating and pushing the single annotated source tag
-`v0.5.0` at exact candidate
-`582d01d6b6890eed5195a1fcbee0ae985304a6c7` with the operator-approved
-annotation. Verify immutable local/remote identity and tag-triggered CI, then
-close out through reviewed documentation. No GitHub Release, registry,
-artifact, provider, or consumer mutation follows.
+Plan the source-tag consumer and working-application lane through
+Tom/Chatterbox, then relay the exact tag to Desktop so blocked g02.051 can
+resume against the coordinated source. g05.049 closed 2026-09-10: annotated
+tag `v0.5.0` was created and pushed at exact candidate `582d01d6` with the
+operator-approved annotation (tag object `c772c583`); local and remote
+agree, pre-tag run 34464717829 and tag-triggered run 34467974791 are both
+green 11/11, and the reviewed documentation closeout records the tagged
+identity. No ready tasks remain; no consumer mutation, provider call,
+publication, or further release follows automatically.
 
 ## Standing Lanes
 

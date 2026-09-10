@@ -42,7 +42,7 @@ enforcement.
 | Make a strict registered-tool Claude SDK session representable without a native tool remainder. | completed; PR 309 merged at `7736a358` after independent exact-head review `5610982422` with no follow-ups; registered-only binding with explicit access landed provider-free | Desktop g02.051 blocked capsule; Contracts 013, 017, 019, 041, and 063; 2026-09-10 operator direction | g05.046 |
 | Prepare the post-`v0.4.4` source as one reviewed `v0.5.0` candidate without crossing the tag gate. | completed; PR 310 merged at `31375966` after independent exact-head review `5615719889`; candidate tree frozen, tag withheld; merge-SHA push CI green except one deferred MSRV floor timing failure | Contract 036; g05.044-046; 2026-09-10 operator version decision | g05.047 |
 | Remove the recurring pinned-MSRV deadline/cleanup race before the `v0.5.0` tag decision. | completed; PR 311 merged at `582d01d6` after independent exact-head review `5616849978`; merge-SHA push run 34464717829 all-green 11/11 including pinned-MSRV tests; tag withheld | g05.047 closeout; runs 34348374964, 34456800235, and 34464717829; 2026-09-10 operator continuation | g05.048 |
-| Create and push the exact `v0.5.0` annotated source tag without publishing another release object. | ready; exact SHA, canonical remote, both tag mutations, and annotation authorized; no publication or consumer authority | Contract 036; g05.047-048; run 34464717829; 2026-09-10 operator authorization | g05.049 |
+| Create and push the exact `v0.5.0` annotated source tag without publishing another release object. | completed; annotated `v0.5.0` tagged and pushed at `582d01d6` 2026-09-10 (tag object `c772c583`); pre-tag run 34464717829 and tag-triggered run 34467974791 both green 11/11; source-only | Contract 036; g05.047-048; run 34464717829; 2026-09-10 operator authorization | g05.049 |
 | Ship the first-turn model rejection evidence to Bovine Desktop as patch `v0.4.4` on one exact candidate tree. | complete; `v0.4.4` tagged at `49c9e3b2` 2026-09-09 (tag object `41da6c1a`); Desktop Card 323 accepted; no publication authority | Contract 036 hosted delegation; Card 154 closeout; Desktop Card 323 closeout; operator tag authorization 2026-09-09 | g05.036 |
 | Make releases short and dependable and CI much faster: gate order and hosted delegation, version-derived scripts, docs check on push, test binary consolidation, CI critical path. | stopped; v0.4.4 lane missed all-green (30-minute fail, one-hosted-run fail, no-rerun-to-green not clean; one-prepare and PR-gate pass); audit PR 305 merged at `94d8ef07` | Contract 036; the g05.030-033 lane records; operator direction 2026-09-06 | g05.034 |
 | Centralize registered tool/server capability, schema, transport, lifecycle, context, skill/reference, and exact permission machinery for Claude, Codex, and Grok without flattening route behavior. | planned; shared kernel and route bindings delivered; card-153 exact Claude SDK tuple qualification merged provider-free; g05.041 remains a planned producer seam | Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-063; Research 288, 295, 301 | g05.035 |
@@ -64,18 +64,20 @@ in [## Tasks](#tasks) below.
 - [g05.042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; consumer requirement and operator direction absent; no dispatch authorization
 - [g05.047 v0.5.0 Release Candidate](./047-v0-5-0-release-candidate.md) — completed; PR #310 merged at `31375966`; tag withheld pending a qualifying green run
 - [g05.048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — completed; PR #311 merged at `582d01d6` after review `5616849978`; merge-SHA push all-green including pinned-MSRV tests; tag withheld
-- [g05.049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — ready; create and push the exact annotated source tag at `582d01d6`; no publication or consumer authority
+- [g05.049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — completed; annotated tag `v0.5.0` created and pushed at `582d01d6` (tag object `c772c583`); tag-triggered CI green; source-only
 
-g05 has forty-nine numbered tasks: 36 complete including
+g05 has forty-nine numbered tasks: 37 complete including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, 037, and 044, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
 at 022, shared
 lifecycle closure at 023-025, provider-limitation reconciliation at 045, the
-registered-only session profile at 046, the `v0.5.0` candidate at 047, and
-the MSRV deadline-cleanup determinism repair at 048;
+registered-only session profile at 046, the `v0.5.0` candidate at 047, the
+MSRV deadline-cleanup determinism repair at 048, and the `v0.5.0` annotated
+source tag at 049;
 honest
-evidence stops at 002, 003, 007, 011, 029, 031, and 034; g05.049 is ready;
+evidence stops at 002, 003, 007, 011, 029, 031, and 034; no ready tasks
+remain;
 planned tasks remain
 at 035, 039, 040,
 041, and 042.
@@ -418,7 +420,8 @@ identity.
 
 ### Ready
 
-- [049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — ready; exact-SHA local annotated tag plus exact-ref push, tag CI, and reviewed docs closeout; no publication
+No ready tasks. Completed g05.049 leaves the frontier to Tom/Chatterbox
+planning.
 
 ### Planned
 
@@ -440,6 +443,7 @@ identity.
 
 ### Completed
 
+- [049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — completed; annotated tag `v0.5.0` created and pushed at exact candidate `582d01d6` (tag object `c772c583`); pre-tag run 34464717829 and tag-triggered run 34467974791 both green 11/11; source-only
 - [047 v0.5.0 Release Candidate](./047-v0-5-0-release-candidate.md) — completed; source-only candidate; PR #310 merged at `31375966` after independent exact-head review `5615719889`; tag withheld pending a qualifying green run
 - [048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — completed; deterministic deadline/cleanup oracles; PR #311 merged at `582d01d6` after independent exact-head review `5616849978`; merge-SHA push all-green including pinned-MSRV tests; tag withheld
 - [046 Claude SDK Registered-Only Session Profile](./046-claude-sdk-registered-only-session-profile.md) — completed; registered-only session profile; PR #309 merged at `7736a358` after independent exact-head review `5610982422` with no follow-ups

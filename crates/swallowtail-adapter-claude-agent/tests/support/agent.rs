@@ -61,6 +61,9 @@ pub(super) struct AgentState {
     effort: Option<String>,
     mode: Option<String>,
     stopped: bool,
+    hold_close_response: bool,
+    released_close_response: bool,
+    held_close_id: Option<u64>,
 }
 
 pub(super) struct SharedAgent {

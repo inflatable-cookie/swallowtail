@@ -6,7 +6,7 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::sync::{Arc, Mutex};
 use support::selection::run_selection;
-use support::{FixtureHost, Scenario};
+use support::{DeadlineWait, FixtureHost, Scenario};
 use swallowtail_adapter_claude_agent::{ClaudeAgentAcpDriver, claude_agent_acp_descriptor};
 use swallowtail_core::{
     CancellationScope, Diagnostic, ExecutionHostId, HarnessConfigurationPosture, HarnessIsolation,
@@ -266,7 +266,7 @@ fn permission_stops_as_provider_request_without_auto_approval_or_callback() {
 }
 
 #[test]
-fn cancellation_and_deadline_stop_the_turn_then_join_operation_cleanup() {
+fn cancellation_stops_the_turn_then_joins_the_clean_operation_cleanup() {
     let cancel_host_id = ExecutionHostId::new("fixture.run.cancel").expect("host id");
     let selected = run_selection(cancel_host_id.clone(), "0.61.0");
     let cancel_host = FixtureHost::new(Scenario::Cancellation, "0.61.0");
@@ -282,11 +282,19 @@ fn cancellation_and_deadline_stop_the_turn_then_join_operation_cleanup() {
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
     assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
     assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+}
 
+#[test]
+fn operation_deadline_times_out_the_turn_then_joins_a_clean_session_cleanup() {
     let deadline_host_id = ExecutionHostId::new("fixture.run.deadline").expect("host id");
     let selected = run_selection(deadline_host_id.clone(), "0.61.0");
-    let deadline_host =
-        FixtureHost::new(Scenario::Cancellation, "0.61.0").with_immediate_deadline();
+    // The first scripted host-clock observation bounds the operation turn
+    // and expires. The cleanup deadline observation is scripted to stay
+    // unreached, so a session cleanup that completes before its caller
+    // boundary stays Clean instead of being forced into the timeout
+    // diagnostic that the old compound assertion assumed.
+    let deadline_host = FixtureHost::new(Scenario::Cancellation, "0.61.0")
+        .with_deadline_waits([DeadlineWait::Expires, DeadlineWait::StaysBefore]);
     let mut run = block_on(driver(selected.credential).start_run(
         selected.plan,
         request(
@@ -299,6 +307,38 @@ fn cancellation_and_deadline_stop_the_turn_then_join_operation_cleanup() {
         deadline_host.services(deadline_host_id),
     ))
     .expect("deadline run starts");
+    let (_, outcome) = complete(&mut run);
+    assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+    assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
+    assert!(deadline_host.writes().iter().any(|message| {
+        message.get("method").and_then(serde_json::Value::as_str) == Some("session/close")
+    }));
+    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+}
+
+#[test]
+fn session_cleanup_crossing_its_caller_deadline_reports_deadline_expired() {
+    let deadline_host_id = ExecutionHostId::new("fixture.run.cleanup-deadline").expect("host id");
+    let selected = run_selection(deadline_host_id.clone(), "0.61.0");
+    // The session-close response is held back so the cleanup genuinely
+    // crosses its caller boundary while pending, and the second scripted
+    // host-clock observation then expires, surfacing the independent
+    // session-cleanup diagnostic deterministically.
+    let deadline_host = FixtureHost::new(Scenario::Cancellation, "0.61.0")
+        .with_held_session_close_response()
+        .with_deadline_waits([DeadlineWait::Expires, DeadlineWait::Expires]);
+    let mut run = block_on(driver(selected.credential).start_run(
+        selected.plan,
+        request(
+            "run-cleanup-deadline",
+            selected.resource,
+            Some(swallowtail_runtime::Deadline::at(
+                MonotonicInstant::from_ticks(1),
+            )),
+        ),
+        deadline_host.services(deadline_host_id),
+    ))
+    .expect("cleanup deadline run starts");
     let (_, outcome) = complete(&mut run);
     assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
     assert_eq!(

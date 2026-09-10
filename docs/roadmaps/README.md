@@ -15,13 +15,17 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Validate g05.050: consume the canonical remote `v0.5.0` tag from one isolated
-external Cargo application, prove every selected Swallowtail package resolves
-to exact peel `582d01d6`, and compile the registered-only Claude SDK surface
-needed by Desktop g02.051. This proof is provider-free and does not mutate
-Desktop. After its accepted closeout, Chatterbox will promote the narrow
-Desktop pin amendment and resume the existing blocked task rather than replace
-it. No provider call, publication, or further release follows automatically.
+Closed g05.050 on 2026-09-10: the canonical remote `v0.5.0` tag was consumed
+as one exact source — the repository selector from a clean detached checkout
+and one external Cargo consumer both resolved every selected Swallowtail
+package to exact peel `582d01d6` (tag object `c772c583`) with no path,
+branch, revision, patch, or mixed-source leak, and the registered-only
+Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`
+without opening a session or contacting a provider. The next move belongs to
+Tom/Chatterbox: relay the capsule into the narrow Desktop pin amendment and
+resume blocked g02.051 in its preserved workspace. No ready tasks remain; no
+consumer mutation, provider call, publication, or further release follows
+automatically.
 
 ## Standing Lanes
 

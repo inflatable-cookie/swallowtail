@@ -25,6 +25,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-10 g05.050 v0.5.0 Tagged-Source Consumer Proof](./2026-09-10-g05-050-v0-5-0-tagged-source-consumer-proof.md) — annotated `v0.5.0` proved consumable: repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free capsule for the Desktop g02.051 relay
+
 - [2026-09-10 v0.5.0 Annotated Source Tag](./2026-09-10-v0-5-0-annotated-source-tag.md) — operator-authorized annotated tag `v0.5.0` created and pushed at exact candidate `582d01d6` (tag object `c772c583`); local and remote agree; pre-tag run 34464717829 and tag-triggered run 34467974791 both green 11/11; documentation closeout merged through PR #312 after review `5617729579`; source-only with no publication
 - [2026-09-10 g05.048 MSRV Deadline-Cleanup Determinism](./2026-09-10-g05-048-msrv-deadline-cleanup-determinism.md) — compound pinned-MSRV deadline assertion split into three deterministic host-clock oracles; PR #311 merged at `582d01d6` after review `5616849978`; merge-SHA push all-green 11/11 including pinned-MSRV tests; tag withheld
 - [2026-09-10 g05.047 v0.5.0 Release Candidate](./2026-09-10-g05-047-v0-5-0-release-candidate.md) — source-only candidate prepared and merged as PR #310; Contract 036 minor boundary; merge-SHA push green except one deferred pinned-MSRV floor timing failure; tag withheld

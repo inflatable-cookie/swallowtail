@@ -144,12 +144,15 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 50 tasks: 37 completed tasks, honest evidence stops at 002,
-003, 007, 011, 029, 031, and 034, one ready task at 050, and planned tasks at
+g05 has 50 tasks: 38 completed tasks, honest evidence stops at 002,
+003, 007, 011, 029, 031, and 034, and planned tasks at
 035, 039, 040, 041, and 042.
-g05.050 proves the immutable remote `v0.5.0` tag resolves every selected
-Swallowtail package to exact peel `582d01d6` and compiles the registered-only
-Claude SDK surface before the preserved Desktop g02.051 task resumes.
+g05.050 completed 2026-09-10: the immutable remote `v0.5.0` tag resolved
+every selected Swallowtail package to exact peel `582d01d6` in both the
+repository selector and an external remote-tag consumer, and the
+registered-only Claude SDK binding compiled with explicit `ReadWrite` on
+MSRV `1.95.0`, provider-free; the capsule now waits on the preserved Desktop
+g02.051 task resume.
 g05.049 completed 2026-09-10: annotated tag `v0.5.0` created and pushed at
 exact candidate `582d01d6` (tag object `c772c583`); pre-tag run 34464717829
 and tag-triggered run 34467974791 both green 11/11; documentation closeout
@@ -442,11 +445,13 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Define the source-tag consumer and working-application lane through
-Tom/Chatterbox, then relay the exact tag to Desktop so blocked g02.051 can
-resume against the coordinated source. g05.049 closed 2026-09-10: annotated
-tag `v0.5.0` created and pushed at exact candidate `582d01d6` with the
-approved annotation (tag object `c772c583`); local and remote agree and both
-pre-tag run 34464717829 and tag-triggered run 34467974791 are green 11/11.
-No ready tasks remain; no consumer, provider, publication, or further
-release authority follows automatically.
+Define the g05.050 tagged-source consumer capsule relay through Tom/Chatterbox
+and resume the preserved Desktop task. g05.050 closed 2026-09-10: the repository
+selector from a clean detached checkout of `v0.5.0` and one external remote-
+tag consumer both resolved every selected Swallowtail package to exact peel
+`582d01d6` (tag object `c772c583`) with no path, branch, revision, patch, or
+mixed-source leak, and the registered-only Claude SDK binding compiled with
+explicit `ReadWrite` on MSRV `1.95.0` without opening a session or contacting
+a provider. No ready tasks remain; Chatterbox promotes the narrow Desktop pin
+amendment and resumes g02.051, and no consumer mutation, provider call,
+publication, or further release authority follows automatically.

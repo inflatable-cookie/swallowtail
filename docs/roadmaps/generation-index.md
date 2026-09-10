@@ -438,11 +438,11 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Closed g05.049 on 2026-09-10: annotated tag `v0.5.0` created and pushed at
-exact candidate `582d01d6` with the approved annotation (tag object
-`c772c583`); local and remote agree and both pre-tag run 34464717829 and
-tag-triggered run 34467974791 are green 11/11. The next move belongs to
-Tom/Chatterbox: plan the source-tag consumer and working-application lane and
-relay the exact tag to Desktop so blocked g02.051 can resume. No ready tasks
-remain; no consumer, provider, publication, or further release authority
-follows automatically.
+Define the source-tag consumer and working-application lane through
+Tom/Chatterbox, then relay the exact tag to Desktop so blocked g02.051 can
+resume against the coordinated source. g05.049 closed 2026-09-10: annotated
+tag `v0.5.0` created and pushed at exact candidate `582d01d6` with the
+approved annotation (tag object `c772c583`); local and remote agree and both
+pre-tag run 34464717829 and tag-triggered run 34467974791 are green 11/11.
+No ready tasks remain; no consumer, provider, publication, or further
+release authority follows automatically.

@@ -771,9 +771,14 @@ fn the_qualified_route_binds_the_accepted_live_evidence_identities() {
         NODE_VERSION,
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NODE_RUNTIME
     );
-    assert_eq!(
-        SIDECAR_TAG,
+    // The sidecar source tag moves with every coordinated release, so the
+    // live tag at this head is not the tag the capsules ran. The evidence
+    // stays bound to the exact 0.4.4 source build and shares only the asset
+    // lineage prefix with the live sidecar identity.
+    assert_eq!(SIDECAR_TAG, "swallowtail-claude-agent-sdk-sidecar@0.4.4");
+    assert!(
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG
+            .starts_with("swallowtail-claude-agent-sdk-sidecar@")
     );
     assert_eq!(MCP_PROTOCOL_VERSION, CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION);
     // The qualified mediation is exactly the private-loopback mediated-stdio

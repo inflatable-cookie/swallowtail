@@ -1,0 +1,193 @@
+pub mod swallowtail_adapter_openai
+pub enum swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure
+pub swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::Rejected
+pub swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::Rejected::contribution: swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::Rejected::failure: swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::Runtime(swallowtail_runtime::failure::RuntimeFailure)
+impl swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure
+pub const fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::failure(&self) -> &swallowtail_runtime::failure::RuntimeFailure
+pub fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::into_parts(self) -> (swallowtail_runtime::failure::RuntimeFailure, core::option::Option<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution>)
+pub const fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure::rejected_contribution(&self) -> core::option::Option<&swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution>
+pub struct swallowtail_adapter_openai::OpenAiBackgroundDriver
+impl swallowtail_adapter_openai::OpenAiBackgroundDriver
+pub fn swallowtail_adapter_openai::OpenAiBackgroundDriver::new() -> Self
+impl swallowtail_runtime::roles::ProviderRunReconciliationDriver for swallowtail_adapter_openai::OpenAiBackgroundDriver
+pub fn swallowtail_adapter_openai::OpenAiBackgroundDriver::reconcile_provider_run(&self, swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationPlan, swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_openai::OpenAiBackgroundDriver
+pub fn swallowtail_adapter_openai::OpenAiBackgroundDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_openai::OpenAiBackgroundModelSelection
+impl swallowtail_adapter_openai::OpenAiBackgroundModelSelection
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_openai::OpenAiBackgroundPreparationInput
+impl swallowtail_adapter_openai::OpenAiBackgroundPreparationInput
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundPreparationInput::new(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence
+impl swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence::service_tier(&self) -> core::option::Option<swallowtail_adapter_openai::OpenAiBackgroundServiceTier>
+pub struct swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration
+impl swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_openai::OpenAiBackgroundDriver
+pub fn swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration
+pub fn swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration::prepare_background_run(&self, swallowtail_adapter_openai::OpenAiBackgroundRunProfileInput) -> core::result::Result<swallowtail_adapter_openai::OpenAiPreparedBackgroundRun, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration
+pub fn swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration::prepare_run_reconciliation(&self, swallowtail_adapter_openai::OpenAiBackgroundReconciliationInput) -> core::result::Result<swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation, swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration
+pub fn swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration::prepare_working_state_restoration(&self, swallowtail_adapter_openai::OpenAiBackgroundReconciliationInput) -> core::result::Result<swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_openai::OpenAiBackgroundReconciliationInput
+impl swallowtail_adapter_openai::OpenAiBackgroundReconciliationInput
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundReconciliationInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_openai::OpenAiBackgroundModelSelection, swallowtail_runtime::provider_run_checkpoint::PersistedProviderRunCheckpoint, core::num::nonzero::NonZeroU64, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
+pub struct swallowtail_adapter_openai::OpenAiBackgroundRunProfileInput
+impl swallowtail_adapter_openai::OpenAiBackgroundRunProfileInput
+pub fn swallowtail_adapter_openai::OpenAiBackgroundRunProfileInput::background_with_temporary_retention_and_one_reattachment(swallowtail_runtime::identity::RequestId, swallowtail_adapter_openai::OpenAiBackgroundModelSelection, swallowtail_runtime::content::OperationContent, core::num::nonzero::NonZeroU64, swallowtail_runtime::time::Deadline) -> Self
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_openai::OpenAiBackgroundModelSelection, swallowtail_runtime::content::OperationContent, core::num::nonzero::NonZeroU64, swallowtail_runtime::time::Deadline, swallowtail_runtime::operation_policy::ProviderExecutionPolicy, swallowtail_runtime::operation_policy::ProviderRetentionPolicy, swallowtail_runtime::operation_policy::StreamReattachmentPolicy) -> Self
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundRunProfileInput::with_active_run_detachment(self) -> Self
+pub fn swallowtail_adapter_openai::OpenAiBackgroundRunProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundRunProfileInput::with_service_tier(self, swallowtail_adapter_openai::OpenAiBackgroundServiceTier) -> Self
+pub fn swallowtail_adapter_openai::OpenAiBackgroundRunProfileInput::with_structured_output(self, swallowtail_runtime::schema::StructuredOutputDescriptor) -> Self
+pub struct swallowtail_adapter_openai::OpenAiBackgroundServiceTier
+impl swallowtail_adapter_openai::OpenAiBackgroundServiceTier
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundServiceTier::as_str(self) -> &'static str
+pub fn swallowtail_adapter_openai::OpenAiBackgroundServiceTier::parse(&str) -> core::option::Option<Self>
+pub const fn swallowtail_adapter_openai::OpenAiBackgroundServiceTier::standard() -> Self
+pub struct swallowtail_adapter_openai::OpenAiModelsDriver
+impl swallowtail_adapter_openai::OpenAiModelsDriver
+pub fn swallowtail_adapter_openai::OpenAiModelsDriver::new() -> Self
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_openai::OpenAiModelsDriver
+pub fn swallowtail_adapter_openai::OpenAiModelsDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_openai::OpenAiModelsPreparationInput
+impl swallowtail_adapter_openai::OpenAiModelsPreparationInput
+pub const fn swallowtail_adapter_openai::OpenAiModelsPreparationInput::new(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_openai::OpenAiModelsPreparedIntegration
+impl swallowtail_adapter_openai::OpenAiModelsPreparedIntegration
+pub const fn swallowtail_adapter_openai::OpenAiModelsPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_openai::OpenAiModelsPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_openai::OpenAiModelsPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_openai::OpenAiModelsPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_openai::OpenAiModelsPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_openai::OpenAiModelsProfileInput) -> core::result::Result<swallowtail_adapter_openai::OpenAiPreparedModels, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_openai::OpenAiModelsProfileInput
+impl swallowtail_adapter_openai::OpenAiModelsProfileInput
+pub const fn swallowtail_adapter_openai::OpenAiModelsProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_openai::OpenAiModelsProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation
+impl swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation
+pub const fn swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation::evidence(&self) -> &swallowtail_runtime::provider_run_reconciliation::PreparedProviderRunReconciliationEvidence
+pub const fn swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation::plan(&self) -> &swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationPlan
+pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation::reconcile(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation::request(&self) -> &swallowtail_runtime::provider_run_reconciliation::ProviderRunReconciliationRequest
+impl swallowtail_runtime::working_state_restoration::WorkingStateRestorationOperation for swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation
+pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation::method(&self) -> swallowtail_runtime::working_state_restoration::WorkingStateRestorationMethod
+pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundReconciliation::restore(alloc::boxed::Box<Self>, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::working_state_restoration::WorkingStateRestorationOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_openai::OpenAiPreparedBackgroundRun
+impl swallowtail_adapter_openai::OpenAiPreparedBackgroundRun
+pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_openai::OpenAiPreparedBackgroundRun
+pub const fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::evidence(&self) -> &swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence
+pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::into_parts(self) -> (swallowtail_adapter_openai::OpenAiBackgroundPreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::low_level_driver(&self) -> swallowtail_adapter_openai::OpenAiBackgroundDriver
+pub const fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_openai::OpenAiPreparedBackgroundRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_openai::OpenAiPreparedModels
+impl swallowtail_adapter_openai::OpenAiPreparedModels
+pub const fn swallowtail_adapter_openai::OpenAiPreparedModels::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_openai::OpenAiPreparedModels::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_openai::OpenAiPreparedModels::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_openai::OpenAiPreparedModels::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_openai::OpenAiPreparedRealtimeSession
+impl swallowtail_adapter_openai::OpenAiPreparedRealtimeSession
+pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_openai::OpenAiPreparedRealtimeSession
+pub const fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::evidence(&self) -> &swallowtail_adapter_openai::OpenAiRealtimePreparedEvidence
+pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::into_parts(self) -> (swallowtail_adapter_openai::OpenAiRealtimePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest)
+pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::low_level_driver(&self) -> swallowtail_adapter_openai::OpenAiRealtimeDriver
+pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RealtimeMediaSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::request(&self) -> &swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest
+impl swallowtail_adapter_openai::OpenAiPreparedRealtimeSession
+pub fn swallowtail_adapter_openai::OpenAiPreparedRealtimeSession::open_session_with_projection(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId, swallowtail_runtime::host_registry::HostServices) -> swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFuture
+pub struct swallowtail_adapter_openai::OpenAiRealtimeDriver
+impl swallowtail_adapter_openai::OpenAiRealtimeDriver
+pub fn swallowtail_adapter_openai::OpenAiRealtimeDriver::new() -> Self
+impl swallowtail_runtime::roles::RealtimeMediaSessionDriver for swallowtail_adapter_openai::OpenAiRealtimeDriver
+pub fn swallowtail_adapter_openai::OpenAiRealtimeDriver::open_realtime_media_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::realtime_media::request::OpenRealtimeMediaSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RealtimeMediaSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_openai::OpenAiRealtimePreparationInput
+impl swallowtail_adapter_openai::OpenAiRealtimePreparationInput
+pub const fn swallowtail_adapter_openai::OpenAiRealtimePreparationInput::new(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_openai::OpenAiRealtimePreparedEvidence
+impl swallowtail_adapter_openai::OpenAiRealtimePreparedEvidence
+pub const fn swallowtail_adapter_openai::OpenAiRealtimePreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_openai::OpenAiRealtimePreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_openai::OpenAiRealtimePreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration
+impl swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration
+pub const fn swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_openai::OpenAiRealtimeDriver
+pub fn swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration
+pub fn swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration::prepare_realtime_session(&self, swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput) -> core::result::Result<swallowtail_adapter_openai::OpenAiPreparedRealtimeSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome
+impl swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome
+pub const fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome::contribution(&self) -> &swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution
+pub fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome::into_parts(self) -> (alloc::boxed::Box<dyn swallowtail_runtime::handles::RealtimeMediaSessionHandle>, swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution)
+pub fn swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome::session(&self) -> &dyn swallowtail_runtime::handles::RealtimeMediaSessionHandle
+pub struct swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput
+impl swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput
+pub fn swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput::manual_pcm_two_turns(swallowtail_runtime::identity::RequestId, core::option::Option<swallowtail_runtime::time::Deadline>) -> Self
+pub const fn swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_core::realtime_media::RealtimeMediaConfig, core::option::Option<swallowtail_runtime::time::Deadline>, swallowtail_core::planned_connection_rollover::PlannedConnectionRolloverPolicy) -> Self
+pub const fn swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput::with_maximum_output_tokens(self, core::num::nonzero::NonZeroU64) -> Self
+pub fn swallowtail_adapter_openai::OpenAiRealtimeSessionProfileInput::with_reasoning_mode(self, swallowtail_core::model::ReasoningMode) -> Self
+pub const swallowtail_adapter_openai::OPENAI_BACKGROUND_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_BACKGROUND_CONFIGURED_INSTANCE_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_BACKGROUND_ENDPOINT: &str
+pub const swallowtail_adapter_openai::OPENAI_BACKGROUND_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_openai::OPENAI_BACKGROUND_FACADE_REVISION: &str
+pub const swallowtail_adapter_openai::OPENAI_BACKGROUND_MODEL_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_BACKGROUND_MODEL_ROUTE_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_MODELS_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_MODELS_CONFIGURED_INSTANCE_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_MODELS_ENDPOINT: &str
+pub const swallowtail_adapter_openai::OPENAI_MODELS_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_openai::OPENAI_MODELS_FACADE_REVISION: &str
+pub const swallowtail_adapter_openai::OPENAI_REALTIME_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_REALTIME_CONFIGURED_INSTANCE_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_REALTIME_ENDPOINT: &str
+pub const swallowtail_adapter_openai::OPENAI_REALTIME_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_openai::OPENAI_REALTIME_FACADE_REVISION: &str
+pub const swallowtail_adapter_openai::OPENAI_REALTIME_MODEL_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_REALTIME_MODEL_ROUTE_ID: &str
+pub const swallowtail_adapter_openai::OPENAI_REALTIME_SUPERSEDED_FACADE_REVISION: &str
+pub fn swallowtail_adapter_openai::openai_background_access_profile(swallowtail_core::runtime_identity::CredentialRef) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_openai::openai_background_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_openai::openai_background_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_openai::openai_background_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_openai::openai_background_instance(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_openai::openai_background_model_route(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::ModelRouteRevision) -> swallowtail_core::instance::ModelRoute
+pub fn swallowtail_adapter_openai::openai_background_requirements(swallowtail_core::runtime_identity::ExecutionHostId, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::requirement::CapabilityRequirement>) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_openai::openai_models_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_openai::openai_models_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_openai::openai_models_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_openai::openai_realtime_access_profile(swallowtail_core::runtime_identity::CredentialRef) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_openai::openai_realtime_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_openai::openai_realtime_facade_binding() -> swallowtail_core::interface_version::InterfaceVersionBinding
+pub fn swallowtail_adapter_openai::openai_realtime_facade_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_openai::openai_realtime_instance(swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_openai::openai_realtime_media_config() -> swallowtail_core::realtime_media::RealtimeMediaConfig
+pub fn swallowtail_adapter_openai::openai_realtime_model_route(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::ModelRouteRevision) -> swallowtail_core::instance::ModelRoute
+pub fn swallowtail_adapter_openai::openai_realtime_requirements(swallowtail_core::runtime_identity::ExecutionHostId, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_core::requirement::CapabilityRequirement>) -> swallowtail_core::requirement::operation::OperationRequirements
+pub fn swallowtail_adapter_openai::prepare_openai_background(swallowtail_adapter_openai::OpenAiBackgroundPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_openai::OpenAiBackgroundPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_openai::prepare_openai_models(swallowtail_adapter_openai::OpenAiModelsPreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_openai::OpenAiModelsPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_openai::prepare_openai_realtime(swallowtail_adapter_openai::OpenAiRealtimePreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_openai::OpenAiRealtimePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub type swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFuture = swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenOutcome, swallowtail_adapter_openai::OpenAiRealtimeProjectionOpenFailure>>

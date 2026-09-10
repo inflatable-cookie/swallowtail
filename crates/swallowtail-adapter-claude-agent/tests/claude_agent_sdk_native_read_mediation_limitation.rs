@@ -139,9 +139,23 @@ fn the_limitation_does_not_flip_emitted_callback_or_registered_tool_truths() {
     assert_eq!(tuple["sdk"], CLAUDE_AGENT_SDK_VERSION);
     assert_eq!(tuple["native"], CLAUDE_AGENT_SDK_NATIVE_VERSION);
     assert_eq!(tuple["node"], CLAUDE_AGENT_SDK_NODE_RUNTIME);
+    // The sidecar source tag moves with every coordinated release. The
+    // capsules ran the exact source build frozen in this fixture, so the
+    // tuple binds to that source's coordinated version and is never
+    // silently rebased onto a newer tag; the live source tag shares only
+    // the asset lineage prefix.
+    let frozen_source_tag = evidence["source"]["tag"]
+        .as_str()
+        .expect("frozen source tag");
+    let frozen_version = frozen_source_tag
+        .strip_prefix('v')
+        .expect("versioned frozen source tag");
     assert_eq!(
         tuple["sidecar_source_tag"],
-        CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG
+        format!("swallowtail-claude-agent-sdk-sidecar@{frozen_version}")
+    );
+    assert!(
+        CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG.starts_with("swallowtail-claude-agent-sdk-sidecar@")
     );
     assert_eq!(tuple["sidecar_wire"], CLAUDE_AGENT_SDK_WIRE);
     assert_eq!(tuple["permission_mode"], "default");

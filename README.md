@@ -19,13 +19,13 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`v0.4.4` is the current source tag. Releases are distributed as
+`v0.5.0` is the current source tag. Releases are distributed as
 annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The 40 packages share coordinated version `0.4.4` and provide 49 production
+The 40 packages share coordinated version `0.5.0` and provide 49 production
 routes, including `pi.sdk-sidecar` and `claude-agent.sdk`. OpenHands remains a
 package without a production route. The current tag preserves the Rust `1.95.0`
 floor and is not an API 1.0 promise.
@@ -55,10 +55,10 @@ a typical application:
 <!-- source-install:start -->
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.4" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.4" }
-swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.4" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.4.4" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.0" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.0" }
+swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.0" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.0" }
 ```
 <!-- source-install:end -->
 
@@ -114,7 +114,7 @@ payloads in the consumer. Start with:
 
 ## Runtime Prerequisites
 
-- Rust `1.95.0` or newer for every `v0.4.4` package
+- Rust `1.95.0` or newer for every `v0.5.0` package
 - Apple Silicon macOS is the verified release target; other targets are
   unverified, not prohibited
 - installed harnesses, attached services, model artifacts, authentication, and
@@ -146,7 +146,7 @@ Before 1.0:
   identity, or weakening lifecycle and authority truth is breaking
 
 See [Contract 036](docs/contracts/036-crate-release-and-compatibility-boundary.md)
-and the [v0.4.4 release notes](docs/releases/0.4.4.md).
+and the [v0.5.0 release notes](docs/releases/0.5.0.md).
 
 ## Development
 

@@ -17,9 +17,10 @@ Closed generations live only as roll-ups under
 
 Reconcile g05.045 after Desktop g02.049 closes its native-mediation evidence
 stop. Swallowtail consumes all three merged capsules provider-free, records
-the exact SDK limitation, and must not repeat the call. Desktop g02.051 owns
-the separate provider-free registered-tool editing implementation. No live
-acceptance, release, tag, or range authority follows.
+the exact SDK limitation, and must not repeat the call. g05.046 is queued
+serially behind it to add the provider-free registered-only session profile
+Desktop g02.051 exposed as missing. No live acceptance, release, tag, or range
+authority follows.
 
 ## Standing Lanes
 

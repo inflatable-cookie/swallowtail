@@ -144,10 +144,9 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 45 tasks: 32 completed tasks, honest evidence stops at 002,
-003, 007, 011, 029, 031, and 034, one ready task at 045 waiting on its
-immutable Desktop queue dependency, and planned tasks at 035, 039, 040, 041,
-and 042.
+g05 has 46 tasks: 32 completed tasks, honest evidence stops at 002,
+003, 007, 011, 029, 031, and 034, ready tasks at 045 and 046 with 046 serial
+behind 045, and planned tasks at 035, 039, 040, 041, and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
 deferred.
@@ -438,6 +437,6 @@ rollover still requires explicit operator authority.
 Validate g05.045 as a provider-limitation reconciliation after Desktop task
 `bc4acd98-91a3-4e14-86e0-38376b037da7` closes. Desktop lands three immutable
 negative capsules; Swallowtail records the exact native `canUseTool`
-limitation provider-free. Desktop g02.051 owns the separate registered-tool
-editing implementation. No provider call, range widening, release, or tag
-authority follows.
+limitation provider-free. g05.046 then adds the registered-only session profile
+needed by blocked Desktop g02.051, also provider-free. No provider call, range
+widening, release, or tag authority follows.

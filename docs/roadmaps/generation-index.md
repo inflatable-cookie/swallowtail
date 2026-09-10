@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 46 tasks: 33 completed tasks, honest evidence stops at 002,
-003, 007, 011, 029, 031, and 034, one ready task at 046, and planned tasks
+g05 has 46 tasks: 34 completed tasks, honest evidence stops at 002,
+003, 007, 011, 029, 031, and 034, no ready tasks, and planned tasks
 at 035, 039, 040, 041, and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
@@ -434,8 +434,10 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Implement g05.046 as the registered-only session profile needed by blocked
-Desktop g02.051, also provider-free. g05.045 closed 2026-09-10 as a
-provider-limitation reconciliation (PR #308 merged at `05f1a3a1` after
-independent exact-head review `5610583309` with no follow-ups). No provider
-call, range widening, release, or tag authority follows.
+Define the post-g05.046 direction through Chatterbox planning. g05.046 closed
+2026-09-10 as the registered-only session profile (PR #309 merged at
+`7736a358` after independent exact-head review `5610982422` with no
+follow-ups). No ready tasks remain; the separately authorized patch candidate
+carrying the registered-only source change for blocked Desktop g02.051 awaits
+operator authorization. No provider call, range widening, release, or tag
+authority follows.

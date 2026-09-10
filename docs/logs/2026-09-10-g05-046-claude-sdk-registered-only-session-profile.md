@@ -43,8 +43,10 @@ asset tests prove carrier-only admission, all seven native tools disallowed,
 and empty `tools[]` still `tools_invalid` before SDK construction. Zero
 credential or provider contact.
 
-Independent exact-head review, merge, and reserved-index closeout remain
-queue-owned.
+Independent exact-head review `5610982422` (ready to merge, no follow-ups)
+at head `ebc703f1`; PR [#309](https://github.com/inflatable-cookie/swallowtail/pull/309)
+merged as `7736a3582ef1bb72a3147e38f70467a9534864be` with all-green CI.
+Reserved-index closeout recorded on 2026-09-10.
 
 ## Surfaces
 

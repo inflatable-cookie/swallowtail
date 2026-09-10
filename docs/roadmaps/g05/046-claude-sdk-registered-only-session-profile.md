@@ -1,6 +1,6 @@
 # g05.046 Claude SDK Registered-Only Session Profile
 
-Status: ready; provider-free; serial after g05.045
+Status: completed; registered-only session profile merged as PR 309 (`7736a358`) after independent exact-head review `5610982422` with no follow-ups
 Owner: Tom
 Created: 2026-09-10
 Depends on: Contracts 013, 017, 019, 029, 041, and 063; g05.045; Desktop
@@ -135,6 +135,15 @@ On completion record the exact source head, API and wire shape, access
 propagation, native disallow list, provider-free test results, independent
 review, merge, and closeout. Record zero provider contact and every retained
 non-claim.
+
+Closed 2026-09-10 as an additive source/API repair after `v0.4.4`. PR
+[#309](https://github.com/inflatable-cookie/swallowtail/pull/309) merged as
+`7736a3582ef1bb72a3147e38f70467a9534864be` (head `ebc703f1`) after
+independent exact-head review `5610982422` (ready to merge, no follow-ups).
+Focused adapter validation passed (515 tests), plus package verify, sidecar
+asset tests, `qa:docs`, `qa:northstar`, `git diff --check`, and all-green CI
+including the semantic API baseline absorption. Zero provider contact. No
+matrix Yes/No, version, range, candidate, tag, or Desktop pin follows.
 
 ## Next Task
 

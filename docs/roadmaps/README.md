@@ -15,11 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g05.046 Claude SDK Registered-Only Session Profile](g05/046-claude-sdk-registered-only-session-profile.md)
-adds the provider-free registered-only session profile Desktop g02.051
-exposed as missing, unblocked by completed g05.045 (PR 308 merged as
-`05f1a3a1`; native-mediation provider limitation recorded with no
-follow-ups). No live acceptance, release, tag, or range authority follows.
+Closed g05.046 on 2026-09-10 (PR #309 merged as `7736a358` after
+independent exact-head review `5610982422` with no follow-ups). No ready
+tasks remain; the separately authorized patch candidate carrying this source
+change and any further planning direction belong to Chatterbox.
+No live acceptance, release, tag, or range authority follows.
 
 ## Standing Lanes
 

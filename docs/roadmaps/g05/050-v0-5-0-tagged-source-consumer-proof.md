@@ -1,6 +1,6 @@
 # g05.050 v0.5.0 Tagged-Source Consumer Proof
 
-Status: ready
+Status: completed; remote-tag consumer resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout PR pending review
 Owner: Tom
 Created: 2026-09-10
 Depends on: g05.049; Contract 036; annotated `v0.5.0`
@@ -85,6 +85,35 @@ Claude, or claim that Desktop's working route has passed.
    log and closeout surfaces, open one PR, obtain independent exact-head review,
    merge, and synchronize canonical `main`.
 
+## Result
+
+Closed 2026-09-10. The tag capsule was verified unchanged: annotated tag
+object `c772c5839806b6cbf1c9d3b495049b362e4c0c52` identical locally and on the
+canonical remote, peeling to `582d01d6b6890eed5195a1fcbee0ae985304a6c7`
+(tree `eebb6978be365f79ae41436912240886d0aecf78`) with the approved
+annotation digests `0949222c…` (object bytes) and `eb99cdf8…` (body).
+
+From a clean detached checkout at that peel, `effigy package:source-consumer`
+passed at exit 0 with transcript digest `2d198fe1…`. In a fresh temporary
+directory outside the repository, one minimal Cargo application declared the
+three direct Swallowtail dependencies needed by the registered-only Claude
+SDK surface (`swallowtail-adapter-claude-agent`, `swallowtail-runtime`,
+`swallowtail-core`), each through the canonical HTTPS Git URL with only
+`tag = "v0.5.0"` — no path, branch, `rev`, patch, or workspace override.
+`cargo +1.95.0 generate-lockfile` locked 47 packages, and locked metadata
+proved all six reachable Swallowtail packages (adapter-claude-agent, core,
+host-local, idioms, protocol-acp, runtime) carry the one identical source
+`git+https://github.com/inflatable-cookie/swallowtail?tag=v0.5.0#582d01d6b6890eed5195a1fcbee0ae985304a6c7`
+with zero `file://` or path sources. `cargo +1.95.0 check --locked` finished
+cleanly at transcript digest `567c946e…`, type-checking
+`ClaudeAgentSdkRegisteredOnlyBinding::new` with `ResourceAccess::ReadWrite`
+and `ClaudeAgentSdkPermissionMode::AcceptEdits`, plus a compiled
+`is_registered_only()` and explicit-access check through the public API. No
+binding was constructed with a live preparation, no session opened, and no
+provider was contacted. Manifest, lockfile, and source digests are recorded
+in the evidence log. Cleanup removed the detached worktree and consumer; the
+tag and canonical Swallowtail were re-verified unchanged afterward.
+
 ## Review Oracle
 
 | Invariant | Adversarial counterexample | Required proof |
@@ -118,7 +147,10 @@ contact, no tag or consumer mutation, and retained non-claims.
 
 ## Next Task
 
-After acceptance, Chatterbox relays the exact capsule to Desktop, promotes the
-narrow `v0.5.0` pin amendment required by the existing g02.051 handoff, and
-resumes task `1e7b9baf-9b97-4e49-a6d4-17aa24bbcb5c` in its preserved workspace.
-No provider call follows from this Swallowtail task.
+The proof closed 2026-09-10. Chatterbox relays the exact capsule (tag
+object/peel/tree, both consumer proofs, every package source identity, and
+transcript digests in [the evidence log](../../logs/2026-09-10-g05-050-v0-5-0-tagged-source-consumer-proof.md))
+into the Desktop planning amendment, promotes the narrow `v0.5.0` pin
+amendment required by the existing g02.051 handoff, and resumes task
+`1e7b9baf-9b97-4e49-a6d4-17aa24bbcb5c` in its preserved workspace. No provider
+call follows from this Swallowtail task.

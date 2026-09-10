@@ -65,16 +65,17 @@ in [## Tasks](#tasks) below.
 - [g05.047 v0.5.0 Release Candidate](./047-v0-5-0-release-candidate.md) — completed; PR #310 merged at `31375966`; tag withheld pending a qualifying green run
 - [g05.048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — completed; PR #311 merged at `582d01d6` after review `5616849978`; merge-SHA push all-green including pinned-MSRV tests; tag withheld
 - [g05.049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — completed; annotated tag `v0.5.0` created and pushed at `582d01d6` (tag object `c772c583`); tag-triggered CI green; source-only
+- [g05.050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free
 
-g05 has forty-nine numbered tasks: 37 complete including
+g05 has fifty numbered tasks: 38 complete including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, 037, and 044, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
 at 022, shared
 lifecycle closure at 023-025, provider-limitation reconciliation at 045, the
 registered-only session profile at 046, the `v0.5.0` candidate at 047, the
-MSRV deadline-cleanup determinism repair at 048, and the `v0.5.0` annotated
-source tag at 049;
+MSRV deadline-cleanup determinism repair at 048, the `v0.5.0` annotated
+source tag at 049, and the tagged-source consumer proof at 050;
 honest
 evidence stops at 002, 003, 007, 011, 029, 031, and 034; no ready tasks
 remain;
@@ -420,8 +421,6 @@ identity.
 
 ### Ready
 
-- [050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — ready; provider-free remote-tag resolution and registered-only Claude SDK compile before the preserved Desktop g02.051 task resumes
-
 ### Planned
 
 - [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; Batch A promoted (card 114 complete); former stubs 130/134 preserved as g05.041/g05.042
@@ -442,6 +441,7 @@ identity.
 
 ### Completed
 
+- [050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free
 - [049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — completed; annotated tag `v0.5.0` created and pushed at exact candidate `582d01d6` (tag object `c772c583`); pre-tag run 34464717829 and tag-triggered run 34467974791 both green 11/11; source-only
 - [047 v0.5.0 Release Candidate](./047-v0-5-0-release-candidate.md) — completed; source-only candidate; PR #310 merged at `31375966` after independent exact-head review `5615719889`; tag withheld pending a qualifying green run
 - [048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — completed; deterministic deadline/cleanup oracles; PR #311 merged at `582d01d6` after independent exact-head review `5616849978`; merge-SHA push all-green including pinned-MSRV tests; tag withheld

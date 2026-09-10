@@ -15,11 +15,13 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Prove g05.048 by removing the recurring pinned-MSRV deadline/cleanup race and
-obtaining one qualifying all-green hosted run on the repaired `0.5.0` source.
-Preserve the production cleanup contract and every release surface. Stop
-before release prepare, provider contact, Desktop mutation, publication, or
-tag creation.
+Closed g05.048 on 2026-09-10 (PR #311 merged as `582d01d6` after
+independent exact-head review `5616849978` against the identical merge
+tree; merge-SHA push run 34464717829 green on all 11 jobs including
+pinned-MSRV floor tests). The repaired `0.5.0` candidate SHA returns to
+Tom for the separate exact-SHA tag decision. No ready tasks remain; any
+further planning direction belongs to Tom/Chatterbox. No provider call,
+Desktop mutation, publication, or tag authority follows.
 
 ## Standing Lanes
 

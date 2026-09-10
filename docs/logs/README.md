@@ -25,7 +25,7 @@ then conformance closeout.
 
 ## Entries
 
-- [2026-09-10 g05.048 MSRV Deadline-Cleanup Determinism](./2026-09-10-g05-048-msrv-deadline-cleanup-determinism.md) — compound pinned-MSRV deadline assertion split into three deterministic host-clock oracles with scripted deadline waits and a held session-close response; zero production/workflow changes; qualifying hosted run still owed
+- [2026-09-10 g05.048 MSRV Deadline-Cleanup Determinism](./2026-09-10-g05-048-msrv-deadline-cleanup-determinism.md) — compound pinned-MSRV deadline assertion split into three deterministic host-clock oracles; PR #311 merged at `582d01d6` after review `5616849978`; merge-SHA push all-green 11/11 including pinned-MSRV tests; tag withheld
 - [2026-09-10 g05.047 v0.5.0 Release Candidate](./2026-09-10-g05-047-v0-5-0-release-candidate.md) — source-only candidate prepared and merged as PR #310; Contract 036 minor boundary; merge-SHA push green except one deferred pinned-MSRV floor timing failure; tag withheld
 - [2026-09-10 g05.046 Claude SDK Registered-Only Session Profile](./2026-09-10-g05-046-claude-sdk-registered-only-session-profile.md) — zero-native registered-tool session with explicit `Read`/`ReadWrite`; additive native path unchanged; provider-free
 - [2026-09-10 g05.045 Claude Native Mediation Limitation](./2026-09-10-g05-045-claude-native-mediation-limitation.md) — Desktop g02.049 successor capsule proves native `Read` completed without `canUseTool`; universal native mediation unavailable; permission-exchange and registered-tool truths retained; provider-free

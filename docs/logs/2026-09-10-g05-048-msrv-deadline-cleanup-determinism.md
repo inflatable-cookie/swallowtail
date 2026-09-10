@@ -65,10 +65,16 @@ swallowtail-adapter-claude-agent` passed in 28 seconds.
 
 ## Disposition
 
-The repair PR from `ns-790b9257-3f96-40d9-9b6e-ec8be991bbde` goes to
-independent exact-head review; the queue owns merge and one new qualifying
-all-green hosted run (pinned-MSRV floor included) before returning the exact
-candidate SHA to Tom for the separate annotated-tag decision. Zero provider
-contact. `v0.5.0` absent locally and remotely; `v0.4.4` immutable at
-`49c9e3b2`; `.release-prepared.json` and every `0.5.0` release surface
-unchanged.
+Closed 2026-09-10. Independent exact-head review `5616849978` accepted
+reviewed head `73e5f3705bf8d915e0192fd67a5cd1fe4a7538bc` (ready to merge;
+one non-blocking observation: the `release_held_session_close_response`
+fixture path is unused surface inside the owned fixture). PR
+[#311](https://github.com/inflatable-cookie/swallowtail/pull/311) merged as
+`582d01d6b6890eed5195a1fcbee0ae985304a6c7`, identical tree
+`eebb6978be365f79ae41436912240886d0aecf78`. PR run 34463849326 green
+(MSRV floor tests skipped); merge-SHA push run 34464717829 green on all 11
+jobs including `Pinned MSRV floor tests` — the qualifying all-green hosted
+gate on the exact candidate source. Zero provider contact. `v0.5.0` absent
+locally and remotely; `v0.4.4` immutable at `49c9e3b2`;
+`.release-prepared.json` and every `0.5.0` release surface unchanged. The
+exact candidate SHA returns to Tom for the separate annotated-tag decision.

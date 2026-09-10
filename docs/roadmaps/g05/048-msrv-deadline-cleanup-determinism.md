@@ -1,6 +1,6 @@
 # g05.048 MSRV Deadline-Cleanup Determinism
 
-Status: ready; operator-authorized repair and qualifying hosted gate
+Status: completed; PR #311 merged as `582d01d6` after independent exact-head review `5616849978`; merge-SHA push run 34464717829 all-green 11/11 including pinned-MSRV tests; tag withheld for Tom's exact-SHA decision
 Owner: Tom
 Created: 2026-09-10
 Depends on: g05.047; Contract 036; release playbook
@@ -161,9 +161,24 @@ release-receipt, or historical-evidence surface changed; zero provider
 contact; `v0.5.0` absent; `v0.4.4` immutable. A qualifying all-green hosted
 run at the exact repair head is still owed before any tag decision.
 
+Closed 2026-09-10. PR
+[#311](https://github.com/inflatable-cookie/swallowtail/pull/311) merged as
+`582d01d6b6890eed5195a1fcbee0ae985304a6c7` (reviewed head `73e5f370`,
+identical tree `eebb6978be365f79ae41436912240886d0aecf78`, base `065440ce`)
+after independent exact-head review `5616849978` (ready to merge; one
+non-blocking observation on the unused held-close release path). PR run
+34463849326 green (MSRV floor tests skipped); merge-SHA push run 34464717829
+green on all 11 jobs including `Pinned MSRV floor tests`, so the qualifying
+gate transferred across the identical tree. Zero provider contact.
+`v0.5.0` absent locally and remotely; `v0.4.4` immutable at `49c9e3b2`.
+No production, workflow, version, release-receipt, or historical-evidence
+surface changed. The exact `v0.5.0` candidate SHA returns to Tom for the
+separate tag decision.
+
 ## Next Task
 
-Return the repaired exact `v0.5.0` candidate SHA and qualifying all-green CI
-to Tom for the separate annotated-tag decision. After an authorized tag, run
-the source-tag consumer/working-application lane and resume blocked Desktop
-g02.051 against that exact tag. Nothing follows automatically.
+Return the repaired exact `v0.5.0` candidate SHA `582d01d6` with its
+qualifying all-green merge-SHA run 34464717829 to Tom for the separate
+annotated-tag decision. After an authorized tag, run the source-tag
+consumer/working-application lane and resume blocked Desktop g02.051 against
+that exact tag. Nothing follows automatically.

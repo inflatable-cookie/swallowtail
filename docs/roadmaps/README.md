@@ -15,11 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Closed g05.046 on 2026-09-10 (PR #309 merged as `7736a358` after
-independent exact-head review `5610982422` with no follow-ups). No ready
-tasks remain; the separately authorized patch candidate carrying this source
-change and any further planning direction belong to Chatterbox.
-No live acceptance, release, tag, or range authority follows.
+Validate g05.047 as the source-only `v0.5.0` candidate. Contract 036 requires a
+minor boundary because g05.045 withdrew the `v0.4.4` universal native-tool
+mediation guarantee; g05.046 supplies the registered-only replacement route.
+Run provider-free, exact-source consumer, independent review, and qualifying
+hosted gates. Stop before any tag, Desktop mutation, or provider call.
 
 ## Standing Lanes
 

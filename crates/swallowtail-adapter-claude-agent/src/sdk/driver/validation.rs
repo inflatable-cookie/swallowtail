@@ -14,6 +14,21 @@ use swallowtail_runtime::{
 pub(crate) const ACCESS_NAMESPACE: &str = "claude/delegated-subscription-auth";
 pub(crate) const ENDPOINT_AUDIENCE: &str = "claude-agent-sdk";
 
+pub(super) fn validate_session_profile_shape(
+    profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
+    registered: Option<&crate::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding>,
+    mcp_servers: &[crate::sdk::mcp::ClaudeAgentSdkMcpServer],
+) -> Result<(), RuntimeFailure> {
+    if let Some((code, message)) = crate::sdk::profile::registered_only_shape_error(
+        &profile,
+        registered.is_some(),
+        !mcp_servers.is_empty(),
+    ) {
+        return Err(failure(code, message));
+    }
+    Ok(())
+}
+
 pub(super) fn validate_open(
     plan: &PreflightPlan,
     request: &OpenSessionRequest,
@@ -71,9 +86,10 @@ pub(super) fn validate_open(
         return Err(plan_mismatch("model route"));
     }
     validate_session_plan_agreement(plan, request.plan_agreement())?;
-    // The driver's admitted tool set and the plan's resource access are one
-    // decision. A write profile opened against a read-only plan is refused
-    // here, before a credential, a lease, a process, or the sidecar exists.
+    // The driver's admitted tool set, or the registered-only explicit lease,
+    // and the plan's resource access are one decision. A write profile
+    // opened against a read-only plan is refused here, before a credential,
+    // a lease, a process, or the sidecar exists.
     let resource_access = profile.resource_access();
     if request.access_policy() != &SessionAccessPolicy::ambient_harness(resource_access)
         || plan.requirements().harness_isolation() != Some(HarnessIsolation::AmbientHost)

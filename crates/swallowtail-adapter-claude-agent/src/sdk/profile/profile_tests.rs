@@ -90,6 +90,68 @@ fn explicit_bash_requires_a_read_write_lease() {
 }
 
 #[test]
+fn a_registered_only_profile_carries_explicit_access_without_native_tools() {
+    for access in [ResourceAccess::Read, ResourceAccess::ReadWrite] {
+        let profile = ClaudeAgentSdkSessionProfile::registered_only(
+            access,
+            ClaudeAgentSdkPermissionMode::Default,
+        );
+        assert!(profile.is_registered_only());
+        assert!(!profile.admits_any_native_tool());
+        assert!(!profile.admits_writes());
+        assert_eq!(profile.resource_access(), access);
+        assert_eq!(names(&profile), [] as [&str; 0]);
+        for tool in [
+            ClaudeAgentSdkTool::Read,
+            ClaudeAgentSdkTool::Glob,
+            ClaudeAgentSdkTool::Grep,
+            ClaudeAgentSdkTool::Edit,
+            ClaudeAgentSdkTool::Write,
+            ClaudeAgentSdkTool::MultiEdit,
+            ClaudeAgentSdkTool::Bash,
+        ] {
+            assert!(!profile.admits(tool));
+        }
+    }
+}
+
+#[test]
+fn empty_native_admission_without_the_registered_only_binding_still_fails() {
+    let empty = ClaudeAgentSdkSessionProfile::new([], ClaudeAgentSdkPermissionMode::Default)
+        .expect_err("an empty native set is still rejected");
+    assert_eq!(
+        empty.diagnostic().safe().code(),
+        "swallowtail.claude-agent.sdk.profile.tool_set_empty"
+    );
+    let unbound = crate::sdk::profile::registered_only_shape_error(
+        &ClaudeAgentSdkSessionProfile::registered_only(
+            ResourceAccess::ReadWrite,
+            ClaudeAgentSdkPermissionMode::Default,
+        ),
+        false,
+        false,
+    )
+    .expect("registered-only without a selection is unbound");
+    assert_eq!(
+        unbound.0,
+        "swallowtail.claude-agent.sdk.profile.registered_only_unbound"
+    );
+    let mixed = crate::sdk::profile::registered_only_shape_error(
+        &ClaudeAgentSdkSessionProfile::registered_only(
+            ResourceAccess::Read,
+            ClaudeAgentSdkPermissionMode::Default,
+        ),
+        true,
+        true,
+    )
+    .expect("consumer MCP cannot share registered-only");
+    assert_eq!(
+        mixed.0,
+        "swallowtail.claude-agent.sdk.profile.registered_only_mcp_conflict"
+    );
+}
+
+#[test]
 fn names_round_trip_through_the_admitted_vocabulary() {
     let profile =
         ClaudeAgentSdkSessionProfile::from_names(["Write", "Read", "MultiEdit"], "acceptEdits")

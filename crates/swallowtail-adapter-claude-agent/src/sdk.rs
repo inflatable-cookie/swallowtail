@@ -63,6 +63,7 @@ pub use profile::{
     ClaudeAgentSdkEffort, ClaudeAgentSdkEffortOutcome, ClaudeAgentSdkPermissionMode,
     ClaudeAgentSdkSessionProfile, ClaudeAgentSdkTool,
 };
+pub use registered_tool::ClaudeAgentSdkRegisteredOnlyBinding;
 pub use selected_skill::ClaudeAgentSdkSelectedSkillBinding;
 pub use selection::{
     CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_NODE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS,

@@ -35,6 +35,7 @@ mod binding;
 mod carrier;
 mod mediation;
 mod projection;
+mod registered_only;
 mod version;
 mod wire;
 
@@ -56,6 +57,7 @@ pub use projection::{
     project_claude_agent_sdk_registered_tool_with_selected_skill,
     project_claude_agent_sdk_registered_tool_with_selected_skill_from_source,
 };
+pub use registered_only::ClaudeAgentSdkRegisteredOnlyBinding;
 pub use version::{
     CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION, CLAUDE_AGENT_SDK_MCP_SUPPORTED_PROTOCOL_VERSIONS,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_AXIS,

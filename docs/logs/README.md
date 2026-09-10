@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-10 g05.046 Claude SDK Registered-Only Session Profile](./2026-09-10-g05-046-claude-sdk-registered-only-session-profile.md) — zero-native registered-tool session with explicit `Read`/`ReadWrite`; additive native path unchanged; provider-free
 - [2026-09-10 g05.045 Claude Native Mediation Limitation](./2026-09-10-g05-045-claude-native-mediation-limitation.md) — Desktop g02.049 successor capsule proves native `Read` completed without `canUseTool`; universal native mediation unavailable; permission-exchange and registered-tool truths retained; provider-free
 - [2026-09-09 g05.029 Claude SDK Interactive Parity Acceptance Audit](./2026-09-09-g05-029-claude-sdk-interactive-parity-acceptance-audit.md) — consumer multi-turn editing session fail; permission-mode, default preservation, later-scope landing, and v0.4.1 Contract 036 carrier pass; Card 087 no-range gate preserved
 - [2026-09-09 g05.031 CI Latency Acceptance Audit](./2026-09-09-g05-031-ci-latency-acceptance-audit.md) — PR-gate median 2m43s pass; literal macOS pinned floor fail (Linux); every-PR test population pass; required-check set unproven; honest evidence stop

@@ -208,12 +208,16 @@ impl ClaudeAgentSdkPermissionMode {
 ///
 /// `read_only` is the `v0.4.0` default and is what every existing caller
 /// keeps: `Read`, `Glob`, `Grep` under `default` mode on a read-only lease.
+/// Registered-only sessions keep this type `Copy` and carry explicit
+/// working-resource access instead of native tools; that shape is constructed
+/// only through [`super::registered_tool::ClaudeAgentSdkRegisteredOnlyBinding`].
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ClaudeAgentSdkSessionProfile {
     admitted: u8,
     permission_mode: ClaudeAgentSdkPermissionMode,
     effort: Option<ClaudeAgentSdkEffort>,
     persist_session: bool,
+    explicit_resource_access: Option<ResourceAccess>,
 }
 
 const READ_ONLY_ADMITTED: u8 = ClaudeAgentSdkTool::Read.bit()
@@ -234,6 +238,7 @@ impl ClaudeAgentSdkSessionProfile {
             permission_mode: ClaudeAgentSdkPermissionMode::Default,
             effort: None,
             persist_session: false,
+            explicit_resource_access: None,
         }
     }
 
@@ -250,6 +255,28 @@ impl ClaudeAgentSdkSessionProfile {
             permission_mode,
             effort: None,
             persist_session: false,
+            explicit_resource_access: None,
+        }
+    }
+
+    /// Builds the Copy half of a registered-only session: zero native tools
+    /// and an explicit working-resource lease.
+    ///
+    /// This is not a public native-profile constructor. Empty native admission
+    /// is valid only when [`super::registered_tool::ClaudeAgentSdkRegisteredOnlyBinding`]
+    /// also carries a non-empty qualified registered selection. Access is the
+    /// consumer's registered-route choice; it is never inferred from MCP
+    /// presence, a tool name, or [`swallowtail_runtime::RegisteredToolEffectPosture`].
+    pub(crate) const fn registered_only(
+        resource_access: ResourceAccess,
+        permission_mode: ClaudeAgentSdkPermissionMode,
+    ) -> Self {
+        Self {
+            admitted: 0,
+            permission_mode,
+            effort: None,
+            persist_session: false,
+            explicit_resource_access: Some(resource_access),
         }
     }
 
@@ -282,6 +309,7 @@ impl ClaudeAgentSdkSessionProfile {
             permission_mode,
             effort: None,
             persist_session: false,
+            explicit_resource_access: None,
         })
     }
 
@@ -322,10 +350,28 @@ impl ClaudeAgentSdkSessionProfile {
         self.admitted & tool.bit() != 0
     }
 
-    /// Reports whether any admitted tool can mutate the working resource.
+    /// Reports whether any admitted native SDK tool can mutate the working
+    /// resource.
+    ///
+    /// Registered-only sessions admit no native tools, so this stays false
+    /// even when the explicit lease is [`ResourceAccess::ReadWrite`]. Use
+    /// [`Self::resource_access`] for the lease.
     #[must_use]
     pub const fn admits_writes(&self) -> bool {
         self.admitted & WRITE_ADMITTED != 0
+    }
+
+    /// Reports whether this profile is the registered-only shape: zero native
+    /// SDK tools and an explicit working-resource lease.
+    #[must_use]
+    pub const fn is_registered_only(&self) -> bool {
+        self.admitted == 0 && self.explicit_resource_access.is_some()
+    }
+
+    /// Reports whether any native SDK tool is admitted.
+    #[must_use]
+    pub(crate) const fn admits_any_native_tool(&self) -> bool {
+        self.admitted != 0
     }
 
     /// Returns the permission mode this session opens with.
@@ -413,12 +459,16 @@ impl ClaudeAgentSdkSessionProfile {
 
     /// Returns the exact working-resource lease access this profile requires.
     ///
-    /// A write tool without a read-write lease is refused: preparation binds
-    /// this access into the plan, and the host's own lease must match it
-    /// before the sidecar starts.
+    /// Native profiles derive this from write-tool admission. Registered-only
+    /// profiles carry the consumer's explicit `Read` or `ReadWrite` choice.
+    /// A write lease without a matching host grant is refused: preparation
+    /// binds this access into the plan, and the host's own lease must match
+    /// it before the sidecar starts.
     #[must_use]
     pub const fn resource_access(&self) -> ResourceAccess {
-        if self.admits_writes() {
+        if let Some(access) = self.explicit_resource_access {
+            access
+        } else if self.admits_writes() {
             ResourceAccess::ReadWrite
         } else {
             ResourceAccess::Read
@@ -439,6 +489,39 @@ impl ClaudeAgentSdkSessionProfile {
 impl Default for ClaudeAgentSdkSessionProfile {
     fn default() -> Self {
         Self::read_only()
+    }
+}
+
+/// Returns a typed failure when zero-native admission is not bound to a
+/// registered-only selection, or when registered-only is mixed with consumer
+/// MCP servers. `None` means the shape is valid.
+pub(crate) const fn registered_only_shape_error(
+    profile: &ClaudeAgentSdkSessionProfile,
+    has_registered: bool,
+    has_consumer_mcp: bool,
+) -> Option<(&'static str, &'static str)> {
+    if profile.is_registered_only() {
+        if !has_registered {
+            return Some((
+                "swallowtail.claude-agent.sdk.profile.registered_only_unbound",
+                "Claude Agent SDK registered-only preparation requires a qualified registered-tool selection",
+            ));
+        }
+        if has_consumer_mcp {
+            return Some((
+                "swallowtail.claude-agent.sdk.profile.registered_only_mcp_conflict",
+                "Claude Agent SDK registered-only preparation admits only its selected carrier tools",
+            ));
+        }
+        return None;
+    }
+    if profile.admits_any_native_tool() {
+        None
+    } else {
+        Some((
+            "swallowtail.claude-agent.sdk.profile.tool_set_empty",
+            "Claude Agent SDK preparation requires at least one admitted tool",
+        ))
     }
 }
 

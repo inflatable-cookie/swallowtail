@@ -1745,6 +1745,75 @@ fn fixture_mcp_server() -> Value {
     })
 }
 
+const NATIVE_SDK_TOOLS: [&str; 7] = ["Read", "Glob", "Grep", "Edit", "Write", "MultiEdit", "Bash"];
+
+fn fixture_registered_only_open(cwd: &str) -> Value {
+    json!({
+        "cwd": cwd,
+        "model": "m-1",
+        "tools": ["mcp__swallowtail-registered-tools__desktop_reconcile"],
+        "permissionMode": "default",
+        "mcpServers": [{
+            "name": "swallowtail-registered-tools",
+            "command": "/usr/bin/node",
+            "args": ["courier.mjs"],
+            "envAllowlistKeys": ["PATH", "HOME"],
+            "tools": ["desktop_reconcile"],
+            "optional": false
+        }]
+    })
+}
+
+#[test]
+fn a_registered_only_open_admits_carrier_tools_and_disallows_every_native_sdk_tool() {
+    let mut sidecar = SidecarProcess::start_scenario("mcp");
+    let cwd = sidecar.cwd();
+    let open = sidecar.command("open-1", "open", fixture_registered_only_open(&cwd));
+    assert_eq!(open["success"], true, "registered-only open: {open}");
+    assert_eq!(
+        open["data"]["tools"],
+        json!(["mcp__swallowtail-registered-tools__desktop_reconcile"])
+    );
+    let options = sidecar.observed_options();
+    assert_eq!(
+        options["tools"],
+        json!(["mcp__swallowtail-registered-tools__desktop_reconcile"])
+    );
+    assert!(
+        options.get("allowedTools").is_none(),
+        "registered-only must never set allowedTools: {options}"
+    );
+    let disallowed = options["disallowedTools"]
+        .as_array()
+        .expect("disallowed tools are listed");
+    for native in NATIVE_SDK_TOOLS {
+        assert!(
+            disallowed.iter().any(|tool| tool == native),
+            "{native} must be disallowed on a registered-only open: {options}"
+        );
+        assert!(
+            options["tools"]
+                .as_array()
+                .expect("tools")
+                .iter()
+                .all(|tool| tool != native),
+            "{native} must not be admitted: {options}"
+        );
+    }
+}
+
+#[test]
+fn an_empty_tool_set_stays_invalid_even_when_mcp_servers_are_declared() {
+    let mut sidecar = SidecarProcess::start_scenario("mcp");
+    let cwd = sidecar.cwd();
+    let mut params = fixture_registered_only_open(&cwd);
+    params["tools"] = json!([]);
+    let open = sidecar.command("open-1", "open", params);
+    assert_eq!(open["success"], false, "empty tools must fail: {open}");
+    assert_eq!(open["failure"]["code"], "tools_invalid");
+    assert!(!sidecar.sdk_was_constructed());
+}
+
 fn fixture_mcp_open(cwd: &str, extra_tools: &[&str], optional: bool) -> Value {
     let mut server = fixture_mcp_server();
     server["optional"] = json!(optional);

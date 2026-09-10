@@ -67,9 +67,10 @@ impl ClaudeAgentSdkDriver {
             .working_resource()
             .cloned()
             .expect("validated sidecar working-resource service");
-        // The admitted tool set decides the access this session asks for. A
-        // host that grants less fails the lease agreement below, so no write
-        // tool can reach a read-only working resource.
+        // The admitted tool set, or the registered-only explicit lease,
+        // decides the access this session asks for. A host that grants less
+        // fails the lease agreement below, so no write can reach a read-only
+        // working resource.
         let resource = resource_service
             .resolve(
                 scope.clone(),

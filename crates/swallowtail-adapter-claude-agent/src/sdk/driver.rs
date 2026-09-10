@@ -8,7 +8,7 @@
 //! binary and everything it spawns stay enrolled in one host-owned tree.
 
 pub use self::session::ClaudeAgentSdkSessionHandle;
-use self::validation::{validate_open, validate_resume};
+use self::validation::{validate_open, validate_resume, validate_session_profile_shape};
 use crate::sdk::bounded::HostBound;
 use crate::sdk::connection::SdkConnection;
 use crate::sdk::failure::{failure, unsupported};
@@ -106,6 +106,17 @@ impl ClaudeAgentSdkDriver {
     ) -> Self {
         self.registered = Some(binding);
         self
+    }
+
+    /// Binds a registered-only session: zero native tools, selected carrier
+    /// tools, and the explicit working-resource lease on the Copy profile.
+    #[must_use]
+    pub fn with_registered_only(
+        self,
+        binding: crate::sdk::registered_tool::ClaudeAgentSdkRegisteredOnlyBinding,
+    ) -> Self {
+        self.with_session_profile(binding.session_profile())
+            .with_registered_tools(binding.into_registered())
     }
 
     /// Binds one immutable resolved selected-skill bundle to fresh sidecar
@@ -357,6 +368,11 @@ impl ClaudeAgentSdkDriver {
                     "Claude Agent SDK session listing request did not match its prepared route",
                 )
             })?;
+            validate_session_profile_shape(
+                self.profile,
+                self.registered.as_ref(),
+                &self.mcp_servers,
+            )?;
             validate_open(&plan, &request, &services, &self.credential, self.profile)?;
             let bounded = HostBound::new(
                 services
@@ -457,6 +473,12 @@ impl ClaudeAgentSdkDriver {
         Box::pin(async move {
             match &start {
                 SessionStart::Fresh => {
+                    validate_session_profile_shape(
+                        self.profile,
+                        self.registered.as_ref(),
+                        &self.mcp_servers,
+                    )
+                    .map_err(OpenFailure::admission)?;
                     validate_open(&plan, &request, &services, &self.credential, self.profile)
                         .map_err(OpenFailure::admission)?;
                 }
@@ -500,6 +522,12 @@ impl ClaudeAgentSdkDriver {
                             ClaudeAgentSdkFailedOpenCleanup::not_acquired(),
                         )
                     })?;
+                    validate_session_profile_shape(
+                        self.profile,
+                        self.registered.as_ref(),
+                        &self.mcp_servers,
+                    )
+                    .map_err(OpenFailure::admission)?;
                     validate_resume(
                         &plan,
                         &resume,

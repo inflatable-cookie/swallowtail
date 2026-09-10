@@ -144,9 +144,13 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 49 tasks: 36 completed tasks, honest evidence stops at 002,
-003, 007, 011, 029, 031, and 034, one ready task at 049, and planned tasks at
+g05 has 49 tasks: 37 completed tasks, honest evidence stops at 002,
+003, 007, 011, 029, 031, and 034, no ready tasks, and planned tasks at
 035, 039, 040, 041, and 042.
+g05.049 completed 2026-09-10: annotated tag `v0.5.0` created and pushed at
+exact candidate `582d01d6` (tag object `c772c583`); pre-tag run 34464717829
+and tag-triggered run 34467974791 both green 11/11; documentation closeout
+pending reviewed PR.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
 deferred.
@@ -434,8 +438,11 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Close g05.049 by creating and pushing annotated source tag `v0.5.0` at exact
-candidate `582d01d6b6890eed5195a1fcbee0ae985304a6c7` with the approved
-annotation, verifying local/remote identity and tag-triggered CI, then
-publishing the reviewed documentation closeout. No publication or consumer
-mutation follows.
+Closed g05.049 on 2026-09-10: annotated tag `v0.5.0` created and pushed at
+exact candidate `582d01d6` with the approved annotation (tag object
+`c772c583`); local and remote agree and both pre-tag run 34464717829 and
+tag-triggered run 34467974791 are green 11/11. The next move belongs to
+Tom/Chatterbox: plan the source-tag consumer and working-application lane and
+relay the exact tag to Desktop so blocked g02.051 can resume. No ready tasks
+remain; no consumer, provider, publication, or further release authority
+follows automatically.

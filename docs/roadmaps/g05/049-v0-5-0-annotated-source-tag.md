@@ -1,6 +1,6 @@
 # g05.049 v0.5.0 Annotated Source Tag
 
-Status: ready; exact-SHA local tag creation and tag push authorized
+Status: completed; annotated tag `v0.5.0` created and pushed at exact candidate `582d01d6` (tag object `c772c583`); local and remote agree; tag-triggered CI run 34467974791 green 11/11; documentation closeout PR pending review
 Owner: Tom
 Created: 2026-09-10
 Depends on: g05.047; g05.048; Contract 036; release playbook
@@ -119,6 +119,30 @@ No other release or mutation authority follows.
    `effigy qa:northstar`, and `git diff --check`, obtain independent exact-head
    review, merge, and synchronize canonical `main`.
 
+## Result
+
+Closed 2026-09-10. One exact read-only preflight confirmed: worker tree clean
+at planning commit `5ba7b11c`; remote URL exact; candidate `582d01d6` with
+tree `eebb6978` and ancestor of canonical `main`; workspace version `0.5.0`,
+`publish = false`, MSRV `1.95`; preparation receipt identity retained;
+review `5616849978` recorded against the identical tree; merge-SHA push run
+34464717829 green on all 11 jobs at the exact candidate; `v0.4.4` immutable
+(tag object `41da6c1a` peeling to `49c9e3b2`); local and remote `v0.5.0`
+absent.
+
+Annotated tag `v0.5.0` was created once at exactly
+`582d01d6b6890eed5195a1fcbee0ae985304a6c7` with the approved three-paragraph
+annotation. Local re-read confirmed object type `tag`, peel to the exact
+candidate and tree, and byte-exact message body. Push carried only
+`refs/tags/v0.5.0` with no branch, force, or other ref. Post-push fetch
+confirms the remote tag object equals local object
+`c772c5839806b6cbf1c9d3b495049b362e4c0c52`, peeling to `582d01d6` with tree
+`eebb6978`. Tag-triggered CI run 34467974791 (event `push`, head branch
+`v0.5.0`, head SHA the exact candidate) completed `success` with all 11 jobs
+green, including Pinned MSRV floor and Pinned MSRV floor tests. No tag
+movement, deletion, recreation, GitHub Release, registry publication,
+artifact, provider call, or consumer mutation occurred.
+
 ## Review Oracle
 
 | Invariant | Adversarial counterexample | Required proof |
@@ -154,7 +178,7 @@ mutation, and every retained non-claim.
 
 ## Next Task
 
-After successful immutable tag verification, plan the source-tag consumer and
-working-application lane, then relay the exact tag to Desktop so blocked
+The immutable tag is verified. Tom/Chatterbox plans the source-tag consumer
+and working-application lane, then relays the exact tag to Desktop so blocked
 g02.051 can resume against the coordinated source. No consumer mutation,
 provider call, publication, or further release follows automatically.

@@ -5,6 +5,8 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-09-10
+
 ### Added
 - raise the Pi RPC qualified ceiling from `0.84.4` to official npm
   `@earendil-works/pi-coding-agent` `0.85.1`. Compatible extension of
@@ -16,6 +18,30 @@ annotated Git tags from the canonical repository.
   abort covering unmapped `compact`. Unpublished `0.83.1` and `0.84.5` stay
   incompatible; unpublished `0.85.2` remains visible `UnverifiedNewer`.
   `pi.sdk-sidecar` stays exact `0.84.2`. Research 302, g05.044.
+- add the Claude SDK registered-only session profile:
+  `ClaudeAgentSdkRegisteredOnlyBinding` binds one non-empty qualified
+  registered-tool selection, zero admitted native SDK tools, and explicit
+  `Read` or `ReadWrite` working-resource access in one structural constructor;
+  preparation `with_registered_only` / `with_registered_only_binding` and
+  driver `with_registered_only` propagate it. Open `tools[]` carries only the
+  selected carrier spellings with `allowedTools` unset, and `Read`, `Glob`,
+  `Grep`, `Edit`, `Write`, `MultiEdit`, and `Bash` are structurally
+  disallowed. Ordinary native constructors and additive
+  `with_registered_tools` stay byte-compatible; empty native admission
+  without the binding keeps the typed early failure, and an extracted
+  registered-only profile without its binding fails
+  `profile.registered_only_unbound` at prepare before any lease, process, or
+  provider contact. Provider-free fixtures only. g05.046.
+
+### Changed
+- corrected the `claude-agent.sdk` native-mediation guarantee: on the frozen
+  qualified tuple one in-workspace native `Read` under `default` mode
+  completed without a `canUseTool` callback, so the documentation no longer
+  claims every admitted native tool is offered through the permission
+  exchange. `permission_exchange=Yes` stays scoped to the callbacks the SDK
+  emits, registered MCP keeps the Contract 063 before-dispatch bridge, and
+  matrix values are unchanged. Research 303 binds Desktop g02.049's three
+  merged capsules provider-free. g05.045.
 
 ## [0.4.4] - 2026-09-09
 

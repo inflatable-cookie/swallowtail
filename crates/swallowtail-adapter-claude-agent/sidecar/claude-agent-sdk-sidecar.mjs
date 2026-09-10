@@ -565,6 +565,8 @@ function admittedToolsWithMcp(values, servers) {
     }
     return DEFAULT_TOOLS;
   }
+  // Empty remains invalid: registered-only still sends its selected carrier
+  // spellings, and native profiles still require at least one SDK tool.
   if (!Array.isArray(values) || values.length === 0) {
     throw new SidecarFailure("tools_invalid");
   }
@@ -1452,6 +1454,8 @@ async function handleOpen(params) {
     throw new SidecarFailure("resume_persistence_disabled");
   }
   const selectedSkill = selectedSkillBundle(params.selectedSkillBundle);
+  // Registered-only open lists only carrier spellings in `tools`, so every
+  // native SDK tool lands in `disallowedTools` with the never-available set.
   const disallowed = [
     ...NEVER_AVAILABLE_TOOLS,
     ...ADMISSIBLE_TOOLS.filter((tool) => !tools.includes(tool)),

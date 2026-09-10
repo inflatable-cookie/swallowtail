@@ -207,7 +207,7 @@ impl CourierClient {
     }
 }
 
-fn courier_binary() -> &'static Path {
+pub(super) fn courier_binary() -> &'static Path {
     static PATH: OnceLock<PathBuf> = OnceLock::new();
     PATH.get_or_init(|| {
         let workspace = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -561,7 +561,7 @@ fn snapshot(
     .expect("snapshot")
 }
 
-fn preparation_for(
+pub(super) fn preparation_for(
     host: ExecutionHostId,
     admission: swallowtail_runtime::ConsumerAdmissionBinding,
     executable: ExecutableRef,

@@ -463,6 +463,13 @@ pub(crate) fn admitted_open_tool_names(
     profile: &ClaudeAgentSdkSessionProfile,
     servers: &[OpenStdioMcpServer],
 ) -> Vec<String> {
+    if profile.is_registered_only() {
+        return servers
+            .iter()
+            .filter(|server| server.name() == CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER)
+            .flat_map(OpenStdioMcpServer::admitted_tool_names)
+            .collect();
+    }
     let mut names: Vec<String> = profile
         .tools()
         .map(|tool| tool.as_str().to_owned())

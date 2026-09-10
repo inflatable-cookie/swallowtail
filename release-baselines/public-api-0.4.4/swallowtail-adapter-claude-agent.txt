@@ -117,6 +117,17 @@ pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkMcp
 pub enum swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolDecision
 pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolDecision::Allow
 pub swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolDecision::Deny
+pub struct swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredOnlyBinding
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::into_registered(self) -> swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::new(swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation, swallowtail_core::session_access::ResourceAccess, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::registered_tools(&self) -> &swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::resource_access(&self) -> swallowtail_core::session_access::ResourceAccess
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::session_profile(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_effort(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_host(self, swallowtail_host_local::services::LocalHostServices) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_permission_mode(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_persist_session(self, bool) -> Self
 pub struct swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool
 impl swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool
 pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool::carrier_tool_name(&self) -> &str
@@ -277,6 +288,7 @@ impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::session_profile(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::with_mcp_servers(self, alloc::vec::Vec<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpServer>) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::with_registered_only(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::with_registered_tools(self, swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::with_selected_skill_binding(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSelectedSkillBinding) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkDriver::with_selected_skill_bundle(self, swallowtail_runtime::registered_tool::selected_skill_resolution::ResolvedSkillBundle) -> Self
@@ -342,6 +354,17 @@ pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::res
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::resume_session_at(&self, swallowtail_runtime::identity::RequestId, swallowtail_runtime::session_binding::SessionResumeBinding, impl core::convert::Into<alloc::string::String>, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionHandle, swallowtail_runtime::failure::RuntimeFailure>>, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::selected_skill_bundle(&self) -> core::option::Option<&swallowtail_runtime::registered_tool::selected_skill_resolution::ResolvedSkillBundle>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::session_profile(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::into_registered(self) -> swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::new(swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation, swallowtail_core::session_access::ResourceAccess, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::registered_tools(&self) -> &swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::resource_access(&self) -> swallowtail_core::session_access::ResourceAccess
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::session_profile(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_effort(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_host(self, swallowtail_host_local::services::LocalHostServices) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_permission_mode(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_persist_session(self, bool) -> Self
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSelectedSkillBinding
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSelectedSkillBinding
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSelectedSkillBinding::bundle(&self) -> &swallowtail_runtime::registered_tool::selected_skill_resolution::ResolvedSkillBundle
@@ -382,6 +405,8 @@ impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId, swallowtail_runtime::time::Deadline) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId, swallowtail_runtime::time::Deadline) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_mcp_binding(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_only(self, swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation, swallowtail_host_local::services::LocalHostServices, swallowtail_core::session_access::ResourceAccess) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_only_binding(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_tool_binding(self, swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_tools(self, swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation, swallowtail_host_local::services::LocalHostServices) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_selected_skill_binding(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSelectedSkillBinding) -> Self
@@ -393,6 +418,7 @@ pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::admits_writes(&self) -> bool
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::effort(&self) -> core::option::Option<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::from_names<'a>(impl core::iter::traits::collect::IntoIterator<Item = &'a str>, &str) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::is_registered_only(&self) -> bool
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::new(impl core::iter::traits::collect::IntoIterator<Item = swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkTool>, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::permission_mode(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile::persist_session(&self) -> bool

@@ -344,7 +344,8 @@ options are identical to `v0.4.0`.
 configuration reaches. An unknown tool name fails there with
 `profile.tool_unknown`, a repeat with `profile.tool_repeated`, and an empty set
 with `profile.tool_set_empty` — all before a plan, lease, process, or provider
-contact exists.
+contact exists. Empty native admission stays invalid unless the session is the
+registered-only binding below.
 
 Availability is restricted with `Options.tools`, which carries exactly the
 admitted set. `Options.allowedTools` is never set: it auto-allows without
@@ -415,7 +416,8 @@ versions, or ranges.
 end. Any of them binds
 `ResourceAccess::ReadWrite` on the working-resource lease into the plan, the
 session access policy, and the `claude-agent-sdk-ambient-read-write` instance
-policy. The host's own lease must grant exactly that access: a host that
+policy. A registered-only session binds the same lease from its explicit
+`Read` or `ReadWrite` choice, not from native write-tool admission. The host's own lease must grant exactly that access: a host that
 resolves a read-only lease fails the agreement with
 `swallowtail.session_access.resource_access_mismatch` before the sidecar
 starts, so no write tool ever reaches a read-only working resource. The
@@ -575,6 +577,29 @@ resolved `RegisteredToolProxyRecipe`. Host-mediated callback selections stay
 on the Card 116 mediator. Open then requires the local host composition so
 prepare can resolve the approved courier path and Card 084 environment;
 missing host fails typed `registered_tool.host_missing`.
+
+### Registered-only session
+
+`ClaudeAgentSdkRegisteredOnlyBinding` is the zero-native route. It requires a
+non-empty qualified registered selection and an explicit `Read` or
+`ReadWrite` working-resource lease. Native `new` / `from_names` still reject
+an empty tool set. Additive `with_registered_tools` is unchanged: registered
+MCP names still append to the native profile, and a mutating registered
+declaration does not elevate `resource_access()`.
+
+`ClaudeAgentSdkSessionPreparation::with_registered_only(preparation, host,
+access)` is the openable entry;
+`with_registered_only_binding` remains for a binding that already carries the
+host. Access is the consumer's registered-route choice. It is not inferred
+from MCP presence, a carrier spelling, or
+`RegisteredToolEffectPosture`. Consumer-declared MCP servers cannot share
+this shape.
+
+Open `tools[]` contains only the selected carrier spellings. All seven native
+SDK tools — `Read`, `Glob`, `Grep`, `Edit`, `Write`, `MultiEdit`, and `Bash`
+— are structurally disallowed. `allowedTools` stays unset. Empty native
+admission without this binding fails before a plan, lease, process, or
+provider contact. The host lease must match the explicit access exactly.
 
 Prepare mints the bridge lease, generation, secret, and one-shot rendezvous
 without waiting, then declares the reserved `swallowtail-registered-tools`

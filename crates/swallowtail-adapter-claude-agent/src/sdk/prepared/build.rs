@@ -36,9 +36,20 @@ pub(super) fn prepare(
             "Claude Agent SDK preparation admits no session options in this layer",
         ));
     }
-    // The admitted tool set decides the lease this plan asks for. A write tool
-    // binds `ResourceAccess::ReadWrite` here, and the host's own lease must
-    // agree at open, so no write reaches a read-only working resource.
+    if let Some((code, message)) = crate::sdk::profile::registered_only_shape_error(
+        &input.profile,
+        input.registered_tools.is_some(),
+        !input.mcp_servers.is_empty(),
+    ) {
+        return Err(preparation_failure(
+            swallowtail_runtime::PreparationStage::Preflight,
+            code,
+            message,
+        ));
+    }
+    // The admitted tool set, or the registered-only explicit lease, decides
+    // the access this plan asks for. A write lease without a matching host
+    // grant fails at open, so no write reaches a read-only working resource.
     let resource_access = input.profile.resource_access();
     let mut capability_requirements = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),

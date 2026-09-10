@@ -16,6 +16,7 @@ mod claude_agent_sdk_driver {
     pub mod open_receipt;
     pub mod permission;
     pub mod readiness;
+    pub mod registered_only;
     pub mod registered_tool;
     pub mod registered_tool_route;
     pub mod resume;

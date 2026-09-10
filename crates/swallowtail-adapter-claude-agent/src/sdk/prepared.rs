@@ -13,7 +13,9 @@ use super::driver::{ClaudeAgentSdkDriver, ClaudeAgentSdkSessionHandle};
 use super::mcp::{ClaudeAgentSdkMcpBinding, ClaudeAgentSdkMcpServer};
 use super::open_receipt::ClaudeAgentSdkOpenRejection;
 use super::profile::ClaudeAgentSdkSessionProfile;
-use super::registered_tool::ClaudeAgentSdkRegisteredToolBinding;
+use super::registered_tool::{
+    ClaudeAgentSdkRegisteredOnlyBinding, ClaudeAgentSdkRegisteredToolBinding,
+};
 use super::selected_skill::ClaudeAgentSdkSelectedSkillBinding;
 use swallowtail_core::{
     AccessProfileId, ConfigFieldId, ConfiguredInstanceId, CredentialFieldId, CredentialRef,
@@ -173,6 +175,45 @@ impl ClaudeAgentSdkSessionPreparation {
     ) -> Self {
         self.registered_tools = Some(binding);
         self
+    }
+
+    /// Qualifies a registered-only session: zero native tools, the selected
+    /// carrier tools, and explicit working-resource access.
+    ///
+    /// Additive [`Self::with_registered_tools`] is unchanged. Consumer-declared
+    /// MCP servers cannot share this shape: `tools[]` must contain only the
+    /// selected carrier spellings.
+    pub fn with_registered_only(
+        self,
+        preparation: RegisteredToolPreparation,
+        host: LocalHostServices,
+        resource_access: swallowtail_core::ResourceAccess,
+    ) -> Result<Self, PreparationFailure> {
+        self.with_registered_only_binding(
+            ClaudeAgentSdkRegisteredOnlyBinding::new(
+                preparation,
+                resource_access,
+                crate::sdk::profile::ClaudeAgentSdkPermissionMode::Default,
+            )?
+            .with_host(host),
+        )
+    }
+
+    /// Binds an already-constructed registered-only session.
+    pub fn with_registered_only_binding(
+        mut self,
+        binding: ClaudeAgentSdkRegisteredOnlyBinding,
+    ) -> Result<Self, PreparationFailure> {
+        if !self.mcp_servers.is_empty() {
+            return Err(preparation_failure(
+                PreparationStage::Preflight,
+                "swallowtail.claude-agent.sdk.profile.registered_only_mcp_conflict",
+                "Claude Agent SDK registered-only preparation admits only its selected carrier tools",
+            ));
+        }
+        self.profile = binding.session_profile();
+        self.registered_tools = Some(binding.into_registered());
+        Ok(self)
     }
 
     /// Builds session preparation input from one admitted SDK sidecar route

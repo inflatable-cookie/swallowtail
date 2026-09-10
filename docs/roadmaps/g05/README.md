@@ -420,8 +420,7 @@ identity.
 
 ### Ready
 
-No ready tasks. Completed g05.049 leaves the frontier to Tom/Chatterbox
-planning.
+- [050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — ready; provider-free remote-tag resolution and registered-only Claude SDK compile before the preserved Desktop g02.051 task resumes
 
 ### Planned
 

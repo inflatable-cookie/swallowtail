@@ -2,6 +2,15 @@ use super::agent::FixtureProcessHandle;
 use super::*;
 use swallowtail_runtime::CredentialService;
 
+/// One scripted host-clock observation for a deadline wait.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DeadlineWait {
+    /// The fixture clock has reached the observed deadline.
+    Expires,
+    /// The fixture clock stays before the observed deadline forever.
+    StaysBefore,
+}
+
 impl ProcessService for FixtureHost {
     fn start(
         &self,
@@ -125,6 +134,7 @@ impl JoinedTask for ThreadTask {
 pub(super) struct FixtureTime {
     immediate: bool,
     deadline_after_waits: Option<usize>,
+    script: Option<Mutex<VecDeque<DeadlineWait>>>,
     waits: AtomicUsize,
 }
 
@@ -133,6 +143,16 @@ impl FixtureTime {
         Self {
             immediate,
             deadline_after_waits,
+            script: None,
+            waits: AtomicUsize::new(0),
+        }
+    }
+
+    pub(super) fn scripted(waits: Vec<DeadlineWait>) -> Self {
+        Self {
+            immediate: false,
+            deadline_after_waits: None,
+            script: Some(Mutex::new(waits.into())),
             waits: AtomicUsize::new(0),
         }
     }
@@ -144,6 +164,21 @@ impl TimeService for FixtureTime {
     }
 
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        if let Some(script) = &self.script {
+            let mut observations = script
+                .lock()
+                .expect("fixture deadline script lock poisoned");
+            let Some(next) = observations.pop_front() else {
+                panic!("fixture deadline script exhausted at {deadline:?}");
+            };
+            drop(observations);
+            return match next {
+                DeadlineWait::Expires => {
+                    Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
+                }
+                DeadlineWait::StaysBefore => Box::pin(std::future::pending()),
+            };
+        }
         let wait = self.waits.fetch_add(1, Ordering::SeqCst) + 1;
         if self.immediate
             || self

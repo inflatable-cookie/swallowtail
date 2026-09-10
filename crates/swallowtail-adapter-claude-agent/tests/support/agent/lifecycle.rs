@@ -9,8 +9,32 @@ impl SharedAgent {
         if self.scenario != Scenario::ClosePending {
             self.cancel(state)?;
         }
+        if state.hold_close_response && !state.released_close_response {
+            state.held_close_id = id;
+            return Ok(());
+        }
         Self::enqueue(state, json!({"jsonrpc": "2.0", "id": id, "result": {}}));
         Ok(())
+    }
+
+    pub(in crate::support) fn hold_close_response(&self) {
+        self.state
+            .lock()
+            .expect("fixture agent lock poisoned")
+            .hold_close_response = true;
+    }
+
+    pub(in crate::support) fn release_held_close_response(&self) {
+        let mut state = self.state.lock().expect("fixture agent lock poisoned");
+        state.released_close_response = true;
+        if let Some(id) = state.held_close_id.take() {
+            Self::enqueue(
+                &mut state,
+                json!({"jsonrpc": "2.0", "id": id, "result": {}}),
+            );
+        }
+        drop(state);
+        self.changed.notify_all();
     }
 
     pub(super) fn delete_session(

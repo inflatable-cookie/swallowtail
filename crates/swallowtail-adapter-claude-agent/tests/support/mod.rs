@@ -29,6 +29,7 @@ mod services;
 
 use agent::SharedAgent;
 pub use agent::{ObservedProcess, Scenario};
+pub use services::DeadlineWait;
 use services::{FixtureTime, ThreadTaskService};
 
 #[derive(Clone)]
@@ -42,6 +43,7 @@ pub struct FixtureHost {
     credential_releases: Arc<AtomicUsize>,
     immediate_deadline: bool,
     deadline_after_waits: Option<usize>,
+    deadline_waits: Option<Vec<DeadlineWait>>,
 }
 
 impl FixtureHost {
@@ -56,6 +58,7 @@ impl FixtureHost {
             credential_releases: Arc::new(AtomicUsize::new(0)),
             immediate_deadline: false,
             deadline_after_waits: None,
+            deadline_waits: None,
         }
     }
 
@@ -70,13 +73,39 @@ impl FixtureHost {
         self
     }
 
+    /// Scripts every deadline wait observation in call order: the first
+    /// observation bounds the operation turn, later ones bound joined
+    /// session cleanup. An exhausted script fails the wait instead of
+    /// guessing, keeping each observation an exact named control.
+    pub fn with_deadline_waits(mut self, waits: impl IntoIterator<Item = DeadlineWait>) -> Self {
+        self.deadline_waits = Some(waits.into_iter().collect());
+        self
+    }
+
+    /// Makes the fixture agent hold back the session-close response so a
+    /// cleanup genuinely crosses its caller boundary while still pending.
+    pub fn with_held_session_close_response(self) -> Self {
+        self.agent.hold_close_response();
+        self
+    }
+
+    /// Releases a previously held session-close response.
+    #[allow(dead_code)]
+    pub fn release_held_session_close_response(&self) {
+        self.agent.release_held_close_response();
+    }
+
+    fn fixture_time(&self) -> FixtureTime {
+        match &self.deadline_waits {
+            Some(waits) => FixtureTime::scripted(waits.clone()),
+            None => FixtureTime::new(self.immediate_deadline, self.deadline_after_waits),
+        }
+    }
+
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
             .with_task(Arc::new(ThreadTaskService))
-            .with_time(Arc::new(FixtureTime::new(
-                self.immediate_deadline,
-                self.deadline_after_waits,
-            )))
+            .with_time(Arc::new(self.fixture_time()))
             .with_process(Arc::new(self.clone()))
             .with_credential(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))
@@ -101,10 +130,7 @@ impl FixtureHost {
     pub fn services_without_credential(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
             .with_task(Arc::new(ThreadTaskService))
-            .with_time(Arc::new(FixtureTime::new(
-                self.immediate_deadline,
-                self.deadline_after_waits,
-            )))
+            .with_time(Arc::new(self.fixture_time()))
             .with_process(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))
             .with_working_resource_io(Arc::new(self.clone()))

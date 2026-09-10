@@ -141,6 +141,26 @@ focused validation, PR/head/review/merge/tree, qualifying hosted run and every
 job conclusion, unchanged `0.5.0` release receipt/surfaces, zero provider
 contact, and local/remote tag absence.
 
+Repaired 2026-09-10 at worker head `843fedf4fe3fd0f9fe7f19264094cd0737305dcb`
+(PR from `ns-790b9257-3f96-40d9-9b6e-ec8be991bbde`, worker-recorded). The
+compound assertion split into three exact independent oracles
+(`cancellation_stops_the_turn_then_joins_the_clean_operation_cleanup`,
+`operation_deadline_times_out_the_turn_then_joins_a_clean_session_cleanup`,
+`session_cleanup_crossing_its_caller_deadline_reports_deadline_expired`)
+backed by scripted named host-clock observations
+(`FixtureHost::with_deadline_waits`) and an optional held session-close
+response (`with_held_session_close_response`) under
+`tests/support/`. Scheduler-order counterexample, matching both hosted
+failures: the run task's session cleanup can complete cleanly before
+`bound_session_cleanup` observes the cleanup deadline wait, so a frozen
+fixture clock (0 < boundary tick 1) accepts `CleanupOutcome::Clean` with no
+diagnostic. Pinned 1.95.0 exact-test repetitions 40× each (120 runs) plus 15
+full parallel integration-board runs with zero failures; workspace pinned
+suite and focused package validation green. No production, workflow, version,
+release-receipt, or historical-evidence surface changed; zero provider
+contact; `v0.5.0` absent; `v0.4.4` immutable. A qualifying all-green hosted
+run at the exact repair head is still owed before any tag decision.
+
 ## Next Task
 
 Return the repaired exact `v0.5.0` candidate SHA and qualifying all-green CI

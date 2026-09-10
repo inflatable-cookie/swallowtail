@@ -1,6 +1,6 @@
 # g05.047 v0.5.0 Release Candidate
 
-Status: ready; candidate preparation authorized; tag not authorized
+Status: completed; v0.5.0 candidate merged as PR 310 (`31375966`) after independent exact-head review `5615719889`; merge-SHA push CI green except one deferred pinned-MSRV floor timing failure; tag withheld
 Owner: Tom
 Created: 2026-09-10
 Depends on: Contract 036; release playbook; tagged `v0.4.4`; g05.044,
@@ -140,6 +140,20 @@ and tree identities, version classification, preparation receipt SHA-256,
 provider-free gate results, source-consumer identity, qualifying hosted run and
 all job conclusions, zero provider calls, local/remote tag absence, and every
 retained non-claim.
+
+Closed 2026-09-10. PR
+[#310](https://github.com/inflatable-cookie/swallowtail/pull/310) merged as
+`31375966bb4bcb2b62d6c5396490355ba41955c8` (candidate head `2d49aeea`,
+identical tree `4336c36236d865129638a8129914fab89fbe448c`, base `539bd28f`)
+after independent exact-head review `5615719889` (ready to merge, prior
+sidecar finding resolved; earlier `5615566119` required changes on
+`0fce574a`). Receipt SHA-256
+`15f506d72b915a1679a8cea27d4e23578abaf439aefd7f9f778b48592ef376a1`. PR run
+34456054548 green (MSRV floor tests skipped); merge-SHA push run 34456800235
+green except `Pinned MSRV floor tests` (167 passed, 1 timing-sensitive
+deadline failure in `structured_run`, deferred to Chatterbox). Zero provider
+contact. `v0.5.0` absent locally and remotely; `v0.4.4` immutable at
+`49c9e3b2`. Tag decision pending a qualifying green run.
 
 ## Next Task
 

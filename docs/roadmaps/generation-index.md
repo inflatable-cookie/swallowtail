@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 47 tasks: 34 completed tasks, honest evidence stops at 002,
-003, 007, 011, 029, 031, and 034, one ready task at 047, and planned tasks at
+g05 has 47 tasks: 35 completed tasks, honest evidence stops at 002,
+003, 007, 011, 029, 031, and 034, no ready tasks, and planned tasks at
 035, 039, 040, 041, and 042.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
@@ -434,8 +434,8 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Validate g05.047 as the source-only `v0.5.0` candidate. Contract 036 requires
-the minor boundary because current source withdraws `v0.4.4`'s universal
-native-tool mediation guarantee. Run one prepare transaction, provider-free
-and exact-source consumer gates, independent review, and qualifying hosted CI.
-Stop before any tag, provider call, or Desktop mutation.
+Define the post-g05.047 tag decision through Tom/Chatterbox planning.
+g05.047 closed 2026-09-10 (PR #310 merged at `31375966` after independent
+exact-head review `5615719889`); the merge-SHA push run is green except one
+deferred timing-sensitive pinned-MSRV floor failure. No tag request until a
+qualifying green run. No ready tasks remain.

@@ -15,11 +15,14 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Validate g05.047 as the source-only `v0.5.0` candidate. Contract 036 requires a
-minor boundary because g05.045 withdrew the `v0.4.4` universal native-tool
-mediation guarantee; g05.046 supplies the registered-only replacement route.
-Run provider-free, exact-source consumer, independent review, and qualifying
-hosted gates. Stop before any tag, Desktop mutation, or provider call.
+Closed g05.047 on 2026-09-10 (PR #310 merged as `31375966` after
+independent exact-head review `5615719889`; merge tree identical to the
+reviewed head). The merge-SHA push run is green except pinned-MSRV floor
+tests (one timing-sensitive deadline failure, deferred to Chatterbox); no
+tag request until a qualifying green run. No ready tasks remain; the
+exact-SHA tag decision and any further planning direction belong to
+Tom/Chatterbox. No provider call, Desktop mutation, publication, or tag
+authority follows.
 
 ## Standing Lanes
 

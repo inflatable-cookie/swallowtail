@@ -28,3 +28,6 @@ the shipped `manifest.json` digests rather than by downloading 200 MB artifacts.
 - `protocol.json` — the selected mapped subset, every classified declaration
   delta with why it stays unmapped, the unchanged implementation invariants,
   and the credential non-custody re-verification.
+- `native-read-mediation-limitation.json` — provider-free scored extract of
+  Desktop g02.049's three merged capsules. Research 303: native `Read`
+  completed without `canUseTool` on the qualified tuple. Secret-free.

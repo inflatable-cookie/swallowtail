@@ -10,6 +10,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ### Harness Skills And Watchers
 
+- [303 Claude SDK Native Mediation Limitation](./303-claude-sdk-native-mediation-limitation.md) — complete; Desktop g02.049 successor capsule proves in-workspace native `Read` completed without `canUseTool`; universal native mediation unavailable on the qualified tuple; `permission_exchange` and registered tools retained; g05.045; no live/provider claim
 - [301 Claude SDK Registered-Tool Live Acceptance](./301-claude-sdk-registered-tool-live-acceptance.md) — complete; Card 318 passed the exact funded four-control suite at source `24f88fb8`; promoted as provider-free Card 153; no further live call or release inference
 - [300 Claude SDK Structured Provider Failure Evidence](./300-claude-sdk-structured-provider-failure-evidence.md) — complete; Card 316 proved numeric API status and terminal reason are present but discarded; Contract 019 and Card 152 own safe projection and exact ambiguity
 - [299 Claude SDK Live MCP Startup Failure](./299-claude-sdk-live-mcp-startup-failure.md) — complete; Card 150 reproduced and repaired the mutable courier race through Desktop PR 178; Card 151 owns the separately authorized zero-credit first-turn rerun

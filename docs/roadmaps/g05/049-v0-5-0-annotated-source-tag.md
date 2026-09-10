@@ -1,6 +1,6 @@
 # g05.049 v0.5.0 Annotated Source Tag
 
-Status: completed; annotated tag `v0.5.0` created and pushed at exact candidate `582d01d6` (tag object `c772c583`); local and remote agree; tag-triggered CI run 34467974791 green 11/11; documentation closeout PR pending review
+Status: completed; annotated tag `v0.5.0` created and pushed at exact candidate `582d01d6` (tag object `c772c583`); local and remote agree; tag-triggered CI run 34467974791 green 11/11; documentation closeout merged through PR #312 at `e409f64` after independent exact-head review `5617729579`
 Owner: Tom
 Created: 2026-09-10
 Depends on: g05.047; g05.048; Contract 036; release playbook
@@ -142,6 +142,15 @@ confirms the remote tag object equals local object
 green, including Pinned MSRV floor and Pinned MSRV floor tests. No tag
 movement, deletion, recreation, GitHub Release, registry publication,
 artifact, provider call, or consumer mutation occurred.
+
+Documentation closeout merged 2026-09-10 as PR
+[#312](https://github.com/inflatable-cookie/swallowtail/pull/312) at
+`e409f64227566125436864ae9bd0b03f7acfa7e3` (reviewed head `ef8f2820`,
+base `5ba7b11c`) after independent exact-head review `5617729579`
+(ready to merge; no blocking findings). PR run 34469265420 green on all
+required jobs (Pinned MSRV floor tests skipped on `pull_request` as
+designed). The closeout diff is nine documentation files only, +140/-32,
+with no runtime, workflow, version, baseline, lock, or candidate mutation.
 
 ## Review Oracle
 

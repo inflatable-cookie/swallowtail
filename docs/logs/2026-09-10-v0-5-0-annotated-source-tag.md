@@ -46,3 +46,14 @@ publication work follows automatically.
 Tom/Chatterbox plans the source-tag consumer and working-application lane and
 relays the exact tag to Desktop so blocked g02.051 can resume against the
 coordinated source. Nothing else follows automatically.
+
+## Closeout
+
+Documentation closeout merged 2026-09-10 through PR
+[#312](https://github.com/inflatable-cookie/swallowtail/pull/312) at
+`e409f64227566125436864ae9bd0b03f7acfa7e3` (reviewed head `ef8f2820`,
+base `5ba7b11c`) after independent exact-head review `5617729579`
+(ready to merge; no blocking findings). PR run 34469265420 green on all
+required jobs; `effigy qa:docs`, `effigy qa:northstar`, and
+`git diff --check` recorded at the reviewed head. No deferred failures;
+the tag remains immutable and source-only.

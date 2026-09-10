@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-09
+Updated: 2026-09-10
 
 ## Generations
 
@@ -150,7 +150,8 @@ g05 has 49 tasks: 37 completed tasks, honest evidence stops at 002,
 g05.049 completed 2026-09-10: annotated tag `v0.5.0` created and pushed at
 exact candidate `582d01d6` (tag object `c772c583`); pre-tag run 34464717829
 and tag-triggered run 34467974791 both green 11/11; documentation closeout
-pending reviewed PR.
+merged through PR #312 at `e409f64` after independent exact-head review
+`5617729579`.
 g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
 review and documentation validation passed, with no migration failure
 deferred.

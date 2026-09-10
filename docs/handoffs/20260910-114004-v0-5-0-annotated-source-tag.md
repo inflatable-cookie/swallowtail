@@ -4,7 +4,7 @@ kind: northstar-handoff
 handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
-status: ready-to-launch
+status: merged
 base_required: pushed-main
 queue_dispatch: northstar-queue
 queue_approval: "Tom explicitly authorized local annotated-tag creation and tag push for v0.5.0 at exact SHA 582d01d6b6890eed5195a1fcbee0ae985304a6c7 on 2026-09-10. Tom separately approved the exact annotation text quoted in this handoff. No GitHub Release, registry, artifact, provider, or consumer authority was granted."

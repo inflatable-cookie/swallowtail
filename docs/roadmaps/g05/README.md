@@ -65,7 +65,7 @@ in [## Tasks](#tasks) below.
 - [g05.047 v0.5.0 Release Candidate](./047-v0-5-0-release-candidate.md) — completed; PR #310 merged at `31375966`; tag withheld pending a qualifying green run
 - [g05.048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — completed; PR #311 merged at `582d01d6` after review `5616849978`; merge-SHA push all-green including pinned-MSRV tests; tag withheld
 - [g05.049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — completed; annotated tag `v0.5.0` created and pushed at `582d01d6` (tag object `c772c583`); tag-triggered CI green; source-only
-- [g05.050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free
+- [g05.050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout merged through PR #313 at `fa2e4b94` after review `5618788611`
 
 g05 has fifty numbered tasks: 38 complete including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,

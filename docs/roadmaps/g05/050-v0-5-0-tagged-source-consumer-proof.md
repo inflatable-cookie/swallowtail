@@ -1,6 +1,6 @@
 # g05.050 v0.5.0 Tagged-Source Consumer Proof
 
-Status: completed; remote-tag consumer resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout PR pending review
+Status: completed; remote-tag consumer resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout merged through PR #313 at `fa2e4b94` after independent exact-head review `5618788611`
 Owner: Tom
 Created: 2026-09-10
 Depends on: g05.049; Contract 036; annotated `v0.5.0`

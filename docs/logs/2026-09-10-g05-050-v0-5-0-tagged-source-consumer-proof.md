@@ -146,3 +146,12 @@ authorize a publication, tag movement, or provider call. Desktop task
 `1e7b9baf-9b97-4e49-a6d4-17aa24bbcb5c` remained blocked throughout. Chatterbox
 owns the relay of this capsule into the narrow Desktop `v0.5.0` pin amendment
 and the same-task resume.
+
+## Merge And Closeout
+
+Documentation PR #313 (head `f1b301af07d308680e7c1a8bac167abd3cdd0440`, one
+commit over handoff `ac56130d`) passed independent exact-head review
+`5618788611` with no findings and merged to canonical `main` at
+`fa2e4b942785a288befd3fc76f15e04638f17eaa`. Validation at review:
+`effigy qa:docs` pass, `effigy qa:northstar` pass, `git diff --check` clean.
+No provider was contacted and no consumer was mutated.

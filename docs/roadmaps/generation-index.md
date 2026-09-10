@@ -151,8 +151,9 @@ g05.050 completed 2026-09-10: the immutable remote `v0.5.0` tag resolved
 every selected Swallowtail package to exact peel `582d01d6` in both the
 repository selector and an external remote-tag consumer, and the
 registered-only Claude SDK binding compiled with explicit `ReadWrite` on
-MSRV `1.95.0`, provider-free; the capsule now waits on the preserved Desktop
-g02.051 task resume.
+MSRV `1.95.0`, provider-free; documentation closeout merged through PR #313
+at `fa2e4b94` after independent exact-head review `5618788611`; the capsule
+now waits on the preserved Desktop g02.051 task resume.
 g05.049 completed 2026-09-10: annotated tag `v0.5.0` created and pushed at
 exact candidate `582d01d6` (tag object `c772c583`); pre-tag run 34464717829
 and tag-triggered run 34467974791 both green 11/11; documentation closeout

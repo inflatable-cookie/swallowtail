@@ -15,13 +15,12 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Closed g05.048 on 2026-09-10 (PR #311 merged as `582d01d6` after
-independent exact-head review `5616849978` against the identical merge
-tree; merge-SHA push run 34464717829 green on all 11 jobs including
-pinned-MSRV floor tests). The repaired `0.5.0` candidate SHA returns to
-Tom for the separate exact-SHA tag decision. No ready tasks remain; any
-further planning direction belongs to Tom/Chatterbox. No provider call,
-Desktop mutation, publication, or tag authority follows.
+Close g05.049 by creating and pushing the single annotated source tag
+`v0.5.0` at exact candidate
+`582d01d6b6890eed5195a1fcbee0ae985304a6c7` with the operator-approved
+annotation. Verify immutable local/remote identity and tag-triggered CI, then
+close out through reviewed documentation. No GitHub Release, registry,
+artifact, provider, or consumer mutation follows.
 
 ## Standing Lanes
 

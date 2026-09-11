@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-10
+Updated: 2026-09-11
 
 ## Generations
 
@@ -144,9 +144,12 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 50 tasks: 38 completed tasks, honest evidence stops at 002,
-003, 007, 011, 029, 031, and 034, and planned tasks at
-035, 039, 040, 041, and 042.
+g05 has 51 tasks: 38 completed tasks, one ready task at 051, honest evidence
+stops at 002, 003, 007, 011, 029, 031, and 034, and planned tasks at 035, 039,
+040, 041, and 042.
+g05.051 is ready: freeze the single official OpenCode HTTP `1.18.30` hop with
+complete-tree evidence before any claim edit, then qualify only an admitted
+segment. No provider or live-server work is authorized.
 g05.050 completed 2026-09-10: the immutable remote `v0.5.0` tag resolved
 every selected Swallowtail package to exact peel `582d01d6` in both the
 repository selector and an external remote-tag consumer, and the
@@ -446,13 +449,8 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Define the g05.050 tagged-source consumer capsule relay through Tom/Chatterbox
-and resume the preserved Desktop task. g05.050 closed 2026-09-10: the repository
-selector from a clean detached checkout of `v0.5.0` and one external remote-
-tag consumer both resolved every selected Swallowtail package to exact peel
-`582d01d6` (tag object `c772c583`) with no path, branch, revision, patch, or
-mixed-source leak, and the registered-only Claude SDK binding compiled with
-explicit `ReadWrite` on MSRV `1.95.0` without opening a session or contacting
-a provider. No ready tasks remain; Chatterbox promotes the narrow Desktop pin
-amendment and resumes g02.051, and no consumer mutation, provider call,
-publication, or further release authority follows automatically.
+Validate g05.051 as the single ready task. Freeze official OpenCode HTTP `1.18.30`
+against qualified `1.18.29`, compare complete artifacts because the GitHub
+tags diverge, and change the claim only if the mapped evidence admits it. No
+provider call, live server, install, host update, release, or consumer mutation
+follows.

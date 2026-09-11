@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-07
+Updated: 2026-09-11
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -25,6 +25,14 @@ need an active generation.
 One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
+
+Active family: OpenCode HTTP `1.18.30` (g05.051). Official npm and GitHub
+stable agree on the single published hop after qualified `1.18.29`. The host
+remains observation-only at `1.18.18`. Planning-time GitHub tag comparison is
+diverged and provider transformation sources changed, so complete-tree mapped
+evidence must land before any claim edit. Research 304 is reserved. No
+provider call, live server, install, host update, release, or consumer mutation
+is authorized.
 
 Current promoted family: Pi RPC `0.85.1` (g05.044). Research 302 froze
 identity before the claim. Official npm and GitHub `0.85.1` plus published

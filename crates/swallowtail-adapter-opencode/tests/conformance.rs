@@ -56,6 +56,7 @@ fn provider_neutral_closed_window_assertion_covers_opencode_range() {
         version("1.18.27"),
         version("1.18.28"),
         version("1.18.29"),
+        version("1.18.30"),
     ])
     .with_rejected([
         version("1.14.47"),
@@ -64,10 +65,10 @@ fn provider_neutral_closed_window_assertion_covers_opencode_range() {
         version("1.16.1"),
         version("1.17.21"),
         version("1.18.11-rc.1"),
-        version("1.18.30"),
+        version("1.18.31"),
     ]);
     assert_closed_semantic_compatibility_window(&opencode_http_claim(), &case);
-    assert_unverified_newer_execution(&opencode_http_claim(), &version("1.18.30"));
+    assert_unverified_newer_execution(&opencode_http_claim(), &version("1.18.31"));
 }
 
 #[test]

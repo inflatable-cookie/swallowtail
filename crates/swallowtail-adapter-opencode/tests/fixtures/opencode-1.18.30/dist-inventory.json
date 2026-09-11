@@ -1,0 +1,201 @@
+{
+  "compared": [
+    "1.18.29",
+    "1.18.30"
+  ],
+  "npm_package_file_counts": {
+    "1.18.29": 4,
+    "1.18.30": 4
+  },
+  "implementation_source_file_counts": {
+    "1.18.29": 407,
+    "1.18.30": 408
+  },
+  "repository_file_counts": {
+    "1.18.29": 6557,
+    "1.18.30": 6561
+  },
+  "repository_symlink_counts": {
+    "1.18.29": 60,
+    "1.18.30": 60
+  },
+  "repository_symlink_targets_identical": true,
+  "npm_identical_through_1.18.29_to_1.18.30": [
+    "LICENSE",
+    "bin/opencode.exe",
+    "postinstall.mjs"
+  ],
+  "source_deltas": {
+    "1.18.29_to_1.18.30": {
+      "added": [
+        "packages/opencode/src/session/prompt/gpt-astra.txt"
+      ],
+      "removed": [],
+      "changed": [
+        "packages/opencode/src/provider/provider.ts",
+        "packages/opencode/src/provider/transform.ts",
+        "packages/opencode/src/session/system.ts"
+      ]
+    }
+  },
+  "bundled_workspace_source_deltas": {
+    "1.18.29_to_1.18.30": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "packages/core/src/plugin/provider/amazon-bedrock.ts"
+      ]
+    }
+  },
+  "repository_deltas": {
+    "1.18.29_to_1.18.30": {
+      "added": [
+        "packages/console/app/src/routes/oauth/opencode/client.json.ts",
+        "packages/console/core/test/model.test.ts",
+        "packages/opencode/src/session/prompt/gpt-astra.txt",
+        "patches/@ai-sdk%2Fopenai@3.0.88.patch"
+      ],
+      "removed": [],
+      "changed_count": 101
+    }
+  },
+  "repository_changed_files": [
+    "bun.lock",
+    "infra/console.ts",
+    "nix/hashes.json",
+    "package.json",
+    "packages/app/package.json",
+    "packages/cli/package.json",
+    "packages/codemode/package.json",
+    "packages/console/app/package.json",
+    "packages/console/app/src/i18n/ar.ts",
+    "packages/console/app/src/i18n/br.ts",
+    "packages/console/app/src/i18n/da.ts",
+    "packages/console/app/src/i18n/de.ts",
+    "packages/console/app/src/i18n/en.ts",
+    "packages/console/app/src/i18n/es.ts",
+    "packages/console/app/src/i18n/fr.ts",
+    "packages/console/app/src/i18n/it.ts",
+    "packages/console/app/src/i18n/ja.ts",
+    "packages/console/app/src/i18n/ko.ts",
+    "packages/console/app/src/i18n/no.ts",
+    "packages/console/app/src/i18n/pl.ts",
+    "packages/console/app/src/i18n/ru.ts",
+    "packages/console/app/src/i18n/th.ts",
+    "packages/console/app/src/i18n/tr.ts",
+    "packages/console/app/src/i18n/uk.ts",
+    "packages/console/app/src/i18n/zh.ts",
+    "packages/console/app/src/i18n/zht.ts",
+    "packages/console/app/src/routes/api/enterprise.ts",
+    "packages/console/app/src/routes/go/index.tsx",
+    "packages/console/app/src/routes/zen/index.tsx",
+    "packages/console/app/src/routes/zen/util/handler.ts",
+    "packages/console/app/src/routes/zen/util/provider/openai.ts",
+    "packages/console/app/test/providerUsage.test.ts",
+    "packages/console/core/package.json",
+    "packages/console/core/src/model.ts",
+    "packages/console/function/package.json",
+    "packages/console/mail/package.json",
+    "packages/console/support/package.json",
+    "packages/core/package.json",
+    "packages/core/src/plugin/provider/amazon-bedrock.ts",
+    "packages/core/test/plugin/provider-amazon-bedrock.test.ts",
+    "packages/desktop/package.json",
+    "packages/effect-drizzle-sqlite/package.json",
+    "packages/effect-sqlite-node/package.json",
+    "packages/enterprise/package.json",
+    "packages/function/package.json",
+    "packages/http-recorder/package.json",
+    "packages/llm/package.json",
+    "packages/opencode/package.json",
+    "packages/opencode/src/provider/provider.ts",
+    "packages/opencode/src/provider/transform.ts",
+    "packages/opencode/src/session/system.ts",
+    "packages/opencode/test/provider/amazon-bedrock.test.ts",
+    "packages/opencode/test/provider/transform.test.ts",
+    "packages/plugin/package.json",
+    "packages/sdk/js/package.json",
+    "packages/server/package.json",
+    "packages/session-ui/package.json",
+    "packages/slack/package.json",
+    "packages/stats/app/package.json",
+    "packages/stats/core/package.json",
+    "packages/stats/server/package.json",
+    "packages/tui/package.json",
+    "packages/ui/package.json",
+    "packages/web/package.json",
+    "packages/web/src/content/docs/ar/go.mdx",
+    "packages/web/src/content/docs/ar/zen.mdx",
+    "packages/web/src/content/docs/bs/go.mdx",
+    "packages/web/src/content/docs/bs/zen.mdx",
+    "packages/web/src/content/docs/da/go.mdx",
+    "packages/web/src/content/docs/da/zen.mdx",
+    "packages/web/src/content/docs/de/go.mdx",
+    "packages/web/src/content/docs/de/zen.mdx",
+    "packages/web/src/content/docs/es/go.mdx",
+    "packages/web/src/content/docs/es/zen.mdx",
+    "packages/web/src/content/docs/fr/go.mdx",
+    "packages/web/src/content/docs/fr/zen.mdx",
+    "packages/web/src/content/docs/go.mdx",
+    "packages/web/src/content/docs/it/go.mdx",
+    "packages/web/src/content/docs/it/zen.mdx",
+    "packages/web/src/content/docs/ja/go.mdx",
+    "packages/web/src/content/docs/ja/zen.mdx",
+    "packages/web/src/content/docs/ko/go.mdx",
+    "packages/web/src/content/docs/ko/zen.mdx",
+    "packages/web/src/content/docs/nb/go.mdx",
+    "packages/web/src/content/docs/nb/zen.mdx",
+    "packages/web/src/content/docs/pl/go.mdx",
+    "packages/web/src/content/docs/pl/zen.mdx",
+    "packages/web/src/content/docs/pt-br/go.mdx",
+    "packages/web/src/content/docs/pt-br/zen.mdx",
+    "packages/web/src/content/docs/ru/go.mdx",
+    "packages/web/src/content/docs/ru/zen.mdx",
+    "packages/web/src/content/docs/th/go.mdx",
+    "packages/web/src/content/docs/th/zen.mdx",
+    "packages/web/src/content/docs/tr/go.mdx",
+    "packages/web/src/content/docs/tr/zen.mdx",
+    "packages/web/src/content/docs/zen.mdx",
+    "packages/web/src/content/docs/zh-cn/go.mdx",
+    "packages/web/src/content/docs/zh-cn/zen.mdx",
+    "packages/web/src/content/docs/zh-tw/go.mdx",
+    "packages/web/src/content/docs/zh-tw/zen.mdx",
+    "sdks/vscode/package.json"
+  ],
+  "openapi_sha256": {
+    "1.18.29": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3",
+    "1.18.30": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3"
+  },
+  "npm_invariant_hashes": {
+    "LICENSE": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+    "bin/opencode.exe": "21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+    "postinstall.mjs": "5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+  },
+  "npm_changed_hashes": {
+    "package.json": {
+      "1.18.29": "946672283f1e84ef0477d3d5a1771c6fad2456c4b86ca03aa144fefdf2ebf89a",
+      "1.18.30": "1db4d5007a35b9bd666df943532111f0c9fec151a15496dc24076eed550de592"
+    }
+  },
+  "changed_source_hashes": {
+    "packages/opencode/src/provider/provider.ts": {
+      "1.18.29": "3e0e5828ed163ccf8ef31c05a9ffd7f47655dcec30e087d6f4c57a17ba11b5bd",
+      "1.18.30": "77216c71fd0079da036ac25af516a29ee45f58b52e7c63987065ca97583ee364"
+    },
+    "packages/opencode/src/provider/transform.ts": {
+      "1.18.29": "272ca4ae5219f9fa20e00c84ce12ddba2fa64df926a0aa3c5f8d8f6eef2d9a90",
+      "1.18.30": "c07d49e48dd2478ad2813a10805781a72551db2fd847b7df994cc854bf654c16"
+    },
+    "packages/opencode/src/session/system.ts": {
+      "1.18.29": "ff8fd5d64ce82a1ad1264b267cda5410facde72626c2f56d6fb94cf96509f0c4",
+      "1.18.30": "7257f0660202d3e5d7ef86ee48cb4e51d5d0aa67703c274b8eb840b8ae307bbc"
+    },
+    "packages/core/src/plugin/provider/amazon-bedrock.ts": {
+      "1.18.29": "6e17efa51ff5e88f706d025e70cb7fe17070743b48b0305cac103f9623ce6efc",
+      "1.18.30": "5874a3b9bf89202c63e6e35ec1d7b7be0f72870c2077300e5504d62fea31c2f1"
+    }
+  },
+  "added_source_hashes": {
+    "packages/opencode/src/session/prompt/gpt-astra.txt": "46d386ea8dd8db5734d06f6ec1d04c566f1224b1afa5bc5b0ccefd6f853281f9"
+  }
+}

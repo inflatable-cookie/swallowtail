@@ -25,6 +25,8 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-11 OpenCode HTTP 1.18.30 Claim](./2026-09-11-opencode-http-1-18-30-claim.md) — raised `opencode.server` through official `1.18.30`; preserved baseline, gaps, `surface-19`, and `AllowUnverified`; synthetic `1.18.31` stays `UnverifiedNewer`
+- [2026-09-11 OpenCode HTTP 1.18.30 Identity](./2026-09-11-opencode-http-1-18-30-identity.md) — Research 304 froze official npm/GitHub `1.18.30` as a compatible `surface-19` extension from complete source-tree inventories despite diverged tags; production claims unchanged
 - [2026-09-10 g05.050 v0.5.0 Tagged-Source Consumer Proof](./2026-09-10-g05-050-v0-5-0-tagged-source-consumer-proof.md) — annotated `v0.5.0` proved consumable: repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free capsule for the Desktop g02.051 relay
 
 - [2026-09-10 v0.5.0 Annotated Source Tag](./2026-09-10-v0-5-0-annotated-source-tag.md) — operator-authorized annotated tag `v0.5.0` created and pushed at exact candidate `582d01d6` (tag object `c772c583`); local and remote agree; pre-tag run 34464717829 and tag-triggered run 34467974791 both green 11/11; documentation closeout merged through PR #312 after review `5617729579`; source-only with no publication

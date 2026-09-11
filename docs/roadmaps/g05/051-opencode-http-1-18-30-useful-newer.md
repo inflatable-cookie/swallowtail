@@ -103,4 +103,29 @@ artifacts.
 
 ## Result
 
-Pending worker evidence and independent exact-head review.
+Worker evidence: the admitted segment is a compatible extension of
+`opencode.http-sse.surface-19` through official `1.18.30`. Research 304 and
+`crates/swallowtail-adapter-opencode/tests/fixtures/opencode-1.18.30/` freeze
+npm and GitHub identity for the single published hop `1.18.29` -> `1.18.30`.
+The published GitHub tags diverge, so identity is proved from deterministic
+complete source trees: the repository tree grows from 6557 to 6561 files with
+four added paths, no removals, and 101 changed files, and
+`packages/opencode/src` grows from 407 to 408 files. Selected HTTP/SSE route
+and handler files and OpenAPI SHA-256 are byte-identical. Unmapped
+provider-internal Bedrock model-id resolution, unmapped GitLab reasoning-option
+shaping, the unmapped GPT-6 Astra system prompt and prompt text, provider SDK
+dependency bumps, and the explicit-service-tier patch are the only shipped
+deltas. Identity landed as its own commit before any production claim edit.
+
+Claim: `OPENCODE_LATEST_QUALIFIED_VERSION` is `1.18.30`, baseline `1.14.48`,
+claim id `opencode.http.server-window-1`, `surface-19`, every historical gap,
+and `AllowUnverified` stay. Synthetic later stable `1.18.31` is the visible
+`UnverifiedNewer` point. The prepared guide, both OpenCode route-matrix rows,
+the feature-matrix version cell, the architecture ceiling lines,
+`CHANGELOG.md` `[Unreleased]`, the standing-lane OpenCode paragraphs, and the
+identity and claim logs agree with `selection.rs`. Official latest was
+re-probed immediately before the identity commit and again immediately before
+push; both remained `1.18.30`. No provider call, live server, install, host
+update, release, tag, or consumer mutation occurred.
+
+Independent exact-head review and the merge gate are queue-owned.

@@ -15,11 +15,12 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Validate [g05.051 OpenCode HTTP 1.18.30 Useful Newer](g05/051-opencode-http-1-18-30-useful-newer.md).
-Freeze the single official `1.18.29` -> `1.18.30` hop before any
-claim edit, use complete artifact trees because the GitHub tags diverge, and
-qualify only a deterministically admitted segment. No provider call, live
-server, install, host update, release, or consumer mutation is authorized.
+Define the next Contract 029 currentness family or other generation work
+through Tom/Chatterbox. [g05.051 OpenCode HTTP 1.18.30 Useful Newer](g05/051-opencode-http-1-18-30-useful-newer.md)
+closed 2026-09-11: official `1.18.30` qualified as a compatible `surface-19`
+extension and merged through PR #314 at `2b79b083` after independent
+exact-head review `5633203211`. No ready tasks remain; no consumer mutation,
+provider call, publication, or further release follows automatically.
 
 ## Standing Lanes
 

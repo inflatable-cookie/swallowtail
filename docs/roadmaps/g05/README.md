@@ -30,7 +30,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete; the per-turn audit note is reserved for Chatterbox's prune | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | g05.008; g05.009 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | g05.010 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | g05.011 |
-| Keep production route versions current one family at a time. | OpenCode HTTP `1.18.30` ready as one identity-before-claim task; Pi RPC `0.85.1` remains the latest completed family | Contract 029; Research 292, 302; qualified OpenCode `1.18.29`; official `1.18.30` | g05.051 |
+| Keep production route versions current one family at a time. | completed; OpenCode HTTP `1.18.30` qualified as a compatible `surface-19` extension through PR #314 at `2b79b083` after review `5633203211`; Pi RPC `0.85.1` remains the latest completed family | Contract 029; Research 292, 302, 304; qualified OpenCode `1.18.30`; official `1.18.30` | g05.051 |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | g05.017 |
 | Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04 | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | g05.021 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | g05.022 |
@@ -66,11 +66,11 @@ in [## Tasks](#tasks) below.
 - [g05.048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — completed; PR #311 merged at `582d01d6` after review `5616849978`; merge-SHA push all-green including pinned-MSRV tests; tag withheld
 - [g05.049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — completed; annotated tag `v0.5.0` created and pushed at `582d01d6` (tag object `c772c583`); tag-triggered CI green; source-only
 - [g05.050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout merged through PR #313 at `fa2e4b94` after review `5618788611`
-- [g05.051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — ready; one official stable hop; complete-tree identity before any claim; provider-free
+- [g05.051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — completed; OpenCode HTTP qualified through official `1.18.30`; PR #314 merged at `2b79b083` after independent exact-head review `5633203211`
 
-g05 has fifty-one numbered tasks: 38 complete including
+g05 has fifty-one numbered tasks: 39 complete including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
-028, 037, and 044, the A2 ACP cap at 017, contract promotion at 008 and 010,
+028, 037, 044, and 051, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
 at 022, shared
 lifecycle closure at 023-025, provider-limitation reconciliation at 045, the
@@ -78,7 +78,7 @@ registered-only session profile at 046, the `v0.5.0` candidate at 047, the
 MSRV deadline-cleanup determinism repair at 048, the `v0.5.0` annotated
 source tag at 049, and the tagged-source consumer proof at 050;
 honest
-evidence stops at 002, 003, 007, 011, 029, 031, and 034; g05.051 is ready;
+evidence stops at 002, 003, 007, 011, 029, 031, and 034; g05.051 is complete;
 planned tasks remain
 at 035, 039, 040,
 041, and 042.
@@ -421,7 +421,8 @@ identity.
 
 ### Ready
 
-- [051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — ready; one provider-free identity-before-claim qualification of the single official stable hop
+No task is ready; the next move belongs to Tom/Chatterbox (see the Next Task
+pointer in the roadmaps front door).
 
 ### Planned
 
@@ -443,6 +444,7 @@ identity.
 
 ### Completed
 
+- [051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — completed; OpenCode HTTP qualified through official `1.18.30` as a compatible `surface-19` extension; PR #314 merged at `2b79b083` after independent exact-head review `5633203211`
 - [050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free
 - [049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — completed; annotated tag `v0.5.0` created and pushed at exact candidate `582d01d6` (tag object `c772c583`); pre-tag run 34464717829 and tag-triggered run 34467974791 both green 11/11; source-only
 - [047 v0.5.0 Release Candidate](./047-v0-5-0-release-candidate.md) — completed; source-only candidate; PR #310 merged at `31375966` after independent exact-head review `5615719889`; tag withheld pending a qualifying green run

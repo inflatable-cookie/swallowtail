@@ -1,6 +1,6 @@
 # g05.051 OpenCode HTTP 1.18.30 Useful Newer
 
-Status: ready
+Status: completed; OpenCode HTTP qualified through official `1.18.30` as a compatible `surface-19` extension; PR #314 merged at `2b79b083` after independent exact-head review `5633203211`
 Owner: Tom
 Created: 2026-09-11
 Depends on: Contract 029; qualified OpenCode HTTP `1.18.29`; Research 292; g05.037
@@ -93,13 +93,13 @@ artifacts.
 
 ## Acceptance
 
-- [ ] official identity is reproducible for the published hop
-- [ ] every changed shipped file feeding selected behavior is classified
-- [ ] identity evidence lands before any production claim edit
-- [ ] only the admitted segment changes the claim; a stop changes no claim
-- [ ] historical segments, gaps, claim ID, `AllowUnverified`, and unrelated
+- [x] official identity is reproducible for the published hop
+- [x] every changed shipped file feeding selected behavior is classified
+- [x] identity evidence lands before any production claim edit
+- [x] only the admitted segment changes the claim; a stop changes no claim
+- [x] historical segments, gaps, claim ID, `AllowUnverified`, and unrelated
       OpenCode surfaces survive
-- [ ] official latest is rechecked at both required boundaries
+- [x] official latest is rechecked at both required boundaries
 
 ## Result
 
@@ -129,3 +129,7 @@ push; both remained `1.18.30`. No provider call, live server, install, host
 update, release, tag, or consumer mutation occurred.
 
 Independent exact-head review and the merge gate are queue-owned.
+
+Merge: PR #314 (identity `6d4fbf44`, claim `f53cbe81`) passed independent
+exact-head review `5633203211` with no findings and merged to canonical
+`main` at `2b79b083`. Documentation closeout records the merged outcome.

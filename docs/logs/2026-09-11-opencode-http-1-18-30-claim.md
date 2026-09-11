@@ -23,3 +23,18 @@ Focused formatting plus `validate:focused` and `package:verify-affected` on
 `swallowtail-adapter-opencode`, with `check:examples`, `package:api`,
 `qa:routes`, `qa:northstar`, the research, logs, roadmaps, g05, roadmap-number,
 status, and next-action checks, and `git diff --check`.
+
+## Merge And Closeout
+
+Documentation PR #314 (heads `6d4fbf44` identity and `f53cbe81` claim over
+handoff `ca70b30c`) passed independent exact-head review `5633203211`
+(`zai/glm-5.3-flash`, distinct from the worker provider) with no findings
+and merged to canonical `main` at `2b79b083`. Validation at review:
+`git diff --check` clean, `cargo fmt --check` clean,
+`effigy validate:focused swallowtail-adapter-opencode` (133 tests passed),
+`effigy package:verify-affected swallowtail-adapter-opencode`,
+`effigy check:examples`, `effigy package:api`, `effigy qa:routes`,
+`effigy qa:northstar`, and the research/logs/roadmaps/g05 index,
+roadmap-number, status-drift, next-action, and docs-links checks all passed;
+exact-SHA CI on the PR was green. No provider was contacted, no host was
+changed, and no consumer was mutated.

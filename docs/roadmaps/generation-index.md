@@ -144,12 +144,13 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 51 tasks: 38 completed tasks, one ready task at 051, honest evidence
+g05 has 51 tasks: 39 completed tasks, no ready task, honest evidence
 stops at 002, 003, 007, 011, 029, 031, and 034, and planned tasks at 035, 039,
 040, 041, and 042.
-g05.051 is ready: freeze the single official OpenCode HTTP `1.18.30` hop with
-complete-tree evidence before any claim edit, then qualify only an admitted
-segment. No provider or live-server work is authorized.
+g05.051 completed 2026-09-11: OpenCode HTTP qualified through official
+`1.18.30` as a compatible `surface-19` extension from complete-tree identity
+evidence; PR #314 merged at `2b79b083` after independent exact-head review
+`5633203211`; provider-free with no consumer mutation.
 g05.050 completed 2026-09-10: the immutable remote `v0.5.0` tag resolved
 every selected Swallowtail package to exact peel `582d01d6` in both the
 repository selector and an external remote-tag consumer, and the
@@ -449,8 +450,8 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Validate g05.051 as the single ready task. Freeze official OpenCode HTTP `1.18.30`
-against qualified `1.18.29`, compare complete artifacts because the GitHub
-tags diverge, and change the claim only if the mapped evidence admits it. No
-provider call, live server, install, host update, release, or consumer mutation
-follows.
+Define the next Contract 029 currentness family or other generation work
+through Tom/Chatterbox. g05.051 closed 2026-09-11: OpenCode HTTP `1.18.30`
+qualified and merged through PR #314 at `2b79b083` after independent
+exact-head review `5633203211`. No ready tasks remain; no consumer mutation,
+provider call, publication, or further release follows automatically.

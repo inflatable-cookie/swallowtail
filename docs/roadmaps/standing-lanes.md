@@ -26,13 +26,16 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: OpenCode HTTP `1.18.30` (g05.051). Official npm and GitHub
-stable agree on the single published hop after qualified `1.18.29`. The host
-remains observation-only at `1.18.18`. Planning-time GitHub tag comparison is
-diverged and provider transformation sources changed, so complete-tree mapped
-evidence must land before any claim edit. Research 304 is reserved. No
-provider call, live server, install, host update, release, or consumer mutation
-is authorized.
+Active family: OpenCode HTTP `1.18.30` (g05.051) is claimed; no family follows
+it automatically. Official npm and
+GitHub stable `1.18.30` is a compatible extension of the existing
+`opencode.http-sse.surface-19` window through qualified `1.18.29`. Research 304
+froze identity before the claim. The published GitHub tags diverge, so the hop
+was proved from complete source-tree inventories; selected route files and
+OpenAPI stay byte-identical and the Bedrock, GitLab reasoning, and GPT-6 Astra
+prompt changes are unmapped. The host remains observation-only at `1.18.18`.
+Unpublished `1.18.31` stays permitted `UnverifiedNewer`. No provider call, live
+server, install, host update, release, or consumer mutation occurred.
 
 Current promoted family: Pi RPC `0.85.1` (g05.044). Research 302 froze
 identity before the claim. Official npm and GitHub `0.85.1` plus published
@@ -115,7 +118,23 @@ recorded.
 
 ### Latest Completed Family
 
-OpenCode HTTP `1.18.29` is a compatible extension of existing
+OpenCode HTTP `1.18.30` is a compatible extension of existing
+`opencode.http-sse.surface-19`. Research 304 and g05.051 freeze identity before
+the claim. Host `opencode` is `1.18.18` on `PATH` and stays observation-only; it
+was not installed, updated, or invoked beyond `--version`. Official artifacts
+were hashed and never executed. Official npm and GitHub stable is `1.18.30`
+published 2026-09-09T03:33:55.588Z / 2026-09-09T03:34:27Z; the only published
+stable after `1.18.29` is `1.18.30`. The published GitHub tags diverge, so the
+hop is proved from complete repository-tree inventories: 6557 to 6561 files,
+four added paths, no removals, and 101 changed files. Selected HTTP/SSE route
+files and OpenAPI SHA-256 stay byte-identical. Bedrock model-id resolution,
+GitLab reasoning-option shaping, the GPT-6 Astra system prompt, provider SDK
+bumps, and the explicit-service-tier patch are unmapped or provider-facing.
+Baseline `1.14.48`, claim id, historical gaps, and `AllowUnverified` stay.
+Unpublished `1.18.31` remains permitted `UnverifiedNewer`. No provider prompt,
+live session, login, install, or host update was required.
+
+Previous OpenCode HTTP `1.18.29` is a compatible extension of existing
 `opencode.http-sse.surface-19`. Research 292 and g05.037 cards 135-136 freeze
 identity before the claim. Host `opencode` was not on `PATH` and was not
 installed, updated, or replaced. Official artifacts were hashed and never
@@ -126,12 +145,13 @@ after `1.18.28` is `1.18.29`. npm `LICENSE`, `bin/opencode.exe`, and
 HTTP/SSE route files and OpenAPI SHA-256 stay byte-identical. The only
 `packages/opencode/src` change is unmapped Codex OAuth catalogue filtering in
 `plugin/openai/codex.ts`. Baseline `1.14.48`, claim id, historical gaps, and
-`AllowUnverified` stay. Unpublished `1.18.30` remains permitted
-`UnverifiedNewer`. No provider prompt, live session, login, install, or host
+`AllowUnverified` stay. Unpublished `1.18.30` was the `UnverifiedNewer` point
+until this claim. No provider prompt, live session, login, install, or host
 update was required.
 
-g05.028 cards 077-078 remain the `1.18.28` identity/claim. This family adds
-only the next published hop.
+g05.037 cards 135-136 remain the `1.18.29` identity/claim. g05.028 cards
+077-078 remain the `1.18.28` identity/claim. Each family adds only the next
+published hop.
 
 ### Previous Completed Family
 
@@ -197,7 +217,9 @@ material candidate. OpenCode HTTP `1.18.28` ranked first: the host is
 admitted all eight published hops as compatible `surface-19`; card 078 raises
 the qualified ceiling through `1.18.28`. g05.037 cards 135-136 later raise
 that same `surface-19` through official `1.18.29` and leave unpublished
-`1.18.30` `UnverifiedNewer` under Contract 029.
+`1.18.30` `UnverifiedNewer` under Contract 029. g05.051 then raises that same
+`surface-19` through official `1.18.30` and leaves unpublished `1.18.31`
+`UnverifiedNewer`.
 
 Research 276 previously revalidated all 40 production families on 2026-09-02.
 Kimi Code npm and GitHub stable moved to `0.40.1`; the

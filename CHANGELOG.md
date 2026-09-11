@@ -5,6 +5,19 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Changed
+- raise the qualified OpenCode HTTP ceiling from `1.18.29` to official npm
+  `opencode-ai` `1.18.30` on the `opencode.server` axis. Compatible extension
+  of `opencode.http-sse.surface-19`: selected HTTP/SSE route files and OpenAPI
+  stay byte-identical, and the published GitHub tags diverge, so the hop is
+  proven from complete source-tree inventories rather than a commit range.
+  Unmapped Bedrock model-id resolution, unmapped GitLab reasoning-option
+  shaping, and the unmapped GPT-6 Astra system prompt are the only shipped
+  server source changes; provider SDK bumps and the explicit-service-tier
+  patch stay provider-facing. Baseline `1.14.48`, claim id, historical gaps,
+  and `AllowUnverified` stay; unpublished `1.18.31` remains visible
+  `UnverifiedNewer`. Research 304, g05.051.
+
 ## [0.5.0] - 2026-09-10
 
 ### Added

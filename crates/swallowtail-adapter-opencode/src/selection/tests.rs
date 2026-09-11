@@ -106,7 +106,7 @@ fn claim_preserves_unpublished_and_outer_gaps() {
     }
     for qualified in [
         "1.18.21", "1.18.22", "1.18.23", "1.18.24", "1.18.25", "1.18.26", "1.18.27", "1.18.28",
-        "1.18.29",
+        "1.18.29", "1.18.30",
     ] {
         let binding = opencode_server_binding(qualified).expect("qualified version is safe");
         let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(binding.version())
@@ -118,7 +118,7 @@ fn claim_preserves_unpublished_and_outer_gaps() {
             "opencode.http-sse.surface-19"
         );
     }
-    let newer = opencode_server_binding("1.18.30").expect("newer version is safe");
+    let newer = opencode_server_binding("1.18.31").expect("newer version is safe");
     assert!(!claim.supports(newer.version()));
     assert!(claim.permits(newer.version()));
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
@@ -127,7 +127,7 @@ fn claim_preserves_unpublished_and_outer_gaps() {
         panic!("newer stable version must remain unverified");
     };
     assert_eq!(unverified.version(), newer.version());
-    assert_eq!(unverified.latest_qualified().as_str(), "1.18.29");
+    assert_eq!(unverified.latest_qualified().as_str(), "1.18.30");
     assert_eq!(
         unverified.behavior_revision().as_str(),
         "opencode.http-sse.surface-19"

@@ -144,9 +144,9 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 52 tasks: 40 completed tasks, honest evidence
-stops at 002, 003, 007, 011, 029, 031, and 034, and planned tasks at 035, 039,
-040, 041, and 042.
+g05 has 53 tasks: 40 completed tasks, honest evidence
+stops at 002, 003, 007, 011, 029, 031, and 034, one ready task at 053, and
+planned tasks at 035, 039, 040, 041, and 042.
 g05.052 completed 2026-09-12: typed non-admission ruling for the exact
 installed Grok `1.0.25` model-catalogue seam; PR #315 merged at `5d0c49f1`
 after independent exact-head review `5648599784`; provider-free with no
@@ -454,7 +454,6 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Define the next generation move through Tom/Chatterbox (see the Next Task
-pointer in the roadmaps front door). [g05.052](g05/052-grok-build-1-0-25-model-catalogue.md)
-closed 2026-09-12 as a typed non-admission ruling with no provider call,
-release, tag or Desktop mutation.
+Implement [g05.053](g05/053-grok-build-1-0-25-catalogue-correction.md). It
+corrects g05.052's missed `GROK_CONFIG` suppression path and restores the
+exact installed `1.0.25` catalogue lane with a fail-closed pre-process gate.

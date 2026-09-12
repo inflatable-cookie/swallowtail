@@ -15,11 +15,12 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Define the next generation work through Tom/Chatterbox. [g05.052 Grok Build 1.0.25 Model Catalogue](g05/052-grok-build-1-0-25-model-catalogue.md)
-closed 2026-09-12: typed non-admission ruling for exact installed Grok `1.0.25`
-merged through PR #315 at `5d0c49f1` after independent exact-head review
-`5648599784`. No ready tasks remain; no provider call, release, tag, Desktop
-mutation, or consumer pin follows automatically.
+Implement [g05.053 Grok Build 1.0.25 Catalogue Correction](g05/053-grok-build-1-0-25-catalogue-correction.md).
+It corrects g05.052's missed per-process `GROK_CONFIG` suppression,
+recovers the reviewed catalogue implementation, and requires exact
+`--no-auto-update models`, an isolated catalogue environment, fail-closed
+enterprise-precedence evidence, and at most one no-prompt catalogue listing.
+No inference, release, tag, Desktop mutation, or consumer pin follows.
 
 ## Standing Lanes
 

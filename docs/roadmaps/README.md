@@ -16,11 +16,10 @@ Closed generations live only as roll-ups under
 ## Next Task
 
 Implement [g05.053 Grok Build 1.0.25 Catalogue Correction](g05/053-grok-build-1-0-25-catalogue-correction.md).
-It corrects g05.052's suppression and parser mistakes, recovers the reviewed
-catalogue implementation, and requires exact `--no-auto-update models`, an
-isolated catalogue environment, fail-closed enterprise-precedence evidence,
-and one final operator-authorized no-prompt catalogue listing with persistent
-redacted runtime evidence.
+It corrects g05.052's parser and acceptance mistakes, recovers the reviewed
+catalogue implementation, and treats exact `--no-auto-update models` as an
+authenticated non-inference metadata command. The existing successful capsule
+is sufficient; no further Grok run is needed.
 No inference, release, tag, Desktop mutation, or consumer pin follows.
 
 ## Standing Lanes

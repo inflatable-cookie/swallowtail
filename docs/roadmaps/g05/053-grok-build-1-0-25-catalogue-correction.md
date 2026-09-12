@@ -1,94 +1,76 @@
 # g05.053 Grok Build 1.0.25 Catalogue Correction
 
-Status: ready after final-observation ruling; operator-directed completion of the Grok catalogue seam
+Status: ready after metadata-boundary correction; operator-directed completion of the Grok catalogue seam
 Owner: Tom
 Created: 2026-09-12
 Depends on: Contracts 020 and 047; g05.052; PR #315; installed Grok `1.0.25`
-Vision tags: model catalogue, Grok Build, provider suppression, consumer truth
+Vision tags: model catalogue, Grok Build, authenticated metadata, consumer truth
 
 ## Outcome
 
 Deliver the exact installed Grok `1.0.25` pre-session model catalogue through
-a separately prepared `ModelCatalog` operation. Correct g05.052's
-non-admission premise: it searched for a dedicated `remote_fetch` environment
-variable but missed Grok's documented, allowlisted per-process `GROK_CONFIG`
-overlay and Swallowtail host-local's ambient-environment clearing.
+a separately prepared `ModelCatalog` operation. Classify exact argv
+`--no-auto-update models` honestly as an authenticated, non-inference metadata
+command. It may refresh authentication or catalogue metadata. It must not send
+a prompt, open a model session, invoke inference, dispatch a tool, update the
+harness, retry, or retain provider state beyond the bounded operation.
 
-The catalogue process uses exact argv `--no-auto-update models` and one
-catalogue-only environment binding that supplies an authorized isolated
-`GROK_HOME`. That operation-private home contains a generated `config.toml`:
-
-```toml
-[features]
-remote_fetch = false
-managed_config = false
-```
-
-Preparation requires positive host evidence that no higher-priority
-requirements/MDM layer defeats either suppression. If that evidence is absent,
-conflicted, or stale, preparation fails before the catalogue process starts.
-
-`GROK_CONFIG` is not the suppression mechanism. Exact `1.0.25` documentation
-warns that security gates may read raw disk layers without the overlay, and
-marks `features.remote_fetch` as a security-sensitive fleet-precedence key.
-The first observation confirmed that limitation: it started the auth-refresh
-watcher and wrote a freshly fetched remote-origin `models_cache.json` despite
-the overlay. That observation is frozen as failed evidence, not retried.
+The prior `ProviderSuppressed` requirement was not traced to the Desktop
+consumer need. It incorrectly turned Grok's internal auth-refresh watcher into
+a product failure even though the final observation exited zero, parsed the
+requested catalogue, opened no model session, performed no inference, joined
+cleanup, and succeeded with a zero-credit account. Remove that requirement and
+the private suppression machinery rather than adding an operating-system
+network sandbox.
 
 ## Ready-State Rubric
 
 - [x] The operator rejected g05.052's non-admission and explicitly instructed
       Chatterbox to fix the seam.
-- [x] Exact `1.0.25` installed documentation states that `GROK_CONFIG` is an
-      allowlisted inline JSON overlay covering `features`, including
-      `features.remote_fetch` and `features.managed_config`.
+- [x] The operator confirmed that authenticated catalogue metadata traffic is
+      acceptable; the required boundary is no prompt, session, tool, or
+      inference.
 - [x] Swallowtail host-local clears ambient environment before applying exact
       approved environment bindings.
 - [x] `--no-auto-update` is accepted only before the `models` subcommand.
-- [x] The enterprise-precedence caveat is explicit and fail-closed rather than
-      silently ignored.
+- [x] The previous enterprise-precedence and remote-fetch checks are removed
+      because neither protects the accepted non-inference boundary.
 - [x] No prompt, model session, provider inference, release, tag, or Desktop
       mutation is required.
 
 ## Work
 
-1. Freeze Research 306 from the exact `1.0.25` shipped configuration docs,
-   command grammar, installed executable identity, host-local `env_clear`
-   launch semantics, PR #315 review history, and the failed first observation.
-   Correct Research 305 and its ruling log narrowly: the earlier verdict
-   remains historical, but its claim that no bindable suppression exists is
-   superseded by an operation-private isolated-home `config.toml`.
+1. Freeze Research 306 from the exact `1.0.25` command grammar, installed
+   executable identity, host-local launch semantics, PR #315 review history,
+   and all observations. Correct Research 305 and its ruling log narrowly: the
+   earlier verdict remains historical, while the final successful capsule and
+   corrected authenticated-metadata boundary supersede its non-admission.
 2. Recover the admitted implementation from PR #315's preserved Git objects
-   rather than rewriting it from memory. Correct it before admission:
-   `--no-auto-update models`; a distinct catalogue environment reference;
-   an operation-private `config.toml`; exact provider-suppression evidence;
-   `HarnessConfigurationPosture::ProviderSuppressed`
-   in instance, requirements, plan, and driver validation; and a typed
-   pre-process rejection when a requirements/MDM override is not proved absent
-   or safely disabling.
+   rather than rewriting it from memory. Keep exact `--no-auto-update models`,
+   bounded capture, redaction, lifecycle, and the shipped bullet grammar.
+   Remove the operation-private suppression file, enterprise-precedence gate,
+   `ProviderSuppressed` binding, and suppression-only public types/tests. Use
+   `HarnessConfigurationPosture::Ambient`; catalogue authority remains
+   separate from inference authority.
 3. Preserve the previously reviewed bounded parser and exact-`1.0.25`
    supplemental metadata projection: live listing owns membership, order, and
    default; the frozen embedded document supplements exact matching IDs only.
    Unknown valid IDs pass through. Missing source fields remain absent.
-4. Prove with fake processes and the real local host that ambient variables,
-   `GROK_CONFIG`, `GROK_CONFIG_PATH`, user config, and unrelated ACP environment
-   state do not leak into the catalogue launch; the exact generated file and
-   isolated home do; conflicting or unproved enterprise pins reject before
-   spawn; malformed or missing private configuration rejects; and success,
-   failure, deadline, disconnect, and cleanup remain bounded and joined.
-5. Preserve both earlier observations as failed evidence. The replacement
+4. Prove with fake processes and the real local host that exact argv,
+   executable, bounded output, redaction, success, failure, deadline,
+   disconnect, and cleanup remain deterministic and joined. Do not add tests
+   for the removed suppression machinery.
+5. Preserve the earlier observations as evidence. The replacement
    process exited zero with 113 stdout bytes and zero stderr bytes; exact binary
    format pieces prove the parser rejected Grok's shipped `*`/`-` bullet rows,
    not the catalogue membership. Its unwind guard removed the private home
    before the runtime suppression proof was retained. After the corrected
    bullet parser, persistent redacted capsule, and revised provider-free gates
-   pass, run exactly one final authenticated, provider-suppressed `1.0.25`
-   catalogue command using the operation-private file. No retry. Persist
-   bounded stdout/stderr counts and digests plus runtime suppression evidence
-   before any assertion. Admit only when the exact-version log proves remote
-   fetch disabled and the private home has neither an auth-refresh watcher nor
-   a fresh remote-origin cache write. It must send no prompt, open no model
-   session, or perform inference.
+   pass. The final observation is already sufficient and must not be repeated:
+   it parsed ordered `grok-4.6` default then `grok-4.5`, exited zero, opened no
+   session, performed no inference, joined cleanup, and persisted redacted
+   counts/digests. Its auth-refresh watcher and absence of a fresh remote-origin
+   cache are descriptive metadata-path evidence, not acceptance gates.
 6. Restore the additive post-`v0.5.0` route-50 current-source inventory using
    g05.052's 2026-09-12 blocker ruling: current working baselines may advance;
    tagged `v0.5.0`, Research 281, historical ledgers, and release notes remain
@@ -101,26 +83,24 @@ the overlay. That observation is frozen as failed evidence, not retried.
 | --- | --- |
 | Readiness | ready |
 | Prerequisites | Contracts 020 and 047; g05.052/PR #315 evidence; exact installed Grok `1.0.25`; clean pushed `main` |
-| Completion conditions | Research 306 freezes both failed observations and the operation-private-file correction; the preserved implementation has the shipped bullet grammar and a failure-safe redacted capsule; exactly one final catalogue command proves the accepted path after revised provider-free gates; exact-head review and all named validation pass; Desktop receives the source-linked capsule |
+| Completion conditions | Research 306 freezes the observations and corrected metadata boundary; the preserved implementation has the shipped bullet grammar and failure-safe redacted evidence; the existing final capsule is accepted without another live run; exact-head review and all named validation pass; Desktop receives the source-linked capsule |
 | Owned mutable paths | `crates/swallowtail-adapter-grok/**`; exact Grok rows in current route/feature/activity matrices and integration guides; `CHANGELOG.md` `[Unreleased]`; current-role `release-baselines/production-routes-0.5.0.txt` and `release-baselines/public-api-0.5.0/swallowtail-adapter-grok.txt`; narrowly required route/front-door/activity validation scripts and tests; `docs/research/305-grok-1-0-25-model-catalogue-evidence.md`, new `docs/research/306-*.md`, and research index; `docs/logs/2026-09-12-g05-052-grok-1-0-25-model-catalogue-ruling.md`, one new corrective claim log, and logs index; this task's result/status; `PAPERCUTS.md` append only |
 | Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, and `docs/roadmaps/generation-index.md`; queue coordinator edits these at closeout |
 | Forbidden paths | `docs/releases/0.5.0.md`; Research 281 and every historical freeze ledger/baseline; Grok ACP execution selection/claim behavior; contracts; every other adapter; Desktop or consumer repositories; release/tag/workflow files |
 | Approved concurrent siblings | none on Grok, current inventory, or closeout surfaces |
-| Worker capability class | complex Rust/evidence correction worker; exact process-environment and configuration-precedence reasoning; one final bounded provider-suppressed catalogue observation only after revised provider-free proof |
-| Acceptance evidence | exact shipped Grok config docs and executable identity; local-host environment-clearing proof; mutation-sensitive fake-process corpus; exact environment/argv capture; one redacted live catalogue capsule; current-vs-tagged inventory regression; focused package and route gates |
-| Review oracle | the smallest counterexample is omitting `--no-auto-update`, reusing an ambient ACP environment, allowing a higher-priority pin to force remote fetch, spawning before suppression evidence, trusting the embedded document for live membership, contacting inference, mutating tagged evidence, or collapsing catalogue into ACP execution |
-| Stop conditions | exact `1.0.25` rejects or ignores the private file; runtime evidence shows a fresh remote-origin cache write or auth-refresh watcher; enterprise precedence cannot be proved before spawn; the command prompts, creates a session, performs inference, or cannot close/join; provider-free gates fail before the final allowance |
+| Worker capability class | Rust/evidence correction worker; simplify the retained catalogue implementation to the authenticated non-inference boundary; no further live observation |
+| Acceptance evidence | exact shipped Grok command grammar and executable identity; local-host launch proof; mutation-sensitive fake-process corpus; exact argv capture; one redacted live catalogue capsule; current-vs-tagged inventory regression; focused package and route gates |
+| Review oracle | the smallest counterexample is omitting `--no-auto-update`, sending a prompt, opening a model session, invoking inference or a tool, trusting the embedded document for live membership, mutating tagged evidence, retaining raw account data, or collapsing catalogue into ACP execution |
+| Stop conditions | the command prompts, creates a model session, invokes inference or a tool, updates the harness, cannot close/join, exceeds bounds, leaks raw account data, or the provider-free gates fail |
 | Escalation owner | operator via Chatterbox for semantic/authority questions; queue coordinator for mechanical blockers |
 
 ## Boundaries
 
-Tom explicitly authorized one final observation on 2026-09-12 after the
-bullet-grammar and capsule-ordering defects were isolated. This supersedes the
-earlier no-third-observation boundary only for that exact no-prompt
-`--no-auto-update models` operation. The reported zero Grok credit balance does
-not relax acceptance: the operation must remain provider-suppressed and must
-not contact inference. A concrete billing/quota rejection is retained as a
-typed failure and stops the task; it does not authorize a retry.
+Tom accepted the authenticated non-inference metadata boundary on 2026-09-12.
+The existing final observation is the acceptance evidence; no further Grok
+run is authorized or needed. Its zero-credit success supports the observed
+non-inference classification but does not prove entitlement or future billing
+state.
 
 This corrects the catalogue seam only. It does not widen Grok ACP execution,
 change `grok_build_model_for_version`, infer entitlement from listing, hard-code
@@ -145,10 +125,8 @@ is not a model prompt and grants no inference authority.
 
 ## Acceptance
 
-- [ ] exact private-file suppression is bound and proved before spawn and at runtime
 - [ ] exact argv is `--no-auto-update models`
-- [ ] ambient config/environment cannot leak into the child
-- [ ] enterprise precedence fails closed
+- [ ] no prompt, model session, tool dispatch, inference, update, or retry occurs
 - [ ] listing owns membership/order/default; supplemental metadata stays exact-ID only
 - [ ] lifecycle, bounds, redaction, and cleanup pass
 - [ ] tagged `v0.5.0` and historical evidence remain immutable

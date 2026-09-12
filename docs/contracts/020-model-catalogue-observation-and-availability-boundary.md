@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-27
+Updated: 2026-09-12
 
 ## Purpose
 
@@ -47,17 +47,23 @@ harness catalogue remains harness interaction. A hosted catalogue does not
 turn a harness route into direct inference. A control-plane observation does
 not become runtime authority.
 
-A dedicated harness catalogue may start one ephemeral provider-suppressed
-process when its protocol offers a discovery command independent from a
-provider session. It must disable session persistence, prompts, tools,
-extensions, project configuration, update actions, retry, and provider
-invocation. Process, task, time, configuration, and delegated-access work
-remain joined and bound to the prepared instance.
+A dedicated harness catalogue may start one ephemeral authenticated metadata
+process when its protocol offers a discovery command independent from a model
+session. The operation may perform bounded authentication or catalogue
+metadata traffic when that is part of the source command. It must not send a
+prompt, open a model session, invoke inference, dispatch a tool, enable an
+extension, update the harness, retry, or retain provider state beyond its
+operation scope. Process, task, time, configuration, metadata-request, and
+delegated-access work remain joined and bound to the prepared instance.
 
-Provider-suppressed execution may use a harness-native safe or non-interactive
-mode. It does not imply an operating-system sandbox. The reported set remains
-scoped to the exact executable, version, configuration, environment, and
-access posture used by that process.
+`ProviderSuppressed` is required only when the consumer or route contract
+actually requires provider-configuration suppression. It is not the default
+meaning of a prompt-free catalogue. An authenticated metadata command does
+not fail merely because the harness starts credential refresh or performs a
+bounded catalogue request. Conversely, no-prompt or zero-credit success does
+not prove that metadata traffic was absent. The reported set remains scoped to
+the exact executable, version, configuration, environment, access posture,
+account audience, and observation time used by that process.
 
 Model options advertised only by opening, loading, or updating a provider
 session are negotiated session evidence. They are not a standalone catalogue
@@ -225,9 +231,11 @@ Marketplace action, or paid inference.
 
 Dedicated harness catalogue conformance must additionally prove:
 
-- exact executable compatibility and provider-suppressed configuration
+- exact executable compatibility and the explicitly selected configuration
+  posture; do not require `ProviderSuppressed` without a named need
 - session persistence, prompts, tools, extensions, project resources, update,
-  retry, and provider inference stay disabled
+  retry, and provider inference stay disabled; bounded authentication and
+  catalogue metadata traffic remain distinct from inference
 - bounded model count and field projection from one qualified command
 - command completion, process close, task join, and delegated credential
   release under success, failure, deadline, and disconnect

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-06
+Updated: 2026-09-12
 
 ## Scope
 
@@ -18,6 +18,12 @@ These rules apply to all Swallowtail work before v1.0.
   layers without operator approval.
 - Do not flatten provider differences into a fake uniform interface.
 - Do not import consumer product concepts into portable crates.
+- Use the minimum sufficient acceptance oracle. Every restrictive condition
+  must trace to a concrete consumer requirement, safety boundary, or named
+  failure harm. Do not fail useful work on internal provider activity when the
+  required boundary is narrower, such as no prompt, model session, tool use,
+  or inference. Recheck that trace before spending a one-shot live allowance;
+  if it is absent, correct the plan rather than hardening the probe.
 - Keep external source repositories as evidence, not hidden build inputs.
 - Keep each roadmap generation as a long-lived container for roughly 30-50
   numbered tasks (`gNN.NNN` files directly under `gNN/`). Phase changes alone

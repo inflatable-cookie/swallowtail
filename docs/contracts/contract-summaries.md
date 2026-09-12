@@ -65,8 +65,10 @@ contract file owns the exact rules.
   accepted-for-reap never means joined.
 - **020** keeps mutable catalogue observations separate from entitlement,
   runtime capability, and route selection. It distinguishes standalone sources
-  from session-negotiated options and records that the current common
-  catalogue request has a deadline but no independent cancellation control.
+  from session-negotiated options, permits bounded authenticated metadata
+  traffic without relabeling it as inference, and records that the current
+  common catalogue request has a deadline but no independent cancellation
+  control.
 - **021** makes provider-managed background execution, required temporary
   retention, bounded stream reattachment, and remote cancellation truth
   explicit and opt-in.

@@ -455,5 +455,6 @@ rollover still requires explicit operator authority.
 ## Next Task
 
 Implement [g05.053](g05/053-grok-build-1-0-25-catalogue-correction.md). It
-corrects g05.052's missed `GROK_CONFIG` suppression path and restores the
-exact installed `1.0.25` catalogue lane with a fail-closed pre-process gate.
+corrects g05.052's parser and over-strict suppression premise and restores the
+exact installed `1.0.25` catalogue as authenticated non-inference metadata.
+The existing successful capsule is sufficient; no further Grok run is needed.

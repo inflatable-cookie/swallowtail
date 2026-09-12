@@ -7,7 +7,7 @@ dispatch_authority: orchestrator
 status: ready-to-launch
 base_required: pushed-main
 queue_dispatch: northstar-queue
-queue_approval: "Tom rejected g05.052's non-admission as wrong, instructed Swallowtail Chatterbox to fix it, and explicitly authorized one final no-prompt observation after the parser/capsule repair with 'Go for it' on 2026-09-12."
+queue_approval: "Tom rejected the unnecessary provider-suppression gate and confirmed the authenticated non-inference metadata boundary on 2026-09-12; land the retained catalogue without another Grok run."
 queue:
   capability: complex
   skipPRReview: false
@@ -20,7 +20,7 @@ tags: [coordination, handoff, worker, grok, catalogue, correction, desktop]
 ## What This Thread Was Doing
 
 Correct g05.052 and deliver the exact installed Grok `1.0.25` pre-session
-model catalogue through a genuinely provider-suppressed prepared operation.
+model catalogue through an authenticated, non-inference metadata operation.
 
 ## Why It Matters
 
@@ -50,6 +50,10 @@ single ACP compatibility model or a hard-coded downstream list.
   capsule with counts, digests, and runtime proof before any assertion.
 - Focused provider-free validation is green: format, clippy including
   `live-probes`, and every `swallowtail-adapter-grok` test.
+- The final persisted capsule parses `grok-4.6` as default followed by
+  `grok-4.5`, exited zero, joined cleanup, opened no model session, and ran with
+  zero account credit. Its auth-refresh watcher is permitted metadata-path
+  activity, not inference.
 
 ## Boundaries
 
@@ -61,50 +65,27 @@ release evidence, create a tag/release, publish, or touch workflows.
 
 ## Important Context
 
-Recover the admitted PR #315 implementation, then correct it before claiming
-support. The first live observation disproved the overlay route: it exited zero
-but started Grok's auth-refresh watcher and wrote a freshly fetched
-remote-origin `models_cache.json`; raw command output was not retained, so
-parser grammar was also unproved. Preserve that as failed evidence.
-
-The catalogue needs a distinct exact environment reference containing an
-authorized isolated `GROK_HOME`, no ambient `GROK_CONFIG` or
-`GROK_CONFIG_PATH`, and a generated operation-private `$GROK_HOME/config.toml`
-containing only:
-
-```toml
-[features]
-remote_fetch = false
-managed_config = false
-```
-
-This is temporary operation materialization, not a host configuration edit.
-Use exact argv `--no-auto-update models`. Represent both the instance and
-operation requirements as `HarnessConfigurationPosture::ProviderSuppressed`.
-Require positive host evidence that no higher-priority requirements/MDM pin
-defeats suppression; reject before process start otherwise. Exact `1.0.25`
-documents that overlay-reachable `features` still include security gates that
-read raw disk layers and that `remote_fetch` has fleet precedence. Do not use
-the overlay for this gate.
+Recover the retained implementation and simplify it before claiming support.
+Use exact argv `--no-auto-update models`. Keep the bounded parser, redacted
+output evidence, exact executable binding, no-update flag, and joined process
+lifecycle. Remove the private suppression file, enterprise-precedence checks,
+`ProviderSuppressed` plan binding, and suppression-only public API/tests. This
+operation may perform bounded authentication or catalogue metadata traffic;
+it must not send a prompt, open a model session, invoke inference or tools,
+update, retry, or retain raw account data. Bind
+`HarnessConfigurationPosture::Ambient`; that accepts the harness metadata
+configuration without granting inference authority.
 
 The live listing remains authoritative for membership, order, and default.
 The frozen exact-`1.0.25` embedded document may only supplement matching IDs.
-Keep the existing parser bounds and lifecycle work, add mutation-sensitive
-environment/pre-spawn regressions, and restore current-source route 50 without
-changing tagged `v0.5.0` or Research 281. Run every revised provider-free gate
-first. Then run exactly one final authenticated, provider-suppressed catalogue
-listing with the corrected parser and persistent capsule. Persist bounded
-stdout/stderr counts and digests plus the exact-version runtime proof before any
-assertion. Admit only if the log proves remote fetch disabled and the isolated
-home has neither a fresh remote-origin cache write nor an auth-refresh watcher.
-Tom explicitly authorized this final observation with “Go for it” on
-2026-09-12. No retry is authorized.
-
-The operator reports that the Grok account has zero usage credit. That must not
-matter to an honestly provider-suppressed catalogue operation. Do not send a
-prompt, open a model session, perform inference, or weaken suppression to work
-around billing. If the CLI returns a concrete billing/quota failure, retain it
-as typed evidence and stop without retry.
+Keep the existing parser bounds and lifecycle work and restore current-source
+route 50 without changing tagged `v0.5.0` or Research 281. Run every revised
+provider-free gate first. Do not run Grok again. The existing final capsule is
+accepted: it records successful bullet-grammar parsing, ordered ids/default,
+zero stderr, joined cleanup, and no model session or inference. The observed
+auth-refresh watcher is allowed metadata-path behavior. Zero-credit success is
+evidence about this observation only, not a general entitlement or billing
+claim.
 
 Expected fixture root is
 `crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.25-model-catalogue/`.
@@ -113,9 +94,9 @@ a narrow correction note rather than rewritten history.
 
 ## Suggested Next Move
 
-Finish the retained parser/capsule revision, rerun the full provider-free gate,
-then use the single final observation to decide admission from persistent
-runtime suppression evidence.
+Simplify the retained parser/capsule revision to the corrected metadata
+boundary, run the complete provider-free gate, then open the PR without any
+further Grok observation.
 
 ## Completion Protocol
 

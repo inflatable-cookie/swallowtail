@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-11
+Updated: 2026-09-12
 
 ## Generations
 
@@ -144,9 +144,14 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 51 tasks: 39 completed tasks, no ready task, honest evidence
+g05 has 52 tasks: 39 completed tasks, one ready task at 052, honest evidence
 stops at 002, 003, 007, 011, 029, 031, and 034, and planned tasks at 035, 039,
 040, 041, and 042.
+g05.052 is ready and operator-approved: prove the exact installed Grok
+`1.0.25` non-prompt model-catalogue seam from static evidence, then deliver a
+separately prepared bounded catalogue or a typed non-admission ruling. No live
+provider call, ACP compatibility widening, release, tag or Desktop mutation is
+authorized.
 g05.051 completed 2026-09-11: OpenCode HTTP qualified through official
 `1.18.30` as a compatible `surface-19` extension from complete-tree identity
 evidence; PR #314 merged at `2b79b083` after independent exact-head review
@@ -450,8 +455,7 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Define the next Contract 029 currentness family or other generation work
-through Tom/Chatterbox. g05.051 closed 2026-09-11: OpenCode HTTP `1.18.30`
-qualified and merged through PR #314 at `2b79b083` after independent
-exact-head review `5633203211`. No ready tasks remain; no consumer mutation,
-provider call, publication, or further release follows automatically.
+Prove [g05.052 Grok Build 1.0.25 Model Catalogue](g05/052-grok-build-1-0-25-model-catalogue.md).
+Static command/output identity precedes any claim; the accepted
+outcome is one exact prepared catalogue or a typed non-admission ruling. No
+provider call, release, tag or Desktop mutation follows.

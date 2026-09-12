@@ -15,12 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Define the next Contract 029 currentness family or other generation work
-through Tom/Chatterbox. [g05.051 OpenCode HTTP 1.18.30 Useful Newer](g05/051-opencode-http-1-18-30-useful-newer.md)
-closed 2026-09-11: official `1.18.30` qualified as a compatible `surface-19`
-extension and merged through PR #314 at `2b79b083` after independent
-exact-head review `5633203211`. No ready tasks remain; no consumer mutation,
-provider call, publication, or further release follows automatically.
+Prove [g05.052 Grok Build 1.0.25 Model Catalogue](g05/052-grok-build-1-0-25-model-catalogue.md).
+It is ready and operator-approved. It must prove the installed CLI's independent
+non-prompt catalogue seam from static evidence, then either deliver one exact
+prepared operation or a typed non-admission ruling. No live provider call,
+release, tag or Desktop mutation is authorized.
 
 ## Standing Lanes
 

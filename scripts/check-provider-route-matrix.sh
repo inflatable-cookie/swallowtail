@@ -76,11 +76,13 @@ current_routes = {
 }
 if not current_routes:
     fail("current route inventory is empty")
-if current_routes != immutable_routes:
+if not immutable_routes < current_routes:
     fail(
-        f"current route inventory must equal immutable v{previous_version} exactly: "
-        f"added={sorted(current_routes - immutable_routes)}, "
-        f"missing={sorted(immutable_routes - current_routes)}"
+        "current source route inventory must strictly extend immutable "
+        f"v{previous_version}: post-tag additions "
+        f"{sorted(current_routes - immutable_routes)} must stay declared while "
+        f"v{previous_version} stays frozen; rewritten history "
+        f"{sorted(immutable_routes - current_routes)} collapses the split"
     )
 
 candidate_routes = {
@@ -130,10 +132,10 @@ required_fields = {
 }
 if reader.fieldnames is None or not required_fields <= set(reader.fieldnames):
     fail(f"route behavior ledger lacks required fields: {sorted(required_fields)}")
-if len(rows) != len(current_routes):
+if len(rows) != len(immutable_routes):
     fail(
-        f"route behavior ledger must contain exactly {len(current_routes)} rows: "
-        f"{len(rows)}"
+        "frozen route behavior ledger must contain exactly "
+        f"{len(immutable_routes)} historical rows: {len(rows)}"
     )
 
 ledger_by_route: dict[str, dict[str, str]] = {}
@@ -143,16 +145,16 @@ for row in rows:
         fail(f"route behavior ledger contains duplicate route: {route}")
     ledger_by_route[route] = row
 
-if set(ledger_by_route) != current_routes:
+if set(ledger_by_route) != immutable_routes:
     fail(
-        "route behavior ledger must cover the current "
-        f"{len(current_routes)}-route set exactly: "
-        f"extra={sorted(set(ledger_by_route) - current_routes)}, "
-        f"missing={sorted(current_routes - set(ledger_by_route))}"
+        "frozen route behavior ledger must cover the immutable "
+        f"v{previous_version} {len(immutable_routes)}-route set exactly: "
+        f"extra={sorted(set(ledger_by_route) - immutable_routes)}, "
+        f"missing={sorted(immutable_routes - set(ledger_by_route))}"
     )
 
 expected_membership = {
-    route: "yes" if route in historical_routes else "no" for route in current_routes
+    route: "yes" if route in historical_routes else "no" for route in immutable_routes
 }
 actual_membership = {
     route: row[historical_field].strip()
@@ -162,26 +164,26 @@ if actual_membership != expected_membership:
     fail(
         f"route behavior ledger {historical_field} must match the immutable "
         f"{len(historical_routes)}-route set: mismatches="
-        f"{sorted(route for route in current_routes if actual_membership.get(route) != expected_membership[route])}"
+        f"{sorted(route for route in immutable_routes if actual_membership.get(route) != expected_membership[route])}"
     )
 
-additions = current_routes - historical_routes
+additions = immutable_routes - historical_routes
 actual_no = {route for route, value in actual_membership.items() if value == "no"}
 if actual_no != additions:
     fail(
-        "route behavior ledger historical non-members must equal current minus "
+        "route behavior ledger historical non-members must equal immutable minus "
         f"historical inventory: expected={sorted(additions)}; actual={sorted(actual_no)}"
     )
 
 candidate_phrase = (
     "candidate inclusion is frozen by Card051's explicit "
-    f"{len(current_routes)}-route boundary"
+    f"{len(immutable_routes)}-route boundary"
 )
 for route in sorted(additions):
     row = ledger_by_route[route]
     if candidate_phrase not in row["compatibility_class"]:
         fail(
-            f"{route} lacks the frozen {len(current_routes)}-route candidate "
+            f"{route} lacks the frozen {len(immutable_routes)}-route candidate "
             "inclusion evidence"
         )
 

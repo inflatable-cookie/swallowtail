@@ -125,12 +125,50 @@ is not a model prompt and grants no inference authority.
 
 ## Acceptance
 
-- [ ] exact argv is `--no-auto-update models`
-- [ ] no prompt, model session, tool dispatch, inference, update, or retry occurs
-- [ ] listing owns membership/order/default; supplemental metadata stays exact-ID only
-- [ ] lifecycle, bounds, redaction, and cleanup pass
-- [ ] tagged `v0.5.0` and historical evidence remain immutable
-- [ ] Desktop receives an exact-source adoption boundary
+- [x] exact argv is `--no-auto-update models`
+- [x] no prompt, model session, tool dispatch, inference, update, or retry occurs
+- [x] listing owns membership/order/default; supplemental metadata stays exact-ID only
+- [x] lifecycle, bounds, redaction, and cleanup pass
+- [x] tagged `v0.5.0` and historical evidence remain immutable
+- [x] Desktop receives an exact-source adoption boundary
+
+## Result
+
+Worker evidence. The route is admitted as an authenticated, non-inference
+metadata operation on exact installed `grok 1.0.25`
+(`f7e67d6988e2`, SHA-256
+`9ef4a40ad60c6a5178a65caf39c2a148e6a98d0d2d350b10329dee34d9195d9c`) under
+`HarnessConfigurationPosture::Ambient`. One bounded `--no-auto-update models`
+process with stdin closed unwritten reports ordered exact ids and the source
+default; it may refresh authentication or bounded catalogue metadata but
+sends no prompt, opens no model session, dispatches no tool, invokes no
+inference, updates nothing, retries nothing, and retains no provider state
+beyond the operation.
+
+The shipped exact-`1.0.25` output grammar was recovered from the installed
+binary: an authentication preamble followed by `  * <id> (default)` and
+`  - <id>` bullet rows. The parser requires that grammar and the exact default
+marker, tolerates the preamble, and fails closed on a bare row, duplicate or
+ambiguous default, malformed, empty, or over-limit document. The
+operation-private suppression file, enterprise-precedence gate,
+`ProviderSuppressed` binding, and suppression-only public types/tests were
+removed rather than replaced with network isolation.
+
+The accepted final observation is recorded in
+`crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.25-model-catalogue/live-capsule.json`:
+exact argv, zero exit, stdout 113 bytes with zero stderr, bullet-grammar parse
+to ordered `grok-4.6` default then `grok-4.5`, no prompt, no model session, no
+inference, and joined cleanup. Its descriptive auth-refresh and cache fields
+are metadata-path evidence, not acceptance gates. Both earlier observations
+are preserved as evidence and were not retried. Research 306 freezes the
+corrected boundary and the capsule; Research 305 and the g05.052 ruling log
+keep narrow correction notes.
+
+`grok_build_acp_claim`, `grok_build_model_for_version`, released `v0.5.0`, and
+every tagged or historical ledger and release note are unchanged. Route 50
+(`grok-build.catalogue`) is additive post-`v0.5.0`: current source and the
+working `0.5.0` baselines validate at 50 production routes while tagged
+`v0.5.0` and Research 281 stay frozen at 49.
 
 ## Next Task
 

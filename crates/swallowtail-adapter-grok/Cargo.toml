@@ -21,6 +21,7 @@ futures-channel = "0.3"
 futures-core = "0.3"
 semver = "1"
 serde_json = "1"
+sha2 = "0.10"
 swallowtail-core.workspace = true
 swallowtail-host-local.workspace = true
 swallowtail-protocol-acp.workspace = true
@@ -47,6 +48,15 @@ name = "compatibility_corpus"
 path = "tests/compatibility_corpus.rs"
 
 [[test]]
+name = "catalogue_suite"
+path = "tests/catalogue_suite.rs"
+
+[[test]]
 name = "live_installed_probe"
 path = "tests/live_installed_probe.rs"
+required-features = ["live-probes"]
+
+[[test]]
+name = "live_catalogue_probe"
+path = "tests/live_catalogue_probe.rs"
 required-features = ["live-probes"]

@@ -5,6 +5,30 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Added
+- add the Grok Build pre-session model catalogue as a separately prepared
+  `ModelCatalog` operation on exact installed `1.0.25` only. One bounded
+  authenticated non-inference `--no-auto-update models` process with stdin
+  closed unwritten reports ordered exact model ids and the source default under
+  `HarnessConfigurationPosture::Ambient`. The operation may refresh
+  authentication or bounded catalogue metadata, but it sends no prompt, opens
+  no model session, dispatches no tool, invokes no inference, updates nothing,
+  retries nothing, and retains no provider state beyond the bounded operation;
+  no provider-suppression file or enterprise-precedence gate is required.
+  The shipped exact-`1.0.25` output carries an authentication preamble and
+  `*`/`-` bullet rows, which the parser requires. Display name, description,
+  input token limit, and reasoning modes project only from the frozen
+  exact-`1.0.25` default-model document by exact id equality, unknown ids pass
+  through, malformed, duplicate, empty, over-limit, and ambiguous-default
+  catalogues fail closed with joined cleanup, and `list_models_recorded`
+  returns only redacted stdout/stderr byte counts and digests captured before
+  parsing. The new `QualifiedOnly` claim
+  `grok-build.catalogue.executable-1-0-25`
+  (`grok-build.catalogue.models-text-v1`) admits no older or newer point, and
+  the ACP execution claim, `grok_build_model_for_version`, and released
+  `v0.5.0` are unchanged. The disproved suppression attempts are recorded as
+  evidence. Research 306, g05.053.
+
 ### Changed
 - raise the qualified OpenCode HTTP ceiling from `1.18.29` to official npm
   `opencode-ai` `1.18.30` on the `opencode.server` axis. Compatible extension

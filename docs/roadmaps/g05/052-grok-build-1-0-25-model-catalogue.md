@@ -94,6 +94,8 @@ authorized exact-source pin. Released `v0.5.0` remains immutable and does not
 contain this seam. A new source tag remains a separate operator decision.
 
 ## Blocker Ruling — 2026-09-12
+> Superseded by the non-admission verdict below: PR 315 review proved no
+> admissible seam, so the route-50 program in this section was not carried out.
 
 Contract 036 and the current/previous roles in `release-baselines/README.md`
 settle the route-50 blocker. Keep `grok-build.catalogue` as the additive
@@ -129,21 +131,55 @@ Desktop authority is added.
 - research, logs, roadmaps, g05, roadmap-number, status and next-action checks
 - `git diff --check`
 
-## Acceptance
+## Acceptance (non-admission branch)
 
-- [ ] exact `1.0.25` static evidence precedes and bounds any catalogue claim
-- [ ] preparation requires exact version, access readiness and immutable
-      `ModelCatalog` plan evidence
-- [ ] execution is one bounded `models` process with zero prompt/session/retry
-- [ ] rows preserve provider order, exact IDs, default and only supplied
-      metadata; unknown IDs pass through
-- [ ] malformed/access/exit/deadline/cancellation/cleanup outcomes stay typed
-- [ ] ACP execution choice and compatibility history remain unchanged
-- [ ] final capsule names exact source SHA, Contract 020/047 paths, exact
-      fixture paths, focused selector results and Desktop's exact-source versus
-      later-release adoption boundary
+- [x] exact `1.0.25` static evidence precedes and bounds any catalogue claim
+- [x] PR 315 review findings confirmed by further static inspection, without
+      executing the catalogue command
+- [x] typed non-admission ruling lands with claims unchanged: no `ModelCatalog`
+      driver, descriptor, claim, prepared operation, projection row, matrix
+      cell, baseline, or API surface
+- [x] ACP execution choice and compatibility history remain unchanged
+- [x] ruling names the re-admission gate for a future release
+
+## Result
+
+Worker evidence: the seam is not admitted. Research 305 froze the static
+command/output link first: installed `grok 1.0.25 (f7e67d6988e2) [stable]`
+(SHA-256 `9ef4a40ad60c6a5178a65caf39c2a148e6a98d0d2d350b10329dee34d9195d9c`),
+the bounded text grammar, and the byte-identical embedded default-model
+documents (SHA-256
+`c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a`).
+An admitted implementation was built, then independent review on PR 315
+(reviewCommentId 5648500001) proved the admission defective on two static
+counts, both confirmed without executing the catalogue command: the argv
+`["models"]` disabled no update action (only `["--no-auto-update", "models"]`
+would have qualified, per the adapter's own probe), and the `models` path
+admits optional online model-catalog fetches (`remote_fetch`, default true)
+with no CLI or environment suppression available to a prepared operation.
+Contract 020 admits a dedicated harness catalogue only with provider
+invocation disabled, so the ruling is typed non-admission
+(`swallowtail.grok.catalogue_not_admitted`,
+`provider_invocation_not_suppressible`, contributory
+`update_action_unsuppressed`), scoped to exact `1.0.25` with no version range
+and no `UnverifiedNewer` path. The full implementation was reverted; the
+branch carries only Research 305, the ruling log, and this record.
+`grok_build_acp_claim`, `grok_build_model_for_version`, released `v0.5.0`,
+and every matrix, baseline, ledger, gate script, and API surface is
+byte-untouched: the 2026-09-12 Blocker Ruling's gate-repair items assumed the
+admission branch and became immaterial once review forced non-admission, so
+the two gates stay in their frozen 49-route form and every named check passes
+on the reverted tree. No credential was read, no provider was contacted, no
+host was changed.
+Contracts 020 (`docs/contracts/020-model-catalogue-observation-and-availability-boundary.md`)
+and 047 (`docs/contracts/047-configured-provider-instance-catalogue.md`).
+Re-admission gate is recorded in Research 305.
+
+Desktop Chatterbox receives this ruling in place of a catalogue capsule:
+there is no source SHA to pin and no later-release adoption boundary beyond
+the stated re-admission gate. No release or tag follows.
 
 ## Next Task
 
-After merge, Desktop Chatterbox may plan a separately authorized exact-source
-adoption into g02.086. No release or tag follows automatically.
+None on this seam until a future Grok release meets the re-admission gate.
+The ruling is delivered to Desktop Chatterbox; no release or tag follows.

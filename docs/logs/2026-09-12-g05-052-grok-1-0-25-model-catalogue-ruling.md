@@ -54,8 +54,8 @@ operations, 36 harness routes).
 
 ## Merge And Closeout
 
-Worker PR 315 targets `main` from the queue-owned branch; merge, review, and
-closeout SHAs are recorded here by the queue at closeout. Desktop Chatterbox
+PR #315 merged to `main` at `5d0c49f1` (exact reviewed head `43bff73b`) after
+independent exact-head review `5648599784`. Desktop Chatterbox
 receives this ruling in place of a catalogue capsule: there is no source SHA
 to pin and no later-release adoption boundary to watch beyond the stated
 re-admission gate.

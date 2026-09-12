@@ -1,6 +1,6 @@
 # g05.052 Grok Build 1.0.25 Model Catalogue
 
-Status: ready
+Status: completed; typed non-admission ruling for exact Grok `1.0.25`; PR #315 merged at `5d0c49f1` after independent exact-head review `5648599784`
 Owner: Tom
 Created: 2026-09-12
 Depends on: Contracts 020 and 047; released `v0.5.0`; Desktop g02.086 producer intake

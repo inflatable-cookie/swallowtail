@@ -50,7 +50,6 @@ conflicts or when you are qualifying a new claim.
 | `gemini-cli.acp` | [Gemini CLI](gemini-cli-prepared-integration.md) | [prepared ACP](../../crates/swallowtail-adapter-gemini/examples/prepared_gemini_acp.rs) | complete |
 | `gemini-cli.headless` | [Gemini CLI](gemini-cli-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-gemini/examples/prepared_gemini_headless.rs) | complete |
 | `grok-build.acp` | [Grok Build](grok-build-prepared-integration.md) | [prepared run and session](../../crates/swallowtail-adapter-grok/examples/prepared_grok_build_acp.rs) | complete |
-| `grok-build.catalogue` | [Grok Build](grok-build-prepared-integration.md) | [prepared catalogue](../../crates/swallowtail-adapter-grok/examples/prepared_grok_build_catalogue.rs) | complete |
 | `kimi-code.acp` | [Kimi Code](kimi-prepared-integration.md) | [prepared ACP](../../crates/swallowtail-adapter-kimi/examples/prepared_acp.rs) | complete |
 | `kimi-code.headless` | [Kimi Code](kimi-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-kimi/examples/prepared_headless.rs) | complete |
 | `muse-code.headless` | [Muse Code](muse-code-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-muse/examples/prepared_muse_headless.rs) | complete |

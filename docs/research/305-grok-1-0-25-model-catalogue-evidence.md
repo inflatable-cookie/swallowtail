@@ -1,6 +1,7 @@
 # 305 Grok 1.0.25 Model Catalogue Evidence
 
 Status: complete
+Verdict: typed non-admission (PR 315 review findings 1–2); no catalogue claim
 Owner: Tom
 Date: 2026-09-12
 Card: g05.052
@@ -145,11 +146,11 @@ Order is `grok-4.6` first, then `grok-4.5`; top-level `default` is
 only has ...`) confirm the loader requires a non-empty `default` naming a
 model entry, so the frozen `default` field is load-bearing source truth.
 
-## Field alignment ruling
+## Field alignment analysis (unexercised)
 
-The live `models` text output is authoritative for membership, order, and
-default. The frozen exact-`1.0.25` document above supplies supplemental
-metadata by exact id equality only:
+Had the seam been admissible, the live `models` text output would have been
+authoritative for membership, order, and default, with the frozen exact-`1.0.25`
+document supplying supplemental metadata by exact id equality only:
 
 | Source field | Common projection | Rule |
 | --- | --- | --- |
@@ -165,29 +166,90 @@ Unknown valid ids pass through with default-less metadata. Document ids
 absent from the live list are ignored. Nothing is derived from an id and no
 capability the source omitted is attached.
 
-## Admission verdict
+## Review findings (PR 315, reviewCommentId 5648500001)
 
-Admitted as a dedicated harness catalogue under Contract 020: one ephemeral
-provider-suppressed `models` process, stdin closed unwritten, bounded output,
-exact `1.0.25` claim only. `QualifiedOnly` posture plus a plan validator that
-requires `Qualified` on the exact catalogue behavior means every point above
-or below `1.0.25` fails closed; there is no `UnverifiedNewer` catalogue path.
-The strict body parser requires exactly one `Default model:` line, the
-`Available models:` header after it, rows of `id` with optional leading
-whitespace and an optional ` (default)` suffix, and exactly one marked row
-agreeing with the header. Duplicates, empty lists, over-limit output, id
-charset violations, control bytes, missing or double markers, and
-header/marker disagreement fail closed with a typed diagnostic.
+Independent review of the admitted implementation proved two defects in the
+admission itself, both confirmed by further static inspection. No catalogue
+command was executed for either; all evidence below is argv-grammar probes
+(`--help` exits) and read-only byte carves.
 
-Consumer cancellation is not claimed: the portable `ModelCatalogRequest`
-carries a deadline but no cancellation control, and dropping its future
-cannot report joined cleanup (Contract 020). The driver enforces
-elapsed-deadline rejection, mid-read timeout with joined stop/wait cleanup,
-and typed cleanup failure instead.
+### Finding 1 — update actions were not disabled
+
+Contract 020 requires a dedicated harness catalogue process to disable update
+actions. The admitted driver ran exactly `["models"]` with no update
+suppression, while this adapter's own version probe and ACP process both pass
+`--no-auto-update`, and the installed root CLI documents `| --no-auto-update
+| Disable update checks for this session |` (also `grok -p "..."
+--no-auto-update`).
+
+Argv probes: `grok --no-auto-update models --help` exits 0 printing the
+`models` help, so the root flag is accepted in root position (as in the
+probe's `["--no-auto-update", "--version"]`); `grok models --no-auto-update
+--help` fails with `error: unexpected argument '--no-auto-update'`, so the
+admissible argv would have been `["--no-auto-update", "models"]`, never the
+flag after the subcommand. The admitted `["models"]` argv is therefore
+deficient, but the deficiency is immaterial next to finding 2.
+
+### Finding 2 — the models path can perform outbound provider I/O
+
+The installed binary documents `[features] remote_fetch = true` as "allow
+optional online model-catalog fetches (default: true; set false for
+firewalled/air-gapped deployments)", pinnable by fleet
+(`features.remote_fetch`, managed wins over the user file), with
+`remote_config/fetch.rs` (`startup.fetch_models_blocking`, "models fetch
+skipped: remote_fetch disabled") and catalog states ("model catalog:
+fetching", "model catalog: fetch succeeded", "model catalog fetch timed
+out", "model catalog: falling back to bundled defaults only", "model
+catalog: bundled defaults in use (remote_fetch disabled)", "initial models
+prefetch timed out; catalog freeze uses bundled defaults", "loaded models
+from disk cache"). No CLI flag and no `GROK_*` environment override for
+`remote_fetch` exists in the binary; the only switches are config-file and
+fleet layers, which this task is forbidden to read or mutate — and a
+user-file override would not bind managed/fleet policy anyway.
+
+Contract 020 admits a dedicated harness catalogue process only with provider
+invocation disabled. A `models` process that may fetch a remote model catalog
+under default host configuration is not provider-suppressed, and no admissible
+non-prompt argv, environment, or working-resource binding can make it so.
+The `--no-auto-update` fix from finding 1 suppresses update checks only; it
+does not touch the catalog fetch switch. A narrowed endpoint/scope statement
+is unprovable: fetch behavior depends on host config, fleet policy, cache
+state, and auth state, none of which static inspection can fix.
+
+## Non-admission verdict (typed ruling)
+
+No admissible non-prompt catalogue seam exists on exact installed Grok
+`1.0.25`:
+
+- code `swallowtail.grok.catalogue_not_admitted`
+- reason `provider_invocation_not_suppressible`: the `models` command admits
+  optional online model-catalog fetches (`remote_fetch`, default true) with
+  no CLI or environment suppression available to a prepared operation, and
+  host/fleet configuration is out of bounds for preparation to read or bind.
+- reason `update_action_unsuppressed` (contributory): the as-built argv
+  omitted the root `--no-auto-update` suppression the adapter itself uses.
+- scope: exact `1.0.25` (`f7e67d6988e2`, SHA-256
+  `9ef4a40ad60c6a5178a65caf39c2a148e6a98d0d2d350b10329dee34d9195d9c`).
+  No version range is admitted, and no `UnverifiedNewer` catalogue path is
+  opened: the ruling is about the seam, not the version.
+- effect: no `ModelCatalog` driver, descriptor, claim, prepared operation,
+  projection row, matrix cell, baseline, or API surface is admitted. The
+  feature matrix `pre_session_model_catalogue` cell for Grok stays unavailable
+  under its existing provider-limitation evidence. `grok_build_acp_claim`,
+  `grok_build_model_for_version`, and released `v0.5.0` are unchanged.
+- re-admission gate: a future Grok release qualifies only with static proof
+  of a provider-suppressed listing (fetch switch removed, or a CLI/env
+  suppression the prepared operation can bind without touching host config),
+  frozen the same way before any claim.
+
+The field-alignment table above is retained as unexercised analysis: it
+records what the frozen document would have supplied had the seam been
+admissible. It authorizes nothing.
 
 ## Sources
 
-- installed `/Users/tom/.grok/bin/grok` `--help` and `models --help`
+- installed `/Users/tom/.grok/bin/grok` `--help`, `models --help`, and
+  `--no-auto-update models --help` (argv-grammar exits only)
 - read-only byte carves at the offsets above; no catalogue execution
-- frozen `crates/swallowtail-adapter-grok/src/catalogue/default_models_1_0_25.json`
-- frozen `crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.25-model-catalogue/`
+- `config.rs`/`fetch.rs`/`cache.rs` event and config-doc literals proving the
+  `remote_fetch` switch and bundled-default fallback

@@ -510,21 +510,6 @@
    ]
   },
   {
-   "id": "grok-build.catalogue",
-   "driver": "swallowtail.grok-build.catalogue",
-   "transport": "grok-cli-models-stdio",
-   "qualified": "1.0.25",
-   "prepared_profiles": [],
-   "unavailable_operations": [],
-   "not_applicable_operations": [
-    "model-catalogue"
-   ],
-   "unknown_posture": "preserve-namespaced",
-   "exact_absences": [
-    "ordinary agent activity"
-   ]
-  },
-  {
    "id": "kimi-code.acp",
    "driver": "swallowtail.kimi.acp",
    "transport": "acp-v1-stdio",

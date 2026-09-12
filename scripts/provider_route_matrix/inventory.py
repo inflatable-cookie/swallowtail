@@ -47,12 +47,12 @@ audited_value_counts = Counter(
 )
 if audited_value_counts != Counter(
     {
-        "Yes": 341,
+        "Yes": 340,
         "No": 561,
         "Not applicable": 431,
         "Partial": 2,
         "Caller-supplied": 16,
-        "Session-negotiated": 2,
+        "Session-negotiated": 3,
     }
 ):
     raise SystemExit(

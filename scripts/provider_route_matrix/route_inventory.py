@@ -16,7 +16,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 FEATURE_MATRIX = REPO / "docs" / "guides" / "provider-solution-feature-matrix.csv"
-EXPECTED_ROUTE_COUNT = 50
+EXPECTED_ROUTE_COUNT = 49
 
 # Provider-session lifecycle posture per route:
 # (persistent-session posture, management binding, archive, restore, delete,
@@ -55,7 +55,6 @@ LIFECYCLE_POSTURES: dict[str, tuple[str, str, str, str, str, str]] = {
     "gemini-cli.headless": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
     "gemini.live": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "grok-build.acp": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
-    "grok-build.catalogue": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "kimi-code.acp": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
     "kimi-code.headless": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
     "kimi-code.local-server": ("supported", "yes", "supported", "supported", "unsupported", "unsupported"),

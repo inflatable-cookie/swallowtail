@@ -84,9 +84,9 @@ retained_execution_classifications = {
     ("retained_background_execution", "xai.responses-websocket"): "operation_shape_not_applicable",
     ("stream_reattachment", "xai.responses-websocket"): "operation_shape_not_applicable",
     ("provider_managed_recovery", "xai.responses-websocket"): "upstream_unsupported",
-    ("retained_background_execution", "grok-build.catalogue + grok-build.acp"): "operation_shape_not_applicable",
-    ("stream_reattachment", "grok-build.catalogue + grok-build.acp"): "operation_shape_not_applicable",
-    ("provider_managed_recovery", "grok-build.catalogue + grok-build.acp"): "upstream_unsupported",
+    ("retained_background_execution", "grok-build.acp"): "operation_shape_not_applicable",
+    ("stream_reattachment", "grok-build.acp"): "operation_shape_not_applicable",
+    ("provider_managed_recovery", "grok-build.acp"): "upstream_unsupported",
     ("retained_background_execution", "cline.acp"): "operation_shape_not_applicable",
     ("stream_reattachment", "cline.acp"): "operation_shape_not_applicable",
     ("provider_managed_recovery", "cline.acp"): "upstream_unsupported",
@@ -161,7 +161,7 @@ working_resource_write_classifications = {
     ("bounded_workspace_text_write", "opencode.http"): "upstream_unsupported",
     ("working_resource", "xai.responses-websocket"): "operation_shape_not_applicable",
     ("bounded_workspace_text_write", "xai.responses-websocket"): "operation_shape_not_applicable",
-    ("bounded_workspace_text_write", "grok-build.catalogue + grok-build.acp"): "upstream_unsupported",
+    ("bounded_workspace_text_write", "grok-build.acp"): "upstream_unsupported",
 }
 
 owned_runtime_not_applicable = {
@@ -190,7 +190,7 @@ owned_runtime_not_applicable = {
     "deepseek.continuation",
     "gemini-cli.acp + gemini-cli.headless",
     "gemini.live",
-    "grok-build.catalogue + grok-build.acp",
+    "grok-build.acp",
     "llama-cpp.attached",
     "kimi-code.acp + kimi-code.headless",
     "kimi-platform.chat",
@@ -229,7 +229,7 @@ rollover_not_applicable = {
     "pi.sdk-sidecar",
     "deepseek.continuation",
     "gemini-cli.acp + gemini-cli.headless",
-    "grok-build.catalogue + grok-build.acp",
+    "grok-build.acp",
     "llama-cpp.attached",
     "kimi-code.acp + kimi-code.headless",
     "kimi-code.local-server",
@@ -332,7 +332,7 @@ residual_operation_not_applicable = {
         "codex.app-server; codex.exec",
         "openai.background",
         "opencode.http",
-        "grok-build.catalogue + grok-build.acp",
+        "grok-build.acp",
         "cline.acp",
         "copilot-cli.acp",
         "goose.acp",
@@ -404,7 +404,7 @@ residual_non_authoritative_cost = {
         "claude-agent.acp",
         "pi.rpc",
         "opencode.http",
-        "grok-build.catalogue + grok-build.acp",
+        "grok-build.acp",
     }
 }
 residual_feature_classifications = {

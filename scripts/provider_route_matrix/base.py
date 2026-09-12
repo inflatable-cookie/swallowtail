@@ -15,8 +15,8 @@ if providers != sorted(providers, key=str.casefold):
 
 expected = Counter(
     {
-        "Yes": 21,
-        "Session-negotiated": 2,
+        "Yes": 20,
+        "Session-negotiated": 3,
         "Not applicable": 2,
         "Caller-supplied": 16,
     }

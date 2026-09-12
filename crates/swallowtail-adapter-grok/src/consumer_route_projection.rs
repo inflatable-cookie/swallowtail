@@ -142,15 +142,6 @@ impl GrokPreparedRun {
             .build()
     }
 }
-impl crate::GrokPreparedCatalogue {
-    /// Emits only the model-catalogue rows this prepared catalogue proves.
-    pub fn consumer_route_projection_contribution(
-        &self,
-        source: ConsumerRouteProjectionSourceId,
-    ) -> Result<ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure> {
-        Projection::new(self.plan(), source).prepared(false).build()
-    }
-}
 
 struct Projection<'a> {
     plan: &'a PreflightPlan,
@@ -395,7 +386,6 @@ const fn feature_for(capability: Capability, session: bool) -> Option<ConsumerRo
     Some(match capability {
         Capability::InteractiveSession if session => ConsumerRouteFeatureId::InteractiveSession,
         Capability::StructuredRun if !session => ConsumerRouteFeatureId::StructuredRun,
-        Capability::ModelCatalog if !session => ConsumerRouteFeatureId::ModelCatalogue,
         Capability::StreamingEvents => ConsumerRouteFeatureId::StreamingEvents,
         Capability::UsageReporting => ConsumerRouteFeatureId::UsageEvidence,
         Capability::Interruption => return None,

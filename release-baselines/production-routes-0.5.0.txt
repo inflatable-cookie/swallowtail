@@ -27,7 +27,6 @@ gemini-cli.headless
 gemini.live
 goose.acp
 grok-build.acp
-grok-build.catalogue
 kimi-code.acp
 kimi-code.headless
 kimi-code.local-server

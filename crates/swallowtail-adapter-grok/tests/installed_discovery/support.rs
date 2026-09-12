@@ -30,8 +30,8 @@ pub struct ProcessState {
     stdin_closed: AtomicBool,
     force_stopped: AtomicBool,
     waited: AtomicBool,
-    wait_error: AtomicBool,
 }
+
 impl ProcessState {
     pub fn started(&self) -> bool {
         self.request.lock().expect("request lock").is_some()
@@ -73,29 +73,6 @@ impl FakeProcessService {
 
     pub fn held_open() -> (Arc<Self>, Arc<ProcessState>) {
         Self::new("", ProcessExit::new(false, Some(130)), true)
-    }
-
-    pub fn scripted(
-        chunks: Vec<ProcessOutputChunk>,
-        exit: ProcessExit,
-    ) -> (Arc<Self>, Arc<ProcessState>) {
-        let state = Arc::new(ProcessState::default());
-        (
-            Arc::new(Self {
-                state: Arc::clone(&state),
-                output: Mutex::new(Some(chunks.into_iter().collect())),
-                exit,
-                hold_open: false,
-                missing_executable: false,
-            }),
-            state,
-        )
-    }
-
-    pub fn wait_failed(output: &str) -> (Arc<Self>, Arc<ProcessState>) {
-        let (service, state) = Self::completed(output);
-        state.wait_error.store(true, Ordering::SeqCst);
-        (service, state)
     }
 
     pub fn missing_executable() -> (Arc<Self>, Arc<ProcessState>) {
@@ -216,17 +193,8 @@ impl ProcessHandle for FakeProcessHandle {
 
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
         self.state.waited.store(true, Ordering::SeqCst);
-        let failed = self.state.wait_error.load(Ordering::SeqCst);
         let exit = self.exit;
-        Box::pin(async move {
-            if failed {
-                return Err(RuntimeFailure::new(SafeDiagnostic::new(
-                    "fixture.grok.wait_failed",
-                    "Fixture process wait failed",
-                )));
-            }
-            Ok(exit)
-        })
+        Box::pin(async move { Ok(exit) })
     }
 }
 

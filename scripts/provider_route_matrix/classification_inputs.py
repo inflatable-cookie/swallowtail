@@ -5,7 +5,7 @@ no_classification_overrides = {
         "kimi-code.acp + kimi-code.headless",
     ): "upstream_unsupported",
     ("usage_evidence", "kimi-code.local-server"): "upstream_unsupported",
-    ("usage_evidence", "grok-build.catalogue + grok-build.acp"): "contract_or_corpus_required",
+    ("usage_evidence", "grok-build.acp"): "contract_or_corpus_required",
     ("usage_evidence", "cline.acp"): "selected_surface_absence",
     ("usage_evidence", "cline.headless"): "selected_surface_absence",
     ("usage_evidence", "mistral-vibe.headless"): "selected_surface_absence",
@@ -115,9 +115,9 @@ generation_control_classifications = {
     ("structured_output", "openai.realtime"): "upstream_unsupported",
     ("output_token_limit", "opencode.http"): "upstream_unsupported",
     ("structured_output", "xai.responses-websocket"): "ready_operator_hold",
-    ("output_token_limit", "grok-build.catalogue + grok-build.acp"): "upstream_unsupported",
-    ("reasoning_selection", "grok-build.catalogue + grok-build.acp"): "contract_or_corpus_required",
-    ("structured_output", "grok-build.catalogue + grok-build.acp"): "upstream_unsupported",
+    ("output_token_limit", "grok-build.acp"): "upstream_unsupported",
+    ("reasoning_selection", "grok-build.acp"): "contract_or_corpus_required",
+    ("structured_output", "grok-build.acp"): "upstream_unsupported",
 }
 input_callback_classifications = {
     ("attachments", "claude-agent.sdk"): "selected_surface_absence",
@@ -276,9 +276,9 @@ input_callback_classifications = {
     ("consumer_tool_exchange", "xai.responses-websocket"): "ready_operator_hold",
     ("permission_exchange", "xai.responses-websocket"): "upstream_unsupported",
     ("external_search", "xai.responses-websocket"): "ready_operator_hold",
-    ("attachments", "grok-build.catalogue + grok-build.acp"): "contract_or_corpus_required",
-    ("permission_exchange", "grok-build.catalogue + grok-build.acp"): "upstream_unsupported",
-    ("external_search", "grok-build.catalogue + grok-build.acp"): "contract_or_corpus_required",
+    ("attachments", "grok-build.acp"): "contract_or_corpus_required",
+    ("permission_exchange", "grok-build.acp"): "upstream_unsupported",
+    ("external_search", "grok-build.acp"): "contract_or_corpus_required",
     ("question_exchange", "qwen.headless"): "upstream_unsupported",
     ("question_exchange", "alibaba.conversations"): "upstream_unsupported",
     ("question_exchange", "bedrock.catalogue; bedrock.runtime"): "upstream_unsupported",
@@ -295,7 +295,7 @@ input_callback_classifications = {
     ("question_exchange", "openai.realtime"): "upstream_unsupported",
     ("question_exchange", "openai.background"): "upstream_unsupported",
     ("question_exchange", "xai.responses-websocket"): "upstream_unsupported",
-    ("question_exchange", "grok-build.catalogue + grok-build.acp"): "upstream_unsupported",
+    ("question_exchange", "grok-build.acp"): "upstream_unsupported",
 }
 session_continuity_classifications = {
     ("load_session", "claude-agent.sdk"): "selected_surface_absence",
@@ -395,9 +395,9 @@ session_continuity_classifications = {
     ("load_session", "xai.responses-websocket"): "operation_shape_not_applicable",
     ("resume_session", "xai.responses-websocket"): "operation_shape_not_applicable",
     ("native_session_close", "xai.responses-websocket"): "operation_shape_not_applicable",
-    ("load_session", "grok-build.catalogue + grok-build.acp"): "contract_or_corpus_required",
-    ("resume_session", "grok-build.catalogue + grok-build.acp"): "contract_or_corpus_required",
-    ("native_session_close", "grok-build.catalogue + grok-build.acp"): "upstream_unsupported",
+    ("load_session", "grok-build.acp"): "contract_or_corpus_required",
+    ("resume_session", "grok-build.acp"): "contract_or_corpus_required",
+    ("native_session_close", "grok-build.acp"): "upstream_unsupported",
 }
 provider_retention_not_applicable = {
     "muse-code.headless",
@@ -446,7 +446,7 @@ for feature in ["provider_session_archive", "provider_session_restore"]:
         "alibaba.conversations",
         "claude-agent.acp",
         "gemini-cli.acp + gemini-cli.headless",
-        "grok-build.catalogue + grok-build.acp",
+        "grok-build.acp",
         "cline.acp",
         "copilot-cli.acp",
         "goose.acp",
@@ -463,7 +463,7 @@ for route in provider_session_not_applicable:
     )
 for route in [
     "antigravity.catalogue + antigravity.headless",
-    "grok-build.catalogue + grok-build.acp",
+    "grok-build.acp",
     "cline.acp",
     "copilot-cli.acp",
     "goose.acp",
@@ -491,7 +491,7 @@ for route in owned_cleanup_not_applicable:
         "operation_shape_not_applicable"
     )
 for route in [
-    "grok-build.catalogue + grok-build.acp",
+    "grok-build.acp",
     "cline.acp",
     "copilot-cli.acp",
     "goose.acp",

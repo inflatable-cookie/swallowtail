@@ -106,22 +106,6 @@ fn build_plan(
     )
 }
 
-fn build_catalogue_plan(
-    prepared: &GrokPreparedIntegration,
-    instance: &ConfiguredInstance,
-    requirements: &OperationRequirements,
-) -> Result<PreflightPlan, PreparationFailure> {
-    swallowtail_runtime::build_plan(
-        &crate::grok_build_catalogue_descriptor(),
-        instance,
-        None,
-        requirements,
-        prepared.access_profile(),
-        prepared.access_evidence().status(),
-        prepared.available_host_services(),
-    )
-}
-
 fn activity_profile(
     prepared: &GrokPreparedIntegration,
 ) -> Result<ObservableActivityProfile, PreparationFailure> {

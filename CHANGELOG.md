@@ -5,20 +5,6 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
-### Added
-- add the Grok Build pre-session model catalogue as a separately prepared
-  `ModelCatalog` operation on exact installed `1.0.25` only. One bounded
-  provider-suppressed `models` process with stdin closed unwritten reports
-  ordered exact model ids and the source default; display name, description,
-  input token limit, and reasoning modes project only from the frozen
-  exact-`1.0.25` default-model document by exact id equality, unknown ids pass
-  through, and malformed, duplicate, empty, over-limit, and ambiguous-default
-  catalogues fail closed with joined cleanup. The new `QualifiedOnly` claim
-  `grok-build.catalogue.executable-1-0-25`
-  (`grok-build.catalogue.models-text-v1`) admits no older or newer point, and
-  the ACP execution claim, `grok_build_model_for_version`, and released
-  `v0.5.0` are unchanged. Research 305, g05.052.
-
 ### Changed
 - raise the qualified OpenCode HTTP ceiling from `1.18.29` to official npm
   `opencode-ai` `1.18.30` on the `opencode.server` axis. Compatible extension

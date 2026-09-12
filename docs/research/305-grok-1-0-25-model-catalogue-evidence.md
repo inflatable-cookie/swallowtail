@@ -49,11 +49,12 @@ Options:
 ```
 
 The subcommand takes no `PROMPT` argument and no session, persistence,
-tool, extension, project, update, retry, or provider-invocation flag. The
-admitted driver argv is exactly `["models"]` with no optional flag, so no
-prompt can be supplied through the prepared operation. `--leader-socket`
-selects local leader IPC isolation, not a provider session, and is never
-passed by the driver.
+tool, extension, project, update, retry, or provider-invocation flag.
+`--leader-socket` selects local leader IPC isolation, not a provider session.
+No driver or prepared operation exists on this branch: the `["models"]` argv
+built during admission is recorded deficient in finding 1 below (only
+`["--no-auto-update", "models"]` would have qualified), and the seam is not
+admitted regardless per finding 2.
 
 ## Output grammar evidence
 
@@ -71,8 +72,8 @@ header line followed by the list header followed by id rows. Auth-status
 literals (`You are not authenticated.`, `You are authenticated via
 deployment key.`, `You are using XAI_API_KEY.`, `You are logged in with...`)
 sit in the same region but cannot be attributed to the `models` printer
-specifically; the parser therefore tolerates an unproven preamble but derives
-membership, order, and default only from the strict body.
+specifically; this preamble stays unproven either way, and no parser was
+admitted to derive membership, order, or default from the strict body.
 
 ## Embedded default-model document
 
@@ -80,10 +81,9 @@ The executable carries two byte-identical copies of the embedded
 `default_models.json` fallback (offsets 111710804 and 113348525), 2324 bytes
 each, SHA-256
 `c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a`.
-Frozen bytes ship as
-`crates/swallowtail-adapter-grok/src/catalogue/default_models_1_0_25.json`
-and the accepted stdout grammar ships as
-`crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.25-model-catalogue/`.
+These bytes were carved and verified but ship nowhere in tree: no driver
+embeds them and no fixture directory carries them. The document is reproduced
+in full below as analyzed evidence only; it authorizes nothing.
 The document, in full:
 
 ```json

@@ -94,6 +94,8 @@ authorized exact-source pin. Released `v0.5.0` remains immutable and does not
 contain this seam. A new source tag remains a separate operator decision.
 
 ## Blocker Ruling — 2026-09-12
+> Superseded by the non-admission verdict below: PR 315 review proved no
+> admissible seam, so the route-50 program in this section was not carried out.
 
 Contract 036 and the current/previous roles in `release-baselines/README.md`
 settle the route-50 blocker. Keep `grok-build.catalogue` as the additive

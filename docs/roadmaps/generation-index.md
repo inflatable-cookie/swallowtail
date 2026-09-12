@@ -144,9 +144,13 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 53 tasks: 40 completed tasks, honest evidence
-stops at 002, 003, 007, 011, 029, 031, and 034, one ready task at 053, and
+g05 has 53 tasks: 41 completed tasks, honest evidence
+stops at 002, 003, 007, 011, 029, 031, and 034, no ready task, and
 planned tasks at 035, 039, 040, 041, and 042.
+g05.053 completed 2026-09-13: exact installed Grok `1.0.25` catalogue admitted
+as authenticated non-inference metadata; PR #316 merged at `3e9f29e7`
+after independent exact-head review `5649291554`; provider-free with no
+release, tag, Desktop mutation, or consumer pin.
 g05.052 completed 2026-09-12: typed non-admission ruling for the exact
 installed Grok `1.0.25` model-catalogue seam; PR #315 merged at `5d0c49f1`
 after independent exact-head review `5648599784`; provider-free with no
@@ -454,7 +458,6 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Implement [g05.053](g05/053-grok-build-1-0-25-catalogue-correction.md). It
-corrects g05.052's parser and over-strict suppression premise and restores the
-exact installed `1.0.25` catalogue as authenticated non-inference metadata.
-The existing successful capsule is sufficient; no further Grok run is needed.
+Reassess the g05 runway through a Chatterbox planning ruling after the g05.053
+merge (`3e9f29e7`, review `5649291554`): no task is ready, and planned tasks
+035 and 039–042 all await operator promotion, disposition, or requirements.

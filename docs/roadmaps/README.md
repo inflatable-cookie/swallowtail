@@ -15,12 +15,12 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement [g05.053 Grok Build 1.0.25 Catalogue Correction](g05/053-grok-build-1-0-25-catalogue-correction.md).
-It corrects g05.052's parser and acceptance mistakes, recovers the reviewed
-catalogue implementation, and treats exact `--no-auto-update models` as an
-authenticated non-inference metadata command. The existing successful capsule
-is sufficient; no further Grok run is needed.
-No inference, release, tag, Desktop mutation, or consumer pin follows.
+Reassess the g05 runway through a Chatterbox planning ruling now that g05.053
+Grok Build 1.0.25 Catalogue Correction merged through PR #316 at `3e9f29e7`
+after independent exact-head review `5649291554`. No task is ready: planned
+tasks 035 and 039–042 all await operator promotion, disposition, or
+requirements. No inference, release, tag, Desktop mutation, or consumer pin
+follows.
 
 ## Standing Lanes
 

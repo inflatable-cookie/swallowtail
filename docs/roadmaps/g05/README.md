@@ -31,7 +31,7 @@ enforcement.
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | g05.010 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | g05.011 |
 | Keep production route versions current one family at a time. | completed; OpenCode HTTP `1.18.30` qualified as a compatible `surface-19` extension through PR #314 at `2b79b083` after review `5633203211`; Pi RPC `0.85.1` remains the latest completed family | Contract 029; Research 292, 302, 304; qualified OpenCode `1.18.30`; official `1.18.30` | g05.051 |
-| Expose the installed Grok CLI's truthful pre-session model catalogue without widening ACP execution authority. | correction ready; g05.053 fixes the shipped bullet grammar and uses the successful final capsule under the authenticated non-inference metadata boundary; no further Grok run | Contracts 020 and 047; Desktop g02.086 producer intake; installed Grok `1.0.25`; PR #315 | g05.053 |
+| Expose the installed Grok CLI's truthful pre-session model catalogue without widening ACP execution authority. | completed; PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`; authenticated non-inference metadata boundary, shipped bullet grammar, accepted final capsule | Contracts 020 and 047; Desktop g02.086 producer intake; installed Grok `1.0.25`; PR #315 | g05.053 |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | g05.017 |
 | Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04 | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | g05.021 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | g05.022 |
@@ -64,14 +64,14 @@ in [## Tasks](#tasks) below.
 - [g05.041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; operator promotion absent; no dispatch authorization
 - [g05.042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; consumer requirement and operator direction absent; no dispatch authorization
 - [g05.052 Grok Build 1.0.25 Model Catalogue](./052-grok-build-1-0-25-model-catalogue.md) — completed; typed non-admission ruling; PR #315 merged at `5d0c49f1` after independent exact-head review `5648599784`
-- [g05.053 Grok Build 1.0.25 Catalogue Correction](./053-grok-build-1-0-25-catalogue-correction.md) — ready; authenticated non-inference metadata boundary accepted, shipped bullet grammar fixed, no further Grok run
+- [g05.053 Grok Build 1.0.25 Catalogue Correction](./053-grok-build-1-0-25-catalogue-correction.md) — completed; PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`; authenticated non-inference metadata boundary, shipped bullet grammar fixed, accepted final capsule
 - [g05.047 v0.5.0 Release Candidate](./047-v0-5-0-release-candidate.md) — completed; PR #310 merged at `31375966`; tag withheld pending a qualifying green run
 - [g05.048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — completed; PR #311 merged at `582d01d6` after review `5616849978`; merge-SHA push all-green including pinned-MSRV tests; tag withheld
 - [g05.049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — completed; annotated tag `v0.5.0` created and pushed at `582d01d6` (tag object `c772c583`); tag-triggered CI green; source-only
 - [g05.050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout merged through PR #313 at `fa2e4b94` after review `5618788611`
 - [g05.051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — completed; OpenCode HTTP qualified through official `1.18.30`; PR #314 merged at `2b79b083` after independent exact-head review `5633203211`
 
-g05 has fifty-three numbered tasks: 40 complete, including
+g05 has fifty-three numbered tasks: 41 complete, including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, 037, 044, and 051, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
@@ -82,10 +82,10 @@ MSRV deadline-cleanup determinism repair at 048, the `v0.5.0` annotated
 source tag at 049, the tagged-source consumer proof at 050, and the Grok
 `1.0.25` catalogue non-admission ruling at 052;
 honest
-evidence stops at 002, 003, 007, 011, 029, 031, and 034; g05.051 is complete
-and g05.052 is complete as a typed non-admission ruling; g05.053 is ready to
-correct that ruling and deliver the catalogue; planned tasks remain
-at 035, 039, 040,
+evidence stops at 002, 003, 007, 011, 029, 031, and 034; g05.051 is complete,
+g05.052 is complete as a typed non-admission ruling, and g05.053 is complete:
+PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`;
+planned tasks remain at 035, 039, 040,
 041, and 042.
 g05.020 is complete: Codex
 qualifies official `0.152.1`. g05.026 is complete as an evidence stop:
@@ -426,7 +426,7 @@ identity.
 
 ### Ready
 
-- [053 Grok Build 1.0.25 Catalogue Correction](./053-grok-build-1-0-25-catalogue-correction.md) — ready; simplify and land the retained correction using the existing successful capsule
+No task is ready; planned tasks 035 and 039–042 await operator promotion, disposition, or requirements.
 
 ### Planned
 
@@ -447,6 +447,8 @@ identity.
 - [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — stopped; honest evidence stop (consumer multi-turn editing session unproven; permission modes, default, landing order, and v0.4.1 carrier pass); audit PR 307 merged at `55595c38`
 
 ### Completed
+
+- [053 Grok Build 1.0.25 Catalogue Correction](./053-grok-build-1-0-25-catalogue-correction.md) — completed; exact installed Grok `1.0.25` catalogue admitted as authenticated non-inference metadata; PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`
 
 - [052 Grok Build 1.0.25 Model Catalogue](./052-grok-build-1-0-25-model-catalogue.md) — completed; typed non-admission ruling for exact installed Grok `1.0.25`; PR #315 merged at `5d0c49f1` after independent exact-head review `5648599784`
 - [051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — completed; OpenCode HTTP qualified through official `1.18.30` as a compatible `surface-19` extension; PR #314 merged at `2b79b083` after independent exact-head review `5633203211`

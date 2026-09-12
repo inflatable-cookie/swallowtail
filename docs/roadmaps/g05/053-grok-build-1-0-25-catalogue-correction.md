@@ -1,6 +1,6 @@
 # g05.053 Grok Build 1.0.25 Catalogue Correction
 
-Status: ready after metadata-boundary correction; operator-directed completion of the Grok catalogue seam
+Status: complete; PR #316 merged at 3e9f29e7 after independent exact-head review 5649291554
 Owner: Tom
 Created: 2026-09-12
 Depends on: Contracts 020 and 047; g05.052; PR #315; installed Grok `1.0.25`
@@ -172,6 +172,8 @@ working `0.5.0` baselines validate at 50 production routes while tagged
 
 ## Next Task
 
-Implement g05.053 through the queue now. On merge, Desktop may adopt only the exact accepted source
-SHA under separate consumer authority or wait for a separately authorized
-future source tag.
+None — merged. PR #316 landed the authenticated non-inference catalogue at
+`3e9f29e7` after independent exact-head review `5649291554`. Desktop may adopt
+only the exact accepted source SHA under separate consumer authority. No
+further Grok run, inference, release, tag, Desktop mutation, or consumer pin
+follows from this task.

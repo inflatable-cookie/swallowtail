@@ -31,7 +31,7 @@ enforcement.
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | g05.010 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | g05.011 |
 | Keep production route versions current one family at a time. | completed; OpenCode HTTP `1.18.30` qualified as a compatible `surface-19` extension through PR #314 at `2b79b083` after review `5633203211`; Pi RPC `0.85.1` remains the latest completed family | Contract 029; Research 292, 302, 304; qualified OpenCode `1.18.30`; official `1.18.30` | g05.051 |
-| Expose the installed Grok CLI's truthful pre-session model catalogue without widening ACP execution authority. | correction ready; g05.052's PR #315 non-admission missed the allowlisted per-process `GROK_CONFIG` feature overlay; g05.053 binds exact remote-fetch/update suppression and fail-closed precedence | Contracts 020 and 047; Desktop g02.086 producer intake; installed Grok `1.0.25`; PR #315 | g05.053 |
+| Expose the installed Grok CLI's truthful pre-session model catalogue without widening ACP execution authority. | correction ready; g05.053 replaces the disproved overlay with a private config, fixes the shipped bullet grammar, and has one final operator-authorized observation to retain runtime suppression proof | Contracts 020 and 047; Desktop g02.086 producer intake; installed Grok `1.0.25`; PR #315 | g05.053 |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | g05.017 |
 | Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04 | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | g05.021 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | g05.022 |
@@ -64,7 +64,7 @@ in [## Tasks](#tasks) below.
 - [g05.041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; operator promotion absent; no dispatch authorization
 - [g05.042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; consumer requirement and operator direction absent; no dispatch authorization
 - [g05.052 Grok Build 1.0.25 Model Catalogue](./052-grok-build-1-0-25-model-catalogue.md) — completed; typed non-admission ruling; PR #315 merged at `5d0c49f1` after independent exact-head review `5648599784`
-- [g05.053 Grok Build 1.0.25 Catalogue Correction](./053-grok-build-1-0-25-catalogue-correction.md) — ready; operator-directed correction using exact per-process configuration suppression
+- [g05.053 Grok Build 1.0.25 Catalogue Correction](./053-grok-build-1-0-25-catalogue-correction.md) — ready; private-file suppression and shipped bullet grammar fixed, with one final no-prompt observation authorized
 - [g05.047 v0.5.0 Release Candidate](./047-v0-5-0-release-candidate.md) — completed; PR #310 merged at `31375966`; tag withheld pending a qualifying green run
 - [g05.048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — completed; PR #311 merged at `582d01d6` after review `5616849978`; merge-SHA push all-green including pinned-MSRV tests; tag withheld
 - [g05.049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — completed; annotated tag `v0.5.0` created and pushed at `582d01d6` (tag object `c772c583`); tag-triggered CI green; source-only
@@ -426,7 +426,7 @@ identity.
 
 ### Ready
 
-- [053 Grok Build 1.0.25 Catalogue Correction](./053-grok-build-1-0-25-catalogue-correction.md) — ready; recover PR #315's admitted implementation and bind exact per-process provider suppression
+- [053 Grok Build 1.0.25 Catalogue Correction](./053-grok-build-1-0-25-catalogue-correction.md) — ready; finish the retained correction and run the single final no-prompt suppression proof
 
 ### Planned
 

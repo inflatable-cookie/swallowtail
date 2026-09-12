@@ -7,7 +7,7 @@ dispatch_authority: orchestrator
 status: ready-to-launch
 base_required: pushed-main
 queue_dispatch: northstar-queue
-queue_approval: "Tom rejected g05.052's non-admission as wrong and explicitly instructed Swallowtail Chatterbox to fix the Grok catalogue seam on 2026-09-12."
+queue_approval: "Tom rejected g05.052's non-admission as wrong, instructed Swallowtail Chatterbox to fix it, and explicitly authorized one final no-prompt observation after the parser/capsule repair with 'Go for it' on 2026-09-12."
 queue:
   capability: complex
   skipPRReview: false
@@ -42,7 +42,14 @@ single ACP compatibility model or a hard-coded downstream list.
   feature keys. Requirements/MDM remain higher priority.
 - Host-local launches with `env_clear()` before applying the exact approved
   bootstrap and environment references.
-- No catalogue command or provider call was run during corrective planning.
+- The replacement observation exited zero with 113 stdout bytes and zero
+  stderr bytes. Exact binary format pieces prove the shipped output uses an
+  authentication preamble and `*`/`-` bullet rows. The old bare-row parser
+  rejected it before the private-home runtime proof was retained.
+- The retained dirty revision fixes the bullet grammar and writes a redacted
+  capsule with counts, digests, and runtime proof before any assertion.
+- Focused provider-free validation is green: format, clippy including
+  `live-probes`, and every `swallowtail-adapter-grok` test.
 
 ## Boundaries
 
@@ -85,13 +92,19 @@ The frozen exact-`1.0.25` embedded document may only supplement matching IDs.
 Keep the existing parser bounds and lifecycle work, add mutation-sensitive
 environment/pre-spawn regressions, and restore current-source route 50 without
 changing tagged `v0.5.0` or Research 281. Run every revised provider-free gate
-first. Then run exactly one replacement authenticated, provider-suppressed
-catalogue listing. Capture bounded raw stdout and stderr before parsing. Admit
-only if the exact-version log proves remote fetch disabled and the isolated
+first. Then run exactly one final authenticated, provider-suppressed catalogue
+listing with the corrected parser and persistent capsule. Persist bounded
+stdout/stderr counts and digests plus the exact-version runtime proof before any
+assertion. Admit only if the log proves remote fetch disabled and the isolated
 home has neither a fresh remote-origin cache write nor an auth-refresh watcher.
-No third observation or further retry is authorized. Tom's 2026-09-12
-instruction to fix the seam after rejecting non-admission authorizes this
-materially corrected replacement.
+Tom explicitly authorized this final observation with “Go for it” on
+2026-09-12. No retry is authorized.
+
+The operator reports that the Grok account has zero usage credit. That must not
+matter to an honestly provider-suppressed catalogue operation. Do not send a
+prompt, open a model session, perform inference, or weaken suppression to work
+around billing. If the CLI returns a concrete billing/quota failure, retain it
+as typed evidence and stop without retry.
 
 Expected fixture root is
 `crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.25-model-catalogue/`.
@@ -100,10 +113,9 @@ a narrow correction note rather than rewritten history.
 
 ## Suggested Next Move
 
-Freeze the failed overlay and private-file precedence evidence in Research 306,
-recover the preserved admitted tree, then make the pre-process and runtime
-suppression proofs fail closed before restoring
-the route.
+Finish the retained parser/capsule revision, rerun the full provider-free gate,
+then use the single final observation to decide admission from persistent
+runtime suppression evidence.
 
 ## Completion Protocol
 

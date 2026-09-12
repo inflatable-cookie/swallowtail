@@ -1,6 +1,6 @@
 # g05.053 Grok Build 1.0.25 Catalogue Correction
 
-Status: ready after first-observation correction; operator-directed completion of the Grok catalogue seam
+Status: ready after final-observation ruling; operator-directed completion of the Grok catalogue seam
 Owner: Tom
 Created: 2026-09-12
 Depends on: Contracts 020 and 047; g05.052; PR #315; installed Grok `1.0.25`
@@ -76,16 +76,19 @@ the overlay. That observation is frozen as failed evidence, not retried.
    isolated home do; conflicting or unproved enterprise pins reject before
    spawn; malformed or missing private configuration rejects; and success,
    failure, deadline, disconnect, and cleanup remain bounded and joined.
-5. The failed overlay observation spent its allowance and is immutable. After
-   every revised provider-free gate passes, run exactly one replacement
-   authenticated, provider-suppressed `1.0.25` catalogue command using the
-   operation-private file. No further retry. Capture bounded raw stdout and
-   stderr before parsing, then retain a redacted capsule proving exact argv,
-   effective suppression, ordered IDs/default, completion, and cleanup. The
-   required positive runtime evidence is the exact-version suppression log and
-   absence of a new remote-origin cache write/auth-refresh watcher. Stop without
-   admission if either fails. It must send no prompt, open no model session, or
-   perform inference.
+5. Preserve both earlier observations as failed evidence. The replacement
+   process exited zero with 113 stdout bytes and zero stderr bytes; exact binary
+   format pieces prove the parser rejected Grok's shipped `*`/`-` bullet rows,
+   not the catalogue membership. Its unwind guard removed the private home
+   before the runtime suppression proof was retained. After the corrected
+   bullet parser, persistent redacted capsule, and revised provider-free gates
+   pass, run exactly one final authenticated, provider-suppressed `1.0.25`
+   catalogue command using the operation-private file. No retry. Persist
+   bounded stdout/stderr counts and digests plus runtime suppression evidence
+   before any assertion. Admit only when the exact-version log proves remote
+   fetch disabled and the private home has neither an auth-refresh watcher nor
+   a fresh remote-origin cache write. It must send no prompt, open no model
+   session, or perform inference.
 6. Restore the additive post-`v0.5.0` route-50 current-source inventory using
    g05.052's 2026-09-12 blocker ruling: current working baselines may advance;
    tagged `v0.5.0`, Research 281, historical ledgers, and release notes remain
@@ -98,23 +101,26 @@ the overlay. That observation is frozen as failed evidence, not retried.
 | --- | --- |
 | Readiness | ready |
 | Prerequisites | Contracts 020 and 047; g05.052/PR #315 evidence; exact installed Grok `1.0.25`; clean pushed `main` |
-| Completion conditions | Research 306 freezes the failed overlay evidence and operation-private-file correction; the preserved admitted implementation is corrected to a fail-closed provider-suppressed operation; exactly one replacement catalogue command proves the accepted path after revised provider-free gates; exact-head review and all named validation pass; Desktop receives the source-linked capsule |
+| Completion conditions | Research 306 freezes both failed observations and the operation-private-file correction; the preserved implementation has the shipped bullet grammar and a failure-safe redacted capsule; exactly one final catalogue command proves the accepted path after revised provider-free gates; exact-head review and all named validation pass; Desktop receives the source-linked capsule |
 | Owned mutable paths | `crates/swallowtail-adapter-grok/**`; exact Grok rows in current route/feature/activity matrices and integration guides; `CHANGELOG.md` `[Unreleased]`; current-role `release-baselines/production-routes-0.5.0.txt` and `release-baselines/public-api-0.5.0/swallowtail-adapter-grok.txt`; narrowly required route/front-door/activity validation scripts and tests; `docs/research/305-grok-1-0-25-model-catalogue-evidence.md`, new `docs/research/306-*.md`, and research index; `docs/logs/2026-09-12-g05-052-grok-1-0-25-model-catalogue-ruling.md`, one new corrective claim log, and logs index; this task's result/status; `PAPERCUTS.md` append only |
 | Reserved shared closeout surfaces | `docs/roadmaps/README.md`, `docs/roadmaps/g05/README.md`, and `docs/roadmaps/generation-index.md`; queue coordinator edits these at closeout |
 | Forbidden paths | `docs/releases/0.5.0.md`; Research 281 and every historical freeze ledger/baseline; Grok ACP execution selection/claim behavior; contracts; every other adapter; Desktop or consumer repositories; release/tag/workflow files |
 | Approved concurrent siblings | none on Grok, current inventory, or closeout surfaces |
-| Worker capability class | complex Rust/evidence correction worker; exact process-environment and configuration-precedence reasoning; one replacement bounded provider-suppressed catalogue observation only after revised provider-free proof |
+| Worker capability class | complex Rust/evidence correction worker; exact process-environment and configuration-precedence reasoning; one final bounded provider-suppressed catalogue observation only after revised provider-free proof |
 | Acceptance evidence | exact shipped Grok config docs and executable identity; local-host environment-clearing proof; mutation-sensitive fake-process corpus; exact environment/argv capture; one redacted live catalogue capsule; current-vs-tagged inventory regression; focused package and route gates |
 | Review oracle | the smallest counterexample is omitting `--no-auto-update`, reusing an ambient ACP environment, allowing a higher-priority pin to force remote fetch, spawning before suppression evidence, trusting the embedded document for live membership, contacting inference, mutating tagged evidence, or collapsing catalogue into ACP execution |
-| Stop conditions | exact `1.0.25` rejects or ignores the private file; runtime evidence shows a fresh remote-origin cache write or auth-refresh watcher; enterprise precedence cannot be proved before spawn; the command prompts, creates a session, performs inference, or cannot close/join; provider-free gates fail before the replacement allowance |
+| Stop conditions | exact `1.0.25` rejects or ignores the private file; runtime evidence shows a fresh remote-origin cache write or auth-refresh watcher; enterprise precedence cannot be proved before spawn; the command prompts, creates a session, performs inference, or cannot close/join; provider-free gates fail before the final allowance |
 | Escalation owner | operator via Chatterbox for semantic/authority questions; queue coordinator for mechanical blockers |
 
 ## Boundaries
 
-The replacement observation is authorized by Tom's standing 2026-09-12
-instruction to fix the seam after rejecting g05.052's non-admission. It is a
-materially corrected operation, not a retry of the disproved overlay. No third
-observation is authorized.
+Tom explicitly authorized one final observation on 2026-09-12 after the
+bullet-grammar and capsule-ordering defects were isolated. This supersedes the
+earlier no-third-observation boundary only for that exact no-prompt
+`--no-auto-update models` operation. The reported zero Grok credit balance does
+not relax acceptance: the operation must remain provider-suppressed and must
+not contact inference. A concrete billing/quota rejection is retained as a
+typed failure and stops the task; it does not authorize a retry.
 
 This corrects the catalogue seam only. It does not widen Grok ACP execution,
 change `grok_build_model_for_version`, infer entitlement from listing, hard-code

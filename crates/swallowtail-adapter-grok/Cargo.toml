@@ -47,6 +47,10 @@ name = "compatibility_corpus"
 path = "tests/compatibility_corpus.rs"
 
 [[test]]
+name = "catalogue_suite"
+path = "tests/catalogue_suite.rs"
+
+[[test]]
 name = "live_installed_probe"
 path = "tests/live_installed_probe.rs"
 required-features = ["live-probes"]

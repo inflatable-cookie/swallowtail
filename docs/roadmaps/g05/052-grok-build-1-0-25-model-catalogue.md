@@ -131,17 +131,63 @@ Desktop authority is added.
 
 ## Acceptance
 
-- [ ] exact `1.0.25` static evidence precedes and bounds any catalogue claim
-- [ ] preparation requires exact version, access readiness and immutable
+- [x] exact `1.0.25` static evidence precedes and bounds any catalogue claim
+- [x] preparation requires exact version, access readiness and immutable
       `ModelCatalog` plan evidence
-- [ ] execution is one bounded `models` process with zero prompt/session/retry
-- [ ] rows preserve provider order, exact IDs, default and only supplied
+- [x] execution is one bounded `models` process with zero prompt/session/retry
+- [x] rows preserve provider order, exact IDs, default and only supplied
       metadata; unknown IDs pass through
-- [ ] malformed/access/exit/deadline/cancellation/cleanup outcomes stay typed
-- [ ] ACP execution choice and compatibility history remain unchanged
-- [ ] final capsule names exact source SHA, Contract 020/047 paths, exact
+- [x] malformed/access/exit/deadline/cancellation/cleanup outcomes stay typed
+- [x] ACP execution choice and compatibility history remain unchanged
+- [x] final capsule names exact source SHA, Contract 020/047 paths, exact
       fixture paths, focused selector results and Desktop's exact-source versus
       later-release adoption boundary
+
+## Result
+
+Worker evidence: the seam is admitted. Research 305 froze the static
+command/output link before any production claim edit: installed `grok 1.0.25
+(f7e67d6988e2) [stable]` (SHA-256
+`9ef4a40ad60c6a5178a65caf39c2a148e6a98d0d2d350b10329dee34d9195d9c`),
+`grok models --help` proving no prompt/session/persistence flag, the bounded
+text grammar (`Default model:`, `Available models:`, ` (default)`), and the
+byte-identical embedded default-model documents (SHA-256
+`c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a`).
+The `grok models` command never ran; no credential was read and no provider
+was contacted.
+
+Claim: `grok_build_catalogue_claim` (`grok-build.catalogue.executable-1-0-25`,
+`grok-build.catalogue.models-text-v1`, `QualifiedOnly`) admits only exact
+`1.0.25`; `GrokCatalogueDriver` runs exactly `["models"]` with stdin closed
+unwritten; `GrokPreparedIntegration::prepare_catalogue` binds the
+`grok-build.catalogue` descriptor, delegated subscription access readiness,
+and the immutable `ModelCatalog` plan; `GrokPreparedCatalogue::list_models`
+executes it. `grok_build_acp_claim`, `grok_build_model_for_version`, and
+released `v0.5.0` are byte-untouched. Independent consumer cancellation is
+not claimed (the portable `ModelCatalogRequest` carries no cancellation
+control per Contract 020); elapsed-deadline rejection and mid-read timeout
+with joined cleanup are the typed bounds instead.
+
+Fixtures: `crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.25-model-catalogue/`
+(`models.txt`, `unknown-ids.txt`) plus the frozen
+`crates/swallowtail-adapter-grok/src/catalogue/default_models_1_0_25.json`.
+Contracts 020 (`docs/contracts/020-model-catalogue-observation-and-availability-boundary.md`)
+and 047 (`docs/contracts/047-configured-provider-instance-catalogue.md`).
+Route truth: new `grok-build.catalogue` rows in the prepared guide, route and
+lifecycle matrices, feature matrix (production route 50), activity matrix,
+guide map with a prepared-catalogue example, the Card050/051 ledger boundary
+records, and the current-role `0.5.0` route and Grok API baselines. The
+2026-09-12 Blocker Ruling keeps the route additive post-`v0.5.0`: Research 281
+is reverted byte-identical at its frozen 49 rows, `docs/releases/0.5.0.md` is
+untouched, and the two gates now validate the split — current source and its
+working baseline at 50 routes, tagged `v0.5.0` and Research 281 independently
+at frozen 49, with strict-extension and ledger-membership assertions that fail
+if the inventories are collapsed again. No tag, publication, consumer pin, or
+Desktop mutation follows.
+
+Desktop may consume only the exact accepted merged source SHA under separate
+pin authority, or wait for a later separately authorized source tag;
+`v0.5.0` does not contain the seam.
 
 ## Next Task
 

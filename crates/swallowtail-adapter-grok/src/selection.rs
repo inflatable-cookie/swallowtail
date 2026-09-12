@@ -28,6 +28,9 @@ pub(crate) const GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR: &str =
     "grok-build.acp-v1.cached-token-model-4-6-v3";
 pub(crate) const GROK_BUILD_MODEL_4_5: &str = "grok-4.5";
 pub(crate) const GROK_BUILD_MODEL_4_6: &str = "grok-4.6";
+/// Exact installed Grok Build version admitted by the model catalogue seam.
+pub const GROK_BUILD_CATALOGUE_VERSION: &str = "1.0.25";
+pub(crate) const GROK_BUILD_CATALOGUE_BEHAVIOR: &str = "grok-build.catalogue.models-text-v1";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -181,6 +184,61 @@ pub(crate) fn select_grok_acp_plan(
     })
 }
 
+/// Returns the exact-version compatibility claim for the Grok Build catalogue.
+///
+/// Unlike the ACP execution claim, this claim is `QualifiedOnly`: only exact
+/// `1.0.25` assesses `Qualified`, and every older or newer point fails closed.
+pub fn grok_build_catalogue_claim() -> InterfaceCompatibilityClaim {
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new("grok-build.catalogue.executable-1-0-25")
+            .expect("static Grok catalogue claim id is valid"),
+        axis(),
+        InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::QualifiedOnly,
+        [InterfaceVersionSegment::exact(
+            version(GROK_BUILD_CATALOGUE_VERSION).expect("static Grok version is valid"),
+            behavior(GROK_BUILD_CATALOGUE_BEHAVIOR),
+            InterfaceSupportStatus::Maintained,
+        )],
+        [],
+    )
+    .expect("static Grok catalogue compatibility claim is valid")
+}
+
+pub(crate) fn validate_grok_catalogue_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+    let claim = grok_build_catalogue_claim();
+    let mut bindings = plan
+        .interface_versions()
+        .filter(|binding| binding.axis() == claim.axis());
+    let binding = bindings.next().ok_or_else(|| {
+        failure(
+            "swallowtail.grok.catalogue.version_missing",
+            "Grok Build catalogue plan is missing its exact executable version",
+        )
+    })?;
+    if bindings.next().is_some() {
+        return Err(failure(
+            "swallowtail.grok.catalogue.version_ambiguous",
+            "Grok Build catalogue plan contains more than one executable version",
+        ));
+    }
+    let assessment = claim.assess(binding.version());
+    let qualified = matches!(
+        assessment,
+        swallowtail_core::InterfaceCompatibilityAssessment::Qualified(_)
+    ) && assessment == plan.assess_interface_version(binding)
+        && assessment
+            .behavior_revision()
+            .is_some_and(|revision| revision.as_str() == GROK_BUILD_CATALOGUE_BEHAVIOR);
+    if !qualified {
+        return Err(failure(
+            "swallowtail.grok.catalogue.version_incompatible",
+            "Grok Build executable version is incompatible with the catalogue driver",
+        ));
+    }
+    Ok(())
+}
+
 fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(GROK_BUILD_ACP_AXIS).expect("static Grok axis is valid")
 }
@@ -288,6 +346,29 @@ mod tests {
             "latest",
         ] {
             assert!(grok_build_acp_binding(rejected).is_none());
+        }
+    }
+
+    #[test]
+    fn catalogue_claim_is_exact_1_0_25_qualified_only() {
+        use super::{GROK_BUILD_CATALOGUE_BEHAVIOR, grok_build_catalogue_claim};
+
+        let claim = grok_build_catalogue_claim();
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version("1.0.25"))
+        else {
+            panic!("exact 1.0.25 is qualified");
+        };
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            GROK_BUILD_CATALOGUE_BEHAVIOR
+        );
+        assert_eq!(claim.axis().as_str(), GROK_BUILD_ACP_AXIS);
+        for rejected in ["0.2.117", "1.0.4", "1.0.5", "1.0.24", "1.0.26"] {
+            assert_eq!(
+                claim.assess(&version(rejected)),
+                InterfaceCompatibilityAssessment::Incompatible,
+                "unexpected permit {rejected}"
+            );
         }
     }
 

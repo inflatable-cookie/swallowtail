@@ -12,6 +12,9 @@ On the maintained `1.0.4..=1.0.5` segments it also carries consumer registered
 tools through the Swallowtail-owned courier.
 Reject it when the application needs hosted xAI inference, usage, or public
 provider-session management.
+The separate `grok-build.catalogue` route (`GrokCatalogueDriver`,
+`swallowtail.grok-build.catalogue`) lists installed models on exact `1.0.25`
+only; see Model Catalogue below. It never opens ACP or sends a prompt.
 
 ## Route And Operation Shapes
 
@@ -67,9 +70,37 @@ admitted executable behavior: `grok-4.5` on the `0.2` segments, `grok-4.6` on
 `1.0.4` through `1.0.5` and permitted unverified-newer points that inherit that
 milestone. No model fallback is performed. Interactive initialization may expose
 authorized session model options on the returned handle; that observation
-does not become a standalone provider catalogue.
+does not become a standalone provider catalogue. That negotiated evidence stays
+separate from the prepared `grok-build.catalogue` operation below, which is
+the only pre-session model inventory.
 
 Reasoning selection, output limits, and structured output are not qualified.
+
+## Model Catalogue
+
+Create `GrokCatalogueProfileInput` with request ID and optional deadline, then
+call `prepare_catalogue` on the admitted integration and `list_models`. The
+operation runs exactly `models` with stdin closed unwritten, bounds combined
+output, requires successful exit, and joins cleanup on success, failure,
+timeout, and cleanup failure. It never retries, updates the CLI, opens ACP,
+or falls back to an execution default.
+
+Preparation admits only exact installed `1.0.25` under the `QualifiedOnly`
+claim `grok-build.catalogue.executable-1-0-25`
+(`grok-build.catalogue.models-text-v1`); every older or newer point fails
+closed before any process starts. Preparation also requires the same delegated
+subscription access readiness as the ACP operations.
+
+Rows preserve provider order and exact opaque ids. The top-level default from
+the `models` document marks `is_default`; a missing, repeated, or disagreeing
+marker fails the operation instead of guessing. Display name, description,
+input token limit, and reasoning modes come only from the frozen exact-`1.0.25`
+default-model document by exact id equality (`grok-4.5` has no description,
+so it stays unknown there); unknown future ids pass through with empty
+metadata and no provider id is ever attached. Malformed, duplicate, empty,
+and over-limit documents fail closed, exit status is reported without quoting
+stderr, and there is no consumer cancellation surface: enforce the deadline
+instead. Research 305 freezes the static command/output evidence.
 
 ## Structured Run
 

@@ -48,27 +48,50 @@ single ACP compatibility model or a hard-coded downstream list.
 
 Follow g05.053 exactly. Do not reuse ambient ACP environment state, edit host,
 fleet, requirements, MDM, or user configuration, expose credentials, send a
-prompt, open a model session, perform inference, retry the live listing,
+prompt, open a model session, perform inference, run any unbounded observation,
 change Grok ACP execution compatibility, mutate Desktop, edit tagged/historical
 release evidence, create a tag/release, publish, or touch workflows.
 
 ## Important Context
 
 Recover the admitted PR #315 implementation, then correct it before claiming
-support. The catalogue needs a distinct exact environment reference containing
-an authorized isolated `GROK_HOME`, no ambient or `GROK_CONFIG_PATH`, and exact
-`GROK_CONFIG={"features":{"remote_fetch":false,"managed_config":false}}`.
+support. The first live observation disproved the overlay route: it exited zero
+but started Grok's auth-refresh watcher and wrote a freshly fetched
+remote-origin `models_cache.json`; raw command output was not retained, so
+parser grammar was also unproved. Preserve that as failed evidence.
+
+The catalogue needs a distinct exact environment reference containing an
+authorized isolated `GROK_HOME`, no ambient `GROK_CONFIG` or
+`GROK_CONFIG_PATH`, and a generated operation-private `$GROK_HOME/config.toml`
+containing only:
+
+```toml
+[features]
+remote_fetch = false
+managed_config = false
+```
+
+This is temporary operation materialization, not a host configuration edit.
 Use exact argv `--no-auto-update models`. Represent both the instance and
 operation requirements as `HarnessConfigurationPosture::ProviderSuppressed`.
 Require positive host evidence that no higher-priority requirements/MDM pin
-defeats suppression; reject before process start otherwise.
+defeats suppression; reject before process start otherwise. Exact `1.0.25`
+documents that overlay-reachable `features` still include security gates that
+read raw disk layers and that `remote_fetch` has fleet precedence. Do not use
+the overlay for this gate.
 
 The live listing remains authoritative for membership, order, and default.
 The frozen exact-`1.0.25` embedded document may only supplement matching IDs.
 Keep the existing parser bounds and lifecycle work, add mutation-sensitive
 environment/pre-spawn regressions, and restore current-source route 50 without
-changing tagged `v0.5.0` or Research 281. Run every provider-free gate first;
-then at most one authenticated provider-suppressed catalogue listing, no retry.
+changing tagged `v0.5.0` or Research 281. Run every revised provider-free gate
+first. Then run exactly one replacement authenticated, provider-suppressed
+catalogue listing. Capture bounded raw stdout and stderr before parsing. Admit
+only if the exact-version log proves remote fetch disabled and the isolated
+home has neither a fresh remote-origin cache write nor an auth-refresh watcher.
+No third observation or further retry is authorized. Tom's 2026-09-12
+instruction to fix the seam after rejecting non-admission authorizes this
+materially corrected replacement.
 
 Expected fixture root is
 `crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.25-model-catalogue/`.
@@ -77,9 +100,9 @@ a narrow correction note rather than rewritten history.
 
 ## Suggested Next Move
 
-Freeze the shipped `GROK_CONFIG` allowlist/precedence and host-local
-environment-clearing evidence in Research 306, recover the preserved admitted
-tree, then make the pre-process suppression proof fail closed before restoring
+Freeze the failed overlay and private-file precedence evidence in Research 306,
+recover the preserved admitted tree, then make the pre-process and runtime
+suppression proofs fail closed before restoring
 the route.
 
 ## Completion Protocol

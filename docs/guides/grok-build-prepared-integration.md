@@ -12,6 +12,9 @@ On the maintained `1.0.4..=1.0.5` segments it also carries consumer registered
 tools through the Swallowtail-owned courier.
 Reject it when the application needs hosted xAI inference, usage, or public
 provider-session management.
+The separate `grok-build.catalogue` route (`GrokCatalogueDriver`,
+`swallowtail.grok-build.catalogue`) lists installed models on exact `1.0.25`
+only; see Model Catalogue below. It never opens ACP or sends a prompt.
 
 ## Route And Operation Shapes
 
@@ -67,9 +70,57 @@ admitted executable behavior: `grok-4.5` on the `0.2` segments, `grok-4.6` on
 `1.0.4` through `1.0.5` and permitted unverified-newer points that inherit that
 milestone. No model fallback is performed. Interactive initialization may expose
 authorized session model options on the returned handle; that observation
-does not become a standalone provider catalogue.
+does not become a standalone provider catalogue. That negotiated evidence stays
+separate from the prepared `grok-build.catalogue` operation below, which is
+the only pre-session model inventory.
 
 Reasoning selection, output limits, and structured output are not qualified.
+
+## Model Catalogue
+
+Create `GrokCatalogueProfileInput` with request ID and optional deadline, then
+call `prepare_catalogue` on the admitted integration and `list_models`. The
+operation runs exactly `--no-auto-update models` with stdin closed unwritten,
+bounds combined output, requires successful exit, and joins cleanup on
+success, failure, timeout, and cleanup failure. It never retries, updates the
+CLI, opens ACP, sends a prompt, opens a model session, dispatches a tool, or
+falls back to an execution default.
+
+Preparation admits only exact installed `1.0.25` under the `QualifiedOnly`
+claim `grok-build.catalogue.executable-1-0-25`
+(`grok-build.catalogue.models-text-v1`); every older or newer point fails
+closed before any process starts. Preparation also requires the same delegated
+subscription access readiness as the ACP operations.
+
+The catalogue is an authenticated, non-inference metadata operation under
+`HarnessConfigurationPosture::Ambient`: it binds the prepared ambient
+environment and may refresh authentication or bounded catalogue metadata, but
+it retains no provider state beyond the bounded operation. It does not
+materialize an operation-private suppression file, gate on enterprise
+precedence, or require `ProviderSuppressed`; none of those is needed for a
+prompt-free command, and the operation is not wrapped in an operating-system
+network sandbox. Grok's auth-refresh watcher and bounded catalogue metadata
+traffic are permitted.
+
+`list_models_recorded` additionally returns the redacted
+`GrokCatalogueOutputEvidence` captured before parsing: stdout and stderr byte
+counts plus their SHA-256 digests. Raw bytes stay host-private and never enter
+records or diagnostics.
+
+Rows preserve provider order and exact opaque ids. The shipped exact-`1.0.25`
+output carries an authentication preamble and `  * <id> (default)` / `
+  - <id>` bullet rows; the parser requires that grammar. The top-level default
+from the `models` document marks `is_default`; a missing, repeated, or
+disagreeing marker fails the operation instead of guessing. Display name,
+description, input token limit, and reasoning modes come only from the frozen
+exact-`1.0.25` default-model document by exact id equality (`grok-4.5` has no
+description, so it stays unknown there); unknown future ids pass through with
+empty metadata and no provider id is ever attached. Malformed, duplicate,
+empty, and over-limit documents fail closed, exit status is reported without
+quoting stderr, and there is no consumer cancellation surface: enforce the
+deadline instead. Research 306 freezes the corrected boundary and the accepted
+live capsule; Research 305 keeps the static command/output evidence with a
+correction note.
 
 ## Structured Run
 

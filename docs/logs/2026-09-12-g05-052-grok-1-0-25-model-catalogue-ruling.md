@@ -59,3 +59,20 @@ independent exact-head review `5648599784`. Desktop Chatterbox
 receives this ruling in place of a catalogue capsule: there is no source SHA
 to pin and no later-release adoption boundary to watch beyond the stated
 re-admission gate.
+
+## Correction 2026-09-12 (g05.053)
+
+The operator rejected this ruling's premise and directed a correction. Typed
+non-admission remains the historical g05.052 outcome, but its second reason
+(`provider_invocation_not_suppressible`) is superseded. Both the `GROK_CONFIG`
+overlay and an operation-private `$GROK_HOME/config.toml` were tested and
+disproved as suppression mechanisms; Contract 020 was then corrected on
+2026-09-12 so a dedicated harness catalogue may run one ephemeral
+**authenticated metadata** process without a prompt, model session, tool,
+inference, update, retry, or retained provider state. The final accepted
+observation parses the shipped bullet grammar to `grok-4.6` default then
+`grok-4.5`, exits zero with zero stderr, opens no session, performs no
+inference, and joins cleanup, so the route is admitted under
+`HarnessConfigurationPosture::Ambient`. Grok's auth-refresh watcher and bounded
+catalogue metadata traffic are permitted. Research 306 freezes the corrected
+boundary and the accepted capsule. This entry is not rewritten.

@@ -1,0 +1,57 @@
+{
+  "argv": [
+    "--no-auto-update",
+    "models"
+  ],
+  "cleared_ambient_names": [
+    "GROK_CONFIG",
+    "GROK_CONFIG_PATH"
+  ],
+  "cli": {
+    "executable_path": "<host-private>",
+    "executable_sha256": "9ef4a40ad60c6a5178a65caf39c2a148e6a98d0d2d350b10329dee34d9195d9c",
+    "version": "1.0.25"
+  },
+  "correction": "operation-private config.toml replaces the disproved GROK_CONFIG overlay",
+  "default_model": "grok-4.6",
+  "delegated_credential_present": true,
+  "duration_ms": 1374,
+  "environment_binding_names": [
+    "GROK_HOME"
+  ],
+  "environment_reference": "grok-build.catalogue.private-grok-home",
+  "higher_priority_configuration": "NoLayer",
+  "inference_performed": false,
+  "isolated_home": "<host-private>",
+  "model_ids": [
+    "grok-4.6",
+    "grok-4.5"
+  ],
+  "notes": [
+    "live listing owns membership, order, and default",
+    "the frozen exact-1.0.25 embedded document supplements matching ids only",
+    "no retry was performed",
+    "the failed overlay observation remains immutable",
+    "a failure capsule keeps only redacted counts, digests, and runtime proof"
+  ],
+  "outcome": "success",
+  "private_config_bytes": 55,
+  "private_config_sha256": "8d1cc0097f44f2b705ded13ffedca115c12319ba94eb1fd3561e70fd9ec02f87",
+  "process_joined": true,
+  "prompt_sent": false,
+  "provider_free_gates": "passed before this single authorized replacement listing",
+  "runtime_proof": {
+    "auth_refresh_watcher_started": true,
+    "log_bytes": 7082,
+    "remote_fetch_disabled": false,
+    "remote_origin_models_cache": false
+  },
+  "schema": "swallowtail.grok.catalogue.live-capsule.v2",
+  "session_opened": false,
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdin_closed": true,
+  "stdout_bytes": 113,
+  "stdout_sha256": "6e495049ee1ee9c25d09444b4fbcf873e5a5b50b3aefe66de0170aa9b7575360",
+  "task": "g05.053"
+}

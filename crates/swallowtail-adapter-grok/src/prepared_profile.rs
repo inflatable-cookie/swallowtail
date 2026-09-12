@@ -285,5 +285,6 @@ impl GrokPreparedIntegration {
     }
 }
 
+include!("prepared_profile/catalogue.rs");
 include!("prepared_profile/plan.rs");
 include!("prepared_profile/run.rs");

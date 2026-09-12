@@ -253,3 +253,23 @@ admissible. It authorizes nothing.
 - read-only byte carves at the offsets above; no catalogue execution
 - `config.rs`/`fetch.rs`/`cache.rs` event and config-doc literals proving the
   `remote_fetch` switch and bundled-default fallback
+
+## Correction 2026-09-12 (g05.053)
+
+The verdict above remains the historical g05.052 record and its argv finding 1
+stands, but finding 2 and the typed non-admission are superseded. The
+`GROK_CONFIG` overlay and an operation-private `$GROK_HOME/config.toml` were
+tested and disproved as suppression mechanisms, and Contract 020 was corrected
+on 2026-09-12: a dedicated harness catalogue may run one ephemeral
+**authenticated metadata** process that performs bounded authentication or
+catalogue-metadata traffic without sending a prompt, opening a model session,
+invoking inference or a tool, updating the harness, retrying, or retaining
+provider state. `ProviderSuppressed` is required only when a named need
+requires it. The final accepted observation (`grok-4.6` default then
+`grok-4.5`, exit zero, zero stderr, no session or inference, joined cleanup)
+admits `grok-build.catalogue` under `HarnessConfigurationPosture::Ambient`.
+Static recovery of the shipped `xai-grok-pager/src/models.rs` format pieces
+also corrects this record's output grammar: exact `1.0.25` renders
+`  * <id> (default)` and `  - <id>` bullet rows after an authentication
+preamble. Research 306 freezes the corrected boundary and the accepted
+capsule. This record is not rewritten.

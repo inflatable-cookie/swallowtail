@@ -60,6 +60,13 @@ exact-SHA checkpoint.
    workspace still named `0.5.0`. Prove the restored blobs match the tag, then
    carry the additions into the fresh `0.5.1` baselines. Do not alter any other
    prior release note or baseline.
+   Repair `scripts/check-consumer-front-door.py` so the current release note's
+   Production Routes inventory is compared with the fresh current-version
+   route baseline, not the previous tag's baseline. Permit the inherited
+   unchanged-set shorthand only when the current and previous route sets are
+   equal. `0.5.1` must truthfully list all 50 routes, including
+   `grok-build.catalogue`; do not hide the addition in prose to satisfy the old
+   assertion.
 4. Prove `git diff --exit-code 0209dd7f..<candidate> -- crates/` and exact
    subtree equality. Version, lock, changelog, release note, baselines, and
    directly required release scripts/docs are the only candidate changes.
@@ -88,7 +95,7 @@ exact-SHA checkpoint.
 | Approved concurrent siblings | none that changes source, release inputs, baselines, or closeout surfaces |
 | Worker capability class | release-candidate worker; provider-free; ordinary automatic pool |
 | Acceptance evidence | Desktop Phase A capsule; frozen source/subtree identities; one Effigy prepare receipt; exact-source consumer; semantic API and route baselines; independent review; exact-SHA hosted CI |
-| Review oracle | reject any `crates/**` change, non-patch version, reused release state, prior-version change other than byte equality with the two named `v0.5.0` tag blobs, missing source consumer, different-SHA CI, tag/publication mutation, or inferred registry availability |
+| Review oracle | reject any `crates/**` change, non-patch version, reused release state, prior-version change other than byte equality with the two named `v0.5.0` tag blobs, release note route inventory unequal to the fresh `0.5.1` baseline, missing source consumer, different-SHA CI, tag/publication mutation, or inferred registry availability |
 | Stop conditions | dirty or divergent base; existing `v0.5.1`; qualified subtree mismatch; either restored blob differs from tag `v0.5.0`; deterministic prepare/gate/review/CI failure; required runtime change; any other historical mutation; tag or publication side effect |
 | Escalation owner | Chatterbox for compatibility/tree/release semantics; queue coordinator for mechanical blockers; Tom for exact-SHA tag authorization |
 

@@ -67,6 +67,28 @@ pub fn swallowtail_adapter_grok::GrokAcpDriver::recover_session_attachment(&self
 pub fn swallowtail_adapter_grok::GrokAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_grok::GrokAcpDriver
 pub fn swallowtail_adapter_grok::GrokAcpDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_grok::GrokCatalogueDriver
+impl swallowtail_adapter_grok::GrokCatalogueDriver
+pub fn swallowtail_adapter_grok::GrokCatalogueDriver::list_models_recorded(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_adapter_grok::GrokCatalogueListing, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_adapter_grok::GrokCatalogueDriver
+pub const fn swallowtail_adapter_grok::GrokCatalogueDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_grok::GrokCatalogueDriver
+pub fn swallowtail_adapter_grok::GrokCatalogueDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_grok::GrokCatalogueListing
+impl swallowtail_adapter_grok::GrokCatalogueListing
+pub fn swallowtail_adapter_grok::GrokCatalogueListing::entries(&self) -> &[swallowtail_core::model::ModelCatalogEntry]
+pub const fn swallowtail_adapter_grok::GrokCatalogueListing::evidence(&self) -> &swallowtail_adapter_grok::GrokCatalogueOutputEvidence
+pub fn swallowtail_adapter_grok::GrokCatalogueListing::into_entries(self) -> alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>
+pub struct swallowtail_adapter_grok::GrokCatalogueOutputEvidence
+impl swallowtail_adapter_grok::GrokCatalogueOutputEvidence
+pub const fn swallowtail_adapter_grok::GrokCatalogueOutputEvidence::stderr_bytes(&self) -> usize
+pub fn swallowtail_adapter_grok::GrokCatalogueOutputEvidence::stderr_sha256(&self) -> &str
+pub const fn swallowtail_adapter_grok::GrokCatalogueOutputEvidence::stdout_bytes(&self) -> usize
+pub fn swallowtail_adapter_grok::GrokCatalogueOutputEvidence::stdout_sha256(&self) -> &str
+pub struct swallowtail_adapter_grok::GrokCatalogueProfileInput
+impl swallowtail_adapter_grok::GrokCatalogueProfileInput
+pub const fn swallowtail_adapter_grok::GrokCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_grok::GrokCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
 pub struct swallowtail_adapter_grok::GrokModelSelection
 impl swallowtail_adapter_grok::GrokModelSelection
 pub const fn swallowtail_adapter_grok::GrokModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
@@ -76,6 +98,17 @@ pub const fn swallowtail_adapter_grok::GrokPreparationInput::new(swallowtail_cor
 pub struct swallowtail_adapter_grok::GrokPreparationProbe
 impl swallowtail_adapter_grok::GrokPreparationProbe
 pub const fn swallowtail_adapter_grok::GrokPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_grok::GrokPreparedCatalogue
+impl swallowtail_adapter_grok::GrokPreparedCatalogue
+pub fn swallowtail_adapter_grok::GrokPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_grok::GrokPreparedCatalogue
+pub const fn swallowtail_adapter_grok::GrokPreparedCatalogue::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_grok::GrokPreparedCatalogue::into_parts(self) -> (swallowtail_runtime::prepared_operation::PreparedOperationEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest)
+pub fn swallowtail_adapter_grok::GrokPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_grok::GrokPreparedCatalogue::list_models_recorded(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_adapter_grok::GrokCatalogueListing, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_grok::GrokPreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_grok::GrokCatalogueDriver
+pub const fn swallowtail_adapter_grok::GrokPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_grok::GrokPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
 pub struct swallowtail_adapter_grok::GrokPreparedEvidence
 impl swallowtail_adapter_grok::GrokPreparedEvidence
 pub const fn swallowtail_adapter_grok::GrokPreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
@@ -93,6 +126,8 @@ pub fn swallowtail_adapter_grok::GrokPreparedIntegration::low_level_driver(&self
 pub const fn swallowtail_adapter_grok::GrokPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
 pub const fn swallowtail_adapter_grok::GrokPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
 pub fn swallowtail_adapter_grok::GrokPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_grok::GrokPreparedIntegration
+pub fn swallowtail_adapter_grok::GrokPreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_grok::GrokCatalogueProfileInput) -> core::result::Result<swallowtail_adapter_grok::GrokPreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
 impl swallowtail_adapter_grok::GrokPreparedIntegration
 pub fn swallowtail_adapter_grok::GrokPreparedIntegration::prepare_run(&self, swallowtail_adapter_grok::GrokRunProfileInput) -> core::result::Result<swallowtail_adapter_grok::GrokPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
 impl swallowtail_adapter_grok::GrokPreparedIntegration
@@ -137,11 +172,14 @@ pub const fn swallowtail_adapter_grok::GrokSessionProfileInput::with_consumer_me
 pub const swallowtail_adapter_grok::GROK_BUILD_ACP_AXIS: &str
 pub const swallowtail_adapter_grok::GROK_BUILD_ACP_BASELINE_VERSION: &str
 pub const swallowtail_adapter_grok::GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_grok::GROK_BUILD_CATALOGUE_VERSION: &str
 pub const swallowtail_adapter_grok::GROK_BUILD_SUBSCRIPTION_ACCESS_PROFILE_ID: &str
 pub const swallowtail_adapter_grok::GROK_BUILD_SUBSCRIPTION_AUDIENCE: &str
 pub fn swallowtail_adapter_grok::grok_build_acp_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_grok::grok_build_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub fn swallowtail_adapter_grok::grok_build_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_grok::grok_build_catalogue_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_grok::grok_build_catalogue_descriptor() -> swallowtail_core::registration::DriverDescriptor
 pub fn swallowtail_adapter_grok::grok_build_model_for_behavior(&str) -> core::option::Option<&'static str>
 pub fn swallowtail_adapter_grok::grok_build_model_for_version(&swallowtail_core::interface_version::InterfaceVersion) -> core::option::Option<&'static str>
 pub fn swallowtail_adapter_grok::grok_build_permission_namespace() -> swallowtail_core::event::ExtensionNamespace

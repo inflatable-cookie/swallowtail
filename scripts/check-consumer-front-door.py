@@ -148,6 +148,13 @@ if not immutable_routes < current_routes:
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if not documented_routes:
+    if expected_routes != immutable_routes:
+        fail(
+            "unchanged-set route shorthand requires the fresh "
+            f"v{current_version} baseline to equal the tagged v{previous_version} "
+            f"inventory; added={sorted(expected_routes - immutable_routes)}, "
+            f"removed={sorted(immutable_routes - expected_routes)}"
+        )
     if (
         f"The 49-route candidate inventory is unchanged from `{previous_tag}`, including"
         not in release_route_section
@@ -162,10 +169,10 @@ if not documented_routes:
     documented_routes = set(
         re.findall(r"^- `([^`]+)`$", prior_route_section, re.MULTILINE)
     )
-if documented_routes != immutable_routes:
-    missing = sorted(immutable_routes - documented_routes)
-    extra = sorted(documented_routes - immutable_routes)
-    fail(f"tagged release route inventory drifted; missing={missing}, extra={extra}")
+if documented_routes != expected_routes:
+    missing = sorted(expected_routes - documented_routes)
+    extra = sorted(documented_routes - expected_routes)
+    fail(f"current release route inventory drifted; missing={missing}, extra={extra}")
 
 for relative, document in (
     ("README.md", readme),

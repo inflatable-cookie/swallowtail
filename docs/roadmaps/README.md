@@ -15,13 +15,12 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Reassess the g05 runway through a Chatterbox planning ruling now that
-g05.054 v0.5.1 Release Candidate merged through PR #317 at `e9140b46`
-after independent exact-head review `5649975685`, returning the exact
-merged identity for Tom's separate annotated-tag gate. No task is ready:
-planned tasks 035 and 039–042 all await operator promotion, disposition,
-or requirements. No tag, registry, GitHub Release, provider call, or
-Desktop mutation follows.
+Dispatch g05.055 v0.5.1 Annotated Source Tag. Tom authorized the exact
+`e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27` target, tree `d375b322…`,
+annotation, local annotated-tag creation, and the single `v0.5.1` ref push
+after merge-SHA CI run 34731113171 passed all 11 jobs. The task remains
+source-only: no registry, GitHub Release, artifact, provider call, or Desktop
+mutation.
 
 ## Standing Lanes
 

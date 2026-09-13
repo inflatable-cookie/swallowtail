@@ -144,10 +144,14 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 54 tasks: 42 completed tasks, honest evidence
-stops at 002, 003, 007, 011, 029, 031, and 034, no ready task, and
+g05 has 55 tasks: 42 completed tasks, honest evidence
+stops at 002, 003, 007, 011, 029, 031, and 034, one ready task at 055, and
 planned tasks at 035, 039, 040, 041, and 042.
-g05.054 completed 2026-09-13: source-only `v0.5.1` candidate `755a2669`
+g05.055 is ready under Tom's 2026-09-13 exact-SHA authorization: create one
+annotated `v0.5.1` tag at `e9140b46`, push only that tag ref, verify immutable
+identity and tag-triggered CI, then return the source-only release capsule to
+Desktop g02.089. No registry, GitHub Release, artifact, provider, or Desktop
+mutation is authorized. g05.054 completed 2026-09-13: source-only `v0.5.1` candidate `755a2669`
 merged at `e9140b46` through PR #317 after independent exact-head review
 `5649975685`; qualified `crates/` unchanged, exact-head CI green, no tag or
 publication; exact identity returned for Tom's annotated-tag authorization.

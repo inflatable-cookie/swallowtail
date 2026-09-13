@@ -336,6 +336,14 @@ gates.
 The gate performs no authenticated provider work and no external release
 mutation.
 
+Provider-free candidate preparation is not a one-shot resource. A failed
+prepare in a clean isolated worker checkout may be diagnosed, repaired within
+the task's existing paths and acceptance boundary, and rerun. Preserve the
+failed receipt or exact diagnostic and prove the final candidate diff; do not
+require a disposable rehearsal checkout merely to avoid consuming local
+authority. One-shot limits remain appropriate for provider calls and external
+release mutations such as tag creation or push.
+
 ## Hosted Gate Delegation
 
 `lint`, `lint:no-features`, `test`, and `floor` are satisfied for a candidate by

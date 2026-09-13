@@ -41,10 +41,14 @@ exact-SHA checkpoint.
    remains immutable, `v0.5.1` remains absent locally and remotely, workspace
    version is `0.5.0`, the qualified source is an ancestor, and the frozen
    `crates/` and Grok adapter tree identities above still resolve.
-2. Prepare patch `0.5.1` exactly once through
+2. Prepare patch `0.5.1` through
    `effigy --json release prepare --yes --check-gates --version 0.5.1`.
    Retain its receipt. A stale ignored release-state file from another release
-   is not candidate evidence; a fresh queue workspace must not reuse it.
+   is not candidate evidence; a fresh queue workspace must not reuse it. A
+   failed provider-free prepare does not consume release authority: retain its
+   exact diagnostic, repair only within this manifest, and rerun in the same
+   isolated workspace. Do not create a rehearsal copy solely to protect a
+   one-shot allowance.
 3. Promote the two real `[Unreleased]` entries into `0.5.1`. Add
    `docs/releases/0.5.1.md`, release index/install guidance, and fresh `0.5.1`
    package, route, dependency, and semantic API baselines required by current
@@ -77,7 +81,7 @@ exact-SHA checkpoint.
 | --- | --- |
 | Readiness | ready |
 | Prerequisites | Contract 036; g05.051 and g05.053 complete; Desktop g02.089 Phase A green; clean pushed `main` |
-| Completion conditions | one `0.5.1` prepare; release metadata and fresh baselines; zero `crates/**` diff from `0209dd7f`; provider-free/source-consumer gates; exact-head review; qualifying hosted CI; merged immutable candidate; exact identity returned for tag authorization |
+| Completion conditions | successful `0.5.1` prepare receipt; release metadata and fresh baselines; zero `crates/**` diff from `0209dd7f`; provider-free/source-consumer gates; exact-head review; qualifying hosted CI; merged immutable candidate; exact identity returned for tag authorization |
 | Owned mutable paths | `Cargo.toml`; `Cargo.lock`; `CHANGELOG.md`; root `README.md`; new `docs/releases/0.5.1.md`; `docs/releases/README.md`; fresh `release-baselines/*0.5.1*`; exact tag restoration of `release-baselines/production-routes-0.5.0.txt` and `release-baselines/public-api-0.5.0/swallowtail-adapter-grok.txt`; directly required release validation docs/scripts; this task and one candidate evidence log; `PAPERCUTS.md` append only |
 | Reserved shared closeout surfaces | `docs/roadmaps/README.md`; `docs/roadmaps/g05/README.md`; `docs/roadmaps/generation-index.md`; logs index |
 | Forbidden paths | every `crates/**` path; prior release notes and baselines except the two exact tag restorations above; `.github/workflows/**`; tags; registry/GitHub Release/artifact publication; provider or Desktop repositories |
@@ -101,7 +105,7 @@ not an invented package release.
 
 - `effigy --json release simulate`
 - `effigy --json release status --check-gates`
-- one `effigy --json release prepare --yes --check-gates --version 0.5.1`
+- `effigy --json release prepare --yes --check-gates --version 0.5.1`
 - `effigy release execute --plan`
 - complete repository-owned candidate and source-consumer selectors
 - `git diff --exit-code 0209dd7f..<candidate> -- crates/`
@@ -114,7 +118,7 @@ not an invented package release.
 - [ ] qualified `crates/` and Grok adapter trees are unchanged
 - [ ] the two named `0.5.0` baselines match immutable tag `v0.5.0` exactly
 - [ ] release note, changelog, and fresh baselines describe the actual source
-- [ ] one prepare receipt and exact-source consumer pass
+- [ ] successful prepare receipt and exact-source consumer pass
 - [ ] independent review and exact-SHA hosted CI pass
 - [ ] candidate merges without tag or publication
 - [ ] exact candidate identity returns for the tag gate

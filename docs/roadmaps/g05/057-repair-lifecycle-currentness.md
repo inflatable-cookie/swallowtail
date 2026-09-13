@@ -37,6 +37,9 @@ Not applicable.
 - **Owned lifecycle tooling:** `scripts/check-roadmap-status-drift.py`, only to
   remove its requirement for hand-maintained status on flattened lifecycle
   tasks while preserving its remaining drift checks.
+- **Owned task index:** the `## Tasks` status buckets in
+  `docs/roadmaps/g05/README.md`, only as needed to stop them duplicating
+  lifecycle-owned mechanical state while retaining every task link.
 - **Reserved closeout surfaces:** this task's lifecycle record, declared generated projection blocks, and deletion of the submitted handoff belong to the repository hook.
 - **Worker:** automatic mechanical pool; independent exact-head review remains required.
 - **Excluded:** product code, releases, generation rollover or compaction, new product planning, arbitrary prose cleanup, Queue/Effigy source, and Paseo thread/workspace disposal.
@@ -47,8 +50,9 @@ Not applicable.
 1. Re-run `effigy skill run northstar/lifecycle:run -- audit-currentness --repo .` and confirm the inventory below.
 2. Apply only the exact accepted removals or task-free frontier replacements.
 3. Remove this task's temporary `Status:` line and update the legacy roadmap
-   status checker so lifecycle-managed flattened tasks no longer require that
-   duplicate field.
+   status checker and task index so lifecycle-managed flattened tasks no
+   longer require or project duplicate status fields. Preserve every task
+   link and all semantic runway history.
 4. Repair the exact terminal-handoff backlinks below, if any, by targeting a permanent evidence surface.
 5. Prove the audit is clean, lifecycle projections verify, documentation checks and normal QA pass, and the diff contains no product files.
 6. Land through Queue review and repository-hook closeout.
@@ -75,8 +79,9 @@ Read-only currentness findings:
 - `docs/roadmaps/g05/README.md` — `duplicate-status-header` in `g05 Agent Runtime Surfaces And Route Truth`
 
 Promotion also proved that `scripts/check-roadmap-status-drift.py` requires a
-task-level `Status:` line. This task carries that field only to pass the legacy
-planning push; the implementation removes both the field and the requirement.
+task-level `Status:` line and a matching `## Tasks` status bucket. This task
+carries those fields only to pass the legacy planning push; the implementation
+removes the duplicate state model while preserving the task index.
 
 Transient-handoff backlink inventory:
 

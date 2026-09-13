@@ -1,6 +1,5 @@
 # g05 Agent Runtime Surfaces And Route Truth
 
-Status: active
 Owner: Tom
 Created: 2026-08-28
 Updated: 2026-09-13
@@ -432,20 +431,14 @@ identity.
 
 ## Tasks
 
-### Ready
-
 - [057 Lifecycle Currentness Repair](./057-repair-lifecycle-currentness.md) — ready; migrate this legacy status-bucket index to lifecycle-owned state
 - [056 Effigy-Hosted Lifecycle Hook](./056-adopt-effigy-hosted-lifecycle-hook.md) — ready; operator-approved configuration-only maintenance lane; product priority unchanged
-
-### Planned
 
 - [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; Batch A promoted (card 114 complete); former stubs 130/134 preserved as g05.041/g05.042
 - [039 Qoder Effective Skill Visibility Binding](./039-qoder-effective-skill-visibility-binding.md) — planned; gated on a non-empty Research 256 deliver-now disposition
 - [040 Qoder Skill Visibility Acceptance](./040-qoder-skill-visibility-acceptance.md) — planned; serial after g05.039
 - [041 Persistent Permission Grant Admission](./041-persistent-permission-grant-admission.md) — planned; operator promotion absent; no dispatch authorization
 - [042 Registered-Tool Adoption For Remaining ACP Routes](./042-registered-tool-adoption-remaining-acp-routes.md) — planned; consumer requirement and operator direction absent; no dispatch authorization
-
-### Stopped
 
 - [011 Watcher Route Admission Recovery](./011-watcher-route-admission-recovery.md) — stopped after provider-free evidence; no exact flag shape; mechanism change unplanned
 - [007 Claude Watcher Live Acceptance](./007-claude-watcher-live-acceptance.md) — stopped after live evidence and merged through PR 128 at `528a31c9`; card 020 Linux Haiku turn consumed; claims withheld
@@ -454,8 +447,6 @@ identity.
 - [034 Release Lane Simplification](./034-release-lane-simplification.md) — stopped; v0.4.4 lane missed all-green (30-minute fail, one-hosted-run fail, no-rerun-to-green not clean); audit PR 305 merged at `94d8ef07`
 - [031 CI Latency](./031-ci-latency.md) — stopped; honest evidence stop (PR-gate median 2m43s pass, literal macOS pinned floor fail, every-PR test population pass, required-check set unproven); audit PR 306 merged at `3b4f5378`
 - [029 Claude SDK Interactive Parity](./029-claude-sdk-interactive-parity.md) — stopped; honest evidence stop (consumer multi-turn editing session unproven; permission modes, default, landing order, and v0.4.1 carrier pass); audit PR 307 merged at `55595c38`
-
-### Completed
 
 - [055 v0.5.1 Annotated Source Tag](./055-v0-5-1-annotated-source-tag.md) — completed; annotated `v0.5.1` created and pushed at `e9140b46` (tag object `97a6933a`) after Tom's exact-SHA authorization; pre-tag run 34731113171 and tag-triggered run 34743711387 green 11/11; qualified source unchanged; source-only, not published
 - [054 v0.5.1 Release Candidate](./054-v0-5-1-release-candidate.md) — completed; source-only `v0.5.1` candidate merged without touching qualified `crates/`; PR #317 merged at `e9140b46` after independent exact-head review `5649975685`; tag gate with Tom

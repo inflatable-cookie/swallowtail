@@ -15,10 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Adopt the Effigy-hosted lifecycle through g05.056 as the operator-approved, configuration-only Queue lifecycle
-adoption lane. It does not change product priority, promote planned tasks
-035 or 039–042, or authorize another release. After hook-owned closeout,
-return to Chatterbox for product runway planning.
+Reassess product runway with Chatterbox after hook-owned closeout of the
+Queue lifecycle lanes. No task is dispatched by this frontier; it does not
+change product priority, promote planned tasks, or authorize another release.
 
 ## Standing Lanes
 

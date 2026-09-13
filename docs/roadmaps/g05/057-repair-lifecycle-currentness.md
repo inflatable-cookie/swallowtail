@@ -1,7 +1,5 @@
 # g05.057 — Repair lifecycle currentness
 
-Status: ready
-
 Owner: repository maintainers
 Created: 2026-09-13
 Governing refs: installed Northstar lifecycle currentness contract and portfolio repair route

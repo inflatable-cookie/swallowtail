@@ -38,8 +38,10 @@ Not applicable.
   remove its requirement for hand-maintained status on flattened lifecycle
   tasks while preserving its remaining drift checks.
 - **Owned task index:** the `## Tasks` status buckets in
-  `docs/roadmaps/g05/README.md`, only as needed to stop them duplicating
-  lifecycle-owned mechanical state while retaining every task link.
+  `docs/roadmaps/g05/README.md` and the g05 task-status summary in
+  `docs/roadmaps/generation-index.md`, only as needed to stop them duplicating
+  lifecycle-owned mechanical state while retaining every task link and
+  semantic history.
 - **Reserved closeout surfaces:** this task's lifecycle record, declared generated projection blocks, and deletion of the submitted handoff belong to the repository hook.
 - **Worker:** automatic mechanical pool; independent exact-head review remains required.
 - **Excluded:** product code, releases, generation rollover or compaction, new product planning, arbitrary prose cleanup, Queue/Effigy source, and Paseo thread/workspace disposal.
@@ -79,9 +81,10 @@ Read-only currentness findings:
 - `docs/roadmaps/g05/README.md` — `duplicate-status-header` in `g05 Agent Runtime Surfaces And Route Truth`
 
 Promotion also proved that `scripts/check-roadmap-status-drift.py` requires a
-task-level `Status:` line and a matching `## Tasks` status bucket. This task
-carries those fields only to pass the legacy planning push; the implementation
-removes the duplicate state model while preserving the task index.
+task-level `Status:` line, a matching `## Tasks` status bucket, and matching
+generation-index counts. This task carries those fields only to pass the legacy
+planning push; the implementation removes the duplicate state model while
+preserving the task index and semantic history.
 
 Transient-handoff backlink inventory:
 

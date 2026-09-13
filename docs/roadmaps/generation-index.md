@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 56 tasks: 43 completed tasks, honest evidence
-stops at 002, 003, 007, 011, 029, 031, and 034, one ready task at 056, and
+g05 has 57 tasks: 43 completed tasks, honest evidence
+stops at 002, 003, 007, 011, 029, 031, and 034, ready tasks at 056 and 057, and
 planned tasks at 035, 039, 040, 041, and 042.
 g05.055 completed 2026-09-13: annotated `v0.5.1` tag created and pushed at
 exact candidate `e9140b46` (tree `d375b322`, tag object `97a6933a`) after

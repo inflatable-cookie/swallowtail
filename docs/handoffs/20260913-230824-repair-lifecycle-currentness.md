@@ -31,9 +31,10 @@ Canonical lifecycle JSON and generated projections can disagree with hand-mainta
 - Planning base before this handoff: `7758e620090de3dc16fdea6af5830344060d5fde`.
 - The integration checkout was clean and synchronized before promotion.
 - The pre-push docs gate proved `scripts/check-roadmap-status-drift.py` still
-  requires task-level `Status:` fields and matching status-bucket index entries.
-  The task temporarily satisfies that legacy gate and explicitly owns replacing
-  the duplicate state model while retaining every task link.
+  requires task-level `Status:` fields, matching status-bucket index entries,
+  and matching generation-index counts. The task temporarily satisfies that
+  legacy gate and explicitly owns replacing the duplicate state model while
+  retaining every task link and semantic history.
 - Exact currentness findings:
 - `docs/roadmaps/README.md` — `stale-frontier` in `Next Task` for `g05.056`
 - `docs/roadmaps/g05/056-adopt-effigy-hosted-lifecycle-hook.md` — `duplicate-status-header` in `g05.056 Adopt the Effigy-Hosted Lifecycle Hook` for `g05.056`

@@ -432,6 +432,10 @@ identity.
 
 ## Tasks
 
+- [057 Lifecycle Currentness Repair](./057-repair-lifecycle-currentness.md) —
+  lifecycle-managed maintenance; mechanical state is owned by Queue and the
+  generated projection
+
 ### Ready
 
 - [056 Effigy-Hosted Lifecycle Hook](./056-adopt-effigy-hosted-lifecycle-hook.md) — ready; operator-approved configuration-only maintenance lane; product priority unchanged

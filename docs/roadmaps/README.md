@@ -15,11 +15,13 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement [g05.054 v0.5.1 Release Candidate](g05/054-v0-5-1-release-candidate.md).
-Desktop g02.089 qualified exact source `0209dd7f`; prepare patch `0.5.1` while
-keeping every `crates/**` path byte-identical, then merge the reviewed candidate
-and return its exact SHA for the separate annotated-tag gate. No tag, registry,
-GitHub Release, provider call, or Desktop mutation follows automatically.
+Reassess the g05 runway through a Chatterbox planning ruling now that
+g05.054 v0.5.1 Release Candidate merged through PR #317 at `e9140b46`
+after independent exact-head review `5649975685`, returning the exact
+merged identity for Tom's separate annotated-tag gate. No task is ready:
+planned tasks 035 and 039–042 all await operator promotion, disposition,
+or requirements. No tag, registry, GitHub Release, provider call, or
+Desktop mutation follows.
 
 ## Standing Lanes
 

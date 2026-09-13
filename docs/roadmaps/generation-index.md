@@ -144,13 +144,17 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 54 tasks: 41 completed tasks, honest evidence
-stops at 002, 003, 007, 011, 029, 031, and 034, ready task at 054, and
+g05 has 54 tasks: 42 completed tasks, honest evidence
+stops at 002, 003, 007, 011, 029, 031, and 034, no ready task, and
 planned tasks at 035, 039, 040, 041, and 042.
-g05.053 completed 2026-09-13: exact installed Grok `1.0.25` catalogue admitted
-as authenticated non-inference metadata; PR #316 merged at `3e9f29e7`
-after independent exact-head review `5649291554`; provider-free with no
-release, tag, Desktop mutation, or consumer pin.
+g05.054 completed 2026-09-13: source-only `v0.5.1` candidate `755a2669`
+merged at `e9140b46` through PR #317 after independent exact-head review
+`5649975685`; qualified `crates/` unchanged, exact-head CI green, no tag or
+publication; exact identity returned for Tom's annotated-tag authorization.
+ g05.053 completed 2026-09-13: exact installed Grok `1.0.25` catalogue admitted
+ as authenticated non-inference metadata; PR #316 merged at `3e9f29e7`
+ after independent exact-head review `5649291554`; provider-free with no
+ release, tag, Desktop mutation, or consumer pin.
 g05.052 completed 2026-09-12: typed non-admission ruling for the exact
 installed Grok `1.0.25` model-catalogue seam; PR #315 merged at `5d0c49f1`
 after independent exact-head review `5648599784`; provider-free with no
@@ -458,7 +462,8 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Implement [g05.054](g05/054-v0-5-1-release-candidate.md). Desktop g02.089
-qualified exact source `0209dd7f`; prepare and merge patch `0.5.1` while every
-`crates/**` path remains identical, then return the exact candidate SHA for the
-separate annotated-tag gate.
+Reassess the g05 runway through a Chatterbox planning ruling after the
+g05.054 merge (`e9140b46`, review `5649975685`): no task is ready, and
+planned tasks 035 and 039–042 all await operator promotion, disposition,
+or requirements. The `v0.5.1` annotated-tag gate awaits Tom's exact-SHA
+authorization.

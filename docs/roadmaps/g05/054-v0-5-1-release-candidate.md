@@ -1,6 +1,6 @@
 # g05.054 v0.5.1 Release Candidate
 
-Status: ready; Desktop-qualified patch candidate requested by Tom
+Status: complete; PR #317 merged candidate 755a2669 at e9140b46 after independent exact-head review 5649975685
 Owner: Tom
 Created: 2026-09-13
 Depends on: Contract 036; g05.051; g05.053; Desktop g02.089 Phase A
@@ -121,17 +121,20 @@ not an invented package release.
 
 ## Acceptance
 
-- [ ] coordinated version is `0.5.1`
-- [ ] qualified `crates/` and Grok adapter trees are unchanged
-- [ ] the two named `0.5.0` baselines match immutable tag `v0.5.0` exactly
-- [ ] release note, changelog, and fresh baselines describe the actual source
-- [ ] successful prepare receipt and exact-source consumer pass
-- [ ] independent review and exact-SHA hosted CI pass
-- [ ] candidate merges without tag or publication
-- [ ] exact candidate identity returns for the tag gate
+- [x] coordinated version is `0.5.1`
+- [x] qualified `crates/` and Grok adapter trees are unchanged
+- [x] the two named `0.5.0` baselines match immutable tag `v0.5.0` exactly
+- [x] release note, changelog, and fresh baselines describe the actual source
+- [x] successful prepare receipt and exact-source consumer pass
+- [x] independent review and exact-SHA hosted CI pass
+- [x] candidate merges without tag or publication
+- [x] exact candidate identity returns for the tag gate
 
 ## Next Task
 
-Return the immutable candidate SHA/tree and qualifying CI to Tom for exact-SHA
-authorization of the `v0.5.1` annotated source tag. Desktop g02.089 remains
-held until that real tag exists.
+None — merged. PR #317 landed candidate `755a2669` at `e9140b46` after
+independent exact-head review `5649975685`; exact-head CI green at the
+candidate (runs `34730275986` and `34730278564`); merge tree identical. The
+immutable merged identity returns to Tom for exact-SHA authorization of the
+`v0.5.1` annotated source tag. Desktop g02.089 remains held until that real
+tag exists.

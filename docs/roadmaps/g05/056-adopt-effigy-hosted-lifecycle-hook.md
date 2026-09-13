@@ -1,6 +1,5 @@
 # g05.056 Adopt the Effigy-Hosted Lifecycle Hook
 
-Status: ready; operator-approved configuration-only maintenance lane
 Owner: repo maintainers
 Created: 2026-09-13
 Governing refs: installed Northstar lifecycle contract and Queue control v2

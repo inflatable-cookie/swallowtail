@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
-"""Fail when task indexes disagree with Status frontmatter.
+"""Fail when the flattened task index drifts from the task files.
 
 Task model (g05.038): ``docs/roadmaps/gNN/NNN-<slug>.md`` files are the sole
-executable planning unit. The generation README lists each task once under
-``### Planned`` / ``### Ready`` / ``### Blocked`` / ``### Stopped`` /
-``### Completed`` beneath ``## Tasks``. There is no nested card level: any
-``batch-cards/`` directory or link, ``## Batch Cards`` section, ``Milestone:``
-pointer, ``execute card`` verb, card-budget table, allowed-runway table, or
-``First milestone`` / ``Next milestone`` column in a current planning surface
-is a migration defect.
+executable planning unit. Since g05.057, terminal task state is
+lifecycle-owned in ``.northstar/lifecycle/v1/``: task files carry no
+hand-maintained ``Status:`` line, the generation README's ``## Tasks``
+section is a flat link registry with no status buckets, and the generation
+index carries no hand-maintained status census. The retired status-bucket
+model is a migration defect, like any nested card level.
+
+Remaining drift checks: exactly one active generation is declared, every
+task file is indexed exactly once under ``## Tasks``, every indexed link
+resolves to a task file, no status buckets return under ``## Tasks``, and no
+nested dispatch level (``batch-cards/``) is reintroduced.
 """
 
 from __future__ import annotations
@@ -22,27 +26,18 @@ SCRIPT_ROOT = Path(__file__).resolve().parent.parent
 ROOT = SCRIPT_ROOT
 GENERATION_INDEX = ROOT / "docs/roadmaps/generation-index.md"
 
-# Longer aliases first so ``evidence stop`` wins over a later ``stopped``.
-RECOGNISED_TOKENS = (
-    "evidence stop",
-    "identity stop",
-    "stopped",
-    "completed",
-    "complete",
-    "blocked",
-    "planned",
-    "ready",
-    "done",
+LINK_RE = re.compile(
+    r"^- \[.*?\]\(\.?/?(?P<file>\d{3}-[^)\s]+\.md)\)(?:\s*—\s*(?P<ann>.*))?$",
+    re.MULTILINE,
 )
-STATUS_TOKENS = {
-    "planned",
-    "ready",
-    "blocked",
-    "stopped",
-    "complete",
-    "completed",
-    "done",
-}
+TASKS_HEADING_RE = re.compile(r"^## Tasks\s*$", re.MULTILINE)
+ANY_H2_RE = re.compile(r"^## .+$", re.MULTILINE)
+# Status buckets under ``## Tasks`` duplicated lifecycle-owned state; they
+# are rejected outright rather than validated.
+RETIRED_BUCKET_RE = re.compile(
+    r"^#{3,}\s+(?:Planned|Ready|Blocked|Stopped|Completed)\s*$",
+    re.MULTILINE,
+)
 
 
 def line_at(document: str, offset: int) -> int:
@@ -91,7 +86,7 @@ def bind_paths(root: Path) -> None:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Reject roadmap task Status drift and nested dispatch."
+        description="Reject flattened task-index drift and nested dispatch."
     )
     parser.add_argument(
         "--root",
@@ -102,48 +97,66 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-STATUS_RE = re.compile(r"^Status:\s*(?P<raw>.+)$", re.MULTILINE)
-LINK_RE = re.compile(
-    r"^- \[.*?\]\(\.?/?(?P<file>\d{3}-[^)\s]+\.md)\)(?:\s*—\s*(?P<ann>.*))?$",
-    re.MULTILINE,
-)
-SECTION_RE = re.compile(
-    r"^#{2,3} (?P<title>Planned|Ready|Blocked|Stopped|Completed)\s*$",
-    re.MULTILINE,
-)
-TASK_READY_PROSE_RE = re.compile(
-    r"tasks?\s+(?P<ids>(?:\d{3}(?:\s*[-–,]\s*\d{3})*)+)\s+(?:is|are)\s+ready",
-    re.IGNORECASE,
-)
-STOPPED_LIST_RE = re.compile(
-    r"honest evidence\s+stops at\s+(?P<ids>[\d,\s]+(?:and\s+\d+)?)",
-    re.IGNORECASE,
-)
-COMPLETED_COUNT_RE = re.compile(r"(?P<count>\d+)\s+completed tasks?", re.IGNORECASE)
-READY_TASK_RE = re.compile(
-    r"(?:one ready task at|ready\s+tasks?\s+at)\s+(?P<ids>\d{3}(?:\s*,\s*\d{3})*(?:\s*,?\s*and\s+\d{3})?)",
-    re.IGNORECASE,
-)
-PLANNED_TASK_RE = re.compile(
-    r"(?:one planned task at|planned\s+tasks?\s+at)\s+(?P<ids>\d{3}(?:\s*,\s*\d{3})*(?:\s*,?\s*and\s+\d{3})?)",
-    re.IGNORECASE,
-)
-NO_PLANNED_RE = re.compile(r"\bno planned tasks\b", re.IGNORECASE)
+def read(path: Path) -> str:
+    if not path.is_file():
+        fail(f"missing {path.relative_to(ROOT)}", at=(path, 1))
+    return path.read_text(encoding="utf-8")
 
-SECTION_BUCKET = {
-    "Planned": "planned",
-    "Ready": "ready",
-    "Blocked": "blocked",
-    "Stopped": "stopped",
-    "Completed": "complete",
-}
-ANNOTATION_ALLOWED = {
-    "planned": {"planned"},
-    "ready": {"ready"},
-    "blocked": {"blocked"},
-    "complete": {"complete", "completed", "done", "evidence stop", "identity stop"},
-    "stopped": {"stopped"},
-}
+
+def tasks_section(document: str) -> tuple[str, int]:
+    heading = TASKS_HEADING_RE.search(document)
+    if heading is None:
+        fail("task index has no `## Tasks` section", at=(TASK_INDEX, 1))
+    start = heading.end()
+    next_h2 = ANY_H2_RE.search(document, start)
+    end = next_h2.start() if next_h2 else len(document)
+    return document[start:end], line_at(document, heading.start())
+
+
+def check_tasks() -> None:
+    document = read(TASK_INDEX)
+    section, section_line = tasks_section(document)
+
+    bucket = RETIRED_BUCKET_RE.search(section)
+    if bucket is not None:
+        fail(
+            "retired status bucket under `## Tasks`; task state is lifecycle-owned",
+            at=(TASK_INDEX, section_line + line_at(section, bucket.start()) - 1),
+        )
+
+    indexed: dict[str, list[int]] = defaultdict(list)
+    for link in LINK_RE.finditer(section):
+        indexed[link.group("file")].append(line_at(section, link.start()))
+
+    for name, lines in sorted(indexed.items()):
+        if len(lines) > 1:
+            places = ", ".join(str(line) for line in lines)
+            fail(
+                f"task {name} is indexed more than once (lines {places})",
+                at=(TASK_INDEX, section_line + lines[0] - 1),
+            )
+        if not (TASK_DIR / name).is_file():
+            fail(
+                f"task index links missing file {name}",
+                at=(TASK_INDEX, section_line + lines[0] - 1),
+            )
+
+    for path in sorted(TASK_DIR.glob("*.md")):
+        if path.name == "README.md":
+            continue
+        if path.name not in indexed:
+            fail(
+                f"task {path.name} is not indexed under `## Tasks`",
+                at=(path, 1),
+            )
+
+
+def legacy_scan_roots() -> list[Path]:
+    roots = [x for x in (ROOT / "docs" / "roadmaps").rglob("*.md")]
+    roots.append(ROOT / "docs" / "contracts" / "001-working-rules.md")
+    roots.append(ROOT / "AGENTS.md")
+    return sorted(set(roots))
+
 
 # Nested-dispatch structures rejected in current planning surfaces.
 LEGACY_LINK_RE = re.compile(r"\]\([^)]*batch-cards/")
@@ -167,271 +180,6 @@ LEGACY_SCAN_EXEMPT = frozenset(
         "docs/roadmaps/status-grammar.md",
     }
 )
-
-
-def read(path: Path) -> str:
-    if not path.is_file():
-        fail(f"missing {path.relative_to(ROOT)}", at=(path, 1))
-    return path.read_text(encoding="utf-8")
-
-
-def first_recognised_token(raw: str) -> str | None:
-    primary = re.split(r"[;\n]", raw, maxsplit=1)[0].strip().lower()
-    for candidate in RECOGNISED_TOKENS:
-        if re.match(rf"{re.escape(candidate)}\b", primary):
-            return candidate
-    return None
-
-
-def status_bucket(raw: str) -> str | None:
-    token = first_recognised_token(raw)
-    if token is None or token not in STATUS_TOKENS:
-        return None
-    if token in {"complete", "completed", "done"}:
-        return "complete"
-    if token == "stopped":
-        return "stopped"
-    return token
-
-
-def frontmatter_status(path: Path) -> tuple[str, int]:
-    document = read(path)
-    match = STATUS_RE.search(document)
-    if match is None:
-        fail("has no Status line", at=(path, 1))
-    line = line_at(document, match.start())
-    bucket = status_bucket(match.group("raw"))
-    if bucket is None:
-        fail(f"unrecognized Status {match.group('raw')!r}", at=(path, line))
-    return bucket, line
-
-
-def annotation_primary(annotation: str | None) -> str | None:
-    if annotation is None:
-        return None
-    token = first_recognised_token(annotation)
-    if token is None:
-        return None
-    return token
-
-
-def parse_id_list(text: str, *, at: tuple[Path, int]) -> set[str]:
-    ids: set[str] = set()
-    for chunk in re.split(r",|\band\b", text):
-        chunk = chunk.strip()
-        if not chunk:
-            continue
-        range_match = re.fullmatch(r"(\d{3})\s*[-–]\s*(\d{3})", chunk)
-        if range_match:
-            start = int(range_match.group(1))
-            end = int(range_match.group(2))
-            if end < start:
-                fail(f"inverted id range {chunk!r}", at=at)
-            ids.update(f"{value:03d}" for value in range(start, end + 1))
-            continue
-        single = re.fullmatch(r"\d{3}", chunk)
-        if single:
-            ids.add(chunk)
-            continue
-        fail(f"unparseable id list fragment {chunk!r}", at=at)
-    return ids
-
-
-def check_tasks() -> None:
-    document = read(TASK_INDEX)
-    sections = list(SECTION_RE.finditer(document))
-    if not sections:
-        fail(
-            "task index has no Planned/Ready/Blocked/Stopped/Completed sections",
-            at=(TASK_INDEX, 1),
-        )
-
-    indexed: dict[str, list[tuple[str, str | None, int]]] = defaultdict(list)
-    for index, match in enumerate(sections):
-        start = match.end()
-        end = sections[index + 1].start() if index + 1 < len(sections) else len(document)
-        body = document[start:end]
-        section_name = match.group("title")
-        bucket = SECTION_BUCKET[section_name]
-        for link in LINK_RE.finditer(body):
-            line = line_at(document, start + link.start())
-            indexed[link.group("file")].append((bucket, link.group("ann"), line))
-
-    task_files = sorted(
-        path for path in TASK_DIR.glob("*.md") if path.name != "README.md"
-    )
-    for path in task_files:
-        expected, status_line = frontmatter_status(path)
-        entries = indexed.get(path.name, [])
-        if not entries:
-            fail(
-                f"task {path.name} is not indexed in {TASK_INDEX.relative_to(ROOT)}",
-                at=(path, status_line),
-            )
-        if len(entries) > 1:
-            places = ", ".join(f"{bucket} at line {line}" for bucket, _, line in entries)
-            fail(
-                f"task {path.name} is indexed more than once ({places})",
-                at=(TASK_INDEX, entries[0][2]),
-            )
-        section_bucket, annotation, index_line = entries[0]
-        if section_bucket != expected:
-            fail(
-                f"task {path.name} Status bucket is {expected!r} but index lists it under {section_bucket!r}",
-                at=(TASK_INDEX, index_line),
-            )
-        primary = annotation_primary(annotation)
-        if primary is not None:
-            allowed = ANNOTATION_ALLOWED[expected]
-            if primary not in allowed:
-                fail(
-                    f"task {path.name} annotation primary {primary!r} does not match Status bucket {expected!r}",
-                    at=(TASK_INDEX, index_line),
-                )
-
-    for name, entries in sorted(indexed.items()):
-        if not (TASK_DIR / name).is_file():
-            fail(
-                f"task index links missing file {name}",
-                at=(TASK_INDEX, entries[0][2]),
-            )
-
-
-def check_task_annotations() -> None:
-    document = read(TASK_INDEX)
-    task_files = {
-        path.name: path
-        for path in TASK_DIR.glob("*.md")
-        if path.name != "README.md" and re.match(r"^\d{3}-", path.name)
-    }
-    for link in LINK_RE.finditer(document):
-        name = link.group("file")
-        path = task_files.get(name)
-        if path is None:
-            continue
-        expected, _status_line = frontmatter_status(path)
-        primary = annotation_primary(link.group("ann"))
-        if primary is None:
-            continue
-        allowed = ANNOTATION_ALLOWED[expected]
-        if primary not in allowed:
-            fail(
-                f"task {name} annotation primary {primary!r} does not match Status bucket {expected!r}",
-                at=(TASK_INDEX, line_at(document, link.start())),
-            )
-
-
-def active_generation_census(document: str) -> tuple[str, int]:
-    match = re.search(
-        rf"^{re.escape(ACTIVE_GENERATION)} (?:now )?has .+?(?=^{re.escape(ACTIVE_GENERATION)}\.|^## |\Z)",
-        document,
-        re.MULTILINE | re.DOTALL,
-    )
-    if match is None:
-        fail(
-            f"generation-index is missing the active {ACTIVE_GENERATION} census paragraph",
-            at=(GENERATION_INDEX, 1),
-        )
-    return match.group(0), line_at(document, match.start())
-
-
-def check_generation_index() -> None:
-    document = read(GENERATION_INDEX)
-    buckets: dict[str, set[str]] = defaultdict(set)
-    for path in TASK_DIR.glob("*.md"):
-        if path.name == "README.md" or not re.match(r"^\d{3}-", path.name):
-            continue
-        number = path.name[:3]
-        bucket, _status_line = frontmatter_status(path)
-        buckets[bucket].add(number)
-
-    for match in TASK_READY_PROSE_RE.finditer(document):
-        line = line_at(document, match.start())
-        for number in parse_id_list(match.group("ids"), at=(GENERATION_INDEX, line)):
-            path = next(TASK_DIR.glob(f"{number}-*.md"), None)
-            if path is None:
-                fail(
-                    f"generation-index claims task {number} is ready but the task file is missing",
-                    at=(GENERATION_INDEX, line),
-                )
-            actual, _status_line = frontmatter_status(path)
-            if actual != "ready":
-                fail(
-                    f"generation-index claims task {number} is ready but Status bucket is {actual!r}",
-                    at=(GENERATION_INDEX, line),
-                )
-
-    census, census_line = active_generation_census(document)
-    ready_claimed: set[str] = set()
-    for match in READY_TASK_RE.finditer(census):
-        ready_line = census_line + line_at(census, match.start()) - 1
-        ready_claimed.update(parse_id_list(match.group("ids"), at=(GENERATION_INDEX, ready_line)))
-    if ready_claimed != buckets["ready"]:
-        fail(
-            "generation-index ready task set "
-            f"{sorted(ready_claimed)} disagrees with frontmatter {sorted(buckets['ready'])}",
-            at=(GENERATION_INDEX, census_line),
-        )
-
-    planned_claimed: set[str] = set()
-    for match in PLANNED_TASK_RE.finditer(census):
-        planned_line = census_line + line_at(census, match.start()) - 1
-        planned_claimed.update(parse_id_list(match.group("ids"), at=(GENERATION_INDEX, planned_line)))
-    if not PLANNED_TASK_RE.search(census) and not NO_PLANNED_RE.search(census):
-        fail(
-            f"generation-index {ACTIVE_GENERATION} census omits planned task disposition",
-            at=(GENERATION_INDEX, census_line),
-        )
-    if planned_claimed != buckets["planned"]:
-        fail(
-            "generation-index planned task set "
-            f"{sorted(planned_claimed)} disagrees with frontmatter {sorted(buckets['planned'])}",
-            at=(GENERATION_INDEX, census_line),
-        )
-
-    completed_match = COMPLETED_COUNT_RE.search(census)
-    if completed_match is None:
-        fail(
-            f"generation-index {ACTIVE_GENERATION} census omits completed task count",
-            at=(GENERATION_INDEX, census_line),
-        )
-    claimed = int(completed_match.group("count"))
-    actual = len(buckets["complete"])
-    if claimed != actual:
-        fail(
-            f"generation-index claims {claimed} completed tasks but frontmatter has {actual}",
-            at=(
-                GENERATION_INDEX,
-                census_line + line_at(census, completed_match.start()) - 1,
-            ),
-        )
-
-    stopped_match = STOPPED_LIST_RE.search(census)
-    if stopped_match is None:
-        if not re.search(r"\bno honest evidence stops\b", census, re.IGNORECASE):
-            fail(
-                f"generation-index {ACTIVE_GENERATION} census omits honest evidence stop disposition",
-                at=(GENERATION_INDEX, census_line),
-            )
-        claimed_ids: set[str] = set()
-        stopped_line = census_line
-    else:
-        stopped_line = census_line + line_at(census, stopped_match.start()) - 1
-        claimed_ids = parse_id_list(stopped_match.group("ids"), at=(GENERATION_INDEX, stopped_line))
-    actual_stopped = buckets["stopped"]
-    if claimed_ids != actual_stopped:
-        fail(
-            "generation-index honest evidence stops "
-            f"{sorted(claimed_ids)} disagree with frontmatter {sorted(actual_stopped)}",
-            at=(GENERATION_INDEX, stopped_line),
-        )
-
-
-def legacy_scan_roots() -> list[Path]:
-    roots = [x for x in (ROOT / "docs" / "roadmaps").rglob("*.md")]
-    roots.append(ROOT / "docs" / "contracts" / "001-working-rules.md")
-    roots.append(ROOT / "AGENTS.md")
-    return sorted(set(roots))
 
 
 def check_no_legacy_dispatch() -> None:
@@ -462,8 +210,6 @@ def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     bind_paths(args.root)
     check_tasks()
-    check_task_annotations()
-    check_generation_index()
     check_no_legacy_dispatch()
     print("roadmap status drift check passed")
 

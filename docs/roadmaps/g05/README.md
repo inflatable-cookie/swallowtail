@@ -500,3 +500,11 @@ identity.
 - [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:77337a269f4af13cd5c931758542d02f37c151a5a5f24f987acbb950fcbf4fb1 -->
+| Generation | Disposition | Runway state |
+| --- | --- | --- |
+| g05 | open | planning_required |
+| Task | Status | Stage | Revision | Record digest |
+| --- | --- | --- | --- | --- |
+| g05.056 | complete | none | 8 | sha256:04575df830c1975942c0f05f7f53c8b5510df7908f4cd18acea8303a2c5f8166 |
+<!-- northstar:lifecycle:end -->

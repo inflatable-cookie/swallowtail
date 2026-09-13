@@ -33,7 +33,7 @@ enforcement.
 | Keep production route versions current one family at a time. | completed; OpenCode HTTP `1.18.30` qualified as a compatible `surface-19` extension through PR #314 at `2b79b083` after review `5633203211`; Pi RPC `0.85.1` remains the latest completed family | Contract 029; Research 292, 302, 304; qualified OpenCode `1.18.30`; official `1.18.30` | g05.051 |
 | Expose the installed Grok CLI's truthful pre-session model catalogue without widening ACP execution authority. | completed; PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`; authenticated non-inference metadata boundary, shipped bullet grammar, accepted final capsule | Contracts 020 and 047; Desktop g02.086 producer intake; installed Grok `1.0.25`; PR #315 | g05.053 |
 | Prepare the Desktop-qualified source as patch `v0.5.1` without changing package source or crossing the exact-SHA tag gate. | completed; PR #317 merged candidate `755a2669` at `e9140b46` after independent exact-head review `5649975685`; `crates/` tree `186f3ba4` and Grok tree `1a6f777f` unchanged; tag withheld for Tom's exact-SHA authorization | Contract 036; g05.051; g05.053; Desktop g02.089 Phase A | g05.054 |
-| Create and push the exact `v0.5.1` annotated source tag without publishing another release object. | ready; Tom authorized exact merge `e9140b46`, tree `d375b322`, annotation, local tag creation, and the single tag-ref push after run 34731113171 passed 11/11 | Contract 036; g05.054; run 34731113171; 2026-09-13 operator authorization | g05.055 |
+| Create and push the exact `v0.5.1` annotated source tag without publishing another release object. | completed; annotated `v0.5.1` tagged and pushed at `e9140b46` 2026-09-13 (tag object `97a6933a`); pre-tag run 34731113171 and tag-triggered run 34743711387 both green 11/11; source-only | Contract 036; g05.054; run 34731113171; 2026-09-13 operator authorization | g05.055 |
 | Settle the direction for a route whose upstream gained uncontained process authority. | completed; operator selected A2; card 043 capped ACP at `QualifiedOnly` | Contracts 010, 015, 017, 023, 029; Research 011, 259, 270; the containment and mediation gate | g05.017 |
 | Prepare a bounded next-minor source candidate without crossing the release-execution or tag gate. | completed; cards 050-052 passed against immutable candidate `56f3913a`; annotated `v0.4.0` tagged and pushed 2026-09-04 | Contract 036; v0.3.3 precedent; prepared 0.4.0 changelog; Research 276/281 | g05.021 |
 | Establish a featureful native Claude SDK route and independently expand the portable Claude ACP route. | completed; cards 053-056 complete; card 055 merged through PR 196 at `493f8194` | Research 277-279; Contracts 010, 019, 029 | g05.022 |
@@ -68,14 +68,14 @@ in [## Tasks](#tasks) below.
 - [g05.052 Grok Build 1.0.25 Model Catalogue](./052-grok-build-1-0-25-model-catalogue.md) — completed; typed non-admission ruling; PR #315 merged at `5d0c49f1` after independent exact-head review `5648599784`
 - [g05.053 Grok Build 1.0.25 Catalogue Correction](./053-grok-build-1-0-25-catalogue-correction.md) — completed; PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`; authenticated non-inference metadata boundary, shipped bullet grammar fixed, accepted final capsule
 - [g05.054 v0.5.1 Release Candidate](./054-v0-5-1-release-candidate.md) — completed; PR #317 merged at `e9140b46` after independent exact-head review `5649975685`; qualified source unchanged; tag withheld
-- [g05.055 v0.5.1 Annotated Source Tag](./055-v0-5-1-annotated-source-tag.md) — ready; exact `e9140b46` target, annotation, local tag creation, and single tag-ref push authorized; no other publication
+- [g05.055 v0.5.1 Annotated Source Tag](./055-v0-5-1-annotated-source-tag.md) — completed; annotated tag `v0.5.1` created and pushed at `e9140b46` (tag object `97a6933a`); tag-triggered CI run 34743711387 green 11/11; source-only
 - [g05.047 v0.5.0 Release Candidate](./047-v0-5-0-release-candidate.md) — completed; PR #310 merged at `31375966`; tag withheld pending a qualifying green run
 - [g05.048 MSRV Deadline-Cleanup Determinism](./048-msrv-deadline-cleanup-determinism.md) — completed; PR #311 merged at `582d01d6` after review `5616849978`; merge-SHA push all-green including pinned-MSRV tests; tag withheld
 - [g05.049 v0.5.0 Annotated Source Tag](./049-v0-5-0-annotated-source-tag.md) — completed; annotated tag `v0.5.0` created and pushed at `582d01d6` (tag object `c772c583`); tag-triggered CI green; source-only
 - [g05.050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout merged through PR #313 at `fa2e4b94` after review `5618788611`
 - [g05.051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — completed; OpenCode HTTP qualified through official `1.18.30`; PR #314 merged at `2b79b083` after independent exact-head review `5633203211`
 
-g05 has fifty-five numbered tasks: 42 complete and one ready, including
+g05 has fifty-five numbered tasks: 43 complete and none ready, including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, 037, 044, and 051, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
@@ -90,8 +90,10 @@ evidence stops at 002, 003, 007, 011, 029, 031, and 034; g05.051 is complete,
 g05.052 is complete as a typed non-admission ruling, g05.053 is complete:
 PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`,
 and g05.054 is complete: PR #317 merged the `v0.5.1` candidate at `e9140b46`
-after independent exact-head review `5649975685`; g05.055 is ready under Tom's
-exact-SHA annotated-tag authorization; planned tasks remain at 035, 039, 040,
+after independent exact-head review `5649975685`; g05.055 is complete:
+annotated `v0.5.1` created and pushed at `e9140b46` (tag object `97a6933a`);
+tag-triggered run 34743711387 green 11/11; source-only and not published;
+planned tasks remain at 035, 039, 040,
 041, and 042.
 g05.020 is complete: Codex
 qualifies official `0.152.1`. g05.026 is complete as an evidence stop:
@@ -432,8 +434,6 @@ identity.
 
 ### Ready
 
-- [055 v0.5.1 Annotated Source Tag](./055-v0-5-1-annotated-source-tag.md) — ready; exact `e9140b46` target, annotation, local tag creation, and single tag-ref push authorized; return the immutable release capsule to Desktop g02.089
-
 ### Planned
 
 - [035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; Batch A promoted (card 114 complete); former stubs 130/134 preserved as g05.041/g05.042
@@ -454,6 +454,7 @@ identity.
 
 ### Completed
 
+- [055 v0.5.1 Annotated Source Tag](./055-v0-5-1-annotated-source-tag.md) — completed; annotated `v0.5.1` created and pushed at `e9140b46` (tag object `97a6933a`) after Tom's exact-SHA authorization; pre-tag run 34731113171 and tag-triggered run 34743711387 green 11/11; qualified source unchanged; source-only, not published
 - [054 v0.5.1 Release Candidate](./054-v0-5-1-release-candidate.md) — completed; source-only `v0.5.1` candidate merged without touching qualified `crates/`; PR #317 merged at `e9140b46` after independent exact-head review `5649975685`; tag gate with Tom
 - [053 Grok Build 1.0.25 Catalogue Correction](./053-grok-build-1-0-25-catalogue-correction.md) — completed; exact installed Grok `1.0.25` catalogue admitted as authenticated non-inference metadata; PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`
 

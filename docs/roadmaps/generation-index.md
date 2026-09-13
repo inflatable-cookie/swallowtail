@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-12
+Updated: 2026-09-13
 
 ## Generations
 
@@ -144,14 +144,17 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 55 tasks: 42 completed tasks, honest evidence
-stops at 002, 003, 007, 011, 029, 031, and 034, one ready task at 055, and
+g05 has 55 tasks: 43 completed tasks, honest evidence
+stops at 002, 003, 007, 011, 029, 031, and 034, no task remains ready, and
 planned tasks at 035, 039, 040, 041, and 042.
-g05.055 is ready under Tom's 2026-09-13 exact-SHA authorization: create one
-annotated `v0.5.1` tag at `e9140b46`, push only that tag ref, verify immutable
-identity and tag-triggered CI, then return the source-only release capsule to
-Desktop g02.089. No registry, GitHub Release, artifact, provider, or Desktop
-mutation is authorized. g05.054 completed 2026-09-13: source-only `v0.5.1` candidate `755a2669`
+g05.055 completed 2026-09-13: annotated `v0.5.1` tag created and pushed at
+exact candidate `e9140b46` (tree `d375b322`, tag object `97a6933a`) after
+Tom's exact-SHA authorization; the exact three-paragraph annotation and the
+single `refs/tags/v0.5.1` push were verified, local and remote refs are
+byte-identical and both peel to the candidate; tag-triggered run 34743711387
+is green 11/11 after qualifying pre-tag run 34731113171; qualified `crates/`
+and Grok trees are unchanged; no registry, GitHub Release, artifact, provider,
+or Desktop mutation. g05.054 completed 2026-09-13: source-only `v0.5.1` candidate `755a2669`
 merged at `e9140b46` through PR #317 after independent exact-head review
 `5649975685`; qualified `crates/` unchanged, exact-head CI green, no tag or
 publication; exact identity returned for Tom's annotated-tag authorization.
@@ -466,8 +469,9 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Reassess the g05 runway through a Chatterbox planning ruling after the
-g05.054 merge (`e9140b46`, review `5649975685`): no task is ready, and
-planned tasks 035 and 039–042 all await operator promotion, disposition,
-or requirements. The `v0.5.1` annotated-tag gate awaits Tom's exact-SHA
-authorization.
+Reassess the g05 runway through a Chatterbox planning ruling now that g05.055
+has completed the `v0.5.1` annotated source tag at `e9140b46`: no task is
+ready, and planned tasks 035 and 039–042 all await operator promotion,
+disposition, or requirements. Desktop g02.089 Phase B may resume against the
+ordinary `v0.5.1` pin; no consumer, provider, registry, GitHub Release, or
+further release work follows automatically.

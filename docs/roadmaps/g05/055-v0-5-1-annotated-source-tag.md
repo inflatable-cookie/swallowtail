@@ -1,6 +1,6 @@
 # g05.055 v0.5.1 Annotated Source Tag
 
-Status: complete 2026-09-13; annotated tag `v0.5.1` created and pushed at `e9140b46` (tag object `97a6933a`); tag-triggered run 34743711387 green 11/11; documentation closeout in review
+Status: complete 2026-09-13; annotated tag `v0.5.1` created and pushed at `e9140b46` (tag object `97a6933a`); tag-triggered run 34743711387 green 11/11; documentation closeout merged through PR #318 at `b0c800e0` after independent exact-head review `5651817371`
 Owner: Tom
 Created: 2026-09-13
 Depends on: g05.054; Contract 036; release playbook
@@ -177,15 +177,21 @@ and Grok subtree `1a6f777f84f9aef80c146badf6944811568e23cd` equal
 Desktop-qualified `0209dd7f`; every package is version `0.5.1` with
 `publish = false`. No GitHub Release, workflow artifact, or registry entry
 exists; the authoritative crates.io query for `swallowtail-core` returned a
-does-not-exist result. Documentation closeout, independent exact-head review,
-and merge are queued through one documentation PR; the queue owns merge and
-canonical `main` synchronization. Retained non-claims: no crates.io
+does-not-exist result. Documentation closeout merged 2026-09-13 through PR
+#318 at `b0c800e0b5e83446a2938467923a37420884418f` from reviewed head
+`a32b9609986e779630462792cebc8407d78bbf32` against base `b1bc5dff` after
+independent exact-head review comment `5651817371` accepted the result with no
+blocking findings. `effigy qa:docs`, `effigy qa:northstar`, and
+`git diff --check` passed at the reviewed head. The queue's post-merge
+local-sync `git ls-tree` failure was recovered before this closeout; no
+task-scoped validation failure or deferred closeout item remains. Retained
+non-claims: no crates.io
 publication, GitHub Release, binary, sidecar, installer, model artifact,
 provider call, consumer mutation, or post-tag source change.
 
 ## Next Task
 
-After the immutable tag and documentation closeout are verified, Desktop
-g02.089 resumes against the ordinary `v0.5.1` pin. No Swallowtail consumer
+The immutable tag and documentation closeout are verified. Desktop g02.089
+resumes against the ordinary `v0.5.1` pin. No Swallowtail consumer
 mutation, provider call, registry publication, GitHub Release, or further
 release follows automatically.

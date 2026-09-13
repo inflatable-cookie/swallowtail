@@ -154,7 +154,9 @@ single `refs/tags/v0.5.1` push were verified, local and remote refs are
 byte-identical and both peel to the candidate; tag-triggered run 34743711387
 is green 11/11 after qualifying pre-tag run 34731113171; qualified `crates/`
 and Grok trees are unchanged; no registry, GitHub Release, artifact, provider,
-or Desktop mutation. g05.054 completed 2026-09-13: source-only `v0.5.1` candidate `755a2669`
+or Desktop mutation; documentation closeout merged through PR #318 at
+`b0c800e0` after independent exact-head review `5651817371`. g05.054 completed
+2026-09-13: source-only `v0.5.1` candidate `755a2669`
 merged at `e9140b46` through PR #317 after independent exact-head review
 `5649975685`; qualified `crates/` unchanged, exact-head CI green, no tag or
 publication; exact identity returned for Tom's annotated-tag authorization.

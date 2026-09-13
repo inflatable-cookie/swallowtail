@@ -4,7 +4,8 @@ kind: northstar-handoff
 handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
-status: ready-to-launch
+status: merged
+updated: 2026-09-13
 base_required: pushed-main
 queue_dispatch: northstar-queue
 queue_approval: "Tom explicitly authorized local annotated-tag creation and tag push for v0.5.1 at exact SHA e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27 on 2026-09-13. Tom approved the exact annotation text quoted in this handoff. No GitHub Release, registry, artifact, provider, or consumer authority was granted."
@@ -43,7 +44,12 @@ Phase B without replacing the qualified package tree.
   both match Desktop-qualified source `0209dd7f`.
 - Workspace version is `0.5.1`; every package has `publish = false`.
 - Local and remote `v0.5.1` were absent at planning promotion.
-- Current `main` includes closeout `c712b902` and is not the tag target.
+- At tag time, current `main` included closeout `c712b902`, which was not the
+  tag target.
+- Documentation closeout PR #318 merged at `b0c800e0b5e83446a2938467923a37420884418f`
+  from reviewed head `a32b9609986e779630462792cebc8407d78bbf32` after accepted
+  independent exact-head review comment `5651817371`; canonical `main` is
+  synchronized at the merge.
 
 ## Boundaries
 
@@ -92,3 +98,15 @@ documentation PR. Run `effigy qa:docs`, `effigy qa:northstar`, and
 queue. Return the immutable release capsule directly to Desktop Chatterbox
 agent `5317069e-201f-4dea-94f3-af8f0b9faff2`. No consumer, provider, GitHub
 Release, registry, binary, or other publication work follows automatically.
+
+## Handoff Closeout
+
+This handoff is merged. Documentation closeout PR #318 merged into `main` at
+`b0c800e0b5e83446a2938467923a37420884418f` from reviewed head
+`a32b9609986e779630462792cebc8407d78bbf32` after independent exact-head
+review comment `5651817371` accepted the result with no blocking findings.
+`effigy qa:docs`, `effigy qa:northstar`, and `git diff --check` passed at the
+reviewed head. The queue's post-merge local-sync `git ls-tree` failure was
+recovered before this closeout; no task-scoped validation failure or deferred
+closeout item remains. The active Next Task pointer was preserved, and no new
+planning direction was introduced.

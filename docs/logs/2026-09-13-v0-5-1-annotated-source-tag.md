@@ -58,10 +58,14 @@ recorded structurally from that successful query, not inferred.
 
 The release note and its index entry, Contract 036 current tagged identity,
 g05.055, the g05 and roadmap front doors, the generation index, and this log
-now describe the tagged state. Documentation closeout, independent exact-head
-review, and merge are queued through one documentation PR; the queue owns merge
-and canonical `main` synchronization. No consumer, provider, GitHub Release,
-registry, binary, or further publication work follows automatically.
+now describe the tagged state. Documentation closeout PR #318 merged into
+canonical `main` at `b0c800e0b5e83446a2938467923a37420884418f` from reviewed
+head `a32b9609986e779630462792cebc8407d78bbf32` after independent exact-head
+review comment `5651817371` accepted the result with no blocking findings. The
+queue recovered its post-merge local-sync `git ls-tree` failure before this
+closeout; no task-scoped validation failure or deferred closeout item remains.
+No consumer, provider, GitHub Release, registry, binary, or further publication
+work follows automatically.
 
 ## Next
 
@@ -71,8 +75,12 @@ GitHub Release, or further release follows automatically.
 
 ## Closeout
 
-Documentation closeout opens as one PR against `main` from the task branch
-after `effigy qa:docs`, `effigy qa:northstar`, and `git diff --check` pass at
-the reviewed head. Independent exact-head review and merge are owned by the
-northstar queue; the immutable tag is unaffected by that review. No deferred
-failures; the tag remains immutable and source-only.
+Documentation closeout merged as PR
+[#318](https://github.com/inflatable-cookie/swallowtail/pull/318) on
+2026-09-13 at `b0c800e0b5e83446a2938467923a37420884418f` from reviewed head
+`a32b9609986e779630462792cebc8407d78bbf32` after independent exact-head
+review comment `5651817371` accepted the result with no blocking findings.
+`effigy qa:docs`, `effigy qa:northstar`, and `git diff --check` passed at the
+reviewed head. The prior queue-local sync failure was recovered before
+closeout; no task-scoped validation failure or deferred closeout item remains.
+The tag remains immutable and source-only.

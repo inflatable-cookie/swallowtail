@@ -30,6 +30,9 @@ Canonical lifecycle JSON and generated projections can disagree with hand-mainta
 - Canonical task: [`g05.057`](../roadmaps/g05/057-repair-lifecycle-currentness.md).
 - Planning base before this handoff: `7758e620090de3dc16fdea6af5830344060d5fde`.
 - The integration checkout was clean and synchronized before promotion.
+- The pre-push docs gate proved `scripts/check-roadmap-status-drift.py` still
+  requires task-level `Status:` fields. The task temporarily satisfies that
+  legacy gate and explicitly owns its removal.
 - Exact currentness findings:
 - `docs/roadmaps/README.md` — `stale-frontier` in `Next Task` for `g05.056`
 - `docs/roadmaps/g05/056-adopt-effigy-hosted-lifecycle-hook.md` — `duplicate-status-header` in `g05.056 Adopt the Effigy-Hosted Lifecycle Hook` for `g05.056`
@@ -39,7 +42,10 @@ Canonical lifecycle JSON and generated projections can disagree with hand-mainta
 
 ## Boundaries
 
-Edit documentation and planning surfaces only. Apply the task's exact accepted removals and task-free frontier replacements. Do not edit product code, releases, Queue/Effigy source, unrelated planning, generation disposition, or Paseo threads/workspaces.
+Edit documentation, planning surfaces, and the named roadmap-status checker
+only. Apply the task's exact accepted removals and task-free frontier
+replacements. Do not edit product code, releases, Queue/Effigy source,
+unrelated planning, generation disposition, or Paseo threads/workspaces.
 
 ## Important Context
 

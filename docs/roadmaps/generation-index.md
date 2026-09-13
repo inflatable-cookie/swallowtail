@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 55 tasks: 43 completed tasks, honest evidence
-stops at 002, 003, 007, 011, 029, 031, and 034, no task remains ready, and
+g05 has 56 tasks: 43 completed tasks, honest evidence
+stops at 002, 003, 007, 011, 029, 031, and 034, one ready task at 056, and
 planned tasks at 035, 039, 040, 041, and 042.
 g05.055 completed 2026-09-13: annotated `v0.5.1` tag created and pushed at
 exact candidate `e9140b46` (tree `d375b322`, tag object `97a6933a`) after
@@ -471,9 +471,7 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Reassess the g05 runway through a Chatterbox planning ruling now that g05.055
-has completed the `v0.5.1` annotated source tag at `e9140b46`: no task is
-ready, and planned tasks 035 and 039–042 all await operator promotion,
-disposition, or requirements. Desktop g02.089 Phase B may resume against the
-ordinary `v0.5.1` pin; no consumer, provider, registry, GitHub Release, or
-further release work follows automatically.
+Adopt the Effigy-hosted lifecycle through g05.056 as the operator-approved, configuration-only Queue lifecycle
+adoption lane. It does not change product priority or promote planned tasks 035
+or 039–042. After hook-owned closeout, return to Chatterbox for product runway
+planning.

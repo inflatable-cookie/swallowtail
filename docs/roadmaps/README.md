@@ -15,17 +15,10 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Reassess the g05 runway through a Chatterbox planning ruling. g05.055 completed
-the operator-authorized `v0.5.1` annotated source tag at exact candidate
-`e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27` (tree `d375b322…`, tag object
-`97a6933a`); the tag-triggered CI run 34743711387 is green 11/11 and
-documentation closeout PR #318 merged at `b0c800e0` after independent
-exact-head review `5651817371`. Canonical `main` is synchronized at that
-merge. No task is ready: planned tasks 035 and
-039–042 await operator promotion, disposition, or requirements. Desktop
-g02.089 Phase B may resume against the ordinary `v0.5.1` pin; no registry,
-GitHub Release, artifact, provider call, or consumer mutation follows
-automatically.
+Adopt the Effigy-hosted lifecycle through g05.056 as the operator-approved, configuration-only Queue lifecycle
+adoption lane. It does not change product priority, promote planned tasks
+035 or 039–042, or authorize another release. After hook-owned closeout,
+return to Chatterbox for product runway planning.
 
 ## Standing Lanes
 

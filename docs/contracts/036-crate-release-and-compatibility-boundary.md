@@ -250,6 +250,16 @@ Examples and route guides supplement Rustdoc; they do not replace it.
 Subsequent compatible candidates compare against the tagged semantic baseline
 and receive explicit compatible or breaking classification.
 
+A version-labelled package, route, dependency, or semantic API baseline records
+the immutable tagged source for that version. Post-tag additions belong in the
+next candidate's baseline, even while the workspace manifest still names the
+older version. If current-source validation temporarily updates an older
+version-labelled baseline after its tag, the next candidate must restore that
+file byte-for-byte from the tag before generating the new baseline. This is a
+correction back to tagged evidence, not authority to revise release history.
+The exact tag comparison must prove every restored byte; unrelated historical
+release notes and baselines remain immutable.
+
 The semantic inventory uses `cargo-public-api 0.52.0` with
 `nightly-2026-08-05`, all package features enabled, and blanket, auto-trait,
 and auto-derived implementations omitted. That nightly exists only to produce

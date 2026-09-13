@@ -48,7 +48,14 @@ exact-SHA checkpoint.
 3. Promote the two real `[Unreleased]` entries into `0.5.1`. Add
    `docs/releases/0.5.1.md`, release index/install guidance, and fresh `0.5.1`
    package, route, dependency, and semantic API baselines required by current
-   release gates. Never rewrite an earlier release or baseline.
+   release gates. Before the prepare, restore only
+   `release-baselines/production-routes-0.5.0.txt` and
+   `release-baselines/public-api-0.5.0/swallowtail-adapter-grok.txt`
+   byte-for-byte from immutable tag `v0.5.0`: g05.053 temporarily placed its
+   post-tag route and API additions in those version-labelled files while the
+   workspace still named `0.5.0`. Prove the restored blobs match the tag, then
+   carry the additions into the fresh `0.5.1` baselines. Do not alter any other
+   prior release note or baseline.
 4. Prove `git diff --exit-code 0209dd7f..<candidate> -- crates/` and exact
    subtree equality. Version, lock, changelog, release note, baselines, and
    directly required release scripts/docs are the only candidate changes.
@@ -71,14 +78,14 @@ exact-SHA checkpoint.
 | Readiness | ready |
 | Prerequisites | Contract 036; g05.051 and g05.053 complete; Desktop g02.089 Phase A green; clean pushed `main` |
 | Completion conditions | one `0.5.1` prepare; release metadata and fresh baselines; zero `crates/**` diff from `0209dd7f`; provider-free/source-consumer gates; exact-head review; qualifying hosted CI; merged immutable candidate; exact identity returned for tag authorization |
-| Owned mutable paths | `Cargo.toml`; `Cargo.lock`; `CHANGELOG.md`; root `README.md`; new `docs/releases/0.5.1.md`; `docs/releases/README.md`; fresh `release-baselines/*0.5.1*`; directly required release validation docs/scripts; this task and one candidate evidence log; `PAPERCUTS.md` append only |
+| Owned mutable paths | `Cargo.toml`; `Cargo.lock`; `CHANGELOG.md`; root `README.md`; new `docs/releases/0.5.1.md`; `docs/releases/README.md`; fresh `release-baselines/*0.5.1*`; exact tag restoration of `release-baselines/production-routes-0.5.0.txt` and `release-baselines/public-api-0.5.0/swallowtail-adapter-grok.txt`; directly required release validation docs/scripts; this task and one candidate evidence log; `PAPERCUTS.md` append only |
 | Reserved shared closeout surfaces | `docs/roadmaps/README.md`; `docs/roadmaps/g05/README.md`; `docs/roadmaps/generation-index.md`; logs index |
-| Forbidden paths | every `crates/**` path; prior release notes and baselines; `.github/workflows/**`; tags; registry/GitHub Release/artifact publication; provider or Desktop repositories |
+| Forbidden paths | every `crates/**` path; prior release notes and baselines except the two exact tag restorations above; `.github/workflows/**`; tags; registry/GitHub Release/artifact publication; provider or Desktop repositories |
 | Approved concurrent siblings | none that changes source, release inputs, baselines, or closeout surfaces |
 | Worker capability class | release-candidate worker; provider-free; ordinary automatic pool |
 | Acceptance evidence | Desktop Phase A capsule; frozen source/subtree identities; one Effigy prepare receipt; exact-source consumer; semantic API and route baselines; independent review; exact-SHA hosted CI |
-| Review oracle | reject any `crates/**` change, non-patch version, reused release state, rewritten historical evidence, missing source consumer, different-SHA CI, tag/publication mutation, or inferred registry availability |
-| Stop conditions | dirty or divergent base; existing `v0.5.1`; qualified subtree mismatch; deterministic prepare/gate/review/CI failure; required runtime change; historical mutation; tag or publication side effect |
+| Review oracle | reject any `crates/**` change, non-patch version, reused release state, prior-version change other than byte equality with the two named `v0.5.0` tag blobs, missing source consumer, different-SHA CI, tag/publication mutation, or inferred registry availability |
+| Stop conditions | dirty or divergent base; existing `v0.5.1`; qualified subtree mismatch; either restored blob differs from tag `v0.5.0`; deterministic prepare/gate/review/CI failure; required runtime change; any other historical mutation; tag or publication side effect |
 | Escalation owner | Chatterbox for compatibility/tree/release semantics; queue coordinator for mechanical blockers; Tom for exact-SHA tag authorization |
 
 ## Boundaries
@@ -105,6 +112,7 @@ not an invented package release.
 
 - [ ] coordinated version is `0.5.1`
 - [ ] qualified `crates/` and Grok adapter trees are unchanged
+- [ ] the two named `0.5.0` baselines match immutable tag `v0.5.0` exactly
 - [ ] release note, changelog, and fresh baselines describe the actual source
 - [ ] one prepare receipt and exact-source consumer pass
 - [ ] independent review and exact-SHA hosted CI pass

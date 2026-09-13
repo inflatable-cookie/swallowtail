@@ -6,6 +6,8 @@ mutations.
 
 ## Current Release
 
+- [Swallowtail 0.5.1](0.5.1.md) — candidate over immutable `v0.5.0`; source-only additive patch carrying the OpenCode HTTP `1.18.30` qualification and the Grok Build `1.0.25` authenticated non-inference model catalogue with additive route `grok-build.catalogue`; every `crates/` path byte-identical to Desktop-qualified source `0209dd7f`; tag not authorized and absent; source-only, not published
+
 - [Swallowtail 0.5.0](0.5.0.md) — tagged `v0.5.0` at `582d01d6`; tag object `c772c583`; tagged 2026-09-10; coordinated pre-1.0 minor over immutable `v0.4.4` carrying the corrected native-mediation guarantee, the Pi RPC `0.85.1` qualification, and the registered-only Claude SDK session profile; source-only, not published
 
 - [Swallowtail 0.4.4](0.4.4.md) — tagged `v0.4.4` at `49c9e3b2`; tag object `41da6c1a`; tagged 2026-09-09; source-only additive patch over immutable `v0.4.3`; not published

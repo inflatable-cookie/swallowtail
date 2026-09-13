@@ -5,6 +5,8 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-09-13
+
 ### Added
 - add the Grok Build pre-session model catalogue as a separately prepared
   `ModelCatalog` operation on exact installed `1.0.25` only. One bounded

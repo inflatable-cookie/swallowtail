@@ -1,6 +1,6 @@
 # g05.055 v0.5.1 Annotated Source Tag
 
-Status: ready
+Status: complete 2026-09-13; annotated tag `v0.5.1` created and pushed at `e9140b46` (tag object `97a6933a`); tag-triggered run 34743711387 green 11/11; documentation closeout in review
 Owner: Tom
 Created: 2026-09-13
 Depends on: g05.054; Contract 036; release playbook
@@ -158,6 +158,30 @@ artifact evidence, documentation PR/head/review/merge/closeout, and every
 retained non-claim. Send the complete immutable capsule directly to Desktop
 Chatterbox agent `5317069e-201f-4dea-94f3-af8f0b9faff2` so g02.089 Phase B
 can resume.
+
+## Completion Record
+
+Authorized candidate merge `e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27`,
+tree `d375b3227985e8e552ba9346d8f9b8631936db5f`; reviewed candidate head
+`755a2669185f4937dbccde95effc5d82dfaa0324` (review `5649975685`); canonical
+branch `main` at remote `git@github.com:inflatable-cookie/swallowtail.git`.
+Tag `v0.5.1`, object `97a6933abe13b2e8f05441e1ab950962e0683e65`, type `tag`,
+peel `e9140b46…`, peel tree `d375b322…`; push carried only
+`refs/tags/v0.5.1`; local and remote tag bytes identical; annotation bytes
+equal the approved three paragraphs.
+
+Pre-tag run `34731113171` (push, `e9140b46…`) and tag-triggered run
+`34743711387` (push, branch `v0.5.1`, `e9140b46…`) each completed `success`
+with all 11 jobs green. Tagged `crates/` tree `186f3ba42a4aa896c03a3bddcacb007b1afbd8cc`
+and Grok subtree `1a6f777f84f9aef80c146badf6944811568e23cd` equal
+Desktop-qualified `0209dd7f`; every package is version `0.5.1` with
+`publish = false`. No GitHub Release, workflow artifact, or registry entry
+exists; the authoritative crates.io query for `swallowtail-core` returned a
+does-not-exist result. Documentation closeout, independent exact-head review,
+and merge are queued through one documentation PR; the queue owns merge and
+canonical `main` synchronization. Retained non-claims: no crates.io
+publication, GitHub Release, binary, sidecar, installer, model artifact,
+provider call, consumer mutation, or post-tag source change.
 
 ## Next Task
 

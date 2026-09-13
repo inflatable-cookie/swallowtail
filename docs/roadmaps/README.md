@@ -15,12 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Reassess the g05 runway through a Chatterbox planning ruling now that g05.053
-Grok Build 1.0.25 Catalogue Correction merged through PR #316 at `3e9f29e7`
-after independent exact-head review `5649291554`. No task is ready: planned
-tasks 035 and 039–042 all await operator promotion, disposition, or
-requirements. No inference, release, tag, Desktop mutation, or consumer pin
-follows.
+Implement [g05.054 v0.5.1 Release Candidate](g05/054-v0-5-1-release-candidate.md).
+Desktop g02.089 qualified exact source `0209dd7f`; prepare patch `0.5.1` while
+keeping every `crates/**` path byte-identical, then merge the reviewed candidate
+and return its exact SHA for the separate annotated-tag gate. No tag, registry,
+GitHub Release, provider call, or Desktop mutation follows automatically.
 
 ## Standing Lanes
 

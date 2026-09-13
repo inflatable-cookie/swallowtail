@@ -144,8 +144,8 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 53 tasks: 41 completed tasks, honest evidence
-stops at 002, 003, 007, 011, 029, 031, and 034, no ready task, and
+g05 has 54 tasks: 41 completed tasks, honest evidence
+stops at 002, 003, 007, 011, 029, 031, and 034, ready task at 054, and
 planned tasks at 035, 039, 040, 041, and 042.
 g05.053 completed 2026-09-13: exact installed Grok `1.0.25` catalogue admitted
 as authenticated non-inference metadata; PR #316 merged at `3e9f29e7`
@@ -458,6 +458,7 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Reassess the g05 runway through a Chatterbox planning ruling after the g05.053
-merge (`3e9f29e7`, review `5649291554`): no task is ready, and planned tasks
-035 and 039–042 all await operator promotion, disposition, or requirements.
+Implement [g05.054](g05/054-v0-5-1-release-candidate.md). Desktop g02.089
+qualified exact source `0209dd7f`; prepare and merge patch `0.5.1` while every
+`crates/**` path remains identical, then return the exact candidate SHA for the
+separate annotated-tag gate.

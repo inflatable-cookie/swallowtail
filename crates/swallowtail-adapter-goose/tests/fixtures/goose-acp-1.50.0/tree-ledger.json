@@ -1,0 +1,361 @@
+{
+  "compared": ["1.46.0", "1.47.0", "1.48.0", "1.49.0", "1.50.0"],
+  "closure_files": [
+    "Cargo.toml",
+    "crates/goose-cli/src/cli.rs",
+    "crates/goose-mcp/src/lib.rs",
+    "crates/goose-provider-types/src/conversation/message.rs",
+    "crates/goose-provider-types/src/errors.rs",
+    "crates/goose-provider-types/src/goose_mode.rs",
+    "crates/goose/src/acp/common.rs",
+    "crates/goose/src/acp/mod.rs",
+    "crates/goose/src/acp/response_builder.rs",
+    "crates/goose/src/acp/server.rs",
+    "crates/goose/src/acp/server/dispatch.rs",
+    "crates/goose/src/acp/server/extensions.rs",
+    "crates/goose/src/acp/server/fork_session.rs",
+    "crates/goose/src/acp/server/load_session.rs",
+    "crates/goose/src/acp/server/new_session.rs",
+    "crates/goose/src/acp/server/prompts.rs",
+    "crates/goose/src/acp/server/providers.rs",
+    "crates/goose/src/agents/agent.rs",
+    "crates/goose/src/agents/extension_manager.rs",
+    "crates/goose/src/agents/platform_extensions/mod.rs",
+    "crates/goose/src/builtin_extension.rs",
+    "crates/goose/src/config/base.rs",
+    "crates/goose/src/config/extensions.rs",
+    "crates/goose/src/permission/permission_inspector.rs",
+    "crates/goose/src/session/session_manager.rs",
+    "documentation/docs/guides/acp-clients.md"
+  ],
+  "hashes": {
+    "Cargo.toml": {
+      "1.46.0": "88d32aa535899baee170f801949e2c77a9ac033056119c8b71eadd198a505cee",
+      "1.47.0": "697f57138a2cdfcf1d886f9b79af2eb8fb1cda21482a0f25790ef297d4e7f179",
+      "1.48.0": "bb0017f7b79099606d775b59149f4e187537e9360c8cca7b83b2d9aa1f9a02a4",
+      "1.49.0": "19e41a15490335c0d10426fe293e7e0ac4a57546084d56d63685bf44bae18460",
+      "1.50.0": "b17ca40bee5b00acf44577b8102f6da0ff5bef59f8b38ef0c110f43644b16244"
+    },
+    "crates/goose-cli/src/cli.rs": {
+      "1.46.0": "b7f45c9204319fecd593a05584952e1c008b5e11879c6509c29785d7baede1f4",
+      "1.47.0": "b7f45c9204319fecd593a05584952e1c008b5e11879c6509c29785d7baede1f4",
+      "1.48.0": "f103e7f0c97dab2c7f68b2135645133a12615948c2762782a47ff4330694e0cb",
+      "1.49.0": "969c9940e7d18feea8b4916247c63768b14c03f043f1fea11961361ff10afabb",
+      "1.50.0": "8e40ff2f9a0218dd96e48970dba555fa1844a2b2fde800cd28455a40f1fdc321"
+    },
+    "crates/goose-mcp/src/lib.rs": {
+      "1.46.0": "ba998bc5a3b825848115ffa2059b0bd71f1d78fc1499c6f10b863c786ec82a7a",
+      "1.47.0": "ba998bc5a3b825848115ffa2059b0bd71f1d78fc1499c6f10b863c786ec82a7a",
+      "1.48.0": "ba998bc5a3b825848115ffa2059b0bd71f1d78fc1499c6f10b863c786ec82a7a",
+      "1.49.0": "ba998bc5a3b825848115ffa2059b0bd71f1d78fc1499c6f10b863c786ec82a7a",
+      "1.50.0": "ba998bc5a3b825848115ffa2059b0bd71f1d78fc1499c6f10b863c786ec82a7a"
+    },
+    "crates/goose-provider-types/src/conversation/message.rs": {
+      "1.46.0": "27128ec6fcc2feaa4fa93c6dad7308fe65474841e6e8f9ee0d6b1949444fc2f6",
+      "1.47.0": "1abd2f42926067b2280dd5051e3f4c96c2e71dd11487fd229c950b73049d34a8",
+      "1.48.0": "402f5c8871fbd35b4054f02cae9ddc24745f05af3ebe3c79d13747aaff5b9d72",
+      "1.49.0": "2ff5bbab59d1b6483b85869e779d084b932288e26154bec4500809a0fb9ed935",
+      "1.50.0": "2ff5bbab59d1b6483b85869e779d084b932288e26154bec4500809a0fb9ed935"
+    },
+    "crates/goose-provider-types/src/errors.rs": {
+      "1.46.0": "1bdac6ed36ccfa4cb7c73b62947d9fe350d0b99d73a74f87c5453d9032b8e5d7",
+      "1.47.0": "1bdac6ed36ccfa4cb7c73b62947d9fe350d0b99d73a74f87c5453d9032b8e5d7",
+      "1.48.0": "7243f9c54c35acbc426d7770147060f78c6af1538e8f0817994f44c3e489de3f",
+      "1.49.0": "7243f9c54c35acbc426d7770147060f78c6af1538e8f0817994f44c3e489de3f",
+      "1.50.0": "7243f9c54c35acbc426d7770147060f78c6af1538e8f0817994f44c3e489de3f"
+    },
+    "crates/goose-provider-types/src/goose_mode.rs": {
+      "1.46.0": "d5b0ae31b4882085b572ca7b595f9153f595c417f797d4ef6a50bcba1e7ebdd7",
+      "1.47.0": "d5b0ae31b4882085b572ca7b595f9153f595c417f797d4ef6a50bcba1e7ebdd7",
+      "1.48.0": "d5b0ae31b4882085b572ca7b595f9153f595c417f797d4ef6a50bcba1e7ebdd7",
+      "1.49.0": "d5b0ae31b4882085b572ca7b595f9153f595c417f797d4ef6a50bcba1e7ebdd7",
+      "1.50.0": "d5b0ae31b4882085b572ca7b595f9153f595c417f797d4ef6a50bcba1e7ebdd7"
+    },
+    "crates/goose/src/acp/common.rs": {
+      "1.46.0": "0c02366eef5bb590097312387d722a2aca4f8f373ae5eace678c6b24eafc276f",
+      "1.47.0": "0c02366eef5bb590097312387d722a2aca4f8f373ae5eace678c6b24eafc276f",
+      "1.48.0": "0c02366eef5bb590097312387d722a2aca4f8f373ae5eace678c6b24eafc276f",
+      "1.49.0": "0c02366eef5bb590097312387d722a2aca4f8f373ae5eace678c6b24eafc276f",
+      "1.50.0": "0c02366eef5bb590097312387d722a2aca4f8f373ae5eace678c6b24eafc276f"
+    },
+    "crates/goose/src/acp/mod.rs": {
+      "1.46.0": "879f5fdb61b896072a13dd19b6a8408d6242c594e35b9d36c04aee3a2f5e95c7",
+      "1.47.0": "b41288468a172a6efe9218d461b184d9d224ddc2aec103b2a716ef8789b5d1b9",
+      "1.48.0": "849272eec37b24dee925abb458fc94556d054601b8486040291ecd2f403c9ac7",
+      "1.49.0": "849272eec37b24dee925abb458fc94556d054601b8486040291ecd2f403c9ac7",
+      "1.50.0": "849272eec37b24dee925abb458fc94556d054601b8486040291ecd2f403c9ac7"
+    },
+    "crates/goose/src/acp/response_builder.rs": {
+      "1.46.0": "b1a18f5ec51f49a2bc5bf45cbc86a1c2fcb2fdbfd1d5524cc4b243b5bbece571",
+      "1.47.0": "cc56d8282072740e1af6289cb6624e2b70c9e40b6fd60e03a52d9d279a9d4df2",
+      "1.48.0": "efae8229d09eb4c18f4a2fbd241b560685edd6b637a146b7caffc6b719f795b8",
+      "1.49.0": "2d64ec9e762bb9499f9b3dc2f126f7c9db8b8d3febbe7b17d631311da26857e7",
+      "1.50.0": "2d64ec9e762bb9499f9b3dc2f126f7c9db8b8d3febbe7b17d631311da26857e7"
+    },
+    "crates/goose/src/acp/server.rs": {
+      "1.46.0": "3eb611c4ae0f37a1d4affde82a4c29a5d56e9d70cb796d8cc7cc6082bc13b47f",
+      "1.47.0": "bcb0a1711d2893a0bbbdcce34127c472f98f4a4c37c658e4ef4efc312efb84c6",
+      "1.48.0": "b93959cf9b0d0aaab7aa291c0dc96eee35983871b81da204f7e981c0322b0b4c",
+      "1.49.0": "5637f55188eb6b2ad050d73d70e858c866444c85e39d4ee7392878fa7c09f1a7",
+      "1.50.0": "5637f55188eb6b2ad050d73d70e858c866444c85e39d4ee7392878fa7c09f1a7"
+    },
+    "crates/goose/src/acp/server/dispatch.rs": {
+      "1.46.0": "f7ae4a0e3a52b852df4cbb7f44ac8113f795d55df020de5ea96d36f3d5101f21",
+      "1.47.0": "77f13fbf4b70a1f330dc18da48507fab7c9a52460903280809d8bd119a0ae42d",
+      "1.48.0": "d39abc62cbc7324fb534ecfb980fb66179f78c4060aac41e1818527b04680f25",
+      "1.49.0": "ddbeeca619c76d89d67b0754704245232368d76b25693a293c4e2ff0ad580948",
+      "1.50.0": "ddbeeca619c76d89d67b0754704245232368d76b25693a293c4e2ff0ad580948"
+    },
+    "crates/goose/src/acp/server/extensions.rs": {
+      "1.46.0": "54b727253fa1774d5ba16a6e507fce0cb68042607a884080652944843f5f61af",
+      "1.47.0": "1e85ee225cbec2104adb9635229964ed10230409436e2386fcf2abf92d46f8ac",
+      "1.48.0": "1e85ee225cbec2104adb9635229964ed10230409436e2386fcf2abf92d46f8ac",
+      "1.49.0": "ef9de60234024a2ae650fe25437c1d2143a67cf74f2d22e7fb34faba0f34e761",
+      "1.50.0": "ef9de60234024a2ae650fe25437c1d2143a67cf74f2d22e7fb34faba0f34e761"
+    },
+    "crates/goose/src/acp/server/fork_session.rs": {
+      "1.46.0": "13a16f577ddf25315e62499b09c3afaf563632082c2f689094ea46d968fa336f",
+      "1.47.0": "13a16f577ddf25315e62499b09c3afaf563632082c2f689094ea46d968fa336f",
+      "1.48.0": "00c1fdfa7efaf90c363f1fbe542695e1bc2d00daeb61ed32b5312416a232e972",
+      "1.49.0": "00c1fdfa7efaf90c363f1fbe542695e1bc2d00daeb61ed32b5312416a232e972",
+      "1.50.0": "00c1fdfa7efaf90c363f1fbe542695e1bc2d00daeb61ed32b5312416a232e972"
+    },
+    "crates/goose/src/acp/server/load_session.rs": {
+      "1.46.0": "13e538ff9cde0314d7fc6b78b49c2325075363d4c01230b9b14e894068ab6997",
+      "1.47.0": "13e538ff9cde0314d7fc6b78b49c2325075363d4c01230b9b14e894068ab6997",
+      "1.48.0": "d88fadee019ec81c0a926baaf30a69b5f49823dc21c298cf8e3c399db06dc74e",
+      "1.49.0": "0ec964a8a24eedde2c3e342fe9125991cae1492ad376540f85ec0d04f3984811",
+      "1.50.0": "0ec964a8a24eedde2c3e342fe9125991cae1492ad376540f85ec0d04f3984811"
+    },
+    "crates/goose/src/acp/server/new_session.rs": {
+      "1.46.0": "10146d0e24a148f5d89bbdb3447f4720cff74b2fdb62d80b8febf2cc3e2a6dad",
+      "1.47.0": "63d8420347370445cbe4f8a851b570dad2895f4f09d918dcd54b5c838de18ca5",
+      "1.48.0": "930af2090f1c8a3a3fd418d6afcb7dca511311cce7f79f3d9e3f4788929ed768",
+      "1.49.0": "930af2090f1c8a3a3fd418d6afcb7dca511311cce7f79f3d9e3f4788929ed768",
+      "1.50.0": "930af2090f1c8a3a3fd418d6afcb7dca511311cce7f79f3d9e3f4788929ed768"
+    },
+    "crates/goose/src/acp/server/prompts.rs": {
+      "1.46.0": "2d8c4dce604944673669ae435b2f7592041998d4141d4651d5a0396ad996e750",
+      "1.47.0": "2d8c4dce604944673669ae435b2f7592041998d4141d4651d5a0396ad996e750",
+      "1.48.0": "2d8c4dce604944673669ae435b2f7592041998d4141d4651d5a0396ad996e750",
+      "1.49.0": "2d8c4dce604944673669ae435b2f7592041998d4141d4651d5a0396ad996e750",
+      "1.50.0": "2d8c4dce604944673669ae435b2f7592041998d4141d4651d5a0396ad996e750"
+    },
+    "crates/goose/src/acp/server/providers.rs": {
+      "1.46.0": "1a962b722484a96f72e39f02f3723a7b72107defaf30d28b13586be34dbd5c70",
+      "1.47.0": "18b1185cda5c439e01b33f9204d6e6df4df80c21fb0cdf89c2699f55d2ca39b6",
+      "1.48.0": "d7133880665ae2b2b0c29f74f8fc8993bcb6f27d3f2f043164bc7e15a0e30589",
+      "1.49.0": "2ab90a473a4b06de387e1519e3d659beb25071b518bb9949b628efd5476da851",
+      "1.50.0": "2ab90a473a4b06de387e1519e3d659beb25071b518bb9949b628efd5476da851"
+    },
+    "crates/goose/src/agents/agent.rs": {
+      "1.46.0": "2227f114aae644241feaeb3a4f1a9feed1545cf6e9a792b39783deac89c19be6",
+      "1.47.0": "249792d6b9c2e836f195fa21e2921d64e5f9729cac87d70d2d9aeb1a286f9227",
+      "1.48.0": "a214a843067816fb21fe4650940e31688e420de4fb1b41904bc7b93dab150565",
+      "1.49.0": "343e138bf18f92317182a4c31b362a86624b4a9e137beffab93a7cfd85b33ca6",
+      "1.50.0": "cf1dc22510cb0a780ec6351c6e378b4021018fe8f187d2e28a46aded370b4b99"
+    },
+    "crates/goose/src/agents/extension_manager.rs": {
+      "1.46.0": "04ebc8b18026f9f9cfac9417407da232bc3f42ed878da246e6b5127dfab30f79",
+      "1.47.0": "1ab490e7e7bbf6bf06a269ac1ba17255d8a336af98a577362fc31bb6da992e0d",
+      "1.48.0": "5a69f9dbfb998bbf3ab25448b837538e38af787f8eb108fb8c4f0f09f535842c",
+      "1.49.0": "7396447d7ba2be27c886a0d30d0bc5ce1e84654dea6771c5a5eb0d6452f8b1ef",
+      "1.50.0": "7396447d7ba2be27c886a0d30d0bc5ce1e84654dea6771c5a5eb0d6452f8b1ef"
+    },
+    "crates/goose/src/agents/platform_extensions/mod.rs": {
+      "1.46.0": "cb578bbe8eab9d9f5c2ba9547e8d7b08b7582814a25e4e4870b9ca3dc07d388b",
+      "1.47.0": "cb578bbe8eab9d9f5c2ba9547e8d7b08b7582814a25e4e4870b9ca3dc07d388b",
+      "1.48.0": "cb578bbe8eab9d9f5c2ba9547e8d7b08b7582814a25e4e4870b9ca3dc07d388b",
+      "1.49.0": "cb578bbe8eab9d9f5c2ba9547e8d7b08b7582814a25e4e4870b9ca3dc07d388b",
+      "1.50.0": "cb578bbe8eab9d9f5c2ba9547e8d7b08b7582814a25e4e4870b9ca3dc07d388b"
+    },
+    "crates/goose/src/builtin_extension.rs": {
+      "1.46.0": "3f3c1aca88295b24473e6e16c8713977089c592cbd3baf495e74e43a0d48904e",
+      "1.47.0": "3f3c1aca88295b24473e6e16c8713977089c592cbd3baf495e74e43a0d48904e",
+      "1.48.0": "3f3c1aca88295b24473e6e16c8713977089c592cbd3baf495e74e43a0d48904e",
+      "1.49.0": "3f3c1aca88295b24473e6e16c8713977089c592cbd3baf495e74e43a0d48904e",
+      "1.50.0": "3f3c1aca88295b24473e6e16c8713977089c592cbd3baf495e74e43a0d48904e"
+    },
+    "crates/goose/src/config/base.rs": {
+      "1.46.0": "07828d8ca7fdd5f5a80769879ad4bf0f1ca61c788506390db74da1dda1d8378d",
+      "1.47.0": "07828d8ca7fdd5f5a80769879ad4bf0f1ca61c788506390db74da1dda1d8378d",
+      "1.48.0": "ef4b82e7efbc71d59a2e56f17ec6c000a59a4be0264901a03a4c84fe01acd8f5",
+      "1.49.0": "3f94eee9de8ea290214d7549cd50d088abc17918c5472e948b3e01c09e85f563",
+      "1.50.0": "3f94eee9de8ea290214d7549cd50d088abc17918c5472e948b3e01c09e85f563"
+    },
+    "crates/goose/src/config/extensions.rs": {
+      "1.46.0": "8e8668b532c0e0702dd8678c36d9a76ac212dbf342e4c471b93a93b2e3204486",
+      "1.47.0": "8e8668b532c0e0702dd8678c36d9a76ac212dbf342e4c471b93a93b2e3204486",
+      "1.48.0": "8e8668b532c0e0702dd8678c36d9a76ac212dbf342e4c471b93a93b2e3204486",
+      "1.49.0": "5524c4fe66582f7021a07f5509cf99affa18a8b6138fbcff3042a86fc7f79dea",
+      "1.50.0": "5524c4fe66582f7021a07f5509cf99affa18a8b6138fbcff3042a86fc7f79dea"
+    },
+    "crates/goose/src/permission/permission_inspector.rs": {
+      "1.46.0": "c9944a12742c443bb834abead6f3a5120f6b09d666a41d80ab1491752b545390",
+      "1.47.0": "c9944a12742c443bb834abead6f3a5120f6b09d666a41d80ab1491752b545390",
+      "1.48.0": "c9944a12742c443bb834abead6f3a5120f6b09d666a41d80ab1491752b545390",
+      "1.49.0": "c9944a12742c443bb834abead6f3a5120f6b09d666a41d80ab1491752b545390",
+      "1.50.0": "c9944a12742c443bb834abead6f3a5120f6b09d666a41d80ab1491752b545390"
+    },
+    "crates/goose/src/session/session_manager.rs": {
+      "1.46.0": "d1d402bad5c55e3b50b3d81ad6fd9c29b4f6c69e59ec1198fded81760ebf14c8",
+      "1.47.0": "2680cc36c8d7dcdc04413217ad578f5232e11d417f55c1d3c9cb9dc05f04f80c",
+      "1.48.0": "4df5be5f9f5780e04bfd53bcd3133d870f4ca9a3205d0e926a4ae384e56852f6",
+      "1.49.0": "30f76a00e81fe87735f07adb8cde7543ea770f3a2b6aaf42ba6e76b0a6c5abaa",
+      "1.50.0": "d95f285281972ce5422bbadb4a9b9246ab58ae78c508f4551ace76c6786e8f72"
+    },
+    "documentation/docs/guides/acp-clients.md": {
+      "1.46.0": "9db93def1b6920317463cf20949b0979c96520ce8b57cf557b44a727c41143bf",
+      "1.47.0": "9db93def1b6920317463cf20949b0979c96520ce8b57cf557b44a727c41143bf",
+      "1.48.0": "9db93def1b6920317463cf20949b0979c96520ce8b57cf557b44a727c41143bf",
+      "1.49.0": "9db93def1b6920317463cf20949b0979c96520ce8b57cf557b44a727c41143bf",
+      "1.50.0": null
+    }
+  },
+  "byte_identical_across_all_hops": [
+    "crates/goose-mcp/src/lib.rs",
+    "crates/goose-provider-types/src/goose_mode.rs",
+    "crates/goose/src/acp/common.rs",
+    "crates/goose/src/acp/server/prompts.rs",
+    "crates/goose/src/agents/platform_extensions/mod.rs",
+    "crates/goose/src/builtin_extension.rs",
+    "crates/goose/src/permission/permission_inspector.rs"
+  ],
+  "from_hop_to_hop": {
+    "1.46.0_to_1.47.0": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "Cargo.toml",
+        "crates/goose/src/acp/mod.rs",
+        "crates/goose/src/acp/response_builder.rs",
+        "crates/goose/src/acp/server.rs",
+        "crates/goose/src/acp/server/dispatch.rs",
+        "crates/goose/src/acp/server/extensions.rs",
+        "crates/goose/src/acp/server/new_session.rs",
+        "crates/goose/src/acp/server/providers.rs",
+        "crates/goose/src/agents/agent.rs",
+        "crates/goose/src/agents/extension_manager.rs",
+        "crates/goose/src/session/session_manager.rs",
+        "crates/goose-provider-types/src/conversation/message.rs"
+      ],
+      "identical": [
+        "crates/goose-cli/src/cli.rs",
+        "crates/goose-mcp/src/lib.rs",
+        "crates/goose-provider-types/src/errors.rs",
+        "crates/goose-provider-types/src/goose_mode.rs",
+        "crates/goose/src/acp/common.rs",
+        "crates/goose/src/acp/server/fork_session.rs",
+        "crates/goose/src/acp/server/load_session.rs",
+        "crates/goose/src/acp/server/prompts.rs",
+        "crates/goose/src/agents/platform_extensions/mod.rs",
+        "crates/goose/src/builtin_extension.rs",
+        "crates/goose/src/config/base.rs",
+        "crates/goose/src/config/extensions.rs",
+        "crates/goose/src/permission/permission_inspector.rs",
+        "documentation/docs/guides/acp-clients.md"
+      ]
+    },
+    "1.47.0_to_1.48.0": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "Cargo.toml",
+        "crates/goose-cli/src/cli.rs",
+        "crates/goose/src/acp/mod.rs",
+        "crates/goose/src/acp/response_builder.rs",
+        "crates/goose/src/acp/server.rs",
+        "crates/goose/src/acp/server/dispatch.rs",
+        "crates/goose/src/acp/server/fork_session.rs",
+        "crates/goose/src/acp/server/load_session.rs",
+        "crates/goose/src/acp/server/new_session.rs",
+        "crates/goose/src/acp/server/providers.rs",
+        "crates/goose/src/agents/agent.rs",
+        "crates/goose/src/agents/extension_manager.rs",
+        "crates/goose/src/config/base.rs",
+        "crates/goose/src/session/session_manager.rs",
+        "crates/goose-provider-types/src/conversation/message.rs",
+        "crates/goose-provider-types/src/errors.rs"
+      ],
+      "identical": [
+        "crates/goose-mcp/src/lib.rs",
+        "crates/goose-provider-types/src/goose_mode.rs",
+        "crates/goose/src/acp/common.rs",
+        "crates/goose/src/acp/server/extensions.rs",
+        "crates/goose/src/acp/server/prompts.rs",
+        "crates/goose/src/agents/platform_extensions/mod.rs",
+        "crates/goose/src/builtin_extension.rs",
+        "crates/goose/src/config/extensions.rs",
+        "crates/goose/src/permission/permission_inspector.rs",
+        "documentation/docs/guides/acp-clients.md"
+      ]
+    },
+    "1.48.0_to_1.49.0": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "Cargo.toml",
+        "crates/goose-cli/src/cli.rs",
+        "crates/goose/src/acp/response_builder.rs",
+        "crates/goose/src/acp/server.rs",
+        "crates/goose/src/acp/server/dispatch.rs",
+        "crates/goose/src/acp/server/extensions.rs",
+        "crates/goose/src/acp/server/load_session.rs",
+        "crates/goose/src/acp/server/providers.rs",
+        "crates/goose/src/agents/agent.rs",
+        "crates/goose/src/agents/extension_manager.rs",
+        "crates/goose/src/config/base.rs",
+        "crates/goose/src/config/extensions.rs",
+        "crates/goose/src/session/session_manager.rs",
+        "crates/goose-provider-types/src/conversation/message.rs"
+      ],
+      "identical": [
+        "crates/goose-mcp/src/lib.rs",
+        "crates/goose-provider-types/src/errors.rs",
+        "crates/goose-provider-types/src/goose_mode.rs",
+        "crates/goose/src/acp/common.rs",
+        "crates/goose/src/acp/mod.rs",
+        "crates/goose/src/acp/server/fork_session.rs",
+        "crates/goose/src/acp/server/new_session.rs",
+        "crates/goose/src/acp/server/prompts.rs",
+        "crates/goose/src/agents/platform_extensions/mod.rs",
+        "crates/goose/src/builtin_extension.rs",
+        "crates/goose/src/permission/permission_inspector.rs",
+        "documentation/docs/guides/acp-clients.md"
+      ]
+    },
+    "1.49.0_to_1.50.0": {
+      "added": [],
+      "removed": ["documentation/docs/guides/acp-clients.md"],
+      "changed": [
+        "Cargo.toml",
+        "crates/goose-cli/src/cli.rs",
+        "crates/goose/src/agents/agent.rs",
+        "crates/goose/src/session/session_manager.rs"
+      ],
+      "identical": [
+        "crates/goose-mcp/src/lib.rs",
+        "crates/goose-provider-types/src/conversation/message.rs",
+        "crates/goose-provider-types/src/errors.rs",
+        "crates/goose-provider-types/src/goose_mode.rs",
+        "crates/goose/src/acp/common.rs",
+        "crates/goose/src/acp/mod.rs",
+        "crates/goose/src/acp/response_builder.rs",
+        "crates/goose/src/acp/server.rs",
+        "crates/goose/src/acp/server/dispatch.rs",
+        "crates/goose/src/acp/server/extensions.rs",
+        "crates/goose/src/acp/server/fork_session.rs",
+        "crates/goose/src/acp/server/load_session.rs",
+        "crates/goose/src/acp/server/new_session.rs",
+        "crates/goose/src/acp/server/prompts.rs",
+        "crates/goose/src/acp/server/providers.rs",
+        "crates/goose/src/agents/extension_manager.rs",
+        "crates/goose/src/agents/platform_extensions/mod.rs",
+        "crates/goose/src/builtin_extension.rs",
+        "crates/goose/src/config/base.rs",
+        "crates/goose/src/config/extensions.rs",
+        "crates/goose/src/permission/permission_inspector.rs"
+      ]
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "selected_command": ["goose", "acp"],
+  "transport": "stdio-jsonrpc",
+  "protocol_version": 1,
+  "protocol_version_negotiation": "server echoes the client-requested protocolVersion at every hop; adapter sends 1 and requires the echo",
+  "first_op": ["initialize", "session/new", "session/prompt"],
+  "selected_methods": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel"
+  ],
+  "advertised_unmapped_at_1_46_0": [
+    "session/load",
+    "session/list",
+    "session/close",
+    "session/fork",
+    "session/steer",
+    "session/set_model",
+    "authenticate"
+  ],
+  "advertised_unmapped_added_by_1_50_0": ["session/delete"],
+  "initialize_response_1_46_0_to_1_50_0": {
+    "protocol_version_echo": "unchanged",
+    "agent_capabilities_load_session": true,
+    "session_capabilities_list_close": "unchanged",
+    "session_capabilities_delete_added_at_1_47_0": "advertised only; no adapter operation reads it",
+    "prompt_capabilities_image_audio_embedded": "unchanged",
+    "mcp_capabilities_http": "unchanged",
+    "agent_info_name": "goose",
+    "agent_info_version_tracks_workspace": true,
+    "auth_methods_goose_provider_configure": "unchanged",
+    "agent_capabilities_meta_recipe_parameter_scopes_added_at_1_47_0": "empty object; unmapped recipe surface"
+  },
+  "stop_boundary": {
+    "hop": ["1.46.0", "1.47.0"],
+    "kind": "selected provider-failure mapping change",
+    "session_new_agent_creation": "chained agent-client-protocol AuthRequired errors now map to JSON-RPC auth_required via agent_creation_error; 1.46.0 always returned internal_error",
+    "session_prompt_provider_auth": "ProviderError::Authentication now persists MessageContent::Error(Authentication) via Message::from_provider_error and trips prompt_error_from_message_content to stream_error auth_required, failing the prompt RPC; 1.46.0 fell into the generic arm, emitted assistant text, and ended the turn normally",
+    "adapter_observation": "adapter fails the turn on any prompt RPC error and completes on end_turn, so identical host provider-auth state completes with text at 1.46.0 and fails from 1.47.0 onward",
+    "frozen_1_46_0_negative_cases_have_no_auth_code": true
+  },
+  "classified_selected_surface": {
+    "cli_dispatch_goose_acp_argv": "byte-stable Command::Acp (builtins, enable_scheduler) and run(builtins, enable_scheduler) dispatch at all five tags; roam/serve/tui/mcp-probe/with-extension-help deltas are unmapped sibling commands",
+    "builtin_scheduler_defaults": "empty AcpBuiltinSelection defaults at every hop; PLATFORM_EXTENSIONS, BUILTIN_EXTENSIONS, and builtin_to_extension_config membership byte-identical; host-extension merge semantics unchanged",
+    "session_new_cwd_authority": "absolute-existing-cwd validation unchanged; session_cwd host override added at 1.48.0 but the stdio run() path pins session_cwd None, so client-sent cwd still rules; mode seeding stays get_goose_mode().unwrap_or_default()",
+    "session_new_response_additions": "thinking-effort config options and recipeParameterScopeId meta are additive; adapter parses only sessionId",
+    "prompt_content_conversion": "prompts.rs byte-identical; text/image/embedded/resource-link conversion and audio drop unchanged",
+    "stop_reasons": "prompt_stop_reason cancelled/max_tokens/end_turn logic identical",
+    "session_cancel": "on_cancel active-run token lookup identical at 1.46.0, 1.48.0, and 1.50.0",
+    "permission_kinds": "allow_once/allow_always/reject_once/reject_always occurrence counts identical at all five tags; permission_inspector.rs byte-identical; later-hop permission plumbing refactors stay inside unmapped callback internals",
+    "modes": "GooseMode four-variant membership, default auto, build_mode_state, and host seeding all identical; get_goose_mode_strict is only consumed by the unmapped codex_acp provider adapter",
+    "correlation_bounds_cwd_resource": "no change to request ids, session ids, absolute-cwd rule, or mcpServers:[] plan shape",
+    "deadlines_process_cleanup": "cancel-then-join-or-kill ownership unchanged; active-run registry refactors keep the same observable cancel token semantics"
+  },
+  "bounded_unmapped": {
+    "acp_provider_adapters_copilot_pi_codex_claude": "configured_model_for_provider, use_default_model plumbing, and strict-mode resolution live in Goose-as-ACP-client paths the route never spawns",
+    "client_mcp_oauth_fields": "client_id/client_secret_key/scopes ride the client-supplied McpServer path; the plan always sends mcpServers:[]",
+    "extension_management_ops": "add/remove/get_available extension RPCs, extension-key addressing, and replay-tail load options belong to unmapped session/load/list/close/delete/fork/steer/set-model siblings",
+    "thinking_effort_selection": "set-thinking-effort and effort menus are new unmapped config surface; adapter never sends them",
+    "recipe_parameter_scopes": "recipe rendering and scope meta belong to unmapped recipes-as-routing",
+    "serve_roam_tui_desktop_local_inference_mcp_version_telemetry": "serve --roam, roaming session_cwd, TUI removal, MCP protocol version, telemetry gating, session naming, and provider-inventory internals never touch the stdio ACP wire observed by the adapter",
+    "usage_and_available_commands_notifications": "usage_update stays unclaimed portable usage and available-commands updates are unmapped session metadata",
+    "docs_acp_clients_md_removed_at_1_50_0": "guide deleted at the last hop; selected argv and wire are proved from source, not docs"
+  },
+  "acp_dependency_pins": {
+    "1.46.0": {"schema": "1.1", "sdk": "1.0"},
+    "1.47.0_through_1.50.0": {"schema": "=1.5.0", "sdk": "2.0.0", "git_rev": "c97a5203d3392f7f231514d84eea014f9f43e6fb"}
+  },
+  "decoder_corpus": "goose-acp-1.46.0",
+  "decoder_corpus_change": "none; frozen 1.46.0 specimens stand",
+  "allow_always_unselected": true,
+  "auto_mode_unselected": true,
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "host_install_changed": false
+}

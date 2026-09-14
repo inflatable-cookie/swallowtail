@@ -15,10 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.065 Claude Agent SDK `0.3.270` / native `2.1.270` as the seventh
-family in Tom's authorized Research 308 currentness campaign. Continue the
-remaining twelve families serially without repeated approval; no release
-follows.
+Compile and dispatch the Grok Build catalogue as the next family in Tom's
+authorized Research 308 currentness campaign. Continue the remaining eleven
+families serially without repeated approval; no release follows.
 
 ## Standing Lanes
 

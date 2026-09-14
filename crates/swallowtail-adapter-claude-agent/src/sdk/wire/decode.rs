@@ -431,7 +431,7 @@ fn nullable_nonnegative_integer(
     }
     value.as_u64().ok_or_else(|| failure(kind)).map(Some)
 }
-/// Optional numeric provider HTTP status from exact SDK `0.3.259`
+/// Optional numeric provider HTTP status from exact SDK `0.3.270`
 /// `api_error_status`. Absent or null stays `None`; a present non-null value
 /// outside `100..=599` fails closed.
 fn nullable_http_status(
@@ -451,7 +451,7 @@ fn nullable_http_status(
     }
 }
 
-/// Optional bounded terminal reason from exact SDK `0.3.259`
+/// Optional bounded terminal reason from exact SDK `0.3.270`
 /// `terminal_reason`. Absent or null stays `None`; a present non-null value
 /// outside the safe label domain fails closed.
 fn nullable_terminal_reason(

@@ -1,6 +1,6 @@
 //! Contract 063 registered-tool adoption for the `claude-agent.sdk` route.
 //!
-//! The pinned `0.3.259` surface exposes MCP server configuration, a permission
+//! The `0.3.270` surface exposes MCP server configuration, a permission
 //! callback, and bounded status. It exposes no public callback equivalent to
 //! `RegisteredToolDispatcher::dispatch(call, context)`. This route therefore
 //! adopts the registered-tool boundary through one Swallowtail-owned MCP
@@ -26,10 +26,11 @@
 //!   withheld: no pinned transport corpus qualifies them.
 //!
 //! What this module claims: the registered capability is qualified only for
-//! the exact accepted Card 318 live tuple (Research 301), and only on the
-//! Darwin arm64 target the capsules ran on — every other target projects
-//! `Unqualified`. The deterministic fixtures and the frozen transcript bind
-//! the evidence identities; they never widen the tuple.
+//! the exact accepted Card 318 live tuple (Research 301: SDK `0.3.259`,
+//! native `2.1.259`), and only on the Darwin arm64 target the capsules ran
+//! on — every other target, and every other compiled wrapper/native tuple,
+//! projects `Unqualified`. The deterministic fixtures and the frozen
+//! transcript bind the evidence identities; they never widen the tuple.
 
 mod binding;
 mod carrier;
@@ -51,14 +52,17 @@ pub use mediation::{
 pub(crate) use projection::project_claude_agent_sdk_selected_skill_from_source;
 pub use projection::{
     CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID, CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_LIVE_TUPLE_NOT_COMPILED_CODE,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_PLATFORM_NOT_ADMITTED_CODE,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SOURCE,
-    claude_agent_sdk_registered_tool_qualification, project_claude_agent_sdk_registered_tool,
+    claude_agent_sdk_live_tuple_compiled, claude_agent_sdk_registered_tool_qualification,
+    project_claude_agent_sdk_registered_tool,
     project_claude_agent_sdk_registered_tool_with_selected_skill,
     project_claude_agent_sdk_registered_tool_with_selected_skill_from_source,
 };
 pub use registered_only::ClaudeAgentSdkRegisteredOnlyBinding;
 pub use version::{
+    CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION, CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION,
     CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION, CLAUDE_AGENT_SDK_MCP_SUPPORTED_PROTOCOL_VERSIONS,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_AXIS,
     CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION,

@@ -160,12 +160,15 @@ pub async fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgent
 pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator::new(swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier, swallowtail_runtime::registered_tool::lease::RegisteredToolBridgeLease) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator::record_admission(&self, &str, swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolDecision) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolMediator::with_consumer_limits(self, swallowtail_runtime::registered_tool::limits::RegisteredToolLimits) -> Self
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_MCP_SUPPORTED_PROTOCOL_VERSIONS: &[&str]
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REAL_ROUTE_GATE_PENDING_CODE: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_AXIS: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION: &str
+pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_LIVE_TUPLE_NOT_COMPILED_CODE: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION: &str
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_PLATFORM_NOT_ADMITTED_CODE: &str
@@ -179,6 +182,7 @@ pub const swallowtail_adapter_claude_agent::sdk::registered_tool::MCP_ERROR_INVA
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::MCP_ERROR_INVALID_REQUEST: i64
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::MCP_ERROR_METHOD_NOT_FOUND: i64
 pub const swallowtail_adapter_claude_agent::sdk::registered_tool::MCP_JSONRPC_VERSION: &str
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::claude_agent_sdk_live_tuple_compiled() -> bool
 pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::claude_agent_sdk_mcp_protocol_version_admitted(&str) -> bool
 pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::claude_agent_sdk_mcp_protocol_version_known(&str) -> bool
 pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::claude_agent_sdk_registered_tool_carrier_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>

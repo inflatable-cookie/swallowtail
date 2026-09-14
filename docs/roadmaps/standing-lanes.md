@@ -26,17 +26,27 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Claude Agent SDK official npm `0.3.270`, carrying native Claude
-`2.1.270` (g05.065), is the seventh family of Tom's authorized Research 308
-campaign. Planning found nine published wrapper points after exact `0.3.259`:
-`0.3.260`, `0.3.261`, `0.3.263`, and `0.3.265..=0.3.270`; `0.3.262` and
-`0.3.264` are unpublished gaps. Installed Node `22.23.2` matches the exact Node
-axis, while installed Claude `2.1.258` is observation-only and does not identify
-the bundled native. The worker must freeze complete wrapper/native/platform
-identity before an exact one-point rebind, keep all five axes independent, and
-leave Research 301's live registered-tool qualification bound to the
-`0.3.259` / `2.1.259` tuple unless new matching evidence exists. Shared
-matrices and the changelog stay serial.
+Active family: the Grok Build catalogue is the eighth family of Tom's
+authorized Research 308 campaign. The installed build and the official npm
+catalogue release must be rechecked, and complete prompt-free identity must be
+frozen before the exact `1.0.25` claim is requalified. Shared matrices and the
+changelog stay serial.
+
+Completed campaign family: Claude Agent SDK official npm `0.3.270`, carrying
+native Claude `2.1.270` (g05.065), is the seventh family of Tom's authorized
+Research 308 campaign. Research 315 froze all nine published wrapper points
+after exact `0.3.259` (`0.3.260`, `0.3.261`, `0.3.263`, and `0.3.265..=0.3.270`;
+`0.3.262` and `0.3.264` are unpublished gaps) with wrapper/native coupling,
+tarball digests, native commits, platform payloads, and a complete 15-file
+tree inventory; 42 declaration surfaces classified unmapped with the mapped
+subset, lifecycle, and credential posture unchanged. The exact one-point
+package/native tuple rebound to `0.3.270`/`2.1.270` with behavior revision,
+wire, Node `22.23.2`, sidecar source-tag axes, claim ids, and QualifiedOnly
+posture unchanged. Research 301 live registered-tool acceptance stays bound
+to `0.3.259`/`2.1.259` and does not transfer: the compiled tuple projects
+`registered_tools` and `consumer_tool_exchange` unqualified until a separately
+authorized live requalification runs on the new tuple. The next family is the
+Grok Build catalogue.
 
 Completed campaign family: Grok Build ACP official npm stable `1.0.30`
 (g05.064) is the sixth family of Tom's authorized Research 308 campaign.

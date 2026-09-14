@@ -543,7 +543,7 @@ function invokeSpawnHook(hook, ...hookArguments) {
   const [spawnOptions] = hookArguments;
   // Record the arguments actually received by this SDK-side invocation before
   // forwarding them. This is a sanitized shape projection, not the query
-  // options object: all five 0.3.259 SpawnOptions keys remain visible,
+  // options object: all five 0.3.270 SpawnOptions keys remain visible,
   // including the forwarded signal, and the count catches positional calls.
   observed.spawnHookArgumentCount = hookArguments.length;
   observed.spawnHookArgument = {
@@ -724,8 +724,8 @@ function editingSession(prompt, options, child) {
   return iterator;
 }
 
-// Card 146 faithful rows. The exact 0.3.259 `McpServerStatus` declaration
-// (package/sdk.d.ts:1114-1158) permits optional `serverInfo`, `error`,
+// Card 146 faithful rows. The exact 0.3.270 `McpServerStatus` declaration
+// (package/sdk.d.ts:1124-1168) permits optional `serverInfo`, `error`,
 // `config`, `scope`, and `tools` on every row, and the shipped
 // `mcpServerStatus` query passes native `mcp_status` rows through unchanged.
 // The fake therefore emits all five declared optional fields on every row —

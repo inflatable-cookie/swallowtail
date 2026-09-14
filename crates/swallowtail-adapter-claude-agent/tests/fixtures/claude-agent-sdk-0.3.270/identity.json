@@ -1,0 +1,550 @@
+{
+ "axis_family": "claude-agent.sdk",
+ "package": "@anthropic-ai/claude-agent-sdk",
+ "channel": "npm dist-tags.latest",
+ "observed_at": "2026-09-14",
+ "claim_at_observation": {
+  "package_axis": "claude-agent.sdk.package",
+  "package_point": "0.3.259",
+  "native_axis": "claude-agent.sdk.native",
+  "native_point": "2.1.259",
+  "posture": "QualifiedOnly",
+  "behavior_revision": "claude-agent.sdk-v1"
+ },
+ "official": {
+  "version": "0.3.270",
+  "dist_tags": [
+   "latest",
+   "next"
+  ],
+  "published": "2026-09-12T18:53:13.002Z",
+  "tarball_sha256": "36e86fc13a1ddc8c026dcf5e5bcf72f4107bcbceaff1a45e7f81c5d44d703575",
+  "tarball_sha1": "2a1d5fd4e265320a64e62607ae87567bd7b955d8",
+  "tarball_bytes": 1426560,
+  "file_count": 15,
+  "unpacked_bytes": 5114331
+ },
+ "previous_ceiling": {
+  "version": "0.3.259",
+  "published": "2026-09-02T21:22:40.857Z",
+  "tarball_sha256": "0c5740e44a536ab6fd32f2a7de0d508b75d34782ebc219b87aa8d834449a3f7e",
+  "tarball_sha1": "daf465f8231392ab99e1c7fc7f1e14c3d25ea012",
+  "tarball_bytes": 1403858,
+  "file_count": 15,
+  "unpacked_bytes": 5043385,
+  "corroborates_research_280": true
+ },
+ "published_stables_between": [
+  {
+   "version": "0.3.260",
+   "published": "2026-09-03T22:33:32.324Z",
+   "tarball_sha256": "6c504878a2acd478f3ece4e20771ac840d6acf7942da209149d6d3f0f94349b7",
+   "tarball_sha1": "7f183685e0a9583378949a8966704ec8a5082101",
+   "tarball_bytes": 1396331,
+   "unpacked_bytes": 5013698,
+   "coupled_native": "2.1.260",
+   "native_commit": "e51f681183f733dbe9a81bf35921c786ee26dbc6"
+  },
+  {
+   "version": "0.3.261",
+   "published": "2026-09-04T17:56:50.700Z",
+   "tarball_sha256": "a8bb0793c93987d358362e5cc64e576b9427360466091271728955fa11c583db",
+   "tarball_sha1": "346564f24835fb9ef50576d9999ee98b796612cb",
+   "tarball_bytes": 1401206,
+   "unpacked_bytes": 5028220,
+   "coupled_native": "2.1.261",
+   "native_commit": "1349cf9c224caea8b7721f717418645e28ebacb8"
+  },
+  {
+   "version": "0.3.263",
+   "published": "2026-09-06T02:09:39.522Z",
+   "tarball_sha256": "e1d6b68b557fc3c57430cafa8cc65eea9d40ff7348b238fe2c431284d727901d",
+   "tarball_sha1": "e689ea59019ac1687ab2706bddee93635c57eaec",
+   "tarball_bytes": 1401253,
+   "unpacked_bytes": 5028300,
+   "coupled_native": "2.1.263",
+   "native_commit": "37ae3f38d765199d54a6913cd61c6c9ad8576cc6"
+  },
+  {
+   "version": "0.3.265",
+   "published": "2026-09-08T19:05:13.333Z",
+   "tarball_sha256": "bd5ff5cc729752291f64634326d7896992e56aa8183dcb8b5c9e61d073d63e3e",
+   "tarball_sha1": "5c75857ee8e36e1529a0bb91b02c3b4787365463",
+   "tarball_bytes": 1406864,
+   "unpacked_bytes": 5046565,
+   "coupled_native": "2.1.265",
+   "native_commit": "b08ec8ffb5055fe2e5ecbacfbf8f0b744e62ea51"
+  },
+  {
+   "version": "0.3.266",
+   "published": "2026-09-08T23:32:00.338Z",
+   "tarball_sha256": "155036c63456c2e99335a2ebc3761ceb114c618f549000be55bb997165060a6e",
+   "tarball_sha1": "a0e41263d18549d0e3632f17731f7309be340b60",
+   "tarball_bytes": 1406867,
+   "unpacked_bytes": 5046565,
+   "coupled_native": "2.1.266",
+   "native_commit": "eb01d60909645dfca0bf35a844b946aabaa3a75e"
+  },
+  {
+   "version": "0.3.267",
+   "published": "2026-09-09T18:28:34.720Z",
+   "tarball_sha256": "4177598847f37041aadcfe1a922a0153e2e58495100521233fc587e1c0839485",
+   "tarball_sha1": "a819a14bc82991f3fd20c85c838fbdf8d524246b",
+   "tarball_bytes": 1412649,
+   "unpacked_bytes": 5064242,
+   "coupled_native": "2.1.267",
+   "native_commit": "a9e1808c8204fef901336d54bac7d4ab442955cb"
+  },
+  {
+   "version": "0.3.268",
+   "published": "2026-09-10T18:43:42.723Z",
+   "tarball_sha256": "9fa9b0d0dbeb8b3b4978257287fc4e6600abec861d31589c84b1c3cc1761b1ad",
+   "tarball_sha1": "ec3a98377e8c8289013b7f227f76a4e989c3592e",
+   "tarball_bytes": 1419496,
+   "unpacked_bytes": 5090758,
+   "coupled_native": "2.1.268",
+   "native_commit": "8d19e585f3f1e02a7e31642695321906d38609a3"
+  },
+  {
+   "version": "0.3.269",
+   "published": "2026-09-11T18:15:23.037Z",
+   "tarball_sha256": "089e768e1c0de3eabbd6912f6b5a4b1be7e42b998a14e60d729d768246093144",
+   "tarball_sha1": "cadd420f5f9895c60796fe9e2861b19734aac6ed",
+   "tarball_bytes": 1426571,
+   "unpacked_bytes": 5114331,
+   "coupled_native": "2.1.269",
+   "native_commit": "d0733697ad641a564c7cfcb19a6eb1eb9d61357e"
+  }
+ ],
+ "unpublished_gaps": [
+  "0.3.262",
+  "0.3.264"
+ ],
+ "first_unpublished_later_stable": "0.3.271",
+ "native": {
+  "0.3.259": {
+   "version": "2.1.259",
+   "commit": "9b549c8d1c72e407ea9d3af3b9d5e50da794ec4d",
+   "buildDate": "2026-09-02T20:40:41Z"
+  },
+  "0.3.260": {
+   "version": "2.1.260",
+   "commit": "e51f681183f733dbe9a81bf35921c786ee26dbc6",
+   "buildDate": "2026-09-03T19:51:05Z"
+  },
+  "0.3.261": {
+   "version": "2.1.261",
+   "commit": "1349cf9c224caea8b7721f717418645e28ebacb8",
+   "buildDate": "2026-09-04T17:00:27Z"
+  },
+  "0.3.263": {
+   "version": "2.1.263",
+   "commit": "37ae3f38d765199d54a6913cd61c6c9ad8576cc6",
+   "buildDate": "2026-09-06T01:17:56Z"
+  },
+  "0.3.265": {
+   "version": "2.1.265",
+   "commit": "b08ec8ffb5055fe2e5ecbacfbf8f0b744e62ea51",
+   "buildDate": "2026-09-08T18:30:16Z"
+  },
+  "0.3.266": {
+   "version": "2.1.266",
+   "commit": "eb01d60909645dfca0bf35a844b946aabaa3a75e",
+   "buildDate": "2026-09-08T23:11:11Z"
+  },
+  "0.3.267": {
+   "version": "2.1.267",
+   "commit": "a9e1808c8204fef901336d54bac7d4ab442955cb",
+   "buildDate": "2026-09-09T17:39:36Z"
+  },
+  "0.3.268": {
+   "version": "2.1.268",
+   "commit": "8d19e585f3f1e02a7e31642695321906d38609a3",
+   "buildDate": "2026-09-10T17:38:45Z"
+  },
+  "0.3.269": {
+   "version": "2.1.269",
+   "commit": "d0733697ad641a564c7cfcb19a6eb1eb9d61357e",
+   "buildDate": "2026-09-11T17:44:26Z"
+  },
+  "0.3.270": {
+   "version": "2.1.270",
+   "commit": "97ecbf7abeb4170dcfd26c4d4b397afd9015030e",
+   "buildDate": "2026-09-12T18:17:55Z"
+  }
+ },
+ "native_harness_schema": {
+  "0.3.259": 1,
+  "0.3.260": 1,
+  "0.3.261": 1,
+  "0.3.263": 1,
+  "0.3.265": 1,
+  "0.3.266": 1,
+  "0.3.267": 1,
+  "0.3.268": 1,
+  "0.3.269": 1,
+  "0.3.270": 1
+ },
+ "native_tested_wrapper_ceiling": {
+  "0.3.259": "0.3.227",
+  "0.3.260": "0.3.227",
+  "0.3.261": "0.3.227",
+  "0.3.263": "0.3.227",
+  "0.3.265": "0.3.227",
+  "0.3.266": "0.3.227",
+  "0.3.267": "0.3.227",
+  "0.3.268": "0.3.227",
+  "0.3.269": "0.3.268",
+  "0.3.270": "0.3.269"
+ },
+ "native_platform_artifacts": {
+  "darwin-arm64": {
+   "0.3.259": {
+    "checksum": "884baa38fe1a624be25c4a91568bf5a08b5cf4e7d7acf29b7760e3525d964898",
+    "size": 200225968
+   },
+   "0.3.260": {
+    "checksum": "3c269f66801028823e24a63ced9fdd3988cb86cf85fccd9f03f87e463b9d3e3c",
+    "size": 198289440
+   },
+   "0.3.261": {
+    "checksum": "5efecaff231b798be3c66def9be54183623b328b80eaef17f93c43987024e82a",
+    "size": 199241568
+   },
+   "0.3.263": {
+    "checksum": "ef5d2909c8af49f31ab6d5487e90316777bc2fac170adfe8160716caa8aaf4f9",
+    "size": 199257984
+   },
+   "0.3.265": {
+    "checksum": "164b09eb800dedb9bb06304129fbf07743ab9db972ae07333ef4f18cde0cb8d5",
+    "size": 199422144
+   },
+   "0.3.266": {
+    "checksum": "553d1b9e9e7068b275c0a783c7e139ff6503096f286e674c8c919379fb0eca62",
+    "size": 199422144
+   },
+   "0.3.267": {
+    "checksum": "a681f3008f0050029aeebcab3af51bb6a55ddeb625a3af3141a4416d43cd2558",
+    "size": 200489184
+   },
+   "0.3.268": {
+    "checksum": "06a96d5423f83770f120859f1c58e60d7252cc4c122aa13043b7e7cd716bc76a",
+    "size": 202081536
+   },
+   "0.3.269": {
+    "checksum": "c942e1228b93cb4d52183b3dfbc77f28264f35aa947acd9c0853d029164cf450",
+    "size": 203150240
+   },
+   "0.3.270": {
+    "checksum": "a506b6d970a4cf44f6abdb53a81ddcd5d3b0ce042a95c502fe9d1f946bdb8807",
+    "size": 207500480
+   }
+  },
+  "darwin-x64": {
+   "0.3.259": {
+    "checksum": "af8741cff0d3fb5c4b893c7cb3613bd21b28fa61cca45469d60b8e5e161eb9d8",
+    "size": 209000528
+   },
+   "0.3.260": {
+    "checksum": "2d791b1bff2bc36419de09e1f2226c076b40b0717ee43108928938f622ea9b77",
+    "size": 207051744
+   },
+   "0.3.261": {
+    "checksum": "2cbc002b32778bd70aa2e668ada920c54d9aacd91b71dbd5619c01ca148ae533",
+    "size": 208009440
+   },
+   "0.3.263": {
+    "checksum": "a94a8b229fa85c3a316c6b4a35e0aa22bec1aabbd3d1422826ce1d10ddc88751",
+    "size": 208025952
+   },
+   "0.3.265": {
+    "checksum": "42c267a37f3db40af9e453a315edf91d423cb96ad147353e2c187769931b1af8",
+    "size": 208075488
+   },
+   "0.3.266": {
+    "checksum": "e8010163be47e29681e768946865130482e82bb47b2c5e7d0f217bacd25b526d",
+    "size": 208075488
+   },
+   "0.3.267": {
+    "checksum": "071988cb2e5a4378d8543d78e0ff5f8ed1ecc5e113271774a0582ee74fb0ef79",
+    "size": 209165280
+   },
+   "0.3.268": {
+    "checksum": "f94c0d5ab0ab79f28e8dc9129ae7c980c2c1af65f3ea67ee6e9256bed3da67e9",
+    "size": 210766944
+   },
+   "0.3.269": {
+    "checksum": "5a8c02f9ff48f1917b38e86d837114b8d5cbbf534ce72bc6aa106eb17eb3a90f",
+    "size": 211924736
+   },
+   "0.3.270": {
+    "checksum": "b3ee3237a019b8a5abb3008f1c7ddd46295a0e6e65ab94545a79c9b997dc8928",
+    "size": 216316928
+   }
+  },
+  "linux-arm64": {
+   "0.3.259": {
+    "checksum": "c6ff03c389ccdeae0f19e9dc32488eeba61fbef4796f531dbfba6c00f45040d0",
+    "size": 216194384
+   },
+   "0.3.260": {
+    "checksum": "9811afb5f97224c2c5d3d0ee1e8c316117d298d5ec3e095d5ff0c1dd0e889ca5",
+    "size": 214228392
+   },
+   "0.3.261": {
+    "checksum": "7bbed5a9b0fc2e4ec67bad3490d06ca91b86d6b037d47520b7898951757d1b8a",
+    "size": 215211432
+   },
+   "0.3.263": {
+    "checksum": "7d25d7c8ae6c6e009cc7dae4e817f674179fd31fb7761bcd56fee4c2902b4c03",
+    "size": 215211432
+   },
+   "0.3.265": {
+    "checksum": "fc1f75b115d6a398f6437df0e00142b073c23633b040618758a935f634427c88",
+    "size": 215670184
+   },
+   "0.3.266": {
+    "checksum": "6e44c5d3c97efaa1ee35ab8dd875a907681707e5cc4f6ca0da3d13a917bbcedb",
+    "size": 215670184
+   },
+   "0.3.267": {
+    "checksum": "226a4e009574044a18bf5495f127806b2a1bfcbf25b3c01608705fafee95fefb",
+    "size": 216718760
+   },
+   "0.3.268": {
+    "checksum": "116fd031f939ef1e09edf170d62c489e1cc28ed6bfbda49f948773ba168c8f62",
+    "size": 218291624
+   },
+   "0.3.269": {
+    "checksum": "4c84a33adc34c60d4de3acd43cfe7c64ba966591e51587c04867b8d589021be4",
+    "size": 219536808
+   },
+   "0.3.270": {
+    "checksum": "7bf9f33acc124df9abccf6f2366397a82a740378d535fa12d426fa77fdbc9946",
+    "size": 223862184
+   }
+  },
+  "linux-arm64-musl": {
+   "0.3.259": {
+    "checksum": "2203a17d0dddf7c5afece2d948d60d20fdef4f227ffc0c1c1ed17ce6221fa65b",
+    "size": 209073816
+   },
+   "0.3.260": {
+    "checksum": "414fea0ef7bf774b7b1d1a42635ce176b6fc5ec80912303557307f1e04aca621",
+    "size": 207173272
+   },
+   "0.3.261": {
+    "checksum": "53b58ffbeb3f9325f0ca5eb54fd03cd0346bd197328fa1e68a700ac8e097e6c1",
+    "size": 208090776
+   },
+   "0.3.263": {
+    "checksum": "9b02e81a61d54bef3e6d190b6f2f6c4a9c31e6e068468f79d520d5ffff6b0e42",
+    "size": 208156312
+   },
+   "0.3.265": {
+    "checksum": "2ca881fe49749e616d579be1f7260bfe3f8d9195f0b8517d24c0be5476581c7a",
+    "size": 208615064
+   },
+   "0.3.266": {
+    "checksum": "7736377f052bffce3113570dc80a9fa1661f911fb0f6730e3b3b550db1991f10",
+    "size": 208615064
+   },
+   "0.3.267": {
+    "checksum": "2aa337b3610742cdc9ed5dc5123d0ac41094849235182a5e6f2b7956da7ccaa5",
+    "size": 209663640
+   },
+   "0.3.268": {
+    "checksum": "a1cb086b8b65ff5e2068eb764d2aff7c8a48f914df4741dd9bdb2d3aa5db971b",
+    "size": 211236504
+   },
+   "0.3.269": {
+    "checksum": "242c2de9119ac22127b939efa6d142533981225d7ffaca84a0c5b233a31acb10",
+    "size": 212219656
+   },
+   "0.3.270": {
+    "checksum": "067b322dfca0ed81521b562ef05825e8be282eeb5c83441e4be824415572dbc0",
+    "size": 216545032
+   }
+  },
+  "linux-x64": {
+   "0.3.259": {
+    "checksum": "f7dd62ae415378018cd21dd950eb3bac174ab085830304d3b8b098146bfd47b6",
+    "size": 216677784
+   },
+   "0.3.260": {
+    "checksum": "7a2fdc74b6836ea3d183f665b869f0ee3baebc9713cbebffe5838da4ea7bd82e",
+    "size": 214687216
+   },
+   "0.3.261": {
+    "checksum": "4ae40dd1784e85753e742e09f267d29ecbb82890361ad3817d27560866d364a6",
+    "size": 215641584
+   },
+   "0.3.263": {
+    "checksum": "26d020351e8112f4006790f3cfce43b4c9df0c1bb1d0e542364d64151b81d5ba",
+    "size": 215662064
+   },
+   "0.3.265": {
+    "checksum": "e14738e3a58d1fc6ccc23b9c919451b4846bc27074a3fb48db976a7d595bdeeb",
+    "size": 215940592
+   },
+   "0.3.266": {
+    "checksum": "19842705e989393fce936804df6d2ab034860e24b8f8880357981d87ffd83fac",
+    "size": 215940592
+   },
+   "0.3.267": {
+    "checksum": "0399c793ff571d5946ef923d80b4f330d05ac4b6842a6b0775468f5d389403c0",
+    "size": 217013744
+   },
+   "0.3.268": {
+    "checksum": "9691a2b7bd796712ca8cffb8e32e54ff7fc45b662540233171a16a94a0425653",
+    "size": 218602992
+   },
+   "0.3.269": {
+    "checksum": "25e44883f54419569a3d739f38cbbdaebe83b09895da0f343e1b003710a4775b",
+    "size": 219651568
+   },
+   "0.3.270": {
+    "checksum": "3a624a5a7cd79bbad4d32bd7db36f1197ecf458bc5bf1e2aed81834a01ad3ef0",
+    "size": 223981040
+   }
+  },
+  "linux-x64-musl": {
+   "0.3.259": {
+    "checksum": "1a595699211501087e8fb31952254d03a13ebb62a3e45f95990f15138eec6d70",
+    "size": 210702280
+   },
+   "0.3.260": {
+    "checksum": "08a7ca9c07d88af26d3ea53ed59a27bf74d8827b2f3e01d329f1fd2ae42ceaaa",
+    "size": 208703440
+   },
+   "0.3.261": {
+    "checksum": "df6502c5978420d71fb32fe41b4ca956a7eb3f6245fc11a03ca2cde7f03b8f93",
+    "size": 209661904
+   },
+   "0.3.263": {
+    "checksum": "b9c407e36847bcb24b953b1390f240c840ae6c99e10a76475d2fadc5d5c4adca",
+    "size": 209678288
+   },
+   "0.3.265": {
+    "checksum": "77b792470cd157517fbeedb349f31c8f9c40adb3aa0f21ef6086f54b007a2223",
+    "size": 209956816
+   },
+   "0.3.266": {
+    "checksum": "1b92f53d2380955bf43cf50c261f88ae69e865b620e214be217cb346d0faaff1",
+    "size": 209956816
+   },
+   "0.3.267": {
+    "checksum": "3c336039170511e6592be624097e95eb9e85be0ecf96f78b331907497512c401",
+    "size": 211034064
+   },
+   "0.3.268": {
+    "checksum": "1e9b0013268c023266438653eb4beac34d71311a451a9f45988e5f176fdf2e24",
+    "size": 212623312
+   },
+   "0.3.269": {
+    "checksum": "9fbb3c062bfde0880170296bd72fd331614428fa45996e24d3c92e90ff681d45",
+    "size": 213565504
+   },
+   "0.3.270": {
+    "checksum": "38f98338ff23afce49c66c83ac57ea238f84e7f4e8c17ae7cc74b3eeaee9a299",
+    "size": 217894976
+   }
+  },
+  "win32-arm64": {
+   "0.3.259": {
+    "checksum": "5d964b5bc68c1a4cd618a6f992ae56266cb34e68ae2c4aed9aa0ed68247dd218",
+    "size": 210756256
+   },
+   "0.3.260": {
+    "checksum": "40c1dfef976a6c4df772c75d73cb313773d3bbfcb8ce8d05fd2965afec3718b5",
+    "size": 208821920
+   },
+   "0.3.261": {
+    "checksum": "df26e336df846f4b68edda1021af5aecc1f8172d9f045ee33a480916385b35f9",
+    "size": 209778336
+   },
+   "0.3.263": {
+    "checksum": "2ca14d6f61a39c3ad5d72424f4e347d5a570a58036ab1afe14c5e3eb668e9540",
+    "size": 209795744
+   },
+   "0.3.265": {
+    "checksum": "ad007cd51d4be86138e22f5c5528c433ef843c2e1aa5ec35c51a486064b0ca5d",
+    "size": 210214560
+   },
+   "0.3.266": {
+    "checksum": "ca711c1637af25d5ab517bc499603355fdaccf3884728228960aaeab3f601294",
+    "size": 210214048
+   },
+   "0.3.267": {
+    "checksum": "0dc306259e3036af4255f66b77451d3f7297bcd376bfae20f7b42e2fa1473607",
+    "size": 211294368
+   },
+   "0.3.268": {
+    "checksum": "30f0dbc7f1520ff0af1a2eb0167e11f09363a49f5dfd2f719ccd95e05809112c",
+    "size": 212880032
+   },
+   "0.3.269": {
+    "checksum": "8f428028d56c11b97b5645380eacbf86691f3d92854efba2d1be656f8681b9dc",
+    "size": 213922976
+   },
+   "0.3.270": {
+    "checksum": "fda3cff248cfe4536f7ecf04b363a360fe4caba8bdedeb8d37fc0d80428d7894",
+    "size": 218256032
+   }
+  },
+  "win32-x64": {
+   "0.3.259": {
+    "checksum": "85429000ec9b80082613e9ecd2e0d3b2276c9d5b22a681936575d2c4c2f342ed",
+    "size": 219715232
+   },
+   "0.3.260": {
+    "checksum": "ab5fe6cb800a9faf3df1cc0f6bcb71f097296b302a16b576ca906446a22fea71",
+    "size": 217771680
+   },
+   "0.3.261": {
+    "checksum": "f2f5d1a155167488aeb32cd263e15436253c7b1681ae147c9e73e4d6bbc3c852",
+    "size": 218728608
+   },
+   "0.3.263": {
+    "checksum": "0b35df94c1307004f07b738390bfef8dfca5e9af29aaf6517f305bf086b95b03",
+    "size": 218746016
+   },
+   "0.3.265": {
+    "checksum": "b3d39d4a7e63629e4675a72066eec5e7334225ac1a28432e6f4325b72782631d",
+    "size": 218972320
+   },
+   "0.3.266": {
+    "checksum": "d2c5f7b3b6a12819097ceb6efbce2a390157166003fcaee32dbde0e6d7b45ef7",
+    "size": 218971808
+   },
+   "0.3.267": {
+    "checksum": "23dde2a47cf1d7d9c4a2d96d21fa80ea9bfc872dfde0ee06e9982d2908603350",
+    "size": 220051616
+   },
+   "0.3.268": {
+    "checksum": "1e472bcfd49449e73ef76698c87f6583055aeb88dc41ca190a9c12c6791b5eea",
+    "size": 221637792
+   },
+   "0.3.269": {
+    "checksum": "97164b206e46eecde26fbe8f3993e2fd015e4f53fa90b26b53a8edcb8bc875a9",
+    "size": 222719136
+   },
+   "0.3.270": {
+    "checksum": "fd7f35ec7761195ab5ba4eff423e48a78a7849e78f60d93ec31256cdb1a9ec7e",
+    "size": 227051168
+   }
+  }
+ },
+ "host_observations": {
+  "node": "22.23.2",
+  "node_source": "/Users/tom/.local/bin/node (`node --version`)",
+  "claude_code": "2.1.258",
+  "claude_code_note": "installed host Claude identifies only itself; it is not the bundled native target and no host-native crossing is claimed"
+ },
+ "no_prompt": true,
+ "no_live_session": true,
+ "no_login": true,
+ "no_install": true,
+ "nothing_executed": true,
+ "identity_decision": "rebind the exact QualifiedOnly package point 0.3.259 -> 0.3.270 and the coupled native point 2.1.259 -> 2.1.270; keep behavior revision, wire, node, and sidecar source-tag axes unchanged. Research 301 live registered-tool evidence stays bound to 0.3.259/2.1.259 and does not transfer; the newer compiled tuple projects registered_tools/consumer_tool_exchange unqualified until a separately authorized live requalification runs."
+}

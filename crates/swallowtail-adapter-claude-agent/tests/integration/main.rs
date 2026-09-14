@@ -45,6 +45,8 @@ mod claude_agent_acp_0_76_identity;
 mod claude_agent_acp_identity;
 #[path = "../claude_agent_sdk_0_3_259_identity.rs"]
 mod claude_agent_sdk_0_3_259_identity;
+#[path = "../claude_agent_sdk_0_3_270_identity.rs"]
+mod claude_agent_sdk_0_3_270_identity;
 #[path = "../claude_agent_sdk_identity.rs"]
 mod claude_agent_sdk_identity;
 #[path = "../claude_agent_sdk_mcp_status_rows.rs"]

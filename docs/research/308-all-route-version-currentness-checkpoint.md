@@ -99,8 +99,10 @@ Every task rechecks official latest and includes all newly published hops.
   authority.
 - Oh My Pi `18.x` is a major-line mapping investigation, not an inferred range
   extension.
-- Grok catalogue may run only the existing prompt-free, provider-suppressed
-  metadata operation after its provider-free gate passes; no inference turn.
+- Grok catalogue may run only the existing prompt-free authenticated
+  non-inference metadata operation after its provider-free gate passes. Auth
+  refresh or bounded catalogue metadata traffic is allowed; provider
+  suppression is not an acceptance gate. No inference turn.
 - No task grants release, tag, publication, host update, or consumer mutation.
 
 ## Sources

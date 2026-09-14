@@ -26,11 +26,14 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: the Grok Build catalogue is the eighth family of Tom's
-authorized Research 308 campaign. The installed build and the official npm
-catalogue release must be rechecked, and complete prompt-free identity must be
-frozen before the exact `1.0.25` claim is requalified. Shared matrices and the
-changelog stay serial.
+Active family: the Grok Build catalogue at official and installed exact
+`1.0.30` (g05.067) is the eighth family of Tom's authorized Research 308
+campaign. The worker must reproduce Research 314 identity, freeze the
+catalogue-specific `1.0.25..=1.0.30` path, then run the existing prompt-free
+authenticated non-inference metadata operation. Provider suppression is not
+an acceptance gate under g05.053. The catalogue remains exact QualifiedOnly
+and independent of the Grok ACP window. Shared matrices and the changelog stay
+serial.
 
 Completed campaign family: Claude Agent SDK official npm `0.3.270`, carrying
 native Claude `2.1.270` (g05.065), is the seventh family of Tom's authorized

@@ -26,12 +26,20 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Ollama official `0.34.0` (g05.063) is the fifth family of Tom's
-authorized Research 308 campaign. The host client reports `0.33.3`; published
-stable hops after the `0.32.15` ceiling are `0.33.0`, `0.33.1`, `0.33.2`,
-`0.33.3`, and `0.34.0`. The worker must recheck official latest and freeze the
-complete tagged-source identity before changing the attached-runtime claim.
-Shared matrices and the changelog stay serial.
+Active family: Grok Build ACP is the sixth family of Tom's authorized
+Research 308 campaign. The worker must recheck official latest and freeze
+identity before changing the ACP claim, keeping the catalogue axis on its
+separate evidence. Shared matrices and the changelog stay serial.
+
+Completed campaign family: Ollama official `0.34.0` (g05.063) is the fifth
+family of Tom's authorized Research 308 campaign. Research 313 froze all
+five published hops after the prior `0.32.15` ceiling with host client
+`0.33.3` observed. The compatible-extension-with-stop claim qualifies
+`0.33.0` through `0.33.2`; `0.33.3` and `0.34.0` stay permitted
+`UnverifiedNewer` on the named strict-decoder cached-count reason with a
+decoder-tolerance follow-up, and historical exclusions, claim identity,
+behavior revision, and `AllowUnverified` stay. The next family is Grok
+Build ACP.
 
 Completed campaign family: Cursor Agent official `2026.09.10-fd3934a`
 (g05.062) is the fourth family of Tom's authorized Research 308 campaign.
@@ -41,7 +49,7 @@ compatible-extension claim now qualifies catalogue, ACP, and headless through
 `2026.09.10-fd3934a`; calendar dates between the seven exact points stay
 incompatible, exact feature-specific sets stay on their probed points, and
 historical milestones, claim identities, and `AllowUnverified` stay. The
-next family is Ollama.
+campaign continued serially with Ollama.
 
 Completed campaign family: Codex official npm and GitHub release `0.154.0`
 (g05.061) is the third family of Tom's authorized Research 308 campaign.

@@ -12,10 +12,17 @@ fn exact_version_codec_separates_qualified_unverified_and_incompatible_points() 
         assert_eq!(binding.version().as_str(), version);
     }
     let newer = parse_version(&response(200, fixture_bytes!("version-newer.json")))
-        .expect("stable newer version is preserved for an unverified attempt");
+        .expect("stable newer version is preserved for an attempt");
     assert_eq!(newer.version().as_str(), "0.32.16");
     assert!(matches!(
         crate::selection::ollama_runtime_claim().assess(newer.version()),
+        swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == swallowtail_core::InterfaceSupportStatus::Maintained
+    ));
+    let above = parse_version(&response(200, br#"{"version":"0.34.1"}"#))
+        .expect("first unpublished version past official is preserved");
+    assert!(matches!(
+        crate::selection::ollama_runtime_claim().assess(above.version()),
         swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     for body in [

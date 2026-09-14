@@ -90,12 +90,30 @@ unmanaged.
 
 ## Acceptance
 
-- [ ] official identity and every published stable are reproducible
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes production claim edits
-- [ ] the maintained segment and historical exclusions remain truthful
-- [ ] attached-runtime ownership and exact feature boundaries survive
-- [ ] official latest is rechecked at both boundaries
+- [x] official identity and every published stable are reproducible
+- [x] every changed selected input is classified
+- [x] identity evidence precedes production claim edits
+- [x] the maintained segment and historical exclusions remain truthful
+- [x] attached-runtime ownership and exact feature boundaries survive
+- [x] official latest is rechecked at both boundaries
+
+## Result
+
+Research 313 froze the official tag/commit/tree and selected-file identities
+for all five published hops after `0.32.15` (`0.33.0`, `0.33.1`, `0.33.2`,
+`0.33.3`, `0.34.0`) with host client `0.33.3` observed and no runtime
+started. The eight selected structs are byte-identical through `0.34.0` and
+routes through `0.33.2`; the only in-range types delta is the unselected
+experimental model-recommendation mappings surface. The compatible-extension-
+with-stop claim qualifies `0.33.0` through `0.33.2`, keeps the baseline,
+claim identity, behavior revision, historical exclusions, decoder specimen,
+and `AllowUnverified`, and leaves `0.33.3` and `0.34.0` visibly unverified
+on the named strict-decoder stop: `0.33.3` plumbs additive optional
+`prompt_eval_cached_count` into selected `/api/chat` NDJSON records and the
+`ollama.native-text-v1` chat decoder fail-closes on that unmapped key, proved
+by the frozen counterexample record with a decoder-tolerance follow-up named.
+No provider operation or host mutation occurred. Validation is named in the
+handoff; PR review remains queue-owned.
 
 ## Next Task
 

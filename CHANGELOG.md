@@ -6,6 +6,17 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
+- raise the Ollama attached-runtime qualified ceiling through official
+  `0.33.2`: Research 313 freezes all five published hops after `0.32.15`
+  with tag/commit/tree and selected-file hashes and classifies the eight
+  selected structs as byte-identical through `0.34.0` with routes identical
+  through `0.33.2`. Qualify `0.33.0`, `0.33.1`, and `0.33.2` with no
+  inferred gap, keep the baseline, claim identity, behavior revision,
+  historical exclusions, decoder specimen, and `AllowUnverified`, and leave
+  `0.33.3` and `0.34.0` visibly unverified: the strict native decoder
+  fail-closes on the additive `0.33.3` `prompt_eval_cached_count` metrics
+  key, with a decoder-tolerance follow-up named. No provider operation or
+  host mutation occurred.
 - raise the Cursor Agent catalogue, ACP, and headless qualified ceiling
   through official `2026.09.10-fd3934a`: Research 312 freezes all three
   published hops after `2026.08.11-e8db854` with a complete tree inventory

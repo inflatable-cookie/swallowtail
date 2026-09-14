@@ -34,9 +34,9 @@ fn exact_artifact_and_protocol_revisions_are_bound_together() {
 fn protocol_never_ingests_run_end_next_state() {
     let protocol: Value = serde_json::from_str(PROTOCOL).expect("protocol fixture parses");
     assert!(
-        protocol["known_event_types"]
+        protocol["selected_event_types"]
             .as_array()
-            .expect("known event types")
+            .expect("selected event types")
             .iter()
             .any(|value| value == "run_end")
     );

@@ -26,13 +26,17 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Command Code official npm `1.54.0` (g05.068) is the ninth
-family of Tom's authorized Research 308 campaign. Installed `1.15.1` remains
-the exact prior point; 67 published stable successors require one automated
-all-hop shipped-tree ledger. The worker must preserve QualifiedOnly, make one
-exact-point decision, and keep Research 116/118 live evidence bound to
-`1.15.1` unless matching evidence exists. Shared matrices and the changelog
-stay serial.
+Completed campaign family: Command Code official npm `1.54.0` (g05.068) is the
+ninth family of Tom's authorized Research 308 campaign. Research 317 froze the
+installed `1.15.1` baseline and all 67 published stable successors with a
+complete shipped-tree ledger: no removals, eight additive bundled references,
+and a byte-identical entrypoint; selected invocation, AgentEvent, result,
+usage, failure, and local lifecycle surfaces remain compatible. The exact
+`QualifiedOnly` point advanced to `1.54.0` with the
+`command-code.agent-event-ndjson-v1` behavior revision unchanged. Research 116
+and 118 live evidence stays bound to `1.15.1`; authenticated completion/tool/
+usage/credit and private continuation are gated pending a separately
+authorized exact-`1.54.0` live requalification. The next family is Qoder.
 
 Completed campaign family: the Grok Build catalogue at official and installed
 exact `1.0.30` (g05.067) is the eighth family of Tom's authorized Research

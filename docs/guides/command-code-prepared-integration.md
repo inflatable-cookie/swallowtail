@@ -10,11 +10,18 @@ This package is additive unreleased source after `v0.3.1`. Consumers must pin
 an explicitly reviewed commit containing it. Immutable `v0.3.1` and earlier
 tags do not contain the package or route.
 
+Research 317 requalified the exact npm point to `1.54.0` from the complete
+official stable chain. The provider-free selected-surface evidence transfers;
+Research 116's authenticated completion/tool/usage/credit observations and
+Research 118's two-turn private continuation remain exact-`1.15.1` evidence.
+They are not `1.54.0` live acceptance and require a separately authorized
+requalification.
+
 ## Selected Boundary
 
 The route selects:
 
-- exact npm release `1.15.1` on axis `command-code.npm`
+- exact npm release `1.54.0` on axis `command-code.npm`
 - unambiguous executable basename `command-code`
 - one explicit model id
 - one read-only filesystem working resource
@@ -65,7 +72,7 @@ script alone fails closed: ambient `PATH` is cleared, so `env node` cannot run.
 Construct `CommandCodePreparationProbe` with a request ID, scope, deadline, and
 `DiscoveryCancellation`. Then call `prepare_command_code_headless`.
 
-Preparation runs only `--version`. It requires the exact line `1.15.1`, binds
+Preparation runs only `--version`. It requires the exact line `1.54.0`, binds
 the resulting compatibility observation, and returns
 `CommandCodePreparedIntegration`. It sends no prompt and does not test account
 credits. A wrong axis, wrong version, wrong host, unavailable discovery result,

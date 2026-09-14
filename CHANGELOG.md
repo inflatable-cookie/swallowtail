@@ -6,6 +6,19 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
+- advance the Command Code exact point from `1.15.1` to official npm
+  `1.54.0`: Research 317 freezes all 67 published stable successors with a
+  complete package-tree inventory, no removals, eight additive bundled
+  references, a byte-identical `dist/index.mjs`, and all selected invocation,
+  AgentEvent, result, usage, failure, stdin, and local lifecycle inputs
+  classified without executing downloaded artifacts. Keep the
+  `command-code.headless-window-1` claim, `command-code.agent-event-ndjson-v1`
+  behavior revision, exact one-point `QualifiedOnly` posture, private exact
+  `--resume` boundary, and no public catalogue/export/Provider API or write
+  authority. Research 116 and 118 remain bound to `1.15.1`: authenticated
+  completion/tool/usage/credit and two-turn private continuation do not migrate
+  and require a separately authorized live `1.54.0` requalification. No
+  provider operation, host mutation, or downloaded-artifact execution occurred.
 - advance the Grok Build catalogue exact point from `1.0.25` to official and
   installed `1.0.30`: Research 316 reproduces the Research 314 platform
   tarball, brotli, and decompressed executable digests for `1.0.25` and every

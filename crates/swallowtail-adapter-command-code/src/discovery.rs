@@ -53,25 +53,25 @@ mod tests {
     #[test]
     fn parser_requires_the_exact_release_line_and_tolerates_one_trailing_newline() {
         assert_eq!(
-            parse_version(b"1.15.1\n")
+            parse_version(b"1.54.0\n")
                 .expect("exact version parses")
                 .version()
                 .as_str(),
-            "1.15.1"
+            "1.54.0"
         );
         assert_eq!(
-            parse_version(b"1.15.1")
+            parse_version(b"1.54.0")
                 .expect("exact version without newline parses")
                 .version()
                 .as_str(),
-            "1.15.1"
+            "1.54.0"
         );
         for rejected in [
-            b"1.15.2\n".as_slice(),
-            b"command-code 1.15.1\n".as_slice(),
-            b"1.15.1 \n".as_slice(),
-            b"1.15.1\n\n".as_slice(),
-            b" 1.15.1\n".as_slice(),
+            b"1.54.1\n".as_slice(),
+            b"command-code 1.54.0\n".as_slice(),
+            b"1.54.0 \n".as_slice(),
+            b"1.54.0\n\n".as_slice(),
+            b" 1.54.0\n".as_slice(),
             b"".as_slice(),
         ] {
             assert!(parse_version(rejected).is_none());

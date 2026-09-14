@@ -102,30 +102,22 @@ fn wrapper_and_platform_inventories_are_exact() {
     let hashes = &inventory["hashes"];
     assert_eq!(
         hashes["darwin-arm64-cli-0.154.0"],
-        serde_json::json!(
-            "4f85982624b3898c8991cb80c0981b2aa71070e3537046c9a95950318a95afcc"
-        ),
+        serde_json::json!("4f85982624b3898c8991cb80c0981b2aa71070e3537046c9a95950318a95afcc"),
         "official ceiling binary digest"
     );
     assert_eq!(
         hashes["linux-x64-cli-0.154.0"],
-        serde_json::json!(
-            "3188814c35471432d4123203e0eb38e5bddc60226e3d7ddf0e59e649ea140022"
-        ),
+        serde_json::json!("3188814c35471432d4123203e0eb38e5bddc60226e3d7ddf0e59e649ea140022"),
         "official ceiling binary digest"
     );
     assert_eq!(
         hashes["darwin-arm64-cli-0.153.3"],
-        serde_json::json!(
-            "0e1f892695844ad0798dab8895955846450a9e7663476ebf24615814dd377216"
-        ),
+        serde_json::json!("0e1f892695844ad0798dab8895955846450a9e7663476ebf24615814dd377216"),
         "host binary digest equals the frozen host record"
     );
     assert_eq!(
         hashes["darwin-arm64-cli-0.152.1"],
-        serde_json::json!(
-            "8194ea3181f330e63023b234b0b231855e5874e0331c5ef7cbc490591497a7bf"
-        ),
+        serde_json::json!("8194ea3181f330e63023b234b0b231855e5874e0331c5ef7cbc490591497a7bf"),
         "prior ceiling digest reproduces Research 275"
     );
 }

@@ -1,5 +1,7 @@
 #[test]
 fn exact_versions_advertise_and_prepare_thread_catalogue_only_inside_the_corpus() {
+    // Newly interior unpublished 0.152.2 fails preparation outright; its
+    // rejection is pinned by the prepared compatibility and discovery suites.
     for (version, expected) in [
         ("0.104.0", false),
         ("0.105.0", true),
@@ -15,7 +17,13 @@ fn exact_versions_advertise_and_prepare_thread_catalogue_only_inside_the_corpus(
         ("0.151.0", true),
         ("0.152.0", true),
         ("0.152.1", true),
-        ("0.152.2", false),
+        ("0.153.0", true),
+        ("0.153.1", true),
+        ("0.153.2", true),
+        ("0.153.3", true),
+        ("0.153.4", true),
+        ("0.154.0", true),
+        ("0.154.1", false),
     ] {
         let recording = RecordingHostServices::default();
         let prepared_app = prepared(CodexPreparedDriver::AppServer, version, &recording, true);

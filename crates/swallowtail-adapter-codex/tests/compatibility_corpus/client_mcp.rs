@@ -66,6 +66,7 @@ fn frozen_app_server_corpus_has_no_client_mcp_declaration_surface() {
         json(include_str!("../fixtures/codex-cli-0.151.0/protocol.json")),
         json(include_str!("../fixtures/codex-cli-0.152.0/protocol.json")),
         json(include_str!("../fixtures/codex-cli-0.152.1/protocol.json")),
+        json(include_str!("../fixtures/codex-cli-0.154.0/protocol.json")),
     ] {
         let methods = strings(&protocol["schema"]["methods_present"]);
         refute_client_mcp_names(&methods, "identity protocol method");

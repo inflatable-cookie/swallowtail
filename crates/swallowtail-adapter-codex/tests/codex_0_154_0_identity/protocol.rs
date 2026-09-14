@@ -89,20 +89,60 @@ fn byte_identical_mapped_sources_hold_across_all_seven_tags() {
     assert_exact_string_set(&source["mapped_feeding_changed_files"], &[]);
     let byte_identical = &source["byte_identical_mapped_sources"];
     for (path, sha) in [
-        ("codex-rs/exec/src/exec_events.rs", "30df7f176a02c5283405a70fac2d5ef9acdcb66e"),
-        ("codex-rs/exec/src/event_processor_with_jsonl_output.rs", "488cbc52e9ca31cea1203fb8ba923af50e2b39df"),
-        ("codex-rs/app-server-protocol/schema/json/v1/InitializeParams.json", "7acc76386c6cdeb534160fc9854e79495f199841"),
-        ("codex-rs/app-server-protocol/schema/json/v1/InitializeResponse.json", "1de65f82f4df9fa810fbda3ff199eca49430a29f"),
-        ("codex-rs/app-server-protocol/schema/json/v2/ModelListParams.json", "11a3476240ca9dc59a3478a2a87530764d903878"),
-        ("codex-rs/app-server-protocol/schema/json/v2/ThreadArchiveParams.json", "49322b60a45ff90c43cf6119ec3a0346985e9ea1"),
-        ("codex-rs/app-server-protocol/schema/json/v2/ThreadDeleteParams.json", "1711e11a2f3ba6e0b68520873b69099b340dce0a"),
-        ("codex-rs/app-server-protocol/schema/json/v2/ThreadReadParams.json", "920e6c346d6b6fca1773e7ea4b68c69dee46dec1"),
-        ("codex-rs/app-server-protocol/schema/json/v2/ThreadStartParams.json", "8bf5ae8bef72a0769bc1b9f66f7ce4cc0148dcb7"),
-        ("codex-rs/app-server-protocol/schema/json/v2/TurnInterruptParams.json", "9181428a10e17186272d2cdd74fc2c4f07c76504"),
-        ("codex-rs/app-server-protocol/schema/json/v2/TurnInterruptResponse.json", "5d8a0f9ce22e0387218fd390c362de6a61247b8c"),
-        ("codex-rs/app-server-protocol/schema/json/v2/TurnStartParams.json", "2ba2e1f4830ad3639715e678e70df9640b7ff405"),
+        (
+            "codex-rs/exec/src/exec_events.rs",
+            "30df7f176a02c5283405a70fac2d5ef9acdcb66e",
+        ),
+        (
+            "codex-rs/exec/src/event_processor_with_jsonl_output.rs",
+            "488cbc52e9ca31cea1203fb8ba923af50e2b39df",
+        ),
+        (
+            "codex-rs/app-server-protocol/schema/json/v1/InitializeParams.json",
+            "7acc76386c6cdeb534160fc9854e79495f199841",
+        ),
+        (
+            "codex-rs/app-server-protocol/schema/json/v1/InitializeResponse.json",
+            "1de65f82f4df9fa810fbda3ff199eca49430a29f",
+        ),
+        (
+            "codex-rs/app-server-protocol/schema/json/v2/ModelListParams.json",
+            "11a3476240ca9dc59a3478a2a87530764d903878",
+        ),
+        (
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadArchiveParams.json",
+            "49322b60a45ff90c43cf6119ec3a0346985e9ea1",
+        ),
+        (
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadDeleteParams.json",
+            "1711e11a2f3ba6e0b68520873b69099b340dce0a",
+        ),
+        (
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadReadParams.json",
+            "920e6c346d6b6fca1773e7ea4b68c69dee46dec1",
+        ),
+        (
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadStartParams.json",
+            "8bf5ae8bef72a0769bc1b9f66f7ce4cc0148dcb7",
+        ),
+        (
+            "codex-rs/app-server-protocol/schema/json/v2/TurnInterruptParams.json",
+            "9181428a10e17186272d2cdd74fc2c4f07c76504",
+        ),
+        (
+            "codex-rs/app-server-protocol/schema/json/v2/TurnInterruptResponse.json",
+            "5d8a0f9ce22e0387218fd390c362de6a61247b8c",
+        ),
+        (
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartParams.json",
+            "2ba2e1f4830ad3639715e678e70df9640b7ff405",
+        ),
     ] {
-        assert_eq!(byte_identical[path], serde_json::json!(sha), "{path} blob SHA");
+        assert_eq!(
+            byte_identical[path],
+            serde_json::json!(sha),
+            "{path} blob SHA"
+        );
     }
     let bounded = source["bounded_feeding_changes"]
         .as_array()

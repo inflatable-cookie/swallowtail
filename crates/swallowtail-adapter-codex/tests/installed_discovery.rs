@@ -154,8 +154,20 @@ fn local_and_remote_authoritative_hosts_execute_their_own_probe() {
         (ExecutionTopologyFixture::remote_authoritative(), "0.152.0"),
         (ExecutionTopologyFixture::local(), "0.152.1"),
         (ExecutionTopologyFixture::remote_authoritative(), "0.152.1"),
-        (ExecutionTopologyFixture::local(), "0.152.2"),
-        (ExecutionTopologyFixture::remote_authoritative(), "0.152.2"),
+        (ExecutionTopologyFixture::local(), "0.153.0"),
+        (ExecutionTopologyFixture::remote_authoritative(), "0.153.0"),
+        (ExecutionTopologyFixture::local(), "0.153.1"),
+        (ExecutionTopologyFixture::remote_authoritative(), "0.153.1"),
+        (ExecutionTopologyFixture::local(), "0.153.2"),
+        (ExecutionTopologyFixture::remote_authoritative(), "0.153.2"),
+        (ExecutionTopologyFixture::local(), "0.153.3"),
+        (ExecutionTopologyFixture::remote_authoritative(), "0.153.3"),
+        (ExecutionTopologyFixture::local(), "0.153.4"),
+        (ExecutionTopologyFixture::remote_authoritative(), "0.153.4"),
+        (ExecutionTopologyFixture::local(), "0.154.0"),
+        (ExecutionTopologyFixture::remote_authoritative(), "0.154.0"),
+        (ExecutionTopologyFixture::local(), "0.154.1"),
+        (ExecutionTopologyFixture::remote_authoritative(), "0.154.1"),
     ] {
         let (process, state) = FakeProcessService::completed(&format!("codex-cli {version}\n"));
         let services = host_services_for(topology.execution_host_id().clone(), process)
@@ -179,14 +191,14 @@ fn local_and_remote_authoritative_hosts_execute_their_own_probe() {
             topology.execution_host_id()
         );
         let observation = outcome.installed_executable_observation().unwrap();
-        if version == "0.152.2" {
+        if version == "0.154.1" {
             let InstalledExecutableCompatibility::UnverifiedNewer(unverified) =
                 observation.compatibility()
             else {
                 panic!("newer version must remain unverified");
             };
             assert_eq!(unverified.version().as_str(), version);
-            assert_eq!(unverified.latest_qualified().as_str(), "0.152.1");
+            assert_eq!(unverified.latest_qualified().as_str(), "0.154.0");
         } else {
             assert!(observation.is_qualified());
         }
@@ -196,6 +208,19 @@ fn local_and_remote_authoritative_hosts_execute_their_own_probe() {
         );
         assert!(state.waited());
     }
+}
+
+#[test]
+fn newly_interior_gap_0_152_2_discovers_incompatible() {
+    let (process, _) = FakeProcessService::completed("codex-cli 0.152.2\n");
+    let outcome =
+        block_on(exec_driver().discover_installed_executable(
+            request(DiscoveryCancellation::new()),
+            services(process),
+        ))
+        .expect("probe completes");
+    assert_eq!(outcome.status(), DiscoveryStatus::Incompatible);
+    assert!(outcome.installed_executable_observation().is_some());
 }
 
 enum Driver {

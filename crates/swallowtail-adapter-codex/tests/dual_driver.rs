@@ -147,8 +147,17 @@ fn selected_profiles_keep_identical_common_assertions() {
 }
 
 #[test]
-fn both_codex_transports_keep_newer_execution_outside_qualified_support() {
-    let version = binding("0.152.2");
+fn both_codex_transports_keep_gap_and_newer_execution_outside_qualified_support() {
+    let gap = binding("0.152.2");
+    assert_eq!(
+        codex_exec_claim().assess(gap.version()),
+        swallowtail_core::InterfaceCompatibilityAssessment::Incompatible
+    );
+    assert_eq!(
+        codex_app_server_claim().assess(gap.version()),
+        swallowtail_core::InterfaceCompatibilityAssessment::Incompatible
+    );
+    let version = binding("0.154.1");
     assert_unverified_newer_execution(&codex_exec_claim(), version.version());
     assert_unverified_newer_execution(&codex_app_server_claim(), version.version());
 }

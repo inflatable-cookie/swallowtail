@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-14 Codex 0.154.0 Claim](./2026-09-14-codex-0-154-0-claim.md) — g05.061 raised `codex.cli` exec and app-server through official `0.154.0`; qualified all six published hops, pinned newly interior `0.152.2` incompatible, synthetic `0.154.1` `UnverifiedNewer`, and every feature-specific exact set unchanged
 - [2026-09-14 Codex 0.154.0 Identity](./2026-09-14-codex-0-154-0-identity.md) — Research 311 froze all six published hops from qualified `0.152.1` to official `0.154.0` with complete wrapper/platform/source-tree inventories; exec wire and selected schema params byte-identical or additive-only with bounded feeding deltas; compatible extension named; production claims unchanged
 - [2026-09-14 Qwen Code 0.23.3 Claim](./2026-09-14-qwen-code-0-23-3-claim.md) — g05.060 raised `qwen-code.package` through official `0.23.3`; qualified all four published `0.23.x` hops, kept the exact Plan set bounded at `0.22.3`, exact `0.21.15` reasoning/budgets, historical gaps, and `AllowUnverified`; no provider operation or host mutation
 - [2026-09-14 Qwen Code 0.23.3 Identity](./2026-09-14-qwen-code-0-23-3-identity.md) — Research 310 froze complete npm package inventories and direct family release/tag identities after `0.22.3`; selected surfaces remained compatible and all changed adjacent internals stayed unmapped

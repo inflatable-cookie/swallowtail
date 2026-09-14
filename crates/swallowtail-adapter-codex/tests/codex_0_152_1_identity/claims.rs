@@ -3,9 +3,12 @@ use swallowtail_adapter_codex::{codex_app_server_claim, codex_exec_claim};
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus};
 
 #[test]
-fn production_exec_claim_admits_0_152_1_as_the_maintained_ceiling() {
+fn production_exec_claim_admits_0_154_0_as_the_maintained_ceiling() {
     let exec = codex_exec_claim();
-    for point in ["0.150.1", "0.152.0", "0.152.1"] {
+    for point in [
+        "0.150.1", "0.152.0", "0.152.1", "0.153.0", "0.153.1", "0.153.2", "0.153.3", "0.153.4",
+        "0.154.0",
+    ] {
         let qualified = exec.assess(&version(point));
         let InterfaceCompatibilityAssessment::Qualified(matched) = qualified else {
             panic!("{point} must be qualified after the claim card");
@@ -14,16 +17,18 @@ fn production_exec_claim_admits_0_152_1_as_the_maintained_ceiling() {
         assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-        exec.assess(&version("0.152.2"))
+        exec.assess(&version("0.154.1"))
     else {
-        panic!("0.152.2 must remain unverified newer after the claim card");
+        panic!("0.154.1 must remain unverified newer after the claim card");
     };
-    assert_eq!(unverified.latest_qualified().as_str(), "0.152.1");
+    assert_eq!(unverified.latest_qualified().as_str(), "0.154.0");
     assert_eq!(
         unverified.behavior_revision().as_str(),
         "codex.exec.jsonl-v1"
     );
-    for gap in ["0.149.2", "0.150.2", "0.151.1", "0.108.0", "0.109.0"] {
+    for gap in [
+        "0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.108.0", "0.109.0",
+    ] {
         assert_eq!(
             exec.assess(&version(gap)),
             InterfaceCompatibilityAssessment::Incompatible,
@@ -33,9 +38,12 @@ fn production_exec_claim_admits_0_152_1_as_the_maintained_ceiling() {
 }
 
 #[test]
-fn production_app_server_claim_admits_0_152_1_as_the_maintained_ceiling() {
+fn production_app_server_claim_admits_0_154_0_as_the_maintained_ceiling() {
     let app_server = codex_app_server_claim();
-    for point in ["0.150.1", "0.152.0", "0.152.1"] {
+    for point in [
+        "0.150.1", "0.152.0", "0.152.1", "0.153.0", "0.153.1", "0.153.2", "0.153.3", "0.153.4",
+        "0.154.0",
+    ] {
         let qualified = app_server.assess(&version(point));
         let InterfaceCompatibilityAssessment::Qualified(matched) = qualified else {
             panic!("{point} must be qualified after the claim card");
@@ -47,16 +55,16 @@ fn production_app_server_claim_admits_0_152_1_as_the_maintained_ceiling() {
         assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-        app_server.assess(&version("0.152.2"))
+        app_server.assess(&version("0.154.1"))
     else {
-        panic!("0.152.2 must remain unverified newer after the claim card");
+        panic!("0.154.1 must remain unverified newer after the claim card");
     };
-    assert_eq!(unverified.latest_qualified().as_str(), "0.152.1");
+    assert_eq!(unverified.latest_qualified().as_str(), "0.154.0");
     assert_eq!(
         unverified.behavior_revision().as_str(),
         "codex.app-server.v2.workspace-roots"
     );
-    for gap in ["0.149.2", "0.150.2", "0.151.1"] {
+    for gap in ["0.149.2", "0.150.2", "0.151.1", "0.152.2"] {
         assert_eq!(
             app_server.assess(&version(gap)),
             InterfaceCompatibilityAssessment::Incompatible,

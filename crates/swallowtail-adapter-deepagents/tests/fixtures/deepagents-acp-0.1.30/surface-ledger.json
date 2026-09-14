@@ -1,0 +1,258 @@
+{
+  "axis": "deepagents-acp.package",
+  "route": "deepagents.acp",
+  "observed_at": "2026-09-14",
+  "npm_packages": {
+    "0.1.25": {
+      "published": "2026-08-14T16:43:46.024Z",
+      "integrity": "sha512-5S6Rpd74vV3YKVxAEqQkXKek+y1ChTpL0D2xf+WLaAYneJQZ9haZ4lPgjPy2VvszqErVsSr+T5tq8vdjuAWShQ==",
+      "tarball_sha256": "6a56fa60e985a0681217cd20b1e21c0f7782fb10ebed6728f2865346ba137141",
+      "package_json_sha256": "cddb5563aafc9fc22e67760c2ac906187c69e83d1ed73c36ae13db04c35cdb5e",
+      "cli_js_sha256": "68b7d6cb31d181a399f623a4c6486892bf7d408aec61cac0a3ea9e033baa2319",
+      "index_js_sha256": "401149000c8051d8c425fb249e75c6f3f776a8b3fa1bc48bbc5cdf14504ae5c5",
+      "index_cjs_sha256": "7f555a1619dbcd7a17bc6d60370eb8d6b7ba6f5b063eff02d3ee63ade2d4df4b",
+      "deepagents_dependency": "1.12.4",
+      "agentclientprotocol_sdk_dependency": "^1.1.0"
+    },
+    "0.1.26": {
+      "published": "2026-08-20T03:02:13.870Z",
+      "integrity": "sha512-qGdO3+Ca9wMIgoA74hBQZwxPgpiGpg1pz760zVJRJDb66TcWmzOXeqGsj2JrXolfnXOc4vedBQkH3bvwaDF4FA==",
+      "tarball_sha256": "876f0fe25bfde92548cabe42b5b8647a9f23ddcd55d0caa27c348f0072a46a9e",
+      "package_json_sha256": "403ebcacf91e8ed7115a795d408d18e57d3ea78f0bf41ab446a23adbb0729501",
+      "cli_js_sha256": "68b7d6cb31d181a399f623a4c6486892bf7d408aec61cac0a3ea9e033baa2319",
+      "index_js_sha256": "401149000c8051d8c425fb249e75c6f3f776a8b3fa1bc48bbc5cdf14504ae5c5",
+      "index_cjs_sha256": "7f555a1619dbcd7a17bc6d60370eb8d6b7ba6f5b063eff02d3ee63ade2d4df4b",
+      "deepagents_dependency": "1.13.0",
+      "agentclientprotocol_sdk_dependency": "^1.1.0",
+      "peer_floor_change": "@langchain/langgraph ^1.2.9 -> ^1.4.10; @langchain/langgraph-checkpoint ^1.0.0 -> ^1.1.5"
+    },
+    "0.1.27": {
+      "published": "2026-08-21T20:33:15.517Z",
+      "integrity": "sha512-oOeJIEe8xyE473nj7TbiO4PrRsAcdmDr2Wzs42xqOwc4zG2+J6xse7sDTipr1s3LTlA91/loSiZvP8fl0wNj4A==",
+      "tarball_sha256": "ea953abd732e564146de7f9009c82d6c2a67d3d50e63c5234a5367fc0b355d6e",
+      "package_json_sha256": "30b8c2010da4f41c48fdb28c3535fdeb1919c4263fb56ef1533242d49bc24fde",
+      "cli_js_sha256": "68b7d6cb31d181a399f623a4c6486892bf7d408aec61cac0a3ea9e033baa2319",
+      "index_js_sha256": "401149000c8051d8c425fb249e75c6f3f776a8b3fa1bc48bbc5cdf14504ae5c5",
+      "index_cjs_sha256": "7f555a1619dbcd7a17bc6d60370eb8d6b7ba6f5b063eff02d3ee63ade2d4df4b",
+      "deepagents_dependency": "1.13.1",
+      "agentclientprotocol_sdk_dependency": "^1.1.0"
+    },
+    "0.1.28": {
+      "published": "2026-08-27T19:33:39.584Z",
+      "integrity": "sha512-f+XUaqj9yr89TgMzQhFfYXweX/PK9cOSX7WgStQ0QO/vAcRsr+71vpKCwX0tyhX8Mr7+QeDdMpHXazvvDm/7lA==",
+      "tarball_sha256": "00206a23b2075fdb49ade06001425a9c41371129bb669a76af8937762c902053",
+      "package_json_sha256": "305444ba90aaa58228c8643255639fd024b774082dc1a485c99be3673ea82f76",
+      "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+      "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+      "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+      "deepagents_dependency": "1.13.2",
+      "agentclientprotocol_sdk_dependency": "^1.1.0"
+    },
+    "0.1.29": {
+      "published": "2026-09-03T16:05:59.467Z",
+      "integrity": "sha512-53eOMWiBPWf1AuQp0UF2kQBunZfRxDkkPc1XDnhnKgpJq8FFYbTNpiQcG32+DyrCbuqcRU6XNtplg/GMZBAbrw==",
+      "tarball_sha256": "ed5b44b6efc27f450fb02f80188266f952e360de20bfde81bdea997dee5ef010",
+      "package_json_sha256": "5f22d067b62b6f87252c98585bc73bfe949803efb6209fe88639600386bc5649",
+      "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+      "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+      "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+      "deepagents_dependency": "1.13.3",
+      "agentclientprotocol_sdk_dependency": "^1.1.0"
+    },
+    "0.1.30": {
+      "published": "2026-09-09T17:34:53.193Z",
+      "integrity": "sha512-moNlTkJN7JyowNXETdEaGJenpFtZ45xUO+oJYUYBOuebi4FuB0ChGhq7jblPY/JdnFbtX44Waiqotq/3O1fM7A==",
+      "tarball_sha256": "c9bc8b95d779fc120d0614bbc37f8d6d35361376b19a5c77d0ae4e870823a661",
+      "package_json_sha256": "1f7f4b7af7d87dff92bcd612ca019524aee4be8eb59df373c9397780243311b8",
+      "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+      "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+      "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+      "deepagents_dependency": "1.13.4",
+      "agentclientprotocol_sdk_dependency": "^1.1.0"
+    }
+  },
+  "selected_cli_functions_byte_stable_through_0_1_27": [
+    "normalizeArgs",
+    "parseArgs",
+    "showHelp",
+    "showVersion",
+    "main (spawns DeepAgentsServer with serverName deepagents-acp, no serverVersion, explicit FilesystemBackend backend at workspace root)",
+    "handleInitialize (protocolVersion echo, agentInfo constructor defaults, agentCapabilities, authMethods)",
+    "handleAuthenticate (no-op)",
+    "handleNewSession (generated session id, agentName from config, ignores params.cwd, modes response, available_commands_update)",
+    "handleLoadSession (advertised, unmapped)",
+    "handlePrompt (field prompt, slash-command interception, streamAgentResponse, stopReason end_turn/cancelled, AbortError cancelled)",
+    "handleCancel (aborts the live prompt controller)",
+    "handleSetSessionMode (advertised, unmapped)",
+    "streamAgentResponse (messages extraction, AIMessage/ToolMessage dispatch, todos plan updates, end_turn)",
+    "handleAIMessage (message chunks, thought chunks, tool calls, permission decision branches)",
+    "handleToolMessage (tool_call_update content, error status heuristic)",
+    "requestToolPermission (allow-once/allow-always/reject-once/reject-always options, per-name cache, catch returns allow)",
+    "getToolCallKind and formatToolCallTitle (delete is not a named kind; falls to other)",
+    "handleSlashCommand (plan/agent/ask/clear/status)",
+    "createAgent (createDeepAgent with CLI config; backend config wins)",
+    "createBackend (config.backend branch returns the CLI-provided FilesystemBackend before any client-capability check)"
+  ],
+  "cli_delta_0_1_27_to_0_1_28": {
+    "changed_files": ["dist/cli.js", "dist/cli.js.map", "dist/index.js", "dist/index.js.map", "dist/index.cjs", "dist/index.cjs.map"],
+    "unchanged_selected_files": ["dist/index.d.ts", "dist/index.d.cts"],
+    "sole_change": "ACPFilesystemBackend.read switches its offset/limit slicing to the new normalizeReadPagination helper and returns totalLines/startLine/endLine/nextOffset pagination metadata",
+    "unreachable_on_selected_route": "the CLI main() passes an explicit backend: new FilesystemBackend({rootDir: workspaceRoot}) in the agent config, and createBackend returns config.backend before any client-capability branch, so ACPFilesystemBackend is never constructed for the no-extra-argv child; the selected initialize also advertises host fs false",
+    "classification": "dead selected-route code; wire, lifecycle, authority, permission, failure, resource, and cleanup inputs unchanged"
+  },
+  "runtime_dependencies": {
+    "1.12.4": {
+      "published": "2026-08-14T16:43:46.460Z",
+      "tarball_sha256": "cea1b79d542a9ee695d103d4371b5265b83eac157cbbef8101c431f7062654ec",
+      "package_json_sha256": "c8e0779d4097894f460a0126c1e45e21d4b3bc6a456c8b7d8823c8930f1586ba",
+      "selected_chunk_sha256": "d17461ce79202cb8d3470b98949afeea6adfc7acdb016d2cd11220379fb501aa",
+      "selected_chunk": "dist/langsmith-DRyafCNe.js",
+      "filesystem_backend_chunk_sha256": "4b41210d62eab442cc09897a51a841e705fe6c5712369657d23e5513373c4dd5",
+      "filesystem_backend_chunk": "dist/src-DMHrmLGK.js"
+    },
+    "1.13.0": {
+      "published": "2026-08-20T03:02:14.931Z",
+      "tarball_sha256": "e5e99d838f176f99bab8e7e35969fb183f96eadb070babbd5e82676e1e4f7e19",
+      "package_json_sha256": "7f6b67257714217528a40334f84c50abfa270539ce6091b673973cd931c319bf",
+      "selected_chunk_sha256": "1030b9b3784eab896f95f51eaa47540be9ea401a15e10971181f49cb686150de",
+      "selected_chunk": "dist/langsmith-zm0ILQsV.js",
+      "filesystem_backend_chunk_sha256": "bb88125a45490adfd594b367ea98f0fe6eccdac064ed9c18c8d7ddfc8c433e74",
+      "filesystem_backend_chunk": "dist/src-C9o7b5C6.js"
+    },
+    "1.13.1": {
+      "published": "2026-08-21T20:33:13.561Z",
+      "tarball_sha256": "ea8d29d6d1510ceb4326abd38a66d0f1835c685c848f87940b486e4980db1a1c",
+      "package_json_sha256": "cbbf2ba702505431ee841775a243cb9a6207c9ae0de90cdaf01b8ed16e09748c",
+      "selected_chunk_sha256": "1030b9b3784eab896f95f51eaa47540be9ea401a15e10971181f49cb686150de",
+      "selected_chunk": "dist/langsmith-zm0ILQsV.js (byte-identical to 1.13.0)",
+      "filesystem_backend_chunk_sha256": "bb88125a45490adfd594b367ea98f0fe6eccdac064ed9c18c8d7ddfc8c433e74",
+      "filesystem_backend_chunk": "dist/src-C9o7b5C6.js (byte-identical to 1.13.0)"
+    },
+    "1.13.2": {
+      "published": "2026-08-27T19:33:40.819Z",
+      "tarball_sha256": "5af18e3eb2515318610d61f2d8592bf34089288ebb2392e4e2173a35d29ec727",
+      "package_json_sha256": "4bc6b4b323071a0c075ed453d4fe4e696945ce901b62e334b581ef8d723861b3",
+      "selected_chunk_sha256": "5fb1e90faaca6fc3821b493473c3483c2de304e2009f63704b060a88cc644e0b",
+      "selected_chunk": "dist/langsmith-BBV5JlNW.js",
+      "filesystem_backend_chunk_sha256": "3b7ef1df1327afac277b4c450fefdfc19f0b29402bb653a49015903121700fad",
+      "filesystem_backend_chunk": "dist/src-CKk0apeE.js"
+    },
+    "1.13.3": {
+      "published": "2026-09-03T16:08:08.497Z",
+      "tarball_sha256": "6b2e09c9c7a9e38c999c0f07b9ba88df0664779b07b72a683eccbfc5c8a03eab",
+      "package_json_sha256": "1b627a746b2f6ef10536af9f41afb60f9f65e2dfadaacf3a344a22e34cc183fc",
+      "selected_chunk_sha256": "cbb5389eb73bc8f96a4470ae99dbf762144a6e064d30350e26ab44a86a456f65",
+      "selected_chunk": "dist/langsmith-BYWZnEVh.js",
+      "filesystem_backend_chunk_sha256": "f1aba452f3536df18d945a254c12cc6f13af264c6871f2e37cb365b3c34ceac7",
+      "filesystem_backend_chunk": "dist/src-Blh1ZEYd.js (byte-identical implementation to 1.13.2/1.13.4; import and sourcemap lines only)"
+    },
+    "1.13.4": {
+      "published": "2026-09-09T17:37:07.120Z",
+      "tarball_sha256": "a00d90a3041794cc4f80186b0eaf519f4fdbccea16dc8576771aeb0d8b3c800c",
+      "package_json_sha256": "03d74e6e1c03414ada4c27a942bdb9e94a769cbc699911921b8ca2e1f37c0d6f",
+      "selected_chunk_sha256": "52d0b741683a27a2a08709e7aae290c35e0a7838d050f4647c158baac1672a93",
+      "selected_chunk": "dist/langsmith-BAO_h4J6.js",
+      "filesystem_backend_chunk_sha256": "9709b83d8170cfadfd76791e1c9cb78e927e0d312786f8be967e0bc85f2ba834",
+      "filesystem_backend_chunk": "dist/src-CcY34Ckx.js"
+    }
+  },
+  "per_hop_changed_selected_inputs": {
+    "deepagents-acp_0.1.25..0.1.26": {
+      "cli": "byte-stable (dist digests unchanged)",
+      "package_json": "version and deepagents dep 1.12.4 -> 1.13.0; peer floors rise (@langchain/langgraph ^1.4.10, langgraph-checkpoint ^1.1.5) as install-time ambient ranges",
+      "classification": "dependency-only hop on the package axis; selected wire unchanged; classified with the deepagents 1.12.4..1.13.0 hop below"
+    },
+    "deepagents-acp_0.1.26..0.1.27": {
+      "cli": "byte-stable",
+      "package_json": "version and deepagents dep 1.13.0 -> 1.13.1",
+      "classification": "dependency-only hop; deepagents 1.13.0..1.13.1 implementation chunks are byte-identical (type declarations and sourcemaps only)"
+    },
+    "deepagents-acp_0.1.27..0.1.28": {
+      "cli": "sole CLI body change in the window: ACPFilesystemBackend.read pagination via normalizeReadPagination; unreachable on the selected route because the CLI main passes an explicit FilesystemBackend config backend and the selected client advertises fs false",
+      "package_json": "version and deepagents dep 1.13.1 -> 1.13.2",
+      "classification": "classified with the deepagents 1.13.1..1.13.2 hop below"
+    },
+    "deepagents-acp_0.1.28..0.1.29": {
+      "cli": "byte-stable",
+      "package_json": "version and deepagents dep 1.13.2 -> 1.13.3",
+      "classification": "classified with the deepagents 1.13.2..1.13.3 hop below"
+    },
+    "deepagents-acp_0.1.29..0.1.30": {
+      "cli": "byte-stable",
+      "package_json": "version and deepagents dep 1.13.3 -> 1.13.4",
+      "classification": "classified with the deepagents 1.13.3..1.13.4 hop below"
+    },
+    "deepagents_1.12.4..1.13.0": {
+      "selected_changes": [
+        "new builtin delete tool (recursive file/directory deletion) added to the filesystem toolset; FILESYSTEM_TOOL_NAMES gains delete; createDeleteTool with its own deny-pattern permission check that is inert without configured permission rules",
+        "write_file schema: content no longer defaults to an empty string and is now required (model-facing tool schema)",
+        "profile filesystem-tools selection reworked (harness-profile surface; the CLI passes no profile, default profile unchanged)",
+        "subagent fork-mode machinery and parentSystemPrompt plumbing (unselected: the CLI passes no subagents)",
+        "memory middleware construction hoisted earlier in createDeepAgent and added to forked-subagent stacks (unselected: no subagents; the parent stack order and content are unchanged)",
+        "StateBackend, StoreBackend, ContextHubBackend, CompositeBackend, and sandbox delete/routing changes (unselected: FilesystemBackend only)"
+      ],
+      "wire_classification": "the delete tool surfaces through the unchanged generic tool_call/tool_call_update/permission paths with kind other; the decoder is tool-name agnostic; no ACP wire, lifecycle, authentication, permission-option, failure-mapping, working-resource, process-authority, or session-persistence boundary changed",
+      "authority_note": "the child's local-file authority now includes recursive deletion; the route already records that local FilesystemBackend writes in the child cwd are not a Swallowtail bounded-write claim, and the same ACP-level observe-and-cancel permission flow still gates execution"
+    },
+    "deepagents_1.13.0..1.13.1": {
+      "selected_changes": ["none; dist/langsmith and dist/src implementation chunks are byte-identical, only index.d.ts/index.d.cts/browser d.ts and langsmith sourcemaps moved"],
+      "wire_classification": "no selected surface change"
+    },
+    "deepagents_1.13.1..1.13.2": {
+      "selected_changes": [
+        "normalizeReadPagination helper added and exported (deepagents-acp 0.1.28+ imports it at module load; the exact deepagents pins 1.13.2+ export it, so resolution stays deterministic)",
+        "FilesystemBackend.read normalizes offset/limit, recomputes totalLines, and returns startLine/endLine/nextOffset pagination metadata",
+        "read_file middleware normalizes caller offset/limit, renders a remaining-lines notice footer into the tool-result text when a read is partial, and truncates only at complete source-line boundaries",
+        "tool-exclusion middleware rejects calls to excluded tools (unselected: the exclusion set is empty on the selected route)",
+        "read pagination changes for StateBackend, StoreBackend, ContextHubBackend, and sandbox reads (unselected: FilesystemBackend only)"
+      ],
+      "wire_classification": "read_file tool results may now carry a pagination footer text; ToolMessage content flows to ACP tool_call_update content as opaque text, so the decoder-invisible surface is unchanged in shape; no wire, lifecycle, authority, permission, failure, resource, or cleanup boundary changed"
+    },
+    "deepagents_1.13.2..1.13.3": {
+      "selected_changes": [
+        "subagent fork/isolated machinery: FORKED_CONTEXT_KEY, fork recursion refusal, fork state filtering, mirrored fork task tool, duplicate subagent-name rejection (all unselected: no subagents)",
+        "default subagent spec mode handoff -> isolated and task-tool description wording (model-facing text; the general-purpose-only machinery text is not an ACP surface)",
+        "middleware utility helpers moved within the bundle (no behavior change)"
+      ],
+      "wire_classification": "no selected ACP surface change"
+    },
+    "deepagents_1.13.3..1.13.4": {
+      "selected_changes": [
+        "subagent fork machinery continues (unselected)",
+        "harness-profile-aware subagent middleware resolution and per-subagent profiles (unselected)",
+        "CALL_COUNT_STATE_KEYS exclusion and fork state filtering (unselected)",
+        "task-tool listing line rendering via describeSubagentForTool (model-facing text)"
+      ],
+      "wire_classification": "no selected ACP surface change"
+    }
+  },
+  "classification_invariants": {
+    "argument_parsing": "normalizeArgs/parseArgs byte-identical through 0.1.30; no-extra-argv defaults unchanged (name deepagents, model claude-sonnet-4-5-20250929, workspace process.cwd())",
+    "initialize_shape": "handleInitialize byte-identical; agentInfo.version stays constructor default 0.0.1, not the npm axis",
+    "session_new": "handleNewSession byte-identical; params.cwd ignored; owned child cwd stays the working resource",
+    "prompt_field": "field prompt with text blocks unchanged; content stays a named negative",
+    "stop_reasons": "end_turn and cancelled only; AbortError maps to cancelled",
+    "permission_options": "allow-once/allow-always/reject-once/reject-always byte-identical; failure fallback still returns allow and stays non-Swallowtail policy; allow_always still unselected",
+    "authentication": "host-owned ANTHROPIC_API_KEY/OPENAI_API_KEY in the isolated child env; authenticate stays a no-op; no credential lease",
+    "working_resource_authority": "child cwd at spawn; explicit FilesystemBackend rooted at workspaceRoot; local writes remain outside the Swallowtail bounded-write claim and now also cover recursive deletion",
+    "streaming_updates": "agent_message_chunk/agent_thought_chunk/tool_call/tool_call_update/plan/available_commands_update kinds byte-identical",
+    "deadline": "no ACP deadline surface; host task/process ownership unchanged",
+    "task_ownership": "one owned stdio child per session; unchanged",
+    "cleanup": "cancel in-flight prompt then join or kill the owned child; SIGINT/SIGTERM handlers byte-identical",
+    "session_persistence": "in-process Map plus MemorySaver import byte-identical; not durable across restart; loadSession advertised and unmapped"
+  },
+  "acp_registry_staleness": {
+    "registry_url": "https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json",
+    "registry_version": "1.0.0",
+    "registry_agents": 41,
+    "deepagents_entry_version": "0.1.7",
+    "deepagents_entry_npx_package": "deepagents-acp@0.1.7",
+    "disposition": "discovery-only metadata; never compared to the npm package axis and never inherited by the claim"
+  },
+  "source_digests_0_1_30": {
+    "dist/cli.js": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+    "dist/index.js": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+    "dist/index.cjs": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+    "dist/index.d.ts": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b"
+  }
+}

@@ -56,6 +56,10 @@ name = "grok_1_0_30_identity"
 path = "tests/grok_1_0_30_identity.rs"
 
 [[test]]
+name = "grok_1_0_30_catalogue_identity"
+path = "tests/grok_1_0_30_catalogue_identity.rs"
+
+[[test]]
 name = "live_installed_probe"
 path = "tests/live_installed_probe.rs"
 required-features = ["live-probes"]

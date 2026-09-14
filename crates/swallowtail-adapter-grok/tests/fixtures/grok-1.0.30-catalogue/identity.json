@@ -1,0 +1,319 @@
+{
+  "argv_grammar": {
+    "accepted": [
+      "--no-auto-update",
+      "models"
+    ],
+    "models_subcommand_options": [
+      "--debug",
+      "--debug-file",
+      "-h",
+      "--help",
+      "--leader-socket"
+    ],
+    "observed_on": "installed exact 1.0.30 via --help exits only",
+    "prompt_argument_accepted": false,
+    "root_flag_after_subcommand_error": "unexpected argument '--no-auto-update' found",
+    "root_flag_after_subcommand_rejected": true,
+    "root_flag_before_subcommand_accepted": true
+  },
+  "axis": "grok-build.executable",
+  "catalogue_surface": {
+    "absent_source_fields": "stay absent",
+    "embedded_metadata_role": "supplements matching exact ids only",
+    "literal_counts_identical_across_hops": true,
+    "literals": [
+      {
+        "counts": 4,
+        "literal": "--no-auto-update",
+        "name": "root_flag"
+      },
+      {
+        "counts": 3,
+        "literal": "Default model: ",
+        "name": "format_default_header"
+      },
+      {
+        "counts": 1,
+        "literal": "Available models:",
+        "name": "format_available_header"
+      },
+      {
+        "counts": 158,
+        "literal": "  - ",
+        "name": "format_bullet_other"
+      },
+      {
+        "counts": 3,
+        "literal": "  * ",
+        "name": "format_bullet_default"
+      },
+      {
+        "counts": 5,
+        "literal": " (default)\n",
+        "name": "format_default_suffix"
+      },
+      {
+        "counts": 1,
+        "literal": "You are logged in with ",
+        "name": "auth_logged_in"
+      },
+      {
+        "counts": 1,
+        "literal": "You are using XAI_API_KEY.",
+        "name": "auth_api_key"
+      },
+      {
+        "counts": 1,
+        "literal": "' is using its own API key.",
+        "name": "auth_own_key_suffix"
+      },
+      {
+        "counts": 1,
+        "literal": "You are authenticated via deployment key.",
+        "name": "auth_deployment_key"
+      },
+      {
+        "counts": 1,
+        "literal": "You are not authenticated.",
+        "name": "auth_none"
+      },
+      {
+        "counts": 1,
+        "literal": "xai-grok-pager/src/models.rs",
+        "name": "models_module"
+      },
+      {
+        "counts": 1,
+        "literal": "List available models and exit",
+        "name": "models_help_description"
+      }
+    ],
+    "membership_source": "live listing",
+    "model_document_identical_across_hops": true,
+    "surface_digest": "aa3ad436d5a6c8eb893d1091c02f0cadbdabe9338bce38a4205d9a04768d3e02",
+    "unknown_ids": "pass through with empty metadata"
+  },
+  "channel": {
+    "alpha": "1.0.31",
+    "channel_note": "npm dist-tags expose only current pointers; alpha 1.0.31 is a channel candidate and not the stable target; every plain version at or below latest is a published stable.",
+    "first_unpublished_stable_after_latest": "1.0.32",
+    "latest": "1.0.30",
+    "observed_at": "2026-09-14",
+    "package": "@xai-official/grok",
+    "previous_exact_point": "1.0.25",
+    "published_stables_compared": [
+      "1.0.25",
+      "1.0.26",
+      "1.0.27",
+      "1.0.28",
+      "1.0.29",
+      "1.0.30"
+    ]
+  },
+  "claim_at_observation": {
+    "behavior_revision": "grok-build.catalogue.models-text-v1",
+    "claim_id": "grok-build.catalogue.executable-1-0-25",
+    "exact_point": "1.0.25",
+    "posture": "qualified_only"
+  },
+  "comparison_scope": "platform package bin/grok.br brotli-decompressed for darwin-arm64; downloaded artifacts never executed",
+  "decision": {
+    "behavior_revision_after": "grok-build.catalogue.models-text-v1",
+    "claim_id_after": "grok-build.catalogue.executable-1-0-30",
+    "exact_point_after": "1.0.30",
+    "posture_after": "qualified_only",
+    "reason": "exact argv, authentication preamble, shipped bullet grammar, models module path, and the embedded default-model document are identical across 1.0.25..=1.0.30; the live exact-1.0.30 listing decides acceptance",
+    "segment_shape": "compatible extension of the exact QualifiedOnly catalogue point"
+  },
+  "hops": [
+    {
+      "brotli_sha256": "7d13cf31755d1dc4918a3bd5bd1bed2917fcaa06d965602357759178f375fcb0",
+      "brotli_size": 40481176,
+      "catalogue_literal_counts": {
+        "auth_api_key": 1,
+        "auth_deployment_key": 1,
+        "auth_logged_in": 1,
+        "auth_none": 1,
+        "auth_own_key_suffix": 1,
+        "format_available_header": 1,
+        "format_bullet_default": 3,
+        "format_bullet_other": 158,
+        "format_default_header": 3,
+        "format_default_suffix": 5,
+        "models_help_description": 1,
+        "models_module": 1,
+        "root_flag": 4
+      },
+      "executable_sha256": "9ef4a40ad60c6a5178a65caf39c2a148e6a98d0d2d350b10329dee34d9195d9c",
+      "executable_size": 138080336,
+      "git_head": "f7e67d6988e2727a1c730e285661eca4aa5eb565",
+      "model_document_copies": 2,
+      "model_document_sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+      "model_document_size": 2323,
+      "platform_tarball_sha256": "c1548be1210511909bc74e2f4264feb569166ffcfecf15123fda8ead250e0cc2",
+      "published": "2026-09-09T18:21:45.130Z",
+      "version": "1.0.25"
+    },
+    {
+      "brotli_sha256": "879d6b1bc67624676c67711f3a5d4177b64a1469ac0f0c166e36f8e8c93f9141",
+      "brotli_size": 41294250,
+      "catalogue_literal_counts": {
+        "auth_api_key": 1,
+        "auth_deployment_key": 1,
+        "auth_logged_in": 1,
+        "auth_none": 1,
+        "auth_own_key_suffix": 1,
+        "format_available_header": 1,
+        "format_bullet_default": 3,
+        "format_bullet_other": 158,
+        "format_default_header": 3,
+        "format_default_suffix": 5,
+        "models_help_description": 1,
+        "models_module": 1,
+        "root_flag": 4
+      },
+      "executable_sha256": "081f1d861e99bd738e2939ccc7d447d113f0e05fa253c6489a8918adaaf7d8b2",
+      "executable_size": 141421808,
+      "git_head": "fadad3468632f90c38832f7f597dd3d0e6c793a4",
+      "model_document_copies": 2,
+      "model_document_sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+      "model_document_size": 2323,
+      "platform_tarball_sha256": "f237c01a41f2993fa93a1cef1715ddbea16f571d2f8cc5293a17e2801bcc2964",
+      "published": "2026-09-10T00:44:45.296Z",
+      "version": "1.0.26"
+    },
+    {
+      "brotli_sha256": "9077bfa8ff155bc109bf35f495b61342b4304505a1c6be9eb198ef12544248a2",
+      "brotli_size": 41300597,
+      "catalogue_literal_counts": {
+        "auth_api_key": 1,
+        "auth_deployment_key": 1,
+        "auth_logged_in": 1,
+        "auth_none": 1,
+        "auth_own_key_suffix": 1,
+        "format_available_header": 1,
+        "format_bullet_default": 3,
+        "format_bullet_other": 158,
+        "format_default_header": 3,
+        "format_default_suffix": 5,
+        "models_help_description": 1,
+        "models_module": 1,
+        "root_flag": 4
+      },
+      "executable_sha256": "6e85277b0432c894abcb325d9132bdc88c9715fa3089f65b7589963d5522ec80",
+      "executable_size": 141421536,
+      "git_head": "a538938e5720026f3091318a7fd76c24ba01fcfb",
+      "model_document_copies": 2,
+      "model_document_sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+      "model_document_size": 2323,
+      "platform_tarball_sha256": "6c12734cadf73812a3a40dc10e9f8fda53d22f2f7311d224b87dde7119343e4e",
+      "published": "2026-09-10T03:12:47.582Z",
+      "version": "1.0.27"
+    },
+    {
+      "brotli_sha256": "ba5ad4781216ad0858f60d9d322f754e50614d5f5b0513d65c2d7aa1996afd29",
+      "brotli_size": 41352031,
+      "catalogue_literal_counts": {
+        "auth_api_key": 1,
+        "auth_deployment_key": 1,
+        "auth_logged_in": 1,
+        "auth_none": 1,
+        "auth_own_key_suffix": 1,
+        "format_available_header": 1,
+        "format_bullet_default": 3,
+        "format_bullet_other": 158,
+        "format_default_header": 3,
+        "format_default_suffix": 5,
+        "models_help_description": 1,
+        "models_module": 1,
+        "root_flag": 4
+      },
+      "executable_sha256": "bfaa983f8dd4d300ce8277f52ec38257e42a6105d4df75492f6059a28e55cc5c",
+      "executable_size": 141587632,
+      "git_head": "cae16d2533b63d532ced411602293df06957d570",
+      "model_document_copies": 2,
+      "model_document_sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+      "model_document_size": 2323,
+      "platform_tarball_sha256": "0782e98799dc03049aac7513fc70261dc2c82d0b237e1cc47ebcf76565650e4d",
+      "published": "2026-09-10T20:26:22.991Z",
+      "version": "1.0.28"
+    },
+    {
+      "brotli_sha256": "a6729424609ea58e6317f9ff046b6203c9530973ecc45e4164468178e4d90da6",
+      "brotli_size": 41327540,
+      "catalogue_literal_counts": {
+        "auth_api_key": 1,
+        "auth_deployment_key": 1,
+        "auth_logged_in": 1,
+        "auth_none": 1,
+        "auth_own_key_suffix": 1,
+        "format_available_header": 1,
+        "format_bullet_default": 3,
+        "format_bullet_other": 158,
+        "format_default_header": 3,
+        "format_default_suffix": 5,
+        "models_help_description": 1,
+        "models_module": 1,
+        "root_flag": 4
+      },
+      "executable_sha256": "2b6b44a2e7e72348c4fc65f3c427b1c47fe95cbcf9f43f204f826d382b7d85db",
+      "executable_size": 141553456,
+      "git_head": "4c83f16c3e1071b22eccbb317db6f2801f811309",
+      "model_document_copies": 2,
+      "model_document_sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+      "model_document_size": 2323,
+      "platform_tarball_sha256": "da4a3756a367d5d342bd0885f6bbf73a497539ed2f810cc6ba6e914d345a35bf",
+      "published": "2026-09-11T02:33:30.558Z",
+      "version": "1.0.29"
+    },
+    {
+      "brotli_sha256": "13f3c6cd5145c5d1e39a6ab9ab51bc429655d6f7410938b295011a367db17d1e",
+      "brotli_size": 41436148,
+      "catalogue_literal_counts": {
+        "auth_api_key": 1,
+        "auth_deployment_key": 1,
+        "auth_logged_in": 1,
+        "auth_none": 1,
+        "auth_own_key_suffix": 1,
+        "format_available_header": 1,
+        "format_bullet_default": 3,
+        "format_bullet_other": 158,
+        "format_default_header": 3,
+        "format_default_suffix": 5,
+        "models_help_description": 1,
+        "models_module": 1,
+        "root_flag": 4
+      },
+      "executable_sha256": "d53b6e543e482716236748914331db50145c696ac7af91f1ebdedcf5654cfecb",
+      "executable_size": 141869568,
+      "git_head": "04b7ffed98c6943e3c736e6e8cfb7f979560638e",
+      "model_document_copies": 2,
+      "model_document_sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+      "model_document_size": 2323,
+      "platform_tarball_sha256": "7e522683b99268fb44b5834909739bdea743fb8ed9fe9fa3186b6be56938b3ed",
+      "published": "2026-09-11T23:11:16.162Z",
+      "version": "1.0.30"
+    }
+  ],
+  "host": {
+    "command": "grok --no-auto-update --version",
+    "executable_sha256": "d53b6e543e482716236748914331db50145c696ac7af91f1ebdedcf5654cfecb",
+    "executable_size": 141869568,
+    "host_install_changed": false,
+    "official_darwin_arm64_payload_equal": true,
+    "output": "grok 1.0.30 (04b7ffed98c6) [stable]",
+    "source_revision": "04b7ffed98c6",
+    "version": "1.0.30"
+  },
+  "no_provider_work_during_identity": {
+    "catalogue_command_executed": false,
+    "credential_used": false,
+    "download_executed": false,
+    "host_install_changed": false,
+    "model_session_opened": false,
+    "prompt_sent": false
+  },
+  "route": "grok-build.catalogue",
+  "target_exact_point": "1.0.30"
+}

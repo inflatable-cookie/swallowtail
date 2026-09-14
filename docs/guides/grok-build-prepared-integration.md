@@ -13,7 +13,7 @@ consumer registered tools through the Swallowtail-owned courier.
 Reject it when the application needs hosted xAI inference, usage, or public
 provider-session management.
 The separate `grok-build.catalogue` route (`GrokCatalogueDriver`,
-`swallowtail.grok-build.catalogue`) lists installed models on exact `1.0.25`
+`swallowtail.grok-build.catalogue`) lists installed models on exact `1.0.30`
 only; see Model Catalogue below. It never opens ACP or sends a prompt.
 
 ## Route And Operation Shapes
@@ -86,8 +86,8 @@ success, failure, timeout, and cleanup failure. It never retries, updates the
 CLI, opens ACP, sends a prompt, opens a model session, dispatches a tool, or
 falls back to an execution default.
 
-Preparation admits only exact installed `1.0.25` under the `QualifiedOnly`
-claim `grok-build.catalogue.executable-1-0-25`
+Preparation admits only exact installed `1.0.30` under the `QualifiedOnly`
+claim `grok-build.catalogue.executable-1-0-30`
 (`grok-build.catalogue.models-text-v1`); every older or newer point fails
 closed before any process starts. Preparation also requires the same delegated
 subscription access readiness as the ACP operations.
@@ -107,20 +107,23 @@ traffic are permitted.
 counts plus their SHA-256 digests. Raw bytes stay host-private and never enter
 records or diagnostics.
 
-Rows preserve provider order and exact opaque ids. The shipped exact-`1.0.25`
+Rows preserve provider order and exact opaque ids. The shipped exact-`1.0.30`
 output carries an authentication preamble and `  * <id> (default)` / `
   - <id>` bullet rows; the parser requires that grammar. The top-level default
 from the `models` document marks `is_default`; a missing, repeated, or
 disagreeing marker fails the operation instead of guessing. Display name,
 description, input token limit, and reasoning modes come only from the frozen
-exact-`1.0.25` default-model document by exact id equality (`grok-4.5` has no
+exact-`1.0.30` default-model document by exact id equality (`grok-4.5` has no
 description, so it stays unknown there); unknown future ids pass through with
 empty metadata and no provider id is ever attached. Malformed, duplicate,
 empty, and over-limit documents fail closed, exit status is reported without
 quoting stderr, and there is no consumer cancellation surface: enforce the
-deadline instead. Research 306 freezes the corrected boundary and the accepted
-live capsule; Research 305 keeps the static command/output evidence with a
-correction note.
+deadline instead. Research 316 proves the catalogue argv grammar, preamble,
+bullet grammar, and embedded default-model document identical at every
+published stable from the previous `1.0.25` point through `1.0.30`, and freezes
+the accepted live capsule; Research 306 keeps the corrected boundary and the
+historical `1.0.25` capsule, and Research 305 keeps the static command/output
+evidence with a correction note.
 
 ## Structured Run
 

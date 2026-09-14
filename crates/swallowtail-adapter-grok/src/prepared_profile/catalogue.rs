@@ -24,7 +24,7 @@ impl GrokCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-/// Prepared Grok Build model catalogue bound to exact installed `1.0.25`.
+/// Prepared Grok Build model catalogue bound to exact installed `1.0.30`.
 ///
 /// This is an authenticated non-inference metadata operation: it lists models
 /// through one bounded `--no-auto-update models` process that may refresh
@@ -104,7 +104,7 @@ impl GrokPreparedCatalogue {
 impl GrokPreparedIntegration {
     /// Prepares a model catalogue from the admitted integration.
     ///
-    /// Only an exact `1.0.25` observation prepares: every other executable
+    /// Only an exact `1.0.30` observation prepares: every other executable
     /// version fails closed here, before any process starts. Access readiness
     /// was already proved while preparing the integration.
     pub fn prepare_catalogue(
@@ -150,7 +150,7 @@ fn require_exact_catalogue_version(
             swallowtail_runtime::PreparationStage::CompatibilityClassification,
             swallowtail_core::Diagnostic::new(swallowtail_core::SafeDiagnostic::new(
                 "swallowtail.grok.preparation.catalogue_version_incompatible",
-                "Grok Build catalogue requires exact installed version 1.0.25",
+                "Grok Build catalogue requires exact installed version 1.0.30",
             )),
         ));
     }

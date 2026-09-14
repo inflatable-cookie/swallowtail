@@ -1,14 +1,16 @@
-//! Live one-shot probe for the exact installed Grok Build `1.0.25`
+//! Live one-shot probe for the exact installed Grok Build `1.0.30`
 //! authenticated non-inference model catalogue.
 //!
 //! This test never runs by default. It requires:
 //!
 //! - `SWALLOWTAIL_LIVE_GROK_CATALOGUE=1`
-//! - an installed `grok` `1.0.25` on `PATH`
+//! - an installed `grok` `1.0.30` on `PATH`
 //! - an authorized Grok home. `SWALLOWTAIL_GROK_CATALOGUE_HOME`, or
-//!   `GROK_HOME`, selects it. With neither set, an empty private directory is
-//!   created and the delegated `~/.grok/auth.json` is copied into it when
-//!   present, so the child authenticates through the provider's own store.
+//!   `GROK_HOME`, selects it. With neither set, a private directory is
+//!   created and the delegated `~/.grok/auth.json` plus the exact channel
+//!   `~/.grok/version.json` are copied into it when present, so the child
+//!   authenticates through the provider's own store and reports its stable
+//!   channel without reading or mutating host configuration in place.
 //!
 //! The catalogue is an authenticated, prompt-free metadata command: exact
 //! `--no-auto-update models` under `HarnessConfigurationPosture::Ambient`. It
@@ -121,7 +123,7 @@ fn configured_grok_catalogue_is_bounded_authenticated_metadata() {
         .prepare_catalogue(GrokCatalogueProfileInput::new(
             RequestId::new("live.grok-catalogue.models").expect("request"),
         ))
-        .expect("the exact 1.0.25 catalogue prepares");
+        .expect("the exact 1.0.30 catalogue prepares");
     assert_eq!(
         catalogue.plan().harness_configuration_posture(),
         Some(swallowtail_core::HarnessConfigurationPosture::Ambient)
@@ -134,7 +136,7 @@ fn configured_grok_catalogue_is_bounded_authenticated_metadata() {
         .map(PathBuf::from)
         .unwrap_or_else(|| {
             PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-                .join("tests/fixtures/grok-1.0.25-model-catalogue/live-capsule.json")
+                .join("tests/fixtures/grok-1.0.30-catalogue/live-capsule.json")
         });
     write_redacted_capsule(
         &capsule_path,
@@ -169,8 +171,8 @@ fn write_redacted_capsule(
     duration_ms: u64,
 ) {
     let mut capsule = serde_json::json!({
-        "schema": "swallowtail.grok.catalogue.live-capsule.v3",
-        "task": "g05.053",
+        "schema": "swallowtail.grok.catalogue.live-capsule.v4",
+        "task": "g05.067",
         "boundary": "authenticated non-inference metadata operation",
         "cli": {
             "version": GROK_BUILD_CATALOGUE_VERSION,
@@ -190,7 +192,7 @@ fn write_redacted_capsule(
         "duration_ms": duration_ms,
         "notes": [
             "live listing owns membership, order, and default",
-            "the frozen exact-1.0.25 embedded document supplements matching ids only",
+            "the frozen exact-1.0.30 embedded document supplements matching ids only",
             "authentication refresh and bounded catalogue metadata activity are permitted",
             "no retry was performed",
         ],
@@ -264,7 +266,16 @@ impl AuthorizedHome {
         ));
         std::fs::create_dir_all(&root).expect("authorized Grok home is created");
         if let Some(host_home) = std::env::var_os("HOME") {
-            let delegated = PathBuf::from(host_home).join(".grok/auth.json");
+            let host_home = PathBuf::from(host_home).join(".grok");
+            // The channel file carries only version strings and a timestamp;
+            // copying it lets discovery report the installed stable channel
+            // from the private home instead of reading host state in place.
+            let channel = host_home.join("version.json");
+            if channel.is_file() {
+                std::fs::copy(&channel, root.join("version.json"))
+                    .expect("exact channel state is copied privately");
+            }
+            let delegated = host_home.join("auth.json");
             if delegated.is_file() {
                 let copied = root.join("auth.json");
                 std::fs::copy(&delegated, &copied).expect("delegated auth is copied privately");

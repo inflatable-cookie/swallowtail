@@ -1,9 +1,10 @@
 //! Production claim state after the g05.064 claim card.
 //!
 //! The ACP executable window extends through official `1.0.30` on the
-//! existing behavior revision. The exact `1.0.25` catalogue claim and the
+//! existing behavior revision. The exact catalogue claim and the
 //! registered-tool courier bounded to the accepted live capsules stay
-//! independent of the ACP window.
+//! independent of the ACP window. g05.067 later advanced the exact catalogue
+//! point from `1.0.25` to `1.0.30` without changing that independence.
 
 use super::identity::{COMPARED, HOPS, OFFICIAL_STABLE, PREVIOUS_CEILING};
 use super::support::version;
@@ -95,15 +96,15 @@ fn production_claim_admits_every_hop_through_1_0_30_as_maintained() {
 #[test]
 fn the_exact_catalogue_claim_does_not_move_with_the_acp_window() {
     let catalogue = grok_build_catalogue_claim();
-    let InterfaceCompatibilityAssessment::Qualified(matched) = catalogue.assess(&version("1.0.25"))
+    let InterfaceCompatibilityAssessment::Qualified(matched) = catalogue.assess(&version("1.0.30"))
     else {
-        panic!("exact 1.0.25 stays catalogue-qualified");
+        panic!("exact 1.0.30 stays catalogue-qualified");
     };
     assert_eq!(
         matched.behavior_revision().as_str(),
         "grok-build.catalogue.models-text-v1"
     );
-    for rejected in ["1.0.4", "1.0.24", "1.0.30"] {
+    for rejected in ["1.0.4", "1.0.25", "1.0.29", "1.0.31"] {
         assert_eq!(
             catalogue.assess(&version(rejected)),
             InterfaceCompatibilityAssessment::Incompatible,

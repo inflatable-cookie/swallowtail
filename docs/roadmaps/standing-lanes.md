@@ -26,14 +26,27 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: the Grok Build catalogue at official and installed exact
-`1.0.30` (g05.067) is the eighth family of Tom's authorized Research 308
-campaign. The worker must reproduce Research 314 identity, freeze the
-catalogue-specific `1.0.25..=1.0.30` path, then run the existing prompt-free
-authenticated non-inference metadata operation. Provider suppression is not
-an acceptance gate under g05.053. The catalogue remains exact QualifiedOnly
-and independent of the Grok ACP window. Shared matrices and the changelog stay
-serial.
+Active family: Command Code is the ninth family of Tom's authorized Research
+308 campaign. The worker must recheck the official channel and installed
+harness, freeze complete all-hop identity, and classify the selected surface
+before changing any claim. Shared matrices and the changelog stay serial.
+
+Completed campaign family: the Grok Build catalogue at official and installed
+exact `1.0.30` (g05.067) is the eighth family of Tom's authorized Research
+308 campaign. Research 316 reproduced the Research 314 platform and
+executable identity for the previous exact `1.0.25` point and every later
+published stable through `1.0.30`, and proved the catalogue argv grammar,
+authentication preamble, shipped `*`/`-` bullet grammar,
+`xai-grok-pager/src/models.rs` module path, and embedded default-model
+document identical at every hop. The exact `QualifiedOnly` claim advanced to
+`grok-build.catalogue.executable-1-0-30` with the
+`grok-build.catalogue.models-text-v1` behavior revision unchanged. The
+accepted observation is one prompt-free authenticated `--no-auto-update
+models` process on the installed exact `1.0.30` executable that returned
+ordered `grok-4.6` default then `grok-4.5` with zero stderr, no prompt,
+session, inference, or tool, and joined cleanup. The Grok ACP window and the
+`1.0.4`/`1.0.5` registered-tool courier stay independent. The next family is
+Command Code.
 
 Completed campaign family: Claude Agent SDK official npm `0.3.270`, carrying
 native Claude `2.1.270` (g05.065), is the seventh family of Tom's authorized

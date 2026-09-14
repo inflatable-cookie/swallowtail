@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.071 Goose `1.50.0` exact-pin qualification as the eleventh family
+Implement g05.072 Kiro `2.21.4` exact-pin qualification as the twelfth family
 in Tom's authorized Research 308 currentness campaign. Continue the remaining
-eight families serially without repeated approval; no release follows.
+seven families serially without repeated approval; no release follows.
 
 ## Standing Lanes
 

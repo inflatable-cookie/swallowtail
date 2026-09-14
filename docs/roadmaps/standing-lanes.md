@@ -26,7 +26,7 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active campaign family: Kiro official manifest `2.21.4` is the twelfth family
+Active campaign family: Kiro official manifest `2.21.4` (g05.072) is the twelfth family
 of Tom's authorized Research 308 campaign. Exact `2.18.1` is `QualifiedOnly`
 and the local CLI is absent; the manifest successors after `2.18.1` require a
 complete provider-free identity and mapped-module ledger, with the selected

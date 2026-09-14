@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.070 Qoder `1.1.52` exact-pin qualification as the tenth family
+Implement g05.071 Goose `1.50.0` exact-pin qualification as the eleventh family
 in Tom's authorized Research 308 currentness campaign. Continue the remaining
-nine families serially without repeated approval; no release follows.
+eight families serially without repeated approval; no release follows.
 
 ## Standing Lanes
 

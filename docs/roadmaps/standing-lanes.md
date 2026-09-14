@@ -26,6 +26,15 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
+Active campaign family: Goose official GitHub `v1.50.0` (g05.071) is the
+eleventh family of Tom's authorized Research 308 campaign. Exact `1.46.0` is
+`QualifiedOnly`; `goose` is absent locally; four stable successor tags require
+a complete provider-free source-tree and mapped-module ledger. The selected
+stdio ACP wire, builtin/scheduler defaults, permission and mode authority,
+provider/model failure, resource ownership, and cleanup must be classified
+without running Goose or a provider. Serve, desktop/TUI, recipes, ACP-provider
+adapters, and advertised session operations remain independent. Next is Kiro.
+
 Stopped campaign family: Qoder official npm `1.1.52` (g05.070) is the tenth
 family of Tom's authorized Research 308 campaign. Research 318 froze the exact
 `1.1.25` baseline and all 27 published stable successors through `1.1.52` from

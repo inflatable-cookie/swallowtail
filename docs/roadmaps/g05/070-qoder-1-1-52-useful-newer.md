@@ -108,18 +108,68 @@ authority.
 
 ## Acceptance
 
-- [ ] official identity and all 27 published successors reproduce
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes the claim decision
-- [ ] exact QualifiedOnly shape and route boundaries remain truthful
-- [ ] Research 256's skill-visibility stop remains independent
-- [ ] official stable is rechecked at both boundaries
+- [x] official identity and all 27 published successors reproduce
+- [x] every changed selected input is classified
+- [x] identity evidence precedes the claim decision
+- [x] exact QualifiedOnly shape and route boundaries remain truthful
+- [x] Research 256's skill-visibility stop remains independent
+- [x] official stable is rechecked at both boundaries
+- [x] the selected-route change that blocks the exact-point move is named by
+      one exact hop
 
 ## Result
 
-Not started.
+Typed **stop**. Official npm stable was rechecked at both boundaries as
+`latest=1.1.52` (published `2026-09-14T12:07:54.560Z`), with `1.1.35-beta.2` on
+the separate beta channel and `1.1.53` unpublished. The exact `1.1.25` baseline
+and all 27 published stable successors `1.1.26..=1.1.52` were retrieved from
+the official registry into `/tmp`, integrity-checked, extracted, and inspected
+without executing a downloaded artifact. Research 318 and the
+`qoder-headless-1.1.52` fixture (with a mutation-sensitive delta ledger) freeze
+the result. `qodercli` is still absent locally and no provider operation,
+prompt, login, credential, installation, or host update occurred.
+
+The shipped tree holds 33 files through `1.1.46`, 35 at `1.1.47`, 29 at
+`1.1.48`, and 28 from `1.1.49`. The only additions are the two `qodersec-update`
+vendor scripts; the only removals are the six macOS seatbelt profiles and
+`policies/sandbox-default.toml`, which feed an argv- and host-config-selected
+CLI feature this route never enables. `bundle/qodercli.js` changes at every hop
+so all 28 points were classified directly.
+
+The smallest exact counterexample is the hop `1.1.29..1.1.30`. At `1.1.25..=1.1.29`
+the CLI `--max-turns` value was inert: it reached only Config
+`maxSessionTurns`, the headless session config bound the package constant
+`1000`, and `driveQuery` carried a fixed `?? 1000` fallback. At `1.1.30..=1.1.52`
+the option gains a numeric argParser, both headless mode entry points forward
+`argv.maxTurns` into the headless session, that session binds the forwarded
+value, and the fixed fallback is gone. The AgentLoop guard is unchanged, so the
+route argv `--max-turns 8` is now the real turn ceiling: a run that could reach
+1000 turns terminates with `error_max_turns` at 8.
+
+No claim moved. `QODER_PACKAGE_VERSION` stays exact `1.1.25`;
+`qoder.headless.package-window-1` stays one exact `QualifiedOnly` maintained
+point with the unchanged `qoder.headless.stdio-stream-json-v1` behavior
+revision; no range, second point, exclusion, or newer-version posture was added.
+The Qoder prepared guide, route/activity/feature matrices, and architecture
+ceiling stay untouched because the qualified point did not move. Research 151's
+`1.1.25` decoder specimens stand, and Research 256's empty deliver-now ruling
+with the `g05.039`/`g05.040` gate stays independent: package skill files, init
+`skills`/`plugins`, and `qoder skills list` were not turned into selected-run
+visibility.
+
+Material validation: `cargo fmt -p swallowtail-adapter-qoder -- --check`,
+`effigy validate:focused swallowtail-adapter-qoder`,
+`effigy package:verify-affected swallowtail-adapter-qoder`, `effigy check:examples`,
+`effigy package:api`, `effigy qa:routes`, `effigy qa:northstar`, the focused
+Qoder selectors including the new delta ledger, the research/log/roadmap/number/
+lifecycle/next-action checks, and `git diff --check`.
+
+The route returns to the operator via Chatterbox for a planning ruling on the
+turn-binding policy before any `1.1.30`-or-later exact point can be claimed.
 
 ## Next Task
 
-Return the exact outcome to Chatterbox, then compile and dispatch Goose as the
-next Research 308 family without asking Tom to repeat authorization.
+Return the exact outcome to Chatterbox: Qoder is a typed stop that needs an
+exact turn-binding ruling before any `1.1.30`-or-later claim. The campaign then
+continues serially with Goose as the next Research 308 family without asking Tom
+to repeat authorization.

@@ -8,6 +8,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ## Research Records
 
+- [318 Qoder Headless 1.1.52 Identity Stop](./318-qoder-headless-1-1-52-identity-stop.md) — complete official npm identity and all 27 stable successors after `1.1.25`; the selected route's historical inert `--max-turns 8` argv becomes the AgentLoop ceiling at `1.1.29..1.1.30`, so the exact `QualifiedOnly` point stays at `1.1.25` and the turn-binding policy returns to the operator; Research 151/256 unchanged
 - [317 Command Code 1.54.0 Identity](./317-command-code-1-54-0-identity.md) — complete official npm identity and all 67 stable successors; selected route surface classified provider-free; Research 116/118 live evidence remains bound to `1.15.1`; no production claim yet
 
 ### Harness Skills And Watchers

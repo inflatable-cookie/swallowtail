@@ -48,3 +48,7 @@ path = "tests/prepared_facade.rs"
 [[test]]
 name = "consumer_route_projection"
 path = "tests/consumer_route_projection.rs"
+
+[[test]]
+name = "qoder_1_1_52_delta_ledger"
+path = "tests/qoder_1_1_52_delta_ledger.rs"

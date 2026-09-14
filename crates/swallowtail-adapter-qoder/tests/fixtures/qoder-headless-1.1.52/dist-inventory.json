@@ -1,0 +1,786 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-09-14",
+  "source": "official-npm-tarball",
+  "extraction": "tar -xzf into /tmp; inspected, never executed",
+  "compared": [
+    "1.1.25",
+    "1.1.26",
+    "1.1.27",
+    "1.1.28",
+    "1.1.29",
+    "1.1.30",
+    "1.1.31",
+    "1.1.32",
+    "1.1.33",
+    "1.1.34",
+    "1.1.35",
+    "1.1.36",
+    "1.1.37",
+    "1.1.38",
+    "1.1.39",
+    "1.1.40",
+    "1.1.41",
+    "1.1.42",
+    "1.1.43",
+    "1.1.44",
+    "1.1.45",
+    "1.1.46",
+    "1.1.47",
+    "1.1.48",
+    "1.1.49",
+    "1.1.50",
+    "1.1.51",
+    "1.1.52"
+  ],
+  "package_file_counts": {
+    "1.1.25": 33,
+    "1.1.26": 33,
+    "1.1.27": 33,
+    "1.1.28": 33,
+    "1.1.29": 33,
+    "1.1.30": 33,
+    "1.1.31": 33,
+    "1.1.32": 33,
+    "1.1.33": 33,
+    "1.1.34": 33,
+    "1.1.35": 33,
+    "1.1.36": 33,
+    "1.1.37": 33,
+    "1.1.38": 33,
+    "1.1.39": 33,
+    "1.1.40": 33,
+    "1.1.41": 33,
+    "1.1.42": 33,
+    "1.1.43": 33,
+    "1.1.44": 33,
+    "1.1.45": 33,
+    "1.1.46": 33,
+    "1.1.47": 35,
+    "1.1.48": 29,
+    "1.1.49": 28,
+    "1.1.50": 28,
+    "1.1.51": 28,
+    "1.1.52": 28
+  },
+  "package_unpacked_sizes": {
+    "1.1.25": 62086670,
+    "1.1.26": 62145136,
+    "1.1.27": 62212071,
+    "1.1.28": 62230116,
+    "1.1.29": 62352681,
+    "1.1.30": 62468437,
+    "1.1.31": 62594554,
+    "1.1.32": 63125279,
+    "1.1.33": 65543883,
+    "1.1.34": 65544020,
+    "1.1.35": 65603034,
+    "1.1.36": 65643437,
+    "1.1.37": 65635023,
+    "1.1.38": 65665669,
+    "1.1.39": 65791807,
+    "1.1.40": 65791550,
+    "1.1.41": 65813172,
+    "1.1.42": 65823197,
+    "1.1.43": 65945960,
+    "1.1.44": 65945797,
+    "1.1.45": 66047642,
+    "1.1.46": 66821252,
+    "1.1.47": 66913227,
+    "1.1.48": 66874160,
+    "1.1.49": 66718529,
+    "1.1.50": 67672599,
+    "1.1.51": 67832255,
+    "1.1.52": 67904596
+  },
+  "path_union": [
+    "package/LICENSE",
+    "package/README.md",
+    "package/bundle/builtin/agent-creator/SKILL.md",
+    "package/bundle/builtin/hook-config/SKILL.md",
+    "package/bundle/builtin/sdk/SKILL.md",
+    "package/bundle/builtin/skill-creator/SKILL.md",
+    "package/bundle/policies/sandbox-default.toml",
+    "package/bundle/proto/chat.proto",
+    "package/bundle/qoder-npm-dispatcher.cjs",
+    "package/bundle/qoder-worker-runtime.mjs",
+    "package/bundle/qodercli.js",
+    "package/bundle/sandbox-macos-permissive-open.sb",
+    "package/bundle/sandbox-macos-permissive-proxied.sb",
+    "package/bundle/sandbox-macos-restrictive-open.sb",
+    "package/bundle/sandbox-macos-restrictive-proxied.sb",
+    "package/bundle/sandbox-macos-strict-open.sb",
+    "package/bundle/sandbox-macos-strict-proxied.sb",
+    "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+    "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+    "package/bundle/vendor/qoder-security/assets/logo.svg",
+    "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+    "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+    "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+    "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+    "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+    "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+    "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+    "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+    "package/bundle/vendor/qoder-security/config.yaml.example",
+    "package/bundle/vendor/qoder-security/package.json",
+    "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+    "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+    "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+    "package/package.json",
+    "package/postinstall.cjs"
+  ],
+  "from_hop_to_hop": {
+    "1.1.25..1.1.26": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.26..1.1.27": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.27..1.1.28": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.28..1.1.29": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.29..1.1.30": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.30..1.1.31": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/README.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.31..1.1.32": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.32..1.1.33": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.33..1.1.34": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.34..1.1.35": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.35..1.1.36": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.36..1.1.37": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.37..1.1.38": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.38..1.1.39": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.39..1.1.40": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.40..1.1.41": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.41..1.1.42": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.42..1.1.43": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.43..1.1.44": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.44..1.1.45": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.45..1.1.46": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.46..1.1.47": {
+      "added": [
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh"
+      ],
+      "removed": [],
+      "changed": [
+        "package/README.md",
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/package.json"
+      ]
+    },
+    "1.1.47..1.1.48": {
+      "added": [],
+      "removed": [
+        "package/bundle/sandbox-macos-permissive-open.sb",
+        "package/bundle/sandbox-macos-permissive-proxied.sb",
+        "package/bundle/sandbox-macos-restrictive-open.sb",
+        "package/bundle/sandbox-macos-restrictive-proxied.sb",
+        "package/bundle/sandbox-macos-strict-open.sb",
+        "package/bundle/sandbox-macos-strict-proxied.sb"
+      ],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.48..1.1.49": {
+      "added": [],
+      "removed": [
+        "package/bundle/policies/sandbox-default.toml"
+      ],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.49..1.1.50": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.50..1.1.51": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    },
+    "1.1.51..1.1.52": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ]
+    }
+  },
+  "hashes": {
+    "package/package.json": {
+      "1.1.25": "459d820e451a6bdfd34c9799a841f2bcb66eaae155316e497cb1b12d44b53310",
+      "1.1.26": "b413349a35b23c15a7bbc7ec942a90f22c1ce9ae20dc24970e0f2c4226e0b836",
+      "1.1.27": "f06ff5704c9c4da4fb9a4beebb2740d8dd9cb0bcabc955f283b0b4904da687af",
+      "1.1.28": "9da8e59ec2aea3f2b67965d1e7e7e77895b79283d57e3bd4805dc58dbff21405",
+      "1.1.29": "6dac2499a55349dcd0cf9adf9ce3af006dbf7b3977312d64fbcd7bd0d083c55a",
+      "1.1.30": "79795b217c780c9138552bb5242ca71ec8c4f494b745c715c027e8dbb0cc0987",
+      "1.1.31": "9230c4742946cc4a0dbcae5622bbcfd6d04fd9d22ef60f54d275c42b2a57f368",
+      "1.1.32": "452b15304888b7b042f951618d01361db782152fcc801a06fc4871f14aaad8d1",
+      "1.1.33": "4a9bfdcd4e1be39402b8fc98cd59df120a4f60bf442f45635344af224eb8e8b2",
+      "1.1.34": "80595c02a7f47b8a2af52732e6455e6dc9c52b504df5d827a53109338156916d",
+      "1.1.35": "a28e9a92b5c008de3eb71d8ddd6f669ae3abb02da8e229031ef3cc066f5badb5",
+      "1.1.36": "a22aba8346d6180e1f1d4b252e5529bb4bdae0d2ec46636ef86492a586da0b6c",
+      "1.1.37": "c6a88412c57b7a08efa68cdcb9c010120c60a7f217d0c9904db5e89ef3144402",
+      "1.1.38": "f1cf5da543a325a2a2e4364b3e1101f610ce08497bfbfa0e4a308c8f8e1477a2",
+      "1.1.39": "b93b5231ae0b6deedbfdebf508aecde003fa8729066725eb751dc07555da250f",
+      "1.1.40": "184c00c375f23ca9e585fb4759b64dea1caf35f9af5318e7c6db18ed3d68fecf",
+      "1.1.41": "85237f8bc334b2dd3980a1b2bdd274c3e7f1bc3b178a9a847079d7f956b52bce",
+      "1.1.42": "57484a4ed9e7a42e3fca0f5e26b885072efdddc6c5031b47fa10b20ee0fc30c1",
+      "1.1.43": "b962fbbfebfeae808f9ebf30d4a99c0d311b07c40f94b6b89d61c4cc7804a9c9",
+      "1.1.44": "dbffac399fbca9061a5120588552fa3362f49eb82fa4270b0b9f9313efb9afd2",
+      "1.1.45": "88116495bb8988ff02af3b5d1dda42ccefaf8d5927d33b6c9649467a2abdb701",
+      "1.1.46": "f2b7877937de7ee84c8bad088e7d9786cdcb447673c895a275764a1c3d46143d",
+      "1.1.47": "95c579ac645113f05c24742eea5ada72edbecb2bee5348c83ddc4beed2803a43",
+      "1.1.48": "4f3ce331d6535365c35c75176d98316d3463e9eb5ea1e46ca53ec8f0c4abd86b",
+      "1.1.49": "040a6268cab12fe437b658e3aaa7a45201d7614546d161dd67cebb0d926d229e",
+      "1.1.50": "58d8ebdef3e69f7d29c2615b8e34f4acd9ad2c68564b7062710707f597ddbcd4",
+      "1.1.51": "cd8f4ee228caecb3b3974ce93fe43e7f31075d618dfd60b41890ea21345e9b8e",
+      "1.1.52": "cae138a1a490550553b60f2c26343de24729a197b10803faef0195158ec8996a"
+    },
+    "package/bundle/qodercli.js": {
+      "1.1.25": "77f7387974d5df79c7127bb41c9c7be8aad82aa567512ca2d9f780b2e3f73d52",
+      "1.1.26": "3a6afabb3fee8d977c425ad2dbe4cb7faaccf27231b7621841dc7989eeb4cdfd",
+      "1.1.27": "cd5139a26963c8a101a319fcdd714b6745659737fe0200a06df27256a3cbe25d",
+      "1.1.28": "3cd2c60b3a0d2db4bb8ee053260e75b20bfc080d8688761cf6f06326d85282fd",
+      "1.1.29": "4767d47c71494eb396b77765efe2599a14d67123a4ea8a2fa91dca6ba5ae386f",
+      "1.1.30": "1a64a3664b06a9e78a512c08070dd739779324f3f6c75117fccc40b92c5a0677",
+      "1.1.31": "124796d6417ba58928e41363957d95c5c84b1d52942ff5b2d55a973bcd38588f",
+      "1.1.32": "24de5b12520cbe49c0027b53654eaee02bddd857e3d9f19a6198824e365d89bf",
+      "1.1.33": "257df2ed71c1ec0ce78eef1357bb956ebd39e78180c3c272b4286470aaa50737",
+      "1.1.34": "ae06043dbf88fa993f7286fe8c5d0ebb99f9349580bef86dd509f58add27cc0b",
+      "1.1.35": "b0f2a286b7e7c1eb42db7f82f01fd2c980484550dcac81f9b6d47b7f6415337e",
+      "1.1.36": "5f8339937c87bab52d8fb4b3f8e6ed5746ae8c1932825f178242428a23200989",
+      "1.1.37": "0035236d2c8cd9084dfa5d530da82ddb781e20132c4c20958d1e92018387424b",
+      "1.1.38": "713d4482d170554ac57b71e485d06ba490b904a3606efdf1843a3443037c86ec",
+      "1.1.39": "fed6e4d041129d3e5818814781c0ba2641cecae5b4a3f5691749bf34ce00cda6",
+      "1.1.40": "a5b9d9f116c16c512fd3000a62cb87e6d7e72ff4edbb196e24773834cef13eba",
+      "1.1.41": "9da65796e5b87cc5f9c61582283bab61d22591510687a37bab4855cd4220ba7c",
+      "1.1.42": "40dc541f7db03e2dd950ce8d10a3672f446991c8e37141a687122bb65028ca78",
+      "1.1.43": "1464fa0c2ad75944029a8b61b7a88377c04226cada87a6a92b62aa98db59f984",
+      "1.1.44": "7f55fa1bbd105c5e4905c673d4a6665db0cd6c68addca5de4508c8ba3b5f92e5",
+      "1.1.45": "86565469a3a0dd2dcede554c6056678cb7423f12e1929b4b23b9d6c340559418",
+      "1.1.46": "7eb99f4cb8049c7aafce0c3d08fd2bf7df1f1acb57d5cb944f562c4d8bcd2084",
+      "1.1.47": "aeaf9c907fed1441a0c3efed67969be804ec9182e5fe755ef329d733a729f24e",
+      "1.1.48": "d8532dc0f73699092a6f82e2cc295a2b6c4b532a075ce061eb0bfc205b712480",
+      "1.1.49": "5aadacf2e086d9f9680f294079d0ad19bcbbceb94edc4b2cc6a993345134a1ca",
+      "1.1.50": "788081c288899817431425b2445bbf1c67d1ee74db9c74d4f885e31a813b0f3b",
+      "1.1.51": "a0682b07398d9ec0e2e2bf3c6b3a961de19ce5a7fb1c22563b26491d26407281",
+      "1.1.52": "ddeb47c2b4dd760b735af387a615d8946d0bc14e2455a20b75ae65409902a62b"
+    },
+    "package/bundle/qoder-npm-dispatcher.cjs": {
+      "1.1.25": "f8aabc49f26ec4a8c98302cf239d5e1a6e4c1efaccea18cdf8b2ad147de6cb6a",
+      "1.1.26": "f8aabc49f26ec4a8c98302cf239d5e1a6e4c1efaccea18cdf8b2ad147de6cb6a",
+      "1.1.27": "f8aabc49f26ec4a8c98302cf239d5e1a6e4c1efaccea18cdf8b2ad147de6cb6a",
+      "1.1.28": "f8aabc49f26ec4a8c98302cf239d5e1a6e4c1efaccea18cdf8b2ad147de6cb6a",
+      "1.1.29": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.30": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.31": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.32": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.33": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.34": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.35": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.36": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.37": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.38": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.39": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.40": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.41": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.42": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.43": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.44": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.45": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.46": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.47": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.48": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.49": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.50": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.51": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.52": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120"
+    },
+    "package/bundle/qoder-worker-runtime.mjs": {
+      "1.1.25": "b01ad4a3a376798678eb50746641de2caf7fcd742a04af776a94b50f34cb81b0",
+      "1.1.26": "d66445a5489e39eef7e2701dbd9d474f885af1164a86888d92b3c15da60fd8d5",
+      "1.1.27": "8fa6c60744ebdf5677669edceb657b8f5a217eee21ef7807e734462743e45c27",
+      "1.1.28": "125e0930b508939f632939864b8f527c0bc2715bdf0d1161729fb5d7d4d17961",
+      "1.1.29": "a6df6dce4029866e7758e86c13d86e0085097a08475d46400a62acff19e0e748",
+      "1.1.30": "3ef39da653df9cff5fa2bba5a9cda2184a9d14663d481d2e41e34a850c7b2e7c",
+      "1.1.31": "bda34181f96e6ee432cc24d7e7b1b80293e5c941c21b63ba29fd038e3a3861fb",
+      "1.1.32": "c4ef089f38fecb8f1d658095fb62db57cd0641b3ee5a6d2d30b521ac0b257c96",
+      "1.1.33": "e148a40bd8b2cd61d76f6bc214482e8fc220cf3ead62c455d45b8795693e8583",
+      "1.1.34": "09d7f01fda170cd9650a579b8ca9a9bd93d4aaf1b2154aa2427bd94d6a6d9fa4",
+      "1.1.35": "8c4615997bc95d17065a7621de408d4e619e2778506f46f608b20df3614ce20e",
+      "1.1.36": "0a0b6bb6993f1514e669240da721a190380fa51def20d3cf35184ab028291c6d",
+      "1.1.37": "5ec35688671d396c70217a03d30c9b55c028d6bcb97c3993894f4506d9e3d2dc",
+      "1.1.38": "52de5097982b930a5af678b34332e94cb6c182321c1f7ab440ad07d41504e0aa",
+      "1.1.39": "5a9015d9f8f9c0cf6125c95f5d4aa956fef7b88134b1415d47af40fafec52f93",
+      "1.1.40": "7df9c3693acef66c3be12937364a3a0b15fe8a7735cf8e86c626c4a198601178",
+      "1.1.41": "80e1f92131f7049874862fc5c36898018212abd524cfa74d920e62f86f9960af",
+      "1.1.42": "9eb4eb5e22015c4a021c3a7d763cfa162fc17c0b3480596f8028be5c8de8bf7b",
+      "1.1.43": "2509cf01f562851fb4acbc09e2e4d4c1325cb98520a93b099a3c8de2cfffa725",
+      "1.1.44": "f7bc1e63a64114a63d392c24458bde611889f823771f689350d6fa462ac7b5f9",
+      "1.1.45": "fd655ab42b991ae8e1457c3e3c8548e7ba854ae6485ad7565715d219cc37d17b",
+      "1.1.46": "3288d2ba714a87145fb2f9d73bc5f18c1bdc1be4ae6a3abf692ca394549d33cd",
+      "1.1.47": "7e00a159dfb468f92b513f076c2263a783837cccec546c5eba5649eadf8c300b",
+      "1.1.48": "e5f87c4323bf3dd226224ed8a41a07b2ee0d0ad462a330fd0b1f7c1cb19d6ae8",
+      "1.1.49": "d765ff6b257c0eac6a7b8cb81bb0b845ddf27148092de4de254c49ff2616489a",
+      "1.1.50": "d6fe6752000df5093f3162736c0b082e6965d46c67d236b6178847349585c22a",
+      "1.1.51": "47641b93611e005b8e21c3803a24b9d84d2abc2a9861c43fe25816404bfc27cb",
+      "1.1.52": "0d57be1e8201837592d42a6aa234cd90e0d45c7e22cf1ef98ebfaef937673293"
+    },
+    "package/postinstall.cjs": {
+      "1.1.25": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.26": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.27": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.28": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.29": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.30": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.31": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.32": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.33": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.34": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.35": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.36": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.37": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.38": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.39": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.40": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.41": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.42": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.43": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.44": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.45": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.46": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.47": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.48": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.49": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.50": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.51": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.52": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220"
+    },
+    "package/bundle/proto/chat.proto": {
+      "1.1.25": "564758840cac28aff8e49cd97d1d97597e36ab002714368a987c806df162717b",
+      "1.1.26": "564758840cac28aff8e49cd97d1d97597e36ab002714368a987c806df162717b",
+      "1.1.27": "564758840cac28aff8e49cd97d1d97597e36ab002714368a987c806df162717b",
+      "1.1.28": "564758840cac28aff8e49cd97d1d97597e36ab002714368a987c806df162717b",
+      "1.1.29": "564758840cac28aff8e49cd97d1d97597e36ab002714368a987c806df162717b",
+      "1.1.30": "564758840cac28aff8e49cd97d1d97597e36ab002714368a987c806df162717b",
+      "1.1.31": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.32": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.33": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.34": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.35": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.36": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.37": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.38": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.39": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.40": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.41": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.42": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.43": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.44": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.45": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.46": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.47": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.48": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.49": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.50": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.51": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.52": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372"
+    }
+  },
+  "sizes": {
+    "package/package.json": {
+      "1.1.25": 1134,
+      "1.1.26": 1134,
+      "1.1.27": 1134,
+      "1.1.28": 1134,
+      "1.1.29": 1134,
+      "1.1.30": 1134,
+      "1.1.31": 1134,
+      "1.1.32": 1134,
+      "1.1.33": 1134,
+      "1.1.34": 1134,
+      "1.1.35": 1134,
+      "1.1.36": 1134,
+      "1.1.37": 1134,
+      "1.1.38": 1177,
+      "1.1.39": 1177,
+      "1.1.40": 1177,
+      "1.1.41": 1177,
+      "1.1.42": 1177,
+      "1.1.43": 1177,
+      "1.1.44": 1177,
+      "1.1.45": 1177,
+      "1.1.46": 1177,
+      "1.1.47": 1177,
+      "1.1.48": 1177,
+      "1.1.49": 1177,
+      "1.1.50": 1177,
+      "1.1.51": 1177,
+      "1.1.52": 1177
+    },
+    "package/bundle/qodercli.js": {
+      "1.1.25": 30987220,
+      "1.1.26": 31017475,
+      "1.1.27": 31051346,
+      "1.1.28": 31060551,
+      "1.1.29": 31121733,
+      "1.1.30": 31180386,
+      "1.1.31": 31247198,
+      "1.1.32": 31516140,
+      "1.1.33": 32217762,
+      "1.1.34": 32217828,
+      "1.1.35": 32247884,
+      "1.1.36": 32274773,
+      "1.1.37": 32263460,
+      "1.1.38": 32279292,
+      "1.1.39": 32374312,
+      "1.1.40": 32374153,
+      "1.1.41": 32384960,
+      "1.1.42": 32389858,
+      "1.1.43": 32451507,
+      "1.1.44": 32451429,
+      "1.1.45": 32489700,
+      "1.1.46": 32764270,
+      "1.1.47": 32781856,
+      "1.1.48": 32777483,
+      "1.1.49": 32698451,
+      "1.1.50": 33017582,
+      "1.1.51": 33091558,
+      "1.1.52": 33128383
+    },
+    "package/bundle/qoder-npm-dispatcher.cjs": {
+      "1.1.25": 8183,
+      "1.1.26": 8183,
+      "1.1.27": 8183,
+      "1.1.28": 8183,
+      "1.1.29": 8262,
+      "1.1.30": 8262,
+      "1.1.31": 8262,
+      "1.1.32": 8262,
+      "1.1.33": 8262,
+      "1.1.34": 8262,
+      "1.1.35": 8262,
+      "1.1.36": 8262,
+      "1.1.37": 8262,
+      "1.1.38": 8262,
+      "1.1.39": 8262,
+      "1.1.40": 8262,
+      "1.1.41": 8262,
+      "1.1.42": 8262,
+      "1.1.43": 8262,
+      "1.1.44": 8262,
+      "1.1.45": 8262,
+      "1.1.46": 8262,
+      "1.1.47": 8262,
+      "1.1.48": 8262,
+      "1.1.49": 8262,
+      "1.1.50": 8262,
+      "1.1.51": 8262,
+      "1.1.52": 8262
+    },
+    "package/bundle/qoder-worker-runtime.mjs": {
+      "1.1.25": 30920617,
+      "1.1.26": 30948828,
+      "1.1.27": 30981892,
+      "1.1.28": 30990732,
+      "1.1.29": 31052036,
+      "1.1.30": 31109139,
+      "1.1.31": 31168598,
+      "1.1.32": 31430381,
+      "1.1.33": 33147363,
+      "1.1.34": 33147434,
+      "1.1.35": 33176392,
+      "1.1.36": 33189906,
+      "1.1.37": 33192805,
+      "1.1.38": 33207576,
+      "1.1.39": 33238694,
+      "1.1.40": 33238596,
+      "1.1.41": 33249411,
+      "1.1.42": 33254538,
+      "1.1.43": 33315652,
+      "1.1.44": 33315567,
+      "1.1.45": 33379141,
+      "1.1.46": 33878181,
+      "1.1.47": 33909881,
+      "1.1.48": 33894075,
+      "1.1.49": 33817946,
+      "1.1.50": 34452885,
+      "1.1.51": 34538565,
+      "1.1.52": 34574081
+    },
+    "package/postinstall.cjs": {
+      "1.1.25": 6813,
+      "1.1.26": 6813,
+      "1.1.27": 6813,
+      "1.1.28": 6813,
+      "1.1.29": 6813,
+      "1.1.30": 6813,
+      "1.1.31": 6813,
+      "1.1.32": 6813,
+      "1.1.33": 6813,
+      "1.1.34": 6813,
+      "1.1.35": 6813,
+      "1.1.36": 6813,
+      "1.1.37": 6813,
+      "1.1.38": 6813,
+      "1.1.39": 6813,
+      "1.1.40": 6813,
+      "1.1.41": 6813,
+      "1.1.42": 6813,
+      "1.1.43": 6813,
+      "1.1.44": 6813,
+      "1.1.45": 6813,
+      "1.1.46": 6813,
+      "1.1.47": 6813,
+      "1.1.48": 6813,
+      "1.1.49": 6813,
+      "1.1.50": 6813,
+      "1.1.51": 6813,
+      "1.1.52": 6813
+    },
+    "package/bundle/proto/chat.proto": {
+      "1.1.25": 8334,
+      "1.1.26": 8334,
+      "1.1.27": 8334,
+      "1.1.28": 8334,
+      "1.1.29": 8334,
+      "1.1.30": 8334,
+      "1.1.31": 8366,
+      "1.1.32": 8366,
+      "1.1.33": 8366,
+      "1.1.34": 8366,
+      "1.1.35": 8366,
+      "1.1.36": 8366,
+      "1.1.37": 8366,
+      "1.1.38": 8366,
+      "1.1.39": 8366,
+      "1.1.40": 8366,
+      "1.1.41": 8366,
+      "1.1.42": 8366,
+      "1.1.43": 8366,
+      "1.1.44": 8366,
+      "1.1.45": 8366,
+      "1.1.46": 8366,
+      "1.1.47": 8366,
+      "1.1.48": 8366,
+      "1.1.49": 8366,
+      "1.1.50": 8366,
+      "1.1.51": 8366,
+      "1.1.52": 8366
+    }
+  },
+  "tree_shape": {
+    "33_files_1.1.25..1.1.46": true,
+    "35_files_at_1.1.47": true,
+    "29_files_at_1.1.48": true,
+    "28_files_1.1.49..1.1.52": true,
+    "removed_paths": [
+      "package/bundle/policies/sandbox-default.toml",
+      "package/bundle/sandbox-macos-permissive-open.sb",
+      "package/bundle/sandbox-macos-permissive-proxied.sb",
+      "package/bundle/sandbox-macos-restrictive-open.sb",
+      "package/bundle/sandbox-macos-restrictive-proxied.sb",
+      "package/bundle/sandbox-macos-strict-open.sb",
+      "package/bundle/sandbox-macos-strict-proxied.sb"
+    ],
+    "added_paths": [
+      "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+      "package/bundle/vendor/qoder-security/bin/qodersec-update.sh"
+    ]
+  }
+}

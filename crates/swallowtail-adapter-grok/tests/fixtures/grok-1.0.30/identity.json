@@ -1,0 +1,942 @@
+{
+ "alpha_after_ceiling": [
+  "1.0.31"
+ ],
+ "axis": "grok-build.executable",
+ "channel_note": "npm dist-tags expose only current pointers; a version above the latest tag that is only on the alpha tag is not stable, and every plain version at or below latest is a published stable.",
+ "claim_at_observation": {
+  "classification_of_1_0_6_through_1_0_30": "unverified_newer",
+  "latest_qualified_before": "1.0.5",
+  "posture": "allow_unverified"
+ },
+ "first_unpublished_stable_after_latest": "1.0.32",
+ "hops": [
+  {
+   "git_head": "5115b46bc909ae5c7f5fc064455197440e796b6b",
+   "model_document_sha256": [
+    "264d0f644b0c435b0be869c081ac08231a205ccacecc6a46df2a7426f550748a"
+   ],
+   "platform": {
+    "brotli_sha256": "80d5e229fff339938989ab2d35af6ca51a293a50d328549dbaf5c1d5e7035c12",
+    "brotli_size": 38583727,
+    "executable_sha256": "3dfa7f04fbb5427a8fbead286591543aaecb478b3a0ab222c4329eca1a3b2f86",
+    "executable_size": 134349648,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-akEtE93V7nOHEMfj16kkl3Nxl/AjcNaRkZCnY5HoIayy3VR6qQ6VTsQdUka4ZgT1bGJCZff4UIcTVpFGDaMAQQ==",
+     "grok-darwin-x64": "sha512-kIr1YUidX+Zl8Ti7qFBCmQyVzR/D779Q0/pNvCBo7enLObFaGiM7JUAuQ7Y23aaIC/m1rwPv7xzoQ3DGHOO1yA==",
+     "grok-linux-arm64": "sha512-yPdBddzfqBNfmyKGEuy0Vy+8zr/0I9xTqX9aYzaaz5QUS3+3Xe3bIJ2EYbAZV6o/16WUC2ZbkLNUx3X3IkBSRA==",
+     "grok-linux-x64": "sha512-JJ6ajCCdBeLc14jvcGKQmeOvoJdEvWMe2Bj82McNikup1d6QaX/E7MI7nmMmoHfQthqRfUSnFk/ExFRu4fodTw==",
+     "grok-win32-arm64": "sha512-B4cIPElA8KWpOX2fvIxFeb8U5Ifwal56ZNKtvqPgatflLMf9Quo+3KnBUXH7X8/Ohwe81ff8G+mcU6Ja6Z5RKQ==",
+     "grok-win32-x64": "sha512-EqPxlKg5FMFymmnF+w58VQ8V+ZrghIp7Qsuc2VCurIY82H+6qvnAMgJXGCpo2qH6JSWfh0HPiHkmTk32kHstjw=="
+    },
+    "tarball_sha256": "94b9c4ec7574ef37daabc2fdc5824c5fd86cc84561f2726635fb233f66655192"
+   },
+   "published": "2026-08-16T00:25:35.078Z",
+   "source_revision": "5115b46bc909",
+   "version": "1.0.5",
+   "wrapper": {
+    "file_count": 4,
+    "integrity": "sha512-kk5hez+Oz5CvWonDGkMNmL483CWRIGRF2ki8jQzpIXH56P0fhCgaX9lrr0IUoFCKh/rYAm5vfCPgQsdIIYLu8Q==",
+    "shasum": "ceb86ba13935478692a29724e2b53f1396e8fe3f",
+    "tarball_sha256": "667bd0b99c0318e39d8dc4af501d1658df9ece3e7a7e2bd87b012c0bb25f6f31",
+    "unpacked_size": 17267
+   }
+  },
+  {
+   "git_head": "24c70bc7ffdd6f278fb0b75136c06282f9ae593c",
+   "model_document_sha256": [
+    "264d0f644b0c435b0be869c081ac08231a205ccacecc6a46df2a7426f550748a"
+   ],
+   "platform": {
+    "brotli_sha256": "f5210e50365f9b5f93d14b1589cc245700b9b4ea7c08a831ebb28ecd8ef574ab",
+    "brotli_size": 38808817,
+    "executable_sha256": "14f76c7164a4bcad98d313afd300b7a3f2bd0a70880462477438c8af809dc678",
+    "executable_size": 135129536,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-w1zhPHFtmvqG0R+tnreOLHFo42/Fh8utapUqNy8NOBSFKbYW/britG8ZWmUbD/ZVvS9c3bv4RrS2ieEGaTVzzQ==",
+     "grok-darwin-x64": "sha512-BYzq588MwpE3T2gOPWfU59vghWrYx2ACy9A/GCPHAC1M8pS4q7Imw93Q3/4x1cPQFLPP4fD5J6ebTy640P3icQ==",
+     "grok-linux-arm64": "sha512-7Joec6ETcCmRf+2mHrb/zd4lLsb4GYfaTdW0xm+1oglCRPayRptz7opFHNEeZSkM1r09DITXAzB86T5DkZ5i8A==",
+     "grok-linux-x64": "sha512-9TRl1KbMow6ZXJIvA0tkIV8gjH8LIVLfz80ZEy0+FOZ2PivaK7y82m9zYBYJyMZGajx/pOwnK9av2Xx/WT7YPw==",
+     "grok-win32-arm64": "sha512-FofQcz20mroM0yYNIQUpavL7oSvuz/F4VKAZyJuAzlyU4mWWN8bKo3vkg86Ooa5lZFMXq5z6idY/kOldlB+yfw==",
+     "grok-win32-x64": "sha512-j95UHTqzqnWcfgBZjradXepd1iIXX/XdRpIs0Tpu17JA0qeG8Dd4JE9cUVQ/6jEvuu/1DZY9rybYWyMXPl0/Gg=="
+    },
+    "tarball_sha256": "ed5905e549001b2eed47e4f49891c3a05e623f6c0e720de985eda777642f7436"
+   },
+   "published": "2026-08-18T19:25:15.447Z",
+   "source_revision": "24c70bc7ffdd",
+   "version": "1.0.6",
+   "wrapper": {
+    "file_count": 4,
+    "integrity": "sha512-FP8BVevhl1rY2/rWQaoInX0JM7PtG5R2WFbdJxAyLWdekLQBox0Xc/X57pAgoY7aLZQZ3HWA+b4Y+ek04yS81A==",
+    "shasum": "98a299e95e1c1c272da1a5884e6f83cfc880f585",
+    "tarball_sha256": "d816fd10c5ff1c2b0407c5c3ab39ecb07494b8fdb66a8f2dd7fe951a5b8e3538",
+    "unpacked_size": 17267
+   }
+  },
+  {
+   "git_head": "325eae35b09b55a29ed340731edbdcab6adaa0f8",
+   "model_document_sha256": [
+    "264d0f644b0c435b0be869c081ac08231a205ccacecc6a46df2a7426f550748a"
+   ],
+   "platform": {
+    "brotli_sha256": "2c9500ba951fc0cf46efac8466c01f46f2bc4956a73be4d8778bc15d083f74e7",
+    "brotli_size": 38914021,
+    "executable_sha256": "71dad3b49f169e9b97d65649bf7f56f10f072fac130c521c71110dabc60c6301",
+    "executable_size": 135577712,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-Wa7U5M7M6Xwok2QSrOWAB37FIbPTdCK8um7krPgmBFCmGrhXGisGd+pBeYGA0vvuaCqEDi7RKoP9j3R0pcotbw==",
+     "grok-darwin-x64": "sha512-TeMAv1BrvcJAXwSS5qnLbmK5azkwARNLiSBUzkMyYKIYx5ToT7GECh0tzY204z9BbhFLfBrQjfp0Dee86fFOxg==",
+     "grok-linux-arm64": "sha512-JAti52rbNI5WLfGS/UDS5RwRWqQSQdYyhql3NYJN/S+ckIJkQ9UIy3BXMMGkjemsPrLqJoRUDs0t7KSRURHKIA==",
+     "grok-linux-x64": "sha512-e2++MPJS8fJJ3N1NDdNzLimJnX6gzez7Sbvmyt8DuJFHPCg6dKxHw+f+QVvSLILk5JjJnhxb1m2FfG+ZH1sY6A==",
+     "grok-win32-arm64": "sha512-rqdhPRMACLbZoaBvppFG9AaDYUdWdHlhyEGJ05Oo4snba9jpISvhBGg099UvIWUXX3xhbV/BuAyI5RCfmmWBYg==",
+     "grok-win32-x64": "sha512-KUL1nWPWnRvvEaxmPtTZUWFfcpgrh4dyZ6I2lJ8JOaKWn+om8ANld1cqEexKnMnR302gZo+beyQuofj4waBabA=="
+    },
+    "tarball_sha256": "c4d683c08d5ca94046ff749df89a2daba037cbbda92928c9a47a4500e7e8d102"
+   },
+   "published": "2026-08-19T22:44:17.840Z",
+   "source_revision": "325eae35b09b",
+   "version": "1.0.7",
+   "wrapper": {
+    "file_count": 4,
+    "integrity": "sha512-vrnnrxs0YzXXA8Af1vK/cKcC8DF/HUS8k/2SJcUoNV6QfzSjTlFJ3rrggYwhSJGq/bPBEyK8B+4tlsKX6GKFBA==",
+    "shasum": "6132f120cce1ba2531bd7c0ceb298e9e6d2f4725",
+    "tarball_sha256": "c76e89ffb6955b9a45d3d808cc22daff3d41a62bb1b66187581afca9e71afae8",
+    "unpacked_size": 17267
+   }
+  },
+  {
+   "git_head": "95f4d452703b4d0de2b799e3da2667aac509ee82",
+   "model_document_sha256": [
+    "264d0f644b0c435b0be869c081ac08231a205ccacecc6a46df2a7426f550748a"
+   ],
+   "platform": {
+    "brotli_sha256": "72edad9976c76824ed5b37c8e81266685845906eeb9ff604b3f42f29d2bfa4f8",
+    "brotli_size": 39248080,
+    "executable_sha256": "b16e351ea3989fc2307b28032278c43cda1e043f0adadf8ab0f40d51128aba0d",
+    "executable_size": 136757200,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-fCTbsBCvqGOPZT0YicIuGyzbYNXBGAFRkHUit+eEhhLQBqY+2fLIBbG3mncSHdZm7yHtTtM8zch+Wr4mAuzZCw==",
+     "grok-darwin-x64": "sha512-pCrwfGnUTGf1vh2R6Il7ORDLyPjrIGCh3SmJOHFyUUIcXMy6UKeJznizgICgNgaMSrKrTPgBmIMp/RaeQ7Uw6g==",
+     "grok-linux-arm64": "sha512-EnUgf6GdFdGvoXB0oClDt/NEsAirHPpBPap/x70Q4EGEjpd67ucgOVg7yoFNwhlw3HgrNJD5nDb3BXBHm4pHhA==",
+     "grok-linux-x64": "sha512-vLlebIj2YB+kda8IicYWG0N2KvC5Rp7EI4S0LwusB5lWLmw+fsqPYSfijLfA7mno/Me+sRXQ+4m+0BZR/DxhuA==",
+     "grok-win32-arm64": "sha512-TsSOzv6V3vbN2Uk8uvqRahBEP+0P3N41KxaovHgd6w34hMMDl9cTVKer2dxHevVNZDjk+qkwbFAR777bZFd0kg==",
+     "grok-win32-x64": "sha512-URXfrmdVr968tZSDs32dSEDEHlGbgTGM//sPPgVlFhdgV4jGBt60YQxQsCwAiVOeqv1qLoXkicbc+77Jn5V8iQ=="
+    },
+    "tarball_sha256": "23104e28a5f5cd57059be742282620bd735e2603f230d65c054e372e7c16d985"
+   },
+   "published": "2026-08-20T21:16:37.994Z",
+   "source_revision": "95f4d452703b",
+   "version": "1.0.8",
+   "wrapper": {
+    "file_count": 4,
+    "integrity": "sha512-uUqsq63fXuWxIEw6aca17mpS7N76mZ1uHdljXN0DKcHaR5L8QYRlOnQ337jG17dYU9zw24FmDEUpcBjYfVMomg==",
+    "shasum": "370646152674fa6b115c94342541761156f73a65",
+    "tarball_sha256": "858ca012c405b7c0b63ca3ffc0ea59cff7e3e46ab32873eb7e602c404f7a25f3",
+    "unpacked_size": 17267
+   }
+  },
+  {
+   "git_head": "d5a34fd40c84c9e16ed18762aa2038cdbaf576d1",
+   "model_document_sha256": [
+    "264d0f644b0c435b0be869c081ac08231a205ccacecc6a46df2a7426f550748a"
+   ],
+   "platform": {
+    "brotli_sha256": "2cb94d1e89b9129ae1c2c1d72be279bd6961da230cab9c40b243bdd29e563999",
+    "brotli_size": 37944706,
+    "executable_sha256": "6010f2c38bc4d9b11f44cf4968294908fdb3390e0bcd59a05e76f8c4530d3afb",
+    "executable_size": 132144432,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-L2Xl7et46YeeAQQPmH4XcLwMRZCFSwIeVLWQiFiWOHpH8BQJIX3cQ1+xXwWwdBlhRLza3jcuryq5bjGy25o9xA==",
+     "grok-darwin-x64": "sha512-vUOYgjAkXEbZOCJcSki//CYK1OrIHsVi2K0A3nhZaAy4jb4ulwRFraZ4VgZ/JnH/Ob9zHWzoalk6Q0HKR9LsGw==",
+     "grok-linux-arm64": "sha512-sMtddwRvEgUHPwZ9ET3TgnIUscyrDG2P2+iehoZD7/bWnEjnS2yIl4XjJHJKneb4R8oBtEw104ymcka0u28Tmw==",
+     "grok-linux-x64": "sha512-xOE4By4D1ETNMpwZDMVUIHbUrK4oLCrSN1leJcCB1T2wF+29qEl88zSt/9Rv3GCg7WLZE9CFdkbLT0Eefsqt8g==",
+     "grok-win32-arm64": "sha512-y0jx5oFBQjiqwGJMtTQ8azP5yQGPtISte/bWkopWi4tnEhGsnvGzo/UyBzHtKHC88EGsyYoDhAy8wF2tnWHS8w==",
+     "grok-win32-x64": "sha512-kstObnGFTnjjajvJq+4mYnQeIpQsnnwhPfQpWPtf0Ews3nQjnn5qYH1ZaWzZ4RFNz1FevNo/S+1I4GgOeeoV9Q=="
+    },
+    "tarball_sha256": "4ebb4634c0e943f146bab2c0685337523b5480c881bab469aa275344b4e6a917"
+   },
+   "published": "2026-08-24T22:24:11.843Z",
+   "source_revision": "d5a34fd40c84",
+   "version": "1.0.9",
+   "wrapper": {
+    "file_count": 4,
+    "integrity": "sha512-M15sW21mDjacPHyJSp058UphV2Z1npq2xfQXBXBGWlU+qtNxOZ06XfEUm3tGkUbGwr9oC9ZZPpwMEnJexjQFhQ==",
+    "shasum": "178c7b532d5a726527a9aeb2b783dc0b222989d0",
+    "tarball_sha256": "46f755e672d16bcfd3f0dd5a9cf62897e04dec3cf30628154a785f7e4ba9901f",
+    "unpacked_size": 17267
+   }
+  },
+  {
+   "git_head": "5992780042ca5ae88a709cfc01b089c6f9e3a536",
+   "model_document_sha256": [
+    "264d0f644b0c435b0be869c081ac08231a205ccacecc6a46df2a7426f550748a"
+   ],
+   "platform": {
+    "brotli_sha256": "25a36107e0bc0e07441208a78793712b6d20cb0b8878b1cb0cc8816bcb8b8ca5",
+    "brotli_size": 37971749,
+    "executable_sha256": "c66b8b44b670d55bd20022e0ade5c8b449f76699d81f9861f3ad21992f604446",
+    "executable_size": 132177488,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-JW8nkv6UuzUSfoJSeFb19jPw1c7lPRFv4o26tDFfKVcw7saQVhsdC7AS7CsFgzjCXrUROowKe6CLAiGMj5SAtQ==",
+     "grok-darwin-x64": "sha512-cvxleAmw0k4LpHbMhg7PcqnsJaomA2ndkSCgdlw+zi03HlxLC01v8EI83J0Wg6un/NOm7S+X86gp+TfwMZ/ndw==",
+     "grok-linux-arm64": "sha512-Ns8I9wv7xWjJyqjVgyelNXroIgCjGHONbdW78+F0OPTzgvDcp0L+tdy8WRiOXn+BHLsm9ub5hgs3pVoCuSIL4w==",
+     "grok-linux-x64": "sha512-SwEfM8PORPIKJ3vydn+DtIcqBRYoQ2NyqWxwiYjH6U7QEM3uQBqtoIGCQCJVEJCjqIdcJHYjvGKuMYeph6phIA==",
+     "grok-win32-arm64": "sha512-yzIQ9iWpdJu4PPzlnvGhPiGRnc0E3zJtJQJHHXhuY5IvNawhvqsRqFpOe4muPMkaCy+EYDA0uo/UcU/90y/X5g==",
+     "grok-win32-x64": "sha512-9mLHRkuZJoCK3ENAwn2flJ6o/0WiG2ep8KZ9PusxmLF7iQDBnTz0Kd05/LCDWfOMUWu2sJDPxOVKt7qBOT9ddA=="
+    },
+    "tarball_sha256": "730b8335a7e19b43d6f38c3247d38c349418ceddee4ff7ad16c94f8afa3c1ad3"
+   },
+   "published": "2026-08-25T00:12:27.233Z",
+   "source_revision": "5992780042ca",
+   "version": "1.0.10",
+   "wrapper": {
+    "file_count": 4,
+    "integrity": "sha512-BN1gsXm6mAWaz8GxK3aU43UNNGchSCy2pSS+d3FGyvdSgrLe8cD/4BsZ2T5IkRiya5SuJJTYd93c6eEEG1ceFQ==",
+    "shasum": "02d0a98365745fb8a9b77e7e5cd822ddf7702ab7",
+    "tarball_sha256": "99808a96748fd28fd971074126e516965adacce61221efcb94f281aa75c17ffe",
+    "unpacked_size": 17274
+   }
+  },
+  {
+   "git_head": "6870d7b2fdb76aa42537250aaac7924c326546fa",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "d2513621bac9f0ff272d6465a7b51087c00d05f32aa566dbb9764050793d2702",
+    "brotli_size": 38278348,
+    "executable_sha256": "7fd4681f61a65b1b19bc3774ebdea8df8b003bfae84a19f409b117b6ace4171e",
+    "executable_size": 133346912,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-2vTxtGCplvEHuW1wxoJmiX2vFzG8OPNcVmc2kmhPKj2hv8uF0YZ95iDLaN3CrBP+2fz95ZLv0LDuO3kOAMJ1fw==",
+     "grok-darwin-x64": "sha512-wiNOhDVyVj7eecYWjtRpZwNuL14TsS3ETUjnAQVjsGBuSU8YrFinBtVftOlIFawQiBEE7Pihv6MjB7edqbzcSA==",
+     "grok-linux-arm64": "sha512-oibtw5UVOHX0I2tmsgcRbgFiroUGP7iJOgtF+sqHeozZfNMq97xRtw+UJ9vuWX3O96jsqB90WC/XoJeEOCJGdg==",
+     "grok-linux-x64": "sha512-ij6WiJDK2+ChxjD19cVbV6tHCu0Jj333igQNDP0ai1ZnEdrHQxpX5BR7ZhE/vXsVhtNNCIRQoYBv4pHAtf0ptQ==",
+     "grok-win32-arm64": "sha512-hahI0Scj/XMRv1FS0M8OYLX8OW30bVfc8ekWlhqXs+bpkRVUFX3r0+QdGFTDtqUEhqIapGLr3HI1WeWsXatbNQ==",
+     "grok-win32-x64": "sha512-rTOqmDYRB4IFh/0O/LrPLvPx9N/YkkztgcHLSuntxkSZqPMBUj+q0/mKGzZmYOPnt6wJzbwInuto/IyG6KGcpQ=="
+    },
+    "tarball_sha256": "50e321db31395f7fe17927bdc981639a79b9e191782549675c8eb086cc88c839"
+   },
+   "published": "2026-08-26T21:18:17.930Z",
+   "source_revision": "6870d7b2fdb7",
+   "version": "1.0.11",
+   "wrapper": {
+    "file_count": 4,
+    "integrity": "sha512-MVIQuQTJ3uWED6rHiILlW8MUxFUAShITbBcFPqljtKzjpIpaqXQvl6BmmSjeayw5OKraqtNttO9gO4FNJHFYhw==",
+    "shasum": "3a0cfbddc45117aa62892880d759ed4c4336afe8",
+    "tarball_sha256": "83051ac17236d6c97a052765decfc6d006f6248188bb6de5227e713d21592fca",
+    "unpacked_size": 17274
+   }
+  },
+  {
+   "git_head": "ece2b556c27187f4cdbe9667a1d1151b47258f1b",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "ae190ed3bd3fd8d168971d3bb3a1e06ec7de781a6f394b990f8002db76a4b04c",
+    "brotli_size": 38254240,
+    "executable_sha256": "a7d2495b9721d6f4d01a2a1e74beb62cc5007276a76bbab0529a238b9373f165",
+    "executable_size": 133150912,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-ZcCeDeFGsNrsb5sclPNoV0ldO181YWh+4p2h2NjW3sE/bIbk+QwEihiT5Hz4p0s06O6ZIQYezenN0OHcTxU3iQ==",
+     "grok-darwin-x64": "sha512-HRoyW2p0rdiwGxcwa/QpKcDTk2zVU4dYyM1TGOO3qyjyFHHfi4CAEYkTfXxuHGBM3aFQU7s2HPL3sqJvDvLfEA==",
+     "grok-linux-arm64": "sha512-9N/kdx4W4/D1QVCqAgw0MnjjBQlm0V5c3u2ZQrzmJ+I4R+XMC3CVAcF2THaPElQnsow6JNx4Qata7Ba/9X+8hQ==",
+     "grok-linux-x64": "sha512-AAJRr1t5UtmeUk11RT94YWZ8XvCD0+P7dak0UjYveRD/1hy8f3RTClOoz5Q8iFiqcOcb9s/ArRS3bQ5dSsaVGg==",
+     "grok-win32-arm64": "sha512-E6luMxblGEO//6kUbgKqIf6j4j6AbhmabFgAOnOnbZWLDT9Rdiim+pouvL5dSQlNEC2yvXnEGpYMY80GUOuedQ==",
+     "grok-win32-x64": "sha512-9DnH7H9sMAeFYCTE5vYpIrMF7g3JxvxPy+newfODKwY+9e3rdSOt0sBs4kIJy3FYQQ+8mj5RMyW7OGXZsatI2A=="
+    },
+    "tarball_sha256": "8b08df1fdb909afb35cd24b2c5f019343787d599b5dba17d99ef828c0e25c403"
+   },
+   "published": "2026-08-27T05:43:40.430Z",
+   "source_revision": "ece2b556c271",
+   "version": "1.0.12",
+   "wrapper": {
+    "file_count": 4,
+    "integrity": "sha512-YzvjKmCZrYHD45ytHovPNxv+83FkCc99DZ6JBvC234G0e4GXHJ+pvukXbC+c8oeo7RA9K6U3EYJNLi39Xqj7KA==",
+    "shasum": "245dcd6e80346f2e83a392a78b5ffbb9cdd019c9",
+    "tarball_sha256": "e8b8b45268816a6ab59c9a0b306b3d3025bccaafb5db18e7c80edf4ee764cb8d",
+    "unpacked_size": 17274
+   }
+  },
+  {
+   "git_head": "5e9a58528b76b6128ee610059d79aecaa71b9b8d",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "e98538958adce7b4faf5d0d6f9dbaac414a1640135a8f65cc41fb55f6dcf5c39",
+    "brotli_size": 38386816,
+    "executable_sha256": "8669e0fdadceec25b8c159c355f427ffbd82583525d774b6ab1522197ea83b80",
+    "executable_size": 133486016,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-Nctnwkzj550E512RZ+n+IUuhqGPZ2L7z/ZTIlZdVn0KqZHfzC58vIZPMBzdcOkoK42IrJlLD6GS7Eo6c1y+VGw==",
+     "grok-darwin-x64": "sha512-trI+fm4ZY/2skF05XLfCYCMQgk/NUj6jYVV1stL4jPafhYj41yDYxu0PHgLxEy6f8UtA8XCfZN084/KxgiYDKw==",
+     "grok-linux-arm64": "sha512-hUfACShilnR5am+KVFyigNYSmL3FEVcRnXBRNKX2xz5eQ68ZoUMLt9IxNtZn27vogYS8NxsWiFkEsGI1rPeQ0w==",
+     "grok-linux-x64": "sha512-t0TpPmsEZwwS0utHq07L1oPX7tMgufAazIziccGn8IdTpo8ihqZ7KjaI6wikROXExfjvwTh83m4B0PL2ErPeiw==",
+     "grok-win32-arm64": "sha512-J+USAEgMyy7TaDRir2HvS1rj8yG8HjjtewK0qxz1dl2E7jjdqMjaKuN6H6l563ASvXwNDx17ye+1fkwwpjyKdg==",
+     "grok-win32-x64": "sha512-IAoQ+fDQVUzwzl1gYK+CMka2cH4yN5nbcsyodyvYTvkxSPixDIzzWeRtrOESOCPlft6YYpvFfdqisJppPOHekA=="
+    },
+    "tarball_sha256": "97c4b3ecab67747dee270c2576a5fafde75962c56aec5c519c44d9b933d91363"
+   },
+   "published": "2026-08-28T22:41:26.553Z",
+   "source_revision": "5e9a58528b76",
+   "version": "1.0.13",
+   "wrapper": {
+    "file_count": 4,
+    "integrity": "sha512-rBMEx/7ND5DaBRGwzi6fEyf4ZWy4yStPnZ38UaIM2smZzg4E0fieDfLKPK8eRF4l2Xe4+5kSdCAVop99+whG4A==",
+    "shasum": "7b60da75c5b79a98ef412af4243c9c248f99eb93",
+    "tarball_sha256": "97aee4a07bd358233616a97a63d7732539721e0f9ea7ffad4f018f15b0cad0ee",
+    "unpacked_size": 17274
+   }
+  },
+  {
+   "git_head": "dbb9bc1e773c56a541e74dfbed9220365b9fff90",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "5292f82429194b406a3c70aad79e3679982f588724518c221980509e6d868159",
+    "brotli_size": 38598988,
+    "executable_sha256": "90ef0f656cddd4ade316d3879af7b92927a07c4e2359d4f8f89af18b5e63d50d",
+    "executable_size": 131377248,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-+bM7MmFwOzsw69G5mm0eNU2hydZU6cDk9XJrDNf3E+H88kEnW+IKrdyAluOHw74h5eI0qTMYJgjU64/RZ+4Kxg==",
+     "grok-darwin-x64": "sha512-Jn4Iq/0V8j8W+GiR6nw9ukWzir6sy2kPCWrErOPsT8349Bt1KebKfrBpQtbzu9BwHS3mCzxH1lvHzw3MdxGL1A==",
+     "grok-linux-arm64": "sha512-sC04Ij34vN5EqrFfphBGZPdgcY6btz49zuewFV3D6maCl5N4rb4skXPNDg4WcrJkP/llvmWAdFOvkxI+MUDURA==",
+     "grok-linux-x64": "sha512-NKpJUtdl0v/mAtgt3kaZYRcpDVEooLx8UxvaOAMq1ozyTOlOLpX4DRSZ0znBNI29EVOVQjfCasohREBO+fQckw==",
+     "grok-win32-arm64": "sha512-TNp1DkhlMVy2fhM0Uo6bYM1rnYkAKzgfwFudN/1+oMuPNSBcWCh+mfH5dYq/sjt6M0qCqWw68SHBfnS3nqIKxw==",
+     "grok-win32-x64": "sha512-oYI57xrgREL73f3vP+RtQvhEcEwxxi1tCr1AOvpojfn0NtA8rriGI8LqEappR2WF+51EWaLcvzggGfug8FSKCw=="
+    },
+    "tarball_sha256": "a0a6b941a912dbcd219948435b1b051438a131f7c2b896978834c42a50495439"
+   },
+   "published": "2026-08-31T17:54:10.361Z",
+   "source_revision": "dbb9bc1e773c",
+   "version": "1.0.14",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-DvIJVJMl9UNTQ1VnS2gph6QrWuq9PfGxUhF4BXAN0+zFdnU+fF+JURdC9Ly1xT3rcpFfdbrmwDzEjjfV4P/psw==",
+    "shasum": "7b45af1a09a2cd796dabe34d82274c7a770e15a2",
+    "tarball_sha256": "eac00528816d7fe6d9b38fa9071b234369519a2c93eb5c9f572b0dfdb83182bb",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "9df779fea880ea7c33ced6c77b84a15b22a15560",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "b5c4245f7312d2bc985416002f2f515a8de9459d21971b2432f4c23e15f5a455",
+    "brotli_size": 38679070,
+    "executable_sha256": "86ffac7a9547936f02e97dcd9a0ddb3f69486c7bac66ee9e1cbefc72d59b4635",
+    "executable_size": 131578896,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-/JZYoc5o+0h/2tYLheK3Tkom9gdskCdPqY5MudKtVY9sqb3QN0jy4/QfQGKD4yLEe65rImnUfbSKEZ5LEZ1csw==",
+     "grok-darwin-x64": "sha512-7XQhfG+eZD/+b6sWngFbMJkfS9ZArhms0l6JNIygJ/uYZfy7AVjlxiju5Crn/kjdfakHyjdrcewub7J+gquVOQ==",
+     "grok-linux-arm64": "sha512-7PWzj8XFbwjZY8GJjwmsXQ6EqlfovR0ku1+luQnIOvnqYIOAf91dZt4uN1PbYuLnw9Ab6muex9um4SyFvJogew==",
+     "grok-linux-x64": "sha512-R2H7R9wxzcufSLaHJuvUlnA+wEQZ1d7JkO0seV3NTNBdFyI3Sl+sSqiuWVwjrFD5sStfCoONSGOuZRkTAk77Vg==",
+     "grok-win32-arm64": "sha512-3ZQNOFMIuRQtLgrGsUZlsIXq0jr9XPV3QgtTFabmZwOUYWv1NCv3E1xsIFTPPAIaM0tUrAJ2+VD+IyypzALi5w==",
+     "grok-win32-x64": "sha512-4Bjh8R0t53/ulFAtng7L4SHfXVMkIAG+CWr5v2UjR/htDPed9b5K9NxNFbFgOflKGhvqQYGnLDsJvJwyf9N8aQ=="
+    },
+    "tarball_sha256": "64b51fe138b7118794636d8a1edbd38871a06e12dbccdb70f1fb4b5c0bea6deb"
+   },
+   "published": "2026-08-31T23:18:25.728Z",
+   "source_revision": "9df779fea880",
+   "version": "1.0.15",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-RZhwtQswjrjhuuXlsRAlHwVMzVhtscU0jHuM611Lyu3CLD03WD11zJioiEdt/kgT6iXi6oN7RekmWYEJT6kZKg==",
+    "shasum": "9bc3ae7ff50a1aae3f2d9b7e0da2873da4e13f4f",
+    "tarball_sha256": "059c491a28c5c067c4be48aa1bcc9566155bdeac1eb3901795a4ebdcad8412a3",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "a0239a2688c17ba173e62863d23ca44ffcd5b8f9",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "a09810292e75bcfe8d903d58d7bbce8cd8035f54490f7501661ed14028a78ed5",
+    "brotli_size": 38757184,
+    "executable_sha256": "8d901060ef725068443fea122cc6f9e4818fb6724fc69ddeb39d464ed750e127",
+    "executable_size": 131829984,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-kC//CsgJgA7INzqCgomSz0eOQQivLEycpCuJvtINvB7XB0nZ6vROd/c395aAk2urg2uHdc+jEkWqdOP+oo5Twg==",
+     "grok-darwin-x64": "sha512-kdxVxMVk+NwrjTIa8Yzf3PcfcGhEC/sGQqXmvWk6LjJ6sfD27b1BNwcfjO82wxt8087bHi3/UdxGBqCd6+89Ug==",
+     "grok-linux-arm64": "sha512-UAXK4uZCP7dfXbpyWQ82pGNSddL7JQXET7lXFvtXM8E16ZLjs6VqlG60XIFHkeTQ9ouef9OGUJFLqEJC+hCGkw==",
+     "grok-linux-x64": "sha512-qV1/DYiu/7LIytIZy0Ahslpn1x1mTXxF7FiVsAsYqUQ7n6w6Y1EAvZwjUZ5H2APnxxrsGw64DmM4jzbHYsaqKw==",
+     "grok-win32-arm64": "sha512-Ciqhdn3FRcaXlW1nr5LWNRKy3YZecCTdy6GRRGONVk6ifOryDReJXk87nYCE4Q1akbaUoHCIgHyJ6VazEU6ZPQ==",
+     "grok-win32-x64": "sha512-ff9uPsASpGl7jwwOEqmKKQ6I/FuX3vTaVYR4a9tW5oGxj/QPx5zFG8flDMHKS3qUQRQ/Pa7Yy+ir1O3fT84UOA=="
+    },
+    "tarball_sha256": "6cf18ff89e7b2f4caf453556d608a24a1f4816327921cdbf1890ea5f7d84913c"
+   },
+   "published": "2026-09-01T06:30:58.848Z",
+   "source_revision": "a0239a2688c1",
+   "version": "1.0.16",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-FUD4/IZWfFC/HzrDnel/xFZu7G8rcJK/Cf+bstCaeDP+w3vOAO81hvtGAYdNW1pC1nMoG3sg4MmFS/h0UkeXTw==",
+    "shasum": "3221ef595bd6df7268c1b74276364df51eb067f0",
+    "tarball_sha256": "d8d80a41a7cfa518ec32fcee793b8aa24d37d4c031bdd393db7e0346bc902c5c",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "a549186d9d39311f2d3ee4208db62af8c65aa476",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "aa24578dc07ca571bc1c8814d9cdacc0b289f71db679eadbd5cc297d9519fbc3",
+    "brotli_size": 39106729,
+    "executable_sha256": "be8b42718132e3c2239e779707aa37cb6794ac678cf667845a7711e52fa7f4d3",
+    "executable_size": 132921600,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-kObO4j/mhUSm6hY+L475aSNgZk+shJ9Glx8a/OvfGbZXzVsqanBUaP5MJI6GJxrYxZ3SL9tEjprXr61raOaSCw==",
+     "grok-darwin-x64": "sha512-RHL0iWKX/OK91uPDvcPTk3j2Hy88uUebNnmtK5Rc9NQFRK/0CMG+ajDyPwWcPAZLi5zMox2geeQ8y7CWuo4cHA==",
+     "grok-linux-arm64": "sha512-oLhuR2ZGP12b8xCcjfqGdQ7ZXH7uoL5k4RosvK/RSjy38QMB5oPHlSZaGkDZWlETJGrNQOvckPt2PadrNUbNnA==",
+     "grok-linux-x64": "sha512-DG6dIebAtycYnY75+EVDZijm5o2ral0YYIlk4b+XggOq0rZEvRbzaLb2ARJZOBZl3Zc8vlgcX1j3DkFtnJOJ1A==",
+     "grok-win32-arm64": "sha512-H1PiVSPUsKltUKCGur51oq1yFUB18AkzxokYeUfG99lqfnHxXG1PlpwevcCnesbXatnc1Xq7Xz0xKkIgLpzuuQ==",
+     "grok-win32-x64": "sha512-Za39gkP9MMBtK9YvGKPIRZEu4J4fBRnIWgja598QgXcUug4HdSaytVOKqPoEO5xNg+qciFTk/Tl7VAPUNKOY6w=="
+    },
+    "tarball_sha256": "be621867919c8f6165d326583e3ccd099cc9871040889689e54267ab4b37cc0b"
+   },
+   "published": "2026-09-01T18:34:44.214Z",
+   "source_revision": "a549186d9d39",
+   "version": "1.0.17",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-eltsMETwoLxtOgBRlTJ5icIaXNT3vhA/54BYZw+VzoJ2bphUN0WYWovYOBG2ls/nt1yFDupxFgC11KOY/EJqYA==",
+    "shasum": "c7ec9bdc933a43d1bd10784db4867f0db8512868",
+    "tarball_sha256": "6c45171fa1df018aeb3b8447ca2cea09717bec86e01e0749f6a3f9d3f95be248",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "ea950872ad513f24be21388b287bf2dc765edba1",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "b03f371fb985a429d84d2f0d29ca55dc296ef0035b7ce3546194094d892c1b21",
+    "brotli_size": 39882542,
+    "executable_sha256": "99b77202286face91f27f97caca0590377b36300ccca99ff18e730228f7a5ca3",
+    "executable_size": 135828368,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-PHLPzrI6Jb6N6IYjbQdUbeF9hadGR0ALh87Wns0C0A1X7THDuu8vmbIdduGQFOsEDVxHNXZSO8+nCvZHgsLemg==",
+     "grok-darwin-x64": "sha512-xjZuoi3bAiv8aGVOA4jsivOMWi8N7aS3gP5+K1uLSw38D1HHM8v3DFCa49hWVviXpyM3hn4yTbdl2KCUIyRqnQ==",
+     "grok-linux-arm64": "sha512-b9gD43YQiiCyc3/ZIudD639EUjBoZuX42xZYqO18ps3kRgb+6/JYUj1E6IEtc8tNNNIVAB9Stox5axs3bW8Usw==",
+     "grok-linux-x64": "sha512-FVN9+Ex/zAdHLI8PtEpVIYqnrpQ0hZaxp2OVhcFOj+9e/65DK585TUK9LSVFeN/1gYt04AUMIA3vOKnoYnjnOw==",
+     "grok-win32-arm64": "sha512-3+b7TKi7W5jhcJtBmOtXftToq4aWUInd4ykPN8xc1onIJX1RjUhQv8Nv5UcrHhd/iYkW8D/TAfwtWturZKz3+w==",
+     "grok-win32-x64": "sha512-PbP/UYl8Xs8PANWCgJZxDttrqbDOr+9r0uAf0p1Js8+Ved/8iEDMdTI3GdzdZtMGuebMZprtoxYKW09wmOKTxw=="
+    },
+    "tarball_sha256": "ecfe539f9ee714c0791936598a78e231275defad3a81304e7237342960c865f6"
+   },
+   "published": "2026-09-02T20:33:44.645Z",
+   "source_revision": "ea950872ad51",
+   "version": "1.0.18",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-s90QT5h8d5SeV18K/KMPeT5FUHy8uZD4slx9MiGKcGJFuVt9lJC4HoZCiCJH6oL7iBLep6832kFyNr3Mr9gDYA==",
+    "shasum": "3852e95428c53271dea71e42377f0ab003462161",
+    "tarball_sha256": "90ae26f55e32abe1ddb2e27f4f31f7e7b40ed2da46dec0c15dc90874e4df7449",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "6b38df55f6b21c9fc453d1ee182845f47b2842da",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "e191782a4f4d280edfd1c64b15d698d6293c40845df680599a1bb9ad55331a7e",
+    "brotli_size": 39993702,
+    "executable_sha256": "d07bcf2a5babebb99301fb64d8aed00edc5980c98ae204bea9a91593c3ffcf68",
+    "executable_size": 136213120,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-vD6/e0B8VMtAB2qaT53zDj867iD4xIxWDU7zyA/wRrlJxsS6nF/b1NYhnHN0RnDdxatARlw+I0ggjA2QrFzz0w==",
+     "grok-darwin-x64": "sha512-LhyV/gdR0eHAYnKCrmSTOycSn73mVGySndxkhxYANJWoSFW81MUKNmBXCBseutAnkuYepYc4yC6GH9WSeCiN/g==",
+     "grok-linux-arm64": "sha512-tJV76kIy/RKKMwYY+X6sKIIKXQwElR2Z94B63kyk9MoCP92GCo67ZOEtd281rv/rBAZpdIOd81Qyb7fjCnTVfw==",
+     "grok-linux-x64": "sha512-vaAaXYi34PI5uTzM1+lREVF3es3DoTTW9qQJcxEP1UKOgoHtbvIMomI5WnXkD/Ru4hL0W+KGvH92RzBBzCvFcQ==",
+     "grok-win32-arm64": "sha512-Skl/hpDfS8pvNlWPrH3U4ehQv6eFqw+dS5zR8EIzzRVUL1u4vaK9r/IWD2D99IYicMHtTCxqnLo8KWdapl4W7Q==",
+     "grok-win32-x64": "sha512-odsVCrfVEfmvjyFywSMt0bQFPsTgKToFMeFsfiPvdhTk9deZtXETfMfBmwDHPqYOW0Rvb4SF1JK1p7Fa9CfYhg=="
+    },
+    "tarball_sha256": "8b49e881321a6f66da9ddcee7079a2c7d562fc7e8f3d51dcaed70fd7f03e72e6"
+   },
+   "published": "2026-09-04T15:47:04.118Z",
+   "source_revision": "6b38df55f6b2",
+   "version": "1.0.19",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-tEyHd4rZu9pFYm5jBDh37xGs+Ry9DYUxwUH4TjwvVia61N0veSDpO0aPgbvfUzDkosKGw2vPjr5/JaNAG2ZoiQ==",
+    "shasum": "0f48931e6aee9ab7288f9745946b02ce9812dd62",
+    "tarball_sha256": "cb324aa4f214325c0d858fa689da45c095c92d2d52db37f5bcb2a0c55dd1be00",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "df7ef6ad56ed56a879b0a52138cb8d6f7df04c4a",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "6923435a25969af55284dc4df9055231156f96bfb83ca8b8cc5391bb7aada30f",
+    "brotli_size": 40092485,
+    "executable_sha256": "c68e058c3ac02d5af5060ec80d53dbfbb320b60d24ab69992f805af922b63039",
+    "executable_size": 136466992,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-x6/JgU+AFbApLyq5It1VqU0ngQH8AC62YJ3r4AJebdcJcRgowzmwY4AOJvBFeCOs0UHVkh92/+H3zJjJwc360g==",
+     "grok-darwin-x64": "sha512-3Bg4X4iDRdo7NamNdCaIrq/XraDHy1yBQriJg3ukaOZneJm9a22UWMoNDabVmlr8VSP40KcXgey5H/GTwFklhg==",
+     "grok-linux-arm64": "sha512-Dl0o8J7K/iAMvjVaeFDJHUquzP1iFpV8lpkO980YvR/lUlncFYwBwOJCCcKZIMyGWhQHf5uTBG3BLo6GnW/DSw==",
+     "grok-linux-x64": "sha512-nQow+ez6IlTy2WAdjPQvBLcNq4ZncUTA91O61BBi/aIh1R5cfSl0E7zKmrtJWYYVuHiBBUvL8x0uwcCLpDC5DQ==",
+     "grok-win32-arm64": "sha512-cI9igxN9vtjk7ZtrwSvxdgBQWvc8X9tQG9c5PldjDsplX2uYmtO6zkhMk73+gPBp8MkRkU0dO3fHqAj0+ynA1A==",
+     "grok-win32-x64": "sha512-BxVLP6zaLm1XMXWTZKrJyGCP2aJCwezvLEF9Uqnne4F25H1srLY+L0O7nd4IP+ZrhrYub9gf5pMxEc4rWjFnrw=="
+    },
+    "tarball_sha256": "ea472302bc184079d8388e0c93bf9f5bd72eff66bb5ff54ff6b55915ca996746"
+   },
+   "published": "2026-09-04T17:43:47.124Z",
+   "source_revision": "df7ef6ad56ed",
+   "version": "1.0.20",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-0M/6puhAfuW7y0xeLif0JgrhN91xExdFIHqbH5gILs5XEgxf1LFdS4qYBPKQmGzF7sgZS+oaVLuaeoBVSNxiKQ==",
+    "shasum": "83ec48041fb0b9c3183fdcecab9943713e8ba8d4",
+    "tarball_sha256": "74a2b2dbbc1971a1ab1a995413803c2d8c9750c315ff25792c5535e20e41c972",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "3aedf38d5cfb8f82bed8d8380ea4af0d4e584e8a",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "a6555c9c1742bc5d2903e4c011bb0feb8720311dd5b383888de9d761285768f8",
+    "brotli_size": 40062905,
+    "executable_sha256": "daac3e1cc56771b94605c39cc091b7d3c3d4ef0aea3a45658250200aa22e936b",
+    "executable_size": 136467248,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-I4pKZGnR6Mv4MJOJsB9B/i2o0ODF4eZtp4jHN5feoTqKIeAUVg38OzBtE8aN/wZa7Xg+qhnf6Jd1tcAFvMoFtQ==",
+     "grok-darwin-x64": "sha512-h0nFj3NZ9Kz8w6fQ6UDxxeSIhC1WjwwoRE92iNbG//tZy6YGkppR3s7oRVtt4Xl0CJANKUt0EusyIYnnAvKLzw==",
+     "grok-linux-arm64": "sha512-Jlwz9XtZPNKz/V/ydifC8OVu3hIZz7pmoStt8c4KCqkSWjWiZ/PBIC0iJiq8rvByhx5Z0EdSyq8ZXVwtocceGA==",
+     "grok-linux-x64": "sha512-AjDV5ifEz5LFG2Jt5IlhAeEkJati/wOvCchVbR4eIj2ogjvmXoXlzBrYRXuAJpXBy5q0se/Yuez5FxDU9Ju81w==",
+     "grok-win32-arm64": "sha512-l7OloNMU1NNBKVYKWCkVctw+qekQcClWguPXS1ckxS3mdatIXce4uWvTzvA+eKm2Z8BqU5pJDh6lcZAIQnHDMg==",
+     "grok-win32-x64": "sha512-PheG2wZLHmnJZiD4rx6B6Aj86VE0kMCp0dek51FulEJfHIcfjuxs4NOF8qG50yZlpcCycUO/ssYFsvArNJh2gQ=="
+    },
+    "tarball_sha256": "b502b36b6ab4911f2a7fd5152583de3ff4810e64a69b680a16f27b2e4a571d6a"
+   },
+   "published": "2026-09-04T19:51:47.325Z",
+   "source_revision": "3aedf38d5cfb",
+   "version": "1.0.21",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-6yQqC+h1o+ObaqCxImK23dhkrOX1DEBMOKaH6fCK+B4gX0/8XIKZp0n7iKyBdK8KZa5vhMn7pS45kjX49Tps5g==",
+    "shasum": "5957e16a52b373aecf217901e522bd6f68ad8da1",
+    "tarball_sha256": "8b1ef8361c77d03ac9fcec0b8854f3249a86c9ac3404511fca3da7ac5dba83a4",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "8f40483ca2a5db8e52ced38d5f1aa63c7bc735c0",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "a04bdce823d5a84be80f7c733cc1fe6cb4912f1a55c8a9370ec83174fd49b152",
+    "brotli_size": 40253485,
+    "executable_sha256": "f17b8369d3283bb9ef3daa53bb95f68bfff91d605376eee1769dfbc798f7a9f6",
+    "executable_size": 137281360,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-nNRvUYjntqLpp+iMWSMC8LAGlMSp30Qm07lGAEdIKxXNhKNmIfgBj/GpP65tbHZ5ucbnKk9RQZtObb1VhUrcTw==",
+     "grok-darwin-x64": "sha512-fE7oykAZUKgbuS9PXb2t5eopYF0lv1cgay3OnJRCvdu5AhRp2s5hjZ9m0gQr7+ISjuuXaX/elIW03yGU63As3A==",
+     "grok-linux-arm64": "sha512-18cM7TG8AAiiHLpbsMWbULqNqYOB2AgFToTtqqKGDApXIaUdiofygf84FUSdWmWxf2y86tvER1ibkRis27Jcaw==",
+     "grok-linux-x64": "sha512-81qbSrCAfm+bNs3zKXQgNWaaTW7a2AY0ltWSEN90ejuahaJ0+HjMUPmeYA4r5HlIqleftzw6t84tI1EzUxxffg==",
+     "grok-win32-arm64": "sha512-Rs3wA/w6/What/5Pst+IyzhwnGrIhanwwBxyae7DyXOD027M6tG3XsNZVIAwtw/1wulE9Tck5MdVc62ZLMeB2g==",
+     "grok-win32-x64": "sha512-RA1fGQQWTD9t5JwMw22EuuRLapQLH3SCkou8bQ5ukopT+kc9CJ/2VKzELh7hI8LHzaAzvmFj60lmH7IASjC5DQ=="
+    },
+    "tarball_sha256": "8bed2d18e41e42585af9df6b3fe38dadc9ec350e49d259536de1e9d98b7d2839"
+   },
+   "published": "2026-09-07T03:45:05.760Z",
+   "source_revision": "8f40483ca2a5",
+   "version": "1.0.22",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-APqQAV0GSi26gM7TUEN2/HnNX5oa2MBZA0JjS2oUYxCS9fZKrMS1XEA8rhylqIH65Mu+KR1wG+c1fHns3rna9Q==",
+    "shasum": "00ad248f93c7b88c9a83b9a99f6aa54dcb287fe8",
+    "tarball_sha256": "583f1d45004bc1763a16490233bab84c9cc53700dd4eb57767421f7c5ca37cd7",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "7fa0ca2c9e6ab4b405f83b2a8dc5a0e1b724f06b",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "787ffd8bf83cbba7c8552431225fcbff28a9a792267d202c8d0d7fbbb4638742",
+    "brotli_size": 40277500,
+    "executable_sha256": "a697d8e96e93f2c687f15591208abaa4e127ed6d9bd0045712086279e8cdcca0",
+    "executable_size": 137331648,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-NnWI58O0qriCnL8ORCq1SpAQpHef5X5FEpRFevh8/xG41XSI++9FWEk/QXcvfxO8MKoBJkfmSLLkUpDUPNiA4A==",
+     "grok-darwin-x64": "sha512-zMDlUi9eSUQk69fprSLcV9Kg6bM6k8vBen18T3s2itvWN28UP+eZsDwS1+LTCyMOfP/cdgYRKG6ZvZFV51wteg==",
+     "grok-linux-arm64": "sha512-dkq85Dm1QLuhI5a5wEUFjKyhovRw21V+VWFnusgUI1Hh7oIPouwu5B4EkY432UAb0mxZFfw1FyyuRXFnByHLQQ==",
+     "grok-linux-x64": "sha512-KEalGRt9m7vHTaur8IpW04V2Cl7Yhb32n5jqLRHSqIwK13xrvTeK1rVoFhB84yy66Rdtq2LbdbxQA9p5XItktA==",
+     "grok-win32-arm64": "sha512-hh0PAllJho6/es+uyN9ZugDIeEACFMVFb0hFIpoYXPcYTt9poeuAXENeC8OhgJ4oI113Lhv3Q2dEq2+3sYRyWA==",
+     "grok-win32-x64": "sha512-qJhHKazKkS6VDykiJmTukHQvuKGI8kI/C1HYZ6XWVgcqnuZnqwgGbG/H2aXbNLQPesFnM3EbxZ457gtmCtBwaw=="
+    },
+    "tarball_sha256": "7d823f5d758b26fc960fb9f0e5ce8ab668f8b4e0d0425d53ffdc2bbc81385127"
+   },
+   "published": "2026-09-07T19:09:22.714Z",
+   "source_revision": "7fa0ca2c9e6a",
+   "version": "1.0.23",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-wkNHD7gB3+LLORzRHBry0/2i3qM2FIfj/lF13dylk0d8p+VxH5uYhPVHo14MUYVgmPIFBydJWywR40t63kQejQ==",
+    "shasum": "0745f99f21572335fb5da8929da2812aba52edaf",
+    "tarball_sha256": "859ff58ef001a77249adcc35da84e0aeb14c2baf482e4482d123e6e39581e027",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "68e414c661e37965e3b8244c3d66e7fce2d0c644",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "502ba7ee2b5ca8f29d31f186022aa35bccaf8e26e2dd01973358d01c815048c9",
+    "brotli_size": 40282046,
+    "executable_sha256": "4291021c1570a7c8610277a3d65490a5e54b50311e222c6b4614264f02a215b3",
+    "executable_size": 137364416,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-XFhXsZKSshFVXx+/TDAsIao9BkQYTq3+STewuw57F1wsRPa1r/E/RGoaa0HTwzEYzM2EJht5qg6BwHuuRTuPVA==",
+     "grok-darwin-x64": "sha512-H+6drYV0roO+zqE3LSC2pmH3AE8EM49cerlDYdVpbu9XjqfGTRc5Ol/Qex/Fp8MahSHsovRN0V+7bWzaZPzpbA==",
+     "grok-linux-arm64": "sha512-PKZ79oGaYeXyiVDhgEawYhcLAOBGY/U1okgJFkm4J4naHkv2vCRuWFVM515N5mCRCnp8V18/GaQ0kI0neCtCwA==",
+     "grok-linux-x64": "sha512-Ivf7CUyKnoESbIYfcxSSHP12iEYI8s7n9uzlUl5lzsYbPyNiLlDwcdae5Ck+PiK9BSN4eRMxyRHvsjgy0OkvgQ==",
+     "grok-win32-arm64": "sha512-iOEKYYEvpZLtSdLbcTviToqvSi5YcndpV/4kfylHR6hWvKK+X5GGmcjFeLiUaNOpCMEZKuJGDodNYIhyzxvAmA==",
+     "grok-win32-x64": "sha512-LAlxTTJ/RDW1W7UhPlwKVZs1SNx8+cXXau3tdOQffmvIfm4ADj22RXRbFbvCJ2Z31RENJTTLMtk8t/5yExgAyQ=="
+    },
+    "tarball_sha256": "f0af5b2faaec27f79825cf8bfb3a79b0bf064d9a51014b993bfc22430b3ac942"
+   },
+   "published": "2026-09-07T22:35:58.009Z",
+   "source_revision": "68e414c661e3",
+   "version": "1.0.24",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-zgOGfApEA94h6RcjU3eHdw1IFGamrMprWY2Mzjl9gelZ7b7qrdD1sPrTSEo3Rd0xjkpZoIBqIGLtdop7/y2ToA==",
+    "shasum": "6008ac49b5a494ad96f7dd37c1c8dc7b571b1931",
+    "tarball_sha256": "31984364f75c3cf58b0b14a86e4dedea59fa0d4f5fc0b28e35a439123b2647fd",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "f7e67d6988e2727a1c730e285661eca4aa5eb565",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "7d13cf31755d1dc4918a3bd5bd1bed2917fcaa06d965602357759178f375fcb0",
+    "brotli_size": 40481176,
+    "executable_sha256": "9ef4a40ad60c6a5178a65caf39c2a148e6a98d0d2d350b10329dee34d9195d9c",
+    "executable_size": 138080336,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-UiJJ6W0w+WyI87L4gbbfT6Qb4TyIP1VRIIaGG4OA030KDYzgwKz6mj+OSmHUGJj3wWwefNRXQfPNcAU6pLG3Jw==",
+     "grok-darwin-x64": "sha512-w3TPOEnLHSqW/srzuBkyDp1n6UAnpkjXNvQ3uePKVPfdtHfZIXbBiE2oalxfdJWt1wfaIsh5bV+2+CqVcKy1mQ==",
+     "grok-linux-arm64": "sha512-f80UtExZcNEIk/kz1ICnT9IcM6Xz5/Le5XqpPeQHP1gozYE4PIKfrkUPKvMX1KzidjT9ecIPDq3qzi3W+NT1tg==",
+     "grok-linux-x64": "sha512-o6jLo9Sl020LYVnAFXiaNPuHJ1SnKO7hxZ/7i6v/4lrUtX8YnKxBitxGv1zCwmooDaF+hgGF7EqAwmKgu7FNfQ==",
+     "grok-win32-arm64": "sha512-d1uYk3ShXLdEBSfv2KvI3ovUZvShkiWit4N58qmcq8JfeHrS8GKCsNqgtS7JK/vkBdv60onNSrBKr1KqxB1Cbg==",
+     "grok-win32-x64": "sha512-FW8MyP02P7ldwmthbg3ZntdJnP9XTn0xJMq+pcQfqxUNLglbEOV8WCvvqrhgNhkK8ePyZkjh2WCNyoGmQmK2rA=="
+    },
+    "tarball_sha256": "c1548be1210511909bc74e2f4264feb569166ffcfecf15123fda8ead250e0cc2"
+   },
+   "published": "2026-09-09T18:21:45.130Z",
+   "source_revision": "f7e67d6988e2",
+   "version": "1.0.25",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-ctFahpzPHMTGk2rYfcWMlQ/Edu3GZ0NmexpfCQ2eMA79QtxC6j0xpAQf9A5HZqQj2vUcic0gWDdyYrHNbofowQ==",
+    "shasum": "1e87fb7444e17b972182f273d7677e3073148c54",
+    "tarball_sha256": "74402844a945d6be6e065e3e0fa2881957aba9af36581f8cc2fb698f73be8ab2",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "fadad3468632f90c38832f7f597dd3d0e6c793a4",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "879d6b1bc67624676c67711f3a5d4177b64a1469ac0f0c166e36f8e8c93f9141",
+    "brotli_size": 41294250,
+    "executable_sha256": "081f1d861e99bd738e2939ccc7d447d113f0e05fa253c6489a8918adaaf7d8b2",
+    "executable_size": 141421808,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-Z5TqgLYRJRVDHaBofW9Too0j6gGUVMB/SJEV1lQne0mIQt0ce5LowyfkMDFo0R6yj/rONKfOSnNfO/PAGTGxLA==",
+     "grok-darwin-x64": "sha512-11MaIf0HFjmuJOn66McJnAjKd0+bdanUgeLYIUEg/zUmu/MDwwUKeNvGcDiaUoROrGik2a9YJ08ErSk2E5NOqQ==",
+     "grok-linux-arm64": "sha512-PNdZTHlP3Z3jVxYiyyhHvcjU59DI+h3vivBOWKvVU+LmWbElO2EbCrXfMxqkNY6SzWeUlrirD9qC/6M6cJB9xQ==",
+     "grok-linux-x64": "sha512-gwmrNKJDN5IKu32Clt3tpK1yWPedPBzY5bWqklG2oh3+4A/Ou4U/wv5EsINPILsDIjPWRGd8FqCcMwI2FlZF5w==",
+     "grok-win32-arm64": "sha512-V4G6s7sgOW9qNZMStGzupiNF+xHqp43ow9CMJ9pRWxtqIJXA2SpCpwmpftXCAMiCmjYhTC82OtQl4h8o8j+qtA==",
+     "grok-win32-x64": "sha512-nhL0W3qC5jTN8fRwY6VfwyFYo3UxmWtsmv9wlicZ2APgY6KyRehC+x27rAeFDUJbAtKQ7E3C3YfiRj8+3kXGGg=="
+    },
+    "tarball_sha256": "f237c01a41f2993fa93a1cef1715ddbea16f571d2f8cc5293a17e2801bcc2964"
+   },
+   "published": "2026-09-10T00:44:45.296Z",
+   "source_revision": "fadad3468632",
+   "version": "1.0.26",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-w7e2gUMQC9WAM02D/K++6nqdMk5eKEyx9F4/jL9rYsKiLP+ckIni4o25oAGXJamN2oi/wTHiTuPIlIqtueH4Nw==",
+    "shasum": "8254ccb9d62fc84f6080260b447aba46a23526f9",
+    "tarball_sha256": "ffe0809819ca01f8562f33f9f76fa31ed5ff477dd414d211f0531a4ab683fbaa",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "a538938e5720026f3091318a7fd76c24ba01fcfb",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "9077bfa8ff155bc109bf35f495b61342b4304505a1c6be9eb198ef12544248a2",
+    "brotli_size": 41300597,
+    "executable_sha256": "6e85277b0432c894abcb325d9132bdc88c9715fa3089f65b7589963d5522ec80",
+    "executable_size": 141421536,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-IortKRKP8Ooor9F8R1jUVHhnl/JAz7VfqX/GMkNEDJ8LF1qJ+4MiEL6sCBQrKfXf28RPETRs/6sqQZAJpJ9QGA==",
+     "grok-darwin-x64": "sha512-N3m9jhaiiKXp/J3+keUKmMlhCs/P80D9IhdUeRkHmmsrmSGwXqATxGN+vUy5Y+hvCMOHttA5Adgdxgg+xnK54g==",
+     "grok-linux-arm64": "sha512-iD9Z8NTDi19vsLDZ69Jt7usgev1+T3zsypdhhbBhUwEKZpYy6ZrXc6i6AagiIK1Zz+2OAZjZcc6xZX4vSU5y5Q==",
+     "grok-linux-x64": "sha512-7ueV4HiYEyGgxWTG5c13V9pJ209KDbjeK1XMm6snuATPp0f9npoZs9Qhqggei8NgzHAX3qMbqWOR9PhYr3z6sw==",
+     "grok-win32-arm64": "sha512-Diodjac49HAtJ526m1qVdmLmvXSkX5irWTSuHLk+8AGWC5W3jGLpu+3Iw7m+S35+S06MTcp2cybHCAkTkaKAYg==",
+     "grok-win32-x64": "sha512-P5CrhRrS4TI4hEcVxQ3PD6mQ8R4W84fmfuGR/X82MPDRGYzyljnZVVu4yHONF0kjyyhxxgI7270q0KaKkm4RsQ=="
+    },
+    "tarball_sha256": "6c12734cadf73812a3a40dc10e9f8fda53d22f2f7311d224b87dde7119343e4e"
+   },
+   "published": "2026-09-10T03:12:47.582Z",
+   "source_revision": "a538938e5720",
+   "version": "1.0.27",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-WdkCpSlbbi0cbNBCm3P1Zs9wYju6E7FiUc14toWjsAXUd7KU+yIe9fZnsQ3VVceDfxOB4MeLnE458Ax6e5pPtw==",
+    "shasum": "35292860f4126b3edd0f742c35e7973782becea3",
+    "tarball_sha256": "1ea56aaa23b1486be8abd4d10c9ad2b0b12351f29df05564faf29568ff2b4d83",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "cae16d2533b63d532ced411602293df06957d570",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "ba5ad4781216ad0858f60d9d322f754e50614d5f5b0513d65c2d7aa1996afd29",
+    "brotli_size": 41352031,
+    "executable_sha256": "bfaa983f8dd4d300ce8277f52ec38257e42a6105d4df75492f6059a28e55cc5c",
+    "executable_size": 141587632,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-xzEv/qnvZ7HUxZqZVP8XX3+iZ4fdDKo4rXGKU5VtCJoDdP8rjwD6sLzMOfdTnpLCe3LSvSVnZN/9gmpoAOoWTQ==",
+     "grok-darwin-x64": "sha512-r+WDmkK24t3oa5HPmAMjCMN33+KwcOyiF8OGDOUhRbepGdjvMCchcp3/ZLUfi8HZzHMUlFJFQOtmGdTLgoNZXw==",
+     "grok-linux-arm64": "sha512-uqfTHkaeU/ID6ag6WSR2emPPMMb5ufw7weFC1g08wHv5zjC1votsYLcmDy9dYieKqu7ThyJGKK5RHLlya/72/Q==",
+     "grok-linux-x64": "sha512-CwKeM0xv30nt+Ebo2hCRsT892Vcrs9QTC3sCfsAelgHWyRWbrdOkOV8KtXPnudQqufbJKnDvxc44itCMYtW1Nw==",
+     "grok-win32-arm64": "sha512-2rzk2tyuJyYuxwsUfYiM72bh/m6fSX3DE5+KhEFgtHT3AKBbdL5qO0R82ORjhS+yJxE0gqe7liMYFPRUXX3+Uw==",
+     "grok-win32-x64": "sha512-PaqgT9utsuz2uxYW9rQecgc9RnOs8Ln1YXhwCwuqDqFTDHUFf7aaC8INbe14OeJJdfifVaMGizdus+fpvZtK9A=="
+    },
+    "tarball_sha256": "0782e98799dc03049aac7513fc70261dc2c82d0b237e1cc47ebcf76565650e4d"
+   },
+   "published": "2026-09-10T20:26:22.991Z",
+   "source_revision": "cae16d2533b6",
+   "version": "1.0.28",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-zgLsvTPoTndL4HVOUfoKHpU3cyVx3LaJoeRcpQaeStiOcrcMRteyCzZY0jpmy52yI6gS+iFcGm0fBhWXh+Um1A==",
+    "shasum": "4ed402284c230745f6e1b426733ede33432b0b5c",
+    "tarball_sha256": "3cd21624ee1a75b1791f53591bedd006a737c847df38ad3dad98585c62ca4cc8",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "4c83f16c3e1071b22eccbb317db6f2801f811309",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "a6729424609ea58e6317f9ff046b6203c9530973ecc45e4164468178e4d90da6",
+    "brotli_size": 41327540,
+    "executable_sha256": "2b6b44a2e7e72348c4fc65f3c427b1c47fe95cbcf9f43f204f826d382b7d85db",
+    "executable_size": 141553456,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-d+Be4WnblHqvbPC5hFsnZjBHRD7D5rqjBmufyRazgKyvu2vcrt+DsFjChRsptx6e/JsuVWS6dQzWqe3cPhuk7Q==",
+     "grok-darwin-x64": "sha512-4sTJRD18P/Bvakj1guZM5IsC5dOPgU/8fs3XI6obrHC+kBQwAkwUUo81Sibfl/tACZGunw0EOzEg2/RHOcrSpA==",
+     "grok-linux-arm64": "sha512-Bc8swwMr8FwxeLWptp24bzYH42hMoI1ad5xH4ZKk5DCSMqhISmkTBp5UPRnV7kFajfiHfBCpvuXY4liotZBGAA==",
+     "grok-linux-x64": "sha512-wfh+19OeU4lywfIbtII7WEgk9ckUFHGZDduSXAAMm9MiEMbqP42BjSAv2kOcvGyOs+Nk8dGa8+ggUeWNxYbXKg==",
+     "grok-win32-arm64": "sha512-S1mevWQORkZgfC8Yi2PFSh6V27h9+ku2s6pJXNN1AxznwDSEkIGAemyLUjPGo3Px77pghhocgueMGBUmYhccNQ==",
+     "grok-win32-x64": "sha512-g+RqKZivV22EUPG/ljn79v7GUSHvMxf3ssjLqT9qckQe0Uq160RvaNIXSZuwlGzAQWwseCrHE10fV8XBQIhJTw=="
+    },
+    "tarball_sha256": "da4a3756a367d5d342bd0885f6bbf73a497539ed2f810cc6ba6e914d345a35bf"
+   },
+   "published": "2026-09-11T02:33:30.558Z",
+   "source_revision": "4c83f16c3e10",
+   "version": "1.0.29",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-0gmCRIQpXQR2Dsn+Vk8ht3LfkgnCX53N7ekpMidBPD/LiK8p2KpD8DB67QoaUoYvzVtPrtN80PE+pGuvxL2nKA==",
+    "shasum": "75c3553991332807c265d3fee7d82c975d3fcde7",
+    "tarball_sha256": "9adf32651ba3be6c50619ad0f47ab3d72ba9b5196f0e7efd7732e6b64cc57fbc",
+    "unpacked_size": 18363
+   }
+  },
+  {
+   "git_head": "04b7ffed98c6943e3c736e6e8cfb7f979560638e",
+   "model_document_sha256": [
+    "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a"
+   ],
+   "platform": {
+    "brotli_sha256": "13f3c6cd5145c5d1e39a6ab9ab51bc429655d6f7410938b295011a367db17d1e",
+    "brotli_size": 41436148,
+    "executable_sha256": "d53b6e543e482716236748914331db50145c696ac7af91f1ebdedcf5654cfecb",
+    "executable_size": 141869568,
+    "name": "@xai-official/grok-darwin-arm64",
+    "other_platform_integrities": {
+     "grok-darwin-arm64": "sha512-/7FLmHU1VX+sdBGBAqDZbOqqu+3iithK9Kky3/IJBaqvxgnaeUbGFCz8f5uG6OkkoKyBZuKbwgId2iI6/e/Prw==",
+     "grok-darwin-x64": "sha512-TiRKMh3MFjQHcP7WrjyqcxeQLO0NUdHh59jejwo32ioF21FLaJemI4JtbmBIRbTG2aNsYnCeNWJ98aNzR54Eyg==",
+     "grok-linux-arm64": "sha512-ggOR6JIsP8Oaz1WpdE8lJFrVKcGfq0QcYhhqir2TfZvGnO5LCIKoLF+hYFim56oLR0RmYM8v7qB4Xh2VlzuzpA==",
+     "grok-linux-x64": "sha512-yM1q8mRZeAUUhEJn0SY256D2ucz+jvmK8tKo/Ivcr+7EUouy/VtS9bRfrhTfj5i6IemYxH9NIoV4wtJjSzh90w==",
+     "grok-win32-arm64": "sha512-MLa0AzQzYYcXh/lszwbu++5k3zZ+U547LyNRr0a2d8sQ3rSPrqog+Yz7rCG0jjSfGt+eklnKuQzIV2XsuP6kbA==",
+     "grok-win32-x64": "sha512-r8iEYsEspPXzKDmKMQq6wqnvNzbAjTsihFnharoOsJK/SgSiOR2PINrXzVDOaORxQPWTWlxRjIuqt9DY1iInIw=="
+    },
+    "tarball_sha256": "7e522683b99268fb44b5834909739bdea743fb8ed9fe9fa3186b6be56938b3ed"
+   },
+   "published": "2026-09-11T23:11:16.162Z",
+   "source_revision": "04b7ffed98c6",
+   "version": "1.0.30",
+   "wrapper": {
+    "file_count": 5,
+    "integrity": "sha512-nIz4K8DXHJMIVzbXBKWmM0qT27iZV0T4RI4LQ2AC+vO7JAAAqlQQGyZHqb3TzlF4PFMNBPpUmfnmcbEOrs6FUw==",
+    "shasum": "dd6bbb51ddbfd6a07143e2bef4afb83d02c7beaa",
+    "tarball_sha256": "c57e7106e1f18e9d41677d06836a0abb3a498ae353763dacab3a1da473351628",
+    "unpacked_size": 18363
+   }
+  }
+ ],
+ "host": {
+  "binary_sha256": "d53b6e543e482716236748914331db50145c696ac7af91f1ebdedcf5654cfecb",
+  "binary_size": 141869568,
+  "cli": "grok 1.0.30 (04b7ffed98c6) [stable]",
+  "equals_official_darwin_arm64_1_0_30_executable": true,
+  "installed": true,
+  "note": "Decompressing the official 1.0.30 darwin-arm64 package's bin/grok.br yields a byte-identical executable; the host was observed only and never updated or replaced",
+  "path": "~/.grok/bin/grok -> ~/.grok/downloads/grok-1.0.30-macos-aarch64",
+  "source_revision": "04b7ffed98c6",
+  "version": "1.0.30"
+ },
+ "identity_decision": {
+  "catalogue_claim_unchanged": "exact 1.0.25 under QualifiedOnly",
+  "downloaded_artifacts_executed": false,
+  "host_install_changed": false,
+  "keep_0_2_window": true,
+  "keep_1_0_4_floor": true,
+  "keep_baseline": "0.2.114",
+  "later_unverified_after_qualification": "1.0.31",
+  "live_acp_session": false,
+  "mid_gap_0_2_118_through_0_2_121": "incompatible",
+  "model_binding": "grok-4.6",
+  "new_milestone": false,
+  "provider_prompt_sent": false,
+  "qualify_intermediates": [
+   "1.0.6",
+   "1.0.7",
+   "1.0.8",
+   "1.0.9",
+   "1.0.10",
+   "1.0.11",
+   "1.0.12",
+   "1.0.13",
+   "1.0.14",
+   "1.0.15",
+   "1.0.16",
+   "1.0.17",
+   "1.0.18",
+   "1.0.19",
+   "1.0.20",
+   "1.0.21",
+   "1.0.22",
+   "1.0.23",
+   "1.0.24",
+   "1.0.25",
+   "1.0.26",
+   "1.0.27",
+   "1.0.28",
+   "1.0.29",
+   "1.0.30"
+  ],
+  "raise_latest_qualified_to": "1.0.30",
+  "registered_tool_claim_unchanged": "exact 1.0.4 and 1.0.5 only",
+  "reuse_behavior_revision": "grok-build.acp-v1.cached-token-model-4-6-v3",
+  "shape": "compatible-extension",
+  "unprobed_1_0_0_through_1_0_3": "incompatible"
+ },
+ "npm_dist_tags": {
+  "alpha": "1.0.31",
+  "latest": "1.0.30"
+ },
+ "npm_package": "@xai-official/grok",
+ "observed_at": "2026-09-14",
+ "observed_platform": "darwin-arm64",
+ "official_stable": "1.0.30",
+ "packument_modified": "2026-09-13T15:01:07.161Z",
+ "platform_package_compared": "@xai-official/grok-darwin-arm64",
+ "previous_ceiling": "1.0.5",
+ "published_stables_after_ceiling": [
+  "1.0.6",
+  "1.0.7",
+  "1.0.8",
+  "1.0.9",
+  "1.0.10",
+  "1.0.11",
+  "1.0.12",
+  "1.0.13",
+  "1.0.14",
+  "1.0.15",
+  "1.0.16",
+  "1.0.17",
+  "1.0.18",
+  "1.0.19",
+  "1.0.20",
+  "1.0.21",
+  "1.0.22",
+  "1.0.23",
+  "1.0.24",
+  "1.0.25",
+  "1.0.26",
+  "1.0.27",
+  "1.0.28",
+  "1.0.29",
+  "1.0.30"
+ ]
+}

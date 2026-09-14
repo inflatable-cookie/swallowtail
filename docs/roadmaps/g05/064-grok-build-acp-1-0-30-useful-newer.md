@@ -94,16 +94,37 @@ stable authority. The ACP registry does not override the npm stable channel.
 
 ## Acceptance
 
-- [ ] official identity and every published stable are reproducible
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes production claim edits
-- [ ] the maintained segment and historical gaps remain truthful
-- [ ] catalogue, registered-tool, and exact feature boundaries survive
-- [ ] official stable is rechecked at both boundaries
+- [x] official identity and every published stable are reproducible
+- [x] every changed selected input is classified
+- [x] identity evidence precedes production claim edits
+- [x] the maintained segment and historical gaps remain truthful
+- [x] catalogue, registered-tool, and exact feature boundaries survive
+- [x] official stable is rechecked at both boundaries
 
 ## Result
 
-Ready for Queue dispatch.
+Research 314 froze the wrapper/platform integrity, tarball and decompressed
+executable digests, git head, and shipped-file inventory of every published
+stable `1.0.6..=1.0.30` after the `1.0.5` ceiling, with the installed host
+`1.0.30` executable equal to the official `darwin-arm64` payload and no
+downloaded artifact executed. The mapped ACP method, callback, key,
+permission, auth, model, and vendor literal presence map is byte-identical
+at every hop; the embedded model document changes once only by dropping the
+unread `show_model_fingerprint` key; and the 62 mapped-core ACP modules
+persist while added modules and internal renames stay unmapped. The
+compatible extension raises the maintained ACP window to `1.0.4..=1.0.30` on
+`grok-build.acp-v1.cached-token-model-4-6-v3`, keeps the baseline, claim
+identity, deprecated `0.2.114..=0.2.117` segments, `0.2.118..=0.2.121` and
+`1.0.0..=1.0.3` gaps, `grok-4.6` binding, and `AllowUnverified`, and leaves
+alpha `1.0.31` and unpublished `1.0.32` visible `UnverifiedNewer`. The exact
+`1.0.25` catalogue claim and the registered-tool courier on the accepted live
+versions `1.0.4` and `1.0.5` stay independently bounded, with the
+registered-tool qualification decoupled from the executable window. Exact
+npm/package/executable identity, the all-hop mapped-surface ledger,
+mutation-sensitive fixtures, and current docs/claim agreement are frozen in
+`crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.30/` and enforced by
+fifteen identity tests. Validation is named in the handoff; PR review remains
+queue-owned.
 
 ## Next Task
 

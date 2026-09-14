@@ -11,20 +11,21 @@
 //! versions the accepted Card 128 live gate ran: Grok Build `1.0.4` and
 //! `1.0.5` each admitted the Swallowtail-owned mediated-stdio courier, listed
 //! its tools, and completed one registered call through it (Research 295).
+//! That set is independent of the `grok-build.executable` ACP window: the
+//! window may hold later maintained points without extending this live
+//! evidence.
 //! The qualified dimensions are exactly what those capsules proved — the
 //! provider cannot represent a consumer Deny, the route delivers no consumer
 //! tool progress, and the capsules carried no selected skill bundle. A plan
 //! bound to any other `grok-build.executable` version — deprecated `0.2.x`,
-//! the unprobed gap, or an unverified-newer point — projects the unqualified
-//! truth and refuses a registered open, so every published row stays scoped
-//! to the executable version it was asked about.
+//! the unprobed gap, a later maintained ACP point, or an unverified-newer
+//! point — projects the unqualified truth and refuses a registered open, so
+//! every published row stays scoped to the executable version it was asked
+//! about.
 
 use super::carrier::{GROK_ACP_REGISTERED_TOOL_MEDIATION, GrokRegisteredToolCarrier};
 use super::version::GROK_ACP_REGISTERED_TOOL_MCP_PROTOCOL_VERSION;
-use crate::selection::grok_build_acp_claim;
-use swallowtail_core::{
-    InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion, SafeDiagnostic,
-};
+use swallowtail_core::{InterfaceVersion, SafeDiagnostic};
 use swallowtail_runtime::{
     ConsumerRouteActorPosture, ConsumerRouteApplicability, ConsumerRouteAvailability,
     ConsumerRouteAvailabilityDimension, ConsumerRouteControlValue, ConsumerRouteEnumerableValue,
@@ -68,13 +69,23 @@ pub const GROK_ACP_REGISTERED_TOOL_ROUTE: RegisteredToolQualifiedRoute =
         RegisteredToolSkillDelivery::NotCarried,
     );
 
+/// Exact executable versions the accepted Card 128 live capsules proved for
+/// the registered-tool courier.
+///
+/// This set is deliberately independent of the `grok-build.executable` ACP
+/// window. Extending the ACP executable window does not extend the live
+/// registered-tool evidence, so neither a later qualified point nor an
+/// unverified-newer point inherits this qualification.
+pub(crate) const GROK_ACP_REGISTERED_TOOL_QUALIFIED_VERSIONS: &[&str] = &["1.0.4", "1.0.5"];
+
 /// Returns this route's registered-tool qualification for one executable
 /// version.
 ///
 /// [`RegisteredToolRouteQualification::Qualified`] rests only on the accepted
-/// live capsules for exact Grok Build `1.0.4` and `1.0.5`: the maintained
-/// segment of the `grok-build.executable` claim. Deprecated `0.2.x` segments,
-/// the unprobed gap, and unverified-newer points return
+/// live capsules for exact Grok Build `1.0.4` and `1.0.5`
+/// ([`GROK_ACP_REGISTERED_TOOL_QUALIFIED_VERSIONS`]). Every other
+/// `grok-build.executable` version — deprecated `0.2.x`, the unprobed gap,
+/// later maintained ACP points, and unverified-newer points — returns
 /// [`RegisteredToolRouteQualification::Unqualified`]; a callable seam,
 /// provider-free fixtures, and an admitted client-supplied MCP declaration
 /// never qualified a route on their own.
@@ -82,13 +93,10 @@ pub const GROK_ACP_REGISTERED_TOOL_ROUTE: RegisteredToolQualifiedRoute =
 pub fn grok_build_acp_registered_tool_qualification(
     version: &InterfaceVersion,
 ) -> RegisteredToolRouteQualification {
-    match grok_build_acp_claim().assess(version) {
-        InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained =>
-        {
-            RegisteredToolRouteQualification::Qualified(GROK_ACP_REGISTERED_TOOL_ROUTE)
-        }
-        _ => RegisteredToolRouteQualification::Unqualified,
+    if GROK_ACP_REGISTERED_TOOL_QUALIFIED_VERSIONS.contains(&version.as_str()) {
+        RegisteredToolRouteQualification::Qualified(GROK_ACP_REGISTERED_TOOL_ROUTE)
+    } else {
+        RegisteredToolRouteQualification::Unqualified
     }
 }
 
@@ -98,7 +106,7 @@ pub fn grok_build_acp_registered_tool_qualification(
 /// Readiness must have been evaluated for exactly this carrier's own
 /// selection; mixed evidence rejects the whole contribution rather than
 /// composing into an available row. A version outside the accepted live
-/// segments projects the unqualified truth instead of the qualified rows.
+/// versions projects the unqualified truth instead of the qualified rows.
 pub fn project_grok_build_acp_registered_tool(
     applicability: &ConsumerRouteApplicability,
     carrier: &GrokRegisteredToolCarrier,
@@ -200,7 +208,7 @@ fn mediation_kind_row(
             source.id().clone(),
             SafeDiagnostic::new(
                 GROK_ACP_REGISTERED_TOOL_VERSION_NOT_ADMITTED_CODE,
-                "the accepted live gate ran only on exact maintained Grok Build 1.0.4..=1.0.5",
+                "the accepted live gate ran only on exact Grok Build 1.0.4 and 1.0.5",
             ),
         )?))
     }

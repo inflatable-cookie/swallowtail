@@ -107,9 +107,12 @@ fn task_control_behavior_changes_only_at_0_2_117_without_new_authority() {
 
 #[test]
 fn production_claim_matches_the_frozen_segments() {
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.5");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.30");
     let claim = grok_build_acp_claim();
-    for candidate in ["0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4", "1.0.5"] {
+    for candidate in [
+        "0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4", "1.0.5", "1.0.6", "1.0.17", "1.0.24",
+        "1.0.30",
+    ] {
         assert!(claim.supports(&version(candidate)));
     }
     assert!(matches!(
@@ -117,20 +120,19 @@ fn production_claim_matches_the_frozen_segments() {
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
-    assert!(matches!(
-        claim.assess(&version("1.0.4")),
-        InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
-    ));
-    assert!(matches!(
-        claim.assess(&version("1.0.5")),
-        InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
-    ));
-    assert!(matches!(
-        claim.assess(&version("1.0.6")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    for maintained in ["1.0.4", "1.0.5", "1.0.30"] {
+        assert!(matches!(
+            claim.assess(&version(maintained)),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.support_status() == InterfaceSupportStatus::Maintained
+        ));
+    }
+    for later in ["1.0.31", "1.0.32"] {
+        assert!(matches!(
+            claim.assess(&version(later)),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
+    }
     for gap in ["0.2.118", "0.2.121", "1.0.0", "1.0.3"] {
         assert!(!claim.permits(&version(gap)));
     }
@@ -187,7 +189,7 @@ fn identity_and_handshake_qualify_1_0_4_as_same_axis_milestone() {
     assert_eq!(handshake["provider_prompt_sent"], false);
     assert_eq!(handshake["session_resume_qualified"], false);
 
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.5");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.30");
     let claim = grok_build_acp_claim();
     assert!(matches!(
         claim.assess(&version("1.0.4")),
@@ -264,7 +266,7 @@ fn identity_and_handshake_qualify_1_0_5_as_compatible_extension() {
     assert_eq!(handshake["provider_prompt_sent"], false);
     assert_eq!(handshake["session_resume_qualified"], false);
 
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.5");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.30");
     let claim = grok_build_acp_claim();
     assert!(matches!(
         claim.assess(&version("1.0.5")),

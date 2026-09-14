@@ -4,13 +4,14 @@
 //! Grok route was observed on 2026-09-07 to admit a non-empty `mcpServers`
 //! declaration, spawn the described server, connect to it, and enumerate its
 //! tools. The accepted Card 128 live gate then ran one real registered call
-//! through this exact courier on each maintained segment — Grok Build `1.0.4`
-//! and `1.0.5` (Research 295) — so
+//! through this exact courier on each accepted live version — Grok Build
+//! `1.0.4` and `1.0.5` (Research 295) — so
 //! [`grok_build_acp_registered_tool_qualification`] returns
 //! `swallowtail_runtime::RegisteredToolRouteQualification::Qualified` with the
-//! dimensions the capsules proved for exactly those executable versions. A
-//! plan bound to any other `grok-build.executable` version — deprecated
-//! `0.2.x`, the unprobed gap, or an unverified-newer point — projects the
+//! dimensions the capsules proved for exactly those executable versions. That
+//! set is independent of the `grok-build.executable` ACP window: a plan bound
+//! to any other version — deprecated `0.2.x`, the unprobed gap, a later
+//! maintained ACP point, or an unverified-newer point — projects the
 //! unqualified truth and refuses a registered open before any host, lease, or
 //! provider work.
 //!

@@ -14,7 +14,7 @@ pub const GROK_BUILD_ACP_AXIS: &str = "grok-build.executable";
 /// Oldest qualified Grok Build version.
 pub const GROK_BUILD_ACP_BASELINE_VERSION: &str = "0.2.114";
 /// Most recent qualified Grok Build version.
-pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "1.0.5";
+pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "1.0.30";
 /// Stable identifier for Grok Build delegated subscription access.
 pub const GROK_BUILD_SUBSCRIPTION_ACCESS_PROFILE_ID: &str =
     "grok-build.subscription.delegated-oauth";
@@ -261,9 +261,12 @@ mod tests {
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn segments_cover_0_2_windows_and_1_0_4_through_1_0_5() {
+    fn segments_cover_0_2_windows_and_1_0_4_through_1_0_30() {
         let claim = grok_build_acp_claim();
-        for candidate in ["0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4", "1.0.5"] {
+        for candidate in [
+            "0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4", "1.0.5", "1.0.6", "1.0.11",
+            "1.0.17", "1.0.24", "1.0.25", "1.0.29", "1.0.30",
+        ] {
             assert!(claim.supports(&version(candidate)), "missing {candidate}");
         }
         for (candidate, behavior) in [
@@ -273,6 +276,9 @@ mod tests {
             ("0.2.117", GROK_BUILD_ACP_TASK_CONTROL_BEHAVIOR),
             ("1.0.4", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
             ("1.0.5", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
+            ("1.0.6", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
+            ("1.0.24", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
+            ("1.0.30", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
         ] {
             assert_eq!(
                 claim
@@ -299,15 +305,18 @@ mod tests {
                 "unexpected permit {rejected}"
             );
         }
-        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("1.0.6"))
-        else {
-            panic!("later stable release remains unverified");
-        };
-        assert_eq!(
-            newer.behavior_revision().as_str(),
-            GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR
-        );
+        for later in ["1.0.31", "1.0.32", "1.1.0"] {
+            let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+                claim.assess(&version(later))
+            else {
+                panic!("{later} is a later stable release and stays unverified");
+            };
+            assert_eq!(newer.latest_qualified().as_str(), "1.0.30");
+            assert_eq!(
+                newer.behavior_revision().as_str(),
+                GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR
+            );
+        }
         assert_eq!(
             grok_build_model_for_version(&version("0.2.117")),
             Some(GROK_BUILD_MODEL_4_5)
@@ -317,11 +326,11 @@ mod tests {
             Some(GROK_BUILD_MODEL_4_6)
         );
         assert_eq!(
-            grok_build_model_for_version(&version("1.0.5")),
+            grok_build_model_for_version(&version("1.0.30")),
             Some(GROK_BUILD_MODEL_4_6)
         );
         assert_eq!(
-            grok_build_model_for_version(&version("1.0.6")),
+            grok_build_model_for_version(&version("1.0.31")),
             Some(GROK_BUILD_MODEL_4_6)
         );
     }
@@ -337,6 +346,7 @@ mod tests {
         );
         assert!(grok_build_acp_binding("1.0.4").is_some());
         assert!(grok_build_acp_binding("1.0.5").is_some());
+        assert!(grok_build_acp_binding("1.0.30").is_some());
         for rejected in [
             "",
             " 0.2.114",
@@ -363,7 +373,7 @@ mod tests {
             GROK_BUILD_CATALOGUE_BEHAVIOR
         );
         assert_eq!(claim.axis().as_str(), GROK_BUILD_ACP_AXIS);
-        for rejected in ["0.2.117", "1.0.4", "1.0.5", "1.0.24", "1.0.26"] {
+        for rejected in ["0.2.117", "1.0.4", "1.0.5", "1.0.24", "1.0.26", "1.0.30"] {
             assert_eq!(
                 claim.assess(&version(rejected)),
                 InterfaceCompatibilityAssessment::Incompatible,

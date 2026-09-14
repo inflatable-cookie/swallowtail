@@ -291,7 +291,7 @@ pub(crate) async fn prepare_registered(
     ) {
         return Err(failure(
             GROK_ACP_REGISTERED_TOOL_VERSION_NOT_ADMITTED_CODE,
-            "Grok Build registered-tool open requires an executable version inside the accepted live segments (exact maintained 1.0.4..=1.0.5)",
+            "Grok Build registered-tool open requires an executable version inside the accepted live versions (exact 1.0.4 and 1.0.5)",
         ));
     }
     let host = binding.require_host()?;

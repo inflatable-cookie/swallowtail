@@ -8,8 +8,8 @@ The route is `grok-build.acp`, driver ID `swallowtail.grok-build.acp`, over
 ACP v1 stdio. Choose it for the installed subscription harness. It can expose
 answerable one-shot permissions on an explicitly opted-in interactive session;
 structured runs and the default session profile reject permission requests.
-On the maintained `1.0.4..=1.0.5` segments it also carries consumer registered
-tools through the Swallowtail-owned courier.
+On the exact accepted live versions `1.0.4` and `1.0.5` it also carries
+consumer registered tools through the Swallowtail-owned courier.
 Reject it when the application needs hosted xAI inference, usage, or public
 provider-session management.
 The separate `grok-build.catalogue` route (`GrokCatalogueDriver`,
@@ -47,10 +47,10 @@ or fall back to an API key. ACP activation uses only the advertised
 `cached_token` mechanism after initialization.
 
 Versions `0.2.114..=0.2.117` remain permitted as deprecated segments on
-`grok-build.executable`. `1.0.4` through `1.0.5` are the maintained milestone
+`grok-build.executable`. `1.0.4` through `1.0.30` are the maintained window
 and bind `grok-4.6`. Exact `0.2.117` keeps its private task-control behavior
-revision. Later stable versions above `1.0.5` remain visible unverified newer,
-including published alpha `1.0.6` which is not official latest. Mid-gap
+revision. Published alpha `1.0.31` is not official latest and stays visible
+unverified newer, as does the next unpublished stable `1.0.32`. Mid-gap
 `0.2.118..=0.2.121` and unprobed `1.0.0..=1.0.3` are incompatible.
 
 ## Prepare The Installation
@@ -67,7 +67,7 @@ bound to that exact target and host.
 
 Both operations require `GrokModelSelection` for the model qualified to the
 admitted executable behavior: `grok-4.5` on the `0.2` segments, `grok-4.6` on
-`1.0.4` through `1.0.5` and permitted unverified-newer points that inherit that
+`1.0.4` through `1.0.30` and permitted unverified-newer points that inherit that
 milestone. No model fallback is performed. Interactive initialization may expose
 authorized session model options on the returned handle; that observation
 does not become a standalone provider catalogue. That negotiated evidence stays
@@ -170,8 +170,8 @@ reconciliation. There is no public load or resume operation.
 
 ## Consumer Registered Tools
 
-On the maintained `1.0.4..=1.0.5` segments the route carries consumer
-registered tools. `GrokRegisteredToolBinding::qualify` binds one Contract 063
+On the exact accepted live versions `1.0.4` and `1.0.5` the route carries
+consumer registered tools. `GrokRegisteredToolBinding::qualify` binds one Contract 063
 `RegisteredToolPreparation`, and an interactive session opens with
 `GrokPreparedSession::open_registered_session`. The Swallowtail-owned
 mediated-stdio courier is then declared as one reserved entry in the ACP
@@ -179,11 +179,12 @@ mediated-stdio courier is then declared as one reserved entry in the ACP
 call settles through the Contract 063 kernel. The lease is bound to one exact
 turn and settles at its terminal or on cancellation.
 
-Registered-tool qualification is version-scoped: a session opened with a
-registered binding on any executable version outside exact maintained
-`1.0.4..=1.0.5` fails typed with `version_not_admitted` before any host,
+Registered-tool qualification is version-scoped independently of the ACP
+executable window: a session opened with a registered binding on any version
+other than exact `1.0.4` or `1.0.5` fails typed with `version_not_admitted`
+before any host,
 lease, or provider work, and the projection publishes the unqualified truth
-for those versions. On an admitted version Grok Build admits the
+for those versions, including later maintained ACP points. On an admitted version Grok Build admits the
 client-declared server and calls its tools, but it cannot represent a consumer
 Deny (the provider's one-shot permission exchange is a separate channel), and
 the route delivers no consumer tool progress. A session that opens without a
@@ -220,10 +221,11 @@ to infer retry or authentication policy.
 The route has no usage or billed-cost evidence, reasoning control, structured
 output, attachments, selected-skill bundles (see above), question response,
 external search, provider-session management, or provider-managed retry.
-Consumer registered tools are qualified on the maintained `1.0.4..=1.0.5`
-segments only, with the exact Deny and progress bounds stated above; no
-registered-tool claim extends to deprecated `0.2.x` segments or unverified
-newer points.
+Consumer registered tools are qualified on the exact accepted live versions
+`1.0.4` and `1.0.5` only, with the exact Deny and progress bounds stated
+above; no
+registered-tool claim extends to deprecated `0.2.x` segments, later
+maintained ACP points, or unverified newer points.
 
 Promotion requires an exact Grok Build surface and release, prepared-plan and
 access binding, bounded ACP fixtures, lifecycle tests, and route-matrix

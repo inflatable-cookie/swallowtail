@@ -15,8 +15,8 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.064 Grok Build ACP `1.0.30` as the sixth family in Tom's
-authorized Research 308 currentness campaign. Continue the remaining thirteen
+Compile and dispatch the Claude Agent SDK tuple as the next family in Tom's
+authorized Research 308 currentness campaign. Continue the remaining twelve
 families serially without repeated approval; no release follows.
 
 ## Standing Lanes

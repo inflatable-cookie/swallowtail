@@ -26,14 +26,26 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Grok Build ACP official npm stable `1.0.30` (g05.064) is the
-sixth family of Tom's authorized Research 308 campaign. Planning observed the
-same exact installed build, `1.0.30 (04b7ffed98c6) [stable]`, and every
-published stable after the `1.0.5` ceiling is `1.0.6..=1.0.30`. Published
-`1.0.31` is alpha and not the stable target. The worker must recheck the
-official channel and freeze complete all-hop identity before changing the ACP
-claim. The exact `1.0.25` catalogue operation and registered-tool carrier stay
-independently bounded. Shared matrices and the changelog stay serial.
+Active family: the Claude Agent SDK tuple is the seventh family of Tom's
+authorized Research 308 campaign. The installed tuple and the official npm
+SDK and native releases must be rechecked, and complete identity must be
+frozen before the exact tuple is reopened. Shared matrices and the changelog
+stay serial.
+
+Completed campaign family: Grok Build ACP official npm stable `1.0.30`
+(g05.064) is the sixth family of Tom's authorized Research 308 campaign.
+Research 314 froze all 25 published stables `1.0.6..=1.0.30` after the
+`1.0.5` ceiling with verified wrapper/platform integrity, tarball and
+decompressed executable digests, a byte-identical mapped ACP literal presence
+map, one unread model-document metadata delta, a persistent 62-module mapped
+ACP core, and a complete shipped-file inventory. The compatible-extension
+claim extends the maintained window `1.0.4..=1.0.30` on
+`grok-build.acp-v1.cached-token-model-4-6-v3`; baseline, claim identity,
+deprecated `0.2.114..=0.2.117`, gaps, `grok-4.6` binding, and
+`AllowUnverified` stay, with alpha `1.0.31` and unpublished `1.0.32` visible
+`UnverifiedNewer`. The exact `1.0.25` catalogue claim and the registered-tool
+courier on the accepted live versions `1.0.4` and `1.0.5` stay independently
+bounded. The next family is the Claude Agent SDK tuple.
 
 Completed campaign family: Ollama official `0.34.0` (g05.063) is the fifth
 family of Tom's authorized Research 308 campaign. Research 313 froze all
@@ -42,8 +54,8 @@ five published hops after the prior `0.32.15` ceiling with host client
 `0.33.0` through `0.33.2`; `0.33.3` and `0.34.0` stay permitted
 `UnverifiedNewer` on the named strict-decoder cached-count reason with a
 decoder-tolerance follow-up, and historical exclusions, claim identity,
-behavior revision, and `AllowUnverified` stay. The next family is Grok
-Build ACP.
+behavior revision, and `AllowUnverified` stay. The campaign continued
+serially with Grok Build ACP.
 
 Completed campaign family: Cursor Agent official `2026.09.10-fd3934a`
 (g05.062) is the fourth family of Tom's authorized Research 308 campaign.

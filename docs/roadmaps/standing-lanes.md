@@ -26,6 +26,13 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
+Active campaign family: Mistral Vibe official GitHub/PyPI `2.25.4` (g05.073)
+is the thirteenth family of Tom's authorized Research 308 campaign. Exact
+`2.24.2` is `QualifiedOnly`; GitHub has eight stable successors while PyPI
+lacks only `2.24.4`. The selected structured-headless wire, fixed Plan profile,
+caller-decreasing maximum turns, authority, failure, and cleanup require a
+complete provider-free source/distribution ledger. Deep Agents follows.
+
 Completed campaign family: Kiro official manifest `2.21.4` (g05.072) is the
 twelfth family of Tom's authorized Research 308 campaign. Research 320 froze
 the exact `2.18.1` baseline and all eleven published stable successors

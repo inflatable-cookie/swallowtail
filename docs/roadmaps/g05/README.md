@@ -59,6 +59,7 @@ enforcement.
 Only ready and planned tasks are actionable. Completed and stopped tasks live
 in [## Tasks](#tasks) below.
 
+- [g05.073 Mistral Vibe 2.25.4 Useful Newer](./073-mistral-vibe-2-25-4-useful-newer.md) — ready; exact GitHub/PyPI trees and the complete successor ledger decide whether the `QualifiedOnly` point advances from `2.24.2`
 - [g05.072 Kiro 2.21.4 Useful Newer](./072-kiro-2-21-4-useful-newer.md) — complete; exact official archives and the complete successor ledger advanced the `QualifiedOnly` point to `2.21.4` with the `kiro.acp.stdio-v1` behavior unchanged
 - [g05.068 Command Code 1.54.0 Useful Newer](./068-command-code-1-54-0-useful-newer.md) — completed; PR #330 merged at `f99938d7`; lifecycle closeout `8eef8c9c`; review `5667459060`; Research 317; exact `QualifiedOnly` point advanced to `1.54.0`; live evidence stays version-bound
 - [g05.069 Command Code 1.54.0 Live Requalification](./069-command-code-1-54-0-live-requalification.md) — planned; separately authorized exact-pin live gate for the version-bound feature and activity evidence
@@ -78,7 +79,7 @@ in [## Tasks](#tasks) below.
 - [g05.050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout merged through PR #313 at `fa2e4b94` after review `5618788611`
 - [g05.051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — completed; OpenCode HTTP qualified through official `1.18.30`; PR #314 merged at `2b79b083` after independent exact-head review `5633203211`
 
-g05 has seventy-two numbered tasks: 55 complete and one ready, including
+g05 has seventy-three numbered tasks: 55 complete and one ready, including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, 037, 044, and 051, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
@@ -482,6 +483,7 @@ identity.
 
 ## Tasks
 
+- [073 Mistral Vibe 2.25.4 Useful Newer](./073-mistral-vibe-2-25-4-useful-newer.md) — ready; thirteenth Research 308 family; exact GitHub/PyPI trees, the `2.24.4` packaging gap, and mapped selected-surface evidence decide the one exact-pin outcome
 - [072 Kiro 2.21.4 Useful Newer](./072-kiro-2-21-4-useful-newer.md) — completed; twelfth Research 308 family; exact official archives and the mapped selected-surface ledger advanced the exact `QualifiedOnly` point to `2.21.4` without executing Kiro
 - [071 Goose 1.50.0 Useful Newer](./071-goose-1-50-0-useful-newer.md) — stopped; exact-pin identity across all four published successors froze a selected-route provider-auth failure change at `1.46.0..1.47.0`; the `QualifiedOnly` point stays at `1.46.0` and advertised siblings stay independent
 - [070 Qoder 1.1.52 Useful Newer](./070-qoder-1-1-52-useful-newer.md) — stopped; exact-pin identity across all 27 published successors froze a selected-route `--max-turns` authority change at `1.1.29..1.1.30`; the `QualifiedOnly` point stays at `1.1.25` and skill visibility stays independent

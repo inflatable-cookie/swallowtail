@@ -54,6 +54,22 @@ pub const CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION: &str = CLAUDE_AGENT_SDK_
 /// Exact native binary version this carrier profile was qualified against.
 pub const CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION: &str = CLAUDE_AGENT_SDK_NATIVE_VERSION;
 
+/// Exact SDK wrapper version the accepted Card 318 live gate ran on.
+///
+/// Research 301 freezes the evidence. This is deliberately independent of
+/// [`CLAUDE_AGENT_SDK_VERSION`]: rebinding the route's package axis does not
+/// extend the live registered-tool evidence, so the qualification gate stays
+/// closed until a separately authorized live requalification updates this
+/// point.
+pub const CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION: &str = "0.3.259";
+
+/// Exact native binary version the accepted Card 318 live gate ran on.
+///
+/// Same independence rule as
+/// [`CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION`]: the native axis may move
+/// without moving this point.
+pub const CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION: &str = "2.1.259";
+
 /// Binds the exact opaque registered-tool carrier revision.
 #[must_use]
 pub fn claude_agent_sdk_registered_tool_carrier_binding(

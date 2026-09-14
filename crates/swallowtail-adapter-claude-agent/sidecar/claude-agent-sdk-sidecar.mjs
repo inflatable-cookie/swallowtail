@@ -58,8 +58,8 @@ import process from "node:process";
 const WIRE = "swallowtail-claude-agent-sdk-jsonl-v1";
 const BEHAVIOR = "claude-agent.sdk-v1";
 const SDK_PACKAGE = "@anthropic-ai/claude-agent-sdk";
-const SDK_VERSION = "0.3.259";
-const NATIVE_VERSION = "2.1.259";
+const SDK_VERSION = "0.3.270";
+const NATIVE_VERSION = "2.1.270";
 const NODE_FLOOR = [22, 19, 0];
 
 const MAXIMUM_RECORD_BYTES = 1024 * 1024;
@@ -145,7 +145,7 @@ const CHILD_ENV_EXACT_KEYS = new Set([
   "COMMAND_MODE",
 ]);
 
-// Names from the frozen 0.3.259 SDKResultSuccess/SDKResultError union. The
+// Names from the frozen 0.3.270 SDKResultSuccess/SDKResultError union. The
 // sidecar records only presence booleans; values such as result text, usage,
 // UUIDs, paths, and provider errors never cross the wire.
 const SDK_RESULT_FIELD_NAMES = [
@@ -625,9 +625,9 @@ function sdkMcpServers(servers) {
   return config;
 }
 
-// Exact 0.3.259 `McpServerStatus` rows (package/sdk.d.ts:1114-1158) carry
+// Exact 0.3.270 `McpServerStatus` rows (package/sdk.d.ts:1124-1168) carry
 // `name` and `status` plus declared optional `serverInfo`, `error`, `config`,
-// `scope`, and `tools`. The shipped 0.3.259 `mcpServerStatus` is a passthrough
+// `scope`, and `tools`. The shipped 0.3.270 `mcpServerStatus` is a passthrough
 // of the native `mcp_status` rows, so any declared combination is lawful
 // producer output. Card 146: the safe projection admits every declared key
 // and discards the metadata; any row key the declaration does not permit
@@ -1367,7 +1367,7 @@ function projectMessage(message) {
       ];
     }
     case "rate_limit_event": {
-      // SDK 0.3.259: a rate-limit information update, not a turn result.
+      // SDK 0.3.270: a rate-limit information update, not a turn result.
       // Even rejected may describe changing quota/overage state; the SDK's
       // result (or thrown query error) still owns success/failure. Forward no
       // quota, account, timing, or session payload.
@@ -1505,7 +1505,7 @@ async function handleOpen(params) {
       },
     };
     if (selectedSkill !== undefined) {
-      // The plain-string systemPrompt is the frozen 0.3.259 carrier for
+      // The plain-string systemPrompt is the frozen 0.3.270 carrier for
       // resolved text. The omitted default is empty, so this adds only the
       // private wire label: it does not select the provider's ambient preset,
       // load files, enable ambient skills, or merge with per-turn user text.

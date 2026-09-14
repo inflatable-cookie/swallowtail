@@ -3,11 +3,16 @@
 //! Research 303 scores the merged successor capsule: native `Read` completed
 //! under SDK `default` with zero recorded `canUseTool` callbacks or decisions
 //! and an unchanged fixture. This file never contacts a provider.
+//!
+//! The capsules ran on the frozen live tuple, so the fixture binds to the
+//! live-qualified point, not to the route's moving wrapper/native axes.
 
 use serde_json::Value;
+use swallowtail_adapter_claude_agent::sdk::registered_tool::{
+    CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION, CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION,
+};
 use swallowtail_adapter_claude_agent::sdk::{
-    CLAUDE_AGENT_SDK_NATIVE_VERSION, CLAUDE_AGENT_SDK_NODE_RUNTIME,
-    CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_WIRE,
+    CLAUDE_AGENT_SDK_NODE_RUNTIME, CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_WIRE,
 };
 
 const EVIDENCE: &str =
@@ -136,8 +141,11 @@ fn the_successor_records_a_native_read_result_with_zero_decisions_and_an_unchang
 fn the_limitation_does_not_flip_emitted_callback_or_registered_tool_truths() {
     let evidence = json(EVIDENCE);
     let tuple = &evidence["tuple"];
-    assert_eq!(tuple["sdk"], CLAUDE_AGENT_SDK_VERSION);
-    assert_eq!(tuple["native"], CLAUDE_AGENT_SDK_NATIVE_VERSION);
+    assert_eq!(tuple["sdk"], CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION);
+    assert_eq!(
+        tuple["native"],
+        CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION
+    );
     assert_eq!(tuple["node"], CLAUDE_AGENT_SDK_NODE_RUNTIME);
     // The sidecar source tag moves with every coordinated release. The
     // capsules ran the exact source build frozen in this fixture, so the

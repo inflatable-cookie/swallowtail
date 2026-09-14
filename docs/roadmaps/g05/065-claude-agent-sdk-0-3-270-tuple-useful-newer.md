@@ -109,16 +109,34 @@ posture, or compatibility transfer from Claude Code or Claude Agent ACP.
 
 ## Acceptance
 
-- [ ] official wrapper and coupled native identities are reproducible for every hop
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes production edits
-- [ ] all five base axes remain exact and independent
-- [ ] live-qualified feature evidence remains bound to the tuple it actually ran
-- [ ] official stable is rechecked at both boundaries
+- [x] official wrapper and coupled native identities are reproducible for every hop
+- [x] every changed selected input is classified
+- [x] identity evidence precedes production edits
+- [x] all five base axes remain exact and independent
+- [x] live-qualified feature evidence remains bound to the tuple it actually ran
+- [x] official stable is rechecked at both boundaries
 
 ## Result
 
-Ready for Queue dispatch.
+Research 315 froze the wrapper/native coupling, tarball digests, native
+commits, platform payloads, and 15-file inventory of every published hop
+`0.3.260..=0.3.270` after the `0.3.259` ceiling (gaps `0.3.262`, `0.3.264`),
+with the installed Node `22.23.2` observed and the installed Claude `2.1.258`
+kept observation-only, and no downloaded artifact executed. All 42
+declaration surfaces are classified unmapped with the mapped subset,
+lifecycle, and credential posture unchanged. The exact one-point
+package/native tuple rebound to `0.3.270`/`2.1.270` with behavior revision,
+wire, Node, sidecar source-tag axes, claim ids, and QualifiedOnly posture
+unchanged; `0.3.259` is unqualified rather than a second point. Research 301
+stays bound to `0.3.259`/`2.1.259`: the qualification additionally requires
+the compiled tuple to equal the frozen live tuple, so the newer compiled
+tuple projects `registered_tools` and `consumer_tool_exchange` unqualified
+with the reason `live_tuple_not_compiled` until a separately authorized live
+requalification runs. Exact wrapper/native identity, the all-hop ledger,
+mutation-sensitive fixtures, and current docs/claim agreement are frozen in
+`crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.270/`
+and enforced by ten identity tests. Validation is named in the handoff; PR
+review remains queue-owned.
 
 ## Next Task
 

@@ -211,8 +211,8 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         "wire": "swallowtail-claude-agent-sdk-jsonl-v1",
         "behavior": "claude-agent.sdk-v1",
         "sdkPackage": "@anthropic-ai/claude-agent-sdk",
-        "sdkVersion": "0.3.259",
-        "nativeVersion": "2.1.259",
+        "sdkVersion": "0.3.270",
+        "nativeVersion": "2.1.270",
         "nodeVersion": "22.23.2",
         "cwd": FIXTURE_CWD,
         "requestedModel": FIXTURE_MODEL,
@@ -622,9 +622,9 @@ fn model_qualification_diagnostic(scenario: SdkScenario) -> Option<Value> {
             "effectiveMembership": effective_membership,
             "querySource": "sdk.query",
             "phase": "first-turn-model-qualification",
-            "declaredSdkVersion": "0.3.259",
-            "loadedSdkVersion": "0.3.259",
-            "nativeVersion": "2.1.259"
+            "declaredSdkVersion": "0.3.270",
+            "loadedSdkVersion": "0.3.270",
+            "nativeVersion": "2.1.270"
         }
     }))
 }

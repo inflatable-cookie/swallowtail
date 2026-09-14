@@ -9,9 +9,6 @@
 
 use serde_json::Value;
 use std::collections::BTreeSet;
-use swallowtail_adapter_claude_agent::sdk::{
-    CLAUDE_AGENT_SDK_NATIVE_VERSION, CLAUDE_AGENT_SDK_VERSION,
-};
 
 const IDENTITY: &str = include_str!("fixtures/claude-agent-sdk-0.3.259/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/claude-agent-sdk-0.3.259/protocol.json");
@@ -34,11 +31,10 @@ fn exact_set(value: &Value, expected: &[&str]) -> bool {
 #[test]
 fn the_bound_points_are_exactly_the_frozen_official_artifact() {
     let identity = json(IDENTITY);
-    assert_eq!(identity["official"]["version"], CLAUDE_AGENT_SDK_VERSION);
-    assert_eq!(
-        identity["native"]["0.3.259"]["version"],
-        CLAUDE_AGENT_SDK_NATIVE_VERSION
-    );
+    // This ledger is historical since the g05.065 rebind: it pins the frozen
+    // hop with literals, while the live constants moved to 0.3.270/2.1.270.
+    assert_eq!(identity["official"]["version"], "0.3.259");
+    assert_eq!(identity["native"]["0.3.259"]["version"], "2.1.259");
     // The npm digest is the sole artifact identity for this family, so it is
     // asserted exactly rather than by size or file count.
     assert_eq!(

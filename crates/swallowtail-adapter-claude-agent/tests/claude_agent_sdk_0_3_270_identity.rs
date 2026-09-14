@@ -399,10 +399,7 @@ fn the_lifecycle_and_credential_invariants_survived_every_hop() {
     assert_eq!(credential["exported_functions"], 17);
     assert_eq!(credential["login_or_oauth_exports"], 0);
     assert_eq!(credential["entry_points_unchanged"], true);
-    assert_eq!(
-        protocol["bridge_declaration_byte_identical_all_hops"],
-        true
-    );
+    assert_eq!(protocol["bridge_declaration_byte_identical_all_hops"], true);
 
     let native = &protocol["native_artifact_rotation"];
     assert_eq!(

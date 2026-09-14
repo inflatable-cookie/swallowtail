@@ -15,13 +15,16 @@ use crate::sdk_support;
 use serde_json::{Value, json};
 use std::sync::{Arc, Mutex};
 use swallowtail_adapter_claude_agent::sdk::registered_tool::{
+    CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION, CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION,
     CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION, CLAUDE_AGENT_SDK_MCP_SUPPORTED_PROTOCOL_VERSIONS,
     CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID, CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_AXIS,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER, ClaudeAgentSdkMcpReply,
-    ClaudeAgentSdkRegisteredToolBinding, ClaudeAgentSdkRegisteredToolCarrier,
-    ClaudeAgentSdkRegisteredToolDecision, ClaudeAgentSdkRegisteredToolMediator,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_LIVE_TUPLE_NOT_COMPILED_CODE,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER,
+    ClaudeAgentSdkMcpReply, ClaudeAgentSdkRegisteredToolBinding,
+    ClaudeAgentSdkRegisteredToolCarrier, ClaudeAgentSdkRegisteredToolDecision,
+    ClaudeAgentSdkRegisteredToolMediator, claude_agent_sdk_live_tuple_compiled,
     claude_agent_sdk_mcp_protocol_version_admitted, claude_agent_sdk_mcp_protocol_version_known,
     claude_agent_sdk_registered_tool_carrier_binding,
     claude_agent_sdk_registered_tool_carrier_claim, claude_agent_sdk_registered_tool_qualification,
@@ -564,7 +567,15 @@ fn row_with_semantic_id<'a>(
 
 #[test]
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
-fn the_projection_publishes_the_qualified_route_on_the_accepted_platform() {
+fn the_projection_publishes_the_unqualified_truth_on_a_newer_compiled_tuple() {
+    // Research 315 rebound the route to 0.3.270/2.1.270 while Research 301
+    // stays frozen on 0.3.259/2.1.259. On the accepted platform the only
+    // reason the route projects unqualified is the tuple gate: no live
+    // evidence covers the compiled tuple yet.
+    assert!(
+        !claude_agent_sdk_live_tuple_compiled(),
+        "the compiled tuple must differ from the frozen live tuple"
+    );
     let selection = route_selection();
     let carrier = ClaudeAgentSdkRegisteredToolCarrier::new(&selection).expect("carrier is valid");
     let hosts = mounted_hosts(dispatcher("ok"));
@@ -576,95 +587,60 @@ fn the_projection_publishes_the_qualified_route_on_the_accepted_platform() {
         project_claude_agent_sdk_registered_tool(&applicability, &carrier, &readiness)
             .expect("the contribution composes");
 
-    let route = swallowtail_adapter_claude_agent::sdk::registered_tool::
-        CLAUDE_AGENT_SDK_REGISTERED_TOOL_ROUTE;
-    assert_eq!(
-        claude_agent_sdk_registered_tool_qualification(),
-        swallowtail_runtime::RegisteredToolRouteQualification::Qualified(route),
-        "the accepted live tuple qualifies the route on its own platform"
-    );
-    assert_eq!(
-        route.permission(),
-        swallowtail_runtime::RegisteredToolPermissionStrength::ExactOneShot
-    );
-    assert_eq!(
-        route.progress(),
-        swallowtail_runtime::RegisteredToolProgressMode::NoProgress
-    );
-    assert_eq!(
-        route.skill_delivery(),
-        swallowtail_runtime::RegisteredToolSkillDelivery::NotCarried
-    );
-    let capability = row_with_semantic_id(&contribution, "registered-tool.capability");
-    assert_eq!(
-        capability.support(),
-        swallowtail_runtime::ConsumerRouteSupportPosture::Supported
-    );
-    assert_eq!(
-        capability.availability(),
-        swallowtail_runtime::ConsumerRouteAvailability::Available
+    // Two layers: platform admissibility is unchanged on the accepted target,
+    // but the projection additionally requires the frozen live tuple, which
+    // the rebound route no longer compiles.
+    assert!(
+        matches!(
+            claude_agent_sdk_registered_tool_qualification(),
+            swallowtail_runtime::RegisteredToolRouteQualification::Qualified(_)
+        ),
+        "platform admissibility is unchanged on the accepted target"
     );
     let mediation =
         row_with_semantic_id(&contribution, CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID);
     assert_eq!(
         mediation.support(),
-        swallowtail_runtime::ConsumerRouteSupportPosture::Supported
+        swallowtail_runtime::ConsumerRouteSupportPosture::Unknown
     );
     assert_eq!(
         mediation.availability(),
-        swallowtail_runtime::ConsumerRouteAvailability::Available
+        swallowtail_runtime::ConsumerRouteAvailability::Unavailable
     );
     assert_eq!(
         mediation.evidence_strength(),
-        swallowtail_runtime::ConsumerRouteEvidenceStrength::RouteValidation
+        swallowtail_runtime::ConsumerRouteEvidenceStrength::RuntimeType
     );
-    assert!(
-        mediation.safe_reason().is_none(),
-        "a route-validation row carries no unavailable reason"
-    );
-    let permission = row_with_semantic_id(&contribution, "registered-tool.one-shot-permission");
+    let reason = mediation.safe_reason().expect("tuple reason");
     assert_eq!(
-        permission.support(),
-        swallowtail_runtime::ConsumerRouteSupportPosture::Supported
+        reason.diagnostic().code(),
+        CLAUDE_AGENT_SDK_REGISTERED_TOOL_LIVE_TUPLE_NOT_COMPILED_CODE
     );
     assert_eq!(
-        permission.availability(),
-        swallowtail_runtime::ConsumerRouteAvailability::Available
+        reason.diagnostic().message(),
+        format!(
+            "the accepted live gate ran on SDK {} and native {}; this compiled tuple awaits its own live requalification",
+            CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION,
+            CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION,
+        ),
     );
-    for dimension in [
-        "registered-tool.progress-delivery",
-        "registered-tool.selected-skill-bundle",
-    ] {
-        let row = row_with_semantic_id(&contribution, dimension);
-        assert_eq!(
-            row.support(),
-            swallowtail_runtime::ConsumerRouteSupportPosture::Unsupported,
-            "{dimension} stays exactly what the capsule proved"
-        );
-        assert_eq!(
+    for row in contribution.selection_rows() {
+        assert_ne!(
             row.availability(),
-            swallowtail_runtime::ConsumerRouteAvailability::Unavailable
-        );
-        assert_eq!(
-            row.safe_reason()
-                .expect("dimension reason")
-                .diagnostic()
-                .code(),
-            "swallowtail.registered_tool.route_dimension_unsupported"
+            swallowtail_runtime::ConsumerRouteAvailability::Available,
+            "an unqualified route publishes no available registered-capability row"
         );
     }
+    // Unqualified dimensions fall back to the unknown posture with the route
+    // reason; the sweep above already proves none is available. The
+    // provider-free selected-skill transport row stays independent of the
+    // route qualification.
     let skill = row_with_semantic_id(&contribution, "registered-tool.selected-skill-bundle");
     assert_eq!(
         skill.actor_posture(),
         swallowtail_runtime::ConsumerRouteActorPosture::Informational
     );
     assert!(skill.mutation_authority().source().is_none());
-    let scheduling = row_with_semantic_id(&contribution, "registered-tool.scheduling");
-    assert_eq!(
-        scheduling.support(),
-        swallowtail_runtime::ConsumerRouteSupportPosture::Unsupported,
-        "scheduling stays withheld on the qualified route"
-    );
 }
 
 #[test]
@@ -717,7 +693,7 @@ fn the_projection_publishes_the_unqualified_truth_off_the_accepted_platform() {
 }
 
 #[test]
-fn the_qualified_route_binds_the_accepted_live_evidence_identities() {
+fn the_newer_compiled_tuple_holds_the_live_evidence_without_inheriting_it() {
     // Research 301 freezes the accepted Desktop Card 318 gate: exactly four
     // fresh opens and four prompt turns ran against source-linked Swallowtail,
     // with no retry, reconnect, respawn, repeated attempt, or model fallback.
@@ -749,8 +725,8 @@ fn the_qualified_route_binds_the_accepted_live_evidence_identities() {
     const ALLOW_DISPATCH_COUNT: usize = 1;
     const CONTROL_DISPATCH_COUNT: usize = 0;
 
-    // The claim is bound to exactly the tuple the capsules ran, and to nothing
-    // adjacent: the route pins every version axis at this exact point.
+    // The frozen live tuple is bound to the Research 301 capsules, and to
+    // nothing adjacent: the live point stays put while the route axes move.
     assert_eq!(
         CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION,
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_VERSION
@@ -759,13 +735,20 @@ fn the_qualified_route_binds_the_accepted_live_evidence_identities() {
         CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION,
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_VERSION
     );
-    assert_eq!(
-        SDK_VERSION,
-        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_VERSION
-    );
+    assert_eq!(SDK_VERSION, CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION);
     assert_eq!(
         NATIVE_VERSION,
-        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_VERSION
+        CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION
+    );
+    // The compiled route rebound past the live evidence: the new tuple is
+    // exact and independent, never a second live-qualified point.
+    assert_eq!(
+        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_VERSION,
+        "0.3.270"
+    );
+    assert_eq!(
+        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_VERSION,
+        "2.1.270"
     );
     assert_eq!(
         NODE_VERSION,
@@ -803,16 +786,23 @@ fn the_qualified_route_binds_the_accepted_live_evidence_identities() {
     assert_eq!(ATTEMPT_COUNT, 4);
     assert_eq!(ALLOW_DISPATCH_COUNT, 1);
     assert_eq!(CONTROL_DISPATCH_COUNT, 0);
-    // The compiled platform decides which truth the projection publishes:
-    // qualified only on the exact Darwin arm64 target the capsules ran on.
-    let accepted_platform = cfg!(all(target_os = "macos", target_arch = "aarch64"));
+    // The compiled tuple decides which truth the projection publishes: the
+    // live evidence never transfers, so the newer tuple projects unqualified
+    // on every platform until its own live requalification runs. Platform
+    // admissibility keeps its own layer: qualified only on the Darwin arm64
+    // target the capsules ran on.
+    assert!(
+        !claude_agent_sdk_live_tuple_compiled(),
+        "the compiled tuple must not equal the frozen live tuple"
+    );
+    let platform_qualified = cfg!(all(target_os = "macos", target_arch = "aarch64"));
     assert_eq!(
         matches!(
             claude_agent_sdk_registered_tool_qualification(),
             swallowtail_runtime::RegisteredToolRouteQualification::Qualified(_)
         ),
-        accepted_platform,
-        "the qualification never widens past the accepted platform"
+        platform_qualified,
+        "platform admissibility never widens past the accepted target"
     );
 }
 

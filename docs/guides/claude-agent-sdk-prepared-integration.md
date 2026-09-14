@@ -35,7 +35,7 @@ stdio through a third-party bridge and is versioned on its own adapter axis.
 CLI's stream-JSON interface directly and are versioned on the Claude Code
 axis. `claude-agent.sdk` reaches the same native binary only through the
 official SDK wrapper and is versioned on the SDK axis. The axes are coupled
-but never equal: `0.3.259` declares native `2.1.259`, so a Claude Code
+but never equal: `0.3.270` declares native `2.1.270`, so a Claude Code
 qualification never transfers to this route and this route's qualification
 never transfers back.
 
@@ -145,8 +145,8 @@ Five separate axes carry qualified-only one-point claims. The claims stay
 exact; the open path has one narrow observation-only exception for a newer Node
 runtime that passes the sidecar floor:
 
-- `claude-agent.sdk.package`: exact `@anthropic-ai/claude-agent-sdk@0.3.259`
-- `claude-agent.sdk.native`: exact native `2.1.259`, as the shipped
+- `claude-agent.sdk.package`: exact `@anthropic-ai/claude-agent-sdk@0.3.270`
+- `claude-agent.sdk.native`: exact native `2.1.270`, as the shipped
   `manifest.json` declares it
 - `claude-agent.sdk.node`: exact Node `22.23.2` (satisfying the upstream
   `>=18.0.0` requirement)
@@ -161,8 +161,8 @@ the tarball is staged from a private monorepo, and the public GitHub
 repository holds no SDK source, so a future checkpoint cannot diff tags or
 read that repository's changelog as a shipped-behavior oracle. And shipped
 declarations are not runtime evidence — the shipped `manifest.json` declares
-tested wrapper versions topping out at `0.3.227` inside the wrapper published
-as `0.3.259`. Only the runtime `capabilities` observed from the first-turn
+tested wrapper versions topping out at `0.3.269` inside the wrapper published
+as `0.3.270`. Only the runtime `capabilities` observed from the first-turn
 `system/init` may be treated as behavior.
 
 At open, the sidecar resolves the package manifest from the host-supplied SDK
@@ -174,10 +174,13 @@ or version fails with typed `sdk_version_mismatch`; its bounded
 labels. A missing, malformed, or otherwise unreadable manifest fails with
 typed `sdk_identity_unverifiable`, before the SDK is constructed.
 
-The point moved once already: `0.3.258` was qualified first, and Research 280
-rebound both coupled axes to `0.3.259` after a full package-tree inventory. The
-publication cadence is roughly daily, so treat the qualified point as a frozen
-artifact identity, not as "current".
+The point moved twice already: `0.3.258` was qualified first, Research 280
+rebound both coupled axes to `0.3.259` after a full package-tree inventory, and
+Research 315 rebound them to `0.3.270` across the nine published hops
+`0.3.260..=0.3.270` (gaps `0.3.262`, `0.3.264`) with the mapped subset,
+lifecycle, and credential posture unchanged. The publication cadence is roughly
+daily, so treat the qualified point as a frozen artifact identity, not as
+"current".
 
 ## What Open Verifies
 
@@ -461,7 +464,7 @@ value is in that open-time list, so an unsupported model is rejected before
 `Query.setModel` is called.
 
 `set_model` reports the exact model returned by the sidecar only when the SDK
-supplies that value. The pinned `0.3.259` integration evidence exposes
+supplies that value. The pinned `0.3.270` integration evidence exposes
 `Query.setModel` without a returned model value, so its normal outcome is the
 typed `swallowtail.claude-agent.sdk.model_change_unconfirmed` failure. In that
 outcome the previously confirmed model remains effective. No requested value
@@ -478,7 +481,7 @@ scope.
 
 ## Resume And Session Listing
 
-The pinned `0.3.259` SDK exposes `persistSession`, `resume`, and
+The pinned `0.3.270` SDK exposes `persistSession`, `resume`, and
 `resumeSessionAt` on `Options`, plus the bounded `listSessions` function. The
 prepared profile keeps persistence disabled by default. Calling
 `with_persist_session(true)` opts into provider-owned retention, adds the
@@ -514,7 +517,7 @@ transcript content.
 
 ## Client MCP Servers
 
-The pinned `0.3.259` SDK exposes `Options.mcpServers`, `strictMcpConfig`, and
+The pinned `0.3.270` SDK exposes `Options.mcpServers`, `strictMcpConfig`, and
 `Query.mcpServerStatus()`. This route maps only consumer-declared **stdio**
 servers. SSE and HTTP configs carry URLs and optional headers; in-process
 `sdk` servers execute callbacks inside the sidecar. Neither shape is
@@ -540,8 +543,8 @@ Optional servers record `pending` or `failed` in open evidence instead.
 Status evidence carries name, kind, and a typed failure code only.
 
 The status rows themselves are the native `mcp_status` rows the pinned SDK
-passes through unchanged, and the exact 0.3.259 declaration
-(`package/sdk.d.ts:1114-1158`) lets every row carry optional `serverInfo`,
+passes through unchanged, and the exact 0.3.270 declaration
+(`package/sdk.d.ts:1124-1168`) lets every row carry optional `serverInfo`,
 `error`, `config`, `scope`, and `tools` beside `name` and `status`. Card 146
 reconciled that shape with the projection: the sidecar admits every declared
 optional field and discards it, so a required connected server stays admitted
@@ -615,23 +618,28 @@ live verdicts. Close joins the single listener; Drop hands the lease to the
 guardian and does not join on the dropping thread. Omitting the binding keeps
 the previous open, including the empty `mcpServers` omission.
 
-Resume and listing refuse a bound selection. The Contract 061 projection is
+Resume and listing refuse a bound selection. The Contract 061 projection was
 qualified on the exact accepted Card 318 live tuple (Research 301): SDK
 `0.3.259`, native `2.1.259`, Node `22.23.2`, the `0.4.4` sidecar source tag,
 carrier `swallowtail-claude-agent-sdk-registered-tool-mcp-v1`,
 `private-loopback-http` plus `mediated-stdio-proxy`, and MCP `2025-11-25`.
-Every one of those axes is pinned exactly by this route's one-point claims, so
-the compiled platform is the one axis a build can vary: only the Darwin arm64
-target the capsules ran on projects the qualified truth, and every other
-target publishes the unqualified truth with the reason `platform_not_admitted`.
+Research 315 rebound the route's wrapper/native axes to `0.3.270`/`2.1.270`
+without extending that live evidence, so the compiled tuple projects the
+unqualified truth with the reason `live_tuple_not_compiled` until a separately
+authorized live requalification runs on the new tuple. The qualification
+additionally requires the compiled tuple to equal the frozen live tuple, so a
+rebind can never silently inherit it; off the Darwin arm64 target the
+projection publishes the unqualified truth with the reason
+`platform_not_admitted`.
 The qualified dimensions are exactly what the capsule proved: `ExactOneShot`
 one-shot permission (one Allow dispatched `desktop/reconcile` exactly once
 with unchanged `{}` and correlated its fixed `{"ok":true}` result; one Deny
 completed with zero dispatches; the cancellation and stale/foreign controls
 dispatched zero times and ended provider-failed as pass evidence),
 `NoProgress`, and `NotCarried` selected-skill delivery. The mediation-kind row
-moved from `Unknown`/`Unavailable` to route-validation support on the accepted
-platform. The capsule's cleanup was the accepted Contract 019 route-qualified
+carried route-validation support on the accepted platform and tuple; on the
+rebound tuple it is back to `Unknown`/`Unavailable` with the live-tuple
+reason. The capsule's cleanup was the accepted Contract 019 route-qualified
 degraded macOS posture — reapers joined and no lease, listener, or process
 survived — and it is never renamed `Clean`. Deterministic route tests freeze
 the source, task, capsule, PR, review, merge, closeout, courier, attempt,
@@ -681,10 +689,11 @@ separates every bounded rejection class, deadline, joined cleanup, and
 unconfirmed cleanup. The deterministic route identifies no producer defect,
 so the live rejection cause stays unresolved without a separately authorized
 gate; a future live capsule must record the receipt fields instead of prose.
-That gate has since run and passed: the Card 318 capsule (Research 301)
-qualified both Contract 061 registered-tool cells on the exact tuple above,
-and this receipt stays the typed producer-evidence surface for any future
-failed open.
+That gate ran and passed on the exact tuple above: the Card 318 capsule
+(Research 301) qualified both Contract 061 registered-tool cells there, and
+this receipt stays the typed producer-evidence surface for any future failed
+open. The g05.065 rebind moved the compiled tuple past that evidence, so both
+cells are unqualified again until the new tuple's own live gate runs.
 
 ## Selected Skill Bundles
 
@@ -706,7 +715,7 @@ the digest, UTF-8 text encoding, reference uniqueness, and Contract 063 byte
 and count bounds before the SDK is constructed. The provider-free Card 126
 fixture is `tests/fixtures/claude-agent-sdk-v1/selected-skill-bundle-card126.json`.
 
-The pinned `0.3.259` sidecar has no ambient skill loading: it sends
+The pinned `0.3.270` sidecar has no ambient skill loading: it sends
 `settingSources: []` and `skills: []` explicitly. When the selected bundle is
 present, the sidecar uses the frozen `Options.systemPrompt` plain-string
 surface to carry one labelled JSON envelope under
@@ -726,10 +735,11 @@ Contract 061 publishes `registered-tool.selected-skill-bundle` as a
 session-start row only for this exact prepared Claude route. That transport
 row is available from the provider-free route evidence and stays independent
 of the registered-tool route qualification. The Card 125 provider-spawned
-registered-tool carrier and its mediation rows are now qualified for the
-exact Card 318 tuple (see Registered Tools), but the accepted capsule carried
-no selected skill bundle, so the qualified route records `NotCarried` skill
-delivery. Card 084 consumer-declared MCP servers remain a separate input and
+registered-tool carrier and its mediation rows were qualified for the
+exact Card 318 tuple (see Registered Tools) before the g05.065 rebind moved
+the compiled tuple past that evidence; the accepted capsule carried
+no selected skill bundle, so the route records `NotCarried` skill
+delivery either way. Card 084 consumer-declared MCP servers remain a separate input and
 topology. This row still does not claim that a live provider followed or
 executed the selected content.
 

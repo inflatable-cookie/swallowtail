@@ -6,6 +6,22 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
+- rebind the Claude Agent SDK exact one-point package/native tuple to official
+  npm `@anthropic-ai/claude-agent-sdk` `0.3.270` carrying native `2.1.270`:
+  Research 315 freezes all nine published hops `0.3.260..=0.3.270` after the
+  `0.3.259` ceiling (gaps `0.3.262`, `0.3.264`) with wrapper/native coupling,
+  tarball digests, native commits, platform payloads, and a complete 15-file
+  tree inventory; 42 declaration surfaces are classified unmapped with the
+  mapped query/session/permission/model/tool-admission subset, the
+  sidecar/native lifecycle, and the credential non-custody posture unchanged.
+  Keep the behavior revision, wire, Node `22.23.2`, sidecar source-tag axes,
+  claim ids, and `QualifiedOnly` posture with no unverified-newer. Research
+  301 live registered-tool acceptance stays bound to `0.3.259`/`2.1.259` and
+  does not transfer: the compiled tuple projects `registered_tools` and
+  `consumer_tool_exchange` unqualified (`live_tuple_not_compiled`) until a
+  separately authorized live requalification runs on the new tuple. No
+  provider operation, downloaded-artifact execution, or host mutation
+  occurred.
 - raise the Grok Build ACP executable window through official npm
   `@xai-official/grok` `1.0.30`: Research 314 freezes all 25 published
   stables `1.0.6..=1.0.30` after the `1.0.5` ceiling with verified

@@ -1156,7 +1156,7 @@ fn a_courier_that_dies_at_startup_reports_its_own_stderr() {
     );
 }
 /// Card 144: the exact Card 132 registered-open request, reproduced
-/// provider-free against the frozen fake `0.3.259` sidecar. Research 296
+/// provider-free against the frozen fake sidecar. Research 296
 /// froze the live capsule (SHA-256 `e0460a54776a5644ff2c54bc412a52d8
 /// 1b0d84f04ee34f56971b78181e501433`) and its tuple — SDK `0.3.259`, native
 /// `2.1.259`, Node `22.23.2`, sidecar source tag `0.4.4`, carrier

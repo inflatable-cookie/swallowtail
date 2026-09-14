@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-11
+Updated: 2026-09-14
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -26,16 +26,19 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: OpenCode HTTP `1.18.30` (g05.051) is claimed; no family follows
-it automatically. Official npm and
-GitHub stable `1.18.30` is a compatible extension of the existing
-`opencode.http-sse.surface-19` window through qualified `1.18.29`. Research 304
-froze identity before the claim. The published GitHub tags diverge, so the hop
-was proved from complete source-tree inventories; selected route files and
-OpenAPI stay byte-identical and the Bedrock, GitLab reasoning, and GPT-6 Astra
-prompt changes are unmapped. The host remains observation-only at `1.18.18`.
-Unpublished `1.18.31` stays permitted `UnverifiedNewer`. No provider call, live
-server, install, host update, release, or consumer mutation occurred.
+Active family: Claude Code `2.1.270` (g05.058) is claimed; no family follows
+it automatically. Official npm and GitHub stable `2.1.270` is a compatible
+extension of the existing headless `2.1.220..=2.1.257` and response-only
+`2.1.227..=2.1.257` stream-JSON windows. Research 307 froze identity before
+the claim and classified all eleven published hops on both platform builds;
+selected mapped argv and stream-JSON shapes are unchanged and every
+`sdk-tools.d.ts` delta is SDK tool declaration content the routes do not
+consume. Unpublished `2.1.262` and `2.1.264` join the historical gaps;
+unpublished `2.1.271` stays permitted `UnverifiedNewer`. Host `2.1.258`
+matches the official `darwin-arm64` binary and its help equals the frozen
+`2.1.257` digest; it was observed only. Watcher stays exact `2.1.251`. No
+provider prompt, login, install, host update, release, or consumer mutation
+occurred.
 
 Current promoted family: Pi RPC `0.85.1` (g05.044). Research 302 froze
 identity before the claim. Official npm and GitHub `0.85.1` plus published
@@ -66,15 +69,15 @@ shipped-tree and source-tree deltas are Guardian, test, and version-bump
 bounded. Feature-specific exact sets remain on the `0.147.0..=0.149.1`
 probed points. `AllowUnverified` remains.
 
-Earlier one-family claim: Claude Code `2.1.257` (g05.019, cards 046-047).
-Headless is `2.1.220..=2.1.257` and response-only is `2.1.227..=2.1.257`.
-Unpublished `2.1.244`, `2.1.249`, and hop-skipped `2.1.253` through
-`2.1.256` stay incompatible. Official `2.1.258` is newer than the qualified
-bound and remains an exact `UnverifiedNewer` observation until a later family
-run. Host `2.1.257` matches official darwin-arm64 and stays observation-only.
-Watcher stays exact `2.1.251` behind its mechanism-change gate.
-Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed points.
-`AllowUnverified` remains.
+Earlier one-family claim: Claude Code `2.1.257` (g05.019, cards 046-047),
+later raised through official `2.1.270` (g05.058). Headless is
+`2.1.220..=2.1.270` and response-only is `2.1.227..=2.1.270`. Unpublished
+`2.1.244`, `2.1.249`, hop-skipped `2.1.253` through `2.1.256`, `2.1.262`,
+and `2.1.264` stay incompatible. Unpublished `2.1.271` stays permitted
+`UnverifiedNewer`. Host `2.1.258` matches official darwin-arm64 and stays
+observation-only. Watcher stays exact `2.1.251` behind its mechanism-change
+gate. Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed
+points. `AllowUnverified` remains.
 
 Earlier one-family claim: Claude Agent ACP `0.73.0` (g05.018, cards 044-045).
 Maintained v7 is `0.66.0..=0.73.0`. Published intermediates `0.71.0`,
@@ -100,10 +103,10 @@ remains `AllowUnverified`.
 Earlier one-family claim: Pi RPC `0.84.4` (g05.015, cards 039-040).
 Unpublished `0.83.1` stays incompatible. `pi.sdk-sidecar` stays exact
 `0.84.2`. Claude Code headless and response-only later rose through official
-`2.1.257` (g05.019, cards 046-047). g05.014 cards 037-038 remain the
-`2.1.252` identity/claim. Unpublished `2.1.244`, `2.1.249`, and hop-skipped
-`2.1.253` through `2.1.256` stay incompatible. Watcher stays exact `2.1.251`
-behind its mechanism-change gate.
+`2.1.270` (g05.019 cards 046-047 and g05.058). g05.014 cards 037-038 remain
+the `2.1.252` identity/claim. Unpublished `2.1.244`, `2.1.249`, hop-skipped
+`2.1.253` through `2.1.256`, `2.1.262`, and `2.1.264` stay incompatible.
+Watcher stays exact `2.1.251` behind its mechanism-change gate.
 Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed points.
 Codex exec and app-server later rose through official `0.152.1` (g05.020,
 cards 048-049). g05.013 cards 035-036 remain the `0.152.0` identity/claim.
@@ -118,7 +121,30 @@ recorded.
 
 ### Latest Completed Family
 
-OpenCode HTTP `1.18.30` is a compatible extension of existing
+Claude Code `2.1.270` is a compatible extension of the separate headless and
+response-only stream-JSON axes. Research 307 and g05.058 freeze identity before
+the claim. Host `2.1.258` matches the official darwin-arm64 binary and was not
+installed, updated, or replaced. Official binaries were hashed and not
+executed; mapped-surface evidence was recovered from the embedded
+`// @bun @bytecode` source chunks of both platform builds. Official npm and
+GitHub stable is `2.1.270` published 2026-09-12T18:52:44.937Z /
+2026-09-12T19:45:44Z. All eleven published hops after `2.1.257` were retrieved
+and classified; `2.1.262` and `2.1.264` are unpublished. Wrapper files except
+`package.json` and `sdk-tools.d.ts` are byte-identical across all twelve
+compared versions, and every `sdk-tools.d.ts` delta is SDK tool declaration
+content. Host `2.1.258` help equals the frozen `2.1.257` help digest. Selected
+mapped stream-JSON flags, format, effort, and permission enumerations, the wire
+permission spelling, and the normalized `init`, `stream_event`, `hook_started`,
+`result`, and `thinking_tokens` constructions stay. Changelog mapped-keyword
+bullets name only unmapped interactive, VSCode, cloud, Remote Control, gateway,
+hook, resume, permission-rule, plugin, telemetry, and sandbox surfaces.
+Unpublished `2.1.244`, `2.1.249`, hop-skipped `2.1.253` through `2.1.256`,
+`2.1.262`, and `2.1.264` remain incompatible; unpublished `2.1.271` remains
+permitted `UnverifiedNewer`. Watcher stays exact `2.1.251` and is not
+live-ready. No provider prompt, live session, login, install, or host update
+was required.
+
+Previous OpenCode HTTP `1.18.30` is a compatible extension of existing
 `opencode.http-sse.surface-19`. Research 304 and g05.051 freeze identity before
 the claim. Host `opencode` is `1.18.18` on `PATH` and stays observation-only; it
 was not installed, updated, or invoked beyond `--version`. Official artifacts
@@ -134,7 +160,7 @@ Baseline `1.14.48`, claim id, historical gaps, and `AllowUnverified` stay.
 Unpublished `1.18.31` remains permitted `UnverifiedNewer`. No provider prompt,
 live session, login, install, or host update was required.
 
-Previous OpenCode HTTP `1.18.29` is a compatible extension of existing
+Earlier OpenCode HTTP `1.18.29` is a compatible extension of existing
 `opencode.http-sse.surface-19`. Research 292 and g05.037 cards 135-136 freeze
 identity before the claim. Host `opencode` was not on `PATH` and was not
 installed, updated, or replaced. Official artifacts were hashed and never
@@ -153,7 +179,7 @@ g05.037 cards 135-136 remain the `1.18.29` identity/claim. g05.028 cards
 077-078 remain the `1.18.28` identity/claim. Each family adds only the next
 published hop.
 
-### Previous Completed Family
+### Earlier Completed Family
 
 Codex exec and app-server `0.152.1` are compatible extensions of their
 existing maintained behaviors. Research 275 and g05.020 cards 048-049 freeze
@@ -177,11 +203,12 @@ install, or host update was required.
 Research 274 remaining family after Claude Code `2.1.257` was this family
 alone and changed no claim.
 
-### Earlier Completed Family
+### Older Completed Family
 
 Claude Code `2.1.257` is a compatible extension of the separate headless and
 response-only stream-JSON axes. Research 273 and g05.019 cards 046-047 freeze
-identity before the claim. Host `2.1.257` matches the official darwin-arm64
+identity before the claim; g05.058 later raised the ceiling to `2.1.270`. Host
+`2.1.257` matches the official darwin-arm64
 package and was not installed, updated, or replaced. Official binaries were
 hashed and not executed. Official npm and GitHub stable is `2.1.257`
 published 2026-09-01T17:15:33.223Z. The only published stable after

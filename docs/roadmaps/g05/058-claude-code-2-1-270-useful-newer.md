@@ -1,5 +1,6 @@
 # g05.058 Claude Code 2.1.270 Useful Newer
 
+Status: completed; Claude Code qualified through official `2.1.270` on both existing stream-JSON axes as a compatible extension; identity `5c34bfde`; independent exact-head review and merge are queue-owned
 Owner: Tom
 Created: 2026-09-14
 Depends on: Contract 029; qualified Claude Code `2.1.257`; Research 273; g05.019
@@ -95,13 +96,51 @@ provider-free qualification.
 
 ## Acceptance
 
-- [ ] official identity is reproducible for every published hop
-- [ ] every changed shipped input feeding selected behavior is classified
-- [ ] identity evidence lands before any production claim edit
-- [ ] only the admitted segment changes claims; a stop changes no claim
-- [ ] historical segments, gaps, claim IDs, `AllowUnverified`, watcher bounds,
+- [x] official identity is reproducible for every published hop
+- [x] every changed shipped input feeding selected behavior is classified
+- [x] identity evidence lands before any production claim edit
+- [x] only the admitted segment changes claims; a stop changes no claim
+- [x] historical segments, gaps, claim IDs, `AllowUnverified`, watcher bounds,
       and unrelated Claude routes survive
-- [ ] official latest is rechecked at both required boundaries
+- [x] official latest is rechecked at both required boundaries
+
+## Result
+
+Worker evidence: the admitted segment is a compatible extension of
+`claude-code.headless.stream-json.v1` and
+`claude-code.response-only.stream-json.v1` through official `2.1.270`. Research
+307 and `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-code-2.1.270/`
+freeze npm and GitHub identity for all eleven published hops from qualified
+`2.1.257`: `2.1.258`, `2.1.259`, `2.1.260`, `2.1.261`, `2.1.263`, `2.1.265`,
+`2.1.266`, `2.1.267`, `2.1.268`, `2.1.269`, and `2.1.270`; `2.1.262` and
+`2.1.264` are unpublished. Downloaded official binaries were hashed and never
+executed; the selected mapped surface was classified from the embedded
+`// @bun @bytecode` source chunks of both platform builds. Every selected flag
+keeps an identical normalized definition set, the format, effort, and
+permission enumerations and the wire permission spelling are unchanged, and
+the normalized `init`, `stream_event`, `hook_started`, `result`, and
+`thinking_tokens` constructions hold. Wrapper files except `package.json` and
+`sdk-tools.d.ts` are byte-identical across all twelve compared versions, and
+every `sdk-tools.d.ts` delta is SDK tool declaration content neither route
+consumes. Host `2.1.258` matches the official darwin-arm64 binary and its help
+equals the frozen `2.1.257` digest. Identity landed as its own commit before
+any production claim edit.
+
+Claim: headless is `2.1.220..=2.1.270` and response-only is
+`2.1.227..=2.1.270`. Baselines, claim ids, behavior revisions,
+`AllowUnverified`, and every historical boundary stay. Unpublished `2.1.244`,
+`2.1.249`, hop-skipped `2.1.253` through `2.1.256`, and the newly observed
+unpublished `2.1.262` and `2.1.264` stay incompatible; synthetic `2.1.271` is
+the visible `UnverifiedNewer` point. Watcher stays exact `2.1.251` and every
+feature-specific exact-version set stays on the `2.1.220..=2.1.241` probed
+points. The prepared guide, both Claude Code route-matrix rows, the
+feature-matrix version cell, `CHANGELOG.md` `[Unreleased]`, the standing-lane
+Claude Code paragraphs, and the identity and claim logs agree with
+`selection.rs`. Official latest was re-probed immediately before the identity
+commit and again immediately before push. No provider call, live session,
+login, install, host update, release, tag, or consumer mutation occurred.
+
+Independent exact-head review and the merge gate are queue-owned.
 
 ## Next Task
 

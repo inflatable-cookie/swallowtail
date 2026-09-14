@@ -12,13 +12,13 @@ pub const CLAUDE_CODE_RESPONSE_ONLY_AXIS: &str = "claude-code.response-only-stre
 /// Oldest Claude Code version qualified for response-only runs.
 pub const CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION: &str = "2.1.227";
 /// Most recent Claude Code version with qualified response-only evidence.
-pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.257";
+pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.270";
 /// Most recent Claude Code version with qualified response-only evidence.
 pub const CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str =
     CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION;
 /// Stable Claude Code releases explicitly denied for response-only execution.
 pub const CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS: &[&str] = &[
-    "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256",
+    "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
 ];
 
 const RESPONSE_ONLY_BEHAVIOR: &str = "claude-code.response-only.stream-json.v1";
@@ -142,6 +142,15 @@ mod tests {
         assert!(claim.supports(&InterfaceVersion::new("2.1.251").unwrap()));
         assert!(claim.supports(&InterfaceVersion::new("2.1.252").unwrap()));
         assert!(claim.supports(&InterfaceVersion::new("2.1.257").unwrap()));
+        for published in [
+            "2.1.258", "2.1.259", "2.1.260", "2.1.261", "2.1.263", "2.1.265", "2.1.266", "2.1.267",
+            "2.1.268", "2.1.269", "2.1.270",
+        ] {
+            assert!(
+                claim.supports(&InterfaceVersion::new(published).unwrap()),
+                "{published}"
+            );
+        }
         assert!(!claim.permits(&InterfaceVersion::new("2.1.226").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.244").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.249").unwrap()));
@@ -149,8 +158,10 @@ mod tests {
         assert!(!claim.permits(&InterfaceVersion::new("2.1.254").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.255").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.256").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("2.1.262").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("2.1.264").unwrap()));
         assert!(matches!(
-            claim.assess(&InterfaceVersion::new("2.1.258").unwrap()),
+            claim.assess(&InterfaceVersion::new("2.1.271").unwrap()),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
     }
@@ -160,7 +171,8 @@ mod tests {
         assert_eq!(
             CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
             &[
-                "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256",
+                "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262",
+                "2.1.264",
             ]
         );
         let claim = response_only_claim(&["2.1.229"]);

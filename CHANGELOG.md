@@ -5,6 +5,26 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Changed
+- raise both qualified Claude Code ceilings from `2.1.257` to official npm
+  `@anthropic-ai/claude-code` `2.1.270`: headless `2.1.220..=2.1.270` and
+  response-only `2.1.227..=2.1.270`. Compatible extension of
+  `claude-code.headless.stream-json.v1` and
+  `claude-code.response-only.stream-json.v1`. All eleven published hops after
+  the ceiling were retrieved and classified on both platform builds; every
+  selected flag keeps an identical normalized option-definition shape, the
+  format, effort, and permission enumerations are unchanged, and the
+  normalized `init`, `stream_event`, `hook_started`, `result`, and
+  `thinking_tokens` constructions hold. Wrapper files except `package.json`
+  and `sdk-tools.d.ts` are byte-identical across all twelve compared
+  versions, and every `sdk-tools.d.ts` delta is SDK tool declaration content
+  the routes do not consume. Host `2.1.258` help equals the frozen `2.1.257`
+  digest. Unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
+  `2.1.262`, and `2.1.264` stay incompatible; unpublished `2.1.271` remains
+  visible `UnverifiedNewer`. Baselines, claim ids, `AllowUnverified`, watcher
+  exact `2.1.251`, and every feature-specific exact-version set stay.
+  Research 307, g05.058.
+
 ## [0.5.1] - 2026-09-13
 
 ### Added

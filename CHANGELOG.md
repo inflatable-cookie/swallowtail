@@ -6,6 +6,17 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
+- raise the Cursor Agent catalogue, ACP, and headless qualified ceiling
+  through official `2026.09.10-fd3934a`: Research 312 freezes all three
+  published hops after `2026.08.11-e8db854` with a complete tree inventory
+  and classifies the selected CLI definitions, ACP initialize construction,
+  and stream-json event keys as text-identical modulo minifier renames. Add
+  exact milestones `2026.08.31-4057e58`, `2026.09.02-c22c1a3`, and
+  `2026.09.10-fd3934a` with no inferred gap, keep the three distinct route
+  claims, historical milestones, exact feature-specific sets, and
+  `AllowUnverified`, and leave worker/controller flags, SEA/native
+  packaging, ACP load/replay, and continuation recovery unmapped or blocked.
+  No provider operation or host mutation occurred.
 - raise the Codex exec and app-server qualified ceiling through official npm
   `@openai/codex` `0.154.0`: Research 311 freezes all six published stable
   hops after `0.152.1` with complete wrapper/platform/source-tree

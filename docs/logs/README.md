@@ -25,6 +25,7 @@ then conformance closeout.
 
 ## Entries
 
+- [2026-09-14 Cursor Agent 2026.09.10 Claim](./2026-09-14-cursor-agent-2026-09-10-claim.md) — g05.062 raised `cursor-agent.release-date` through official `2026.09.10-fd3934a`; qualified all three published hops, kept inter-date gaps incompatible, synthetic `2026.09.11` `UnverifiedNewer`, and every feature-specific exact set unchanged
 - [2026-09-14 Codex 0.154.0 Claim](./2026-09-14-codex-0-154-0-claim.md) — g05.061 raised `codex.cli` exec and app-server through official `0.154.0`; qualified all six published hops, pinned newly interior `0.152.2` incompatible, synthetic `0.154.1` `UnverifiedNewer`, and every feature-specific exact set unchanged
 - [2026-09-14 Cursor Agent 2026.09.10 Identity](./2026-09-14-cursor-agent-2026-09-10-identity.md) — Research 312 froze all three published hops from qualified `2026.08.11-e8db854` to official `2026.09.10-fd3934a` with a complete tree inventory; selected CLI, ACP initialize, and stream-json wire text-identical modulo minifier renames with worker/packaging deltas bounded unmapped; compatible extension named; production claims unchanged
 - [2026-09-14 Codex 0.154.0 Identity](./2026-09-14-codex-0-154-0-identity.md) — Research 311 froze all six published hops from qualified `0.152.1` to official `0.154.0` with complete wrapper/platform/source-tree inventories; exec wire and selected schema params byte-identical or additive-only with bounded feeding deltas; compatible extension named; production claims unchanged

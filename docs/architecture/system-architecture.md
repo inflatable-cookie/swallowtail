@@ -428,8 +428,9 @@ OpenHands adds a package without a production route.
   private task-control behavior revision without adding public task-control
   authority, and maintained `1.0.4..=1.0.5` bind `grok-4.6`
 - `swallowtail-adapter-cursor` realizes exact Cursor Agent milestones
-  `2026.07.01-41b2de7`, `2026.07.23-e383d2b`, `2026.08.04-aaa8809`, and
-  `2026.08.11-e8db854` through three separate routes:
+  `2026.07.01-41b2de7`, `2026.07.23-e383d2b`, `2026.08.04-aaa8809`,
+  `2026.08.11-e8db854`, `2026.08.31-4057e58`, `2026.09.02-c22c1a3`, and
+  `2026.09.10-fd3934a` through three separate routes:
   authenticated catalogue,
   ACP v1 interactive sessions, and headless stream-JSON structured runs. The
   headless route binds an explicit model and workspace authority, accepts typed
@@ -442,7 +443,7 @@ OpenHands adds a package without a production route.
   projects
   exact assistant, thinking, correlated tool, usage, and terminal evidence,
   and joins every cancellation, deadline, success, or failure path. Dispatch
-  does not prove provider acceptance. All four qualified calendar
+  does not prove provider acceptance. All seven qualified calendar
   dates retain exact opaque build gates; the gap is not inferred and later
   dates remain visibly unverified. Raw tool payloads and stderr remain private;
   force flags, implicit sandboxing, and partial-output duplication are not

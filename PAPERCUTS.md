@@ -1031,3 +1031,8 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Closed: 2026-09-08 origin/main `ccd58ca6` repointed the
   `consumer_tool_exchange` cross_ref producer-gap path to card 146;
   `effigy qa:routes` passes on heads that include that commit.
+- Orphaned `crates/swallowtail-adapter-cursor/tests/cursor_agent_release_identity.rs`
+  has no `[[test]]` target and is referenced by no suite root, so with
+  `autotests = false` it never compiles or runs; its assertions still pin the
+  old `2026.08.11` ceiling. Wire it to a target or fold it into
+  `compatibility_corpus.rs`; found during g05.062.

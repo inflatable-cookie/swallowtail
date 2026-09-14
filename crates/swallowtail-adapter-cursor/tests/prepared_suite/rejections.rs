@@ -77,7 +77,7 @@ fn ask_selection_rejects_unqualified_releases_at_preparation() {
     let CursorPreparedIntegration::Headless(headless) = prepare_release(
         CursorPreparedDriver::Headless,
         host_id(),
-        "2026.08.12-abcdef1\n",
+        "2026.09.11-abcdef1\n",
     )
     .expect("newer unverified release still prepares the route") else {
         panic!("headless route remains explicit");

@@ -81,11 +81,21 @@ release, tag, publication, or consumer mutation.
 
 ## Acceptance
 
-- [ ] official identity and every published stable are reproducible
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes production claim edits
-- [ ] historical windows, gaps, exact controls, claim identity, and `AllowUnverified` survive
-- [ ] official latest is rechecked at both boundaries
+- [x] official identity and every published stable are reproducible
+- [x] every changed selected input is classified
+- [x] identity evidence precedes production claim edits
+- [x] historical windows, gaps, exact controls, claim identity, and `AllowUnverified` survive
+- [x] official latest is rechecked at both boundaries
+
+## Result
+
+Research 310 froze the official npm and direct QwenLM release/tag identities
+for `0.23.0` through `0.23.3`, including a complete package inventory and
+selected-surface delta ledger. The compatible-extension claim now qualifies
+the maintained `0.22.0..=0.23.3` segment; the separately proven exact Plan
+set remains bounded at `0.22.3`, while exact `0.21.15` reasoning and budgets, historical gaps, and
+`AllowUnverified` remain unchanged. No provider operation or host mutation was
+used. Validation is named in the handoff; PR review remains queue-owned.
 
 ## Next Task
 

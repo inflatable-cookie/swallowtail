@@ -26,12 +26,13 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Qwen Code `0.23.3` (g05.060) is the second family of Tom's
-authorized Research 308 campaign. Planning observed four published stable
-hops after the qualified `0.22.3` ceiling and host `0.21.2`; the worker must
-recheck official latest and freeze identity before changing the claim. Exact
-`0.21.15` reasoning and budgets, historical gaps, and adjacent Alibaba/Qwen
-families stay independently bounded.
+Completed campaign family: Qwen Code official npm and direct GitHub release
+`0.23.3` (g05.060) is the second family of Tom's authorized Research 308
+campaign. Research 310 froze the four published stable hops after the prior
+`0.22.3` ceiling and host `0.21.2`. The compatible-extension claim now
+qualifies `0.22.0..=0.23.3`; the exact Plan set remains bounded at `0.22.3`,
+while exact `0.21.15` reasoning and budgets, historical gaps, and adjacent
+Alibaba/Qwen families stay independently bounded. The next family is Codex.
 
 Completed campaign family: Claude Agent ACP official npm, GitHub, and
 ACP-registry stable `0.76.0` is a compatible extension of
@@ -122,7 +123,8 @@ Codex exec and app-server later rose through official `0.152.1` (g05.020,
 cards 048-049). g05.013 cards 035-036 remain the `0.152.0` identity/claim.
 Unpublished `0.149.2`, `0.150.2`, and `0.151.1` stay incompatible.
 Feature-specific exact sets remain on the `0.147.0..=0.149.1` probed points.
-Qwen headless `0.22.3` remains qualified through g05.004 cards 012-013. Kimi
+Qwen headless `0.23.3` is qualified through g05.060 and Research 310; g05.004
+cards 012-013 remain the prior `0.22.3` currentness record. Kimi
 Code headless agent-core-v2 stream-json first qualified as exact `0.38.0`
 under `kimi.headless.stream-json.v2` (g04.064, cards 179-180); g05.016
 corrected that revision's baseline to `0.33.0` and extended it to

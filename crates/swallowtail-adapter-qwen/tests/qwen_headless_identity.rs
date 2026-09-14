@@ -92,7 +92,7 @@ fn identity_and_claim_qualify_0_21_13_as_compatible_extension() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(QWEN_CODE_BASELINE_VERSION, "0.19.11");
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.3");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.23.3");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.21.2"
@@ -193,7 +193,7 @@ fn identity_and_claim_qualify_0_21_14_as_compatible_extension() {
         );
     }
 
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.3");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.23.3");
     let claim = qwen_headless_claim();
     assert!(matches!(
         claim.assess(&version("0.21.13")),
@@ -300,7 +300,7 @@ fn identity_and_claim_qualify_0_21_15_as_compatible_extension() {
         );
     }
 
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.3");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.23.3");
     let claim = qwen_headless_claim();
     assert!(matches!(
         claim.assess(&version("0.21.14")),
@@ -404,7 +404,7 @@ fn identity_and_claim_qualify_0_22_1_as_compatible_extension() {
         );
     }
 
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.3");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.23.3");
     let claim = qwen_headless_claim();
     assert!(matches!(
         claim.assess(&version("0.21.15")),
@@ -424,7 +424,7 @@ fn identity_and_claim_qualify_0_22_1_as_compatible_extension() {
     }
     assert!(!claim.permits(&version("0.21.16")));
     assert!(matches!(
-        claim.assess(&version("0.22.4")),
+        claim.assess(&version("0.23.4")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
@@ -516,7 +516,7 @@ fn identity_and_claim_qualify_0_22_2_as_compatible_extension() {
         );
     }
 
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.3");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.23.3");
     let claim = qwen_headless_claim();
     assert!(matches!(
         claim.assess(&version("0.21.15")),
@@ -536,7 +536,7 @@ fn identity_and_claim_qualify_0_22_2_as_compatible_extension() {
     }
     assert!(!claim.permits(&version("0.21.16")));
     assert!(matches!(
-        claim.assess(&version("0.22.4")),
+        claim.assess(&version("0.23.4")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
@@ -639,7 +639,7 @@ fn identity_and_claim_qualify_0_22_3_as_compatible_extension() {
         );
     }
 
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.22.3");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.23.3");
     let claim = qwen_headless_claim();
     assert!(matches!(
         claim.assess(&version("0.21.15")),
@@ -659,7 +659,7 @@ fn identity_and_claim_qualify_0_22_3_as_compatible_extension() {
     }
     assert!(!claim.permits(&version("0.21.16")));
     assert!(matches!(
-        claim.assess(&version("0.22.4")),
+        claim.assess(&version("0.23.4")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(

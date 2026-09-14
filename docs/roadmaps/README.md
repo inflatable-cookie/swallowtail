@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.060, Qwen Code currentness through official stable, as the second
-family in Tom's authorized Research 308 campaign. Continue the remaining
-seventeen families serially without repeated approval; no release follows.
+Compile and dispatch Codex as the next family in Tom's authorized Research 308
+currentness campaign. Continue the remaining sixteen families serially without
+repeated approval; no release follows.
 
 ## Standing Lanes
 

@@ -1,0 +1,174 @@
+{
+  "baseline": "2.24.2",
+  "official": "2.25.4",
+  "retrieved": "2026-09-14",
+  "authority": "shipped PyPI sdist/wheel trees for the eight published points; GitHub tag tree for the GitHub-only 2.24.4; 2.24.2 baseline digests reproduce Research 150/199/252",
+  "github_tags": {
+    "v2.24.2": "5e6aa0f6beb3454454f4c1de74a7652ba577ab05",
+    "v2.24.3": "a84be0391bf93e93a4025a5e08e8032ecb587123",
+    "v2.24.4": "dcb1c7d44e3e59c94f1216f77190a02292212753",
+    "v2.24.5": "50d99cf79b55ba92e43fa1ffdb0fc9c7bee83533",
+    "v2.25.0": "6c79ef0e1ee484d7069bc38590d5917d3914cd48",
+    "v2.25.1": "2817f3df81ae05d49ba9538262edb1d5a18fa006",
+    "v2.25.2": "96836b551e36c987656625011e4ffa39806645b6",
+    "v2.25.3": "b166c3a39eaac6ece96ca31840a3278c636616b5",
+    "v2.25.4": "19b5b74faa78d0816b8d4d4c7d7543fc3520678c"
+  },
+  "pypi_distributions": {
+    "2.24.2": {
+      "sdist_sha256": "be62b3148a9640ab2d72ab9849a40499d1680aa59589b01deb62c5eb08df269d",
+      "wheel_sha256": "52536350059bcbffa3fd7a2e7ce50b3087b2839f26b9170c6bd3a63501e19e30"
+    },
+    "2.24.3": {
+      "sdist_sha256": "a7b954f2a86d71b96b0bca4afc89f6c7df45ae093349b567ba49af0c44725be7",
+      "wheel_sha256": "bbc71b513938a8482287c3a81ea50c65a115dc7b2cdf0c76400db0286eefd548"
+    },
+    "2.24.4": {
+      "sdist_sha256": null,
+      "wheel_sha256": null,
+      "pypi": "absent"
+    },
+    "2.24.5": {
+      "sdist_sha256": "2f5e315e6d50a0647200d9e9aa99c55342f9a3e4d12f02c0d277ce8bba4e153e",
+      "wheel_sha256": "82e47b143a7b71408bf14a5b7a84687e5811456ed30f029b085afa7b603959cb"
+    },
+    "2.25.0": {
+      "sdist_sha256": "1d51d99904fc7dd82bbd0f06d76b14a47f4b54d045029a3c701b4fec2e92862c",
+      "wheel_sha256": "cdedb722d5b8ae6770b56496f6b17677cc2d02705b6e6d5205c0c09167e652fa"
+    },
+    "2.25.1": {
+      "sdist_sha256": "b0dde425fb7390160ec86d09bce8522d8389fa1454c5df9cf5b8dd5f521c91e0",
+      "wheel_sha256": "a6185dcab4cc58de2282ff1f3aaebbbff467db83d455fcc42536d6d4aea70a86"
+    },
+    "2.25.2": {
+      "sdist_sha256": "7deaf3f28412195de5015d418003c1e4ecb3ed9787a08298bfea16190783d94e",
+      "wheel_sha256": "2fc4ae6344a80c470a5b0fbaf8b160ebe4352060d68764b07358a8ffc55a75fe"
+    },
+    "2.25.3": {
+      "sdist_sha256": "b01b77df624d79cb133c45b4066534275d62e8d35f37f7f10d008370205342b6",
+      "wheel_sha256": "f8468f97187c74bd61394ee662936f580a5defd260537af76b64080c89a4f1e4"
+    },
+    "2.25.4": {
+      "sdist_sha256": "9e3ecadfa8d9be4a2693b19d5c2cf71ec914bc623649463b93b478be423f7fb8",
+      "wheel_sha256": "d43aa028e1931f3d05d735111384eadc937b4d47b7a05eb2ee04313fd860662f"
+    }
+  },
+  "selected_surfaces_stable_at_every_hop": {
+    "vibe/cli/programmatic.py": "36a5008914136714a851880b3c6921f6ba196371e28422f58a45c8a728b25b34",
+    "vibe/core/middleware.py": "ede809d72ced3328986a3a7c93d4793f66506467182e45f89168fd8ae8343a7a",
+    "tests/cli/test_programmatic.py": "42cb58a1210e398fd8e33991307d43822d8da32f4e74797017d276dd859337b4",
+    "console_script": "vibe = vibe.cli.entrypoint:main",
+    "session_options_shape": "SessionOptions = AgentConfig with agent/auto_approve/disabled_tools/max_turns/headless/trust_workspace fields byte-identical from 2.24.2 through 2.25.4",
+    "public_history_union": "message|reasoning|effect|callback|checkpoint|notice discriminator unchanged",
+    "public_entry_generation_status": "in_progress|completed unchanged",
+    "public_turn_stop_reason": "LIMIT-only unchanged",
+    "content_block_union": "text|image|resource discriminator unchanged",
+    "turn_limit_install_condition": "TurnLimitMiddleware added only when max_turns is not None; unchanged",
+    "trust_application": "trust_for_session(cwd) when options.trust_workspace; unchanged",
+    "missing_api_key_terminal": "MissingAPIKeyError prints Error line to stderr and exits 1 at baseline and 2.25.4"
+  },
+  "per_hop_changed_selected_inputs": {
+    "2.24.2..2.24.3": {
+      "vibe/cli/entrypoint.py": "adds guarded _set_process_title (cosmetic process rename); argument surface unchanged",
+      "vibe/core/agent_loop/_loop.py": "unsupported-image error uses model display name; turn/limit machinery unchanged",
+      "vibe/core/config/vibe_schema.py": "model catalogue display names",
+      "vibe/app_server/models.py": "optional error/connector_error on MCP state models; not public history",
+      "vibe/core/config/models.py": "optional ModelConfig display_name"
+    },
+    "2.24.3..2.24.4": {
+      "vibe/core/agent_loop/_loop.py": "background session-title machinery behind auto_title_enabled=False default; turn/limit machinery unchanged",
+      "vibe/core/agents/models.py": "optional instructions field on profile model; Plan overrides unchanged",
+      "vibe/core/agents/manager.py": "rebind/rediscover for directory moves; worktree surface only",
+      "vibe/core/agents/registry.py": "rediscover search paths; worktree surface only",
+      "vibe/app_server/protocol.py": "additive plugin/MCP/connector catalogue client methods",
+      "vibe/app_server/models.py": "PublicRetryState turn-state model plus plugin catalogue models; not history entries",
+      "vibe/app_server/events.py": "MCP/connector authorization-required events plus snapshot history merge; ProgrammaticOutput consumes only history/callback events",
+      "vibe/core/types.py": "session origin_directory and config snapshot fields",
+      "pypi": "ABSENT on PyPI (GitHub-only packaging gap)"
+    },
+    "2.24.4..2.24.5": {
+      "vibe/cli/cli.py": "config-load error handling and _agent_selection reroute only when --auto-approve is passed without --agent; selected --agent plan path unchanged",
+      "vibe/core/config/vibe_schema.py": "GrowthBook routed_extra_models coercion",
+      "vibe/core/agents/__init__.py": "exports"
+    },
+    "2.24.5..2.25.0": {
+      "vibe/cli/entrypoint.py": "hidden --internal-posix-pty-helper interception and update alias; never on selected argv",
+      "vibe/cli/cli.py": "require_api_key_or_onboard factors the baseline-identical MissingAPIKeyError stderr/exit-1 behavior",
+      "vibe/core/agent_loop/_loop.py": "explicit require_active_provider_api_key in loop init plus config-gated registry-skill sync; CLI gate already enforced the same key requirement",
+      "vibe/app_server/session.py": "turn-queue API and generation tracking; headless enqueues exactly one turn via act()",
+      "vibe/app_server/events.py": "TurnQueueUpdated event; decoder-invisible on selected route",
+      "vibe/app_server/models.py": "Session content block union for the app-server client protocol; public history ContentBlock union unchanged",
+      "vibe/core/config/vibe_schema.py": "admin auto-compact merge and shell session-pattern wildcard helpers"
+    },
+    "2.25.0..2.25.1": {
+      "vibe/cli/entrypoint.py": "--legacy-harness and --smart-approve flags; harness resolution consumed at session startup",
+      "vibe/cli/cli.py": "legacy_harness plumbed into programmatic and TUI harness options",
+      "vibe/_experimental_harness.py": "resolve_harness_selection: --legacy-harness first, --experimental-harness, GrowthBook rollout cache, then default legacy",
+      "vibe/app_server/local.py": "HarnessProcess receives legacy_harness",
+      "vibe/app_server/_runtime.py": "startup harness selection reads the ambient eval cache; use_unified only when the internal mistralai_vibe_local_harness module is importable",
+      "vibe/core/agents/models.py": "smart-approve builtin profile, Unified-Harness-only, ships dark behind rollout flags",
+      "vibe/core/agents/manager.py": "smart-approve forced-agent bookkeeping",
+      "vibe/core/config/vibe_schema.py": "smart_approve_available/default flags and resolve_default_agent; default_agent stays accept-edits and is never consulted because --agent plan is always passed",
+      "vibe/agents.py": "AgentSafety.SMART label",
+      "vibe/app_server/models.py": "approval reason, TurnErrorCode.INVALID_API_KEY consumed by unified adapter/TUI/ACP only, RemoteProjectLink teleport rename",
+      "vibe/app_server/events.py": "turn/queueUpdated notification rename",
+      "vibe/app_server/session.py": "closing guard makes stream loss during close clean; steer/additional queue methods",
+      "github_zip": "vibe-darwin-aarch64 zip starts bundling _internal/mistralai_vibe_local_harness/_native.abi3.so; PyPI wheels and sdists never ship that module"
+    },
+    "2.25.1..2.25.2": {
+      "vibe/cli/entrypoint.py": "worktree holder carries session.pending_hold; worktree surface only",
+      "vibe/core/agent_loop/_loop.py": "set_field_or_warn config-write robustness"
+    },
+    "2.25.2..2.25.3": {
+      "vibe/cli/entrypoint.py": "comment-only pyright directive removal",
+      "vibe/core/config/vibe_schema.py": "file_watcher_for_autocomplete default flip; autocomplete surface only"
+    },
+    "2.25.3..2.25.4": {
+      "vibe/cli/entrypoint.py": "unchanged",
+      "note": "additive shell-command permission-analysis modules and presentation/UI changes; Plan write/edit NEVER overrides and headless callback denial unchanged"
+    }
+  },
+  "harness_rollout_evidence": {
+    "question": "can the selected headless run swap to the internal Unified Harness without any Swallowtail-visible argv change",
+    "pypi_channel": "mistralai_vibe_local_harness is absent from every official wheel and sdist, so experimental_harness_available() is false and the rollout branch can never fire",
+    "github_zip_channel": "the bundled native module appears from 2.25.1; with an ambient ~/.vibe experiment eval cache resolving variant unified, resolve_harness_selection would pick the unified backend for the selected argv",
+    "darwin_aarch64_zip_bundles_native_harness": {
+      "2.24.2": false,
+      "2.24.3": false,
+      "2.24.4": false,
+      "2.24.5": false,
+      "2.25.0": false,
+      "2.25.1": true,
+      "2.25.2": true,
+      "2.25.3": true,
+      "2.25.4": true
+    },
+    "darwin_aarch64_zip_sha256": {
+      "2.24.2": "924069bab01afbf697981151f4c29e38e594506cf18c44e94b4a5185f6704125",
+      "2.24.3": "af7cbb6ca956254632b1f2b5f238d75818e5bcc228a739bee8250ececf42e66a",
+      "2.24.4": "1336609cadd5e58896b271b9c0793dac7461f0d2781aa44f9067261ed7d5c1c9",
+      "2.24.5": "c846b8ce2d50c70b94718b0a0489016003eb5bdc35c4cfb25e90f4a3578a0ba9",
+      "2.25.0": "c155c6b26cb52f65854f25c707fc02c4f8d3bf004199f07063a5bacfac042cc3",
+      "2.25.1": "3bb6c63f463da544344ebf2925e27ee85de503c1ec6c84e8e0721018b8ad7a9b",
+      "2.25.2": "31985576b16c5764714a04f4458e0808e8d4246facfb2795dd7ac6f648f9e778",
+      "2.25.3": "de3234602a0ef572b0282c17d19c9b425c72927aed188370f0d9d0b13b475aed",
+      "2.25.4": "4a4e11ebecd50ca9af00fa3da08df742098a34db5de158de9f825dbf28f9261f"
+    },
+    "resolution": "the adapter-privately selected --legacy-harness flag has first-precedence in resolve_harness_selection and pins the legacy Python harness deterministically on both channels; the unified backend stays unmapped",
+    "native_backend_authority": "the bundled backend is a native module whose tool-authority behavior is not statically classifiable; execution remains forbidden, so it is excluded on the selected route rather than mapped"
+  },
+  "classification_invariants": {
+    "argument_parsing": "selected flags byte-identical at 2.25.4; additions are opt-in flags never passed",
+    "plan_profile": "PLAN profile definition byte-identical baseline to 2.25.4; profile overrides install before act",
+    "headless_callback_denial": "headless=True, ask_user_question/exit_plan_mode disabled, CallbackRequested denied; unchanged",
+    "streaming_ndjson": "programmatic.py byte-stable; completed-only, id-dedup, camelCase model_dump(by_alias=True) lines",
+    "provider_limit_failure_mapping": "ProgrammaticLimitError stderr and exit 1 plus LIMIT-only stop reason unchanged",
+    "process_exit": "exit 0 success, exit 1 error paths, stderr text unchanged",
+    "working_resource_authority": "--workdir expanduser/resolve/must-be-dir/chdir unchanged",
+    "deadline": "host-owned; unchanged",
+    "task_ownership": "one stdio child; unchanged",
+    "session_close": "session.close() in finally unchanged; closing guard only hardens the dropped-connection error path",
+    "joined_cleanup": "join or kill; unchanged",
+    "authentication": "host-owned MISTRAL_API_KEY; missing key fails with the same stderr text and exit 1 at both boundaries"
+  }
+}

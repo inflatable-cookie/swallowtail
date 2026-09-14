@@ -26,6 +26,16 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
+Active campaign family: Deep Agents official npm `0.1.30` (g05.074) is the
+fourteenth family of Tom's authorized Research 308 campaign. Production binds
+exact `deepagents-acp@0.1.25`, while npm has five stable successors through
+`0.1.30`; the ACP registry remains stale at discovery-only `0.1.7` and the CLI
+is absent locally. The provider-free gate freezes every exact tarball and
+classifies the selected no-extra-argv ACP wire, host-owned auth, permission
+fallback, working-resource authority, process cleanup, and in-process session
+persistence before one exact-pin decision. Research 206's empty explicit
+model-selection set stays independent. Antigravity follows.
+
 Completed campaign family: Mistral Vibe official GitHub/PyPI `2.25.4`
 (g05.073) is the thirteenth family of Tom's authorized Research 308
 campaign. Research 321 froze the exact `2.24.2` baseline and all eight

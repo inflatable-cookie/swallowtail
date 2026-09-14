@@ -31,7 +31,7 @@ When sources disagree:
 
 Nucleus and Soundcheck are initial migration sources. Monkey may later provide
 a local-model route. None is an authority owner for Swallowtail.
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:7bd94b5a1b3e5f5cd0369985915353610ef868699291d97d110f2b0a526a6569 -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:45a6cfc67cd5fcb06741ab9613ad1795c4c891861ebcef0818d1f2e5030fb77e -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g05 | open | planning_required |
@@ -43,4 +43,5 @@ a local-model route. None is an authority owner for Swallowtail.
 | g05.059 | complete | none | 8 | sha256:6faa98046ef88d5d1a7ccbcc2a60785743e8a8eb34342697a22e9eee0d906514 |
 | g05.060 | complete | none | 8 | sha256:a824e3781686e49ed9e80170d350ee528bf3af6e4f87b637e780884c8e2ba906 |
 | g05.061 | complete | none | 8 | sha256:9247a437714e4625d1f6b49cd55668776cb4144ca413420ac350d0b8937624fa |
+| g05.062 | complete | none | 8 | sha256:17ac7e6f3ab7f6ed5e924b46f2d22574ba179fcce64fdc18344d1aa1eeb4accb |
 <!-- northstar:lifecycle:end -->

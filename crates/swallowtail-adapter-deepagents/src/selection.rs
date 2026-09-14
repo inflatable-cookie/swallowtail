@@ -12,7 +12,7 @@ pub const DEEPAGENTS_ACP_EXECUTABLE_NAME: &str = "deepagents-acp";
 /// Opaque npm package-version axis for Deep Agents ACP.
 pub const DEEPAGENTS_ACP_PACKAGE_AXIS: &str = "deepagents-acp.package";
 /// Exact qualified Deep Agents npm package used by ACP.
-pub const DEEPAGENTS_ACP_PACKAGE_VERSION: &str = "0.1.25";
+pub const DEEPAGENTS_ACP_PACKAGE_VERSION: &str = "0.1.30";
 
 pub(crate) const DEEPAGENTS_ACP_BEHAVIOR: &str = "deepagents.acp.stdio-v1";
 const MAX_VERSION_BYTES: usize = 32;
@@ -137,17 +137,17 @@ mod tests {
         for rejected in [
             "",
             "0.1.24",
-            "0.1.26",
+            "0.1.29",
             "0.0.1",
             "0.1.7",
             "0.1",
-            "0.1.25.0",
-            "v0.1.25",
-            "0.1.25-beta",
-            "0.1.25\n",
-            " 0.1.25",
-            "0.1.25 ",
-            "deepagents-acp 0.1.25",
+            "0.1.30.0",
+            "v0.1.30",
+            "0.1.30-beta",
+            "0.1.30\n",
+            " 0.1.30",
+            "0.1.30 ",
+            "deepagents-acp 0.1.30",
         ] {
             assert!(
                 deepagents_acp_package_binding(rejected).is_none(),
@@ -160,7 +160,7 @@ mod tests {
     fn exact_release_is_permitted_and_newer_is_not() {
         let permitted =
             InterfaceVersion::new(DEEPAGENTS_ACP_PACKAGE_VERSION).expect("qualified version");
-        let newer = InterfaceVersion::new("0.1.26").expect("newer version");
+        let newer = InterfaceVersion::new("0.1.31").expect("newer version");
         let claim = deepagents_acp_claim();
         assert!(claim.assess(&permitted).is_permitted());
         assert!(!claim.assess(&newer).is_permitted());
@@ -169,20 +169,20 @@ mod tests {
     #[test]
     fn version_stdout_parser_accepts_bare_or_named_exact_release() {
         assert_eq!(
-            parse_deepagents_acp_version_output(b"0.1.25\n")
+            parse_deepagents_acp_version_output(b"0.1.30\n")
                 .expect("exact version parses")
                 .version()
                 .as_str(),
-            "0.1.25"
+            "0.1.30"
         );
         assert_eq!(
-            parse_deepagents_acp_version_output(b"deepagents-acp 0.1.25\n")
+            parse_deepagents_acp_version_output(b"deepagents-acp 0.1.30\n")
                 .expect("named version parses")
                 .version()
                 .as_str(),
-            "0.1.25"
+            "0.1.30"
         );
-        assert!(parse_deepagents_acp_version_output(b"0.1.26\n").is_none());
+        assert!(parse_deepagents_acp_version_output(b"0.1.29\n").is_none());
         assert!(parse_deepagents_acp_version_output(b"0.0.1\n").is_none());
         assert!(parse_deepagents_acp_version_output(b"v0.1.25\n").is_none());
         assert!(parse_deepagents_acp_version_output(b"deepagents-acp  0.1.25\n").is_none());

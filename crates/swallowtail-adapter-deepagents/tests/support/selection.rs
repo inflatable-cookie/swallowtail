@@ -31,7 +31,7 @@ pub fn selection_with_access(
             ],
         ),
     ]);
-    let version_binding = deepagents_acp_package_binding("0.1.25").expect("fixture version is valid");
+    let version_binding = deepagents_acp_package_binding("0.1.30").expect("fixture version is valid");
     let instance = ConfiguredInstance::new(
         instance_id.clone(),
         InstanceRevision::new("fixture-revision").expect("valid revision"),

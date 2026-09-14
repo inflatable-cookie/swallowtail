@@ -296,7 +296,7 @@ OpenHands adds a package without a production route.
   on `kiro-cli acp` through `prepare_kiro_acp`. Credentials stay host-owned
   local account. `--cloud`, `--agent`, `kiro-cli chat --no-interactive`,
   `session/load`, and docs `session/prompt` field `content` stay out.
-- `swallowtail-adapter-deepagents` implements exact npm `0.1.25` ACP on
+- `swallowtail-adapter-deepagents` implements exact npm `0.1.30` ACP on
   host-approved `deepagents-acp` with no extra argv through
   `prepare_deepagents_acp`. Working resource is the child cwd. CLI
   `agentInfo.version` `0.0.1` is not the package axis. `npx`,
@@ -667,7 +667,7 @@ Crate status:
   credential lease, and `prepare_kiro_acp`. `kiro.acp` is a production
   route. The package remains an unreleased additive candidate after
   `v0.3.2`.
-- `swallowtail-adapter-deepagents` — realized for exact npm `0.1.25` ACP
+- `swallowtail-adapter-deepagents` — realized for exact npm `0.1.30` ACP
   discovery and stdio driver with qualified-only claim, host-owned
   provider API keys, no credential lease, empty extra argv, and
   `prepare_deepagents_acp`. `deepagents.acp` is a production route.

@@ -26,15 +26,21 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active campaign family: Deep Agents official npm `0.1.30` (g05.074) is the
-fourteenth family of Tom's authorized Research 308 campaign. Production binds
-exact `deepagents-acp@0.1.25`, while npm has five stable successors through
-`0.1.30`; the ACP registry remains stale at discovery-only `0.1.7` and the CLI
-is absent locally. The provider-free gate freezes every exact tarball and
-classifies the selected no-extra-argv ACP wire, host-owned auth, permission
-fallback, working-resource authority, process cleanup, and in-process session
-persistence before one exact-pin decision. Research 206's empty explicit
-model-selection set stays independent. Antigravity follows.
+Completed campaign family: Deep Agents official npm `0.1.30` (g05.074) is
+the fourteenth family of Tom's authorized Research 308 campaign. Research
+322 froze the exact `0.1.25` baseline, all five published stable successors
+through `0.1.30`, and the exact-pinned `deepagents` runtime dependency chain
+`1.12.4..=1.13.4` as registry-verified tarballs whose baselines reproduce
+Research 157 and Research 206. The selected no-extra-argv stdio wire is
+byte-stable across the whole window and the sole CLI body change
+(`0.1.27..0.1.28`, `ACPFilesystemBackend.read` pagination) is unreachable on
+the selected route, so the exact `QualifiedOnly` point advanced to `0.1.30`
+with the `deepagents.acp.stdio-v1` behavior revision, empty selected argv,
+and no argv change. The selected `deepagents` deltas are additive and
+decoder-invisible (builtin `delete` tool, required `write_file` content,
+`read_file` pagination footer); the stale ACP registry `0.1.7` entry and
+constructor-default `agentInfo.version` `0.0.1` stay outside the claim.
+Antigravity follows and awaits Chatterbox's task compilation.
 
 Completed campaign family: Mistral Vibe official GitHub/PyPI `2.25.4`
 (g05.073) is the thirteenth family of Tom's authorized Research 308
@@ -51,8 +57,8 @@ one mechanical adaptation: the selected argv adds adapter-private
 `--legacy-harness` because `2.25.1` resolves the session harness from
 flags, the ambient GrowthBook rollout cache, and native-module availability
 (bundled in GitHub zips from `2.25.1`, never in PyPI distributions), and
-the Unified Harness plus `--smart-approve` stay unmapped. Deep Agents
-follows.
+the Unified Harness plus `--smart-approve` stay unmapped. The next family
+was Deep Agents.
 
 Completed campaign family: Kiro official manifest `2.21.4` (g05.072) is the
 twelfth family of Tom's authorized Research 308 campaign. Research 320 froze

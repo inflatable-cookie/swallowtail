@@ -7,11 +7,16 @@ Vision tags: route currentness, Deep Agents, ACP, exact pin
 
 ## Outcome
 
-Reopen the exact `deepagents-acp.package` pin and qualify official npm
-`deepagents-acp@0.1.30` for `deepagents.acp` only if a complete provider-free
-package-tree, ACP-wire, authority, failure, and lifecycle comparison admits it.
-Preserve `QualifiedOnly` and one exact maintained point. Do not infer a range
-across the five published successors after `0.1.25`.
+Complete. Official npm `0.1.30` is qualified as a compatible exact-point
+rebind: Research 322 froze the `0.1.25` baseline, all five published stable
+successors, and the exact-pinned `deepagents` runtime dependency chain
+`1.12.4..=1.13.4` as registry-verified tarballs; the selected no-extra-argv
+stdio wire is byte-stable across the whole window; the sole CLI body change
+(`0.1.27..0.1.28`, `ACPFilesystemBackend.read` pagination) is unreachable on
+the selected route; and every selected `deepagents` delta is additive and
+decoder-invisible. The exact `deepagents-acp.package` point moved to
+`0.1.30` with the `deepagents.acp.stdio-v1` behavior revision, empty
+selected argv, and `QualifiedOnly` posture unchanged.
 
 Planning rechecked the official npm channel on 2026-09-14. `latest` is
 `0.1.30`, published `2026-09-09T17:34:53.193Z`, with tarball shasum
@@ -112,12 +117,12 @@ ACP registry metadata, dependency capabilities, or advertised operations.
 
 ## Acceptance
 
-- [ ] official npm identities reproduce for baseline and every successor
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes the claim decision
-- [ ] exact QualifiedOnly shape and route boundaries remain truthful
-- [ ] stale registry metadata and advertised siblings stay independently gated
-- [ ] official npm latest is rechecked at both boundaries
+- [x] official npm identities reproduce for baseline and every successor
+- [x] every changed selected input is classified
+- [x] identity evidence precedes the claim decision
+- [x] exact QualifiedOnly shape and route boundaries remain truthful
+- [x] stale registry metadata and advertised siblings stay independently gated
+- [x] official npm latest is rechecked at both boundaries
 
 ## Next Task
 

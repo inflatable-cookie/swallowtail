@@ -31,6 +31,32 @@ annotated Git tags from the canonical repository.
   disposition stays independent.
 
 ### Changed
+- advance the Deep Agents ACP exact point from `0.1.25` to official npm
+  `0.1.30`: Research 322 freezes all five published stable successors and
+  the exact-pinned `deepagents` runtime dependency chain `1.12.4..=1.13.4`
+  as registry-verified tarballs (both baselines reproduce earlier
+  research), keeps the ACP registry's discovery-only `0.1.7` entry and the
+  CLI constructor-default `agentInfo.version` `0.0.1` outside the claim,
+  and finds the selected no-extra-argv stdio wire byte-stable across the
+  whole window: initialize shape, `session/new` cwd authority, the `prompt`
+  field, stop reasons, cancel, permission options with the unchanged
+  catch-returns-allow fallback, slash-command interception, and joined
+  cleanup. The sole CLI body change (`0.1.27..0.1.28`) rewrites
+  `ACPFilesystemBackend.read` pagination and is unreachable on the selected
+  route because the CLI passes an explicit `FilesystemBackend` config
+  backend before any client-capability branch and the selected initialize
+  advertises host `fs` false. The selected `deepagents` deltas are additive
+  and decoder-invisible: a builtin `delete` tool through unchanged generic
+  tool/permission paths with kind `other` (the child's already-unbounded
+  local-file authority now also covers recursive deletion, still outside
+  the Swallowtail bounded-write disposition), `write_file` `content`
+  becoming required, and `read_file` pagination footer text inside opaque
+  tool-result content; the subagent fork/isolated machinery stays
+  unselected. Keep the `deepagents.acp.package-window-1` claim,
+  `deepagents.acp.stdio-v1` behavior revision, empty selected argv, exact
+  one-point `QualifiedOnly` posture, and no unverified-newer execution.
+  No provider operation, host mutation, or downloaded-artifact execution
+  occurred.
 - advance the Mistral Vibe headless exact point from `2.24.2` to official
   GitHub/PyPI `2.25.4`: Research 321 freezes all eight published stable
   successors as exact source tarballs and registry-matched sdist/wheel

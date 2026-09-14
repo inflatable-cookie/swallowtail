@@ -15,9 +15,10 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.074 Deep Agents `0.1.30` exact-pin qualification as the
-fourteenth family in Tom's authorized Research 308 currentness campaign.
-Continue the remaining five families serially without repeated approval; no
+g05.074 completed the Deep Agents `0.1.30` exact-pin rebind, the fourteenth
+family in Tom's authorized Research 308 currentness campaign. Return the
+outcome to Chatterbox, then compile and dispatch the Antigravity family
+(fifteenth) from fresh canonical `main` without repeated approval; no
 release follows.
 
 ## Standing Lanes

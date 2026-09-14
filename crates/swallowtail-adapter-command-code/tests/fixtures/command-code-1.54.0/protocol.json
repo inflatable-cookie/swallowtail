@@ -1,0 +1,229 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-09-14",
+  "route_id": "command-code.headless",
+  "artifact_revision": "1.54.0",
+  "compatibility_revision": "command-code.headless-window-1",
+  "protocol_facade_revision": "command-code.agent-event-ndjson-v1",
+  "selected_invocation": {
+    "argv": [
+      "-p",
+      "--output-format",
+      "json",
+      "--permission-mode",
+      "plan",
+      "--skip-onboarding",
+      "--no-session",
+      "--no-auto-update",
+      "--trust",
+      "--no-skills",
+      "--max-turns",
+      "8",
+      "-m",
+      "<model>"
+    ],
+    "prompt_transport": "stdin",
+    "structured_retention": "--no-session",
+    "interactive_first_turn": "no --no-session",
+    "interactive_continuation": "--resume exact id only; no --continue or --fork-session"
+  },
+  "selected_event_types": [
+    "run_start",
+    "turn_start",
+    "message_start",
+    "model_request_start",
+    "model_trace",
+    "thinking_start",
+    "thinking_delta",
+    "thinking_end",
+    "text_delta",
+    "message_update",
+    "model_request_end",
+    "message_end",
+    "tool_queued",
+    "tool_running",
+    "tool_completed",
+    "turn_end",
+    "run_end",
+    "run_error"
+  ],
+  "projected_event_types": [
+    "run_start",
+    "thinking_start",
+    "thinking_delta",
+    "thinking_end",
+    "text_delta",
+    "tool_queued",
+    "tool_running",
+    "tool_completed",
+    "model_request_end"
+  ],
+  "ignored_lifecycle_event_types": [
+    "turn_start",
+    "turn_end",
+    "message_start",
+    "message_update",
+    "message_end",
+    "model_request_start",
+    "model_trace",
+    "run_end"
+  ],
+  "selected_result_keys": [
+    "type",
+    "subtype",
+    "sessionId",
+    "stopReason",
+    "usage",
+    "durationMs",
+    "finalText"
+  ],
+  "selected_usage_keys": [
+    "inputTokens",
+    "outputTokens",
+    "cacheReadTokens",
+    "cacheWriteTokens"
+  ],
+  "selected_failure_signals": {
+    "credit_text": "credit",
+    "credit_exit_code": 10,
+    "error_subtype": "error",
+    "max_turns_subtype": "max_turns"
+  },
+  "selected_presence_all_hops": {
+    "--output-format": true,
+    "--permission-mode": true,
+    "--skip-onboarding": true,
+    "--no-session": true,
+    "--no-auto-update": true,
+    "--no-skills": true,
+    "--trust": true,
+    "--max-turns": true,
+    "--model": true,
+    "--resume": true,
+    "run_start": true,
+    "turn_start": true,
+    "message_start": true,
+    "model_request_start": true,
+    "model_trace": true,
+    "thinking_start": true,
+    "thinking_delta": true,
+    "thinking_end": true,
+    "text_delta": true,
+    "message_update": true,
+    "model_request_end": true,
+    "message_end": true,
+    "tool_queued": true,
+    "tool_running": true,
+    "tool_completed": true,
+    "turn_end": true,
+    "run_end": true,
+    "run_error": true,
+    "sessionId": true,
+    "stopReason": true,
+    "finalText": true,
+    "usage": true,
+    "inputTokens": true,
+    "outputTokens": true,
+    "cacheReadTokens": true,
+    "cacheWriteTokens": true,
+    "nextState": true,
+    "toolCallId": true,
+    "toolName": true,
+    "hadToolCalls": true,
+    "subtype": true,
+    "durationMs": true,
+    "credit": true
+  },
+  "selected_file_identity": {
+    "entrypoint": {
+      "path": "dist/index.mjs",
+      "sha256": "157feefa0140e78f060ef2c1f9c50d10de702196ea229dc73db6bbcc39a0bcbb",
+      "identical_all_hops": true
+    },
+    "payload": {
+      "path": "dist/cli.mjs",
+      "changed_each_hop": true
+    },
+    "package_json": {
+      "bin_and_engines_identical": true
+    }
+  },
+  "classified_deltas": {
+    "package_metadata": "package.json version and 1.23.2/1.27.2 dependency metadata changes plus the 1.29.0..1.30.0 devDependency renames (@commandcode/provider-anthropic -> @byokkit/cmd-provider-anthropic, @commandcode/provider-openai -> @byokkit/cmd-provider-openai, @commandcode/provider-copilot -> @byokkit/cmd-provider-copilot) are packaging/dependency resolution only; bin, main, type, files, engines, license, and selected entrypoint remain unchanged.",
+    "launcher": "dist/index.mjs is byte-identical across all hops and remains the only selected launcher.",
+    "mapped_payload": "dist/cli.mjs changes on every hop, but all selected invocation/event/result/usage/failure literals remain present across every hop; source contexts retain the same run/result construction and exact-id resume path at baseline and latest.",
+    "unmapped_payload": "New --tools-all/--tools-enable (1.19.1), select_effort (1.38.0), --local-only (registered as CMD_LOCAL_ONLY and config localOnly at 1.30.0), interaction_requested/interaction_resolved (1.54.0), and internal/provider/TUI/mod/session additions are not selected by this route; the local-only toggle can reroute provider traffic without changing argv and is therefore an explicitly classified ambient boundary; unknown event types remain namespaced observations and are never terminal authority.",
+    "ambient_configuration": "CMD_LOCAL_ONLY and config localOnly first appear at 1.30.0. They are an unmapped ambient toggle that can reroute provider traffic without changing argv; the selected route neither sets nor reads them.",
+    "documentation": "Bundled knowledge/design files and VSIX are unselected documentation/editor surfaces; every added file and changed file is represented in dist-inventory.json.",
+    "process_lifecycle": "The mapped owned child process, stdin prompt, stdout NDJSON pump, exact session-id retention boundary, deadline/cancellation force cleanup, and joined task cleanup are adapter-owned and unchanged; no package delta requires a new authority or public operation."
+  },
+  "unmapped_boundaries": {
+    "cli_options": [
+      "--tools-all",
+      "--tools-enable <names>",
+      "--local-only",
+      "--effort",
+      "--config",
+      "--skill",
+      "--mod",
+      "--mod-option",
+      "--ide-setup",
+      "--worktree",
+      "--session",
+      "--continue",
+      "--fork-session"
+    ],
+    "event_types": [
+      "select_effort",
+      "interaction_requested",
+      "interaction_resolved",
+      "compaction_start",
+      "compaction_done",
+      "session_titled",
+      "permission_mode_changed"
+    ],
+    "surfaces": [
+      "TUI",
+      "Provider API",
+      "mods/taste",
+      "skills",
+      "catalogue/export",
+      "ambient session scanning",
+      "background/update internals"
+    ],
+    "ambient_toggles": {
+      "CMD_LOCAL_ONLY": "1.30.0",
+      "config.localOnly": "1.30.0",
+      "classification": "Unmapped ambient configuration; it can reroute provider traffic without changing the selected argv. The route neither sets nor reads it."
+    },
+    "dependency_metadata": {
+      "1.29.0..1.30.0": {
+        "removed_dev_dependencies": [
+          "@commandcode/provider-anthropic",
+          "@commandcode/provider-openai",
+          "@commandcode/provider-copilot"
+        ],
+        "added_dev_dependencies": [
+          "@byokkit/cmd-provider-anthropic",
+          "@byokkit/cmd-provider-openai",
+          "@byokkit/cmd-provider-copilot"
+        ]
+      }
+    },
+    "reason": "The prepared adapter emits only the selected argv, never opts into these surfaces, parses only the frozen selected event/result keys, ignores unknown event types, and does not claim public catalogue/import/export/resume or provider authority."
+  },
+  "live_evidence_disposition": {
+    "qualified_protocol": true,
+    "live_authenticated_completion": false,
+    "live_tool_lifecycle": false,
+    "live_usage": false,
+    "live_credit_failure": false,
+    "live_interactive_continuation": false,
+    "source": "1.15.1 only",
+    "follow_up": "g05.069 (docs/roadmaps/g05/069-command-code-1-54-0-live-requalification.md) is the separately authorized exact-1.54.0 live gate before restoring version-specific live feature truth."
+  },
+  "no_prompt": true,
+  "no_live_session": true,
+  "no_host_change": true,
+  "nothing_executed": true
+}

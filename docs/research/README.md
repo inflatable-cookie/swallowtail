@@ -8,6 +8,8 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ## Research Records
 
+- [317 Command Code 1.54.0 Identity](./317-command-code-1-54-0-identity.md) — complete official npm identity and all 67 stable successors; selected route surface classified provider-free; Research 116/118 live evidence remains bound to `1.15.1`; no production claim yet
+
 ### Harness Skills And Watchers
 
 - [303 Claude SDK Native Mediation Limitation](./303-claude-sdk-native-mediation-limitation.md) — complete; Desktop g02.049 successor capsule proves in-workspace native `Read` completed without `canUseTool`; universal native mediation unavailable on the qualified tuple; `permission_exchange` and registered tools retained; g05.045; no live/provider claim

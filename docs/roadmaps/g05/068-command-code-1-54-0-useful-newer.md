@@ -110,16 +110,35 @@ are not stable authority.
 
 ## Acceptance
 
-- [ ] official identity and all 67 published successors reproduce
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes the claim decision
-- [ ] exact QualifiedOnly shape and route boundaries remain truthful
-- [ ] live evidence stays bound to the exact version that produced it
-- [ ] official stable is rechecked at both boundaries
+- [x] official identity and all 67 published successors reproduce
+- [x] every changed selected input is classified
+- [x] identity evidence precedes the claim decision
+- [x] exact QualifiedOnly shape and route boundaries remain truthful
+- [x] live evidence stays bound to the exact version that produced it
+- [x] official stable is rechecked at both boundaries
 
 ## Result
 
-Ready for dispatch.
+Research 317 freezes the official npm baseline `1.15.1` and all 67 published
+stable successors through `1.54.0`. The complete extracted package inventory
+has no removals, eight additive bundled reference paths, and a byte-identical
+`dist/index.mjs`; every selected invocation, AgentEvent, result, usage,
+failure, stdin, and local process/lifecycle input is classified in the
+identity corpus. The exact `command-code.headless-window-1` claim now binds
+one maintained `1.54.0` point with the unchanged
+`command-code.agent-event-ndjson-v1` behavior revision and `QualifiedOnly`
+posture. No range or second exact point was added, and `1.54.1` is not
+published.
+
+Research 116 and 118 remain immutable exact-`1.15.1` live evidence. Their
+authenticated completion, tool lifecycle, usage, credit-failure, and two-turn
+private continuation observations do not migrate to `1.54.0`; the feature
+matrix notes retain that live-evidence gate and name a separately authorized
+exact `1.54.0` live requalification. The provider-free decoder, argv, unknown-event,
+retention, and cleanup boundaries remain covered by the all-hop ledger and
+focused fixtures. No provider operation, host mutation, prompt, login, or
+downloaded-artifact execution occurred. Validation is named above; PR review
+and merge remain queue-owned.
 
 ## Next Task
 

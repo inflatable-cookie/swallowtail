@@ -34,9 +34,9 @@ fn exact_artifact_and_protocol_revisions_are_bound_together() {
 fn protocol_never_ingests_run_end_next_state() {
     let protocol: Value = serde_json::from_str(PROTOCOL).expect("protocol fixture parses");
     assert!(
-        protocol["known_event_types"]
+        protocol["selected_event_types"]
             .as_array()
-            .expect("known event types")
+            .expect("selected event types")
             .iter()
             .any(|value| value == "run_end")
     );
@@ -47,4 +47,23 @@ fn protocol_never_ingests_run_end_next_state() {
             .iter()
             .any(|value| value == "run_end")
     );
+}
+
+#[test]
+fn direct_probe_explicitly_records_not_run() {
+    let artifact: Value = serde_json::from_str(ARTIFACT).expect("artifact fixture parses");
+    let probe = &artifact["direct_probe"];
+    assert_eq!(probe["status"], "not-run");
+    assert!(probe["reason"].as_str().unwrap().contains("never executed"));
+    for key in [
+        "version_succeeded",
+        "help_succeeded",
+        "no_tool_headless_succeeded",
+        "tool_headless_succeeded",
+        "credit_failure_exit_code",
+    ] {
+        assert!(probe[key].is_null(), "not-run probe must not claim {key}");
+    }
+    let protocol: Value = serde_json::from_str(PROTOCOL).expect("protocol fixture parses");
+    assert_eq!(protocol["selected_failure_signals"]["credit_exit_code"], 10);
 }

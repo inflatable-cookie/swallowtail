@@ -269,13 +269,15 @@ OpenHands adds a package without a production route.
   entitled set and may substitute that model's default, while this route
   selects no model. The route therefore exposes no portable
   `ReasoningSelection` and retains its exact absent-effort argv.
-- `swallowtail-adapter-mistral-vibe` implements exact GitHub/PyPI `2.24.2`
+- `swallowtail-adapter-mistral-vibe` implements exact GitHub/PyPI `2.25.4`
   discovery and one bounded `vibe --prompt --output streaming` structured
   run with typed caller-decreasing `MistralVibeMaxTurns` `1..=8`; omission
-  keeps `--max-turns 8`, then fixed `--trust --agent plan --workdir` through
-  `prepare_mistral_vibe_headless`. Native limit remains provider-failed.
-  `vibe-acp`, TUI, `--continue`/`--resume`, teleport, and
-  `--auto-approve`/`--yolo` stay out.
+  keeps `--max-turns 8`, then fixed `--trust --agent plan --workdir
+  --legacy-harness` through `prepare_mistral_vibe_headless`. The
+  adapter-private harness pin counters upstream `2.25.1` ambient
+  harness-rollout selection; the Unified Harness stays unmapped. Native
+  limit remains provider-failed. `vibe-acp`, TUI, `--continue`/`--resume`,
+  teleport, and `--auto-approve`/`--yolo` stay out.
 - `swallowtail-adapter-qoder` implements exact npm `1.1.25` discovery and one
   `qodercli --print --output-format stream-json` structured run with
   `--permission-mode dont_ask`, historical inert `--max-turns 8`,
@@ -648,7 +650,7 @@ Crate status:
   and no credential lease. The package remains an unreleased additive
   candidate after `v0.3.2`.
 - `swallowtail-adapter-mistral-vibe` — realized for exact GitHub/PyPI
-  `2.24.2` headless discovery, one bounded streaming-NDJSON structured
+  `2.25.4` headless discovery, one bounded streaming-NDJSON structured
   run, and `prepare_mistral_vibe_headless`. The package remains an
   unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-qoder` — realized for exact npm `1.1.25` headless

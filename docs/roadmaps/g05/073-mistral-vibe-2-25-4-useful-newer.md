@@ -110,12 +110,41 @@ semver, changelogs, registry metadata, or advertised capabilities.
 
 ## Acceptance
 
-- [ ] official GitHub and PyPI identities reproduce with the channel gap intact
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes the claim decision
-- [ ] exact QualifiedOnly shape and route boundaries remain truthful
-- [ ] advertised siblings and capabilities remain independently gated
-- [ ] both official latest channels are rechecked at both boundaries
+- [x] official GitHub and PyPI identities reproduce with the channel gap intact
+- [x] every changed selected input is classified
+- [x] identity evidence precedes the claim decision
+- [x] exact QualifiedOnly shape and route boundaries remain truthful
+- [x] advertised siblings and capabilities remain independently gated
+- [x] both official latest channels are rechecked at both boundaries
+
+## Result
+
+Research 321 freezes official `2.24.2` plus all eight published stable
+successors through `2.25.4` as exact source tarballs and registry-matched
+sdist/wheel pairs; the baseline reproduces Research 150's digests and
+GitHub-only `2.24.4` stays a named PyPI packaging gap. The selected surface
+is byte-stable across every hop: the streaming print wire
+(`programmatic.py`), turn-limit middleware (`middleware.py`), upstream's own
+`tests/cli/test_programmatic.py`, the public-history union and generation
+status, the `LIMIT`-only stop reason, `SessionOptions` shape, the builtin
+`plan` profile, headless callback denial, trust and workdir authority,
+missing-key failure, and the console script never move.
+
+The one material finding: `2.25.1` introduces `resolve_harness_selection`,
+which reads the ambient GrowthBook rollout cache and can swap the session
+backend to the internal Unified Harness when that native module is bundled
+— GitHub zips from `2.25.1` bundle it, PyPI never ships it. The exact
+`mistral-vibe.headless.release-window-1` claim therefore advances to one
+maintained `2.25.4` point with the unchanged
+`mistral-vibe.headless.stdio-streaming-v1` behavior revision,
+`QualifiedOnly` posture, and one mechanical adaptation: the selected argv
+adds adapter-private `--legacy-harness`, which has first upstream
+precedence and pins the corpus-covered legacy harness deterministically on
+both channels. The Unified Harness and `--smart-approve` stay unmapped.
+Research 199's maximum-turns binding and Research 252's Plan-only boundary
+carry over unchanged. No provider operation, host mutation, prompt, login,
+or downloaded-artifact execution occurred. Validation is named above; PR
+review and merge remain queue-owned.
 
 ## Next Task
 

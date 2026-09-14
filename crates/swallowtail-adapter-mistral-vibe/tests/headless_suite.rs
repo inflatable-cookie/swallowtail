@@ -68,6 +68,7 @@ fn success_run_uses_streaming_plan_trust_and_joins_cleanup() {
             "plan",
             "--workdir",
             FIXTURE_CWD,
+            "--legacy-harness",
         ]
     );
     for forbidden in [

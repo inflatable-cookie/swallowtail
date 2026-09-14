@@ -184,7 +184,7 @@ fn every_changed_selected_input_hop_is_classified() {
     );
     for (hop, entry) in hops {
         assert!(
-            entry.as_object().expect(hop).len() >= 1,
+            !entry.as_object().expect(hop).is_empty(),
             "{hop} classification is empty"
         );
     }

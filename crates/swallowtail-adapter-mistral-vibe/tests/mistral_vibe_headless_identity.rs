@@ -4,9 +4,9 @@ use swallowtail_adapter_mistral_vibe::{
 };
 use swallowtail_core::InterfaceVersion;
 
-const IDENTITY: &str = include_str!("fixtures/mistral-vibe-headless-2.24.2/identity.json");
+const IDENTITY: &str = include_str!("fixtures/mistral-vibe-headless-2.25.4/identity.json");
+const COMMAND: &str = include_str!("fixtures/mistral-vibe-headless-2.25.4/command.json");
 const PROTOCOL: &str = include_str!("fixtures/mistral-vibe-headless-2.24.2/protocol.json");
-const COMMAND: &str = include_str!("fixtures/mistral-vibe-headless-2.24.2/command.json");
 const SUCCESS: &str = include_str!("fixtures/mistral-vibe-headless-2.24.2/success.jsonl");
 const ABORT: &str = include_str!("fixtures/mistral-vibe-headless-2.24.2/abort.jsonl");
 const STDERR: &str = include_str!("fixtures/mistral-vibe-headless-2.24.2/stderr-error.txt");
@@ -24,23 +24,23 @@ fn frozen_identity_keeps_streaming_plan_separate_from_acp_and_yolo() {
         identity["official"]["version"],
         MISTRAL_VIBE_RELEASE_VERSION
     );
-    assert_eq!(
-        identity["identity_decision"]["flatten_onto_vibe_acp"],
-        false
-    );
-    assert_eq!(identity["identity_decision"]["flatten_onto_tui"], false);
-    assert_eq!(
-        identity["identity_decision"]["pass_auto_approve_or_yolo"],
-        false
-    );
-    assert_eq!(identity["identity_decision"]["pass_agent_plan"], true);
-    assert_eq!(identity["identity_decision"]["require_trust"], true);
-    assert_eq!(identity["identity_decision"]["require_max_turns"], true);
-    assert_eq!(
-        identity["identity_decision"]["selected_output"],
-        "streaming"
-    );
-    assert_eq!(identity["identity_decision"]["claim_change_in_card"], false);
+    let decision = &identity["identity_decision"];
+    assert_eq!(decision["shape"], "compatible-exact-point-rebind");
+    assert_eq!(decision["move_exact_point_to_2_25_4"], true);
+    assert_eq!(decision["behavior_revision_change"], "none");
+    assert_eq!(decision["pass_auto_approve_or_yolo"], false);
+    assert_eq!(decision["omit_agent"], false);
+    assert_eq!(decision["omit_trust"], false);
+    assert_eq!(decision["omit_max_turns"], false);
+    assert_eq!(decision["add_adapter_private_legacy_harness_pin"], true);
+    assert_eq!(decision["map_experimental_unified_harness"], false);
+    assert_eq!(decision["map_smart_approve"], false);
+    assert_eq!(decision["second_exact_point_retained"], false);
+    assert_eq!(decision["range_inferred"], false);
+    assert_eq!(decision["run_setup_login"], false);
+    assert_eq!(decision["provider_prompt_sent"], false);
+    assert_eq!(decision["live_prompt_run"], false);
+    assert_eq!(decision["downloaded_artifact_executed"], false);
 
     let protocol: Value = serde_json::from_str(PROTOCOL).expect("protocol fixture");
     assert_eq!(
@@ -66,7 +66,12 @@ fn frozen_identity_keeps_streaming_plan_separate_from_acp_and_yolo() {
     assert!(claim.assess(&version).is_permitted());
     assert!(
         !claim
-            .assess(&InterfaceVersion::new("2.24.3").expect("newer"))
+            .assess(&InterfaceVersion::new("2.25.5").expect("newer"))
+            .is_permitted()
+    );
+    assert!(
+        !claim
+            .assess(&InterfaceVersion::new("2.24.2").expect("prior baseline"))
             .is_permitted()
     );
 }

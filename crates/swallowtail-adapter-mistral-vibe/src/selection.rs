@@ -12,7 +12,7 @@ pub const MISTRAL_VIBE_EXECUTABLE_NAME: &str = "vibe";
 /// Opaque GitHub-release axis for Mistral Vibe headless.
 pub const MISTRAL_VIBE_RELEASE_AXIS: &str = "mistral-vibe.release";
 /// Exact qualified Vibe CLI release used by headless.
-pub const MISTRAL_VIBE_RELEASE_VERSION: &str = "2.24.2";
+pub const MISTRAL_VIBE_RELEASE_VERSION: &str = "2.25.4";
 
 pub(crate) const MISTRAL_VIBE_HEADLESS_BEHAVIOR: &str = "mistral-vibe.headless.stdio-streaming-v1";
 const MAX_VERSION_BYTES: usize = 32;
@@ -129,16 +129,17 @@ mod tests {
         assert!(mistral_vibe_release_binding(MISTRAL_VIBE_RELEASE_VERSION).is_some());
         for rejected in [
             "",
-            "2.24.1",
-            "2.24.3",
-            "2.24",
-            "2.24.2.0",
-            "v2.24.2",
-            "2.24.2-beta",
-            "2.24.2\n",
-            " 2.24.2",
-            "2.24.2 ",
-            "vibe 2.24.2",
+            "2.24.2",
+            "2.25.3",
+            "2.25.5",
+            "2.25",
+            "2.25.4.0",
+            "v2.25.4",
+            "2.25.4-beta",
+            "2.25.4\n",
+            " 2.25.4",
+            "2.25.4 ",
+            "vibe 2.25.4",
         ] {
             assert!(
                 mistral_vibe_release_binding(rejected).is_none(),
@@ -148,33 +149,35 @@ mod tests {
     }
 
     #[test]
-    fn exact_release_is_permitted_and_newer_is_not() {
+    fn exact_release_is_permitted_and_other_versions_are_not() {
         let permitted =
             InterfaceVersion::new(MISTRAL_VIBE_RELEASE_VERSION).expect("qualified version");
-        let newer = InterfaceVersion::new("2.24.3").expect("newer version");
+        let newer = InterfaceVersion::new("2.25.5").expect("newer version");
+        let older = InterfaceVersion::new("2.24.2").expect("prior baseline");
         let claim = mistral_vibe_headless_claim();
         assert!(claim.assess(&permitted).is_permitted());
         assert!(!claim.assess(&newer).is_permitted());
+        assert!(!claim.assess(&older).is_permitted());
     }
 
     #[test]
     fn version_stdout_parser_accepts_bare_or_named_exact_release() {
         assert_eq!(
-            parse_vibe_version_output(b"2.24.2\n")
+            parse_vibe_version_output(b"2.25.4\n")
                 .expect("exact version parses")
                 .version()
                 .as_str(),
-            "2.24.2"
+            "2.25.4"
         );
         assert_eq!(
-            parse_vibe_version_output(b"vibe 2.24.2\n")
+            parse_vibe_version_output(b"vibe 2.25.4\n")
                 .expect("named version parses")
                 .version()
                 .as_str(),
-            "2.24.2"
+            "2.25.4"
         );
-        assert!(parse_vibe_version_output(b"2.24.3\n").is_none());
-        assert!(parse_vibe_version_output(b"v2.24.2\n").is_none());
-        assert!(parse_vibe_version_output(b"vibe  2.24.2\n").is_none());
+        assert!(parse_vibe_version_output(b"2.25.5\n").is_none());
+        assert!(parse_vibe_version_output(b"v2.25.4\n").is_none());
+        assert!(parse_vibe_version_output(b"vibe  2.25.4\n").is_none());
     }
 }

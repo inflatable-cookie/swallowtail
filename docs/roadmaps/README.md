@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.073 Mistral Vibe `2.25.4` exact-pin qualification as the
-thirteenth family in Tom's authorized Research 308 currentness campaign.
-Continue the remaining six families serially without repeated approval; no
+Implement g05.074 Deep Agents `0.1.30` exact-pin qualification as the
+fourteenth family in Tom's authorized Research 308 currentness campaign.
+Continue the remaining five families serially without repeated approval; no
 release follows.
 
 ## Standing Lanes

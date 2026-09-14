@@ -5,7 +5,7 @@ use swallowtail_adapter_deepagents::{
 use swallowtail_core::InterfaceVersion;
 use swallowtail_testkit::{ConformanceAssertion, run_acp_single_turn_projection_assertions};
 
-const IDENTITY: &str = include_str!("fixtures/deepagents-acp-0.1.25/identity.json");
+const IDENTITY: &str = include_str!("fixtures/deepagents-acp-0.1.30/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/deepagents-acp-0.1.25/protocol.json");
 const INITIALIZE: &str = include_str!("fixtures/deepagents-acp-0.1.25/initialize.json");
 const SESSION_NEW: &str = include_str!("fixtures/deepagents-acp-0.1.25/session-new.json");

@@ -1,0 +1,108 @@
+{
+  "axis": "deepagents-acp.package",
+  "route": "deepagents.acp",
+  "observed_at": "2026-09-14",
+  "host": {
+    "present": false
+  },
+  "official": {
+    "version": "0.1.30",
+    "source": "official-npm-package",
+    "npm_package": "deepagents-acp",
+    "published": "2026-09-09T17:34:53.193Z",
+    "integrity": "sha512-moNlTkJN7JyowNXETdEaGJenpFtZ45xUO+oJYUYBOuebi4FuB0ChGhq7jblPY/JdnFbtX44Waiqotq/3O1fM7A==",
+    "tarball_url": "https://registry.npmjs.org/deepagents-acp/-/deepagents-acp-0.1.30.tgz",
+    "tarball_sha256": "c9bc8b95d779fc120d0614bbc37f8d6d35361376b19a5c77d0ae4e870823a661",
+    "package_json_sha256": "1f7f4b7af7d87dff92bcd612ca019524aee4be8eb59df373c9397780243311b8",
+    "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+    "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+    "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+    "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+    "acp_docs_url": "https://docs.langchain.com/oss/javascript/deepagents/acp",
+    "acp_docs_html_sha256": "28d92130d0f3a14d50c6082ad9aa4dff0c7a54058964334c7da5f2ae2e00a19e",
+    "repository": "https://github.com/langchain-ai/deepagentsjs",
+    "binary": "deepagents-acp",
+    "bin_path": "dist/cli.js",
+    "runtime_dependencies": {
+      "@agentclientprotocol/sdk": "^1.1.0",
+      "deepagents": "1.13.4"
+    },
+    "peer_dependencies": {
+      "@langchain/core": "^1.1.40",
+      "@langchain/langgraph": "^1.4.10"
+    },
+    "acp_registry_id": "deepagents",
+    "acp_registry_version": "0.1.7",
+    "acp_registry_npx_package": "deepagents-acp@0.1.7",
+    "acp_registry_sha256": "2e0ddd7be13f676b48158f266ba8d64a29da7c80e971b493664ed993dd99e295",
+    "tarball_extracted_for_inspection": true,
+    "tarball_installed": false
+  },
+  "baseline_reproduction": {
+    "version": "0.1.25",
+    "npm_integrity": "sha512-5S6Rpd74vV3YKVxAEqQkXKek+y1ChTpL0D2xf+WLaAYneJQZ9haZ4lPgjPy2VvszqErVsSr+T5tq8vdjuAWShQ==",
+    "tarball_sha256": "6a56fa60e985a0681217cd20b1e21c0f7782fb10ebed6728f2865346ba137141",
+    "package_json_sha256": "cddb5563aafc9fc22e67760c2ac906187c69e83d1ed73c36ae13db04c35cdb5e",
+    "cli_js_sha256": "68b7d6cb31d181a399f623a4c6486892bf7d408aec61cac0a3ea9e033baa2319",
+    "matches_research_157_and_206": true,
+    "runtime_dependency_tarball_sha256": "cea1b79d542a9ee695d103d4371b5265b83eac157cbbef8101c431f7062654ec",
+    "runtime_dependency_matches_research_206": true
+  },
+  "runtime_dependency": {
+    "package": "deepagents",
+    "version": "1.13.4",
+    "published": "2026-09-09T17:37:07.120Z",
+    "integrity": "sha512-eVCxAcVi2A51u68SkFHNoi0FzZlxfPx8uPNd/vMyqOX1CzsiXkSCK8YBaLQSM7rpo0couKJBYnjH1e96+M7hTQ==",
+    "tarball_sha256": "a00d90a3041794cc4f80186b0eaf519f4fdbccea16dc8576771aeb0d8b3c800c",
+    "package_json_sha256": "03d74e6e1c03414ada4c27a942bdb9e94a769cbc699911921b8ca2e1f37c0d6f",
+    "selected_chunk_sha256": "52d0b741683a27a2a08709e7aae290c35e0a7838d050f4647c158baac1672a93",
+    "selected_chunk": "dist/langsmith-BAO_h4J6.js",
+    "filesystem_backend_chunk_sha256": "9709b83d8170cfadfd76791e1c9cb78e927e0d312786f8be967e0bc85f2ba834",
+    "filesystem_backend_chunk": "dist/src-CcY34Ckx.js"
+  },
+  "cli_constructor_defaults": {
+    "agent_name": "deepagents",
+    "server_name": "deepagents-acp",
+    "server_version": "0.0.1",
+    "server_version_is_constructor_default_not_npm": true,
+    "cli_passes_server_version": false,
+    "backend": "explicit FilesystemBackend at workspace root, so ACPFilesystemBackend is never constructed on the selected route"
+  },
+  "claim_at_observation": {
+    "point": "0.1.25",
+    "posture": "QualifiedOnly",
+    "behavior_revision": "deepagents.acp.stdio-v1",
+    "claim_id": "deepagents.acp.package-window-1"
+  },
+  "identity_decision": {
+    "shape": "compatible-exact-point-rebind",
+    "entrypoint": ["deepagents-acp"],
+    "wrap_npx": false,
+    "wrap_library_start_server": false,
+    "wrap_custom_tsx": false,
+    "wrap_python_deepagents": false,
+    "pass_name_flag": false,
+    "pass_model_flag": false,
+    "pass_workspace_flag": false,
+    "pass_skills_flag": false,
+    "pass_memory_flag": false,
+    "pass_debug_flag": false,
+    "bind_anthropic_api_key_lease": false,
+    "bind_openai_api_key_lease": false,
+    "map_session_load": false,
+    "map_session_set_mode": false,
+    "map_slash_commands": false,
+    "select_allow_always": false,
+    "treat_agentinfo_version_as_package": false,
+    "inherit_registry_0_1_7": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false,
+    "host_install_changed": false,
+    "move_exact_point_to_0_1_30": true,
+    "behavior_revision_change": "none",
+    "argv_change": "none",
+    "second_exact_point_retained": false,
+    "range_inferred": false,
+    "downloaded_artifact_executed": false
+  }
+}

@@ -359,7 +359,7 @@ fn constructor_default_agent_info_version_is_not_the_package_axis() {
         ),
         services.clone(),
     ))
-    .expect("constructor default agentInfo.version must not be compared to npm 0.1.25");
+    .expect("constructor default agentInfo.version must not be compared to npm 0.1.30");
     assert_eq!(
         block_on(close_session(session, services)),
         CleanupOutcome::Clean

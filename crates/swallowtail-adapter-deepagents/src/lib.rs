@@ -5,7 +5,7 @@
 //! `prepare_deepagents_acp`. `npx`, library embed, `--workspace` / `--model`,
 //! `session/load`, slash commands, and `session/prompt` field `content` stay
 //! out. CLI `agentInfo.version` is the constructor default `0.0.1`, not npm
-//! `0.1.25`.
+//! `0.1.30`.
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]

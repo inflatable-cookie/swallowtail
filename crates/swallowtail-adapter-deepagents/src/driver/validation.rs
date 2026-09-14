@@ -50,7 +50,7 @@ fn validate_open(
 
 fn validate_initialize(response: &Value) -> Result<(), RuntimeFailure> {
     // CLI omits serverVersion, so agentInfo.version is constructor default
-    // 0.0.1, not npm 0.1.25. Fail closed only on a present name drift.
+    // 0.0.1, not npm 0.1.30. Fail closed only on a present name drift.
     if let Some(info) = response.get("agentInfo") {
         if !info.is_object() {
             return Err(malformed());

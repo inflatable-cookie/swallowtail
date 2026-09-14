@@ -1,0 +1,419 @@
+{
+ "axis": "claude-code.headless-stream-json",
+ "version": "2.1.270",
+ "observed_at": "2026-09-14",
+ "npm_package": "@anthropic-ai/claude-code",
+ "npm_latest": true,
+ "published_at": "2026-09-12T18:52:44.937Z",
+ "github_tag": "v2.1.270",
+ "github_published_at": "2026-09-12T19:45:44Z",
+ "github_tag_commit": "2b40e76d3f03b9070e2431e0bd05b4f3ace77982",
+ "github_tag_annotated": false,
+ "npm_integrity": "sha512-0zMkfIWQu7/SG56VP8r780HZWvrNShzK28AbAnhKRK0ns+ToGXPT0W8UqyZmZCUKAkJDd5//TrwSOhk1+hysiw==",
+ "npm_shasum": "6cba495abac4528f76fddf32acd46b016a0d48a6",
+ "darwin_arm64_package": "@anthropic-ai/claude-code-darwin-arm64",
+ "darwin_arm64_binary_sha256": "a506b6d970a4cf44f6abdb53a81ddcd5d3b0ce042a95c502fe9d1f946bdb8807",
+ "darwin_arm64_binary_size": 207500480,
+ "linux_x64_package": "@anthropic-ai/claude-code-linux-x64",
+ "linux_x64_binary_sha256": "3a624a5a7cd79bbad4d32bd7db36f1197ecf458bc5bf1e2aed81834a01ad3ef0",
+ "official_version_output": "2.1.270 (Claude Code)",
+ "official_help_sha256": "not_recovered_without_execution",
+ "official_2_1_258_help_sha256": "a0ab4f1df36388fba86563a10839c020cc7dcb13cec2311c336aebe6963db0a1",
+ "frozen_2_1_257_help_sha256": "a0ab4f1df36388fba86563a10839c020cc7dcb13cec2311c336aebe6963db0a1",
+ "official_2_1_258_help_byte_identical_to_frozen_2_1_257": true,
+ "downloaded_official_binaries_executed": false,
+ "host": {
+  "not_installed": false,
+  "version_output": "2.1.258 (Claude Code)",
+  "bin_sha256": "b63136194160791c27cfa7b0403060d85eb0752991625fde8c09f9acacb17c78",
+  "native_sha256": "b63136194160791c27cfa7b0403060d85eb0752991625fde8c09f9acacb17c78",
+  "native_size": 199027600,
+  "help_sha256": "a0ab4f1df36388fba86563a10839c020cc7dcb13cec2311c336aebe6963db0a1",
+  "codesign_identifier": "com.anthropic.claude-code",
+  "codesign_team": "Q6L2SF6YDW",
+  "codesign_authority": "Developer ID Application: Anthropic PBC (Q6L2SF6YDW)",
+  "matches_official_darwin_arm64_2_1_258": true,
+  "help_byte_identical_to_official_2_1_258": true,
+  "help_byte_identical_to_frozen_2_1_257": true,
+  "note": "Host was observed at 2.1.258 and was not installed, updated, or replaced by this run. Host native SHA-256 equals the official npm 2.1.258 darwin-arm64 claude binary, so its --help is official 2.1.258 help. That help digest equals the frozen 2.1.257 digest. Downloaded official 2.1.270 binaries were hashed and never executed; mapped-surface evidence for the other hops was recovered from the embedded `// @bun @bytecode` source chunks."
+ },
+ "frozen_corpus_version": "2.1.220",
+ "frozen_agent_sdk": "0.3.220",
+ "previous_ceiling": "2.1.257",
+ "published_stables_from_previous_ceiling": [
+  "2.1.258",
+  "2.1.259",
+  "2.1.260",
+  "2.1.261",
+  "2.1.263",
+  "2.1.265",
+  "2.1.266",
+  "2.1.267",
+  "2.1.268",
+  "2.1.269",
+  "2.1.270"
+ ],
+ "published_hop_count": 11,
+ "unpublished_2_1_244": true,
+ "unpublished_2_1_249": true,
+ "unpublished_2_1_253": true,
+ "unpublished_2_1_254": true,
+ "unpublished_2_1_255": true,
+ "unpublished_2_1_256": true,
+ "unpublished_2_1_262": true,
+ "unpublished_2_1_264": true,
+ "first_unpublished_after_official": "2.1.271",
+ "hop_ledger": {
+  "2.1.258": {
+   "npm_published_at": "2026-09-01T22:25:07.449Z",
+   "npm_wrapper_integrity": "sha512-Zis1AYrHuCcK4V1tXJUkzJdklFsTvvqIcj7gk4K8lyEeJOW99ZoQH/E+WxugMqDEO7xncYZ41gydxlkSTmj/2Q==",
+   "npm_wrapper_shasum": "55f84789ed34ca70702c043e7bcba88dde2daea3",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-01T22:33:20Z",
+   "github_tag_commit": "aef74afe01f65b602258d6102b0da9730ac6f0aa",
+   "github_release_body_sha256": "a55ddfc195eee8bc51ab8c1a4aed9a9f44dc3d9a4e5be5973970d7e62b671c81",
+   "github_release_bullets": 2,
+   "darwin_arm64_binary_sha256": "b63136194160791c27cfa7b0403060d85eb0752991625fde8c09f9acacb17c78",
+   "linux_x64_binary_sha256": "704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976",
+   "wrapper_files_changed_from_previous": [
+    "package.json"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  },
+  "2.1.259": {
+   "npm_published_at": "2026-09-02T21:21:42.115Z",
+   "npm_wrapper_integrity": "sha512-kzhz+R36GgL5aouAkeMO9nI1BEIVaRx1NGu0wTTn/H315l61uiLRo13yvva7H10Pfv0PGgzqJ4m+EKv9BzIRXQ==",
+   "npm_wrapper_shasum": "98ffba9e70047120136ae937218b2407164c323a",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-02T22:33:51Z",
+   "github_tag_commit": "f173a697aa6486945f1b9c4aa9ce5383d2c87db6",
+   "github_release_body_sha256": "e978870e6b89c43a241d83d7dde6a44287f3eb90a59bc1549c48542768cae061",
+   "github_release_bullets": 37,
+   "darwin_arm64_binary_sha256": "884baa38fe1a624be25c4a91568bf5a08b5cf4e7d7acf29b7760e3525d964898",
+   "linux_x64_binary_sha256": "f7dd62ae415378018cd21dd950eb3bac174ab085830304d3b8b098146bfd47b6",
+   "wrapper_files_changed_from_previous": [
+    "package.json",
+    "sdk-tools.d.ts"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  },
+  "2.1.260": {
+   "npm_published_at": "2026-09-03T22:32:02.087Z",
+   "npm_wrapper_integrity": "sha512-Arqg8BvlOehmC3QdACN2WKshqqWQVMo+5NwG22aiJbw7M6S1LM7E2pA2MjD8BS5P5EwZVkh2eKUmC6k7pVUqSQ==",
+   "npm_wrapper_shasum": "50a77d223c3bd945455abd35ac757a7c57324ee6",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-03T23:48:12Z",
+   "github_tag_commit": "b3f0e501b79fe5cfc8c10d18cf3b0b6715c5c2fb",
+   "github_release_body_sha256": "47e0c2f1a88ebb69155a4b575c09dee4c83bee646f9a7816cc8e044adcc03508",
+   "github_release_bullets": 66,
+   "darwin_arm64_binary_sha256": "3c269f66801028823e24a63ced9fdd3988cb86cf85fccd9f03f87e463b9d3e3c",
+   "linux_x64_binary_sha256": "7a2fdc74b6836ea3d183f665b869f0ee3baebc9713cbebffe5838da4ea7bd82e",
+   "wrapper_files_changed_from_previous": [
+    "package.json",
+    "sdk-tools.d.ts"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  },
+  "2.1.261": {
+   "npm_published_at": "2026-09-04T17:49:34.927Z",
+   "npm_wrapper_integrity": "sha512-j6+AkfCl6/UJBcx66nlZUmWc4XGK3TscvW19Tiat+oDwkz3WqQfKzjvHO5FhR+shXTtktqs6vqSBrJmeSWpU3Q==",
+   "npm_wrapper_shasum": "9506177b40c5ccaf2ccbebecf2e133758299cd89",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-04T19:58:10Z",
+   "github_tag_commit": "d7dbd9a09f59775726ed14bbea8fc9dfdff62f7b",
+   "github_release_body_sha256": "2cbd5ee8fbdc6cf3e1213741359194abc6417675717ea7ee323d1f346f6a802a",
+   "github_release_bullets": 67,
+   "darwin_arm64_binary_sha256": "5efecaff231b798be3c66def9be54183623b328b80eaef17f93c43987024e82a",
+   "linux_x64_binary_sha256": "4ae40dd1784e85753e742e09f267d29ecbb82890361ad3817d27560866d364a6",
+   "wrapper_files_changed_from_previous": [
+    "package.json"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  },
+  "2.1.263": {
+   "npm_published_at": "2026-09-06T02:07:58.391Z",
+   "npm_wrapper_integrity": "sha512-kvvBK6/69iTRYnq0TKVyxVZs1CxYCJGojshQSP+2qaDb66A2xtI4zbCuqkZUWLkFGmHSRqhFf/ATpzH2UNKcwg==",
+   "npm_wrapper_shasum": "724f3282ee21318b227a6a20cbc66af331ee0fa4",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-06T02:54:20Z",
+   "github_tag_commit": "ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558",
+   "github_release_body_sha256": "dd490d3f4e93c8165c0322324024d1202fe097b1be5a232b6035fd40bfee97cc",
+   "github_release_bullets": 1,
+   "darwin_arm64_binary_sha256": "ef5d2909c8af49f31ab6d5487e90316777bc2fac170adfe8160716caa8aaf4f9",
+   "linux_x64_binary_sha256": "26d020351e8112f4006790f3cfce43b4c9df0c1bb1d0e542364d64151b81d5ba",
+   "wrapper_files_changed_from_previous": [
+    "package.json"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  },
+  "2.1.265": {
+   "npm_published_at": "2026-09-08T19:05:16.492Z",
+   "npm_wrapper_integrity": "sha512-c6PZNLVtaiNdDbeeGtCvYQ+qlGE2oZmvvS0PxdYUxJZdmBf1Nd1/Ey7ziHJtj0IVvT1tLWndONf29oBxToCsvQ==",
+   "npm_wrapper_shasum": "a103628e91278b1cc04b2f5fdbc2ecd64e240888",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-08T20:37:31Z",
+   "github_tag_commit": "8e02f6ddce21f4c2585d2be501651c1d6b16246a",
+   "github_release_body_sha256": "75ec110cfde09ae1467021596fa4f59aeba22f41055b905172ac3cd18832d5fb",
+   "github_release_bullets": 50,
+   "darwin_arm64_binary_sha256": "164b09eb800dedb9bb06304129fbf07743ab9db972ae07333ef4f18cde0cb8d5",
+   "linux_x64_binary_sha256": "e14738e3a58d1fc6ccc23b9c919451b4846bc27074a3fb48db976a7d595bdeeb",
+   "wrapper_files_changed_from_previous": [
+    "package.json",
+    "sdk-tools.d.ts"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  },
+  "2.1.266": {
+   "npm_published_at": "2026-09-08T23:32:32.880Z",
+   "npm_wrapper_integrity": "sha512-zaEL5S5twZgQzmF1b/SBMSOllwMrJiqHXTd25ZWwaZRKr1jUKy4jGTPR/uMLYWsuv9Az1neiaWGLJu93lPYO8w==",
+   "npm_wrapper_shasum": "8131af031e5f87916de71cdc1d7de5b165dcf102",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-08T23:55:14Z",
+   "github_tag_commit": "347b38e4a733d95b2f00690a4ca58ac1544f8a1c",
+   "github_release_body_sha256": "98fb8711e2d8aaff113ca63322d4a28a305791068e8b4fd9426e5d1425c51576",
+   "github_release_bullets": 1,
+   "darwin_arm64_binary_sha256": "553d1b9e9e7068b275c0a783c7e139ff6503096f286e674c8c919379fb0eca62",
+   "linux_x64_binary_sha256": "19842705e989393fce936804df6d2ab034860e24b8f8880357981d87ffd83fac",
+   "wrapper_files_changed_from_previous": [
+    "package.json"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  },
+  "2.1.267": {
+   "npm_published_at": "2026-09-09T18:25:42.820Z",
+   "npm_wrapper_integrity": "sha512-0rErYxMp/5uJKt2Z8zJVRmuGEijTiDOb659YnELpGsxyrOp0BKhoOrT8tyNrK5yn8VLYXxc3X3KXfT9woL0R4g==",
+   "npm_wrapper_shasum": "11710a497103b7cd03f8035c587875bd91b7925d",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-09T19:58:14Z",
+   "github_tag_commit": "9cdc2a4d946c586a8472e504fb20b3e79106518c",
+   "github_release_body_sha256": "d0feaf75d4394f52a513cb5fa5fee3130bcb82e1b2333ff338e2d20fec307091",
+   "github_release_bullets": 53,
+   "darwin_arm64_binary_sha256": "a681f3008f0050029aeebcab3af51bb6a55ddeb625a3af3141a4416d43cd2558",
+   "linux_x64_binary_sha256": "0399c793ff571d5946ef923d80b4f330d05ac4b6842a6b0775468f5d389403c0",
+   "wrapper_files_changed_from_previous": [
+    "package.json",
+    "sdk-tools.d.ts"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  },
+  "2.1.268": {
+   "npm_published_at": "2026-09-10T18:41:11.770Z",
+   "npm_wrapper_integrity": "sha512-DSRUVAbRRH7WaHm99OErT4FJQDkbhIUb8mIaevcFrXtKCZwA9UmKY5+SOFWmgyeEUj2Uh1pFw0Rk/gYffmUEUw==",
+   "npm_wrapper_shasum": "4fca301638492c98f248316b438c58c4286624ae",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-10T20:30:54Z",
+   "github_tag_commit": "536a2e23d9e28586f81f17b3535281b5f2995a70",
+   "github_release_body_sha256": "69ac30cd09b3380ad86931fcf12f23265f5224f82cf9c6bed5d71ddf0433adfd",
+   "github_release_bullets": 96,
+   "darwin_arm64_binary_sha256": "06a96d5423f83770f120859f1c58e60d7252cc4c122aa13043b7e7cd716bc76a",
+   "linux_x64_binary_sha256": "9691a2b7bd796712ca8cffb8e32e54ff7fc45b662540233171a16a94a0425653",
+   "wrapper_files_changed_from_previous": [
+    "package.json",
+    "sdk-tools.d.ts"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  },
+  "2.1.269": {
+   "npm_published_at": "2026-09-11T18:12:49.253Z",
+   "npm_wrapper_integrity": "sha512-osSbRU1KjlAfhVSgso7g+KxCr5DLNlfm7xeRPpm/c9s+7HGqQLHbkUYvjepbe6TiHJa9iSeirW/t7vW4sZhTIQ==",
+   "npm_wrapper_shasum": "862f6deaffbfda326ca2306b21f4db80265c2d52",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-11T19:17:55Z",
+   "github_tag_commit": "df52d04a4e65195c1621fe6222e0564bcccb1804",
+   "github_release_body_sha256": "0f3e72fe8a6f365b1b2fc362de9f9ff76018cceabb8c32492aa36ddb4e53574a",
+   "github_release_bullets": 98,
+   "darwin_arm64_binary_sha256": "c942e1228b93cb4d52183b3dfbc77f28264f35aa947acd9c0853d029164cf450",
+   "linux_x64_binary_sha256": "25e44883f54419569a3d739f38cbbdaebe83b09895da0f343e1b003710a4775b",
+   "wrapper_files_changed_from_previous": [
+    "package.json",
+    "sdk-tools.d.ts"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  },
+  "2.1.270": {
+   "npm_published_at": "2026-09-12T18:52:44.937Z",
+   "npm_wrapper_integrity": "sha512-0zMkfIWQu7/SG56VP8r780HZWvrNShzK28AbAnhKRK0ns+ToGXPT0W8UqyZmZCUKAkJDd5//TrwSOhk1+hysiw==",
+   "npm_wrapper_shasum": "6cba495abac4528f76fddf32acd46b016a0d48a6",
+   "npm_wrapper_file_count": 7,
+   "npm_platform_file_count": {
+    "darwin-arm64": 4,
+    "linux-x64": 4
+   },
+   "github_release_published_at": "2026-09-12T19:45:44Z",
+   "github_tag_commit": "2b40e76d3f03b9070e2431e0bd05b4f3ace77982",
+   "github_release_body_sha256": "a76eefe04be528882c2fa7833bb445583bf1c988ba74ac9304d23ede9e114586",
+   "github_release_bullets": 1,
+   "darwin_arm64_binary_sha256": "a506b6d970a4cf44f6abdb53a81ddcd5d3b0ce042a95c502fe9d1f946bdb8807",
+   "linux_x64_binary_sha256": "3a624a5a7cd79bbad4d32bd7db36f1197ecf458bc5bf1e2aed81834a01ad3ef0",
+   "wrapper_files_changed_from_previous": [
+    "package.json"
+   ],
+   "platform_files_changed_from_previous": [
+    "claude",
+    "package.json"
+   ],
+   "mapped_source_delta": "none"
+  }
+ },
+ "wrapper_files_byte_identical_across_all_compared": [
+  "LICENSE.md",
+  "README.md",
+  "bin/claude.exe",
+  "cli-wrapper.cjs",
+  "install.cjs"
+ ],
+ "platform_files_byte_identical_across_all_compared": [
+  "LICENSE.md",
+  "README.md"
+ ],
+ "sdk_tools_d_ts_delta_summary": "SDK tool declaration edits only: SkillCreate description wording, ArtifactPublish/Audit fields and emoji wording, browser-tab icon parameter, project_memory_list/project_memory_read methods, list_types, cowritten/staged/unchanged/seq/foreign/written notes, and publish metadata wording. Not selected stream-JSON framing or decoding.",
+ "watcher_audit": {
+  "exact_watcher_version_remains": "2.1.251",
+  "widen_watcher_help_authorization": false,
+  "widen_watcher_digest_authorization": false,
+  "widen_watcher_live_authorization": false,
+  "copy_watcher_isolation_fixture": false,
+  "copy_watcher_tool_admission_fixture": false,
+  "mechanism_change_gate_unchanged": true
+ },
+ "claim_at_observation": {
+  "headless_baseline": "2.1.220",
+  "headless_latest_qualified": "2.1.257",
+  "response_only_baseline": "2.1.227",
+  "response_only_latest_qualified": "2.1.257",
+  "posture": "allow_unverified",
+  "denied_versions": [
+   "2.1.244",
+   "2.1.249",
+   "2.1.253",
+   "2.1.254",
+   "2.1.255",
+   "2.1.256"
+  ],
+  "classification_of_2_1_257": "qualified_maintained",
+  "classification_of_2_1_258": "unverified_newer",
+  "classification_of_2_1_270": "unverified_newer",
+  "watcher_exact_version": "2.1.251"
+ },
+ "identity_decision": {
+  "shape": "compatible-extension",
+  "reuse_headless_behavior_revision": "claude-code.headless.stream-json.v1",
+  "reuse_response_only_behavior_revision": "claude-code.response-only.stream-json.v1",
+  "raise_latest_qualified_to": "2.1.270",
+  "keep_headless_baseline": "2.1.220",
+  "keep_response_only_baseline": "2.1.227",
+  "qualify_published_intermediates": true,
+  "qualified_published_intermediates": [
+   "2.1.258",
+   "2.1.259",
+   "2.1.260",
+   "2.1.261",
+   "2.1.263",
+   "2.1.265",
+   "2.1.266",
+   "2.1.267",
+   "2.1.268",
+   "2.1.269",
+   "2.1.270"
+  ],
+  "keep_unpublished_2_1_244_incompatible": true,
+  "keep_unpublished_2_1_249_incompatible": true,
+  "keep_unpublished_2_1_253_incompatible": true,
+  "keep_unpublished_2_1_254_incompatible": true,
+  "keep_unpublished_2_1_255_incompatible": true,
+  "keep_unpublished_2_1_256_incompatible": true,
+  "add_unpublished_2_1_262_gap": true,
+  "add_unpublished_2_1_264_gap": true,
+  "new_milestone": false,
+  "mix_headless_and_response_only": false,
+  "flatten_to_claude_agent_acp": false,
+  "map_restricted": false,
+  "map_watcher_flags": false,
+  "widen_maximum_turns": false,
+  "widen_watcher_authorization": false,
+  "later_unverified_after_qualification": "2.1.271",
+  "later_unverified_published": false,
+  "provider_prompt_sent": false,
+  "host_install_changed": false
+ }
+}

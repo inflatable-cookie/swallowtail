@@ -1,0 +1,830 @@
+{
+ "compared": [
+  "2.1.257",
+  "2.1.258",
+  "2.1.259",
+  "2.1.260",
+  "2.1.261",
+  "2.1.263",
+  "2.1.265",
+  "2.1.266",
+  "2.1.267",
+  "2.1.268",
+  "2.1.269",
+  "2.1.270"
+ ],
+ "inventory_scope": "official npm wrapper plus darwin-arm64 and linux-x64 platform packages extracted from npm tarballs. Published npm and GitHub stables 2.1.258 through 2.1.270 were retrieved for every hop; 2.1.262 and 2.1.264 are unpublished. Downloaded binaries were hashed and never executed; bounded mapped-surface classification was recovered from the embedded `// @bun @bytecode` source chunks. Not a complete semantic changelog of every internal line.",
+ "not_a_complete_semantic_changelog": true,
+ "package_file_counts": {
+  "wrapper-2.1.257": 7,
+  "darwin-arm64-2.1.257": 4,
+  "linux-x64-2.1.257": 4,
+  "wrapper-2.1.258": 7,
+  "darwin-arm64-2.1.258": 4,
+  "linux-x64-2.1.258": 4,
+  "wrapper-2.1.259": 7,
+  "darwin-arm64-2.1.259": 4,
+  "linux-x64-2.1.259": 4,
+  "wrapper-2.1.260": 7,
+  "darwin-arm64-2.1.260": 4,
+  "linux-x64-2.1.260": 4,
+  "wrapper-2.1.261": 7,
+  "darwin-arm64-2.1.261": 4,
+  "linux-x64-2.1.261": 4,
+  "wrapper-2.1.263": 7,
+  "darwin-arm64-2.1.263": 4,
+  "linux-x64-2.1.263": 4,
+  "wrapper-2.1.265": 7,
+  "darwin-arm64-2.1.265": 4,
+  "linux-x64-2.1.265": 4,
+  "wrapper-2.1.266": 7,
+  "darwin-arm64-2.1.266": 4,
+  "linux-x64-2.1.266": 4,
+  "wrapper-2.1.267": 7,
+  "darwin-arm64-2.1.267": 4,
+  "linux-x64-2.1.267": 4,
+  "wrapper-2.1.268": 7,
+  "darwin-arm64-2.1.268": 4,
+  "linux-x64-2.1.268": 4,
+  "wrapper-2.1.269": 7,
+  "darwin-arm64-2.1.269": 4,
+  "linux-x64-2.1.269": 4,
+  "wrapper-2.1.270": 7,
+  "darwin-arm64-2.1.270": 4,
+  "linux-x64-2.1.270": 4
+ },
+ "published_hop_tarball_sha256": {
+  "wrapper": {
+   "2.1.257": "e11188b92a6198945329e4e2657ebff206fbc014b3e5fc95644f76b62300ad5d",
+   "2.1.258": "695a6dcbf475ea24f20d2c4dcb6d540a86de8c8c996ad88c1972d0b71d191ffc",
+   "2.1.259": "4f9e79e4c1de22cdb6e760c9974e54fc3af992a50052cec745e6430af82062bc",
+   "2.1.260": "b429cb300fb9e1add440330019695fb6ec093684e4a83accd5bd23e2eaab67cc",
+   "2.1.261": "ce644bd9502bf8b0e42144d268c563b52c3da422bd96c03b443178414d3fd172",
+   "2.1.263": "b325aaaf748065ebce116c50893120384ce6ec56c1133f42f45177f8d1030c66",
+   "2.1.265": "b787ed322cf693e807c9ffbf8f138448be473ff87a4e8b69d97a3cc6697a2c37",
+   "2.1.266": "baddf861c4687d5741d1413614bb9a4a49474c9b7cf29cac87a4d85fbdba506a",
+   "2.1.267": "b7896127c6ae4382a4a688d90189ab574dbe495aff81153dea909576d299e439",
+   "2.1.268": "d140a23793879f6b0c337f636a383b30a4929d55b97ef491c5ecbf7e4aaba9cb",
+   "2.1.269": "5a7234b0418bfc821dedae7726c04326f89f140d1299eb70bce2c144bc03c021",
+   "2.1.270": "ee37736066e3349c977db70bdfaf4f3cf7c398a06e2a051fe8e00728e1f6e932"
+  },
+  "darwin-arm64": {
+   "2.1.257": "54c80ce110673637cf932dee41a02f31c95ad1a8bd1455adf480a9a271cdb54a",
+   "2.1.258": "eba374d2796edf6ed9652b40d4c081a1b7d2c206b5f2aec6187fcb3384087686",
+   "2.1.259": "979e70733dd39dad59d837e803a784399299d4b9fbb6c8994c83eefbcb2bf4b8",
+   "2.1.260": "49042e0a4b3b67304a9adfedca242329668f04cf5f37c3d5c30e5d652653a056",
+   "2.1.261": "809babf7b847545f6591605e05068ae8e24218b7ef39eed0db98cfd833abbf7f",
+   "2.1.263": "f1c0d2da0e49acdb26f87d9d1a6fd036d03c1d31d9ae8a5682c453c8f127f32e",
+   "2.1.265": "1ecd7a25537350ec27f70721405bbc87089daf1c93857499edafdd0925f1d1b9",
+   "2.1.266": "2e16531e2af91885f363feda4ae4d60cbbb7d4000a2a8f88ae0b4fe489ee6cae",
+   "2.1.267": "cae3e0ed28742196b990a6e615977501cabab9cf31e77d8e854ce660c186aaa2",
+   "2.1.268": "318b90751b61d09a20e92ddf7f57172ea375ca0bc5dfecd3e65bfa6e3babedc9",
+   "2.1.269": "a6c973d3474f9e4e78adb31d6a035a96746a42787f53165b7632e565679a8ba0",
+   "2.1.270": "1233c82cf589f08ca89906a6ec5c074423d8e329fdf3a1f5eb9331da2a67d461"
+  },
+  "linux-x64": {
+   "2.1.257": "7e53dc103c832c4a34bb3f3a515f8141d9cd4bd19fd2fecd5698030e30a589a2",
+   "2.1.258": "037f8a21ae74a29b613f02cd3986cefb0b00fcb14f957a8dab98dc2e3f3fd753",
+   "2.1.259": "3fdf03de822d74d43d14eb54d9a2b4dfaa1854a03c38baea1ba871e2b6ebf9d6",
+   "2.1.260": "6843dff27b8944787f17d67de033f6275617c49581753a559f8b7ce000aeebb3",
+   "2.1.261": "90a3e675e9f3cb613fea2ff881fe4108527abfbcea707e0434e15a524cf6bc8e",
+   "2.1.263": "8b6207348ad56fdcde085a0ad1f7cff0dfe06ce2c6c1bf97f69f1a1a7b6d0945",
+   "2.1.265": "24c2228597f726f0f95f9b2c4dec1ad5b3206fb3c9af84211d9f7e3e3a8df1f8",
+   "2.1.266": "49f12080b2857b25aa8400d389f92a6afea557f656276b69463ab1784d0acce5",
+   "2.1.267": "010258658ab7a0aa09ea992cb2a314689e25ce42854c57d6993e3136097039d5",
+   "2.1.268": "b423e6647c6843fcd802759440c5b3932f52aa04548abe427f3dc928c61a5485",
+   "2.1.269": "556de237572f052c4597ac6a466573e26c60d2301a27e3c79b739d050b3a62a7",
+   "2.1.270": "a2c0b69773f9da730b0616c19771094de51ffd23f0dfaa7c34ccead34eb76dd0"
+  }
+ },
+ "from_2_1_257_to_2_1_258_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs",
+   "sdk-tools.d.ts"
+  ]
+ },
+ "from_2_1_257_to_2_1_258_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_257_to_2_1_258_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_258_to_2_1_259_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json",
+   "sdk-tools.d.ts"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs"
+  ]
+ },
+ "from_2_1_258_to_2_1_259_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_258_to_2_1_259_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_259_to_2_1_260_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json",
+   "sdk-tools.d.ts"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs"
+  ]
+ },
+ "from_2_1_259_to_2_1_260_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_259_to_2_1_260_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_260_to_2_1_261_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs",
+   "sdk-tools.d.ts"
+  ]
+ },
+ "from_2_1_260_to_2_1_261_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_260_to_2_1_261_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_261_to_2_1_263_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs",
+   "sdk-tools.d.ts"
+  ]
+ },
+ "from_2_1_261_to_2_1_263_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_261_to_2_1_263_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_263_to_2_1_265_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json",
+   "sdk-tools.d.ts"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs"
+  ]
+ },
+ "from_2_1_263_to_2_1_265_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_263_to_2_1_265_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_265_to_2_1_266_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs",
+   "sdk-tools.d.ts"
+  ]
+ },
+ "from_2_1_265_to_2_1_266_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_265_to_2_1_266_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_266_to_2_1_267_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json",
+   "sdk-tools.d.ts"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs"
+  ]
+ },
+ "from_2_1_266_to_2_1_267_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_266_to_2_1_267_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_267_to_2_1_268_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json",
+   "sdk-tools.d.ts"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs"
+  ]
+ },
+ "from_2_1_267_to_2_1_268_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_267_to_2_1_268_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_268_to_2_1_269_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json",
+   "sdk-tools.d.ts"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs"
+  ]
+ },
+ "from_2_1_268_to_2_1_269_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_268_to_2_1_269_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_269_to_2_1_270_wrapper": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "bin/claude.exe",
+   "cli-wrapper.cjs",
+   "install.cjs",
+   "sdk-tools.d.ts"
+  ]
+ },
+ "from_2_1_269_to_2_1_270_darwin_arm64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "from_2_1_269_to_2_1_270_linux_x64": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "claude",
+   "package.json"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md"
+  ]
+ },
+ "hashes": {
+  "wrapper.cli-wrapper.cjs": {
+   "2.1.257": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.258": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.259": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.260": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.261": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.263": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.265": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.266": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.267": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.268": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.269": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+   "2.1.270": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e"
+  },
+  "wrapper.install.cjs": {
+   "2.1.257": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.258": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.259": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.260": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.261": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.263": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.265": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.266": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.267": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.268": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.269": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+   "2.1.270": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85"
+  },
+  "wrapper.bin.claude.exe": {
+   "2.1.257": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.258": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.259": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.260": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.261": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.263": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.265": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.266": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.267": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.268": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.269": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+   "2.1.270": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b"
+  },
+  "wrapper.README.md": {
+   "2.1.257": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.258": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.259": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.260": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.261": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.263": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.265": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.266": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.267": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.268": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.269": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+   "2.1.270": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce"
+  },
+  "wrapper.LICENSE.md": {
+   "2.1.257": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.258": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.259": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.260": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.261": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.263": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.265": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.266": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.267": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.268": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.269": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "2.1.270": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a"
+  },
+  "wrapper.sdk-tools.d.ts": {
+   "2.1.257": "a8bb537bb1624e9e68d5aa7c620260027278a9f83ce81943906a9485b06d7c9d",
+   "2.1.258": "a8bb537bb1624e9e68d5aa7c620260027278a9f83ce81943906a9485b06d7c9d",
+   "2.1.259": "afc015ba55e73c1ea45f8fd4f959592d005ef4eb5177133164df6f7316dd7509",
+   "2.1.260": "857230a2248a044e1053962d7c1aec0b87a1ed0e3737417890156449fb3461ce",
+   "2.1.261": "857230a2248a044e1053962d7c1aec0b87a1ed0e3737417890156449fb3461ce",
+   "2.1.263": "857230a2248a044e1053962d7c1aec0b87a1ed0e3737417890156449fb3461ce",
+   "2.1.265": "92d6f9d037f9b104e365b99da2c3e3b208d0e85b895116855ca434d8d5df97bb",
+   "2.1.266": "92d6f9d037f9b104e365b99da2c3e3b208d0e85b895116855ca434d8d5df97bb",
+   "2.1.267": "2a1125f7329728cd53ce8214c5d9d99a067f94caafc6ae12a2a2b676198f38cc",
+   "2.1.268": "198b88d268407d6769d5170db03e40943462b951a02b556b924cebacc7a958e3",
+   "2.1.269": "66d864d04c989d0436b7954734187336bb31a09b47a17a56382939dc38c83c5e",
+   "2.1.270": "66d864d04c989d0436b7954734187336bb31a09b47a17a56382939dc38c83c5e"
+  },
+  "wrapper.package.json": {
+   "2.1.257": "cb408f1f662219e62bdf6400c12f272bf2224f7899bb6d9391442d4f702c1117",
+   "2.1.258": "f29f49ecc04db70e6591dc69627aba9433c49a996350c14683f48d228a09fcc8",
+   "2.1.259": "a67161bbe9bcfcc1d7f9860b3ca5873893dcd30ba708f200edfe82b6af224aa5",
+   "2.1.260": "bbeddb7936d4b39baf0cbae90dd5db2a122807068b75c6bfae734b0e79f75248",
+   "2.1.261": "7477000a7bfe756ba28a803955f737c9f9079c64d07e7e707924b267097d9e4c",
+   "2.1.263": "dcff66272841ab47f5736f80ce6d1189d27cc6ca07050960fece678afecad4c4",
+   "2.1.265": "b2781518c7291048c29d5079a8ae2b2eeb8d477bd1523865497dc8e06efaab41",
+   "2.1.266": "8994649c846d9c6a0ffb107eb1f7ceb79004d29ce49cb23ed7ad3360fa7453ff",
+   "2.1.267": "508586ac6bea4efc08b2d2b998226a6f2aff8a6ab284500c0e53e06e50476045",
+   "2.1.268": "1c0908a4b56af659a2a7eb535a45ba80282664c2d2268084e2334ab4107ed425",
+   "2.1.269": "787d0cc6d4fe5643d1f4ca0ce99017cc5d3b773b994becf6e190698212ee8a69",
+   "2.1.270": "15b40e678ad411ac35f91276fa492fab4d41a61177e5ab38dcdc38a2f51fe3e4"
+  },
+  "darwin-arm64.claude": {
+   "2.1.257": "64590d7d9d9c189d33fb3dfa58c5408eaf2a10fe556bd84155d95efaab46b60e",
+   "2.1.258": "b63136194160791c27cfa7b0403060d85eb0752991625fde8c09f9acacb17c78",
+   "2.1.259": "884baa38fe1a624be25c4a91568bf5a08b5cf4e7d7acf29b7760e3525d964898",
+   "2.1.260": "3c269f66801028823e24a63ced9fdd3988cb86cf85fccd9f03f87e463b9d3e3c",
+   "2.1.261": "5efecaff231b798be3c66def9be54183623b328b80eaef17f93c43987024e82a",
+   "2.1.263": "ef5d2909c8af49f31ab6d5487e90316777bc2fac170adfe8160716caa8aaf4f9",
+   "2.1.265": "164b09eb800dedb9bb06304129fbf07743ab9db972ae07333ef4f18cde0cb8d5",
+   "2.1.266": "553d1b9e9e7068b275c0a783c7e139ff6503096f286e674c8c919379fb0eca62",
+   "2.1.267": "a681f3008f0050029aeebcab3af51bb6a55ddeb625a3af3141a4416d43cd2558",
+   "2.1.268": "06a96d5423f83770f120859f1c58e60d7252cc4c122aa13043b7e7cd716bc76a",
+   "2.1.269": "c942e1228b93cb4d52183b3dfbc77f28264f35aa947acd9c0853d029164cf450",
+   "2.1.270": "a506b6d970a4cf44f6abdb53a81ddcd5d3b0ce042a95c502fe9d1f946bdb8807"
+  },
+  "linux-x64.claude": {
+   "2.1.257": "9a64bda9d8722a1fa05bef9a5961d07e0331b99597eda9e2f6a732f3a0ff7f05",
+   "2.1.258": "704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976",
+   "2.1.259": "f7dd62ae415378018cd21dd950eb3bac174ab085830304d3b8b098146bfd47b6",
+   "2.1.260": "7a2fdc74b6836ea3d183f665b869f0ee3baebc9713cbebffe5838da4ea7bd82e",
+   "2.1.261": "4ae40dd1784e85753e742e09f267d29ecbb82890361ad3817d27560866d364a6",
+   "2.1.263": "26d020351e8112f4006790f3cfce43b4c9df0c1bb1d0e542364d64151b81d5ba",
+   "2.1.265": "e14738e3a58d1fc6ccc23b9c919451b4846bc27074a3fb48db976a7d595bdeeb",
+   "2.1.266": "19842705e989393fce936804df6d2ab034860e24b8f8880357981d87ffd83fac",
+   "2.1.267": "0399c793ff571d5946ef923d80b4f330d05ac4b6842a6b0775468f5d389403c0",
+   "2.1.268": "9691a2b7bd796712ca8cffb8e32e54ff7fc45b662540233171a16a94a0425653",
+   "2.1.269": "25e44883f54419569a3d739f38cbbdaebe83b09895da0f343e1b003710a4775b",
+   "2.1.270": "3a624a5a7cd79bbad4d32bd7db36f1197ecf458bc5bf1e2aed81834a01ad3ef0"
+  }
+ },
+ "wrapper_byte_identical_across_all_compared": [
+  "LICENSE.md",
+  "README.md",
+  "bin/claude.exe",
+  "cli-wrapper.cjs",
+  "install.cjs"
+ ],
+ "sdk_tools_d_ts_distinct_groups": {
+  "a8bb537bb1624e9e68d5aa7c620260027278a9f83ce81943906a9485b06d7c9d": [
+   "2.1.257",
+   "2.1.258"
+  ],
+  "afc015ba55e73c1ea45f8fd4f959592d005ef4eb5177133164df6f7316dd7509": [
+   "2.1.259"
+  ],
+  "857230a2248a044e1053962d7c1aec0b87a1ed0e3737417890156449fb3461ce": [
+   "2.1.260",
+   "2.1.261",
+   "2.1.263"
+  ],
+  "92d6f9d037f9b104e365b99da2c3e3b208d0e85b895116855ca434d8d5df97bb": [
+   "2.1.265",
+   "2.1.266"
+  ],
+  "2a1125f7329728cd53ce8214c5d9d99a067f94caafc6ae12a2a2b676198f38cc": [
+   "2.1.267"
+  ],
+  "198b88d268407d6769d5170db03e40943462b951a02b556b924cebacc7a958e3": [
+   "2.1.268"
+  ],
+  "66d864d04c989d0436b7954734187336bb31a09b47a17a56382939dc38c83c5e": [
+   "2.1.269",
+   "2.1.270"
+  ]
+ },
+ "npm_wrapper_integrity": {
+  "2.1.257": "sha512-JzpBQDzbEV+IKV9lIs/SSRIdHGrAmQXhNScoz9PZgdjnatrVnbsBXRDrF26qBBBph38pA/39d+BhDpf+7RwkwA==",
+  "2.1.258": "sha512-Zis1AYrHuCcK4V1tXJUkzJdklFsTvvqIcj7gk4K8lyEeJOW99ZoQH/E+WxugMqDEO7xncYZ41gydxlkSTmj/2Q==",
+  "2.1.259": "sha512-kzhz+R36GgL5aouAkeMO9nI1BEIVaRx1NGu0wTTn/H315l61uiLRo13yvva7H10Pfv0PGgzqJ4m+EKv9BzIRXQ==",
+  "2.1.260": "sha512-Arqg8BvlOehmC3QdACN2WKshqqWQVMo+5NwG22aiJbw7M6S1LM7E2pA2MjD8BS5P5EwZVkh2eKUmC6k7pVUqSQ==",
+  "2.1.261": "sha512-j6+AkfCl6/UJBcx66nlZUmWc4XGK3TscvW19Tiat+oDwkz3WqQfKzjvHO5FhR+shXTtktqs6vqSBrJmeSWpU3Q==",
+  "2.1.263": "sha512-kvvBK6/69iTRYnq0TKVyxVZs1CxYCJGojshQSP+2qaDb66A2xtI4zbCuqkZUWLkFGmHSRqhFf/ATpzH2UNKcwg==",
+  "2.1.265": "sha512-c6PZNLVtaiNdDbeeGtCvYQ+qlGE2oZmvvS0PxdYUxJZdmBf1Nd1/Ey7ziHJtj0IVvT1tLWndONf29oBxToCsvQ==",
+  "2.1.266": "sha512-zaEL5S5twZgQzmF1b/SBMSOllwMrJiqHXTd25ZWwaZRKr1jUKy4jGTPR/uMLYWsuv9Az1neiaWGLJu93lPYO8w==",
+  "2.1.267": "sha512-0rErYxMp/5uJKt2Z8zJVRmuGEijTiDOb659YnELpGsxyrOp0BKhoOrT8tyNrK5yn8VLYXxc3X3KXfT9woL0R4g==",
+  "2.1.268": "sha512-DSRUVAbRRH7WaHm99OErT4FJQDkbhIUb8mIaevcFrXtKCZwA9UmKY5+SOFWmgyeEUj2Uh1pFw0Rk/gYffmUEUw==",
+  "2.1.269": "sha512-osSbRU1KjlAfhVSgso7g+KxCr5DLNlfm7xeRPpm/c9s+7HGqQLHbkUYvjepbe6TiHJa9iSeirW/t7vW4sZhTIQ==",
+  "2.1.270": "sha512-0zMkfIWQu7/SG56VP8r780HZWvrNShzK28AbAnhKRK0ns+ToGXPT0W8UqyZmZCUKAkJDd5//TrwSOhk1+hysiw=="
+ },
+ "npm_wrapper_shasum": {
+  "2.1.257": "5aa17a093a628f0030c691ed0e11bb50e3228c59",
+  "2.1.258": "55f84789ed34ca70702c043e7bcba88dde2daea3",
+  "2.1.259": "98ffba9e70047120136ae937218b2407164c323a",
+  "2.1.260": "50a77d223c3bd945455abd35ac757a7c57324ee6",
+  "2.1.261": "9506177b40c5ccaf2ccbebecf2e133758299cd89",
+  "2.1.263": "724f3282ee21318b227a6a20cbc66af331ee0fa4",
+  "2.1.265": "a103628e91278b1cc04b2f5fdbc2ecd64e240888",
+  "2.1.266": "8131af031e5f87916de71cdc1d7de5b165dcf102",
+  "2.1.267": "11710a497103b7cd03f8035c587875bd91b7925d",
+  "2.1.268": "4fca301638492c98f248316b438c58c4286624ae",
+  "2.1.269": "862f6deaffbfda326ca2306b21f4db80265c2d52",
+  "2.1.270": "6cba495abac4528f76fddf32acd46b016a0d48a6"
+ },
+ "npm_platform_integrity": {
+  "2.1.257": {
+   "darwin-arm64": "sha512-VQQfNs9fiSmtDK4kgK18gQ9cXE8Nw44BogYYLZ3mGxWASplyYWhORMs+loNilBDmspBWhyVxVA4iGBPEpgxkmQ==",
+   "linux-x64": "sha512-Mue9ytQXYqkPYZfVnum5kxLirKdwxrU27VHykpzZ6ZOM9NNf7IEHmZ4a4eX0sRlYptJ0FACEc0HxgFdDnL7pgQ=="
+  },
+  "2.1.258": {
+   "darwin-arm64": "sha512-9gYzEZjYLY/3N49jkgk9BeXPGDQNCE/6pO3/tFHJP054YnXCvKcyjWbx1M5ISgiKnEtmTRDXnAX4cXe1SGZ+Eg==",
+   "linux-x64": "sha512-y1O9xbBzr/2J3cojc5aecHmJzpihx3BMBXnFTHdYU+4gpDkjpEvn4xXSfoKe3UzdUrMCSMdkPD0Ru6byQ3vojA=="
+  },
+  "2.1.259": {
+   "darwin-arm64": "sha512-yAMbgvi5pVt2fBO0Sg9n+2WJ0vJTd6ykafaRq1DL/8/hb314zDwyJuP7OewFBgHthYm3szTPi7CSe0vmeTxz3g==",
+   "linux-x64": "sha512-Uh2OEu5DVvndwosVXfjUpahQVjNqxZeCO7ehrG0JBd+xo/iWz38LfwCGsbgPiGNI+ZioIl3vwenD+6BjpOi8nQ=="
+  },
+  "2.1.260": {
+   "darwin-arm64": "sha512-rhLCelO/hob3gj5qHEdDTWd+QQzr5JOT10VY86YdRFmLObm4+JSvDDVvkySlpyGThf+2iZDLrGJuSUfnTOwF5w==",
+   "linux-x64": "sha512-sq79dM8gHYc0eGW44knR7LkzHntJRLODp1e6BIv2pEg6vXvKZHfhzwNyjWE1iX/kzZvtaZrEA5Pg7i+Al3gUdw=="
+  },
+  "2.1.261": {
+   "darwin-arm64": "sha512-HW2cIc5MWj9BOzLxm+3zNTfidepTMAFirwYO8H2ywTamOZvmwb8LzvRlRDLgUzEpUJBIkv9bEvI/RxfMk3zKOg==",
+   "linux-x64": "sha512-t7yPrjZH7/xOPR0HYg8NDBr9dGqIi2y3dCDLKmx2zHedSHjAGxoX7HnHeXr1tdk3iw2a6sM/LsV9O7/+Ar86FA=="
+  },
+  "2.1.263": {
+   "darwin-arm64": "sha512-yLv8MtgulGMGCWTwDUSmlEL0+94sxKP3vJm0SAXZX+0qVQ09PrjVSRC0ibtVeW7xymyhvP1JaUimOyp+t2wO5g==",
+   "linux-x64": "sha512-0IrvpLd/0FP0acQw59T4Cvx/r4nwAXKBrW0WyhIXymzYWurPCLztB+Icu9MkeewAUI+p3PTXsSfmilv/n6XlAQ=="
+  },
+  "2.1.265": {
+   "darwin-arm64": "sha512-A1mQlQ0FuwodxxZ8byYvIJ/MnIUBiYl+J2L7tInnulXzh2dir+0+zUzBvB9KcVh9Y5X6qa9tL/5lPmEYfD4lJw==",
+   "linux-x64": "sha512-XFUO7tShdNctZzxdPvX0yPclwbiue8d/K2zQ3INvVX0K3VpDGAethbTPgZsTEY043B6EYGRO/gslrv4BV1BaSg=="
+  },
+  "2.1.266": {
+   "darwin-arm64": "sha512-VXuQWllJBff2h5b4tzHpv3vLksXGiSFhCGRd6Mpk09T3/xqZIY1supoK04xMtAY4HobeAIyIjINosT0Jl6Yq8w==",
+   "linux-x64": "sha512-0YW7k2gyjCKfoNNMn+h9LVOKbZi/XVie2BBLGcoahXtRmWIXNuhazEd0BdvXDbcUc7mi9A2Nwq/TWD/riwO6oA=="
+  },
+  "2.1.267": {
+   "darwin-arm64": "sha512-bTFYZ15uCsOprEtUWV1q/lx7mKPENEpZtj2zfapyV/TOHFRIzi2WfdRrZaz3HSDIYADnWNrWt2UaweNwP0xY5g==",
+   "linux-x64": "sha512-/tbh7mVwKlsGV4NHSMp+Bxulu2Ly+DSnD7JcsSQex8UO2G7pq8sYXIXXNLR1l2U04Oia/qzH8UkUonRXkwWJeg=="
+  },
+  "2.1.268": {
+   "darwin-arm64": "sha512-+pFmygg+D8kfLlcpJMIx6MvbF4GsIvgVuN76Vnd4KucscbFLJ+DpE51C0v5CaaJBWEbDHMZDBjdz+KLuUImuTA==",
+   "linux-x64": "sha512-jDLnHS2AjeU2dcencmLFSwOLoikSaekS5eIddKsGAWKrOW6sjs4nado+9L1S92nK+ll7SKEERt3uBLlwHZVeTA=="
+  },
+  "2.1.269": {
+   "darwin-arm64": "sha512-xZjM2thYhj79vsSYqgbqR4vNmgcxv3r0ZiEPkLUiZiSonzTkok0QghEg+jJV0nEFA1c+yH3jEDxUGjSAesaoew==",
+   "linux-x64": "sha512-Ti+9oKbf2p9pJuMMj1Fv+6YzljREpy9cx6SN7NV7Zik/vaaXPxC8u+cDiGF7HnPPJ5HsLbmwKoh3BnE3IhdAeQ=="
+  },
+  "2.1.270": {
+   "darwin-arm64": "sha512-cfSXE9L21yhJilj8+PCpoV3jYNcS3/lnTOZDKoS27LAh+Un4HqyGecQWDXddDwL4TKPR/2Q9CyCjFqIFnSXSXg==",
+   "linux-x64": "sha512-DFwGNa5eSZ40UtoJ6TlyDQym1jdUkr+/YB7B0CN0maCPwzxJHvIG6gHMomdQRwj/Bd8XQyemCMIJVAscKjlhzQ=="
+  }
+ },
+ "npm_published_at": {
+  "2.1.257": "2026-09-01T17:15:33.223Z",
+  "2.1.258": "2026-09-01T22:25:07.449Z",
+  "2.1.259": "2026-09-02T21:21:42.115Z",
+  "2.1.260": "2026-09-03T22:32:02.087Z",
+  "2.1.261": "2026-09-04T17:49:34.927Z",
+  "2.1.263": "2026-09-06T02:07:58.391Z",
+  "2.1.265": "2026-09-08T19:05:16.492Z",
+  "2.1.266": "2026-09-08T23:32:32.880Z",
+  "2.1.267": "2026-09-09T18:25:42.820Z",
+  "2.1.268": "2026-09-10T18:41:11.770Z",
+  "2.1.269": "2026-09-11T18:12:49.253Z",
+  "2.1.270": "2026-09-12T18:52:44.937Z"
+ },
+ "github_tag_ref": {
+  "2.1.257": "a1e64dc407dd57dfb4ea283b0f8049adf3eabee5",
+  "2.1.258": "aef74afe01f65b602258d6102b0da9730ac6f0aa",
+  "2.1.259": "f173a697aa6486945f1b9c4aa9ce5383d2c87db6",
+  "2.1.260": "b3f0e501b79fe5cfc8c10d18cf3b0b6715c5c2fb",
+  "2.1.261": "d7dbd9a09f59775726ed14bbea8fc9dfdff62f7b",
+  "2.1.263": "ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558",
+  "2.1.265": "8e02f6ddce21f4c2585d2be501651c1d6b16246a",
+  "2.1.266": "347b38e4a733d95b2f00690a4ca58ac1544f8a1c",
+  "2.1.267": "9cdc2a4d946c586a8472e504fb20b3e79106518c",
+  "2.1.268": "536a2e23d9e28586f81f17b3535281b5f2995a70",
+  "2.1.269": "df52d04a4e65195c1621fe6222e0564bcccb1804",
+  "2.1.270": "2b40e76d3f03b9070e2431e0bd05b4f3ace77982"
+ },
+ "github_release_published_at": {
+  "2.1.257": "2026-09-01T17:53:52Z",
+  "2.1.258": "2026-09-01T22:33:20Z",
+  "2.1.259": "2026-09-02T22:33:51Z",
+  "2.1.260": "2026-09-03T23:48:12Z",
+  "2.1.261": "2026-09-04T19:58:10Z",
+  "2.1.263": "2026-09-06T02:54:20Z",
+  "2.1.265": "2026-09-08T20:37:31Z",
+  "2.1.266": "2026-09-08T23:55:14Z",
+  "2.1.267": "2026-09-09T19:58:14Z",
+  "2.1.268": "2026-09-10T20:30:54Z",
+  "2.1.269": "2026-09-11T19:17:55Z",
+  "2.1.270": "2026-09-12T19:45:44Z"
+ },
+ "github_release_body_sha256": {
+  "2.1.257": "2714c1c2436e8eb5e4e7f00ee0549aa16920fbb3f10591bc1cefe82c8308fe9d",
+  "2.1.258": "a55ddfc195eee8bc51ab8c1a4aed9a9f44dc3d9a4e5be5973970d7e62b671c81",
+  "2.1.259": "e978870e6b89c43a241d83d7dde6a44287f3eb90a59bc1549c48542768cae061",
+  "2.1.260": "47e0c2f1a88ebb69155a4b575c09dee4c83bee646f9a7816cc8e044adcc03508",
+  "2.1.261": "2cbd5ee8fbdc6cf3e1213741359194abc6417675717ea7ee323d1f346f6a802a",
+  "2.1.263": "dd490d3f4e93c8165c0322324024d1202fe097b1be5a232b6035fd40bfee97cc",
+  "2.1.265": "75ec110cfde09ae1467021596fa4f59aeba22f41055b905172ac3cd18832d5fb",
+  "2.1.266": "98fb8711e2d8aaff113ca63322d4a28a305791068e8b4fd9426e5d1425c51576",
+  "2.1.267": "d0feaf75d4394f52a513cb5fa5fee3130bcb82e1b2333ff338e2d20fec307091",
+  "2.1.268": "69ac30cd09b3380ad86931fcf12f23265f5224f82cf9c6bed5d71ddf0433adfd",
+  "2.1.269": "0f3e72fe8a6f365b1b2fc362de9f9ff76018cceabb8c32492aa36ddb4e53574a",
+  "2.1.270": "a76eefe04be528882c2fa7833bb445583bf1c988ba74ac9304d23ede9e114586"
+ },
+ "platform_files_byte_identical_across_all_compared": [
+  "LICENSE.md",
+  "README.md"
+ ]
+}

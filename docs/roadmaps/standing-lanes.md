@@ -26,14 +26,31 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active campaign family: Goose official GitHub `v1.50.0` (g05.071) is the
-eleventh family of Tom's authorized Research 308 campaign. Exact `1.46.0` is
-`QualifiedOnly`; `goose` is absent locally; four stable successor tags require
-a complete provider-free source-tree and mapped-module ledger. The selected
-stdio ACP wire, builtin/scheduler defaults, permission and mode authority,
-provider/model failure, resource ownership, and cleanup must be classified
-without running Goose or a provider. Serve, desktop/TUI, recipes, ACP-provider
-adapters, and advertised session operations remain independent. Next is Kiro.
+Active campaign family: Kiro official manifest `2.21.4` is the twelfth family
+of Tom's authorized Research 308 campaign. Exact `2.18.1` is `QualifiedOnly`
+and the local CLI is absent; the manifest successors after `2.18.1` require a
+complete provider-free identity and mapped-module ledger, with the selected
+ACP wire, authority, and lifecycle classified without running Kiro or a
+provider. Mistral Vibe follows per the campaign order.
+
+Stopped campaign family: Goose official GitHub `v1.50.0` (g05.071) is the
+eleventh family of Tom's authorized Research 308 campaign. Research 319 froze
+the exact `1.46.0` baseline and all four published stable successors through
+`1.50.0` as exact tagged source trees with a 26-file mapped-module ledger and
+a mutation-sensitive fixture under the adapter, and classified every selected
+input provider-free. The exact `QualifiedOnly` point stays at `1.46.0`:
+provider-authentication failure stops being generic text plus `end_turn` at
+the exact hop `1.46.0..1.47.0`, where `session/new` agent-creation failure
+with a chained ACP `AuthRequired` maps to `auth_required` and a dedicated
+`ProviderError::Authentication` arm persists
+`MessageContent::Error(Authentication)` so the prompt RPC fails
+`auth_required`, while `1.46.0` completed the turn with error text. That is a
+selected provider-failure mapping change, so no `1.47.0`-or-later claim lands
+until the operator rules on the route's failure-binding policy. Research
+148's `1.46.0` decoder specimens and Research 250/253's empty builtin/mode
+dispositions stand, and advertised-only `session/delete`,
+`recipeParameterScopes`, and thinking-effort menus stay independently gated.
+The next family is Kiro.
 
 Stopped campaign family: Qoder official npm `1.1.52` (g05.070) is the tenth
 family of Tom's authorized Research 308 campaign. Research 318 froze the exact

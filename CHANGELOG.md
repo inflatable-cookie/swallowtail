@@ -6,6 +6,20 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- keep the Goose `goose.acp` claim at the exact `1.46.0` `QualifiedOnly`
+  point. Research 319 froze official GitHub `1.46.0` plus all four published
+  stable successors through `1.50.0` as exact tagged source trees with a
+  26-file mapped-module ledger, and found that provider-authentication
+  failure stops being generic text plus `end_turn` at the exact hop
+  `1.46.0..1.47.0`: `session/new` agent-creation failure with a chained ACP
+  `AuthRequired` maps to `auth_required` and a dedicated
+  `ProviderError::Authentication` arm fails the `session/prompt` RPC with
+  `auth_required`. That is a selected provider-failure mapping change, so no
+  `1.47.0`-or-later exact point can be claimed before the route's
+  failure-binding policy is ruled on. Research 148's `1.46.0` decoder
+  specimens and Research 250/253's empty builtin/mode dispositions stand, and
+  advertised-only `session/delete`, recipe scopes, and thinking-effort menus
+  stay independently gated.
 - keep the Qoder `qoder.headless` claim at the exact `1.1.25` `QualifiedOnly`
   point. Research 318 froze official npm `1.1.25` plus all 27 published stable
   successors through `1.1.52` with a complete shipped-tree ledger, and found

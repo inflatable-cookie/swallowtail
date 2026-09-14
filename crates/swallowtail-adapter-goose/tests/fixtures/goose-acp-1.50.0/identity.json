@@ -1,0 +1,110 @@
+{
+  "axis": "goose.release",
+  "route": "goose.acp",
+  "observed_at": "2026-09-14",
+  "github_repository_canonical": "https://github.com/block/goose",
+  "github_repository_current": "aaif-goose/goose",
+  "host": {
+    "present": false
+  },
+  "official": {
+    "version": "1.50.0",
+    "source": "official-github-tag-sources",
+    "published_at": "2026-09-08T19:32:41Z",
+    "github_tag": "v1.50.0",
+    "github_tag_object": "4cc49a8485f7960efeceba37ac5f572459c52c7c",
+    "github_tag_object_type": "commit",
+    "github_commit": "4cc49a8485f7960efeceba37ac5f572459c52c7c",
+    "workspace_version": "1.50.0",
+    "agent_client_protocol_schema": "=1.5.0",
+    "agent_client_protocol": "2.0.0",
+    "agent_client_protocol_git_rev": "c97a5203d3392f7f231514d84eea014f9f43e6fb",
+    "platform_archive_not_extracted": {
+      "darwin-aarch64": {
+        "archive": "goose-aarch64-apple-darwin.tar.bz2",
+        "sha256": "2ac186f03e547057a7d8aaa28c2ec34bef0c3718ead98bbbda50945273f93147",
+        "extracted": false
+      }
+    }
+  },
+  "compared": ["1.46.0", "1.47.0", "1.48.0", "1.49.0", "1.50.0"],
+  "published_stable_count": 4,
+  "published_stables_from_previous_ceiling": ["1.47.0", "1.48.0", "1.49.0", "1.50.0"],
+  "points": {
+    "1.46.0": {
+      "github_tag": "v1.46.0",
+      "github_tag_object": "98c11ce2ee7b9b302978aa64b1eab7d0895607c7",
+      "published_at": "2026-08-12T16:05:13Z",
+      "workspace_version": "1.46.0",
+      "agent_client_protocol_schema": "1.1",
+      "agent_client_protocol": "1.0",
+      "darwin_aarch64_archive_sha256": "de263fb06839de31345dff08aeba999ba165b023cd3cec7ec3bef20f6f4f7e73"
+    },
+    "1.47.0": {
+      "github_tag": "v1.47.0",
+      "github_tag_object": "f9c7aaccde4834810dfd13d5efa8f0d39ba28a20",
+      "published_at": "2026-08-21T18:14:59Z",
+      "workspace_version": "1.47.0",
+      "agent_client_protocol_schema": "=1.5.0",
+      "agent_client_protocol": "2.0.0",
+      "darwin_aarch64_archive_sha256": "2ec6bb5d2051de0d1c50151f62c0071b82353098e6b1e377ba01bdebe891df09"
+    },
+    "1.48.0": {
+      "github_tag": "v1.48.0",
+      "github_tag_object": "25021517f12cab87c94bed0874fe7d28168dc264",
+      "published_at": "2026-08-27T19:12:05Z",
+      "workspace_version": "1.48.0",
+      "agent_client_protocol_schema": "=1.5.0",
+      "agent_client_protocol": "2.0.0",
+      "darwin_aarch64_archive_sha256": "a0568e64ab21d0defd2c8dfd9e236b876b6357fb752c8e451f4bfe706aeb40c0"
+    },
+    "1.49.0": {
+      "github_tag": "v1.49.0",
+      "github_tag_object": "71fc4be1ed729e26b1dc0a4466abdd03be548a53",
+      "published_at": "2026-09-03T19:34:26Z",
+      "workspace_version": "1.49.0",
+      "agent_client_protocol_schema": "=1.5.0",
+      "agent_client_protocol": "2.0.0",
+      "darwin_aarch64_archive_sha256": "b0d29c99b310cfd58281ea50be6287be461438689506d6d4e994e4b05332fddb"
+    },
+    "1.50.0": {
+      "github_tag": "v1.50.0",
+      "github_tag_object": "4cc49a8485f7960efeceba37ac5f572459c52c7c",
+      "published_at": "2026-09-08T19:32:41Z",
+      "workspace_version": "1.50.0",
+      "agent_client_protocol_schema": "=1.5.0",
+      "agent_client_protocol": "2.0.0",
+      "darwin_aarch64_archive_sha256": "2ac186f03e547057a7d8aaa28c2ec34bef0c3718ead98bbbda50945273f93147"
+    }
+  },
+  "later_stable_after_official": "none published",
+  "later_stable_note": "tags above v1.50.0 are v2 prerelease spellings (v2-rc.1, v2.0-rc-04-27-0, v2.0.0-rc-04-27-0); prerelease channels are not stable authority and a major-line reset needs an operator ruling, so no synthetic UnverifiedNewer point is recorded",
+  "acp_registry_reprobe": "not reached from this host during the run; registry entry is discovery metadata, not a claim input, and the stop does not depend on it",
+  "claim_at_observation": {
+    "point": "1.46.0",
+    "posture": "QualifiedOnly",
+    "behavior_revision": "goose.acp.stdio-v1",
+    "claim_id": "goose.acp.release-window-1"
+  },
+  "identity_decision": {
+    "shape": "stop",
+    "entrypoint": ["goose", "acp"],
+    "smallest_counterexample_hop": ["1.46.0", "1.47.0"],
+    "move_exact_point_to_1_50_0": false,
+    "claim_change": "none",
+    "flatten_onto_goose_serve": false,
+    "flatten_onto_with_builtin": false,
+    "flatten_onto_desktop_or_tui": false,
+    "flatten_onto_acp_providers": false,
+    "pass_with_builtin": false,
+    "enable_scheduler": false,
+    "run_goose_configure": false,
+    "map_session_load": false,
+    "map_session_delete": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false,
+    "host_install_changed": false,
+    "platform_archive_extracted": false,
+    "downloaded_artifact_executed": false
+  }
+}

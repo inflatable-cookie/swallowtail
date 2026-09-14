@@ -49,3 +49,7 @@ path = "tests/prepared_facade.rs"
 [[test]]
 name = "consumer_route_projection"
 path = "tests/consumer_route_projection.rs"
+
+[[test]]
+name = "goose_1_50_0_delta_ledger"
+path = "tests/goose_1_50_0_delta_ledger.rs"

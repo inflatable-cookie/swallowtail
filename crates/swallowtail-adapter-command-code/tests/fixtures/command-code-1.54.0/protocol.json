@@ -149,10 +149,11 @@
     }
   },
   "classified_deltas": {
-    "package_metadata": "package.json version and 1.23.2/1.27.2 dependency metadata changes are packaging/dependency resolution only; bin, main, type, files, engines, license, and selected entrypoint remain unchanged.",
+    "package_metadata": "package.json version and 1.23.2/1.27.2 dependency metadata changes plus the 1.29.0..1.30.0 devDependency renames (@commandcode/provider-anthropic -> @byokkit/cmd-provider-anthropic, @commandcode/provider-openai -> @byokkit/cmd-provider-openai, @commandcode/provider-copilot -> @byokkit/cmd-provider-copilot) are packaging/dependency resolution only; bin, main, type, files, engines, license, and selected entrypoint remain unchanged.",
     "launcher": "dist/index.mjs is byte-identical across all hops and remains the only selected launcher.",
     "mapped_payload": "dist/cli.mjs changes on every hop, but all selected invocation/event/result/usage/failure literals remain present across every hop; source contexts retain the same run/result construction and exact-id resume path at baseline and latest.",
-    "unmapped_payload": "New --tools-all/--tools-enable (1.19.1), select_effort (1.38.0), --local-only (1.54.0), interaction_requested/interaction_resolved (1.54.0), and internal/provider/TUI/mod/session additions are not selected by this route; unknown event types remain namespaced observations and are never terminal authority.",
+    "unmapped_payload": "New --tools-all/--tools-enable (1.19.1), select_effort (1.38.0), --local-only (registered as CMD_LOCAL_ONLY and config localOnly at 1.30.0), interaction_requested/interaction_resolved (1.54.0), and internal/provider/TUI/mod/session additions are not selected by this route; the local-only toggle can reroute provider traffic without changing argv and is therefore an explicitly classified ambient boundary; unknown event types remain namespaced observations and are never terminal authority.",
+    "ambient_configuration": "CMD_LOCAL_ONLY and config localOnly first appear at 1.30.0. They are an unmapped ambient toggle that can reroute provider traffic without changing argv; the selected route neither sets nor reads them.",
     "documentation": "Bundled knowledge/design files and VSIX are unselected documentation/editor surfaces; every added file and changed file is represented in dist-inventory.json.",
     "process_lifecycle": "The mapped owned child process, stdin prompt, stdout NDJSON pump, exact session-id retention boundary, deadline/cancellation force cleanup, and joined task cleanup are adapter-owned and unchanged; no package delta requires a new authority or public operation."
   },
@@ -190,6 +191,25 @@
       "ambient session scanning",
       "background/update internals"
     ],
+    "ambient_toggles": {
+      "CMD_LOCAL_ONLY": "1.30.0",
+      "config.localOnly": "1.30.0",
+      "classification": "Unmapped ambient configuration; it can reroute provider traffic without changing the selected argv. The route neither sets nor reads it."
+    },
+    "dependency_metadata": {
+      "1.29.0..1.30.0": {
+        "removed_dev_dependencies": [
+          "@commandcode/provider-anthropic",
+          "@commandcode/provider-openai",
+          "@commandcode/provider-copilot"
+        ],
+        "added_dev_dependencies": [
+          "@byokkit/cmd-provider-anthropic",
+          "@byokkit/cmd-provider-openai",
+          "@byokkit/cmd-provider-copilot"
+        ]
+      }
+    },
     "reason": "The prepared adapter emits only the selected argv, never opts into these surfaces, parses only the frozen selected event/result keys, ignores unknown event types, and does not claim public catalogue/import/export/resume or provider authority."
   },
   "live_evidence_disposition": {
@@ -200,7 +220,7 @@
     "live_credit_failure": false,
     "live_interactive_continuation": false,
     "source": "1.15.1 only",
-    "follow_up": "Run separately on exact 1.54.0 before restoring version-specific live feature truth."
+    "follow_up": "g05.069 (docs/roadmaps/g05/069-command-code-1-54-0-live-requalification.md) is the separately authorized exact-1.54.0 live gate before restoring version-specific live feature truth."
   },
   "no_prompt": true,
   "no_live_session": true,

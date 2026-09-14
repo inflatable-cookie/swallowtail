@@ -4834,7 +4834,25 @@
     "cli_options": {
       "--tools-all": "1.19.1",
       "--tools-enable <names>": "1.19.1",
-      "--local-only": "1.54.0"
+      "--local-only": "1.30.0"
+    },
+    "ambient_toggles": {
+      "CMD_LOCAL_ONLY": "1.30.0",
+      "config.localOnly": "1.30.0"
+    },
+    "dependency_metadata": {
+      "1.29.0..1.30.0": {
+        "removed_dev_dependencies": [
+          "@commandcode/provider-anthropic",
+          "@commandcode/provider-openai",
+          "@commandcode/provider-copilot"
+        ],
+        "added_dev_dependencies": [
+          "@byokkit/cmd-provider-anthropic",
+          "@byokkit/cmd-provider-openai",
+          "@byokkit/cmd-provider-copilot"
+        ]
+      }
     },
     "event_types": {
       "select_effort": "1.38.0",
@@ -4861,7 +4879,7 @@
     ],
     "transfers": false,
     "reason": "Research 116 authenticated completions/tool lifecycle/usage/credit-failure observations and Research 118 exact-id two-turn continuation ran only on 1.15.1. They remain immutable and do not claim live execution on 1.54.0.",
-    "follow_up": "Separately authorized live requalification is required before projecting version-specific authenticated completion, tool, usage, credit-failure, or interactive-continuation acceptance onto 1.54.0."
+    "follow_up": "g05.069 is the separately authorized live requalification required before projecting version-specific authenticated completion, tool, usage, credit-failure, or interactive-continuation acceptance onto 1.54.0."
   },
   "negative_controls": {
     "no_prompt": true,

@@ -35,8 +35,9 @@ usage, failure, and local lifecycle surfaces remain compatible. The exact
 `QualifiedOnly` point advanced to `1.54.0` with the
 `command-code.agent-event-ndjson-v1` behavior revision unchanged. Research 116
 and 118 live evidence stays bound to `1.15.1`; authenticated completion/tool/
-usage/credit and private continuation are gated pending a separately
-authorized exact-`1.54.0` live requalification. The next family is Qoder.
+usage/credit and private continuation are gated pending the separately
+authorized exact-`1.54.0` live requalification named in g05.069. The next
+family is Qoder.
 
 Completed campaign family: the Grok Build catalogue at official and installed
 exact `1.0.30` (g05.067) is the eighth family of Tom's authorized Research

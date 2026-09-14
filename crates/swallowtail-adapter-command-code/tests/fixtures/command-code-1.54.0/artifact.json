@@ -21,10 +21,12 @@
   },
   "license": "UNLICENSED",
   "direct_probe": {
-    "version_succeeded": false,
-    "help_succeeded": false,
-    "no_tool_headless_succeeded": false,
-    "tool_headless_succeeded": false,
+    "status": "not-run",
+    "reason": "Downloaded artifacts were inspected but never executed; no live/provider probe occurred.",
+    "version_succeeded": null,
+    "help_succeeded": null,
+    "no_tool_headless_succeeded": null,
+    "tool_headless_succeeded": null,
     "credit_failure_exit_code": null
   }
 }

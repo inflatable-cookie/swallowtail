@@ -77,8 +77,10 @@ and package metadata are in `dist-inventory.json`. The only additions are:
 changes at every hop, so the selected literals were checked at every point,
 not inferred from semver or a changelog. The package `bin`, main/type/files,
 engine, license, and README boundaries remain stable. Dependency metadata
-changes at `1.23.2` and `1.27.2`; those install-time changes do not alter the
-selected shipped entrypoint or route.
+changes at `1.23.2` and `1.27.2`, and the `1.29.0..1.30.0` devDependency
+rename from `@commandcode/provider-{anthropic,openai,copilot}` to
+`@byokkit/cmd-provider-{anthropic,openai,copilot}`; those install-time changes
+do not alter the selected shipped entrypoint or route.
 
 ## Selected-surface classification
 
@@ -103,8 +105,13 @@ remain the existing mapped implementation boundaries; downloaded artifacts
 were not live-executed.
 
 The complete inventory also bounds unmapped additions. `--tools-all` and
-`--tools-enable` first appear at `1.19.1`; `--local-only` first appears at
-`1.54.0`; `--effort` is present but unselected. `interaction_requested` and
+`--tools-enable` first appear at `1.19.1`; `--local-only` is registered at
+`1.30.0` as `CMD_LOCAL_ONLY` with config key `localOnly`; `--effort` is
+present but unselected. The local-only option and config are an explicitly
+unmapped ambient toggle: they can reroute provider traffic without changing
+the selected argv, and this route neither sets nor reads them. The
+`1.29.0..1.30.0` dependency rename is classified as package metadata rather
+than selected route behavior. `interaction_requested` and
 `interaction_resolved` appear at `1.54.0` and are unknown namespaced activity,
 never terminal authority. TUI, Provider API, mods/taste, session catalogue or
 export, aliases, and other options remain unselected. No new driver, public
@@ -125,6 +132,8 @@ and local process/lifecycle shape. It does not migrate live acceptance:
 Research 116 stays the `1.15.1` record for authenticated completion, tool
 lifecycle, usage, and credit failure, and Research 118 stays the `1.15.1`
 record for private exact-id interactive continuation. The corresponding
-feature cells are gated in the claim batch with a named follow-up for exact
-`1.54.0` live requalification. No old live result is presented as a
+feature cells remain structurally available but their live acceptance is gated
+by the named follow-up
+[`g05.069`](../roadmaps/g05/069-command-code-1-54-0-live-requalification.md)
+for exact `1.54.0` live requalification. No old live result is presented as a
 `1.54.0` observation.

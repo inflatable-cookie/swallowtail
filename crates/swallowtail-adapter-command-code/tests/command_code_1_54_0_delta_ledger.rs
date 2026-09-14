@@ -31,6 +31,39 @@ fn identity_freezes_the_baseline_and_every_published_successor() {
     );
     assert_eq!(identity["identity_decision"]["raise_no_range"], true);
     assert_eq!(identity["live_evidence"]["transfers"], false);
+    assert_eq!(
+        identity["unmapped_additions"]["cli_options"]["--local-only"],
+        "1.30.0"
+    );
+    assert_eq!(
+        identity["unmapped_additions"]["ambient_toggles"],
+        serde_json::json!({
+            "CMD_LOCAL_ONLY": "1.30.0",
+            "config.localOnly": "1.30.0"
+        })
+    );
+    assert_eq!(
+        identity["unmapped_additions"]["dependency_metadata"]["1.29.0..1.30.0"]["removed_dev_dependencies"],
+        serde_json::json!([
+            "@commandcode/provider-anthropic",
+            "@commandcode/provider-openai",
+            "@commandcode/provider-copilot"
+        ])
+    );
+    assert_eq!(
+        identity["unmapped_additions"]["dependency_metadata"]["1.29.0..1.30.0"]["added_dev_dependencies"],
+        serde_json::json!([
+            "@byokkit/cmd-provider-anthropic",
+            "@byokkit/cmd-provider-openai",
+            "@byokkit/cmd-provider-copilot"
+        ])
+    );
+    assert!(
+        identity["live_evidence"]["follow_up"]
+            .as_str()
+            .unwrap()
+            .contains("g05.069")
+    );
 }
 
 #[test]
@@ -76,6 +109,21 @@ fn inventory_is_complete_and_has_no_unexpected_tree_additions_or_removals() {
         inventory["hashes"]["dist/index.mjs"]["1.15.1"],
         inventory["hashes"]["dist/index.mjs"]["1.54.0"]
     );
+    let first_rename = &inventory["from_hop_to_hop"]["1.29.0..1.30.0"];
+    assert_eq!(
+        first_rename["added"],
+        serde_json::json!(["dist/bundled/command-code-knowledge/reference/byok.md"])
+    );
+    assert_eq!(first_rename["removed"], serde_json::json!([]));
+    for path in ["dist/cli.mjs", "package.json"] {
+        assert!(
+            first_rename["changed"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|value| value == path)
+        );
+    }
 }
 
 #[test]
@@ -132,6 +180,34 @@ fn selected_protocol_keys_are_present_on_every_hop_and_unmapped_additions_stay_b
         ])
     );
     assert_eq!(
+        protocol["unmapped_boundaries"]["ambient_toggles"]["CMD_LOCAL_ONLY"],
+        "1.30.0"
+    );
+    assert_eq!(
+        protocol["unmapped_boundaries"]["ambient_toggles"]["config.localOnly"],
+        "1.30.0"
+    );
+    assert!(
+        protocol["unmapped_boundaries"]["ambient_toggles"]["classification"]
+            .as_str()
+            .unwrap()
+            .contains("reroute provider traffic")
+    );
+    assert!(
+        protocol["classified_deltas"]["ambient_configuration"]
+            .as_str()
+            .unwrap()
+            .contains("first appear at 1.30.0")
+    );
+    assert_eq!(
+        protocol["unmapped_boundaries"]["dependency_metadata"]["1.29.0..1.30.0"]["added_dev_dependencies"],
+        serde_json::json!([
+            "@byokkit/cmd-provider-anthropic",
+            "@byokkit/cmd-provider-openai",
+            "@byokkit/cmd-provider-copilot"
+        ])
+    );
+    assert_eq!(
         protocol["live_evidence_disposition"]["live_authenticated_completion"],
         false
     );
@@ -143,5 +219,11 @@ fn selected_protocol_keys_are_present_on_every_hop_and_unmapped_additions_stay_b
     assert_eq!(
         protocol["live_evidence_disposition"]["live_interactive_continuation"],
         false
+    );
+    assert!(
+        protocol["live_evidence_disposition"]["follow_up"]
+            .as_str()
+            .unwrap()
+            .contains("g05.069")
     );
 }

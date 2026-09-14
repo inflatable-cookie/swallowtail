@@ -26,19 +26,21 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Claude Code `2.1.270` (g05.058) is claimed; no family follows
-it automatically. Official npm and GitHub stable `2.1.270` is a compatible
-extension of the existing headless `2.1.220..=2.1.257` and response-only
-`2.1.227..=2.1.257` stream-JSON windows. Research 307 froze identity before
-the claim and classified all eleven published hops on both platform builds;
-selected mapped argv and stream-JSON shapes are unchanged and every
-`sdk-tools.d.ts` delta is SDK tool declaration content the routes do not
-consume. Unpublished `2.1.262` and `2.1.264` join the historical gaps;
-unpublished `2.1.271` stays permitted `UnverifiedNewer`. Host `2.1.258`
-matches the official `darwin-arm64` binary and its help equals the frozen
-`2.1.257` digest; it was observed only. Watcher stays exact `2.1.251`. No
-provider prompt, login, install, host update, release, or consumer mutation
-occurred.
+Active family: Claude Agent ACP `0.76.0` (g05.059) is claimed as the first
+family of Tom's authorized Research 308 campaign. Official npm, GitHub, and
+ACP-registry stable `0.76.0` is a compatible extension of
+`claude-agent.acp.initialize-meta-extensions-v7` through the previous `0.73.0`
+ceiling. Research 309 froze identity before the claim and classified all four
+published hops `0.74.0`, `0.75.0`, `0.75.1`, and `0.76.0` from a complete dist
+inventory; the mode, config-id, elicitation, tools, settings, utils, and
+`dist/permissions/**` modules are byte-identical across every hop and the ACP
+SDK `1.4.0` and Agent SDK `0.3.257` pins hold. Unpublished `0.58.0`,
+`0.73.1`, `0.74.1`, `0.75.2`, and `0.76.1` stay incompatible; unpublished
+`0.77.0` stays permitted `UnverifiedNewer`. Host `0.63.0` matches the frozen
+`0.70.0` host digest and was observed only. Claude Code, the Claude Agent SDK
+sidecar, and the watcher stay untouched. The campaign continues serially with
+Qwen Code. No provider prompt, login, install, host update, release, or
+consumer mutation occurred.
 
 Current promoted family: Pi RPC `0.85.1` (g05.044). Research 302 froze
 identity before the claim. Official npm and GitHub `0.85.1` plus published
@@ -79,10 +81,12 @@ observation-only. Watcher stays exact `2.1.251` behind its mechanism-change
 gate. Feature-specific exact sets remain on the `2.1.220..=2.1.241` probed
 points. `AllowUnverified` remains.
 
-Earlier one-family claim: Claude Agent ACP `0.73.0` (g05.018, cards 044-045).
-Maintained v7 is `0.66.0..=0.73.0`. Published intermediates `0.71.0`,
-`0.72.0`, and `0.73.0` are qualified. Unpublished `0.58.0` stays
-incompatible. Unpublished `0.74.0` stays permitted `UnverifiedNewer`. Host
+Earlier one-family claim: Claude Agent ACP `0.73.0` (g05.018, cards
+044-045), later raised through official `0.76.0` (g05.059). Maintained v7 is
+now `0.66.0..=0.76.0`. Published intermediates `0.71.0`, `0.72.0`, and
+`0.73.0` are qualified, as are `0.74.0`, `0.75.0`, `0.75.1`, and `0.76.0`.
+Unpublished `0.58.0`, `0.73.1`, `0.74.1`, `0.75.2`, and `0.76.1` stay
+incompatible. Unpublished `0.77.0` stays permitted `UnverifiedNewer`. Host
 `0.63.0` stays observation-only Qualified Deprecated. `AllowUnverified`
 remains.
 
@@ -120,6 +124,32 @@ corrected that revision's baseline to `0.33.0` and extended it to
 recorded.
 
 ### Latest Completed Family
+
+Claude Agent ACP `0.76.0` is a compatible extension of
+`claude-agent.acp.initialize-meta-extensions-v7`, the first family of the
+Research 308 campaign. Research 309 and g05.059 freeze identity before the
+claim. Host `0.63.0` matches the frozen `0.70.0` host digest and was not
+installed, updated, replaced, or executed beyond `--version`. Official npm,
+GitHub, and ACP-registry stable is `0.76.0` published
+2026-09-09T21:16:32.982Z; published stables above the previous `0.73.0`
+ceiling are exactly `0.74.0`, `0.75.0`, `0.75.1`, and `0.76.0`. Complete dist
+inventory `0.73.0` (96 files) → `0.74.0` (99) → `0.75.0` (111) → `0.75.1`
+(117) → `0.76.0` (123) is frozen with no removals; `dist/index.js`,
+`dist/elicitation.js`, `dist/settings.js`, `dist/utils.js`, `dist/tools.js`,
+`dist/session-mode.js`, `dist/session-config-ids.js`, and the complete
+`dist/permissions/**` tree are byte-identical across every hop, so mode
+ids/categories, `plan`/`acceptEdits`, permission option kinds, and the effort
+config id are unchanged. The ACP SDK pin stays `1.4.0` and the Agent SDK pin
+stays `0.3.257`. The `--hide-claude-auth` guard, the `authStatus` push
+extension, the synthetic context-compaction tool call, usage Markdown, AIR
+fork metadata, clear-context coordination, and capability-gated recommended
+config values stay unmapped with reasons. Unpublished `0.58.0`, `0.73.1`,
+`0.74.1`, `0.75.2`, and `0.76.1` stay incompatible; unpublished `0.77.0`
+remains permitted `UnverifiedNewer`. Claude Code and the watcher stay
+untouched. No provider prompt, live ACP initialize, login, install, host
+update, or execution of downloaded official binaries was required.
+
+### Previous Completed Family
 
 Claude Code `2.1.270` is a compatible extension of the separate headless and
 response-only stream-JSON axes. Research 307 and g05.058 freeze identity before
@@ -331,7 +361,8 @@ A2 `0.38.0` cap.
 ### Earlier Completed Family
 
 Claude Agent ACP `0.73.0` is a compatible extension of
-`claude-agent.acp.initialize-meta-extensions-v7`. Operator restart after
+`claude-agent.acp.initialize-meta-extensions-v7`; g05.059 later raised the
+same segment through official `0.76.0`. Operator restart after
 official latest moved during the unmerged `0.72.0` family. Research 272 and
 g05.018 cards 044-045 freeze identity before the claim. Host `0.63.0`
 matches the frozen `0.70.0` host digest and was not installed, updated,

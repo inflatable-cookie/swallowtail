@@ -37,6 +37,10 @@ mod claude_agent_acp_0_70_identity;
 mod claude_agent_acp_0_73_delta_ledger;
 #[path = "../claude_agent_acp_0_73_identity.rs"]
 mod claude_agent_acp_0_73_identity;
+#[path = "../claude_agent_acp_0_76_delta_ledger.rs"]
+mod claude_agent_acp_0_76_delta_ledger;
+#[path = "../claude_agent_acp_0_76_identity.rs"]
+mod claude_agent_acp_0_76_identity;
 #[path = "../claude_agent_acp_identity.rs"]
 mod claude_agent_acp_identity;
 #[path = "../claude_agent_sdk_0_3_259_identity.rs"]

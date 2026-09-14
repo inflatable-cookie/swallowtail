@@ -79,11 +79,45 @@ tag, publication, or consumer mutation.
 
 ## Acceptance
 
-- [ ] official identity and every published hop are reproducible
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes production claim edits
-- [ ] historical segments, gaps, claim identity, and `AllowUnverified` survive
-- [ ] official latest is rechecked at both boundaries
+- [x] official identity and every published hop are reproducible
+- [x] every changed selected input is classified
+- [x] identity evidence precedes production claim edits
+- [x] historical segments, gaps, claim identity, and `AllowUnverified` survive
+- [x] official latest is rechecked at both boundaries
+
+## Result
+
+Worker evidence: the admitted segment is a compatible extension of
+`claude-agent.acp.initialize-meta-extensions-v7` through official `0.76.0`.
+Research 309 and
+`crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.76.0/`
+freeze npm, GitHub, and ACP-registry identity for all four published hops from
+the previous `0.73.0` ceiling: `0.74.0`, `0.75.0`, `0.75.1`, and `0.76.0`.
+`0.58.0`, `0.73.1`, `0.74.1`, `0.75.2`, and `0.76.1` are unpublished; `0.75.2`
+and `0.76.1` have preview builds only. The complete dist inventory
+`0.73.0` (96 files) → `0.74.0` (99) → `0.75.0` (111) → `0.75.1` (117) →
+`0.76.0` (123) is frozen with no removals, and every changed `acp-agent.js`
+delta is classified mapped-adjacent, provider-internal, or unmapped with a
+reason. The `--hide-claude-auth` guard, `authStatus`, context compaction as an
+extra-metadata tool call, usage Markdown, AIR fork metadata, clear-context
+coordination, and capability-gated recommended config values stay unmapped.
+Identity landed as its own commit before any production claim edit.
+
+Claim: the Maintained v7 segment becomes `0.66.0..=0.76.0` and
+`latest_qualified` is `0.76.0`. Baseline `0.53.0`, claim id
+`claude-agent.acp.window-2`, exclusion `0.58.0`, every historical milestone,
+and `AllowUnverified` stay. Synthetic unpublished `0.77.0` is the visible
+`UnverifiedNewer` point. Host `0.63.0` stays observation-only. Claude Code,
+the Claude Agent SDK sidecar, and the watcher are untouched. The prepared
+guide, both route-matrix rows, the feature-matrix version cell, the contract
+and architecture ceiling references, `CHANGELOG.md` `[Unreleased]`, the
+standing-lane paragraphs, and the identity and claim logs agree with
+`selection.rs`. Official latest was re-probed immediately before the identity
+commit and again immediately before push. No provider prompt, live ACP
+initialize, login, install, host update, downloaded-artifact execution,
+release, tag, publication, or consumer mutation occurred.
+
+Independent exact-head review and the merge gate are queue-owned.
 
 ## Next Task
 

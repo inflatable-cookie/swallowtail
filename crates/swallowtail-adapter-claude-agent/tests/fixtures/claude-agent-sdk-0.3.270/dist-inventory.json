@@ -1,0 +1,423 @@
+{
+ "compared": [
+  "0.3.259",
+  "0.3.260",
+  "0.3.261",
+  "0.3.263",
+  "0.3.265",
+  "0.3.266",
+  "0.3.267",
+  "0.3.268",
+  "0.3.269",
+  "0.3.270"
+ ],
+ "package_file_counts": {
+  "0.3.259": 15,
+  "0.3.260": 15,
+  "0.3.261": 15,
+  "0.3.263": 15,
+  "0.3.265": 15,
+  "0.3.266": 15,
+  "0.3.267": 15,
+  "0.3.268": 15,
+  "0.3.269": 15,
+  "0.3.270": 15
+ },
+ "identical_through_0_3_259_to_0_3_270": [
+  "LICENSE.md",
+  "README.md",
+  "agentSdkTypes.d.ts",
+  "bridge.d.ts",
+  "extractFromBunfs.d.ts",
+  "extractFromBunfs.js"
+ ],
+ "from_0_3_259_to_0_3_260": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_260_to_0_3_261": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js",
+   "sdk-tools.d.ts"
+  ]
+ },
+ "from_0_3_261_to_0_3_263": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js",
+   "sdk-tools.d.ts",
+   "sdk.d.ts"
+  ]
+ },
+ "from_0_3_263_to_0_3_265": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_265_to_0_3_266": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js",
+   "sdk-tools.d.ts",
+   "sdk.d.ts"
+  ]
+ },
+ "from_0_3_266_to_0_3_267": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.d.ts",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_267_to_0_3_268": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_268_to_0_3_269": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_269_to_0_3_270": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js",
+   "sdk-tools.d.ts",
+   "sdk.d.ts"
+  ]
+ },
+ "hashes": {
+  "LICENSE.md": {
+   "0.3.259": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.260": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.261": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.263": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.265": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.266": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.267": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.268": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.269": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.270": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a"
+  },
+  "README.md": {
+   "0.3.259": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.260": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.261": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.263": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.265": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.266": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.267": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.268": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.269": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.270": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab"
+  },
+  "agentSdkTypes.d.ts": {
+   "0.3.259": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.260": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.261": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.263": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.265": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.266": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.267": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.268": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.269": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.270": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93"
+  },
+  "bridge.d.ts": {
+   "0.3.259": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.260": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.261": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.263": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.265": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.266": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.267": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.268": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.269": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.270": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295"
+  },
+  "bridge.mjs": {
+   "0.3.259": "4c4bde155bf5840532d83c111c10dfaf0f43a1ac466057c99dc73481f1a52c4e",
+   "0.3.260": "926ef9f20814828d1b45ffb011a648560d0c48758ca0a6c96cdba56ff5ecc391",
+   "0.3.261": "68fc6a1dbe20ffda394b87ca69ca9a178aa433fc0408c86663b6be83507d8aa4",
+   "0.3.263": "bcf2e62ded19e90b1da9fb17bc5ccd6f2a90e3f705db9fa373fa8e4ecad0ea7c",
+   "0.3.265": "5aec4eadf7bbc777ffff95cfdfab307f13d01ffb365d7173cad8b5403af83cb2",
+   "0.3.266": "13cdf48cf1948b48790515c6a94207483205e39f4ff20c41165625b1a0581ee6",
+   "0.3.267": "028346621d379fcbfd8c2c080f4ffd860a3f523fc7a9b73bc7517c61ebb602c2",
+   "0.3.268": "7a2ac6b3b1f0c58db9d19aed4db0888b8cb25f8aa3fc21eed950d6a3139b04fd",
+   "0.3.269": "e354e52af5cac0dc600c0d7e2a8ff40fcac9ee8045518d9dd6c2a4ff012c0ecf",
+   "0.3.270": "07a52ffcc827991163e422b0939f30e9fa2c748a65d473545f70c5379f5fc1e9"
+  },
+  "browser-sdk.d.ts": {
+   "0.3.259": "a8005d33d20f9b7ed540ad62653a94a5cea1a0678027a0198a2ee6bb4ac13bf1",
+   "0.3.260": "a8005d33d20f9b7ed540ad62653a94a5cea1a0678027a0198a2ee6bb4ac13bf1",
+   "0.3.261": "a8005d33d20f9b7ed540ad62653a94a5cea1a0678027a0198a2ee6bb4ac13bf1",
+   "0.3.263": "a8005d33d20f9b7ed540ad62653a94a5cea1a0678027a0198a2ee6bb4ac13bf1",
+   "0.3.265": "a8005d33d20f9b7ed540ad62653a94a5cea1a0678027a0198a2ee6bb4ac13bf1",
+   "0.3.266": "a8005d33d20f9b7ed540ad62653a94a5cea1a0678027a0198a2ee6bb4ac13bf1",
+   "0.3.267": "0071c301dfe6eeee525e5e68c244582225cceb2601294be6e3b7a11793eb55aa",
+   "0.3.268": "0071c301dfe6eeee525e5e68c244582225cceb2601294be6e3b7a11793eb55aa",
+   "0.3.269": "0071c301dfe6eeee525e5e68c244582225cceb2601294be6e3b7a11793eb55aa",
+   "0.3.270": "0071c301dfe6eeee525e5e68c244582225cceb2601294be6e3b7a11793eb55aa"
+  },
+  "browser-sdk.js": {
+   "0.3.259": "7a8544f40738e2fe1c6c6b1266a029ca3479046e45d7bd73b22484c5bb19bd82",
+   "0.3.260": "77d509e43ddab0328934e2f9ecbdb8da1a65adbfe01bb55e58c2b9e27481dd9d",
+   "0.3.261": "4082c2cb4bfc354b6a912934d8a6810064a2296474ace3f1993da817da70c6c6",
+   "0.3.263": "a4f5c97f23f8810d26e6c8d43b3a5b46b2f28ba670919d3e0838d9ea073bace3",
+   "0.3.265": "e356a13ee57b370f81e262d39a8245d44fd2c9e7c34049f34a2d38b7dd1038c1",
+   "0.3.266": "375d814ca23b6a1aa06d6f282db8508c32ed92c4d90e3ec3ed65595d24ac9040",
+   "0.3.267": "51c74c2b29b506d80ecda381f6c5905335eb128b1bfb93dec32716fdb8c3510e",
+   "0.3.268": "d6b5cd4a2e9b3dc296b86f774ce2101b91782ec9421298bd412494dd27e22966",
+   "0.3.269": "346eff4e5fb07f4392b26811e419b64a1e59c5042b5458b97bbc427c29d2849d",
+   "0.3.270": "f51a920dfd0759c2fb4e5bbf53f5acb4c2aa06ce7145f9c30c5cd8e8810f8690"
+  },
+  "extractFromBunfs.d.ts": {
+   "0.3.259": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.260": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.261": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.263": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.265": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.266": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.267": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.268": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.269": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.270": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984"
+  },
+  "extractFromBunfs.js": {
+   "0.3.259": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.260": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.261": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.263": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.265": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.266": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.267": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.268": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.269": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.270": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27"
+  },
+  "manifest.json": {
+   "0.3.259": "8ed7edb84db1a4a51dcc232e8a65fe3e5c3522e0be2d31f92fd8e67dded4f57a",
+   "0.3.260": "6f90d6c01bf2ea872c3f6d72b676121eef23d851e981fa4e4adf8eea58f379ca",
+   "0.3.261": "45c085feeebcf799787143394ed32db72089f2c6707d5a9ea9019f1af4dacc35",
+   "0.3.263": "96f64bb75b98b1ca93008826a2028cb8b7d0f41727cdf188cf316a275328116a",
+   "0.3.265": "3abdc11721a13655d1b451caac43af62b6906289e5b731306963373baf8c6f4a",
+   "0.3.266": "2736b456cee89b6c238b51203082c13c1495533310f54eef549e75bd3f5457e4",
+   "0.3.267": "0d616022e26a1b023eb0c3ebdb1810e4caa58de0929c86b421c1c8a7780e2529",
+   "0.3.268": "e19824d5124b5ccd356d07b751dea589847f90a74b180a42c5777eae7972f0d4",
+   "0.3.269": "7f2a4706151f22cfd142be5b34390f9cb2dd0908660817af3a0acd00a3789758",
+   "0.3.270": "eb38935d0967ed1a78a75d6203545fbd20d9af6e10bd04a5033bcb3dbfc19582"
+  },
+  "manifest.zst.json": {
+   "0.3.259": "c4e5986af101ef0a8f3459b9a47c87979a0bce13eb8f798896df5e6340a45829",
+   "0.3.260": "828848ea62ad6f782cda196d171100c079806ed53788fe76a05a206fc2ce2d78",
+   "0.3.261": "91da0f4f7acbef428a3c0dfb180055db974782f2a1515ca05887b5f23ebcc15e",
+   "0.3.263": "03e651583cec33d0150f9874940003a565dee82ab1c507ea2298a89d42bc6198",
+   "0.3.265": "6fc4f3584f4340b154c698632de2d680ce3992fbea04e9c266dfbb0c9f998a62",
+   "0.3.266": "34938945e1a29e2c3c750b939359bfa73de1b43f22c5ab75a167ae4ef3212c6e",
+   "0.3.267": "e1666347044a693a98cf0e486510ea85f482bf08e892463159b3352e3151b197",
+   "0.3.268": "98e9073a4303a4787012bcae8342c5b5c5326c9b189429370d85e030902a8104",
+   "0.3.269": "2228e071c0585b51836798c8470cc35a0b32f8fb5dc5610bda960de39329703f",
+   "0.3.270": "887398e92a68526b6188fc93b1406a32314bbd683ab16006dc9f42e95274841f"
+  },
+  "package.json": {
+   "0.3.259": "25036e367de06d68ee20636a22548b5336c655c9747a6c46aee0405eaf3843b2",
+   "0.3.260": "4cfbecdc4e752f4195bb09c20b60860d244e00b04350fb20ea03c17610523c1a",
+   "0.3.261": "a07266fb8fba01456181446b35348687eaf2886c220afc53127b2a0f75eb1c4e",
+   "0.3.263": "dda13abc4e1fc75c83c525e7f926ada50a0049055b5a0c74f277e0c1e5286d5e",
+   "0.3.265": "aed10eecdfba445e34b938a919d42c7e2fb787e9daca6ef698bbe2182f769c1a",
+   "0.3.266": "c29d635b0c94c05dff99fb95246762ce0b93ce230573f9e3054617b9998982be",
+   "0.3.267": "dc29b970f5c4ce0d3eb28b8e4bf9f9b014ff5d4f0ddfe7715f4606fc4e5e55c8",
+   "0.3.268": "735a0d9e498036cd006e1c63e05ce790dfbb3f32cd6e305a36a0b1375019c73a",
+   "0.3.269": "2334ded8bf65f602a0407489a759f19a587aa836abc6b9c12186619193452635",
+   "0.3.270": "0c87965d4ef196439004d0e9c5dbde184b867fc800dfd2c900ebcbadc8b66393"
+  },
+  "sdk-tools.d.ts": {
+   "0.3.259": "afc015ba55e73c1ea45f8fd4f959592d005ef4eb5177133164df6f7316dd7509",
+   "0.3.260": "857230a2248a044e1053962d7c1aec0b87a1ed0e3737417890156449fb3461ce",
+   "0.3.261": "857230a2248a044e1053962d7c1aec0b87a1ed0e3737417890156449fb3461ce",
+   "0.3.263": "857230a2248a044e1053962d7c1aec0b87a1ed0e3737417890156449fb3461ce",
+   "0.3.265": "92d6f9d037f9b104e365b99da2c3e3b208d0e85b895116855ca434d8d5df97bb",
+   "0.3.266": "92d6f9d037f9b104e365b99da2c3e3b208d0e85b895116855ca434d8d5df97bb",
+   "0.3.267": "2a1125f7329728cd53ce8214c5d9d99a067f94caafc6ae12a2a2b676198f38cc",
+   "0.3.268": "198b88d268407d6769d5170db03e40943462b951a02b556b924cebacc7a958e3",
+   "0.3.269": "66d864d04c989d0436b7954734187336bb31a09b47a17a56382939dc38c83c5e",
+   "0.3.270": "66d864d04c989d0436b7954734187336bb31a09b47a17a56382939dc38c83c5e"
+  },
+  "sdk.d.ts": {
+   "0.3.259": "f76aa847ddf433a2d7ff9c28935c0764467f00d31f35044226382ddf86ad7d81",
+   "0.3.260": "c705122752d364856eafd2c1ea9e1b12000f3dc4f69f19b7d45e84e6b89e79a7",
+   "0.3.261": "59560e31f91e47ed93e7cbcaa846e3fc3c96d8dcc41ea36cda64de96c0c4edf4",
+   "0.3.263": "59560e31f91e47ed93e7cbcaa846e3fc3c96d8dcc41ea36cda64de96c0c4edf4",
+   "0.3.265": "5301ef6902f43423ef061465d25598f1b1218466fcab7d774b8e49a6d02da828",
+   "0.3.266": "5301ef6902f43423ef061465d25598f1b1218466fcab7d774b8e49a6d02da828",
+   "0.3.267": "5d243d3837ac5cf211470f11bcb51eb77cb5a0c8554074935d5c2c4c159d0cf3",
+   "0.3.268": "72c3c44a08645d742da84c8c611b65a913362d02d8e5c3c90a487714b97d255e",
+   "0.3.269": "851c62ed778ee56625537a608ef93fbb53445a687eac9314ae6c758c94f1ce44",
+   "0.3.270": "851c62ed778ee56625537a608ef93fbb53445a687eac9314ae6c758c94f1ce44"
+  },
+  "sdk.mjs": {
+   "0.3.259": "7fa7c212361864544e775e7551519e790515f95d4bb6a4831b0b05f5b368a0c5",
+   "0.3.260": "358ca69f006687197e375659d8440e242bf2c67c747a3c4df20a49736cc73643",
+   "0.3.261": "e4a7f408597eb189c0a1e980f370bb0db147180ea3076c0f3ac58b0402e4d62f",
+   "0.3.263": "3d690c23ec82b4ba05f7ac8c26e2510f84e112c68ced68053ec40cf7d5dcbfe2",
+   "0.3.265": "ee8162c1f066a24f63c0dcab7784ad0988a1bff42a5028bf86713a1b5e3d9496",
+   "0.3.266": "5d5cfa1636de72fe5b3f053ad9cffc272ea7acf1e6b5db6dc609bb2ac6342fc1",
+   "0.3.267": "6854ffd19debce9571088394460eca93fab305df29458ce14c2a0d1fccc33aa3",
+   "0.3.268": "629e2f28412e0ebef10823f589b44a9cdf6e607774dc548921ce1b1af9fad5d2",
+   "0.3.269": "d1fc66e9f38607f4e565a9d2873a429f81ba4ce5bcbabdd49b8483e56abf5579",
+   "0.3.270": "ad98da1735760c234efb02a1bc6aaa3b25911a773d8334fd1a7a1e6cf46e8b31"
+  }
+ }
+}

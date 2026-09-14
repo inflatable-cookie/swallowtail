@@ -26,6 +26,17 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
+Active campaign family: Antigravity official GitHub `1.2.2` (g05.075) is the
+fifteenth family of Tom's authorized Research 308 campaign. Research 283
+froze `1.1.17..=1.1.26` and stopped at `1.1.22`, where selected headless HTTP
+502 failure became provider-managed retry without a published bound or disable
+control. Five further releases now reach `1.2.2`; `1.1.28` advertises much
+longer exponential retry and changed print-timeout expiry, while `1.2.1`
+advertises broader automatic retry. The provider-free lane freezes both
+platform assets, tests finite containment exactly, and decides catalogue and
+headless segments independently. Unknown retry stays incompatible and gaps
+stay explicit. Gemini follows.
+
 Completed campaign family: Deep Agents official npm `0.1.30` (g05.074) is
 the fourteenth family of Tom's authorized Research 308 campaign. Research
 322 froze the exact `0.1.25` baseline, all five published stable successors
@@ -40,7 +51,7 @@ and no argv change. The selected `deepagents` deltas are additive and
 decoder-invisible (builtin `delete` tool, required `write_file` content,
 `read_file` pagination footer); the stale ACP registry `0.1.7` entry and
 constructor-default `agentInfo.version` `0.0.1` stay outside the claim.
-Antigravity follows and awaits Chatterbox's task compilation.
+Antigravity followed.
 
 Completed campaign family: Mistral Vibe official GitHub/PyPI `2.25.4`
 (g05.073) is the thirteenth family of Tom's authorized Research 308

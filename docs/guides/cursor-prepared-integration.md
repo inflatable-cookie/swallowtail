@@ -29,12 +29,15 @@ Swallowtail does not install Cursor, perform login, read its credential store,
 or search PATH. Local subscription state crosses the boundary only as safe
 readiness evidence; no credential reference enters the prepared plan.
 
-Four exact calendar/build pairs are qualified:
+Seven exact calendar/build pairs are qualified:
 
 - `2026.07.01-41b2de7`
 - `2026.07.23-e383d2b`
 - `2026.08.04-aaa8809`
 - `2026.08.11-e8db854`
+- `2026.08.31-4057e58`
+- `2026.09.02-c22c1a3`
+- `2026.09.10-fd3934a`
 
 The gap is not inferred. A qualified date with a different opaque build is
 rejected. Later dates remain visibly unverified newer.

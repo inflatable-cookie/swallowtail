@@ -26,13 +26,20 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Cursor Agent official `2026.09.10-fd3934a` (g05.062) is the
-fourth family of Tom's authorized Research 308 campaign. The host remains the
-qualified `2026.08.04-aaa8809`; known later official observations include
-`2026.08.31-4057e58` and `2026.09.02-c22c1a3`. The worker must reconstruct the
-complete published point set, bind every date to its exact opaque revision,
-and freeze identity before changing catalogue, ACP, or headless claims. Shared
-matrices and the changelog stay serial.
+Active family: Ollama is the fifth family of Tom's authorized Research 308
+campaign. The worker must recheck official latest and freeze identity before
+changing the attached-runtime claim. Shared matrices and the changelog stay
+serial.
+
+Completed campaign family: Cursor Agent official `2026.09.10-fd3934a`
+(g05.062) is the fourth family of Tom's authorized Research 308 campaign.
+Research 312 froze all three published hops after the prior
+`2026.08.11-e8db854` ceiling and host `2026.08.04-aaa8809`. The
+compatible-extension claim now qualifies catalogue, ACP, and headless through
+`2026.09.10-fd3934a`; calendar dates between the seven exact points stay
+incompatible, exact feature-specific sets stay on their probed points, and
+historical milestones, claim identities, and `AllowUnverified` stay. The
+next family is Ollama.
 
 Completed campaign family: Codex official npm and GitHub release `0.154.0`
 (g05.061) is the third family of Tom's authorized Research 308 campaign.
@@ -43,7 +50,7 @@ both exec and app-server through `0.154.0`; newly interior unpublished
 `0.151.1`, while unpublished `0.154.1` stays permitted `UnverifiedNewer`,
 feature-specific exact sets stay on the `0.147.0..=0.149.1` probed points,
 and historical windows, claim identities, and `AllowUnverified` stay. The
-next family is Cursor Agent.
+campaign continued serially with Cursor Agent.
 
 Completed campaign family: Qwen Code official npm and direct GitHub release
 `0.23.3` (g05.060) is the second family of Tom's authorized Research 308

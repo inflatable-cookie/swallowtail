@@ -88,13 +88,28 @@ mutation. The npm `cursor-agent` package is a different identity axis.
 
 ## Acceptance
 
-- [ ] official identity and the complete later point set are reproducible
-- [ ] every accepted point binds its exact opaque build revision
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes production claim edits
-- [ ] catalogue, ACP, and headless remain separately truthful
-- [ ] historical milestones, gaps, exact feature sets, claims, and `AllowUnverified` survive
-- [ ] official latest is rechecked at both boundaries
+- [x] official identity and the complete later point set are reproducible
+- [x] every accepted point binds its exact opaque build revision
+- [x] every changed selected input is classified
+- [x] identity evidence precedes production claim edits
+- [x] catalogue, ACP, and headless remain separately truthful
+- [x] historical milestones, gaps, exact feature sets, claims, and `AllowUnverified` survive
+- [x] official latest is rechecked at both boundaries
+
+## Result
+
+Research 312 froze the official download identities for all three published
+hops after `2026.08.11-e8db854` (`2026.08.31-4057e58`, `2026.09.02-c22c1a3`,
+`2026.09.10-fd3934a`) with a complete tree inventory. The selected CLI
+definitions, ACP initialize construction, and stream-json event keys are
+text-identical modulo minifier renames; new flags attach only to unmapped
+worker/controller commands and the SEA/native packaging refactor feeds no
+selected surface. The compatible-extension claim adds the three exact
+milestones through `2026.09.10-fd3934a`, keeps the three distinct route
+claims, historical milestones and gaps, exact feature-specific sets, and
+`AllowUnverified`, and leaves ACP load/replay and continuation recovery
+blocked. No provider operation or host mutation occurred. Validation is
+named in the handoff; PR review remains queue-owned.
 
 ## Next Task
 

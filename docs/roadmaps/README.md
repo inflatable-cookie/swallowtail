@@ -15,9 +15,10 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.072 Kiro `2.21.4` exact-pin qualification as the twelfth family
-in Tom's authorized Research 308 currentness campaign. Continue the remaining
-seven families serially without repeated approval; no release follows.
+Implement g05.073 Mistral Vibe `2.25.4` exact-pin qualification as the
+thirteenth family in Tom's authorized Research 308 currentness campaign.
+Continue the remaining six families serially without repeated approval; no
+release follows.
 
 ## Standing Lanes
 

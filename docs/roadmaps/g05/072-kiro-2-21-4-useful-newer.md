@@ -109,12 +109,38 @@ changelog families, embedded library versions, or advertised capabilities.
 
 ## Acceptance
 
-- [ ] official identity and every reproducible published successor reproduce
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes the claim decision
-- [ ] exact QualifiedOnly shape and route boundaries remain truthful
-- [ ] advertised siblings and capabilities remain independently gated
-- [ ] official stable manifest is rechecked at both boundaries
+- [x] official identity and every reproducible published successor reproduce
+- [x] every changed selected input is classified
+- [x] identity evidence precedes the claim decision
+- [x] exact QualifiedOnly shape and route boundaries remain truthful
+- [x] advertised siblings and capabilities remain independently gated
+- [x] official stable manifest is rechecked at both boundaries
+
+## Result
+
+Research 320 freezes the official `2.18.1` baseline and all eleven
+published stable successors through `2.21.4` as exact Linux aarch64
+archives (baseline digest reproduces Research 156; `2.21.4` matches the
+planning digests) plus read-only-mounted baseline and official DMGs. The
+selected ACP surface is byte-stable across every hop: ACP library pins
+`sacp-11.0.0` and `agent-client-protocol-0.10.4` never move, the selected
+argv stays exactly `kiro-cli` + `acp`, the prompt field stays `prompt`,
+and initialize, `session/new`, `session/prompt`, `session/cancel`,
+session-update kinds, permission kinds, stop reasons, and cleanup are
+unchanged. The exact `kiro.acp.release-window-1` claim now binds one
+maintained `2.21.4` point with the unchanged `kiro.acp.stdio-v1` behavior
+revision and `QualifiedOnly` posture; `2.21.5` is not published.
+
+Bounded unmapped deltas: the `_kiro.dev` extension-request handler appears
+at `2.19.2` and gains `mcp/startup_status` at `2.20.2`; the serve method
+list gains `session/load` at `2.20.2`; and the `2.21.4` chat JS rebuild
+swaps the bridge method map while the selected literals hold. The official
+ACP docs page still shows the stale `content` prompt-field example.
+Research 251 and 254 keep their empty deliver-now sets with their
+package/source gates closed by the per-hop binary evidence. No provider
+operation, host mutation, prompt, login, or downloaded-artifact execution
+occurred. Validation is named above; PR review and merge remain
+queue-owned.
 
 ## Next Task
 

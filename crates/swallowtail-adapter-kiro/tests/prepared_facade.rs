@@ -213,7 +213,7 @@ fn preparation_rejects_access_axis_and_package_drift_before_acp_work() {
     assert!(axis_host.observed_process().is_none());
 
     let newer_host = ExecutionHostId::new("fixture.prepared.newer").expect("host");
-    let newer = DiscoveryHost::new("2.18.2");
+    let newer = DiscoveryHost::new("2.21.5");
     let error = block_on(prepare_kiro_acp(
         preparation_input(newer_host.clone()),
         probe(),

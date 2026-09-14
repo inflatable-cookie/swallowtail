@@ -290,7 +290,7 @@ OpenHands adds a package without a production route.
   production route: live HTTP/WebSocket conversation stays unwired and
   `start_run` fail-closes. V0 Socket.IO, Contract 035 remote ACP, the
   Python SDK, Docker/hosted sandbox, and `NeverConfirm` stay out.
-- `swallowtail-adapter-kiro` implements exact installer-manifest `2.18.1` ACP
+- `swallowtail-adapter-kiro` implements exact installer-manifest `2.21.4` ACP
   on `kiro-cli acp` through `prepare_kiro_acp`. Credentials stay host-owned
   local account. `--cloud`, `--agent`, `kiro-cli chat --no-interactive`,
   `session/load`, and docs `session/prompt` field `content` stay out.
@@ -661,7 +661,7 @@ Crate status:
   live HTTP/WebSocket conversation is unwired. The package remains an
   unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-kiro` — realized for exact installer-manifest
-  `2.18.1` ACP with qualified-only claim, local-account access, no
+  `2.21.4` ACP with qualified-only claim, local-account access, no
   credential lease, and `prepare_kiro_acp`. `kiro.acp` is a production
   route. The package remains an unreleased additive candidate after
   `v0.3.2`.

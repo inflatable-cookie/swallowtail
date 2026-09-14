@@ -12,7 +12,7 @@ pub const KIRO_CLI_EXECUTABLE_NAME: &str = "kiro-cli";
 /// Opaque GitHub-release axis for Kiro ACP.
 pub const KIRO_CLI_RELEASE_AXIS: &str = "kiro-cli.release";
 /// Exact qualified Kiro CLI release used by ACP.
-pub const KIRO_CLI_RELEASE_VERSION: &str = "2.18.1";
+pub const KIRO_CLI_RELEASE_VERSION: &str = "2.21.4";
 
 pub(crate) const KIRO_ACP_BEHAVIOR: &str = "kiro.acp.stdio-v1";
 const MAX_VERSION_BYTES: usize = 32;
@@ -147,16 +147,17 @@ mod tests {
         assert!(kiro_cli_release_binding(KIRO_CLI_RELEASE_VERSION).is_some());
         for rejected in [
             "",
-            "2.17.0",
-            "2.18.2",
-            "2.18",
-            "2.18.1.0",
-            "v2.18.1",
-            "2.18.1-beta",
-            "2.18.1\n",
-            " 2.18.1",
-            "2.18.1 ",
-            "kiro-cli 2.18.1",
+            "2.18.1",
+            "2.21.3",
+            "2.21.5",
+            "2.21",
+            "2.21.4.0",
+            "v2.21.4",
+            "2.21.4-beta",
+            "2.21.4\n",
+            " 2.21.4",
+            "2.21.4 ",
+            "kiro-cli 2.21.4",
         ] {
             assert!(
                 kiro_cli_release_binding(rejected).is_none(),
@@ -168,30 +169,32 @@ mod tests {
     #[test]
     fn exact_release_is_permitted_and_newer_is_not() {
         let permitted = InterfaceVersion::new(KIRO_CLI_RELEASE_VERSION).expect("qualified version");
-        let newer = InterfaceVersion::new("2.18.2").expect("newer version");
+        let newer = InterfaceVersion::new("2.21.5").expect("newer version");
+        let older = InterfaceVersion::new("2.18.1").expect("prior baseline");
         let claim = kiro_acp_claim();
         assert!(claim.assess(&permitted).is_permitted());
         assert!(!claim.assess(&newer).is_permitted());
+        assert!(!claim.assess(&older).is_permitted());
     }
 
     #[test]
     fn version_stdout_parser_accepts_bare_or_named_exact_release() {
         assert_eq!(
-            parse_kiro_cli_version_output(b"2.18.1\n")
+            parse_kiro_cli_version_output(b"2.21.4\n")
                 .expect("exact version parses")
                 .version()
                 .as_str(),
-            "2.18.1"
+            "2.21.4"
         );
         assert_eq!(
-            parse_kiro_cli_version_output(b"kiro-cli 2.18.1\n")
+            parse_kiro_cli_version_output(b"kiro-cli 2.21.4\n")
                 .expect("named version parses")
                 .version()
                 .as_str(),
-            "2.18.1"
+            "2.21.4"
         );
-        assert!(parse_kiro_cli_version_output(b"2.18.2\n").is_none());
-        assert!(parse_kiro_cli_version_output(b"v2.18.1\n").is_none());
-        assert!(parse_kiro_cli_version_output(b"kiro-cli  2.18.1\n").is_none());
+        assert!(parse_kiro_cli_version_output(b"2.21.5\n").is_none());
+        assert!(parse_kiro_cli_version_output(b"v2.21.4\n").is_none());
+        assert!(parse_kiro_cli_version_output(b"kiro-cli  2.21.4\n").is_none());
     }
 }

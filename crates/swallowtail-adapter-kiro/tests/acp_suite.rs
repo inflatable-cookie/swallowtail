@@ -334,7 +334,7 @@ fn malformed_and_version_mismatch_fail_before_prompt() {
 fn drifted_agent_info_version_fails_closed() {
     let host_id = ExecutionHostId::new("fixture.host.agent-version").expect("valid host id");
     let selected = selection(host_id.clone());
-    let host = FixtureHost::with_version(Scenario::Success, "2.18.2");
+    let host = FixtureHost::with_version(Scenario::Success, "2.21.5");
     let services = host.services(host_id);
     let driver = KiroAcpDriver::new(
         swallowtail_runtime::EnvironmentRef::new("kiro.fixture.isolated")

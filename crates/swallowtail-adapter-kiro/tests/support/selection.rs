@@ -31,7 +31,7 @@ pub fn selection_with_access(
             ],
         ),
     ]);
-    let version_binding = kiro_cli_release_binding("2.18.1").expect("fixture version is valid");
+    let version_binding = kiro_cli_release_binding("2.21.4").expect("fixture version is valid");
     let instance = ConfiguredInstance::new(
         instance_id.clone(),
         InstanceRevision::new("fixture-revision").expect("valid revision"),

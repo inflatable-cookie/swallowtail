@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.059, Claude Agent ACP currentness through official stable, as the
-first family in Tom's authorized Research 308 campaign. Continue the remaining
-eighteen families serially without repeated approval; no release follows.
+Implement g05.060, Qwen Code currentness through official stable, as the second
+family in Tom's authorized Research 308 campaign. Continue the remaining
+seventeen families serially without repeated approval; no release follows.
 
 ## Standing Lanes
 

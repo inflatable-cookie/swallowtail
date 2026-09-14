@@ -26,8 +26,14 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Claude Agent ACP `0.76.0` (g05.059) is claimed as the first
-family of Tom's authorized Research 308 campaign. Official npm, GitHub, and
+Active family: Qwen Code `0.23.3` (g05.060) is the second family of Tom's
+authorized Research 308 campaign. Planning observed four published stable
+hops after the qualified `0.22.3` ceiling and host `0.21.2`; the worker must
+recheck official latest and freeze identity before changing the claim. Exact
+`0.21.15` reasoning and budgets, historical gaps, and adjacent Alibaba/Qwen
+families stay independently bounded.
+
+Completed campaign family: Claude Agent ACP official npm, GitHub, and
 ACP-registry stable `0.76.0` is a compatible extension of
 `claude-agent.acp.initialize-meta-extensions-v7` through the previous `0.73.0`
 ceiling. Research 309 froze identity before the claim and classified all four

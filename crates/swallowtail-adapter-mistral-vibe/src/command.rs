@@ -3,7 +3,15 @@ use crate::MistralVibeMaxTurns;
 /// Required positive CLI turn bound. The host process deadline is the Swallowtail timeout.
 pub(crate) const MAXIMUM_TURNS: &str = "8";
 
-/// Headless argv. ACP, TUI, continue/resume, teleport, and yolo stay out.
+/// Adapter-private harness pin. Upstream `2.25.1` resolves the session
+/// harness from flags, the ambient GrowthBook rollout cache, and native
+/// module availability; `--legacy-harness` has first precedence and forces
+/// the legacy Python harness the frozen corpus covers on every install
+/// channel. The Unified Harness stays unmapped.
+pub(crate) const LEGACY_HARNESS_PIN: &str = "--legacy-harness";
+
+/// Headless argv. ACP, TUI, continue/resume, teleport, yolo, and the
+/// experimental Unified Harness stay out.
 pub(crate) fn arguments(
     cwd: &str,
     prompt: &str,
@@ -21,6 +29,7 @@ pub(crate) fn arguments(
         "plan".to_owned(),
         "--workdir".to_owned(),
         cwd.to_owned(),
+        LEGACY_HARNESS_PIN.to_owned(),
     ]
 }
 
@@ -40,6 +49,8 @@ mod tests {
             "--setup",
             "--worktree",
             "--max-price",
+            "--experimental-harness",
+            "--smart-approve",
             "json",
             "text",
         ] {
@@ -54,6 +65,7 @@ mod tests {
         );
         assert!(args.windows(2).any(|pair| pair == ["--agent", "plan"]));
         assert!(args.contains(&"--trust".to_owned()));
+        assert!(args.contains(&"--legacy-harness".to_owned()));
     }
 
     #[test]
@@ -73,6 +85,7 @@ mod tests {
                 "plan",
                 "--workdir",
                 "/private/fixture",
+                "--legacy-harness",
             ]
         );
         assert_fixed_flags(&args);

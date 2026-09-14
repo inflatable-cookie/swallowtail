@@ -49,6 +49,7 @@ fn selected_max_turns_agree_across_input_prepared_run_and_argv() {
                 "plan".to_owned(),
                 "--workdir".to_owned(),
                 FIXTURE_CWD.to_owned(),
+                "--legacy-harness".to_owned(),
             ]
         );
         for forbidden in [

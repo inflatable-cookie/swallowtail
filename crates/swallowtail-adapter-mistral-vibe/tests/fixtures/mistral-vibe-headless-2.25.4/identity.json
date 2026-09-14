@@ -1,0 +1,112 @@
+{
+  "axis": "mistral-vibe.release",
+  "route": "mistral-vibe.headless",
+  "observed_at": "2026-09-14",
+  "github_repository": "https://github.com/mistralai/mistral-vibe",
+  "pypi_project": "mistral-vibe",
+  "host": {
+    "present": false
+  },
+  "claim_at_observation": {
+    "point": "2.24.2",
+    "posture": "QualifiedOnly",
+    "behavior_revision": "mistral-vibe.headless.stdio-streaming-v1",
+    "claim_id": "mistral-vibe.headless.release-window-1"
+  },
+  "official": {
+    "version": "2.25.4",
+    "source": "official-github-tag-and-pypi-distributions",
+    "published_at": "2026-09-12T18:39:34Z",
+    "prerelease": false,
+    "github_tag": "v2.25.4",
+    "github_tag_object_type": "lightweight-commit",
+    "github_commit": "19b5b74faa78d0816b8d4d4c7d7543fc3520678c",
+    "pypi_version": "2.25.4",
+    "pypi_yanked": false,
+    "pypi_sdist_sha256": "9e3ecadfa8d9be4a2693b19d5c2cf71ec914bc623649463b93b478be423f7fb8",
+    "pypi_wheel_sha256": "d43aa028e1931f3d05d735111384eadc937b4d47b7a05eb2ee04313fd860662f",
+    "console_script": "vibe = vibe.cli.entrypoint:main",
+    "platform_archive_identity": {
+      "darwin-aarch64": {
+        "archive": "vibe-darwin-aarch64-2.25.4.zip",
+        "sha256": "4a4e11ebecd50ca9af00fa3da08df742098a34db5de158de9f825dbf28f9261f",
+        "executed": false,
+        "contents_listed": true
+      }
+    }
+  },
+  "baseline_reproduction": {
+    "github_tag": "v2.24.2",
+    "github_commit": "5e6aa0f6beb3454454f4c1de74a7652ba577ab05",
+    "pypi_sdist_sha256": "be62b3148a9640ab2d72ab9849a40499d1680aa59589b01deb62c5eb08df269d",
+    "pypi_wheel_sha256": "52536350059bcbffa3fd7a2e7ce50b3087b2839f26b9170c6bd3a63501e19e30",
+    "matches_research_150": true,
+    "selected_source_digests_match_research_150_and_199": true
+  },
+  "channel_agreement": {
+    "wheel_equals_sdist_vibe_tree": "all eight published points",
+    "sdist_equals_tag_vibe_tree": "modulo one build-time constant",
+    "build_time_constant": {
+      "file": "vibe/observability/sentry.py",
+      "delta": "sentry DSN strings are None in public tags and injected in shipped distributions",
+      "present_at_baseline": true,
+      "selected_wire_impact": "none; init_sentry stays gated on ambient config enable_telemetry at both baseline and 2.25.4"
+    }
+  },
+  "github_only_pypi_gap": {
+    "version": "2.24.4",
+    "github_tag": "v2.24.4",
+    "github_commit": "dcb1c7d44e3e59c94f1216f77190a02292212753",
+    "pypi": "absent",
+    "disposition": "named packaging gap; never qualified by adjacency"
+  },
+  "selected_source_digests_2_25_4": {
+    "vibe/cli/programmatic.py": "36a5008914136714a851880b3c6921f6ba196371e28422f58a45c8a728b25b34",
+    "vibe/core/middleware.py": "ede809d72ced3328986a3a7c93d4793f66506467182e45f89168fd8ae8343a7a",
+    "vibe/cli/entrypoint.py": "07da7d76af4f02e09ec6509ecea4e1fa8dfbaf63448f9bbf557a9a5812c7562b",
+    "vibe/cli/cli.py": "96a5895ef4ac16e2710dfe312df83efd2b5b996b94b1def4ca5734b900f9cd9f",
+    "vibe/core/agent_loop/_loop.py": "9c7d64dfb54623705f054a324363975783227019cd5a1f1d16910f599b11f0c2",
+    "vibe/core/agents/models.py": "fe36db6db7ffbe56ed13ed3ed614d8782e9ebe842e8034ac31ede408091ed559",
+    "vibe/core/agents/manager.py": "b593a636ff7105d7a789a9c6b976e1c60dfd83afd7d4a58205897096232dd89c",
+    "vibe/core/agents/registry.py": "95791c2ea9cf13d8eb4f181623b10f26dc3405ff8135e60e0315c37c8d5f6407",
+    "vibe/core/config/vibe_schema.py": "92c8d33f0c2b3444379a4ca1d490c7ea45bac1d22ac361c711cb175dc2cb26c6",
+    "vibe/agents.py": "2d7cb6be6d7f0259e66f295ace0f8c5afb17e68b849f1058a9c306f0a7c0d2e9",
+    "vibe/app_server/protocol.py": "dac26cb2c8bb36a20e8ea710f4a05e48d55edafcffc2041a2cf681ae22b41db4",
+    "vibe/app_server/models.py": "ef57e328cbe9370499865da1065b172ecce447571dd3e77cc3ba584161e319aa",
+    "vibe/app_server/events.py": "19dd6f9ff92753eaf856017abaad1a27887a5db94e8b99e3b5a7cc002b8ae523",
+    "vibe/app_server/session.py": "fb4bcd8c947e950bde1fae8ea1e14f11e3ee0e47d3e2161ca16614e879dc4977",
+    "tests/cli/test_programmatic.py": "42cb58a1210e398fd8e33991307d43822d8da32f4e74797017d276dd859337b4"
+  },
+  "identity_decision": {
+    "shape": "compatible-exact-point-rebind",
+    "move_exact_point_to_2_25_4": true,
+    "behavior_revision_change": "none",
+    "entrypoint": [
+      "vibe",
+      "--prompt",
+      "--output",
+      "streaming",
+      "--max-turns",
+      "--trust",
+      "--agent",
+      "plan",
+      "--workdir",
+      "--legacy-harness"
+    ],
+    "add_adapter_private_legacy_harness_pin": true,
+    "legacy_harness_pin_reason": "2.25.1 resolves the session harness from CLI flags, the ambient GrowthBook rollout cache, and native-module availability; --legacy-harness has first-precedence and forces the legacy Python harness the corpus freezes",
+    "map_experimental_unified_harness": false,
+    "map_smart_approve": false,
+    "pass_auto_approve_or_yolo": false,
+    "omit_agent": false,
+    "omit_trust": false,
+    "omit_max_turns": false,
+    "run_setup_login": false,
+    "provider_prompt_sent": false,
+    "live_prompt_run": false,
+    "host_install_changed": false,
+    "downloaded_artifact_executed": false,
+    "second_exact_point_retained": false,
+    "range_inferred": false
+  }
+}

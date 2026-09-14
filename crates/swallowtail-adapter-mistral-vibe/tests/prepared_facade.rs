@@ -144,6 +144,7 @@ fn prepared_run_names_vibe_headless_and_release_then_drains_one_print() {
             "plan",
             "--workdir",
             FIXTURE_CWD,
+            "--legacy-harness",
         ]
     );
     for forbidden in [
@@ -237,7 +238,7 @@ fn preparation_rejects_access_axis_and_release_drift_before_stream_work() {
     assert!(axis_host.observed_process().is_none());
 
     let newer_host = ExecutionHostId::new("fixture.prepared.headless.newer").expect("host");
-    let newer = DiscoveryHost::new("2.24.3");
+    let newer = DiscoveryHost::new("2.25.5");
     let error = block_on(prepare_mistral_vibe_headless(
         preparation_input(newer_host.clone()),
         probe(),

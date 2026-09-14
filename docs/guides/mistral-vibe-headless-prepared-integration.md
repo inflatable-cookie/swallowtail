@@ -3,7 +3,7 @@
 Use `swallowtail-adapter-mistral-vibe` for the installed Vibe streaming print
 run. The route is `mistral-vibe.headless`; the driver ID is
 `swallowtail.mistral-vibe.headless`. It owns one bounded
-`vibe --prompt --output streaming --max-turns 8 --trust --agent plan --workdir`
+`vibe --prompt --output streaming --max-turns 8 --trust --agent plan --workdir --legacy-harness`
 child over streaming NDJSON.
 
 This is a separate family from `vibe-acp`, the Vibe TUI, `--continue` /
@@ -21,7 +21,7 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Preparation requires all of the following:
 
 - exact release axis `mistral-vibe.release`
-- exact GitHub/PyPI `2.24.2`
+- exact GitHub/PyPI `2.25.4`
 - host-approved `vibe` executable and isolated environment
 - `mistral_vibe_local_config_access_profile` with no credential reference
 - working resource, plus host services for task, process, time, and
@@ -53,6 +53,13 @@ Official docs that programmatic mode defaults to auto-approve are stale.
 Swallowtail must pass `--agent plan`. Do not pass `--auto-approve` or `--yolo`.
 `--output json` is the dump-at-end sibling, not this streaming decoder.
 
+`--legacy-harness` is adapter-private policy: upstream `2.25.1` resolves the
+session harness from flags, the ambient GrowthBook rollout cache, and native
+module availability, and a GitHub-zip install of `2.25.1` or later can bundle
+the internal Unified Harness. The flag has first upstream precedence and pins
+the legacy Python harness the frozen corpus covers on every install channel.
+The Unified Harness backend and `--smart-approve` stay unmapped.
+
 ## One Bounded Print Run
 
 Create `MistralVibeHeadlessRunProfileInput::new` with request identity, prompt
@@ -70,7 +77,7 @@ closed as `swallowtail.mistral-vibe.headless.max_turns`.
 The driver owns one joined stdio child and performs this sequence:
 
 1. spawn `vibe --prompt <text> --output streaming --max-turns <1..=8, default 8> --trust
-   --agent plan --workdir <cwd>`
+   --agent plan --workdir <cwd> --legacy-harness`
 2. close stdin immediately; the prompt is argv, not a stdin document
 3. decode streaming NDJSON (`message`, `reasoning`, `effect`; skip
    `callback` / `checkpoint` / `notice` and `generationStatus == in_progress`)

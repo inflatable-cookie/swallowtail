@@ -1,0 +1,59 @@
+{
+  "executable": "vibe",
+  "selected_flags": [
+    "--prompt",
+    "--output",
+    "streaming",
+    "--max-turns",
+    "--trust",
+    "--agent",
+    "plan",
+    "--workdir",
+    "--legacy-harness"
+  ],
+  "cwd_flag": "--workdir",
+  "prompt": "flag-text",
+  "example_argv": [
+    "vibe",
+    "--prompt",
+    "opaque fixture prompt",
+    "--output",
+    "streaming",
+    "--max-turns",
+    "1",
+    "--trust",
+    "--agent",
+    "plan",
+    "--workdir",
+    "opaque-working-resource",
+    "--legacy-harness"
+  ],
+  "legacy_harness_pin": {
+    "flag": "--legacy-harness",
+    "reason": "2.25.1 resolves the session harness from flags, the ambient GrowthBook rollout cache, and native-module availability; first precedence forces the legacy Python harness the corpus covers",
+    "channels": "required on GitHub-zip installs from 2.25.1; a harmless no-op on PyPI installs where the internal module is absent",
+    "unified_harness_mapped": false,
+    "smart_approve_mapped": false
+  },
+  "forbidden_argv": [
+    "vibe-acp",
+    "--continue",
+    "--resume",
+    "--teleport",
+    "--auto-approve",
+    "--yolo",
+    "--setup",
+    "--worktree",
+    "--max-price",
+    "--experimental-harness",
+    "--smart-approve"
+  ],
+  "auto_approve_forbidden": ["--auto-approve"],
+  "yolo_forbidden": ["--yolo"],
+  "omit_agent_forbidden": true,
+  "omit_trust_forbidden": true,
+  "omit_max_turns_forbidden": true,
+  "stdin": "not-the-prompt-channel",
+  "stdout": "completed-public-history-ndjson",
+  "stderr": "plain-text-errors-or-diagnostics"
+}

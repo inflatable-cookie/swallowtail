@@ -31,6 +31,31 @@ annotated Git tags from the canonical repository.
   disposition stays independent.
 
 ### Changed
+- advance the Mistral Vibe headless exact point from `2.24.2` to official
+  GitHub/PyPI `2.25.4`: Research 321 freezes all eight published stable
+  successors as exact source tarballs and registry-matched sdist/wheel
+  pairs (baseline reproducing Research 150), keeps GitHub-only `2.24.4` a
+  named PyPI packaging gap, and finds the selected surface byte-stable
+  across every hop: `vibe/cli/programmatic.py` streaming print wire,
+  `vibe/core/middleware.py` turn-limit middleware, upstream
+  `tests/cli/test_programmatic.py`, public-history union and generation
+  status, `LIMIT`-only stop reason, `SessionOptions` shape, the builtin
+  `plan` profile, headless callback denial, trust and workdir authority,
+  missing-API-key failure, and the console script. The selected argv adds
+  adapter-private `--legacy-harness`: upstream `2.25.1` resolves the
+  session harness from flags, the ambient GrowthBook rollout cache, and
+  native-module availability (the internal Unified Harness module is
+  bundled in GitHub release zips from `2.25.1` and absent from every PyPI
+  distribution), and the flag has first upstream precedence so the legacy
+  Python harness the corpus covers runs deterministically on both
+  channels. The Unified Harness backend and `--smart-approve` stay
+  unmapped, and Research 199's caller-decreasing `--max-turns` `1..=8`
+  binding plus Research 252's Plan-only profile boundary carry over
+  unchanged. Keep the `mistral-vibe.headless.release-window-1` claim,
+  `mistral-vibe.headless.stdio-streaming-v1` behavior revision, exact
+  one-point `QualifiedOnly` posture, and no unverified-newer execution. No
+  provider operation, host mutation, or downloaded-artifact execution
+  occurred.
 - advance the Kiro ACP exact point from `2.18.1` to official stable-manifest
   `2.21.4`: Research 320 freezes all eleven published stable successors as
   exact official archives with byte-identical `install.sh`/`README`/`q`/

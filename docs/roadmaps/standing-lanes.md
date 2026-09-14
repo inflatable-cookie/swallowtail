@@ -26,12 +26,23 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active campaign family: Mistral Vibe official GitHub/PyPI `2.25.4` (g05.073)
-is the thirteenth family of Tom's authorized Research 308 campaign. Exact
-`2.24.2` is `QualifiedOnly`; GitHub has eight stable successors while PyPI
-lacks only `2.24.4`. The selected structured-headless wire, fixed Plan profile,
-caller-decreasing maximum turns, authority, failure, and cleanup require a
-complete provider-free source/distribution ledger. Deep Agents follows.
+Completed campaign family: Mistral Vibe official GitHub/PyPI `2.25.4`
+(g05.073) is the thirteenth family of Tom's authorized Research 308
+campaign. Research 321 froze the exact `2.24.2` baseline and all eight
+published GitHub successors through `2.25.4` as exact source tarballs with
+registry-matched sdist/wheel digests, kept GitHub-only `2.24.4` a named
+PyPI packaging gap, and classified every selected input provider-free. The
+streaming wire, limit middleware, upstream programmatic tests, public
+history schema, builtin `plan` profile, trust and workdir authority,
+missing-key failure, and cleanup are byte-stable across every hop, so the
+exact `QualifiedOnly` point advanced to `2.25.4` with the
+`mistral-vibe.headless.stdio-streaming-v1` behavior revision unchanged and
+one mechanical adaptation: the selected argv adds adapter-private
+`--legacy-harness` because `2.25.1` resolves the session harness from
+flags, the ambient GrowthBook rollout cache, and native-module availability
+(bundled in GitHub zips from `2.25.1`, never in PyPI distributions), and
+the Unified Harness plus `--smart-approve` stay unmapped. Deep Agents
+follows.
 
 Completed campaign family: Kiro official manifest `2.21.4` (g05.072) is the
 twelfth family of Tom's authorized Research 308 campaign. Research 320 froze
@@ -43,7 +54,7 @@ every hop (library pins `sacp-11.0.0` and `agent-client-protocol-0.10.4`, argv `
 reasons, cleanup), so the exact `QualifiedOnly` point advanced to `2.21.4`
 with the `kiro.acp.stdio-v1` behavior revision unchanged. The `_kiro.dev`
 extension set and the advertised `session/load` stay unmapped additions, and
-Research 251/254's empty deliver-now sets stand. The next family is Mistral
+Research 251/254's empty deliver-now sets stand. The next family was Mistral
 Vibe.
 
 Stopped campaign family: Goose official GitHub `v1.50.0` (g05.071) is the

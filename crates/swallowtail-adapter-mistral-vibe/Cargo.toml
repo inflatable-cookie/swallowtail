@@ -34,6 +34,10 @@ name = "mistral_vibe_headless_identity"
 path = "tests/mistral_vibe_headless_identity.rs"
 
 [[test]]
+name = "mistral_vibe_2_25_4_delta_ledger"
+path = "tests/mistral_vibe_2_25_4_delta_ledger.rs"
+
+[[test]]
 name = "activity_corpus"
 path = "tests/activity_corpus.rs"
 

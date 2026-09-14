@@ -107,16 +107,26 @@ tags, protocol crate semver, or advertised capabilities.
 
 ## Acceptance
 
-- [ ] official identity and all four published successors reproduce
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes the claim decision
-- [ ] exact QualifiedOnly shape and route boundaries remain truthful
-- [ ] advertised siblings and capabilities remain independently gated
-- [ ] official stable is rechecked at both boundaries
+- [x] official identity and all four published successors reproduce
+- [x] every changed selected input is classified
+- [x] identity evidence precedes the claim decision
+- [x] exact QualifiedOnly shape and route boundaries remain truthful
+- [x] advertised siblings and capabilities remain independently gated
+- [x] official stable is rechecked at both boundaries
 
 ## Result
 
-Not started.
+Stopped as a typed identity stop. Research 319 froze the exact `1.46.0`
+baseline and all four published stable successors through official `1.50.0`
+as exact tagged source trees with a 26-file mapped-module ledger, Darwin-arm64
+asset digests hashed without extraction, and a mutation-sensitive ledger test;
+no downloaded artifact was executed and no provider operation occurred. The
+smallest exact counterexample is the hop `1.46.0..1.47.0`: provider-auth
+failure becomes typed `auth_required` on `session/new` and `session/prompt`,
+so the exact `QualifiedOnly` point stays at `1.46.0` with behavior
+`goose.acp.stdio-v1` unchanged and no range, second point, or newer posture
+added. Research 148/250/253 stand. The failure-binding policy returns to the
+operator via Chatterbox; the campaign continues serially with Kiro.
 
 ## Next Task
 

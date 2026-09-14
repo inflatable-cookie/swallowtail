@@ -15,9 +15,10 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Compile and dispatch Cursor Agent as the next family in Tom's authorized
-Research 308 currentness campaign. Continue the remaining fifteen families
-serially without repeated approval; no release follows.
+Implement g05.062, Cursor Agent currentness through exact official
+`2026.09.10-fd3934a`, as the fourth family in Tom's authorized Research 308
+campaign. Continue the remaining fifteen families serially without repeated
+approval; no release follows.
 
 ## Standing Lanes
 

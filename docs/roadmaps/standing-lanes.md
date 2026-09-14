@@ -26,10 +26,13 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Cursor Agent is the fourth family of Tom's authorized Research
-308 campaign. The worker must recheck official latest and freeze identity
-before changing catalogue, ACP, or headless claims. Shared matrices and the
-changelog stay serial.
+Active family: Cursor Agent official `2026.09.10-fd3934a` (g05.062) is the
+fourth family of Tom's authorized Research 308 campaign. The host remains the
+qualified `2026.08.04-aaa8809`; known later official observations include
+`2026.08.31-4057e58` and `2026.09.02-c22c1a3`. The worker must reconstruct the
+complete published point set, bind every date to its exact opaque revision,
+and freeze identity before changing catalogue, ACP, or headless claims. Shared
+matrices and the changelog stay serial.
 
 Completed campaign family: Codex official npm and GitHub release `0.154.0`
 (g05.061) is the third family of Tom's authorized Research 308 campaign.

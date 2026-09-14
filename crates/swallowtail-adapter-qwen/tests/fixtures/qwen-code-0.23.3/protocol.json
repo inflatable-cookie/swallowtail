@@ -47,7 +47,7 @@
     "0.23.1_to_0.23.2": "resume prompt-id bookkeeping and generic reasoning internals changed; selected session and controls unchanged",
     "0.23.2_to_0.23.3": "permission/tool-scheduler/provider catalogue internals changed; selected controls and mapped stream contract unchanged"
   },
-  "0_23_3_plan_mode_blobs_byte_identical_to_0_22_3": true,
+  "0_23_3_plan_mode_blobs_byte_identical_to_0_22_3": false,
   "0_23_3_config_delta": "shared option extraction, goal/web-shell/ACP additions, and internal defaults; selected flags remain unchanged",
   "0_23_3_session_delta": "prompt-id seeding from resumed transcript remains internal; no selected session wire or resume contract change",
   "unused_deltas": [

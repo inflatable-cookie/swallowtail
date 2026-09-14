@@ -6142,5 +6142,5 @@
     "session_source_registry": "0.23.3 adds a session source registry; no selected Qwen headless stream or resume field changes.",
     "export_transcript_assets": "0.23.1 adds export-transcript-document.js and 0.23.3 adds its CSS; transcript export is outside the selected route."
   },
-  "identical_through_reason": "The complete five-hop package inventory records every path. Selected stream types, control dispatcher/controller, approval mode, plan policy, budget functions, and mapped CLI option definitions were compared separately; their stable selected values remain unchanged. Changed internal paths are listed as named unmapped deltas above."
+  "identical_through_reason": "The complete five-hop package inventory records every path. Selected stream types, control dispatcher/controller, approval mode, budget functions, and mapped CLI option definitions were compared separately; their stable selected values remain unchanged. The Plan execution-mode confirmation delta is retained as a counterexample and keeps the exact Plan set bounded at 0.22.3. Changed internal paths are listed as named unmapped deltas above."
 }

@@ -54,7 +54,7 @@ fn identity_freezes_official_hops_and_preserves_claim_boundary() {
     assert_eq!(protocol["decoder_corpus"], "qwen-code-v0.19.11");
     assert_eq!(
         protocol["0_23_3_plan_mode_blobs_byte_identical_to_0_22_3"],
-        true
+        false
     );
     for flag in [
         "--safe-mode",

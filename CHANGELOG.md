@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
+- raise the Qwen Code headless qualified ceiling through official npm
+  `@qwen-code/qwen-code` `0.23.3`: Research 310 freezes every published
+  `0.23.x` hop and classifies the selected stream, controls, help, session,
+  and Plan surfaces as a compatible extension. Extend the maintained
+  `0.22.0..=0.23.3` segment, keep the exact Plan set bounded at `0.22.3`, and keep exact `0.21.15`
+  reasoning and budgets, preserve historical gaps and `AllowUnverified`, and
+  leave Web Shell, daemon, ACP, Model Studio, and other adjacent deltas
+  unmapped. No provider operation or host mutation occurred.
 - raise the Claude Agent ACP qualified ceiling from `0.73.0` to official npm
   `@agentclientprotocol/claude-agent-acp` `0.76.0`. Compatible extension of
   `claude-agent.acp.initialize-meta-extensions-v7`: the selected mapped ACP

@@ -79,7 +79,7 @@
     "exit_plan_mode": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e"
   },
   "selected_mapped_subset_unchanged": true,
-  "plan_mode_blobs_unchanged": true,
+  "plan_mode_blobs_unchanged": false,
   "cli_entry_identical_0_21_15_through_0_23_3": true,
   "claim_at_observation": {
     "baseline": "0.19.11",

@@ -5,6 +5,17 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Notes
+- keep the Qoder `qoder.headless` claim at the exact `1.1.25` `QualifiedOnly`
+  point. Research 318 froze official npm `1.1.25` plus all 27 published stable
+  successors through `1.1.52` with a complete shipped-tree ledger, and found
+  that the route's own historical inert `--max-turns 8` argv becomes the
+  AgentLoop turn ceiling at the exact hop `1.1.29..1.1.30`. That is a selected
+  run-lifecycle and bounded-limit failure change, so no newer exact point can
+  be claimed before the route's turn-binding policy is ruled on. Research 151's
+  `1.1.25` decoder specimens stand and Research 256's empty skill-visibility
+  disposition stays independent.
+
 ### Changed
 - advance the Command Code exact point from `1.15.1` to official npm
   `1.54.0`: Research 317 freezes all 67 published stable successors with a

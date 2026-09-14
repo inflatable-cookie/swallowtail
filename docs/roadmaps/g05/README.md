@@ -29,7 +29,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete; the per-turn audit note is reserved for Chatterbox's prune | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | g05.008; g05.009 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | g05.010 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | g05.011 |
-| Keep production route versions current one family at a time. | active campaign; nine families completed through the exact versions recorded in Research 309-317; Qoder exact `1.1.52` is ready as the tenth family; Command Code's separate live requalification remains named in g05.069; Gemini deferral lifted; Kimi, Antigravity, and Oh My Pi reopened under existing containment and identity rules | Contract 029; Research 308-317; Tom's 2026-09-14 direction | g05.070 |
+| Keep production route versions current one family at a time. | active campaign; nine families completed through the exact versions recorded in Research 309-317; Qoder exact `1.1.52` stopped at the selected-route `--max-turns` authority change and keeps the `1.1.25` point pending an operator ruling; Command Code's separate live requalification remains named in g05.069; Gemini deferral lifted; Kimi, Antigravity, and Oh My Pi reopened under existing containment and identity rules | Contract 029; Research 308-318; Tom's 2026-09-14 direction | g05.070 |
 | Expose the installed Grok CLI's truthful pre-session model catalogue without widening ACP execution authority. | completed; PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`; authenticated non-inference metadata boundary, shipped bullet grammar, accepted final capsule | Contracts 020 and 047; Desktop g02.086 producer intake; installed Grok `1.0.25`; PR #315 | g05.053 |
 | Prepare the Desktop-qualified source as patch `v0.5.1` without changing package source or crossing the exact-SHA tag gate. | completed; PR #317 merged candidate `755a2669` at `e9140b46` after independent exact-head review `5649975685`; `crates/` tree `186f3ba4` and Grok tree `1a6f777f` unchanged; tag withheld for Tom's exact-SHA authorization | Contract 036; g05.051; g05.053; Desktop g02.089 Phase A | g05.054 |
 | Create and push the exact `v0.5.1` annotated source tag without publishing another release object. | completed; annotated `v0.5.1` tagged and pushed at `e9140b46` 2026-09-13 (tag object `97a6933a`); pre-tag run 34731113171 and tag-triggered run 34743711387 both green 11/11; documentation closeout merged through PR #318 at `b0c800e0` after independent exact-head review `5651817371`; source-only | Contract 036; g05.054; run 34731113171; 2026-09-13 operator authorization | g05.055 |
@@ -59,7 +59,7 @@ enforcement.
 Only ready and planned tasks are actionable. Completed and stopped tasks live
 in [## Tasks](#tasks) below.
 
-- [g05.070 Qoder 1.1.52 Useful Newer](./070-qoder-1-1-52-useful-newer.md) — ready; provider-free 28-point exact-pin and evidence reconciliation
+- [g05.070 Qoder 1.1.52 Useful Newer](./070-qoder-1-1-52-useful-newer.md) — stopped; provider-free 28-point exact-pin evidence froze every published stable through `1.1.52`, but the route's own `--max-turns 8` argv becomes the AgentLoop ceiling at `1.1.29..1.1.30`, so the exact `QualifiedOnly` point stays at `1.1.25` and the turn-binding policy returns to the operator
 - [g05.068 Command Code 1.54.0 Useful Newer](./068-command-code-1-54-0-useful-newer.md) — completed; PR #330 merged at `f99938d7`; lifecycle closeout `8eef8c9c`; review `5667459060`; Research 317; exact `QualifiedOnly` point advanced to `1.54.0`; live evidence stays version-bound
 - [g05.069 Command Code 1.54.0 Live Requalification](./069-command-code-1-54-0-live-requalification.md) — planned; separately authorized exact-pin live gate for the version-bound feature and activity evidence
 - [g05.066 Claude Agent SDK 0.3.270 Registered-Tool Live Requalification](./066-claude-agent-sdk-0-3-270-registered-tool-live-requalification.md) — planned; separately authorized live gate on the rebound tuple; awaiting Chatterbox compilation and queue dispatch
@@ -78,7 +78,7 @@ in [## Tasks](#tasks) below.
 - [g05.050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout merged through PR #313 at `fa2e4b94` after review `5618788611`
 - [g05.051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — completed; OpenCode HTTP qualified through official `1.18.30`; PR #314 merged at `2b79b083` after independent exact-head review `5633203211`
 
-g05 has seventy numbered tasks: 55 complete and one ready, including
+g05 has seventy numbered tasks: 55 complete with no ready tasks, including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, 037, 044, and 051, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
@@ -105,6 +105,11 @@ ACP window and registered-tool courier stay independent;
 g05.068 is complete: PR #330 merged at `f99938d7` after review `5667459060`;
 Research 317 advanced the exact Command Code point to `1.54.0`, kept its old
 live evidence version-bound, and included the scoped rustls security repair;
+g05.070 stopped as a typed identity stop: Research 318 froze the exact `1.1.25`
+Qoder baseline and all 27 published stable successors through `1.1.52`, found
+that the selected route's historical inert `--max-turns 8` argv becomes the
+AgentLoop turn ceiling at `1.1.29..1.1.30`, and kept the exact `QualifiedOnly`
+point at `1.1.25` pending an operator ruling on the route's turn-binding policy;
 planned tasks remain at 035, 039, 040,
 041, 042, 066, and 069.
 g05.020 is complete: Codex
@@ -477,7 +482,7 @@ identity.
 
 ## Tasks
 
-- [070 Qoder 1.1.52 Useful Newer](./070-qoder-1-1-52-useful-newer.md) — ready; exact-pin qualification across all 27 published successors without reopening skill visibility
+- [070 Qoder 1.1.52 Useful Newer](./070-qoder-1-1-52-useful-newer.md) — stopped; exact-pin identity across all 27 published successors froze a selected-route `--max-turns` authority change at `1.1.29..1.1.30`; the `QualifiedOnly` point stays at `1.1.25` and skill visibility stays independent
 - [069 Command Code 1.54.0 Live Requalification](./069-command-code-1-54-0-live-requalification.md) — planned; separately authorized exact-pin live gate for version-bound feature and activity evidence
 - [068 Command Code 1.54.0 Useful Newer](./068-command-code-1-54-0-useful-newer.md) — completed; PR #330 merged at `f99938d7`; lifecycle closeout `8eef8c9c`; review `5667459060`; Research 317; exact point advanced to `1.54.0`; old live evidence remains version-bound; scoped RUSTSEC-2026-0285 repair green
 - [067 Grok Build 1.0.30 Catalogue Useful Newer](./067-grok-build-1-0-30-catalogue-useful-newer.md) — completed; PR #329 merged at `3a519b09`; lifecycle closeout `f40d2a3f`; review `5666473407`; Research 316; exact `QualifiedOnly` catalogue point advanced to `1.0.30`; ACP window and registered-tool courier unchanged

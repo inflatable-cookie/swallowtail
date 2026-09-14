@@ -26,15 +26,21 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active campaign family: Qoder official npm `1.1.52` (g05.070) is the tenth
-family of Tom's authorized Research 308 campaign. The checkpoint's `1.1.51`
-moved before planning. Exact `1.1.25` is `QualifiedOnly`; `qodercli` is absent
-locally; 27 published stable successors require a complete provider-free
-shipped-tree ledger. The selected headless route, historical inert max-turns,
-permission, retention, stream-JSON, deadline, and cleanup boundaries must be
-classified without installing or running the package. Research 256's empty
-skill-visibility disposition and g05.039/g05.040 remain independent. Next is
-Goose.
+Stopped campaign family: Qoder official npm `1.1.52` (g05.070) is the tenth
+family of Tom's authorized Research 308 campaign. Research 318 froze the exact
+`1.1.25` baseline and all 27 published stable successors through `1.1.52` from
+the official registry with a complete shipped-tree ledger and a
+mutation-sensitive fixture under the adapter, and classified every selected
+input provider-free. The exact `QualifiedOnly` point stays at `1.1.25`: the
+route's own `--max-turns 8` argv stops being historical inert history at the
+exact hop `1.1.29..1.1.30`, where the CLI option gains a numeric argParser, both
+headless mode entry points begin forwarding `argv.maxTurns` into the headless
+session, and `driveQuery` loses its fixed `1000` fallback, so the argv value
+becomes the AgentLoop turn ceiling. That is a selected run-lifecycle and
+bounded-limit failure change, so no `1.1.30`-or-later claim lands until the
+operator rules on the route's turn-binding policy. Research 151's `1.1.25`
+decoder specimens stand, and Research 256's empty skill-visibility disposition
+with the g05.039/g05.040 gate stays independent. The next family is Goose.
 
 Completed campaign family: Command Code official npm `1.54.0` (g05.068) is the
 ninth family of Tom's authorized Research 308 campaign. Research 317 froze the

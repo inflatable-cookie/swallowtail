@@ -26,10 +26,12 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Ollama is the fifth family of Tom's authorized Research 308
-campaign. The worker must recheck official latest and freeze identity before
-changing the attached-runtime claim. Shared matrices and the changelog stay
-serial.
+Active family: Ollama official `0.34.0` (g05.063) is the fifth family of Tom's
+authorized Research 308 campaign. The host client reports `0.33.3`; published
+stable hops after the `0.32.15` ceiling are `0.33.0`, `0.33.1`, `0.33.2`,
+`0.33.3`, and `0.34.0`. The worker must recheck official latest and freeze the
+complete tagged-source identity before changing the attached-runtime claim.
+Shared matrices and the changelog stay serial.
 
 Completed campaign family: Cursor Agent official `2026.09.10-fd3934a`
 (g05.062) is the fourth family of Tom's authorized Research 308 campaign.

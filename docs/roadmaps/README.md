@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Compile and dispatch Ollama as the next family in Tom's authorized Research
-308 currentness campaign. Continue the remaining fourteen families serially
-without repeated approval; no release follows.
+Implement g05.063, Ollama currentness through official `0.34.0`, as the fifth
+family in Tom's authorized Research 308 campaign. Continue the remaining
+fourteen families serially without repeated approval; no release follows.
 
 ## Standing Lanes
 

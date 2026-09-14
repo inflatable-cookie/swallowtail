@@ -32,6 +32,13 @@ stay absent. The `1.0.25` fixture under
 `../grok-1.0.25-model-catalogue/` and Research 305/306 stay as history: they
 are not a second accepted catalogue point.
 
+`models.txt` and `unknown-ids.txt` are the fake-process stdout specimens for
+the accepted document and the unknown-id pass-through. They are byte-identical
+to the historical `1.0.25` specimens: Research 316 proves the shipped
+authentication preamble and `*`/`-` bullet grammar do not change from `1.0.25`
+through `1.0.30`, so the same document bytes are valid at the new exact point.
+The accepted `1.0.30` live capsule is `live-capsule.json`.
+
 No downloaded artifact was executed. No prompt, inference, model session,
 tool, install, or host update occurred. The only provider contact was the
 final prompt-free authenticated `--no-auto-update models` observation recorded

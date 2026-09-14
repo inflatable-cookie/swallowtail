@@ -96,10 +96,14 @@ previous exact point through official stable:
   The shipped `xai-grok-pager/src/models.rs` module path persists, so the
   Research 306 format-piece recovery remains the same source.
 - **Supplemental embedded document.** The `default_models.json` document is
-  byte-identical at every hop: raw SHA-256 `9d6924ec760a…`, 2323 bytes, two
-  copies. The default stays `grok-4.6`, the ids stay `grok-4.6` and
-  `grok-4.5`, the default effort stays `high`, and the efforts stay `xhigh`,
-  `high`, `medium`, `low`.
+  byte-identical at every hop: the balanced-brace JSON document (2323 bytes)
+  hashes to `9d6924ec760a…` with two byte-identical copies per executable,
+  and the embedded slice including its trailing newline (2324 bytes) hashes
+  to `c7b26d2f4a4f…`, which is the in-tree frozen
+  `crates/swallowtail-adapter-grok/src/catalogue/default_models_1_0_30.json`.
+  The default stays `grok-4.6`, the ids stay `grok-4.6` and `grok-4.5`, the
+  default effort stays `high`, and the efforts stay `xhigh`, `high`,
+  `medium`, `low`.
 - **Membership source.** The live `models` listing remains authoritative for
   membership, order, and default; the frozen document supplements matching
   exact ids only, unknown valid ids pass through with empty metadata, and
@@ -121,6 +125,23 @@ as `grok-build.catalogue.executable-1-0-30` and accept exact `1.0.30`, since
 the claim identifier names the exact accepted point. Every older and newer
 point, including `1.0.31`, stays rejected by the qualified-only posture.
 
+## Accepted observation
+
+The provider-free parser, driver, fake-process, local-host, redaction, and
+lifecycle gates passed before the live boundary. Exactly one prompt-free
+authenticated `--no-auto-update models` observation then ran the installed
+exact `1.0.30` executable with the delegated credential in an operation-private
+home that reproduces only the installed channel file and the delegated
+credential. It exited zero with 113 stdout bytes and zero stderr and returned
+ordered `grok-4.6` default then `grok-4.5`; no prompt, model session,
+inference, or tool dispatch occurred, stdin was closed, and cleanup joined.
+The stdout byte count and SHA-256 reproduce the accepted Research 306
+`1.0.25` capsule exactly, and no retry was performed. The redacted capsule is
+frozen at
+`crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.30-catalogue/live-capsule.json`
+(schema `swallowtail.grok.catalogue.live-capsule.v4`, task `g05.067`). The live
+listing owns membership, order, and default.
+
 The Grok ACP execution window, the registered-tool courier on the accepted
 live `1.0.4`/`1.0.5` capsules, the frozen `1.0.25` catalogue evidence, and
 every historical corpus stay independently bounded.
@@ -132,5 +153,5 @@ every historical corpus stay independently bounded.
   official tarballs and published integrity
 - installed `1.0.30` `--help` argv-grammar exits only
 - frozen
-  `crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.30-catalogue/identity.json`
+  `crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.30-catalogue/{identity.json,live-capsule.json}`
 - Research 305, 306, and 314; g05.052 and g05.053

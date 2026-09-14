@@ -20,19 +20,22 @@ const MAXIMUM_LINE_BYTES: usize = 1_024;
 const MAXIMUM_ID_BYTES: usize = 256;
 const MAXIMUM_PRESENTATION_BYTES: usize = 1_024;
 
-/// Frozen `default_models.json` carved from exact installed Grok `1.0.25`.
+/// Frozen `default_models.json` carved from exact installed Grok `1.0.30`.
 ///
-/// Research 305 freezes the provenance: two byte-identical copies at binary
-/// offsets 111710804 and 113348525, SHA-256
-/// `c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a`.
-/// The live `models` text output stays authoritative for membership, order,
-/// and default; this document only supplies supplemental metadata by exact id
-/// equality.
-const FROZEN_DEFAULT_MODELS: &str = include_str!("catalogue/default_models_1_0_25.json");
+/// Research 316 freezes the provenance: the embedded document is identical at
+/// every hop from `1.0.25` through `1.0.30`, with two byte-identical copies per
+/// executable. The balanced-brace JSON document (2323 bytes) hashes to
+/// `9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a`, and
+/// the embedded slice including its trailing newline (2324 bytes) hashes to
+/// `c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a`, which
+/// is this file. The live `models` text output stays authoritative for
+/// membership, order, and default; this document only supplies supplemental
+/// metadata by exact id equality.
+const FROZEN_DEFAULT_MODELS: &str = include_str!("catalogue/default_models_1_0_30.json");
 
 /// Redacted evidence for one bounded catalogue process.
 ///
-/// Exact-`1.0.25` stdout and stderr are captured before parsing, but the raw
+/// Exact-`1.0.30` stdout and stderr are captured before parsing, but the raw
 /// bytes stay host-private: this record retains only their byte counts and
 /// SHA-256 digests, which are safe to keep and log.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -370,10 +373,12 @@ fn parse_rows(lines: &[&str], header: &DefaultHeader) -> Result<Vec<ModelRow>, R
             return Err(protocol_failure());
         }
         let row = line.trim_start_matches([' ', '\t']);
-        // Exact `1.0.25` renders each row with a bullet: `* ` marks the source
-        // default and `- ` marks every other model. Research 306 froze the
-        // shipped `xai-grok-pager/src/models.rs` format pieces (`"  - "`,
-        // `"  * "`, `" (default)\n"`).
+        // Exact `1.0.30` (and every stable through it) renders each row with a
+        // bullet: `* ` marks the source default and `- ` marks every other
+        // model. Research 306 froze the shipped `xai-grok-pager/src/models.rs`
+        // format pieces (`"  - "`, `"  * "`, `" (default)\n"`); Research 316
+        // proves those pieces and their counts are identical at every hop from
+        // `1.0.25` through `1.0.30`.
         let (row, bullet_default) = match row.strip_prefix("* ") {
             Some(rest) => (rest, true),
             None => match row.strip_prefix("- ") {
@@ -442,7 +447,7 @@ fn project_row(row: &ModelRow, known: &FrozenModels) -> Result<ModelCatalogEntry
     ))
 }
 
-/// Supplemental metadata from the frozen exact-`1.0.25` default-model document.
+/// Supplemental metadata from the frozen exact-`1.0.30` default-model document.
 struct FrozenModels {
     entries: Vec<FrozenEntry>,
 }
@@ -765,7 +770,7 @@ mod tests {
             "Default model: grok-4.6\nAvailable models:\n",
             "Default model: grok-4.6\nDefault model: grok-4.5\nAvailable models:\n  * grok-4.6 (default)\n",
             // The frozen grammar requires the shipped bullet prefixes: a bare
-            // two-space row is not the exact-1.0.25 format.
+            // two-space row is not the exact-1.0.30 format.
             "Default model: grok-4.6\nAvailable models:\n  grok-4.6 (default)\n  grok-4.5\n",
             // A `-` row cannot also carry the `(default)` marker.
             "Default model: grok-4.6\nAvailable models:\n  - grok-4.6 (default)\n",

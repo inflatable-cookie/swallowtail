@@ -29,7 +29,7 @@ pub(crate) const GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR: &str =
 pub(crate) const GROK_BUILD_MODEL_4_5: &str = "grok-4.5";
 pub(crate) const GROK_BUILD_MODEL_4_6: &str = "grok-4.6";
 /// Exact installed Grok Build version admitted by the model catalogue seam.
-pub const GROK_BUILD_CATALOGUE_VERSION: &str = "1.0.25";
+pub const GROK_BUILD_CATALOGUE_VERSION: &str = "1.0.30";
 pub(crate) const GROK_BUILD_CATALOGUE_BEHAVIOR: &str = "grok-build.catalogue.models-text-v1";
 const MAX_VERSION_BYTES: usize = 64;
 
@@ -187,10 +187,10 @@ pub(crate) fn select_grok_acp_plan(
 /// Returns the exact-version compatibility claim for the Grok Build catalogue.
 ///
 /// Unlike the ACP execution claim, this claim is `QualifiedOnly`: only exact
-/// `1.0.25` assesses `Qualified`, and every older or newer point fails closed.
+/// `1.0.30` assesses `Qualified`, and every older or newer point fails closed.
 pub fn grok_build_catalogue_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("grok-build.catalogue.executable-1-0-25")
+        InterfaceCompatibilityClaimId::new("grok-build.catalogue.executable-1-0-30")
             .expect("static Grok catalogue claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
@@ -360,20 +360,20 @@ mod tests {
     }
 
     #[test]
-    fn catalogue_claim_is_exact_1_0_25_qualified_only() {
+    fn catalogue_claim_is_exact_1_0_30_qualified_only() {
         use super::{GROK_BUILD_CATALOGUE_BEHAVIOR, grok_build_catalogue_claim};
 
         let claim = grok_build_catalogue_claim();
-        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version("1.0.25"))
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version("1.0.30"))
         else {
-            panic!("exact 1.0.25 is qualified");
+            panic!("exact 1.0.30 is qualified");
         };
         assert_eq!(
             matched.behavior_revision().as_str(),
             GROK_BUILD_CATALOGUE_BEHAVIOR
         );
         assert_eq!(claim.axis().as_str(), GROK_BUILD_ACP_AXIS);
-        for rejected in ["0.2.117", "1.0.4", "1.0.5", "1.0.24", "1.0.26", "1.0.30"] {
+        for rejected in ["0.2.117", "1.0.4", "1.0.5", "1.0.25", "1.0.29", "1.0.31"] {
             assert_eq!(
                 claim.assess(&version(rejected)),
                 InterfaceCompatibilityAssessment::Incompatible,

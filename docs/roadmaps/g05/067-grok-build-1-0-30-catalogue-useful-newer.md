@@ -104,16 +104,42 @@ billing failure. Alpha `1.0.31` is not the stable target.
 
 ## Acceptance
 
-- [ ] exact `1.0.30` package, executable, and catalogue identities reproduce
-- [ ] every changed catalogue input is classified
-- [ ] the observation sends no prompt and opens no inference session
-- [ ] membership, order, default, redaction, bounds, and cleanup are truthful
-- [ ] exact catalogue and ACP claims remain independent
-- [ ] official stable is rechecked at both boundaries
+- [x] exact `1.0.30` package, executable, and catalogue identities reproduce
+- [x] every changed catalogue input is classified
+- [x] the observation sends no prompt and opens no inference session
+- [x] membership, order, default, redaction, bounds, and cleanup are truthful
+- [x] exact catalogue and ACP claims remain independent
+- [x] official stable is rechecked at both boundaries
 
 ## Result
 
-Ready for dispatch.
+Research 316 reproduced the Research 314 `darwin-arm64` platform tarball,
+brotli payload, and decompressed executable digests for the previous exact
+catalogue point `1.0.25` and every later published stable through official
+`1.0.30`, without executing a downloaded artifact. The catalogue-specific
+ledger proves the exact root flag `--no-auto-update`, the `models` subcommand
+grammar with no `PROMPT` argument, the authentication preamble, the shipped
+`*`/`-` bullet format literals with byte-identical counts, the
+`xai-grok-pager/src/models.rs` module path, and the embedded
+`default_models.json` document identical at every hop; the combined surface
+digest is `aa3ad436d5a6…`. The exact one-point claim is now
+`grok-build.catalogue.executable-1-0-30` under `QualifiedOnly` with the
+`grok-build.catalogue.models-text-v1` behavior revision unchanged, so every
+older and newer point, including alpha `1.0.31`, fails closed.
+
+The provider-free fake-process, local-host, parser, driver, redaction, and
+lifecycle gates pass before the live boundary. One prompt-free authenticated
+`--no-auto-update models` observation of the installed exact `1.0.30`
+executable returned ordered `grok-4.6` default then `grok-4.5` with 113
+stdout bytes, zero stderr, `outcome = "success"`, `process_joined = true`, and
+no prompt, model session, inference, or tool dispatch. The redacted capsule is
+frozen at
+`crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.30-catalogue/live-capsule.json`
+(schema `swallowtail.grok.catalogue.live-capsule.v4`, task `g05.067`). The
+Grok ACP execution window and the `1.0.4`/`1.0.5` registered-tool courier stay
+independent, no `1.0.25` catalogue point is retained as a second accepted
+point, and no release or tag follows. Validation is named above; PR review and
+merge remain queue-owned.
 
 ## Next Task
 

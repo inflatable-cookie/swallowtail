@@ -28,9 +28,9 @@ use swallowtail_runtime::{
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
-const MODELS: &str = include_str!("fixtures/grok-1.0.25-model-catalogue/models.txt");
-const UNKNOWN_IDS: &str = include_str!("fixtures/grok-1.0.25-model-catalogue/unknown-ids.txt");
-const VERSION_OUTPUT: &str = "grok 1.0.25 (f7e67d6988e2) [stable]\n";
+const MODELS: &str = include_str!("fixtures/grok-1.0.30-catalogue/models.txt");
+const UNKNOWN_IDS: &str = include_str!("fixtures/grok-1.0.30-catalogue/unknown-ids.txt");
+const VERSION_OUTPUT: &str = "grok 1.0.30 (04b7ffed98c6) [stable]\n";
 
 fn catalogue_input(request: RequestId) -> GrokCatalogueProfileInput {
     GrokCatalogueProfileInput::new(request)
@@ -50,10 +50,10 @@ fn temporary_root(prefix: &str) -> PathBuf {
 }
 
 #[test]
-fn catalogue_claim_admits_only_exact_1_0_25() {
-    assert_eq!(GROK_BUILD_CATALOGUE_VERSION, "1.0.25");
+fn catalogue_claim_admits_only_exact_1_0_30() {
+    assert_eq!(GROK_BUILD_CATALOGUE_VERSION, "1.0.30");
     let claim = grok_build_catalogue_claim();
-    let qualified = claim.assess(&version("1.0.25"));
+    let qualified = claim.assess(&version("1.0.30"));
     assert!(matches!(
         qualified,
         InterfaceCompatibilityAssessment::Qualified(_)
@@ -64,7 +64,7 @@ fn catalogue_claim_admits_only_exact_1_0_25() {
             .map(|revision| revision.as_str()),
         Some("grok-build.catalogue.models-text-v1")
     );
-    for candidate in ["0.2.117", "1.0.4", "1.0.5", "1.0.24", "1.0.26"] {
+    for candidate in ["0.2.117", "1.0.4", "1.0.5", "1.0.25", "1.0.29"] {
         assert_eq!(
             claim.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Incompatible,
@@ -88,17 +88,21 @@ fn catalogue_claim_stays_independent_of_the_acp_execution_window() {
         grok_build_model_for_version(&version("1.0.4")),
         Some("grok-4.6")
     );
-    // The ACP window carries 1.0.25, but the catalogue operation still only
-    // admits its own exact qualified point.
+    // The ACP window carries 1.0.30, but the catalogue operation still only
+    // admits its own exact qualified point and rejects every other point,
+    // including the previous exact 1.0.25 and the alpha 1.0.31 candidate.
     let catalogue = grok_build_catalogue_claim();
     assert!(matches!(
-        catalogue.assess(&version("1.0.25")),
+        catalogue.assess(&version("1.0.30")),
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
-    assert_eq!(
-        catalogue.assess(&version("1.0.30")),
-        InterfaceCompatibilityAssessment::Incompatible
-    );
+    for rejected in ["1.0.25", "1.0.31"] {
+        assert_eq!(
+            catalogue.assess(&version(rejected)),
+            InterfaceCompatibilityAssessment::Incompatible,
+            "{rejected} stays outside the exact catalogue point"
+        );
+    }
     assert_ne!(
         grok_build_acp_claim().id(),
         grok_build_catalogue_claim().id()
@@ -106,12 +110,12 @@ fn catalogue_claim_stays_independent_of_the_acp_execution_window() {
 }
 
 #[test]
-fn catalogue_prepares_on_exact_1_0_25_and_lists_the_accepted_document() {
+fn catalogue_prepares_on_exact_1_0_30_and_lists_the_accepted_document() {
     let host_id = host_id("catalogue.accept");
     let prepared = prepared_integration("catalogue.accept", VERSION_OUTPUT);
     let catalogue = prepared
         .prepare_catalogue(catalogue_input(request_id("catalogue.accept")))
-        .expect("catalogue prepares on exact 1.0.25");
+        .expect("catalogue prepares on exact 1.0.30");
     assert_prepared_operation_evidence_matches_plan(catalogue.evidence(), catalogue.plan());
     assert_eq!(
         catalogue.plan().driver_identity().id().as_str(),
@@ -190,11 +194,12 @@ fn catalogue_prepares_on_exact_1_0_25_and_lists_the_accepted_document() {
 }
 
 #[test]
-fn catalogue_preparation_rejects_non_1_0_25_observation() {
-    let prepared = prepared_integration("catalogue.reject", "grok 1.0.5 (5115b46bc909) [stable]\n");
+fn catalogue_preparation_rejects_non_1_0_30_observation() {
+    let prepared =
+        prepared_integration("catalogue.reject", "grok 1.0.25 (f7e67d6988e2) [stable]\n");
     let error = prepared
         .prepare_catalogue(catalogue_input(request_id("catalogue.reject")))
-        .expect_err("1.0.5 cannot prepare a catalogue");
+        .expect_err("1.0.25 cannot prepare a catalogue");
     assert_eq!(
         error.diagnostic().safe().code(),
         "swallowtail.grok.preparation.catalogue_version_incompatible"
@@ -276,7 +281,7 @@ fn live_bullet_grammar_is_required_and_auth_preamble_is_tolerated() {
     let catalogue = prepared
         .prepare_catalogue(catalogue_input(request_id("catalogue.grammar")))
         .expect("catalogue prepares");
-    // A bare two-space row is not the shipped exact-1.0.25 grammar.
+    // A bare two-space row is not the shipped exact-1.0.30 grammar.
     let (process, _) = FakeProcessService::completed(
         "Default model: grok-4.6\nAvailable models:\n  grok-4.6 (default)\n  grok-4.5\n",
     );
@@ -499,7 +504,7 @@ fn catalogue_projection_emits_only_catalogue_rows() {
 fn real_local_host_runs_the_bounded_catalogue_command() {
     let root = temporary_root("catalogue.local-host");
     let script = root.join("fake-grok");
-    let script_body = "#!/bin/sh\nfor probe_arg in \"$@\"; do\n  case \"$probe_arg\" in\n    --version) printf 'grok 1.0.25 (f7e67d6988e2) [stable]\\n'; exit 0;;\n    models) printf 'Default model: grok-4.6\\nAvailable models:\\n  * grok-4.6 (default)\\n  - grok-4.5\\n'; exit 0;;\n  esac\ndone\nexit 3\n";
+    let script_body = "#!/bin/sh\nfor probe_arg in \"$@\"; do\n  case \"$probe_arg\" in\n    --version) printf 'grok 1.0.30 (04b7ffed98c6) [stable]\\n'; exit 0;;\n    models) printf 'Default model: grok-4.6\\nAvailable models:\\n  * grok-4.6 (default)\\n  - grok-4.5\\n'; exit 0;;\n  esac\ndone\nexit 3\n";
     std::fs::write(&script, script_body).expect("script");
     let mut permissions = std::fs::metadata(&script).expect("metadata").permissions();
     std::os::unix::fs::PermissionsExt::set_mode(&mut permissions, 0o700);

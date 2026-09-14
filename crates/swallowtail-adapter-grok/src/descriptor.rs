@@ -65,8 +65,8 @@ pub fn grok_build_acp_descriptor() -> DriverDescriptor {
 /// Describes the installed Grok Build model catalogue route.
 ///
 /// This is separate from the ACP execution route: it only lists models
-/// through one bounded provider-suppressed `models` process on exact
-/// `1.0.25`. It never opens ACP, starts a session, or sends a prompt.
+/// through one bounded authenticated non-inference `models` process on exact
+/// `1.0.30`. It never opens ACP, starts a session, or sends a prompt.
 pub fn grok_build_catalogue_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(

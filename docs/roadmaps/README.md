@@ -15,10 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.067 Grok Build `1.0.30` catalogue qualification as the eighth
-family in Tom's authorized Research 308 currentness campaign. Continue the
-remaining eleven families serially without repeated approval; no release
-follows.
+Compile and dispatch Command Code as the next family in Tom's authorized
+Research 308 currentness campaign. Continue the remaining ten families
+serially without repeated approval; no release follows.
 
 ## Standing Lanes
 

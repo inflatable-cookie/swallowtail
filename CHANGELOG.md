@@ -6,6 +6,23 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
+- advance the Grok Build catalogue exact point from `1.0.25` to official and
+  installed `1.0.30`: Research 316 reproduces the Research 314 platform
+  tarball, brotli, and decompressed executable digests for `1.0.25` and every
+  later published stable through `1.0.30` without executing a downloaded
+  artifact, and proves the exact root flag `--no-auto-update`, the `models`
+  subcommand grammar with no `PROMPT` argument, the authentication preamble,
+  the shipped `*`/`-` bullet format literals with byte-identical counts, the
+  `xai-grok-pager/src/models.rs` module path, and the embedded
+  `default_models.json` document identical at every hop. Re-identify the exact
+  one-point claim as `grok-build.catalogue.executable-1-0-30`, keep the
+  `QualifiedOnly` posture and the `grok-build.catalogue.models-text-v1`
+  behavior revision, and reject every older and newer point. One prompt-free
+  authenticated `--no-auto-update models` observation of the installed exact
+  `1.0.30` executable returned the ordered `grok-4.6` default then `grok-4.5`
+  with zero stderr, no prompt, no model session, no inference, no tool
+  dispatch, and joined cleanup; the redacted capsule is frozen. The Grok ACP
+  window and the `1.0.4`/`1.0.5` registered-tool courier stay independent.
 - rebind the Claude Agent SDK exact one-point package/native tuple to official
   npm `@anthropic-ai/claude-agent-sdk` `0.3.270` carrying native `2.1.270`:
   Research 315 freezes all nine published hops `0.3.260..=0.3.270` after the

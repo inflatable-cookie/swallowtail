@@ -1,0 +1,40 @@
+{
+  "argv": [
+    "--no-auto-update",
+    "models"
+  ],
+  "boundary": "authenticated non-inference metadata operation",
+  "cli": {
+    "executable_path": "<host-private>",
+    "executable_sha256": "d53b6e543e482716236748914331db50145c696ac7af91f1ebdedcf5654cfecb",
+    "version": "1.0.30"
+  },
+  "configuration_posture": "Ambient",
+  "default_model": "grok-4.6",
+  "delegated_credential_present": true,
+  "duration_ms": 1294,
+  "inference_performed": false,
+  "isolated_home": "<host-private>",
+  "model_ids": [
+    "grok-4.6",
+    "grok-4.5"
+  ],
+  "notes": [
+    "live listing owns membership, order, and default",
+    "the frozen exact-1.0.30 embedded document supplements matching ids only",
+    "authentication refresh and bounded catalogue metadata activity are permitted",
+    "no retry was performed"
+  ],
+  "outcome": "success",
+  "process_joined": true,
+  "prompt_sent": false,
+  "schema": "swallowtail.grok.catalogue.live-capsule.v4",
+  "session_opened": false,
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdin_closed": true,
+  "stdout_bytes": 113,
+  "stdout_sha256": "6e495049ee1ee9c25d09444b4fbcf873e5a5b50b3aefe66de0170aa9b7575360",
+  "task": "g05.067",
+  "tool_dispatched": false
+}

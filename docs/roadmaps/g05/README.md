@@ -75,7 +75,7 @@ in [## Tasks](#tasks) below.
 - [g05.050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout merged through PR #313 at `fa2e4b94` after review `5618788611`
 - [g05.051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — completed; OpenCode HTTP qualified through official `1.18.30`; PR #314 merged at `2b79b083` after independent exact-head review `5633203211`
 
-g05 has sixty-five numbered tasks: 52 complete and one ready, including
+g05 has sixty-six numbered tasks: 53 complete, including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, 037, 044, and 051, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
@@ -94,7 +94,7 @@ after independent exact-head review `5649975685`; g05.055 is complete:
 annotated `v0.5.1` created and pushed at `e9140b46` (tag object `97a6933a`);
 tag-triggered run 34743711387 green 11/11; source-only and not published;
 planned tasks remain at 035, 039, 040,
-041, and 042.
+041, 042, and 066.
 g05.020 is complete: Codex
 qualifies official `0.152.1`. g05.026 is complete as an evidence stop:
 card 062 froze Kimi

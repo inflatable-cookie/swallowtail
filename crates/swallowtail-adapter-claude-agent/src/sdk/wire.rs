@@ -411,10 +411,10 @@ pub(crate) enum ClaudeAgentSdkEvent {
         error_text_type: String,
         result_field_presence: BTreeMap<String, bool>,
         /// Validated numeric provider HTTP status from exact SDK
-        /// `0.3.259` `api_error_status`, if the result carried one.
+        /// `0.3.270` `api_error_status`, if the result carried one.
         /// Absent stays `None` and classifies generic downstream.
         api_error_status: Option<u64>,
-        /// Bounded terminal reason from exact SDK `0.3.259`
+        /// Bounded terminal reason from exact SDK `0.3.270`
         /// `terminal_reason`, if the result carried one.
         terminal_reason: Option<String>,
         /// Latest validated active-turn rate-limit status observed before
@@ -424,7 +424,7 @@ pub(crate) enum ClaudeAgentSdkEvent {
     TurnFailed,
 }
 
-/// Fixed rate-limit vocabulary the sidecar projects from exact SDK `0.3.259`
+/// Fixed rate-limit vocabulary the sidecar projects from exact SDK `0.3.270`
 /// `rate_limit_event` notices. Advisory only: it never authorizes retry,
 /// fallback, replay, or account mutation.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

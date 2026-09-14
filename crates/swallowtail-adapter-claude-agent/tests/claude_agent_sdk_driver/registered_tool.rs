@@ -14,19 +14,19 @@
 use crate::sdk_support;
 use serde_json::{Value, json};
 use std::sync::{Arc, Mutex};
+#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+use swallowtail_adapter_claude_agent::sdk::registered_tool::CLAUDE_AGENT_SDK_REGISTERED_TOOL_LIVE_TUPLE_NOT_COMPILED_CODE;
 use swallowtail_adapter_claude_agent::sdk::registered_tool::{
     CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION, CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION,
     CLAUDE_AGENT_SDK_MCP_PROTOCOL_VERSION, CLAUDE_AGENT_SDK_MCP_SUPPORTED_PROTOCOL_VERSIONS,
     CLAUDE_AGENT_SDK_MEDIATION_KIND_SEMANTIC_ID, CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_AXIS,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_LIVE_TUPLE_NOT_COMPILED_CODE,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION,
-    CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER,
-    ClaudeAgentSdkMcpReply, ClaudeAgentSdkRegisteredToolBinding,
-    ClaudeAgentSdkRegisteredToolCarrier, ClaudeAgentSdkRegisteredToolDecision,
-    ClaudeAgentSdkRegisteredToolMediator, claude_agent_sdk_live_tuple_compiled,
-    claude_agent_sdk_mcp_protocol_version_admitted, claude_agent_sdk_mcp_protocol_version_known,
-    claude_agent_sdk_registered_tool_carrier_binding,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_CARRIER_REVISION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_MEDIATION,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_NATIVE_VERSION, CLAUDE_AGENT_SDK_REGISTERED_TOOL_SDK_VERSION,
+    CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER, ClaudeAgentSdkMcpReply,
+    ClaudeAgentSdkRegisteredToolBinding, ClaudeAgentSdkRegisteredToolCarrier,
+    ClaudeAgentSdkRegisteredToolDecision, ClaudeAgentSdkRegisteredToolMediator,
+    claude_agent_sdk_live_tuple_compiled, claude_agent_sdk_mcp_protocol_version_admitted,
+    claude_agent_sdk_mcp_protocol_version_known, claude_agent_sdk_registered_tool_carrier_binding,
     claude_agent_sdk_registered_tool_carrier_claim, claude_agent_sdk_registered_tool_qualification,
     project_claude_agent_sdk_registered_tool,
 };

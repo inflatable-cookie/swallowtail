@@ -257,7 +257,7 @@ input_callback_no_cells = {
     if row[feature] == "No"
 }
 if len(input_callback_no_cells) != 177:
-    raise SystemExit("input/callback inventory must contain exactly 176 No cells")
+    raise SystemExit("input/callback inventory must contain exactly 177 No cells")
 if input_callback_no_cells != set(input_callback_classifications):
     raise SystemExit("input/callback No classifications changed")
 

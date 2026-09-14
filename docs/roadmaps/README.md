@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.068 Command Code `1.54.0` exact-pin qualification as the ninth
-family in Tom's authorized Research 308 currentness campaign. Continue the
-remaining ten families serially without repeated approval; no release follows.
+Implement g05.070 Qoder `1.1.52` exact-pin qualification as the tenth family
+in Tom's authorized Research 308 currentness campaign. Continue the remaining
+nine families serially without repeated approval; no release follows.
 
 ## Standing Lanes
 

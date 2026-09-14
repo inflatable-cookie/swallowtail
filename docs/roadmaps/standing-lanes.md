@@ -26,6 +26,16 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
+Active campaign family: Qoder official npm `1.1.52` (g05.070) is the tenth
+family of Tom's authorized Research 308 campaign. The checkpoint's `1.1.51`
+moved before planning. Exact `1.1.25` is `QualifiedOnly`; `qodercli` is absent
+locally; 27 published stable successors require a complete provider-free
+shipped-tree ledger. The selected headless route, historical inert max-turns,
+permission, retention, stream-JSON, deadline, and cleanup boundaries must be
+classified without installing or running the package. Research 256's empty
+skill-visibility disposition and g05.039/g05.040 remain independent. Next is
+Goose.
+
 Completed campaign family: Command Code official npm `1.54.0` (g05.068) is the
 ninth family of Tom's authorized Research 308 campaign. Research 317 froze the
 installed `1.15.1` baseline and all 67 published stable successors with a

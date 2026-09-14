@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Reassess product runway with Chatterbox after hook-owned closeout of the
-Queue lifecycle lanes. No task is dispatched by this frontier; it does not
-change product priority, promote planned tasks, or authorize another release.
+Implement g05.058, the operator-requested Claude Code `2.1.270` one-family
+currentness qualification. It is provider-free and authorizes no release or
+second family.
 
 ## Standing Lanes
 

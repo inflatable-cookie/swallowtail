@@ -29,7 +29,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete; the per-turn audit note is reserved for Chatterbox's prune | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | g05.008; g05.009 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | g05.010 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | g05.011 |
-| Keep production route versions current one family at a time. | completed; OpenCode HTTP `1.18.30` qualified as a compatible `surface-19` extension through PR #314 at `2b79b083` after review `5633203211`; Pi RPC `0.85.1` remains the latest completed family | Contract 029; Research 292, 302, 304; qualified OpenCode `1.18.30`; official `1.18.30` | g05.051 |
+| Keep production route versions current one family at a time. | ready; Claude Code official stable moved from qualified `2.1.257` to `2.1.270`; eleven published hops require identity-first classification | Contract 029; Research 273; qualified Claude Code `2.1.257`; official `2.1.270` | g05.058 |
 | Expose the installed Grok CLI's truthful pre-session model catalogue without widening ACP execution authority. | completed; PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`; authenticated non-inference metadata boundary, shipped bullet grammar, accepted final capsule | Contracts 020 and 047; Desktop g02.086 producer intake; installed Grok `1.0.25`; PR #315 | g05.053 |
 | Prepare the Desktop-qualified source as patch `v0.5.1` without changing package source or crossing the exact-SHA tag gate. | completed; PR #317 merged candidate `755a2669` at `e9140b46` after independent exact-head review `5649975685`; `crates/` tree `186f3ba4` and Grok tree `1a6f777f` unchanged; tag withheld for Tom's exact-SHA authorization | Contract 036; g05.051; g05.053; Desktop g02.089 Phase A | g05.054 |
 | Create and push the exact `v0.5.1` annotated source tag without publishing another release object. | completed; annotated `v0.5.1` tagged and pushed at `e9140b46` 2026-09-13 (tag object `97a6933a`); pre-tag run 34731113171 and tag-triggered run 34743711387 both green 11/11; documentation closeout merged through PR #318 at `b0c800e0` after independent exact-head review `5651817371`; source-only | Contract 036; g05.054; run 34731113171; 2026-09-13 operator authorization | g05.055 |
@@ -59,6 +59,7 @@ enforcement.
 Only ready and planned tasks are actionable. Completed and stopped tasks live
 in [## Tasks](#tasks) below.
 
+- [g05.058 Claude Code 2.1.270 Useful Newer](./058-claude-code-2-1-270-useful-newer.md) — ready; operator-authorized provider-free identity-before-claim qualification across both existing Claude Code axes
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
 - [g05.039 Qoder Effective Skill Visibility Binding](./039-qoder-effective-skill-visibility-binding.md) — planned; gated on a non-empty Research 256 deliver-now disposition
 - [g05.040 Qoder Skill Visibility Acceptance](./040-qoder-skill-visibility-acceptance.md) — planned; serial after g05.039
@@ -431,6 +432,7 @@ identity.
 
 ## Tasks
 
+- [058 Claude Code 2.1.270 Useful Newer](./058-claude-code-2-1-270-useful-newer.md) — ready; eleven published hops from qualified `2.1.257`, identity before claim
 - [057 Lifecycle Currentness Repair](./057-repair-lifecycle-currentness.md) — ready; migrate this legacy status-bucket index to lifecycle-owned state
 - [056 Effigy-Hosted Lifecycle Hook](./056-adopt-effigy-hosted-lifecycle-hook.md) — ready; operator-approved configuration-only maintenance lane; product priority unchanged
 

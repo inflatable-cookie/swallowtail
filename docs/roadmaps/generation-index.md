@@ -470,7 +470,6 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Adopt the Effigy-hosted lifecycle through g05.056 as the operator-approved, configuration-only Queue lifecycle
-adoption lane. It does not change product priority or promote planned tasks 035
-or 039–042. After hook-owned closeout, return to Chatterbox for product runway
-planning.
+Implement g05.058 as the operator-requested Claude Code `2.1.270` currentness
+lane. It covers the two existing Claude Code axes as one provider-free family
+and authorizes no release or second family.

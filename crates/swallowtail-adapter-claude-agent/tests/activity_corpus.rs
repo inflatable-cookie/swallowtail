@@ -37,7 +37,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_sha(segment, "tag_commit", 40);
         assert_sha(segment, "source_sha256", 64);
     }
-    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.73.0");
+    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.76.0");
     assert_eq!(range["current_external_releases"][2]["version"], "0.64.0");
     assert_eq!(
         range["current_external_releases"][2]["classification"],
@@ -104,12 +104,64 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         range["current_external_releases"][7]["activity_delta"],
         "agent-sdk-pin-unmapped"
     );
+    assert_eq!(range["current_external_releases"][8]["version"], "0.74.0");
+    assert_eq!(
+        range["current_external_releases"][8]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][8]["profile"],
+        "0.76.0-guarantee"
+    );
+    assert_eq!(
+        range["current_external_releases"][8]["activity_delta"],
+        "hide-claude-auth-guard-and-session-failure-unmapped"
+    );
+    assert_eq!(range["current_external_releases"][9]["version"], "0.75.0");
+    assert_eq!(
+        range["current_external_releases"][9]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][9]["profile"],
+        "0.76.0-guarantee"
+    );
+    assert_eq!(
+        range["current_external_releases"][9]["activity_delta"],
+        "auth-status-compaction-and-usage-markdown-unmapped"
+    );
+    assert_eq!(range["current_external_releases"][10]["version"], "0.75.1");
+    assert_eq!(
+        range["current_external_releases"][10]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][10]["profile"],
+        "0.76.0-guarantee"
+    );
+    assert_eq!(
+        range["current_external_releases"][10]["activity_delta"],
+        "resumed-transcript-and-fork-meta-unmapped"
+    );
+    assert_eq!(range["current_external_releases"][11]["version"], "0.76.0");
+    assert_eq!(
+        range["current_external_releases"][11]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][11]["profile"],
+        "0.76.0-guarantee"
+    );
+    assert_eq!(
+        range["current_external_releases"][11]["activity_delta"],
+        "recommended-config-values-and-clear-context-unmapped"
+    );
     assert_eq!(
         range["current_external_releases"]
             .as_array()
             .expect("releases")
             .len(),
-        8
+        12
     );
 }
 

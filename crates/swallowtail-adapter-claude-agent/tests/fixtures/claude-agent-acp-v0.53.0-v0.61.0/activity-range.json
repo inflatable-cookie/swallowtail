@@ -60,7 +60,7 @@
       "revision": "host-steering-option-and-form-marker-display"
     },
     {
-      "range": "0.66.0..=0.73.0",
+      "range": "0.66.0..=0.76.0",
       "introduced_by": "0.66.0",
       "tag_commit": "59a7e9367b3931a50178de4783cf6074b20060cd",
       "acp_sdk": "1.3.0",
@@ -139,6 +139,42 @@
       "classification": "qualified",
       "profile": "0.73.0-guarantee",
       "activity_delta": "agent-sdk-pin-unmapped"
+    },
+    {
+      "version": "0.74.0",
+      "published_at": "2026-09-04T11:11:03.220Z",
+      "tag_commit": "847a3b642929654b5bf32b143b3e1efd5884d331",
+      "source_sha256": "0eeabe7242f82b2a27bd9a98c9812ff7fb29c4a67c1d289947b88bcacceb8548",
+      "classification": "qualified",
+      "profile": "0.76.0-guarantee",
+      "activity_delta": "hide-claude-auth-guard-and-session-failure-unmapped"
+    },
+    {
+      "version": "0.75.0",
+      "published_at": "2026-09-05T08:56:11.799Z",
+      "tag_commit": "a0122dae4c6f0d19a6716561683607dac4f50215",
+      "source_sha256": "731746d8ec2609201c92d31aca28e5b4f2149552c9a8fab078025d65805e897c",
+      "classification": "qualified",
+      "profile": "0.76.0-guarantee",
+      "activity_delta": "auth-status-compaction-and-usage-markdown-unmapped"
+    },
+    {
+      "version": "0.75.1",
+      "published_at": "2026-09-05T14:37:57.183Z",
+      "tag_commit": "3e23c5b960b66a6d2c892e7524c952e731c076a7",
+      "source_sha256": "c22424c297429378166524b59ee6bed239c999a420ad0dd06571b768efa7525b",
+      "classification": "qualified",
+      "profile": "0.76.0-guarantee",
+      "activity_delta": "resumed-transcript-and-fork-meta-unmapped"
+    },
+    {
+      "version": "0.76.0",
+      "published_at": "2026-09-09T21:16:32.982Z",
+      "tag_commit": "c2e4815029ef3962787ecaefe208b0b6f8b81302",
+      "source_sha256": "c1635f643ceff71c906011b85f33f1b135a4a07aeaa5546d44fb6c5fad11c96d",
+      "classification": "qualified",
+      "profile": "0.76.0-guarantee",
+      "activity_delta": "recommended-config-values-and-clear-context-unmapped"
     }
   ],
   "emitted_updates": [

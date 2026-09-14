@@ -6,6 +6,26 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
+- raise the Claude Agent ACP qualified ceiling from `0.73.0` to official npm
+  `@agentclientprotocol/claude-agent-acp` `0.76.0`. Compatible extension of
+  `claude-agent.acp.initialize-meta-extensions-v7`: the selected mapped ACP
+  routes stay, and the mode module, config-id module, elicitation, tools,
+  settings, utils, and complete `dist/permissions/**` tree are byte-identical
+  across every hop, so mode ids/categories, `plan`/`acceptEdits`, permission
+  option kinds, and the effort config id are unchanged. The ACP SDK pin stays
+  `1.4.0` and the Agent SDK pin stays `0.3.257`. `0.74.0` adds the
+  `--hide-claude-auth` `argv` guard; `0.75.0` adds the `authStatus` push
+  extension, context compaction as an ordinary `tool_call` lifecycle with an
+  extra `_meta.contextCompaction` key, and usage Markdown; `0.75.1` reads the
+  resumed model from the local transcript and tightens AIR fork metadata;
+  `0.76.0` adds capability-gated recommended config values, clear-context
+  coordination, and a `vitest` dev-dependency bump. Every one of those stays
+  unmapped with a reason. Published hops `0.74.0`, `0.75.0`, `0.75.1`, and
+  `0.76.0` are qualified; unpublished `0.58.0`, `0.73.1`, `0.74.1`, `0.75.2`,
+  and `0.76.1` stay incompatible; synthetic unpublished `0.77.0` remains
+  visible `UnverifiedNewer`. Host `0.63.0` stays observation-only. Claude Code,
+  the Claude Agent SDK sidecar, and the watcher stay untouched. Research 309,
+  g05.059.
 - raise both qualified Claude Code ceilings from `2.1.257` to official npm
   `@anthropic-ai/claude-code` `2.1.270`: headless `2.1.220..=2.1.270` and
   response-only `2.1.227..=2.1.270`. Compatible extension of

@@ -33,7 +33,7 @@ use swallowtail_runtime::{
 const INSTANCE: &str = "claude-agent.work";
 const HOST: &str = "claude-agent.lifecycle.host";
 const ACCESS: &str = "claude-agent.work.subscription";
-const QUALIFIED_VERSION: &str = "0.73.0";
+const QUALIFIED_VERSION: &str = "0.76.0";
 
 fn host_id() -> ExecutionHostId {
     ExecutionHostId::new(HOST).expect("host id is valid")

@@ -26,6 +26,13 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
+Active family: Codex `0.154.0` (g05.061) is the third family of Tom's
+authorized Research 308 campaign. Planning observed six published stable hops
+after the qualified `0.152.1` ceiling and host `0.153.3`; the worker must
+recheck official latest and freeze identity before changing either exec or
+app-server. Historical gaps, lifecycle segments, and feature-specific exact
+version sets stay independently bounded.
+
 Completed campaign family: Qwen Code official npm and direct GitHub release
 `0.23.3` (g05.060) is the second family of Tom's authorized Research 308
 campaign. Research 310 froze the four published stable hops after the prior

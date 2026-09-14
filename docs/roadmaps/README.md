@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Compile and dispatch Codex as the next family in Tom's authorized Research 308
-currentness campaign. Continue the remaining sixteen families serially without
-repeated approval; no release follows.
+Implement g05.061, Codex currentness through official stable, as the third
+family in Tom's authorized Research 308 campaign. Continue the remaining
+sixteen families serially without repeated approval; no release follows.
 
 ## Standing Lanes
 

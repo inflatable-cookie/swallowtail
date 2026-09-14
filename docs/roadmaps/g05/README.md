@@ -562,7 +562,7 @@ identity.
 - [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:58291337d1a709fc20354f59f22d5760ff9c56799c87a2d71a0930fae6ab0fcf -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:964d235b106a056726e2d1480ac55447f5eaa53c7b51a05fe9aa8d47b443c0af -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g05 | open | planning_required |
@@ -584,4 +584,5 @@ identity.
 | g05.071 | complete | none | 8 | sha256:01ad03c7d5299ce0b32c58317f45ce5b7b80405d7d34bacd6cfe19cd7f071e08 |
 | g05.072 | complete | none | 8 | sha256:f4bca8804534aad5ca5180f1f02fe4cfc55f503197d72b0f1c98b0d2c13bbf8f |
 | g05.073 | complete | none | 8 | sha256:1897696db18dad0865b08214a2cd1fef6b3c9c7aff7456c4114c44d3d0d7c39d |
+| g05.074 | complete | none | 8 | sha256:b4320ee873482331483ba376a936a91737dccad7d03370108181ba37b4a8d185 |
 <!-- northstar:lifecycle:end -->

@@ -230,6 +230,20 @@ family alone and changed no claim.
 
 ### Latest Checkpoint
 
+Research 308 revalidated the operator-named currentness backlog on 2026-09-14
+after Claude Code `2.1.270` closed. Tom directed Swallowtail to action all
+nineteen families, explicitly including Kimi and Oh My Pi; that direction also
+lifts the Gemini deferral and reopens Antigravity. The serial order is Claude
+Agent ACP, Qwen, Codex, Cursor, Ollama, Grok ACP, Claude Agent SDK, Grok
+catalogue, Command Code, Qoder, Goose, Kiro, Mistral Vibe, Deep Agents,
+Antigravity, Gemini, Kimi installed routes, Kimi local server, then Oh My Pi.
+Each family gets its own Contract 029 task from fresh canonical main. Shared
+matrices and changelog stay serial. Ordinary provider-free recovery is
+unbounded by artificial attempt counts. Existing containment rules remain:
+Kimi and Antigravity must gain a bounded mechanism or fail closed, and Oh My
+Pi `18.x` remains a major-line identity investigation rather than an inferred
+extension. No release authority follows.
+
 Research 294 revalidated all 41 production solution rows on 2026-09-08. The
 partition is 10 unchanged, 8 visible unverified-newer, and 23 record-only.
 Cursor Agent `2026.09.02` ranks as the next one-family candidate, but the

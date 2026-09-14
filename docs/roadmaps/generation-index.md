@@ -470,6 +470,6 @@ rollover still requires explicit operator authority.
 
 ## Next Task
 
-Implement g05.058 as the operator-requested Claude Code `2.1.270` currentness
-lane. It covers the two existing Claude Code axes as one provider-free family
-and authorizes no release or second family.
+Implement the active task named by the
+[roadmaps front door](README.md#next-task). The generation index records
+status; the sole actionable pointer stays in the front door.

@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.058, the operator-requested Claude Code `2.1.270` one-family
-currentness qualification. It is provider-free and authorizes no release or
-second family.
+Implement g05.059, Claude Agent ACP currentness through official stable, as the
+first family in Tom's authorized Research 308 campaign. Continue the remaining
+eighteen families serially without repeated approval; no release follows.
 
 ## Standing Lanes
 

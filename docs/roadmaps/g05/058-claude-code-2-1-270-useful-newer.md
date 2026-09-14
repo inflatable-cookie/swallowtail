@@ -1,6 +1,5 @@
 # g05.058 Claude Code 2.1.270 Useful Newer
 
-Status: completed; Claude Code qualified through official `2.1.270` on both existing stream-JSON axes as a compatible extension; identity `5c34bfde`; independent exact-head review and merge are queue-owned
 Owner: Tom
 Created: 2026-09-14
 Depends on: Contract 029; qualified Claude Code `2.1.257`; Research 273; g05.019

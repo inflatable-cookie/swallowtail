@@ -26,10 +26,13 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Command Code is the ninth family of Tom's authorized Research
-308 campaign. The worker must recheck the official channel and installed
-harness, freeze complete all-hop identity, and classify the selected surface
-before changing any claim. Shared matrices and the changelog stay serial.
+Active family: Command Code official npm `1.54.0` (g05.068) is the ninth
+family of Tom's authorized Research 308 campaign. Installed `1.15.1` remains
+the exact prior point; 67 published stable successors require one automated
+all-hop shipped-tree ledger. The worker must preserve QualifiedOnly, make one
+exact-point decision, and keep Research 116/118 live evidence bound to
+`1.15.1` unless matching evidence exists. Shared matrices and the changelog
+stay serial.
 
 Completed campaign family: the Grok Build catalogue at official and installed
 exact `1.0.30` (g05.067) is the eighth family of Tom's authorized Research

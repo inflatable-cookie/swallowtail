@@ -15,9 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Compile and dispatch Command Code as the next family in Tom's authorized
-Research 308 currentness campaign. Continue the remaining ten families
-serially without repeated approval; no release follows.
+Implement g05.068 Command Code `1.54.0` exact-pin qualification as the ninth
+family in Tom's authorized Research 308 currentness campaign. Continue the
+remaining ten families serially without repeated approval; no release follows.
 
 ## Standing Lanes
 

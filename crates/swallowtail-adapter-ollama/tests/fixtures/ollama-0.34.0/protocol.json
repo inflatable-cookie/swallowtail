@@ -1,0 +1,73 @@
+{
+  "selected_routes": [
+    "GET /api/version",
+    "GET /api/tags",
+    "GET /api/ps",
+    "POST /api/show",
+    "POST /api/chat"
+  ],
+  "selected_routes_registered_at_every_hop": true,
+  "selected_structs_identical_0_32_15_through_0_34_0": true,
+  "selected_struct_hashes": {
+    "chat_request": "d7035a0da458f5ab354f771d2ee3eb9239f1ff40dae6700bdcd8e9806b18ae14",
+    "chat_response": "f9deac910407655aa7ecbded4820f8de5d404bb2f49e261b1a64b7db56f2b936",
+    "message": "bfc165a63e64996e5b843072e8be965a9798e214dfc1c88cc5974bc802d0c9f9",
+    "list_response": "3bd9321282acf137960e6480b523b2575f585ee0f7ea928301def363b426c6b9",
+    "process_response": "caaa50bff293aefb1d2702bf411dab49fe933225ef76a5f5591bdc8ffae1072d",
+    "show_request": "698cdcb3a9942de50bf9be2e65525e945a9ee3613d8309d2c3435b1db207852e",
+    "show_response": "eeba5938770c1ff3181e1f183a3ef9217dd44635688fd29b0940ea2ce68d7a71",
+    "options": "c615649cf6298722a03719706c4533308fa8a86e944bfeb936aad4c919ad02b7"
+  },
+  "types_go_file_hashes": {
+    "v0.32.15": "032fe8c044429afd42fd9f898c6bbd6efc5977ffeeec4dd3c5a04035e9c3d0b1",
+    "v0.33.0": "032fe8c044429afd42fd9f898c6bbd6efc5977ffeeec4dd3c5a04035e9c3d0b1",
+    "v0.33.1": "d2ae593daf72f0b2fb61a0999c670de53d892f4709b3c39640e81d6efd2d3d7b",
+    "v0.33.2": "d2ae593daf72f0b2fb61a0999c670de53d892f4709b3c39640e81d6efd2d3d7b",
+    "v0.33.3": "76a7ba0a33c9395a113ffb279faa0106f77cafcc5d4e80c3d4aab17e02a7b008",
+    "v0.34.0": "40c2647781a54fd3baedca021d495f3f7f899e217fce9697405e90b7930b9d8e"
+  },
+  "routes_go_file_hashes": {
+    "v0.32.15": "c2ebab461d0f258340152e9207d35a4d72113a57c46043121d5b6798d8c770fa",
+    "v0.33.0": "c2ebab461d0f258340152e9207d35a4d72113a57c46043121d5b6798d8c770fa",
+    "v0.33.1": "c2ebab461d0f258340152e9207d35a4d72113a57c46043121d5b6798d8c770fa",
+    "v0.33.2": "c2ebab461d0f258340152e9207d35a4d72113a57c46043121d5b6798d8c770fa",
+    "v0.33.3": "c09978f83342b1ecd4d8d288fdb0429c01773cd2c9e80f640782a528a6042cef",
+    "v0.34.0": "99d48da007feaa85321ad24b25bff4d881c5bf329a5019aec642defe95396b73"
+  },
+  "metrics_struct_hashes": {
+    "v0.32.15_through_v0.33.2": "1166c0471d4afd6ee12b56ae79b99e26aecfb58d347d4129961de0f26603a624",
+    "v0.33.3_and_v0.34.0": "bbc09305511a40e65370507477be58246ae171095d73ff35935d5f0066b38cb4"
+  },
+  "hop_classification": {
+    "v0.33.0": "byte-identical selected files to v0.32.15; compatible",
+    "v0.33.1": "types delta confined to unselected experimental ModelRecommendations mappings; routes identical; compatible",
+    "v0.33.2": "selected files identical to v0.33.1; compatible",
+    "v0.33.3": "STOP: Metrics gains optional prompt_eval_cached_count plumbed into selected /api/chat records; strict native-text-v1 decoder rejects it",
+    "v0.34.0": "STOP inherits; remaining deltas unselected (Codex desktop proxy route, /v1/responses compaction, recommendation thinking advertisement)"
+  },
+  "stop_counterexample_terminal_record": "{\"model\":\"m:8b\",\"created_at\":\"2026-09-05T00:00:00Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done\":true,\"done_reason\":\"stop\",\"total_duration\":1,\"load_duration\":1,\"prompt_eval_count\":10,\"prompt_eval_cached_count\":4,\"prompt_eval_duration\":1,\"eval_count\":3,\"eval_duration\":1}",
+  "stop_counterexample_result": "rejected_by_native_text_v1_chat_record_extra_key; identical record without the key decodes to Finished(stop)+Usage",
+  "bounded_unmapped_0_33_3": [
+    "model-generation-defaults-fill-gaps-only-request-opts-still-win",
+    "structured-output-intermediate-metrics-gating-adapter-never-sends-format"
+  ],
+  "unused_deltas": [
+    "claude-desktop-gateway-proxy",
+    "prefill-restore-point-caching",
+    "deepseek-harness-npx-fallback",
+    "mlx-qwen3.8-flash-structured-output",
+    "mlx-metal-timeout-avoidance",
+    "macos-app-single-instance-handoff",
+    "gemma4-mlx-image-audio",
+    "model-recommendation-mappings",
+    "model-recommendation-thinking-advertisement",
+    "codex-desktop-proxy-route",
+    "openai-responses-compaction",
+    "mlx-llamacpp-dependency-updates"
+  ],
+  "new_public_selected_operation": false,
+  "decoder_corpus": "ollama-native-v0.14.0-v0.32.1",
+  "provider_prompt_sent": false,
+  "attached_server_started": false,
+  "host_install_changed": false
+}

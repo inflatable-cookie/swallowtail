@@ -1,0 +1,99 @@
+{
+  "axis": "ollama.runtime",
+  "observed_at": "2026-09-14",
+  "github_repo": "ollama/ollama",
+  "not_ollama_cloud": true,
+  "host": {
+    "client_version": "0.33.3",
+    "client_path": "/usr/local/bin/ollama",
+    "client_sha256": "75b6b83ab9c06712c7097807c91d2bb86a3ef3dd143d59359a5fbb3314970c0a",
+    "client_bytes": 50,
+    "note": "50-byte launcher shim reporting client 0.33.3; no runtime was reachable and no server was started"
+  },
+  "official": {
+    "version": "0.34.0",
+    "source": "official-github-tag",
+    "published_at": "2026-09-05T23:49:00Z",
+    "prerelease": false,
+    "github_tag": "v0.34.0",
+    "github_commit": "d8ab4b4f0ca24b51d3a46b3bf4f462e58ce66b1f",
+    "github_tree": "61d8627adc97b18b257bdb1419bf78948a052578"
+  },
+  "published_hops": [
+    {
+      "version": "0.33.0",
+      "github_tag": "v0.33.0",
+      "github_commit": "ebf200f9521da9739a576a8bbf8cbf94e0cec6e3",
+      "github_tree": "c537fd75700f30018c0a1161e26b7f2b215807a9",
+      "published_at": "2026-08-21T22:52:46Z",
+      "prerelease": false
+    },
+    {
+      "version": "0.33.1",
+      "github_tag": "v0.33.1",
+      "github_commit": "13f2fb8c99278469b954429d5541019f4d83a4d0",
+      "github_tree": "b3e63b82943bb57e17d501fa137d1abae26ee1f6",
+      "published_at": "2026-08-26T18:09:57Z",
+      "prerelease": false
+    },
+    {
+      "version": "0.33.2",
+      "github_tag": "v0.33.2",
+      "github_commit": "f96e7aa0513b9973a0ccc71be414c2ecb9d65b1a",
+      "github_tree": "c35ae275b3fd3d6f58b3ea12f468a2212b6a87f5",
+      "published_at": "2026-08-27T20:31:47Z",
+      "prerelease": false
+    },
+    {
+      "version": "0.33.3",
+      "github_tag": "v0.33.3",
+      "github_commit": "b79067b0db7417f20108363bc22adb97f35c966a",
+      "github_tree": "69ea0f1f9e302e6bfabe5b00b482b9b3ff6363e1",
+      "published_at": "2026-09-02T00:11:33Z",
+      "prerelease": false
+    },
+    {
+      "version": "0.34.0",
+      "github_tag": "v0.34.0",
+      "github_commit": "d8ab4b4f0ca24b51d3a46b3bf4f462e58ce66b1f",
+      "github_tree": "61d8627adc97b18b257bdb1419bf78948a052578",
+      "published_at": "2026-09-05T23:49:00Z",
+      "prerelease": false
+    }
+  ],
+  "published_stables_from_previous_ceiling": ["0.33.0", "0.33.1", "0.33.2", "0.33.3", "0.34.0"],
+  "unpublished_next": "0.34.1",
+  "github_prerelease_plain_versions": ["0.32.2", "0.32.10"],
+  "frozen_corpus_ceiling": "0.32.15",
+  "claim_at_observation": {
+    "baseline": "0.14.0",
+    "latest_qualified": "0.32.15",
+    "behavior_revision": "ollama.native-text-v1",
+    "posture": "allow_unverified",
+    "excluded": ["0.32.2", "0.32.10"],
+    "classification_of_0_32_15": "qualified_maintained",
+    "classification_of_0_33_0_through_0_34_0": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension-with-stop",
+    "reuse_behavior": "ollama.native-text-v1",
+    "raise_latest_qualified_to": "0.33.2",
+    "keep_baseline": "0.14.0",
+    "keep_exclusion_0_32_2": true,
+    "keep_exclusion_0_32_10": true,
+    "qualified_hops": ["0.33.0", "0.33.1", "0.33.2"],
+    "stop_at_0_33_3": {
+      "reason": "selected-wire-additive-metrics-key-rejected-by-strict-decoder",
+      "key": "prompt_eval_cached_count",
+      "detail": "0.33.3 adds optional Metrics.PromptEvalCachedCount, plumbed into selected POST /api/chat NDJSON records; the native-text-v1 ChatRecord fail-closes on unmapped keys, so valid 0.33.3+ terminal records are rejected"
+    },
+    "leave_0_33_3_and_0_34_0": "unverified_newer",
+    "new_public_operation": false,
+    "flatten_to_cloud_or_generate": false,
+    "flatten_to_llama_cpp": false,
+    "provider_prompt_sent": false,
+    "attached_server_started": false,
+    "host_install_changed": false,
+    "official_app_archive_downloaded": false
+  }
+}

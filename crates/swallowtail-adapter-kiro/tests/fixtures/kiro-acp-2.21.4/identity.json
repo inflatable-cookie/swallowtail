@@ -1,0 +1,116 @@
+{
+  "axis": "kiro-cli.release",
+  "route": "kiro.acp",
+  "observed_at": "2026-09-14",
+  "host": {
+    "present": false
+  },
+  "official": {
+    "version": "2.21.4",
+    "source": "official-stable-installer-manifest",
+    "manifest_url": "https://prod.download.cli.kiro.dev/stable/latest/manifest.json",
+    "manifest_sha256": "6b269b47a32b5f5e633d1ddb2745a8609fbfdd39da9accf7623fa9bf6b595dc4",
+    "install_script_url": "https://cli.kiro.dev/install",
+    "install_script_sha256": "91a21bfa05cd7b58601cb83e0f1f187a9d0084726e5b824d4a4cf60306250908",
+    "selected_platform_artifacts": {
+      "macos-universal-dmg": {
+        "download": "2.21.4/Kiro CLI.dmg",
+        "sha256": "954a48e8a5796507c6733c0b67e1b4a3fea97a4b24a3bdb37c43a4e9da2f95b7",
+        "extracted": "read-only mounted for static inspection"
+      },
+      "linux-aarch64-tar-xz": {
+        "download": "2.21.4/kirocli-aarch64-linux.tar.xz",
+        "sha256": "f582eac0e002b4d11bbd061d41fcb49d1d37626a2c1fe230373fcbf97755df6f",
+        "extracted": true
+      }
+    }
+  },
+  "acp_docs": {
+    "url": "https://kiro.dev/docs/cli/acp.md",
+    "sha256": "50e8f6285b5fbc46feb5afa34a7bc8b8fa3fff95ae926ab959f6ce0253745ab0",
+    "unchanged_since_research_254": true,
+    "page_updated": "August 4, 2026"
+  },
+  "changelog": {
+    "url": "https://kiro.dev/changelog/cli/2-19/",
+    "headline_versions": {
+      "2.19.0": "August 19, 2026",
+      "2.20.0": "August 26, 2026",
+      "2.21.0": "September 1, 2026"
+    },
+    "patches": {
+      "2.19.1": "August 21, 2026",
+      "2.19.2": "August 25, 2026",
+      "2.20.1": "August 27, 2026",
+      "2.20.2": "August 31, 2026",
+      "2.21.1": "September 3, 2026",
+      "2.21.2": "September 8, 2026",
+      "2.21.3": "September 10, 2026",
+      "2.21.4": "September 11, 2026"
+    }
+  },
+  "compared": [
+    "2.18.1",
+    "2.19.0",
+    "2.19.1",
+    "2.19.2",
+    "2.20.0",
+    "2.20.1",
+    "2.20.2",
+    "2.21.0",
+    "2.21.1",
+    "2.21.2",
+    "2.21.3",
+    "2.21.4"
+  ],
+  "published_stable_count": 11,
+  "published_stables_from_previous_ceiling": [
+    "2.19.0",
+    "2.19.1",
+    "2.19.2",
+    "2.20.0",
+    "2.20.1",
+    "2.20.2",
+    "2.21.0",
+    "2.21.1",
+    "2.21.2",
+    "2.21.3",
+    "2.21.4"
+  ],
+  "later_stable_after_official": "none published",
+  "later_stable_note": "the stable manifest tip at the pre-push recheck is 2.21.4 and the official changelog page lists no later CLI stable; per-version manifests under /stable/<version>/ are 403 AccessDenied, so the version ledger comes from the official changelog entries plus per-version artifact downloads and BUILD-INFO build identities",
+  "manifest_hash_verification": "every compared archive SHA-256 matched the value recorded in the retrieved manifest of its own release family (2.18.1 from Research 156; 2.21.4 from the g05.072 planning manifest); intermediate manifest digests are not recoverable because versioned manifest endpoints are 403",
+  "claim_at_observation": {
+    "point": "2.18.1",
+    "posture": "QualifiedOnly",
+    "behavior_revision": "kiro.acp.stdio-v1",
+    "claim_id": "kiro.acp.release-window-1"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "entrypoint": ["kiro-cli", "acp"],
+    "move_exact_point_to_2_21_4": true,
+    "behavior_revision_change": "none",
+    "flatten_onto_kiro_headless": false,
+    "flatten_onto_cloud": false,
+    "flatten_onto_tui_chat_binary": false,
+    "pass_agent_flag": false,
+    "pass_v2_or_v3_harness_flag": false,
+    "wrap_npm_or_pypi_kiro_cli": false,
+    "run_kiro_login": false,
+    "bind_kiro_api_key_lease": false,
+    "map_session_load": false,
+    "map_session_set_model": false,
+    "map_kiro_dev_extensions": false,
+    "send_prompt_field_content": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false,
+    "host_install_changed": false,
+    "downloaded_artifact_executed": false
+  },
+  "research_251_and_254_unchanged": {
+    "effort_rows": "none; chat `--effort` stays outside the ACP entrypoint docs and outside the selected argv",
+    "agent_profile_rows": "none; `--agent` stays an advertised placeholder with no closed membership or reject path",
+    "evidence_hop": "both researches recorded that the platform archives returned HTTP 403 on 2026-08-28; this run retrieved the exact artifacts, so the per-hop argv and binary evidence now covers their gates without changing their empty deliver-now sets"
+  }
+}

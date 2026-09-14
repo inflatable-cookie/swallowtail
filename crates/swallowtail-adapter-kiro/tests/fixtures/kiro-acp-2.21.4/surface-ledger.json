@@ -1,0 +1,110 @@
+{
+  "axis": "kiro-cli.release",
+  "route": "kiro.acp",
+  "entry_chain": {
+    "selected_argv": ["kiro-cli", "acp"],
+    "router_binary": "kiro-cli",
+    "serve_binary": "kiro-cli-chat",
+    "note": "the kiro-cli router owns the `acp` subcommand (`AcpArgs for acp subcommand`, help `Agent Client Protocol (ACP)`) and launches the chat binary, whose chat-cli-v2 agent implements the stdio ACP serve over sacp-11.0.0 plus agent-client-protocol-0.10.4; the selected Swallowtail argv is unchanged"
+  },
+  "acp_libraries_stable_across_all_hops": {
+    "agent_client_protocol": "0.10.4",
+    "sacp": "11.0.0",
+    "sacp_files": [
+      "src/jsonrpc.rs",
+      "src/jsonrpc/handlers.rs",
+      "src/jsonrpc/incoming_actor.rs",
+      "src/jsonrpc/outgoing_actor.rs",
+      "src/jsonrpc/run.rs",
+      "src/jsonrpc/task_actor.rs",
+      "src/jsonrpc/transport_actor.rs",
+      "src/role.rs",
+      "src/role/acp.rs",
+      "src/util.rs"
+    ],
+    "set_change": "none"
+  },
+  "selected_surface_literals": {
+    "note": "exact byte counts of the named adjacent-string literals inside the shipped chat binary; counts are stable unless named in from_hop_to_hop",
+    "serve_method_list_without_load": "initializesession/newsession/set_config_optionsession/promptsession/list",
+    "serve_method_list_with_load": "initializesession/newsession/loadsession/set_config_optionsession/promptsession/list",
+    "session_update_kinds": "user_message_chunkagent_message_chunkagent_thought_chunktool_calltool_call_update",
+    "permission_option_kinds": "allow_onceallow_alwaysreject_oncereject_always",
+    "bridge_prompt_call": "this.connection.prompt({prompt:e,sessionId:this.sessionId})",
+    "bridge_handshake": "[acp-client] ACP handshake done",
+    "bridge_method_map_sorted": "initialize:\"initialize\",logout:\"logout\"",
+    "kas_method_map_new": "initialize:\"initialize\",authenticate:\"authenticate\"",
+    "kiro_api_key_env": "KIRO_API_KEY"
+  },
+  "selected_presence_counts": {
+    "2.18.1": { "serve_method_list_without_load": 1, "serve_method_list_with_load": 0, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.19.0": { "serve_method_list_without_load": 1, "serve_method_list_with_load": 0, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.19.1": { "serve_method_list_without_load": 1, "serve_method_list_with_load": 0, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.19.2": { "serve_method_list_without_load": 1, "serve_method_list_with_load": 0, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.20.0": { "serve_method_list_without_load": 1, "serve_method_list_with_load": 0, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.20.1": { "serve_method_list_without_load": 1, "serve_method_list_with_load": 0, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.20.2": { "serve_method_list_without_load": 0, "serve_method_list_with_load": 1, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.21.0": { "serve_method_list_without_load": 0, "serve_method_list_with_load": 1, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.21.1": { "serve_method_list_without_load": 0, "serve_method_list_with_load": 1, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.21.2": { "serve_method_list_without_load": 0, "serve_method_list_with_load": 1, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.21.3": { "serve_method_list_without_load": 0, "serve_method_list_with_load": 1, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 1, "kas_method_map_new": 0 },
+    "2.21.4": { "serve_method_list_without_load": 0, "serve_method_list_with_load": 1, "session_update_kinds": 1, "permission_option_kinds": 3, "bridge_prompt_call": 1, "bridge_handshake": 1, "bridge_method_map_sorted": 0, "kas_method_map_new": 1 }
+  },
+  "acp_source_module_closure": {
+    "crate": "crates/chat-cli-v2/src/agent/acp",
+    "baseline_files": 43,
+    "official_files": 45,
+    "added_at_2_19_2": ["extension_request.rs"],
+    "removed": [],
+    "struct_literals_stable_across_all_hops": [
+      "struct AgentCapabilities with 8 elements",
+      "struct InitializeResponse with 5 elements",
+      "struct PromptCapabilities with 4 elements",
+      "struct NewSessionResponse with 5 elements",
+      "struct PromptRequest with 4 elements",
+      "struct SessionUpdate",
+      "struct CancelNotification",
+      "struct RequestPermissionRequest"
+    ]
+  },
+  "from_hop_to_hop": {
+    "2.18.1_to_2.19.0": { "selected": "unchanged", "executables": "rebuilt", "other": "none observed on mapped surface" },
+    "2.19.0_to_2.19.1": { "selected": "unchanged", "executables": "rebuilt", "other": "none observed on mapped surface" },
+    "2.19.1_to_2.19.2": {
+      "selected": "unchanged",
+      "executables": "rebuilt",
+      "unmapped_additions": [
+        "crates/chat-cli-v2/src/agent/acp/extension_request.rs and crates/chat-cli-v2/src/telemetry/acp_method.rs appear; the ACP extension-request handler begins dispatching _kiro.dev/commands/execute, _kiro.dev/commands/options, _kiro.dev/session/list, _kiro.dev/session/terminate, _kiro.dev/settings/list, _kiro.dev/settings/set, _kiro.dev/session/steer, _kiro.dev/session/steer/clear, _kiro.dev/session/spawn, and _kiro.dev/message/send"
+      ],
+      "non_effect": "Swallowtail does not map _kiro.dev/* extensions; the selected initialize, session/new, session/prompt, session/cancel, session/update, permission, stop-reason, and cleanup inputs are unchanged"
+    },
+    "2.19.2_to_2.20.0": { "selected": "unchanged", "executables": "rebuilt", "other": "none observed on mapped surface" },
+    "2.20.0_to_2.20.1": { "selected": "unchanged", "executables": "rebuilt", "other": "none observed on mapped surface" },
+    "2.20.1_to_2.20.2": {
+      "selected": "unchanged",
+      "executables": "rebuilt",
+      "unmapped_additions": [
+        "the serve method-literal region gains session/load (initializesession/newsession/load...); _kiro.dev/mcp/startup_status joins the extension set"
+      ],
+      "non_effect": "session/load stays advertised-only and unmapped in Swallowtail (loadSession stays true in initialize); no selected op changes"
+    },
+    "2.20.2_to_2.21.0": { "selected": "unchanged", "executables": "rebuilt", "other": "none observed on mapped surface" },
+    "2.21.0_to_2.21.1": { "selected": "unchanged", "executables": "rebuilt", "other": "none observed on mapped surface" },
+    "2.21.1_to_2.21.2": { "selected": "unchanged", "executables": "rebuilt", "other": "none observed on mapped surface" },
+    "2.21.2_to_2.21.3": { "selected": "unchanged", "executables": "rebuilt", "other": "none observed on mapped surface" },
+    "2.21.3_to_2.21.4": {
+      "selected": "unchanged",
+      "executables": "rebuilt",
+      "unmapped_additions": [
+        "the chat binary JS chunk is rebuilt: the sorted bridge method map (which still named session_set_model) is replaced by a new KAS client chunk (initialize/authenticate/providers_list/...), and the router subcommand soup gains the chat-only --v2 harness flag"
+      ],
+      "non_effect": "session/set_model stays unsupported in Swallowtail either way; --v2 is a chat harness flag and never part of the selected ACP argv; the selected prompt field stays `prompt` (this.connection.prompt({prompt:e,sessionId:...}) is present at 2.21.4)"
+    }
+  },
+  "selected_method_set": ["initialize", "session/new", "session/prompt", "session/cancel"],
+  "docs_session_notification_names_are_not_decoder_keys": true,
+  "docs_prompt_field_content_example_still_stale_at_2_21_4": true,
+  "downloaded_artifact_executed": false,
+  "live_acp_initialize": false,
+  "provider_prompt_sent": false
+}

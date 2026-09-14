@@ -8,6 +8,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ## Research Records
 
+- [320 Kiro ACP 2.21.4 Identity](./320-kiro-acp-2-21-4-identity.md) — complete official manifest identity, all eleven stable successors after `2.18.1` frozen as exact archives, and the selected ACP surface byte-stable across every hop; compatible exact-point rebind to `2.21.4` with the `kiro.acp.stdio-v1` behavior unchanged; Research 251/254 empty deliver-now sets stand
 - [319 Goose ACP 1.50.0 Identity Stop](./319-goose-acp-1-50-0-identity-stop.md) — complete official GitHub identity and all 4 stable successors after `1.46.0`; provider-auth failure becomes typed `auth_required` on `session/new` and `session/prompt` at the exact hop `1.46.0..1.47.0`, so the exact `QualifiedOnly` point stays at `1.46.0` and the failure-binding policy returns to the operator; Research 148/250/253 unchanged
 - [318 Qoder Headless 1.1.52 Identity Stop](./318-qoder-headless-1-1-52-identity-stop.md) — complete official npm identity and all 27 stable successors after `1.1.25`; the selected route's historical inert `--max-turns 8` argv becomes the AgentLoop ceiling at `1.1.29..1.1.30`, so the exact `QualifiedOnly` point stays at `1.1.25` and the turn-binding policy returns to the operator; Research 151/256 unchanged
 - [317 Command Code 1.54.0 Identity](./317-command-code-1-54-0-identity.md) — complete official npm identity and all 67 stable successors; selected route surface classified provider-free; Research 116/118 live evidence remains bound to `1.15.1`; no production claim yet

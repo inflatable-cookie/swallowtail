@@ -35,6 +35,10 @@ name = "kiro_acp_identity"
 path = "tests/kiro_acp_identity.rs"
 
 [[test]]
+name = "kiro_2_21_4_delta_ledger"
+path = "tests/kiro_2_21_4_delta_ledger.rs"
+
+[[test]]
 name = "activity_corpus"
 path = "tests/activity_corpus.rs"
 

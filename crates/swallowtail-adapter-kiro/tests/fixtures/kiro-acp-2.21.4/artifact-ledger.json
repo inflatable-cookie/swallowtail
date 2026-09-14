@@ -1,0 +1,268 @@
+{
+  "axis": "kiro-cli.release",
+  "route": "kiro.acp",
+  "baseline": "2.18.1",
+  "official": "2.21.4",
+  "compared": [
+    "2.18.1",
+    "2.19.0",
+    "2.19.1",
+    "2.19.2",
+    "2.20.0",
+    "2.20.1",
+    "2.20.2",
+    "2.21.0",
+    "2.21.1",
+    "2.21.2",
+    "2.21.3",
+    "2.21.4"
+  ],
+  "published_stable_count": 11,
+  "published_stables_from_previous_ceiling": [
+    "2.19.0",
+    "2.19.1",
+    "2.19.2",
+    "2.20.0",
+    "2.20.1",
+    "2.20.2",
+    "2.21.0",
+    "2.21.1",
+    "2.21.2",
+    "2.21.3",
+    "2.21.4"
+  ],
+  "later_stable_after_official": "none published",
+  "later_stable_note": "the 2026-09-14 stable manifest tip is 2.21.4 and the official changelog page publishes no later CLI stable; patches 2.21.1..2.21.4 are listed under the 2.21.0 entry",
+  "shipped_tree": {
+    "every_hop": [
+      "kirocli/BUILD-INFO",
+      "kirocli/README",
+      "kirocli/install.sh",
+      "kirocli/bin/q",
+      "kirocli/bin/qchat",
+      "kirocli/bin/kiro-cli",
+      "kirocli/bin/kiro-cli-chat",
+      "kirocli/bin/kiro-cli-term"
+    ],
+    "no_additions": true,
+    "no_removals": true,
+    "byte_identical_across_all_hops": [
+      "kirocli/install.sh",
+      "kirocli/README",
+      "kirocli/bin/q",
+      "kirocli/bin/qchat"
+    ],
+    "changed_at_every_hop": [
+      "kirocli/BUILD-INFO",
+      "kirocli/bin/kiro-cli",
+      "kirocli/bin/kiro-cli-chat",
+      "kirocli/bin/kiro-cli-term"
+    ]
+  },
+  "build_info_fields": [
+    "BUILD_DATE",
+    "BUILD_HASH",
+    "BUILD_TARGET_TRIPLE",
+    "BUILD_VERSION"
+  ],
+  "build_target_triple": "aarch64-unknown-linux-gnu",
+  "build_version_matches_release_every_hop": true,
+  "points": {
+    "2.18.1": {
+      "archive_sha256": "c1f860b63f6656501dbcf8995e2687c3e31142b95755c76ce99f8d18000017df",
+      "manifest_digest_match": "research_156_recorded_digest",
+      "executables": {
+        "kiro-cli": "ef24f8428646d4e50e32e758d66f77f56c6ab2ecd128507650f19039f9533dd0",
+        "kiro-cli-chat": "4b7790e5c9a00d15158d6719596066dc2d7bc013d32b6bbca9a1249edd43157c",
+        "kiro-cli-term": "27b5c75484d19d8be905f03264f21ec646bde1542378ef69de2e6a8a6e259956",
+        "q": "56897a672bb49ac53309edd88a726e3bf2d93533903fe548f960acf25114a671",
+        "qchat": "9ac2f85a80fafc1d350bd8d33c7d9b25315c193cf9ca14d285e51361c8243830",
+        "install.sh": "2118af61165eb413c08768008ef586b134805f46855e3764db3f1e25d955957c",
+        "README": "fc6f24a67be61fe36cc413ff60a86f3a39e1915e4c457feb5b6cde2a1e2c749a"
+      },
+      "build": {
+        "BUILD_DATE": "2026-08-13T23:20:03.596995+00:00",
+        "BUILD_HASH": "74b78bb5a369788e393b06654b2b213d937a41d2",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.18.1"
+      }
+    },
+    "2.19.0": {
+      "archive_sha256": "12009230bcfb528f12542b8729e3d2462d3653d33ec6aa955c1c8940018d864e",
+      "executables": {
+        "kiro-cli": "00d2fbf4ddd3c8b06ccad12fd0e8f45d62caaea73c469e7ee36347e1b244c065",
+        "kiro-cli-chat": "16569e93fdda550672ed482fdf7d23241bfaf7ebdb440323873bf3201b6e6008",
+        "kiro-cli-term": "ef10ced5295f161fe2f1b2b3dc7c5c7badeb30662c17f3fd13f60a11030115db"
+      },
+      "build": {
+        "BUILD_DATE": "2026-08-19T22:24:10.194227+00:00",
+        "BUILD_HASH": "60eb656b3201c6e0a5b800c3b9dde677e0e33396",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.19.0"
+      }
+    },
+    "2.19.1": {
+      "archive_sha256": "b180e80c5656e08f70092d553cb97e9c1b1a1bd04197b4b23859ae4c930f68c0",
+      "executables": {
+        "kiro-cli": "66f747ded97d699703bb0893935cdd25a4fce37b3e8ecd32d2e0aa3733b52795",
+        "kiro-cli-chat": "c3ba96ca1dfff505c3af685cf7ca5acc3ee36c97a9f2417bf808313089b491df",
+        "kiro-cli-term": "106a67afed4863f99d0fa98e455d79a3ff3900c6c7d0427369ae80b22d2c4c63"
+      },
+      "build": {
+        "BUILD_DATE": "2026-08-20T19:31:16.292309+00:00",
+        "BUILD_HASH": "5ac111d2b500c1cc4604ac951d2e04c4fe863b05",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.19.1"
+      }
+    },
+    "2.19.2": {
+      "archive_sha256": "18fb1fdbc8902a574fd34e6623b229c1a1ee19e4866a89478e108e833cccc7ba",
+      "executables": {
+        "kiro-cli": "614a6e239fd75c81562bdc83a581e53f36b669247277a68c3c4a2ca8298bd7e7",
+        "kiro-cli-chat": "cc372c5384ff2fc7cad145f69222ea6e7fbad9c19cd152041493e63d116c1bb1",
+        "kiro-cli-term": "609fd9a473c15e3aed77b7595a3af70c793269d91649299d0478b6663043c79a"
+      },
+      "build": {
+        "BUILD_DATE": "2026-08-25T02:47:17.261555+00:00",
+        "BUILD_HASH": "80d5aeb353825e5fbbe66c5e5c07084979af0262",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.19.2"
+      }
+    },
+    "2.20.0": {
+      "archive_sha256": "f82e1d7fe354adcefa465bdf23605e2cc477dbf055b626a9a3095800d703eaea",
+      "executables": {
+        "kiro-cli": "e0f728dde981e6ab1d5e207b499de2122c723bb6312aead553081c9f32e6f8e7",
+        "kiro-cli-chat": "6369e8601ca0867804abdb5500080956c6bc6114fca8d94cc6f27426a898258c",
+        "kiro-cli-term": "b373271373c5910462d849844249887bee82e32f9a50fa23ea0079121d1a69e4"
+      },
+      "build": {
+        "BUILD_DATE": "2026-08-26T01:05:58.477999+00:00",
+        "BUILD_HASH": "fbab2a36c76374fb4b9ac23e6939ee62abea9015",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.20.0"
+      }
+    },
+    "2.20.1": {
+      "archive_sha256": "bd14048b37db3f47cd663d7133bd05d8f6ad99037a9aee85997df2bcff271ef2",
+      "executables": {
+        "kiro-cli": "3868f52017faee2fc2b4e3f5d24c22abe812ec4990e0c31b1ee7dc1c6370b239",
+        "kiro-cli-chat": "ea29c3aa20d6f03ba0e423463c5795e2cb773c21341b7e11948cd359a00ea005",
+        "kiro-cli-term": "d77565088a0c435e1c2b59ea0fb01c222b996f51cb3857e0eba6095225dbebd4"
+      },
+      "build": {
+        "BUILD_DATE": "2026-08-27T07:21:28.113057+00:00",
+        "BUILD_HASH": "dc1a243b88b0ba6c216ff345363f02b7a9c5884d",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.20.1"
+      }
+    },
+    "2.20.2": {
+      "archive_sha256": "49395d0491e6d9e46ce9b900f5e819573bd313751a5b0b6906899a92b438ee3a",
+      "executables": {
+        "kiro-cli": "0e629a6ba20ac0dede43114e7b1b0bdb33754e4d242c90968322dde930d10f0c",
+        "kiro-cli-chat": "857db0e02a7f0eb3141deafd553f91d3121aa310ea97a9975e027d946c408af5",
+        "kiro-cli-term": "4777518f816016b84b2348a848725b4037a9c4fecf3df7582b378864935deb09"
+      },
+      "build": {
+        "BUILD_DATE": "2026-08-31T17:24:50.890847+00:00",
+        "BUILD_HASH": "4eff83b5113b937bfd9f69a2167889de87807cf8",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.20.2"
+      }
+    },
+    "2.21.0": {
+      "archive_sha256": "6d1f633acca917a5e656a24199f51010a8172554b0105b20aeca20827fb69d72",
+      "executables": {
+        "kiro-cli": "8fc1b9e7ad8de2b7d57b42e231f0ef1cb7d2a96e855d976352c4ef05026fe1c6",
+        "kiro-cli-chat": "33caa1b564c92e89dc895a87498a54c051d3f1b55412d6d2b709216695207246",
+        "kiro-cli-term": "6fcf472f9cdc2d39311c85eab3e012771a480ecb076dd78910d198e145ca7398"
+      },
+      "build": {
+        "BUILD_DATE": "2026-09-01T00:32:11.937596+00:00",
+        "BUILD_HASH": "8436687fc8f3426e6330752748e3f9ee562b3a51",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.21.0"
+      }
+    },
+    "2.21.1": {
+      "archive_sha256": "e4f75158e46e72e5fe3c7f342d19bac0ea51426138049b85217d1d6864b60959",
+      "executables": {
+        "kiro-cli": "4aef794ccc5933c40c46b2430be3791fb4a444babaa41adf64cf5fcd9883f14c",
+        "kiro-cli-chat": "317f1d89d02811550e4bc87b73b2ff3e5444aa029ff4a4f783d8aa0698aada85",
+        "kiro-cli-term": "7dd5ed900cc671722b8c66e7f85e61e1d0d252874c10a85e677c420bc5e23ca2"
+      },
+      "build": {
+        "BUILD_DATE": "2026-09-04T11:49:43.518703+00:00",
+        "BUILD_HASH": "3958cee0a3dcce6e3984fa46daa42b774bdb680e",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.21.1"
+      }
+    },
+    "2.21.2": {
+      "archive_sha256": "d79959536352fc5f070316b0e7533e363e9364c0e262d19edb0312de3fd9db49",
+      "executables": {
+        "kiro-cli": "f7211998cdb3c4783929d7a43773eee56ef6b4ae1195dc123e86b85e9d07ec9c",
+        "kiro-cli-chat": "4cf81928a7af4b0c4436cc922c9f4bcc6984b86a45eeeef67a3fe1b1bcd4182d",
+        "kiro-cli-term": "00e1887e2dd9889f00890c48ccd721f1932c1f015889ef877794bc0807e5252d"
+      },
+      "build": {
+        "BUILD_DATE": "2026-09-08T19:40:53.848434+00:00",
+        "BUILD_HASH": "a4729fa233d8097438cb3dcb4c9c8d2f21cc82d9",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.21.2"
+      }
+    },
+    "2.21.3": {
+      "archive_sha256": "981173676093fca58b67f82e00c34efbe9c743f87ccf534393e931e2d4af4ede",
+      "executables": {
+        "kiro-cli": "7ae0673e3709da9cff3830502eccb73698164c98294322250318169b73c3844b",
+        "kiro-cli-chat": "96c53bca9c6ae08efa072ef0bbd2790c75f40c3c082e18ed521e14ab9cbabdcc",
+        "kiro-cli-term": "27496b127a51924da6bce63c158c722f48966dd8b508f4a860a75d03ed08a086"
+      },
+      "build": {
+        "BUILD_DATE": "2026-09-10T17:29:49.940677+00:00",
+        "BUILD_HASH": "764d760ed4357fb1d7eb75f112cd74eab272a747",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.21.3"
+      }
+    },
+    "2.21.4": {
+      "archive_sha256": "f582eac0e002b4d11bbd061d41fcb49d1d37626a2c1fe230373fcbf97755df6f",
+      "manifest_digest_match": "g05_072_planning_recorded_digest",
+      "executables": {
+        "kiro-cli": "3a1318d58edbd7e6b6b8cafcd04ac659f77fd8896c8b8faf6e1c87a9cb226e66",
+        "kiro-cli-chat": "13a8a907f86f9ff482990cb7aab22848d591de923427224fff3c851e7ab157f6",
+        "kiro-cli-term": "3592244b27cec80f9a4e02b55c0316fa656098d36e4826d09afa161b6d427e63"
+      },
+      "build": {
+        "BUILD_DATE": "2026-09-11T12:48:07.133043+00:00",
+        "BUILD_HASH": "57c33e903958a4731d1eaaa8353ad807badbe7d7",
+        "BUILD_TARGET_TRIPLE": "aarch64-unknown-linux-gnu",
+        "BUILD_VERSION": "2.21.4"
+      }
+    }
+  },
+  "macos_universal_dmg": {
+    "2.18.1": {
+      "sha256": "07893e9477c8d296ebc653192648772fd305718da4bf3a97583718e122c47061",
+      "mounted_readonly": true,
+      "bundle": "Kiro CLI.app",
+      "cli_path": "Contents/MacOS/kiro-cli",
+      "macos_kiro_cli_sha256": "0356b0f40252b8842482781a478ac39cddf795892f6df1968fcc875d46d0f640",
+      "CFBundleShortVersionString": "2.18.1",
+      "CFBundleVersion": "20260813.234951"
+    },
+    "2.21.4": {
+      "sha256": "954a48e8a5796507c6733c0b67e1b4a3fea97a4b24a3bdb37c43a4e9da2f95b7",
+      "mounted_readonly": true,
+      "bundle": "Kiro CLI.app",
+      "cli_path": "Contents/MacOS/kiro-cli",
+      "macos_kiro_cli_sha256": "6fce5b12851a33ab1aac619332078e9323f813db8e4ce4431fe02c1c201adfde",
+      "CFBundleShortVersionString": "2.21.4",
+      "CFBundleVersion": "20260911.130100"
+    }
+  },
+  "downloaded_artifact_executed": false,
+  "installed_on_host": false
+}

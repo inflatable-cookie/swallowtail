@@ -26,12 +26,18 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active campaign family: Kiro official manifest `2.21.4` (g05.072) is the twelfth family
-of Tom's authorized Research 308 campaign. Exact `2.18.1` is `QualifiedOnly`
-and the local CLI is absent; the manifest successors after `2.18.1` require a
-complete provider-free identity and mapped-module ledger, with the selected
-ACP wire, authority, and lifecycle classified without running Kiro or a
-provider. Mistral Vibe follows per the campaign order.
+Completed campaign family: Kiro official manifest `2.21.4` (g05.072) is the
+twelfth family of Tom's authorized Research 308 campaign. Research 320 froze
+the exact `2.18.1` baseline and all eleven published stable successors
+through `2.21.4` as exact official archives with per-hop BUILD-INFO and
+executable digests plus read-only-mounted DMG identity, and classified every
+selected ACP input provider-free. The selected surface is byte-stable across
+every hop (library pins `sacp-11.0.0` and `agent-client-protocol-0.10.4`, argv `kiro-cli acp`, `prompt` field, update kinds, permission kinds, stop
+reasons, cleanup), so the exact `QualifiedOnly` point advanced to `2.21.4`
+with the `kiro.acp.stdio-v1` behavior revision unchanged. The `_kiro.dev`
+extension set and the advertised `session/load` stay unmapped additions, and
+Research 251/254's empty deliver-now sets stand. The next family is Mistral
+Vibe.
 
 Stopped campaign family: Goose official GitHub `v1.50.0` (g05.071) is the
 eleventh family of Tom's authorized Research 308 campaign. Research 319 froze

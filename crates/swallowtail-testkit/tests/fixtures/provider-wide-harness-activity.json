@@ -596,7 +596,7 @@
    "id": "kiro.acp",
    "driver": "swallowtail.kiro.acp",
    "transport": "acp-v1-stdio",
-   "qualified": "2.18.1",
+   "qualified": "2.21.4",
    "prepared_profiles": [
     {
      "operation": "interactive-session",

@@ -31,6 +31,23 @@ annotated Git tags from the canonical repository.
   disposition stays independent.
 
 ### Changed
+- advance the Kiro ACP exact point from `2.18.1` to official stable-manifest
+  `2.21.4`: Research 320 freezes all eleven published stable successors as
+  exact official archives with byte-identical `install.sh`/`README`/`q`/
+  `qchat`, per-hop BUILD-INFO and executable digests, read-only-mounted DMG
+  identity, and a byte-stable selected ACP surface: initialize capability
+  shape, `session/new` cwd authority, the `prompt` field (the official docs
+  `content` example stays stale at `2.21.4`), cancel, session-update kinds,
+  permission kinds with `allow_always` unselected, stop reasons, and joined
+  cleanup. Keep the `kiro.acp.release-window-1` claim,
+  `kiro.acp.stdio-v1` behavior revision, exact one-point `QualifiedOnly`
+  posture, and no unverified-newer execution. The `_kiro.dev/*` extension
+  set (from `2.19.2`) and the advertised `session/load` (from `2.20.2`)
+  stay unmapped additions, and the chat-only `--v2` harness flag at
+  `2.21.4` never enters the selected argv. Research 251 and 254 keep their
+  empty deliver-now sets with their package/source gates now closed by
+  per-hop binary evidence. No provider operation, host mutation, or
+  downloaded-artifact execution occurred.
 - advance the Command Code exact point from `1.15.1` to official npm
   `1.54.0`: Research 317 freezes all 67 published stable successors with a
   complete package-tree inventory, no removals, eight additive bundled

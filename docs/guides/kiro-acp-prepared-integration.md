@@ -22,7 +22,7 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Preparation requires all of the following:
 
 - exact release axis `kiro-cli.release`
-- exact installer-manifest release `2.18.1`
+- exact installer-manifest release `2.21.4`
 - host-approved `kiro-cli` executable and isolated environment
 - `kiro_local_account_access_profile` with no credential reference
 - working resource, plus host services for task, process, and working-resource
@@ -64,7 +64,7 @@ The driver owns one joined stdio child and performs this sequence:
 6. join connection, process, and task cleanup
 
 Initialize result fields are unrecovered from public Kiro source. A present
-`agentInfo.name` must be `kiro-cli`; a present version must match `2.18.1`.
+`agentInfo.name` must be `kiro-cli`; a present version must match `2.21.4`.
 Missing fields are not invented.
 
 Host `fs/readTextFile` and `fs/writeTextFile` callbacks are rejected. Session

@@ -39,7 +39,7 @@ pub struct FixtureHost {
 
 impl FixtureHost {
     pub fn new(scenario: Scenario) -> Self {
-        Self::with_version(scenario, "2.18.1")
+        Self::with_version(scenario, "2.21.4")
     }
 
     pub fn with_version(scenario: Scenario, version: &str) -> Self {

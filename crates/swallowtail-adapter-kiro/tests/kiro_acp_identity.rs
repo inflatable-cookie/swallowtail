@@ -20,7 +20,10 @@ fn frozen_identity_keeps_acp_separate_from_headless_cloud_and_content_field() {
     let identity: Value = serde_json::from_str(IDENTITY).expect("identity fixture");
     assert_eq!(identity["axis"], "kiro-cli.release");
     assert_eq!(identity["route"], "kiro.acp");
-    assert_eq!(identity["official"]["version"], KIRO_CLI_RELEASE_VERSION);
+    // The frozen 2.18.1 corpus stays as historical baseline identity; the
+    // qualified claim is now exact 2.21.4 (see fixtures/kiro-acp-2.21.4).
+    assert_eq!(identity["official"]["version"], "2.18.1");
+    assert_eq!(KIRO_CLI_RELEASE_VERSION, "2.21.4");
     assert_eq!(
         identity["identity_decision"]["flatten_onto_kiro_headless"],
         false

@@ -26,10 +26,14 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Grok Build ACP is the sixth family of Tom's authorized
-Research 308 campaign. The worker must recheck official latest and freeze
-identity before changing the ACP claim, keeping the catalogue axis on its
-separate evidence. Shared matrices and the changelog stay serial.
+Active family: Grok Build ACP official npm stable `1.0.30` (g05.064) is the
+sixth family of Tom's authorized Research 308 campaign. Planning observed the
+same exact installed build, `1.0.30 (04b7ffed98c6) [stable]`, and every
+published stable after the `1.0.5` ceiling is `1.0.6..=1.0.30`. Published
+`1.0.31` is alpha and not the stable target. The worker must recheck the
+official channel and freeze complete all-hop identity before changing the ACP
+claim. The exact `1.0.25` catalogue operation and registered-tool carrier stay
+independently bounded. Shared matrices and the changelog stay serial.
 
 Completed campaign family: Ollama official `0.34.0` (g05.063) is the fifth
 family of Tom's authorized Research 308 campaign. Research 313 froze all

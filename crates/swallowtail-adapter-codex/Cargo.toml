@@ -51,3 +51,7 @@ path = "tests/exec_suite.rs"
 [[test]]
 name = "codex_0_152_1_identity"
 path = "tests/codex_0_152_1_identity.rs"
+
+[[test]]
+name = "codex_0_154_0_identity"
+path = "tests/codex_0_154_0_identity.rs"

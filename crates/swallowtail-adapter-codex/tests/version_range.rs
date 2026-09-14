@@ -53,13 +53,11 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
     }
     for claim in [codex_exec_claim(), codex_app_server_claim()] {
         assert_eq!(
-            claim
-                .classify(binding("0.80.0").version())
-                .unwrap()
-                .support_status(),
-            InterfaceSupportStatus::Deprecated
+            claim.assess(binding("0.152.2").version()),
+            InterfaceCompatibilityAssessment::Incompatible,
+            "newly interior unpublished 0.152.2 stays incompatible"
         );
-        let newer = binding("0.152.2");
+        let newer = binding("0.154.1");
         assert!(!claim.supports(newer.version()));
         assert!(claim.permits(newer.version()));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
@@ -68,7 +66,7 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
             panic!("newer stable Codex version must remain unverified");
         };
         assert_eq!(unverified.version(), newer.version());
-        assert_eq!(unverified.latest_qualified().as_str(), "0.152.1");
+        assert_eq!(unverified.latest_qualified().as_str(), "0.154.0");
     }
     assert_eq!(
         codex_exec_claim()

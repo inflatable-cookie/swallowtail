@@ -1,0 +1,60 @@
+{
+  "axis": "codex.cli",
+  "version": "0.154.0",
+  "observed_at": "2026-09-14",
+  "npm_package": "@openai/codex",
+  "npm_latest": true,
+  "published_at": "2026-09-09T22:40:10.746Z",
+  "npm_integrity": "sha512-FV/x1OHXYv/ifjf3mXj9ThTTAWcUZN6cGIRQRhRxkKNOPuImu1WW0c8ev1vUkE9XGH90dEnYG1tBjIkxRikg0w==",
+  "npm_shasum": "eb1ec011cca427c606ef6cd4814014e59a1c3d70",
+  "git_tag": "rust-v0.154.0",
+  "tag_commit": "6b9826e3aa83b1a5947db50f4332cb9c65f1b340",
+  "local_cli": "codex-cli 0.153.3",
+  "official_cli": "codex-cli 0.154.0",
+  "published_intermediates": ["0.153.0", "0.153.1", "0.153.2", "0.153.3", "0.153.4", "0.154.0"],
+  "unpublished_gaps": ["0.149.2", "0.150.2", "0.151.1", "0.152.2"],
+  "source_delta": {
+    "base_tag": "rust-v0.152.1",
+    "base_commit": "5adb68a49933ae446bf11935662c83dba55a0804",
+    "head_commit": "6b9826e3aa83b1a5947db50f4332cb9c65f1b340",
+    "changed_files": 1812,
+    "mapped_feeding_changed_files": 0,
+    "note": "downloaded binaries were hashed and never executed; per-hop added/removed/changed sets are frozen in the codex-cli-0.154.0 dist inventory; selected surfaces are proved through byte-identical generating sources, additive-only schema digests, and the bounded feeding-change ledger in protocol.json"
+  },
+  "schema": {
+    "generator": "codex app-server generate-json-schema --out",
+    "authority": "upstream-published checked-in schema files",
+    "v2_bundle_sha256": "f3487938786b729cb6773dbc9e83a7efab9c78c845db7094e8f539f373cbacc9",
+    "methods_present": [
+      "initialize",
+      "model/list",
+      "thread/list",
+      "thread/read",
+      "thread/start",
+      "thread/resume",
+      "thread/archive",
+      "thread/delete",
+      "turn/start",
+      "turn/interrupt",
+      "item/started",
+      "item/completed",
+      "item/plan/delta",
+      "subAgentActivity",
+      "collabAgentToolCall"
+    ]
+  },
+  "claim_at_observation": {
+    "latest_qualified": "0.152.1",
+    "classification": "unverified_newer"
+  },
+  "segment_decision": {
+    "shape": "compatible-extension",
+    "exec_behavior": "codex.exec.jsonl-v1",
+    "app_server_behavior": "codex.app-server.v2.workspace-roots",
+    "lifecycle_behavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+    "extend_through": "0.154.0",
+    "raise_thread_catalogue_ceiling": true,
+    "new_milestone": false,
+    "later_unverified_after_qualification": "0.154.1"
+  }
+}

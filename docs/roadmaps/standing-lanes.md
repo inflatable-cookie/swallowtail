@@ -26,12 +26,21 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active family: Codex `0.154.0` (g05.061) is the third family of Tom's
-authorized Research 308 campaign. Planning observed six published stable hops
-after the qualified `0.152.1` ceiling and host `0.153.3`; the worker must
-recheck official latest and freeze identity before changing either exec or
-app-server. Historical gaps, lifecycle segments, and feature-specific exact
-version sets stay independently bounded.
+Active family: Cursor Agent is the fourth family of Tom's authorized Research
+308 campaign. The worker must recheck official latest and freeze identity
+before changing catalogue, ACP, or headless claims. Shared matrices and the
+changelog stay serial.
+
+Completed campaign family: Codex official npm and GitHub release `0.154.0`
+(g05.061) is the third family of Tom's authorized Research 308 campaign.
+Research 311 froze all six published stable hops after the prior `0.152.1`
+ceiling and host `0.153.3`. The compatible-extension claim now qualifies
+both exec and app-server through `0.154.0`; newly interior unpublished
+`0.152.2` is pinned incompatible alongside `0.149.2`, `0.150.2`, and
+`0.151.1`, while unpublished `0.154.1` stays permitted `UnverifiedNewer`,
+feature-specific exact sets stay on the `0.147.0..=0.149.1` probed points,
+and historical windows, claim identities, and `AllowUnverified` stay. The
+next family is Cursor Agent.
 
 Completed campaign family: Qwen Code official npm and direct GitHub release
 `0.23.3` (g05.060) is the second family of Tom's authorized Research 308

@@ -91,7 +91,13 @@ fn prepared_compatibility_keeps_deprecated_and_unverified_newer_visible() {
         ("0.151.0", Some(InterfaceSupportStatus::Maintained)),
         ("0.152.0", Some(InterfaceSupportStatus::Maintained)),
         ("0.152.1", Some(InterfaceSupportStatus::Maintained)),
-        ("0.152.2", None),
+        ("0.153.0", Some(InterfaceSupportStatus::Maintained)),
+        ("0.153.1", Some(InterfaceSupportStatus::Maintained)),
+        ("0.153.2", Some(InterfaceSupportStatus::Maintained)),
+        ("0.153.3", Some(InterfaceSupportStatus::Maintained)),
+        ("0.153.4", Some(InterfaceSupportStatus::Maintained)),
+        ("0.154.0", Some(InterfaceSupportStatus::Maintained)),
+        ("0.154.1", None),
     ] {
         let fixture = fixture(CodexPreparedDriver::StructuredExec, "host.local", "codex");
         let (process, _) = FakeProcessService::completed(&format!("codex-cli {version}\n"));
@@ -108,7 +114,7 @@ fn prepared_compatibility_keeps_deprecated_and_unverified_newer_visible() {
             }
             (InstalledExecutableCompatibility::UnverifiedNewer(newer), None) => {
                 assert_eq!(newer.version().as_str(), version);
-                assert_eq!(newer.latest_qualified().as_str(), "0.152.1");
+                assert_eq!(newer.latest_qualified().as_str(), "0.154.0");
             }
             (actual, expected) => {
                 panic!("unexpected compatibility {actual:?} for expected {expected:?}")
@@ -122,6 +128,11 @@ fn incompatible_malformed_and_bounded_output_fail_at_distinct_stages() {
     for (output, expected_stage, expected_code) in [
         (
             "codex-cli 0.108.0\n".to_owned(),
+            PreparationStage::CompatibilityClassification,
+            "swallowtail.codex.preparation.discovery_rejected",
+        ),
+        (
+            "codex-cli 0.152.2\n".to_owned(),
             PreparationStage::CompatibilityClassification,
             "swallowtail.codex.preparation.discovery_rejected",
         ),

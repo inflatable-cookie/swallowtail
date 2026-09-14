@@ -82,12 +82,29 @@ operation, release, tag, publication, or consumer mutation.
 
 ## Acceptance
 
-- [ ] official identity and every published stable are reproducible
-- [ ] every changed selected input is classified
-- [ ] identity evidence precedes production claim edits
-- [ ] exec and app-server remain separately truthful
-- [ ] historical windows, gaps, exact feature sets, claim identities, and `AllowUnverified` survive
-- [ ] official latest is rechecked at both boundaries
+- [x] official identity and every published stable are reproducible
+- [x] every changed selected input is classified
+- [x] identity evidence precedes production claim edits
+- [x] exec and app-server remain separately truthful
+- [x] historical windows, gaps, exact feature sets, claim identities, and `AllowUnverified` survive
+- [x] official latest is rechecked at both boundaries
+
+## Result
+
+Research 311 froze the official npm/GitHub identities for all six published
+stables after `0.152.1` (`0.153.0` through `0.154.0`) with complete
+wrapper/platform/source-tree inventories. The exec JSONL wire is
+byte-identical, selected schema params are byte-identical or additive-only,
+and the only selected-feeding deltas are the default-off `exec --worktree`
+opt-in, CLI text plus AWS/remote additions, the rollout-cwd scanner
+refactor, allocator/plumbing internals, experimental-realtime removal, and
+new unmapped dispatch arms. The compatible-extension claim qualifies both
+axes through `0.154.0`, pins newly interior unpublished `0.152.2`
+incompatible, keeps every feature-specific exact set on the
+`0.147.0..=0.149.1` probed points, and preserves historical windows, gaps,
+claim identities, and `AllowUnverified`. No provider operation or host
+mutation occurred. Validation is named in the handoff; PR review remains
+queue-owned.
 
 ## Next Task
 

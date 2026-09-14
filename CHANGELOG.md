@@ -6,6 +6,18 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
+- raise the Codex exec and app-server qualified ceiling through official npm
+  `@openai/codex` `0.154.0`: Research 311 freezes all six published stable
+  hops after `0.152.1` with complete wrapper/platform/source-tree
+  inventories and classifies the selected exec JSONL, app-server RPC/schema,
+  catalogue, session, lifecycle, and process surfaces as a compatible
+  extension. Extend the maintained `codex.cli` window through `0.154.0`, pin
+  newly interior unpublished `0.152.2` incompatible alongside `0.149.2`,
+  `0.150.2`, and `0.151.1`, keep feature-specific exact pins on the
+  `0.147.0..=0.149.1` probed points, and preserve historical windows and
+  `AllowUnverified`. The default-off `exec --worktree` opt-in, plugin
+  reconcile, user verification, and other adjacent deltas stay unmapped. No
+  provider operation or host mutation occurred.
 - raise the Qwen Code headless qualified ceiling through official npm
   `@qwen-code/qwen-code` `0.23.3`: Research 310 freezes every published
   `0.23.x` hop and classifies the selected stream, controls, help, session,

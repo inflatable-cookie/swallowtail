@@ -426,7 +426,7 @@ OpenHands adds a package without a production route.
   interactive ACP execution, and visible later-stable unverified posture;
   deprecated `0.2.114..=0.2.117` remain, exact `0.2.117` carries a distinct
   private task-control behavior revision without adding public task-control
-  authority, and maintained `1.0.4..=1.0.5` bind `grok-4.6`
+  authority, and maintained `1.0.4..=1.0.30` bind `grok-4.6`
 - `swallowtail-adapter-cursor` realizes exact Cursor Agent milestones
   `2026.07.01-41b2de7`, `2026.07.23-e383d2b`, `2026.08.04-aaa8809`,
   `2026.08.11-e8db854`, `2026.08.31-4057e58`, `2026.09.02-c22c1a3`, and

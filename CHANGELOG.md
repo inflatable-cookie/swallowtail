@@ -6,6 +6,24 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Changed
+- raise the Grok Build ACP executable window through official npm
+  `@xai-official/grok` `1.0.30`: Research 314 freezes all 25 published
+  stables `1.0.6..=1.0.30` after the `1.0.5` ceiling with verified
+  wrapper/platform integrity, tarball and decompressed executable digests,
+  and a complete shipped-file inventory; the mapped ACP method, callback,
+  key, permission, auth, and model literal presence map is byte-identical at
+  every hop, the embedded model document changes once only by dropping the
+  unread `show_model_fingerprint` key, and the 62 mapped-core ACP modules
+  persist while added modules and internal renames stay unmapped. Extend the
+  maintained window `1.0.4..=1.0.30` on
+  `grok-build.acp-v1.cached-token-model-4-6-v3`, keep the baseline, claim
+  identity, deprecated `0.2.114..=0.2.117` segments, `0.2.118..=0.2.121` and
+  `1.0.0..=1.0.3` gaps, `grok-4.6` binding, and `AllowUnverified`, and leave
+  published alpha `1.0.31` and the next unpublished stable `1.0.32` visible
+  unverified. The exact `1.0.25` `QualifiedOnly` catalogue claim and the
+  registered-tool courier on the accepted live versions `1.0.4` and `1.0.5`
+  stay independently bounded and do not move. No provider operation,
+  downloaded-artifact execution, or host mutation occurred.
 - raise the Ollama attached-runtime qualified ceiling through official
   `0.33.2`: Research 313 freezes all five published hops after `0.32.15`
   with tag/commit/tree and selected-file hashes and classifies the eight

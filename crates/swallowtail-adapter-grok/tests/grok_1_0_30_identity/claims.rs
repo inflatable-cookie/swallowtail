@@ -1,20 +1,22 @@
-//! Production claim state before and inside the identity card.
+//! Production claim state after the g05.064 claim card.
 //!
-//! The identity card freezes evidence only. These assertions record that the
-//! production ACP claim still stops at `1.0.5` until the claim card lands; the
-//! claim card rewrites this module to the after state.
+//! The ACP executable window extends through official `1.0.30` on the
+//! existing behavior revision. The exact `1.0.25` catalogue claim and the
+//! registered-tool courier bounded to the accepted live capsules stay
+//! independent of the ACP window.
 
-use super::identity::{HOPS, OFFICIAL_STABLE, PREVIOUS_CEILING};
-use super::support::{IDENTITY, json, version};
+use super::identity::{COMPARED, HOPS, OFFICIAL_STABLE, PREVIOUS_CEILING};
+use super::support::version;
 use swallowtail_adapter_grok::{
-    GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, grok_build_acp_claim, grok_build_model_for_version,
+    GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, grok_build_acp_claim, grok_build_catalogue_claim,
+    grok_build_model_for_version, registered_tool,
 };
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus};
 
 #[test]
-fn production_claim_still_stops_at_the_previous_ceiling_inside_the_identity_card() {
+fn production_claim_admits_every_hop_through_1_0_30_as_maintained() {
     let claim = grok_build_acp_claim();
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, PREVIOUS_CEILING);
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, OFFICIAL_STABLE);
     for (point, behavior, status) in [
         (
             "0.2.114",
@@ -31,35 +33,50 @@ fn production_claim_still_stops_at_the_previous_ceiling_inside_the_identity_card
             "grok-build.acp-v1.cached-token-task-control-v2",
             InterfaceSupportStatus::Deprecated,
         ),
-        (
-            "1.0.4",
-            "grok-build.acp-v1.cached-token-model-4-6-v3",
-            InterfaceSupportStatus::Maintained,
-        ),
-        (
-            "1.0.5",
-            "grok-build.acp-v1.cached-token-model-4-6-v3",
-            InterfaceSupportStatus::Maintained,
-        ),
     ] {
         let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version(point))
         else {
-            panic!("{point} must stay qualified inside the identity card");
+            panic!("{point} must stay qualified");
         };
         assert_eq!(matched.behavior_revision().as_str(), behavior);
         assert_eq!(matched.support_status(), status);
     }
-    assert_eq!(
-        grok_build_model_for_version(&version("1.0.5")),
-        Some("grok-4.6")
-    );
-    for point in HOPS {
-        let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-            claim.assess(&version(point))
+    for point in COMPARED {
+        if *point == PREVIOUS_CEILING {
+            continue;
+        }
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version(point))
         else {
-            panic!("{point} must stay unverified newer inside the identity card");
+            panic!("{point} must be qualified after the claim card");
         };
-        assert_eq!(unverified.latest_qualified().as_str(), PREVIOUS_CEILING);
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            "grok-build.acp-v1.cached-token-model-4-6-v3"
+        );
+        assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
+        assert_eq!(
+            grok_build_model_for_version(&version(point)),
+            Some("grok-4.6")
+        );
+    }
+    for point in ["1.0.4", "1.0.5"] {
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version(point))
+        else {
+            panic!("{point} must stay qualified");
+        };
+        assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
+        assert_eq!(
+            grok_build_model_for_version(&version(point)),
+            Some("grok-4.6")
+        );
+    }
+    for later in ["1.0.31", "1.0.32", "1.1.0"] {
+        let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
+            claim.assess(&version(later))
+        else {
+            panic!("{later} must stay unverified newer");
+        };
+        assert_eq!(unverified.latest_qualified().as_str(), OFFICIAL_STABLE);
         assert_eq!(
             unverified.behavior_revision().as_str(),
             "grok-build.acp-v1.cached-token-model-4-6-v3"
@@ -72,6 +89,46 @@ fn production_claim_still_stops_at_the_previous_ceiling_inside_the_identity_card
             "{gap} must stay incompatible"
         );
     }
-    let decision = &json(IDENTITY)["identity_decision"];
-    assert_eq!(decision["raise_latest_qualified_to"], OFFICIAL_STABLE);
+    assert_eq!(HOPS.len(), COMPARED.len() - 1);
+}
+
+#[test]
+fn the_exact_catalogue_claim_does_not_move_with_the_acp_window() {
+    let catalogue = grok_build_catalogue_claim();
+    let InterfaceCompatibilityAssessment::Qualified(matched) = catalogue.assess(&version("1.0.25"))
+    else {
+        panic!("exact 1.0.25 stays catalogue-qualified");
+    };
+    assert_eq!(
+        matched.behavior_revision().as_str(),
+        "grok-build.catalogue.models-text-v1"
+    );
+    for rejected in ["1.0.4", "1.0.24", "1.0.30"] {
+        assert_eq!(
+            catalogue.assess(&version(rejected)),
+            InterfaceCompatibilityAssessment::Incompatible,
+            "{rejected} stays outside the exact catalogue point"
+        );
+    }
+}
+
+#[test]
+fn the_registered_tool_courier_stays_on_the_accepted_live_capsules() {
+    use swallowtail_runtime::RegisteredToolRouteQualification;
+    for accepted in ["1.0.4", "1.0.5"] {
+        assert_eq!(
+            registered_tool::grok_build_acp_registered_tool_qualification(&version(accepted)),
+            RegisteredToolRouteQualification::Qualified(
+                registered_tool::GROK_ACP_REGISTERED_TOOL_ROUTE
+            ),
+            "{accepted} carries an accepted live capsule"
+        );
+    }
+    for later in ["1.0.6", "1.0.17", "1.0.30", "1.0.31"] {
+        assert_eq!(
+            registered_tool::grok_build_acp_registered_tool_qualification(&version(later)),
+            RegisteredToolRouteQualification::Unqualified,
+            "{later} carries no accepted registered-tool evidence"
+        );
+    }
 }

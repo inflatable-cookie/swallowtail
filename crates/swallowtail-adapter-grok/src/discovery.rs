@@ -15,13 +15,38 @@ use crate::failure::failure;
 use crate::{grok_build_acp_binding, grok_build_acp_claim};
 
 const MAX_VERSION_OUTPUT_BYTES: usize = 96;
-const QUALIFIED_SOURCE_REVISIONS: [(&str, &str); 6] = [
+const QUALIFIED_SOURCE_REVISIONS: &[(&str, &str)] = &[
     ("0.2.114", "0c785038798"),
     ("0.2.115", "dd16b5eb7d50"),
     ("0.2.116", "99b387d2cc0e"),
     ("0.2.117", "f1c06093089f"),
     ("1.0.4", "d846eb93d94d"),
     ("1.0.5", "5115b46bc909"),
+    ("1.0.6", "24c70bc7ffdd"),
+    ("1.0.7", "325eae35b09b"),
+    ("1.0.8", "95f4d452703b"),
+    ("1.0.9", "d5a34fd40c84"),
+    ("1.0.10", "5992780042ca"),
+    ("1.0.11", "6870d7b2fdb7"),
+    ("1.0.12", "ece2b556c271"),
+    ("1.0.13", "5e9a58528b76"),
+    ("1.0.14", "dbb9bc1e773c"),
+    ("1.0.15", "9df779fea880"),
+    ("1.0.16", "a0239a2688c1"),
+    ("1.0.17", "a549186d9d39"),
+    ("1.0.18", "ea950872ad51"),
+    ("1.0.19", "6b38df55f6b2"),
+    ("1.0.20", "df7ef6ad56ed"),
+    ("1.0.21", "3aedf38d5cfb"),
+    ("1.0.22", "8f40483ca2a5"),
+    ("1.0.23", "7fa0ca2c9e6a"),
+    ("1.0.24", "68e414c661e3"),
+    ("1.0.25", "f7e67d6988e2"),
+    ("1.0.26", "fadad3468632"),
+    ("1.0.27", "a538938e5720"),
+    ("1.0.28", "cae16d2533b6"),
+    ("1.0.29", "4c83f16c3e10"),
+    ("1.0.30", "04b7ffed98c6"),
 ];
 
 // Vendor source: https://docs.x.ai/build/overview (frozen 2026-09-06).
@@ -367,19 +392,27 @@ mod tests {
 
     #[test]
     fn parser_requires_stable_channel_and_every_exact_qualified_revision() {
+        for (version, revision) in super::QUALIFIED_SOURCE_REVISIONS {
+            let output = format!("grok {version} ({revision}) [stable]\n");
+            assert_eq!(
+                parse_version(output.as_bytes())
+                    .unwrap_or_else(|| panic!("{version} must parse"))
+                    .version()
+                    .as_str(),
+                *version
+            );
+        }
+        // Ordered points outside the pinned window still parse; their
+        // classification is the claim's job, not the version scanner's.
         for (output, version) in [
-            ("grok 0.2.114 (0c785038798) [stable]\n", "0.2.114"),
-            ("grok 0.2.115 (dd16b5eb7d50) [stable]\n", "0.2.115"),
-            ("grok 0.2.116 (99b387d2cc0e) [stable]\n", "0.2.116"),
-            ("grok 0.2.117 (f1c06093089f) [stable]\n", "0.2.117"),
-            ("grok 1.0.4 (d846eb93d94d) [stable]\n", "1.0.4"),
-            ("grok 1.0.5 (5115b46bc909) [stable]\n", "1.0.5"),
             ("grok 0.2.118 (123456789abc) [stable]\n", "0.2.118"),
-            ("grok 1.0.6 (abcdef123456) [stable]\n", "1.0.6"),
+            ("grok 1.0.31 (04b7ffed98c6) [stable]\n", "1.0.31"),
+            ("grok 1.0.32 (04b7ffed98c6) [stable]\n", "1.0.32"),
+            ("grok 1.1.0 (04b7ffed98c6) [stable]\n", "1.1.0"),
         ] {
             assert_eq!(
                 parse_version(output.as_bytes())
-                    .expect("exact release parses")
+                    .expect("unpinned release parses")
                     .version()
                     .as_str(),
                 version
@@ -392,6 +425,9 @@ mod tests {
             b"grok 0.2.117 (99b387d2cc0e) [stable]\n".as_slice(),
             b"grok 1.0.4 (f1c06093089f) [stable]\n".as_slice(),
             b"grok 1.0.5 (d846eb93d94d) [stable]\n".as_slice(),
+            b"grok 1.0.6 (5115b46bc909) [stable]\n".as_slice(),
+            b"grok 1.0.17 (f7e67d6988e2) [stable]\n".as_slice(),
+            b"grok 1.0.30 (f7e67d6988e2) [stable]\n".as_slice(),
             b"grok 0.2.114 (0c785038798) [alpha]\n".as_slice(),
             b"grok 0.2.114 (0c785038798)\n".as_slice(),
             b"0.2.114\n".as_slice(),

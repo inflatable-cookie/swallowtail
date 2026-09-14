@@ -1,7 +1,16 @@
 #[test]
 fn qualified_behavior_segments_execute() {
     let claim = swallowtail_adapter_grok::grok_build_acp_claim();
-    for candidate in ["0.2.114", "0.2.117", "1.0.4", "1.0.5"] {
+    for candidate in [
+        "0.2.114",
+        "0.2.117",
+        "1.0.4",
+        "1.0.5",
+        "1.0.6",
+        "1.0.17",
+        "1.0.24",
+        "1.0.30",
+    ] {
         let version = swallowtail_core::InterfaceVersion::new(candidate).expect("version");
         assert!(claim.supports(&version));
         let host = FixtureHost::with_version(Scenario::Success, candidate);
@@ -18,16 +27,16 @@ fn qualified_behavior_segments_execute() {
 #[test]
 fn unverified_newer_executes_without_becoming_guaranteed_support() {
     let claim = swallowtail_adapter_grok::grok_build_acp_claim();
-    let version = swallowtail_core::InterfaceVersion::new("1.0.6").expect("version");
+    let version = swallowtail_core::InterfaceVersion::new("1.0.31").expect("version");
     assert!(!claim.supports(&version));
     assert!(claim.permits(&version));
     assert!(matches!(
         claim.assess(&version),
         swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
-    let host = FixtureHost::with_version(Scenario::Success, "1.0.6");
+    let host = FixtureHost::with_version(Scenario::Success, "1.0.31");
     let host_id = ExecutionHostId::new("fixture.host.grok.unverified").expect("host");
-    let mut run = start_run(host_id, &host, "1.0.6", Some(run_deadline()));
+    let mut run = start_run(host_id, &host, "1.0.31", Some(run_deadline()));
     let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);

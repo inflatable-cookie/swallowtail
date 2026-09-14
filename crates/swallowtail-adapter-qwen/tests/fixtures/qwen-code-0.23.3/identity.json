@@ -1,0 +1,119 @@
+{
+  "axis": "qwen-code.package",
+  "observed_at": "2026-09-14",
+  "npm_package": "@qwen-code/qwen-code",
+  "npm_latest": true,
+  "host": {
+    "version": "0.21.2",
+    "executable_sha256": "08d28a806f88eb00351fd32f32f891ae5c17d39d28c2538a57a8f8b931684a13",
+    "executable_size": 71,
+    "note": "Observed installed host version and digest only; host was not changed"
+  },
+  "official": {
+    "version": "0.23.3",
+    "source": "official-npm-tarball",
+    "published_at": "2026-09-10T15:20:05.693Z",
+    "github_tag": "v0.23.3",
+    "github_published_at": "2026-09-10T14:56:46Z",
+    "npm_integrity": "sha512-QaBNg5y/nfKJCMdVYjZmEx9n0StGTvg3NIYRExHIy9OWgBQ4wE7MQc7YrAMvy13pUmqJhYlpwOtvNsGDAgvYdA==",
+    "npm_shasum": "3336056e130b9199bf365e0c2a34416523240e18",
+    "github_commit": "b695664b8df06d06c625db3e30b97045d82092c7",
+    "tarball_sha256": "1f791a136e326f79f317784d1244c79b020a0058eb9458dcf6e1594ae67fb5e5",
+    "package_json_sha256": "45f92de42988a9fa8a53db96b127eca8d8e19f0ce4f669435e7e555a04db1fd1",
+    "extracted_cli_sha256": "d2556c3877e4f697c14e1fb8f532561b583ae99f638b07b9412c6ed491e315be",
+    "extracted_cli_size": 14550,
+    "extracted_bin_entry_sha256": "68cb29eb7ccc936d78ece5564ef55cae41a55b630e6657dc417c1f2e561cf4c9",
+    "extracted_bin_entry_size": 13895
+  },
+  "research_258_ceiling": "0.22.3",
+  "published_intermediates": [
+    {
+      "version": "0.23.0",
+      "published_at": "2026-09-03T11:53:52.432Z",
+      "github_tag": "v0.23.0",
+      "github_published_at": "2026-09-03T11:03:15Z",
+      "github_commit": "98a9c964158697dd5631d15a62174684ff7bbb53",
+      "npm_integrity": "sha512-foznQtmptzM7DtYGPALZVtwUBVTsANYc6ytWOfGisXB7FgpzNmYT6xIHzh+26RJD9Kl+qzRW0gFp/AkqRouhnQ==",
+      "npm_shasum": "01a83323ddf99f2b9b0e76e87c0ea42fab1d24c2"
+    },
+    {
+      "version": "0.23.1",
+      "published_at": "2026-09-08T16:17:55.104Z",
+      "github_tag": "v0.23.1",
+      "github_published_at": "2026-09-08T15:56:16Z",
+      "github_commit": "d9331e6fcf7f8f8225a16a9ec6973f8f38f56747",
+      "npm_integrity": "sha512-HEAMzo5dbHA5N6tzAMgm+oHlfN9nZ9yO9GTQF1usayoVVnUO7usyDGB5vnMFVMFQB5jgb+ztLkclB52JUy2KLg==",
+      "npm_shasum": "d15f0dd9ecc8325d88f5b79439849e31d55d581c"
+    },
+    {
+      "version": "0.23.2",
+      "published_at": "2026-09-09T11:08:10.043Z",
+      "github_tag": "v0.23.2",
+      "github_published_at": "2026-09-09T10:51:34Z",
+      "github_commit": "f56de980b316cd5410f067fbb62357481ebd66b8",
+      "npm_integrity": "sha512-OthkaYnzRauVopk9yhgbQUfbsQo/B45fB76yHo863gRiv2cp8NmDOs1+79KxPb0zoi/G3fC6OvUHVgqdCCcFJQ==",
+      "npm_shasum": "98c144d1ec89a66e6f0cb2d6685efda2e1e9f6cd"
+    }
+  ],
+  "published_stables_from_previous_ceiling": [
+    "0.23.0",
+    "0.23.1",
+    "0.23.2",
+    "0.23.3"
+  ],
+  "unpublished_stable_0_20_2": true,
+  "unpublished_0_21_16": true,
+  "unpublished_0_22_4": true,
+  "unpublished_0_23_4": true,
+  "ignored_preview": "0.23.2-preview.0",
+  "ignored_nightly": "0.23.3-nightly.20260913.faa395885e",
+  "selected_blobs_at_0_23_3": {
+    "stream_types": "ad95cd033ab6ebab8f2f67bd8383e0bbfa11d26f20c9b31b78cd42f6bd0f8c94",
+    "system_controller": "1fb10dfccfd68395418bc84fa6c86009df6755ab215b8ce864a2d12445256a2f",
+    "config": "3e95e0e05af32b733f354ee90987d5b610b0134dc8757dfc24908067b5ffab63",
+    "session": "a19be9464a8edf3815664f2e3f0135f914c38438d68b36d6a04712965a5a9755",
+    "reasoning_effort": "a0d945a6a04a40bc9dfd5ae2eafddbdd162d5ba7f6df96734b155817b06f2ba2",
+    "dashscope": "2c06150dd472cb262fee364b58070f458ed8d5dc0a25f7d3be5baaa2a62c4ea6",
+    "permission_flow": "ba8508c76d517ffdfcd36db58c55d2ad4d38e00ba73b022dafb3658f9b21c054",
+    "plan_mode_shell_policy": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe",
+    "exit_plan_mode": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e"
+  },
+  "selected_mapped_subset_unchanged": true,
+  "plan_mode_blobs_unchanged": true,
+  "cli_entry_identical_0_21_15_through_0_23_3": true,
+  "claim_at_observation": {
+    "baseline": "0.19.11",
+    "latest_qualified": "0.22.3",
+    "posture": "allow_unverified",
+    "classification_of_0_23_0": "unverified_newer",
+    "classification_of_0_23_1": "unverified_newer",
+    "classification_of_0_23_2": "unverified_newer",
+    "classification_of_0_23_3": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior_revision": "qwen-code.headless.v0.21.15-reasoning-control",
+    "keep_exact_0_21_15": true,
+    "extend_same_revision_segment": "0.22.0..=0.23.3",
+    "raise_latest_qualified_to": "0.23.3",
+    "keep_baseline": "0.19.11",
+    "qualify_intermediates": true,
+    "new_milestone": false,
+    "keep_0_20_2_incompatible": true,
+    "keep_0_21_16_incompatible": true,
+    "keep_0_22_4_incompatible": true,
+    "later_unverified_after_qualification": "0.23.4",
+    "extend_plan_exact_list_to_include_0_23_hops": false,
+    "extend_reasoning_beyond_0_21_15": false,
+    "extend_budgets_beyond_0_21_15": false,
+    "map_goal_state": false,
+    "map_daemon_session_apis": false,
+    "map_web_shell_extras": false,
+    "map_acp": false,
+    "flatten_to_model_studio_or_acp": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_headless_session": false,
+    "host_install_changed": false
+  }
+}

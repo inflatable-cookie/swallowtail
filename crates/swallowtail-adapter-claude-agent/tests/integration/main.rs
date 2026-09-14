@@ -51,6 +51,8 @@ mod claude_agent_sdk_native_read_mediation_limitation;
 mod claude_code_2_1_252_identity;
 #[path = "../claude_code_2_1_257_identity.rs"]
 mod claude_code_2_1_257_identity;
+#[path = "../claude_code_2_1_270_identity.rs"]
+mod claude_code_2_1_270_identity;
 #[path = "../claude_code_headless_autocompaction_identity.rs"]
 mod claude_code_headless_autocompaction_identity;
 #[path = "../claude_code_headless_identity.rs"]

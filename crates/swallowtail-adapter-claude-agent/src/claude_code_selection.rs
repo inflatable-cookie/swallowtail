@@ -12,10 +12,10 @@ pub const CLAUDE_CODE_HEADLESS_AXIS: &str = "claude-code.headless-stream-json";
 /// Oldest qualified native Claude Code headless version.
 pub const CLAUDE_CODE_HEADLESS_BASELINE_VERSION: &str = "2.1.220";
 /// Most recent qualified native Claude Code headless version.
-pub const CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.257";
+pub const CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.270";
 /// Unpublished stables inside the semantic headless window.
 const HEADLESS_UNPUBLISHED_GAPS: &[&str] = &[
-    "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256",
+    "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
 ];
 
 const HEADLESS_BEHAVIOR: &str = "claude-code.headless.stream-json.v1";
@@ -141,7 +141,7 @@ mod tests {
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn qualified_window_covers_2_1_220_through_2_1_257() {
+    fn qualified_window_covers_published_hops_through_2_1_270() {
         let claim = claude_code_headless_claim();
         assert!(claim.supports(&version("2.1.220")));
         assert!(claim.supports(&version("2.1.221")));
@@ -160,6 +160,12 @@ mod tests {
         assert!(claim.supports(&version("2.1.251")));
         assert!(claim.supports(&version("2.1.252")));
         assert!(claim.supports(&version("2.1.257")));
+        for published in [
+            "2.1.258", "2.1.259", "2.1.260", "2.1.261", "2.1.263", "2.1.265", "2.1.266", "2.1.267",
+            "2.1.268", "2.1.269", "2.1.270",
+        ] {
+            assert!(claim.supports(&version(published)), "{published}");
+        }
         assert!(!claim.permits(&version("2.1.219")));
         assert!(!claim.permits(&version("2.1.244")));
         assert!(!claim.permits(&version("2.1.249")));
@@ -167,12 +173,14 @@ mod tests {
         assert!(!claim.permits(&version("2.1.254")));
         assert!(!claim.permits(&version("2.1.255")));
         assert!(!claim.permits(&version("2.1.256")));
+        assert!(!claim.permits(&version("2.1.262")));
+        assert!(!claim.permits(&version("2.1.264")));
         assert!(matches!(
-            claim.assess(&version("2.1.258")),
+            claim.assess(&version("2.1.271")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
         assert_eq!(
-            claude_code_headless_binding("2.1.257")
+            claude_code_headless_binding("2.1.270")
                 .expect("version binds")
                 .axis()
                 .as_str(),

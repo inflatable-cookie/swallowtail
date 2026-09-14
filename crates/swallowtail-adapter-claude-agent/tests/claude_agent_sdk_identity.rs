@@ -75,7 +75,7 @@ fn the_route_binds_five_independent_exact_identities() {
     assert_ne!(CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_NATIVE_VERSION);
     assert_eq!(
         swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION,
-        "2.1.257",
+        "2.1.270",
         "the Claude Code window is observed separately and does not transfer"
     );
 }

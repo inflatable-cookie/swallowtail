@@ -100,7 +100,7 @@ fn unpublished_gaps_and_later_2_1_258_stay_classified() {
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         &[
-            "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256",
+            "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
         ]
     );
 
@@ -111,6 +111,8 @@ fn unpublished_gaps_and_later_2_1_258_stay_classified() {
     assert!(!headless.permits(&version("2.1.254")));
     assert!(!headless.permits(&version("2.1.255")));
     assert!(!headless.permits(&version("2.1.256")));
+    assert!(!headless.permits(&version("2.1.262")));
+    assert!(!headless.permits(&version("2.1.264")));
     assert!(matches!(
         headless.assess(&version("2.1.257")),
         InterfaceCompatibilityAssessment::Qualified(matched)
@@ -118,12 +120,19 @@ fn unpublished_gaps_and_later_2_1_258_stay_classified() {
     ));
     assert!(matches!(
         headless.assess(&version("2.1.258")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        headless.assess(&version("2.1.271")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     let response = claude_code_response_only_claim();
     assert!(!response.permits(&version("2.1.244")));
     assert!(!response.permits(&version("2.1.249")));
     assert!(!response.permits(&version("2.1.253")));
+    assert!(!response.permits(&version("2.1.262")));
+    assert!(!response.permits(&version("2.1.264")));
     assert!(matches!(
         response.assess(&version("2.1.257")),
         InterfaceCompatibilityAssessment::Qualified(matched)
@@ -131,6 +140,11 @@ fn unpublished_gaps_and_later_2_1_258_stay_classified() {
     ));
     assert!(matches!(
         response.assess(&version("2.1.258")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        response.assess(&version("2.1.271")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }
@@ -166,11 +180,11 @@ fn identity_and_claim_qualify_2_1_257_as_compatible_extension() {
         "2.1.252"
     );
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.257");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.270");
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.257"
+        "2.1.270"
     );
 
     let headless = claude_code_headless_claim();

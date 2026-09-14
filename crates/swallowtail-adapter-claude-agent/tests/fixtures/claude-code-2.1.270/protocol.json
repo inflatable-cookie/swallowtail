@@ -1,0 +1,298 @@
+{
+ "version": "2.1.270",
+ "compared_versions": [
+  "2.1.257",
+  "2.1.258",
+  "2.1.259",
+  "2.1.260",
+  "2.1.261",
+  "2.1.263",
+  "2.1.265",
+  "2.1.266",
+  "2.1.267",
+  "2.1.268",
+  "2.1.269",
+  "2.1.270"
+ ],
+ "host_help_reprobed": true,
+ "official_help_reprobed_for_2_1_258_via_host": true,
+ "official_2_1_258_help_sha256": "a0ab4f1df36388fba86563a10839c020cc7dcb13cec2311c336aebe6963db0a1",
+ "frozen_2_1_257_help_sha256": "a0ab4f1df36388fba86563a10839c020cc7dcb13cec2311c336aebe6963db0a1",
+ "official_2_1_258_help_byte_identical_to_frozen_2_1_257": true,
+ "selected_mapped_subset_source": "official 2.1.258 help recovered from the byte-identical host binary; every other hop classified from the embedded `// @bun @bytecode` source chunks of the official darwin-arm64 and linux-x64 binaries, which were hashed and never executed",
+ "selected_mapped_subset_unchanged": true,
+ "option_definition_fingerprints": {
+  "--input-format": {
+   "darwin-arm64": [
+    "b0ae98420d9eebb3fb9263daf1df82633671f4b9b1ade878717a573a3d655d83"
+   ],
+   "linux-x64": [
+    "b0ae98420d9eebb3fb9263daf1df82633671f4b9b1ade878717a573a3d655d83"
+   ]
+  },
+  "--output-format": {
+   "darwin-arm64": [
+    "b2d535163c0d13c97ebd3fd6786e8b3ceebdd912a249ba9d60e058e1cd23a228"
+   ],
+   "linux-x64": [
+    "b2d535163c0d13c97ebd3fd6786e8b3ceebdd912a249ba9d60e058e1cd23a228"
+   ]
+  },
+  "--verbose": {
+   "darwin-arm64": [
+    "f56b0acce4e8560ac5f131524607ccd8f44804103eb6df9122dc98fedd6eb675",
+    "faca440eb60bfe44064542f086995a9bad396fde901f39894e59703bd4afe194"
+   ],
+   "linux-x64": [
+    "f56b0acce4e8560ac5f131524607ccd8f44804103eb6df9122dc98fedd6eb675",
+    "faca440eb60bfe44064542f086995a9bad396fde901f39894e59703bd4afe194"
+   ]
+  },
+  "--no-session-persistence": {
+   "darwin-arm64": [
+    "f35d4ae1474b3ca852f1e62972bc6a78b424d81c71f0de4c8d77ff967da6ce93"
+   ],
+   "linux-x64": [
+    "f35d4ae1474b3ca852f1e62972bc6a78b424d81c71f0de4c8d77ff967da6ce93"
+   ]
+  },
+  "--model": {
+   "darwin-arm64": [
+    "0885d1ea112d372950068fd6de9119265bc093b7372fec4482579830dc0165ab",
+    "090422246a0414b477086811c711c570e3825e618a8962c6c189241892dbe7b5",
+    "7a2224536bc88fea850e22e9e981b8e0752a6fc5175d4e4dfe89134e1e66e842",
+    "cc9d13ccb0526437ec3f5f84e77708ac251c4b38efd81c5589a02f945d745efc"
+   ],
+   "linux-x64": [
+    "0885d1ea112d372950068fd6de9119265bc093b7372fec4482579830dc0165ab",
+    "090422246a0414b477086811c711c570e3825e618a8962c6c189241892dbe7b5",
+    "7a2224536bc88fea850e22e9e981b8e0752a6fc5175d4e4dfe89134e1e66e842",
+    "cc9d13ccb0526437ec3f5f84e77708ac251c4b38efd81c5589a02f945d745efc"
+   ]
+  },
+  "--effort": {
+   "darwin-arm64": [
+    "33e849f4ff6784abd2564c43900e372120344aa9480f7af0e25ba8a8d108c1de",
+    "344c67388e2d0ac1fe8dae26355aa2faf09e9c1ed0e2a0af39a87344afa46075"
+   ],
+   "linux-x64": [
+    "33e849f4ff6784abd2564c43900e372120344aa9480f7af0e25ba8a8d108c1de",
+    "344c67388e2d0ac1fe8dae26355aa2faf09e9c1ed0e2a0af39a87344afa46075"
+   ]
+  },
+  "--permission-mode": {
+   "darwin-arm64": [
+    "c6e6103fdeecbc5435476b93a0a7d09bc4f641445c580f2144c23e9d8b375e95",
+    "d10d01997a4bb28b2f8fdec16d0ee5ace6ddc3bd9c7cec12ac1eacb3b473c6d1"
+   ],
+   "linux-x64": [
+    "c6e6103fdeecbc5435476b93a0a7d09bc4f641445c580f2144c23e9d8b375e95",
+    "d10d01997a4bb28b2f8fdec16d0ee5ace6ddc3bd9c7cec12ac1eacb3b473c6d1"
+   ]
+  },
+  "--tools": {
+   "darwin-arm64": [
+    "2f92755910882c447d5201e711a920992afb7badc09c3acec545fe264b867560"
+   ],
+   "linux-x64": [
+    "2f92755910882c447d5201e711a920992afb7badc09c3acec545fe264b867560"
+   ]
+  },
+  "--setting-sources": {
+   "darwin-arm64": [
+    "78894352ccc74945bd471f0f8470184378ca6a8b43dd0f4a41a976c4ada5829f"
+   ],
+   "linux-x64": [
+    "78894352ccc74945bd471f0f8470184378ca6a8b43dd0f4a41a976c4ada5829f"
+   ]
+  },
+  "--mcp-config": {
+   "darwin-arm64": [
+    "5ddb40cc03bdaf6fd9fbb7b62f25e9f0a7dc10e03be1f45590240c032f55cff1",
+    "a2282c8718ff8c24c9f04fe7bbece08d24fe53db5a668f5e20ed8a4a622253c7"
+   ],
+   "linux-x64": [
+    "5ddb40cc03bdaf6fd9fbb7b62f25e9f0a7dc10e03be1f45590240c032f55cff1",
+    "a2282c8718ff8c24c9f04fe7bbece08d24fe53db5a668f5e20ed8a4a622253c7"
+   ]
+  },
+  "--strict-mcp-config": {
+   "darwin-arm64": [
+    "33903bcc2972f0c98bd1a4f20fb840a2d064470b464cde23f4de50fd5dfbd5f5",
+    "4d105b91c47d1597e74c4e3b31a456bd36a2978505c328bedfb9ba6aa082c454"
+   ],
+   "linux-x64": [
+    "33903bcc2972f0c98bd1a4f20fb840a2d064470b464cde23f4de50fd5dfbd5f5",
+    "4d105b91c47d1597e74c4e3b31a456bd36a2978505c328bedfb9ba6aa082c454"
+   ]
+  },
+  "--max-turns": {
+   "darwin-arm64": [
+    "eef1a761fca627d8cf5ca9e220749b48091f76d1f46d325c737a722d98da6b66"
+   ],
+   "linux-x64": [
+    "eef1a761fca627d8cf5ca9e220749b48091f76d1f46d325c737a722d98da6b66"
+   ]
+  },
+  "--safe-mode": {
+   "darwin-arm64": [
+    "3050b3ad84044607c784e63610956d9537f3d1d62a1a466d3ad726584c01c038"
+   ],
+   "linux-x64": [
+    "3050b3ad84044607c784e63610956d9537f3d1d62a1a466d3ad726584c01c038"
+   ]
+  },
+  "--disable-slash-commands": {
+   "darwin-arm64": [
+    "0d3b2791f93287bd8507ba6a7687f9ee4c917b50d55fa020b5d2a5909ee83a2f"
+   ],
+   "linux-x64": [
+    "0d3b2791f93287bd8507ba6a7687f9ee4c917b50d55fa020b5d2a5909ee83a2f"
+   ]
+  },
+  "--no-chrome": {
+   "darwin-arm64": [
+    "08501c728357cc16389a745faf08b3434e10419bbb1c71abb5eb47afe6fa7c6d"
+   ],
+   "linux-x64": [
+    "08501c728357cc16389a745faf08b3434e10419bbb1c71abb5eb47afe6fa7c6d"
+   ]
+  },
+  "--prompt-suggestions": {
+   "darwin-arm64": [
+    "c16469774837592b7aaaf3849a9c9dd902ee3919f26ed401d3799b74eb4a4a9e"
+   ],
+   "linux-x64": [
+    "c16469774837592b7aaaf3849a9c9dd902ee3919f26ed401d3799b74eb4a4a9e"
+   ]
+  }
+ },
+ "option_definition_fingerprint_scope": "identical normalized (string-literal, method-name) fingerprint sets across all twelve compared versions for each selected flag; an unchanged set means the flag name, value placeholder, choices, help description, and parser attach methods for every definition naming that flag are unchanged on the selected mapped surface. Multiple digests per flag are the separate commands (print command and agent view) that define that flag.",
+ "help_selected_flags_present": [
+  "-p",
+  "--print",
+  "--input-format",
+  "--output-format",
+  "--verbose",
+  "--no-session-persistence",
+  "--model",
+  "--effort",
+  "--permission-mode",
+  "--tools",
+  "--setting-sources",
+  "--mcp-config",
+  "--strict-mcp-config"
+ ],
+ "input_format_choices": [
+  "text",
+  "stream-json"
+ ],
+ "output_format_choices": [
+  "text",
+  "json",
+  "stream-json"
+ ],
+ "effort_choices": [
+  "low",
+  "medium",
+  "high",
+  "xhigh",
+  "max"
+ ],
+ "permission_mode_effective_choices": [
+  "acceptEdits",
+  "auto",
+  "bypassPermissions",
+  "manual",
+  "dontAsk",
+  "plan"
+ ],
+ "permission_mode_wire_values": [
+  "acceptEdits",
+  "auto",
+  "bypassPermissions",
+  "default",
+  "dontAsk",
+  "plan"
+ ],
+ "selected_permission_mode": "plan",
+ "selected_tools_headless": "Read,Glob,Grep",
+ "selected_tools_response_only": "",
+ "selected_setting_sources": "user,project,local",
+ "selected_mcp_isolation": "{\"mcpServers\":{}}",
+ "include_partial_messages_selected": false,
+ "stream_json_stream_anchors": {
+  "init_record_shape_sha256": "3a19423278f50a72bcbc4335a38d568f52e0f628fff7bae9d63f157838b5d187",
+  "init_record_shape_note": "normalized init construction with only the embedded version, build timestamp, and build commit blanked; identical across all twelve compared versions",
+  "stream_event_normalized_fingerprints": [
+   "1d9c2d6aadd862c81fa14c064f181a963d3a323a0fa6c86567ff736f09729918",
+   "1eae261a0da83929a667ecb0d9e3b32a14ed59e10db77d81ddeab2c86aaa12b9",
+   "2071aa32f50ac6d1f1621232f8ec51f5cbdb8b585481ee8c8454f1577cd418a3",
+   "2562332d1c30e98975cad051b3bc4ea8e8cc1f938e5dd31a0b314b6048198cf9",
+   "31eafb3e8521eef8554677f0061e69e6a267f23942c676d76317855777a803cc",
+   "4736dcd878c431b3681750a34015c428325cde6226bb9d51beadedde650a68b2",
+   "4ea3e8d613c8a27bb5c2faf01f0b007f89e42b8a3d9fc1e144df0f233cb0d8fd",
+   "554c8ff842a5d86e74d1b28187369d7c625f48080aa3e9765529643cf14aefbd",
+   "9f46bf899d18953f5d809146a7983499eeaedfd8976f6704df551dd8e43c7af2",
+   "d96985abae67940edf31c8972f7c8301e923305789927d18f06ddbbc746a2e0d",
+   "ea257f3bbd353ddffced23562a2094b3c523253754b76172513a46f454ec0f59",
+   "fad1d82d354b615ab7ba0464f87fdb80386ba727233727fb9eb5b0de65916664"
+  ],
+  "hook_started_normalized_fingerprints": [
+   "38baad191c4435427633063b299daade1a6422285f51a845e3fa50a5fa04336d"
+  ],
+  "result_uuid_normalized_fingerprints": [
+   "53f760099f661fd3d237d96cbdad85ac9f679faed5d7b4feffcf74347adbb41f"
+  ],
+  "thinking_tokens_normalized_fingerprints": [
+   "6a5971c714789a1749b7d3cc27cd575cc601605ccbb6984e0ff5312f4118594a",
+   "6fa9e52b8ff324aea3d881535e59d8a0d49735f0a426bd51d449d3fb28e6a784",
+   "feb30c6c4bc2c492ba5d17a40c63c1edce20528e012d825ecdb57216ccb00237"
+  ],
+  "anchor_scope": "each digest is the SHA-256 of a balanced construction site normalized so minified identifiers collapse; the sets are identical on every compared version",
+  "thinking_tokens_note": "2.1.257 through 2.1.259 carry a fourth SessionsV2Client deliver site; 2.1.260 drops that duplicate remote-session path. The print-route emitters and the record shape stay."
+ },
+ "thinking_tokens_note": "2.1.260 removes one duplicate SessionsV2Client deliver path that re-emitted thinking_tokens from a payload. The print-route emitters and the estimated_tokens / estimated_tokens_delta / session_id / uuid record shape stay.",
+ "unmapped_boundaries": {
+  "watcher_flags": [
+   "--bare",
+   "--settings",
+   "--add-dir",
+   "--include-hook-events"
+  ],
+  "new_help_flags": [
+   "--permission-prompts",
+   "--system-prompt-snapshot",
+   "--json-schema",
+   "--max-budget-usd",
+   "--brief",
+   "--cloud",
+   "--restricted",
+   "--forward-subagent-text",
+   "--session-mirror",
+   "--worktree"
+  ],
+  "background_session_commands": [
+   "attach",
+   "logs",
+   "stop",
+   "kill",
+   "respawn",
+   "rm"
+  ],
+  "sdk_tools_declarations": "sdk-tools.d.ts",
+  "remote_control_and_cloud": "SessionsV2Client, Remote Control, VSCode, and Claude apps gateway paths",
+  "managed_settings": [
+   "managedMcpServers",
+   "maxEffortLevel",
+   "gatewayInternalNetworks",
+   "forceLoginGatewayUrl"
+  ],
+  "hooks": "PermissionRequest, SessionStart, SessionEnd, and Stop hooks are not configured by either route"
+ },
+ "mapped_deltas_from_2_1_257": [],
+ "decoder_corpus": "claude-code-2.1.220",
+ "provider_prompt_sent": false,
+ "live_session": false,
+ "host_install_changed": false
+}

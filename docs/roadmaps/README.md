@@ -15,11 +15,10 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-g05.075 completed the Antigravity `1.2.2` useful-newer requalification, the
-fifteenth family in Tom's authorized Research 308 currentness campaign.
-Return the outcome to Chatterbox, then compile and dispatch the Gemini
-family (sixteenth) from fresh canonical `main` without repeated approval; no
-release follows.
+Implement g05.076 Gemini CLI `0.59.0` useful-newer qualification as the
+sixteenth family in Tom's authorized Research 308 currentness campaign.
+Classify ACP and headless independently from exact artifacts; no provider or
+release action follows.
 
 ## Standing Lanes
 

@@ -7,6 +7,7 @@ dispatch_authority: orchestrator
 status: ready-to-launch
 base_required: pushed-main
 queue_dispatch: northstar-queue
+roadmap: docs/roadmaps/g05/079-oh-my-pi-18-1-22-major-line-qualification.md
 queue_approval: "Tom instructed Chatterbox on 2026-09-14 to action every Research 308 family, explicitly including Oh My Pi, and told it to continue serially without repeated approval."
 queue:
   capability: general
@@ -31,8 +32,7 @@ without confusing it with the separate Pi package.
 
 ## Current State
 
-- Canonical task:
-  [g05.079 Oh My Pi 18.1.22 Major-Line Qualification](../roadmaps/g05/079-oh-my-pi-18-1-22-major-line-qualification.md).
+- Canonical task: [g05.079](../roadmaps/g05/079-oh-my-pi-18-1-22-major-line-qualification.md).
 - Current claim: axis `oh-my-pi.package`, maintained
   `17.2.9..=17.4.0`, claim `oh-my-pi.rpc.package-window-1`, behavior
   `oh-my-pi.rpc-v2-v17.2.9`, posture `AllowUnverified`.

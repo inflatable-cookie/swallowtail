@@ -12,13 +12,13 @@ pub const GEMINI_CLI_ACP_AXIS: &str = "gemini-cli.acp-agent";
 /// Oldest Gemini CLI version qualified for ACP interaction.
 pub const GEMINI_CLI_ACP_BASELINE_VERSION: &str = "0.51.0";
 /// Newest Gemini CLI version behaviorally qualified for ACP interaction.
-pub const GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION: &str = "0.56.0";
+pub const GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION: &str = "0.59.0";
 /// Semantic-version axis reported by the Gemini CLI headless route.
 pub const GEMINI_CLI_HEADLESS_AXIS: &str = "gemini-cli.headless-stream-json";
 /// Oldest Gemini CLI version qualified for headless stream-JSON runs.
 pub const GEMINI_CLI_HEADLESS_BASELINE_VERSION: &str = "0.51.0";
 /// Newest Gemini CLI version behaviorally qualified for headless runs.
-pub const GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.56.0";
+pub const GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.59.0";
 
 const BASELINE_BEHAVIOR: &str = "gemini-cli.acp.v0.51.0";
 pub(crate) const HEADLESS_BEHAVIOR: &str = "gemini-cli.headless.stream-json.v1";
@@ -215,6 +215,7 @@ mod tests {
         let claim = gemini_cli_acp_claim();
         for published in [
             "0.51.0", "0.52.0", "0.53.0", "0.53.1", "0.54.0", "0.54.4", "0.55.1", "0.56.0",
+            "0.57.0", "0.58.0", "0.59.0",
         ] {
             assert!(
                 claim.supports(&version(published)),
@@ -224,7 +225,7 @@ mod tests {
         assert!(!claim.permits(&version("0.50.0")));
         assert!(!claim.permits(&version("0.51.0-rc.1")));
         assert!(matches!(
-            claim.assess(&version("0.56.1")),
+            claim.assess(&version("0.59.1")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
     }
@@ -234,6 +235,7 @@ mod tests {
         let claim = gemini_cli_headless_claim();
         for published in [
             "0.51.0", "0.52.0", "0.53.0", "0.53.1", "0.54.0", "0.54.4", "0.55.1", "0.56.0",
+            "0.57.0", "0.58.0", "0.59.0",
         ] {
             assert!(
                 claim.supports(&version(published)),
@@ -242,11 +244,11 @@ mod tests {
         }
         assert!(!claim.permits(&version("0.50.0")));
         assert!(matches!(
-            claim.assess(&version("0.56.1")),
+            claim.assess(&version("0.59.1")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
         assert_eq!(
-            gemini_cli_headless_binding("0.56.0")
+            gemini_cli_headless_binding("0.59.0")
                 .expect("version binds")
                 .axis()
                 .as_str(),
@@ -257,7 +259,7 @@ mod tests {
     #[test]
     fn binding_accepts_only_one_exact_semantic_version() {
         assert_eq!(
-            gemini_cli_acp_binding("0.56.0")
+            gemini_cli_acp_binding("0.59.0")
                 .expect("version binds")
                 .axis()
                 .as_str(),

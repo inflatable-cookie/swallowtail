@@ -8,12 +8,30 @@ Vision tags: route currentness, Gemini CLI, ACP, headless, exact artifacts
 
 ## Outcome
 
-Ready. Requalify the separate Gemini CLI ACP and headless claims from their
-shared `0.56.0` ceiling through official stable `0.59.0`, or stop either claim
-at its first exact incompatible hop. Tom's 2026-09-14 campaign direction
-explicitly lifts the former Gemini deferral.
+Complete. Both separate claims are compatible extensions through official
+stable `0.59.0`. Research 324 froze npm and GitHub `0.56.0`, `0.57.0`,
+`0.58.0`, and `0.59.0` with tarball, tag, tree, source-archive, and
+darwin-arm64 digests, and one deterministic tagged-source inventory per point:
+89 changed paths `0.56.0..0.57.0`, 36 `0.57.0..0.58.0`, and 24
+`0.58.0..0.59.0`, with no changed path under `packages/cli/src/acp/**`. ACP
+advances to maintained `0.51.0..=0.59.0` on `gemini-cli.acp.v0.51.0` with
+baseline `0.51.0`, `AllowUnverified`, the
+`@agentclientprotocol/sdk@0.16.1` pin, and both read-only Plan and
+bounded-write Auto Edit profiles unchanged. Headless advances to maintained
+`0.51.0..=0.59.0` on `gemini-cli.headless.stream-json.v1` with the same
+baseline and posture: only `geminiChat.ts` provider-request retry, empty-part,
+and abort-rollback internals and the `resolveWorktreeBaseSha` `getSafeGitEnv()`
+helper move, while every selected stream-json event, terminal record, native
+exit code, CLI option, and retention source is unchanged. Workspace-trust
+fail-closing, the policy safety-checker declaration, the macOS Seatbelt
+sandbox profiles, and the MCP OAuth SSRF repair stay unmapped because the
+selected route sets neither `GEMINI_RESTRICTED_MODE` nor
+`GEMINI_CLI_TRUST_WORKSPACE=false` and already passes `--skip-trust`.
+Unpublished `0.59.1` remains the visible `UnverifiedNewer` point. No provider,
+login, credential, prompt, catalogue, live session, installation, host update,
+release, tag, or consumer action occurred.
 
-Planning rechecked the official channels on 2026-09-15. npm latest is
+Planning checked the official channels on 2026-09-15. npm latest was
 `@google/gemini-cli@0.59.0`, published `2026-09-08T21:19:17.301Z`, with
 integrity
 `sha512-RHcjpQEMwVkrWz75mEFsuMuM0JRVJgzLQzkGhEY6SE0KjwOWFA1wYKTUqpzDUHprcE2mgcTActyd4ihVdC2dpg==`.
@@ -119,12 +137,12 @@ publication, or consumer mutation.
 
 ## Acceptance
 
-- [ ] official identities reproduce for all compared releases and channels
-- [ ] every published selected-path change is classified independently per claim
-- [ ] identity evidence precedes any claim or mapping change
-- [ ] maintained segments and incompatible gaps are maximally honest
-- [ ] existing sibling routes and exact option evidence remain independently bounded
-- [ ] official latest is rechecked at identity and push boundaries
+- [x] official identities reproduce for all compared releases and channels
+- [x] every published selected-path change is classified independently per claim
+- [x] identity evidence precedes any claim or mapping change
+- [x] maintained segments and incompatible gaps are maximally honest
+- [x] existing sibling routes and exact option evidence remain independently bounded
+- [x] official latest is rechecked at identity and push boundaries
 
 ## Next Task
 

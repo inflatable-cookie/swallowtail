@@ -31,6 +31,22 @@ annotated Git tags from the canonical repository.
   disposition stays independent.
 
 ### Changed
+- raise the qualified Gemini CLI ACP and headless ceilings from maintained
+  `0.51.0..=0.56.0` to maintained `0.51.0..=0.59.0` on the separate
+  `gemini-cli.acp-agent` and `gemini-cli.headless-stream-json` axes with the
+  `gemini-cli.acp.v0.51.0` and `gemini-cli.headless.stream-json.v1` behavior
+  revisions, baseline `0.51.0`, and `AllowUnverified` unchanged. Research 324
+  froze official npm and GitHub `0.56.0`, `0.57.0`, `0.58.0`, and `0.59.0`
+  and one deterministic tagged-source inventory per point: no changed path
+  lies under `packages/cli/src/acp/**`, every selected ACP source is
+  byte-identical with the `@agentclientprotocol/sdk@0.16.1` pin, and every
+  selected stream-json event, terminal shape, native exit code, option, and
+  retention source is unchanged. Only `geminiChat.ts` provider-request retry,
+  empty-part, and abort-rollback internals and the `resolveWorktreeBaseSha`
+  git helper move. Workspace-trust fail-closing, the policy safety-checker
+  declaration, macOS Seatbelt sandboxing, and the MCP OAuth SSRF repair stay
+  unmapped; unpublished `0.59.1` remains visible `UnverifiedNewer`. Research
+  324, g05.076.
 - split the Antigravity claims under official GitHub
   `google-antigravity/antigravity-cli` `1.2.2`: the catalogue claim advances
   from maintained `1.1.9..=1.1.17` to maintained `1.1.9..=1.2.2` on the

@@ -327,10 +327,10 @@ OpenHands adds a package without a production route.
   plane audience, generated request, summary, lifecycle and error types, and
   bounded provider-neutral projection
 - `swallowtail-adapter-gemini` implements the qualified Gemini CLI
-  `0.51.0..=0.56.0` ambient-host interactive subset with separate read-only
+  `0.51.0..=0.59.0` ambient-host interactive subset with separate read-only
   Plan Mode and bounded-write Auto Edit profiles, bounded host text read/write
   callbacks over ACP v1 stdio, and session-advertised model options retained as
-  negotiated evidence; a separately qualified `0.51.0..=0.56.0` headless
+  negotiated evidence; a separately qualified `0.51.0..=0.59.0` headless
   route sends one prompt over stdin, consumes bounded `stream-json`, reports
   usage, requires
   durable local transcript retention, and forces no sandbox; one public
@@ -942,7 +942,7 @@ the historical Gemini or Kimi pins. Independent close-only, delete-only,
 omitted, null, success, and error fixtures pass through the same bounded
 message codec used by stdio and explicit remote ACP. Portable delete truth
 remains history removal.
-Gemini CLI ACP `0.51.0..=0.56.0` supports new sessions, text prompts, updates,
+Gemini CLI ACP `0.51.0..=0.59.0` supports new sessions, text prompts, updates,
 native turn cancellation, permission cancellation, and bounded host text
 callbacks. Its read-only profile launches Plan Mode and advertises only
 `fs.readTextFile`; its bounded-write profile launches Auto Edit and advertises
@@ -1817,7 +1817,7 @@ Research 054-055 and Contracts 021, 038-039 define the realized
 provider-retention tranche.
 
 - Gemini CLI stored-transcript management was revalidated across the qualified
-  `0.51.0..=0.56.0` headless range. Its post-delete `--list-sessions` check
+  `0.51.0..=0.59.0` headless range. Its post-delete `--list-sessions` check
   may perform summary inference and mutate retained transcripts, so it is not
   a read-only confirmation surface. Contract 038 and g03.033 remove the
   public management role and binding. Operation-owned cleanup sends one delete

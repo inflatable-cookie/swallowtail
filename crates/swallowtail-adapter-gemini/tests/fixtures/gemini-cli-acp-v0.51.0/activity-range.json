@@ -16,16 +16,16 @@
     }
   ],
   "current_external_release": {
-    "version": "0.56.0",
-    "published_at": "2026-08-19T19:29:38Z",
-    "tag_commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a",
+    "version": "0.59.0",
+    "published_at": "2026-09-08T21:13:43Z",
+    "tag_commit": "fb0d535af931b27c51e87e5e6ade72905b1e8390",
     "session_source_sha256": "6c477fa56ad3fc8a8a683a0bd9fae6233e5fbbf4143a8b8cb21bc8de15e34c23",
     "classification": "qualified",
-    "profile": "0.56.0-guarantee",
+    "profile": "0.59.0-guarantee",
     "activity_source_delta": "provider-invalid-stream-categories-unmapped",
     "full_harness_qualification": true,
     "later_stable_posture": {
-      "minimum": "greater-than-0.56.0",
+      "minimum": "greater-than-0.59.0",
       "classification": "unverified-newer",
       "execution": "allowed-with-visible-evidence"
     }

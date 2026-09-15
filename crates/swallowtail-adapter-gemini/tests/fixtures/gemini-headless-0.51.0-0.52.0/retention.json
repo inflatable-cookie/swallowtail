@@ -3,7 +3,7 @@
   "claim_id": "gemini-cli.stored-transcript-delete-window-1",
   "axis": "gemini-cli.headless-stream-json",
   "baseline": "0.51.0",
-  "latest_qualified": "0.56.0",
+  "latest_qualified": "0.59.0",
   "driver_role": "provider_session_management",
   "classification": "unsupported_without_side_effect_free_confirmation",
   "delete_command": ["--delete-session", "<BOUND_SESSION_ID>"],
@@ -40,13 +40,25 @@
     {
       "version": "0.56.0",
       "commit": "b6e23a7dc29eb15fede4bbe646d91869e948b45a"
+    },
+    {
+      "version": "0.57.0",
+      "commit": "6b0ae9a6c37aa117cc8b070d8b41c5bb4fa6d253"
+    },
+    {
+      "version": "0.58.0",
+      "commit": "ac9431c9e2290d68af31a77614ff2fddb2391ca3"
+    },
+    {
+      "version": "0.59.0",
+      "commit": "fb0d535af931b27c51e87e5e6ade72905b1e8390"
     }
   ],
   "source_sha256": {
     "packages/cli/src/utils/sessions.ts": "fa8a3ab8ce762cd4b714362d843bdd73e73f0894f0480778fcdf2254a507af50",
     "packages/core/src/utils/sessionOperations.ts": "21ac4a3153dd94770a7d0cd87480cfece9c6c1777e520b3eef12b702be03f24b",
     "packages/cli/src/gemini.tsx": "1ac297b1af4cca39f358fc5c90c18059e275c4c393cfba152f73215e03ead828",
-    "packages/cli/src/config/config.ts": "5100bcd48f798d04b9463bd72680af7202f331de566321b1c29f5f8710c2c44c"
+    "packages/cli/src/config/config.ts": "bdb490bbf0ea1803d74e8bc1748432096eff7063abec0447e5e7aa467e4187b8"
   },
   "cases": [
     {
@@ -81,7 +93,7 @@
     "environment"
   ],
   "later_stable_posture": {
-    "minimum": "greater-than-0.56.0",
+    "minimum": "greater-than-0.59.0",
     "classification": "unverified-newer",
     "execution": "allowed-with-visible-evidence"
   }

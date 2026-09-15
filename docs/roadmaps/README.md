@@ -15,9 +15,10 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.076 Gemini CLI `0.59.0` useful-newer qualification as the
-sixteenth family in Tom's authorized Research 308 currentness campaign.
-Classify ACP and headless independently from exact artifacts; no provider or
+Compile and dispatch the Kimi Code installed ACP/headless family as the
+seventeenth family in Tom's authorized Research 308 currentness campaign, from
+fresh canonical `main`. Gemini CLI `0.59.0` (g05.076) completed with both the
+ACP and headless claims raised to maintained `0.51.0..=0.59.0`; no provider or
 release action follows.
 
 ## Standing Lanes

@@ -26,6 +26,25 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
+Completed campaign family: Gemini CLI official npm `0.59.0` (g05.076) is
+the sixteenth family of Tom's authorized Research 308 campaign. Research 324
+froze official npm and GitHub `0.56.0`, `0.57.0`, `0.58.0`, and `0.59.0`
+with tarball, tag, tree, source-archive, and darwin-arm64 digests, and built
+one deterministic tagged-source file inventory per point. No changed path lies
+under `packages/cli/src/acp/**`; every selected ACP source is byte-identical
+with the `@agentclientprotocol/sdk@0.16.1` pin and both selected ACP profiles
+unchanged. Every selected stream-json event, terminal record, native exit
+code, CLI option, and retention source is unchanged; only `geminiChat.ts`
+provider-request retry, empty-part, and abort-rollback internals and the
+`resolveWorktreeBaseSha` git helper move. Workspace-trust fail-closing, the
+policy safety-checker declaration, macOS Seatbelt sandboxing, and the MCP
+OAuth SSRF repair stay unmapped because the selected route sets neither
+`GEMINI_RESTRICTED_MODE` nor `GEMINI_CLI_TRUST_WORKSPACE=false` and already
+passes `--skip-trust`. Both axes advanced to maintained `0.51.0..=0.59.0`
+with their baseline, claim ids, behavior revisions, and `AllowUnverified`
+unchanged, and unpublished `0.59.1` stays visible `UnverifiedNewer`. Kimi
+installed routes follow.
+
 Completed campaign family: Antigravity official GitHub `1.2.2` (g05.075) is
 the fifteenth family of Tom's authorized Research 308 campaign. Research 283
 froze `1.1.17..=1.1.26` and stopped at `1.1.22`, where selected headless HTTP
@@ -39,7 +58,7 @@ maintained `1.1.9..=1.2.2` because no published selected-path change touches
 retry with no published finite bound or disable control, leaving
 `1.1.18..=1.2.2` as the named unqualified gap. Exhaustive binary scanning
 stopped at the ruling and collected hashes are retained. Unknown retry stays
-incompatible and the gap stays explicit. Gemini follows.
+incompatible and the gap stays explicit. Gemini followed.
 
 Completed campaign family: Deep Agents official npm `0.1.30` (g05.074) is
 the fourteenth family of Tom's authorized Research 308 campaign. Research

@@ -100,7 +100,10 @@ fn official_identity_reproduces_for_every_compared_point() {
     assert_eq!(identity["npm_package"], "@google/gemini-cli");
     assert_eq!(identity["npm_latest"], true);
     assert_eq!(identity["official"]["version"], OFFICIAL);
-    assert_eq!(identity["official"]["npm_published_at"], "2026-09-08T21:19:17.301Z");
+    assert_eq!(
+        identity["official"]["npm_published_at"],
+        "2026-09-08T21:19:17.301Z"
+    );
     assert_eq!(identity["official"]["github_tag"], "v0.59.0");
     assert_eq!(
         identity["official"]["github_commit"],
@@ -143,7 +146,10 @@ fn official_identity_reproduces_for_every_compared_point() {
         identity["official"]["darwin_arm64_extracted_sha256"],
         "f78acf4241ae6b1c9b04c9a2cb201c6a876e9e79266a9d1078b88cf833edf36c"
     );
-    assert_eq!(identity["official"]["darwin_arm64_extracted_size"], 121528144);
+    assert_eq!(
+        identity["official"]["darwin_arm64_extracted_size"],
+        121528144
+    );
     assert_eq!(identity["official"]["downloaded_artifact_executed"], false);
 
     let points: BTreeSet<&str> = identity["compared_points"]
@@ -355,7 +361,9 @@ fn deterministic_changed_path_ledger_classifies_every_hop() {
         "packages/core/src/availability/modelAvailabilityService.ts",
     ] {
         assert!(
-            classification[file].as_str().is_some_and(|text| !text.is_empty()),
+            classification[file]
+                .as_str()
+                .is_some_and(|text| !text.is_empty()),
             "{file} needs a classification"
         );
     }
@@ -384,7 +392,10 @@ fn protocol_corpus_keeps_both_axes_and_unmapped_deltas_explicit() {
     let protocol = fixture(PROTOCOL, "protocol");
     assert_eq!(protocol["official_version"], OFFICIAL);
     assert_eq!(protocol["acp"]["axis"], "gemini-cli.acp-agent");
-    assert_eq!(protocol["headless"]["axis"], "gemini-cli.headless-stream-json");
+    assert_eq!(
+        protocol["headless"]["axis"],
+        "gemini-cli.headless-stream-json"
+    );
     assert_eq!(protocol["acp"]["sdk"], "@agentclientprotocol/sdk@0.16.1");
     assert_eq!(protocol["acp"]["wire_version"], 1);
     assert_eq!(
@@ -395,17 +406,21 @@ fn protocol_corpus_keeps_both_axes_and_unmapped_deltas_explicit() {
         protocol["headless"]["selected_external_shapes_unchanged_through_0.59.0"],
         true
     );
-    assert_eq!(
-        protocol["npm_bundle_identity"]["executed"],
-        false
-    );
+    assert_eq!(protocol["npm_bundle_identity"]["executed"], false);
     assert_eq!(
         protocol["headless"]["selected_terminal"]["native_exit_codes"],
         serde_json::json!([41, 42, 44, 52, 53, 54, 55, 130])
     );
     assert_eq!(
         protocol["headless"]["selected_event_types"],
-        serde_json::json!(["init", "message", "tool_use", "tool_result", "error", "result"])
+        serde_json::json!([
+            "init",
+            "message",
+            "tool_use",
+            "tool_result",
+            "error",
+            "result"
+        ])
     );
     for (route, guard) in [
         ("acp", "provider_prompt_sent"),
@@ -428,5 +443,8 @@ fn protocol_corpus_keeps_both_axes_and_unmapped_deltas_explicit() {
             .is_empty()
     );
     assert_eq!(protocol["access_boundary"]["browser_login"], false);
-    assert_eq!(protocol["access_boundary"]["individual_account_service"], false);
+    assert_eq!(
+        protocol["access_boundary"]["individual_account_service"],
+        false
+    );
 }

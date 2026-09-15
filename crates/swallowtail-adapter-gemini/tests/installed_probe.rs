@@ -25,7 +25,11 @@ fn qualified_and_unverified_newer_versions_probe_the_approved_target() {
         ("0.54.4", true),
         ("0.55.1", true),
         ("0.56.0", true),
-        ("0.56.1", false),
+        ("0.56.1", true),
+        ("0.57.0", true),
+        ("0.58.0", true),
+        ("0.59.0", true),
+        ("0.59.1", false),
     ] {
         let host_id = ExecutionHostId::new("fixture.host.discovery").expect("valid host");
         let host = DiscoveryHost::new(version);
@@ -81,7 +85,11 @@ fn headless_probe_qualifies_frozen_range_and_keeps_newer_visible() {
         ("0.54.4", true),
         ("0.55.1", true),
         ("0.56.0", true),
-        ("0.56.1", false),
+        ("0.56.1", true),
+        ("0.57.0", true),
+        ("0.58.0", true),
+        ("0.59.0", true),
+        ("0.59.1", false),
     ] {
         let host_id = ExecutionHostId::new("fixture.host.headless").expect("valid host");
         let host = DiscoveryHost::new(version);

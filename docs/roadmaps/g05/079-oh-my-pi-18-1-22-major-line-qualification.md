@@ -7,19 +7,54 @@ Vision tags: route currentness, Oh My Pi, RPC, major-line mapping
 
 ## Outcome
 
-Qualify or stop the `oh-my-pi.rpc` route across every published npm stable
-after `17.4.0` through current official `18.1.22`. Settle `17.4.1` and
-`17.4.2` independently, then treat `18.x` as a new adapter-private major-line
-mapping segment rather than inferring that the 17.x compatibility window
-continues.
+Complete. Research 327 froze official npm `@oh-my-pi/pi-coding-agent` identity
+for all 36 published stables from `17.4.0` through `18.1.22` — registry
+integrity, shasum, tarball SHA-256, `dist/cli.js` digest and size, shipped file
+count, package version, and GitHub tag commit — plus one deterministic per-hop
+shipped-tree inventory and a mutation-sensitive mapped RPC source ledger,
+before any claim moved. Official npm `latest` and the GitHub latest
+release/tag agree on `18.1.22`; installed `omp/18.1.16` was observed only.
 
-Official npm and GitHub stable are `18.1.22` at planning. The installed host
-reports `omp/18.1.16`; that is an observation inside the assigned family, not
-qualification or update authority. Research 217 found selected RPC argv,
-commands, framing, and decoded fields compatible through observed `18.0.6`,
-but stopped because official latest moved during the run. This task reuses
-that evidence only where exact identities reproduce and completes the whole
-published ledger through `18.1.22`.
+Both later `17.x` hops are compatible extensions of the retained
+`17.2.9..=17.4.0` window. `17.4.1` adds an unmapped host
+`runCommandInBackground` callback and reports the consumed-builtin `prompt`
+`agentInvoked` field accurately; `17.4.2` adds optional select
+`optionDetails`, which `docs/rpc.md` documents as ignorable by hosts that read
+`options` alone. The retained `17.x` segment therefore extends to
+`17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` revision.
+
+Every published `18.x` hop from `18.0.0` through `18.1.22` is admitted as a
+distinct adapter-private `18.x` segment on the new
+`oh-my-pi.rpc-v2-v18.0.0` behavior revision. No mapped wire, authority,
+failure, resource, retention, cancellation, ownership, or cleanup change was
+found: the mapped `18.x` hops are byte-identical, unmapped, additive,
+client-library, or a resolved session-scoped persistence change whose adapter-
+asserted `get_state` values are unchanged. `18.0.2` and `18.1.7` are explicit
+exclusions; the npm-unpublished GitHub tags `17.4.3` and `17.4.4` stay
+incompatible between the segments; `18.1.23` stays permitted
+`UnverifiedNewer`.
+
+Contract 029 gives a claim its own revision, so adding the milestone moves the
+claim id from `oh-my-pi.rpc.package-window-1` to
+`oh-my-pi.rpc.package-window-2`, and the retained `17.x` segment reports
+`Deprecated` while staying executable because the `18.x` segment carries the
+newest behavior revision. Baseline `17.2.9`, `AllowUnverified`, the frozen
+`oh-my-pi-rpc-17.2.9` decoder corpus, and every historical specimen stay.
+`pi.package` stays a separate axis. New mutation-sensitive coverage lives in
+`tests/oh_my_pi_18_1_22_identity.rs` with the frozen `oh-my-pi-18.1.22`
+corpus; the existing identity, compatibility, driver, and prepared-facade
+suites assert the two segments, labels, gaps, and the `UnverifiedNewer` point;
+and the prepared guide, route and lifecycle matrices, feature matrix,
+architecture ceiling, standing lane, and `[Unreleased]` agree.
+
+Research 217 reproduces exactly, with one correction: the `optionDetails` type
+and the `agentInvoked` / `runCommandInBackground` mode changes land in
+published `17.4.2`, not at the `18.0.0` tag.
+
+Official latest was rechecked at npm and GitHub `18.1.22` at the identity and
+push boundaries. No provider prompt, login, credential, installation, host
+update, downloaded-artifact execution, Pi adapter mutation, release, tag,
+publication, or consumer mutation occurred.
 
 ## Ready-State Rubric
 
@@ -114,13 +149,13 @@ Pi adapter mutation, release, tag, publication, or consumer mutation.
 
 ## Acceptance
 
-- [ ] official identities reproduce for every published stable through latest
-- [ ] npm-unpublished gaps remain explicit and are never inferred compatible
-- [ ] identity evidence lands before any claim or mapping change
-- [ ] both 17.x hops and every 18.x hop receive an exact selected-path ruling
-- [ ] any admitted 18.x range uses a distinct private behavior segment
-- [ ] historical evidence, `pi.package`, and unrelated surfaces remain separate
-- [ ] official latest is rechecked at identity and push boundaries
+- [x] official identities reproduce for every published stable through latest
+- [x] npm-unpublished gaps remain explicit and are never inferred compatible
+- [x] identity evidence lands before any claim or mapping change
+- [x] both 17.x hops and every 18.x hop receive an exact selected-path ruling
+- [x] any admitted 18.x range uses a distinct private behavior segment
+- [x] historical evidence, `pi.package`, and unrelated surfaces remain separate
+- [x] official latest is rechecked at identity and push boundaries
 
 ## Next Task
 

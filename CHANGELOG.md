@@ -31,6 +31,34 @@ annotated Git tags from the canonical repository.
   disposition stays independent.
 
 ### Changed
+- extend the qualified Oh My Pi RPC package window from
+  `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
+  `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior
+  revision, and a distinct adapter-private `18.0.0..=18.1.22` segment on the
+  new `oh-my-pi.rpc-v2-v18.0.0` revision. Contract 029 gives a claim its own
+  revision, so the claim id moves from `oh-my-pi.rpc.package-window-1` to
+  `oh-my-pi.rpc.package-window-2`; because the `18.x` segment carries the
+  newest behavior revision, the retained `17.x` segment reports `Deprecated`
+  while staying executable. Research 327 froze all 36 published npm stables
+  from `17.4.0` through official `18.1.22` with reproduced registry
+  integrity, shasum, tarball, `dist/cli.js`, shipped file-count, and GitHub
+  tag-commit identity plus one deterministic per-hop shipped-tree inventory
+  before any claim changed: `rpc-messages.ts`, `rpc-input.ts`, `host-uris.ts`,
+  and `message-framing.ts` are byte-identical across all 36 versions,
+  `rpc-types.ts` from `17.4.2`, and `docs/rpc.md` is blob `310b4470` from
+  `v17.4.2` through `v18.1.22`. The later `17.x` hops are additive or
+  advisory (an unmapped background-command callback, an accurate
+  `agentInvoked` field, optional select `optionDetails`), and every mapped
+  `18.x` hop is byte-identical, unmapped, additive, client-library, or a
+  resolved session-scoped persistence change with the adapter's asserted
+  `get_state` values unchanged. `18.0.2` and `18.1.7` are explicit
+  exclusions; the npm-unpublished GitHub tags `17.4.3` and `17.4.4` stay
+  incompatible between the segments; `18.1.23` stays permitted
+  `UnverifiedNewer` on the `18.x` revision. Baseline `17.2.9`,
+  `AllowUnverified`, the frozen `oh-my-pi-rpc-17.2.9` decoder corpus, and
+  every historical specimen stay, `pi.package` is untouched, and no new
+  public operation, shared type, or shared behavior revision is required.
+  Research 327, g05.079.
 - extend the Kimi Code local-server ceiling from maintained
   `0.35.0..=0.38.0` to maintained `0.35.0..=0.39.1` with the
   `kimi.local-server.rest-ws-v2-heartbeat-ping` behavior revision and

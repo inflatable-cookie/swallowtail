@@ -15,12 +15,14 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Dispatch [g05.079 Oh My Pi 18.1.22 Major-Line Qualification](g05/079-oh-my-pi-18-1-22-major-line-qualification.md)
-through Northstar Queue as family nineteen in Tom's authorized Research 308
-campaign. Classify both later 17.x points and every published 18.x point from
-one identity-first selected-source ledger; an admitted 18.x range requires a
-distinct adapter-private behavior segment. Provider-free; no release, tag,
-publication, host update, or consumer authority.
+Reassess the active generation now that Tom's authorized Research 308
+currentness campaign is complete through Oh My Pi `18.1.22` (g05.079,
+Research 327). All nineteen families were actioned: eighteen advanced, and
+Goose and Qoder keep their exact `QualifiedOnly` points at their selected-
+route provider-auth and turn-binding stops pending an operator ruling. No
+currentness family remains ready. Do not keep the generation open for
+currentness, and do not infer release, tag, publication, live-provider, or
+consumer authority.
 
 ## Standing Lanes
 

@@ -1,0 +1,181 @@
+{
+  "axis": "antigravity-cli.release",
+  "observed_at": "2026-09-15",
+  "github_repo": "google-antigravity/antigravity-cli",
+  "official_latest": "1.2.2",
+  "not_gemini_cli": true,
+  "not_antigravity_acp": true,
+  "host": {
+    "installed": true,
+    "version": "1.1.19",
+    "version_authority": "byte-identical-to-official-1.1.19-mac-arm64",
+    "executable_sha256": "96fae3fccfb444c7fb2c6d8d70426e5c978e4f21cfc4507a541f612a8b8ffeef",
+    "executable_size": 178046224,
+    "official_tarball_sha256": "ad72daf6b255d96e4864fe6bd2f3fa4070fb4c554845ceaf1d6399d8f1092e45",
+    "github_commit": "ee5766c17fce8f27ea85185f97183575058218ec",
+    "signature_authority": "Developer ID Application: Google LLC (EQHXZ8M8AV)",
+    "executed_during_probe": false
+  },
+  "official": {
+    "version": "1.2.2",
+    "published_at": "2026-09-12T03:51:08Z",
+    "github_commit": "ba985e6b5de2ac8aa09860a154a102831eb7722b",
+    "assets": {
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "sha256": "2cfa5c9a4a1edd96db6d4058f34970be60d3bcacda866e2bdce6aefb2451b48e",
+        "size": 57596853,
+        "extracted_cli_sha256": "e8f90ef67943b56c1148d73bc0e102d0b44d18935ffb11d49a2d870a095f416b",
+        "extracted_cli_size": 213582080,
+        "elf_build_id": "fa00846652bf39ea18e012d43e3e161f"
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "sha256": "f90ff6094a196f1be3854ac45d999a542d47ec66a1513aa882a8505b947b9a0f",
+        "tarball_size": 49929659,
+        "extracted_cli_sha256": "cabadc15a61944372bede1fdff186701c17467dd9d718e97dc79283055d3c101",
+        "extracted_cli_size": 180089984
+      }
+    },
+    "version_literal_in_binary": "1.2.2"
+  },
+  "published_stables_from_previous_ceiling": [
+    "1.1.27",
+    "1.1.28",
+    "1.2.0",
+    "1.2.1",
+    "1.2.2"
+  ],
+  "artifacts": {
+    "1.1.27": {
+      "published_at": "2026-09-05T04:23:25Z",
+      "github_commit": "1ae9cb7b51667192c051b73a91099c71e816ca5f",
+      "linux_x64_tarball_sha256": "f874d4f6b8a73c2df660f580f25fb656fcb6e64adbfd746e6692e837fd9a20be",
+      "linux_x64_tarball_size": 56789301,
+      "mac_arm64_tarball_sha256": "e901e5c8fd20ab4c21c01df306030079286d08e6d372cdb535d5ccc7a3f565f4",
+      "linux_x64_extracted_cli_sha256": "93eb2118b778a4005700b54cdd7e08b896fbe665d5ff338e38e9e53da9a091ea",
+      "linux_x64_extracted_cli_size": 210551040,
+      "linux_x64_elf_build_id": "f9e9161520c4891e4727593e196cba3d",
+      "mac_arm64_extracted_cli_sha256": "d583be1344ea9cfa0c45cff2c1342af7837f4833c4edb65e69bee84776a45caa",
+      "mac_arm64_extracted_cli_size": 177426912,
+      "version_literal_in_binary": "1.1.27"
+    },
+    "1.1.28": {
+      "published_at": "2026-09-09T00:43:52Z",
+      "github_commit": "baef32d9f7d91aa5f8f1747b4a8a938723132a19",
+      "linux_x64_tarball_sha256": "074ff4f732a750ad727aeed5fc82ed34b1fb72fda2a6ceba6c8e652ffd0a94b0",
+      "linux_x64_tarball_size": 56914961,
+      "mac_arm64_tarball_sha256": "8f642cffce8bc14aa3e49d1a75780bb2bd99fe7a3016389627476d9e3ec911eb",
+      "linux_x64_extracted_cli_sha256": "a8793092fbe6eea0b8228fc20582ec306f7f7698d1151be526902b1556a76f3a",
+      "linux_x64_extracted_cli_size": 210923776,
+      "linux_x64_elf_build_id": "b3f253d9868abc95dc081fe2fcf9f702",
+      "mac_arm64_extracted_cli_sha256": "2a63488c33221627f1798ff4ccb1d5131b6abe3160286c84b357a7456905f763",
+      "mac_arm64_extracted_cli_size": 177756720,
+      "version_literal_in_binary": "1.1.28"
+    },
+    "1.2.0": {
+      "published_at": "2026-09-10T01:43:29Z",
+      "github_commit": "34406bef8e87fc103783c0c9715e5e2cce3c3e1b",
+      "linux_x64_tarball_sha256": "d9bfee1ae6e4329562cb87da1f5fc3c886d18594837e73e25c3aae00a49499b9",
+      "linux_x64_tarball_size": 57224342,
+      "mac_arm64_tarball_sha256": "8fee3c120142490f2eddd286ff7d532b3e660c92d17e60a3612cc0ad1122478f",
+      "linux_x64_extracted_cli_sha256": "195bf11b249deebe67028305a9b7b1d19ac38e9ab281b786a163a7d2fc8ff428",
+      "linux_x64_extracted_cli_size": 212304128,
+      "linux_x64_elf_build_id": "734ed857e46e56054b0ce7d40927d3b7",
+      "mac_arm64_extracted_cli_sha256": "f3671863b53ecef2c45a41673677fe603fbe5d73df33d744feec3e88d5af0199",
+      "mac_arm64_extracted_cli_size": 178935744,
+      "version_literal_in_binary": "1.2.0"
+    },
+    "1.2.1": {
+      "published_at": "2026-09-11T06:46:48Z",
+      "github_commit": "e4afe6b6f3aa115b1ba31e26db6508a23b5e42e5",
+      "linux_x64_tarball_sha256": "6a2c53db6c681fc114f9a1e499e7b4771357ab2852242e56acbd43197d4807f9",
+      "linux_x64_tarball_size": 57458208,
+      "mac_arm64_tarball_sha256": "b80425e10a7b92f20679eee5df3bb18e3f9154b3653a373fad47e2f72614248e",
+      "linux_x64_extracted_cli_sha256": "38f130cdd0757e1d22e151baa48ace4074a5bd3d960eb2dcc7f44bdf2ad4c0fd",
+      "linux_x64_extracted_cli_size": 213422336,
+      "linux_x64_elf_build_id": "c61f1d72352c28d668f23f19c79fd7b9",
+      "mac_arm64_extracted_cli_sha256": "98724c5370d91a2fc99a1b42cccb8cda5075dba61615e18aa71daaacb7a71f86",
+      "mac_arm64_extracted_cli_size": 179956448,
+      "version_literal_in_binary": "1.2.1"
+    },
+    "1.2.2": {
+      "published_at": "2026-09-12T03:51:08Z",
+      "github_commit": "ba985e6b5de2ac8aa09860a154a102831eb7722b",
+      "linux_x64_tarball_sha256": "2cfa5c9a4a1edd96db6d4058f34970be60d3bcacda866e2bdce6aefb2451b48e",
+      "linux_x64_tarball_size": 57596853,
+      "mac_arm64_tarball_sha256": "f90ff6094a196f1be3854ac45d999a542d47ec66a1513aa882a8505b947b9a0f",
+      "linux_x64_extracted_cli_sha256": "e8f90ef67943b56c1148d73bc0e102d0b44d18935ffb11d49a2d870a095f416b",
+      "linux_x64_extracted_cli_size": 213582080,
+      "linux_x64_elf_build_id": "fa00846652bf39ea18e012d43e3e161f",
+      "mac_arm64_extracted_cli_sha256": "cabadc15a61944372bede1fdff186701c17467dd9d718e97dc79283055d3c101",
+      "mac_arm64_extracted_cli_size": 180089984,
+      "version_literal_in_binary": "1.2.2"
+    }
+  },
+  "frozen_1_1_26_boundary_reproduction": {
+    "1.1.26_linux_x64_tarball_sha256": "c47c0726266b3513660b7094bceceecbd03d8ae907786aa269c507ceb7e4ee54",
+    "1.1.26_linux_x64_binary_sha256": "a0a6a8044d01accd39e6f5926d29648d212a2e519ff14102f09e1c061e6171dd",
+    "1.1.21_linux_x64_binary_sha256": "ca7ffc496be6c24bb908aab478ec5be2b8fbad76507085b885163475613332c5",
+    "1.1.22_linux_x64_binary_sha256": "2822292f90deea4556938a8728fe4ed02a1d66d1525cf75fa07a171e36a38c25",
+    "matches_research_283": true,
+    "digest_disagreement": false
+  },
+  "public_git_hops": "CHANGELOG.md-only",
+  "first_unpublished_later_stable": "1.2.3",
+  "first_unpublished_release_absent": true,
+  "first_unpublished_tag_absent": true,
+  "keep_1_1_8_incompatible": true,
+  "decoder_corpus": "antigravity-cli-1.1.9",
+  "claim_at_observation": {
+    "baseline": "1.1.9",
+    "latest_qualified": "1.1.17",
+    "posture": "allow_unverified",
+    "classification_of_1_1_18": "unverified_newer",
+    "classification_of_1_2_2": "unverified_newer"
+  },
+  "identity_decision": {
+    "behavioural_authority": "official-release-notes",
+    "authority_ruling": "Tom directed on 2026-09-15 that the official release notes are the behavioural authority for this requalification; exhaustive binary scanning stopped and already-collected hashes are preserved",
+    "catalogue": {
+      "shape": "compatible-extension",
+      "advance_to": "1.2.2",
+      "qualify_intermediates": [
+        "1.1.18",
+        "1.1.19",
+        "1.1.20",
+        "1.1.21",
+        "1.1.22",
+        "1.1.23",
+        "1.1.24",
+        "1.1.25",
+        "1.1.26",
+        "1.1.27",
+        "1.1.28",
+        "1.2.0",
+        "1.2.1"
+      ],
+      "keep_catalogue_behavior": "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1",
+      "keep_baseline": "1.1.9",
+      "reason": "no published selected-path change to `agy models` in the 1.1.27..1.2.2 release notes; the published retry changes name the agent model request loop, not the catalogue command"
+    },
+    "headless": {
+      "shape": "stop",
+      "blocking_hop": "1.1.22",
+      "keep_latest_qualified": "1.1.17",
+      "unqualified_gap": "1.1.18..=1.2.2",
+      "keep_headless_behavior": "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1",
+      "keep_baseline": "1.1.9",
+      "reason": "the 1.1.22 provider-managed HTTP 502 retry stands; 1.1.28 retries transient model errors for much longer with exponential backoff and 1.2.1 broadens automatic in-process retry to 502/503/504, per-minute 429, and mid-stream interruptions, each with no published finite bound or disable control; 1.1.28 also changes print-timeout expiry to partial output plus successful exit and 1.2.0 adds a content-filter stop reason"
+    },
+    "new_public_operation": false,
+    "new_private_milestone": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_print_run": false,
+    "host_install_changed": false,
+    "downloaded_binaries_executed": false,
+    "exhaustive_binary_forensics_after_ruling": false,
+    "official_latest_moved_during_run": false
+  }
+}

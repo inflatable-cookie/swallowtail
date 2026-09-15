@@ -1,0 +1,130 @@
+{
+  "method": "official GitHub release/tag/asset identity plus the official release notes as the behavioural authority under Tom's 2026-09-15 operator ruling; collected binary hashes from the pre-ruling probe are retained, downloaded binaries were never executed, and exhaustive string scanning stopped at the ruling",
+  "selected_surfaces": [
+    "--print",
+    "--output-format",
+    "--model",
+    "--mode",
+    "--sandbox",
+    "--effort",
+    "--json-schema",
+    "--conversation",
+    "models"
+  ],
+  "selected_values": [
+    "stream-json",
+    "plan",
+    "request-review"
+  ],
+  "selected_surfaces_unchanged_in_notes": true,
+  "published_selected_path_changes": {
+    "from_1_1_26_to_1_1_27": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "print-mode-denied-actions-notice-and-json-denied_actions-field",
+        "print-mode-exits-after-session-shutdown-so-trailing-history-reaches-disk"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "compatible-extension-repair-blocked-by-1-1-22"
+    },
+    "from_1_1_27_to_1_1_28": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "transient-model-api-errors-retry-for-much-longer-with-exponential-backoff",
+        "print-timeout-expiry-now-returns-partial-output-and-exits-zero",
+        "print-mode-waits-for-background-tasks-bounded-by-print-timeout-and-leaves-daemon-tasks-running",
+        "print-fatal-errors-report-on-stderr-with-a-stable-error-marker-and-truncation-note",
+        "headless-plan-review-proceeds-automatically-instead-of-stalling",
+        "url-fetch-default-permission-changes-from-always-allowed-to-asking-first"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-deepens"
+    },
+    "from_1_1_28_to_1_2_0": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "content-safety-filter-blocks-surface-a-clear-content-filter-stop-reason-instead-of-silent-or-retried-ends"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-maintained"
+    },
+    "from_1_2_0_to_1_2_1": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "transient-genai-api-errors-502-503-504-per-minute-429-and-mid-stream-interruptions-automatically-retry-in-process-with-exponential-backoff"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-maintained"
+    },
+    "from_1_2_1_to_1_2_2": {
+      "catalogue_changes": [],
+      "headless_changes": [],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-maintained"
+    }
+  },
+  "headless_retry_trace": {
+    "hop_1_1_22_http_502_retry": {
+      "published_finite_bound_present": false,
+      "public_disable_control_present": false,
+      "separate_operator_acceptance_present": false,
+      "stop": true
+    },
+    "hop_1_1_28_much_longer_retry": {
+      "published_finite_bound_present": false,
+      "public_disable_control_present": false,
+      "published_backoff_shape": "exponential, duration unbounded in the notes",
+      "admissible_under_contract_023": false
+    },
+    "hop_1_2_1_broader_automatic_retry": {
+      "published_finite_bound_present": false,
+      "public_disable_control_present": false,
+      "published_codes": ["502", "503", "504", "429-per-minute", "mid-stream-interruptions"],
+      "admissible_under_contract_023": false
+    },
+    "host_deadline_is_not_a_provider_retry_policy": true,
+    "inferred_bound_recorded": false
+  },
+  "print_timeout_trace": {
+    "expiry_before_1_1_28": "timeout error terminal failure",
+    "expiry_from_1_1_28": "returns partial output and exits zero with a stderr warning",
+    "published_default_or_caller_bounds": "not stated in the notes",
+    "selected_deadline_authority_unchanged": true
+  },
+  "authority_trace": {
+    "contract_017": {
+      "private_exact_conversation_id_is_not_public_load_or_resume": true,
+      "provider_permission_observation_grants_no_write_authority": true,
+      "ambient_route_claims_no_filesystem_or_descendant_containment": true
+    },
+    "contract_023": {
+      "host_deadline_does_not_replace_provider_native_retry_policy": true,
+      "provider_managed_retry_requires_separate_acceptance": true,
+      "no_separate_acceptance_exists_for_this_lane": true
+    },
+    "hop_1_2_0_content_filter_stop": {
+      "applies_to_selected_headless_stream": true,
+      "new_stop_reason_published": true,
+      "catalogue_affected": false
+    },
+    "catalogue_isolation": {
+      "notes_name_no_models_selected_path_change": true,
+      "retry_notes_name_the_agent_model_request_loop": true,
+      "catalogue_advance_independent_of_headless_stop": true
+    }
+  },
+  "material_unmapped_published_changes": [
+    "interactive-model-picker-and-effort-defaults",
+    "remote-control-services",
+    "mcp-and-plugin-management",
+    "custom-agents-and-skills",
+    "gemini-api-key-sign-in",
+    "conversation-delete-and-worktree-cleanup",
+    "url-fetch-permission-default"
+  ],
+  "provider_prompt_sent": false,
+  "live_catalogue": false,
+  "live_print_run": false,
+  "host_install_changed": false,
+  "downloaded_binaries_executed": false
+}

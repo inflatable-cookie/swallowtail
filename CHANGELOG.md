@@ -31,6 +31,29 @@ annotated Git tags from the canonical repository.
   disposition stays independent.
 
 ### Changed
+- raise the Kimi Code installed headless ceiling from maintained
+  `0.33.0..=0.39.1` to maintained `0.33.0..=0.43.0` on
+  `kimi.headless.executable-window-2` with the `kimi.headless.stream-json.v2`
+  behavior revision, baseline `0.33.0`, and `AllowUnverified` unchanged.
+  Research 325 froze official npm and GitHub `0.39.1`, `0.40.0`, `0.40.1`,
+  `0.41.0`, `0.42.0`, and `0.43.0` and one deterministic tagged-source
+  inventory per point before any claim changed: the `dispatchNativeEvent`
+  switch is byte-identical across all six points, `prompt-render.ts` and
+  `options.ts` are byte-identical git blobs, and the JSONL roles, meta types,
+  `system.version` preamble, `session.resume_hint`, retry record, tool record,
+  terminal shape, retention, cancellation, and cleanup do not move. Only
+  internal dependency-injection, telemetry, shutdown-quiescence,
+  prompt-submission, and cancellation mechanics change, plus the `0.42.0`
+  deletion of the v1 legacy body and the `KIMI_CODE_LEGACY_FLAG` gate. The
+  `0.41.0` auto-permission-mode dangerous-command guard drop and the `0.42.0`
+  trust-gated MCP stderr warning stay unmapped. `kimi-code.acp` keeps its
+  `QualifiedOnly` `0.38.0` cap: Research 325 proved `acpTerminalRunner.ts` and
+  the bundled `AcpProcessService` byte-identical at every point through
+  `0.43.0`, so the A2 `terminal: false` local host-process spawn is unchanged,
+  the exact `0.39.0`/`0.39.1` exclusions do not grow, and
+  `0.40.0..=0.43.0` is the posture-rejected published gap. Unpublished
+  `0.43.1` stays the visible `UnverifiedNewer` point, and the separate
+  `kimi-code.local-server` family did not move. Research 325, g05.077.
 - raise the qualified Gemini CLI ACP and headless ceilings from maintained
   `0.51.0..=0.56.0` to maintained `0.51.0..=0.59.0` on the separate
   `gemini-cli.acp-agent` and `gemini-cli.headless-stream-json` axes with the

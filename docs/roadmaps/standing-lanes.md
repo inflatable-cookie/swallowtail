@@ -305,12 +305,13 @@ incompatible. Unpublished `0.77.0` stays permitted `UnverifiedNewer`. Host
 `0.63.0` stays observation-only Qualified Deprecated. `AllowUnverified`
 remains.
 
-Earlier one-family claim: Kimi Code installed harness `0.39.1` (g05.016,
-cards 041-042) plus the A2 ACP cap (g05.017, card 043). Headless v1 is
-`0.29.0..=0.32.0` and headless v2 is `0.33.0..=0.39.1`, above which unpublished
-`0.39.2` stays permitted `UnverifiedNewer`. ACP is `QualifiedOnly` at exact
+Earlier one-family claim: Kimi Code installed harness `0.43.0` (g05.016,
+cards 041-042; g05.077) plus the A2 ACP cap (g05.017, card 043). Headless v1 is
+`0.29.0..=0.32.0` and headless v2 is `0.33.0..=0.43.0`, above which unpublished
+`0.43.1` stays permitted `UnverifiedNewer`. ACP is `QualifiedOnly` at exact
 `0.28.1` plus `0.29.0..=0.38.0` with exact `0.39.0` and `0.39.1` excluded as
-recorded evidence; every point above `0.38.0` fails closed. A shipped-artifact
+recorded evidence; every point above `0.38.0` fails closed, including the
+published `0.40.0..=0.43.0` gap. A shipped-artifact
 identity run may reopen planning only if every invocation path fails closed
 again for a terminal-less client, or upstream supplies a ProviderEnforced
 boundary satisfying Contracts 017/023. The trigger authorizes a fresh
@@ -336,8 +337,10 @@ cards 012-013 remain the prior `0.22.3` currentness record. Kimi
 Code headless agent-core-v2 stream-json first qualified as exact `0.38.0`
 under `kimi.headless.stream-json.v2` (g04.064, cards 179-180); g05.016
 corrected that revision's baseline to `0.33.0` and extended it to
-`0.33.0..=0.39.1`. The v1 ceiling is `0.32.0`, not the `0.37.2` g04.064
-recorded.
+`0.33.0..=0.39.1`; g05.077 then extended it again to `0.33.0..=0.43.0` with the
+selected argv, JSONL grammar, retry record, terminal shape, retention,
+cancellation, and cleanup unchanged. The v1 ceiling is `0.32.0`, not the
+`0.37.2` g04.064 recorded.
 
 ### Latest Completed Family
 
@@ -650,8 +653,18 @@ The trigger authorizes a fresh identity/claim decision, never automatic
 admission and never restoration of AllowUnverified by itself. The lane must
 not adopt a growing exclusion set as a substitute for the posture.
 
+Research 325 (g05.077) then ran the artifact-level trigger through official
+npm and GitHub `0.43.0`. `acpTerminalRunner.ts` is git blob `9016d48b` at every
+point from `0.39.1` through `0.43.0`, and the bundled `AcpProcessService` is
+the frozen `7c58e045` digest at all six points, so ACP stays capped at `0.38.0`
+with the published `0.40.0..=0.43.0` gap posture-rejected and the exclusion set
+unchanged. The same run extended `kimi.headless.stream-json.v2` to
+`0.33.0..=0.43.0`; unpublished `0.43.1` is the first later stable. The separate
+`kimi-code.local-server` family stays Research 282's and did not move.
+
 Research 271 revalidated all 40 families after the Kimi A2 cap. Headless
-`0.39.1` is on-ceiling. `kimi-code.acp` stays `QualifiedOnly` at `0.38.0` and
+`0.39.1` was on-ceiling then; g05.077 and Research 325 later extended it to
+`0.43.0`. `kimi-code.acp` stays `QualifiedOnly` at `0.38.0` and
 is not reopened. Claude Agent ACP `0.72.0` was the sole next-family
 candidate. Operator restart compiled official `0.73.0` in g05.018.
 

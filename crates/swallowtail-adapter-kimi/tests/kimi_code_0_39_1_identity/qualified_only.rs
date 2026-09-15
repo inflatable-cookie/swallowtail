@@ -193,7 +193,7 @@ fn headless_does_not_inherit_the_acp_qualified_only_cap() {
         InterfaceNewerVersionPosture::AllowUnverified
     );
     assert!(matches!(
-        headless.assess(&version("0.39.2")),
+        headless.assess(&version("0.43.1")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     for excluded in EXCLUDED {

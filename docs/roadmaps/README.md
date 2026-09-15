@@ -15,11 +15,15 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement [g05.077 Kimi Code 0.43.0 Installed Useful Newer](g05/077-kimi-code-0-43-0-installed-useful-newer.md)
-as the seventeenth family in Tom's authorized Research 308 currentness
-campaign. Requalify ACP and headless independently, preserve the A2
-process-authority boundary, and stop either claim at its first exact selected
-incompatibility. Provider-free only.
+Return the g05.077 outcome to Chatterbox, then compile and dispatch the
+separate `kimi-code.local-server` currentness family from fresh canonical
+`main` as family eighteen in Tom's authorized Research 308 campaign, without
+asking Tom to repeat authorization. Research 282 already froze the `0.40.0`
+Bash `cwd` workspace-assertion removal and the `0.41.0` auto-permission-mode
+dangerous-command guard drop and left that family stopped at `0.38.0`; the
+follow-on lane must treat the workspace-assertion removal as an authority
+question first, must not widen or flatten the installed ACP/headless claims,
+and stays provider-free.
 
 ## Standing Lanes
 

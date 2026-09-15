@@ -344,13 +344,15 @@ OpenHands adds a package without a production route.
 - `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
   route-specific behavior segments whose bounds differ per route.
   `kimi-code.acp` qualifies `0.29.0..=0.38.0` under `QualifiedOnly` and
-  excludes exact `0.39.0` and `0.39.1`; every point above `0.38.0` fails
-  closed. Its ACP route owns ambient-host
+  excludes exact `0.39.0` and `0.39.1`; the uncontained ACP terminal-runner
+  local spawn is byte-identical through `0.43.0`, so every point above
+  `0.38.0` fails closed, including the published `0.40.0..=0.43.0` gap. Its
+  ACP route owns ambient-host
   interactive new, load-with-replay, replay-free resume, bounded writes, and
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process
   cleanup. Headless qualifies `0.29.0..=0.32.0` under
-  `kimi.headless.stream-json.v1` and `0.33.0..=0.39.1` under
+  `kimi.headless.stream-json.v1` and `0.33.0..=0.43.0` under
   `kimi.headless.stream-json.v2` with a matching `system.version` preamble.
   Public facade `kimi-headless-stream-json-v1` covers both revisions. One
   installed facade requires explicit ACP or headless selection.

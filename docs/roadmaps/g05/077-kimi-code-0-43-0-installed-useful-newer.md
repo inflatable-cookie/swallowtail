@@ -8,23 +8,42 @@ Vision tags: route currentness, Kimi Code, ACP, headless, process authority
 
 ## Outcome
 
-Ready. Requalify the installed Kimi Code ACP and headless claims independently
-from their current ceilings through official stable `0.43.0`. Preserve the A2
-ACP containment decision: a newer point is admitted only if exact shipped
-source proves the host-process authority is bounded or absent. Headless may
-advance independently where its selected stream-json route remains compatible.
-Stop either claim at its first exact selected incompatibility.
+Complete. A split outcome through official stable `0.43.0`. Research 325
+froze npm and GitHub `0.39.1`, `0.40.0`, `0.40.1`, `0.41.0`, `0.42.0`, and
+`0.43.0` with tarball, tag, commit, tree, source-archive, and release-asset
+digests, one deterministic tagged-source inventory per point, a
+mutation-sensitive selected-file blob ledger, and a bundle oracle, before any
+claim moved.
 
-Planning rechecked the official channels on 2026-09-15. npm latest is
-`@moonshot-ai/kimi-code@0.43.0`, published `2026-09-14T12:10:41.073Z`, with
-integrity
-`sha512-J8GnyiHKxjBA1kGkPGnxXWY2rbQ+O4WwBDfiOOqKAYOpptVk568l9qp5edlmz1iBXUpCZZUyw3pPnJhM5hZl2A==`
-and shasum `d867d748d41e69c9883dd2d5c54bbba131bbc3dc`. GitHub's matching
-latest release is `@moonshot-ai/kimi-code@0.43.0`, published
-`2026-09-14T12:03Z`, at signed release commit `ffa94fa`. The stable hops after
-`0.39.1` are exactly `0.40.0`, `0.40.1`, `0.41.0`, `0.42.0`, and `0.43.0`.
-The installed host remains `0.34.0` at
-`sha256:9f4337e10da47843f6b550474012a53ba8b30dd665f83b176a5cd479c5f7e859`.
+The Kimi Code installed headless claim advances from maintained
+`0.33.0..=0.39.1` to maintained `0.33.0..=0.43.0` on
+`kimi.headless.executable-window-2` with the `kimi.headless.stream-json.v2`
+behavior revision, baseline `0.33.0`, and `AllowUnverified` unchanged. The
+`dispatchNativeEvent` switch is byte-identical across all six points — the
+same ten case labels and writer calls — and `prompt-render.ts` and
+`options.ts` are byte-identical git blobs, so the JSONL roles, meta types,
+`system.version` preamble, `session.resume_hint`, retry record, tool record,
+terminal shape, retention, cancellation, and cleanup do not move. Only
+internal dependency-injection, telemetry, shutdown-quiescence,
+prompt-submission, and cancellation mechanics change, plus the `0.42.0`
+deletion of the v1 legacy body and the `KIMI_CODE_LEGACY_FLAG` gate. The
+`0.41.0` auto-permission-mode dangerous-command guard drop and the `0.42.0`
+trust-gated MCP stderr warning stay unmapped. Unpublished `0.43.1` is the
+visible `UnverifiedNewer` point.
+
+`kimi-code.acp` holds at `QualifiedOnly` `0.38.0`. The g05.017 A2 ruling is
+binding and unchanged: `acpTerminalRunner.ts` is git blob `9016d48b` at every
+point from `0.39.1` through `0.43.0`, and the bundled `AcpProcessService` is
+SHA-256 `7c58e045` at all six — the frozen `0.39.0`/`0.39.1` digest — so the
+`terminal: false` local host-process spawn is still the branch taken. No exact
+containment or removal exists. The exact `0.39.0` and `0.39.1` exclusions do
+not grow, `0.40.0..=0.43.0` is the posture-rejected published gap, and no new
+ACP behavior revision, public operation, or shared type is required.
+`kimi-code.local-server` stays Research 282's separate family at `0.38.0`.
+
+No provider prompt, login, credential, catalogue call, live session,
+installation, host update, downloaded-binary execution, local-server start,
+release, tag, publication, or consumer mutation occurred.
 
 ## Ready-State Rubric
 
@@ -120,13 +139,13 @@ local-server mutation, release, tag, publication, or consumer mutation.
 
 ## Acceptance
 
-- [ ] official identities reproduce for all compared releases and channels
-- [ ] every published selected-path change is classified independently per claim
-- [ ] identity evidence precedes any claim or mapping change
-- [ ] ACP never crosses the A2 authority boundary without exact containment proof
-- [ ] maintained segments and incompatible gaps are maximally honest
-- [ ] local server and unrelated Kimi surfaces remain independently bounded
-- [ ] official latest is rechecked at identity and push boundaries
+- [x] official identities reproduce for all compared releases and channels
+- [x] every published selected-path change is classified independently per claim
+- [x] identity evidence precedes any claim or mapping change
+- [x] ACP never crosses the A2 authority boundary without exact containment proof
+- [x] maintained segments and incompatible gaps are maximally honest
+- [x] local server and unrelated Kimi surfaces remain independently bounded
+- [x] official latest is rechecked at identity and push boundaries
 
 ## Next Task
 

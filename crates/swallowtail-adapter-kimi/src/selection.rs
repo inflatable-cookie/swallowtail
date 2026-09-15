@@ -18,14 +18,24 @@ pub const KIMI_CODE_BASELINE_VERSION: &str = "0.28.1";
 /// From `0.39.0` the agent-core-v2 ACP terminal runner replaces two
 /// fail-closed errors with a local host-process spawn, and Swallowtail always
 /// advertises `terminal: false`, so that branch always applies. Nothing in
-/// this adapter or the runtime contains that spawn. Exact `0.39.0` and
-/// `0.39.1` stay excluded as recorded evidence. See
-/// `ACP_EXCLUDED_AUTHORITY_VERSIONS`.
+/// this adapter or the runtime contains that spawn. The g05.077 currentness
+/// run through official `0.43.0` found the same `acpTerminalRunner` source
+/// blob and the same bundled `AcpProcessService` digest at every point, so the
+/// cap does not move and no new exclusion is added. Exact `0.39.0` and
+/// `0.39.1` stay excluded as recorded evidence; `0.40.0..=0.43.0` are the
+/// posture-rejected published gap. See `ACP_EXCLUDED_AUTHORITY_VERSIONS`.
 pub const KIMI_CODE_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
 /// Oldest qualified Kimi Code headless version.
 pub const KIMI_HEADLESS_BASELINE_VERSION: &str = "0.29.0";
 /// Most recent qualified Kimi Code headless version.
-pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.39.1";
+///
+/// The g05.077 currentness run requalified the selected v2 route through
+/// official `0.43.0`. The dispatch switch, the `prompt-render` writers, the
+/// `system.version` preamble, the `session.resume_hint`, the retry payload,
+/// and the `--output-format stream-json` option surface are byte-identical
+/// from `0.39.1`; only internal dependency-injection, telemetry, and shutdown
+/// mechanics move.
+pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.43.0";
 
 /// Newest Kimi Code release whose default `kimi -p` engine is agent-core v1.
 ///
@@ -345,7 +355,7 @@ mod tests {
             assert!(!claim.permits(&version(excluded)));
         }
 
-        for newer in ["0.38.1", "0.39.2", "0.40.0"] {
+        for newer in ["0.38.1", "0.39.2", "0.40.0", "0.43.0", "0.43.1"] {
             assert_eq!(
                 claim.assess(&version(newer)),
                 InterfaceCompatibilityAssessment::Incompatible,
@@ -390,7 +400,7 @@ mod tests {
         // this claim previously mislabelled v1.
         for v2_point in [
             "0.33.0", "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2",
-            "0.38.0", "0.39.0", "0.39.1",
+            "0.38.0", "0.39.0", "0.39.1", "0.40.0", "0.40.1", "0.41.0", "0.42.0", "0.43.0",
         ] {
             let InterfaceCompatibilityAssessment::Qualified(v2) = claim.assess(&version(v2_point))
             else {
@@ -414,12 +424,12 @@ mod tests {
         }
 
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.39.2"))
+            claim.assess(&version("0.43.1"))
         else {
             panic!("stable newer release remains unverified");
         };
         assert_eq!(newer.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);
-        assert_eq!(newer.latest_qualified().as_str(), "0.39.1");
+        assert_eq!(newer.latest_qualified().as_str(), "0.43.0");
     }
 
     #[test]

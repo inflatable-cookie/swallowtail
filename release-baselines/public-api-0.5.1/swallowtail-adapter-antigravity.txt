@@ -110,6 +110,8 @@ pub const fn swallowtail_adapter_antigravity::AntigravityPreparedHeadlessRun::re
 pub fn swallowtail_adapter_antigravity::AntigravityPreparedHeadlessRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_AUTOMATIC_EXECUTABLE_NAME: &str
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_BASELINE_VERSION: &str
+pub const swallowtail_adapter_antigravity::ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_antigravity::ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_PERSONAL_GOOGLE_AUDIENCE: &str
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_RELEASE_AXIS: &str

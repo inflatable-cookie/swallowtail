@@ -31,6 +31,27 @@ annotated Git tags from the canonical repository.
   disposition stays independent.
 
 ### Changed
+- split the Antigravity claims under official GitHub
+  `google-antigravity/antigravity-cli` `1.2.2`: the catalogue claim advances
+  from maintained `1.1.9..=1.1.17` to maintained `1.1.9..=1.2.2` on the
+  `antigravity-cli.release` axis with the
+  `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1` behavior revision,
+  baseline `1.1.9`, and `AllowUnverified` unchanged, because Research 323
+  classified every published hop `1.1.27..=1.2.2` from the official release
+  notes under Tom's 2026-09-15 authority ruling and found no selected-path
+  change to `agy models`; the headless claim keeps maintained
+  `1.1.9..=1.1.17` because the Research 283 `1.1.22` provider-managed HTTP
+  502 retry stands and `1.1.28` plus `1.2.1` broaden provider-managed retry
+  with no published finite bound or disable control, so `1.1.18..=1.2.2`
+  stay the named unqualified gap with `1.1.28`'s partial-output
+  `--print-timeout` expiry and `1.2.0`'s content-filter stop reason inside
+  it. Official identity for both platform assets and the reproduced
+  `1.1.26` boundary are frozen in
+  `crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.2.2/`;
+  collected pre-ruling hashes are retained, exhaustive binary scanning
+  stopped at the ruling, downloaded binaries were never executed, and no
+  provider, prompt, login, credential, installation, or host-mutation
+  operation occurred. Research 323, g05.075.
 - advance the Deep Agents ACP exact point from `0.1.25` to official npm
   `0.1.30`: Research 322 freezes all five published stable successors and
   the exact-pinned `deepagents` runtime dependency chain `1.12.4..=1.13.4`

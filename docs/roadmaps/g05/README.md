@@ -29,7 +29,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete; the per-turn audit note is reserved for Chatterbox's prune | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | g05.008; g05.009 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | g05.010 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | g05.011 |
-| Keep production route versions current one family at a time. | active campaign; fourteen families processed through Research 322; Goose stopped at the selected-route provider-auth failure change and keeps exact `1.46.0` pending an operator ruling; Kiro advanced to exact `2.21.4`; Mistral Vibe advanced to exact `2.25.4` with an adapter-private `--legacy-harness` argv pin; Deep Agents advanced to exact `0.1.30` with the stdio wire unchanged; Antigravity reopens against `1.2.2` with bounded retry or per-claim fail-closed required; Command Code's separate live requalification remains named in g05.069; Gemini deferral lifted; Kimi and Oh My Pi remain open under existing containment and identity rules | Contract 029; Research 308-322; Tom's 2026-09-14 direction | g05.075 |
+| Keep production route versions current one family at a time. | active campaign; fifteen families processed through Research 323; Goose stopped at the selected-route provider-auth failure change and keeps exact `1.46.0` pending an operator ruling; Kiro advanced to exact `2.21.4`; Mistral Vibe advanced to exact `2.25.4` with an adapter-private `--legacy-harness` argv pin; Deep Agents advanced to exact `0.1.30` with the stdio wire unchanged; Antigravity advanced the catalogue claim to `1.2.2` and stopped headless at the `1.1.22` provider-retry stop under the release-notes authority ruling; Command Code's separate live requalification remains named in g05.069; Gemini deferral lifted; Kimi and Oh My Pi remain open under existing containment and identity rules | Contract 029; Research 308-323; Tom's 2026-09-14 and 2026-09-15 directions | Gemini compilation |
 | Expose the installed Grok CLI's truthful pre-session model catalogue without widening ACP execution authority. | completed; PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`; authenticated non-inference metadata boundary, shipped bullet grammar, accepted final capsule | Contracts 020 and 047; Desktop g02.086 producer intake; installed Grok `1.0.25`; PR #315 | g05.053 |
 | Prepare the Desktop-qualified source as patch `v0.5.1` without changing package source or crossing the exact-SHA tag gate. | completed; PR #317 merged candidate `755a2669` at `e9140b46` after independent exact-head review `5649975685`; `crates/` tree `186f3ba4` and Grok tree `1a6f777f` unchanged; tag withheld for Tom's exact-SHA authorization | Contract 036; g05.051; g05.053; Desktop g02.089 Phase A | g05.054 |
 | Create and push the exact `v0.5.1` annotated source tag without publishing another release object. | completed; annotated `v0.5.1` tagged and pushed at `e9140b46` 2026-09-13 (tag object `97a6933a`); pre-tag run 34731113171 and tag-triggered run 34743711387 both green 11/11; documentation closeout merged through PR #318 at `b0c800e0` after independent exact-head review `5651817371`; source-only | Contract 036; g05.054; run 34731113171; 2026-09-13 operator authorization | g05.055 |
@@ -59,7 +59,7 @@ enforcement.
 Only ready and planned tasks are actionable. Completed and stopped tasks live
 in [## Tasks](#tasks) below.
 
-- [g05.075 Antigravity 1.2.2 Useful Newer Requalification](./075-antigravity-1-2-2-useful-newer-requalification.md) — ready; freeze five new official releases, prove or reject retry containment, and record the maximal honest catalogue and headless segments independently
+- [g05.075 Antigravity 1.2.2 Useful Newer Requalification](./075-antigravity-1-2-2-useful-newer-requalification.md) — complete; Research 323 split the claims under Tom's release-notes authority ruling: the catalogue claim advanced to maintained `1.1.9..=1.2.2` with no published selected-path change, while headless keeps `1.1.9..=1.1.17` at the exact `1.1.22` provider-retry stop with `1.1.18..=1.2.2` as the named unqualified gap
 - [g05.074 Deep Agents 0.1.30 Useful Newer](./074-deep-agents-0-1-30-useful-newer.md) — complete; the exact npm successor ledger and the classified `deepagents` dependency chain advanced the `QualifiedOnly` point to `0.1.30` with the `deepagents.acp.stdio-v1` behavior unchanged and no argv change
 - [g05.073 Mistral Vibe 2.25.4 Useful Newer](./073-mistral-vibe-2-25-4-useful-newer.md) — complete; exact GitHub/PyPI trees, the `2.24.4` packaging gap, and the mapped selected-surface ledger advanced the `QualifiedOnly` point to `2.25.4` with the streaming behavior unchanged and an adapter-private `--legacy-harness` argv pin
 - [g05.072 Kiro 2.21.4 Useful Newer](./072-kiro-2-21-4-useful-newer.md) — complete; exact official archives and the complete successor ledger advanced the `QualifiedOnly` point to `2.21.4` with the `kiro.acp.stdio-v1` behavior unchanged
@@ -81,7 +81,7 @@ in [## Tasks](#tasks) below.
 - [g05.050 v0.5.0 Tagged-Source Consumer Proof](./050-v0-5-0-tagged-source-consumer-proof.md) — completed; repository selector and external remote-tag consumer both resolved every selected Swallowtail package at exact peel `582d01d6`; registered-only Claude SDK binding compiled with explicit `ReadWrite` on MSRV `1.95.0`; provider-free; documentation closeout merged through PR #313 at `fa2e4b94` after review `5618788611`
 - [g05.051 OpenCode HTTP 1.18.30 Useful Newer](./051-opencode-http-1-18-30-useful-newer.md) — completed; OpenCode HTTP qualified through official `1.18.30`; PR #314 merged at `2b79b083` after independent exact-head review `5633203211`
 
-g05 has seventy-five numbered tasks: 56 complete and one ready, including
+g05 has seventy-five numbered tasks: 57 complete and none ready, including
 standing currentness at 004, 005, 012, 013, 014, 015, 016, 018, 019, 020,
 028, 037, 044, and 051, the A2 ACP cap at 017, contract promotion at 008 and 010,
 dual-route parity
@@ -113,6 +113,13 @@ Qoder baseline and all 27 published stable successors through `1.1.52`, found
 that the selected route's historical inert `--max-turns 8` argv becomes the
 AgentLoop turn ceiling at `1.1.29..1.1.30`, and kept the exact `QualifiedOnly`
 point at `1.1.25` pending an operator ruling on the route's turn-binding policy;
+g05.075 is complete: Research 323 froze official Antigravity identity for
+`1.1.27..=1.2.2` with both platform digests and the reproduced `1.1.26`
+boundary, and under Tom's 2026-09-15 release-notes authority ruling split
+the claims — catalogue advanced to maintained `1.1.9..=1.2.2` with no
+published selected-path change while headless keeps `1.1.9..=1.1.17` at the
+exact `1.1.22` provider-managed-retry stop with `1.1.18..=1.2.2` as the
+named unqualified gap;
 planned tasks remain at 035, 039, 040,
 041, 042, 066, and 069.
 g05.020 is complete: Codex
@@ -485,7 +492,7 @@ identity.
 
 ## Tasks
 
-- [075 Antigravity 1.2.2 Useful Newer Requalification](./075-antigravity-1-2-2-useful-newer-requalification.md) — ready; fifteenth Research 308 family; exact closed-artifact extension from `1.1.26` through `1.2.2` with per-claim segment decisions and bounded retry or fail-closed enforcement
+- [075 Antigravity 1.2.2 Useful Newer Requalification](./075-antigravity-1-2-2-useful-newer-requalification.md) — completed; fifteenth Research 308 family; official identity for `1.1.27..=1.2.2` frozen with both platform digests and the reproduced `1.1.26` boundary, and the per-claim decision advanced the catalogue claim to maintained `1.1.9..=1.2.2` while headless stays at `1.1.9..=1.1.17` with `1.1.18..=1.2.2` named as the unqualified gap at the `1.1.22` provider-retry stop
 - [074 Deep Agents 0.1.30 Useful Newer](./074-deep-agents-0-1-30-useful-newer.md) — completed; fourteenth Research 308 family; the exact npm `0.1.25..=0.1.30` ledger with the classified `deepagents@1.12.4..=1.13.4` chain advanced the exact `QualifiedOnly` point to `0.1.30` with the `deepagents.acp.stdio-v1` behavior unchanged and no argv change; stale ACP-registry metadata and Research 206's empty model-selection set stayed separate
 - [073 Mistral Vibe 2.25.4 Useful Newer](./073-mistral-vibe-2-25-4-useful-newer.md) — completed; thirteenth Research 308 family; exact GitHub/PyPI trees, the `2.24.4` packaging gap, and the mapped selected-surface ledger advanced the exact `QualifiedOnly` point to `2.25.4` with the `mistral-vibe.headless.stdio-streaming-v1` behavior unchanged and an adapter-private `--legacy-harness` argv pin; the Unified Harness and `--smart-approve` stay unmapped
 - [072 Kiro 2.21.4 Useful Newer](./072-kiro-2-21-4-useful-newer.md) — completed; twelfth Research 308 family; exact official archives and the mapped selected-surface ledger advanced the exact `QualifiedOnly` point to `2.21.4` without executing Kiro

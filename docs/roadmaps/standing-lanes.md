@@ -26,16 +26,20 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Active campaign family: Antigravity official GitHub `1.2.2` (g05.075) is the
-fifteenth family of Tom's authorized Research 308 campaign. Research 283
+Completed campaign family: Antigravity official GitHub `1.2.2` (g05.075) is
+the fifteenth family of Tom's authorized Research 308 campaign. Research 283
 froze `1.1.17..=1.1.26` and stopped at `1.1.22`, where selected headless HTTP
 502 failure became provider-managed retry without a published bound or disable
-control. Five further releases now reach `1.2.2`; `1.1.28` advertises much
-longer exponential retry and changed print-timeout expiry, while `1.2.1`
-advertises broader automatic retry. The provider-free lane freezes both
-platform assets, tests finite containment exactly, and decides catalogue and
-headless segments independently. Unknown retry stays incompatible and gaps
-stay explicit. Gemini follows.
+control. Tom ruled on 2026-09-15 that the official release notes are the
+behavioural authority for the five further releases through `1.2.2`, and
+Research 323 classified each hop per claim: the catalogue claim advances to
+maintained `1.1.9..=1.2.2` because no published selected-path change touches
+`agy models`, while the headless claim keeps `1.1.9..=1.1.17` because the
+`1.1.22` retry stop stands and `1.1.28` plus `1.2.1` broaden provider-managed
+retry with no published finite bound or disable control, leaving
+`1.1.18..=1.2.2` as the named unqualified gap. Exhaustive binary scanning
+stopped at the ruling and collected hashes are retained. Unknown retry stays
+incompatible and the gap stays explicit. Gemini follows.
 
 Completed campaign family: Deep Agents official npm `0.1.30` (g05.074) is
 the fourteenth family of Tom's authorized Research 308 campaign. Research

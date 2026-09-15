@@ -65,7 +65,7 @@ bucket, not a status by itself.
 Generations normally collect 30-50 numbered tasks (`gNN.NNN` files directly
 under `gNN/`). There is no nested card level. A phase boundary
 does not imply a generation rollover.
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:b0975dc566032af3849e49dba54143bd6baf665d6a8e9be0c2a5bbf205b61425 -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:ad6996f4b803ffe50d6becc2aec3e5e268d3d7d8cd1415472cee09bc5d61400a -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g05 | open | planning_required |
@@ -90,4 +90,5 @@ does not imply a generation rollover.
 | g05.074 | complete | none | 8 | sha256:b4320ee873482331483ba376a936a91737dccad7d03370108181ba37b4a8d185 |
 | g05.075 | complete | none | 8 | sha256:b09624442301f7bee77ce0ee7054de621398cd18f0f079a61a9161b64017ada8 |
 | g05.076 | complete | none | 8 | sha256:187ec9d3870cbdb9c9b86030732c8ae37dc814f81eca8d3c774df7cee717b2f9 |
+| g05.077 | complete | none | 8 | sha256:5a8821d0ed913ccf1b0a57060f3c790cdc92880c6e9b3406f5a8f947567170a0 |
 <!-- northstar:lifecycle:end -->

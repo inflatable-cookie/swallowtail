@@ -123,7 +123,6 @@
   "containment_trace": {
     "question": "does any Swallowtail control, server profile, or remaining provider boundary contain Bash cwd escape for a local-server client",
     "harness_isolation_declared": "AmbientHost",
-    "harness_configuration_posture": "Ambient",
     "contract_023_clause": "the harness process and descendants execute with the ambient authority of the selected execution host",
     "contract_023_tool_clause": "provider approval modes, tool allowlists or denylists, plan modes, safe modes, and disabled extensions limit harness behavior; they do not contain the harness process, its descendants, or unmediated filesystem and network access",
     "contract_017_ambient_clause": "under AmbientHost the working-resource lease remains a location and callback scope only",
@@ -152,7 +151,7 @@
   "decoder_corpus": "kimi-local-server-0.28.1-0.29.0",
   "unmapped_deltas": [
     "kimi web --allow-remote-terminals removal; PTY routes stay loopback-only",
-    "Remote Control routes, QR output, and experimental gating; Swallowtail never passes --remote-control",
+    "Remote Control routes, QR output (including the 0.43.0 localServerToken formatter field), and experimental gating; Swallowtail never passes --remote-control",
     "watch_fs subscription and watchFsAdd/watchFsRemove/watchFsAck removal at 0.42.0; the adapter never maps watch_fs",
     "deleteSessionResponseSchema {deleted:true} at 0.42.0; the adapter driver returns unsupported for session deletion",
     "terminal-route runtime_id compat-schema removal at 0.42.0; the adapter sends no runtime_id to the PTY terminals endpoint",

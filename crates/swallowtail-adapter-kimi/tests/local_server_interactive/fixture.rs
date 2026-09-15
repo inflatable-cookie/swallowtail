@@ -29,6 +29,17 @@ pub(super) fn prepare(
     ))
     .expect("local server prepares")
 }
+pub(super) fn try_prepare(
+    execution_host: ExecutionHostId,
+    services: HostServices,
+    version: &str,
+) -> Result<KimiLocalServerPreparedIntegration, swallowtail_runtime::PreparationFailure> {
+    block_on(prepare_kimi_local_server_attached(
+        attached_input(execution_host, version),
+        probe(),
+        services,
+    ))
+}
 
 pub(super) fn session_profile(
     prepared: &KimiLocalServerPreparedIntegration,

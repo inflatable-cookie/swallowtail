@@ -99,11 +99,13 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
     assert_eq!(KIMI_HEADLESS_BASELINE_VERSION, "0.29.0");
     assert_eq!(KIMI_LOCAL_SERVER_BASELINE_VERSION, "0.28.1");
     // ACP stops at 0.38.0 for the 0.39 process-authority delta; headless
-    // extends. The local-server family shares the npm package and moves with
-    // neither. Research 325 later raised the live headless ceiling to 0.43.0.
+    // extends. The local-server family shares the npm package and moves on
+    // its own authority evidence: Research 326 proved the 0.39.x safe prefix
+    // and capped it QualifiedOnly at 0.39.1 for the uncontained 0.40.0 Bash
+    // cwd widening. Research 325 raised the live headless ceiling to 0.43.0.
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
     assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
-    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.38.0");
+    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.39.1");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.31.1"
@@ -125,8 +127,11 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
         ),
         (
             &kimi_local_server_claim(),
-            ["0.32.0", "0.34.0", "0.35.0", "0.36.1", "0.37.2", "0.38.0"].as_slice(),
-            "0.38.1",
+            [
+                "0.32.0", "0.34.0", "0.35.0", "0.36.1", "0.37.2", "0.38.0", "0.39.0", "0.39.1",
+            ]
+            .as_slice(),
+            "0.39.2",
         ),
     ] {
         for value in qualified {
@@ -136,16 +141,18 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
                     if matched.support_status() == InterfaceSupportStatus::Maintained
             ));
         }
-        if claim.id() == kimi_acp_claim().id() {
-            assert_eq!(
-                claim.assess(&version(first_newer)),
-                InterfaceCompatibilityAssessment::Incompatible
-            );
-        } else {
+        if claim.id() == kimi_headless_claim().id() {
             assert!(matches!(
                 claim.assess(&version(first_newer)),
                 InterfaceCompatibilityAssessment::UnverifiedNewer(_)
             ));
+        } else {
+            // ACP and local-server are QualifiedOnly: the first point above
+            // the ceiling fails closed.
+            assert_eq!(
+                claim.assess(&version(first_newer)),
+                InterfaceCompatibilityAssessment::Incompatible
+            );
         }
     }
     assert_eq!(

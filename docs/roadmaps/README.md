@@ -15,11 +15,13 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement [g05.078 Kimi Code 0.43.0 Local-Server Containment](g05/078-kimi-code-0-43-0-local-server-containment.md)
-as family eighteen in Tom's authorized Research 308 campaign. Land the
-evidenced safe prefix, trace containment through every later stable, and make
-uncontained points fail closed. Keep installed ACP/headless separate and stay
-provider-free.
+Return the g05.078 outcome to Chatterbox, then compile and dispatch the Oh My
+Pi RPC major-line identity family from fresh canonical `main` as family
+nineteen in Tom's authorized Research 308 campaign, without asking Tom to
+repeat authorization. The Kimi Code local-server family now holds a `0.39.1`
+`QualifiedOnly` ceiling with the uncontained `0.40.0..=0.43.0` gap failing
+closed; the follow-on lane stays provider-free and out of release, tag,
+publication, and consumer scope.
 
 ## Standing Lanes
 

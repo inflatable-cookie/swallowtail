@@ -9,21 +9,34 @@ fail closed
 
 ## Outcome
 
-Ready. Requalify the separate `kimi-code.local-server` claim through official
-stable `0.43.0` under the Research 308 containment-or-fail-closed rule. Land
-the maximal safe prefix already evidenced through `0.39.1`. At the first
-uncontained authority change, make every later point fail closed rather than
-leaving unsafe releases available through `AllowUnverified`. A later segment
-may reopen only where exact shipped source proves containment was restored.
+Complete. Extend-and-fail-closed through official stable `0.43.0` under the
+Research 308 containment-or-fail-closed rule. Research 326 froze official npm
+and GitHub identity for every published stable `0.38.0..=0.43.0` with
+tarball, bundle, tag, commit, and tree digests and a mutation-sensitive
+thirteen-file local-server blob ledger, before any claim moved.
 
-Research 282 already froze the selected REST/WebSocket v2 route through
-`0.41.0`: `0.39.0` and `0.39.1` preserve the Bash workspace assertion, while
-`0.40.0` removes it and `0.41.0` also removes the auto-permission-mode
-dangerous-command guard. Research 325 freezes exact npm/GitHub identities for
-`0.39.1`, `0.40.0`, `0.40.1`, `0.41.0`, `0.42.0`, and `0.43.0`. Planning
-rechecked npm on 2026-09-15: latest remains `0.43.0`; installed `kimi` remains
-`0.34.0` at
+The separate `kimi.local-server.executable-window-2` claim extends from
+maintained `0.35.0..=0.38.0` to maintained `0.35.0..=0.39.1` on the unchanged
+`kimi.local-server.rest-ws-v2-heartbeat-ping` behavior revision with baseline
+`0.28.1` and the claim id unchanged, and the newer-version posture changes
+from `AllowUnverified` to `QualifiedOnly`. `0.39.0` and `0.39.1` preserve the
+Bash workspace assertion (`RuntimeWorkspaceView.resolve` still maps then
+calls `assertAllowed`), while `0.40.0` removes it and the uncontained
+pure-mapping `resolve` persists byte-identical through `0.43.0` with no
+restored containment, so every point above `0.39.1` fails closed, including
+the published `0.40.0..=0.43.0` gap. The two newly classified hops add no
+containment: the `0.41.0→0.42.0` wire deltas are all unmapped or inert on the
+selected route, and `0.42.0→0.43.0` is one added field in the unmapped Remote
+Control QR output. No new exclusion is added, and no new behavior revision,
+public operation, or shared type. A later segment may reopen only on exact
+restored containment.
+
+Official latest was rechecked at npm and GitHub `0.43.0` at the push
+boundary; installed `kimi` remains `0.34.0` at
 `sha256:9f4337e10da47843f6b550474012a53ba8b30dd665f83b176a5cd479c5f7e859`.
+No provider prompt, login, credential, installation, host update,
+downloaded-binary execution, local-server start, release, tag, publication,
+or consumer mutation occurred.
 
 ## Ready-State Rubric
 
@@ -123,13 +136,13 @@ publication, or consumer mutation.
 
 ## Acceptance
 
-- [ ] official identities reproduce from the frozen evidence and current channels
-- [ ] the selected local-server ledger covers every published hop through latest
-- [ ] `0.39.0..=0.39.1` lands when its safe-prefix evidence reproduces
-- [ ] every uncontained point from `0.40.0` fails closed in production
-- [ ] any reopened later segment has exact restored-containment evidence
-- [ ] installed ACP/headless and unrelated Kimi surfaces remain unchanged
-- [ ] official latest is rechecked at the push boundary
+- [x] official identities reproduce from the frozen evidence and current channels
+- [x] the selected local-server ledger covers every published hop through latest
+- [x] `0.39.0..=0.39.1` lands when its safe-prefix evidence reproduces
+- [x] every uncontained point from `0.40.0` fails closed in production
+- [x] any reopened later segment has exact restored-containment evidence
+- [x] installed ACP/headless and unrelated Kimi surfaces remain unchanged
+- [x] official latest is rechecked at the push boundary
 
 ## Next Task
 

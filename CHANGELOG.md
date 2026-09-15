@@ -31,6 +31,28 @@ annotated Git tags from the canonical repository.
   disposition stays independent.
 
 ### Changed
+- extend the Kimi Code local-server ceiling from maintained
+  `0.35.0..=0.38.0` to maintained `0.35.0..=0.39.1` on
+  `kimi.local-server.executable-window-2` with the
+  `kimi.local-server.rest-ws-v2-heartbeat-ping` behavior revision,
+  baseline `0.28.1`, and claim id unchanged, and change the
+  newer-version posture from `AllowUnverified` to `QualifiedOnly` so every
+  point above `0.39.1` fails closed. Research 326 froze official npm and
+  GitHub `0.38.0..=0.43.0` and a mutation-sensitive thirteen-file
+  local-server blob ledger before any claim changed: `0.39.0` and `0.39.1`
+  preserve the Bash workspace assertion (`RuntimeWorkspaceView.resolve`
+  still maps then calls `assertAllowed`, and `bashTool` still computes
+  `effectiveCwd` through `view.resolve`), while `0.40.0` removes it and the
+  uncontained pure-mapping `resolve` persists byte-identical through
+  `0.43.0` with no restored containment. The two newly classified hops add
+  none: the `0.41.0→0.42.0` wire deltas (model-catalog import-source move,
+  `watch_fs` removal, delete-response reshape, terminal compat-schema
+  removal, Remote Control de-experimentalization) are all unmapped or inert
+  on the selected route, and `0.42.0→0.43.0` is one added field in the
+  unmapped Remote Control QR output. The published `0.40.0..=0.43.0` gap is
+  posture-rejected; no new exclusion is added, and no new behavior revision,
+  public operation, or shared type is required. `kimi-code.acp` and
+  `kimi-code.headless` are untouched. Research 326, g05.078.
 - raise the Kimi Code installed headless ceiling from maintained
   `0.33.0..=0.39.1` to maintained `0.33.0..=0.43.0` on
   `kimi.headless.executable-window-2` with the `kimi.headless.stream-json.v2`

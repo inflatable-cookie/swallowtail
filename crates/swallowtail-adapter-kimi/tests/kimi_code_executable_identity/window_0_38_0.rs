@@ -123,9 +123,10 @@ fn identity_0_38_0_qualifies_acp_and_local_server_retracts_headless() {
 
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
     // Research 325 raised the live headless ceiling past the 0.39.1 point this
-    // corpus observed; the ACP and local-server ceilings are unchanged.
+    // corpus observed; the ACP ceiling is unchanged. Research 326 then moved
+    // the separate local-server ceiling to 0.39.1 QualifiedOnly.
     assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
-    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.38.0");
+    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.39.1");
     let acp_claim = kimi_acp_claim();
     assert!(matches!(
         acp_claim.assess(&version("0.38.0")),

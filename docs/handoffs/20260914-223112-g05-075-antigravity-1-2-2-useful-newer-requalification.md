@@ -5,7 +5,7 @@ handoff_mode: worker-pr-loop
 worker_mode: implementation
 dispatch_authority: orchestrator
 status: ready-to-launch
-updated: 2026-09-15
+updated: 2026-09-14
 base_required: pushed-main
 queue_dispatch: northstar-queue
 queue_approval: "Tom directed Swallowtail on 2026-09-14 to action every Research 308 family, explicitly including Antigravity, and retained the rule that Antigravity must gain a bounded mechanism or fail closed. This authorizes provider-free exact-artifact requalification through current official 1.2.2 and the smallest honest per-claim segment decision. It does not authorize unknown provider-managed retry, provider calls, release, tag, publication, installation, host update, or downloaded-binary execution."
@@ -49,14 +49,14 @@ independent catalogue claim.
 
 ## Boundaries
 
-Provider-free only. Preserve the official identities and hashes already
-collected; do not execute downloaded assets. Host `agy --version` and digest
-checks are allowed; no catalogue, print, continuation, login, credential,
-prompt, or provider operation. No host update, release, tag, publication,
-ACP/Gemini flattening, or consumer work.
+Provider-free only. Download, extract, hash, and statically inspect official
+assets in `/tmp`; do not execute them. Host `agy --version` and digest checks
+are allowed; no catalogue, print, continuation, login, credential, prompt, or
+provider operation. No host update, release, tag, publication, ACP/Gemini
+flattening, or consumer work.
 
 Ordinary provider-free retries are allowed. Do not impose a one-shot limit on
-downloads, extraction, parsing, fixtures, or validation. Stop only
+downloads, extraction, scanning, parsing, fixtures, or validation. Stop only
 on semantic conditions or an actual external blocker.
 
 ## Important Context
@@ -65,14 +65,9 @@ Follow
 `docs/roadmaps/g05/075-antigravity-1-2-2-useful-newer-requalification.md`.
 Read Contracts 017/023/029, Research 177/283/308/322, the prepared guide,
 selection, commands, catalogue/headless/session drivers, and all Antigravity
-fixtures. Freeze Research 323 before changing claims. Operator ruling,
-2026-09-15: trust the official release notes as the behavioural authority for
-this task. Stop exhaustive binary scanning. Release/tag/asset identity and the
-published notes are sufficient, and absence of a selected-path change in those
-notes may be treated as unchanged. Classify `1.1.28`'s “much longer” retry and
-changed `--print-timeout` result, `1.2.0`'s content-filter stop, and `1.2.1`'s
-broader automatic retries directly from the notes. Where the notes expose no
-finite retry bound, fail closed without reverse engineering one.
+fixtures. Freeze Research 323 before changing claims. `1.1.28`'s “much
+longer” retry and changed `--print-timeout` result, `1.2.0`'s content-filter
+stop, and `1.2.1`'s broader automatic retries are discovery leads only.
 
 Assess catalogue and headless separately. A host deadline cannot satisfy the
 provider-retry rule. Keep an explicit incompatible gap. Do not reject a safe
@@ -85,11 +80,11 @@ new operator policy may be accepted by this task.
 
 ## Suggested Next Move
 
-Use the already-collected release identities and hashes, classify catalogue
-and headless from the official notes, and stop at any published unbounded retry
-boundary. Do not run more binary-forensics loops. Land the maximal honest
-segments, validate, push, open a PR, and hand the exact head to independent
-review.
+Freeze the five new releases and both official platform assets, extend the
+exact binary ledger from `1.1.26`, then classify catalogue and headless deltas
+plus retry/timeout semantics. Commit identity first. Land only the maximal
+honest segments, validate, push, open a PR, and hand the exact head to
+independent review.
 
 ## Completion Protocol
 

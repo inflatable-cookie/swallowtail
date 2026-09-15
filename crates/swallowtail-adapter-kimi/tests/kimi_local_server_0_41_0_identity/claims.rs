@@ -29,7 +29,9 @@ fn production_local_server_claim_bytes_stay_on_the_0_38_0_ceiling() {
 #[test]
 fn sibling_kimi_families_do_not_move() {
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
-    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.39.1");
+    // Research 325 advanced the installed headless ceiling to 0.43.0; the
+    // local-server family still does not move with it.
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
     assert_eq!(
         kimi_acp_claim().assess(&version("0.41.0")),
         InterfaceCompatibilityAssessment::Incompatible

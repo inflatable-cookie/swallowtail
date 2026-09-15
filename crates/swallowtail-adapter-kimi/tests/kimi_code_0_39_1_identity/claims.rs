@@ -37,10 +37,10 @@ fn the_fixture_decision_is_the_shape_production_actually_encodes() {
         decision["headless_v2_axis"]["raise_range_to"],
         "0.33.0..=0.39.1"
     );
-    assert_eq!(
-        decision["raise_headless_latest_qualified_to"],
-        KIMI_HEADLESS_LATEST_QUALIFIED_VERSION
-    );
+    // Research 325 later extended the live range to 0.43.0; this corpus keeps
+    // the destination it recorded.
+    assert_eq!(decision["raise_headless_latest_qualified_to"], "0.39.1");
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
     assert_eq!(
         decision["synthetic_later_unverified_newer_headless"],
         "0.39.2"
@@ -97,12 +97,12 @@ fn headless_v1_corrects_down_and_v2_corrects_down_and_extends() {
         "kimi.headless.stream-json.v1"
     );
     assert_eq!(segments[1].minimum().as_str(), "0.33.0");
-    assert_eq!(segments[1].maximum().as_str(), "0.39.1");
     assert_eq!(
         segments[1].behavior_revision().as_str(),
         "kimi.headless.stream-json.v2"
     );
-    assert_eq!(claim.latest_qualified().as_str(), "0.39.1");
+    // Research 325 extended the live v2 ceiling past this corpus's 0.39.1.
+    assert_eq!(claim.latest_qualified().as_str(), "0.43.0");
 
     let identity = json(IDENTITY);
     let reason = text(
@@ -139,16 +139,18 @@ fn a_later_exact_stable_stays_unverified_newer_on_the_headless_axis() {
         json(IDENTITY)["publication_adjacency"]["unpublished_0_39_2"],
         true
     );
+    // 0.39.2 was the first later stable this corpus observed. Research 325 has
+    // since qualified through 0.43.0, so the live first-later point moved.
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        kimi_headless_claim().assess(&version("0.39.2"))
+        kimi_headless_claim().assess(&version("0.43.1"))
     else {
-        panic!("0.39.2 stays unverified newer");
+        panic!("0.43.1 stays unverified newer");
     };
     assert_eq!(
         newer.behavior_revision().as_str(),
         "kimi.headless.stream-json.v2"
     );
-    assert_eq!(newer.latest_qualified().as_str(), "0.39.1");
+    assert_eq!(newer.latest_qualified().as_str(), "0.43.0");
 }
 
 #[test]
@@ -227,7 +229,7 @@ fn this_run_adds_no_public_operation_that_a_projection_gate_would_have_to_rank()
             .expect("headless claim")
             .latest_qualified()
             .as_str(),
-        "0.39.1"
+        KIMI_HEADLESS_LATEST_QUALIFIED_VERSION
     );
 }
 

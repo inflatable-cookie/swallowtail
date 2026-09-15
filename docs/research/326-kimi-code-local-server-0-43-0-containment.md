@@ -136,14 +136,19 @@ ACP/headless observations are recorded only.
 
 ## Decision
 
-**Extend and fail closed.** Keep claim id
-`kimi.local-server.executable-window-2` and baseline `0.28.1`. Extend the
+**Extend and fail closed.** Keep baseline `0.28.1`. Extend the
 maintained heartbeat-ping segment from `0.35.0..=0.38.0` to
 `0.35.0..=0.39.1` on the unchanged
 `kimi.local-server.rest-ws-v2-heartbeat-ping` behavior revision, and change
 the newer-version posture from `AllowUnverified` to `QualifiedOnly` so every
 point above `0.39.1` fails closed — including the published `0.40.0..=0.43.0`
-gap. No new behavior revision, public operation, or shared type. Decoder
+gap. Contract 029 gives the claim its own revision: the posture change
+revises the claim id from `kimi.local-server.executable-window-2` to
+`kimi.local-server.executable-window-5` (mirroring the ACP A2 `window-2` to
+`window-5` revision and skipping the frozen historical `window-3`/`window-4`
+reservations), so stale `window-2` plans and observations fail closed with a
+claim mismatch instead of staying accepted. No new behavior revision, public
+operation, or shared type. Decoder
 specimens stay on `kimi-local-server-0.28.1-0.29.0`. ACP and headless claims
 stay as they are.
 

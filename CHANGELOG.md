@@ -32,13 +32,16 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 - extend the Kimi Code local-server ceiling from maintained
-  `0.35.0..=0.38.0` to maintained `0.35.0..=0.39.1` on
-  `kimi.local-server.executable-window-2` with the
-  `kimi.local-server.rest-ws-v2-heartbeat-ping` behavior revision,
-  baseline `0.28.1`, and claim id unchanged, and change the
-  newer-version posture from `AllowUnverified` to `QualifiedOnly` so every
-  point above `0.39.1` fails closed. Research 326 froze official npm and
-  GitHub `0.38.0..=0.43.0` and a mutation-sensitive thirteen-file
+  `0.35.0..=0.38.0` to maintained `0.35.0..=0.39.1` with the
+  `kimi.local-server.rest-ws-v2-heartbeat-ping` behavior revision and
+  baseline `0.28.1`, and change the newer-version posture from
+  `AllowUnverified` to `QualifiedOnly` so every point above `0.39.1` fails
+  closed. Contract 029 gives the claim its own revision, so the posture
+  change revises the claim id from `kimi.local-server.executable-window-2`
+  to `kimi.local-server.executable-window-5` (mirroring the ACP A2 revision
+  and skipping the frozen `window-3`/`window-4` reservations). Research 326
+  froze official npm and GitHub `0.38.0..=0.43.0` and a mutation-sensitive
+  thirteen-file
   local-server blob ledger before any claim changed: `0.39.0` and `0.39.1`
   preserve the Bash workspace assertion (`RuntimeWorkspaceView.resolve`
   still maps then calls `assertAllowed`, and `bashTool` still computes

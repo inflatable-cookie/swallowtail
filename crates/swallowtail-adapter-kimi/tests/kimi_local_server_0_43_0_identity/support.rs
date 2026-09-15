@@ -9,6 +9,10 @@ pub(super) const FROZEN_0_41_0_IDENTITY: &str =
     include_str!("../fixtures/kimi-local-server-0.41.0/identity.json");
 pub(super) const FROZEN_0_41_0_PROTOCOL: &str =
     include_str!("../fixtures/kimi-local-server-0.41.0/protocol.json");
+pub(super) const FROZEN_0_30_0_0_31_0_RANGE: &str =
+    include_str!("../fixtures/kimi-code-0.30.0-0.31.0/installed-range.json");
+pub(super) const FROZEN_0_31_1_RELEASE: &str =
+    include_str!("../fixtures/kimi-code-0.31.1/release.json");
 
 pub(super) fn json(value: &str) -> Value {
     serde_json::from_str(value).expect("frozen corpus JSON is valid")

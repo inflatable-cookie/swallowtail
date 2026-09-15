@@ -15,12 +15,17 @@ and GitHub identity for every published stable `0.38.0..=0.43.0` with
 tarball, bundle, tag, commit, and tree digests and a mutation-sensitive
 thirteen-file local-server blob ledger, before any claim moved.
 
-The separate `kimi.local-server.executable-window-2` claim extends from
-maintained `0.35.0..=0.38.0` to maintained `0.35.0..=0.39.1` on the unchanged
+The separate local-server claim extends from maintained `0.35.0..=0.38.0` to
+maintained `0.35.0..=0.39.1` on the unchanged
 `kimi.local-server.rest-ws-v2-heartbeat-ping` behavior revision with baseline
-`0.28.1` and the claim id unchanged, and the newer-version posture changes
-from `AllowUnverified` to `QualifiedOnly`. `0.39.0` and `0.39.1` preserve the
-Bash workspace assertion (`RuntimeWorkspaceView.resolve` still maps then
+`0.28.1`, and the newer-version posture changes from `AllowUnverified` to
+`QualifiedOnly`. Contract 029 gives the claim its own revision, so the
+posture change revises the claim id from
+`kimi.local-server.executable-window-2` to
+`kimi.local-server.executable-window-5` (mirroring the ACP A2 revision and
+skipping the frozen `window-3`/`window-4` reservations); stale `window-2`
+evidence fails closed with a claim mismatch. `0.39.0` and `0.39.1` preserve
+the Bash workspace assertion (`RuntimeWorkspaceView.resolve` still maps then
 calls `assertAllowed`), while `0.40.0` removes it and the uncontained
 pure-mapping `resolve` persists byte-identical through `0.43.0` with no
 restored containment, so every point above `0.39.1` fails closed, including

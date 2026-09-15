@@ -35,7 +35,7 @@ const REST_WS_V2_HEARTBEAT_PING_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-h
 /// Returns the qualified compatibility claim for Kimi local-server.
 pub fn kimi_local_server_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-2")
+        InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-5")
             .expect("static Kimi local-server claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,

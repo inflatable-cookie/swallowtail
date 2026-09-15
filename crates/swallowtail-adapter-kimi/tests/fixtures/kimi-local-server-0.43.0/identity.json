@@ -208,6 +208,8 @@
     "safe_prefix_becomes": "0.35.0..=0.39.1",
     "latest_qualified_becomes": "0.39.1",
     "posture_becomes": "qualified_only",
+    "claim_id_becomes": "kimi.local-server.executable-window-5",
+    "claim_id_revision_reason": "Contract 029: the AllowUnverified to QualifiedOnly posture change revises the claim, invalidating stale window-2 plans; window-3 and window-4 stay frozen historical reservations",
     "rejected_gap": "0.40.0..=0.43.0",
     "reason": "0.39.0 and 0.39.1 preserve the Bash workspace assertion (RuntimeWorkspaceView.resolve still calls assertAllowed, and bashTool still computes effectiveCwd through view.resolve), while 0.40.0 removes it and the uncontained pure-mapping resolve persists byte-identical through 0.43.0; Swallowtail's local-server client declares AmbientHost and sets no process cwd",
     "authority_first": true,

@@ -11,6 +11,11 @@ fn production_local_server_claim_lands_the_0_39_1_ceiling_and_fails_closed() {
     assert_eq!(KIMI_LOCAL_SERVER_BASELINE_VERSION, "0.28.1");
     assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.39.1");
     let claim = kimi_local_server_claim();
+    assert_eq!(claim.id().as_str(), "kimi.local-server.executable-window-5");
+    assert_eq!(
+        json(IDENTITY)["identity_decision"]["claim_id_becomes"],
+        "kimi.local-server.executable-window-5"
+    );
     assert_eq!(
         claim.newer_version_posture(),
         InterfaceNewerVersionPosture::QualifiedOnly

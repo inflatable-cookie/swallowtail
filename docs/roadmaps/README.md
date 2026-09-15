@@ -15,11 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Compile and dispatch the Kimi Code installed ACP/headless family as the
-seventeenth family in Tom's authorized Research 308 currentness campaign, from
-fresh canonical `main`. Gemini CLI `0.59.0` (g05.076) completed with both the
-ACP and headless claims raised to maintained `0.51.0..=0.59.0`; no provider or
-release action follows.
+Implement [g05.077 Kimi Code 0.43.0 Installed Useful Newer](g05/077-kimi-code-0-43-0-installed-useful-newer.md)
+as the seventeenth family in Tom's authorized Research 308 currentness
+campaign. Requalify ACP and headless independently, preserve the A2
+process-authority boundary, and stop either claim at its first exact selected
+incompatibility. Provider-free only.
 
 ## Standing Lanes
 

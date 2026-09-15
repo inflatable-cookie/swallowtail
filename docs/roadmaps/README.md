@@ -15,13 +15,12 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Return the g05.078 outcome to Chatterbox, then compile and dispatch the Oh My
-Pi RPC major-line identity family from fresh canonical `main` as family
-nineteen in Tom's authorized Research 308 campaign, without asking Tom to
-repeat authorization. The Kimi Code local-server family now holds a `0.39.1`
-`QualifiedOnly` ceiling with the uncontained `0.40.0..=0.43.0` gap failing
-closed; the follow-on lane stays provider-free and out of release, tag,
-publication, and consumer scope.
+Dispatch [g05.079 Oh My Pi 18.1.22 Major-Line Qualification](g05/079-oh-my-pi-18-1-22-major-line-qualification.md)
+through Northstar Queue as family nineteen in Tom's authorized Research 308
+campaign. Classify both later 17.x points and every published 18.x point from
+one identity-first selected-source ledger; an admitted 18.x range requires a
+distinct adapter-private behavior segment. Provider-free; no release, tag,
+publication, host update, or consumer authority.
 
 ## Standing Lanes
 

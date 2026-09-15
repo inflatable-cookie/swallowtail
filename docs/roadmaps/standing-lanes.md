@@ -26,6 +26,15 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
+Ready campaign family: Oh My Pi official npm/GitHub `18.1.22` (g05.079) is
+the nineteenth and final family of Tom's authorized Research 308 campaign.
+It must freeze every published npm stable after `17.4.0`, classify `17.4.1`
+and `17.4.2` independently, and treat the 17-to-18 boundary as a distinct
+adapter-private mapping segment rather than an inferred range extension.
+Research 217's earlier `18.0.x` evidence must reproduce; installed
+`omp/18.1.16` is observation only. Provider-free; no Pi-family flattening,
+host update, release, tag, publication, or consumer authority.
+
 Completed campaign family: Gemini CLI official npm `0.59.0` (g05.076) is
 the sixteenth family of Tom's authorized Research 308 campaign. Research 324
 froze official npm and GitHub `0.56.0`, `0.57.0`, `0.58.0`, and `0.59.0`

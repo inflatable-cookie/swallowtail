@@ -141,4 +141,4 @@ blocks, so it changes nothing about the catalogue/headless split.
 - [Research 283](./283-antigravity-1-1-26-identity.md) and
   [Research 308](./308-all-route-version-currentness-checkpoint.md)
 - [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md)
-  and [Contract 029](../contracts/029-release-currentness-and-in-run-latest-movement.md)
+  and [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)

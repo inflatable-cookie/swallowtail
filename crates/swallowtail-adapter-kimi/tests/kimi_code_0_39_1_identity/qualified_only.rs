@@ -143,42 +143,44 @@ fn removing_an_exact_exclusion_fails_the_classification_proof() {
 }
 
 #[test]
-fn changing_local_server_posture_fails_the_isolation_proof() {
-    let original = kimi_local_server_claim();
+fn local_server_fails_closed_on_its_own_boundary_without_acp_posture() {
+    // Research 326 moved local-server to QualifiedOnly at 0.39.1 on its own
+    // Bash-cwd authority evidence. The posture is not inherited from ACP:
+    // the ACP exclusions stay off the local-server claim, and flipping
+    // local-server back would re-admit the uncontained gap.
+    let local = kimi_local_server_claim();
     assert_eq!(
-        original.newer_version_posture(),
-        InterfaceNewerVersionPosture::AllowUnverified
+        local.newer_version_posture(),
+        InterfaceNewerVersionPosture::QualifiedOnly
     );
-    assert!(matches!(
-        original.assess(&version("0.38.1")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    for point in ["0.39.2", "0.40.0", "0.43.0"] {
+        assert_eq!(
+            local.assess(&version(point)),
+            InterfaceCompatibilityAssessment::Incompatible,
+            "{point} must fail closed"
+        );
+    }
     for excluded in EXCLUDED {
-        assert!(matches!(
-            original.assess(&version(excluded)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
+        assert!(
+            !local.exclusions().any(|value| value.as_str() == excluded),
+            "{excluded} is ACP evidence, not a local-server exclusion"
+        );
+        assert!(local.supports(&version(excluded)));
     }
 
     let mutated = rebuild(
-        &original,
-        InterfaceNewerVersionPosture::QualifiedOnly,
-        original.exclusions().cloned(),
+        &local,
+        InterfaceNewerVersionPosture::AllowUnverified,
+        local.exclusions().cloned(),
     );
-    assert_eq!(
-        mutated.assess(&version("0.38.1")),
-        InterfaceCompatibilityAssessment::Incompatible,
-        "inheriting ACP QualifiedOnly would fail local-server isolation"
+    assert!(
+        matches!(
+            mutated.assess(&version("0.40.0")),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ),
+        "AllowUnverified would re-admit the uncontained Bash cwd gap"
     );
 
-    assert_eq!(
-        original.newer_version_posture(),
-        InterfaceNewerVersionPosture::AllowUnverified
-    );
-    assert!(matches!(
-        original.assess(&version("0.38.1")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
     assert_eq!(
         kimi_acp_claim().newer_version_posture(),
         InterfaceNewerVersionPosture::QualifiedOnly

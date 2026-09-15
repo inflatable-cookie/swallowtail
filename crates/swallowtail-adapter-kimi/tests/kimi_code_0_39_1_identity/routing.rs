@@ -213,5 +213,6 @@ fn the_correction_does_not_move_the_local_server_family() {
     let claim = kimi_local_server_claim();
     assert!(claim.supports(&version("0.32.0")));
     assert!(claim.supports(&version("0.33.0")));
-    assert_eq!(claim.latest_qualified().as_str(), "0.38.0");
+    // Research 326 later moved the separate family to 0.39.1 QualifiedOnly.
+    assert_eq!(claim.latest_qualified().as_str(), "0.39.1");
 }

@@ -137,13 +137,15 @@ fn the_acp_stop_does_not_leak_onto_headless_or_local_server() {
             "{excluded} stays qualified on the headless axis"
         );
     }
-    // Local-server neither gains nor loses anything.
+    // Local-server qualifies both points the ACP route refuses: Research 326
+    // proved the 0.39.x Bash workspace assertion intact and capped the family
+    // QualifiedOnly at 0.39.1 on that evidence.
     let local = kimi_local_server_claim();
-    assert_eq!(local.latest_qualified().as_str(), "0.38.0");
+    assert_eq!(local.latest_qualified().as_str(), "0.39.1");
     for excluded in EXCLUDED {
-        assert!(matches!(
-            local.assess(&version(excluded)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
+        assert!(
+            local.supports(&version(excluded)),
+            "{excluded} stays qualified on the local-server axis"
+        );
     }
 }

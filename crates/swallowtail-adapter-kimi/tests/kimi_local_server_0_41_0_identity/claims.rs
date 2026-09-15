@@ -7,15 +7,19 @@ use swallowtail_adapter_kimi::{
 use swallowtail_core::InterfaceCompatibilityAssessment;
 
 #[test]
-fn production_local_server_claim_bytes_stay_on_the_0_38_0_ceiling() {
+fn production_local_server_claim_advances_on_research_326_evidence() {
+    // The 0.41.0 fixture decision below is frozen history: that run stopped
+    // at 0.38.0. Research 326 then proved the 0.39.x safe prefix and moved
+    // the live claim to a 0.39.1 QualifiedOnly ceiling.
     assert_eq!(KIMI_LOCAL_SERVER_BASELINE_VERSION, "0.28.1");
-    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.38.0");
+    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.39.1");
     let claim = kimi_local_server_claim();
     assert!(claim.supports(&version("0.38.0")));
-    assert!(matches!(
+    assert!(claim.supports(&version("0.39.1")));
+    assert_eq!(
         claim.assess(&version("0.41.0")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+        InterfaceCompatibilityAssessment::Incompatible
+    );
     assert_eq!(
         json(IDENTITY)["identity_decision"]["widen_local_server_claim"],
         false

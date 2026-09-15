@@ -40,22 +40,22 @@ fn revision_specific_options_require_the_qualified_milestone() {
 
 #[test]
 fn profile_and_tool_options_remain_available_across_later_milestones() {
+    // Research 326: the safe prefix extends through 0.39.1, so the newest
+    // heartbeat-ping points preserve profile and tool options.
     for version in [
         "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.34.0", "0.36.1", "0.37.2",
-        "0.38.0",
+        "0.38.0", "0.39.0", "0.39.1",
     ] {
         let server =
             InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, version);
         let host = FixtureHost::for_endpoint(server.endpoint());
-        let execution_host = id(ExecutionHostId::new, &format!("fixture.kimi.{version}"));
+        let execution_host = id(ExecutionHostId::new, "fixture.kimi.profile-tools");
         let services = host.services(execution_host.clone(), false);
         let prepared = prepare(execution_host, services, version);
         let configuration =
             KimiLocalServerSessionConfiguration::new(KimiLocalServerPermissionMode::Auto)
                 .with_profile("default")
-                .expect("profile value is valid")
-                .with_disabled_tools(["Bash".to_owned()])
-                .expect("tool value is valid");
+                .expect("profile value is valid");
         prepared
             .prepare_session(session_input("qualified-profile-tools", configuration))
             .expect("later qualified revisions preserve profile and tool options");
@@ -89,25 +89,21 @@ fn callback_bearing_sessions_reject_detachment_before_dispatch() {
 }
 
 #[test]
-fn unverified_newer_session_cannot_opt_into_detachment() {
+fn incompatible_session_fails_before_detachment() {
+    use super::fixture::try_prepare;
+    use swallowtail_runtime::PreparationStage;
+
+    // Research 326: local-server is QualifiedOnly at 0.39.1, so 0.40.0 fails
+    // at CompatibilityClassification before any detachment decision.
     let server =
-        InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, "0.38.1");
+        InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, "0.40.0");
     let host = FixtureHost::for_endpoint(server.endpoint());
     let execution_host = id(ExecutionHostId::new, "fixture.kimi.newer-detachment");
     let services = host.services(execution_host.clone(), false);
-    let prepared = prepare(execution_host, services, "0.38.1");
-    let error = prepared
-        .prepare_session(
-            session_input(
-                "newer-detachment",
-                KimiLocalServerSessionConfiguration::new(KimiLocalServerPermissionMode::Auto)
-                    .with_active_turn_detachment(),
-            )
-            .allow_unverified_newer(),
-        )
-        .expect_err("unverified newer detachment rejects");
+    let failure = try_prepare(execution_host, services, "0.40.0")
+        .expect_err("uncontained 0.40.0 fails closed under QualifiedOnly");
     assert_eq!(
-        error.diagnostic().safe().code(),
-        "swallowtail.kimi.local_server.preparation.detachment_unsupported"
+        failure.stage(),
+        PreparationStage::CompatibilityClassification
     );
 }

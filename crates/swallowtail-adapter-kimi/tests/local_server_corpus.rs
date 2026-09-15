@@ -46,7 +46,7 @@ fn local_server_and_acp_descriptors_cannot_substitute_for_each_other() {
 }
 
 #[test]
-fn local_server_claim_is_separate_and_forward_permissive() {
+fn local_server_claim_is_separate_and_fail_closed() {
     let claim = kimi_local_server_claim();
     assert_eq!(claim.axis().as_str(), KIMI_CODE_AXIS);
     assert_ne!(
@@ -60,7 +60,8 @@ fn local_server_claim_is_separate_and_forward_permissive() {
 
     for exact in [
         "0.28.1", "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.32.0", "0.33.0",
-        "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2", "0.38.0",
+        "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2", "0.38.0", "0.39.0",
+        "0.39.1",
     ] {
         let binding = kimi_code_binding(exact).expect("exact version binds");
         assert!(matches!(
@@ -68,12 +69,14 @@ fn local_server_claim_is_separate_and_forward_permissive() {
             InterfaceCompatibilityAssessment::Qualified(_)
         ));
     }
-    for version in ["0.38.1", "1.0.0"] {
+    // Research 326: the 0.40.0 Bash cwd widening is uncontained, so the
+    // QualifiedOnly claim fails every point above 0.39.1 closed.
+    for version in ["0.39.2", "0.40.0", "0.43.0", "1.0.0"] {
         let newer = kimi_code_binding(version).expect("newer version binds");
-        assert!(matches!(
+        assert_eq!(
             claim.assess(newer.version()),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
+            InterfaceCompatibilityAssessment::Incompatible
+        );
     }
 }
 
@@ -222,7 +225,8 @@ fn exact_0_31_1_corpus_binds_route_deltas_to_expanded_claims() {
     );
     assert_eq!(
         kimi_local_server_claim().latest_qualified().as_str(),
-        "0.38.0"
+        // Research 326 extended the live local-server ceiling to 0.39.1.
+        "0.39.1"
     );
 
     let provenance = include_str!("fixtures/kimi-code-0.31.1/README.md");

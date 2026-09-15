@@ -174,12 +174,19 @@ fn exact_negative_points_survive_the_correction() {
 #[test]
 fn the_local_server_family_does_not_move_with_the_installed_harness_axes() {
     assert_eq!(KIMI_LOCAL_SERVER_BASELINE_VERSION, "0.28.1");
-    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.38.0");
+    // Research 326 moved the separate local-server family on its own
+    // authority evidence: the 0.39.x points this fixture recorded as
+    // observations are now qualified under a 0.39.1 QualifiedOnly ceiling.
+    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.39.1");
     let claim = kimi_local_server_claim();
     assert!(matches!(
-        claim.assess(&version("0.38.1")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        claim.assess(&version("0.39.1")),
+        InterfaceCompatibilityAssessment::Qualified(_)
     ));
+    assert_eq!(
+        claim.assess(&version("0.40.0")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
     assert_eq!(
         json(IDENTITY)["identity_decision"]["widen_local_server_claim"],
         false

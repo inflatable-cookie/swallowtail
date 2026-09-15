@@ -317,8 +317,11 @@ again for a terminal-less client, or upstream supplies a ProviderEnforced
 boundary satisfying Contracts 017/023. The trigger authorizes a fresh
 identity/claim decision, never automatic admission and never restoration of
 AllowUnverified by itself.
-`kimi-code.local-server` stays exact `0.28.1` plus `0.29.0..=0.38.0` and
-remains `AllowUnverified`.
+`kimi-code.local-server` is `QualifiedOnly` at exact `0.28.1` plus
+`0.29.0..=0.39.1` (g05.078, Research 326): the `0.39.x` Bash workspace
+assertion is intact, while the uncontained `0.40.0` `cwd` widening persists
+through `0.43.0`, so every point above `0.39.1` fails closed. A later
+segment may reopen only on exact restored containment.
 
 Earlier one-family claim: Pi RPC `0.84.4` (g05.015, cards 039-040).
 Unpublished `0.83.1` stays incompatible. `pi.sdk-sidecar` stays exact

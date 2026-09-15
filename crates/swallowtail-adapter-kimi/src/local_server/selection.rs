@@ -11,7 +11,14 @@ use crate::{KIMI_CODE_AXIS, failure::failure, kimi_code_binding};
 /// Oldest qualified Kimi local-server version.
 pub const KIMI_LOCAL_SERVER_BASELINE_VERSION: &str = "0.28.1";
 /// Most recent qualified Kimi local-server version.
-pub const KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
+///
+/// This does not track the family's newest stable. The claim is
+/// `QualifiedOnly` at this ceiling: from `0.40.0`
+/// `RuntimeWorkspaceView.resolve` no longer asserts workspace membership,
+/// so the Bash tool `cwd` can escape the workspace roots, and nothing in
+/// the adapter or runtime contains it under the declared `AmbientHost`
+/// isolation. Every point above `0.39.1` fails closed.
+pub const KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.39.1";
 
 const REST_WS_V2_BASELINE_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-baseline";
 const REST_WS_V2_PROFILE_TOOLS_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-profile-tools";
@@ -28,11 +35,11 @@ const REST_WS_V2_HEARTBEAT_PING_BEHAVIOR: &str = "kimi.local-server.rest-ws-v2-h
 /// Returns the qualified compatibility claim for Kimi local-server.
 pub fn kimi_local_server_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-2")
+        InterfaceCompatibilityClaimId::new("kimi.local-server.executable-window-5")
             .expect("static Kimi local-server claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
-        InterfaceNewerVersionPosture::AllowUnverified,
+        InterfaceNewerVersionPosture::QualifiedOnly,
         [
             exact_segment(
                 KIMI_LOCAL_SERVER_BASELINE_VERSION,
@@ -168,7 +175,9 @@ mod tests {
     use swallowtail_core::InterfaceCompatibilityAssessment;
 
     #[test]
-    fn claim_qualifies_exact_releases_and_permits_visible_newer_releases() {
+    fn claim_qualifies_safe_prefix_and_fails_closed_above_0_39_1() {
+        use swallowtail_core::InterfaceNewerVersionPosture;
+
         let claim = kimi_local_server_claim();
         assert_eq!(
             claim.baseline().as_str(),
@@ -177,6 +186,11 @@ mod tests {
         assert_eq!(
             claim.latest_qualified().as_str(),
             KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION
+        );
+        assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.39.1");
+        assert_eq!(
+            claim.newer_version_posture(),
+            InterfaceNewerVersionPosture::QualifiedOnly
         );
         assert_eq!(claim.milestones().len(), 7);
 
@@ -198,6 +212,8 @@ mod tests {
             ("0.37.1", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
             ("0.37.2", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
             ("0.38.0", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
+            ("0.39.0", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
+            ("0.39.1", REST_WS_V2_HEARTBEAT_PING_BEHAVIOR),
         ] {
             let binding = kimi_code_binding(qualified).expect("fixture version binds");
             let InterfaceCompatibilityAssessment::Qualified(matched) =
@@ -212,11 +228,23 @@ mod tests {
             );
         }
 
-        let newer = kimi_code_binding("0.38.1").expect("fixture version binds");
-        assert!(matches!(
-            corroborate_versions(&newer, "0.38.1").expect("newer version remains permitted"),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
+        // Research 326: the 0.40.0 Bash cwd widening is uncontained, so every
+        // point above the 0.39.1 ceiling fails closed instead of running as
+        // unverified newer.
+        for uncontained in ["0.39.2", "0.40.0", "0.40.1", "0.41.0", "0.42.0", "0.43.0"] {
+            let binding = kimi_code_binding(uncontained).expect("fixture version binds");
+            assert_eq!(
+                corroborate_versions(&binding, uncontained)
+                    .expect_err("uncontained versions must fail closed")
+                    .diagnostic()
+                    .code(),
+                "swallowtail.kimi.local_server.version_incompatible"
+            );
+            assert_eq!(
+                claim.assess(binding.version()),
+                InterfaceCompatibilityAssessment::Incompatible
+            );
+        }
     }
 
     #[test]

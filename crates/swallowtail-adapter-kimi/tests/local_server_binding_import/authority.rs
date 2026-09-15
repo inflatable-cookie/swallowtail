@@ -10,7 +10,7 @@ use swallowtail_adapter_kimi::{
 use swallowtail_core::{
     Capability, ExecutionHostId, ProviderSessionBindingOrigin, ProviderSessionEffectTruth,
 };
-use swallowtail_runtime::RequestId;
+use swallowtail_runtime::{PreparationStage, RequestId};
 
 #[test]
 fn attached_import_is_lookup_only_and_issues_a_new_route_bound_binding() {
@@ -113,8 +113,10 @@ fn owned_import_uses_the_same_binding_contract_and_joins_its_child() {
 }
 
 #[test]
-fn unverified_newer_local_server_stays_visible_without_an_acp_source_above_the_cap() {
-    let server = FixtureServer::start_with_version("0.38.1");
+fn incompatible_local_server_fails_closed_without_an_acp_source_above_the_cap() {
+    // Research 326: local-server is QualifiedOnly at 0.39.1, so 0.40.0 fails
+    // at CompatibilityClassification instead of preparing as visible newer.
+    let server = FixtureServer::start_with_version("0.40.0");
     let host = LocalHost::new(&server);
     let host_id = value(ExecutionHostId::new, "fixture.host.newer");
     let services = host.services(host_id.clone(), false);
@@ -125,21 +127,21 @@ fn unverified_newer_local_server_stays_visible_without_an_acp_source_above_the_c
         "fixture.kimi.newer",
         "fixture.endpoint",
         "fixture.bearer",
-        "0.38.1",
+        "0.40.0",
     );
-    let prepared = block_on(prepare_kimi_local_server_attached(
+    let failure = block_on(prepare_kimi_local_server_attached(
         input,
         probe("fixture-newer-prepare"),
         services,
     ))
-    .expect("newer local server remains visible");
-    assert!(
-        !prepared.server().is_qualified(),
-        "local-server 0.38.1 stays UnverifiedNewer"
+    .expect_err("local-server 0.40.0 fails closed under QualifiedOnly");
+    assert_eq!(
+        failure.stage(),
+        PreparationStage::CompatibilityClassification
     );
     let error = source_authority(
         host_id,
-        "0.38.1",
+        "0.40.0",
         Some("fixture.kimi.state-root"),
         "session-1",
     )

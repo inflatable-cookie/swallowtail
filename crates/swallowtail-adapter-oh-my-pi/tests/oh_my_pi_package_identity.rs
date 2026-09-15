@@ -79,7 +79,7 @@ fn identity_and_claim_qualify_17_3_7_as_compatible_extension() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(OH_MY_PI_PACKAGE_BASELINE_VERSION, "17.2.9");
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "17.4.0");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.1.22");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "17.2.9"
@@ -93,7 +93,7 @@ fn identity_and_claim_qualify_17_3_7_as_compatible_extension() {
     assert!(matches!(
         claim.assess(&version("17.3.7")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     assert_eq!(
         oh_my_pi_package_binding("17.3.7")
@@ -182,23 +182,24 @@ fn identity_and_claim_qualify_17_3_8_as_compatible_extension() {
     assert_eq!(protocol["decoder_corpus"], "oh-my-pi-rpc-17.2.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "17.4.0");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.1.22");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "17.3.7"
     );
 
     let claim = oh_my_pi_rpc_claim();
-    for value in ["17.2.15", "17.3.7", "17.3.8", "17.4.0"] {
+    for value in ["17.2.15", "17.3.7", "17.3.8", "17.4.0", "17.4.1", "17.4.2"] {
         assert!(matches!(
             claim.assess(&version(value)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
         ));
     }
     assert!(matches!(
-        claim.assess(&version("17.4.1")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        claim.assess(&version("18.0.0")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
     assert_eq!(
         oh_my_pi_package_binding("17.3.8")
@@ -291,24 +292,20 @@ fn identity_and_claim_qualify_17_4_0_as_compatible_extension() {
     assert_eq!(protocol["decoder_corpus"], "oh-my-pi-rpc-17.2.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "17.4.0");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.1.22");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "17.3.8"
     );
 
     let claim = oh_my_pi_rpc_claim();
-    for value in ["17.2.15", "17.3.7", "17.3.8", "17.4.0"] {
+    for value in ["17.2.15", "17.3.7", "17.3.8", "17.4.0", "17.4.1", "17.4.2"] {
         assert!(matches!(
             claim.assess(&version(value)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
         ));
     }
-    assert!(matches!(
-        claim.assess(&version("17.4.1")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
     assert_eq!(
         oh_my_pi_package_binding("17.4.0")
             .expect("version binds")
@@ -401,7 +398,7 @@ fn identity_stops_18_0_5_after_official_latest_moved() {
     assert_eq!(protocol["decoder_corpus"], "oh-my-pi-rpc-17.2.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "17.4.0");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.1.22");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "17.4.0"
@@ -411,17 +408,43 @@ fn identity_stops_18_0_5_after_official_latest_moved() {
     assert!(matches!(
         claim.assess(&version("17.4.0")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
-    for value in ["17.4.1", "17.4.2", "18.0.5", "18.0.6"] {
+    for value in ["17.4.1", "17.4.2"] {
         assert!(
             matches!(
                 claim.assess(&version(value)),
-                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+                InterfaceCompatibilityAssessment::Qualified(matched)
+                    if matched.support_status() == InterfaceSupportStatus::Deprecated
             ),
-            "{value} stays UnverifiedNewer"
+            "{value} extends the retained 17.x segment"
         );
     }
+    for value in [
+        "18.0.5", "18.0.6", "18.0.0", "18.0.1", "18.0.3", "18.1.16", "18.1.22",
+    ] {
+        assert!(
+            matches!(
+                claim.assess(&version(value)),
+                InterfaceCompatibilityAssessment::Qualified(matched)
+                    if matched.support_status() == InterfaceSupportStatus::Maintained
+            ),
+            "{value} is qualified on the 18.x segment"
+        );
+    }
+    for value in ["18.0.2", "18.1.7"] {
+        assert!(
+            matches!(
+                claim.assess(&version(value)),
+                InterfaceCompatibilityAssessment::Incompatible
+            ),
+            "unpublished {value} stays incompatible"
+        );
+    }
+    assert!(matches!(
+        claim.assess(&version("18.1.23")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
 }
 
 fn is_sha256(value: &str) -> bool {

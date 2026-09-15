@@ -1,0 +1,740 @@
+{
+  "axis": "oh-my-pi.package",
+  "version": "18.1.22",
+  "observed_at": "2026-09-15",
+  "help_source": "extracted npm shipped source and dist/cli.js strings; downloaded artifacts were never executed",
+  "selected_argv_flags": [
+    "--mode",
+    "--no-session",
+    "--provider",
+    "--model",
+    "--tools",
+    "--no-extensions",
+    "--no-skills",
+    "--no-rules",
+    "--no-prewalk",
+    "--approval-mode"
+  ],
+  "catalogue_argv_flags": [
+    "--mode",
+    "--no-session",
+    "--no-tools",
+    "--no-extensions",
+    "--no-skills",
+    "--no-rules",
+    "--no-prewalk"
+  ],
+  "selected_mode": "rpc",
+  "selected_mode_choices": [
+    "text",
+    "json",
+    "rpc",
+    "rpc-ui"
+  ],
+  "selected_approval_mode": "always-ask",
+  "selected_tools": "read,grep,glob,todo,ask",
+  "selected_commands": [
+    "negotiate_protocol",
+    "set_model",
+    "set_thinking_level",
+    "set_auto_retry",
+    "set_auto_compaction",
+    "set_steering_mode",
+    "set_follow_up_mode",
+    "set_interrupt_mode",
+    "get_state",
+    "get_available_models",
+    "prompt",
+    "steer",
+    "follow_up",
+    "abort"
+  ],
+  "selected_wire_invariants": {
+    "ready_protocolVersion": 1,
+    "ready_supportedProtocolVersions": [
+      1,
+      2
+    ],
+    "negotiated_protocolVersion": 2,
+    "maximum_physical_frame_bytes": 1048576,
+    "maximum_reassembled_frame_bytes": 67108864,
+    "strict_lf_jsonl": true,
+    "rpc_chunk_fields": [
+      "chunkId",
+      "index",
+      "count",
+      "byteLength",
+      "data"
+    ],
+    "response_fields": [
+      "id",
+      "command",
+      "success",
+      "data"
+    ],
+    "terminal_event": "agent_end with isTerminal true",
+    "terminal_non_true": "agent_end with isTerminal false is progress, not completion",
+    "usage_fields": [
+      "input",
+      "output",
+      "cacheRead",
+      "cacheWrite"
+    ],
+    "provider_failure_marker": "assistant message_end with stopReason error",
+    "tool_event_fields": [
+      "toolCallId",
+      "toolName",
+      "isError"
+    ],
+    "ui_dialog_methods": [
+      "select",
+      "confirm",
+      "input",
+      "editor"
+    ],
+    "ui_display_methods": [
+      "notify",
+      "setStatus",
+      "setWidget",
+      "setTitle",
+      "set_editor_text"
+    ]
+  },
+  "mapped_rpc_files": [
+    "src/modes/rpc/rpc-client.ts",
+    "src/modes/rpc/rpc-frame.ts",
+    "src/modes/rpc/rpc-input.ts",
+    "src/modes/rpc/rpc-messages.ts",
+    "src/modes/rpc/rpc-mode.ts",
+    "src/modes/rpc/rpc-types.ts",
+    "src/modes/rpc/rpc-subagents.ts",
+    "src/modes/rpc/host-tools.ts",
+    "src/modes/rpc/host-uris.ts",
+    "src/jsonrpc/message-framing.ts"
+  ],
+  "mapped_rpc_digest_groups": {
+    "src/modes/rpc/rpc-client.ts": [
+      {
+        "sha256": "64e31a71f112fcdd11061900a27eb433ba3cd75cdfd6246595e8e68715c13375",
+        "versions": [
+          "17.4.0",
+          "17.4.1",
+          "17.4.2",
+          "18.0.0",
+          "18.0.1",
+          "18.0.3",
+          "18.0.4",
+          "18.0.5",
+          "18.0.6",
+          "18.0.7"
+        ]
+      },
+      {
+        "sha256": "934b8dbf18a65192d3bd4d9e3bd8d8dfe04234ff464bef3ea449e6d90096603b",
+        "versions": [
+          "18.0.8"
+        ]
+      },
+      {
+        "sha256": "6a782f6bd8b617dae7b1dfa02ce691f7ee10245a824a08c74353bcf05ceb1533",
+        "versions": [
+          "18.0.9",
+          "18.0.10",
+          "18.0.11",
+          "18.1.0",
+          "18.1.1",
+          "18.1.2",
+          "18.1.3",
+          "18.1.4",
+          "18.1.5"
+        ]
+      },
+      {
+        "sha256": "a2f2c8d82778ef1516675f486f5d0c5333beebda5517f3eb49d75ab9b8953643",
+        "versions": [
+          "18.1.6",
+          "18.1.8",
+          "18.1.9",
+          "18.1.10",
+          "18.1.11",
+          "18.1.12",
+          "18.1.13",
+          "18.1.14",
+          "18.1.15",
+          "18.1.16",
+          "18.1.17",
+          "18.1.18",
+          "18.1.19",
+          "18.1.20",
+          "18.1.21",
+          "18.1.22"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-frame.ts": [
+      {
+        "sha256": "a7842596e455bf22f8d47b2fef1aaeb285aa0d85114f5b57ae6cdce595740126",
+        "versions": [
+          "17.4.0",
+          "17.4.1",
+          "17.4.2",
+          "18.0.0",
+          "18.0.1",
+          "18.0.3",
+          "18.0.4",
+          "18.0.5",
+          "18.0.6",
+          "18.0.7",
+          "18.0.8",
+          "18.0.9",
+          "18.0.10",
+          "18.0.11"
+        ]
+      },
+      {
+        "sha256": "255a7512fcb67bc36170edc0669f7957ba97c90d005be712587f1b2b7d7a8297",
+        "versions": [
+          "18.1.0",
+          "18.1.1",
+          "18.1.2",
+          "18.1.3",
+          "18.1.4",
+          "18.1.5",
+          "18.1.6",
+          "18.1.8",
+          "18.1.9",
+          "18.1.10",
+          "18.1.11",
+          "18.1.12",
+          "18.1.13",
+          "18.1.14",
+          "18.1.15",
+          "18.1.16",
+          "18.1.17",
+          "18.1.18",
+          "18.1.19",
+          "18.1.20",
+          "18.1.21",
+          "18.1.22"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-input.ts": [
+      {
+        "sha256": "de20cd9b52302798d5816019ca5fff24b009cfbdb478d204d41cf902336b16c3",
+        "versions": [
+          "17.4.0",
+          "17.4.1",
+          "17.4.2",
+          "18.0.0",
+          "18.0.1",
+          "18.0.3",
+          "18.0.4",
+          "18.0.5",
+          "18.0.6",
+          "18.0.7",
+          "18.0.8",
+          "18.0.9",
+          "18.0.10",
+          "18.0.11",
+          "18.1.0",
+          "18.1.1",
+          "18.1.2",
+          "18.1.3",
+          "18.1.4",
+          "18.1.5",
+          "18.1.6",
+          "18.1.8",
+          "18.1.9",
+          "18.1.10",
+          "18.1.11",
+          "18.1.12",
+          "18.1.13",
+          "18.1.14",
+          "18.1.15",
+          "18.1.16",
+          "18.1.17",
+          "18.1.18",
+          "18.1.19",
+          "18.1.20",
+          "18.1.21",
+          "18.1.22"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-messages.ts": [
+      {
+        "sha256": "e0c11e294574cddbfd04192affc5b9ebae87f150f25aa24d25da2b756f751261",
+        "versions": [
+          "17.4.0",
+          "17.4.1",
+          "17.4.2",
+          "18.0.0",
+          "18.0.1",
+          "18.0.3",
+          "18.0.4",
+          "18.0.5",
+          "18.0.6",
+          "18.0.7",
+          "18.0.8",
+          "18.0.9",
+          "18.0.10",
+          "18.0.11",
+          "18.1.0",
+          "18.1.1",
+          "18.1.2",
+          "18.1.3",
+          "18.1.4",
+          "18.1.5",
+          "18.1.6",
+          "18.1.8",
+          "18.1.9",
+          "18.1.10",
+          "18.1.11",
+          "18.1.12",
+          "18.1.13",
+          "18.1.14",
+          "18.1.15",
+          "18.1.16",
+          "18.1.17",
+          "18.1.18",
+          "18.1.19",
+          "18.1.20",
+          "18.1.21",
+          "18.1.22"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-mode.ts": [
+      {
+        "sha256": "5ce7071445fd99abcff81eb1c7f74b4ee88c36c27b42c40bade2bf34310528a2",
+        "versions": [
+          "17.4.0"
+        ]
+      },
+      {
+        "sha256": "beafadbe5479130332bc874c984ac3b00e845b734ca067a48e126dfb1a8b0d21",
+        "versions": [
+          "17.4.1"
+        ]
+      },
+      {
+        "sha256": "a428097440d18b8671e635ef46052792254de40771e32869b33095a8c587e1ab",
+        "versions": [
+          "17.4.2",
+          "18.0.0",
+          "18.0.1",
+          "18.0.3",
+          "18.0.4",
+          "18.0.5",
+          "18.0.6"
+        ]
+      },
+      {
+        "sha256": "14b49872d4e51481e9c12958b2c600bb318878e1d2697f80d0a8795995ef103f",
+        "versions": [
+          "18.0.7",
+          "18.0.8"
+        ]
+      },
+      {
+        "sha256": "9a7395a8cbf694b19faa391d2a88d1e06b3600cfb2c92d7f36e2be37edd22100",
+        "versions": [
+          "18.0.9",
+          "18.0.10",
+          "18.0.11"
+        ]
+      },
+      {
+        "sha256": "8a64ee44e1f3cefa9c536cdc10ab0369473ecef0ab64508512f2a88df572ff28",
+        "versions": [
+          "18.1.0",
+          "18.1.1",
+          "18.1.2"
+        ]
+      },
+      {
+        "sha256": "2e7c38538d69f0bd00c6e2377c02ae0d3f941960384692728e6499994929b862",
+        "versions": [
+          "18.1.3",
+          "18.1.4",
+          "18.1.5",
+          "18.1.6",
+          "18.1.8",
+          "18.1.9",
+          "18.1.10",
+          "18.1.11",
+          "18.1.12",
+          "18.1.13",
+          "18.1.14",
+          "18.1.15",
+          "18.1.16",
+          "18.1.17"
+        ]
+      },
+      {
+        "sha256": "79878b6a2f95cdeaf2f3404fdbc3c0efc949f5612cd3ef5df4c94b1e85cb821b",
+        "versions": [
+          "18.1.18",
+          "18.1.19",
+          "18.1.20",
+          "18.1.21",
+          "18.1.22"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-types.ts": [
+      {
+        "sha256": "79470809d3469025d2dd0153553082d2c55af6b2e9e4da4e6b814591eb0c6b78",
+        "versions": [
+          "17.4.0",
+          "17.4.1"
+        ]
+      },
+      {
+        "sha256": "224ad60de4a6432189564482a8336e0f3fc41adea6cef419e4ac21753df4b94f",
+        "versions": [
+          "17.4.2",
+          "18.0.0",
+          "18.0.1",
+          "18.0.3",
+          "18.0.4",
+          "18.0.5",
+          "18.0.6",
+          "18.0.7",
+          "18.0.8",
+          "18.0.9",
+          "18.0.10",
+          "18.0.11",
+          "18.1.0",
+          "18.1.1",
+          "18.1.2",
+          "18.1.3",
+          "18.1.4",
+          "18.1.5",
+          "18.1.6",
+          "18.1.8",
+          "18.1.9",
+          "18.1.10",
+          "18.1.11",
+          "18.1.12",
+          "18.1.13",
+          "18.1.14",
+          "18.1.15",
+          "18.1.16",
+          "18.1.17",
+          "18.1.18",
+          "18.1.19",
+          "18.1.20",
+          "18.1.21",
+          "18.1.22"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-subagents.ts": [
+      {
+        "sha256": "cadf56ddb0b07f47189c4a641d5e26d6c14650c170f7b14cb3f59cb4b1205f79",
+        "versions": [
+          "17.4.0",
+          "17.4.1",
+          "17.4.2",
+          "18.0.0",
+          "18.0.1",
+          "18.0.3",
+          "18.0.4",
+          "18.0.5",
+          "18.0.6",
+          "18.0.7",
+          "18.0.8"
+        ]
+      },
+      {
+        "sha256": "1c20c8d4d1be7785c4dc9b2b2b1d84cab729ce81a70d9940fff76ce5a4eec0a2",
+        "versions": [
+          "18.0.9",
+          "18.0.10",
+          "18.0.11",
+          "18.1.0",
+          "18.1.1",
+          "18.1.2",
+          "18.1.3",
+          "18.1.4",
+          "18.1.5",
+          "18.1.6",
+          "18.1.8",
+          "18.1.9",
+          "18.1.10",
+          "18.1.11",
+          "18.1.12",
+          "18.1.13",
+          "18.1.14",
+          "18.1.15",
+          "18.1.16",
+          "18.1.17",
+          "18.1.18",
+          "18.1.19",
+          "18.1.20",
+          "18.1.21",
+          "18.1.22"
+        ]
+      }
+    ],
+    "src/modes/rpc/host-tools.ts": [
+      {
+        "sha256": "0f923d909edfccebd8bb0fd010aa1aace5377e98c6edbc5c7da58bbe74965760",
+        "versions": [
+          "17.4.0",
+          "17.4.1",
+          "17.4.2",
+          "18.0.0",
+          "18.0.1",
+          "18.0.3",
+          "18.0.4",
+          "18.0.5",
+          "18.0.6",
+          "18.0.7",
+          "18.0.8",
+          "18.0.9",
+          "18.0.10",
+          "18.0.11"
+        ]
+      },
+      {
+        "sha256": "3244839de8072d601124283eae7bc474f31ee64a26fa7b7339baec8cb58de38c",
+        "versions": [
+          "18.1.0",
+          "18.1.1",
+          "18.1.2",
+          "18.1.3",
+          "18.1.4",
+          "18.1.5",
+          "18.1.6",
+          "18.1.8",
+          "18.1.9",
+          "18.1.10",
+          "18.1.11",
+          "18.1.12",
+          "18.1.13",
+          "18.1.14",
+          "18.1.15",
+          "18.1.16",
+          "18.1.17",
+          "18.1.18",
+          "18.1.19",
+          "18.1.20",
+          "18.1.21",
+          "18.1.22"
+        ]
+      }
+    ],
+    "src/modes/rpc/host-uris.ts": [
+      {
+        "sha256": "1363fb013ff60630b717cea0a7e9bd83918c78ee3e3cbabbfa6fbbde0a0d8428",
+        "versions": [
+          "17.4.0",
+          "17.4.1",
+          "17.4.2",
+          "18.0.0",
+          "18.0.1",
+          "18.0.3",
+          "18.0.4",
+          "18.0.5",
+          "18.0.6",
+          "18.0.7",
+          "18.0.8",
+          "18.0.9",
+          "18.0.10",
+          "18.0.11",
+          "18.1.0",
+          "18.1.1",
+          "18.1.2",
+          "18.1.3",
+          "18.1.4",
+          "18.1.5",
+          "18.1.6",
+          "18.1.8",
+          "18.1.9",
+          "18.1.10",
+          "18.1.11",
+          "18.1.12",
+          "18.1.13",
+          "18.1.14",
+          "18.1.15",
+          "18.1.16",
+          "18.1.17",
+          "18.1.18",
+          "18.1.19",
+          "18.1.20",
+          "18.1.21",
+          "18.1.22"
+        ]
+      }
+    ],
+    "src/jsonrpc/message-framing.ts": [
+      {
+        "sha256": "1ebbbc1b0e24fa76967a08bf43222fb6dcba0c26e2fe0c5bcef56b3f98124c3c",
+        "versions": [
+          "17.4.0",
+          "17.4.1",
+          "17.4.2",
+          "18.0.0",
+          "18.0.1",
+          "18.0.3",
+          "18.0.4",
+          "18.0.5",
+          "18.0.6",
+          "18.0.7",
+          "18.0.8",
+          "18.0.9",
+          "18.0.10",
+          "18.0.11",
+          "18.1.0",
+          "18.1.1",
+          "18.1.2",
+          "18.1.3",
+          "18.1.4",
+          "18.1.5",
+          "18.1.6",
+          "18.1.8",
+          "18.1.9",
+          "18.1.10",
+          "18.1.11",
+          "18.1.12",
+          "18.1.13",
+          "18.1.14",
+          "18.1.15",
+          "18.1.16",
+          "18.1.17",
+          "18.1.18",
+          "18.1.19",
+          "18.1.20",
+          "18.1.21",
+          "18.1.22"
+        ]
+      }
+    ]
+  },
+  "mapped_support_files": [
+    "src/cli/flag-tables.ts",
+    "src/modes/index.ts"
+  ],
+  "docs_rpc_md_blob_v17_4_2_through_v18_1_22": "310b44702de66b4eecd6da37660f9fc40075d973",
+  "docs_rpc_md_option_details_delta": "Adds only the documented optional `optionDetails: Array<{ description?: string }>` for `select`, aligned to `options: string[]`; hosts that do not render descriptions keep using `options` alone.",
+  "hop_classification": {
+    "17.4.0->17.4.1": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-mode.ts"
+      ],
+      "classification": "unmapped additive/advisory",
+      "reason": "rpc-mode.ts adds the host `runCommandInBackground` callback and reports the consumed-builtin `prompt` response field `agentInvoked` accurately. Swallowtail reads only response `success` for `prompt`, never registers host extension callbacks, and no mapped flag, command, frame, response key, event, or UI field moves."
+    },
+    "17.4.1->17.4.2": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-mode.ts",
+        "src/modes/rpc/rpc-types.ts"
+      ],
+      "classification": "unmapped additive optional select metadata",
+      "reason": "Optional `optionDetails` is added to the `select` extension_ui_request and `requestRpcSelect` is extracted; docs/rpc.md at v17.4.2 states hosts that do not render descriptions continue to use `options` alone. Swallowtail keeps reading the `options` string array and bounds unknown select fields. `options` remains the positionally aligned label array."
+    },
+    "17.4.2->18.0.0": {
+      "mapped_files": [],
+      "support_files": [
+        "src/modes/index.ts"
+      ],
+      "classification": "unmapped barrel export",
+      "reason": "Only `src/modes/index.ts` adds a `./composer` barrel export. No mapped RPC file, wire, lifecycle, failure, retention, cancellation, or cleanup source moves."
+    },
+    "18.0.6->18.0.7": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-mode.ts"
+      ],
+      "classification": "unmapped extension-root plumbing",
+      "reason": "`loadSlashCommands` receives `session.effectiveExtensionRoots` for the `available_commands_update` lifecycle record. Swallowtail runs `--no-extensions` and treats `available_commands_update` as lifecycle, not mapped content."
+    },
+    "18.0.7->18.0.8": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-client.ts"
+      ],
+      "classification": "unmapped client-library launcher option",
+      "reason": "The embedded RpcClient gains an optional `command` launcher override. Swallowtail spawns the official CLI directly and never uses the RpcClient process launcher."
+    },
+    "18.0.8->18.0.9": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-client.ts",
+        "src/modes/rpc/rpc-mode.ts",
+        "src/modes/rpc/rpc-subagents.ts"
+      ],
+      "classification": "unmapped client transport abstraction and parameter renames",
+      "reason": "RpcClient gains an optional `spawn` transport and a nullable stdin flush; `eventBus` parameters are renamed to `subagentEventBus`/`observabilityBus`. Swallowtail does not use RpcClient, does not subscribe to subagents, and the wire bytes are unchanged."
+    },
+    "18.0.9->18.0.10": {
+      "mapped_files": [],
+      "support_files": [
+        "src/cli/flag-tables.ts"
+      ],
+      "classification": "unmapped append-only argv helper",
+      "reason": "`src/cli/flag-tables.ts` appends `SESSION_SOURCE_FLAGS` and `restartArgv` for in-place `/restart`. The selected `--mode rpc` flag tables and every selected flag are unchanged."
+    },
+    "18.0.11->18.1.0": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-frame.ts",
+        "src/modes/rpc/rpc-mode.ts",
+        "src/modes/rpc/host-tools.ts"
+      ],
+      "classification": "unmapped comment and formatting only",
+      "reason": "Each hop diff is an `oxlint-disable-next-line` comment or a line-wrap reflow. No executable statement changes."
+    },
+    "18.1.2->18.1.3": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-mode.ts"
+      ],
+      "classification": "unmapped skill-command dispatch timing",
+      "reason": "The `/skill:*` prompt branch now acknowledges before the expensive dispatch. Swallowtail passes `--no-skills`, so `session.skillsSettings.enableSkillCommands` is falsy and the changed branch is not selected; the plain-prompt path is untouched."
+    },
+    "18.1.5->18.1.6": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-client.ts"
+      ],
+      "classification": "unmapped additive client forwarded-event name",
+      "reason": "The embedded RpcClient adds `tool_stream_update` to its forwarded-event name set. The server-side `session.subscribe(event => output(event))` path already forwarded session events, and Swallowtail's decoder already bounds unrecognised namespaced events and ignores them in the turn state machine."
+    },
+    "18.1.16->18.1.17": {
+      "mapped_files": [],
+      "support_files": [
+        "src/modes/index.ts"
+      ],
+      "classification": "unmapped barrel re-export",
+      "reason": "Only `src/modes/index.ts` preserves a `planSaveFileName` barrel re-export after a module move. No mapped RPC file changes."
+    },
+    "18.1.17->18.1.18": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-mode.ts"
+      ],
+      "classification": "resolved session-scoped persistence change",
+      "reason": "`set_steering_mode`, `set_follow_up_mode`, and `set_interrupt_mode` now call the session setters with `persist: false`. The session-local mode is still applied and `get_state` still reports it, so the adapter's `state_matches` contract is unchanged; the removed side effect was a machine-global `config.yml` write. A short-lived `--no-session` RPC process never relied on that persistence."
+    }
+  },
+  "mapped_wire_lifecycle_failure_resource_change_found": false,
+  "byte_identical_mapped_files_across_all_compared": [
+    "src/jsonrpc/message-framing.ts",
+    "src/modes/rpc/rpc-input.ts",
+    "src/modes/rpc/rpc-messages.ts",
+    "src/modes/rpc/host-uris.ts"
+  ],
+  "option_details_is_additive_and_ignored": true,
+  "option_details_cannot_change_mapped_options": true,
+  "unmapped_boundaries": {
+    "subagent_subscription": "set_subagent_subscription, subagent_* events, get_subagents, get_subagent_messages, and nested subagent visibility stay unselected and unmapped.",
+    "runtime_client_launcher": "The shipped RpcClient launcher, custom spawn transport, forwarded-event name set, and SSH/remote launcher builders are not on Swallowtail's route; Swallowtail owns the child process.",
+    "slash_commands_and_skills": "--no-extensions and --no-skills keep slash-command and /skill:* prompt branches unselected.",
+    "session_persistence": "The 18.1.18 queue-mode commands no longer write machine-global config; the session-local setting the adapter asserts is unchanged.",
+    "session_import_and_legacy_usage": "--no-session keeps imported and legacy session usage-metadata repair unselected.",
+    "unmapped_extra_events": "New session event names forwarded by the server are bounded by namespace and ignored by the turn state machine; they cannot complete or fail a turn."
+  },
+  "mapped_decoder_corpus": "oh-my-pi-rpc-17.2.9",
+  "decoder_corpus_retained": true,
+  "provider_prompt_sent": false,
+  "host_install_changed": false,
+  "downloaded_artifact_executed": false,
+  "host_cli_observed": "omp/18.1.16"
+}

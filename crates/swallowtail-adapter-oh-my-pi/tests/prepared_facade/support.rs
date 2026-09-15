@@ -30,7 +30,7 @@ fn assert_prompt_image(host: &FixtureHost) {
 }
 
 #[test]
-fn latest_pi_is_qualified_and_later_stable_remains_unverified() {
+fn seventeen_and_eighteen_segments_are_qualified_and_later_stable_remains_unverified() {
     let host_id = ExecutionHostId::new("fixture.pi.prepared.newer").expect("valid host");
     let discovery = FixtureHost::version_probe("17.2.9");
     let prepared = block_on(prepare_oh_my_pi_rpc(
@@ -77,19 +77,73 @@ fn latest_pi_is_qualified_and_later_stable_remains_unverified() {
         basis.behavior_revision().as_str(),
         "oh-my-pi.rpc-v2-v17.2.9"
     );
+}
 
-    let host_id = ExecutionHostId::new("fixture.pi.prepared.later").expect("valid host");
-    let discovery = FixtureHost::version_probe("17.4.1");
+#[test]
+fn later_17_x_and_every_18_x_point_are_qualified_on_their_own_behavior() {
+    for (version, behavior) in [
+        ("17.4.1", "oh-my-pi.rpc-v2-v17.2.9"),
+        ("17.4.2", "oh-my-pi.rpc-v2-v17.2.9"),
+        ("18.0.0", "oh-my-pi.rpc-v2-v18.0.0"),
+        ("18.1.16", "oh-my-pi.rpc-v2-v18.0.0"),
+        ("18.1.22", "oh-my-pi.rpc-v2-v18.0.0"),
+    ] {
+        let host_id =
+            ExecutionHostId::new(format!("fixture.pi.prepared.{version}")).expect("valid host");
+        let discovery = FixtureHost::version_probe(version);
+        let prepared = block_on(prepare_oh_my_pi_rpc(
+            preparation_input(host_id.clone()),
+            probe(),
+            discovery.services(host_id),
+        ))
+        .expect("qualified OhMyPi prepares");
+        let InstalledExecutableCompatibility::Qualified(assessment) =
+            prepared.observation().compatibility()
+        else {
+            panic!("{version} is qualified");
+        };
+        assert_eq!(
+            assessment.behavior_revision().as_str(),
+            behavior,
+            "{version} uses its segment behavior"
+        );
+    }
+}
+
+#[test]
+fn passed_major_boundary_and_unpublished_gaps_remain_unexecutable() {
+    for version in ["17.4.3", "17.4.4", "18.0.2", "18.1.7"] {
+        let host_id =
+            ExecutionHostId::new(format!("fixture.pi.prepared.gap.{version}")).expect("valid host");
+        let discovery = FixtureHost::version_probe(version);
+        let outcome = block_on(prepare_oh_my_pi_rpc(
+            preparation_input(host_id.clone()),
+            probe(),
+            discovery.services(host_id),
+        ));
+        assert!(outcome.is_err(), "{version} must fail preparation");
+    }
+}
+
+#[test]
+fn later_stable_above_official_stays_unverified_newer() {
+    let host_id = ExecutionHostId::new("fixture.pi.prepared.unverified").expect("valid host");
+    let discovery = FixtureHost::version_probe("18.1.23");
     let prepared = block_on(prepare_oh_my_pi_rpc(
         preparation_input(host_id.clone()),
         probe(),
         discovery.services(host_id),
     ))
     .expect("later OhMyPi remains executable");
-    assert!(matches!(
-        prepared.observation().compatibility(),
-        InstalledExecutableCompatibility::UnverifiedNewer(_)
-    ));
+    let InstalledExecutableCompatibility::UnverifiedNewer(assessment) =
+        prepared.observation().compatibility()
+    else {
+        panic!("later OhMyPi is unverified newer");
+    };
+    assert_eq!(
+        assessment.behavior_revision().as_str(),
+        "oh-my-pi.rpc-v2-v18.0.0"
+    );
 }
 
 fn preparation_input(host: ExecutionHostId) -> OhMyPiPreparationInput {

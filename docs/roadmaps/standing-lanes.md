@@ -26,14 +26,32 @@ One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
 
-Ready campaign family: Oh My Pi official npm/GitHub `18.1.22` (g05.079) is
+Completed campaign family: Oh My Pi official npm/GitHub `18.1.22` (g05.079) is
 the nineteenth and final family of Tom's authorized Research 308 campaign.
-It must freeze every published npm stable after `17.4.0`, classify `17.4.1`
-and `17.4.2` independently, and treat the 17-to-18 boundary as a distinct
-adapter-private mapping segment rather than an inferred range extension.
-Research 217's earlier `18.0.x` evidence must reproduce; installed
-`omp/18.1.16` is observation only. Provider-free; no Pi-family flattening,
-host update, release, tag, publication, or consumer authority.
+Research 327 re-probed npm and GitHub `18.1.22` (published 2026-09-14) and the
+installed `omp/18.1.16`, then reproduced every registry `integrity` and
+`shasum`, tarball, `dist/cli.js`, shipped file-count, and GitHub tag-commit for
+all 36 published stables from `17.4.0` through `18.1.22` with one
+deterministic per-hop shipped-tree inventory and a mutation-sensitive mapped
+RPC source ledger. Both later `17.x` hops are additive extensions (`17.4.1`
+adds an unmapped background-command callback and an accurate `agentInvoked`
+field; `17.4.2` adds optional select `optionDetails` that `docs/rpc.md` says
+hosts may ignore), so the retained `17.x` segment extends to
+`17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` revision. The
+whole `18.x` line compiles as a distinct adapter-private segment
+`18.0.0..=18.1.22` on the new `oh-my-pi.rpc-v2-v18.0.0` revision: every mapped
+hop is byte-identical, unmapped, additive, client-library, or a resolved
+session-scoped persistence change with unchanged `get_state` values.
+`rpc-messages.ts`, `rpc-input.ts`, `host-uris.ts`, and `message-framing.ts` are
+byte-identical across all 36 points and `docs/rpc.md` is blob `310b4470` from
+`v17.4.2` through `v18.1.22`. Contract 029 revises the claim id to
+`oh-my-pi.rpc.package-window-2`; the retained `17.x` segment reports
+`Deprecated` while staying executable, `18.0.2` and `18.1.7` are explicit
+exclusions, the npm-unpublished GitHub tags `17.4.3`/`17.4.4` stay
+incompatible, and `18.1.23` stays permitted `UnverifiedNewer`. Research 217
+reproduces with the `17.4.2` landing correction. `pi.package` stays separate;
+no prompt, login, install, host update, downloaded-artifact execution, or
+consumer mutation occurred. This closes the Research 308 campaign.
 
 Completed campaign family: Gemini CLI official npm `0.59.0` (g05.076) is
 the sixteenth family of Tom's authorized Research 308 campaign. Research 324
@@ -505,6 +523,16 @@ Kimi and Antigravity must gain a bounded mechanism or fail closed, and Oh My
 Pi `18.x` remains a major-line identity investigation rather than an inferred
 extension. No release authority follows.
 
+All nineteen families have now been actioned. Oh My Pi `18.1.22` (g05.079,
+Research 327) closed the campaign on 2026-09-15: the npm/GitHub identity
+ledger reproduced for all 36 published stables, the retained `17.x` segment
+extended to `17.2.9..=17.4.2`, and the admitted `18.0.0..=18.1.22` range landed
+on a distinct adapter-private behavior revision. Goose and Qoder keep their
+exact `QualifiedOnly` stops and their operator rulings stay open; Gemini's
+deferral was lifted for the campaign and its claims advanced through `0.59.0`.
+The standing lane stays available for the next checkpoint after official
+stables move; it is not a generation goal and does not keep g05 open.
+
 Research 294 revalidated all 41 production solution rows on 2026-09-08. The
 partition is 10 unchanged, 8 visible unverified-newer, and 23 record-only.
 Cursor Agent `2026.09.02` ranks as the next one-family candidate, but the
@@ -721,6 +749,8 @@ changed no claim.
 ## Next Task
 
 Implement the active task named by the
-[roadmaps front door](README.md#next-task). g05.037 cards 135-136 completed
-the OpenCode HTTP `1.18.29` family. This file records standing lanes; the
-sole actionable pointer stays in the front door.
+[roadmaps front door](README.md#next-task). This file records standing lanes;
+the sole actionable pointer stays in the front door. The authorized Research
+308 campaign completed at g05.079 (Oh My Pi `18.1.22`), so no currentness
+family remains ready; the next move is the operator conversation recorded by
+the front door, not a new lane.

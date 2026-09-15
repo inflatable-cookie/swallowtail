@@ -13,7 +13,13 @@ pub const ANTIGRAVITY_AUTOMATIC_EXECUTABLE_NAME: &str = "agy";
 pub const ANTIGRAVITY_RELEASE_AXIS: &str = "antigravity-cli.release";
 /// Oldest release in the current maintained qualification window.
 pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
-/// Latest release in the current maintained qualification window.
+/// Latest catalogue release in the current maintained qualification window.
+pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.2.2";
+/// Latest headless release in the current maintained qualification window.
+pub const ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
+/// Historical shared ceiling. The headless claim still ends here; the
+/// catalogue claim advanced to `1.2.2` under Research 323 while headless
+/// stays stopped at the `1.1.22` provider-managed-retry boundary.
 pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
 
 pub(crate) const ANTIGRAVITY_CATALOGUE_BEHAVIOR: &str =
@@ -53,7 +59,7 @@ pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
         InterfaceNewerVersionPosture::AllowUnverified,
         [InterfaceVersionSegment::new(
             version(ANTIGRAVITY_BASELINE_VERSION).expect("static Antigravity release is valid"),
-            version(ANTIGRAVITY_LATEST_QUALIFIED_VERSION)
+            version(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION)
                 .expect("static Antigravity release is valid"),
             InterfaceBehaviorRevision::new(ANTIGRAVITY_CATALOGUE_BEHAVIOR)
                 .expect("static Antigravity behavior is valid"),
@@ -75,7 +81,7 @@ pub fn antigravity_headless_claim() -> InterfaceCompatibilityClaim {
         InterfaceNewerVersionPosture::AllowUnverified,
         [InterfaceVersionSegment::new(
             version(ANTIGRAVITY_BASELINE_VERSION).expect("static Antigravity release is valid"),
-            version(ANTIGRAVITY_LATEST_QUALIFIED_VERSION)
+            version(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION)
                 .expect("static Antigravity release is valid"),
             InterfaceBehaviorRevision::new(ANTIGRAVITY_HEADLESS_BEHAVIOR)
                 .expect("static Antigravity headless behavior is valid"),
@@ -166,8 +172,8 @@ fn version(value: &str) -> Option<InterfaceVersion> {
 #[cfg(test)]
 mod tests {
     use super::{
-        ANTIGRAVITY_CATALOGUE_BEHAVIOR, ANTIGRAVITY_RELEASE_AXIS, antigravity_catalogue_claim,
-        antigravity_headless_claim, antigravity_release_binding,
+        ANTIGRAVITY_CATALOGUE_BEHAVIOR, ANTIGRAVITY_HEADLESS_BEHAVIOR, ANTIGRAVITY_RELEASE_AXIS,
+        antigravity_catalogue_claim, antigravity_headless_claim, antigravity_release_binding,
     };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
@@ -179,9 +185,11 @@ mod tests {
         assert!(claim.supports(&version("1.1.15")));
         assert!(claim.supports(&version("1.1.16")));
         assert!(claim.supports(&version("1.1.17")));
+        assert!(claim.supports(&version("1.1.27")));
+        assert!(claim.supports(&version("1.2.2")));
         assert!(!claim.permits(&version("1.1.8")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("1.1.18"))
+            claim.assess(&version("1.2.3"))
         else {
             panic!("later Antigravity release remains visibly unverified");
         };
@@ -189,6 +197,25 @@ mod tests {
             newer.behavior_revision().as_str(),
             ANTIGRAVITY_CATALOGUE_BEHAVIOR
         );
+    }
+
+    #[test]
+    fn headless_claim_stops_at_the_1_1_22_retry_boundary() {
+        let claim = antigravity_headless_claim();
+        assert!(claim.supports(&version("1.1.9")));
+        assert!(claim.supports(&version("1.1.17")));
+        for stopped in ["1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.1", "1.2.2"] {
+            let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+                claim.assess(&version(stopped))
+            else {
+                panic!("headless stop at 1.1.22 leaves {stopped} unverified");
+            };
+            assert_eq!(
+                newer.behavior_revision().as_str(),
+                ANTIGRAVITY_HEADLESS_BEHAVIOR
+            );
+        }
+        assert!(!claim.permits(&version("1.1.8")));
     }
 
     #[test]

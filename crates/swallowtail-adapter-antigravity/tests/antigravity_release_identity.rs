@@ -9,6 +9,8 @@ use swallowtail_core::{
 
 #[path = "antigravity_1_1_26_delta_ledger.rs"]
 mod antigravity_1_1_26_delta_ledger;
+#[path = "antigravity_1_2_2_notes_ledger.rs"]
+mod antigravity_1_2_2_notes_ledger;
 
 const IDENTITY: &str = include_str!("fixtures/antigravity-cli-1.1.14/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/antigravity-cli-1.1.14/protocol.json");
@@ -242,7 +244,7 @@ fn identity_and_claim_qualify_1_1_15_as_compatible_extension() {
     assert!(!catalogue.permits(&version("1.1.8")));
     assert!(!headless.permits(&version("1.1.8")));
     assert!(matches!(
-        catalogue.assess(&version("1.1.18")),
+        headless.assess(&version("1.1.18")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
@@ -384,7 +386,7 @@ fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
     assert!(!catalogue.permits(&version("1.1.8")));
     assert!(!headless.permits(&version("1.1.8")));
     assert!(matches!(
-        catalogue.assess(&version("1.1.18")),
+        headless.assess(&version("1.1.18")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(

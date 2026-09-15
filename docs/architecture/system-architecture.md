@@ -451,15 +451,21 @@ OpenHands adds a package without a production route.
   force flags, implicit sandboxing, and partial-output duplication are not
   selected
 - `swallowtail-adapter-antigravity` begins Google's separate personal-account
-  harness family with Google-signed `agy` `1.1.9..=1.1.17` discovery and an
+  harness family with Google-signed `agy` discovery and an
   authenticated `agy models` catalogue plus a separate headless stream-JSON
   structured driver. The access profile represents
   provider-owned local Google Sign-In without credential extraction. Catalogue
   entries preserve only opaque model identity and do not imply entitlement or
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
   tag share one source commit; `1.1.8` is not independently qualified.
-  Later published stables through `1.1.17` reuse the same catalogue and
-  stream-JSON revisions. `--input-format` stdin turns and Gemini API-key
+  Catalogue support extends through official `1.2.2` with the same
+  catalogue revision because no published release-note change touches the
+  selected `agy models` path after the classified `1.1.23` stdin repair;
+  headless support stops at `1.1.17` because `1.1.22` introduced
+  provider-managed HTTP 502 retry on the model request with no published
+  bound or disable control, `1.1.28` and `1.2.1` broaden that retry, and
+  `1.1.28` also changes `--print-timeout` expiry to partial output plus a
+  successful exit. `--input-format` stdin turns and Gemini API-key
   sign-in stay unmapped. Headless runs bind exact model, read or write
   authority, optional provider sandboxing, optional effort, optional inline
   JSON Schema, request-review permission mode, typed activity and usage,

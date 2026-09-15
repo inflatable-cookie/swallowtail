@@ -34,7 +34,12 @@ Swallowtail does not install Antigravity, start login, inspect its auth store,
 or acquire a credential. The access profile is provider-supported local auth
 with subscription allowance and no credential reference.
 
-Qualified versions are `1.1.9..=1.1.17` on `antigravity-cli.release`.
+Qualified catalogue versions are `1.1.9..=1.2.2` on `antigravity-cli.release`.
+Qualified headless versions remain `1.1.9..=1.1.17`: the official `1.1.22`
+release introduced provider-managed HTTP 502 retry on the model request
+with no published finite bound or disable control, later notes broaden that
+retry (`1.1.28`, `1.2.1`) without bounding it, so `1.1.18..=1.2.2` stay
+unqualified for headless runs and turn continuation under Contract 023.
 Later stable versions remain visible as unverified newer. `1.1.8` is not
 silently accepted from the shared documentation tag.
 

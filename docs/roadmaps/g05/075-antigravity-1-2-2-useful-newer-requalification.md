@@ -7,13 +7,24 @@ Vision tags: route currentness, Antigravity, retry containment, exact artifacts
 
 ## Outcome
 
-Reopen `antigravity-cli.release` against official GitHub `1.2.2`. Qualify the
-catalogue and headless claims independently only across exact contiguous
-segments whose selected behavior and authority are proved. Preserve the
-`1.1.22` provider-managed-retry stop unless a later artifact exposes a finite,
-deterministic bound or disable mechanism that Contract 023 can admit without
-new operator policy. Fail closed at the smallest unproved boundary instead of
-treating the entire family as all-or-nothing.
+Complete. Under Tom's 2026-09-15 operator ruling the official release notes
+are the behavioural authority, and the two claims split honestly:
+Research 323 froze official identity for all five stable hops `1.1.27`
+through `1.2.2` (both platform digests; the Research 283 `1.1.26` boundary
+reproduces byte-for-byte) and found no published selected-path change to
+`agy models` in any hop, so the catalogue claim advances to maintained
+`1.1.9..=1.2.2` with the
+`antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1` behavior revision,
+baseline `1.1.9`, and `AllowUnverified` unchanged. The headless claim keeps
+its maintained `1.1.9..=1.1.17` window: the `1.1.22` provider-managed HTTP
+502 retry stands, `1.1.28` retries transient model errors "for much
+longer" with exponential backoff, and `1.2.1` broadens automatic in-process
+retry to 502/503/504, per-minute 429, and mid-stream interruptions, each
+with no published finite bound or disable control, so `1.1.18..=1.2.2` stay
+the named unqualified gap. `1.1.28`'s partial-output `--print-timeout`
+expiry and `1.2.0`'s content-filter stop reason are classified inside that
+gap. No private milestone, new public operation, provider call, or host
+change; exhaustive binary scanning stopped at the ruling.
 
 Planning rechecked the official channel on 2026-09-14. Latest stable is
 `1.2.2`, published `2026-09-12T03:51:08Z`, at tag commit
@@ -139,13 +150,13 @@ consumer mutation. No generic authorization for provider-managed retry.
 
 ## Acceptance
 
-- [ ] official identities reproduce for all new releases and named assets
-- [ ] every published selected-path change is classified independently per claim
-- [ ] retry and print-timeout boundaries use the published evidence and fail closed where no admissible bound is stated
-- [ ] identity evidence precedes any claim or mapping change
-- [ ] maintained segments and incompatible gaps are maximally honest
-- [ ] both claims retain their authority, lifecycle, and sibling boundaries
-- [ ] official latest is rechecked at both identity and push boundaries
+- [x] official identities reproduce for all new releases and named assets
+- [x] every published selected-path change is classified independently per claim
+- [x] retry and print-timeout boundaries use the published evidence and fail closed where no admissible bound is stated
+- [x] identity evidence precedes any claim or mapping change
+- [x] maintained segments and incompatible gaps are maximally honest
+- [x] both claims retain their authority, lifecycle, and sibling boundaries
+- [x] official latest is rechecked at both identity and push boundaries
 
 ## Next Task
 

@@ -15,11 +15,11 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Implement g05.075 Antigravity `1.2.2` useful-newer requalification as the
+g05.075 completed the Antigravity `1.2.2` useful-newer requalification, the
 fifteenth family in Tom's authorized Research 308 currentness campaign.
-Require an exact bounded retry mechanism or fail closed per claim. Continue
-the remaining four families serially without repeated approval; no release
-follows.
+Return the outcome to Chatterbox, then compile and dispatch the Gemini
+family (sixteenth) from fresh canonical `main` without repeated approval; no
+release follows.
 
 ## Standing Lanes
 

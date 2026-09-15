@@ -600,7 +600,7 @@ fn distribution_inventory_is_one_changed_closed_binary_per_hop() {
 }
 
 #[test]
-fn stop_keeps_the_production_ceiling_and_gates_card_072() {
+fn stop_decision_froze_the_headless_ceiling_and_gated_card_072() {
     let identity = json(IDENTITY);
     let decision = &identity["identity_decision"];
     assert_eq!(decision["shape"], "stop");
@@ -617,14 +617,26 @@ fn stop_keeps_the_production_ceiling_and_gates_card_072() {
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
     assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.1.17");
 
-    for claim in [antigravity_catalogue_claim(), antigravity_headless_claim()] {
-        assert!(!claim.permits(&version("1.1.8")));
-        for candidate in ["1.1.18", "1.1.22", "1.1.26"] {
-            assert!(matches!(
-                claim.assess(&version(candidate)),
-                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-            ));
-        }
+    // Research 283's stop froze the then-shared ceiling at 1.1.17. Research
+    // 323 later split the claims: the headless claim still stops at the
+    // 1.1.22 provider-retry hop, while the catalogue claim advanced to
+    // official 1.2.2 because the release notes name no selected-path change
+    // to `agy models`.
+    let headless = antigravity_headless_claim();
+    assert!(!headless.permits(&version("1.1.8")));
+    for candidate in ["1.1.18", "1.1.22", "1.1.26"] {
+        assert!(matches!(
+            headless.assess(&version(candidate)),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
+    }
+    let catalogue = antigravity_catalogue_claim();
+    assert!(!catalogue.permits(&version("1.1.8")));
+    for candidate in ["1.1.18", "1.1.22", "1.1.26"] {
+        assert!(matches!(
+            catalogue.assess(&version(candidate)),
+            InterfaceCompatibilityAssessment::Qualified(_)
+        ));
     }
 }
 

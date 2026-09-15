@@ -1,0 +1,585 @@
+{
+  "executing_path": {
+    "npm_bin": "dist/main.mjs",
+    "github_archive_member": "kimi",
+    "archive_format": "node-single-executable-application",
+    "acp_argv": [
+      "acp"
+    ],
+    "headless_argv": [
+      "--model",
+      "<model>",
+      "--prompt",
+      "<content>",
+      "--output-format",
+      "stream-json"
+    ],
+    "headless_v2_default_since": "0.33.0",
+    "legacy_env_that_no_longer_exists_after_0_41_0": "KIMI_CODE_LEGACY_FLAG",
+    "swallowtail_never_sets_legacy_flag": true,
+    "acp_implementation_from_0_40_0": "@moonshot-ai/acp-server (agent-core-v2); the acp-adapter legacy package is not shipped",
+    "headless_implementation_from_0_42_0": "apps/kimi-code/src/cli/run-prompt.ts unconditionally dynamic-imports v2/run-v2-print.ts"
+  },
+  "selected_file_ledger": {
+    "packages/acp-server/src/server.ts": {
+      "0.39.1": "6e4ee87840af172117d66673bafe3426479c3b5b",
+      "0.40.0": "c2157face164225d307fa434f413abdbe8cac02d",
+      "0.40.1": "c2157face164225d307fa434f413abdbe8cac02d",
+      "0.41.0": "c2157face164225d307fa434f413abdbe8cac02d",
+      "0.42.0": "c2157face164225d307fa434f413abdbe8cac02d",
+      "0.43.0": "c2157face164225d307fa434f413abdbe8cac02d"
+    },
+    "packages/acp-server/src/events-map.ts": {
+      "0.39.1": "cb549b736199c4857f43791fb9153894f3f18a0b",
+      "0.40.0": "cb549b736199c4857f43791fb9153894f3f18a0b",
+      "0.40.1": "cb549b736199c4857f43791fb9153894f3f18a0b",
+      "0.41.0": "cb549b736199c4857f43791fb9153894f3f18a0b",
+      "0.42.0": "2b2c042f1bfc5a48f16c920ed3af699bd910926e",
+      "0.43.0": "2b2c042f1bfc5a48f16c920ed3af699bd910926e"
+    },
+    "packages/acp-server/src/auth-methods.ts": {
+      "0.39.1": "7b537995c99b5dcb5e065f4fde86e8d1600e3925",
+      "0.40.0": "7c8dee20286d3ecd0cb6dcb3fd48fe86d1cf6752",
+      "0.40.1": "7c8dee20286d3ecd0cb6dcb3fd48fe86d1cf6752",
+      "0.41.0": "7c8dee20286d3ecd0cb6dcb3fd48fe86d1cf6752",
+      "0.42.0": "7c8dee20286d3ecd0cb6dcb3fd48fe86d1cf6752",
+      "0.43.0": "7c8dee20286d3ecd0cb6dcb3fd48fe86d1cf6752"
+    },
+    "packages/acp-server/src/modes.ts": {
+      "0.39.1": "a0ecdb7cd71eb3d13802f5713c3ca75cbac38e64",
+      "0.40.0": "a0ecdb7cd71eb3d13802f5713c3ca75cbac38e64",
+      "0.40.1": "a0ecdb7cd71eb3d13802f5713c3ca75cbac38e64",
+      "0.41.0": "a0ecdb7cd71eb3d13802f5713c3ca75cbac38e64",
+      "0.42.0": "a0ecdb7cd71eb3d13802f5713c3ca75cbac38e64",
+      "0.43.0": "a0ecdb7cd71eb3d13802f5713c3ca75cbac38e64"
+    },
+    "packages/acp-server/src/config-options.ts": {
+      "0.39.1": "beeb4300833e6db38bd16f35dd5e57607c841fad",
+      "0.40.0": "beeb4300833e6db38bd16f35dd5e57607c841fad",
+      "0.40.1": "beeb4300833e6db38bd16f35dd5e57607c841fad",
+      "0.41.0": "beeb4300833e6db38bd16f35dd5e57607c841fad",
+      "0.42.0": "beeb4300833e6db38bd16f35dd5e57607c841fad",
+      "0.43.0": "beeb4300833e6db38bd16f35dd5e57607c841fad"
+    },
+    "packages/acp-server/src/approval.ts": {
+      "0.39.1": "2c14a18e631abf7a087dea1666c5786dab5c359c",
+      "0.40.0": "2c14a18e631abf7a087dea1666c5786dab5c359c",
+      "0.40.1": "2c14a18e631abf7a087dea1666c5786dab5c359c",
+      "0.41.0": "2c14a18e631abf7a087dea1666c5786dab5c359c",
+      "0.42.0": "2c14a18e631abf7a087dea1666c5786dab5c359c",
+      "0.43.0": "2c14a18e631abf7a087dea1666c5786dab5c359c"
+    },
+    "packages/acp-server/src/model-catalog.ts": {
+      "0.39.1": "3fad223bc3b55c314557e4c6a61bd6f11a52c875",
+      "0.40.0": "3fad223bc3b55c314557e4c6a61bd6f11a52c875",
+      "0.40.1": "3fad223bc3b55c314557e4c6a61bd6f11a52c875",
+      "0.41.0": "3fad223bc3b55c314557e4c6a61bd6f11a52c875",
+      "0.42.0": "3fad223bc3b55c314557e4c6a61bd6f11a52c875",
+      "0.43.0": "3fad223bc3b55c314557e4c6a61bd6f11a52c875"
+    },
+    "packages/acp-server/src/convert.ts": {
+      "0.39.1": "48c34bff63d69079604bc7e2d94a4a17e25aa47b",
+      "0.40.0": "48c34bff63d69079604bc7e2d94a4a17e25aa47b",
+      "0.40.1": "48c34bff63d69079604bc7e2d94a4a17e25aa47b",
+      "0.41.0": "48c34bff63d69079604bc7e2d94a4a17e25aa47b",
+      "0.42.0": "51737aa02da5368f464905c1cdc57320d656c522",
+      "0.43.0": "51737aa02da5368f464905c1cdc57320d656c522"
+    },
+    "packages/acp-server/src/session.ts": {
+      "0.39.1": "9c82c912e1f3e15e23f258864431031afa043571",
+      "0.40.0": "999c08e3fd2d9de31bb11afa96de13dc1688d4a5",
+      "0.40.1": "999c08e3fd2d9de31bb11afa96de13dc1688d4a5",
+      "0.41.0": "999c08e3fd2d9de31bb11afa96de13dc1688d4a5",
+      "0.42.0": "a11043e8f40e4f9ffeeeb528a64310a03c6b2871",
+      "0.43.0": "a11043e8f40e4f9ffeeeb528a64310a03c6b2871"
+    },
+    "packages/acp-server/src/start.ts": {
+      "0.39.1": "5b60cac574d754878f02b8cac47414fec3da7802",
+      "0.40.0": "5b60cac574d754878f02b8cac47414fec3da7802",
+      "0.40.1": "5b60cac574d754878f02b8cac47414fec3da7802",
+      "0.41.0": "5b60cac574d754878f02b8cac47414fec3da7802",
+      "0.42.0": "5b60cac574d754878f02b8cac47414fec3da7802",
+      "0.43.0": "5b60cac574d754878f02b8cac47414fec3da7802"
+    },
+    "packages/acp-server/src/version.ts": {
+      "0.39.1": "84e9cb4c89967ec2192bac4b0f5bc24cbc6754e1",
+      "0.40.0": "dad12ff3b2cd75c890a50388dd3aaa0293f8b121",
+      "0.40.1": "dad12ff3b2cd75c890a50388dd3aaa0293f8b121",
+      "0.41.0": "dad12ff3b2cd75c890a50388dd3aaa0293f8b121",
+      "0.42.0": "dad12ff3b2cd75c890a50388dd3aaa0293f8b121",
+      "0.43.0": "dad12ff3b2cd75c890a50388dd3aaa0293f8b121"
+    },
+    "packages/acp-server/src/interaction-bridge.ts": {
+      "0.39.1": "7aba932abef8a1140125e4e63f612e936dc7e018",
+      "0.40.0": "7aba932abef8a1140125e4e63f612e936dc7e018",
+      "0.40.1": "7aba932abef8a1140125e4e63f612e936dc7e018",
+      "0.41.0": "7aba932abef8a1140125e4e63f612e936dc7e018",
+      "0.42.0": "d57e79ed4341abe22bee4235e48e277e3ddbd1c4",
+      "0.43.0": "d57e79ed4341abe22bee4235e48e277e3ddbd1c4"
+    },
+    "packages/acp-server/src/replay.ts": {
+      "0.39.1": "6de77b683ed010cbcf897e3c5823d33f3d6e69f2",
+      "0.40.0": "6de77b683ed010cbcf897e3c5823d33f3d6e69f2",
+      "0.40.1": "6de77b683ed010cbcf897e3c5823d33f3d6e69f2",
+      "0.41.0": "6de77b683ed010cbcf897e3c5823d33f3d6e69f2",
+      "0.42.0": "6de77b683ed010cbcf897e3c5823d33f3d6e69f2",
+      "0.43.0": "187ea214e97e9eeb2bcb9f1f3f9bcffd85dcd23f"
+    },
+    "packages/acp-server/src/acp-terminal/acpTerminalRunner.ts": {
+      "0.39.1": "9016d48b643f35b263449d98dee25597a9a24d30",
+      "0.40.0": "9016d48b643f35b263449d98dee25597a9a24d30",
+      "0.40.1": "9016d48b643f35b263449d98dee25597a9a24d30",
+      "0.41.0": "9016d48b643f35b263449d98dee25597a9a24d30",
+      "0.42.0": "9016d48b643f35b263449d98dee25597a9a24d30",
+      "0.43.0": "9016d48b643f35b263449d98dee25597a9a24d30"
+    },
+    "packages/acp-server/src/acp-fs/index.ts": {
+      "0.39.1": "14734929616cfcda8fc0cf4737e537e5ff331372",
+      "0.40.0": "14734929616cfcda8fc0cf4737e537e5ff331372",
+      "0.40.1": "14734929616cfcda8fc0cf4737e537e5ff331372",
+      "0.41.0": "14734929616cfcda8fc0cf4737e537e5ff331372",
+      "0.42.0": "14734929616cfcda8fc0cf4737e537e5ff331372",
+      "0.43.0": "14734929616cfcda8fc0cf4737e537e5ff331372"
+    },
+    "apps/kimi-code/src/cli/sub/acp.ts": {
+      "0.39.1": "d0803a852fdaca4fcb68cb1794a626854fcd1224",
+      "0.40.0": "17bbbe009a729f74e2987846263043a690b074d3",
+      "0.40.1": "17bbbe009a729f74e2987846263043a690b074d3",
+      "0.41.0": "17bbbe009a729f74e2987846263043a690b074d3",
+      "0.42.0": "17bbbe009a729f74e2987846263043a690b074d3",
+      "0.43.0": "17bbbe009a729f74e2987846263043a690b074d3"
+    },
+    "apps/kimi-code/src/cli/sub/acp-native.ts": {
+      "0.39.1": "83d444e343f6c54448e596c36026c7492c6d6645",
+      "0.40.0": null,
+      "0.40.1": null,
+      "0.41.0": null,
+      "0.42.0": null,
+      "0.43.0": null
+    },
+    "apps/kimi-code/src/cli/commands.ts": {
+      "0.39.1": "6b6c3aca0739ea5ef540396a848265aff7ed7de0",
+      "0.40.0": "4ee0f26f4cbd24f1d15eadf8fed771b1e85acb44",
+      "0.40.1": "4ee0f26f4cbd24f1d15eadf8fed771b1e85acb44",
+      "0.41.0": "4ee0f26f4cbd24f1d15eadf8fed771b1e85acb44",
+      "0.42.0": "4ee0f26f4cbd24f1d15eadf8fed771b1e85acb44",
+      "0.43.0": "e6022a8f119f8a79185d6fec75ab22732d4ffcd4"
+    },
+    "apps/kimi-code/src/cli/experimental-v2.ts": {
+      "0.39.1": "09deacc9c2f891fa27944171662116ea5e2e2c83",
+      "0.40.0": "8ccb56ebddafa66640afa0026dad2b080712a26d",
+      "0.40.1": "8ccb56ebddafa66640afa0026dad2b080712a26d",
+      "0.41.0": "8ccb56ebddafa66640afa0026dad2b080712a26d",
+      "0.42.0": null,
+      "0.43.0": null
+    },
+    "apps/kimi-code/src/cli/run-prompt.ts": {
+      "0.39.1": "cd519b223ea79355a0656a0254b8803576c3deb0",
+      "0.40.0": "cd519b223ea79355a0656a0254b8803576c3deb0",
+      "0.40.1": "cd519b223ea79355a0656a0254b8803576c3deb0",
+      "0.41.0": "cd519b223ea79355a0656a0254b8803576c3deb0",
+      "0.42.0": "65a49446872c9fb939343324cef5ff8e15f3cc76",
+      "0.43.0": "65a49446872c9fb939343324cef5ff8e15f3cc76"
+    },
+    "apps/kimi-code/src/cli/options.ts": {
+      "0.39.1": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "0.40.0": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "0.40.1": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "0.41.0": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "0.42.0": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "0.43.0": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95"
+    },
+    "apps/kimi-code/src/cli/prompt-render.ts": {
+      "0.39.1": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "0.40.0": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "0.40.1": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "0.41.0": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "0.42.0": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "0.43.0": "0e2f35238db066a13b53ad2cfff11bdff2f76724"
+    },
+    "apps/kimi-code/src/cli/v2/run-v2-print.ts": {
+      "0.39.1": "299e926caa6d749c873d5c3fc277aa1e96303887",
+      "0.40.0": "bbf5eedc2b7476d70043d1e2211e80d2845ec249",
+      "0.40.1": "bbf5eedc2b7476d70043d1e2211e80d2845ec249",
+      "0.41.0": "72ed2e9443f23b253ce00d00702da060d892d98a",
+      "0.42.0": "e3e430ca35cce42a23a5a82513dc55d982ba02e0",
+      "0.43.0": "3e0e6755a9fdc1015dcb2d30cc1e7fcbe3c29108"
+    },
+    "packages/agent-core-v2/src/agent/stepRetry/stepRetryService.ts": {
+      "0.39.1": "3c2eac8a070ddf2b3f4fdb562e999d7a7a39b8b4",
+      "0.40.0": "bf55aa99e7fa9c5b021bfe0cecd33dca5d6fe659",
+      "0.40.1": "bf55aa99e7fa9c5b021bfe0cecd33dca5d6fe659",
+      "0.41.0": "bf55aa99e7fa9c5b021bfe0cecd33dca5d6fe659",
+      "0.42.0": null,
+      "0.43.0": null
+    },
+    "packages/agent-core-v2/src/agent/loop/turnEvents.ts": {
+      "0.39.1": "3dbdd396b728593c8cd284d25a57209e93d0011e",
+      "0.40.0": "d3e9fdebe6780d5b6baaf1cd19a9bdc146458e7f",
+      "0.40.1": "d3e9fdebe6780d5b6baaf1cd19a9bdc146458e7f",
+      "0.41.0": "d3e9fdebe6780d5b6baaf1cd19a9bdc146458e7f",
+      "0.42.0": "f0163142e58b2e113e37fc7224700e36c7c89aa8",
+      "0.43.0": "f0163142e58b2e113e37fc7224700e36c7c89aa8"
+    }
+  },
+  "ledger_method": "one deterministic path -> git blob sha1 map per extracted GitHub tagged source tree; every digest below is the sha1 of the git blob (sha1(\"blob <len>\\0\" + bytes)); a null means the path does not exist at that point; the map is the frozen proof a later edit cannot silently move a selected surface",
+  "bundle_oracle": {
+    "corpus": "npm @moonshot-ai/kimi-code dist/main.mjs, brace-matched extraction with the same shape recorded by Research 270",
+    "versions": [
+      "0.39.1",
+      "0.40.0",
+      "0.40.1",
+      "0.41.0",
+      "0.42.0",
+      "0.43.0"
+    ],
+    "acp_process_service_digest_all_six": "7c58e045273d9dbcea96e38d0792d6122193810cd3b9a7c93bb02d40d21284e4",
+    "acp_process_service_matches_research_270_0_39_0_and_0_39_1": true,
+    "acp_process_service_is_the_gating_a2_surface": true,
+    "headless_surface_digests": {
+      "prompt_json_writer": {
+        "0.39.1": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "0.40.0": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "0.40.1": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "0.41.0": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "0.42.0": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "0.43.0": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10"
+      },
+      "prompt_transcript_writer": {
+        "0.39.1": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "0.40.0": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "0.40.1": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "0.41.0": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "0.42.0": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "0.43.0": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8"
+      },
+      "write_experimental_version": {
+        "0.39.1": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "0.40.0": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "0.40.1": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "0.41.0": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "0.42.0": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "0.43.0": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7"
+      },
+      "write_resume_hint": {
+        "0.39.1": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "0.40.0": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "0.40.1": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "0.41.0": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "0.42.0": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "0.43.0": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1"
+      },
+      "stringify_tool_output": {
+        "0.39.1": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "0.40.0": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "0.40.1": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "0.41.0": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "0.42.0": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "0.43.0": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb"
+      },
+      "run_prompt_dispatch": {
+        "0.39.1": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "0.40.0": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "0.40.1": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "0.41.0": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "0.42.0": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "0.43.0": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29"
+      },
+      "dispatch_native_event": {
+        "0.39.1": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "0.40.0": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "0.40.1": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "0.41.0": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "0.42.0": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "0.43.0": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f"
+      }
+    },
+    "every_headless_surface_has_one_distinct_digest_across_the_six_points": true
+  },
+  "hop_classification": [
+    {
+      "from": "0.39.1",
+      "to": "0.40.0",
+      "acp": {
+        "verdict": "compatible-selected-adjacent",
+        "note": "the acp-adapter legacy package and acp-native.ts are removed and sub/acp.ts now lazily imports @moonshot-ai/acp-server directly; server.ts additionally requires a successful restore() after session/fork; session.ts, auth-methods.ts, and version.ts changes are comments only; acpTerminalRunner.ts, acp-fs/, start.ts, modes.ts, approval.ts, config-options.ts, and model-catalog.ts are byte-identical",
+        "changed_selected_files": [
+          "apps/kimi-code/src/cli/sub/acp-native.ts",
+          "apps/kimi-code/src/cli/sub/acp.ts",
+          "packages/acp-adapter/src/approval.ts",
+          "packages/acp-adapter/src/auth-methods.ts",
+          "packages/acp-adapter/src/builtin-commands.ts",
+          "packages/acp-adapter/src/config-options.ts",
+          "packages/acp-adapter/src/convert.ts",
+          "packages/acp-adapter/src/events-map.ts",
+          "packages/acp-adapter/src/index.ts",
+          "packages/acp-adapter/src/kaos-acp.ts",
+          "packages/acp-adapter/src/log-guard.ts",
+          "packages/acp-adapter/src/marker.ts",
+          "packages/acp-adapter/src/mcp.ts",
+          "packages/acp-adapter/src/model-catalog.ts",
+          "packages/acp-adapter/src/modes.ts",
+          "packages/acp-adapter/src/question.ts",
+          "packages/acp-adapter/src/server.ts",
+          "packages/acp-adapter/src/session.ts",
+          "packages/acp-adapter/src/slash.ts",
+          "packages/acp-adapter/src/types.ts",
+          "packages/acp-adapter/src/version.ts",
+          "packages/acp-server/src/auth-methods.ts",
+          "packages/acp-server/src/server.ts",
+          "packages/acp-server/src/session.ts",
+          "packages/acp-server/src/version.ts"
+        ]
+      },
+      "headless": {
+        "verdict": "compatible",
+        "note": "experimental-v2.ts is a doc-comment edit; run-v2-print.ts moves goal/cron service lookup to agent-scoped services and sets nonInteractive: true on the request headers; commands.ts and main.ts add unrelated subcommands; the JSONL dispatch, writers, meta types, and retry payload are unchanged",
+        "changed_selected_files": [
+          "apps/kimi-code/src/cli/commands.ts",
+          "apps/kimi-code/src/cli/experimental-v2.ts",
+          "apps/kimi-code/src/cli/run-shell.ts",
+          "apps/kimi-code/src/cli/sub/acp-native.ts",
+          "apps/kimi-code/src/cli/sub/acp.ts",
+          "apps/kimi-code/src/cli/sub/doctor.ts",
+          "apps/kimi-code/src/cli/sub/fork.ts",
+          "apps/kimi-code/src/cli/sub/login-flow.ts",
+          "apps/kimi-code/src/cli/sub/session.ts",
+          "apps/kimi-code/src/cli/update/native-manifest.ts",
+          "apps/kimi-code/src/cli/update/native-stage.ts",
+          "apps/kimi-code/src/cli/v2/run-v2-print.ts",
+          "packages/agent-core-v2/src/agent/loop/loopService.ts",
+          "packages/agent-core-v2/src/agent/loop/turnEvents.ts",
+          "packages/agent-core-v2/src/agent/loop/turnOps.ts",
+          "packages/agent-core-v2/src/agent/stepRetry/stepRetryService.ts"
+        ]
+      }
+    },
+    {
+      "from": "0.40.0",
+      "to": "0.40.1",
+      "acp": {
+        "verdict": "identical",
+        "note": "no ACP source change anywhere in the package; apps/kimi-code/package.json is the only delta",
+        "changed_selected_files": []
+      },
+      "headless": {
+        "verdict": "identical",
+        "note": "only apps/kimi-code/package.json moves",
+        "changed_selected_files": []
+      }
+    },
+    {
+      "from": "0.40.1",
+      "to": "0.41.0",
+      "acp": {
+        "verdict": "identical",
+        "note": "no ACP source change; the selected ACP surfaces are byte-identical",
+        "changed_selected_files": []
+      },
+      "headless": {
+        "verdict": "compatible",
+        "note": "run-v2-print.ts adds quiesce/flush telemetry and lifecycle work at shutdown (the print-mode session-record fix) plus KIMI_DISABLE_TELEMETRY handling; the emitted stream-json grammar is unchanged",
+        "changed_selected_files": [
+          "apps/kimi-code/src/cli/run-shell.ts",
+          "apps/kimi-code/src/cli/v2/run-v2-print.ts",
+          "packages/agent-core-v2/src/agent/loop/handoffStep.ts",
+          "packages/agent-core-v2/src/agent/loop/loop.ts",
+          "packages/agent-core-v2/src/agent/loop/loopService.ts",
+          "packages/agent-core-v2/src/agent/loop/stepRequestQueue.ts",
+          "packages/agent-core-v2/src/agent/loop/turnOps.ts"
+        ]
+      }
+    },
+    {
+      "from": "0.41.0",
+      "to": "0.42.0",
+      "acp": {
+        "verdict": "compatible-selected-adjacent",
+        "note": "convert.ts delegates image format gating to the provider-bound engine; events-map.ts and session.ts move tool-event type imports from @moonshot-ai/protocol to agent-core-v2 re-exports; interaction-bridge.ts is a comment change; approval.ts, modes.ts, config-options.ts, model-catalog.ts, start.ts, acp-fs/, and acpTerminalRunner.ts are byte-identical",
+        "changed_selected_files": [
+          "packages/acp-server/src/convert.ts",
+          "packages/acp-server/src/events-map.ts",
+          "packages/acp-server/src/interaction-bridge.ts",
+          "packages/acp-server/src/session.ts"
+        ]
+      },
+      "headless": {
+        "verdict": "compatible",
+        "note": "run-prompt.ts deletes the v1 legacy body and always dispatches runV2Print; experimental-v2.ts is removed with the KIMI_CODE_LEGACY_FLAG gate; run-v2-print.ts submits through IAgentLoopService and prints a trust-gated MCP warning on stderr; prompt-render.ts, options.ts, and the dispatch switch are byte-identical",
+        "changed_selected_files": [
+          "apps/kimi-code/src/cli/experimental-v2.ts",
+          "apps/kimi-code/src/cli/prompt-session.ts",
+          "apps/kimi-code/src/cli/run-prompt.ts",
+          "apps/kimi-code/src/cli/run-shell.ts",
+          "apps/kimi-code/src/cli/sub/export.ts",
+          "apps/kimi-code/src/cli/sub/fork.ts",
+          "apps/kimi-code/src/cli/sub/provider.ts",
+          "apps/kimi-code/src/cli/sub/session.ts",
+          "apps/kimi-code/src/cli/telemetry.ts",
+          "apps/kimi-code/src/cli/update/native-manifest.ts",
+          "apps/kimi-code/src/cli/update/native-stage.ts",
+          "apps/kimi-code/src/cli/v2/run-v2-print.ts",
+          "packages/agent-core-v2/src/agent/loop/handoffStep.ts",
+          "packages/agent-core-v2/src/agent/loop/loop.ts",
+          "packages/agent-core-v2/src/agent/loop/loopContinuation.ts",
+          "packages/agent-core-v2/src/agent/loop/loopContinuationService.ts",
+          "packages/agent-core-v2/src/agent/loop/loopService.ts",
+          "packages/agent-core-v2/src/agent/loop/machine/engine.ts",
+          "packages/agent-core-v2/src/agent/loop/machine/history.ts",
+          "packages/agent-core-v2/src/agent/loop/machine/index.ts",
+          "packages/agent-core-v2/src/agent/loop/machine/requester.ts",
+          "packages/agent-core-v2/src/agent/loop/machine/tools.ts",
+          "packages/agent-core-v2/src/agent/loop/stepRequest.ts",
+          "packages/agent-core-v2/src/agent/loop/stepRequestQueue.ts",
+          "packages/agent-core-v2/src/agent/loop/turnEvents.ts",
+          "packages/agent-core-v2/src/agent/loop/turnOps.ts",
+          "packages/agent-core-v2/src/agent/stepRetry/stepRetry.ts",
+          "packages/agent-core-v2/src/agent/stepRetry/stepRetryService.ts"
+        ]
+      }
+    },
+    {
+      "from": "0.42.0",
+      "to": "0.43.0",
+      "acp": {
+        "verdict": "compatible-selected-adjacent",
+        "note": "replay.ts suppresses thinking deltas for parts marked hidden; no initialize, session, callback, permission, or process-authority surface moves",
+        "changed_selected_files": [
+          "packages/acp-server/src/replay.ts"
+        ]
+      },
+      "headless": {
+        "verdict": "compatible",
+        "note": "run-v2-print.ts moves prompt submission to IAgentLoopService.submit/promptHandle and prompt cancellation to loop.cancel({promptId}); commands.ts/main.ts add the kimi upgrade --yes flag; the dispatch switch, writers, meta types, and retry payload are byte-identical",
+        "changed_selected_files": [
+          "apps/kimi-code/src/cli/commands.ts",
+          "apps/kimi-code/src/cli/sub/upgrade.ts",
+          "apps/kimi-code/src/cli/v2/run-v2-print.ts",
+          "packages/agent-core-v2/src/agent/loop/configSection.ts",
+          "packages/agent-core-v2/src/agent/loop/loop.ts",
+          "packages/agent-core-v2/src/agent/loop/loopService.ts",
+          "packages/agent-core-v2/src/agent/loop/machine/engine.ts",
+          "packages/agent-core-v2/src/agent/loop/machine/index.ts",
+          "packages/agent-core-v2/src/agent/loop/machine/requester.ts",
+          "packages/agent-core-v2/src/agent/loop/machine/storeJournal.ts",
+          "packages/agent-core-v2/src/agent/loop/machine/tools.ts",
+          "packages/agent-core-v2/src/agent/loop/promptChannel.ts",
+          "packages/agent-core-v2/src/agent/loop/turnOps.ts"
+        ]
+      }
+    }
+  ],
+  "a2_containment_result": {
+    "ruling": "g05.017 A2 is binding; no exact containment or removal is present at any hop",
+    "source_surface": "packages/acp-server/src/acp-terminal/acpTerminalRunner.ts",
+    "source_blob_all_six": "9016d48b643f35b263449d98dee25597a9a24d30",
+    "bundle_surface": "AcpProcessService in npm dist/main.mjs",
+    "bundle_digest_all_six": "7c58e045273d9dbcea96e38d0792d6122193810cd3b9a7c93bb02d40d21284e4",
+    "local_spawn_branch_condition": "!this.connection.terminalEnabled || !isBashToolInvocation(args, options)",
+    "swallowtail_advertised_terminal": false,
+    "swallowtail_advertised_auth_terminal": false,
+    "terminal_enabled_is_always_false": true,
+    "therefore_the_local_spawn_branch_is_always_taken": true,
+    "containment_trace": {
+      "adapter_control_found": false,
+      "runtime_control_found": false,
+      "harness_isolation_declared": "AmbientHost",
+      "contract_015_clause": "Process ownership implies neither callback authority nor filesystem containment",
+      "conclusion": "containment is absent; the uncontained host-process authority the A2 ruling capped 0.38.0 for is unchanged through 0.43.0"
+    },
+    "disposition": {
+      "shape": "stop-unchanged",
+      "acp_latest_qualified_stays": "0.38.0",
+      "exclude_exact": [
+        "0.39.0",
+        "0.39.1"
+      ],
+      "published_gap_above_the_cap": [
+        "0.40.0",
+        "0.40.1",
+        "0.41.0",
+        "0.42.0",
+        "0.43.0"
+      ],
+      "gap_mechanism": "QualifiedOnly posture rejection, not a new exclusion; the deny-list does not grow",
+      "new_acp_behavior_revision": false,
+      "new_shared_type_required": false
+    }
+  },
+  "headless_selected_grammar": {
+    "roles": [
+      "meta",
+      "assistant",
+      "tool"
+    ],
+    "meta_types": [
+      "system.version",
+      "turn.step.retrying",
+      "session.resume_hint"
+    ],
+    "retry_fields": [
+      "failed_attempt",
+      "next_attempt",
+      "max_attempts",
+      "delay_ms",
+      "error_name",
+      "error_message",
+      "status_code"
+    ],
+    "tool_fields": [
+      "tool_call_id",
+      "content"
+    ],
+    "output_format_choices": [
+      "text",
+      "stream-json"
+    ],
+    "behavior_revision": "kimi.headless.stream-json.v2",
+    "public_facade_id": "kimi-headless-stream-json-v1",
+    "decoder_corpus": "kimi-code-0.38.0-headless-v2",
+    "qualified_range_after_this_run": "0.33.0..=0.43.0",
+    "dispatch_case_labels_all_six": [
+      "turn.step.started",
+      "turn.step.interrupted",
+      "turn.step.retrying",
+      "assistant.delta",
+      "hook.result",
+      "thinking.delta",
+      "tool.call.started",
+      "tool.call.delta",
+      "tool.result",
+      "tool.progress"
+    ],
+    "prompt_render_ts_blob_all_six": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+    "options_ts_blob_all_six": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+    "dispatch_native_event_bundle_digest_all_six": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f"
+  },
+  "unmapped_deltas": [
+    "agent-core-v2 auto-permission-mode drop of the dangerous-command deny guard at 0.41.0 (provider tool policy behind the mode the print route forces; recorded by Research 282 as unmapped and unchanged here)",
+    "kimi -p trust-gated project-level MCP warning written to stderr at 0.42.0 (stderr diagnostic, not the stdout stream-json channel)",
+    "agent-core-v2 prompt/loop submission and cancellation API reorganization at 0.42.0 and 0.43.0",
+    "agent-core-v2 retry/requester, compaction, telemetry, and session-index internals",
+    "acp-server image format gating moved to the provider-bound engine at 0.42.0",
+    "acp-server replay hidden-thinking suppression at 0.43.0",
+    "subagent model pool always on, Remote Control always on, minidb read model and search worker always on, AI session titles always on",
+    "Tower multi-agent mode, web UI, session picker, and Remote Control changes",
+    "kimi upgrade --yes at 0.43.0 and kimi migrate --run at 0.40.0",
+    "dynamic tool loading (deferred MCP servers) and structured MCP content"
+  ],
+  "separate_family_observations": {
+    "kimi_code_local_server": "Research 282 owns this family; 0.40.0 removed the Bash cwd workspace assertion and 0.41.0 dropped the auto-mode dangerous-command deny guard, but no claim, fixture, route, or matrix cell is edited here",
+    "python_kimi_cli": "separate axis; untouched",
+    "kimi_platform_chat": "separate axis; untouched"
+  },
+  "guards": {
+    "provider_prompt_sent": false,
+    "authentication_performed": false,
+    "live_probe_run": false,
+    "local_server_started": false,
+    "host_install_changed": false,
+    "downloaded_binaries_executed": false,
+    "contracts_edited": false,
+    "local_server_claim_edited": false,
+    "published_binary_executed": false
+  }
+}

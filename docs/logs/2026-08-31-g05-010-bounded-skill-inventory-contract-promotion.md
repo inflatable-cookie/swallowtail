@@ -52,5 +52,5 @@ inventory realization needs a separate post-contract review and card.
 - [Contract 062](../contracts/062-bounded-skill-inventory.md)
 - [Contract 058](../contracts/058-effective-harness-skill-visibility.md)
 - [Spec 013 archive](../specs/archive/013-bounded-skill-inventory-and-effective-visibility.md)
-- [g05.010](../roadmaps/g05/010-bounded-skill-inventory-and-effective-visibility.md)
-- [card 025](../roadmaps/g05/010-bounded-skill-inventory-and-effective-visibility.md)
+- [g05.010](../roadmaps/archive/g05.md)
+- [card 025](../roadmaps/archive/g05.md)

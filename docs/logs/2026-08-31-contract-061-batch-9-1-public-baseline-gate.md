@@ -339,7 +339,7 @@ stops after the 51-row proof for an orchestrator checkpoint.
 ## Authority
 
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
-- [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
+- [g05.009](../roadmaps/archive/g05.md)
 - [realization-readiness inventory](2026-08-31-contract-061-realization-readiness-inventory.md)
 - [consumer projection census](2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Contract 037](../contracts/037-prepared-consumer-integration.md)

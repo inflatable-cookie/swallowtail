@@ -172,11 +172,10 @@ LEGACY_PATTERNS = (
     re.compile(r"^\| Card \|", re.MULTILINE),
 )
 # Surfaces that may name retired structures without dispatching them: the
-# migration task itself (it specifies the removal) and the grammar that
-# defines the rejection rule.
+# grammar that defines the rejection rule. Compacted migration tasks live in
+# docs/roadmaps/archive/, which the scan skips wholesale.
 LEGACY_SCAN_EXEMPT = frozenset(
     {
-        "docs/roadmaps/g05/038-flattened-task-switchover.md",
         "docs/roadmaps/status-grammar.md",
     }
 )

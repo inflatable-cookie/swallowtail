@@ -134,6 +134,6 @@ lifecycle, usage, and credit failure, and Research 118 stays the `1.15.1`
 record for private exact-id interactive continuation. The corresponding
 feature cells remain structurally available but their live acceptance is gated
 by the named follow-up
-[`g05.069`](../roadmaps/g05/069-command-code-1-54-0-live-requalification.md)
+[`g05.069`](../roadmaps/archive/g05.md)
 for exact `1.54.0` live requalification. No old live result is presented as a
 `1.54.0` observation.

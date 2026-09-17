@@ -73,8 +73,8 @@ through one additive adapter-owned projected-open seam while preserving
 
 ## Authority
 
-- [completed card 031](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
-- [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
+- [completed card 031](../roadmaps/archive/g05.md)
+- [g05.009](../roadmaps/archive/g05.md)
 - [Batch 9.4 checkpoint](2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Cline active-observation gate](2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)

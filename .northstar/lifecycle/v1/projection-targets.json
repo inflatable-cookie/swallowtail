@@ -3,7 +3,7 @@
   "targets": [
     "docs/README.md",
     "docs/roadmaps/README.md",
-    "docs/roadmaps/g05/README.md"
+    "docs/roadmaps/g06/README.md"
   ],
-  "active_generation": "g05"
+  "active_generation": "g06"
 }

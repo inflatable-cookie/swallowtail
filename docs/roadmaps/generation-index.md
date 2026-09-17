@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-13
+Updated: 2026-09-17
 
 ## Generations
 
@@ -12,7 +12,8 @@ Updated: 2026-09-13
 | `g02` | completed | API stabilization, prepared facades, packaging, consumer upgrade proof, lifecycle management, feature-matrix closure, observable activity, and structural/validation hardening. |
 | `g03` | completed | Compatibility maintenance across real interface ranges and consumer-proven hardening without release chasing. |
 | `g04` | completed | Route availability, connection admission, credential and sign-in descriptors, readiness refresh, and consumer-driven model selection without a Swallowtail server. |
-| `g05` | active | Bounded skill inventory, watcher truth, lifecycle-aware feature projection, serial route currentness, and bounded `v0.4.0` release readiness without ambient authority or silent flattening. |
+| `g05` | completed | Bounded skill inventory, watcher truth, lifecycle-aware feature projection, serial route currentness, and bounded release lanes without ambient authority or silent flattening. |
+| `g06` | active | The carried-forward g05 set: shared registered-tool harness capability and producer boundary, gated Qoder skill visibility, persistent permission grant admission, and remaining-ACP-routes registered-tool adoption. |
 
 ## Generation Size
 
@@ -144,328 +145,26 @@ Contract 029 currentness is a standing lane. It is not a generation runway
 goal and does not keep g04 or any later generation open. See
 [standing-lanes.md](standing-lanes.md).
 
-g05 has 57 tasks. Terminal task disposition is owned by the repository
-lifecycle projection; the entries below keep each task's semantic history.
-g05.055 completed 2026-09-13: annotated `v0.5.1` tag created and pushed at
-exact candidate `e9140b46` (tree `d375b322`, tag object `97a6933a`) after
-Tom's exact-SHA authorization; the exact three-paragraph annotation and the
-single `refs/tags/v0.5.1` push were verified, local and remote refs are
-byte-identical and both peel to the candidate; tag-triggered run 34743711387
-is green 11/11 after qualifying pre-tag run 34731113171; qualified `crates/`
-and Grok trees are unchanged; no registry, GitHub Release, artifact, provider,
-or Desktop mutation; documentation closeout merged through PR #318 at
-`b0c800e0` after independent exact-head review `5651817371`. g05.054 completed
-2026-09-13: source-only `v0.5.1` candidate `755a2669`
-merged at `e9140b46` through PR #317 after independent exact-head review
-`5649975685`; qualified `crates/` unchanged, exact-head CI green, no tag or
-publication; exact identity returned for Tom's annotated-tag authorization.
- g05.053 completed 2026-09-13: exact installed Grok `1.0.25` catalogue admitted
- as authenticated non-inference metadata; PR #316 merged at `3e9f29e7`
- after independent exact-head review `5649291554`; provider-free with no
- release, tag, Desktop mutation, or consumer pin.
-g05.052 completed 2026-09-12: typed non-admission ruling for the exact
-installed Grok `1.0.25` model-catalogue seam; PR #315 merged at `5d0c49f1`
-after independent exact-head review `5648599784`; provider-free with no
-release, tag, Desktop mutation, or consumer pin.
-g05.051 completed 2026-09-11: OpenCode HTTP qualified through official
-`1.18.30` as a compatible `surface-19` extension from complete-tree identity
-evidence; PR #314 merged at `2b79b083` after independent exact-head review
-`5633203211`; provider-free with no consumer mutation.
-g05.050 completed 2026-09-10: the immutable remote `v0.5.0` tag resolved
-every selected Swallowtail package to exact peel `582d01d6` in both the
-repository selector and an external remote-tag consumer, and the
-registered-only Claude SDK binding compiled with explicit `ReadWrite` on
-MSRV `1.95.0`, provider-free; documentation closeout merged through PR #313
-at `fa2e4b94` after independent exact-head review `5618788611`; the capsule
-now waits on the preserved Desktop g02.051 task resume.
-g05.049 completed 2026-09-10: annotated tag `v0.5.0` created and pushed at
-exact candidate `582d01d6` (tag object `c772c583`); pre-tag run 34464717829
-and tag-triggered run 34467974791 both green 11/11; documentation closeout
-merged through PR #312 at `e409f64` after independent exact-head review
-`5617729579`.
-g05.038 completed through PR #301 at merged head `8dc1f161`; its exact-head
-review and documentation validation passed, with no migration failure
-deferred.
-g05.035 is planned. Its shared registered-tool kernel and route bindings
-are delivered;
-Card 153's provider-free Claude SDK exact-tuple qualification is complete at
-merged head `b35e4c38`; Card 154 is complete with candidate merge
-`49c9e3b2`; g05.041 remains a planned persistent-permission producer seam and
-g05.042 the remaining-ACP-routes seam. The dependent Desktop
-exact-tree acceptance passed 2026-09-09 under Card 323 (evidence in g05.036);
-operator-authorized annotated tag `v0.4.4` was created and pushed 2026-09-09
-at the exact candidate (tag object `41da6c1a`) after CI run `34350208617`
-passed all 11 jobs; g05.036 is complete. No publication authority follows.
-g05.043 completed through PR #302 at merged head `8ae707d5`; its exact-head
-review and documentation validation passed, with no validation failure
-deferred.
-g05.044 is complete through PR #304 at merged head `eeb44e86`; its exact-head
-review and documentation validation passed, with no validation failure
-deferred.
-g05.034 stopped as an honest evidence stop: the v0.4.4 lane missed the
-all-green target (30-minute fail, one-hosted-run fail, no-rerun-to-green not clean; one-prepare and PR-gate pass); audit PR #305 merged at `94d8ef07` after exact-head review with no follow-ups. g05.031 stopped as an honest evidence stop: PR-gate median 2m43s pass, literal macOS pinned floor fail, every-PR test population pass, required-check set unproven; audit PR #306 merged at `3b4f5378` after exact-head review with no follow-ups. g05.033 completed the `v0.4.3` patch release; Card107's source
-consumer passed at `cbd4ddc8` and its tag capsule was relayed to Acowtancy.
-g05.030 completed the
-`v0.4.1` patch release carrying the Claude SDK editing session; cards 090-092
-are complete and `v0.4.1` is tagged at `c3cce750`. g05.029 stopped as an
-honest evidence stop: cards 080, 081, and 082 delivered the `v0.4.1`
-carrier, Bash mediation, and model/effort control; cards 083-086, 088,
-and 105 delivered (complete) and the qualified-ranges widening is held at
-the stopped 087 gate, but no consumer ever drove a multi-turn editing
-session; audit PR #307 merged at `55595c38` after exact-head review with
-no follow-ups. g05.027 completed
-the Antigravity `1.1.26` identity run as an evidence stop after the Kimi stop;
-card 071 is complete at a `1.1.17` ceiling and the follow-on claim stays gated
-with former card 072 retired. g05.009
-has all 767 proved rows; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete. g05.028 is complete: card 077 admitted compatible
-OpenCode HTTP `surface-19` and card 078 qualified that segment through
-`1.18.28`. g05.037 later raised the same `surface-19` through official
-`1.18.29`; unpublished `1.18.30` remains `UnverifiedNewer`. Tasks
-004, 005, 012, 013, 014, 015, 016, 018, 019, 020, 028, and 037 are completed standing
-currentness. Research 276 records Kimi Code local server `0.40.1` as the first
-post-release standing candidate; g05.026 compiles that family, retargeted on
-2026-09-04 to official `0.41.0` after latest moved mid-run, and card 062 is
-complete as an evidence stop; the follow-on claim stays gated with former card
-063 retired behind an admitted segment.
-g05.021 is complete; Research 281's fresh exact `b7f804b5` audit was
-accepted through PR 198 head `2f4923b8`, merged as `835fe9ff`. Its 49-route
-candidate boundary includes both current-only routes. Candidate `56f3913a`
-passed exact-SHA CI, the external source consumer, and one operator-authorized
-authenticated Nucleus Agent Chat smoke on attempt one. g05.022
-is completed: card 055 restored the `claude-agent.sdk` route on card 061's
-pre-effect reap reservations with one enclosing cleanup guardian and merged
-through PR 196 at `493f8194`. g05.023 is completed: card 057 landed the
-provider-neutral root-exit versus owned-tree-empty distinction, card 058
-completed the breaking caller-bounded close seam, and card 059 stopped at an
-evidence stop after four native counterexamples falsified the candidate
-primitives (setsid escape, descriptor EOF with a live child, released-group
-identity, and reparenting to launchd), and no sound owned-tree observation was
-found within the current ordinary host-local authority on macOS, so the host
-stays root-only and adds no unsafe; entitlement or system-extension mechanisms
-are out of scope, not proved nonexistent. The operator accepted bounded
-root-only degraded cleanup on ordinary macOS: only `OwnedTreeEmpty` supports
-`Clean`; confirmed root completion is `Degraded`; unconfirmed root or an
-observed survivor is `Failed`. g05.024 then closes the narrower
-exact-head ownership gap: an unfinished joined task can transfer back to its
-exact selected host and scope for autonomous reap without blocking the caller
-or implying joined cleanup. PR 188 nevertheless merged despite rejected
-exact-head review, and PR 193 withdrew its route pending provider-neutral
-shared-runtime reservation/reapable-task authority. g05.025
-granted that authority before operation effects, made later valid
-exact-host/scope handoff immune to shutdown and capacity races, and proved the
-real local-host lifecycle without changing ordinary task ownership; it merged at
-`53153af1`. Card 055 then restored the route on that seam: reap authority is
-reserved before every effect, one enclosing guardian owns the pump, process, and
-both leases through the ordered cleanup continuation, and the caller deadline
-transfers that guardian rather than the pump; it merged through PR 196 at
-`493f8194`.
-Contract 019 descendant-tree join and Contract 029 artifact-only authority are
-promoted. Card 056 and card 058 are complete; card 059 is an evidence stop;
-card 060 is complete; card 061 is complete and merged; card 055 is complete and
-merged through PR 196 at `493f8194`. The
-`v0.4.0` release lane completed cards 050-052. PR 201 exact
-head `10d9b7a0` merged as immutable candidate `56f3913a`, and canonical
-workflow-dispatch run 33853812785 passed all six jobs at that exact SHA. Card
-052's source consumer and authenticated Nucleus Agent Chat smoke passed against
-that SHA. The operator authorized and executed the annotated `v0.4.0` tag and
-push on 2026-09-04; tag-push CI run 33870017023 passed at the same SHA. The
-feature/currentness freeze is lifted. Publication stays unauthorized.
-g05.017 is
-completed operator A2 with card 043. g05.006 is completed
-credential-free repair. g05.008 is completed contract promotion.
-g05.010 is completed contract promotion with implementation unplanned.
-g05.001 is completed: it closed Research 255, the
-operator decision packet, Contracts 058-059, and first-route dispositions.
-g05.002 stopped after Research 256's honest empty Qoder roster; Qoder binding
-and acceptance are preserved as g05.039 and g05.040 behind that disposition.
-containment evidence but no longer imposes a hard-containment product gate:
-the operator clarified that watchers supervise ordinary host-managed processes
-and publish lifecycle rather than sandbox hostile descendants. Card 009's
-registry repair is complete. Card 014 landed through PR 118, restoring default
-host-process execution through the owned process handle, process-group cleanup,
-and joined supervisor. Research 260 and card 015 landed through PR 119 at
-`c36e11ad`. The operator selected the minimal HTTP boundary on 2026-08-30.
-Contract 060 is active and card 016 landed the provider-neutral bridge core.
-The post-bridge orchestrator checkpoint removed a circular gate between cards
-010 and 011. g05.005 standing currentness is complete: Research 261 and cards
-017-018 qualify Claude Code headless and response-only through official
-`2.1.251` without moving the generation pointer. The post-merge reassessment
-closed card 010 for exact `2.1.251` credential-free binding. Card 011 consumed
-one exact Haiku live turn, but the host registry never observed a watcher. The
-first route claim stays withheld and prototype head `49f2692f` remains
-unmerged. The operator selected credential-free repair before another provider
-authorization. g05.006 card 019 completed lossless watcher lifecycle
-activity, a direct active-Stop and same-session proof oracle, and panic-safe
-live workspace cleanup, then landed through PR 126 at `c8691e84`. It did not
-run a provider turn or publish a watcher claim. g05.004 standing currentness
-is complete: Research 258 and cards 012-013 qualify Qwen headless through
-official `0.22.3`. No second provider prompt was authorized through card 011.
-The operator authorized g05.007 card 020 for one fresh exact Claude Code
-`2.1.251` turn using exact `claude-haiku-4-5`, with no fallback or rerun. Its
-first worker stopped before contact because the Linux host could not satisfy a
-Darwin-only digest envelope; PR 127 remains unmerged. The operator selected
-the `linux-x86_64` host on 2026-08-31 and authorized a bounded per-platform
-probe repair before the same one-shot turn. The lock and API-tool validation
-gaps were cleared. Card 020 repaired digest selection at `adb04f17`, then
-consumed the turn, and its honest evidence stop merged through PR 128 at
-`528a31c9`. The ordered recorder kept only `JoinedZero`. Watcher claims stay
-unpublished. The operator accepted the post-card-020 recommendation. Spec 012
-promoted the reviewed consumer route-feature and control census into one
-dedicated composing-contract lane. g05.008 card 021 completed that lane:
-Contract 061 is active, Spec 012 is archived, and the contract front door,
-index, and summaries agree. Contract 061 composes Contracts 037/047/057 without
-amending them, keeps the three projection views and per-turn truth distinct,
-uses source dimensions plus bounded safe reasons instead of a closed
-availability taxonomy, and names four fail-closed points. At that checkpoint,
-implementation was unplanned. The post-contract reassessment classified g05
-as `strict-paused` with no ready milestone or card and recommended a
-planning-only Contract 061
-realization-readiness inventory to settle source ownership, dependency
-direction, tranche, coverage, and bound questions before any public API or
-implementation card. The operator selected that planning-only inventory on
-2026-08-31. The inventory is drafted and returns material package, API, bound,
-coverage, and tranche forks to the operator. The operator accepted all four
-recommended option 1 decisions. g05.009 now compiles the realization runway;
-its Batch 9.1 shared runtime surface, fixed maxima, failure behavior,
-replacement, fixtures, validation, and stops are closed. The operator approved
-an additive adapter-owned prepared-open result that preserves exact
-`session.updated` truth while retaining the existing generic open method.
-Batch 9.1 names the exact route-local surface and passes the readiness rubric.
-Card 022 delivered one four-package 51-row tranche and stopped before package
-expansion. Its worker revised that tranche against the accepted PR 131 review
-packet: distinct Realtime prepared and active-observation sources,
-consumer-mediated per-turn authority, exact access dimensions, fail-closed
-cross-access agreement, construction-time withholding of two out-of-tranche
-Codex feature rows, the restored 391/7/42/342 god-file baseline, and exact
-source-identity admission. Exact head `b632d9e6` passed the orchestrator
-two-route checkpoint and five green checks; PR 131 merged at `fdd2b018`. Both
-ledgers claimed nothing for the remaining 716 rows. The g05.009 Batch 9.4
-planning checkpoint assigned those rows exactly once to 12 bounded
-complete-package candidates. Candidate A alone passed the readiness rubric.
-Card 023 completed its 35 `codex.exec` plus 24 `openai.background` rows through
-PR 133 at `58be7122`; exact head `fbb4b118` passed review and all five checks.
-The post-card-023 current-main reassessment corrected the Codex output-token
-census row as descriptor-only negative coverage and promoted candidate H
-alone. Card 024 completed exact 9-row `deepagents.acp`, 9-row `kiro.acp`,
-8-row `qoder.headless`, and 12-row `zcode.app-server` package completion
-through PR 138 at `8b295e6b`. Candidates B-G and I-L initially remained
-without implementation authority. The four-track reframe now prioritizes
-acknowledgement candidates D/F/G, per-turn candidates B/K/L, then breadth
-candidates C/E/I/J. Planning-only card 030 audited D, F, and G on current
-`main` and promoted none: `claude-agent.acp`, `kimi-code.acp`, and `cline.acp`
-each validate their provider confirmation and discard it, so rubric item 2 has
-no active-observation facade to name and the census `rejected` state has no
-retained value. Candidate D is the narrowest unblock, so its gate is scoped to
-`claude-agent.acp` alone. The operator accepted adapter-local exact effective
-and rejected retention plus one additive adapter-owned open-with-projection
-result preserving the existing open method. The exact public surface, source
-split, state transitions, unknown-failure boundary, shared-open lifecycle, and
-provider-free oracle are closed. Card 031 completed the exact 30/12/11-row
-Claude Agent package remainder through PR 141 at `5d1f173a`. Batch 9.4 now has
-201 proved rows and 566 remaining before candidate G. F remains coupled across
-three Kimi post-open families. The operator approved G's narrower Cline
-route-local baseline: exact effective/rejected Plan
-acknowledgement plus exact bounded negotiated model options through one
-additive adapter-owned projected-open seam preserving the existing open
-method. The gate fixes exact names, signatures, state, source identity,
-lifecycle, failure preservation, and provider-free oracles. Card 032 completed
-candidate G through PR 144 at `18a6907e`. Contract 061 then had 249 proved rows
-and 518 remaining. Card 033 bound that result to the merged source — both
-commits resolve to one tree — repartitioned the census independently, and
-reassessed candidate F. F stops. Its 89 rows split 60 selection-summary, 22
-session-start-only, and 7 post-open, four of which are descriptor-only
-activity. The other three sit on `kimi-code.acp`: both confirmations are
-discarded, the reasoning value domain admits foreign catalogue rows so no exact
-rejected or effective effort survives, the already-retained negotiated model
-options have no publishing seam, and the provider-session catalogue observes
-through a separate prepared operation. The first-round Kimi route-local
-repairs remain evidence, but the gate stops on the provider-operation
-observation decision. It keeps `EffectiveReasoningSetup` unchanged, retains
-exact reasoning and Plan values adapter-locally behind one bounded 128-byte
-Kimi provider value, preserves the projected-open evidence and source split,
-and records the profile-conditional attachment controls and platform catalogue
-model-selection correction. It cannot add a projected catalogue seam:
-`list_sessions` opens no session, while `ActiveSessionObservation`,
-`PostOpenObservationOnly`, and `ConsumerRouteActiveSessionState` are each
-post-open session semantics. The compound acknowledgement item retains its
-unresolved generic half-to-state and terminal not-observed corrections; no
-replacement shape is selected. The corrected interim 89-row ledger remains 74
-emitted, 14 withheld, and 1 undecided as reassessment evidence only. Candidate F is not promoted,
-card 034 is complete and folded into g05.009's evidence ledger; the Kimi follow-on scope stays held at the task-owned gate behind the provider-operation observation
-public-baseline decision. On 2026-09-04 the operator deferred that decision
-behind the candidate C audit and compiled planning-only audits 064-067 for
-breadth candidates C, E, I, and J; cards 064 and 067 are complete and
-promotable, card 066 stopped on the shared observation decision, cards 068 and
-069 are merged, and card 065 remains
-active. No Kimi gate reopened.
-Contract 062 and
-completed g05.010 add the missing bounded global/project/harness
-skill-inventory contract without weakening Contract 058 effective truth;
-Spec 013 is archived and realization remains unplanned. g05.011 card 026
-rejected Claude watcher MCP suppression by `--tools`; card 029 then rejected
-every exact `2.1.251` credential-preserving isolation shape. PR 135 merged the
-provider-free evidence stop without a production behavior change. Separating
-watcher instruction delivery from ambient skill discovery now needs a new
-planning lane before any live attempt. g05.012
-reconstructed PR 130 as two identity-before-claim commits,
-recorded the current signed host `0.150.1` binary, and qualified Codex exec and
-app-server through official `0.151.0` while retaining feature-specific exact
-sets through `0.149.1`. Cards 027-028 and milestone 012 are complete. g05.013
-then qualified official `0.152.0` through cards 035-036. Card 025
-promoted Contract 062 without Rust. Cards 026 and 029 closed without a
-production behavior change. Card 030 closed as an evidence stop without Rust or
-a promoted candidate; the later accepted `claude-agent.acp` gate led to card
-031, now complete through PR 141. The accepted Cline route-local gate promoted
-candidate G as card 032; PR 144 completed it at `18a6907e`. Card 033 then
-closed as an evidence stop without promoting candidate F or changing Rust, and
-the `kimi-code.acp` operator gate remains held at g05.009's task-owned gate (former card 034 complete and folded). g05.013 cards 035-036 qualify Codex exec and
-app-server through official `0.152.0`. Research 265 selected Claude Code
-`2.1.252`. g05.014 cards 037-038 qualify both Claude Code axes through official
-`2.1.252` while keeping watcher exact `2.1.251`. Research 267 selected Pi
-`0.84.4` as the next one-family Upgrade Workflow. The checkpoint changes no
-claim. g05.015 cards 039-040 qualify Pi RPC through official `0.84.4` while
-keeping sidecar exact `0.84.2`. Research 269 selected Kimi Code installed
-harness `0.39.1` as the next one-family Upgrade Workflow. The checkpoint
-changes no claim. g05.016 cards 041-042 then corrected the headless
-agent-core-v2 routing boundary to `0.33.0` and qualified headless v2 through
-official `0.39.1`, while the `kimi-code.acp` ceiling stays `0.38.0` with exact
-`0.39.0` and `0.39.1` excluded for an uncontained process-authority delta.
-g05.017 compiled that direction. The operator selected **A2**: indefinite
-`QualifiedOnly` cap at `0.38.0` with one artifact-level upstream reopen
-trigger. Card 043 moved `kimi-code.acp` from `AllowUnverified` to
-`QualifiedOnly`, kept exact `0.39.0` and `0.39.1` excluded as recorded
-evidence, and left local-server `AllowUnverified`. Every point above `0.38.0`
-fails closed. The trigger authorizes a fresh identity/claim decision, never
-automatic admission and never restoration of `AllowUnverified` by itself.
-Research 271 selected Claude Agent ACP `0.72.0` as the next one-family
-Upgrade Workflow. The checkpoint changes no claim. Operator restart after
-official latest moved to `0.73.0`. Research 272 and g05.018 cards 044-045
-then qualify official `0.73.0` as a compatible extension of v7. Research 271's
-remaining family is Claude Code `2.1.257`. g05.019 cards 046-047 then
-qualify both Claude Code axes through official `2.1.257` while keeping watcher
-exact `2.1.251`. Coverage stood at 249/518 at that checkpoint. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
-overlapping watcher worker, orchestrator-side live selector, container
-backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
-or parked Bedrock work is authorized. Card 067 closed candidate J as promotable on 2026-09-04
-(PR 206 merged as `8cbf6064`); card 068 completed its exact 35-row llama.cpp
-and Ollama tranche (PR 208 merged as `c5cca28d`). Card 064 closed candidate C as promotable (PR
-204 merged as `1903f715`) and found no catalogue route needs provider-operation
-observation; card 069 completed its exact 94-row Antigravity,
-Bedrock, and Cursor tranche (PR 209 merged as `d2d8ae8b`). Card 066 stopped candidate I (PR 207 merged as
-`85221307`) on the same provider-operation observation gap as Kimi. With three
-carrier routes, the operator chose on 2026-09-04 to compile one shared
-provider-operation observation gate; card 070 is complete as planning evidence,
-Chatterbox promoted it into Contract 061 on 2026-09-04, and runtime baseline
-card 073 is merged. Candidate I is promoted as card 074 and Candidate E Path A
-as card 075. Cards 074 and 075 brought the census to 481 proved rows. Card 076 settled the Kimi compound acknowledgement design and Card 079 realized the shared baseline; card 034 is complete and folded, and the Kimi follow-on scope awaits readiness at g05.009's task-owned gate. Research 284 compiled g05.028 card 077 for OpenCode HTTP
-`1.18.28` identity-first currentness; g05.037 later qualified official `1.18.29`.
+g05 closed at 82 numbered tasks after the operator-authorized 2026-09-17
+rollover: 77 terminal tasks — including the honest evidence stops at 002,
+003, 007, 011, 029, 031, and 034 and the typed stops recorded inside terminal
+lifecycle records (026, 027, 069, 070, 071, and the split headless/ACP
+claims) — plus five planned tasks carried forward to g06: g05.035 → g06.001,
+g05.039 → g06.002, g05.040 → g06.003, g05.041 → g06.004, and g05.042 →
+g06.005. g05 promoted Contracts 058-063, closed all 767 rows of the Contract
+061 consumer projection census, delivered the watcher lifecycle kernel, ran
+the source-only `v0.4.0`-`v0.5.1` tag lane, and completed the nineteen-family
+Research 308 currentness campaign. Terminal task records live in the
+compacted g05 lifecycle receipt; semantic history is in
+[archive/g05.md](archive/g05.md) and `docs/logs/`.
 
 ## Rollover Rule
 
-g04 passed the normal 30-50 roadmap range and closed after explicit operator
-authority. g05 is the sole active generation. Several independent track cards
-may be ready, but the front door keeps one canonical serial Next Task. Later
-rollover still requires explicit operator authority.
+g05 passed the normal 30-50 roadmap range and closed after explicit operator
+authority; g06 opened from its carried-forward set. g06 is the sole active
+generation. Several independent track cards may be ready, but the front door
+keeps one canonical serial Next Task. Later rollover still requires explicit
+operator authority.
 
 
 ## Next Task

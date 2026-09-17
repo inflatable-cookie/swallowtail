@@ -402,7 +402,8 @@ producer inputs and evidence gates, not authority to implement or release.
 - `docs/architecture/repository-authority-map.md`
 - new contracts and amendments named above
 - Contract 061 projection vocabulary and adapter rows
-- `docs/roadmaps/g05/035-shared-harness-capability-and-producer-boundary.md`
+- `docs/roadmaps/g06/001-shared-harness-capability-and-producer-boundary.md`
+  (carried from g05.035 by the g05.084 rollover)
 - route guides, matrices, release notes, and consumer handoffs only after
   implementation and evidence
 

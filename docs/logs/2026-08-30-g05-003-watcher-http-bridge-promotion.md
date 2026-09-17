@@ -29,5 +29,5 @@ The first worker returns one PR. No auto-continuation is authorized.
 
 - [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md)
 - [Research 260](../research/260-claude-code-watcher-bridge-transport.md)
-- [g05.003](../roadmaps/g05/003-operation-scoped-watcher-proof.md)
-- [card 016](../roadmaps/g05/003-operation-scoped-watcher-proof.md)
+- [g05.003](../roadmaps/archive/g05.md)
+- [card 016](../roadmaps/archive/g05.md)

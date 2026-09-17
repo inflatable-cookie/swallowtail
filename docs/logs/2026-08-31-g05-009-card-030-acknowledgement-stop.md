@@ -74,8 +74,8 @@ blocker to force a selection.
 
 ## Authority
 
-- [card 030](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
-- [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
+- [card 030](../roadmaps/archive/g05.md)
+- [g05.009](../roadmaps/archive/g05.md)
 - [Batch 9.4 package expansion](2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Batch 9.1 public baseline gate](2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)

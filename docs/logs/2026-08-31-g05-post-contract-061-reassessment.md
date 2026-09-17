@@ -80,7 +80,7 @@ readiness rubric without invented architecture or scope.
 ## Authority
 
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
-- [g05 roadmap](../roadmaps/g05/README.md)
-- [g05.008 closeout](../roadmaps/g05/008-consumer-route-feature-and-control-projection.md)
-- [card 021](../roadmaps/g05/008-consumer-route-feature-and-control-projection.md)
+- [g05 roadmap](../roadmaps/archive/g05.md)
+- [g05.008 closeout](../roadmaps/archive/g05.md)
+- [card 021](../roadmaps/archive/g05.md)
 - [consumer projection census synthesis](2026-08-30-consumer-route-feature-and-option-projection.md)

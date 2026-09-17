@@ -7,7 +7,7 @@ Contracts: 029, 043
 
 ## Result
 
-The newly authorized exact-`1.54.0` gate ran once with the canonical free
+The newly authorized exact-`1.54.0` gate ran once with the selected free
 model `meituan/LongCat-2.0:free` and the stored local Command Code account.
 The executable was checked immediately before provider use: `command-code`
 reported `1.54.0`, and `dist/index.mjs` retained the frozen SHA-256
@@ -21,14 +21,15 @@ unproven on `1.54.0`; the required two-turn private exact-id continuation was
 not started. The exact model string is part of this observation and no other
 model was tried.
 
-The prior exact-`1.54.0` credit-failure observation remains comparison evidence
-only. Research 116 and 118 remain immutable exact-`1.15.1` records. The
+This record makes no new exact-`1.54.0` credit-failure claim. Research 116 and
+118 remain immutable exact-`1.15.1` records. The
 `command-code.npm` claim stays one exact `QualifiedOnly` point at `1.54.0`,
 and the `1.54.2` availability remains an observation rather than a claim
 change.
 
-No retry, model substitution, executable update, login, catalogue operation,
-or second provider attempt ran. No raw provider stream, account identifier,
+During this authorized gate, no retry, model substitution, or executable update
+ran; no login, catalogue operation, or second provider attempt ran. No raw
+provider stream, account identifier,
 prompt, session id, tool body, or private path is retained.
 
 ## Current State

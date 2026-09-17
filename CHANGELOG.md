@@ -6,29 +6,22 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
-- keep the Goose `goose.acp` claim at the exact `1.46.0` `QualifiedOnly`
-  point. Research 319 froze official GitHub `1.46.0` plus all four published
-  stable successors through `1.50.0` as exact tagged source trees with a
-  26-file mapped-module ledger, and found that provider-authentication
-  failure stops being generic text plus `end_turn` at the exact hop
-  `1.46.0..1.47.0`: `session/new` agent-creation failure with a chained ACP
-  `AuthRequired` maps to `auth_required` and a dedicated
-  `ProviderError::Authentication` arm fails the `session/prompt` RPC with
-  `auth_required`. That is a selected provider-failure mapping change, so no
-  `1.47.0`-or-later exact point can be claimed before the route's
-  failure-binding policy is ruled on. Research 148's `1.46.0` decoder
-  specimens and Research 250/253's empty builtin/mode dispositions stand, and
-  advertised-only `session/delete`, recipe scopes, and thinking-effort menus
-  stay independently gated.
-- keep the Qoder `qoder.headless` claim at the exact `1.1.25` `QualifiedOnly`
-  point. Research 318 froze official npm `1.1.25` plus all 27 published stable
-  successors through `1.1.52` with a complete shipped-tree ledger, and found
-  that the route's own historical inert `--max-turns 8` argv becomes the
-  AgentLoop turn ceiling at the exact hop `1.1.29..1.1.30`. That is a selected
-  run-lifecycle and bounded-limit failure change, so no newer exact point can
-  be claimed before the route's turn-binding policy is ruled on. Research 151's
-  `1.1.25` decoder specimens stand and Research 256's empty skill-visibility
-  disposition stays independent.
+- rebind the Goose `goose.acp` claim to exact `1.50.1` under the new
+  `goose.acp.stdio-v2.auth-required` behavior revision. Research 328
+  re-probed official GitHub `v1.50.1`, classified the `1.50.0..1.50.1` MCP
+  protocol-version default change as unmapped on the selected route, and
+  carried the typed provider-authentication binding on both `session/new` and
+  `session/prompt` into the adapter diagnostic
+  `swallowtail.goose.acp.auth_required`. Research 319's historical stop and
+  the independently gated builtin, mode, lifecycle, and effort surfaces stand.
+- advance the Qoder `qoder.headless` claim to one exact `1.1.54`
+  `QualifiedOnly` point on the new adapter-private
+  `qoder.headless.stdio-stream-json-v2` behavior revision. Research 328 froze
+  official npm `1.1.54` after the `1.1.52` stop and recorded the deliberate
+  adapter-owned `--max-turns 8` AgentLoop ceiling plus its
+  `error_max_turns` provider-failure shape. The historical `1.1.25` decoder
+  specimens and Research 256's independent empty skill-visibility disposition
+  remain unchanged.
 
 ### Changed
 - extend the qualified Oh My Pi RPC package window from

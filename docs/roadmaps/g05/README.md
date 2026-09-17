@@ -29,7 +29,7 @@ enforcement.
 | Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | g05.008; g05.009 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | g05.010 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | g05.011 |
-| Keep production route versions current one family at a time. | campaign complete; all nineteen Research 308 families actioned through Research 327 and g05.079; Goose keeps exact `1.46.0` and Qoder keeps exact `1.1.25` with their provider-auth and turn-binding rulings now recorded in the standing lane, so only their reopen lanes remain to compile; Kiro advanced to exact `2.21.4`; Mistral Vibe advanced to exact `2.25.4` with an adapter-private `--legacy-harness` argv pin; Deep Agents advanced to exact `0.1.30` with the stdio wire unchanged; Antigravity advanced the catalogue claim to `1.2.2` and stopped headless at the `1.1.22` provider-retry stop under the release-notes authority ruling; Gemini advanced both the ACP and headless claims to maintained `0.51.0..=0.59.0` with the selected mapped sources byte-identical; Kimi installed headless advanced to maintained `0.33.0..=0.43.0` while ACP held the A2 `0.38.0` cap; Kimi local server extended the safe prefix to maintained `0.35.0..=0.39.1` and made uncontained `0.40.0..=0.43.0` fail closed under `QualifiedOnly`; Command Code's separate live requalification remains named in g05.069; Oh My Pi advanced the retained `17.x` segment to `17.2.9..=17.4.2` and admitted `18.0.0..=18.1.22` on a distinct private behavior revision | Contract 029; Research 217 and 308-327; Tom's 2026-09-14 and 2026-09-15 directions | g05.079 |
+| Keep production route versions current one family at a time. | campaign complete; all nineteen Research 308 families actioned through Research 328 and g05.081; Goose binds exact `1.50.1` on the `goose.acp.stdio-v2.auth-required` revision, and Qoder binds exact `1.1.54` on `qoder.headless.stdio-stream-json-v2` with its adapter-owned eight-turn bound; Kiro advanced to exact `2.21.4`; Mistral Vibe advanced to exact `2.25.4` with an adapter-private `--legacy-harness` argv pin; Deep Agents advanced to exact `0.1.30` with the stdio wire unchanged; Antigravity advanced the catalogue claim to `1.2.2` and stopped headless at the `1.1.22` provider-retry stop under the release-notes authority ruling; Gemini advanced both the ACP and headless claims to maintained `0.51.0..=0.59.0` with the selected mapped sources byte-identical; Kimi installed headless advanced to maintained `0.33.0..=0.43.0` while ACP held the A2 `0.38.0` cap; Kimi local server extended the safe prefix to maintained `0.35.0..=0.39.1` and made uncontained `0.40.0..=0.43.0` fail closed under `QualifiedOnly`; Command Code's separate live requalification remains named in g05.069; Oh My Pi advanced the retained `17.x` segment to `17.2.9..=17.4.2` and admitted `18.0.0..=18.1.22` on a distinct private behavior revision | Contract 029; Research 217 and 308-328; Tom's 2026-09-14, 2026-09-15, and 2026-09-17 directions | g05.081 |
 | Expose the installed Grok CLI's truthful pre-session model catalogue without widening ACP execution authority. | completed; PR #316 merged at `3e9f29e7` after independent exact-head review `5649291554`; authenticated non-inference metadata boundary, shipped bullet grammar, accepted final capsule | Contracts 020 and 047; Desktop g02.086 producer intake; installed Grok `1.0.25`; PR #315 | g05.053 |
 | Prepare the Desktop-qualified source as patch `v0.5.1` without changing package source or crossing the exact-SHA tag gate. | completed; PR #317 merged candidate `755a2669` at `e9140b46` after independent exact-head review `5649975685`; `crates/` tree `186f3ba4` and Grok tree `1a6f777f` unchanged; tag withheld for Tom's exact-SHA authorization | Contract 036; g05.051; g05.053; Desktop g02.089 Phase A | g05.054 |
 | Create and push the exact `v0.5.1` annotated source tag without publishing another release object. | completed; annotated `v0.5.1` tagged and pushed at `e9140b46` 2026-09-13 (tag object `97a6933a`); pre-tag run 34731113171 and tag-triggered run 34743711387 both green 11/11; documentation closeout merged through PR #318 at `b0c800e0` after independent exact-head review `5651817371`; source-only | Contract 036; g05.054; run 34731113171; 2026-09-13 operator authorization | g05.055 |
@@ -69,8 +69,8 @@ in [## Tasks](#tasks) below.
 - [g05.068 Command Code 1.54.0 Useful Newer](./068-command-code-1-54-0-useful-newer.md) — completed; PR #330 merged at `f99938d7`; lifecycle closeout `8eef8c9c`; review `5667459060`; Research 317; exact `QualifiedOnly` point advanced to `1.54.0`; live evidence stays version-bound
 - [g05.069 Command Code 1.54.0 Live Requalification](./069-command-code-1-54-0-live-requalification.md) — stopped; the exact 1.54.0 gate on `meituan/LongCat-2.0:free` returned `swallowtail.command_code.headless.malformed_stream`, so live-derived feature and activity evidence remains bound to 1.15.1
 - [g05.066 Claude Agent SDK 0.3.270 Registered-Tool Live Requalification](./066-claude-agent-sdk-0-3-270-registered-tool-live-requalification.md) — ready; compiled under Tom's 2026-09-17 re-confirmation of the live gate on the rebound tuple
-- [g05.080 Qoder 1.1.52 Turn-Bound Reopen](./080-qoder-1-1-52-turn-bound-reopen.md) — ready; the recorded turn-binding ruling requires a deliberate adapter-owned `--max-turns` value and the `error_max_turns` shape before the exact point moves
-- [g05.081 Goose 1.50.0 Failure-Binding Reopen](./081-goose-1-50-0-failure-binding-reopen.md) — ready; the recorded failure-binding ruling admits the typed provider-auth arm on a new behavior revision
+- [g05.080 Qoder 1.1.52 Turn-Bound Reopen](./080-qoder-1-1-52-turn-bound-reopen.md) — completed; Research 328 froze official `1.1.54`, fixed the adapter-owned eight-turn AgentLoop ceiling, recorded the `error_max_turns` provider-failure shape, and advanced the exact `QualifiedOnly` point on behavior revision `qoder.headless.stdio-stream-json-v2`
+- [g05.081 Goose 1.50.1 Failure-Binding Reopen](./081-goose-1-50-0-failure-binding-reopen.md) — implemented; exact `1.50.1` is qualified on the new `goose.acp.stdio-v2.auth-required` behavior revision, with typed `auth_required` fixtures for `session/new` and `session/prompt`
 - [g05.084 Roll Over To g06 And Compact g05](./084-roll-over-to-g06-and-compact-g05.md) — ready; serial after the four live lanes; closes g05, opens g06, and compacts under the installed lifecycle procedure
 - [g05.035 Shared Harness Capability And Producer Boundary](./035-shared-harness-capability-and-producer-boundary.md) — planned; operator-confirmed producer proposal awaits independent review and canonical contract promotion; no implementation authority
 - [g05.039 Qoder Effective Skill Visibility Binding](./039-qoder-effective-skill-visibility-binding.md) — planned; gated on a non-empty Research 256 deliver-now disposition
@@ -117,9 +117,10 @@ live evidence version-bound, and included the scoped rustls security repair;
 g05.070 stopped as a typed identity stop: Research 318 froze the exact `1.1.25`
 Qoder baseline and all 27 published stable successors through `1.1.52`, found
 that the selected route's historical inert `--max-turns 8` argv becomes the
-AgentLoop turn ceiling at `1.1.29..1.1.30`, and kept the exact `QualifiedOnly`
-point at `1.1.25` for the turn-binding ruling now recorded in the standing
-lane;
+AgentLoop turn ceiling at `1.1.29..1.1.30`, and handed the turn-binding ruling
+to g05.080. g05.080 is complete: Research 328 froze official `1.1.54`, the
+adapter-owned bound is fixed at `8`, and the exact `QualifiedOnly` point moved
+to `1.1.54` on behavior revision `qoder.headless.stdio-stream-json-v2`;
 g05.075 is complete: Research 323 froze official Antigravity identity for
 `1.1.27..=1.2.2` with both platform digests and the reproduced `1.1.26`
 boundary, and under Tom's 2026-09-15 release-notes authority ruling split
@@ -544,8 +545,8 @@ identity.
 - [068 Command Code 1.54.0 Useful Newer](./068-command-code-1-54-0-useful-newer.md) — completed; PR #330 merged at `f99938d7`; lifecycle closeout `8eef8c9c`; review `5667459060`; Research 317; exact point advanced to `1.54.0`; old live evidence remains version-bound; scoped RUSTSEC-2026-0285 repair green
 - [067 Grok Build 1.0.30 Catalogue Useful Newer](./067-grok-build-1-0-30-catalogue-useful-newer.md) — completed; PR #329 merged at `3a519b09`; lifecycle closeout `f40d2a3f`; review `5666473407`; Research 316; exact `QualifiedOnly` catalogue point advanced to `1.0.30`; ACP window and registered-tool courier unchanged
 - [066 Claude Agent SDK 0.3.270 Registered-Tool Live Requalification](./066-claude-agent-sdk-0-3-270-registered-tool-live-requalification.md) — ready; compiled under Tom's 2026-09-17 re-confirmation of the live gate on the rebound tuple
-- [080 Qoder 1.1.52 Turn-Bound Reopen](./080-qoder-1-1-52-turn-bound-reopen.md) — ready; declares the adapter-owned turn bound before the exact point moves
-- [081 Goose 1.50.0 Failure-Binding Reopen](./081-goose-1-50-0-failure-binding-reopen.md) — ready; admits the typed provider-auth arm on a new behavior revision
+- [080 Qoder 1.1.52 Turn-Bound Reopen](./080-qoder-1-1-52-turn-bound-reopen.md) — completed; Research 328 froze official `1.1.54`, fixed the adapter-owned eight-turn AgentLoop ceiling, recorded the `error_max_turns` provider-failure shape, and advanced the exact `QualifiedOnly` point on behavior revision `qoder.headless.stdio-stream-json-v2`
+- [081 Goose 1.50.1 Failure-Binding Reopen](./081-goose-1-50-0-failure-binding-reopen.md) — implemented; exact `1.50.1` binds the typed provider-auth arm on the new behavior revision
 - [084 Roll Over To g06 And Compact g05](./084-roll-over-to-g06-and-compact-g05.md) — ready; serial after the four live lanes; closes g05 and opens g06
 - [065 Claude Agent SDK 0.3.270 Tuple Useful Newer](./065-claude-agent-sdk-0-3-270-tuple-useful-newer.md) — completed; PR #328 merged at `0c4f86ed`; lifecycle closeout `96804098`; review `5665982546`; Research 315; exact tuple rebound to `0.3.270`/`2.1.270`; Research 301 stays bound to `0.3.259`/`2.1.259` with `live_tuple_not_compiled` gating
 - [064 Grok Build ACP 1.0.30 Useful Newer](./064-grok-build-acp-1-0-30-useful-newer.md) — completed; PR #327 merged at `578acda9`; lifecycle closeout `90d9dfc4`; review `5664881281`; Research 314; ACP window extended `1.0.4..=1.0.30`; exact `1.0.25` catalogue claim and `1.0.4`/`1.0.5` registered-tool courier unchanged
@@ -616,7 +617,7 @@ identity.
 - [005 Claude Code 2.1.251 Useful Newer](./005-claude-code-2-1-251-useful-newer.md) — completed (standing currentness), cards 017-018
 - [004 Qwen Headless 0.22.3 Useful Newer](./004-qwen-headless-0-22-3-useful-newer.md) — completed (standing currentness), cards 012-013
 - [001 Harness Skill And Watcher Surface Inventory](./001-harness-skill-and-watcher-surface-inventory.md) — completed; cards 001-003 closed
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:b179f44ef54fb69eff1d70e11da1d43bb717327ab01e318cca6d5b42e33dd23f -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:38ceb6e42be787281cbf4aad7cfdf72fd638eea9ab70c750665cd78377ad2072 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g05 | open | planning_required |
@@ -632,6 +633,7 @@ identity.
 | g05.063 | complete | none | 8 | sha256:c2b7b2f48ef4e8089a881aa3b9eee7192d736c58beb3f30955d658c0280b3a3d |
 | g05.064 | complete | none | 8 | sha256:2f85f11601971f4288748d461c2992b2723579d8f0337a4ecc71f8f9f7a43863 |
 | g05.065 | complete | none | 8 | sha256:d05090070bc3b985089c32299fa5ad306731815e01046a72319abc04734329e1 |
+| g05.066 | complete | none | 8 | sha256:d31adb23fc5bfc9857b02706d3b7e5e408160f45ac4a23c0a0b7f3979c8cf808 |
 | g05.067 | complete | none | 8 | sha256:ba28e7454fff7eb5a8cd81214e02dc54e7ecc83ee8dc2dda5ea3aa1a14993ecd |
 | g05.068 | complete | none | 8 | sha256:d1d741fb17688f7934629d5de8d98bfdd9c24092ce67b222891b6eef16b217b4 |
 | g05.070 | complete | none | 8 | sha256:5bdd5c79c117f6439c7f63373850d2d20f25f5d991c5c0989c9e98ec700c1946 |
@@ -644,4 +646,6 @@ identity.
 | g05.077 | complete | none | 8 | sha256:5a8821d0ed913ccf1b0a57060f3c790cdc92880c6e9b3406f5a8f947567170a0 |
 | g05.078 | complete | none | 8 | sha256:0290231269ee25ff6c9d39c4a54c0fece5f8aecbfa4a2316e09e420db2f57ac1 |
 | g05.079 | complete | none | 8 | sha256:1d44609db92ba01f2312a46873dbc6b57faddc4b276537085a922645c0d04090 |
+| g05.080 | complete | none | 8 | sha256:c6e30892927468263ba8c871c00df77cd77c9e5949de6f0b8ca83147d2dcc1d2 |
+| g05.081 | complete | none | 8 | sha256:32dcdfcb3b98b7898541b18da2436164af08dc27b29adf5e11439042a7b3d382 |
 <!-- northstar:lifecycle:end -->

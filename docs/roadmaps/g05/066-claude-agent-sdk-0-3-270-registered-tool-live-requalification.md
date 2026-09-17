@@ -1,6 +1,7 @@
 # g05.066 Claude Agent SDK 0.3.270 Registered-Tool Live Requalification
 
-Status: ready; separately authorized live gate, re-confirmed by Tom on 2026-09-17
+Status: ready; typed setup stop recorded; separately authorized live gate
+remains unqualified
 Owner: Tom
 Created: 2026-09-14
 Depends on: Contract 029; Contract 061; Contract 063; Research 301; Research 315; g05.065
@@ -74,17 +75,24 @@ authorized gate.
 
 ## Acceptance
 
-- [ ] the live gate ran on the exact rebound tuple or a typed stop is recorded
-- [ ] the frozen live point moves only on acceptance
-- [ ] both matrix cells agree with the projected truth
+- [x] the live gate returned the typed setup stop recorded in Research 329
+- [x] the frozen live point did not move without acceptance
+- [x] both matrix cells remain producer-gap `live_tuple_not_compiled`, agreeing
+  with the projected truth
 
 ## Result
 
 Compiled and dispatched by Chatterbox on 2026-09-17 under Tom's re-confirmed
-provider-operation authority. The gate itself has not run.
+provider-operation authority. The Swallowtail courier build and mediated-stdio
+preflight passed. The existing Desktop runner's provider-free check stopped at
+`setup.static_tuple_mismatch`: it remains bound to SDK `0.3.259` / native
+`2.1.259`, while this route is compiled at SDK `0.3.270` / native `2.1.270`.
+No provider work started; Research 329 records the typed stop. The frozen live
+point and both matrix cells remain unchanged.
 
 ## Next Task
 
-The queue dispatches g05.066 as one bounded live gate. On return, Chatterbox
-reconciles the frozen live point and the two matrix cells from the accepted or
-stopped outcome.
+The queue dispatched g05.066 as one bounded live gate. The typed stop closes
+this attempt without a rerun. A future separately authorized consumer update
+must bind the existing runner to the exact rebound tuple before another live
+operation can be considered.

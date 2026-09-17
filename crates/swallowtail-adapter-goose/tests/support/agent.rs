@@ -6,6 +6,7 @@ pub enum Scenario {
     Cancellation,
     Disconnect,
     AuthRequired,
+    AuthRequiredOnPrompt,
     Malformed,
     ProtocolMismatch,
     Oversized,
@@ -110,7 +111,7 @@ impl SharedAgent {
                         "id": id,
                         "error": {
                             "code": -32603,
-                            "message": "Failed to resolve provider: missing host config"
+                        "message": "auth_required"
                         }
                     }),
                 ),
@@ -222,6 +223,17 @@ impl SharedAgent {
                     Scenario::Cancellation => {}
                     Scenario::Disconnect => state.stopped = true,
                     Scenario::AuthRequired | Scenario::Malformed | Scenario::ProtocolMismatch => {}
+                    Scenario::AuthRequiredOnPrompt => Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "error": {
+                                "code": -32603,
+                                "message": "auth_required"
+                            }
+                        }),
+                    ),
                 }
             }
             Some("session/cancel") => {

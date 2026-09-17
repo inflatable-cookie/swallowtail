@@ -12,9 +12,10 @@ pub const QODER_EXECUTABLE_NAME: &str = "qodercli";
 /// Opaque npm package-version axis for Qoder headless.
 pub const QODER_PACKAGE_AXIS: &str = "qoder.package";
 /// Exact qualified Qoder npm package used by headless.
-pub const QODER_PACKAGE_VERSION: &str = "1.1.25";
+pub const QODER_PACKAGE_VERSION: &str = "1.1.54";
 
-pub(crate) const QODER_HEADLESS_BEHAVIOR: &str = "qoder.headless.stdio-stream-json-v1";
+/// Adapter-private behavior revision for the deliberate AgentLoop bound.
+pub(crate) const QODER_HEADLESS_BEHAVIOR: &str = "qoder.headless.stdio-stream-json-v2";
 const MAX_VERSION_BYTES: usize = 32;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -64,7 +65,7 @@ pub fn qoder_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
 #[must_use]
 pub fn qoder_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("qoder.headless.package-window-1")
+        InterfaceCompatibilityClaimId::new("qoder.headless.package-window-2")
             .expect("static Qoder claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
@@ -130,15 +131,15 @@ mod tests {
         for rejected in [
             "",
             "1.1.24",
-            "1.1.26",
+            "1.1.25",
             "1.1",
             "1.1.25.0",
             "v1.1.25",
             "1.1.25-beta",
-            "1.1.25\n",
-            " 1.1.25",
-            "1.1.25 ",
-            "qodercli 1.1.25",
+            "1.1.54\n",
+            " 1.1.54",
+            "1.1.54 ",
+            "qodercli 1.1.54",
         ] {
             assert!(
                 qoder_package_binding(rejected).is_none(),
@@ -159,28 +160,28 @@ mod tests {
     #[test]
     fn version_stdout_parser_accepts_bare_or_named_exact_package() {
         assert_eq!(
-            parse_qoder_version_output(b"1.1.25\n")
+            parse_qoder_version_output(b"1.1.54\n")
                 .expect("exact version parses")
                 .version()
                 .as_str(),
-            "1.1.25"
+            "1.1.54"
         );
         assert_eq!(
-            parse_qoder_version_output(b"qodercli 1.1.25\n")
+            parse_qoder_version_output(b"qodercli 1.1.54\n")
                 .expect("named version parses")
                 .version()
                 .as_str(),
-            "1.1.25"
+            "1.1.54"
         );
         assert_eq!(
-            parse_qoder_version_output(b"qoder 1.1.25\n")
+            parse_qoder_version_output(b"qoder 1.1.54\n")
                 .expect("dispatcher-named version parses")
                 .version()
                 .as_str(),
-            "1.1.25"
+            "1.1.54"
         );
-        assert!(parse_qoder_version_output(b"1.1.26\n").is_none());
-        assert!(parse_qoder_version_output(b"v1.1.25\n").is_none());
-        assert!(parse_qoder_version_output(b"qodercli  1.1.25\n").is_none());
+        assert!(parse_qoder_version_output(b"1.1.53\n").is_none());
+        assert!(parse_qoder_version_output(b"v1.1.54\n").is_none());
+        assert!(parse_qoder_version_output(b"qodercli  1.1.54\n").is_none());
     }
 }

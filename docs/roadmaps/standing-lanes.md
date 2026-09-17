@@ -134,55 +134,34 @@ extension set and the advertised `session/load` stay unmapped additions, and
 Research 251/254's empty deliver-now sets stand. The next family was Mistral
 Vibe.
 
-Stopped campaign family: Goose official GitHub `v1.50.0` (g05.071) is the
-eleventh family of Tom's authorized Research 308 campaign. Research 319 froze
-the exact `1.46.0` baseline and all four published stable successors through
-`1.50.0` as exact tagged source trees with a 26-file mapped-module ledger and
-a mutation-sensitive fixture under the adapter, and classified every selected
-input provider-free. The exact `QualifiedOnly` point stays at `1.46.0`:
-provider-authentication failure stops being generic text plus `end_turn` at
-the exact hop `1.46.0..1.47.0`, where `session/new` agent-creation failure
-with a chained ACP `AuthRequired` maps to `auth_required` and a dedicated
-`ProviderError::Authentication` arm persists
-`MessageContent::Error(Authentication)` so the prompt RPC fails
-`auth_required`, while `1.46.0` completed the turn with error text. That is a
-selected provider-failure mapping change. Tom ruled on 2026-09-17, having
-delegated the rule choice to the Chatterbox, that the route binds the typed
-provider-authentication semantics: a chained ACP `AuthRequired` on
-`session/new` or `session/prompt` is admitted to surface as `auth_required`,
-and the prompt RPC failing typed is the route's contract. `1.46.0`'s untyped
-error text plus `end_turn` gave a consumer nothing to branch on, so the typed
-arm refines an unclassified surface rather than adding a lifecycle or
-authority. Reopening the family requires a new behavior revision for the
-changed failure mapping, a re-frozen exact point at the then-current published
-stable, and the typed failure shape recorded in the Goose prepared guide.
-Research 148's `1.46.0` decoder specimens and Research 250/253's empty
-builtin/mode
-dispositions stand, and advertised-only `session/delete`,
+Completed campaign family: Goose official GitHub `v1.50.1` (g05.081) is the
+eleventh family of Tom's authorized Research 308 campaign. Research 328
+re-probed the official release channel, froze `1.50.1` identity and the
+`1.50.0..1.50.1` patch hop, and kept the selected ACP sources byte-identical
+apart from an unmapped MCP protocol-version default. The exact `QualifiedOnly`
+point advances to `1.50.1` on the new
+`goose.acp.stdio-v2.auth-required` behavior revision. The route binds the
+typed provider-authentication semantics: a chained ACP `AuthRequired` on
+`session/new` or `session/prompt` surfaces as `auth_required`. The old
+`1.46.0` untyped error text plus `end_turn` gave a consumer nothing to branch
+on, so this adapter-local mapping refines an unclassified failure surface
+without adding lifecycle or authority. Research 148's `1.46.0` decoder
+specimens and Research 250/253's empty builtin/mode dispositions stand, and
+advertised-only `session/delete`,
 `recipeParameterScopes`, and thinking-effort menus stay independently gated.
 The next family is Kiro.
 
-Stopped campaign family: Qoder official npm `1.1.52` (g05.070) is the tenth
-family of Tom's authorized Research 308 campaign. Research 318 froze the exact
-`1.1.25` baseline and all 27 published stable successors through `1.1.52` from
-the official registry with a complete shipped-tree ledger and a
-mutation-sensitive fixture under the adapter, and classified every selected
-input provider-free. The exact `QualifiedOnly` point stays at `1.1.25`: the
-route's own `--max-turns 8` argv stops being historical inert history at the
-exact hop `1.1.29..1.1.30`, where the CLI option gains a numeric argParser, both
-headless mode entry points begin forwarding `argv.maxTurns` into the headless
-session, and `driveQuery` loses its fixed `1000` fallback, so the argv value
-becomes the AgentLoop turn ceiling. That is a selected run-lifecycle and
-bounded-limit failure change. Tom ruled on 2026-09-17, having delegated the
-rule choice to the Chatterbox, that the route accepts a declared turn bound
-but not an inherited accident: `--max-turns 8` becoming the real ceiling means
-the qualified claim must state a bound. Reopening the family requires the
-adapter to pin an explicit, deliberate `--max-turns` value and to record the
-chosen bound and the `error_max_turns` terminal shape in the Qoder prepared
-guide; advancing the exact point on the unexamined inherited `8` is not
-authorised. Research 151's `1.1.25`
-decoder specimens stand, and Research 256's empty skill-visibility disposition
-with the g05.039/g05.040 gate stays independent. The next family is Goose.
+Completed campaign family: Qoder official npm `1.1.54` (g05.080) is the tenth
+family of Tom's authorized Research 308 campaign. Research 328 froze official
+`1.1.54` after the `1.1.52` stop with the exact successor ledger and
+mutation-sensitive selected-route evidence. The exact `QualifiedOnly` point
+advanced to `1.1.54` on the new adapter-private
+`qoder.headless.stdio-stream-json-v2` behavior revision: the route now declares
+an adapter-owned `--max-turns 8` AgentLoop ceiling, and a result
+`error_max_turns` with `is_error: true` and `num_turns: 8` maps to provider
+failure. Research 151's `1.1.25` decoder specimens stand, and Research 256's
+empty skill-visibility disposition with the g05.039/g05.040 gate stays
+independent. The next family is Goose.
 
 Completed campaign family: Command Code official npm `1.54.0` (g05.068) is the
 ninth family of Tom's authorized Research 308 campaign. Research 317 froze the

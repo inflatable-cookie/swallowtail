@@ -31,7 +31,7 @@ When sources disagree:
 
 Nucleus and Soundcheck are initial migration sources. Monkey may later provide
 a local-model route. None is an authority owner for Swallowtail.
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:b179f44ef54fb69eff1d70e11da1d43bb717327ab01e318cca6d5b42e33dd23f -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:38ceb6e42be787281cbf4aad7cfdf72fd638eea9ab70c750665cd78377ad2072 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g05 | open | planning_required |
@@ -47,6 +47,7 @@ a local-model route. None is an authority owner for Swallowtail.
 | g05.063 | complete | none | 8 | sha256:c2b7b2f48ef4e8089a881aa3b9eee7192d736c58beb3f30955d658c0280b3a3d |
 | g05.064 | complete | none | 8 | sha256:2f85f11601971f4288748d461c2992b2723579d8f0337a4ecc71f8f9f7a43863 |
 | g05.065 | complete | none | 8 | sha256:d05090070bc3b985089c32299fa5ad306731815e01046a72319abc04734329e1 |
+| g05.066 | complete | none | 8 | sha256:d31adb23fc5bfc9857b02706d3b7e5e408160f45ac4a23c0a0b7f3979c8cf808 |
 | g05.067 | complete | none | 8 | sha256:ba28e7454fff7eb5a8cd81214e02dc54e7ecc83ee8dc2dda5ea3aa1a14993ecd |
 | g05.068 | complete | none | 8 | sha256:d1d741fb17688f7934629d5de8d98bfdd9c24092ce67b222891b6eef16b217b4 |
 | g05.070 | complete | none | 8 | sha256:5bdd5c79c117f6439c7f63373850d2d20f25f5d991c5c0989c9e98ec700c1946 |
@@ -59,4 +60,6 @@ a local-model route. None is an authority owner for Swallowtail.
 | g05.077 | complete | none | 8 | sha256:5a8821d0ed913ccf1b0a57060f3c790cdc92880c6e9b3406f5a8f947567170a0 |
 | g05.078 | complete | none | 8 | sha256:0290231269ee25ff6c9d39c4a54c0fece5f8aecbfa4a2316e09e420db2f57ac1 |
 | g05.079 | complete | none | 8 | sha256:1d44609db92ba01f2312a46873dbc6b57faddc4b276537085a922645c0d04090 |
+| g05.080 | complete | none | 8 | sha256:c6e30892927468263ba8c871c00df77cd77c9e5949de6f0b8ca83147d2dcc1d2 |
+| g05.081 | complete | none | 8 | sha256:32dcdfcb3b98b7898541b18da2436164af08dc27b29adf5e11439042a7b3d382 |
 <!-- northstar:lifecycle:end -->

@@ -18,7 +18,7 @@ fn frozen_identity_keeps_acp_separate_from_serve_and_with_builtin() {
     let identity: Value = serde_json::from_str(IDENTITY).expect("identity fixture");
     assert_eq!(identity["axis"], "goose.release");
     assert_eq!(identity["route"], "goose.acp");
-    assert_eq!(identity["official"]["version"], GOOSE_RELEASE_VERSION);
+    assert_eq!(identity["official"]["version"], "1.46.0");
     assert_eq!(
         identity["identity_decision"]["flatten_onto_goose_serve"],
         false

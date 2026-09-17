@@ -15,7 +15,7 @@ use swallowtail_runtime::{
 
 const SUCCESS: &str = include_str!("fixtures/qoder-headless-1.1.25/success.jsonl");
 const ABORT: &str = include_str!("fixtures/qoder-headless-1.1.25/abort.jsonl");
-const LIMIT: &str = include_str!("fixtures/qoder-headless-1.1.25/limit.jsonl");
+const CURRENT_LIMIT: &str = include_str!("fixtures/qoder-headless-1.1.54/limit.jsonl");
 const JSON_DUMP: &str = include_str!("fixtures/qoder-headless-1.1.25/json-dump.json");
 
 #[test]
@@ -125,7 +125,7 @@ fn abort_stream_cancels_without_selecting_acp() {
 fn max_turns_is_bounded_failure_not_end_turn() {
     let host_id = ExecutionHostId::new("fixture.host.local").expect("host");
     let selected = support::selection(host_id.clone());
-    let host = FixtureHost::scripted([LIMIT]);
+    let host = FixtureHost::scripted([CURRENT_LIMIT]);
     let mut handle = block_on(driver().start_run(
         selected.plan,
         request("limit", selected.resource),
@@ -143,6 +143,7 @@ fn max_turns_is_bounded_failure_not_end_turn() {
         }
         other => panic!("expected provider failed, got {other:?}"),
     }
+    assert_eq!(&host.observed().arguments[5..7], ["--max-turns", "8"]);
 }
 
 #[test]

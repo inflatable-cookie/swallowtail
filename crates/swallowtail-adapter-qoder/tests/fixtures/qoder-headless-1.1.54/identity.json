@@ -1,0 +1,122 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-09-17",
+  "axis": "qoder.package",
+  "route": "qoder.headless",
+  "npm_package": "@qoder-ai/qodercli",
+  "registry": "https://registry.npmjs.org/@qoder-ai/qodercli",
+  "host": {
+    "present": false,
+    "qoder": false,
+    "qodercli": false,
+    "installed_version": null,
+    "node": "22.23.2",
+    "node_satisfies_engine": true
+  },
+  "npm_channel": {
+    "dist_tags": {
+      "beta": "1.1.54-beta.1",
+      "latest": "1.1.54"
+    },
+    "latest": "1.1.54",
+    "beta": "1.1.54-beta.1",
+    "beta_is_not_stable_authority": true
+  },
+  "previous_ceiling": "1.1.52",
+  "published_stables_since_previous_ceiling": ["1.1.53", "1.1.54"],
+  "first_unpublished_later_stable": "1.1.55",
+  "first_unpublished_verified": true,
+  "compared": ["1.1.52", "1.1.53", "1.1.54"],
+  "baseline": {
+    "version": "1.1.52",
+    "published_at": "2026-09-14T12:07:54.560Z",
+    "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.52.tgz",
+    "tarball_sha256": "1186b8febc9b13159fae43a75b6b6169d448f68470e811a9ea63b73072ed4ea2",
+    "integrity": "sha512-J4nkNkfiAeWblp6iDjJSVDpp8QCvniIlJXOy/CDgfKlFOAu6rY+wjbAX5tie5ITdDA/MMl6IAiQplD/9W8lv2g==",
+    "shasum": "7e3ab30d13cace2865105e93595a4c8a4d8e4bb8",
+    "file_count": 28,
+    "unpacked_size": 67904596
+  },
+  "official": {
+    "version": "1.1.54",
+    "published_at": "2026-09-16T15:56:43.751Z",
+    "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.54.tgz",
+    "tarball_sha256": "a2c52c5d1edbf9ebb70af6c47a052ce705ba55b0c4e6221eddc1ce2563c61a9b",
+    "integrity": "sha512-8kQIvny9G0ZAcQAjoBvAEXrF/AJxLpDver0FsPQTFZcEI6wbprDFHhP0YWSmgMvJ5Q2JdGHKz9f+O7GbU+kkyA==",
+    "shasum": "6835275d449fe32d97a6d63ff6eac9d5a48928c5",
+    "file_count": 30,
+    "unpacked_size": 69199769
+  },
+  "points": {
+    "1.1.52": {
+      "version": "1.1.52",
+      "published_at": "2026-09-14T12:07:54.560Z",
+      "tarball_sha256": "1186b8febc9b13159fae43a75b6b6169d448f68470e811a9ea63b73072ed4ea2",
+      "integrity": "sha512-J4nkNkfiAeWblp6iDjJSVDpp8QCvniIlJXOy/CDgfKlFOAu6rY+wjbAX5tie5ITdDA/MMl6IAiQplD/9W8lv2g==",
+      "shasum": "7e3ab30d13cace2865105e93595a4c8a4d8e4bb8",
+      "file_count": 28,
+      "unpacked_size": 67904596
+    },
+    "1.1.53": {
+      "version": "1.1.53",
+      "published_at": "2026-09-15T10:26:59.588Z",
+      "tarball_sha256": "b146b93e06bdefdfd7d6453d4012057d016932d89e7105ffc28f55b5693dc640",
+      "integrity": "sha512-iH50/vGxsh+mVXdLDRHpxm3ClCgypm0/AOT5MBXVqcSgHVpSgQtLVHI6+5ZjJ7DKEqw6GPAGG0JFb6zQX4vyRA==",
+      "shasum": "4fda8d1637079b36aa3bf11b88d7bd2909580638",
+      "file_count": 28,
+      "unpacked_size": 67957349
+    },
+    "1.1.54": {
+      "version": "1.1.54",
+      "published_at": "2026-09-16T15:56:43.751Z",
+      "tarball_sha256": "a2c52c5d1edbf9ebb70af6c47a052ce705ba55b0c4e6221eddc1ce2563c61a9b",
+      "integrity": "sha512-8kQIvny9G0ZAcQAjoBvAEXrF/AJxLpDver0FsPQTFZcEI6wbprDFHhP0YWSmgMvJ5Q2JdGHKz9f+O7GbU+kkyA==",
+      "shasum": "6835275d449fe32d97a6d63ff6eac9d5a48928c5",
+      "file_count": 30,
+      "unpacked_size": 69199769
+    }
+  },
+  "package_metadata_stable": {
+    "name": "@qoder-ai/qodercli",
+    "bin_qodercli": "bundle/qodercli.js",
+    "bin_qoder": "bundle/qoder-npm-dispatcher.cjs",
+    "type": "module",
+    "engines_node": ">=20.0.0",
+    "files": ["bundle/", "postinstall.cjs", "README.md", "LICENSE"],
+    "os": ["darwin", "linux", "win32"],
+    "git_head": null,
+    "repository": null
+  },
+  "claim_at_observation": {
+    "claim_id": "qoder.headless.package-window-1",
+    "axis": "qoder.package",
+    "point": "1.1.25",
+    "posture": "QualifiedOnly",
+    "behavior_revision": "qoder.headless.stdio-stream-json-v1"
+  },
+  "identity_decision": {
+    "shape": "private-milestone",
+    "segment": "private-milestone",
+    "claim_change": true,
+    "previous_point_retained": false,
+    "previous_behavior_revision": "qoder.headless.stdio-stream-json-v1",
+    "new_behavior_revision": "qoder.headless.stdio-stream-json-v2",
+    "chosen_max_turns": 8,
+    "chosen_max_turns_rationale": "A fixed eight-turn ceiling preserves useful short one-prompt runs while making the adapter-owned bound explicit and preventing an effectively unbounded AgentLoop.",
+    "smallest_counterexample_hop": "1.1.29..1.1.30",
+    "argv_max_turns_is_effective_at_official": true,
+    "error_max_turns_terminal_shape": "result subtype error_max_turns with is_error true and num_turns equal to the configured bound",
+    "decoder_wire_shape_unchanged": true,
+    "permission_mode_unchanged": true,
+    "retention_unchanged": true,
+    "cwd_and_cleanup_unchanged": true,
+    "authentication_unchanged": true,
+    "requires_new_public_operation": false
+  },
+  "evidence_hygiene": {
+    "provider_operation": false,
+    "downloaded_artifact_executed": false,
+    "host_install_changed": false,
+    "credentials_used": false
+  }
+}

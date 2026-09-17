@@ -257,8 +257,10 @@ OpenHands adds a package without a production route.
   unselected provider/model and emits no selected-argv acknowledgement.
   Headless Plan is provider behavior, not isolation; omission keeps the current
   argv and is not implicit Plan. `act`, `yolo`, and `zen` stay unselected.
-- `swallowtail-adapter-goose` implements exact GitHub `1.46.0` ACP on
-  `goose acp`. Credentials stay host-owned local config.
+- `swallowtail-adapter-goose` implements exact GitHub `1.50.1` ACP on
+  `goose acp`, with typed provider-authentication failures bound by the
+  `goose.acp.stdio-v2.auth-required` behavior revision. Credentials stay
+  host-owned local config.
   `--with-builtin`, `goose configure`, `goose serve`, and `GooseMode`
   `auto` stay out.
 - `swallowtail-adapter-copilot-cli` implements exact npm `1.0.80` ACP on
@@ -278,14 +280,13 @@ OpenHands adds a package without a production route.
   harness-rollout selection; the Unified Harness stays unmapped. Native
   limit remains provider-failed. `vibe-acp`, TUI, `--continue`/`--resume`,
   teleport, and `--auto-approve`/`--yolo` stay out.
-- `swallowtail-adapter-qoder` implements exact npm `1.1.25` discovery and one
+- `swallowtail-adapter-qoder` implements exact npm `1.1.54` discovery and one
   `qodercli --print --output-format stream-json` structured run with
-  `--permission-mode dont_ask`, historical inert `--max-turns 8`,
-  `--no-session-persistence --cwd` through `prepare_qoder_headless`. Exact
-  selected CLI headless factory AgentLoop ceiling is `1000`; argv `8` does
-  not set that ceiling. `error_max_turns` mapping is decoder-only. `--acp`,
-  SDK stdio, TUI, `--yolo` / `bypass_permissions` / `accept_edits`, and the
-  `qoder` IDE dispatcher stay out.
+  `--permission-mode dont_ask`, adapter-owned `--max-turns 8`,
+  `--no-session-persistence --cwd` through `prepare_qoder_headless`.
+  `error_max_turns` with the configured bound maps to provider failure.
+  `--acp`, SDK stdio, TUI, `--yolo` / `bypass_permissions` / `accept_edits`,
+  and the `qoder` IDE dispatcher stay out.
 - `swallowtail-adapter-openhands` holds exact PyPI `1.42.1` discovery, owned
   loopback spawn `python -m openhands.agent_server --host 127.0.0.1`, and
   `prepare_openhands_agent_server`. `openhands.agent-server` is not a
@@ -652,8 +653,9 @@ Crate status:
   headless print-run routes with separate constructors, qualified-only
   claims, local-account access, and no credential lease. The package
   remains an unreleased additive candidate after `v0.3.2`.
-- `swallowtail-adapter-goose` — realized for exact GitHub `1.46.0` ACP
-  with qualified-only claim, local-config access, and no credential lease.
+- `swallowtail-adapter-goose` — realized for exact GitHub `1.50.1` ACP
+  with qualified-only claim, typed auth-failure binding, local-config access,
+  and no credential lease.
   The package remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-copilot-cli` — realized for exact npm `1.0.80` ACP
   with qualified-only claim, visible public preview, host-account access,
@@ -663,10 +665,10 @@ Crate status:
   `2.25.4` headless discovery, one bounded streaming-NDJSON structured
   run, and `prepare_mistral_vibe_headless`. The package remains an
   unreleased additive candidate after `v0.3.2`.
-- `swallowtail-adapter-qoder` — realized for exact npm `1.1.25` headless
-  discovery, one bounded stream-json structured run, and
-  `prepare_qoder_headless`. The package remains an unreleased additive
-  candidate after `v0.3.2`.
+- `swallowtail-adapter-qoder` — realized for exact npm `1.1.54` headless
+  discovery, one bounded stream-json structured run with an adapter-owned
+  eight-turn AgentLoop ceiling, and `prepare_qoder_headless`. The package
+  remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-openhands` — realized for exact PyPI `1.42.1`
   Agent Server discovery, owned loopback spawn, and
   `prepare_openhands_agent_server`. `openhands.agent-server` is deferred:

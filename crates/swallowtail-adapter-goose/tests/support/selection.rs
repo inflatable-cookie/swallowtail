@@ -31,7 +31,9 @@ pub fn selection_with_access(
             ],
         ),
     ]);
-    let version_binding = goose_release_binding("1.46.0").expect("fixture version is valid");
+    let version_binding =
+        goose_release_binding(swallowtail_adapter_goose::GOOSE_RELEASE_VERSION)
+            .expect("fixture version is valid");
     let instance = ConfiguredInstance::new(
         instance_id.clone(),
         InstanceRevision::new("fixture-revision").expect("valid revision"),

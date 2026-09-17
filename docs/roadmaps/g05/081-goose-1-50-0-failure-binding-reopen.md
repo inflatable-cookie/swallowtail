@@ -1,4 +1,4 @@
-# g05.081 Goose 1.50.0 Failure-Binding Reopen
+# g05.081 Goose 1.50.1 Failure-Binding Reopen
 
 Status: ready
 Owner: Tom
@@ -26,7 +26,7 @@ provider-authentication failure mapping.
 - [x] Scope, acceptance, validation, evidence, and stop conditions are explicit.
 - [x] Review oracle is present because the claim is exact, version-bound, and
   partly negative.
-- [ ] Official stable is re-probed immediately before the identity commit.
+- [x] Official stable is re-probed immediately before the identity commit.
 
 ## Decisions
 
@@ -98,6 +98,34 @@ to branch on. This task settles the behavior revision and the recorded shape.
 On completion, record the identity ledger, the failure-mapping fixture result,
 the new behavior revision, validation actually run, PR link, reviewed exact
 head, merge commit, and any material limit.
+
+## Acceptance
+
+- [x] Official `v1.50.1` identity and the `1.50.0..1.50.1` patch hop are
+  frozen in Research 328 and the currentness fixture.
+- [x] Typed `auth_required` is covered on both `session/new` and
+  `session/prompt`; the adapter diagnostic is mutation-tested.
+- [x] The claim is one exact `QualifiedOnly` point at `1.50.1` on the new
+  `goose.acp.stdio-v2.auth-required` behavior revision.
+- [x] Builtin, mode, lifecycle, permission, process, and advertised sibling
+  surfaces remain independently gated.
+
+## Result
+
+Research 328 re-probed official Goose GitHub `v1.50.1`, froze its tag and
+Darwin ARM64 archive identity, and compared the selected ACP closure through
+the patch hop from `1.50.0`. Only the MCP protocol-version default changes in
+the mapped source closure, and that change is unmapped because the selected
+route sends an empty `mcpServers` list; the ACP server, dispatch, new-session,
+prompt, and conversation-message sources are byte-identical.
+
+The exact `goose.release` claim now binds `1.50.1` under
+`goose.acp.stdio-v2.auth-required`. Typed provider-authentication failures on
+`session/new` and `session/prompt` map to
+`swallowtail.goose.acp.auth_required`; other provider/model resolution errors
+retain their existing diagnostic. No provider prompt, login, configure,
+installation, downloaded-artifact execution, release, or tag action occurred.
+Validation and PR review remain queue-owned after this worker opens the PR.
 
 ## Next task
 

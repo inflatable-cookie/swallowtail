@@ -3,7 +3,8 @@
 Use `swallowtail-adapter-goose` for the installed Goose ACP agent. The route is
 `goose.acp`; the driver ID is `swallowtail.goose.acp`. It owns initialize plus
 one bounded `session/prompt` over ACP v1 stdio on a host-approved `goose acp`
-child.
+child. The qualified behavior revision is
+`goose.acp.stdio-v2.auth-required`.
 
 This is a separate family from `goose serve` (HTTP/WebSocket ACP), desktop, TUI,
 recipes as routing, and Goose ACP-providers. Swallowtail does not pass
@@ -20,13 +21,14 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Preparation requires all of the following:
 
 - exact release axis `goose.release`
-- exact GitHub release `1.46.0`
+- exact GitHub release `1.50.1`
 - host-approved `goose` executable and isolated environment
 - `goose_local_config_access_profile` with no credential reference
 - working resource, plus host services for task, process, and working-resource
   ownership
 
-The claim is qualified-only. Later releases do not inherit this route.
+The claim is qualified-only at the one exact point `1.50.1`. Later releases do
+not inherit this route.
 `UnverifiedNewer` is not a Goose ACP execution posture.
 
 Swallowtail does not install Goose, search `PATH`, run `goose configure`, bind
@@ -64,8 +66,11 @@ The driver owns one joined stdio child and performs this sequence:
 
 Host `fs/readTextFile` and `fs/writeTextFile` callbacks are rejected. Session
 deadline, `session/load`, `session/list`, and `session/close` are unsupported.
-Missing host provider or model maps to
-`swallowtail.goose.acp.host_provider_unconfigured`.
+Typed provider-authentication failure from either `session/new` or
+`session/prompt` maps to `swallowtail.goose.acp.auth_required`. The host owns
+credential setup; Swallowtail does not configure or lease provider
+credentials. Other provider/model resolution failures retain their separate
+`swallowtail.goose.acp.host_provider_unconfigured` diagnostic.
 
 Take each turn's event stream and terminal outcome immediately and poll them
 concurrently. Cancellation issues `session/cancel` and joins the active turn.

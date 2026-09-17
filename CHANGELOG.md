@@ -20,15 +20,14 @@ annotated Git tags from the canonical repository.
   specimens and Research 250/253's empty builtin/mode dispositions stand, and
   advertised-only `session/delete`, recipe scopes, and thinking-effort menus
   stay independently gated.
-- keep the Qoder `qoder.headless` claim at the exact `1.1.25` `QualifiedOnly`
-  point. Research 318 froze official npm `1.1.25` plus all 27 published stable
-  successors through `1.1.52` with a complete shipped-tree ledger, and found
-  that the route's own historical inert `--max-turns 8` argv becomes the
-  AgentLoop turn ceiling at the exact hop `1.1.29..1.1.30`. That is a selected
-  run-lifecycle and bounded-limit failure change, so no newer exact point can
-  be claimed before the route's turn-binding policy is ruled on. Research 151's
-  `1.1.25` decoder specimens stand and Research 256's empty skill-visibility
-  disposition stays independent.
+- advance the Qoder `qoder.headless` claim to one exact `1.1.54`
+  `QualifiedOnly` point on the new adapter-private
+  `qoder.headless.stdio-stream-json-v2` behavior revision. Research 328 froze
+  official npm `1.1.54` after the `1.1.52` stop and recorded the deliberate
+  adapter-owned `--max-turns 8` AgentLoop ceiling plus its
+  `error_max_turns` provider-failure shape. The historical `1.1.25` decoder
+  specimens and Research 256's independent empty skill-visibility disposition
+  remain unchanged.
 
 ### Changed
 - extend the qualified Oh My Pi RPC package window from

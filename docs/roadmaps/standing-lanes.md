@@ -162,27 +162,17 @@ dispositions stand, and advertised-only `session/delete`,
 `recipeParameterScopes`, and thinking-effort menus stay independently gated.
 The next family is Kiro.
 
-Stopped campaign family: Qoder official npm `1.1.52` (g05.070) is the tenth
-family of Tom's authorized Research 308 campaign. Research 318 froze the exact
-`1.1.25` baseline and all 27 published stable successors through `1.1.52` from
-the official registry with a complete shipped-tree ledger and a
-mutation-sensitive fixture under the adapter, and classified every selected
-input provider-free. The exact `QualifiedOnly` point stays at `1.1.25`: the
-route's own `--max-turns 8` argv stops being historical inert history at the
-exact hop `1.1.29..1.1.30`, where the CLI option gains a numeric argParser, both
-headless mode entry points begin forwarding `argv.maxTurns` into the headless
-session, and `driveQuery` loses its fixed `1000` fallback, so the argv value
-becomes the AgentLoop turn ceiling. That is a selected run-lifecycle and
-bounded-limit failure change. Tom ruled on 2026-09-17, having delegated the
-rule choice to the Chatterbox, that the route accepts a declared turn bound
-but not an inherited accident: `--max-turns 8` becoming the real ceiling means
-the qualified claim must state a bound. Reopening the family requires the
-adapter to pin an explicit, deliberate `--max-turns` value and to record the
-chosen bound and the `error_max_turns` terminal shape in the Qoder prepared
-guide; advancing the exact point on the unexamined inherited `8` is not
-authorised. Research 151's `1.1.25`
-decoder specimens stand, and Research 256's empty skill-visibility disposition
-with the g05.039/g05.040 gate stays independent. The next family is Goose.
+Completed campaign family: Qoder official npm `1.1.54` (g05.080) is the tenth
+family of Tom's authorized Research 308 campaign. Research 328 froze official
+`1.1.54` after the `1.1.52` stop with the exact successor ledger and
+mutation-sensitive selected-route evidence. The exact `QualifiedOnly` point
+advanced to `1.1.54` on the new adapter-private
+`qoder.headless.stdio-stream-json-v2` behavior revision: the route now declares
+an adapter-owned `--max-turns 8` AgentLoop ceiling, and a result
+`error_max_turns` with `is_error: true` and `num_turns: 8` maps to provider
+failure. Research 151's `1.1.25` decoder specimens stand, and Research 256's
+empty skill-visibility disposition with the g05.039/g05.040 gate stays
+independent. The next family is Goose.
 
 Completed campaign family: Command Code official npm `1.54.0` (g05.068) is the
 ninth family of Tom's authorized Research 308 campaign. Research 317 froze the

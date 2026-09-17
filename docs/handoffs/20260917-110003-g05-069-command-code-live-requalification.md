@@ -6,6 +6,7 @@ worker_mode: implementation
 dispatch_authority: orchestrator
 status: ready-to-launch
 base_required: pushed-main
+roadmap: docs/roadmaps/g05/069-command-code-1-54-0-live-requalification.md
 queue_dispatch: northstar-queue
 queue_approval: "Tom re-confirmed on 2026-09-17 that the separately authorized Command Code exact-1.54.0 live gate still stands. It covers one exact version and one attempt only."
 queue:

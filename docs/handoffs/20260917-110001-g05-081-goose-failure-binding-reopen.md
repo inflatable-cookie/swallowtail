@@ -6,6 +6,7 @@ worker_mode: implementation
 dispatch_authority: orchestrator
 status: ready-to-launch
 base_required: pushed-main
+roadmap: docs/roadmaps/g05/081-goose-1-50-0-failure-binding-reopen.md
 queue_dispatch: northstar-queue
 queue_approval: "Tom ruled on 2026-09-17, having delegated the rule choice to the Chatterbox, that the Goose route binds the typed provider-authentication semantics; reopening needs a new behavior revision and the typed failure shape recorded in the prepared guide. Provider-free."
 queue:

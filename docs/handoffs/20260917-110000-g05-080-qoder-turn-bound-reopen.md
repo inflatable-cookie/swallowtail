@@ -6,6 +6,7 @@ worker_mode: implementation
 dispatch_authority: orchestrator
 status: ready-to-launch
 base_required: pushed-main
+roadmap: docs/roadmaps/g05/080-qoder-1-1-52-turn-bound-reopen.md
 queue_dispatch: northstar-queue
 queue_approval: "Tom ruled on 2026-09-17, having delegated the rule choice to the Chatterbox, that the Qoder route accepts a declared turn bound but not an inherited one; reopening needs an explicit deliberate --max-turns value and the recorded error_max_turns shape. Provider-free."
 queue:

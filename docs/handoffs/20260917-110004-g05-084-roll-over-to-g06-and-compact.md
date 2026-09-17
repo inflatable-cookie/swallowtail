@@ -6,6 +6,7 @@ worker_mode: implementation
 dispatch_authority: orchestrator
 status: ready-to-launch
 base_required: pushed-main
+roadmap: docs/roadmaps/g05/084-roll-over-to-g06-and-compact-g05.md
 queue_dispatch: northstar-queue
 queue_approval: "Tom authorized the structural rollover on 2026-09-17 with 'roll over and compact'. Documentation and planning surfaces only; no product or release authority."
 queue:

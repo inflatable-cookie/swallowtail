@@ -6,6 +6,7 @@ worker_mode: implementation
 dispatch_authority: orchestrator
 status: ready-to-launch
 base_required: pushed-main
+roadmap: docs/roadmaps/g05/066-claude-agent-sdk-0-3-270-registered-tool-live-requalification.md
 queue_dispatch: northstar-queue
 queue_approval: "Tom re-confirmed on 2026-09-17 that the separately authorized Claude Agent SDK registered-tool live gate still stands. It covers one exact tuple and one attempt only."
 queue:

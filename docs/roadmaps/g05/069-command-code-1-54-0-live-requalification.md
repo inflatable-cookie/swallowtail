@@ -1,6 +1,6 @@
 # g05.069 Command Code 1.54.0 Live Requalification
 
-Status: ready; separately authorized live gate, re-confirmed by Tom on 2026-09-17
+Status: stopped; typed live evidence failure on 2026-09-17
 Owner: Tom
 Created: 2026-09-14
 Depends on: Contract 029; Contract 043; Research 116, 118, and 317; g05.068
@@ -76,14 +76,19 @@ docs gates. The live gate supplies its own exact provider evidence.
 
 ## Acceptance
 
-- [ ] the exact-`1.54.0` live gate runs or records a typed stop
-- [ ] Research 116/118 remain immutable and version-bound
-- [ ] feature and activity cells agree with the accepted live outcome
+- [x] the exact-`1.54.0` live gate runs or records a typed stop
+- [x] Research 116/118 remain immutable and version-bound
+- [x] feature and activity cells preserve the version-bound gate
 
 ## Result
 
-Compiled and dispatched by Chatterbox on 2026-09-17 under Tom's re-confirmed
-provider-operation authority. The gate itself has not run.
+The exact-`1.54.0` gate ran once on `meituan/LongCat-2.0:free` after the
+operator repaired the executable and reauthorized the attempt. The structured
+turn reached the provider but stopped with
+`swallowtail.command_code.headless.malformed_stream`. The live-derived feature
+and activity cells remain version-bound to `1.15.1`; no interactive
+continuation, retry, model substitution, or claim change followed. See the
+[live stop log](../../logs/2026-09-17-g05-069-command-code-1-54-0-live-stop.md).
 
 ## Next Task
 

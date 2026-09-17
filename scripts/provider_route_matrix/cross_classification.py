@@ -125,10 +125,25 @@ def producer_gap_reasons(notes: str, row_route: str) -> dict[str, str]:
     return reasons
 
 
+def active_generation_dir(root: Path) -> Path:
+    """Resolve the sole active generation's task directory from the index.
+
+    The rollover renames the directory (g05 → g06), so the producer-gap
+    reference target is derived, never hard-coded.
+    """
+    index = root / "docs/roadmaps/generation-index.md"
+    if not index.is_file():
+        fail(f"missing generation index: {index}")
+    matches = re.findall(r"^\| `(g\d{2})` \| active \|", index.read_text(encoding="utf-8"), re.MULTILINE)
+    if len(matches) != 1:
+        fail("generation-index must name exactly one active generation")
+    return root / "docs/roadmaps" / matches[0]
+
+
 def producer_task(root: Path, ref: str) -> None:
     path = root / ref
-    if not path.is_file() or path.parent != root / "docs/roadmaps/g05":
-        fail(f"producer_gap reference must be an existing non-complete g05 task: {ref}")
+    if not path.is_file() or path.parent != active_generation_dir(root):
+        fail(f"producer_gap reference must be an existing non-complete active-generation task: {ref}")
     match = TASK_STATUS.search(path.read_text(encoding="utf-8"))
     if match is None:
         fail(f"producer_gap task lacks a Status line: {ref}")

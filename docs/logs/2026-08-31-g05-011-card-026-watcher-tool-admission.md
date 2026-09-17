@@ -41,8 +41,8 @@ skills, MCP servers, or settings.
 
 ## Authority
 
-- [card 026](../roadmaps/g05/011-watcher-route-admission-recovery.md)
-- [card 029](../roadmaps/g05/011-watcher-route-admission-recovery.md)
-- [g05.011](../roadmaps/g05/011-watcher-route-admission-recovery.md)
+- [card 026](../roadmaps/archive/g05.md)
+- [card 029](../roadmaps/archive/g05.md)
+- [g05.011](../roadmaps/archive/g05.md)
 - [Contract 059](../contracts/059-operation-scoped-process-watchers.md)
 - [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md)

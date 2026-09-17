@@ -118,3 +118,84 @@ copied from the generation READMEs and census into the four roll-ups.
   card files; their destinations live in git history and the folded ledgers.
   Resolving them into new task edits would be re-planning, which this migration
   does not do.
+
+---
+
+# Preservation Manifest — g05.084 Roll Over To g06 And Compact g05
+
+Frozen before any deletion. Canonical task:
+`docs/roadmaps/g05/084-roll-over-to-g06-and-compact-g05.md` (its own record is
+folded into [g05.md](g05.md) and `docs/logs/` before removal). Planning commit
+`c59ce0bf769f64ffccfd32fda58c6e4ef5cb6c25`; dispatch base is pushed `main` at
+`1d57cf28`. Operator rollover authority: Tom, 2026-09-17, "roll over and
+compact" — documentation and planning surfaces only.
+
+## Classification
+
+- g05: safely closed. All 26 dispatched lifecycle records terminal
+  (`status: complete`, including the four serial prerequisites g05.066,
+  g05.069, g05.080, and g05.081); the exhausted runway is `planning_required`,
+  closed only by the explicit operator rollover authority. Closure record:
+  `.northstar/lifecycle/v1/generations/g05.closure.json` with tasks digest
+  `sha256:cfe29cbb46d182207cc1d60b2701301c1e27a0ccc8a093ab03976b96ee69754f`
+  over the 26 terminal fragments; receipt `g05.json` published on compaction.
+- g06: active after the rollover; sole expanded generation.
+- No unresolved generation. No explicit parallel active generation.
+
+## Carry-forward map (open commitments)
+
+| g05 task | g06 task | State carried over |
+| --- | --- | --- |
+| 035 Shared Harness Capability And Producer Boundary | g06.001 | planned; Batch A promoted; folded card evidence and held gates intact |
+| 039 Qoder Effective Skill Visibility Binding | g06.002 | planned; gated on a non-empty Research 256 deliver-now disposition |
+| 040 Qoder Skill Visibility Acceptance | g06.003 | planned; serial after g06.002 |
+| 041 Persistent Permission Grant Admission | g06.004 | planned; operator promotion absent; no dispatch authorization |
+| 042 Registered-Tool Adoption For Remaining ACP Routes | g06.005 | planned; consumer requirement and operator direction absent |
+
+Everything else was terminal before this task ran. Gated follow-ons that stay
+with their stopped parents (Kimi local-server claim behind g05.026,
+Antigravity headless claim behind g05.027, Contract 061 Kimi gate behind
+g05.009) keep those parents as their honest stopped record; they do not become
+duplicate executable tasks. g05.066's live-tuple follow-on (bind the Desktop
+runner to `0.3.270`/`2.1.270` before any further live operation) is recorded
+in [g05.md](g05.md) — it requires a future separately authorized consumer
+update, so it is not carried as an executable task; the claude-agent.sdk
+feature-matrix cells cite the held real-route gate at g06.001.
+
+## Unique authority destinations
+
+No live rule exists only inside the removed tree. Durable rules already live
+in `docs/contracts/` (058-063, 019 amendments) and `docs/architecture/`;
+[g05.md](g05.md) maps the generation's lasting decisions onto those canonical
+destinations. The lifecycle closure record and receipt keep the terminal
+record set verifiable after fragment removal.
+
+## Selected material evidence (kept in the roll-up, not re-proved)
+
+Annotated source tags `v0.4.0`–`v0.5.1` with their CI runs, the Research
+308-328 currentness campaign with PRs #321-#330, the Contract 061
+767-row census, PR 196 at `493f8194`, Research 301 and 329, and the
+per-task PR/review/merge identities recorded in `docs/logs/` closeouts.
+
+## Exact paths removed
+
+- `docs/roadmaps/g05/` — entire tree: README plus 82 numbered task files
+  (001-081, 084; 082-083 were never created), after the g06 tree, the
+  roll-up, the manifest section, the closure record, the receipt, and the
+  front-door projections existed and validated.
+- `.northstar/lifecycle/v1/tasks/g05.NNN.json` — all 26 terminal fragments,
+  consumed into `.northstar/lifecycle/v1/generations/g05.json`.
+
+## Reference rewiring
+
+`docs/roadmaps/README.md`, `docs/roadmaps/generation-index.md`,
+`docs/roadmaps/status-grammar.md`, `docs/roadmaps/standing-lanes.md`,
+`docs/README.md` (generated projection), `effigy.toml` (roadmaps_g06 index
+policy), `scripts/check-roadmap-status-drift.py` (exempt list),
+`scripts/provider_route_matrix/cross_classification.py` (active-generation
+derivation), `docs/guides/provider-route-matrix.md`,
+`docs/guides/provider-solution-feature-matrix.csv` (producer-gap refs →
+g06.001/g06.004/g06.005), and `docs/specs/014-shared-harness-capability-and-
+producer-boundary.md` were updated. Historical `docs/logs/` and
+`docs/research/` markdown links into the removed tree were retargeted to
+[g05.md](g05.md); closed handoffs stay historical.

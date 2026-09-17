@@ -526,7 +526,8 @@ exact `QualifiedOnly` points, with their failure-binding and turn-binding
 rulings now recorded above; Gemini's
 deferral was lifted for the campaign and its claims advanced through `0.59.0`.
 The standing lane stays available for the next checkpoint after official
-stables move; it is not a generation goal and does not keep g05 open.
+stables move; it is not a generation goal and does not keep any generation
+open.
 
 Research 294 revalidated all 41 production solution rows on 2026-09-08. The
 partition is 10 unchanged, 8 visible unverified-newer, and 23 record-only.
@@ -747,5 +748,5 @@ Implement the active task named by the
 [roadmaps front door](README.md#next-task). This file records standing lanes;
 the sole actionable pointer stays in the front door. The authorized Research
 308 campaign completed at g05.079 (Oh My Pi `18.1.22`), so no currentness
-family remains ready; the next move is the operator conversation recorded by
-the front door, not a new lane.
+family remains ready; the next move is the g06 frontier recorded by the
+front door, not a new lane.

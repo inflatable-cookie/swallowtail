@@ -230,5 +230,5 @@ production behavior changed.
 - [Contract 038](../contracts/038-provider-session-management-and-consumer-thread-boundary.md)
 - [Contract 041](../contracts/041-input-callback-and-provider-tool-admission.md)
 - [Contract 047](../contracts/047-configured-provider-instance-catalogue.md)
-- [g05.022](../roadmaps/g05/022-claude-agent-dual-route-parity.md)
-- [card 054](../roadmaps/g05/022-claude-agent-dual-route-parity.md)
+- [g05.022](../roadmaps/archive/g05.md)
+- [card 054](../roadmaps/archive/g05.md)

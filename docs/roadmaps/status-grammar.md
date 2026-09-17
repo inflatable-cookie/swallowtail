@@ -4,13 +4,27 @@ Status: active
 Audience: agents editing generation indexes and task files
 
 `effigy qa:docs:roadmaps:status` runs
-`scripts/check-roadmap-status-drift.py`. That checker owns the accepted
-Status buckets and the generation-index census phrases. Prefer matching this
-grammar over rewriting the parser.
+`scripts/check-roadmap-status-drift.py`. That checker owns enforcement; this
+note records the model it enforces. Prefer matching this grammar over
+rewriting the parser.
 
-## Status Buckets
+## Lifecycle-Owned Terminal State
 
-The first token of a task `Status:` line must be one of:
+Since g05.057, terminal task state is lifecycle-owned. The canonical records
+live in `.northstar/lifecycle/v1/tasks/` (compacted closed generations live
+in `.northstar/lifecycle/v1/generations/`), and the generated projection
+blocks in the front doors are the only rendered status. Task files carry no
+hand-maintained `Status:` line once a task is dispatched through the queue
+lifecycle, the generation README's `## Tasks` section is a flat link registry
+with no status buckets, and the generation index carries no hand-maintained
+status census. The retired status-bucket model (status sections under
+`## Tasks`, index census phrases) is a migration defect, like any nested card
+level: do not reintroduce it.
+
+## Planning Status Lines
+
+A planned, pre-dispatch task file may carry one `Status:` line whose first
+token is one of:
 
 | Bucket | Accepted primary tokens |
 | --- | --- |
@@ -20,12 +34,8 @@ The first token of a task `Status:` line must be one of:
 | stopped | `stopped` |
 | complete | `complete`, `completed`, `done` |
 
-Anything after the first `;` is free-form detail. Index annotations may use the
-same primary tokens, plus complete aliases `evidence stop` and
-`identity stop`.
-
-`gated` is not a status bucket. Write a gate as detail after an accepted
-bucket:
+Anything after the first `;` is free-form detail. `gated` is not a status
+bucket. Write a gate as detail after an accepted bucket:
 
 ```text
 Status: planned; gated on a non-empty Research 256 deliver-now disposition
@@ -34,36 +44,14 @@ Status: ready; one authorized live turn
 
 Do not write `Status: gated`.
 
-The active generation README lists each task once under ``### Planned``,
-``### Ready``, ``### Blocked``, ``### Stopped``, or ``### Completed`` beneath
-its ``## Tasks`` section. ``stopped`` Status maps only to ``### Stopped``.
+## Enforcement
 
-## Generation-Index Census
-
-The active generation's census paragraph in `generation-index.md` must carry
-these exact shapes (live regexes in the checker):
-
-| Claim | Required phrase |
-| --- | --- |
-| Completed count | `N completed tasks` |
-| Honest stops | `honest evidence stops at …` (id list), or `no honest evidence stops` |
-| Ready set | `ready tasks at 003` / `ready task at 003`, or `one ready task at 003` |
-| Planned set | `one planned task at 035`, `planned tasks at 035, 039`, or `no planned tasks` |
-
-Examples that pass:
-
-```text
-g05 now has 2 completed tasks, honest evidence stops at 001, and one
-ready task at 003.
-```
-
-```text
-g05 has 4 completed tasks, no honest evidence stops, ready
-tasks at 003, 007, and one planned task at 035.
-```
-
-Task-ready prose elsewhere in the generation index uses
-`task 011 is ready` / `tasks 011-012 are ready` and must match frontmatter.
+The checker validates: exactly one active generation is declared in
+`generation-index.md` (`| gNN | active |`), every task file in the active
+generation is indexed exactly once under the README's `## Tasks`, every
+indexed link resolves to a task file, no status buckets return under
+`## Tasks`, and no nested dispatch level (`batch-cards/`) is reintroduced in
+current planning surfaces.
 
 ## No Nested Dispatch Level
 

@@ -66,8 +66,8 @@ Card129 [frozen evidence ledger](../research/290-feature-matrix-cross-evidence.m
 whose basis is an anchored `docs/research` or `docs/contracts` line that names
 the route (Research 281 for the Card129 census; Research 291 for the Codex
 `client_mcp_servers` cell);
-`producer_gap` with an existing non-complete g05 task path (a `g05.NNN` file
-directly under `docs/roadmaps/g05/`); or
+`producer_gap` with an existing non-complete active-generation task path (a
+`gNN.NNN` file directly under the active `docs/roadmaps/gNN/` directory); or
 `evidence_pending` with a live hand-off packet under `docs/handoffs/` —
 never a task file, because task completion closes its gate. An evidence-pending packet must name
 the owner who runs the gate and the decision tree converting each outcome

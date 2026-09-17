@@ -125,8 +125,8 @@ merge.
 
 ## Authority
 
-- [card 059](../roadmaps/g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
-- [card 057](../roadmaps/g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
-- [g05.023](../roadmaps/g05/023-claude-sdk-shared-lifecycle-prerequisites.md)
+- [card 059](../roadmaps/archive/g05.md)
+- [card 057](../roadmaps/archive/g05.md)
+- [g05.023](../roadmaps/archive/g05.md)
 - [Contract 010](../contracts/010-execution-host-services-and-inputs.md)
 - [Contract 019](../contracts/019-embedded-sdk-and-cloud-client-boundary.md)

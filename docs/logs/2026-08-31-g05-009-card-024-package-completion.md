@@ -55,8 +55,8 @@ honest stop. Per-turn and breadth candidates remain later bands.
 
 ## Authority
 
-- [card 024](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
-- [card 030](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
-- [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
+- [card 024](../roadmaps/archive/g05.md)
+- [card 030](../roadmaps/archive/g05.md)
+- [g05.009](../roadmaps/archive/g05.md)
 - [Batch 9.4 checkpoint](2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)

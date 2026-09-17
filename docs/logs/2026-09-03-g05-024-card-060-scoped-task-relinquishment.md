@@ -54,7 +54,7 @@ or handle-side host hook enters generated consumer API.
 
 ## Authority
 
-- [g05.024](../roadmaps/g05/024-scoped-task-relinquishment.md)
-- [card 060](../roadmaps/g05/024-scoped-task-relinquishment.md)
+- [g05.024](../roadmaps/archive/g05.md)
+- [card 060](../roadmaps/archive/g05.md)
 - [Contract 010](../contracts/010-execution-host-services-and-inputs.md)
 - [Contract 019](../contracts/019-embedded-sdk-and-cloud-client-boundary.md)

@@ -51,8 +51,8 @@ proof for orchestrator review before reassessing another Batch 9.4 candidate.
 
 ## Authority
 
-- [card 031](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
+- [card 031](../roadmaps/archive/g05.md)
 - [public-baseline gate](2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)
-- [g05.009](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
+- [g05.009](../roadmaps/archive/g05.md)
 - [Batch 9.4 package expansion](2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)

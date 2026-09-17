@@ -2,7 +2,7 @@
 
 Date: 2026-09-05
 Roadmap: `../roadmaps/g05/009-contract-061-consumer-projection-realization.md`
-Audit: `../triage/20260905-143430-contract-061-per-turn-authority-audit.md`
+Audit: card 096's per-turn authority audit note, pruned after closeout in `2676b67e`; the ruling is retained in this record
 
 ## Ruling
 

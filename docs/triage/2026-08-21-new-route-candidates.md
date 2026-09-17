@@ -1020,5 +1020,5 @@ from this pass.
 
 If the operator later asks for one new-family inventory, Amp is the first
 recommendation; that is a recommendation, not a scheduled card. Hosted
-URL-open OAuth remains parked. This assessment does not move Next Task from
-g04.024 and does not start Kimi Platform wiring.
+URL-open OAuth remains parked. This assessment does not move the roadmap Next
+Task pointer and does not start Kimi Platform wiring.

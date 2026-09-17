@@ -1,6 +1,6 @@
 # g05.009 Contract 061 Consumer Projection Realization
 
-Status: complete; 767 rows proved; card 096 ruled the existing vocabulary sufficient; cards 097, 098, and 099 are complete; the per-turn audit note remains for this task's reserved prune
+Status: complete; 767 rows proved; card 096 ruled the existing vocabulary sufficient; cards 097, 098, and 099 are complete; the per-turn audit note was pruned after closeout
 Owner: Tom
 Created: 2026-08-31
 Updated: 2026-09-04

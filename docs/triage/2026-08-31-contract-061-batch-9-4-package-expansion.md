@@ -1,8 +1,7 @@
 # Contract 061 Batch 9.4 Package Expansion
 
-Status: active planning evidence; candidates A, D, G, and H complete through
-cards 023, 024, 031, and 032; 249 rows proved and 518 remaining; candidate F
-still unpromoted after the `kimi-code.acp` gate stopped
+Status: resolved; superseded by g05.009 completion at all 767 rows (card 034
+plus cards 096-099); retained as the historical Batch 9.4 candidate ledger
 Owner: Tom
 Date: 2026-08-31
 
@@ -538,10 +537,13 @@ authority and does not compile Batch 9.5 early.
 
 ## All-Route Gate
 
-Batch 9.5 remains uncompiled. It may become ready only after candidates A-L
-are completed and one audit can reconcile 767 rows, 48 route IDs, 31 adapter
-packages, nine no-control routes, nine per-turn rows, and five exact
-acknowledgement rows without weakening any Contract 061 boundary.
+The reconciliation this gate described was reached without a separate Batch
+9.5. g05.009 closed at all 767 rows: card 034 realized candidate F's 89 rows,
+card 096 ruled the existing per-turn vocabulary sufficient for the remaining
+197 rows across candidates B, K, and L, and cards 097-099 completed them as
+one concurrent group over disjoint packages. The Batch 9.4 candidate ledger is
+retained as history only; it grants no execution authority and no later
+tranche is outstanding.
 
 ## Sources
 

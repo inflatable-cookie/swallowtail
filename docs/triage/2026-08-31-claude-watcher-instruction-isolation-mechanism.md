@@ -35,5 +35,5 @@ boundary. This note is not execution authority and does not select a mechanism.
 ## Next Canonical Home
 
 A new watcher planning milestone/card after an orchestrator readiness review.
-Until then g05.011 remains an evidence stop and card 024 owns the sole roadmap
-Next Task.
+Until then g05.011 remains an evidence stop and the sole actionable pointer
+stays in the [roadmaps front door](../roadmaps/README.md#next-task).

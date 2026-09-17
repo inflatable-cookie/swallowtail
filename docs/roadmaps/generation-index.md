@@ -369,7 +369,7 @@ acknowledgement plus exact bounded negotiated model options through one
 additive adapter-owned projected-open seam preserving the existing open
 method. The gate fixes exact names, signatures, state, source identity,
 lifecycle, failure preservation, and provider-free oracles. Card 032 completed
-candidate G through PR 144 at `18a6907e`. Contract 061 now has 249 proved rows
+candidate G through PR 144 at `18a6907e`. Contract 061 then had 249 proved rows
 and 518 remaining. Card 033 bound that result to the merged source — both
 commits resolve to one tree — repartitioned the census independently, and
 reassessed candidate F. F stops. Its 89 rows split 60 selection-summary, 22
@@ -443,7 +443,7 @@ official latest moved to `0.73.0`. Research 272 and g05.018 cards 044-045
 then qualify official `0.73.0` as a compatible extension of v7. Research 271's
 remaining family is Claude Code `2.1.257`. g05.019 cards 046-047 then
 qualify both Claude Code axes through official `2.1.257` while keeping watcher
-exact `2.1.251`. Coverage stays 249/518. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
+exact `2.1.251`. Coverage stood at 249/518 at that checkpoint. PR 130 merged exact reviewed head `63324b4f` through `3360d497`. No Darwin dispatch,
 overlapping watcher worker, orchestrator-side live selector, container
 backend, provider turn, later candidate, Batch 9.5 audit, generation rollover,
 or parked Bedrock work is authorized. Card 067 closed candidate J as promotable on 2026-09-04
@@ -457,7 +457,7 @@ carrier routes, the operator chose on 2026-09-04 to compile one shared
 provider-operation observation gate; card 070 is complete as planning evidence,
 Chatterbox promoted it into Contract 061 on 2026-09-04, and runtime baseline
 card 073 is merged. Candidate I is promoted as card 074 and Candidate E Path A
-as card 075. Cards 074 and 075 are complete at 481 proved rows. Card 076 settled the Kimi compound acknowledgement design and Card 079 realized the shared baseline; card 034 is complete and folded, and the Kimi follow-on scope awaits readiness at g05.009's task-owned gate. Research 284 compiled g05.028 card 077 for OpenCode HTTP
+as card 075. Cards 074 and 075 brought the census to 481 proved rows. Card 076 settled the Kimi compound acknowledgement design and Card 079 realized the shared baseline; card 034 is complete and folded, and the Kimi follow-on scope awaits readiness at g05.009's task-owned gate. Research 284 compiled g05.028 card 077 for OpenCode HTTP
 `1.18.28` identity-first currentness; g05.037 later qualified official `1.18.29`.
 
 ## Rollover Rule

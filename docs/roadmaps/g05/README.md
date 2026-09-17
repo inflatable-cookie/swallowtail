@@ -26,7 +26,7 @@ enforcement.
 | Promote architecture and contracts for any selected portable observation or control seam. | Contracts 058-060 promoted | evidence and operator decisions | g05.001; g05.003 |
 | Prove one skill-discovery route and one watcher-enforcement route without flattening provider behavior. | Qoder and Claude live proofs stopped; the card-020 Linux turn consumed; live claim withheld | Contracts 058-060; Research 256-261; card 011 live stop; g05.006; g05.007 | g05.002, g05.003, g05.006, and g05.007 |
 | Publish bounded consumer-facing observation without raw process or ambient-host leakage. | planned | selected activity and privacy contracts | after host registry and route proof |
-| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete; the per-turn audit note is reserved for Chatterbox's prune | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | g05.008; g05.009 |
+| Publish cohesive route-feature and control truth without adapter downcasts or execution-authority widening. | Contract 061 active with provider-operation observation; all 767 rows proved; cards 034, 074, 075, 076, 079, 097, 098, and 099 are complete | reviewed 767-row census; Contracts 037, 047, 057, 061; accepted realization and PR-review decisions; Batch 9.1, 9.4, and Kimi gates | g05.008; g05.009 |
 | Inventory skills from approved global, project-bound, and harness-distribution roots without inferring model visibility. | Contract 062 active; Spec 013 archived; card 025 complete; implementation unplanned | Contracts 058 and 062; explicit root authority, bounds, traversal, provenance, conflict, freshness, and disclosure decisions | g05.010 |
 | Recover watcher route admission before another live attempt. | stopped; cards 026 and 029 prove no exact flag shape; production unchanged; mechanism change unplanned | exact `2.1.251` help, fail-closed private fixtures, Contracts 059-060; PR 135 | g05.011 |
 | Keep production route versions current one family at a time. | campaign complete; all nineteen Research 308 families actioned through Research 327 and g05.079; Goose keeps exact `1.46.0` and Qoder keeps exact `1.1.25` as their selected-route provider-auth and turn-binding stops pending an operator ruling; Kiro advanced to exact `2.21.4`; Mistral Vibe advanced to exact `2.25.4` with an adapter-private `--legacy-harness` argv pin; Deep Agents advanced to exact `0.1.30` with the stdio wire unchanged; Antigravity advanced the catalogue claim to `1.2.2` and stopped headless at the `1.1.22` provider-retry stop under the release-notes authority ruling; Gemini advanced both the ACP and headless claims to maintained `0.51.0..=0.59.0` with the selected mapped sources byte-identical; Kimi installed headless advanced to maintained `0.33.0..=0.43.0` while ACP held the A2 `0.38.0` cap; Kimi local server extended the safe prefix to maintained `0.35.0..=0.39.1` and made uncontained `0.40.0..=0.43.0` fail closed under `QualifiedOnly`; Command Code's separate live requalification remains named in g05.069; Oh My Pi advanced the retained `17.x` segment to `17.2.9..=17.4.2` and admitted `18.0.0..=18.1.22` on a distinct private behavior revision | Contract 029; Research 217 and 308-327; Tom's 2026-09-14 and 2026-09-15 directions | g05.079 |
@@ -330,9 +330,10 @@ of exact effective/rejected Plan acknowledgement plus exact bounded negotiated
 model options through one additive adapter-owned projected-open seam while
 preserving `ClinePreparedSession::open_session`. The gate fixes its exact API,
 state, source, lifecycle, failure, and oracle boundary. Card 032 completed
-candidate G through PR 144 at `18a6907e`; 249 rows are now proved and 518
-remain. Card 033 then bound that result to the merged source and reassessed
-candidate F on current `main`. F stops: 86 of its 89 rows rest on proved
+candidate G through PR 144 at `18a6907e`; 249 rows stood proved and 518
+remained at that point. Card 033 then bound that result to the merged source
+and reassessed candidate F on current `main`. F stops: 86 of its 89 rows
+rest on proved
 prepared patterns, but three `kimi-code.acp` post-open rows fail rubric items
 2 and 3. Kimi discards both its reasoning and Plan confirmations, its
 reasoning value domain admits foreign catalogue rows so no exact rejected or
@@ -357,7 +358,7 @@ and platform catalogue model-selection correction are also retained. The gate
 re-derives F's four route ledgers as 74 emitted, 14 withheld, and 1 undecided
 across 89 rows as reassessment evidence only, leaves candidate F unpromoted, and leaves card
 034 planned; not ready; blocked by the provider-operation observation
-public-baseline decision. Coverage stays 249/518.
+public-baseline decision. Coverage stood at 249/518 at that checkpoint.
 
 g05.004 standing currentness closed Research 258 and cards 012-013 for Qwen
 `0.22.3` without moving the generation pointer. g05.060 then closed the second
@@ -430,8 +431,9 @@ session, and the existing runtime source, lifecycle, and view names cannot
 represent that completed query honestly. g05.009 is planned and
 `strict-paused`; its provider-operation observation decision remains queued.
 The corrected interim 89-row ledger is 74 emitted / 14 withheld / 1 undecided
-as reassessment evidence only; coverage stays 249/518. Research 263 separately
-selected Codex `0.152.0`. g05.013 cards 035-036 freeze identity then qualify
+as reassessment evidence only; coverage stood at 249/518 at that checkpoint.
+Research 263 separately selected Codex `0.152.0`. g05.013 cards 035-036 freeze
+identity then qualify
 exec and app-server through official `0.152.0`. Research 265 selected Claude
 Code `2.1.252`. g05.014 cards 037-038 freeze identity then qualify both Claude
 Code axes through official `2.1.252` while keeping watcher exact `2.1.251`.
@@ -476,8 +478,11 @@ evidence remain parked post-release, not a merged qualification. The installed
 Kimi ACP route remains QualifiedOnly at the A2 `0.38.0` cap, Gemini was
 then still deferred (Tom lifted that deferral on 2026-09-14 and g05.076
 completed both Gemini claims at `0.59.0`), watcher remains exact `2.1.251`,
-and the g05.009 card 034 stop remains;
-coverage is 481 proved / 286 remaining after cards 068, 069, 074, and 075.
+and the g05.009 card 034 stop remains; coverage stood at 481 proved / 286
+remaining after cards 068, 069, 074, and 075. The later card 034 candidate-F
+realization, the card 096 vocabulary ruling, and completed cards 097-099
+closed those 286 rows, so g05.009 now holds all 767 rows proved with no row
+outstanding.
 
 g05.021 owns the unpaused `v0.4.0` release-readiness runway. Immutable `v0.3.3`
 is 40 packages and 47 routes, and current source is still 40 packages against

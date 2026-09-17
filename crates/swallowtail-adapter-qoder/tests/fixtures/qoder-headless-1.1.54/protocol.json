@@ -1,0 +1,110 @@
+{
+  "fixture_schema": 1,
+  "artifact_revision": "1.1.54",
+  "route_id": "qoder.headless",
+  "protocol_facade_revision": "qoder.headless.stdio-stream-json-v1",
+  "selected_invocation": {
+    "argv": [
+      "qodercli",
+      "--print",
+      "--output-format",
+      "stream-json",
+      "--permission-mode",
+      "dont_ask",
+      "--max-turns",
+      "8",
+      "--no-session-persistence",
+      "--cwd",
+      "<cwd>",
+      "<prompt>"
+    ],
+    "prompt_argv_operand": true,
+    "stdin_prompt_unselected": true
+  },
+  "selected_presence_all_hops": {
+    "--print": true,
+    "--output-format": true,
+    "stream-json": true,
+    "--permission-mode": true,
+    "dont_ask": true,
+    "--max-turns": true,
+    "--no-session-persistence": true,
+    "--cwd": true,
+    "--acp": true,
+    "error_max_turns": true,
+    "Maximum turns exceeded": true,
+    "error_during_execution": true,
+    "Operation aborted": true,
+    "aborted_streaming": true,
+    "protocol_version": true,
+    "stream_event": true
+  },
+  "mode_dispatch": {
+    "remote_control_wins": true,
+    "acp_wins_over_print": true,
+    "sdk_requires_entrypoint_and_bidirectional_stream_json": true,
+    "print_or_prompt_selects_headless": true,
+    "flatten_onto_acp": false,
+    "flatten_onto_sdk_stdio": false,
+    "flatten_onto_tui": false
+  },
+  "max_turns_authority": {
+    "argv_value": "8",
+    "argv_value_is_agent_loop_ceiling": true,
+    "adapter_owned": true,
+    "explicitly_declared": true,
+    "bound_turns": 8,
+    "terminal_subtype": "error_max_turns",
+    "terminal_is_error": true,
+    "terminal_num_turns_equals_bound": true,
+    "terminal_mapping": "swallowtail.qoder.headless.max_turns"
+  },
+  "mapped_semantics_unchanged": {
+    "stream_json_ndjson": true,
+    "assistant_text_and_result_decoder": true,
+    "permission_mode_dont_ask": true,
+    "no_session_persistence": true,
+    "one_owned_stdio_child": true,
+    "abort_and_join_cleanup": true,
+    "host_process_deadline": true
+  },
+  "classified_deltas": {
+    "1.1.52..1.1.53": "qodercli.js and the provider-internal worker runtime changed; selected print, stream-json, permission, retention, abort, and effective max-turns semantics remain unchanged",
+    "1.1.53..1.1.54": "qodercli.js and the provider-internal worker runtime changed and two vendor/sites assets were added; the selected mapped semantics remain unchanged",
+    "max_turns_reopen": "the 1.1.30 authority change is now intentionally bound by adapter-owned --max-turns 8; reaching the bound emits result subtype error_max_turns with is_error true and num_turns 8",
+    "unselected_sites": "vendor/sites/artifact.json and vendor/sites/sites.zip are not selected by qoder.headless",
+    "skill_visibility": "package skill files and any newly bundled vendor surface remain outside selected-run visibility; Research 256 and the g05.039/g05.040 gate remain independent"
+  },
+  "unmapped_boundaries": {
+    "cli_options": [
+      "--acp",
+      "--sdk",
+      "--input-format stream-json",
+      "--output-format text",
+      "--output-format json",
+      "--yolo",
+      "--dangerously-skip-permissions",
+      "--continue",
+      "--resume",
+      "--session-id",
+      "--remote-control",
+      "--sandbox",
+      "--max-output-tokens",
+      "login",
+      "ide"
+    ],
+    "modes": ["acp", "sdk", "daemon", "remoteWorker", "interactive", "tui"],
+    "classification": "none is selected by the route argv"
+  },
+  "skill_visibility_disposition": {
+    "research": 256,
+    "deliver_now": "empty",
+    "g05_039_g05_040_gate_remains_independent": true
+  },
+  "live_evidence_disposition": {
+    "provider_operation": false,
+    "downloaded_artifact_executed": false,
+    "host_install_changed": false,
+    "live_print_run": false
+  }
+}

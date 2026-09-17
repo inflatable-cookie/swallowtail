@@ -1,0 +1,90 @@
+{
+  "fixture_schema": 1,
+  "compared": ["1.1.52", "1.1.53", "1.1.54"],
+  "package_file_counts": {"1.1.52": 28, "1.1.53": 28, "1.1.54": 30},
+  "path_union": [
+    "package/bundle/qoder-worker-runtime.mjs",
+    "package/bundle/qodercli.js",
+    "package/bundle/vendor/sites/artifact.json",
+    "package/bundle/vendor/sites/sites.zip",
+    "package/package.json"
+  ],
+  "from_hop_to_hop": {
+    "1.1.52..1.1.53": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/proto/chat.proto",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.53..1.1.54": {
+      "added": [
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip"
+      ],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/proto/chat.proto",
+        "package/postinstall.cjs"
+      ]
+    }
+  },
+  "hashes": {
+    "package/bundle/qodercli.js": {
+      "1.1.52": "ddeb47c2b4dd760b735af387a615d8946d0bc14e2455a20b75ae65409902a62b",
+      "1.1.53": "fc752d86a75d313f5f8cb6a0ca2dfcd558b636fad98df17307597afe17ae82ca",
+      "1.1.54": "d4fa03671e987d0d17cafc726e7e265fd9682a3fbe90c0e1ac0632c34891d417"
+    },
+    "package/bundle/qoder-worker-runtime.mjs": {
+      "1.1.52": "0d57be1e8201837592d42a6aa234cd90e0d45c7e22cf1ef98ebfaef937673293",
+      "1.1.53": "685d55d9f9526d4cb47e63be99ff418570ae9d4e27a10478ebe0886cb56dba70",
+      "1.1.54": "f0ca3b8b6d986b0a1edea55fd6556c74b872b5a95800733fe05850d50796def7"
+    },
+    "package/bundle/qoder-npm-dispatcher.cjs": {
+      "1.1.52": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.53": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.54": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120"
+    },
+    "package/bundle/proto/chat.proto": {
+      "1.1.52": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.53": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.54": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372"
+    },
+    "package/postinstall.cjs": {
+      "1.1.52": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.53": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.54": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220"
+    },
+    "package/package.json": {
+      "1.1.52": "cae138a1a490550553b60f2c26343de24729a197b10803faef0195158ec8996a",
+      "1.1.53": "4af56201cf7131f819578824357df417d354adf72b5064e41316683b9bb57220",
+      "1.1.54": "549e49bf4a97414b7d67d5fe3968c6e556a8691a36ee48c0d4b26ea6a2ab0f78"
+    },
+    "package/bundle/vendor/sites/artifact.json": {
+      "1.1.54": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46"
+    },
+    "package/bundle/vendor/sites/sites.zip": {
+      "1.1.54": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c"
+    }
+  },
+  "selected_file_classification": {
+    "package/bundle/qodercli.js": "changed at both hops; selected max-turns forwarding, stream-json result, permission, and print dispatch semantics remain present",
+    "package/bundle/qoder-worker-runtime.mjs": "provider-internal worker runtime; not selected by qoder.headless",
+    "package/bundle/vendor/sites/artifact.json": "added at 1.1.54; vendor site asset, not selected",
+    "package/bundle/vendor/sites/sites.zip": "added at 1.1.54; vendor site asset, not selected",
+    "package/package.json": "version and dependency metadata only"
+  }
+}

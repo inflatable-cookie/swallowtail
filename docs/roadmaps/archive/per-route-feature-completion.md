@@ -3,7 +3,7 @@
 Status: completed programme
 Owner: Tom
 Created: 2026-08-21
-Evidence: `../triage/2026-08-21-advanced-route-features.md`
+Evidence: `../../logs/2026-08-21-advanced-route-features.md`
 Live inventory: [Per-Route Feature Inventory](./per-route-feature-inventory.md)
 Governing refs: Contracts 011, 020, 024, 037, 040, 041, 047, 052
 

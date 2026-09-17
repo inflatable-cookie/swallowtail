@@ -22,7 +22,7 @@ invent a default, or own consumer UI and routing policy.
 ## Evidence Baseline
 
 The reviewed census in
-[`2026-08-30-consumer-route-feature-and-option-projection-census.csv`](../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
+[`2026-08-30-consumer-route-feature-and-option-projection-census.csv`](../../logs/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 contains 767 rows across all 48 current production routes:
 
 - 555 feature rows
@@ -37,7 +37,7 @@ four named route paths. Matrices remain documentation cross-checks, not runtime
 authority.
 
 The source analysis and unsafe-inference register remain in the
-[promoted triage note](../../triage/2026-08-30-consumer-route-feature-and-option-projection.md).
+[promoted triage note](../../logs/2026-08-30-consumer-route-feature-and-option-projection.md).
 
 ## Scope
 

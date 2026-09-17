@@ -2,7 +2,7 @@
 
 Date: 2026-09-04
 Roadmap: `../roadmaps/g05/009-contract-061-consumer-projection-realization.md`
-Gate: `../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md`
+Gate: `2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md`
 
 ## Decision
 

@@ -18,7 +18,7 @@ The operator selected **A2** on 2026-09-01: indefinite `QualifiedOnly` cap at
 follow-on claim change. No further operator question is returned.
 
 The
-[containment and mediation gate](../../triage/2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md)
+[containment and mediation gate](../../logs/2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md)
 holds the re-derived failure path, the actor ledger, the mutually exclusive
 choices, the per-choice analysis, the proved uncertainties, the review oracle,
 and the single question. The operator recorded **A2**; the gate's section-4

@@ -260,6 +260,6 @@ contact or live probe belongs to the card.
 
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
 - [Batch 9.4 package expansion](2026-08-31-contract-061-batch-9-4-package-expansion.md)
-- [completed card 031](../roadmaps/g05/batch-cards/031-contract-061-claude-agent-package-and-acknowledgement.md)
+- [completed card 031](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [reviewed census](2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Batch 9.1 public baseline](2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)

@@ -263,7 +263,7 @@ nine numbered roadmaps. The operator selected a planning-only Contract 061
 realization-readiness inventory before any implementation card.
 
 The
-[realization-readiness inventory](../../triage/2026-08-31-contract-061-realization-readiness-inventory.md)
+[realization-readiness inventory](../../logs/2026-08-31-contract-061-realization-readiness-inventory.md)
 is drafted. It confirms the current adapters -> runtime -> core import
 direction, the 48-route and 767-row coverage obligation, and the need for a
 projection-specific admission bound. It recommends a runtime-owned normalized
@@ -272,7 +272,7 @@ library projection maxima, and a Codex app-server plus OpenAI Realtime first
 proof before package-coherent all-route expansion. Those package, API, bound,
 coverage, and tranche choices were all accepted by the operator on 2026-08-31.
 g05.009 compiles the realization runway. Its
-[Batch 9.1 gate](../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
+[Batch 9.1 gate](../../logs/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
 selects the shared runtime names and composer shape, fixed numeric maxima,
 admission failures, replacement behavior, fixtures, validation, and stops.
 OpenAI Realtime privately validates and then discards its exact

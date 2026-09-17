@@ -576,8 +576,8 @@ and `git diff --check`.
 
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
 - [Batch 9.4 package expansion](2026-08-31-contract-061-batch-9-4-package-expansion.md)
-- [completed card 033](../roadmaps/g05/batch-cards/033-contract-061-card-032-closeout-and-kimi-reassessment.md)
-- [planned card 034](../roadmaps/g05/batch-cards/034-contract-061-kimi-package-completion.md)
+- [completed card 033](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
+- [planned card 034](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [reviewed census](2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Batch 9.1 public baseline](2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
 - [Claude Agent acknowledgement gate](2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)

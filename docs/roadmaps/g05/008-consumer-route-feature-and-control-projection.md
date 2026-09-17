@@ -89,7 +89,7 @@ realization claim, or implementation card follows.
 
 - [Spec 012](../../specs/archive/012-consumer-route-feature-and-control-projection.md)
 - [Contract 061](../../contracts/061-consumer-route-feature-and-control-projection.md)
-- [Projection triage and census synthesis](../../triage/2026-08-30-consumer-route-feature-and-option-projection.md)
+- [Projection triage and census synthesis](../../logs/2026-08-30-consumer-route-feature-and-option-projection.md)
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Contract 047 Configured Provider Instance Catalogue](../../contracts/047-configured-provider-instance-catalogue.md)
 - [Contract 057 Route Readiness And Connection Admission](../../contracts/057-route-readiness-and-connection-admission.md)

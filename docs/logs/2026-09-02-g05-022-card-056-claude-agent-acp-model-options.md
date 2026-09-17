@@ -65,5 +65,5 @@ No provider, live, release, tag, or merge work.
 
 - [card 056](../roadmaps/g05/022-claude-agent-dual-route-parity.md)
 - [Research 279](../research/279-claude-agent-acp-capability-census-and-tranche-selection.md)
-- [ACP parity delivery gate](../triage/2026-09-02-claude-agent-acp-parity-gate.md)
+- [ACP parity delivery gate](2026-09-02-claude-agent-acp-parity-census-and-delivery-gate.md)
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)

@@ -196,7 +196,7 @@ provider contact belongs to the card.
 ## Authority
 
 - [Contract 061](../contracts/061-consumer-route-feature-and-control-projection.md)
-- [Card 030 stop](../roadmaps/g05/batch-cards/030-contract-061-acknowledgement-candidate-reassessment.md)
+- [Card 030 stop](../roadmaps/g05/009-contract-061-consumer-projection-realization.md)
 - [Batch 9.4 package expansion](2026-08-31-contract-061-batch-9-4-package-expansion.md)
 - [reviewed census](2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Batch 9.1 public baseline](2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)

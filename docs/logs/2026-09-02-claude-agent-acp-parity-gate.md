@@ -32,5 +32,5 @@ final worker head. No provider or live validation was authorized.
 ## Authority
 
 - [Research 279](../research/279-claude-agent-acp-capability-census-and-tranche-selection.md)
-- [ACP parity delivery gate](../triage/2026-09-02-claude-agent-acp-parity-gate.md)
+- [ACP parity delivery gate](2026-09-02-claude-agent-acp-parity-census-and-delivery-gate.md)
 - [card 054](../roadmaps/g05/022-claude-agent-dual-route-parity.md)

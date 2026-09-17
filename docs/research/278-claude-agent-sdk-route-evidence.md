@@ -1,7 +1,7 @@
 # 278 Claude Agent SDK Route Evidence
 
 Status: evidence gate; contract proposal in
-`../triage/2026-09-02-claude-agent-sdk-route-contract-gate.md`
+`../logs/2026-09-02-claude-agent-sdk-route-contract-gate.md`
 Owner: Tom
 Date: 2026-09-02
 Card: g05 batch 053
@@ -761,7 +761,7 @@ One Contract 019 lifecycle gap is real and is not fixed by current contracts:
 close is specified against a single sidecar process, with no bound, no
 escalation, and no required join outcome, while the route owns a descendant
 tree. The proposed provider-neutral invariant is in
-`../triage/2026-09-02-claude-agent-sdk-route-contract-gate.md`.
+`../logs/2026-09-02-claude-agent-sdk-route-contract-gate.md`.
 
 That gap cannot be closed by using the SDK correctly. The SDK supplies a
 bounded wait attempt whose outcome is discarded, not a joined stop, so the

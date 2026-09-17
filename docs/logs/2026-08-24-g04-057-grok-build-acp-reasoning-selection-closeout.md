@@ -80,7 +80,7 @@ Applied by the orchestrator after the fast-forward merge:
   No; no claim edit
 - per-route programme: record the evidence stop and reassessment boundary;
   changelog: no feature delivery
-- `docs/triage/2026-08-21-advanced-route-features.md` `grok-build.acp` block:
+- `docs/logs/2026-08-21-advanced-route-features.md` `grok-build.acp` block:
   drop the "Changelog: ACP clients can specify reasoning effort when opening
   or resuming (Grok Build 1.0.x)" lead. Frozen changelog pages do not contain
   that sentence. Official ACP docs do not document an effort field. Exact

@@ -95,7 +95,7 @@ topology, and route/guide contracts without a PR change.
   blocked
 - architecture/contracts/matrix/guide: no claim edit; `--model` remains not
   passed
-- `docs/triage/2026-08-21-advanced-route-features.md` Deep Agents model row:
+- `docs/logs/2026-08-21-advanced-route-features.md` Deep Agents model row:
   record Research 206 empty stop
 - g04 remains open; no rollover
 

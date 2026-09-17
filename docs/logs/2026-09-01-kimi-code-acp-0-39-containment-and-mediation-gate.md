@@ -661,6 +661,6 @@ The gate itself was planning-only. Card 043 owns the claim-change validation.
 - [Research 259](../research/259-process-containment-backend-evidence.md)
 - [Research 011](../research/011-kimi-macos-app-sandbox-runtime-compatibility.md)
 - [completed g05.016](../roadmaps/g05/016-kimi-code-0-39-1-useful-newer.md)
-- [completed card 041](../roadmaps/g05/batch-cards/041-kimi-code-0-39-1-identity.md)
-- [completed card 042](../roadmaps/g05/batch-cards/042-kimi-code-0-39-1-claim.md)
+- [completed card 041](../roadmaps/g05/016-kimi-code-0-39-1-useful-newer.md)
+- [completed card 042](../roadmaps/g05/016-kimi-code-0-39-1-useful-newer.md)
 - [standing lanes](../roadmaps/standing-lanes.md)

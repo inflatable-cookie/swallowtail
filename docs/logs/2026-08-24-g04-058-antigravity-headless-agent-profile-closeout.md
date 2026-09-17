@@ -96,7 +96,7 @@ Applied by the orchestrator after the fast-forward merge:
   blocked
 - architecture/contracts/matrix/guide: no claim edit; `--agent` remains not
   passed
-- `docs/triage/2026-08-21-advanced-route-features.md` Antigravity agent-profile
+- `docs/logs/2026-08-21-advanced-route-features.md` Antigravity agent-profile
   row: record Research 205 empty stop without projecting live incidents onto
   the qualified range
 - g04 remains open; no rollover

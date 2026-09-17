@@ -1,7 +1,7 @@
 # 2026-09-01 Kimi Code ACP QualifiedOnly Cap
 
 Card: g05.017 batch 043
-Gate: [containment and mediation](../triage/2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md)
+Gate: [containment and mediation](2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md)
 
 ## What changed
 

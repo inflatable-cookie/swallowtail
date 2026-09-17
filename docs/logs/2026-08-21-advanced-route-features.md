@@ -2583,7 +2583,7 @@ default/stored behavior.
 ## Post-g04.081 Inventory Normalization (2026-08-27)
 
 Disposition: promoted to the
-[live per-route feature inventory](../roadmaps/g04/per-route-feature-inventory.md).
+[live per-route feature inventory](../roadmaps/archive/per-route-feature-inventory.md).
 
 The original 85 numbered pairs now have one maintained disposition: 41 are
 closed by numbered delivery, evidence-stop, correction, or withhold lanes; 34

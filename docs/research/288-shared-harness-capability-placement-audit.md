@@ -134,7 +134,7 @@ fresh Desktop attempt, and mutating or indeterminate calls never replay.
 - Grok permission and session fixtures:
   `crates/swallowtail-adapter-grok/tests/acp/`
 - route projection census:
-  `docs/triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv`
+  `docs/logs/2026-08-30-consumer-route-feature-and-option-projection-census.csv`
 
 No live provider, credential, consumer, server, or network operation was used.
 `effigy test --plan` resolves to `cargo nextest run --workspace`; no test suite

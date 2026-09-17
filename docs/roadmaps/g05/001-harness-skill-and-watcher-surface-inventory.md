@@ -76,7 +76,7 @@ promotion.
 ## References
 
 - [Research 255 Production Harness Skill And Watcher Surface Census](../../research/255-production-harness-skill-and-watcher-surface-census.md)
-- [Harness Skill Discovery And Process Watchers](../../triage/2026-08-27-harness-skill-discovery-and-process-watchers.md)
+- [Harness Skill Discovery And Process Watchers](../../logs/2026-08-27-harness-skill-discovery-and-process-watchers.md)
 - [Contract 013 Interactive Session Access Policy](../../contracts/013-interactive-session-access-policy.md)
 - [Contract 017 Provider-Owned Session Load](../../contracts/017-provider-owned-session-load-replay-and-host-containment.md)
 - [Contract 023 Harness Isolation](../../contracts/023-harness-operation-isolation-and-native-boundary.md)

@@ -66,7 +66,7 @@ family as a shipped reasoning control:
 - `CHANGELOG.md`: unchanged; no feature shipped.
 - `docs/roadmaps/g04/per-route-feature-completion.md`: marks g04.040 stopped
   / withheld, not delivered.
-- `docs/triage/2026-08-21-advanced-route-features.md`: records that Copilot CLI
+- `docs/logs/2026-08-21-advanced-route-features.md`: records that Copilot CLI
   ACP effort is no longer a deliver-now candidate on this package without a
   model route.
 - `docs/roadmaps/README.md` and `docs/roadmaps/g04/README.md`: move Next Task

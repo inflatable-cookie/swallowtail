@@ -113,7 +113,7 @@ Completed by the orchestrator after the fast-forward merge:
 - `CHANGELOG.md`: unchanged; no feature shipped.
 - `docs/roadmaps/g04/per-route-feature-completion.md`: mark g04.042 stopped /
   withheld, not delivered.
-- `docs/triage/2026-08-21-advanced-route-features.md`: record that Cline
+- `docs/logs/2026-08-21-advanced-route-features.md`: record that Cline
   thinking is no longer a deliver-now candidate on this package point.
 - `docs/roadmaps/README.md` and `docs/roadmaps/g04/README.md`: move the sole
   Next Task off g04.042 to the next selected route family.

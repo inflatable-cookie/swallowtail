@@ -2,7 +2,7 @@
 
 Card 053 froze the native `claude-agent.sdk` evidence and contract gate.
 Research 278 records it; the contract proposal is in
-`../triage/2026-09-02-claude-agent-sdk-route-contract-gate.md`.
+`2026-09-02-claude-agent-sdk-route-contract-gate.md`.
 
 Official subscription guidance was rechecked immediately before artifact
 freeze and is unchanged: Agent SDK, `claude -p`, and third-party app usage

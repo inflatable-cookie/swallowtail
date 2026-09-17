@@ -127,7 +127,7 @@ or mutation authority.
 - [x] bind cross-access agreement, exact-tranche withholding, and the measured
       391/7/42/342 god-file baseline into card 022 acceptance
 
-The [Batch 9.1 gate](../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
+The [Batch 9.1 gate](../../logs/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
 records the selected maxima, exact route-local surface, and strict-ready
 result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 
@@ -200,7 +200,7 @@ result. Card 022 owns Batches 9.2 and 9.3 as one inseparable evidence tranche.
 - [ ] make no route support or mutation claim from documentation-only evidence
 
 The
-[Batch 9.4 package-expansion checkpoint](../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
+[Batch 9.4 package-expansion checkpoint](../../logs/2026-08-31-contract-061-batch-9-4-package-expansion.md)
 assigns all 716 remaining rows exactly once across candidates A-L. Each owns
 the complete remainder for one to four adapter packages and stays within 35 to
 94 rows. Candidate A passed the full façade, ledger, dependency, validation,
@@ -219,7 +219,7 @@ public-baseline gate scoped to `claude-agent.acp` alone: adapter-local exact
 effective and rejected retention plus one additive adapter-owned
 open-with-projection outcome and failure preserving the existing
 `open_session`. The
-[gate](../../triage/2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)
+[gate](../../logs/2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)
 fixes the exact public signatures, source split, state transitions, malformed
 failure boundary, and provider-free oracle. Candidate D passed the rubric and
 card 031 completed its exact 53-row proof through PR 141 at `5d1f173a`. The
@@ -228,7 +228,7 @@ post-open families. The operator approved G's narrower Cline route-local
 baseline: exact effective/rejected Plan acknowledgement plus exact bounded
 negotiated model options through one additive adapter-owned projected-open
 seam. The
-[Cline gate](../../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
+[Cline gate](../../logs/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
 fixes names, signatures, typed state, source identities, lifecycle, failure
 preservation, and falsifiable oracles. Candidate G passed the promotion rubric
 and card 032 merged through PR 144 at `18a6907e`, proving 11/8/11/9/9 rows with
@@ -241,7 +241,7 @@ descriptor-only activity. The remaining three sit on `kimi-code.acp` alone.
 `driver/mode.rs` freezes the Plan domain while the reasoning path confirms
 first. Negotiated model options are already retained on `KimiSessionHandle`.
 Card 033 named the original Kimi gate. The
-[Kimi gate](../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+[Kimi gate](../../logs/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
 retains the adapter-owned projected-open evidence and the unresolved generic
 half-to-state problem. Cards 070 and 073 closed the separate provider-operation
 catalogue seam. The four route ledgers now target 75 emitted and 14 withheld
@@ -348,14 +348,14 @@ the three, each card appending its own entry.
 
 - [Contract 061 Consumer Route Feature And Control Projection](../../contracts/061-consumer-route-feature-and-control-projection.md)
 - [g05.008 contract promotion](008-consumer-route-feature-and-control-projection.md)
-- [realization-readiness inventory](../../triage/2026-08-31-contract-061-realization-readiness-inventory.md)
-- [Batch 9.1 public baseline gate](../../triage/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
-- [Batch 9.4 package-expansion checkpoint](../../triage/2026-08-31-contract-061-batch-9-4-package-expansion.md)
-- [Claude Agent acknowledgement public-baseline gate](../../triage/2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)
-- [Cline active-observation public-baseline gate](../../triage/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
-- [Kimi active-observation public-baseline gate stop](../../triage/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
-- [Codex exec output-token census-source question](../../triage/2026-08-31-codex-exec-output-token-census-source.md)
-- [consumer projection census](../../triage/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
+- [realization-readiness inventory](../../logs/2026-08-31-contract-061-realization-readiness-inventory.md)
+- [Batch 9.1 public baseline gate](../../logs/2026-08-31-contract-061-batch-9-1-public-baseline-gate.md)
+- [Batch 9.4 package-expansion checkpoint](../../logs/2026-08-31-contract-061-batch-9-4-package-expansion.md)
+- [Claude Agent acknowledgement public-baseline gate](../../logs/2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md)
+- [Cline active-observation public-baseline gate](../../logs/2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md)
+- [Kimi active-observation public-baseline gate stop](../../logs/2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md)
+- [Codex exec output-token census-source question](../../logs/2026-08-31-codex-exec-output-token-census-source.md)
+- [consumer projection census](../../logs/2026-08-30-consumer-route-feature-and-option-projection-census.csv)
 - [Contract 037 Prepared Consumer Integration](../../contracts/037-prepared-consumer-integration.md)
 - [Contract 047 Configured Provider Instance Catalogue](../../contracts/047-configured-provider-instance-catalogue.md)
 - [Contract 057 Route Readiness And Connection Admission](../../contracts/057-route-readiness-and-connection-admission.md)

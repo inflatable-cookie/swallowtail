@@ -1035,3 +1035,27 @@ then conformance closeout.
 - [2026-07-19 Codex App-Server Tool Callbacks](./2026-07-19-codex-app-server-tool-callbacks.md)
 - [2026-07-19 Nucleus Topology and Lifecycle Proof](./2026-07-19-nucleus-topology-and-lifecycle-proof.md)
 - [2026-07-19 Nucleus Adoption Handoff](./2026-07-19-nucleus-adoption-handoff.md)
+
+### Re-homed Planning Records
+
+Gate, census, inventory, and audit records promoted out of `docs/triage/` when
+that directory was reduced to unresolved intake only. Each keeps its original
+capture date. They are cited as provenance by contracts, roadmaps, and specs,
+and they are history rather than work-session entries; git history and the
+promoting commit preserve how each arrived.
+
+- [2026-09-02 Claude Agent SDK Route Contract Gate](./2026-09-02-claude-agent-sdk-route-contract-gate.md) — proposed the Contract 019 descendant-tree amendment and the Contract 029 family note from Research 278; promoted into Contract 019
+- [2026-09-02 Claude Agent ACP Parity Census And Delivery Gate](./2026-09-02-claude-agent-acp-parity-census-and-delivery-gate.md) — card 054's no-filter `claude-agent.acp` bridge census; negotiated model-options observation named as the only adapter-only next tranche; evidence-only, no production change
+- [2026-09-01 Kimi Code ACP 0.39 Containment And Mediation Gate](./2026-09-01-kimi-code-acp-0-39-containment-and-mediation-gate.md) — operator selected A2; capped `kimi-code.acp` at exact `QualifiedOnly` `0.38.0` with one artifact-level upstream reopen trigger
+- [2026-09-01 Contract 061 Kimi Active Observation Public Baseline Gate](./2026-09-01-contract-061-kimi-active-observation-public-baseline-gate.md) — five first-round route-local decisions for the `kimi-code.acp` post-open rows; stopped on the provider-operation observation vocabulary and was realized by card 034
+- [2026-09-01 Contract 061 Cline Active Observation Public Baseline Gate](./2026-09-01-contract-061-cline-active-observation-public-baseline-gate.md) — Cline adapter-local Plan acknowledgement plus bounded negotiated model options behind one additive projected-open seam; card 032
+- [2026-08-31 Contract 061 Realization Readiness Inventory](./2026-08-31-contract-061-realization-readiness-inventory.md) — package, API, bound, coverage, and tranche forks; the operator accepted all four recommended option 1 decisions and g05.009 compiled them
+- [2026-08-31 Contract 061 Claude Agent Acknowledgement Public Baseline Gate](./2026-08-31-contract-061-claude-agent-acknowledgement-public-baseline-gate.md) — Claude Agent adapter-local effective/rejected retention plus one additive open-with-projection result; card 031
+- [2026-08-31 Contract 061 Batch 9.4 Package Expansion](./2026-08-31-contract-061-batch-9-4-package-expansion.md) — partitioned the 716-row remainder into twelve bounded candidates; resolved and superseded when g05.009 closed at all 767 rows
+- [2026-08-31 Contract 061 Batch 9.1 Public Baseline Gate](./2026-08-31-contract-061-batch-9-1-public-baseline-gate.md) — shared runtime names, composer shape, fixed maxima, admission failures, replacement, fixtures, validation, and stops; card 022
+- [2026-08-31 Codex Exec Output Token Census Source](./2026-08-31-codex-exec-output-token-census-source.md) — resolved; the Codex output-token row is route-rejected descriptor-only evidence, so no Codex control is created
+- [2026-08-30 Consumer Route Feature And Option Projection](./2026-08-30-consumer-route-feature-and-option-projection.md) — census synthesis promoted into Contract 061 and archived Spec 012
+- [2026-08-30 Consumer Projection Census](./2026-08-30-consumer-route-feature-and-option-projection-census.csv) — the reviewed 767-row census source (CSV, so it carries no index entry)
+- [2026-08-27 Harness Skill Discovery And Process Watchers](./2026-08-27-harness-skill-discovery-and-process-watchers.md) — bounded skill-discovery and process-watcher census promoted into Contracts 058 and 059
+- [2026-08-21 Advanced Route Features](./2026-08-21-advanced-route-features.md) — the per-route feature corpus cited as evidence by the archive roll-ups
+- [2026-08-19 Route Readiness Facade](./2026-08-19-route-readiness-facade.md) — the route-availability facade, add-connection, and admitted-instance request promoted into g04

@@ -15,15 +15,9 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Reassess the active generation now that Tom's authorized Research 308
-currentness campaign is complete through Oh My Pi `18.1.22` (g05.079,
-Research 327). All nineteen families were actioned: eighteen advanced, and
-Goose and Qoder keep their exact `QualifiedOnly` points at their selected-
-route provider-auth and turn-binding stops. Tom recorded the two binding
-rulings on 2026-09-17, so those two families now have reopen lanes to compile
-and no currentness family is otherwise ready. Do not keep the generation open
-for currentness, and do not infer release, tag, publication, live-provider, or
-consumer authority.
+Implement g05.081 Goose 1.50.0 failure-binding reopen. Qoder g05.080 is
+complete at exact `1.1.54`; Goose remains the one currentness reopen lane. Do
+not infer release, tag, publication, live-provider, or consumer authority.
 
 ## Standing Lanes
 

@@ -505,20 +505,19 @@ fn bounded_unmapped_surfaces_and_the_independent_skill_stop_are_recorded() {
 }
 
 #[test]
-fn the_production_claim_still_binds_the_exact_baseline_and_no_newer_point() {
+fn the_production_claim_rejects_the_historical_stop_and_binds_current_point() {
     let identity = fixture(IDENTITY, "identity");
     assert_eq!(identity["identity_decision"]["claim_change"], false);
-    assert_eq!(QODER_PACKAGE_VERSION, BASELINE);
-    assert_eq!(
-        identity["claim_at_observation"]["point"],
-        QODER_PACKAGE_VERSION
-    );
+    assert_eq!(QODER_PACKAGE_VERSION, "1.1.54");
+    assert_eq!(identity["claim_at_observation"]["point"], BASELINE);
 
     let claim = qoder_headless_claim();
     let baseline = InterfaceVersion::new(BASELINE).expect("baseline");
     let official = InterfaceVersion::new(OFFICIAL).expect("official");
-    assert!(claim.assess(&baseline).is_permitted());
+    let current = InterfaceVersion::new(QODER_PACKAGE_VERSION).expect("current");
+    assert!(!claim.assess(&baseline).is_permitted());
     assert!(!claim.assess(&official).is_permitted());
+    assert!(claim.assess(&current).is_permitted());
     assert!(
         !claim
             .assess(&InterfaceVersion::new("1.1.26").expect("next"))

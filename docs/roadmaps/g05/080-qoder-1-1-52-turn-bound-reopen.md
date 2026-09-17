@@ -1,6 +1,6 @@
 # g05.080 Qoder 1.1.52 Turn-Bound Reopen
 
-Status: ready
+Status: complete
 Owner: Tom
 Created: 2026-09-17
 Governing refs: Contract 029; Contracts 017 and 023
@@ -26,7 +26,7 @@ the `error_max_turns` terminal shape is recorded in the Qoder prepared guide.
 - [x] Scope, acceptance, validation, evidence, and stop conditions are explicit.
 - [x] Review oracle is present because the claim is exact, version-bound, and
   partly negative.
-- [ ] Official stable is re-probed immediately before the identity commit.
+- [x] Official stable is re-probed immediately before the identity commit.
 
 ## Decisions
 
@@ -102,6 +102,19 @@ and its documentation.
 On completion, record the identity ledger, the chosen bound and rationale, the
 fixture result, validation actually run, PR link, reviewed exact head, merge
 commit, and any material limit.
+
+## Result
+
+Research 328 froze official npm `@qoder-ai/qodercli@1.1.54` after the `1.1.52`
+stop. The route fixes an explicit adapter-owned `--max-turns 8` AgentLoop
+ceiling, and the mutation-sensitive current fixture binds
+`error_max_turns` / `is_error: true` / `num_turns: 8` to the
+`swallowtail.qoder.headless.max_turns` provider failure. The claim is one exact
+`QualifiedOnly` point at `1.1.54` on
+`qoder.headless.stdio-stream-json-v2`; `1.1.25` is retained only as historical
+decoder evidence. `cargo fmt --check`, focused Qoder validation (52 tests),
+affected-package verification, route QA, Northstar QA, and the research, logs,
+roadmaps, and next-action index checks passed.
 
 ## Next task
 

@@ -19,7 +19,7 @@ fn frozen_identity_keeps_print_stream_json_separate_from_acp_sdk_and_yolo() {
     let identity: Value = serde_json::from_str(IDENTITY).expect("identity fixture");
     assert_eq!(identity["axis"], "qoder.package");
     assert_eq!(identity["route"], "qoder.headless");
-    assert_eq!(identity["official"]["version"], QODER_PACKAGE_VERSION);
+    assert_eq!(identity["official"]["version"], "1.1.25");
     assert_eq!(identity["identity_decision"]["flatten_onto_acp"], false);
     assert_eq!(
         identity["identity_decision"]["flatten_onto_sdk_stdio"],

@@ -1,7 +1,5 @@
-/// Historical inert argv value for `--max-turns`. Exact `1.1.25` selected CLI
-/// headless factory hardcodes AgentLoop `maxTurns` to `1000`; this string only
-/// populates Config `maxSessionTurns` (text-error formatter). The host process
-/// deadline is the Swallowtail timeout.
+/// Deliberate adapter-owned AgentLoop ceiling for the exact `1.1.54` route.
+/// The host process deadline remains the independent Swallowtail timeout.
 pub(crate) const MAXIMUM_TURNS: &str = "8";
 
 /// Headless argv. ACP, SDK stdio, TUI, yolo, and session restore stay out.

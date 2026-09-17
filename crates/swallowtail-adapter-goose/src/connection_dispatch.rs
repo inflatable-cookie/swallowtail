@@ -29,7 +29,12 @@ impl AcpConnection {
                 )
             })?;
         sender.complete(result.map_err(|error| {
-            if error.message().contains("Failed to resolve provider")
+            if error.message() == "auth_required" {
+                failure(
+                    "swallowtail.goose.acp.auth_required",
+                    "Goose requires host-owned credentials before ACP work",
+                )
+            } else if error.message().contains("Failed to resolve provider")
                 || error.message().contains("Failed to resolve model")
             {
                 failure(

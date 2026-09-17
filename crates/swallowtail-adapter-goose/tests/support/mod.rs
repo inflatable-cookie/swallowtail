@@ -9,7 +9,8 @@ use std::{
     thread::JoinHandle,
 };
 use swallowtail_adapter_goose::{
-    goose_acp_descriptor, goose_local_config_access_profile, goose_release_binding,
+    GOOSE_RELEASE_VERSION, goose_acp_descriptor, goose_local_config_access_profile,
+    goose_release_binding,
 };
 use swallowtail_core::{
     AccessProfileId, AccessRequirement, AccessStatus, AdapterId, Capability, CapabilityConstraint,
@@ -39,7 +40,7 @@ pub struct FixtureHost {
 
 impl FixtureHost {
     pub fn new(scenario: Scenario) -> Self {
-        Self::with_version(scenario, "1.46.0")
+        Self::with_version(scenario, GOOSE_RELEASE_VERSION)
     }
 
     pub fn with_version(scenario: Scenario, version: &str) -> Self {

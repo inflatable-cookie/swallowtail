@@ -1,7 +1,7 @@
-//! Identity and stop evidence for official Goose `1.50.0` (g05.071).
+//! Historical identity and currentness evidence for the Goose ACP route.
 //!
-//! This corpus is the smallest honest provider-free counterexample that keeps
-//! the exact `goose.release` point at `1.46.0`: at the hop `1.46.0..1.47.0`
+//! The historical corpus records the original `1.46.0` stop. Currentness
+//! extends it through official `1.50.1`; at the hop `1.46.0..1.47.0`
 //! provider-authentication failure stops being generic text plus `end_turn`
 //! and becomes a typed JSON-RPC `auth_required` error on the selected
 //! `session/new` and `session/prompt` paths. The assertions here are
@@ -16,9 +16,11 @@ use swallowtail_core::InterfaceVersion;
 const IDENTITY: &str = include_str!("fixtures/goose-acp-1.50.0/identity.json");
 const LEDGER: &str = include_str!("fixtures/goose-acp-1.50.0/tree-ledger.json");
 const PROTOCOL: &str = include_str!("fixtures/goose-acp-1.50.0/protocol.json");
+const CURRENTNESS: &str = include_str!("fixtures/goose-acp-1.50.1/currentness.json");
 
 const BASELINE: &str = "1.46.0";
-const OFFICIAL: &str = "1.50.0";
+const HISTORICAL_OFFICIAL: &str = "1.50.0";
+const OFFICIAL: &str = "1.50.1";
 
 fn fixture(body: &str, name: &str) -> Value {
     serde_json::from_str(body).unwrap_or_else(|error| panic!("{name}: {error}"))
@@ -49,13 +51,16 @@ fn identity_freezes_the_baseline_and_every_published_stable_successor() {
     let identity = fixture(IDENTITY, "identity");
     assert_eq!(identity["axis"], "goose.release");
     assert_eq!(identity["route"], "goose.acp");
-    assert_eq!(identity["official"]["version"], OFFICIAL);
+    assert_eq!(identity["official"]["version"], HISTORICAL_OFFICIAL);
     assert_eq!(identity["official"]["published_at"], "2026-09-08T19:32:41Z");
     assert_eq!(
         identity["official"]["github_tag_object"],
         "4cc49a8485f7960efeceba37ac5f572459c52c7c"
     );
-    assert_eq!(identity["official"]["workspace_version"], OFFICIAL);
+    assert_eq!(
+        identity["official"]["workspace_version"],
+        HISTORICAL_OFFICIAL
+    );
     assert_eq!(identity["published_stable_count"], 4);
     let compared: Vec<&str> = identity["compared"]
         .as_array()
@@ -65,7 +70,7 @@ fn identity_freezes_the_baseline_and_every_published_stable_successor() {
         .collect();
     assert_eq!(
         compared,
-        vec![BASELINE, "1.47.0", "1.48.0", "1.49.0", OFFICIAL]
+        vec![BASELINE, "1.47.0", "1.48.0", "1.49.0", HISTORICAL_OFFICIAL]
     );
     let points = identity["points"].as_object().expect("points");
     assert_eq!(points.len(), 5);
@@ -86,7 +91,7 @@ fn identity_freezes_the_baseline_and_every_published_stable_successor() {
         "71fc4be1ed729e26b1dc0a4466abdd03be548a53"
     );
     assert_eq!(
-        points[OFFICIAL]["github_tag_object"],
+        points[HISTORICAL_OFFICIAL]["github_tag_object"],
         "4cc49a8485f7960efeceba37ac5f572459c52c7c"
     );
     assert_eq!(identity["host"]["present"], false);
@@ -243,15 +248,68 @@ fn protocol_freezes_the_stop_boundary_and_the_stable_surface() {
 }
 
 #[test]
-fn production_claim_stays_exact_1_46_0_qualified_only() {
-    assert_eq!(GOOSE_RELEASE_VERSION, BASELINE);
+fn production_claim_reopens_at_exact_1_50_1_with_typed_auth_revision() {
+    assert_eq!(GOOSE_RELEASE_VERSION, OFFICIAL);
     let claim = goose_acp_claim();
     let baseline = InterfaceVersion::new(BASELINE).expect("baseline");
     let official = InterfaceVersion::new(OFFICIAL).expect("official");
-    let stop_hop = InterfaceVersion::new("1.47.0").expect("stop hop");
-    assert!(claim.assess(&baseline).is_permitted());
-    assert!(!claim.assess(&official).is_permitted());
-    assert!(!claim.assess(&stop_hop).is_permitted());
-    assert!(goose_release_binding(BASELINE).is_some());
-    assert!(goose_release_binding(OFFICIAL).is_none());
+    assert!(!claim.assess(&baseline).is_permitted());
+    let assessment = claim.assess(&official);
+    assert!(assessment.is_permitted());
+    assert_eq!(
+        assessment.behavior_revision().expect("behavior").as_str(),
+        "goose.acp.stdio-v2.auth-required"
+    );
+    assert!(goose_release_binding(OFFICIAL).is_some());
+}
+
+#[test]
+fn currentness_fixture_reproves_typed_failure_binding_through_official_patch() {
+    let currentness = fixture(CURRENTNESS, "currentness");
+    assert_eq!(currentness["official"]["version"], OFFICIAL);
+    assert_eq!(
+        currentness["official"]["github_tag_object"],
+        "881f96c00d618ab6fca9b2aaa3a0abf07673cc2c"
+    );
+    assert_eq!(currentness["previous"]["version"], HISTORICAL_OFFICIAL);
+    assert_eq!(
+        currentness["compared"],
+        serde_json::json!([
+            BASELINE,
+            "1.47.0",
+            "1.48.0",
+            "1.49.0",
+            HISTORICAL_OFFICIAL,
+            OFFICIAL
+        ])
+    );
+    assert_eq!(
+        currentness["failure_binding"]["session_new"],
+        "auth_required"
+    );
+    assert_eq!(
+        currentness["failure_binding"]["session_prompt"],
+        "auth_required"
+    );
+    assert_eq!(currentness["failure_binding"]["mutation_sensitive"], true);
+    assert_eq!(
+        currentness["patch_hop"]["classification"],
+        "unmapped; mcpServers is always empty on the selected route"
+    );
+    assert_eq!(
+        currentness["patch_hop"]["changed_mapped_files"],
+        serde_json::json!(["Cargo.toml", "crates/goose/src/agents/agent.rs"])
+    );
+    assert_eq!(
+        currentness["patch_hop"]["source_sha256"]["crates/goose/src/acp/server.rs"],
+        "5637f55188eb6b2ad050d73d70e858c866444c85e39d4ee7392878fa7c09f1a7"
+    );
+    assert_eq!(
+        currentness["patch_hop"]["source_sha256"]["crates/goose/src/agents/agent.rs"][OFFICIAL],
+        "9171a3c9a980d06b2c1a035b0b0b1a39317157f645d06d1a74fbcef6baf13fa9"
+    );
+    assert_eq!(
+        currentness["claim"]["behavior_revision"],
+        "goose.acp.stdio-v2.auth-required"
+    );
 }

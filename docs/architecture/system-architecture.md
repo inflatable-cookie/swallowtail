@@ -257,8 +257,10 @@ OpenHands adds a package without a production route.
   unselected provider/model and emits no selected-argv acknowledgement.
   Headless Plan is provider behavior, not isolation; omission keeps the current
   argv and is not implicit Plan. `act`, `yolo`, and `zen` stay unselected.
-- `swallowtail-adapter-goose` implements exact GitHub `1.46.0` ACP on
-  `goose acp`. Credentials stay host-owned local config.
+- `swallowtail-adapter-goose` implements exact GitHub `1.50.1` ACP on
+  `goose acp`, with typed provider-authentication failures bound by the
+  `goose.acp.stdio-v2.auth-required` behavior revision. Credentials stay
+  host-owned local config.
   `--with-builtin`, `goose configure`, `goose serve`, and `GooseMode`
   `auto` stay out.
 - `swallowtail-adapter-copilot-cli` implements exact npm `1.0.80` ACP on
@@ -652,8 +654,9 @@ Crate status:
   headless print-run routes with separate constructors, qualified-only
   claims, local-account access, and no credential lease. The package
   remains an unreleased additive candidate after `v0.3.2`.
-- `swallowtail-adapter-goose` — realized for exact GitHub `1.46.0` ACP
-  with qualified-only claim, local-config access, and no credential lease.
+- `swallowtail-adapter-goose` — realized for exact GitHub `1.50.1` ACP
+  with qualified-only claim, typed auth-failure binding, local-config access,
+  and no credential lease.
   The package remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-copilot-cli` — realized for exact npm `1.0.80` ACP
   with qualified-only claim, visible public preview, host-account access,

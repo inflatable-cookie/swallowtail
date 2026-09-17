@@ -75,7 +75,7 @@ authorized gate.
 
 ## Acceptance
 
-- [x] the live gate returned the typed setup stop recorded in Research 328
+- [x] the live gate returned the typed setup stop recorded in Research 329
 - [x] the frozen live point did not move without acceptance
 - [x] both matrix cells remain producer-gap `live_tuple_not_compiled`, agreeing
   with the projected truth
@@ -87,7 +87,7 @@ provider-operation authority. The Swallowtail courier build and mediated-stdio
 preflight passed. The existing Desktop runner's provider-free check stopped at
 `setup.static_tuple_mismatch`: it remains bound to SDK `0.3.259` / native
 `2.1.259`, while this route is compiled at SDK `0.3.270` / native `2.1.270`.
-No provider work started; Research 328 records the typed stop. The frozen live
+No provider work started; Research 329 records the typed stop. The frozen live
 point and both matrix cells remain unchanged.
 
 ## Next Task

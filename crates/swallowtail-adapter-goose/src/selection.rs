@@ -12,9 +12,11 @@ pub const GOOSE_EXECUTABLE_NAME: &str = "goose";
 /// Opaque GitHub-release axis for Goose ACP.
 pub const GOOSE_RELEASE_AXIS: &str = "goose.release";
 /// Exact qualified Goose CLI release used by ACP.
-pub const GOOSE_RELEASE_VERSION: &str = "1.46.0";
+pub const GOOSE_RELEASE_VERSION: &str = "1.50.1";
 
-pub(crate) const GOOSE_ACP_BEHAVIOR: &str = "goose.acp.stdio-v1";
+/// Adapter-private behavior revision covering typed provider authentication
+/// failures on the ACP session/new and session/prompt requests.
+pub(crate) const GOOSE_ACP_BEHAVIOR: &str = "goose.acp.stdio-v2.auth-required";
 const MAX_VERSION_BYTES: usize = 32;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -147,16 +149,16 @@ mod tests {
         assert!(goose_release_binding(GOOSE_RELEASE_VERSION).is_some());
         for rejected in [
             "",
-            "1.45.0",
-            "1.46.1",
-            "1.46",
-            "1.46.0.0",
-            "v1.46.0",
-            "1.46.0-beta",
-            "1.46.0\n",
-            " 1.46.0",
-            "1.46.0 ",
-            "goose 1.46.0",
+            "1.50.0",
+            "1.50.2",
+            "1.50",
+            "1.50.1.0",
+            "v1.50.1",
+            "1.50.1-beta",
+            "1.50.1\n",
+            " 1.50.1",
+            "1.50.1 ",
+            "goose 1.50.1",
         ] {
             assert!(
                 goose_release_binding(rejected).is_none(),
@@ -177,21 +179,21 @@ mod tests {
     #[test]
     fn version_stdout_parser_accepts_bare_or_named_exact_release() {
         assert_eq!(
-            parse_goose_version_output(b"1.46.0\n")
+            parse_goose_version_output(b"1.50.1\n")
                 .expect("exact version parses")
                 .version()
                 .as_str(),
-            "1.46.0"
+            "1.50.1"
         );
         assert_eq!(
-            parse_goose_version_output(b"goose 1.46.0\n")
+            parse_goose_version_output(b"goose 1.50.1\n")
                 .expect("named version parses")
                 .version()
                 .as_str(),
-            "1.46.0"
+            "1.50.1"
         );
         assert!(parse_goose_version_output(b"1.46.1\n").is_none());
-        assert!(parse_goose_version_output(b"v1.46.0\n").is_none());
-        assert!(parse_goose_version_output(b"goose  1.46.0\n").is_none());
+        assert!(parse_goose_version_output(b"v1.50.1\n").is_none());
+        assert!(parse_goose_version_output(b"goose  1.50.1\n").is_none());
     }
 }

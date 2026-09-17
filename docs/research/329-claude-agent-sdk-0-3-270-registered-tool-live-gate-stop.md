@@ -1,4 +1,4 @@
-# 328 Claude Agent SDK 0.3.270 Registered-Tool Live Gate Stop
+# 329 Claude Agent SDK 0.3.270 Registered-Tool Live Gate Stop
 
 Status: typed stop; no provider work started
 Owner: Swallowtail worker

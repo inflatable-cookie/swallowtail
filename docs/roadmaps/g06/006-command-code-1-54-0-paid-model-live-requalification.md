@@ -36,7 +36,7 @@ free-backend artefact.
 - [x] Scope, acceptance, validation, evidence, and stop conditions are explicit.
 - [x] Review oracle is present because the claim is exact, version-bound, and
       partly negative.
-- [ ] Official stable is re-probed at the boundary before the claim decision.
+- [x] Official stable is re-probed at the boundary before the claim decision (`latest` `1.55.1`; observation only).
 
 ## Dispatch manifest
 
@@ -113,14 +113,24 @@ evidence.
 
 ## Acceptance
 
-- [ ] the exact-`1.54.0` paid-model gate runs or records a typed stop naming the model
-- [ ] Research 116/118 remain immutable and version-bound
-- [ ] live feature and activity cells agree with the accepted live outcome
-- [ ] no second attempt, model substitution, or executable update occurred
+- [x] the exact-`1.54.0` paid-model gate runs or records a typed stop naming the model
+- [x] Research 116/118 remain immutable and version-bound
+- [x] live feature and activity cells agree with the accepted live outcome
+- [x] no second attempt, model substitution, or executable update occurred
 
 ## Result
 
-Not started.
+Accepted 2026-09-17. Pre-gate checks held exact `1.54.0`, the frozen
+`dist/index.mjs` digest, and disabled auto-update. The one authorized gate ran
+once on `deepseek/deepseek-v4-flash`: the structured one-turn probe completed
+with the exact reply, clean cleanup, and every streamed event valid, and the
+Contract 043 two-turn probe completed both turns with exact replies, private
+exact-id resume, and a clean session close. The g05.069 `malformed_stream`
+stays a free-backend artefact. Research 330 records the gate; the feature and
+activity rows and the prepared-integration guide now rest their `1.54.0` live
+basis on it, with credit failure still bound to `1.15.1`. Official stable
+`1.55.1` is an observation only. No second attempt, substitution, or update
+occurred.
 
 ## Next Task
 

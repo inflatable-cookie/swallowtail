@@ -13,11 +13,14 @@ tags do not contain the package or route.
 Research 317 requalified the exact npm point to `1.54.0` from the complete
 official stable chain. The provider-free selected-surface evidence transfers;
 Research 116's authenticated completion/tool/usage/credit observations and
-Research 118's two-turn private continuation remain exact-`1.15.1` evidence.
-The separately authorized `1.54.0` gate ran once on
-`meituan/LongCat-2.0:free` and stopped with
-`swallowtail.command_code.headless.malformed_stream`; those live-derived
-features remain version-bound to `1.15.1`.
+Research 118's two-turn private continuation remain exact-`1.15.1` records.
+The free-model gate stopped with
+`swallowtail.command_code.headless.malformed_stream` on
+`meituan/LongCat-2.0:free`; the separately authorized paid-model gate then
+accepted exact-`1.54.0` on `deepseek/deepseek-v4-flash` (Research 330),
+carrying the `1.54.0` live acceptance for structured completion, streaming
+events, usage decoding, and the two-turn private continuation. Authenticated
+credit failure stays version-bound to `1.15.1`.
 
 ## Selected Boundary
 

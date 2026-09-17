@@ -19,9 +19,10 @@ Reassess the active generation now that Tom's authorized Research 308
 currentness campaign is complete through Oh My Pi `18.1.22` (g05.079,
 Research 327). All nineteen families were actioned: eighteen advanced, and
 Goose and Qoder keep their exact `QualifiedOnly` points at their selected-
-route provider-auth and turn-binding stops pending an operator ruling. No
-currentness family remains ready. Do not keep the generation open for
-currentness, and do not infer release, tag, publication, live-provider, or
+route provider-auth and turn-binding stops. Tom recorded the two binding
+rulings on 2026-09-17, so those two families now have reopen lanes to compile
+and no currentness family is otherwise ready. Do not keep the generation open
+for currentness, and do not infer release, tag, publication, live-provider, or
 consumer authority.
 
 ## Standing Lanes

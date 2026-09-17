@@ -125,10 +125,16 @@ smallest exact counterexample is the hop `1.46.0..1.47.0`: provider-auth
 failure becomes typed `auth_required` on `session/new` and `session/prompt`,
 so the exact `QualifiedOnly` point stays at `1.46.0` with behavior
 `goose.acp.stdio-v1` unchanged and no range, second point, or newer posture
-added. Research 148/250/253 stand. The failure-binding policy returns to the
-operator via Chatterbox; the campaign continues serially with Kiro.
+added. Research 148/250/253 stand. The failure-binding policy returned to the
+operator via Chatterbox and that ruling is now recorded in
+[standing-lanes.md](../standing-lanes.md); the campaign continued serially with
+Kiro.
 
 ## Next Task
 
-Return the exact outcome to Chatterbox, then compile and dispatch Kiro as the
-next Research 308 family without asking Tom to repeat authorization.
+The failure-binding ruling is recorded in
+[standing-lanes.md](../standing-lanes.md): the route binds the typed
+provider-authentication semantics, so the reopen lane needs a new behavior
+revision, a re-frozen exact point at the then-current published stable, and the
+typed failure shape recorded in the Goose prepared guide. Kiro followed this
+family and is complete.

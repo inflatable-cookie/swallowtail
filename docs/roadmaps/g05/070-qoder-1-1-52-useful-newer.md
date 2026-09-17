@@ -164,12 +164,15 @@ Material validation: `cargo fmt -p swallowtail-adapter-qoder -- --check`,
 Qoder selectors including the new delta ledger, the research/log/roadmap/number/
 lifecycle/next-action checks, and `git diff --check`.
 
-The route returns to the operator via Chatterbox for a planning ruling on the
-turn-binding policy before any `1.1.30`-or-later exact point can be claimed.
+The route returned to the operator via Chatterbox for a planning ruling on the
+turn-binding policy before any `1.1.30`-or-later exact point could be claimed.
+That ruling is now recorded in [standing-lanes.md](../standing-lanes.md).
 
 ## Next Task
 
-Return the exact outcome to Chatterbox: Qoder is a typed stop that needs an
-exact turn-binding ruling before any `1.1.30`-or-later claim. The campaign then
-continues serially with Goose as the next Research 308 family without asking Tom
-to repeat authorization.
+The turn-binding ruling is recorded in
+[standing-lanes.md](../standing-lanes.md): the route accepts a declared turn
+bound, but the reopen lane must pin an explicit, deliberate `--max-turns`
+value and record the chosen bound with the `error_max_turns` terminal shape in
+the Qoder prepared guide. Compile that one-family lane against the
+then-current published stable.

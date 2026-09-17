@@ -146,9 +146,18 @@ with a chained ACP `AuthRequired` maps to `auth_required` and a dedicated
 `ProviderError::Authentication` arm persists
 `MessageContent::Error(Authentication)` so the prompt RPC fails
 `auth_required`, while `1.46.0` completed the turn with error text. That is a
-selected provider-failure mapping change, so no `1.47.0`-or-later claim lands
-until the operator rules on the route's failure-binding policy. Research
-148's `1.46.0` decoder specimens and Research 250/253's empty builtin/mode
+selected provider-failure mapping change. Tom ruled on 2026-09-17, having
+delegated the rule choice to the Chatterbox, that the route binds the typed
+provider-authentication semantics: a chained ACP `AuthRequired` on
+`session/new` or `session/prompt` is admitted to surface as `auth_required`,
+and the prompt RPC failing typed is the route's contract. `1.46.0`'s untyped
+error text plus `end_turn` gave a consumer nothing to branch on, so the typed
+arm refines an unclassified surface rather than adding a lifecycle or
+authority. Reopening the family requires a new behavior revision for the
+changed failure mapping, a re-frozen exact point at the then-current published
+stable, and the typed failure shape recorded in the Goose prepared guide.
+Research 148's `1.46.0` decoder specimens and Research 250/253's empty
+builtin/mode
 dispositions stand, and advertised-only `session/delete`,
 `recipeParameterScopes`, and thinking-effort menus stay independently gated.
 The next family is Kiro.
@@ -164,8 +173,14 @@ exact hop `1.1.29..1.1.30`, where the CLI option gains a numeric argParser, both
 headless mode entry points begin forwarding `argv.maxTurns` into the headless
 session, and `driveQuery` loses its fixed `1000` fallback, so the argv value
 becomes the AgentLoop turn ceiling. That is a selected run-lifecycle and
-bounded-limit failure change, so no `1.1.30`-or-later claim lands until the
-operator rules on the route's turn-binding policy. Research 151's `1.1.25`
+bounded-limit failure change. Tom ruled on 2026-09-17, having delegated the
+rule choice to the Chatterbox, that the route accepts a declared turn bound
+but not an inherited accident: `--max-turns 8` becoming the real ceiling means
+the qualified claim must state a bound. Reopening the family requires the
+adapter to pin an explicit, deliberate `--max-turns` value and to record the
+chosen bound and the `error_max_turns` terminal shape in the Qoder prepared
+guide; advancing the exact point on the unexamined inherited `8` is not
+authorised. Research 151's `1.1.25`
 decoder specimens stand, and Research 256's empty skill-visibility disposition
 with the g05.039/g05.040 gate stays independent. The next family is Goose.
 
@@ -528,7 +543,8 @@ Research 327) closed the campaign on 2026-09-15: the npm/GitHub identity
 ledger reproduced for all 36 published stables, the retained `17.x` segment
 extended to `17.2.9..=17.4.2`, and the admitted `18.0.0..=18.1.22` range landed
 on a distinct adapter-private behavior revision. Goose and Qoder keep their
-exact `QualifiedOnly` stops and their operator rulings stay open; Gemini's
+exact `QualifiedOnly` points, with their failure-binding and turn-binding
+rulings now recorded above; Gemini's
 deferral was lifted for the campaign and its claims advanced through `0.59.0`.
 The standing lane stays available for the next checkpoint after official
 stables move; it is not a generation goal and does not keep g05 open.

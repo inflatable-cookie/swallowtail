@@ -134,31 +134,20 @@ extension set and the advertised `session/load` stay unmapped additions, and
 Research 251/254's empty deliver-now sets stand. The next family was Mistral
 Vibe.
 
-Stopped campaign family: Goose official GitHub `v1.50.0` (g05.071) is the
-eleventh family of Tom's authorized Research 308 campaign. Research 319 froze
-the exact `1.46.0` baseline and all four published stable successors through
-`1.50.0` as exact tagged source trees with a 26-file mapped-module ledger and
-a mutation-sensitive fixture under the adapter, and classified every selected
-input provider-free. The exact `QualifiedOnly` point stays at `1.46.0`:
-provider-authentication failure stops being generic text plus `end_turn` at
-the exact hop `1.46.0..1.47.0`, where `session/new` agent-creation failure
-with a chained ACP `AuthRequired` maps to `auth_required` and a dedicated
-`ProviderError::Authentication` arm persists
-`MessageContent::Error(Authentication)` so the prompt RPC fails
-`auth_required`, while `1.46.0` completed the turn with error text. That is a
-selected provider-failure mapping change. Tom ruled on 2026-09-17, having
-delegated the rule choice to the Chatterbox, that the route binds the typed
-provider-authentication semantics: a chained ACP `AuthRequired` on
-`session/new` or `session/prompt` is admitted to surface as `auth_required`,
-and the prompt RPC failing typed is the route's contract. `1.46.0`'s untyped
-error text plus `end_turn` gave a consumer nothing to branch on, so the typed
-arm refines an unclassified surface rather than adding a lifecycle or
-authority. Reopening the family requires a new behavior revision for the
-changed failure mapping, a re-frozen exact point at the then-current published
-stable, and the typed failure shape recorded in the Goose prepared guide.
-Research 148's `1.46.0` decoder specimens and Research 250/253's empty
-builtin/mode
-dispositions stand, and advertised-only `session/delete`,
+Completed campaign family: Goose official GitHub `v1.50.1` (g05.081) is the
+eleventh family of Tom's authorized Research 308 campaign. Research 328
+re-probed the official release channel, froze `1.50.1` identity and the
+`1.50.0..1.50.1` patch hop, and kept the selected ACP sources byte-identical
+apart from an unmapped MCP protocol-version default. The exact `QualifiedOnly`
+point advances to `1.50.1` on the new
+`goose.acp.stdio-v2.auth-required` behavior revision. The route binds the
+typed provider-authentication semantics: a chained ACP `AuthRequired` on
+`session/new` or `session/prompt` surfaces as `auth_required`. The old
+`1.46.0` untyped error text plus `end_turn` gave a consumer nothing to branch
+on, so this adapter-local mapping refines an unclassified failure surface
+without adding lifecycle or authority. Research 148's `1.46.0` decoder
+specimens and Research 250/253's empty builtin/mode dispositions stand, and
+advertised-only `session/delete`,
 `recipeParameterScopes`, and thinking-effort menus stay independently gated.
 The next family is Kiro.
 

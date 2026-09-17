@@ -248,7 +248,7 @@ fn disconnect_fails_the_turn_and_session_close_still_joins_cleanup() {
 }
 
 #[test]
-fn missing_host_provider_fails_closed_without_configure() {
+fn typed_session_new_auth_failure_fails_closed_without_configure() {
     let host_id = ExecutionHostId::new("fixture.host.auth").expect("valid host id");
     let selected = selection(host_id.clone());
     let host = FixtureHost::new(Scenario::AuthRequired);
@@ -276,7 +276,27 @@ fn missing_host_provider_fails_closed_without_configure() {
     };
     assert_eq!(
         error.diagnostic().code(),
-        "swallowtail.goose.acp.host_provider_unconfigured"
+        "swallowtail.goose.acp.auth_required"
+    );
+    assert_eq!(host.releases(), 1);
+}
+
+#[test]
+fn typed_prompt_auth_failure_fails_the_turn_as_auth_required() {
+    let (host, mut session, services) = open(Scenario::AuthRequiredOnPrompt, "prompt-auth");
+    let mut turn = start(&mut *session, services.clone(), "prompt-auth-turn");
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    let TerminalStatus::RuntimeFailed(error) = outcome.status() else {
+        panic!("typed prompt auth failure must fail the turn");
+    };
+    assert_eq!(error.code(), "swallowtail.goose.acp.auth_required");
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
     );
     assert_eq!(host.releases(), 1);
 }

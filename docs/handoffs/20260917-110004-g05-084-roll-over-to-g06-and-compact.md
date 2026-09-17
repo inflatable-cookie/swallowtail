@@ -10,6 +10,11 @@ roadmap: docs/roadmaps/g05/084-roll-over-to-g06-and-compact-g05.md
 queue_dispatch: northstar-queue
 queue_approval: "Tom authorized the structural rollover on 2026-09-17 with 'roll over and compact'. Documentation and planning surfaces only; no product or release authority."
 queue:
+  dependsOn:
+    - 79fdb744-f000-4e41-8a93-d51538ebf71d
+    - 35815e75-5cc9-4698-92dc-5b70bf54b4c0
+    - 99984822-4eab-4a34-878b-36f60d534505
+    - 0ffd1fc0-a683-4f06-abe0-96e83844134f
   capability: general
   skipPRReview: false
   notifyOriginOnCloseout: true

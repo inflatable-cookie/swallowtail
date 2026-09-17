@@ -1,0 +1,57 @@
+{
+  "axis": "goose.release",
+  "route": "goose.acp",
+  "official": {
+    "version": "1.50.1",
+    "github_tag": "v1.50.1",
+    "github_tag_object": "881f96c00d618ab6fca9b2aaa3a0abf07673cc2c",
+    "published_at": "2026-09-14T21:00:01Z",
+    "release_url": "https://github.com/aaif-goose/goose/releases/tag/v1.50.1",
+    "darwin_aarch64_archive_sha256": "951055fac48e50a2087178307a75a1285f25f6a81675b84974ffc4fe6abe0d62"
+  },
+  "previous": {
+    "version": "1.50.0",
+    "github_tag": "v1.50.0",
+    "github_tag_object": "4cc49a8485f7960efeceba37ac5f572459c52c7c"
+  },
+  "compared": ["1.46.0", "1.47.0", "1.48.0", "1.49.0", "1.50.0", "1.50.1"],
+  "failure_binding": {
+    "session_new": "auth_required",
+    "session_prompt": "auth_required",
+    "mutation_sensitive": true,
+    "adapter_diagnostic": "swallowtail.goose.acp.auth_required",
+    "old_behavior": "1.46.0 returned generic error text and end_turn"
+  },
+  "patch_hop": {
+    "from": "1.50.0",
+    "to": "1.50.1",
+    "changed_mapped_files": ["Cargo.toml", "crates/goose/src/agents/agent.rs"],
+    "agent_rs_change": "MCP_PROTOCOL_VERSION default and mcp_protocol_version initialization only",
+    "classification": "unmapped; mcpServers is always empty on the selected route",
+    "selected_acp_files_byte_identical": true,
+    "source_sha256": {
+      "Cargo.toml": {
+        "1.50.0": "b17ca40bee5b00acf44577b8102f6da0ff5bef59f8b38ef0c110f43644b16244",
+        "1.50.1": "afbc779f174f48e9e0db8de6152ea98060a1bc647f5e188ddbd42f3b24c39d88"
+      },
+      "crates/goose/src/agents/agent.rs": {
+        "1.50.0": "cf1dc22510cb0a780ec6351c6e378b4021018fe8f187d2e28a46aded370b4b99",
+        "1.50.1": "9171a3c9a980d06b2c1a035b0b0b1a39317157f645d06d1a74fbcef6baf13fa9"
+      },
+      "crates/goose/src/acp/server.rs": "5637f55188eb6b2ad050d73d70e858c866444c85e39d4ee7392878fa7c09f1a7",
+      "crates/goose/src/acp/server/dispatch.rs": "ddbeeca619c76d89d67b0754704245232368d76b25693a293c4e2ff0ad580948",
+      "crates/goose/src/acp/server/new_session.rs": "930af2090f1c8a3a3fd418d6afcb7dca511311cce7f79f3d9e3f4788929ed768",
+      "crates/goose/src/acp/server/prompts.rs": "2d8c4dce604944673669ae435b2f7592041998d4141d4651d5a0396ad996e750",
+      "crates/goose-provider-types/src/conversation/message.rs": "2ff5bbab59d1b6483b85869e779d084b932288e26154bec4500809a0fb9ed935"
+    }
+  },
+  "claim": {
+    "point": "1.50.1",
+    "posture": "QualifiedOnly",
+    "behavior_revision": "goose.acp.stdio-v2.auth-required",
+    "claim_id": "goose.acp.release-window-2"
+  },
+  "provider_free": true,
+  "downloaded_artifact_executed": false,
+  "provider_prompt_sent": false
+}

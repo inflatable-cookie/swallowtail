@@ -137,9 +137,11 @@ ACP adapters may compose instead of their stdio transport.
 interactive route). `command-code.headless` interactive continuity is private
 exact-id only; prepared sessions expose only fresh context-losing restoration
 and no public load/resume. Its exact package point is `1.54.0`; the selected
-provider-free surface is requalified, while live authenticated completion,
-tool/usage/credit, and two-turn continuation evidence remains bound to
-`1.15.1` in Research 116/118. Dispositions are in their guides. `into_parts` and,
+provider-free surface is requalified, while the exact-`1.54.0` live gate
+stopped with `swallowtail.command_code.headless.malformed_stream` on
+`meituan/LongCat-2.0:free`. Live authenticated completion, tool/usage/credit,
+and two-turn continuation evidence remains bound to `1.15.1` in Research
+116/118. Dispositions are in their guides. `into_parts` and,
 for these headless routes, `low_level_driver` are omitted per the
 prepared-facade authoring guide's recorded omissions (antigravity, cursor,
 muse, command-code).

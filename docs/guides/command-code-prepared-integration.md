@@ -14,8 +14,10 @@ Research 317 requalified the exact npm point to `1.54.0` from the complete
 official stable chain. The provider-free selected-surface evidence transfers;
 Research 116's authenticated completion/tool/usage/credit observations and
 Research 118's two-turn private continuation remain exact-`1.15.1` evidence.
-They are not `1.54.0` live acceptance and require a separately authorized
-requalification.
+The separately authorized `1.54.0` gate ran once on
+`meituan/LongCat-2.0:free` and stopped with
+`swallowtail.command_code.headless.malformed_stream`; those live-derived
+features remain version-bound to `1.15.1`.
 
 ## Selected Boundary
 

@@ -24,6 +24,7 @@ feature usually has a short chain: selection evidence, contract, implementation,
 then conformance closeout.
 
 ## Entries
+- [2026-09-17 g05.069 Command Code 1.54.0 Live Stop](./2026-09-17-g05-069-command-code-1-54-0-live-stop.md) — the one authorized exact-`1.54.0` gate on `meituan/LongCat-2.0:free` stopped with `swallowtail.command_code.headless.malformed_stream`; live-derived completion, tool/usage, and two-turn continuation evidence remains bound to `1.15.1`, with claims and matrix cells unchanged
 - [2026-09-17 Qoder Headless 1.1.54 Claim](./2026-09-17-qoder-headless-1-1-54-claim.md) — advanced the exact `qoder.headless` `QualifiedOnly` point to `1.1.54` on a new private behavior revision with an explicit adapter-owned eight-turn AgentLoop ceiling and `error_max_turns` provider-failure mapping
 - [2026-09-17 Qoder Headless 1.1.54 Identity](./2026-09-17-qoder-headless-1-1-54-identity.md) — Research 328 froze official npm stable `1.1.54` and beta `1.1.54-beta.1` after `1.1.52`; the selected forwarded `--max-turns` AgentLoop authority is reconfirmed, and the recorded ruling sends one exact `1.1.54` private-milestone claim with a deliberate adapter-owned eight-turn bound to the claim card
 - [2026-09-17 Goose ACP 1.50.1 Claim](./2026-09-17-goose-acp-1-50-1-claim.md) — g05.081 reopens the exact `QualifiedOnly` point at `1.50.1` on `goose.acp.stdio-v2.auth-required`, binding typed `auth_required` failures on `session/new` and `session/prompt` while keeping other Goose surfaces independent

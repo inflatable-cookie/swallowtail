@@ -15,7 +15,7 @@ OpenCode ACP restore/config-option work, the unmapped TUI exit-status change,
 and unmapped GitHub Copilot summarized-thinking request shaping. Compatible
 `surface-19` extension admitted. Host `opencode` is not on `PATH`.
 
-Production claims stayed at `1.18.30` in this record. Research 331.
+Production claims stayed at `1.18.30` in this record. Research 332, g06.010.
 
 ## Next
 

@@ -24,6 +24,7 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Changed
+
 - raise the qualified OpenCode HTTP ceiling from `1.18.30` to official npm
   `opencode-ai` `1.18.31` on the `opencode.server` axis. Compatible extension
   of `opencode.http-sse.surface-19`: selected HTTP/SSE route files and OpenAPI
@@ -34,7 +35,24 @@ annotated Git tags from the canonical repository.
   unmapped GitHub Copilot summarized-thinking request shaping are the only
   shipped server source changes; provider SDK bumps stay provider-facing.
   Baseline `1.14.48`, claim id, historical gaps, and `AllowUnverified` stay;
-  unpublished `1.18.32` remains visible `UnverifiedNewer`. Research 331.
+  unpublished `1.18.32` remains visible `UnverifiedNewer`. Research 332, g06.010.
+- raise both qualified Claude Code ceilings from `2.1.270` to official npm
+  `@anthropic-ai/claude-code` `2.1.278`: headless `2.1.220..=2.1.278` and
+  response-only `2.1.227..=2.1.278`. Compatible extension of
+  `claude-code.headless.stream-json.v1` and
+  `claude-code.response-only.stream-json.v1`. All eight published hops after
+  the ceiling were retrieved and classified on both platform builds; every
+  selected flag keeps an identical constructor-site fingerprint intersection,
+  the format, effort, and permission enumerations are unchanged, and the
+  required `init` keys plus `stream_event`, `hook_started`, `result`, and
+  `thinking_tokens` presence hold. Wrapper files except `package.json` and
+  `sdk-tools.d.ts` are byte-identical across all nine compared versions, and
+  every `sdk-tools.d.ts` delta is SDK tool declaration content the routes do
+  not consume. Host `claude` was not installed. Unpublished `2.1.244`,
+  `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, and `2.1.264` stay
+  incompatible; unpublished `2.1.279` remains visible `UnverifiedNewer`.
+  Baselines, claim ids, `AllowUnverified`, watcher exact `2.1.251`, and every
+  feature-specific exact-version set stay. Research 331, g06.009.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

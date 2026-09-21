@@ -16,7 +16,7 @@ provider SDK bumps stay unmapped or provider-facing. Host `opencode` is not
 on `PATH`.
 
 No public API, generation card, provider contact, install, or host change
-entered the claim. Research 331.
+entered the claim. Research 332, g06.010.
 
 ## Validation
 

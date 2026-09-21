@@ -52,7 +52,8 @@ maintained in this section.
 - [009 Claude Code 2.1.278 Useful Newer](./009-claude-code-2-1-278-useful-newer.md) — external PR submitted for independent review under operator-approved Queue takeover
 - [010 OpenCode HTTP 1.18.31 Useful Newer](./010-opencode-http-1-18-31-useful-newer.md) — external PR #351 admitted through review entry as the bounded pilot; merged at `5ade647a` after one independent reviewer run with no initial worker
 - [011 Codex 0.155.1 Useful Newer](./011-codex-0-155-1-useful-newer.md) — external PR #353 admitted through review entry after the pilot; merged at `edb0e428` after one review finding was repaired by a worker in the same workspace
-- [012 Qwen Code 0.24.2 Useful Newer](./012-qwen-code-0-24-2-useful-newer.md) — external PR #352 admitted through review entry with a known failing nextest check, to be repaired through the revision path
+- [012 Qwen Code 0.24.2 Useful Newer](./012-qwen-code-0-24-2-useful-newer.md) — external PR #352 admitted through review entry with a known failing nextest check; merged at `5dcbabb6` after the reviewer required unpublished interior gaps to be excluded
+- [013 Claude Agent ACP 0.79.0 Useful Newer](./013-claude-agent-acp-0-79-0-useful-newer.md) — external PR #350, last of the approved suite; raises the ACP ceiling and amends the Contracts 015/038 range statements under explicit contract review
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:5307f4fac34e305838be83310011c4489c6b9e887016f899dddd1d88bf8570ce -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

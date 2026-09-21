@@ -1,31 +1,36 @@
 use std::collections::BTreeSet;
 
 use serde_json::{Map, Value};
-use swallowtail_adapter_opencode::{opencode_http_claim, opencode_server_binding};
+use swallowtail_adapter_opencode::{
+    OPENCODE_LATEST_QUALIFIED_VERSION, opencode_http_claim, opencode_server_binding,
+};
 use swallowtail_core::InterfaceCompatibilityAssessment;
 
-#[path = "opencode_http_1_18_30_delta_ledger/identity.rs"]
+#[path = "opencode_http_1_18_31_delta_ledger/identity.rs"]
 mod identity;
-#[path = "opencode_http_1_18_30_delta_ledger/inventory.rs"]
+#[path = "opencode_http_1_18_31_delta_ledger/inventory.rs"]
 mod inventory;
-#[path = "opencode_http_1_18_30_delta_ledger/protocol.rs"]
+#[path = "opencode_http_1_18_31_delta_ledger/protocol.rs"]
 mod protocol;
 
-const IDENTITY: &str = include_str!("fixtures/opencode-1.18.30/identity.json");
-const PROTOCOL: &str = include_str!("fixtures/opencode-1.18.30/protocol.json");
-const INVENTORY: &str = include_str!("fixtures/opencode-1.18.30/dist-inventory.json");
-const CLAIM: &str = include_str!("fixtures/opencode-1.18.30/claim.json");
+const IDENTITY: &str = include_str!("fixtures/opencode-1.18.31/identity.json");
+const PROTOCOL: &str = include_str!("fixtures/opencode-1.18.31/protocol.json");
+const INVENTORY: &str = include_str!("fixtures/opencode-1.18.31/dist-inventory.json");
+const CLAIM: &str = include_str!("fixtures/opencode-1.18.31/claim.json");
 
 #[test]
 fn admitted_claim_fixture_matches_production_selection() {
     let fixture = json(CLAIM);
     let claim = opencode_http_claim();
+    assert_eq!(OPENCODE_LATEST_QUALIFIED_VERSION, "1.18.31");
     assert_eq!(claim.id().as_str(), fixture["claim_id"]);
     assert_eq!(claim.baseline().as_str(), fixture["baseline"]);
-    assert_eq!(fixture["latest_qualified"], "1.18.30");
-    assert_eq!(fixture["unverified_newer"], "1.18.31");
+    assert_eq!(
+        claim.latest_qualified().as_str(),
+        fixture["latest_qualified"]
+    );
     assert_eq!(fixture["behavior_revision"], "opencode.http-sse.surface-19");
-    assert_exact_strings(&fixture["newly_qualified"], &["1.18.30"]);
+    assert_exact_strings(&fixture["newly_qualified"], &["1.18.31"]);
     assert_eq!(fixture["newer_version_posture"], "allow_unverified");
     assert_exact_strings(
         &fixture["historical_gaps_preserved"],
@@ -48,6 +53,11 @@ fn admitted_claim_fixture_matches_production_selection() {
             fixture["behavior_revision"]
         );
     }
+    let later = opencode_server_binding(fixture["unverified_newer"].as_str().unwrap()).unwrap();
+    assert!(matches!(
+        claim.assess(later.version()),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
 }
 
 fn json(input: &str) -> Value {

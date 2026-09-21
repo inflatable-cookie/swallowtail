@@ -19,34 +19,18 @@ const INVENTORY: &str = include_str!("fixtures/opencode-1.18.31/dist-inventory.j
 const CLAIM: &str = include_str!("fixtures/opencode-1.18.31/claim.json");
 
 #[test]
-fn identity_keeps_production_claim_at_the_previous_ceiling() {
-    let identity = json(IDENTITY);
+fn admitted_claim_fixture_matches_production_selection() {
+    let fixture = json(CLAIM);
     let claim = opencode_http_claim();
-    assert_eq!(OPENCODE_LATEST_QUALIFIED_VERSION, "1.18.30");
+    assert_eq!(OPENCODE_LATEST_QUALIFIED_VERSION, "1.18.31");
+    assert_eq!(claim.id().as_str(), fixture["claim_id"]);
+    assert_eq!(claim.baseline().as_str(), fixture["baseline"]);
     assert_eq!(
         claim.latest_qualified().as_str(),
-        identity["claim_at_observation"]["latest_qualified"]
+        fixture["latest_qualified"]
     );
-    assert_eq!(
-        identity["identity_decision"]["claim_changed_in_identity_card"],
-        false
-    );
-    let later = opencode_server_binding("1.18.31").expect("official hop is safe");
-    assert!(matches!(
-        claim.assess(later.version()),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
-}
-
-#[test]
-fn admitted_claim_fixture_names_the_intended_after_state() {
-    let fixture = json(CLAIM);
-    assert_eq!(fixture["claim_id"], "opencode.http.server-window-1");
-    assert_eq!(fixture["baseline"], "1.14.48");
-    assert_eq!(fixture["latest_qualified"], "1.18.31");
     assert_eq!(fixture["behavior_revision"], "opencode.http-sse.surface-19");
     assert_exact_strings(&fixture["newly_qualified"], &["1.18.31"]);
-    assert_eq!(fixture["unverified_newer"], "1.18.32");
     assert_eq!(fixture["newer_version_posture"], "allow_unverified");
     assert_exact_strings(
         &fixture["historical_gaps_preserved"],
@@ -54,6 +38,26 @@ fn admitted_claim_fixture_names_the_intended_after_state() {
             "1.14.52", "1.15.8", "1.15.14", "1.16.1", "1.16.3", "1.17.21",
         ],
     );
+    for version in fixture["newly_qualified"]
+        .as_array()
+        .expect("version array")
+    {
+        let binding = opencode_server_binding(version.as_str().expect("version string"))
+            .expect("qualified binding");
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(binding.version())
+        else {
+            panic!("published hop is not qualified");
+        };
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            fixture["behavior_revision"]
+        );
+    }
+    let later = opencode_server_binding(fixture["unverified_newer"].as_str().unwrap()).unwrap();
+    assert!(matches!(
+        claim.assess(later.version()),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
 }
 
 fn json(input: &str) -> Value {

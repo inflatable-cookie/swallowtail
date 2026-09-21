@@ -24,6 +24,7 @@ feature usually has a short chain: selection evidence, contract, implementation,
 then conformance closeout.
 
 ## Entries
+- [2026-09-21 OpenCode HTTP 1.18.31 Claim](./2026-09-21-opencode-http-1-18-31-claim.md) — raised `opencode.server` through official `1.18.31`; preserved baseline, gaps, `surface-19`, and `AllowUnverified`; synthetic `1.18.32` stays `UnverifiedNewer`
 - [2026-09-21 OpenCode HTTP 1.18.31 Identity](./2026-09-21-opencode-http-1-18-31-identity.md) — Research 331 froze official npm/GitHub `1.18.31` as a compatible `surface-19` extension from complete source-tree inventories despite diverged tags; production claims unchanged
 - [2026-09-17 g05.084 Roll Over To g06 And Compact g05](./2026-09-17-g05-084-rollover-and-compaction.md) — the operator-authorized rollover closed g05 at 82 numbered tasks, carried the five planned tasks to g06.001–g06.005, committed the lifecycle closure record and receipt, regenerated the front-door projections for g06, and removed `docs/roadmaps/g05/**` with the preservation manifest and archive roll-up in place
 - [2026-09-17 g05.069 Command Code 1.54.0 Live Stop](./2026-09-17-g05-069-command-code-1-54-0-live-stop.md) — the one authorized exact-`1.54.0` gate on `meituan/LongCat-2.0:free` stopped with `swallowtail.command_code.headless.malformed_stream`; live-derived completion, tool/usage, and two-turn continuation evidence remains bound to `1.15.1`, with claims and matrix cells unchanged

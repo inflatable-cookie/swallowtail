@@ -24,6 +24,17 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Changed
+- raise the qualified OpenCode HTTP ceiling from `1.18.30` to official npm
+  `opencode-ai` `1.18.31` on the `opencode.server` axis. Compatible extension
+  of `opencode.http-sse.surface-19`: selected HTTP/SSE route files and OpenAPI
+  stay byte-identical, and the published GitHub tags diverge, so the hop is
+  proven from complete source-tree inventories rather than a commit range.
+  Unmapped remote-config auth defect-to-400 mapping, unmapped OpenCode ACP
+  restore/config-option work, the unmapped TUI exit-status change, and
+  unmapped GitHub Copilot summarized-thinking request shaping are the only
+  shipped server source changes; provider SDK bumps stay provider-facing.
+  Baseline `1.14.48`, claim id, historical gaps, and `AllowUnverified` stay;
+  unpublished `1.18.32` remains visible `UnverifiedNewer`. Research 331.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

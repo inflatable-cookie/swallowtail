@@ -57,7 +57,12 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
             InterfaceCompatibilityAssessment::Incompatible,
             "newly interior unpublished 0.152.2 stays incompatible"
         );
-        let newer = binding("0.154.1");
+        assert_eq!(
+            claim.assess(binding("0.154.1").version()),
+            InterfaceCompatibilityAssessment::Incompatible,
+            "newly interior unpublished 0.154.1 stays incompatible"
+        );
+        let newer = binding("0.155.2");
         assert!(!claim.supports(newer.version()));
         assert!(claim.permits(newer.version()));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
@@ -66,7 +71,7 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
             panic!("newer stable Codex version must remain unverified");
         };
         assert_eq!(unverified.version(), newer.version());
-        assert_eq!(unverified.latest_qualified().as_str(), "0.154.0");
+        assert_eq!(unverified.latest_qualified().as_str(), "0.155.1");
     }
     assert_eq!(
         codex_exec_claim()

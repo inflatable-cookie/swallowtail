@@ -177,6 +177,7 @@ pub fn codex_app_server_lifecycle_claim() -> InterfaceCompatibilityClaim {
             super::version("0.150.2").expect("static Codex unpublished gap is valid"),
             super::version("0.151.1").expect("static Codex unpublished gap is valid"),
             super::version("0.152.2").expect("static Codex unpublished gap is valid"),
+            super::version("0.154.1").expect("static Codex unpublished gap is valid"),
         ],
     )
     .expect("static Codex app-server lifecycle claim is valid")

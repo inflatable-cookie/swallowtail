@@ -78,7 +78,7 @@
     }
   ],
   "unverified_newer": {
-    "version": "0.154.1",
+    "version": "0.155.2",
     "evidence": "synthetic-later-stable-classification",
     "execution": "permitted-with-explicit-unverified-status",
     "guaranteed": false

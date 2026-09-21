@@ -49,6 +49,7 @@ maintained in this section.
 - [006 Command Code 1.54.0 Paid-Model Live Requalification](./006-command-code-1-54-0-paid-model-live-requalification.md) — ready; one authorized gate on `deepseek/deepseek-v4-flash` after g05.069 stopped on the free backend's malformed stream
 - [007 Prospective-Merge Protocol Migration](./007-prospective-merge-protocol-migration.md) — ready; operator-approved configuration-only manifest migration to the accepted v4 prospective-merge shape
 - [008 Repair Lifecycle Currentness](./008-repair-lifecycle-currentness.md) — ready; bounded repair of the two audited currentness findings, sequenced after the migration lane
+- [009 Claude Code 2.1.278 Useful Newer](./009-claude-code-2-1-278-useful-newer.md) — external PR submitted for independent review under operator-approved Queue takeover
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:8ace978c1e82d6a7a8a051cb874df83fef5cbef20aebf31f8a068ad19e747674 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

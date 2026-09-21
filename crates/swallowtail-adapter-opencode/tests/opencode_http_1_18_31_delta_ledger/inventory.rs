@@ -206,14 +206,12 @@ fn artifact_tree_delta_ledger_is_mutation_sensitive() {
         "955f7ecba06e5f152edf409f743e8c281212089f35ecd704b703aaf0fc5481b6"
     );
     assert_eq!(
-        inventory["changed_source_hashes"]
-            ["packages/opencode/src/server/routes/instance/httpapi/middleware/error.ts"]
+        inventory["changed_source_hashes"]["packages/opencode/src/server/routes/instance/httpapi/middleware/error.ts"]
             ["1.18.30"],
         "88acd9ee60e81213bf60836ac624f96168d0cc972d30e5c3c5de32041ea778f1"
     );
     assert_eq!(
-        inventory["changed_source_hashes"]
-            ["packages/opencode/src/server/routes/instance/httpapi/middleware/error.ts"]
+        inventory["changed_source_hashes"]["packages/opencode/src/server/routes/instance/httpapi/middleware/error.ts"]
             ["1.18.31"],
         "f29c2a49d43e3aabe9472d2c9c5c8f912749d7c211a39ca9ae81e91088d676a7"
     );

@@ -1,6 +1,5 @@
 # g06.006 Command Code 1.54.0 Paid-Model Live Requalification
 
-Status: ready
 Owner: Tom
 Created: 2026-09-17
 Depends on: Contract 029; Contract 043; Research 116, 118, 317; completed g05.068 and g05.069

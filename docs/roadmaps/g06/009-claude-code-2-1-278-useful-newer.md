@@ -78,3 +78,24 @@ reset; or if one axis must stay behind.
 Research 331. Fixtures under
 `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-code-2.1.278/`.
 Probe artifacts lived in `/tmp/g06-009` and are not in the repo.
+
+## External PR Review Entry Authority
+
+Tom authorized the Queue Oracle on 2026-09-21 to prepare and take over existing
+PR #349 through review entry. The external work and its evidence above are
+submitted claims, not independent acceptance. Tom declared Grok 4.6 as its
+external author model; canonical declaration: `xai/grok-4.6`, GitHub author
+`betterthanclay`, authoring system Cursor cloud driven by Grok Bot.
+
+Queue starts an independent reviewer, not a worker. Changes requested authorize
+one ordinary revision loop in the same workspace and branch, scoped to this
+Claude Code qualification and its existing changed surfaces. Queue owns merge
+and lifecycle closeout. The intake preparation may publish this planning and
+merge it into the existing branch; the original no-handoff/no-frontier-edit
+boundary above applies to implementation workers, not this operator-approved
+planning preparation or hook-owned closeout.
+
+Canonical handoff: `docs/handoffs/20260921-g06-009-external-pr-review-entry.md`.
+Preserve external branch and workspace after completion. Other external PRs are
+not dispatched by this approval. Research 331 remains this lane's reference;
+other PRs must reconcile their collisions before separate admission.

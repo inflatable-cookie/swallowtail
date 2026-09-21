@@ -15,7 +15,7 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Map the g06 frontier before any dispatch. The five carried-forward tasks
+Map the carried-forward g06 frontier before dispatching that work. The five carried-forward tasks
 (g06.001–g06.005) are planned and none is dispatch-ready: g06.001 awaits the
 producer proposal's independent review and canonical contract promotion,
 g06.002–g06.003 stay behind the Research 256 disposition gate, and g06.004–

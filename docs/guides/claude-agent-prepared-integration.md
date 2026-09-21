@@ -234,7 +234,7 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 `xhigh`, and `max` reasoning selections, and requires the initialized and
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
-capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.270`,
+capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.278`,
 excluding unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
 `2.1.262`, and `2.1.264`; later stable versions remain visible
 `UnverifiedNewer`.
@@ -265,7 +265,7 @@ selectable here.
 A selection requires one of the exact Claude Code versions Research 226 probed.
 That set is narrower than the route's qualified window:
 
-- published qualified points `2.1.242..=2.1.270` excluding unpublished
+- published qualified points `2.1.242..=2.1.278` excluding unpublished
   `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, and `2.1.264`
   were never probed for this feature
 - the compatibility claim permits later stable points as `UnverifiedNewer`, and
@@ -328,7 +328,7 @@ See the compile-tested
 
 `prepare_claude_code_response_only` accepts a host-approved stable Claude Code
 executable at or above the proven `2.1.227` protocol floor, except any release
-on the route's explicit known-bad deny-list. `2.1.227` through `2.1.270` are
+on the route's explicit known-bad deny-list. `2.1.227` through `2.1.278` are
 qualified except unpublished `2.1.244`, `2.1.249`, `2.1.253` through
 `2.1.256`, `2.1.262`, and `2.1.264`; later stable releases run
 provisionally as `UnverifiedNewer` under the same runtime validation. It is a
@@ -372,7 +372,7 @@ claim.
 Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
-qualification: the qualified segment ends at `2.1.270`, while newer stable
+qualification: the qualified segment ends at `2.1.278`, while newer stable
 versions are provisional until evidence moves that boundary. The static
 deny-list is unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
 `2.1.262`, and `2.1.264`.

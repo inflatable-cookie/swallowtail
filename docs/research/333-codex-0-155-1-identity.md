@@ -1,4 +1,4 @@
-# Research 331: Codex 0.155.1 Identity
+# Research 333: Codex 0.155.1 Identity
 
 Status: promoted. Identity evidence for the Codex family qualification from
 qualified `0.154.0` through official npm/GitHub stable `0.155.1`.

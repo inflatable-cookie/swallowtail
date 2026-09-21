@@ -87,6 +87,8 @@ fn later_17_x_and_every_18_x_point_are_qualified_on_their_own_behavior() {
         ("18.0.0", "oh-my-pi.rpc-v2-v18.0.0"),
         ("18.1.16", "oh-my-pi.rpc-v2-v18.0.0"),
         ("18.1.22", "oh-my-pi.rpc-v2-v18.0.0"),
+        ("18.2.0", "oh-my-pi.rpc-v2-v18.0.0"),
+        ("18.2.7", "oh-my-pi.rpc-v2-v18.0.0"),
     ] {
         let host_id =
             ExecutionHostId::new(format!("fixture.pi.prepared.{version}")).expect("valid host");
@@ -128,7 +130,7 @@ fn passed_major_boundary_and_unpublished_gaps_remain_unexecutable() {
 #[test]
 fn later_stable_above_official_stays_unverified_newer() {
     let host_id = ExecutionHostId::new("fixture.pi.prepared.unverified").expect("valid host");
-    let discovery = FixtureHost::version_probe("18.1.23");
+    let discovery = FixtureHost::version_probe("18.2.8");
     let prepared = block_on(prepare_oh_my_pi_rpc(
         preparation_input(host_id.clone()),
         probe(),

@@ -24,7 +24,6 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Changed
-
 - raise the qualified OpenCode HTTP ceiling from `1.18.30` to official npm
   `opencode-ai` `1.18.31` on the `opencode.server` axis. Compatible extension
   of `opencode.http-sse.surface-19`: selected HTTP/SSE route files and OpenAPI
@@ -53,6 +52,19 @@ annotated Git tags from the canonical repository.
   incompatible; unpublished `2.1.279` remains visible `UnverifiedNewer`.
   Baselines, claim ids, `AllowUnverified`, watcher exact `2.1.251`, and every
   feature-specific exact-version set stay. Research 331, g06.009.
+- raise the shared `codex.cli` ceiling for Codex exec and app-server from
+  qualified `0.154.0` through official npm `@openai/codex` `0.155.1`.
+  Research 333 freezes both published stables `0.155.0` then `0.155.1` as a
+  compatible extension of `codex.exec.jsonl-v1`,
+  `codex.app-server.v2.workspace-roots`, and
+  `codex.app-server.lifecycle.v1.strict-descendant-hard-delete`. Keep
+  baseline `0.80.0`, both claim ids, and `AllowUnverified`. Pin newly
+  interior unpublished `0.154.1` incompatible alongside `0.149.2`,
+  `0.150.2`, `0.151.1`, and `0.152.2`. After qualification, unpublished
+  `0.155.2` is the first visible `UnverifiedNewer` point. Feature-specific
+  exact pins stay on the `0.147.0..=0.149.1` probed points. Voice,
+  code-mode-host, attachments, managed-daemon, and TUI stay unmapped.
+  Research 333.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

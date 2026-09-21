@@ -3,11 +3,10 @@ use swallowtail_adapter_codex::{codex_app_server_claim, codex_exec_claim};
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus};
 
 #[test]
-fn production_exec_claim_admits_0_154_0_as_the_maintained_ceiling() {
+fn production_exec_claim_admits_0_155_1_as_the_maintained_ceiling() {
     let exec = codex_exec_claim();
     for point in [
-        "0.150.1", "0.152.0", "0.152.1", "0.153.0", "0.153.1", "0.153.2", "0.153.3", "0.153.4",
-        "0.154.0",
+        "0.150.1", "0.152.1", "0.153.0", "0.154.0", "0.155.0", "0.155.1",
     ] {
         let qualified = exec.assess(&version(point));
         let InterfaceCompatibilityAssessment::Qualified(matched) = qualified else {
@@ -19,7 +18,7 @@ fn production_exec_claim_admits_0_154_0_as_the_maintained_ceiling() {
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
         exec.assess(&version("0.155.2"))
     else {
-        panic!("0.155.2 must remain unverified newer after the later claim");
+        panic!("0.155.2 must remain unverified newer after the claim card");
     };
     assert_eq!(unverified.latest_qualified().as_str(), "0.155.1");
     assert_eq!(
@@ -38,11 +37,10 @@ fn production_exec_claim_admits_0_154_0_as_the_maintained_ceiling() {
 }
 
 #[test]
-fn production_app_server_claim_admits_0_154_0_as_the_maintained_ceiling() {
+fn production_app_server_claim_admits_0_155_1_as_the_maintained_ceiling() {
     let app_server = codex_app_server_claim();
     for point in [
-        "0.150.1", "0.152.0", "0.152.1", "0.153.0", "0.153.1", "0.153.2", "0.153.3", "0.153.4",
-        "0.154.0",
+        "0.150.1", "0.152.1", "0.153.0", "0.154.0", "0.155.0", "0.155.1",
     ] {
         let qualified = app_server.assess(&version(point));
         let InterfaceCompatibilityAssessment::Qualified(matched) = qualified else {
@@ -57,7 +55,7 @@ fn production_app_server_claim_admits_0_154_0_as_the_maintained_ceiling() {
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
         app_server.assess(&version("0.155.2"))
     else {
-        panic!("0.155.2 must remain unverified newer after the later claim");
+        panic!("0.155.2 must remain unverified newer after the claim card");
     };
     assert_eq!(unverified.latest_qualified().as_str(), "0.155.1");
     assert_eq!(
@@ -74,7 +72,7 @@ fn production_app_server_claim_admits_0_154_0_as_the_maintained_ceiling() {
 }
 
 #[test]
-fn identity_decision_names_compatible_extension_without_raising_the_claim() {
+fn identity_decision_names_compatible_extension() {
     let decision = &json(IDENTITY)["identity_decision"];
     assert_eq!(decision["shape"], "compatible-extension");
     assert_eq!(decision["exec_behavior"], "codex.exec.jsonl-v1");
@@ -86,22 +84,19 @@ fn identity_decision_names_compatible_extension_without_raising_the_claim() {
         decision["lifecycle_behavior"],
         "codex.app-server.lifecycle.v1.strict-descendant-hard-delete"
     );
-    assert_eq!(decision["raise_latest_qualified_to"], "0.152.1");
+    assert_eq!(decision["raise_latest_qualified_to"], "0.155.1");
     assert_eq!(decision["keep_baseline"], true);
     assert_eq!(
         decision["qualify_intermediates"],
-        serde_json::json!(["0.152.1"])
+        serde_json::json!(["0.155.0", "0.155.1"])
     );
     assert_eq!(decision["new_milestone"], false);
-    assert_eq!(decision["later_unverified_after_qualification"], "0.152.2");
+    assert_eq!(decision["later_unverified_after_qualification"], "0.155.2");
     assert_eq!(
         decision["thread_resume_exclude_turns"],
         "already-selected-mapped"
     );
-    assert_eq!(
-        decision["thread_resume_params_byte_identical_to_0_152_0"],
-        true
-    );
+    assert_eq!(decision["thread_resume_params_additive_only"], true);
     for unmapped in [
         "map_exec_fork",
         "map_thread_fork",
@@ -111,8 +106,19 @@ fn identity_decision_names_compatible_extension_without_raising_the_claim() {
         "map_thread_items_list",
         "map_thread_shell_command",
         "map_code_mode_host",
+        "map_voice_host",
         "map_auth_recovery_notifications",
         "map_guardian_auto_review_node_repl_policy",
+        "map_exec_worktree",
+        "map_plugin_reconcile",
+        "map_user_verification",
+        "map_thread_list_originators",
+        "map_configuration_reasoning",
+        "map_thread_attachment",
+        "map_managed_daemon",
+        "map_daemon_thread_recovery",
+        "map_turn_admission",
+        "map_memory_status",
         "widen_feature_exact_pins",
     ] {
         assert_eq!(decision[unmapped], false, "{unmapped} must stay false");
@@ -126,6 +132,8 @@ fn identity_decision_names_compatible_extension_without_raising_the_claim() {
             "0.149.2",
             "0.150.2",
             "0.151.1",
+            "0.152.2",
+            "0.154.1",
         ],
     );
 }

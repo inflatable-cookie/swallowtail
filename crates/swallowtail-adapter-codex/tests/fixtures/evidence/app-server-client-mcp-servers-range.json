@@ -11,7 +11,7 @@
   "qualified_range": [
     "0.80.0..=0.81.0",
     "0.84.0..=0.107.0",
-    "0.110.0..=0.154.0"
+    "0.110.0..=0.155.1"
   ],
   "segments": [
     {
@@ -30,7 +30,7 @@
     },
     {
       "id": "current-experimental-thread-fields",
-      "range": "0.110.0..=0.154.0",
+      "range": "0.110.0..=0.155.1",
       "corpus": "crates/swallowtail-adapter-codex/tests/fixtures/compatibility/app-server-releases.json",
       "experimental_thread_fields_union": [
         "allowProviderModelFallback",
@@ -41,8 +41,8 @@
     },
     {
       "id": "identity-protocol-methods",
-      "range": "0.148.0..=0.154.0",
-      "corpus": "crates/swallowtail-adapter-codex/tests/fixtures/codex-cli-0.148.0/protocol.json through codex-cli-0.154.0/protocol.json",
+      "range": "0.148.0..=0.155.1",
+      "corpus": "crates/swallowtail-adapter-codex/tests/fixtures/codex-cli-0.148.0/protocol.json through codex-cli-0.155.1/protocol.json",
       "methods_present": [
         "initialize",
         "model/list",

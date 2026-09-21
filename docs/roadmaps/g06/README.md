@@ -49,11 +49,12 @@ maintained in this section.
 - [006 Command Code 1.54.0 Paid-Model Live Requalification](./006-command-code-1-54-0-paid-model-live-requalification.md) — ready; one authorized gate on `deepseek/deepseek-v4-flash` after g05.069 stopped on the free backend's malformed stream
 - [007 Prospective-Merge Protocol Migration](./007-prospective-merge-protocol-migration.md) — ready; operator-approved configuration-only manifest migration to the accepted v4 prospective-merge shape
 - [008 Repair Lifecycle Currentness](./008-repair-lifecycle-currentness.md) — ready; bounded repair of the two audited currentness findings, sequenced after the migration lane
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:18346aae9670dc4b061128c98a83c46753f84fe4580bffd19dbd561bbde7ebde -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:843f286069f79c8c29b89fa77197aca0590dd10bad93f59f217af265115c3337 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g06 | open | planning_required |
 | Task | Status | Stage | Revision | Record digest |
 | --- | --- | --- | --- | --- |
 | g06.006 | complete | none | 8 | sha256:635e26aa157bc647fa329f09a2f574f8ddd2e891da474ef878fcf2b420cf326e |
+| g06.007 | complete | none | 8 | sha256:f1b2d5d544acd7d632fac663acd5dbc1e376192c239bb257f99f1ba5e8c06b23 |
 <!-- northstar:lifecycle:end -->

@@ -106,12 +106,10 @@ fn identity_and_claim_qualify_0_32_14_as_compatible_extension() {
     for version in ["0.32.2", "0.32.10", "0.32.3-rc.0", "0.13.5"] {
         assert!(!claim.permits(&version_value(version)));
     }
-    for version in ["0.34.3"] {
-        assert!(matches!(
-            claim.assess(&version_value(version)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
-    }
+    assert!(matches!(
+        claim.assess(&version_value("0.34.3")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     assert_eq!(
         ollama_runtime_binding("0.32.14")
             .expect("version binds")
@@ -223,12 +221,10 @@ fn identity_and_claim_qualify_0_32_15_as_compatible_extension() {
             if matched.support_status() == InterfaceSupportStatus::Maintained
                 && matched.behavior_revision().as_str() == "ollama.native-text-v1"
     ));
-    for version in ["0.34.3"] {
-        assert!(matches!(
-            claim.assess(&version_value(version)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
-    }
+    assert!(matches!(
+        claim.assess(&version_value("0.34.3")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     assert_eq!(
         ollama_runtime_binding("0.32.15")
             .expect("version binds")

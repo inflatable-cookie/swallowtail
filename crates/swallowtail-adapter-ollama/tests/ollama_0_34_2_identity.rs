@@ -232,12 +232,10 @@ fn identity_freezes_0_33_3_through_0_34_2_and_names_compatible_extension() {
                 if matched.support_status() == InterfaceSupportStatus::Maintained
         ));
     }
-    for version in ["0.34.3"] {
-        assert!(matches!(
-            claim.assess(&version_value(version)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
-    }
+    assert!(matches!(
+        claim.assess(&version_value("0.34.3")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     assert_eq!(
         ollama_runtime_binding("0.34.2")
             .expect("version binds")

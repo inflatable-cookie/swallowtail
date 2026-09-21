@@ -146,14 +146,12 @@ mod tests {
                 &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
             ));
         }
-        for version in ["0.34.3"] {
-            assert!(matches!(
-                descriptor.assess_interface_version(
-                    &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
-                ),
-                swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-            ));
-        }
+        assert!(matches!(
+            descriptor.assess_interface_version(
+                &ollama_runtime_binding("0.34.3").expect("fixture Ollama version is valid"),
+            ),
+            swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
     }
 
     #[test]

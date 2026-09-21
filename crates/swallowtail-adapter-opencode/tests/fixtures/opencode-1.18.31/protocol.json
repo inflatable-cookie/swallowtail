@@ -1,0 +1,92 @@
+{
+  "version": "1.18.31",
+  "selected_routes": [
+    "global.health",
+    "provider.list",
+    "session.create",
+    "session.prompt_async",
+    "event.subscribe",
+    "session.abort",
+    "session.delete",
+    "session.list",
+    "session.status",
+    "session.get",
+    "session.messages"
+  ],
+  "selected_route_and_handler_files_byte_identical": true,
+  "mapped_stable_files": [
+    "packages/opencode/src/server/routes/instance/httpapi/groups/event.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/groups/provider.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/groups/session.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/event.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/provider.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/lifecycle.ts",
+    "packages/opencode/src/session/compaction.ts",
+    "packages/opencode/src/session/message-v2.ts",
+    "packages/opencode/src/session/session.ts",
+    "packages/opencode/src/session/status.ts"
+  ],
+  "openapi_deltas": {
+    "selected_operation_objects_changed": false
+  },
+  "classified_mapped_internal_deltas": [],
+  "classified_unmapped_deltas": [
+    {
+      "hop": "1.18.30_to_1.18.31",
+      "file": "packages/opencode/src/server/routes/instance/httpapi/middleware/error.ts",
+      "classification": "adds ConfigErrorV1.RemoteAuthError to the existing defect-to-400 list; RemoteAuthError is thrown only when remote config fetch returns an HTML login page, config.ts and the error type are byte-identical, and selected route handlers plus OpenAPI stay unchanged"
+    },
+    {
+      "hop": "1.18.30_to_1.18.31",
+      "file": "packages/opencode/src/acp/config-option.ts",
+      "classification": "ACP effort select now keeps an explicit default variant value; OpenCode ACP is a separate family and is not selected on opencode.http"
+    },
+    {
+      "hop": "1.18.30_to_1.18.31",
+      "file": "packages/opencode/src/acp/event.ts",
+      "classification": "ACP reasoning chunks now use part.id as messageId; ACP sessionUpdate wire only, not the selected HTTP/SSE event stream"
+    },
+    {
+      "hop": "1.18.30_to_1.18.31",
+      "file": "packages/opencode/src/acp/service.ts",
+      "classification": "ACP load/resume/fork restore model, effort, and mode from the backing session plus history, and emit config_option_update; OpenCode ACP stays a separate unmapped family"
+    },
+    {
+      "hop": "1.18.30_to_1.18.31",
+      "file": "packages/opencode/src/cli/cmd/tui.ts",
+      "classification": "TUI shutdown now calls process.exit() without a forced zero so remote-config auth failures can surface a non-zero status; TUI process lifecycle is not the attached HTTP/SSE route"
+    },
+    {
+      "hop": "1.18.30_to_1.18.31",
+      "file": "packages/opencode/src/plugin/github-copilot/models.ts",
+      "classification": "GitHub Copilot adaptive thinking now always requests display summarized instead of only for opus-4.7; outgoing provider request option only"
+    },
+    {
+      "hop": "1.18.30_to_1.18.31",
+      "file": "packages/opencode/package.json",
+      "classification": "version bump plus provider sdk dependency bumps (@ai-sdk/gateway 3.0.104 to 3.0.191, @ai-sdk/provider 3.0.8 to 3.0.16); provider-facing dependency only, catalogue Model and Info schemas unchanged"
+    },
+    {
+      "hop": "1.18.30_to_1.18.31",
+      "file": "packages/core/package.json",
+      "classification": "version bump plus the same gateway/provider sdk bumps and @ai-sdk/provider-utils 4.0.23 to 4.0.51 in the bundled core package"
+    }
+  ],
+  "bounded_unmapped_delta_categories": [
+    "remote-config-auth-defect-400",
+    "acp-session-restore-and-config-options",
+    "tui-remote-auth-exit",
+    "github-copilot-summarized-thinking",
+    "provider-sdk-dependency-bumps",
+    "package-version-metadata",
+    "console-web-ui-and-docs-sites",
+    "repository-lockfile-and-nix-hashes"
+  ],
+  "provider_catalogue_basis": "provider.list derives Info and Model from models.dev plus connected providers; provider.ts, Model/Info generated types, and toPublicInfo stay byte-identical across the hop, so capability advertisement shape is unchanged",
+  "decoder_corpus": "opencode-1.14.48",
+  "provider_prompt_sent": false,
+  "live_server_started": false,
+  "downloaded_artifact_executed": false,
+  "host_install_changed": false
+}

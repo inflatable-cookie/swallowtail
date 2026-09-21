@@ -49,7 +49,11 @@ maintained in this section.
 - [006 Command Code 1.54.0 Paid-Model Live Requalification](./006-command-code-1-54-0-paid-model-live-requalification.md) — ready; one authorized gate on `deepseek/deepseek-v4-flash` after g05.069 stopped on the free backend's malformed stream
 - [007 Prospective-Merge Protocol Migration](./007-prospective-merge-protocol-migration.md) — ready; operator-approved configuration-only manifest migration to the accepted v4 prospective-merge shape
 - [008 Repair Lifecycle Currentness](./008-repair-lifecycle-currentness.md) — ready; bounded repair of the two audited currentness findings, sequenced after the migration lane
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:8ace978c1e82d6a7a8a051cb874df83fef5cbef20aebf31f8a068ad19e747674 -->
+- [009 Claude Code 2.1.278 Useful Newer](./009-claude-code-2-1-278-useful-newer.md) — external PR submitted for independent review under operator-approved Queue takeover
+- [010 OpenCode HTTP 1.18.31 Useful Newer](./010-opencode-http-1-18-31-useful-newer.md) — external PR #351 admitted through review entry as the bounded pilot; merged at `5ade647a` after one independent reviewer run with no initial worker
+- [011 Codex 0.155.1 Useful Newer](./011-codex-0-155-1-useful-newer.md) — external PR #353 admitted through review entry after the pilot; merged at `edb0e428` after one review finding was repaired by a worker in the same workspace
+- [012 Qwen Code 0.24.2 Useful Newer](./012-qwen-code-0-24-2-useful-newer.md) — external PR #352 admitted through review entry with a known failing nextest check, to be repaired through the revision path
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:381bbed71c09179034e1090b845f2509e60a4053ea562014179ac0a86f3bfab1 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g06 | open | planning_required |
@@ -58,4 +62,7 @@ maintained in this section.
 | g06.006 | complete | none | 8 | sha256:635e26aa157bc647fa329f09a2f574f8ddd2e891da474ef878fcf2b420cf326e |
 | g06.007 | complete | none | 8 | sha256:f1b2d5d544acd7d632fac663acd5dbc1e376192c239bb257f99f1ba5e8c06b23 |
 | g06.008 | complete | none | 8 | sha256:68d63185abb4a3122810c5d4deee794a81ec22184b10d9fc8515bae2a1253d5e |
+| g06.009 | complete | none | 8 | sha256:e7e6c3f850646b4678e08c9ad0522ecd245caaf8eeb142f06c585a0a53afd2e9 |
+| g06.010 | complete | none | 8 | sha256:866915187aeaaa4a453448a80f3e35b4cf0c4624110c39344bf6254faa3a89ca |
+| g06.011 | complete | none | 8 | sha256:d79a43593d0ac5f65eefb50bc51bca22a6dce1eedab68e2f21360679741922da |
 <!-- northstar:lifecycle:end -->

@@ -24,8 +24,49 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Changed
+- raise the qualified OpenCode HTTP ceiling from `1.18.30` to official npm
+  `opencode-ai` `1.18.31` on the `opencode.server` axis. Compatible extension
+  of `opencode.http-sse.surface-19`: selected HTTP/SSE route files and OpenAPI
+  stay byte-identical, and the published GitHub tags diverge, so the hop is
+  proven from complete source-tree inventories rather than a commit range.
+  Unmapped remote-config auth defect-to-400 mapping, unmapped OpenCode ACP
+  restore/config-option work, the unmapped TUI exit-status change, and
+  unmapped GitHub Copilot summarized-thinking request shaping are the only
+  shipped server source changes; provider SDK bumps stay provider-facing.
+  Baseline `1.14.48`, claim id, historical gaps, and `AllowUnverified` stay;
+  unpublished `1.18.32` remains visible `UnverifiedNewer`. Research 332, g06.010.
+- raise both qualified Claude Code ceilings from `2.1.270` to official npm
+  `@anthropic-ai/claude-code` `2.1.278`: headless `2.1.220..=2.1.278` and
+  response-only `2.1.227..=2.1.278`. Compatible extension of
+  `claude-code.headless.stream-json.v1` and
+  `claude-code.response-only.stream-json.v1`. All eight published hops after
+  the ceiling were retrieved and classified on both platform builds; every
+  selected flag keeps an identical constructor-site fingerprint intersection,
+  the format, effort, and permission enumerations are unchanged, and the
+  required `init` keys plus `stream_event`, `hook_started`, `result`, and
+  `thinking_tokens` presence hold. Wrapper files except `package.json` and
+  `sdk-tools.d.ts` are byte-identical across all nine compared versions, and
+  every `sdk-tools.d.ts` delta is SDK tool declaration content the routes do
+  not consume. Host `claude` was not installed. Unpublished `2.1.244`,
+  `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, and `2.1.264` stay
+  incompatible; unpublished `2.1.279` remains visible `UnverifiedNewer`.
+  Baselines, claim ids, `AllowUnverified`, watcher exact `2.1.251`, and every
+  feature-specific exact-version set stay. Research 331, g06.009.
+- raise the shared `codex.cli` ceiling for Codex exec and app-server from
+  qualified `0.154.0` through official npm `@openai/codex` `0.155.1`.
+  Research 333 freezes both published stables `0.155.0` then `0.155.1` as a
+  compatible extension of `codex.exec.jsonl-v1`,
+  `codex.app-server.v2.workspace-roots`, and
+  `codex.app-server.lifecycle.v1.strict-descendant-hard-delete`. Keep
+  baseline `0.80.0`, both claim ids, and `AllowUnverified`. Pin newly
+  interior unpublished `0.154.1` incompatible alongside `0.149.2`,
+  `0.150.2`, `0.151.1`, and `0.152.2`. After qualification, unpublished
+  `0.155.2` is the first visible `UnverifiedNewer` point. Feature-specific
+  exact pins stay on the `0.147.0..=0.149.1` probed points. Voice,
+  code-mode-host, attachments, managed-daemon, and TUI stay unmapped.
+  Research 333.
 - raise the Qwen Code headless qualified ceiling through official npm
-  `@qwen-code/qwen-code` `0.24.2`: Research 331 freezes every published hop
+  `@qwen-code/qwen-code` `0.24.2`: Research 334 freezes every published hop
   after `0.23.3` (`0.23.4`, `0.24.0`, `0.24.1`, `0.24.2`) and classifies the
   selected stream, controls, help, session, and Plan surfaces as a compatible
   extension. Extend the maintained `0.22.0..=0.24.2` segment, keep the exact

@@ -50,7 +50,7 @@ maintained in this section.
 - [007 Prospective-Merge Protocol Migration](./007-prospective-merge-protocol-migration.md) — ready; operator-approved configuration-only manifest migration to the accepted v4 prospective-merge shape
 - [008 Repair Lifecycle Currentness](./008-repair-lifecycle-currentness.md) — ready; bounded repair of the two audited currentness findings, sequenced after the migration lane
 - [009 Claude Code 2.1.278 Useful Newer](./009-claude-code-2-1-278-useful-newer.md) — external PR submitted for independent review under operator-approved Queue takeover
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:8ace978c1e82d6a7a8a051cb874df83fef5cbef20aebf31f8a068ad19e747674 -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:793dfc5a789cc1e0ff6eeb406a1447cb2bb1d9e05561c3c0f80aeed707cbd8e2 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g06 | open | planning_required |
@@ -59,4 +59,5 @@ maintained in this section.
 | g06.006 | complete | none | 8 | sha256:635e26aa157bc647fa329f09a2f574f8ddd2e891da474ef878fcf2b420cf326e |
 | g06.007 | complete | none | 8 | sha256:f1b2d5d544acd7d632fac663acd5dbc1e376192c239bb257f99f1ba5e8c06b23 |
 | g06.008 | complete | none | 8 | sha256:68d63185abb4a3122810c5d4deee794a81ec22184b10d9fc8515bae2a1253d5e |
+| g06.009 | complete | none | 8 | sha256:e7e6c3f850646b4678e08c9ad0522ecd245caaf8eeb142f06c585a0a53afd2e9 |
 <!-- northstar:lifecycle:end -->

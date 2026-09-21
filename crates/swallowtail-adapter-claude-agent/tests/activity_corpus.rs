@@ -37,7 +37,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_sha(segment, "tag_commit", 40);
         assert_sha(segment, "source_sha256", 64);
     }
-    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.76.0");
+    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.79.0");
     assert_eq!(range["current_external_releases"][2]["version"], "0.64.0");
     assert_eq!(
         range["current_external_releases"][2]["classification"],
@@ -156,12 +156,51 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         range["current_external_releases"][11]["activity_delta"],
         "recommended-config-values-and-clear-context-unmapped"
     );
+    assert_eq!(range["current_external_releases"][12]["version"], "0.77.0");
+    assert_eq!(
+        range["current_external_releases"][12]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][12]["profile"],
+        "0.79.0-guarantee"
+    );
+    assert_eq!(
+        range["current_external_releases"][12]["activity_delta"],
+        "agent-config-removal-and-multi-select-other-description"
+    );
+    assert_eq!(range["current_external_releases"][13]["version"], "0.78.0");
+    assert_eq!(
+        range["current_external_releases"][13]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][13]["profile"],
+        "0.79.0-guarantee"
+    );
+    assert_eq!(
+        range["current_external_releases"][13]["activity_delta"],
+        "compaction-update-and-single-select-other-description"
+    );
+    assert_eq!(range["current_external_releases"][14]["version"], "0.79.0");
+    assert_eq!(
+        range["current_external_releases"][14]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][14]["profile"],
+        "0.79.0-guarantee"
+    );
+    assert_eq!(
+        range["current_external_releases"][14]["activity_delta"],
+        "agent-sdk-pin-and-shell-permission-title-unmapped"
+    );
     assert_eq!(
         range["current_external_releases"]
             .as_array()
             .expect("releases")
             .len(),
-        12
+        15
     );
 }
 

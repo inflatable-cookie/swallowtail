@@ -420,7 +420,7 @@ integration.
 ## ACP Version Posture
 
 Discovery records the exact Claude Agent ACP wrapper version. Qualified
-wrappers are `0.53.0..=0.76.0`, excluding unpublished `0.58.0`. Those
+wrappers are `0.53.0..=0.79.0`, excluding unpublished `0.58.0`. Those
 milestones remain guaranteed. A newer stable release is admitted as
 unverified, remains inspectable in evidence, and must identify itself as that
 same exact version during ACP initialization. Excluded and older versions do

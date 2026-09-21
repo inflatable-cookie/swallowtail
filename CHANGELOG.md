@@ -75,6 +75,22 @@ annotated Git tags from the canonical repository.
   preserve historical gaps and `AllowUnverified`, and leave board/sandbox,
   goal workflow, Web Shell, daemon, ACP, Model Studio, and other adjacent
   deltas unmapped. No provider operation or host mutation occurred.
+- raise the Claude Agent ACP qualified ceiling from `0.76.0` to official npm
+  `@agentclientprotocol/claude-agent-acp` `0.79.0`. Compatible extension of
+  `claude-agent.acp.initialize-meta-extensions-v7`: selected mapped ACP routes
+  stay, the ACP SDK pin stays `1.4.0`, and `dist/index.js`, `dist/settings.js`,
+  `dist/utils.js`, and `dist/lib.js` are byte-identical across every hop, so
+  mode ids/categories, `plan`/`acceptEdits`, permission option kinds, and the
+  effort config id stay. `0.77.0` removes the unmapped `agent` config option
+  and changes the multi-select Other description; `0.78.0` adds
+  capability-gated `compaction_update` that Swallowtail does not advertise and
+  changes the single-select Other description; `0.79.0` bumps the unmapped
+  Agent SDK pin to `0.3.274` and keeps command text in shell permission
+  titles. Already-mapped form elicitation accepts the two new Other
+  description strings. Unpublished `0.58.0`, `0.73.1`, `0.74.1`, `0.75.2`,
+  `0.76.1`, `0.77.1`, and `0.78.1` stay incompatible; synthetic unpublished
+  `0.80.0` remains visible `UnverifiedNewer`. Claude Code stream-JSON and the
+  Claude Agent SDK sidecar stay separate families. Research 335.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

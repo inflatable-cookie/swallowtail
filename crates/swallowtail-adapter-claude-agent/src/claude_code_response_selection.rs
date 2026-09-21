@@ -12,7 +12,7 @@ pub const CLAUDE_CODE_RESPONSE_ONLY_AXIS: &str = "claude-code.response-only-stre
 /// Oldest Claude Code version qualified for response-only runs.
 pub const CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION: &str = "2.1.227";
 /// Most recent Claude Code version with qualified response-only evidence.
-pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.270";
+pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.278";
 /// Most recent Claude Code version with qualified response-only evidence.
 pub const CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str =
     CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION;
@@ -144,7 +144,8 @@ mod tests {
         assert!(claim.supports(&InterfaceVersion::new("2.1.257").unwrap()));
         for published in [
             "2.1.258", "2.1.259", "2.1.260", "2.1.261", "2.1.263", "2.1.265", "2.1.266", "2.1.267",
-            "2.1.268", "2.1.269", "2.1.270",
+            "2.1.268", "2.1.269", "2.1.270", "2.1.271", "2.1.272", "2.1.273", "2.1.274", "2.1.275",
+            "2.1.276", "2.1.277", "2.1.278",
         ] {
             assert!(
                 claim.supports(&InterfaceVersion::new(published).unwrap()),
@@ -161,7 +162,7 @@ mod tests {
         assert!(!claim.permits(&InterfaceVersion::new("2.1.262").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.264").unwrap()));
         assert!(matches!(
-            claim.assess(&InterfaceVersion::new("2.1.271").unwrap()),
+            claim.assess(&InterfaceVersion::new("2.1.279").unwrap()),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
     }

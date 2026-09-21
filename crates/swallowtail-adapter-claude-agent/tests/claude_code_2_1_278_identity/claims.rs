@@ -1,8 +1,11 @@
 use super::support::{IDENTITY, PUBLISHED_HOPS, RESPONSE_ONLY, json, strings, version};
 use swallowtail_adapter_claude_agent::{
-    CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS, claude_code_headless_claim,
+    CLAUDE_CODE_HEADLESS_BASELINE_VERSION, CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION,
+    CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
+    CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION, claude_code_headless_claim,
     claude_code_response_only_claim,
 };
+use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus};
 
 #[test]
 fn watcher_authorization_stays_on_exact_2_1_251() {
@@ -143,4 +146,47 @@ fn identity_names_compatible_extension_without_changing_production() {
         identity["claim_at_observation"]["classification_of_2_1_278"],
         "unverified_newer"
     );
+    assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.278");
+    assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
+    assert_eq!(
+        CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
+        "2.1.278"
+    );
+
+    let headless = claude_code_headless_claim();
+    assert!(matches!(
+        headless.assess(&version("2.1.270")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    for published in PUBLISHED_HOPS.iter().copied() {
+        assert!(
+            matches!(
+                headless.assess(&version(published)),
+                InterfaceCompatibilityAssessment::Qualified(matched)
+                    if matched.support_status() == InterfaceSupportStatus::Maintained
+            ),
+            "{published}"
+        );
+    }
+    assert!(matches!(
+        headless.assess(&version("2.1.279")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+    let response = claude_code_response_only_claim();
+    assert!(matches!(
+        response.assess(&version("2.1.270")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        response.assess(&version("2.1.278")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        response.assess(&version("2.1.279")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
 }

@@ -24,7 +24,7 @@ permission to leave the current official stable UnverifiedNewer.
       agree.
 - [x] Every published hop `2.1.271` through `2.1.278` was retrieved.
 - [x] Research 331 froze identity and named compatible-extension.
-- [ ] Claim raises both `LATEST_QUALIFIED` values to official latest.
+- [x] Claim raises both `LATEST_QUALIFIED` values to official latest.
 
 ## Decisions
 

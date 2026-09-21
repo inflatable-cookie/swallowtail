@@ -73,7 +73,8 @@ justifies flattening into Model Studio or Qwen ACP.
 The family is a `compatible-extension` of
 `qwen-code.headless.v0.21.15-reasoning-control`. Keep the deprecated
 `0.19.11..=0.20.1` and `0.21.0..=0.21.14` windows, exact `0.21.15`, and
-extend maintained `0.22.0..=0.24.2`. Qualify every published hop. Keep the
-unpublished gaps and `AllowUnverified`; after qualification, `0.24.3` is
-the first unverified newer stable candidate. No new public mapped
+extend maintained `0.22.0..=0.24.2` with the unpublished interior `0.22.4`
+and `0.23.5` stables kept incompatible. Qualify every published hop. Keep
+the remaining unpublished gaps and `AllowUnverified`; after qualification,
+`0.24.3` is the first unverified newer stable candidate. No new public mapped
 operation. No major-line reset.

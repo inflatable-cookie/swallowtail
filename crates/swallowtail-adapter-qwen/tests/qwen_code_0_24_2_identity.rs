@@ -1,4 +1,6 @@
 use serde_json::Value;
+use swallowtail_adapter_qwen::qwen_headless_claim;
+use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
 const IDENTITY: &str = include_str!("fixtures/qwen-code-0.24.2/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/qwen-code-0.24.2/protocol.json");
@@ -88,6 +90,35 @@ fn identity_freezes_official_hops_and_preserves_claim_boundary() {
 }
 
 #[test]
+fn production_claim_excludes_the_documented_unpublished_interior_gaps() {
+    let decision = &json(IDENTITY)["identity_decision"];
+    assert_eq!(decision["keep_0_22_4_incompatible"], true);
+    assert_eq!(decision["keep_0_23_5_incompatible"], true);
+
+    let claim = qwen_headless_claim();
+    for point in [
+        "0.22.0", "0.22.1", "0.22.2", "0.22.3", "0.23.0", "0.23.1", "0.23.2", "0.23.3", "0.23.4",
+        "0.24.0", "0.24.1", "0.24.2",
+    ] {
+        assert!(
+            claim.supports(&version(point)),
+            "published stable {point} stays qualified"
+        );
+    }
+    for gap in ["0.22.4", "0.23.5"] {
+        assert_eq!(
+            claim.assess(&version(gap)),
+            InterfaceCompatibilityAssessment::Incompatible,
+            "unpublished interior {gap} stays incompatible"
+        );
+    }
+    assert!(matches!(
+        claim.assess(&version("0.24.3")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+}
+
+#[test]
 fn complete_hop_inventory_has_mutation_sensitive_counts_and_hashes() {
     let inventory = json(DIST_INVENTORY);
     assert_eq!(
@@ -171,4 +202,8 @@ fn complete_hop_inventory_has_mutation_sensitive_counts_and_hashes() {
             .len()
             >= 10
     );
+}
+
+fn version(value: &str) -> InterfaceVersion {
+    InterfaceVersion::new(value).expect("fixture version is valid")
 }

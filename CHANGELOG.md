@@ -69,7 +69,8 @@ annotated Git tags from the canonical repository.
   `@qwen-code/qwen-code` `0.24.2`: Research 334 freezes every published hop
   after `0.23.3` (`0.23.4`, `0.24.0`, `0.24.1`, `0.24.2`) and classifies the
   selected stream, controls, help, session, and Plan surfaces as a compatible
-  extension. Extend the maintained `0.22.0..=0.24.2` segment, keep the exact
+  extension. Extend the maintained `0.22.0..=0.24.2` segment with unpublished
+  interior `0.22.4` and `0.23.5` kept incompatible, keep the exact
   Plan set bounded at `0.22.3`, keep exact `0.21.15` reasoning and budgets,
   preserve historical gaps and `AllowUnverified`, and leave board/sandbox,
   goal workflow, Web Shell, daemon, ACP, Model Studio, and other adjacent

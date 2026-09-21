@@ -90,7 +90,12 @@ pub fn qwen_headless_claim() -> InterfaceCompatibilityClaim {
                 InterfaceSupportStatus::Maintained,
             ),
         ],
-        [],
+        // Unpublished interior stables recorded by Research 334 stay
+        // incompatible inside the raised window.
+        [
+            version("0.22.4").expect("static Qwen unpublished gap is valid"),
+            version("0.23.5").expect("static Qwen unpublished gap is valid"),
+        ],
     )
     .expect("static Qwen compatibility claim is valid")
 }
@@ -216,6 +221,8 @@ mod tests {
         ));
         assert!(!claim.permits(&version("0.20.2")));
         assert!(!claim.permits(&version("0.21.16")));
+        assert!(!claim.permits(&version("0.22.4")));
+        assert!(!claim.permits(&version("0.23.5")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
             claim.assess(&version("0.24.3"))
         else {

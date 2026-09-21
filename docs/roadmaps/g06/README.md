@@ -47,6 +47,7 @@ on 2026-09-17 against the exact `1.54.0` point.
 - [005 Registered-Tool Adoption For Remaining ACP Routes](./005-registered-tool-adoption-remaining-acp-routes.md) — planned; carried from g05.042; no dispatch authorization
 - [006 Command Code 1.54.0 Paid-Model Live Requalification](./006-command-code-1-54-0-paid-model-live-requalification.md) — ready; one authorized gate on `deepseek/deepseek-v4-flash` after g05.069 stopped on the free backend's malformed stream
 - [007 Prospective-Merge Protocol Migration](./007-prospective-merge-protocol-migration.md) — ready; operator-approved configuration-only manifest migration to the accepted v4 prospective-merge shape
+- [008 Repair Lifecycle Currentness](./008-repair-lifecycle-currentness.md) — ready; bounded repair of the two audited currentness findings, sequenced after the migration lane
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:18346aae9670dc4b061128c98a83c46753f84fe4580bffd19dbd561bbde7ebde -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

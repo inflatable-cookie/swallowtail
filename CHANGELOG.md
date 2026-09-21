@@ -54,7 +54,7 @@ annotated Git tags from the canonical repository.
   feature-specific exact-version set stay. Research 331, g06.009.
 - raise the shared `codex.cli` ceiling for Codex exec and app-server from
   qualified `0.154.0` through official npm `@openai/codex` `0.155.1`.
-  Research 331 freezes both published stables `0.155.0` then `0.155.1` as a
+  Research 333 freezes both published stables `0.155.0` then `0.155.1` as a
   compatible extension of `codex.exec.jsonl-v1`,
   `codex.app-server.v2.workspace-roots`, and
   `codex.app-server.lifecycle.v1.strict-descendant-hard-delete`. Keep
@@ -64,7 +64,8 @@ annotated Git tags from the canonical repository.
   `0.155.2` is the first visible `UnverifiedNewer` point. Feature-specific
   exact pins stay on the `0.147.0..=0.149.1` probed points. Voice,
   code-mode-host, attachments, managed-daemon, and TUI stay unmapped.
-  Research 331.- extend the qualified Oh My Pi RPC package window from
+  Research 333.
+- extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior
   revision, and a distinct adapter-private `18.0.0..=18.1.22` segment on the

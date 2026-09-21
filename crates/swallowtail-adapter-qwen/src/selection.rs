@@ -12,7 +12,7 @@ pub const QWEN_CODE_AXIS: &str = "qwen-code.package";
 /// Oldest qualified Qwen Code package version.
 pub const QWEN_CODE_BASELINE_VERSION: &str = "0.19.11";
 /// Most recent qualified Qwen Code package version.
-pub const QWEN_CODE_LATEST_QUALIFIED_VERSION: &str = "0.23.3";
+pub const QWEN_CODE_LATEST_QUALIFIED_VERSION: &str = "0.24.2";
 
 const BASELINE_BEHAVIOR: &str = "qwen-code.headless.v0.19.11";
 const CATALOGUE_FILTER_BEHAVIOR: &str = "qwen-code.headless.v0.21.0-catalogue-filter";
@@ -160,7 +160,7 @@ mod tests {
         for candidate in [
             "0.19.11", "0.19.12", "0.20.0", "0.20.1", "0.21.0", "0.21.1", "0.21.2", "0.21.3",
             "0.21.13", "0.21.14", "0.21.15", "0.22.0", "0.22.1", "0.22.2", "0.22.3", "0.23.0",
-            "0.23.1", "0.23.2", "0.23.3",
+            "0.23.1", "0.23.2", "0.23.3", "0.23.4", "0.24.0", "0.24.1", "0.24.2",
         ] {
             assert!(claim.supports(&version(candidate)));
         }
@@ -208,10 +208,16 @@ mod tests {
                 if matched.support_status() == InterfaceSupportStatus::Maintained
                     && matched.behavior_revision().as_str() == REASONING_CONTROL_BEHAVIOR
         ));
+        assert!(matches!(
+            claim.assess(&version("0.24.2")),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.support_status() == InterfaceSupportStatus::Maintained
+                    && matched.behavior_revision().as_str() == REASONING_CONTROL_BEHAVIOR
+        ));
         assert!(!claim.permits(&version("0.20.2")));
         assert!(!claim.permits(&version("0.21.16")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.23.4"))
+            claim.assess(&version("0.24.3"))
         else {
             panic!("later stable Qwen remains unverified");
         };
@@ -239,6 +245,10 @@ mod tests {
         assert!(qwen_code_binding("0.23.1").is_some());
         assert!(qwen_code_binding("0.23.2").is_some());
         assert!(qwen_code_binding("0.23.3").is_some());
+        assert!(qwen_code_binding("0.23.4").is_some());
+        assert!(qwen_code_binding("0.24.0").is_some());
+        assert!(qwen_code_binding("0.24.1").is_some());
+        assert!(qwen_code_binding("0.24.2").is_some());
         for value in ["", " 0.19.11", "qwen 0.19.11", "latest"] {
             assert!(qwen_code_binding(value).is_none());
         }

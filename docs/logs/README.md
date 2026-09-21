@@ -24,6 +24,7 @@ feature usually has a short chain: selection evidence, contract, implementation,
 then conformance closeout.
 
 ## Entries
+- [2026-09-21 Qwen Code 0.24.2 Claim](./2026-09-21-qwen-code-0-24-2-claim.md) — raised `qwen-code.package` through official `0.24.2`; qualified published hops `0.23.4`, `0.24.0`, and `0.24.1`, kept the exact Plan set bounded at `0.22.3`, exact `0.21.15` reasoning/budgets, historical gaps, and `AllowUnverified`; no provider operation or host mutation
 - [2026-09-21 Qwen Code 0.24.2 Identity](./2026-09-21-qwen-code-0-24-2-identity.md) — Research 331 froze complete npm package inventories and direct family release/tag identities after `0.23.3`; selected surfaces remained compatible and all changed adjacent internals stayed unmapped
 - [2026-09-17 g05.084 Roll Over To g06 And Compact g05](./2026-09-17-g05-084-rollover-and-compaction.md) — the operator-authorized rollover closed g05 at 82 numbered tasks, carried the five planned tasks to g06.001–g06.005, committed the lifecycle closure record and receipt, regenerated the front-door projections for g06, and removed `docs/roadmaps/g05/**` with the preservation manifest and archive roll-up in place
 - [2026-09-17 g05.069 Command Code 1.54.0 Live Stop](./2026-09-17-g05-069-command-code-1-54-0-live-stop.md) — the one authorized exact-`1.54.0` gate on `meituan/LongCat-2.0:free` stopped with `swallowtail.command_code.headless.malformed_stream`; live-derived completion, tool/usage, and two-turn continuation evidence remains bound to `1.15.1`, with claims and matrix cells unchanged

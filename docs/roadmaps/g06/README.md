@@ -34,9 +34,10 @@ Only ready and planned tasks are actionable. The five carried-forward tasks
 open with no dispatch authorization: g06.001 awaits the operator-confirmed
 producer proposal's independent review and canonical contract promotion,
 g06.002 and g06.003 stay behind the Research 256 disposition gate, and g06.004
-and g06.005 have no consumer requirement or operator direction. g06.006 is the
-first ready lane: one operator-authorized Command Code live gate, dispatched
-on 2026-09-17 against the exact `1.54.0` point.
+and g06.005 have no consumer requirement or operator direction. The completed
+live-gate history is represented by the lifecycle projection below; remaining
+ready work is sequenced by the queue and generation runway, with no task pointer
+maintained in this section.
 
 ## Tasks
 

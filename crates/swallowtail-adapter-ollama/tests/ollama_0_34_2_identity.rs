@@ -1,7 +1,8 @@
 use serde_json::Value;
 use swallowtail_adapter_ollama::{
     OLLAMA_BASELINE_VERSION, OLLAMA_LATEST_QUALIFIED_VERSION, ollama_runtime_binding,
-    ollama_runtime_claim, protocol::ChatDecoder,
+    ollama_runtime_claim,
+    protocol::{ChatDecoder, NativeEvent},
 };
 use swallowtail_core::{
     InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
@@ -222,16 +223,16 @@ fn identity_freezes_0_33_3_through_0_34_2_and_names_compatible_extension() {
     }
 
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.33.2");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.34.2");
     let claim = ollama_runtime_claim();
-    for version in ["0.14.0", "0.33.2"] {
+    for version in ["0.14.0", "0.33.2", "0.33.3", "0.34.0", "0.34.1", "0.34.2"] {
         assert!(matches!(
             claim.assess(&version_value(version)),
             InterfaceCompatibilityAssessment::Qualified(matched)
                 if matched.support_status() == InterfaceSupportStatus::Maintained
         ));
     }
-    for version in ["0.33.3", "0.34.0", "0.34.1", "0.34.2"] {
+    for version in ["0.34.3"] {
         assert!(matches!(
             claim.assess(&version_value(version)),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
@@ -247,14 +248,38 @@ fn identity_freezes_0_33_3_through_0_34_2_and_names_compatible_extension() {
 }
 
 #[test]
-fn strict_decoder_still_fail_closes_on_cached_count_before_claim() {
+fn decoder_accepts_and_ignores_the_0_33_3_cached_count_key() {
     let counterexample = protocol_record("tolerance_counterexample_terminal_record");
+    let mut decoder = ChatDecoder::new("m:8b");
+    let events = decoder
+        .push(format!("{counterexample}\n").as_bytes())
+        .expect("decoder-tolerance accepts the additive 0.33.3 metrics key");
+    assert_eq!(events.len(), 2);
+    assert!(matches!(
+        &events[0],
+        NativeEvent::Finished(reason) if reason == "stop"
+    ));
+    assert!(matches!(
+        &events[1],
+        NativeEvent::Usage(usage)
+            if usage.input_tokens() == Some(10) && usage.output_tokens() == Some(3)
+    ));
+
     let mut decoder = ChatDecoder::new("m:8b");
     assert!(
         decoder
-            .push(format!("{counterexample}\n").as_bytes())
+            .push(
+                format!(
+                    "{}\n",
+                    counterexample.replace(
+                        "\"prompt_eval_cached_count\":4,",
+                        "\"prompt_eval_cached_count\":4,\"unknown_metrics_key\":1,"
+                    )
+                )
+                .as_bytes()
+            )
             .is_err(),
-        "identity-before-claim: native-text-v1 still fail-closes on the unmapped 0.33.3 metrics key"
+        "unknown extra keys still fail closed"
     );
 }
 

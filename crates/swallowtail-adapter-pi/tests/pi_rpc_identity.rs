@@ -111,8 +111,7 @@ fn identity_and_claim_qualify_0_84_3_as_compatible_extension() {
                     == "pi.rpc.strict-lf-v0.83.0-bash-extension-hook"
     ));
     for candidate in [
-        "0.84.0", "0.84.1", "0.84.2", "0.84.3", "0.84.4", "0.85.0", "0.85.1",
-        "0.86.0", "0.86.1",
+        "0.84.0", "0.84.1", "0.84.2", "0.84.3", "0.84.4", "0.85.0", "0.85.1", "0.86.0", "0.86.1",
     ] {
         assert!(matches!(
             claim.assess(&version(candidate)),

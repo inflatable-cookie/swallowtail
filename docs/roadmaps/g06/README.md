@@ -51,7 +51,8 @@ maintained in this section.
 - [008 Repair Lifecycle Currentness](./008-repair-lifecycle-currentness.md) — ready; bounded repair of the two audited currentness findings, sequenced after the migration lane
 - [009 Claude Code 2.1.278 Useful Newer](./009-claude-code-2-1-278-useful-newer.md) — external PR submitted for independent review under operator-approved Queue takeover
 - [010 OpenCode HTTP 1.18.31 Useful Newer](./010-opencode-http-1-18-31-useful-newer.md) — external PR #351 admitted through review entry as the bounded pilot; merged at `5ade647a` after one independent reviewer run with no initial worker
-- [011 Codex 0.155.1 Useful Newer](./011-codex-0-155-1-useful-newer.md) — external PR #353 admitted through review entry after the pilot
+- [011 Codex 0.155.1 Useful Newer](./011-codex-0-155-1-useful-newer.md) — external PR #353 admitted through review entry after the pilot; merged at `edb0e428` after one review finding was repaired by a worker in the same workspace
+- [012 Qwen Code 0.24.2 Useful Newer](./012-qwen-code-0-24-2-useful-newer.md) — external PR #352 admitted through review entry with a known failing nextest check, to be repaired through the revision path
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:381bbed71c09179034e1090b845f2509e60a4053ea562014179ac0a86f3bfab1 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

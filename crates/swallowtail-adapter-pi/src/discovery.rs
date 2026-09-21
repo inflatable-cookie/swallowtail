@@ -52,7 +52,10 @@ mod tests {
 
     #[test]
     fn parser_accepts_only_bare_pi_semver() {
-        for candidate in ["0.80.10", "0.83.0", "0.84.2", "0.84.3", "0.84.4", "0.85.1"] {
+        for candidate in [
+            "0.80.10", "0.83.0", "0.84.2", "0.84.3", "0.84.4", "0.85.1", "0.86.0",
+            "0.86.1",
+        ] {
             assert_eq!(
                 parse_version(format!("{candidate}\n").as_bytes())
                     .expect("version parses")

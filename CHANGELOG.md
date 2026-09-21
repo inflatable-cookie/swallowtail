@@ -24,6 +24,18 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Changed
+- raise the Pi RPC qualified ceiling from `0.85.1` to official npm
+  `@earendil-works/pi-coding-agent` `0.86.1`. Compatible extension of
+  `pi.rpc.strict-lf-v0.84.0-message-update-delta`: selected mapped commands
+  and argv stay; published `0.86.0` is also qualified. `0.86.0`
+  `{ source: "rpc" }` on already-mapped `steer` / `follow_up` covers
+  unmapped extension input handlers and is a no-op under selected
+  `--no-extensions`. `0.86.1` `META_API_KEY` help, Meta Muse, compile
+  cache, cache warming, `/bug`, Radius, compaction budgets, custom-provider
+  `TranscriptContext`, and `user_bash` fail-closed stay unmapped.
+  Unpublished `0.83.1`, `0.84.5`, and `0.85.2` stay incompatible;
+  unpublished `0.86.2` remains visible `UnverifiedNewer`. `pi.sdk-sidecar`
+  stays exact `0.84.2`. Research 331.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

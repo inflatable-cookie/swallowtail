@@ -1,9 +1,9 @@
-//! Production claim state before the 1.0.40 compatible-extension claim card.
+//! Production claim state after the 1.0.40 compatible-extension claim card.
 //!
-//! Identity-before-claim: the ACP executable window still ends at official
-//! `1.0.30`. Every hop `1.0.31..=1.0.40` stays `UnverifiedNewer` until the
-//! claim card lands. The exact catalogue claim and the registered-tool
-//! courier stay independently bounded.
+//! The ACP executable window extends through official `1.0.40` on the
+//! existing behavior revision. The exact catalogue claim and the
+//! registered-tool courier bounded to the accepted live capsules stay
+//! independent of the ACP window.
 
 use super::identity::{COMPARED, HOPS, OFFICIAL_STABLE, PREVIOUS_CEILING};
 use super::support::version;
@@ -14,13 +14,9 @@ use swallowtail_adapter_grok::{
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus};
 
 #[test]
-fn production_claim_still_ends_at_1_0_30_before_the_claim_card() {
+fn production_claim_admits_every_hop_through_1_0_40_as_maintained() {
     let claim = grok_build_acp_claim();
-    assert_eq!(
-        GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION,
-        PREVIOUS_CEILING
-    );
-    assert_ne!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, OFFICIAL_STABLE);
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, OFFICIAL_STABLE);
     for (point, behavior, status) in [
         (
             "0.2.114",
@@ -45,21 +41,25 @@ fn production_claim_still_ends_at_1_0_30_before_the_claim_card() {
         assert_eq!(matched.behavior_revision().as_str(), behavior);
         assert_eq!(matched.support_status(), status);
     }
-    let InterfaceCompatibilityAssessment::Qualified(matched) =
-        claim.assess(&version(PREVIOUS_CEILING))
-    else {
-        panic!("{PREVIOUS_CEILING} must stay the current ceiling");
-    };
-    assert_eq!(
-        matched.behavior_revision().as_str(),
-        "grok-build.acp-v1.cached-token-model-4-6-v3"
-    );
-    assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
-    assert_eq!(
-        grok_build_model_for_version(&version(PREVIOUS_CEILING)),
-        Some("grok-4.6")
-    );
-    for point in ["1.0.4", "1.0.5"] {
+    for point in COMPARED {
+        if *point == PREVIOUS_CEILING {
+            continue;
+        }
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version(point))
+        else {
+            panic!("{point} must be qualified after the claim card");
+        };
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            "grok-build.acp-v1.cached-token-model-4-6-v3"
+        );
+        assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
+        assert_eq!(
+            grok_build_model_for_version(&version(point)),
+            Some("grok-4.6")
+        );
+    }
+    for point in ["1.0.4", "1.0.5", PREVIOUS_CEILING] {
         let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version(point))
         else {
             panic!("{point} must stay qualified");
@@ -70,13 +70,13 @@ fn production_claim_still_ends_at_1_0_30_before_the_claim_card() {
             Some("grok-4.6")
         );
     }
-    for later in HOPS.iter().chain(["1.0.41", "1.1.0"].iter()) {
+    for later in ["1.0.41", "1.1.0"] {
         let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
             claim.assess(&version(later))
         else {
-            panic!("{later} must stay unverified newer before the claim card");
+            panic!("{later} must stay unverified newer");
         };
-        assert_eq!(unverified.latest_qualified().as_str(), PREVIOUS_CEILING);
+        assert_eq!(unverified.latest_qualified().as_str(), OFFICIAL_STABLE);
         assert_eq!(
             unverified.behavior_revision().as_str(),
             "grok-build.acp-v1.cached-token-model-4-6-v3"

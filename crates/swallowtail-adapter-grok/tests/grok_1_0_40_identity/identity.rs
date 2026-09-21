@@ -202,9 +202,7 @@ fn every_hop_pins_exact_wrapper_platform_and_executable_identity() {
             "each hop ships a distinct linux executable"
         );
         assert!(
-            seen_darwin
-                .insert(darwin_sha.to_owned(), version)
-                .is_none(),
+            seen_darwin.insert(darwin_sha.to_owned(), version).is_none(),
             "each hop ships a distinct darwin executable"
         );
         let platforms = entry["platform"]["other_platform_integrities"]
@@ -243,7 +241,10 @@ fn ceiling_reproduces_research_314_wrapper_and_darwin_arm64() {
         ceiling["darwin_arm64_crosscheck"]["brotli_sha256"],
         "13f3c6cd5145c5d1e39a6ab9ab51bc429655d6f7410938b295011a367db17d1e"
     );
-    assert_eq!(identity["darwin_arm64_1_0_30_reproduces_research_314"], true);
+    assert_eq!(
+        identity["darwin_arm64_1_0_30_reproduces_research_314"],
+        true
+    );
     assert_eq!(
         identity["research_314_darwin_arm64_1_0_30_executable"],
         "d53b6e543e482716236748914331db50145c696ac7af91f1ebdedcf5654cfecb"

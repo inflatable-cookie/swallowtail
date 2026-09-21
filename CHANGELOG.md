@@ -6,6 +6,18 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- raise the Grok Build ACP executable window through official npm
+  `@xai-official/grok` `1.0.40`: Research 331 freezes all ten published
+  stables `1.0.31..=1.0.40` after the `1.0.30` ceiling with verified
+  linux-x64 identity, a darwin-arm64 cross-check that reproduces Research
+  314, a byte-identical selected-literal presence map, an unchanged
+  `grok-4.6` model document, the 62 mapped-core ACP modules, and a complete
+  shipped-file inventory. The claim keeps baseline `0.2.114`, claim id
+  `grok-build.acp.executable-window-2`, behavior
+  `grok-build.acp-v1.cached-token-model-4-6-v3`, and `AllowUnverified`, and
+  extends the maintained window `1.0.4..=1.0.40`. Unpublished `1.0.41`
+  stays visible `UnverifiedNewer`. The exact `1.0.30` catalogue claim and
+  the `1.0.4`/`1.0.5` registered-tool courier stay independently bounded.
 - rebind the Goose `goose.acp` claim to exact `1.50.1` under the new
   `goose.acp.stdio-v2.auth-required` behavior revision. Research 328
   re-probed official GitHub `v1.50.1`, classified the `1.50.0..1.50.1` MCP

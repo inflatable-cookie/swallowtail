@@ -324,9 +324,7 @@ fn selected_surface_literals_are_frozen_and_identical_at_every_hop() {
         .collect();
     assert_eq!(
         present.len(),
-        SELECTED_LITERALS.len()
-            - UNDERSCORE_PREFIXED_ABSENT.len()
-            - LINUX_ABSENT_AT_CEILING.len()
+        SELECTED_LITERALS.len() - UNDERSCORE_PREFIXED_ABSENT.len() - LINUX_ABSENT_AT_CEILING.len()
     );
     for absent in UNDERSCORE_PREFIXED_ABSENT {
         assert_eq!(presence[*absent], false, "{absent}");
@@ -363,8 +361,7 @@ fn selected_surface_literals_are_frozen_and_identical_at_every_hop() {
             "{version}"
         );
         assert_eq!(
-            entry["darwin_arm64_selected_literal_presence_digest"],
-            DARWIN_PRESENCE_DIGEST,
+            entry["darwin_arm64_selected_literal_presence_digest"], DARWIN_PRESENCE_DIGEST,
             "{version}"
         );
     }
@@ -505,7 +502,10 @@ fn acp_module_inventory_keeps_the_mapped_core_and_classifies_additions() {
         );
         assert_exact_string_set(
             &inventory["per_hop_added"][version],
-            &computed_added.iter().map(String::as_str).collect::<Vec<_>>(),
+            &computed_added
+                .iter()
+                .map(String::as_str)
+                .collect::<Vec<_>>(),
         );
         assert_exact_string_set(
             &inventory["per_hop_removed"][version],

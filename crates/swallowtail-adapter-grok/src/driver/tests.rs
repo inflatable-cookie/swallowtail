@@ -37,6 +37,7 @@ fn exact_initialize_binds_0_2_and_1_0_behavior_segments() {
         ("1.0.6", GROK_BUILD_MODEL_4_6),
         ("1.0.17", GROK_BUILD_MODEL_4_6),
         ("1.0.30", GROK_BUILD_MODEL_4_6),
+        ("1.0.40", GROK_BUILD_MODEL_4_6),
     ] {
         let options = validate_initialize(
             &initialize(version, model),

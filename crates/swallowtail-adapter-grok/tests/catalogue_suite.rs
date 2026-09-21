@@ -76,9 +76,9 @@ fn catalogue_claim_admits_only_exact_1_0_30() {
 
 #[test]
 fn catalogue_claim_stays_independent_of_the_acp_execution_window() {
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.30");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.40");
     let claim = grok_build_acp_claim();
-    for candidate in ["1.0.4", "1.0.5", "1.0.25", "1.0.30"] {
+    for candidate in ["1.0.4", "1.0.5", "1.0.25", "1.0.30", "1.0.40"] {
         assert!(matches!(
             claim.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Qualified(_)
@@ -88,9 +88,9 @@ fn catalogue_claim_stays_independent_of_the_acp_execution_window() {
         grok_build_model_for_version(&version("1.0.4")),
         Some("grok-4.6")
     );
-    // The ACP window carries 1.0.30, but the catalogue operation still only
+    // The ACP window carries 1.0.40, but the catalogue operation still only
     // admits its own exact qualified point and rejects every other point,
-    // including the previous exact 1.0.25 and the alpha 1.0.31 candidate.
+    // including the previous exact 1.0.25 and later ACP-qualified 1.0.31.
     let catalogue = grok_build_catalogue_claim();
     assert!(matches!(
         catalogue.assess(&version("1.0.30")),

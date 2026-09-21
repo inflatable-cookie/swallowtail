@@ -47,6 +47,16 @@ const QUALIFIED_SOURCE_REVISIONS: &[(&str, &str)] = &[
     ("1.0.28", "cae16d2533b6"),
     ("1.0.29", "4c83f16c3e10"),
     ("1.0.30", "04b7ffed98c6"),
+    ("1.0.31", "b44e0bc0a8e0"),
+    ("1.0.32", "e21ee47a3bbf"),
+    ("1.0.33", "ff317a6753d1"),
+    ("1.0.34", "3736acbc8658"),
+    ("1.0.35", "d949da3917a8"),
+    ("1.0.36", "9ecab0bec61e"),
+    ("1.0.37", "7bb320867c4f"),
+    ("1.0.38", "41b9d57a3b9a"),
+    ("1.0.39", "0b340e9ac868"),
+    ("1.0.40", "eb1a2256660d"),
 ];
 
 // Vendor source: https://docs.x.ai/build/overview (frozen 2026-09-06).
@@ -406,8 +416,7 @@ mod tests {
         // classification is the claim's job, not the version scanner's.
         for (output, version) in [
             ("grok 0.2.118 (123456789abc) [stable]\n", "0.2.118"),
-            ("grok 1.0.31 (04b7ffed98c6) [stable]\n", "1.0.31"),
-            ("grok 1.0.32 (04b7ffed98c6) [stable]\n", "1.0.32"),
+            ("grok 1.0.41 (04b7ffed98c6) [stable]\n", "1.0.41"),
             ("grok 1.1.0 (04b7ffed98c6) [stable]\n", "1.1.0"),
         ] {
             assert_eq!(
@@ -428,6 +437,7 @@ mod tests {
             b"grok 1.0.6 (5115b46bc909) [stable]\n".as_slice(),
             b"grok 1.0.17 (f7e67d6988e2) [stable]\n".as_slice(),
             b"grok 1.0.30 (f7e67d6988e2) [stable]\n".as_slice(),
+            b"grok 1.0.40 (04b7ffed98c6) [stable]\n".as_slice(),
             b"grok 0.2.114 (0c785038798) [alpha]\n".as_slice(),
             b"grok 0.2.114 (0c785038798)\n".as_slice(),
             b"0.2.114\n".as_slice(),

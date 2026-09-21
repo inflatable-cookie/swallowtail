@@ -65,6 +65,16 @@ annotated Git tags from the canonical repository.
   exact pins stay on the `0.147.0..=0.149.1` probed points. Voice,
   code-mode-host, attachments, managed-daemon, and TUI stay unmapped.
   Research 333.
+- raise the Qwen Code headless qualified ceiling through official npm
+  `@qwen-code/qwen-code` `0.24.2`: Research 334 freezes every published hop
+  after `0.23.3` (`0.23.4`, `0.24.0`, `0.24.1`, `0.24.2`) and classifies the
+  selected stream, controls, help, session, and Plan surfaces as a compatible
+  extension. Extend the maintained `0.22.0..=0.24.2` segment with unpublished
+  interior `0.22.4` and `0.23.5` kept incompatible, keep the exact
+  Plan set bounded at `0.22.3`, keep exact `0.21.15` reasoning and budgets,
+  preserve historical gaps and `AllowUnverified`, and leave board/sandbox,
+  goal workflow, Web Shell, daemon, ACP, Model Studio, and other adjacent
+  deltas unmapped. No provider operation or host mutation occurred.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

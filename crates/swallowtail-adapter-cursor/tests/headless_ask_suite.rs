@@ -142,7 +142,7 @@ fn ask_selection_rejects_read_write_authority_before_process_work() {
 
 #[test]
 fn ask_selection_rejects_unqualified_releases_before_process_work() {
-    for release in ["2026.09.11-abcdef1", "2026.09.12-abcdef1"] {
+    for release in ["2026.09.19-abcdef1", "2026.09.20-abcdef1"] {
         let host_id = local_host();
         let host = FixtureHost::completed([stdout(&fixture())]);
         let failure = block_on(ask_driver().start_run(

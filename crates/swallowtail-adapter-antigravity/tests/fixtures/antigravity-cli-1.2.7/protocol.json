@@ -1,0 +1,135 @@
+{
+  "method": "official GitHub release/tag/asset identity plus the official release notes as the behavioural authority under Tom's 2026-09-15 operator ruling; public git hops 1.2.2..1.2.7 change only CHANGELOG.md; downloaded binaries were hashed and never executed; exhaustive string scanning stays stopped at the ruling",
+  "selected_surfaces": [
+    "--print",
+    "--output-format",
+    "--model",
+    "--mode",
+    "--sandbox",
+    "--effort",
+    "--json-schema",
+    "--conversation",
+    "models"
+  ],
+  "selected_values": [
+    "stream-json",
+    "plan",
+    "request-review"
+  ],
+  "selected_surfaces_unchanged_in_notes": true,
+  "archive_inventory": {
+    "compared": ["1.2.3", "1.2.4", "1.2.5", "1.2.6", "1.2.7"],
+    "package_file_counts": {
+      "1.2.3": 1,
+      "1.2.4": 1,
+      "1.2.5": 1,
+      "1.2.6": 1,
+      "1.2.7": 1
+    },
+    "files_per_archive": ["antigravity"],
+    "identical_through_1_2_3_to_1_2_7": [],
+    "every_hop": {
+      "added": [],
+      "removed": [],
+      "changed": ["antigravity"],
+      "identical": []
+    },
+    "mapped_binary_byte_identical_across_hops": false
+  },
+  "published_selected_path_changes": {
+    "from_1_2_2_to_1_2_3": {
+      "catalogue_changes": [],
+      "headless_changes": [],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-maintained"
+    },
+    "from_1_2_3_to_1_2_4": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "agent-turns-no-longer-terminate-on-tool-schema-validation-failure"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-maintained"
+    },
+    "from_1_2_4_to_1_2_5": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "outside-signal-killed-commands-recorded-canceled-not-exit-0"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-maintained"
+    },
+    "from_1_2_5_to_1_2_6": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "headless-default-print-timeout-changes-from-5-minutes-to-unlimited",
+        "headless-agent-or-model-api-failure-prints-agy-error-json-and-exits-3"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-deepens"
+    },
+    "from_1_2_6_to_1_2_7": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "model-api-retry-per-attempt-backoff-capped-at-30-seconds",
+        "headless-background-task-waiting-notice-occasionally-skipped"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-maintained"
+    }
+  },
+  "headless_retry_trace": {
+    "hop_1_1_22_http_502_retry": {
+      "published_finite_bound_present": false,
+      "public_disable_control_present": false,
+      "separate_operator_acceptance_present": false,
+      "stop": true
+    },
+    "hop_1_2_7_backoff_cap": {
+      "published_finite_attempt_bound_present": false,
+      "public_disable_control_present": false,
+      "published_per_attempt_backoff_cap": "30 seconds",
+      "admissible_under_contract_023": false
+    },
+    "host_deadline_is_not_a_provider_retry_policy": true,
+    "inferred_bound_recorded": false
+  },
+  "print_timeout_trace": {
+    "default_before_1_2_6": "5 minutes, published retrospectively by the 1.2.6 notes",
+    "default_from_1_2_6": "unlimited unless --print-timeout is passed",
+    "selected_deadline_authority_unchanged": true,
+    "catalogue_affected": false
+  },
+  "headless_error_trace": {
+    "from_1_2_6": "AGY_ERROR JSON line on stderr and exit code 3 on agent or model API failure",
+    "catalogue_affected": false
+  },
+  "authority_trace": {
+    "contract_023": {
+      "host_deadline_does_not_replace_provider_native_retry_policy": true,
+      "provider_managed_retry_requires_separate_acceptance": true,
+      "no_separate_acceptance_exists_for_this_lane": true
+    },
+    "catalogue_isolation": {
+      "notes_name_no_models_selected_path_change": true,
+      "retry_notes_name_the_agent_model_request_loop": true,
+      "print_timeout_and_agy_error_name_headless_prompt_path": true,
+      "catalogue_advance_independent_of_headless_stop": true
+    }
+  },
+  "material_unmapped_published_changes": [
+    "interactive-ask-question-and-copy-btw",
+    "remote-control-session-flag",
+    "plugin-and-skill-management",
+    "interactive-model-picker-and-slash-model",
+    "gemini-api-key-headless-daemon-background",
+    "customization-token-budget",
+    "kitty-graphics-artifact-viewer",
+    "default-agent-legacy-toolset-retirement"
+  ],
+  "provider_prompt_sent": false,
+  "live_catalogue": false,
+  "live_print_run": false,
+  "host_install_changed": false,
+  "downloaded_binaries_executed": false
+}

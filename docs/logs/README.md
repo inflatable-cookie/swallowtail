@@ -24,6 +24,8 @@ feature usually has a short chain: selection evidence, contract, implementation,
 then conformance closeout.
 
 ## Entries
+- [2026-09-21 Antigravity 1.2.7 Catalogue Claim](./2026-09-21-antigravity-1-2-7-claim.md) — catalogue claim advanced to maintained `1.1.9..=1.2.7` with the unchanged catalogue behavior revision; headless stays at `1.1.17` and was not raised
+- [2026-09-21 Antigravity 1.2.7 Catalogue Identity](./2026-09-21-antigravity-1-2-7-identity.md) — Research 331 froze official GitHub `1.2.3` through `1.2.7` as a catalogue-only compatible extension; the `1.1.22` headless stop stands and the gap becomes `1.1.18..=1.2.7`
 - [2026-09-17 g05.084 Roll Over To g06 And Compact g05](./2026-09-17-g05-084-rollover-and-compaction.md) — the operator-authorized rollover closed g05 at 82 numbered tasks, carried the five planned tasks to g06.001–g06.005, committed the lifecycle closure record and receipt, regenerated the front-door projections for g06, and removed `docs/roadmaps/g05/**` with the preservation manifest and archive roll-up in place
 - [2026-09-17 g05.069 Command Code 1.54.0 Live Stop](./2026-09-17-g05-069-command-code-1-54-0-live-stop.md) — the one authorized exact-`1.54.0` gate on `meituan/LongCat-2.0:free` stopped with `swallowtail.command_code.headless.malformed_stream`; live-derived completion, tool/usage, and two-turn continuation evidence remains bound to `1.15.1`, with claims and matrix cells unchanged
 - [2026-09-17 Qoder Headless 1.1.54 Claim](./2026-09-17-qoder-headless-1-1-54-claim.md) — advanced the exact `qoder.headless` `QualifiedOnly` point to `1.1.54` on a new private behavior revision with an explicit adapter-owned eight-turn AgentLoop ceiling and `error_max_turns` provider-failure mapping

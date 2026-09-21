@@ -24,6 +24,18 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Changed
+- extend the Antigravity catalogue claim from maintained `1.1.9..=1.2.2`
+  to maintained `1.1.9..=1.2.7` on `antigravity-cli.release` with the
+  unchanged `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1` behavior
+  revision, baseline `1.1.9`, and `AllowUnverified` posture. Research 331
+  froze official GitHub `1.2.3` through `1.2.7` with both platform
+  digests; every public hop changes only `CHANGELOG.md`, and the release
+  notes name no selected-path change to `agy models`. Headless stays
+  maintained `1.1.9..=1.1.17` at the Research 283 `1.1.22` provider-managed
+  retry stop; `1.2.6` and `1.2.7` deepen that gap, so `1.1.18..=1.2.7`
+  stay unqualified. Unpublished `1.2.8` remains visible
+  `UnverifiedNewer`. Gemini CLI and `antigravity-acp` were not touched.
+  Research 331.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

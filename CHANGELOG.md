@@ -24,6 +24,19 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Changed
+- raise the Cursor Agent catalogue, ACP, and headless qualified ceiling
+  through official `2026.09.18-9a7762b`: Research 331 freezes both
+  published hops after `2026.09.10-fd3934a` with a complete tree inventory
+  and classifies the selected CLI definitions, ACP initialize subset, and
+  stream-json event keys as unchanged on Swallowtail's selected client.
+  Add exact milestones `2026.09.15-d2fe57e` and `2026.09.18-9a7762b` with
+  no inferred gap, keep the three distinct route claims, historical
+  milestones, exact feature-specific sets, and `AllowUnverified`, and leave
+  negotiated `sessionCapabilities.subagents`, worker/persist flags,
+  SEA/native packaging, ACP load/replay, and continuation recovery
+  unmapped or blocked. Older published `2026.08.25-3e8eec8` and
+  `2026.09.08-6caf4ff` stay independently unqualified gaps. No provider
+  operation, downloaded-artifact execution, or host mutation occurred.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

@@ -50,7 +50,8 @@ maintained in this section.
 - [007 Prospective-Merge Protocol Migration](./007-prospective-merge-protocol-migration.md) — ready; operator-approved configuration-only manifest migration to the accepted v4 prospective-merge shape
 - [008 Repair Lifecycle Currentness](./008-repair-lifecycle-currentness.md) — ready; bounded repair of the two audited currentness findings, sequenced after the migration lane
 - [009 Claude Code 2.1.278 Useful Newer](./009-claude-code-2-1-278-useful-newer.md) — external PR submitted for independent review under operator-approved Queue takeover
-- [010 OpenCode HTTP 1.18.31 Useful Newer](./010-opencode-http-1-18-31-useful-newer.md) — external PR #351 admitted through review entry as the bounded pilot of the operator-approved external suite
+- [010 OpenCode HTTP 1.18.31 Useful Newer](./010-opencode-http-1-18-31-useful-newer.md) — external PR #351 admitted through review entry as the bounded pilot; merged at `5ade647a` after one independent reviewer run with no initial worker
+- [011 Codex 0.155.1 Useful Newer](./011-codex-0-155-1-useful-newer.md) — external PR #353 admitted through review entry after the pilot
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:1f384165dfbc638ed2e9d89f753817e5756a761d0625247cd439f783129b26fe -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

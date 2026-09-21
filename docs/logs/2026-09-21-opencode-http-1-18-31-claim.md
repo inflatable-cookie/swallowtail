@@ -20,5 +20,11 @@ entered the claim. Research 331.
 
 ## Validation
 
-Focused formatting plus `validate:focused` and `package:verify-affected` on
-`swallowtail-adapter-opencode`.
+`cargo fmt -p swallowtail-adapter-opencode` then focused nextest and clippy on
+`swallowtail-adapter-opencode`: 137 tests passed. `package:verify-affected`
+failed in this checkout because the content audit treats repo-root
+`/workspace` as a leaked host path and matches existing `/workspace/fixture`
+fixtures plus official `.../routes/workspace/...` inventory paths. The same
+selector passed from `/tmp/swallowtail-verify` (190-file package, isolated
+`cargo check --all-targets`). Official npm/GitHub latest was still `1.18.31`
+at the pre-push recheck.

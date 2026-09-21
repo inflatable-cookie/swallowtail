@@ -2,7 +2,7 @@
 
 ## Result
 
-Research 331 froze official npm/GitHub/ACP-registry
+Research 335 froze official npm/GitHub/ACP-registry
 `@agentclientprotocol/claude-agent-acp` `0.79.0` against the `0.76.0`
 claim. Host `claude-agent-acp` was not on `PATH` and was not installed.
 npm `gitHead` matches GitHub tags `v0.77.0`

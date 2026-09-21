@@ -1,0 +1,289 @@
+{
+ "version": "2.1.278",
+ "compared_versions": [
+  "2.1.270",
+  "2.1.271",
+  "2.1.272",
+  "2.1.273",
+  "2.1.274",
+  "2.1.275",
+  "2.1.276",
+  "2.1.277",
+  "2.1.278"
+ ],
+ "host_help_reprobed": false,
+ "host_not_installed": true,
+ "selected_mapped_subset_source": "every hop classified from the embedded `// @bun @bytecode` source chunks of the official darwin-arm64 and linux-x64 binaries, which were hashed and never executed; host claude was not on PATH",
+ "selected_mapped_subset_unchanged": true,
+ "option_definition_fingerprints": {
+  "--input-format": {
+   "darwin-arm64": [
+    "f26dc0d788d94feac33d8f30060bb5416cdfdfa4a3ec4d78b316dfdc8fd5528f"
+   ],
+   "linux-x64": [
+    "f26dc0d788d94feac33d8f30060bb5416cdfdfa4a3ec4d78b316dfdc8fd5528f"
+   ]
+  },
+  "--output-format": {
+   "darwin-arm64": [
+    "b32bbd9c831797e25c5eabdcafeab99d174f9d448b97ea560976360cf452acb0"
+   ],
+   "linux-x64": [
+    "b32bbd9c831797e25c5eabdcafeab99d174f9d448b97ea560976360cf452acb0"
+   ]
+  },
+  "--verbose": {
+   "darwin-arm64": [
+    "d961c9b1881c1e610334f7d926ccbef8c618e84d5af4f70830120267a61bc8f8",
+    "e0788c8eada3f4becdc418b14fe582f463a4212516f6da51efd65e0cfa2947ac"
+   ],
+   "linux-x64": [
+    "d961c9b1881c1e610334f7d926ccbef8c618e84d5af4f70830120267a61bc8f8",
+    "e0788c8eada3f4becdc418b14fe582f463a4212516f6da51efd65e0cfa2947ac"
+   ]
+  },
+  "--no-session-persistence": {
+   "darwin-arm64": [
+    "029d3ea9379f2788423da63a83f8542b730164fa0e1bc5755c16f283ed7902f4"
+   ],
+   "linux-x64": [
+    "029d3ea9379f2788423da63a83f8542b730164fa0e1bc5755c16f283ed7902f4"
+   ]
+  },
+  "--model": {
+   "darwin-arm64": [
+    "2849261318acb904e312534629c3c64e65467a865a518f035844a1e559b03773",
+    "35f2e0c6b94c1f4a55af58e3967b9ec57b603e3d9e08f48df21d76d7d6983221",
+    "cd14efd58fa6be8bee20260026b473be0c37d8c41fc295f62973b45504d3b54e"
+   ],
+   "linux-x64": [
+    "2849261318acb904e312534629c3c64e65467a865a518f035844a1e559b03773",
+    "35f2e0c6b94c1f4a55af58e3967b9ec57b603e3d9e08f48df21d76d7d6983221",
+    "cd14efd58fa6be8bee20260026b473be0c37d8c41fc295f62973b45504d3b54e"
+   ]
+  },
+  "--effort": {
+   "darwin-arm64": [
+    "5f50151d4cf956937ce5bee5ad8f3124d76df85c0a9a4597494dbb6fcafc2ee4"
+   ],
+   "linux-x64": [
+    "5f50151d4cf956937ce5bee5ad8f3124d76df85c0a9a4597494dbb6fcafc2ee4"
+   ]
+  },
+  "--permission-mode": {
+   "darwin-arm64": [
+    "28c6f427ad24bbee51f4d7a18852c187c1c4f88143d99023ff291466246c4704",
+    "d060015ed466b05d185c46339f3a9d063d9bf15f62ef7e0075cb7e3ea3086bff"
+   ],
+   "linux-x64": [
+    "28c6f427ad24bbee51f4d7a18852c187c1c4f88143d99023ff291466246c4704",
+    "d060015ed466b05d185c46339f3a9d063d9bf15f62ef7e0075cb7e3ea3086bff"
+   ]
+  },
+  "--tools": {
+   "darwin-arm64": [
+    "ad526a29bd4dd9efcf62903ae7b3a4e1d1017053ad8ae262b9eae91e78482d33"
+   ],
+   "linux-x64": [
+    "ad526a29bd4dd9efcf62903ae7b3a4e1d1017053ad8ae262b9eae91e78482d33"
+   ]
+  },
+  "--setting-sources": {
+   "darwin-arm64": [
+    "c247ed4cc5764ecd03a1bea80e09c5e6dfcf033b6dca357ad5dec827e89415a7"
+   ],
+   "linux-x64": [
+    "c247ed4cc5764ecd03a1bea80e09c5e6dfcf033b6dca357ad5dec827e89415a7"
+   ]
+  },
+  "--mcp-config": {
+   "darwin-arm64": [
+    "40105f32ecaf5f3802f1f0095ab324fe7b758d0d5abe9d14badc2bf09c1a84e7",
+    "765ac557df02c8e462e51419e9d2851a53830383092aa53a00348d7bb4d34e0f"
+   ],
+   "linux-x64": [
+    "40105f32ecaf5f3802f1f0095ab324fe7b758d0d5abe9d14badc2bf09c1a84e7",
+    "765ac557df02c8e462e51419e9d2851a53830383092aa53a00348d7bb4d34e0f"
+   ]
+  },
+  "--strict-mcp-config": {
+   "darwin-arm64": [
+    "01d8e598f542a35a2af4432301458cd8fedb9d5097dcde8294c2d2f3011d295a",
+    "1ab3b8f8c89250453defe9f7efb80a668f1fad3acf03286e1a9ad10c391458f4"
+   ],
+   "linux-x64": [
+    "01d8e598f542a35a2af4432301458cd8fedb9d5097dcde8294c2d2f3011d295a",
+    "1ab3b8f8c89250453defe9f7efb80a668f1fad3acf03286e1a9ad10c391458f4"
+   ]
+  },
+  "--max-turns": {
+   "darwin-arm64": [
+    "bc1c0fd8faa0d58ecbce88a14a99ec312bf5822f158aee093dd687ad29b36948"
+   ],
+   "linux-x64": [
+    "bc1c0fd8faa0d58ecbce88a14a99ec312bf5822f158aee093dd687ad29b36948"
+   ]
+  },
+  "--safe-mode": {
+   "darwin-arm64": [
+    "7ed106d819194854909416d883056dc33d73965069ce4047066e1e88d8167f38"
+   ],
+   "linux-x64": [
+    "7ed106d819194854909416d883056dc33d73965069ce4047066e1e88d8167f38"
+   ]
+  },
+  "--disable-slash-commands": {
+   "darwin-arm64": [
+    "9bc209af39c0eec0a9bd9c17feb47606e79489ed2cb7e40f2024b9cbed99cb8d"
+   ],
+   "linux-x64": [
+    "9bc209af39c0eec0a9bd9c17feb47606e79489ed2cb7e40f2024b9cbed99cb8d"
+   ]
+  },
+  "--no-chrome": {
+   "darwin-arm64": [
+    "a5e9f07fb2ea8845dd7d02214c1213bd16ba6a71d58e71909dbe53d564193861"
+   ],
+   "linux-x64": [
+    "a5e9f07fb2ea8845dd7d02214c1213bd16ba6a71d58e71909dbe53d564193861"
+   ]
+  },
+  "--prompt-suggestions": {
+   "darwin-arm64": [
+    "0d5cc328554c2e855d19ab3628e11bc2ecefe9b4d93348a0818aa3f4d50f5b77"
+   ],
+   "linux-x64": [
+    "0d5cc328554c2e855d19ab3628e11bc2ecefe9b4d93348a0818aa3f4d50f5b77"
+   ]
+  }
+ },
+ "option_definition_fingerprint_scope": "intersection of constructor-site string-literal fingerprints that are identical across all nine compared versions on both platform builds for each selected flag. An unchanged intersection means the flag name, value placeholder, choices, and help description for every print-route definition naming that flag stay. --verbose, --model, and --effort each carry one additional hop-local fingerprint from bunfs chunk remangle or minified template ids; those remangles do not change selected help or choices.",
+ "remangling_flags": [
+  "--verbose",
+  "--model",
+  "--effort"
+ ],
+ "help_selected_flags_present": [
+  "-p",
+  "--print",
+  "--input-format",
+  "--output-format",
+  "--verbose",
+  "--no-session-persistence",
+  "--model",
+  "--effort",
+  "--permission-mode",
+  "--tools",
+  "--setting-sources",
+  "--mcp-config",
+  "--strict-mcp-config"
+ ],
+ "input_format_choices": [
+  "text",
+  "stream-json"
+ ],
+ "output_format_choices": [
+  "text",
+  "json",
+  "stream-json"
+ ],
+ "effort_choices": [
+  "low",
+  "medium",
+  "high",
+  "xhigh",
+  "max"
+ ],
+ "permission_mode_effective_choices": [
+  "acceptEdits",
+  "auto",
+  "bypassPermissions",
+  "manual",
+  "dontAsk",
+  "plan"
+ ],
+ "permission_mode_wire_values": [
+  "acceptEdits",
+  "auto",
+  "bypassPermissions",
+  "default",
+  "dontAsk",
+  "plan"
+ ],
+ "selected_permission_mode": "plan",
+ "selected_tools_headless": "Read,Glob,Grep",
+ "selected_tools_response_only": "",
+ "selected_setting_sources": "user,project,local",
+ "selected_mcp_isolation": "{\"mcpServers\":{}}",
+ "include_partial_messages_selected": false,
+ "stream_json_stream_anchors": {
+  "init_required_keys": [
+   "type",
+   "subtype",
+   "cwd",
+   "session_id",
+   "tools",
+   "mcp_servers",
+   "model",
+   "permissionMode",
+   "slash_commands",
+   "claude_code_version"
+  ],
+  "init_optional_mcp_servers_source_from": "2.1.274",
+  "init_optional_mcp_servers_source_note": "additive optional field on mcp_servers[] items from 2.1.274; response-only decoder requires mcp_servers to be an array and does not fail on extra keys of an empty array; headless init does not parse mcp_servers",
+  "has_stream_event_on_every_hop": true,
+  "has_hook_started_on_every_hop": true,
+  "has_result_on_every_hop": true,
+  "thinking_sites_present_on_every_hop": true,
+  "anchor_scope": "required init keys, stream_event/hook_started/result presence, and thinking-token construction sites recovered from embedded source on every compared version and both platforms"
+ },
+ "unmapped_boundaries": {
+  "watcher_flags": [
+   "--bare",
+   "--settings",
+   "--add-dir",
+   "--include-hook-events"
+  ],
+  "new_help_flags": [
+   "--permission-prompts",
+   "--system-prompt-snapshot",
+   "--json-schema",
+   "--max-budget-usd",
+   "--brief",
+   "--cloud",
+   "--restricted",
+   "--forward-subagent-text",
+   "--session-mirror",
+   "--worktree"
+  ],
+  "background_session_commands": [
+   "attach",
+   "logs",
+   "stop",
+   "kill",
+   "respawn",
+   "rm"
+  ],
+  "sdk_tools_declarations": "sdk-tools.d.ts",
+  "remote_control_and_cloud": "SessionsV2Client, Remote Control, VSCode, and Claude apps gateway paths",
+  "managed_settings": [
+   "managedMcpServers",
+   "maxEffortLevel",
+   "gatewayInternalNetworks",
+   "forceLoginGatewayUrl"
+  ],
+  "hooks": "PermissionRequest, SessionStart, SessionEnd, and Stop hooks are not configured by either route",
+  "changelog_discovery_unmapped": [
+   "2.1.273 stream-json subagent/background drop fix (already-mapped envelope reliability)",
+   "2.1.274 MCP startup wait and empty --strict-mcp-config+--mcp-config wait (timing only; selected routes already use that combo; selected input is text)",
+   "2.1.275 --forward-subagent-text (unmapped flag)",
+   "2.1.277 claude -p hang to error+exit 1 (failure-path reliability; still provider failure)",
+   "2.1.278 auto-mode classifier (selected routes use plan / tools empty)"
+  ]
+ },
+ "mapped_deltas_from_2_1_270": [],
+ "decoder_corpus": "claude-code-2.1.220",
+ "provider_prompt_sent": false,
+ "live_session": false,
+ "host_install_changed": false
+}

@@ -19,7 +19,7 @@ defaultToNo option order, and shell permission titles stay unmapped with
 reasons. Baseline `0.53.0`, claim id `claude-agent.acp.window-2`, exclusion
 `0.58.0`, every historical segment, and `AllowUnverified` survive. Claude
 Code stream-JSON and the Claude Agent SDK sidecar are untouched. Research
-331 froze the identity evidence in the same batch.
+335 froze the identity evidence in the same batch.
 
 ## Validation
 

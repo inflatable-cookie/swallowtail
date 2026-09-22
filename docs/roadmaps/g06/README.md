@@ -55,6 +55,7 @@ maintained in this section.
 - [012 Qwen Code 0.24.2 Useful Newer](./012-qwen-code-0-24-2-useful-newer.md) — external PR #352 admitted through review entry with a known failing nextest check; merged at `5dcbabb6` after the reviewer required unpublished interior gaps to be excluded
 - [013 Claude Agent ACP 0.79.0 Useful Newer](./013-claude-agent-acp-0-79-0-useful-newer.md) — external PR #350, last of the approved suite; merged at `235a9187` with its Contracts 015/038 range amendments accepted
 - [014 Consumer-Supplied HTTP MCP Acceptance Per Route](./014-consumer-supplied-http-mcp-acceptance-per-route.md) — ready; produces the per-route list that decides direct HTTP MCP versus Longhorn's stdio carrier
+- [015 OpenCode ACP Identity And Surface Freeze](./015-opencode-acp-identity-and-surface-freeze.md) — ready; freezes the `opencode acp` surface and the `mcpServers` handoff before g06.016 implements the route
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:194978d4691616b1aa54fa702e9d6897314dcede2eb67bb25846fb6f914309e3 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

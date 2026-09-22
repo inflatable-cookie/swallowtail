@@ -1,8 +1,9 @@
 # 014 Shared Harness Capability And Producer Boundary
 
 Status: promoted; durable rules in Contract063 and amendments 041/060/061/062;
-runtime pending; registered-tool production MCP role withdrawn 2026-09-22
-(Longhorn Contract 022 `agent-control` is the production MCP)
+runtime pending; MCP-registration-server role withdrawn from production
+2026-09-22 (Longhorn Contract 022 `agent-control` is the production MCP);
+host-mediated route-native tool mediation remains production-capable
 Owner: Tom
 Updated: 2026-09-07
 Evidence: Research 288; Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; Desktop Spec 010 at `30a338f2`; Longhorn PR 22 PASS at `6ce4aa1b`
@@ -21,7 +22,7 @@ This spec preserves planning provenance. Contract063 and amendments041/060/061/0
 
 | Owner | Owns | Does not own | Governing evidence |
 | --- | --- | --- | --- |
-| Swallowtail | sole namespaced registration snapshot; operation bridge listener/transport, lease, correlation, generation, lifecycle, prepared-plan binding, route adapters, safe diagnostics, and conformance | domain tool names or schemas, business/effect policy, durable product identity, admission issuance, packaged host startup | [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md), amended only after review |
+| Swallowtail | sole namespaced registration snapshot; host-mediated route-native tool mediation for protocols that carry tool calls natively; non-production MCP bridge listener/transport, lease, correlation for the retained profiles; generation, lifecycle, prepared-plan binding, route adapters, safe diagnostics, and conformance | domain tool names or schemas, business/effect policy, durable product identity, admission issuance, packaged host startup | [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md), amended only after review |
 | Longhorn | transport-neutral typed host dispatch/validation library and generic safe result/error envelopes, and the production MCP server (Contract 022 `agent-control`) | registry authority, listener, lease, correlation kernel, admission identity, domain names/schemas/policy, standalone daemon in slice 1 | [PR 22](https://github.com/inflatable-cookie/longhorn/pull/22). Its aligned Contract 023 and Spec 002 passed at `6ce4aa1b` and are **withdrawn for the production MCP role** by Longhorn `7ea44d23` (operator direction 2026-09-22, shipping in Longhorn `0.2.0`), with 023 retained only as its typed dispatch/validation record |
 | Desktop | domain tool names and input/output schemas; effects/business/tool policy; bounded app-context disclosure; durable task/session/attempt admission issuance; final Allow/Deny policy; packaging, distribution, startup, queue/UX, and receipts | provider wire, registration snapshot ownership, bridge transport/listener/lease/correlation lifetime | [`Spec 010` at `30a338f2`](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md) |
 
@@ -141,8 +142,13 @@ leases. Desktop owns application startup/shutdown; Swallowtail owns bridge
 lifetime inside that host. Drop is defensive cleanup, never success evidence.
 Production and development control profiles remain distinct, but their roles are
 inverted from the original decision. Longhorn's Contract 022 `agent-control`
-server is the production MCP; this bridge is retained for development and
-non-production profiles and is not a production tool surface.
+server is the production MCP. The MCP-registration-server placements — the
+Contract 060 watcher bridge and the routed MCP courier placements for
+`claude-agent.sdk` and `grok-build.acp` — are retained for development and
+non-production profiles and are not production tool surfaces. Route-native
+mediated tool paths that expose no MCP server are unaffected and remain
+production-capable, `codex.app-server`'s host-mediated `dynamicTools` among
+them.
 
 ### Transport And Reconnect
 
@@ -396,8 +402,12 @@ direction 2026-09-22, shipping in Longhorn `0.2.0`): the production MCP is
 Longhorn's Contract 022 `agent-control` server, enabled by a consumer at compile
 time and bounded by its registered typed command catalogue, with no second
 listener. The durable rules promoted here remain valid as the record of the
-typed boundary, and Swallowtail's production role narrows to harness-side MCP
-client configuration. Batch A promotes the durable rules after independent
+typed boundary. Swallowtail's production role narrows to harness-side MCP client
+configuration where a route can be an MCP client, and to that route's own
+host-mediated tool mediation where its protocol carries tool calls natively —
+the `codex.app-server` `dynamicTools` path stands up no MCP server and is
+unaffected by the withdrawal. Batch A promotes the durable rules after
+independent
 planning review. Runtime readiness is determined by the recompiled g05.035
 manifest.
 

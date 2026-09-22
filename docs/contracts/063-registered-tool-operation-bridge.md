@@ -1,8 +1,9 @@
 # 063 Registered Tool Operation Bridge
 
-Status: active for development and non-production profiles; production MCP
-role withdrawn 2026-09-22 (Longhorn Contract 022 `agent-control` is the
-production MCP); implementation pending cards 114-117
+Status: active; MCP-registration-server role withdrawn from production
+2026-09-22 (Longhorn Contract 022 `agent-control` is the production MCP);
+host-mediated route-native tool mediation remains production-capable;
+implementation pending cards 114-117
 Owner: Tom
 Created: 2026-09-07
 
@@ -19,13 +20,23 @@ command catalogue; it binds loopback with a per-instance bearer and speaks
 stateless streamable HTTP. There is no second production MCP, and nothing here
 permits a competing listener alongside it.
 
-Swallowtail's production role in this boundary is harness-side MCP client
-configuration: emitting the consumer's server entry into each route's own MCP
-configuration, and owning that harness process and its lifecycle. Swallowtail
-owns no production listener, registry, lease, correlation kernel or admission
-issuer here. The bridge and courier kernel below are retained as the record of
-the typed boundary they defined and remain available for development and
-non-production profiles.
+Swallowtail's production role in this boundary narrows to two things. For a
+route that can act as an MCP client, it is harness-side MCP client
+configuration: emitting the consumer's server entry into that route's own MCP
+configuration, and owning that harness process and its lifecycle. For a route
+whose provider protocol carries host-mediated tool calls natively, it is that
+route's own mediation: `codex.app-server`'s host-mediated `dynamicTools` is the
+qualified example and stands up no MCP server at all.
+
+What is withdrawn is the MCP-registration-server role. No Swallowtail-owned
+listener, registry, lease, correlation kernel or admission issuer may act as a
+production MCP alongside the Contract 022 server. The affected surfaces are the
+Contract 060 watcher bridge and the routed MCP courier placements for
+`claude-agent.sdk` and `grok-build.acp`; they are retained as the record of the
+typed boundary they defined and remain available for development and
+non-production profiles. **Route-native mediated tool paths that expose no MCP
+server are unaffected and remain production-capable**, which is why Codex's
+host-mediated `dynamicTools` path keeps its qualified standing.
 
 The Longhorn counterpart allocated by the original bilateral decision —
 Contract 023 and Spec 002 — is withdrawn for the production MCP role by
@@ -39,7 +50,7 @@ so this boundary stays Swallowtail-local and truthful.
 
 | Owner | Owns | Does not own | Governing evidence |
 | --- | --- | --- | --- |
-| Swallowtail | sole namespaced registration snapshot; operation bridge listener/transport, lease, correlation, generation, lifecycle, prepared-plan binding, route adapters, safe diagnostics, and conformance | domain tool names or schemas, business/effect policy, durable product identity, admission issuance, packaged host startup | [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md), amended by this promotion |
+| Swallowtail | sole namespaced registration snapshot; host-mediated route-native tool mediation for protocols that carry tool calls natively; non-production MCP bridge listener/transport, lease, correlation for the retained profiles; generation, lifecycle, prepared-plan binding, route adapters, safe diagnostics, and conformance | domain tool names or schemas, business/effect policy, durable product identity, admission issuance, packaged host startup | [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md), amended by this promotion |
 | Longhorn | transport-neutral typed host dispatch/validation library and generic safe result/error envelopes, and the production MCP server (Contract 022 `agent-control`) | registry authority, listener, lease, correlation kernel, admission identity, domain names/schemas/policy, standalone daemon in slice 1 | [PR 22](https://github.com/inflatable-cookie/longhorn/pull/22). Its aligned Contract 023 and Spec 002 passed at `6ce4aa1b` and are **withdrawn for the production MCP role** by Longhorn `7ea44d23` (operator direction 2026-09-22, shipping in Longhorn `0.2.0`), with 023 retained only as its typed dispatch/validation record |
 | Desktop | domain tool names and input/output schemas; effects/business/tool policy; bounded app-context disclosure; durable task/session/attempt admission issuance; final Allow/Deny policy; packaging, distribution, startup, queue/UX, and receipts | provider wire, registration snapshot ownership, bridge transport/listener/lease/correlation lifetime | [`Spec 010` at `30a338f2`](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md) |
 

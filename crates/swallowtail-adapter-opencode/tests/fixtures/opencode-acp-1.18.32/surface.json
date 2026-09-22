@@ -1,0 +1,334 @@
+{
+  "family": "opencode.acp",
+  "route_id": "opencode.acp",
+  "frozen_at": "2026-09-22",
+  "by": "g06.015",
+  "surface_source": "published GitHub tag source for v1.18.32 (adapt v1.18.18) cross-checked against the official platform binaries and the installed 1.18.18 bundle; the ACP wire is the client-facing contract, the frozen source is the implementation evidence",
+  "protocol": {
+    "name": "Agent Client Protocol (ACP)",
+    "acp_sdk": "@agentclientprotocol/sdk 0.21.0",
+    "protocol_version_constant": 1,
+    "initialize_protocol_version_returned": 1,
+    "negotiates_down": false,
+    "wire": "newline-delimited JSON-RPC over the child process stdin/stdout (ndJsonStream)",
+    "internal_http_server": {
+      "started": true,
+      "purpose": "the ACP agent talks to a loopback OpenCode server it starts itself",
+      "default_bind": "127.0.0.1",
+      "default_port": 0,
+      "loopback_by_default": true,
+      "consumer_override_flags": [
+        "--hostname",
+        "--port",
+        "--mdns",
+        "--mdns-domain",
+        "--cors"
+      ]
+    }
+  },
+  "entrypoint": {
+    "argv": [
+      "opencode",
+      "acp"
+    ],
+    "describe": "start ACP (Agent Client Protocol) server",
+    "cwd_flag": "--cwd",
+    "cwd_default": "process.cwd()",
+    "network_flags": {
+      "--port": {
+        "type": "number",
+        "default": 0
+      },
+      "--hostname": {
+        "type": "string",
+        "default": "127.0.0.1"
+      },
+      "--mdns": {
+        "type": "boolean",
+        "default": false
+      },
+      "--mdns-domain": {
+        "type": "string",
+        "default": "opencode.local"
+      },
+      "--cors": {
+        "type": "array",
+        "default": []
+      }
+    },
+    "global_flags_observed_on_installed_1_18_18_acp_help": [
+      "--print-logs",
+      "--log-level"
+    ],
+    "log_level_choices": [
+      "DEBUG",
+      "INFO",
+      "WARN",
+      "ERROR"
+    ],
+    "pure_flag": "--pure",
+    "process_env_set": "OPENCODE_CLIENT=acp",
+    "evidence": "packages/opencode/src/cli/cmd/acp.ts; packages/opencode/src/cli/network.ts; observed `opencode acp --help` on the installed 1.18.18 binary"
+  },
+  "initialize": {
+    "request_fields_read": [
+      "clientCapabilities",
+      "clientCapabilities._meta.terminal-auth"
+    ],
+    "response": {
+      "protocolVersion": 1,
+      "agentCapabilities": {
+        "loadSession": true,
+        "mcpCapabilities": {
+          "http": true,
+          "sse": true
+        },
+        "promptCapabilities": {
+          "embeddedContext": true,
+          "image": true
+        },
+        "sessionCapabilities": {
+          "close": {},
+          "fork": {},
+          "list": {},
+          "resume": {}
+        }
+      },
+      "authMethods": [
+        {
+          "id": "opencode-login",
+          "name": "Login with opencode",
+          "description": "Run `opencode auth login` in the terminal"
+        }
+      ],
+      "agentInfo": {
+        "name": "OpenCode",
+        "version": "InstallationVersion (the running package version)"
+      }
+    },
+    "authenticate": {
+      "method_id": "opencode-login",
+      "unknown_method": "invalidParams (unknown auth method)"
+    }
+  },
+  "session_methods": [
+    "session/new",
+    "session/load",
+    "session/list",
+    "session/resume",
+    "session/close",
+    "session/fork (unstable_forkSession)",
+    "session/set_config_option",
+    "session/set_mode",
+    "session/set_model (unstable_setSessionModel)",
+    "session/prompt",
+    "session/cancel"
+  ],
+  "mcp_servers": {
+    "field": "mcpServers",
+    "acp_sdk_union": [
+      {
+        "transport": "stdio",
+        "required": [
+          "name",
+          "command",
+          "args",
+          "env"
+        ],
+        "optional": [
+          "_meta"
+        ]
+      },
+      {
+        "transport": "http",
+        "required": [
+          "name",
+          "url",
+          "headers"
+        ],
+        "optional": [
+          "_meta"
+        ]
+      },
+      {
+        "transport": "sse",
+        "required": [
+          "name",
+          "url",
+          "headers"
+        ],
+        "optional": [
+          "_meta"
+        ]
+      }
+    ],
+    "declared_on": [
+      "session/new",
+      "session/load",
+      "session/resume",
+      "session/fork"
+    ],
+    "declared_per_session": true,
+    "initialize_advertises": {
+      "mcpCapabilities": {
+        "http": true,
+        "sse": true
+      }
+    },
+    "mapping_to_backing_config": {
+      "http_or_sse_entry": {
+        "config": {
+          "type": "remote",
+          "url": "<entry.url>",
+          "headers": "<entry.headers as a name/value record>"
+        },
+        "note": "the ACP transport discriminant is dropped; http and sse entries both become the single backing `remote` shape"
+      },
+      "stdio_entry": {
+        "config": {
+          "type": "local",
+          "command": [
+            "<entry.command>",
+            "<entry.args...>"
+          ],
+          "environment": "<entry.env as a name/value record>"
+        }
+      }
+    },
+    "backing_registration": {
+      "call": "sdk.mcp.add({ directory, name, config })",
+      "scope": "one OpenCode instance/directory",
+      "key": "server name",
+      "last_write_wins": true,
+      "dedupe": "per ACP session, by name + stable-stringified config",
+      "unregistered_on_session_close": false,
+      "evidence": "packages/opencode/src/acp/service.ts registerMcpServers/mcpConfig; packages/opencode/src/mcp/index.ts MCP.add"
+    },
+    "remote_connect": {
+      "transports_tried_in_order": [
+        "StreamableHTTP",
+        "SSE"
+      ],
+      "headers_forwarded": "declared headers are passed as requestInit.headers to both transports",
+      "oauth": "optional and independent; headers carry non-OAuth bearer values directly",
+      "evidence": "packages/opencode/src/mcp/index.ts connectRemote"
+    },
+    "stdio_connect": {
+      "transport": "stdio child process",
+      "environment": "declared env merged over the OpenCode process environment",
+      "evidence": "packages/opencode/src/mcp/index.ts connectLocal"
+    },
+    "carrier_conclusion": {
+      "direct_http_representable": true,
+      "per_instance_bearer_via_headers": true,
+      "loopback_url_representable": true,
+      "stdio_representable": true,
+      "longhorn_stdio_carrier_required": false,
+      "proven": "representability and wiring from frozen source",
+      "unproven_without_live_session": "that a loopback StreamableHTTP server with a bearer header connects and its tools become callable in a real turn"
+    }
+  },
+  "prompt": {
+    "request": {
+      "method": "session/prompt",
+      "fields_read": [
+        "sessionId",
+        "prompt",
+        "messageId"
+      ],
+      "content_mapped_by": "promptContentToParts",
+      "slash_command_detected": true,
+      "known_command_uses": "session/command",
+      "compact_command_uses": "session/summarize"
+    },
+    "response": {
+      "fields": [
+        "stopReason",
+        "usage",
+        "userMessageId",
+        "_meta"
+      ],
+      "stop_reasons_emitted": [
+        "end_turn",
+        "cancelled",
+        "max_tokens",
+        "refusal"
+      ],
+      "stop_reasons_not_emitted": [
+        "max_turn_requests"
+      ],
+      "error_mapping": {
+        "ProviderAuthError": "authRequired",
+        "other assistant errors": "internalError"
+      }
+    }
+  },
+  "updates": {
+    "notification": "session/update",
+    "frames_emitted": [
+      "agent_message_chunk",
+      "agent_thought_chunk",
+      "user_message_chunk (replay on load/resume/fork)",
+      "tool_call",
+      "tool_call_update",
+      "available_commands_update",
+      "config_option_update",
+      "usage_update"
+    ],
+    "config_option_update_introduced_at": "1.18.31",
+    "reasoning_message_id": {
+      "1.18.18_through_1.18.30": "the message id",
+      "1.18.31_through_1.18.32": "the reasoning part id"
+    }
+  },
+  "permission_callbacks": {
+    "client_method": "session/request_permission",
+    "options": [
+      {
+        "optionId": "once",
+        "kind": "allow_once",
+        "name": "Allow once"
+      },
+      {
+        "optionId": "always",
+        "kind": "allow_always",
+        "name": "Always allow"
+      },
+      {
+        "optionId": "reject",
+        "kind": "reject_once",
+        "name": "Reject"
+      }
+    ],
+    "missing_client_callback": "the pending permission is auto-rejected",
+    "edit_write_path": "fs/write_text_file, only for an `edit` permission with a filepath + diff, and only when the client advertises writeTextFile; absence is a silent skip",
+    "callbacks_not_used": [
+      "fs/read_text_file",
+      "terminal/*",
+      "elicitation"
+    ],
+    "queued_per_session": true
+  },
+  "cancellation": {
+    "client_notification": "session/cancel",
+    "effect": "aborts the backing OpenCode session (best effort)",
+    "prompt_result": "stopReason cancelled"
+  },
+  "exit_and_cleanup": {
+    "stdin_eof": "ends the process with exit code 0",
+    "session_close": "removes ACP session state, clears the ACP MCP dedupe set, aborts the backing session best effort",
+    "acp_side_mcp_unregister": false,
+    "process_exit_kills_internal_server": true,
+    "evidence": "packages/opencode/test/cli/acp/lifecycle.test.ts; cli/cmd/acp.ts stdin end handler; service.ts closeSession"
+  },
+  "evidence_files": {
+    "packages/opencode/src/cli/cmd/acp.ts": "104d1dfe498154fca38c5971deec8330be4793cedf122e36c5a38589089e1b23",
+    "packages/opencode/src/acp/agent.ts": "3bf7c0a31bbf8c3dd5b3d06ddf38eff0c988858e5df6bb46d3abecc906f15a57",
+    "packages/opencode/src/acp/service.ts@1.18.32": "238750d52e220080db7b7f4992432fbfc7fb7ec5a15a6175460f8f0832a2c8de",
+    "packages/opencode/src/acp/service.ts@1.18.18": "c591e9bb8570a4492bffffae8b024069b617e5b64ceb684cfd538f020216efdf",
+    "packages/opencode/src/acp/session.ts": "cc73f70f7d7071fd6bf808871c65bcb87d9f737f9e292be5e279ee51f5c9507e",
+    "packages/opencode/src/acp/permission.ts": "b83f1b30015f92f432e56a444a7304e131b1824b06870e7842c70db6bd969743",
+    "packages/opencode/src/mcp/index.ts": "82c459309dfd005d25daecfabc1007d807d4bee23f6078434974277938a1c026",
+    "packages/core/src/config/mcp.ts": "5e5c1ed7d3d1a786edd6acc9774f5b4c91d6487279a34a8409c4090c42f95633"
+  }
+}

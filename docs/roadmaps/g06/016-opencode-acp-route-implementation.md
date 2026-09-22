@@ -116,23 +116,6 @@ if the URL-plus-header placement cannot be modelled without wiring it.
 Research 337 and its fixtures. Focused and affected-package validation for
 `swallowtail-adapter-opencode`, route and matrix QA, and the named docs gates.
 
-## Result
-
-Accepted 2026-09-22. `opencode.acp` is a production ACP stdio route in
-`swallowtail-adapter-opencode`, unflattened from `opencode.http`. Compiled
-behavior is `opencode.acp-v1.client-mcp-servers-v2` for `1.18.31..=1.18.32`;
-`v1` is accepted-but-older for deprecated `1.18.18..=1.18.30`. The driver pins
-`opencode acp --pure`, records provider-fixed `protocolVersion` `1`, admits one
-stdio MCP entry named `swallowtail-opencode-acp`, carries that declaration onto
-working-state restoration, and models URL-plus-header `http`/`sse` behind the
-contract gate. Every MCP matrix cell stays No. Working `0.5.1` public-API
-baseline records the additive ACP facade; the working internal-dependency
-graph records `swallowtail-adapter-opencode` → `swallowtail-protocol-acp`.
-Named validation passed: fmt check, `validate:focused`,
-`package:verify-affected`, `package:api`, `check-package-metadata.sh`,
-`qa:routes`, `qa:docs`, `git diff --check`. No live ACP session, login,
-install, or host update.
-
 ## Next Task
 
 After this lands, Chatterbox reconciles the route and either compiles a live

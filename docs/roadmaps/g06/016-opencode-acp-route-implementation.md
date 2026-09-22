@@ -126,10 +126,12 @@ behavior is `opencode.acp-v1.client-mcp-servers-v2` for `1.18.31..=1.18.32`;
 stdio MCP entry named `swallowtail-opencode-acp`, carries that declaration onto
 working-state restoration, and models URL-plus-header `http`/`sse` behind the
 contract gate. Every MCP matrix cell stays No. Working `0.5.1` public-API
-baseline records the additive ACP facade. Named validation passed: fmt check,
-`validate:focused`, `package:verify-affected`, `package:api`, `qa:routes`,
-`qa:docs`, `git diff --check`. No live ACP session, login, install, or host
-update.
+baseline records the additive ACP facade; the working internal-dependency
+graph records `swallowtail-adapter-opencode` → `swallowtail-protocol-acp`.
+Named validation passed: fmt check, `validate:focused`,
+`package:verify-affected`, `package:api`, `check-package-metadata.sh`,
+`qa:routes`, `qa:docs`, `git diff --check`. No live ACP session, login,
+install, or host update.
 
 ## Next Task
 

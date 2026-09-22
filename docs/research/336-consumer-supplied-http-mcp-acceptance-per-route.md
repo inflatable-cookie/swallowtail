@@ -64,6 +64,22 @@ streamable HTTP — as the sole production MCP, and narrows Swallowtail's
 production role to harness-side MCP client configuration. Spec 014 records
 the same withdrawal.
 
+**Scope of every classification below.** Each route is classified by what
+*Swallowtail's admitted seam* can carry, established from Swallowtail's frozen
+artifacts. None of these classifications describes what a harness can do when a
+consumer drives it directly, outside Swallowtail: a consumer that configures the
+harness itself is not bound by an adapter's pin. `claude-code` is the concrete
+case — the CLI flag shape exists and Swallowtail pins it empty, and this record
+states plainly that what the CLI would honour is unsettleable from our
+artifacts.
+
+So `carrier-required` means "this *Swallowtail route* cannot reach the
+production MCP without Longhorn's stdio carrier". It never means "this harness
+cannot", and it is not a dependency map for a consumer that drops Swallowtail
+and drives a harness directly. Such a consumer must establish its own harness's
+acceptance independently; its harness may accept a streamable-HTTP entry that
+this record cannot settle.
+
 ## Seam Inventory
 
 Sources: Contracts 012, 017, 041, 063; every prepared guide; each route's

@@ -12,7 +12,7 @@ Coverage states:
 - **missing** — no canonical task-oriented guide exists
 - **complete** — guide, example, and coverage validation meet Contract 052
 
-All 49 production route rows and every portable feature family have completed
+All 51 production route rows and every portable feature family have completed
 the checklist. Coverage state describes documentation evidence, not the
 underlying production capability.
 
@@ -68,6 +68,7 @@ conflicts or when you are qualifying a new claim.
 | `pi.sdk-sidecar` | [Pi SDK sidecar](pi-sdk-sidecar-prepared-integration.md) | [prepared SDK sidecar](../../crates/swallowtail-adapter-pi/examples/prepared_pi_sdk_sidecar.rs) | complete |
 | `qwen.headless` | [Qwen](qwen-headless-prepared-integration.md) | [prepared headless](../../crates/swallowtail-adapter-qwen/examples/prepared_qwen_headless.rs) | complete |
 | `kimi-code.local-server` | [Kimi Local Server](kimi-local-server-prepared-integration.md) | [prepared attached](../../crates/swallowtail-adapter-kimi/examples/prepared_local_server_attached.rs) | complete |
+| `opencode.acp` | [OpenCode ACP](opencode-acp-prepared-integration.md) | [prepared ACP](../../crates/swallowtail-adapter-opencode/examples/prepared_opencode_acp.rs) | complete |
 | `opencode.http` | [OpenCode](opencode-attached-prepared-integration.md) | [prepared attached](../../crates/swallowtail-adapter-opencode/examples/prepared_opencode_attached.rs) | complete |
 | `anthropic.messages` | [Anthropic Direct](anthropic-direct-prepared-integration.md) | [prepared direct](../../crates/swallowtail-adapter-anthropic/examples/prepared_direct.rs) | complete |
 | `kimi-platform.chat` | [Kimi Platform](kimi-platform-prepared-integration.md) | [prepared direct](../../crates/swallowtail-adapter-kimi-platform/examples/prepared_kimi_platform_direct.rs) | complete |

@@ -310,7 +310,12 @@ OpenHands adds a package without a production route.
   guaranteed support; a separate 61-release deletion corpus freezes two
   delete-schema revisions, recursive provider-defined descendants, missing-
   target rejection, inactive-target requirements, and post-dispatch
-  uncertainty without yet advertising production deletion
+  uncertainty without yet advertising production deletion. The same crate
+  implements a separate `opencode.acp` family on `opencode.executable`: ACP v1
+  stdio on host-approved `opencode acp --pure`, deprecated `1.18.18..=1.18.30`
+  and maintained `1.18.31..=1.18.32`, ProviderSupported host-owned login
+  without a credential lease, one admitted stdio MCP name, and URL-plus-header
+  MCP modelled behind the contract gate. The HTTP and ACP axes stay unflattened.
 - `swallowtail-adapter-anthropic` implements provider-supported `2023-06-01`
   Models catalogue and Messages direct inference over host-approved HTTP/SSE,
   including exact `claude-opus-4-7` `low` / `medium` / `high` / `xhigh` / `max`
@@ -686,7 +691,10 @@ Crate status:
   The package remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-opencode` — realized for attached model catalogue and
   read-only interactive sessions over a six-route HTTP/SSE subset with exact
-  delegated-auth, version, provider/model, abort, deadline, and cleanup bounds
+  delegated-auth, version, provider/model, abort, deadline, and cleanup bounds,
+  and separately for `opencode.acp` ACP v1 stdio on `opencode acp --pure` with
+  ProviderSupported host-account access, one route-owned stdio MCP name, and
+  no credential lease
 - `swallowtail-adapter-anthropic` — realized for the frozen two-route public-
   API subset with API-key and version headers, bounded catalogue pagination,
   explicit output bounds, ordered SSE, usage, rate and request evidence,
@@ -1431,7 +1439,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 47 production routes form six facade implementation families:
+The current 51 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a

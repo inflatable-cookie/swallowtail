@@ -45,6 +45,7 @@ contracts or architecture.
 - [Observable Activity](observable-activity.md)
 - [Ordinary Operation Lifecycle](ordinary-operation-lifecycle.md)
 - [OpenAI Background Prepared Integration](openai-background-prepared-integration.md)
+- [OpenCode ACP Prepared Integration](opencode-acp-prepared-integration.md)
 - [OpenCode Attached Prepared Integration](opencode-attached-prepared-integration.md)
 - [Provider Session Catalogue And Explicit Import](provider-session-import.md)
 - [Provider Session History Pages](provider-session-history.md)

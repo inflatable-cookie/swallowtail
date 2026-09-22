@@ -57,7 +57,7 @@ maintained in this section.
 - [014 Consumer-Supplied HTTP MCP Acceptance Per Route](./014-consumer-supplied-http-mcp-acceptance-per-route.md) — ready; produces the per-route list that decides direct HTTP MCP versus Longhorn's stdio carrier
 - [015 OpenCode ACP Identity And Surface Freeze](./015-opencode-acp-identity-and-surface-freeze.md) — ready; freezes the `opencode acp` surface and the `mcpServers` handoff before g06.016 implements the route
 - [016 OpenCode ACP Route Implementation](./016-opencode-acp-route-implementation.md) — ready; builds the `opencode.acp` route against Research 337, with the URL-plus-header MCP placement gated on a contract admission
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:5729d1a2ce4eb841cf48aab19a1a093600a091ec466062522e2cc40e4e665dbf -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:12552e682d1f1baeae6fcd1e68a5965a78a2a3451671e4d9353bd4ed1a55adbe -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g06 | open | planning_required |
@@ -73,4 +73,5 @@ maintained in this section.
 | g06.013 | complete | none | 8 | sha256:626f7ba39265aa64063a1ca5aa5be3a4c5f7c8c076689f73878a1854b0c7f5b0 |
 | g06.014 | complete | none | 8 | sha256:d7c2dccee1d02541a17ba6e30f05d089fe53dce1642cbf200ae4c66d09085dc1 |
 | g06.015 | complete | none | 8 | sha256:80f5e0d909ed63c33c3ac11045abc79f9c8f8e996f1992ca26f0d1cfab35018f |
+| g06.016 | complete | none | 8 | sha256:f142de6a246403d77e824a3515b07e194b4719ad6b6f496e5cc4661d38b5d441 |
 <!-- northstar:lifecycle:end -->

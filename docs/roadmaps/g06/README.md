@@ -56,6 +56,7 @@ maintained in this section.
 - [013 Claude Agent ACP 0.79.0 Useful Newer](./013-claude-agent-acp-0-79-0-useful-newer.md) — external PR #350, last of the approved suite; merged at `235a9187` with its Contracts 015/038 range amendments accepted
 - [014 Consumer-Supplied HTTP MCP Acceptance Per Route](./014-consumer-supplied-http-mcp-acceptance-per-route.md) — ready; produces the per-route list that decides direct HTTP MCP versus Longhorn's stdio carrier
 - [015 OpenCode ACP Identity And Surface Freeze](./015-opencode-acp-identity-and-surface-freeze.md) — ready; freezes the `opencode acp` surface and the `mcpServers` handoff before g06.016 implements the route
+- [016 OpenCode ACP Route Implementation](./016-opencode-acp-route-implementation.md) — ready; builds the `opencode.acp` route against Research 337, with the URL-plus-header MCP placement gated on a contract admission
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:5729d1a2ce4eb841cf48aab19a1a093600a091ec466062522e2cc40e4e665dbf -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

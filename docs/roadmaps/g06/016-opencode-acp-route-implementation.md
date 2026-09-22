@@ -123,11 +123,13 @@ Accepted 2026-09-22. `opencode.acp` is a production ACP stdio route in
 behavior is `opencode.acp-v1.client-mcp-servers-v2` for `1.18.31..=1.18.32`;
 `v1` is accepted-but-older for deprecated `1.18.18..=1.18.30`. The driver pins
 `opencode acp --pure`, records provider-fixed `protocolVersion` `1`, admits one
-stdio MCP entry named `swallowtail-opencode-acp`, and models URL-plus-header
-`http`/`sse` behind the contract gate. Every MCP matrix cell stays No. Named
-validation passed: fmt check, `validate:focused`, `package:verify-affected`,
-`qa:routes`, `qa:docs`, `git diff --check`. No live ACP session, login,
-install, or host update.
+stdio MCP entry named `swallowtail-opencode-acp`, carries that declaration onto
+working-state restoration, and models URL-plus-header `http`/`sse` behind the
+contract gate. Every MCP matrix cell stays No. Working `0.5.1` public-API
+baseline records the additive ACP facade. Named validation passed: fmt check,
+`validate:focused`, `package:verify-affected`, `package:api`, `qa:routes`,
+`qa:docs`, `git diff --check`. No live ACP session, login, install, or host
+update.
 
 ## Next Task
 

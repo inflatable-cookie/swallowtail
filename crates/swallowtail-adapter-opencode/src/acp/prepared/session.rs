@@ -154,7 +154,8 @@ impl OpenCodeAcpPreparedSession {
     ) -> PreparedWorkingStateRestoration {
         PreparedWorkingStateRestoration::fresh_session_replacement(
             interrupted_turn_id,
-            crate::OpenCodeAcpDriver::new(self.environment.clone()),
+            crate::OpenCodeAcpDriver::new(self.environment.clone())
+                .with_prepared_stdio_mcp(self.stdio_mcp.clone()),
             self.plan().clone(),
             self.request.clone(),
         )

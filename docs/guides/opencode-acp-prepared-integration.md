@@ -94,9 +94,11 @@ representability, not live honouring.
 
 ## Restart, Failure, And Promotion
 
-ACP exposes no public load or resume binding.
-`prepare_working_state_restoration` opens a fresh context-losing session after
-process loss; it does not recover the interrupted turn or transcript.
+ACP exposes no public load, resume, or close binding. Cleanup still sends
+`session/close` before joining. `prepare_working_state_restoration` opens a
+fresh context-losing session after process loss; it does not recover the
+interrupted turn or transcript. A prepared stdio MCP declaration is carried
+onto that replacement session.
 
 Handle failures through portable classification and retain the exact
 `swallowtail.opencode.acp` diagnostic for support. Do not parse stderr, ACP

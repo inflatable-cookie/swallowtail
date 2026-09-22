@@ -158,7 +158,6 @@ impl ActiveTurn {
         } else {
             match stop_reason {
                 "end_turn" => TerminalStatus::Completed,
-                "cancelled" if self.cancelled.load(Ordering::SeqCst) => TerminalStatus::Cancelled,
                 "cancelled" => TerminalStatus::Cancelled,
                 "max_tokens" => {
                     TerminalStatus::ProviderFailed(swallowtail_core::SafeDiagnostic::new(

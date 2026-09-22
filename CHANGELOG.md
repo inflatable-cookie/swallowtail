@@ -31,11 +31,11 @@ annotated Git tags from the canonical repository.
   with accepted-but-older `opencode.acp-v1.client-mcp-servers-v1` covering
   deprecated `1.18.18..=1.18.30`. The driver pins `opencode acp --pure`,
   records provider-fixed `protocolVersion` `1` without inferring acceptance,
-  admits one stdio MCP entry named `swallowtail-opencode-acp`, and models the
-  URL-plus-header `http`/`sse` placement behind the contract gate. Feature
-  matrix MCP cells stay No: Research 337 proved representability, not live
-  honouring. No live ACP session, login, install, or host update. Research
-  337, g06.016.
+  admits one stdio MCP entry named `swallowtail-opencode-acp`, carries that
+  declaration onto working-state restoration, and models the URL-plus-header
+  `http`/`sse` placement behind the contract gate. Feature matrix MCP cells
+  stay No: Research 337 proved representability, not live honouring. No live
+  ACP session, login, install, or host update. Research 337, g06.016.
 
 ### Changed
 - raise the qualified OpenCode HTTP ceiling from `1.18.30` to official npm

@@ -44,12 +44,19 @@ impl OpenCodeAcpDriver {
 
     /// Admits one route-owned stdio MCP declaration onto production `session/new`.
     pub fn with_stdio_mcp_server(
-        mut self,
+        self,
         server: OpenCodeAcpStdioMcpServer,
     ) -> Result<Self, RuntimeFailure> {
         let _ = server.to_acp_value()?;
-        self.stdio_mcp = Some(server);
-        Ok(self)
+        Ok(self.with_prepared_stdio_mcp(Some(server)))
+    }
+
+    pub(crate) fn with_prepared_stdio_mcp(
+        mut self,
+        server: Option<OpenCodeAcpStdioMcpServer>,
+    ) -> Self {
+        self.stdio_mcp = server;
+        self
     }
 
     fn validate_plan(

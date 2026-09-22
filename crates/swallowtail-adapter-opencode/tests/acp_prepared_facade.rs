@@ -26,6 +26,7 @@ use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
     InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
     RequestId, RuntimeTurnId, ScopeId, TerminalStatus, TurnRequest, WorkingResourceRef,
+    WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -169,6 +170,39 @@ fn prepared_session_can_bind_the_admitted_stdio_mcp_name() {
         message["method"] == "session/new"
             && message["params"]["mcpServers"][0]["name"] == OPENCODE_ACP_MCP_SERVER_NAME
     }));
+    assert_eq!(
+        block_on(handle.close(operation.cleanup_request(), operation.services(host_id))),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn working_state_restoration_carries_the_prepared_stdio_mcp_declaration() {
+    let host_id = ExecutionHostId::new("fixture.prepared.restore-mcp").expect("host");
+    let prepared = prepare(host_id.clone());
+    let session = prepared
+        .prepare_session(session_input("restore-mcp").with_stdio_mcp_server(
+            OpenCodeAcpStdioMcpServer::new(
+                OPENCODE_ACP_MCP_SERVER_NAME,
+                "/usr/bin/echo-mcp",
+                Vec::<String>::new(),
+                Vec::<(String, String)>::new(),
+            ),
+        ))
+        .expect("session prepares");
+    let operation = FixtureHost::new(Scenario::Success);
+    let restoration = session
+        .prepare_working_state_restoration(RuntimeTurnId::new("interrupted-mcp").expect("turn"));
+    let WorkingStateRestorationOutcome::SessionReplaced(replaced) =
+        block_on(restoration.restore(operation.services(host_id.clone()))).expect("restores")
+    else {
+        panic!("OpenCode ACP restoration is a fresh session replacement");
+    };
+    assert!(operation.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["name"] == OPENCODE_ACP_MCP_SERVER_NAME
+    }));
+    let (_, handle) = replaced.into_parts();
     assert_eq!(
         block_on(handle.close(operation.cleanup_request(), operation.services(host_id))),
         CleanupOutcome::Clean

@@ -2215,8 +2215,10 @@ roadmap.
 Contract063 and the Contract060 amendment define the next implementation seam;
 this section records ownership, not realized generic MCP support. Swallowtail
 owns the sole immutable registration snapshot and operation bridge kernel.
-Longhorn supplies linked transport-neutral validation/dispatch; consumers own
-domain schemas/policy, durable admission IDs, bounded context and app startup.
+Longhorn supplies the production MCP server (Contract 022 `agent-control`),
+with its earlier linked dispatch/validation counterpart withdrawn for that role
+by Longhorn `7ea44d23`; consumers own domain schemas/policy, durable admission
+IDs, bounded context and app startup.
 One internal kernel serves distinct watcher and registered-tool profiles.
 Existing WatcherBridge remains closed and source-compatible. No second listener,
 registry authority, daemon or product schema enters the producer runtime.

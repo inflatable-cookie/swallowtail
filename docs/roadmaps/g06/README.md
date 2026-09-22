@@ -55,7 +55,7 @@ maintained in this section.
 - [012 Qwen Code 0.24.2 Useful Newer](./012-qwen-code-0-24-2-useful-newer.md) — external PR #352 admitted through review entry with a known failing nextest check; merged at `5dcbabb6` after the reviewer required unpublished interior gaps to be excluded
 - [013 Claude Agent ACP 0.79.0 Useful Newer](./013-claude-agent-acp-0-79-0-useful-newer.md) — external PR #350, last of the approved suite; merged at `235a9187` with its Contracts 015/038 range amendments accepted
 - [014 Consumer-Supplied HTTP MCP Acceptance Per Route](./014-consumer-supplied-http-mcp-acceptance-per-route.md) — ready; produces the per-route list that decides direct HTTP MCP versus Longhorn's stdio carrier
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:a86fa89dd03eaa4c9c8e7b5bec50f3726ebc9c83c48389ae4eabe5a493dce375 -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:194978d4691616b1aa54fa702e9d6897314dcede2eb67bb25846fb6f914309e3 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g06 | open | planning_required |
@@ -69,4 +69,5 @@ maintained in this section.
 | g06.011 | complete | none | 8 | sha256:d79a43593d0ac5f65eefb50bc51bca22a6dce1eedab68e2f21360679741922da |
 | g06.012 | complete | none | 8 | sha256:ae092bb7d4ee6f8be088206020d644d515a86755011c513341f4c44eb46ac00c |
 | g06.013 | complete | none | 8 | sha256:626f7ba39265aa64063a1ca5aa5be3a4c5f7c8c076689f73878a1854b0c7f5b0 |
+| g06.014 | complete | none | 8 | sha256:d7c2dccee1d02541a17ba6e30f05d089fe53dce1642cbf200ae4c66d09085dc1 |
 <!-- northstar:lifecycle:end -->

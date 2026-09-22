@@ -8,7 +8,7 @@ status: ready-to-launch
 base_required: pushed-main
 roadmap: docs/roadmaps/g06/014-consumer-supplied-http-mcp-acceptance-per-route.md
 queue_dispatch: northstar-queue
-queue_approval: "Tom directed Swallowtail to match the Longhorn 2026-09-22 production MCP boundary, and Longhorn accepted the stdio-carrier requirement and gated its acceptance evidence on this per-route list. Operator direction 2026-09-22.",
+queue_approval: "Tom directed Swallowtail to match the Longhorn 2026-09-22 production MCP boundary, and Longhorn accepted the stdio-carrier requirement and gated its acceptance evidence on this per-route list. Operator direction 2026-09-22."
 queue:
   capability: general
   notifyOriginOnCloseout: true

@@ -53,7 +53,8 @@ maintained in this section.
 - [010 OpenCode HTTP 1.18.31 Useful Newer](./010-opencode-http-1-18-31-useful-newer.md) — external PR #351 admitted through review entry as the bounded pilot; merged at `5ade647a` after one independent reviewer run with no initial worker
 - [011 Codex 0.155.1 Useful Newer](./011-codex-0-155-1-useful-newer.md) — external PR #353 admitted through review entry after the pilot; merged at `edb0e428` after one review finding was repaired by a worker in the same workspace
 - [012 Qwen Code 0.24.2 Useful Newer](./012-qwen-code-0-24-2-useful-newer.md) — external PR #352 admitted through review entry with a known failing nextest check; merged at `5dcbabb6` after the reviewer required unpublished interior gaps to be excluded
-- [013 Claude Agent ACP 0.79.0 Useful Newer](./013-claude-agent-acp-0-79-0-useful-newer.md) — external PR #350, last of the approved suite; raises the ACP ceiling and amends the Contracts 015/038 range statements under explicit contract review
+- [013 Claude Agent ACP 0.79.0 Useful Newer](./013-claude-agent-acp-0-79-0-useful-newer.md) — external PR #350, last of the approved suite; merged at `235a9187` with its Contracts 015/038 range amendments accepted
+- [014 Consumer-Supplied HTTP MCP Acceptance Per Route](./014-consumer-supplied-http-mcp-acceptance-per-route.md) — ready; produces the per-route list that decides direct HTTP MCP versus Longhorn's stdio carrier
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:a86fa89dd03eaa4c9c8e7b5bec50f3726ebc9c83c48389ae4eabe5a493dce375 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

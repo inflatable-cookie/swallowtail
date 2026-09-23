@@ -1,0 +1,109 @@
+{
+ "version": "2.1.280",
+ "compared_versions": [
+  "2.1.278",
+  "2.1.280"
+ ],
+ "host_not_installed": true,
+ "selected_mapped_subset_source": "both hops classified from embedded source in the official darwin-arm64 and linux-x64 binaries, which were hashed and never executed; host claude was not on PATH",
+ "selected_mapped_subset_unchanged": false,
+ "identity_decision_shape": "stop",
+ "unchanged_selected_flags": [
+  "-p",
+  "--print",
+  "--input-format",
+  "--output-format",
+  "--verbose",
+  "--no-session-persistence",
+  "--model",
+  "--effort",
+  "--permission-mode",
+  "--tools",
+  "--setting-sources",
+  "--mcp-config",
+  "--strict-mcp-config",
+  "--max-turns",
+  "--disable-slash-commands",
+  "--no-chrome",
+  "--prompt-suggestions"
+ ],
+ "changed_selected_flags": [
+  "--safe-mode"
+ ],
+ "constructor_ident_remangle": {
+  "linux-x64": {
+   "2.1.278": "Y",
+   "2.1.280": "J"
+  },
+  "note": "Minified Option constructor name only. Not the stop."
+ },
+ "input_format_choices": [
+  "text",
+  "stream-json"
+ ],
+ "output_format_choices": [
+  "text",
+  "json",
+  "stream-json"
+ ],
+ "effort_choices": [
+  "low",
+  "medium",
+  "high",
+  "xhigh",
+  "max"
+ ],
+ "permission_mode_wire_values": [
+  "acceptEdits",
+  "auto",
+  "bypassPermissions",
+  "default",
+  "dontAsk",
+  "plan"
+ ],
+ "permission_mode_manual_alias": "manual maps to default",
+ "selected_permission_mode": "plan",
+ "selected_tools_headless": "Read,Glob,Grep",
+ "selected_tools_response_only": "",
+ "headless_passes_safe_mode": false,
+ "response_only_passes_safe_mode": true,
+ "stream_json_init_keys": [
+  "type",
+  "subtype",
+  "cwd",
+  "session_id",
+  "tools",
+  "mcp_servers",
+  "model",
+  "permissionMode",
+  "slash_commands",
+  "claude_code_version"
+ ],
+ "init_optional_mcp_servers_source_still_present": true,
+ "has_stream_event_on_both_versions": true,
+ "has_hook_started_on_both_versions": true,
+ "has_result_on_both_versions": true,
+ "thinking_sites_present_on_both_versions": true,
+ "safe_mode_help": {
+  "2.1.278": "Start with all customizations (CLAUDE.md, skills, plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \\u2014 useful for troubleshooting a broken configuration. Admin-managed (policy) settings still apply. Auth, model selection, built-in tools, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.",
+  "2.1.280_concatenated": "Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \\u2014 useful for troubleshooting a broken configuration. Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1."
+ },
+ "safe_mode_plugin_hooks": {
+  "2.1.278_linux_early_return": "if(kr()){t(\"Safe mode: skipping plugin hook registration\");return}",
+  "2.1.278_linux_skip_log": "Skipping plugin hooks - safe mode disables plugins (managed settings-file hooks still run)",
+  "2.1.280_linux_filter": "function lar(e){if(!Er())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>jO(n.source))}",
+  "2.1.280_linux_builtin_predicate": "function jO(e){return e.endsWith(`@${ou}`)}",
+  "2.1.280_linux_builtin_constant": "ou=\"builtin\"",
+  "2.1.280_linux_skip_log": "Skipping plugin hooks - safe mode disables installed plugins (managed settings-file hooks still run; built-in plugins load regardless)",
+  "2.1.280_darwin_filter": "function zir(e){if(!vr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>XO(n.source))}",
+  "2.1.280_darwin_builtin_predicate": "function XO(e){return e.endsWith(`@${iu}`)}",
+  "2.1.280_darwin_builtin_constant": "iu=\"builtin\"",
+  "platforms_agree": true,
+  "effect": "2.1.278 returns before plugin-hook registration. 2.1.280 keeps sources ending in @builtin and continues registration."
+ },
+ "sdk_tools_d_ts_byte_identical": true,
+ "provider_prompt_sent": false,
+ "live_session": false,
+ "host_install_changed": false,
+ "claim_edited": false
+}

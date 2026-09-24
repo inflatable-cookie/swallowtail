@@ -5,7 +5,7 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use http_mcp_live::{
     DisposableHttpMcpServer, HTTP_MCP_LIVE_TOOL, HTTP_MCP_LIVE_TOOL_RESULT, HttpMcpLiveRecord,
-    HttpMcpLiveStop,
+    HttpMcpLiveStop, resolve_usable_acp_model,
 };
 use std::ffi::OsString;
 use std::path::{Path, PathBuf};
@@ -23,13 +23,12 @@ use swallowtail_core::{
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
-    CleanupOutcome, DiscoveryCancellation, EnvironmentRef, ExecutableRef, OperationContent,
-    PreparedAccessEvidence, RequestId, RuntimeTurnId, ScopeId, TerminalStatus, TurnRequest,
-    WorkingResourceRef,
+    CleanupOutcome, DiscoveryCancellation, EnvironmentRef, ExecutableRef, InteractiveSessionHandle,
+    OperationContent, PreparedAccessEvidence, RequestId, RuntimeTurnId, ScopeId, TerminalStatus,
+    TurnRequest, WorkingResourceRef,
 };
 
 const LIVE_GATE: &str = "SWALLOWTAIL_LIVE_OPENCODE_ACP_HTTP_MCP";
-const CONFIGURED_MODEL: &str = "kimi-for-coding/k3";
 
 #[test]
 #[ignore = "requires SWALLOWTAIL_LIVE_OPENCODE_ACP_HTTP_MCP=1, host opencode 1.18.18, and an already-configured model"]
@@ -56,9 +55,9 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
     let Some(opencode) = installed_opencode() else {
         return HttpMcpLiveRecord::pre_attempt_stop(HttpMcpLiveStop::HostVersion, None);
     };
-    if !configured_model_is_present() {
+    let Some(model) = load_usable_acp_model() else {
         return HttpMcpLiveRecord::pre_attempt_stop(HttpMcpLiveStop::NoUsableModel, None);
-    }
+    };
     let workspace = std::env::temp_dir().join(format!(
         "swallowtail-opencode-acp-http-mcp-live-{}",
         std::process::id()
@@ -128,7 +127,7 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
         Err(_) => {
             return HttpMcpLiveRecord::pre_attempt_stop(
                 HttpMcpLiveStop::NoUsableModel,
-                Some(CONFIGURED_MODEL.to_owned()),
+                Some(model),
             );
         }
     };
@@ -150,13 +149,30 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
                     &server.transcript(),
                     &TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                     CleanupOutcome::Failed(error.diagnostic().clone()),
-                    Some(CONFIGURED_MODEL.to_owned()),
+                    Some(model.clone()),
                 );
                 record.force_stop(stop);
                 record
             };
         }
     };
+    if !advertised_model_matches(handle.as_ref(), &model) {
+        let cleanup = block_on(handle.close(
+            swallowtail_runtime::SessionCleanupRequest::new(
+                local.deadline_after(Duration::from_secs(30)),
+            ),
+            local.services().clone(),
+        ));
+        let mut record = HttpMcpLiveRecord::from_attempt(
+            true,
+            &server.transcript(),
+            &TerminalStatus::Cancelled,
+            cleanup,
+            Some(model),
+        );
+        record.force_stop(HttpMcpLiveStop::NoUsableModel);
+        return record;
+    }
 
     let mut turn = match block_on(handle.start_turn(
         TurnRequest::new(
@@ -181,7 +197,7 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
                 &server.transcript(),
                 &TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                 CleanupOutcome::Failed(error.diagnostic().clone()),
-                Some(CONFIGURED_MODEL.to_owned()),
+                Some(model.clone()),
             );
         }
     };
@@ -206,7 +222,7 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
         &server.transcript(),
         outcome.status(),
         cleanup,
-        Some(CONFIGURED_MODEL.to_owned()),
+        Some(model),
     )
 }
 
@@ -271,18 +287,23 @@ fn installed_opencode() -> Option<PathBuf> {
     candidates.into_iter().find(|candidate| candidate.is_file())
 }
 
-fn configured_model_is_present() -> bool {
-    let Some(home) = std::env::var_os("HOME") else {
-        return false;
-    };
-    let config = PathBuf::from(home).join(".config/opencode/opencode.json");
-    let Ok(text) = std::fs::read_to_string(config) else {
-        return false;
-    };
-    let Ok(value) = serde_json::from_str::<serde_json::Value>(&text) else {
-        return false;
-    };
-    value
-        .pointer("/provider/kimi-for-coding/models/k3")
-        .is_some()
+fn advertised_model_matches(handle: &dyn InteractiveSessionHandle, expected: &str) -> bool {
+    match handle.negotiated_model_options() {
+        None => true,
+        Some(options) => options.current_value() == expected,
+    }
+}
+
+fn load_usable_acp_model() -> Option<String> {
+    let home = std::env::var_os("HOME")?;
+    let config = read_json(PathBuf::from(&home).join(".config/opencode/opencode.json"))?;
+    let auth = read_json(PathBuf::from(&home).join(".local/share/opencode/auth.json"))
+        .or_else(|| read_json(PathBuf::from(home).join(".config/opencode/auth.json")))
+        .unwrap_or_else(|| serde_json::json!({}));
+    resolve_usable_acp_model(&config, &auth)
+}
+
+fn read_json(path: PathBuf) -> Option<serde_json::Value> {
+    let text = std::fs::read_to_string(path).ok()?;
+    serde_json::from_str(&text).ok()
 }

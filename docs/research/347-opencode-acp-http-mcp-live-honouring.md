@@ -14,7 +14,20 @@ streamable-HTTP MCP entry: connect, list one tool, and complete one tool call?
 ## Answer
 
 Yes. One authorized attempt on the `http` form, a loopback URL, and one
-bearer header, using already-configured model `kimi-for-coding/k3`, accepted.
+bearer header accepted. Honouring (connect, list, call, completed turn) is
+not in dispute.
+
+The spent run printed model `kimi-for-coding/k3` because that gate treated a
+provider definition as the tuple. This route does not send a model on
+`session/new` or `session/prompt`, and `negotiated_model_options` is none, so
+the host default is the ACP-effective model. A definition-only K3 cell does
+not prove that default or that it was usable without a login.
+
+The live attempt was not rerun. The gate now resolves `config.model` (or
+`agent.model`), requires that exact definition plus existing host auth for
+its provider, records that string only, and stops with `no_usable_model`
+when those are missing. If a future ACP session advertises a current model,
+it must match that resolved default before the prompt.
 
 The committed harness proof
 (`http_mcp_live_harness` against a fake ACP agent and the disposable
@@ -38,6 +51,13 @@ It is not a production path.
 
 No raw provider stream, bearer, account identifier, session id, or private
 path is retained.
+
+## Limits
+
+ACP on this route does not negotiate a model. The recorded model is the
+resolved host default, not an ACP `current_value`. The spent attempt's printed
+`kimi-for-coding/k3` is not a verified ACP-effective default. Honouring of the
+HTTP MCP entry on exact `1.18.18` still stands.
 
 ## Disposition
 

@@ -99,9 +99,11 @@ modelled through `OpenCodeAcpRemoteMcpPlacement::sse` and is not emitted.
 
 The Contract 061 placement projection names `consumer-supplied-http` when an
 HTTP entry is bound. Research 347 accepted live honouring of that HTTP entry
-on exact `1.18.18` (`client_mcp_servers` Yes, model `kimi-for-coding/k3`).
-Later points in the window stay unqualified for honouring. stdio MCP live
-honouring is not that evidence.
+on exact `1.18.18` (`client_mcp_servers` Yes). This route does not send a
+model on `session/new`; the live gate records the resolved host default after
+that definition and existing host auth are present. Later points in the
+window stay unqualified for honouring. stdio MCP live honouring is not that
+evidence.
 
 ## Restart, Failure, And Promotion
 

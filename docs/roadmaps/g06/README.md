@@ -62,6 +62,7 @@ maintained in this section.
 - [019 OpenCode ACP Consumer HTTP MCP Wiring](./019-opencode-acp-consumer-http-mcp-wiring.md) — ready; wires the Contract 063 consumer-supplied streamable-HTTP placement into `opencode.acp` production `session/new`
 - [020 Grok Build ACP 1.0.40 Review-Entry Pilot](./020-grok-build-acp-1-0-40-review-entry-pilot.md) — ready; external PR #358 as the bounded pilot for the #354–#359 suite
 - [021 Command Code Current-Release Qualification](./021-command-code-current-release-qualification.md) — ready; moves the exact `command-code.npm` point from `1.54.0` to current official, provider-free
+- [022 Claude Code 2.1.281 Narrowed Response-Only Qualification](./022-claude-code-2-1-281-narrowed-response-only.md) — ready; qualifies both axes through current official after Tom accepted the narrowed built-in-hook guarantee (Contract 039)
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:b8d9274ae3032a1719cce8c08026fc910955141cfb5e1eb58e758559f6c0f846 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

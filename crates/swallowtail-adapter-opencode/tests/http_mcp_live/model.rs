@@ -1,10 +1,11 @@
 use serde_json::Value;
 
-/// Resolves the ACP-effective host default model that `session/new` will use.
+/// Resolves the ACP-effective host model that `session/new` will use.
 ///
-/// This route does not send a model on `session/new` or `session/prompt`, so the
-/// host default is the tuple. A provider model definition without that default,
-/// or without existing host auth for its provider, is not usable.
+/// This route does not send a model on `session/new` or `session/prompt`.
+/// OpenCode applies the selected default agent's `model` over the root
+/// `model`. A provider definition without that effective default, or without
+/// existing host auth for its provider, is not usable.
 #[must_use]
 pub fn resolve_usable_acp_model(config: &Value, auth: &Value) -> Option<String> {
     let selected = selected_model(config)?;
@@ -19,13 +20,26 @@ pub fn resolve_usable_acp_model(config: &Value, auth: &Value) -> Option<String> 
 }
 
 fn selected_model(config: &Value) -> Option<String> {
-    config
-        .get("model")
+    let agent_name = config
+        .get("default_agent")
         .and_then(Value::as_str)
-        .or_else(|| config.pointer("/agent/model").and_then(Value::as_str))
+        .map(str::trim)
+        .filter(|name| !name.is_empty())
+        .unwrap_or("build");
+    let agent_model = config
+        .pointer(&format!("/agent/{}/model", json_pointer_escape(agent_name)))
+        .and_then(Value::as_str)
         .map(str::trim)
         .filter(|value| !value.is_empty())
-        .map(str::to_owned)
+        .map(str::to_owned);
+    agent_model.or_else(|| {
+        config
+            .get("model")
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+            .map(str::to_owned)
+    })
 }
 
 fn split_provider_model(selected: &str) -> Option<(&str, &str)> {
@@ -140,6 +154,101 @@ mod tests {
             "provider": {
                 "kimi-for-coding": {
                     "models": { "other": {} }
+                }
+            }
+        });
+        let auth = json!({ "kimi-for-coding": { "type": "api" } });
+        assert_eq!(resolve_usable_acp_model(&config, &auth), None);
+    }
+
+    #[test]
+    fn selected_default_agent_model_overrides_root_model() {
+        let config = json!({
+            "model": "kimi-for-coding/k3",
+            "agent": {
+                "build": { "model": "other/cheap" }
+            },
+            "provider": {
+                "kimi-for-coding": {
+                    "models": { "k3": {} }
+                },
+                "other": {
+                    "models": { "cheap": {} }
+                }
+            }
+        });
+        let auth = json!({
+            "kimi-for-coding": { "type": "api" },
+            "other": { "type": "api" }
+        });
+        assert_eq!(
+            resolve_usable_acp_model(&config, &auth).as_deref(),
+            Some("other/cheap")
+        );
+    }
+
+    #[test]
+    fn named_default_agent_model_overrides_root_and_build() {
+        let config = json!({
+            "model": "kimi-for-coding/k3",
+            "default_agent": "plan",
+            "agent": {
+                "build": { "model": "other/cheap" },
+                "plan": { "model": "other/plan" }
+            },
+            "provider": {
+                "kimi-for-coding": {
+                    "models": { "k3": {} }
+                },
+                "other": {
+                    "models": { "cheap": {}, "plan": {} }
+                }
+            }
+        });
+        let auth = json!({
+            "kimi-for-coding": { "type": "api" },
+            "other": { "type": "api" }
+        });
+        assert_eq!(
+            resolve_usable_acp_model(&config, &auth).as_deref(),
+            Some("other/plan")
+        );
+    }
+
+    #[test]
+    fn default_agent_without_model_falls_back_to_root() {
+        let config = json!({
+            "model": "kimi-for-coding/k3",
+            "default_agent": "plan",
+            "agent": {
+                "plan": { "description": "fixture" }
+            },
+            "provider": {
+                "kimi-for-coding": {
+                    "models": { "k3": {} }
+                }
+            }
+        });
+        let auth = json!({ "kimi-for-coding": { "type": "api" } });
+        assert_eq!(
+            resolve_usable_acp_model(&config, &auth).as_deref(),
+            Some("kimi-for-coding/k3")
+        );
+    }
+
+    #[test]
+    fn unusable_agent_override_does_not_fall_back_to_root() {
+        let config = json!({
+            "model": "kimi-for-coding/k3",
+            "agent": {
+                "build": { "model": "other/cheap" }
+            },
+            "provider": {
+                "kimi-for-coding": {
+                    "models": { "k3": {} }
+                },
+                "other": {
+                    "models": { "cheap": {} }
                 }
             }
         });

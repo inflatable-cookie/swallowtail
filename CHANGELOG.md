@@ -46,10 +46,11 @@ annotated Git tags from the canonical repository.
   on installed exact `1.18.18`. One live attempt accepted: connect,
   `tools/list`, one `tools/call`, completed turn, clean cleanup.
   `client_mcp_servers` is Yes on that exact point only; later window points
-  stay unqualified for honouring. The live gate records only the resolved
-  host default (`config.model`) after that definition and existing host auth
-  are present; a definition-only model cell is not the tuple. Harness proof
-  is a default-feature test; the live binary stays behind `live-probes` and
+  stay unqualified for honouring. The spent attempt has no verified exact
+  model attribution. The live gate records the selected default agent's
+  model override, else the root `model`, only after that definition and
+  existing host auth are present. Harness proof is a default-feature test;
+  the live binary stays behind `live-probes` and
   an env gate. The disposable loopback MCP server is test-only. Research 347,
   g06.028.
 - add the OpenCode ACP production route `opencode.acp` in

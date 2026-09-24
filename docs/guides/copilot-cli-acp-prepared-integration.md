@@ -59,7 +59,7 @@ The driver owns one joined stdio child and performs this sequence:
 
 1. spawn `copilot --acp --stdio` with no extra argv
 2. `initialize` with host `fs` and `terminal` advertised false
-3. `session/new` with `{cwd, mcpServers: []}`
+3. `session/new` with `{cwd, mcpServers}` — empty, or one admitted HTTP entry
 4. one bounded `session/prompt` of text blocks
 5. observe permission requests and cancel; never select `allow_always`
 6. join connection, process, and task cleanup
@@ -76,11 +76,33 @@ isolation is not filesystem or descendant-process containment.
 See the compile-tested
 [`prepared_copilot_cli_acp` example](../../crates/swallowtail-adapter-copilot-cli/examples/prepared_copilot_cli_acp.rs).
 
+## Consumer-declared MCP
+
+Contract 063 admits one consumer-supplied streamable-HTTP placement. Bind
+`CopilotCliAcpRemoteMcpPlacement` whose name is the route-owned
+`swallowtail-copilot-cli-acp`. A foreign name fails closed as a collision:
+Research 351 shows Copilot CLI skips names that already exist on
+agent-configured servers. Stdio client entries are not offered: the provider
+rejects them.
+
+HTTP encoding emits ACP `type: "http"` with the consumer URL and headers
+verbatim. Structure is validated only: non-empty name, absolute `http`/`https`
+URL, well-formed header names. URL and header values never appear in failures,
+diagnostics, activity, receipts, `Debug` output, or plan fingerprints: the
+public encoder returns `CopilotCliAcpEncodedMcpServers`, whose `Debug` form
+redacts those values, and the wire JSON stays crate-private. `sse` stays
+modelled through `CopilotCliAcpRemoteMcpPlacement::sse` and is not emitted.
+
+The Contract 061 placement projection names `consumer-supplied-http` when an
+HTTP entry is bound. Emission is not honouring: `client_mcp_servers` stays
+unavailable pending a live gate.
+
 ## Restart, Failure, And Promotion
 
 ACP exposes no public load or resume binding.
 `prepare_working_state_restoration` opens a fresh context-losing session after
-process loss; it does not recover the interrupted turn or transcript.
+process loss; it does not recover the interrupted turn or transcript. A prepared
+HTTP MCP declaration is carried onto that replacement session.
 
 Handle failures through portable classification and retain the exact
 `swallowtail.copilot-cli.acp` diagnostic for support. Do not parse stderr, ACP
@@ -88,11 +110,12 @@ data, or GitHub account state to infer retry, auth, terminal, or cleanup truth.
 Unauthorized initialize maps to `swallowtail.copilot-cli.acp.host_auth_required`
 without GitHub policy.
 
-Promotion of TCP `--port`, `--yolo` / `allow_all`, server-start tool or effort
-flags, GitHub login as Swallowtail action, treating preview as stable, Copilot
-IDE/API coverage, host fs writes, model selection, usage, session load, or live
-qualification requires a separate card, exact version evidence, and matrix
-coverage. An advertised ACP capability or CLI flag alone is insufficient.
+Promotion of HTTP MCP honouring, TCP `--port`, `--yolo` / `allow_all`,
+server-start tool or effort flags, GitHub login as Swallowtail action,
+treating preview as stable, Copilot IDE/API coverage, host fs writes, model
+selection, usage, session load, or live qualification requires a separate
+card, exact version evidence, and matrix coverage. An advertised ACP
+capability or CLI flag alone is insufficient.
 
 ## Deterministic Validation
 

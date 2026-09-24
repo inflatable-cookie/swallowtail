@@ -1,13 +1,39 @@
 pub mod swallowtail_adapter_kiro
+pub enum swallowtail_adapter_kiro::KiroAcpHttpAdvertisement
+pub swallowtail_adapter_kiro::KiroAcpHttpAdvertisement::Advertised
+pub swallowtail_adapter_kiro::KiroAcpHttpAdvertisement::NotAdvertised
+pub swallowtail_adapter_kiro::KiroAcpHttpAdvertisement::Unproven
+impl swallowtail_adapter_kiro::KiroAcpHttpAdvertisement
+pub fn swallowtail_adapter_kiro::KiroAcpHttpAdvertisement::from_initialize(&serde_json::value::Value) -> Self
+pub enum swallowtail_adapter_kiro::KiroAcpMcpGate
+pub swallowtail_adapter_kiro::KiroAcpMcpGate::AgentConfigurationOverride
+pub swallowtail_adapter_kiro::KiroAcpMcpGate::GovernanceDisabled
+pub swallowtail_adapter_kiro::KiroAcpMcpGate::InitializeAdvertisementUnproven
 pub struct swallowtail_adapter_kiro::KiroAcpDriver
 impl swallowtail_adapter_kiro::KiroAcpDriver
 pub const fn swallowtail_adapter_kiro::KiroAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+pub fn swallowtail_adapter_kiro::KiroAcpDriver::with_http_mcp_placement(self, swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_kiro::KiroAcpDriver
 pub fn swallowtail_adapter_kiro::KiroAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_kiro::KiroAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_kiro::KiroAcpDriver
 pub fn swallowtail_adapter_kiro::KiroAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_kiro::KiroAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_kiro::KiroAcpEncodedMcpServers
+impl swallowtail_adapter_kiro::KiroAcpEncodedMcpServers
+pub fn swallowtail_adapter_kiro::KiroAcpEncodedMcpServers::gates(&self) -> &'static [swallowtail_adapter_kiro::KiroAcpMcpGate]
+pub const fn swallowtail_adapter_kiro::KiroAcpEncodedMcpServers::is_honoured(&self) -> bool
+impl core::fmt::Debug for swallowtail_adapter_kiro::KiroAcpEncodedMcpServers
+pub fn swallowtail_adapter_kiro::KiroAcpEncodedMcpServers::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement
+impl swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement
+pub fn swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement::headers(&self) -> &[(alloc::string::String, alloc::string::String)]
+pub fn swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement::name(&self) -> &str
+pub fn swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement::new(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
+pub fn swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement::to_production_mcp_servers(&self) -> core::result::Result<swallowtail_adapter_kiro::KiroAcpEncodedMcpServers, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement::url(&self) -> &str
+impl core::fmt::Debug for swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement
+pub fn swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_adapter_kiro::KiroPreparationInput
 impl swallowtail_adapter_kiro::KiroPreparationInput
 pub const fn swallowtail_adapter_kiro::KiroPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
@@ -39,6 +65,9 @@ pub const fn swallowtail_adapter_kiro::KiroPreparedSession::request(&self) -> &s
 pub struct swallowtail_adapter_kiro::KiroSessionProfileInput
 impl swallowtail_adapter_kiro::KiroSessionProfileInput
 pub const fn swallowtail_adapter_kiro::KiroSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub fn swallowtail_adapter_kiro::KiroSessionProfileInput::with_http_mcp_placement(self, swallowtail_adapter_kiro::KiroAcpRemoteMcpPlacement) -> Self
+pub const swallowtail_adapter_kiro::KIRO_ACP_HTTP_MCP_PLACEMENT: &str
+pub const swallowtail_adapter_kiro::KIRO_ACP_MCP_SERVER_NAME: &str
 pub const swallowtail_adapter_kiro::KIRO_CLI_EXECUTABLE_NAME: &str
 pub const swallowtail_adapter_kiro::KIRO_CLI_RELEASE_AXIS: &str
 pub const swallowtail_adapter_kiro::KIRO_CLI_RELEASE_VERSION: &str

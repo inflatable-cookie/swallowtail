@@ -9,6 +9,7 @@ pub enum Scenario {
     Malformed,
     ProtocolMismatch,
     Oversized,
+    McpNotAdvertised,
 }
 
 #[derive(Clone, Debug)]
@@ -66,6 +67,22 @@ impl SharedAgent {
                         "id": id,
                         "result": {
                             "protocolVersion": 2,
+                            "agentInfo": {"name": "kiro-cli", "version": self.version}
+                        }
+                    }),
+                ),
+                Scenario::McpNotAdvertised => Self::enqueue(
+                    &mut state,
+                    json!({
+                        "jsonrpc": "2.0",
+                        "id": id,
+                        "result": {
+                            "protocolVersion": 1,
+                            "agentCapabilities": {
+                                "loadSession": true,
+                                "promptCapabilities": { "image": true },
+                                "mcpCapabilities": { "http": false, "sse": false }
+                            },
                             "agentInfo": {"name": "kiro-cli", "version": self.version}
                         }
                     }),
@@ -196,7 +213,10 @@ impl SharedAgent {
                     }
                     Scenario::Cancellation => {}
                     Scenario::Disconnect => state.stopped = true,
-                    Scenario::AuthRequired | Scenario::Malformed | Scenario::ProtocolMismatch => {}
+                    Scenario::AuthRequired
+                    | Scenario::Malformed
+                    | Scenario::ProtocolMismatch
+                    | Scenario::McpNotAdvertised => {}
                 }
             }
             Some("session/cancel") => {

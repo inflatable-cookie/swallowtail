@@ -63,7 +63,7 @@ whose grammar [status-grammar.md](./status-grammar.md) defines.
 Generations normally collect 30-50 numbered tasks (`gNN.NNN` files directly
 under `gNN/`). There is no nested card level. A phase boundary
 does not imply a generation rollover.
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:8ae9e4673ab97918c57e93536b3611ceccc24d579ebd5c6cadbf8a93ee2493c6 -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:218695f0f231dbb27a543f93a3d974ecc1fd41b9050042830d844b8f31463328 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g06 | open | planning_required |
@@ -87,4 +87,5 @@ does not imply a generation rollover.
 | g06.021 | complete | none | 8 | sha256:a71af0e87e5ea1947bbf74a63e76a9c82f9e5542268a5570b54395e5c33a2876 |
 | g06.023 | complete | none | 8 | sha256:b15823efb01420d3d2553a7e9d9ddaa964df95b40fe3789da9648702ffed40db |
 | g06.027 | complete | none | 8 | sha256:ff8512301401f88fff3f62d5729570b3eaf8a6a6eddfa7aef08f734c5cc5bce5 |
+| g06.029 | complete | none | 8 | sha256:7d70b4f38890742b81adf1b3c2499ec0b7293042acf31c9fd58447fc57dc5c36 |
 <!-- northstar:lifecycle:end -->

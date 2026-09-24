@@ -29,7 +29,8 @@ generation to house currentness.
 No terminal stop (Tom, 2026-09-24; Contract 029). A recorded stop moves no
 claim but always has an owning adaptation task that qualifies the current
 official stable. Open owners: Claude Code `2.1.280` safe-mode stop →
-g06.018. Command Code `1.54.0` → current official is g06.021.
+g06.018. Command Code moved from `1.54.0` to official `1.65.0` through
+g06.021.
 
 Completed campaign family: Oh My Pi official npm/GitHub `18.1.22` (g05.079) is
 the nineteenth and final family of Tom's authorized Research 308 campaign.

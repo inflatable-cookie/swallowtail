@@ -1,0 +1,36 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-09-24",
+  "release": "1.65.0",
+  "reported_version": "1.65.0",
+  "launchers": [
+    "command-code",
+    "cmd",
+    "cmdc"
+  ],
+  "preferred_bin": "command-code",
+  "entrypoint": {
+    "path": "dist/index.mjs",
+    "sha256": "157feefa0140e78f060ef2c1f9c50d10de702196ea229dc73db6bbcc39a0bcbb",
+    "size_bytes": 1836
+  },
+  "payload": {
+    "path": "dist/cli.mjs",
+    "sha256": "29949b2406b82bc81b102f4747cf6076484005d54938eebc585a9feb09bb7bca",
+    "size_bytes": 2668082
+  },
+  "package_json_sha256": "275d09d61a3299f07783345f105004ed99f7bf4bc954433a5ae55aca22b5b014",
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "UNLICENSED",
+  "direct_probe": {
+    "status": "not-run",
+    "reason": "Downloaded artifacts were inspected but never executed; no live/provider probe occurred.",
+    "version_succeeded": null,
+    "help_succeeded": null,
+    "no_tool_headless_succeeded": null,
+    "tool_headless_succeeded": null,
+    "credit_failure_exit_code": null
+  }
+}

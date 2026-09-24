@@ -50,6 +50,16 @@ annotated Git tags from the canonical repository.
   ACP session, login, install, or host update. Research 337, g06.016.
 
 ### Changed
+- rebind the exact `command-code.npm` `QualifiedOnly` point from `1.54.0` to
+  official npm `command-code` `1.65.0` with claim
+  `command-code.headless-window-1` and behavior
+  `command-code.agent-event-ndjson-v1` unchanged. Research 339 froze all 19
+  published stables after `1.54.0`; selected invocation, AgentEvent, result,
+  usage, plan mode, retention, and local lifecycle stay compatible. Research
+  330 live acceptance stays bound to exact `1.54.0` and is gated at `1.65.0`;
+  Research 116/118 stay bound to `1.15.1`. Unpublished `1.66.0` stays
+  incompatible. No prompt, login, install, host update, or downloaded-artifact
+  execution. g06.021.
 - raise the qualified OpenCode HTTP ceiling from `1.18.30` to official npm
   `opencode-ai` `1.18.31` on the `opencode.server` axis. Compatible extension
   of `opencode.http-sse.surface-19`: selected HTTP/SSE route files and OpenAPI

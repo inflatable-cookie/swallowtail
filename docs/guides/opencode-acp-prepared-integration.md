@@ -98,13 +98,14 @@ redacts those values, and the wire JSON stays crate-private. `sse` stays
 modelled through `OpenCodeAcpRemoteMcpPlacement::sse` and is not emitted.
 
 The Contract 061 placement projection names `consumer-supplied-http` when an
-HTTP entry is bound. Research 347 accepted live honouring of that HTTP entry
-on exact `1.18.18` (`client_mcp_servers` Yes). This route does not send a
-model on `session/new`. The spent attempt has no verified exact model
-attribution. The live gate records the selected default agent's model
-override, else the root `model`, after that definition and existing host auth
-are present. Later points in the window stay unqualified for honouring.
-stdio MCP live honouring is not that evidence.
+HTTP entry is bound. Research 348 observed live honouring of that HTTP entry
+on exact `1.18.18`. That observation is not an accepted-run: the spent
+attempt has no verified exact model attribution, so `client_mcp_servers`
+stays No. This route does not send a model on `session/new`. The live gate
+records the selected default agent's model override, else the root `model`,
+after that definition and existing host auth are present. Later points in the
+window stay unqualified for honouring. stdio MCP live honouring is not that
+evidence.
 
 ## Restart, Failure, And Promotion
 
@@ -134,5 +135,5 @@ effigy validate:focused swallowtail-adapter-opencode
 ```
 
 No login, install, or authenticated prompt is part of deterministic acceptance.
-HTTP MCP honouring on exact `1.18.18` is Research 347. Further live
-qualification stays separately gated.
+HTTP MCP honouring on exact `1.18.18` is Research 348 and is not a settled
+`client_mcp_servers` Yes. Further live qualification stays separately gated.

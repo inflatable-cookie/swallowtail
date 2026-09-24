@@ -42,17 +42,15 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Added
-- prove `opencode.acp` honours a consumer-supplied streamable-HTTP MCP entry
-  on installed exact `1.18.18`. One live attempt accepted: connect,
-  `tools/list`, one `tools/call`, completed turn, clean cleanup.
-  `client_mcp_servers` is Yes on that exact point only; later window points
-  stay unqualified for honouring. The spent attempt has no verified exact
-  model attribution. The live gate records the selected default agent's
-  model override, else the root `model`, only after that definition and
-  existing host auth are present. Harness proof is a default-feature test;
-  the live binary stays behind `live-probes` and
-  an env gate. The disposable loopback MCP server is test-only. Research 347,
-  g06.028.
+- add the OpenCode ACP HTTP MCP live harness and spend the one authorized
+  attempt on installed exact `1.18.18`. Honouring was observed: connect,
+  `tools/list`, one `tools/call`, completed turn, clean cleanup. The spent
+  attempt has no verified exact model attribution, so `client_mcp_servers`
+  stays No. The live gate records the selected default agent's model
+  override, else the root `model`, only after that definition and existing
+  host auth are present. Harness proof is a default-feature test; the live
+  binary stays behind `live-probes` and an env gate. The disposable
+  loopback MCP server is test-only. Research 348, g06.028.
 - add the OpenCode ACP production route `opencode.acp` in
   `swallowtail-adapter-opencode`, unflattened from `opencode.http`. Axis
   `opencode.executable`, claim `opencode.acp.executable-window-1`, compiled

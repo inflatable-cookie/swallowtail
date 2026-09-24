@@ -70,6 +70,7 @@ maintained in this section.
 - [027 Antigravity Catalogue 1.2.7 Review Entry](./027-antigravity-catalogue-1-2-7-review-entry.md) — ready; external PR #359 through review entry; reserved Research 346
 - [028 OpenCode ACP HTTP MCP Live Gate](./028-opencode-acp-http-mcp-live-gate.md) — ready; one authorized attempt proving `opencode.acp` honours a consumer-supplied HTTP MCP entry on exact `1.18.18`
 - [029 Command Code 1.65.0 Live Requalification](./029-command-code-1-65-0-live-requalification.md) — ready; one authorized attempt on exact `1.65.0` with `deepseek/deepseek-v4-flash`
+- [030 Ollama Runtime Current-Release Qualification](./030-ollama-runtime-current-release.md) — ready; raises `ollama.runtime` from `0.34.2` to current official, provider-free
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:edb04a75bef6302d2a7911bcfdd364e01614ec2838bf8ee755baf8cf4eaae5d6 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

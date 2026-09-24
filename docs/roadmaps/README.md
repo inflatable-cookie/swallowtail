@@ -15,14 +15,12 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Map the g06 frontier before any dispatch. The five carried-forward tasks
-(g06.001–g06.005) are planned and none is dispatch-ready: g06.001 awaits the
-producer proposal's independent review and canonical contract promotion,
-g06.002–g06.003 stay behind the Research 256 disposition gate, and g06.004–
-g06.005 lack consumer requirement and operator direction. Chatterbox
-reconciles the carried set, compiles the next ready lane, and settles g06's
-wider focus with the operator. Do not infer release, tag, publication,
-live-provider, or consumer authority.
+[g06.018 Claude Code Current-Release Qualification](./g06/018-claude-code-current-release-qualification.md)
+leads four independent ready lanes in the [g06 manifest](./g06/README.md):
+g06.019 OpenCode ACP consumer HTTP MCP wiring, g06.020 the Grok Build ACP #358
+review-entry pilot, and g06.021 Command Code current-release qualification.
+g06.001–g06.005 stay planned and gated as before. Do not infer release, tag,
+publication, live-provider, or consumer authority.
 
 ## Standing Lanes
 
@@ -67,7 +65,7 @@ whose grammar [status-grammar.md](./status-grammar.md) defines.
 Generations normally collect 30-50 numbered tasks (`gNN.NNN` files directly
 under `gNN/`). There is no nested card level. A phase boundary
 does not imply a generation rollover.
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:8ace978c1e82d6a7a8a051cb874df83fef5cbef20aebf31f8a068ad19e747674 -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:37154e7fd58e02d8976781067d313f2524f8787cf7feae769ba8c51d3b2dda17 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g06 | open | planning_required |
@@ -76,4 +74,13 @@ does not imply a generation rollover.
 | g06.006 | complete | none | 8 | sha256:635e26aa157bc647fa329f09a2f574f8ddd2e891da474ef878fcf2b420cf326e |
 | g06.007 | complete | none | 8 | sha256:f1b2d5d544acd7d632fac663acd5dbc1e376192c239bb257f99f1ba5e8c06b23 |
 | g06.008 | complete | none | 8 | sha256:68d63185abb4a3122810c5d4deee794a81ec22184b10d9fc8515bae2a1253d5e |
+| g06.009 | complete | none | 8 | sha256:e7e6c3f850646b4678e08c9ad0522ecd245caaf8eeb142f06c585a0a53afd2e9 |
+| g06.010 | complete | none | 8 | sha256:866915187aeaaa4a453448a80f3e35b4cf0c4624110c39344bf6254faa3a89ca |
+| g06.011 | complete | none | 8 | sha256:d79a43593d0ac5f65eefb50bc51bca22a6dce1eedab68e2f21360679741922da |
+| g06.012 | complete | none | 8 | sha256:ae092bb7d4ee6f8be088206020d644d515a86755011c513341f4c44eb46ac00c |
+| g06.013 | complete | none | 8 | sha256:626f7ba39265aa64063a1ca5aa5be3a4c5f7c8c076689f73878a1854b0c7f5b0 |
+| g06.014 | complete | none | 8 | sha256:d7c2dccee1d02541a17ba6e30f05d089fe53dce1642cbf200ae4c66d09085dc1 |
+| g06.015 | complete | none | 8 | sha256:80f5e0d909ed63c33c3ac11045abc79f9c8f8e996f1992ca26f0d1cfab35018f |
+| g06.016 | complete | none | 8 | sha256:f142de6a246403d77e824a3515b07e194b4719ad6b6f496e5cc4661d38b5d441 |
+| g06.017 | complete | none | 8 | sha256:43b11c2d0a6bd566533b241444420c32c8eafbddf24bc1a301b8fca08d8c3c2a |
 <!-- northstar:lifecycle:end -->

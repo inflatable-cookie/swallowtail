@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-14
+Updated: 2026-09-24
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -25,6 +25,11 @@ need an active generation.
 One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
+
+No terminal stop (Tom, 2026-09-24; Contract 029). A recorded stop moves no
+claim but always has an owning adaptation task that qualifies the current
+official stable. Open owners: Claude Code `2.1.280` safe-mode stop →
+g06.018. Command Code `1.54.0` → current official is g06.021.
 
 Completed campaign family: Oh My Pi official npm/GitHub `18.1.22` (g05.079) is
 the nineteenth and final family of Tom's authorized Research 308 campaign.

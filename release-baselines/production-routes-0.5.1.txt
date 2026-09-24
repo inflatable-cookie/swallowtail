@@ -41,6 +41,7 @@ oh-my-pi.rpc
 ollama.attached
 openai.background
 openai.realtime
+opencode.acp
 opencode.http
 pi.rpc
 pi.sdk-sidecar

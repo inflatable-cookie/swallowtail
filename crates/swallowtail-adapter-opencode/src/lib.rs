@@ -1,12 +1,12 @@
-//! Attached OpenCode HTTP harness integration for Swallowtail.
+//! OpenCode harness integrations for Swallowtail.
 //!
-//! The adapter keeps model catalogue, interactive and structured execution,
-//! provider-session catalogue/import/reconciliation, and inactive-session
-//! deletion as separately prepared authorities against one observed server.
+//! `opencode.http` is the attached HTTP/SSE family. `opencode.acp` is a
+//! separate ACP stdio family on `opencode.executable`. They are not flattened.
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
 
+mod acp;
 mod activity;
 mod consumer_route_projection;
 mod driver;
@@ -17,6 +17,15 @@ mod protocol;
 mod selection;
 mod transport;
 
+pub use acp::{
+    OPENCODE_ACP_AXIS, OPENCODE_ACP_BASELINE_VERSION, OPENCODE_ACP_EXECUTABLE_NAME,
+    OPENCODE_ACP_HOST_ACCOUNT_AUDIENCE, OPENCODE_ACP_LATEST_QUALIFIED_VERSION,
+    OPENCODE_ACP_MCP_SERVER_NAME, OpenCodeAcpDriver, OpenCodeAcpPreparationInput,
+    OpenCodeAcpPreparationProbe, OpenCodeAcpPreparedIntegration, OpenCodeAcpPreparedSession,
+    OpenCodeAcpRemoteMcpPlacement, OpenCodeAcpSessionProfileInput, OpenCodeAcpStdioMcpServer,
+    opencode_acp_binding, opencode_acp_claim, opencode_acp_descriptor,
+    opencode_acp_host_account_access_profile, prepare_opencode_acp,
+};
 pub use driver::{OpenCodeHttpDriver, opencode_http_descriptor};
 pub use prepared::{
     OpenCodePreparationInput, OpenCodePreparationProbe, OpenCodePreparedIntegration,

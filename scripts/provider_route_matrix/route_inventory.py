@@ -16,7 +16,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 FEATURE_MATRIX = REPO / "docs" / "guides" / "provider-solution-feature-matrix.csv"
-EXPECTED_ROUTE_COUNT = 50
+EXPECTED_ROUTE_COUNT = 51
 
 # Provider-session lifecycle posture per route:
 # (persistent-session posture, management binding, archive, restore, delete,
@@ -67,6 +67,7 @@ LIFECYCLE_POSTURES: dict[str, tuple[str, str, str, str, str, str]] = {
     "ollama.attached": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "openai.background": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "openai.realtime": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
+    "opencode.acp": ("unsupported", "no", "unsupported", "unsupported", "unsupported", "unsupported"),
     "opencode.http": ("supported", "yes", "unsupported", "unsupported", "supported", "ProviderDataDeleted"),
     "oh-my-pi.rpc": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),
     "pi.rpc": ("not-applicable", "no", "not-applicable", "not-applicable", "not-applicable", "not-applicable"),

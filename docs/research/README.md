@@ -8,8 +8,7 @@ roadmaps, or logs. Do not leave implementation-critical rules here.
 
 ## Research Records
 
-Reserved numbers: 343 (#355 Cursor Agent), 344 (#356 Pi RPC), 345 (#357 Oh
-My Pi). New records take the next number after the highest file or
+Reserved numbers: 343 (#355 Cursor Agent), 345 (#357 Oh My Pi). New records take the next number after the highest file or
 reservation.
 
 - [341 Claude Code 2.1.281 Built-in Hooks and Qualification Stop](./341-claude-code-2-1-281-builtin-hooks-and-qualification-stop.md) — official `2.1.280` and `2.1.281` artifacts and all nine built-in plugins frozen; `agents-md` prompt-context injection becomes default-on at `2.1.281`, and writable settings cannot disable the built-in hook set; g06.018 branch 3 prepares a narrowed response-only claim for operator ruling, with both production ceilings held at `2.1.278`

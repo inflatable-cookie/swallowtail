@@ -147,8 +147,15 @@ impl OpenCodeAcpRemoteMcpPlacement {
     }
 
     /// Encodes this placement onto production `mcpServers` when it is the admitted `http` form.
-    pub fn to_production_mcp_servers(&self) -> Result<Value, RuntimeFailure> {
-        Ok(json!([self.to_acp_http_value()?]))
+    ///
+    /// The returned payload's `Debug` form redacts URL and header values. The
+    /// wire JSON stays crate-private.
+    pub fn to_production_mcp_servers(
+        &self,
+    ) -> Result<OpenCodeAcpEncodedMcpServers, RuntimeFailure> {
+        Ok(OpenCodeAcpEncodedMcpServers::from_entry(
+            self.to_acp_http_value()?,
+        ))
     }
 
     pub(crate) fn to_acp_http_value(&self) -> Result<Value, RuntimeFailure> {
@@ -204,6 +211,68 @@ impl fmt::Debug for OpenCodeAcpRemoteMcpPlacement {
             )
             .finish()
     }
+}
+
+/// Production `mcpServers` payload. Debug redacts URL and header values.
+pub struct OpenCodeAcpEncodedMcpServers {
+    value: Value,
+}
+
+impl OpenCodeAcpEncodedMcpServers {
+    fn from_entry(entry: Value) -> Self {
+        Self {
+            value: json!([entry]),
+        }
+    }
+}
+
+impl fmt::Debug for OpenCodeAcpEncodedMcpServers {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("OpenCodeAcpEncodedMcpServers")
+            .field("entries", &redacted_mcp_servers_debug(&self.value))
+            .finish()
+    }
+}
+
+fn redacted_mcp_servers_debug(value: &Value) -> Value {
+    let Some(entries) = value.as_array() else {
+        return json!("<redacted>");
+    };
+    Value::Array(
+        entries
+            .iter()
+            .map(|entry| {
+                let mut object = serde_json::Map::new();
+                if let Some(kind) = entry.get("type") {
+                    object.insert("type".to_owned(), kind.clone());
+                }
+                if let Some(name) = entry.get("name") {
+                    object.insert("name".to_owned(), name.clone());
+                }
+                if entry.get("url").is_some() {
+                    object.insert("url".to_owned(), json!("<redacted>"));
+                }
+                if let Some(headers) = entry.get("headers").and_then(Value::as_array) {
+                    object.insert(
+                        "headers".to_owned(),
+                        Value::Array(
+                            headers
+                                .iter()
+                                .map(|header| {
+                                    json!({
+                                        "name": header.get("name").cloned().unwrap_or(Value::Null),
+                                        "value": "<redacted>",
+                                    })
+                                })
+                                .collect(),
+                        ),
+                    );
+                }
+                Value::Object(object)
+            })
+            .collect(),
+    )
 }
 
 /// Production `mcpServers` list: empty, or exactly one admitted stdio or HTTP entry.
@@ -337,18 +406,16 @@ mod tests {
     #[test]
     fn http_encoder_passes_url_and_headers_verbatim() {
         let remote = admitted_http();
-        let value = remote
+        let encoded = remote
             .to_production_mcp_servers()
             .expect("http is admitted");
+        assert_secret_redacted(&encoded);
+        let value = production_mcp_servers(None, Some(&remote)).expect("http list");
         assert_eq!(value[0]["type"], "http");
         assert_eq!(value[0]["name"], OPENCODE_ACP_MCP_SERVER_NAME);
         assert_eq!(value[0]["url"], CANARY_URL);
         assert_eq!(value[0]["headers"][0]["name"], "Authorization");
         assert_eq!(value[0]["headers"][0]["value"], CANARY_HEADER);
-        assert_eq!(
-            production_mcp_servers(None, Some(&remote)).expect("http list"),
-            value
-        );
     }
 
     #[test]
@@ -444,5 +511,12 @@ mod tests {
         assert!(rendered.contains("Authorization"));
         assert!(rendered.contains("<redacted>"));
         assert!(!rendered.contains(CANARY_URL));
+
+        let encoded = remote
+            .to_production_mcp_servers()
+            .expect("http is admitted");
+        assert_secret_redacted(&encoded);
+        assert!(format!("{encoded:?}").contains("<redacted>"));
+        assert!(!format!("{encoded:?}").contains(CANARY_HEADER));
     }
 }

@@ -40,7 +40,9 @@ annotated Git tags from the canonical repository.
   `opencode.acp` production `session/new`. A session declares at most one
   consumer entry, stdio or HTTP, under `swallowtail-opencode-acp`. HTTP
   encoding emits ACP `type: "http"` with the consumer URL and headers
-  verbatim; `sse` stays modelled and unemitted. URL and header values stay
+  verbatim; `sse` stays modelled and unemitted. The public encoder returns
+  `OpenCodeAcpEncodedMcpServers`, whose `Debug` form redacts URL and header
+  values; the wire JSON stays crate-private. URL and header values stay
   out of failures, diagnostics, activity, receipts, `Debug`, and plan
   fingerprints. The Contract 061 placement projection names
   `consumer-supplied-http`. Feature matrix MCP cells stay No: emission is

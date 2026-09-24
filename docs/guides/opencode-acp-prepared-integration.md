@@ -92,8 +92,10 @@ a typed refusal.
 HTTP encoding emits ACP `type: "http"` with the consumer URL and headers
 verbatim. Structure is validated only: non-empty name, absolute `http`/`https`
 URL, well-formed header names. URL and header values never appear in failures,
-diagnostics, activity, receipts, `Debug` output, or plan fingerprints. `sse`
-stays modelled through `OpenCodeAcpRemoteMcpPlacement::sse` and is not emitted.
+diagnostics, activity, receipts, `Debug` output, or plan fingerprints: the
+public encoder returns `OpenCodeAcpEncodedMcpServers`, whose `Debug` form
+redacts those values, and the wire JSON stays crate-private. `sse` stays
+modelled through `OpenCodeAcpRemoteMcpPlacement::sse` and is not emitted.
 
 The Contract 061 placement projection names `consumer-supplied-http` when an
 HTTP entry is bound. No feature-matrix MCP cell is `Yes`: this lane proves

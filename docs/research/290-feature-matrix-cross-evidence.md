@@ -28,7 +28,10 @@ names the route. Card129 rows cite Research 281. The Card131 Codex
 `selected_skill_bundle` row after its accepted live gate qualified the three
 MCP/tool cells and settled the selected-skill surface as absent on frozen ACP
 v1 and the exact Grok artifacts; its basis is the same Research 281 Grok
-census line as the route's other limitations. Prepared integration guides are
+census line as the route's other limitations. g06.016 appends the
+`opencode.acp` unavailable cells; their basis is
+[337-opencode-acp-unavailable-cells.tsv](337-opencode-acp-unavailable-cells.tsv),
+which names the route and points at Research 337. Prepared integration guides are
 not evidence for this disposition: the docs front door classifies guides as
 non-authoritative integration usage.
 

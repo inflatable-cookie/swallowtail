@@ -10,23 +10,20 @@ This package is additive unreleased source after `v0.3.1`. Consumers must pin
 an explicitly reviewed commit containing it. Immutable `v0.3.1` and earlier
 tags do not contain the package or route.
 
-Research 317 requalified the exact npm point to `1.54.0` from the complete
-official stable chain. The provider-free selected-surface evidence transfers;
-Research 116's authenticated completion/tool/usage/credit observations and
-Research 118's two-turn private continuation remain exact-`1.15.1` records.
-The free-model gate stopped with
-`swallowtail.command_code.headless.malformed_stream` on
-`meituan/LongCat-2.0:free`; the separately authorized paid-model gate then
-accepted exact-`1.54.0` on `deepseek/deepseek-v4-flash` (Research 330),
-carrying the `1.54.0` live acceptance for structured completion, streaming
-events, usage decoding, and the two-turn private continuation. Authenticated
-credit failure stays version-bound to `1.15.1`.
+Research 339 requalified the exact npm point to `1.65.0` from the complete
+official stable chain after `1.54.0`. The provider-free selected-surface
+evidence transfers; Research 330's paid-model live acceptance remains
+exact-`1.54.0`, and Research 116's authenticated completion/tool/usage/credit
+observations and Research 118's two-turn private continuation remain
+exact-`1.15.1` records. Live-derived cells stay gated at `1.65.0` until a
+separately authorized live requalification. Authenticated credit failure stays
+version-bound to `1.15.1`.
 
 ## Selected Boundary
 
 The route selects:
 
-- exact npm release `1.54.0` on axis `command-code.npm`
+- exact npm release `1.65.0` on axis `command-code.npm`
 - unambiguous executable basename `command-code`
 - one explicit model id
 - one read-only filesystem working resource
@@ -77,7 +74,7 @@ script alone fails closed: ambient `PATH` is cleared, so `env node` cannot run.
 Construct `CommandCodePreparationProbe` with a request ID, scope, deadline, and
 `DiscoveryCancellation`. Then call `prepare_command_code_headless`.
 
-Preparation runs only `--version`. It requires the exact line `1.54.0`, binds
+Preparation runs only `--version`. It requires the exact line `1.65.0`, binds
 the resulting compatibility observation, and returns
 `CommandCodePreparedIntegration`. It sends no prompt and does not test account
 credits. A wrong axis, wrong version, wrong host, unavailable discovery result,

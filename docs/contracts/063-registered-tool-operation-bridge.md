@@ -1,6 +1,10 @@
 # 063 Registered Tool Operation Bridge
 
-Status: active; implementation pending cards 114-117
+Status: active; MCP-registration-server role withdrawn from production
+2026-09-22 (Longhorn Contract 022 `agent-control` is the production MCP);
+host-mediated route-native tool mediation remains production-capable;
+consumer-supplied streamable-HTTP placement admitted 2026-09-24;
+implementation pending cards 114-117
 Owner: Tom
 Created: 2026-09-07
 
@@ -8,12 +12,83 @@ This is implementation authority, not a claim of realized runtime support.
 Promoted from independently reviewed Spec014 and the bilateral ownership
 decision at Desktop `30a338f2`, Longhorn `edc21078`, Swallowtail `6fa6266b`.
 
+## Production MCP Boundary — 2026-09-22
+
+Operator direction withdraws this contract's production MCP role. The
+production MCP is Longhorn's Contract 022 `agent-control` server, enabled by a
+consumer at compile time and bounded by that consumer's registered typed
+command catalogue; it binds loopback with a per-instance bearer and speaks
+stateless streamable HTTP. There is no second production MCP, and nothing here
+permits a competing listener alongside it.
+
+Swallowtail's production role in this boundary narrows to two things. For a
+route that can act as an MCP client, it is harness-side MCP client
+configuration: emitting the consumer's server entry into that route's own MCP
+configuration, and owning that harness process and its lifecycle. For a route
+whose provider protocol carries host-mediated tool calls natively, it is that
+route's own mediation: `codex.app-server`'s host-mediated `dynamicTools` is the
+qualified example and stands up no MCP server at all.
+
+What is withdrawn is the MCP-registration-server role. No Swallowtail-owned
+listener, registry, lease, correlation kernel or admission issuer may act as a
+production MCP alongside the Contract 022 server. The affected surfaces are the
+Contract 060 watcher bridge and the routed MCP courier placements for
+`claude-agent.sdk` and `grok-build.acp`; they are retained as the record of the
+typed boundary they defined and remain available for development and
+non-production profiles. **Route-native mediated tool paths that expose no MCP
+server are unaffected and remain production-capable**, which is why Codex's
+host-mediated `dynamicTools` path keeps its qualified standing.
+
+The Longhorn counterpart allocated by the original bilateral decision —
+Contract 023 and Spec 002 — is withdrawn for the production MCP role by
+Longhorn [`7ea44d23`](https://github.com/inflatable-cookie/longhorn/commit/7ea44d23)
+(operator direction 2026-09-22, shipping in Longhorn
+`0.2.0`), which retains that contract as its typed dispatch/validation record.
+Longhorn has no authority over this document; the withdrawal is recorded here
+so this boundary stays Swallowtail-local and truthful.
+
+## Consumer-Supplied HTTP MCP Placement — 2026-09-24
+
+Operator ruling, delegated to the Chatterbox's recommendation and accepted by
+Tom on 2026-09-24: a **consumer-supplied streamable-HTTP MCP entry** is an
+admitted placement shape beside the three stdio-shaped placements. It is the
+shape the Production MCP Boundary already describes emitting — the consumer's
+server entry written into a harness's own MCP client configuration — so it
+adds no Swallowtail listener, registry, lease, correlation kernel or admission
+issuer.
+
+**Shape.** One entry carries a server name, an absolute URL, and an ordered
+header list. The consumer owns every value; for the Contract 022
+`agent-control` server that is a loopback URL and a per-instance bearer header.
+Swallowtail validates structure only (non-empty name, absolute `http`/`https`
+URL, well-formed header names) and passes the values to the route's native MCP
+configuration verbatim. It never rewrites, proxies, probes, or retries the URL.
+
+**Redaction.** URL and header values are consumer secrets. They never appear
+in failures, diagnostics, receipts, activity, logs, matrices, or prepared-plan
+fingerprints; a digest or presence flag is the most a projection may carry.
+
+**Per-route admission.** The shape is admitted as a contract shape, not as a
+capability of every route. A route may emit it only when frozen evidence shows
+its provider accepts a URL-plus-header entry on the selected surface, and it
+publishes the placement through Contract 061 like any other. A route whose
+provider has no such seam keeps its current placement; Longhorn's stdio carrier
+remains the path for stdio-only harnesses. Emitting the entry is not proof the
+provider honours it: the feature cell stays gated until a live gate shows one
+declared remote entry connected and one tool call completed.
+
+**First route.** `opencode.acp`: Research 337 froze ACP `session/new`
+accepting `mcpServers` entries of type `http` and `sse` with forwarded headers
+and advertising `mcpCapabilities: { http: true, sse: true }`. The route emits
+the `http` form; `sse` stays modelled but unemitted until a consumer needs it.
+Wiring is g06.019; live honouring is a separate gate.
+
 ## Ownership
 
 | Owner | Owns | Does not own | Governing evidence |
 | --- | --- | --- | --- |
-| Swallowtail | sole namespaced registration snapshot; operation bridge listener/transport, lease, correlation, generation, lifecycle, prepared-plan binding, route adapters, safe diagnostics, and conformance | domain tool names or schemas, business/effect policy, durable product identity, admission issuance, packaged host startup | [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md), amended by this promotion |
-| Longhorn | transport-neutral typed host dispatch/validation library and generic safe result/error envelopes | registry authority, listener, lease, correlation kernel, admission identity, domain names/schemas/policy, standalone daemon in slice 1 | [PR 22](https://github.com/inflatable-cookie/longhorn/pull/22), whose aligned [`Contract 023`](https://github.com/inflatable-cookie/longhorn/blob/6ce4aa1beafad6748af238d19fb47ffaa1ad342f/docs/contracts/023-production-contextual-agent-tool-boundary.md) and [`Spec 002`](https://github.com/inflatable-cookie/longhorn/blob/6ce4aa1beafad6748af238d19fb47ffaa1ad342f/docs/specs/002-production-contextual-agent-tool-boundary.md) independently passed at `6ce4aa1b` |
+| Swallowtail | sole namespaced registration snapshot; host-mediated route-native tool mediation for protocols that carry tool calls natively; non-production MCP bridge listener/transport, lease, correlation for the retained profiles; generation, lifecycle, prepared-plan binding, route adapters, safe diagnostics, and conformance | domain tool names or schemas, business/effect policy, durable product identity, admission issuance, packaged host startup | [Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md), amended by this promotion |
+| Longhorn | transport-neutral typed host dispatch/validation library and generic safe result/error envelopes, and the production MCP server (Contract 022 `agent-control`) | registry authority, listener, lease, correlation kernel, admission identity, domain names/schemas/policy, standalone daemon in slice 1 | [PR 22](https://github.com/inflatable-cookie/longhorn/pull/22). Its aligned Contract 023 and Spec 002 passed at `6ce4aa1b` and are **withdrawn for the production MCP role** by Longhorn `7ea44d23` (operator direction 2026-09-22, shipping in Longhorn `0.2.0`), with 023 retained only as its typed dispatch/validation record |
 | Desktop | domain tool names and input/output schemas; effects/business/tool policy; bounded app-context disclosure; durable task/session/attempt admission issuance; final Allow/Deny policy; packaging, distribution, startup, queue/UX, and receipts | provider wire, registration snapshot ownership, bridge transport/listener/lease/correlation lifetime | [`Spec 010` at `30a338f2`](https://github.com/acowtancy/bovine-accelerator-desktop/blob/30a338f2/docs/specs/010-contextual-chat-and-task-queue.md) |
 
 Other consumers may reuse the Swallowtail boundary. They do not inherit
@@ -129,9 +204,10 @@ freezes admission, abandons or completes issued calls, joins callbacks and trans
 releases the linked dispatch binding and resources, then releases credential
 leases. Desktop owns application startup/shutdown; Swallowtail owns bridge
 lifetime inside that host. Drop is defensive cleanup, never success evidence.
-Production and development control profiles remain distinct. The Longhorn
-Contract 022 development loopback is not a registered-tool profile and cannot
-enter a release build through this bridge, host binding, or feature selection.
+Production and development control profiles remain distinct, but their roles are
+inverted from the original decision. Longhorn's Contract 022 `agent-control`
+server is the production MCP; this bridge is retained for development and
+non-production profiles and is not a production tool surface.
 
 ### Transport And Reconnect
 
@@ -234,6 +310,7 @@ did not receive.
 | `claude-agent.acp` | host-mediated native callbacks only; MCP withheld | current ACP sends an empty server list and has no MCP input facade; add direct MCP only after exact bridge schema, version, permission, and lifecycle evidence |
 | `codex.app-server` | host-mediated dynamic native tools | this is already the qualified execution seam; observed MCP activity is not registration or result authority; provider-direct MCP needs a separate app-server surface and corpus |
 | `grok-build.acp` | route-local ACP client-MCP courier through the Contract 063 mediated-stdio kernel, scoped to exact maintained `1.0.4..=1.0.5` | the accepted Card 128 live gate ran exact Grok Build `1.0.4` and `1.0.5` each admitting the Swallowtail-owned courier, listing its tools, and completing one registered call (Research 295); the qualification is version-scoped — other executable versions project unqualified rows and a registered open refuses with `version_not_admitted` before any host, lease, or provider work — the consumer Deny stays unrepresented, progress stays undelivered, selected skills stay `NotCarried` for want of any ACP skill input, and omission still sends `mcpServers: []` |
+| `opencode.acp` | consumer-supplied streamable-HTTP entry in ACP `session/new` `mcpServers`, or one route-owned stdio entry | admitted 2026-09-24 by the Consumer-Supplied HTTP MCP Placement ruling on Research 337 frozen evidence; production wiring is g06.019; live honouring stays gated until a separately authorized live gate; `--pure` bounds host plugin loading |
 
 The common API must not promise that every route accepts MCP. A route publishes
 the exact attachment or mediation kind through Contract 061.

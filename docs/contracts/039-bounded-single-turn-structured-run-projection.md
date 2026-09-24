@@ -162,6 +162,22 @@ Process, and Time host services and advertises no working-resource, callback,
 tool, session, continuation, retry, fallback, or structured-output capability.
 The existing `claude-code.headless` read-only Plan profile remains unchanged.
 
+**Built-in provider hooks — operator ruling 2026-09-24.** From Claude Code
+`2.1.280`, `--safe-mode` keeps the provider's `@builtin` plugin hooks and no
+writable setting disables them (Research 341). Tom accepted the Chatterbox
+recommendation: response-only qualifies those releases under a narrowed
+guarantee instead of holding the ceiling. Swallowtail guarantees what its
+arguments control — empty tools, empty strict MCP, disabled slash commands and
+Chrome, no prompt suggestions, no session persistence, one text-only turn.
+Provider built-in behaviour (policy, UI, prompt sections, first-party
+telemetry under provider settings) is provider surface, like the system
+prompt and built-in tools, and the guide discloses it. Project instruction
+files (`AGENTS.md` through the built-in `agents-md` hook, alongside the
+existing `CLAUDE.md` discovery) resolve from the launch directory: the
+consumer's `Read` project location when given, otherwise an adapter-chosen
+directory that must not supply them. A supported switch that suppresses
+instruction injection or telemetry is pinned when frozen evidence proves it.
+
 The qualified response-only compatibility segment begins at exact `2.1.227`
 and currently extends through exact `2.1.235`; exact `2.1.228` carries
 separately observed live evidence for the same protocol revision. Stable

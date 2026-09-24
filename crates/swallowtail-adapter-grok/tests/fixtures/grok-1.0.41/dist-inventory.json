@@ -1,0 +1,201 @@
+{
+  "compared": [
+    "1.0.40",
+    "1.0.41"
+  ],
+  "digests": {
+    "platform": {
+      "README.md": {
+        "1.0.40": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+        "1.0.41": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb"
+      },
+      "THIRD_PARTY_NOTICES.md": {
+        "1.0.40": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "1.0.41": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+      },
+      "bin/grok.br": {
+        "1.0.40": "fe98209666ad4caf3f1f9de18b33e565569867ce5befeb88a636c5a880c13097",
+        "1.0.41": "90f67689153380f2a363cf3c6a7e5e1ab303e9b7eb07f8092dca86471f1fce5d"
+      },
+      "package.json": {
+        "1.0.40": "56e0c23dbd8b3ee9bcfdc6d811e4ead43979a94d9a8d7665b3c15c537680f018",
+        "1.0.41": "8215a598c1d300612d89a14b1614483f6614883e9d9147950332375d537326d7"
+      }
+    },
+    "wrapper": {
+      "README.md": {
+        "1.0.40": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+        "1.0.41": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f"
+      },
+      "bin/grok": {
+        "1.0.40": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+        "1.0.41": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+      },
+      "bin/grok-bootstrap.js": {
+        "1.0.40": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+        "1.0.41": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+      },
+      "bin/postinstall.js": {
+        "1.0.40": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+        "1.0.41": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+      },
+      "package.json": {
+        "1.0.40": "e639240aeff1532c9f98250c0608f76c118d37b69ce7065388c845e640a692bc",
+        "1.0.41": "fbb144c26a2d59f8a0bc6dc12c17f1ca7f6ecd8c6aa73013752f86132669d606"
+      }
+    }
+  },
+  "hop_to_hop_delta": {
+    "1.0.41": {
+      "platform": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    }
+  },
+  "identical_through_all_hops": {
+    "platform": [
+      "README.md",
+      "THIRD_PARTY_NOTICES.md"
+    ],
+    "wrapper": [
+      "README.md",
+      "bin/grok",
+      "bin/grok-bootstrap.js",
+      "bin/postinstall.js"
+    ]
+  },
+  "package_file_counts": {
+    "1.0.40": {
+      "platform": 4,
+      "wrapper": 5
+    },
+    "1.0.41": {
+      "platform": 4,
+      "wrapper": 5
+    }
+  },
+  "per_hop_delta_from_1_0_40": {
+    "1.0.40": {
+      "platform": {
+        "added": [],
+        "changed": [],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md",
+          "bin/grok.br",
+          "package.json"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js",
+          "package.json"
+        ],
+        "removed": []
+      }
+    },
+    "1.0.41": {
+      "platform": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    }
+  },
+  "per_hop_files": {
+    "1.0.40": {
+      "platform": {
+        "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "fe98209666ad4caf3f1f9de18b33e565569867ce5befeb88a636c5a880c13097",
+        "package.json": "56e0c23dbd8b3ee9bcfdc6d811e4ead43979a94d9a8d7665b3c15c537680f018"
+      },
+      "wrapper": {
+        "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+        "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+        "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+        "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+        "package.json": "e639240aeff1532c9f98250c0608f76c118d37b69ce7065388c845e640a692bc"
+      }
+    },
+    "1.0.41": {
+      "platform": {
+        "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "90f67689153380f2a363cf3c6a7e5e1ab303e9b7eb07f8092dca86471f1fce5d",
+        "package.json": "8215a598c1d300612d89a14b1614483f6614883e9d9147950332375d537326d7"
+      },
+      "wrapper": {
+        "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+        "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+        "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+        "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+        "package.json": "fbb144c26a2d59f8a0bc6dc12c17f1ca7f6ecd8c6aa73013752f86132669d606"
+      }
+    }
+  },
+  "platform_compared": "grok-linux-x64",
+  "present_in_every_hop": {
+    "platform": [
+      "README.md",
+      "THIRD_PARTY_NOTICES.md",
+      "bin/grok.br",
+      "package.json"
+    ],
+    "wrapper": [
+      "README.md",
+      "bin/grok",
+      "bin/grok-bootstrap.js",
+      "bin/postinstall.js",
+      "package.json"
+    ]
+  }
+}

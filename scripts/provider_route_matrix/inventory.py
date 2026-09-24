@@ -1,32 +1,32 @@
 expected_no_counts = Counter(
     {
         "unverified_newer_allowed": 17,
-        "structured_run": 9,
+        "structured_run": 10,
         "interactive_session": 9,
         "realtime_media_session": 3,
-        "usage_evidence": 13,
+        "usage_evidence": 14,
         "billed_cost_evidence": 19,
-        "output_token_limit": 30,
-        "reasoning_selection": 20,
-        "structured_output": 35,
-        "attachments": 34,
-        "consumer_tool_exchange": 35,
-        "permission_exchange": 36,
-        "question_exchange": 34,
-        "load_session": 32,
-        "resume_session": 32,
+        "output_token_limit": 31,
+        "reasoning_selection": 21,
+        "structured_output": 36,
+        "attachments": 35,
+        "consumer_tool_exchange": 36,
+        "permission_exchange": 37,
+        "question_exchange": 35,
+        "load_session": 33,
+        "resume_session": 33,
         "provider_session_catalogue": 8,
         "provider_session_import": 9,
-        "bounded_workspace_text_write": 23,
-        "external_search": 38,
+        "bounded_workspace_text_write": 24,
+        "external_search": 39,
         "retained_background_execution": 5,
         "stream_reattachment": 3,
-        "provider_managed_recovery": 34,
-        "provider_session_archive": 13,
-        "provider_session_restore": 14,
-        "provider_session_delete": 12,
-        "native_session_close": 36,
-        "owned_remote_resource_cleanup": 8,
+        "provider_managed_recovery": 35,
+        "provider_session_archive": 14,
+        "provider_session_restore": 15,
+        "provider_session_delete": 13,
+        "native_session_close": 37,
+        "owned_remote_resource_cleanup": 9,
         "planned_connection_rollover": 1,
     }
 )
@@ -47,11 +47,11 @@ audited_value_counts = Counter(
 )
 if audited_value_counts != Counter(
     {
-        "Yes": 340,
-        "No": 562,
-        "Not applicable": 431,
+        "Yes": 345,
+        "No": 581,
+        "Not applicable": 439,
         "Partial": 2,
-        "Caller-supplied": 16,
+        "Caller-supplied": 17,
         "Session-negotiated": 2,
     }
 ):
@@ -62,5 +62,5 @@ if actual_no_counts != expected_no_counts:
     raise SystemExit(
         f"provider solution No inventory changed: {dict(actual_no_counts)}"
     )
-if len(no_cells) != 562 or len(no_cells) != len(set(no_cells)):
-    raise SystemExit("provider solution No inventory must contain 562 unique cells")
+if len(no_cells) != 581 or len(no_cells) != len(set(no_cells)):
+    raise SystemExit("provider solution No inventory must contain 581 unique cells")

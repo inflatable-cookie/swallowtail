@@ -234,7 +234,7 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 `xhigh`, and `max` reasoning selections, and requires the initialized and
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
-capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.270`,
+capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.278`,
 excluding unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
 `2.1.262`, and `2.1.264`; later stable versions remain visible
 `UnverifiedNewer`.
@@ -265,7 +265,7 @@ selectable here.
 A selection requires one of the exact Claude Code versions Research 226 probed.
 That set is narrower than the route's qualified window:
 
-- published qualified points `2.1.242..=2.1.270` excluding unpublished
+- published qualified points `2.1.242..=2.1.278` excluding unpublished
   `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, and `2.1.264`
   were never probed for this feature
 - the compatibility claim permits later stable points as `UnverifiedNewer`, and
@@ -328,7 +328,7 @@ See the compile-tested
 
 `prepare_claude_code_response_only` accepts a host-approved stable Claude Code
 executable at or above the proven `2.1.227` protocol floor, except any release
-on the route's explicit known-bad deny-list. `2.1.227` through `2.1.270` are
+on the route's explicit known-bad deny-list. `2.1.227` through `2.1.278` are
 qualified except unpublished `2.1.244`, `2.1.249`, `2.1.253` through
 `2.1.256`, `2.1.262`, and `2.1.264`; later stable releases run
 provisionally as `UnverifiedNewer` under the same runtime validation. It is a
@@ -372,10 +372,17 @@ claim.
 Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
-qualification: the qualified segment ends at `2.1.270`, while newer stable
+qualification: the qualified segment ends at `2.1.278`, while newer stable
 versions are provisional until evidence moves that boundary. The static
 deny-list is unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
 `2.1.262`, and `2.1.264`.
+
+Research 341 found that `2.1.280` and `2.1.281` safe mode retains built-in
+plugin hooks. At `2.1.281`, the built-in `agents-md` prompt-context hook is
+enabled by default and can add project instructions. A writable `--settings`
+value cannot disable the built-in hook set. These releases remain provisional
+under the current claim while the narrowed isolation guarantee awaits an
+operator ruling.
 
 The prepared plan records `ProviderSuppressed` harness configuration and
 `AmbientHost` isolation. The first says exact provider flags suppress tools
@@ -420,7 +427,7 @@ integration.
 ## ACP Version Posture
 
 Discovery records the exact Claude Agent ACP wrapper version. Qualified
-wrappers are `0.53.0..=0.76.0`, excluding unpublished `0.58.0`. Those
+wrappers are `0.53.0..=0.79.0`, excluding unpublished `0.58.0`. Those
 milestones remain guaranteed. A newer stable release is admitted as
 unverified, remains inspectable in evidence, and must identify itself as that
 same exact version during ACP initialization. Excluded and older versions do

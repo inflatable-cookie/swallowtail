@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-14
+Updated: 2026-09-24
 
 These lanes outlive a generation. They are not generation runway goals
 and they do not keep a generation open.
@@ -25,6 +25,13 @@ need an active generation.
 One-family qualification that changes a claim compiles into the
 then-active generation. If none is active, stop and ask. Do not invent a
 generation to house currentness.
+
+No terminal stop (Tom, 2026-09-24; Contract 029). A recorded stop moves no
+claim but always has an owning adaptation task that qualifies the current
+official stable. Open owners: Claude Code `2.1.280`/`2.1.281` built-in hook
+stop (Research 341, g06.018 branch 3) → narrowed guarantee accepted 2026-09-24
+(Contract 039); g06.022 qualifies it. Command Code moved from `1.54.0` to official `1.65.0` through
+g06.021.
 
 Completed campaign family: Oh My Pi official npm/GitHub `18.1.22` (g05.079) is
 the nineteenth and final family of Tom's authorized Research 308 campaign.

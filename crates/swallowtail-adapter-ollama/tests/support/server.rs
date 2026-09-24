@@ -215,7 +215,7 @@ fn respond(
                 VersionFixture::DriftAfterPreparation if request_index == 0 => VERSION.to_owned(),
                 VersionFixture::DriftAfterPreparation => VERSION.replace("0.30.0", "0.32.1"),
                 VersionFixture::Excluded => VERSION.replace("0.30.0", "0.32.2"),
-                VersionFixture::Newer => VERSION.replace("0.30.0", "0.34.3"),
+                VersionFixture::Newer => VERSION.replace("0.30.0", "0.34.5"),
             };
             respond_with(stream, 200, "application/json", &body);
         }

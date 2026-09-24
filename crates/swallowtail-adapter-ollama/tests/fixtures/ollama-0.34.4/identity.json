@@ -1,0 +1,89 @@
+{
+  "axis": "ollama.runtime",
+  "observed_at": "2026-09-24",
+  "github_repo": "ollama/ollama",
+  "not_ollama_cloud": true,
+  "host": {
+    "client_version": "0.33.3",
+    "executable_sha256": "75b6b83ab9c06712c7097807c91d2bb86a3ef3dd143d59359a5fbb3314970c0a",
+    "no_runtime_reachable": true,
+    "host_not_mutated": true,
+    "note": "client 0.33.3 on PATH; --version only; no running instance; host was not mutated"
+  },
+  "official": {
+    "version": "0.34.4",
+    "source": "official-github-tag",
+    "published_at": "2026-09-23T02:24:43Z",
+    "prerelease": false,
+    "github_tag": "v0.34.4",
+    "github_commit": "b2da9e468af2479058ae18c6d908ed29de410684",
+    "github_tree": "525c37066242cc8feb9f7d909927270b168c6a7c",
+    "tag_tarball_sha256": "c265dfff78cd2fe909f9f9fa0bb21b1e34dfcd354e1bfa13ed8eac2cfce90940"
+  },
+  "published_hops": [
+    {
+      "version": "0.34.3",
+      "github_tag": "v0.34.3",
+      "github_commit": "6383a0fa9cbf97494b847226e189f6e36b401a08",
+      "github_tree": "45bb0e750cc7db55ee25b73e039af3026e683a3d",
+      "published_at": "2026-09-19T00:02:57Z",
+      "prerelease": false,
+      "tag_tarball_sha256": "89aecca954feb03ff39c781ff321b0055349b82720b0c3832a2336e0ea9da029"
+    },
+    {
+      "version": "0.34.4",
+      "github_tag": "v0.34.4",
+      "github_commit": "b2da9e468af2479058ae18c6d908ed29de410684",
+      "github_tree": "525c37066242cc8feb9f7d909927270b168c6a7c",
+      "published_at": "2026-09-23T02:24:43Z",
+      "prerelease": false,
+      "tag_tarball_sha256": "c265dfff78cd2fe909f9f9fa0bb21b1e34dfcd354e1bfa13ed8eac2cfce90940"
+    }
+  ],
+  "previous_ceiling": "0.34.2",
+  "previous_ceiling_identity": {
+    "github_tag": "v0.34.2",
+    "github_commit": "dfabde4539e42ba1e1eab50a3a50b88aea7958a0",
+    "github_tree": "f7a55d8ed225cbddcaa585b7c5dad7fbb7c80d00",
+    "published_at": "2026-09-15T21:21:07Z",
+    "prerelease": false,
+    "tag_tarball_sha256": "3fb06dc496f321749423792066f299205c433b815540c1f23f18368540401640",
+    "types_go_sha256": "2f38141506af42d3ece12a89517ace40077e6327b034128ef7d0ee054ab83d3e",
+    "routes_go_sha256": "fe40523b0a35b03c12bb8d530d3478e9d08a32e4723366ccaed0148ac8705e5a"
+  },
+  "published_stables_from_previous_ceiling": ["0.34.3", "0.34.4"],
+  "unpublished_next": "0.34.5",
+  "github_prerelease_plain_versions": ["0.32.2", "0.32.10"],
+  "ignored_prerelease_after_previous_ceiling": ["0.34.3-rc1"],
+  "frozen_corpus_ceiling": "0.34.2",
+  "research_342_reproduced": true,
+  "claim_at_observation": {
+    "baseline": "0.14.0",
+    "latest_qualified": "0.34.2",
+    "behavior_revision": "ollama.native-text-v1",
+    "posture": "allow_unverified",
+    "excluded": ["0.32.2", "0.32.10"],
+    "classification_of_0_34_2": "qualified_maintained",
+    "classification_of_0_34_3_through_0_34_4": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior": "ollama.native-text-v1",
+    "raise_latest_qualified_to": "0.34.4",
+    "keep_baseline": "0.14.0",
+    "keep_claim_id": "ollama.native-runtime-window-2",
+    "keep_exclusion_0_32_2": true,
+    "keep_exclusion_0_32_10": true,
+    "keep_allow_unverified": true,
+    "keep_decoder_specimen": "ollama-native-v0.14.0-v0.32.1",
+    "qualified_hops": ["0.34.3", "0.34.4"],
+    "synthetic_unverified_newer": "0.34.5",
+    "new_public_operation": false,
+    "flatten_to_cloud_or_generate": false,
+    "flatten_to_llama_cpp": false,
+    "provider_prompt_sent": false,
+    "attached_server_started": false,
+    "host_install_changed": false,
+    "official_app_archive_downloaded": false
+  }
+}

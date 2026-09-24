@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- raise the Ollama attached-runtime qualified ceiling through official
+  `0.34.4`: Research 350 freezes both published hops after `0.34.2` with
+  tag/commit/tree/tarball and selected-file hashes, and reproduces Research
+  342's `0.34.2` hashes. `ShowResponse.thinking` is additive and ignored by
+  the catalog decoder; remaining ChatHandler and leftover routes.go deltas
+  stay bounded unmapped. Qualify `0.34.3` and `0.34.4` as a compatible
+  extension of `ollama.native-text-v1`. Keep the baseline, claim identity,
+  behavior revision, historical exclusions, decoder specimen, and
+  `AllowUnverified`. Synthetic later-stable `0.34.5` stays visibly
+  unverified. No provider operation or host mutation occurred.
 - raise Claude Code headless through official `2.1.281` as a compatible
   extension of `claude-code.headless.stream-json.v1`, and split response-only
   into v1 `2.1.227..=2.1.278` plus v2 `2.1.280..=2.1.281` under the Contract

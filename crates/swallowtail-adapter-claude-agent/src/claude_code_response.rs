@@ -6,13 +6,15 @@ use crate::failure::failure;
 use std::sync::Arc;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, DriverDescriptor, DriverRole, ExecutionLayer,
-    HostServiceKind, IntegrationFamilyId, OperationShape, PreflightPlan, TransportFamilyId,
+    HostServiceKind, IntegrationFamilyId, OperationShape, PreflightPlan, ResourceAccess,
+    ResourceRepresentation, TransportFamilyId,
 };
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, DebugObservation, DebugObservationKind, EnvironmentRef,
-    ExecutableRef, HostServices, ProcessHandle, ProcessInputChunk, ProcessRequest, RunHandle,
-    RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId, StructuredRunDriver,
-    StructuredRunRequest, runtime_event_channel, terminal_outcome_channel,
+    ExecutableRef, HostServices, ProcessHandle, ProcessInputChunk, ProcessRequest, ResourceLease,
+    RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId,
+    StructuredRunDriver, StructuredRunRequest, WorkingResourceService, runtime_event_channel,
+    terminal_outcome_channel,
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.claude-code.response-only";
@@ -142,21 +144,45 @@ impl ClaudeCodeResponseOnlyDriver {
         ))
         .with_arguments(arguments(&model, request.policy().reasoning_mode()))
         .with_environment([self.environment.clone()]);
+        let mut launch_directory = None;
         if let Some(working_resource) = request.working_resource() {
             process_request = process_request.with_working_resource(working_resource.clone());
+        } else if crate::claude_code_response_selection::version_uses_narrowed_builtin_hooks(
+            observed_version.version(),
+        ) {
+            let resources = services.working_resource().cloned().ok_or_else(|| {
+                failure(
+                    "swallowtail.claude_code.response_only.host_service_missing",
+                    "Claude Code response-only execution requires the preflight-bound working resource service",
+                )
+            })?;
+            let lease = resources
+                .create_temporary(
+                    scope.clone(),
+                    ResourceAccess::Read,
+                    ResourceRepresentation::Filesystem,
+                )
+                .await?;
+            process_request = process_request.with_working_resource(lease.reference().clone());
+            launch_directory = Some((resources, lease));
         }
-        let process: Arc<dyn ProcessHandle> = Arc::from(
-            process_service
-                .start(scope.clone(), process_request)
-                .await?,
-        );
+        let process: Arc<dyn ProcessHandle> =
+            match process_service.start(scope.clone(), process_request).await {
+                Ok(process) => Arc::from(process),
+                Err(error) => {
+                    release_launch_directory(launch_directory).await;
+                    return Err(error);
+                }
+            };
         if let Err(error) = write_prompt(process.as_ref(), &request).await {
             cleanup_failed_start(process.as_ref()).await;
+            release_launch_directory(launch_directory).await;
             return Err(error);
         }
         let deadline = time_service.wait_until(deadline);
         if let Err(error) = event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started)) {
             cleanup_failed_start(process.as_ref()).await;
+            release_launch_directory(launch_directory).await;
             return Err(error);
         }
         let (terminal_sender, terminal_future) = terminal_outcome_channel();
@@ -183,6 +209,7 @@ impl ClaudeCodeResponseOnlyDriver {
                         services,
                     )
                     .await;
+                    release_launch_directory(launch_directory).await;
                     let _ = terminal_sender.complete(outcome);
                     event_sender.mark_terminal();
                 }
@@ -203,6 +230,14 @@ impl ClaudeCodeResponseOnlyDriver {
             cancellation,
             task,
         )))
+    }
+}
+
+async fn release_launch_directory(
+    launch_directory: Option<(Arc<dyn WorkingResourceService>, ResourceLease)>,
+) {
+    if let Some((resources, lease)) = launch_directory {
+        let _ = resources.release(lease).await;
     }
 }
 

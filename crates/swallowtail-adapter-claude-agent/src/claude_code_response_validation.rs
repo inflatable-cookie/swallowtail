@@ -88,6 +88,16 @@ pub(crate) fn validate(
         )?;
     } else {
         reject_capability(plan, Capability::WorkingResource)?;
+        if crate::claude_code_response_selection::version_uses_narrowed_builtin_hooks(
+            observed_version.version(),
+        ) {
+            require_service(
+                plan,
+                services.working_resource().is_some(),
+                HostServiceKind::WorkingResource,
+                "working resource",
+            )?;
+        }
     }
     if request.attachments().len() != 0
         || request.tools().len() != 0

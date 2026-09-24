@@ -1,8 +1,9 @@
 #![allow(dead_code, unused_imports)]
 
 use crate::claude_code_support::{
-    FakeProcessService, ImmediateTimeService, PendingTimeService, host_services, response_fixture,
-    response_fixture_at, response_preparation_input, response_preparation_probe,
+    FakeProcessService, ImmediateTimeService, PendingTimeService, empty_launch_host, host_services,
+    host_services_with_working_resource, response_fixture, response_fixture_at,
+    response_preparation_input, response_preparation_probe,
 };
 use futures_executor::block_on;
 use futures_util::StreamExt;
@@ -189,23 +190,26 @@ fn baseline_private_thinking_remains_qualified_and_fail_closed() {
 fn provisional_newer_binds_init_and_exposes_version_diagnostics() {
     let host = swallowtail_core::ExecutionHostId::new("host.provisional").expect("host is valid");
     let observer = Arc::new(CapturingDebugObserver::default());
-    let prepared = prepared_at(host.clone(), "2.1.279", Some(Arc::clone(&observer)));
+    let local = empty_launch_host(host.clone());
+    let prepared =
+        prepared_at_narrowed(host.clone(), "2.1.282", Some(Arc::clone(&observer)), &local);
     assert!(matches!(
         prepared.observation().compatibility(),
         InstalledExecutableCompatibility::UnverifiedNewer(_)
     ));
     assert_eq!(
         prepared.observation().version().version().as_str(),
-        "2.1.279"
+        "2.1.282"
     );
     let run = profile(&prepared, "provisional");
     assert_eq!(
         run.evidence().observation().version().version().as_str(),
-        "2.1.279"
+        "2.1.282"
     );
-    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.279", 1);
+    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.282", 1);
     let (process, state) = FakeProcessService::completed(&output);
-    let (services, task) = host_services(host, process, Arc::new(PendingTimeService));
+    let (services, task) =
+        host_services_with_working_resource(host, process, Arc::new(PendingTimeService), &local);
     let services = services.with_diagnostic_observer(observer.clone());
     let mut handle = block_on(run.start_run(services)).expect("provisional run starts");
     let _events = block_on(
@@ -230,7 +234,7 @@ fn provisional_newer_binds_init_and_exposes_version_diagnostics() {
                 && observation.route() == Some("claude-code.response-only")
                 && observation.stage() == Some(stage)
                 && observation.detail()
-                    == "observed_version=2.1.279; compatibility=unverified-newer"
+                    == "observed_version=2.1.282; compatibility=unverified-newer"
         }));
     }
 }
@@ -489,6 +493,51 @@ fn deadline_stops_and_reaps_the_provider_process() {
     assert!(task.joined());
 }
 
+#[test]
+fn narrowed_segment_keeps_v1_arguments_and_binds_an_empty_launch_directory() {
+    let host = swallowtail_core::ExecutionHostId::new("host.narrowed").expect("host is valid");
+    let local = empty_launch_host(host.clone());
+    let prepared = prepared_at_narrowed(host.clone(), "2.1.281", None, &local);
+    let run = profile(&prepared, "narrowed");
+    assert!(
+        !run.plan()
+            .requirements()
+            .capabilities()
+            .any(|requirement| requirement.capability() == Capability::WorkingResource)
+    );
+    assert!(
+        run.plan()
+            .requirements()
+            .host_services()
+            .any(|service| service == swallowtail_core::HostServiceKind::WorkingResource)
+    );
+    assert!(run.request().working_resource().is_none());
+    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.281", 1);
+    let (process, state) = FakeProcessService::completed(&output);
+    let (services, task) =
+        host_services_with_working_resource(host, process, Arc::new(PendingTimeService), &local);
+    let mut handle = block_on(run.start_run(services)).expect("narrowed run starts");
+    let outcome = block_on(
+        handle
+            .take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert!(state.waited());
+    assert!(task.joined());
+    let request = state.request();
+    assert!(request.working_resource.is_some());
+    assert!(request.arguments.iter().any(|value| value == "--safe-mode"));
+    assert!(
+        request
+            .arguments
+            .windows(2)
+            .any(|pair| pair == ["--tools", ""])
+    );
+    assert!(!request.arguments.iter().any(|value| value == "--settings"));
+}
+
 fn prepared(host: swallowtail_core::ExecutionHostId) -> ClaudeCodeResponsePreparedIntegration {
     prepared_at(host, "2.1.228", None)
 }
@@ -500,6 +549,35 @@ fn prepared_at(
 ) -> ClaudeCodeResponsePreparedIntegration {
     let (process, state) = FakeProcessService::completed(&format!("{version} (Claude Code)\n"));
     let (services, task) = host_services(host.clone(), process, Arc::new(PendingTimeService));
+    let services = match observer {
+        Some(observer) => services.with_diagnostic_observer(observer),
+        None => services,
+    };
+    let prepared = block_on(prepare_claude_code_response_only(
+        response_preparation_input(host),
+        response_preparation_probe(),
+        services,
+    ))
+    .expect("Claude Code response-only prepares");
+    assert_eq!(state.request().arguments, ["--version"]);
+    assert!(state.waited());
+    assert!(task.joined());
+    prepared
+}
+
+fn prepared_at_narrowed(
+    host: swallowtail_core::ExecutionHostId,
+    version: &str,
+    observer: Option<Arc<CapturingDebugObserver>>,
+    local: &swallowtail_host_local::LocalHostServices,
+) -> ClaudeCodeResponsePreparedIntegration {
+    let (process, state) = FakeProcessService::completed(&format!("{version} (Claude Code)\n"));
+    let (services, task) = host_services_with_working_resource(
+        host.clone(),
+        process,
+        Arc::new(PendingTimeService),
+        local,
+    );
     let services = match observer {
         Some(observer) => services.with_diagnostic_observer(observer),
         None => services,

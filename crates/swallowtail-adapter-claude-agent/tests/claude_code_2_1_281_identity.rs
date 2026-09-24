@@ -23,26 +23,35 @@ fn official_hops_and_claim_stop_are_explicit() {
     assert_eq!(identity["unpublished_between"], json!(["2.1.279"]));
     assert_eq!(identity["branch"], "neither_escalate");
     assert_eq!(identity["downloaded_binaries_executed"], false);
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.278");
     assert_eq!(
-        CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
+        identity["claim_at_observation"]["headless_latest_qualified"],
         "2.1.278"
     );
-    for claim in [
-        claude_code_headless_claim(),
-        claude_code_response_only_claim(),
-    ] {
-        for newer in ["2.1.280", "2.1.281"] {
-            assert!(matches!(
-                claim.assess(&InterfaceVersion::new(newer).unwrap()),
-                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-            ));
-        }
-        assert!(matches!(
-            claim.assess(&InterfaceVersion::new("2.1.279").unwrap()),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
+    assert_eq!(
+        identity["claim_at_observation"]["response_only_latest_qualified"],
+        "2.1.278"
+    );
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
+    assert_eq!(
+        CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
+        "2.1.281"
+    );
+    let headless = claude_code_headless_claim();
+    let response = claude_code_response_only_claim();
+    for published in ["2.1.280", "2.1.281"] {
+        assert!(headless.supports(&InterfaceVersion::new(published).unwrap()));
+        assert!(response.supports(&InterfaceVersion::new(published).unwrap()));
     }
+    assert!(!headless.permits(&InterfaceVersion::new("2.1.279").unwrap()));
+    assert!(!response.permits(&InterfaceVersion::new("2.1.279").unwrap()));
+    assert!(matches!(
+        headless.assess(&InterfaceVersion::new("2.1.282").unwrap()),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+    assert!(matches!(
+        response.assess(&InterfaceVersion::new("2.1.282").unwrap()),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
 }
 
 #[test]
@@ -198,6 +207,52 @@ fn builtin_hook_set_and_decisive_prompt_context_are_frozen() {
     assert_eq!(
         protocol["disable_all_hooks_user_setting_keeps_builtin_plugins"],
         true
+    );
+    assert_eq!(
+        protocol["instruction_files_parser"]["default"],
+        "claude-md-or-agents-md"
+    );
+    assert_eq!(
+        protocol["instruction_files_parser"]["modes"],
+        json!([
+            "claude-md",
+            "claude-md-or-agents-md",
+            "claude-md-and-agents-md",
+            "managed-only"
+        ])
+    );
+    assert_eq!(
+        protocol["instruction_files_parser"]["claude_md_stops_agents_md_hook_registration"],
+        true
+    );
+    assert_eq!(
+        protocol["instruction_files_parser"]["managed_only_drops_project_local_user_kinds"],
+        true
+    );
+    assert_eq!(
+        protocol["instruction_files_parser"]["pinned_on_selected_surface"],
+        false
+    );
+    assert_eq!(
+        protocol["telemetry_opt_out"]["DISABLE_TELEMETRY_any_nonempty"],
+        true
+    );
+    assert_eq!(
+        protocol["telemetry_opt_out"]["CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC_any_nonempty"],
+        true
+    );
+    assert_eq!(
+        protocol["telemetry_opt_out"]["DO_NOT_TRACK_1_true_yes_on"],
+        true
+    );
+    assert_eq!(protocol["telemetry_opt_out"]["settings_key"], json!(null));
+    assert_eq!(
+        protocol["telemetry_opt_out"]["pinned_on_selected_surface"],
+        false
+    );
+    assert_eq!(
+        protocol["launch_directory"]["without_project_location_v2"],
+        "adapter_owned_empty_temporary_working_resource"
     );
     assert_eq!(protocol["branch"], "neither");
 }

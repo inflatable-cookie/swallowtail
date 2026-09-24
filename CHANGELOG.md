@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- raise Claude Code headless through official `2.1.281` as a compatible
+  extension of `claude-code.headless.stream-json.v1`, and split response-only
+  into v1 `2.1.227..=2.1.278` plus v2 `2.1.280..=2.1.281` under the Contract
+  039 narrowed built-in-hook guarantee. Unpublished `2.1.279` is an explicit
+  exclusion. v2 without a project location launches in an adapter-owned empty
+  directory. The nine `@builtin` plugins that `--safe-mode` keeps from
+  `2.1.280` are disclosed in the Claude prepared guide. Watcher stays exact
+  `2.1.251`. Research 348.
 - raise the Grok Build ACP executable window through the current official
   npm `@xai-official/grok` `1.0.41`: Research 340 freezes all eleven
   published stables `1.0.31..=1.0.41` after the `1.0.30` ceiling with

@@ -234,10 +234,11 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 `xhigh`, and `max` reasoning selections, and requires the initialized and
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
-capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.278`,
+capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.281`,
 excluding unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
-`2.1.262`, and `2.1.264`; later stable versions remain visible
-`UnverifiedNewer`.
+`2.1.262`, `2.1.264`, and `2.1.279`; later stable versions remain visible
+`UnverifiedNewer`. Headless does not pass `--safe-mode` and already admits
+ambient project instructions.
 
 ### Maximum Agentic Turns
 
@@ -265,9 +266,9 @@ selectable here.
 A selection requires one of the exact Claude Code versions Research 226 probed.
 That set is narrower than the route's qualified window:
 
-- published qualified points `2.1.242..=2.1.278` excluding unpublished
-  `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, and `2.1.264`
-  were never probed for this feature
+- published qualified points `2.1.242..=2.1.281` excluding unpublished
+  `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, `2.1.264`, and
+  `2.1.279` were never probed for this feature
 - the compatibility claim permits later stable points as `UnverifiedNewer`, and
   no artifact for one has been probed
 - the claim's segment is a semantic range that contains `2.1.230`, which was
@@ -328,11 +329,17 @@ See the compile-tested
 
 `prepare_claude_code_response_only` accepts a host-approved stable Claude Code
 executable at or above the proven `2.1.227` protocol floor, except any release
-on the route's explicit known-bad deny-list. `2.1.227` through `2.1.278` are
-qualified except unpublished `2.1.244`, `2.1.249`, `2.1.253` through
-`2.1.256`, `2.1.262`, and `2.1.264`; later stable releases run
-provisionally as `UnverifiedNewer` under the same runtime validation. It is a
-distinct route. It does not weaken or replace `claude-code.headless`.
+on the route's explicit known-bad deny-list. Two maintained segments share
+claim id `claude-code.response-only.window-1`:
+
+- `2.1.227` through `2.1.278` keep `claude-code.response-only.stream-json.v1`.
+- `2.1.280` through `2.1.281` use `claude-code.response-only.stream-json.v2`
+  under the narrowed built-in-hook guarantee.
+
+Unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
+`2.1.264`, and `2.1.279` are denied. Later stable releases run provisionally as
+`UnverifiedNewer` on the v2 behavior. It is a distinct route. It does not
+weaken or replace `claude-code.headless`.
 
 `ClaudeCodeResponseProfileInput::new` accepts only request identity, an exact
 caller-selected model route, one prompt, and a deadline. Optional qualified
@@ -372,23 +379,43 @@ claim.
 Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
-qualification: the qualified segment ends at `2.1.278`, while newer stable
-versions are provisional until evidence moves that boundary. The static
-deny-list is unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
-`2.1.262`, and `2.1.264`.
+qualification. The v1 segment ends at `2.1.278`. The v2 segment ends at
+`2.1.281`. Newer stable versions are provisional until evidence moves that
+boundary. The static deny-list is unpublished `2.1.244`, `2.1.249`, `2.1.253`
+through `2.1.256`, `2.1.262`, `2.1.264`, and `2.1.279`.
 
-Research 341 found that `2.1.280` and `2.1.281` safe mode retains built-in
-plugin hooks. At `2.1.281`, the built-in `agents-md` prompt-context hook is
-enabled by default and can add project instructions. A writable `--settings`
-value cannot disable the built-in hook set. These releases remain provisional
-under the current claim while the narrowed isolation guarantee awaits an
-operator ruling.
+From `2.1.280`, `--safe-mode` still loads the provider's nine `@builtin`
+plugins. Swallowtail guarantees what its arguments control: empty tools, empty
+strict MCP, disabled slash commands and Chrome, no prompt suggestions, no
+session persistence, one text-only turn. Provider built-in behaviour is
+provider surface, disclosed here:
+
+| Built-in | What it can do | What Swallowtail arguments block |
+| --- | --- | --- |
+| `sec-default` | Policy-only hooks can preserve managed instructions, tool policy, and settings | none; organization-seated policy is provider surface |
+| `agents-md` | Reads ancestor `AGENTS.md` into `prompt.context`; `Read` can add nested instructions. Default off at `2.1.280`, on at `2.1.281` | empty `--tools` blocks the `Read` hook; `prompt.context` still runs |
+| `telemetry` | Session and engine analytics; can send first-party network requests under provider settings | none on the selected surface; `DISABLE_TELEMETRY`, `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, and `DO_NOT_TRACK` are proven in the frozen module but the approved environment is opaque |
+| `plugin-authoring` | Invocable skill; no hook event | `--disable-slash-commands` and empty tools |
+| `tips` | Session-start tip UI | none mapped onto stream-JSON |
+| `mermaid` | Terminal `ui.render` rewrite | none mapped onto stream-JSON |
+| `responsive-mode` | Rollout-gated prompt section/submit mutation | none; can change a turn when the provider gate is on |
+| `diff` | Interactive diff UI, command, and git-state hooks | `--disable-slash-commands` and empty tools block command/tool paths |
+| `claude-test` | Command/skill hooks that can launch test assets | `--disable-slash-commands` blocks invocation |
+
+Project instruction files resolve from the launch directory. A consumer `Read`
+working resource is that directory, so `AGENTS.md` joins the existing
+`CLAUDE.md` discovery. Without one, v1 keeps the inherited process cwd; v2
+creates an adapter-owned empty temporary working resource as cwd so those
+files are not supplied. Frozen `instructionFiles` values can stop `agents-md`
+injection (`claude-md`) or drop project/local/user kinds (`managed-only`);
+they are not pinned because the `--settings` JSON path into plugin userConfig
+is not proven.
 
 The prepared plan records `ProviderSuppressed` harness configuration and
 `AmbientHost` isolation. The first says exact provider flags suppress tools
 and MCP configuration. The second says those flags are not an OS sandbox.
-No working resource is passed to the process. The execution host still needs
-a launch directory, but that host process detail creates no portable
+A consumer working resource is optional project location only. The v2
+adapter-owned empty directory is host-service materialization, not consumer
 filesystem authority.
 
 Local macOS proof required the approved environment to preserve `HOME`,

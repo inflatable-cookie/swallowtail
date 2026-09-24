@@ -416,3 +416,136 @@ fn finding(findings: &str, prefix: &str) -> String {
         .find_map(|line| line.strip_prefix(prefix).map(str::to_owned))
         .unwrap_or_else(|| panic!("finding {prefix} is present"))
 }
+
+#[test]
+fn narrowed_resource_free_run_launches_where_instruction_files_are_absent() {
+    let fixture = empty_launch_fixture("empty");
+    let prepared = block_on(prepare_claude_code_response_only(
+        response_preparation_input(fixture.host.clone()),
+        probe("empty-launch"),
+        fixture.local.services().clone(),
+    ))
+    .expect("narrowed response-only prepares");
+    let run = profile(&prepared, "empty-launch", None);
+    assert!(run.request().working_resource().is_none());
+    assert!(
+        !run.plan()
+            .requirements()
+            .capabilities()
+            .any(|requirement| requirement.capability() == Capability::WorkingResource)
+    );
+    let mut handle = block_on(run.start_run(fixture.local.services().clone()))
+        .expect("the resource-free narrowed run starts");
+    let outcome = block_on(
+        handle
+            .take_terminal_outcome()
+            .expect("terminal is available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+
+    let child_cwd = read_trimmed(&fixture.record.join("cwd.txt"));
+    let temporary_root = canonical(&fixture.temporary_root);
+    assert!(
+        child_cwd.starts_with(&temporary_root),
+        "child cwd {child_cwd} must sit under the adapter-owned temporary root {temporary_root}"
+    );
+    assert_ne!(child_cwd, canonical(Path::new(".")));
+    let findings = fs::read_to_string(fixture.record.join("findings.txt"))
+        .expect("cwd-relative findings are recorded");
+    assert_eq!(finding(&findings, "claude-md:"), "none");
+    assert_eq!(finding(&findings, "agents-md:"), "none");
+    let child_arguments = fs::read_to_string(fixture.record.join("argv.txt"))
+        .expect("child argv is recorded")
+        .lines()
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+    assert!(child_arguments.iter().any(|value| value == "--safe-mode"));
+    assert!(!child_arguments.iter().any(|value| value == "--settings"));
+
+    fs::remove_dir_all(&fixture.root).expect("fixture tree is removable");
+}
+
+struct EmptyLaunchFixture {
+    host: ExecutionHostId,
+    local: LocalHostServices,
+    root: PathBuf,
+    temporary_root: PathBuf,
+    record: PathBuf,
+}
+
+fn empty_launch_fixture(label: &str) -> EmptyLaunchFixture {
+    let sequence = SCRATCH_SEQUENCE.fetch_add(1, Ordering::Relaxed);
+    let root = std::env::temp_dir().join(format!(
+        "swallowtail-claude-code-response-empty-{}-{label}-{sequence}",
+        std::process::id()
+    ));
+    let record = root.join("record");
+    let temporary_root = root.join("tmp");
+    fs::create_dir_all(&record).expect("record directory is created");
+    fs::create_dir_all(&temporary_root).expect("temporary root is created");
+    fs::write(
+        record.join("stream.jsonl"),
+        response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.281", 1),
+    )
+    .expect("response stream seeded");
+    let script = root.join("claude-fixture.sh");
+    fs::write(&script, empty_launch_script_body(&record)).expect("fixture script is written");
+    fs::set_permissions(&script, fs::Permissions::from_mode(0o755))
+        .expect("fixture script is executable");
+    let host =
+        ExecutionHostId::new(format!("host.response-empty-launch.{label}")).expect("host is valid");
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .with_temporary_root(&temporary_root)
+        .approve_executable(
+            swallowtail_runtime::ExecutableRef::new("claude.fixture.executable")
+                .expect("executable is valid"),
+            &script,
+        )
+        .approve_environment(
+            swallowtail_runtime::EnvironmentRef::new(
+                "claude.fixture.local-subscription-environment",
+            )
+            .expect("environment is valid"),
+            [("PATH".into(), "/usr/bin:/bin".into())],
+        )
+        .build_services(host.clone());
+    EmptyLaunchFixture {
+        host,
+        local,
+        root,
+        temporary_root,
+        record,
+    }
+}
+
+fn empty_launch_script_body(record: &Path) -> String {
+    let record = record.to_str().expect("record path is utf-8");
+    format!(
+        r#"#!/bin/sh
+if [ "$1" = "--version" ]; then
+    printf '2.1.281 (Claude Code)\n'
+    exit 0
+fi
+printf '%s\n' "$@" > '{record}/argv.txt'
+pwd -P > '{record}/cwd.txt'
+{{
+    anchor=none
+    agents=none
+    directory="$PWD"
+    while [ "$directory" != "/" ]; do
+        if [ -f "$directory/CLAUDE.md" ] && [ "$anchor" = none ]; then
+            anchor="$directory/CLAUDE.md"
+        fi
+        if [ -f "$directory/AGENTS.md" ] && [ "$agents" = none ]; then
+            agents="$directory/AGENTS.md"
+        fi
+        directory=$(dirname "$directory")
+    done
+    printf 'claude-md:%s\n' "$anchor"
+    printf 'agents-md:%s\n' "$agents"
+}} > '{record}/findings.txt'
+cat '{record}/stream.jsonl'
+"#
+    )
+}

@@ -10,6 +10,32 @@
   "agents_md_prompt_context_hook": true,
   "disable_all_hooks_user_setting_keeps_builtin_plugins": true,
   "enabled_plugins_builtin_override_from_cli_settings_ignored": true,
+  "instruction_files_parser": {
+    "modes": [
+      "claude-md",
+      "claude-md-or-agents-md",
+      "claude-md-and-agents-md",
+      "managed-only"
+    ],
+    "default": "claude-md-or-agents-md",
+    "claude_md_stops_agents_md_hook_registration": true,
+    "managed_only_drops_project_local_user_kinds": true,
+    "pinned_on_selected_surface": false,
+    "reason": "frozen plugin USER_CONFIG proves the four values; selected --settings JSON path into that plugin config is not proven"
+  },
+  "telemetry_opt_out": {
+    "DISABLE_TELEMETRY_any_nonempty": true,
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC_any_nonempty": true,
+    "DO_NOT_TRACK_1_true_yes_on": true,
+    "settings_key": null,
+    "pinned_on_selected_surface": false,
+    "reason": "frozen telemetry module reads those env vars; response-only EnvironmentRef is opaque host-approved subscription state"
+  },
+  "launch_directory": {
+    "with_read_project_location": "consumer_working_resource",
+    "without_project_location_v1": "inherited_process_cwd",
+    "without_project_location_v2": "adapter_owned_empty_temporary_working_resource"
+  },
   "selected_response_only_args": [
     "--tools",
     "",

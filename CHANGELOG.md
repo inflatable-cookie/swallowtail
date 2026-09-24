@@ -67,6 +67,12 @@ annotated Git tags from the canonical repository.
   proven, live honouring of a remote tool call is not. Research 337, g06.019.
 
 ### Changed
+- accept the exact `command-code.headless` `1.65.0` live surface on
+  `deepseek/deepseek-v4-flash`. Research 342 records one authorized gate:
+  structured one-turn completion and the Contract 043 two-turn private
+  exact-id continuation both `Completed` with `Clean` cleanup. Research 330
+  stays the exact-`1.54.0` paid-model record; Research 116/118 stay bound to
+  `1.15.1`. g06.029.
 - rebind the exact `command-code.npm` `QualifiedOnly` point from `1.54.0` to
   official npm `command-code` `1.65.0` with claim
   `command-code.headless-window-1` and behavior

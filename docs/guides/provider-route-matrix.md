@@ -138,8 +138,9 @@ ACP adapters may compose instead of their stdio transport.
 interactive route). `command-code.headless` interactive continuity is private
 exact-id only; prepared sessions expose only fresh context-losing restoration
 and no public load/resume. Its exact package point is `1.65.0`; the selected
-provider-free surface is requalified. Research 330 live acceptance stays bound
-to exact `1.54.0` and is gated at `1.65.0`. Research 116/118 remain bound to
+provider-free surface is requalified. Research 342 live acceptance is bound to
+exact `1.65.0` on `deepseek/deepseek-v4-flash`. Research 330 stays the
+exact-`1.54.0` paid-model record. Research 116/118 remain bound to
 `1.15.1`. Dispositions are in their guides. `into_parts` and,
 for these headless routes, `low_level_driver` are omitted per the
 prepared-facade authoring guide's recorded omissions (antigravity, cursor,

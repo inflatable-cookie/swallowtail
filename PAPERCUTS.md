@@ -28,6 +28,17 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 
 ## Open
 
+### [ ] Architecture still names Command Code 1.54.0 after the 1.65.0 rebind — 2026-09-24
+- Friction: `docs/architecture/system-architecture.md` still describes
+  `swallowtail-adapter-command-code` as exact npm `1.54.0` after g06.021
+  rebound the `QualifiedOnly` point to `1.65.0`.
+- Impact: the architecture surface disagrees with selection, the prepared
+  guide, and the feature matrix on the current qualified point.
+- Fix: retarget that paragraph to exact `1.65.0` on a card that owns the
+  architecture sentence.
+- Surface: `docs/architecture/system-architecture.md` Command Code route
+  family paragraph.
+
 ### [ ] Live-probe harnesses ran without a self-proof — 2026-09-05
 - Friction: card 100's live harness consumed two operator authorizations
   without producing provider evidence: once on a wrong endpoint audience,

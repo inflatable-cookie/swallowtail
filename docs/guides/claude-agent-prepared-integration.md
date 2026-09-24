@@ -377,6 +377,13 @@ versions are provisional until evidence moves that boundary. The static
 deny-list is unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
 `2.1.262`, and `2.1.264`.
 
+Research 341 found that `2.1.280` and `2.1.281` safe mode retains built-in
+plugin hooks. At `2.1.281`, the built-in `agents-md` prompt-context hook is
+enabled by default and can add project instructions. A writable `--settings`
+value cannot disable the built-in hook set. These releases remain provisional
+under the current claim while the narrowed isolation guarantee awaits an
+operator ruling.
+
 The prepared plan records `ProviderSuppressed` harness configuration and
 `AmbientHost` isolation. The first says exact provider flags suppress tools
 and MCP configuration. The second says those flags are not an OS sandbox.

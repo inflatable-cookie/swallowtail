@@ -19,6 +19,11 @@ annotated Git tags from the canonical repository.
   `AllowUnverified`, and extends the maintained window `1.0.4..=1.0.41`.
   The exact `1.0.30` catalogue claim and the `1.0.4`/`1.0.5`
   registered-tool courier stay independently bounded.
+- freeze Claude Code `2.1.280` and `2.1.281` official artifacts and built-in
+  hooks in Research 341. The `2.1.281` default-enabled `agents-md` hook can
+  add project instructions despite `--safe-mode`; no selected writable
+  setting disables all built-ins. g06.018 takes the narrowed-claim escalation
+  branch, leaving both qualified ceilings at `2.1.278` pending a ruling.
 - rebind the Goose `goose.acp` claim to exact `1.50.1` under the new
   `goose.acp.stdio-v2.auth-required` behavior revision. Research 328
   re-probed official GitHub `v1.50.1`, classified the `1.50.0..1.50.1` MCP

@@ -85,7 +85,7 @@ fn identity_and_claim_qualify_0_32_14_as_compatible_extension() {
     assert_eq!(protocol["attached_server_started"], false);
 
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.33.2");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.34.2");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.32.1"
@@ -94,7 +94,7 @@ fn identity_and_claim_qualify_0_32_14_as_compatible_extension() {
     let claim = ollama_runtime_claim();
     for version in [
         "0.14.0", "0.32.1", "0.32.3", "0.32.9", "0.32.11", "0.32.14", "0.32.15", "0.33.0",
-        "0.33.1", "0.33.2",
+        "0.33.1", "0.33.2", "0.33.3", "0.34.0", "0.34.1", "0.34.2",
     ] {
         assert!(matches!(
             claim.assess(&version_value(version)),
@@ -106,12 +106,10 @@ fn identity_and_claim_qualify_0_32_14_as_compatible_extension() {
     for version in ["0.32.2", "0.32.10", "0.32.3-rc.0", "0.13.5"] {
         assert!(!claim.permits(&version_value(version)));
     }
-    for version in ["0.33.3", "0.34.0", "0.34.1"] {
-        assert!(matches!(
-            claim.assess(&version_value(version)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
-    }
+    assert!(matches!(
+        claim.assess(&version_value("0.34.3")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     assert_eq!(
         ollama_runtime_binding("0.32.14")
             .expect("version binds")
@@ -210,7 +208,7 @@ fn identity_and_claim_qualify_0_32_15_as_compatible_extension() {
     assert_eq!(protocol["provider_prompt_sent"], false);
     assert_eq!(protocol["attached_server_started"], false);
 
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.33.2");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.34.2");
     let claim = ollama_runtime_claim();
     assert!(matches!(
         claim.assess(&version_value("0.32.14")),
@@ -218,17 +216,15 @@ fn identity_and_claim_qualify_0_32_15_as_compatible_extension() {
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
     assert!(matches!(
-        claim.assess(&version_value("0.33.2")),
+        claim.assess(&version_value("0.34.2")),
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
                 && matched.behavior_revision().as_str() == "ollama.native-text-v1"
     ));
-    for version in ["0.33.3", "0.34.0", "0.34.1"] {
-        assert!(matches!(
-            claim.assess(&version_value(version)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
-    }
+    assert!(matches!(
+        claim.assess(&version_value("0.34.3")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     assert_eq!(
         ollama_runtime_binding("0.32.15")
             .expect("version binds")

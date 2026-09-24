@@ -85,7 +85,7 @@ version, qualified or unverified-newer assessment, installed and running
 observations, selected detail, route selection, configured instance, access
 provenance, and low-level driver escape hatch.
 
-The guaranteed window remains `0.14.0` through `0.34.2`. Exact `0.32.2` and
+The guaranteed window remains `0.14.0` through `0.34.4`. Exact `0.32.2` and
 `0.32.10` stay excluded and semantic prereleases fail. A later exact stable
 version may proceed as visibly unverified through the latest qualified text
 behavior. It does not expand guaranteed support, and every operation rechecks

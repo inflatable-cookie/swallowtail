@@ -1,0 +1,83 @@
+{
+  "selected_routes": [
+    "GET /api/version",
+    "GET /api/tags",
+    "GET /api/ps",
+    "POST /api/show",
+    "POST /api/chat"
+  ],
+  "selected_routes_registered_at_every_hop": true,
+  "research_342_0_34_2_hashes_reproduced": true,
+  "selected_struct_hashes": {
+    "chat_request": {
+      "v0.34.2": "d7035a0da458f5ab354f771d2ee3eb9239f1ff40dae6700bdcd8e9806b18ae14",
+      "v0.34.3_and_v0.34.4": "5d4e403b7da9fbe9413a077d59131f49ef0708e454a0e977e874901ad73848ed"
+    },
+    "chat_response_0_34_2_through_0_34_4": "f9deac910407655aa7ecbded4820f8de5d404bb2f49e261b1a64b7db56f2b936",
+    "message_0_34_2_through_0_34_4": "bfc165a63e64996e5b843072e8be965a9798e214dfc1c88cc5974bc802d0c9f9",
+    "list_response_0_34_2_through_0_34_4": "3bd9321282acf137960e6480b523b2575f585ee0f7ea928301def363b426c6b9",
+    "process_response_0_34_2_through_0_34_4": "caaa50bff293aefb1d2702bf411dab49fe933225ef76a5f5591bdc8ffae1072d",
+    "show_request_0_34_2_through_0_34_4": "698cdcb3a9942de50bf9be2e65525e945a9ee3613d8309d2c3435b1db207852e",
+    "show_response": {
+      "v0.34.2": "eeba5938770c1ff3181e1f183a3ef9217dd44635688fd29b0940ea2ce68d7a71",
+      "v0.34.3_and_v0.34.4": "7e6f60b93930ae251348000e61e6f3b7ea650826759323687292ad05fa58271c"
+    }
+  },
+  "chat_request_delta_0_34_3": "comment-only ThinkValue wording; json tag unchanged; adapter still sends think as false or a mode string",
+  "show_response_delta_0_34_3": "additive optional json thinking advertisement; catalog decoder ignores unknown keys and still reads capabilities plus gguf details",
+  "options_struct_hash_0_34_2_through_0_34_4": "37e4c751ed65c80fede99ae00c871b44f05d3b8a6e26cf088dcb205c13c67583",
+  "runner_struct_hash_0_34_2_through_0_34_4": "ba876ee7446bb7201e233bedb0f4e0dfa3aa105b4fbd4bb73fc9684179bd6475",
+  "metrics_struct_hash_0_34_2_through_0_34_4": "bbc09305511a40e65370507477be58246ae171095d73ff35935d5f0066b38cb4",
+  "types_go_file_hashes": {
+    "v0.34.2": "2f38141506af42d3ece12a89517ace40077e6327b034128ef7d0ee054ab83d3e",
+    "v0.34.3": "98b90dd63455b939012806b6e1ff817e3ae2f3fe83f7b01deba218d2175409c0",
+    "v0.34.4": "98b90dd63455b939012806b6e1ff817e3ae2f3fe83f7b01deba218d2175409c0"
+  },
+  "types_go_byte_identical_0_34_3_through_0_34_4": true,
+  "routes_go_file_hashes": {
+    "v0.34.2": "fe40523b0a35b03c12bb8d530d3478e9d08a32e4723366ccaed0148ac8705e5a",
+    "v0.34.3": "91572cbfe21a62b67c67b273d42ff6de36a861348abc1295c2088ccb27e1d44a",
+    "v0.34.4": "3c1beee510431e9f692261837037960e5f3bc62cfb93bb87dc931cb959866322"
+  },
+  "selected_handler_hashes": {
+    "list_handler_0_34_2_through_0_34_4": "66f210f58813fe02cb1b9bfdd0a26368e0d9cd12ec11ba7c6fdae494cb8b61f6",
+    "show_handler_0_34_2_through_0_34_4": "2077b9ce5d744a7ca84fbbacb710ddc67f1f0b378fdf8607dc70b4027ab70065",
+    "ps_handler_0_34_2_through_0_34_4": "b4deea59f7a43c03ccc61f055dfed23539617151b2654367ac825ab3899d6075",
+    "chat_handler": {
+      "v0.34.2": "37e6ee8d29f977ed560d8ec0319a1bd695da3b3d105baded2a655aeeadf62f57",
+      "v0.34.3": "94b20369fec90d9ca5cd289282d4d26af955c2b8ea581535cc03f657acfa8091",
+      "v0.34.4": "12314badb6cb4bc0d91459dc48d0a065d32d636c8724d750d811ee51b713adf4"
+    }
+  },
+  "hop_classification": {
+    "v0.34.3": "ShowResponse gains optional thinking advertisement ignored by the catalog decoder; ChatRequest Think comment-only; ChatHandler resolves think against advertised controls while the adapter still sends false or a mapped mode string; GetModelInfo fills the unmapped show field; GenerateHandler and OpenAI/Anthropic middleware stay unselected",
+    "v0.34.4": "types.go identical to 0.34.3; ChatHandler drops two-pass structured-output restart and passes ThinkingClose into completion; leftover getExistingName casing fix and GenerateHandler stay unselected; llama.cpp/MLX/XGrammar and Apple-silicon image/Qwen speed stay unmapped"
+  },
+  "show_thinking_counterexample": "{\"license\":\"Synthetic fixture license\",\"parameters\":\"num_ctx 4096\",\"template\":\"synthetic private template\",\"capabilities\":[\"completion\",\"thinking\"],\"thinking\":{\"values\":[\"low\",\"high\",\"max\"],\"default\":\"max\"},\"modified_at\":\"2026-07-23T10:00:00Z\",\"details\":{\"parent_model\":\"\",\"format\":\"gguf\",\"family\":\"fixture\",\"families\":[\"fixture\"],\"parameter_size\":\"8B\",\"quantization_level\":\"Q4_K_M\"},\"model_info\":{\"fixture.context_length\":4096}}",
+  "show_thinking_counterexample_intended_result": "accepted; capabilities still completion+thinking; thinking advertisement ignored",
+  "bounded_unmapped": [
+    "show-thinking-advertisement-catalog-decoder-ignores-unknown-keys",
+    "chat-request-think-comment-only-json-tag-unchanged",
+    "chat-handler-advertised-think-controls-adapter-sends-false-or-mode-string",
+    "getmodelinfo-thinking-field-fill-unmapped",
+    "generate-handler-think-resolution-unselected",
+    "openai-anthropic-lookup-thinking-middleware-unselected",
+    "chat-handler-single-pass-format-on-thinking-models",
+    "thinking-close-completion-internal",
+    "getexistingname-case-insensitive-prefix-match"
+  ],
+  "unused_deltas": [
+    "nemotron-h-vision-mlx",
+    "macos-app-window-reopen",
+    "huggingface-pull-fix",
+    "qwen-3.8-apple-silicon-prompt",
+    "gemma4-apple-silicon-image-resolution",
+    "macos-app-chatgpt-codex-check-hang",
+    "mlx-llamacpp-xgrammar-updates"
+  ],
+  "new_public_selected_operation": false,
+  "decoder_corpus": "ollama-native-v0.14.0-v0.32.1",
+  "provider_prompt_sent": false,
+  "attached_server_started": false,
+  "host_install_changed": false
+}

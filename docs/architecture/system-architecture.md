@@ -386,7 +386,7 @@ OpenHands adds a package without a production route.
   persistent new, load-with-replay, and replay-free resume gated on the exact
   host-leased cwd
 - `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.4.2`
-  (retained, deprecated) and `18.0.0..=18.1.22` (maintained) package segments
+  (retained, deprecated) and `18.0.0..=18.2.7` (maintained) package segments
   and `omp` executable over negotiated RPC v2 JSONL stdio. The two segments
   carry separate adapter-private behavior revisions. It uses OMP local
   auth without a Swallowtail credential lease, binds exact provider, model,

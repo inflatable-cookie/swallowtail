@@ -1,0 +1,430 @@
+{
+  "axis": "oh-my-pi.package",
+  "version": "18.2.7",
+  "observed_at": "2026-09-21",
+  "help_source": "extracted npm shipped source; downloaded artifacts were never executed",
+  "selected_argv_flags": [
+    "--mode",
+    "--no-session",
+    "--provider",
+    "--model",
+    "--tools",
+    "--no-extensions",
+    "--no-skills",
+    "--no-rules",
+    "--no-prewalk",
+    "--approval-mode"
+  ],
+  "catalogue_argv_flags": [
+    "--mode",
+    "--no-session",
+    "--no-tools",
+    "--no-extensions",
+    "--no-skills",
+    "--no-rules",
+    "--no-prewalk"
+  ],
+  "selected_mode": "rpc",
+  "selected_mode_choices": [
+    "text",
+    "json",
+    "rpc",
+    "rpc-ui"
+  ],
+  "selected_approval_mode": "always-ask",
+  "selected_tools": "read,grep,glob,todo,ask",
+  "selected_commands": [
+    "negotiate_protocol",
+    "set_model",
+    "set_thinking_level",
+    "set_auto_retry",
+    "set_auto_compaction",
+    "set_steering_mode",
+    "set_follow_up_mode",
+    "set_interrupt_mode",
+    "get_state",
+    "get_available_models",
+    "prompt",
+    "steer",
+    "follow_up",
+    "abort"
+  ],
+  "selected_wire_invariants": {
+    "ready_protocolVersion": 1,
+    "ready_supportedProtocolVersions": [
+      1,
+      2
+    ],
+    "negotiated_protocolVersion": 2,
+    "maximum_physical_frame_bytes": 1048576,
+    "maximum_reassembled_frame_bytes": 67108864,
+    "strict_lf_jsonl": true,
+    "rpc_chunk_fields": [
+      "chunkId",
+      "index",
+      "count",
+      "byteLength",
+      "data"
+    ],
+    "response_fields": [
+      "id",
+      "command",
+      "success",
+      "data"
+    ],
+    "terminal_event": "agent_end with isTerminal true",
+    "terminal_non_true": "agent_end with isTerminal false is progress, not completion",
+    "usage_fields": [
+      "input",
+      "output",
+      "cacheRead",
+      "cacheWrite"
+    ],
+    "provider_failure_marker": "assistant message_end with stopReason error",
+    "tool_event_fields": [
+      "toolCallId",
+      "toolName",
+      "isError"
+    ],
+    "ui_dialog_methods": [
+      "select",
+      "confirm",
+      "input",
+      "editor"
+    ],
+    "ui_display_methods": [
+      "notify",
+      "setStatus",
+      "setWidget",
+      "setTitle",
+      "set_editor_text"
+    ]
+  },
+  "mapped_rpc_files": [
+    "src/modes/rpc/rpc-client.ts",
+    "src/modes/rpc/rpc-frame.ts",
+    "src/modes/rpc/rpc-input.ts",
+    "src/modes/rpc/rpc-messages.ts",
+    "src/modes/rpc/rpc-mode.ts",
+    "src/modes/rpc/rpc-types.ts",
+    "src/modes/rpc/rpc-subagents.ts",
+    "src/modes/rpc/host-tools.ts",
+    "src/modes/rpc/host-uris.ts",
+    "src/jsonrpc/message-framing.ts"
+  ],
+  "mapped_rpc_digest_groups": {
+    "src/modes/rpc/rpc-client.ts": [
+      {
+        "sha256": "a2f2c8d82778ef1516675f486f5d0c5333beebda5517f3eb49d75ab9b8953643",
+        "versions": [
+          "18.1.22",
+          "18.2.0"
+        ]
+      },
+      {
+        "sha256": "99a36de64bcd6780ece9e9c82be22f5e13b66e41055e04d6a6f83a93fe4ac7ef",
+        "versions": [
+          "18.2.1"
+        ]
+      },
+      {
+        "sha256": "94f178eedadfe4e968b3d0e1576ab0e51e869727b852428d9a77bbe356228031",
+        "versions": [
+          "18.2.2",
+          "18.2.3",
+          "18.2.4",
+          "18.2.5",
+          "18.2.6",
+          "18.2.7"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-frame.ts": [
+      {
+        "sha256": "255a7512fcb67bc36170edc0669f7957ba97c90d005be712587f1b2b7d7a8297",
+        "versions": [
+          "18.1.22",
+          "18.2.0",
+          "18.2.1",
+          "18.2.2",
+          "18.2.3",
+          "18.2.4",
+          "18.2.5",
+          "18.2.6",
+          "18.2.7"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-input.ts": [
+      {
+        "sha256": "de20cd9b52302798d5816019ca5fff24b009cfbdb478d204d41cf902336b16c3",
+        "versions": [
+          "18.1.22",
+          "18.2.0",
+          "18.2.1",
+          "18.2.2",
+          "18.2.3",
+          "18.2.4",
+          "18.2.5",
+          "18.2.6",
+          "18.2.7"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-messages.ts": [
+      {
+        "sha256": "e0c11e294574cddbfd04192affc5b9ebae87f150f25aa24d25da2b756f751261",
+        "versions": [
+          "18.1.22",
+          "18.2.0",
+          "18.2.1",
+          "18.2.2",
+          "18.2.3",
+          "18.2.4",
+          "18.2.5",
+          "18.2.6",
+          "18.2.7"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-mode.ts": [
+      {
+        "sha256": "79878b6a2f95cdeaf2f3404fdbc3c0efc949f5612cd3ef5df4c94b1e85cb821b",
+        "versions": [
+          "18.1.22"
+        ]
+      },
+      {
+        "sha256": "05b3ccfed4c05d62a2e21d9eeff8038d672ef53d25d3c85ee2d225a58d098f83",
+        "versions": [
+          "18.2.0"
+        ]
+      },
+      {
+        "sha256": "35e337eedb7e2800a37ae9b6e86a8428d4d8cc2e54ca9841c1fe694c60e318cc",
+        "versions": [
+          "18.2.1",
+          "18.2.2"
+        ]
+      },
+      {
+        "sha256": "11aa5aca4e5a9dcabf8aa2a792b8e3ccb29368f6e60c53789f718f90a84d1c51",
+        "versions": [
+          "18.2.3",
+          "18.2.4"
+        ]
+      },
+      {
+        "sha256": "0a53fe0c03d1d1fa94657d4063f459bea01e1b3cbedd770ac707bd411b275e13",
+        "versions": [
+          "18.2.5",
+          "18.2.6",
+          "18.2.7"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-types.ts": [
+      {
+        "sha256": "224ad60de4a6432189564482a8336e0f3fc41adea6cef419e4ac21753df4b94f",
+        "versions": [
+          "18.1.22",
+          "18.2.0"
+        ]
+      },
+      {
+        "sha256": "683d6b47ff67173b5f687beab6938b3e33899ab0467f697c3f452d0d5ccf993b",
+        "versions": [
+          "18.2.1",
+          "18.2.2",
+          "18.2.3",
+          "18.2.4"
+        ]
+      },
+      {
+        "sha256": "a800fb646f1730eabcc8854c327efd15cd8c8473545b6f575231885bf51ddd73",
+        "versions": [
+          "18.2.5",
+          "18.2.6",
+          "18.2.7"
+        ]
+      }
+    ],
+    "src/modes/rpc/rpc-subagents.ts": [
+      {
+        "sha256": "1c20c8d4d1be7785c4dc9b2b2b1d84cab729ce81a70d9940fff76ce5a4eec0a2",
+        "versions": [
+          "18.1.22",
+          "18.2.0",
+          "18.2.1",
+          "18.2.2",
+          "18.2.3",
+          "18.2.4"
+        ]
+      },
+      {
+        "sha256": "b8b2e9d6de76319d4224a39b542d7f9bb8f465946494082d7db3cacbf7a3d2d2",
+        "versions": [
+          "18.2.5",
+          "18.2.6",
+          "18.2.7"
+        ]
+      }
+    ],
+    "src/modes/rpc/host-tools.ts": [
+      {
+        "sha256": "3244839de8072d601124283eae7bc474f31ee64a26fa7b7339baec8cb58de38c",
+        "versions": [
+          "18.1.22",
+          "18.2.0",
+          "18.2.1",
+          "18.2.2",
+          "18.2.3",
+          "18.2.4"
+        ]
+      },
+      {
+        "sha256": "505b0a1b3d077c04847ffca3f8eee0242876e22c2896e7f7952d6803896688ed",
+        "versions": [
+          "18.2.5",
+          "18.2.6",
+          "18.2.7"
+        ]
+      }
+    ],
+    "src/modes/rpc/host-uris.ts": [
+      {
+        "sha256": "1363fb013ff60630b717cea0a7e9bd83918c78ee3e3cbabbfa6fbbde0a0d8428",
+        "versions": [
+          "18.1.22",
+          "18.2.0",
+          "18.2.1",
+          "18.2.2",
+          "18.2.3",
+          "18.2.4",
+          "18.2.5",
+          "18.2.6",
+          "18.2.7"
+        ]
+      }
+    ],
+    "src/jsonrpc/message-framing.ts": [
+      {
+        "sha256": "1ebbbc1b0e24fa76967a08bf43222fb6dcba0c26e2fe0c5bcef56b3f98124c3c",
+        "versions": [
+          "18.1.22",
+          "18.2.0"
+        ]
+      },
+      {
+        "sha256": "fe10632edb256495bec64d090cc7725f00a4a93f061eb48c9b7f686d54dc69d8",
+        "versions": [
+          "18.2.1",
+          "18.2.2",
+          "18.2.3",
+          "18.2.4",
+          "18.2.5",
+          "18.2.6",
+          "18.2.7"
+        ]
+      }
+    ]
+  },
+  "mapped_support_files": [
+    "src/cli/flag-tables.ts",
+    "src/modes/index.ts"
+  ],
+  "added_selected_files": {
+    "src/modes/rpc/rpc-output.ts": {
+      "first_version": "18.2.1",
+      "sha256_18_2_1_through_18_2_7": "10529f7fbd9e6303f103a99a5d4fdaf5f9268dd29219463fdf638f4122cec433"
+    }
+  },
+  "docs_rpc_md_blob_v18_1_22_through_v18_2_0": "310b44702de66b4eecd6da37660f9fc40075d973",
+  "docs_rpc_md_blob_v18_2_1": "b3b5d8aaa0574da8ad7bd6767ffdfa91555fc903",
+  "docs_rpc_md_blob_v18_2_3_through_v18_2_7": "b91b20a85aca2eacc7272cac7f1a55370449bc05",
+  "docs_rpc_md_18_2_1_delta": "Documents stdout drain after stdin EOF and the private backpressure spool. Selected JSONL frame encoder is unchanged. Clients already read stdout until the process exits.",
+  "docs_rpc_md_18_2_3_delta": "Documents that login rejects secret:true prompts instead of emitting ordinary input. Swallowtail does not send login; local OMP auth stays outside the selected route.",
+  "hop_classification": {
+    "18.1.22->18.2.0": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-mode.ts"
+      ],
+      "classification": "unmapped skill-invocation prompt field",
+      "reason": "rpc-mode.ts threads an extra prompt field through SkillPromptInput. Swallowtail passes --no-skills, so the /skill:* branch is unselected and the plain-prompt path is untouched."
+    },
+    "18.2.0->18.2.1": {
+      "mapped_files": [
+        "src/jsonrpc/message-framing.ts",
+        "src/modes/rpc/rpc-client.ts",
+        "src/modes/rpc/rpc-mode.ts",
+        "src/modes/rpc/rpc-types.ts"
+      ],
+      "added_selected_files": [
+        "src/modes/rpc/rpc-output.ts"
+      ],
+      "classification": "unmapped backpressure spool, persistence notice, optional host-tool field, and LSP/DAP framing",
+      "reason": "Selected JSONL encoder rpc-frame.ts is byte-identical. rpc-output.ts is an internal stdout spool used only after RpcFrameEncoder produces the same physical lines; spool failure disposes and exits 1. Persistence notice frames are bounded unknown events and cannot complete or fail a turn; --no-session uses an ephemeral manager. rpc-types/rpc-client add optional readsSkillUris on unmapped set_host_tools. message-framing.ts is Content-Length JSON-RPC used only by LSP/DAP, not imported by --mode rpc."
+    },
+    "18.2.1->18.2.2": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-client.ts"
+      ],
+      "classification": "unmapped comment only",
+      "reason": "RpcClient.handoff comment text changes. Swallowtail does not use RpcClient. No executable statement moves."
+    },
+    "18.2.2->18.2.3": {
+      "mapped_files": [
+        "src/modes/rpc/rpc-mode.ts"
+      ],
+      "classification": "unmapped login secret rejection",
+      "reason": "Provider login onPrompt rejects secret:true instead of requesting ordinary input. Swallowtail does not send login and uses local OMP auth. Selected commands and UI dialog methods are unchanged."
+    },
+    "18.2.4->18.2.5": {
+      "mapped_files": [
+        "src/modes/rpc/host-tools.ts",
+        "src/modes/rpc/rpc-mode.ts",
+        "src/modes/rpc/rpc-subagents.ts",
+        "src/modes/rpc/rpc-types.ts"
+      ],
+      "support_files": [
+        "src/cli/flag-tables.ts",
+        "src/modes/index.ts"
+      ],
+      "classification": "unmapped import-path move",
+      "reason": "TUI theme/composer/todo/task types move to @oh-my-pi/pi-tui. Selected flag tables, RPC commands, and wire sources otherwise stay; the 570-file tree drop is the extracted TUI modules. No mapped statement change."
+    },
+    "18.2.6->18.2.7": {
+      "mapped_files": [],
+      "support_files": [
+        "src/cli/flag-tables.ts"
+      ],
+      "classification": "unmapped append-only argv flag",
+      "reason": "flag-tables.ts adds --system-prompt-template. Selected --mode rpc flags and every selected flag remain. The find tool, bash env removal, and Handlebars templates stay unmapped unused surfaces."
+    }
+  },
+  "mapped_wire_lifecycle_failure_resource_change_found": false,
+  "byte_identical_mapped_files_across_all_compared": [
+    "src/modes/rpc/rpc-frame.ts",
+    "src/modes/rpc/rpc-input.ts",
+    "src/modes/rpc/rpc-messages.ts",
+    "src/modes/rpc/host-uris.ts"
+  ],
+  "unmapped_boundaries": {
+    "jsonrpc_content_length_framing": "src/jsonrpc/message-framing.ts is imported only by LSP and DAP clients. The selected --mode rpc path uses RpcFrameEncoder/Decoder in rpc-frame.ts, which is byte-identical across every compared hop.",
+    "rpc_output_spool": "RpcOutputWriter spills encoded JSONL lines under backpressure. Frame bytes still come from the unchanged encoder. Swallowtail already reads stdout until exit.",
+    "persistence_notice": "type=notice session-persistence frames are bounded unknown events and cannot complete or fail a turn. --no-session keeps an ephemeral manager.",
+    "login_secret_prompts": "login is unselected. Local OMP authentication stays outside the route.",
+    "host_tools_and_skills": "set_host_tools readsSkillUris and skill-invocation prompt fields stay unmapped; the route uses --no-skills and does not register host tools.",
+    "system_prompt_template_and_find": "--system-prompt-template and the find tool are unused extras. Selected tools remain read,grep,glob,todo,ask.",
+    "runtime_client_launcher": "RpcClient, handoff client helper, and custom spawn transports are not on Swallowtail's route.",
+    "subagent_subscription": "set_subagent_subscription and nested subagent visibility stay unselected.",
+    "tui_extraction": "18.2.5 moves TUI modules to @oh-my-pi/pi-tui. Selected RPC sources remain in the package.",
+    "pi_package_axis": "@earendil-works/pi-coding-agent 0.86.1 stays a separate family."
+  },
+  "mapped_decoder_corpus": "oh-my-pi-rpc-17.2.9",
+  "decoder_corpus_retained": true,
+  "provider_prompt_sent": false,
+  "host_install_changed": false,
+  "downloaded_artifact_executed": false,
+  "host_cli_observed": null
+}

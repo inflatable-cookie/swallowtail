@@ -39,7 +39,7 @@ optional attachment services. They use no credential service. Provider-
 suppressed tools and ambient execution are not host sandboxing.
 
 Package `17.2.9..=17.4.2` is qualified and retained on the
-`oh-my-pi.rpc-v2-v17.2.9` behavior revision, and `18.0.0..=18.1.22` is
+`oh-my-pi.rpc-v2-v17.2.9` behavior revision, and `18.0.0..=18.2.7` is
 qualified on the distinct `oh-my-pi.rpc-v2-v18.0.0` behavior revision. The
 `17.x` segment reports `Deprecated` while remaining executable; `18.x` is
 maintained. Unpublished `18.0.2` and `18.1.7` are excluded, the

@@ -34,7 +34,12 @@ census line as the route's other limitations. g06.016 appends the
 which names the route and points at Research 337. g06.028 removes the
 `opencode.acp` `client_mcp_servers` limitation after Research 349 accepted
 HTTP honouring on exact `1.18.18`; the host default agent model is unverified
-and the claim does not depend on it. Prepared integration guides are
+and the claim does not depend on it. g06.031 / Research 351 retargets
+`claude-agent.acp` `client_mcp_servers` to
+[351-acp-routes-http-mcp-acceptance.tsv](351-acp-routes-http-mcp-acceptance.tsv)
+and appends `cline.acp` plus `deepagents.acp` `client_mcp_servers` limitation
+rows after those cells leave g06.005; the provider findings do not make any
+cell available. Prepared integration guides are
 not evidence for this disposition: the docs front door classifies guides as
 non-authoritative integration usage.
 

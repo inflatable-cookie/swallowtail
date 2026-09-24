@@ -1,0 +1,4 @@
+route	note
+`cline.acp`	exact `3.0.55` stores `session/new` `mcpServers` on `SessionState` and never passes them into `createCliCore`; no `mcpCapabilities` advertised; client MCP seam absent (Research 351)
+`deepagents.acp`	exact `0.1.30` `initialize` advertises `mcpCapabilities { http: false, sse: false }`; `handleNewSession` ignores `params.mcpServers`; client MCP seam absent (Research 351)
+`claude-agent.acp`	Swallowtail still sends `mcpServers: []`; provider `0.79.0` maps `stdio`/`http`/`sse` with headers (direct-http-candidate); the Swallowtail-owned cell stays unavailable until a wiring task plus live gate (Research 351)

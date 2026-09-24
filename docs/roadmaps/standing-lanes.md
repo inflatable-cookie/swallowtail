@@ -28,8 +28,9 @@ generation to house currentness.
 
 No terminal stop (Tom, 2026-09-24; Contract 029). A recorded stop moves no
 claim but always has an owning adaptation task that qualifies the current
-official stable. Open owners: Claude Code `2.1.280` safe-mode stop →
-g06.018. Command Code moved from `1.54.0` to official `1.65.0` through
+official stable. Open owners: Claude Code `2.1.280`/`2.1.281` built-in hook
+stop (Research 341, g06.018 branch 3) → operator ruling, then the next g06
+adaptation task. Command Code moved from `1.54.0` to official `1.65.0` through
 g06.021.
 
 Completed campaign family: Oh My Pi official npm/GitHub `18.1.22` (g05.079) is

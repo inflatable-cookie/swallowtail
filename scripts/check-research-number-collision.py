@@ -31,7 +31,13 @@ ALLOWLISTED_COLLISIONS = {
             "goose-acp-1-50-1-failure-binding-reopen",
             "qoder-headless-1-1-54-identity",
         }
-    )
+    ),
+    "337": frozenset(
+        {
+            "opencode-acp-1-18-32-identity",
+            "opencode-acp-unavailable-cells",
+        }
+    ),
 }
 
 

@@ -621,7 +621,7 @@ fn stop_decision_froze_the_headless_ceiling_and_gated_card_072() {
     // 323 later split the claims: the headless claim still stops at the
     // 1.1.22 provider-retry hop, while the catalogue claim advanced to
     // official 1.2.2 because the release notes name no selected-path change
-    // to `agy models`. Research 331 later raised that same catalogue
+    // to `agy models`. Research 346 later raised that same catalogue
     // segment through official 1.2.7.
     let headless = antigravity_headless_claim();
     assert!(!headless.permits(&version("1.1.8")));

@@ -1,6 +1,6 @@
 # 2026-09-21 Antigravity 1.2.7 Catalogue Identity
 
-Research 331 froze official GitHub `google-antigravity/antigravity-cli`
+Research 346 froze official GitHub `google-antigravity/antigravity-cli`
 identity for `1.2.3` through `1.2.7` and classified the hops per claim
 under Tom's 2026-09-15 release-notes authority ruling. Catalogue-only.
 Headless stays stopped.

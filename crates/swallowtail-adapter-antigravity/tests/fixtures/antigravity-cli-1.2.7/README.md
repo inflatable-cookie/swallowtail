@@ -2,7 +2,7 @@
 
 Frozen identity and release-note classification for official GitHub
 `google-antigravity/antigravity-cli` `1.2.3`, `1.2.4`, `1.2.5`, `1.2.6`,
-and `1.2.7` (Research 331). Catalogue-only hop after Research 323.
+and `1.2.7` (Research 346). Catalogue-only hop after Research 323.
 
 - `identity.json` — release/tag/asset identity for the five new stable
   points (linux-x64 and mac-arm64 tarball digests, extracted binary

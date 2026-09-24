@@ -18,7 +18,7 @@ pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.2.7";
 /// Latest headless release in the current maintained qualification window.
 pub const ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
 /// Historical shared ceiling. The headless claim still ends here; the
-/// catalogue claim advanced to `1.2.7` under Research 331 while headless
+/// catalogue claim advanced to `1.2.7` under Research 346 while headless
 /// stays stopped at the `1.1.22` provider-managed-retry boundary.
 pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
 

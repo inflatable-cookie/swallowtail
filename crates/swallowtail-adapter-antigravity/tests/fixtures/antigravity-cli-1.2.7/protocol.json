@@ -72,7 +72,7 @@
       "catalogue_changes": [],
       "headless_changes": [
         "model-api-retry-per-attempt-backoff-capped-at-30-seconds",
-        "headless-background-task-waiting-notice-occasionally-skipped"
+        "headless-background-waiting-notice-occasionally-skipped"
       ],
       "catalogue_classification": "unchanged",
       "headless_classification": "authority-stop-maintained"
@@ -118,7 +118,7 @@
     }
   },
   "material_unmapped_published_changes": [
-    "interactive-ask-question-and-copy-btw",
+    "interactive-question-and-copy-btw",
     "remote-control-session-flag",
     "plugin-and-skill-management",
     "interactive-model-picker-and-slash-model",

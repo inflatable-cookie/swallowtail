@@ -373,7 +373,7 @@ fn protocol_classifies_every_published_selected_path_change_per_claim() {
         &changes["from_1_2_6_to_1_2_7"]["headless_changes"],
         &[
             "model-api-retry-per-attempt-backoff-capped-at-30-seconds",
-            "headless-background-task-waiting-notice-occasionally-skipped",
+            "headless-background-waiting-notice-occasionally-skipped",
         ],
     );
 
@@ -451,7 +451,7 @@ fn protocol_classifies_every_published_selected_path_change_per_claim() {
     assert_exact_string_set(
         &protocol["material_unmapped_published_changes"],
         &[
-            "interactive-ask-question-and-copy-btw",
+            "interactive-question-and-copy-btw",
             "remote-control-session-flag",
             "plugin-and-skill-management",
             "interactive-model-picker-and-slash-model",

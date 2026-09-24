@@ -15,7 +15,7 @@ Research 283 `1.1.22` provider-managed HTTP 502 retry stop stands;
 `1.2.6` and `1.2.7` deepen that gap, so `1.1.18..=1.2.7` stay
 unqualified.
 
-Research 331 froze both platform digests for all five hops. Frozen
+Research 346 froze both platform digests for all five hops. Frozen
 corpus:
 `crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.2.7/`.
 No downloaded binary was executed. No provider, prompt, login,

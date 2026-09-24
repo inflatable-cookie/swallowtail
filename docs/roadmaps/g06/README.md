@@ -68,6 +68,8 @@ maintained in this section.
 - [025 Pi RPC 0.86.1 Review Entry](./025-pi-rpc-0-86-1-review-entry.md) — ready; external PR #356 through review entry; reserved Research 344
 - [026 Oh My Pi RPC 18.2.7 Review Entry](./026-oh-my-pi-rpc-18-2-7-review-entry.md) — ready; external PR #357 through review entry; reserved Research 345
 - [027 Antigravity Catalogue 1.2.7 Review Entry](./027-antigravity-catalogue-1-2-7-review-entry.md) — ready; external PR #359 through review entry; reserved Research 346
+- [028 OpenCode ACP HTTP MCP Live Gate](./028-opencode-acp-http-mcp-live-gate.md) — ready; one authorized attempt proving `opencode.acp` honours a consumer-supplied HTTP MCP entry on exact `1.18.18`
+- [029 Command Code 1.65.0 Live Requalification](./029-command-code-1-65-0-live-requalification.md) — ready; one authorized attempt on exact `1.65.0` with `deepseek/deepseek-v4-flash`
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:b8d9274ae3032a1719cce8c08026fc910955141cfb5e1eb58e758559f6c0f846 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

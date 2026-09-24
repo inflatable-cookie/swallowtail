@@ -1,0 +1,973 @@
+{
+ "compared": [
+  "1.0.30",
+  "1.0.31",
+  "1.0.32",
+  "1.0.33",
+  "1.0.34",
+  "1.0.35",
+  "1.0.36",
+  "1.0.37",
+  "1.0.38",
+  "1.0.39",
+  "1.0.40"
+ ],
+ "digests": {
+  "platform": {
+   "README.md": {
+    "1.0.30": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "1.0.31": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "1.0.32": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "1.0.33": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "1.0.34": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "1.0.35": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "1.0.36": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "1.0.37": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "1.0.38": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "1.0.39": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "1.0.40": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb"
+   },
+   "THIRD_PARTY_NOTICES.md": {
+    "1.0.30": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "1.0.31": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "1.0.32": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "1.0.33": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "1.0.34": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "1.0.35": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "1.0.36": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "1.0.37": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "1.0.38": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "1.0.39": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "1.0.40": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+   },
+   "bin/grok.br": {
+    "1.0.30": "7ffffbcb1f4118702c2dc264e2a478ccb676aed297dc799666f9984a9b475242",
+    "1.0.31": "57d42743489a00c9a6cb638813071162eba08f8f201140e836ad030a123682e9",
+    "1.0.32": "46b4c4d453e680c58cd18ffe41a7aeefd5c82f89a366699dc4cd6478c6eb14ef",
+    "1.0.33": "1bf986059a8e29998eb2b995e9663ecf91f051e2983f064ac598d857526c88d4",
+    "1.0.34": "50646a56e7e47ff5ad2f429c79f250bb51fa3286ec6e918f9ca8e34e5ca41fe0",
+    "1.0.35": "0469700c9eefe958de42060c092dad77de5157fb0a5f7ece1d2354a5e0010499",
+    "1.0.36": "c81d5e4e8a6c54f4e7f4e9f824e7f4ce75ac67ef11efb4f690269d1a5531d5c2",
+    "1.0.37": "c71140c7edef3e8492a4f9d9df7aea348041774e04c9e3db17540a5b8e5b2003",
+    "1.0.38": "155268221b27e5b463f32454ab03c58b5dd6ece816d4042b5af7be0e26472315",
+    "1.0.39": "2037e41aa746b96c0bfdf9d8e34748b36026c253ec0cd0bee97ad47c8bc56882",
+    "1.0.40": "fe98209666ad4caf3f1f9de18b33e565569867ce5befeb88a636c5a880c13097"
+   },
+   "package.json": {
+    "1.0.30": "c6567a9dc59fd430d59b58a36614b5c1bdc8815a7bd072ed2c91ace2633966a5",
+    "1.0.31": "94b8051cb8ebda2a67f841ff5ba7026587b0d785bb7d4ade6db51e6ccaada737",
+    "1.0.32": "c39c1af027ad346e8d304c2d608e41fd196ebdcecb2d8b5eb022baa492a80720",
+    "1.0.33": "fb5f25daae940a3b8fcc4f74f66b70b25ab3db355e263c36b8f3a74d7be41669",
+    "1.0.34": "c2b43da95aae760cac8113179e3c10d4685b104fdf6aa71669288275dd275e95",
+    "1.0.35": "784a4f5bca458dbddb52230e2bc8d3e1aa6534e0b23b9d624e8c26b68c356c99",
+    "1.0.36": "942cf5eda62c70d8c8f05ae4f3fe87a621e9e8a797e5363911e0ee5152286755",
+    "1.0.37": "e96c4f37357d8fa6f1c689a3b1f2aca5304b23f377a10222c8785bcca5c809ee",
+    "1.0.38": "c4e9f4862353f0b48edcd8074109c7d06759499c2d60d4c7240ee0d4e5aebd0e",
+    "1.0.39": "f056e0b8a86c75135a9415c99aeb30da045c86a338f5173424d4af885ce6cca1",
+    "1.0.40": "56e0c23dbd8b3ee9bcfdc6d811e4ead43979a94d9a8d7665b3c15c537680f018"
+   }
+  },
+  "wrapper": {
+   "README.md": {
+    "1.0.30": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "1.0.31": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "1.0.32": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "1.0.33": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "1.0.34": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "1.0.35": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "1.0.36": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "1.0.37": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "1.0.38": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "1.0.39": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "1.0.40": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f"
+   },
+   "bin/grok": {
+    "1.0.30": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "1.0.31": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "1.0.32": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "1.0.33": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "1.0.34": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "1.0.35": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "1.0.36": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "1.0.37": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "1.0.38": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "1.0.39": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "1.0.40": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+   },
+   "bin/grok-bootstrap.js": {
+    "1.0.30": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "1.0.31": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "1.0.32": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "1.0.33": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "1.0.34": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "1.0.35": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "1.0.36": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "1.0.37": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "1.0.38": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "1.0.39": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "1.0.40": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+   },
+   "bin/postinstall.js": {
+    "1.0.30": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "1.0.31": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "1.0.32": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "1.0.33": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "1.0.34": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "1.0.35": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "1.0.36": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "1.0.37": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "1.0.38": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "1.0.39": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "1.0.40": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+   },
+   "package.json": {
+    "1.0.30": "0c40c0579d29de3acec0217ea5ac8569587dc5f410691eb590edd8f645c0c327",
+    "1.0.31": "4691d8f503fc71eef95f4e7683461c24bcf0d26231711bdd7f4d97566e7a5399",
+    "1.0.32": "fe0c12e9ca911a76f4db2eee43fc5207a9a069b522e63b54dc37b6ade2657e80",
+    "1.0.33": "1cfe32ee4ebbab80046097e6df1160449d664f4bc7c48a8ff1e3f20c4dce310f",
+    "1.0.34": "42a6f4f1107cd80c50e7d90caad41df443b09c9d783e266d6f090a2d099d6846",
+    "1.0.35": "967a4756fac0f5f90c0b5d25a135d9368b94a5fdf6d507396c67a1a2e5c77220",
+    "1.0.36": "dde2d6c07a3623e744137d0678bed55db5c48135ea42bbb6b8362cfa7bb1438b",
+    "1.0.37": "9f21eacabd3754dac0ddceaba503f1b8032135d818da294b9b8e3f77c03aab25",
+    "1.0.38": "d37fa9a7ff8df410afdad8cb8f08c9d6900bdb14d5d9601ae48984d2793037e4",
+    "1.0.39": "bfbf2d30d65741c5bb2ff5229b54902773f03a328a5ec69ade9b357b07b2f077",
+    "1.0.40": "e639240aeff1532c9f98250c0608f76c118d37b69ce7065388c845e640a692bc"
+   }
+  }
+ },
+ "hop_to_hop_delta": {
+  "1.0.30": {
+   "platform": {
+    "added": [],
+    "changed": [],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md",
+     "bin/grok.br",
+     "package.json"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js",
+     "package.json"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.31": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.32": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.33": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.34": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.35": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.36": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.37": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.38": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.39": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.40": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  }
+ },
+ "identical_through_all_hops": {
+  "platform": [
+   "README.md",
+   "THIRD_PARTY_NOTICES.md"
+  ],
+  "wrapper": [
+   "README.md",
+   "bin/grok",
+   "bin/grok-bootstrap.js",
+   "bin/postinstall.js"
+  ]
+ },
+ "package_file_counts": {
+  "1.0.30": {
+   "platform": 4,
+   "wrapper": 5
+  },
+  "1.0.31": {
+   "platform": 4,
+   "wrapper": 5
+  },
+  "1.0.32": {
+   "platform": 4,
+   "wrapper": 5
+  },
+  "1.0.33": {
+   "platform": 4,
+   "wrapper": 5
+  },
+  "1.0.34": {
+   "platform": 4,
+   "wrapper": 5
+  },
+  "1.0.35": {
+   "platform": 4,
+   "wrapper": 5
+  },
+  "1.0.36": {
+   "platform": 4,
+   "wrapper": 5
+  },
+  "1.0.37": {
+   "platform": 4,
+   "wrapper": 5
+  },
+  "1.0.38": {
+   "platform": 4,
+   "wrapper": 5
+  },
+  "1.0.39": {
+   "platform": 4,
+   "wrapper": 5
+  },
+  "1.0.40": {
+   "platform": 4,
+   "wrapper": 5
+  }
+ },
+ "per_hop_delta_from_1_0_30": {
+  "1.0.30": {
+   "platform": {
+    "added": [],
+    "changed": [],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md",
+     "bin/grok.br",
+     "package.json"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js",
+     "package.json"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.31": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.32": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.33": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.34": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.35": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.36": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.37": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.38": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.39": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  },
+  "1.0.40": {
+   "platform": {
+    "added": [],
+    "changed": [
+     "bin/grok.br",
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "THIRD_PARTY_NOTICES.md"
+    ],
+    "removed": []
+   },
+   "wrapper": {
+    "added": [],
+    "changed": [
+     "package.json"
+    ],
+    "identical": [
+     "README.md",
+     "bin/grok",
+     "bin/grok-bootstrap.js",
+     "bin/postinstall.js"
+    ],
+    "removed": []
+   }
+  }
+ },
+ "per_hop_files": {
+  "1.0.30": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "7ffffbcb1f4118702c2dc264e2a478ccb676aed297dc799666f9984a9b475242",
+    "package.json": "c6567a9dc59fd430d59b58a36614b5c1bdc8815a7bd072ed2c91ace2633966a5"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "0c40c0579d29de3acec0217ea5ac8569587dc5f410691eb590edd8f645c0c327"
+   }
+  },
+  "1.0.31": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "57d42743489a00c9a6cb638813071162eba08f8f201140e836ad030a123682e9",
+    "package.json": "94b8051cb8ebda2a67f841ff5ba7026587b0d785bb7d4ade6db51e6ccaada737"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "4691d8f503fc71eef95f4e7683461c24bcf0d26231711bdd7f4d97566e7a5399"
+   }
+  },
+  "1.0.32": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "46b4c4d453e680c58cd18ffe41a7aeefd5c82f89a366699dc4cd6478c6eb14ef",
+    "package.json": "c39c1af027ad346e8d304c2d608e41fd196ebdcecb2d8b5eb022baa492a80720"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "fe0c12e9ca911a76f4db2eee43fc5207a9a069b522e63b54dc37b6ade2657e80"
+   }
+  },
+  "1.0.33": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "1bf986059a8e29998eb2b995e9663ecf91f051e2983f064ac598d857526c88d4",
+    "package.json": "fb5f25daae940a3b8fcc4f74f66b70b25ab3db355e263c36b8f3a74d7be41669"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "1cfe32ee4ebbab80046097e6df1160449d664f4bc7c48a8ff1e3f20c4dce310f"
+   }
+  },
+  "1.0.34": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "50646a56e7e47ff5ad2f429c79f250bb51fa3286ec6e918f9ca8e34e5ca41fe0",
+    "package.json": "c2b43da95aae760cac8113179e3c10d4685b104fdf6aa71669288275dd275e95"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "42a6f4f1107cd80c50e7d90caad41df443b09c9d783e266d6f090a2d099d6846"
+   }
+  },
+  "1.0.35": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "0469700c9eefe958de42060c092dad77de5157fb0a5f7ece1d2354a5e0010499",
+    "package.json": "784a4f5bca458dbddb52230e2bc8d3e1aa6534e0b23b9d624e8c26b68c356c99"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "967a4756fac0f5f90c0b5d25a135d9368b94a5fdf6d507396c67a1a2e5c77220"
+   }
+  },
+  "1.0.36": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "c81d5e4e8a6c54f4e7f4e9f824e7f4ce75ac67ef11efb4f690269d1a5531d5c2",
+    "package.json": "942cf5eda62c70d8c8f05ae4f3fe87a621e9e8a797e5363911e0ee5152286755"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "dde2d6c07a3623e744137d0678bed55db5c48135ea42bbb6b8362cfa7bb1438b"
+   }
+  },
+  "1.0.37": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "c71140c7edef3e8492a4f9d9df7aea348041774e04c9e3db17540a5b8e5b2003",
+    "package.json": "e96c4f37357d8fa6f1c689a3b1f2aca5304b23f377a10222c8785bcca5c809ee"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "9f21eacabd3754dac0ddceaba503f1b8032135d818da294b9b8e3f77c03aab25"
+   }
+  },
+  "1.0.38": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "155268221b27e5b463f32454ab03c58b5dd6ece816d4042b5af7be0e26472315",
+    "package.json": "c4e9f4862353f0b48edcd8074109c7d06759499c2d60d4c7240ee0d4e5aebd0e"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "d37fa9a7ff8df410afdad8cb8f08c9d6900bdb14d5d9601ae48984d2793037e4"
+   }
+  },
+  "1.0.39": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "2037e41aa746b96c0bfdf9d8e34748b36026c253ec0cd0bee97ad47c8bc56882",
+    "package.json": "f056e0b8a86c75135a9415c99aeb30da045c86a338f5173424d4af885ce6cca1"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "bfbf2d30d65741c5bb2ff5229b54902773f03a328a5ec69ade9b357b07b2f077"
+   }
+  },
+  "1.0.40": {
+   "platform": {
+    "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+    "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+    "bin/grok.br": "fe98209666ad4caf3f1f9de18b33e565569867ce5befeb88a636c5a880c13097",
+    "package.json": "56e0c23dbd8b3ee9bcfdc6d811e4ead43979a94d9a8d7665b3c15c537680f018"
+   },
+   "wrapper": {
+    "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+    "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+    "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+    "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+    "package.json": "e639240aeff1532c9f98250c0608f76c118d37b69ce7065388c845e640a692bc"
+   }
+  }
+ },
+ "platform_compared": "grok-linux-x64",
+ "present_in_every_hop": {
+  "platform": [
+   "README.md",
+   "THIRD_PARTY_NOTICES.md",
+   "bin/grok.br",
+   "package.json"
+  ],
+  "wrapper": [
+   "README.md",
+   "bin/grok",
+   "bin/grok-bootstrap.js",
+   "bin/postinstall.js",
+   "package.json"
+  ]
+ }
+}

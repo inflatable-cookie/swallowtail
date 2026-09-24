@@ -17,9 +17,9 @@ use swallowtail_runtime::{
     WorkingResourceRef,
 };
 
-pub(super) const ARTIFACT: &str = include_str!("../fixtures/command-code-1.54.0/artifact.json");
-pub(super) const PROTOCOL: &str = include_str!("../fixtures/command-code-1.54.0/protocol.json");
-pub(super) const VERSION: &str = include_str!("../fixtures/command-code-1.54.0/version.txt");
+pub(super) const ARTIFACT: &str = include_str!("../fixtures/command-code-1.65.0/artifact.json");
+pub(super) const PROTOCOL: &str = include_str!("../fixtures/command-code-1.65.0/protocol.json");
+pub(super) const VERSION: &str = include_str!("../fixtures/command-code-1.65.0/version.txt");
 pub(super) const NO_TOOL_SUCCESS: &str =
     include_str!("../fixtures/command-code-1.15.1/no-tool-success.jsonl");
 pub(super) const TOOL_SUCCESS: &str =

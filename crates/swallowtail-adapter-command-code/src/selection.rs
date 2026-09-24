@@ -10,7 +10,7 @@ pub const COMMAND_CODE_EXECUTABLE_NAME: &str = "command-code";
 /// Opaque npm version axis for Command Code releases.
 pub const COMMAND_CODE_RELEASE_AXIS: &str = "command-code.npm";
 /// Exact qualified Command Code npm release.
-pub const COMMAND_CODE_RELEASE_VERSION: &str = "1.54.0";
+pub const COMMAND_CODE_RELEASE_VERSION: &str = "1.65.0";
 
 pub(crate) const COMMAND_CODE_HEADLESS_BEHAVIOR: &str = "command-code.agent-event-ndjson-v1";
 
@@ -105,16 +105,16 @@ mod tests {
         assert!(command_code_release_binding(COMMAND_CODE_RELEASE_VERSION).is_some());
         for rejected in [
             "",
-            "1.54.0.0",
-            "1.54.1",
-            "1.54",
-            "1.54.0.0",
-            "v1.54.0",
-            "1.54.0-beta",
-            "1.54.0\n",
-            " 1.54.0",
-            "1.54.0 ",
-            "command-code 1.54.0",
+            "1.65.0.0",
+            "1.65.1",
+            "1.65",
+            "1.54.0",
+            "v1.65.0",
+            "1.65.0-beta",
+            "1.65.0\n",
+            " 1.65.0",
+            "1.65.0 ",
+            "command-code 1.65.0",
         ] {
             assert!(
                 command_code_release_binding(rejected).is_none(),
@@ -127,8 +127,9 @@ mod tests {
     fn claim_qualifies_only_the_exact_release_and_rejects_newer() {
         let claim = command_code_headless_claim();
         assert!(claim.supports(&InterfaceVersion::new(COMMAND_CODE_RELEASE_VERSION).unwrap()));
-        assert!(!claim.permits(&InterfaceVersion::new("1.54.1").unwrap()));
-        assert!(!claim.permits(&InterfaceVersion::new("1.53.1").unwrap()));
-        assert!(!claim.permits(&InterfaceVersion::new("1.54.0-rc.1").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("1.65.1").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("1.64.1").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("1.54.0").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("1.65.0-rc.1").unwrap()));
     }
 }

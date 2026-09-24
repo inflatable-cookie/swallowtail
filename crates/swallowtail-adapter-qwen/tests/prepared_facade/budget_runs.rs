@@ -135,7 +135,7 @@ fn selected_qwen_budgets_reject_unqualified_version_and_keep_native_terminals() 
     let turns = QwenSessionTurnBudget::try_new(2).expect("admitted turns");
     for version in [
         "0.19.11", "0.22.0", "0.22.1", "0.22.2", "0.22.3", "0.23.0", "0.23.1",
-        "0.23.2", "0.23.3",
+        "0.23.2", "0.23.3", "0.23.4", "0.24.0", "0.24.1", "0.24.2",
     ] {
         let host_id = ExecutionHostId::new(format!("fixture.qwen.budget.reject.{version}"))
             .expect("valid host");

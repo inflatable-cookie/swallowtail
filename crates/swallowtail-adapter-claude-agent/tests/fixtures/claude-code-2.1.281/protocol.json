@@ -1,0 +1,30 @@
+{
+  "safe_mode_filters_builtins_instead_of_skipping_hooks": {
+    "2.1.280": true,
+    "2.1.281": true
+  },
+  "agents_md_default_enabled": {
+    "2.1.280": false,
+    "2.1.281": true
+  },
+  "agents_md_prompt_context_hook": true,
+  "disable_all_hooks_user_setting_keeps_builtin_plugins": true,
+  "enabled_plugins_builtin_override_from_cli_settings_ignored": true,
+  "selected_response_only_args": [
+    "--tools",
+    "",
+    "--safe-mode",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--prompt-suggestions",
+    "false",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--strict-mcp-config"
+  ],
+  "branch": "neither",
+  "headless_safe_mode": false,
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "host_install_changed": false
+}

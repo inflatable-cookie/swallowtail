@@ -64,6 +64,7 @@ swallowtail-adapter-ollama	swallowtail-runtime	^0.5.1
 swallowtail-adapter-openai	swallowtail-core	^0.5.1
 swallowtail-adapter-openai	swallowtail-runtime	^0.5.1
 swallowtail-adapter-opencode	swallowtail-core	^0.5.1
+swallowtail-adapter-opencode	swallowtail-protocol-acp	^0.5.1
 swallowtail-adapter-opencode	swallowtail-runtime	^0.5.1
 swallowtail-adapter-openhands	swallowtail-core	^0.5.1
 swallowtail-adapter-openhands	swallowtail-runtime	^0.5.1

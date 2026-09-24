@@ -68,7 +68,7 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 - accept the exact `command-code.headless` `1.65.0` live surface on
-  `deepseek/deepseek-v4-flash`. Research 342 records one authorized gate:
+  `deepseek/deepseek-v4-flash`. Research 347 records one authorized gate:
   structured one-turn completion and the Contract 043 two-turn private
   exact-id continuation both `Completed` with `Clean` cleanup. Research 330
   stays the exact-`1.54.0` paid-model record; Research 116/118 stay bound to
@@ -164,6 +164,18 @@ annotated Git tags from the canonical repository.
   Unpublished `18.2.8` stays permitted `UnverifiedNewer`. `pi.package`
   stays a separate axis. Not a major-line reset, new public operation,
   or new driver/facade.
+- raise the Pi RPC qualified ceiling from `0.85.1` to official npm
+  `@earendil-works/pi-coding-agent` `0.86.1`. Compatible extension of
+  `pi.rpc.strict-lf-v0.84.0-message-update-delta`: selected mapped commands
+  and argv stay; published `0.86.0` is also qualified. `0.86.0`
+  `{ source: "rpc" }` on already-mapped `steer` / `follow_up` covers
+  unmapped extension input handlers and is a no-op under selected
+  `--no-extensions`. `0.86.1` `META_API_KEY` help, Meta Muse, compile
+  cache, cache warming, `/bug`, Radius, compaction budgets, custom-provider
+  `TranscriptContext`, and `user_bash` fail-closed stay unmapped.
+  Unpublished `0.83.1`, `0.84.5`, and `0.85.2` stay incompatible;
+  unpublished `0.86.2` remains visible `UnverifiedNewer`. `pi.sdk-sidecar`
+  stays exact `0.84.2`. Research 344.
 - extend the Antigravity catalogue claim from maintained `1.1.9..=1.2.2`
   to maintained `1.1.9..=1.2.7` on `antigravity-cli.release` with the
   unchanged `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1` behavior

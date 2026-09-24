@@ -12,7 +12,7 @@ tags do not contain the package or route.
 
 Research 339 requalified the exact npm point to `1.65.0` from the complete
 official stable chain after `1.54.0`. The provider-free selected-surface
-evidence transfers. Research 342 accepted exact-`1.65.0` live on
+evidence transfers. Research 347 accepted exact-`1.65.0` live on
 `deepseek/deepseek-v4-flash` for structured completion, streaming events,
 usage decoding, and the two-turn private continuation. Research 330 stays the
 exact-`1.54.0` paid-model record. Research 116's authenticated

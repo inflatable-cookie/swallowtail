@@ -1060,3 +1060,8 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `ask-question`, so `package:verify-affected` rejects a clean package. The
   labels were rephrased to keep the proof green; anchor the pattern so `sk-`
   must start a token instead. Found g06.027.
+- g06.029 took Research 342 while it was reserved for the #354 suite lane;
+  Chatterbox renumbered it to 347 after merge. Reservations lived only in task
+  cards, so workers on other lanes could not see them. Until the research
+  collision check exists, reservations are listed at the top of
+  `docs/research/README.md`.

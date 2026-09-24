@@ -62,7 +62,7 @@ The driver owns one joined stdio child and performs this sequence:
 
 1. spawn `opencode acp --pure` with no extra argv
 2. `initialize` with host `fs` and `terminal` advertised false
-3. `session/new` with `{cwd, mcpServers}` — empty, or one admitted stdio entry
+3. `session/new` with `{cwd, mcpServers}` — empty, or one admitted stdio or HTTP entry
 4. one bounded `session/prompt` of text blocks
 5. observe permission requests and cancel; never select `allow_always`
 6. `session/close`, then join connection, process, and task cleanup
@@ -81,23 +81,30 @@ See the compile-tested
 
 ## Consumer-declared MCP
 
-Contract 063 already admits a stdio placement. Bind at most one
-`OpenCodeAcpStdioMcpServer` whose name is the route-owned
+Contract 063 admits one stdio placement and one consumer-supplied
+streamable-HTTP placement. Bind at most one of `OpenCodeAcpStdioMcpServer` or
+`OpenCodeAcpRemoteMcpPlacement`, whose name is the route-owned
 `swallowtail-opencode-acp`. A foreign name fails closed as a collision: OpenCode
 maps per-session declarations onto a name-keyed instance-scoped registration
-with last-write-wins and no unregister on close.
+with last-write-wins and no unregister on close. Binding both in one session is
+a typed refusal.
 
-`OpenCodeAcpRemoteMcpPlacement` models the provider's URL-plus-header `http` /
-`sse` shape. `to_production_mcp_servers` fails closed until a contract admits
-that placement. No feature-matrix MCP cell is `Yes`: Research 337 proved
-representability, not live honouring.
+HTTP encoding emits ACP `type: "http"` with the consumer URL and headers
+verbatim. Structure is validated only: non-empty name, absolute `http`/`https`
+URL, well-formed header names. URL and header values never appear in failures,
+diagnostics, activity, receipts, `Debug` output, or plan fingerprints. `sse`
+stays modelled through `OpenCodeAcpRemoteMcpPlacement::sse` and is not emitted.
+
+The Contract 061 placement projection names `consumer-supplied-http` when an
+HTTP entry is bound. No feature-matrix MCP cell is `Yes`: this lane proves
+emission, not live honouring of a remote tool call.
 
 ## Restart, Failure, And Promotion
 
 ACP exposes no public load, resume, or close binding. Cleanup still sends
 `session/close` before joining. `prepare_working_state_restoration` opens a
 fresh context-losing session after process loss; it does not recover the
-interrupted turn or transcript. A prepared stdio MCP declaration is carried
+interrupted turn or transcript. A prepared stdio or HTTP MCP declaration is carried
 onto that replacement session.
 
 Handle failures through portable classification and retain the exact
@@ -106,7 +113,7 @@ data, or OpenCode account state to infer retry, auth, terminal, or cleanup
 truth. Unauthorized initialize maps to
 `swallowtail.opencode.acp.host_auth_required` without OpenCode policy.
 
-Promotion of URL-plus-header MCP into production, live MCP honouring, host
+Promotion of live MCP honouring, host
 plugins without `--pure`, treating `protocolVersion` as negotiated, flattening
 onto `opencode.http`, OpenCode login as a Swallowtail action, or live
 qualification requires a separate card, exact version evidence, and matrix

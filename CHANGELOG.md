@@ -36,6 +36,15 @@ annotated Git tags from the canonical repository.
   `http`/`sse` placement behind the contract gate. Feature matrix MCP cells
   stay No: Research 337 proved representability, not live honouring. No live
   ACP session, login, install, or host update. Research 337, g06.016.
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `opencode.acp` production `session/new`. A session declares at most one
+  consumer entry, stdio or HTTP, under `swallowtail-opencode-acp`. HTTP
+  encoding emits ACP `type: "http"` with the consumer URL and headers
+  verbatim; `sse` stays modelled and unemitted. URL and header values stay
+  out of failures, diagnostics, activity, receipts, `Debug`, and plan
+  fingerprints. The Contract 061 placement projection names
+  `consumer-supplied-http`. Feature matrix MCP cells stay No: emission is
+  proven, live honouring of a remote tool call is not. Research 337, g06.019.
 
 ### Changed
 - raise the qualified OpenCode HTTP ceiling from `1.18.30` to official npm

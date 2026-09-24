@@ -1047,11 +1047,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   `autotests = false` it never compiles or runs; its assertions still pin the
   old `2026.08.11` ceiling. Wire it to a target or fold it into
   `compatibility_corpus.rs`; found during g05.062.
-- Research number 328 is used twice (`328-goose-acp-1-50-1-failure-binding-reopen.md`
-  and `328-qoder-headless-1-1-54-identity.md`). The roadmap collision check
-  covers task numbers only; extend it to research records (ignoring same-number
-  companion `.tsv` files). Found reconciling g06.020, where #358 also collided
-  on 331 before review renumbered it to 340.
 - The package content audit's secret pattern `sk-[A-Za-z0-9_-]{20,}` in
   `scripts/validation/archive.sh` false-positives on ordinary hyphenated
   English: g06.027's Antigravity fixture labels
@@ -1065,7 +1060,3 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   cards, so workers on other lanes could not see them. Until the research
   collision check exists, reservations are listed at the top of
   `docs/research/README.md`.
-- g06.022 allocated Research 342 from planning SHA `35436b0e`; merge with
-  later main found `docs/research/342-ollama-0-34-2-identity.md` already
-  assigned. Renumbered the claim to 348. The reservation list does not
-  protect numbers that become files after a worker starts. Found g06.022.

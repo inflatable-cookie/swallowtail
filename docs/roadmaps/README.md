@@ -15,10 +15,10 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g06.028 OpenCode ACP HTTP MCP Live Gate](./g06/028-opencode-acp-http-mcp-live-gate.md)
-is the lead ready lane; the [g06 manifest](./g06/README.md) holds any other
-ready lanes. g06.001–g06.005 stay planned and gated. Do not infer release,
-tag, publication, live-provider, or consumer authority.
+No g06 lane is ready. g06 holds 28 tasks, near the rollover range: Chatterbox
+settles the g07 rollover with the operator, including which of the planned
+g06.001–g06.005 carry forward. Do not infer release, tag, publication,
+live-provider, or consumer authority.
 
 ## Standing Lanes
 

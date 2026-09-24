@@ -98,8 +98,14 @@ redacts those values, and the wire JSON stays crate-private. `sse` stays
 modelled through `OpenCodeAcpRemoteMcpPlacement::sse` and is not emitted.
 
 The Contract 061 placement projection names `consumer-supplied-http` when an
-HTTP entry is bound. No feature-matrix MCP cell is `Yes`: this lane proves
-emission, not live honouring of a remote tool call.
+HTTP entry is bound. Research 349 accepted live honouring of that HTTP entry
+on exact `1.18.18` (`client_mcp_servers` Yes). The host default agent model
+is unverified; the claim does not depend on it. This route does not send a
+model on `session/new`. The live gate records the selected default agent's
+model override, else the root `model`, after that definition and existing
+host auth are present, and stops with `no_usable_model` when those are
+missing. Later points in the window stay unqualified for honouring.
+stdio MCP live honouring is not that evidence.
 
 ## Restart, Failure, And Promotion
 
@@ -115,11 +121,12 @@ data, or OpenCode account state to infer retry, auth, terminal, or cleanup
 truth. Unauthorized initialize maps to
 `swallowtail.opencode.acp.host_auth_required` without OpenCode policy.
 
-Promotion of live MCP honouring, host
-plugins without `--pure`, treating `protocolVersion` as negotiated, flattening
-onto `opencode.http`, OpenCode login as a Swallowtail action, or live
-qualification requires a separate card, exact version evidence, and matrix
-coverage. An advertised ACP capability or CLI flag alone is insufficient.
+Promotion of HTTP MCP honouring past exact `1.18.18`, stdio MCP live
+honouring, host plugins without `--pure`, treating `protocolVersion` as
+negotiated, flattening onto `opencode.http`, OpenCode login as a Swallowtail
+action, or broader live qualification requires a separate card, exact version
+evidence, and matrix coverage. An advertised ACP capability or CLI flag alone
+is insufficient.
 
 ## Deterministic Validation
 
@@ -128,4 +135,5 @@ effigy validate:focused swallowtail-adapter-opencode
 ```
 
 No login, install, or authenticated prompt is part of deterministic acceptance.
-Live evidence stays separately gated and is not claimed by this route.
+HTTP MCP honouring on exact `1.18.18` is Research 349. Further live
+qualification stays separately gated.

@@ -31,7 +31,10 @@ v1 and the exact Grok artifacts; its basis is the same Research 281 Grok
 census line as the route's other limitations. g06.016 appends the
 `opencode.acp` unavailable cells; their basis is
 [337-opencode-acp-unavailable-cells.tsv](337-opencode-acp-unavailable-cells.tsv),
-which names the route and points at Research 337. Prepared integration guides are
+which names the route and points at Research 337. g06.028 removes the
+`opencode.acp` `client_mcp_servers` limitation after Research 349 accepted
+HTTP honouring on exact `1.18.18`; the host default agent model is unverified
+and the claim does not depend on it. Prepared integration guides are
 not evidence for this disposition: the docs front door classifies guides as
 non-authoritative integration usage.
 

@@ -685,6 +685,28 @@
    ]
   },
   {
+   "id": "opencode.acp",
+   "driver": "swallowtail.opencode.acp",
+   "transport": "acp-v1-stdio",
+   "qualified": "1.18.18..=1.18.32",
+   "prepared_profiles": [
+    {
+     "operation": "interactive-session",
+     "availability": "available"
+    }
+   ],
+   "unavailable_operations": [],
+   "not_applicable_operations": [],
+   "unknown_posture": "preserve-namespaced",
+   "exact_absences": [
+    "raw tool input",
+    "raw tool output",
+    "child topology",
+    "public load or resume",
+    "live MCP honouring"
+   ]
+  },
+  {
    "id": "opencode.http",
    "driver": "swallowtail.opencode.http",
    "transport": "http-sse",

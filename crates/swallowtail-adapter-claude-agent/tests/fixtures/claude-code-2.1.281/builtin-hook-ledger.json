@@ -1,0 +1,234 @@
+{
+  "versions": {
+    "2.1.280": [
+      {
+        "name": "sec-default",
+        "hook_events": [
+          "agent.offer",
+          "agent.spawn",
+          "attribution.text",
+          "command.describe",
+          "prompt.context",
+          "prompt.section",
+          "settings.read",
+          "skill.prompt",
+          "tool.describe",
+          "tool.list",
+          "tool.register"
+        ],
+        "effect": "Policy-only hooks preserve managed instructions, settings and tool policy; can affect prompt and admission when organization seats it.",
+        "linux_embedded_module_sha256": "ab483044a3a03c9de79e58b49b8fd84c9a8eea6bd01ea3f94c2caa40297ec41a",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "agents-md",
+        "hook_events": [
+          "agent.spawn",
+          "prompt.context",
+          "session.start",
+          "tool.call"
+        ],
+        "effect": "Reads ancestor AGENTS.md and adds project instructionFiles to prompt.context; tool.call Read can add nested instruction context. Default off in 2.1.280, on in 2.1.281.",
+        "linux_embedded_module_sha256": "fd7b0d390f79bcfb3c49e2594053a202cc38a4f510f8f9d31d40cfe2e53820d3",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "telemetry",
+        "hook_events": [
+          "engine.create",
+          "session.end",
+          "session.start"
+        ],
+        "effect": "Records session and engine analytics, can send first-party telemetry network requests.",
+        "linux_embedded_module_sha256": "c587862ec8651f57553dfb0c2a4a3bb13e5ecd7abfc3ede49ee090f0221e8bdf",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "plugin-authoring",
+        "hook_events": [],
+        "effect": "Provides an invocable skill; no hook event in module.",
+        "linux_embedded_module_sha256": "04a143342cf83bd8050f8d3c2a24de38bad7db4f59e741cc34c7f080812ec2e6",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "tips",
+        "hook_events": [
+          "session.start"
+        ],
+        "effect": "Session-start tip UI state and telemetry; no mapped stream-JSON rewrite found.",
+        "linux_embedded_module_sha256": "b09409335dd6044a291863e120cb41a8c838a5fbff37ea5d9620a1e2de3624b9",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "mermaid",
+        "hook_events": [
+          "ui.render"
+        ],
+        "effect": "Rewrites terminal assistant-message UI rendering only.",
+        "linux_embedded_module_sha256": "3515f67c33a601043048d25ceab2bc7397b32ef0456639c8d60ba6836970d89c",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "responsive-mode",
+        "hook_events": [
+          "prompt.section",
+          "prompt.submit",
+          "ui.render"
+        ],
+        "effect": "Rollout-gated prompt section/submit mutation and terminal hint rendering; can change a turn when enabled.",
+        "linux_embedded_module_sha256": "10e2b1d94620bfcb59de8522e394b0ebf6dddec024eedcb18a919da13d4c26e4",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "diff",
+        "hook_events": [
+          "command.run",
+          "prompt.submit",
+          "session.start",
+          "tool.call",
+          "ui.close",
+          "ui.focus",
+          "ui.render",
+          "ui.scroll"
+        ],
+        "effect": "Interactive diff UI and command hooks; may read git state; selected response-only slash-command/tool-disabled path does not invoke its command hooks.",
+        "linux_embedded_module_sha256": "b8810faaad8fc302dfa14dfc81fa49c2cb052d252d552231ff0638a150c69071",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "claude-test",
+        "hook_events": [
+          "command.run",
+          "skill.prompt"
+        ],
+        "effect": "Command/skill hooks can read and launch test assets when invoked; selected response-only slash-command-disabled path does not invoke them.",
+        "linux_embedded_module_sha256": "cd3f29a48da31d5298cd5eacd4c46f9a09ece238ca8e04f930af7833db162b6c",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      }
+    ],
+    "2.1.281": [
+      {
+        "name": "sec-default",
+        "hook_events": [
+          "agent.offer",
+          "agent.spawn",
+          "attribution.text",
+          "command.describe",
+          "prompt.context",
+          "prompt.section",
+          "settings.read",
+          "skill.prompt",
+          "tool.describe",
+          "tool.list",
+          "tool.register"
+        ],
+        "effect": "Policy-only hooks preserve managed instructions, settings and tool policy; can affect prompt and admission when organization seats it.",
+        "linux_embedded_module_sha256": "b3ffe7e16a875d53de0fed8ff8bd81a72b71afd32727b2edc533b96ad4763be1",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "agents-md",
+        "hook_events": [
+          "agent.spawn",
+          "prompt.context",
+          "session.start",
+          "tool.call"
+        ],
+        "effect": "Reads ancestor AGENTS.md and adds project instructionFiles to prompt.context; tool.call Read can add nested instruction context. Default off in 2.1.280, on in 2.1.281.",
+        "linux_embedded_module_sha256": "799d2032c65cf657de0076c93ad77cc79db9a08c3237ff1b6fd967f630a1621f",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "telemetry",
+        "hook_events": [
+          "engine.create",
+          "session.end",
+          "session.start"
+        ],
+        "effect": "Records session and engine analytics, can send first-party telemetry network requests.",
+        "linux_embedded_module_sha256": "c7273826c8f46bf4f4a2d4ee8ef684e98b2bcddd92baac9e23671b0c279f2051",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "plugin-authoring",
+        "hook_events": [],
+        "effect": "Provides an invocable skill; no hook event in module.",
+        "linux_embedded_module_sha256": "dbb5d5b0e21e1dc3c26b3e65b28af68593a7e549fd4a21d71c41609754a0c140",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "tips",
+        "hook_events": [
+          "session.start"
+        ],
+        "effect": "Session-start tip UI state and telemetry; no mapped stream-JSON rewrite found.",
+        "linux_embedded_module_sha256": "64eada59f6ea69e059321bd60dfc8d12dd49e3e27ef8b36a05f5731dd5f59623",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "mermaid",
+        "hook_events": [
+          "ui.render"
+        ],
+        "effect": "Rewrites terminal assistant-message UI rendering only.",
+        "linux_embedded_module_sha256": "b7de95da9b97c92a01dfc23e5d90c3b87aba59f9d84f0e27f1c01a86c6b5c2c8",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "responsive-mode",
+        "hook_events": [
+          "prompt.section",
+          "prompt.submit",
+          "ui.render"
+        ],
+        "effect": "Rollout-gated prompt section/submit mutation and terminal hint rendering; can change a turn when enabled.",
+        "linux_embedded_module_sha256": "ce450a36a1eb414d1883aaef7300ab86c1baf57b3affcb37828e7d949cc4256f",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "diff",
+        "hook_events": [
+          "command.run",
+          "prompt.submit",
+          "session.start",
+          "tool.call",
+          "ui.close",
+          "ui.focus",
+          "ui.render",
+          "ui.scroll"
+        ],
+        "effect": "Interactive diff UI and command hooks; may read git state; selected response-only slash-command/tool-disabled path does not invoke its command hooks.",
+        "linux_embedded_module_sha256": "89f1da8df175bba05a8326419425a55320a3b73bf69b1a23fff771d378949b0e",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      },
+      {
+        "name": "claude-test",
+        "hook_events": [
+          "command.run",
+          "skill.prompt"
+        ],
+        "effect": "Command/skill hooks can read and launch test assets when invoked; selected response-only slash-command-disabled path does not invoke them.",
+        "linux_embedded_module_sha256": "29d3d6ccd4718c3cabe390bf18c44a87941555a32084611ff700f520b885bb22",
+        "registered_in_darwin_arm64": true,
+        "registered_in_linux_x64": true
+      }
+    ]
+  }
+}

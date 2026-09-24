@@ -27,9 +27,9 @@ annotated Git tags from the
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The 40 packages share coordinated version `0.5.1` and provide 50 production
-routes, including `pi.sdk-sidecar`, `claude-agent.sdk`, and additive
-`grok-build.catalogue`. OpenHands remains a
+The 40 packages share coordinated version `0.5.1` and provide 51 production
+routes, including `pi.sdk-sidecar`, `claude-agent.sdk`, additive
+`grok-build.catalogue`, and additive `opencode.acp`. OpenHands remains a
 package without a production route. The release line preserves the Rust
 `1.95.0`
 floor and is not an API 1.0 promise.
@@ -39,7 +39,7 @@ floor and is not an API 1.0 promise.
 Swallowtail does not choose a provider, model, credential, endpoint, executable,
 billing arrangement, or fallback.
 
-1. Choose one of the [49 production routes](docs/guides/provider-route-matrix.md).
+1. Choose one of the [51 production routes](docs/guides/provider-route-matrix.md).
 2. Read its canonical guide through the
    [integration guide map](docs/guides/integration-guide-map.md).
 3. Add only the adapter and shared packages your application imports.

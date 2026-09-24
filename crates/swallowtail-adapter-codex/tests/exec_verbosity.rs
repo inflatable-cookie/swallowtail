@@ -102,7 +102,7 @@ fn unretrieved_version_identities_reject_verbosity_before_process_start() {
         "0.147.1",
         "0.148.1",
         "0.149.1+build.1",
-        "0.154.1",
+        "0.155.2",
     ] {
         let (process, state) = FakeProcessService::completed("");
         let request = StructuredRunRequest::new(
@@ -135,7 +135,7 @@ fn unretrieved_version_identities_reject_verbosity_before_process_start() {
 fn later_qualified_versions_reject_verbosity_before_process_start() {
     for version in [
         "0.150.0", "0.150.1", "0.151.0", "0.152.0", "0.152.1", "0.153.0", "0.153.1", "0.153.2",
-        "0.153.3", "0.153.4", "0.154.0",
+        "0.153.3", "0.153.4", "0.154.0", "0.155.0", "0.155.1",
     ] {
         let (process, state) = FakeProcessService::completed("");
         let request = StructuredRunRequest::new(

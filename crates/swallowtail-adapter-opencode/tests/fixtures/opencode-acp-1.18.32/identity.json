@@ -1,0 +1,150 @@
+{
+  "family": "opencode.acp",
+  "route_id": "opencode.acp",
+  "proposed_axis": "opencode.executable",
+  "frozen_at": "2026-09-22",
+  "by": "g06.015",
+  "evidence_class": "official-artifact-and-published-source identity; no live session; no claim change",
+  "window": {
+    "baseline": "1.18.18",
+    "latest_qualified": "1.18.32",
+    "acp_axis_identity": "the launched `opencode` CLI package/executable release, kept unflattened from the attached-server `opencode.server` axis"
+  },
+  "official": {
+    "vendor": "OpenCode (anomalyco)",
+    "npm_launcher_package": "opencode-ai",
+    "npm_platform_package": "opencode-darwin-arm64",
+    "github_repository": "anomalyco/opencode",
+    "npm_latest_at_observation": "1.18.32",
+    "github_latest_tag_at_observation": "v1.18.32",
+    "first_unpublished_stable_at_observation": "1.18.33",
+    "published_stables_1_18_18_through_1_18_32": [
+      "1.18.18",
+      "1.18.19",
+      "1.18.20",
+      "1.18.21",
+      "1.18.22",
+      "1.18.23",
+      "1.18.24",
+      "1.18.25",
+      "1.18.26",
+      "1.18.27",
+      "1.18.28",
+      "1.18.29",
+      "1.18.30",
+      "1.18.31",
+      "1.18.32"
+    ],
+    "unpublished_interior_gap": false,
+    "npm_metadata_carries_git_head": false
+  },
+  "official_hops": [
+    {
+      "version": "1.18.18",
+      "npm_launcher_published_at": "2026-08-13T01:13:43.814Z",
+      "npm_launcher_integrity": "sha512-J+5HFq8tf+wPBBpBpMPSNjSytF2/EkNWYfFZh4si1d9auFbQriqDyqZv+vFUsLWERfdMU32Eajwuiq3rKBvZLQ==",
+      "npm_launcher_shasum": "a78971b6affe7ed27a207218465d1a80e36a018c",
+      "npm_launcher_tarball_sha256": "3e76f908fc945e26c0f305462755c4bee37ee52c221ccb02df6bb2bcbcbe3071",
+      "github_tag": "v1.18.18",
+      "github_tag_commit": "31406ccc51b4bd2a4e1e086b2bcaa5f7f804f26d",
+      "github_release_published_at": "2026-08-13T01:15:04Z",
+      "github_release_target_commitish": "14b37df39168eaf6a6faf862ec4a7bbe9c825bbd",
+      "source_archive_sha256": "9962680e6ea7b59e002b2940a1f33f31f147fea4e976df2ea5501bc70ed2fb83",
+      "platform_package_published_at": "2026-08-13T01:12:26.686Z",
+      "platform_package_integrity": "sha512-VkG+bz8u8Xqg9NzPK+2/71nEd4DKKlo2NLZurQ1eLAzDnmb1CMYZif/o6Shl8YFuTuYU/30k6yufl4Zr0Ij64g==",
+      "platform_package_shasum": "02d86094ac46da7b7e6f5875c26c908595668358",
+      "platform_tarball_sha256": "9d62f72654b27c4fae220ce09fcea4e1364ff52225086feab94a35c6b0c0b4a7",
+      "platform_binary": "bin/opencode",
+      "platform_binary_sha256": "4f5979c2dadb06fbff1335335afaaea274e58f92e79aa43cf2ed98618d555422",
+      "platform_binary_bytes": 143182562,
+      "npm_launcher_files": [
+        "LICENSE",
+        "bin/opencode.exe",
+        "package.json",
+        "postinstall.mjs"
+      ]
+    },
+    {
+      "version": "1.18.32",
+      "npm_launcher_published_at": "2026-09-21T22:50:42.463Z",
+      "npm_launcher_integrity": "sha512-SCrZWdq44y/EoH2+fE4HLcXS+DzpVqHPzmXk3p2RrufYy8LWvpfhRhKtijb5ktvx8r94ScqToqwHxR0BwS65OQ==",
+      "npm_launcher_shasum": "11493b166da727403b3ba41455b5a66dbf790fe5",
+      "npm_launcher_tarball_sha256": "454fbb032ade95a21323891138d4b425573f67631e7e888e516da893dc4be8ba",
+      "github_tag": "v1.18.32",
+      "github_tag_commit": "545f51d26cc39a907d2867492d498d9607ea5fa4",
+      "github_release_published_at": "2026-09-21T22:51:20Z",
+      "github_release_target_commitish": "f5ce4f881e477c7b75421cea2d20939f0ddd71fb",
+      "source_archive_sha256": "65e95c9a6666ca65bbd17de1e7cecddac1504e66eeebbcfaf5ac68f97e6f392b",
+      "platform_package_published_at": "2026-09-21T22:51:16.356Z",
+      "platform_package_integrity": "sha512-sDsHk/A6FNqeN5NuAiII6AAhi4pJIFcIY0S2yjG9gToIIVaqrQRaHQ6g0kpoVqTiMci8tvaND6tWD4eDT3ahFw==",
+      "platform_package_shasum": "b1a5c024b0cb34d374af66b9aa910b78c4d752f0",
+      "platform_tarball_sha256": "a1707bb6cc9deaccca501c4097f1580b8af70dfc227f194ae0f576f32abbdebe",
+      "platform_binary": "bin/opencode",
+      "platform_binary_sha256": "a3c45d4e1d6620b436851f1ef6b25c71befcf06a382e279a1eb1c2196424395e",
+      "platform_binary_bytes": 144602594,
+      "npm_launcher_files": [
+        "LICENSE",
+        "bin/opencode.exe",
+        "package.json",
+        "postinstall.mjs"
+      ]
+    }
+  ],
+  "npm_launcher_file_hashes_sha256": {
+    "LICENSE": {
+      "1.18.18": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "1.18.32": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b"
+    },
+    "bin/opencode.exe": {
+      "1.18.18": "21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+      "1.18.32": "21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd"
+    },
+    "postinstall.mjs": {
+      "1.18.18": "5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b",
+      "1.18.32": "5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+    },
+    "package.json": {
+      "1.18.18": "3c26b2928a7fb423e8d60b71086a4e79eec8ad1fa9236647ad8f8baa0ff7bcd1",
+      "1.18.32": "e16daf8d0898f73840a3bd2efdefc6e007714f6380577484d07bc9bfd89802b2"
+    }
+  },
+  "acp_sdk": {
+    "package": "@agentclientprotocol/sdk",
+    "version": "0.21.0",
+    "pin": "packages/opencode/package.json dependencies.@agentclientprotocol/sdk",
+    "pinned_at_every_hop_1_18_18_through_1_18_32": true,
+    "tarball_sha256": "f19a8134c9060c3673bd58293597c6dd34004c626c7ecc09ef281af367f683f2",
+    "npm_integrity": "sha512-ONj+Q8qOdNQp5XbH5jnMwzT9IKZJsSN0p0lkceS4GtUtNOPVLpNzSS8gqQdGMKfBvA0ESbkL8BTaSN1Rc9miEw==",
+    "npm_shasum": "0ff29414374b868b5855f16b9bfa75a5ee16f8a1",
+    "npm_git_head": "74372b59f8f56eb30e72f2538df2671a0adb376f",
+    "npm_published_at": "2026-04-28T08:54:26.822Z",
+    "protocol_version_constant": 1,
+    "repository": "https://github.com/agentclientprotocol/typescript-sdk"
+  },
+  "installed_observation": {
+    "path": "/Users/tom/.opencode/bin/opencode",
+    "reported_version": "1.18.18",
+    "sha256": "4f5979c2dadb06fbff1335335afaaea274e58f92e79aa43cf2ed98618d555422",
+    "bytes": 143182562,
+    "artifact_kind": "mach-o",
+    "on_path": false,
+    "equals_official_platform_binary": true,
+    "equals_official_platform_package": "opencode-darwin-arm64@1.18.18",
+    "invocations": [
+      "opencode --version",
+      "opencode acp --help"
+    ],
+    "installed_or_updated": false,
+    "provider_session_or_prompt": false,
+    "selected_surface_matches_official_1_18_18": true,
+    "selected_surface_delta_to_1_18_32": "bounded to the 1.18.30 -> 1.18.31 hop in packages/opencode/src/acp/{service,event,config-option}.ts; the mcpServers chain, initialize response, entrypoint/argv, permissions, cancellation, and stop reasons are unchanged"
+  },
+  "claim_at_observation": {
+    "existing_opencode_claims": [
+      "opencode.http.server-window-1 (axis opencode.server)"
+    ],
+    "opencode_acp_claim_exists": false,
+    "route_in_matrix": false,
+    "admission_changed": false
+  }
+}

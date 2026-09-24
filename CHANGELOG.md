@@ -6,6 +6,24 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- raise the Grok Build ACP executable window through the current official
+  npm `@xai-official/grok` `1.0.41`: Research 340 freezes all eleven
+  published stables `1.0.31..=1.0.41` after the `1.0.30` ceiling with
+  verified linux-x64 identity, a darwin-arm64 cross-check that reproduces
+  Research 314, a byte-identical selected-literal presence map, an
+  unchanged `grok-4.6` model document, the 62 mapped-core ACP modules, and
+  a complete shipped-file inventory. The `1.0.41` hop adds one unmapped
+  `subagent_handoff` module and moves no mapped surface. The claim keeps
+  baseline `0.2.114`, claim id `grok-build.acp.executable-window-2`,
+  behavior `grok-build.acp-v1.cached-token-model-4-6-v3`, and
+  `AllowUnverified`, and extends the maintained window `1.0.4..=1.0.41`.
+  The exact `1.0.30` catalogue claim and the `1.0.4`/`1.0.5`
+  registered-tool courier stay independently bounded.
+- freeze Claude Code `2.1.280` and `2.1.281` official artifacts and built-in
+  hooks in Research 341. The `2.1.281` default-enabled `agents-md` hook can
+  add project instructions despite `--safe-mode`; no selected writable
+  setting disables all built-ins. g06.018 takes the narrowed-claim escalation
+  branch, leaving both qualified ceilings at `2.1.278` pending a ruling.
 - rebind the Goose `goose.acp` claim to exact `1.50.1` under the new
   `goose.acp.stdio-v2.auth-required` behavior revision. Research 328
   re-probed official GitHub `v1.50.1`, classified the `1.50.0..1.50.1` MCP
@@ -23,7 +41,109 @@ annotated Git tags from the canonical repository.
   specimens and Research 256's independent empty skill-visibility disposition
   remain unchanged.
 
+### Added
+- add the OpenCode ACP production route `opencode.acp` in
+  `swallowtail-adapter-opencode`, unflattened from `opencode.http`. Axis
+  `opencode.executable`, claim `opencode.acp.executable-window-1`, compiled
+  behavior `opencode.acp-v1.client-mcp-servers-v2` for `1.18.31..=1.18.32`,
+  with accepted-but-older `opencode.acp-v1.client-mcp-servers-v1` covering
+  deprecated `1.18.18..=1.18.30`. The driver pins `opencode acp --pure`,
+  records provider-fixed `protocolVersion` `1` without inferring acceptance,
+  admits one stdio MCP entry named `swallowtail-opencode-acp`, carries that
+  declaration onto working-state restoration, and models the URL-plus-header
+  `http`/`sse` placement behind the contract gate. Feature matrix MCP cells
+  stay No: Research 337 proved representability, not live honouring. No live
+  ACP session, login, install, or host update. Research 337, g06.016.
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `opencode.acp` production `session/new`. A session declares at most one
+  consumer entry, stdio or HTTP, under `swallowtail-opencode-acp`. HTTP
+  encoding emits ACP `type: "http"` with the consumer URL and headers
+  verbatim; `sse` stays modelled and unemitted. The public encoder returns
+  `OpenCodeAcpEncodedMcpServers`, whose `Debug` form redacts URL and header
+  values; the wire JSON stays crate-private. URL and header values stay
+  out of failures, diagnostics, activity, receipts, `Debug`, and plan
+  fingerprints. The Contract 061 placement projection names
+  `consumer-supplied-http`. Feature matrix MCP cells stay No: emission is
+  proven, live honouring of a remote tool call is not. Research 337, g06.019.
+
 ### Changed
+- rebind the exact `command-code.npm` `QualifiedOnly` point from `1.54.0` to
+  official npm `command-code` `1.65.0` with claim
+  `command-code.headless-window-1` and behavior
+  `command-code.agent-event-ndjson-v1` unchanged. Research 339 froze all 19
+  published stables after `1.54.0`; selected invocation, AgentEvent, result,
+  usage, plan mode, retention, and local lifecycle stay compatible. Research
+  330 live acceptance stays bound to exact `1.54.0` and is gated at `1.65.0`;
+  Research 116/118 stay bound to `1.15.1`. Unpublished `1.66.0` stays
+  incompatible. No prompt, login, install, host update, or downloaded-artifact
+  execution. g06.021.
+- raise the qualified OpenCode HTTP ceiling from `1.18.30` to official npm
+  `opencode-ai` `1.18.31` on the `opencode.server` axis. Compatible extension
+  of `opencode.http-sse.surface-19`: selected HTTP/SSE route files and OpenAPI
+  stay byte-identical, and the published GitHub tags diverge, so the hop is
+  proven from complete source-tree inventories rather than a commit range.
+  Unmapped remote-config auth defect-to-400 mapping, unmapped OpenCode ACP
+  restore/config-option work, the unmapped TUI exit-status change, and
+  unmapped GitHub Copilot summarized-thinking request shaping are the only
+  shipped server source changes; provider SDK bumps stay provider-facing.
+  Baseline `1.14.48`, claim id, historical gaps, and `AllowUnverified` stay;
+  unpublished `1.18.32` remains visible `UnverifiedNewer`. Research 332, g06.010.
+- raise both qualified Claude Code ceilings from `2.1.270` to official npm
+  `@anthropic-ai/claude-code` `2.1.278`: headless `2.1.220..=2.1.278` and
+  response-only `2.1.227..=2.1.278`. Compatible extension of
+  `claude-code.headless.stream-json.v1` and
+  `claude-code.response-only.stream-json.v1`. All eight published hops after
+  the ceiling were retrieved and classified on both platform builds; every
+  selected flag keeps an identical constructor-site fingerprint intersection,
+  the format, effort, and permission enumerations are unchanged, and the
+  required `init` keys plus `stream_event`, `hook_started`, `result`, and
+  `thinking_tokens` presence hold. Wrapper files except `package.json` and
+  `sdk-tools.d.ts` are byte-identical across all nine compared versions, and
+  every `sdk-tools.d.ts` delta is SDK tool declaration content the routes do
+  not consume. Host `claude` was not installed. Unpublished `2.1.244`,
+  `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, and `2.1.264` stay
+  incompatible; unpublished `2.1.279` remains visible `UnverifiedNewer`.
+  Baselines, claim ids, `AllowUnverified`, watcher exact `2.1.251`, and every
+  feature-specific exact-version set stay. Research 331, g06.009.
+- raise the shared `codex.cli` ceiling for Codex exec and app-server from
+  qualified `0.154.0` through official npm `@openai/codex` `0.155.1`.
+  Research 333 freezes both published stables `0.155.0` then `0.155.1` as a
+  compatible extension of `codex.exec.jsonl-v1`,
+  `codex.app-server.v2.workspace-roots`, and
+  `codex.app-server.lifecycle.v1.strict-descendant-hard-delete`. Keep
+  baseline `0.80.0`, both claim ids, and `AllowUnverified`. Pin newly
+  interior unpublished `0.154.1` incompatible alongside `0.149.2`,
+  `0.150.2`, `0.151.1`, and `0.152.2`. After qualification, unpublished
+  `0.155.2` is the first visible `UnverifiedNewer` point. Feature-specific
+  exact pins stay on the `0.147.0..=0.149.1` probed points. Voice,
+  code-mode-host, attachments, managed-daemon, and TUI stay unmapped.
+  Research 333.
+- raise the Qwen Code headless qualified ceiling through official npm
+  `@qwen-code/qwen-code` `0.24.2`: Research 334 freezes every published hop
+  after `0.23.3` (`0.23.4`, `0.24.0`, `0.24.1`, `0.24.2`) and classifies the
+  selected stream, controls, help, session, and Plan surfaces as a compatible
+  extension. Extend the maintained `0.22.0..=0.24.2` segment with unpublished
+  interior `0.22.4` and `0.23.5` kept incompatible, keep the exact
+  Plan set bounded at `0.22.3`, keep exact `0.21.15` reasoning and budgets,
+  preserve historical gaps and `AllowUnverified`, and leave board/sandbox,
+  goal workflow, Web Shell, daemon, ACP, Model Studio, and other adjacent
+  deltas unmapped. No provider operation or host mutation occurred.
+- raise the Claude Agent ACP qualified ceiling from `0.76.0` to official npm
+  `@agentclientprotocol/claude-agent-acp` `0.79.0`. Compatible extension of
+  `claude-agent.acp.initialize-meta-extensions-v7`: selected mapped ACP routes
+  stay, the ACP SDK pin stays `1.4.0`, and `dist/index.js`, `dist/settings.js`,
+  `dist/utils.js`, and `dist/lib.js` are byte-identical across every hop, so
+  mode ids/categories, `plan`/`acceptEdits`, permission option kinds, and the
+  effort config id stay. `0.77.0` removes the unmapped `agent` config option
+  and changes the multi-select Other description; `0.78.0` adds
+  capability-gated `compaction_update` that Swallowtail does not advertise and
+  changes the single-select Other description; `0.79.0` bumps the unmapped
+  Agent SDK pin to `0.3.274` and keeps command text in shell permission
+  titles. Already-mapped form elicitation accepts the two new Other
+  description strings. Unpublished `0.58.0`, `0.73.1`, `0.74.1`, `0.75.2`,
+  `0.76.1`, `0.77.1`, and `0.78.1` stay incompatible; synthetic unpublished
+  `0.80.0` remains visible `UnverifiedNewer`. Claude Code stream-JSON and the
+  Claude Agent SDK sidecar stay separate families. Research 335.
 - extend the qualified Oh My Pi RPC `18.x` package segment from
   `18.0.0..=18.1.22` to `18.0.0..=18.2.7` on the unchanged
   `oh-my-pi.rpc-v2-v18.0.0` behavior revision. Official npm and GitHub

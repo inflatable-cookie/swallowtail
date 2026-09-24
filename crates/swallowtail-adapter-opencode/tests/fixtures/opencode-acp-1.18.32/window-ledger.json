@@ -1,0 +1,276 @@
+{
+  "family": "opencode.acp",
+  "window": {
+    "baseline": "1.18.18",
+    "latest_qualified": "1.18.32"
+  },
+  "method": "sha256 of each selected published-tag source file at every stable ref v1.18.18..v1.18.32, fetched from the official GitHub tag refs; the two endpoint values were cross-checked against the downloaded tag archives",
+  "published_stables": [
+    "1.18.18",
+    "1.18.19",
+    "1.18.20",
+    "1.18.21",
+    "1.18.22",
+    "1.18.23",
+    "1.18.24",
+    "1.18.25",
+    "1.18.26",
+    "1.18.27",
+    "1.18.28",
+    "1.18.29",
+    "1.18.30",
+    "1.18.31",
+    "1.18.32"
+  ],
+  "acp_sdk_pin_per_version": {
+    "1.18.18": "0.21.0",
+    "1.18.19": "0.21.0",
+    "1.18.20": "0.21.0",
+    "1.18.21": "0.21.0",
+    "1.18.22": "0.21.0",
+    "1.18.23": "0.21.0",
+    "1.18.24": "0.21.0",
+    "1.18.25": "0.21.0",
+    "1.18.26": "0.21.0",
+    "1.18.27": "0.21.0",
+    "1.18.28": "0.21.0",
+    "1.18.29": "0.21.0",
+    "1.18.30": "0.21.0",
+    "1.18.31": "0.21.0",
+    "1.18.32": "0.21.0"
+  },
+  "selected_files": [
+    {
+      "path": "packages/opencode/src/acp/agent.ts",
+      "sha256_1_18_18": "3bf7c0a31bbf8c3dd5b3d06ddf38eff0c988858e5df6bb46d3abecc906f15a57",
+      "sha256_1_18_32": "3bf7c0a31bbf8c3dd5b3d06ddf38eff0c988858e5df6bb46d3abecc906f15a57",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/acp/config-option.ts",
+      "sha256_1_18_18": "27083dbd0c27cab7656ddf23959b75c0beeefbd3b54dec8d5ef32e24ba08e796",
+      "sha256_1_18_32": "4545cf9639b12b4a9a0bd28d9a5f61b3d8e7e6706558f04c66454773813ed1a1",
+      "changed_at_hops": [
+        "v1.18.31"
+      ],
+      "byte_identical_across_window": false
+    },
+    {
+      "path": "packages/opencode/src/acp/content.ts",
+      "sha256_1_18_18": "8b3c0bc40893eb18a2a4b8f8709a2188ffe5aa11e4d93232b4bd80989ba2bbc3",
+      "sha256_1_18_32": "8b3c0bc40893eb18a2a4b8f8709a2188ffe5aa11e4d93232b4bd80989ba2bbc3",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/acp/directory.ts",
+      "sha256_1_18_18": "c4f0f38ef433713afdd50f89d7ecf2ce8130f5104dc7606a2ff3f090726109b4",
+      "sha256_1_18_32": "c4f0f38ef433713afdd50f89d7ecf2ce8130f5104dc7606a2ff3f090726109b4",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/acp/error.ts",
+      "sha256_1_18_18": "60657818576b13275c4d3e665e6c586f686d98cc5ef30ac2ef4c0402c2c8080b",
+      "sha256_1_18_32": "60657818576b13275c4d3e665e6c586f686d98cc5ef30ac2ef4c0402c2c8080b",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/acp/event.ts",
+      "sha256_1_18_18": "14af93c9b428325f6b8d2db25d87a78e75d8a8e25c5937ec0b7ee8c5c4371741",
+      "sha256_1_18_32": "bbbfe1e210ba7ddf7b76a8d7d829e6f7e44d4d714c79dce832681ced9314d9ca",
+      "changed_at_hops": [
+        "v1.18.31"
+      ],
+      "byte_identical_across_window": false
+    },
+    {
+      "path": "packages/opencode/src/acp/permission.ts",
+      "sha256_1_18_18": "b83f1b30015f92f432e56a444a7304e131b1824b06870e7842c70db6bd969743",
+      "sha256_1_18_32": "b83f1b30015f92f432e56a444a7304e131b1824b06870e7842c70db6bd969743",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/acp/profile.ts",
+      "sha256_1_18_18": "e18bc3b08f5a26506394434436333fddc88ac15dcc9fbfbc0eb09944486e3c3a",
+      "sha256_1_18_32": "e18bc3b08f5a26506394434436333fddc88ac15dcc9fbfbc0eb09944486e3c3a",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/acp/service.ts",
+      "sha256_1_18_18": "c591e9bb8570a4492bffffae8b024069b617e5b64ceb684cfd538f020216efdf",
+      "sha256_1_18_32": "238750d52e220080db7b7f4992432fbfc7fb7ec5a15a6175460f8f0832a2c8de",
+      "changed_at_hops": [
+        "v1.18.31"
+      ],
+      "byte_identical_across_window": false
+    },
+    {
+      "path": "packages/opencode/src/acp/session.ts",
+      "sha256_1_18_18": "cc73f70f7d7071fd6bf808871c65bcb87d9f737f9e292be5e279ee51f5c9507e",
+      "sha256_1_18_32": "cc73f70f7d7071fd6bf808871c65bcb87d9f737f9e292be5e279ee51f5c9507e",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/acp/tool.ts",
+      "sha256_1_18_18": "decfa2d51b4edcf5a2259b754e1d6528b4d42aeff1309981c5ec19ff09d45e3e",
+      "sha256_1_18_32": "decfa2d51b4edcf5a2259b754e1d6528b4d42aeff1309981c5ec19ff09d45e3e",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/acp/usage.ts",
+      "sha256_1_18_18": "09b2c0ec9a31a78cf85d5810d8bc7aa8d9b0fa460b16f4d0008d7d5b4d3fc38b",
+      "sha256_1_18_32": "09b2c0ec9a31a78cf85d5810d8bc7aa8d9b0fa460b16f4d0008d7d5b4d3fc38b",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/cli/cmd/acp.ts",
+      "sha256_1_18_18": "104d1dfe498154fca38c5971deec8330be4793cedf122e36c5a38589089e1b23",
+      "sha256_1_18_32": "104d1dfe498154fca38c5971deec8330be4793cedf122e36c5a38589089e1b23",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/mcp/index.ts",
+      "sha256_1_18_18": "82c459309dfd005d25daecfabc1007d807d4bee23f6078434974277938a1c026",
+      "sha256_1_18_32": "82c459309dfd005d25daecfabc1007d807d4bee23f6078434974277938a1c026",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/core/src/config/mcp.ts",
+      "sha256_1_18_18": "5e5c1ed7d3d1a786edd6acc9774f5b4c91d6487279a34a8409c4090c42f95633",
+      "sha256_1_18_32": "5e5c1ed7d3d1a786edd6acc9774f5b4c91d6487279a34a8409c4090c42f95633",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/core/src/v1/config/mcp.ts",
+      "sha256_1_18_18": "7993ec591f75a42fc2763e5d22de20c7b216d73cb944e03c6729ecfa331072a9",
+      "sha256_1_18_32": "7993ec591f75a42fc2763e5d22de20c7b216d73cb944e03c6729ecfa331072a9",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/server/routes/instance/httpapi/groups/mcp.ts",
+      "sha256_1_18_18": "06fb822ef79a07981a0342e03e418685efdab9e931a4fc7bded1c868a8d63eb7",
+      "sha256_1_18_32": "06fb822ef79a07981a0342e03e418685efdab9e931a4fc7bded1c868a8d63eb7",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/src/server/routes/instance/httpapi/handlers/mcp.ts",
+      "sha256_1_18_18": "0f800a0abb57d9af0ace7340de0a041997e91f70e368d00d88d0563009ed5799",
+      "sha256_1_18_32": "0f800a0abb57d9af0ace7340de0a041997e91f70e368d00d88d0563009ed5799",
+      "changed_at_hops": [],
+      "byte_identical_across_window": true
+    },
+    {
+      "path": "packages/opencode/package.json",
+      "sha256_1_18_18": "3bd4269fe9e691cb23cd7d65d6057821eb56228fe429d551bedcab044413740c",
+      "sha256_1_18_32": "eb126c466ed6aee083bc42904c3f4c1d72e2821bde01e929e88c7727160eaa8f",
+      "changed_at_hops": [
+        "v1.18.19",
+        "v1.18.20",
+        "v1.18.21",
+        "v1.18.22",
+        "v1.18.23",
+        "v1.18.24",
+        "v1.18.25",
+        "v1.18.26",
+        "v1.18.27",
+        "v1.18.28",
+        "v1.18.29",
+        "v1.18.30",
+        "v1.18.31",
+        "v1.18.32"
+      ],
+      "byte_identical_across_window": false
+    }
+  ],
+  "selected_surface_hop_count": 1,
+  "single_selected_surface_hop": "1.18.30 -> 1.18.31",
+  "distinct_selected_file_hashes": {
+    "packages/opencode/src/acp/service.ts": {
+      "c591e9bb8570a4492bffffae8b024069b617e5b64ceb684cfd538f020216efdf": [
+        "1.18.18",
+        "1.18.19",
+        "1.18.20",
+        "1.18.21",
+        "1.18.22",
+        "1.18.23",
+        "1.18.24",
+        "1.18.25",
+        "1.18.26",
+        "1.18.27",
+        "1.18.28",
+        "1.18.29",
+        "1.18.30"
+      ],
+      "238750d52e220080db7b7f4992432fbfc7fb7ec5a15a6175460f8f0832a2c8de": [
+        "1.18.31",
+        "1.18.32"
+      ]
+    },
+    "packages/opencode/src/acp/event.ts": {
+      "14af93c9b428325f6b8d2db25d87a78e75d8a8e25c5937ec0b7ee8c5c4371741": [
+        "1.18.18",
+        "1.18.19",
+        "1.18.20",
+        "1.18.21",
+        "1.18.22",
+        "1.18.23",
+        "1.18.24",
+        "1.18.25",
+        "1.18.26",
+        "1.18.27",
+        "1.18.28",
+        "1.18.29",
+        "1.18.30"
+      ],
+      "bbbfe1e210ba7ddf7b76a8d7d829e6f7e44d4d714c79dce832681ced9314d9ca": [
+        "1.18.31",
+        "1.18.32"
+      ]
+    },
+    "packages/opencode/src/acp/config-option.ts": {
+      "27083dbd0c27cab7656ddf23959b75c0beeefbd3b54dec8d5ef32e24ba08e796": [
+        "1.18.18",
+        "1.18.19",
+        "1.18.20",
+        "1.18.21",
+        "1.18.22",
+        "1.18.23",
+        "1.18.24",
+        "1.18.25",
+        "1.18.26",
+        "1.18.27",
+        "1.18.28",
+        "1.18.29",
+        "1.18.30"
+      ],
+      "4545cf9639b12b4a9a0bd28d9a5f61b3d8e7e6706558f04c66454773813ed1a1": [
+        "1.18.31",
+        "1.18.32"
+      ]
+    }
+  },
+  "delta_classification": {
+    "1.18.30_to_1.18.31": {
+      "summary": "ACP session restore/config-option semantics and reasoning message-id binding only",
+      "admitted": "compatible extension; the mcpServers chain, initialize response, entrypoint/argv, permissions, cancellation, and stop reasons are byte-identical across the hop",
+      "changes": [
+        "session/load, session/resume, and session/fork restore model, effort variant, and mode from the durable backing session and message history, and add the `default` effort sentinel to the selectable variants",
+        "session/set_config_option and unstable_setSessionModel emit a `config_option_update` session/update notification (new frame as of 1.18.31)",
+        "reasoning chunks bind `messageId` to the reasoning part id instead of the message id"
+      ]
+    }
+  }
+}

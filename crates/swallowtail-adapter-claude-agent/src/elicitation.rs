@@ -12,6 +12,10 @@ const MAXIMUM_BYTES: usize = 64 * 1024;
 const MULTIPLE_QUESTION_MESSAGE: &str = "Please answer the following questions.";
 const CUSTOM_DESCRIPTION: &str =
     "Type your own answer instead of choosing an option above (optional).";
+const MULTI_SELECT_CUSTOM_DESCRIPTION: &str =
+    "Type your own answer to add to your selection above (optional).";
+const SINGLE_SELECT_CUSTOM_DESCRIPTION: &str =
+    "Type your own answer, or add a note to the option you chose above (optional).";
 const OPTION_META_KEY: &str = "_claude/askUserQuestionOption";
 const CUSTOM_META_KEY: &str = "_askUserQuestionCustomAnswer";
 
@@ -174,7 +178,14 @@ fn custom_field(index: usize) -> String {
 fn custom_field_is_supported(field: &Map<String, Value>, question_id: &str) -> bool {
     if field.get("type").and_then(Value::as_str) != Some("string")
         || field.get("title").and_then(Value::as_str) != Some("Other")
-        || field.get("description").and_then(Value::as_str) != Some(CUSTOM_DESCRIPTION)
+        || !matches!(
+            field.get("description").and_then(Value::as_str),
+            Some(
+                CUSTOM_DESCRIPTION
+                    | MULTI_SELECT_CUSTOM_DESCRIPTION
+                    | SINGLE_SELECT_CUSTOM_DESCRIPTION
+            )
+        )
     {
         return false;
     }
@@ -379,6 +390,72 @@ mod tests {
             response_content(&request, &response).unwrap(),
             json!({"question_0_custom": "Custom component"})
         );
+    }
+
+    #[test]
+    fn later_other_descriptions_still_map_to_typed_other() {
+        for description in [
+            MULTI_SELECT_CUSTOM_DESCRIPTION,
+            SINGLE_SELECT_CUSTOM_DESCRIPTION,
+        ] {
+            let mut custom = json!({
+                "type": "string",
+                "title": "Other",
+                "description": description
+            });
+            custom["_meta"] = json!({
+                CUSTOM_META_KEY: {"questionId": "question_0", "isCustomAnswer": true}
+            });
+            let params = json!({
+                "mode": "form",
+                "sessionId": "session",
+                "toolCallId": "tool",
+                "message": "Which component should be used?",
+                "requestedSchema": {
+                    "type": "object",
+                    "properties": {
+                        "question_0": {
+                            "type": "string",
+                            "title": "Component",
+                            "oneOf": [
+                                {"const": "Card", "title": "Card", "description": "Use the card."},
+                                {"const": "Panel", "title": "Panel", "description": "Use the panel."}
+                            ]
+                        },
+                        "question_0_custom": custom
+                    }
+                }
+            });
+            let mapped = request(&params)
+                .unwrap()
+                .expect("later Other description remains representable");
+            assert!(matches!(
+                mapped.questions().next().expect("one question").kind(),
+                HarnessUserInputQuestionKind::Choice {
+                    allow_other: true,
+                    ..
+                }
+            ));
+        }
+    }
+
+    #[test]
+    fn unknown_other_description_is_not_flattened() {
+        let params = form(
+            json!({
+                "type": "string",
+                "title": "Component",
+                "oneOf": [
+                    {"const": "Card", "title": "Card", "description": "Use the card."},
+                    {"const": "Panel", "title": "Panel", "description": "Use the panel."}
+                ]
+            }),
+            None,
+        );
+        let mut params = params;
+        params["requestedSchema"]["properties"]["question_0_custom"]["description"] =
+            json!("Type something else.");
+        assert!(request(&params).unwrap().is_none());
     }
 
     #[test]

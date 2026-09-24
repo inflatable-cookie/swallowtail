@@ -16,17 +16,17 @@ fn production_exec_claim_admits_0_154_0_as_the_maintained_ceiling() {
         assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-        exec.assess(&version("0.154.1"))
+        exec.assess(&version("0.155.2"))
     else {
-        panic!("0.154.1 must remain unverified newer after the claim card");
+        panic!("0.155.2 must remain unverified newer after the later claim");
     };
-    assert_eq!(unverified.latest_qualified().as_str(), "0.154.0");
+    assert_eq!(unverified.latest_qualified().as_str(), "0.155.1");
     assert_eq!(
         unverified.behavior_revision().as_str(),
         "codex.exec.jsonl-v1"
     );
     for gap in [
-        "0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.108.0", "0.109.0",
+        "0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.154.1", "0.108.0", "0.109.0",
     ] {
         assert_eq!(
             exec.assess(&version(gap)),
@@ -53,16 +53,16 @@ fn production_app_server_claim_admits_0_154_0_as_the_maintained_ceiling() {
         assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-        app_server.assess(&version("0.154.1"))
+        app_server.assess(&version("0.155.2"))
     else {
-        panic!("0.154.1 must remain unverified newer after the claim card");
+        panic!("0.155.2 must remain unverified newer after the later claim");
     };
-    assert_eq!(unverified.latest_qualified().as_str(), "0.154.0");
+    assert_eq!(unverified.latest_qualified().as_str(), "0.155.1");
     assert_eq!(
         unverified.behavior_revision().as_str(),
         "codex.app-server.v2.workspace-roots"
     );
-    for gap in ["0.149.2", "0.150.2", "0.151.1", "0.152.2"] {
+    for gap in ["0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.154.1"] {
         assert_eq!(
             app_server.assess(&version(gap)),
             InterfaceCompatibilityAssessment::Incompatible,

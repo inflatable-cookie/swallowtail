@@ -60,7 +60,7 @@
       "revision": "host-steering-option-and-form-marker-display"
     },
     {
-      "range": "0.66.0..=0.76.0",
+      "range": "0.66.0..=0.79.0",
       "introduced_by": "0.66.0",
       "tag_commit": "59a7e9367b3931a50178de4783cf6074b20060cd",
       "acp_sdk": "1.3.0",
@@ -175,6 +175,33 @@
       "classification": "qualified",
       "profile": "0.76.0-guarantee",
       "activity_delta": "recommended-config-values-and-clear-context-unmapped"
+    },
+    {
+      "version": "0.77.0",
+      "published_at": "2026-09-14T13:14:18.405Z",
+      "tag_commit": "dfe823b9581979cd22db40272d4469cc7e42b77e",
+      "source_sha256": "0f232770adcf279ce6e185c60ea005a3528c02aefb0b87af8053d75f7f622e71",
+      "classification": "qualified",
+      "profile": "0.79.0-guarantee",
+      "activity_delta": "agent-config-removal-and-multi-select-other-description"
+    },
+    {
+      "version": "0.78.0",
+      "published_at": "2026-09-15T21:01:04.061Z",
+      "tag_commit": "becd854dd813af769475cf66e081d48c3f25f081",
+      "source_sha256": "db1db1b10be8c39b47b0684a57fd3a82cf59e40b46be6bc8bd93d1d743dcfcdf",
+      "classification": "qualified",
+      "profile": "0.79.0-guarantee",
+      "activity_delta": "compaction-update-and-single-select-other-description"
+    },
+    {
+      "version": "0.79.0",
+      "published_at": "2026-09-17T14:55:56.043Z",
+      "tag_commit": "d421f56a6c43cde16d9a7531d08a750a5ef2f04a",
+      "source_sha256": "e9711af5c5dd150718c4a22b1760f913ce8a871b7355d1f0f63aa845d282e37c",
+      "classification": "qualified",
+      "profile": "0.79.0-guarantee",
+      "activity_delta": "agent-sdk-pin-and-shell-permission-title-unmapped"
     }
   ],
   "emitted_updates": [

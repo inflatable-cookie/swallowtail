@@ -53,7 +53,13 @@ Record provisional design the task settles, or write `None`.
 
 ## Evidence
 
-On completion, record: outcome, validation actually run, PR link, reviewed exact head, merge commit, and material limits or blockers.
+Worker evidence belongs in the worker's report and in the lane's designated
+evidence files, never in this card. A task file's pinned prose — including a
+result or evidence section — is immutable once the handoff is pinned. The only
+machine-owned region is the generated lifecycle block, which the lifecycle hook
+writes; do not hand-edit it. Report outcome, validation actually run, PR link,
+reviewed exact head, merge commit, and material limits through the
+authenticated run result.
 
 ## Next task
 

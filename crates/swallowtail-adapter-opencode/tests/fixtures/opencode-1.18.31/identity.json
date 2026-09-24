@@ -1,0 +1,77 @@
+{
+  "axis": "opencode.server",
+  "version": "1.18.31",
+  "observed_at": "2026-09-21",
+  "npm_package": "opencode-ai",
+  "npm_latest": true,
+  "github_latest_tag": "v1.18.31",
+  "official_channels_agree": true,
+  "github_tag_comparison_status": "diverged",
+  "github_tag_comparison": {
+    "base_tag": "v1.18.30",
+    "head_tag": "v1.18.31",
+    "merge_base_commit": "5cd8e68fdd72b27818d26d168b9c7a06b359567e",
+    "ahead_by": 25,
+    "behind_by": 1,
+    "linear_descendant": false,
+    "method": "deterministic complete source tree inventories, not commit-range summaries"
+  },
+  "host": {
+    "present": false,
+    "on_path": false,
+    "observation_only": true,
+    "installed_or_updated": false,
+    "invoked_beyond_version": false
+  },
+  "published_stables_from_previous_ceiling": [
+    "1.18.31"
+  ],
+  "unpublished_gap_in_1_18_30_through_1_18_31": false,
+  "unpublished_next": "1.18.32",
+  "official_hops": [
+    {
+      "version": "1.18.30",
+      "npm_published_at": "2026-09-09T03:33:55.588Z",
+      "npm_integrity": "sha512-oLcOLQE4XzDKy6T5L5d1RdVJvXHXwVlD4hRF5V317JbUQorrl2EyDdGZk5kbgv675J9FXp8usg92MZbEWhh6gQ==",
+      "npm_shasum": "7917bb2ccf6a3f63b76da353798c39ac699bfca7",
+      "npm_tarball_sha256": "3a97a99230d07fcbe6fd1ea2a001556297225d57f55d7880d3c9e6e29960ae90",
+      "github_tag_commit": "3104c1428ec91f809e5ab86631300de41eb6952e",
+      "github_release_target_commitish": "5cd8e68fdd72b27818d26d168b9c7a06b359567e",
+      "github_release_published_at": "2026-09-09T03:34:27Z",
+      "source_archive_sha256": "d54574de6a2b02d58fe4d403035103a08bdca0f4eafac63d3681cda774e85cd9"
+    },
+    {
+      "version": "1.18.31",
+      "npm_published_at": "2026-09-14T17:47:43.078Z",
+      "npm_integrity": "sha512-J95feefeWwtIaw3irx76WjzWcgQXxmuHmDVphvs5ep9X30fBJ6T6bFhw50i9Kx50MG/xPn5w2pafXIfNtdry9w==",
+      "npm_shasum": "af4a04d634555c02e4f410937c232c3c087c8a10",
+      "npm_tarball_sha256": "b6baa53003cd2e096981474ba9461a33aba2e6948b2b4b08c4aa1a88e6dc1b59",
+      "github_tag_commit": "014614d35b397775e5d397a490fc72368c894ec2",
+      "github_release_target_commitish": "a97622c801f4ca571530ddc51076af659a9c32cd",
+      "github_release_published_at": "2026-09-14T17:47:30Z",
+      "source_archive_sha256": "76f69fe27ec2b44e23fa1749029e7c012eb7e975a0f0c7819e9458198dfd3896"
+    }
+  ],
+  "claim_at_observation": {
+    "baseline": "1.14.48",
+    "latest_qualified": "1.18.30",
+    "posture": "allow_unverified",
+    "classification_of_1_18_31": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "keep_surface_19": true,
+    "add_private_surface": null,
+    "raise_latest_qualified_to": "1.18.31",
+    "keep_baseline": "1.14.48",
+    "keep_historical_segments_and_gaps": true,
+    "new_public_operation": false,
+    "selected_route_and_handler_files_byte_identical": true,
+    "openapi_byte_identical": true,
+    "provider_prompt_sent": false,
+    "live_server_started": false,
+    "downloaded_artifact_executed": false,
+    "host_install_changed": false,
+    "claim_changed_in_identity_card": false
+  }
+}

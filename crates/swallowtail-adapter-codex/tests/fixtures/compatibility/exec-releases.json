@@ -21,7 +21,9 @@
     "0.153.2",
     "0.153.3",
     "0.153.4",
-    "0.154.0"
+    "0.154.0",
+    "0.155.0",
+    "0.155.1"
   ],
   "required_argv": [
     "exec",
@@ -352,6 +354,34 @@
       "classification": "candidate"
     },
     {
+      "version": "0.155.0",
+      "tag_commit": "f0a1b8f0849d90960bc406b848f32e5a129b0457",
+      "npm_integrity": "sha512-35a85Hbwy9WXkDTJumLjTcmMgpR7BMdrTloWBVGjoA+FBCh7jb3+cYp2W+3U4klqGAjAskoIvQZv7/eedmCjHA==",
+      "npm_shasum": "d0feb7b169b84ee02dd9712c14eee1abe8bf0caf",
+      "help_sha256": null,
+      "cli_source_sha256": null,
+      "events_source_sha256": null,
+      "json": true,
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "ignore_rules": true,
+      "classification": "candidate"
+    },
+    {
+      "version": "0.155.1",
+      "tag_commit": "be2951ea34f0d295ed0becf97079f92fa5f6950e",
+      "npm_integrity": "sha512-02fAAGyBtlA1zPjEo3kTj/bOSYbPz5DvjLwRZJdV7weFFEDzNFOMjQGmZ/+5CuirYV0hE+AZTrnjzwXYU4AdAQ==",
+      "npm_shasum": "7190987abfcabc8fcba7774518539d694a490fc8",
+      "help_sha256": null,
+      "cli_source_sha256": null,
+      "events_source_sha256": null,
+      "json": true,
+      "ephemeral": true,
+      "ignore_user_config": true,
+      "ignore_rules": true,
+      "classification": "candidate"
+    },
+    {
       "version": "0.146.0-alpha.4",
       "tag_commit": "34a3d19b2fa18fafee7236c834f8b63c584c1986",
       "npm_integrity": "sha512-vjaXlVT2yfl0RWigu7dlU8imc29EBVm6y5heN0AWDeAHl3J7r1Oo1XdLk+ZU1gqrUPaeujYo4BLLtZjVGwN8wQ==",
@@ -368,7 +398,7 @@
   ],
   "synthetic_rejections": ["not-a-version"],
   "unverified_newer": {
-    "version": "0.154.1",
+    "version": "0.155.2",
     "evidence": "synthetic-later-stable-classification",
     "execution": "permitted-with-explicit-unverified-status",
     "guaranteed": false

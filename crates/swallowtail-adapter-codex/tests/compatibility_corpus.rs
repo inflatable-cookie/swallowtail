@@ -21,6 +21,7 @@ const CODEX_0_151_0_RANGE: &str = include_str!("fixtures/compatibility/codex-0-1
 const CODEX_0_152_0_RANGE: &str = include_str!("fixtures/compatibility/codex-0-152-0-range.json");
 const CODEX_0_152_1_RANGE: &str = include_str!("fixtures/compatibility/codex-0-152-1-range.json");
 const CODEX_0_154_0_RANGE: &str = include_str!("fixtures/compatibility/codex-0-154-0-range.json");
+const CODEX_0_155_1_RANGE: &str = include_str!("fixtures/compatibility/codex-0-155-1-range.json");
 
 include!("compatibility_corpus/exec.rs");
 include!("compatibility_corpus/app_server.rs");
@@ -35,3 +36,4 @@ include!("compatibility_corpus/range_0_151.rs");
 include!("compatibility_corpus/range_0_152.rs");
 include!("compatibility_corpus/range_0_152_1.rs");
 include!("compatibility_corpus/range_0_154_0.rs");
+include!("compatibility_corpus/range_0_155_1.rs");

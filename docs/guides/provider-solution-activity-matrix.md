@@ -13,13 +13,13 @@ cleanup deadline. That boundary covers all post-expiry interruption, joins,
 credential release, and resource release; deadline expiry cannot be reported
 as clean.
 
-The inventory contains 86 route-operation rows:
+The inventory contains 89 route-operation rows:
 
-- 56 ordinary structured-run or interactive-session profiles with
+- 58 ordinary structured-run or interactive-session profiles with
   `available` activity
-- 30 catalogue, inventory, provider-session-management, realtime-media, or
+- 31 catalogue, inventory, provider-session-management, realtime-media, or
   serving operations where ordinary agent activity is `not-applicable`
-- all 48 production route identities
+- all 51 production route identities
 - four auxiliary hosted catalogue identities
 
 There is no unexplained whole-operation `unavailable` result. An

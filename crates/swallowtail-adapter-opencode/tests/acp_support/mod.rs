@@ -28,6 +28,7 @@ use swallowtail_runtime::{
     WorkingResourceService,
 };
 
+include!("http_mcp.rs");
 include!("agent.rs");
 
 #[derive(Clone)]

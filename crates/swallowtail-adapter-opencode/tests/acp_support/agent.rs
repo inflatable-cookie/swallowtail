@@ -1,6 +1,8 @@
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Scenario {
     Success,
+    #[allow(dead_code)]
+    HttpMcpHonour,
     UnexpectedWrite,
     Permission,
     Cancellation,
@@ -24,6 +26,7 @@ struct AgentState {
     writes: Vec<Value>,
     prompt_id: Option<u64>,
     stopped: bool,
+    http_mcp: Option<(String, Vec<(String, String)>)>,
 }
 
 struct SharedAgent {
@@ -93,6 +96,26 @@ impl SharedAgent {
                         }
                     }),
                 ),
+                Scenario::HttpMcpHonour => {
+                    let placement = message.get("params").and_then(placement_from_session_new);
+                    drop(state);
+                    if let Some((url, headers)) = placement.as_ref() {
+                        let _ = connect_and_list(url, headers);
+                    }
+                    let mut state = self.state.lock().expect("fixture agent lock poisoned");
+                    state.http_mcp = placement;
+                    Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "result": {
+                                "sessionId": "opaque-fixture-session"
+                            }
+                        }),
+                    );
+                    enqueue_session_metadata(&mut state);
+                }
                 _ => {
                     Self::enqueue(
                         &mut state,
@@ -110,6 +133,73 @@ impl SharedAgent {
             Some("session/prompt") => {
                 state.prompt_id = id;
                 match self.scenario {
+                    Scenario::HttpMcpHonour => {
+                        let prompt_id = state.prompt_id.take();
+                        let placement = state.http_mcp.clone();
+                        drop(state);
+                        let result = placement
+                            .as_ref()
+                            .and_then(|(url, headers)| call_ping(url, headers).ok())
+                            .unwrap_or_else(|| "missing-tool-result".to_owned());
+                        let mut state = self.state.lock().expect("fixture agent lock poisoned");
+                        Self::enqueue(
+                            &mut state,
+                            json!({
+                                "jsonrpc": "2.0",
+                                "method": "session/update",
+                                "params": {
+                                    "sessionId": "opaque-fixture-session",
+                                    "update": {
+                                        "sessionUpdate": "tool_call",
+                                        "toolCallId": "tool-mcp-ping",
+                                        "title": "ping",
+                                        "kind": "other",
+                                        "status": "in_progress"
+                                    }
+                                }
+                            }),
+                        );
+                        Self::enqueue(
+                            &mut state,
+                            json!({
+                                "jsonrpc": "2.0",
+                                "method": "session/update",
+                                "params": {
+                                    "sessionId": "opaque-fixture-session",
+                                    "update": {
+                                        "sessionUpdate": "tool_call_update",
+                                        "toolCallId": "tool-mcp-ping",
+                                        "status": "completed",
+                                        "content": [{"type":"content","content":{"type":"text","text": result}}]
+                                    }
+                                }
+                            }),
+                        );
+                        Self::enqueue(
+                            &mut state,
+                            json!({
+                                "jsonrpc": "2.0",
+                                "method": "session/update",
+                                "params": {
+                                    "sessionId": "opaque-fixture-session",
+                                    "update": {
+                                        "sessionUpdate": "agent_message_chunk",
+                                        "content": {"type": "text", "text": result}
+                                    }
+                                }
+                            }),
+                        );
+                        if let Some(prompt_id) = prompt_id {
+                            Self::enqueue(
+                                &mut state,
+                                json!({
+                                    "jsonrpc": "2.0",
+                                    "id": prompt_id,
+                                    "result": {"stopReason": "end_turn"}
+                                }),
+                            );
+                        }
+                    }
                     Scenario::Success => {
                         enqueue_session_metadata(&mut state);
                         Self::enqueue(
@@ -191,7 +281,9 @@ impl SharedAgent {
                     }
                     Scenario::Cancellation => {}
                     Scenario::Disconnect => state.stopped = true,
-                    Scenario::AuthRequired | Scenario::Malformed | Scenario::ProtocolMismatch => {}
+                    Scenario::AuthRequired
+                    | Scenario::Malformed
+                    | Scenario::ProtocolMismatch => {}
                 }
             }
             Some("session/cancel") => {

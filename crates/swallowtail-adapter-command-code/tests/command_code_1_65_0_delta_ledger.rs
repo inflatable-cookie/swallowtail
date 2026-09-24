@@ -25,7 +25,10 @@ fn identity_freezes_the_baseline_and_every_published_successor() {
     assert_eq!(identity["official"]["file_count"], 72);
     assert_eq!(identity["official"]["engines_node"], ">=22");
     assert_eq!(identity["claim_at_observation"]["posture"], "QualifiedOnly");
-    assert_eq!(identity["claim_at_observation"]["latest_qualified"], "1.54.0");
+    assert_eq!(
+        identity["claim_at_observation"]["latest_qualified"],
+        "1.54.0"
+    );
     assert_eq!(
         identity["identity_decision"]["segment"],
         "compatible-extension"

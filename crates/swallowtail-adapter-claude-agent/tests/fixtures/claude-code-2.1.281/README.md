@@ -10,5 +10,5 @@ both platform binaries corroborate registration. `protocol.json` freezes the
 response-only decision inputs, including the `instructionFiles` and telemetry
 opt-out parser results and the v2 launch-directory rule.
 
-Research 341 froze the stop. Research 342 records the claim under the
+Research 341 froze the stop. Research 348 records the claim under the
 narrowed built-in-hook guarantee.

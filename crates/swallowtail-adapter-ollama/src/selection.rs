@@ -10,11 +10,10 @@ use swallowtail_core::{
 pub const OLLAMA_BASELINE_VERSION: &str = "0.14.0";
 /// Newest Ollama runtime release qualified for the native text facade.
 ///
-/// Hops `0.33.0` through `0.33.2` are a compatible extension of
-/// `ollama.native-text-v1`. `0.33.3` and later stay visibly unverified: the
-/// strict native decoder fail-closes on the additive `0.33.3`
-/// `prompt_eval_cached_count` metrics key (Research 313).
-pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.33.2";
+/// Hops `0.33.3` through `0.34.2` are a compatible extension of
+/// `ollama.native-text-v1` after decoder-tolerance of the additive `0.33.3`
+/// `prompt_eval_cached_count` metrics key (Research 342).
+pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.34.2";
 pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";
 /// Exact text-only native API facade selected by this adapter.
@@ -130,7 +129,7 @@ mod tests {
         assert!(descriptor.supports_role(DriverRole::InteractiveSession));
         for version in [
             "0.14.0", "0.18.0", "0.30.0", "0.32.1", "0.32.9", "0.32.14", "0.32.15", "0.33.0",
-            "0.33.1", "0.33.2",
+            "0.33.1", "0.33.2", "0.33.3", "0.34.0", "0.34.1", "0.34.2",
         ] {
             assert_eq!(
                 descriptor
@@ -147,21 +146,19 @@ mod tests {
                 &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
             ));
         }
-        for version in ["0.33.3", "0.34.0", "0.34.1"] {
-            assert!(matches!(
-                descriptor.assess_interface_version(
-                    &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
-                ),
-                swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-            ));
-        }
+        assert!(matches!(
+            descriptor.assess_interface_version(
+                &ollama_runtime_binding("0.34.3").expect("fixture Ollama version is valid"),
+            ),
+            swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
     }
 
     #[test]
     fn reusable_testkit_asserts_the_same_closed_window() {
         let case = swallowtail_testkit::ClosedSemanticWindowCase::new(
             InterfaceVersion::new("0.14.0").unwrap(),
-            InterfaceVersion::new("0.33.2").unwrap(),
+            InterfaceVersion::new("0.34.2").unwrap(),
         )
         .with_accepted([
             InterfaceVersion::new("0.18.0").unwrap(),
@@ -172,6 +169,10 @@ mod tests {
             InterfaceVersion::new("0.32.15").unwrap(),
             InterfaceVersion::new("0.33.0").unwrap(),
             InterfaceVersion::new("0.33.1").unwrap(),
+            InterfaceVersion::new("0.33.2").unwrap(),
+            InterfaceVersion::new("0.33.3").unwrap(),
+            InterfaceVersion::new("0.34.0").unwrap(),
+            InterfaceVersion::new("0.34.1").unwrap(),
         ])
         .with_rejected([
             InterfaceVersion::new("0.13.5").unwrap(),
@@ -185,7 +186,7 @@ mod tests {
         );
         swallowtail_testkit::assert_unverified_newer_execution(
             &ollama_runtime_claim(),
-            &InterfaceVersion::new("0.34.1").unwrap(),
+            &InterfaceVersion::new("0.34.3").unwrap(),
         );
     }
 }

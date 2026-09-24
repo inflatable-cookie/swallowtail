@@ -1,0 +1,172 @@
+{
+  "axis": "antigravity-cli.release",
+  "observed_at": "2026-09-21",
+  "github_repo": "google-antigravity/antigravity-cli",
+  "official_latest": "1.2.7",
+  "not_gemini_cli": true,
+  "not_antigravity_acp": true,
+  "host": {
+    "installed": false,
+    "install_attempted": false,
+    "executed_during_probe": false
+  },
+  "official": {
+    "version": "1.2.7",
+    "published_at": "2026-09-19T01:01:46Z",
+    "github_commit": "7bb195acaec9e7788df5210d0dc3e15f3cefc6b3",
+    "assets": {
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "sha256": "e410dd56d8c213ef12643d3ff5eaaab57a17e05bbf72e9415322f23879fc4a18",
+        "size": 61763170,
+        "extracted_cli_sha256": "9991515b6d5307bcf701069622b0537b6b206e605f3c891c0cf3a3d208dea8b0",
+        "extracted_cli_size": 224268544,
+        "elf_build_id": "4666c9380200e7538aab7b73748b9341"
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "sha256": "ce9fe3f4d6f44a2b1c83b334fc5c8f2975079959e24dd805e10eb49ab8c76a7e",
+        "tarball_size": 53945901,
+        "extracted_cli_sha256": "8c01ef82307dc01455418eb2e6e82f2989a3fa8b815c4b192efaaa89a55bef8d",
+        "extracted_cli_size": 189658880
+      }
+    },
+    "version_literal_in_binary": "1.2.7"
+  },
+  "published_stables_from_previous_ceiling": [
+    "1.2.3",
+    "1.2.4",
+    "1.2.5",
+    "1.2.6",
+    "1.2.7"
+  ],
+  "artifacts": {
+    "1.2.3": {
+      "published_at": "2026-09-15T02:03:04Z",
+      "github_commit": "444063c79f81a36f124ad613b30caf113f093c0b",
+      "linux_x64_tarball_sha256": "57afb34f2a4be9296beb477e600761b6ac7401eb3a54a64a0014d573b7fc3af4",
+      "linux_x64_tarball_size": 57891892,
+      "mac_arm64_tarball_sha256": "c244ec966f5d8c22d845117332a6858f3abaf0fb5c8058e337d51b77b2c93e50",
+      "mac_arm64_tarball_size": 50217630,
+      "linux_x64_extracted_cli_sha256": "c4c8a6722f9b570e370941b0953ba29051336307d7999ec842bdf7500b0ca7c8",
+      "linux_x64_extracted_cli_size": 215384320,
+      "linux_x64_elf_build_id": "41c0722061557995df58308202bf857a",
+      "mac_arm64_extracted_cli_sha256": "e0c2743e3fd062e11c13d2eb5fabaa244936094bbe39c30fdfbac619bb78e554",
+      "mac_arm64_extracted_cli_size": 181740432,
+      "version_literal_in_binary": "1.2.3"
+    },
+    "1.2.4": {
+      "published_at": "2026-09-16T03:54:29Z",
+      "github_commit": "e5dcb8247e3c364671f2bae4c64971c8632590ed",
+      "linux_x64_tarball_sha256": "dcd3e4d8c8afb1902d59c1ae52812458d2ddab67a5d2db44810c512910d918fe",
+      "linux_x64_tarball_size": 58151273,
+      "mac_arm64_tarball_sha256": "f59c12c289e74bbb48178f827702c6224bd0aa920914319f85b42760dfc72f4c",
+      "mac_arm64_tarball_size": 50449780,
+      "linux_x64_extracted_cli_sha256": "5c19ea964509bc4fd33c3789860f017a8ca22ef93cb48d333c7b95b118bbb6a7",
+      "linux_x64_extracted_cli_size": 217022720,
+      "linux_x64_elf_build_id": "4c44c1cba03957b96aa5127baafa441d",
+      "mac_arm64_extracted_cli_sha256": "a939016cfb86e3862112ee57124f1bc14f30defdd69e181a8526b6e7c80a4471",
+      "mac_arm64_extracted_cli_size": 182974368,
+      "version_literal_in_binary": "1.2.4"
+    },
+    "1.2.5": {
+      "published_at": "2026-09-17T04:10:06Z",
+      "github_commit": "48e88e0723bc8f3c7b6bdae85d34067b04fc9277",
+      "linux_x64_tarball_sha256": "e450caab5682acc920721b04cf0f6860c313d1f5296bc6e49d79cd3843802e65",
+      "linux_x64_tarball_size": 58151164,
+      "mac_arm64_tarball_sha256": "b37495eebe53e1c565dd6d77bdd1d3ba603216b5d3acddafb185f97d35fdf9eb",
+      "mac_arm64_tarball_size": 50431921,
+      "linux_x64_extracted_cli_sha256": "84808e105f643f135d9b347b36005d5bbe6cfe09c5ffc61e3311700adb5a3286",
+      "linux_x64_extracted_cli_size": 217284864,
+      "linux_x64_elf_build_id": "cd38e0524c59a16f19d3d459ae25311d",
+      "mac_arm64_extracted_cli_sha256": "cdf6bcff6840b12184b7ff3210c156a522f9d855ce32f4e27ce34c40091a8409",
+      "mac_arm64_extracted_cli_size": 183156336,
+      "version_literal_in_binary": "1.2.5"
+    },
+    "1.2.6": {
+      "published_at": "2026-09-18T04:21:05Z",
+      "github_commit": "d39491f6f98a62aaf29af76964aa4fe75bc044d4",
+      "linux_x64_tarball_sha256": "3d4973187c4c074e70894068053eeef1b7dfa9c0a16bfe9c3b81954de0d2cc5c",
+      "linux_x64_tarball_size": 58626363,
+      "mac_arm64_tarball_sha256": "14e1be7ed9b35e512b6aa2f2b2ba3ad79877dbde1b2d487892d3721806ff9e59",
+      "mac_arm64_tarball_size": 50904209,
+      "linux_x64_extracted_cli_sha256": "312eb057d8b8155383e74242e948333c6556adc779e9398b121a863390691fe9",
+      "linux_x64_extracted_cli_size": 218132688,
+      "linux_x64_elf_build_id": "15cff90bb5b1dfa7429a148ef393c21f",
+      "mac_arm64_extracted_cli_sha256": "7e1a1036b68cd8e2ad66097ddc8f43dc2081079d51d340863647dc8de2a1bc84",
+      "mac_arm64_extracted_cli_size": 184043424,
+      "version_literal_in_binary": "1.2.6"
+    },
+    "1.2.7": {
+      "published_at": "2026-09-19T01:01:46Z",
+      "github_commit": "7bb195acaec9e7788df5210d0dc3e15f3cefc6b3",
+      "linux_x64_tarball_sha256": "e410dd56d8c213ef12643d3ff5eaaab57a17e05bbf72e9415322f23879fc4a18",
+      "linux_x64_tarball_size": 61763170,
+      "mac_arm64_tarball_sha256": "ce9fe3f4d6f44a2b1c83b334fc5c8f2975079959e24dd805e10eb49ab8c76a7e",
+      "mac_arm64_tarball_size": 53945901,
+      "linux_x64_extracted_cli_sha256": "9991515b6d5307bcf701069622b0537b6b206e605f3c891c0cf3a3d208dea8b0",
+      "linux_x64_extracted_cli_size": 224268544,
+      "linux_x64_elf_build_id": "4666c9380200e7538aab7b73748b9341",
+      "mac_arm64_extracted_cli_sha256": "8c01ef82307dc01455418eb2e6e82f2989a3fa8b815c4b192efaaa89a55bef8d",
+      "mac_arm64_extracted_cli_size": 189658880,
+      "version_literal_in_binary": "1.2.7"
+    }
+  },
+  "frozen_1_2_2_boundary_reproduction": {
+    "1.2.2_linux_x64_tarball_sha256": "2cfa5c9a4a1edd96db6d4058f34970be60d3bcacda866e2bdce6aefb2451b48e",
+    "1.2.2_linux_x64_binary_sha256": "e8f90ef67943b56c1148d73bc0e102d0b44d18935ffb11d49a2d870a095f416b",
+    "matches_research_323": true,
+    "digest_disagreement": false
+  },
+  "public_git_hops": "CHANGELOG.md-only",
+  "first_unpublished_later_stable": "1.2.8",
+  "first_unpublished_release_absent": true,
+  "first_unpublished_tag_absent": true,
+  "keep_1_1_8_incompatible": true,
+  "decoder_corpus": "antigravity-cli-1.1.9",
+  "claim_at_observation": {
+    "baseline": "1.1.9",
+    "catalogue_latest_qualified": "1.2.2",
+    "headless_latest_qualified": "1.1.17",
+    "posture": "allow_unverified",
+    "classification_of_1_2_3": "unverified_newer",
+    "classification_of_1_2_7": "unverified_newer"
+  },
+  "identity_decision": {
+    "behavioural_authority": "official-release-notes",
+    "authority_ruling": "Tom directed on 2026-09-15 that the official release notes are the behavioural authority; exhaustive binary scanning stays stopped and collected hashes are preserved",
+    "catalogue": {
+      "shape": "compatible-extension",
+      "advance_to": "1.2.7",
+      "qualify_intermediates": [
+        "1.2.3",
+        "1.2.4",
+        "1.2.5",
+        "1.2.6"
+      ],
+      "keep_catalogue_behavior": "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1",
+      "keep_baseline": "1.1.9",
+      "reason": "no published selected-path change to `agy models` in the 1.2.3..1.2.7 release notes; published retry, timeout, and print-error changes name the agent model-request loop and `-p`/`--prompt` headless path, not the catalogue command"
+    },
+    "headless": {
+      "shape": "stop",
+      "blocking_hop": "1.1.22",
+      "keep_latest_qualified": "1.1.17",
+      "unqualified_gap": "1.1.18..=1.2.7",
+      "keep_headless_behavior": "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1",
+      "keep_baseline": "1.1.9",
+      "reason": "the 1.1.22 provider-managed HTTP 502 retry stands; 1.2.6 changes the published headless default `--print-timeout` from 5 minutes to unlimited and replaces agent/model API failure with `AGY_ERROR` plus exit 3; 1.2.7 caps per-attempt retry backoff at 30 seconds but still publishes no finite attempt bound or disable control"
+    },
+    "new_public_operation": false,
+    "new_private_milestone": false,
+    "headless_must_move_with_catalogue": false,
+    "headless_stop_reopened": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_print_run": false,
+    "host_install_changed": false,
+    "downloaded_binaries_executed": false,
+    "exhaustive_binary_forensics_after_ruling": false,
+    "official_latest_moved_during_run": false
+  }
+}

@@ -17,7 +17,7 @@ location launches in an adapter-owned empty temporary directory.
 frozen parsers and not pinned. Watcher stays exact `2.1.251`. Every
 feature-specific exact set stays on its probed points.
 
-Research 342. g06.022.
+Research 348. g06.022.
 
 ## Validation
 

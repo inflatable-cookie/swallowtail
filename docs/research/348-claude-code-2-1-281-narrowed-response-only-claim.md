@@ -1,4 +1,4 @@
-# 342 Claude Code 2.1.281 Narrowed Response-Only Claim
+# 348 Claude Code 2.1.281 Narrowed Response-Only Claim
 
 Status: promoted; g06.022 claim evidence.
 

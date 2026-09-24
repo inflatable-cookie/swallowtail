@@ -23,6 +23,14 @@ g06.018 for the Claude Code `2.1.280` `--safe-mode` stop.
 **Grok Bot suite pilot.** #358 (Grok Build ACP) enters review entry as the
 pilot for #354–#359 (g06.020); the rest wait for a fresh base.
 
+**Grok Bot suite admitted.** After the pilot landed, Tom approved #354–#357
+and #359 and attested that every Grok Bot PR was written by Grok 4.6 or 4.7
+(g06.023–g06.027). Research 342–346 are reserved one per PR.
+
+**Narrowed Claude Code response-only guarantee.** g06.018 ended on branch 3;
+Tom accepted the narrowed guarantee recorded in Contract 039, and g06.022
+qualifies both axes.
+
 **Next currentness lane.** Command Code `1.54.0` → current official (g06.021).
 
 **No rollover.** g06 holds 21 tasks, below the 30–50 range; the earlier

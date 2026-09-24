@@ -73,6 +73,11 @@ maintained in this section.
 - [030 Ollama Runtime Current-Release Qualification](./030-ollama-runtime-current-release.md) — ready; raises `ollama.runtime` from `0.34.2` to current official, provider-free
 - [031 ACP Routes HTTP MCP Acceptance Evidence](./031-acp-routes-http-mcp-acceptance-evidence.md) — ready; classifies each remaining ACP route for direct consumer HTTP MCP from frozen artifacts, advancing g06.005
 - [032 Research Number Collision Check](./032-research-number-collision-check.md) — ready; extends the number-collision check to research records
+- [033 Claude Agent ACP Consumer HTTP MCP Wiring](./033-claude-agent-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `claude-agent.acp` per Research 351
+- [034 Copilot CLI ACP Consumer HTTP MCP Wiring](./034-copilot-cli-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `copilot-cli.acp` per Research 351
+- [035 Gemini CLI ACP Consumer HTTP MCP Wiring](./035-gemini-cli-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `gemini-cli.acp` per Research 351
+- [036 Goose ACP Consumer HTTP MCP Wiring](./036-goose-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `goose.acp` per Research 351
+- [037 Kiro ACP Consumer HTTP MCP Wiring](./037-kiro-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `kiro.acp` per Research 351
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:260cd98a6880bfb7a297be2242b2c0345c15136023edffa4ea725525f7dd8893 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

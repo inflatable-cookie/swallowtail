@@ -15,8 +15,8 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g06.031 ACP Routes HTTP MCP Acceptance Evidence](./g06/031-acp-routes-http-mcp-acceptance-evidence.md)
-is the lead ready lane; the [g06 manifest](./g06/README.md) holds any other
+[g06.033 Claude Agent ACP Consumer HTTP MCP Wiring](./g06/033-claude-agent-acp-consumer-http-mcp-wiring.md)
+is the lead ready lane; the [g06 manifest](./g06/README.md) holds the other
 ready lanes. g06.001–g06.005 stay planned and gated. Do not infer release,
 tag, publication, live-provider, or consumer authority.
 

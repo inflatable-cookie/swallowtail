@@ -1,4 +1,4 @@
-# Research 331: Cursor Agent 2026.09.18 Identity
+# Research 343: Cursor Agent 2026.09.18 Identity
 
 Status: complete; identity evidence only. Production claim changes land with
 this family's claim commit after this record.

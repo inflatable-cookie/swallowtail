@@ -145,7 +145,7 @@ annotated Git tags from the canonical repository.
   `0.80.0` remains visible `UnverifiedNewer`. Claude Code stream-JSON and the
   Claude Agent SDK sidecar stay separate families. Research 335.
 - raise the Cursor Agent catalogue, ACP, and headless qualified ceiling
-  through official `2026.09.18-9a7762b`: Research 331 freezes both
+  through official `2026.09.18-9a7762b`: Research 343 freezes both
   published hops after `2026.09.10-fd3934a` with a complete tree inventory
   and classifies the selected CLI definitions, ACP initialize subset, and
   stream-json event keys as unchanged on Swallowtail's selected client.

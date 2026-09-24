@@ -40,10 +40,10 @@ must stay untouched by a window raise.
 - Keep the exact `1.0.30` catalogue pin, the `1.0.4`/`1.0.5` registered-tool
   courier, claim id `grok-build.acp.executable-window-2`, and the behavior
   revision unless identity proves a change.
-- The author declaration needs Tom's attestation for #358 itself before
-  intake binds; the Cursor-cloud footer and GitHub `betterthanclay` alone do
-  not establish a model. Do not extend any attestation to #354–#357 or #359
-  without his word.
+- Author declaration: Tom attested on 2026-09-24 that Grok 4.7 wrote #358,
+  recorded as `xai/grok-4.7`; GitHub `betterthanclay`; Cursor cloud agent per
+  the PR footer. It is operator-declared, not runtime-observed, and does not
+  extend to #354–#357 or #359.
 
 ## Dispatch manifest
 

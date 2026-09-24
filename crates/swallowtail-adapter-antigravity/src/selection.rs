@@ -14,11 +14,11 @@ pub const ANTIGRAVITY_RELEASE_AXIS: &str = "antigravity-cli.release";
 /// Oldest release in the current maintained qualification window.
 pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
 /// Latest catalogue release in the current maintained qualification window.
-pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.2.2";
+pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.2.7";
 /// Latest headless release in the current maintained qualification window.
 pub const ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
 /// Historical shared ceiling. The headless claim still ends here; the
-/// catalogue claim advanced to `1.2.2` under Research 323 while headless
+/// catalogue claim advanced to `1.2.7` under Research 346 while headless
 /// stays stopped at the `1.1.22` provider-managed-retry boundary.
 pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
 
@@ -187,9 +187,10 @@ mod tests {
         assert!(claim.supports(&version("1.1.17")));
         assert!(claim.supports(&version("1.1.27")));
         assert!(claim.supports(&version("1.2.2")));
+        assert!(claim.supports(&version("1.2.7")));
         assert!(!claim.permits(&version("1.1.8")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("1.2.3"))
+            claim.assess(&version("1.2.8"))
         else {
             panic!("later Antigravity release remains visibly unverified");
         };
@@ -204,7 +205,7 @@ mod tests {
         let claim = antigravity_headless_claim();
         assert!(claim.supports(&version("1.1.9")));
         assert!(claim.supports(&version("1.1.17")));
-        for stopped in ["1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.1", "1.2.2"] {
+        for stopped in ["1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.2", "1.2.7"] {
             let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
                 claim.assess(&version(stopped))
             else {

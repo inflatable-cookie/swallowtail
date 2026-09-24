@@ -4,7 +4,10 @@ mod agent;
 mod code;
 
 use super::builder::{ProjectionBuilder, ProjectionRoute, bounded, exact};
-use crate::ClaudeAgentPreparedSession;
+use crate::{
+    CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT, CLAUDE_AGENT_ACP_MCP_SERVER_NAME,
+    ClaudeAgentAcpRemoteMcpTransport, ClaudeAgentPreparedSession,
+};
 use swallowtail_core::Capability;
 use swallowtail_runtime::{
     ConsumerRouteControlId, ConsumerRouteOmissionSemantics, ConsumerRouteProjectionContribution,
@@ -98,5 +101,14 @@ pub(crate) fn observed_session_contribution(
     if has_model_observation {
         builder = builder.with_model_observation()?;
     }
-    builder.build()
+    builder
+        .with_mcp_placement(http_mcp_kind(session), CLAUDE_AGENT_ACP_MCP_SERVER_NAME)?
+        .build()
+}
+
+fn http_mcp_kind(session: &ClaudeAgentPreparedSession) -> Option<&'static str> {
+    session
+        .http_mcp()
+        .filter(|remote| remote.transport() == ClaudeAgentAcpRemoteMcpTransport::Http)
+        .map(|_| CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT)
 }

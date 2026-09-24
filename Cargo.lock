@@ -2756,6 +2756,7 @@ dependencies = [
  "swallowtail-testkit",
  "swallowtail-transport-acp-remote",
  "tokio",
+ "url",
 ]
 
 [[package]]

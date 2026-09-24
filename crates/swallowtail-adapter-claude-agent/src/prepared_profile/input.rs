@@ -1,3 +1,4 @@
+use crate::ClaudeAgentAcpRemoteMcpPlacement;
 use swallowtail_core::{ModelId, ModelRouteId, ModelRouteRevision, ReasoningMode};
 use swallowtail_runtime::{
     Deadline, OperationContent, ProviderSessionManagementBinding, RequestId, SessionOptions,
@@ -60,6 +61,7 @@ pub struct ClaudeAgentSessionProfileInput {
     working_resource: WorkingResourceRef,
     options: SessionOptions,
     permission_handling: ClaudeAgentPermissionHandling,
+    http_mcp: Option<ClaudeAgentAcpRemoteMcpPlacement>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -210,6 +212,7 @@ impl ClaudeAgentSessionProfileInput {
             working_resource,
             options,
             permission_handling: ClaudeAgentPermissionHandling::RejectAndStop,
+            http_mcp: None,
         }
     }
 
@@ -217,6 +220,13 @@ impl ClaudeAgentSessionProfileInput {
     #[must_use]
     pub const fn with_consumer_mediated_permissions(mut self) -> Self {
         self.permission_handling = ClaudeAgentPermissionHandling::ConsumerMediated;
+        self
+    }
+
+    /// Binds one admitted streamable-HTTP MCP declaration to this session.
+    #[must_use]
+    pub fn with_http_mcp_placement(mut self, server: ClaudeAgentAcpRemoteMcpPlacement) -> Self {
+        self.http_mcp = Some(server);
         self
     }
 
@@ -228,6 +238,7 @@ impl ClaudeAgentSessionProfileInput {
         WorkingResourceRef,
         SessionOptions,
         ClaudeAgentPermissionHandling,
+        Option<ClaudeAgentAcpRemoteMcpPlacement>,
     ) {
         (
             self.request_id,
@@ -235,6 +246,7 @@ impl ClaudeAgentSessionProfileInput {
             self.working_resource,
             self.options,
             self.permission_handling,
+            self.http_mcp,
         )
     }
 }

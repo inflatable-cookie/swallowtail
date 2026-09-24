@@ -1,10 +1,11 @@
 use super::{ProjectionBuilder, bounded, exact};
 use swallowtail_runtime::{
     ConsumerRouteActorPosture, ConsumerRouteControlId, ConsumerRouteControlValue,
-    ConsumerRouteEvidenceStrength, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
-    ConsumerRouteMutationAuthority, ConsumerRouteOmissionSemantics, ConsumerRouteProjectionFailure,
-    ConsumerRouteRowIdentity, ConsumerRouteSourceClass, ConsumerRouteStateSupport,
-    ConsumerRouteValueDomain, ConsumerRouteValueKind,
+    ConsumerRouteEnumerableValue, ConsumerRouteEnumeratedValues, ConsumerRouteEvidenceStrength,
+    ConsumerRouteFeatureId, ConsumerRouteLifecycle, ConsumerRouteMutationAuthority,
+    ConsumerRouteOmissionSemantics, ConsumerRouteProjectionFailure, ConsumerRouteRowIdentity,
+    ConsumerRouteSourceClass, ConsumerRouteStateSupport, ConsumerRouteValueDomain,
+    ConsumerRouteValueKind,
 };
 
 impl ProjectionBuilder<'_> {
@@ -136,6 +137,37 @@ impl ProjectionBuilder<'_> {
                 ConsumerRouteOmissionSemantics::NotSelectable,
             ));
         self.active_session.push(row);
+        Ok(self)
+    }
+
+    pub(crate) fn with_mcp_placement(
+        mut self,
+        kind: Option<&str>,
+        server_name: &str,
+    ) -> Result<Self, ConsumerRouteProjectionFailure> {
+        let Some(kind) = kind else {
+            return Ok(self);
+        };
+        let identity = ConsumerRouteRowIdentity::Feature(self.local_feature("mcp.placement")?);
+        let values = ConsumerRouteEnumeratedValues::new([
+            ConsumerRouteEnumerableValue::new(kind)?,
+            ConsumerRouteEnumerableValue::new(server_name)?,
+        ])?;
+        let row = self
+            .prepared_row(
+                identity,
+                ConsumerRouteSourceClass::AdapterPreparedInput,
+                ConsumerRouteEvidenceStrength::PreparedOperation,
+                ConsumerRouteLifecycle::SelectionSummary,
+            )
+            .with_actor_posture(ConsumerRouteActorPosture::Informational)
+            .with_mutation_authority(ConsumerRouteMutationAuthority::Absent)
+            .with_control_value(ConsumerRouteControlValue::new(
+                ConsumerRouteValueKind::BoundedEnumeration,
+                ConsumerRouteValueDomain::Enumerated(values),
+                ConsumerRouteOmissionSemantics::NotSelectable,
+            ));
+        self.selection.push(row);
         Ok(self)
     }
 }

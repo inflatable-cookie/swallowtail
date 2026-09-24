@@ -39,6 +39,7 @@ include!("prepared_facade/session_cases.rs");
 include!("prepared_facade/structured_cases.rs");
 include!("prepared_facade/permission_cases.rs");
 include!("prepared_facade/access_cases.rs");
+include!("prepared_facade/http_mcp_cases.rs");
 
 fn preparation_input(host: ExecutionHostId) -> ClaudeAgentPreparationInput {
     ClaudeAgentPreparationInput::new(

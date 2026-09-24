@@ -95,6 +95,7 @@ Session preparation requires:
 - optional reasoning effort in `SessionOptions`
 - optional `HarnessMode::Plan` in `SessionOptions`
 - optional session-wide consumer-mediated one-shot permission exchange
+- optional consumer-supplied streamable-HTTP MCP placement
 
 Structured-run preparation requires:
 
@@ -108,6 +109,30 @@ Structured-run preparation requires:
 
 Swallowtail does not choose a model, account, credential, workspace, endpoint,
 permission result, or fallback route.
+
+## Consumer-declared HTTP MCP
+
+Contract 063 admits one consumer-supplied streamable-HTTP placement on
+`claude-agent.acp`. Bind `ClaudeAgentAcpRemoteMcpPlacement` on
+`ClaudeAgentSessionProfileInput`; the name is the route-owned
+`swallowtail-claude-agent-acp`. A foreign name fails closed as a collision.
+Omission keeps production `session/new` `mcpServers` byte-identical to today's
+empty list. Load and resume still send `mcpServers: []`.
+
+HTTP encoding emits ACP `{ type: "http", name, url, headers: [{name, value}] }`
+with the consumer URL and headers verbatim. Structure is validated only:
+non-empty name, absolute `http`/`https` URL, well-formed header names. URL and
+header values never appear in failures, diagnostics, activity, receipts,
+`Debug` output, or plan fingerprints: the public encoder returns
+`ClaudeAgentAcpEncodedMcpServers`, whose `Debug` form redacts those values, and
+the wire JSON stays crate-private. The provider also maps `stdio` and `sse`;
+this route emits `http` only. `sse` stays modelled through
+`ClaudeAgentAcpRemoteMcpPlacement::sse` and is refused. Research 351 records no
+provider gate on the `0.79.0` map.
+
+The Contract 061 placement projection names `consumer-supplied-http` when an
+HTTP entry is bound. Emission is not honouring: `client_mcp_servers` stays No
+until a live gate proves a remote tool call.
 
 Local subscription access means the approved ACP process inherits the selected
 environment and uses authentication already held by the local Claude

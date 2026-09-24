@@ -471,6 +471,9 @@ pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_tool_admission_na
 pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_wire_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_wire_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub fn swallowtail_adapter_claude_agent::sdk::prepare_claude_agent_sdk_session(swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation, swallowtail_runtime::session_options::SessionOptions) -> core::result::Result<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub enum swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpTransport
+pub swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpTransport::Http
+pub swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpTransport::Sse
 pub enum swallowtail_adapter_claude_agent::ClaudeAgentPermissionHandling
 pub swallowtail_adapter_claude_agent::ClaudeAgentPermissionHandling::ConsumerMediated
 pub swallowtail_adapter_claude_agent::ClaudeAgentPermissionHandling::RejectAndStop
@@ -489,6 +492,7 @@ pub swallowtail_adapter_claude_agent::ClaudeAgentRunRetention::TemporaryWithOwne
 pub struct swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver
 impl swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver::with_http_mcp_placement(self, swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver::with_local_auth(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -503,6 +507,20 @@ pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver::delete_session(&s
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver::restore_session(&self, swallowtail_runtime::provider_session_operation::ProviderSessionManagementPlan, swallowtail_runtime::provider_session_operation::RestoreProviderSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::provider_session_operation::ProviderSessionManagementOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_claude_agent::ClaudeAgentAcpEncodedMcpServers
+impl core::fmt::Debug for swallowtail_adapter_claude_agent::ClaudeAgentAcpEncodedMcpServers
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpEncodedMcpServers::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement
+impl swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement::headers(&self) -> &[(alloc::string::String, alloc::string::String)]
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement::name(&self) -> &str
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement::new(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement::sse(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement::to_production_mcp_servers(&self) -> core::result::Result<swallowtail_adapter_claude_agent::ClaudeAgentAcpEncodedMcpServers, swallowtail_runtime::failure::RuntimeFailure>
+pub const fn swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement::transport(&self) -> swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpTransport
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement::url(&self) -> &str
+impl core::fmt::Debug for swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_adapter_claude_agent::ClaudeAgentModelSelection
 impl swallowtail_adapter_claude_agent::ClaudeAgentModelSelection
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId) -> Self
@@ -591,6 +609,7 @@ pub struct swallowtail_adapter_claude_agent::ClaudeAgentSessionProfileInput
 impl swallowtail_adapter_claude_agent::ClaudeAgentSessionProfileInput
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_claude_agent::ClaudeAgentModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentSessionProfileInput::with_consumer_mediated_permissions(self) -> Self
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentSessionProfileInput::with_http_mcp_placement(self, swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement) -> Self
 pub struct swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver
 impl swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver
 pub const fn swallowtail_adapter_claude_agent::ClaudeCodeHeadlessDriver::install_guidance() -> swallowtail_core::registration::discovery::InstallGuidance
@@ -715,7 +734,9 @@ pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_AXIS: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_BASELINE_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID: &str
+pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_MCP_SERVER_NAME: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_SUBSCRIPTION_AUDIENCE: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_AXIS: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_BASELINE_VERSION: &str

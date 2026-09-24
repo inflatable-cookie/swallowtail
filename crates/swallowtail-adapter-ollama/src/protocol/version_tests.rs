@@ -19,7 +19,7 @@ fn exact_version_codec_separates_qualified_unverified_and_incompatible_points() 
         swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == swallowtail_core::InterfaceSupportStatus::Maintained
     ));
-    let above = parse_version(&response(200, br#"{"version":"0.34.1"}"#))
+    let above = parse_version(&response(200, br#"{"version":"0.34.3"}"#))
         .expect("first unpublished version past official is preserved");
     assert!(matches!(
         crate::selection::ollama_runtime_claim().assess(above.version()),

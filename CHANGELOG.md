@@ -156,6 +156,16 @@ annotated Git tags from the canonical repository.
   Unpublished `0.83.1`, `0.84.5`, and `0.85.2` stay incompatible;
   unpublished `0.86.2` remains visible `UnverifiedNewer`. `pi.sdk-sidecar`
   stays exact `0.84.2`. Research 344.
+- raise the Ollama attached-runtime qualified ceiling through official
+  `0.34.2`: Research 342 freezes all four published hops after `0.33.2`
+  with tag/commit/tree/tarball and selected-file hashes. The native decoder
+  now accepts and ignores the additive `0.33.3` `prompt_eval_cached_count`
+  metrics key named by Research 313, then qualifies `0.33.3`, `0.34.0`,
+  `0.34.1`, and `0.34.2` as a compatible extension of
+  `ollama.native-text-v1`. Keep the baseline, claim identity, behavior
+  revision, historical exclusions, decoder specimen, and `AllowUnverified`.
+  Synthetic later-stable `0.34.3` stays visibly unverified. No provider
+  operation or host mutation occurred.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

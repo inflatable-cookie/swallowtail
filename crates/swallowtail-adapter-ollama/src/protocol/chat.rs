@@ -154,6 +154,9 @@ struct ChatRecord {
     done_reason: Option<String>,
     #[serde(default)]
     prompt_eval_count: Option<u64>,
+    /// Additive `0.33.3` cached-prompt metric. Accepted and ignored.
+    #[serde(default, rename = "prompt_eval_cached_count")]
+    _prompt_eval_cached_count: Option<u64>,
     #[serde(default)]
     eval_count: Option<u64>,
     #[serde(default)]

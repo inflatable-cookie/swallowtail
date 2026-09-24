@@ -220,3 +220,12 @@ or modified. No claim that any route connects to the production MCP today.
 No claim about `subscriptions`/`listen` or `longhorn://` resources beyond
 typed-unsupported. Frozen artifacts hashed, never executed; no provider
 session opened.
+
+## Addendum 2026-09-24 (g06.031 / Research 351)
+
+Research 336 classified Swallowtail's admitted seam. Research 351 classifies
+the **provider** from hashed artifacts for the eight g06.031 routes and
+supersedes this record's rows for those routes only: five
+`direct-http-candidate`, two `provider-limitation` (`cline.acp`,
+`deepagents.acp`), `grok-build.acp` still `carrier-required`. Other 336 rows
+stand. No available cell.

@@ -24,6 +24,8 @@ feature usually has a short chain: selection evidence, contract, implementation,
 then conformance closeout.
 
 ## Entries
+- [2026-09-24 Command Code 1.65.0 Claim](./2026-09-24-command-code-1-65-0-claim.md) — g06.021 advanced the exact `QualifiedOnly` Command Code point to `1.65.0` with the unchanged AgentEvent behavior and route boundaries; Research 330 stays bound to exact `1.54.0` and Research 116/118 stay bound to `1.15.1`, so live-derived cells stay gated at `1.65.0`
+- [2026-09-24 Command Code 1.65.0 Identity](./2026-09-24-command-code-1-65-0-identity.md) — Research 339 froze all 19 published stable successors after `1.54.0`; the complete package inventory has no removals, one additive `/loop` skill, and a byte-identical entrypoint; selected invocation, AgentEvent, result, usage, plan mode, failure, and local lifecycle surfaces remain compatible; old live evidence stays version-bound
 - [2026-09-24 Chatterbox Rulings: HTTP MCP Placement And No Terminal Stop](./2026-09-24-chatterbox-rulings-http-mcp-placement-and-no-terminal-stop.md) — Contract 063 admits a consumer-supplied streamable-HTTP MCP placement; Contract 029 makes every stop a transient adaptation task; #358 pilot and Command Code lane opened in g06
 - [2026-09-21 OpenCode HTTP 1.18.31 Claim](./2026-09-21-opencode-http-1-18-31-claim.md) — raised `opencode.server` through official `1.18.31`; preserved baseline, gaps, `surface-19`, and `AllowUnverified`; synthetic `1.18.32` stays `UnverifiedNewer`
 - [2026-09-21 OpenCode HTTP 1.18.31 Identity](./2026-09-21-opencode-http-1-18-31-identity.md) — Research 332 froze official npm/GitHub `1.18.31` as a compatible `surface-19` extension from complete source-tree inventories despite diverged tags; production claims unchanged

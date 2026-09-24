@@ -192,7 +192,7 @@ OpenHands adds a package without a production route.
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
-  sessions for Claude Agent ACP `0.53.0..=0.76.0`, excluding `0.58.0`, over
+  sessions for Claude Agent ACP `0.53.0..=0.79.0`, excluding `0.58.0`, over
   ACP v1 stdio; stable newer
   versions remain visible and unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
@@ -304,13 +304,18 @@ OpenHands adds a package without a production route.
   `--workspace` / `--model`, `session/load`, and field `content` stay
   out. `deepagents.acp` is a production route.
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
-  `1.14.48..=1.18.30` model discovery and ambient-host interactive sessions with
+  `1.14.48..=1.18.31` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
   stable newer releases may run as visibly unverified without extending
   guaranteed support; a separate 61-release deletion corpus freezes two
   delete-schema revisions, recursive provider-defined descendants, missing-
   target rejection, inactive-target requirements, and post-dispatch
-  uncertainty without yet advertising production deletion
+  uncertainty without yet advertising production deletion. The same crate
+  implements a separate `opencode.acp` family on `opencode.executable`: ACP v1
+  stdio on host-approved `opencode acp --pure`, deprecated `1.18.18..=1.18.30`
+  and maintained `1.18.31..=1.18.32`, ProviderSupported host-owned login
+  without a credential lease, one admitted stdio MCP name, and URL-plus-header
+  MCP modelled behind the contract gate. The HTTP and ACP axes stay unflattened.
 - `swallowtail-adapter-anthropic` implements provider-supported `2023-06-01`
   Models catalogue and Messages direct inference over host-approved HTTP/SSE,
   including exact `claude-opus-4-7` `low` / `medium` / `high` / `xhigh` / `max`
@@ -433,7 +438,7 @@ OpenHands adds a package without a production route.
   interactive ACP execution, and visible later-stable unverified posture;
   deprecated `0.2.114..=0.2.117` remain, exact `0.2.117` carries a distinct
   private task-control behavior revision without adding public task-control
-  authority, and maintained `1.0.4..=1.0.30` bind `grok-4.6`
+  authority, and maintained `1.0.4..=1.0.41` bind `grok-4.6`
 - `swallowtail-adapter-cursor` realizes exact Cursor Agent milestones
   `2026.07.01-41b2de7`, `2026.07.23-e383d2b`, `2026.08.04-aaa8809`,
   `2026.08.11-e8db854`, `2026.08.31-4057e58`, `2026.09.02-c22c1a3`, and
@@ -498,7 +503,7 @@ OpenHands adds a package without a production route.
   reports key-visible entries without inferring background or Realtime support
 - `swallowtail-adapter-qwen` implements qualified Qwen Code
   `0.19.11..=0.20.1`, `0.21.0..=0.21.14`, exact `0.21.15`, and
-  `0.22.0..=0.23.3` headless
+  `0.22.0..=0.24.2` excluding unpublished `0.22.4` and `0.23.5` headless
   behavior segments with
   exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
@@ -687,7 +692,10 @@ Crate status:
   The package remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-opencode` — realized for attached model catalogue and
   read-only interactive sessions over a six-route HTTP/SSE subset with exact
-  delegated-auth, version, provider/model, abort, deadline, and cleanup bounds
+  delegated-auth, version, provider/model, abort, deadline, and cleanup bounds,
+  and separately for `opencode.acp` ACP v1 stdio on `opencode acp --pure` with
+  ProviderSupported host-account access, one route-owned stdio MCP name, and
+  no credential lease
 - `swallowtail-adapter-anthropic` — realized for the frozen two-route public-
   API subset with API-key and version headers, bounded catalogue pagination,
   explicit output bounds, ordered SSE, usage, rate and request evidence,
@@ -977,14 +985,14 @@ installed `0.51.0` probe is separately gated and ignored by default.
 The original Claude Agent lifecycle corpus freezes close and delete through
 `0.61.0` plus the unpublished-package exclusion. Exact source deltas and
 adapter conformance carry that unchanged mapping through the newer private
-`0.62.0` through `0.76.0` behavior milestones.
+`0.62.0` through `0.79.0` behavior milestones.
 Qualified close tears down only active in-memory resources and preserves
 history. Qualified delete tears down an active target when present, then uses
 the exact Agent SDK path that removes the primary local transcript and sibling
 session directory. That evidence supports provider-data deletion with
 provider-defined descendants, but no hard-erasure or Anthropic API service-data
 claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` through
-`0.76.0` add private behavior revisions without changing deletion truth.
+`0.79.0` add private behavior revisions without changing deletion truth.
 Later stable versions remain visible and unverified.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization
@@ -1100,13 +1108,13 @@ follows the Upgrade Workflow. The operator runbook is the
 version-currentness checkpoint guide.
 
 The OpenCode HTTP adapter has a closed qualified server-version boundary.
-Tagged OpenAPI and artifact-tree evidence for 71 stable releases from `1.14.48`
-through `1.18.30` closes six selected operations through every transitive local schema
+Tagged OpenAPI and artifact-tree evidence for 72 stable releases from `1.14.48`
+through `1.18.31` closes six selected operations through every transitive local schema
 reference. Nineteen closed surfaces map to 21 contiguous segments so
 unpublished patches and cross-minor synthetic versions remain unsupported.
 The production descriptor publishes the `opencode.server` claim. Configured
 instances, requirements, and immutable plans must bind one matching exact
-release. Stable exact releases above `1.18.30` may execute as unverified through
+release. Stable exact releases above `1.18.31` may execute as unverified through
 surface 19 without widening the qualified range. `GET /global/health` produces
 only that safe binding and three-way assessment; no endpoint, credential, raw
 payload, configured instance, or execution authority enters the observation.
@@ -1432,7 +1440,7 @@ session, background run, managed agent, realtime media, SDK, attached runtime,
 and owned-serving operations remain separate types and methods. There is no
 generic prompt method.
 
-The current 47 production routes form six facade implementation families:
+The current 51 production routes form six facade implementation families:
 installed harness, attached harness network, hosted direct and provider-owned
 state, realtime connection, embedded SDK, and local model runtime. Family
 helpers may share host and preparation mechanics. They cannot select a
@@ -2216,8 +2224,10 @@ roadmap.
 Contract063 and the Contract060 amendment define the next implementation seam;
 this section records ownership, not realized generic MCP support. Swallowtail
 owns the sole immutable registration snapshot and operation bridge kernel.
-Longhorn supplies linked transport-neutral validation/dispatch; consumers own
-domain schemas/policy, durable admission IDs, bounded context and app startup.
+Longhorn supplies the production MCP server (Contract 022 `agent-control`),
+with its earlier linked dispatch/validation counterpart withdrawn for that role
+by Longhorn `7ea44d23`; consumers own domain schemas/policy, durable admission
+IDs, bounded context and app startup.
 One internal kernel serves distinct watcher and registered-tool profiles.
 Existing WatcherBridge remains closed and source-compatible. No second listener,
 registry authority, daemon or product schema enters the producer runtime.

@@ -180,6 +180,27 @@ when:
 The pre-push recheck remains mandatory. A move found at that recheck follows
 this same rule: extend before the identity commit, record after it.
 
+### No Terminal Stop — 2026-09-24
+
+Operator direction (Tom, 2026-09-24): staying on an older ceiling is not an
+outcome. When an identity run finds that official stable changes a selected
+mapped surface, a capability, or process authority, the record still names the
+change exactly and moves no claim, but the stop is transient. It is a work
+item, the same way an unavailable matrix cell is.
+
+- Chatterbox compiles an adaptation task in the active generation as soon as
+  the stop lands. That task owns qualifying the then-current official stable.
+- The adaptation takes the Upgrade Workflow's ordinary path: an adapter-private
+  milestone when mapping changes, a new driver or facade revision when the
+  public lifecycle changes, and additional pinned arguments or settings when
+  the provider moves an isolation or safety default.
+- When the provider removes or weakens behavior the route claimed, the route
+  still qualifies the new version and narrows that capability honestly through
+  Contract 061. A narrowing that changes a consumer-visible guarantee is an
+  operator ruling, raised with the evidence, not a reason to hold the ceiling.
+- `UnverifiedNewer` under `AllowUnverified` remains the posture while the
+  adaptation task is open. A stop with no owning task is a defect.
+
 ### Artifact Authority Without Public Source
 
 Some published packages cannot be correlated to public source: metadata may

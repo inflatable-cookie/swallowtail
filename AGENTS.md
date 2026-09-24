@@ -147,8 +147,10 @@ standing lane: it is not a generation runway goal and does not keep a
 generation open. The checkpoint writes research; it does not change claims.
 Extend one family at a time through the Upgrade Workflow. Do not bulk-bump
 from `latest`. Do not leave the current host or official stable
-UnverifiedNewer without a named incompatible reason. Execute the lane
-through the repo skill `version-currentness` at
+UnverifiedNewer without a named incompatible reason, and a named
+incompatible reason is never an endpoint: it compiles an adaptation task that
+qualifies the current release (Contract 029, No Terminal Stop). Execute the
+lane through the repo skill `version-currentness` at
 `.cursor/skills/version-currentness/`. Sequencing lives in
 `docs/roadmaps/standing-lanes.md`.
 

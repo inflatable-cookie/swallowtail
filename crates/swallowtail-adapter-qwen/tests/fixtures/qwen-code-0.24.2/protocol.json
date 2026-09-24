@@ -1,0 +1,78 @@
+{
+  "help_source": "top-level-options.ts-v0.24.2 plus config.ts-v0.24.2",
+  "help_selected_flags_present": [
+    "--safe-mode",
+    "--approval-mode",
+    "--core-tools",
+    "--exclude-tools",
+    "--max-wall-time",
+    "--max-tool-calls",
+    "--max-session-turns",
+    "--include-partial-messages",
+    "--input-format",
+    "--output-format",
+    "--resume"
+  ],
+  "selected_read_tools": [
+    "read_file",
+    "grep_search",
+    "glob",
+    "list_directory",
+    "lsp"
+  ],
+  "selected_controls": [
+    "can_get_available_models",
+    "get_available_models",
+    "can_set_effort",
+    "set_effort"
+  ],
+  "approval_mode_values_unchanged": [
+    "plan",
+    "default",
+    "auto-edit",
+    "auto",
+    "yolo"
+  ],
+  "selected_stream_formats_unchanged": ["text", "stream-json", "json"],
+  "swallowtail_dispatches_approval_mode": "default",
+  "catalogue_image_only_filter": true,
+  "stream_types_add_goal_state_from": "0.21.4",
+  "goal_state_is_nested_stream_event": true,
+  "active_goal_removed_from": "0.24.1",
+  "mapped_top_level_types": ["system", "stream_event", "assistant", "result"],
+  "decoder_corpus": "qwen-code-v0.19.11",
+  "selected_mapped_subset_unchanged": true,
+  "selected_source_hop_summary": {
+    "0.23.3_to_0.23.4": "board command, skill-name help text, goal-budget settings, reasoning-effort helpers, and DashScope metadata gating; selected flags, controls, and mapped types unchanged",
+    "0.23.4_to_0.24.0": "sandbox command, omni/web-search settings, session recovery tool-call ids, and system-controller settings argument; selected session and control names unchanged",
+    "0.24.0_to_0.24.1": "nested active_goal stream event removed; goal checkpoint text removed; permission abort forwarding; selected mapped types remain system/stream_event/assistant/result",
+    "0.24.1_to_0.24.2": "untrusted-folder approval messaging and hidden ToolCall concurrency unwrap; selected argv and stream-json contract unchanged"
+  },
+  "0_24_2_plan_mode_blobs_byte_identical_to_0_22_3": false,
+  "0_24_2_plan_policy_and_exit_byte_identical_to_0_23_3": true,
+  "0_24_2_config_delta": "unmapped board/sandbox commands, web-search/omni/goal settings, agent-execution backend, and trusted-folder messaging; selected flags remain unchanged",
+  "0_24_2_session_delta": "completed tool-call id seeding remains internal; no selected session wire or resume contract change",
+  "0_24_2_stream_types_delta": "0.24.1 removes unmapped nested active_goal; mapped top-level types unchanged",
+  "unused_deltas": [
+    "hashed chunks and Web Shell asset rebuilds",
+    "board and sandbox commands",
+    "skill-name matching help text",
+    "goal turn/active-time budgets and checkpoint text",
+    "nested active_goal stream event removal",
+    "web-search timeout and session caps",
+    "omni setting-key validation",
+    "reasoning-effort helper functions",
+    "DashScope metadata gating and Omni OSS header",
+    "session recovery completed-tool-call ids",
+    "system-controller settings argument",
+    "permission match params and abort forwarding",
+    "agent-execution backend and provider-protocol validation",
+    "untrusted-folder approval messaging",
+    "hidden ToolCall concurrency unwrap",
+    "bundled docs, locales, transcript export, and sandbox helpers"
+  ],
+  "provider_prompt_sent": false,
+  "live_catalogue": false,
+  "live_headless_session": false,
+  "host_install_changed": false
+}

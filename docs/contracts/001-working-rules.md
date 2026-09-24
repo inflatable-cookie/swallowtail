@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-12
+Updated: 2026-09-22
 
 ## Scope
 
@@ -44,7 +44,12 @@ These rules apply to all Swallowtail work before v1.0.
 - A worker exists only through a coordinator-dispatched handoff under
   `docs/handoffs/` whose frontmatter names worker mode and orchestrator
   dispatch authority. Do not infer worker mode from a branch, path, or
-  harness. A worker edits only the paths its task and manifest own.
+  harness. A worker edits only the paths its task and manifest own. A task
+  file's pinned prose is immutable to a worker: only its generated lifecycle
+  block is machine-owned, and the lifecycle hook owns that. Evidence goes in
+  the worker report and the lane's designated evidence files, never in the
+  card's prose or result lines, and a handoff must not grant write access to
+  them.
 - Triage notes are intake, never execution authority. Papercuts in
   `PAPERCUTS.md` are observations for later triage, never an automatic
   triage note or roadmap task.

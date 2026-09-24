@@ -7,8 +7,8 @@
   "facade": "codex-app-server-v2",
   "qualified_range": {
     "baseline": "0.80.0",
-    "latest": "0.154.0",
-    "excluded_gaps": ["0.82.0", "0.83.0", "0.108.0", "0.109.0", "0.149.2", "0.150.2", "0.151.1", "0.152.2"],
+    "latest": "0.155.1",
+    "excluded_gaps": ["0.82.0", "0.83.0", "0.108.0", "0.109.0", "0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.154.1"],
     "newer_posture": "allow_unverified"
   },
   "method_boundaries": {
@@ -64,7 +64,7 @@
       "behavior_revision": "codex.app-server.thread-catalogue.v1.exclude-turns"
     },
     {
-      "range": "0.131.0..=0.154.0",
+      "range": "0.131.0..=0.155.1",
       "catalogue_import": true,
       "behavior_revision": "codex.app-server.thread-catalogue.v1.workspace-roots"
     }
@@ -135,7 +135,9 @@
     {"version":"0.153.2","published_at":"2026-09-03T23:57:21.074Z","tag_commit":"657a993cbee87acf52d14b758ce49dbd46d1b8eb","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
     {"version":"0.153.3","published_at":"2026-09-04T19:07:16.079Z","tag_commit":"b1a547b1f73ce86205d9222ac19cff334b3b7a2e","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
     {"version":"0.153.4","published_at":"2026-09-04T23:31:18.513Z","tag_commit":"3d2ee51ca2d5db578f328aa75e20aa22c0197c9a","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
-    {"version":"0.154.0","published_at":"2026-09-09T22:40:10.746Z","tag_commit":"6b9826e3aa83b1a5947db50f4332cb9c65f1b340","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true}
+    {"version":"0.154.0","published_at":"2026-09-09T22:40:10.746Z","tag_commit":"6b9826e3aa83b1a5947db50f4332cb9c65f1b340","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.155.0","published_at":"2026-09-17T23:19:02.781Z","tag_commit":"f0a1b8f0849d90960bc406b848f32e5a129b0457","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true},
+    {"version":"0.155.1","published_at":"2026-09-18T20:09:23.628Z","tag_commit":"be2951ea34f0d295ed0becf97079f92fa5f6950e","protocol_layout":"split","list":true,"read":true,"source_filter":true,"cwd_filter":true,"status":true,"history_read":true}
   ],
   "sources": {
     "repository": "https://github.com/openai/codex",
@@ -147,7 +149,7 @@
     "current_documentation_role": "corroboration-only"
   },
   "unverified_newer": {
-    "version": "0.154.1",
+    "version": "0.155.2",
     "execution": "permitted-with-explicit-unverified-status",
     "guaranteed": false,
     "evidence": "synthetic-later-stable-classification"

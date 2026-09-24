@@ -150,6 +150,20 @@ annotated Git tags from the canonical repository.
   `0.76.1`, `0.77.1`, and `0.78.1` stay incompatible; synthetic unpublished
   `0.80.0` remains visible `UnverifiedNewer`. Claude Code stream-JSON and the
   Claude Agent SDK sidecar stay separate families. Research 335.
+- extend the qualified Oh My Pi RPC `18.x` package segment from
+  `18.0.0..=18.1.22` to `18.0.0..=18.2.7` on the unchanged
+  `oh-my-pi.rpc-v2-v18.0.0` behavior revision. Official npm and GitHub
+  latest is `18.2.7`. Research 345 froze the previous ceiling `18.1.22`
+  and every published hop `18.2.0` through `18.2.7`: selected JSONL wire
+  files `rpc-frame.ts`, `rpc-input.ts`, `rpc-messages.ts`, and
+  `host-uris.ts` are byte-identical; remaining mapped hops are unmapped
+  skill, login-secret, backpressure-spool, LSP/DAP framing, import-path,
+  or append-only argv changes. Claim id `oh-my-pi.rpc.package-window-2`,
+  retained deprecated `17.2.9..=17.4.2`, exclusions `18.0.2`/`18.1.7`,
+  `AllowUnverified`, and the `oh-my-pi-rpc-17.2.9` decoder corpus stay.
+  Unpublished `18.2.8` stays permitted `UnverifiedNewer`. `pi.package`
+  stays a separate axis. Not a major-line reset, new public operation,
+  or new driver/facade.
 - raise the Cursor Agent catalogue, ACP, and headless qualified ceiling
   through official `2026.09.18-9a7762b`: Research 343 freezes both
   published hops after `2026.09.10-fd3934a` with a complete tree inventory

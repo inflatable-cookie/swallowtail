@@ -16,9 +16,8 @@ Closed generations live only as roll-ups under
 ## Next Task
 
 [g06.018 Claude Code Current-Release Qualification](./g06/018-claude-code-current-release-qualification.md)
-leads three independent ready lanes in the [g06 manifest](./g06/README.md):
-g06.019 OpenCode ACP consumer HTTP MCP wiring and g06.020 the Grok Build ACP
-#358 review-entry pilot.
+is the lead ready lane; the [g06 manifest](./g06/README.md) holds the other
+ready lanes.
 g06.001–g06.005 stay planned and gated as before. Do not infer release, tag,
 publication, live-provider, or consumer authority.
 

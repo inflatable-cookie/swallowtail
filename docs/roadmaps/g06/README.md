@@ -39,8 +39,6 @@ live-gate history is represented by the lifecycle projection below; remaining
 ready work is sequenced by the queue and generation runway, with no task pointer
 maintained in this section.
 
-Ready lanes, independent and parallel: g06.018 (lead), g06.019 and g06.020.
-
 ## Tasks
 
 - [001 Shared Harness Capability And Producer Boundary](./001-shared-harness-capability-and-producer-boundary.md) — planned; carried from g05.035 with Batch A promoted and folded card evidence intact

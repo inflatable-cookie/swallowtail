@@ -1,6 +1,6 @@
-//! Production claim state after the 1.0.40 compatible-extension claim card.
+//! Production claim state after the 1.0.41 compatible-extension claim card.
 //!
-//! The ACP executable window now extends through official `1.0.40` on the
+//! The ACP executable window now extends through official `1.0.41` on the
 //! existing behavior revision. This historical 1.0.30 identity suite still
 //! pins the hops it froze; later-unverified points move with the live claim.
 //! The exact catalogue claim and the registered-tool courier stay
@@ -17,7 +17,7 @@ use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus}
 #[test]
 fn production_claim_admits_every_hop_through_1_0_30_as_maintained() {
     let claim = grok_build_acp_claim();
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.40");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.41");
     for (point, behavior, status) in [
         (
             "0.2.114",
@@ -71,13 +71,13 @@ fn production_claim_admits_every_hop_through_1_0_30_as_maintained() {
             Some("grok-4.6")
         );
     }
-    for later in ["1.0.41", "1.1.0"] {
+    for later in ["1.0.42", "1.1.0"] {
         let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
             claim.assess(&version(later))
         else {
             panic!("{later} must stay unverified newer");
         };
-        assert_eq!(unverified.latest_qualified().as_str(), "1.0.40");
+        assert_eq!(unverified.latest_qualified().as_str(), "1.0.41");
         assert_eq!(
             unverified.behavior_revision().as_str(),
             "grok-build.acp-v1.cached-token-model-4-6-v3"

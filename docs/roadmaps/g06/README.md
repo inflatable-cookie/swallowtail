@@ -71,6 +71,8 @@ maintained in this section.
 - [028 OpenCode ACP HTTP MCP Live Gate](./028-opencode-acp-http-mcp-live-gate.md) — ready; one authorized attempt proving `opencode.acp` honours a consumer-supplied HTTP MCP entry on exact `1.18.18`
 - [029 Command Code 1.65.0 Live Requalification](./029-command-code-1-65-0-live-requalification.md) — ready; one authorized attempt on exact `1.65.0` with `deepseek/deepseek-v4-flash`
 - [030 Ollama Runtime Current-Release Qualification](./030-ollama-runtime-current-release.md) — ready; raises `ollama.runtime` from `0.34.2` to current official, provider-free
+- [031 ACP Routes HTTP MCP Acceptance Evidence](./031-acp-routes-http-mcp-acceptance-evidence.md) — ready; classifies each remaining ACP route for direct consumer HTTP MCP from frozen artifacts, advancing g06.005
+- [032 Research Number Collision Check](./032-research-number-collision-check.md) — ready; extends the number-collision check to research records
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:260cd98a6880bfb7a297be2242b2c0345c15136023edffa4ea725525f7dd8893 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

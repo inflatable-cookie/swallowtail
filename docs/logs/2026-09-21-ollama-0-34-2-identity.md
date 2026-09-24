@@ -15,7 +15,7 @@ then qualify through official `0.34.2` as a compatible extension of
 `ollama.native-text-v1`. Remaining deltas stay bounded unmapped. Host
 `ollama` is absent; the host was not mutated.
 
-Production claims stay at `0.33.2` in this record.
+Production claims stay at `0.33.2` in this record. Research 342.
 
 ## Next
 

@@ -145,7 +145,7 @@ annotated Git tags from the canonical repository.
   `0.80.0` remains visible `UnverifiedNewer`. Claude Code stream-JSON and the
   Claude Agent SDK sidecar stay separate families. Research 335.
 - raise the Ollama attached-runtime qualified ceiling through official
-  `0.34.2`: Research 331 freezes all four published hops after `0.33.2`
+  `0.34.2`: Research 342 freezes all four published hops after `0.33.2`
   with tag/commit/tree/tarball and selected-file hashes. The native decoder
   now accepts and ignores the additive `0.33.3` `prompt_eval_cached_count`
   metrics key named by Research 313, then qualifies `0.33.3`, `0.34.0`,

@@ -12,7 +12,7 @@ pub const OLLAMA_BASELINE_VERSION: &str = "0.14.0";
 ///
 /// Hops `0.33.3` through `0.34.2` are a compatible extension of
 /// `ollama.native-text-v1` after decoder-tolerance of the additive `0.33.3`
-/// `prompt_eval_cached_count` metrics key (Research 331).
+/// `prompt_eval_cached_count` metrics key (Research 342).
 pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.34.2";
 pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";

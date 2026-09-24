@@ -39,6 +39,9 @@ live-gate history is represented by the lifecycle projection below; remaining
 ready work is sequenced by the queue and generation runway, with no task pointer
 maintained in this section.
 
+Ready lanes, independent and parallel: g06.018 (lead), g06.019, g06.020 and
+g06.021.
+
 ## Tasks
 
 - [001 Shared Harness Capability And Producer Boundary](./001-shared-harness-capability-and-producer-boundary.md) — planned; carried from g05.035 with Batch A promoted and folded card evidence intact
@@ -58,6 +61,10 @@ maintained in this section.
 - [015 OpenCode ACP Identity And Surface Freeze](./015-opencode-acp-identity-and-surface-freeze.md) — ready; freezes the `opencode acp` surface and the `mcpServers` handoff before g06.016 implements the route
 - [016 OpenCode ACP Route Implementation](./016-opencode-acp-route-implementation.md) — ready; builds the `opencode.acp` route against Research 337, with the URL-plus-header MCP placement gated on a contract admission
 - [017 Claude Code 2.1.280 Identity Stop](./017-claude-code-2-1-280-identity-stop.md) — external PR #363 admitted through review entry; a typed stop keeping both ceilings at `2.1.278`
+- [018 Claude Code Current-Release Qualification](./018-claude-code-current-release-qualification.md) — ready; adapts the response-only route to the `2.1.280` `--safe-mode` change and qualifies both axes through current official, under Contract 029 No Terminal Stop
+- [019 OpenCode ACP Consumer HTTP MCP Wiring](./019-opencode-acp-consumer-http-mcp-wiring.md) — ready; wires the Contract 063 consumer-supplied streamable-HTTP placement into `opencode.acp` production `session/new`
+- [020 Grok Build ACP 1.0.40 Review-Entry Pilot](./020-grok-build-acp-1-0-40-review-entry-pilot.md) — ready; external PR #358 as the bounded pilot for the #354–#359 suite
+- [021 Command Code Current-Release Qualification](./021-command-code-current-release-qualification.md) — ready; moves the exact `command-code.npm` point from `1.54.0` to current official, provider-free
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:37154e7fd58e02d8976781067d313f2524f8787cf7feae769ba8c51d3b2dda17 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

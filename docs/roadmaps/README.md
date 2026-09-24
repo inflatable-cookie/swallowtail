@@ -15,14 +15,12 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-Map the carried-forward g06 frontier before dispatching that work. The five carried-forward tasks
-(g06.001–g06.005) are planned and none is dispatch-ready: g06.001 awaits the
-producer proposal's independent review and canonical contract promotion,
-g06.002–g06.003 stay behind the Research 256 disposition gate, and g06.004–
-g06.005 lack consumer requirement and operator direction. Chatterbox
-reconciles the carried set, compiles the next ready lane, and settles g06's
-wider focus with the operator. Do not infer release, tag, publication,
-live-provider, or consumer authority.
+[g06.018 Claude Code Current-Release Qualification](./g06/018-claude-code-current-release-qualification.md)
+leads four independent ready lanes in the [g06 manifest](./g06/README.md):
+g06.019 OpenCode ACP consumer HTTP MCP wiring, g06.020 the Grok Build ACP #358
+review-entry pilot, and g06.021 Command Code current-release qualification.
+g06.001–g06.005 stay planned and gated as before. Do not infer release, tag,
+publication, live-provider, or consumer authority.
 
 ## Standing Lanes
 

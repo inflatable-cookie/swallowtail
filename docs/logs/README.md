@@ -24,6 +24,7 @@ feature usually has a short chain: selection evidence, contract, implementation,
 then conformance closeout.
 
 ## Entries
+- [2026-09-24 Chatterbox Rulings: HTTP MCP Placement And No Terminal Stop](./2026-09-24-chatterbox-rulings-http-mcp-placement-and-no-terminal-stop.md) — Contract 063 admits a consumer-supplied streamable-HTTP MCP placement; Contract 029 makes every stop a transient adaptation task; #358 pilot and Command Code lane opened in g06
 - [2026-09-21 OpenCode HTTP 1.18.31 Claim](./2026-09-21-opencode-http-1-18-31-claim.md) — raised `opencode.server` through official `1.18.31`; preserved baseline, gaps, `surface-19`, and `AllowUnverified`; synthetic `1.18.32` stays `UnverifiedNewer`
 - [2026-09-21 OpenCode HTTP 1.18.31 Identity](./2026-09-21-opencode-http-1-18-31-identity.md) — Research 332 froze official npm/GitHub `1.18.31` as a compatible `surface-19` extension from complete source-tree inventories despite diverged tags; production claims unchanged
 - [2026-09-21 Claude Code 2.1.278 Claim](./2026-09-21-claude-code-2-1-278-claim.md) — raised headless `2.1.220..=2.1.278` and response-only `2.1.227..=2.1.278` as compatible extensions; qualified all eight published hops, kept historical unpublished gaps, synthetic `2.1.279` `UnverifiedNewer`, watcher exact `2.1.251`, and every feature-specific exact set unchanged

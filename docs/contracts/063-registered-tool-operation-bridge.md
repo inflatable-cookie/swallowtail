@@ -3,6 +3,7 @@
 Status: active; MCP-registration-server role withdrawn from production
 2026-09-22 (Longhorn Contract 022 `agent-control` is the production MCP);
 host-mediated route-native tool mediation remains production-capable;
+consumer-supplied streamable-HTTP placement admitted 2026-09-24;
 implementation pending cards 114-117
 Owner: Tom
 Created: 2026-09-07
@@ -45,6 +46,42 @@ Longhorn [`7ea44d23`](https://github.com/inflatable-cookie/longhorn/commit/7ea44
 `0.2.0`), which retains that contract as its typed dispatch/validation record.
 Longhorn has no authority over this document; the withdrawal is recorded here
 so this boundary stays Swallowtail-local and truthful.
+
+## Consumer-Supplied HTTP MCP Placement — 2026-09-24
+
+Operator ruling, delegated to the Chatterbox's recommendation and accepted by
+Tom on 2026-09-24: a **consumer-supplied streamable-HTTP MCP entry** is an
+admitted placement shape beside the three stdio-shaped placements. It is the
+shape the Production MCP Boundary already describes emitting — the consumer's
+server entry written into a harness's own MCP client configuration — so it
+adds no Swallowtail listener, registry, lease, correlation kernel or admission
+issuer.
+
+**Shape.** One entry carries a server name, an absolute URL, and an ordered
+header list. The consumer owns every value; for the Contract 022
+`agent-control` server that is a loopback URL and a per-instance bearer header.
+Swallowtail validates structure only (non-empty name, absolute `http`/`https`
+URL, well-formed header names) and passes the values to the route's native MCP
+configuration verbatim. It never rewrites, proxies, probes, or retries the URL.
+
+**Redaction.** URL and header values are consumer secrets. They never appear
+in failures, diagnostics, receipts, activity, logs, matrices, or prepared-plan
+fingerprints; a digest or presence flag is the most a projection may carry.
+
+**Per-route admission.** The shape is admitted as a contract shape, not as a
+capability of every route. A route may emit it only when frozen evidence shows
+its provider accepts a URL-plus-header entry on the selected surface, and it
+publishes the placement through Contract 061 like any other. A route whose
+provider has no such seam keeps its current placement; Longhorn's stdio carrier
+remains the path for stdio-only harnesses. Emitting the entry is not proof the
+provider honours it: the feature cell stays gated until a live gate shows one
+declared remote entry connected and one tool call completed.
+
+**First route.** `opencode.acp`: Research 337 froze ACP `session/new`
+accepting `mcpServers` entries of type `http` and `sse` with forwarded headers
+and advertising `mcpCapabilities: { http: true, sse: true }`. The route emits
+the `http` form; `sse` stays modelled but unemitted until a consumer needs it.
+Wiring is g06.019; live honouring is a separate gate.
 
 ## Ownership
 
@@ -273,6 +310,7 @@ did not receive.
 | `claude-agent.acp` | host-mediated native callbacks only; MCP withheld | current ACP sends an empty server list and has no MCP input facade; add direct MCP only after exact bridge schema, version, permission, and lifecycle evidence |
 | `codex.app-server` | host-mediated dynamic native tools | this is already the qualified execution seam; observed MCP activity is not registration or result authority; provider-direct MCP needs a separate app-server surface and corpus |
 | `grok-build.acp` | route-local ACP client-MCP courier through the Contract 063 mediated-stdio kernel, scoped to exact maintained `1.0.4..=1.0.5` | the accepted Card 128 live gate ran exact Grok Build `1.0.4` and `1.0.5` each admitting the Swallowtail-owned courier, listing its tools, and completing one registered call (Research 295); the qualification is version-scoped — other executable versions project unqualified rows and a registered open refuses with `version_not_admitted` before any host, lease, or provider work — the consumer Deny stays unrepresented, progress stays undelivered, selected skills stay `NotCarried` for want of any ACP skill input, and omission still sends `mcpServers: []` |
+| `opencode.acp` | consumer-supplied streamable-HTTP entry in ACP `session/new` `mcpServers`, or one route-owned stdio entry | admitted 2026-09-24 by the Consumer-Supplied HTTP MCP Placement ruling on Research 337 frozen evidence; production wiring is g06.019; live honouring stays gated until a separately authorized live gate; `--pure` bounds host plugin loading |
 
 The common API must not promise that every route accepts MCP. A route publishes
 the exact attachment or mediation kind through Contract 061.

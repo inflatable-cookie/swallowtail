@@ -1,0 +1,35 @@
+{
+  "axis": [
+    "claude-code.headless-stream-json",
+    "claude-code.response-only-stream-json"
+  ],
+  "previous_ceiling": "2.1.278",
+  "official_latest_at_observation": "2.1.281",
+  "npm_published": {
+    "2.1.280": "2026-09-22T15:44:39.443Z",
+    "2.1.281": "2026-09-23T17:01:17.780Z"
+  },
+  "github_release_published": {
+    "2.1.280": "2026-09-22T16:38:14Z",
+    "2.1.281": "2026-09-23T19:19:15Z"
+  },
+  "github_tag_commit": {
+    "2.1.280": "56f36532530f88b572854538d685fcf781141e8c",
+    "2.1.281": "d78be9481b889e11186ec4578b4f5e9301396e25"
+  },
+  "published_hops": [
+    "2.1.280",
+    "2.1.281"
+  ],
+  "unpublished_between": [
+    "2.1.279"
+  ],
+  "first_unpublished_after_latest": "2.1.282",
+  "host_mentioned_but_not_executed": true,
+  "downloaded_binaries_executed": false,
+  "branch": "neither_escalate",
+  "claim_at_observation": {
+    "headless_latest_qualified": "2.1.278",
+    "response_only_latest_qualified": "2.1.278"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "axis": "ollama.runtime",
+  "observed_at": "2026-09-21",
+  "github_repo": "ollama/ollama",
+  "not_ollama_cloud": true,
+  "host": {
+    "not_installed": true,
+    "note": "ollama absent from PATH; missing install is not a gap; host was not mutated"
+  },
+  "official": {
+    "version": "0.34.2",
+    "source": "official-github-tag",
+    "published_at": "2026-09-15T21:21:07Z",
+    "prerelease": false,
+    "github_tag": "v0.34.2",
+    "github_commit": "dfabde4539e42ba1e1eab50a3a50b88aea7958a0",
+    "github_tree": "f7a55d8ed225cbddcaa585b7c5dad7fbb7c80d00",
+    "tag_tarball_sha256": "3fb06dc496f321749423792066f299205c433b815540c1f23f18368540401640"
+  },
+  "published_hops": [
+    {
+      "version": "0.33.3",
+      "github_tag": "v0.33.3",
+      "github_commit": "b79067b0db7417f20108363bc22adb97f35c966a",
+      "github_tree": "69ea0f1f9e302e6bfabe5b00b482b9b3ff6363e1",
+      "published_at": "2026-09-02T00:11:33Z",
+      "prerelease": false,
+      "tag_tarball_sha256": "eaf9e0e7f78f1cac54dea518cbab6346890516e28c49575ee754bd778094d6d6"
+    },
+    {
+      "version": "0.34.0",
+      "github_tag": "v0.34.0",
+      "github_commit": "d8ab4b4f0ca24b51d3a46b3bf4f462e58ce66b1f",
+      "github_tree": "61d8627adc97b18b257bdb1419bf78948a052578",
+      "published_at": "2026-09-05T23:49:00Z",
+      "prerelease": false,
+      "tag_tarball_sha256": "810e7bfc2d321783f0ffd294290bca72deb292c0fd481534849dd595d59ade49"
+    },
+    {
+      "version": "0.34.1",
+      "github_tag": "v0.34.1",
+      "github_commit": "38fdb5dd58c761f850cddd6ba1e78a7954646b4f",
+      "github_tree": "0a4e45de57716a630a8275e124f64a29b370ec93",
+      "published_at": "2026-09-14T22:14:03Z",
+      "prerelease": false,
+      "tag_tarball_sha256": "e171eabbad44f0a95fbddaa40e78257b94dd7618528be47c11174be6d8d08585"
+    },
+    {
+      "version": "0.34.2",
+      "github_tag": "v0.34.2",
+      "github_commit": "dfabde4539e42ba1e1eab50a3a50b88aea7958a0",
+      "github_tree": "f7a55d8ed225cbddcaa585b7c5dad7fbb7c80d00",
+      "published_at": "2026-09-15T21:21:07Z",
+      "prerelease": false,
+      "tag_tarball_sha256": "3fb06dc496f321749423792066f299205c433b815540c1f23f18368540401640"
+    }
+  ],
+  "previous_ceiling": "0.33.2",
+  "previous_ceiling_identity": {
+    "github_tag": "v0.33.2",
+    "github_commit": "f96e7aa0513b9973a0ccc71be414c2ecb9d65b1a",
+    "github_tree": "c35ae275b3fd3d6f58b3ea12f468a2212b6a87f5",
+    "published_at": "2026-08-27T20:31:47Z",
+    "prerelease": false,
+    "tag_tarball_sha256": "cd11aaa623ee823ddd4f4adc2c9d5eb07676f9f3cffb06725abd7143094f9e8d"
+  },
+  "published_stables_from_previous_ceiling": ["0.33.3", "0.34.0", "0.34.1", "0.34.2"],
+  "unpublished_next": "0.34.3",
+  "github_prerelease_plain_versions": ["0.32.2", "0.32.10"],
+  "ignored_prerelease_after_official": ["0.34.3-rc1"],
+  "frozen_corpus_ceiling": "0.33.2",
+  "research_313_follow_up": "decoder-tolerance-then-requalify",
+  "claim_at_observation": {
+    "baseline": "0.14.0",
+    "latest_qualified": "0.33.2",
+    "behavior_revision": "ollama.native-text-v1",
+    "posture": "allow_unverified",
+    "excluded": ["0.32.2", "0.32.10"],
+    "classification_of_0_33_2": "qualified_maintained",
+    "classification_of_0_33_3_through_0_34_2": "unverified_newer"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior": "ollama.native-text-v1",
+    "raise_latest_qualified_to": "0.34.2",
+    "keep_baseline": "0.14.0",
+    "keep_claim_id": "ollama.native-runtime-window-2",
+    "keep_exclusion_0_32_2": true,
+    "keep_exclusion_0_32_10": true,
+    "keep_allow_unverified": true,
+    "keep_decoder_specimen": "ollama-native-v0.14.0-v0.32.1",
+    "qualified_hops": ["0.33.3", "0.34.0", "0.34.1", "0.34.2"],
+    "decoder_tolerance": {
+      "key": "prompt_eval_cached_count",
+      "action": "accept-and-ignore",
+      "detail": "0.33.3 adds optional Metrics.PromptEvalCachedCount on selected POST /api/chat NDJSON; native-text-v1 accepts the key and does not map it into TokenUsage so existing prompt_eval_count/eval_count usage stays"
+    },
+    "synthetic_unverified_newer": "0.34.3",
+    "new_public_operation": false,
+    "flatten_to_cloud_or_generate": false,
+    "flatten_to_llama_cpp": false,
+    "provider_prompt_sent": false,
+    "attached_server_started": false,
+    "host_install_changed": false,
+    "official_app_archive_downloaded": false
+  }
+}

@@ -187,9 +187,9 @@ fn identity_freezes_0_33_x_hops_and_names_the_0_33_3_stop() {
     assert_eq!(protocol["attached_server_started"], false);
 
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.33.2");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.34.2");
     let claim = ollama_runtime_claim();
-    for version in ["0.32.15", "0.33.0", "0.33.1", "0.33.2"] {
+    for version in ["0.32.15", "0.33.0", "0.33.1", "0.33.2", "0.33.3", "0.34.0"] {
         assert!(matches!(
             claim.assess(&version_value(version)),
             InterfaceCompatibilityAssessment::Qualified(matched)
@@ -197,7 +197,7 @@ fn identity_freezes_0_33_x_hops_and_names_the_0_33_3_stop() {
         ));
     }
     assert!(matches!(
-        claim.assess(&version_value("0.34.0")),
+        claim.assess(&version_value("0.34.3")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
@@ -210,21 +210,19 @@ fn identity_freezes_0_33_x_hops_and_names_the_0_33_3_stop() {
 }
 
 #[test]
-fn strict_decoder_fail_closes_on_0_33_3_cached_count_key() {
+fn decoder_now_accepts_the_0_33_3_cached_count_key() {
     let counterexample = protocol_record("stop_counterexample_terminal_record");
     let mut decoder = ChatDecoder::new("m:8b");
-    assert!(
-        decoder
-            .push(format!("{counterexample}\n").as_bytes())
-            .is_err(),
-        "native-text-v1 must fail closed on the unmapped 0.33.3 metrics key"
-    );
+    let events = decoder
+        .push(format!("{counterexample}\n").as_bytes())
+        .expect("decoder-tolerance accepts the additive 0.33.3 metrics key");
+    assert_eq!(events.len(), 2);
 
     let without_key = counterexample.replace("\"prompt_eval_cached_count\":4,", "");
     let mut decoder = ChatDecoder::new("m:8b");
     let events = decoder
         .push(format!("{without_key}\n").as_bytes())
-        .expect("identical record without the new key decodes");
+        .expect("identical record without the new key still decodes");
     assert_eq!(events.len(), 2);
 }
 

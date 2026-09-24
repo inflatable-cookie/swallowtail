@@ -12,11 +12,12 @@ tags do not contain the package or route.
 
 Research 339 requalified the exact npm point to `1.65.0` from the complete
 official stable chain after `1.54.0`. The provider-free selected-surface
-evidence transfers; Research 330's paid-model live acceptance remains
-exact-`1.54.0`, and Research 116's authenticated completion/tool/usage/credit
-observations and Research 118's two-turn private continuation remain
-exact-`1.15.1` records. Live-derived cells stay gated at `1.65.0` until a
-separately authorized live requalification. Authenticated credit failure stays
+evidence transfers. Research 347 accepted exact-`1.65.0` live on
+`deepseek/deepseek-v4-flash` for structured completion, streaming events,
+usage decoding, and the two-turn private continuation. Research 330 stays the
+exact-`1.54.0` paid-model record. Research 116's authenticated
+completion/tool/usage/credit observations and Research 118's two-turn private
+continuation remain exact-`1.15.1` records. Authenticated credit failure stays
 version-bound to `1.15.1`.
 
 ## Selected Boundary

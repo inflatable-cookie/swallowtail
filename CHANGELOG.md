@@ -78,6 +78,12 @@ annotated Git tags from the canonical repository.
   proven, live honouring of a remote tool call is not. Research 337, g06.019.
 
 ### Changed
+- accept the exact `command-code.headless` `1.65.0` live surface on
+  `deepseek/deepseek-v4-flash`. Research 347 records one authorized gate:
+  structured one-turn completion and the Contract 043 two-turn private
+  exact-id continuation both `Completed` with `Clean` cleanup. Research 330
+  stays the exact-`1.54.0` paid-model record; Research 116/118 stay bound to
+  `1.15.1`. g06.029.
 - rebind the exact `command-code.npm` `QualifiedOnly` point from `1.54.0` to
   official npm `command-code` `1.65.0` with claim
   `command-code.headless-window-1` and behavior
@@ -155,6 +161,67 @@ annotated Git tags from the canonical repository.
   `0.76.1`, `0.77.1`, and `0.78.1` stay incompatible; synthetic unpublished
   `0.80.0` remains visible `UnverifiedNewer`. Claude Code stream-JSON and the
   Claude Agent SDK sidecar stay separate families. Research 335.
+- extend the qualified Oh My Pi RPC `18.x` package segment from
+  `18.0.0..=18.1.22` to `18.0.0..=18.2.7` on the unchanged
+  `oh-my-pi.rpc-v2-v18.0.0` behavior revision. Official npm and GitHub
+  latest is `18.2.7`. Research 345 froze the previous ceiling `18.1.22`
+  and every published hop `18.2.0` through `18.2.7`: selected JSONL wire
+  files `rpc-frame.ts`, `rpc-input.ts`, `rpc-messages.ts`, and
+  `host-uris.ts` are byte-identical; remaining mapped hops are unmapped
+  skill, login-secret, backpressure-spool, LSP/DAP framing, import-path,
+  or append-only argv changes. Claim id `oh-my-pi.rpc.package-window-2`,
+  retained deprecated `17.2.9..=17.4.2`, exclusions `18.0.2`/`18.1.7`,
+  `AllowUnverified`, and the `oh-my-pi-rpc-17.2.9` decoder corpus stay.
+  Unpublished `18.2.8` stays permitted `UnverifiedNewer`. `pi.package`
+  stays a separate axis. Not a major-line reset, new public operation,
+  or new driver/facade.
+- raise the Cursor Agent catalogue, ACP, and headless qualified ceiling
+  through official `2026.09.18-9a7762b`: Research 343 freezes both
+  published hops after `2026.09.10-fd3934a` with a complete tree inventory
+  and classifies the selected CLI definitions, ACP initialize subset, and
+  stream-json event keys as unchanged on Swallowtail's selected client.
+  Add exact milestones `2026.09.15-d2fe57e` and `2026.09.18-9a7762b` with
+  no inferred gap, keep the three distinct route claims, historical
+  milestones, exact feature-specific sets, and `AllowUnverified`, and leave
+  negotiated `sessionCapabilities.subagents`, worker/persist flags,
+  SEA/native packaging, ACP load/replay, and continuation recovery
+  unmapped or blocked. Older published `2026.08.25-3e8eec8` and
+  `2026.09.08-6caf4ff` stay independently unqualified gaps. No provider
+  operation, downloaded-artifact execution, or host mutation occurred.
+- raise the Pi RPC qualified ceiling from `0.85.1` to official npm
+  `@earendil-works/pi-coding-agent` `0.86.1`. Compatible extension of
+  `pi.rpc.strict-lf-v0.84.0-message-update-delta`: selected mapped commands
+  and argv stay; published `0.86.0` is also qualified. `0.86.0`
+  `{ source: "rpc" }` on already-mapped `steer` / `follow_up` covers
+  unmapped extension input handlers and is a no-op under selected
+  `--no-extensions`. `0.86.1` `META_API_KEY` help, Meta Muse, compile
+  cache, cache warming, `/bug`, Radius, compaction budgets, custom-provider
+  `TranscriptContext`, and `user_bash` fail-closed stay unmapped.
+  Unpublished `0.83.1`, `0.84.5`, and `0.85.2` stay incompatible;
+  unpublished `0.86.2` remains visible `UnverifiedNewer`. `pi.sdk-sidecar`
+  stays exact `0.84.2`. Research 344.
+- extend the Antigravity catalogue claim from maintained `1.1.9..=1.2.2`
+  to maintained `1.1.9..=1.2.7` on `antigravity-cli.release` with the
+  unchanged `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1` behavior
+  revision, baseline `1.1.9`, and `AllowUnverified` posture. Research 346
+  froze official GitHub `1.2.3` through `1.2.7` with both platform
+  digests; every public hop changes only `CHANGELOG.md`, and the release
+  notes name no selected-path change to `agy models`. Headless stays
+  maintained `1.1.9..=1.1.17` at the Research 283 `1.1.22` provider-managed
+  retry stop; `1.2.6` and `1.2.7` deepen that gap, so `1.1.18..=1.2.7`
+  stay unqualified. Unpublished `1.2.8` remains visible
+  `UnverifiedNewer`. Gemini CLI and `antigravity-acp` were not touched.
+  Research 346.
+- raise the Ollama attached-runtime qualified ceiling through official
+  `0.34.2`: Research 342 freezes all four published hops after `0.33.2`
+  with tag/commit/tree/tarball and selected-file hashes. The native decoder
+  now accepts and ignores the additive `0.33.3` `prompt_eval_cached_count`
+  metrics key named by Research 313, then qualifies `0.33.3`, `0.34.0`,
+  `0.34.1`, and `0.34.2` as a compatible extension of
+  `ollama.native-text-v1`. Keep the baseline, claim identity, behavior
+  revision, historical exclusions, decoder specimen, and `AllowUnverified`.
+  Synthetic later-stable `0.34.3` stays visibly unverified. No provider
+  operation or host mutation occurred.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

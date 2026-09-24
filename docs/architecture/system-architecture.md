@@ -386,7 +386,7 @@ OpenHands adds a package without a production route.
   persistent new, load-with-replay, and replay-free resume gated on the exact
   host-leased cwd
 - `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.4.2`
-  (retained, deprecated) and `18.0.0..=18.1.22` (maintained) package segments
+  (retained, deprecated) and `18.0.0..=18.2.7` (maintained) package segments
   and `omp` executable over negotiated RPC v2 JSONL stdio. The two segments
   carry separate adapter-private behavior revisions. It uses OMP local
   auth without a Swallowtail credential lease, binds exact provider, model,
@@ -418,7 +418,7 @@ OpenHands adds a package without a production route.
   mapping now use the common compatible-chat framing and envelope codec
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
-  `0.14.0..=0.33.2`; exact runtime, installed and running model observations,
+  `0.14.0..=0.34.2`; exact runtime, installed and running model observations,
   NDJSON output, and inference-caused residency remain distinct, with optional
   adapter-local `options.num_ctx` dispatch on structured runs and interactive
   replay, with no installation, model acquisition, cloud access, unload, or
@@ -441,8 +441,9 @@ OpenHands adds a package without a production route.
   authority, and maintained `1.0.4..=1.0.41` bind `grok-4.6`
 - `swallowtail-adapter-cursor` realizes exact Cursor Agent milestones
   `2026.07.01-41b2de7`, `2026.07.23-e383d2b`, `2026.08.04-aaa8809`,
-  `2026.08.11-e8db854`, `2026.08.31-4057e58`, `2026.09.02-c22c1a3`, and
-  `2026.09.10-fd3934a` through three separate routes:
+  `2026.08.11-e8db854`, `2026.08.31-4057e58`, `2026.09.02-c22c1a3`,
+  `2026.09.10-fd3934a`, `2026.09.15-d2fe57e`, and `2026.09.18-9a7762b`
+  through three separate routes:
   authenticated catalogue,
   ACP v1 interactive sessions, and headless stream-JSON structured runs. The
   headless route binds an explicit model and workspace authority, accepts typed
@@ -468,14 +469,15 @@ OpenHands adds a package without a production route.
   entries preserve only opaque model identity and do not imply entitlement or
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
   tag share one source commit; `1.1.8` is not independently qualified.
-  Catalogue support extends through official `1.2.2` with the same
+  Catalogue support extends through official `1.2.7` with the same
   catalogue revision because no published release-note change touches the
   selected `agy models` path after the classified `1.1.23` stdin repair;
   headless support stops at `1.1.17` because `1.1.22` introduced
   provider-managed HTTP 502 retry on the model request with no published
-  bound or disable control, `1.1.28` and `1.2.1` broaden that retry, and
+  bound or disable control, `1.1.28` and `1.2.1` broaden that retry,
   `1.1.28` also changes `--print-timeout` expiry to partial output plus a
-  successful exit. `--input-format` stdin turns and Gemini API-key
+  successful exit, and `1.2.6` plus `1.2.7` change the published headless
+  default timeout and per-attempt backoff without a finite attempt bound. `--input-format` stdin turns and Gemini API-key
   sign-in stay unmapped. Headless runs bind exact model, read or write
   authority, optional provider sandboxing, optional effort, optional inline
   JSON Schema, request-review permission mode, typed activity and usage,
@@ -1696,7 +1698,7 @@ installed inventory, running inventory, and selected-model detail without
 inference or model mutation. Prepared inventory and one-attempt inference stay
 separate. Inference declares runtime-managed residency but grants no pull,
 unload, restoration, process, or server authority. Exact endpoint and runtime
-drift fail before operation effects. The guaranteed `0.14.0` through `0.33.2`
+drift fail before operation effects. The guaranteed `0.14.0` through `0.34.2`
 window, exact `0.32.2` and `0.32.10` exclusions, prerelease closure, and
 visibly unverified later stable execution remain explicit.
 

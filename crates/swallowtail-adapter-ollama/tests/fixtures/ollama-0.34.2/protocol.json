@@ -1,0 +1,94 @@
+{
+  "selected_routes": [
+    "GET /api/version",
+    "GET /api/tags",
+    "GET /api/ps",
+    "POST /api/show",
+    "POST /api/chat"
+  ],
+  "selected_routes_registered_at_every_hop": true,
+  "selected_structs_identical_0_33_2_through_0_34_2_except_options_comment": true,
+  "selected_struct_hashes": {
+    "chat_request": "d7035a0da458f5ab354f771d2ee3eb9239f1ff40dae6700bdcd8e9806b18ae14",
+    "chat_response": "f9deac910407655aa7ecbded4820f8de5d404bb2f49e261b1a64b7db56f2b936",
+    "message": "bfc165a63e64996e5b843072e8be965a9798e214dfc1c88cc5974bc802d0c9f9",
+    "list_response": "3bd9321282acf137960e6480b523b2575f585ee0f7ea928301def363b426c6b9",
+    "process_response": "caaa50bff293aefb1d2702bf411dab49fe933225ef76a5f5591bdc8ffae1072d",
+    "show_request": "698cdcb3a9942de50bf9be2e65525e945a9ee3613d8309d2c3435b1db207852e",
+    "show_response": "eeba5938770c1ff3181e1f183a3ef9217dd44635688fd29b0940ea2ce68d7a71"
+  },
+  "options_struct_hashes": {
+    "v0.33.2_through_v0.34.0": "c615649cf6298722a03719706c4533308fa8a86e944bfeb936aad4c919ad02b7",
+    "v0.34.1_and_v0.34.2": "37e4c751ed65c80fede99ae00c871b44f05d3b8a6e26cf088dcb205c13c67583"
+  },
+  "options_delta_0_34_1": "comment-only typical_p deprecation; json tag unchanged; adapter sends only num_ctx",
+  "runner_struct_hash_0_33_2_through_0_34_2": "ba876ee7446bb7201e233bedb0f4e0dfa3aa105b4fbd4bb73fc9684179bd6475",
+  "types_go_file_hashes": {
+    "v0.33.2": "d2ae593daf72f0b2fb61a0999c670de53d892f4709b3c39640e81d6efd2d3d7b",
+    "v0.33.3": "76a7ba0a33c9395a113ffb279faa0106f77cafcc5d4e80c3d4aab17e02a7b008",
+    "v0.34.0": "40c2647781a54fd3baedca021d495f3f7f899e217fce9697405e90b7930b9d8e",
+    "v0.34.1": "2f38141506af42d3ece12a89517ace40077e6327b034128ef7d0ee054ab83d3e",
+    "v0.34.2": "2f38141506af42d3ece12a89517ace40077e6327b034128ef7d0ee054ab83d3e"
+  },
+  "types_go_byte_identical_0_34_1_through_0_34_2": true,
+  "routes_go_file_hashes": {
+    "v0.33.2": "c2ebab461d0f258340152e9207d35a4d72113a57c46043121d5b6798d8c770fa",
+    "v0.33.3": "c09978f83342b1ecd4d8d288fdb0429c01773cd2c9e80f640782a528a6042cef",
+    "v0.34.0": "99d48da007feaa85321ad24b25bff4d881c5bf329a5019aec642defe95396b73",
+    "v0.34.1": "7bcfe80b11f637a1a2951b9f013b1a966aaf2c1a3f92b8e4b5f6342aa0988817",
+    "v0.34.2": "fe40523b0a35b03c12bb8d530d3478e9d08a32e4723366ccaed0148ac8705e5a"
+  },
+  "metrics_struct_hashes": {
+    "v0.33.2": "1166c0471d4afd6ee12b56ae79b99e26aecfb58d347d4129961de0f26603a624",
+    "v0.33.3_through_v0.34.2": "bbc09305511a40e65370507477be58246ae171095d73ff35935d5f0066b38cb4"
+  },
+  "selected_handler_hashes": {
+    "list_handler": {
+      "v0.33.2_through_v0.34.0": "e2de9b8cf0aed7c5434c9f56214ebf6d9258812854902f1a30df50fa4837ab2f",
+      "v0.34.1_and_v0.34.2": "66f210f58813fe02cb1b9bfdd0a26368e0d9cd12ec11ba7c6fdae494cb8b61f6"
+    },
+    "show_handler_0_33_2_through_0_34_2": "2077b9ce5d744a7ca84fbbacb710ddc67f1f0b378fdf8607dc70b4027ab70065",
+    "ps_handler_0_33_2_through_0_34_2": "b4deea59f7a43c03ccc61f055dfed23539617151b2654367ac825ab3899d6075",
+    "chat_handler": {
+      "v0.33.2": "739224ad044b74b7e2a9e347f87d44819aa80f06c292c5e4cb453277d19a8ddd",
+      "v0.33.3_and_v0.34.0": "f7778660ed3ba36cb9fe60b226104f0b1cf81db16465ba3519b50f03b66fda7e",
+      "v0.34.1_and_v0.34.2": "37e6ee8d29f977ed560d8ec0319a1bd695da3b3d105baded2a655aeeadf62f57"
+    }
+  },
+  "hop_classification": {
+    "v0.33.3": "Metrics gains optional prompt_eval_cached_count plumbed into selected /api/chat; decoder-tolerance accept-and-ignore; generation-defaults fill-gaps-only and format-gated intermediate metrics stay unmapped",
+    "v0.34.0": "inherits cached-count; remaining deltas unselected (Codex desktop proxy, /v1/responses compaction, recommendation thinking advertisement)",
+    "v0.34.1": "ListHandler drops unused model-list cache; ChatHandler getModel rename; Options typical_p comment-only; tags capability-consistency fills existing ListModelResponse fields the inventory decoder ignores; CreateRequest comments and LoRA deprecation unmapped",
+    "v0.34.2": "types.go identical to 0.34.1; selected handlers identical; leftover routes.go is safetensors helper rename on the rejected non-gguf show path; first-run setup, ollama://apps, MLX speculative-decoding memory, llama.cpp update unmapped"
+  },
+  "tolerance_counterexample_terminal_record": "{\"model\":\"m:8b\",\"created_at\":\"2026-09-05T00:00:00Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done\":true,\"done_reason\":\"stop\",\"total_duration\":1,\"load_duration\":1,\"prompt_eval_count\":10,\"prompt_eval_cached_count\":4,\"prompt_eval_duration\":1,\"eval_count\":3,\"eval_duration\":1}",
+  "tolerance_counterexample_intended_result": "accepted_after_decoder_tolerance; usage stays prompt_eval_count=10 eval_count=3; cached count ignored",
+  "bounded_unmapped": [
+    "model-generation-defaults-fill-gaps-only-request-opts-still-win",
+    "structured-output-intermediate-metrics-gating-adapter-never-sends-format",
+    "typical_p-deprecation-adapter-never-sends",
+    "list-handler-cache-removal-response-struct-identical",
+    "tags-capability-consistency-inventory-decoder-ignores-extra-fields",
+    "chat-getmodel-rename-error-paths-unchanged",
+    "safetensors-show-helper-rename-adapter-requires-gguf",
+    "create-request-comment-and-lora-deprecation"
+  ],
+  "unused_deltas": [
+    "gemma4-mlx-image-audio",
+    "mlx-llamacpp-dependency-updates",
+    "codex-desktop-proxy-route",
+    "openai-responses-compaction",
+    "model-recommendation-thinking-advertisement",
+    "mlx-safetensors-create-no-longer-experimental",
+    "mlx-apple-silicon-memory",
+    "repeat-token-detection-threshold",
+    "first-run-setup-cli-desktop",
+    "ollama-apps-desktop-uri",
+    "mlx-speculative-decoding-memory"
+  ],
+  "new_public_selected_operation": false,
+  "decoder_corpus": "ollama-native-v0.14.0-v0.32.1",
+  "provider_prompt_sent": false,
+  "attached_server_started": false,
+  "host_install_changed": false
+}

@@ -70,7 +70,7 @@ maintained in this section.
 - [027 Antigravity Catalogue 1.2.7 Review Entry](./027-antigravity-catalogue-1-2-7-review-entry.md) — ready; external PR #359 through review entry; reserved Research 346
 - [028 OpenCode ACP HTTP MCP Live Gate](./028-opencode-acp-http-mcp-live-gate.md) — ready; one authorized attempt proving `opencode.acp` honours a consumer-supplied HTTP MCP entry on exact `1.18.18`
 - [029 Command Code 1.65.0 Live Requalification](./029-command-code-1-65-0-live-requalification.md) — ready; one authorized attempt on exact `1.65.0` with `deepseek/deepseek-v4-flash`
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:b8d9274ae3032a1719cce8c08026fc910955141cfb5e1eb58e758559f6c0f846 -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:74b7c032a99e21559df425d3790a83f637ab3cbc23b0cd6a632d6062867fb234 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g06 | open | planning_required |
@@ -92,4 +92,10 @@ maintained in this section.
 | g06.019 | complete | none | 8 | sha256:8e7f1280842d99f01b94a223b7681bd5a1cc09f4f4bbee9b561688992c384cb4 |
 | g06.020 | complete | none | 8 | sha256:8ad5406d0363e9e159f1818a7c9280992dee3edd02f003df769de313df01f1b8 |
 | g06.021 | complete | none | 8 | sha256:a71af0e87e5ea1947bbf74a63e76a9c82f9e5542268a5570b54395e5c33a2876 |
+| g06.023 | complete | none | 8 | sha256:b15823efb01420d3d2553a7e9d9ddaa964df95b40fe3789da9648702ffed40db |
+| g06.024 | complete | none | 8 | sha256:b27242799383b5a9fe1d9ef92e0858fe90adec53dddb6ef7f382f1986059e4c6 |
+| g06.025 | complete | none | 8 | sha256:f4299e36f59f2bfc03fef46083d4c73b0cea60788e4b549e76b2012f76adc82e |
+| g06.026 | complete | none | 8 | sha256:fffbb3c6f8d73e15f0fe2e31c00c10a6b77e1d0aa769cadb1ae5f6b3b7bc34ff |
+| g06.027 | complete | none | 8 | sha256:ff8512301401f88fff3f62d5729570b3eaf8a6a6eddfa7aef08f734c5cc5bce5 |
+| g06.029 | complete | none | 8 | sha256:7d70b4f38890742b81adf1b3c2499ec0b7293042acf31c9fd58447fc57dc5c36 |
 <!-- northstar:lifecycle:end -->

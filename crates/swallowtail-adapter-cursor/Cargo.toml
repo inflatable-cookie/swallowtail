@@ -59,3 +59,7 @@ path = "tests/consumer_route_projection.rs"
 [[test]]
 name = "cursor_agent_2026_09_10_identity"
 path = "tests/cursor_agent_2026_09_10_identity.rs"
+
+[[test]]
+name = "cursor_agent_2026_09_18_identity"
+path = "tests/cursor_agent_2026_09_18_identity.rs"

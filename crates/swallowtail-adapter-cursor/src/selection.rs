@@ -25,9 +25,17 @@ pub const CURSOR_AGENT_AUGUST_04_VERSION: &str = "2026-08-04";
 /// Qualified build revision for [`CURSOR_AGENT_AUGUST_04_VERSION`].
 pub const CURSOR_AGENT_AUGUST_04_BUILD_REVISION: &str = "aaa8809";
 /// Most recent qualified Cursor Agent release date.
-pub const CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str = "2026-09-10";
+pub const CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str = "2026-09-18";
 /// Qualified build revision for [`CURSOR_AGENT_LATEST_QUALIFIED_VERSION`].
-pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "fd3934a";
+pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "9a7762b";
+/// First published Cursor Agent milestone date after the September 10 ceiling.
+pub const CURSOR_AGENT_SEPTEMBER_15_VERSION: &str = "2026-09-15";
+/// Qualified build revision for [`CURSOR_AGENT_SEPTEMBER_15_VERSION`].
+pub const CURSOR_AGENT_SEPTEMBER_15_BUILD_REVISION: &str = "d2fe57e";
+/// Previous qualified Cursor Agent release date.
+pub const CURSOR_AGENT_SEPTEMBER_10_VERSION: &str = "2026-09-10";
+/// Qualified build revision for [`CURSOR_AGENT_SEPTEMBER_10_VERSION`].
+pub const CURSOR_AGENT_SEPTEMBER_10_BUILD_REVISION: &str = "fd3934a";
 /// Second published Cursor Agent milestone date after the August ceiling.
 pub const CURSOR_AGENT_SEPTEMBER_02_VERSION: &str = "2026-09-02";
 /// Qualified build revision for [`CURSOR_AGENT_SEPTEMBER_02_VERSION`].
@@ -294,7 +302,7 @@ fn axis() -> InterfaceVersionAxis {
         .expect("static Cursor release axis is valid")
 }
 
-const fn qualified_release_builds() -> [(&'static str, &'static str); 7] {
+const fn qualified_release_builds() -> [(&'static str, &'static str); 9] {
     [
         (
             CURSOR_AGENT_BASELINE_VERSION,
@@ -321,13 +329,21 @@ const fn qualified_release_builds() -> [(&'static str, &'static str); 7] {
             CURSOR_AGENT_SEPTEMBER_02_BUILD_REVISION,
         ),
         (
+            CURSOR_AGENT_SEPTEMBER_10_VERSION,
+            CURSOR_AGENT_SEPTEMBER_10_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_SEPTEMBER_15_VERSION,
+            CURSOR_AGENT_SEPTEMBER_15_BUILD_REVISION,
+        ),
+        (
             CURSOR_AGENT_LATEST_QUALIFIED_VERSION,
             CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION,
         ),
     ]
 }
 
-fn exact_milestones(behavior: &str) -> [InterfaceVersionSegment; 7] {
+fn exact_milestones(behavior: &str) -> [InterfaceVersionSegment; 9] {
     qualified_release_builds().map(|(date, _build)| {
         InterfaceVersionSegment::exact(
             version(date).expect("static Cursor release version is valid"),
@@ -358,6 +374,8 @@ mod tests {
         assert!(claim.supports(&version("2026-08-31")));
         assert!(claim.supports(&version("2026-09-02")));
         assert!(claim.supports(&version("2026-09-10")));
+        assert!(claim.supports(&version("2026-09-15")));
+        assert!(claim.supports(&version("2026-09-18")));
         assert!(!claim.permits(&version("2026-06-30")));
         assert!(!claim.permits(&version("2026-07-15")));
         assert!(!claim.permits(&version("2026-07-24")));
@@ -365,12 +383,15 @@ mod tests {
         assert!(!claim.permits(&version("2026-08-12")));
         assert!(!claim.permits(&version("2026-09-01")));
         assert!(!claim.permits(&version("2026-09-03")));
+        assert!(!claim.permits(&version("2026-09-11")));
+        assert!(!claim.permits(&version("2026-09-16")));
+        assert!(!claim.permits(&version("2026-09-17")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("2026-09-11"))
+            claim.assess(&version("2026-09-19"))
         else {
             panic!("later Cursor release remains visibly unverified");
         };
-        assert_eq!(newer.latest_qualified().as_str(), "2026-09-10");
+        assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
     }
 
     #[test]
@@ -393,9 +414,12 @@ mod tests {
             .expect("installed Cursor version parses");
         assert_eq!(local.axis().as_str(), CURSOR_AGENT_RELEASE_AXIS);
         assert_eq!(local.version().as_str(), "2026-07-01");
-        let registry = cursor_agent_release_binding("2026.09.10-fd3934a")
+        let registry = cursor_agent_release_binding("2026.09.18-9a7762b")
             .expect("registry Cursor version parses");
-        assert_eq!(registry.version().as_str(), "2026-09-10");
+        assert_eq!(registry.version().as_str(), "2026-09-18");
+        let prior = cursor_agent_release_binding("2026.09.10-fd3934a")
+            .expect("prior qualified Cursor version parses");
+        assert_eq!(prior.version().as_str(), "2026-09-10");
         let host =
             cursor_agent_release_binding("2026.08.04-aaa8809").expect("host Cursor version parses");
         assert_eq!(host.version().as_str(), "2026-08-04");
@@ -412,6 +436,8 @@ mod tests {
             "2026.08.31-deadbee",
             "2026.09.02-deadbee",
             "2026.09.10-deadbee",
+            "2026.09.15-deadbee",
+            "2026.09.18-deadbee",
             "2026.07.01-41b2de",
             "2026.02.30-41b2de7",
             " 2026.07.01-41b2de7",

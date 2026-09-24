@@ -147,7 +147,7 @@ annotated Git tags from the canonical repository.
 - extend the qualified Oh My Pi RPC `18.x` package segment from
   `18.0.0..=18.1.22` to `18.0.0..=18.2.7` on the unchanged
   `oh-my-pi.rpc-v2-v18.0.0` behavior revision. Official npm and GitHub
-  latest is `18.2.7`. Research 331 froze the previous ceiling `18.1.22`
+  latest is `18.2.7`. Research 345 froze the previous ceiling `18.1.22`
   and every published hop `18.2.0` through `18.2.7`: selected JSONL wire
   files `rpc-frame.ts`, `rpc-input.ts`, `rpc-messages.ts`, and
   `host-uris.ts` are byte-identical; remaining mapped hops are unmapped

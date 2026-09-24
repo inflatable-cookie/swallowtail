@@ -249,7 +249,7 @@
     "mix_pi_package_axis": false,
     "decoder_corpus_retained": "oh-my-pi-rpc-17.2.9",
     "historical_specimens_retained": true,
-    "research_record": "docs/research/331-oh-my-pi-18-2-7-identity.md",
+    "research_record": "docs/research/345-oh-my-pi-18-2-7-identity.md",
     "private_milestone_checked": true
   }
 }

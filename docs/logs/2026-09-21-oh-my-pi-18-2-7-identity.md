@@ -1,6 +1,6 @@
 # 2026-09-21 Oh My Pi 18.2.7 Identity
 
-Research 331 froze official npm and GitHub `@oh-my-pi/pi-coding-agent@18.2.7`
+Research 345 froze official npm and GitHub `@oh-my-pi/pi-coding-agent@18.2.7`
 before any claim moved. npm `latest` is `18.2.7`, published
 `2026-09-21T03:12:39.903Z`. GitHub latest release is `v18.2.7`, published
 `2026-09-21T02:13:02Z`, tag commit `d716bcf60ab0a2e7ece1fdf382c0d143fef1f307`.

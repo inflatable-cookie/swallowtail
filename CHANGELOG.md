@@ -158,6 +158,19 @@ annotated Git tags from the canonical repository.
   `0.76.1`, `0.77.1`, and `0.78.1` stay incompatible; synthetic unpublished
   `0.80.0` remains visible `UnverifiedNewer`. Claude Code stream-JSON and the
   Claude Agent SDK sidecar stay separate families. Research 335.
+- raise the Cursor Agent catalogue, ACP, and headless qualified ceiling
+  through official `2026.09.18-9a7762b`: Research 343 freezes both
+  published hops after `2026.09.10-fd3934a` with a complete tree inventory
+  and classifies the selected CLI definitions, ACP initialize subset, and
+  stream-json event keys as unchanged on Swallowtail's selected client.
+  Add exact milestones `2026.09.15-d2fe57e` and `2026.09.18-9a7762b` with
+  no inferred gap, keep the three distinct route claims, historical
+  milestones, exact feature-specific sets, and `AllowUnverified`, and leave
+  negotiated `sessionCapabilities.subagents`, worker/persist flags,
+  SEA/native packaging, ACP load/replay, and continuation recovery
+  unmapped or blocked. Older published `2026.08.25-3e8eec8` and
+  `2026.09.08-6caf4ff` stay independently unqualified gaps. No provider
+  operation, downloaded-artifact execution, or host mutation occurred.
 - raise the Pi RPC qualified ceiling from `0.85.1` to official npm
   `@earendil-works/pi-coding-agent` `0.86.1`. Compatible extension of
   `pi.rpc.strict-lf-v0.84.0-message-update-delta`: selected mapped commands

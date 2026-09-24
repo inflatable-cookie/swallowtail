@@ -65,7 +65,7 @@ fn selected_route_evidence_retains_three_behaviors_and_no_new_authority() {
 }
 
 #[test]
-fn production_claims_use_seven_singletons_and_keep_later_dates_unverified() {
+fn production_claims_use_nine_singletons_and_keep_later_dates_unverified() {
     for claim in [
         cursor_catalogue_claim(),
         cursor_acp_claim(),
@@ -78,12 +78,16 @@ fn production_claims_use_seven_singletons_and_keep_later_dates_unverified() {
         assert!(claim.supports(&version("2026-08-31")));
         assert!(claim.supports(&version("2026-09-02")));
         assert!(claim.supports(&version("2026-09-10")));
+        assert!(claim.supports(&version("2026-09-15")));
+        assert!(claim.supports(&version("2026-09-18")));
         assert!(!claim.permits(&version("2026-07-15")));
         assert!(!claim.permits(&version("2026-07-24")));
         assert!(!claim.permits(&version("2026-08-12")));
         assert!(!claim.permits(&version("2026-09-01")));
+        assert!(!claim.permits(&version("2026-09-11")));
+        assert!(!claim.permits(&version("2026-09-16")));
         assert!(matches!(
-            claim.assess(&version("2026-09-11")),
+            claim.assess(&version("2026-09-19")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
     }
@@ -99,6 +103,8 @@ fn every_qualified_date_requires_its_exact_build_revision() {
         "2026.08.31-4057e58",
         "2026.09.02-c22c1a3",
         "2026.09.10-fd3934a",
+        "2026.09.15-d2fe57e",
+        "2026.09.18-9a7762b",
     ] {
         assert!(cursor_agent_release_binding(accepted).is_some());
     }
@@ -110,10 +116,12 @@ fn every_qualified_date_requires_its_exact_build_revision() {
         "2026.08.31-deadbee",
         "2026.09.02-deadbee",
         "2026.09.10-deadbee",
+        "2026.09.15-deadbee",
+        "2026.09.18-deadbee",
     ] {
         assert!(cursor_agent_release_binding(rejected).is_none());
     }
-    assert!(cursor_agent_release_binding("2026.09.11-a1b2c3d").is_some());
+    assert!(cursor_agent_release_binding("2026.09.19-a1b2c3d").is_some());
 }
 
 #[test]

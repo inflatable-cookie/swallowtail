@@ -63,6 +63,11 @@ maintained in this section.
 - [020 Grok Build ACP 1.0.40 Review-Entry Pilot](./020-grok-build-acp-1-0-40-review-entry-pilot.md) — ready; external PR #358 as the bounded pilot for the #354–#359 suite
 - [021 Command Code Current-Release Qualification](./021-command-code-current-release-qualification.md) — ready; moves the exact `command-code.npm` point from `1.54.0` to current official, provider-free
 - [022 Claude Code 2.1.281 Narrowed Response-Only Qualification](./022-claude-code-2-1-281-narrowed-response-only.md) — ready; qualifies both axes through current official after Tom accepted the narrowed built-in-hook guarantee (Contract 039)
+- [023 Ollama Runtime 0.34.2 Review Entry](./023-ollama-runtime-0-34-2-review-entry.md) — ready; external PR #354 through review entry; reserved Research 342
+- [024 Cursor Agent 2026.09.18 Review Entry](./024-cursor-agent-2026-09-18-review-entry.md) — ready; external PR #355 through review entry; reserved Research 343
+- [025 Pi RPC 0.86.1 Review Entry](./025-pi-rpc-0-86-1-review-entry.md) — ready; external PR #356 through review entry; reserved Research 344
+- [026 Oh My Pi RPC 18.2.7 Review Entry](./026-oh-my-pi-rpc-18-2-7-review-entry.md) — ready; external PR #357 through review entry; reserved Research 345
+- [027 Antigravity Catalogue 1.2.7 Review Entry](./027-antigravity-catalogue-1-2-7-review-entry.md) — ready; external PR #359 through review entry; reserved Research 346
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:b8d9274ae3032a1719cce8c08026fc910955141cfb5e1eb58e758559f6c0f846 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

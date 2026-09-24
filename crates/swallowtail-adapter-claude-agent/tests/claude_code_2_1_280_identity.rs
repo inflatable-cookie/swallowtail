@@ -234,7 +234,7 @@ fn dist_inventory_changes_only_version_pins_and_the_binary() {
 }
 
 #[test]
-fn production_ceilings_stay_at_2_1_278() {
+fn identity_stop_is_frozen_and_production_now_qualifies_through_2_1_281() {
     let identity = json(IDENTITY);
     let decision = &identity["identity_decision"];
     assert_eq!(
@@ -249,37 +249,36 @@ fn production_ceilings_stay_at_2_1_278() {
             .as_str()
             .expect("baseline")
     );
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.278");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.278"
+        "2.1.281"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         [
             "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
+            "2.1.279",
         ]
     );
     let headless = claude_code_headless_claim();
     let response = claude_code_response_only_claim();
     assert!(headless.supports(&version("2.1.278")));
     assert!(response.supports(&version("2.1.278")));
-    for later in ["2.1.279", "2.1.280", "2.1.281"] {
-        assert!(
-            matches!(
-                headless.assess(&version(later)),
-                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-            ),
-            "{later}"
-        );
-        assert!(
-            matches!(
-                response.assess(&version(later)),
-                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-            ),
-            "{later}"
-        );
+    assert!(!headless.permits(&version("2.1.279")));
+    assert!(!response.permits(&version("2.1.279")));
+    for later in ["2.1.280", "2.1.281"] {
+        assert!(headless.supports(&version(later)), "{later}");
+        assert!(response.supports(&version(later)), "{later}");
     }
+    assert!(matches!(
+        headless.assess(&version("2.1.282")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+    assert!(matches!(
+        response.assess(&version("2.1.282")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     assert!(!headless.permits(&version("2.1.244")));
     assert!(!response.permits(&version("2.1.244")));
 }

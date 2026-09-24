@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- raise Claude Code headless through official `2.1.281` as a compatible
+  extension of `claude-code.headless.stream-json.v1`, and split response-only
+  into v1 `2.1.227..=2.1.278` plus v2 `2.1.280..=2.1.281` under the Contract
+  039 narrowed built-in-hook guarantee. Unpublished `2.1.279` is an explicit
+  exclusion. v2 without a project location launches in an adapter-owned empty
+  directory. The nine `@builtin` plugins that `--safe-mode` keeps from
+  `2.1.280` are disclosed in the Claude prepared guide. Watcher stays exact
+  `2.1.251`. Research 348.
 - raise the Grok Build ACP executable window through the current official
   npm `@xai-official/grok` `1.0.41`: Research 340 freezes all eleven
   published stables `1.0.31..=1.0.41` after the `1.0.30` ceiling with
@@ -42,15 +50,17 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Added
-- add the OpenCode ACP HTTP MCP live harness and spend the one authorized
-  attempt on installed exact `1.18.18`. Honouring was observed: connect,
-  `tools/list`, one `tools/call`, completed turn, clean cleanup. The spent
-  attempt has no verified exact model attribution, so `client_mcp_servers`
-  stays No. The live gate records the selected default agent's model
-  override, else the root `model`, only after that definition and existing
-  host auth are present. Harness proof is a default-feature test; the live
-  binary stays behind `live-probes` and an env gate. The disposable
-  loopback MCP server is test-only. Research 348, g06.028.
+- prove `opencode.acp` honours a consumer-supplied streamable-HTTP MCP entry
+  on installed exact `1.18.18`. One live attempt accepted: connect,
+  `tools/list`, one `tools/call`, completed turn, clean cleanup.
+  `client_mcp_servers` is Yes on that exact point only; later window points
+  stay unqualified for honouring. The host default agent model is unverified;
+  the claim does not depend on it. The live gate records the selected default
+  agent's model override, else the root `model`, only after that definition
+  and existing host auth are present, and stops with `no_usable_model` when
+  those are missing. Harness proof is a default-feature test; the live binary
+  stays behind `live-probes` and an env gate. The disposable loopback MCP
+  server is test-only. Research 349, g06.028.
 - add the OpenCode ACP production route `opencode.acp` in
   `swallowtail-adapter-opencode`, unflattened from `opencode.http`. Axis
   `opencode.executable`, claim `opencode.acp.executable-window-1`, compiled

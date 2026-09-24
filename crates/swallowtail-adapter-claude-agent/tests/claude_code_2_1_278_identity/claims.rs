@@ -89,6 +89,7 @@ fn unpublished_gaps_and_later_2_1_279_stay_classified() {
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         &[
             "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
+            "2.1.279",
         ]
     );
     let headless = claude_code_headless_claim();
@@ -147,11 +148,11 @@ fn identity_names_compatible_extension_without_changing_production() {
         "unverified_newer"
     );
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.278");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.278"
+        "2.1.281"
     );
 
     let headless = claude_code_headless_claim();
@@ -170,10 +171,9 @@ fn identity_names_compatible_extension_without_changing_production() {
             "{published}"
         );
     }
-    assert!(matches!(
-        headless.assess(&version("2.1.279")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    assert!(!headless.permits(&version("2.1.279")));
+    assert!(headless.supports(&version("2.1.280")));
+    assert!(headless.supports(&version("2.1.281")));
     let response = claude_code_response_only_claim();
     assert!(matches!(
         response.assess(&version("2.1.270")),
@@ -185,8 +185,7 @@ fn identity_names_compatible_extension_without_changing_production() {
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
-    assert!(matches!(
-        response.assess(&version("2.1.279")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    assert!(!response.permits(&version("2.1.279")));
+    assert!(response.supports(&version("2.1.280")));
+    assert!(response.supports(&version("2.1.281")));
 }

@@ -24,6 +24,8 @@ feature usually has a short chain: selection evidence, contract, implementation,
 then conformance closeout.
 
 ## Entries
+- [2026-09-24 g06.028 Live Gate Disposition](./2026-09-24-g06-028-live-gate-disposition.md) — the OpenCode ACP HTTP MCP attempt is accepted as honouring evidence on exact `1.18.18` with the model disclosed as unverified; record renumbers to Research 349; no rerun
+- [2026-09-24 Claude Code 2.1.281 Claim](./2026-09-24-claude-code-2-1-281-claim.md) — headless `2.1.220..=2.1.281` compatible extension; response-only v1 `2.1.227..=2.1.278` plus v2 `2.1.280..=2.1.281` under the narrowed built-in-hook guarantee; unpublished `2.1.279` excluded; watcher exact `2.1.251` unchanged
 - [2026-09-24 Claude Code 2.1.281 Claim Prepared](./2026-09-24-claude-code-2-1-281-claim-prepared.md) — branch-3 response-only isolation wording prepared for operator ruling; production claims held at `2.1.278`
 - [2026-09-24 Claude Code 2.1.281 Identity](./2026-09-24-claude-code-2-1-281-identity.md) — Research 341 froze official identity, all built-in hooks, and the absent writable disable switch; no downloaded binary execution or live provider work
 - [2026-09-24 Grok Build ACP 1.0.41 Claim](./2026-09-24-grok-build-acp-1-0-41-claim.md) — re-raised `grok-build.executable` through the current official `1.0.41`; kept the baseline, deprecated `0.2.114..=0.2.117`, gaps, `grok-4.6` binding, and `AllowUnverified`, left no published stable `UnverifiedNewer`, and left the exact `1.0.30` catalogue claim and the `1.0.4`/`1.0.5` registered-tool courier independent of the ACP window

@@ -88,8 +88,20 @@ mod tests {
             "--continue",
             "--fork-session",
             "--fallback-model",
+            "--settings",
         ] {
             assert!(!arguments.iter().any(|value| value == forbidden));
         }
+    }
+
+    #[test]
+    fn v1_and_v2_share_the_tool_free_argument_list() {
+        let model = ModelId::new("claude-sonnet-5").unwrap();
+        let v1 = arguments(&model, None);
+        let v2 = arguments(&model, None);
+        assert_eq!(v1, v2);
+        assert!(v1.iter().any(|value| value == "--safe-mode"));
+        assert!(!v1.iter().any(|value| value == "--settings"));
+        assert!(!v1.iter().any(|value| value == "--add-dir"));
     }
 }

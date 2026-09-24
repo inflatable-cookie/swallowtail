@@ -1065,3 +1065,7 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   cards, so workers on other lanes could not see them. Until the research
   collision check exists, reservations are listed at the top of
   `docs/research/README.md`.
+- g06.022 allocated Research 342 from planning SHA `35436b0e`; merge with
+  later main found `docs/research/342-ollama-0-34-2-identity.md` already
+  assigned. Renumbered the claim to 348. The reservation list does not
+  protect numbers that become files after a worker starts. Found g06.022.

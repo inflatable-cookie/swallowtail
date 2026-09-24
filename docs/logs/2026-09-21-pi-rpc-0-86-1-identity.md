@@ -2,7 +2,7 @@
 
 ## Result
 
-Research 331 froze official npm `@earendil-works/pi-coding-agent` `0.86.1`
+Research 344 froze official npm `@earendil-works/pi-coding-agent` `0.86.1`
 against the `0.85.1` claim. Host `pi` was not on PATH; missing install is
 not a gap. npm gitHead matches GitHub tag `v0.86.1`
 (`13cbf77df2396303013a41646bcfa77b4271ae56`). Published hops after

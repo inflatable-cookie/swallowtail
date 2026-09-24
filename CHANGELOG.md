@@ -155,7 +155,7 @@ annotated Git tags from the canonical repository.
   `TranscriptContext`, and `user_bash` fail-closed stay unmapped.
   Unpublished `0.83.1`, `0.84.5`, and `0.85.2` stay incompatible;
   unpublished `0.86.2` remains visible `UnverifiedNewer`. `pi.sdk-sidecar`
-  stays exact `0.84.2`. Research 331.
+  stays exact `0.84.2`. Research 344.
 - extend the qualified Oh My Pi RPC package window from
   `17.2.9..=17.4.0` to two segments on `oh-my-pi.package`: retained
   `17.2.9..=17.4.2` on the unchanged `oh-my-pi.rpc-v2-v17.2.9` behavior

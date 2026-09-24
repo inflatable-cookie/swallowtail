@@ -1,0 +1,84 @@
+{
+  "acp_initialize_construction_identical_modulo_minifier": false,
+  "acp_initialize_selected_subset_identical": true,
+  "acp_initialize_shape": {
+    "agent_info": null,
+    "auth_methods": [
+      "cursor_login"
+    ],
+    "load_session": true,
+    "mcp_capabilities": {
+      "http": true,
+      "sse": true
+    },
+    "prompt_capabilities": {
+      "audio": false,
+      "embeddedContext": false,
+      "image": true
+    },
+    "protocol_version_constant": true,
+    "session_capabilities": {
+      "list": {}
+    },
+    "session_capabilities_subagents": "client-negotiated-default-off-unmapped"
+  },
+  "authenticated_catalogue_called": false,
+  "continuation_recovery": "blocked",
+  "downloaded_artifacts_executed": false,
+  "help_selected_flags_present": [
+    "-p",
+    "--print",
+    "--output-format",
+    "--model",
+    "--trust",
+    "--mode"
+  ],
+  "load_session_posture": "advertised-without-proven-replay",
+  "mode_choices": [
+    "plan",
+    "ask"
+  ],
+  "models_command_stable": true,
+  "selected_acp_command": "acp",
+  "selected_catalogue_command": "models",
+  "selected_cli_definitions_identical_modulo_minifier": true,
+  "selected_headless": {
+    "force": false,
+    "output_format": "stream-json",
+    "plan_mode_for_read": true,
+    "print": true,
+    "sandbox": false,
+    "stream_partial_output": false,
+    "trust": true,
+    "yolo": false
+  },
+  "stream_json_event_keys": [
+    "type",
+    "subtype",
+    "call_id",
+    "tool_call",
+    "model_call_id",
+    "session_id",
+    "timestamp_ms"
+  ],
+  "stream_json_event_keys_identical_modulo_minifier": true,
+  "session_capabilities_subagents_unmapped": true,
+  "session_capabilities_subagents_reason": "2026.09.15 can advertise sessionCapabilities.subagents only when clientCapabilities negotiate it. Swallowtail initialize sends {fs:{readTextFile:true,writeTextFile:false}} and does not enable subagents. Default remains false. Extra nested field stays unmapped.",
+  "provider_prompt_sent": false,
+  "unused_help_deltas": [
+    "--auto-review",
+    "worker",
+    "create-chat",
+    "generate-rule",
+    "--stream-partial-output",
+    "--force",
+    "--yolo",
+    "--sandbox",
+    "persist",
+    "--spawn",
+    "--warm-idle",
+    "--plugin-dir",
+    "--worktree",
+    "--list-models"
+  ]
+}

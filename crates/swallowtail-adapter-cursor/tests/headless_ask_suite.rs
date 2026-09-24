@@ -16,7 +16,7 @@ use swallowtail_runtime::{
 };
 
 const FIXTURE: &str = "tests/fixtures/cursor-agent-2026.07.01-41b2de7/headless-success.jsonl";
-const QUALIFIED_RELEASES: [&str; 7] = [
+const QUALIFIED_RELEASES: [&str; 9] = [
     "2026.07.01-41b2de7",
     "2026.07.23-e383d2b",
     "2026.08.04-aaa8809",
@@ -24,6 +24,8 @@ const QUALIFIED_RELEASES: [&str; 7] = [
     "2026.08.31-4057e58",
     "2026.09.02-c22c1a3",
     "2026.09.10-fd3934a",
+    "2026.09.15-d2fe57e",
+    "2026.09.18-9a7762b",
 ];
 
 #[test]
@@ -140,7 +142,7 @@ fn ask_selection_rejects_read_write_authority_before_process_work() {
 
 #[test]
 fn ask_selection_rejects_unqualified_releases_before_process_work() {
-    for release in ["2026.09.11-abcdef1", "2026.09.12-abcdef1"] {
+    for release in ["2026.09.19-abcdef1", "2026.09.20-abcdef1"] {
         let host_id = local_host();
         let host = FixtureHost::completed([stdout(&fixture())]);
         let failure = block_on(ask_driver().start_run(

@@ -57,6 +57,7 @@ maintained in this section.
 - [014 Consumer-Supplied HTTP MCP Acceptance Per Route](./014-consumer-supplied-http-mcp-acceptance-per-route.md) — ready; produces the per-route list that decides direct HTTP MCP versus Longhorn's stdio carrier
 - [015 OpenCode ACP Identity And Surface Freeze](./015-opencode-acp-identity-and-surface-freeze.md) — ready; freezes the `opencode acp` surface and the `mcpServers` handoff before g06.016 implements the route
 - [016 OpenCode ACP Route Implementation](./016-opencode-acp-route-implementation.md) — ready; builds the `opencode.acp` route against Research 337, with the URL-plus-header MCP placement gated on a contract admission
+- [017 Claude Code 2.1.280 Identity Stop](./017-claude-code-2-1-280-identity-stop.md) — external PR #363 admitted through review entry; a typed stop keeping both ceilings at `2.1.278`
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:12552e682d1f1baeae6fcd1e68a5965a78a2a3451671e4d9353bd4ed1a55adbe -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

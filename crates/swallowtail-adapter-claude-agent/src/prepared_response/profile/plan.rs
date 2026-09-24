@@ -40,7 +40,11 @@ pub(super) fn requirements(
         HostServiceKind::Process,
         HostServiceKind::Time,
     ];
-    if working_resource {
+    if working_resource
+        || crate::claude_code_response_selection::observation_uses_narrowed_builtin_hooks(
+            prepared.observation(),
+        )
+    {
         host_services.push(HostServiceKind::WorkingResource);
     }
     OperationRequirements::new(

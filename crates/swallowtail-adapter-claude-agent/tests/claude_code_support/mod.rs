@@ -42,6 +42,38 @@ pub fn host_services(
 }
 
 #[allow(dead_code)]
+pub fn empty_launch_host(host: ExecutionHostId) -> LocalHostServices {
+    static EMPTY_LAUNCH_SEQUENCE: AtomicU64 = AtomicU64::new(0);
+
+    let sequence = EMPTY_LAUNCH_SEQUENCE.fetch_add(1, Ordering::Relaxed);
+    let temporary_root = std::env::temp_dir().join(format!(
+        "swallowtail-claude-code-response-empty-{}-{sequence}",
+        std::process::id()
+    ));
+    LocalProcessHost::builder(LocalProcessLimits::default())
+        .with_temporary_root(temporary_root)
+        .build_services(host)
+}
+
+#[allow(dead_code)]
+pub fn host_services_with_working_resource(
+    host: ExecutionHostId,
+    process: Arc<dyn ProcessService>,
+    time: Arc<dyn TimeService>,
+    local: &LocalHostServices,
+) -> (HostServices, Arc<TaskState>) {
+    let (services, task) = host_services(host, process, time);
+    let services = services.with_working_resource(
+        local
+            .services()
+            .working_resource()
+            .expect("working resource")
+            .clone(),
+    );
+    (services, task)
+}
+
+#[allow(dead_code)]
 pub fn local_watcher_host(host: ExecutionHostId) -> LocalHostServices {
     static TEMPORARY_ROOT_SEQUENCE: AtomicU64 = AtomicU64::new(0);
 

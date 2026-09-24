@@ -150,6 +150,18 @@ annotated Git tags from the canonical repository.
   `0.76.1`, `0.77.1`, and `0.78.1` stay incompatible; synthetic unpublished
   `0.80.0` remains visible `UnverifiedNewer`. Claude Code stream-JSON and the
   Claude Agent SDK sidecar stay separate families. Research 335.
+- raise the Pi RPC qualified ceiling from `0.85.1` to official npm
+  `@earendil-works/pi-coding-agent` `0.86.1`. Compatible extension of
+  `pi.rpc.strict-lf-v0.84.0-message-update-delta`: selected mapped commands
+  and argv stay; published `0.86.0` is also qualified. `0.86.0`
+  `{ source: "rpc" }` on already-mapped `steer` / `follow_up` covers
+  unmapped extension input handlers and is a no-op under selected
+  `--no-extensions`. `0.86.1` `META_API_KEY` help, Meta Muse, compile
+  cache, cache warming, `/bug`, Radius, compaction budgets, custom-provider
+  `TranscriptContext`, and `user_bash` fail-closed stay unmapped.
+  Unpublished `0.83.1`, `0.84.5`, and `0.85.2` stay incompatible;
+  unpublished `0.86.2` remains visible `UnverifiedNewer`. `pi.sdk-sidecar`
+  stays exact `0.84.2`. Research 344.
 - extend the Antigravity catalogue claim from maintained `1.1.9..=1.2.2`
   to maintained `1.1.9..=1.2.7` on `antigravity-cli.release` with the
   unchanged `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1` behavior

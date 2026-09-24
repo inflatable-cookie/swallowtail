@@ -1041,3 +1041,11 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   covers task numbers only; extend it to research records (ignoring same-number
   companion `.tsv` files). Found reconciling g06.020, where #358 also collided
   on 331 before review renumbered it to 340.
+- The package content audit's secret pattern `sk-[A-Za-z0-9_-]{20,}` in
+  `scripts/validation/archive.sh` false-positives on ordinary hyphenated
+  English: g06.027's Antigravity fixture labels
+  `headless-background-task-waiting-notice-occasionally-skipped` and
+  `interactive-ask-question-and-copy-btw` match through `task-waiting` and
+  `ask-question`, so `package:verify-affected` rejects a clean package. The
+  labels were rephrased to keep the proof green; anchor the pattern so `sk-`
+  must start a token instead. Found g06.027.

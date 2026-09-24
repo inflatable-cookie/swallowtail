@@ -156,6 +156,18 @@ annotated Git tags from the canonical repository.
   Unpublished `0.83.1`, `0.84.5`, and `0.85.2` stay incompatible;
   unpublished `0.86.2` remains visible `UnverifiedNewer`. `pi.sdk-sidecar`
   stays exact `0.84.2`. Research 344.
+- extend the Antigravity catalogue claim from maintained `1.1.9..=1.2.2`
+  to maintained `1.1.9..=1.2.7` on `antigravity-cli.release` with the
+  unchanged `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1` behavior
+  revision, baseline `1.1.9`, and `AllowUnverified` posture. Research 346
+  froze official GitHub `1.2.3` through `1.2.7` with both platform
+  digests; every public hop changes only `CHANGELOG.md`, and the release
+  notes name no selected-path change to `agy models`. Headless stays
+  maintained `1.1.9..=1.1.17` at the Research 283 `1.1.22` provider-managed
+  retry stop; `1.2.6` and `1.2.7` deepen that gap, so `1.1.18..=1.2.7`
+  stay unqualified. Unpublished `1.2.8` remains visible
+  `UnverifiedNewer`. Gemini CLI and `antigravity-acp` were not touched.
+  Research 346.
 - raise the Ollama attached-runtime qualified ceiling through official
   `0.34.2`: Research 342 freezes all four published hops after `0.33.2`
   with tag/commit/tree/tarball and selected-file hashes. The native decoder

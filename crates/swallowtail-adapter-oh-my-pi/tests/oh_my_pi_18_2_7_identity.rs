@@ -542,8 +542,7 @@ fn digest_groups_are_mutation_sensitive() {
     }
 
     assert_eq!(
-        protocol["added_selected_files"]["src/modes/rpc/rpc-output.ts"]
-            ["sha256_18_2_1_through_18_2_7"],
+        protocol["added_selected_files"]["src/modes/rpc/rpc-output.ts"]["sha256_18_2_1_through_18_2_7"],
         "10529f7fbd9e6303f103a99a5d4fdaf5f9268dd29219463fdf638f4122cec433"
     );
 }

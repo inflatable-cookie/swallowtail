@@ -15,7 +15,7 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g06.022 Claude Code 2.1.281 Narrowed Response-Only Qualification](./g06/022-claude-code-2-1-281-narrowed-response-only.md)
+[g06.028 OpenCode ACP HTTP MCP Live Gate](./g06/028-opencode-acp-http-mcp-live-gate.md)
 is the lead ready lane; the [g06 manifest](./g06/README.md) holds any other
 ready lanes. g06.001–g06.005 stay planned and gated. Do not infer release,
 tag, publication, live-provider, or consumer authority.

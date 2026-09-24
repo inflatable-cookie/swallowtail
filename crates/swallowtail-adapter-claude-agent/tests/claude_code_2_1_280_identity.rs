@@ -37,16 +37,28 @@ fn identity_stops_before_any_claim_edit() {
     assert_eq!(identity["npm_dist_tags"]["latest"], "2.1.280");
     assert_eq!(identity["npm_dist_tags"]["stable"], "2.1.267");
     assert_eq!(identity["previous_ceiling"], "2.1.278");
-    assert_eq!(identity["published_stables_from_previous_ceiling"], json(r#"["2.1.280"]"#));
-    assert_eq!(identity["unpublished_between_ceiling_and_official"], json(r#"["2.1.279"]"#));
+    assert_eq!(
+        identity["published_stables_from_previous_ceiling"],
+        json(r#"["2.1.280"]"#)
+    );
+    assert_eq!(
+        identity["unpublished_between_ceiling_and_official"],
+        json(r#"["2.1.279"]"#)
+    );
     assert_eq!(identity["unpublished_2_1_279"], true);
     assert_eq!(identity["first_unpublished_after_official"], "2.1.281");
-    assert_eq!(identity["github_tag_commit"], "56f36532530f88b572854538d685fcf781141e8c");
+    assert_eq!(
+        identity["github_tag_commit"],
+        "56f36532530f88b572854538d685fcf781141e8c"
+    );
     assert_eq!(identity["github_tag_annotated"], false);
     assert_eq!(identity["downloaded_official_binaries_executed"], false);
     assert_eq!(identity["host"]["not_installed"], true);
     assert_eq!(decision["shape"], "stop");
-    assert_eq!(decision["stop_reason"], "response-only-safe-mode-plugin-hook-filter");
+    assert_eq!(
+        decision["stop_reason"],
+        "response-only-safe-mode-plugin-hook-filter"
+    );
     assert_eq!(decision["raise_latest_qualified"], false);
     assert_eq!(decision["claim_edited"], false);
     assert_eq!(decision["qualify_published_intermediates"], false);
@@ -86,7 +98,10 @@ fn safe_mode_plugin_hook_filter_is_the_selected_surface_change() {
     let hooks = &protocol["safe_mode_plugin_hooks"];
     assert_eq!(protocol["selected_mapped_subset_unchanged"], false);
     assert_eq!(protocol["identity_decision_shape"], "stop");
-    assert_eq!(protocol["changed_selected_flags"], json(r#"["--safe-mode"]"#));
+    assert_eq!(
+        protocol["changed_selected_flags"],
+        json(r#"["--safe-mode"]"#)
+    );
     assert_eq!(protocol["headless_passes_safe_mode"], false);
     assert_eq!(protocol["response_only_passes_safe_mode"], true);
     assert_eq!(protocol["sdk_tools_d_ts_byte_identical"], true);
@@ -128,7 +143,14 @@ fn safe_mode_plugin_hook_filter_is_the_selected_surface_change() {
     );
     assert_eq!(
         strings(&protocol["permission_mode_wire_values"]),
-        ["acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan"]
+        [
+            "acceptEdits",
+            "auto",
+            "bypassPermissions",
+            "default",
+            "dontAsk",
+            "plan"
+        ]
     );
     assert_eq!(
         strings(&protocol["stream_json_init_keys"]),
@@ -145,7 +167,9 @@ fn safe_mode_plugin_hook_filter_is_the_selected_surface_change() {
             "claude_code_version",
         ]
     );
-    let help_278 = protocol["safe_mode_help"]["2.1.278"].as_str().expect("help text");
+    let help_278 = protocol["safe_mode_help"]["2.1.278"]
+        .as_str()
+        .expect("help text");
     let help_280 = protocol["safe_mode_help"]["2.1.280_concatenated"]
         .as_str()
         .expect("help text");
@@ -169,7 +193,14 @@ fn dist_inventory_changes_only_version_pins_and_the_binary() {
     );
     assert_eq!(
         strings(&inventory["from_2_1_278_to_2_1_280_wrapper"]["identical"]),
-        ["LICENSE.md", "README.md", "bin/claude.exe", "cli-wrapper.cjs", "install.cjs", "sdk-tools.d.ts"]
+        [
+            "LICENSE.md",
+            "README.md",
+            "bin/claude.exe",
+            "cli-wrapper.cjs",
+            "install.cjs",
+            "sdk-tools.d.ts"
+        ]
     );
     for platform in ["darwin_arm64", "linux_x64"] {
         let key = format!("from_2_1_278_to_2_1_280_{platform}");
@@ -177,7 +208,10 @@ fn dist_inventory_changes_only_version_pins_and_the_binary() {
             strings(&inventory[&key]["changed"]),
             ["claude", "package.json"]
         );
-        assert_eq!(strings(&inventory[&key]["identical"]), ["LICENSE.md", "README.md"]);
+        assert_eq!(
+            strings(&inventory[&key]["identical"]),
+            ["LICENSE.md", "README.md"]
+        );
         assert_eq!(strings(&inventory[&key]["added"]), Vec::<&str>::new());
         assert_eq!(strings(&inventory[&key]["removed"]), Vec::<&str>::new());
     }
@@ -205,14 +239,21 @@ fn production_ceilings_stay_at_2_1_278() {
     let decision = &identity["identity_decision"];
     assert_eq!(
         CLAUDE_CODE_HEADLESS_BASELINE_VERSION,
-        decision["keep_headless_baseline"].as_str().expect("baseline")
+        decision["keep_headless_baseline"]
+            .as_str()
+            .expect("baseline")
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION,
-        decision["keep_response_only_baseline"].as_str().expect("baseline")
+        decision["keep_response_only_baseline"]
+            .as_str()
+            .expect("baseline")
     );
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.278");
-    assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION, "2.1.278");
+    assert_eq!(
+        CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
+        "2.1.278"
+    );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         [

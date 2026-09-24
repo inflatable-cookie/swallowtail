@@ -364,6 +364,35 @@ fn working_state_restoration_carries_the_prepared_http_mcp_declaration() {
     );
 }
 
+#[test]
+fn restoration_refuses_invalid_http_mcp_before_process_start() {
+    let host_id = ExecutionHostId::new("fixture.prepared.restore-sse-mcp").expect("host");
+    let prepared = prepare(host_id.clone());
+    let session = prepared
+        .prepare_session(session_input("restore-sse-mcp").with_http_mcp_placement(
+            CopilotCliAcpRemoteMcpPlacement::sse(
+                COPILOT_CLI_ACP_MCP_SERVER_NAME,
+                HTTP_CANARY_URL,
+                vec![("Authorization".to_owned(), HTTP_CANARY_HEADER.to_owned())],
+            ),
+        ))
+        .expect("session prepares");
+    let operation = FixtureHost::new(Scenario::Success);
+    let restoration = session.prepare_working_state_restoration(
+        RuntimeTurnId::new("interrupted-sse-mcp").expect("turn"),
+    );
+    let error = match block_on(restoration.restore(operation.services(host_id))) {
+        Err(error) => error,
+        Ok(_) => panic!("sse restoration must refuse before the ACP child starts"),
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.copilot-cli.acp.mcp_sse_not_emitted"
+    );
+    assert_http_secrets_redacted(&error);
+    assert!(!operation.process_started());
+}
+
 fn prepare(
     host_id: ExecutionHostId,
 ) -> swallowtail_adapter_copilot_cli::CopilotCliPreparedIntegration {

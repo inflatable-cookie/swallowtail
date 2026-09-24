@@ -208,6 +208,10 @@ impl CopilotCliAcpDriver {
             .expect("validated filesystem lease")
             .as_driver_value()
             .to_owned();
+        let mcp_servers = match production_mcp_servers(self.http_mcp.as_ref()) {
+            Ok(value) => value,
+            Err(error) => return Err(Box::new((error, resource))),
+        };
         let process_service = services
             .process()
             .cloned()
@@ -244,7 +248,6 @@ impl CopilotCliAcpDriver {
         let opened = async {
             let initialize = connection.initialize().await?;
             validate_initialize(&initialize, selected.version())?;
-            let mcp_servers = production_mcp_servers(self.http_mcp.as_ref())?;
             connection
                 .request(
                     "session/new",

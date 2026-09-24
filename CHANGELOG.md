@@ -67,6 +67,12 @@ annotated Git tags from the canonical repository.
   proven, live honouring of a remote tool call is not. Research 337, g06.019.
 
 ### Changed
+- accept the exact `command-code.headless` `1.65.0` live surface on
+  `deepseek/deepseek-v4-flash`. Research 347 records one authorized gate:
+  structured one-turn completion and the Contract 043 two-turn private
+  exact-id continuation both `Completed` with `Clean` cleanup. Research 330
+  stays the exact-`1.54.0` paid-model record; Research 116/118 stay bound to
+  `1.15.1`. g06.029.
 - rebind the exact `command-code.npm` `QualifiedOnly` point from `1.54.0` to
   official npm `command-code` `1.65.0` with claim
   `command-code.headless-window-1` and behavior
@@ -157,6 +163,30 @@ annotated Git tags from the canonical repository.
   unmapped or blocked. Older published `2026.08.25-3e8eec8` and
   `2026.09.08-6caf4ff` stay independently unqualified gaps. No provider
   operation, downloaded-artifact execution, or host mutation occurred.
+- raise the Pi RPC qualified ceiling from `0.85.1` to official npm
+  `@earendil-works/pi-coding-agent` `0.86.1`. Compatible extension of
+  `pi.rpc.strict-lf-v0.84.0-message-update-delta`: selected mapped commands
+  and argv stay; published `0.86.0` is also qualified. `0.86.0`
+  `{ source: "rpc" }` on already-mapped `steer` / `follow_up` covers
+  unmapped extension input handlers and is a no-op under selected
+  `--no-extensions`. `0.86.1` `META_API_KEY` help, Meta Muse, compile
+  cache, cache warming, `/bug`, Radius, compaction budgets, custom-provider
+  `TranscriptContext`, and `user_bash` fail-closed stay unmapped.
+  Unpublished `0.83.1`, `0.84.5`, and `0.85.2` stay incompatible;
+  unpublished `0.86.2` remains visible `UnverifiedNewer`. `pi.sdk-sidecar`
+  stays exact `0.84.2`. Research 344.
+- extend the Antigravity catalogue claim from maintained `1.1.9..=1.2.2`
+  to maintained `1.1.9..=1.2.7` on `antigravity-cli.release` with the
+  unchanged `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1` behavior
+  revision, baseline `1.1.9`, and `AllowUnverified` posture. Research 346
+  froze official GitHub `1.2.3` through `1.2.7` with both platform
+  digests; every public hop changes only `CHANGELOG.md`, and the release
+  notes name no selected-path change to `agy models`. Headless stays
+  maintained `1.1.9..=1.1.17` at the Research 283 `1.1.22` provider-managed
+  retry stop; `1.2.6` and `1.2.7` deepen that gap, so `1.1.18..=1.2.7`
+  stay unqualified. Unpublished `1.2.8` remains visible
+  `UnverifiedNewer`. Gemini CLI and `antigravity-acp` were not touched.
+  Research 346.
 - raise the Ollama attached-runtime qualified ceiling through official
   `0.34.2`: Research 342 freezes all four published hops after `0.33.2`
   with tag/commit/tree/tarball and selected-file hashes. The native decoder

@@ -7,20 +7,17 @@ use swallowtail_adapter_antigravity::{
 };
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
-const IDENTITY: &str = include_str!("fixtures/antigravity-cli-1.2.2/identity.json");
-const PROTOCOL: &str = include_str!("fixtures/antigravity-cli-1.2.2/protocol.json");
+const IDENTITY: &str = include_str!("fixtures/antigravity-cli-1.2.7/identity.json");
+const PROTOCOL: &str = include_str!("fixtures/antigravity-cli-1.2.7/protocol.json");
 
-const NEW_RELEASES: &[&str] = &["1.1.27", "1.1.28", "1.2.0", "1.2.1", "1.2.2"];
-const CATALOGUE_INTERMEDIATES: &[&str] = &[
-    "1.1.18", "1.1.19", "1.1.20", "1.1.21", "1.1.22", "1.1.23", "1.1.24", "1.1.25", "1.1.26",
-    "1.1.27", "1.1.28", "1.2.0", "1.2.1",
-];
+const NEW_RELEASES: &[&str] = &["1.2.3", "1.2.4", "1.2.5", "1.2.6", "1.2.7"];
+const CATALOGUE_INTERMEDIATES: &[&str] = &["1.2.3", "1.2.4", "1.2.5", "1.2.6"];
 const HOPS: &[&str] = &[
-    "from_1_1_26_to_1_1_27",
-    "from_1_1_27_to_1_1_28",
-    "from_1_1_28_to_1_2_0",
-    "from_1_2_0_to_1_2_1",
-    "from_1_2_1_to_1_2_2",
+    "from_1_2_2_to_1_2_3",
+    "from_1_2_3_to_1_2_4",
+    "from_1_2_4_to_1_2_5",
+    "from_1_2_5_to_1_2_6",
+    "from_1_2_6_to_1_2_7",
 ];
 
 struct Artifact {
@@ -30,6 +27,7 @@ struct Artifact {
     linux_tarball: &'static str,
     linux_tarball_size: u64,
     mac_tarball: &'static str,
+    mac_tarball_size: u64,
     linux_binary: &'static str,
     linux_binary_size: u64,
     build_id: &'static str,
@@ -39,69 +37,74 @@ struct Artifact {
 
 const ARTIFACTS: &[Artifact] = &[
     Artifact {
-        version: "1.1.27",
-        published_at: "2026-09-05T04:23:25Z",
-        commit: "1ae9cb7b51667192c051b73a91099c71e816ca5f",
-        linux_tarball: "f874d4f6b8a73c2df660f580f25fb656fcb6e64adbfd746e6692e837fd9a20be",
-        linux_tarball_size: 56_789_301,
-        mac_tarball: "e901e5c8fd20ab4c21c01df306030079286d08e6d372cdb535d5ccc7a3f565f4",
-        linux_binary: "93eb2118b778a4005700b54cdd7e08b896fbe665d5ff338e38e9e53da9a091ea",
-        linux_binary_size: 210_551_040,
-        build_id: "f9e9161520c4891e4727593e196cba3d",
-        mac_binary: "d583be1344ea9cfa0c45cff2c1342af7837f4833c4edb65e69bee84776a45caa",
-        mac_binary_size: 177_426_912,
+        version: "1.2.3",
+        published_at: "2026-09-15T02:03:04Z",
+        commit: "444063c79f81a36f124ad613b30caf113f093c0b",
+        linux_tarball: "57afb34f2a4be9296beb477e600761b6ac7401eb3a54a64a0014d573b7fc3af4",
+        linux_tarball_size: 57_891_892,
+        mac_tarball: "c244ec966f5d8c22d845117332a6858f3abaf0fb5c8058e337d51b77b2c93e50",
+        mac_tarball_size: 50_217_630,
+        linux_binary: "c4c8a6722f9b570e370941b0953ba29051336307d7999ec842bdf7500b0ca7c8",
+        linux_binary_size: 215_384_320,
+        build_id: "41c0722061557995df58308202bf857a",
+        mac_binary: "e0c2743e3fd062e11c13d2eb5fabaa244936094bbe39c30fdfbac619bb78e554",
+        mac_binary_size: 181_740_432,
     },
     Artifact {
-        version: "1.1.28",
-        published_at: "2026-09-09T00:43:52Z",
-        commit: "baef32d9f7d91aa5f8f1747b4a8a938723132a19",
-        linux_tarball: "074ff4f732a750ad727aeed5fc82ed34b1fb72fda2a6ceba6c8e652ffd0a94b0",
-        linux_tarball_size: 56_914_961,
-        mac_tarball: "8f642cffce8bc14aa3e49d1a75780bb2bd99fe7a3016389627476d9e3ec911eb",
-        linux_binary: "a8793092fbe6eea0b8228fc20582ec306f7f7698d1151be526902b1556a76f3a",
-        linux_binary_size: 210_923_776,
-        build_id: "b3f253d9868abc95dc081fe2fcf9f702",
-        mac_binary: "2a63488c33221627f1798ff4ccb1d5131b6abe3160286c84b357a7456905f763",
-        mac_binary_size: 177_756_720,
+        version: "1.2.4",
+        published_at: "2026-09-16T03:54:29Z",
+        commit: "e5dcb8247e3c364671f2bae4c64971c8632590ed",
+        linux_tarball: "dcd3e4d8c8afb1902d59c1ae52812458d2ddab67a5d2db44810c512910d918fe",
+        linux_tarball_size: 58_151_273,
+        mac_tarball: "f59c12c289e74bbb48178f827702c6224bd0aa920914319f85b42760dfc72f4c",
+        mac_tarball_size: 50_449_780,
+        linux_binary: "5c19ea964509bc4fd33c3789860f017a8ca22ef93cb48d333c7b95b118bbb6a7",
+        linux_binary_size: 217_022_720,
+        build_id: "4c44c1cba03957b96aa5127baafa441d",
+        mac_binary: "a939016cfb86e3862112ee57124f1bc14f30defdd69e181a8526b6e7c80a4471",
+        mac_binary_size: 182_974_368,
     },
     Artifact {
-        version: "1.2.0",
-        published_at: "2026-09-10T01:43:29Z",
-        commit: "34406bef8e87fc103783c0c9715e5e2cce3c3e1b",
-        linux_tarball: "d9bfee1ae6e4329562cb87da1f5fc3c886d18594837e73e25c3aae00a49499b9",
-        linux_tarball_size: 57_224_342,
-        mac_tarball: "8fee3c120142490f2eddd286ff7d532b3e660c92d17e60a3612cc0ad1122478f",
-        linux_binary: "195bf11b249deebe67028305a9b7b1d19ac38e9ab281b786a163a7d2fc8ff428",
-        linux_binary_size: 212_304_128,
-        build_id: "734ed857e46e56054b0ce7d40927d3b7",
-        mac_binary: "f3671863b53ecef2c45a41673677fe603fbe5d73df33d744feec3e88d5af0199",
-        mac_binary_size: 178_935_744,
+        version: "1.2.5",
+        published_at: "2026-09-17T04:10:06Z",
+        commit: "48e88e0723bc8f3c7b6bdae85d34067b04fc9277",
+        linux_tarball: "e450caab5682acc920721b04cf0f6860c313d1f5296bc6e49d79cd3843802e65",
+        linux_tarball_size: 58_151_164,
+        mac_tarball: "b37495eebe53e1c565dd6d77bdd1d3ba603216b5d3acddafb185f97d35fdf9eb",
+        mac_tarball_size: 50_431_921,
+        linux_binary: "84808e105f643f135d9b347b36005d5bbe6cfe09c5ffc61e3311700adb5a3286",
+        linux_binary_size: 217_284_864,
+        build_id: "cd38e0524c59a16f19d3d459ae25311d",
+        mac_binary: "cdf6bcff6840b12184b7ff3210c156a522f9d855ce32f4e27ce34c40091a8409",
+        mac_binary_size: 183_156_336,
     },
     Artifact {
-        version: "1.2.1",
-        published_at: "2026-09-11T06:46:48Z",
-        commit: "e4afe6b6f3aa115b1ba31e26db6508a23b5e42e5",
-        linux_tarball: "6a2c53db6c681fc114f9a1e499e7b4771357ab2852242e56acbd43197d4807f9",
-        linux_tarball_size: 57_458_208,
-        mac_tarball: "b80425e10a7b92f20679eee5df3bb18e3f9154b3653a373fad47e2f72614248e",
-        linux_binary: "38f130cdd0757e1d22e151baa48ace4074a5bd3d960eb2dcc7f44bdf2ad4c0fd",
-        linux_binary_size: 213_422_336,
-        build_id: "c61f1d72352c28d668f23f19c79fd7b9",
-        mac_binary: "98724c5370d91a2fc99a1b42cccb8cda5075dba61615e18aa71daaacb7a71f86",
-        mac_binary_size: 179_956_448,
+        version: "1.2.6",
+        published_at: "2026-09-18T04:21:05Z",
+        commit: "d39491f6f98a62aaf29af76964aa4fe75bc044d4",
+        linux_tarball: "3d4973187c4c074e70894068053eeef1b7dfa9c0a16bfe9c3b81954de0d2cc5c",
+        linux_tarball_size: 58_626_363,
+        mac_tarball: "14e1be7ed9b35e512b6aa2f2b2ba3ad79877dbde1b2d487892d3721806ff9e59",
+        mac_tarball_size: 50_904_209,
+        linux_binary: "312eb057d8b8155383e74242e948333c6556adc779e9398b121a863390691fe9",
+        linux_binary_size: 218_132_688,
+        build_id: "15cff90bb5b1dfa7429a148ef393c21f",
+        mac_binary: "7e1a1036b68cd8e2ad66097ddc8f43dc2081079d51d340863647dc8de2a1bc84",
+        mac_binary_size: 184_043_424,
     },
     Artifact {
-        version: "1.2.2",
-        published_at: "2026-09-12T03:51:08Z",
-        commit: "ba985e6b5de2ac8aa09860a154a102831eb7722b",
-        linux_tarball: "2cfa5c9a4a1edd96db6d4058f34970be60d3bcacda866e2bdce6aefb2451b48e",
-        linux_tarball_size: 57_596_853,
-        mac_tarball: "f90ff6094a196f1be3854ac45d999a542d47ec66a1513aa882a8505b947b9a0f",
-        linux_binary: "e8f90ef67943b56c1148d73bc0e102d0b44d18935ffb11d49a2d870a095f416b",
-        linux_binary_size: 213_582_080,
-        build_id: "fa00846652bf39ea18e012d43e3e161f",
-        mac_binary: "cabadc15a61944372bede1fdff186701c17467dd9d718e97dc79283055d3c101",
-        mac_binary_size: 180_089_984,
+        version: "1.2.7",
+        published_at: "2026-09-19T01:01:46Z",
+        commit: "7bb195acaec9e7788df5210d0dc3e15f3cefc6b3",
+        linux_tarball: "e410dd56d8c213ef12643d3ff5eaaab57a17e05bbf72e9415322f23879fc4a18",
+        linux_tarball_size: 61_763_170,
+        mac_tarball: "ce9fe3f4d6f44a2b1c83b334fc5c8f2975079959e24dd805e10eb49ab8c76a7e",
+        mac_tarball_size: 53_945_901,
+        linux_binary: "9991515b6d5307bcf701069622b0537b6b206e605f3c891c0cf3a3d208dea8b0",
+        linux_binary_size: 224_268_544,
+        build_id: "4666c9380200e7538aab7b73748b9341",
+        mac_binary: "8c01ef82307dc01455418eb2e6e82f2989a3fa8b815c4b192efaaa89a55bef8d",
+        mac_binary_size: 189_658_880,
     },
 ];
 
@@ -113,7 +116,7 @@ fn identity_freezes_every_new_official_release_and_both_platform_assets() {
         identity["github_repo"],
         "google-antigravity/antigravity-cli"
     );
-    assert_eq!(identity["official_latest"], "1.2.2");
+    assert_eq!(identity["official_latest"], "1.2.7");
     assert_eq!(identity["not_gemini_cli"], true);
     assert_eq!(identity["not_antigravity_acp"], true);
     assert_exact_string_array(
@@ -141,6 +144,11 @@ fn identity_freezes_every_new_official_release_and_both_platform_assets() {
             expected.version
         );
         assert_sha256(&actual["mac_arm64_tarball_sha256"], expected.mac_tarball);
+        assert_eq!(
+            actual["mac_arm64_tarball_size"], expected.mac_tarball_size,
+            "{}",
+            expected.version
+        );
         assert_sha256(
             &actual["linux_x64_extracted_cli_sha256"],
             expected.linux_binary,
@@ -172,7 +180,7 @@ fn identity_freezes_every_new_official_release_and_both_platform_assets() {
     }
 
     let official = &identity["official"];
-    assert_eq!(official["version"], "1.2.2");
+    assert_eq!(official["version"], "1.2.7");
     assert_eq!(official["github_commit"], ARTIFACTS[4].commit);
     assert_sha256(
         &official["assets"]["linux_x64"]["sha256"],
@@ -192,45 +200,34 @@ fn identity_freezes_every_new_official_release_and_both_platform_assets() {
     );
 
     let host = &identity["host"];
-    assert_eq!(host["version"], "1.1.19");
-    assert_eq!(
-        host["version_authority"],
-        "byte-identical-to-official-1.1.19-mac-arm64"
-    );
-    assert_sha256(
-        &host["executable_sha256"],
-        "96fae3fccfb444c7fb2c6d8d70426e5c978e4f21cfc4507a541f612a8b8ffeef",
-    );
-    assert_eq!(host["executable_size"], 178_046_224);
+    assert_eq!(host["installed"], false);
+    assert_eq!(host["install_attempted"], false);
     assert_eq!(host["executed_during_probe"], false);
 
-    let boundary = &identity["frozen_1_1_26_boundary_reproduction"];
+    let boundary = &identity["frozen_1_2_2_boundary_reproduction"];
     assert_sha256(
-        &boundary["1.1.26_linux_x64_tarball_sha256"],
-        "c47c0726266b3513660b7094bceceecbd03d8ae907786aa269c507ceb7e4ee54",
+        &boundary["1.2.2_linux_x64_tarball_sha256"],
+        "2cfa5c9a4a1edd96db6d4058f34970be60d3bcacda866e2bdce6aefb2451b48e",
     );
     assert_sha256(
-        &boundary["1.1.26_linux_x64_binary_sha256"],
-        "a0a6a8044d01accd39e6f5926d29648d212a2e519ff14102f09e1c061e6171dd",
+        &boundary["1.2.2_linux_x64_binary_sha256"],
+        "e8f90ef67943b56c1148d73bc0e102d0b44d18935ffb11d49a2d870a095f416b",
     );
-    assert_sha256(
-        &boundary["1.1.21_linux_x64_binary_sha256"],
-        "ca7ffc496be6c24bb908aab478ec5be2b8fbad76507085b885163475613332c5",
-    );
-    assert_sha256(
-        &boundary["1.1.22_linux_x64_binary_sha256"],
-        "2822292f90deea4556938a8728fe4ed02a1d66d1525cf75fa07a171e36a38c25",
-    );
-    assert_eq!(boundary["matches_research_283"], true);
+    assert_eq!(boundary["matches_research_323"], true);
     assert_eq!(boundary["digest_disagreement"], false);
 
-    assert_eq!(identity["first_unpublished_later_stable"], "1.2.3");
+    assert_eq!(identity["public_git_hops"], "CHANGELOG.md-only");
+    assert_eq!(identity["first_unpublished_later_stable"], "1.2.8");
     assert_eq!(identity["first_unpublished_release_absent"], true);
     assert_eq!(identity["first_unpublished_tag_absent"], true);
     assert_eq!(identity["keep_1_1_8_incompatible"], true);
     assert_eq!(identity["decoder_corpus"], "antigravity-cli-1.1.9");
     assert_eq!(
-        identity["claim_at_observation"]["latest_qualified"],
+        identity["claim_at_observation"]["catalogue_latest_qualified"],
+        "1.2.2"
+    );
+    assert_eq!(
+        identity["claim_at_observation"]["headless_latest_qualified"],
         "1.1.17"
     );
 }
@@ -261,7 +258,7 @@ fn release_note_classification_advances_catalogue_and_keeps_the_headless_stop() 
         ],
     );
     assert_eq!(catalogue["shape"], "compatible-extension");
-    assert_eq!(catalogue["advance_to"], "1.2.2");
+    assert_eq!(catalogue["advance_to"], "1.2.7");
     assert_exact_string_array(&catalogue["qualify_intermediates"], CATALOGUE_INTERMEDIATES);
     assert_eq!(
         catalogue["keep_catalogue_behavior"],
@@ -285,7 +282,7 @@ fn release_note_classification_advances_catalogue_and_keeps_the_headless_stop() 
     assert_eq!(headless["shape"], "stop");
     assert_eq!(headless["blocking_hop"], "1.1.22");
     assert_eq!(headless["keep_latest_qualified"], "1.1.17");
-    assert_eq!(headless["unqualified_gap"], "1.1.18..=1.2.2");
+    assert_eq!(headless["unqualified_gap"], "1.1.18..=1.2.7");
     assert_eq!(
         headless["keep_headless_behavior"],
         "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1"
@@ -295,6 +292,8 @@ fn release_note_classification_advances_catalogue_and_keeps_the_headless_stop() 
     for flag in [
         "new_public_operation",
         "new_private_milestone",
+        "headless_must_move_with_catalogue",
+        "headless_stop_reopened",
         "provider_prompt_sent",
         "live_catalogue",
         "live_print_run",
@@ -311,6 +310,19 @@ fn release_note_classification_advances_catalogue_and_keeps_the_headless_stop() 
 fn protocol_classifies_every_published_selected_path_change_per_claim() {
     let protocol = json(PROTOCOL);
     assert_eq!(protocol["selected_surfaces_unchanged_in_notes"], true);
+    let inventory = &protocol["archive_inventory"];
+    assert_exact_string_array(&inventory["compared"], NEW_RELEASES);
+    assert_exact_string_array(&inventory["files_per_archive"], &["antigravity"]);
+    assert_exact_string_array(&inventory["identical_through_1_2_3_to_1_2_7"], &[]);
+    assert_eq!(inventory["mapped_binary_byte_identical_across_hops"], false);
+    for version in NEW_RELEASES {
+        assert_eq!(inventory["package_file_counts"][version], 1, "{version}");
+    }
+    assert_exact_string_array(&inventory["every_hop"]["added"], &[]);
+    assert_exact_string_array(&inventory["every_hop"]["removed"], &[]);
+    assert_exact_string_array(&inventory["every_hop"]["changed"], &["antigravity"]);
+    assert_exact_string_array(&inventory["every_hop"]["identical"], &[]);
+
     let changes = &protocol["published_selected_path_changes"];
     assert_exact_keys(changes, HOPS);
 
@@ -330,45 +342,40 @@ fn protocol_classifies_every_published_selected_path_change_per_claim() {
     }
 
     assert_eq!(
-        changes["from_1_1_27_to_1_1_28"]["headless_classification"],
+        changes["from_1_2_2_to_1_2_3"]["headless_classification"],
+        "authority-stop-maintained"
+    );
+    assert_exact_string_array(&changes["from_1_2_2_to_1_2_3"]["headless_changes"], &[]);
+    assert_eq!(
+        changes["from_1_2_3_to_1_2_4"]["headless_classification"],
+        "authority-stop-maintained"
+    );
+    assert_exact_string_set(
+        &changes["from_1_2_3_to_1_2_4"]["headless_changes"],
+        &["agent-turns-no-longer-terminate-on-tool-schema-validation-failure"],
+    );
+    assert_eq!(
+        changes["from_1_2_5_to_1_2_6"]["headless_classification"],
         "authority-stop-deepens"
     );
     assert_exact_string_set(
-        &changes["from_1_1_27_to_1_1_28"]["headless_changes"],
+        &changes["from_1_2_5_to_1_2_6"]["headless_changes"],
         &[
-            "transient-model-api-errors-retry-for-much-longer-with-exponential-backoff",
-            "print-timeout-expiry-now-returns-partial-output-and-exits-zero",
-            "print-mode-waits-for-background-tasks-bounded-by-print-timeout-and-leaves-daemon-tasks-running",
-            "print-fatal-errors-report-on-stderr-with-a-stable-error-marker-and-truncation-note",
-            "headless-plan-review-proceeds-automatically-instead-of-stalling",
-            "url-fetch-default-permission-changes-from-always-allowed-to-asking-first",
+            "headless-default-print-timeout-changes-from-5-minutes-to-unlimited",
+            "headless-agent-or-model-api-failure-prints-agy-error-json-and-exits-3",
         ],
     );
     assert_eq!(
-        changes["from_1_1_28_to_1_2_0"]["headless_classification"],
+        changes["from_1_2_6_to_1_2_7"]["headless_classification"],
         "authority-stop-maintained"
     );
     assert_exact_string_set(
-        &changes["from_1_1_28_to_1_2_0"]["headless_changes"],
+        &changes["from_1_2_6_to_1_2_7"]["headless_changes"],
         &[
-            "content-safety-filter-blocks-surface-a-clear-content-filter-stop-reason-instead-of-silent-or-retried-ends",
+            "model-api-retry-per-attempt-backoff-capped-at-30-seconds",
+            "headless-background-waiting-notice-occasionally-skipped",
         ],
     );
-    assert_eq!(
-        changes["from_1_2_0_to_1_2_1"]["headless_classification"],
-        "authority-stop-maintained"
-    );
-    assert_exact_string_set(
-        &changes["from_1_2_0_to_1_2_1"]["headless_changes"],
-        &[
-            "transient-genai-api-errors-502-503-504-per-minute-429-and-mid-stream-interruptions-automatically-retry-in-process-with-exponential-backoff",
-        ],
-    );
-    assert_eq!(
-        changes["from_1_2_1_to_1_2_2"]["headless_classification"],
-        "authority-stop-maintained"
-    );
-    assert_exact_string_array(&changes["from_1_2_1_to_1_2_2"]["headless_changes"], &[]);
 
     let retry = &protocol["headless_retry_trace"];
     let hop_1_1_22 = &retry["hop_1_1_22_http_502_retry"];
@@ -382,63 +389,34 @@ fn protocol_classifies_every_published_selected_path_change_per_claim() {
         ],
         &["stop"],
     );
-    let much_longer = &retry["hop_1_1_28_much_longer_retry"];
+    let backoff = &retry["hop_1_2_7_backoff_cap"];
     assert_exact_keys(
-        much_longer,
+        backoff,
         &[
-            "published_finite_bound_present",
+            "published_finite_attempt_bound_present",
             "public_disable_control_present",
-            "published_backoff_shape",
+            "published_per_attempt_backoff_cap",
             "admissible_under_contract_023",
         ],
     );
-    assert_eq!(much_longer["published_finite_bound_present"], false);
-    assert_eq!(much_longer["public_disable_control_present"], false);
-    assert_eq!(much_longer["admissible_under_contract_023"], false);
-    assert_eq!(
-        much_longer["published_backoff_shape"],
-        "exponential, duration unbounded in the notes"
-    );
-    let broader = &retry["hop_1_2_1_broader_automatic_retry"];
-    assert_exact_keys(
-        broader,
-        &[
-            "published_finite_bound_present",
-            "public_disable_control_present",
-            "published_codes",
-            "admissible_under_contract_023",
-        ],
-    );
-    assert_eq!(broader["published_finite_bound_present"], false);
-    assert_eq!(broader["public_disable_control_present"], false);
-    assert_eq!(broader["admissible_under_contract_023"], false);
-    assert_exact_string_set(
-        &broader["published_codes"],
-        &[
-            "502",
-            "503",
-            "504",
-            "429-per-minute",
-            "mid-stream-interruptions",
-        ],
-    );
+    assert_eq!(backoff["published_finite_attempt_bound_present"], false);
+    assert_eq!(backoff["public_disable_control_present"], false);
+    assert_eq!(backoff["admissible_under_contract_023"], false);
+    assert_eq!(backoff["published_per_attempt_backoff_cap"], "30 seconds");
     assert_eq!(retry["host_deadline_is_not_a_provider_retry_policy"], true);
     assert_eq!(retry["inferred_bound_recorded"], false);
 
     let timeout = &protocol["print_timeout_trace"];
     assert_eq!(
-        timeout["expiry_before_1_1_28"],
-        "timeout error terminal failure"
-    );
-    assert_eq!(
-        timeout["expiry_from_1_1_28"],
-        "returns partial output and exits zero with a stderr warning"
-    );
-    assert_eq!(
-        timeout["published_default_or_caller_bounds"],
-        "not stated in the notes"
+        timeout["default_from_1_2_6"],
+        "unlimited unless --print-timeout is passed"
     );
     assert_eq!(timeout["selected_deadline_authority_unchanged"], true);
+    assert_eq!(timeout["catalogue_affected"], false);
+    assert_eq!(
+        protocol["headless_error_trace"]["catalogue_affected"],
+        false
+    );
 
     let authority = &protocol["authority_trace"];
     assert_true_object(
@@ -455,27 +433,17 @@ fn protocol_classifies_every_published_selected_path_change_per_claim() {
         ],
     );
     assert_true_object(
-        &authority["hop_1_2_0_content_filter_stop"],
-        &[
-            "applies_to_selected_headless_stream",
-            "new_stop_reason_published",
-            "catalogue_affected",
-        ],
-        &[
-            "applies_to_selected_headless_stream",
-            "new_stop_reason_published",
-        ],
-    );
-    assert_true_object(
         &authority["catalogue_isolation"],
         &[
             "notes_name_no_models_selected_path_change",
             "retry_notes_name_the_agent_model_request_loop",
+            "print_timeout_and_agy_error_name_headless_prompt_path",
             "catalogue_advance_independent_of_headless_stop",
         ],
         &[
             "notes_name_no_models_selected_path_change",
             "retry_notes_name_the_agent_model_request_loop",
+            "print_timeout_and_agy_error_name_headless_prompt_path",
             "catalogue_advance_independent_of_headless_stop",
         ],
     );
@@ -483,13 +451,14 @@ fn protocol_classifies_every_published_selected_path_change_per_claim() {
     assert_exact_string_set(
         &protocol["material_unmapped_published_changes"],
         &[
-            "interactive-model-picker-and-effort-defaults",
-            "remote-control-services",
-            "mcp-and-plugin-management",
-            "custom-agents-and-skills",
-            "gemini-api-key-sign-in",
-            "conversation-delete-and-worktree-cleanup",
-            "url-fetch-permission-default",
+            "interactive-question-and-copy-btw",
+            "remote-control-session-flag",
+            "plugin-and-skill-management",
+            "interactive-model-picker-and-slash-model",
+            "gemini-api-key-headless-daemon-background",
+            "customization-token-budget",
+            "kitty-graphics-artifact-viewer",
+            "default-agent-legacy-toolset-retirement",
         ],
     );
     for flag in [
@@ -511,7 +480,7 @@ fn per_claim_segments_split_catalogue_from_the_headless_stop() {
 
     let catalogue = antigravity_catalogue_claim();
     for candidate in [
-        "1.1.9", "1.1.17", "1.1.21", "1.1.22", "1.1.27", "1.2.0", "1.2.2", "1.2.7",
+        "1.1.9", "1.1.17", "1.2.2", "1.2.3", "1.2.4", "1.2.5", "1.2.6", "1.2.7",
     ] {
         assert!(matches!(
             catalogue.assess(&version(candidate)),
@@ -532,7 +501,7 @@ fn per_claim_segments_split_catalogue_from_the_headless_stop() {
         ));
     }
     for candidate in [
-        "1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.1", "1.2.2", "1.2.7", "1.2.8",
+        "1.1.18", "1.1.22", "1.2.2", "1.2.3", "1.2.6", "1.2.7", "1.2.8",
     ] {
         assert!(matches!(
             headless.assess(&version(candidate)),

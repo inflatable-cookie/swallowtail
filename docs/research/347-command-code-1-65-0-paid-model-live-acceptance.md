@@ -1,4 +1,4 @@
-# 342 Command Code 1.65.0 Paid-Model Live Acceptance
+# 347 Command Code 1.65.0 Paid-Model Live Acceptance
 
 Status: accepted live evidence; exact `1.65.0` point only
 Owner: Swallowtail worker

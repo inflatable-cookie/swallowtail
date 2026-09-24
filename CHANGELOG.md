@@ -68,7 +68,7 @@ annotated Git tags from the canonical repository.
 
 ### Changed
 - accept the exact `command-code.headless` `1.65.0` live surface on
-  `deepseek/deepseek-v4-flash`. Research 342 records one authorized gate:
+  `deepseek/deepseek-v4-flash`. Research 347 records one authorized gate:
   structured one-turn completion and the Contract 043 two-turn private
   exact-id continuation both `Completed` with `Clean` cleanup. Research 330
   stays the exact-`1.54.0` paid-model record; Research 116/118 stay bound to

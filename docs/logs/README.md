@@ -24,6 +24,7 @@ feature usually has a short chain: selection evidence, contract, implementation,
 then conformance closeout.
 
 ## Entries
+- [2026-09-24 g06.032 Research 337 Companion Ruling](./2026-09-24-g06-032-research-337-companion-ruling.md) — the 337 identity note and its unavailable-cells table are one record; allowlist the exact pair, rename nothing
 - [2026-09-24 Ollama 0.34.4 Claim](./2026-09-24-ollama-0-34-4-claim.md) — raised `ollama.runtime` through official `0.34.4` as a compatible extension; qualified hops `0.34.3` and `0.34.4`; exclusions, behavior, specimen, and `AllowUnverified` kept; synthetic `0.34.5` stays `UnverifiedNewer`
 - [2026-09-24 Ollama 0.34.4 Identity](./2026-09-24-ollama-0-34-4-identity.md) — Research 350 froze both published hops from qualified `0.34.2` to official `0.34.4` with tag/commit/tree/tarball and selected-file hashes; Research 342 hashes reproduce; `ShowResponse.thinking` additive and ignored; compatible extension named; production claims unchanged in the identity record
 - [2026-09-24 g06.028 Live Gate Disposition](./2026-09-24-g06-028-live-gate-disposition.md) — the OpenCode ACP HTTP MCP attempt is accepted as honouring evidence on exact `1.18.18` with the model disclosed as unverified; record renumbers to Research 349; no rerun

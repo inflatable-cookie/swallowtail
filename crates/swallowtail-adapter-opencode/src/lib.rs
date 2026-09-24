@@ -19,10 +19,11 @@ mod transport;
 
 pub use acp::{
     OPENCODE_ACP_AXIS, OPENCODE_ACP_BASELINE_VERSION, OPENCODE_ACP_EXECUTABLE_NAME,
-    OPENCODE_ACP_HOST_ACCOUNT_AUDIENCE, OPENCODE_ACP_LATEST_QUALIFIED_VERSION,
-    OPENCODE_ACP_MCP_SERVER_NAME, OpenCodeAcpDriver, OpenCodeAcpPreparationInput,
-    OpenCodeAcpPreparationProbe, OpenCodeAcpPreparedIntegration, OpenCodeAcpPreparedSession,
-    OpenCodeAcpRemoteMcpPlacement, OpenCodeAcpSessionProfileInput, OpenCodeAcpStdioMcpServer,
+    OPENCODE_ACP_HOST_ACCOUNT_AUDIENCE, OPENCODE_ACP_HTTP_MCP_PLACEMENT,
+    OPENCODE_ACP_LATEST_QUALIFIED_VERSION, OPENCODE_ACP_MCP_SERVER_NAME, OpenCodeAcpDriver,
+    OpenCodeAcpEncodedMcpServers, OpenCodeAcpPreparationInput, OpenCodeAcpPreparationProbe,
+    OpenCodeAcpPreparedIntegration, OpenCodeAcpPreparedSession, OpenCodeAcpRemoteMcpPlacement,
+    OpenCodeAcpRemoteMcpTransport, OpenCodeAcpSessionProfileInput, OpenCodeAcpStdioMcpServer,
     opencode_acp_binding, opencode_acp_claim, opencode_acp_descriptor,
     opencode_acp_host_account_access_profile, prepare_opencode_acp,
 };

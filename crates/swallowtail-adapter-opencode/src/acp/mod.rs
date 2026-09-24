@@ -16,7 +16,8 @@ mod turn;
 pub use access::{OPENCODE_ACP_HOST_ACCOUNT_AUDIENCE, opencode_acp_host_account_access_profile};
 pub use driver::{OpenCodeAcpDriver, opencode_acp_descriptor};
 pub use mcp::{
-    OPENCODE_ACP_MCP_SERVER_NAME, OpenCodeAcpRemoteMcpPlacement, OpenCodeAcpStdioMcpServer,
+    OPENCODE_ACP_HTTP_MCP_PLACEMENT, OPENCODE_ACP_MCP_SERVER_NAME, OpenCodeAcpEncodedMcpServers,
+    OpenCodeAcpRemoteMcpPlacement, OpenCodeAcpRemoteMcpTransport, OpenCodeAcpStdioMcpServer,
 };
 pub use prepared::{
     OpenCodeAcpPreparationInput, OpenCodeAcpPreparationProbe, OpenCodeAcpPreparedIntegration,

@@ -2,7 +2,10 @@ use super::{
     command::arguments,
     connection::AcpConnection,
     failure::{failure, malformed, unsupported},
-    mcp::{OpenCodeAcpStdioMcpServer, production_mcp_servers},
+    mcp::{
+        OpenCodeAcpRemoteMcpPlacement, OpenCodeAcpStdioMcpServer, entry_conflict,
+        production_mcp_servers,
+    },
     turn::ActiveTurn,
 };
 use serde_json::{Value, json};
@@ -30,6 +33,7 @@ const DRIVER_ID: &str = "swallowtail.opencode.acp";
 pub struct OpenCodeAcpDriver {
     isolated_environment: EnvironmentRef,
     stdio_mcp: Option<OpenCodeAcpStdioMcpServer>,
+    http_mcp: Option<OpenCodeAcpRemoteMcpPlacement>,
 }
 
 impl OpenCodeAcpDriver {
@@ -39,6 +43,7 @@ impl OpenCodeAcpDriver {
         Self {
             isolated_environment,
             stdio_mcp: None,
+            http_mcp: None,
         }
     }
 
@@ -47,8 +52,23 @@ impl OpenCodeAcpDriver {
         self,
         server: OpenCodeAcpStdioMcpServer,
     ) -> Result<Self, RuntimeFailure> {
+        if self.http_mcp.is_some() {
+            return Err(entry_conflict());
+        }
         let _ = server.to_acp_value()?;
         Ok(self.with_prepared_stdio_mcp(Some(server)))
+    }
+
+    /// Admits one route-owned streamable-HTTP MCP declaration onto production `session/new`.
+    pub fn with_http_mcp_placement(
+        self,
+        server: OpenCodeAcpRemoteMcpPlacement,
+    ) -> Result<Self, RuntimeFailure> {
+        if self.stdio_mcp.is_some() {
+            return Err(entry_conflict());
+        }
+        let _ = server.to_acp_http_value()?;
+        Ok(self.with_prepared_http_mcp(Some(server)))
     }
 
     pub(crate) fn with_prepared_stdio_mcp(
@@ -56,6 +76,14 @@ impl OpenCodeAcpDriver {
         server: Option<OpenCodeAcpStdioMcpServer>,
     ) -> Self {
         self.stdio_mcp = server;
+        self
+    }
+
+    pub(crate) fn with_prepared_http_mcp(
+        mut self,
+        server: Option<OpenCodeAcpRemoteMcpPlacement>,
+    ) -> Self {
+        self.http_mcp = server;
         self
     }
 
@@ -244,7 +272,8 @@ impl OpenCodeAcpDriver {
         let opened = async {
             let initialize = connection.initialize().await?;
             validate_initialize(&initialize, selected.version())?;
-            let mcp_servers = production_mcp_servers(self.stdio_mcp.as_ref())?;
+            let mcp_servers =
+                production_mcp_servers(self.stdio_mcp.as_ref(), self.http_mcp.as_ref())?;
             connection
                 .request(
                     "session/new",

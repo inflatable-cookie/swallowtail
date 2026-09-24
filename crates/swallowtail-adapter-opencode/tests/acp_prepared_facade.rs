@@ -12,9 +12,10 @@ use futures_util::StreamExt;
 use support::{FixtureHost, Scenario};
 use swallowtail_adapter_opencode::{
     OPENCODE_ACP_AXIS, OPENCODE_ACP_EXECUTABLE_NAME, OPENCODE_ACP_HOST_ACCOUNT_AUDIENCE,
-    OPENCODE_ACP_LATEST_QUALIFIED_VERSION, OPENCODE_ACP_MCP_SERVER_NAME,
-    OpenCodeAcpPreparationInput, OpenCodeAcpPreparationProbe, OpenCodeAcpSessionProfileInput,
-    OpenCodeAcpStdioMcpServer, opencode_acp_host_account_access_profile, prepare_opencode_acp,
+    OPENCODE_ACP_HTTP_MCP_PLACEMENT, OPENCODE_ACP_LATEST_QUALIFIED_VERSION,
+    OPENCODE_ACP_MCP_SERVER_NAME, OpenCodeAcpPreparationInput, OpenCodeAcpPreparationProbe,
+    OpenCodeAcpRemoteMcpPlacement, OpenCodeAcpSessionProfileInput, OpenCodeAcpStdioMcpServer,
+    opencode_acp_host_account_access_profile, prepare_opencode_acp,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
@@ -206,6 +207,151 @@ fn working_state_restoration_carries_the_prepared_stdio_mcp_declaration() {
     assert_eq!(
         block_on(handle.close(operation.cleanup_request(), operation.services(host_id))),
         CleanupOutcome::Clean
+    );
+}
+
+const HTTP_CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-019-redaction-canary";
+const HTTP_CANARY_HEADER: &str = "Bearer g06-019-redaction-canary";
+
+fn http_placement() -> OpenCodeAcpRemoteMcpPlacement {
+    OpenCodeAcpRemoteMcpPlacement::new(
+        OPENCODE_ACP_MCP_SERVER_NAME,
+        HTTP_CANARY_URL,
+        vec![("Authorization".to_owned(), HTTP_CANARY_HEADER.to_owned())],
+    )
+}
+
+fn assert_http_secrets_redacted(value: &impl std::fmt::Debug) {
+    let rendered = format!("{value:?}");
+    assert!(
+        !rendered.contains(HTTP_CANARY_URL),
+        "debug leaked the URL: {rendered}"
+    );
+    assert!(
+        !rendered.contains(HTTP_CANARY_HEADER),
+        "debug leaked a header value: {rendered}"
+    );
+}
+
+#[test]
+fn prepared_session_can_bind_the_admitted_http_mcp_placement() {
+    let host_id = ExecutionHostId::new("fixture.prepared.http-mcp").expect("host");
+    let prepared = prepare(host_id.clone());
+    let session = prepared
+        .prepare_session(session_input("http-mcp").with_http_mcp_placement(http_placement()))
+        .expect("session prepares");
+    assert_http_secrets_redacted(&session);
+    assert_http_secrets_redacted(session.plan());
+    assert_http_secrets_redacted(session.evidence());
+    let contribution = session
+        .consumer_route_projection_contribution(
+            swallowtail_runtime::ConsumerRouteProjectionSourceId::new(
+                "opencode.acp.prepared-session",
+            )
+            .expect("source"),
+        )
+        .expect("projects");
+    assert_http_secrets_redacted(&contribution);
+    let placement = contribution
+        .selection_rows()
+        .find(|row| {
+            row.identity()
+                .namespaced_extension()
+                .is_some_and(|extension| extension.semantic_id() == "mcp.placement")
+        })
+        .expect("HTTP placement is named");
+    let values = match placement
+        .control_value()
+        .expect("placement names values")
+        .domain()
+    {
+        swallowtail_runtime::ConsumerRouteValueDomain::Enumerated(values) => values,
+        other => panic!("placement must be enumerated, got {other:?}"),
+    };
+    let texts: Vec<&str> = values.values().map(|value| value.as_str()).collect();
+    assert!(texts.contains(&OPENCODE_ACP_HTTP_MCP_PLACEMENT));
+    assert!(texts.contains(&OPENCODE_ACP_MCP_SERVER_NAME));
+    assert!(
+        !texts
+            .iter()
+            .any(|value| value.contains("g06-019-redaction-canary"))
+    );
+    let operation = FixtureHost::new(Scenario::Success);
+    let handle =
+        block_on(session.open_session(operation.services(host_id.clone()))).expect("opens");
+    assert!(operation.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["type"] == "http"
+            && message["params"]["mcpServers"][0]["url"] == HTTP_CANARY_URL
+            && message["params"]["mcpServers"][0]["headers"][0]["value"] == HTTP_CANARY_HEADER
+    }));
+    assert_eq!(
+        block_on(handle.close(operation.cleanup_request(), operation.services(host_id))),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn working_state_restoration_carries_the_prepared_http_mcp_declaration() {
+    let host_id = ExecutionHostId::new("fixture.prepared.restore-http-mcp").expect("host");
+    let prepared = prepare(host_id.clone());
+    let session = prepared
+        .prepare_session(
+            session_input("restore-http-mcp").with_http_mcp_placement(http_placement()),
+        )
+        .expect("session prepares");
+    let operation = FixtureHost::new(Scenario::Success);
+    let restoration = session.prepare_working_state_restoration(
+        RuntimeTurnId::new("interrupted-http-mcp").expect("turn"),
+    );
+    let WorkingStateRestorationOutcome::SessionReplaced(replaced) =
+        block_on(restoration.restore(operation.services(host_id.clone()))).expect("restores")
+    else {
+        panic!("OpenCode ACP restoration is a fresh session replacement");
+    };
+    assert!(operation.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["type"] == "http"
+            && message["params"]["mcpServers"][0]["url"] == HTTP_CANARY_URL
+    }));
+    let (_, handle) = replaced.into_parts();
+    assert_eq!(
+        block_on(handle.close(operation.cleanup_request(), operation.services(host_id))),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn prepared_session_refuses_stdio_and_http_mcp_together() {
+    let host_id = ExecutionHostId::new("fixture.prepared.mcp-conflict").expect("host");
+    let prepared = prepare(host_id.clone());
+    let session = prepared
+        .prepare_session(
+            session_input("mcp-conflict")
+                .with_stdio_mcp_server(OpenCodeAcpStdioMcpServer::new(
+                    OPENCODE_ACP_MCP_SERVER_NAME,
+                    "/usr/bin/echo-mcp",
+                    Vec::<String>::new(),
+                    Vec::<(String, String)>::new(),
+                ))
+                .with_http_mcp_placement(http_placement()),
+        )
+        .expect("input can name both before open");
+    let operation = FixtureHost::new(Scenario::Success);
+    let error = match block_on(session.open_session(operation.services(host_id))) {
+        Err(error) => error,
+        Ok(_) => panic!("stdio and HTTP together must refuse"),
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.opencode.acp.mcp_entry_conflict"
+    );
+    assert_http_secrets_redacted(&error);
+    assert!(
+        !operation
+            .writes()
+            .iter()
+            .any(|message| message["method"] == "session/new")
     );
 }
 

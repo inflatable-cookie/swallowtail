@@ -1,19 +1,28 @@
 //! Contract 061 contribution from the prepared OpenCode ACP session.
 
 use super::OpenCodeAcpPreparedSession;
+use super::mcp::{
+    OPENCODE_ACP_HTTP_MCP_PLACEMENT, OPENCODE_ACP_MCP_SERVER_NAME, OpenCodeAcpRemoteMcpTransport,
+};
 use swallowtail_core::{
     AccessStatus, Capability, CredentialState, EndpointAuthorization, EntitlementState,
     PreflightPlan, RuntimeReadiness,
 };
 use swallowtail_runtime::{
     ConsumerRouteActorPosture, ConsumerRouteApplicability, ConsumerRouteAvailability,
+    ConsumerRouteControlValue, ConsumerRouteEnumerableValue, ConsumerRouteEnumeratedValues,
     ConsumerRouteEvidenceStrength, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
-    ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure,
-    ConsumerRouteProjectionRow, ConsumerRouteProjectionSourceId,
+    ConsumerRouteMutationAuthority, ConsumerRouteNamespacedExtension,
+    ConsumerRouteOmissionSemantics, ConsumerRouteProjectionContribution,
+    ConsumerRouteProjectionFailure, ConsumerRouteProjectionRow, ConsumerRouteProjectionSourceId,
     ConsumerRouteProjectionSourceIdentity, ConsumerRouteProjectionSourceKind,
     ConsumerRouteRowIdentity, ConsumerRouteSourceClass, ConsumerRouteStateSupport,
-    ConsumerRouteSupportPosture,
+    ConsumerRouteSupportPosture, ConsumerRouteValueDomain, ConsumerRouteValueKind,
 };
+
+const MCP_PLACEMENT_SEMANTIC_ID: &str = "mcp.placement";
+const MCP_PLACEMENT_VERSION: &str = "acp-v1";
+const ROUTE_ID: &str = "opencode.acp";
 
 impl OpenCodeAcpPreparedSession {
     /// Emits only the interactive-session truth this prepared session proves.
@@ -23,6 +32,7 @@ impl OpenCodeAcpPreparedSession {
     ) -> Result<ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure> {
         SessionProjection::new(self.plan(), source_id)
             .with_prepared_capabilities()
+            .with_mcp_placement(self)?
             .build()
     }
 }
@@ -104,6 +114,48 @@ impl<'a> SessionProjection<'a> {
             }
         }
         self
+    }
+
+    fn with_mcp_placement(
+        mut self,
+        session: &OpenCodeAcpPreparedSession,
+    ) -> Result<Self, ConsumerRouteProjectionFailure> {
+        let placement = match (session.stdio_mcp(), session.http_mcp()) {
+            (Some(_), None) => Some("stdio"),
+            (None, Some(remote)) if remote.transport() == OpenCodeAcpRemoteMcpTransport::Http => {
+                Some(OPENCODE_ACP_HTTP_MCP_PLACEMENT)
+            }
+            _ => None,
+        };
+        let Some(kind) = placement else {
+            return Ok(self);
+        };
+        let identity = ConsumerRouteRowIdentity::Feature(ConsumerRouteFeatureId::Namespaced(
+            ConsumerRouteNamespacedExtension::new(
+                ROUTE_ID,
+                MCP_PLACEMENT_VERSION,
+                MCP_PLACEMENT_SEMANTIC_ID,
+            )?,
+        ));
+        let values = ConsumerRouteEnumeratedValues::new([
+            ConsumerRouteEnumerableValue::new(kind)?,
+            ConsumerRouteEnumerableValue::new(OPENCODE_ACP_MCP_SERVER_NAME)?,
+        ])?;
+        self.selection.push(
+            self.row(
+                identity,
+                ConsumerRouteSourceClass::AdapterPreparedInput,
+                ConsumerRouteLifecycle::SelectionSummary,
+            )
+            .with_actor_posture(ConsumerRouteActorPosture::Informational)
+            .with_mutation_authority(ConsumerRouteMutationAuthority::Absent)
+            .with_control_value(ConsumerRouteControlValue::new(
+                ConsumerRouteValueKind::BoundedEnumeration,
+                ConsumerRouteValueDomain::Enumerated(values),
+                ConsumerRouteOmissionSemantics::NotSelectable,
+            )),
+        );
+        Ok(self)
     }
 
     fn build(self) -> Result<ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure> {

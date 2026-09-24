@@ -1,4 +1,4 @@
-use super::super::mcp::OpenCodeAcpStdioMcpServer;
+use super::super::mcp::{OpenCodeAcpRemoteMcpPlacement, OpenCodeAcpStdioMcpServer, entry_conflict};
 use super::OpenCodeAcpPreparedIntegration;
 use swallowtail_core::{
     AccessRequirement, CancellationScope, Capability, CapabilityConstraint, CapabilityProfile,
@@ -21,6 +21,7 @@ pub struct OpenCodeAcpSessionProfileInput {
     request_id: RequestId,
     working_resource: WorkingResourceRef,
     stdio_mcp: Option<OpenCodeAcpStdioMcpServer>,
+    http_mcp: Option<OpenCodeAcpRemoteMcpPlacement>,
 }
 
 impl OpenCodeAcpSessionProfileInput {
@@ -31,6 +32,7 @@ impl OpenCodeAcpSessionProfileInput {
             request_id,
             working_resource,
             stdio_mcp: None,
+            http_mcp: None,
         }
     }
 
@@ -38,6 +40,13 @@ impl OpenCodeAcpSessionProfileInput {
     #[must_use]
     pub fn with_stdio_mcp_server(mut self, server: OpenCodeAcpStdioMcpServer) -> Self {
         self.stdio_mcp = Some(server);
+        self
+    }
+
+    /// Binds one admitted streamable-HTTP MCP declaration to this session.
+    #[must_use]
+    pub fn with_http_mcp_placement(mut self, server: OpenCodeAcpRemoteMcpPlacement) -> Self {
+        self.http_mcp = Some(server);
         self
     }
 }
@@ -49,6 +58,7 @@ pub struct OpenCodeAcpPreparedSession {
     request: OpenSessionRequest,
     environment: swallowtail_runtime::EnvironmentRef,
     stdio_mcp: Option<OpenCodeAcpStdioMcpServer>,
+    http_mcp: Option<OpenCodeAcpRemoteMcpPlacement>,
 }
 
 impl OpenCodeAcpPreparedIntegration {
@@ -106,6 +116,7 @@ impl OpenCodeAcpPreparedIntegration {
             request,
             environment: self.environment().clone(),
             stdio_mcp: input.stdio_mcp,
+            http_mcp: input.http_mcp,
         })
     }
 }
@@ -129,14 +140,35 @@ impl OpenCodeAcpPreparedSession {
         &self.request
     }
 
+    /// Returns the prepared stdio MCP declaration when the session bound one.
+    #[must_use]
+    pub(crate) fn stdio_mcp(&self) -> Option<&OpenCodeAcpStdioMcpServer> {
+        self.stdio_mcp.as_ref()
+    }
+
+    /// Returns the prepared HTTP MCP placement when the session bound one.
+    #[must_use]
+    pub(crate) fn http_mcp(&self) -> Option<&OpenCodeAcpRemoteMcpPlacement> {
+        self.http_mcp.as_ref()
+    }
+
     /// Opens the prepared ACP session: initialize plus `session/new`.
     pub fn open_session(
         &self,
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         let mut driver = crate::OpenCodeAcpDriver::new(self.environment.clone());
+        if self.stdio_mcp.is_some() && self.http_mcp.is_some() {
+            return Box::pin(async move { Err(entry_conflict()) });
+        }
         if let Some(server) = self.stdio_mcp.clone() {
             driver = match driver.with_stdio_mcp_server(server) {
+                Ok(driver) => driver,
+                Err(error) => return Box::pin(async move { Err(error) }),
+            };
+        }
+        if let Some(server) = self.http_mcp.clone() {
+            driver = match driver.with_http_mcp_placement(server) {
                 Ok(driver) => driver,
                 Err(error) => return Box::pin(async move { Err(error) }),
             };
@@ -155,7 +187,8 @@ impl OpenCodeAcpPreparedSession {
         PreparedWorkingStateRestoration::fresh_session_replacement(
             interrupted_turn_id,
             crate::OpenCodeAcpDriver::new(self.environment.clone())
-                .with_prepared_stdio_mcp(self.stdio_mcp.clone()),
+                .with_prepared_stdio_mcp(self.stdio_mcp.clone())
+                .with_prepared_http_mcp(self.http_mcp.clone()),
             self.plan().clone(),
             self.request.clone(),
         )

@@ -1,7 +1,11 @@
 pub mod swallowtail_adapter_opencode
+pub enum swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpTransport
+pub swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpTransport::Http
+pub swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpTransport::Sse
 pub struct swallowtail_adapter_opencode::OpenCodeAcpDriver
 impl swallowtail_adapter_opencode::OpenCodeAcpDriver
 pub const fn swallowtail_adapter_opencode::OpenCodeAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+pub fn swallowtail_adapter_opencode::OpenCodeAcpDriver::with_http_mcp_placement(self, swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_adapter_opencode::OpenCodeAcpDriver::with_stdio_mcp_server(self, swallowtail_adapter_opencode::OpenCodeAcpStdioMcpServer) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_opencode::OpenCodeAcpDriver
 pub fn swallowtail_adapter_opencode::OpenCodeAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
@@ -9,6 +13,9 @@ pub fn swallowtail_adapter_opencode::OpenCodeAcpDriver::discover_installed_execu
 impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_opencode::OpenCodeAcpDriver
 pub fn swallowtail_adapter_opencode::OpenCodeAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_opencode::OpenCodeAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_opencode::OpenCodeAcpEncodedMcpServers
+impl core::fmt::Debug for swallowtail_adapter_opencode::OpenCodeAcpEncodedMcpServers
+pub fn swallowtail_adapter_opencode::OpenCodeAcpEncodedMcpServers::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_adapter_opencode::OpenCodeAcpPreparationInput
 impl swallowtail_adapter_opencode::OpenCodeAcpPreparationInput
 pub const fn swallowtail_adapter_opencode::OpenCodeAcpPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
@@ -42,11 +49,16 @@ impl swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement
 pub fn swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement::headers(&self) -> &[(alloc::string::String, alloc::string::String)]
 pub fn swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement::name(&self) -> &str
 pub fn swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement::new(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
-pub fn swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement::to_production_mcp_servers(&self) -> core::result::Result<serde_json::value::Value, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement::sse(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
+pub fn swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement::to_production_mcp_servers(&self) -> core::result::Result<swallowtail_adapter_opencode::OpenCodeAcpEncodedMcpServers, swallowtail_runtime::failure::RuntimeFailure>
+pub const fn swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement::transport(&self) -> swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpTransport
 pub fn swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement::url(&self) -> &str
+impl core::fmt::Debug for swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement
+pub fn swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_adapter_opencode::OpenCodeAcpSessionProfileInput
 impl swallowtail_adapter_opencode::OpenCodeAcpSessionProfileInput
 pub const fn swallowtail_adapter_opencode::OpenCodeAcpSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub fn swallowtail_adapter_opencode::OpenCodeAcpSessionProfileInput::with_http_mcp_placement(self, swallowtail_adapter_opencode::OpenCodeAcpRemoteMcpPlacement) -> Self
 pub fn swallowtail_adapter_opencode::OpenCodeAcpSessionProfileInput::with_stdio_mcp_server(self, swallowtail_adapter_opencode::OpenCodeAcpStdioMcpServer) -> Self
 pub struct swallowtail_adapter_opencode::OpenCodeAcpStdioMcpServer
 impl swallowtail_adapter_opencode::OpenCodeAcpStdioMcpServer
@@ -248,6 +260,7 @@ pub const swallowtail_adapter_opencode::OPENCODE_ACP_AXIS: &str
 pub const swallowtail_adapter_opencode::OPENCODE_ACP_BASELINE_VERSION: &str
 pub const swallowtail_adapter_opencode::OPENCODE_ACP_EXECUTABLE_NAME: &str
 pub const swallowtail_adapter_opencode::OPENCODE_ACP_HOST_ACCOUNT_AUDIENCE: &str
+pub const swallowtail_adapter_opencode::OPENCODE_ACP_HTTP_MCP_PLACEMENT: &str
 pub const swallowtail_adapter_opencode::OPENCODE_ACP_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_opencode::OPENCODE_ACP_MCP_SERVER_NAME: &str
 pub const swallowtail_adapter_opencode::OPENCODE_BASELINE_VERSION: &str

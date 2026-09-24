@@ -454,20 +454,89 @@ fn stdio_mcp_is_admitted_on_session_new_and_foreign_names_fail() {
 }
 
 #[test]
-fn url_plus_header_mcp_cannot_reach_production() {
-    let remote = OpenCodeAcpRemoteMcpPlacement::new(
+fn http_mcp_is_admitted_on_session_new_and_keeps_values_verbatim() {
+    let host_id = ExecutionHostId::new("fixture.host.http-mcp").expect("valid host id");
+    let selected = selection(host_id.clone());
+    let host = FixtureHost::new(Scenario::Success);
+    let services = host.services(host_id);
+    const CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-019-redaction-canary";
+    const CANARY_HEADER: &str = "Bearer g06-019-redaction-canary";
+    let admitted = OpenCodeAcpRemoteMcpPlacement::new(
         OPENCODE_ACP_MCP_SERVER_NAME,
-        "http://127.0.0.1:9/mcp",
-        vec![("Authorization".to_owned(), "Bearer secret".to_owned())],
+        CANARY_URL,
+        vec![("Authorization".to_owned(), CANARY_HEADER.to_owned())],
     );
-    let error = remote
-        .to_production_mcp_servers()
-        .expect_err("remote placement stays gated");
+    let driver = OpenCodeAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("opencode.acp.fixture.isolated")
+            .expect("valid environment"),
+    )
+    .with_http_mcp_placement(admitted)
+    .expect("route-owned http placement is admitted");
+    let session = block_on(driver.open_session(
+        selected.plan,
+        OpenSessionRequest::new(
+            RequestId::new("opencode-http-mcp").expect("valid request"),
+            selected.resource,
+            None,
+            SessionPlanAgreement::explicit(
+                swallowtail_core::SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+            ),
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["type"] == "http"
+            && message["params"]["mcpServers"][0]["name"] == OPENCODE_ACP_MCP_SERVER_NAME
+            && message["params"]["mcpServers"][0]["url"] == CANARY_URL
+            && message["params"]["mcpServers"][0]["headers"][0]["value"] == CANARY_HEADER
+    }));
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn stdio_and_http_mcp_together_fail_before_session_new() {
+    let stdio = OpenCodeAcpStdioMcpServer::new(
+        OPENCODE_ACP_MCP_SERVER_NAME,
+        "/usr/bin/echo-mcp",
+        Vec::<String>::new(),
+        Vec::<(String, String)>::new(),
+    );
+    let http = OpenCodeAcpRemoteMcpPlacement::new(
+        OPENCODE_ACP_MCP_SERVER_NAME,
+        "http://127.0.0.1:9/mcp/g06-019-redaction-canary",
+        vec![(
+            "Authorization".to_owned(),
+            "Bearer g06-019-redaction-canary".to_owned(),
+        )],
+    );
+    let error = match OpenCodeAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("opencode.acp.fixture.isolated")
+            .expect("valid environment"),
+    )
+    .with_stdio_mcp_server(stdio)
+    .expect("stdio binds")
+    .with_http_mcp_placement(http)
+    {
+        Err(error) => error,
+        Ok(_) => panic!("stdio and HTTP together must refuse"),
+    };
     assert_eq!(
         error.diagnostic().code(),
-        "swallowtail.opencode.acp.mcp_remote_not_admitted"
+        "swallowtail.opencode.acp.mcp_entry_conflict"
     );
-    assert!(!error.diagnostic().message().contains("Bearer secret"));
+    assert!(
+        !error
+            .diagnostic()
+            .message()
+            .contains("g06-019-redaction-canary")
+    );
 }
 
 fn open(

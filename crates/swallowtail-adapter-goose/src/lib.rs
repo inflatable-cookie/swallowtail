@@ -15,12 +15,17 @@ mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod failure;
+mod mcp;
 mod prepared;
 mod selection;
 mod turn;
 
 pub use access::{GOOSE_LOCAL_ACCOUNT_AUDIENCE, goose_local_config_access_profile};
 pub use driver::{GooseAcpDriver, goose_acp_descriptor};
+pub use mcp::{
+    GOOSE_ACP_HTTP_MCP_PLACEMENT, GOOSE_ACP_MCP_SERVER_NAME, GooseAcpEncodedMcpServers,
+    GooseAcpRemoteMcpPlacement, GooseAcpRemoteMcpTransport,
+};
 pub use prepared::{
     GoosePreparationInput, GoosePreparationProbe, GoosePreparedIntegration, GoosePreparedSession,
     GooseSessionProfileInput, prepare_goose_acp,

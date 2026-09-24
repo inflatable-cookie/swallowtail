@@ -2,6 +2,7 @@ use crate::{
     command::arguments,
     connection::AcpConnection,
     failure::{failure, malformed, unsupported},
+    mcp::{GooseAcpRemoteMcpPlacement, production_mcp_servers},
     turn::ActiveTurn,
 };
 use serde_json::{Value, json};
@@ -28,6 +29,7 @@ const DRIVER_ID: &str = "swallowtail.goose.acp";
 /// Low-level interactive driver for the installed Goose ACP agent.
 pub struct GooseAcpDriver {
     isolated_environment: EnvironmentRef,
+    http_mcp: Option<GooseAcpRemoteMcpPlacement>,
 }
 
 impl GooseAcpDriver {
@@ -36,7 +38,25 @@ impl GooseAcpDriver {
     pub const fn new(isolated_environment: EnvironmentRef) -> Self {
         Self {
             isolated_environment,
+            http_mcp: None,
         }
+    }
+
+    /// Admits one route-owned streamable-HTTP MCP declaration onto production `session/new`.
+    pub fn with_http_mcp_placement(
+        self,
+        server: GooseAcpRemoteMcpPlacement,
+    ) -> Result<Self, RuntimeFailure> {
+        let _ = server.to_acp_http_value()?;
+        Ok(self.with_prepared_http_mcp(Some(server)))
+    }
+
+    pub(crate) fn with_prepared_http_mcp(
+        mut self,
+        server: Option<GooseAcpRemoteMcpPlacement>,
+    ) -> Self {
+        self.http_mcp = server;
+        self
     }
 
     fn validate_plan(
@@ -224,8 +244,12 @@ impl GooseAcpDriver {
         let opened = async {
             let initialize = connection.initialize().await?;
             validate_initialize(&initialize, selected.version())?;
+            let mcp_servers = production_mcp_servers(self.http_mcp.as_ref())?;
             connection
-                .request("session/new", json!({"cwd": cwd, "mcpServers": []}))
+                .request(
+                    "session/new",
+                    json!({"cwd": cwd, "mcpServers": mcp_servers}),
+                )
                 .await
                 .and_then(parse_new_session)
         }

@@ -39,8 +39,7 @@ live-gate history is represented by the lifecycle projection below; remaining
 ready work is sequenced by the queue and generation runway, with no task pointer
 maintained in this section.
 
-Ready lanes, independent and parallel: g06.018 (lead), g06.019, g06.020 and
-g06.021.
+Ready lanes, independent and parallel: g06.018 (lead), g06.019 and g06.020.
 
 ## Tasks
 

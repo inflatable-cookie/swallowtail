@@ -78,7 +78,7 @@ maintained in this section.
 - [035 Gemini CLI ACP Consumer HTTP MCP Wiring](./035-gemini-cli-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `gemini-cli.acp` per Research 351
 - [036 Goose ACP Consumer HTTP MCP Wiring](./036-goose-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `goose.acp` per Research 351
 - [037 Kiro ACP Consumer HTTP MCP Wiring](./037-kiro-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `kiro.acp` per Research 351
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:9c672f2c3cba0b48b6ea818c52b0971c8f5706170deff4a47648cf039beb3a1d -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:4fb4ee9cd98d73d9300682b8989f3c44d0465cea36e979f5c3951eff54870297 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g06 | open | planning_required |
@@ -111,4 +111,5 @@ maintained in this section.
 | g06.030 | complete | none | 8 | sha256:625cb08b75b2b9bc2d32bc89e1ce7fc99257d9c03963d2966556fcd647a503b1 |
 | g06.031 | complete | none | 8 | sha256:d0a53707bb5870460364d9ed4f046e93851c58bff99d87459f2a3b95793c02d7 |
 | g06.032 | complete | none | 8 | sha256:37443f0a7c8676227d3404235eeade79c157a974c3368a14ea13abac1082de52 |
+| g06.034 | complete | none | 8 | sha256:15b35c96d61534018adad6034e50a19a6fe1f72ec240dee91108950e3c3e8e25 |
 <!-- northstar:lifecycle:end -->

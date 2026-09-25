@@ -5,6 +5,7 @@ pub enum Scenario {
     Permission,
     Cancellation,
     Disconnect,
+    AuthRequired,
 }
 
 #[derive(Clone, Debug)]
@@ -65,37 +66,50 @@ impl SharedAgent {
                 }),
                 );
             }
-            Some("session/new") => {
-                let mode = if state.write_enabled {
-                    "autoEdit"
-                } else {
-                    "plan"
-                };
-                Self::enqueue(
+            Some("session/new") => match self.scenario {
+                Scenario::AuthRequired => Self::enqueue(
                     &mut state,
                     json!({
-                    "jsonrpc": "2.0",
-                    "id": id,
-                    "result": {
-                        "sessionId": "fixture-session",
-                        "modes": {"currentModeId": mode},
-                        "models": {
-                            "currentModelId": "fixture-observed-model",
-                            "availableModels": [
-                                {
-                                    "modelId": "fixture-observed-model",
-                                    "name": "Fixture Observed Model"
-                                },
-                                {
-                                    "modelId": "fixture-alternate-model",
-                                    "name": "Fixture Alternate Model"
-                                }
-                            ]
+                        "jsonrpc": "2.0",
+                        "id": id,
+                        "error": {
+                            "code": -32603,
+                            "message": "authRequired: no authenticated profile is selected"
                         }
-                    }
                     }),
-                );
-                enqueue_session_metadata(&mut state, mode);
+                ),
+                _ => {
+                    let mode = if state.write_enabled {
+                        "autoEdit"
+                    } else {
+                        "plan"
+                    };
+                    Self::enqueue(
+                        &mut state,
+                        json!({
+                        "jsonrpc": "2.0",
+                        "id": id,
+                        "result": {
+                            "sessionId": "fixture-session",
+                            "modes": {"currentModeId": mode},
+                            "models": {
+                                "currentModelId": "fixture-observed-model",
+                                "availableModels": [
+                                    {
+                                        "modelId": "fixture-observed-model",
+                                        "name": "Fixture Observed Model"
+                                    },
+                                    {
+                                        "modelId": "fixture-alternate-model",
+                                        "name": "Fixture Alternate Model"
+                                    }
+                                ]
+                            }
+                        }
+                        }),
+                    );
+                    enqueue_session_metadata(&mut state, mode);
+                }
             }
             Some("session/prompt") => {
                 state.prompt_id = id;
@@ -184,6 +198,7 @@ impl SharedAgent {
                     ),
                     Scenario::Cancellation => {}
                     Scenario::Disconnect => state.stopped = true,
+                    Scenario::AuthRequired => {}
                 }
             }
             Some("session/cancel") => {

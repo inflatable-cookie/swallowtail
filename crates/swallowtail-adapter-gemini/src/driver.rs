@@ -1,3 +1,4 @@
+use crate::acp_mcp::{GeminiAcpHttpMcpPlacement, production_mcp_servers};
 use crate::connection::AcpConnection;
 use crate::failure::{failure, malformed, unsupported};
 use crate::turn::ActiveTurn;
@@ -26,6 +27,7 @@ const DRIVER_ID: &str = "swallowtail.gemini.acp";
 pub struct GeminiAcpDriver {
     isolated_environment: EnvironmentRef,
     credential: CredentialRef,
+    http_mcp: Option<GeminiAcpHttpMcpPlacement>,
 }
 
 impl GeminiAcpDriver {
@@ -35,7 +37,26 @@ impl GeminiAcpDriver {
         Self {
             isolated_environment,
             credential,
+            http_mcp: None,
         }
+    }
+
+    /// Admits one route-owned consumer-supplied streamable-HTTP MCP declaration
+    /// onto production `session/new`.
+    pub fn with_http_mcp_placement(
+        self,
+        placement: GeminiAcpHttpMcpPlacement,
+    ) -> Result<Self, RuntimeFailure> {
+        let _ = placement.to_acp_http_value()?;
+        Ok(self.with_prepared_http_mcp(Some(placement)))
+    }
+
+    pub(crate) fn with_prepared_http_mcp(
+        mut self,
+        placement: Option<GeminiAcpHttpMcpPlacement>,
+    ) -> Self {
+        self.http_mcp = placement;
+        self
     }
 
     fn validate_plan(
@@ -234,8 +255,12 @@ impl GeminiAcpDriver {
         let opened = async {
             let initialize = connection.initialize().await?;
             validate_initialize(&initialize, selected.version())?;
+            let mcp_servers = production_mcp_servers(self.http_mcp.as_ref())?;
             let response = connection
-                .request("session/new", json!({"cwd": cwd, "mcpServers": []}))
+                .request(
+                    "session/new",
+                    json!({"cwd": cwd, "mcpServers": mcp_servers}),
+                )
                 .await?;
             parse_new_session(&response, resource_access)
         }

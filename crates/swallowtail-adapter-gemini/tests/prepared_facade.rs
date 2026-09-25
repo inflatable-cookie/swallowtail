@@ -7,9 +7,10 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{FixtureHost, Scenario, close_session};
 use swallowtail_adapter_gemini::{
-    GEMINI_CLI_ACP_AXIS, GeminiCliPreparationInput, GeminiCliPreparationProbe,
-    GeminiCliPreparedDriver, GeminiCliPreparedIntegration, GeminiPreparationInput,
-    GeminiPreparationProbe, GeminiSessionProfileInput, prepare_gemini_acp, prepare_gemini_cli,
+    GEMINI_ACP_MCP_SERVER_NAME, GEMINI_CLI_ACP_AXIS, GeminiAcpHttpMcpPlacement,
+    GeminiCliPreparationInput, GeminiCliPreparationProbe, GeminiCliPreparedDriver,
+    GeminiCliPreparedIntegration, GeminiPreparationInput, GeminiPreparationProbe,
+    GeminiSessionProfileInput, prepare_gemini_acp, prepare_gemini_cli,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, Capability, CapabilityConstraint,
@@ -27,6 +28,81 @@ use swallowtail_runtime::{
 use swallowtail_testkit::{
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
 };
+
+#[test]
+fn prepared_session_carries_http_mcp_entry_and_redacts_its_secrets() {
+    const CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-035-prepared-canary";
+    const CANARY_HEADER: &str = "Bearer g06-035-prepared-canary";
+    let host_id = ExecutionHostId::new("fixture.prepared.mcp").expect("valid host");
+    let operation_host = FixtureHost::new(Scenario::Success);
+    let operation_services = operation_host.services(host_id.clone());
+    let discovery_host = DiscoveryHost::new("0.51.0");
+    let preparation_services = discovery_host
+        .services(host_id.clone())
+        .with_working_resource(
+            operation_services
+                .working_resource()
+                .expect("resource")
+                .clone(),
+        )
+        .with_working_resource_io(
+            operation_services
+                .working_resource_io()
+                .expect("io")
+                .clone(),
+        );
+    let integration = block_on(prepare_gemini_acp(
+        preparation_input(host_id),
+        probe(),
+        preparation_services,
+    ))
+    .expect("Gemini prepares");
+    let placement = GeminiAcpHttpMcpPlacement::new(
+        GEMINI_ACP_MCP_SERVER_NAME,
+        CANARY_URL,
+        vec![("Authorization".to_owned(), CANARY_HEADER.to_owned())],
+    );
+    let profile = integration
+        .prepare_session(
+            GeminiSessionProfileInput::new(
+                RequestId::new("gemini-prepared-mcp").expect("valid request"),
+                WorkingResourceRef::new("gemini.prepared.workspace").expect("valid resource"),
+                SessionOptions::default(),
+            )
+            .with_http_mcp_placement(placement),
+        )
+        .expect("prepared session carries the placement");
+    let rendered = format!("{profile:?}");
+    assert!(!rendered.contains(CANARY_URL));
+    assert!(!rendered.contains(CANARY_HEADER));
+    assert_eq!(
+        profile
+            .prepare_working_state_restoration(RuntimeTurnId::new("lost-mcp-turn").expect("turn"))
+            .method(),
+        WorkingStateRestorationMethod::FreshSessionReplacement
+    );
+    let session = block_on(profile.open_session(operation_services.clone()))
+        .expect("prepared session opens with the bound entry");
+    let session_new = operation_host
+        .writes()
+        .into_iter()
+        .find(|message| message["method"] == "session/new")
+        .expect("session/new is sent");
+    assert_eq!(session_new["params"]["mcpServers"][0]["type"], "http");
+    assert_eq!(
+        session_new["params"]["mcpServers"][0]["name"],
+        GEMINI_ACP_MCP_SERVER_NAME
+    );
+    assert_eq!(session_new["params"]["mcpServers"][0]["url"], CANARY_URL);
+    assert_eq!(
+        session_new["params"]["mcpServers"][0]["headers"][0]["value"],
+        CANARY_HEADER
+    );
+    assert_eq!(
+        block_on(close_session(session, operation_services)),
+        CleanupOutcome::Clean
+    );
+}
 
 #[test]
 fn solution_facade_keeps_acp_selection_typed() {

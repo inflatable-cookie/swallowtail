@@ -63,6 +63,24 @@ does not expose a consumer tool callback. Provider permission requests are
 observed, rejected, and terminate the turn as `ProviderRequestObserved`; they
 cannot be answered through this route.
 
+One consumer-supplied streamable-HTTP MCP entry is admitted per session. Bind
+`GeminiAcpHttpMcpPlacement` through
+`GeminiSessionProfileInput::with_http_mcp_placement` or the low-level
+`GeminiAcpDriver::with_http_mcp_placement`; production `session/new` emits the
+ACP `http` form under the route-owned name `swallowtail-gemini-acp`, which the
+provider maps onto its `httpUrl` transport with the declared headers on
+`requestInit.headers`. Validation is structural only — the route-owned
+non-empty name, an absolute `http`/`https` URL, and well-formed header names —
+and the consumer's URL and header values pass verbatim. Those values are
+consumer secrets: they never enter failures, diagnostics, activity, or
+fingerprints, and omitting the entry keeps `mcpServers` byte-identically
+empty. The provider honours the entry only after its authentication
+completes; an unauthenticated open fails typed as
+`swallowtail.gemini.acp.auth_required` and never drops the entry to succeed.
+Emission is not honouring: the `client_mcp_servers` cell stays a producer gap
+until a live gate proves one declared remote entry connecting and completing
+a tool call. The headless route's MCP-disabled path is unchanged.
+
 Take each turn's event stream and terminal outcome immediately and poll them
 concurrently. Cancellation interrupts the active turn. Close the turn and
 session to join connection, process, resource, credential, and task work.

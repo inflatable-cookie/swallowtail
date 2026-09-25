@@ -28,11 +28,19 @@ impl AcpConnection {
                     "Gemini CLI returned an unknown ACP response",
                 )
             })?;
-        sender.complete(result.map_err(|_| {
-            failure(
-                "swallowtail.gemini.acp.request_rejected",
-                "Gemini CLI rejected an ACP request",
-            )
+        sender.complete(result.map_err(|error| {
+            let message = error.message().to_ascii_lowercase();
+            if message.contains("authrequired") {
+                failure(
+                    "swallowtail.gemini.acp.auth_required",
+                    "Gemini CLI requires completed authentication before session work",
+                )
+            } else {
+                failure(
+                    "swallowtail.gemini.acp.request_rejected",
+                    "Gemini CLI rejected an ACP request",
+                )
+            }
         }));
         Ok(())
     }

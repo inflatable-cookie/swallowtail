@@ -94,6 +94,25 @@ annotated Git tags from the canonical repository.
   fingerprints. The Contract 061 placement projection names
   `consumer-supplied-http`. Feature matrix MCP cells stay No: emission is
   proven, live honouring of a remote tool call is not. Research 337, g06.019.
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `gemini-cli.acp` production `session/new` at the route's current point
+  `0.59.0`. A session declares at most one consumer entry under the
+  route-owned name `swallowtail-gemini-acp`; encoding emits ACP
+  `type: "http"`, which the provider maps onto its `httpUrl` transport with
+  the declared headers on `requestInit.headers` (Research 351). The public
+  encoder returns `GeminiAcpEncodedMcpServers`, whose `Debug` form redacts
+  URL and header values; the wire JSON stays crate-private. Values pass
+  verbatim and stay out of failures, diagnostics, activity, receipts,
+  `Debug`, and plan fingerprints; omission keeps `mcpServers`
+  byte-identically empty. The provider honours the entry only after its
+  authentication completes, so an unauthenticated open fails typed as
+  `swallowtail.gemini.acp.auth_required` and never drops the entry. The
+  prepared facade admits the placement through
+  `GeminiSessionProfileInput::with_http_mcp_placement` and carries it onto
+  working-state restoration. The `gemini-cli.headless` MCP-disabled path is
+  unchanged, and the composite `client_mcp_servers` cell stays a producer
+  gap naming the live gate: emission is not honouring. No live session,
+  login, install, or host update. Research 351, g06.035.
 
 ### Changed
 - accept the exact `command-code.headless` `1.65.0` live surface on

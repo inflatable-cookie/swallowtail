@@ -1,4 +1,5 @@
 use super::KiroPreparedIntegration;
+use crate::mcp::KiroAcpRemoteMcpPlacement;
 use swallowtail_core::{
     AccessRequirement, CancellationScope, Capability, CapabilityConstraint, CapabilityProfile,
     CapabilityRequirement, ConfiguredInstance, CredentialState, DriverRole, EndpointAuthorization,
@@ -19,6 +20,7 @@ use swallowtail_runtime::{
 pub struct KiroSessionProfileInput {
     request_id: RequestId,
     working_resource: WorkingResourceRef,
+    http_mcp: Option<KiroAcpRemoteMcpPlacement>,
 }
 
 impl KiroSessionProfileInput {
@@ -28,7 +30,15 @@ impl KiroSessionProfileInput {
         Self {
             request_id,
             working_resource,
+            http_mcp: None,
         }
+    }
+
+    /// Binds one admitted streamable-HTTP MCP entry to this session.
+    #[must_use]
+    pub fn with_http_mcp_placement(mut self, server: KiroAcpRemoteMcpPlacement) -> Self {
+        self.http_mcp = Some(server);
+        self
     }
 }
 
@@ -38,6 +48,7 @@ pub struct KiroPreparedSession {
     evidence: PreparedOperationEvidence,
     request: OpenSessionRequest,
     environment: swallowtail_runtime::EnvironmentRef,
+    http_mcp: Option<KiroAcpRemoteMcpPlacement>,
 }
 
 impl KiroPreparedIntegration {
@@ -94,6 +105,7 @@ impl KiroPreparedIntegration {
             )?,
             request,
             environment: self.environment().clone(),
+            http_mcp: input.http_mcp,
         })
     }
 }
@@ -117,12 +129,24 @@ impl KiroPreparedSession {
         &self.request
     }
 
+    /// Returns the prepared HTTP MCP placement when the session bound one.
+    #[must_use]
+    pub(crate) fn http_mcp(&self) -> Option<&KiroAcpRemoteMcpPlacement> {
+        self.http_mcp.as_ref()
+    }
+
     /// Opens the prepared ACP session: initialize plus `session/new`.
     pub fn open_session(
         &self,
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        let driver = crate::KiroAcpDriver::new(self.environment.clone());
+        let mut driver = crate::KiroAcpDriver::new(self.environment.clone());
+        if let Some(server) = self.http_mcp.clone() {
+            driver = match driver.with_http_mcp_placement(server) {
+                Ok(driver) => driver,
+                Err(error) => return Box::pin(async move { Err(error) }),
+            };
+        }
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.open_session(plan, request, services).await })
@@ -136,7 +160,8 @@ impl KiroPreparedSession {
     ) -> PreparedWorkingStateRestoration {
         PreparedWorkingStateRestoration::fresh_session_replacement(
             interrupted_turn_id,
-            crate::KiroAcpDriver::new(self.environment.clone()),
+            crate::KiroAcpDriver::new(self.environment.clone())
+                .with_prepared_http_mcp(self.http_mcp.clone()),
             self.plan().clone(),
             self.request.clone(),
         )

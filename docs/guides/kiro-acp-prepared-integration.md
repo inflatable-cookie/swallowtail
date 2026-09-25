@@ -58,7 +58,8 @@ The driver owns one joined stdio child and performs this sequence:
 
 1. spawn `kiro-cli acp` with no extra argv
 2. `initialize` with host `fs` and `terminal` advertised false
-3. `session/new` with `{cwd, mcpServers: []}`
+3. `session/new` with `{cwd, mcpServers}` — empty, or one admitted
+   consumer-supplied HTTP entry
 4. one bounded `session/prompt` of text blocks under field `prompt`
 5. observe permission requests and cancel; never select `allow_always`
 6. join connection, process, and task cleanup
@@ -80,6 +81,42 @@ isolation is not filesystem or descendant-process containment.
 See the compile-tested
 [`prepared_kiro_acp` example](../../crates/swallowtail-adapter-kiro/examples/prepared_kiro_acp.rs).
 
+## Consumer-declared MCP
+
+Contract 063 admits a consumer-supplied streamable-HTTP placement. Bind at most
+one `KiroAcpRemoteMcpPlacement` whose name is the route-owned
+`swallowtail-kiro-acp`, and pass it to `KiroSessionProfileInput` with
+`with_http_mcp_placement`. A foreign name fails closed as a collision.
+
+HTTP encoding emits ACP `type: "http"` with the consumer URL and headers
+verbatim. Structure is validated only: non-empty name, absolute `http`/`https`
+URL, well-formed header names. URL and header values never appear in failures,
+diagnostics, activity, receipts, `Debug` output, or plan fingerprints. The
+provider's `stdio`, `sse`, and `acp` forms are not offered on this route.
+
+Omission keeps `mcpServers: []` byte-identical to the pre-wiring route.
+
+Emission is not honouring, and the route never claims acceptance. Research 351
+leaves three provider gates open, and the typed encoder outcome names all of
+them through `KiroAcpEncodedMcpServers::gates()`:
+
+- `InitializeAdvertisementUnproven`: `initialize` does not prove
+  `mcpCapabilities.http`. The bundled ACP SDK default is `false` and no cited
+  literal `true` exists. `KiroAcpHttpAdvertisement::from_initialize` classifies
+  the result as `Advertised`, `NotAdvertised`, or `Unproven`; the route emits
+  the entry either way and the typed outcome records the gate rather than
+  treating emission as acceptance.
+- `GovernanceDisabled`: Kiro drops session-injected MCP servers when MCP is
+  disabled by governance.
+- `AgentConfigurationOverride`: ACP-supplied MCP servers override servers
+  already present in agent configuration, so a colliding agent-configured name
+  is replaced rather than merged.
+
+`KiroAcpEncodedMcpServers::is_honoured()` is always `false`. No feature-matrix
+MCP cell is `Yes`: this route proves emission, not live honouring of a remote
+tool call. The Contract 061 placement projection names
+`consumer-supplied-http` when an HTTP entry is bound.
+
 ## Restart, Failure, And Promotion
 
 ACP exposes no public load or resume binding.
@@ -90,10 +127,16 @@ Handle failures through portable classification and retain the exact
 `swallowtail.kiro.acp` diagnostic for support. Do not parse stderr, ACP data,
 or `~/.kiro/` files to infer retry, auth, terminal, or cleanup truth.
 
+`prepare_working_state_restoration` carries a prepared HTTP MCP declaration
+onto the replacement session.
+
 Promotion of `kiro.headless`, `--cloud`, `--agent`, `--trust-all-tools`,
 `session/load`, host fs writes, model selection, usage, or live qualification
 requires a separate card, exact version evidence, and matrix coverage. An
-advertised ACP capability or CLI flag alone is insufficient.
+advertised ACP capability or CLI flag alone is insufficient. Live MCP
+honouring is a separate gate: emission reaches production `session/new`, but
+one declared remote entry connected and one tool call completed is not yet
+proven.
 
 ## Deterministic Validation
 

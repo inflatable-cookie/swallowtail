@@ -16,12 +16,18 @@ mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod failure;
+mod mcp;
 mod prepared;
 mod selection;
 mod turn;
 
 pub use access::{COPILOT_CLI_HOST_ACCOUNT_AUDIENCE, copilot_cli_host_account_access_profile};
 pub use driver::{CopilotCliAcpDriver, copilot_cli_acp_descriptor};
+pub use mcp::{
+    COPILOT_CLI_ACP_HTTP_MCP_PLACEMENT, COPILOT_CLI_ACP_MCP_SERVER_NAME,
+    CopilotCliAcpEncodedMcpServers, CopilotCliAcpRemoteMcpPlacement,
+    CopilotCliAcpRemoteMcpTransport,
+};
 pub use prepared::{
     CopilotCliPreparationInput, CopilotCliPreparationProbe, CopilotCliPreparedIntegration,
     CopilotCliPreparedSession, CopilotCliSessionProfileInput, prepare_copilot_cli_acp,

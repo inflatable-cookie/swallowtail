@@ -21,7 +21,17 @@ identity evidence in the same batch. g06.038 is the milestone record.
 
 ## Validation
 
-Named gates for this claim are recorded after they run.
+- `cargo fmt -p swallowtail-adapter-claude-agent` passed
+- `effigy validate:focused swallowtail-adapter-claude-agent` passed: 580 tests and `-D warnings` clippy, on Node `22.23.2`
+- `effigy package:verify-affected swallowtail-adapter-claude-agent` passed from `/tmp/st-qa`. The `/workspace` checkout fails the host-path audit because pre-existing Claude Agent SDK text contains the substring `rule/workspace`, which matches that checkout path. That failure is not this ACP change
+- `effigy qa:routes` passed
+- `effigy qa:northstar` passed
+- `effigy qa:docs:index:research`, `qa:docs:index:logs`, `qa:docs:index:roadmaps`, and `qa:docs:index:roadmaps:g06` passed
+- `effigy qa:docs:index:roadmaps:batch-cards` is not defined. `effigy qa:docs:roadmaps:status` passed and rejects a `batch-cards/` level
+- `effigy qa:docs:roadmaps:numbers` passed against canonical main `49b0d308c6d6`
+- official latest was rechecked immediately before the validation push: npm `latest` `0.81.2` (`gitHead` `5dbb453c63a89746627799b2b06b31ba01a1b674`), GitHub `v0.81.2`, ACP registry `claude-acp` `0.81.2`. No in-run movement
+
+No workspace `qa`. No provider prompt, live ACP initialize, authentication, install, host update, downloaded-artifact execution, release, tag, publication, or consumer mutation.
 
 ## Next
 

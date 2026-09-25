@@ -132,7 +132,7 @@ provider gate on the `0.79.0` map.
 
 The Contract 061 placement projection names `consumer-supplied-http` when an
 HTTP entry is bound. Emission is not honouring: `client_mcp_servers` stays No
-until a live gate proves a remote tool call.
+as a producer gap naming g06.033 until a live gate proves a remote tool call.
 
 Local subscription access means the approved ACP process inherits the selected
 environment and uses authentication already held by the local Claude

@@ -6,6 +6,18 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- raise Claude Agent ACP through official npm/GitHub/ACP-registry stable
+  `0.81.2` as a compatible extension of
+  `claude-agent.acp.initialize-meta-extensions-v7` (`0.66.0..=0.81.2`).
+  Research 352 freezes published hops `0.80.0`, `0.81.0`, `0.81.1`, and
+  `0.81.2` after the `0.79.0` ceiling. The ACP SDK pin moves `1.4.0` to
+  `1.5.0` with byte-identical `dist/acp.js` and `protocolVersion` `1`.
+  Capability-gated `notice`, usage-model `_meta`, informational chunk
+  `_meta`, managed-policy startup, and the Agent SDK pin stay unmapped.
+  Baseline, claim id, exclusion `0.58.0`, and `AllowUnverified` stay.
+  Synthetic later-stable `0.81.3` stays visibly unverified. Claude Code
+  headless and response-only stay at their current ceilings. No provider
+  operation or host mutation occurred.
 - raise the Ollama attached-runtime qualified ceiling through official
   `0.34.4`: Research 350 freezes both published hops after `0.34.2` with
   tag/commit/tree/tarball and selected-file hashes, and reproduces Research

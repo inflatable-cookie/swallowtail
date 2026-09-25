@@ -78,6 +78,7 @@ maintained in this section.
 - [035 Gemini CLI ACP Consumer HTTP MCP Wiring](./035-gemini-cli-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `gemini-cli.acp` per Research 351
 - [036 Goose ACP Consumer HTTP MCP Wiring](./036-goose-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `goose.acp` per Research 351
 - [037 Kiro ACP Consumer HTTP MCP Wiring](./037-kiro-acp-consumer-http-mcp-wiring.md) — ready; wires the consumer HTTP MCP entry into `kiro.acp` per Research 351
+- [038 Claude Agent ACP 0.81.2 Useful Newer](./038-claude-agent-acp-0-81-2-useful-newer.md) — standing-lane qualification; compatible extension of `claude-agent.acp` through official `0.81.2`; Research 352
 <!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:e28c423feba980031f2ef8f338df64c9e3e2aff707492c9f1e7c2b54b4d263a3 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |

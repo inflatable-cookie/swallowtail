@@ -37,7 +37,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_sha(segment, "tag_commit", 40);
         assert_sha(segment, "source_sha256", 64);
     }
-    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.79.0");
+    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.81.2");
     assert_eq!(range["current_external_releases"][2]["version"], "0.64.0");
     assert_eq!(
         range["current_external_releases"][2]["classification"],
@@ -200,7 +200,16 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
             .as_array()
             .expect("releases")
             .len(),
-        15
+        19
+    );
+    assert_eq!(range["current_external_releases"][18]["version"], "0.81.2");
+    assert_eq!(
+        range["current_external_releases"][18]["classification"],
+        "qualified"
+    );
+    assert_eq!(
+        range["current_external_releases"][18]["profile"],
+        "0.81.2-guarantee"
     );
 }
 

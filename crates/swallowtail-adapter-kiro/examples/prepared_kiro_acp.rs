@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
 use swallowtail_adapter_kiro::{
-    KiroPreparationInput, KiroPreparationProbe, KiroPreparedIntegration, KiroPreparedSession,
-    KiroSessionProfileInput, prepare_kiro_acp,
+    KiroAcpRemoteMcpPlacement, KiroPreparationInput, KiroPreparationProbe, KiroPreparedIntegration,
+    KiroPreparedSession, KiroSessionProfileInput, prepare_kiro_acp,
 };
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, InteractiveSessionHandle, OperationContent, PreparationFailure,
@@ -49,6 +49,13 @@ fn prepare_attachment_recovery(
     interrupted_turn_id: RuntimeTurnId,
 ) -> PreparedWorkingStateRestoration {
     prepared.prepare_working_state_restoration(interrupted_turn_id)
+}
+
+fn bind_http_mcp(
+    input: KiroSessionProfileInput,
+    server: KiroAcpRemoteMcpPlacement,
+) -> KiroSessionProfileInput {
+    input.with_http_mcp_placement(server)
 }
 
 fn _session_handle(_: Box<dyn InteractiveSessionHandle>) {}

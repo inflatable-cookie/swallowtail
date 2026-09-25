@@ -2820,6 +2820,7 @@ dependencies = [
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
+ "url",
 ]
 
 [[package]]
@@ -2999,6 +3000,7 @@ dependencies = [
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
+ "url",
 ]
 
 [[package]]

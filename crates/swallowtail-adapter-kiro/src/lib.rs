@@ -16,12 +16,17 @@ mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod failure;
+mod mcp;
 mod prepared;
 mod selection;
 mod turn;
 
 pub use access::{KIRO_LOCAL_ACCOUNT_AUDIENCE, kiro_local_account_access_profile};
 pub use driver::{KiroAcpDriver, kiro_acp_descriptor};
+pub use mcp::{
+    KIRO_ACP_HTTP_MCP_PLACEMENT, KIRO_ACP_MCP_SERVER_NAME, KiroAcpEncodedMcpServers,
+    KiroAcpHttpAdvertisement, KiroAcpMcpGate, KiroAcpRemoteMcpPlacement,
+};
 pub use prepared::{
     KiroPreparationInput, KiroPreparationProbe, KiroPreparedIntegration, KiroPreparedSession,
     KiroSessionProfileInput, prepare_kiro_acp,

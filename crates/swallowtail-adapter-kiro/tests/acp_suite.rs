@@ -10,7 +10,8 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{FixtureHost, Scenario, close_session, selection, selection_with_access};
 use swallowtail_adapter_kiro::{
-    KIRO_CLI_EXECUTABLE_NAME, KIRO_CLI_RELEASE_AXIS, KIRO_CLI_RELEASE_VERSION, KiroAcpDriver,
+    KIRO_ACP_MCP_SERVER_NAME, KIRO_CLI_EXECUTABLE_NAME, KIRO_CLI_RELEASE_AXIS,
+    KIRO_CLI_RELEASE_VERSION, KiroAcpDriver, KiroAcpMcpGate, KiroAcpRemoteMcpPlacement,
 };
 use swallowtail_core::{
     DiscoveryStatus, ExecutionHostId, InterfaceVersionAxis, ProviderRequestHandling, ResourceAccess,
@@ -446,6 +447,130 @@ fn installed_executable_probe_accepts_exact_release_stdout() {
     assert_eq!(
         discovery.observed_process().expect("probe ran").arguments,
         ["--version"]
+    );
+}
+
+#[test]
+fn http_mcp_is_admitted_on_session_new_and_keeps_values_verbatim() {
+    let host_id = ExecutionHostId::new("fixture.host.http-mcp").expect("valid host id");
+    let selected = selection(host_id.clone());
+    let host = FixtureHost::new(Scenario::Success);
+    let services = host.services(host_id);
+    const CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-037-redaction-canary";
+    const CANARY_HEADER: &str = "Bearer g06-037-redaction-canary";
+    let admitted = KiroAcpRemoteMcpPlacement::new(
+        KIRO_ACP_MCP_SERVER_NAME,
+        CANARY_URL,
+        vec![("Authorization".to_owned(), CANARY_HEADER.to_owned())],
+    );
+    let encoded = admitted
+        .to_production_mcp_servers()
+        .expect("route-owned http placement is admitted");
+    assert!(!encoded.is_honoured());
+    assert_eq!(encoded.gates().len(), 3);
+    assert!(!format!("{encoded:?}").contains(CANARY_URL));
+    assert!(!format!("{encoded:?}").contains(CANARY_HEADER));
+    let driver = KiroAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("kiro.fixture.isolated")
+            .expect("valid environment"),
+    )
+    .with_http_mcp_placement(admitted)
+    .expect("route-owned http placement is admitted");
+    let session = block_on(driver.open_session(
+        selected.plan,
+        OpenSessionRequest::new(
+            RequestId::new("kiro-http-mcp").expect("valid request"),
+            selected.resource,
+            None,
+            SessionPlanAgreement::explicit(
+                swallowtail_core::SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+            ),
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["type"] == "http"
+            && message["params"]["mcpServers"][0]["name"] == KIRO_ACP_MCP_SERVER_NAME
+            && message["params"]["mcpServers"][0]["url"] == CANARY_URL
+            && message["params"]["mcpServers"][0]["headers"][0]["value"] == CANARY_HEADER
+    }));
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn omission_keeps_session_new_mcp_servers_empty() {
+    let (host, session, services) = open(Scenario::Success, "omission-mcp");
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"] == serde_json::json!([])
+    }));
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn unadvertised_initialize_still_emits_and_never_claims_acceptance() {
+    // Research 351 leaves the initialize advertisement unproven and the bundled
+    // schema default `false`. The route still emits the consumer entry and
+    // surfaces the gate through the typed encoder outcome instead of claiming
+    // acceptance or silently dropping the declaration.
+    let host_id = ExecutionHostId::new("fixture.host.mcp-unadvertised").expect("valid host id");
+    let selected = selection(host_id.clone());
+    let host = FixtureHost::new(Scenario::McpNotAdvertised);
+    let services = host.services(host_id);
+    const CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-037-redaction-canary";
+    let admitted = KiroAcpRemoteMcpPlacement::new(
+        KIRO_ACP_MCP_SERVER_NAME,
+        CANARY_URL,
+        Vec::<(String, String)>::new(),
+    );
+    let encoded = admitted
+        .to_production_mcp_servers()
+        .expect("route-owned http placement is admitted");
+    assert!(!encoded.is_honoured());
+    assert!(
+        encoded
+            .gates()
+            .contains(&KiroAcpMcpGate::InitializeAdvertisementUnproven)
+    );
+    let driver = KiroAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("kiro.fixture.isolated")
+            .expect("valid environment"),
+    )
+    .with_http_mcp_placement(admitted)
+    .expect("route-owned http placement is admitted");
+    let session = block_on(driver.open_session(
+        selected.plan,
+        OpenSessionRequest::new(
+            RequestId::new("kiro-mcp-unadvertised").expect("valid request"),
+            selected.resource,
+            None,
+            SessionPlanAgreement::explicit(
+                swallowtail_core::SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+            ),
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["type"] == "http"
+            && message["params"]["mcpServers"][0]["url"] == CANARY_URL
+    }));
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
     );
 }
 

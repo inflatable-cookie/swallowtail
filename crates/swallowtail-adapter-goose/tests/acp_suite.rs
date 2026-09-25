@@ -3,7 +3,9 @@ mod support;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{FixtureHost, Scenario, close_session, selection, selection_with_access};
-use swallowtail_adapter_goose::GooseAcpDriver;
+use swallowtail_adapter_goose::{
+    GOOSE_ACP_MCP_SERVER_NAME, GooseAcpDriver, GooseAcpRemoteMcpPlacement,
+};
 use swallowtail_core::{ExecutionHostId, ProviderRequestHandling, ResourceAccess};
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, InteractiveSessionDriver, MonotonicInstant, OpenSessionRequest,
@@ -92,6 +94,10 @@ fn success_turn_uses_acp_only_and_joins_cleanup() {
     );
     assert_eq!(observed.environment_count, 1);
     assert_eq!(observed.working_resource, Some(selected.resource));
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"] == serde_json::json!([])
+    }));
     assert!(!host.writes().iter().any(|message| {
         matches!(
             message.get("method").and_then(serde_json::Value::as_str),
@@ -388,6 +394,81 @@ fn session_deadline_is_rejected_before_spawn() {
     );
     assert!(!host.process_started());
     assert_eq!(host.releases(), 0);
+}
+
+#[test]
+fn http_mcp_is_admitted_on_session_new_and_keeps_values_verbatim() {
+    let host_id = ExecutionHostId::new("fixture.host.http-mcp").expect("valid host id");
+    let selected = selection(host_id.clone());
+    let host = FixtureHost::new(Scenario::Success);
+    let services = host.services(host_id);
+    const CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-036-redaction-canary";
+    const CANARY_HEADER: &str = "Bearer g06-036-redaction-canary";
+    let admitted = GooseAcpRemoteMcpPlacement::new(
+        GOOSE_ACP_MCP_SERVER_NAME,
+        CANARY_URL,
+        vec![("Authorization".to_owned(), CANARY_HEADER.to_owned())],
+    );
+    let driver = GooseAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("goose.fixture.isolated")
+            .expect("valid environment"),
+    )
+    .with_http_mcp_placement(admitted)
+    .expect("route-owned http placement is admitted");
+    let session = block_on(driver.open_session(
+        selected.plan,
+        OpenSessionRequest::new(
+            RequestId::new("goose-http-mcp").expect("valid request"),
+            selected.resource,
+            None,
+            SessionPlanAgreement::explicit(
+                swallowtail_core::SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+            ),
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["type"] == "http"
+            && message["params"]["mcpServers"][0]["name"] == GOOSE_ACP_MCP_SERVER_NAME
+            && message["params"]["mcpServers"][0]["url"] == CANARY_URL
+            && message["params"]["mcpServers"][0]["headers"][0]["value"] == CANARY_HEADER
+    }));
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn sse_mcp_is_refused_before_session_new() {
+    const CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-036-redaction-canary";
+    let remote = GooseAcpRemoteMcpPlacement::sse(
+        GOOSE_ACP_MCP_SERVER_NAME,
+        CANARY_URL,
+        vec![(
+            "Authorization".to_owned(),
+            "Bearer g06-036-redaction-canary".to_owned(),
+        )],
+    );
+    let error = match GooseAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("goose.fixture.isolated")
+            .expect("valid environment"),
+    )
+    .with_http_mcp_placement(remote)
+    {
+        Err(error) => error,
+        Ok(_) => panic!("sse must refuse"),
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.goose.acp.mcp_sse_unsupported"
+    );
+    assert!(!error.diagnostic().message().contains(CANARY_URL));
+    assert!(!format!("{error:?}").contains("g06-036-redaction-canary"));
 }
 
 fn open(

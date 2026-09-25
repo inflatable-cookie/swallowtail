@@ -51,6 +51,13 @@ fn prepare_attachment_recovery(
     prepared.prepare_working_state_restoration(interrupted_turn_id)
 }
 
+fn bind_http_mcp(
+    input: GooseSessionProfileInput,
+    server: swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement,
+) -> GooseSessionProfileInput {
+    input.with_http_mcp_placement(server)
+}
+
 fn _session_handle(_: Box<dyn InteractiveSessionHandle>) {}
 
 fn main() {}

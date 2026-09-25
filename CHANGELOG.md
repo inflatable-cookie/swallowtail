@@ -107,6 +107,20 @@ annotated Git tags from the canonical repository.
   fingerprints. The Contract 061 placement projection names
   `consumer-supplied-http`. Feature matrix MCP cells stay No: emission is
   proven, live honouring of a remote tool call is not. Research 337, g06.019.
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `kiro.acp` production `session/new`. One `KiroAcpRemoteMcpPlacement` under
+  the route-owned name `swallowtail-kiro-acp` emits ACP `type: "http"` with
+  the consumer URL and headers verbatim; the provider's `stdio`, `sse`, and
+  `acp` forms stay out. `KiroAcpEncodedMcpServers` redacts URL and header
+  values in `Debug`, keeps the wire JSON crate-private, and is never an
+  acceptance claim: `is_honoured()` is always `false` and `gates()` names the
+  initialize-advertisement-unproven, governance-drop, and
+  agent-config-override gates Research 351 leaves open.
+  `KiroAcpHttpAdvertisement::from_initialize` classifies the advertisement
+  without blocking emission. The
+  Contract 061 placement projection names `consumer-supplied-http`. Feature
+  matrix MCP cells stay No: emission is proven, live honouring of a remote
+  tool call is not. Research 351, g06.037.
 
 ### Changed
 - accept the exact `command-code.headless` `1.65.0` live surface on

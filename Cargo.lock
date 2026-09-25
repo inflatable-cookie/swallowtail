@@ -2756,6 +2756,7 @@ dependencies = [
  "swallowtail-testkit",
  "swallowtail-transport-acp-remote",
  "tokio",
+ "url",
 ]
 
 [[package]]
@@ -2820,6 +2821,7 @@ dependencies = [
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
+ "url",
 ]
 
 [[package]]
@@ -2926,6 +2928,7 @@ dependencies = [
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
+ "url",
 ]
 
 [[package]]
@@ -2998,6 +3001,7 @@ dependencies = [
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
+ "url",
 ]
 
 [[package]]

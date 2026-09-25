@@ -1,19 +1,29 @@
 //! Contract 061 contribution from the prepared Copilot CLI ACP session.
 
 use crate::CopilotCliPreparedSession;
+use crate::mcp::{
+    COPILOT_CLI_ACP_HTTP_MCP_PLACEMENT, COPILOT_CLI_ACP_MCP_SERVER_NAME,
+    CopilotCliAcpRemoteMcpTransport,
+};
 use swallowtail_core::{
     AccessStatus, Capability, CredentialState, EndpointAuthorization, EntitlementState,
     PreflightPlan, RuntimeReadiness,
 };
 use swallowtail_runtime::{
     ConsumerRouteActorPosture, ConsumerRouteApplicability, ConsumerRouteAvailability,
+    ConsumerRouteControlValue, ConsumerRouteEnumerableValue, ConsumerRouteEnumeratedValues,
     ConsumerRouteEvidenceStrength, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
-    ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure,
-    ConsumerRouteProjectionRow, ConsumerRouteProjectionSourceId,
+    ConsumerRouteMutationAuthority, ConsumerRouteNamespacedExtension,
+    ConsumerRouteOmissionSemantics, ConsumerRouteProjectionContribution,
+    ConsumerRouteProjectionFailure, ConsumerRouteProjectionRow, ConsumerRouteProjectionSourceId,
     ConsumerRouteProjectionSourceIdentity, ConsumerRouteProjectionSourceKind,
     ConsumerRouteRowIdentity, ConsumerRouteSourceClass, ConsumerRouteStateSupport,
-    ConsumerRouteSupportPosture,
+    ConsumerRouteSupportPosture, ConsumerRouteValueDomain, ConsumerRouteValueKind,
 };
+
+const MCP_PLACEMENT_SEMANTIC_ID: &str = "mcp.placement";
+const MCP_PLACEMENT_VERSION: &str = "acp-v1";
+const ROUTE_ID: &str = "copilot-cli.acp";
 
 impl CopilotCliPreparedSession {
     /// Emits only the interactive-session truth this prepared session proves.
@@ -23,6 +33,7 @@ impl CopilotCliPreparedSession {
     ) -> Result<ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure> {
         SessionProjection::new(self.plan(), source_id)
             .with_prepared_capabilities()
+            .with_mcp_placement(self)?
             .build()
     }
 }
@@ -104,6 +115,44 @@ impl<'a> SessionProjection<'a> {
             }
         }
         self
+    }
+
+    fn with_mcp_placement(
+        mut self,
+        session: &CopilotCliPreparedSession,
+    ) -> Result<Self, ConsumerRouteProjectionFailure> {
+        let Some(remote) = session.http_mcp() else {
+            return Ok(self);
+        };
+        if remote.transport() != CopilotCliAcpRemoteMcpTransport::Http {
+            return Ok(self);
+        }
+        let identity = ConsumerRouteRowIdentity::Feature(ConsumerRouteFeatureId::Namespaced(
+            ConsumerRouteNamespacedExtension::new(
+                ROUTE_ID,
+                MCP_PLACEMENT_VERSION,
+                MCP_PLACEMENT_SEMANTIC_ID,
+            )?,
+        ));
+        let values = ConsumerRouteEnumeratedValues::new([
+            ConsumerRouteEnumerableValue::new(COPILOT_CLI_ACP_HTTP_MCP_PLACEMENT)?,
+            ConsumerRouteEnumerableValue::new(COPILOT_CLI_ACP_MCP_SERVER_NAME)?,
+        ])?;
+        self.selection.push(
+            self.row(
+                identity,
+                ConsumerRouteSourceClass::AdapterPreparedInput,
+                ConsumerRouteLifecycle::SelectionSummary,
+            )
+            .with_actor_posture(ConsumerRouteActorPosture::Informational)
+            .with_mutation_authority(ConsumerRouteMutationAuthority::Absent)
+            .with_control_value(ConsumerRouteControlValue::new(
+                ConsumerRouteValueKind::BoundedEnumeration,
+                ConsumerRouteValueDomain::Enumerated(values),
+                ConsumerRouteOmissionSemantics::NotSelectable,
+            )),
+        );
+        Ok(self)
     }
 
     fn build(self) -> Result<ConsumerRouteProjectionContribution, ConsumerRouteProjectionFailure> {

@@ -71,9 +71,10 @@ impl ClaudeAgentAcpDriver {
                 .into());
             }
             let model = plan.model_id().expect("validated model").as_str();
+            let mcp_servers = self.production_mcp_servers()?;
             let response = pending
                 .connection
-                .new_session(pending.cwd.clone(), model)
+                .new_session(pending.cwd.clone(), model, mcp_servers)
                 .await?;
             let provider_id = crate::driver::config::parse_session_id(&response)?;
             pending.connection.set_session_id(provider_id.clone())?;

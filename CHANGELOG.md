@@ -60,6 +60,42 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Added
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `claude-agent.acp` production `session/new`. A session declares at most one
+  HTTP entry under `swallowtail-claude-agent-acp`. Encoding emits ACP
+  `type: "http"` with the consumer URL and headers verbatim; `sse` stays
+  modelled and unemitted. The public encoder returns
+  `ClaudeAgentAcpEncodedMcpServers`, whose `Debug` form redacts URL and header
+  values; the wire JSON stays crate-private. URL and header values stay out of
+  failures, diagnostics, activity, receipts, `Debug`, and plan fingerprints.
+  The Contract 061 placement projection names `consumer-supplied-http`.
+  Feature matrix MCP cells stay No as a producer gap naming g06.033:
+  emission is proven, live honouring of a remote tool call is not.
+  Research 351, g06.033.
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `goose.acp` production `session/new`. A session declares at most one HTTP
+  entry under `swallowtail-goose-acp`. Encoding emits ACP `McpServer::Http`
+  with the consumer URL and headers verbatim; SSE is not offered because the
+  provider rejects it. The public encoder returns `GooseAcpEncodedMcpServers`,
+  whose `Debug` form redacts URL and header values; the wire JSON stays
+  crate-private. URL and header values stay out of failures, diagnostics,
+  activity, receipts, `Debug`, and plan fingerprints. The Contract 061
+  placement projection names `consumer-supplied-http`. Feature matrix MCP
+  cells stay No: emission is proven, live honouring of a remote tool call is
+  not. Research 351, g06.036.
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `copilot-cli.acp` production `session/new`. A session declares at most one
+  consumer HTTP entry under `swallowtail-copilot-cli-acp`. HTTP encoding
+  emits ACP `type: "http"` with the consumer URL and headers verbatim; `sse`
+  stays modelled and unemitted. Stdio client entries are not offered: the
+  provider rejects them, and a colliding name is a typed refusal against the
+  route-owned reserved name. The public encoder returns
+  `CopilotCliAcpEncodedMcpServers`, whose `Debug` form redacts URL and header
+  values; the wire JSON stays crate-private. URL and header values stay out
+  of failures, diagnostics, activity, receipts, `Debug`, and plan
+  fingerprints. The Contract 061 placement projection names
+  `consumer-supplied-http`. Feature matrix MCP cells stay No: emission is
+  proven, live honouring of a remote tool call is not. Research 351, g06.034.
 - prove `opencode.acp` honours a consumer-supplied streamable-HTTP MCP entry
   on installed exact `1.18.18`. One live attempt accepted: connect,
   `tools/list`, one `tools/call`, completed turn, clean cleanup.
@@ -95,6 +131,20 @@ annotated Git tags from the canonical repository.
   `consumer-supplied-http`. Feature matrix MCP cells stay No: emission is
   proven, live honouring of a remote tool call is not. Research 337, g06.019.
 - wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `kiro.acp` production `session/new`. One `KiroAcpRemoteMcpPlacement` under
+  the route-owned name `swallowtail-kiro-acp` emits ACP `type: "http"` with
+  the consumer URL and headers verbatim; the provider's `stdio`, `sse`, and
+  `acp` forms stay out. `KiroAcpEncodedMcpServers` redacts URL and header
+  values in `Debug`, keeps the wire JSON crate-private, and is never an
+  acceptance claim: `is_honoured()` is always `false` and `gates()` names the
+  initialize-advertisement-unproven, governance-drop, and
+  agent-config-override gates Research 351 leaves open.
+  `KiroAcpHttpAdvertisement::from_initialize` classifies the advertisement
+  without blocking emission. The
+  Contract 061 placement projection names `consumer-supplied-http`. Feature
+  matrix MCP cells stay No: emission is proven, live honouring of a remote
+  tool call is not. Research 351, g06.037.
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
   `gemini-cli.acp` production `session/new` at the route's current point
   `0.59.0`. A session declares at most one consumer entry under the
   route-owned name `swallowtail-gemini-acp`; encoding emits ACP
@@ -104,10 +154,7 @@ annotated Git tags from the canonical repository.
   URL and header values; the wire JSON stays crate-private. Values pass
   verbatim and stay out of failures, diagnostics, activity, receipts,
   `Debug`, and plan fingerprints; omission keeps `mcpServers`
-  byte-identically empty. The provider honours the entry only after its
-  authentication completes, so an unauthenticated open fails typed as
-  `swallowtail.gemini.acp.auth_required` and never drops the entry. The
-  prepared facade admits the placement through
+  byte-identically empty. The prepared facade admits the placement through
   `GeminiSessionProfileInput::with_http_mcp_placement`, carries it onto
   working-state restoration, and publishes it through Contract 061's
   projection as one namespaced `mcp.placement` row naming

@@ -123,6 +123,7 @@ impl AcpConnection {
         &self,
         cwd: String,
         model: &str,
+        mcp_servers: Value,
     ) -> Result<Value, RuntimeFailure> {
         let tools = match self.resource.access() {
             ResourceAccess::Read => json!(["Read", "Glob", "Grep"]),
@@ -132,7 +133,7 @@ impl AcpConnection {
             "session/new",
             json!({
                 "cwd": cwd,
-                "mcpServers": [],
+                "mcpServers": mcp_servers,
                 "_meta": {
                     "claudeCode": {
                         "options": {

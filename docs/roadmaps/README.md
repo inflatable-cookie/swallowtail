@@ -15,8 +15,8 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g06.033 Claude Agent ACP Consumer HTTP MCP Wiring](./g06/033-claude-agent-acp-consumer-http-mcp-wiring.md)
-is the lead ready lane; the [g06 manifest](./g06/README.md) holds the other
+[g06.035 Gemini CLI ACP Consumer HTTP MCP Wiring](./g06/035-gemini-cli-acp-consumer-http-mcp-wiring.md)
+is the lead ready lane; the [g06 manifest](./g06/README.md) holds any other
 ready lanes. g06.001–g06.005 stay planned and gated. Do not infer release,
 tag, publication, live-provider, or consumer authority.
 
@@ -63,7 +63,7 @@ whose grammar [status-grammar.md](./status-grammar.md) defines.
 Generations normally collect 30-50 numbered tasks (`gNN.NNN` files directly
 under `gNN/`). There is no nested card level. A phase boundary
 does not imply a generation rollover.
-<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:9c672f2c3cba0b48b6ea818c52b0971c8f5706170deff4a47648cf039beb3a1d -->
+<!-- northstar:lifecycle:begin schema=northstar.lifecycle.projection.v2 digest=sha256:32d23666553b3d3de50dae5e3f7d53259cbacebb8c6ee436ad57ff17762c59d9 -->
 | Generation | Disposition | Runway state |
 | --- | --- | --- |
 | g06 | open | planning_required |
@@ -96,4 +96,8 @@ does not imply a generation rollover.
 | g06.030 | complete | none | 8 | sha256:625cb08b75b2b9bc2d32bc89e1ce7fc99257d9c03963d2966556fcd647a503b1 |
 | g06.031 | complete | none | 8 | sha256:d0a53707bb5870460364d9ed4f046e93851c58bff99d87459f2a3b95793c02d7 |
 | g06.032 | complete | none | 8 | sha256:37443f0a7c8676227d3404235eeade79c157a974c3368a14ea13abac1082de52 |
+| g06.033 | complete | none | 8 | sha256:5ea525a9f558ea15ae69703bfa66200424c2b92636f943d739246ca64bea9a1c |
+| g06.034 | complete | none | 8 | sha256:15b35c96d61534018adad6034e50a19a6fe1f72ec240dee91108950e3c3e8e25 |
+| g06.036 | complete | none | 8 | sha256:c0d54fac5920ccd8498f70a5a4407c9e7b8b3863b1c9691101b840dcb3f660f4 |
+| g06.037 | complete | none | 8 | sha256:5e01e333e2ae3bc82e7b405e817f1096c5797f4961716e56741b9df85a8f43b3 |
 <!-- northstar:lifecycle:end -->

@@ -1,13 +1,31 @@
 pub mod swallowtail_adapter_goose
+pub enum swallowtail_adapter_goose::GooseAcpRemoteMcpTransport
+pub swallowtail_adapter_goose::GooseAcpRemoteMcpTransport::Http
+pub swallowtail_adapter_goose::GooseAcpRemoteMcpTransport::Sse
 pub struct swallowtail_adapter_goose::GooseAcpDriver
 impl swallowtail_adapter_goose::GooseAcpDriver
 pub const fn swallowtail_adapter_goose::GooseAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+pub fn swallowtail_adapter_goose::GooseAcpDriver::with_http_mcp_placement(self, swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_goose::GooseAcpDriver
 pub fn swallowtail_adapter_goose::GooseAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_goose::GooseAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_goose::GooseAcpDriver
 pub fn swallowtail_adapter_goose::GooseAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_goose::GooseAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_goose::GooseAcpEncodedMcpServers
+impl core::fmt::Debug for swallowtail_adapter_goose::GooseAcpEncodedMcpServers
+pub fn swallowtail_adapter_goose::GooseAcpEncodedMcpServers::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement
+impl swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement
+pub fn swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement::headers(&self) -> &[(alloc::string::String, alloc::string::String)]
+pub fn swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement::name(&self) -> &str
+pub fn swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement::new(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
+pub fn swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement::sse(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
+pub fn swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement::to_production_mcp_servers(&self) -> core::result::Result<swallowtail_adapter_goose::GooseAcpEncodedMcpServers, swallowtail_runtime::failure::RuntimeFailure>
+pub const fn swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement::transport(&self) -> swallowtail_adapter_goose::GooseAcpRemoteMcpTransport
+pub fn swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement::url(&self) -> &str
+impl core::fmt::Debug for swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement
+pub fn swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_adapter_goose::GoosePreparationInput
 impl swallowtail_adapter_goose::GoosePreparationInput
 pub const fn swallowtail_adapter_goose::GoosePreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
@@ -39,6 +57,9 @@ pub const fn swallowtail_adapter_goose::GoosePreparedSession::request(&self) -> 
 pub struct swallowtail_adapter_goose::GooseSessionProfileInput
 impl swallowtail_adapter_goose::GooseSessionProfileInput
 pub const fn swallowtail_adapter_goose::GooseSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub fn swallowtail_adapter_goose::GooseSessionProfileInput::with_http_mcp_placement(self, swallowtail_adapter_goose::GooseAcpRemoteMcpPlacement) -> Self
+pub const swallowtail_adapter_goose::GOOSE_ACP_HTTP_MCP_PLACEMENT: &str
+pub const swallowtail_adapter_goose::GOOSE_ACP_MCP_SERVER_NAME: &str
 pub const swallowtail_adapter_goose::GOOSE_EXECUTABLE_NAME: &str
 pub const swallowtail_adapter_goose::GOOSE_LOCAL_ACCOUNT_AUDIENCE: &str
 pub const swallowtail_adapter_goose::GOOSE_RELEASE_AXIS: &str

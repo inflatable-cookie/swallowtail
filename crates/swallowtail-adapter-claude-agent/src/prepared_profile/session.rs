@@ -5,7 +5,9 @@ use super::plan::{
 use super::{ClaudeAgentPreparedSessionFuture, ClaudeAgentPreparedSessionLoadFuture};
 use crate::driver::{ClaudeAgentOpenObservation, ClaudeAgentOpenRejection};
 use crate::prepared::instance::{REASONING_MODES, session_capabilities};
-use crate::{ClaudeAgentAcpDriver, ClaudeAgentPreparedIntegration};
+use crate::{
+    ClaudeAgentAcpDriver, ClaudeAgentAcpRemoteMcpPlacement, ClaudeAgentPreparedIntegration,
+};
 use swallowtail_core::{
     Capability, CapabilityProfile, CapabilityRequirement, ModelRoute, ProviderSessionBindingOrigin,
 };
@@ -32,6 +34,7 @@ pub struct ClaudeAgentPreparedSession {
     evidence: ClaudeAgentPreparedEvidence,
     request: OpenSessionRequest,
     management_instance: swallowtail_core::ConfiguredInstance,
+    http_mcp: Option<ClaudeAgentAcpRemoteMcpPlacement>,
 }
 
 impl ClaudeAgentPreparedSession {
@@ -56,7 +59,15 @@ impl ClaudeAgentPreparedSession {
     /// Creates the low-level ACP driver bound to this session.
     #[must_use]
     pub fn low_level_driver(&self) -> ClaudeAgentAcpDriver {
-        self.evidence.low_level_driver()
+        self.evidence
+            .low_level_driver()
+            .with_prepared_http_mcp(self.http_mcp.clone())
+    }
+
+    /// Returns the prepared HTTP MCP placement when the session bound one.
+    #[must_use]
+    pub(crate) fn http_mcp(&self) -> Option<&ClaudeAgentAcpRemoteMcpPlacement> {
+        self.http_mcp.as_ref()
     }
 
     /// Opens a new provider-owned session with caller-supplied host services.
@@ -74,7 +85,17 @@ impl ClaudeAgentPreparedSession {
         &self,
         services: HostServices,
     ) -> ClaudeAgentPreparedOpenLifecycleFuture {
-        let driver = self.low_level_driver();
+        let driver = match self.http_mcp.clone() {
+            Some(server) => match self
+                .evidence
+                .low_level_driver()
+                .with_http_mcp_placement(server)
+            {
+                Ok(driver) => driver,
+                Err(error) => return Box::pin(async move { Err(error.into()) }),
+            },
+            None => self.evidence.low_level_driver(),
+        };
         let plan = self.plan().clone();
         let request = self.request.clone();
         let management_instance = self.management_instance.clone();
@@ -239,7 +260,7 @@ impl ClaudeAgentPreparedIntegration {
         &self,
         input: ClaudeAgentSessionProfileInput,
     ) -> Result<ClaudeAgentPreparedSession, PreparationFailure> {
-        let (request_id, model, working_resource, options, permission_handling) =
+        let (request_id, model, working_resource, options, permission_handling, http_mcp) =
             input.into_parts();
         let supports_reasoning = crate::selection::version_supports_config_options(
             self.observation().version().version(),
@@ -269,6 +290,7 @@ impl ClaudeAgentPreparedIntegration {
             evidence: ClaudeAgentPreparedEvidence::from_prepared(self, plan, activity_profile)?,
             request,
             management_instance: lifecycle_management_instance(self),
+            http_mcp,
         })
     }
 }

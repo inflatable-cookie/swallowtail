@@ -357,3 +357,83 @@ fn driver(credential: swallowtail_core::CredentialRef) -> ClaudeAgentAcpDriver {
         credential,
     )
 }
+
+#[test]
+fn omission_keeps_session_new_mcp_servers_empty() {
+    let (host, session, services) = open(Scenario::Success, "0.79.0", "http-mcp-omit");
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"] == serde_json::json!([])
+    }));
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn http_mcp_is_admitted_on_session_new_and_keeps_values_verbatim() {
+    let host_id = ExecutionHostId::new("fixture.host.http-mcp").expect("valid host");
+    let selected = selection(host_id.clone(), "0.79.0");
+    let host = FixtureHost::new(Scenario::Success, "0.79.0");
+    let services = host.services(host_id);
+    const CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-033-redaction-canary";
+    const CANARY_HEADER: &str = "Bearer g06-033-redaction-canary";
+    let admitted = swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement::new(
+        swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_MCP_SERVER_NAME,
+        CANARY_URL,
+        vec![("Authorization".to_owned(), CANARY_HEADER.to_owned())],
+    );
+    let driver = driver(selected.credential)
+        .with_http_mcp_placement(admitted)
+        .expect("route-owned http placement is admitted");
+    let session = block_on(driver.open_session(
+        selected.plan,
+        open_request("open-http-mcp", selected.resource),
+        services.clone(),
+    ))
+    .expect("session opens");
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["type"] == "http"
+            && message["params"]["mcpServers"][0]["name"]
+                == swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_MCP_SERVER_NAME
+            && message["params"]["mcpServers"][0]["url"] == CANARY_URL
+            && message["params"]["mcpServers"][0]["headers"][0]["value"] == CANARY_HEADER
+    }));
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn sse_mcp_is_refused_before_session_new() {
+    let selected = selection(
+        ExecutionHostId::new("fixture.host.http-mcp-sse").expect("valid host"),
+        "0.79.0",
+    );
+    let error = match driver(selected.credential).with_http_mcp_placement(
+        swallowtail_adapter_claude_agent::ClaudeAgentAcpRemoteMcpPlacement::sse(
+            swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_MCP_SERVER_NAME,
+            "http://127.0.0.1:9/mcp/g06-033-redaction-canary",
+            vec![(
+                "Authorization".to_owned(),
+                "Bearer g06-033-redaction-canary".to_owned(),
+            )],
+        ),
+    ) {
+        Err(error) => error,
+        Ok(_) => panic!("sse must refuse"),
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.claude_agent.acp.mcp_sse_not_emitted"
+    );
+    assert!(
+        !error
+            .diagnostic()
+            .message()
+            .contains("g06-033-redaction-canary")
+    );
+}

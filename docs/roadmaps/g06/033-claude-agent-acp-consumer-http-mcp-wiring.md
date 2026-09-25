@@ -1,6 +1,5 @@
 # g06.033 Claude Agent ACP Consumer HTTP MCP Wiring
 
-Status: ready; implementation lane
 Owner: Tom
 Created: 2026-09-25
 Depends on: Contract 063 (Consumer-Supplied HTTP MCP Placement); Research 351; g06.019 as the pattern

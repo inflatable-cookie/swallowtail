@@ -73,6 +73,17 @@ annotated Git tags from the canonical repository.
   emission is proven, live honouring of a remote tool call is not.
   Research 351, g06.033.
 - wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `goose.acp` production `session/new`. A session declares at most one HTTP
+  entry under `swallowtail-goose-acp`. Encoding emits ACP `McpServer::Http`
+  with the consumer URL and headers verbatim; SSE is not offered because the
+  provider rejects it. The public encoder returns `GooseAcpEncodedMcpServers`,
+  whose `Debug` form redacts URL and header values; the wire JSON stays
+  crate-private. URL and header values stay out of failures, diagnostics,
+  activity, receipts, `Debug`, and plan fingerprints. The Contract 061
+  placement projection names `consumer-supplied-http`. Feature matrix MCP
+  cells stay No: emission is proven, live honouring of a remote tool call is
+  not. Research 351, g06.036.
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
   `copilot-cli.acp` production `session/new`. A session declares at most one
   consumer HTTP entry under `swallowtail-copilot-cli-acp`. HTTP encoding
   emits ACP `type: "http"` with the consumer URL and headers verbatim; `sse`

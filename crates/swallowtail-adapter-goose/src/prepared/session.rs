@@ -1,4 +1,5 @@
 use super::GoosePreparedIntegration;
+use crate::mcp::GooseAcpRemoteMcpPlacement;
 use swallowtail_core::{
     AccessRequirement, CancellationScope, Capability, CapabilityConstraint, CapabilityProfile,
     CapabilityRequirement, ConfiguredInstance, CredentialState, DriverRole, EndpointAuthorization,
@@ -19,6 +20,7 @@ use swallowtail_runtime::{
 pub struct GooseSessionProfileInput {
     request_id: RequestId,
     working_resource: WorkingResourceRef,
+    http_mcp: Option<GooseAcpRemoteMcpPlacement>,
 }
 
 impl GooseSessionProfileInput {
@@ -28,7 +30,15 @@ impl GooseSessionProfileInput {
         Self {
             request_id,
             working_resource,
+            http_mcp: None,
         }
+    }
+
+    /// Binds one admitted streamable-HTTP MCP declaration to this session.
+    #[must_use]
+    pub fn with_http_mcp_placement(mut self, server: GooseAcpRemoteMcpPlacement) -> Self {
+        self.http_mcp = Some(server);
+        self
     }
 }
 
@@ -38,6 +48,7 @@ pub struct GoosePreparedSession {
     evidence: PreparedOperationEvidence,
     request: OpenSessionRequest,
     environment: swallowtail_runtime::EnvironmentRef,
+    http_mcp: Option<GooseAcpRemoteMcpPlacement>,
 }
 
 impl GoosePreparedIntegration {
@@ -94,6 +105,7 @@ impl GoosePreparedIntegration {
             )?,
             request,
             environment: self.environment().clone(),
+            http_mcp: input.http_mcp,
         })
     }
 }
@@ -117,12 +129,24 @@ impl GoosePreparedSession {
         &self.request
     }
 
+    /// Returns the prepared HTTP MCP placement when the session bound one.
+    #[must_use]
+    pub(crate) fn http_mcp(&self) -> Option<&GooseAcpRemoteMcpPlacement> {
+        self.http_mcp.as_ref()
+    }
+
     /// Opens the prepared ACP session: initialize plus `session/new`.
     pub fn open_session(
         &self,
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        let driver = crate::GooseAcpDriver::new(self.environment.clone());
+        let mut driver = crate::GooseAcpDriver::new(self.environment.clone());
+        if let Some(server) = self.http_mcp.clone() {
+            driver = match driver.with_http_mcp_placement(server) {
+                Ok(driver) => driver,
+                Err(error) => return Box::pin(async move { Err(error) }),
+            };
+        }
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.open_session(plan, request, services).await })
@@ -136,7 +160,8 @@ impl GoosePreparedSession {
     ) -> PreparedWorkingStateRestoration {
         PreparedWorkingStateRestoration::fresh_session_replacement(
             interrupted_turn_id,
-            crate::GooseAcpDriver::new(self.environment.clone()),
+            crate::GooseAcpDriver::new(self.environment.clone())
+                .with_prepared_http_mcp(self.http_mcp.clone()),
             self.plan().clone(),
             self.request.clone(),
         )

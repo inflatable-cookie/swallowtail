@@ -10,9 +10,10 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{FixtureHost, Scenario, close_session};
 use swallowtail_adapter_goose::{
-    GOOSE_EXECUTABLE_NAME, GOOSE_LOCAL_ACCOUNT_AUDIENCE, GOOSE_RELEASE_AXIS, GOOSE_RELEASE_VERSION,
-    GoosePreparationInput, GoosePreparationProbe, GooseSessionProfileInput,
-    goose_local_config_access_profile, prepare_goose_acp,
+    GOOSE_ACP_HTTP_MCP_PLACEMENT, GOOSE_ACP_MCP_SERVER_NAME, GOOSE_EXECUTABLE_NAME,
+    GOOSE_LOCAL_ACCOUNT_AUDIENCE, GOOSE_RELEASE_AXIS, GOOSE_RELEASE_VERSION,
+    GooseAcpRemoteMcpPlacement, GoosePreparationInput, GoosePreparationProbe,
+    GooseSessionProfileInput, goose_local_config_access_profile, prepare_goose_acp,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
@@ -24,6 +25,7 @@ use swallowtail_runtime::{
     CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
     InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
     RequestId, RuntimeTurnId, ScopeId, TerminalStatus, TurnRequest, WorkingResourceRef,
+    WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
@@ -136,6 +138,146 @@ fn prepared_session_names_goose_acp_and_release_then_drains_one_prompt() {
         CleanupOutcome::Clean
     );
     assert_eq!(operation.releases(), 1);
+}
+
+const HTTP_CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-036-redaction-canary";
+const HTTP_CANARY_HEADER: &str = "Bearer g06-036-redaction-canary";
+
+fn http_placement() -> GooseAcpRemoteMcpPlacement {
+    GooseAcpRemoteMcpPlacement::new(
+        GOOSE_ACP_MCP_SERVER_NAME,
+        HTTP_CANARY_URL,
+        vec![("Authorization".to_owned(), HTTP_CANARY_HEADER.to_owned())],
+    )
+}
+
+fn assert_http_secrets_redacted(value: &impl std::fmt::Debug) {
+    let rendered = format!("{value:?}");
+    assert!(
+        !rendered.contains(HTTP_CANARY_URL),
+        "debug leaked the URL: {rendered}"
+    );
+    assert!(
+        !rendered.contains(HTTP_CANARY_HEADER),
+        "debug leaked a header value: {rendered}"
+    );
+}
+
+#[test]
+fn prepared_session_can_bind_the_admitted_http_mcp_placement() {
+    let host_id = ExecutionHostId::new("fixture.prepared.http-mcp").expect("host");
+    let prepared = prepare(host_id.clone());
+    let session = prepared
+        .prepare_session(session_input("http-mcp").with_http_mcp_placement(http_placement()))
+        .expect("session prepares");
+    assert_http_secrets_redacted(&session);
+    assert_http_secrets_redacted(session.plan());
+    assert_http_secrets_redacted(session.evidence());
+    let contribution = session
+        .consumer_route_projection_contribution(
+            swallowtail_runtime::ConsumerRouteProjectionSourceId::new("goose.acp.prepared-session")
+                .expect("source"),
+        )
+        .expect("projects");
+    assert_http_secrets_redacted(&contribution);
+    let placement = contribution
+        .selection_rows()
+        .find(|row| {
+            row.identity()
+                .namespaced_extension()
+                .is_some_and(|extension| extension.semantic_id() == "mcp.placement")
+        })
+        .expect("HTTP placement is named");
+    let values = match placement
+        .control_value()
+        .expect("placement names values")
+        .domain()
+    {
+        swallowtail_runtime::ConsumerRouteValueDomain::Enumerated(values) => values,
+        other => panic!("placement must be enumerated, got {other:?}"),
+    };
+    let texts: Vec<&str> = values.values().map(|value| value.as_str()).collect();
+    assert!(texts.contains(&GOOSE_ACP_HTTP_MCP_PLACEMENT));
+    assert!(texts.contains(&GOOSE_ACP_MCP_SERVER_NAME));
+    assert!(
+        !texts
+            .iter()
+            .any(|value| value.contains("g06-036-redaction-canary"))
+    );
+    let operation = FixtureHost::new(Scenario::Success);
+    let handle =
+        block_on(session.open_session(operation.services(host_id.clone()))).expect("opens");
+    assert!(operation.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["type"] == "http"
+            && message["params"]["mcpServers"][0]["url"] == HTTP_CANARY_URL
+            && message["params"]["mcpServers"][0]["headers"][0]["value"] == HTTP_CANARY_HEADER
+    }));
+    assert_eq!(
+        block_on(close_session(handle, operation.services(host_id))),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn working_state_restoration_carries_the_prepared_http_mcp_declaration() {
+    let host_id = ExecutionHostId::new("fixture.prepared.restore-http-mcp").expect("host");
+    let prepared = prepare(host_id.clone());
+    let session = prepared
+        .prepare_session(
+            session_input("restore-http-mcp").with_http_mcp_placement(http_placement()),
+        )
+        .expect("session prepares");
+    let operation = FixtureHost::new(Scenario::Success);
+    let restoration = session.prepare_working_state_restoration(
+        RuntimeTurnId::new("interrupted-http-mcp").expect("turn"),
+    );
+    let WorkingStateRestorationOutcome::SessionReplaced(replaced) =
+        block_on(restoration.restore(operation.services(host_id.clone()))).expect("restores")
+    else {
+        panic!("Goose ACP restoration is a fresh session replacement");
+    };
+    assert!(operation.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["type"] == "http"
+            && message["params"]["mcpServers"][0]["url"] == HTTP_CANARY_URL
+    }));
+    let (_, handle) = replaced.into_parts();
+    assert_eq!(
+        block_on(close_session(handle, operation.services(host_id))),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn prepared_session_refuses_sse_mcp_before_session_new() {
+    let host_id = ExecutionHostId::new("fixture.prepared.sse-mcp").expect("host");
+    let prepared = prepare(host_id.clone());
+    let session = prepared
+        .prepare_session(session_input("sse-mcp").with_http_mcp_placement(
+            GooseAcpRemoteMcpPlacement::sse(
+                GOOSE_ACP_MCP_SERVER_NAME,
+                HTTP_CANARY_URL,
+                vec![("Authorization".to_owned(), HTTP_CANARY_HEADER.to_owned())],
+            ),
+        ))
+        .expect("input can name sse before open");
+    let operation = FixtureHost::new(Scenario::Success);
+    let error = match block_on(session.open_session(operation.services(host_id))) {
+        Err(error) => error,
+        Ok(_) => panic!("sse must refuse"),
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.goose.acp.mcp_sse_unsupported"
+    );
+    assert_http_secrets_redacted(&error);
+    assert!(
+        !operation
+            .writes()
+            .iter()
+            .any(|message| message["method"] == "session/new")
+    );
 }
 
 #[test]

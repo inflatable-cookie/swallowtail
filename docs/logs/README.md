@@ -24,6 +24,8 @@ feature usually has a short chain: selection evidence, contract, implementation,
 then conformance closeout.
 
 ## Entries
+- [2026-09-25 Claude Agent ACP 0.81.2 Claim](./2026-09-25-claude-agent-acp-0-81-2-claim.md) — raised `claude-agent.acp-adapter` through official `0.81.2` (`0.66.0..=0.81.2`); qualified hops `0.80.0`/`0.81.0`/`0.81.1`/`0.81.2`; kept `0.58.0` excluded and `AllowUnverified`; synthetic `0.81.3` `UnverifiedNewer`; ACP SDK pin move is byte-identical at protocol version `1`; Claude Code ceilings unchanged
+- [2026-09-25 Claude Agent ACP 0.81.2 Identity](./2026-09-25-claude-agent-acp-0-81-2-identity.md) — Research 352 froze published hops from qualified `0.79.0` to official `0.81.2`; `0.79.0` tarball reproduces Research 335; `notice` and `compaction_update` stay unadvertised; Agent SDK pin stays unmapped; compatible extension named
 - [2026-09-24 g06.032 Research 337 Companion Ruling](./2026-09-24-g06-032-research-337-companion-ruling.md) — the 337 identity note and its unavailable-cells table are one record; allowlist the exact pair, rename nothing
 - [2026-09-24 Ollama 0.34.4 Claim](./2026-09-24-ollama-0-34-4-claim.md) — raised `ollama.runtime` through official `0.34.4` as a compatible extension; qualified hops `0.34.3` and `0.34.4`; exclusions, behavior, specimen, and `AllowUnverified` kept; synthetic `0.34.5` stays `UnverifiedNewer`
 - [2026-09-24 Ollama 0.34.4 Identity](./2026-09-24-ollama-0-34-4-identity.md) — Research 350 froze both published hops from qualified `0.34.2` to official `0.34.4` with tag/commit/tree/tarball and selected-file hashes; Research 342 hashes reproduce; `ShowResponse.thinking` additive and ignored; compatible extension named; production claims unchanged in the identity record

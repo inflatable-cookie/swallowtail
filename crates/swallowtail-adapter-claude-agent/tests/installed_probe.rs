@@ -38,7 +38,11 @@ fn exact_wrapper_versions_probe_only_the_host_approved_target() {
         ("0.77.0", true),
         ("0.78.0", true),
         ("0.79.0", true),
-        ("0.80.0", false),
+        ("0.80.0", true),
+        ("0.81.0", true),
+        ("0.81.1", true),
+        ("0.81.2", true),
+        ("0.81.3", false),
     ] {
         let host_id = ExecutionHostId::new("fixture.host.discovery").expect("valid host");
         let host = FixtureHost::new(Scenario::Version, version);

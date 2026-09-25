@@ -4,7 +4,10 @@
 //! Negotiated model options stay withheld until the additive open path observes
 //! them on a successfully opened ACP session.
 
-use crate::{GeminiHeadlessPreparedRun, GeminiPreparedLiveSession, GeminiPreparedSession};
+use crate::{
+    GEMINI_ACP_HTTP_MCP_PLACEMENT, GEMINI_ACP_MCP_SERVER_NAME, GeminiAcpHttpMcpPlacement,
+    GeminiHeadlessPreparedRun, GeminiPreparedLiveSession, GeminiPreparedSession,
+};
 use swallowtail_core::{
     AccessStatus, Capability, CredentialState, EndpointAuthorization, EntitlementState,
     PreflightPlan, RuntimeReadiness,
@@ -74,6 +77,9 @@ impl GeminiProjectionOpenFailure {
 pub type GeminiProjectionOpenFuture =
     BoxFuture<'static, Result<GeminiProjectionOpenOutcome, GeminiProjectionOpenFailure>>;
 
+const MCP_PLACEMENT_SEMANTIC_ID: &str = "mcp.placement";
+const MCP_PLACEMENT_VERSION: &str = "acp-v1";
+
 #[derive(Clone, Copy)]
 enum Route {
     Acp,
@@ -99,6 +105,7 @@ impl GeminiPreparedSession {
         Projection::new(self.plan(), Route::Acp, source)
             .prepared()
             .harness_mode()
+            .http_mcp_placement(self.http_mcp())
             .build()
     }
     /// Opens ACP and publishes retained negotiated options only after success.
@@ -134,6 +141,7 @@ impl GeminiPreparedSession {
             )
             .prepared()
             .harness_mode()
+            .http_mcp_placement(prepared.http_mcp())
             .build();
             match contribution {
                 Ok(contribution) => Ok(GeminiProjectionOpenOutcome {
@@ -384,6 +392,68 @@ impl<'a> Projection<'a> {
             ConsumerRouteValueKind::BoundedInteger,
             rollover,
             ConsumerRouteOmissionSemantics::Required,
+        );
+        self
+    }
+    /// Publishes Contract 063's consumer-supplied streamable-HTTP placement
+    /// when the session binds one: one namespaced row naming the placement
+    /// token and the route-owned server name. Omission stays silent, and no
+    /// URL or header value is ever carried.
+    fn http_mcp_placement(mut self, placement: Option<&GeminiAcpHttpMcpPlacement>) -> Self {
+        let Some(_) = placement else {
+            return self;
+        };
+        let identity = match ConsumerRouteNamespacedExtension::new(
+            self.route.id(),
+            MCP_PLACEMENT_VERSION,
+            MCP_PLACEMENT_SEMANTIC_ID,
+        ) {
+            Ok(extension) => {
+                ConsumerRouteRowIdentity::Feature(ConsumerRouteFeatureId::Namespaced(extension))
+            }
+            Err(error) => {
+                self.rejected = Some(error);
+                return self;
+            }
+        };
+        let (token, name) = (
+            ConsumerRouteEnumerableValue::new(GEMINI_ACP_HTTP_MCP_PLACEMENT),
+            ConsumerRouteEnumerableValue::new(GEMINI_ACP_MCP_SERVER_NAME),
+        );
+        let values = match (token, name) {
+            (Ok(token), Ok(name)) => ConsumerRouteEnumeratedValues::new([token, name]),
+            (Err(error), _) | (_, Err(error)) => {
+                self.rejected = Some(error);
+                return self;
+            }
+        };
+        let values = match values {
+            Ok(values) => values,
+            Err(error) => {
+                self.rejected = Some(error);
+                return self;
+            }
+        };
+        self.selection.push(
+            self.row(
+                identity,
+                &self.prepared_source,
+                ConsumerRouteSourceClass::AdapterPreparedInput,
+                ConsumerRouteEvidenceStrength::PreparedOperation,
+                ConsumerRouteLifecycle::SelectionSummary,
+            )
+            .with_actor_posture(ConsumerRouteActorPosture::Informational)
+            .with_mutation_authority(ConsumerRouteMutationAuthority::Absent)
+            .with_state_support(
+                ConsumerRouteStateSupport::descriptor_only()
+                    .with_requested()
+                    .with_prepared(),
+            )
+            .with_control_value(ConsumerRouteControlValue::new(
+                ConsumerRouteValueKind::BoundedEnumeration,
+                ConsumerRouteValueDomain::Enumerated(values),
+                ConsumerRouteOmissionSemantics::NotSelectable,
+            )),
         );
         self
     }

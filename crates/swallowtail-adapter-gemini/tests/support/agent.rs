@@ -5,7 +5,15 @@ pub enum Scenario {
     Permission,
     Cancellation,
     Disconnect,
+    /// Gemini CLI `0.59.0` `acpSessionManager.ts` `newSession` default:
+    /// `RequestError(-32000, authErrorMessage || 'Authentication required.')`.
     AuthRequired,
+    /// The `newSession` missing-key arm:
+    /// `authErrorMessage = 'Gemini API key is missing or not configured.'`.
+    AuthRequiredMissingKey,
+    /// The bundled `@agentclientprotocol/sdk` `authRequired()` default, which
+    /// serializes as `Authentication required` (no trailing period).
+    AuthRequiredSdkDefault,
 }
 
 #[derive(Clone, Debug)]
@@ -19,6 +27,7 @@ pub struct ObservedProcess {
 struct AgentState {
     output: VecDeque<ProcessOutputChunk>,
     writes: Vec<Value>,
+    agent_messages: Vec<Value>,
     prompt_id: Option<u64>,
     write_enabled: bool,
     stopped: bool,
@@ -33,6 +42,7 @@ struct SharedAgent {
 
 impl SharedAgent {
     fn enqueue(state: &mut AgentState, message: Value) {
+        state.agent_messages.push(message.clone());
         let mut bytes = serde_json::to_vec(&message).expect("fixture message serializes");
         bytes.push(b'\n');
         state
@@ -73,8 +83,30 @@ impl SharedAgent {
                         "jsonrpc": "2.0",
                         "id": id,
                         "error": {
-                            "code": -32603,
-                            "message": "authRequired: no authenticated profile is selected"
+                            "code": -32000,
+                            "message": "Authentication required."
+                        }
+                    }),
+                ),
+                Scenario::AuthRequiredMissingKey => Self::enqueue(
+                    &mut state,
+                    json!({
+                        "jsonrpc": "2.0",
+                        "id": id,
+                        "error": {
+                            "code": -32000,
+                            "message": "Gemini API key is missing or not configured."
+                        }
+                    }),
+                ),
+                Scenario::AuthRequiredSdkDefault => Self::enqueue(
+                    &mut state,
+                    json!({
+                        "jsonrpc": "2.0",
+                        "id": id,
+                        "error": {
+                            "code": -32000,
+                            "message": "Authentication required"
                         }
                     }),
                 ),
@@ -198,7 +230,9 @@ impl SharedAgent {
                     ),
                     Scenario::Cancellation => {}
                     Scenario::Disconnect => state.stopped = true,
-                    Scenario::AuthRequired => {}
+                    Scenario::AuthRequired
+                    | Scenario::AuthRequiredMissingKey
+                    | Scenario::AuthRequiredSdkDefault => {}
                 }
             }
             Some("session/cancel") => {

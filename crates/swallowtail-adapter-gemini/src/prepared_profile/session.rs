@@ -29,6 +29,12 @@ impl GeminiPreparedSession {
         &self.evidence
     }
 
+    /// Returns the bound HTTP MCP placement when the session carries one.
+    #[must_use]
+    pub(crate) fn http_mcp(&self) -> Option<&GeminiAcpHttpMcpPlacement> {
+        self.http_mcp.as_ref()
+    }
+
     /// Returns the immutable preflight plan.
     #[must_use]
     pub const fn plan(&self) -> &swallowtail_core::PreflightPlan {

@@ -118,59 +118,88 @@ fn http_mcp_entry_reaches_session_new_verbatim() {
 
 #[test]
 fn unauthenticated_gate_fails_typed_and_never_drops_the_entry() {
-    let host_id = ExecutionHostId::new("fixture.host.mcp-auth").expect("valid host id");
-    let selected = selection(host_id.clone());
-    let host = FixtureHost::new(Scenario::AuthRequired);
-    let services = host.services(host_id);
-    let admitted = GeminiAcpHttpMcpPlacement::new(
-        GEMINI_ACP_MCP_SERVER_NAME,
-        CANARY_URL,
-        vec![("Authorization".to_owned(), CANARY_HEADER.to_owned())],
-    );
-    let driver = GeminiAcpDriver::new(
-        swallowtail_runtime::EnvironmentRef::new("gemini.fixture.isolated")
-            .expect("valid environment"),
-        selected.credential.clone(),
-    )
-    .with_http_mcp_placement(admitted)
-    .expect("route-owned http placement is admitted");
-    let error = match block_on(driver.open_session(
-        selected.plan,
-        OpenSessionRequest::new(
-            RequestId::new("gemini-mcp-auth").expect("valid request"),
-            selected.resource,
-            None,
-            SessionPlanAgreement::explicit(
-                swallowtail_core::SessionAccessPolicy::ambient_harness(
-                    swallowtail_core::ResourceAccess::Read,
-                ),
-                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
-                Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
-            ),
+    // The three unauthenticated `session/new` shapes Gemini CLI `0.59.0`
+    // actually puts on the wire: the `newSession` default throw, the
+    // missing-key arm, and the bundled SDK `authRequired()` default. None
+    // carries the camelCase `authRequired` identifier.
+    for (scenario, suffix, message) in [
+        (
+            Scenario::AuthRequired,
+            "mcp-auth",
+            "Authentication required.",
         ),
-        services,
-    )) {
-        Err(error) => error,
-        Ok(_) => panic!("the authRequired gate must fail the open"),
-    };
-    assert_eq!(
-        error.diagnostic().code(),
-        "swallowtail.gemini.acp.auth_required"
-    );
-    assert!(
-        !format!("{error:?}").contains("g06-035-redaction-canary"),
-        "typed failure leaked a consumer secret"
-    );
-    let writes = host.writes();
-    assert!(
-        writes.iter().any(|message| {
-            message["method"] == "session/new"
-                && message["params"]["mcpServers"][0]["type"] == "http"
-                && message["params"]["mcpServers"][0]["url"] == CANARY_URL
-        }),
-        "the refused open must still carry the entry, not drop it"
-    );
-    assert_eq!(host.releases(), 1);
+        (
+            Scenario::AuthRequiredMissingKey,
+            "mcp-auth-missing-key",
+            "Gemini API key is missing or not configured.",
+        ),
+        (
+            Scenario::AuthRequiredSdkDefault,
+            "mcp-auth-sdk-default",
+            "Authentication required",
+        ),
+    ] {
+        let host_id =
+            ExecutionHostId::new(format!("fixture.host.{suffix}")).expect("valid host id");
+        let selected = selection(host_id.clone());
+        let host = FixtureHost::new(scenario);
+        let services = host.services(host_id);
+        let admitted = GeminiAcpHttpMcpPlacement::new(
+            GEMINI_ACP_MCP_SERVER_NAME,
+            CANARY_URL,
+            vec![("Authorization".to_owned(), CANARY_HEADER.to_owned())],
+        );
+        let driver = GeminiAcpDriver::new(
+            swallowtail_runtime::EnvironmentRef::new("gemini.fixture.isolated")
+                .expect("valid environment"),
+            selected.credential.clone(),
+        )
+        .with_http_mcp_placement(admitted)
+        .expect("route-owned http placement is admitted");
+        let error = match block_on(driver.open_session(
+            selected.plan,
+            OpenSessionRequest::new(
+                RequestId::new(format!("gemini-{suffix}")).expect("valid request"),
+                selected.resource,
+                None,
+                SessionPlanAgreement::explicit(
+                    swallowtail_core::SessionAccessPolicy::ambient_harness(
+                        swallowtail_core::ResourceAccess::Read,
+                    ),
+                    Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                    Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+                ),
+            ),
+            services,
+        )) {
+            Err(error) => error,
+            Ok(_) => panic!("the unauthenticated gate must fail the open"),
+        };
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.gemini.acp.auth_required"
+        );
+        assert!(
+            !format!("{error:?}").contains("g06-035-redaction-canary"),
+            "typed failure leaked a consumer secret"
+        );
+        let writes = host.writes();
+        assert!(
+            writes.iter().any(|message| {
+                message["method"] == "session/new"
+                    && message["params"]["mcpServers"][0]["type"] == "http"
+                    && message["params"]["mcpServers"][0]["url"] == CANARY_URL
+            }),
+            "the refused open must still carry the entry, not drop it"
+        );
+        assert!(
+            host.agent_messages().iter().any(|sent| {
+                sent["error"]["code"] == -32000 && sent["error"]["message"] == message
+            }),
+            "fixture must use the exact production message"
+        );
+        assert_eq!(host.releases(), 1);
+    }
 }
 
 #[test]

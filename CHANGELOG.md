@@ -108,11 +108,20 @@ annotated Git tags from the canonical repository.
   authentication completes, so an unauthenticated open fails typed as
   `swallowtail.gemini.acp.auth_required` and never drops the entry. The
   prepared facade admits the placement through
-  `GeminiSessionProfileInput::with_http_mcp_placement` and carries it onto
-  working-state restoration. The `gemini-cli.headless` MCP-disabled path is
-  unchanged, and the composite `client_mcp_servers` cell stays a producer
-  gap naming the live gate: emission is not honouring. No live session,
-  login, install, or host update. Research 351, g06.035.
+  `GeminiSessionProfileInput::with_http_mcp_placement`, carries it onto
+  working-state restoration, and publishes it through Contract 061's
+  projection as one namespaced `mcp.placement` row naming
+  `consumer-supplied-http` and `swallowtail-gemini-acp`; omission stays
+  silent and no URL or header value is carried. The provider honours the
+  entry only after its authentication completes, so an unauthenticated open
+  fails typed as `swallowtail.gemini.acp.auth_required` — bound to Gemini
+  `0.59.0`'s actual `session/new` error strings (`Authentication required.`,
+  `Gemini API key is missing or not configured.`, and the bundled SDK's
+  `Authentication required` default) — and never drops the entry. The
+  `gemini-cli.headless` MCP-disabled path is unchanged, and the composite
+  `client_mcp_servers` cell stays a producer gap naming the live gate:
+  emission is not honouring. No live session, login, install, or host
+  update. Research 351, g06.035.
 
 ### Changed
 - accept the exact `command-code.headless` `1.65.0` live surface on

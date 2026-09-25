@@ -91,6 +91,16 @@ impl FixtureHost {
             .writes
             .clone()
     }
+
+    /// Returns every message the fixture agent sent back to the driver.
+    pub fn agent_messages(&self) -> Vec<Value> {
+        self.agent
+            .state
+            .lock()
+            .expect("fixture agent lock poisoned")
+            .agent_messages
+            .clone()
+    }
 }
 
 pub fn close_session(

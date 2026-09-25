@@ -29,8 +29,17 @@ impl AcpConnection {
                 )
             })?;
         sender.complete(result.map_err(|error| {
+            // Gemini CLI `0.59.0` `acpSessionManager.ts` `newSession` throws
+            // `RequestError(-32000, authErrorMessage || 'Authentication
+            // required.')` and the missing-key arm sets
+            // `'Gemini API key is missing or not configured.'`; the bundled
+            // SDK's `authRequired()` default serializes as
+            // `Authentication required`. None of those wire strings carry the
+            // camelCase `authRequired` identifier.
             let message = error.message().to_ascii_lowercase();
-            if message.contains("authrequired") {
+            if message.contains("authentication required")
+                || message.contains("api key is missing or not configured")
+            {
                 failure(
                     "swallowtail.gemini.acp.auth_required",
                     "Gemini CLI requires completed authentication before session work",

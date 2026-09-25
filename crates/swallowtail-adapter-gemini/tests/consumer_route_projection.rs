@@ -13,7 +13,8 @@ use futures_executor::block_on;
 use std::collections::BTreeSet;
 use std::num::NonZeroU64;
 use swallowtail_adapter_gemini::{
-    GEMINI_CLI_ACP_AXIS, GeminiCliPreparedIntegration, GeminiHeadlessModelSelection,
+    GEMINI_ACP_HTTP_MCP_PLACEMENT, GEMINI_ACP_MCP_SERVER_NAME, GEMINI_CLI_ACP_AXIS,
+    GeminiAcpHttpMcpPlacement, GeminiCliPreparedIntegration, GeminiHeadlessModelSelection,
     GeminiHeadlessRunProfileInput, GeminiLiveContextWindowCompression,
     GeminiLiveSessionProfileInput, GeminiPreparationInput, GeminiPreparationProbe,
     GeminiSessionProfileInput, prepare_gemini_acp, prepare_gemini_cli, prepare_gemini_live,
@@ -92,6 +93,85 @@ fn candidate_e_gemini_routes_reconcile_executable_projection_truth() {
             .any(|(route, identity)| route == "gemini.live"
                 && identity.contains("context-window-compression"))
     );
+}
+
+const MCP_CANARY: &str = "g06-035-projection-canary";
+
+#[test]
+fn placement_bound_acp_publishes_the_contract_061_row() {
+    let host = ExecutionHostId::new("card075.gemini.acp.mcp.host").expect("host");
+    let operation_host = acp_support::FixtureHost::new(acp_support::Scenario::Success);
+    let operation_services = operation_host.services(host.clone());
+    let discovery = discovery_support::DiscoveryHost::new("0.51.0");
+    let services = discovery
+        .services(host.clone())
+        .with_working_resource(
+            operation_services
+                .working_resource()
+                .expect("resource")
+                .clone(),
+        )
+        .with_working_resource_io(
+            operation_services
+                .working_resource_io()
+                .expect("resource I/O")
+                .clone(),
+        );
+    let placement = GeminiAcpHttpMcpPlacement::new(
+        GEMINI_ACP_MCP_SERVER_NAME,
+        format!("http://127.0.0.1:9/mcp/{MCP_CANARY}"),
+        vec![("Authorization".to_owned(), format!("Bearer {MCP_CANARY}"))],
+    );
+    let bound = block_on(prepare_gemini_acp(
+        preparation_input(host),
+        probe(),
+        services,
+    ))
+    .expect("ACP prepares")
+    .prepare_session(
+        GeminiSessionProfileInput::new(
+            RequestId::new("card075.gemini.acp.mcp").expect("request"),
+            WorkingResourceRef::new("card075.gemini.acp.mcp.workspace").expect("resource"),
+            SessionOptions::default().with_harness_mode(HarnessMode::Plan),
+        )
+        .with_http_mcp_placement(placement),
+    )
+    .expect("ACP profile prepares");
+    let contribution = bound
+        .consumer_route_projection_contribution(source("card075.gemini.acp.mcp"))
+        .expect("projects");
+
+    // Omission stays at the 7-row census; a bound placement adds exactly the
+    // one namespaced Contract 061 row.
+    assert_eq!(rows("gemini-cli.acp", &contribution).count(), 8);
+    let row = contribution
+        .selection_rows()
+        .find(|row| {
+            row.identity()
+                .namespaced_extension()
+                .is_some_and(|extension| extension.semantic_id() == "mcp.placement")
+        })
+        .expect("placement row is published");
+    let extension = row
+        .identity()
+        .namespaced_extension()
+        .expect("namespaced placement row");
+    assert_eq!(extension.route(), "gemini-cli.acp");
+    assert_eq!(extension.version_segment(), "acp-v1");
+    let values = match row
+        .control_value()
+        .expect("placement names values")
+        .domain()
+    {
+        swallowtail_runtime::ConsumerRouteValueDomain::Enumerated(values) => values,
+        other => panic!("placement must be enumerated, got {other:?}"),
+    };
+    let texts: Vec<&str> = values.values().map(|value| value.as_str()).collect();
+    assert_eq!(texts.len(), 2);
+    assert!(texts.contains(&GEMINI_ACP_HTTP_MCP_PLACEMENT));
+    assert!(texts.contains(&GEMINI_ACP_MCP_SERVER_NAME));
+    assert!(!texts.iter().any(|value| value.contains(MCP_CANARY)));
+    assert!(!format!("{contribution:?}").contains(MCP_CANARY));
 }
 
 fn rows<'a>(

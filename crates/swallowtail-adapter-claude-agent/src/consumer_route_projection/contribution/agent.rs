@@ -2,7 +2,11 @@ use super::{Contribution, session_options_bound};
 use crate::consumer_route_projection::builder::{
     ProjectionBuilder, ProjectionRoute, bounded, exact,
 };
-use crate::{ClaudeAgentPreparedDelete, ClaudeAgentPreparedRun, ClaudeAgentPreparedSession};
+use crate::{
+    CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT, CLAUDE_AGENT_ACP_MCP_SERVER_NAME,
+    ClaudeAgentAcpRemoteMcpTransport, ClaudeAgentPreparedDelete, ClaudeAgentPreparedRun,
+    ClaudeAgentPreparedSession,
+};
 use swallowtail_core::{Capability, ProviderSessionManagementAction};
 use swallowtail_runtime::{
     ConsumerRouteControlId, ConsumerRouteOmissionSemantics, ConsumerRouteProjectionSourceId,
@@ -122,7 +126,9 @@ impl ClaudeAgentPreparedSession {
                 false,
             );
         }
-        builder.build()
+        builder
+            .with_mcp_placement(http_mcp_kind(self), CLAUDE_AGENT_ACP_MCP_SERVER_NAME)?
+            .build()
     }
 }
 
@@ -151,4 +157,11 @@ impl ClaudeAgentPreparedDelete {
         );
         builder.build()
     }
+}
+
+fn http_mcp_kind(session: &ClaudeAgentPreparedSession) -> Option<&'static str> {
+    session
+        .http_mcp()
+        .filter(|remote| remote.transport() == ClaudeAgentAcpRemoteMcpTransport::Http)
+        .map(|_| CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT)
 }

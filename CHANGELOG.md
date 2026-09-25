@@ -61,6 +61,18 @@ annotated Git tags from the canonical repository.
 
 ### Added
 - wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `claude-agent.acp` production `session/new`. A session declares at most one
+  HTTP entry under `swallowtail-claude-agent-acp`. Encoding emits ACP
+  `type: "http"` with the consumer URL and headers verbatim; `sse` stays
+  modelled and unemitted. The public encoder returns
+  `ClaudeAgentAcpEncodedMcpServers`, whose `Debug` form redacts URL and header
+  values; the wire JSON stays crate-private. URL and header values stay out of
+  failures, diagnostics, activity, receipts, `Debug`, and plan fingerprints.
+  The Contract 061 placement projection names `consumer-supplied-http`.
+  Feature matrix MCP cells stay No as a producer gap naming g06.033:
+  emission is proven, live honouring of a remote tool call is not.
+  Research 351, g06.033.
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
   `goose.acp` production `session/new`. A session declares at most one HTTP
   entry under `swallowtail-goose-acp`. Encoding emits ACP `McpServer::Http`
   with the consumer URL and headers verbatim; SSE is not offered because the

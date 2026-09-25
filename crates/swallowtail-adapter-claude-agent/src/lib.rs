@@ -34,6 +34,7 @@ mod discovery;
 mod driver;
 mod elicitation;
 mod failure;
+mod mcp;
 mod permission;
 mod prepared;
 mod prepared_code;
@@ -72,6 +73,11 @@ pub use consumer_route_projection::{
     ClaudeAgentProjectionOpenOutcome,
 };
 pub use driver::{ClaudeAgentAcpDriver, claude_agent_acp_descriptor};
+pub use mcp::{
+    CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT, CLAUDE_AGENT_ACP_MCP_SERVER_NAME,
+    ClaudeAgentAcpEncodedMcpServers, ClaudeAgentAcpRemoteMcpPlacement,
+    ClaudeAgentAcpRemoteMcpTransport,
+};
 pub use permission::claude_agent_permission_namespace;
 pub use prepared::{
     ClaudeAgentPreparationInput, ClaudeAgentPreparationProbe, ClaudeAgentPreparedIntegration,

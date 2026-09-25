@@ -1,5 +1,6 @@
 use crate::connection::AcpConnection;
 use crate::failure::{failure, malformed, unsupported};
+use crate::mcp::ClaudeAgentAcpRemoteMcpPlacement;
 use crate::turn::ActiveTurn;
 use serde_json::{Value, json};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -29,6 +30,7 @@ use self::validation::{validate_attachment, validate_open, validate_plan};
 pub struct ClaudeAgentAcpDriver {
     environment: EnvironmentRef,
     credential: Option<CredentialRef>,
+    http_mcp: Option<ClaudeAgentAcpRemoteMcpPlacement>,
 }
 
 impl ClaudeAgentAcpDriver {
@@ -38,6 +40,7 @@ impl ClaudeAgentAcpDriver {
         Self {
             environment,
             credential: Some(credential),
+            http_mcp: None,
         }
     }
 
@@ -47,7 +50,29 @@ impl ClaudeAgentAcpDriver {
         Self {
             environment,
             credential: None,
+            http_mcp: None,
         }
+    }
+
+    /// Admits one route-owned streamable-HTTP MCP declaration onto production `session/new`.
+    pub fn with_http_mcp_placement(
+        self,
+        server: ClaudeAgentAcpRemoteMcpPlacement,
+    ) -> Result<Self, RuntimeFailure> {
+        let _ = server.to_acp_http_value()?;
+        Ok(self.with_prepared_http_mcp(Some(server)))
+    }
+
+    pub(crate) fn with_prepared_http_mcp(
+        mut self,
+        server: Option<ClaudeAgentAcpRemoteMcpPlacement>,
+    ) -> Self {
+        self.http_mcp = server;
+        self
+    }
+
+    pub(crate) fn production_mcp_servers(&self) -> Result<serde_json::Value, RuntimeFailure> {
+        crate::mcp::production_mcp_servers(self.http_mcp.as_ref())
     }
 }
 

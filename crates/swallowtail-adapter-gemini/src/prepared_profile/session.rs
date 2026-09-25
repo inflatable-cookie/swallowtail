@@ -4,7 +4,7 @@ use super::plan::{
     GeminiPreparedEvidence, build_plan, failure, instance_with_capabilities, requirements,
 };
 use crate::prepared::instance::session_capabilities;
-use crate::{GeminiAcpDriver, GeminiPreparedIntegration};
+use crate::{GeminiAcpDriver, GeminiAcpHttpMcpPlacement, GeminiPreparedIntegration};
 use swallowtail_core::{
     Capability, CapabilityConstraint, CapabilityProfile, CapabilityRequirement, ResourceAccess,
     ResourceRepresentation,
@@ -19,6 +19,7 @@ use swallowtail_runtime::{
 pub struct GeminiPreparedSession {
     evidence: GeminiPreparedEvidence,
     request: OpenSessionRequest,
+    http_mcp: Option<GeminiAcpHttpMcpPlacement>,
 }
 
 impl GeminiPreparedSession {
@@ -26,6 +27,12 @@ impl GeminiPreparedSession {
     #[must_use]
     pub const fn evidence(&self) -> &GeminiPreparedEvidence {
         &self.evidence
+    }
+
+    /// Returns the bound HTTP MCP placement when the session carries one.
+    #[must_use]
+    pub(crate) fn http_mcp(&self) -> Option<&GeminiAcpHttpMcpPlacement> {
+        self.http_mcp.as_ref()
     }
 
     /// Returns the immutable preflight plan.
@@ -48,7 +55,9 @@ impl GeminiPreparedSession {
 
     /// Opens the prepared session using the supplied host services.
     pub fn open_session(&self, services: HostServices) -> GeminiPreparedSessionFuture {
-        let driver = self.low_level_driver();
+        let driver = self
+            .low_level_driver()
+            .with_prepared_http_mcp(self.http_mcp.clone());
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.open_session(plan, request, services).await })
@@ -62,7 +71,8 @@ impl GeminiPreparedSession {
     ) -> PreparedWorkingStateRestoration {
         PreparedWorkingStateRestoration::fresh_session_replacement(
             interrupted_turn_id,
-            self.low_level_driver(),
+            self.low_level_driver()
+                .with_prepared_http_mcp(self.http_mcp.clone()),
             self.plan().clone(),
             self.request.clone(),
         )
@@ -88,7 +98,7 @@ impl GeminiPreparedIntegration {
         &self,
         input: GeminiSessionProfileInput,
     ) -> Result<GeminiPreparedSession, PreparationFailure> {
-        let (request_id, working_resource, options, resource_access) = input.into_parts();
+        let (request_id, working_resource, options, resource_access, http_mcp) = input.into_parts();
         validate_options(&options, resource_access)?;
         let activity_profile = super::activity_profile::activity_profile(self)?;
         let capabilities = session_capabilities_for(resource_access, &options, &activity_profile);
@@ -106,6 +116,7 @@ impl GeminiPreparedIntegration {
         Ok(GeminiPreparedSession {
             evidence: GeminiPreparedEvidence::from_prepared(self, plan, activity_profile)?,
             request,
+            http_mcp,
         })
     }
 }

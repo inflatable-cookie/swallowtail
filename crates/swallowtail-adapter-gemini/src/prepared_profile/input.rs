@@ -1,3 +1,4 @@
+use crate::GeminiAcpHttpMcpPlacement;
 use swallowtail_core::ResourceAccess;
 use swallowtail_runtime::{RequestId, SessionOptions, WorkingResourceRef};
 
@@ -8,6 +9,7 @@ pub struct GeminiSessionProfileInput {
     working_resource: WorkingResourceRef,
     options: SessionOptions,
     resource_access: ResourceAccess,
+    http_mcp: Option<GeminiAcpHttpMcpPlacement>,
 }
 
 impl GeminiSessionProfileInput {
@@ -23,6 +25,7 @@ impl GeminiSessionProfileInput {
             working_resource,
             options,
             resource_access: ResourceAccess::Read,
+            http_mcp: None,
         }
     }
 
@@ -38,7 +41,16 @@ impl GeminiSessionProfileInput {
             working_resource,
             options,
             resource_access: ResourceAccess::ReadWrite,
+            http_mcp: None,
         }
+    }
+
+    /// Binds one route-owned consumer-supplied streamable-HTTP MCP declaration
+    /// to this session.
+    #[must_use]
+    pub fn with_http_mcp_placement(mut self, placement: GeminiAcpHttpMcpPlacement) -> Self {
+        self.http_mcp = Some(placement);
+        self
     }
 
     /// Returns the requested working-resource access level.
@@ -54,12 +66,14 @@ impl GeminiSessionProfileInput {
         WorkingResourceRef,
         SessionOptions,
         ResourceAccess,
+        Option<GeminiAcpHttpMcpPlacement>,
     ) {
         (
             self.request_id,
             self.working_resource,
             self.options,
             self.resource_access,
+            self.http_mcp,
         )
     }
 }

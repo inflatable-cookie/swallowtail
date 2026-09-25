@@ -8,6 +8,7 @@
 #![deny(missing_docs)]
 
 mod acp_activity;
+mod acp_mcp;
 mod catalogue;
 mod connection;
 mod consumer_route_projection;
@@ -36,6 +37,10 @@ mod prepared_profile;
 mod selection;
 mod turn;
 
+pub use acp_mcp::{
+    GEMINI_ACP_HTTP_MCP_PLACEMENT, GEMINI_ACP_MCP_SERVER_NAME, GeminiAcpEncodedMcpServers,
+    GeminiAcpHttpMcpPlacement,
+};
 pub use consumer_route_projection::{
     GeminiProjectionOpenFailure, GeminiProjectionOpenFuture, GeminiProjectionOpenOutcome,
 };

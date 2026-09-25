@@ -15,8 +15,8 @@ Closed generations live only as roll-ups under
 
 ## Next Task
 
-[g06.033 Claude Agent ACP Consumer HTTP MCP Wiring](./g06/033-claude-agent-acp-consumer-http-mcp-wiring.md)
-is the lead ready lane; the [g06 manifest](./g06/README.md) holds the other
+[g06.035 Gemini CLI ACP Consumer HTTP MCP Wiring](./g06/035-gemini-cli-acp-consumer-http-mcp-wiring.md)
+is the lead ready lane; the [g06 manifest](./g06/README.md) holds any other
 ready lanes. g06.001–g06.005 stay planned and gated. Do not infer release,
 tag, publication, live-provider, or consumer authority.
 

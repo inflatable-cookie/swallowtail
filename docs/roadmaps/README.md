@@ -16,7 +16,7 @@ Closed generations live only as roll-ups under
 ## Next Task
 
 No g06 lane is ready. The five Research 351 routes now emit the consumer HTTP
-MCP entry (g06.033–g06.037); Chatterbox settles with the operator which get a
+MCP entry; Chatterbox settles with the operator which get a
 live honouring gate. g06.001–g06.005 stay planned and gated. Do not infer
 release, tag, publication, live-provider, or consumer authority.
 

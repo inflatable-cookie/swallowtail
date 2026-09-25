@@ -3,7 +3,9 @@ mod support;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{FixtureHost, Scenario, selection, selection_with_access};
-use swallowtail_adapter_copilot_cli::CopilotCliAcpDriver;
+use swallowtail_adapter_copilot_cli::{
+    COPILOT_CLI_ACP_MCP_SERVER_NAME, CopilotCliAcpDriver, CopilotCliAcpRemoteMcpPlacement,
+};
 use swallowtail_core::{ExecutionHostId, ProviderRequestHandling, ResourceAccess};
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, InteractiveSessionDriver, MonotonicInstant, OpenSessionRequest,
@@ -92,6 +94,10 @@ fn success_turn_uses_acp_only_and_joins_cleanup() {
     );
     assert_eq!(observed.environment_count, 1);
     assert_eq!(observed.working_resource, Some(selected.resource));
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"] == serde_json::json!([])
+    }));
     assert!(!host.writes().iter().any(|message| {
         matches!(
             message.get("method").and_then(serde_json::Value::as_str),
@@ -368,6 +374,84 @@ fn session_deadline_is_rejected_before_spawn() {
     );
     assert!(!host.process_started());
     assert_eq!(host.releases(), 0);
+}
+
+#[test]
+fn http_mcp_is_admitted_on_session_new_and_keeps_values_verbatim() {
+    let host_id = ExecutionHostId::new("fixture.host.http-mcp").expect("valid host id");
+    let selected = selection(host_id.clone());
+    let host = FixtureHost::new(Scenario::Success);
+    let services = host.services(host_id);
+    const CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-034-redaction-canary";
+    const CANARY_HEADER: &str = "Bearer g06-034-redaction-canary";
+    let admitted = CopilotCliAcpRemoteMcpPlacement::new(
+        COPILOT_CLI_ACP_MCP_SERVER_NAME,
+        CANARY_URL,
+        vec![("Authorization".to_owned(), CANARY_HEADER.to_owned())],
+    );
+    let driver = CopilotCliAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("copilot-cli.fixture.isolated")
+            .expect("valid environment"),
+    )
+    .with_http_mcp_placement(admitted)
+    .expect("route-owned http placement is admitted");
+    let session = block_on(driver.open_session(
+        selected.plan,
+        OpenSessionRequest::new(
+            RequestId::new("copilot-http-mcp").expect("valid request"),
+            selected.resource,
+            None,
+            SessionPlanAgreement::explicit(
+                swallowtail_core::SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+            ),
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    assert!(host.writes().iter().any(|message| {
+        message["method"] == "session/new"
+            && message["params"]["mcpServers"][0]["type"] == "http"
+            && message["params"]["mcpServers"][0]["name"] == COPILOT_CLI_ACP_MCP_SERVER_NAME
+            && message["params"]["mcpServers"][0]["url"] == CANARY_URL
+            && message["params"]["mcpServers"][0]["headers"][0]["value"] == CANARY_HEADER
+    }));
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn http_mcp_foreign_name_fails_before_session_new() {
+    let collision = CopilotCliAcpRemoteMcpPlacement::new(
+        "other-server",
+        "http://127.0.0.1:9/mcp/g06-034-redaction-canary",
+        vec![(
+            "Authorization".to_owned(),
+            "Bearer g06-034-redaction-canary".to_owned(),
+        )],
+    );
+    let error = match CopilotCliAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("copilot-cli.fixture.isolated")
+            .expect("valid environment"),
+    )
+    .with_http_mcp_placement(collision)
+    {
+        Err(error) => error,
+        Ok(_) => panic!("foreign names must refuse"),
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.copilot-cli.acp.mcp_name_collision"
+    );
+    assert!(
+        !error
+            .diagnostic()
+            .message()
+            .contains("g06-034-redaction-canary")
+    );
 }
 
 fn open(

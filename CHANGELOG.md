@@ -60,6 +60,19 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Added
+- wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
+  `copilot-cli.acp` production `session/new`. A session declares at most one
+  consumer HTTP entry under `swallowtail-copilot-cli-acp`. HTTP encoding
+  emits ACP `type: "http"` with the consumer URL and headers verbatim; `sse`
+  stays modelled and unemitted. Stdio client entries are not offered: the
+  provider rejects them, and a colliding name is a typed refusal against the
+  route-owned reserved name. The public encoder returns
+  `CopilotCliAcpEncodedMcpServers`, whose `Debug` form redacts URL and header
+  values; the wire JSON stays crate-private. URL and header values stay out
+  of failures, diagnostics, activity, receipts, `Debug`, and plan
+  fingerprints. The Contract 061 placement projection names
+  `consumer-supplied-http`. Feature matrix MCP cells stay No: emission is
+  proven, live honouring of a remote tool call is not. Research 351, g06.034.
 - prove `opencode.acp` honours a consumer-supplied streamable-HTTP MCP entry
   on installed exact `1.18.18`. One live attempt accepted: connect,
   `tools/list`, one `tools/call`, completed turn, clean cleanup.

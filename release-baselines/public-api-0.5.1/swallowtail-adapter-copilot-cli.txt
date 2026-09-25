@@ -1,13 +1,31 @@
 pub mod swallowtail_adapter_copilot_cli
+pub enum swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpTransport
+pub swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpTransport::Http
+pub swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpTransport::Sse
 pub struct swallowtail_adapter_copilot_cli::CopilotCliAcpDriver
 impl swallowtail_adapter_copilot_cli::CopilotCliAcpDriver
 pub const fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::with_http_mcp_placement(self, swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_copilot_cli::CopilotCliAcpDriver
 pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
 impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_copilot_cli::CopilotCliAcpDriver
 pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_copilot_cli::CopilotCliAcpEncodedMcpServers
+impl core::fmt::Debug for swallowtail_adapter_copilot_cli::CopilotCliAcpEncodedMcpServers
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpEncodedMcpServers::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement
+impl swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement::headers(&self) -> &[(alloc::string::String, alloc::string::String)]
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement::name(&self) -> &str
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement::new(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement::sse(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement::to_production_mcp_servers(&self) -> core::result::Result<swallowtail_adapter_copilot_cli::CopilotCliAcpEncodedMcpServers, swallowtail_runtime::failure::RuntimeFailure>
+pub const fn swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement::transport(&self) -> swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpTransport
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement::url(&self) -> &str
+impl core::fmt::Debug for swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement
+pub fn swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_adapter_copilot_cli::CopilotCliPreparationInput
 impl swallowtail_adapter_copilot_cli::CopilotCliPreparationInput
 pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
@@ -39,7 +57,10 @@ pub const fn swallowtail_adapter_copilot_cli::CopilotCliPreparedSession::request
 pub struct swallowtail_adapter_copilot_cli::CopilotCliSessionProfileInput
 impl swallowtail_adapter_copilot_cli::CopilotCliSessionProfileInput
 pub const fn swallowtail_adapter_copilot_cli::CopilotCliSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub fn swallowtail_adapter_copilot_cli::CopilotCliSessionProfileInput::with_http_mcp_placement(self, swallowtail_adapter_copilot_cli::CopilotCliAcpRemoteMcpPlacement) -> Self
+pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_ACP_HTTP_MCP_PLACEMENT: &str
 pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_ACP_MATURITY: &str
+pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_ACP_MCP_SERVER_NAME: &str
 pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_EXECUTABLE_NAME: &str
 pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_HOST_ACCOUNT_AUDIENCE: &str
 pub const swallowtail_adapter_copilot_cli::COPILOT_CLI_PACKAGE_AXIS: &str

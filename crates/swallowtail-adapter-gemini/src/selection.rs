@@ -20,8 +20,9 @@ pub const GEMINI_CLI_HEADLESS_BASELINE_VERSION: &str = "0.51.0";
 /// Newest Gemini CLI version behaviorally qualified for headless runs.
 pub const GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.61.0";
 
-/// Unpublished stable inside both windows; stays incompatible (Research 357).
-const GEMINI_CLI_UNPUBLISHED_GAP: &str = "0.59.1";
+/// Unpublished stables inside both windows; they stay incompatible
+/// (Research 324 and 357).
+const GEMINI_CLI_UNPUBLISHED_GAPS: [&str; 2] = ["0.56.1", "0.59.1"];
 const BASELINE_BEHAVIOR: &str = "gemini-cli.acp.v0.51.0";
 pub(crate) const HEADLESS_BEHAVIOR: &str = "gemini-cli.headless.stream-json.v1";
 const MAX_VERSION_BYTES: usize = 64;
@@ -83,10 +84,7 @@ pub fn gemini_cli_acp_claim() -> InterfaceCompatibilityClaim {
                 .expect("static Gemini behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [
-            version(GEMINI_CLI_UNPUBLISHED_GAP)
-                .expect("static Gemini CLI unpublished gap is valid"),
-        ],
+        unpublished_gaps(),
     )
     .expect("static Gemini CLI compatibility claim is valid")
 }
@@ -109,10 +107,7 @@ pub fn gemini_cli_headless_claim() -> InterfaceCompatibilityClaim {
                 .expect("static Gemini headless behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [
-            version(GEMINI_CLI_UNPUBLISHED_GAP)
-                .expect("static Gemini CLI unpublished gap is valid"),
-        ],
+        unpublished_gaps(),
     )
     .expect("static Gemini CLI headless compatibility claim is valid")
 }
@@ -197,6 +192,12 @@ pub(crate) fn select_gemini_headless_plan(
     })
 }
 
+fn unpublished_gaps() -> impl Iterator<Item = InterfaceVersion> {
+    GEMINI_CLI_UNPUBLISHED_GAPS
+        .into_iter()
+        .map(|gap| version(gap).expect("static Gemini CLI unpublished gap is valid"))
+}
+
 fn axis() -> InterfaceVersionAxis {
     InterfaceVersionAxis::new(GEMINI_CLI_ACP_AXIS).expect("static Gemini CLI axis is valid")
 }
@@ -232,6 +233,7 @@ mod tests {
         }
         assert!(!claim.permits(&version("0.50.0")));
         assert!(!claim.permits(&version("0.51.0-rc.1")));
+        assert!(!claim.permits(&version("0.56.1")));
         assert!(!claim.permits(&version("0.59.1")));
         assert!(matches!(
             claim.assess(&version("0.61.1")),
@@ -252,6 +254,7 @@ mod tests {
             );
         }
         assert!(!claim.permits(&version("0.50.0")));
+        assert!(!claim.permits(&version("0.56.1")));
         assert!(!claim.permits(&version("0.59.1")));
         assert!(matches!(
             claim.assess(&version("0.61.1")),

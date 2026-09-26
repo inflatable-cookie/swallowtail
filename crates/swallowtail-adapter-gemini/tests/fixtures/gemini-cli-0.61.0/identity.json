@@ -115,6 +115,7 @@
   ],
   "unpublished_later_stable": "0.61.1",
   "unpublished_interior_gaps": [
+    "0.56.1",
     "0.59.1"
   ],
   "ignored_preview": "0.62.0-preview.0",

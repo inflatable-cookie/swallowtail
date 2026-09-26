@@ -25,7 +25,6 @@ fn qualified_and_unverified_newer_versions_probe_the_approved_target() {
         ("0.54.4", true),
         ("0.55.1", true),
         ("0.56.0", true),
-        ("0.56.1", true),
         ("0.57.0", true),
         ("0.58.0", true),
         ("0.59.0", true),
@@ -62,7 +61,7 @@ fn qualified_and_unverified_newer_versions_probe_the_approved_target() {
 
 #[test]
 fn older_version_and_unpublished_gap_are_incompatible() {
-    for version in ["0.50.0", "0.59.1"] {
+    for version in ["0.50.0", "0.56.1", "0.59.1"] {
         let host_id = ExecutionHostId::new("fixture.host.incompatible").expect("valid host");
         let host = DiscoveryHost::new(version);
         let outcome = block_on(
@@ -90,7 +89,6 @@ fn headless_probe_qualifies_frozen_range_and_keeps_newer_visible() {
         ("0.54.4", true),
         ("0.55.1", true),
         ("0.56.0", true),
-        ("0.56.1", true),
         ("0.57.0", true),
         ("0.58.0", true),
         ("0.59.0", true),

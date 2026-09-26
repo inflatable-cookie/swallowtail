@@ -6,6 +6,19 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- raise the Antigravity catalogue ceiling through official `1.2.11` and put
+  the `antigravity.headless` stop to the operator: Research 353 freezes
+  `1.2.8` through `1.2.11` with both platform digests, reproduces Research
+  346's `1.2.7` boundary, and classifies every published hop under the
+  2026-09-15 release-notes authority. No hop names a selected `agy models`
+  change, so the catalogue claim advances to maintained `1.1.9..=1.2.11` on
+  `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1`. Headless stays at
+  maintained `1.1.9..=1.1.17` because no later release publishes a finite
+  model-retry attempt bound or disable control; its unqualified gap becomes
+  `1.1.18..=1.2.11`, and Research 353 raises the Contract 023 acceptance,
+  retry-pin, and keep-ceiling options to Tom. The `1.2.11` `--effort` mapping
+  is a selected change for any future headless milestone. No provider
+  operation or host mutation occurred.
 - raise the Ollama attached-runtime qualified ceiling through official
   `0.34.4`: Research 350 freezes both published hops after `0.34.2` with
   tag/commit/tree/tarball and selected-file hashes, and reproduces Research

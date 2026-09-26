@@ -1,0 +1,172 @@
+{
+  "axis": "antigravity-cli.release",
+  "observed_at": "2026-09-26",
+  "github_repo": "google-antigravity/antigravity-cli",
+  "official_latest": "1.2.11",
+  "not_gemini_cli": true,
+  "not_antigravity_acp": true,
+  "card": "swallowtail#065 antigravity.headless adaptation to current official",
+  "host": {
+    "installed": false,
+    "install_attempted": false,
+    "executed_during_probe": false
+  },
+  "official": {
+    "version": "1.2.11",
+    "published_at": "2026-09-25T04:22:17Z",
+    "github_commit": "6dadd6227a49905f475d22b7f0afe59493229595",
+    "assets": {
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "sha256": "c91c62c5e6fa954f5a7e1d7b9ad417d749db4aa60a4ba0b3d604dec1b645d190",
+        "size": 60414410,
+        "extracted_cli_sha256": "ec7cf797ecb0e1d91ddf3b6d9d6c1d616bb89f78a5b0e43536b72a7fce695f56",
+        "extracted_cli_size": 219545808,
+        "elf_build_id": "257bedb917787ceb25bbe0d36687c663"
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "sha256": "437a813cd7c606ccbb3180886887fc69361c28fe8e880327b3b82201afa900cc",
+        "tarball_size": 53058630,
+        "extracted_cli_sha256": "42e76bedafb5896bc6a6eefb61902162f6ba08ddf59efd3357767102e3a59a0c",
+        "extracted_cli_size": 186406752
+      }
+    }
+  },
+  "published_stables_from_previous_ceiling": [
+    "1.2.8",
+    "1.2.9",
+    "1.2.10",
+    "1.2.11"
+  ],
+  "artifacts": {
+    "1.2.8": {
+      "published_at": "2026-09-22T04:12:17Z",
+      "github_commit": "ad7d70342a108687a1b36db7573050de3e9c2c3e",
+      "linux_x64_tarball_sha256": "244752206d1f65c01aff489628f1df51f1a3fddacaa8ed74984661ebb6d09136",
+      "linux_x64_tarball_size": 59525457,
+      "mac_arm64_tarball_sha256": "f77d57d99ca83e50a3a767d70621c99962ce4242e5470220f3adbf1c50844538",
+      "mac_arm64_tarball_size": 52219853,
+      "linux_x64_extracted_cli_sha256": "c20434f0b9278196498069dac5a0a2e72bc0b5f8aebdf17c5d535b5369b76f67",
+      "linux_x64_extracted_cli_size": 216797392,
+      "linux_x64_elf_build_id": "65997a9e3a37b8a6666307959500a78e",
+      "mac_arm64_extracted_cli_sha256": "62913fb38f14d376e67b62014e701063f4061aba60b0e049cb6af9cab62763ef",
+      "mac_arm64_extracted_cli_size": 184085952
+    },
+    "1.2.9": {
+      "published_at": "2026-09-23T04:42:15Z",
+      "github_commit": "818089f390e240921bb597b7a22ce9c96cdf7fe6",
+      "linux_x64_tarball_sha256": "d9850373f3df866011024a961fa9740cc4adaac060eebe9c70fbf263ac6b2624",
+      "linux_x64_tarball_size": 59668209,
+      "mac_arm64_tarball_sha256": "2b2671c846f62cb1159817517e4a9fff3e9a2ffe01f9dd0b3e227298d88b46f6",
+      "mac_arm64_tarball_size": 52354867,
+      "linux_x64_extracted_cli_sha256": "1dbb10f8295cc1ad2e558bd006c7808fe53b6c7f678a887eb557b576bb591711",
+      "linux_x64_extracted_cli_size": 217424080,
+      "linux_x64_elf_build_id": "268d50b56fcfeb754baa4ec32408b0b4",
+      "mac_arm64_extracted_cli_sha256": "0ff346ae903f15d863bd6a3e401638b612848210d28b174461acdb8780ac8c22",
+      "mac_arm64_extracted_cli_size": 184515040
+    },
+    "1.2.10": {
+      "published_at": "2026-09-24T06:26:54Z",
+      "github_commit": "59a894a009e1ec73129112c8d744ff6e9eb5a81d",
+      "linux_x64_tarball_sha256": "77cb69251292aa35b0b662f91f704f06dd787b72f7902a62db8c6d692989203e",
+      "linux_x64_tarball_size": 60286675,
+      "mac_arm64_tarball_sha256": "95d5d8ab8870b849a157f647bb4d9953184f97855cbfbedebdedcc421ca5b435",
+      "mac_arm64_tarball_size": 52941197,
+      "linux_x64_extracted_cli_sha256": "aea7ed8df1e79b716c0ccd14c7d8086db75b14da535ffb7febdec9a488deff67",
+      "linux_x64_extracted_cli_size": 218566864,
+      "linux_x64_elf_build_id": "5d98c91992eba8921435a28d79f35d87",
+      "mac_arm64_extracted_cli_sha256": "1e43262d55f69e20bf4ba4f087252d65dd4ed37c0a980fae50a6bd5bc3637650",
+      "mac_arm64_extracted_cli_size": 185534944
+    },
+    "1.2.11": {
+      "published_at": "2026-09-25T04:22:17Z",
+      "github_commit": "6dadd6227a49905f475d22b7f0afe59493229595",
+      "linux_x64_tarball_sha256": "c91c62c5e6fa954f5a7e1d7b9ad417d749db4aa60a4ba0b3d604dec1b645d190",
+      "linux_x64_tarball_size": 60414410,
+      "mac_arm64_tarball_sha256": "437a813cd7c606ccbb3180886887fc69361c28fe8e880327b3b82201afa900cc",
+      "mac_arm64_tarball_size": 53058630,
+      "linux_x64_extracted_cli_sha256": "ec7cf797ecb0e1d91ddf3b6d9d6c1d616bb89f78a5b0e43536b72a7fce695f56",
+      "linux_x64_extracted_cli_size": 219545808,
+      "linux_x64_elf_build_id": "257bedb917787ceb25bbe0d36687c663",
+      "mac_arm64_extracted_cli_sha256": "42e76bedafb5896bc6a6eefb61902162f6ba08ddf59efd3357767102e3a59a0c",
+      "mac_arm64_extracted_cli_size": 186406752
+    }
+  },
+  "frozen_1_2_7_boundary_reproduction": {
+    "1.2.7_linux_x64_tarball_sha256": "e410dd56d8c213ef12643d3ff5eaaab57a17e05bbf72e9415322f23879fc4a18",
+    "1.2.7_mac_arm64_tarball_sha256": "ce9fe3f4d6f44a2b1c83b334fc5c8f2975079959e24dd805e10eb49ab8c76a7e",
+    "matches_research_346": true,
+    "digest_disagreement": false
+  },
+  "bounded_binary_observations": {
+    "method": "one bounded targeted string check per published linux-x64 artifact for the release semver and any model-retry control name; exhaustive binary forensics stays stopped at Tom's 2026-09-15 release-notes-authority ruling",
+    "model_retry_control_lead": "AGY_CLI_MODEL_API_MAX_RETRIES",
+    "model_retry_control_published_in_official_notes": false,
+    "model_retry_control_semantics_verified": false,
+    "version_literal": {
+      "1.2.8": "fused-with-neighbour-literal",
+      "1.2.9": "fused-with-neighbour-literal",
+      "1.2.10": "standalone",
+      "1.2.11": "standalone"
+    }
+  },
+  "official_docs_cross_check": {
+    "docs_url": "https://antigravity.google/docs/cli/headless",
+    "docs_published_print_timeout_default": "5m",
+    "release_notes_print_timeout_default_from_1_2_6": "unlimited",
+    "behavioural_authority": "official-release-notes",
+    "docs_publish_any_model_retry_control": false,
+    "artifact_identity_disagreement_across_channels": false
+  },
+  "public_git_hops": "CHANGELOG.md-only",
+  "first_unpublished_later_stable": "1.2.12",
+  "first_unpublished_release_absent": true,
+  "first_unpublished_tag_absent": true,
+  "keep_1_1_8_incompatible": true,
+  "decoder_corpus": "antigravity-cli-1.1.9",
+  "claim_at_observation": {
+    "baseline": "1.1.9",
+    "catalogue_latest_qualified": "1.2.7",
+    "headless_latest_qualified": "1.1.17",
+    "posture": "allow_unverified",
+    "classification_of_1_2_8": "unverified_newer",
+    "classification_of_1_2_11": "unverified_newer"
+  },
+  "identity_decision": {
+    "behavioural_authority": "official-release-notes",
+    "authority_ruling": "Tom directed on 2026-09-15 that the official release notes are the behavioural authority; exhaustive binary scanning stays stopped and collected hashes are preserved",
+    "catalogue": {
+      "shape": "compatible-extension",
+      "advance_to": "1.2.11",
+      "qualify_intermediates": [
+        "1.2.8",
+        "1.2.9",
+        "1.2.10"
+      ],
+      "keep_catalogue_behavior": "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1",
+      "keep_baseline": "1.1.9",
+      "reason": "no published selected-path change to `agy models` in `1.2.8..=1.2.11`; every published hop names the agent turn loop, the TUI, the artifact viewer, settings scanning, sandbox prompting, or the headless `-p`/`--prompt` path, not the catalogue command"
+    },
+    "headless": {
+      "shape": "stop-pending-operator-ruling",
+      "blocking_hop": "1.1.22",
+      "keep_latest_qualified": "1.1.17",
+      "unqualified_gap": "1.1.18..=1.2.11",
+      "keep_headless_behavior": "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1",
+      "keep_baseline": "1.1.9",
+      "reason": "the `1.1.22` provider-managed model-request retry still has no published finite attempt bound or disable control through `1.2.11`; `1.2.7` caps only the per-attempt backoff, `1.2.9` extends the background-task wait to the print-timeout deadline with a 30-minute cap, `1.2.10` adds the partial-output `AGY_ERROR` exit-3 shape, and `1.2.11` moves `--effort` model-support semantics, so qualifying needs a Contract 023 acceptance or an unpublished disable pin"
+    },
+    "new_public_operation": false,
+    "new_private_milestone": false,
+    "headless_must_move_with_catalogue": false,
+    "headless_stop_reopened": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_print_run": false,
+    "host_install_changed": false,
+    "downloaded_binaries_executed": false,
+    "exhaustive_binary_forensics_after_ruling": false,
+    "official_latest_moved_during_run": false
+  }
+}

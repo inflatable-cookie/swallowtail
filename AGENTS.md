@@ -22,6 +22,7 @@ consumers may provide evidence; they do not own Swallowtail decisions.
 - Consumer guides, route and feature matrices: `docs/guides/`
 - Retained research evidence: `docs/research/`
 - Release compatibility notes: `docs/releases/`
+
 Tasks, briefs, status and papercuts live in Queue, never in this repository.
 File small recurring friction as a Queue papercut and carry on: from
 `~/Dev/projects/paseo-northstar-queue`, run
@@ -41,7 +42,9 @@ effigy test --plan
   exact workspace packages
 - `effigy package:verify-affected <pkg>...` — package archive assembly for the
   same scope
-- `effigy qa:docs` — docs, link, index, retired-concept and guide checks
+- `effigy qa:docs` — docs, link, index and guide checks
+- `effigy skill run northstar-lean/retired-concepts` — retired-concept check;
+  kept out of repository QA, so run it before pushing docs changes
 - `effigy qa:routes` — route, feature and activity matrix checks
 - `effigy qa` — the full board
 

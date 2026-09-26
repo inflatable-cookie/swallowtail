@@ -16,17 +16,28 @@ pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
 /// Latest catalogue release in the current maintained qualification window.
 pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.2.11";
 /// Latest headless release in the current maintained qualification window.
-pub const ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
-/// Historical shared ceiling. The headless claim still ends here; the
-/// catalogue claim advanced to `1.2.11` under Research 353 while headless
-/// stays stopped at the `1.1.22` provider-managed-retry boundary pending the
-/// ruling that record raises.
-pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
+/// Exact `1.2.11` qualifies on the retry-disabled behaviour revision under
+/// Research 357; `1.1.18..=1.2.10` stay unqualified (no pin evidence).
+pub const ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "1.2.11";
+/// Historical shared ceiling. Both claims now end at `1.2.11`: the catalogue
+/// claim advanced under Research 353 and exact headless `1.2.11` qualifies on
+/// the retry-disabled revision under Research 357 with
+/// `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned in its approved environment.
+pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.2.11";
+/// Required retry-pin control for the `1.2.11` headless segment.
+pub const ANTIGRAVITY_HEADLESS_RETRY_PIN_NAME: &str = "AGY_CLI_MODEL_API_MAX_RETRIES";
+/// Disabling pin value: provider-managed model-request retry is disabled,
+/// so the segment needs no Contract 023 exception.
+pub const ANTIGRAVITY_HEADLESS_RETRY_PIN_VALUE: &str = "0";
 
 pub(crate) const ANTIGRAVITY_CATALOGUE_BEHAVIOR: &str =
     "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1";
 pub(crate) const ANTIGRAVITY_HEADLESS_BEHAVIOR: &str =
     "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1";
+/// Exact-`1.2.11` headless behaviour with provider-managed model-request
+/// retry disabled by the approved-environment pin (Research 357).
+pub(crate) const ANTIGRAVITY_HEADLESS_RETRY_DISABLED_BEHAVIOR: &str =
+    "antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[must_use]
@@ -73,6 +84,12 @@ pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
 
 #[must_use]
 /// Returns the headless execution release compatibility claim.
+///
+/// Two behaviour segments: `1.1.9..=1.1.17` on the original revision, and
+/// exact `1.2.11` on the retry-disabled revision whose approved environment
+/// pins `AGY_CLI_MODEL_API_MAX_RETRIES=0` (Research 357). `1.1.18..=1.2.10`
+/// fall between the segments and assess incompatible until per-point pin
+/// evidence lands.
 pub fn antigravity_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("antigravity.headless.release-window-1")
@@ -80,14 +97,24 @@ pub fn antigravity_headless_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [InterfaceVersionSegment::new(
-            version(ANTIGRAVITY_BASELINE_VERSION).expect("static Antigravity release is valid"),
-            version(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION)
-                .expect("static Antigravity release is valid"),
-            InterfaceBehaviorRevision::new(ANTIGRAVITY_HEADLESS_BEHAVIOR)
-                .expect("static Antigravity headless behavior is valid"),
-            InterfaceSupportStatus::Maintained,
-        )],
+        [
+            InterfaceVersionSegment::new(
+                version(ANTIGRAVITY_BASELINE_VERSION).expect("static Antigravity release is valid"),
+                version("1.1.17").expect("static Antigravity release is valid"),
+                InterfaceBehaviorRevision::new(ANTIGRAVITY_HEADLESS_BEHAVIOR)
+                    .expect("static Antigravity headless behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                version(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION)
+                    .expect("static Antigravity release is valid"),
+                version(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION)
+                    .expect("static Antigravity release is valid"),
+                InterfaceBehaviorRevision::new(ANTIGRAVITY_HEADLESS_RETRY_DISABLED_BEHAVIOR)
+                    .expect("static Antigravity headless behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
         [],
     )
     .expect("static Antigravity headless compatibility claim is valid")
@@ -149,9 +176,10 @@ pub(crate) fn validate_antigravity_headless_plan(
     let assessment = claim.assess(binding.version());
     if assessment != plan.assess_interface_version(binding)
         || !assessment.is_permitted()
-        || assessment
-            .behavior_revision()
-            .is_none_or(|revision| revision.as_str() != ANTIGRAVITY_HEADLESS_BEHAVIOR)
+        || assessment.behavior_revision().is_none_or(|revision| {
+            revision.as_str() != ANTIGRAVITY_HEADLESS_BEHAVIOR
+                && revision.as_str() != ANTIGRAVITY_HEADLESS_RETRY_DISABLED_BEHAVIOR
+        })
     {
         return Err(failure(
             "swallowtail.antigravity.headless.version_incompatible",
@@ -173,7 +201,8 @@ fn version(value: &str) -> Option<InterfaceVersion> {
 #[cfg(test)]
 mod tests {
     use super::{
-        ANTIGRAVITY_CATALOGUE_BEHAVIOR, ANTIGRAVITY_HEADLESS_BEHAVIOR, ANTIGRAVITY_RELEASE_AXIS,
+        ANTIGRAVITY_CATALOGUE_BEHAVIOR, ANTIGRAVITY_HEADLESS_BEHAVIOR,
+        ANTIGRAVITY_HEADLESS_RETRY_DISABLED_BEHAVIOR, ANTIGRAVITY_RELEASE_AXIS,
         antigravity_catalogue_claim, antigravity_headless_claim, antigravity_release_binding,
     };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
@@ -206,24 +235,49 @@ mod tests {
     }
 
     #[test]
-    fn headless_claim_stops_at_the_1_1_22_retry_boundary() {
+    fn headless_claim_keeps_1_1_17_and_pins_exact_1_2_11() {
         let claim = antigravity_headless_claim();
-        assert!(claim.supports(&version("1.1.9")));
-        assert!(claim.supports(&version("1.1.17")));
-        for stopped in [
-            "1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.2", "1.2.7", "1.2.8", "1.2.9", "1.2.10",
-            "1.2.11",
-        ] {
-            let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-                claim.assess(&version(stopped))
-            else {
-                panic!("headless stop at 1.1.22 leaves {stopped} unverified");
-            };
-            assert_eq!(
-                newer.behavior_revision().as_str(),
-                ANTIGRAVITY_HEADLESS_BEHAVIOR
+        for kept in ["1.1.9", "1.1.14", "1.1.17"] {
+            assert!(
+                matches!(
+                    claim.assess(&version(kept)),
+                    InterfaceCompatibilityAssessment::Qualified(matched)
+                        if matched.behavior_revision().as_str() == ANTIGRAVITY_HEADLESS_BEHAVIOR
+                ),
+                "{kept} stays on the original headless revision"
             );
         }
+        assert!(
+            matches!(
+                claim.assess(&version("1.2.11")),
+                InterfaceCompatibilityAssessment::Qualified(matched)
+                    if matched.behavior_revision().as_str()
+                        == ANTIGRAVITY_HEADLESS_RETRY_DISABLED_BEHAVIOR
+            ),
+            "exact 1.2.11 qualifies on the retry-disabled revision"
+        );
+        // Pin evidence is 1.2.11-only (Research 357): the interior gap is
+        // incompatible, not unverified newer.
+        for gap in [
+            "1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.2", "1.2.7", "1.2.8", "1.2.9", "1.2.10",
+        ] {
+            assert!(
+                matches!(
+                    claim.assess(&version(gap)),
+                    InterfaceCompatibilityAssessment::Incompatible
+                ),
+                "{gap} stays unqualified until per-point pin evidence lands"
+            );
+        }
+        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+            claim.assess(&version("1.2.12"))
+        else {
+            panic!("later Antigravity headless release remains visibly unverified");
+        };
+        assert_eq!(
+            newer.behavior_revision().as_str(),
+            ANTIGRAVITY_HEADLESS_RETRY_DISABLED_BEHAVIOR
+        );
         assert!(!claim.permits(&version("1.1.8")));
     }
 

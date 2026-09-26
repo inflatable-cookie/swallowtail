@@ -1,0 +1,59 @@
+{
+  "record": "docs/research/357-antigravity-headless-retry-pin-evidence.md",
+  "card": "swallowtail#069",
+  "artifact": "antigravity-cli-1.2.11",
+  "official": {
+    "version": "1.2.11",
+    "published_at": "2026-09-25T04:22:17Z",
+    "github_commit": "6dadd6227a49905f475d22b7f0afe59493229595",
+    "linux_x64_tarball_sha256": "c91c62c5e6fa954f5a7e1d7b9ad417d749db4aa60a4ba0b3d604dec1b645d190",
+    "linux_x64_extracted_cli_sha256": "ec7cf797ecb0e1d91ddf3b6d9d6c1d616bb89f78a5b0e43536b72a7fce695f56",
+    "mac_arm64_tarball_sha256": "437a813cd7c606ccbb3180886887fc69361c28fe8e880327b3b82201afa900cc",
+    "mac_arm64_extracted_cli_sha256": "42e76bedafb5896bc6a6eefb61902162f6ba08ddf59efd3357767102e3a59a0c"
+  },
+  "control": {
+    "name": "AGY_CLI_MODEL_API_MAX_RETRIES",
+    "parser": "strconv.ParseUint(value, 10, 32)",
+    "accepted_domain": "base-10 uint32, 0..=4294967295",
+    "target_field": "ModelAPIRetryConfig.max_retries",
+    "loader": "backend.applyModelAPIMaxRetriesOverride",
+    "unset_attempts": 9,
+    "empty_attempts": 9,
+    "empty_warns": false,
+    "invalid_falls_back_to_default": true,
+    "invalid_attempts": 9,
+    "invalid_warning_format": "invalid %s=%q: must be a non-negative integer within uint32: %v; falling back to the default retry budget",
+    "attempts_for_pin": {
+      "0": 1,
+      "1": 2,
+      "2": 3
+    },
+    "pin_classes_bounded": ["502", "503", "504", "429", "mid-stream-EOF"],
+    "terminal_class_single_attempt": ["400"],
+    "backoff_first_seconds": 4,
+    "backoff_cap_seconds": 30,
+    "model_output_retry_has_env_override": false
+  },
+  "effort_mapping_1_2_11": {
+    "explicit_model_requires_effort": true,
+    "admitted": ["low", "medium", "high"]
+  },
+  "decision": {
+    "pin_name": "AGY_CLI_MODEL_API_MAX_RETRIES",
+    "pin_value": "0",
+    "headless_behavior": "antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1",
+    "kept_behavior": "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1",
+    "kept_segment": "1.1.9..=1.1.17",
+    "pinned_point": "1.2.11",
+    "unqualified_gap": "1.1.18..=1.2.10",
+    "contract_023_exception": false
+  },
+  "method": {
+    "transport": "loopback http://127.0.0.1:18731 via AGY_GATEWAY_URL measurement apparatus with dummy key; approved route environment carries no gateway variables",
+    "home": "disposable per run",
+    "egress_audit": "lsof polling plus dead-port proxy trap; only loopback contacted",
+    "provider_call": false,
+    "login_or_credential": false,
+    "host_install": false
+  }
+}

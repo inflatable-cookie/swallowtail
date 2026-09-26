@@ -507,7 +507,9 @@ fn protocol_classifies_every_published_selected_path_change_per_claim() {
 fn per_claim_segments_split_catalogue_from_the_headless_stop() {
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
     assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.2.11");
-    assert_eq!(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION, "1.1.17");
+    // Research 357 qualifies exact headless 1.2.11 on the retry-disabled
+    // revision; the frozen corpus above still records its earlier stop.
+    assert_eq!(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION, "1.2.11");
 
     let catalogue = antigravity_catalogue_claim();
     for candidate in [
@@ -532,12 +534,18 @@ fn per_claim_segments_split_catalogue_from_the_headless_stop() {
             InterfaceCompatibilityAssessment::Qualified(_)
         ));
     }
+    assert!(matches!(
+        headless.assess(&version("1.2.11")),
+        InterfaceCompatibilityAssessment::Qualified(_)
+    ));
+    // Research 357 proves the pin on 1.2.11 only: the interior gap is
+    // incompatible rather than unverified newer.
     for candidate in [
-        "1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.1", "1.2.2", "1.2.7", "1.2.8", "1.2.11",
+        "1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.1", "1.2.2", "1.2.7", "1.2.8",
     ] {
         assert!(matches!(
             headless.assess(&version(candidate)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+            InterfaceCompatibilityAssessment::Incompatible
         ));
     }
     assert!(!headless.permits(&version("1.1.8")));

@@ -615,20 +615,24 @@ fn stop_decision_froze_the_headless_ceiling_and_gated_card_072() {
         "1.1.17"
     );
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
-    assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.1.17");
+    assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.2.11");
 
     // Research 283's stop froze the then-shared ceiling at 1.1.17. Research
     // 323 later split the claims: the headless claim still stops at the
     // 1.1.22 provider-retry hop, while the catalogue claim advanced to
     // official 1.2.2 because the release notes name no selected-path change
     // to `agy models`. Research 346 later raised that same catalogue
-    // segment through official 1.2.7.
+    // segment through official 1.2.7, and Research 357 qualifies exact
+    // headless 1.2.11 on the retry-disabled revision, so the shared ceiling
+    // is 1.2.11 while the frozen 283 corpus still records its stop.
     let headless = antigravity_headless_claim();
     assert!(!headless.permits(&version("1.1.8")));
+    // Pin evidence is 1.2.11-only: these interior points are incompatible
+    // rather than unverified newer.
     for candidate in ["1.1.18", "1.1.22", "1.1.26"] {
         assert!(matches!(
             headless.assess(&version(candidate)),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+            InterfaceCompatibilityAssessment::Incompatible
         ));
     }
     let catalogue = antigravity_catalogue_claim();

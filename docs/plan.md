@@ -23,10 +23,10 @@ at `49b0d308`, before the lean cut.
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Known open
    stops, each getting an adaptation task (Tom, 2026-09-26):
-   `antigravity.headless` at `1.1.17` behind the `1.1.22`
-   provider-managed-retry stop (Research 283, 323, 353; catalogue now at
-   `1.2.11`): evidence on the `AGY_CLI_MODEL_API_MAX_RETRIES` pin first,
-   accepting provider retry as the fallback (Q-003), and
+   `antigravity.headless` at exact `1.2.11` on the retry-disabled revision
+   with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned (Research 357; catalogue
+   also at `1.2.11`): `1.1.18..=1.2.10` still need per-point pin backfill,
+   and accepting provider retry stays the Q-003 fallback for those, and
    `kimi-code.local-server` failing closed above `0.39.1` since `0.40.0`
    removed the Bash workspace restriction (Research 282, 326). An adaptation
    that needs a Contract 023 exception or narrows a consumer-visible

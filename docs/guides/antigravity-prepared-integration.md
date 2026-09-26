@@ -23,7 +23,10 @@ operation shape, authority, and lifecycle.
 
 The host supplies:
 
-- one approved `agy` executable target and explicit environment
+- one approved `agy` executable target and explicit environment, including
+  `AGY_CLI_MODEL_API_MAX_RETRIES=0` for exact `1.2.11` headless runs and
+  continuation turns (Research 357); the pin is required, not optional,
+  because invalid or missing values fall back to 8 provider-managed retries
 - provider-owned personal Google subscription sign-in state
 - an access profile from `antigravity_personal_google_access_profile`
 - matching ready `PreparedAccessEvidence`
@@ -35,17 +38,22 @@ or acquire a credential. The access profile is provider-supported local auth
 with subscription allowance and no credential reference.
 
 Qualified catalogue versions are `1.1.9..=1.2.11` on
-`antigravity-cli.release`. Qualified headless versions remain
-`1.1.9..=1.1.17`: the official `1.1.22` release introduced provider-managed
-HTTP 502 retry on the model request with no published finite bound or
-disable control, later notes broaden that retry (`1.1.28`, `1.2.1`)
-without bounding it, and `1.2.6` through `1.2.11` change headless timeout,
-background-task wait, terminal error, and retry-backoff behaviour without a
-finite attempt bound or disable control, so `1.1.18..=1.2.11` stay
-unqualified for headless runs and turn continuation under Contract 023.
-Research 353 raises the acceptance options to the operator and changes no
-headless claim. Later stable versions remain visible as unverified newer.
-`1.1.8` is not silently accepted from the shared documentation tag.
+`antigravity-cli.release`. Qualified headless versions are `1.1.9..=1.1.17`
+on `antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1` plus exact
+`1.2.11` on
+`antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1`:
+the official `1.1.22` release introduced provider-managed model-request
+retry, and Research 357 proves the `1.2.11` artifact honours
+`AGY_CLI_MODEL_API_MAX_RETRIES` (`ParseUint(_, 10, 32)` into
+`ModelAPIRetryConfig.max_retries`): `0` disables retry to exactly one
+attempt, finite `N` allows exactly `N+1` attempts on every listed
+retryable class, and invalid values warn and keep the default. The exact
+`1.2.11` headless segment therefore requires `AGY_CLI_MODEL_API_MAX_RETRIES=0`
+in its approved environment; provider-managed retry is disabled there, so
+no Contract 023 exception applies. `1.1.18..=1.2.10` stay unqualified for
+headless runs and turn continuation until per-point pin evidence lands.
+Later stable versions remain visible as unverified newer. `1.1.8` is not
+silently accepted from the shared documentation tag.
 
 ## Prepare The Installation
 

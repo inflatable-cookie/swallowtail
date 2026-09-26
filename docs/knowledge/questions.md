@@ -59,3 +59,8 @@ Recommendation: option 2 first, as a bounded evidence task on the frozen
 artifact against a fake model endpoint (no provider); fall back to option 1
 if the control doesn't hold.
 
+Evidence: Research 357. The control bounds every listed retryable class
+and `0` disables retry, so exact `1.2.11` headless qualifies on a
+retry-disabled revision with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned
+(swallowtail#069). `1.1.18..=1.2.10` still need per-point pin backfill.
+

@@ -6,6 +6,21 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify exact Antigravity `1.2.11` headless on a retry-disabled behaviour
+  revision: Research 357 proves `AGY_CLI_MODEL_API_MAX_RETRIES` in the
+  frozen `1.2.11` artifact parses with `ParseUint(_, 10, 32)` into
+  `ModelAPIRetryConfig.max_retries`, so `0` disables provider-managed
+  model-request retry to exactly one attempt, finite `N` allows exactly
+  `N+1` attempts on every listed retryable class (502, 503, 504, 429,
+  mid-stream interruption), and invalid values warn and keep the default.
+  The new `1.2.11..=1.2.11` headless segment on
+  `antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1`
+  requires `AGY_CLI_MODEL_API_MAX_RETRIES=0` in its approved environment
+  and takes no Contract 023 exception. `1.1.9..=1.1.17` stay unchanged and
+  `1.1.18..=1.2.10` stay unqualified until per-point pin evidence lands.
+  Loopback evidence only: no provider call, login, or host change. The
+  `1.2.11` `--effort` mapping (explicit `--model` requires `low`,
+  `medium`, or `high`) is recorded in the milestone.
 - raise the Antigravity catalogue ceiling through official `1.2.11` and put
   the `antigravity.headless` stop to the operator: Research 353 freezes
   `1.2.8` through `1.2.11` with both platform digests, reproduces Research

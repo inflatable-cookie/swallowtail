@@ -24,7 +24,8 @@ at `49b0d308`, before the lean cut.
    consumer hits an unverified-newer point; one family at a time. Known open
    stops, each getting an adaptation task (Tom, 2026-09-26):
    `antigravity.headless` at `1.1.17` behind the `1.1.22`
-   provider-managed-retry stop (Research 283, 323, 346), and
+   provider-managed-retry stop (Research 283, 323, 353; catalogue now at
+   `1.2.11`), awaiting Q-003, and
    `kimi-code.local-server` failing closed above `0.39.1` since `0.40.0`
    removed the Bash workspace restriction (Research 282, 326). An adaptation
    that needs a Contract 023 exception or narrows a consumer-visible

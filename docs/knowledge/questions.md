@@ -36,3 +36,24 @@ fresh disposable checkout, install its own dependencies and exit 0 on pass.
 Candidate: `effigy qa:docs && effigy qa:routes && effigy format:check`, with
 package-scoped `effigy validate:focused` named per brief. Full `effigy qa`
 runs the whole workspace test suite and is likely too slow per task.
+
+## Q-003 — How should `antigravity.headless` qualify past the `1.1.22` retry stop?
+
+Status: open
+Asked: 2026-09-26
+
+From `1.1.22` through official `1.2.11`, Antigravity retries failed model
+requests itself with no published attempt bound or off switch (Research 353,
+"Ruling request"). The claim stays `1.1.9..=1.1.17`. Options:
+
+1. Accept provider-managed retry as a Contract 023 exception on a new
+   milestone. Consumer-visible: only the host deadline bounds a turn.
+2. Pin a finite or disabling retry control. `1.2.11` contains an
+   undocumented `AGY_CLI_MODEL_API_MAX_RETRIES`; its semantics need evidence
+   first, and pinning it changes the route's approved environment.
+3. Keep the ceiling with a successor task.
+
+Recommendation: option 2 first, as a bounded evidence task on the frozen
+artifact against a fake model endpoint (no provider); fall back to option 1
+if the control doesn't hold.
+

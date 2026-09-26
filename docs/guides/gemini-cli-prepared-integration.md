@@ -27,8 +27,8 @@ the plan or diagnostics.
 
 Swallowtail does not install Gemini CLI, search `PATH`, choose an account,
 credential, model, workspace, sandbox, endpoint, billing route, or fallback.
-ACP `0.51.0..=0.61.0` is qualified. Headless `0.51.0..=0.61.0` is
-qualified. Unpublished `0.59.1` is excluded from both. Later stable releases may prepare as visible `UnverifiedNewer`;
+ACP `0.51.0..=0.61.0` excluding unpublished `0.59.1` is qualified. Headless
+`0.51.0..=0.61.0` excluding unpublished `0.59.1` is qualified. Later stable releases may prepare as visible `UnverifiedNewer`;
 older and excluded releases do not prepare and newer releases gain no
 capability.
 

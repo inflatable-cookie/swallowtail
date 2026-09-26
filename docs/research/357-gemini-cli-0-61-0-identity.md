@@ -17,7 +17,7 @@ and does the Research 351 ACP `mcpServers` HTTP mapping still hold at
 
 ## Answer
 
-Yes on both axes. Compatible extension to maintained `0.51.0..=0.61.0` on the
+Yes on both axes. Compatible extension to maintained `0.51.0..=0.61.0`, excluding unpublished `0.59.1`, on the
 unchanged behavior revisions. The HTTP MCP mapping is byte-identical.
 
 ## Rank
@@ -144,9 +144,10 @@ Every selected option literal keeps its multiplicity.
 ## Decision
 
 - ACP: compatible extension. Keep `gemini-cli.acp.v0.51.0`, baseline `0.51.0`,
-  `AllowUnverified`; maintained `0.51.0..=0.61.0`.
+  `AllowUnverified`; maintained `0.51.0..=0.61.0` excluding unpublished `0.59.1`.
 - Headless: compatible extension. Keep `gemini-cli.headless.stream-json.v1`,
-  baseline `0.51.0`, `AllowUnverified`; maintained `0.51.0..=0.61.0`.
+  baseline `0.51.0`, `AllowUnverified`; maintained `0.51.0..=0.61.0`
+  excluding unpublished `0.59.1`.
 - Qualify `0.60.0` and `0.61.0`. Unpublished `0.59.1`, the Research 324
   `UnverifiedNewer` point, now sits inside both windows and becomes an
   excluded gap: it stays incompatible. `0.61.1` stays the visible

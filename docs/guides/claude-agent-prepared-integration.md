@@ -131,9 +131,14 @@ this route emits `http` only. `sse` stays modelled through
 provider gate on the `0.79.0` map.
 
 The Contract 061 placement projection names `consumer-supplied-http` when an
-HTTP entry is bound. Emission is not honouring: `client_mcp_servers` stays No
-as a producer gap naming g06.033. The one authorized live attempt on exact
-`0.79.0` was not accepted (typed stop `cleanup_failed`; Research 352).
+HTTP entry is bound. Research 361 accepted live honouring of that HTTP entry
+on exact `0.79.0` (`client_mcp_servers` Yes). The second authorized attempt
+connected, listed the tool, completed one tool call, ended the turn
+`Completed`, and closed `Clean`; the recorded model `claude-sonnet-4-6` is
+provenance. The first attempt was not accepted (typed stop `cleanup_failed`;
+Research 352), and its record kept no diagnostic code (diagnosis:
+Research 355). Later points in the window stay unqualified for honouring.
+stdio MCP live honouring is not that evidence.
 
 Local subscription access means the approved ACP process inherits the selected
 environment and uses authentication already held by the local Claude

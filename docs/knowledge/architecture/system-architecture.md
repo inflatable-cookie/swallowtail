@@ -333,10 +333,12 @@ OpenHands adds a package without a production route.
   plane audience, generated request, summary, lifecycle and error types, and
   bounded provider-neutral projection
 - `swallowtail-adapter-gemini` implements the qualified Gemini CLI
-  `0.51.0..=0.61.0` ambient-host interactive subset with separate read-only
+  `0.51.0..=0.61.0` (excluding unpublished `0.59.1`) ambient-host interactive
+  subset with separate read-only
   Plan Mode and bounded-write Auto Edit profiles, bounded host text read/write
   callbacks over ACP v1 stdio, and session-advertised model options retained as
   negotiated evidence; a separately qualified `0.51.0..=0.61.0` headless
+  (same `0.59.1` exclusion)
   route sends one prompt over stdin, consumes bounded `stream-json`, reports
   usage, requires
   durable local transcript retention, and forces no sandbox; one public

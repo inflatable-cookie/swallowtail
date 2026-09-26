@@ -37,10 +37,11 @@ at `49b0d308`, before the lean cut.
 ## Next
 
 - **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — one live
-  attempt on exact `0.59.0` after the fake-proven gate merges, using Tom's
-  free Gemini Developer API key (Gemini CLI keychain entry, 2026-09-26).
-  Free personal Google login ended on 2026-06-18, so the key is the only
-  free access path.
+  attempt on the host's Gemini CLI once it is qualified (it auto-updated to
+  official `0.61.0` on 2026-09-26, above the `0.59.0` ceiling), after the
+  fake-proven gate merges. Access is Tom's free Gemini Developer API key in
+  the Gemini CLI keychain entry. Free personal Google login ended on
+  2026-06-18.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the

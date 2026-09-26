@@ -7,7 +7,7 @@ annotated Git tags from the canonical repository.
 
 ### Notes
 - accept `claude-agent.acp` consumer HTTP MCP live honouring on exact
-  `claude-agent-acp` `0.79.0`: Research 360 records the one authorized
+  `claude-agent-acp` `0.79.0`: Research 361 records the one authorized
   second attempt (Tom, 2026-09-26), which connected, listed the tool,
   completed one tool call, ended the turn `Completed`, and closed `Clean`
   (cleanup class `clean`, no code, no stage; model `claude-sonnet-4-6` as

@@ -17,7 +17,7 @@ at `49b0d308`, before the lean cut.
    test-listener defect that dropped idle SSE streams; the second attempt,
    authorized by Tom on 2026-09-26, accepted the full tuple with `Clean`
    cleanup (Research 361), so `client_mcp_servers` is Yes on exact `0.79.0`
-   only. Official is now `0.81.2`, qualified separately afterwards; later
+   only. Official `0.81.2` is now the qualified ceiling (Research 362); later
    window points still need their own live gate.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a

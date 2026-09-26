@@ -153,6 +153,28 @@ fn harness_proves_declaration_connect_list_call_result_and_cleanup() {
             && message["params"]["mcpServers"][0]["headers"][0]["name"] == "Authorization"
     });
     assert!(declaration_sent);
+    assert_eq!(
+        host.observed_process().arguments,
+        ["--acp", "--approval-mode", "plan"]
+    );
+    assert!(
+        host.agent_messages().iter().any(|message| {
+            message["result"]["authMethods"]
+                .as_array()
+                .is_some_and(|methods| {
+                    methods
+                        .iter()
+                        .any(|method| method["id"] == "gemini-api-key")
+                })
+        }),
+        "fake initialize must advertise the API-key auth method"
+    );
+    assert!(
+        host.agent_messages()
+            .iter()
+            .any(|message| { message["result"]["modes"]["currentModeId"] == "plan" }),
+        "read-only profile must open as plan"
+    );
     let debug_server = format!("{server:?}");
     assert!(
         !debug_server.contains(server.bearer()) && !debug_server.contains(server.endpoint()),

@@ -12,9 +12,8 @@ What is true now:
   `opencode.acp` is live-proven honouring it; `claude-agent.acp` on exact
   `0.79.0` spent its one live attempt with typed `cleanup_failed` (Research
   352), and its gate now keeps the typed cleanup diagnostic for the next
-  authorized attempt (Research 355). `gemini-cli.acp` emits the entry; the
-  isolated `0.59.0` opt-in gate is ready (Research 356). The host CLI is
-  qualified at official `0.61.0` with the same mapping (Research 358).
+  authorized attempt (Research 355). `gemini-cli.acp` on host exact `0.61.0`
+  spent its one live attempt with typed `tool_not_called` (Research 360).
   `copilot-cli.acp`, `goose.acp` and `kiro.acp` emit the entry with live
   honouring unproven (Research 351).
 - Unavailable feature-matrix cells are provider limitations with frozen

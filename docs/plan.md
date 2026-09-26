@@ -29,7 +29,8 @@ at `49b0d308`, before the lean cut.
    accepting provider retry as the fallback (Q-003), and
    `kimi-code.local-server` failing closed above `0.39.1` since `0.40.0`
    removed the Bash workspace restriction (Research 282, 326, 354; official
-   now `2.1.1`), awaiting Q-004. An adaptation
+   now `2.1.1`): qualify `0.40.0..=2.1.1` under `AmbientHost` without the
+   check, documented, with `disabled_tools` as the consumer opt-out (Q-004). An adaptation
    that needs a Contract 023 exception or narrows a consumer-visible
    guarantee comes back to Tom as a ruling.
 

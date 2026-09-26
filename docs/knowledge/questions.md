@@ -61,7 +61,8 @@ if the control doesn't hold.
 
 ## Q-004 — How should `kimi-code.local-server` qualify past `0.39.1`?
 
-Status: open
+Status: answered 2026-09-26
+Answer: B (Tom). Plan item `version-currentness`.
 Asked: 2026-09-26
 
 `0.40.0` stopped checking the Bash tool's `cwd` argument against the

@@ -17,7 +17,9 @@ pub const fn swallowtail_adapter_gemini::GeminiProjectionOpenFailure::failure(&s
 pub struct swallowtail_adapter_gemini::GeminiAcpDriver
 impl swallowtail_adapter_gemini::GeminiAcpDriver
 pub const fn swallowtail_adapter_gemini::GeminiAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiAcpDriver::with_default_approval(self) -> Self
 pub fn swallowtail_adapter_gemini::GeminiAcpDriver::with_http_mcp_placement(self, swallowtail_adapter_gemini::GeminiAcpHttpMcpPlacement) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
+pub const fn swallowtail_adapter_gemini::GeminiAcpDriver::with_permission_allow_once(self) -> Self
 impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_gemini::GeminiAcpDriver
 pub fn swallowtail_adapter_gemini::GeminiAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_adapter_gemini::GeminiAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
@@ -212,7 +214,9 @@ impl swallowtail_adapter_gemini::GeminiSessionProfileInput
 pub const fn swallowtail_adapter_gemini::GeminiSessionProfileInput::bounded_write(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
 pub const fn swallowtail_adapter_gemini::GeminiSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::session_options::SessionOptions) -> Self
 pub const fn swallowtail_adapter_gemini::GeminiSessionProfileInput::resource_access(&self) -> swallowtail_core::session_access::ResourceAccess
+pub const fn swallowtail_adapter_gemini::GeminiSessionProfileInput::with_default_approval(self) -> Self
 pub fn swallowtail_adapter_gemini::GeminiSessionProfileInput::with_http_mcp_placement(self, swallowtail_adapter_gemini::GeminiAcpHttpMcpPlacement) -> Self
+pub const fn swallowtail_adapter_gemini::GeminiSessionProfileInput::with_permission_allow_once(self) -> Self
 pub const swallowtail_adapter_gemini::GEMINI_ACP_HTTP_MCP_PLACEMENT: &str
 pub const swallowtail_adapter_gemini::GEMINI_ACP_MCP_SERVER_NAME: &str
 pub const swallowtail_adapter_gemini::GEMINI_CLI_ACP_AXIS: &str

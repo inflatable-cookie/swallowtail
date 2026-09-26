@@ -39,7 +39,9 @@ runs the whole workspace test suite and is likely too slow per task.
 
 ## Q-003 — How should `antigravity.headless` qualify past the `1.1.22` retry stop?
 
-Status: open
+Status: answered 2026-09-26
+Answer: the recommendation below (Tom): option 2 evidence first, option 1 as
+the fallback. Plan item `version-currentness`.
 Asked: 2026-09-26
 
 From `1.1.22` through official `1.2.11`, Antigravity retries failed model

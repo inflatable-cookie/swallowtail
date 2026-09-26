@@ -45,6 +45,15 @@ path = "tests/live_installed_probe.rs"
 required-features = ["live-probes"]
 
 [[test]]
+name = "http_mcp_live_harness"
+path = "tests/http_mcp_live_harness.rs"
+
+[[test]]
+name = "http_mcp_live_gate"
+path = "tests/http_mcp_live_gate.rs"
+required-features = ["live-probes"]
+
+[[test]]
 name = "prepared_facade"
 path = "tests/acp_suite.rs"
 

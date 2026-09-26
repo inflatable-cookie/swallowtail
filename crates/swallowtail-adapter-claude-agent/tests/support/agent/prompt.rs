@@ -66,6 +66,49 @@ impl SharedAgent {
     fn prompt(&self, state: &mut AgentState, id: Option<u64>) -> Result<(), RuntimeFailure> {
         state.prompt_id = id;
         match self.scenario {
+            Scenario::HttpMcpHonour => {
+                let result = state
+                    .http_mcp
+                    .as_ref()
+                    .and_then(|(url, headers)| super::http_mcp::call_ping(url, headers).ok())
+                    .unwrap_or_else(|| "missing-tool-result".to_owned());
+                let config_options = self.config_options(state)?;
+                for update in [
+                    json!({"sessionUpdate": "available_commands_update", "availableCommands": []}),
+                    json!({"sessionUpdate": "config_option_update", "configOptions": config_options}),
+                    json!({"sessionUpdate": "current_mode_update", "currentModeId": "acceptEdits"}),
+                    json!({"sessionUpdate": "tool_call", "toolCallId": "tool-mcp-ping", "title": "ping", "kind": "other", "status": "in_progress", "content": []}),
+                    json!({"sessionUpdate": "tool_call_update", "toolCallId": "tool-mcp-ping", "status": "completed", "content": []}),
+                    json!({"sessionUpdate": "usage_update", "used": 42, "size": 200000}),
+                    json!({"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": result}}),
+                ] {
+                    Self::enqueue(
+                        state,
+                        json!({"jsonrpc": "2.0", "method": "session/update", "params": {
+                            "sessionId": "claude-agent-session-fixture", "update": update
+                        }}),
+                    );
+                }
+                if let Some(prompt_id) = state.prompt_id.take() {
+                    Self::enqueue(
+                        state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": prompt_id,
+                            "result": {
+                                "stopReason": "end_turn",
+                                "usage": {
+                                    "inputTokens": 12,
+                                    "outputTokens": 4,
+                                    "cachedReadTokens": 3,
+                                    "cachedWriteTokens": 2,
+                                    "totalTokens": 21
+                                }
+                            }
+                        }),
+                    );
+                }
+            }
             Scenario::Success
             | Scenario::LargeToolUpdate
             | Scenario::MalformedUsage

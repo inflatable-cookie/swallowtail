@@ -11,10 +11,10 @@ at `49b0d308`, before the lean cut.
 ## Now
 
 1. **Consumer HTTP MCP live honouring on `claude-agent.acp`** (lane
-   `claude-agent-acp-http-mcp-live`) — the route emits the Contract 063 entry
-   but honouring is unproven. One authorized live attempt, harness proven
-   against the fake SDK first, on a pinned `claude-agent-acp` 0.79.0 install
-   (host has 0.63.0). Approved by Tom (Q-001).
+   `claude-agent-acp-http-mcp-live`) — emission stands (Research 351). The
+   one authorized live attempt on pinned exact `0.79.0` was not accepted:
+   typed stop `cleanup_failed` (Research 352). The cell stays No. Do not
+   rerun that attempt. A new live gate needs fresh operator authority.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Known open
@@ -29,8 +29,8 @@ at `49b0d308`, before the lean cut.
 ## Next
 
 - **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — second after
-  Claude, same shape (host 0.53.0, point 0.59.0). Approved by Tom; brief once
-  the Claude gate's harness shape is proven.
+  Claude, same shape (host 0.53.0, point 0.59.0). Approved by Tom. The Claude
+  harness shape is committed (`http_mcp_live_harness`; Research 352).
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the

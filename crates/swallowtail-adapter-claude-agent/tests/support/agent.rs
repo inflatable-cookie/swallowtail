@@ -12,6 +12,7 @@ pub(super) use process::FixtureProcessHandle;
 #[allow(dead_code)]
 pub enum Scenario {
     Success,
+    HttpMcpHonour,
     LargeToolUpdate,
     MalformedUsage,
     DeleteMissing,
@@ -64,6 +65,7 @@ pub(super) struct AgentState {
     hold_close_response: bool,
     released_close_response: bool,
     held_close_id: Option<u64>,
+    http_mcp: Option<(String, Vec<(String, String)>)>,
 }
 
 pub(super) struct SharedAgent {

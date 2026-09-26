@@ -60,6 +60,14 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Added
+- prove the `claude-agent.acp` consumer HTTP MCP live harness against a fake
+  ACP agent and a disposable loopback HTTP MCP server, pin the repo-local
+  `@agentclientprotocol/claude-agent-acp` sidecar to exact `0.79.0`, and run
+  the one authorized live attempt. Honouring was not accepted: typed stop
+  `cleanup_failed`. `client_mcp_servers` stays No. The live binary stays
+  behind `live-probes` and
+  `SWALLOWTAIL_LIVE_CLAUDE_AGENT_ACP_HTTP_MCP`. No second attempt. Research
+  352.
 - wire Contract 063's consumer-supplied streamable-HTTP MCP placement into
   `claude-agent.acp` production `session/new`. A session declares at most one
   HTTP entry under `swallowtail-claude-agent-acp`. Encoding emits ACP

@@ -102,6 +102,12 @@ impl SharedAgent {
         {
             return Err(fixture_failure());
         }
+        if self.scenario == Scenario::HttpMcpHonour
+            && let Some(placement) = super::http_mcp::placement_from_session_new(&message["params"])
+        {
+            let _ = super::http_mcp::connect_and_list(&placement.0, &placement.1);
+            state.http_mcp = Some(placement);
+        }
         let requested_model =
             message["params"]["_meta"]["claudeCode"]["options"]["settings"]["model"]
                 .as_str()

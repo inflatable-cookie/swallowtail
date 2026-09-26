@@ -60,6 +60,14 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Added
+- prove the `gemini-cli.acp` consumer HTTP MCP live harness against a fake
+  ACP agent and a disposable loopback HTTP MCP server, and land the isolated
+  exact `0.59.0` opt-in gate behind `live-probes` and
+  `SWALLOWTAIL_LIVE_GEMINI_ACP_HTTP_MCP`. Typed diagnostics stay on every
+  stop, including cleanup. Two cargo live runs already happened before Tom
+  2026-09-26 ruled no Gemini usage: first `host_version` before ACP, then
+  `mcp_not_connected` with `swallowtail.gemini.acp.mode_rejected`. Honouring
+  is not accepted. `client_mcp_servers` stays No. No third run. Research 354.
 - prove the `claude-agent.acp` consumer HTTP MCP live harness against a fake
   ACP agent and a disposable loopback HTTP MCP server, pin the repo-local
   `@agentclientprotocol/claude-agent-acp` sidecar to exact `0.79.0`, and run

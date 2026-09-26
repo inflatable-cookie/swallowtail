@@ -14,11 +14,6 @@ pub const CLAUDE_AGENT_ACP_AXIS: &str = "claude-agent.acp-adapter";
 pub const CLAUDE_AGENT_ACP_BASELINE_VERSION: &str = "0.53.0";
 /// Most recent qualified Claude Agent ACP version.
 pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.81.2";
-/// Exact Claude Agent ACP version with accepted HTTP MCP honouring evidence.
-///
-/// Research 361 accepted honouring on this point only. Raising
-/// [`CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION`] does not extend that result.
-pub const CLAUDE_AGENT_ACP_HTTP_MCP_HONOURING_VERSION: &str = "0.79.0";
 
 const BASELINE_BEHAVIOR: &str = "claude-agent.acp.baseline-v1";
 const SESSION_CONFIG_BEHAVIOR: &str = "claude-agent.acp.session-config-v2";

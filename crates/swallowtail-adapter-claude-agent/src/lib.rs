@@ -106,6 +106,5 @@ const MAXIMUM_REPLAY_ITEMS: usize = 64;
 const MAXIMUM_REPLAY_BYTES: usize = 256 * 1024;
 pub use selection::{
     CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_BASELINE_VERSION,
-    CLAUDE_AGENT_ACP_HTTP_MCP_HONOURING_VERSION, CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION,
-    claude_agent_acp_binding, claude_agent_acp_claim,
+    CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, claude_agent_acp_binding, claude_agent_acp_claim,
 };

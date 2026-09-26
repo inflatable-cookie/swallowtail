@@ -1,8 +1,7 @@
 use serde_json::Value;
 use swallowtail_adapter_claude_agent::{
     CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_BASELINE_VERSION,
-    CLAUDE_AGENT_ACP_HTTP_MCP_HONOURING_VERSION, CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION,
-    claude_agent_acp_binding, claude_agent_acp_claim,
+    CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, claude_agent_acp_binding, claude_agent_acp_claim,
 };
 use swallowtail_core::{
     InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
@@ -184,7 +183,10 @@ fn identity_and_claim_qualify_0_81_2_as_compatible_extension() {
 
     assert_eq!(CLAUDE_AGENT_ACP_BASELINE_VERSION, "0.53.0");
     assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.81.2");
-    assert_eq!(CLAUDE_AGENT_ACP_HTTP_MCP_HONOURING_VERSION, "0.79.0");
+    assert_ne!(
+        CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.79.0",
+        "raising the qualified ceiling must not reuse the Research 361 honouring pin"
+    );
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.79.0"

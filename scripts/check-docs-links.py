@@ -2,7 +2,7 @@
 """Check front-door Markdown links plus knowledge, guide, research and triage bodies.
 
 Keeps `qa:docs:links` bounded to tracked docs surfaces. The whole-repository
-link and anchor check is `effigy skill run northstar-lean/cut -- check-links`.
+link and anchor check is `effigy skill run northstar/cut -- check-links`.
 """
 
 from __future__ import annotations

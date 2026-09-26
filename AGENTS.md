@@ -43,7 +43,7 @@ effigy test --plan
 - `effigy package:verify-affected <pkg>...` — package archive assembly for the
   same scope
 - `effigy qa:docs` — docs, link, index and guide checks
-- `effigy skill run northstar-lean/retired-concepts` — retired-concept check;
+- `effigy skill run northstar/retired-concepts` — retired-concept check;
   kept out of repository QA, so run it before pushing docs changes
 - `effigy qa:routes` — route, feature and activity matrix checks
 - `effigy qa` — the full board

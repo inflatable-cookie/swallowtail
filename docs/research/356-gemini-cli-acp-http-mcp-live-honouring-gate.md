@@ -1,12 +1,12 @@
-# 355 Gemini CLI ACP HTTP MCP Live Honouring Gate
+# 356 Gemini CLI ACP HTTP MCP Live Honouring Gate
 
-Status: gate ready; waiting on usage; honouring not accepted
+Status: gate ready; waiting on host `0.61.0` qualification; honouring not
+accepted
 Owner: Swallowtail worker
 Created: 2026-09-26
 Task: swallowtail#068; planning `41989748fc2ab5f00e2dafac9ca4efe1279c2722`
 Contracts: 063
-Ruling: Tom 2026-09-26 — do not run a live Gemini attempt; no Gemini usage
-available
+Ruling: Tom 2026-09-26 — this task does not run a live Gemini attempt
 
 ## Question
 
@@ -16,17 +16,20 @@ end the turn `Completed` with `Clean` cleanup?
 
 ## Answer
 
-Unproven. The opt-in gate is ready and waiting on usage. Honouring is not
-accepted.
+Unproven. The opt-in isolated-`0.59.0` gate is ready. Honouring is not
+accepted. Usage is no longer the block: Tom's free Gemini Developer API key
+is available. A live attempt waits on qualifying the host CLI at official
+`0.61.0` (auto-updated 2026-09-26, above the `0.59.0` ceiling).
 
 The committed harness proof against a fake ACP agent and a disposable loopback
 HTTP MCP server passed first. The live binary stays ignored, behind
 `live-probes` and `SWALLOWTAIL_LIVE_GEMINI_ACP_HTTP_MCP=1`. Isolated npm
-`@google/gemini-cli@0.59.0` is the only allowed executable. Host Homebrew
-`gemini` `0.53.0` is not updated. No login or auth change.
+`@google/gemini-cli@0.59.0` is the only allowed executable. The gate does not
+use the host Homebrew `gemini`. No login or auth change.
 
-Tom 2026-09-26: do not run the live attempt; no Gemini usage is available. The
-two cargo runs below already happened under the earlier brief. No third run.
+This task does not run a live attempt. The two cargo runs below already
+happened under the earlier brief, before the no-usage amendment. No third
+run.
 
 ## Observed cargo runs
 
@@ -65,16 +68,15 @@ finished honouring verdict.
 
 ## Limits
 
-The record covers exact `0.59.0` only. Other window points stay unqualified
-for honouring. The gate remains ready.
+The record covers exact `0.59.0` only. Other window points, including host
+`0.61.0`, stay unqualified for honouring. The isolated gate remains ready.
 
 ## Next move
 
-A later authorized live attempt needs Gemini usage and a separate ruling. The
-first open step on exact `0.59.0` is the observed
-`swallowtail.gemini.acp.mode_rejected` failure: `bounded_write` expected
-`autoEdit` and Gemini did not return that mode. Honouring cannot be proven
-until that open succeeds.
+A later authorized live attempt needs the host CLI qualified at official
+`0.61.0`. If that attempt still uses the isolated `0.59.0` gate, the first
+open step is the observed `swallowtail.gemini.acp.mode_rejected` failure:
+`bounded_write` expected `autoEdit` and Gemini did not return that mode.
 
 ## Disposition
 

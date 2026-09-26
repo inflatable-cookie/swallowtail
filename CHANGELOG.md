@@ -80,9 +80,10 @@ annotated Git tags from the canonical repository.
   stop, including prepare-error, no-usage, auth pre-check, and cleanup. Two
   cargo live runs already happened before Tom 2026-09-26 ruled no Gemini
   usage: first `host_version` before ACP, then `mcp_not_connected` with
-  `swallowtail.gemini.acp.mode_rejected`. Honouring is not accepted. The next
-  live step is that exact-`0.59.0` `mode_rejected` open. `client_mcp_servers`
-  stays No. No third run. Research 355.
+  `swallowtail.gemini.acp.mode_rejected`. Honouring is not accepted. A live
+  attempt waits on qualifying the host CLI at official `0.61.0`. The first
+  isolated-`0.59.0` open remains that `mode_rejected` failure.
+  `client_mcp_servers` stays No. No third run. Research 356.
 - prove the `claude-agent.acp` consumer HTTP MCP live harness against a fake
   ACP agent and a disposable loopback HTTP MCP server, pin the repo-local
   `@agentclientprotocol/claude-agent-acp` sidecar to exact `0.79.0`, and run

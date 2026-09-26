@@ -79,9 +79,10 @@ completes; an unauthenticated open fails typed as
 `swallowtail.gemini.acp.auth_required` and never drops the entry to succeed.
 Emission is not honouring: the `client_mcp_servers` cell stays a producer gap
 until a live gate proves one declared remote entry connecting and completing
-a tool call. The isolated `0.59.0` opt-in gate is ready and waiting on usage. The next
-live step is the observed exact-`0.59.0`
-`swallowtail.gemini.acp.mode_rejected` open (Research 355). The headless
+a tool call. The isolated `0.59.0` opt-in gate is ready. A live attempt waits on
+qualifying the host CLI at official `0.61.0`. The first open step on the
+exact-`0.59.0` gate remains the observed
+`swallowtail.gemini.acp.mode_rejected` open (Research 356). The headless
 route's MCP-disabled path is unchanged.
 
 Take each turn's event stream and terminal outcome immediately and poll them

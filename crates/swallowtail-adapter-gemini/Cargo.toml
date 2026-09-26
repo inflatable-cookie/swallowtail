@@ -72,3 +72,7 @@ path = "tests/consumer_route_projection.rs"
 [[test]]
 name = "gemini_cli_0_59_0_delta_ledger"
 path = "tests/gemini_cli_0_59_0_delta_ledger.rs"
+
+[[test]]
+name = "gemini_cli_0_61_0_delta_ledger"
+path = "tests/gemini_cli_0_61_0_delta_ledger.rs"

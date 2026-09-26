@@ -33,9 +33,9 @@ at `49b0d308`, before the lean cut.
 ## Next
 
 - **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — one live
-  attempt on the host's Gemini CLI once it is qualified (it auto-updated to
-  official `0.61.0` on 2026-09-26, above the `0.59.0` ceiling), after the
-  fake-proven gate merges. Access is Tom's free Gemini Developer API key in
+  attempt on the host's Gemini CLI, now qualified at official `0.61.0` with
+  the Research 351 `mcpServers` HTTP mapping unchanged (Research 358); the
+  merged gate still pins isolated `0.59.0`. Access is Tom's free Gemini Developer API key in
   the Gemini CLI keychain entry. Free personal Google login ended on
   2026-06-18.
 - **Shared harness capability and producer boundary** (lane

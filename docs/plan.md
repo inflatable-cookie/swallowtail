@@ -25,7 +25,8 @@ at `49b0d308`, before the lean cut.
    stops, each getting an adaptation task (Tom, 2026-09-26):
    `antigravity.headless` at `1.1.17` behind the `1.1.22`
    provider-managed-retry stop (Research 283, 323, 353; catalogue now at
-   `1.2.11`), awaiting Q-003, and
+   `1.2.11`): evidence on the `AGY_CLI_MODEL_API_MAX_RETRIES` pin first,
+   accepting provider retry as the fallback (Q-003), and
    `kimi-code.local-server` failing closed above `0.39.1` since `0.40.0`
    removed the Bash workspace restriction (Research 282, 326). An adaptation
    that needs a Contract 023 exception or narrows a consumer-visible
@@ -33,9 +34,11 @@ at `49b0d308`, before the lean cut.
 
 ## Next
 
-- **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — second after
-  Claude, same shape (host 0.53.0, point 0.59.0). Approved by Tom. The Claude
-  harness shape is committed (`http_mcp_live_harness`; Research 352).
+- **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — the gate is
+  being built and proven against fakes (host 0.53.0, point 0.59.0). The live
+  attempt waits for usage: the route takes a Gemini Developer API key, and Tom
+  has none with usage (2026-09-26). A free-tier Google AI Studio key is the
+  same key type.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the

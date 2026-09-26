@@ -6,6 +6,19 @@
 # paths and allow: an entry is an exact file, or a directory when it ends in
 # "/". `*` matches within one path segment. Keep terms multi-word and specific.
 
+# Frozen artefacts are never rewritten and are exempt from every retirement
+# and from check-links: test fixtures, the vendored Effigy skill mirror,
+# immutable release baselines and candidates, and research records (evidence
+# the feature matrix cites by line).
+frozen = [
+  "crates/*/tests/fixtures/",
+  "crates/*/fixtures/",
+  ".agents/skills/effigy/",
+  "release-candidates/",
+  "release-baselines/",
+  "docs/research/",
+]
+
 [[retired]]
 id = "northstar-process-records"
 retired = "2026-09-26"
@@ -14,20 +27,8 @@ owner = "docs/knowledge/README.md"
 terms = ["roadmap card", "generation index", "northstar:lifecycle", "chatterbox handoff", "Next Task pointer", "northstar/queue:hook", "standing-lanes.md", "status-grammar.md", "qa:northstar", "qa:docs:roadmaps", "generation runway"]
 paths = [".northstar/", "docs/roadmaps/", "docs/handoffs/", "docs/logs/", "docs/vision/", "docs/policy/", "docs/guides/release-playbook.md", "docs/guides/version-currentness-checkpoint.md", "scripts/check-roadmap-number-collision.py", "scripts/check-roadmap-status-drift.py", "scripts/roadmap_number_authority.py"]
 config_keys = ["northstar/queue:hook", "paseo.queue.control.v4"]
-# Frozen artefacts: released changelog entries, test fixtures, the vendored
-# Effigy skill mirror, immutable release baselines and candidates, and
-# research records (frozen evidence the feature matrix cites by line) name old
-# records by path as history and are never rewritten.
-allow = [
-  "CHANGELOG.md",
-  "docs/research/",
-  "docs/knowledge/retired.toml",
-  "crates/*/tests/fixtures/",
-  "crates/*/fixtures/",
-  ".agents/skills/effigy/",
-  "release-candidates/",
-  "release-baselines/",
-]
+# Released changelog entries name old records as history.
+allow = ["CHANGELOG.md", "docs/knowledge/retired.toml"]
 
 [[retired]]
 id = "papercuts-file"
@@ -36,5 +37,5 @@ replacement = "Papercuts live in Queue: file with `node bin/queue-cli.mjs paperc
 owner = "AGENTS.md"
 terms = ["PAPERCUTS.md"]
 paths = ["PAPERCUTS.md"]
-# Frozen research evidence and released changelog entries name the old file.
-allow = ["CHANGELOG.md", "docs/knowledge/retired.toml", "docs/research/", ".agents/skills/effigy/"]
+# Released changelog entries name the old file.
+allow = ["CHANGELOG.md", "docs/knowledge/retired.toml"]

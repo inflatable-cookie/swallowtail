@@ -13,6 +13,15 @@ impl SharedAgent {
             state.held_close_id = id;
             return Ok(());
         }
+        if state.reject_close_response {
+            Self::enqueue(
+                state,
+                json!({"jsonrpc": "2.0", "id": id, "error": {
+                    "code": -32603, "message": "private provider close failure"
+                }}),
+            );
+            return Ok(());
+        }
         Self::enqueue(state, json!({"jsonrpc": "2.0", "id": id, "result": {}}));
         Ok(())
     }
@@ -35,6 +44,14 @@ impl SharedAgent {
         }
         drop(state);
         self.changed.notify_all();
+    }
+
+    #[allow(dead_code)]
+    pub(in crate::support) fn reject_close_response(&self) {
+        self.state
+            .lock()
+            .expect("fixture agent lock poisoned")
+            .reject_close_response = true;
     }
 
     pub(super) fn delete_session(

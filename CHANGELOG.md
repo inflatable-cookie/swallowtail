@@ -19,6 +19,19 @@ annotated Git tags from the canonical repository.
   retry-pin, and keep-ceiling options to Tom. The `1.2.11` `--effort` mapping
   is a selected change for any future headless milestone. No provider
   operation or host mutation occurred.
+- keep the typed cleanup diagnostic on the `claude-agent.acp` HTTP MCP live
+  gate. Research 355 diagnoses the Research 352 stop without a provider: the
+  spent record kept only the gate's own `cleanup_failed` stop name and no
+  diagnostic code, so the record now keeps the cleanup class, the exact
+  diagnostic code, and the adapter's stage tag, and the gate prints them; the
+  turn-start failure path keeps the close outcome instead of the turn error;
+  and the disposable loopback listener no longer drops a silent GET SSE
+  stream or a persistent HTTP/1.1 connection. The harness proves an idle SSE
+  stream survives, fails if the record drops the diagnostic, and keeps the
+  provider message body out of the record. The frozen `0.79.0` close path is
+  traced with the provider/Swallowtail split, and the leading cause is named
+  as a hypothesis. No live attempt, no claim change, and the matrix cell
+  stays No.
 - raise the Ollama attached-runtime qualified ceiling through official
   `0.34.4`: Research 350 freezes both published hops after `0.34.2` with
   tag/commit/tree/tarball and selected-file hashes, and reproduces Research

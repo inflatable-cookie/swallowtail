@@ -15,10 +15,11 @@ at `49b0d308`, before the lean cut.
    one authorized live attempt on pinned exact `0.79.0` was not accepted:
    typed stop `cleanup_failed` (Research 352): the MCP connect, list, call
    and `Completed` turn happened, but session close was not `Clean`, and the
-   gate record dropped the cleanup diagnostic. The cell stays No. Next: a
-   provider-free diagnosis that makes the gate keep typed cleanup diagnostics
-   and traces what close does with an open HTTP MCP client on `0.79.0`. A new
-   live attempt needs fresh operator authority.
+   gate record dropped the cleanup diagnostic. The cell stays No. The
+   provider-free diagnosis landed (Research 355): the gate now keeps and
+   prints the typed cleanup diagnostic, and the frozen `0.79.0` close path is
+   traced, so a second attempt can name its cause instead of losing it. A new
+   live attempt needs fresh operator authority before it runs.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Known open

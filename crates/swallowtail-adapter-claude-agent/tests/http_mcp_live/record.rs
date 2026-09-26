@@ -1,3 +1,4 @@
+use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{CleanupOutcome, TerminalStatus};
 
 /// Server-side methods observed for one disposable MCP run.
@@ -53,6 +54,35 @@ impl HttpMcpTranscript {
     }
 }
 
+/// Cleanup classification kept for every attempt, independent of the stop name.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum HttpMcpCleanupClass {
+    /// No session existed, so cleanup was never attempted.
+    NotAttempted,
+    /// Every applicable cleanup action completed.
+    Clean,
+    /// Cleanup completed with a non-fatal degradation.
+    Degraded,
+    /// A required cleanup action failed.
+    Failed,
+    /// No cleanup action applied to this session.
+    NotApplicable,
+}
+
+impl HttpMcpCleanupClass {
+    /// Stable short name for the live record line.
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::NotAttempted => "not_attempted",
+            Self::Clean => "clean",
+            Self::Degraded => "degraded",
+            Self::Failed => "failed",
+            Self::NotApplicable => "not_applicable",
+        }
+    }
+}
+
 /// One probe attempt's honouring record. Debug redacts secrets by construction.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct HttpMcpLiveRecord {
@@ -63,6 +93,9 @@ pub struct HttpMcpLiveRecord {
     tool_result: bool,
     terminal_completed: bool,
     cleanup_clean: bool,
+    cleanup_class: HttpMcpCleanupClass,
+    cleanup_code: Option<String>,
+    cleanup_stage: Option<String>,
     stop: Option<HttpMcpLiveStop>,
     model: Option<String>,
 }
@@ -107,6 +140,7 @@ impl HttpMcpLiveRecord {
         let tool_result = transcript.tool_result() == Some(super::HTTP_MCP_LIVE_TOOL_RESULT);
         let terminal_completed = matches!(terminal, TerminalStatus::Completed);
         let cleanup_clean = matches!(cleanup, CleanupOutcome::Clean);
+        let kept_cleanup = KeptCleanup::from_outcome(&cleanup);
         let stop = if !connected {
             Some(HttpMcpLiveStop::McpNotConnected)
         } else if !tools_listed {
@@ -136,6 +170,9 @@ impl HttpMcpLiveRecord {
             tool_result,
             terminal_completed,
             cleanup_clean,
+            cleanup_class: kept_cleanup.class,
+            cleanup_code: kept_cleanup.code,
+            cleanup_stage: kept_cleanup.stage,
             stop,
             model,
         }
@@ -151,6 +188,9 @@ impl HttpMcpLiveRecord {
             tool_result: false,
             terminal_completed: false,
             cleanup_clean: false,
+            cleanup_class: HttpMcpCleanupClass::NotAttempted,
+            cleanup_code: None,
+            cleanup_stage: None,
             stop: Some(stop),
             model,
         }
@@ -198,6 +238,29 @@ impl HttpMcpLiveRecord {
         self.cleanup_clean
     }
 
+    /// Typed cleanup classification for this attempt.
+    #[must_use]
+    pub const fn cleanup_class(&self) -> HttpMcpCleanupClass {
+        self.cleanup_class
+    }
+
+    /// Exact cleanup diagnostic code when cleanup degraded or failed.
+    ///
+    /// `None` for clean, not-applicable, and not-attempted cleanup.
+    #[must_use]
+    pub fn cleanup_diagnostic_code(&self) -> Option<&str> {
+        self.cleanup_code.as_deref()
+    }
+
+    /// Adapter-owned cleanup stage tag when the diagnostic carried one.
+    ///
+    /// The tag is a fixed lowercase identifier the adapter appends to a
+    /// `cleanup_failed` message; the message body itself is never kept.
+    #[must_use]
+    pub fn cleanup_diagnostic_stage(&self) -> Option<&str> {
+        self.cleanup_stage.as_deref()
+    }
+
     /// `None` when the tuple is accepted.
     #[must_use]
     pub const fn stop(&self) -> Option<HttpMcpLiveStop> {
@@ -228,6 +291,59 @@ impl HttpMcpLiveRecord {
     }
 }
 
+/// Secret-free cleanup evidence kept from one [`CleanupOutcome`].
+#[derive(Debug)]
+struct KeptCleanup {
+    class: HttpMcpCleanupClass,
+    code: Option<String>,
+    stage: Option<String>,
+}
+
+impl KeptCleanup {
+    fn from_outcome(outcome: &CleanupOutcome) -> Self {
+        match outcome {
+            CleanupOutcome::Clean => Self {
+                class: HttpMcpCleanupClass::Clean,
+                code: None,
+                stage: None,
+            },
+            CleanupOutcome::NotApplicable => Self {
+                class: HttpMcpCleanupClass::NotApplicable,
+                code: None,
+                stage: None,
+            },
+            CleanupOutcome::Degraded(diagnostic) => {
+                Self::from_diagnostic(HttpMcpCleanupClass::Degraded, diagnostic)
+            }
+            CleanupOutcome::Failed(diagnostic) => {
+                Self::from_diagnostic(HttpMcpCleanupClass::Failed, diagnostic)
+            }
+        }
+    }
+
+    fn from_diagnostic(class: HttpMcpCleanupClass, diagnostic: &SafeDiagnostic) -> Self {
+        Self {
+            class,
+            code: Some(diagnostic.code().to_owned()),
+            stage: cleanup_stage(diagnostic.message()),
+        }
+    }
+}
+
+/// Keeps only the adapter's trailing stage tag from a `cleanup_failed` message
+/// (`... (task_join_failed)`). A stage is an adapter-owned identifier; a message
+/// body may carry host text, so it is never retained.
+fn cleanup_stage(message: &str) -> Option<String> {
+    let (_, tail) = message.rsplit_once(" (")?;
+    let stage = tail.strip_suffix(')')?;
+    (!stage.is_empty()
+        && stage.len() <= 40
+        && stage
+            .bytes()
+            .all(|byte| byte.is_ascii_lowercase() || byte == b'_'))
+    .then(|| stage.to_owned())
+}
+
 impl HttpMcpLiveStop {
     #[must_use]
     pub const fn as_str(self) -> &'static str {
@@ -243,5 +359,57 @@ impl HttpMcpLiveStop {
             Self::TurnNotCompleted => "turn_not_completed",
             Self::CleanupFailed => "cleanup_failed",
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn kept_cleanup_classifies_every_outcome() {
+        let cases = [
+            (CleanupOutcome::Clean, HttpMcpCleanupClass::Clean),
+            (
+                CleanupOutcome::NotApplicable,
+                HttpMcpCleanupClass::NotApplicable,
+            ),
+            (
+                CleanupOutcome::Degraded(SafeDiagnostic::new("fixture.degraded", "degraded")),
+                HttpMcpCleanupClass::Degraded,
+            ),
+            (
+                CleanupOutcome::Failed(SafeDiagnostic::new("fixture.failed", "failed")),
+                HttpMcpCleanupClass::Failed,
+            ),
+        ];
+        for (outcome, expected) in cases {
+            assert_eq!(KeptCleanup::from_outcome(&outcome).class, expected);
+        }
+    }
+
+    #[test]
+    fn kept_cleanup_keeps_code_and_stage_but_never_the_message_body() {
+        let diagnostic = SafeDiagnostic::new(
+            "swallowtail.claude_agent.acp.cleanup_failed",
+            "Claude Agent ACP protocol task did not join (task_join_failed)",
+        );
+        let kept = KeptCleanup::from_outcome(&CleanupOutcome::Failed(diagnostic));
+        assert_eq!(kept.class, HttpMcpCleanupClass::Failed);
+        assert_eq!(
+            kept.code.as_deref(),
+            Some("swallowtail.claude_agent.acp.cleanup_failed")
+        );
+        assert_eq!(kept.stage.as_deref(), Some("task_join_failed"));
+        assert!(!format!("{kept:?}").contains("did not join"));
+    }
+
+    #[test]
+    fn cleanup_stage_rejects_provider_or_host_text() {
+        assert_eq!(cleanup_stage("plain message without a tag"), None);
+        assert_eq!(cleanup_stage("failed at /private/dir ()"), None);
+        assert_eq!(cleanup_stage("failed on /private/dir (Not A Tag)"), None);
+        assert_eq!(cleanup_stage("failed while reading /private/dir"), None);
+        assert_eq!(cleanup_stage("failed on a private path"), None);
     }
 }

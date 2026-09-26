@@ -11,7 +11,9 @@ What is true now:
 - Contract 063 admits a consumer-supplied streamable-HTTP MCP placement.
   `opencode.acp` is live-proven honouring it; `claude-agent.acp` on exact
   `0.79.0` spent its one live attempt with typed `cleanup_failed` (Research
-  352); `copilot-cli.acp`, `gemini-cli.acp`, `goose.acp` and `kiro.acp` emit
+  352), and its gate now keeps the typed cleanup diagnostic for the next
+  authorized attempt (Research 355); `copilot-cli.acp`, `gemini-cli.acp`,
+  `goose.acp` and `kiro.acp` emit
   the entry with live honouring unproven (Research 351).
 - Unavailable feature-matrix cells are provider limitations with frozen
   evidence or producer gaps owned by a [plan](plan.md) item.

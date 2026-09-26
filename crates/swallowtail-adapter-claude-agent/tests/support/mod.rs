@@ -98,6 +98,14 @@ impl FixtureHost {
         self.agent.release_held_close_response();
     }
 
+    /// Makes the fixture agent reject `session/close` with a provider error
+    /// message, so cleanup degrades instead of hanging.
+    #[allow(dead_code)]
+    pub fn with_rejected_close_response(self) -> Self {
+        self.agent.reject_close_response();
+        self
+    }
+
     fn fixture_time(&self) -> FixtureTime {
         match &self.deadline_waits {
             Some(waits) => FixtureTime::scripted(waits.clone()),

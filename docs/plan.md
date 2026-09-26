@@ -14,10 +14,10 @@ at `49b0d308`, before the lean cut.
    `claude-agent-acp-http-mcp-live`) — emission stands (Research 351). The
    first live attempt on pinned `0.79.0` stopped at session close
    (Research 352). Diagnosis (Research 355) fixed the lost diagnostic and a
-   test-listener defect that dropped idle SSE streams, which could have
-   disturbed the provider; the leading hypothesis is that the sidecar didn't
-   answer `session/close` within 30 seconds. A second attempt, which reports
-   the typed cleanup code, needs Tom's authority.
+   test-listener defect that dropped idle SSE streams; the second attempt,
+   authorized by Tom, accepted the full tuple with `Clean` cleanup
+   (Research 357), so `client_mcp_servers` is Yes on exact `0.79.0` only.
+   Later window points still need their own live gate.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Known open

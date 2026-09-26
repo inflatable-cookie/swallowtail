@@ -20,6 +20,8 @@ pub struct GeminiPreparedSession {
     evidence: GeminiPreparedEvidence,
     request: OpenSessionRequest,
     http_mcp: Option<GeminiAcpHttpMcpPlacement>,
+    default_approval: bool,
+    permission_allow_once: bool,
 }
 
 impl GeminiPreparedSession {
@@ -50,7 +52,14 @@ impl GeminiPreparedSession {
     /// Reconstructs the low-level ACP driver from prepared evidence.
     #[must_use]
     pub fn low_level_driver(&self) -> GeminiAcpDriver {
-        self.evidence.low_level_driver()
+        let mut driver = self.evidence.low_level_driver();
+        if self.default_approval {
+            driver = driver.with_default_approval();
+        }
+        if self.permission_allow_once {
+            driver = driver.with_permission_allow_once();
+        }
+        driver
     }
 
     /// Opens the prepared session using the supplied host services.
@@ -98,7 +107,15 @@ impl GeminiPreparedIntegration {
         &self,
         input: GeminiSessionProfileInput,
     ) -> Result<GeminiPreparedSession, PreparationFailure> {
-        let (request_id, working_resource, options, resource_access, http_mcp) = input.into_parts();
+        let (
+            request_id,
+            working_resource,
+            options,
+            resource_access,
+            http_mcp,
+            default_approval,
+            permission_allow_once,
+        ) = input.into_parts();
         validate_options(&options, resource_access)?;
         let activity_profile = super::activity_profile::activity_profile(self)?;
         let capabilities = session_capabilities_for(resource_access, &options, &activity_profile);
@@ -117,6 +134,8 @@ impl GeminiPreparedIntegration {
             evidence: GeminiPreparedEvidence::from_prepared(self, plan, activity_profile)?,
             request,
             http_mcp,
+            default_approval,
+            permission_allow_once,
         })
     }
 }

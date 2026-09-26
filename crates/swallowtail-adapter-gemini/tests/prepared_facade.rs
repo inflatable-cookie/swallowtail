@@ -478,6 +478,59 @@ fn bounded_write_profile_derives_exact_capability_policy_and_invocation() {
     );
 }
 
+#[test]
+fn default_approval_profile_launches_default_mode_on_read_access() {
+    let host_id = ExecutionHostId::new("fixture.prepared.default").expect("valid host");
+    let operation_host = FixtureHost::new(Scenario::Success);
+    let operation_services = operation_host.services(host_id.clone());
+    let discovery_host = DiscoveryHost::new("0.51.0");
+    let preparation_services = discovery_host
+        .services(host_id.clone())
+        .with_working_resource(
+            operation_services
+                .working_resource()
+                .expect("resource service")
+                .clone(),
+        )
+        .with_working_resource_io(
+            operation_services
+                .working_resource_io()
+                .expect("resource I/O service")
+                .clone(),
+        );
+    let prepared = block_on(prepare_gemini_acp(
+        preparation_input(host_id),
+        probe(),
+        preparation_services,
+    ))
+    .expect("Gemini ACP prepares");
+    let profile = prepared
+        .prepare_session(
+            GeminiSessionProfileInput::new(
+                RequestId::new("gemini-prepared-default").expect("valid request"),
+                WorkingResourceRef::new("gemini.prepared.workspace").expect("valid resource"),
+                SessionOptions::default(),
+            )
+            .with_default_approval()
+            .with_permission_allow_once(),
+        )
+        .expect("default approval profile prepares");
+    assert_eq!(
+        profile.request().access_policy(),
+        &SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
+    );
+    let session =
+        block_on(profile.open_session(operation_services.clone())).expect("default profile opens");
+    assert_eq!(
+        operation_host.observed_process().arguments,
+        ["--acp", "--approval-mode", "default"]
+    );
+    assert_eq!(
+        block_on(close_session(session, operation_services)),
+        CleanupOutcome::Clean
+    );
+}
+
 fn preparation_input(host: ExecutionHostId) -> GeminiPreparationInput {
     GeminiPreparationInput::new(
         ConfiguredInstanceId::new("gemini.prepared").expect("valid instance"),

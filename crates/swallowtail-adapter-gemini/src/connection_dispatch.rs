@@ -92,7 +92,7 @@ impl AcpConnection {
         match method {
             "fs/read_text_file" => self.read_text(id, params).await,
             "fs/write_text_file" if self.write_enabled => self.write_text(id, params).await,
-            "session/request_permission" => self.reject_permission(id, params).await,
+            "session/request_permission" => self.handle_permission(id, params).await,
             method if method.starts_with('_') => {
                 self.write(
                     encode_error(id, -32601, "Method not found").map_err(|_| protocol_failure())?,
@@ -161,7 +161,7 @@ impl AcpConnection {
         .await
     }
 
-    async fn reject_permission(&self, id: Value, params: &Value) -> Result<(), RuntimeFailure> {
+    async fn handle_permission(&self, id: Value, params: &Value) -> Result<(), RuntimeFailure> {
         self.verify_session(params)?;
         let options = params
             .get("options")
@@ -175,6 +175,23 @@ impl AcpConnection {
                 .is_none()
         {
             return Err(malformed());
+        }
+        if self.permission_allow_once {
+            let has_proceed_once = options.iter().any(|option| {
+                option.get("optionId").and_then(Value::as_str) == Some("proceed_once")
+            });
+            if !has_proceed_once {
+                return Err(malformed());
+            }
+            return self
+                .write(
+                    encode_result(
+                        id,
+                        json!({"outcome": {"outcome": "selected", "optionId": "proceed_once"}}),
+                    )
+                    .map_err(|_| protocol_failure())?,
+                )
+                .await;
         }
         let turn = self
             .active_turn

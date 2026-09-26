@@ -132,8 +132,18 @@ impl ProcessService for FixtureHost {
         _scope: ScopeId,
         request: ProcessRequest,
     ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        let arguments: Vec<String> = request.arguments().map(str::to_owned).collect();
+        let approval_mode = arguments
+            .windows(2)
+            .find_map(|pair| (pair[0] == "--approval-mode").then(|| pair[1].clone()))
+            .unwrap_or_else(|| "plan".to_owned());
+        self.agent
+            .state
+            .lock()
+            .expect("fixture agent lock poisoned")
+            .approval_mode = approval_mode;
         *self.process.lock().expect("fixture process lock poisoned") = Some(ObservedProcess {
-            arguments: request.arguments().map(str::to_owned).collect(),
+            arguments,
             environment_count: request.environment().len(),
             working_resource: request.working_resource().cloned(),
         });

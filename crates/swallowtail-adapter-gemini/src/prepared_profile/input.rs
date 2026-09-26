@@ -10,6 +10,8 @@ pub struct GeminiSessionProfileInput {
     options: SessionOptions,
     resource_access: ResourceAccess,
     http_mcp: Option<GeminiAcpHttpMcpPlacement>,
+    default_approval: bool,
+    permission_allow_once: bool,
 }
 
 impl GeminiSessionProfileInput {
@@ -26,6 +28,8 @@ impl GeminiSessionProfileInput {
             options,
             resource_access: ResourceAccess::Read,
             http_mcp: None,
+            default_approval: false,
+            permission_allow_once: false,
         }
     }
 
@@ -42,6 +46,8 @@ impl GeminiSessionProfileInput {
             options,
             resource_access: ResourceAccess::ReadWrite,
             http_mcp: None,
+            default_approval: false,
+            permission_allow_once: false,
         }
     }
 
@@ -50,6 +56,24 @@ impl GeminiSessionProfileInput {
     #[must_use]
     pub fn with_http_mcp_placement(mut self, placement: GeminiAcpHttpMcpPlacement) -> Self {
         self.http_mcp = Some(placement);
+        self
+    }
+
+    /// Selects Gemini CLI `--approval-mode default` on this session.
+    ///
+    /// Frozen `0.61.0` Plan mode excludes unannotated MCP tools. Default
+    /// keeps them visible and asks via `session/request_permission`.
+    #[must_use]
+    pub const fn with_default_approval(mut self) -> Self {
+        self.default_approval = true;
+        self
+    }
+
+    /// Answers `session/request_permission` with Gemini's `proceed_once`
+    /// option. The default prepared path still rejects and cancels.
+    #[must_use]
+    pub const fn with_permission_allow_once(mut self) -> Self {
+        self.permission_allow_once = true;
         self
     }
 
@@ -67,6 +91,8 @@ impl GeminiSessionProfileInput {
         SessionOptions,
         ResourceAccess,
         Option<GeminiAcpHttpMcpPlacement>,
+        bool,
+        bool,
     ) {
         (
             self.request_id,
@@ -74,6 +100,8 @@ impl GeminiSessionProfileInput {
             self.options,
             self.resource_access,
             self.http_mcp,
+            self.default_approval,
+            self.permission_allow_once,
         )
     }
 }

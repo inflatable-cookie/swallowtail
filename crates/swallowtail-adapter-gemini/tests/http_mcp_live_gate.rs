@@ -162,7 +162,9 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
             working_resource,
             SessionOptions::default(),
         )
-        .with_http_mcp_placement(placement),
+        .with_http_mcp_placement(placement)
+        .with_default_approval()
+        .with_permission_allow_once(),
     ) {
         Ok(session) => session,
         Err(error) => {

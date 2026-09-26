@@ -6,6 +6,17 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- accept `gemini-cli.acp` HTTP MCP honouring on host exact `0.61.0`.
+  Research 362: frozen `0.61.0` Plan mode excludes unannotated MCP tools
+  (Research 360 `tool_not_called`); `--approval-mode default` plus
+  gate-owned `proceed_once` is the narrowest path that can complete the
+  call. Harness proof first (honouring tuple, Plan `tool_not_called`,
+  default-without-allow-once `permission_observed`). One live attempt
+  accepted: connect, list, one tool call, `Completed`, `Clean`. Model
+  recorded `auto`. `client_mcp_servers` is Yes on that exact ACP point
+  only; later window points stay unqualified. Headless MCP-disabled path
+  unchanged. No second attempt. The live binary stays behind `live-probes`
+  and `SWALLOWTAIL_LIVE_GEMINI_ACP_HTTP_MCP`.
 - accept `claude-agent.acp` consumer HTTP MCP live honouring on exact
   `claude-agent-acp` `0.79.0`: Research 361 records the one authorized
   second attempt (Tom, 2026-09-26), which connected, listed the tool,

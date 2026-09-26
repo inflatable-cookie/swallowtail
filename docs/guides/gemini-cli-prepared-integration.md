@@ -62,7 +62,8 @@ The read-write profile serves exact ACP `fs/read_text_file` and
 `fs/write_text_file` requests through the bound working-resource service. It
 does not expose a consumer tool callback. Provider permission requests are
 observed, rejected, and terminate the turn as `ProviderRequestObserved`; they
-cannot be answered through this route.
+cannot be answered through a consumer callback. `with_permission_allow_once`
+answers Gemini's `proceed_once` option internally and continues the turn.
 
 One consumer-supplied streamable-HTTP MCP entry is admitted per session. Bind
 `GeminiAcpHttpMcpPlacement` through
@@ -78,13 +79,14 @@ fingerprints, and omitting the entry keeps `mcpServers` byte-identically
 empty. The provider honours the entry only after its authentication
 completes; an unauthenticated open fails typed as
 `swallowtail.gemini.acp.auth_required` and never drops the entry to succeed.
-Emission is not honouring: the `client_mcp_servers` cell stays a producer gap.
-The one authorized live attempt on host exact `0.61.0` was not accepted
-(typed stop `tool_not_called`; Research 360). Authenticated MCP `initialize`
-and `tools/list` reached the disposable server; the one turn did not call the
-tool. Research 356's isolated-`0.59.0` `mode_rejected` open is explained from
-frozen untrusted-folder clamp to `default`; the spent attempt used the
-read-only Plan profile. The headless route's MCP-disabled path is unchanged.
+Frozen `0.61.0` Plan mode excludes unannotated MCP tools from the registry
+and denies them at the policy engine (Research 360 `tool_not_called`). HTTP
+MCP honouring uses `--approval-mode default` (`with_default_approval`) and
+gate-owned `proceed_once`. Research 362 accepted that tuple on host exact
+`0.61.0`: connect, list, one tool call, `Completed`, `Clean`.
+`client_mcp_servers` is Yes on that exact ACP point only; later window
+points stay unqualified for honouring. The headless route's MCP-disabled
+path is unchanged.
 
 Take each turn's event stream and terminal outcome immediately and poll them
 concurrently. Cancellation interrupts the active turn. Close the turn and

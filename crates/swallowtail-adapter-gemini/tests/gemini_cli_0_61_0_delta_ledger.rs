@@ -121,6 +121,7 @@ fn official_identity_reproduces_for_every_compared_point() {
         .collect();
     assert_eq!(published, ["0.60.0", OFFICIAL]);
     assert_eq!(identity["unpublished_later_stable"], "0.61.1");
+    assert_eq!(identity["unpublished_interior_gaps"], json!(["0.59.1"]));
     assert_eq!(identity["ignored_preview"], "0.62.0-preview.0");
 }
 

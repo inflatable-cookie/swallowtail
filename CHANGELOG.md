@@ -14,8 +14,8 @@ annotated Git tags from the canonical repository.
   claims advance to maintained `0.51.0..=0.61.0` on `gemini-cli.acp.v0.51.0`
   and `gemini-cli.headless.stream-json.v1`. The ACP `mcpServers` HTTP mapping
   is unchanged. Flash rollout model routing, build-file protection and stdio
-  MCP env filtering stay unmapped. Unpublished `0.61.1` stays
-  `UnverifiedNewer`. No provider operation or host mutation occurred.
+  MCP env filtering stay unmapped. Unpublished `0.59.1` becomes an excluded
+  gap on both claims; unpublished `0.61.1` stays `UnverifiedNewer`. No provider operation or host mutation occurred.
 - raise the Antigravity catalogue ceiling through official `1.2.11` and put
   the `antigravity.headless` stop to the operator: Research 353 freezes
   `1.2.8` through `1.2.11` with both platform digests, reproduces Research

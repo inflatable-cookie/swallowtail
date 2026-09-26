@@ -147,8 +147,10 @@ Every selected option literal keeps its multiplicity.
   `AllowUnverified`; maintained `0.51.0..=0.61.0`.
 - Headless: compatible extension. Keep `gemini-cli.headless.stream-json.v1`,
   baseline `0.51.0`, `AllowUnverified`; maintained `0.51.0..=0.61.0`.
-- Qualify `0.60.0` and `0.61.0`. `0.61.1` stays the visible `UnverifiedNewer`
-  point.
+- Qualify `0.60.0` and `0.61.0`. Unpublished `0.59.1`, the Research 324
+  `UnverifiedNewer` point, now sits inside both windows and becomes an
+  excluded gap: it stays incompatible. `0.61.1` stays the visible
+  `UnverifiedNewer` point.
 - No new public operation, flag, driver, facade or behavior revision. ACP
   activity and headless decoder corpora stay authoritative.
 

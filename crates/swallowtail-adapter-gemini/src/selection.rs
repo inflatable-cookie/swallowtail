@@ -20,6 +20,8 @@ pub const GEMINI_CLI_HEADLESS_BASELINE_VERSION: &str = "0.51.0";
 /// Newest Gemini CLI version behaviorally qualified for headless runs.
 pub const GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.61.0";
 
+/// Unpublished stable inside both windows; stays incompatible (Research 357).
+const GEMINI_CLI_UNPUBLISHED_GAP: &str = "0.59.1";
 const BASELINE_BEHAVIOR: &str = "gemini-cli.acp.v0.51.0";
 pub(crate) const HEADLESS_BEHAVIOR: &str = "gemini-cli.headless.stream-json.v1";
 const MAX_VERSION_BYTES: usize = 64;
@@ -81,7 +83,10 @@ pub fn gemini_cli_acp_claim() -> InterfaceCompatibilityClaim {
                 .expect("static Gemini behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [],
+        [
+            version(GEMINI_CLI_UNPUBLISHED_GAP)
+                .expect("static Gemini CLI unpublished gap is valid"),
+        ],
     )
     .expect("static Gemini CLI compatibility claim is valid")
 }
@@ -104,7 +109,10 @@ pub fn gemini_cli_headless_claim() -> InterfaceCompatibilityClaim {
                 .expect("static Gemini headless behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [],
+        [
+            version(GEMINI_CLI_UNPUBLISHED_GAP)
+                .expect("static Gemini CLI unpublished gap is valid"),
+        ],
     )
     .expect("static Gemini CLI headless compatibility claim is valid")
 }
@@ -224,6 +232,7 @@ mod tests {
         }
         assert!(!claim.permits(&version("0.50.0")));
         assert!(!claim.permits(&version("0.51.0-rc.1")));
+        assert!(!claim.permits(&version("0.59.1")));
         assert!(matches!(
             claim.assess(&version("0.61.1")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
@@ -243,6 +252,7 @@ mod tests {
             );
         }
         assert!(!claim.permits(&version("0.50.0")));
+        assert!(!claim.permits(&version("0.59.1")));
         assert!(matches!(
             claim.assess(&version("0.61.1")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)

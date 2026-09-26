@@ -29,7 +29,6 @@ fn qualified_and_unverified_newer_versions_probe_the_approved_target() {
         ("0.57.0", true),
         ("0.58.0", true),
         ("0.59.0", true),
-        ("0.59.1", true),
         ("0.60.0", true),
         ("0.61.0", true),
         ("0.61.1", false),
@@ -62,19 +61,22 @@ fn qualified_and_unverified_newer_versions_probe_the_approved_target() {
 }
 
 #[test]
-fn older_version_is_incompatible() {
-    let host_id = ExecutionHostId::new("fixture.host.incompatible").expect("valid host");
-    let host = DiscoveryHost::new("0.50.0");
-    let outcome = block_on(
-        driver().discover_installed_executable(request(host_id.clone()), host.services(host_id)),
-    )
-    .expect("discovery completes");
-    assert_eq!(outcome.status(), DiscoveryStatus::Incompatible);
-    assert!(
-        outcome
-            .installed_executable_observation()
-            .is_some_and(|observation| !observation.is_permitted())
-    );
+fn older_version_and_unpublished_gap_are_incompatible() {
+    for version in ["0.50.0", "0.59.1"] {
+        let host_id = ExecutionHostId::new("fixture.host.incompatible").expect("valid host");
+        let host = DiscoveryHost::new(version);
+        let outcome = block_on(
+            driver()
+                .discover_installed_executable(request(host_id.clone()), host.services(host_id)),
+        )
+        .expect("discovery completes");
+        assert_eq!(outcome.status(), DiscoveryStatus::Incompatible, "{version}");
+        assert!(
+            outcome
+                .installed_executable_observation()
+                .is_some_and(|observation| !observation.is_permitted())
+        );
+    }
 }
 
 #[test]
@@ -92,7 +94,6 @@ fn headless_probe_qualifies_frozen_range_and_keeps_newer_visible() {
         ("0.57.0", true),
         ("0.58.0", true),
         ("0.59.0", true),
-        ("0.59.1", true),
         ("0.60.0", true),
         ("0.61.0", true),
         ("0.61.1", false),

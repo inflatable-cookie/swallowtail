@@ -150,9 +150,9 @@ Every selected option literal keeps its multiplicity.
   excluding unpublished `0.56.1` and `0.59.1`.
 - Qualify `0.60.0` and `0.61.0`. Unpublished `0.56.1` (Research 182's
   frozen later stable) and `0.59.1` (Research 324's) sit inside both windows
-  and are excluded gaps: they stay incompatible. No other stable in
-  `0.51.0..=0.61.0` is published or frozen as unpublished. `0.61.1` stays the
-  visible `UnverifiedNewer` point.
+  and are excluded gaps: they stay incompatible. No other unpublished
+  interior gaps are recorded in this range. `0.61.1` stays the visible
+  `UnverifiedNewer` point.
 - No new public operation, flag, driver, facade or behavior revision. ACP
   activity and headless decoder corpora stay authoritative.
 

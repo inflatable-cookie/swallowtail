@@ -28,7 +28,8 @@ at `49b0d308`, before the lean cut.
    `1.2.11`): evidence on the `AGY_CLI_MODEL_API_MAX_RETRIES` pin first,
    accepting provider retry as the fallback (Q-003), and
    `kimi-code.local-server` failing closed above `0.39.1` since `0.40.0`
-   removed the Bash workspace restriction (Research 282, 326). An adaptation
+   removed the Bash workspace restriction (Research 282, 326, 354; official
+   now `2.1.1`), awaiting Q-004. An adaptation
    that needs a Contract 023 exception or narrows a consumer-visible
    guarantee comes back to Tom as a ruling.
 

@@ -78,14 +78,13 @@ fingerprints, and omitting the entry keeps `mcpServers` byte-identically
 empty. The provider honours the entry only after its authentication
 completes; an unauthenticated open fails typed as
 `swallowtail.gemini.acp.auth_required` and never drops the entry to succeed.
-Emission is not honouring: the `client_mcp_servers` cell stays a producer gap
-until a live gate proves one declared remote entry connecting and completing
-a tool call. The isolated `0.59.0` opt-in gate is ready. The host CLI is now
-qualified at official `0.61.0` with the same `mcpServers` HTTP mapping
-(Research 358); a live attempt still needs authority. The first open step on
-the exact-`0.59.0` gate remains the observed
-`swallowtail.gemini.acp.mode_rejected` open (Research 356). The headless
-route's MCP-disabled path is unchanged.
+Emission is not honouring: the `client_mcp_servers` cell stays a producer gap.
+The one authorized live attempt on host exact `0.61.0` was not accepted
+(typed stop `tool_not_called`; Research 360). Authenticated MCP `initialize`
+and `tools/list` reached the disposable server; the one turn did not call the
+tool. Research 356's isolated-`0.59.0` `mode_rejected` open is explained from
+frozen untrusted-folder clamp to `default`; the spent attempt used the
+read-only Plan profile. The headless route's MCP-disabled path is unchanged.
 
 Take each turn's event stream and terminal outcome immediately and poll them
 concurrently. Cancellation interrupts the active turn. Close the turn and

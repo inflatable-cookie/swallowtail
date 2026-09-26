@@ -76,6 +76,14 @@ mod tests {
             }), ResourceAccess::Read)
             .is_err()
         );
+        assert!(
+            parse_new_session(&json!({
+                "sessionId": "fixture-session",
+                "modes": {"currentModeId": "default"}
+            }), ResourceAccess::Read)
+            .is_err(),
+            "untrusted-folder clamp to default is not the read-only plan mode"
+        );
         parse_new_session(
             &json!({
                 "sessionId": "fixture-write-session",

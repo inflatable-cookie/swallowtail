@@ -31,9 +31,11 @@ use swallowtail_runtime::{
 
 const LIVE_GATE: &str = "SWALLOWTAIL_LIVE_GEMINI_ACP_HTTP_MCP";
 const EXACT_VERSION: &str = GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION;
+const CREDENTIAL: &str = "live.gemini.acp.credential";
+const AUDIENCE: &str = "gemini-developer-api";
 
 #[test]
-#[ignore = "requires SWALLOWTAIL_LIVE_GEMINI_ACP_HTTP_MCP=1, isolated gemini-cli 0.59.0, and existing host Gemini auth"]
+#[ignore = "requires SWALLOWTAIL_LIVE_GEMINI_ACP_HTTP_MCP=1, host gemini-cli 0.61.0, and existing host Gemini API-key auth"]
 fn one_authorized_gemini_cli_acp_http_mcp_live_attempt() {
     assert_eq!(
         std::env::var(LIVE_GATE).as_deref(),
@@ -70,7 +72,7 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
             None,
         );
     }
-    let Some((gemini, node)) = isolated_gemini_0_59_0() else {
+    let Some((gemini, node)) = host_gemini() else {
         return HttpMcpLiveRecord::pre_attempt_stop(
             HttpMcpLiveStop::HostVersion,
             host_version_diagnostic(),
@@ -88,8 +90,9 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
             None,
         );
     }
+    let credential = CredentialRef::new(CREDENTIAL).expect("credential");
     let (local, target, environment, working_resource, execution_host_id) =
-        live_host(&gemini, &node, &workspace);
+        live_host(&gemini, &node, &workspace, credential.clone());
     let access_id = AccessProfileId::new("live.gemini.acp.api-key").expect("access id");
     let prepared = match block_on(prepare_gemini_acp(
         GeminiPreparationInput::new(
@@ -102,12 +105,10 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
                 access_id.clone(),
                 CredentialMechanism::ApiKey,
                 EntitlementMetering::PayAsYouGo,
-                EndpointAudience::new("gemini-developer-api").expect("audience"),
+                EndpointAudience::new(AUDIENCE).expect("audience"),
                 SupportAuthority::ProviderSupported,
             )
-            .with_credential_reference(
-                CredentialRef::new("live.gemini.acp.credential").expect("credential"),
-            ),
+            .with_credential_reference(credential),
             PreparedAccessEvidence::caller_asserted(AccessStatus::new(
                 access_id,
                 CredentialState::Ready,
@@ -156,7 +157,7 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
         vec![("Authorization".to_owned(), server.authorization_header())],
     );
     let session = match prepared.prepare_session(
-        GeminiSessionProfileInput::bounded_write(
+        GeminiSessionProfileInput::new(
             RequestId::new("live.gemini.acp.http-mcp.session").expect("request id"),
             working_resource,
             SessionOptions::default(),
@@ -210,7 +211,7 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
     )) {
         Ok(turn) => turn,
         Err(error) => {
-            let _ = block_on(handle.close(
+            let cleanup = block_on(handle.close(
                 swallowtail_runtime::SessionCleanupRequest::new(
                     local.deadline_after(Duration::from_secs(30)),
                 ),
@@ -220,7 +221,7 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
                 true,
                 &server.transcript(),
                 &TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
-                CleanupOutcome::Failed(error.diagnostic().clone()),
+                cleanup,
                 model,
             );
         }
@@ -248,6 +249,7 @@ fn live_host(
     gemini: &Path,
     node: &Path,
     workspace: &Path,
+    credential: CredentialRef,
 ) -> (
     swallowtail_host_local::LocalHostServices,
     swallowtail_runtime::InstalledExecutableTarget,
@@ -269,21 +271,22 @@ fn live_host(
     let path = std::env::var_os("PATH").unwrap_or_default();
     let user = std::env::var_os("USER").unwrap_or_else(|| OsString::from("swallowtail"));
     let logname = std::env::var_os("LOGNAME").unwrap_or_else(|| user.clone());
-    let mut bindings = vec![
-        (OsString::from("HOME"), home),
-        (OsString::from("PATH"), path),
-        (OsString::from("USER"), user),
-        (OsString::from("LOGNAME"), logname),
-    ];
-    for name in ["GEMINI_API_KEY", "GOOGLE_API_KEY", "GOOGLE_GEMINI_BASE_URL"] {
-        if let Some(value) = std::env::var_os(name)
-            && !value.is_empty()
-        {
-            bindings.push((OsString::from(name), value));
-        }
-    }
+    let audience = EndpointAudience::new(AUDIENCE).expect("audience");
     let local = builder
-        .approve_environment(environment.clone(), bindings)
+        .approve_delegated_credential(credential, audience)
+        .approve_environment(
+            environment.clone(),
+            [
+                (OsString::from("HOME"), home),
+                (OsString::from("PATH"), path),
+                (OsString::from("USER"), user),
+                (OsString::from("LOGNAME"), logname),
+                (
+                    OsString::from("GEMINI_CLI_TRUST_WORKSPACE"),
+                    OsString::from("true"),
+                ),
+            ],
+        )
         .approve_working_resource(working_resource.clone(), workspace)
         .build_services(execution_host_id.clone());
     (
@@ -295,40 +298,25 @@ fn live_host(
     )
 }
 
-fn isolated_gemini_0_59_0() -> Option<(PathBuf, PathBuf)> {
-    let prefix = std::env::temp_dir().join(format!(
-        "swallowtail-gemini-cli-{EXACT_VERSION}-{}",
-        std::process::id()
-    ));
-    std::fs::create_dir_all(&prefix).ok()?;
-    let status = Command::new("npm")
-        .args([
-            "install",
-            "--prefix",
-            prefix.to_str()?,
-            &format!("@google/gemini-cli@{EXACT_VERSION}"),
-        ])
-        .status()
-        .ok()?;
-    if !status.success() {
-        return None;
-    }
-    let gemini = prefix.join("node_modules/.bin/gemini");
-    if !gemini.is_file() {
-        return None;
-    }
-    let gemini = std::fs::canonicalize(gemini).ok()?;
+fn host_gemini() -> Option<(PathBuf, PathBuf)> {
+    let gemini = installed_path("gemini")?;
     let output = Command::new(&gemini).arg("--version").output().ok()?;
     if !output.status.success() {
         return None;
     }
     let version = String::from_utf8(output.stdout).ok()?;
-    let version = version.trim();
-    if version != EXACT_VERSION {
+    if !version_is_exact(version.trim()) {
         return None;
     }
     let node = installed_path("node")?;
     Some((gemini, node))
+}
+
+fn version_is_exact(reported: &str) -> bool {
+    reported == EXACT_VERSION
+        || reported
+            .split_whitespace()
+            .any(|token| token == EXACT_VERSION)
 }
 
 fn installed_path(command: &str) -> Option<PathBuf> {
@@ -343,7 +331,7 @@ fn installed_path(command: &str) -> Option<PathBuf> {
 fn host_version_diagnostic() -> SafeDiagnostic {
     gate_diagnostic(
         "swallowtail.gemini.acp.http_mcp.host_version",
-        "Isolated Gemini CLI 0.59.0 was not available",
+        "Host Gemini CLI 0.61.0 was not available",
     )
 }
 
@@ -352,11 +340,6 @@ fn gate_diagnostic(code: &'static str, message: &'static str) -> SafeDiagnostic 
 }
 
 fn host_auth_present() -> bool {
-    for name in ["GEMINI_API_KEY", "GOOGLE_API_KEY"] {
-        if std::env::var_os(name).is_some_and(|value| !value.is_empty()) {
-            return true;
-        }
-    }
     std::env::var_os("HOME")
         .map(PathBuf::from)
         .is_some_and(|home| home.join(".gemini").is_dir())

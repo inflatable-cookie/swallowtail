@@ -6,6 +6,15 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- spend the one authorized `gemini-cli.acp` HTTP MCP live attempt on host
+  exact `0.61.0`. Research 360: harness proof passed first on the read-only
+  Plan profile; frozen `0.61.0` evidence explains Research 356's
+  `mode_rejected` as the untrusted-folder clamp to `default`; the live record
+  is typed stop `tool_not_called` (MCP `initialize` and `tools/list`
+  reached the disposable server; the one turn did not call the tool).
+  Honouring is not accepted. `client_mcp_servers` stays No. No second
+  attempt. The live binary stays behind `live-probes` and
+  `SWALLOWTAIL_LIVE_GEMINI_ACP_HTTP_MCP`.
 - raise the Gemini CLI ACP and headless ceilings through official `0.61.0`:
   Research 358 freezes `0.60.0` and `0.61.0` from npm and GitHub, reproduces
   Research 324's `0.59.0` digests, and inventories every tagged-source hop.
@@ -117,10 +126,10 @@ annotated Git tags from the canonical repository.
   stop, including prepare-error, no-usage, auth pre-check, and cleanup. Two
   cargo live runs already happened before Tom 2026-09-26 ruled no Gemini
   usage: first `host_version` before ACP, then `mcp_not_connected` with
-  `swallowtail.gemini.acp.mode_rejected`. Honouring is not accepted. A live
-  attempt waits on qualifying the host CLI at official `0.61.0`. The first
-  isolated-`0.59.0` open remains that `mode_rejected` failure.
-  `client_mcp_servers` stays No. No third run. Research 356.
+  `swallowtail.gemini.acp.mode_rejected`. Honouring is not accepted. The
+  first isolated-`0.59.0` open remains that `mode_rejected` failure.
+  `client_mcp_servers` stays No. No third isolated-`0.59.0` run. Research
+  356. The later host-`0.61.0` attempt is Research 360.
 - prove the `claude-agent.acp` consumer HTTP MCP live harness against a fake
   ACP agent and a disposable loopback HTTP MCP server, pin the repo-local
   `@agentclientprotocol/claude-agent-acp` sidecar to exact `0.79.0`, and run

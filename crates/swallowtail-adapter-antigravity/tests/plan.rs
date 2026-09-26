@@ -75,11 +75,20 @@ pub fn catalogue_plan(host: ExecutionHostId, target: &str, release: &str) -> Pre
 }
 
 pub fn continuation_plan(host: ExecutionHostId, target: &str) -> PreflightPlan {
+    continuation_plan_at_release(host, target, "1.1.9", None)
+}
+
+pub fn continuation_plan_at_release(
+    host: ExecutionHostId,
+    target: &str,
+    release: &str,
+    effort: Option<&str>,
+) -> PreflightPlan {
     let descriptor = antigravity_headless_descriptor();
     let access_id = AccessProfileId::new("access.antigravity.personal").expect("valid access id");
     let access_profile = antigravity_personal_google_access_profile(access_id.clone());
-    let version = antigravity_release_binding("1.1.9").expect("fixture release is valid");
-    let capabilities = vec![
+    let version = antigravity_release_binding(release).expect("fixture release is valid");
+    let mut capabilities = vec![
         CapabilityRequirement::new(
             Capability::InteractiveSession,
             [CapabilityConstraint::MaximumTurns(24)],
@@ -105,6 +114,14 @@ pub fn continuation_plan(host: ExecutionHostId, target: &str) -> PreflightPlan {
             ],
         ),
     ];
+    if let Some(effort) = effort {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(
+                ReasoningMode::new(effort).expect("valid effort"),
+            )],
+        ));
+    }
     let profile = CapabilityProfile::new(capabilities.clone());
     let instance = ConfiguredInstance::new(
         ConfiguredInstanceId::new("antigravity.continuation.fixture").expect("valid instance id"),
@@ -180,10 +197,30 @@ pub fn headless_plan(
     effort: Option<&str>,
     structured_output: bool,
 ) -> PreflightPlan {
+    headless_plan_for_release(
+        host,
+        target,
+        access,
+        isolation,
+        effort,
+        structured_output,
+        "1.1.9",
+    )
+}
+
+pub fn headless_plan_for_release(
+    host: ExecutionHostId,
+    target: &str,
+    access: ResourceAccess,
+    isolation: HarnessIsolation,
+    effort: Option<&str>,
+    structured_output: bool,
+    release: &str,
+) -> PreflightPlan {
     let descriptor = antigravity_headless_descriptor();
     let access_id = AccessProfileId::new("access.antigravity.personal").expect("valid access id");
     let access_profile = antigravity_personal_google_access_profile(access_id.clone());
-    let version = antigravity_release_binding("1.1.9").expect("fixture release is valid");
+    let version = antigravity_release_binding(release).expect("fixture release is valid");
     let capabilities = headless_capabilities(access, effort, structured_output);
     let profile = CapabilityProfile::new(capabilities.clone());
     let instance = ConfiguredInstance::new(

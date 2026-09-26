@@ -32,7 +32,7 @@ pub(super) fn route_instance_shape(
             crate::antigravity_headless_descriptor(),
             "antigravity-stream-json-v1",
             "antigravity-prepared-exact-continuation",
-            continuation_capabilities(),
+            continuation_capabilities(None),
         ),
     }
 }
@@ -76,8 +76,10 @@ pub(super) fn run_capabilities(
     CapabilityProfile::new(capabilities)
 }
 
-pub(super) fn continuation_capabilities() -> CapabilityProfile {
-    CapabilityProfile::new([
+pub(super) fn continuation_capabilities(
+    effort: Option<&swallowtail_core::ReasoningMode>,
+) -> CapabilityProfile {
+    let mut capabilities = vec![
         CapabilityRequirement::new(
             Capability::InteractiveSession,
             [CapabilityConstraint::MaximumTurns(24)],
@@ -96,7 +98,14 @@ pub(super) fn continuation_capabilities() -> CapabilityProfile {
             )],
         ),
         working_resource(ResourceAccess::Read),
-    ])
+    ];
+    if let Some(effort) = effort {
+        capabilities.push(CapabilityRequirement::new(
+            Capability::ReasoningSelection,
+            [CapabilityConstraint::ReasoningMode(effort.clone())],
+        ));
+    }
+    CapabilityProfile::new(capabilities)
 }
 
 fn working_resource(access: ResourceAccess) -> CapabilityRequirement {

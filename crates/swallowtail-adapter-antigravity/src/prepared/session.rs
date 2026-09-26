@@ -2,26 +2,30 @@ use super::{AntigravityHeadlessModelSelection, AntigravityPreparedContinuationIn
 use swallowtail_core::{
     CapabilityRequirement, DriverRole, ExecutionLayer, HarnessConfigurationPosture,
     HarnessIsolation, HostServiceKind, ModelRoute, OperationRequirements, OperationShape,
-    PreflightPlan, ResourceAccess, SessionAccessPolicy, SessionProviderStatePolicy,
+    PreflightPlan, ReasoningMode, ResourceAccess, SessionAccessPolicy, SessionProviderStatePolicy,
 };
 use swallowtail_runtime::{
     BoxFuture, Deadline, HostServices, InteractiveSessionDriver, InteractiveSessionHandle,
-    OpenSessionRequest, PreparationFailure, PreparedOperationEvidence,
+    OpenSessionRequest, PreparationFailure, PreparationStage, PreparedOperationEvidence,
     PreparedWorkingStateRestoration, RequestId, RuntimeFailure, RuntimeTurnId, WorkingResourceRef,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-/// Exact model, working resource, and deadline for durable continuation.
+/// Exact model, working resource, deadline, and optional reasoning effort
+/// for durable continuation. Exact-`1.2.11` sessions require an effort:
+/// every turn dispatches an explicit `--model`, which `1.2.11` refuses
+/// without `--effort` (Research 359).
 pub struct AntigravityContinuationProfileInput {
     request_id: RequestId,
     model: AntigravityHeadlessModelSelection,
     working_resource: WorkingResourceRef,
     deadline: Option<Deadline>,
+    effort: Option<ReasoningMode>,
 }
 
 impl AntigravityContinuationProfileInput {
     #[must_use]
-    /// Creates continuation input with no deadline.
+    /// Creates continuation input with no deadline and no effort.
     pub const fn new(
         request_id: RequestId,
         model: AntigravityHeadlessModelSelection,
@@ -32,6 +36,7 @@ impl AntigravityContinuationProfileInput {
             model,
             working_resource,
             deadline: None,
+            effort: None,
         }
     }
 
@@ -39,6 +44,14 @@ impl AntigravityContinuationProfileInput {
     /// Adds the session-open deadline.
     pub const fn with_deadline(mut self, deadline: Deadline) -> Self {
         self.deadline = Some(deadline);
+        self
+    }
+
+    #[must_use]
+    /// Selects a supported low, medium, or high reasoning effort for every
+    /// turn. Required for exact-`1.2.11` sessions.
+    pub fn with_effort(mut self, effort: ReasoningMode) -> Self {
+        self.effort = Some(effort);
         self
     }
 }
@@ -57,9 +70,22 @@ impl AntigravityPreparedContinuationIntegration {
         &self,
         input: AntigravityContinuationProfileInput,
     ) -> Result<AntigravityPreparedContinuation, PreparationFailure> {
+        if input
+            .effort
+            .as_ref()
+            .is_some_and(|effort| !matches!(effort.as_str(), "low" | "medium" | "high"))
+        {
+            return Err(super::failure(
+                PreparationStage::Preflight,
+                "swallowtail.antigravity.preparation.effort_rejected",
+                "Antigravity effort must be low, medium, or high",
+            ));
+        }
         let activity = super::activity::profile(self.observation())?;
-        let capabilities =
-            super::activity::with_activity(super::common::continuation_capabilities(), &activity);
+        let capabilities = super::activity::with_activity(
+            super::common::continuation_capabilities(input.effort.as_ref()),
+            &activity,
+        );
         let instance =
             super::common::instance_with_capabilities(self.instance(), capabilities.clone());
         let model = input.model;

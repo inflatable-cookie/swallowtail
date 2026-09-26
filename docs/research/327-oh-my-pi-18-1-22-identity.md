@@ -201,8 +201,8 @@ This record edits no production claim.
 - `CHANGELOG.md` and `docs/rpc.md` at every tag `v17.4.0` through `v18.1.22`
 - frozen `crates/swallowtail-adapter-oh-my-pi/tests/fixtures/oh-my-pi-18.1.22/`
   and the historical `oh-my-pi-17.4.0/` and `oh-my-pi-18.0.5/` corpora
-- [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md),
-  [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md),
-  and [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 017](../knowledge/contracts/017-provider-owned-session-load-replay-and-host-containment.md),
+  [Contract 023](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md),
+  and [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
 - [Research 217](./217-oh-my-pi-18-identity.md) and
   [Research 308](./308-all-route-version-currentness-checkpoint.md)

@@ -15,7 +15,7 @@ leaving g03 evidence-gated?
 ## Method
 
 Followed Contract 029's Recurring Currentness Checkpoint and
-`docs/guides/version-currentness-checkpoint.md`. Compared:
+`docs/knowledge/operations/version-currentness-checkpoint.md`. Compared:
 
 - adapter `selection.rs` claims and the production feature-matrix version
   columns

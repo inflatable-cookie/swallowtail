@@ -131,7 +131,7 @@ qualification evidence-gated.
 
 The operator then promoted the sweep into a named recurring process:
 Contract 029's Recurring Currentness Checkpoint, g03.072, and
-`docs/guides/version-currentness-checkpoint.md`. Codex `0.147.0` is the
+`docs/knowledge/operations/version-currentness-checkpoint.md`. Codex `0.147.0` is the
 first family card. Remaining rows stay one-family-later.
 
 Qualified bounds did not change in the checkpoint itself.

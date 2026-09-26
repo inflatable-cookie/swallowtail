@@ -100,5 +100,5 @@ graphics, and `GEMINI_API_KEY` daemon background stay unmapped.
 - frozen `crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.2.7/`
 - [Research 323](./323-antigravity-1-2-2-identity.md) and
   [Research 283](./283-antigravity-1-1-26-identity.md)
-- [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md)
-  and [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 023](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md)
+  and [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)

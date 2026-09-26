@@ -138,8 +138,8 @@ provider; do not lift Gemini's deferral.
   — 40 current family rows.
 - Current adapter claims in `crates/swallowtail-adapter-*/src/selection.rs`
   and the route-specific OpenAI Realtime selection module.
-- [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
-  and the [version-currentness runbook](../guides/version-currentness-checkpoint.md).
+- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
+  and the [version-currentness runbook](../knowledge/operations/version-currentness-checkpoint.md).
 - [Research 127](./127-all-route-version-currentness-checkpoint.md),
   [Research 159](./159-post-harness-expansion-version-currentness-checkpoint.md),
   and [Research 262](./262-codex-0-151-0-identity.md).

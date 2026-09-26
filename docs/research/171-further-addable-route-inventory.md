@@ -97,7 +97,7 @@ row.
 ## First Post-023 Tranche — Descriptor Work
 
 `kimi-platform.chat` is the first implementation tranche after g04.023.
-Roadmap [g04.024 Hosted API-Key Kimi Platform Chat](../roadmaps/archive/g04.md)
+Roadmap g04.024 Hosted API-Key Kimi Platform Chat
 is named only; its implementation cards are not started by this inventory.
 
 The route is the smallest next proof:

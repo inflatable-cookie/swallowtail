@@ -166,7 +166,7 @@ This record edits no production claim.
   `0d45dddc`, and `95478e8c`
 - frozen `crates/swallowtail-adapter-kimi/tests/fixtures/kimi-code-0.38.0/`
   and `kimi-local-server-0.41.0/`
-- [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md)
-  and [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md)
+- [Contract 017](../knowledge/contracts/017-provider-owned-session-load-replay-and-host-containment.md)
+  and [Contract 023](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md)
 - [Research 270](./270-kimi-code-0-39-1-identity.md),
   [Research 276](./276-all-route-version-currentness-checkpoint.md)

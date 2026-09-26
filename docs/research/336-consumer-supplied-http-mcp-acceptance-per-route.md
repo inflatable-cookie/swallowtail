@@ -35,7 +35,7 @@ provider-free (evidence §5–§7).
 
 **`producer-gap (carrier candidacy open, not carrier dependents)`** — six ACP
 rows whose `client_mcp_servers` cell is already a producer gap owned by
-[g06.005](../roadmaps/g06/005-registered-tool-adoption-remaining-acp-routes.md)
+g06.005
 (planned; no dispatch authorization): `cline.acp`, `copilot-cli.acp`,
 `gemini-cli.acp + gemini-cli.headless`, `goose.acp`, `kiro.acp`,
 `deepagents.acp`. The shared kernel exists but no route-local adoption is

@@ -124,15 +124,15 @@ jobs:
       - name: Semantic public API baseline
         run: bash scripts/check-public-api.sh
 
-  roadmap-numbers:
-    name: Roadmap number uniqueness
+  research-numbers:
+    name: Research number uniqueness
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - name: Collision check against canonical main
-        run: python3 scripts/check-roadmap-number-collision.py
+        run: python3 scripts/check-research-number-collision.py
       - name: Collision mutation suite
-        run: bash scripts/tests/roadmap-number-collision.sh
+        run: bash scripts/tests/research-number-collision.sh
 
   rust-floor:
     name: Pinned MSRV floor

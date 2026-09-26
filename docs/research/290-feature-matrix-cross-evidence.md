@@ -13,7 +13,7 @@ Codex `client_mcp_servers` row, whose basis is the Card131 corpus TSV rather
 than the generic 281 census line. It does not add runtime support or promote a
 provider claim. Each TSV row names one matrix row and unavailable feature,
 records the unavailable finding, and points to an anchored `docs/research` or
-`docs/contracts` line whose first field names the route. A guide-only or
+`docs/knowledge/contracts` line whose first field names the route. A guide-only or
 unanchored citation cannot pass the route check.
 
 ## Machine contract
@@ -22,7 +22,7 @@ The route-matrix checker requires every provider limitation to reference one
 `#L<line>` row in [the TSV ledger](290-feature-matrix-cross-evidence.tsv). The
 row must match the matrix `route_id`, feature, and kind, and its `finding` must
 start with `qualified route unavailable:`. The ledger's `basis` must itself be
-an anchored line under `docs/research` or `docs/contracts` whose first field
+an anchored line under `docs/research` or `docs/knowledge/contracts` whose first field
 names the route. Card129 rows cite Research 281. The Card131 Codex
 `client_mcp_servers` row cites Research 291. Card143 appends the Grok
 `selected_skill_bundle` row after its accepted live gate qualified the three

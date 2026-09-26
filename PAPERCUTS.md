@@ -1,5 +1,10 @@
 # Papercuts
 
+Small, recurring friction worth fixing later. One entry each: date, what
+happened, impact, a plausible fix. Remove an entry when it is fixed. Agents add
+an entry when they hit a solvable hurdle; they don't stop the current task to
+fix it.
+
 ### [ ] Candidate E projection modules exceed the god-file high threshold — 2026-09-04
 - Friction: Card 075's two adapter-local Contract 061 projection modules are
   548 and 403 code lines, respectively, and `effigy scan god-files` marks both
@@ -26,17 +31,15 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface: Contract 061 active-session acknowledgement projection; Kimi ACP
   reasoning-first/Plan-second driver order.
 
-## Open
-
 ### [ ] Architecture still names Command Code 1.54.0 after the 1.65.0 rebind — 2026-09-24
-- Friction: `docs/architecture/system-architecture.md` still describes
+- Friction: `docs/knowledge/architecture/system-architecture.md` still describes
   `swallowtail-adapter-command-code` as exact npm `1.54.0` after g06.021
   rebound the `QualifiedOnly` point to `1.65.0`.
 - Impact: the architecture surface disagrees with selection, the prepared
   guide, and the feature matrix on the current qualified point.
 - Fix: retarget that paragraph to exact `1.65.0` on a card that owns the
   architecture sentence.
-- Surface: `docs/architecture/system-architecture.md` Command Code route
+- Surface: `docs/knowledge/architecture/system-architecture.md` Command Code route
   family paragraph.
 
 ### [ ] Live-probe harnesses ran without a self-proof — 2026-09-05
@@ -101,16 +104,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   after the `v0.4.1` lane closes; do not change the release tool mid-lane.
   Keep-on-failure remains in Effigy triage.
 
-### [ ] Docs link check skips roadmap batch cards — 2026-09-04
-- Friction: `scripts/check-docs-links.py` covers front doors plus research
-  and log files, so cards under `docs/roadmaps/*/batch-cards/` can link to a
-  deleted triage note and `effigy qa:docs` still passes.
-- Impact: a triage prune left two dangling card links on `main` until a
-  manual grep caught them.
-- Fix: include `docs/roadmaps/**` and `docs/triage/**` in the link sweep, or
-  add a roadmap-scoped link policy.
-- Surface: `scripts/check-docs-links.py`; `qa:docs:links`.
-
 ### [ ] Review or validation command wrappers rely on unavailable host `timeout` — 2026-09-04
 - Friction: review or verification pipelines wrapping commands with `timeout <duration> <cmd>`
   fail silently on macOS hosts because `timeout` is a GNU Coreutils binary absent from
@@ -134,17 +127,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   directory or allow worker cards that introduce planned inherent methods to
   update package-scoped public-api baseline manifests.
 - Surface: `scripts/check-public-api.sh`; `release-baselines/public-api-0.4.0/`.
-
-### [ ] Roadmap status-drift checker treats any status word in an annotation as its primary — 2026-09-04
-- Friction: `scripts/check-roadmap-status-drift.py` scans the whole index
-  annotation for status tokens in a fixed priority order, so a `ready`
-  milestone whose annotation mentions "candidate I stopped on ..." fails as
-  primary `stopped`. The failure message does not name the offending line.
-- Impact: honest annotation detail must avoid ordinary words like "stopped"
-  or "blocked"; a planning commit failed docs QA on wording alone.
-- Fix: read the primary as the first token before the first `;`, matching
-  the documented grammar, and print the file and line that failed.
-- Surface: `scripts/check-roadmap-status-drift.py`; `docs/roadmaps/status-grammar.md`.
 
 ### [ ] Rust everyday closeout collides after same-path content revision — 2026-09-03
 - Friction: `northstar-rust-quality closeout` reused snapshot
@@ -184,115 +166,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   or change that built-in behavior without patching Effigy; leave open for an
   Effigy product lane.
 
-### [x] Watcher proof repair restored the 390 god-file baseline — 2026-08-30
-- Friction: the first PR 126 revision raised doctor from 390 findings
-  (341 warnings / 49 errors) on `main` to 395 (346 / 49). New warnings were
-  `claude_code_activity.rs`, both `watcher_proof.rs` files, `watcher/feed.rs`,
-  and `watcher_bridge/mod.rs`.
-- Impact: the closeout and PAPERCUTS entry understated the increase and called
-  several new warnings inherited.
-- Fix: split pump lifecycle, activity system hooks, feed buffer tests, bridge
-  close, fake process handle, and Claude watcher fixtures. Measured baseline
-  on this head is 390 (341 / 49), matching `main`.
-- Surface: g05.006 card 019 PR 126 review revision.
-
-### [x] Route-matrix docs validation leaves Python bytecode — 2026-08-30
-- Friction: `effigy qa:docs` imports the route inventory checker and leaves
-  `scripts/provider_route_matrix/__pycache__/` untracked.
-- Impact: credential-free docs validation dirties a clean planning checkout
-  immediately before its commit and push gate.
-- Fix: set `sys.dont_write_bytecode = True` in the consumer-docs and guides
-  checkers before the route-inventory import, and export
-  `PYTHONDONTWRITEBYTECODE=1` from the routes shell wrapper so every affected
-  selector prevents source-tree bytecode without relying on host
-  `pycache_prefix` redirection or ignore rules.
-- Surface: `qa:consumer-docs`, `qa:guides`, `qa:routes`, and route-inventory
-  imports.
-- Closed: 2026-08-31 papercuts wave 23 route-matrix bytecode.
-
-### [x] Live-probe assertions bypass temporary-workspace cleanup — 2026-08-30
-- Friction: the card 011 Claude watcher probe removes its temporary workspace
-  only after success assertions. Its expected live evidence failure panicked
-  first and left one empty workspace behind.
-- Impact: failed opt-in probes can retain temporary state and contradict their
-  own cleanup claims even when bridge-private material was released.
-- Fix: g05.006 card 019 (PR 126 at `c8691e84`) owns the live-probe workspace
-  with `TempWorkspace` Drop before provider contact and before fallible
-  assertions; credential-free
-  `temporary_workspace_cleanup_is_established_before_assertions` proves a
-  caught assertion panic leaves no directory.
-- Surface: ignored provider live probes with temporary working resources;
-  prototype head `49f2692f`.
-- Closed: 2026-09-01 live-probe temporary-workspace cleanup reconciliation.
-
-### [x] Local watcher host methods cannot run inside a scoped-task executor — 2026-08-30
-- Friction: `LocalScopedTaskService` polls work with `futures_executor::block_on`.
-  `LocalWatcherHostService` also calls `block_on` inside method invocation for
-  process start/stop/join. A bridge listener running on a scoped task panics
-  with `EnterError`.
-- Impact: operation-scoped HTTP listeners cannot reuse the scoped-task executor
-  without changing the watcher host to true async.
-- Fix: watcher host start/stop/join helpers drive process and task futures on a
-  joined scoped thread via `drive_future`, so nested executor entry cannot
-  panic; `watcher_host_methods_succeed_inside_a_scoped_task_executor` proves
-  accept/stop/join from work polled by `LocalScopedTaskService`.
-- Surface: `swallowtail-host-local` watcher host and watcher HTTP bridge.
-- Closed: 2026-09-01 papercuts scoped-task watcher EnterError repair.
-
-### [x] Host-local watcher registry widens the god-file warning baseline — 2026-08-29
-- Friction: PR 117 added four warning-level files above the configured size
-  threshold: `watcher/accept.rs`, `process.rs`, `watcher_service/policy.rs`, and
-  `watcher.rs`. Effigy doctor rose from 381 findings (334 warnings / 47 errors)
-  to 385 (338 warnings / 47 errors).
-- Impact: later g05 lanes inherit noisier structural-health evidence even
-  though the error-level baseline is unchanged.
-- Fix: split watcher acceptance/lookup and local process construction/validation
-  into focused private modules without reducing lifecycle coverage; reconcile
-  the stale four-file claim before changing already-compliant files.
-- Surface: `swallowtail-host-local` process and watcher registry implementation
-  and policy tests; g05.003 card 009 closeout.
-- Closed: 2026-09-01 papercuts host-local watcher god-file split. The live
-  four-path re-measure found only `watcher/accept.rs` at 288 code lines and
-  `process.rs` at 284 above threshold; `watcher.rs` and
-  `watcher_service/policy.rs` were already below it. The split reduced the
-  total from 387 findings (7 critical / 42 high / 338 warning) to 385
-  (7 critical / 42 high / 336 warning).
-
-### [x] xAI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-27
-- Friction: `docs.x.ai/developers/...` HTML bodies are 0.4–1.1 MiB Next.js
-  shells with `x-nextjs-cache`. Markdown exports exist by appending `.md` and
-  are 0.8–47 KiB. `https://docs.x.ai/openapi.json` is a separate 219 KiB schema
-  document.
-- Impact: hashing the HTML shell does not identify the converted text used as
-  evidence. Research 187 hashed HTML; Research 227 hashes `.md` and OpenAPI as
-  the corpus and records HTML only as corroboration.
-- Fix: retrieve xAI docs `.md` exports and OpenAPI JSON; hash those bodies;
-  treat HTML as SPA corroboration only.
-- Surface: g04.080 / Research 227 official-source retrieval.
-- Closed: 2026-09-01 papercuts xAI docs corpus. Research 227 already records
-  binding `.md`/OpenAPI digests with HTML as corroboration only. Research 187
-  keeps its historical HTML table and now notes that Research 227 supersedes
-  the retrieval method.
-
-### [x] Cline Plan acceptance widens the god-file warning baseline — 2026-08-26
-- Friction: PR 72 expands `tests/prepared_headless_facade.rs` to 395 code
-  lines, raising doctor findings from 378 to 379 while the error count remains
-  46.
-- Impact: later lanes inherit noisier structural-health evidence, and the
-  closeout does not name the committed warning increase separately from local
-  evidence-directory noise.
-- Fix: split default-mode and Plan-mode prepared-facade proofs into focused
-  test modules without reducing coverage; record the 379 finding baseline.
-- Surface: `swallowtail-adapter-cline` prepared headless acceptance tests;
-  g04.073 closeout evidence.
-- Closed: 2026-09-01 papercuts Cline prepared-headless god-file split. Moved
-  default-run, Plan, and rejection/binding proofs plus shared fixture builders
-  into `tests/prepared_headless_facade/{default_run,plan,rejections,support}.rs`
-  with bodies intact under the existing `prepared_headless_facade` target.
-  `effigy --json scan god-files` dropped from 385 findings (7 critical / 42
-  high / 336 warning) to 384 (7 critical / 42 high / 335 warning); the 395-line
-  root finding is gone and no new module entered the scan.
-
 ### [ ] Launcher cleanup leaves stale Git worktree registrations — 2026-08-26
 - Friction: the PR 67 launcher worktree directory was removed after merge, but
   `git worktree list` still reported its branch and path as registered.
@@ -309,58 +182,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   (Effigy deps) and runs while the directory still exists, so it cannot
   deregister a later-deleted tree without a repo-wide prune. Leave open for
   the T3/Paseo launcher lane; do not close from Swallowtail.
-
-### [x] GitHub Copilot CLI docs HTML is a Next.js SPA; `.md` is the digestable corpus — 2026-08-26
-- Friction: `docs.github.com/en/copilot/...` HTML bodies are 0.6–1.6 MiB
-  Next.js shells. Markdown exports exist by appending `.md` and are 11–348 KiB.
-- Impact: hashing the HTML shell does not identify the converted text used as
-  evidence. Research 188 hashed HTML; Research 218 hashes `.md` as the corpus
-  and records HTML only as corroboration.
-- Fix: retrieve GitHub docs `.md` exports for Copilot CLI reference pages;
-  hash those bodies; treat HTML as SPA corroboration only.
-- Surface: g04.071 / Research 218 official-source retrieval.
-- Closed: 2026-09-01 papercuts Copilot docs corpus. Research 218 already
-  records binding `.md` digests with HTML as corroboration only. Research 188
-  keeps its historical HTML table and now notes that Research 218 supersedes
-  the retrieval method.
-
-### [x] Codex config docs HTML is a Learn SPA; `.md` is the digestable corpus — 2026-08-25
-- Friction: `developers.openai.com/codex/config-*` 200-redirects to
-  `learn.chatgpt.com` HTML shells (~0.4–1.2 MiB). Markdown exports exist by
-  appending `.md` and are 11–91 KiB.
-- Impact: hashing the HTML shell does not identify the converted text used as
-  evidence. Current `main` `codex-rs/core/models.json` 404s; the tag stores
-  models at `codex-rs/models-manager/models.json`.
-- Fix: retrieve Learn `.md` exports for Codex config docs; hash those bodies;
-  treat GitHub tag paths as binding and current-main URLs as leads only.
-- Surface: g04.066 / Research 213 official-source retrieval.
-- Closed: 2026-09-01 papercuts Codex docs corpus. Research 213 already hashed
-  Learn `.md` as the digestable corpus. The 2026-09-01 reconciliation re-fetched
-  all four config pages' Learn `.md`/HTML bodies, the `developers.openai.com`
-  308 hops (now exact; not 200), and the tag/main models paths; preserved the
-  2026-08-25 digests; recorded current URL/status/body-kind/byte/digest
-  evidence; confirmed basics/advanced `.md` and tag `models.json` still match
-  while reference/sample `.md` moved; left deliver-now claims unchanged.
-
-### [x] Anthropic platform docs return cache-less SPA HTML — 2026-08-25
-- Friction: `platform.claude.com/docs` HTTP bodies are 0.9–2.0 MiB Next.js
-  shells with no `Last-Modified` or `ETag`. Several thinking URLs 307-redirect.
-  The digestable corpus is converted page text, not the hashed HTML shell.
-- Impact: Research 209 hashes are complete retrieved bodies, but they are
-  noisy compared with DeepSeek's cache-validated docs and do not uniquely
-  identify the converted text an agent actually read.
-- Fix: prefer Anthropic's converted/markdown export when one exists; record
-  both HTTP body and converted-text hashes; treat 307 targets as the corpus
-  page rather than hashing the redirect hop twice.
-- Surface: g04.062 / Research 209 official-source retrieval.
-- Closed: 2026-09-01 papercuts Anthropic docs corpus. Research 209 records all
-  9 source rows' followed `.md` bodies, retrieved from public official URLs at
-  `2026-09-01T13:00:30Z`, with requested/effective URLs, statuses, body kinds,
-  byte counts, and SHA-256 digests. The historical HTML hashes remain intact;
-  `adaptive-thinking` is explicitly equivalent to
-  `thinking-steering-and-cost`. The Markdown reconciliation preserves the
-  existing `claude-opus-4-7` adaptive/omitted-display conclusion without any
-  capability, fixture, or claim change.
 
 ### [ ] Antigravity invalid-`--agent` probes crossed card 161's no-prompt boundary — 2026-08-24
 - Friction: card 161 requires promptless help/listing and forbids provider
@@ -411,61 +232,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   use it. Leave open; do not close from Swallowtail. Research 205 stays
   historical.
 
-### [x] llama.cpp context-size proofs widen the god-file warning baseline — 2026-08-24
-- Friction: PR 55 expanded `prepared_facades.rs` and `owned_driver.rs` past the
-  warning threshold, raising doctor findings from 376 to 378 while its worker
-  closeout reported the inherited baseline unchanged.
-- Impact: later lanes inherit noisier structural-health evidence and a stale
-  validation record.
-- Fix: split context-size prepared-facade and owned-driver proofs into focused
-  test modules without reducing lifecycle coverage; correct the closeout
-  baseline to 378 findings (332 warnings / 46 errors).
-- Surface: `swallowtail-adapter-llama-cpp` context-size acceptance tests;
-  g04.056 closeout evidence.
-- Progress 2026-08-26 (g04.078): adding reasoning proofs pushed
-  `owned_driver.rs` from warning to error, so its selection proofs moved to
-  `tests/owned_driver/selections.rs`. That file is a warning again at 260 code
-  lines and doctor returned to the inherited 380/334/46 baseline.
-  `prepared_facades.rs` remains a warning at 381 code lines and still wants the
-  same treatment; the stale g04.056 closeout baseline is still uncorrected.
-- Closed: 2026-09-01 papercuts llama.cpp context-size god-file split. Current
-  scan named two still-live targets: `prepared_facades.rs` at 381 code lines
-  and `owned_driver.rs` at 260. Context-size/reasoning prepared-facade proofs
-  plus shared `owned_start` helpers moved into
-  `tests/prepared_facades/{selections,support}.rs` under the existing
-  `prepared_facades` target. Remaining owned-driver startup-failure proofs
-  moved into the existing `tests/owned_driver/failures.rs` module. Test bodies
-  and counts held (7 prepared-facade, 12 owned-driver). `effigy --json scan
-  god-files` dropped from 383 findings (7 critical / 42 high / 334 warning) to
-  381 (7 critical / 42 high / 332 warning); both named findings are gone and
-  no new module entered the scan. The g04.056 closeout already records the
-  historical 378 (332 warnings / 46 errors) correction from g04.057
-  compilation (`a40cefd5`); current checker taxonomy is
-  critical/high/warning, so that historical paragraph was left unchanged.
-
-### [x] Gemini Live feature proofs widen the god-file warning baseline — 2026-08-23
-- Friction: the context-compression batch left `live_protocol/tests.rs`,
-  `live_context_compression.rs`, and the earlier `live_output_maximum.rs` above
-  the warning threshold, raising doctor findings from 371 to 374.
-- Impact: later feature lanes inherit noisier structural-health evidence even
-  though the error-level baseline is unchanged.
-- Fix: split protocol encoding, context-compression, and output-maximum proofs
-  into focused test modules without reducing route-local coverage.
-- Surface: `swallowtail-adapter-gemini` Live protocol and acceptance tests.
-- Closed: 2026-09-01 papercuts Gemini Live god-file split. Current scan named
-  two live targets: `tests/live_context_compression.rs` (267 code lines) and
-  `tests/live_output_maximum.rs` (257 code lines). The historical
-  `live_protocol/tests.rs` path cited in the initial entry was stale papercut
-  evidence and not present in `tests/`. Split `live_context_compression.rs` into
-  `tests/live_context_compression/{support,rollover,restoration,composition}.rs`
-  and `live_output_maximum.rs` into
-  `tests/live_output_maximum/{support,preparation,rejections,facades}.rs` under
-  the existing `live_prepared_facade` target. Test bodies and counts held (4
-  context-compression tests, 7 output-maximum tests). `effigy --json scan
-  god-files` improved from 381 findings (7 critical / 42 high / 332 warning) to
-  379 (7 critical / 42 high / 330 warning); both warning findings are resolved
-  and no new file entered the scan.
-
 ### [ ] evidence-download cwd steals later repo commands — 2026-08-22
 - Friction: a disposable evidence directory became the persistent shell cwd, so later `effigy` and `git diff --check` ran outside the worktree.
 - Impact: card-gate commands fail with missing-catalog or "not a git repository" errors after an otherwise successful evidence fetch.
@@ -487,363 +253,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   catalogs" (exit 1) from a leaked cwd, while a subshell evidence run keeps
   the caller cwd stable.
 
-### [x] zsh special variables break ordinary shell snippets — 2026-08-22
-- Friction: authority-read snippets used `path` and `status` as ordinary
-  variables; zsh hid the executable search path for the former and rejected
-  assignment to the read-only latter.
-- Impact: otherwise read-only agent scripts can fail partway through a batch
-  with a misleading `command not found` error.
-- Fix: document common reserved names or lint generated zsh snippets for
-  assignments to zsh special parameters.
-- Surface: agent-authored zsh orchestration commands.
-- Closed: 2026-09-01 papercuts zsh special-variables shell-snippet rule.
-  Reproduced `zsh -c 'path=/tmp'` → `PATH` collapses to `/tmp` and `ls` is
-  no longer found, and `zsh -c 'status=0'` → "read-only variable: status"
-  (exit 1); the positive specimen `output_path=/tmp; exit_status=0` runs
-  clean. `bash` accepts both names, and every repo-owned execution path is
-  bash (all `scripts/*.sh` shebangs and `effigy.toml` `bash scripts/...`
-  tasks), so the rule stays zsh-only and no bash script changes. Inventory
-  found no repo snippet assigning `path=`/`status=` and no deterministic
-  corpus of generated zsh snippets, so no lint was added. Added a Shell
-  Snippet Rule to root `AGENTS.md` — the narrowest agent-authoring authority
-  surface: never assign zsh special parameters in snippets; use
-  task-specific names.
-
-### [x] Cursor model-parameter proof exceeds the god-file threshold — 2026-08-22
-- Friction: PR 34 expanded Cursor `tests/prepared_suite.rs` to 454 lines,
-  raising the doctor god-file baseline from 41 to 42 errors.
-- Impact: the completed feature lane leaves structural health worse and makes
-  later doctor comparisons noisier.
-- Fix: split model-parameter preparation and rejection proofs into a focused
-  test module without reducing coverage.
-- Surface: `crates/swallowtail-adapter-cursor/tests/prepared_suite.rs`.
-- Closed: 2026-09-01 papercuts Cursor prepared-suite god-file split. The live
-  finding was 577 code lines (high), not the historical 454-line/error count;
-  that older wording predates the current critical/high/warning taxonomy.
-  Capability/plan, model-parameter, and rejection/drift proofs plus shared
-  fixture builders moved into
-  `tests/prepared_suite/{plans,model_parameters,rejections,support}.rs` with
-  bodies intact under the existing `prepared_suite` target. Nine tests held.
-  `effigy --json scan god-files` dropped from 379 findings (7 critical / 42
-  high / 330 warning) to 378 (7 critical / 41 high / 330 warning); the 577-line
-  root finding is gone and no new module entered the scan.
-
-### [x] Kimi lifecycle proof exceeds the god-file threshold — 2026-08-21
-- Friction: PR 31 added a 566-line Kimi Platform lifecycle integration test,
-  raising the doctor god-file baseline from 40 to 41 errors.
-- Impact: the completed route lane leaves repository structure health worse and
-  makes later doctor comparisons noisier.
-- Fix: split admission/preparation and refresh/catalogue/047 proofs into focused
-  test modules without changing coverage.
-- Surface: `crates/swallowtail-adapter-kimi-platform/tests/connection_lifecycle.rs`.
-- Closed: 2026-09-01 papercuts Kimi Platform lifecycle god-file split. The live
-  finding was 512 code lines (566 total, high); the historical 566-line/error
-  wording predates the current critical/high/warning taxonomy. Admission,
-  preparation, failure/drift, refresh, catalogue, Contract 047, and shared
-  fixture proofs moved into focused fragments under the existing
-  `connection_lifecycle` target with bodies intact. All 8 tests held.
-  `effigy --json scan god-files` dropped from 378 findings (7 critical / 41
-  high / 330 warning) to 377 (7 critical / 40 high / 330 warning); the root
-  finding is gone and no new module entered the scan.
-
-### [x] Parallel currentness branches allocate duplicate roadmap cards — 2026-08-21
-- Friction: PRs 24-30 allocated cards 076-085 from older planning bases while
-  pushed `main` already assigns 076-078 to g04.024.
-- Impact: independently correct family branches conflict at integration and
-  cannot preserve both the active generation runway and unique card identity.
-- Fix: allocate currentness roadmap and card numbers from current pushed
-  `main`, or defer final numbering to the orchestrator restack.
-- Surface: version-currentness worker handoffs; g04 roadmap and batch-card
-  indexes.
-- Closed: 2026-09-02 papercuts currentness card allocation. The first
-  gate still trusted stale or fork `origin/main`, allowed delete-and-add
-  reuse as a "retitle", and left the mutation suite off CI. Repair:
-  `check-roadmap-number-collision.py` fetches the advertised canonical
-  `https://github.com/inflatable-cookie/swallowtail.git` `main` commit from
-  an isolated Git store immediately before enforcement and fails closed on
-  transport, config, or fetch failure. User `url.*.insteadOf` rewrites
-  cannot redirect that URL. The fetch does not mutate the checked
-  repository. Number reuse on another path is rejected;
-  `qa:docs:roadmaps:numbers:test` is hermetic, including insteadOf,
-  symbolic-ref, similarly named tag, and `FETCH_HEAD` isolation; CI job
-  `roadmap-numbers` runs the production checker and that suite.
-  Skill/reference allocate from that refreshed commit, not `origin/main`.
-
-## Closed
-
-### [x] OpenCode post-dispatch deadline proof races its delayed response — 2026-09-04
-- Friction: the third authorized `v0.4.0` prepare passed three gates, then the
-  workspace `test` gate observed `Applied` where
-  `deadline_after_dispatch_is_joined_unconfirmed_and_releases_access` requires
-  `UnconfirmedAfterEffect`.
-- Impact: the proof used independent wall-clock sleeps for a 20-millisecond
-  deadline and 100-millisecond response delay. Scheduler starvation could
-  reverse that intended ordering without a product defect.
-- Fix: gate the DELETE response, wait for observed dispatch, explicitly fire
-  and observe the deadline, then release the response only for joined cleanup.
-  The exact case held 100 default-toolchain runs and 25 Rust `1.95` runs; the
-  focused OpenCode suite and Clippy passed. The three Effigy-owned mutations
-  rolled back and no prepared state was written.
-- Surface: OpenCode prepared-facade deletion fixture; Card 051 `v0.4.0`
-  preparation.
-- Closed: 2026-09-04 before a fresh one-shot prepare authorization.
-
-### [x] Parallel Claude watcher fixtures can reuse a released temporary path — 2026-09-04
-- Friction: the second authorized `v0.4.0` prepare passed nine gates, then the
-  Rust `1.95` floor failed
-  `no_compared_isolation_candidate_satisfies_the_review_oracle` because its
-  retained MCP path existed after clean run closure.
-- Impact: independent fixture hosts started materialization sequence zero under
-  the same process-wide temporary root. Parallel tests could reuse a released
-  path and make a correct cleanup look leaked.
-- Fix: give every `local_watcher_host` a process-and-sequence-unique temporary
-  root and freeze the released-path non-reuse counterexample. Remove the floor
-  selector's obsolete local lock sync and value-only validator; accepted Effigy
-  merge `4c554135` owns package-aware lock synchronization before all gates.
-- Surface: Claude Code watcher fixtures; `scripts/check-release-floor.sh`;
-  Card 051 `v0.4.0` preparation.
-- Closed: 2026-09-04 before the final one-shot prepare authorization.
-
-### [x] Pre-1.0 minor prepare cannot satisfy `--locked` lint with a stale workspace lock — 2026-09-03
-- Friction: the first authorized `effigy release prepare --yes --check-gates
-  --version 0.4.0` applied the version and changelog mutations, then failed
-  `lint` because internal `^0.4.0` requirements could not select workspace
-  packages still recorded as `0.3.3` in `Cargo.lock`. Effigy rolled its two
-  mutations back and wrote no prepared state.
-- Impact: a coordinated pre-1.0 minor cannot pass locked gates unless manifest
-  and lockfile versions move in the same preparation transaction.
-- Fix: configure `release.sync-files = ["Cargo.lock"]` and require Effigy PR 89
-  exact head `7182e753`, merged as `4c554135`. It applies version, changelog,
-  and lock sync before gates, uses `cargo update --workspace --quiet`, and
-  rejects and restores any package or metadata movement not authorized by the
-  post-mutation Cargo workspace-member identity/version map. Locked gates
-  remain mandatory.
-- Surface: Card 051 `v0.4.0` prepare; `config/release.toml`; `Cargo.lock`.
-- Closed: 2026-09-03 Effigy PR 89 plus Swallowtail release-sync prerequisite.
-
-### [x] OpenAI adapter test target name does not match its suite file — 2026-08-31
-- Friction: `crates/swallowtail-adapter-openai/Cargo.toml` binds the test target
-  `prepared_facade` to `tests/direct_suite.rs`, so
-  `cargo test -p swallowtail-adapter-openai --test direct_suite` fails with
-  "no test target named `direct_suite`".
-- Impact: adding a module to the direct suite costs one failed command before
-  the real target name is discovered; the same mismatch exists for
-  `catalogue_activity` and `realtime_prepared_facade`.
-- Fix: renamed the three explicit `[[test]]` targets to `catalogue_suite`,
-  `direct_suite`, and `realtime_suite` so each matches its suite-root filename.
-  Suite counts retained: catalogue 7, direct 35, realtime 33.
-- Surface: `swallowtail-adapter-openai` integration test targets.
-- Closed: 2026-08-31 papercuts wave 23 OpenAI test target names.
-
-### [x] Effigy validation materializes an untracked repo skill — 2026-08-30
-- Friction: running the card 011 docs/Northstar validation copied the Effigy
-  skill and references into untracked `.agents/skills/effigy/`.
-- Impact: a read-only validation round dirties the planning checkout and risks
-  accidental inclusion in unrelated commits.
-- Fix: Swallowtail PR 125 committed the 11-file project-local skill tree.
-  Effigy `f3057b9bb554f1a54b4c2d4cab2df27d5f6da202` (PR 58) syncs that managed
-  tree instead of leaving an untracked copy. On
-  `effigy v0.12.1+local.f3057b9`, `effigy qa:docs` left
-  `git status --porcelain` empty for `.agents/skills/effigy/`.
-- Surface: Effigy startup or validation skill installation; `.agents/skills/`.
-- Closed: 2026-08-31 papercuts wave 21 skill closeout.
-
-### [x] Roadmap status census requires undocumented exact prose — 2026-08-30
-- Friction: `qa:docs:roadmaps:status` rejected truthful g05 census wording
-  until it used the exact phrases `N completed milestones`, `honest evidence
-  stops`, and `ready milestones` with numeric counts.
-- Impact: ordinary planning reconciliation fails through trial and error even
-  when milestone frontmatter and the stated census agree.
-- Fix: documented the live census regexes and Status buckets in
-  `docs/roadmaps/status-grammar.md`, linked from `docs/roadmaps/README.md` and
-  `scripts/README.md`.
-- Surface: `scripts/check-roadmap-status-drift.py`; generation indexes.
-- Closed: 2026-08-30 papercuts wave 19 census grammar.
-
-### [x] Batch cards use `gated` as a status outside the accepted buckets — 2026-08-29
-- Friction: card 010 used `Status: gated`, while roadmap status QA accepts only
-  planned, ready, blocked, stopped, and complete variants. The dependency was
-  truthful, but `effigy qa:docs` could not classify the card.
-- Impact: a valid planning gate fails late, and later agents may repeat the
-  unsupported status because the batch-card template does not name the allowed
-  buckets.
-- Fix: card 010 is `Status: complete`. Swallowtail-local
-  `docs/roadmaps/status-grammar.md` names the accepted buckets and that a gate
-  is `Status: planned; gated behind …` or `ready; …`, not `Status: gated`.
-- Surface: Swallowtail roadmap status QA; card 010.
-- Closed: 2026-08-30 papercuts wave 19 gated status.
-
-### [x] Docs link QA omits research and lane-log bodies — 2026-08-28
-- Friction: PR 112 passed `effigy qa:docs`, but Research 255 contained six
-  links to nonexistent contract filenames. The link selector checks a bounded
-  front-door set and did not inspect the changed research file.
-- Impact: promoted evidence can claim canonical authority while its durable
-  links are broken, and green CI does not catch the defect.
-- Fix: `scripts/check-docs-links.py` keeps the front-door set and also scans
-  `docs/research` and `docs/logs` Markdown bodies behind `qa:docs:links`,
-  without restoring broad child-index churn. Corrected one existing
-  `../../research/` misspell in the g04.083c lane log.
-- Surface: `qa:docs:links`; research and lane-log review.
-- Closed: 2026-08-28 papercuts wave 8 docs links.
-
-### [x] Docs index QA misses roadmap-status drift — 2026-08-26
-- Friction: PR 73 passed every named docs-index selector while
-  `generation-index.md` still called g04.074 ready and the batch-card index
-  still listed completed card 204 as Ready and blocked cards 205-206 as
-  Planned.
-- Impact: a review-ready closeout can leave the canonical planning indexes in
-  mutually contradictory states despite green validation.
-- Fix: `scripts/check-roadmap-status-drift.py` reconciles batch-card section
-  membership, milestone annotations, and generation-index ready/completed/stop
-  census against Status frontmatter; wired as `qa:docs:roadmaps:status`.
-- Surface: Effigy Northstar roadmap and batch-card index QA.
-- Closed: 2026-08-28 papercuts wave 4 QA flakes.
-
-### [x] Timing-sensitive deadline fixtures make unrelated PR heads red — 2026-08-21
-- Friction: restacked PR 23 failed Stable in Ollama
-  `deadline_remains_distinct_from_cancellation`, while PR 21 failed MSRV in
-  Codex `callback_wait_ends_when_the_host_deadline_is_observed`; neither PR
-  changes the failing adapter surface.
-- Impact: otherwise mergeable stacked heads need unrelated CI reruns before
-  the orchestrator can satisfy the exact-head green gate.
-- Fix: Ollama and Codex deadline proofs now use parked controllable clocks and
-  sync after the fixture hold is observed; Alibaba retained-load deadline uses
-  a 500ms bound instead of 5ms so setup cannot trip `deadline_elapsed`.
-- Surface: Ollama attached-driver deadline test; Codex app-server callback
-  deadline test; Alibaba retained-load deadline test; Stable and MSRV CI jobs.
-- Recurrence 2026-08-27 (PR 82): Alibaba Model Studio
-  `retained_load_deadline_joins_transport_before_releasing_access` observed
-  `deadline_elapsed` instead of `timed_out` on a Gemini evidence-only head. A
-  retry moved past it without a code change.
-- Closed: 2026-08-28 papercuts wave 4 QA flakes.
-
-### [x] DeepSeek stream-cancellation test flakes as ProviderFailed — 2026-08-19
-- Friction: `swallowtail-adapter-deepseek::driver::active_stream_cancellation_joins_before_session_credential_release`
-  expected `Cancelled` and observed `ProviderFailed` with
-  `swallowtail.deepseek.stream_incomplete` / `TransportInterrupted` on tag CI
-  run `32309276223` attempt 1. The same SHA had already passed PR and
-  dispatched CI; the in-place rerun passed.
-- Impact: tag-triggered CI can fail a green SHA without a product change,
-  tempting a retag.
-- Fix: treat stream `Closed` with an already-requested cancellation as
-  `Cancelled`, matching the existing `Item(Err)` cancellation path.
-- Surface: DeepSeek driver cancellation test; tag CI Stable job.
-- Recurrence 2026-08-27 (PR 82): Stable again observed
-  `swallowtail.deepseek.stream_incomplete` instead of `Cancelled` on a Gemini
-  evidence-only head. The next unchanged-head retry moved past it.
-- Closed: 2026-08-28 papercuts wave 4 QA flakes.
-
-### [x] Pi replay-during-resume fixture can hang MSRV CI — 2026-08-24
-- Friction: PR 54's first pinned-MSRV run stalled for six hours in
-  `resume_fails_closed_on_replay_evidence`; one local exact-head run also
-  stalled, while immediate reruns passed on Rust 1.95.0 and Stable.
-- Impact: an unrelated Qoder documentation head can remain non-green until the
-  hosted timeout or a successful rerun.
-- Fix: emit the unexpected `replay_item` before the `session_switch` success
-  response so resume fails closed on the pending command instead of racing a
-  completed switch against force-stop wait.
-- Surface: Pi SDK sidecar `ReplayDuringResume` fixture; pinned-MSRV CI.
-- Closed: 2026-08-28 papercuts wave 4 QA flakes.
-
-### [x] A `/var` review worktree breaks affected-package path patches — 2026-08-26
-- Friction: macOS canonicalizes a `mktemp` worktree from `/var/...` to
-  `/private/var/...`, while the affected-package verifier writes Cargo patch
-  paths with the non-canonical spelling.
-- Impact: `package:verify-affected` reports unused patches and a locked
-  `Cargo.lock` update even when the reviewed package and lockfile are sound.
-- Fix: `scripts/verify-affected-packages.sh` now resolves the repo root with
-  `pwd -P` via `scripts/validation/path.sh` before writing patch paths.
-- Surface: `scripts/verify-affected-packages.sh`; disposable review worktrees
-  on macOS.
-- Closed: 2026-08-27 papercuts wave 2 CI/path.
-
-### [x] Isolated HOME for provider probes steals rustup — 2026-08-26
-- Friction: Grok parser probes set `HOME`/`GROK_HOME` to an empty isolated tree
-  and left those exports in the agent shell. Later `effigy validate:focused`
-  ran cargo through rustup with `rustup home` under the isolated tree and no
-  toolchain.
-- Impact: docs-only closeout validation fails with `rustup could not choose a
-  version of cargo` even though host rustup is healthy.
-- Fix: `scripts/run-with-isolated-home.sh` wraps the probe and restores host
-  `HOME` / unsets provider-home vars on exit; `AGENTS.md` points agents there.
-- Surface: g04.072 / Research 219 isolated extracted-binary help and initialize.
-- Closed: 2026-08-27 papercuts wave 2 CI/path.
-
-### [x] OpenCode cancellation fixture panics on expected broken pipe — 2026-08-22
-- Friction: PR 35 MSRV failed in
-  `post_dispatch_cancellation_is_joined_and_unconfirmed` because the fixture
-  response writer treated the cancelled client's `BrokenPipe` as fatal and the
-  fixture server then panicked while joining.
-- Impact: unrelated exact heads can fail MSRV after the product cancellation
-  path has already produced the expected disconnect.
-- Fix: let the cancellation fixture accept `BrokenPipe`/connection reset while
-  writing the abandoned response, while preserving failures for other write
-  errors. Drop no longer panics on join after an expected disconnect abort.
-- Surface: OpenCode prepared-facade HTTP fixture response writer; MSRV CI.
-- Recurrence 2026-08-26 (PR 77): the same writer aborted the Stable job, not
-  just MSRV, this time as `ConnectionReset` in
-  `cancellation_deadline_and_cleanup_release_leases_without_owning_the_server`.
-  The drop-time panic is non-unwinding, so the run dies with SIGABRT and
-  cancels 887 unrelated tests. A plain rerun went green, and the branch touched
-  no OpenCode file. Still open and now blocking unrelated lanes.
-- Recurrence 2026-08-27 (PR 82): the same cancellation fixture aborted Stable
-  with `BrokenPipe` and a destructor-time double panic. The branch changed only
-  Gemini evidence/docs; a later unchanged-head retry passed.
-- Closed: 2026-08-27 papercuts wave 2 CI/path.
-
-### [x] rustfmt --edition 2021 cannot parse this 2024 workspace — 2026-08-20
-- Friction: `rustfmt --edition 2021 <file>` fails on let-chains in sibling
-  modules (`preflight/validation.rs`, `provider_session_history/page.rs`)
-  even when those files are not the format target.
-- Impact: file-scoped rustfmt with the wrong edition aborts instead of
-  formatting the requested sources.
-- Fix: `AGENTS.md` now requires `cargo fmt -p <crate>` / edition 2024 and
-  forbids `rustfmt --edition 2021` on this workspace.
-- Surface: local rustfmt invocation vs workspace edition 2024.
-- Closed: 2026-08-27 papercuts wave 2 CI/path.
-
-### [x] Qwen budget proof raises the god-file error baseline — 2026-08-23
-- Friction: PR 50 added a 441-line `prepared_facade/budgets.rs`, raising doctor
-  findings from 376 to 377 and error-level findings from 46 to 47 while the
-  worker closeout reported the inherited baseline unchanged.
-- Impact: the feature proof left structural health worse and recorded false
-  validation evidence for later review and closeout.
-- Fix: split run/version/terminal and session/replacement budget proofs into
-  focused modules; the reviewed head restored 376 findings (330 warning / 46
-  error) and fast-forwarded through PR 50 at `9807e322`.
-- Surface: `swallowtail-adapter-qwen` prepared-facade budget acceptance tests.
-
-### [x] Worker-local environment file dirties the planning checkout — 2026-08-21
-- Friction: `.agents.local.env` is an intended machine-local worktree-path
-  surface but appeared as an untracked file on orchestrator `main`.
-- Impact: strict Northstar planning could not publish from a clean verified
-  base without touching or hiding operator-local configuration.
-- Fix: ignored the root-local file explicitly while keeping its contents local.
-- Surface: `.gitignore`; Northstar orchestrator planning checkout.
-
-### [x] Stable clippy `result_large_err` on ACP start_session Err pairs — 2026-08-20
-- Friction: CI Stable clippy 1.98.0 failed `result_large_err` on
-  `Result<Handle, (RuntimeFailure, ResourceLease)>` in Cline, Goose,
-  Copilot CLI, Gemini, Kiro, and Deep Agents, then
-  `chunks_exact_to_as_chunks` in ACP lifecycle fixtures.
-- Impact: any PR could go red on Stable without a product change.
-- Fix: boxed the Err pairs; replaced `chunks_exact(2)` with
-  `as_chunks::<2>().0`. PR 14, merge SHA `47b94efc`.
-- Surface: ACP `start_session` helpers; ACP lifecycle fixtures; Stable
-  Clippy (all features).
-
-### [x] Roadmap docs policy applies parent checks to excluded child indexes — 2026-08-11
-- Friction: `effigy qa:docs` reports existing `g01/README.md`, `g02/README.md`,
-  `g03/README.md`, and `backlog/README.md` links as missing even though they
-  exist under `docs/roadmaps/`.
-- Impact: the broad docs selector cannot certify an otherwise indexable docs
-  change; its next-action gate also requires `## Next Task` in every generation
-  and backlog index, contrary to this repo's single front-door pointer rule.
-- Fix: Effigy commit `53a4971da31344c0f1f3bb24308e78ee2e85ec3c`
-  applies index exclusions to collected links for both index and next-action
-  checks. Swallowtail's unchanged roadmap policy and all release gates pass.
-- Surface: Effigy roadmap index and next-action docs policies.
-
 ### [ ] Preflight keys the consumer-tool exclusion on access, not the boundary — 2026-09-04
 - Friction: `swallowtail-core` preflight refuses any interactive session that
   pairs `ResourceAccess::ReadWrite` with `Capability::ToolCalls`, while
@@ -858,23 +267,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   080's second PR then drops the typed refusal.
 - Surface: shared preflight in `swallowtail-core`.
 
-### [x] Release prepare omits coordinated workspace dependency versions — 2026-08-08
-- Friction: Effigy updated `workspace.package.version` before gates but left
-  versioned path entries under `workspace.dependencies` at the previous release.
-- Impact: the first Cargo-backed gate could not resolve the newly versioned local
-  packages, so an otherwise valid coordinated release preparation failed.
-- Fix: Effigy v0.11 release planning now updates exact-version path dependencies
-  for workspace members inheriting `workspace.package.version`. The focused
-  fixture covers plan previews, guarded lock sync, exclusions, and rollback.
-- Surface: Effigy Cargo-workspace release preparation.
-
-### [x] Bootstrap papercuts before an exact-SHA release lane — 2026-08-06
-- Friction: Northstar first required this file after the release candidate had already passed exact-commit CI.
-- Impact: Adding the repository hygiene file during tag closeout would invalidate the clean-tree release check or move the tag beyond the green SHA.
-- Fix: Northstar adopt/upgrade and release-posture guidance now seed
-  `PAPERCUTS.md` before exact-SHA / clean-tree release prep (skill repo-contract,
-  normalize-docs, bundle-docs/papercuts.md, template-bundle).
-- Surface: Northstar adoption and tagged-release preparation.
 ### [ ] Retained worker workspace can disappear before deferred continuation — 2026-09-05
 - Friction: the retained Card 094 worker agent existed in prior coordination history, but its registered worktree had been removed before the post-tag continuation arrived.
 - Impact: the original agent could not be resumed; recreating the implementation lane required a replacement worker and fresh same-workspace reviewer placement.
@@ -909,35 +301,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   sweep.
 - Surface: `crates/swallowtail-adapter-anthropic/tests/managed_driver/`.
 
-### [x] Claude registered-tool close/join fixture flakes in the process-spawning shard — 2026-09-08
-
-- Friction: PR 285 run 34169972936 failed
-  `claude_agent_sdk_driver::registered_tool_route::close_joins_the_registered_listener`
-  at session open with `fixture.claude_agent_sdk.failed`; the same adapter
-  sources passed on the branch's earlier and later heads.
-- Impact: scope comparison excludes Card 137's testkit-only change as the
-  cause, but the fixture failure was not root-caused. A green rerun is weak
-  evidence for the close-and-join path used by the pending Claude live gate.
-- Fix shape: make sidecar startup and listener readiness observable through
-  deterministic fixture signals, retain bounded process output on setup
-  failure, and prove the close/join case repeatedly under the isolated
-  process-spawning selector without relying on a rerun.
-- Surface:
-  `claude_agent_sdk_driver::registered_tool_route::close_joins_the_registered_listener`
-  and the Claude SDK registered-tool sidecar fixture startup path.
-- Closed: 2026-09-08 card 139. At session open the only fixture path that can
-  produce `fixture.claude_agent_sdk.failed` is the provider-side courier
-  spawn, which discarded its `io::Error`. The mechanism is Cargo's non-atomic
-  uplift: a sibling test process rebuilding into the same nested target
-  removes and recreates the shared courier path, measured at 42 `ENOENT`
-  observations across eight rebuilds, and a spawn landing in that window
-  became the bare code. The courier is now acquired with a bounded
-  build-and-read retry and spawned from a hard-linked, content-addressed copy
-  no builder touches. The fixture names the command, arguments,
-  operating-system cause, drained bounded child stderr, and observed exit, and
-  waits on the courier's own rendezvous-claim event. 24 loaded runs of the
-  isolated process-spawning selector are clean.
-
 ### [ ] Nextest reports a rare leak for a test that spawns nothing — 2026-09-08
 - Friction: `claude_agent_sdk_driver` occasionally reports `118 passed
   (1 leaky)` in the process shard. Card 139 captured the name by running with
@@ -958,32 +321,6 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
   on the shard would stop the name being hidden again.
 - Surface: `.config/nextest.toml`; the `ci-process` profile. Card 139's owned
   paths exclude that file, which card 095 owns.
-
-### [x] Registered-tool close waits out the operation bridge read timeout — 2026-09-08
-- Friction: closing a registered-tool route measured 5.00s on every
-  registered case. Card 139 measured it on
-  `close_joins_the_registered_listener` and confirmed the source by narrowing
-  `IO_TIMEOUT` in
-  `crates/swallowtail-host-local/src/operation_bridge/listener.rs` from 5s to
-  2s, which moved the close to a flat 2.00s. `OperationBridgeListener::close`
-  joins each accepted connection thread, and that thread waits out its read
-  timeout instead of being woken.
-- Impact: every registered-tool case in the process-spawning shard pays five
-  seconds of pure wall clock, on both the Claude and Grok routes, and the
-  close/join path is bound by a timer rather than by an event. Guardian
-  cleanup closes the registered lease before the provider close reaches the
-  wire, so a fixture-side child teardown at close lands too late to shorten
-  it; this is not a fixture effect.
-- Fix shape: shut down accepted streams (or carry a close signal into the
-  connection loop) before joining, so close ends on an event.
-- Surface: `crates/swallowtail-host-local/src/operation_bridge/listener.rs`;
-  disclosed by card 139, whose owned paths exclude that crate.
-- Closed: 2026-09-08 card 141. `OperationBridgeListener::close` now shuts down
-  the read side of every live accepted stream (a `try_clone` held per
-  connection, dropped when the connection loop exits so peer end-of-stream
-  semantics are unchanged) before joining, so close ends on an event. The
-  idle-connection close measured 0.21ms against 5.00s before; the watcher
-  profile's live-phase timings are unchanged.
 
 ### [ ] Effigy cannot skip release gates from hosted exact-SHA evidence — 2026-09-06
 - Friction: Card 109 needs `lint`, `lint:no-features`, `test`, and `floor`
@@ -1022,41 +359,16 @@ they hit a solvable hurdle; they do not stop the current task to fix one.
 - Surface: `crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/readiness.rs`;
   `registered_tool_route.rs` courier acquisition.
 
-### [ ] Route matrix still names completed card 144 as the producer gap — 2026-09-08
-- Friction: `effigy qa:routes` fails on the clean dispatch head for card 146
-  (reproduced with all card work stashed at `555c517e`):
-  `check-provider-route-matrix.sh` reports "feature matrix cross
-  classification: producer_gap references a complete card:
-  docs/roadmaps/g05/batch-cards/144-claude-sdk-registered-tool-open-rejection-diagnosis.md".
-  The claude-agent.sdk `cross_ref` cell still names completed card 144 as the
-  producer gap for `consumer_tool_exchange`.
-- Impact: the routes QA gate fails on `main` independent of any branch, so
-  every PR's named validation that includes `qa:routes` reports the same
-  pre-existing failure until the reference is repointed.
-- Fix shape: repoint the `consumer_tool_exchange` cross_ref producer-gap path
-  (and the matching `notes` wording) to the next non-complete card that owns
-  the live-gate diagnosis or qualification once one is promoted; the cell
-  stays `producer_gap` and both Contract 061 cells stay unqualified.
-- Surface: `docs/guides/provider-solution-feature-matrix.csv` claude-agent.sdk
-  row; queue closeout or Chatterbox promotion owns the edit.
-- Closed: 2026-09-08 origin/main `ccd58ca6` repointed the
-  `consumer_tool_exchange` cross_ref producer-gap path to card 146;
-  `effigy qa:routes` passes on heads that include that commit.
-- Orphaned `crates/swallowtail-adapter-cursor/tests/cursor_agent_release_identity.rs`
-  has no `[[test]]` target and is referenced by no suite root, so with
+### [ ] Orphaned Cursor release-identity test never compiles — 2026-09-10
+- Friction: `crates/swallowtail-adapter-cursor/tests/cursor_agent_release_identity.rs`
+  has no `[[test]]` target and no suite root references it, so with
   `autotests = false` it never compiles or runs; its assertions still pin the
-  old `2026.08.11` ceiling. Wire it to a target or fold it into
-  `compatibility_corpus.rs`; found during g05.062.
-- The package content audit's secret pattern `sk-[A-Za-z0-9_-]{20,}` in
-  `scripts/validation/archive.sh` false-positives on ordinary hyphenated
-  English: g06.027's Antigravity fixture labels
-  `headless-background-task-waiting-notice-occasionally-skipped` and
-  `interactive-ask-question-and-copy-btw` match through `task-waiting` and
-  `ask-question`, so `package:verify-affected` rejects a clean package. The
-  labels were rephrased to keep the proof green; anchor the pattern so `sk-`
-  must start a token instead. Found g06.027.
-- g06.029 took Research 342 while it was reserved for the #354 suite lane;
-  Chatterbox renumbered it to 347 after merge. Reservations lived only in task
-  cards, so workers on other lanes could not see them. Until the research
-  collision check exists, reservations are listed at the top of
-  `docs/research/README.md`.
+  old `2026.08.11` ceiling. Found during g05.062.
+- Fix: wire it to a target or fold it into `compatibility_corpus.rs`.
+
+### [ ] Package secret pattern false-positives on hyphenated English — 2026-09-22
+- Friction: `sk-[A-Za-z0-9_-]{20,}` in `scripts/validation/archive.sh` matches
+  ordinary labels such as `headless-background-task-waiting-notice` through
+  `task-waiting`, so `package:verify-affected` rejects a clean package. Found
+  in g06.027; the labels were rephrased to keep the proof green.
+- Fix: anchor the pattern so `sk-` must start a token.

@@ -23,20 +23,17 @@ Normal validation scripts:
   `effigy qa:consumer-docs`. Current tag and inventories come from
   `workspace.package.version` and the matching baseline directories; prepare
   does not repoint this script.
-- `check-roadmap-status-drift.py` — batch-card section, milestone annotation,
-  and generation-index ready/completed/stop counts against Status frontmatter
-  behind `effigy qa:docs:roadmaps:status`. Accepted Status buckets and census
-  phrases: `docs/roadmaps/status-grammar.md`
-- `check-roadmap-number-collision.py` — unique numbered milestone and
-  batch-card files in the working tree, after fetching the advertised
-  canonical `https://github.com/inflatable-cookie/swallowtail.git` `main`
-  commit into an isolated Git store (sanitized config, no user-repo
-  destination ref, tags, or `FETCH_HEAD`). A number already assigned to a
-  path on that commit cannot appear on another path. Behind
-  `effigy qa:docs:roadmaps:numbers` and CI `roadmap-numbers`.
-  Hermetic mutation tests: `effigy qa:docs:roadmaps:numbers:test`
-- `check-docs-links.py` — front-door Markdown links plus `docs/research` and
-  `docs/logs` bodies behind `effigy qa:docs:links`
+- `check-research-number-collision.py` — unique numbered research records
+  in the working tree, after fetching the advertised canonical
+  `https://github.com/inflatable-cookie/swallowtail.git` `main` commit into an
+  isolated Git store (`canonical_main_authority.py`: sanitized config, no
+  user-repo destination ref, tags, or `FETCH_HEAD`). A number already assigned
+  to a slug on that commit cannot appear with another slug. Behind
+  `effigy qa:docs:research:numbers` and CI `research-numbers`. Hermetic
+  mutation tests: `effigy qa:docs:research:numbers:test`
+- `check-docs-links.py` — front-door Markdown links plus `docs/knowledge`,
+  `docs/guides`, `docs/research` and `docs/triage` bodies behind
+  `effigy qa:docs:links`
 - `validate-focused-packages.sh` — one nextest invocation and one
   warnings-denied all-target clippy invocation for one to four explicit
   workspace packages
@@ -47,8 +44,8 @@ Normal validation scripts:
   named provider-home variables, restoring the host environment on exit
 - `run-grok-acp-client-mcp-probe.sh` — Desktop-only Grok ACP client-MCP live
   runner. Refuses unless `SWALLOWTAIL_DESKTOP_GROK_ACP_CLIENT_MCP_PROBE=1`.
-  Swallowtail crate tests never invoke it. Packet:
-  `docs/handoffs/20260907-g05-card128-desktop-grok-acp-client-mcp-probe.md`
+  Swallowtail crate tests never invoke it. The original run packet is in Git
+  history before the lean Northstar cut (`49b0d308`).
 - `validation/package-scope.sh` — shared exact package argument validation
 - `validation/path.sh` — canonical path resolution for macOS `/var` aliases
 - `validation/archive.sh` — shared archive member, manifest, and content audit
@@ -58,7 +55,7 @@ Normal validation scripts:
   source policy through the repository `deny.toml`
 
 The source-tag lane, cheap-then-hosted gate order, and tag-request template:
-[docs/guides/release-playbook.md](../docs/guides/release-playbook.md).
+[docs/knowledge/contracts/release.md](../docs/knowledge/contracts/release.md).
 Contract 036 hosted-gate delegation is the authority.
 
 Release-preparation scripts:
@@ -83,8 +80,8 @@ Release-preparation scripts:
   forbid removals from immutable `public-api-<previous>`. Historical tagged
   directories stay immutable
 - `check-provider-route-matrix.sh` — production route, lifecycle, feature,
-  anchored frozen-evidence cross-classification, producer-gap reasons,
-  evidence-pending packet guards, and activity matrices against current and
+  anchored frozen-evidence cross-classification, producer-gap plan-lane and
+  reason guards, evidence-pending question guards, and activity matrices against current and
   previous route inventories, behind `effigy qa:routes`
 - `check-msrv.sh` — unified Rust 1.95 floor and current stable checks
 

@@ -149,7 +149,7 @@ Before 1.0:
 - raising an MSRV, shrinking a guaranteed provider range, changing route
   identity, or weakening lifecycle and authority truth is breaking
 
-See [Contract 036](docs/contracts/036-crate-release-and-compatibility-boundary.md)
+See [Contract 036](docs/knowledge/contracts/036-crate-release-and-compatibility-boundary.md)
 and the [v0.5.1 release notes](docs/releases/0.5.1.md).
 
 ## Development
@@ -167,7 +167,7 @@ effigy qa
 Live and authenticated probes are separate, opt-in tasks. Normal QA is
 credential-free and must not contact providers.
 
-Repository architecture, contracts, roadmaps, and logs start at
+Repository knowledge (architecture, contracts, vision) and the plan start at
 [docs/README.md](docs/README.md). Contribution rules are in
 [CONTRIBUTING.md](CONTRIBUTING.md).
 

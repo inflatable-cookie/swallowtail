@@ -145,7 +145,7 @@ Consumers build and persist the browseable tree. Swallowtail exposes no direct
 operator child-control handle yet because none of the selected routes
 qualifies one. Whole-turn cancellation and messages to the main agent are not
 substitutes. See
-[Contract 045](../contracts/045-subagent-topology-observation-and-control.md).
+[Contract 045](../knowledge/contracts/045-subagent-topology-observation-and-control.md).
 
 Use `SubagentDirectoryProjection` when an application needs current
 operation-local picker or tree state without repeating graph semantics:
@@ -334,5 +334,5 @@ Bounded application handoffs:
 - [Nucleus observable activity](../releases/0.1.0-nucleus-observable-activity-handoff.md)
 - [Soundcheck observable activity](../releases/0.1.0-soundcheck-observable-activity-handoff.md)
 
-See [Contract 044](../contracts/044-observable-agent-activity-and-disclosure.md)
+See [Contract 044](../knowledge/contracts/044-observable-agent-activity-and-disclosure.md)
 for the durable boundary.

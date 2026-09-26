@@ -4,8 +4,8 @@ Status: promoted
 Owner: Tom
 Created: 2026-08-26
 Updated: 2026-08-26
-Roadmap: [g04.077 Cursor Headless Ask Mode](../roadmaps/archive/g04.md)
-Card: [213 Cursor Headless Ask-Mode Evidence](../roadmaps/archive/g04.md)
+Roadmap: g04.077 Cursor Headless Ask Mode
+Card: 213 Cursor Headless Ask-Mode Evidence
 
 ## Question
 

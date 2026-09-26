@@ -149,9 +149,9 @@ close the family using matrix and docs validation only.
 ## Sources
 
 - [OpenAI Realtime API with WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket)
-- [Contract 018](../contracts/018-owned-ephemeral-model-serving-lifecycle.md)
-- [Contract 027](../contracts/027-planned-connection-rollover-and-realtime-continuity.md)
-- [Contract 031](../contracts/031-attached-native-runtime-version-and-residency.md)
+- [Contract 018](../knowledge/contracts/018-owned-ephemeral-model-serving-lifecycle.md)
+- [Contract 027](../knowledge/contracts/027-planned-connection-rollover-and-realtime-continuity.md)
+- [Contract 031](../knowledge/contracts/031-attached-native-runtime-version-and-residency.md)
 
 ## Promotion
 

@@ -133,5 +133,5 @@ This record edits no production claim.
 - `CHANGELOG.md` and `docs/rpc.md` at every tag `v18.1.22` through `v18.2.7`
 - frozen `crates/swallowtail-adapter-oh-my-pi/tests/fixtures/oh-my-pi-18.2.7/`
   and the historical `oh-my-pi-18.1.22/` corpus
-- [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
 - [Research 327](./327-oh-my-pi-18-1-22-identity.md)

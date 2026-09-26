@@ -217,8 +217,8 @@ posture, and `249` proved / `518` remaining projection counts unchanged.
   — 40 current family rows.
 - Current adapter claims in `crates/swallowtail-adapter-*/src/selection.rs`
   and the route-specific OpenAI Realtime selection module.
-- [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
-  and the [version-currentness runbook](../guides/version-currentness-checkpoint.md).
+- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
+  and the [version-currentness runbook](../knowledge/operations/version-currentness-checkpoint.md).
 - [Research 270](./270-kimi-code-0-39-1-identity.md), [Research 274](./274-all-route-version-currentness-checkpoint.md),
   and [Research 275](./275-codex-0-152-1-identity.md).
 

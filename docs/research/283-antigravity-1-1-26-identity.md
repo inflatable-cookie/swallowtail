@@ -160,7 +160,7 @@ behavior under Contract 023. Decoder specimens stay on
 - official `agy_cli_mac_arm64.tar.gz` for `1.1.17`, `1.1.19`, and `1.1.24`
 - parked PR 182 head `562225db6e2a77986e5f1504a70f767ccb3fe82d`
 - frozen `crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.1.17/`
-- [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md)
-  and [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md)
+- [Contract 017](../knowledge/contracts/017-provider-owned-session-load-replay-and-host-containment.md)
+  and [Contract 023](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md)
 - [Research 177](./177-antigravity-1-1-17-identity.md) and
   [Research 276](./276-all-route-version-currentness-checkpoint.md)

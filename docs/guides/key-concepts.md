@@ -15,7 +15,7 @@ appear throughout.
 - **Driver** — the low-level runtime role that implements a route, such as
   `CodexExecDriver`. Drivers expose provider-neutral roles like "run" and
   "session"; they never collapse providers into one fake uniform API.
-  [Contract 005](../contracts/005-integration-identity-and-transport-diversity.md)
+  [Contract 005](../knowledge/contracts/005-integration-identity-and-transport-diversity.md)
   keeps identity separate.
 - **Adapter** — a package (crate) that owns one or more routes for one
   provider, such as `swallowtail-adapter-codex`. Package selection does not
@@ -24,12 +24,12 @@ appear throughout.
   immutable value (evidence + plan + request) and then call a typed operation
   on it. Think "approve everything up front, then run one thing". The
   low-level drivers behind it stay public for advanced composition.
-  [Contract 037](../contracts/037-prepared-consumer-integration.md) requires
+  [Contract 037](../knowledge/contracts/037-prepared-consumer-integration.md) requires
   the facade for every production driver.
 - **Configured instance** — the identity of one concrete, pre-configured setup
   you want to present or select, such as `codex.local` revision `1`. It is not
   "the provider" in the abstract; it is one exact setup with its own revision.
-  [Contract 047](../contracts/047-configured-provider-instance-catalogue.md)
+  [Contract 047](../knowledge/contracts/047-configured-provider-instance-catalogue.md)
   governs the instance catalogue.
 
 ## Connection Lifecycle

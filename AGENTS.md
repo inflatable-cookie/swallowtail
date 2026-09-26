@@ -1,7 +1,5 @@
 # Swallowtail Agents
 
-This file applies to the whole repository.
-
 Swallowtail is a Rust workspace of provider-neutral agent-runtime crates: one
 core vocabulary, a runtime, host support, and opt-in adapters that expose each
 provider or harness through explicit capabilities and typed prepared paths.
@@ -10,7 +8,25 @@ providers into a generic router. Compatibility is claimed per exact
 interface version from frozen artifacts, never from `latest`. Releases are
 source-only annotated tags.
 
-## Start Here
+Swallowtail is standalone. Nucleus, Soundcheck, Monkey, Longhorn and future
+consumers may provide evidence; they do not own Swallowtail decisions.
+
+## Where things live
+
+- Current state: `docs/README.md`
+- Knowledge (one owner per fact): `docs/knowledge/README.md`
+- Retired concepts, which must not come back: `docs/knowledge/retired.toml`
+- Open questions: `docs/knowledge/questions.md`
+- What's next: `docs/plan.md`
+- Unresolved leads: `docs/triage/`
+- Consumer guides, route and feature matrices: `docs/guides/`
+- Retained research evidence: `docs/research/`
+- Release compatibility notes: `docs/releases/`
+- Small recurring friction: `PAPERCUTS.md`
+
+Tasks, briefs and status live in Queue, never in this repository.
+
+## Commands
 
 ```sh
 effigy tasks
@@ -18,176 +34,84 @@ effigy doctor
 effigy test --plan
 ```
 
-Prefer `effigy <task>` for supported work before raw commands. `effigy doctor`
-is orientation, not validation; the validation board is `effigy qa` and the
-tiered selectors below. Do not add package scripts that merely re-export
-Effigy tasks.
+- `effigy validate:focused <pkg>...` — nextest and clippy for one to four
+  exact workspace packages
+- `effigy package:verify-affected <pkg>...` — package archive assembly for the
+  same scope
+- `effigy qa:docs` — docs, link, index, retired-concept and guide checks
+- `effigy qa:routes` — route, feature and activity matrix checks
+- `effigy qa` — the full board
 
-## How Work Moves Here
+Prefer `effigy <task>` over raw commands. `effigy doctor` is orientation, not
+validation. Do not add package scripts that merely re-export Effigy tasks.
+Details: [validation tiers](docs/guides/validation-tiers.md).
 
-Planning, dispatch, and implementation are separate threads:
+## Product rules
 
-- **Chatterbox** owns planning with the operator. It reconciles
-  `docs/triage/` and promotes canonical docs on `main` after explicit
-  operator confirmation. It never edits runtime code.
-- **Dispatch** runs through the `northstar-queue` Paseo plugin. Chatterbox
-  commits a worker handoff on `main` carrying the queue frontmatter and the
-  actual operator approval, submits it, and the queue owns launch, independent
-  review, the merge gate, and closeout. There is no standing coordinator
-  thread: the queue selects a coordinator when one is needed. A blocked task
-  stays an open obligation and returns to Chatterbox for a planning ruling; it
-  is never removed to quieten the board.
-- **Worker** mode is explicit: it exists only when a coordinator handoff under
-  `docs/handoffs/` declares worker mode and orchestrator dispatch authority.
-  Never infer worker mode from a branch, worktree path, or harness. A worker
-  edits only the paths its task and manifest own and stops at exact-head
-  review; it never merges.
+- Do not implement runtime, provider, transport, or process behavior before
+  the relevant contract is clear enough to test.
+- Keep crates and modules small and focused. Keep provider-neutral vocabulary
+  free of consumer and provider dependencies. Make dependency direction
+  visible and acyclic.
+- Expose provider differences through capabilities, not silent flattening.
+- Keep product prompts, tools, policy, workflows, and durable state
+  downstream.
+- Format with `cargo fmt -p <crate>`. The workspace uses edition 2024; do not
+  pass `rustfmt --edition 2021` on individual files.
+- Wrap isolated provider probes in `scripts/run-with-isolated-home.sh
+  --home-var GROK_HOME -- …`, or restore host `HOME` and unset provider-home
+  variables before running `effigy` or `cargo`.
+- **Version currentness.** Revalidate route families through the Contract 029
+  checkpoint ([procedure](docs/knowledge/operations/version-currentness-checkpoint.md),
+  repo skill `.cursor/skills/version-currentness/`). A checkpoint writes
+  research; it does not change claims. Extend one family at a time; never
+  bulk-bump from `latest`. A named incompatible reason is never an endpoint:
+  it gets an adaptation task that qualifies the current release (Contract 029,
+  No Terminal Stop).
+- **Feature matrix.** An unavailable cell is exactly one of: a provider
+  limitation citing frozen evidence; a producer gap naming the `docs/plan.md`
+  item that builds it (`plan:<key>`); or evidence pending, naming an open
+  question in `docs/knowledge/questions.md` that states the gate owner, the
+  decision tree into the other two kinds, and the cells it covers. A cross
+  with none of the three is a matrix defect. "Withheld" is a producer gap with
+  a reason, never a finished result. Reconcile consumer requirements against
+  required cells, not against truthful reporting. Rule detail:
+  [route matrix](docs/guides/provider-route-matrix.md).
 
-Normal-mode agents use the current checkout and follow the task named in
-`docs/roadmaps/README.md`. `docs/triage/` is a buffer of leads to promote or
-remove, never execution authority. Small solvable friction goes in
-`PAPERCUTS.md` without stopping the task. Full rules:
-`docs/contracts/001-working-rules.md`.
+## Guardrails
 
-## Shell Snippet Rule
+- Releases are source-only annotated tags ([release](docs/knowledge/contracts/release.md),
+  Contract 036). No gate, changelog or merge authorizes a tag, tag push,
+  publication, GitHub Release, or consumer/provider mutation; each needs
+  explicit operator authority naming the exact SHA. Never move or recreate a
+  tag.
+- Live provider turns, paid-model spend and credentials need operator
+  authority. Prove the probe harness against fakes before spending a live
+  attempt.
+- When the knowledge files don't settle a direction, ask the operator rather
+  than inventing product policy.
+- When a change alters what is true, update the owning knowledge file in the
+  same PR.
+- An operator ruling given in conversation goes into its owning file before
+  the thread ends.
 
-Snippets run under the default interactive shell (zsh), not the bash
-shebangs of `scripts/`. Never assign zsh special parameters as ordinary
-variables: `path` is tied to `PATH` and hides the executable search path,
-and `status` is read-only and rejects assignment. Use task-specific names
+## Shell snippets
+
+Snippets run under the default interactive shell (zsh), not the bash shebangs
+of `scripts/`. Never assign zsh special parameters as ordinary variables:
+`path` is tied to `PATH`, and `status` is read-only. Use task-specific names
 (`output_path`, `exit_status`) instead.
 
-## Docs Authority
+## Writing
 
-- `docs/README.md` — front door and the authority order when sources disagree
-- `docs/vision/README.md`
-- `docs/architecture/README.md`
-- `docs/contracts/README.md`
-- `docs/specs/README.md`
-- `docs/roadmaps/README.md` — active generation and the sole Next Task pointer
-- `docs/logs/README.md`
-- `docs/research/README.md` — evidence awaiting promotion
-- `docs/releases/README.md` — tagged and candidate compatibility notes
-- `docs/triage/README.md` and `docs/handoffs/README.md` — intake and dispatch
-  artifacts, not authority
+Artifacts and PR descriptions use glue-light style:
+[writing style](docs/knowledge/contracts/writing-style.md).
 
-Swallowtail is a standalone project. Nucleus, Soundcheck, Monkey, and future
-consumers may provide evidence, but they do not own Swallowtail decisions.
+## Validate
 
-## Project Posture
-
-Swallowtail starts in strict Northstar posture.
-
-- specs are provisional planning surfaces
-- architecture records realized structure
-- contracts hold durable rules and boundaries
-- roadmaps sequence work
-- logs record meaningful decisions and evidence
-
-Do not implement runtime, provider, transport, or process behavior before the
-relevant contracts are clear enough to test.
-
-## Rust Code Shape
-
-- keep crates and modules small and focused
-- keep provider-neutral vocabulary free of consumer and provider dependencies
-- make dependency direction visible and acyclic
-- expose provider differences through capabilities, not silent flattening
-- keep product prompts, tools, policy, workflows, and durable state downstream
-- format with `cargo fmt -p <crate>`; the workspace uses edition 2024, so do not
-  pass `rustfmt --edition 2021` on individual files
-- wrap isolated provider probes in `scripts/run-with-isolated-home.sh
-  --home-var GROK_HOME -- …`, or restore host `HOME` and unset provider-home
-  variables before running `effigy`/`cargo`
-
-## Continuation Rule
-
-In a strict Northstar lane, a bare `continue` resumes the ready task named by
-the previous closeout and `docs/roadmaps/README.md`. The coordinator does not
-wait for `continue`: it dispatches every ready lane in the manifest and moves
-through merge, closeout, and the next ready task on its own.
-
-Keep the active `## Next Task` pointer only in `docs/roadmaps/README.md`.
-When several lanes are ready, the pointer names the lead task and the
-roadmap holding the manifest for the rest.
-
-## Batch Size Rule
-
-Work in meaningful batches. Inspect the ready task and nearby runway before
-editing. Group related tasks when one validation round can cover them. Stop and
-re-scope if work becomes atomic churn.
-
-## Validation Tier Rule
-
-Use explicit package scope for normal batch feedback:
-
-```sh
-effigy validate:focused swallowtail-adapter-codex
-effigy package:verify-affected swallowtail-adapter-codex
-```
-
-Both selectors accept one to four exact workspace package names. Do not infer
-scope from changed files. Run broad `qa`, workspace tests, package checks,
-candidate checks, consumer checks, MSRV checks, or live probes only when the
-accepting task names that evidence tier.
-
-## Roadmap Generation Rule
-
-A roadmap generation is a long planning container, normally holding 30-50
-numbered task files (`gNN.NNN` directly under `gNN/`). There is no nested card level. Do not roll
-to a new generation because a phase, contract set, or implementation layer
-changes. Extend the active generation until it approaches that range or the
-operator explicitly authorizes a structural rollover.
-
-## Version Currentness Rule
-
-Revalidate every production route family through the named Contract 029
-checkpoint and `docs/guides/version-currentness-checkpoint.md`. This is a
-standing lane: it is not a generation runway goal and does not keep a
-generation open. The checkpoint writes research; it does not change claims.
-Extend one family at a time through the Upgrade Workflow. Do not bulk-bump
-from `latest`. Do not leave the current host or official stable
-UnverifiedNewer without a named incompatible reason, and a named
-incompatible reason is never an endpoint: it compiles an adaptation task that
-qualifies the current release (Contract 029, No Terminal Stop). Execute the
-lane through the repo skill `version-currentness` at
-`.cursor/skills/version-currentness/`. Sequencing lives in
-`docs/roadmaps/standing-lanes.md`.
-
-## Feature Matrix Rule
-
-An unavailable cell in the feature matrix is exactly one of: a provider
-limitation with a citation to frozen evidence; a producer gap with the task
-that builds it; or evidence pending, where the provider's capability is
-genuinely unproven and a named, scheduled evidence gate owns the answer. A
-cross with none of the three is a matrix defect. "Withheld" is a producer gap
-with a reason, never a finished result. Reconcile consumer requirements
-against required cells, not against truthful reporting.
-
-Evidence pending is the narrow case and carries guards, so it can never
-become a shrug: it references a live hand-off packet under `docs/handoffs/`
-(not a card, which completes); that packet names the owner who runs the gate
-and the decision tree converting each outcome into one of the other two
-kinds; and it is unavailable to any cell nobody is currently investigating.
-
-## Planning Ambiguity Rule
-
-When the authority surfaces do not settle a direction, ask the operator rather
-than inventing product policy.
-
-## Reporting Rule
-
-Use glue-light writing from `docs/policy/internal-writing-style.md` for
-artifacts and closeouts: what changed, current state, failed or material
-validation, next move. Operator-facing conversation stays natural and human;
-compress artifacts, not the chat.
-
-## Release Rule
-
-Releases are source-only annotated tags governed by Contract 036. No gate,
-changelog, or closeout commit authorizes tag creation, tag push, publication,
-a GitHub Release, or consumer/provider mutation; each needs explicit operator
-authority naming the exact SHA. Never move or recreate a tag.
+`effigy validate:focused <pkg>...` for the packages you touched, plus
+`effigy qa:docs` and `effigy qa:routes` when docs, guides or matrices change,
+before opening a PR. Broader tiers only when the brief names them.
 
 <!-- northstar:rust-quality:start -->
 ## Northstar Rust Quality
@@ -196,7 +120,7 @@ Scope: Rust source, Cargo manifests, build files, tests, and directly related
 documentation under this directory.
 
 Use Northstar's strict everyday-authoring route for ordinary Rust work. Resolve
-the repository-owned profile and deviations under `docs/contracts/`; never
+the repository-owned profile and deviations under `docs/knowledge/contracts/`; never
 assume a universal MSRV. Re-enter at task start and coherent batch closeout.
 Preserve unrelated work. A quality audit, no-slop pass, or audit-and-fix request
 is explicit audit intent; never route it through everyday authoring.

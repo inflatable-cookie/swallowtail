@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Check front-door Markdown links plus research and lane-log bodies.
+"""Check front-door Markdown links plus knowledge, guide, research and triage bodies.
 
-Keeps `qa:docs:links` bounded: root/release front doors plus the indexed
-research and logs corpora. Does not walk roadmap child indexes or the rest of
-`docs/`.
+Keeps `qa:docs:links` bounded to tracked docs surfaces. The whole-repository
+link and anchor check is `effigy skill run northstar-lean/cut -- check-links`.
 """
 
 from __future__ import annotations
@@ -22,7 +21,9 @@ FRONT_DOOR = [
     "CONTRIBUTING.md",
     "SECURITY.md",
     "SUPPORT.md",
+    "PAPERCUTS.md",
     "docs/README.md",
+    "docs/plan.md",
     "docs/releases/README.md",
     "docs/releases/0.1.0.md",
     "docs/releases/0.1.1.md",
@@ -34,8 +35,10 @@ FRONT_DOOR = [
 ]
 
 CORPUS_DIRS = (
+    ROOT / "docs/knowledge",
+    ROOT / "docs/guides",
     ROOT / "docs/research",
-    ROOT / "docs/logs",
+    ROOT / "docs/triage",
 )
 
 
@@ -69,7 +72,7 @@ def main() -> None:
     corpus_count = len(ordered) - front_door_count
     print(
         f"docs link check: {front_door_count} front-door + "
-        f"{corpus_count} research/log Markdown files"
+        f"{corpus_count} corpus Markdown files"
     )
     proc = subprocess.run(
         ["effigy", "docs", "check", "links", *ordered],

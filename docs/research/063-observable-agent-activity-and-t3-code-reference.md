@@ -218,10 +218,10 @@ Contract 029 applies unchanged.
 - [T3 Code ACP event projection](https://github.com/pingdotgg/t3code/blob/694f8d1c6eaaabafbf5c2861ae524174919ef625/apps/server/src/provider/acp/AcpCoreRuntimeEvents.ts)
 - [T3 Code runtime ingestion](https://github.com/pingdotgg/t3code/blob/694f8d1c6eaaabafbf5c2861ae524174919ef625/apps/server/src/orchestration/Layers/ProviderRuntimeIngestion.ts)
 - [T3 Code timeline grouping](https://github.com/pingdotgg/t3code/blob/694f8d1c6eaaabafbf5c2861ae524174919ef625/apps/web/src/components/chat/MessagesTimeline.logic.ts)
-- [Contract 009](../contracts/009-async-operation-lifecycle.md)
-- [Contract 012](../contracts/012-interactive-session-options-and-callback-exchange.md)
-- [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
-- [Contract 037](../contracts/037-prepared-consumer-integration.md)
+- [Contract 009](../knowledge/contracts/009-async-operation-lifecycle.md)
+- [Contract 012](../knowledge/contracts/012-interactive-session-options-and-callback-exchange.md)
+- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 037](../knowledge/contracts/037-prepared-consumer-integration.md)
 
 ## Promotion
 

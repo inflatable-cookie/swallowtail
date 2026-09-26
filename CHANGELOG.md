@@ -17,7 +17,6 @@ annotated Git tags from the canonical repository.
   and guide in step. The Research 352 spent stop stays unreconstructed.
   No raw provider stream, bearer, account, session id, or private path is
   retained.
-=======
 - qualify exact Antigravity `1.2.11` headless on a retry-disabled behaviour
   revision: Research 359 proves `AGY_CLI_MODEL_API_MAX_RETRIES` in the
   frozen `1.2.11` artifact parses with `ParseUint(_, 10, 32)` into

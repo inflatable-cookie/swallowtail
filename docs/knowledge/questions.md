@@ -25,6 +25,11 @@ Copilot, Goose and Kiro held until a consumer needs them.
 Live result: Research 352. The one attempt was not accepted (typed stop
 `cleanup_failed`). The cell stays No.
 
+Diagnosis: Research 355. The stop name was the gate's own classification and
+the run kept no cleanup diagnostic. The gate now keeps the typed cleanup
+diagnostic (class, code, adapter stage tag) and prints it, so a second
+attempt — which still needs fresh operator authority — cannot lose it again.
+
 ## Q-002 — Which command validates a fresh checkout before merge?
 
 Status: answered 2026-09-26

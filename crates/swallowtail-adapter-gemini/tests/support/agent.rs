@@ -14,6 +14,8 @@ pub enum Scenario {
     /// The bundled `@agentclientprotocol/sdk` `authRequired()` default, which
     /// serializes as `Authentication required` (no trailing period).
     AuthRequiredSdkDefault,
+    /// Honour a declared HTTP MCP entry by connecting, listing, and calling it.
+    HttpMcpHonour,
 }
 
 #[derive(Clone, Debug)]
@@ -31,6 +33,7 @@ struct AgentState {
     prompt_id: Option<u64>,
     write_enabled: bool,
     stopped: bool,
+    http_mcp: Option<(String, Vec<(String, String)>)>,
 }
 
 struct SharedAgent {
@@ -76,7 +79,14 @@ impl SharedAgent {
                 }),
                 );
             }
-            Some("session/new") => match self.scenario {
+            Some("session/new") => {
+                if self.scenario == Scenario::HttpMcpHonour
+                    && let Some(placement) = http_mcp::placement_from_session_new(&message["params"])
+                {
+                    let _ = http_mcp::connect_and_list(&placement.0, &placement.1);
+                    state.http_mcp = Some(placement);
+                }
+                match self.scenario {
                 Scenario::AuthRequired => Self::enqueue(
                     &mut state,
                     json!({
@@ -142,10 +152,48 @@ impl SharedAgent {
                     );
                     enqueue_session_metadata(&mut state, mode);
                 }
+                }
             }
             Some("session/prompt") => {
                 state.prompt_id = id;
                 match self.scenario {
+                    Scenario::HttpMcpHonour => {
+                        let result = state
+                            .http_mcp
+                            .as_ref()
+                            .and_then(|(url, headers)| http_mcp::call_ping(url, headers).ok())
+                            .unwrap_or_else(|| "missing-tool-result".to_owned());
+                        let mode = if state.write_enabled {
+                            "autoEdit"
+                        } else {
+                            "plan"
+                        };
+                        enqueue_session_metadata(&mut state, mode);
+                        Self::enqueue(
+                            &mut state,
+                            json!({
+                                "jsonrpc": "2.0",
+                                "method": "session/update",
+                                "params": {
+                                    "sessionId": "fixture-session",
+                                    "update": {
+                                        "sessionUpdate": "agent_message_chunk",
+                                        "content": {"type": "text", "text": result}
+                                    }
+                                }
+                            }),
+                        );
+                        if let Some(prompt_id) = state.prompt_id.take() {
+                            Self::enqueue(
+                                &mut state,
+                                json!({
+                                    "jsonrpc": "2.0",
+                                    "id": prompt_id,
+                                    "result": {"stopReason": "end_turn"}
+                                }),
+                            );
+                        }
+                    }
                     Scenario::Success => {
                         let mode = if state.write_enabled {
                             "autoEdit"

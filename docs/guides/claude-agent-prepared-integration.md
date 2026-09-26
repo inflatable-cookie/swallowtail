@@ -132,7 +132,8 @@ provider gate on the `0.79.0` map.
 
 The Contract 061 placement projection names `consumer-supplied-http` when an
 HTTP entry is bound. Emission is not honouring: `client_mcp_servers` stays No
-as a producer gap naming g06.033 until a live gate proves a remote tool call.
+as a producer gap naming g06.033. The one authorized live attempt on exact
+`0.79.0` was not accepted (typed stop `cleanup_failed`; Research 352).
 
 Local subscription access means the approved ACP process inherits the selected
 environment and uses authentication already held by the local Claude
@@ -457,8 +458,8 @@ See the compile-tested
 
 ## Repo-Local ACP Sidecar
 
-Swallowtail pins `@agentclientprotocol/claude-agent-acp` in the root
-`package.json`. Development and live probes use:
+Swallowtail pins `@agentclientprotocol/claude-agent-acp` to exact `0.79.0`
+in the root `package.json`. Development and live probes use:
 
 ```sh
 effigy bootstrap:claude-agent-acp

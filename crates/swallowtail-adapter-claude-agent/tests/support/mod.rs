@@ -24,11 +24,14 @@ use swallowtail_runtime::{
 };
 
 mod agent;
+pub mod http_mcp;
 pub mod selection;
 mod services;
 
 use agent::SharedAgent;
 pub use agent::{ObservedProcess, Scenario};
+#[allow(unused_imports)]
+pub use http_mcp::{call_ping, connect_and_list};
 pub use services::DeadlineWait;
 use services::{FixtureTime, ThreadTaskService};
 

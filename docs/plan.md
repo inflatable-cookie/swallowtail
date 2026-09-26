@@ -65,9 +65,12 @@ at `49b0d308`, before the lean cut.
 ## Not now
 
 - **Live HTTP MCP honouring on `gemini-cli.acp`** — the gate is built and
-  proven against fakes, but the route needs an enterprise Gemini API key
-  (free keys are no longer accepted), and Tom has none (2026-09-26). Revisit
-  when an enterprise key is available or a consumer needs the cell.
+  proven against fakes, but Tom has no Gemini access with usage
+  (2026-09-26). The route takes a Gemini Developer API key. Free personal
+  Google login ended on 2026-06-18 (unpaid and Google One users moved to
+  Antigravity CLI); personal login now needs Google AI Pro or Ultra, so a
+  personal-login access profile wouldn't help. Revisit when paid access
+  exists or a consumer needs the cell.
 
 - **HTTP MCP live gates on `copilot-cli.acp`, `goose.acp`, `kiro.acp`** —
   wired to emit the entry; held until a consumer needs them.

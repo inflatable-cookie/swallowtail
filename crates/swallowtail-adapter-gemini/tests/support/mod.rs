@@ -24,6 +24,7 @@ use swallowtail_runtime::{
     WorkingResourceService, WorkingResourceText, WorkingResourceWriteRequest,
 };
 
+pub mod http_mcp;
 include!("agent.rs");
 #[derive(Clone)]
 pub struct FixtureHost {

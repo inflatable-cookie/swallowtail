@@ -12,13 +12,6 @@ pub const HTTP_MCP_LIVE_TOOL: &str = "ping";
 /// Deterministic tool result. Not a secret.
 pub const HTTP_MCP_LIVE_TOOL_RESULT: &str = "pong";
 
-/// Per-connection read timeout, used only to pace the listener's stop check.
-///
-/// A streamable-HTTP MCP client holds a GET SSE stream open with no traffic, so
-/// an idle read must never end the connection. The listener treats a timed-out
-/// read as "nothing yet" and keeps the buffered request bytes.
-const IDLE_POLL: Duration = Duration::from_millis(100);
-
 /// Disposable loopback streamable-HTTP MCP server with a per-run bearer.
 pub struct DisposableHttpMcpServer {
     endpoint: String,
@@ -126,7 +119,7 @@ impl std::fmt::Debug for DisposableHttpMcpServer {
 
 fn per_run_bearer() -> String {
     format!(
-        "g06-064-{}-{}",
+        "st-068-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -142,23 +135,12 @@ fn handle_connection(
     stop: &AtomicBool,
 ) {
     stream.set_nonblocking(false).ok();
-    stream.set_read_timeout(Some(IDLE_POLL)).ok();
+    stream.set_read_timeout(Some(Duration::from_secs(5))).ok();
     stream.set_write_timeout(Some(Duration::from_secs(5))).ok();
-    let mut pending = Vec::new();
     while !stop.load(Ordering::SeqCst) {
-        // An idle read returns here so the stop flag is observed every poll:
-        // the connection stays open, the handler thread stays joinable.
-        let request = match read_request(&mut stream, &mut pending) {
-            ReadOutcome::Request(request) => request,
-            ReadOutcome::Idle => continue,
-            ReadOutcome::Closed => return,
+        let Some((keep_alive, target, headers, body)) = read_request(&mut stream) else {
+            return;
         };
-        let ReadRequest {
-            keep_alive,
-            target,
-            headers,
-            body,
-        } = request;
         if target.starts_with("GET ") {
             write_sse_open(&mut stream, keep_alive);
             if !keep_alive {
@@ -264,7 +246,7 @@ fn mcp_reply(request: &Value) -> McpReply {
             "result": {
                 "protocolVersion": protocol,
                 "capabilities": {"tools": {"listChanged": false}},
-                "serverInfo": {"name": "swallowtail-claude-agent-acp-http-mcp-live", "version": "0.0.0"}
+                "serverInfo": {"name": "swallowtail-gemini-acp-http-mcp-live", "version": "0.0.0"}
             }
         }),
         "tools/list" => json!({
@@ -334,97 +316,38 @@ fn prefers_sse(headers: &str) -> bool {
     })
 }
 
-fn read_request(stream: &mut TcpStream, pending: &mut Vec<u8>) -> ReadOutcome {
+fn read_request(stream: &mut TcpStream) -> Option<(bool, String, String, String)> {
+    let mut bytes = Vec::new();
     let mut chunk = [0_u8; 4096];
     loop {
-        match take_request(pending) {
-            Ok(Some(request)) => return ReadOutcome::Request(request),
-            Ok(None) => {}
-            Err(()) => return ReadOutcome::Closed,
+        let count = stream.read(&mut chunk).ok()?;
+        if count == 0 {
+            return None;
         }
-        match stream.read(&mut chunk) {
-            Ok(0) => return ReadOutcome::Closed,
-            Ok(count) => pending.extend_from_slice(&chunk[..count]),
-            // An idle read is not a close: a GET SSE stream stays silent while
-            // the MCP client keeps it open. Return to the connection loop so it
-            // can observe the listener's stop flag instead of blocking a join.
-            Err(error)
-                if error.kind() == std::io::ErrorKind::WouldBlock
-                    || error.kind() == std::io::ErrorKind::TimedOut =>
-            {
-                return ReadOutcome::Idle;
-            }
-            Err(_) => return ReadOutcome::Closed,
-        }
-    }
-}
-
-enum ReadOutcome {
-    Request(ReadRequest),
-    Idle,
-    Closed,
-}
-
-struct ReadRequest {
-    keep_alive: bool,
-    target: String,
-    headers: String,
-    body: String,
-}
-
-/// Consumes one complete request from the connection buffer, keeping partial
-/// bytes for the next read. `Err` means the connection is not usable.
-fn take_request(pending: &mut Vec<u8>) -> Result<Option<ReadRequest>, ()> {
-    let Some(header_end) = pending.windows(4).position(|window| window == b"\r\n\r\n") else {
-        return Ok(None);
-    };
-    let headers = std::str::from_utf8(&pending[..header_end])
-        .map_err(|_| ())?
-        .to_owned();
-    let length = content_length(&headers);
-    let body_start = header_end + 4;
-    if pending.len() < body_start + length {
-        return Ok(None);
-    }
-    let target = headers.lines().next().ok_or(())?.to_owned();
-    let keep_alive = keep_alive(&headers);
-    let body = String::from_utf8_lossy(&pending[body_start..body_start + length]).into_owned();
-    pending.drain(..body_start + length);
-    Ok(Some(ReadRequest {
-        keep_alive,
-        target,
-        headers,
-        body,
-    }))
-}
-
-fn content_length(headers: &str) -> usize {
-    headers
-        .lines()
-        .find_map(|line| {
-            line.to_ascii_lowercase()
-                .strip_prefix("content-length:")
-                .and_then(|value| value.trim().parse::<usize>().ok())
-        })
-        .unwrap_or(0)
-}
-
-/// HTTP/1.1 connections are persistent unless the client says otherwise; an
-/// explicit `Connection: close` still ends the connection after one response.
-fn keep_alive(headers: &str) -> bool {
-    let connection = headers.lines().find_map(|line| {
-        let (name, value) = line.split_once(':')?;
-        name.eq_ignore_ascii_case("connection")
-            .then(|| value.trim().to_ascii_lowercase())
-    });
-    match connection.as_deref() {
-        Some(value) if value.contains("close") => false,
-        Some(value) if value.contains("keep-alive") => true,
-        Some(_) => false,
-        None => headers
+        bytes.extend_from_slice(&chunk[..count]);
+        let Some(header_end) = bytes.windows(4).position(|window| window == b"\r\n\r\n") else {
+            continue;
+        };
+        let headers = std::str::from_utf8(&bytes[..header_end]).ok()?;
+        let length = headers
             .lines()
-            .next()
-            .is_some_and(|line| line.ends_with("HTTP/1.1")),
+            .find_map(|line| {
+                line.to_ascii_lowercase()
+                    .strip_prefix("content-length:")
+                    .and_then(|value| value.trim().parse::<usize>().ok())
+            })
+            .unwrap_or(0);
+        if bytes.len() < header_end + 4 + length {
+            continue;
+        }
+        let target = headers.lines().next()?.to_owned();
+        let keep_alive = headers.lines().any(|line| {
+            line.to_ascii_lowercase().starts_with("connection:")
+                && line.to_ascii_lowercase().contains("keep-alive")
+        });
+        let body_start = header_end + 4;
+        let body = String::from_utf8_lossy(&bytes[body_start..body_start + length]).into_owned();
+        return Some((keep_alive, target, headers.to_owned(), body));
     }
 }
 

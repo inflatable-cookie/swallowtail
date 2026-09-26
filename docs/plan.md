@@ -12,13 +12,13 @@ at `49b0d308`, before the lean cut.
 
 1. **Consumer HTTP MCP live honouring on `claude-agent.acp`** (lane
    `claude-agent-acp-http-mcp-live`) — emission stands (Research 351). The
-   one authorized live attempt on pinned exact `0.79.0` was not accepted:
-   typed stop `cleanup_failed` (Research 352): the MCP connect, list, call
-   and `Completed` turn happened, but session close was not `Clean`, and the
-   gate record dropped the cleanup diagnostic. The cell stays No. Next: a
-   provider-free diagnosis that makes the gate keep typed cleanup diagnostics
-   and traces what close does with an open HTTP MCP client on `0.79.0`. A new
-   live attempt needs fresh operator authority.
+   first live attempt on pinned `0.79.0` stopped at session close
+   (Research 352). Diagnosis (Research 355) fixed the lost diagnostic and a
+   test-listener defect that dropped idle SSE streams, which could have
+   disturbed the provider; the leading hypothesis is that the sidecar didn't
+   answer `session/close` within 30 seconds. Tom approved a second attempt
+   on `0.79.0` (2026-09-26); it reports the typed cleanup code. Official is
+   now `0.81.2`, qualified separately afterwards.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Known open
@@ -28,17 +28,20 @@ at `49b0d308`, before the lean cut.
    also at `1.2.11`): `1.1.18..=1.2.10` still need per-point pin backfill,
    and accepting provider retry stays the Q-003 fallback for those, and
    `kimi-code.local-server` failing closed above `0.39.1` since `0.40.0`
-   removed the Bash workspace restriction (Research 282, 326). An adaptation
+   removed the Bash workspace restriction (Research 282, 326, 354; official
+   now `2.1.1`): qualify `0.40.0..=2.1.1` under `AmbientHost` without the
+   check, documented, with `disabled_tools` as the consumer opt-out (Q-004). An adaptation
    that needs a Contract 023 exception or narrows a consumer-visible
    guarantee comes back to Tom as a ruling.
 
 ## Next
 
-- **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — the gate is
-  being built and proven against fakes (host 0.53.0, point 0.59.0). The live
-  attempt waits for usage: the route takes a Gemini Developer API key, and Tom
-  has none with usage (2026-09-26). A free-tier Google AI Studio key is the
-  same key type.
+- **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — one live
+  attempt on the host's Gemini CLI once it is qualified (it auto-updated to
+  official `0.61.0` on 2026-09-26, above the `0.59.0` ceiling), after the
+  fake-proven gate merges. Access is Tom's free Gemini Developer API key in
+  the Gemini CLI keychain entry. Free personal Google login ended on
+  2026-06-18.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the
@@ -66,6 +69,7 @@ at `49b0d308`, before the lean cut.
   (Q-002).
 
 ## Not now
+
 
 - **HTTP MCP live gates on `copilot-cli.acp`, `goose.acp`, `kiro.acp`** —
   wired to emit the entry; held until a consumer needs them.

@@ -38,6 +38,19 @@ annotated Git tags from the canonical repository.
   retry-pin, and keep-ceiling options to Tom. The `1.2.11` `--effort` mapping
   is a selected change for any future headless milestone. No provider
   operation or host mutation occurred.
+- keep the typed cleanup diagnostic on the `claude-agent.acp` HTTP MCP live
+  gate. Research 355 diagnoses the Research 352 stop without a provider: the
+  spent record kept only the gate's own `cleanup_failed` stop name and no
+  diagnostic code, so the record now keeps the cleanup class, the exact
+  diagnostic code, and the adapter's stage tag, and the gate prints them; the
+  turn-start failure path keeps the close outcome instead of the turn error;
+  and the disposable loopback listener no longer drops a silent GET SSE
+  stream or a persistent HTTP/1.1 connection. The harness proves an idle SSE
+  stream survives, fails if the record drops the diagnostic, and keeps the
+  provider message body out of the record. The frozen `0.79.0` close path is
+  traced with the provider/Swallowtail split, and the leading cause is named
+  as a hypothesis. No live attempt, no claim change, and the matrix cell
+  stays No.
 - raise the Ollama attached-runtime qualified ceiling through official
   `0.34.4`: Research 350 freezes both published hops after `0.34.2` with
   tag/commit/tree/tarball and selected-file hashes, and reproduces Research
@@ -92,6 +105,17 @@ annotated Git tags from the canonical repository.
   remain unchanged.
 
 ### Added
+- prove the `gemini-cli.acp` consumer HTTP MCP live harness against a fake
+  ACP agent and a disposable loopback HTTP MCP server, and land the isolated
+  exact `0.59.0` opt-in gate behind `live-probes` and
+  `SWALLOWTAIL_LIVE_GEMINI_ACP_HTTP_MCP`. Typed diagnostics stay on every
+  stop, including prepare-error, no-usage, auth pre-check, and cleanup. Two
+  cargo live runs already happened before Tom 2026-09-26 ruled no Gemini
+  usage: first `host_version` before ACP, then `mcp_not_connected` with
+  `swallowtail.gemini.acp.mode_rejected`. Honouring is not accepted. A live
+  attempt waits on qualifying the host CLI at official `0.61.0`. The first
+  isolated-`0.59.0` open remains that `mode_rejected` failure.
+  `client_mcp_servers` stays No. No third run. Research 356.
 - prove the `claude-agent.acp` consumer HTTP MCP live harness against a fake
   ACP agent and a disposable loopback HTTP MCP server, pin the repo-local
   `@agentclientprotocol/claude-agent-acp` sidecar to exact `0.79.0`, and run

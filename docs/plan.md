@@ -12,14 +12,12 @@ at `49b0d308`, before the lean cut.
 
 1. **Consumer HTTP MCP live honouring on `claude-agent.acp`** (lane
    `claude-agent-acp-http-mcp-live`) — emission stands (Research 351). The
-   one authorized live attempt on pinned exact `0.79.0` was not accepted:
-   typed stop `cleanup_failed` (Research 352): the MCP connect, list, call
-   and `Completed` turn happened, but session close was not `Clean`, and the
-   gate record dropped the cleanup diagnostic. The cell stays No. The
-   provider-free diagnosis landed (Research 355): the gate now keeps and
-   prints the typed cleanup diagnostic, and the frozen `0.79.0` close path is
-   traced, so a second attempt can name its cause instead of losing it. A new
-   live attempt needs fresh operator authority before it runs.
+   first live attempt on pinned `0.79.0` stopped at session close
+   (Research 352). Diagnosis (Research 355) fixed the lost diagnostic and a
+   test-listener defect that dropped idle SSE streams, which could have
+   disturbed the provider; the leading hypothesis is that the sidecar didn't
+   answer `session/close` within 30 seconds. A second attempt, which reports
+   the typed cleanup code, needs Tom's authority.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Known open

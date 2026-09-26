@@ -67,7 +67,7 @@ Asked: 2026-09-26
 
 `0.40.0` stopped checking the Bash tool's `cwd` argument against the
 workspace; it is unchanged through official `2.1.1` (Research 354,
-"Rulings"). The route runs under Contract 023 `AmbientHost`, which never
+"Rulings"; Research 357 lands the claim). The route runs under Contract 023 `AmbientHost`, which never
 claimed workspace containment, and the removed check covered only the
 starting `cwd`, never what a shell command does after it starts. Options:
 A pin `disabled_tools: ["Bash"]` (removes the shell tool for every consumer);

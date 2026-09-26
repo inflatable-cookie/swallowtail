@@ -53,9 +53,14 @@ kimi web --no-open --host 127.0.0.1 --port <approved-port> --log-level info
 ```
 
 The returned handle owns only that foreground child. `close` stops and joins
-it. No container is required. Neither topology claims a sandbox. Kimi account
-authentication and harness configuration remain Kimi's authority; the server
-bearer only authenticates the approved loopback endpoint.
+it. No container is required. Neither topology claims a sandbox. From
+`0.40.0` the Bash tool no longer checks `cwd` against workspace roots. The
+route declares `AmbientHost`, which never claimed workspace containment
+(Q-004 B). Consumers who want no shell send the existing optional
+`disabled_tools` control with the exact name `Bash`. Swallowtail does not pin
+that denylist. Kimi account authentication and harness configuration remain
+Kimi's authority; the server bearer only authenticates the approved loopback
+endpoint.
 
 ## Interactive Session
 

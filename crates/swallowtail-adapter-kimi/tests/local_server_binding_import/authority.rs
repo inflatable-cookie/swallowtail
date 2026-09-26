@@ -114,9 +114,9 @@ fn owned_import_uses_the_same_binding_contract_and_joins_its_child() {
 
 #[test]
 fn incompatible_local_server_fails_closed_without_an_acp_source_above_the_cap() {
-    // Research 326: local-server is QualifiedOnly at 0.39.1, so 0.40.0 fails
-    // at CompatibilityClassification instead of preparing as visible newer.
-    let server = FixtureServer::start_with_version("0.40.0");
+    // Unpublished 0.39.2 stays an incompatible local-server gap. ACP 0.40.0
+    // still cannot mint import authority.
+    let server = FixtureServer::start_with_version("0.39.2");
     let host = LocalHost::new(&server);
     let host_id = value(ExecutionHostId::new, "fixture.host.newer");
     let services = host.services(host_id.clone(), false);
@@ -127,14 +127,14 @@ fn incompatible_local_server_fails_closed_without_an_acp_source_above_the_cap() 
         "fixture.kimi.newer",
         "fixture.endpoint",
         "fixture.bearer",
-        "0.40.0",
+        "0.39.2",
     );
     let failure = block_on(prepare_kimi_local_server_attached(
         input,
         probe("fixture-newer-prepare"),
         services,
     ))
-    .expect_err("local-server 0.40.0 fails closed under QualifiedOnly");
+    .expect_err("local-server 0.39.2 stays an incompatible gap");
     assert_eq!(
         failure.stage(),
         PreparationStage::CompatibilityClassification

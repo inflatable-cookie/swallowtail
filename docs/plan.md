@@ -10,16 +10,7 @@ at `49b0d308`, before the lean cut.
 
 ## Now
 
-1. **Consumer HTTP MCP live honouring on `claude-agent.acp`** (lane
-   `claude-agent-acp-http-mcp-live`) — emission stands (Research 351). The
-   first live attempt on pinned `0.79.0` stopped at session close
-   (Research 352). Diagnosis (Research 355) fixed the lost diagnostic and a
-   test-listener defect that dropped idle SSE streams; the second attempt,
-   authorized by Tom on 2026-09-26, accepted the full tuple with `Clean`
-   cleanup (Research 361), so `client_mcp_servers` is Yes on exact `0.79.0`
-   only. Official is now `0.81.2`, qualified separately afterwards; later
-   window points still need their own live gate.
-2. **Version currentness** (lane `version-currentness`) — standing, never
+1. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Every stop
    gets an adaptation task (Tom, 2026-09-26); an adaptation that needs a
@@ -30,6 +21,12 @@ at `49b0d308`, before the lean cut.
 
 ## Next
 
+- **Carry `claude-agent.acp` HTTP MCP honouring to current** (lane
+  `claude-agent-acp-http-mcp-live`) — `client_mcp_servers` is Yes on exact
+  `0.79.0` only (Research 361). Once `0.81.2` is qualified, decide from its
+  identity evidence whether the `mcpServers` mapping and close path are
+  unchanged enough to extend the claim, or whether it needs its own live
+  gate.
 - **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — the first
   attempt on `0.61.0` connected and listed the tool but never called it
   (Research 360), likely because read-only Plan mode keeps MCP tools off.

@@ -26,6 +26,7 @@ pub struct swallowtail_adapter_antigravity::AntigravityContinuationProfileInput
 impl swallowtail_adapter_antigravity::AntigravityContinuationProfileInput
 pub const fn swallowtail_adapter_antigravity::AntigravityContinuationProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_antigravity::AntigravityHeadlessModelSelection, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
 pub const fn swallowtail_adapter_antigravity::AntigravityContinuationProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub fn swallowtail_adapter_antigravity::AntigravityContinuationProfileInput::with_effort(self, swallowtail_core::model::ReasoningMode) -> Self
 pub struct swallowtail_adapter_antigravity::AntigravityHeadlessDriver
 impl swallowtail_adapter_antigravity::AntigravityHeadlessDriver
 pub const fn swallowtail_adapter_antigravity::AntigravityHeadlessDriver::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
@@ -112,6 +113,8 @@ pub const swallowtail_adapter_antigravity::ANTIGRAVITY_AUTOMATIC_EXECUTABLE_NAME
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_BASELINE_VERSION: &str
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION: &str
+pub const swallowtail_adapter_antigravity::ANTIGRAVITY_HEADLESS_RETRY_PIN_NAME: &str
+pub const swallowtail_adapter_antigravity::ANTIGRAVITY_HEADLESS_RETRY_PIN_VALUE: &str
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_PERSONAL_GOOGLE_AUDIENCE: &str
 pub const swallowtail_adapter_antigravity::ANTIGRAVITY_RELEASE_AXIS: &str

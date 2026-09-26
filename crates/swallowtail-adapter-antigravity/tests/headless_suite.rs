@@ -394,6 +394,64 @@ fn local_host() -> ExecutionHostId {
     ExecutionHostId::new("host.local").expect("host id")
 }
 
+#[test]
+fn retry_disabled_run_without_effort_is_rejected_before_dispatch() {
+    let host_id = local_host();
+    let host = FixtureHost::completed([stdout(SUCCESS)]);
+    let plan = plan::headless_plan_for_release(
+        host_id.clone(),
+        "antigravity.fixture.executable",
+        ResourceAccess::Read,
+        HarnessIsolation::AmbientHost,
+        None,
+        false,
+        "1.2.11",
+    );
+    let result = block_on(driver().start_run(
+        plan,
+        request(
+            "retry-disabled-no-effort",
+            HarnessIsolation::AmbientHost,
+            None,
+            false,
+        ),
+        host.services(host_id),
+    ));
+    assert!(result.is_err());
+}
+
+#[test]
+fn retry_disabled_run_with_effort_dispatches_effort() {
+    let host_id = local_host();
+    let host = FixtureHost::completed([stdout(SUCCESS)]);
+    let (_, terminal, cleanup) = completed_run(
+        plan::headless_plan_for_release(
+            host_id.clone(),
+            "antigravity.fixture.executable",
+            ResourceAccess::Read,
+            HarnessIsolation::AmbientHost,
+            Some("high"),
+            false,
+            "1.2.11",
+        ),
+        request(
+            "retry-disabled-effort",
+            HarnessIsolation::AmbientHost,
+            Some("high"),
+            false,
+        ),
+        host.services(host_id),
+    );
+    assert_eq!(terminal.status(), &TerminalStatus::Completed);
+    assert_eq!(cleanup, CleanupOutcome::Clean);
+    assert!(
+        host.observed()
+            .arguments
+            .windows(2)
+            .any(|pair| pair == ["--effort", "high"])
+    );
+}
+
 fn assert_status_code(terminal: &TerminalOutcome, expected: &str, provider: bool) {
     let diagnostic = match terminal.status() {
         TerminalStatus::ProviderFailed(diagnostic) if provider => diagnostic,

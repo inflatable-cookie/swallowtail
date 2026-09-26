@@ -273,6 +273,72 @@ fn cleanup_request() -> SessionCleanupRequest {
     SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(1_000)))
 }
 
+#[test]
+fn retry_disabled_session_without_effort_is_rejected() {
+    let host_id = ExecutionHostId::new("fixture.antigravity.retry-disabled").expect("valid host");
+    let plan = plan::continuation_plan_at_release(
+        host_id.clone(),
+        "antigravity.fixture.executable",
+        "1.2.11",
+        None,
+    );
+    let host = FixtureHost::scripted(&[FIRST]);
+    let result = block_on(
+        driver().open_session(
+            plan.clone(),
+            OpenSessionRequest::from_plan(
+                &plan,
+                RequestId::new("antigravity-retry-disabled").expect("valid request"),
+                WorkingResourceRef::new("workspace.main").expect("valid resource"),
+                None,
+            )
+            .expect("request from plan"),
+            host.services(host_id),
+        ),
+    );
+    assert!(result.is_err());
+}
+
+#[test]
+fn retry_disabled_session_with_effort_turns_carry_effort() {
+    let host_id =
+        ExecutionHostId::new("fixture.antigravity.retry-disabled-effort").expect("valid host");
+    let plan = plan::continuation_plan_at_release(
+        host_id.clone(),
+        "antigravity.fixture.executable",
+        "1.2.11",
+        Some("high"),
+    );
+    let host = FixtureHost::scripted(&[FIRST]);
+    let services = host.services(host_id);
+    let mut session = block_on(
+        driver().open_session(
+            plan.clone(),
+            OpenSessionRequest::from_plan(
+                &plan,
+                RequestId::new("antigravity-retry-disabled-effort").expect("valid request"),
+                WorkingResourceRef::new("workspace.main").expect("valid resource"),
+                None,
+            )
+            .expect("request from plan"),
+            services.clone(),
+        ),
+    )
+    .expect("session opens");
+    let terminal = completed_turn(&mut session, turn_request(1, "first"), services.clone());
+    assert_eq!(terminal.status(), &TerminalStatus::Completed);
+    assert!(
+        host.observations()[0]
+            .arguments
+            .windows(2)
+            .any(|pair| pair == ["--effort", "high"])
+    );
+    assert_eq!(
+        block_on(session.close(cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
+}
+
 fn completed_turn(
     session: &mut Box<dyn swallowtail_runtime::InteractiveSessionHandle>,
     request: TurnRequest,

@@ -69,7 +69,7 @@ impl AntigravitySessionHandle {
                     model: &self.model,
                     access: ResourceAccess::Read,
                     isolation: HarnessIsolation::AmbientHost,
-                    effort: None,
+                    effort: self.effort.as_ref(),
                     schema: None,
                     conversation_id: expected_conversation.as_deref(),
                 }))

@@ -36,6 +36,11 @@ at `49b0d308`, before the lean cut.
 
 ## Next
 
+- **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — one live
+  attempt on exact `0.59.0` after the fake-proven gate merges, using Tom's
+  free Gemini Developer API key (Gemini CLI keychain entry, 2026-09-26).
+  Free personal Google login ended on 2026-06-18, so the key is the only
+  free access path.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the
@@ -64,13 +69,6 @@ at `49b0d308`, before the lean cut.
 
 ## Not now
 
-- **Live HTTP MCP honouring on `gemini-cli.acp`** — the gate is built and
-  proven against fakes, but Tom has no Gemini access with usage
-  (2026-09-26). The route takes a Gemini Developer API key. Free personal
-  Google login ended on 2026-06-18 (unpaid and Google One users moved to
-  Antigravity CLI); personal login now needs Google AI Pro or Ultra, so a
-  personal-login access profile wouldn't help. Revisit when paid access
-  exists or a consumer needs the cell.
 
 - **HTTP MCP live gates on `copilot-cli.acp`, `goose.acp`, `kiro.acp`** —
   wired to emit the entry; held until a consumer needs them.

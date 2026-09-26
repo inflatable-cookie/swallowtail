@@ -97,7 +97,7 @@ fn identity_and_claim_qualify_1_1_14_as_compatible_extension() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
-    // Research 357 moves the shared ceiling to 1.2.11; this frozen corpus
+    // Research 359 moves the shared ceiling to 1.2.11; this frozen corpus
     // still records 1.1.9 as latest at its observation.
     assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.2.11");
     assert_eq!(
@@ -122,7 +122,7 @@ fn identity_and_claim_qualify_1_1_14_as_compatible_extension() {
                     && matched.behavior_revision().as_str()
                         == "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1"
         ));
-        // Research 357 adds the newer retry-disabled revision, so the
+        // Research 359 adds the newer retry-disabled revision, so the
         // retained original headless segment is deprecated.
         assert!(matches!(
             headless.assess(&version(candidate)),
@@ -225,7 +225,7 @@ fn identity_and_claim_qualify_1_1_15_as_compatible_extension() {
     assert_eq!(protocol["decoder_corpus"], "antigravity-cli-1.1.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 
-    // Research 357 moves the shared ceiling to 1.2.11; this frozen corpus
+    // Research 359 moves the shared ceiling to 1.2.11; this frozen corpus
     // still records 1.1.14 as latest at its observation.
     assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.2.11");
     assert_eq!(
@@ -243,7 +243,7 @@ fn identity_and_claim_qualify_1_1_15_as_compatible_extension() {
                     && matched.behavior_revision().as_str()
                         == "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1"
         ));
-        // Research 357 adds the newer retry-disabled revision, so the
+        // Research 359 adds the newer retry-disabled revision, so the
         // retained original headless segment is deprecated.
         assert!(matches!(
             headless.assess(&version(candidate)),
@@ -255,7 +255,7 @@ fn identity_and_claim_qualify_1_1_15_as_compatible_extension() {
     }
     assert!(!catalogue.permits(&version("1.1.8")));
     assert!(!headless.permits(&version("1.1.8")));
-    // Research 357 proves the pin on 1.2.11 only: interior 1.1.18 is
+    // Research 359 proves the pin on 1.2.11 only: interior 1.1.18 is
     // incompatible rather than unverified newer.
     assert!(matches!(
         headless.assess(&version("1.1.18")),
@@ -373,7 +373,7 @@ fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
     assert_eq!(protocol["decoder_corpus"], "antigravity-cli-1.1.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 
-    // Research 357 moves the shared ceiling to 1.2.11; this frozen corpus
+    // Research 359 moves the shared ceiling to 1.2.11; this frozen corpus
     // still records 1.1.15 as latest at its observation.
     assert_eq!(ANTIGRAVITY_LATEST_QUALIFIED_VERSION, "1.2.11");
     assert_eq!(
@@ -391,7 +391,7 @@ fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
                     && matched.behavior_revision().as_str()
                         == "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1"
         ));
-        // Research 357 adds the newer retry-disabled revision, so the
+        // Research 359 adds the newer retry-disabled revision, so the
         // retained original headless segment is deprecated.
         assert!(matches!(
             headless.assess(&version(candidate)),
@@ -403,7 +403,7 @@ fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
     }
     assert!(!catalogue.permits(&version("1.1.8")));
     assert!(!headless.permits(&version("1.1.8")));
-    // Research 357 proves the pin on 1.2.11 only: interior 1.1.18 is
+    // Research 359 proves the pin on 1.2.11 only: interior 1.1.18 is
     // incompatible rather than unverified newer.
     assert!(matches!(
         headless.assess(&version("1.1.18")),

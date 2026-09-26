@@ -21,7 +21,7 @@ fn retry_pin_evidence_freezes_the_1_2_11_control_semantics() {
 
     assert_eq!(
         evidence["record"],
-        "docs/research/357-antigravity-headless-retry-pin-evidence.md"
+        "docs/research/359-antigravity-headless-retry-pin-evidence.md"
     );
     assert_eq!(evidence["card"], "swallowtail#069");
     assert_eq!(evidence["artifact"], "antigravity-cli-1.2.11");
@@ -136,7 +136,7 @@ fn headless_claim_pins_exact_1_2_11_on_the_retry_disabled_revision() {
         ),
         "exact 1.2.11 qualifies maintained on the retry-disabled revision"
     );
-    // Research 357 proves the pin on 1.2.11 only: the interior gap is
+    // Research 359 proves the pin on 1.2.11 only: the interior gap is
     // incompatible rather than unverified newer.
     for gap in [
         "1.1.18", "1.1.22", "1.2.0", "1.2.7", "1.2.8", "1.2.9", "1.2.10",

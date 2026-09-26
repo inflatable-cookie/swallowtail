@@ -1,0 +1,172 @@
+{
+  "family": "gemini-cli",
+  "axes": [
+    "gemini-cli.acp-agent",
+    "gemini-cli.headless-stream-json"
+  ],
+  "observed_at": "2026-09-26",
+  "npm_package": "@google/gemini-cli",
+  "npm_latest": true,
+  "official": {
+    "version": "0.61.0",
+    "source": "official-npm-and-github",
+    "npm_published_at": "2026-09-24T00:04:53.021Z",
+    "github_release_published_at": "2026-09-23T23:59:15Z",
+    "github_tag": "v0.61.0",
+    "github_commit": "bb523741c7429a44d03e964bc124c7c92df59d5f",
+    "github_tree": "c4226f654bb0b35109c4f5ce34535c5addecda47",
+    "npm_integrity": "sha512-dbQ9A0qBtFJNi6XBkHvfZ6Azpn6PNgH/P8h2MZ67RLlX8hSAVjup39CRWqdRxZv7YXIuhrFaytr8y0jKnkoxnQ==",
+    "npm_shasum": "d4880a2b42aa6786cf626184303b2fdf13bde88f",
+    "npm_tarball_sha256": "bc4efa5c925c4430105b552820ed3164bbeffa9dc227990fc922f954733bcd7d",
+    "npm_package_json_sha256": "8461a3167a919dafdc3dbbee7a8dba273d4236bafe61050949fa4927215f4e65",
+    "npm_bin_entry_sha256": "0b6e283ae88682b0e27e8ef85a608ab74807a1513dc0c053e5aa80d5b80b29ab",
+    "github_source_archive_sha256": "917e0ac08eb3ef2048910ecc84d4da672ad0c58d82bb2eaa1d6f9e18af80241d",
+    "darwin_arm64_asset_sha256": "829738c00cab5a73b3ed01ce874c7ba79064fbe5869ad821517cba24f778dce2",
+    "darwin_arm64_asset_size": 36523089,
+    "darwin_arm64_extracted_sha256": "93a9d76e77a4a7716eb64127b24907309fe2b0af1e2273fb97a8c44b793fc5d2",
+    "darwin_arm64_extracted_size": 121610064,
+    "darwin_arm64_asset": "gemini-darwin-arm64-unsigned.zip",
+    "downloaded_artifact_executed": false
+  },
+  "host": {
+    "version": "0.61.0",
+    "source": "installed-npm-bin",
+    "bundle_sha256": "0b6e283ae88682b0e27e8ef85a608ab74807a1513dc0c053e5aa80d5b80b29ab",
+    "bundle_matches_official_npm_bin_entry": true,
+    "bin_link_size": 55,
+    "publisher": "unsigned",
+    "codesign": "not signed",
+    "auto_updated_from": "0.53.0",
+    "host_install_changed": false
+  },
+  "compared_points": [
+    {
+      "version": "0.59.0",
+      "npm_published_at": "2026-09-08T21:19:17.301Z",
+      "github_release_published_at": "2026-09-08T21:13:43Z",
+      "github_tag": "v0.59.0",
+      "github_commit": "fb0d535af931b27c51e87e5e6ade72905b1e8390",
+      "github_tree": "a080c8f15d68e93f65a29c6b177090206038dc97",
+      "npm_integrity": "sha512-RHcjpQEMwVkrWz75mEFsuMuM0JRVJgzLQzkGhEY6SE0KjwOWFA1wYKTUqpzDUHprcE2mgcTActyd4ihVdC2dpg==",
+      "npm_shasum": "d0e2cddc280c32520ae9596059be289df380599c",
+      "npm_tarball_sha256": "59dc2cdb098b3000d36e34a185fc873932df4fd9d00900e817f2b19cd349d98b",
+      "npm_package_json_sha256": "e79e13e7c1464a008e73b54fef263b042be488dfec35dc56823c865798be1eff",
+      "npm_bin_entry_sha256": "283a6044adc7837f9331fc2a5ea06ec4d52e9738f6fd202a94a4ae0c11efd53d",
+      "github_source_archive_sha256": "6e698510dcae4341f94efe93704447b2fe456062c138f64f95da1c30996d0f33",
+      "darwin_arm64_asset_sha256": "0c8938c68df7e46fd1de63583e4c0a1d7a452e1ecb1d33065f9ac12b8814876a",
+      "darwin_arm64_asset_size": 36512845,
+      "darwin_arm64_extracted_sha256": "f78acf4241ae6b1c9b04c9a2cb201c6a876e9e79266a9d1078b88cf833edf36c",
+      "darwin_arm64_extracted_size": 121528144,
+      "published_stables_from_previous_ceilings": false,
+      "npm_latest_at_observation": false
+    },
+    {
+      "version": "0.60.0",
+      "npm_published_at": "2026-09-15T20:36:40.030Z",
+      "github_release_published_at": "2026-09-15T20:31:02Z",
+      "github_tag": "v0.60.0",
+      "github_commit": "733edcb597ce690ac2e2fe3b3b3690b60a4c8f27",
+      "github_tree": "d1a4a41217df8500c4d286019dea98af44419bbc",
+      "npm_integrity": "sha512-bp6aLytN+beto8sTHIzMyK5Y6Ry5mMZrBdNGx3EiAjqIpS99B8c/Elha6xyYRIabgFs0Q75/xDauNRAqHGY34w==",
+      "npm_shasum": "4409788ee6be767e66cdb50cd9eaac9a9de63e65",
+      "npm_tarball_sha256": "cecb24eabf2eb23f0f49bf131cddd640e65017336b6298da9297bdf9d213cc0b",
+      "npm_package_json_sha256": "c96d418828bc60648817cd7450c1c347a4156941c380f3a5ba30b26e506f647d",
+      "npm_bin_entry_sha256": "fdff028b293149897b948a23b5d8da9e622127182a523be46d82cf267e7816f2",
+      "github_source_archive_sha256": "3305bc599cae6e83f4f6bc24b6ca15e363b2d3c6ab30ea450d585c77a12ef486",
+      "darwin_arm64_asset_sha256": "8c7a2554fc9ad2ddcbcbd24f9542b1e1b25f32bfb74a02935b74d4d93a88885d",
+      "darwin_arm64_asset_size": 36522444,
+      "darwin_arm64_extracted_sha256": "40c222cb54817092efee8afdc8308a1df6b5e8e0c0a8485cf51d000c579c3761",
+      "darwin_arm64_extracted_size": 121577296,
+      "published_stables_from_previous_ceilings": true,
+      "npm_latest_at_observation": false
+    },
+    {
+      "version": "0.61.0",
+      "npm_published_at": "2026-09-24T00:04:53.021Z",
+      "github_release_published_at": "2026-09-23T23:59:15Z",
+      "github_tag": "v0.61.0",
+      "github_commit": "bb523741c7429a44d03e964bc124c7c92df59d5f",
+      "github_tree": "c4226f654bb0b35109c4f5ce34535c5addecda47",
+      "npm_integrity": "sha512-dbQ9A0qBtFJNi6XBkHvfZ6Azpn6PNgH/P8h2MZ67RLlX8hSAVjup39CRWqdRxZv7YXIuhrFaytr8y0jKnkoxnQ==",
+      "npm_shasum": "d4880a2b42aa6786cf626184303b2fdf13bde88f",
+      "npm_tarball_sha256": "bc4efa5c925c4430105b552820ed3164bbeffa9dc227990fc922f954733bcd7d",
+      "npm_package_json_sha256": "8461a3167a919dafdc3dbbee7a8dba273d4236bafe61050949fa4927215f4e65",
+      "npm_bin_entry_sha256": "0b6e283ae88682b0e27e8ef85a608ab74807a1513dc0c053e5aa80d5b80b29ab",
+      "github_source_archive_sha256": "917e0ac08eb3ef2048910ecc84d4da672ad0c58d82bb2eaa1d6f9e18af80241d",
+      "darwin_arm64_asset_sha256": "829738c00cab5a73b3ed01ce874c7ba79064fbe5869ad821517cba24f778dce2",
+      "darwin_arm64_asset_size": 36523089,
+      "darwin_arm64_extracted_sha256": "93a9d76e77a4a7716eb64127b24907309fe2b0af1e2273fb97a8c44b793fc5d2",
+      "darwin_arm64_extracted_size": 121610064,
+      "published_stables_from_previous_ceilings": true,
+      "npm_latest_at_observation": true
+    }
+  ],
+  "published_stables_from_previous_ceilings": [
+    {
+      "version": "0.60.0",
+      "npm_published_at": "2026-09-15T20:36:40.030Z",
+      "github_commit": "733edcb597ce690ac2e2fe3b3b3690b60a4c8f27"
+    },
+    {
+      "version": "0.61.0",
+      "npm_published_at": "2026-09-24T00:04:53.021Z",
+      "github_commit": "bb523741c7429a44d03e964bc124c7c92df59d5f"
+    }
+  ],
+  "unpublished_later_stable": "0.61.1",
+  "unpublished_interior_gaps": [
+    "0.56.1",
+    "0.59.1"
+  ],
+  "ignored_preview": "0.62.0-preview.0",
+  "claim_at_observation": {
+    "acp": {
+      "baseline": "0.51.0",
+      "latest_qualified": "0.59.0",
+      "posture": "allow_unverified",
+      "classification_of_0.60.0": "unverified_newer",
+      "classification_of_0.61.0": "unverified_newer"
+    },
+    "headless": {
+      "baseline": "0.51.0",
+      "latest_qualified": "0.59.0",
+      "posture": "allow_unverified",
+      "classification_of_0.60.0": "unverified_newer",
+      "classification_of_0.61.0": "unverified_newer"
+    }
+  },
+  "identity_decision": {
+    "acp": {
+      "shape": "compatible-extension",
+      "reuse_behavior_revision": "gemini-cli.acp.v0.51.0",
+      "raise_latest_qualified_to": "0.61.0",
+      "keep_baseline": "0.51.0",
+      "qualify_published_intermediates": true,
+      "new_milestone": false
+    },
+    "headless": {
+      "shape": "compatible-extension",
+      "reuse_behavior_revision": "gemini-cli.headless.stream-json.v1",
+      "raise_latest_qualified_to": "0.61.0",
+      "keep_baseline": "0.51.0",
+      "qualify_published_intermediates": true,
+      "new_milestone": false
+    },
+    "keep_unpublished_later_stable_unverified": true,
+    "new_public_operation": false,
+    "new_public_flag": false,
+    "map_flash_rollout_model_routing": false,
+    "map_build_file_protection": false,
+    "map_acp_model_advertisement": false,
+    "map_mcp_stdio_env_sanitization": false,
+    "map_mcp_oauth_issuer_check": false,
+    "map_sandbox_changes": false,
+    "map_browser_login": false,
+    "map_individual_account_service": false,
+    "flatten_onto_gemini_live_or_models": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "live_session": false,
+    "host_install_changed": false
+  }
+}

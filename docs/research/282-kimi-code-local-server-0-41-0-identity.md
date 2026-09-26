@@ -5,6 +5,12 @@ Owner: Tom
 Date: 2026-09-04
 Card: g05 batch 062
 
+## Addendum 2026-09-26 (Q-004 B / Research 357)
+
+Q-004 B withdraws this record's fail-closed reading. The `0.40.0` Bash
+`cwd` check removal is outside Contract 023 `AmbientHost` isolation.
+Research 357 qualifies `0.40.0..=2.1.1`. The identity ledger here stands.
+
 ## Question
 
 Is official `@moonshot-ai/kimi-code` `0.41.0` a compatible extension of the

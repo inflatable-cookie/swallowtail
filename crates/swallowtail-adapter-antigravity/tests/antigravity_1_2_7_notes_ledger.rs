@@ -476,7 +476,7 @@ fn protocol_classifies_every_published_selected_path_change_per_claim() {
 fn per_claim_segments_split_catalogue_from_the_headless_stop() {
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
     assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.2.11");
-    // Research 357 qualifies exact headless 1.2.11 on the retry-disabled
+    // Research 359 qualifies exact headless 1.2.11 on the retry-disabled
     // revision; the frozen corpus above still records its earlier stop.
     assert_eq!(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION, "1.2.11");
 
@@ -507,7 +507,7 @@ fn per_claim_segments_split_catalogue_from_the_headless_stop() {
         headless.assess(&version("1.2.11")),
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
-    // Research 357 proves the pin on 1.2.11 only: the interior gap is
+    // Research 359 proves the pin on 1.2.11 only: the interior gap is
     // incompatible rather than unverified newer.
     for candidate in [
         "1.1.18", "1.1.22", "1.2.2", "1.2.3", "1.2.6", "1.2.7", "1.2.8",

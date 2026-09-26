@@ -14,7 +14,7 @@ use swallowtail_runtime::{
 /// Exact model, working resource, deadline, and optional reasoning effort
 /// for durable continuation. Exact-`1.2.11` sessions require an effort:
 /// every turn dispatches an explicit `--model`, which `1.2.11` refuses
-/// without `--effort` (Research 357).
+/// without `--effort` (Research 359).
 pub struct AntigravityContinuationProfileInput {
     request_id: RequestId,
     model: AntigravityHeadlessModelSelection,

@@ -622,7 +622,7 @@ fn stop_decision_froze_the_headless_ceiling_and_gated_card_072() {
     // 1.1.22 provider-retry hop, while the catalogue claim advanced to
     // official 1.2.2 because the release notes name no selected-path change
     // to `agy models`. Research 346 later raised that same catalogue
-    // segment through official 1.2.7, and Research 357 qualifies exact
+    // segment through official 1.2.7, and Research 359 qualifies exact
     // headless 1.2.11 on the retry-disabled revision, so the shared ceiling
     // is 1.2.11 while the frozen 283 corpus still records its stop.
     let headless = antigravity_headless_claim();

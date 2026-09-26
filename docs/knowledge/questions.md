@@ -64,7 +64,7 @@ Recommendation: option 2 first, as a bounded evidence task on the frozen
 artifact against a fake model endpoint (no provider); fall back to option 1
 if the control doesn't hold.
 
-Evidence: Research 357. The control bounds every listed retryable class
+Evidence: Research 359. The control bounds every listed retryable class
 and `0` disables retry, so exact `1.2.11` headless qualifies on a
 retry-disabled revision with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned
 (swallowtail#069). `1.1.18..=1.2.10` still need per-point pin backfill.
@@ -77,7 +77,7 @@ Asked: 2026-09-26
 
 `0.40.0` stopped checking the Bash tool's `cwd` argument against the
 workspace; it is unchanged through official `2.1.1` (Research 354,
-"Rulings"). The route runs under Contract 023 `AmbientHost`, which never
+"Rulings"; Research 357 lands the claim). The route runs under Contract 023 `AmbientHost`, which never
 claimed workspace containment, and the removed check covered only the
 starting `cwd`, never what a shell command does after it starts. Options:
 A pin `disabled_tools: ["Bash"]` (removes the shell tool for every consumer);

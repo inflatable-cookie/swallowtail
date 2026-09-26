@@ -9,17 +9,14 @@ use swallowtail_core::InterfaceCompatibilityAssessment;
 #[test]
 fn production_local_server_claim_advances_on_research_326_evidence() {
     // The 0.41.0 fixture decision below is frozen history: that run stopped
-    // at 0.38.0. Research 326 then proved the 0.39.x safe prefix and moved
-    // the live claim to a 0.39.1 QualifiedOnly ceiling.
+    // at 0.38.0. Research 326 then proved the 0.39.x safe prefix. Q-004 B
+    // later qualifies the published 0.40.0..=2.1.1 span under AmbientHost.
     assert_eq!(KIMI_LOCAL_SERVER_BASELINE_VERSION, "0.28.1");
-    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.39.1");
+    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "2.1.1");
     let claim = kimi_local_server_claim();
     assert!(claim.supports(&version("0.38.0")));
     assert!(claim.supports(&version("0.39.1")));
-    assert_eq!(
-        claim.assess(&version("0.41.0")),
-        InterfaceCompatibilityAssessment::Incompatible
-    );
+    assert!(claim.supports(&version("0.41.0")));
     assert_eq!(
         json(IDENTITY)["identity_decision"]["widen_local_server_claim"],
         false

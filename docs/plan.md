@@ -21,25 +21,21 @@ at `49b0d308`, before the lean cut.
    now `0.81.2`, qualified separately afterwards.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
-   consumer hits an unverified-newer point; one family at a time. Known open
-   stops, each getting an adaptation task (Tom, 2026-09-26):
+   consumer hits an unverified-newer point; one family at a time. Every stop
+   gets an adaptation task (Tom, 2026-09-26). Open stop:
    `antigravity.headless` at exact `1.2.11` on the retry-disabled revision
-   with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned (Research 357; catalogue
+   with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned (Research 359; catalogue
    also at `1.2.11`): `1.1.18..=1.2.10` still need per-point pin backfill,
-   and accepting provider retry stays the Q-003 fallback for those, and
-   `kimi-code.local-server` failing closed above `0.39.1` since `0.40.0`
-   removed the Bash workspace restriction (Research 282, 326, 354; official
-   now `2.1.1`): qualify `0.40.0..=2.1.1` under `AmbientHost` without the
-   check, documented, with `disabled_tools` as the consumer opt-out (Q-004). An adaptation
+   and accepting provider retry stays the Q-003 fallback for those. An adaptation
    that needs a Contract 023 exception or narrows a consumer-visible
    guarantee comes back to Tom as a ruling.
 
 ## Next
 
 - **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — one live
-  attempt on the host's Gemini CLI once it is qualified (it auto-updated to
-  official `0.61.0` on 2026-09-26, above the `0.59.0` ceiling), after the
-  fake-proven gate merges. Access is Tom's free Gemini Developer API key in
+  attempt on the host's Gemini CLI, now qualified at official `0.61.0` with
+  the Research 351 `mcpServers` HTTP mapping unchanged (Research 358); the
+  merged gate still pins isolated `0.59.0`. Access is Tom's free Gemini Developer API key in
   the Gemini CLI keychain entry. Free personal Google login ended on
   2026-06-18.
 - **Shared harness capability and producer boundary** (lane

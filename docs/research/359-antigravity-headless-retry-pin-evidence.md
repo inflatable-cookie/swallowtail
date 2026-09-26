@@ -1,4 +1,4 @@
-# 357 Antigravity Headless Retry-Pin Evidence (`AGY_CLI_MODEL_API_MAX_RETRIES`)
+# 359 Antigravity Headless Retry-Pin Evidence (`AGY_CLI_MODEL_API_MAX_RETRIES`)
 
 Status: current. This record proves the `1.2.11` retry-control semantics and
 qualifies exact `1.2.11` headless on a retry-disabled behaviour revision.

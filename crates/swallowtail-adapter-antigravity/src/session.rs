@@ -240,7 +240,7 @@ fn validate_open(
     }
     let effort = planned_effort(plan)?;
     // Exact-1.2.11 turns dispatch an explicit `--model`, which the CLI
-    // refuses without `--effort` (Research 357). Fail closed here instead
+    // refuses without `--effort` (Research 359). Fail closed here instead
     // of opening a session whose turns the CLI rejects.
     if effort.is_none() && crate::selection::bound_headless_is_retry_disabled(plan) {
         return Err(unsupported(

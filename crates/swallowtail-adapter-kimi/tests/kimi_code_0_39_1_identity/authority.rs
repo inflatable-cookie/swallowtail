@@ -137,11 +137,10 @@ fn the_acp_stop_does_not_leak_onto_headless_or_local_server() {
             "{excluded} stays qualified on the headless axis"
         );
     }
-    // Local-server qualifies both points the ACP route refuses: Research 326
-    // proved the 0.39.x Bash workspace assertion intact and capped the family
-    // QualifiedOnly at 0.39.1 on that evidence.
+    // Local-server qualifies both points the ACP route refuses. Q-004 B later
+    // raised that family through official 2.1.1 under AmbientHost.
     let local = kimi_local_server_claim();
-    assert_eq!(local.latest_qualified().as_str(), "0.39.1");
+    assert_eq!(local.latest_qualified().as_str(), "2.1.1");
     for excluded in EXCLUDED {
         assert!(
             local.supports(&version(excluded)),

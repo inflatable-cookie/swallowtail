@@ -7,7 +7,7 @@ annotated Git tags from the canonical repository.
 
 ### Notes
 - qualify exact Antigravity `1.2.11` headless on a retry-disabled behaviour
-  revision: Research 357 proves `AGY_CLI_MODEL_API_MAX_RETRIES` in the
+  revision: Research 359 proves `AGY_CLI_MODEL_API_MAX_RETRIES` in the
   frozen `1.2.11` artifact parses with `ParseUint(_, 10, 32)` into
   `ModelAPIRetryConfig.max_retries`, so `0` disables provider-managed
   model-request retry to exactly one attempt, finite `N` allows exactly
@@ -25,6 +25,30 @@ annotated Git tags from the canonical repository.
   Loopback evidence only: no provider call, login, or host change. The
   `1.2.11` `--effort` mapping (explicit `--model` requires `low`,
   `medium`, or `high`) is recorded in the milestone.
+- raise the Gemini CLI ACP and headless ceilings through official `0.61.0`:
+  Research 358 freezes `0.60.0` and `0.61.0` from npm and GitHub, reproduces
+  Research 324's `0.59.0` digests, and inventories every tagged-source hop.
+  Every selected ACP, headless, option and retention source is
+  byte-identical; the host bundle equals the official npm bin entry. Both
+  claims advance to maintained `0.51.0..=0.61.0`, excluding unpublished
+  `0.56.1` and `0.59.1`, on `gemini-cli.acp.v0.51.0` and
+  `gemini-cli.headless.stream-json.v1`. The ACP `mcpServers` HTTP mapping is
+  unchanged. Flash rollout model routing, build-file protection and stdio MCP
+  env filtering stay unmapped. Unpublished `0.61.1` stays `UnverifiedNewer`.
+  No provider operation or host mutation occurred.
+- qualify `kimi-code.local-server` through official `@moonshot-ai/kimi-code`
+  `2.1.1` under Contract 023 `AmbientHost` (Q-004 B, Research 357). From
+  `0.40.0` Bash `cwd` is not checked against workspace roots; that check
+  was never a Swallowtail isolation claim. Selected REST/WebSocket v2,
+  including the `2.0.0` same-package major-line reset, stays on
+  `kimi.local-server.rest-ws-v2-heartbeat-ping`. Claim id becomes
+  `kimi.local-server.executable-window-6`, posture returns to
+  `AllowUnverified`, and unpublished `0.39.2`, `0.40.2`, `0.41.1`,
+  `0.42.1`, `0.43.2`, `1.x`, and `2.0.3` stay incompatible. Synthetic
+  `2.1.2` is unverified newer. `disabled_tools` stays a consumer opt-out
+  with exact name `Bash` and is not pinned. ACP and headless stay
+  untouched. Research 282 and 326's fail-closed reading is withdrawn.
+
 - raise the Antigravity catalogue ceiling through official `1.2.11` and put
   the `antigravity.headless` stop to the operator: Research 353 freezes
   `1.2.8` through `1.2.11` with both platform digests, reproduces Research

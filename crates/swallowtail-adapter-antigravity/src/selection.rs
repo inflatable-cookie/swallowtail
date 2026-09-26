@@ -17,11 +17,11 @@ pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
 pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.2.11";
 /// Latest headless release in the current maintained qualification window.
 /// Exact `1.2.11` qualifies on the retry-disabled behaviour revision under
-/// Research 357; `1.1.18..=1.2.10` stay unqualified (no pin evidence).
+/// Research 359; `1.1.18..=1.2.10` stay unqualified (no pin evidence).
 pub const ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "1.2.11";
 /// Historical shared ceiling. Both claims now end at `1.2.11`: the catalogue
 /// claim advanced under Research 353 and exact headless `1.2.11` qualifies on
-/// the retry-disabled revision under Research 357 with
+/// the retry-disabled revision under Research 359 with
 /// `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned in its approved environment.
 pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.2.11";
 /// Required retry-pin control for the `1.2.11` headless segment.
@@ -35,7 +35,7 @@ pub(crate) const ANTIGRAVITY_CATALOGUE_BEHAVIOR: &str =
 pub(crate) const ANTIGRAVITY_HEADLESS_BEHAVIOR: &str =
     "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1";
 /// Exact-`1.2.11` headless behaviour with provider-managed model-request
-/// retry disabled by the approved-environment pin (Research 357).
+/// retry disabled by the approved-environment pin (Research 359).
 pub(crate) const ANTIGRAVITY_HEADLESS_RETRY_DISABLED_BEHAVIOR: &str =
     "antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1";
 const MAX_VERSION_BYTES: usize = 64;
@@ -88,7 +88,7 @@ pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
 /// Two behaviour segments: `1.1.9..=1.1.17` on the original revision
 /// (deprecated), and exact `1.2.11` on the retry-disabled revision
 /// (maintained) whose approved environment pins
-/// `AGY_CLI_MODEL_API_MAX_RETRIES=0` (Research 357). `1.1.18..=1.2.10`
+/// `AGY_CLI_MODEL_API_MAX_RETRIES=0` (Research 359). `1.1.18..=1.2.10`
 /// fall between the segments and assess incompatible until per-point pin
 /// evidence lands. A new milestone segment bumps the claim window.
 pub fn antigravity_headless_claim() -> InterfaceCompatibilityClaim {
@@ -122,7 +122,7 @@ pub fn antigravity_headless_claim() -> InterfaceCompatibilityClaim {
 }
 
 /// Reports whether the plan's single bound headless release sits on the
-/// retry-disabled behaviour revision (exact `1.2.11`, Research 357).
+/// retry-disabled behaviour revision (exact `1.2.11`, Research 359).
 /// Dispatch there always passes an explicit `--model`, which `1.2.11`
 /// refuses without `--effort`, so callers fail closed on a missing effort
 /// instead of spawning a child the CLI rejects.
@@ -285,7 +285,7 @@ mod tests {
             ),
             "exact 1.2.11 qualifies maintained on the retry-disabled revision"
         );
-        // Pin evidence is 1.2.11-only (Research 357): the interior gap is
+        // Pin evidence is 1.2.11-only (Research 359): the interior gap is
         // incompatible, not unverified newer.
         for gap in [
             "1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.2", "1.2.7", "1.2.8", "1.2.9", "1.2.10",

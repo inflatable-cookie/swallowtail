@@ -25,7 +25,7 @@ The host supplies:
 
 - one approved `agy` executable target and explicit environment, including
   `AGY_CLI_MODEL_API_MAX_RETRIES=0` for exact `1.2.11` headless runs and
-  continuation turns (Research 357); the pin is required, not optional,
+  continuation turns (Research 359); the pin is required, not optional,
   because invalid or missing values fall back to 8 provider-managed retries
 - provider-owned personal Google subscription sign-in state
 - an access profile from `antigravity_personal_google_access_profile`
@@ -44,7 +44,7 @@ plus exact `1.2.11` on
 `antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1`
 (claim `antigravity.headless.release-window-2`):
 the official `1.1.22` release introduced provider-managed model-request
-retry, and Research 357 proves the `1.2.11` artifact honours
+retry, and Research 359 proves the `1.2.11` artifact honours
 `AGY_CLI_MODEL_API_MAX_RETRIES` (`ParseUint(_, 10, 32)` into
 `ModelAPIRetryConfig.max_retries`): `0` disables retry to exactly one
 attempt, finite `N` allows exactly `N+1` attempts on every listed
@@ -95,7 +95,7 @@ On the `Headless` variant, build an
 - deadline
 - optional `low`, `medium`, or `high` reasoning effort on `1.1.9..=1.1.17`;
   required on exact `1.2.11`, where dispatch always passes an explicit
-  `--model` that the CLI refuses without `--effort` (Research 357)
+  `--model` that the CLI refuses without `--effort` (Research 359)
 - optional provider-native JSON Schema 2020-12 output
 
 Read access selects provider plan mode. Read-write authority remains explicit.

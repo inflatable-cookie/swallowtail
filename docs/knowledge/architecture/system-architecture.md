@@ -333,10 +333,12 @@ OpenHands adds a package without a production route.
   plane audience, generated request, summary, lifecycle and error types, and
   bounded provider-neutral projection
 - `swallowtail-adapter-gemini` implements the qualified Gemini CLI
-  `0.51.0..=0.59.0` ambient-host interactive subset with separate read-only
+  `0.51.0..=0.61.0` (excluding unpublished `0.56.1` and `0.59.1`) ambient-host interactive
+  subset with separate read-only
   Plan Mode and bounded-write Auto Edit profiles, bounded host text read/write
   callbacks over ACP v1 stdio, and session-advertised model options retained as
-  negotiated evidence; a separately qualified `0.51.0..=0.59.0` headless
+  negotiated evidence; a separately qualified `0.51.0..=0.61.0` headless
+  (excluding unpublished `0.56.1` and `0.59.1`)
   route sends one prompt over stdin, consumes bounded `stream-json`, reports
   usage, requires
   durable local transcript retention, and forces no sandbox; one public
@@ -473,7 +475,7 @@ OpenHands adds a package without a production route.
   catalogue revision because no published release-note change touches the
   selected `agy models` path after the classified `1.1.23` stdin repair.
   Research 353 advances the catalogue claim to `1.2.11` and raises the
-  headless Contract 023 acceptance options to the operator. Research 357
+  headless Contract 023 acceptance options to the operator. Research 359
   then proves the `1.2.11` artifact honours `AGY_CLI_MODEL_API_MAX_RETRIES`
   (`0` disables provider-managed model-request retry, finite `N` allows
   `N+1` attempts), so exact `1.2.11` headless qualifies on a
@@ -963,7 +965,7 @@ the historical Gemini or Kimi pins. Independent close-only, delete-only,
 omitted, null, success, and error fixtures pass through the same bounded
 message codec used by stdio and explicit remote ACP. Portable delete truth
 remains history removal.
-Gemini CLI ACP `0.51.0..=0.59.0` supports new sessions, text prompts, updates,
+Gemini CLI ACP `0.51.0..=0.61.0` (excluding unpublished `0.56.1` and `0.59.1`) supports new sessions, text prompts, updates,
 native turn cancellation, permission cancellation, and bounded host text
 callbacks. Its read-only profile launches Plan Mode and advertises only
 `fs.readTextFile`; its bounded-write profile launches Auto Edit and advertises
@@ -1792,14 +1794,16 @@ WebSocket protocol version `2`, exact server metadata, and an opaque bearer
 credential lease. Attached and owned-foreground topologies remain distinct.
 The implementation qualifies reversible archive and restore across exact Kimi
 Code `0.28.1`, exact `0.29.0`, `0.29.1..=0.30.0`, exact `0.31.0`, exact
-`0.31.1`, `0.32.0..=0.34.0`, and `0.35.0..=0.37.2`. The
+`0.31.1`, `0.32.0..=0.34.0`, `0.35.0..=0.39.1`, `0.40.0..=0.43.1`, and
+`2.0.0..=2.1.1`. The
 middle range has a separate behavior revision for global WebSocket event
 fan-out and filtered configured-model discovery. Exact `0.31.0` adds full
 subagent status snapshots and derived-model display aliases. Exact `0.31.1`
 uses workspace-scoped session lookup, stabilizes provider-model refresh, and
 may add optional turn-interruption detail. `0.32.0..=0.34.0` adds optional
-experimental-flag metadata and extra unknown events. `0.35.0..=0.37.2` requires
-application WebSocket ping/pong. Swallowtail keeps status records as
+experimental-flag metadata and extra unknown events. `0.35.0..=0.39.1`,
+`0.40.0..=0.43.1`, and `2.0.0..=2.1.1` require application WebSocket ping/pong. From `0.40.0` Bash `cwd` is not checked
+against workspace roots; the route declares `AmbientHost`. Swallowtail keeps status records as
 non-rendered progress, retains required terminal reason as authority, and
 derives portable subagent activity from dedicated lifecycle events. The route does not qualify deletion or
 change the unsupported ACP mapping. Attached preparation preserves the
@@ -1838,7 +1842,7 @@ Research 054-055 and Contracts 021, 038-039 define the realized
 provider-retention tranche.
 
 - Gemini CLI stored-transcript management was revalidated across the qualified
-  `0.51.0..=0.59.0` headless range. Its post-delete `--list-sessions` check
+  `0.51.0..=0.61.0` headless range (excluding unpublished `0.56.1` and `0.59.1`). Its post-delete `--list-sessions` check
   may perform summary inference and mutate retained transcripts, so it is not
   a read-only confirmation surface. Contract 038 and g03.033 remove the
   public management role and binding. Operation-owned cleanup sends one delete

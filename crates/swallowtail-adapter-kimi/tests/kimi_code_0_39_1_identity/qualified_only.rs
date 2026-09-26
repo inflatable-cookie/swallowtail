@@ -143,23 +143,26 @@ fn removing_an_exact_exclusion_fails_the_classification_proof() {
 }
 
 #[test]
-fn local_server_fails_closed_on_its_own_boundary_without_acp_posture() {
-    // Research 326 moved local-server to QualifiedOnly at 0.39.1 on its own
-    // Bash-cwd authority evidence. The posture is not inherited from ACP:
-    // the ACP exclusions stay off the local-server claim, and flipping
-    // local-server back would re-admit the uncontained gap.
+fn local_server_keeps_its_own_boundary_without_acp_posture() {
+    // Q-004 B qualifies local-server through official 2.1.1 under AmbientHost.
+    // The posture is not inherited from ACP: the ACP exclusions stay off the
+    // local-server claim, unpublished 0.39.2 stays a gap, and later stables
+    // run as unverified newer.
     let local = kimi_local_server_claim();
     assert_eq!(
         local.newer_version_posture(),
-        InterfaceNewerVersionPosture::QualifiedOnly
+        InterfaceNewerVersionPosture::AllowUnverified
     );
-    for point in ["0.39.2", "0.40.0", "0.43.0"] {
-        assert_eq!(
-            local.assess(&version(point)),
-            InterfaceCompatibilityAssessment::Incompatible,
-            "{point} must fail closed"
-        );
-    }
+    assert_eq!(
+        local.assess(&version("0.39.2")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
+    assert!(local.supports(&version("0.40.0")));
+    assert!(local.supports(&version("0.43.0")));
+    assert!(matches!(
+        local.assess(&version("2.1.2")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     for excluded in EXCLUDED {
         assert!(
             !local.exclusions().any(|value| value.as_str() == excluded),
@@ -167,19 +170,6 @@ fn local_server_fails_closed_on_its_own_boundary_without_acp_posture() {
         );
         assert!(local.supports(&version(excluded)));
     }
-
-    let mutated = rebuild(
-        &local,
-        InterfaceNewerVersionPosture::AllowUnverified,
-        local.exclusions().cloned(),
-    );
-    assert!(
-        matches!(
-            mutated.assess(&version("0.40.0")),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ),
-        "AllowUnverified would re-admit the uncontained Bash cwd gap"
-    );
 
     assert_eq!(
         kimi_acp_claim().newer_version_posture(),

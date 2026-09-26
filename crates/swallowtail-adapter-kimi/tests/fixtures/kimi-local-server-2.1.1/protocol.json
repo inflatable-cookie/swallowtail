@@ -76,12 +76,12 @@
     "narrows_consumer_visible_bash_tool": true
   },
   "per_hop_verdict": {
-    "0.43.0_to_0.43.1": "still stopped: selected local-server blobs byte-identical except CHANGELOG; Bash authority unchanged",
-    "0.43.1_to_2.0.0": "major-line reset; selected local-server protocol blobs byte-identical except CHANGELOG and prompts.ts; Bash authority unchanged; stop and ask",
-    "2.0.0_to_2.0.1": "still stopped: catalog schema hop; Bash authority unchanged",
-    "2.0.1_to_2.0.2": "still stopped: selected protocol blobs byte-identical; Bash authority unchanged",
-    "2.0.2_to_2.1.0": "still stopped: web run hop unmapped; Bash authority unchanged",
-    "2.1.0_to_2.1.1": "still stopped: selected protocol blobs byte-identical except CHANGELOG; Bash authority unchanged"
+    "0.43.0_to_0.43.1": "qualified under Q-004 B: selected local-server blobs byte-identical except CHANGELOG; Bash authority unchanged and outside AmbientHost isolation",
+    "0.43.1_to_2.0.0": "major-line reset; same local-server axis under Q-004 B; selected REST/WebSocket v2 blobs byte-identical except CHANGELOG and prompts.ts; Bash authority unchanged",
+    "2.0.0_to_2.0.1": "qualified under Q-004 B: catalog schema hop unmapped; Bash authority unchanged",
+    "2.0.1_to_2.0.2": "qualified under Q-004 B: selected protocol blobs byte-identical; Bash authority unchanged",
+    "2.0.2_to_2.1.0": "qualified under Q-004 B: web run hop unmapped; Bash authority unchanged",
+    "2.1.0_to_2.1.1": "qualified under Q-004 B: selected protocol blobs byte-identical except CHANGELOG; Bash authority unchanged"
   },
   "containment_trace": {
     "question": "does any Swallowtail control, server profile, or remaining provider boundary contain Bash cwd escape for a local-server client at official 2.1.1",
@@ -111,7 +111,8 @@
     {
       "id": "B",
       "authorizes": "treat the 0.40.0 assertion removal as outside Swallowtail isolation and qualify 0.40.0..=2.1.1",
-      "withdraws_research_282_326_fail_closed": true
+      "withdraws_research_282_326_fail_closed": true,
+      "taken": true
     },
     {
       "id": "C",

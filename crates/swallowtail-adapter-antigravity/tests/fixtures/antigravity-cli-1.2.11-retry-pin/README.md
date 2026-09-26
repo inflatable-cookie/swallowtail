@@ -1,6 +1,6 @@
 # Antigravity CLI 1.2.11 Retry-Pin Evidence Fixture
 
-Machine-checkable companion to Research 357 (swallowtail#069, Q-003
+Machine-checkable companion to Research 359 (swallowtail#069, Q-003
 option 2). The `1.2.11` artifact digests reproduce the frozen
 `antigravity-cli-1.2.11` identity corpus; the pin semantics
 (`AGY_CLI_MODEL_API_MAX_RETRIES`, `ParseUint(_, 10, 32)` into

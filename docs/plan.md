@@ -15,21 +15,18 @@ at `49b0d308`, before the lean cut.
    first live attempt on pinned `0.79.0` stopped at session close
    (Research 352). Diagnosis (Research 355) fixed the lost diagnostic and a
    test-listener defect that dropped idle SSE streams; the second attempt,
-   authorized by Tom, accepted the full tuple with `Clean` cleanup
-   (Research 357), so `client_mcp_servers` is Yes on exact `0.79.0` only.
-   Later window points still need their own live gate.
+   authorized by Tom on 2026-09-26, accepted the full tuple with `Clean`
+   cleanup (Research 358), so `client_mcp_servers` is Yes on exact `0.79.0`
+   only. Official is now `0.81.2`, qualified separately afterwards; later
+   window points still need their own live gate.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
-   consumer hits an unverified-newer point; one family at a time. Known open
-   stops, each getting an adaptation task (Tom, 2026-09-26):
+   consumer hits an unverified-newer point; one family at a time. Every stop
+   gets an adaptation task (Tom, 2026-09-26). Open stop:
    `antigravity.headless` at `1.1.17` behind the `1.1.22`
    provider-managed-retry stop (Research 283, 323, 353; catalogue now at
    `1.2.11`): evidence on the `AGY_CLI_MODEL_API_MAX_RETRIES` pin first,
-   accepting provider retry as the fallback (Q-003), and
-   `kimi-code.local-server` failing closed above `0.39.1` since `0.40.0`
-   removed the Bash workspace restriction (Research 282, 326, 354; official
-   now `2.1.1`): qualify `0.40.0..=2.1.1` under `AmbientHost` without the
-   check, documented, with `disabled_tools` as the consumer opt-out (Q-004). An adaptation
+   accepting provider retry as the fallback (Q-003). An adaptation
    that needs a Contract 023 exception or narrows a consumer-visible
    guarantee comes back to Tom as a ruling.
 

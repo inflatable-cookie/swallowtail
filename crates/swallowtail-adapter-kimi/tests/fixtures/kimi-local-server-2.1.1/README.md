@@ -1,6 +1,7 @@
 # kimi-local-server-2.1.1
 
-Research 354 froze this corpus. No production claim moved.
+Research 354 froze this corpus as a ruling request. Research 357 and Q-004 B
+qualify official `2.1.1` under `AmbientHost`.
 
 `identity.json` carries official npm/GitHub identity for every published
 stable after the Research 326 observation (`0.43.1`, `2.0.0`, `2.0.1`,

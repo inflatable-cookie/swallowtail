@@ -28,3 +28,13 @@ allow = [
   "release-candidates/",
   "release-baselines/",
 ]
+
+[[retired]]
+id = "papercuts-file"
+retired = "2026-09-26"
+replacement = "Papercuts live in Queue: file with `node bin/queue-cli.mjs papercut.add` from the Queue plugin root; the planner promotes or closes them."
+owner = "AGENTS.md"
+terms = ["PAPERCUTS.md"]
+paths = ["PAPERCUTS.md"]
+# Frozen research evidence and released changelog entries name the old file.
+allow = ["CHANGELOG.md", "docs/knowledge/retired.toml", "docs/research/", ".agents/skills/effigy/"]

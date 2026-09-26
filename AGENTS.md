@@ -22,9 +22,12 @@ consumers may provide evidence; they do not own Swallowtail decisions.
 - Consumer guides, route and feature matrices: `docs/guides/`
 - Retained research evidence: `docs/research/`
 - Release compatibility notes: `docs/releases/`
-- Small recurring friction: `PAPERCUTS.md`
-
-Tasks, briefs and status live in Queue, never in this repository.
+Tasks, briefs, status and papercuts live in Queue, never in this repository.
+File small recurring friction as a Queue papercut and carry on: from
+`~/Dev/projects/paseo-northstar-queue`, run
+`node bin/queue-cli.mjs papercut.add payload.json` with `repository`
+(`origin: inflatable-cookie/swallowtail`, `path`), `title`, `happened` and
+`impact`, plus optional `area` and `fix`.
 
 ## Commands
 

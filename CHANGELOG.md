@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- raise the Gemini CLI ACP and headless ceilings through official `0.61.0`:
+  Research 357 freezes `0.60.0` and `0.61.0` from npm and GitHub, reproduces
+  Research 324's `0.59.0` digests, and inventories every tagged-source hop.
+  Every selected ACP, headless, option and retention source is
+  byte-identical; the host bundle equals the official npm bin entry. Both
+  claims advance to maintained `0.51.0..=0.61.0` on `gemini-cli.acp.v0.51.0`
+  and `gemini-cli.headless.stream-json.v1`. The ACP `mcpServers` HTTP mapping
+  is unchanged. Flash rollout model routing, build-file protection and stdio
+  MCP env filtering stay unmapped. Unpublished `0.61.1` stays
+  `UnverifiedNewer`. No provider operation or host mutation occurred.
 - raise the Antigravity catalogue ceiling through official `1.2.11` and put
   the `antigravity.headless` stop to the operator: Research 353 freezes
   `1.2.8` through `1.2.11` with both platform digests, reproduces Research

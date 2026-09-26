@@ -13,10 +13,10 @@ What is true now:
   `0.79.0` spent its one live attempt with typed `cleanup_failed` (Research
   352), and its gate now keeps the typed cleanup diagnostic for the next
   authorized attempt (Research 355). `gemini-cli.acp` emits the entry; the
-  isolated `0.59.0` opt-in gate is ready. A live attempt waits on qualifying
-  the host CLI at official `0.61.0` (Research 356). `copilot-cli.acp`,
-  `goose.acp` and `kiro.acp` emit the entry with live honouring unproven
-  (Research 351).
+  isolated `0.59.0` opt-in gate is ready (Research 356). The host CLI is
+  qualified at official `0.61.0` with the same mapping (Research 357).
+  `copilot-cli.acp`, `goose.acp` and `kiro.acp` emit the entry with live
+  honouring unproven (Research 351).
 - Unavailable feature-matrix cells are provider limitations with frozen
   evidence or producer gaps owned by a [plan](plan.md) item.
 

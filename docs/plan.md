@@ -16,8 +16,9 @@ at `49b0d308`, before the lean cut.
    (Research 352). Diagnosis (Research 355) fixed the lost diagnostic and a
    test-listener defect that dropped idle SSE streams, which could have
    disturbed the provider; the leading hypothesis is that the sidecar didn't
-   answer `session/close` within 30 seconds. A second attempt, which reports
-   the typed cleanup code, needs Tom's authority.
+   answer `session/close` within 30 seconds. Tom approved a second attempt
+   on `0.79.0` (2026-09-26); it reports the typed cleanup code. Official is
+   now `0.81.2`, qualified separately afterwards.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Known open

@@ -34,11 +34,6 @@ at `49b0d308`, before the lean cut.
 
 ## Next
 
-- **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — the gate is
-  being built and proven against fakes (host 0.53.0, point 0.59.0). The live
-  attempt waits for usage: the route takes a Gemini Developer API key, and Tom
-  has none with usage (2026-09-26). A free-tier Google AI Studio key is the
-  same key type.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the
@@ -66,6 +61,11 @@ at `49b0d308`, before the lean cut.
   (Q-002).
 
 ## Not now
+
+- **Live HTTP MCP honouring on `gemini-cli.acp`** — the gate is built and
+  proven against fakes, but the route needs an enterprise Gemini API key
+  (free keys are no longer accepted), and Tom has none (2026-09-26). Revisit
+  when an enterprise key is available or a consumer needs the cell.
 
 - **HTTP MCP live gates on `copilot-cli.acp`, `goose.acp`, `kiro.acp`** —
   wired to emit the entry; held until a consumer needs them.

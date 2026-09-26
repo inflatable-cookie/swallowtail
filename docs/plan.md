@@ -22,13 +22,11 @@ at `49b0d308`, before the lean cut.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Every stop
-   gets an adaptation task (Tom, 2026-09-26). Open stop:
-   `antigravity.headless` at `1.1.17` behind the `1.1.22`
-   provider-managed-retry stop (Research 283, 323, 353; catalogue now at
-   `1.2.11`): evidence on the `AGY_CLI_MODEL_API_MAX_RETRIES` pin first,
-   accepting provider retry as the fallback (Q-003). An adaptation
-   that needs a Contract 023 exception or narrows a consumer-visible
-   guarantee comes back to Tom as a ruling.
+   gets an adaptation task (Tom, 2026-09-26); an adaptation that needs a
+   Contract 023 exception or narrows a consumer-visible guarantee comes back
+   to Tom as a ruling. No open stop: `antigravity.headless` qualifies current
+   official `1.2.11` with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned
+   (Research 359).
 
 ## Next
 
@@ -65,6 +63,11 @@ at `49b0d308`, before the lean cut.
   (Q-002).
 
 ## Not now
+
+- **`antigravity.headless` backfill of `1.1.18..=1.2.10`** — current official
+  is qualified with the retry pin (Research 359); the interior points would
+  each need their own pin evidence, and consumers track current. Revisit only
+  if a consumer is pinned to one of them.
 
 
 - **HTTP MCP live gates on `copilot-cli.acp`, `goose.acp`, `kiro.acp`** —

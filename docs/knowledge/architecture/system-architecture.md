@@ -1797,8 +1797,8 @@ fan-out and filtered configured-model discovery. Exact `0.31.0` adds full
 subagent status snapshots and derived-model display aliases. Exact `0.31.1`
 uses workspace-scoped session lookup, stabilizes provider-model refresh, and
 may add optional turn-interruption detail. `0.32.0..=0.34.0` adds optional
-experimental-flag metadata and extra unknown events. `0.35.0..=2.1.1` requires
-application WebSocket ping/pong. From `0.40.0` Bash `cwd` is not checked
+experimental-flag metadata and extra unknown events. `0.35.0..=0.39.1`,
+`0.40.0..=0.43.1`, and `2.0.0..=2.1.1` require application WebSocket ping/pong. From `0.40.0` Bash `cwd` is not checked
 against workspace roots; the route declares `AmbientHost`. Swallowtail keeps status records as
 non-rendered progress, retains required terminal reason as authority, and
 derives portable subagent activity from dedicated lifecycle events. The route does not qualify deletion or

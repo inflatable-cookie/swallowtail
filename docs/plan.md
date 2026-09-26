@@ -10,26 +10,24 @@ at `49b0d308`, before the lean cut.
 
 ## Now
 
-1. **Consumer HTTP MCP live honouring on `claude-agent.acp`** (lane
-   `claude-agent-acp-http-mcp-live`) — emission stands (Research 351). The
-   first live attempt on pinned `0.79.0` stopped at session close
-   (Research 352). Diagnosis (Research 355) fixed the lost diagnostic and a
-   test-listener defect that dropped idle SSE streams; the second attempt,
-   authorized by Tom on 2026-09-26, accepted the full tuple with `Clean`
-   cleanup (Research 361), so `client_mcp_servers` is Yes on exact `0.79.0`
-   only. Official `0.81.2` is now the qualified ceiling (Research 362); later
-   window points still need their own live gate.
-2. **Version currentness** (lane `version-currentness`) — standing, never
+1. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Every stop
    gets an adaptation task (Tom, 2026-09-26); an adaptation that needs a
    Contract 023 exception or narrows a consumer-visible guarantee comes back
    to Tom as a ruling. No open stop: `antigravity.headless` qualifies current
    official `1.2.11` with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned
-   (Research 359).
+   (Research 359). Official `claude-agent.acp` `0.81.2` is now the qualified
+   ceiling (Research 362).
 
 ## Next
 
+- **Carry `claude-agent.acp` HTTP MCP honouring to current** (lane
+  `claude-agent-acp-http-mcp-live`) — `client_mcp_servers` is Yes on exact
+  `0.79.0` only (Research 361). Research 362 qualified official `0.81.2` with
+  the `mcpServers` HTTP mapping and `session/close` teardown path
+  byte-identical; honouring is not extended. Later window points still need
+  their own live gate.
 - **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — the first
   attempt on `0.61.0` connected and listed the tool but never called it
   (Research 360), likely because read-only Plan mode keeps MCP tools off.

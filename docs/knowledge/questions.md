@@ -11,7 +11,9 @@ route-matrix check enforces this.
 
 ## Q-001 — Run a live HTTP MCP honouring gate on `claude-agent.acp`?
 
-Status: open
+Status: answered 2026-09-26
+Answer: yes, as recommended (Tom). One attempt, harness proof first, pinned
+`claude-agent-acp` 0.79.0. Plan item `claude-agent-acp-http-mcp-live`.
 Asked: 2026-09-25
 
 Research 351 wired five ACP routes to emit the Contract 063 consumer HTTP MCP
@@ -22,7 +24,8 @@ Copilot, Goose and Kiro held until a consumer needs them.
 
 ## Q-002 — Which command validates a fresh checkout before merge?
 
-Status: open
+Status: answered 2026-09-26
+Answer: the candidate below (Tom). Recorded in `AGENTS.md` "Validate".
 Asked: 2026-09-26
 
 Queue does not yet run plain pre-merge validation. The command must validate a

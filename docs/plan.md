@@ -14,20 +14,23 @@ at `49b0d308`, before the lean cut.
    `claude-agent-acp-http-mcp-live`) — the route emits the Contract 063 entry
    but honouring is unproven. One authorized live attempt, harness proven
    against the fake SDK first, on a pinned `claude-agent-acp` 0.79.0 install
-   (host has 0.63.0). Awaiting Tom: Q-001.
+   (host has 0.63.0). Approved by Tom (Q-001).
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Known open
-   stops without an adaptation task, which No Terminal Stop says need one or
-   an operator ruling: `antigravity.headless` at `1.1.17` behind the `1.1.22`
+   stops, each getting an adaptation task (Tom, 2026-09-26):
+   `antigravity.headless` at `1.1.17` behind the `1.1.22`
    provider-managed-retry stop (Research 283, 323, 346), and
    `kimi-code.local-server` failing closed above `0.39.1` since `0.40.0`
-   removed the Bash workspace restriction (Research 282, 326).
+   removed the Bash workspace restriction (Research 282, 326). An adaptation
+   that needs a Contract 023 exception or narrows a consumer-visible
+   guarantee comes back to Tom as a ruling.
 
 ## Next
 
 - **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — second after
-  Claude, same shape (host 0.53.0, point 0.59.0). Depends on Q-001.
+  Claude, same shape (host 0.53.0, point 0.59.0). Approved by Tom; brief once
+  the Claude gate's harness shape is proven.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the
@@ -50,8 +53,9 @@ at `49b0d308`, before the lean cut.
   and research, but some may exist only in removed logs or cards. Sweep Git
   history at `49b0d308` and land any missing ruling in its owning knowledge
   file.
-- **Pre-merge validation command** — settle which command Queue should run
-  once it supports plain pre-merge validation: Q-002.
+- **Pre-merge validation command** — add `validation` to `.paseo/queue.json`
+  once Queue runs plain pre-merge validation; the command is in `AGENTS.md`
+  (Q-002).
 
 ## Not now
 

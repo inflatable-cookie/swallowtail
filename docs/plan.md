@@ -30,6 +30,12 @@ at `49b0d308`, before the lean cut.
 
 ## Next
 
+- **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — the first
+  attempt on `0.61.0` connected and listed the tool but never called it
+  (Research 360), likely because read-only Plan mode keeps MCP tools off.
+  Tom approved (2026-09-26) a source check of how each mode treats MCP tool
+  calls, then one more live attempt on his free key in the narrowest mode
+  that allows the call.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the
@@ -64,9 +70,6 @@ at `49b0d308`, before the lean cut.
   if a consumer is pinned to one of them.
 - **HTTP MCP live gates on `copilot-cli.acp`, `goose.acp`, `kiro.acp`** —
   wired to emit the entry; held until a consumer needs them.
-- **HTTP MCP live rerun on `gemini-cli.acp`** — one attempt spent on host
-  exact `0.61.0` (Research 360, typed stop `tool_not_called`); no rerun
-  without new authority.
 - **Hosted interactive OAuth, OpenHands Agent Server production wiring,
   Aider headless, Kiro headless** — parked by Tom (2026-08-21): no current
   consumer need. Revisit only on explicit operator selection; don't refresh

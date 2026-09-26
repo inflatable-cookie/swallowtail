@@ -21,7 +21,6 @@ FRONT_DOOR = [
     "CONTRIBUTING.md",
     "SECURITY.md",
     "SUPPORT.md",
-    "PAPERCUTS.md",
     "docs/README.md",
     "docs/plan.md",
     "docs/releases/README.md",

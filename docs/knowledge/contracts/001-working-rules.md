@@ -39,16 +39,16 @@ These rules apply to all Swallowtail work before v1.0.
   repository. A worker implements one brief in the worktree Queue gives it,
   edits only what the brief owns, and stops at exact-head review; it never
   merges.
-- Triage notes are intake, never execution authority. Papercuts in
-  `PAPERCUTS.md` are observations for later triage, never an automatic
-  triage note or task.
+- Triage notes are intake, never execution authority. Papercuts are filed
+  in Queue with `papercut.add` (see `AGENTS.md`); the planner promotes one to
+  a task or closes it. A papercut is never an automatic triage note or task.
 - Release mutations (tag, push, publication, GitHub Release, consumer or
   provider changes) need explicit operator authority under Contract 036. A
   green gate, changelog, or merge grants none.
 
 ## Validation Before Push
 
-A push that touches `docs/**`, `PAPERCUTS.md`, or `CHANGELOG.md` runs
+A push that touches `docs/**` or `CHANGELOG.md` runs
 `effigy qa:docs` first. The git pre-push hook is the enforcement; this rule is
 the authority. Install the hook once with `effigy hooks:install`
 (`effigy bootstrap` and `effigy doctor` run that task).

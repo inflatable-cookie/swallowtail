@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Refuse a push that changes docs, PAPERCUTS.md, or CHANGELOG.md when
+# Refuse a push that changes docs or CHANGELOG.md when
 # `effigy qa:docs` fails, including the research number check.
 # Contract 001 is the authority; this hook is the enforcement. Install once
 # with `effigy hooks:install`.
@@ -21,7 +21,7 @@ docs_oid=
 path_is_checked() {
   local changed_path=$1
   case "$changed_path" in
-    docs|docs/*|PAPERCUTS.md|CHANGELOG.md) return 0 ;;
+    docs|docs/*|CHANGELOG.md) return 0 ;;
   esac
   return 1
 }
@@ -106,7 +106,7 @@ fi
 unset -v GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_OBJECT_DIRECTORY \
   GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_QUARANTINE_PATH GIT_PREFIX
 
-printf 'pre-push: docs, PAPERCUTS.md, or CHANGELOG.md in this push; running effigy qa:docs\n' >&2
+printf 'pre-push: docs or CHANGELOG.md in this push; running effigy qa:docs\n' >&2
 if ! effigy qa:docs; then
   printf 'pre-push: effigy qa:docs failed; refusing push (Contract 001)\n' >&2
   exit 1

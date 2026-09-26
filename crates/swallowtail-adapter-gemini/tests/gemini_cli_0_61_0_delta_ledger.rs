@@ -1,5 +1,5 @@
 //! Identity and compatible-extension evidence for official Gemini CLI
-//! `0.59.0..=0.61.0` (Research 357, swallowtail#071).
+//! `0.59.0..=0.61.0` (Research 358, swallowtail#071).
 //!
 //! This corpus freezes the three compared official points, their npm registry
 //! identity, GitHub tags, trees, and darwin-arm64 unsigned assets, plus one

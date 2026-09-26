@@ -3,10 +3,10 @@
 //! Contract 029 gives the claim its own revision: changing qualified
 //! membership, exclusions, newer-version posture, evidence, or support
 //! authority changes that revision and therefore invalidates stale plans.
-//! The `AllowUnverified` to `QualifiedOnly` flip is a posture change, so the
-//! live id advances `window-2` to `window-5` (mirroring the ACP A2
-//! `window-2` to `window-5` revision), skipping the frozen historical
-//! `window-3`/`window-4` reservations.
+//! Research 326 advanced `window-2` to `window-5` for the fail-closed
+//! posture. Q-004 B reverses that posture and widens membership, so the
+//! live id is `window-6`. Frozen historical `window-3`/`window-4`
+//! reservations stay unused.
 
 use super::support::{FROZEN_0_30_0_0_31_0_RANGE, FROZEN_0_31_1_RELEASE, json};
 use swallowtail_adapter_kimi::{kimi_code_binding, kimi_local_server_claim};
@@ -17,7 +17,8 @@ use swallowtail_core::{
 use swallowtail_runtime::observe_instance_update;
 
 const PRE_REVISION_LIVE_LOCAL_SERVER_CLAIM_ID: &str = "kimi.local-server.executable-window-2";
-const LIVE_LOCAL_SERVER_CLAIM_ID: &str = "kimi.local-server.executable-window-5";
+const FAIL_CLOSED_LIVE_LOCAL_SERVER_CLAIM_ID: &str = "kimi.local-server.executable-window-5";
+const LIVE_LOCAL_SERVER_CLAIM_ID: &str = "kimi.local-server.executable-window-6";
 const RESERVED_HISTORICAL_LOCAL_SERVER_CLAIM_IDS: [&str; 2] = [
     "kimi.local-server.executable-window-3",
     "kimi.local-server.executable-window-4",
@@ -47,6 +48,10 @@ fn frozen_historical_local_server_claim_ids_stay_reserved() {
         live, PRE_REVISION_LIVE_LOCAL_SERVER_CLAIM_ID,
         "live id must not reuse the pre-revision claim"
     );
+    assert_ne!(
+        live, FAIL_CLOSED_LIVE_LOCAL_SERVER_CLAIM_ID,
+        "live id must not reuse the fail-closed window-5 claim"
+    );
     assert!(
         !RESERVED_HISTORICAL_LOCAL_SERVER_CLAIM_IDS.contains(&live),
         "live id {live} collides with a frozen historical local-server claim id"
@@ -54,33 +59,33 @@ fn frozen_historical_local_server_claim_ids_stay_reserved() {
 }
 
 #[test]
-fn window_2_observation_fails_closed_against_window_5_before_projection() {
+fn window_5_observation_fails_closed_against_window_6_before_projection() {
     let current = kimi_local_server_claim();
     assert_eq!(current.id().as_str(), LIVE_LOCAL_SERVER_CLAIM_ID);
 
-    let stale_claim = rebuild_id(&current, PRE_REVISION_LIVE_LOCAL_SERVER_CLAIM_ID);
+    let stale_claim = rebuild_id(&current, FAIL_CLOSED_LIVE_LOCAL_SERVER_CLAIM_ID);
     let stale = InstalledExecutableObservation::classify(
         ExecutionHostId::new("fixture.host.stale-claim").expect("valid host"),
         kimi_code_binding("0.39.1").expect("qualified binding"),
         &stale_claim,
     )
-    .expect("window-2 classifies qualified 0.39.1");
+    .expect("window-5 classifies qualified 0.39.1");
     assert_eq!(
         stale.claim_id().as_str(),
-        PRE_REVISION_LIVE_LOCAL_SERVER_CLAIM_ID
+        FAIL_CLOSED_LIVE_LOCAL_SERVER_CLAIM_ID
     );
     assert!(stale.is_qualified());
 
     let error = observe_instance_update(&current, Some(stale.clone()))
-        .expect_err("window-2 evidence must fail closed against window-5 before projection");
+        .expect_err("window-5 evidence must fail closed against window-6 before projection");
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.connection_lifecycle.update_claim_mismatch"
     );
 
-    let reverted = rebuild_id(&current, PRE_REVISION_LIVE_LOCAL_SERVER_CLAIM_ID);
+    let reverted = rebuild_id(&current, FAIL_CLOSED_LIVE_LOCAL_SERVER_CLAIM_ID);
     observe_instance_update(&reverted, Some(stale))
-        .expect("mutating the id back to window-2 would accept the stale observation");
+        .expect("mutating the id back to window-5 would accept the stale observation");
 
     assert_eq!(
         kimi_local_server_claim().id().as_str(),

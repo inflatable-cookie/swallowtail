@@ -21,7 +21,7 @@ pub const GEMINI_CLI_HEADLESS_BASELINE_VERSION: &str = "0.51.0";
 pub const GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.61.0";
 
 /// Unpublished stables inside both windows; they stay incompatible
-/// (Research 324 and 357).
+/// (Research 324 and 358).
 const GEMINI_CLI_UNPUBLISHED_GAPS: [&str; 2] = ["0.56.1", "0.59.1"];
 const BASELINE_BEHAVIOR: &str = "gemini-cli.acp.v0.51.0";
 pub(crate) const HEADLESS_BEHAVIOR: &str = "gemini-cli.headless.stream-json.v1";

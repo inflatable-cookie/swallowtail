@@ -82,7 +82,7 @@ Emission is not honouring: the `client_mcp_servers` cell stays a producer gap
 until a live gate proves one declared remote entry connecting and completing
 a tool call. The isolated `0.59.0` opt-in gate is ready. The host CLI is now
 qualified at official `0.61.0` with the same `mcpServers` HTTP mapping
-(Research 357); a live attempt still needs authority. The first open step on
+(Research 358); a live attempt still needs authority. The first open step on
 the exact-`0.59.0` gate remains the observed
 `swallowtail.gemini.acp.mode_rejected` open (Research 356). The headless
 route's MCP-disabled path is unchanged.

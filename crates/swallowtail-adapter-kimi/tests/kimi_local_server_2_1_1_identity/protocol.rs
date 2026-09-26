@@ -45,7 +45,7 @@ fn selected_wire_blobs_hold_then_new_hops_classify() {
 }
 
 #[test]
-fn every_new_hop_stays_stopped() {
+fn every_new_hop_qualifies_under_q004_b() {
     let verdict = &json(PROTOCOL)["per_hop_verdict"];
     assert!(
         verdict["0.43.1_to_2.0.0"]
@@ -55,6 +55,7 @@ fn every_new_hop_stays_stopped() {
     );
     for hop in [
         "0.43.0_to_0.43.1",
+        "0.43.1_to_2.0.0",
         "2.0.0_to_2.0.1",
         "2.0.1_to_2.0.2",
         "2.0.2_to_2.1.0",
@@ -64,8 +65,8 @@ fn every_new_hop_stays_stopped() {
             verdict[hop]
                 .as_str()
                 .expect("verdict is text")
-                .starts_with("still stopped:"),
-            "{hop} must stay stopped"
+                .contains("Q-004 B"),
+            "{hop} must cite Q-004 B"
         );
     }
     assert_eq!(

@@ -100,12 +100,11 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
     assert_eq!(KIMI_LOCAL_SERVER_BASELINE_VERSION, "0.28.1");
     // ACP stops at 0.38.0 for the 0.39 process-authority delta; headless
     // extends. The local-server family shares the npm package and moves on
-    // its own authority evidence: Research 326 proved the 0.39.x safe prefix
-    // and capped it QualifiedOnly at 0.39.1 for the uncontained 0.40.0 Bash
-    // cwd widening. Research 325 raised the live headless ceiling to 0.43.0.
+    // its own authority evidence: Q-004 B qualifies official 2.1.1 under
+    // AmbientHost. Research 325 raised the live headless ceiling to 0.43.0.
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
     assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
-    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.39.1");
+    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "2.1.1");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.31.1"
@@ -147,8 +146,8 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
                 InterfaceCompatibilityAssessment::UnverifiedNewer(_)
             ));
         } else {
-            // ACP and local-server are QualifiedOnly: the first point above
-            // the ceiling fails closed.
+            // ACP fails closed above 0.38.0. Local-server 0.39.2 is an
+            // unpublished gap between 0.39.1 and 0.40.0.
             assert_eq!(
                 claim.assess(&version(first_newer)),
                 InterfaceCompatibilityAssessment::Incompatible

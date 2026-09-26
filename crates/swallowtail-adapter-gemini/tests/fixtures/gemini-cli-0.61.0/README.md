@@ -2,7 +2,7 @@
 
 Secret-free identity corpus for official npm `@google/gemini-cli@0.59.0`,
 `0.60.0` and `0.61.0`, their GitHub tags `v0.59.0` through `v0.61.0`, and each
-darwin-arm64 unsigned release asset. Research 357 owns the reading.
+darwin-arm64 unsigned release asset. Research 358 owns the reading.
 
 The host auto-updated from `0.53.0` to `0.61.0`. Its npm `bundle/gemini.js` is
 byte-identical to the official `0.61.0` npm bin entry. The host was read for

@@ -11,10 +11,10 @@ use std::ffi::OsString;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 use swallowtail_adapter_claude_agent::{
-    CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION,
-    CLAUDE_AGENT_ACP_MCP_SERVER_NAME, ClaudeAgentAcpRemoteMcpPlacement, ClaudeAgentModelSelection,
-    ClaudeAgentPreparationInput, ClaudeAgentPreparationProbe, ClaudeAgentSessionProfileInput,
-    claude_agent_acp_subscription_access_profile, prepare_claude_agent,
+    CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_MCP_SERVER_NAME, ClaudeAgentAcpRemoteMcpPlacement,
+    ClaudeAgentModelSelection, ClaudeAgentPreparationInput, ClaudeAgentPreparationProbe,
+    ClaudeAgentSessionProfileInput, claude_agent_acp_subscription_access_profile,
+    prepare_claude_agent,
 };
 use swallowtail_core::{
     AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialState, EndpointAuthorization,
@@ -30,6 +30,9 @@ use swallowtail_runtime::{
 
 const LIVE_GATE: &str = "SWALLOWTAIL_LIVE_CLAUDE_AGENT_ACP_HTTP_MCP";
 const LIVE_MODEL: &str = "claude-sonnet-4-6";
+/// Research 361 accepted honouring on exact `0.79.0` only. Raising
+/// `CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION` does not extend that result.
+const HTTP_MCP_HONOURING_VERSION: &str = "0.79.0";
 
 #[test]
 #[ignore = "requires SWALLOWTAIL_LIVE_CLAUDE_AGENT_ACP_HTTP_MCP=1, repo-local claude-agent-acp 0.79.0, and local Claude subscription auth"]
@@ -72,8 +75,7 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
     let prepared = match block_on(prepare_claude_agent(
         ClaudeAgentPreparationInput::new(
             ConfiguredInstanceId::new("live.claude-agent.acp.instance").expect("instance id"),
-            InstanceRevision::new(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION)
-                .expect("instance revision"),
+            InstanceRevision::new(HTTP_MCP_HONOURING_VERSION).expect("instance revision"),
             execution_host_id,
             target,
             environment,
@@ -100,9 +102,7 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
             return HttpMcpLiveRecord::pre_attempt_stop(HttpMcpLiveStop::HostVersion, None);
         }
     };
-    if prepared.observation().version().version().as_str()
-        != CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION
-    {
+    if prepared.observation().version().version().as_str() != HTTP_MCP_HONOURING_VERSION {
         return HttpMcpLiveRecord::pre_attempt_stop(
             HttpMcpLiveStop::HostVersion,
             Some(

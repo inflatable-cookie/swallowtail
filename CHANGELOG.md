@@ -6,6 +6,21 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- raise the Claude Agent ACP qualified ceiling from `0.79.0` to official npm
+  `@agentclientprotocol/claude-agent-acp` `0.81.2`. Compatible extension of
+  `claude-agent.acp.initialize-meta-extensions-v7`: selected mapped ACP
+  routes stay, `session/close` → `teardownSession` → `closeQueryStream` and
+  the `mcpServers` HTTP mapping are byte-identical across every hop, and
+  `query.interrupt()` remains unbounded. The ACP SDK pin moves `1.4.0` →
+  `1.5.0` with schema `PROTOCOL_VERSION` still `1`. `0.80.0` adds an optional
+  compaction `cancel()` interrupt that is a no-op without advertised
+  `session.compaction`; `0.81.0` adds capability-gated session notices;
+  `0.81.1` extracts managed-policy env apply; `0.81.2` adds unmapped native
+  subagent and exit-plan surfaces. HTTP MCP honouring stays exact `0.79.0`
+  (Research 361). Unpublished gaps stay incompatible; synthetic unpublished
+  `0.82.0` remains visible `UnverifiedNewer`. The repo-local sidecar pin
+  follows `0.81.2`. Claude Code stream-JSON and the Claude Agent SDK sidecar
+  stay separate families. Research 363.
 - accept `gemini-cli.acp` HTTP MCP honouring on host exact `0.61.0`.
   Research 362: frozen `0.61.0` Plan mode excludes unannotated MCP tools
   (Research 360 `tool_not_called`); `--approval-mode default` plus

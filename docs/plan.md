@@ -17,16 +17,17 @@ at `49b0d308`, before the lean cut.
    Contract 023 exception or narrows a consumer-visible guarantee comes back
    to Tom as a ruling. No open stop: `antigravity.headless` qualifies current
    official `1.2.11` with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned
-   (Research 359).
+   (Research 359). Official `claude-agent.acp` `0.81.2` is now the qualified
+   ceiling (Research 363).
 
 ## Next
 
 - **Carry `claude-agent.acp` HTTP MCP honouring to current** (lane
   `claude-agent-acp-http-mcp-live`) — `client_mcp_servers` is Yes on exact
-  `0.79.0` only (Research 361). Once `0.81.2` is qualified, decide from its
-  identity evidence whether the `mcpServers` mapping and close path are
-  unchanged enough to extend the claim, or whether it needs its own live
-  gate.
+  `0.79.0` only (Research 361). Research 363 qualified official `0.81.2` with
+  the `mcpServers` HTTP mapping and `session/close` teardown path
+  byte-identical; honouring is not extended. Later window points still need
+  their own live gate.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the

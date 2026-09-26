@@ -463,7 +463,7 @@ See the compile-tested
 
 ## Repo-Local ACP Sidecar
 
-Swallowtail pins `@agentclientprotocol/claude-agent-acp` to exact `0.79.0`
+Swallowtail pins `@agentclientprotocol/claude-agent-acp` to exact `0.81.2`
 in the root `package.json`. Development and live probes use:
 
 ```sh
@@ -485,7 +485,7 @@ integration.
 ## ACP Version Posture
 
 Discovery records the exact Claude Agent ACP wrapper version. Qualified
-wrappers are `0.53.0..=0.79.0`, excluding unpublished `0.58.0`. Those
+wrappers are `0.53.0..=0.81.2`, excluding unpublished `0.58.0`. Those
 milestones remain guaranteed. A newer stable release is admitted as
 unverified, remains inspectable in evidence, and must identify itself as that
 same exact version during ACP initialization. Excluded and older versions do

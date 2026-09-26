@@ -20,7 +20,7 @@ use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
     CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
     EntitlementState, ExecutionHostId, InstanceRevision, InterfaceVersionAxis, RuntimeReadiness,
-    SupportAuthority,
+    SafeDiagnostic, SupportAuthority,
 };
 use swallowtail_host_local::{LocalExecutableLaunch, LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
@@ -61,17 +61,32 @@ fn one_authorized_gemini_cli_acp_http_mcp_live_attempt() {
 
 fn run_one_attempt() -> HttpMcpLiveRecord {
     if !host_auth_present() {
-        return HttpMcpLiveRecord::pre_attempt_stop(HttpMcpLiveStop::HostAuthRequired, None);
+        return HttpMcpLiveRecord::pre_attempt_stop(
+            HttpMcpLiveStop::HostAuthRequired,
+            gate_diagnostic(
+                "swallowtail.gemini.acp.http_mcp.host_auth_missing",
+                "Existing host Gemini auth is not present",
+            ),
+            None,
+        );
     }
     let Some((gemini, node)) = isolated_gemini_0_59_0() else {
-        return HttpMcpLiveRecord::pre_attempt_stop(HttpMcpLiveStop::HostVersion, None);
+        return HttpMcpLiveRecord::pre_attempt_stop(
+            HttpMcpLiveStop::HostVersion,
+            host_version_diagnostic(),
+            None,
+        );
     };
     let workspace = std::env::temp_dir().join(format!(
         "swallowtail-gemini-acp-http-mcp-live-{}",
         std::process::id()
     ));
     if std::fs::create_dir_all(&workspace).is_err() {
-        return HttpMcpLiveRecord::pre_attempt_stop(HttpMcpLiveStop::HostVersion, None);
+        return HttpMcpLiveRecord::pre_attempt_stop(
+            HttpMcpLiveStop::HostVersion,
+            host_version_diagnostic(),
+            None,
+        );
     }
     let (local, target, environment, working_resource, execution_host_id) =
         live_host(&gemini, &node, &workspace);
@@ -111,13 +126,18 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
         local.services().clone(),
     )) {
         Ok(prepared) => prepared,
-        Err(_) => {
-            return HttpMcpLiveRecord::pre_attempt_stop(HttpMcpLiveStop::HostVersion, None);
+        Err(error) => {
+            return HttpMcpLiveRecord::pre_attempt_stop(
+                HttpMcpLiveStop::HostVersion,
+                error.diagnostic().safe().clone(),
+                None,
+            );
         }
     };
     if prepared.observation().version().version().as_str() != EXACT_VERSION {
         return HttpMcpLiveRecord::pre_attempt_stop(
             HttpMcpLiveStop::HostVersion,
+            host_version_diagnostic(),
             Some(
                 prepared
                     .observation()
@@ -144,8 +164,12 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
         .with_http_mcp_placement(placement),
     ) {
         Ok(session) => session,
-        Err(_) => {
-            return HttpMcpLiveRecord::pre_attempt_stop(HttpMcpLiveStop::NoUsableModel, None);
+        Err(error) => {
+            return HttpMcpLiveRecord::pre_attempt_stop(
+                HttpMcpLiveStop::NoUsableModel,
+                error.diagnostic().safe().clone(),
+                None,
+            );
         }
     };
 
@@ -314,6 +338,17 @@ fn installed_path(command: &str) -> Option<PathBuf> {
         .map(|directory| directory.join(command))
         .find(|candidate| candidate.is_file())
         .and_then(|path| std::fs::canonicalize(path).ok())
+}
+
+fn host_version_diagnostic() -> SafeDiagnostic {
+    gate_diagnostic(
+        "swallowtail.gemini.acp.http_mcp.host_version",
+        "Isolated Gemini CLI 0.59.0 was not available",
+    )
+}
+
+fn gate_diagnostic(code: &'static str, message: &'static str) -> SafeDiagnostic {
+    SafeDiagnostic::new(code, message)
 }
 
 fn host_auth_present() -> bool {

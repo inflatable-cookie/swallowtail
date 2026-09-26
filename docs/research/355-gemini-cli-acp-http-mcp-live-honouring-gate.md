@@ -1,4 +1,4 @@
-# 354 Gemini CLI ACP HTTP MCP Live Honouring Gate
+# 355 Gemini CLI ACP HTTP MCP Live Honouring Gate
 
 Status: gate ready; waiting on usage; honouring not accepted
 Owner: Swallowtail worker
@@ -35,7 +35,7 @@ First cargo invocation, before any ACP session:
 - accepted: false
 - typed stop: `host_version`
 - model: none
-- no terminal or cleanup diagnostic
+- no terminal or cleanup diagnostic (pre-amendment record)
 
 Cause: `LocalProcessHost` refuses a `#!/usr/bin/env` shebang unless launch is
 `LocalExecutableLaunch::interpreted_script`. Isolated `0.59.0` was installed
@@ -66,8 +66,15 @@ finished honouring verdict.
 ## Limits
 
 The record covers exact `0.59.0` only. Other window points stay unqualified
-for honouring. The gate remains ready. A later authorized live attempt needs
-Gemini usage and a separate ruling.
+for honouring. The gate remains ready.
+
+## Next move
+
+A later authorized live attempt needs Gemini usage and a separate ruling. The
+first open step on exact `0.59.0` is the observed
+`swallowtail.gemini.acp.mode_rejected` failure: `bounded_write` expected
+`autoEdit` and Gemini did not return that mode. Honouring cannot be proven
+until that open succeeds.
 
 ## Disposition
 

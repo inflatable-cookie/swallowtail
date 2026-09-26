@@ -187,7 +187,11 @@ impl HttpMcpLiveRecord {
     }
 
     #[must_use]
-    pub const fn pre_attempt_stop(stop: HttpMcpLiveStop, model: Option<String>) -> Self {
+    pub fn pre_attempt_stop(
+        stop: HttpMcpLiveStop,
+        diagnostic: SafeDiagnostic,
+        model: Option<String>,
+    ) -> Self {
         Self {
             declaration_sent: false,
             connected: false,
@@ -197,7 +201,7 @@ impl HttpMcpLiveRecord {
             terminal_completed: false,
             cleanup_clean: false,
             stop: Some(stop),
-            terminal_diagnostic: None,
+            terminal_diagnostic: Some(HttpMcpLiveStopDiagnostic::from_safe(&diagnostic)),
             cleanup_diagnostic: None,
             model,
         }

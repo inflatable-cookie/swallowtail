@@ -76,6 +76,40 @@ fn record_keeps_cleanup_diagnostic_code_and_class() {
 }
 
 #[test]
+fn record_keeps_pre_attempt_diagnostic_code_and_class() {
+    for (stop, code) in [
+        (
+            HttpMcpLiveStop::HostAuthRequired,
+            "swallowtail.gemini.acp.http_mcp.host_auth_missing",
+        ),
+        (
+            HttpMcpLiveStop::HostVersion,
+            "swallowtail.gemini.acp.http_mcp.host_version",
+        ),
+        (
+            HttpMcpLiveStop::NoUsableModel,
+            "swallowtail.gemini.preparation.session_options_unsupported",
+        ),
+    ] {
+        let record = HttpMcpLiveRecord::pre_attempt_stop(
+            stop,
+            SafeDiagnostic::new(code, "pre-attempt stop keeps code and class"),
+            None,
+        );
+        assert_eq!(record.stop(), Some(stop));
+        let diagnostic = record
+            .terminal_diagnostic()
+            .expect("pre-attempt stop keeps the terminal diagnostic");
+        assert_eq!(diagnostic.code(), code);
+        assert_eq!(diagnostic.class(), "Unknown/Unknown/Unknown");
+        assert!(record.cleanup_diagnostic().is_none());
+        let rendered = format!("{record:?}");
+        assert!(rendered.contains(code));
+        assert!(rendered.contains("Unknown/Unknown/Unknown"));
+    }
+}
+
+#[test]
 fn harness_proves_declaration_connect_list_call_result_and_cleanup() {
     let server = DisposableHttpMcpServer::start();
     let host_id = ExecutionHostId::new("fixture.host.http-mcp-live").expect("valid host id");

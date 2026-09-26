@@ -1,0 +1,141 @@
+{
+  "executing_path": {
+    "npm_bin": "dist/main.mjs",
+    "owned_argv": ["web", "--no-open", "--host", "127.0.0.1"],
+    "process_request_sets_cwd": false,
+    "never_passes_allow_remote_terminals": true,
+    "never_passes_dangerous_bypass_auth": true,
+    "never_passes_remote_control": true
+  },
+  "selected_local_server_source": {
+    "comment": "git blob SHAs at the tagged-source commits; Research 326 0.43.0 blobs reproduce; Bash authority blobs hold through 2.1.1",
+    "auth_ts_unchanged_0_43_0_through_2_1_1": "0bb9ea42f8437c6a45deafe8cb84529d8005525c",
+    "rest_session_ts_unchanged_0_43_0_through_2_1_1": "41d037b82aa949eed0ca97e35c3a29c8281b9531",
+    "rest_approval_ts_unchanged_0_43_0_through_2_1_1": "bb7e354bce8eb15bf4634f0785abf4c2a63d7d01",
+    "rest_question_ts_unchanged_0_43_0_through_2_1_1": "3584025ac68ccf3478e0fa216fee62a626368330",
+    "terminals_ts_unchanged_0_43_0_through_2_1_1": "3dcd07b0ca1aa97ad295efc2b3305fa33eb85072",
+    "web_index_ts_unchanged_0_43_0_through_2_1_1": "30240210b239ebf2573090a82b697e2c4ff823a3",
+    "web_shared_ts_unchanged_0_43_0_through_2_1_1": "91fede6c07bbdacea36243865beeaea5cdd8a5e0",
+    "ws_control_ts_unchanged_0_43_0_through_2_1_1": "f71b3700496a2377951c6025d339406c494c06e6",
+    "rest_model_catalog_ts": {
+      "path": "packages/kap-server/src/protocol/rest-modelCatalog.ts",
+      "0.43.0..=0.43.1_and_2.0.0": "1931153d18587ffda30fa6799e21e2ece56f8ccc",
+      "2.0.1..=2.1.1": "42c7a93e4b37bb6271c8659696c202761cba7615",
+      "2.0.0_to_2.0.1": "catalog schema hop; does not restore Bash cwd"
+    },
+    "web_run_ts": {
+      "path": "apps/kimi-code/src/cli/sub/web/run.ts",
+      "0.43.0..=2.0.2": "b10a666d9cd72e4adf92a9707f1c9135bc3aa670",
+      "2.1.0..=2.1.1": "e1d28ee07126fbba55a0fcb0815f7e4d44e06aac",
+      "2.0.2_to_2.1.0": "web run / Remote Control banner; Swallowtail never passes --remote-control"
+    },
+    "prompts_ts": {
+      "path": "packages/kap-server/src/routes/prompts.ts",
+      "0.43.0..=0.43.1": "33ed55d8a2730172b3e0002be4098a9a287823c3",
+      "2.0.0..=2.1.1": "086a827e9bffe85617a5ba190d36a7ebf2119220",
+      "disabled_tools_applied_after_setModel": true
+    }
+  },
+  "bash_cwd_authority": {
+    "bash_tool_path": "packages/agent-core-v2/src/agent/tools/os/bash/bashTool.ts",
+    "workspace_view_path": "packages/agent-core-v2/src/runtime/runtimeWorkspaceView.ts",
+    "first_published": "0.40.0",
+    "holds_through": "2.1.1",
+    "bash_tool_name": "Bash",
+    "bash_tool_call": "view.resolve(args.cwd ?? view.workDir)",
+    "bash_tool_ts": {
+      "0.39.0..=2.1.1": "41090010ce96a7c66586fda8dc17b3a19d62ceaf"
+    },
+    "runtime_workspace_view_ts": {
+      "0.40.0..=2.1.1": "01db1bbf8f51cc1b16178d3d4e07817d4b63d372"
+    },
+    "terminal_service_ts": {
+      "0.40.0..=2.1.1": "7d778229ffa63bce440aa8a2f97e79d203279e60"
+    },
+    "after": {
+      "resolve": "pure path mapping; no workspace assertion",
+      "assertAllowed_exists_separately": true,
+      "assertAllowed_called_from_resolve": false,
+      "bash_cwd_outside_workspace": "accepted",
+      "pty_create_still_assertAllowed": true
+    }
+  },
+  "disabled_tools_control": {
+    "route_already_maps_from": "0.29.0",
+    "rest_field": "disabled_tools",
+    "exact_tool_name": "Bash",
+    "wrong_case_is_unknown_tool": "bash",
+    "applied_by": "setSessionDisabledTools after setModel",
+    "setModel_binds_default_profile": "agent",
+    "explicit_consumer_profile_required": false,
+    "evaluator_blob_unchanged_0_43_0_through_2_1_1": "ae563141578d235a823456a40c81d2348791ca31",
+    "executor_guard_rejects_with": "Tool \"Bash\" is disabled by the active tool policy",
+    "structured_runs_share_interactive_prompt_path": true,
+    "hides_uncontained_tool": true,
+    "contains_ambient_host_process": false,
+    "narrows_consumer_visible_bash_tool": true
+  },
+  "per_hop_verdict": {
+    "0.43.0_to_0.43.1": "still stopped: selected local-server blobs byte-identical except CHANGELOG; Bash authority unchanged",
+    "0.43.1_to_2.0.0": "major-line reset; selected local-server protocol blobs byte-identical except CHANGELOG and prompts.ts; Bash authority unchanged; stop and ask",
+    "2.0.0_to_2.0.1": "still stopped: catalog schema hop; Bash authority unchanged",
+    "2.0.1_to_2.0.2": "still stopped: selected protocol blobs byte-identical; Bash authority unchanged",
+    "2.0.2_to_2.1.0": "still stopped: web run hop unmapped; Bash authority unchanged",
+    "2.1.0_to_2.1.1": "still stopped: selected protocol blobs byte-identical except CHANGELOG; Bash authority unchanged"
+  },
+  "containment_trace": {
+    "question": "does any Swallowtail control, server profile, or remaining provider boundary contain Bash cwd escape for a local-server client at official 2.1.1",
+    "harness_isolation_declared": "AmbientHost",
+    "contract_023_clause": "the harness process and descendants execute with the ambient authority of the selected execution host",
+    "contract_023_tool_clause": "provider approval modes, tool allowlists or denylists, plan modes, safe modes, and disabled extensions limit harness behavior; they do not contain the harness process, its descendants, or unmediated filesystem and network access",
+    "contract_017_ambient_clause": "under AmbientHost the working-resource lease remains a location and callback scope only",
+    "process_request_sets_cwd": false,
+    "adapter_control_found": true,
+    "adapter_control_kind": "optional disabled_tools denylist already mapped from 0.29.0",
+    "adapter_control_restores_assertAllowed": false,
+    "adapter_control_contains_process": false,
+    "runtime_control_found": false,
+    "loopback_bind_contains_network_not_process_cwd": true,
+    "pty_assertAllowed_is_not_the_bash_tool_path": true,
+    "provider_boundary_remaining_for_bash_cwd": false,
+    "restored_containment_at_any_later_point": false,
+    "conclusion": "containment is absent from 0.40.0 through 2.1.1; pinning disabled_tools Bash hides the tool and narrows a consumer-visible guarantee"
+  },
+  "ruling_options": [
+    {
+      "id": "A",
+      "authorizes": "pin disabled_tools Bash above 0.39.1 and qualify official 2.1.1 as a same-axis milestone",
+      "narrows_consumer_visible_guarantee": true,
+      "contains_ambient_host": false
+    },
+    {
+      "id": "B",
+      "authorizes": "treat the 0.40.0 assertion removal as outside Swallowtail isolation and qualify 0.40.0..=2.1.1",
+      "withdraws_research_282_326_fail_closed": true
+    },
+    {
+      "id": "C",
+      "authorizes": "a new ProviderEnforced or HostEnforced isolation route that contains Bash cwd",
+      "mechanism_present_in_2_1_1_artifacts": false,
+      "new_public_lifecycle": true
+    },
+    {
+      "id": "D",
+      "authorizes": "keep QualifiedOnly at 0.39.1 until the provider restores assertAllowed on resolve",
+      "exception_to_no_terminal_stop": true
+    }
+  ],
+  "decoder_corpus": "kimi-local-server-0.28.1-0.29.0",
+  "unmapped_deltas": [
+    "2.0.0 /desktop slash command and kimi install-app; not a local-server driver",
+    "2.0.1 catalog schema hop; catalogue qualification is not this task",
+    "2.1.0 web run / Remote Control banner; Swallowtail never passes --remote-control",
+    "2.0.1 system-prompt rule drop against file access outside the working directory",
+    "2.0.2 agent no longer assumes cwd is the project root",
+    "2.1.0 file-tool symlink escape block; resolve blob unchanged"
+  ],
+  "other_family_observations_not_acted_on": {
+    "kimi_code_acp": "acp claims, corpora, and conclusions untouched",
+    "kimi_code_headless": "headless claims, corpora, and conclusions untouched"
+  }
+}

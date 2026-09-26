@@ -12,13 +12,12 @@ at `49b0d308`, before the lean cut.
 
 1. **Consumer HTTP MCP live honouring on `claude-agent.acp`** (lane
    `claude-agent-acp-http-mcp-live`) — emission stands (Research 351). The
-   one authorized live attempt on pinned exact `0.79.0` was not accepted:
-   typed stop `cleanup_failed` (Research 352): the MCP connect, list, call
-   and `Completed` turn happened, but session close was not `Clean`, and the
-   gate record dropped the cleanup diagnostic. The cell stays No. Next: a
-   provider-free diagnosis that makes the gate keep typed cleanup diagnostics
-   and traces what close does with an open HTTP MCP client on `0.79.0`. A new
-   live attempt needs fresh operator authority.
+   first live attempt on pinned `0.79.0` stopped at session close
+   (Research 352). Diagnosis (Research 355) fixed the lost diagnostic and a
+   test-listener defect that dropped idle SSE streams, which could have
+   disturbed the provider; the leading hypothesis is that the sidecar didn't
+   answer `session/close` within 30 seconds. A second attempt, which reports
+   the typed cleanup code, needs Tom's authority.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
    consumer hits an unverified-newer point; one family at a time. Known open
@@ -36,6 +35,12 @@ at `49b0d308`, before the lean cut.
 
 ## Next
 
+- **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — one live
+  attempt on the host's Gemini CLI once it is qualified (it auto-updated to
+  official `0.61.0` on 2026-09-26, above the `0.59.0` ceiling), after the
+  fake-proven gate merges. Access is Tom's free Gemini Developer API key in
+  the Gemini CLI keychain entry. Free personal Google login ended on
+  2026-06-18.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the
@@ -64,13 +69,6 @@ at `49b0d308`, before the lean cut.
 
 ## Not now
 
-- **Live HTTP MCP honouring on `gemini-cli.acp`** — the gate is built and
-  proven against fakes, but Tom has no Gemini access with usage
-  (2026-09-26). The route takes a Gemini Developer API key. Free personal
-  Google login ended on 2026-06-18 (unpaid and Google One users moved to
-  Antigravity CLI); personal login now needs Google AI Pro or Ultra, so a
-  personal-login access profile wouldn't help. Revisit when paid access
-  exists or a consumer needs the cell.
 
 - **HTTP MCP live gates on `copilot-cli.acp`, `goose.acp`, `kiro.acp`** —
   wired to emit the entry; held until a consumer needs them.

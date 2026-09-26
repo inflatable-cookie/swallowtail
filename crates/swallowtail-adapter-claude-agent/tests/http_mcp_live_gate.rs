@@ -41,9 +41,12 @@ fn one_authorized_claude_agent_acp_http_mcp_live_attempt() {
     );
     let record = run_one_attempt();
     eprintln!(
-        "claude-agent.acp http mcp live record accepted={} stop={:?} model={:?}",
+        "claude-agent.acp http mcp live record accepted={} stop={:?} cleanup_class={} cleanup_code={:?} cleanup_stage={:?} model={:?}",
         record.accepted(),
         record.stop().map(HttpMcpLiveStop::as_str),
+        record.cleanup_class().as_str(),
+        record.cleanup_diagnostic_code(),
+        record.cleanup_diagnostic_stage(),
         record.model()
     );
     assert!(
@@ -154,11 +157,12 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
             } else {
                 HttpMcpLiveStop::McpNotConnected
             };
+            // No session handle exists, so no cleanup ran and none is reported.
             let mut record = HttpMcpLiveRecord::from_attempt(
                 true,
                 &server.transcript(),
                 &TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
-                CleanupOutcome::Failed(error.diagnostic().clone()),
+                CleanupOutcome::NotApplicable,
                 Some(LIVE_MODEL.to_owned()),
             );
             record.force_stop(stop);
@@ -178,7 +182,10 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
     )) {
         Ok(turn) => turn,
         Err(error) => {
-            let _ = block_on(handle.close(
+            // Keep the cleanup diagnostic the close actually produced: a
+            // deadline or process stage observed here must not be replaced by
+            // the turn error's diagnostic.
+            let cleanup = block_on(handle.close(
                 swallowtail_runtime::SessionCleanupRequest::new(
                     local.deadline_after(Duration::from_secs(30)),
                 ),
@@ -188,7 +195,7 @@ fn run_one_attempt() -> HttpMcpLiveRecord {
                 true,
                 &server.transcript(),
                 &TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
-                CleanupOutcome::Failed(error.diagnostic().clone()),
+                cleanup,
                 Some(LIVE_MODEL.to_owned()),
             );
         }

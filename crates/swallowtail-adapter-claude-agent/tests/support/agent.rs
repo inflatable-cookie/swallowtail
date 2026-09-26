@@ -64,6 +64,7 @@ pub(super) struct AgentState {
     stopped: bool,
     hold_close_response: bool,
     released_close_response: bool,
+    reject_close_response: bool,
     held_close_id: Option<u64>,
     http_mcp: Option<(String, Vec<(String, String)>)>,
 }

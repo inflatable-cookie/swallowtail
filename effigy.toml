@@ -32,13 +32,11 @@ section = "Research Records"
   { task = "qa:docs:agent-contract" },
   { task = "qa:docs:readme" },
   { task = "qa:docs:front-door" },
-  { task = "qa:docs:retired" },
   { task = "qa:consumer-docs" },
   { task = "qa:guides" },
   { task = "qa:code:version-expects" },
 ]
 
-"qa:docs:retired" = "effigy skill run northstar-lean/retired-concepts"
 "qa:docs:spine" = "effigy docs check paths README.md AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md SUPPORT.md PAPERCUTS.md docs/README.md docs/plan.md docs/knowledge/README.md docs/knowledge/vision.md docs/knowledge/questions.md docs/knowledge/retired.toml docs/knowledge/contracts/release.md docs/knowledge/contracts/writing-style.md docs/triage/README.md"
 "qa:docs:agent-contract" = "effigy docs check contains AGENTS.md --require 'effigy tasks' --require 'effigy test --plan' --require 'docs/README.md' --require 'docs/plan.md'"
 "qa:docs:readme" = "effigy docs check contains README.md --require 'docs/README.md'"

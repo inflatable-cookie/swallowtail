@@ -21,8 +21,8 @@ at `49b0d308`, before the lean cut.
    now `0.81.2`, qualified separately afterwards.
 2. **Version currentness** (lane `version-currentness`) — standing, never
    finished. Run the Contract 029 checkpoint when official stables move or a
-   consumer hits an unverified-newer point; one family at a time. Known open
-   stops, each getting an adaptation task (Tom, 2026-09-26):
+   consumer hits an unverified-newer point; one family at a time. Every stop
+   gets an adaptation task (Tom, 2026-09-26). Open stop:
    `antigravity.headless` at `1.1.17` behind the `1.1.22`
    provider-managed-retry stop (Research 283, 323, 353; catalogue now at
    `1.2.11`): evidence on the `AGY_CLI_MODEL_API_MAX_RETRIES` pin first,

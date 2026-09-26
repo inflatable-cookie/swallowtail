@@ -1,0 +1,180 @@
+{
+  "method": "official GitHub release/tag/asset identity plus the official release notes as the behavioural authority under Tom's 2026-09-15 operator ruling; public git hops 1.2.7..1.2.11 change only CHANGELOG.md; downloaded binaries were hashed and never executed; exhaustive string scanning stays stopped at the ruling and one bounded retry-control string check is recorded as an unresolved lead only",
+  "selected_surfaces": [
+    "--print",
+    "--output-format",
+    "--model",
+    "--mode",
+    "--sandbox",
+    "--effort",
+    "--json-schema",
+    "--conversation",
+    "models"
+  ],
+  "selected_values": [
+    "stream-json",
+    "plan",
+    "request-review"
+  ],
+  "selected_surface_presence_unchanged_in_notes": true,
+  "archive_inventory": {
+    "compared": ["1.2.8", "1.2.9", "1.2.10", "1.2.11"],
+    "package_file_counts": {
+      "1.2.8": 1,
+      "1.2.9": 1,
+      "1.2.10": 1,
+      "1.2.11": 1
+    },
+    "files_per_archive": ["antigravity"],
+    "identical_through_1_2_8_to_1_2_11": [],
+    "every_hop": {
+      "added": [],
+      "removed": [],
+      "changed": ["antigravity"],
+      "identical": []
+    },
+    "mapped_binary_byte_identical_across_hops": false
+  },
+  "published_selected_path_changes": {
+    "from_1_2_7_to_1_2_8": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "shutdown-cancels-open-streaming-connections-immediately"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-maintained"
+    },
+    "from_1_2_8_to_1_2_9": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "headless-daemon-background-processes-terminate-when-the-run-ends",
+        "headless-background-tasks-wait-until-print-timeout-deadline-up-to-30-minute-cap"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-deepens"
+    },
+    "from_1_2_9_to_1_2_10": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "headless-partial-response-then-model-or-agent-error-exits-3-with-agy-error"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-deepens"
+    },
+    "from_1_2_10_to_1_2_11": {
+      "catalogue_changes": [],
+      "headless_changes": [
+        "project-custom-agents-resolved-in-headless-runs",
+        "reasoning-effort-level-selection-improved-for-models-with-different-support"
+      ],
+      "catalogue_classification": "unchanged",
+      "headless_classification": "authority-stop-maintained"
+    }
+  },
+  "selected_mapping_changes_by_hop": {
+    "from_1_2_10_to_1_2_11": [
+      "--effort model-support-dependent reasoning level improvement"
+    ]
+  },
+  "headless_retry_trace": {
+    "hop_1_1_22_http_502_retry": {
+      "published_finite_bound_present": false,
+      "public_disable_control_present": false,
+      "separate_operator_acceptance_present": false,
+      "stop": true
+    },
+    "hop_1_2_1_broadened_retry": {
+      "published_finite_bound_present": false,
+      "public_disable_control_present": false,
+      "broader_transient_error_set": true
+    },
+    "hop_1_2_7_backoff_cap": {
+      "published_finite_attempt_bound_present": false,
+      "public_disable_control_present": false,
+      "published_per_attempt_backoff_cap": "30 seconds",
+      "admissible_under_contract_023": false
+    },
+    "hop_1_2_11_retry_bound": {
+      "published_finite_attempt_bound_present": false,
+      "public_disable_control_present": false,
+      "published_per_attempt_backoff_cap": "30 seconds",
+      "unpublished_control_lead": "AGY_CLI_MODEL_API_MAX_RETRIES",
+      "unpublished_control_semantics_verified": false
+    },
+    "host_deadline_is_not_a_provider_retry_policy": true,
+    "inferred_bound_recorded": false
+  },
+  "print_timeout_trace": {
+    "default_from_1_2_6": "unlimited unless --print-timeout is passed",
+    "from_1_2_9_background_task_wait": "bounded by --print-timeout with a 30-minute cap",
+    "from_1_1_28_expiry_shape": "partial output plus successful exit",
+    "official_docs_page_still_publishes": "5m",
+    "selected_deadline_authority_unchanged": true,
+    "catalogue_affected": false
+  },
+  "headless_error_trace": {
+    "from_1_2_6": "agent or model api failure prints AGY_ERROR json and exits 3",
+    "from_1_2_10": "partial response then model or agent error exits 3 and json error output includes the partial response",
+    "catalogue_affected": false
+  },
+  "authority_trace": {
+    "contract_023": {
+      "host_deadline_does_not_replace_provider_native_retry_policy": true,
+      "provider_managed_retry_requires_separate_acceptance": true,
+      "no_separate_acceptance_exists_for_this_lane": true
+    },
+    "catalogue_isolation": {
+      "notes_name_no_models_selected_path_change": true,
+      "effort_note_names_headless_effort_selection": true,
+      "print_timeout_and_agy_error_name_headless_prompt_path": true,
+      "catalogue_advance_independent_of_headless_stop": true
+    }
+  },
+  "ruling_request": {
+    "raised_by": "swallowtail#065",
+    "blocked_on": "contract-023-provider-managed-retry-separate-acceptance",
+    "current_official_stable": "1.2.11",
+    "current_headless_ceiling": "1.1.17",
+    "no_claim_change_in_this_record": true,
+    "options": {
+      "accept_published_retry": {
+        "operator_ruling_required": true,
+        "contract": "023-provider-managed-retry-exception",
+        "effect": "qualify headless 1.1.18..=1.2.11 on a new adapter-private milestone behavior revision",
+        "consumer_visible_change": true,
+        "publishes_attempt_bound": false,
+        "published_per_attempt_backoff_cap": "30 seconds",
+        "host_deadline_remains_the_only_terminal_bound": true
+      },
+      "require_finite_retry_pin": {
+        "operator_ruling_required": true,
+        "contract": "029-pinned-settings",
+        "effect": "require a finite or disabling model-retry control in the approved route environment before qualifying",
+        "control_published_in_official_notes": false,
+        "control_present_in_official_artifact_strings": true,
+        "control_semantics_verified": false,
+        "needs_its_own_evidence_before_qualification": true
+      },
+      "keep_ceiling": {
+        "operator_ruling_required": true,
+        "contract": "029-no-terminal-stop",
+        "effect": "keep headless at 1.1.17 and open a fresh adaptation task",
+        "terminal_stop": true
+      }
+    }
+  },
+  "material_unmapped_published_changes": [
+    "interactive-tui-and-vim-editing",
+    "artifact-viewer-and-kitty-graphics",
+    "context-compaction-budget-sizing",
+    "remote-control-and-enterprise-sign-in",
+    "plugin-skill-agent-registry-scanning",
+    "voice-dictation-deadline",
+    "gemini-api-key-session-parity"
+  ],
+  "provider_prompt_sent": false,
+  "live_catalogue": false,
+  "live_print_run": false,
+  "host_install_changed": false,
+  "downloaded_binaries_executed": false
+}

@@ -506,12 +506,13 @@ fn protocol_classifies_every_published_selected_path_change_per_claim() {
 #[test]
 fn per_claim_segments_split_catalogue_from_the_headless_stop() {
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
-    assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.2.7");
+    assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.2.11");
     assert_eq!(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION, "1.1.17");
 
     let catalogue = antigravity_catalogue_claim();
     for candidate in [
-        "1.1.9", "1.1.17", "1.1.21", "1.1.22", "1.1.27", "1.2.0", "1.2.2", "1.2.7",
+        "1.1.9", "1.1.17", "1.1.21", "1.1.22", "1.1.27", "1.2.0", "1.2.2", "1.2.7", "1.2.8",
+        "1.2.9", "1.2.10", "1.2.11",
     ] {
         assert!(matches!(
             catalogue.assess(&version(candidate)),
@@ -520,7 +521,7 @@ fn per_claim_segments_split_catalogue_from_the_headless_stop() {
     }
     assert!(!catalogue.permits(&version("1.1.8")));
     assert!(matches!(
-        catalogue.assess(&version("1.2.8")),
+        catalogue.assess(&version("1.2.12")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 
@@ -532,7 +533,7 @@ fn per_claim_segments_split_catalogue_from_the_headless_stop() {
         ));
     }
     for candidate in [
-        "1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.1", "1.2.2", "1.2.7", "1.2.8",
+        "1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.1", "1.2.2", "1.2.7", "1.2.8", "1.2.11",
     ] {
         assert!(matches!(
             headless.assess(&version(candidate)),

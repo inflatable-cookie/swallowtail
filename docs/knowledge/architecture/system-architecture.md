@@ -469,15 +469,18 @@ OpenHands adds a package without a production route.
   entries preserve only opaque model identity and do not imply entitlement or
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
   tag share one source commit; `1.1.8` is not independently qualified.
-  Catalogue support extends through official `1.2.7` with the same
+  Catalogue support extends through official `1.2.11` with the same
   catalogue revision because no published release-note change touches the
   selected `agy models` path after the classified `1.1.23` stdin repair;
   headless support stops at `1.1.17` because `1.1.22` introduced
   provider-managed HTTP 502 retry on the model request with no published
   bound or disable control, `1.1.28` and `1.2.1` broaden that retry,
   `1.1.28` also changes `--print-timeout` expiry to partial output plus a
-  successful exit, and `1.2.6` plus `1.2.7` change the published headless
-  default timeout and per-attempt backoff without a finite attempt bound. `--input-format` stdin turns and Gemini API-key
+  successful exit, and `1.2.6` through `1.2.11` change the published headless
+  default timeout, background-task wait, terminal error shape, and
+  per-attempt backoff without a finite attempt bound. Research 353 advances the
+  catalogue claim to `1.2.11` and raises the headless Contract 023
+  acceptance options to the operator without changing the headless claim. `--input-format` stdin turns and Gemini API-key
   sign-in stay unmapped. Headless runs bind exact model, read or write
   authority, optional provider sandboxing, optional effort, optional inline
   JSON Schema, request-review permission mode, typed activity and usage,

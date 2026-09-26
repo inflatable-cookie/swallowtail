@@ -9,6 +9,8 @@ use swallowtail_core::{
 
 #[path = "antigravity_1_1_26_delta_ledger.rs"]
 mod antigravity_1_1_26_delta_ledger;
+#[path = "antigravity_1_2_11_notes_ledger.rs"]
+mod antigravity_1_2_11_notes_ledger;
 #[path = "antigravity_1_2_2_notes_ledger.rs"]
 mod antigravity_1_2_2_notes_ledger;
 #[path = "antigravity_1_2_7_notes_ledger.rs"]

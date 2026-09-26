@@ -24,17 +24,18 @@ at `49b0d308`, before the lean cut.
    consumer hits an unverified-newer point; one family at a time. Known open
    stops, each getting an adaptation task (Tom, 2026-09-26):
    `antigravity.headless` at `1.1.17` behind the `1.1.22`
-   provider-managed-retry stop (Research 283, 323, 346), and
+   provider-managed-retry stop (Research 283, 323, 353; catalogue now at
+   `1.2.11`): evidence on the `AGY_CLI_MODEL_API_MAX_RETRIES` pin first,
+   accepting provider retry as the fallback (Q-003), and
    `kimi-code.local-server` failing closed above `0.39.1` since `0.40.0`
-   removed the Bash workspace restriction (Research 282, 326). An adaptation
+   removed the Bash workspace restriction (Research 282, 326, 354; official
+   now `2.1.1`): qualify `0.40.0..=2.1.1` under `AmbientHost` without the
+   check, documented, with `disabled_tools` as the consumer opt-out (Q-004). An adaptation
    that needs a Contract 023 exception or narrows a consumer-visible
    guarantee comes back to Tom as a ruling.
 
 ## Next
 
-- **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — second after
-  Claude, same shape (host 0.53.0, point 0.59.0). Approved by Tom. The Claude
-  harness shape is committed (`http_mcp_live_harness`; Research 352).
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the
@@ -62,6 +63,14 @@ at `49b0d308`, before the lean cut.
   (Q-002).
 
 ## Not now
+
+- **Live HTTP MCP honouring on `gemini-cli.acp`** — the gate is built and
+  proven against fakes, but Tom has no Gemini access with usage
+  (2026-09-26). The route takes a Gemini Developer API key. Free personal
+  Google login ended on 2026-06-18 (unpaid and Google One users moved to
+  Antigravity CLI); personal login now needs Google AI Pro or Ultra, so a
+  personal-login access profile wouldn't help. Revisit when paid access
+  exists or a consumer needs the cell.
 
 - **HTTP MCP live gates on `copilot-cli.acp`, `goose.acp`, `kiro.acp`** —
   wired to emit the entry; held until a consumer needs them.

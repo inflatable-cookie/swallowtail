@@ -14,12 +14,13 @@ pub const ANTIGRAVITY_RELEASE_AXIS: &str = "antigravity-cli.release";
 /// Oldest release in the current maintained qualification window.
 pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
 /// Latest catalogue release in the current maintained qualification window.
-pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.2.7";
+pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.2.11";
 /// Latest headless release in the current maintained qualification window.
 pub const ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
 /// Historical shared ceiling. The headless claim still ends here; the
-/// catalogue claim advanced to `1.2.7` under Research 346 while headless
-/// stays stopped at the `1.1.22` provider-managed-retry boundary.
+/// catalogue claim advanced to `1.2.11` under Research 353 while headless
+/// stays stopped at the `1.1.22` provider-managed-retry boundary pending the
+/// ruling that record raises.
 pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.1.17";
 
 pub(crate) const ANTIGRAVITY_CATALOGUE_BEHAVIOR: &str =
@@ -188,9 +189,13 @@ mod tests {
         assert!(claim.supports(&version("1.1.27")));
         assert!(claim.supports(&version("1.2.2")));
         assert!(claim.supports(&version("1.2.7")));
+        assert!(claim.supports(&version("1.2.8")));
+        assert!(claim.supports(&version("1.2.9")));
+        assert!(claim.supports(&version("1.2.10")));
+        assert!(claim.supports(&version("1.2.11")));
         assert!(!claim.permits(&version("1.1.8")));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("1.2.8"))
+            claim.assess(&version("1.2.12"))
         else {
             panic!("later Antigravity release remains visibly unverified");
         };
@@ -205,7 +210,10 @@ mod tests {
         let claim = antigravity_headless_claim();
         assert!(claim.supports(&version("1.1.9")));
         assert!(claim.supports(&version("1.1.17")));
-        for stopped in ["1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.2", "1.2.7"] {
+        for stopped in [
+            "1.1.18", "1.1.22", "1.1.27", "1.2.0", "1.2.2", "1.2.7", "1.2.8", "1.2.9", "1.2.10",
+            "1.2.11",
+        ] {
             let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
                 claim.assess(&version(stopped))
             else {

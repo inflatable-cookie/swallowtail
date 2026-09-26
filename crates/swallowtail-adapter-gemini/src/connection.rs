@@ -32,6 +32,7 @@ pub(crate) struct AcpConnection {
     resource: ResourceLease,
     resource_io: Arc<dyn WorkingResourceIoService>,
     write_enabled: bool,
+    permission_allow_once: bool,
     services: HostServices,
     next_id: AtomicU64,
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
@@ -49,6 +50,7 @@ impl AcpConnection {
         resource: ResourceLease,
         resource_io: Arc<dyn WorkingResourceIoService>,
         write_enabled: bool,
+        permission_allow_once: bool,
         services: HostServices,
     ) -> Arc<Self> {
         Arc::new(Self {
@@ -56,6 +58,7 @@ impl AcpConnection {
             resource,
             resource_io,
             write_enabled,
+            permission_allow_once,
             services,
             next_id: AtomicU64::new(1),
             pending: Mutex::new(BTreeMap::new()),

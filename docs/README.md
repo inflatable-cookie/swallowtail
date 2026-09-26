@@ -9,13 +9,12 @@ What is true now:
 - Every production route family is qualified against its official release
   through the Contract 029 currentness procedure.
 - Contract 063 admits a consumer-supplied streamable-HTTP MCP placement.
-  `opencode.acp` is live-proven honouring it; `claude-agent.acp` on exact
-  `0.79.0` spent its one live attempt with typed `cleanup_failed` (Research
-  352), and its gate now keeps the typed cleanup diagnostic for the next
-  authorized attempt (Research 355). `gemini-cli.acp` on host exact `0.61.0`
-  spent its one live attempt with typed `tool_not_called` (Research 360).
-  `copilot-cli.acp`, `goose.acp` and `kiro.acp` emit the entry with live
-  honouring unproven (Research 351).
+  `opencode.acp` is live-proven honouring it. `claude-agent.acp` honours it
+  on exact `0.79.0` (Research 361) after Research 352's `cleanup_failed`
+  stop. `gemini-cli.acp` honours it on host exact `0.61.0` (Research 362)
+  after Research 360's Plan-mode `tool_not_called` stop. `copilot-cli.acp`,
+  `goose.acp` and `kiro.acp` emit the entry with live honouring unproven
+  (Research 351).
 - Unavailable feature-matrix cells are provider limitations with frozen
   evidence or producer gaps owned by a [plan](plan.md) item.
 

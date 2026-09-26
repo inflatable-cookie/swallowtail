@@ -32,6 +32,7 @@ struct AgentState {
     agent_messages: Vec<Value>,
     prompt_id: Option<u64>,
     write_enabled: bool,
+    approval_mode: String,
     stopped: bool,
     http_mcp: Option<(String, Vec<(String, String)>)>,
 }
@@ -121,11 +122,7 @@ impl SharedAgent {
                     }),
                 ),
                 _ => {
-                    let mode = if state.write_enabled {
-                        "autoEdit"
-                    } else {
-                        "plan"
-                    };
+                    let mode = session_mode(&state);
                     Self::enqueue(
                         &mut state,
                         json!({
@@ -158,48 +155,37 @@ impl SharedAgent {
                 state.prompt_id = id;
                 match self.scenario {
                     Scenario::HttpMcpHonour => {
-                        let result = state
-                            .http_mcp
-                            .as_ref()
-                            .and_then(|(url, headers)| http_mcp::call_ping(url, headers).ok())
-                            .unwrap_or_else(|| "missing-tool-result".to_owned());
-                        let mode = if state.write_enabled {
-                            "autoEdit"
+                        if state.approval_mode == "plan" {
+                            complete_http_mcp_prompt(&mut state, "plan-excluded");
                         } else {
-                            "plan"
-                        };
-                        enqueue_session_metadata(&mut state, mode);
-                        Self::enqueue(
-                            &mut state,
-                            json!({
-                                "jsonrpc": "2.0",
-                                "method": "session/update",
-                                "params": {
-                                    "sessionId": "fixture-session",
-                                    "update": {
-                                        "sessionUpdate": "agent_message_chunk",
-                                        "content": {"type": "text", "text": result}
-                                    }
-                                }
-                            }),
-                        );
-                        if let Some(prompt_id) = state.prompt_id.take() {
                             Self::enqueue(
                                 &mut state,
                                 json!({
                                     "jsonrpc": "2.0",
-                                    "id": prompt_id,
-                                    "result": {"stopReason": "end_turn"}
+                                    "id": 900,
+                                    "method": "session/request_permission",
+                                    "params": {
+                                        "sessionId": "fixture-session",
+                                        "toolCall": {"toolCallId": "fixture-mcp-ping"},
+                                        "options": [
+                                            {
+                                                "optionId": "proceed_once",
+                                                "name": "Allow",
+                                                "kind": "allow_once"
+                                            },
+                                            {
+                                                "optionId": "cancel",
+                                                "name": "Reject",
+                                                "kind": "reject_once"
+                                            }
+                                        ]
+                                    }
                                 }),
                             );
                         }
                     }
                     Scenario::Success => {
-                        let mode = if state.write_enabled {
-                            "autoEdit"
-                        } else {
-                            "plan"
-                        };
+                        let mode = session_mode(&state);
                         enqueue_session_metadata(&mut state, mode);
                         Self::enqueue(
                             &mut state,
@@ -357,11 +343,60 @@ impl SharedAgent {
                     );
                 }
             }
-            None if id == Some(900) => {}
+            None if id == Some(900) => {
+                if self.scenario == Scenario::HttpMcpHonour
+                    && message["result"]["outcome"]["outcome"] == "selected"
+                    && message["result"]["outcome"]["optionId"] == "proceed_once"
+                {
+                    let result = state
+                        .http_mcp
+                        .as_ref()
+                        .and_then(|(url, headers)| http_mcp::call_ping(url, headers).ok())
+                        .unwrap_or_else(|| "missing-tool-result".to_owned());
+                    complete_http_mcp_prompt(&mut state, &result);
+                }
+            }
             _ => return Err(fixture_failure()),
         }
         self.changed.notify_all();
         Ok(())
+    }
+}
+
+fn session_mode(state: &AgentState) -> &'static str {
+    match state.approval_mode.as_str() {
+        "auto_edit" => "autoEdit",
+        "default" => "default",
+        _ => "plan",
+    }
+}
+
+fn complete_http_mcp_prompt(state: &mut AgentState, text: &str) {
+    let mode = session_mode(state);
+    enqueue_session_metadata(state, mode);
+    SharedAgent::enqueue(
+        state,
+        json!({
+            "jsonrpc": "2.0",
+            "method": "session/update",
+            "params": {
+                "sessionId": "fixture-session",
+                "update": {
+                    "sessionUpdate": "agent_message_chunk",
+                    "content": {"type": "text", "text": text}
+                }
+            }
+        }),
+    );
+    if let Some(prompt_id) = state.prompt_id.take() {
+        SharedAgent::enqueue(
+            state,
+            json!({
+                "jsonrpc": "2.0",
+                "id": prompt_id,
+                "result": {"stopReason": "end_turn"}
+            }),
+        );
     }
 }
 

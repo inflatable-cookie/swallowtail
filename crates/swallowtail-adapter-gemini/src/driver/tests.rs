@@ -1,12 +1,11 @@
 mod tests {
     use super::{
-        DRIVER_ID, gemini_acp_descriptor, gemini_process_request, parse_new_session,
-        validate_initialize,
+        DRIVER_ID, GeminiAcpApprovalMode, gemini_acp_descriptor, gemini_process_request,
+        parse_new_session, validate_initialize,
     };
     use serde_json::json;
     use swallowtail_core::{
         DriverRole, ExecutionLayer, HostServiceKind, InterfaceVersion, OperationShape,
-        ResourceAccess,
     };
     use swallowtail_runtime::{EnvironmentRef, ExecutableRef, WorkingResourceRef};
 
@@ -36,7 +35,7 @@ mod tests {
             ExecutableRef::new("gemini.pinned").expect("valid executable"),
             environment.clone(),
             resource.clone(),
-            ResourceAccess::Read,
+            GeminiAcpApprovalMode::Plan,
         );
         assert_eq!(
             request.arguments().collect::<Vec<_>>(),
@@ -62,35 +61,62 @@ mod tests {
             }), &selected)
             .is_err()
         );
-        let opened = parse_new_session(&json!({
+        let opened = parse_new_session(
+            &json!({
                 "sessionId": "fixture-session",
                 "modes": {"currentModeId": "plan"}
-            }), ResourceAccess::Read)
-            .expect("plan session is accepted");
+            }),
+            "plan",
+        )
+        .expect("plan session is accepted");
         assert_eq!(opened.provider_id, "fixture-session");
         assert!(opened.model_options.is_none());
         assert!(
-            parse_new_session(&json!({
-                "sessionId": "fixture-session",
-                "modes": {"currentModeId": "yolo"}
-            }), ResourceAccess::Read)
+            parse_new_session(
+                &json!({
+                    "sessionId": "fixture-session",
+                    "modes": {"currentModeId": "yolo"}
+                }),
+                "plan",
+            )
             .is_err()
         );
         assert!(
-            parse_new_session(&json!({
-                "sessionId": "fixture-session",
-                "modes": {"currentModeId": "default"}
-            }), ResourceAccess::Read)
+            parse_new_session(
+                &json!({
+                    "sessionId": "fixture-session",
+                    "modes": {"currentModeId": "default"}
+                }),
+                "plan",
+            )
             .is_err(),
             "untrusted-folder clamp to default is not the read-only plan mode"
         );
         parse_new_session(
             &json!({
+                "sessionId": "fixture-default-session",
+                "modes": {"currentModeId": "default"}
+            }),
+            "default",
+        )
+        .expect("explicit default approval accepts currentModeId default");
+        parse_new_session(
+            &json!({
                 "sessionId": "fixture-write-session",
                 "modes": {"currentModeId": "autoEdit"}
             }),
-            ResourceAccess::ReadWrite,
+            "autoEdit",
         )
         .expect("auto-edit write session is accepted");
+        let default_request = gemini_process_request(
+            ExecutableRef::new("gemini.pinned").expect("valid executable"),
+            EnvironmentRef::new("gemini.isolated").expect("valid environment"),
+            WorkingResourceRef::new("workspace.main").expect("valid resource"),
+            GeminiAcpApprovalMode::Default,
+        );
+        assert_eq!(
+            default_request.arguments().collect::<Vec<_>>(),
+            ["--acp", "--approval-mode", "default"]
+        );
     }
 }

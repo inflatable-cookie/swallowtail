@@ -18,22 +18,16 @@ at `49b0d308`, before the lean cut.
    to Tom as a ruling. No open stop: `antigravity.headless` qualifies current
    official `1.2.11` with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned
    (Research 359). Official `claude-agent.acp` `0.81.2` is now the qualified
-   ceiling (Research 362).
+   ceiling (Research 363).
 
 ## Next
 
 - **Carry `claude-agent.acp` HTTP MCP honouring to current** (lane
   `claude-agent-acp-http-mcp-live`) — `client_mcp_servers` is Yes on exact
-  `0.79.0` only (Research 361). Research 362 qualified official `0.81.2` with
+  `0.79.0` only (Research 361). Research 363 qualified official `0.81.2` with
   the `mcpServers` HTTP mapping and `session/close` teardown path
   byte-identical; honouring is not extended. Later window points still need
   their own live gate.
-- **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — the first
-  attempt on `0.61.0` connected and listed the tool but never called it
-  (Research 360), likely because read-only Plan mode keeps MCP tools off.
-  Tom approved (2026-09-26) a source check of how each mode treats MCP tool
-  calls, then one more live attempt on his free key in the narrowest mode
-  that allows the call.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the
@@ -44,9 +38,9 @@ at `49b0d308`, before the lean cut.
   permission policy (Contract 041). Needs operator promotion.
 - **Registered-tool adoption for remaining ACP routes** (lane
   `registered-tool-remaining-acp`) — `client_mcp_servers` on `cline.acp`,
-  `copilot-cli.acp`, `gemini-cli.acp` (and `gemini-cli.headless`),
-  `goose.acp`, `kiro.acp` and `deepagents.acp`, each with its own surface
-  evidence. Needs a consumer requirement and operator direction.
+  `copilot-cli.acp`, `goose.acp`, `kiro.acp` and `deepagents.acp`, each with
+  its own surface evidence. Needs a consumer requirement and operator
+  direction.
 - **Qoder effective skill visibility** (lane `qoder-skill-visibility`) — bind
   the exact Qoder roster through Contract 058, then close the proof with
   fixtures and guide coverage. Gated on a non-empty Research 256 deliver-now
@@ -68,6 +62,9 @@ at `49b0d308`, before the lean cut.
   if a consumer is pinned to one of them.
 - **HTTP MCP live gates on `copilot-cli.acp`, `goose.acp`, `kiro.acp`** —
   wired to emit the entry; held until a consumer needs them.
+- **Further HTTP MCP live attempts on `gemini-cli.acp`** — exact `0.61.0`
+  is the honouring point (Research 362). Other window points need their
+  own gate.
 - **Hosted interactive OAuth, OpenHands Agent Server production wiring,
   Aider headless, Kiro headless** — parked by Tom (2026-08-21): no current
   consumer need. Revisit only on explicit operator selection; don't refresh

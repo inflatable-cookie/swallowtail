@@ -122,10 +122,12 @@ fn identity_and_claim_qualify_1_1_14_as_compatible_extension() {
                     && matched.behavior_revision().as_str()
                         == "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1"
         ));
+        // Research 357 adds the newer retry-disabled revision, so the
+        // retained original headless segment is deprecated.
         assert!(matches!(
             headless.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
                     && matched.behavior_revision().as_str()
                         == "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1"
         ));
@@ -241,10 +243,12 @@ fn identity_and_claim_qualify_1_1_15_as_compatible_extension() {
                     && matched.behavior_revision().as_str()
                         == "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1"
         ));
+        // Research 357 adds the newer retry-disabled revision, so the
+        // retained original headless segment is deprecated.
         assert!(matches!(
             headless.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
                     && matched.behavior_revision().as_str()
                         == "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1"
         ));
@@ -387,10 +391,12 @@ fn identity_and_claim_qualify_1_1_17_as_compatible_extension() {
                     && matched.behavior_revision().as_str()
                         == "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1"
         ));
+        // Research 357 adds the newer retry-disabled revision, so the
+        // retained original headless segment is deprecated.
         assert!(matches!(
             headless.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
                     && matched.behavior_revision().as_str()
                         == "antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1"
         ));

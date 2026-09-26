@@ -4,7 +4,9 @@ use swallowtail_adapter_antigravity::{
     ANTIGRAVITY_HEADLESS_RETRY_PIN_NAME, ANTIGRAVITY_HEADLESS_RETRY_PIN_VALUE,
     ANTIGRAVITY_RELEASE_AXIS, antigravity_headless_claim,
 };
-use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+use swallowtail_core::{
+    InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
+};
 
 const PIN_EVIDENCE: &str = include_str!("fixtures/antigravity-cli-1.2.11-retry-pin/pin-evidence.json");
 
@@ -67,6 +69,12 @@ fn retry_pin_evidence_freezes_the_1_2_11_control_semantics() {
     assert_exact_string_array(&control["terminal_class_single_attempt"], &["400"]);
     assert_eq!(control["model_output_retry_has_env_override"], false);
 
+    let effort = &evidence["effort_mapping_1_2_11"];
+    assert_eq!(effort["explicit_model_requires_effort"], true);
+    assert_exact_string_array(&effort["admitted"], &["low", "medium", "high"]);
+    assert_eq!(effort["max_rejected_for_gemini_3_8_flash"], true);
+    assert_eq!(effort["adapter_enforces_effort_in_dispatch"], true);
+
     let warning = control["invalid_warning_format"]
         .as_str()
         .expect("warning format is text");
@@ -104,14 +112,19 @@ fn headless_claim_pins_exact_1_2_11_on_the_retry_disabled_revision() {
     let claim = antigravity_headless_claim();
     assert_eq!(claim.axis().as_str(), ANTIGRAVITY_RELEASE_AXIS);
 
+    assert_eq!(
+        claim.id().as_str(),
+        "antigravity.headless.release-window-2"
+    );
     for kept in ["1.1.9", "1.1.15", "1.1.17"] {
         assert!(
             matches!(
                 claim.assess(&version(kept)),
                 InterfaceCompatibilityAssessment::Qualified(matched)
                     if matched.behavior_revision().as_str() == KEPT_BEHAVIOR
+                        && matched.support_status() == InterfaceSupportStatus::Deprecated
             ),
-            "{kept} stays on the original headless revision"
+            "{kept} stays deprecated on the original headless revision"
         );
     }
     assert!(
@@ -119,8 +132,9 @@ fn headless_claim_pins_exact_1_2_11_on_the_retry_disabled_revision() {
             claim.assess(&version("1.2.11")),
             InterfaceCompatibilityAssessment::Qualified(matched)
                 if matched.behavior_revision().as_str() == RETRY_DISABLED_BEHAVIOR
+                    && matched.support_status() == InterfaceSupportStatus::Maintained
         ),
-        "exact 1.2.11 qualifies on the retry-disabled revision"
+        "exact 1.2.11 qualifies maintained on the retry-disabled revision"
     );
     // Research 357 proves the pin on 1.2.11 only: the interior gap is
     // incompatible rather than unverified newer.

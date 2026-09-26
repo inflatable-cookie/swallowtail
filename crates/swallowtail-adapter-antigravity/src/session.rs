@@ -7,7 +7,7 @@ use crate::{AntigravityHeadlessDriver, HEADLESS_DRIVER_ID};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
-    HarnessConfigurationPosture, HarnessIsolation, InstanceOwnership, PreflightPlan,
+    HarnessConfigurationPosture, HarnessIsolation, InstanceOwnership, PreflightPlan, ReasoningMode,
     ResourceAccess, ResourceRepresentation, SessionProviderStatePolicy, SessionRef,
     SupportAuthority,
 };
@@ -28,6 +28,7 @@ pub(super) struct AntigravitySessionHandle {
     request_id: RequestId,
     runtime_id: RuntimeSessionId,
     pub(super) model: swallowtail_core::ModelId,
+    pub(super) effort: Option<ReasoningMode>,
     pub(super) working_resource: swallowtail_runtime::WorkingResourceRef,
     pub(super) services: HostServices,
     pub(super) state: Arc<Mutex<SessionState>>,
@@ -45,7 +46,7 @@ impl InteractiveSessionDriver for AntigravityHeadlessDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            validate_open(&plan, &request, &services)?;
+            let effort = validate_open(&plan, &request, &services)?;
             let active = Arc::new(Mutex::new(None));
             let state = Arc::new(Mutex::new(SessionState {
                 conversation_id: None,
@@ -73,6 +74,7 @@ impl InteractiveSessionDriver for AntigravityHeadlessDriver {
                     .model_id()
                     .cloned()
                     .expect("validated model is present"),
+                effort,
                 working_resource: request
                     .working_resource()
                     .cloned()
@@ -151,7 +153,7 @@ fn validate_open(
     plan: &PreflightPlan,
     request: &OpenSessionRequest,
     services: &HostServices,
-) -> Result<(), RuntimeFailure> {
+) -> Result<Option<ReasoningMode>, RuntimeFailure> {
     if plan.driver_identity().id().as_str() != HEADLESS_DRIVER_ID
         || plan.ownership() != InstanceOwnership::HostOwnedEphemeral
         || plan.credential_mechanism() != &CredentialMechanism::LocalUnauthenticated
@@ -236,7 +238,38 @@ fn validate_open(
             "Antigravity session deadline elapsed before opening",
         ));
     }
-    Ok(())
+    let effort = planned_effort(plan)?;
+    // Exact-1.2.11 turns dispatch an explicit `--model`, which the CLI
+    // refuses without `--effort` (Research 357). Fail closed here instead
+    // of opening a session whose turns the CLI rejects.
+    if effort.is_none() && crate::selection::bound_headless_is_retry_disabled(plan) {
+        return Err(unsupported(
+            "retry-disabled continuation omits the required reasoning effort",
+        ));
+    }
+    Ok(effort)
+}
+
+fn planned_effort(plan: &PreflightPlan) -> Result<Option<ReasoningMode>, RuntimeFailure> {
+    let mut modes = plan.requirements().capabilities().flat_map(|required| {
+        required
+            .constraints()
+            .filter_map(|constraint| match constraint {
+                CapabilityConstraint::ReasoningMode(mode) => Some(mode.clone()),
+                _ => None,
+            })
+    });
+    let effort = modes.next();
+    if modes.next().is_some() {
+        return Err(plan_mismatch("reasoning effort"));
+    }
+    if effort
+        .as_ref()
+        .is_some_and(|mode| !matches!(mode.as_str(), "low" | "medium" | "high"))
+    {
+        return Err(unsupported("unplanned reasoning effort"));
+    }
+    Ok(effort)
 }
 
 fn require_capability(plan: &PreflightPlan, capability: Capability) -> Result<(), RuntimeFailure> {

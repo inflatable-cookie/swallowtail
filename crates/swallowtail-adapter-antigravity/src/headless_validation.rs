@@ -128,6 +128,15 @@ pub(crate) fn validate(
         _ => return Err(plan_mismatch("working-resource authority")),
     };
     let effort = validate_effort(plan, request.policy().reasoning_mode())?;
+    // Exact-1.2.11 dispatch always passes an explicit `--model`, which the
+    // CLI refuses without `--effort` (Research 357). Fail closed here
+    // instead of spawning a child the CLI rejects; omission stays a
+    // rejection, never an invented default.
+    if effort.is_none() && crate::selection::bound_headless_is_retry_disabled(plan) {
+        return Err(unsupported(
+            "retry-disabled headless run omits the required reasoning effort",
+        ));
+    }
     let schema = validate_schema(plan, request)?;
     Ok(ValidatedHeadlessInput {
         access,

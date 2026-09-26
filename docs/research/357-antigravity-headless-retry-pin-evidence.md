@@ -105,17 +105,21 @@ ancillary, 1–3 per run, loopback-bound, and outside the counted budget).
 Runs used `--model gemini-3.8-flash --effort medium`, which records the
 `1.2.11` `--effort` mapping this milestone needs: an explicit `--model`
 requires `--effort`, admitted as `low`, `medium`, or `high` (the CLI
-rejects a bare `--model` naming exactly that set). The adapter already
-admits those three levels, so no adapter change is needed for effort.
+rejects a bare `--model` naming exactly that set, and rejects `--effort
+max` for that model). Enforcement in dispatch is covered above; the
+value gate itself is unchanged.
 
 ## Decision
 
 - **Headless: qualify exact `1.2.11` on a retry-disabled milestone.**
   New segment `1.2.11..=1.2.11` on
   `antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1`,
-  approved environment pins `AGY_CLI_MODEL_API_MAX_RETRIES=0`.
+  approved environment pins `AGY_CLI_MODEL_API_MAX_RETRIES=0`. The
+  milestone bumps the claim to `antigravity.headless.release-window-2`.
 - **Keep `1.1.9..=1.1.17`** on
-  `antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1`, unchanged.
+  `antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1`, relabeled
+  `Deprecated` per the Contract 029 segment rule (older revision retained
+  for existing harnesses, not targeted for new integrations).
 - **`1.1.18..=1.2.10` stay unqualified** (interior to the new latest, so
   assessed incompatible, not unverified newer). Pin backfill per point is a
   successor task under the standing currentness lane.
@@ -124,6 +128,22 @@ admits those three levels, so no adapter change is needed for effort.
   behaviour are unchanged.
 - **No option 1 taken.** Accepting provider-managed retry remains the
   Q-003 fallback and was not used.
+
+## Effort enforcement
+
+The `1.2.11` `--effort` mapping is enforced in dispatch, not just
+recorded. Adapter dispatch always passes an explicit `--model`, and
+`1.2.11` refuses that without `--effort`: `--model gemini-3.8-flash`
+alone fails with `requires --effort (available: low, medium, high)`, and
+`--effort max` fails with `has no "max" effort` for that model. The
+adapter therefore rejects effort-less runs and continuation opens bound
+to the retry-disabled segment instead of spawning a child the CLI
+rejects; omission stays a rejection, never an invented default. The
+admitted set stays `low`, `medium`, or `high` with a planned
+`ReasoningSelection` constraint. Continuation carries a session-scoped
+effort from its profile input into every turn. (`gemini-3.1-flash-lite`
+is not a recognized gateway-mode model slug; the title sidecar that
+names it travels its own path.)
 
 ## Validation
 

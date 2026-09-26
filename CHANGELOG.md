@@ -16,7 +16,11 @@ annotated Git tags from the canonical repository.
   The new `1.2.11..=1.2.11` headless segment on
   `antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1`
   requires `AGY_CLI_MODEL_API_MAX_RETRIES=0` in its approved environment
-  and takes no Contract 023 exception. `1.1.9..=1.1.17` stay unchanged and
+  and takes no Contract 023 exception. The claim bumps to
+  `antigravity.headless.release-window-2` with `1.1.9..=1.1.17` relabeled
+  `Deprecated` per Contract 029, and dispatch enforces the `1.2.11`
+  `--effort` mapping (a planned low, medium, or high effort is required
+  for runs and continuation turns; omission is rejected, never defaulted).
   `1.1.18..=1.2.10` stay unqualified until per-point pin evidence lands.
   Loopback evidence only: no provider call, login, or host change. The
   `1.2.11` `--effort` mapping (explicit `--model` requires `low`,

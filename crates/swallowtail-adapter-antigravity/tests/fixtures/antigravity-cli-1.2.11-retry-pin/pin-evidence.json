@@ -36,7 +36,9 @@
   },
   "effort_mapping_1_2_11": {
     "explicit_model_requires_effort": true,
-    "admitted": ["low", "medium", "high"]
+    "admitted": ["low", "medium", "high"],
+    "max_rejected_for_gemini_3_8_flash": true,
+    "adapter_enforces_effort_in_dispatch": true
   },
   "decision": {
     "pin_name": "AGY_CLI_MODEL_API_MAX_RETRIES",

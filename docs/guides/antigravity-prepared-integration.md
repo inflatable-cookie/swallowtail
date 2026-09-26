@@ -38,10 +38,11 @@ or acquire a credential. The access profile is provider-supported local auth
 with subscription allowance and no credential reference.
 
 Qualified catalogue versions are `1.1.9..=1.2.11` on
-`antigravity-cli.release`. Qualified headless versions are `1.1.9..=1.1.17`
-on `antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1` plus exact
-`1.2.11` on
-`antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1`:
+`antigravity-cli.release`. Qualified headless versions are deprecated
+`1.1.9..=1.1.17` on `antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1`
+plus exact `1.2.11` on
+`antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1`
+(claim `antigravity.headless.release-window-2`):
 the official `1.1.22` release introduced provider-managed model-request
 retry, and Research 357 proves the `1.2.11` artifact honours
 `AGY_CLI_MODEL_API_MAX_RETRIES` (`ParseUint(_, 10, 32)` into
@@ -92,7 +93,9 @@ On the `Headless` variant, build an
 - exact working resource and `Read` or `ReadWrite` access
 - `AmbientHost` or explicitly selected `ProviderEnforced` isolation
 - deadline
-- optional `low`, `medium`, or `high` reasoning effort
+- optional `low`, `medium`, or `high` reasoning effort on `1.1.9..=1.1.17`;
+  required on exact `1.2.11`, where dispatch always passes an explicit
+  `--model` that the CLI refuses without `--effort` (Research 357)
 - optional provider-native JSON Schema 2020-12 output
 
 Read access selects provider plan mode. Read-write authority remains explicit.
@@ -111,7 +114,9 @@ stderr, and raw tool data are not stable diagnostics.
 
 On the `Continuation` variant, build
 `AntigravityContinuationProfileInput` with the explicit model and working
-resource. The resulting session:
+resource, plus a `low`, `medium`, or `high` effort for exact `1.2.11`
+sessions (every turn dispatches an explicit `--model`, which `1.2.11`
+refuses without `--effort`). The resulting session:
 
 - is read-only and ambient
 - supports at most 24 turns

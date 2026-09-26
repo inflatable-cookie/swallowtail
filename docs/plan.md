@@ -24,10 +24,11 @@ at `49b0d308`, before the lean cut.
 
 - **Carry `claude-agent.acp` HTTP MCP honouring to current** (lane
   `claude-agent-acp-http-mcp-live`) — `client_mcp_servers` is Yes on exact
-  `0.79.0` only (Research 361). Research 363 qualified official `0.81.2` with
-  the `mcpServers` HTTP mapping and `session/close` teardown path
-  byte-identical; honouring is not extended. Later window points still need
-  their own live gate.
+  `0.79.0` only (Research 361). The route now qualifies through `0.81.2`
+  (Research 363): the ACP `mcpServers` mapping and `session/close` path are
+  byte-identical, but the bundled Agent SDK, which owns the MCP client, moved
+  `0.3.274` → `0.3.280`. Extending the claim needs one live gate on `0.81.2`
+  with the proven harness; awaiting Tom.
 - **Shared harness capability and producer boundary** (lane
   `shared-harness-producer-boundary`) — one provider-neutral registered
   tool/server boundary with route-exact Claude, Codex and Grok adoption on the

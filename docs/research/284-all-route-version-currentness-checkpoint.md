@@ -64,7 +64,7 @@ package versions are discovery evidence, not Swallowtail compatibility claims.
 
 ## Compatibility Result
 
-Vocabulary follows [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md):
+Vocabulary follows [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md):
 `unchanged`, `visible unverified-newer`, `record only; future range work deferred`,
 and `material candidate`.
 
@@ -139,8 +139,8 @@ Shared ACP checkpoint surfaces:
    `0.40.0..=0.41.0` in [Research 282](./282-kimi-code-local-server-0-41-0-identity.md)
    because upstream added an uncontained Bash tool `cwd` change authority that
    mutates working directories for local-server clients without client opt-in or
-   session containment, violating [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md)
-   and [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md).
+   session containment, violating [Contract 017](../knowledge/contracts/017-provider-owned-session-load-replay-and-host-containment.md)
+   and [Contract 023](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md).
    The qualified ceiling remains held at `0.38.0`. Reopen condition: when a named
    Swallowtail control, HostEnforced/ProviderEnforced isolation, or restored
    provider workspace assertion contains Bash cwd for a local-server client.
@@ -150,7 +150,7 @@ Shared ACP checkpoint surfaces:
    analyzed hops `1.1.18..=1.1.26`. The investigation stopped in Research 283
    because upstream introduced unbounded HTTP 502 retry behavior against model
    endpoints at `1.1.22` without a published finite retry bound or a
-   deterministic disable control, violating [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md).
+   deterministic disable control, violating [Contract 023](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md).
    The qualified ceiling remains held at `1.1.17`. Reopen condition: when official
    evidence names a finite retry policy plus a deterministic disable or bound, or
    the operator separately accepts the exact provider retry behavior under
@@ -265,9 +265,9 @@ not compile identity or claim cards. It keeps:
   — 41 current solution rows.
 - Current adapter claims in `crates/swallowtail-adapter-*/src/selection.rs`
   and route-specific selection modules.
-- [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md),
-  [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md), and
-  [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md).
+- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md),
+  [Contract 017](../knowledge/contracts/017-provider-owned-session-load-replay-and-host-containment.md), and
+  [Contract 023](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md).
 - [Research 276](./276-all-route-version-currentness-checkpoint.md),
   [Research 281](./281-v0-4-0-compatibility-and-freeze-audit.md), and
   [Research 282](./282-kimi-code-local-server-0-41-0-identity.md).

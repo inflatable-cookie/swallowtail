@@ -327,7 +327,7 @@ No item is adopted by this research record alone.
 The operator approved the recommended decision bundle on 2026-07-24.
 
 - accepted structure moved to
-  `docs/architecture/release-and-package-topology.md`
+  `docs/knowledge/architecture/release-and-package-topology.md`
 - durable rules moved to Contract 036
 - provisional Spec 004 moved to the archive
 - roadmap g02.001 cards 003-004 now own realization and release-candidate

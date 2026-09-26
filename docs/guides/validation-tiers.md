@@ -87,6 +87,6 @@ from an optional live-probe failure; neither grants retry or fallback.
 
 Consumers normally use the compiling example and route fixture evidence linked
 from the [integration guide map](integration-guide-map.md). Adapter maintainers
-also run the exact focused and package tiers owned by their card. Release
-operators run the milestone and release gates only when the accepting roadmap
+also run the exact focused and package tiers their task brief names. Release
+operators run the milestone and release gates only when the accepting brief
 requires them.

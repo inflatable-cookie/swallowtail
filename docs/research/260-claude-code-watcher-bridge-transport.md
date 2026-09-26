@@ -37,7 +37,7 @@ the reverse direction: it makes Claude Code the MCP server for another client.
 ## Promotion
 
 On 2026-08-30 the operator selected the minimal HTTP candidate for promotion.
-[Contract 060](../contracts/060-operation-scoped-watcher-http-bridge.md) now
+[Contract 060](../knowledge/contracts/060-operation-scoped-watcher-http-bridge.md) now
 owns the provider-neutral operation bridge: closed reserved watcher MCP,
 operation-private bearer authority, exact host/operation/turn correlation, a
 completion barrier, and joined listener and private-material cleanup.
@@ -246,11 +246,11 @@ and the exact omission fixture in the adapter tests.
 
 ## References
 
-- [Contract 010 — Execution Host Services and Inputs](../contracts/010-execution-host-services-and-inputs.md)
-- [Contract 041 — Input Callback and Provider Tool Admission](../contracts/041-input-callback-and-provider-tool-admission.md)
-- [Contract 044 — Observable Agent Activity and Disclosure](../contracts/044-observable-agent-activity-and-disclosure.md)
-- [Contract 059 — Operation-Scoped Process Watchers](../contracts/059-operation-scoped-process-watchers.md)
-- [Contract 060 — Operation-Scoped Watcher HTTP Bridge](../contracts/060-operation-scoped-watcher-http-bridge.md)
+- [Contract 010 — Execution Host Services and Inputs](../knowledge/contracts/010-execution-host-services-and-inputs.md)
+- [Contract 041 — Input Callback and Provider Tool Admission](../knowledge/contracts/041-input-callback-and-provider-tool-admission.md)
+- [Contract 044 — Observable Agent Activity and Disclosure](../knowledge/contracts/044-observable-agent-activity-and-disclosure.md)
+- [Contract 059 — Operation-Scoped Process Watchers](../knowledge/contracts/059-operation-scoped-process-watchers.md)
+- [Contract 060 — Operation-Scoped Watcher HTTP Bridge](../knowledge/contracts/060-operation-scoped-watcher-http-bridge.md)
 - [Research 257 — Claude Code Watcher Seam Evidence](257-claude-code-watcher-seam-evidence.md)
-- [g05.003 card 015](../roadmaps/archive/g05.md)
-- [g05.003 card 010](../roadmaps/archive/g05.md)
+- g05.003 card 015
+- g05.003 card 010

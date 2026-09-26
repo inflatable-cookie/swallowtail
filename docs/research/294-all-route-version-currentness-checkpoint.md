@@ -184,9 +184,9 @@ The package, release, registry, and hosted-documentation links in the table
 are the documented official channels re-probed on 2026-09-08. Repository
 authority and claim comparison used:
 
-- [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md);
-- [Standing Lanes](../roadmaps/standing-lanes.md);
-- [Version Currentness Checkpoint guide](../guides/version-currentness-checkpoint.md);
+- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md);
+- Standing Lanes;
+- [Version Currentness Checkpoint guide](../knowledge/operations/version-currentness-checkpoint.md);
 - [Research 284](./284-all-route-version-currentness-checkpoint.md);
 - [Research 292](./292-opencode-http-1-18-29-identity.md); and
 - [Research 293](./293-codex-permission-exchange-reconciliation.md).

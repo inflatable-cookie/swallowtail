@@ -228,10 +228,10 @@ Card g05.077 owns the claim change.
 - frozen `crates/swallowtail-adapter-kimi/tests/fixtures/kimi-code-0.43.0/`,
   plus the historical `kimi-code-0.38.0/`, `kimi-code-0.38.0-headless-v2/`,
   `kimi-code-0.39.0-acp-authority/`, and `kimi-code-0.39.1/` corpora
-- [Contract 015](../contracts/015-acp-v1-negotiation-and-client-callbacks.md),
-  [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md),
-  [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md),
-  and [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 015](../knowledge/contracts/015-acp-v1-negotiation-and-client-callbacks.md),
+  [Contract 017](../knowledge/contracts/017-provider-owned-session-load-replay-and-host-containment.md),
+  [Contract 023](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md),
+  and [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
 - [Research 179](./179-kimi-code-0-38-0-identity.md),
   [Research 210](./210-kimi-code-headless-reasoning-effort-evidence.md),
   [Research 211](./211-kimi-code-0-38-0-headless-v2-identity.md),

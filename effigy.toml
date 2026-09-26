@@ -4,53 +4,17 @@ include = ["config/release.toml"]
 [catalog]
 alias = "swallowtail"
 
-[docs_policy.indexes.vision]
-file = "docs/vision/README.md"
-dir = "docs/vision"
-section = "Vision Artifacts"
-exclude = ["history/**"]
-
-[docs_policy.indexes.logs]
-file = "docs/logs/README.md"
-dir = "docs/logs"
-section = "Entries"
-
 [docs_policy.indexes.research]
 file = "docs/research/README.md"
 dir = "docs/research"
 section = "Research Records"
 
-[docs_policy.indexes.roadmaps]
-file = "docs/roadmaps/README.md"
-dir = "docs/roadmaps"
-section = "Index"
-exclude = ["archive/**", "g06/**", "templates/**"]
-
-[docs_policy.indexes.roadmaps_g06]
-file = "docs/roadmaps/g06/README.md"
-dir = "docs/roadmaps/g06"
-section = "Tasks"
-
-[docs_policy.next_actions.roadmaps]
-index = "roadmaps"
-heading = "## Next Task"
-allowlist_file = "docs/policy/vision-next-task-verbs.txt"
-
 [tasks]
 "qa:docs:links" = "python3 scripts/check-docs-links.py"
-"qa:docs:index:vision" = "effigy docs check index --policy-index vision"
-"qa:docs:index:logs" = "effigy docs check index --policy-index logs"
 "qa:docs:index:research" = "effigy docs check index --policy-index research"
-"qa:docs:index:roadmaps" = "effigy docs check index --policy-index roadmaps"
-"qa:docs:index:roadmaps:g06" = "effigy docs check index --policy-index roadmaps_g06"
-"qa:docs:roadmaps:status" = "python3 scripts/check-roadmap-status-drift.py"
-"qa:docs:roadmaps:status:test" = "bash scripts/tests/roadmap-status-drift.sh"
-"qa:docs:roadmaps:numbers" = "python3 scripts/check-roadmap-number-collision.py"
-"qa:docs:roadmaps:numbers:test" = "bash scripts/tests/roadmap-number-collision.sh"
 "qa:docs:research:numbers" = "python3 scripts/check-research-number-collision.py"
 "qa:docs:research:numbers:test" = "bash scripts/tests/research-number-collision.sh"
 "qa:docs:release-version:test" = "bash scripts/tests/release-version-identity.sh"
-"qa:docs:next-action:roadmaps" = "effigy docs check next-action --policy roadmaps"
 "qa:docs:agent-defaults" = "effigy docs check forbidden AGENTS.md README.md docs/README.md --forbid '--repo .'"
 "hooks:install" = "bash scripts/install-git-hooks.sh"
 "qa:guides" = "python3 scripts/check-integration-guide-coverage.py"
@@ -59,37 +23,26 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 
 "qa:docs" = [
   { task = "qa:docs:links" },
-  { task = "qa:docs:index:vision" },
-  { task = "qa:docs:index:logs" },
   { task = "qa:docs:index:research" },
-  { task = "qa:docs:index:roadmaps" },
-  { task = "qa:docs:index:roadmaps:g06" },
-  { task = "qa:docs:roadmaps:status" },
-  { task = "qa:docs:roadmaps:status:test" },
-  { task = "qa:docs:roadmaps:numbers" },
-  { task = "qa:docs:roadmaps:numbers:test" },
   { task = "qa:docs:research:numbers" },
   { task = "qa:docs:research:numbers:test" },
   { task = "qa:docs:release-version:test" },
-  { task = "qa:docs:next-action:roadmaps" },
   { task = "qa:docs:agent-defaults" },
+  { task = "qa:docs:spine" },
+  { task = "qa:docs:agent-contract" },
+  { task = "qa:docs:readme" },
+  { task = "qa:docs:front-door" },
+  { task = "qa:docs:retired" },
   { task = "qa:consumer-docs" },
   { task = "qa:guides" },
   { task = "qa:code:version-expects" },
 ]
 
-"qa:northstar:spine" = "effigy docs check paths README.md AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md SUPPORT.md docs/README.md docs/vision/README.md docs/architecture/README.md docs/contracts/README.md docs/specs/README.md docs/roadmaps/README.md docs/logs/README.md docs/policy/internal-writing-style.md docs/policy/vision-next-task-verbs.txt"
-"qa:northstar:agent-contract" = "effigy docs check contains AGENTS.md --require 'effigy tasks' --require 'effigy test --plan' --require 'docs/README.md'"
-"qa:northstar:readme" = "effigy docs check contains README.md --require 'docs/README.md'"
-"qa:northstar:docs-front-door" = "effigy docs check contains docs/README.md --require 'vision/README.md' --require 'architecture/README.md' --require 'contracts/README.md' --require 'roadmaps/README.md' --require 'logs/README.md'"
-"qa:northstar:headings" = "effigy docs check headings docs/vision/README.md --require-heading '## Current Vision'"
-"qa:northstar" = [
-  { task = "qa:northstar:spine" },
-  { task = "qa:northstar:agent-contract" },
-  { task = "qa:northstar:readme" },
-  { task = "qa:northstar:docs-front-door" },
-  { task = "qa:northstar:headings" },
-]
+"qa:docs:retired" = "effigy skill run northstar-lean/retired-concepts"
+"qa:docs:spine" = "effigy docs check paths README.md AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md SUPPORT.md PAPERCUTS.md docs/README.md docs/plan.md docs/knowledge/README.md docs/knowledge/vision.md docs/knowledge/questions.md docs/knowledge/retired.toml docs/knowledge/contracts/release.md docs/knowledge/contracts/writing-style.md docs/triage/README.md"
+"qa:docs:agent-contract" = "effigy docs check contains AGENTS.md --require 'effigy tasks' --require 'effigy test --plan' --require 'docs/README.md' --require 'docs/plan.md'"
+"qa:docs:readme" = "effigy docs check contains README.md --require 'docs/README.md'"
+"qa:docs:front-door" = "effigy docs check contains docs/README.md --require 'knowledge/README.md' --require 'plan.md'"
 
 "format:check" = "cargo fmt --all -- --check"
 "check:rust" = "cargo check --workspace --all-targets"
@@ -148,7 +101,6 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 
 "qa" = [
   { task = "qa:docs" },
-  { task = "qa:northstar" },
   { task = "qa:routes" },
   { task = "format:check" },
   { task = "lint:rust" },
@@ -156,7 +108,7 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 ]
 
 # Cheap orientation for `effigy doctor`. Full board is `effigy qa`.
-# Never alias health to qa (or qa:northstar).
+# Never alias health to qa.
 "health" = [
   { task = "hooks:install" },
   { task = "qa:docs:agent-defaults" },

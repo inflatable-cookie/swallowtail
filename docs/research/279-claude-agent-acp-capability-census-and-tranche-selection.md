@@ -224,11 +224,11 @@ production behavior changed.
 
 - [Research 277](277-claude-subscription-dual-route-direction.md)
 - [Research 272](272-claude-agent-acp-0-73-0-identity.md)
-- [Contract 015](../contracts/015-acp-v1-negotiation-and-client-callbacks.md)
-- [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md)
-- [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
-- [Contract 038](../contracts/038-provider-session-management-and-consumer-thread-boundary.md)
-- [Contract 041](../contracts/041-input-callback-and-provider-tool-admission.md)
-- [Contract 047](../contracts/047-configured-provider-instance-catalogue.md)
-- [g05.022](../roadmaps/archive/g05.md)
-- [card 054](../roadmaps/archive/g05.md)
+- [Contract 015](../knowledge/contracts/015-acp-v1-negotiation-and-client-callbacks.md)
+- [Contract 017](../knowledge/contracts/017-provider-owned-session-load-replay-and-host-containment.md)
+- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 038](../knowledge/contracts/038-provider-session-management-and-consumer-thread-boundary.md)
+- [Contract 041](../knowledge/contracts/041-input-callback-and-provider-tool-admission.md)
+- [Contract 047](../knowledge/contracts/047-configured-provider-instance-catalogue.md)
+- g05.022
+- card 054

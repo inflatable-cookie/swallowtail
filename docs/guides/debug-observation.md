@@ -4,8 +4,8 @@ Opt into a host-owned debug sink when you need restricted wire, lifecycle, or
 process context that must not enter safe diagnostics or public events.
 Ordinary integrations leave the observer unregistered.
 
-Authority: [Contract 053](../contracts/053-opt-in-debug-observation.md),
-[Contract 010](../contracts/010-execution-host-services-and-inputs.md).
+Authority: [Contract 053](../knowledge/contracts/053-opt-in-debug-observation.md),
+[Contract 010](../knowledge/contracts/010-execution-host-services-and-inputs.md).
 Related: [portable failure handling](portable-failure-handling.md).
 
 ## When To Use It

@@ -15,17 +15,18 @@ disable-model-invocation: true
 Recurring operator-triggered lane. Contract 029 owns the rules. This skill
 is the execution loop that the 2026-08 useful-newer sweep actually ran.
 
-Read [reference.md](reference.md) before writing cards, fixtures, or claims.
+Read [reference.md](reference.md) before writing research, fixtures, or claims.
 
 ## Authority
 
 Read, in order, then follow the latest of these over memory:
 
 1. this skill and `reference.md`
-2. `docs/roadmaps/standing-lanes.md`
-3. `docs/roadmaps/README.md` Next Task
-4. Contract 029 Upgrade Workflow and Recurring Currentness Checkpoint
-5. `docs/guides/version-currentness-checkpoint.md`
+2. the task brief, when Queue dispatched this run
+3. the version-currentness item in `docs/plan.md` (deferrals and open stops)
+4. Contract 029 Upgrade Workflow, No Terminal Stop, and Recurring Currentness
+   Checkpoint
+5. `docs/knowledge/operations/version-currentness-checkpoint.md`
 6. the latest currentness research (127 or its successor)
 7. the family's `selection.rs`, frozen corpus, and prepared guide
 
@@ -51,17 +52,20 @@ rediscover them.
 - **Do not flatten families.** Adjacent products, auth paths, packages, or
   transports stay separate even when they share a vendor.
 - **No provider work.** No prompt, login, live catalogue, live session,
-  install, or host update unless the accepting card names that evidence.
+  install, or host update unless the task brief names that evidence.
 - **Do not map unused surfaces.** New flags, nested fields, sibling
-  sign-in, or changelog extras stay unmapped unless a later card owns them.
+  sign-in, or changelog extras stay unmapped unless a later task owns them.
 - **Keep gaps.** Unpublished stables and independently unqualified tags
   stay incompatible even when they share a git commit with a qualified
   point.
 - **Decoder specimens stay** unless adapter mapping changed. Frozen
   historical corpora stay.
 - **Do not reopen closed families** from this sweep.
-- **Gemini stays deferred** until the operator lifts that gate. Completing
-  every other family does not lift it.
+- **Respect recorded deferrals** in the plan's version-currentness item.
+  Completing every other family does not lift one; only the operator does.
+- **No terminal stop.** A stop moves no claim but is never an endpoint: the
+  planner adds an adaptation task that qualifies the current official stable
+  (Contract 029).
 - **Recheck official latest before final push.** Re-probe official latest
   after evidence repairs and immediately before push. If it moved before
   the identity commit landed, extend the hop set under Contract 029's
@@ -73,7 +77,7 @@ rediscover them.
 - **Number from canonical pushed main.** Authority is
   `https://github.com/inflatable-cookie/swallowtail.git` `main`, not
   `origin/main`. Refresh it immediately before allocating ids and again
-  immediately before push with `effigy qa:docs:roadmaps:numbers`. Fetch
+  immediately before push with `effigy qa:docs:research:numbers`. Fetch
   failure is a stop. Renumber onto a new unused id; do not reuse a
   canonical number on another path.
 - **Ask** on major-line resets, exact-pin widening, new public operations,
@@ -85,24 +89,23 @@ Name of the skill with no extra words → **family** mode.
 
 | User says | Mode |
 | --- | --- |
-| skill name, `useful-newer`, `continue` while Next Task names a family | **family** |
+| skill name, `useful-newer`, or a brief naming a family | **family** |
 | `checkpoint`, `currentness inventory`, `version sweep` without a family | **checkpoint** |
 | an explicit family name | that family only |
-| Next Task is Define/evidence-gate and no family remains | **stop** and ask |
+| no family remains outside recorded deferrals | **stop** and report |
 
 **checkpoint:** follow the runbook. Write research. Index it. Do not edit
 claims, matrices, or fixtures.
 
 **family:** execute the Upgrade Workflow for exactly one production route
-family. Identity card then claim card. One validation round at the claim.
+family. Identity first, then claim. One validation round at the claim.
 
-**stop:** do not start a deferred family. Do not invent a generation to
-house currentness. If a claim change is needed and no generation is
-active, ask.
+**stop:** do not start a deferred family. Report what remains to the
+planner.
 
 ## Rank the family
 
-If Next Task already names a family, use it.
+If the brief already names a family, use it.
 
 Otherwise rank from current claims, not from a frozen research table:
 
@@ -115,7 +118,7 @@ Otherwise rank from current claims, not from a frozen research table:
 4. Prefer `AllowUnverified` families whose official and/or host stable is
    newer than the qualified ceiling, and whose host already sits on a
    qualified bound.
-5. Skip current deferrals recorded in `docs/roadmaps/standing-lanes.md`.
+5. Skip deferrals recorded in the plan's version-currentness item.
 6. Skip exact-pin / qualified-only families unless the operator asked to
    reopen them.
 7. Pick one. Do not start a second family in the same run.
@@ -188,7 +191,7 @@ Name one of:
 Fixes that make already-mapped flags actually apply are compatible
 extension, not a milestone.
 
-## Edit set (claim card only)
+## Edit set (claim only)
 
 Typical claim shape for compatible-extension:
 
@@ -200,55 +203,41 @@ Typical claim shape for compatible-extension:
 
 Then update tests, the prepared guide, route + lifecycle matrix rows,
 feature-matrix CSV, architecture if it names the ceiling, `CHANGELOG.md`
-Unreleased, research/log/roadmap indexes, the then-active generation
-runway + checkpoint + numbered milestone, batch-card index, and Next
-Task. Do not keep a generation open for currentness.
+Unreleased, and the research index. Status and outcomes go to Queue, not
+the repository.
 
 Do **not** edit historical research, immutable release notes, or
 `provider-wide-harness-activity.json` unless a named gate fails.
 
-Copy the nearest prior family in the then-active generation for card,
-research, log, and fixture shape. Numbers: next unused research, that
-generation's next roadmap, and batch card **on refreshed canonical
-pushed main**. Do not take ids from this worktree or from `origin/main`.
-Do not roll a generation to house currentness. If none is active, stop
-and ask.
+Copy the nearest prior family for research and fixture shape. Take the
+next unused research number **on refreshed canonical pushed main**. Do not
+take ids from this worktree or from `origin/main`.
 
 ## Validation
 
-`cargo fmt -p <adapter-package>` then the claim card's named gates:
+`cargo fmt -p <adapter-package>` then the brief's named gates, normally:
 
 ```sh
 effigy validate:focused <adapter-package>
 effigy package:verify-affected <adapter-package>
 effigy qa:routes
-effigy qa:northstar
-effigy qa:docs:index:research
-effigy qa:docs:index:logs
-effigy qa:docs:index:roadmaps
-effigy qa:docs:index:roadmaps:<active-generation>
-effigy qa:docs:index:roadmaps:batch-cards
-effigy qa:docs:roadmaps:numbers
-effigy qa:docs:next-action:roadmaps
+effigy qa:docs
 ```
 
-Identity-only stops may run focused + `qa:northstar` without package
-verify. Do not run workspace `qa`, broad `qa:docs` (child-index papercut),
-live probes, MSRV, or consumer checks unless the card names them.
+Identity-only stops may run focused + `qa:docs` without package verify. Do
+not run workspace `qa`, live probes, MSRV, or consumer checks unless the
+brief names them.
 
 ## Closeout
 
 Glue-light: what changed, current state, failed or material validation,
 next move.
 
-Next Task lives only in `docs/roadmaps/README.md`. Verb from
-`docs/policy/vision-next-task-verbs.txt`.
+Report through Queue:
 
-- more official-newer families remain → Implement the next named family
-- sweep complete except current deferrals → stop currentness; resume the
-  generation's actual Next Task, or ask if none
-- identity named a stop → say so and ask
-- no active generation and a claim change is needed → stop and ask
+- more official-newer families remain → name the next family for the planner
+- sweep complete except recorded deferrals → say so; currentness is idle
+- identity named a stop → say so; the planner adds the adaptation task
+  (No Terminal Stop) or raises a ruling with the operator
 
-Auto-continuation: identity → claim in the same run. Claim → no. A later
-bare `continue` resumes whatever Next Task now names.
+Auto-continuation: identity → claim in the same run. Claim → no.

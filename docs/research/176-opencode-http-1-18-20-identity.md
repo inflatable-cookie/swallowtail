@@ -109,7 +109,7 @@ mapped subset is unchanged.
 - after qualification, synthetic later-stable UnverifiedNewer is `1.18.21`
 
 Decoder specimen remains `opencode-1.14.48`. Claim card:
-[g04 batch 082](../roadmaps/archive/g04.md)
+g04 batch 082
 
 ## Sources
 

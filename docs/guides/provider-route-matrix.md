@@ -63,26 +63,22 @@ stays withheld.
 the CSV. Their keys are the unavailable feature columns in that row. Each
 value is exactly one of: `provider_limitation` with an anchored row in the
 Card129 [frozen evidence ledger](../research/290-feature-matrix-cross-evidence.md),
-whose basis is an anchored `docs/research` or `docs/contracts` line that names
+whose basis is an anchored `docs/research` or `docs/knowledge/contracts` line that names
 the route (Research 281 for the Card129 census; Research 291 for the Codex
 `client_mcp_servers` cell);
-`producer_gap` with an existing non-complete active-generation task path (a
-`gNN.NNN` file directly under the active `docs/roadmaps/gNN/` directory); or
-`evidence_pending` with a live hand-off packet under `docs/handoffs/` —
-never a task file, because task completion closes its gate. An evidence-pending packet must name
-the owner who runs the gate and the decision tree converting each outcome
-into `producer_gap` or `provider_limitation`, and must list the cells it
-investigates; evidence pending is unavailable to a cell no live packet
-covers. For Card128, `accepts_client_mcp` becomes `producer_gap` with
-Card118; `ignores_client_mcp` or `rejects_client_mcp` becomes
-`provider_limitation` with the returned capsule or follows the operator's
-native-route decision; `inconclusive` permits one authorized rerun, then
-follows `ignores_client_mcp`. Prepared integration guides are not frozen
-evidence. Producer-gap
-rows carry an explicit `Card129 producer-gap reasons:` marker in `notes`; a
-withheld cell uses the same producer-gap path and reason. The route-matrix
-check rejects missing, extra, stale, unanchored, guide-only, insufficient,
-complete-task, or non-live-packet references.
+`producer_gap` with a plan item, written `plan:<key>`, where
+[docs/plan.md](../plan.md) lists an item tagged ``(lane `<key>`)`` under
+`## Now` or `## Next`; or `evidence_pending` with an open question, written
+`docs/knowledge/questions.md#q-NNN`, never a plan item. An evidence-pending
+question must name the owner who runs the gate and the decision tree
+converting each outcome into `producer_gap` or `provider_limitation`, and must
+list the cells it investigates under `Evidence gate scope:`; evidence pending
+is unavailable to a cell no open question covers. Prepared integration guides
+are not frozen evidence. Producer-gap rows carry an explicit
+`Card129 producer-gap reasons:` marker in `notes`; a withheld cell uses the
+same producer-gap path and reason. The route-matrix check rejects missing,
+extra, stale, unanchored, guide-only, insufficient, unplanned or deferred plan
+items, and answered or out-of-scope questions.
 
 Every row has two public paths:
 

@@ -67,6 +67,6 @@ working-resource, cancellation, or cleanup surface.
 - frozen [`qoder-headless-1.1.54` corpus](../../crates/swallowtail-adapter-qoder/tests/fixtures/qoder-headless-1.1.54/)
 - [Research 318](./318-qoder-headless-1-1-52-identity-stop.md)
 - [Research 151](./151-qoder-headless-1-1-25-identity.md)
-- [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
 
 This identity record edits no production claim.

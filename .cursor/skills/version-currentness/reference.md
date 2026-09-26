@@ -1,8 +1,7 @@
 # Version Currentness Reference
 
 Read this when executing a family. Templates are shapes, not version
-pins. Copy the nearest prior family in the active generation and replace
-numbers.
+pins. Copy the nearest prior family and replace numbers.
 
 ## Finding current claims
 
@@ -13,8 +12,8 @@ numbers.
 | Route + lifecycle rows | `docs/guides/provider-route-matrix.md` |
 | Decoder / help specimen | adapter `tests/fixtures/<family>-<baseline>/` |
 | Official channel | last currentness research row, adapter README/guide, changelog URL in prior identity research |
-| Current deferrals | `docs/roadmaps/standing-lanes.md` |
-| Next unused numbers | highest research, roadmap, and batch-card ids on refreshed canonical pushed main (`https://github.com/inflatable-cookie/swallowtail.git` `main`), not this worktree or `origin/main` |
+| Current deferrals and open stops | version-currentness item in `docs/plan.md` |
+| Next unused numbers | highest research id on refreshed canonical pushed main (`https://github.com/inflatable-cookie/swallowtail.git` `main`), not this worktree or `origin/main` |
 
 Do not treat a frozen currentness table as still-true official latest.
 Re-probe.
@@ -144,7 +143,7 @@ Delta ledger tests (`<family>_<ver>_delta_ledger.rs` or integration test):
 
 `claim_at_observation` is the **before** claim. The decision records the
 intended after shape. Production `selection.rs` still matches "before"
-until the claim card.
+until the claim step.
 
 ## Research identity record
 
@@ -160,24 +159,20 @@ until the claim card.
 - Identity table: host vs official, with digests
 - Selected protocol: mapped subset vs unmapped extras; byte-identical mapped
   files; classified delta categories; unmapped boundaries with reasons
-- Decision: bullet the intended claim shape; name the claim card
+- Decision: bullet the intended claim shape
 - Sources: host, official URL, changelog, asset
 
 Index it in `docs/research/README.md` under Research Records.
 
-## Roadmap and cards
-
-One milestone in the then-active generation, two batch cards. Status
-starts ready and is completed on closeout. If no generation is active,
-stop and ask. Do not invent a generation to house currentness.
+## Numbers and steps
 
 Canonical pushed-main authority is
 `https://github.com/inflatable-cookie/swallowtail.git` `refs/heads/main`.
 `origin/main` is not authority (forks, stale tracking refs). Immediately
-before allocating ids, and again immediately before push:
+before allocating a research id, and again immediately before push:
 
 ```sh
-effigy qa:docs:roadmaps:numbers
+effigy qa:docs:research:numbers
 ```
 
 That selector discovers and fetches the advertised canonical commit from an
@@ -187,22 +182,18 @@ isolated Git object store with sanitized config (`--no-tags`,
 `url.*.insteadOf` rewrites cannot redirect the canonical HTTPS URL. Fetch
 failure is a stop. It does not mutate the checked repository's object db,
 refs, tags, or `FETCH_HEAD`. Next unused is the max numbered
-`docs/roadmaps/<active>/*.md` and `batch-cards/*.md` on that refreshed
-tree. A number already assigned to a path on canonical main cannot move
-to another path; take a new unused number. Same-path content edits are
-allowed. Forks that need an explicit base pass `--authority` at that URL;
-do not point it at the fork's origin.
+`docs/research/*` record on that refreshed tree. A number already assigned
+to a slug on canonical main cannot take another slug; take a new unused
+number.
 
-Milestone name shape: `<NNN> <Family> <version> Useful Newer`.
+Identity step: freeze evidence, name segment shape, **no production claim
+edit**. Auto-continue to the claim step.
 
-Identity card: freeze evidence, name segment shape, **no production claim
-edit**. Auto-continue to the claim card.
-
-Claim card: raise the bound, refresh tests/docs/indexes, named validation.
+Claim step: raise the bound, refresh tests/docs/indexes, named validation.
 Auto-continuation: No.
 
-Both cards list Gemini (or whatever is currently deferred) as out of
-scope unless the operator lifted that gate.
+Recorded deferrals in the plan stay out of scope unless the operator lifted
+them.
 
 ## Claim edits
 
@@ -231,18 +222,12 @@ Update current surfaces that name the ceiling:
 - family prepared-integration guide
 - `docs/guides/provider-route-matrix.md` capability row and lifecycle row
 - `docs/guides/provider-solution-feature-matrix.csv`
-- `docs/architecture/system-architecture.md` only if it names this
+- `docs/knowledge/architecture/system-architecture.md` only if it names this
   ceiling
 - `CHANGELOG.md` Unreleased
-- `docs/logs/<date>-<family>-<version>-identity.md`
-- `docs/logs/<date>-<family>-<version>-claim.md`
-- `docs/logs/README.md`
-- `docs/roadmaps/README.md` Next Task
-- then-active generation README runway, Current Checkpoint, numbered
-  Milestones list
-- then-active generation `batch-cards/README.md` Completed
 
-Leave historical research, old logs, and immutable release docs alone.
+Status and outcomes go to Queue, never into repository files. Leave
+historical research and immutable release docs alone.
 `v0.3.2` (or whichever tagged release) keeps its recorded package/route
 counts; current source may already differ.
 
@@ -253,41 +238,18 @@ unless it actually states the current bound.
 often still shows an older `qualified` string. Leave it unless `qa:routes`
 or another named gate fails.
 
-## Next Task examples
-
-Verb must be one of: Define, Implement, Validate, Extract, Adopt,
-Reassess, Close, Map, Prove.
-
-Family remaining:
-
-```
-Implement <Family> useful-newer qualification for the current official
-stable. Host already sits on a qualified bound. Do not leave the official
-point UnverifiedNewer without a named incompatible reason.
-```
-
-Sweep complete except current deferrals:
-
-```
-Reassess the active generation now that remaining currentness
-AllowUnverified families except deferred <name> sit on current official
-stables. Do not keep the generation open for currentness.
-```
-
-`generation-index.md` and `long-term-plan.md` keep their pointer to the
-roadmaps front door. Do not duplicate the batch pointer there.
-
 ## Checkpoint classification
 
 The checkpoint research row may still say `visible unverified-newer`.
 That is a research classification, not permission to skip the family.
-After the record, compile one-family Upgrade Workflow work for every
-current official/host stable that is newer than the qualified ceiling
-and is not a named deferral or named incompatible gap.
+After the record, the planner briefs one-family Upgrade Workflow work for
+every current official/host stable that is newer than the qualified
+ceiling and is not a named deferral. A named incompatible gap still gets
+an adaptation task (Contract 029, No Terminal Stop).
 
 ## Stops
 
-Stop the family and ask, leaving claims unchanged, when:
+Stop the family and report, leaving claims unchanged, when:
 
 - exact artifact identity cannot be corroborated from official sources
 - selected mapped help or protocol differs from recorded evidence

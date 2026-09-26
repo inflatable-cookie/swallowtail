@@ -17,7 +17,7 @@ streamable-HTTP MCP entry: connect, list one tool, and complete one tool call?
 ## Answer
 
 Yes. The planning ruling at
-[`docs/logs/2026-09-24-g06-028-live-gate-disposition.md`](../logs/2026-09-24-g06-028-live-gate-disposition.md)
+the retired logs (Git history)
 accepts the one spent attempt as HTTP honouring evidence on installed exact
 `1.18.18`, the `http` form, a loopback URL, and one bearer header. OpenCode
 connected, listed the tool, completed one tool call, and the turn ended

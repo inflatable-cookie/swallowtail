@@ -118,7 +118,7 @@ After qualification, `0.149.2` (unpublished) remains `UnverifiedNewer`.
 
 No new milestone. No decoder update. No provider work.
 
-Claim card: [g04 batch 152](../roadmaps/archive/g04.md)
+Claim card: g04 batch 152
 
 ## Sources
 

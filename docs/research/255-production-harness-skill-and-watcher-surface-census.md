@@ -5,7 +5,7 @@ Owner: Tom
 Created: 2026-08-28
 Updated: 2026-08-28
 Question source: g05.001 production harness skill and watcher surface census
-Assigned card: [g05.001](../roadmaps/archive/g05.md)
+Assigned card: g05.001
 
 ## Question
 
@@ -376,13 +376,13 @@ planned.
 
 - [Provider route matrix](../guides/provider-route-matrix.md)
 - [Provider-solution activity matrix](../guides/provider-solution-activity-matrix.md)
-- [Product guardrails](../architecture/product-guardrails.md)
-- [Contract 013 Interactive Session Access Policy](../contracts/013-interactive-session-access-policy.md)
-- [Contract 017 Provider-Owned Session Load, Replay, And Host Containment](../contracts/017-provider-owned-session-load-replay-and-host-containment.md)
-- [Contract 023 Harness Operation Isolation And Native Boundary](../contracts/023-harness-operation-isolation-and-native-boundary.md)
-- [Contract 029 Interface Version Qualification And Compatibility](../contracts/029-interface-version-qualification-and-compatibility.md)
-- [Contract 044 Observable Agent Activity And Disclosure](../contracts/044-observable-agent-activity-and-disclosure.md)
-- [Contract 047 Configured Provider Instance Catalogue](../contracts/047-configured-provider-instance-catalogue.md)
+- [Product guardrails](../knowledge/architecture/product-guardrails.md)
+- [Contract 013 Interactive Session Access Policy](../knowledge/contracts/013-interactive-session-access-policy.md)
+- [Contract 017 Provider-Owned Session Load, Replay, And Host Containment](../knowledge/contracts/017-provider-owned-session-load-replay-and-host-containment.md)
+- [Contract 023 Harness Operation Isolation And Native Boundary](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md)
+- [Contract 029 Interface Version Qualification And Compatibility](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 044 Observable Agent Activity And Disclosure](../knowledge/contracts/044-observable-agent-activity-and-disclosure.md)
+- [Contract 047 Configured Provider Instance Catalogue](../knowledge/contracts/047-configured-provider-instance-catalogue.md)
 - [Research 063: Claude/T3 Code activity lead](063-observable-agent-activity-and-t3-code-reference.md)
 - [Research 066: non-ACP activity corpus](066-non-acp-harness-activity-inventory-and-corpus.md)
 - [Research 072: subagent topology evidence](072-subagent-topology-observation-and-control-evidence.md)

@@ -118,6 +118,6 @@ Soundcheck keeps:
 
 ## Promotion
 
-- realized consumer shapes: `docs/architecture/consumer-runtime-evidence.md`
+- realized consumer shapes: `docs/knowledge/architecture/consumer-runtime-evidence.md`
 - settled ownership rules: Contract 004 Runtime Ownership Boundary
 - remaining decisions: g01 cards 007 and 008

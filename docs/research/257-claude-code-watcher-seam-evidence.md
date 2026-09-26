@@ -163,7 +163,7 @@ watcher assets. That preserves today's empty strict MCP behavior.
 
 ## References
 
-- [Contract 059](../contracts/059-operation-scoped-process-watchers.md)
+- [Contract 059](../knowledge/contracts/059-operation-scoped-process-watchers.md)
 - [Research 255](255-production-harness-skill-and-watcher-surface-census.md)
 - [Research 202](202-claude-code-2-1-241-identity.md)
-- [g05.003 card 007](../roadmaps/archive/g05.md)
+- g05.003 card 007

@@ -350,8 +350,8 @@ Card 042 owns the claim change. This record edits no production claim.
 - frozen `crates/swallowtail-adapter-kimi/tests/fixtures/kimi-code-0.38.0/`,
   `kimi-code-0.38.0-headless-v2/`, `kimi-code-0.33.0-headless-routing/`, and
   `kimi-code-0.39.0-acp-authority/`
-- [Contract 015](../contracts/015-acp-v1-negotiation-and-client-callbacks.md)
-  and [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md)
+- [Contract 015](../knowledge/contracts/015-acp-v1-negotiation-and-client-callbacks.md)
+  and [Contract 023](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md)
 - [Research 179](./179-kimi-code-0-38-0-identity.md),
   [Research 210](./210-kimi-code-headless-reasoning-effort-evidence.md),
   [Research 211](./211-kimi-code-0-38-0-headless-v2-identity.md),

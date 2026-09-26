@@ -1,10 +1,12 @@
 # Research
 
-Use this area for provider studies, source inventories, and experiments whose
-findings are not yet durable authority.
+Retained evidence: provider studies, source inventories, identity ledgers and
+live-gate records that contracts and the feature matrix cite, often by line.
+Records are frozen once merged; correct a finding with a new record rather than
+rewriting an old one.
 
-Promote accepted findings into vision, architecture, contracts, specs,
-roadmaps, or logs. Do not leave implementation-critical rules here.
+Promote accepted findings into [knowledge](../knowledge/README.md). Do not
+leave implementation-critical rules here.
 
 ## Research Records
 

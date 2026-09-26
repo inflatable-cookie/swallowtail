@@ -13,7 +13,7 @@ from pathlib import Path
 # Keep sibling imports from writing __pycache__ under scripts/.
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from roadmap_number_authority import (  # noqa: E402
+from canonical_main_authority import (  # noqa: E402
     CANONICAL_AUTHORITY,
     CANONICAL_REF,
     AuthorityError,

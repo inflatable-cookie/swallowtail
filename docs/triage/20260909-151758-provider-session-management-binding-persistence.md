@@ -2,11 +2,8 @@
 
 Status: deferred
 Owner: Tom
-Source: g02 card 060; moved from
-`docs/roadmaps/backlog/provider-session-management-binding-persistence.md`
-(former path kept as provenance only) during the g05.043 roadmap-backlog
-retirement on 2026-09-09. The operator confirmed this deferral on
-2026-07-30. Same-process bindings are sufficient for current consumers.
+Source: g02 card 060; moved here from the old backlog on 2026-09-09. The
+operator confirmed this deferral on 2026-07-30. Same-process bindings are sufficient for current consumers.
 
 ## Gap
 

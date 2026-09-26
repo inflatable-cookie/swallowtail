@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Refuse a push that changes docs, PAPERCUTS.md, or CHANGELOG.md when
-# `effigy qa:docs` fails, including roadmap and research number checks.
+# `effigy qa:docs` fails, including the research number check.
 # Contract 001 is the authority; this hook is the enforcement. Install once
 # with `effigy hooks:install`.
 #
@@ -103,14 +103,11 @@ fi
 
 # Hook GIT_* vars pin nested git to this repo. qa:docs runs throwaway git for
 # number collision tests and needs a clean environment.
-# Drop the retired status-checker root override so an ambient export cannot
-# retarget qa:docs:roadmaps:status away from this worktree.
 unset -v GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_OBJECT_DIRECTORY \
-  GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_QUARANTINE_PATH GIT_PREFIX \
-  SWALLOWTAIL_STATUS_CHECK_ROOT
+  GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_QUARANTINE_PATH GIT_PREFIX
 
 printf 'pre-push: docs, PAPERCUTS.md, or CHANGELOG.md in this push; running effigy qa:docs\n' >&2
 if ! effigy qa:docs; then
-  printf 'pre-push: effigy qa:docs failed; refusing push (Contract 001 closeout rule)\n' >&2
+  printf 'pre-push: effigy qa:docs failed; refusing push (Contract 001)\n' >&2
   exit 1
 fi

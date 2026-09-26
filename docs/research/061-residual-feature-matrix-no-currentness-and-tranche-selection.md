@@ -250,9 +250,9 @@ Ollama `0.14.0..=0.32.1` corpora. No other candidate enters card 117.
 - [Gemini Live API reference](https://ai.google.dev/api/live)
 - [Kimi Chat API](https://platform.kimi.ai/docs/api/chat)
 - [Research 048](048-harness-usage-evidence-currentness-and-corpora.md)
-- [Contract 016](../contracts/016-connection-scoped-direct-sessions-and-billed-cost.md)
-- [Contract 026](../contracts/026-realtime-media-direct-session-boundary.md)
-- [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 016](../knowledge/contracts/016-connection-scoped-direct-sessions-and-billed-cost.md)
+- [Contract 026](../knowledge/contracts/026-realtime-media-direct-session-boundary.md)
+- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
 
 ## Promotion
 

@@ -19,10 +19,14 @@ PINNED_CONSUMERS = (
     ("Nucleus", "codex.app-server"),
 )
 ROUTE_SPLIT = re.compile(r"\s*(?:;|\+)\s*")
-TASK_STATUS = re.compile(r"^Status:\s*(.+)$", re.MULTILINE)
 REASON_MARKER = "Card129 producer-gap reasons:"
-HANDOFF_PACKET = re.compile(r"^docs/handoffs/[A-Za-z0-9._-]+\.md$")
-GATE_SCOPE_HEADING = "## Evidence gate scope"
+PLAN = Path("docs/plan.md")
+PLAN_REF = re.compile(r"^plan:(?P<key>[a-z0-9][a-z0-9-]*)$")
+PLAN_LIVE_SECTIONS = {"## Now", "## Next"}
+QUESTIONS = Path("docs/knowledge/questions.md")
+QUESTION_REF = re.compile(r"^docs/knowledge/questions\.md#(?P<id>q-[0-9]{3})$")
+QUESTION_HEADING = re.compile(r"^## (?P<id>Q-[0-9]{3})\b")
+GATE_SCOPE_MARKER = "Evidence gate scope:"
 EVIDENCE_LEDGER = Path("docs/research/290-feature-matrix-cross-evidence.tsv")
 EVIDENCE_DOC = Path("docs/research/290-feature-matrix-cross-evidence.md")
 LINE_REF = re.compile(r"^(?P<path>[^#]+)#L(?P<line>[1-9][0-9]*)$")
@@ -69,7 +73,7 @@ def anchored_line(root: Path, ref: str, label: str) -> tuple[Path, int, list[str
     except ValueError:
         fail(f"{label} reference escapes the repository: {ref}")
     if relative.parts[:2] not in {("docs", "research"), ("docs", "contracts")}:
-        fail(f"{label} reference must cite frozen docs/research or docs/contracts: {ref}")
+        fail(f"{label} reference must cite frozen docs/research or docs/knowledge/contracts: {ref}")
     lines = path.read_text(encoding="utf-8").splitlines()
     if line_number > len(lines):
         fail(f"{label} citation is past EOF: {ref}")
@@ -125,73 +129,91 @@ def producer_gap_reasons(notes: str, row_route: str) -> dict[str, str]:
     return reasons
 
 
-def active_generation_dir(root: Path) -> Path:
-    """Resolve the sole active generation's task directory from the index.
-
-    The rollover renames the directory (g05 → g06), so the producer-gap
-    reference target is derived, never hard-coded.
-    """
-    index = root / "docs/roadmaps/generation-index.md"
-    if not index.is_file():
-        fail(f"missing generation index: {index}")
-    matches = re.findall(r"^\| `(g\d{2})` \| active \|", index.read_text(encoding="utf-8"), re.MULTILINE)
-    if len(matches) != 1:
-        fail("generation-index must name exactly one active generation")
-    return root / "docs/roadmaps" / matches[0]
-
-
 def producer_task(root: Path, ref: str) -> None:
-    path = root / ref
-    if not path.is_file() or path.parent != active_generation_dir(root):
-        fail(f"producer_gap reference must be an existing non-complete active-generation task: {ref}")
-    match = TASK_STATUS.search(path.read_text(encoding="utf-8"))
+    """Guard the producer_gap cross kind: the gap must be a planned outcome.
+
+    The reference names a ``docs/plan.md`` item by its lane key. The item must
+    sit under ``## Now`` or ``## Next``; a deferred or missing item would leave
+    the gap with no owner.
+    """
+    match = PLAN_REF.fullmatch(ref)
     if match is None:
-        fail(f"producer_gap task lacks a Status line: {ref}")
-    status = match.group(1).strip().casefold()
-    if status.startswith("complete") or status.startswith("completed"):
-        fail(f"producer_gap references a complete task: {ref}")
+        fail(f"producer_gap reference must be plan:<key>: {ref}")
+    plan = root / PLAN
+    if not plan.is_file():
+        fail(f"missing {PLAN}")
+    marker = re.compile(rf"\(lane\s+`{re.escape(match.group('key'))}`\)")
+    sections: dict[str, list[str]] = {}
+    section = ""
+    for line in plan.read_text(encoding="utf-8").splitlines():
+        if line.startswith("## "):
+            section = line.strip()
+        sections.setdefault(section, []).append(line.strip())
+    for heading, lines in sections.items():
+        if marker.search(" ".join(lines)):
+            if heading in PLAN_LIVE_SECTIONS:
+                return
+            fail(f"producer_gap plan item is not under Now or Next: {ref}")
+    fail(f"producer_gap reference names no docs/plan.md item: {ref}")
 
 
 def evidence_packet(root: Path, ref: str, row_route: str, feature: str) -> None:
     """Guard the evidence_pending cross kind per the Feature Matrix Rule.
 
-    The reference must be a live hand-off packet under ``docs/handoffs/`` —
-    never a task file, because task completion closes its gate. That packet
-    must name the owner who runs the gate, state the decision tree converting
-    each outcome into ``producer_gap`` or ``provider_limitation``, and list
-    the cells it investigates; evidence pending is unavailable to any cell no
-    live packet covers.
+    The reference must be an open question in ``docs/knowledge/questions.md``
+    — never a plan item, because finishing the work closes its gate. The
+    question must name the owner who runs the gate, state the decision tree
+    converting each outcome into ``producer_gap`` or ``provider_limitation``,
+    and list the cells it investigates; evidence pending is unavailable to
+    any cell no open question covers.
     """
-    if HANDOFF_PACKET.fullmatch(ref) is None or not (root / ref).is_file():
-        fail(f"evidence_pending must reference an existing docs/handoffs packet: {ref}")
-    text = (root / ref).read_text(encoding="utf-8")
-    status = re.search(r"(?m)^status:\s*([A-Za-z0-9_-]+)\s*$", text)
-    if status is None or status.group(1).casefold() != "ready":
-        fail(f"evidence_pending must reference a live (status: ready) packet: {ref}")
+    match = QUESTION_REF.fullmatch(ref)
+    questions = root / QUESTIONS
+    if match is None or not questions.is_file():
+        fail(f"evidence_pending must reference an open docs/knowledge/questions.md entry: {ref}")
+    wanted = match.group("id").upper()
+    section: list[str] | None = None
+    for line in questions.read_text(encoding="utf-8").splitlines():
+        heading = QUESTION_HEADING.match(line)
+        if heading or line.startswith("## "):
+            if section is not None:
+                break
+            if heading and heading.group("id") == wanted:
+                section = []
+            continue
+        if section is not None:
+            section.append(line)
+    if section is None:
+        fail(f"evidence_pending question does not exist: {ref}")
+    text = "\n".join(section)
+    if re.search(r"(?m)^Status:\s*open\s*$", text) is None:
+        fail(f"evidence_pending must reference an open question: {ref}")
     lowered = text.casefold()
     if "owner" not in lowered:
-        fail(f"evidence_pending packet must name the owner who runs the gate: {ref}")
+        fail(f"evidence_pending question must name the owner who runs the gate: {ref}")
     if "producer_gap" not in lowered or "provider_limitation" not in lowered:
         fail(
-            "evidence_pending packet must state the outcome decision tree into "
+            "evidence_pending question must state the outcome decision tree into "
             f"producer_gap or provider_limitation: {ref}"
         )
     scoped_cells: set[tuple[str, str]] = set()
     in_scope = False
-    for line in text.splitlines():
-        if line.startswith("## "):
-            in_scope = line.strip() == GATE_SCOPE_HEADING
+    for line in section:
+        if line.strip() == GATE_SCOPE_MARKER:
+            in_scope = True
         elif in_scope and line.startswith("- "):
-            tokens = line[2:].split()
+            tokens = line[2:].replace("`", "").split()
             if len(tokens) >= 2:
                 scoped_cells.add((tokens[0], tokens[1]))
+        elif in_scope and line.strip():
+            in_scope = False
     if not any(
         (route_token, feature) in scoped_cells
         for route_token in ROUTE_SPLIT.split(row_route)
     ):
         fail(
             f"evidence_pending cell {row_route} {feature} is not in the "
-            f"packet gate scope: {ref}"
+            f"question gate scope: {ref}"
         )
 
 
@@ -283,7 +305,7 @@ def main() -> None:
     )
     gaps = backlog(rows, features)
     if args.backlog:
-        print("consumer | route | feature | producer task | reason")
+        print("consumer | route | feature | plan item | reason")
         print("--- | --- | --- | --- | ---")
         for consumer, route, feature, ref, reason in gaps:
             print(f"{consumer} | `{route}` | `{feature}` | `{ref}` | {reason}")

@@ -53,8 +53,8 @@ attached and owned.
 
 **Adapters that exist without a production row.**
 `swallowtail-adapter-openhands` is deferred. Live HTTP/WebSocket stays
-unwired. Research 155 and
-`docs/triage/2026-08-21-deferred-route-surfaces.md`.
+unwired. Research 155 and the plan's parked surfaces
+([Not now](../plan.md#not-now)).
 
 **Already inventoried, not production.** Research 143 selected the
 primary/secondary waves. Research 153/158 closed the watchlist. Backlog
@@ -1020,5 +1020,5 @@ from this pass.
 
 If the operator later asks for one new-family inventory, Amp is the first
 recommendation; that is a recommendation, not a scheduled card. Hosted
-URL-open OAuth remains parked. This assessment does not move the roadmap Next
-Task pointer and does not start Kimi Platform wiring.
+URL-open OAuth remains parked. This assessment does not change the plan
+and does not start Kimi Platform wiring.

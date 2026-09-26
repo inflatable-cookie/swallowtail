@@ -5,10 +5,10 @@ older pages on scroll-back, without treating that browse as load readiness or
 reconciliation. New to the shared vocabulary? Read
 [Key Concepts](key-concepts.md) first.
 
-Authority: [Contract 054](../contracts/054-paged-provider-session-history.md).
-Related: [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md)
+Authority: [Contract 054](../knowledge/contracts/054-paged-provider-session-history.md).
+Related: [Contract 017](../knowledge/contracts/017-provider-owned-session-load-replay-and-host-containment.md)
 (load complete-before-ready),
-[Contract 048](../contracts/048-cross-process-active-operation-reconciliation.md)
+[Contract 048](../knowledge/contracts/048-cross-process-active-operation-reconciliation.md)
 (observe-only interrupted work),
 [session import](provider-session-import.md),
 [provider operation reconciliation](provider-operation-reconciliation.md).

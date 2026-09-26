@@ -33,7 +33,7 @@ effigy package:verify-affected <workspace-package>
 ```
 
 Group related changes into one meaningful batch. Run broad QA only when the
-accepting roadmap calls for it. Do not commit credentials, local auth state,
+task brief calls for it. Do not commit credentials, local auth state,
 provider captures containing private data, build output, or generated release
 artifacts.
 
@@ -47,7 +47,7 @@ Code should:
 - document every supported public item
 
 Documentation changes must keep contracts, route and feature matrices, guides,
-examples, release copy, and the sole roadmap next task consistent.
+examples, release copy, and [the plan](docs/plan.md) consistent.
 
 New guides should follow the existing template: a plain "use this when" opener,
 a [Key Concepts](docs/guides/key-concepts.md) link for shared vocabulary, a
@@ -58,8 +58,8 @@ artifact owns which fact.
 
 ## Validation
 
-Use the narrowest accepted selector while developing. Before handoff, run the
-validation named by the active card. Common documentation checks are:
+Use the narrowest accepted selector while developing. Before opening a PR, run the
+validation named by the task brief. Common documentation checks are:
 
 ```sh
 effigy qa:docs

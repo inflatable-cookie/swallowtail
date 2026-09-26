@@ -171,9 +171,9 @@ This record edits no production claim.
 - frozen `crates/swallowtail-adapter-kimi/tests/fixtures/kimi-local-server-0.43.0/`
   and the historical `kimi-code-0.38.0/` and `kimi-local-server-0.41.0/`
   corpora
-- [Contract 017](../contracts/017-provider-owned-session-load-replay-and-host-containment.md),
-  [Contract 023](../contracts/023-harness-operation-isolation-and-native-boundary.md),
-  and [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md)
+- [Contract 017](../knowledge/contracts/017-provider-owned-session-load-replay-and-host-containment.md),
+  [Contract 023](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md),
+  and [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
 - [Research 270](./270-kimi-code-0-39-1-identity.md),
   [Research 282](./282-kimi-code-local-server-0-41-0-identity.md),
   [Research 308](./308-all-route-version-currentness-checkpoint.md), and

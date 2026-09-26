@@ -110,7 +110,7 @@ struct OpenedSession {
 
 fn parse_new_session(
     response: &Value,
-    resource_access: swallowtail_core::ResourceAccess,
+    expected_mode: &str,
 ) -> Result<OpenedSession, RuntimeFailure> {
     let session_id = response
         .get("sessionId")
@@ -121,7 +121,6 @@ fn parse_new_session(
         .and_then(|modes| modes.get("currentModeId"))
         .and_then(Value::as_str)
         .ok_or_else(malformed)?;
-    let expected_mode = provider_mode_id(resource_access);
     if mode != expected_mode {
         return Err(failure(
             "swallowtail.gemini.acp.mode_rejected",

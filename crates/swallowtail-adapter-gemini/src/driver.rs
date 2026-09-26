@@ -28,6 +28,8 @@ pub struct GeminiAcpDriver {
     isolated_environment: EnvironmentRef,
     credential: CredentialRef,
     http_mcp: Option<GeminiAcpHttpMcpPlacement>,
+    default_approval: bool,
+    permission_allow_once: bool,
 }
 
 impl GeminiAcpDriver {
@@ -38,7 +40,29 @@ impl GeminiAcpDriver {
             isolated_environment,
             credential,
             http_mcp: None,
+            default_approval: false,
+            permission_allow_once: false,
         }
+    }
+
+    /// Selects Gemini CLI `--approval-mode default` instead of the
+    /// resource-access mapping (`plan` for read-only, `auto_edit` for
+    /// bounded write). Frozen `0.61.0` Plan mode excludes unannotated MCP
+    /// tools from the registry and denies them at the policy engine.
+    #[must_use]
+    pub const fn with_default_approval(mut self) -> Self {
+        self.default_approval = true;
+        self
+    }
+
+    /// Answers `session/request_permission` with Gemini's `proceed_once`
+    /// option and continues the turn. The default path still observes,
+    /// rejects, and cancels. This is gate-owned auto-allow, not a consumer
+    /// permission callback.
+    #[must_use]
+    pub const fn with_permission_allow_once(mut self) -> Self {
+        self.permission_allow_once = true;
+        self
     }
 
     /// Admits one route-owned consumer-supplied streamable-HTTP MCP declaration
@@ -215,6 +239,7 @@ impl GeminiAcpDriver {
             .expect("validated process service");
         let resource_access =
             session_resource_access(plan).map_err(|error| (error, resource.clone()))?;
+        let approval_mode = self.approval_mode(resource_access);
         let process_request = gemini_process_request(
             ExecutableRef::from_instance_target(plan.instance_target_ref()),
             self.isolated_environment.clone(),
@@ -222,7 +247,7 @@ impl GeminiAcpDriver {
                 .working_resource()
                 .expect("validated resource")
                 .clone(),
-            resource_access,
+            approval_mode,
         );
         let process: Arc<dyn ProcessHandle> =
             match process_service.start(scope.clone(), process_request).await {
@@ -238,6 +263,7 @@ impl GeminiAcpDriver {
             resource.clone(),
             resource_io,
             resource_access == ResourceAccess::ReadWrite,
+            self.permission_allow_once,
             services.clone(),
         );
         let pump_connection = Arc::clone(&connection);
@@ -262,7 +288,7 @@ impl GeminiAcpDriver {
                     json!({"cwd": cwd, "mcpServers": mcp_servers}),
                 )
                 .await?;
-            parse_new_session(&response, resource_access)
+            parse_new_session(&response, approval_mode.provider_mode_id())
         }
         .await;
         let opened = match opened {
@@ -303,7 +329,7 @@ impl GeminiAcpDriver {
             pump_task: Some(pump_task),
             services: services.clone(),
             resource: Some(resource),
-            expected_mode: provider_mode_id(resource_access),
+            expected_mode: approval_mode.provider_mode_id(),
             active,
         })
     }
@@ -314,31 +340,62 @@ include!("driver/cancellation.rs");
 include!("driver/turn_handle.rs");
 include!("driver/session.rs");
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum GeminiAcpApprovalMode {
+    Plan,
+    Default,
+    AutoEdit,
+}
+
+impl GeminiAcpApprovalMode {
+    fn from_resource_access(resource_access: ResourceAccess) -> Self {
+        match resource_access {
+            ResourceAccess::Read => Self::Plan,
+            ResourceAccess::ReadWrite => Self::AutoEdit,
+        }
+    }
+
+    fn cli_flag(self) -> &'static str {
+        match self {
+            Self::Plan => "plan",
+            Self::Default => "default",
+            Self::AutoEdit => "auto_edit",
+        }
+    }
+
+    fn provider_mode_id(self) -> &'static str {
+        match self {
+            Self::Plan => "plan",
+            Self::Default => "default",
+            Self::AutoEdit => "autoEdit",
+        }
+    }
+}
+
+impl GeminiAcpDriver {
+    fn approval_mode(&self, resource_access: ResourceAccess) -> GeminiAcpApprovalMode {
+        if self.default_approval {
+            GeminiAcpApprovalMode::Default
+        } else {
+            GeminiAcpApprovalMode::from_resource_access(resource_access)
+        }
+    }
+}
+
 fn gemini_process_request(
     executable: ExecutableRef,
     environment: EnvironmentRef,
     resource: swallowtail_runtime::WorkingResourceRef,
-    resource_access: ResourceAccess,
+    approval_mode: GeminiAcpApprovalMode,
 ) -> ProcessRequest {
-    let approval_mode = match resource_access {
-        ResourceAccess::Read => "plan",
-        ResourceAccess::ReadWrite => "auto_edit",
-    };
     ProcessRequest::new(executable)
         .with_arguments([
             "--acp".to_owned(),
             "--approval-mode".to_owned(),
-            approval_mode.to_owned(),
+            approval_mode.cli_flag().to_owned(),
         ])
         .with_environment([environment])
         .with_working_resource(resource)
-}
-
-fn provider_mode_id(resource_access: ResourceAccess) -> &'static str {
-    match resource_access {
-        ResourceAccess::Read => "plan",
-        ResourceAccess::ReadWrite => "autoEdit",
-    }
 }
 
 fn session_resource_access(plan: &PreflightPlan) -> Result<ResourceAccess, RuntimeFailure> {

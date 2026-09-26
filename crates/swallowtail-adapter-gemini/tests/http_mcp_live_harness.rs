@@ -126,6 +126,8 @@ fn harness_proves_declaration_connect_list_call_result_and_cleanup() {
             .expect("valid environment"),
         selected.credential.clone(),
     )
+    .with_default_approval()
+    .with_permission_allow_once()
     .with_http_mcp_placement(placement)
     .expect("route-owned http placement is admitted");
     let mut session = block_on(driver.open_session(
@@ -155,7 +157,7 @@ fn harness_proves_declaration_connect_list_call_result_and_cleanup() {
     assert!(declaration_sent);
     assert_eq!(
         host.observed_process().arguments,
-        ["--acp", "--approval-mode", "plan"]
+        ["--acp", "--approval-mode", "default"]
     );
     assert!(
         host.agent_messages().iter().any(|message| {
@@ -172,8 +174,8 @@ fn harness_proves_declaration_connect_list_call_result_and_cleanup() {
     assert!(
         host.agent_messages()
             .iter()
-            .any(|message| { message["result"]["modes"]["currentModeId"] == "plan" }),
-        "read-only profile must open as plan"
+            .any(|message| { message["result"]["modes"]["currentModeId"] == "default" }),
+        "default approval must open as default"
     );
     let debug_server = format!("{server:?}");
     assert!(
@@ -207,6 +209,14 @@ fn harness_proves_declaration_connect_list_call_result_and_cleanup() {
         terminal.output().map(OperationContent::as_str),
         Some(HTTP_MCP_LIVE_TOOL_RESULT)
     );
+    assert!(
+        host.writes().iter().any(|message| {
+            message.get("id").and_then(serde_json::Value::as_u64) == Some(900)
+                && message["result"]["outcome"]["outcome"] == "selected"
+                && message["result"]["outcome"]["optionId"] == "proceed_once"
+        }),
+        "gate-owned allow-once must answer proceed_once"
+    );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
     let cleanup = block_on(close_session(session, services));
     let record = HttpMcpLiveRecord::from_attempt(
@@ -231,6 +241,163 @@ fn harness_proves_declaration_connect_list_call_result_and_cleanup() {
         !debug_record.contains(server.bearer()) && !debug_record.contains(server.endpoint()),
         "live record Debug must not carry the URL or bearer"
     );
+}
+
+#[test]
+fn harness_plan_mode_records_tool_not_called() {
+    let server = DisposableHttpMcpServer::start();
+    let host_id = ExecutionHostId::new("fixture.host.http-mcp-plan").expect("valid host id");
+    let selected = selection(host_id.clone());
+    let host = FixtureHost::new(Scenario::HttpMcpHonour);
+    let services = host.services(host_id);
+    let placement = GeminiAcpHttpMcpPlacement::new(
+        GEMINI_ACP_MCP_SERVER_NAME,
+        server.endpoint(),
+        vec![("Authorization".to_owned(), server.authorization_header())],
+    );
+    let driver = GeminiAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("gemini.acp.fixture.plan")
+            .expect("valid environment"),
+        selected.credential.clone(),
+    )
+    .with_http_mcp_placement(placement)
+    .expect("route-owned http placement is admitted");
+    let mut session = block_on(driver.open_session(
+        selected.plan,
+        OpenSessionRequest::new(
+            RequestId::new("gemini-http-mcp-plan").expect("valid request"),
+            selected.resource,
+            None,
+            SessionPlanAgreement::explicit(
+                swallowtail_core::SessionAccessPolicy::ambient_harness(
+                    swallowtail_core::ResourceAccess::Read,
+                ),
+                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+            ),
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    assert_eq!(
+        host.observed_process().arguments,
+        ["--acp", "--approval-mode", "plan"]
+    );
+    let mut turn = block_on(
+        session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("gemini-http-mcp-plan-turn").expect("valid turn"),
+                OperationContent::new(format!(
+                    "Call the tool named {HTTP_MCP_LIVE_TOOL}. Do not finish until it returns."
+                ))
+                .expect("valid prompt"),
+            ),
+            services.clone(),
+        ),
+    )
+    .expect("turn starts");
+    let mut events = turn.take_events().expect("events are available");
+    let terminal = block_on(async {
+        while let Some(event) = events.next().await {
+            event.expect("harness event remains valid");
+        }
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available")
+            .await
+    });
+    let _ = block_on(turn.close());
+    let cleanup = block_on(close_session(session, services));
+    let record = HttpMcpLiveRecord::from_attempt(
+        true,
+        &server.transcript(),
+        terminal.status(),
+        cleanup,
+        Some("fixture".to_owned()),
+    );
+    assert!(!record.accepted(), "{record:?}");
+    assert!(record.connected(), "{record:?}");
+    assert!(record.tools_listed(), "{record:?}");
+    assert!(!record.tool_called(), "{record:?}");
+    assert_eq!(record.stop(), Some(HttpMcpLiveStop::ToolNotCalled));
+}
+
+#[test]
+fn harness_default_without_allow_once_records_permission_observed() {
+    let server = DisposableHttpMcpServer::start();
+    let host_id = ExecutionHostId::new("fixture.host.http-mcp-ask").expect("valid host id");
+    let selected = selection(host_id.clone());
+    let host = FixtureHost::new(Scenario::HttpMcpHonour);
+    let services = host.services(host_id);
+    let placement = GeminiAcpHttpMcpPlacement::new(
+        GEMINI_ACP_MCP_SERVER_NAME,
+        server.endpoint(),
+        vec![("Authorization".to_owned(), server.authorization_header())],
+    );
+    let driver = GeminiAcpDriver::new(
+        swallowtail_runtime::EnvironmentRef::new("gemini.acp.fixture.ask")
+            .expect("valid environment"),
+        selected.credential.clone(),
+    )
+    .with_default_approval()
+    .with_http_mcp_placement(placement)
+    .expect("route-owned http placement is admitted");
+    let mut session = block_on(driver.open_session(
+        selected.plan,
+        OpenSessionRequest::new(
+            RequestId::new("gemini-http-mcp-ask").expect("valid request"),
+            selected.resource,
+            None,
+            SessionPlanAgreement::explicit(
+                swallowtail_core::SessionAccessPolicy::ambient_harness(
+                    swallowtail_core::ResourceAccess::Read,
+                ),
+                Some(swallowtail_core::SessionProviderStatePolicy::Prohibited),
+                Some(swallowtail_core::HarnessConfigurationPosture::Ambient),
+            ),
+        ),
+        services.clone(),
+    ))
+    .expect("session opens");
+    let mut turn = block_on(
+        session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("gemini-http-mcp-ask-turn").expect("valid turn"),
+                OperationContent::new(format!(
+                    "Call the tool named {HTTP_MCP_LIVE_TOOL}. Do not finish until it returns."
+                ))
+                .expect("valid prompt"),
+            ),
+            services.clone(),
+        ),
+    )
+    .expect("turn starts");
+    let mut events = turn.take_events().expect("events are available");
+    let terminal = block_on(async {
+        while let Some(event) = events.next().await {
+            let _ = event;
+        }
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available")
+            .await
+    });
+    let _ = block_on(turn.close());
+    let cleanup = block_on(close_session(session, services));
+    let record = HttpMcpLiveRecord::from_attempt(
+        true,
+        &server.transcript(),
+        terminal.status(),
+        cleanup,
+        Some("fixture".to_owned()),
+    );
+    assert!(!record.accepted(), "{record:?}");
+    assert!(record.connected(), "{record:?}");
+    assert!(record.tools_listed(), "{record:?}");
+    assert!(!record.tool_called(), "{record:?}");
+    assert_eq!(record.stop(), Some(HttpMcpLiveStop::PermissionObserved));
+    assert!(host.writes().iter().any(|message| {
+        message.get("id").and_then(serde_json::Value::as_u64) == Some(900)
+            && message["result"]["outcome"]["outcome"] == "cancelled"
+    }));
 }
 
 fn honoured_transcript() -> HttpMcpTranscript {

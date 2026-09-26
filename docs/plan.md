@@ -40,9 +40,9 @@ at `49b0d308`, before the lean cut.
   permission policy (Contract 041). Needs operator promotion.
 - **Registered-tool adoption for remaining ACP routes** (lane
   `registered-tool-remaining-acp`) — `client_mcp_servers` on `cline.acp`,
-  `copilot-cli.acp`, `gemini-cli.acp` (and `gemini-cli.headless`),
-  `goose.acp`, `kiro.acp` and `deepagents.acp`, each with its own surface
-  evidence. Needs a consumer requirement and operator direction.
+  `copilot-cli.acp`, `goose.acp`, `kiro.acp` and `deepagents.acp`, each with
+  its own surface evidence. Needs a consumer requirement and operator
+  direction.
 - **Qoder effective skill visibility** (lane `qoder-skill-visibility`) — bind
   the exact Qoder roster through Contract 058, then close the proof with
   fixtures and guide coverage. Gated on a non-empty Research 256 deliver-now
@@ -64,9 +64,9 @@ at `49b0d308`, before the lean cut.
   if a consumer is pinned to one of them.
 - **HTTP MCP live gates on `copilot-cli.acp`, `goose.acp`, `kiro.acp`** —
   wired to emit the entry; held until a consumer needs them.
-- **HTTP MCP live rerun on `gemini-cli.acp`** — one attempt spent on host
-  exact `0.61.0` (Research 360, typed stop `tool_not_called`); no rerun
-  without new authority.
+- **Further HTTP MCP live attempts on `gemini-cli.acp`** — exact `0.61.0`
+  is the honouring point (Research 362). Other window points need their
+  own gate.
 - **Hosted interactive OAuth, OpenHands Agent Server production wiring,
   Aider headless, Kiro headless** — parked by Tom (2026-08-21): no current
   consumer need. Revisit only on explicit operator selection; don't refresh

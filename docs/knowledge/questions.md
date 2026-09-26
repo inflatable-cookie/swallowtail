@@ -22,6 +22,9 @@ first, one attempt, harness proof against the fake SDK before the live turn,
 pinned `claude-agent-acp` 0.79.0 over the host's 0.63.0. Gemini second.
 Copilot, Goose and Kiro held until a consumer needs them.
 
+Live result: Research 352. The one attempt was not accepted (typed stop
+`cleanup_failed`). The cell stays No.
+
 ## Q-002 — Which command validates a fresh checkout before merge?
 
 Status: answered 2026-09-26

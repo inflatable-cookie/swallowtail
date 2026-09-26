@@ -1,4 +1,4 @@
-//! Exact ruling options for Research 352. Fails if an option is added,
+//! Exact ruling options for Research 353. Fails if an option is added,
 //! dropped, or quietly rewritten into a claim.
 
 use super::support::{IDENTITY, PROTOCOL, json, strings};

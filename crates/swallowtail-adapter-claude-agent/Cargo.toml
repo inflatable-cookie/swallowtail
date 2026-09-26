@@ -49,6 +49,15 @@ path = "tests/live_watcher_probe.rs"
 required-features = ["live-probes"]
 
 [[test]]
+name = "http_mcp_live_harness"
+path = "tests/http_mcp_live_harness.rs"
+
+[[test]]
+name = "http_mcp_live_gate"
+path = "tests/http_mcp_live_gate.rs"
+required-features = ["live-probes"]
+
+[[test]]
 name = "integration"
 path = "tests/integration/main.rs"
 

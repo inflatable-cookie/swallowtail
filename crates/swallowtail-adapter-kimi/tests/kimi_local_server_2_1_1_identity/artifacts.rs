@@ -1,4 +1,4 @@
-//! Official identity for Research 352. Fails if a hop is dropped, a digest
+//! Official identity for Research 353. Fails if a hop is dropped, a digest
 //! drifts, or the 0.43.0 revalidation no longer matches Research 326.
 
 use super::support::{
@@ -56,7 +56,7 @@ fn official_package_release_and_artifact_identity_is_exact() {
     let identity = json(IDENTITY);
     assert_eq!(identity["axis"], KIMI_CODE_AXIS);
     assert_eq!(identity["route"], "kimi-code.local-server");
-    assert_eq!(identity["research"], 352);
+    assert_eq!(identity["research"], 353);
     assert_eq!(identity["npm_package"], "@moonshot-ai/kimi-code");
     assert_eq!(identity["npm_latest"], "2.1.1");
     assert_eq!(

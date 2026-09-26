@@ -6,6 +6,19 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify `kimi-code.local-server` through official `@moonshot-ai/kimi-code`
+  `2.1.1` under Contract 023 `AmbientHost` (Q-004 B, Research 357). From
+  `0.40.0` Bash `cwd` is not checked against workspace roots; that check
+  was never a Swallowtail isolation claim. Selected REST/WebSocket v2,
+  including the `2.0.0` same-package major-line reset, stays on
+  `kimi.local-server.rest-ws-v2-heartbeat-ping`. Claim id becomes
+  `kimi.local-server.executable-window-6`, posture returns to
+  `AllowUnverified`, and unpublished `0.39.2`, `0.40.2`, `0.41.1`,
+  `0.42.1`, `0.43.2`, `1.x`, and `2.0.3` stay incompatible. Synthetic
+  `2.1.2` is unverified newer. `disabled_tools` stays a consumer opt-out
+  with exact name `Bash` and is not pinned. ACP and headless stay
+  untouched. Research 282 and 326's fail-closed reading is withdrawn.
+
 - raise the Antigravity catalogue ceiling through official `1.2.11` and put
   the `antigravity.headless` stop to the operator: Research 353 freezes
   `1.2.8` through `1.2.11` with both platform digests, reproduces Research

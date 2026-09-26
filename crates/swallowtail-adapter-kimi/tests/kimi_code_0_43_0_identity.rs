@@ -513,19 +513,19 @@ fn every_hop_carries_an_independent_acp_and_headless_verdict() {
 #[test]
 fn the_local_server_family_does_not_move_with_the_installed_axes() {
     assert_eq!(KIMI_LOCAL_SERVER_BASELINE_VERSION, "0.28.1");
-    // Research 326 moved the separate local-server family on its own
-    // authority evidence: 0.39.1 QualifiedOnly ceiling, not the installed
-    // headless 0.43.0 ceiling.
-    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.39.1");
+    // Local-server is a separate family. Q-004 B later qualified it through
+    // official 2.1.1; this installed-axis corpus still must not flatten ACP
+    // or headless onto that claim.
+    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "2.1.1");
     let claim = kimi_local_server_claim();
     assert!(matches!(
         claim.assess(&version("0.39.1")),
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
-    assert_eq!(
+    assert!(matches!(
         claim.assess(&version("0.40.0")),
-        InterfaceCompatibilityAssessment::Incompatible
-    );
+        InterfaceCompatibilityAssessment::Qualified(_)
+    ));
     assert_eq!(
         json(IDENTITY)["identity_decision"]["widen_local_server_claim"],
         false

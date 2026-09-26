@@ -174,19 +174,19 @@ fn exact_negative_points_survive_the_correction() {
 #[test]
 fn the_local_server_family_does_not_move_with_the_installed_harness_axes() {
     assert_eq!(KIMI_LOCAL_SERVER_BASELINE_VERSION, "0.28.1");
-    // Research 326 moved the separate local-server family on its own
-    // authority evidence: the 0.39.x points this fixture recorded as
-    // observations are now qualified under a 0.39.1 QualifiedOnly ceiling.
-    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "0.39.1");
+    // Local-server is a separate family. Q-004 B later qualified published
+    // 0.40.0 under AmbientHost; this installed-axis corpus still must not
+    // flatten ACP or headless onto that claim.
+    assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "2.1.1");
     let claim = kimi_local_server_claim();
     assert!(matches!(
         claim.assess(&version("0.39.1")),
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
-    assert_eq!(
+    assert!(matches!(
         claim.assess(&version("0.40.0")),
-        InterfaceCompatibilityAssessment::Incompatible
-    );
+        InterfaceCompatibilityAssessment::Qualified(_)
+    ));
     assert_eq!(
         json(IDENTITY)["identity_decision"]["widen_local_server_claim"],
         false

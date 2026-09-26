@@ -40,11 +40,11 @@ fn revision_specific_options_require_the_qualified_milestone() {
 
 #[test]
 fn profile_and_tool_options_remain_available_across_later_milestones() {
-    // Research 326: the safe prefix extends through 0.39.1, so the newest
-    // heartbeat-ping points preserve profile and tool options.
+    // Heartbeat-ping points, including Q-004 B's 0.40.0 and 2.1.1, preserve
+    // profile and tool options.
     for version in [
         "0.29.0", "0.29.1", "0.29.2", "0.30.0", "0.31.0", "0.31.1", "0.34.0", "0.36.1", "0.37.2",
-        "0.38.0", "0.39.0", "0.39.1",
+        "0.38.0", "0.39.0", "0.39.1", "0.40.0", "0.43.1", "2.1.1",
     ] {
         let server =
             InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, version);
@@ -93,15 +93,15 @@ fn incompatible_session_fails_before_detachment() {
     use super::fixture::try_prepare;
     use swallowtail_runtime::PreparationStage;
 
-    // Research 326: local-server is QualifiedOnly at 0.39.1, so 0.40.0 fails
-    // at CompatibilityClassification before any detachment decision.
+    // Unpublished 0.39.2 sits between 0.39.1 and 0.40.0, so it fails at
+    // CompatibilityClassification before any detachment decision.
     let server =
-        InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, "0.40.0");
+        InteractiveFixtureServer::start_with_version(InteractiveScenario::Complete, "0.39.2");
     let host = FixtureHost::for_endpoint(server.endpoint());
     let execution_host = id(ExecutionHostId::new, "fixture.kimi.newer-detachment");
     let services = host.services(execution_host.clone(), false);
-    let failure = try_prepare(execution_host, services, "0.40.0")
-        .expect_err("uncontained 0.40.0 fails closed under QualifiedOnly");
+    let failure = try_prepare(execution_host, services, "0.39.2")
+        .expect_err("unpublished 0.39.2 stays an incompatible gap");
     assert_eq!(
         failure.stage(),
         PreparationStage::CompatibilityClassification

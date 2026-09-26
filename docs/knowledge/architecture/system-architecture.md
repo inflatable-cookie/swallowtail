@@ -1790,14 +1790,16 @@ WebSocket protocol version `2`, exact server metadata, and an opaque bearer
 credential lease. Attached and owned-foreground topologies remain distinct.
 The implementation qualifies reversible archive and restore across exact Kimi
 Code `0.28.1`, exact `0.29.0`, `0.29.1..=0.30.0`, exact `0.31.0`, exact
-`0.31.1`, `0.32.0..=0.34.0`, and `0.35.0..=0.37.2`. The
+`0.31.1`, `0.32.0..=0.34.0`, `0.35.0..=0.39.1`, `0.40.0..=0.43.1`, and
+`2.0.0..=2.1.1`. The
 middle range has a separate behavior revision for global WebSocket event
 fan-out and filtered configured-model discovery. Exact `0.31.0` adds full
 subagent status snapshots and derived-model display aliases. Exact `0.31.1`
 uses workspace-scoped session lookup, stabilizes provider-model refresh, and
 may add optional turn-interruption detail. `0.32.0..=0.34.0` adds optional
-experimental-flag metadata and extra unknown events. `0.35.0..=0.37.2` requires
-application WebSocket ping/pong. Swallowtail keeps status records as
+experimental-flag metadata and extra unknown events. `0.35.0..=0.39.1`,
+`0.40.0..=0.43.1`, and `2.0.0..=2.1.1` require application WebSocket ping/pong. From `0.40.0` Bash `cwd` is not checked
+against workspace roots; the route declares `AmbientHost`. Swallowtail keeps status records as
 non-rendered progress, retains required terminal reason as authority, and
 derives portable subagent activity from dedicated lifecycle events. The route does not qualify deletion or
 change the unsupported ACP mapping. Attached preparation preserves the

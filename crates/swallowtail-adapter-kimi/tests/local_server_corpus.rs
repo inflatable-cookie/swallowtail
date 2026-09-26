@@ -69,14 +69,21 @@ fn local_server_claim_is_separate_and_fail_closed() {
             InterfaceCompatibilityAssessment::Qualified(_)
         ));
     }
-    // Research 326: the 0.40.0 Bash cwd widening is uncontained, so the
-    // QualifiedOnly claim fails every point above 0.39.1 closed.
-    for version in ["0.39.2", "0.40.0", "0.43.0", "1.0.0"] {
+    // Q-004 B qualifies published 0.40.0 and 0.43.0. Unpublished 0.39.2 and
+    // the 1.x gap between 0.43.1 and 2.0.0 stay incompatible.
+    for version in ["0.39.2", "1.0.0"] {
         let newer = kimi_code_binding(version).expect("newer version binds");
         assert_eq!(
             claim.assess(newer.version()),
             InterfaceCompatibilityAssessment::Incompatible
         );
+    }
+    for version in ["0.40.0", "0.43.0", "2.1.1"] {
+        let qualified = kimi_code_binding(version).expect("qualified version binds");
+        assert!(matches!(
+            claim.assess(qualified.version()),
+            InterfaceCompatibilityAssessment::Qualified(_)
+        ));
     }
 }
 
@@ -225,8 +232,8 @@ fn exact_0_31_1_corpus_binds_route_deltas_to_expanded_claims() {
     );
     assert_eq!(
         kimi_local_server_claim().latest_qualified().as_str(),
-        // Research 326 extended the live local-server ceiling to 0.39.1.
-        "0.39.1"
+        // Q-004 B extended the live local-server ceiling to official 2.1.1.
+        "2.1.1"
     );
 
     let provenance = include_str!("fixtures/kimi-code-0.31.1/README.md");

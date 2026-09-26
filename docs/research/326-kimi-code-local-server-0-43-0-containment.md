@@ -4,6 +4,14 @@ Status: promoted
 Owner: Tom
 Date: 2026-09-15
 Card: g05.078 (Research 308 containment campaign)
+
+## Addendum 2026-09-26 (Q-004 B / Research 357)
+
+Q-004 B withdraws this record's fail-closed reading and the A2 same-risk-class
+conclusion. The `0.40.0` Bash `cwd` check removal is outside Contract 023
+`AmbientHost` isolation. Research 357 qualifies `0.40.0..=2.1.1`. The identity
+ledger and blob ledger here stand. The `0.39.0..=0.39.1` safe-prefix extension
+stands.
 Authority: Contracts 017, 023, and 029; Research 270, 282, 308, and 325;
 g05.017, g05.026, and g05.077; the Kimi Code local-server selection, prepared
 route, drivers, protocol, activity, and frozen fixtures; and the official npm

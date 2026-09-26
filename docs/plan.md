@@ -16,7 +16,7 @@ at `49b0d308`, before the lean cut.
    (Research 352). Diagnosis (Research 355) fixed the lost diagnostic and a
    test-listener defect that dropped idle SSE streams; the second attempt,
    authorized by Tom on 2026-09-26, accepted the full tuple with `Clean`
-   cleanup (Research 358), so `client_mcp_servers` is Yes on exact `0.79.0`
+   cleanup (Research 359), so `client_mcp_servers` is Yes on exact `0.79.0`
    only. Official is now `0.81.2`, qualified separately afterwards; later
    window points still need their own live gate.
 2. **Version currentness** (lane `version-currentness`) — standing, never
@@ -33,9 +33,9 @@ at `49b0d308`, before the lean cut.
 ## Next
 
 - **Consumer HTTP MCP live honouring on `gemini-cli.acp`** — one live
-  attempt on the host's Gemini CLI once it is qualified (it auto-updated to
-  official `0.61.0` on 2026-09-26, above the `0.59.0` ceiling), after the
-  fake-proven gate merges. Access is Tom's free Gemini Developer API key in
+  attempt on the host's Gemini CLI, now qualified at official `0.61.0` with
+  the Research 351 `mcpServers` HTTP mapping unchanged (Research 358); the
+  merged gate still pins isolated `0.59.0`. Access is Tom's free Gemini Developer API key in
   the Gemini CLI keychain entry. Free personal Google login ended on
   2026-06-18.
 - **Shared harness capability and producer boundary** (lane

@@ -7,7 +7,7 @@ annotated Git tags from the canonical repository.
 
 ### Notes
 - accept `claude-agent.acp` consumer HTTP MCP live honouring on exact
-  `claude-agent-acp` `0.79.0`: Research 358 records the one authorized
+  `claude-agent-acp` `0.79.0`: Research 359 records the one authorized
   second attempt (Tom, 2026-09-26), which connected, listed the tool,
   completed one tool call, ended the turn `Completed`, and closed `Clean`
   (cleanup class `clean`, no code, no stage; model `claude-sonnet-4-6` as
@@ -17,6 +17,17 @@ annotated Git tags from the canonical repository.
   and guide in step. The Research 352 spent stop stays unreconstructed.
   No raw provider stream, bearer, account, session id, or private path is
   retained.
+- raise the Gemini CLI ACP and headless ceilings through official `0.61.0`:
+  Research 358 freezes `0.60.0` and `0.61.0` from npm and GitHub, reproduces
+  Research 324's `0.59.0` digests, and inventories every tagged-source hop.
+  Every selected ACP, headless, option and retention source is
+  byte-identical; the host bundle equals the official npm bin entry. Both
+  claims advance to maintained `0.51.0..=0.61.0`, excluding unpublished
+  `0.56.1` and `0.59.1`, on `gemini-cli.acp.v0.51.0` and
+  `gemini-cli.headless.stream-json.v1`. The ACP `mcpServers` HTTP mapping is
+  unchanged. Flash rollout model routing, build-file protection and stdio MCP
+  env filtering stay unmapped. Unpublished `0.61.1` stays `UnverifiedNewer`.
+  No provider operation or host mutation occurred.
 - qualify `kimi-code.local-server` through official `@moonshot-ai/kimi-code`
   `2.1.1` under Contract 023 `AmbientHost` (Q-004 B, Research 357). From
   `0.40.0` Bash `cwd` is not checked against workspace roots; that check

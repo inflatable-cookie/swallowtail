@@ -131,7 +131,7 @@ this route emits `http` only. `sse` stays modelled through
 provider gate on the `0.79.0` map.
 
 The Contract 061 placement projection names `consumer-supplied-http` when an
-HTTP entry is bound. Research 358 accepted live honouring of that HTTP entry
+HTTP entry is bound. Research 359 accepted live honouring of that HTTP entry
 on exact `0.79.0` (`client_mcp_servers` Yes). The second authorized attempt
 connected, listed the tool, completed one tool call, ended the turn
 `Completed`, and closed `Clean`; the recorded model `claude-sonnet-4-6` is

@@ -7,5 +7,6 @@
 mod record;
 mod server;
 
+pub(crate) use record::persist_and_print_record;
 pub use record::{HttpMcpCleanupClass, HttpMcpLiveRecord, HttpMcpLiveStop, HttpMcpTranscript};
 pub use server::{DisposableHttpMcpServer, HTTP_MCP_LIVE_TOOL, HTTP_MCP_LIVE_TOOL_RESULT};

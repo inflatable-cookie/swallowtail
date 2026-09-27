@@ -120,9 +120,8 @@ Artifacts and PR descriptions use glue-light style:
 `effigy qa:docs` and `effigy qa:routes` when docs, guides or matrices change,
 before opening a PR. Broader tiers only when the brief names them.
 
-Pre-merge validation of a fresh checkout (for Queue's `validation` field once
-Queue runs it): `effigy qa:docs && effigy qa:routes && effigy format:check`,
-plus the `effigy validate:focused` packages the brief names.
+Queue validates merges through GitHub CI; it runs no separate pre-merge
+command for this repository (Q-002).
 
 <!-- northstar:rust-quality:start -->
 ## Northstar Rust Quality

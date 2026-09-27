@@ -33,7 +33,8 @@ attempt — which still needs fresh operator authority — cannot lose it again.
 ## Q-002 — Which command validates a fresh checkout before merge?
 
 Status: answered 2026-09-26
-Answer: the candidate below (Tom). Recorded in `AGENTS.md` "Validate".
+Answer: no separate Queue validation for now (Tom, 2026-09-28); GitHub CI
+gates merges. `AGENTS.md` "Validate". Revisit through the Queue lead.
 Asked: 2026-09-26
 
 Queue does not yet run plain pre-merge validation. The command must validate a

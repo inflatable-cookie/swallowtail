@@ -22,7 +22,7 @@ frozen = [
 [[retired]]
 id = "northstar-process-records"
 retired = "2026-09-26"
-replacement = "Knowledge in docs/knowledge/, intent in docs/plan.md; tasks, briefs, status and outcomes live in Queue."
+replacement = "Knowledge in docs/knowledge/; the plan, tasks, briefs, status and outcomes live in Queue."
 owner = "docs/knowledge/README.md"
 terms = ["roadmap card", "generation index", "northstar:lifecycle", "chatterbox handoff", "Next Task pointer", "northstar/queue:hook", "standing-lanes.md", "status-grammar.md", "qa:northstar", "qa:docs:roadmaps", "generation runway"]
 paths = [".northstar/", "docs/roadmaps/", "docs/handoffs/", "docs/logs/", "docs/vision/", "docs/policy/", "docs/guides/release-playbook.md", "docs/guides/version-currentness-checkpoint.md", "scripts/check-roadmap-number-collision.py", "scripts/check-roadmap-status-drift.py", "scripts/roadmap_number_authority.py"]
@@ -38,4 +38,12 @@ owner = "AGENTS.md"
 terms = ["PAPERCUTS.md"]
 paths = ["PAPERCUTS.md"]
 # Released changelog entries name the old file.
+allow = ["CHANGELOG.md", "docs/knowledge/retired.toml"]
+
+[[retired]]
+id = "repository-planning-files"
+retired = "2026-09-27"
+replacement = "The plan is Queue lanes, lane documents and plan order; leads are Queue records (lead.add)."
+owner = "docs/knowledge/README.md"
+paths = ["docs/plan.md", "docs/triage/"]
 allow = ["CHANGELOG.md", "docs/knowledge/retired.toml"]

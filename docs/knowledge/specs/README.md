@@ -1,7 +1,7 @@
 # Specs
 
 Specs are provisional design surfaces. Promote settled decisions into
-architecture or contracts; sequencing belongs in [the plan](../../plan.md).
+architecture or contracts; sequencing belongs in Queue lanes.
 
 ## Active Specs
 

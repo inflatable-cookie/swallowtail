@@ -66,10 +66,11 @@ Card129 [frozen evidence ledger](../research/290-feature-matrix-cross-evidence.m
 whose basis is an anchored `docs/research` or `docs/knowledge/contracts` line that names
 the route (Research 281 for the Card129 census; Research 291 for the Codex
 `client_mcp_servers` cell);
-`producer_gap` with a plan item, written `plan:<key>`, where
-[docs/plan.md](../plan.md) lists an item tagged ``(lane `<key>`)`` under
-`## Now` or `## Next`; or `evidence_pending` with an open question, written
-`docs/knowledge/questions.md#q-NNN`, never a plan item. An evidence-pending
+`producer_gap` with the Queue lane that builds it, written `lane:<key>` (the
+lane must be open in Swallowtail's plan; the check validates the form, and
+planning keeps the lane open while the gap exists); or `evidence_pending`
+with an open question, written `docs/knowledge/questions.md#q-NNN`, never a
+lane. An evidence-pending
 question must name the owner who runs the gate and the decision tree
 converting each outcome into `producer_gap` or `provider_limitation`, and must
 list the cells it investigates under `Evidence gate scope:`; evidence pending
@@ -77,8 +78,8 @@ is unavailable to a cell no open question covers. Prepared integration guides
 are not frozen evidence. Producer-gap rows carry an explicit
 `Card129 producer-gap reasons:` marker in `notes`; a withheld cell uses the
 same producer-gap path and reason. The route-matrix check rejects missing,
-extra, stale, unanchored, guide-only, insufficient, unplanned or deferred plan
-items, and answered or out-of-scope questions.
+extra, stale, unanchored, guide-only, insufficient, or malformed lane
+references, and answered or out-of-scope questions.
 
 Every row has two public paths:
 

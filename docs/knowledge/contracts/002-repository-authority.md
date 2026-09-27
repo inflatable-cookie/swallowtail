@@ -12,7 +12,7 @@ applications.
 ## Contract
 
 - This repository is canonical for Swallowtail vision, architecture,
-  contracts, API plans, release history, and the plan.
+  contracts, API plans, and release history.
 - Consumer documents may describe adoption but cannot redefine a Swallowtail
   contract.
 - Consumer code is not copied wholesale. Each mechanism is separated from
@@ -30,4 +30,5 @@ applications.
 - the crate graph can build without consumer repositories present
 - public types use Swallowtail vocabulary
 - consumer conformance tests can prove adoption without reverse dependencies
-- `docs/plan.md` is the sole statement of what Swallowtail does next
+- Swallowtail's plan (its Queue lanes and their order) is the sole statement
+  of what Swallowtail does next

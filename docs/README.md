@@ -16,7 +16,7 @@ What is true now:
   `goose.acp` and `kiro.acp` emit the entry with live honouring unproven
   (Research 351).
 - Unavailable feature-matrix cells are provider limitations with frozen
-  evidence or producer gaps owned by a [plan](plan.md) item.
+  evidence or producer gaps owned by a Queue lane.
 
 When sources disagree: contracts govern behaviour, then architecture, then
 vision. Specs and research stay provisional until promoted.
@@ -33,4 +33,5 @@ vision. Specs and research stay provisional until promoted.
 
 ## What's next
 
-See [plan.md](plan.md). Open questions: [knowledge/questions.md](knowledge/questions.md).
+The project's plan is in Queue: its lanes, their documents and their order.
+Open questions: [knowledge/questions.md](knowledge/questions.md).

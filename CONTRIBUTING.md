@@ -47,7 +47,7 @@ Code should:
 - document every supported public item
 
 Documentation changes must keep contracts, route and feature matrices, guides,
-examples, release copy, and [the plan](docs/plan.md) consistent.
+examples and release copy consistent.
 
 New guides should follow the existing template: a plain "use this when" opener,
 a [Key Concepts](docs/guides/key-concepts.md) link for shared vocabulary, a

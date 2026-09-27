@@ -1,6 +1,6 @@
 # Questions
 
-Questions that block or shape work. Reference them by ID from the plan and from
+Questions that block or shape work. Reference them by ID from lane documents and from
 briefs. An answered question keeps only its pointer to where the answer lives.
 
 An open question can own feature-matrix `evidence_pending` cells. It must name
@@ -13,7 +13,7 @@ route-matrix check enforces this.
 
 Status: answered 2026-09-26
 Answer: yes, as recommended (Tom). One attempt, harness proof first, pinned
-`claude-agent-acp` 0.79.0. Plan item `claude-agent-acp-http-mcp-live`.
+`claude-agent-acp` 0.79.0. Lane `claude-agent-acp-http-mcp-live`.
 Asked: 2026-09-25
 
 Research 351 wired five ACP routes to emit the Contract 063 consumer HTTP MCP
@@ -46,7 +46,7 @@ runs the whole workspace test suite and is likely too slow per task.
 
 Status: answered 2026-09-26
 Answer: the recommendation below (Tom): option 2 evidence first, option 1 as
-the fallback. Plan item `version-currentness`.
+the fallback. Lane `version-currentness`.
 Asked: 2026-09-26
 
 From `1.1.22` through official `1.2.11`, Antigravity retries failed model
@@ -72,7 +72,7 @@ retry-disabled revision with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned
 ## Q-004 — How should `kimi-code.local-server` qualify past `0.39.1`?
 
 Status: answered 2026-09-26
-Answer: B (Tom). Plan item `version-currentness`.
+Answer: B (Tom). Lane `version-currentness`.
 Asked: 2026-09-26
 
 `0.40.0` stopped checking the Bash tool's `cwd` argument against the

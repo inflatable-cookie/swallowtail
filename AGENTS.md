@@ -17,18 +17,13 @@ consumers may provide evidence; they do not own Swallowtail decisions.
 - Knowledge (one owner per fact): `docs/knowledge/README.md`
 - Retired concepts, which must not come back: `docs/knowledge/retired.toml`
 - Open questions: `docs/knowledge/questions.md`
-- What's next: `docs/plan.md`
-- Unresolved leads: `docs/triage/`
 - Consumer guides, route and feature matrices: `docs/guides/`
 - Retained research evidence: `docs/research/`
 - Release compatibility notes: `docs/releases/`
 
-Tasks, briefs, status and papercuts live in Queue, never in this repository.
-File small recurring friction as a Queue papercut and carry on: from
-`~/Dev/projects/paseo-northstar-queue`, run
-`node bin/queue-cli.mjs papercut.add payload.json` with `repository`
-(`origin: inflatable-cookie/swallowtail`, `path`), `title`, `happened` and
-`impact`, plus optional `area` and `fix`.
+The plan (lanes, their documents and their order), leads, papercuts, brief
+drafts, tasks and status live in Queue, never in this repository. Read what's
+next with `plan.get` (see the `northstar` skill).
 
 ## Commands
 
@@ -75,8 +70,8 @@ Details: [validation tiers](docs/guides/validation-tiers.md).
   it gets an adaptation task that qualifies the current release (Contract 029,
   No Terminal Stop).
 - **Feature matrix.** An unavailable cell is exactly one of: a provider
-  limitation citing frozen evidence; a producer gap naming the `docs/plan.md`
-  item that builds it (`plan:<key>`); or evidence pending, naming an open
+  limitation citing frozen evidence; a producer gap naming the Queue lane
+  that builds it (`lane:<key>`); or evidence pending, naming an open
   question in `docs/knowledge/questions.md` that states the gate owner, the
   decision tree into the other two kinds, and the cells it covers. A cross
   with none of the three is a matrix defect. "Withheld" is a producer gap with
@@ -100,6 +95,12 @@ Details: [validation tiers](docs/guides/validation-tiers.md).
   same PR.
 - An operator ruling given in conversation goes into its owning file before
   the thread ends.
+
+## Papercuts and leads
+
+File small, recurring friction in Queue with `papercut.add`, and unplanned
+ideas or observations with `lead.add` (see the `northstar` skill). The
+repository holds no papercut file or triage folder.
 
 ## Shell snippets
 

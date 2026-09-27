@@ -189,7 +189,7 @@ change exactly and moves no claim, but the stop is transient. It is a work
 item, the same way an unavailable matrix cell is.
 
 - The planner briefs an adaptation task as soon as the stop lands and lists
-  it under the plan's version-currentness item. That task owns qualifying the
+  it under the `version-currentness` Queue lane. That task owns qualifying the
   then-current official stable.
 - The adaptation takes the Upgrade Workflow's ordinary path: an adapter-private
   milestone when mapping changes, a new driver or facade revision when the
@@ -223,7 +223,7 @@ exact qualified point until another artifact has its own evidence.
 Swallowtail revalidates every production route family against official stable
 points through a named currentness checkpoint, not through calendar CI or
 registry `latest`. The checkpoint is a standing item in
-[the plan](../../plan.md), never finished.
+Queue lane (`version-currentness`), never finished.
 
 A checkpoint:
 

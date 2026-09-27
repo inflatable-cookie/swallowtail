@@ -20,9 +20,7 @@ PINNED_CONSUMERS = (
 )
 ROUTE_SPLIT = re.compile(r"\s*(?:;|\+)\s*")
 REASON_MARKER = "Card129 producer-gap reasons:"
-PLAN = Path("docs/plan.md")
-PLAN_REF = re.compile(r"^plan:(?P<key>[a-z0-9][a-z0-9-]*)$")
-PLAN_LIVE_SECTIONS = {"## Now", "## Next"}
+LANE_REF = re.compile(r"^lane:(?P<key>[a-z0-9][a-z0-9-]*)$")
 QUESTIONS = Path("docs/knowledge/questions.md")
 QUESTION_REF = re.compile(r"^docs/knowledge/questions\.md#(?P<id>q-[0-9]{3})$")
 QUESTION_HEADING = re.compile(r"^## (?P<id>Q-[0-9]{3})\b")
@@ -129,39 +127,22 @@ def producer_gap_reasons(notes: str, row_route: str) -> dict[str, str]:
     return reasons
 
 
-def producer_task(root: Path, ref: str) -> None:
-    """Guard the producer_gap cross kind: the gap must be a planned outcome.
+def producer_task(ref: str) -> None:
+    """Guard the producer_gap cross kind: the gap must name the lane that builds it.
 
-    The reference names a ``docs/plan.md`` item by its lane key. The item must
-    sit under ``## Now`` or ``## Next``; a deferred or missing item would leave
-    the gap with no owner.
+    The plan lives in Queue, which this offline check cannot read, so it
+    validates the ``lane:<key>`` form only. Planning keeps the named lane open
+    in Swallowtail's plan while the gap exists.
     """
-    match = PLAN_REF.fullmatch(ref)
-    if match is None:
-        fail(f"producer_gap reference must be plan:<key>: {ref}")
-    plan = root / PLAN
-    if not plan.is_file():
-        fail(f"missing {PLAN}")
-    marker = re.compile(rf"\(lane\s+`{re.escape(match.group('key'))}`\)")
-    sections: dict[str, list[str]] = {}
-    section = ""
-    for line in plan.read_text(encoding="utf-8").splitlines():
-        if line.startswith("## "):
-            section = line.strip()
-        sections.setdefault(section, []).append(line.strip())
-    for heading, lines in sections.items():
-        if marker.search(" ".join(lines)):
-            if heading in PLAN_LIVE_SECTIONS:
-                return
-            fail(f"producer_gap plan item is not under Now or Next: {ref}")
-    fail(f"producer_gap reference names no docs/plan.md item: {ref}")
+    if LANE_REF.fullmatch(ref) is None:
+        fail(f"producer_gap reference must be lane:<key>: {ref}")
 
 
 def evidence_packet(root: Path, ref: str, row_route: str, feature: str) -> None:
     """Guard the evidence_pending cross kind per the Feature Matrix Rule.
 
     The reference must be an open question in ``docs/knowledge/questions.md``
-    — never a plan item, because finishing the work closes its gate. The
+    — never a lane, because finishing the work closes its gate. The
     question must name the owner who runs the gate, state the decision tree
     converting each outcome into ``producer_gap`` or ``provider_limitation``,
     and list the cells it investigates; evidence pending is unavailable to
@@ -251,7 +232,7 @@ def load_matrix(root: Path, matrix: Path) -> tuple[list[dict[str, str]], list[st
             if kind == "provider_limitation":
                 evidence_ledger(root, route, feature, ref)
             elif kind == "producer_gap":
-                producer_task(root, ref)
+                producer_task(ref)
             else:
                 evidence_packet(root, ref, route, feature)
             if row[feature].strip().casefold() == "withheld" and kind != "producer_gap":
@@ -305,7 +286,7 @@ def main() -> None:
     )
     gaps = backlog(rows, features)
     if args.backlog:
-        print("consumer | route | feature | plan item | reason")
+        print("consumer | route | feature | lane | reason")
         print("--- | --- | --- | --- | ---")
         for consumer, route, feature, ref, reason in gaps:
             print(f"{consumer} | `{route}` | `{feature}` | `{ref}` | {reason}")

@@ -15,7 +15,7 @@ Run when any of these is true:
 - a consumer hits a defect on an unverified-newer point
 - a cluster of stables has moved since the last research currentness record
 
-This is a standing Contract 029 item in [the plan](../../plan.md), never
+This is a standing Contract 029 Queue lane (`version-currentness`), never
 finished.
 
 Do not run it as CI, as a calendar cron, or as an install/update/login

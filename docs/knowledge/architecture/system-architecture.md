@@ -1111,7 +1111,7 @@ latest-qualified boundary is an explicit later-release change. No open-ended
 `latest` value participates in routing. All-route currentness is a named
 Contract 029 checkpoint: local `--version` plus official stable metadata
 against every production claim, classified without changing the claim.
-It is a standing plan item, never finished. Family qualification
+It is a standing Queue lane, never finished. Family qualification
 follows the Upgrade Workflow. The operator runbook is the
 version-currentness checkpoint guide.
 

@@ -27,13 +27,13 @@ These rules apply to all Swallowtail work before v1.0.
   if it is absent, correct the plan rather than hardening the probe.
 - Keep external source repositories as evidence, not hidden build inputs.
 - Run all-route version currentness as a named Contract 029 checkpoint. It is
-  a standing plan item, never finished. Do not extend a compatibility claim
+  a standing Queue lane, never finished. Do not extend a compatibility claim
   from registry `latest` or local `--version` alone.
 
 ## Roles And Authority
 
 - The planner (Chatterbox) explores problems with the operator, keeps
-  `docs/plan.md` and the knowledge files current, writes task briefs, and
+  the plan in Queue and the knowledge files current, writes task briefs, and
   requests dispatch approval. It writes no runtime code and does not merge.
 - Tasks, briefs, status, review and closeout live in Queue, never in this
   repository. A worker implements one brief in the worktree Queue gives it,

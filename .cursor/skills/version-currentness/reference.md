@@ -12,7 +12,7 @@ pins. Copy the nearest prior family and replace numbers.
 | Route + lifecycle rows | `docs/guides/provider-route-matrix.md` |
 | Decoder / help specimen | adapter `tests/fixtures/<family>-<baseline>/` |
 | Official channel | last currentness research row, adapter README/guide, changelog URL in prior identity research |
-| Current deferrals and open stops | version-currentness item in `docs/plan.md` |
+| Current deferrals and open stops | `version-currentness` Queue lane document and its leads |
 | Next unused numbers | highest research id on refreshed canonical pushed main (`https://github.com/inflatable-cookie/swallowtail.git` `main`), not this worktree or `origin/main` |
 
 Do not treat a frozen currentness table as still-true official latest.
@@ -192,7 +192,7 @@ edit**. Auto-continue to the claim step.
 Claim step: raise the bound, refresh tests/docs/indexes, named validation.
 Auto-continuation: No.
 
-Recorded deferrals in the plan stay out of scope unless the operator lifted
+Recorded deferrals in the lane stay out of scope unless the operator lifted
 them.
 
 ## Claim edits

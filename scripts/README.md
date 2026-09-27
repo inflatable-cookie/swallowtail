@@ -32,7 +32,7 @@ Normal validation scripts:
   `effigy qa:docs:research:numbers` and CI `research-numbers`. Hermetic
   mutation tests: `effigy qa:docs:research:numbers:test`
 - `check-docs-links.py` — front-door Markdown links plus `docs/knowledge`,
-  `docs/guides`, `docs/research` and `docs/triage` bodies behind
+  `docs/guides` and `docs/research` bodies behind
   `effigy qa:docs:links`
 - `validate-focused-packages.sh` — one nextest invocation and one
   warnings-denied all-target clippy invocation for one to four explicit

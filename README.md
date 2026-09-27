@@ -167,7 +167,7 @@ effigy qa
 Live and authenticated probes are separate, opt-in tasks. Normal QA is
 credential-free and must not contact providers.
 
-Repository knowledge (architecture, contracts, vision) and the plan start at
+Repository knowledge (architecture, contracts, vision) starts at
 [docs/README.md](docs/README.md). Contribution rules are in
 [CONTRIBUTING.md](CONTRIBUTING.md).
 

@@ -23,7 +23,8 @@ Read, in order, then follow the latest of these over memory:
 
 1. this skill and `reference.md`
 2. the task brief, when Queue dispatched this run
-3. the version-currentness item in `docs/plan.md` (deferrals and open stops)
+3. the `version-currentness` Queue lane document and its leads (deferrals
+   and open stops)
 4. Contract 029 Upgrade Workflow, No Terminal Stop, and Recurring Currentness
    Checkpoint
 5. `docs/knowledge/operations/version-currentness-checkpoint.md`
@@ -61,7 +62,8 @@ rediscover them.
 - **Decoder specimens stay** unless adapter mapping changed. Frozen
   historical corpora stay.
 - **Do not reopen closed families** from this sweep.
-- **Respect recorded deferrals** in the plan's version-currentness item.
+- **Respect recorded deferrals** in the `version-currentness` lane and its
+  leads.
   Completing every other family does not lift one; only the operator does.
 - **No terminal stop.** A stop moves no claim but is never an endpoint: the
   planner adds an adaptation task that qualifies the current official stable
@@ -118,7 +120,7 @@ Otherwise rank from current claims, not from a frozen research table:
 4. Prefer `AllowUnverified` families whose official and/or host stable is
    newer than the qualified ceiling, and whose host already sits on a
    qualified bound.
-5. Skip deferrals recorded in the plan's version-currentness item.
+5. Skip deferrals recorded in the `version-currentness` lane and its leads.
 6. Skip exact-pin / qualified-only families unless the operator asked to
    reopen them.
 7. Pick one. Do not start a second family in the same run.

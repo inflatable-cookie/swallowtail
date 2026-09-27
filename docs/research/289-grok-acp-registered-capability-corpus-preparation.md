@@ -383,14 +383,14 @@ minimum mapping, if the operator later promotes the triage lead, is:
   service and reference requirements, bounds, permission/progress posture,
   and reconnect/teardown evidence. Swallowtail still owns the admission,
   bridge lease, call/result correlation, and safe failure boundary.
-- The alternative is routed to the operator through the [main triage lead](../triage/2026-09-07-grok-native-mcp-mediation-route-lead.md)
+- The alternative is routed to the operator through the main triage lead (now a Queue lead; the note is in Git history at `7359d6e7`, `docs/triage/2026-09-07-grok-native-mcp-mediation-route-lead.md`)
   recorded at `17e6eab4`; it is not a g05.035 follow-up or implementation
   authorization. Card118 records the ACP disposition and does not change
   runtime.
 
 ### Chatterbox decision — resolved
 
-The [main triage lead](../triage/2026-09-07-grok-native-mcp-mediation-route-lead.md)
+The main triage lead (now a Queue lead; the note is in Git history at `7359d6e7`, `docs/triage/2026-09-07-grok-native-mcp-mediation-route-lead.md`)
 at `17e6eab4` resolves the conditional question: runtime remains withheld and
 no native Grok MCP mediation route is authorized under g05.035. The alternative
 is operator-only triage after an exact probe result; this research does not

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check front-door Markdown links plus knowledge, guide, research and triage bodies.
+"""Check front-door Markdown links plus knowledge, guide and research bodies.
 
 Keeps `qa:docs:links` bounded to tracked docs surfaces. The whole-repository
 link and anchor check is `effigy skill run northstar/cut -- check-links`.
@@ -22,7 +22,6 @@ FRONT_DOOR = [
     "SECURITY.md",
     "SUPPORT.md",
     "docs/README.md",
-    "docs/plan.md",
     "docs/releases/README.md",
     "docs/releases/0.1.0.md",
     "docs/releases/0.1.1.md",
@@ -37,7 +36,6 @@ CORPUS_DIRS = (
     ROOT / "docs/knowledge",
     ROOT / "docs/guides",
     ROOT / "docs/research",
-    ROOT / "docs/triage",
 )
 
 

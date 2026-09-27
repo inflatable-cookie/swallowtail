@@ -1,3 +1,6 @@
+use std::fs::OpenOptions;
+use std::io::{self, Write};
+use std::path::Path;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{CleanupOutcome, TerminalStatus};
 
@@ -91,6 +94,8 @@ pub struct HttpMcpLiveRecord {
     tools_listed: bool,
     tool_called: bool,
     tool_result: bool,
+    terminal_status: &'static str,
+    terminal_code: Option<String>,
     terminal_completed: bool,
     cleanup_clean: bool,
     cleanup_class: HttpMcpCleanupClass,
@@ -103,7 +108,7 @@ pub struct HttpMcpLiveRecord {
 /// Named failure when the one authorized attempt did not honour the entry.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum HttpMcpLiveStop {
-    /// Host executable was not exact `0.79.0`.
+    /// Host executable was not exact `0.81.2`.
     HostVersion,
     /// No already-configured model was usable without a login.
     NoUsableModel,
@@ -139,6 +144,10 @@ impl HttpMcpLiveRecord {
         let tool_called = transcript.tool_called();
         let tool_result = transcript.tool_result() == Some(super::HTTP_MCP_LIVE_TOOL_RESULT);
         let terminal_completed = matches!(terminal, TerminalStatus::Completed);
+        let terminal_status = terminal_status(terminal);
+        let terminal_code = terminal
+            .failure()
+            .map(|failure| failure.diagnostic().code().to_owned());
         let cleanup_clean = matches!(cleanup, CleanupOutcome::Clean);
         let kept_cleanup = KeptCleanup::from_outcome(&cleanup);
         let stop = if !connected {
@@ -168,6 +177,8 @@ impl HttpMcpLiveRecord {
             tools_listed,
             tool_called,
             tool_result,
+            terminal_status,
+            terminal_code,
             terminal_completed,
             cleanup_clean,
             cleanup_class: kept_cleanup.class,
@@ -186,6 +197,8 @@ impl HttpMcpLiveRecord {
             tools_listed: false,
             tool_called: false,
             tool_result: false,
+            terminal_status: "not_started",
+            terminal_code: None,
             terminal_completed: false,
             cleanup_clean: false,
             cleanup_class: HttpMcpCleanupClass::NotAttempted,
@@ -230,6 +243,18 @@ impl HttpMcpLiveRecord {
     #[must_use]
     pub const fn terminal_completed(&self) -> bool {
         self.terminal_completed
+    }
+
+    /// Stable terminal status name, without provider request or message data.
+    #[must_use]
+    pub(crate) const fn terminal_status(&self) -> &'static str {
+        self.terminal_status
+    }
+
+    /// Typed terminal diagnostic code, when terminal status is a failure.
+    #[must_use]
+    pub(crate) fn terminal_diagnostic_code(&self) -> Option<&str> {
+        self.terminal_code.as_deref()
     }
 
     /// Session cleanup joined clean.
@@ -289,6 +314,77 @@ impl HttpMcpLiveRecord {
             && self.cleanup_clean
             && self.stop.is_none()
     }
+
+    /// Serializes only the secret-free evidence required to classify the attempt.
+    #[must_use]
+    pub(crate) fn to_json_line(&self) -> String {
+        serde_json::json!({
+            "schema_version": 1,
+            "accepted": self.accepted(),
+            "stop": self.stop().map(HttpMcpLiveStop::as_str),
+            "model": self.model(),
+            "declaration_sent": self.declaration_sent(),
+            "connected": self.connected(),
+            "tools_listed": self.tools_listed(),
+            "tool_called": self.tool_called(),
+            "tool_result": self.tool_result(),
+            "terminal": {
+                "status": self.terminal_status(),
+                "code": self.terminal_diagnostic_code(),
+            },
+            "cleanup": {
+                "class": self.cleanup_class().as_str(),
+                "code": self.cleanup_diagnostic_code(),
+                "stage": self.cleanup_diagnostic_stage(),
+            },
+        })
+        .to_string()
+    }
+}
+
+fn terminal_status(status: &TerminalStatus) -> &'static str {
+    match status {
+        TerminalStatus::Completed => "completed",
+        TerminalStatus::Detached => "detached",
+        TerminalStatus::Cancelled => "cancelled",
+        TerminalStatus::TimedOut => "timed_out",
+        TerminalStatus::ProviderRequestObserved(_) => "provider_request_observed",
+        TerminalStatus::ProviderFailed(_) => "provider_failed",
+        TerminalStatus::HostFailed(_) => "host_failed",
+        TerminalStatus::RuntimeFailed(_) => "runtime_failed",
+    }
+}
+
+/// Persists a record and writes the same JSON line to the selected output.
+///
+/// Any persistence or output error is returned so the live gate can fail
+/// closed. The output includes only redacted typed evidence, never a raw
+/// provider stream, bearer, account, session id, or host path.
+pub(crate) fn persist_and_print_record(
+    record: &HttpMcpLiveRecord,
+    record_path: &Path,
+    output: &mut impl Write,
+) -> io::Result<()> {
+    if let Some(parent) = record_path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    let json = record.to_json_line();
+    let mut file = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(record_path)?;
+    file.write_all(json.as_bytes())?;
+    file.write_all(b"\n")?;
+    file.sync_all()?;
+    drop(file);
+    if !record_path.is_file() {
+        return Err(io::Error::new(
+            io::ErrorKind::NotFound,
+            "live gate record file was not written",
+        ));
+    }
+    writeln!(output, "CLAUDE_AGENT_ACP_HTTP_MCP_RECORD={json}")?;
+    Ok(())
 }
 
 /// Secret-free cleanup evidence kept from one [`CleanupOutcome`].

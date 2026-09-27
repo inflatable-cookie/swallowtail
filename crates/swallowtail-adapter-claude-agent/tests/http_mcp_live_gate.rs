@@ -5,7 +5,7 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use http_mcp_live::{
     DisposableHttpMcpServer, HTTP_MCP_LIVE_TOOL, HTTP_MCP_LIVE_TOOL_RESULT, HttpMcpLiveRecord,
-    HttpMcpLiveStop,
+    HttpMcpLiveStop, persist_and_print_record,
 };
 use std::ffi::OsString;
 use std::path::{Path, PathBuf};
@@ -30,12 +30,12 @@ use swallowtail_runtime::{
 
 const LIVE_GATE: &str = "SWALLOWTAIL_LIVE_CLAUDE_AGENT_ACP_HTTP_MCP";
 const LIVE_MODEL: &str = "claude-sonnet-4-6";
-/// Research 361 accepted honouring on exact `0.79.0` only. Raising
-/// `CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION` does not extend that result.
-const HTTP_MCP_HONOURING_VERSION: &str = "0.79.0";
+/// Research 361 accepted honouring on exact `0.79.0` only. This gate tests the
+/// separately authorized current point, exact `0.81.2`.
+const HTTP_MCP_HONOURING_VERSION: &str = "0.81.2";
 
 #[test]
-#[ignore = "requires SWALLOWTAIL_LIVE_CLAUDE_AGENT_ACP_HTTP_MCP=1, repo-local claude-agent-acp 0.79.0, and local Claude subscription auth"]
+#[ignore = "requires SWALLOWTAIL_LIVE_CLAUDE_AGENT_ACP_HTTP_MCP=1, repo-local claude-agent-acp 0.81.2, and local Claude subscription auth"]
 fn one_authorized_claude_agent_acp_http_mcp_live_attempt() {
     assert_eq!(
         std::env::var(LIVE_GATE).as_deref(),
@@ -43,19 +43,21 @@ fn one_authorized_claude_agent_acp_http_mcp_live_attempt() {
         "Claude Agent ACP HTTP MCP live gate requires its explicit env gate"
     );
     let record = run_one_attempt();
-    eprintln!(
-        "claude-agent.acp http mcp live record accepted={} stop={:?} cleanup_class={} cleanup_code={:?} cleanup_stage={:?} model={:?}",
-        record.accepted(),
-        record.stop().map(HttpMcpLiveStop::as_str),
-        record.cleanup_class().as_str(),
-        record.cleanup_diagnostic_code(),
-        record.cleanup_diagnostic_stage(),
-        record.model()
-    );
+    let record_path = live_record_path();
+    persist_and_print_record(&record, &record_path, &mut std::io::stdout().lock())
+        .expect("live gate must persist and print its typed record");
+    assert!(record_path.is_file(), "live gate record file must exist");
     assert!(
         record.accepted() || record.stop().is_some(),
         "one attempt must accept or name a typed stop: {record:?}"
     );
+}
+
+fn live_record_path() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .join("target/claude-agent-acp-http-mcp-live")
+        .join(format!("attempt-{}.json", std::process::id()))
 }
 
 fn run_one_attempt() -> HttpMcpLiveRecord {

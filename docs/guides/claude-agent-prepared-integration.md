@@ -128,17 +128,19 @@ header values never appear in failures, diagnostics, activity, receipts,
 the wire JSON stays crate-private. The provider also maps `stdio` and `sse`;
 this route emits `http` only. `sse` stays modelled through
 `ClaudeAgentAcpRemoteMcpPlacement::sse` and is refused. Research 351 records no
-provider gate on the `0.79.0` map.
+live result; Research 361 later accepted the exact `0.79.0` point.
 
 The Contract 061 placement projection names `consumer-supplied-http` when an
 HTTP entry is bound. Research 361 accepted live honouring of that HTTP entry
-on exact `0.79.0` (`client_mcp_servers` Yes). The second authorized attempt
-connected, listed the tool, completed one tool call, ended the turn
-`Completed`, and closed `Clean`; the recorded model `claude-sonnet-4-6` is
-provenance. The first attempt was not accepted (typed stop `cleanup_failed`;
-Research 352), and its record kept no diagnostic code (diagnosis:
-Research 355). Later points in the window stay unqualified for honouring.
-stdio MCP live honouring is not that evidence.
+on exact `0.79.0`; Research 364 accepts exact `0.81.2` as well, so
+`client_mcp_servers` is Yes on those two exact points. On `0.81.2`, the
+persisted gate record confirms connection, tool listing, one successful tool
+call, a `Completed` turn, and `Clean` cleanup (class `clean`, no code or
+stage); the recorded model `claude-sonnet-4-6` is provenance. The first
+`0.81.2` attempt was spent but its output record was lost when cargo captured
+`eprintln`; its result is not reconstructed. The earlier exact `0.79.0`
+attempt history remains in Research 352/355/361. Other window points stay
+unqualified for honouring. stdio MCP live honouring is not that evidence.
 
 Local subscription access means the approved ACP process inherits the selected
 environment and uses authentication already held by the local Claude

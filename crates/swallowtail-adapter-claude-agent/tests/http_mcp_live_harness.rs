@@ -10,9 +10,9 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use http_mcp_live::{
     DisposableHttpMcpServer, HTTP_MCP_LIVE_TOOL, HTTP_MCP_LIVE_TOOL_RESULT, HttpMcpCleanupClass,
-    HttpMcpLiveRecord, HttpMcpLiveStop,
+    HttpMcpLiveRecord, HttpMcpLiveStop, persist_and_print_record,
 };
-use serde_json::json;
+use serde_json::{Value, json};
 use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::time::Duration;
@@ -234,6 +234,59 @@ fn harness_proves_declaration_connect_list_call_result_and_cleanup() {
         !debug_record.contains(server.bearer()) && !debug_record.contains(server.endpoint()),
         "live record Debug must not carry the URL or bearer"
     );
+
+    let record_dir = unique_record_test_dir();
+    let record_path = record_dir.join("attempt.json");
+    let mut printed = Vec::new();
+    persist_and_print_record(&record, &record_path, &mut printed)
+        .expect("fake-agent record persists and prints");
+    let persisted = std::fs::read_to_string(&record_path).expect("persisted record is readable");
+    let rendered = record.to_json_line();
+    assert_eq!(persisted, format!("{rendered}\n"));
+    assert_eq!(
+        String::from_utf8(printed).expect("record output is UTF-8"),
+        format!("CLAUDE_AGENT_ACP_HTTP_MCP_RECORD={rendered}\n")
+    );
+    let value: Value = serde_json::from_str(&persisted).expect("record is valid JSON");
+    assert_eq!(value["accepted"], true);
+    assert_eq!(value["stop"], Value::Null);
+    assert_eq!(value["model"], "fixture");
+    assert_eq!(value["terminal"]["status"], "completed");
+    assert_eq!(value["terminal"]["code"], Value::Null);
+    assert_eq!(value["cleanup"]["class"], "clean");
+    assert_eq!(value["cleanup"]["code"], Value::Null);
+    assert_eq!(value["cleanup"]["stage"], Value::Null);
+    assert!(!persisted.contains(server.bearer()));
+    assert!(!persisted.contains(server.endpoint()));
+    std::fs::remove_dir_all(record_dir).expect("test record directory removes");
+}
+
+#[test]
+fn gate_record_writer_fails_when_it_cannot_persist_the_record() {
+    let blocker = unique_record_test_dir();
+    std::fs::write(&blocker, b"not a directory").expect("file blocks record directory");
+    let record_path = blocker.join("attempt.json");
+    let record = HttpMcpLiveRecord::pre_attempt_stop(HttpMcpLiveStop::HostVersion, None);
+    let mut printed = Vec::new();
+    let result = persist_and_print_record(&record, &record_path, &mut printed);
+    assert!(result.is_err(), "gate must fail when persistence fails");
+    assert!(
+        printed.is_empty(),
+        "no record is printed before persistence"
+    );
+    assert!(!record_path.exists());
+    std::fs::remove_file(blocker).expect("blocking file removes");
+}
+
+fn unique_record_test_dir() -> std::path::PathBuf {
+    let nonce = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("system clock follows UNIX epoch")
+        .as_nanos();
+    std::env::temp_dir().join(format!(
+        "swallowtail-http-mcp-record-test-{}-{nonce}",
+        std::process::id()
+    ))
 }
 
 /// Runs the fake HTTP MCP honouring tuple to `Completed`, then closes the
@@ -327,6 +380,16 @@ fn harness_keeps_the_cleanup_diagnostic_when_close_crosses_its_deadline() {
         Some("swallowtail.session_cleanup.deadline_expired"),
         "the record must keep the typed cleanup diagnostic, not only the stop name"
     );
+    let value: Value = serde_json::from_str(&record.to_json_line()).expect("record JSON parses");
+    assert_eq!(value["accepted"], false);
+    assert_eq!(value["stop"], "cleanup_failed");
+    assert_eq!(value["terminal"]["status"], "completed");
+    assert_eq!(value["cleanup"]["class"], "failed");
+    assert_eq!(
+        value["cleanup"]["code"],
+        "swallowtail.session_cleanup.deadline_expired"
+    );
+    assert_eq!(value["cleanup"]["stage"], Value::Null);
 }
 
 #[test]

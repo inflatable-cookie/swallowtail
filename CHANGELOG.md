@@ -16,9 +16,10 @@ annotated Git tags from the canonical repository.
   compaction `cancel()` interrupt that is a no-op without advertised
   `session.compaction`; `0.81.0` adds capability-gated session notices;
   `0.81.1` extracts managed-policy env apply; `0.81.2` adds unmapped native
-  subagent and exit-plan surfaces. HTTP MCP honouring stays exact `0.79.0`
-  (Research 361). Unpublished gaps stay incompatible; synthetic unpublished
-  `0.82.0` remains visible `UnverifiedNewer`. The repo-local sidecar pin
+  subagent and exit-plan surfaces. HTTP MCP honouring is accepted on exact
+  `0.79.0` and `0.81.2` (Research 361, 364). Unpublished gaps stay
+  incompatible; synthetic unpublished `0.82.0` remains visible
+  `UnverifiedNewer`. The repo-local sidecar pin
   follows `0.81.2`. Claude Code stream-JSON and the Claude Agent SDK sidecar
   stay separate families. Research 363.
 - accept `gemini-cli.acp` HTTP MCP honouring on host exact `0.61.0`.
@@ -39,10 +40,11 @@ annotated Git tags from the canonical repository.
   (cleanup class `clean`, no code, no stage; model `claude-sonnet-4-6` as
   provenance). The harness proof passed first; the pin, host install,
   login, auth, gate deadline, and production cleanup path are unchanged.
-  `client_mcp_servers` is Yes on exact `0.79.0` only, with the route matrix
-  and guide in step. The Research 352 spent stop stays unreconstructed.
-  No raw provider stream, bearer, account, session id, or private path is
-  retained.
+  Research 361 retains the exact `0.79.0` acceptance as prior evidence;
+  Research 364 extends `client_mcp_servers` to exact `0.81.2` after one
+  additional authorized attempt. The earlier Research 352 spent stop stays
+  unreconstructed. No raw provider stream, bearer, account, session id, or
+  private path is retained.
 - spend the one authorized `gemini-cli.acp` HTTP MCP live attempt on host
   exact `0.61.0`. Research 360: harness proof passed first on the read-only
   Plan profile; frozen `0.61.0` evidence explains Research 356's

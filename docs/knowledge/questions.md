@@ -91,3 +91,19 @@ want no shell at the existing `disabled_tools` control. `2.0.0` is a
 same-package major-line reset with an otherwise unchanged local-server
 surface; B qualifies it as the same axis.
 
+## Q-005 — Does "release notes are behavioural authority" govern future Antigravity qualification?
+
+Status: open
+Asked: 2026-09-28
+
+On 2026-09-15 Tom ruled that official release notes were the behavioural
+authority for the five Antigravity hops through `1.2.2` (Research 323; source
+`49b0d308:docs/logs/2026-09-15-antigravity-1-2-2-identity.md`). The source
+scopes it to that task. Contract 029 "Artifact Authority Without Public
+Source" makes the shipped artifact the authority and a changelog discovery
+evidence only.
+
+Recommendation: keep the ruling scoped to those hops. Future Antigravity
+qualification follows Contract 029: artifact evidence decides, release notes
+only find candidates, as Research 353 and 359 did.
+

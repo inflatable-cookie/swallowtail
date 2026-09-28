@@ -444,6 +444,11 @@ semantics.
 
 ## Exclusions
 
+Tom's 2026-07-30 ruling keeps management-binding persistence deferred until a
+consumer has a real requirement to execute provider archive, restore, or
+delete after application restart; only then is a versioned export/import
+contract justified.
+
 This contract does not add:
 
 - consumer thread persistence or UI

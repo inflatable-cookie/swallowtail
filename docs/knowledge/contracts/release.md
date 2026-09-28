@@ -6,6 +6,9 @@ installer, or model artifact. Versions are coordinated across every package
 (pre-1.0 semver; see Contract 036 for patch versus minor). Release notes live
 in [`docs/releases/`](../../releases/README.md).
 
+Tom ruled on 2026-07-30 that crates.io publication will not be considered
+until months of working-application usage evidence exist.
+
 Use this when preparing a Swallowtail source tag. Authority is
 [Contract 036](036-crate-release-and-compatibility-boundary.md).
 Shared vocabulary: [Key Concepts](../../guides/key-concepts.md). This page does not

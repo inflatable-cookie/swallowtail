@@ -93,7 +93,9 @@ surface; B qualifies it as the same axis.
 
 ## Q-005 — Does "release notes are behavioural authority" govern future Antigravity qualification?
 
-Status: open
+Status: answered 2026-09-28
+Answer: no (Tom). The ruling stays scoped to the five hops through `1.2.2`;
+Contract 029 "Artifact Authority Without Public Source" governs.
 Asked: 2026-09-28
 
 On 2026-09-15 Tom ruled that official release notes were the behavioural

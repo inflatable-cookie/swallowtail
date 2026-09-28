@@ -6,6 +6,17 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- raise both Claude Code stream-JSON ceilings from `2.1.281` to official npm
+  `@anthropic-ai/claude-code` `2.1.283`. Compatible extension: headless stays
+  `claude-code.headless.stream-json.v1` on `2.1.220..=2.1.283`; response-only
+  v1 stays `2.1.227..=2.1.278` on `stream-json.v1` and v2 extends to
+  `2.1.280..=2.1.283` on `stream-json.v2`. Published hop `2.1.282` qualifies.
+  Selected argv, option choices, the `@builtin` safe-mode filter, and
+  default-on `agents-md` stay. `--client-data-url` and the interactive
+  auto-mode default stay unmapped. `AllowUnverified` stays. Unpublished gaps
+  stay incompatible. Synthetic unpublished `2.1.284` is `UnverifiedNewer`.
+  Watcher stays exact `2.1.251`. Claude Agent ACP and the SDK sidecar stay
+  separate families. Research 365.
 - raise the Claude Agent ACP qualified ceiling from `0.79.0` to official npm
   `@agentclientprotocol/claude-agent-acp` `0.81.2`. Compatible extension of
   `claude-agent.acp.initialize-meta-extensions-v7`: selected mapped ACP

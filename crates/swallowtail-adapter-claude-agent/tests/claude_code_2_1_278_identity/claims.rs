@@ -148,11 +148,11 @@ fn identity_names_compatible_extension_without_changing_production() {
         "unverified_newer"
     );
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.283");
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.281"
+        "2.1.283"
     );
 
     let headless = claude_code_headless_claim();
@@ -174,6 +174,8 @@ fn identity_names_compatible_extension_without_changing_production() {
     assert!(!headless.permits(&version("2.1.279")));
     assert!(headless.supports(&version("2.1.280")));
     assert!(headless.supports(&version("2.1.281")));
+    assert!(headless.supports(&version("2.1.282")));
+    assert!(headless.supports(&version("2.1.283")));
     let response = claude_code_response_only_claim();
     assert!(matches!(
         response.assess(&version("2.1.270")),
@@ -188,4 +190,6 @@ fn identity_names_compatible_extension_without_changing_production() {
     assert!(!response.permits(&version("2.1.279")));
     assert!(response.supports(&version("2.1.280")));
     assert!(response.supports(&version("2.1.281")));
+    assert!(response.supports(&version("2.1.282")));
+    assert!(response.supports(&version("2.1.283")));
 }

@@ -267,7 +267,7 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 `xhigh`, and `max` reasoning selections, and requires the initialized and
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
-capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.281`,
+capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.283`,
 excluding unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
 `2.1.262`, `2.1.264`, and `2.1.279`; later stable versions remain visible
 `UnverifiedNewer`. Headless does not pass `--safe-mode` and already admits
@@ -299,7 +299,7 @@ selectable here.
 A selection requires one of the exact Claude Code versions Research 226 probed.
 That set is narrower than the route's qualified window:
 
-- published qualified points `2.1.242..=2.1.281` excluding unpublished
+- published qualified points `2.1.242..=2.1.283` excluding unpublished
   `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, `2.1.264`, and
   `2.1.279` were never probed for this feature
 - the compatibility claim permits later stable points as `UnverifiedNewer`, and
@@ -366,7 +366,7 @@ on the route's explicit known-bad deny-list. Two maintained segments share
 claim id `claude-code.response-only.window-1`:
 
 - `2.1.227` through `2.1.278` keep `claude-code.response-only.stream-json.v1`.
-- `2.1.280` through `2.1.281` use `claude-code.response-only.stream-json.v2`
+- `2.1.280` through `2.1.283` use `claude-code.response-only.stream-json.v2`
   under the narrowed built-in-hook guarantee.
 
 Unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
@@ -413,7 +413,7 @@ Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
 qualification. The v1 segment ends at `2.1.278`. The v2 segment ends at
-`2.1.281`. Newer stable versions are provisional until evidence moves that
+`2.1.283`. Newer stable versions are provisional until evidence moves that
 boundary. The static deny-list is unpublished `2.1.244`, `2.1.249`, `2.1.253`
 through `2.1.256`, `2.1.262`, `2.1.264`, and `2.1.279`.
 
@@ -426,7 +426,7 @@ provider surface, disclosed here:
 | Built-in | What it can do | What Swallowtail arguments block |
 | --- | --- | --- |
 | `sec-default` | Policy-only hooks can preserve managed instructions, tool policy, and settings | none; organization-seated policy is provider surface |
-| `agents-md` | Reads ancestor `AGENTS.md` into `prompt.context`; `Read` can add nested instructions. Default off at `2.1.280`, on at `2.1.281` | empty `--tools` blocks the `Read` hook; `prompt.context` still runs |
+| `agents-md` | Reads ancestor `AGENTS.md` into `prompt.context`; `Read` can add nested instructions. Default off at `2.1.280`, on from `2.1.281` through `2.1.283` | empty `--tools` blocks the `Read` hook; `prompt.context` still runs |
 | `telemetry` | Session and engine analytics; can send first-party network requests under provider settings | none on the selected surface; `DISABLE_TELEMETRY`, `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, and `DO_NOT_TRACK` are proven in the frozen module but the approved environment is opaque |
 | `plugin-authoring` | Invocable skill; no hook event | `--disable-slash-commands` and empty tools |
 | `tips` | Session-start tip UI | none mapped onto stream-JSON |

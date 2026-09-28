@@ -192,21 +192,21 @@ fn provisional_newer_binds_init_and_exposes_version_diagnostics() {
     let observer = Arc::new(CapturingDebugObserver::default());
     let local = empty_launch_host(host.clone());
     let prepared =
-        prepared_at_narrowed(host.clone(), "2.1.282", Some(Arc::clone(&observer)), &local);
+        prepared_at_narrowed(host.clone(), "2.1.284", Some(Arc::clone(&observer)), &local);
     assert!(matches!(
         prepared.observation().compatibility(),
         InstalledExecutableCompatibility::UnverifiedNewer(_)
     ));
     assert_eq!(
         prepared.observation().version().version().as_str(),
-        "2.1.282"
+        "2.1.284"
     );
     let run = profile(&prepared, "provisional");
     assert_eq!(
         run.evidence().observation().version().version().as_str(),
-        "2.1.282"
+        "2.1.284"
     );
-    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.282", 1);
+    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.284", 1);
     let (process, state) = FakeProcessService::completed(&output);
     let (services, task) =
         host_services_with_working_resource(host, process, Arc::new(PendingTimeService), &local);
@@ -234,7 +234,7 @@ fn provisional_newer_binds_init_and_exposes_version_diagnostics() {
                 && observation.route() == Some("claude-code.response-only")
                 && observation.stage() == Some(stage)
                 && observation.detail()
-                    == "observed_version=2.1.282; compatibility=unverified-newer"
+                    == "observed_version=2.1.284; compatibility=unverified-newer"
         }));
     }
 }

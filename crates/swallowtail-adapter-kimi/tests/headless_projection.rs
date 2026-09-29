@@ -1,4 +1,10 @@
 use crate::support::{local_topology, prepared, profile};
+use std::collections::BTreeMap;
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
+};
+#[path = "consumer_route_projection/ledger.rs"]
+mod ledger;
 use swallowtail_runtime::{
     ConsumerRouteFeatureId, ConsumerRouteProjectionSourceId, ConsumerRouteRowIdentity,
 };
@@ -23,6 +29,22 @@ fn headless_projection_matches_the_ten_emitted_row_ledger() {
         10,
         "unexpected rows: {:?}",
         rows.iter().map(|row| row.identity()).collect::<Vec<_>>()
+    );
+    const ROUTE: &str = "kimi-code.headless";
+    const RUN: &str = "run";
+    let observed = BTreeMap::from([(RUN, ledger::observed_tuples(ROUTE, &contribution))]);
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        ledger::HEADLESS
+            .iter()
+            .map(|(shape, semantic, emitted)| ConsumerRouteLedgerClaim {
+                identity: (
+                    ROUTE.to_owned(),
+                    (*shape).to_owned(),
+                    (*semantic).to_owned(),
+                ),
+                emitted_by: if *emitted { &[RUN] } else { &[] },
+            }),
     );
     for withheld in [
         ConsumerRouteFeatureId::ModelCatalogue,

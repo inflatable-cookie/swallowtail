@@ -10,7 +10,7 @@ mod headless_support;
 mod live_support;
 
 use futures_executor::block_on;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::num::NonZeroU64;
 use swallowtail_adapter_gemini::{
     GEMINI_ACP_HTTP_MCP_PLACEMENT, GEMINI_ACP_MCP_SERVER_NAME, GEMINI_CLI_ACP_AXIS,
@@ -31,6 +31,9 @@ use swallowtail_runtime::{
     DiscoveryCancellation, EnvironmentRef, ExecutableRef, InstalledExecutableTarget,
     MonotonicInstant, OperationContent, PreparedAccessEvidence, RequestId, ScopeId, SessionOptions,
     WorkingResourceRef,
+};
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
 };
 
 #[test]
@@ -58,6 +61,23 @@ fn candidate_e_gemini_routes_reconcile_executable_projection_truth() {
     assert_eq!(rows("gemini.live", &live).count(), 14);
     assert_eq!(emitted.len(), 29);
     assert_eq!(emitted, expected_emitted());
+    let observed = BTreeMap::from([
+        ("gemini-cli.acp", observed_tuples("gemini-cli.acp", &acp)),
+        (
+            "gemini-cli.headless",
+            observed_tuples("gemini-cli.headless", &headless),
+        ),
+        ("gemini.live", observed_tuples("gemini.live", &live)),
+    ]);
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        LEDGER.iter().map(
+            |(route, shape, semantic, emitted_by)| ConsumerRouteLedgerClaim {
+                identity: (*route, *shape, (*semantic).to_owned()),
+                emitted_by,
+            },
+        ),
+    );
 
     // The 14 Gemini omissions are checked against the executable projections,
     // not counted from an audit ledger. Grok's companion proof supplies 10/3.
@@ -190,6 +210,321 @@ fn semantic(row: &swallowtail_runtime::ConsumerRouteProjectionRow) -> String {
         |extension| extension.semantic_id().to_owned(),
     )
 }
+const LEDGER: [(&str, &str, &str, &[&str]); 43] = [
+    (
+        "gemini-cli.acp",
+        "route-capability",
+        "feature.prepared-facade",
+        &["gemini-cli.acp"],
+    ),
+    (
+        "gemini-cli.acp",
+        "interactive-session",
+        "feature.interactive-session",
+        &["gemini-cli.acp"],
+    ),
+    (
+        "gemini-cli.acp",
+        "route-observation",
+        "feature.streaming-events",
+        &["gemini-cli.acp"],
+    ),
+    (
+        "gemini-cli.acp",
+        "route-capability",
+        "feature.cancellation-or-interruption",
+        &["gemini-cli.acp"],
+    ),
+    (
+        "gemini-cli.acp",
+        "route-capability",
+        "feature.working-resource",
+        &["gemini-cli.acp"],
+    ),
+    (
+        "gemini-cli.acp",
+        "route-observation",
+        "feature.activity-observation",
+        &["gemini-cli.acp"],
+    ),
+    (
+        "gemini-cli.acp",
+        "interactive-session",
+        "control.harness-mode",
+        &["gemini-cli.acp"],
+    ),
+    (
+        "gemini-cli.headless",
+        "route-capability",
+        "feature.prepared-facade",
+        &["gemini-cli.headless"],
+    ),
+    (
+        "gemini-cli.headless",
+        "structured-run",
+        "feature.structured-run",
+        &["gemini-cli.headless"],
+    ),
+    (
+        "gemini-cli.headless",
+        "route-observation",
+        "feature.streaming-events",
+        &["gemini-cli.headless"],
+    ),
+    (
+        "gemini-cli.headless",
+        "route-observation",
+        "feature.usage-evidence",
+        &["gemini-cli.headless"],
+    ),
+    (
+        "gemini-cli.headless",
+        "route-capability",
+        "feature.cancellation-or-interruption",
+        &["gemini-cli.headless"],
+    ),
+    (
+        "gemini-cli.headless",
+        "route-capability",
+        "feature.working-resource",
+        &["gemini-cli.headless"],
+    ),
+    (
+        "gemini-cli.headless",
+        "route-observation",
+        "feature.activity-observation",
+        &["gemini-cli.headless"],
+    ),
+    (
+        "gemini-cli.headless",
+        "structured-run",
+        "control.model-selection",
+        &["gemini-cli.headless"],
+    ),
+    (
+        "gemini.live",
+        "route-capability",
+        "feature.prepared-facade",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "realtime-media-session",
+        "feature.realtime-media-session",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "route-observation",
+        "feature.streaming-events",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "route-observation",
+        "feature.usage-evidence",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "route-capability",
+        "feature.output-token-limit",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "route-capability",
+        "feature.reasoning-selection",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "route-capability",
+        "feature.cancellation-or-interruption",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "route-capability",
+        "feature.planned-connection-rollover",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "route-observation",
+        "feature.activity-observation",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "realtime-media-session",
+        "control.reasoning-selection",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "realtime-media-session",
+        "control.maximum-output-tokens",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "realtime-media-session",
+        "control.realtime-media-config",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "realtime-media-session",
+        "control.context-window-compression",
+        &["gemini.live"],
+    ),
+    (
+        "gemini.live",
+        "realtime-media-session",
+        "control.planned-connection-rollover",
+        &["gemini.live"],
+    ),
+    (
+        "gemini-cli.acp",
+        "model-catalogue",
+        "feature.model-catalogue",
+        &[],
+    ),
+    (
+        "gemini-cli.acp",
+        "structured-run",
+        "feature.structured-run",
+        &[],
+    ),
+    (
+        "gemini-cli.acp",
+        "route-observation",
+        "feature.usage-evidence",
+        &[],
+    ),
+    (
+        "gemini-cli.acp",
+        "route-capability",
+        "feature.bounded-workspace-text-write",
+        &[],
+    ),
+    (
+        "gemini-cli.acp",
+        "route-capability",
+        "feature.owned-remote-resource-cleanup",
+        &[],
+    ),
+    (
+        "gemini-cli.acp",
+        "session-lifecycle",
+        "feature.persistent-session-posture",
+        &[],
+    ),
+    (
+        "gemini-cli.acp",
+        "route-observation",
+        "feature.negotiated-model-options-observation",
+        &[],
+    ),
+    (
+        "gemini-cli.headless",
+        "model-catalogue",
+        "feature.model-catalogue",
+        &[],
+    ),
+    (
+        "gemini-cli.headless",
+        "interactive-session",
+        "feature.interactive-session",
+        &[],
+    ),
+    (
+        "gemini-cli.headless",
+        "route-capability",
+        "feature.bounded-workspace-text-write",
+        &[],
+    ),
+    (
+        "gemini-cli.headless",
+        "route-capability",
+        "feature.owned-remote-resource-cleanup",
+        &[],
+    ),
+    (
+        "gemini-cli.headless",
+        "session-lifecycle",
+        "feature.persistent-session-posture",
+        &[],
+    ),
+    (
+        "gemini.live",
+        "model-catalogue",
+        "feature.model-catalogue",
+        &[],
+    ),
+    (
+        "gemini.live",
+        "session-lifecycle",
+        "feature.persistent-session-posture",
+        &[],
+    ),
+];
+
+fn observed_tuples(
+    route: &'static str,
+    contribution: &ConsumerRouteProjectionContribution,
+) -> BTreeSet<(&'static str, &'static str, String)> {
+    rows(route, contribution)
+        .map(|(_, identity)| {
+            let semantic = canonical_semantic(&identity);
+            let shape = operation_shape(route, &semantic);
+            (route, shape, semantic)
+        })
+        .collect()
+}
+
+fn canonical_semantic(identity: &str) -> String {
+    for (prefix, kind) in [("Feature(", "feature"), ("Control(", "control")] {
+        if let Some(name) = identity
+            .strip_prefix(prefix)
+            .and_then(|name| name.strip_suffix(')'))
+        {
+            let mut semantic = format!("{kind}.");
+            for (index, character) in name.chars().enumerate() {
+                if character.is_uppercase() && index != 0 {
+                    semantic.push('-');
+                }
+                semantic.extend(character.to_lowercase());
+            }
+            return semantic;
+        }
+    }
+    identity.to_owned()
+}
+
+fn operation_shape(route: &str, semantic: &str) -> &'static str {
+    match semantic {
+        "feature.model-catalogue" => "model-catalogue",
+        "feature.structured-run" => "structured-run",
+        "feature.interactive-session" => "interactive-session",
+        "feature.realtime-media-session" => "realtime-media-session",
+        "feature.streaming-events"
+        | "feature.usage-evidence"
+        | "feature.activity-observation"
+        | "feature.negotiated-model-options-observation" => "route-observation",
+        "feature.persistent-session-posture" => "session-lifecycle",
+        value if value.starts_with("control.") => match route {
+            "gemini-cli.acp" => "interactive-session",
+            "gemini-cli.headless" => "structured-run",
+            "gemini.live" => "realtime-media-session",
+            _ => panic!("unexpected Gemini route {route}"),
+        },
+        value if value.starts_with("feature.") => "route-capability",
+        _ => panic!("unexpected Gemini identity {semantic}"),
+    }
+}
+
 fn expected_emitted() -> BTreeSet<(String, String)> {
     [
         ("gemini-cli.acp", "Feature(PreparedFacade)"),

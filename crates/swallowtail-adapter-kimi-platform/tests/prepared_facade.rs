@@ -7,6 +7,7 @@ mod support;
 use fixture::Fixture;
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use std::collections::{BTreeMap, BTreeSet};
 use std::num::NonZeroU64;
 use swallowtail_adapter_kimi_platform::{
     KIMI_PLATFORM_ENDPOINT_AUDIENCE, KIMI_PLATFORM_MODEL_ID, KimiPlatformCatalogueProfileInput,
@@ -18,10 +19,12 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{CleanupOutcome, OperationContent, RequestId, TerminalStatus};
 use swallowtail_runtime::{
-    ConsumerRouteControlId, ConsumerRouteProjectionSourceId, ConsumerRouteRowIdentity,
+    ConsumerRouteControlId, ConsumerRouteFeatureId, ConsumerRouteProjectionContribution,
+    ConsumerRouteProjectionSourceId, ConsumerRouteRowIdentity,
 };
 use swallowtail_testkit::{
-    ExecutionTopologyFixture, assert_observable_activity_not_applicable,
+    ConsumerRouteLedgerClaim, ExecutionTopologyFixture,
+    assert_consumer_route_ledger_emitted_by_facade, assert_observable_activity_not_applicable,
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
 };
 
@@ -107,6 +110,74 @@ fn catalogue_and_exact_k3_attempt_remain_separate_on_both_host_topologies() {
                 == &ConsumerRouteRowIdentity::Control(ConsumerRouteControlId::ModelSelection)
         }));
 
+        const ROUTE: &str = "kimi-platform.chat";
+        const CATALOGUE: &str = "catalogue";
+        const INFERENCE: &str = "inference";
+        const LEDGER: [(&str, &str, &[&str]); 13] = [
+            ("model-catalogue", "feature.model-catalogue", &[CATALOGUE]),
+            ("structured-run", "feature.structured-run", &[INFERENCE]),
+            (
+                "route-observation",
+                "feature.streaming-events",
+                &[INFERENCE],
+            ),
+            ("route-observation", "feature.usage-evidence", &[INFERENCE]),
+            (
+                "route-capability",
+                "feature.output-token-limit",
+                &[INFERENCE],
+            ),
+            (
+                "route-capability",
+                "feature.reasoning-selection",
+                &[INFERENCE],
+            ),
+            (
+                "route-capability",
+                "feature.cancellation-or-interruption",
+                &[],
+            ),
+            (
+                "route-capability",
+                "feature.prepared-facade",
+                &[CATALOGUE, INFERENCE],
+            ),
+            (
+                "route-observation",
+                "feature.activity-observation",
+                &[INFERENCE],
+            ),
+            ("structured-run", "control.model-selection", &[INFERENCE]),
+            (
+                "structured-run",
+                "control.reasoning-selection",
+                &[INFERENCE],
+            ),
+            (
+                "structured-run",
+                "control.maximum-output-tokens",
+                &[INFERENCE],
+            ),
+            (
+                "structured-run",
+                "control.reasoning-and-output-required",
+                &[INFERENCE],
+            ),
+        ];
+        let observed = BTreeMap::from([
+            (CATALOGUE, observed_tuples(ROUTE, &catalogue_projection)),
+            (INFERENCE, observed_tuples(ROUTE, &inference_projection)),
+        ]);
+        assert_consumer_route_ledger_emitted_by_facade(
+            &observed,
+            LEDGER
+                .iter()
+                .map(|(shape, semantic, emitted_by)| ConsumerRouteLedgerClaim {
+                    identity: (ROUTE, *shape, *semantic),
+                    emitted_by,
+                }),
+        );
+
         let mut run =
             block_on(attempt.start_run(fixture.services())).expect("prepared attempt starts");
         let mut events = run.take_events().expect("events");
@@ -125,6 +196,66 @@ fn catalogue_and_exact_k3_attempt_remain_separate_on_both_host_topologies() {
         assert_eq!(fixture.release_after_blocking(), [1, 2]);
         assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
     }
+}
+
+fn observed_tuples(
+    route: &'static str,
+    contribution: &ConsumerRouteProjectionContribution,
+) -> BTreeSet<(&'static str, &'static str, &'static str)> {
+    contribution
+        .selection_rows()
+        .chain(contribution.session_start_rows())
+        .chain(contribution.active_session_rows())
+        .map(|row| {
+            let (shape, semantic) = match row.identity() {
+                ConsumerRouteRowIdentity::Feature(feature) => match feature {
+                    ConsumerRouteFeatureId::ModelCatalogue => {
+                        ("model-catalogue", "feature.model-catalogue")
+                    }
+                    ConsumerRouteFeatureId::StructuredRun => {
+                        ("structured-run", "feature.structured-run")
+                    }
+                    ConsumerRouteFeatureId::StreamingEvents => {
+                        ("route-observation", "feature.streaming-events")
+                    }
+                    ConsumerRouteFeatureId::UsageEvidence => {
+                        ("route-observation", "feature.usage-evidence")
+                    }
+                    ConsumerRouteFeatureId::OutputTokenLimit => {
+                        ("route-capability", "feature.output-token-limit")
+                    }
+                    ConsumerRouteFeatureId::ReasoningSelection => {
+                        ("route-capability", "feature.reasoning-selection")
+                    }
+                    ConsumerRouteFeatureId::PreparedFacade => {
+                        ("route-capability", "feature.prepared-facade")
+                    }
+                    ConsumerRouteFeatureId::ActivityObservation => {
+                        ("route-observation", "feature.activity-observation")
+                    }
+                    other => panic!("unexpected Kimi Platform feature {other:?}"),
+                },
+                ConsumerRouteRowIdentity::Control(control) => {
+                    let semantic = match control {
+                        ConsumerRouteControlId::ModelSelection => "control.model-selection",
+                        ConsumerRouteControlId::ReasoningSelection => "control.reasoning-selection",
+                        ConsumerRouteControlId::MaximumOutputTokens => {
+                            "control.maximum-output-tokens"
+                        }
+                        ConsumerRouteControlId::Namespaced(extension)
+                            if extension.semantic_id()
+                                == "control.reasoning-and-output-required" =>
+                        {
+                            "control.reasoning-and-output-required"
+                        }
+                        other => panic!("unexpected Kimi Platform control {other:?}"),
+                    };
+                    ("structured-run", semantic)
+                }
+            };
+            (route, shape, semantic)
+        })
+        .collect()
 }
 
 fn source(value: &str) -> ConsumerRouteProjectionSourceId {

@@ -17,7 +17,10 @@ use swallowtail_runtime::{
     ConsumerRouteRowIdentity, OperationContent, RequestId, SchemaDocument, ToolDeclaration,
 };
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
+};
 
 #[test]
 fn candidate_i_projection_ledger_is_exact_and_provider_free() {
@@ -115,7 +118,181 @@ fn candidate_i_projection_ledger_is_exact_and_provider_free() {
     // census tuples. The actual contributions above therefore prove 16 unique
     // identities and exactly 19 operation-scoped ledger rows.
     assert_eq!(emitted.len() + 3, 19);
+    const ROUTE: &str = "deepseek.continuation";
+    const CATALOGUE: &str = "catalogue";
+    const RUN: &str = "run";
+    const SESSION: &str = "session";
+    const LEDGER: [(&str, &str, &[&str]); 22] = [
+        ("model-catalogue", "feature.model-catalogue", &[CATALOGUE]),
+        (
+            "route-capability",
+            "feature.prepared-facade",
+            &[CATALOGUE, RUN, SESSION],
+        ),
+        ("structured-run", "feature.structured-run", &[RUN]),
+        (
+            "interactive-session",
+            "feature.interactive-session",
+            &[SESSION],
+        ),
+        (
+            "route-observation",
+            "feature.streaming-events",
+            &[RUN, SESSION],
+        ),
+        (
+            "route-observation",
+            "feature.usage-evidence",
+            &[RUN, SESSION],
+        ),
+        (
+            "route-capability",
+            "feature.output-token-limit",
+            &[RUN, SESSION],
+        ),
+        (
+            "route-capability",
+            "feature.reasoning-selection",
+            &[RUN, SESSION],
+        ),
+        (
+            "route-capability",
+            "feature.consumer-tool-exchange",
+            &[SESSION],
+        ),
+        (
+            "route-capability",
+            "feature.cancellation-or-interruption",
+            &[RUN, SESSION],
+        ),
+        (
+            "route-observation",
+            "feature.activity-observation",
+            &[RUN, SESSION],
+        ),
+        ("structured-run", "control.model-selection", &[RUN]),
+        ("interactive-session", "control.model-selection", &[SESSION]),
+        ("structured-run", "control.reasoning-selection", &[RUN]),
+        (
+            "interactive-session",
+            "control.reasoning-selection",
+            &[SESSION],
+        ),
+        ("structured-run", "control.maximum-output-tokens", &[RUN]),
+        ("structured-run", "control.inference-cache-policy", &[RUN]),
+        (
+            "interactive-session",
+            "control.inference-cache-policy",
+            &[SESSION],
+        ),
+        (
+            "interactive-session",
+            "control.tool-declarations",
+            &[SESSION],
+        ),
+        (
+            "session-lifecycle",
+            "feature.persistent-session-posture",
+            &[],
+        ),
+        (
+            "session-lifecycle",
+            "feature.provider-session-catalogue",
+            &[],
+        ),
+        ("session-lifecycle", "feature.provider-session-history", &[]),
+    ];
+    let observed = BTreeMap::from([
+        (CATALOGUE, observed_tuples(ROUTE, &catalogue)),
+        (RUN, observed_tuples(ROUTE, &run)),
+        (SESSION, observed_tuples(ROUTE, &session)),
+    ]);
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        LEDGER
+            .iter()
+            .map(|(shape, semantic, emitted_by)| ConsumerRouteLedgerClaim {
+                identity: (ROUTE, *shape, *semantic),
+                emitted_by,
+            }),
+    );
     assert!(fixture.server.requests().is_empty());
+}
+
+fn observed_tuples(
+    route: &'static str,
+    contribution: &swallowtail_runtime::ConsumerRouteProjectionContribution,
+) -> BTreeSet<(&'static str, &'static str, &'static str)> {
+    contribution
+        .selection_rows()
+        .chain(contribution.session_start_rows())
+        .chain(contribution.active_session_rows())
+        .map(|row| {
+            let (shape, semantic) = match row.identity() {
+                ConsumerRouteRowIdentity::Feature(feature) => match feature {
+                    ConsumerRouteFeatureId::ModelCatalogue => {
+                        ("model-catalogue", "feature.model-catalogue")
+                    }
+                    ConsumerRouteFeatureId::PreparedFacade => {
+                        ("route-capability", "feature.prepared-facade")
+                    }
+                    ConsumerRouteFeatureId::StructuredRun => {
+                        ("structured-run", "feature.structured-run")
+                    }
+                    ConsumerRouteFeatureId::InteractiveSession => {
+                        ("interactive-session", "feature.interactive-session")
+                    }
+                    ConsumerRouteFeatureId::StreamingEvents => {
+                        ("route-observation", "feature.streaming-events")
+                    }
+                    ConsumerRouteFeatureId::UsageEvidence => {
+                        ("route-observation", "feature.usage-evidence")
+                    }
+                    ConsumerRouteFeatureId::OutputTokenLimit => {
+                        ("route-capability", "feature.output-token-limit")
+                    }
+                    ConsumerRouteFeatureId::ReasoningSelection => {
+                        ("route-capability", "feature.reasoning-selection")
+                    }
+                    ConsumerRouteFeatureId::ConsumerToolExchange => {
+                        ("route-capability", "feature.consumer-tool-exchange")
+                    }
+                    ConsumerRouteFeatureId::CancellationOrInterruption => {
+                        ("route-capability", "feature.cancellation-or-interruption")
+                    }
+                    ConsumerRouteFeatureId::ActivityObservation => {
+                        ("route-observation", "feature.activity-observation")
+                    }
+                    other => panic!("unexpected DeepSeek feature {other:?}"),
+                },
+                ConsumerRouteRowIdentity::Control(control) => {
+                    let shape = match contribution.applicability().operation_shape() {
+                        swallowtail_core::OperationShape::StructuredRun => "structured-run",
+                        swallowtail_core::OperationShape::InteractiveSession => {
+                            "interactive-session"
+                        }
+                        other => panic!("unexpected DeepSeek control shape {other:?}"),
+                    };
+                    let semantic = match control {
+                        ConsumerRouteControlId::ModelSelection => "control.model-selection",
+                        ConsumerRouteControlId::ReasoningSelection => "control.reasoning-selection",
+                        ConsumerRouteControlId::MaximumOutputTokens => {
+                            "control.maximum-output-tokens"
+                        }
+                        ConsumerRouteControlId::ToolDeclarations => "control.tool-declarations",
+                        ConsumerRouteControlId::Namespaced(extension)
+                            if extension.semantic_id() == "control.inference-cache-policy" =>
+                        {
+                            "control.inference-cache-policy"
+                        }
+                        other => panic!("unexpected DeepSeek control {other:?}"),
+                    };
+                    (shape, semantic)
+                }
+            };
+            (route, shape, semantic)
+        })
+        .collect()
 }
 
 fn assert_rows(

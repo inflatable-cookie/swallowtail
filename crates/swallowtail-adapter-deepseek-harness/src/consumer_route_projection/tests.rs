@@ -1,4 +1,7 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
+};
 
 use super::*;
 use crate::{
@@ -143,10 +146,250 @@ fn candidate_i_harness_contributions_reconcile_the_actual_ledger() {
     assert!(!jsonrpc_rows.iter().any(owned_runtime_lifecycle));
     assert!(!web_rows.iter().any(owned_runtime_lifecycle));
 
+    const JSONRPC: &str = "jsonrpc.run";
+    const WEB_RUN: &str = "web.run";
+    const WEB_CATALOGUE: &str = "web.catalogue";
+    const WEB_HISTORY: &str = "web.history";
+    const WEB_FORK: &str = "web.fork";
+    const WEB_ARCHIVE: &str = "web.archive";
+    const WEB_ALL: &[&str] = &[WEB_RUN, WEB_CATALOGUE, WEB_HISTORY, WEB_FORK, WEB_ARCHIVE];
+    const LEDGER: [(&str, &str, &str, &[&str]); 26] = [
+        (
+            JSONRPC_ROUTE,
+            "structured-run",
+            "feature.structured-run",
+            &[JSONRPC],
+        ),
+        (
+            JSONRPC_ROUTE,
+            "route-observation",
+            "feature.streaming-events",
+            &[JSONRPC],
+        ),
+        (
+            JSONRPC_ROUTE,
+            "route-observation",
+            "feature.usage-evidence",
+            &[JSONRPC],
+        ),
+        (
+            JSONRPC_ROUTE,
+            "route-capability",
+            "feature.cancellation-or-interruption",
+            &[JSONRPC],
+        ),
+        (
+            JSONRPC_ROUTE,
+            "route-capability",
+            "feature.working-resource",
+            &[JSONRPC],
+        ),
+        (
+            JSONRPC_ROUTE,
+            "route-capability",
+            "feature.prepared-facade",
+            &[JSONRPC],
+        ),
+        (
+            JSONRPC_ROUTE,
+            "route-observation",
+            "feature.activity-observation",
+            &[JSONRPC],
+        ),
+        (
+            JSONRPC_ROUTE,
+            "structured-run",
+            "control.model-selection",
+            &[JSONRPC],
+        ),
+        (
+            WEB_ROUTE,
+            "structured-run",
+            "feature.structured-run",
+            &[WEB_RUN],
+        ),
+        (
+            WEB_ROUTE,
+            "route-observation",
+            "feature.streaming-events",
+            &[WEB_RUN],
+        ),
+        (
+            WEB_ROUTE,
+            "route-observation",
+            "feature.usage-evidence",
+            &[WEB_RUN],
+        ),
+        (
+            WEB_ROUTE,
+            "route-capability",
+            "feature.cancellation-or-interruption",
+            &[WEB_RUN],
+        ),
+        (
+            WEB_ROUTE,
+            "route-capability",
+            "feature.working-resource",
+            &[WEB_RUN, WEB_CATALOGUE],
+        ),
+        (
+            WEB_ROUTE,
+            "route-capability",
+            "feature.prepared-facade",
+            WEB_ALL,
+        ),
+        (
+            WEB_ROUTE,
+            "route-observation",
+            "feature.activity-observation",
+            &[WEB_RUN],
+        ),
+        (
+            WEB_ROUTE,
+            "structured-run",
+            "control.model-selection",
+            &[WEB_RUN],
+        ),
+        (
+            WEB_ROUTE,
+            "session-lifecycle",
+            "feature.provider-session-catalogue",
+            &[WEB_CATALOGUE],
+        ),
+        (
+            WEB_ROUTE,
+            "session-lifecycle",
+            "feature.provider-session-archive",
+            &[WEB_ARCHIVE],
+        ),
+        (
+            WEB_ROUTE,
+            "session-management",
+            "control.provider-session-fork",
+            &[WEB_FORK],
+        ),
+        (
+            WEB_ROUTE,
+            "session-management",
+            "control.provider-session-archive",
+            &[WEB_ARCHIVE],
+        ),
+        (
+            JSONRPC_ROUTE,
+            "model-catalogue",
+            "feature.model-catalogue",
+            &[],
+        ),
+        (
+            JSONRPC_ROUTE,
+            "session-lifecycle",
+            "feature.persistent-session-posture",
+            &[],
+        ),
+        (
+            JSONRPC_ROUTE,
+            "route-capability",
+            "feature.owned-runtime-lifecycle",
+            &[],
+        ),
+        (WEB_ROUTE, "model-catalogue", "feature.model-catalogue", &[]),
+        (
+            WEB_ROUTE,
+            "session-lifecycle",
+            "feature.persistent-session-posture",
+            &[],
+        ),
+        (
+            WEB_ROUTE,
+            "route-capability",
+            "feature.owned-runtime-lifecycle",
+            &[],
+        ),
+    ];
+    let observed = BTreeMap::from([
+        (JSONRPC, observed_tuples(JSONRPC_ROUTE, &jsonrpc)),
+        (WEB_RUN, observed_tuples(WEB_ROUTE, &run)),
+        (WEB_CATALOGUE, observed_tuples(WEB_ROUTE, &catalogue_rows)),
+        (WEB_HISTORY, observed_tuples(WEB_ROUTE, &history_rows)),
+        (WEB_FORK, observed_tuples(WEB_ROUTE, &fork)),
+        (WEB_ARCHIVE, observed_tuples(WEB_ROUTE, &archive)),
+    ]);
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        LEDGER.iter().map(
+            |(route, shape, semantic, emitted_by)| ConsumerRouteLedgerClaim {
+                identity: (*route, *shape, *semantic),
+                emitted_by,
+            },
+        ),
+    );
     let prepared_emitted = 19 + jsonrpc_rows.len() + web_rows.len();
     assert_eq!(prepared_emitted, 39);
     assert_eq!(prepared_emitted + 2, 41);
     assert_eq!(prepared_emitted + 2 + 6, 47);
+}
+
+fn observed_tuples(
+    route: &'static str,
+    contribution: &ConsumerRouteProjectionContribution,
+) -> BTreeSet<(&'static str, &'static str, &'static str)> {
+    contribution
+        .selection_rows()
+        .chain(contribution.session_start_rows())
+        .chain(contribution.active_session_rows())
+        .map(|row| {
+            let (shape, semantic) = match row.identity() {
+                ConsumerRouteRowIdentity::Feature(feature) => match feature {
+                    ConsumerRouteFeatureId::StructuredRun => {
+                        ("structured-run", "feature.structured-run")
+                    }
+                    ConsumerRouteFeatureId::StreamingEvents => {
+                        ("route-observation", "feature.streaming-events")
+                    }
+                    ConsumerRouteFeatureId::UsageEvidence => {
+                        ("route-observation", "feature.usage-evidence")
+                    }
+                    ConsumerRouteFeatureId::CancellationOrInterruption => {
+                        ("route-capability", "feature.cancellation-or-interruption")
+                    }
+                    ConsumerRouteFeatureId::WorkingResource => {
+                        ("route-capability", "feature.working-resource")
+                    }
+                    ConsumerRouteFeatureId::PreparedFacade => {
+                        ("route-capability", "feature.prepared-facade")
+                    }
+                    ConsumerRouteFeatureId::ActivityObservation => {
+                        ("route-observation", "feature.activity-observation")
+                    }
+                    ConsumerRouteFeatureId::ProviderSessionCatalogue => {
+                        ("session-lifecycle", "feature.provider-session-catalogue")
+                    }
+                    ConsumerRouteFeatureId::ProviderSessionArchive => {
+                        ("session-lifecycle", "feature.provider-session-archive")
+                    }
+                    other => panic!("unexpected Harness feature {other:?}"),
+                },
+                ConsumerRouteRowIdentity::Control(control) => match control {
+                    ConsumerRouteControlId::ModelSelection => {
+                        ("structured-run", "control.model-selection")
+                    }
+                    ConsumerRouteControlId::Namespaced(extension) => {
+                        match extension.semantic_id() {
+                            "control.provider-session-fork" => {
+                                ("session-management", "control.provider-session-fork")
+                            }
+                            "control.provider-session-archive" => {
+                                ("session-management", "control.provider-session-archive")
+                            }
+                            other => panic!("unexpected Harness extension {other}"),
+                        }
+                    }
+                    other => panic!("unexpected Harness control {other:?}"),
+                },
+            };
+            (route, shape, semantic)
+        })
+        .collect()
 }
 
 #[test]

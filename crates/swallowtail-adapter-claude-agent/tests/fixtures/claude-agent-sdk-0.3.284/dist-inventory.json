@@ -1,0 +1,630 @@
+{
+ "compared": [
+  "0.3.270",
+  "0.3.271",
+  "0.3.272",
+  "0.3.273",
+  "0.3.274",
+  "0.3.275",
+  "0.3.276",
+  "0.3.277",
+  "0.3.278",
+  "0.3.280",
+  "0.3.281",
+  "0.3.282",
+  "0.3.283",
+  "0.3.284"
+ ],
+ "package_file_counts": {
+  "0.3.270": 15,
+  "0.3.271": 15,
+  "0.3.272": 15,
+  "0.3.273": 15,
+  "0.3.274": 15,
+  "0.3.275": 15,
+  "0.3.276": 15,
+  "0.3.277": 15,
+  "0.3.278": 15,
+  "0.3.280": 15,
+  "0.3.281": 15,
+  "0.3.282": 19,
+  "0.3.283": 19,
+  "0.3.284": 19
+ },
+ "identical_through_0_3_270_to_0_3_284": [
+  "LICENSE.md",
+  "agentSdkTypes.d.ts",
+  "extractFromBunfs.d.ts",
+  "extractFromBunfs.js"
+ ],
+ "from_0_3_270_to_0_3_271": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.d.ts",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_271_to_0_3_272": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js",
+   "sdk-tools.d.ts",
+   "sdk.d.ts"
+  ]
+ },
+ "from_0_3_272_to_0_3_273": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.d.ts",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_273_to_0_3_274": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_274_to_0_3_275": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_275_to_0_3_276": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js",
+   "sdk-tools.d.ts",
+   "sdk.d.ts"
+  ]
+ },
+ "from_0_3_276_to_0_3_277": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.d.ts",
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_277_to_0_3_278": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js",
+   "sdk-tools.d.ts",
+   "sdk.d.ts"
+  ]
+ },
+ "from_0_3_278_to_0_3_280": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js",
+   "sdk-tools.d.ts"
+  ]
+ },
+ "from_0_3_280_to_0_3_281": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   "bridge.d.ts",
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "from_0_3_281_to_0_3_282": {
+  "added": [
+   "core-276encc2.mjs",
+   "core-5drmq1nt.mjs",
+   "core.d.ts",
+   "core.mjs"
+  ],
+  "removed": [],
+  "changed": [
+   "README.md",
+   "bridge.mjs",
+   "browser-sdk.js",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js",
+   "sdk-tools.d.ts"
+  ]
+ },
+ "from_0_3_282_to_0_3_283": {
+  "added": [
+   "core-3mr1yqt9.mjs",
+   "core-rg0sgcv0.mjs"
+  ],
+  "removed": [
+   "core-276encc2.mjs",
+   "core-5drmq1nt.mjs"
+  ],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "core.mjs",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "core.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js",
+   "sdk-tools.d.ts"
+  ]
+ },
+ "from_0_3_283_to_0_3_284": {
+  "added": [
+   "core-3ctbshc7.mjs",
+   "core-eg2e19h0.mjs"
+  ],
+  "removed": [
+   "core-3mr1yqt9.mjs",
+   "core-rg0sgcv0.mjs"
+  ],
+  "changed": [
+   "bridge.mjs",
+   "browser-sdk.js",
+   "core.mjs",
+   "manifest.json",
+   "manifest.zst.json",
+   "package.json",
+   "sdk-tools.d.ts",
+   "sdk.d.ts",
+   "sdk.mjs"
+  ],
+  "identical": [
+   "LICENSE.md",
+   "README.md",
+   "agentSdkTypes.d.ts",
+   "bridge.d.ts",
+   "browser-sdk.d.ts",
+   "core.d.ts",
+   "extractFromBunfs.d.ts",
+   "extractFromBunfs.js"
+  ]
+ },
+ "hashes": {
+  "LICENSE.md": {
+   "0.3.270": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.271": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.272": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.273": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.274": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.275": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.276": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.277": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.278": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.280": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.281": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.282": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.283": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+   "0.3.284": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a"
+  },
+  "README.md": {
+   "0.3.270": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.271": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.272": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.273": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.274": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.275": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.276": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.277": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.278": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.280": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.281": "a923405f92c474ca40c62d0b5ffb2897aba56f779a7ea36807555b1553d0cdab",
+   "0.3.282": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+   "0.3.283": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+   "0.3.284": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192"
+  },
+  "agentSdkTypes.d.ts": {
+   "0.3.270": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.271": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.272": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.273": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.274": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.275": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.276": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.277": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.278": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.280": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.281": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.282": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.283": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+   "0.3.284": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93"
+  },
+  "bridge.d.ts": {
+   "0.3.270": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.271": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.272": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.273": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.274": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.275": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.276": "3aa177a4c5859dbacd768cead5e660b148e854b834d5bf430e0c489339785295",
+   "0.3.277": "7ec1e671ef30bcd5c39cb2cf636d30790e6e50d3ad04918028a64b648503796c",
+   "0.3.278": "7ec1e671ef30bcd5c39cb2cf636d30790e6e50d3ad04918028a64b648503796c",
+   "0.3.280": "7ec1e671ef30bcd5c39cb2cf636d30790e6e50d3ad04918028a64b648503796c",
+   "0.3.281": "1ee98f40a605ef53c50c31aab8998a3df986298c398e8c95faacefc34fc7bac6",
+   "0.3.282": "1ee98f40a605ef53c50c31aab8998a3df986298c398e8c95faacefc34fc7bac6",
+   "0.3.283": "1ee98f40a605ef53c50c31aab8998a3df986298c398e8c95faacefc34fc7bac6",
+   "0.3.284": "1ee98f40a605ef53c50c31aab8998a3df986298c398e8c95faacefc34fc7bac6"
+  },
+  "bridge.mjs": {
+   "0.3.270": "07a52ffcc827991163e422b0939f30e9fa2c748a65d473545f70c5379f5fc1e9",
+   "0.3.271": "6c64bef3badd8ad9ebb62884c7381ae5b387139624944b5925632b2e6163dcd7",
+   "0.3.272": "7aea8f74c1433621cdea4d478bcda88cb6f9c622cf2968ea79743aa5a39ccfda",
+   "0.3.273": "fbdb34b6806285674a5886d99292a0960102f35910e3b5dc4cf2c52d95de02ec",
+   "0.3.274": "ff16ab1ac7d09052e9768d2565e1ecb592bbbda1cb82ef5cd0ac0e019d6acc07",
+   "0.3.275": "e0f9fa02dc06860f1eea27f489d72ee981d5eecda245d7d96907da874b410250",
+   "0.3.276": "cd342dff0b2e94b65160bbbc2c1887de13df4055e47600224e8ac06eea32fddc",
+   "0.3.277": "af08d269550306e54a12ed99adfc23fa76b20072118e454affda87955d1bee15",
+   "0.3.278": "7011353bdb90d5f03f07c6e6b8f19fbcc5c204608400a2fc5133dfcc5b8acfa8",
+   "0.3.280": "b817ee4520eb37f62610fc6d819c5ec151246d768f681b4ca8481ea0caf5b17f",
+   "0.3.281": "7b96e3c5544cb0b905eceda79cc696275d64202d11fdd6b9709bb47dbe0ccefd",
+   "0.3.282": "4469b2157143af8cb267af5b9583af2c0ac72fc88e3905371674882f22873862",
+   "0.3.283": "c019b56ab6967376951e673ef19e4089533351bbb7c3a45cd4fd133878f70b1c",
+   "0.3.284": "684b2eef359bef0e8c32ad8a00b2fe80363d0deacfaa00bcd691f1808cc2688b"
+  },
+  "browser-sdk.d.ts": {
+   "0.3.270": "0071c301dfe6eeee525e5e68c244582225cceb2601294be6e3b7a11793eb55aa",
+   "0.3.271": "36462e79a0d9a5c7eaddb56ca0b1491a94d4e02cb5bb7234b7c8083d600428cf",
+   "0.3.272": "36462e79a0d9a5c7eaddb56ca0b1491a94d4e02cb5bb7234b7c8083d600428cf",
+   "0.3.273": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+   "0.3.274": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+   "0.3.275": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+   "0.3.276": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+   "0.3.277": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+   "0.3.278": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+   "0.3.280": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+   "0.3.281": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+   "0.3.282": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+   "0.3.283": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+   "0.3.284": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9"
+  },
+  "browser-sdk.js": {
+   "0.3.270": "f51a920dfd0759c2fb4e5bbf53f5acb4c2aa06ce7145f9c30c5cd8e8810f8690",
+   "0.3.271": "c832b8878426dc79c2474bee6dbe8cc8c18b05e41cc132054c8025a83539d733",
+   "0.3.272": "172bb31ebb494160be7536a5ebb0b8093960c48b81c0f942043ca613a8ef8bed",
+   "0.3.273": "194e02ef80b861a81c72236b99b7781e294545280f00c20fdeafc107eb5bb813",
+   "0.3.274": "5c9decfc1a3cc9ed1ec7dcd979b68ccde56ebc8cc132d10048eef14c258b16a4",
+   "0.3.275": "c7b16d6192546c02e2c11d7f17bcd2d690cf32070d4958d6f272bceb4dc7da20",
+   "0.3.276": "44ea6bac382b9e984ade0c764acf03d8206057b8f5117193bb39fac937be8f77",
+   "0.3.277": "8c1998cd317e63e96a6e3b759ad3d4b05acfd2ee138ee889ddf8d0045dd619e3",
+   "0.3.278": "fcbfe14b2ed108078269061fe26e92b78b80de692a8f63e13c7aff053936edb8",
+   "0.3.280": "089bbc86fb0068efa46f7472d83d4d6610dc777ad6aad8276567b0255758ba3e",
+   "0.3.281": "117924506b8a836ca3830ce9b945d7cb42f73aa7471fd46ad98e47ff51872b45",
+   "0.3.282": "c7d37d61fed31c0feeaefb62d188219d007c832542fadeb6ab151bf765bbcfeb",
+   "0.3.283": "16cf7c992012b89ab0fecabb201f121951027cd25e768c6e36889a46ed8efd68",
+   "0.3.284": "51963bedc7d7ab07121a7b138f13722112b7c116f4d808f96b76938b0b549d48"
+  },
+  "core-276encc2.mjs": {
+   "0.3.282": "6dc691df68a7ff003c52de174383cff2cbafd074f61a6950faaa99f4d854cadb"
+  },
+  "core-3ctbshc7.mjs": {
+   "0.3.284": "300b22fb7b2d516e20441a3be2343d62eae09fde0a1b2af3c2086bec115ee5ac"
+  },
+  "core-3mr1yqt9.mjs": {
+   "0.3.283": "b8354a7d47c5c971dcf68e29f30a4ac3f3d37be315468ca23097c745936cc25f"
+  },
+  "core-5drmq1nt.mjs": {
+   "0.3.282": "4e3fc5ba077a5db5553aaa4b63e911d9ccdb6ef066217a64850f7d087304680d"
+  },
+  "core-eg2e19h0.mjs": {
+   "0.3.284": "acf908ea12506af1ebe374d5c981b77c320dc811570f19c083e238bc04c68921"
+  },
+  "core-rg0sgcv0.mjs": {
+   "0.3.283": "46dc9e66a0dd3a8b65d48f3e961232cc1de91a01bd99d4daf131ef3e77abe002"
+  },
+  "core.d.ts": {
+   "0.3.282": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+   "0.3.283": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+   "0.3.284": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8"
+  },
+  "core.mjs": {
+   "0.3.282": "29a8108b2b93f3be612bcea596510ec1639063cd1415df2ca17df31a98588c17",
+   "0.3.283": "7d1917486c8bf37f00e6e63f13ab55e5a1cd1a6344f09cc36f611e21d5d3f10d",
+   "0.3.284": "eaaef071750c68f168588c817f964ea756e11620554e715d15e8ab267b189355"
+  },
+  "extractFromBunfs.d.ts": {
+   "0.3.270": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.271": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.272": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.273": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.274": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.275": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.276": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.277": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.278": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.280": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.281": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.282": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.283": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+   "0.3.284": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984"
+  },
+  "extractFromBunfs.js": {
+   "0.3.270": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.271": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.272": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.273": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.274": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.275": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.276": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.277": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.278": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.280": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.281": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.282": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.283": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+   "0.3.284": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27"
+  },
+  "manifest.json": {
+   "0.3.270": "eb38935d0967ed1a78a75d6203545fbd20d9af6e10bd04a5033bcb3dbfc19582",
+   "0.3.271": "754b3831709a815b61fd418c9d7719f4c90885e609c8f2cf93fc5bb79d9c8d7f",
+   "0.3.272": "52fb9116753ebb0fa9f54e6ce97622f720e06ef0213eee9bb7cdaea1dde4d29a",
+   "0.3.273": "02aa2311fd5d9a4cc9a5aea017b89f5067eec78013bd340f62450719a5393fca",
+   "0.3.274": "5d6fb056dfa62483d690629a59057469ebc3f659f4948d48329358c31b823da5",
+   "0.3.275": "dc27fe6bb284b4b97fdee416a21bda71ad591233724c3e36c56d4a60d11aecdc",
+   "0.3.276": "69cc8d2cb84b25fe6b86f5ff68a51c5da7dba9923944fb1d229eaaad85e25fd2",
+   "0.3.277": "c1e3cdcbdc9e27f68836c1e16234666f7d0d0eba0d3faee8579410eeeb23c609",
+   "0.3.278": "d1bf63d94621d6aa6fb84297b235ddb8f5aaadc9252cef8020d170ef661b2f28",
+   "0.3.280": "6d9840c779f76b2a7e974aa3476be24d1ea477f5dc96abd0096be28a58cb7120",
+   "0.3.281": "9964a1a24a9f7dcf51a088b2343a7d97355bc753e670428972b0c724cdb8371f",
+   "0.3.282": "041abb14aba47e7dd31f8ba83d8102e54b6350d099382cb1def7ab10add415ed",
+   "0.3.283": "e4dc657e4c8dbb087ce7573ac5ea5a75367b5414de1ba5c904a870a09778d2fd",
+   "0.3.284": "89d15995a702c15a37cbc986a33cba415aa93e9671114971e137592aad7b2bd1"
+  },
+  "manifest.zst.json": {
+   "0.3.270": "887398e92a68526b6188fc93b1406a32314bbd683ab16006dc9f42e95274841f",
+   "0.3.271": "83aa9af00f805c53a9c7e30fe11ce1a6f440d5084ea88b84cf2eb4aeeb952283",
+   "0.3.272": "579d469d3ee6b924fcc432facb8f73014a18bd882fbe7e15ae14eba23f9b0ef3",
+   "0.3.273": "371ed3e87c2c1922512d4c972e2d5ce02d3ff8985e81ece6f5cdb06f80632ac8",
+   "0.3.274": "de2405a4413654a49678f5c5bf725cfd6f6c8e0cac3651a79a91af34ee0efd7a",
+   "0.3.275": "27c7c19dcbfb8222554b76861f6cdb083244131029577c1c14378a76d3edeb05",
+   "0.3.276": "f83c20754d4c02135373e5d918d0d6893f3056016041d0056788d85509ee8045",
+   "0.3.277": "849bd6adfdb869fe3764eecb74d62e42cfa311aaf575244773159623b91ca556",
+   "0.3.278": "3c346eba43b94eef481130108c0351ca61ce8127e38747eb67b7b6a91bf380bd",
+   "0.3.280": "fc5e0cb17230f5e64eb904bacf0b155352728f66784df264aef171797edf8435",
+   "0.3.281": "0e2d63f311df5802297b2887ce1cce9aa04c61f3af679a31bcb66d3a6dfc3c0e",
+   "0.3.282": "817eb937c59b7283bf4b5f314aff24f7edc085e71a0c3443bb5d11a3cefc11ee",
+   "0.3.283": "cbdfc55ce4893ca01929659df00b52af36c6842466f257585b10c3539072f7da",
+   "0.3.284": "be06b4c4749fb9dc1898504e2d321a319bbe7ac1f5ff1df6e3c782e8430f52a9"
+  },
+  "package.json": {
+   "0.3.270": "0c87965d4ef196439004d0e9c5dbde184b867fc800dfd2c900ebcbadc8b66393",
+   "0.3.271": "1dfbf19c290fe8b0c8e5f4ae916b647b84db07edf4e7b3b3a553488b1d6fe3da",
+   "0.3.272": "56b4d3a904566e0dd04b4ee11fbdf73d3861bb2337e1d0873e9b4a50f62c71cd",
+   "0.3.273": "07e6dde450139231ec6dd3fde35cf8a7e2832f2782121c4c548e4158a7a6d6d1",
+   "0.3.274": "93070f663fa27fb2e4be37db463b9e410c3fcc02fea85ec2d2ed13e5cfd3f56b",
+   "0.3.275": "42b96e618238980f1b596e465aa9037b756202232d3b63feb321deeacbed4d33",
+   "0.3.276": "27db2cccced4b7a11ab151b6ff1d79df6688785b32d00a8e06dc5bab500cf3cd",
+   "0.3.277": "cc8bb99cca51156bd3859bfe553bef6dc2d7df601ec32e6c7d626e4dad7c0f94",
+   "0.3.278": "762d2e6150885396e3211ac671120a7490ae5a4074c33515bcf2ae5820091ac2",
+   "0.3.280": "1b088aefaa33134531f1840976e87cc1fce2383deff646a75e7a5bdd78cf18c8",
+   "0.3.281": "5e1a695c14fa5a5df65af2592f802dcd69d238aef7dfacd3bd949b27bdc09657",
+   "0.3.282": "09edf69454d48dc601e4778bd2ae195bf1307a7cc9029ffc02d2a32a99a3740c",
+   "0.3.283": "35b69121e47f66bc1fbc41804523c38b542c012719c4f2a99eeee5723511e77d",
+   "0.3.284": "5045b4b1e147978878f3c5cbc7fb241e697ad9ea384468e0dbdb7d02f6bea272"
+  },
+  "sdk-tools.d.ts": {
+   "0.3.270": "66d864d04c989d0436b7954734187336bb31a09b47a17a56382939dc38c83c5e",
+   "0.3.271": "86a72376b3f82fd077e550704061c1cfdbbc64395f500bd2402ff39481f5fe2e",
+   "0.3.272": "86a72376b3f82fd077e550704061c1cfdbbc64395f500bd2402ff39481f5fe2e",
+   "0.3.273": "6c994dbe48f2f3e50485d875d0e23247558f4ecf25732e64510a00b115aa474c",
+   "0.3.274": "715f31952cf047959dcd695c5471c7bb36759a6a50dfe74df1deb374c5698745",
+   "0.3.275": "7c5689f18dd70cc079bbddd86db1b1e886ecb98a3c19f3317d40148cd9f2f772",
+   "0.3.276": "7c5689f18dd70cc079bbddd86db1b1e886ecb98a3c19f3317d40148cd9f2f772",
+   "0.3.277": "4fdbd64f76e190800f48e93ddf4edcf6f3c87187396b586a75de808a78d8c1c4",
+   "0.3.278": "4fdbd64f76e190800f48e93ddf4edcf6f3c87187396b586a75de808a78d8c1c4",
+   "0.3.280": "4fdbd64f76e190800f48e93ddf4edcf6f3c87187396b586a75de808a78d8c1c4",
+   "0.3.281": "b33fdb2cf0af6559a111ae602ab259767883510456492907d2cdf4eec794b417",
+   "0.3.282": "b33fdb2cf0af6559a111ae602ab259767883510456492907d2cdf4eec794b417",
+   "0.3.283": "b33fdb2cf0af6559a111ae602ab259767883510456492907d2cdf4eec794b417",
+   "0.3.284": "5f159fcf690556d5d8674a663d21b9043df132f4f0d2c4db7dcd156935723b0e"
+  },
+  "sdk.d.ts": {
+   "0.3.270": "851c62ed778ee56625537a608ef93fbb53445a687eac9314ae6c758c94f1ce44",
+   "0.3.271": "c743250b0cd980dfba841451bc13a593a92ba014fc338d5ec12a336d5ba3dc5b",
+   "0.3.272": "c743250b0cd980dfba841451bc13a593a92ba014fc338d5ec12a336d5ba3dc5b",
+   "0.3.273": "74b8968aa635680932a74074d554dfc170898586c0a58d7cc446556b75d047ee",
+   "0.3.274": "c653c4e4d359214a8eeedbbab71a990f24482bbe205cca5ea1024a780a093594",
+   "0.3.275": "6c0c98e0f3b269d7b811fc0e92607d73633d263c067eb72cd3527fa02fc7f213",
+   "0.3.276": "6c0c98e0f3b269d7b811fc0e92607d73633d263c067eb72cd3527fa02fc7f213",
+   "0.3.277": "1995b3a75ca82c6b202424f07a50955f2c66a2ce4f0c8badbfc5275889dddfd2",
+   "0.3.278": "1995b3a75ca82c6b202424f07a50955f2c66a2ce4f0c8badbfc5275889dddfd2",
+   "0.3.280": "b7ac9c0ed0db5c1792a5394e72c75d69d85f4ce9edc0279487ec55d32eabfa76",
+   "0.3.281": "546012613030340c2411f756c4bcf93edfcc550ec7761b7e902b4748fcfc9df7",
+   "0.3.282": "efa0faa1630c09d3ca8f219869401cf0468e3bb85a7224947d4d93ddfdc7a32f",
+   "0.3.283": "8d1444fff1b7955ef385a3338b2b6fb0418d108dca61c51781eb7c24f4084b3f",
+   "0.3.284": "048ae2e6c796cc2aa3c423afaad59a08972cb48c271ffcc9847d910ff65f61b2"
+  },
+  "sdk.mjs": {
+   "0.3.270": "ad98da1735760c234efb02a1bc6aaa3b25911a773d8334fd1a7a1e6cf46e8b31",
+   "0.3.271": "7e37e4e03ff22c4bb17d3809da1e26978584c6497626e7594ea460db39715a7d",
+   "0.3.272": "f848f35f4148c4b68e3aa6040c0f6a91bfc6c9131d96aabc8bedea15cd648a1e",
+   "0.3.273": "79aa5bb1b4b5e0c3c4b9e771ddb806666a1d86f6464d570d2269bf82be522b17",
+   "0.3.274": "935ceae86435a65a686da3b85a24e6bd5b97c61b386a97a5db7927e4dbc5fb9d",
+   "0.3.275": "ede334a2a647ae7aa74e212a4ca789eefa0881e93f6a7ea1f6b13f2b43f47ab0",
+   "0.3.276": "b1607967e0dfb39a0db45f143d3b57c7a85f2f6eaa77d6bee7d8184a9830a9f3",
+   "0.3.277": "5117c812937166f74cfe96ad48dd8236be8afd78586e8e4360fd1fe9a9ac7a35",
+   "0.3.278": "d768bb75542ea853a66c570bd82b010a7b843f4949ab3ebb20e9d1f2a27af881",
+   "0.3.280": "ef4c2c0fc286d8c7dab7771516cf95206f9f670e99e74dc62f245b7fc8224955",
+   "0.3.281": "197c3409723949544589358fc774ce3d6831f83307c95570dbb644641f41d5c7",
+   "0.3.282": "a69f9f736b5f8f4913fde6cbfc581c52612f13b4f5267d2f46aba6c62e1277bb",
+   "0.3.283": "d88abad1360f675dda417c9a6ce7395447d0892b77735529083d10ea4fbdd242",
+   "0.3.284": "32d062c37b03e10870fbf839f54694545ee01bc0ec719e47078fbed76e30ef71"
+  }
+ }
+}

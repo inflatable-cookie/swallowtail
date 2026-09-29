@@ -724,11 +724,11 @@ function editingSession(prompt, options, child) {
   return iterator;
 }
 
-// Card 146 faithful rows. The exact 0.3.270 `McpServerStatus` declaration
-// (package/sdk.d.ts:1124-1168) permits optional `serverInfo`, `error`,
-// `config`, `scope`, and `tools` on every row, and the shipped
+// Card 146 faithful rows. The exact 0.3.284 `McpServerStatus` declaration
+// (package/sdk.d.ts:1226) permits optional `serverInfo`, `error`, `config`,
+// `scope`, `source`, and `tools` on every row, and the shipped
 // `mcpServerStatus` query passes native `mcp_status` rows through unchanged.
-// The fake therefore emits all five declared optional fields on every row —
+// The fake therefore emits all six declared optional fields on every row —
 // with fixture-only marker values the sidecar must never project — instead of
 // only `{name, status}`. The remaining scenarios keep the bounded axis
 // honest: each distinct status drives the same declared metadata, and the
@@ -756,6 +756,7 @@ function mcpStatusRows(options) {
       url: "http://127.0.0.1:65000/fixture-only-mcp",
     },
     scope: "fixture-only-scope",
+    source: "fixture-only-source",
     tools: [
       {
         name: "search",

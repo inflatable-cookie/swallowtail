@@ -35,7 +35,7 @@ stdio through a third-party bridge and is versioned on its own adapter axis.
 CLI's stream-JSON interface directly and are versioned on the Claude Code
 axis. `claude-agent.sdk` reaches the same native binary only through the
 official SDK wrapper and is versioned on the SDK axis. The axes are coupled
-but never equal: `0.3.270` declares native `2.1.270`, so a Claude Code
+but never equal: `0.3.284` declares native `2.1.284`, so a Claude Code
 qualification never transfers to this route and this route's qualification
 never transfers back.
 
@@ -145,8 +145,8 @@ Five separate axes carry qualified-only one-point claims. The claims stay
 exact; the open path has one narrow observation-only exception for a newer Node
 runtime that passes the sidecar floor:
 
-- `claude-agent.sdk.package`: exact `@anthropic-ai/claude-agent-sdk@0.3.270`
-- `claude-agent.sdk.native`: exact native `2.1.270`, as the shipped
+- `claude-agent.sdk.package`: exact `@anthropic-ai/claude-agent-sdk@0.3.284`
+- `claude-agent.sdk.native`: exact native `2.1.284`, as the shipped
   `manifest.json` declares it
 - `claude-agent.sdk.node`: exact Node `22.23.2` (satisfying the upstream
   `>=18.0.0` requirement)
@@ -161,8 +161,8 @@ the tarball is staged from a private monorepo, and the public GitHub
 repository holds no SDK source, so a future checkpoint cannot diff tags or
 read that repository's changelog as a shipped-behavior oracle. And shipped
 declarations are not runtime evidence — the shipped `manifest.json` declares
-tested wrapper versions topping out at `0.3.269` inside the wrapper published
-as `0.3.270`. Only the runtime `capabilities` observed from the first-turn
+tested wrapper versions topping out at `0.3.282` inside the wrapper published
+as `0.3.284`. Only the runtime `capabilities` observed from the first-turn
 `system/init` may be treated as behavior.
 
 At open, the sidecar resolves the package manifest from the host-supplied SDK
@@ -174,11 +174,14 @@ or version fails with typed `sdk_version_mismatch`; its bounded
 labels. A missing, malformed, or otherwise unreadable manifest fails with
 typed `sdk_identity_unverifiable`, before the SDK is constructed.
 
-The point moved twice already: `0.3.258` was qualified first, Research 280
-rebound both coupled axes to `0.3.259` after a full package-tree inventory, and
+The point moved three times already: `0.3.258` was qualified first, Research 280
+rebound both coupled axes to `0.3.259` after a full package-tree inventory,
 Research 315 rebound them to `0.3.270` across the nine published hops
-`0.3.260..=0.3.270` (gaps `0.3.262`, `0.3.264`) with the mapped subset,
-lifecycle, and credential posture unchanged. The publication cadence is roughly
+`0.3.260..=0.3.270` (gaps `0.3.262`, `0.3.264`), and Research 367 rebound them
+to `0.3.284` across the thirteen published hops `0.3.271`–`0.3.278` and
+`0.3.280`–`0.3.283` (gap `0.3.279`) with the mapped subset, lifecycle, and
+credential posture unchanged. Card 146 admits optional `McpServerStatus.source`
+as a discarded declared key. The publication cadence is roughly
 daily, so treat the qualified point as a frozen artifact identity, not as
 "current".
 
@@ -464,7 +467,7 @@ value is in that open-time list, so an unsupported model is rejected before
 `Query.setModel` is called.
 
 `set_model` reports the exact model returned by the sidecar only when the SDK
-supplies that value. The pinned `0.3.270` integration evidence exposes
+supplies that value. The pinned `0.3.284` integration evidence exposes
 `Query.setModel` without a returned model value, so its normal outcome is the
 typed `swallowtail.claude-agent.sdk.model_change_unconfirmed` failure. In that
 outcome the previously confirmed model remains effective. No requested value
@@ -481,7 +484,7 @@ scope.
 
 ## Resume And Session Listing
 
-The pinned `0.3.270` SDK exposes `persistSession`, `resume`, and
+The pinned `0.3.284` SDK exposes `persistSession`, `resume`, and
 `resumeSessionAt` on `Options`, plus the bounded `listSessions` function. The
 prepared profile keeps persistence disabled by default. Calling
 `with_persist_session(true)` opts into provider-owned retention, adds the
@@ -517,7 +520,7 @@ transcript content.
 
 ## Client MCP Servers
 
-The pinned `0.3.270` SDK exposes `Options.mcpServers`, `strictMcpConfig`, and
+The pinned `0.3.284` SDK exposes `Options.mcpServers`, `strictMcpConfig`, and
 `Query.mcpServerStatus()`. This route maps only consumer-declared **stdio**
 servers. SSE and HTTP configs carry URLs and optional headers; in-process
 `sdk` servers execute callbacks inside the sidecar. Neither shape is
@@ -543,11 +546,12 @@ Optional servers record `pending` or `failed` in open evidence instead.
 Status evidence carries name, kind, and a typed failure code only.
 
 The status rows themselves are the native `mcp_status` rows the pinned SDK
-passes through unchanged, and the exact 0.3.270 declaration
-(`package/sdk.d.ts:1124-1168`) lets every row carry optional `serverInfo`,
-`error`, `config`, `scope`, and `tools` beside `name` and `status`. Card 146
-reconciled that shape with the projection: the sidecar admits every declared
-optional field and discards it, so a required connected server stays admitted
+passes through unchanged, and the exact 0.3.284 declaration
+(`package/sdk.d.ts:1226`) lets every row carry optional `serverInfo`,
+`error`, `config`, `scope`, `source`, and `tools` beside `name` and `status`.
+Card 146 reconciled that shape with the projection: the sidecar admits every
+declared optional field, including `source` added at `0.3.274`, and discards
+it, so a required connected server stays admitted
 however much declared metadata its row carries, and `failed`, `needs-auth`,
 and `disabled` rows reach their bounded failure codes instead of collapsing
 into `mcp_status_invalid`. Raw error text, configuration, URLs, headers,
@@ -623,8 +627,9 @@ qualified on the exact accepted Card 318 live tuple (Research 301): SDK
 `0.3.259`, native `2.1.259`, Node `22.23.2`, the `0.4.4` sidecar source tag,
 carrier `swallowtail-claude-agent-sdk-registered-tool-mcp-v1`,
 `private-loopback-http` plus `mediated-stdio-proxy`, and MCP `2025-11-25`.
-Research 315 rebound the route's wrapper/native axes to `0.3.270`/`2.1.270`
-without extending that live evidence, so the compiled tuple projects the
+Research 315 rebound the route's wrapper/native axes to `0.3.270`/`2.1.270`,
+and Research 367 rebound them again to `0.3.284`/`2.1.284`, without extending
+that live evidence, so the compiled tuple projects the
 unqualified truth with the reason `live_tuple_not_compiled` until a separately
 authorized live requalification runs on the new tuple. The qualification
 additionally requires the compiled tuple to equal the frozen live tuple, so a
@@ -715,7 +720,7 @@ the digest, UTF-8 text encoding, reference uniqueness, and Contract 063 byte
 and count bounds before the SDK is constructed. The provider-free Card 126
 fixture is `tests/fixtures/claude-agent-sdk-v1/selected-skill-bundle-card126.json`.
 
-The pinned `0.3.270` sidecar has no ambient skill loading: it sends
+The pinned `0.3.284` sidecar has no ambient skill loading: it sends
 `settingSources: []` and `skills: []` explicitly. When the selected bundle is
 present, the sidecar uses the frozen `Options.systemPrompt` plain-string
 surface to carry one labelled JSON envelope under

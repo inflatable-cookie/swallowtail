@@ -151,7 +151,13 @@ impl CourierClient {
     }
 }
 
-/// Builds the real Contract 063 courier once for this test binary.
+/// Builds or locates the Contract 063 courier before any ready-wait.
+///
+/// Nextest isolates each test in its own process, so a `OnceLock` cannot
+/// share the nested cargo build. Every process used to invoke cargo into
+/// `target/card118-courier`, wait on the package-cache lock, and starve a
+/// sibling already inside the 10s `READY_WAIT`. One cross-process lock owns
+/// the build; spawn uses a write-once copy so a later cargo cannot yank it.
 fn courier_binary() -> &'static std::path::Path {
     static PATH: std::sync::OnceLock<std::path::PathBuf> = std::sync::OnceLock::new();
     PATH.get_or_init(|| {
@@ -163,27 +169,198 @@ fn courier_binary() -> &'static std::path::Path {
             .to_path_buf();
         // Nested cargo must not share the outer `cargo test` target lock.
         let nested_target = workspace.join("target").join("card118-courier");
-        let status = std::process::Command::new("cargo")
-            .args([
-                "build",
-                "-p",
-                "swallowtail-host-local",
-                "--features",
-                "mediated-stdio-proxy",
-                "--bin",
-                "swallowtail-registered-tool-courier",
-            ])
-            .env("CARGO_TARGET_DIR", &nested_target)
-            .current_dir(&workspace)
-            .status()
-            .expect("courier build starts");
-        assert!(status.success(), "courier binary failed to build");
-        let binary = nested_target
+        std::fs::create_dir_all(&nested_target).expect("courier target directory");
+        let _lock = CourierBuildLock::acquire(nested_target.join("courier-build.lock"));
+        let built = nested_target
             .join("debug")
             .join("swallowtail-registered-tool-courier");
-        assert!(binary.is_file(), "missing courier binary at {binary:?}");
-        binary
+        build_courier(&workspace, &nested_target);
+        let bytes = read_built_courier(&built);
+        let published = publish_write_once(&bytes, &nested_target);
+        assert!(
+            is_executable(&published),
+            "courier binary at {published:?} is not executable, so every later spawn would fail"
+        );
+        published
     })
+}
+
+/// One nested cargo invocation. Failures are real defects; only a later
+/// read of a transiently absent artifact is retried.
+fn build_courier(workspace: &std::path::Path, nested_target: &std::path::Path) {
+    let output = std::process::Command::new("cargo")
+        .args([
+            "build",
+            "-p",
+            "swallowtail-host-local",
+            "--features",
+            "mediated-stdio-proxy",
+            "--bin",
+            "swallowtail-registered-tool-courier",
+        ])
+        .env("CARGO_TARGET_DIR", nested_target)
+        .current_dir(workspace)
+        .output()
+        .expect("courier build starts");
+    assert!(
+        output.status.success(),
+        "courier binary failed to build: {}\nstdout: {}\nstderr: {}",
+        output.status,
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+/// Cargo's uplift is not atomic. A sibling that still rebuilt into this
+/// nested target could remove `debug/swallowtail-registered-tool-courier`
+/// after cargo returned; the measured failure is `ENOENT`, not a wrong
+/// binary, so only that absence is retried.
+fn read_built_courier(binary: &std::path::Path) -> Vec<u8> {
+    const ATTEMPTS: usize = 5;
+    let mut absences = Vec::new();
+    for attempt in 1..=ATTEMPTS {
+        match std::fs::read(binary) {
+            Ok(bytes) if !bytes.is_empty() => return bytes,
+            Ok(_) => absences.push(format!("attempt {attempt}: built courier read as empty")),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => absences.push(format!(
+                "attempt {attempt}: {binary:?} was absent: {error}"
+            )),
+            Err(error) => panic!(
+                "reading the built courier at {binary:?} failed on attempt {attempt}: {error}"
+            ),
+        }
+        if attempt < ATTEMPTS {
+            std::thread::sleep(std::time::Duration::from_millis(50));
+        }
+    }
+    panic!(
+        "courier binary was absent on all {ATTEMPTS} acquisition attempts:\n{}",
+        absences.join("\n")
+    );
+}
+
+fn publish_write_once(bytes: &[u8], nested_target: &std::path::Path) -> std::path::PathBuf {
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    std::hash::Hasher::write(&mut hasher, bytes);
+    let digest = std::hash::Hasher::finish(&hasher);
+    let directory = nested_target.join("write-once");
+    std::fs::create_dir_all(&directory).expect("write-once courier directory");
+    let published = directory.join(format!("swallowtail-registered-tool-courier-{digest:016x}"));
+    if published.is_file() {
+        return published;
+    }
+    let staged = directory.join(format!("staged-{}-{digest:016x}", std::process::id()));
+    std::fs::write(&staged, bytes).expect("staged courier is written");
+    set_executable(&staged);
+    // Hard link, not rename: rename replaces an existing destination, so a
+    // concurrent publisher could swap the file another process is about to
+    // spawn. Linking fails when the name already exists, which makes the
+    // published path literally write-once.
+    match std::fs::hard_link(&staged, &published) {
+        Ok(()) => {}
+        Err(_) if published.is_file() => {}
+        Err(error) => panic!("published courier could not be installed at {published:?}: {error}"),
+    }
+    let _ = std::fs::remove_file(&staged);
+    published
+}
+
+/// Exclusive create-new lock file released on drop. A crashed holder's pid
+/// lets waiters unlink and retry; `create_new` keeps two stealers from
+/// deleting a third process's just-created lock.
+struct CourierBuildLock {
+    path: std::path::PathBuf,
+}
+
+impl CourierBuildLock {
+    fn acquire(path: std::path::PathBuf) -> Self {
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent).expect("courier lock parent");
+        }
+        // An earlier mkdir-lock leftover would make create_new fail as a directory.
+        if path.is_dir() {
+            let _ = std::fs::remove_dir_all(&path);
+        }
+        let started = std::time::Instant::now();
+        loop {
+            match std::fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(&path)
+            {
+                Ok(mut file) => {
+                    use std::io::Write;
+                    writeln!(file, "{}", std::process::id()).expect("courier lock pid");
+                    let _ = file.sync_all();
+                    return Self { path };
+                }
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+                    assert!(
+                        started.elapsed() < std::time::Duration::from_secs(600),
+                        "courier build lock at {path:?} held for 600s"
+                    );
+                    if let Some(dead_pid) = dead_lock_holder_pid(&path) {
+                        let still_dead = std::fs::read_to_string(&path)
+                            .ok()
+                            .is_some_and(|text| text.trim() == dead_pid);
+                        if still_dead {
+                            let _ = std::fs::remove_file(&path);
+                        }
+                        continue;
+                    }
+                    std::thread::sleep(std::time::Duration::from_millis(50));
+                }
+                Err(error) => panic!("courier build lock at {path:?}: {error}"),
+            }
+        }
+    }
+}
+
+impl Drop for CourierBuildLock {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_file(&self.path);
+    }
+}
+
+fn dead_lock_holder_pid(lock_path: &std::path::Path) -> Option<String> {
+    let pid_text = std::fs::read_to_string(lock_path).ok()?;
+    let trimmed = pid_text.trim();
+    let Ok(pid) = trimmed.parse::<u32>() else {
+        return Some(trimmed.to_owned());
+    };
+    let alive = std::process::Command::new("kill")
+        .args(["-0", &pid.to_string()])
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .is_ok_and(|status| status.success());
+    if alive {
+        None
+    } else {
+        Some(trimmed.to_owned())
+    }
+}
+
+#[cfg(unix)]
+fn set_executable(path: &std::path::Path) {
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o755))
+        .expect("published courier is executable");
+}
+
+#[cfg(not(unix))]
+fn set_executable(_path: &std::path::Path) {}
+
+#[cfg(unix)]
+fn is_executable(path: &std::path::Path) -> bool {
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::metadata(path).is_ok_and(|data| data.permissions().mode() & 0o111 != 0)
+}
+
+#[cfg(not(unix))]
+fn is_executable(path: &std::path::Path) -> bool {
+    path.is_file()
 }
 
 fn registered_tool_id() -> swallowtail_runtime::RegisteredToolId {
@@ -464,6 +641,10 @@ fn try_open_registered_route_with_deadline(
     OpenedRegisteredRoute,
     Box<(RuntimeFailure, swallowtail_host_local::LocalHostServices)>,
 > {
+    // Locate or build the courier before the opening deadline and ready-wait
+    // start. The nested cargo work is cross-process locked inside
+    // `courier_binary`; this call just makes that happen before timing.
+    let courier_path = courier_binary();
     let host_id = ExecutionHostId::new(host_name).expect("host");
     let selected = selection_for(host_id.clone(), "1.0.4", false);
     let fixture = FixtureHost::with_version(scenario, "1.0.4");
@@ -475,7 +656,7 @@ fn try_open_registered_route_with_deadline(
         &host_id,
         &fixture,
         dispatcher,
-        courier_binary(),
+        courier_path,
         &executable,
         &environment,
         cleanup_budget,

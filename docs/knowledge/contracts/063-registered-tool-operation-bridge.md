@@ -47,6 +47,16 @@ Longhorn [`7ea44d23`](https://github.com/inflatable-cookie/longhorn/commit/7ea44
 Longhorn has no authority over this document; the withdrawal is recorded here
 so this boundary stays Swallowtail-local and truthful.
 
+**`claude-agent.sdk` production path (Tom, 2026-09-29).** Consumer tools reach
+`claude-agent.sdk` in production through Longhorn's stdio carrier, declared by
+the consumer as an ordinary stdio MCP server on `ClaudeAgentSdkMcpBinding`
+(the existing consumer-declared stdio placement). The route does not emit a
+consumer-supplied HTTP entry: Research 366 shows the pinned Agent SDK accepts
+one, but passes the whole MCP configuration, headers included, on the native
+child's command line, which would expose the server's bearer to local process
+listing. Swallowtail's mediated-stdio courier on this route stays
+non-production.
+
 ## Consumer-Supplied HTTP MCP Placement — 2026-09-24
 
 Operator ruling, delegated to the Chatterbox's recommendation and accepted by

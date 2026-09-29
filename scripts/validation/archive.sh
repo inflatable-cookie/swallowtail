@@ -28,7 +28,7 @@ validation_extracted_tree_is_safe() {
   local validation_tree=$1
   local validation_repo_root=$2
   if rg -l \
-    "$validation_repo_root|/home/tom/|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|sk-[A-Za-z0-9_-]{20,}" \
+    "$validation_repo_root|/home/tom/|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|\\bsk-[A-Za-z0-9_-]{20,}" \
     "$validation_tree" > /dev/null
   then
     return 1

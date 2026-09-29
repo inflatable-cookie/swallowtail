@@ -74,6 +74,31 @@ then
   exit 1
 fi
 
+validation_audit_tree=$(mktemp -d)
+validation_audit_repo_root="/nonexistent-repo-root-for-archive-audit"
+printf '%s\n' \
+  "headless-background-task-waiting-notice-occasionally-skipped" \
+  >"$validation_audit_tree/hyphenated-english.txt"
+if ! validation_extracted_tree_is_safe \
+  "$validation_audit_tree" \
+  "$validation_audit_repo_root"
+then
+  printf 'hyphenated English tripped the secret pattern\n' >&2
+  rm -rf "$validation_audit_tree"
+  exit 1
+fi
+printf '%s\n' "sk-abcdefghijklmnopqrstuvwxyz123456" \
+  >"$validation_audit_tree/synthetic-key.txt"
+if validation_extracted_tree_is_safe \
+  "$validation_audit_tree" \
+  "$validation_audit_repo_root"
+then
+  printf 'synthetic sk- key was not flagged\n' >&2
+  rm -rf "$validation_audit_tree"
+  exit 1
+fi
+rm -rf "$validation_audit_tree"
+
 validation_real_root=$(mktemp -d)
 validation_alias_root="${validation_real_root}-alias"
 ln -s "$validation_real_root" "$validation_alias_root"

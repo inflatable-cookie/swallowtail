@@ -739,6 +739,8 @@ fn open_without_a_host_composition_fails_typed() {
         error.diagnostic().code(),
         "swallowtail.claude-agent.sdk.registered_tool.host_missing"
     );
+    // Open started fixture guardians before it found the missing courier host.
+    fixture.reaper().shutdown();
 }
 
 #[test]

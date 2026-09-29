@@ -9,6 +9,7 @@ use futures_util::StreamExt;
 use serde_json::Value;
 use std::fs;
 use std::io;
+use std::path::PathBuf;
 use std::process::{Child, Command, ExitStatus, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
@@ -96,6 +97,7 @@ fn open_failure(scenario: SdkScenario) -> (String, Vec<CleanupEvent>) {
 fn wrapper_death_preserves_partial_capture_journal() {
     if std::env::var_os(CAPTURE_CHILD_ENV).is_some() {
         let path = std::env::var_os(CAPTURE_JOURNAL_ENV).expect("journal path is passed");
+        let ready_path = PathBuf::from(&path).with_extension("ready");
         let mut journal = SanitizedCaptureJournal::create(path).expect("journal is created");
         let capture = SanitizedWireCapture {
             open_sidecar_code: Some("construction_failed".to_owned()),
@@ -104,10 +106,15 @@ fn wrapper_death_preserves_partial_capture_journal() {
         journal
             .append_snapshot(&capture)
             .expect("partial capture is persisted");
+        fs::write(ready_path, b"ready").expect("journal durability marker is written");
         loop {
             thread::sleep(Duration::from_millis(25));
         }
     }
+
+    // Resolve the shared courier before starting the five-second capture
+    // window. Its first use can run a nested Cargo build into a cold target.
+    let _ = super::registered_tool_route::courier_binary();
 
     let sequence = NEXT_CAPTURE_JOURNAL.fetch_add(1, Ordering::Relaxed);
     let path = std::env::temp_dir().join(format!(
@@ -126,11 +133,12 @@ fn wrapper_death_preserves_partial_capture_journal() {
             .expect("capture wrapper child starts"),
     );
 
+    let ready_path = path.with_extension("ready");
     let deadline = Instant::now() + Duration::from_secs(5);
-    while !path.exists() {
+    while !ready_path.exists() {
         assert!(
             Instant::now() < deadline,
-            "capture wrapper did not persist before the kill"
+            "capture wrapper did not durably persist before the kill"
         );
         thread::sleep(Duration::from_millis(10));
     }
@@ -152,6 +160,7 @@ fn wrapper_death_preserves_partial_capture_journal() {
     );
     assert_eq!(record["stderrTailPresent"], Value::Bool(false));
     fs::remove_file(path).expect("capture journal is removed");
+    fs::remove_file(ready_path).expect("capture durability marker is removed");
 }
 
 fn first_turn_failure(scenario: SdkScenario) -> String {

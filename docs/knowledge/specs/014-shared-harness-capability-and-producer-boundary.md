@@ -1,11 +1,10 @@
 # 014 Shared Harness Capability And Producer Boundary
 
 Status: promoted; durable rules in Contract063 and amendments 041/060/061/062;
-runtime pending; MCP-registration-server role withdrawn from production
-2026-09-22 (Longhorn Contract 022 `agent-control` is the production MCP);
-host-mediated route-native tool mediation remains production-capable
+current capability review in [Research 365](../../research/365-spec-014-current-capability-review.md);
+MCP-registration-server role withdrawn from production 2026-09-22
 Owner: Tom
-Updated: 2026-09-07
+Updated: 2026-09-29
 Evidence: Research 288; Contracts 012, 017, 019, 028, 029, 037, 041, 047, 051, 057, 058, 060-062; Desktop Spec 010 at `30a338f2`; Longhorn PR 22 PASS at `6ce4aa1b`
 
 ## Purpose
@@ -310,30 +309,10 @@ replays a mutating tool call or message.
 
 ## Capability Matrix And Readiness
 
-Legend: `R` means the exact cell behavior is released at audited tag `v0.4.3`,
-including any stated route-local restriction; it never means generic parity.
-`M` is merged after that tag but untagged and unreleased; `P` is proposed but
-unimplemented; `W` is withheld pending route evidence; `—` means the
-capability does not apply to that route shape. An upstream feature
-without an adapter plan, facade, acknowledgement, and proof is `W`.
-
-| Capability | Claude Code | Claude SDK | Claude ACP | Codex app-server | Grok ACP | Common producer gate |
-| --- | --- | --- | --- | --- | --- | --- |
-| bounded per-turn text | R structured run | R | R | R | R | unchanged `TurnRequest` |
-| session instructions | R opt-in operation assets | W | R subset | R | W | exact setup/resume lifecycle |
-| durable session | — | R | R | R | R provider-owned | exact binding and cleanup |
-| load/resume | — | route-qualified R | R | R | W | no raw id; no mutating replay |
-| native consumer tools | W | route-local R | W | R | W | registration, schema, exact result |
-| one-shot Allow/Deny | W generic; closed watcher host admission R | route-local R | R subset | tool result/question; approval W | R subset | exact provider response or typed cancel/fail |
-| persistent permission | W | W | W | W | W | separate explicit contract |
-| provider-direct MCP | R watcher-only | M declared stdio only; common bridge P | W | W | W | Contract 060 kernel plus real server/result |
-| host-mediated tool server | W | P | P | P | P after consumer-tool evidence | common host service and callback binding |
-| tool progress/partial | W notifications; R queried watcher state | W | W | R provider-owned MCP display progress | W | bounded correlation, order, cancellation, stale generation |
-| skill/reference bundle | R watcher skill only | P | P | P | P | Contract 062 selection plus opaque refs |
-| consumer app context | W | P | P | P | P | Desktop-owned composition, bounded transport |
-| between-turn queue | — | Desktop-owned | Desktop-owned | Desktop-owned | Desktop-owned | next turn after terminal close |
-| mid-turn steering | W | W | W | W | W | exact route contract and real acknowledgement |
-| reconnect | W | P transport-only | P transport-only | P transport-only | P transport-only | same binding/generation; no mutating replay |
+This `v0.4.3` matrix is superseded by the [current route review (Research
+365)](../../research/365-spec-014-current-capability-review.md#current-capability-matrix).
+The [provider feature matrix](../../guides/provider-route-matrix.md) remains
+the owner of route claims.
 
 ## Promotion Disposition
 

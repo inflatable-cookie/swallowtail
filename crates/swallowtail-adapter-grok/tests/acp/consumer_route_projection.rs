@@ -1,6 +1,6 @@
 use super::discovery_support::{FakeProcessService, services as discovery_services};
 use super::*;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use swallowtail_adapter_grok::{
     GROK_BUILD_ACP_AXIS, GrokModelSelection, GrokPreparationInput, GrokPreparationProbe,
     GrokRunProfileInput, GrokSessionProfileInput, grok_build_subscription_access_profile,
@@ -8,6 +8,9 @@ use swallowtail_adapter_grok::{
 };
 use swallowtail_core::InterfaceVersionAxis;
 use swallowtail_runtime::{ConsumerRouteProjectionSourceId, ExecutableRef};
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
+};
 
 #[test]
 fn candidate_e_grok_routes_reconcile_executable_projection_truth() {
@@ -47,6 +50,70 @@ fn candidate_e_grok_routes_reconcile_executable_projection_truth() {
     let emitted = rows(&session).chain(rows(&run)).collect::<BTreeSet<_>>();
     assert_eq!(emitted.len(), 10);
     assert_eq!(emitted, expected_emitted());
+    const ROUTE: &str = "grok-build.acp";
+    const RUN: &str = "run";
+    const SESSION: &str = "session";
+    const LEDGER: [(&str, &str, &[&str]); 13] = [
+        (
+            "route-capability",
+            "feature.prepared-facade",
+            &[RUN, SESSION],
+        ),
+        ("structured-run", "feature.structured-run", &[RUN]),
+        (
+            "interactive-session",
+            "feature.interactive-session",
+            &[SESSION],
+        ),
+        (
+            "route-observation",
+            "feature.streaming-events",
+            &[RUN, SESSION],
+        ),
+        (
+            "route-observation",
+            "feature.usage-evidence",
+            &[RUN, SESSION],
+        ),
+        (
+            "route-capability",
+            "feature.working-resource",
+            &[RUN, SESSION],
+        ),
+        (
+            "route-observation",
+            "feature.activity-observation",
+            &[RUN, SESSION],
+        ),
+        ("structured-run", "control.model-selection", &[RUN]),
+        ("interactive-session", "control.model-selection", &[SESSION]),
+        ("interactive-session", "control.session-options", &[SESSION]),
+        ("model-catalogue", "feature.model-catalogue", &[]),
+        (
+            "session-lifecycle",
+            "feature.persistent-session-posture",
+            &[],
+        ),
+        (
+            "route-observation",
+            "feature.negotiated-model-options-observation",
+            &[],
+        ),
+    ];
+    let observed = BTreeMap::from([
+        (RUN, observed_tuples(ROUTE, &run)),
+        (SESSION, observed_tuples(ROUTE, &session)),
+    ]);
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        LEDGER
+            .iter()
+            .map(|(shape, semantic, emitted_by)| ConsumerRouteLedgerClaim {
+                identity: (ROUTE, *shape, *semantic),
+                emitted_by,
+            }),
+    );
+
     let withheld = expected_withheld();
     assert_eq!(withheld.len(), 3);
     assert_eq!(emitted.len() + withheld.len(), 13);
@@ -69,6 +136,64 @@ fn candidate_e_grok_routes_reconcile_executable_projection_truth() {
         );
     }
 }
+fn observed_tuples(
+    route: &'static str,
+    contribution: &swallowtail_runtime::ConsumerRouteProjectionContribution,
+) -> BTreeSet<(&'static str, &'static str, &'static str)> {
+    contribution
+        .selection_rows()
+        .chain(contribution.session_start_rows())
+        .chain(contribution.active_session_rows())
+        .map(|row| {
+            use swallowtail_runtime::{
+                ConsumerRouteControlId, ConsumerRouteFeatureId, ConsumerRouteRowIdentity,
+            };
+            let (shape, semantic) = match row.identity() {
+                ConsumerRouteRowIdentity::Feature(feature) => match feature {
+                    ConsumerRouteFeatureId::PreparedFacade => {
+                        ("route-capability", "feature.prepared-facade")
+                    }
+                    ConsumerRouteFeatureId::StructuredRun => {
+                        ("structured-run", "feature.structured-run")
+                    }
+                    ConsumerRouteFeatureId::InteractiveSession => {
+                        ("interactive-session", "feature.interactive-session")
+                    }
+                    ConsumerRouteFeatureId::StreamingEvents => {
+                        ("route-observation", "feature.streaming-events")
+                    }
+                    ConsumerRouteFeatureId::UsageEvidence => {
+                        ("route-observation", "feature.usage-evidence")
+                    }
+                    ConsumerRouteFeatureId::WorkingResource => {
+                        ("route-capability", "feature.working-resource")
+                    }
+                    ConsumerRouteFeatureId::ActivityObservation => {
+                        ("route-observation", "feature.activity-observation")
+                    }
+                    other => panic!("unexpected Grok feature {other:?}"),
+                },
+                ConsumerRouteRowIdentity::Control(control) => {
+                    let shape = match contribution.applicability().operation_shape() {
+                        swallowtail_core::OperationShape::StructuredRun => "structured-run",
+                        swallowtail_core::OperationShape::InteractiveSession => {
+                            "interactive-session"
+                        }
+                        other => panic!("unexpected Grok control shape {other:?}"),
+                    };
+                    let semantic = match control {
+                        ConsumerRouteControlId::ModelSelection => "control.model-selection",
+                        ConsumerRouteControlId::SessionOptions => "control.session-options",
+                        other => panic!("unexpected Grok control {other:?}"),
+                    };
+                    (shape, semantic)
+                }
+            };
+            (route, shape, semantic)
+        })
+        .collect()
+}
+
 fn expected_withheld() -> BTreeSet<(String, String)> {
     [
         ("", "Feature(ModelCatalogue)"),

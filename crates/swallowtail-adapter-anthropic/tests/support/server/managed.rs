@@ -1,8 +1,11 @@
 include!("managed/fixtures.rs");
+
+use std::sync::Condvar;
 pub struct ManagedFixtureServer {
     endpoint: String,
     requests: Arc<Mutex<Vec<FixtureRequest>>>,
     state: Arc<Mutex<ManagedFixtureState>>,
+    changed: Arc<Condvar>,
     stop: Arc<AtomicBool>,
     thread: Option<JoinHandle<()>>,
 }
@@ -32,9 +35,11 @@ impl ManagedFixtureServer {
             ManagedFixtureState::default()
         };
         let state = Arc::new(Mutex::new(initial_state));
+        let changed = Arc::new(Condvar::new());
         let stop = Arc::new(AtomicBool::new(false));
         let server_requests = Arc::clone(&requests);
         let server_state = Arc::clone(&state);
+        let server_changed = Arc::clone(&changed);
         let server_stop = Arc::clone(&stop);
         let thread = thread::spawn(move || {
             loop {
@@ -49,7 +54,14 @@ impl ManagedFixtureServer {
                         .lock()
                         .expect("request lock is available")
                         .push(request.clone());
-                    respond_managed(&mut stream, &request, &server_state, fixture);
+                    respond_managed(
+                        &mut stream,
+                        &request,
+                        &server_state,
+                        &server_changed,
+                        fixture,
+                    );
+                    server_changed.notify_all();
                 }
             }
         });
@@ -57,6 +69,7 @@ impl ManagedFixtureServer {
             endpoint,
             requests,
             state,
+            changed,
             stop,
             thread: Some(thread),
         }
@@ -76,6 +89,33 @@ impl ManagedFixtureServer {
     pub fn state(&self) -> ManagedFixtureState {
         *self.state.lock().expect("managed state lock is available")
     }
+
+    /// Blocks until the fake server observes `count` stream attachments.
+    ///
+    /// The wait is event-driven: the server notifies on every observed state
+    /// change. `timeout` is a backstop against a wedged server, not a timing
+    /// budget; the passing path never depends on its length.
+    pub fn wait_for_stream_attachments(
+        &self,
+        count: usize,
+        timeout: std::time::Duration,
+    ) -> ManagedFixtureState {
+        let guard = self
+            .state
+            .lock()
+            .expect("managed state lock is available");
+        let (guard, waited) = self
+            .changed
+            .wait_timeout_while(guard, timeout, |state| state.stream_attachments < count)
+            .expect("managed state lock is available");
+        if guard.stream_attachments < count && waited.timed_out() {
+            panic!(
+                "managed fixture never observed {count} stream attachments (saw {}): {guard:?}",
+                guard.stream_attachments,
+            );
+        }
+        *guard
+    }
 }
 
 impl Drop for ManagedFixtureServer {
@@ -92,6 +132,7 @@ fn respond_managed(
     stream: &mut TcpStream,
     request: &FixtureRequest,
     state: &Mutex<ManagedFixtureState>,
+    changed: &Condvar,
     fixture: ManagedStreamFixture,
 ) {
     if !managed_authorized(request) {
@@ -142,6 +183,11 @@ fn respond_managed(
         ("GET", "/v1/sessions/session_fixture/events/stream") if state.session_creations == 1 => {
             state.stream_attachments += 1;
             let attachment = state.stream_attachments;
+            // Release the state lock before serving the long-lived stream so
+            // observers can see the attachment (and request cancellation)
+            // while it is open.
+            drop(state);
+            changed.notify_all();
             match fixture {
                 ManagedStreamFixture::Success => respond_sse(stream, MANAGED_SUCCESS),
                 ManagedStreamFixture::RequiresActionThenSuccess if attachment == 1 => {

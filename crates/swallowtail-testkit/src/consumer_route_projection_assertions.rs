@@ -6,6 +6,7 @@
 mod compound_acknowledgement;
 mod counterexamples;
 mod failures;
+mod ledger;
 mod maxima;
 mod provider_operation;
 mod replacement;
@@ -41,4 +42,5 @@ pub use compound_acknowledgement::{
     assert_compound_acknowledgement_requires_observation_source,
     assert_compound_acknowledgement_terminal_not_dispatched_is_distinct,
 };
+pub use ledger::{ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade};
 pub use provider_operation::assert_consumer_route_provider_operation_observation_contract;

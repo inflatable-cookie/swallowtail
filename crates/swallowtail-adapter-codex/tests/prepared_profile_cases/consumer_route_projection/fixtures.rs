@@ -64,7 +64,7 @@ pub(super) fn session_profile(suffix: &str) -> CodexSessionProfileInput {
 }
 
 /// Collects the exact rows every prepared app-server facade emits.
-pub(super) fn observed_dispositions() -> BTreeMap<&'static str, BTreeSet<&'static str>> {
+pub(super) fn observed_dispositions() -> BTreeMap<&'static str, BTreeSet<RowIdentity>> {
     let recording = RecordingHostServices::default();
     let prepared_app = prepared(
         CodexPreparedDriver::AppServer,
@@ -144,7 +144,7 @@ pub(super) fn observed_dispositions() -> BTreeMap<&'static str, BTreeSet<&'stati
         observed
             .entry(facade)
             .or_insert_with(BTreeSet::new)
-            .extend(rows(contribution));
+            .extend(identities(contribution));
     };
     record(
         CATALOGUE,

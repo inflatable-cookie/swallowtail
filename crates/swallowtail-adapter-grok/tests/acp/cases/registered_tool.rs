@@ -188,27 +188,171 @@ fn courier_binary() -> &'static std::path::Path {
 /// One nested cargo invocation. Failures are real defects; only a later
 /// read of a transiently absent artifact is retried.
 fn build_courier(workspace: &std::path::Path, nested_target: &std::path::Path) {
-    let output = std::process::Command::new("cargo")
-        .args([
-            "build",
-            "-p",
-            "swallowtail-host-local",
-            "--features",
-            "mediated-stdio-proxy",
-            "--bin",
-            "swallowtail-registered-tool-courier",
-        ])
-        .env("CARGO_TARGET_DIR", nested_target)
-        .current_dir(workspace)
-        .output()
-        .expect("courier build starts");
-    assert!(
-        output.status.success(),
-        "courier binary failed to build: {}\nstdout: {}\nstderr: {}",
-        output.status,
-        String::from_utf8_lossy(&output.stdout),
-        String::from_utf8_lossy(&output.stderr)
+    let built = run_bounded(
+        std::process::Command::new("cargo")
+            .args([
+                "build",
+                "-p",
+                "swallowtail-host-local",
+                "--features",
+                "mediated-stdio-proxy",
+                "--bin",
+                "swallowtail-registered-tool-courier",
+            ])
+            .env("CARGO_TARGET_DIR", nested_target)
+            .current_dir(workspace),
     );
+    assert!(
+        built.status.success(),
+        "courier binary failed to build: {}\nstdout: {}\nstderr: {}",
+        built.status,
+        built.stdout,
+        built.stderr
+    );
+}
+
+/// One command's exit plus its output, with each stream bounded as it is read.
+struct BoundedOutput {
+    status: std::process::ExitStatus,
+    stdout: String,
+    stderr: String,
+}
+
+/// Bound on collecting build output after the build itself has exited.
+///
+/// Card 139: a surviving descendant can hold an inherited pipe open after the
+/// build exits. Joining the readers outright would withhold an exit status
+/// already observed, for as long as that descendant lives. `.output()` is
+/// that hang: it waits for pipe EOF, not for cargo's exit.
+const BUILD_DRAIN_BOUND: std::time::Duration = std::time::Duration::from_secs(5);
+
+/// Runs `command`, capping each captured stream instead of buffering all of
+/// it. Both streams are drained so the child cannot block on a full pipe, and
+/// collection after exit is bounded so an observed failure is always reported.
+fn run_bounded(command: &mut std::process::Command) -> BoundedOutput {
+    let mut child = command
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .expect("courier build starts");
+    let stdout = child.stdout.take().expect("build stdout pipe");
+    let stderr = child.stderr.take().expect("build stderr pipe");
+    let out_capture = Arc::new(Mutex::new(StreamCapture::default()));
+    let err_capture = Arc::new(Mutex::new(StreamCapture::default()));
+    let (send_out, recv_out) = std::sync::mpsc::channel();
+    let (send_err, recv_err) = std::sync::mpsc::channel();
+    let out_writer = Arc::clone(&out_capture);
+    let err_writer = Arc::clone(&err_capture);
+    std::thread::spawn(move || {
+        read_bounded(stdout, &out_writer);
+        send_out.send(())
+    });
+    std::thread::spawn(move || {
+        read_bounded(stderr, &err_writer);
+        send_err.send(())
+    });
+    let status = child.wait().expect("courier build completes");
+    // The exit is already known; collecting output may not withhold it. One
+    // deadline covers both streams: a stream left with no remaining wait still
+    // reports everything it read, so per-stream bounds would only double the
+    // worst-case delay without preserving one extra byte.
+    let deadline = std::time::Instant::now() + BUILD_DRAIN_BOUND;
+    BoundedOutput {
+        status,
+        stdout: collect_bounded(&recv_out, &out_capture, "stdout", deadline),
+        stderr: collect_bounded(&recv_err, &err_capture, "stderr", deadline),
+    }
+}
+
+/// Takes one reader's capture, whether or not the reader finished.
+///
+/// The reader thread is left running rather than joined: it ends when its
+/// pipe closes, and nothing here may wait on a descendant to do that. The
+/// capture is shared rather than sent, so a bound that expires still reports
+/// every byte read so far instead of discarding the diagnostic it was meant
+/// to preserve.
+fn collect_bounded(
+    finished: &std::sync::mpsc::Receiver<()>,
+    capture: &Arc<Mutex<StreamCapture>>,
+    stream: &str,
+    deadline: std::time::Instant,
+) -> String {
+    let ending = match finished.recv_timeout(deadline.saturating_duration_since(std::time::Instant::now())) {
+        Ok(()) => None,
+        Err(std::sync::mpsc::RecvTimeoutError::Timeout) => Some(format!(
+            "build {stream} still open {BUILD_DRAIN_BOUND:?} after exit"
+        )),
+        Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
+            Some(format!("build {stream} reader ended without reporting"))
+        }
+    };
+    let capture = capture.lock().expect("build capture lock");
+    let rendered = capture.describe();
+    let fault = capture.fault.clone();
+    drop(capture);
+    match (ending, fault) {
+        (None, None) => rendered,
+        (ending, fault) => {
+            let reasons = [ending, fault]
+                .into_iter()
+                .flatten()
+                .collect::<Vec<_>>()
+                .join("; ");
+            format!("{rendered} (capture incomplete: {reasons})")
+        }
+    }
+}
+
+/// One bounded stream capture, readable while its reader is still running.
+#[derive(Default)]
+struct StreamCapture {
+    retained: std::collections::VecDeque<u8>,
+    dropped: usize,
+    fault: Option<String>,
+}
+
+impl StreamCapture {
+    fn describe(&self) -> String {
+        let bytes = self.retained.iter().copied().collect::<Vec<_>>();
+        let text = String::from_utf8_lossy(&bytes).into_owned();
+        if self.dropped == 0 {
+            text
+        } else {
+            format!("(earlier {} bytes dropped)… {text}", self.dropped)
+        }
+    }
+}
+
+/// Reads a stream to its end into `capture`, retaining only its last
+/// `OUTPUT_CAP` bytes.
+///
+/// A build's diagnosis is at the end of its output, behind however much
+/// progress noise the run produced, so the tail is the part worth keeping.
+/// Bytes land in the shared capture as they are read, so a caller whose bound
+/// expires still sees everything read up to that point.
+fn read_bounded(mut stream: impl std::io::Read, capture: &Arc<Mutex<StreamCapture>>) {
+    const OUTPUT_CAP: usize = 4_096;
+    let mut buffer = [0_u8; 1_024];
+    loop {
+        match stream.read(&mut buffer) {
+            Ok(0) => return,
+            Ok(read) => {
+                let mut capture = capture.lock().expect("build capture lock");
+                capture.retained.extend(&buffer[..read]);
+                while capture.retained.len() > OUTPUT_CAP {
+                    capture.retained.pop_front();
+                    capture.dropped += 1;
+                }
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::Interrupted => {}
+            Err(error) => {
+                capture.lock().expect("build capture lock").fault =
+                    Some(format!("read failed: {error}"));
+                return;
+            }
+        }
+    }
 }
 
 /// Cargo's uplift is not atomic. A sibling that still rebuilt into this
@@ -268,9 +412,17 @@ fn publish_write_once(bytes: &[u8], nested_target: &std::path::Path) -> std::pat
 /// Exclusive create-new lock file released on drop. A crashed holder's pid
 /// lets waiters unlink and retry; `create_new` keeps two stealers from
 /// deleting a third process's just-created lock.
+///
+/// The fd stays open so Drop still unlinks our name. Waiters that see an
+/// empty file treat it as still being written, not as a dead holder.
 struct CourierBuildLock {
     path: std::path::PathBuf,
+    _file: std::fs::File,
 }
+
+/// CI nextest slow-timeout is 60s × 2. This bound must fire first so a stuck
+/// lock names itself instead of dying as an opaque hang.
+const COURIER_BUILD_LOCK_BOUND: std::time::Duration = std::time::Duration::from_secs(90);
 
 impl CourierBuildLock {
     fn acquire(path: std::path::PathBuf) -> Self {
@@ -292,12 +444,12 @@ impl CourierBuildLock {
                     use std::io::Write;
                     writeln!(file, "{}", std::process::id()).expect("courier lock pid");
                     let _ = file.sync_all();
-                    return Self { path };
+                    return Self { path, _file: file };
                 }
                 Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
                     assert!(
-                        started.elapsed() < std::time::Duration::from_secs(600),
-                        "courier build lock at {path:?} held for 600s"
+                        started.elapsed() < COURIER_BUILD_LOCK_BOUND,
+                        "courier build lock at {path:?} held for {COURIER_BUILD_LOCK_BOUND:?}"
                     );
                     if let Some(dead_pid) = dead_lock_holder_pid(&path) {
                         let still_dead = std::fs::read_to_string(&path)
@@ -325,6 +477,10 @@ impl Drop for CourierBuildLock {
 fn dead_lock_holder_pid(lock_path: &std::path::Path) -> Option<String> {
     let pid_text = std::fs::read_to_string(lock_path).ok()?;
     let trimmed = pid_text.trim();
+    // Empty is the create→pid-write window: the holder is live.
+    if trimmed.is_empty() {
+        return None;
+    }
     let Ok(pid) = trimmed.parse::<u32>() else {
         return Some(trimmed.to_owned());
     };

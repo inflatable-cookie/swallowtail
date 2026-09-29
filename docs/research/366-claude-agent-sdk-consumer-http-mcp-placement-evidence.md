@@ -104,6 +104,13 @@ and no currentness step precedes this evidence.
   `YQ=L(()=>C({type:V(["http","streamable-http"]).transform(()=>"http"),url:g(),headers:Z(g(),g()).optional(),...}))`
   (byte offset 1,288,209); the sibling `sse` schema is `ZQ` immediately
   before it.
+- The header shape the pinned package requires is a JSON object, not a list:
+  the declaration types `headers?: Record<string, string>`
+  ([`:313`](../../crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.270/sdk-declarations.d.ts))
+  and the bundle schema is `headers:Z(g(),g())`, a string-to-string record.
+  Contract 063's placement shape and the ACP wire instead carry an ordered
+  `[{name, value}]` list, so the two are not interchangeable and the wiring
+  must convert.
 - The spawn argv builder pushes the whole record with no transport filtering:
   `if(q&&Object.keys(q).length>0)W.push("--mcp-config",me({mcpServers:q}))`
   (byte offset 918,855), where `q` is `Options.mcpServers` (destructured at
@@ -216,7 +223,9 @@ already builds, with omission unchanged. The minimal edit set:
    `ClaudeAgentSdkRemoteMcpPlacement` (`name`, `url`, `headers`, transport
    `Http`/`Sse`), a route-owned reserved name, structure validation (non-empty
    name, absolute `http`/`https` URL, well-formed header names), an encoder to
-   `{type:"http",name,url,headers:[{name,value}]}`, and a hand-written `Debug`
+   `{type:"http",name,url,headers:[{name,value}]}`, that ordered pair list
+   being the sidecar-command shape (it matches the ACP wire and lets the
+   route detect a repeated header name), and a hand-written `Debug`
    that redacts URL and header values, mirroring
    [`mcp.rs:15-231`](../../crates/swallowtail-adapter-claude-agent/src/mcp.rs).
    `sse` stays modelled and refused, as on the ACP route.
@@ -234,9 +243,15 @@ already builds, with omission unchanged. The minimal edit set:
    `error`/`url`/`config`
    ([`:744-826`](../../crates/swallowtail-adapter-claude-agent/src/sdk/driver/startup.rs)).
 4. `crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs`
-   — admit the placement (new key or new field) in `admittedMcpServers`, have
-   `sdkMcpServers` emit `{type:"http",url,headers}` for it, and keep
-   `strictMcpConfig: true` and the status projection
+   — admit the placement (new key or new field) in `admittedMcpServers`, and
+   have `sdkMcpServers` **convert the ordered `[{name,value}]` header list into
+   the pinned SDK's required `Record<string,string>`** before it reaches
+   `query()`, emitting `{type:"http",url,headers:{name:value,...}}`. That
+   conversion is the one place the two shapes meet: a record cannot carry a
+   repeated header name, so a duplicate must fail closed with
+   `mcp_servers_invalid` rather than silently keep a last value, and header
+   order is not preserved by the SDK shape. Keep `strictMcpConfig: true` and
+   the status projection
    ([`:503-626`, `:1493-1494`](../../crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs)).
 5. **Contract 061 projection** — publish the SDK route's
    `consumer-supplied-http` placement beside the existing process-existence

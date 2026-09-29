@@ -1,0 +1,159 @@
+{
+ "mapped_subset_unchanged": true,
+ "bridge_and_browser_implementations_changed_but_unreachable": true,
+ "bridge_declaration_changed_at_0_3_277_and_0_3_281_only": true,
+ "credential_non_custody": {
+  "bridge_and_browser_declarations_reachable": false,
+  "entry_points_dot_and_extract_unchanged": true,
+  "new_core_export_unmapped": true,
+  "exported_functions_0_3_270": 17,
+  "exported_functions_0_3_284": 18,
+  "added_export": "prewarm",
+  "login_or_oauth_exports": 0,
+  "hits_are_prose_only": true,
+  "ten_pattern_hits_in_default_entry": 3,
+  "ten_patterns": "accessToken|refreshToken|access_token|refresh_token|bearer|Bearer|oauthToken|authToken|credentialsJson|clientSecret"
+ },
+ "declaration_deltas": [
+  {
+   "kind": "added_optional_field",
+   "mapped": false,
+   "symbol": "McpServerStatus.source",
+   "first_hop": "0.3.273->0.3.274",
+   "why_unmapped": "New optional top-level row key naming where the server definition came from (sdk, plugin, or a config scope). Card 146 admits every declared key and discards metadata; the sidecar allowlist grows by this one key so a native row that carries it does not fail-closed. Projected evidence stays name + status + optional failureCode. The field is never forwarded on the private wire."
+  },
+  {
+   "kind": "added_optional_field",
+   "mapped": false,
+   "symbol": "McpServerStatus.tools[]._meta",
+   "first_hop": "0.3.278->0.3.280",
+   "why_unmapped": "Nested MCP Apps UI metadata under the already-allowed tools key. The sidecar fail-closed check is top-level only; nested members are discarded with tools. Never projected."
+  },
+  {
+   "kind": "added_optional_field",
+   "mapped": false,
+   "symbol": "CanUseTool.options.mcpServer",
+   "why_unmapped": "Optional {name, source} on permission-ask options for mcp__ tools. The sidecar callback is (toolName, input) only and ignores extra options, same as the 0.3.270 ask-dialog hints. PermissionResult stays byte-identical."
+  },
+  {
+   "kind": "new_unmapped_operation",
+   "mapped": false,
+   "symbol": "Query.readMcpResource",
+   "why_unmapped": "New control to read an MCP resource by server name and URI. The route sends no control requests and never calls it."
+  },
+  {
+   "kind": "new_unmapped_operation",
+   "mapped": false,
+   "symbol": "prewarm / SpareProcess / ClaimOptions",
+   "why_unmapped": "New default-entry export and spare-process types at 0.3.284. The sidecar calls query() only and never prewarms."
+  },
+  {
+   "kind": "new_unmapped_subpath",
+   "mapped": false,
+   "symbol": "exports['./core'] tree refactor at 0.3.282",
+   "why_unmapped": "package.json exports and files gain ./core plus hashed core-*.mjs chunks. The sidecar imports the . entry only. core.d.ts re-exports from ./sdk.js. Same class as /bridge and /browser: unreachable from this process."
+  },
+  {
+   "kind": "added_optional_input",
+   "mapped": false,
+   "symbol": "McpStdioServerConfig.bareElicitationCapability",
+   "why_unmapped": "New optional stdio config flag. The route writes type, command, args, env, and alwaysLoad only."
+  },
+  {
+   "kind": "added_union_member",
+   "mapped": false,
+   "symbol": "setMaxThinkingTokens thinkingDisplay highlights",
+   "why_unmapped": "Additive display member on a Query method the route never calls. Also appears on the prohibited /bridge onSetMaxThinkingTokens hook."
+  },
+  {
+   "kind": "added_union_member",
+   "mapped": false,
+   "symbol": "updateSettings source userSettings",
+   "why_unmapped": "Additive settings-tier source on a control the route never sends. settingSources stays []."
+  },
+  {
+   "kind": "added_type",
+   "mapped": false,
+   "symbol": "McpServerProvenance / SDKStartupFailureReason / SDKUsageReport",
+   "why_unmapped": "New declaration-only types. Provenance is the source vocabulary; startup-failure and usage-report types sit on uncalled APIs."
+  },
+  {
+   "kind": "prohibited_subpath_only",
+   "mapped": false,
+   "symbol": "bridge.d.ts thinkingDisplay highlights and verdict return (0.3.277, 0.3.281)",
+   "why_unmapped": "onSetMaxThinkingTokens gains highlights then a verdict return type on /bridge. The route never imports /bridge. The sidecar falsifier stays clean."
+  },
+  {
+   "kind": "implementation_move",
+   "mapped": false,
+   "symbol": "in-process bash process.kill(-pid) left sdk.mjs at 0.3.281",
+   "why_unmapped": "The process-group SIGKILL that left the default entry lived on the in-process bash tool, which this route never loads. ProcessTransport still SIGTERM then unref'd SIGKILL after 5s; waitForExit stays a 2000 ms discarded race; sdk-exit-after-stderr-drained remains one internal remap."
+  },
+  {
+   "kind": "added_tool_shape",
+   "mapped": false,
+   "symbol": "sdk-tools skill/tool deltas",
+   "why_unmapped": "Skill and tool I/O shapes stay prohibited. Deltas sit in the unmapped skill/tool tier."
+  }
+ ],
+ "implementation_invariants_unchanged": {
+  "account_projection": "apiProvider stays the first-party gate; subscriptionType/tokenSource/apiKeySource stay labelled observations; AccountInfo declaration identical",
+  "can_use_tool_gating": "canUseTool still conflicts with permissionPromptToolName and still pushes --permission-prompt-tool stdio by default; --permission-prompts pushed only when set",
+  "mcp_stdio_forwarding": "non-empty mcpServers still serialize as --mcp-config JSON {mcpServers: map}; strictMcpConfig still pushes --strict-mcp-config; alwaysLoad still optional on stdio config",
+  "mcp_wire_constants": "bundled MCP literal still offers 2025-11-25 first with the same five supported versions on every hop (minified var names only; at 0.3.282 the literal moved from sdk.mjs into the core split but the version list is identical)",
+  "mcp_status_passthrough": "mcpServerStatus() still returns native mcp_status rows unchanged; the sidecar still projects name + status + optional failureCode",
+  "no_joined_stop": "the bounded waitForExit race remains, and ProcessTransport SIGKILL escalation is still unref'd",
+  "permission_prompts_default": "unset keeps the default host surface; the sidecar never sets permissionPrompts",
+  "plugin_delivery_default": "selector defaults to argv when unset; the route leaves it unset with plugins: []",
+  "query_close": "Query.close() stays close(): void with the same terminate-and-stop-messages contract",
+  "spawn_callback": "spawnClaudeCodeProcess still takes one SpawnOptions object; the sidecar destructures exactly {command, args, cwd, env, signal}",
+  "stderr_drain": "sdk-exit-after-stderr-drained remains a single internal remap"
+ },
+ "sidecar_allowlist": {
+  "rule": "Card 146: admit every declared top-level McpServerStatus key and discard metadata",
+  "declared_keys_0_3_270": ["name", "status", "serverInfo", "error", "config", "scope", "tools"],
+  "declared_keys_0_3_284": ["name", "status", "serverInfo", "error", "config", "scope", "source", "tools"],
+  "projected": ["name", "status", "failureCode on failed rows only"],
+  "source_is_discarded": true
+ },
+ "selected_mapped_subset": [
+  "query() through the '.' entry point only",
+  "query({prompt, options}) accepts string | AsyncIterable<SDKUserMessage>; the streaming input remains open across turns until Query.close()",
+  "Options: cwd, model, executable, pathToClaudeCodeExecutable, env, settingSources, skills, plugins, agents, mcpServers, strictMcpConfig, hooks, persistSession, tools, disallowedTools, permissionMode, canUseTool, spawnClaudeCodeProcess",
+  "system/init fields: cwd, model, apiKeySource, capabilities",
+  "Query.initializationResult(): Promise<SDKControlInitializeResponse>",
+  "Query.supportedModels(): Promise<ModelInfo[]>",
+  "Query.accountInfo(): Promise<AccountInfo>",
+  "accountInfo(): apiProvider, subscriptionType, tokenSource, apiKeySource",
+  "canUseTool(toolName, input) -> allow with unchanged updatedInput, or deny",
+  "interrupt() and its capability-gated receipt",
+  "SDKMessage projection: assistant text and tool_use, user tool_result, result subtype",
+  "Query.mcpServerStatus(): Promise<McpServerStatus[]>; sidecar projects name + status only"
+ ],
+ "native_artifact_rotation": {
+  "all_eight_platform_binaries_rotated_every_hop": true,
+  "darwin_arm64_0_3_284_checksum": "50a14c2f50f56668380fdda490167f1d3630d5cc18fb8aed3073c2c7ea7314fe",
+  "harness_schema_unchanged": true,
+  "tested_wrapper_versions_still_stale": true
+ },
+ "registered_tool_disposition": "Research 301 acceptance stays bound to exact 0.3.259/2.1.259. Bundled MCP version constants are identical on 0.3.284, but that provider-free equality is not live evidence, so the newer compiled tuple projects registered_tools and consumer_tool_exchange unqualified. The registered-tool courier stays non-production.",
+ "no_host_change": true,
+ "no_live_session": true,
+ "no_prompt": true,
+ "nothing_executed": true,
+ "per_hop_declaration_attribution": {
+  "0_3_270_to_0_3_271": "sdk.d.ts + sdk-tools.d.ts + browser-sdk.d.ts; unmapped extras",
+  "0_3_271_to_0_3_272": "0 declaration files; pure native rotation and metadata",
+  "0_3_272_to_0_3_273": "sdk.d.ts + sdk-tools.d.ts + browser-sdk.d.ts",
+  "0_3_273_to_0_3_274": "McpServerStatus.source first appears",
+  "0_3_274_to_0_3_275": "sdk.d.ts + sdk-tools.d.ts",
+  "0_3_275_to_0_3_276": "0 declaration files; pure native rotation and metadata",
+  "0_3_276_to_0_3_277": "sdk.d.ts + sdk-tools.d.ts + first bridge.d.ts move (highlights)",
+  "0_3_277_to_0_3_278": "0 declaration files; pure native rotation and metadata",
+  "0_3_278_to_0_3_280": "sdk.d.ts; tools[]._meta first appears; gap 0.3.279 unpublished",
+  "0_3_280_to_0_3_281": "sdk.d.ts + sdk-tools.d.ts + second bridge.d.ts move (verdict return)",
+  "0_3_281_to_0_3_282": "sdk.d.ts + ./core tree added (4 files); README.md first change",
+  "0_3_282_to_0_3_283": "sdk.d.ts; hashed core chunks rotate",
+  "0_3_283_to_0_3_284": "sdk.d.ts + sdk-tools.d.ts; prewarm export; hashed core chunks rotate"
+ }
+}

@@ -1,0 +1,42 @@
+{
+ "credential_or_provider_use": {
+  "live_mcp_server": false,
+  "login_or_credential_read": false,
+  "network_beyond_npm_registry_tarball": false,
+  "provider_process": false
+ },
+ "executed": false,
+ "jsonrpc_version": "2.0",
+ "latest_protocol_version": "2025-11-25",
+ "literal": "var kb=\"2025-11-25\";var KL=[kb,\"2025-06-18\",\"2025-03-26\",\"2024-11-05\",\"2024-10-07\"]",
+ "literal_byte_offset": 570385,
+ "method": "The bundled MCP TypeScript SDK constants are minified into one literal. They were recovered by searching the extracted file for the exact byte sequence below. Nothing was imported, evaluated, or run.",
+ "package": "@anthropic-ai/claude-agent-sdk",
+ "purpose": "Carrier-qualification anchor for the route-local registered-tool MCP profile. This records what the pinned bundle carries; it claims no route support and no provider turn.",
+ "reading": "The pinned bundle offers `2025-11-25` first and accepts any member of `supported_protocol_versions` from a server. A Swallowtail-owned carrier therefore answers `initialize` with exactly `2025-11-25` and rejects every other negotiated value before provider work. The version list is identical to the 0.3.270 bundle; only the minified variable names moved. At 0.3.282 the same list also appears in the unmapped ./core split.",
+ "record": "claude-agent-sdk 0.3.284 bundled MCP protocol constants",
+ "reproduce": [
+  "npm pack @anthropic-ai/claude-agent-sdk@0.3.284",
+  "shasum -a 256 anthropic-ai-claude-agent-sdk-0.3.284.tgz",
+  "tar xzf anthropic-ai-claude-agent-sdk-0.3.284.tgz",
+  "shasum -a 256 package/sdk.mjs",
+  "grep -c 'var kb=\"2025-11-25\";var KL=\\[kb,\"2025-06-18\",\"2025-03-26\",\"2024-11-05\",\"2024-10-07\"\\]' package/sdk.mjs"
+ ],
+ "source_file": "package/sdk.mjs",
+ "source_file_bytes": 1159746,
+ "source_file_sha256": "32d062c37b03e10870fbf839f54694545ee01bc0ec719e47078fbed76e30ef71",
+ "supported_protocol_versions": [
+  "2025-11-25",
+  "2025-06-18",
+  "2025-03-26",
+  "2024-11-05",
+  "2024-10-07"
+ ],
+ "tarball_sha256": "4550e830246026133fc1802a2208dd0f3a785cae1eec83f261d114c33d797771",
+ "version": "0.3.284",
+ "withheld": [
+  "This records only the versions the bundle carries. It is not a captured live handshake with the native binary, and it is not a real-route qualification.",
+  "SSE, streamable HTTP, in-process SDK, and managed/ambient MCP stay withheld: no pinned transport corpus exists for them.",
+  "Identical version constants on a newer wrapper are not live evidence: Research 301 acceptance stays bound to 0.3.259/2.1.259 until a separately authorized live requalification runs."
+ ]
+}

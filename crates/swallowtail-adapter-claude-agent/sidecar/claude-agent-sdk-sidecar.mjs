@@ -58,8 +58,8 @@ import process from "node:process";
 const WIRE = "swallowtail-claude-agent-sdk-jsonl-v1";
 const BEHAVIOR = "claude-agent.sdk-v1";
 const SDK_PACKAGE = "@anthropic-ai/claude-agent-sdk";
-const SDK_VERSION = "0.3.270";
-const NATIVE_VERSION = "2.1.270";
+const SDK_VERSION = "0.3.284";
+const NATIVE_VERSION = "2.1.284";
 const NODE_FLOOR = [22, 19, 0];
 
 const MAXIMUM_RECORD_BYTES = 1024 * 1024;
@@ -625,14 +625,15 @@ function sdkMcpServers(servers) {
   return config;
 }
 
-// Exact 0.3.270 `McpServerStatus` rows (package/sdk.d.ts:1124-1168) carry
+// Exact 0.3.284 `McpServerStatus` rows (package/sdk.d.ts:1226) carry
 // `name` and `status` plus declared optional `serverInfo`, `error`, `config`,
-// `scope`, and `tools`. The shipped 0.3.270 `mcpServerStatus` is a passthrough
-// of the native `mcp_status` rows, so any declared combination is lawful
-// producer output. Card 146: the safe projection admits every declared key
-// and discards the metadata; any row key the declaration does not permit
+// `scope`, `source`, and `tools`. The shipped 0.3.284 `mcpServerStatus` is a
+// passthrough of the native `mcp_status` rows, so any declared combination is
+// lawful producer output. Card 146: the safe projection admits every declared
+// key and discards the metadata; any row key the declaration does not permit
 // stays fail-closed (`mcp_status_invalid`), so an unknown shape is never
-// accepted.
+// accepted. Research 367: `source` is a new declared optional key and is
+// discarded, not projected.
 const MCP_STATUS_DECLARED_KEYS = new Set([
   "name",
   "status",
@@ -640,6 +641,7 @@ const MCP_STATUS_DECLARED_KEYS = new Set([
   "error",
   "config",
   "scope",
+  "source",
   "tools",
 ]);
 

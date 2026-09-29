@@ -568,7 +568,7 @@ fn row_with_semantic_id<'a>(
 #[test]
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 fn the_projection_publishes_the_unqualified_truth_on_a_newer_compiled_tuple() {
-    // Research 315 rebound the route to 0.3.270/2.1.270 while Research 301
+    // Research 367 rebound the route to 0.3.284/2.1.284 while Research 301
     // stays frozen on 0.3.259/2.1.259. On the accepted platform the only
     // reason the route projects unqualified is the tuple gate: no live
     // evidence covers the compiled tuple yet.
@@ -744,11 +744,11 @@ fn the_newer_compiled_tuple_holds_the_live_evidence_without_inheriting_it() {
     // exact and independent, never a second live-qualified point.
     assert_eq!(
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_VERSION,
-        "0.3.270"
+        "0.3.284"
     );
     assert_eq!(
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_VERSION,
-        "2.1.270"
+        "2.1.284"
     );
     assert_eq!(
         NODE_VERSION,

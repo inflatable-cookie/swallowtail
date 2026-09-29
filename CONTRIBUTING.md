@@ -28,12 +28,14 @@ Use Effigy for repository tasks:
 ```sh
 effigy tasks
 effigy test --plan
-effigy validate:focused <workspace-package>
-effigy package:verify-affected <workspace-package>
 ```
 
-Group related changes into one meaningful batch. Run broad QA only when the
-task brief calls for it. Do not commit credentials, local auth state,
+Group related changes into one meaningful batch. Run the brief's targeted
+Effigy checks once: tests for the changed behaviour, a compile of touched
+code, and relevant docs checks. Whole package suites are not task checks.
+The planner runs full QA on `main` at release points and after major chunks
+of work. See [validation tiers](docs/guides/validation-tiers.md).
+Do not commit credentials, local auth state,
 provider captures containing private data, build output, or generated release
 artifacts.
 

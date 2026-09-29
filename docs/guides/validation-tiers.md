@@ -8,7 +8,20 @@ All selectors in this guide are deterministic unless a command is explicitly
 named as a live probe. They do not authorize authentication, provider prompts,
 remote mutation, allowance spend, or destructive cleanup.
 
-## Normal Package Feedback
+## Task Proof
+
+Tom's directive (2026-09-30): targeted checks per task, full QA at milestones.
+Briefs name Effigy selectors for tests of the changed behaviour and a compile
+of the touched code, plus relevant static checks below. Use a test target or
+filter that proves the change; package selection alone is not a test filter.
+If no selector covers that scope, add a narrow selector as part of the task.
+
+Workers run those checks once, open the PR and report. Reviewers read the diff,
+run the same checks and exercise the behaviour. Neither runs whole suites or
+repeat passes. Queue runs no separate per-task validation command; GitHub CI
+gates merges.
+
+## Whole-Package Proof
 
 Pass one to four exact workspace package names:
 
@@ -23,7 +36,9 @@ This runs:
 1. one nextest invocation for the selected packages
 2. one warnings-denied all-target clippy invocation for the same packages
 
-It does not infer scope from the worktree.
+It does not infer scope from the worktree or filter tests within a package.
+Despite its name, `validate:focused` runs whole package suites. It is not a
+per-task default; reserve it for milestone package proof.
 
 ## Affected Archive Proof
 
@@ -57,7 +72,9 @@ map changes.
 
 ## Milestone And Release Gates
 
-The accepting card owns broad validation:
+The planner runs `effigy qa` on `main` at release points and after major chunks
+of work, then briefs fixes for what it finds. Release acceptance owns additional
+release gates:
 
 - workspace: `check:rust`, `check:examples`, `lint:rust`, `test:rust`, `qa`
 - package: `package:docs`, `package:msrv`, `package:verify-local`,
@@ -65,8 +82,7 @@ The accepting card owns broad validation:
 - candidate and consumer: `package:candidate:*`
 - installed live evidence: `probe:*`
 
-Do not run these after every local edit. Do not weaken or skip them when the
-accepting card requires their evidence.
+Do not run broad gates per task. Do not weaken or skip release evidence.
 
 ## Failure And Scope
 
@@ -87,6 +103,6 @@ from an optional live-probe failure; neither grants retry or fallback.
 
 Consumers normally use the compiling example and route fixture evidence linked
 from the [integration guide map](integration-guide-map.md). Adapter maintainers
-also run the exact focused and package tiers their task brief names. Release
+also run the targeted checks their task brief names. Release
 operators run the milestone and release gates only when the accepting brief
 requires them.

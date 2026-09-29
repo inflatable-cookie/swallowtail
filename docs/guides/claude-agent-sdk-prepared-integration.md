@@ -539,6 +539,14 @@ object, never omitted `process.env`. Keys outside that allowlist fail at
 profile construction. The reserved watcher name `swallowtail-watchers` is
 rejected there too.
 
+For Longhorn's `longhorn-agent-control-client` stdio carrier, select `HOME`
+explicitly on macOS. `XDG_STATE_HOME`, `XDG_RUNTIME_DIR`, `LOCALAPPDATA`,
+`APPDATA` and `TEMP` are outside this route's allowlist. On Linux with XDG
+overrides, and on Windows, pass the carrier's non-secret `--state-root` or
+`--discovery-dir` argument instead. The carrier reads the bearer from the
+app's private discovery file; do not put it in argv or environment variables.
+This uses the ordinary consumer stdio placement under Contract 063.
+
 `strictMcpConfig` stays true. Required servers set `alwaysLoad: true` so open
 waits for connect; a required server that is not `connected` fails open typed.
 Optional servers record `pending` or `failed` in open evidence instead.

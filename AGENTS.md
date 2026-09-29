@@ -33,8 +33,8 @@ effigy doctor
 effigy test --plan
 ```
 
-- `effigy validate:focused <pkg>...` — nextest and clippy for one to four
-  exact workspace packages
+- `effigy validate:focused <pkg>...` — whole-package nextest and clippy for
+  one to four exact workspace packages; milestone proof, not a task default
 - `effigy package:verify-affected <pkg>...` — package archive assembly for the
   same scope
 - `effigy qa:docs` — docs, link, index and guide checks
@@ -116,9 +116,15 @@ Artifacts and PR descriptions use glue-light style:
 
 ## Validate
 
-`effigy validate:focused <pkg>...` for the packages you touched, plus
-`effigy qa:docs` and `effigy qa:routes` when docs, guides or matrices change,
-before opening a PR. Broader tiers only when the brief names them.
+Briefs name targeted Effigy selectors: tests for the changed behaviour and a
+compile of the touched code, plus `effigy qa:docs` when docs change and
+`effigy qa:routes` when route or matrix truth changes. Workers run those checks
+once, open the PR and report. Reviewers run the same checks and exercise the
+behaviour. No whole package suites or repeat passes per task.
+
+The planner runs `effigy qa` on `main` at release points and after major chunks
+of work, then briefs fixes for failures. `validate:focused` runs whole package
+suites; it is not targeted task validation.
 
 Queue validates merges through GitHub CI; it runs no separate pre-merge
 command for this repository (Q-002).

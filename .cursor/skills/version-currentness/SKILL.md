@@ -217,18 +217,20 @@ take ids from this worktree or from `origin/main`.
 
 ## Validation
 
-`cargo fmt -p <adapter-package>` then the brief's named gates, normally:
+Format with `cargo fmt -p <adapter-package>`, then run the brief's targeted
+Effigy selectors once: identity/claim regression tests for the changed family,
+a compile of touched code, and relevant docs and route checks.
 
 ```sh
-effigy validate:focused <adapter-package>
-effigy package:verify-affected <adapter-package>
 effigy qa:routes
 effigy qa:docs
 ```
 
-Identity-only stops may run focused + `qa:docs` without package verify. Do
-not run workspace `qa`, live probes, MSRV, or consumer checks unless the
-brief names them.
+`validate:focused` runs whole package suites and is not a task default.
+Package archive proof is only for a named packaging change. Do not run whole
+suites, workspace `qa`, MSRV, or broad consumer checks per task. The planner
+owns full QA on `main` at release points and after major chunks of work.
+Live probes still need separate operator authority.
 
 ## Closeout
 

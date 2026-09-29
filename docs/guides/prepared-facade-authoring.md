@@ -198,15 +198,16 @@ The three representative compile-tested examples show the real shape:
 
 ## Validation
 
-Follow the conformance checklist above, then prove the public surface
-deterministically:
+Follow the conformance checklist above, then prove the changed public surface
+with the brief's targeted Effigy tests and compile check. Filter examples to
+the touched package and target; `check:examples` compiles the whole workspace.
+Run relevant static checks once:
 
 ```sh
-effigy check:examples
-effigy validate:focused swallowtail-adapter-<route>
 effigy qa:docs
 effigy qa:routes
 ```
 
+See [validation tiers](validation-tiers.md) for task and milestone scope.
 Live provider probes remain separately operator-gated and never replace the
 fixture and example evidence.

@@ -10,7 +10,7 @@ What is true now:
   through the Contract 029 currentness procedure.
 - Contract 063 admits a consumer-supplied streamable-HTTP MCP placement.
   `opencode.acp` is live-proven honouring it. `claude-agent.acp` honours it
-  on exact `0.79.0` (Research 361) after Research 352's `cleanup_failed`
+  on exact `0.81.2` (Research 364) after Research 352's `cleanup_failed`
   stop. `gemini-cli.acp` honours it on host exact `0.61.0` (Research 362)
   after Research 360's Plan-mode `tool_not_called` stop. `copilot-cli.acp`,
   `goose.acp` and `kiro.acp` emit the entry with live honouring unproven

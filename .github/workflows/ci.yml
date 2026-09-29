@@ -40,6 +40,7 @@ jobs:
   stable-nextest:
     name: Stable nextest (shard ${{ matrix.shard }}/2)
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -62,6 +63,7 @@ jobs:
   stable-process-nextest:
     name: Stable process-spawning nextest
     runs-on: macos-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable

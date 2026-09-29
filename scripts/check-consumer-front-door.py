@@ -71,6 +71,23 @@ routes_relative = f"release-baselines/production-routes-{current_version}.txt"
 readme = read("README.md")
 release = read(release_relative)
 changelog = read("CHANGELOG.md")
+releases_index = read("docs/releases/README.md")
+
+# The releases index is the deterministic tagged-version source in CI: fail
+# the front door if the README calls any tagged version a candidate, and
+# require it to name the current version as the current source tag once
+# that version is tagged. Before a tag the current version is legitimately
+# a candidate, so only already-tagged versions are constrained.
+tagged_versions = set(re.findall(r"tagged `v(\d+\.\d+\.\d+)`", releases_index))
+if current_version in tagged_versions:
+    if f"`v{current_version}` is the current source tag" not in readme:
+        fail(
+            f"README.md does not state tagged v{current_version} as the "
+            "current source tag"
+        )
+for tagged in sorted(tagged_versions):
+    if re.search(rf"`v{re.escape(tagged)}`[^`]*?[Cc]andidate", readme):
+        fail(f"README.md calls tagged v{tagged} a candidate")
 
 for required in ("SECURITY.md", "SUPPORT.md", "CONTRIBUTING.md", "LICENSE"):
     read(required)

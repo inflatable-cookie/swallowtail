@@ -19,9 +19,8 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`v0.5.1` is the coordinated candidate version; the current source tag
-remains `v0.5.0` until the separately authorized `v0.5.1` annotated tag
-exists. Releases are distributed as
+`v0.5.1` is the current source tag, tagged 2026-09-13; see the
+[v0.5.1 release notes](docs/releases/0.5.1.md). Releases are distributed as
 annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or

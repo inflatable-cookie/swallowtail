@@ -183,12 +183,9 @@ fn cancellation_interrupts_then_deletes_before_releasing_the_credential() {
     )
     .expect("run starts");
     let terminal = run.take_terminal_outcome().expect("terminal is available");
-    for _ in 0..200 {
-        if fixture.server.state().stream_attachments == 1 {
-            break;
-        }
-        std::thread::sleep(std::time::Duration::from_millis(1));
-    }
+    fixture
+        .server
+        .wait_for_stream_attachments(1, std::time::Duration::from_secs(30));
     block_on(run.cancellation().request()).expect("cancellation is accepted");
     let outcome = block_on(terminal);
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);

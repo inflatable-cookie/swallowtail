@@ -13,12 +13,9 @@ fn prepared_interrupt_deletes_owned_resources_before_credential_release() {
         .expect("managed run prepares");
     let mut handle = block_on(run.start_run(fixture.services())).expect("run starts");
     let terminal = handle.take_terminal_outcome().expect("terminal exists");
-    for _ in 0..200 {
-        if fixture.server.state().stream_attachments == 1 {
-            break;
-        }
-        std::thread::sleep(std::time::Duration::from_millis(1));
-    }
+    fixture
+        .server
+        .wait_for_stream_attachments(1, std::time::Duration::from_secs(30));
     block_on(handle.cancellation().request()).expect("cancellation is accepted");
     let outcome = block_on(terminal);
     assert_eq!(outcome.status(), &TerminalStatus::Cancelled);

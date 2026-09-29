@@ -250,7 +250,7 @@ fn watcher_opt_in_rejects_every_version_except_exact_2_1_251() {
     let topology = ExecutionTopologyFixture::local();
     for version in [
         "2.1.220", "2.1.241", "2.1.250", "2.1.252", "2.1.257", "2.1.258", "2.1.270", "2.1.278",
-        "2.1.280", "2.1.281",
+        "2.1.280", "2.1.281", "2.1.282", "2.1.283",
     ] {
         let prepared = prepared_at(topology.execution_host_id().clone(), version);
         let error = watcher_profile(

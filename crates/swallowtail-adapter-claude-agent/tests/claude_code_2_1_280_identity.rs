@@ -234,7 +234,7 @@ fn dist_inventory_changes_only_version_pins_and_the_binary() {
 }
 
 #[test]
-fn identity_stop_is_frozen_and_production_now_qualifies_through_2_1_281() {
+fn identity_stop_is_frozen_and_production_now_qualifies_through_2_1_283() {
     let identity = json(IDENTITY);
     let decision = &identity["identity_decision"];
     assert_eq!(
@@ -249,10 +249,10 @@ fn identity_stop_is_frozen_and_production_now_qualifies_through_2_1_281() {
             .as_str()
             .expect("baseline")
     );
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.283");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.281"
+        "2.1.283"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
@@ -267,16 +267,16 @@ fn identity_stop_is_frozen_and_production_now_qualifies_through_2_1_281() {
     assert!(response.supports(&version("2.1.278")));
     assert!(!headless.permits(&version("2.1.279")));
     assert!(!response.permits(&version("2.1.279")));
-    for later in ["2.1.280", "2.1.281"] {
+    for later in ["2.1.280", "2.1.281", "2.1.282", "2.1.283"] {
         assert!(headless.supports(&version(later)), "{later}");
         assert!(response.supports(&version(later)), "{later}");
     }
     assert!(matches!(
-        headless.assess(&version("2.1.282")),
+        headless.assess(&version("2.1.284")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(matches!(
-        response.assess(&version("2.1.282")),
+        response.assess(&version("2.1.284")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(!headless.permits(&version("2.1.244")));

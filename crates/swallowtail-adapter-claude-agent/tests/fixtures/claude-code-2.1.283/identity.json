@@ -1,0 +1,103 @@
+{
+  "axis": [
+    "claude-code.headless-stream-json",
+    "claude-code.response-only-stream-json"
+  ],
+  "previous_ceiling": "2.1.281",
+  "official_latest_at_observation": "2.1.283",
+  "official_channel": "npm @anthropic-ai/claude-code dist-tag latest",
+  "npm_dist_tags_at_observation": {
+    "latest": "2.1.283",
+    "next": "2.1.283",
+    "stable": "2.1.274"
+  },
+  "npm_stable_is_not_this_channel": true,
+  "npm_published": {
+    "2.1.281": "2026-09-23T17:01:17.780Z",
+    "2.1.282": "2026-09-24T15:56:22.706Z",
+    "2.1.283": "2026-09-25T18:46:11.330Z"
+  },
+  "npm_integrity": {
+    "wrapper": {
+      "2.1.281": "sha512-sldhFsGqOnGA8pfOMLjyc+Sc331VkZ1TsP1sdpvMeVFYBikC5x53miTCsnTiE6Bio74IYPn7BIzTNbHcRp5fXQ==",
+      "2.1.282": "sha512-nKh6bevzeUQm7yJzA6WdyvQ92k6/M5muwTUJtI1CbRWzl9drmdGdh61N9y4CIUVXAZhaVam0migsHuqpt8Kvlw==",
+      "2.1.283": "sha512-/8Y1pe7M15qMOU7RwUEjpFcM8XGVXNzWrWRXXp/0HlGm1k8FcOCxYMA9VR237JUUzzx5DkcQaGvELAo4si7TwA=="
+    },
+    "darwin-arm64": {
+      "2.1.281": "sha512-rEI/YGBDX4YTfdq5w1B86NicoLgpFHGp4IrKM6sDrmUemruePSXF7ybICthHClIsRY8a/Kp7PQ6UJah1VWTbSA==",
+      "2.1.282": "sha512-THkAiXsMlYu5Bv6cFZmdgWWwxl39a7i793O+VPFPjMySKkeKJY4JQcO9IjJhy63cPWPiXn5tGauw1NDS8ZBF7w==",
+      "2.1.283": "sha512-GczpJ+FvnOYvxn6XPGHbdqJEZMves6Vc0WKS/g1N2eG39EKKAHxG77e+w4Rjtmf8xgCxNY36Jf/IOfbcyus4zA=="
+    },
+    "linux-x64": {
+      "2.1.281": "sha512-Z7ld7AE2AtvghO0qlNFBGD8S2w+nPVUk8uq4UprAUKJr6HHavXm605iGhbzSOTgXu3F/y540JHVUW9ON87w4IQ==",
+      "2.1.282": "sha512-iuegTPhk/134MJiuyNDD6gW2SNDRkHoPDK6XK+lrhzyISLyNpKCuFUpIHKTfxkp4RbWQgH2Dtnp1rYxmJTzEOQ==",
+      "2.1.283": "sha512-q9+Ke42t/I6oLb/bTmh6sI24jMw4KNwz3QbQLp9dVQ8ipQChfAW5L11SX8jcDzVCW/P2tId7ftI+lgBURvz9uQ=="
+    }
+  },
+  "github_release_published": {
+    "2.1.281": "2026-09-23T19:19:15Z",
+    "2.1.282": "2026-09-24T18:38:05Z",
+    "2.1.283": "2026-09-25T21:50:12Z"
+  },
+  "github_tag_commit": {
+    "2.1.281": "d78be9481b889e11186ec4578b4f5e9301396e25",
+    "2.1.282": "ddcb43a29b2d4da61fd22a55f6030c6d376b0545",
+    "2.1.283": "7779afb12e3635f46f56ec823979d68350ae000b"
+  },
+  "github_latest_tag": "v2.1.283",
+  "published_hops": [
+    "2.1.282",
+    "2.1.283"
+  ],
+  "compared": [
+    "2.1.281",
+    "2.1.282",
+    "2.1.283"
+  ],
+  "unpublished_between": [],
+  "kept_unpublished_gaps": [
+    "2.1.244",
+    "2.1.249",
+    "2.1.253",
+    "2.1.254",
+    "2.1.255",
+    "2.1.256",
+    "2.1.262",
+    "2.1.264",
+    "2.1.279"
+  ],
+  "first_unpublished_after_latest": "2.1.284",
+  "host_claude_on_path": false,
+  "host_mentioned_but_not_executed": true,
+  "downloaded_binaries_executed": false,
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "host_install_changed": false,
+  "claim_at_observation": {
+    "headless_latest_qualified": "2.1.281",
+    "response_only_latest_qualified": "2.1.281",
+    "response_only_v1_ceiling": "2.1.278",
+    "response_only_v2_baseline": "2.1.280",
+    "posture": "AllowUnverified"
+  },
+  "identity_decision": {
+    "segment_shape": "compatible-extension",
+    "identity_stop": "none",
+    "keep_headless_baseline": "2.1.220",
+    "keep_headless_behavior": "claude-code.headless.stream-json.v1",
+    "keep_headless_claim_id": "claude-code.headless.window-1",
+    "raise_headless_latest_qualified_to": "2.1.283",
+    "keep_response_only_baseline": "2.1.227",
+    "keep_response_only_v1_ceiling": "2.1.278",
+    "keep_response_only_v1_behavior": "claude-code.response-only.stream-json.v1",
+    "keep_response_only_v2_baseline": "2.1.280",
+    "keep_response_only_v2_behavior": "claude-code.response-only.stream-json.v2",
+    "keep_response_only_claim_id": "claude-code.response-only.window-1",
+    "raise_response_only_latest_qualified_to": "2.1.283",
+    "keep_posture": "AllowUnverified",
+    "synthetic_unverified_newer": "2.1.284",
+    "keep_gaps": true,
+    "flatten_onto_claude_agent_acp": false,
+    "flatten_onto_claude_agent_sdk": false
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "selected_mapped_subset_unchanged": true,
+  "selected_option_fingerprints_equal_on_both_platforms": {
+    "2.1.281": true,
+    "2.1.282": true,
+    "2.1.283": true
+  },
+  "output_format_choices": [
+    "text",
+    "json",
+    "stream-json"
+  ],
+  "input_format_choices": [
+    "text",
+    "stream-json"
+  ],
+  "effort_choices": [
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max"
+  ],
+  "permission_mode_wire_values": [
+    "acceptEdits",
+    "auto",
+    "bypassPermissions",
+    "default",
+    "dontAsk",
+    "plan"
+  ],
+  "headless_selected_permission_mode": "plan",
+  "headless_passes_safe_mode": false,
+  "response_only_passes_permission_mode": false,
+  "selected_response_only_args": [
+    "--tools",
+    "",
+    "--safe-mode",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--prompt-suggestions",
+    "false",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--strict-mcp-config"
+  ],
+  "launch_directory": {
+    "with_read_project_location": "consumer_working_resource",
+    "without_project_location_v1": "inherited_process_cwd",
+    "without_project_location_v2": "adapter_owned_empty_temporary_working_resource"
+  },
+  "safe_mode_keeps_builtin_suffix": {
+    "2.1.281": true,
+    "2.1.282": true,
+    "2.1.283": true
+  },
+  "safe_mode_builtin_sentinel": "builtin",
+  "agents_md_default_mode": "claude-md-or-agents-md",
+  "agents_md_is_on_by_default": {
+    "2.1.281": true,
+    "2.1.282": true,
+    "2.1.283": true
+  },
+  "agents_md_hook_events": [
+    "session.start",
+    "prompt.context",
+    "agent.spawn",
+    "tool.call"
+  ],
+  "builtin_registration_names_and_gates_equal": true,
+  "init_schema_keys_equal": true,
+  "init_keys_include_optional_mcp_source_and_terminal_slash_commands": true,
+  "sdk_tools_d_ts_byte_identical": true,
+  "sdk_tools_d_ts_sha256": "b33fdb2cf0af6559a111ae602ab259767883510456492907d2cdf4eec794b417",
+  "telemetry_opt_out_parser_unchanged": true,
+  "telemetry_opt_out_pinned": false,
+  "telemetry_opt_out_reason": "nonempty DISABLE_TELEMETRY and CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC and truthy DO_NOT_TRACK still select the same opt-out; response-only EnvironmentRef stays opaque",
+  "unmapped_new_flags": [
+    "--client-data-url"
+  ],
+  "unmapped_new_flag_present": {
+    "--client-data-url": {
+      "2.1.281": false,
+      "2.1.282": false,
+      "2.1.283": true
+    }
+  },
+  "unmapped_preexisting_flags": [
+    "--bare"
+  ],
+  "classified_unmapped": [
+    {
+      "item": "2.1.283 optional path on stream-json init plugin_errors",
+      "reason": "additive init field for --plugin-dir load failures; selected routes do not pass --plugin-dir and the response-only decoder does not fail on extra init keys"
+    },
+    {
+      "item": "2.1.283 claude -p skips loading the interactive UI",
+      "reason": "startup performance; selected argv, stream-json init keys, and result shape are unchanged"
+    },
+    {
+      "item": "2.1.283 interactive sessions on third-party providers or with telemetry off start in auto mode when no permission mode is configured",
+      "reason": "changelog scopes the default to interactive sessions; headless always passes --permission-mode plan and response-only does not pass --permission-mode"
+    },
+    {
+      "item": "2.1.283 --system-prompt and file forms together",
+      "reason": "selected routes do not pass --system-prompt or --append-system-prompt"
+    },
+    {
+      "item": "2.1.283 revert of the 2.1.282 claude-ai name reservation",
+      "reason": "skill, command, workflow, and MCP prompt names; neither selected route loads that surface"
+    },
+    {
+      "item": "--client-data-url",
+      "reason": "new flag present only at 2.1.283; neither selected argv passes it"
+    },
+    {
+      "item": "--bare",
+      "reason": "already present at the 2.1.281 ceiling and already excluded by the prepared guide; neither selected argv passes it"
+    }
+  ],
+  "platform_binary_changed_each_hop": true,
+  "platform_binary_change_class": "internal remangle; selected option help, choice arrays, safe-mode filter, agents-md default, builtin registration, init keys, and telemetry parser stay",
+  "wrapper_changed_files": [
+    "package.json"
+  ],
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "host_install_changed": false,
+  "downloaded_binaries_executed": false
+}

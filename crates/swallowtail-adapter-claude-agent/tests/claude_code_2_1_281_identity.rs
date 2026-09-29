@@ -31,10 +31,10 @@ fn official_hops_and_claim_stop_are_explicit() {
         identity["claim_at_observation"]["response_only_latest_qualified"],
         "2.1.278"
     );
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.283");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.281"
+        "2.1.283"
     );
     let headless = claude_code_headless_claim();
     let response = claude_code_response_only_claim();
@@ -45,11 +45,11 @@ fn official_hops_and_claim_stop_are_explicit() {
     assert!(!headless.permits(&InterfaceVersion::new("2.1.279").unwrap()));
     assert!(!response.permits(&InterfaceVersion::new("2.1.279").unwrap()));
     assert!(matches!(
-        headless.assess(&InterfaceVersion::new("2.1.282").unwrap()),
+        headless.assess(&InterfaceVersion::new("2.1.284").unwrap()),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(matches!(
-        response.assess(&InterfaceVersion::new("2.1.282").unwrap()),
+        response.assess(&InterfaceVersion::new("2.1.284").unwrap()),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

@@ -17,7 +17,7 @@ const CLAUDE_CODE_RESPONSE_ONLY_V1_CEILING_VERSION: &str = "2.1.278";
 /// First Claude Code version on the narrowed built-in-hook isolation segment.
 const CLAUDE_CODE_RESPONSE_ONLY_V2_BASELINE_VERSION: &str = "2.1.280";
 /// Most recent Claude Code version with qualified response-only evidence.
-pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.281";
+pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.283";
 /// Most recent Claude Code version with qualified response-only evidence.
 pub const CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str =
     CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION;
@@ -196,7 +196,7 @@ mod tests {
                 "{published}"
             );
         }
-        for published in ["2.1.280", "2.1.281"] {
+        for published in ["2.1.280", "2.1.281", "2.1.282", "2.1.283"] {
             assert!(
                 matches!(
                     claim.assess(&InterfaceVersion::new(published).unwrap()),
@@ -217,7 +217,7 @@ mod tests {
         assert!(!claim.permits(&InterfaceVersion::new("2.1.264").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.279").unwrap()));
         assert!(matches!(
-            claim.assess(&InterfaceVersion::new("2.1.282").unwrap()),
+            claim.assess(&InterfaceVersion::new("2.1.284").unwrap()),
             InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
                 if newer.behavior_revision().as_str() == RESPONSE_ONLY_BEHAVIOR_V2
         ));

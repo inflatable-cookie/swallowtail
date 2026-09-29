@@ -1,5 +1,9 @@
 #[path = "local_server_lifecycle/cancellation.rs"]
 mod cancellation;
+#[path = "local_server_lifecycle/projection_ledger.rs"]
+mod projection_ledger;
+#[path = "consumer_route_projection/ledger.rs"]
+mod route_ledger;
 
 use crate::lifecycle_support as local_server_lifecycle_support;
 

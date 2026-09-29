@@ -1,8 +1,83 @@
 use std::collections::BTreeSet;
+use swallowtail_runtime::{ConsumerRouteProjectionContribution, ConsumerRouteRowIdentity};
 
-type Row = (&'static str, &'static str, bool);
+pub(super) fn observed_tuples(
+    route: &str,
+    contribution: &ConsumerRouteProjectionContribution,
+) -> BTreeSet<(String, String, String)> {
+    contribution
+        .selection_rows()
+        .chain(contribution.session_start_rows())
+        .chain(contribution.active_session_rows())
+        .map(|row| {
+            let semantic = row.identity().namespaced_extension().map_or_else(
+                || match row.identity() {
+                    ConsumerRouteRowIdentity::Feature(feature) => {
+                        let name = format!("{feature:?}");
+                        if name == "ActiveSessionReasoningAcknowledgement" {
+                            "feature.active-session-reasoning-and-plan-ack".to_owned()
+                        } else {
+                            format!("feature.{}", kebab(&name))
+                        }
+                    }
+                    ConsumerRouteRowIdentity::Control(control) => {
+                        format!("control.{}", kebab(&format!("{control:?}")))
+                    }
+                },
+                |extension| extension.semantic_id().to_owned(),
+            );
+            let shape = match semantic.as_str() {
+                "feature.model-catalogue" => "model-catalogue",
+                "feature.structured-run" => "structured-run",
+                "feature.interactive-session"
+                | "feature.active-session-reasoning-and-plan-ack"
+                | "feature.negotiated-model-options-observation" => "interactive-session",
+                "feature.streaming-events"
+                | "feature.usage-evidence"
+                | "feature.activity-observation" => "route-observation",
+                "feature.load-session"
+                | "feature.resume-session"
+                | "feature.provider-session-catalogue"
+                | "feature.provider-session-import"
+                | "feature.provider-managed-recovery"
+                | "feature.persistent-session-posture"
+                | "feature.stream-reattachment"
+                | "feature.provider-session-archive"
+                | "feature.provider-session-restore" => "session-lifecycle",
+                "control.load-session"
+                | "control.resume-session"
+                | "control.provider-session-catalogue"
+                | "control.provider-session-import" => "session-management",
+                value if value.starts_with("control.") => match contribution
+                    .applicability()
+                    .operation_shape()
+                {
+                    swallowtail_core::OperationShape::StructuredRun => "structured-run",
+                    swallowtail_core::OperationShape::InteractiveSession => "interactive-session",
+                    other => panic!("unexpected Kimi control shape {other:?}"),
+                },
+                value if value.starts_with("feature.") => "route-capability",
+                _ => panic!("unexpected Kimi semantic {semantic}"),
+            };
+            (route.to_owned(), shape.to_owned(), semantic)
+        })
+        .collect()
+}
 
-const ACP: [Row; 25] = [
+fn kebab(value: &str) -> String {
+    let mut result = String::new();
+    for (index, character) in value.chars().enumerate() {
+        if character.is_uppercase() && index != 0 {
+            result.push('-');
+        }
+        result.extend(character.to_lowercase());
+    }
+    result
+}
+
+pub(super) type Row = (&'static str, &'static str, bool);
+
+pub(super) const ACP: [Row; 25] = [
     ("model-catalogue", "feature.model-catalogue", false),
     ("structured-run", "feature.structured-run", false),
     ("interactive-session", "feature.interactive-session", true),
@@ -66,7 +141,7 @@ const ACP: [Row; 25] = [
     ),
 ];
 
-const HEADLESS: [Row; 20] = [
+pub(super) const HEADLESS: [Row; 20] = [
     ("model-catalogue", "feature.model-catalogue", false),
     ("structured-run", "feature.structured-run", true),
     ("interactive-session", "feature.interactive-session", false),
@@ -113,7 +188,7 @@ const HEADLESS: [Row; 20] = [
     ("structured-run", "control.provider-managed-recovery", true),
 ];
 
-const LOCAL: [Row; 31] = [
+pub(super) const LOCAL: [Row; 31] = [
     ("model-catalogue", "feature.model-catalogue", true),
     ("structured-run", "feature.structured-run", true),
     ("interactive-session", "feature.interactive-session", true),

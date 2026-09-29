@@ -228,6 +228,8 @@ fn has_control(
         .session_start_rows()
         .any(|row| row.identity() == &ConsumerRouteRowIdentity::Control(control.clone()))
 }
+#[path = "consumer_route_projection/acp_ledger.rs"]
+mod acp_ledger;
 #[path = "consumer_route_projection/catalogue.rs"]
 mod catalogue;
 #[path = "consumer_route_projection/foreign.rs"]

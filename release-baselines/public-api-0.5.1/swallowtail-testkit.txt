@@ -277,6 +277,9 @@ impl swallowtail_testkit::ConformanceReport
 pub fn swallowtail_testkit::ConformanceReport::covers(&self, swallowtail_testkit::ConformanceAssertion) -> bool
 pub fn swallowtail_testkit::ConformanceReport::passed(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_testkit::ConformanceAssertion> + '_
 pub const fn swallowtail_testkit::ConformanceReport::profile(&self) -> swallowtail_testkit::SyntheticProfile
+pub struct swallowtail_testkit::ConsumerRouteLedgerClaim<'a, T>
+pub swallowtail_testkit::ConsumerRouteLedgerClaim::emitted_by: &'a [&'a str]
+pub swallowtail_testkit::ConsumerRouteLedgerClaim::identity: T
 pub struct swallowtail_testkit::ConsumerRouteProjectionFixture
 impl swallowtail_testkit::ConsumerRouteProjectionFixture
 pub fn swallowtail_testkit::ConsumerRouteProjectionFixture::applicability(&self) -> swallowtail_runtime::consumer_route_projection::applicability::ConsumerRouteApplicability
@@ -545,6 +548,7 @@ pub fn swallowtail_testkit::assert_compound_acknowledgement_preserves_reasoning_
 pub fn swallowtail_testkit::assert_compound_acknowledgement_rejects_impossible_half_combinations()
 pub fn swallowtail_testkit::assert_compound_acknowledgement_requires_observation_source()
 pub fn swallowtail_testkit::assert_compound_acknowledgement_terminal_not_dispatched_is_distinct()
+pub fn swallowtail_testkit::assert_consumer_route_ledger_emitted_by_facade<'a, T>(&alloc::collections::btree::map::BTreeMap<&str, alloc::collections::btree::set::BTreeSet<T>>, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_testkit::ConsumerRouteLedgerClaim<'a, T>>) where T: core::clone::Clone + core::cmp::Ord + core::fmt::Debug
 pub fn swallowtail_testkit::assert_consumer_route_projection_contract()
 pub fn swallowtail_testkit::assert_consumer_route_provider_operation_observation_contract()
 pub fn swallowtail_testkit::assert_consumer_tool_exclusion_keys_on_boundary_claim()

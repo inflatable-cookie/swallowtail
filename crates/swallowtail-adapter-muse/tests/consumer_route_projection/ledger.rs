@@ -4,7 +4,10 @@ use swallowtail_runtime::{
     ConsumerRouteControlId, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
     ConsumerRouteProjectionContribution, ConsumerRouteRowIdentity,
 };
-use std::collections::BTreeSet;
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
+};
+use std::collections::{BTreeMap, BTreeSet};
 
 const ROUTE: &str = "muse-code.headless";
 const PROFILE: &str = "MusePreparedRun";
@@ -41,7 +44,7 @@ fn contribution(source: &str) -> ConsumerRouteProjectionContribution {
     .expect("projection contribution")
 }
 
-fn semantic_id(row: &swallowtail_runtime::ConsumerRouteProjectionRow) -> &str {
+fn semantic_id(row: &swallowtail_runtime::ConsumerRouteProjectionRow) -> &'static str {
     match row.identity() {
         ConsumerRouteRowIdentity::Feature(feature) => match feature {
             ConsumerRouteFeatureId::ModelCatalogue => "feature.model-catalogue",
@@ -73,21 +76,43 @@ fn rows(contribution: &ConsumerRouteProjectionContribution) -> impl Iterator<Ite
         .chain(contribution.active_session_rows())
 }
 
+fn operation_shape(row: &swallowtail_runtime::ConsumerRouteProjectionRow) -> &'static str {
+    match row.identity() {
+        ConsumerRouteRowIdentity::Feature(feature) => match feature {
+            ConsumerRouteFeatureId::ModelCatalogue => "model-catalogue",
+            ConsumerRouteFeatureId::StructuredRun => "structured-run",
+            ConsumerRouteFeatureId::StreamingEvents | ConsumerRouteFeatureId::ActivityObservation => {
+                "route-observation"
+            }
+            ConsumerRouteFeatureId::ReasoningSelection
+            | ConsumerRouteFeatureId::CancellationOrInterruption
+            | ConsumerRouteFeatureId::WorkingResource
+            | ConsumerRouteFeatureId::PreparedFacade => "route-capability",
+            other => panic!("unexpected Muse feature for shape {other:?}"),
+        },
+        ConsumerRouteRowIdentity::Control(
+            ConsumerRouteControlId::ModelSelection | ConsumerRouteControlId::ReasoningSelection,
+        ) => "structured-run",
+        other => panic!("unexpected Muse identity for shape {other:?}"),
+    }
+}
+
+fn observed_tuples(
+    contribution: &ConsumerRouteProjectionContribution,
+) -> BTreeSet<(&'static str, &'static str, &'static str)> {
+    rows(contribution)
+        .map(|row| (ROUTE, operation_shape(row), semantic_id(row)))
+        .collect()
+}
+
 #[test]
 fn ledger_emits_all_ten_exact_rows_once() {
     let contribution = contribution("muse-code.ledger");
-    let observed = rows(&contribution).map(semantic_id).collect::<Vec<_>>();
-    let expected = LEDGER.iter().map(|entry| entry.semantic_id).collect::<Vec<_>>();
     let tuples = LEDGER
         .iter()
         .map(|entry| (entry.route_id, entry.operation_shape, entry.semantic_id))
         .collect::<BTreeSet<_>>();
-    assert_eq!(observed.len(), LEDGER.len());
     assert_eq!(tuples.len(), LEDGER.len());
-    assert_eq!(
-        observed.iter().copied().collect::<BTreeSet<_>>(),
-        expected.iter().copied().collect::<BTreeSet<_>>(),
-    );
     for entry in LEDGER {
         assert_eq!(entry.route_id, ROUTE);
         assert!(entry.semantic_id.starts_with("feature.") || entry.semantic_id.starts_with("control."));
@@ -95,6 +120,13 @@ fn ledger_emits_all_ten_exact_rows_once() {
         assert_eq!(entry.emitted_by.is_empty(), !entry.withheld_because.is_empty());
         assert!(entry.withheld_because.is_empty());
     }
+    assert_consumer_route_ledger_emitted_by_facade(
+        &BTreeMap::from([(PROFILE, observed_tuples(&contribution))]),
+        LEDGER.iter().map(|entry| ConsumerRouteLedgerClaim {
+            identity: (entry.route_id, entry.operation_shape, entry.semantic_id),
+            emitted_by: entry.emitted_by,
+        }),
+    );
 }
 
 #[test]

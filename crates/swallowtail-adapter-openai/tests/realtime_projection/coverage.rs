@@ -2,10 +2,13 @@ use crate::realtime_support;
 
 use futures_executor::block_on;
 use realtime_support::{RealtimeFixture, RealtimeScenario, TimeMode};
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use swallowtail_runtime::{
     ConsumerRouteActorPosture, ConsumerRouteEvidenceStrength, ConsumerRouteLifecycle,
     ConsumerRouteSourceClass, ConsumerRouteValueDomain,
+};
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
 };
 
 use super::ledger::*;
@@ -15,10 +18,17 @@ use super::support::*;
 #[test]
 fn the_coverage_ledger_dispositions_exactly_the_fifteen_realtime_rows() {
     let mut ids = BTreeSet::new();
+    let mut tuples = BTreeSet::new();
     for entry in &REALTIME_FIRST_TRANCHE {
+        assert_eq!(entry.route_id, REALTIME_ROUTE);
         assert!(
             ids.insert(entry.semantic_id),
             "the ledger repeats {}",
+            entry.semantic_id
+        );
+        assert!(
+            tuples.insert((entry.route_id, entry.operation_shape, entry.semantic_id)),
+            "the ledger repeats the exact identity of {}",
             entry.semantic_id
         );
         assert!(
@@ -34,6 +44,7 @@ fn the_coverage_ledger_dispositions_exactly_the_fifteen_realtime_rows() {
         );
     }
     assert_eq!(REALTIME_FIRST_TRANCHE.len(), 15);
+    assert_eq!(tuples.len(), 15);
 }
 
 #[test]
@@ -43,13 +54,6 @@ fn prepared_and_acknowledged_contributions_match_the_coverage_ledger() {
     let prepared = session
         .consumer_route_projection_contribution(source(PREPARED_SOURCE))
         .expect("prepared contribution is admitted");
-    let expected_prepared = REALTIME_FIRST_TRANCHE
-        .iter()
-        .filter(|entry| entry.emitted_by.contains(&PREPARED_FACADE))
-        .map(|entry| entry.semantic_id)
-        .collect::<BTreeSet<_>>();
-    assert_eq!(rows(&prepared), expected_prepared);
-
     let outcome = block_on(session.open_session_with_projection(
         source(PREPARED_SOURCE),
         source(OBSERVATION_SOURCE),
@@ -57,12 +61,19 @@ fn prepared_and_acknowledged_contributions_match_the_coverage_ledger() {
     ))
     .map_err(|failure| failure.failure().diagnostic().code())
     .expect("a matching acknowledgement opens the projected session");
-    let expected_open = REALTIME_FIRST_TRANCHE
-        .iter()
-        .filter(|entry| entry.emitted_by.contains(&PROJECTION_OPEN))
-        .map(|entry| entry.semantic_id)
-        .collect::<BTreeSet<_>>();
-    assert_eq!(rows(outcome.contribution()), expected_open);
+    let observed = BTreeMap::from([
+        (PREPARED_FACADE, identities(&prepared)),
+        (PROJECTION_OPEN, identities(outcome.contribution())),
+    ]);
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        REALTIME_FIRST_TRANCHE
+            .iter()
+            .map(|entry| ConsumerRouteLedgerClaim {
+                identity: (entry.route_id, entry.operation_shape, entry.semantic_id),
+                emitted_by: entry.emitted_by,
+            }),
+    );
 
     let acknowledgement = outcome
         .contribution()

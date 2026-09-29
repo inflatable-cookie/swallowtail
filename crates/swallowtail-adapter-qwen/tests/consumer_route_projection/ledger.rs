@@ -2,20 +2,23 @@ use super::{
     FakeProcessService, PendingTimeService, host_services_for, preparation_input, probe,
 };
 use futures_executor::block_on;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 use swallowtail_adapter_qwen::{
     QwenCatalogueProfileInput, QwenModelSelection, QwenRunProfileInput, QwenSessionProfileInput,
     prepare_qwen_catalogue, prepare_qwen_headless,
 };
 use swallowtail_core::{
-    ExecutionHostId, HarnessMode, ModelId, ModelRouteId, ModelRouteRevision, ProviderId,
-    ReasoningMode,
+    ExecutionHostId, HarnessMode, ModelId, ModelRouteId, ModelRouteRevision, OperationShape,
+    ProviderId, ReasoningMode,
 };
 use swallowtail_runtime::{
     ConsumerRouteControlId, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
     ConsumerRouteProjectionContribution, ConsumerRouteRowIdentity, Deadline, MonotonicInstant,
     OperationContent, RequestId, SessionOptions, WorkingResourceRef,
+};
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
 };
 
 const ROUTE: &str = "qwen.headless";
@@ -135,6 +138,56 @@ fn rows(contribution: &ConsumerRouteProjectionContribution) -> impl Iterator<Ite
     contribution.selection_rows().chain(contribution.session_start_rows()).chain(contribution.active_session_rows())
 }
 
+fn operation_shape(
+    row: &swallowtail_runtime::ConsumerRouteProjectionRow,
+    contribution: &ConsumerRouteProjectionContribution,
+) -> &'static str {
+    match row.identity() {
+        ConsumerRouteRowIdentity::Feature(feature) => match feature {
+            ConsumerRouteFeatureId::ModelCatalogue => "model-catalogue",
+            ConsumerRouteFeatureId::StructuredRun => "structured-run",
+            ConsumerRouteFeatureId::InteractiveSession => "interactive-session",
+            ConsumerRouteFeatureId::StreamingEvents
+            | ConsumerRouteFeatureId::UsageEvidence
+            | ConsumerRouteFeatureId::ActivityObservation => "route-observation",
+            ConsumerRouteFeatureId::ReasoningSelection
+            | ConsumerRouteFeatureId::CancellationOrInterruption
+            | ConsumerRouteFeatureId::WorkingResource
+            | ConsumerRouteFeatureId::PreparedFacade => "route-capability",
+            other => panic!("unexpected Qwen feature for shape {other:?}"),
+        },
+        ConsumerRouteRowIdentity::Control(
+            ConsumerRouteControlId::ModelSelection
+            | ConsumerRouteControlId::ReasoningSelection
+            | ConsumerRouteControlId::Namespaced(_),
+        ) => match contribution.applicability().operation_shape() {
+            OperationShape::StructuredRun => "structured-run",
+            OperationShape::InteractiveSession => "interactive-session",
+            other => panic!("unexpected Qwen control operation {other:?}"),
+        },
+        other => panic!("unexpected Qwen identity for shape {other:?}"),
+    }
+}
+
+fn row_tuple(
+    row: &swallowtail_runtime::ConsumerRouteProjectionRow,
+    contribution: &ConsumerRouteProjectionContribution,
+) -> (&'static str, &'static str, String) {
+    (
+        ROUTE,
+        operation_shape(row, contribution),
+        semantic_id(row).to_owned(),
+    )
+}
+
+fn observed_tuples(
+    contribution: &ConsumerRouteProjectionContribution,
+) -> BTreeSet<(&'static str, &'static str, String)> {
+    rows(contribution)
+        .map(|row| row_tuple(row, contribution))
+        .collect()
+}
+
 #[test]
 fn ledger_reconciles_all_sixteen_rows_across_three_facades() {
     let prepared = prepared("0.21.15");
@@ -156,10 +209,6 @@ fn ledger_reconciles_all_sixteen_rows_across_three_facades() {
         .map(|entry| (entry.route_id, entry.operation_shape, entry.semantic_id))
         .collect::<BTreeSet<_>>();
     assert_eq!(tuples.len(), LEDGER.len());
-    let expected = LEDGER
-        .iter()
-        .map(|entry| entry.semantic_id)
-        .collect::<BTreeSet<_>>();
     for entry in LEDGER {
         assert_eq!(entry.route_id, ROUTE);
         assert!(entry.semantic_id.starts_with("feature.") || entry.semantic_id.starts_with("control."));
@@ -168,12 +217,22 @@ fn ledger_reconciles_all_sixteen_rows_across_three_facades() {
         assert_eq!(entry.emitted_by.is_empty(), !entry.withheld_because.is_empty());
         assert!(entry.withheld_because.is_empty());
     }
-    let observed = [&catalogue, &run, &session]
-        .into_iter()
-        .flat_map(rows)
-        .map(semantic_id)
-        .collect::<BTreeSet<_>>();
-    assert_eq!(observed, expected);
+    let observed = BTreeMap::from([
+        (CATALOGUE, observed_tuples(&catalogue)),
+        (RUN, observed_tuples(&run)),
+        (SESSION, observed_tuples(&session)),
+    ]);
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        LEDGER.iter().map(|entry| ConsumerRouteLedgerClaim {
+            identity: (
+                entry.route_id,
+                entry.operation_shape,
+                entry.semantic_id.to_owned(),
+            ),
+            emitted_by: entry.emitted_by,
+        }),
+    );
 }
 
 #[test]

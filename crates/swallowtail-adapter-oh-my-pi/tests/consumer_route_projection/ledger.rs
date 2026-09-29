@@ -1,11 +1,14 @@
 use super::{image, model, prepared, prepared_catalogue};
 use swallowtail_adapter_oh_my_pi::{OhMyPiRunProfileInput, OhMyPiSessionProfileInput};
-use swallowtail_core::{ExecutionHostId, ReasoningMode};
+use swallowtail_core::{ExecutionHostId, OperationShape, ReasoningMode};
 use swallowtail_runtime::{
     ConsumerRouteControlId, ConsumerRouteFeatureId, ConsumerRouteLifecycle,
     ConsumerRouteProjectionContribution, ConsumerRouteRowIdentity, SessionOptions,
 };
-use std::collections::BTreeSet;
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
+};
+use std::collections::{BTreeMap, BTreeSet};
 
 const ROUTE: &str = "oh-my-pi.rpc";
 const CATALOGUE: &str = "OhMyPiPreparedCatalogue";
@@ -110,6 +113,53 @@ fn rows(contribution: &ConsumerRouteProjectionContribution) -> impl Iterator<Ite
     contribution.selection_rows().chain(contribution.session_start_rows()).chain(contribution.active_session_rows())
 }
 
+fn operation_shape(
+    row: &swallowtail_runtime::ConsumerRouteProjectionRow,
+    contribution: &ConsumerRouteProjectionContribution,
+) -> &'static str {
+    match row.identity() {
+        ConsumerRouteRowIdentity::Feature(feature) => match feature {
+            ConsumerRouteFeatureId::ModelCatalogue => "model-catalogue",
+            ConsumerRouteFeatureId::StructuredRun => "structured-run",
+            ConsumerRouteFeatureId::InteractiveSession => "interactive-session",
+            ConsumerRouteFeatureId::StreamingEvents
+            | ConsumerRouteFeatureId::UsageEvidence
+            | ConsumerRouteFeatureId::ActivityObservation => "route-observation",
+            ConsumerRouteFeatureId::ReasoningSelection
+            | ConsumerRouteFeatureId::Attachments
+            | ConsumerRouteFeatureId::QuestionExchange
+            | ConsumerRouteFeatureId::CancellationOrInterruption
+            | ConsumerRouteFeatureId::WorkingResource
+            | ConsumerRouteFeatureId::PreparedFacade => "route-capability",
+            other => panic!("unexpected Oh My Pi feature for shape {other:?}"),
+        },
+        ConsumerRouteRowIdentity::Control(
+            ConsumerRouteControlId::ModelSelection
+            | ConsumerRouteControlId::ReasoningSelection
+            | ConsumerRouteControlId::Namespaced(_),
+        ) => match contribution.applicability().operation_shape() {
+            OperationShape::StructuredRun => "structured-run",
+            OperationShape::InteractiveSession => "interactive-session",
+            other => panic!("unexpected Oh My Pi control operation {other:?}"),
+        },
+        other => panic!("unexpected Oh My Pi identity for shape {other:?}"),
+    }
+}
+
+fn observed_tuples(
+    contribution: &ConsumerRouteProjectionContribution,
+) -> BTreeSet<(&'static str, &'static str, String)> {
+    rows(contribution)
+        .map(|row| {
+            (
+                ROUTE,
+                operation_shape(row, contribution),
+                semantic_id(row).to_owned(),
+            )
+        })
+        .collect()
+}
+
 #[test]
 fn ledger_reconciles_all_eighteen_rows_across_three_facades() {
     let catalogue = prepared_catalogue(ExecutionHostId::new("oh-my-pi.catalogue.host").unwrap(), None);
@@ -131,10 +181,6 @@ fn ledger_reconciles_all_eighteen_rows_across_three_facades() {
         .map(|entry| (entry.route_id, entry.operation_shape, entry.semantic_id))
         .collect::<BTreeSet<_>>();
     assert_eq!(tuples.len(), LEDGER.len());
-    let expected = LEDGER
-        .iter()
-        .map(|entry| entry.semantic_id)
-        .collect::<BTreeSet<_>>();
     for entry in LEDGER {
         assert_eq!(entry.route_id, ROUTE);
         assert!(!entry.operation_shape.is_empty());
@@ -143,13 +189,22 @@ fn ledger_reconciles_all_eighteen_rows_across_three_facades() {
         assert_eq!(entry.emitted_by.is_empty(), !entry.withheld_because.is_empty());
         assert!(entry.withheld_because.is_empty());
     }
-    let mut observed = BTreeSet::new();
-    for contribution in [&catalogue, &run, &session] {
-        for row in rows(contribution) {
-            observed.insert(semantic_id(row));
-        }
-    }
-    assert_eq!(observed, expected);
+    let observed = BTreeMap::from([
+        (CATALOGUE, observed_tuples(&catalogue)),
+        (RUN, observed_tuples(&run)),
+        (SESSION, observed_tuples(&session)),
+    ]);
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        LEDGER.iter().map(|entry| ConsumerRouteLedgerClaim {
+            identity: (
+                entry.route_id,
+                entry.operation_shape,
+                entry.semantic_id.to_owned(),
+            ),
+            emitted_by: entry.emitted_by,
+        }),
+    );
 }
 
 #[test]

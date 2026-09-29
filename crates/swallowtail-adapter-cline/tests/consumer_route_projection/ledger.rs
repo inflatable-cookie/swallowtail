@@ -80,18 +80,25 @@ fn exact_nineteen_row_ledger_reconciles_to_the_reviewed_census() {
     let outcome = block_on(prepared.open_session_with_projection(
         source("cline.ledger.prepared"), source("cline.ledger.active"), host.cleanup_request(), services.clone(),
     )).unwrap_or_else(|failure| panic!("maximal open failed: {:?}", failure.failure()));
-    let mut observed = semantic_ids(outcome.contribution()).into_iter().map(|semantic| {
+    let acp_observed = semantic_ids(outcome.contribution()).into_iter().map(|semantic| {
         ("cline.acp".to_owned(), cline_shape("cline.acp", &semantic).to_owned(), semantic)
     }).collect::<BTreeSet<_>>();
-    observed.extend(semantic_ids(
+    let headless_observed = semantic_ids(
         &headless_run(true).consumer_route_projection_contribution(source("cline.ledger.headless")).expect("headless contributes")
     ).into_iter().map(|semantic| {
         ("cline.headless".to_owned(), cline_shape("cline.headless", &semantic).to_owned(), semantic)
-    }));
-    let emitted = LEDGER.iter().filter(|row| row.3).map(|row| {
-        (row.0.to_owned(), row.1.to_owned(), row.2.to_owned())
     }).collect::<BTreeSet<_>>();
-    assert_eq!(observed, emitted);
+    let observed = BTreeMap::from([
+        ("cline.acp", acp_observed),
+        ("cline.headless", headless_observed),
+    ]);
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        LEDGER.iter().map(|(route, shape, semantic, emitted)| ConsumerRouteLedgerClaim {
+            identity: ((*route).to_owned(), (*shape).to_owned(), (*semantic).to_owned()),
+            emitted_by: if *emitted { std::slice::from_ref(route) } else { &[] },
+        }),
+    );
     let _ = block_on(
         outcome
             .into_parts()

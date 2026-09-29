@@ -77,11 +77,70 @@ pub(super) fn semantic_id(identity: &ConsumerRouteRowIdentity) -> &'static str {
     }
 }
 
-pub(super) fn rows(contribution: &ConsumerRouteProjectionContribution) -> BTreeSet<&'static str> {
+pub(super) type RowIdentity = (&'static str, &'static str, &'static str);
+
+/// Returns the census operation shape one published app-server row belongs to.
+///
+/// This map is written independently of the ledger, so a drifted ledger
+/// operation shape fails the emitted comparison instead of agreeing with
+/// itself.
+pub(super) fn operation_shape(identity: &ConsumerRouteRowIdentity) -> &'static str {
+    match semantic_id(identity) {
+        "feature.model-catalogue" => "model-catalogue",
+        "feature.structured-run" => "structured-run",
+        "feature.interactive-session" => "interactive-session",
+        "feature.streaming-events" | "feature.usage-evidence" | "feature.activity-observation" => {
+            "route-observation"
+        }
+        "feature.load-session"
+        | "feature.resume-session"
+        | "feature.provider-session-catalogue"
+        | "feature.provider-session-import"
+        | "feature.provider-session-archive"
+        | "feature.provider-session-restore"
+        | "feature.provider-session-delete"
+        | "feature.persistent-session-posture" => "session-lifecycle",
+        "feature.reasoning-selection"
+        | "feature.structured-output"
+        | "feature.attachments"
+        | "feature.consumer-tool-exchange"
+        | "feature.question-exchange"
+        | "feature.cancellation-or-interruption"
+        | "feature.working-resource"
+        | "feature.bounded-workspace-text-write"
+        | "feature.external-search"
+        | "feature.prepared-facade" => "route-capability",
+        "control.model-selection"
+        | "control.reasoning-selection"
+        | "control.session-options"
+        | "control.tool-declarations"
+        | "control.developer-instructions"
+        | "control.idioms"
+        | "control.user-input-exchange" => "interactive-session",
+        "control.load-session"
+        | "control.resume-session"
+        | "control.session-catalogue-bounds"
+        | "control.session-history-bounds"
+        | "control.session-reconciliation" => "session-management",
+        other => panic!("unexpected census identity {other}"),
+    }
+}
+
+pub(super) fn row_identity(identity: &ConsumerRouteRowIdentity) -> RowIdentity {
+    (
+        super::ledger::APP_SERVER_ROUTE,
+        operation_shape(identity),
+        semantic_id(identity),
+    )
+}
+
+pub(super) fn identities(
+    contribution: &ConsumerRouteProjectionContribution,
+) -> BTreeSet<RowIdentity> {
     contribution
         .selection_rows()
         .chain(contribution.session_start_rows())
         .chain(contribution.active_session_rows())
-        .map(|row| semantic_id(row.identity()))
+        .map(|row| row_identity(row.identity()))
         .collect()
 }

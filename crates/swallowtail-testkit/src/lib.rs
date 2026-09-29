@@ -83,13 +83,13 @@ pub use assertions::{
 };
 pub use callback_fixture::{CallbackExchangeFixture, successful_callback_response};
 pub use consumer_route_projection_assertions::{
-    assert_compound_acknowledgement_associates_each_half_state,
+    ConsumerRouteLedgerClaim, assert_compound_acknowledgement_associates_each_half_state,
     assert_compound_acknowledgement_preserves_exact_provider_values,
     assert_compound_acknowledgement_preserves_reasoning_first_order,
     assert_compound_acknowledgement_rejects_impossible_half_combinations,
     assert_compound_acknowledgement_requires_observation_source,
     assert_compound_acknowledgement_terminal_not_dispatched_is_distinct,
-    assert_consumer_route_projection_contract,
+    assert_consumer_route_ledger_emitted_by_facade, assert_consumer_route_projection_contract,
     assert_consumer_route_provider_operation_observation_contract,
 };
 pub use consumer_route_projection_fixture::{

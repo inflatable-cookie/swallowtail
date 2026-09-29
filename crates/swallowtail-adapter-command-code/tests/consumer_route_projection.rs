@@ -10,7 +10,7 @@ mod common;
 mod posture;
 mod support;
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use swallowtail_adapter_command_code::CommandCodeSessionProfileInput;
 use swallowtail_core::OperationShape;
 use swallowtail_runtime::{
@@ -18,6 +18,9 @@ use swallowtail_runtime::{
     ConsumerRouteLifecycle, ConsumerRouteProjectionContribution, ConsumerRouteProjectionSourceId,
     ConsumerRouteRowIdentity, ConsumerRouteStateSupport, ConsumerRouteSupportPosture, RequestId,
     WorkingResourceRef,
+};
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
 };
 
 #[test]
@@ -93,22 +96,29 @@ fn exact_run_and_session_facades_reconcile_the_eleven_row_ledger() {
         assert!(!model.state_support().observed());
     }
 
-    const LEDGER: [(&str, &str, bool); 11] = [
-        ("model-catalogue", "feature.model-catalogue", false),
-        ("structured-run", "feature.structured-run", true),
-        ("interactive-session", "feature.interactive-session", true),
-        ("route-observation", "feature.streaming-events", true),
-        ("route-observation", "feature.usage-evidence", true),
+    const RUN: &str = "run";
+    const SESSION: &str = "session";
+    const BOTH: &[&str] = &[RUN, SESSION];
+    const LEDGER: [(&str, &str, &[&str]); 11] = [
+        ("model-catalogue", "feature.model-catalogue", &[]),
+        ("structured-run", "feature.structured-run", &[RUN]),
+        (
+            "interactive-session",
+            "feature.interactive-session",
+            &[SESSION],
+        ),
+        ("route-observation", "feature.streaming-events", BOTH),
+        ("route-observation", "feature.usage-evidence", BOTH),
         (
             "route-capability",
             "feature.cancellation-or-interruption",
-            true,
+            BOTH,
         ),
-        ("route-capability", "feature.working-resource", true),
-        ("route-capability", "feature.prepared-facade", true),
-        ("route-observation", "feature.activity-observation", true),
-        ("structured-run", "control.model-selection", true),
-        ("interactive-session", "control.model-selection", true),
+        ("route-capability", "feature.working-resource", BOTH),
+        ("route-capability", "feature.prepared-facade", BOTH),
+        ("route-observation", "feature.activity-observation", BOTH),
+        ("structured-run", "control.model-selection", &[RUN]),
+        ("interactive-session", "control.model-selection", &[SESSION]),
     ];
     let ledger = LEDGER
         .iter()
@@ -121,24 +131,25 @@ fn exact_run_and_session_facades_reconcile_the_eleven_row_ledger() {
         })
         .collect::<BTreeSet<_>>();
     assert_eq!(ledger, census_tuples());
-    assert_eq!(LEDGER.iter().filter(|row| row.2).count(), 10);
-    assert_eq!(LEDGER.iter().filter(|row| !row.2).count(), 1);
-    let emitted = LEDGER
-        .iter()
-        .filter(|row| row.2)
-        .map(|(shape, semantic, _)| {
-            (
-                "command-code.headless".to_owned(),
-                (*shape).to_owned(),
-                (*semantic).to_owned(),
-            )
-        })
-        .collect::<BTreeSet<_>>();
-    let observed = [&run_projection, &session_projection]
-        .into_iter()
-        .flat_map(posture::observed_tuples)
-        .collect::<BTreeSet<_>>();
-    assert_eq!(observed, emitted);
+    assert_eq!(LEDGER.iter().filter(|row| !row.2.is_empty()).count(), 10);
+    assert_eq!(LEDGER.iter().filter(|row| row.2.is_empty()).count(), 1);
+    let observed = BTreeMap::from([
+        (RUN, posture::observed_tuples(&run_projection)),
+        (SESSION, posture::observed_tuples(&session_projection)),
+    ]);
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        LEDGER
+            .iter()
+            .map(|(shape, semantic, emitted_by)| ConsumerRouteLedgerClaim {
+                identity: (
+                    "command-code.headless".to_owned(),
+                    (*shape).to_owned(),
+                    (*semantic).to_owned(),
+                ),
+                emitted_by,
+            }),
+    );
 
     let run_row = rows(&run_projection).next().expect("run row").clone();
     let rejection = ConsumerRouteProjectionContribution::new(

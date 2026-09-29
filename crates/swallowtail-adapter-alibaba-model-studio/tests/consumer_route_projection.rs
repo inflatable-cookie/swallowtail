@@ -4,7 +4,7 @@
 
 use crate::support;
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::num::{NonZeroU32, NonZeroU64};
 use support::{DriverFixture, ServerScenario};
 use swallowtail_adapter_alibaba_model_studio::{
@@ -28,7 +28,9 @@ use swallowtail_runtime::{
     CredentialRef, PreparedAccessEvidence, ProviderSessionHistoryBounds,
     ProviderSessionManagementBinding, RequestId, SessionResumeBinding,
 };
-use swallowtail_testkit::RecordingHostServices;
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, RecordingHostServices, assert_consumer_route_ledger_emitted_by_facade,
+};
 
 const ROUTE: &str = "alibaba.conversations";
 const CATALOGUE: &str = "AlibabaPreparedDeployableModels";
@@ -204,17 +206,18 @@ fn every_prepared_alibaba_profile_matches_its_ledger_disposition() {
                 .collect::<BTreeSet<_>>(),
         )
     })
-    .collect::<Vec<_>>();
+    .collect::<BTreeMap<_, _>>();
 
     assert_eq!(observed.len(), PROFILES.len());
-    for (profile, identities) in observed {
-        let expected = ALIBABA_TRANCHE
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        ALIBABA_TRANCHE
             .iter()
-            .filter(|entry| entry.emitted_by.contains(&profile))
-            .map(|entry| (entry.operation_shape, entry.semantic_id))
-            .collect::<BTreeSet<_>>();
-        assert_eq!(identities, expected, "{profile} disposition differs");
-    }
+            .map(|entry| ConsumerRouteLedgerClaim {
+                identity: (ROUTE, entry.operation_shape, entry.semantic_id),
+                emitted_by: entry.emitted_by,
+            }),
+    );
 }
 
 #[test]
@@ -256,8 +259,9 @@ fn withheld_rows_and_cross_shape_assembly_are_rejected() {
 fn row_identity(
     row: &ConsumerRouteProjectionRow,
     contribution: &ConsumerRouteProjectionContribution,
-) -> (&'static str, &'static str) {
+) -> (&'static str, &'static str, &'static str) {
     (
+        ROUTE,
         census_shape(
             row.identity(),
             contribution.applicability().operation_shape(),

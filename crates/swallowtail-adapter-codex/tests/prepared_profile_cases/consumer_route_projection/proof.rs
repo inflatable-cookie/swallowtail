@@ -4,6 +4,9 @@ use swallowtail_runtime::{
     ConsumerRouteActorPosture, ConsumerRouteControlId, ConsumerRouteFeatureId,
     ConsumerRouteLifecycle, ConsumerRouteRowIdentity, ConsumerRouteSourceClass,
 };
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
+};
 
 use super::fixtures::{observed_dispositions, session_profile};
 use super::ledger::*;
@@ -12,10 +15,17 @@ use super::naming::*;
 #[test]
 fn the_coverage_ledger_dispositions_exactly_the_thirty_six_app_server_rows() {
     let mut ids = BTreeSet::new();
+    let mut tuples = BTreeSet::new();
     for entry in &CODEX_FIRST_TRANCHE {
+        assert_eq!(entry.route_id, APP_SERVER_ROUTE);
         assert!(
             ids.insert(entry.semantic_id),
             "the ledger repeats {}",
+            entry.semantic_id
+        );
+        assert!(
+            tuples.insert((entry.route_id, entry.operation_shape, entry.semantic_id)),
+            "the ledger repeats the exact identity of {}",
             entry.semantic_id
         );
         assert!(
@@ -39,24 +49,22 @@ fn the_coverage_ledger_dispositions_exactly_the_thirty_six_app_server_rows() {
     }
     assert_eq!(CODEX_FIRST_TRANCHE.len(), 36);
     assert_eq!(ids.len(), 36);
+    assert_eq!(tuples.len(), 36);
 }
 
 #[test]
 fn every_prepared_facade_emits_exactly_its_ledger_rows() {
     let observed = observed_dispositions();
     assert_eq!(observed.len(), CODEX_FACADES.len());
-    for facade in CODEX_FACADES {
-        let expected = CODEX_FIRST_TRANCHE
+    assert_consumer_route_ledger_emitted_by_facade(
+        &observed,
+        CODEX_FIRST_TRANCHE
             .iter()
-            .filter(|entry| entry.emitted_by.contains(&facade))
-            .map(|entry| entry.semantic_id)
-            .collect::<BTreeSet<_>>();
-        let published = observed.get(facade).expect("every facade contributes");
-        assert_eq!(
-            published, &expected,
-            "{facade} emitted rows differ from the coverage ledger"
-        );
-    }
+            .map(|entry| ConsumerRouteLedgerClaim {
+                identity: (entry.route_id, entry.operation_shape, entry.semantic_id),
+                emitted_by: entry.emitted_by,
+            }),
+    );
 }
 
 #[test]
@@ -65,7 +73,7 @@ fn withheld_rows_are_emitted_by_no_prepared_facade() {
     let emitted = observed
         .values()
         .flatten()
-        .copied()
+        .map(|(_, _, semantic)| *semantic)
         .collect::<BTreeSet<_>>();
     let ledger = CODEX_FIRST_TRANCHE
         .iter()
@@ -100,7 +108,7 @@ fn out_of_tranche_feature_rows_are_withheld_at_construction() {
     let emitted = observed
         .values()
         .flatten()
-        .copied()
+        .map(|(_, _, semantic)| *semantic)
         .collect::<BTreeSet<_>>();
     for withheld in WITHHELD_OUT_OF_TRANCHE {
         assert!(

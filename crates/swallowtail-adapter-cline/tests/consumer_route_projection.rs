@@ -8,7 +8,7 @@ mod support;
 
 use discovery_support::DiscoveryHost;
 use futures_executor::block_on;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use support::{FixtureHost, Scenario};
 use swallowtail_adapter_cline::{
     CLINE_EXECUTABLE_NAME, CLINE_PACKAGE_AXIS, CLINE_PACKAGE_VERSION,
@@ -27,6 +27,9 @@ use swallowtail_runtime::{
     ConsumerRouteProjectionSourceKind, ConsumerRouteRowIdentity, Deadline, DiscoveryCancellation,
     EnvironmentRef, ExecutableRef, InstalledExecutableTarget, MonotonicInstant, OperationContent,
     PreparationFailure, PreparedAccessEvidence, RequestId, ScopeId, WorkingResourceRef,
+};
+use swallowtail_testkit::{
+    ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,
 };
 
 const HEADLESS_SUCCESS: &str = include_str!("fixtures/cline-headless-3.0.55/success.jsonl");

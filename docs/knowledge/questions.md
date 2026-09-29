@@ -99,8 +99,7 @@ Contract 029 "Artifact Authority Without Public Source" governs.
 Asked: 2026-09-28
 
 On 2026-09-15 Tom ruled that official release notes were the behavioural
-authority for the five Antigravity hops through `1.2.2` (Research 323; source
-`49b0d308:docs/logs/2026-09-15-antigravity-1-2-2-identity.md`). The source
+authority for the five Antigravity hops through `1.2.2` (Research 323; the source log is in Git history at `49b0d308`). The source
 scopes it to that task. Contract 029 "Artifact Authority Without Public
 Source" makes the shipped artifact the authority and a changelog discovery
 evidence only.

@@ -7,13 +7,11 @@
 # "/". `*` matches within one path segment. Keep terms multi-word and specific.
 
 # Frozen artefacts are never rewritten and are exempt from every retirement
-# and from check-links: test fixtures, the vendored Effigy skill mirror,
-# immutable release baselines and candidates, and research records (evidence
-# the feature matrix cites by line).
+# and from check-links: test fixtures, immutable release baselines and
+# candidates, and research records (evidence the feature matrix cites by line).
 frozen = [
   "crates/*/tests/fixtures/",
   "crates/*/fixtures/",
-  ".agents/skills/effigy/",
   "release-candidates/",
   "release-baselines/",
   "docs/research/",

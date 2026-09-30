@@ -47,6 +47,19 @@ Prefer `effigy <task>` over raw commands. `effigy doctor` is orientation, not
 validation. Do not add package scripts that merely re-export Effigy tasks.
 Details: [validation tiers](docs/guides/validation-tiers.md).
 
+Agent guidance lives in Effigy's maintained `skills/effigy/` source. Use an
+installed copy at one global root: `~/.agents/skills/effigy`,
+`~/.codex/skills/effigy`, `~/.claude/skills/effigy`, or
+`~/.cursor/skills/effigy`; aliases should resolve to one canonical directory.
+If the skill is missing or stale, install or refresh that source with the
+agent platform's skill installer, then start a fresh agent context. Keep
+Swallowtail's selectors and guardrails here. The `effigy` executable is
+separate; if it is missing, use the [Effigy installation
+instructions](https://github.com/inflatable-cookie/effigy#install). Before
+admission-aware validation, check `command -v effigy` and
+`effigy admission status --json`; require `result.schema` to be
+`effigy.admission.status.v1`.
+
 ## Product rules
 
 - Do not implement runtime, provider, transport, or process behavior before

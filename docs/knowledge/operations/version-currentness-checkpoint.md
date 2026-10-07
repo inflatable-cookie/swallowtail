@@ -37,6 +37,25 @@ Swallowtail pin is itself that prerelease. Ignore hosted "latest model".
 Do not flatten packaging, desktop About, or unofficial launchers onto the
 named compatibility axis.
 
+### Pre-v0.5.2 Sweep Authority
+
+Tom ruled on the Queue board on 2026-10-07: "Approve remaining one-family
+qualifications with the stated boundaries" (decision
+`a641caad-d963-4277-b62c-9fa6ac0247e9`). For the sweep inventoried in
+[Research 369](../../research/369-all-route-version-currentness-checkpoint.md),
+this reopens exact pins and major-version, schema and version-scheme transitions
+for separate family qualification and adaptation tasks. Each task re-probes its
+official target and proves exact artifact identity before changing a claim.
+
+Preserve released consumer contracts and existing qualified points. A
+consumer-visible narrowing, public API or lifecycle change, missing artifact
+identity, or need for live proof returns for a separate ruling. Muse and ZCode
+source gaps permit metadata discovery only until an exact target is established.
+Node sidecar work stays on the Node 22 patch line. Antigravity's deferred
+interior-point backfill stays out of scope. This ruling authorizes no live
+provider work, credentials, installation, host mutation, workflow change, tag
+or publication.
+
 ## Method
 
 1. Read the current adapter `selection.rs` claims and the production

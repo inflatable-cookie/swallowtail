@@ -68,6 +68,11 @@ bounded wire, join the sidecar process, then release provider state,
 host resources, and credentials in contract order. Process isolation does not
 by itself prove filesystem or network containment.
 
+When the pump reaches EOF or rejects a frame, command admission closes under
+the same lock used to register and drain pending responses. It resolves those
+waiters before escalation or process wait, so cleanup cannot await a response
+from a reader that has already stopped.
+
 Where an upstream SDK launches further provider-owned processes, the nearest
 sidecar is not the lifecycle boundary. The execution host owns termination of
 the sidecar root and every descendant still reachable through its declared

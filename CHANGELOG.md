@@ -6,6 +6,34 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- keep the `gemini-cli.acp` qualified ceiling at `0.61.0`. The current
+  official stable `0.63.0` is not qualified: `0.62.0` adds existing ACP v1
+  pending/failed tool-call updates, and `0.63.0` adds confirmation and real
+  path checks that can stop bounded-write operations under the route's
+  reject-and-cancel permission policy. Research 372 records the exact
+  adaptation or ruling needed. HTTP MCP live honouring remains exact
+  `0.61.0`; the headless claim is untouched.
+- close the Claude Agent SDK command-admission race when its pump rejects an
+  unsolicited event or reaches EOF. The pump now closes admission and resolves
+  pending commands before escalation and process wait; command registration
+  rechecks under the pending lock, so close cannot wait for a response from a
+  stopped reader.
+- keep the `codex.exec` qualified ceiling at `0.155.1` after the currentness
+  sweep to official `0.161.0`. `0.156.0` changes projectless thread-start
+  trust behavior; `0.157.0` binds host-managed application network policy to
+  ordinary exec. Both need provider-free adaptation and an operator ruling
+  before qualification can move. The intervening and later stable points
+  remain visible `UnverifiedNewer`; the claim, behavior revisions, segments,
+  exclusions, and independent app-server claim are unchanged. Research 370
+  freezes npm/GitHub identities, every wrapper/platform file digest, and
+  source-hop classifications. No downloaded artifact was executed.
+- record official Gemini CLI headless currentness through `0.63.0` without
+  advancing the existing `0.61.0` ceiling: Research 371 freezes published
+  hops `0.62.0` and `0.63.0` plus complete npm/source trees. The selected
+  `0.63.0` Plan Mode authority, noninteractive permission, and
+  tool-output/context changes need an operator ruling before qualification;
+  both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
+  and `0.59.1` exclusions remain in force.
 - project one validated `claude-agent.sdk` main-loop usage snapshot per
   completed SDK result through `ProviderObservation::Usage`, including
   input/output and cache-read/cache-write token dimensions. Required counts

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-10-07
 
 ## Purpose
 
@@ -39,6 +39,77 @@ harness process, its descendants, or unmediated filesystem and network access.
 Swallowtail may require exact provider flags as part of a driver contract. It
 reports only the isolation posture independently proven by the configured
 route. A read-only tool posture under `AmbientHost` remains ambient.
+
+## Codex Trust, Workspace And Managed Network Changes
+
+Tom, 2026-10-07: "Yeah that's fine", accepting separate provider-free
+`codex.app-server` and `codex.exec` adaptations for the following upstream
+changes discovered in the pre-v0.5.2 sweep:
+
+- both routes may accept skipped automatic persisted trust for projectless
+  working directories; Swallowtail must not restore that persistence;
+- app-server may accept path normalization and linked `.git` read-only
+  protections within approved writable roots; Swallowtail must not bypass
+  those protections or expand consumer-approved access;
+- exec may honour host-managed application network restrictions, including
+  system and macOS MDM allowlists; Swallowtail must not disable or weaken them
+  with `ignore_managed_requirements`.
+
+This is adaptation authority, not qualification evidence. Each route needs
+its own frozen source and deterministic regression proof before a claim
+moves. Prove projectless and marked-directory startup, app-server root and
+alias boundaries, and exec allowed/denied network-policy outcomes as
+applicable. Preserve read-only defaults, existing qualified points, and honest
+failure projection. A provider restriction is not proof of process containment
+or a new isolation posture.
+
+Return any unproven boundary, further authority change, consumer-contract
+narrowing, or public API/lifecycle change for a separate ruling. This authority
+includes no live provider turns, credentials, installations, host or workflow
+mutation, or release/tag action. The exec findings are retained in
+[Research 370](../../research/370-codex-exec-currentness-stop.md); app-server
+has a separate evidence record and qualification path.
+
+### Codex App-Server Protected AWS Directory
+
+Tom, 2026-10-07: "Approve", accepting Codex app-server `0.159.0`'s
+read-only protection for an existing top-level `.aws` directory inside the
+consumer-approved writable root. Document that exact version-specific
+workspace-write limitation; do not add a write exception or bypass the
+protection. Upstream protects AWS configuration because it can select
+executable credential helpers.
+
+Preserve earlier qualified behaviour and segments, read-only defaults, and
+the approved-root boundary. Qualification must prove ordinary root writes,
+protected `.aws` write denial, no access expansion, and honest failure
+projection, alongside the previously authorized startup/alias proofs and
+remaining per-hop semantic review. Name any necessary behaviour revision
+from that evidence. This accepts the specified consumer-visible limitation;
+it does not settle Contract 036 patch compatibility or waive any release
+gate. Further authority changes, consumer narrowing, public API/lifecycle
+changes, or live-proof needs still return for a separate ruling. The existing
+exclusions on live work, credentials, host/workflow mutation and release/tag
+actions remain in force.
+
+## Gemini Headless Currentness Adaptation
+
+Tom, operator board, 2026-10-07: "Approve bounded adaptation with
+authority-preserving proof" (decision `de317828-daf8-4bb3-a2b3-d75bd9f5a833`).
+This authorizes a separate provider-free `gemini-cli.headless` adaptation for
+[Research 371](../../research/371-gemini-cli-0-63-0-headless-currentness-stop.md).
+Preserve the selected authority and existing consumer contract: no automatic
+transition from Plan Mode into implementation, no `ASK_USER` approval bypass,
+defensive read checks honoured, and truthful bounded/truncated tool-output
+semantics. Prove those boundaries with frozen selected-route evidence and
+deterministic regressions before qualifying newer versions.
+
+Preserve older qualified segments and keep ACP independent. A justified
+private behaviour milestone requires evidence that the public contract stays
+intact. An inability to preserve those promises, further authority change,
+consumer narrowing, new public API/lifecycle need, or live-proof requirement
+returns for a separate ruling. This includes no live providers, credentials,
+installation, host/workflow mutation, or release/tag action. It does not
+approve the distinct ACP restrictions in Research 372.
 
 ## Native Sandbox Boundary
 

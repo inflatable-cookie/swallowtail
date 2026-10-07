@@ -75,6 +75,29 @@ fn parser_preserves_safe_search_reasoning_and_usage_progress() {
 }
 
 #[test]
+fn parser_ignores_additive_web_search_results_and_keeps_query_progress() {
+    let mut parser = parser();
+    let events = parser
+        .push(
+            concat!(
+                r#"{"type":"item.completed","item":{"id":"search-1","type":"web_search","query":"official manual","action":{"type":"search","query":"official manual"},"results":[{"title":"Manual","url":"https://example.test/manual","snippet":"Public result text"}]}}"#,
+                "\n"
+            )
+            .as_bytes(),
+        )
+        .expect("the additive results field is valid JSONL");
+
+    assert_eq!(events.len(), 2);
+    assert!(matches!(events[0].kind(), RuntimeEventKind::Activity(_)));
+    assert!(events[0].content().is_none());
+    assert_eq!(events[1].kind(), &RuntimeEventKind::ExternalSearchProgress);
+    assert_eq!(
+        events[1].content().map(|value| value.as_str()),
+        Some("official manual")
+    );
+}
+
+#[test]
 fn queryless_other_search_does_not_abort_later_structured_output() {
     let case: Value = ACTIVITY_CORPUS
         .lines()

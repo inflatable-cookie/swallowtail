@@ -72,6 +72,14 @@ Unpublished `0.149.2`, `0.150.2`, `0.151.1`, `0.152.2`, and `0.154.1` stay
 incompatible. Later stable versions may remain visible `UnverifiedNewer`
 without gaining capabilities.
 
+The exec ceiling remains `0.155.1` after the 2026-10-07 sweep. The first
+unqualified stable `0.156.0` changes projectless `thread/start` trust
+behavior; `0.157.0` adds host-managed application network restrictions to
+regular exec. Both need provider-free adaptation and a ruling before a ceiling
+increase. Current official stable `0.161.0` remains `UnverifiedNewer`; see
+[Research 370](../research/370-codex-exec-currentness-stop.md). The app-server
+claim is independent and was not changed by this exec review.
+
 ## Normal Flow
 
 1. The consumer selects the Codex driver: app-server or structured exec.

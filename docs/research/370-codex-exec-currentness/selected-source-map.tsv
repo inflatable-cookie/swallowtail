@@ -1,0 +1,47 @@
+from_to	status	path	classification	reason
+0.155.1-0.156.0	M	codex-rs/app-server/src/request_processors/thread_processor.rs	projectless-auto-trust-stop	thread/start no longer persists project trust for a projectless directory; exec starts an ephemeral thread with explicit cwd
+0.155.1-0.156.0	M	codex-rs/app-server/src/request_processors/thread_processor_tests.rs	projectless-trust-regression	upstream tests exercise the projectless trust decision
+0.155.1-0.156.0	M	codex-rs/app-server/tests/suite/v2/thread_start.rs	projectless-trust-regression	upstream thread/start tests cover projectless auto-trust behavior
+0.155.1-0.156.0	A	codex-rs/config/src/loader/managed_requirements.rs	managed-requirements-refactor	managed requirement loader extraction; application network policy namespace appears in the later .157.0 hop
+0.155.1-0.156.0	M	codex-rs/config/src/loader/mod.rs	projectless-classification-stop	sets is_projectless only after discovery finds no marker, checkout root, or project layer
+0.155.1-0.156.0	A	codex-rs/config/src/loader/projectless_directory_tests.rs	projectless-classification-regression	upstream tests freeze projectless classification and ignored-discovery cases
+0.155.1-0.156.0	M	codex-rs/config/src/state.rs	projectless-classification-stop	adds is_projectless state consumed by thread/start trust logic
+0.155.1-0.156.0	M	codex-rs/exec/Cargo.toml	dependency-metadata	manifest change; no adapter option or public behavior is added
+0.155.1-0.156.0	M	codex-rs/exec/src/event_processor_with_human_output.rs	unselected-human-output	adapter invokes JSONL output; human presentation path is not selected
+0.155.1-0.156.0	M	codex-rs/exec/src/event_processor_with_human_output_tests.rs	upstream-test-only	test source records behavior but changes no production mapping
+0.155.1-0.156.0	M	codex-rs/exec/src/event_processor_with_jsonl_output.rs	selected-wire-additive	forwards optional search results and typed action into upstream JSONL; adapter ignores results
+0.155.1-0.156.0	M	codex-rs/exec/src/event_processor_with_jsonl_output_tests.rs	upstream-test-only	test source records behavior but changes no production mapping
+0.155.1-0.156.0	M	codex-rs/exec/src/exec_events.rs	selected-wire-additive	optional search results field; Swallowtail preserves query progress and ignores results
+0.155.1-0.156.0	M	codex-rs/exec/src/lib.rs	internal-attribution	turn_trigger=exec is internal request metadata, absent from external JSONL
+0.155.1-0.156.0	M	codex-rs/exec/src/lib_tests.rs	upstream-test-only	test source records behavior but changes no production mapping
+0.155.1-0.156.0	M	codex-rs/exec/tests/event_processor_with_json_output.rs	upstream-test-only	test source records behavior but changes no production mapping
+0.155.1-0.156.0	M	codex-rs/exec/tests/suite/resume.rs	upstream-test-only	test source records behavior but changes no production mapping
+0.155.1-0.156.0	M	codex-rs/exec/tests/suite/sandbox.rs	upstream-test-only	test source records behavior but changes no production mapping
+0.155.1-0.156.0	M	codex-rs/exec/tests/suite/worktree.rs	upstream-test-only	test source records behavior but changes no production mapping
+0.156.1-0.157.0	M	codex-rs/app-server-client/src/lib.rs	host-managed-network-policy-stop	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	A	codex-rs/app-server/src/application_network.rs	host-managed-network-policy-stop	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	A	codex-rs/app-server/src/application_network_tests.rs	stop-regression-evidence	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	M	codex-rs/app-server/src/in_process.rs	host-managed-network-policy-stop	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	A	codex-rs/app-server/src/in_process_bootstrap.rs	host-managed-network-policy-stop	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	A	codex-rs/app-server/src/in_process_bootstrap_tests.rs	stop-regression-evidence	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	M	codex-rs/app-server/src/lib.rs	host-managed-network-policy-stop	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	A	codex-rs/app-server/tests/suite/v2/application_network.rs	stop-regression-evidence	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	A	codex-rs/config/src/loader/application.rs	host-managed-network-policy-stop	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	M	codex-rs/config/src/loader/managed_requirements.rs	host-managed-network-policy-stop	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	M	codex-rs/config/src/loader/mod.rs	host-managed-network-policy-stop	system and macOS MDM application requirements now load and bind a destination allowlist policy into ordinary exec HTTP clients
+0.156.1-0.157.0	M	codex-rs/exec/src/lib.rs	host-managed-network-policy-stop	regular exec loads and binds the effective host-managed destination policy to its HTTP clients
+0.156.1-0.157.0	M	codex-rs/exec/src/worktree.rs	unselected-worktree	optional --worktree path is not used by adapter invocation
+0.156.1-0.157.0	M	codex-rs/exec/tests/suite/auth_env.rs	upstream-test-only	test source records behavior but changes no production mapping
+0.157.1-0.158.0	M	codex-rs/exec/tests/event_processor_with_json_output.rs	upstream-test-only	test source records behavior but changes no production mapping
+0.158.0-0.159.0	M	codex-rs/exec/src/lib.rs	internal-runtime-paths	replaces internal exec-server path options; external argv and JSONL frame unchanged
+0.158.0-0.159.0	M	codex-rs/exec/src/worktree.rs	unselected-worktree	optional --worktree path is not used by adapter invocation
+0.160.1-0.161.0	M	codex-rs/app-server/src/application_network.rs	network-policy-refresh	refresh path retains and rebinds the effective host-managed policy; original .157 stop remains
+0.160.1-0.161.0	M	codex-rs/app-server/src/in_process_bootstrap.rs	network-policy-refresh	refresh path retains and rebinds the effective host-managed policy; original .157 stop remains
+0.160.1-0.161.0	M	codex-rs/app-server/src/in_process_bootstrap_tests.rs	network-policy-refresh	refresh path retains and rebinds the effective host-managed policy; original .157 stop remains
+0.160.1-0.161.0	M	codex-rs/exec/src/cli.rs	unselected-opt-in	Daybreak/Cyber access program requires opt-in or a gated feature; adapter sends no flag and makes no selection
+0.160.1-0.161.0	M	codex-rs/exec/src/cli_tests.rs	unselected-opt-in	Daybreak/Cyber access program requires opt-in or a gated feature; adapter sends no flag and makes no selection
+0.160.1-0.161.0	A	codex-rs/exec/src/daybreak.rs	unselected-opt-in	Daybreak/Cyber access program requires opt-in or a gated feature; adapter sends no flag and makes no selection
+0.160.1-0.161.0	M	codex-rs/exec/src/lib.rs	unselected-opt-in	Daybreak/Cyber access program requires opt-in or a gated feature; adapter sends no flag and makes no selection
+0.160.1-0.161.0	A	codex-rs/exec/tests/suite/cyber_access_program_tests.rs	unselected-opt-in	Daybreak/Cyber access program requires opt-in or a gated feature; adapter sends no flag and makes no selection
+0.160.1-0.161.0	A	codex-rs/exec/tests/suite/daybreak.rs	unselected-opt-in	Daybreak/Cyber access program requires opt-in or a gated feature; adapter sends no flag and makes no selection
+0.160.1-0.161.0	M	codex-rs/exec/tests/suite/mod.rs	unselected-opt-in	Daybreak/Cyber access program requires opt-in or a gated feature; adapter sends no flag and makes no selection

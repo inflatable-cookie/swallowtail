@@ -312,8 +312,8 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_eq!(release["classification"], "qualified");
         assert_eq!(release["profile"], "0.87.0-guarantee");
         assert_eq!(release["activity_delta"], activity_delta);
-        assert_sha(&release, "tag_commit", 40);
-        assert_sha(&release, "source_sha256", 64);
+        assert_sha(release, "tag_commit", 40);
+        assert_sha(release, "source_sha256", 64);
     }
 }
 

@@ -271,7 +271,11 @@ capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.281`,
 excluding unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
 `2.1.262`, `2.1.264`, and `2.1.279`; later stable versions remain visible
 `UnverifiedNewer`. Headless does not pass `--safe-mode` and already admits
-ambient project instructions.
+ambient project instructions. Research 372 observed official npm and GitHub
+latest `2.1.293`; it remains `UnverifiedNewer` because `2.1.287` changes
+stream-JSON behavior for slash-skill prompts and `2.1.290` changes permission
+checks after `PreToolUse` rewrites. Qualification stays at `2.1.281` pending
+the required adaptation or ruling.
 
 ### Maximum Agentic Turns
 

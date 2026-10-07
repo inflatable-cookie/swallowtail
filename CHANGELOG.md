@@ -13,6 +13,13 @@ annotated Git tags from the canonical repository.
   reject-and-cancel permission policy. Research 372 records the exact
   adaptation or ruling needed. HTTP MCP live honouring remains exact
   `0.61.0`; the headless claim is untouched.
+- keep `claude-code.headless` qualified through `2.1.281` after the official
+  currentness sweep to `2.1.293`. Research 372 freezes every published hop;
+  `2.1.287` changes `stream-json` behavior for slash-skill prompts and
+  `2.1.290` changes permission checks after `PreToolUse` rewrites. These
+  selected changes need an adaptation or ruling before qualification moves;
+  later stable points remain `UnverifiedNewer`, with existing segments and
+  exclusions unchanged.
 - close the Claude Agent SDK command-admission race when its pump rejects an
   unsolicited event or reaches EOF. The pump now closes admission and resolves
   pending commands before escalation and process wait; command registration

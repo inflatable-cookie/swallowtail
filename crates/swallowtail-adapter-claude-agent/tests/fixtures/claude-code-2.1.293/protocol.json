@@ -1,0 +1,605 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "behavior_revision": "claude-code.headless.stream-json.v1",
+  "decision": "stop",
+  "selected_command": {
+    "arguments": [
+      "-p",
+      "--input-format",
+      "text",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--no-session-persistence",
+      "--model",
+      "<caller-selected-model>",
+      "--permission-mode",
+      "plan",
+      "--tools",
+      "Read,Glob,Grep",
+      "--setting-sources",
+      "user,project,local",
+      "--mcp-config",
+      "{\"mcpServers\":{}}",
+      "--strict-mcp-config"
+    ],
+    "optional_arguments": [
+      {
+        "--effort": "caller-selected reasoning mode"
+      },
+      {
+        "--max-turns": "separate exact-version feature evidence only; not extended above 2.1.281"
+      }
+    ]
+  },
+  "selected_behavior_boundary": {
+    "input_format": "text",
+    "output_format": "stream-json",
+    "permission_mode": "plan",
+    "tool_names": [
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "setting_sources": [
+      "user",
+      "project",
+      "local"
+    ],
+    "mcp_config": {
+      "mcpServers": {}
+    },
+    "strict_mcp_config": true,
+    "session_persistence": false,
+    "slash_commands_disabled": false
+  },
+  "parser_init_required_fields": [
+    "model",
+    "permissionMode",
+    "session_id"
+  ],
+  "static_string_inspection": {
+    "method": "strings -a -n 6 on extracted binaries; no binary execution",
+    "architectures": [
+      "darwin-arm64",
+      "linux-x64"
+    ],
+    "versions": [
+      "2.1.281",
+      "2.1.282",
+      "2.1.283",
+      "2.1.284",
+      "2.1.285",
+      "2.1.286",
+      "2.1.287",
+      "2.1.288",
+      "2.1.289",
+      "2.1.290",
+      "2.1.291",
+      "2.1.292",
+      "2.1.293"
+    ],
+    "binaries_checked": 26,
+    "required_cli_markers": [
+      "-p, --print",
+      "--input-format",
+      "--output-format",
+      "stream-json",
+      "--permission-mode",
+      "--tools",
+      "--model",
+      "--effort",
+      "--max-turns",
+      "--no-session-persistence",
+      "--setting-sources",
+      "--mcp-config",
+      "--strict-mcp-config"
+    ],
+    "exact_help_lines": [
+      "Output format (only works with --print): \"text\" (default), \"json\" (single result), or \"stream-json\" (realtime streaming)",
+      "Input format (only works with --print): \"text\" (default), or \"stream-json\" (realtime streaming input)"
+    ],
+    "missing": [],
+    "limit": "String presence proves published marker identity only; it does not establish executable semantics or source parity."
+  },
+  "per_hop_classification": [
+    {
+      "hop": "2.1.281_to_2.1.282",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [
+        {
+          "surface": "settings and allowed-tools permission rules",
+          "classification": "unselected",
+          "reason": "The command uses explicit plan mode and only Read, Glob, and Grep; it does not pass --allowedTools or select Bash."
+        }
+      ],
+      "selected_mapped_change": false,
+      "decision": "no-selected-change-identified"
+    },
+    {
+      "hop": "2.1.282_to_2.1.283",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [
+        {
+          "surface": "system/init.plugin_errors[].path",
+          "classification": "additive-unmapped-field",
+          "reason": "The headless init parser requires session_id, model, and permissionMode and ignores other init fields."
+        },
+        {
+          "surface": "result.usage in non-streaming fallback",
+          "classification": "unselected",
+          "reason": "The headless route selects --output-format stream-json."
+        }
+      ],
+      "selected_mapped_change": false,
+      "decision": "no-selected-change-identified"
+    },
+    {
+      "hop": "2.1.283_to_2.1.284",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code/sdk-tools.d.ts",
+          "classification": "SDK-declaration-only",
+          "scope": "SDK type declarations; no SDK or response-only claim is in scope."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [],
+      "selected_mapped_change": false,
+      "decision": "no-selected-change-identified"
+    },
+    {
+      "hop": "2.1.284_to_2.1.285",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code/sdk-tools.d.ts",
+          "classification": "SDK-declaration-only",
+          "scope": "SDK type declarations; no SDK or response-only claim is in scope."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [
+        {
+          "surface": "permission-mode default when unspecified",
+          "classification": "selected-argument-unchanged",
+          "reason": "This route explicitly sends --permission-mode plan."
+        },
+        {
+          "surface": "--max-turns interrupted-turn resume",
+          "classification": "outside-newer-headless-points",
+          "reason": "The optional maximum-turn feature keeps its separate exact-version evidence gate, and this route disables session persistence."
+        }
+      ],
+      "selected_mapped_change": false,
+      "decision": "no-selected-change-identified"
+    },
+    {
+      "hop": "2.1.285_to_2.1.286",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [],
+      "selected_mapped_change": false,
+      "decision": "no-selected-change-identified"
+    },
+    {
+      "hop": "2.1.286_to_2.1.287",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [
+        {
+          "surface": "stream-json turns for context: fork skills invoked as the prompt",
+          "classification": "selected-wire-lifecycle-change",
+          "reason": "The route accepts prompt text, does not pass --disable-slash-commands, and does not exclude a slash skill prompt; stop before changing the claim."
+        }
+      ],
+      "selected_mapped_change": true,
+      "decision": "stop"
+    },
+    {
+      "hop": "2.1.287_to_2.1.288",
+      "changed_files": [
+        {
+          "path": "claude-code/install.cjs",
+          "classification": "installer-only",
+          "scope": "Not invoked by the already-installed headless route; never executed during this task."
+        },
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [],
+      "selected_mapped_change": false,
+      "decision": "no-selected-change-identified"
+    },
+    {
+      "hop": "2.1.288_to_2.1.289",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [],
+      "selected_mapped_change": false,
+      "decision": "no-selected-change-identified"
+    },
+    {
+      "hop": "2.1.289_to_2.1.290",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code/sdk-tools.d.ts",
+          "classification": "SDK-declaration-only",
+          "scope": "SDK type declarations; no SDK or response-only claim is in scope."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [
+        {
+          "surface": "plan-mode permission and safety checks after PreToolUse rewrites tool input",
+          "classification": "selected-security-authority-change",
+          "reason": "The route selects plan mode and enables user, project, and local settings without disabling hooks; stop for a ruling."
+        },
+        {
+          "surface": "plan-mode connector tool and session-resume fixes",
+          "classification": "unselected",
+          "reason": "The route uses strict empty MCP configuration and disables session persistence."
+        }
+      ],
+      "selected_mapped_change": true,
+      "decision": "stop"
+    },
+    {
+      "hop": "2.1.290_to_2.1.291",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [
+        {
+          "surface": "cloud-session permission prompt handling",
+          "classification": "unselected",
+          "reason": "The route is a local headless process, not a cloud session."
+        }
+      ],
+      "selected_mapped_change": false,
+      "decision": "no-selected-change-identified"
+    },
+    {
+      "hop": "2.1.291_to_2.1.292",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code/sdk-tools.d.ts",
+          "classification": "SDK-declaration-only",
+          "scope": "SDK type declarations; no SDK or response-only claim is in scope."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [
+        {
+          "surface": "plan-mode session resume and MCP resource startup",
+          "classification": "unselected",
+          "reason": "The route disables session persistence and supplies strict empty MCP configuration."
+        },
+        {
+          "surface": "Agent tool effort and MCP protocol changes",
+          "classification": "unselected",
+          "reason": "The route sends an explicit model and fixed Read, Glob, and Grep tool selection."
+        }
+      ],
+      "selected_mapped_change": false,
+      "decision": "no-selected-change-identified"
+    },
+    {
+      "hop": "2.1.292_to_2.1.293",
+      "changed_files": [
+        {
+          "path": "claude-code/package.json",
+          "classification": "wrapper-version-and-platform-dependency-metadata",
+          "scope": "Pins matching optional platform package versions; the launcher source itself is byte-identical."
+        },
+        {
+          "path": "claude-code-darwin-arm64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-darwin-arm64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        },
+        {
+          "path": "claude-code-linux-x64/claude",
+          "classification": "provider-compiled-runtime",
+          "scope": "Executable selected by the headless route; full file identity is frozen. It is not source-auditable from the public repository."
+        },
+        {
+          "path": "claude-code-linux-x64/package.json",
+          "classification": "platform-package-version-metadata",
+          "scope": "Version metadata for this exact platform runtime."
+        }
+      ],
+      "release_note_review": [
+        {
+          "surface": "default Haiku model",
+          "classification": "unselected",
+          "reason": "The route always sends the caller-selected --model."
+        },
+        {
+          "surface": "mod $.tool.register.isDeferred and agentType payload",
+          "classification": "unselected",
+          "reason": "The route exposes no mod tool-registration operation or subagent surface and fixes its tool set."
+        }
+      ],
+      "selected_mapped_change": false,
+      "decision": "no-selected-change-identified"
+    }
+  ],
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "downloaded_artifacts_executed": false,
+  "host_install_changed": false
+}

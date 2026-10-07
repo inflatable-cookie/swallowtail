@@ -13,7 +13,7 @@ pub const CLAUDE_AGENT_ACP_AXIS: &str = "claude-agent.acp-adapter";
 /// Oldest qualified Claude Agent ACP version.
 pub const CLAUDE_AGENT_ACP_BASELINE_VERSION: &str = "0.53.0";
 /// Most recent qualified Claude Agent ACP version.
-pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.81.2";
+pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.87.0";
 
 const BASELINE_BEHAVIOR: &str = "claude-agent.acp.baseline-v1";
 const SESSION_CONFIG_BEHAVIOR: &str = "claude-agent.acp.session-config-v2";
@@ -135,7 +135,7 @@ pub fn claude_agent_acp_claim() -> InterfaceCompatibilityClaim {
             ),
             segment(
                 "0.66.0",
-                "0.81.2",
+                "0.87.0",
                 INITIALIZE_META_EXTENSIONS_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
@@ -242,21 +242,28 @@ mod tests {
     fn claim_preserves_seven_milestones_exclusions_and_visible_newer_execution() {
         let claim = claude_agent_acp_claim();
         assert_eq!(claim.baseline().as_str(), "0.53.0");
-        assert_eq!(claim.latest_qualified().as_str(), "0.81.2");
+        assert_eq!(claim.latest_qualified().as_str(), "0.87.0");
         assert_eq!(claim.milestones().len(), 7);
         for qualified in [
             "0.53.0", "0.54.1", "0.58.1", "0.59.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0",
             "0.64.1", "0.65.0", "0.66.0", "0.69.0", "0.70.0", "0.71.0", "0.72.0", "0.73.0",
             "0.74.0", "0.75.0", "0.75.1", "0.76.0", "0.77.0", "0.78.0", "0.79.0", "0.80.0",
-            "0.81.0", "0.81.1", "0.81.2",
+            "0.81.0", "0.81.1", "0.81.2", "0.82.0", "0.83.0", "0.84.0", "0.85.0", "0.85.1",
+            "0.86.0", "0.87.0",
         ] {
             assert!(claim.supports(&version(qualified)));
         }
-        for incompatible in ["0.52.0", "0.58.0", "0.61.0-rc.1", "invalid"] {
+        for incompatible in [
+            "0.52.0",
+            "0.58.0",
+            "0.61.0-rc.1",
+            "0.86.1-preview.3",
+            "invalid",
+        ] {
             assert!(!claim.permits(&version(incompatible)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.82.0"))
+            claim.assess(&version("0.88.0"))
         else {
             panic!("newer stable version remains unverified");
         };
@@ -308,6 +315,13 @@ mod tests {
         assert!(version_supports_config_options(&version("0.81.0")));
         assert!(version_supports_config_options(&version("0.81.1")));
         assert!(version_supports_config_options(&version("0.81.2")));
+        assert!(version_supports_config_options(&version("0.82.0")));
+        assert!(version_supports_config_options(&version("0.83.0")));
+        assert!(version_supports_config_options(&version("0.84.0")));
+        assert!(version_supports_config_options(&version("0.85.0")));
+        assert!(version_supports_config_options(&version("0.85.1")));
+        assert!(version_supports_config_options(&version("0.86.0")));
+        assert!(version_supports_config_options(&version("0.87.0")));
     }
 
     fn version(value: &str) -> InterfaceVersion {

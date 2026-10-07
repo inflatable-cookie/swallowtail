@@ -7,6 +7,8 @@ mod support;
 mod acp_driver;
 #[path = "acp_mcp.rs"]
 mod acp_mcp;
+#[path = "gemini_cli_0_63_0_currentness_stop.rs"]
+mod currentness_stop;
 #[path = "installed_probe.rs"]
 mod installed_probe;
 #[path = "prepared_facade.rs"]

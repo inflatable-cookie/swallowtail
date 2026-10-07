@@ -118,8 +118,12 @@ fn production_claim_excludes_the_documented_unpublished_interior_gaps() {
             "the current qualification extends the historical 0.24.2 ceiling through {point}"
         );
     }
-    assert!(matches!(
+    assert_eq!(
         claim.assess(&version("0.25.1-preview.0")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
+    assert!(matches!(
+        claim.assess(&version("0.26.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

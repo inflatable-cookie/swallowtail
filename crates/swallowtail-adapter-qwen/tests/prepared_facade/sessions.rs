@@ -39,10 +39,14 @@ fn prepared_session_uses_only_the_exact_private_resume_id_on_later_turns() {
         WorkingStateRestorationMethod::FreshSessionReplacement
     );
 
-    let (process, states) = ScriptedProcessService::completed(&[
-        include_str!("../fixtures/qwen-code-v0.19.11/interactive-first-turn.jsonl"),
-        include_str!("../fixtures/qwen-code-v0.19.11/interactive-continued-turn.jsonl"),
-    ]);
+    let first_turn = include_str!("../fixtures/qwen-code-v0.19.11/interactive-first-turn.jsonl")
+        .replace("\"qwen_code_version\":\"0.19.11\"", "\"qwen_code_version\":\"0.25.0\"");
+    let continued_turn = include_str!(
+        "../fixtures/qwen-code-v0.19.11/interactive-continued-turn.jsonl"
+    )
+    .replace("\"qwen_code_version\":\"0.19.11\"", "\"qwen_code_version\":\"0.25.0\"");
+    let (process, states) =
+        ScriptedProcessService::completed(&[&first_turn, &continued_turn]);
     let (services, _) = host_services_for(host_id, process, Arc::new(PendingTimeService));
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
     assert!(session.provider_session_ref().is_none());

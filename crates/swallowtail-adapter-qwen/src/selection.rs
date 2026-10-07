@@ -224,8 +224,12 @@ mod tests {
         assert!(!claim.permits(&version("0.21.16")));
         assert!(!claim.permits(&version("0.22.4")));
         assert!(!claim.permits(&version("0.23.5")));
+        assert_eq!(
+            claim.assess(&version("0.25.1-preview.0")),
+            InterfaceCompatibilityAssessment::Incompatible
+        );
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.25.1-preview.0"))
+            claim.assess(&version("0.26.0"))
         else {
             panic!("later stable Qwen remains unverified");
         };

@@ -101,9 +101,9 @@ fn latest_qualified_qwen_binds_its_exact_runtime_stream_version() {
 }
 
 #[test]
-fn later_preview_qwen_is_visible_and_executable_as_unverified_newer() {
+fn later_stable_qwen_is_visible_and_executable_as_unverified_newer() {
     let host_id = ExecutionHostId::new("fixture.qwen.prepared.newer").expect("valid host");
-    let (process, _) = FakeProcessService::completed("0.25.1-preview.0\n");
+    let (process, _) = FakeProcessService::completed("0.26.0\n");
     let (services, _) = host_services_for(host_id.clone(), process, Arc::new(PendingTimeService));
     let prepared = block_on(prepare_qwen_headless(
         preparation_input(host_id),

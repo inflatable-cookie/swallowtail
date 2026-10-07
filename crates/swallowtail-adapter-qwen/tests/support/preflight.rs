@@ -84,6 +84,12 @@ fn bound_plan_with(
     instance_versions: impl IntoIterator<Item = InterfaceVersionBinding>,
     requirements: Vec<CapabilityRequirement>,
 ) -> PreflightPlan {
+    let instance_versions = instance_versions.into_iter().collect::<Vec<_>>();
+    let required_qwen_version = instance_versions
+        .iter()
+        .find(|binding| binding.axis().as_str() == "qwen-code.package")
+        .expect("Qwen operation binds its package version")
+        .clone();
     let descriptor = qwen_headless_descriptor();
     let access_id = AccessProfileId::new("access.qwen-headless").expect("access id is valid");
     let profile = CapabilityProfile::new(requirements.clone());
@@ -100,7 +106,7 @@ fn bound_plan_with(
         InstancePolicyId::new("read-only-ambient-host").expect("policy is valid"),
         profile.clone(),
     )
-    .with_interface_versions(instance_versions)
+    .with_interface_versions(instance_versions.clone())
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient);
     let route = ModelRoute::new(
         ModelRouteId::new("qwen-model-route").expect("route id is valid"),
@@ -150,7 +156,7 @@ fn bound_plan_with(
     .with_capabilities(requirements)
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
-    .with_interface_versions([qwen_package("0.19.11")])
+    .with_interface_versions([required_qwen_version])
     .require_model_route();
     preflight(
         &PreflightContext::new(&descriptor, &instance, &access, &status, host_services)

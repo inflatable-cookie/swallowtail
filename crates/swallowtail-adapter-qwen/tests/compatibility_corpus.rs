@@ -118,9 +118,13 @@ fn production_claim_keeps_the_frozen_corpus_inside_the_raised_window() {
     assert!(!claim.permits(&version("0.20.2")));
     assert!(!claim.permits(&version("0.21.16")));
     assert!(matches!(
-        claim.assess(&version("0.25.1-preview.0")),
+        claim.assess(&version("0.26.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
+    assert_eq!(
+        claim.assess(&version("0.25.1-preview.0")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
     assert!(!claim.permits(&version("0.21.14-rc.1")));
     assert!(!claim.permits(&version("0.21.14-preview.0")));
 }

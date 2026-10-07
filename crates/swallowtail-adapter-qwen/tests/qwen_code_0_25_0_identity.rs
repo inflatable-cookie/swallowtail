@@ -170,8 +170,12 @@ fn official_identity_freezes_npm_latest_and_preserves_the_claim_shape() {
             "excluded unpublished point {excluded} remains excluded"
         );
     }
-    assert!(matches!(
+    assert_eq!(
         claim.assess(&version("0.25.1-preview.0")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
+    assert!(matches!(
+        claim.assess(&version("0.26.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

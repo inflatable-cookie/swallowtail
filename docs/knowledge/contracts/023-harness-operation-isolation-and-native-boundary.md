@@ -111,6 +111,32 @@ returns for a separate ruling. This includes no live providers, credentials,
 installation, host/workflow mutation, or release/tag action. It does not
 approve the distinct ACP restrictions in Research 372.
 
+## Gemini ACP Permission And Filesystem Restrictions
+
+Tom, operator board, 2026-10-07: "Accept documented restrictions and bounded
+adaptation" (decision `b0a9a93a-282b-4029-baa2-57f7f2cfd198`). This accepts
+Gemini CLI ACP `0.63.0`'s exact permission/filesystem restrictions as documented
+version-specific limits and authorizes separate provider-free adaptation and
+qualification of the selected route. Evidence is
+[Research 372](../../research/372-gemini-cli-0-63-0-acp-currentness-stop.md).
+
+Preserve reject-and-cancel: no new consumer approval callback, `YOLO` override,
+or permission bypass. Honour `.gemini` configuration-write protections,
+redirection requiring `ASK_USER`, defensive real-path checks, and protected
+`.env.*` reads, including upstream's named example/template exceptions.
+Document the resulting limits; prove ordinary bounded writes and exact
+refused/cancelled outcomes with deterministic mode-specific regressions before
+a claim moves. Report provider tool-output bounds and truncation honestly.
+
+Preserve older qualified segments, exclusions, and independent headless
+behaviour; name any necessary behaviour revision from evidence and assess
+Contract 036 release compatibility separately. HTTP MCP live honouring remains
+bound to exact `0.61.0`; no newer live claim follows from unchanged mapping.
+Further authority changes, consumer narrowing, new public API/lifecycle needs,
+or required live proof return for a separate ruling. This authority includes
+no live providers, credentials, installation, host/workflow mutation, or
+release/tag action, and waives no release gate.
+
 ## Native Sandbox Boundary
 
 Provider-native sandboxing is optional. A configured route may select

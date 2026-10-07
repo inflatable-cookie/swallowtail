@@ -10,9 +10,18 @@ annotated Git tags from the canonical repository.
   official stable `0.63.0` is not qualified: `0.62.0` adds existing ACP v1
   pending/failed tool-call updates, and `0.63.0` adds confirmation and real
   path checks that can stop bounded-write operations under the route's
-  reject-and-cancel permission policy. Research 370 records the exact
+  reject-and-cancel permission policy. Research 371 records the exact
   adaptation or ruling needed. HTTP MCP live honouring remains exact
   `0.61.0`; the headless claim is untouched.
+- keep the `codex.exec` qualified ceiling at `0.155.1` after the currentness
+  sweep to official `0.161.0`. `0.156.0` changes projectless thread-start
+  trust behavior; `0.157.0` binds host-managed application network policy to
+  ordinary exec. Both need provider-free adaptation and an operator ruling
+  before qualification can move. The intervening and later stable points
+  remain visible `UnverifiedNewer`; the claim, behavior revisions, segments,
+  exclusions, and independent app-server claim are unchanged. Research 370
+  freezes npm/GitHub identities, every wrapper/platform file digest, and
+  source-hop classifications. No downloaded artifact was executed.
 - project one validated `claude-agent.sdk` main-loop usage snapshot per
   completed SDK result through `ProviderObservation::Usage`, including
   input/output and cache-read/cache-write token dimensions. Required counts

@@ -1,4 +1,4 @@
-# Research 370: Codex App-Server Currentness Stop at 0.161.0
+# Research 372: Codex App-Server Currentness Stop at 0.161.0
 
 Status: stopped for operator ruling; no compatibility claim changed
 
@@ -12,11 +12,12 @@ Can the `codex.app-server` claim extend from `0.155.1` through the official
 stable `0.161.0` for the v0.5.2 version sweep?
 
 Answer: the route identity and stable release chain were recorded, but
-qualification stopped before changing the claim. Codex changed projectless
-trust handling at `0.156.0` and filesystem permission derivation at `0.158.0`.
-The current route binds `thread/start` to its preflight-approved working
-resource. Contract 029 and the task brief require a ruling for a security or
-authority change.
+qualification stopped before changing the claim. Tom authorized bounded
+adaptations for the projectless trust change at `0.156.0` and path-alias and
+linked-Git handling at `0.158.0`. Further source review found that `0.159.0`
+also makes an existing top-level `.aws` directory read-only by default within
+a writable root. This narrows the selected workspace-write behavior and needs
+a separate ruling before the claim can move.
 
 ## Method and limits
 
@@ -32,7 +33,9 @@ changed, and feeding-candidate paths. This is a source inventory, not a
 semantic classification of every provider-internal change. The selected
 schema check found no removed selected method or changed selected required
 request field; optional additions and unmapped methods do not settle the
-runtime permission changes described below.
+runtime trust, permission, or lifecycle semantics described below. The
+`.158.0` to `.159.0` hop changes exactly two protocol permission files; their
+exact source hashes and path set are asserted by the route's stop fixture.
 
 No live app-server session, provider prompt, artifact execution, installation,
 credential use, or host update occurred. The observed host was `codex-cli
@@ -62,8 +65,9 @@ automatic trust-state persistence for some caller-selected working directories.
 Swallowtail sends the preflight-approved root as `cwd` on `thread/start`
 ([`session_access.rs`](../../crates/swallowtail-adapter-codex/src/session_access.rs),
 [`session_role.rs`](../../crates/swallowtail-adapter-codex/src/app_server/session_role.rs)).
-Whether this trust-state change fits the existing workspace-roots contract is
-not settled by the current evidence.
+Tom's 2026-10-07 ruling authorizes this route to accept skipped automatic
+persisted trust for projectless working directories. Deterministic regression
+proof is still required before qualification.
 
 ### 0.158.0: path and writable-root calculation
 
@@ -77,23 +81,43 @@ root, the resulting write boundary can differ. This is not evidence that the
 change grants reads outside the selected root.
 
 Swallowtail binds `cwd`, `runtimeWorkspaceRoots`, and turn `writableRoots` to
-the same preflight-approved working-resource root. The alias and linked-Git
-directory behavior therefore needs a ruling against that authority boundary.
+the same preflight-approved working-resource root. Tom's 2026-10-07 ruling
+allows path normalization and linked `.git` read-only protections inside that
+approved root. Deterministic regression proof is still required.
+
+### 0.159.0: `.aws` becomes read-only by default
+
+The exact `.158.0` to `.159.0` hop changes
+`codex-rs/protocol/src/permissions.rs` and
+`codex-rs/protocol/src/permissions/target.rs`. In the frozen
+[`permissions.rs` at `rust-v0.159.0`](https://github.com/openai/codex/blob/rust-v0.159.0/codex-rs/protocol/src/permissions.rs#L40), Codex adds `.aws` to `PROTECTED_METADATA_PATH_NAMES`; [`default_read_only_subpaths_for_writable_root`](https://github.com/openai/codex/blob/rust-v0.159.0/codex-rs/protocol/src/permissions.rs#L2384) adds an existing top-level `<writable-root>/.aws` directory as a read-only subpath. Its upstream [regression test](https://github.com/openai/codex/blob/rust-v0.159.0/codex-rs/protocol/src/permissions.rs#L3460) creates `.aws/config` under a writable root and confirms that writes are denied. The corresponding `.155.1` and `.158.0` sources do not include `.aws` in the protected names. Exact source hashes and the changed-file set are in the stop fixture.
+[`permissions.rs` at `rust-v0.159.0`](https://github.com/openai/codex/blob/rust-v0.159.0/codex-rs/protocol/src/permissions.rs#L40), Codex adds `.aws` to `PROTECTED_METADATA_PATH_NAMES`; [`default_read_only_subpaths_for_writable_root`](https://github.com/openai/codex/blob/rust-v0.159.0/codex-rs/protocol/src/permissions.rs#L2384) adds an existing top-level `<writable-root>/.aws` directory as a read-only subpath. Its upstream [regression test](https://github.com/openai/codex/blob/rust-v0.159.0/codex-rs/protocol/src/permissions.rs#L3460) creates `.aws/config` under a writable root and confirms that writes are denied. The source explains that AWS profiles can select credential helpers Codex executes, so this is a security-sensitive default. The corresponding `.155.1` and `.158.0` sources do not include `.aws` in the protected names. Exact source hashes and the changed-file set are in the stop fixture.
+
+Swallowtail sends `workspace-write` with one preflight-approved root in
+`thread/start`, and its `turn/start` sandbox policy has one matching writable
+root, network access disabled, and the existing temporary-directory
+exclusions. It sends no `.aws` exception. Therefore an existing top-level
+`.aws` directory in that approved root becomes read-only under the selected
+route. This narrows earlier workspace-write behavior without expanding the
+approved root.
 
 ## Claim and next decision
 
 The `codex.app-server.cli-window-2` claim remains through `0.155.1`, preserving
 its existing segments and exclusions. `codex.exec` and its claim remain
 unchanged. No route guide, matrix, changelog, release note, or selection value
-was edited.
+was edited. The prior ruling covers the `.156.0` and `.158.0` behaviors, but
+they are not presented as qualified here; their required deterministic route
+proofs are incomplete.
 
-The next ruling is whether the existing app-server workspace-roots contract
-accepts (a) the `0.156.0` projectless trust-state change on the selected
-`thread/start` path and (b) the `0.158.0` path normalization and read-only
-Git-directory carveout when the target is inside a broader writable root. If
-either is outside that contract, the next adaptation must preserve earlier
-qualified segments and define the narrow route behavior or boundary needed to
-continue the Contract 029 currentness lane.
+The next ruling is whether the bounded `codex.app-server` workspace-write
+contract accepts this security-sensitive default read-only carveout for an
+existing top-level `.aws` directory under the approved root, including the
+resulting consumer-facing narrowing. If not, define a separate route adaptation
+that preserves the `.aws` protection and approved-root boundary while resolving
+the consumer guarantee; do not add an automatic write exception. Then complete
+the authorized `.156.0` and `.158.0` regression proof and the full per-hop
+semantic review before reconsidering the `.161.0` claim.
 
 Sources: [official npm registry](https://registry.npmjs.org/@openai/codex),
 [GitHub release `rust-v0.161.0`](https://github.com/openai/codex/releases/tag/rust-v0.161.0),

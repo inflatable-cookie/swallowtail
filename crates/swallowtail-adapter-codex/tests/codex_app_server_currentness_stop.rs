@@ -330,6 +330,20 @@ fn official_package_and_source_chains_are_exact() {
                 .any(|candidate| candidate == path)
         );
     }
+    let aws_hop = &hops[5];
+    assert_eq!(aws_hop["from"], "0.158.0");
+    assert_eq!(aws_hop["to"], "0.159.0");
+    let changed_permission_files = strings(&aws_hop["changed"])
+        .into_iter()
+        .filter(|path| path.starts_with("codex-rs/protocol/src/permissions"))
+        .collect::<BTreeSet<_>>();
+    assert_eq!(
+        changed_permission_files,
+        BTreeSet::from([
+            "codex-rs/protocol/src/permissions.rs",
+            "codex-rs/protocol/src/permissions/target.rs",
+        ])
+    );
 }
 
 #[test]
@@ -337,7 +351,7 @@ fn authority_changes_are_frozen_and_the_existing_claim_stays_at_0_155_1() {
     let analysis = json(ANALYSIS);
     assert_eq!(
         analysis["decision"],
-        "stop; no compatibility claim, selection, guide, matrix, changelog, or release file changed"
+        "stop at the 0.159.0 default read-only .aws carveout pending a separate operator ruling; no compatibility claim, selection, guide, matrix, changelog, or release file changed"
     );
     assert_eq!(analysis["official_channel"]["npm_latest"], "0.161.0");
     assert_eq!(
@@ -350,7 +364,7 @@ fn authority_changes_are_frozen_and_the_existing_claim_stays_at_0_155_1() {
     assert_eq!(analysis["inventory"]["hop_count"], 12);
 
     let reasons = analysis["stop_reasons"].as_array().expect("stop reasons");
-    assert_eq!(reasons.len(), 2);
+    assert_eq!(reasons.len(), 3);
     assert_eq!(reasons[0]["version"], "0.156.0");
     assert_eq!(reasons[0]["category"], "project trust and authority flow");
     assert_eq!(
@@ -385,6 +399,74 @@ fn authority_changes_are_frozen_and_the_existing_claim_stays_at_0_155_1() {
             .expect("effect")
             .contains("not evidence of a new read grant")
     );
+    assert_eq!(reasons[2]["version"], "0.159.0");
+    assert_eq!(
+        reasons[2]["category"],
+        "security boundary and consumer-visible workspace-write narrowing"
+    );
+    assert_exact_keys(
+        &reasons[2],
+        &[
+            "after",
+            "before",
+            "category",
+            "decision",
+            "files",
+            "observed_effect",
+            "source_sha256",
+            "source_lines",
+            "version",
+        ],
+    );
+    assert_eq!(
+        strings(&reasons[2]["files"]),
+        vec![
+            "codex-rs/protocol/src/permissions.rs",
+            "codex-rs/protocol/src/permissions/target.rs",
+        ]
+    );
+    assert_exact_keys(
+        &reasons[2]["source_sha256"],
+        &[
+            "codex-rs/protocol/src/permissions.rs@rust-v0.155.1",
+            "codex-rs/protocol/src/permissions.rs@rust-v0.158.0",
+            "codex-rs/protocol/src/permissions.rs@rust-v0.159.0",
+            "codex-rs/protocol/src/permissions/target.rs@rust-v0.158.0",
+            "codex-rs/protocol/src/permissions/target.rs@rust-v0.159.0",
+        ],
+    );
+    assert_eq!(
+        reasons[2]["source_sha256"]["codex-rs/protocol/src/permissions.rs@rust-v0.155.1"],
+        "d90725db886111ae662f3cb8477429c18b0ce25a243a5189cc6193284d01b46c"
+    );
+    assert_eq!(
+        reasons[2]["source_sha256"]["codex-rs/protocol/src/permissions.rs@rust-v0.158.0"],
+        "9195d43702fc0442ff9ad6d3cc7653324130996f035a008ac94489a7f20bd3e7"
+    );
+    assert_eq!(
+        reasons[2]["source_sha256"]["codex-rs/protocol/src/permissions.rs@rust-v0.159.0"],
+        "78a1c80b9b5cda29c563538d90003005d26c411eea533bd00db54a185a6aed54"
+    );
+    assert_eq!(
+        reasons[2]["source_sha256"]["codex-rs/protocol/src/permissions/target.rs@rust-v0.158.0"],
+        "e7c44e9e8e15e0579ee9081ac8b7b6f8d34cc53a48ca8a5594838cd0d962efdd"
+    );
+    assert_eq!(
+        reasons[2]["source_sha256"]["codex-rs/protocol/src/permissions/target.rs@rust-v0.159.0"],
+        "df4ed6069d7d64396066dc6a2ca87f540f1f05f6589ab4c990592b5648ae4219"
+    );
+    assert!(
+        reasons[2]["after"]
+            .as_str()
+            .expect("after")
+            .contains("existing top-level .aws directory")
+    );
+    assert!(
+        reasons[2]["observed_effect"]
+            .as_str()
+            .expect("effect")
+            .contains("no explicit .aws write exception")
+    );
 
     let boundary = &analysis["route_boundary"];
     assert_eq!(
@@ -400,6 +482,17 @@ fn authority_changes_are_frozen_and_the_existing_claim_stays_at_0_155_1() {
             "runtimeWorkspaceRoots=[same root]",
         ]
     );
+    assert_eq!(
+        strings(&boundary["turn_sandbox_policy_keys"]),
+        vec![
+            "excludeSlashTmp",
+            "excludeTmpdirEnvVar",
+            "networkAccess",
+            "type",
+            "writableRoots",
+        ]
+    );
+    assert_eq!(boundary["no_aws_write_exception"], true);
     assert_eq!(boundary["no_live_session"], true);
     assert_eq!(boundary["no_provider_prompt"], true);
     assert_eq!(boundary["no_artifact_execution"], true);

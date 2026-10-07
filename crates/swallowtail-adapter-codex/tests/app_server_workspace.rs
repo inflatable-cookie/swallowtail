@@ -2,6 +2,7 @@ use crate::support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use std::collections::BTreeSet;
 use support::app_server::{AppServerMode, ScriptedAppServer};
 use support::{
     app_server_plan, app_server_session_agreement, bounded_workspace_plan,
@@ -82,6 +83,21 @@ fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
 
     let turn_start = message(&state.messages(), "turn/start");
     let sandbox = &turn_start["params"]["sandboxPolicy"];
+    assert_eq!(
+        sandbox
+            .as_object()
+            .expect("workspace sandbox policy is an object")
+            .keys()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>(),
+        BTreeSet::from([
+            "excludeSlashTmp",
+            "excludeTmpdirEnvVar",
+            "networkAccess",
+            "type",
+            "writableRoots",
+        ])
+    );
     assert_eq!(sandbox["type"], "workspaceWrite");
     assert_eq!(sandbox["writableRoots"].as_array().map(Vec::len), Some(1));
     assert_eq!(sandbox["writableRoots"][0], "/private/recording/workspace");

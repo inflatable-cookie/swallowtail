@@ -25,7 +25,7 @@
     "qualified_ceiling": "0.155.1",
     "route": "codex.app-server"
   },
-  "decision": "stop; no compatibility claim, selection, guide, matrix, changelog, or release file changed",
+  "decision": "stop at the 0.159.0 default read-only .aws carveout pending a separate operator ruling; no compatibility claim, selection, guide, matrix, changelog, or release file changed",
   "host_observation": {
     "interpretation": "launcher stub identity only; no update performed",
     "observed_date": "2026-10-07",
@@ -44,9 +44,9 @@
     "tag_count": 13
   },
   "next_ruling": [
-    "Does the current codex.app-server workspace-roots contract accept the 0.156.0 projectless trust-state change for the exact thread/start path?",
-    "Does the current workspace-write mapping accept the 0.158.0 alias normalization and linked-Git-directory read-only carveout when a target falls within a broader writable root?",
-    "If either change is outside the contract, define the narrow adaptation that preserves prior qualified segments and continues the currentness lane."
+    "Does the bounded codex.app-server workspace-write contract accept the 0.159.0 default read-only carveout for an existing top-level .aws directory under the approved root?",
+    "If not, define a scoped adaptation that preserves prior behavior without expanding the approved root, or explicitly resolve the consumer-facing narrowing.",
+    "After that ruling, complete deterministic regression proof for the authorized 0.156.0 projectless trust skip and 0.158.0 path-alias and linked-.git protections, then finish the per-hop semantic review."
   ],
   "official_channel": {
     "agreement": true,
@@ -89,7 +89,15 @@
       "networkAccess=false",
       "excludeSlashTmp=true",
       "excludeTmpdirEnvVar=true"
-    ]
+    ],
+    "turn_sandbox_policy_keys": [
+      "excludeSlashTmp",
+      "excludeTmpdirEnvVar",
+      "networkAccess",
+      "type",
+      "writableRoots"
+    ],
+    "no_aws_write_exception": true
   },
   "selected_schema_review": {
     "additions": "optional selected request/response fields only in the checked schema closure; unselected methods/notifications remain unmapped",
@@ -102,7 +110,7 @@
       "after": "the same condition additionally requires !config.config_layer_stack.is_projectless()",
       "before": "requested_cwd.is_some() && active_project.trust_level.is_none() && effective_permissions_trust_project",
       "category": "project trust and authority flow",
-      "decision": "operator ruling required before extending the route claim",
+      "decision": "Tom authorized acceptance; deterministic regression proof is required before extending the route claim",
       "files": [
         "codex-rs/app-server/src/request_processors/thread_processor.rs",
         "codex-rs/config/src/loader/mod.rs",
@@ -117,7 +125,7 @@
     },
     {
       "category": "filesystem permission boundary",
-      "decision": "operator ruling required before extending the route claim",
+      "decision": "Tom authorized acceptance; deterministic regression proof is required before extending the route claim",
       "details": [
         "WritableRootPathResolution::PreserveMutableComponents now normalizes system aliases.",
         "LocalFileSystemPolicyMatcher resolves policy and target aliases on macOS.",
@@ -135,6 +143,30 @@
         "permissions.rs_resolved_gitdir_entries": 1564
       },
       "version": "0.158.0"
+    },
+    {
+      "after": "PROTECTED_METADATA_AWS_PATH_NAME is added to PROTECTED_METADATA_PATH_NAMES; default_read_only_subpaths_for_writable_root adds an existing top-level .aws directory; the upstream regression test denies writes to .aws/config under a writable root",
+      "before": "the protected metadata names are .git, .agents, and .codex; .aws is not a default read-only subpath",
+      "category": "security boundary and consumer-visible workspace-write narrowing",
+      "decision": "separate operator ruling required before extending the route claim",
+      "files": [
+        "codex-rs/protocol/src/permissions.rs",
+        "codex-rs/protocol/src/permissions/target.rs"
+      ],
+      "observed_effect": "an existing top-level <approved-root>/.aws directory becomes read-only under the selected one-root workspace-write route; the route sends no explicit .aws write exception",
+      "source_sha256": {
+        "codex-rs/protocol/src/permissions.rs@rust-v0.155.1": "d90725db886111ae662f3cb8477429c18b0ce25a243a5189cc6193284d01b46c",
+        "codex-rs/protocol/src/permissions.rs@rust-v0.158.0": "9195d43702fc0442ff9ad6d3cc7653324130996f035a008ac94489a7f20bd3e7",
+        "codex-rs/protocol/src/permissions.rs@rust-v0.159.0": "78a1c80b9b5cda29c563538d90003005d26c411eea533bd00db54a185a6aed54",
+        "codex-rs/protocol/src/permissions/target.rs@rust-v0.158.0": "e7c44e9e8e15e0579ee9081ac8b7b6f8d34cc53a48ca8a5594838cd0d962efdd",
+        "codex-rs/protocol/src/permissions/target.rs@rust-v0.159.0": "df4ed6069d7d64396066dc6a2ca87f540f1f05f6589ab4c990592b5648ae4219"
+      },
+      "source_lines": {
+        "permissions.rs_aws_constant": 43,
+        "permissions.rs_default_read_only_aws": 2384,
+        "permissions.rs_regression_test": 3460
+      },
+      "version": "0.159.0"
     }
   ]
 }

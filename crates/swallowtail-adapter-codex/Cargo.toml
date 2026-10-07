@@ -59,3 +59,7 @@ path = "tests/codex_0_154_0_identity.rs"
 [[test]]
 name = "codex_0_155_1_identity"
 path = "tests/codex_0_155_1_identity.rs"
+
+[[test]]
+name = "codex_app_server_currentness_stop"
+path = "tests/codex_app_server_currentness_stop.rs"

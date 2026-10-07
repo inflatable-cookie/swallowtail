@@ -1,0 +1,140 @@
+{
+  "candidate": {
+    "package": "@openai/codex",
+    "route": "codex.app-server",
+    "version": "0.161.0"
+  },
+  "claim_at_observation": {
+    "claim_id": "codex.app-server.cli-window-2",
+    "exec_claim_unchanged": true,
+    "gaps": [
+      "0.82.0..=0.83.0",
+      "0.108.0",
+      "0.109.0",
+      "0.149.2",
+      "0.150.2",
+      "0.151.1",
+      "0.152.2",
+      "0.154.1"
+    ],
+    "maintained_segments": [
+      "0.80.0..=0.81.0",
+      "0.84.0..=0.107.0",
+      "0.110.0..=0.155.1"
+    ],
+    "qualified_ceiling": "0.155.1",
+    "route": "codex.app-server"
+  },
+  "decision": "stop; no compatibility claim, selection, guide, matrix, changelog, or release file changed",
+  "host_observation": {
+    "interpretation": "launcher stub identity only; no update performed",
+    "observed_date": "2026-10-07",
+    "resolved_file_sha256": "e89718aa1969bfc4a471277bdc4679a3a3529293de0a309909822dfd67ddb77a",
+    "resolved_file_size": 55,
+    "version": "codex-cli 0.159.0"
+  },
+  "inventory": {
+    "feeding_candidates": "path census for app-server, app-server-protocol, protocol, core, and config areas; candidates are not semantic classifications",
+    "hop_count": 12,
+    "manifest": "per-tag SHA256 over the sorted full path/mode/Git blob SHA inventory; per-hop exact added/removed/changed path arrays and identical-tree manifest digest",
+    "official_artifacts_file": "published-artifacts.json",
+    "official_artifacts_sha256": "900fac812f58dc651702dd15eccea0ad0b96edb2eba7fb1970acc586024ee566",
+    "source_file": "source-inventory.json",
+    "source_file_sha256": "5270b85736b65a231f3605d3c62ddc3e420f64e7165b23c67e2ad4083cf32889",
+    "tag_count": 13
+  },
+  "next_ruling": [
+    "Does the current codex.app-server workspace-roots contract accept the 0.156.0 projectless trust-state change for the exact thread/start path?",
+    "Does the current workspace-write mapping accept the 0.158.0 alias normalization and linked-Git-directory read-only carveout when a target falls within a broader writable root?",
+    "If either change is outside the contract, define the narrow adaptation that preserves prior qualified segments and continues the currentness lane."
+  ],
+  "official_channel": {
+    "agreement": true,
+    "alpha_ignored": "0.162.0-alpha.18",
+    "github_latest_non_prerelease": "rust-v0.161.0",
+    "github_published_at": "2026-10-07T15:58:45Z",
+    "npm_latest": "0.161.0",
+    "npm_package": "@openai/codex",
+    "npm_published_at": "2026-10-07T16:04:02.844Z",
+    "stable_hops_after_ceiling": [
+      "0.156.0",
+      "0.156.1",
+      "0.157.0",
+      "0.157.1",
+      "0.158.0",
+      "0.159.0",
+      "0.159.1",
+      "0.159.2",
+      "0.159.3",
+      "0.160.0",
+      "0.160.1",
+      "0.161.0"
+    ]
+  },
+  "route_boundary": {
+    "adapter_file": "crates/swallowtail-adapter-codex/src/session_access.rs",
+    "no_artifact_execution": true,
+    "no_host_update": true,
+    "no_live_session": true,
+    "no_provider_prompt": true,
+    "thread_start_fields": [
+      "approvalPolicy=never",
+      "sandbox=workspace-write",
+      "cwd=<preflight-approved working-resource root>",
+      "runtimeWorkspaceRoots=[same root]"
+    ],
+    "thread_start_file": "crates/swallowtail-adapter-codex/src/app_server/session_role.rs",
+    "turn_sandbox_fields": [
+      "writableRoots=[same root]",
+      "networkAccess=false",
+      "excludeSlashTmp=true",
+      "excludeTmpdirEnvVar=true"
+    ]
+  },
+  "selected_schema_review": {
+    "additions": "optional selected request/response fields only in the checked schema closure; unselected methods/notifications remain unmapped",
+    "limit": "schema review does not cover upstream runtime permission, trust, or lifecycle semantics",
+    "selected_methods_removed": false,
+    "selected_request_required_fields_changed": false
+  },
+  "stop_reasons": [
+    {
+      "after": "the same condition additionally requires !config.config_layer_stack.is_projectless()",
+      "before": "requested_cwd.is_some() && active_project.trust_level.is_none() && effective_permissions_trust_project",
+      "category": "project trust and authority flow",
+      "decision": "operator ruling required before extending the route claim",
+      "files": [
+        "codex-rs/app-server/src/request_processors/thread_processor.rs",
+        "codex-rs/config/src/loader/mod.rs",
+        "codex-rs/config/src/loader/projectless_directory_tests.rs"
+      ],
+      "observed_effect": "the prior set_project_trust_level(Trusted) persistence path now skips requests classified as projectless; Swallowtail supplies the preflight-approved cwd on thread/start",
+      "source_lines": {
+        "loader_mod.rs": 329,
+        "thread_processor.rs": 1361
+      },
+      "version": "0.156.0"
+    },
+    {
+      "category": "filesystem permission boundary",
+      "decision": "operator ruling required before extending the route claim",
+      "details": [
+        "WritableRootPathResolution::PreserveMutableComponents now normalizes system aliases.",
+        "LocalFileSystemPolicyMatcher resolves policy and target aliases on macOS.",
+        "Writable-root derivation resolves a .git pointer target and adds it as FileSystemAccessMode::Read to read-only carveout calculations on Linux/macOS."
+      ],
+      "files": [
+        "codex-rs/protocol/src/permissions.rs",
+        "codex-rs/protocol/src/permissions/local_aliases.rs",
+        "codex-rs/protocol/src/permissions/local_aliases_tests.rs"
+      ],
+      "observed_effect": "write permission boundaries can differ for aliased paths and linked Git directories inside a broader writable root; this is not evidence of a new read grant",
+      "source_lines": {
+        "permissions.rs_git_pointer_helpers": 2498,
+        "permissions.rs_preserve_alias": 252,
+        "permissions.rs_resolved_gitdir_entries": 1564
+      },
+      "version": "0.158.0"
+    }
+  ]
+}

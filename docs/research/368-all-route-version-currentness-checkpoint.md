@@ -1,10 +1,10 @@
 # Research 368: All-Route Version Currentness Checkpoint
 
-Status: research checkpoint; blocked at official-channel reconciliation; no compatibility claim, fixture, or matrix change
+Status: research checkpoint complete; official channels reconciled; no compatibility claim, fixture, or matrix change
 
 Owner: standing version-currentness lane
 Date: 2026-10-07
-Observation window: 2026-10-07 16:33–16:44 UTC
+Observation window: 2026-10-07 16:33–16:53 UTC
 Base: canonical `main` `257bbd02c5b5dbbcb5801af8edb56bdbf0274ec5`
 Authority: Contract 029; version-currentness checkpoint procedure; Queue brief
 for task 093
@@ -18,11 +18,13 @@ interface axis before preparation of v0.5.2?
 Answer: the current route inventory reconciles to 51 distinct production route
 IDs. Official versions newer than current qualification, local versions newer
 than their route bound, exact-pin gates, major-line resets, and source gaps are
-listed below. The official Claude Code npm `stable` dist-tag points to `2.1.285`
-while npm `latest` and GitHub's latest stable release point to `2.1.292`. The
-checkpoint records the conflict and stops without selecting a stable channel
-for those routes. This checkpoint changes no claim and authorizes no bulk
-update.
+listed below. For Claude Code, the selected official channel is npm `latest`,
+which agrees with GitHub's latest non-prerelease release at `2.1.292`. The npm
+`stable` dist-tag remains `2.1.285`; Anthropic documents it as a deliberately
+delayed channel, typically about one week behind `latest`. These are separate
+channels, not conflicting reports of the same channel. All newer points remain
+unqualified until separate family tasks complete identity and route-specific
+qualification. This checkpoint changes no claim and authorizes no bulk update.
 
 ## Method and limits
 
@@ -35,8 +37,9 @@ available. Public registry, release, manifest, and documentation metadata were
 read only. No provider prompt, live catalogue, login, credential, installation,
 host update, or downloaded-artifact execution was used.
 
-The observation cutoff is 2026-10-07 16:38 UTC. Registry or release metadata
-discovers a point and its publication ordering; it does not qualify that point.
+The observation cutoff is 2026-10-07 16:53 UTC; Claude Code npm and GitHub
+metadata were re-probed at 16:53 UTC. Registry or release metadata discovers a
+point and its publication ordering; it does not qualify that point.
 The “hops” below count published stable package/tag points after the exact
 qualified point on that official channel. A gate marked “identity chain” still
 requires the family task to inspect the exact selected artifacts and mapped
@@ -61,8 +64,8 @@ list is this table; every row points to this record, Research 368.
 | `bedrock.runtime` | Exact SDK `1.139.0`; service model exact | `aws-sdk-bedrockruntime 1.148.0` (2026-10-01) | `aws-sdk-bedrockruntime`; crates.io stable | Not applicable | Nine published stable crate points after `1.139.0`; keep separate from catalogue SDK. Identity task required. | [368](#current-route-and-interface-inventory) |
 | `claude-agent.acp` | Maintained `0.53.0..=0.81.2` excluding `0.58.0`; later stable unverified | `0.87.0` (2026-10-07) | `@agentclientprotocol/claude-agent-acp`; npm/GitHub and ACP registry agree | `claude-agent-acp 0.63.0` | Seven stable package hops; no stop to be inferred from metadata. Compare every selected hop in a one-family task. | [368](#current-route-and-interface-inventory) |
 | `claude-agent.sdk` | Exact `0.3.284` package with native `2.1.284`; `QualifiedOnly` | SDK package `0.3.292` (2026-10-06); embedded native identity not established from packument metadata | `@anthropic-ai/claude-agent-sdk`; npm. `@anthropic-ai/claude-code@2.1.292` is a separate host CLI axis. | Node `22.23.2`; installed `claude 2.1.286` identifies the host CLI, not the embedded SDK | Eight SDK package hops after `0.3.284`; read the exact versioned platform artifact manifest and selected SDK surface before updating either package or native claim. Keep Research 367's usage/registered-tool gates. | [368](#current-route-and-interface-inventory) |
-| `claude-code.headless` | Maintained `2.1.220..=2.1.281`; excludes unpublished `2.1.244`, `.249`, `.253..=.256`, `.262`, `.264`, `.279`; stable-newer is `UnverifiedNewer` | npm `stable` tag `2.1.285`; npm `latest` and GitHub latest stable `2.1.292` (2026-10-06) | `@anthropic-ai/claude-code`; npm packument dist-tags and GitHub stable release | `claude 2.1.286` | Channel disagreement: four published stables after `2.1.281` through npm `stable`, eleven through npm `latest`/GitHub. Stop before selecting or qualifying a current stable. | [368](#current-route-and-interface-inventory) |
-| `claude-code.response-only` | Maintained `2.1.227..=2.1.278` on `stream-json.v1`, then `2.1.280..=2.1.281` on `stream-json.v2`; same unpublished holes; stable-newer is provisional | npm `stable` tag `2.1.285`; npm `latest` and GitHub latest stable `2.1.292` (2026-10-06) | `@anthropic-ai/claude-code`; npm packument dist-tags and GitHub stable release | `claude 2.1.286` | Same official-channel disagreement; preserve the stream-json v1/v2 split and deny-list. Do not choose a channel or transfer headless evidence. | [368](#current-route-and-interface-inventory) |
+| `claude-code.headless` | Maintained `2.1.220..=2.1.281`; excludes unpublished `2.1.244`, `.249`, `.253..=.256`, `.262`, `.264`, `.279`; newer selected-channel points are `UnverifiedNewer` | npm `latest` `2.1.292` and GitHub latest non-prerelease `v2.1.292` (2026-10-06); delayed npm `stable` tag `2.1.285` (2026-09-29) | `@anthropic-ai/claude-code`; npm latest and GitHub latest release agree | `claude 2.1.286` | Eleven published points `2.1.282`–`2.1.292` after the qualified ceiling. Metadata discovery only; qualify the headless route separately. npm `stable` is a distinct delayed channel, not a disagreement. | [368](#current-route-and-interface-inventory) |
+| `claude-code.response-only` | Maintained `2.1.227..=2.1.278` on `stream-json.v1`, then `2.1.280..=2.1.281` on `stream-json.v2`; same unpublished holes; newer selected-channel points are `UnverifiedNewer` | npm `latest` `2.1.292` and GitHub latest non-prerelease `v2.1.292` (2026-10-06); delayed npm `stable` tag `2.1.285` (2026-09-29) | `@anthropic-ai/claude-code`; npm latest and GitHub latest release agree | `claude 2.1.286` | Eleven published points `2.1.282`–`2.1.292` after the qualified ceiling. Preserve the stream-json v1/v2 split and deny-list; qualify this response-only route separately. No evidence transfers from headless. | [368](#current-route-and-interface-inventory) |
 | `anthropic.managed-agent` | Exact opaque `managed-agents-2026-04-01`; `QualifiedOnly` | No ordered public stable version; exact API facade | Anthropic Managed Agents API docs | Not applicable | No versioned release channel; recheck the exact beta facade and route controls. | [368](#current-route-and-interface-inventory) |
 | `anthropic.messages` | Exact `anthropic-2023-06-01`; `QualifiedOnly` | No newer dated API version observed; exact Messages API revision | Anthropic Messages API docs | Not applicable | No ordered release stream; latest model aliases are out of scope. | [368](#current-route-and-interface-inventory) |
 | `pi.rpc` | Maintained published points `0.80.10..=0.86.1`, excluding `0.83.1`, `0.84.5`, `0.85.2`; later stable unverified | `1.0.4` (2026-10-05) | `@earendil-works/pi-coding-agent`; npm/GitHub agree | `pi 0.87.1` | Ten stable points after `0.86.1`; major-line reset to `1.x`. The installed host and official point exceed the current bound. Identity/mapping task, no range inference. | [368](#current-route-and-interface-inventory) |
@@ -127,8 +130,8 @@ is authorized here.
 | 3 | `gemini-cli.acp` | `0.61.0 → 0.63.0` | 2 | Gemini deferral is lifted; qualify ACP only and preserve exact HTTP MCP boundary. |
 | 4 | `gemini-cli.headless` | `0.61.0 → 0.63.0` | 2 | Same package, separate headless profile. |
 | 5 | `claude-agent.acp` | `0.81.2 → 0.87.0` | 7 | Recheck ACP package, GitHub release, and ACP registry agreement; identity task. |
-| 6 | `claude-code.headless` | `2.1.281 → npm stable tag 2.1.285; npm latest/GitHub stable 2.1.292` | 4 points vs 11 points | Official channel disagreement; stop before choosing current stable or qualifying either point. |
-| 7 | `claude-code.response-only` | `2.1.281 (stream-json.v2) → npm stable tag 2.1.285; npm latest/GitHub stable 2.1.292` | 4 points vs 11 points | Same channel disagreement; stop before choosing current stable, keep route-specific stream protocol. |
+| 6 | `claude-code.headless` | `2.1.281 → npm latest/GitHub latest release 2.1.292`; delayed npm `stable` tag `2.1.285` | 11 published points: `2.1.282`–`2.1.292` | npm latest and GitHub latest non-prerelease agree; metadata only. Qualify headless route independently. Anthropic documents `stable` as a separate delayed channel. |
+| 7 | `claude-code.response-only` | `2.1.281 (stream-json.v2) → npm latest/GitHub latest release 2.1.292`; delayed npm `stable` tag `2.1.285` | 11 published points: `2.1.282`–`2.1.292` | Same channel agreement; retain the route-specific stream protocol and qualify response-only independently. Do not transfer headless evidence. |
 | 8 | `qwen.headless` | `0.24.2 → 0.25.0` | 6 | npm CLI package; compare its exact selected points, not the unrelated TypeScript SDK GitHub tag. |
 | 9 | `antigravity.catalogue` | `1.2.11 → 1.3.1` | 8 | Official CLI releases; catalog mapping task. ACP registry `antigravity-acp@1.3.0` is a different product. |
 | 10 | `antigravity.headless` | pinned `1.2.11 → 1.3.1` | 8 | Keep `AGY_CLI_MODEL_API_MAX_RETRIES=0`; the pin qualifies only `1.2.11`. Current release requires an adaptation task with bounded retry evidence. |
@@ -181,11 +184,23 @@ also has no newer point: official `2.1.1` equals its current qualified ceiling.
   CLI, Kimi Code, OpenCode, and Codex. Mistral GitHub and PyPI both point to
   `2.26.0`; Goose, Antigravity, Ollama, and llama.cpp use their named official
   GitHub stable channels.
-- Claude Code is the stop condition: npm packument declares `stable=2.1.285`
-  and `latest=2.1.292`, while GitHub's latest non-prerelease release is
-  `v2.1.292`. The runbook names npm `latest`, but no official statement was
-  located explaining the separate npm `stable` tag. Report this disagreement
-  and obtain source/owner clarification before any Claude Code family task.
+- Claude Code channel selection follows the [checkpoint procedure's Sources
+  section](../knowledge/operations/version-currentness-checkpoint.md#sources)
+  and the [version-currentness reference's Official channels
+  section](../../.cursor/skills/version-currentness/reference.md#official-channels):
+  npm `latest` is the selected channel for published CLIs. [Research
+  348](./348-claude-code-2-1-281-narrowed-response-only-claim.md#official-latest)
+  records that npm `latest`/`next` and GitHub latest agreed at `2.1.281`, and
+  explicitly says npm `stable` was not this family's channel. Anthropic's
+  [release-channel documentation](https://code.claude.com/docs/en/setup#configure-release-channel)
+  defines `latest` as the default immediate channel and `stable` as typically
+  about one week old, skipping releases with major regressions. At the 2026-10-07
+  16:53 UTC re-probe, npm `latest=2.1.292` (published 2026-10-06) and GitHub's
+  latest non-prerelease release `v2.1.292` agree; npm `stable=2.1.285`
+  (published 2026-09-29) is the separately documented delayed channel. There is
+  no same-channel disagreement. The eleven npm latest points after the
+  qualified `2.1.281` are discovery only; headless and response-only still
+  need independent family qualification.
 - Qwen's GitHub latest tag is for its TypeScript SDK; route `qwen.headless`
   uses npm `@qwen-code/qwen-code`. Cline GitHub `v4.1.23` is the editor
   product; Swallowtail routes use npm package `cline@3.0.69`. These are
@@ -232,6 +247,8 @@ publication dates and hop lists. Host observations are not version authority.
 | npm Claude Agent ACP | <https://registry.npmjs.org/@agentclientprotocol%2Fclaude-agent-acp> |
 | npm Claude Agent SDK | <https://registry.npmjs.org/@anthropic-ai%2Fclaude-agent-sdk> |
 | npm Claude Code | <https://registry.npmjs.org/@anthropic-ai%2Fclaude-code> |
+| Claude Code latest release | <https://api.github.com/repos/anthropics/claude-code/releases/latest> |
+| Anthropic Claude Code release channels | <https://code.claude.com/docs/en/setup#configure-release-channel> |
 | npm Pi | <https://registry.npmjs.org/@earendil-works%2Fpi-coding-agent> |
 | npm Cline | <https://registry.npmjs.org/cline> |
 | npm Command Code | <https://registry.npmjs.org/command-code> |
@@ -276,10 +293,10 @@ to distinguish packaging metadata from the selected runtime axis.
 
 ## Disposition
 
-This record identifies the remaining one-family work, but Claude Code's
-official channel disagreement meets the Queue brief's stop condition. Resolve
-the npm `stable` versus npm `latest`/GitHub point with the official source or
-operator before using this snapshot to dispatch follow-up qualification or
-advance the v0.5.2 release gate. Other rows remain metadata discovery, not
-qualification. No claims, fixtures, matrices, release state, host state, or
-consumer state changed.
+This record identifies the remaining one-family work and resolves the Claude
+Code channel question from the selected official channel and Anthropic's
+channel documentation. The planner can use this checkpoint to create separate
+family tasks; metadata discovery does not qualify any newer point. Existing
+exact-pin, major-line, adaptation, and source-identity gates remain explicit.
+No claims, fixtures, matrices, release state, host state, or consumer state
+changed.

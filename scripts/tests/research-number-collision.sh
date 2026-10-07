@@ -21,6 +21,14 @@ write_record() {
   printf '# %s\n' "$name" >"$cwd/docs/research/$name"
 }
 
+write_numbered_record() {
+  local cwd=$1
+  local name=$2
+  local contents=$3
+  mkdir -p "$cwd/docs/research"
+  printf '%s' "$contents" >"$cwd/docs/research/$name"
+}
+
 expect_failure() {
   local expected=$1
   shift
@@ -91,5 +99,68 @@ git_test "$updater" push -q origin HEAD:main
 write_record "$worker" 104-stale-worker-record.md
 expect_failure 'canonical main' \
   "${checker[@]}" --root "$worker" --authority "$canonical"
+
+# A canonical collision can be repaired only by retaining every record,
+# moving a record to an unused number, and changing only its numbered heading.
+collision_seed=$scratch/collision-seed
+collision_canonical=$scratch/collision-canonical.git
+collision_worker=$scratch/collision-worker
+collision_deletion=$scratch/collision-deletion
+collision_changed=$scratch/collision-changed
+collision_in_place=$scratch/collision-in-place
+collision_occupied=$scratch/collision-occupied
+mkdir -p "$collision_seed/docs/research"
+git_test "$collision_seed" init -q -b main
+write_numbered_record "$collision_seed" 373-first.md \
+  $'# Research 373: First canonical record\nFirst record evidence.\n'
+write_numbered_record "$collision_seed" 373-second.md \
+  $'# Research 373: Second canonical record\nSecond record evidence.\n'
+write_numbered_record "$collision_seed" 376-second.tsv \
+  $'# Research 376: Second canonical companion\nCompanion evidence.\n'
+git_test "$collision_seed" add docs
+git_test "$collision_seed" commit -q -m 'seed canonical collision records'
+git_test "$scratch" clone -q --bare "$collision_seed" "$collision_canonical"
+git_test "$scratch" clone -q "$collision_canonical" "$collision_worker"
+git_test "$scratch" clone -q "$collision_canonical" "$collision_deletion"
+git_test "$scratch" clone -q "$collision_canonical" "$collision_changed"
+git_test "$scratch" clone -q "$collision_canonical" "$collision_in_place"
+git_test "$scratch" clone -q "$collision_canonical" "$collision_occupied"
+
+expect_failure 'working tree research number 373' \
+  "${checker[@]}" --root "$collision_worker" --local-base main
+
+rm "$collision_deletion/docs/research/373-second.md"
+expect_failure 'canonical collision repair must retain' \
+  "${checker[@]}" --root "$collision_deletion" --local-base main
+
+rm "$collision_changed/docs/research/373-second.md"
+write_numbered_record "$collision_changed" 374-second.md \
+  $'# Research 374: Second canonical record\nChanged evidence.\n'
+expect_failure 'only its numbered heading and path may change' \
+  "${checker[@]}" --root "$collision_changed" --local-base main
+
+write_numbered_record "$collision_in_place" 373-first.md \
+  $'# Research 373: First canonical record\nChanged evidence.\n'
+rm "$collision_in_place/docs/research/373-second.md"
+write_numbered_record "$collision_in_place" 374-second.md \
+  $'# Research 374: Second canonical record\nSecond record evidence.\n'
+expect_failure 'changed in place; preserve its evidence bytes' \
+  "${checker[@]}" --root "$collision_in_place" --local-base main
+
+rm "$collision_occupied/docs/research/373-second.md"
+write_numbered_record "$collision_occupied" 376-second.md \
+  $'# Research 376: Second canonical record\nSecond record evidence.\n'
+expect_failure 'repair target 376 is already occupied' \
+  "${checker[@]}" --root "$collision_occupied" --local-base main
+
+rm "$collision_worker/docs/research/373-second.md"
+write_numbered_record "$collision_worker" 374-second.md \
+  $'# Research 374: Second canonical record\nSecond record evidence.\n'
+expect_pass "${checker[@]}" --root "$collision_worker" --local-base main
+expect_pass "${checker[@]}" --root "$collision_worker" \
+  --authority "$collision_canonical"
+expect_failure 'cannot refresh canonical main' \
+  "${checker[@]}" --root "$collision_worker" \
+  --authority "$scratch/missing-canonical.git"
 
 printf 'research number collision tests passed\n'

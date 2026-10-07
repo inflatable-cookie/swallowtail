@@ -1,0 +1,139 @@
+{
+  "selected_routes": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel",
+    "session/load",
+    "session/resume",
+    "session/close",
+    "session/delete",
+    "session/request_permission",
+    "elicitation/create",
+    "session/set_config_option",
+    "session/set_mode"
+  ],
+  "selected_protocol_version": 1,
+  "swallowtail_initialize_request": {
+    "protocolVersion": 1,
+    "fs_readTextFile": true,
+    "fs_writeTextFile": false,
+    "elicitation_form": true,
+    "advertises_air": false,
+    "advertises_goal": false,
+    "advertises_async_tasks": false,
+    "advertises_session_notices": false,
+    "advertises_native_subagent_sessions": false,
+    "advertises_context_compaction": false
+  },
+  "official_current_runtime": {
+    "node_engine": ">=22",
+    "bin": "dist/index.js",
+    "default_protocol": 1,
+    "experimental_v2_requires_explicit_env": "CLAUDE_AGENT_ACP_EXPERIMENTAL_V2=1",
+    "swallowtail_requests_v2": false
+  },
+  "stable_schema_and_lifecycle": {
+    "protocol_version_stays_1": true,
+    "selected_v1_methods_unchanged": [
+      "session/new",
+      "session/resume",
+      "session/close",
+      "session/delete",
+      "session/set_mode"
+    ],
+    "load_session_v1_handler_reworked_in_0_86": true,
+    "load_session_response_and_replay_contract_unchanged": true,
+    "cancel_handler_internal_rework": [
+      "0.82.0",
+      "0.85.1"
+    ],
+    "cancel_method_and_terminal_domain_unchanged": true,
+    "close_and_delete_response_shapes_unchanged": true,
+    "no_public_lifecycle_break": true
+  },
+  "tool_exchange": {
+    "session_update_kind_set_unchanged_for_selected_client": true,
+    "tool_call_update_fields_are_optional_and_replacements_when_present": [
+      "status",
+      "title",
+      "kind",
+      "content",
+      "locations"
+    ],
+    "0_82_tracker_omits_unchanged_replacement_fields": true,
+    "swallowtail_decoder_accepts_partial_updates": true,
+    "swallowtail_decoder": "crates/swallowtail-protocol-acp/src/activity/decode/tool.rs",
+    "projection_preserves_label_when_update_title_absent": true,
+    "projection_omits_content_when_update_content_absent": true,
+    "regression_test": "tool_title_refines_and_survives_payload_only_completion",
+    "new_0_87_failed_terminal_tool_update_maps_to_existing_status": true,
+    "raw_input_and_raw_output_excluded_by_swallowtail": true,
+    "tool_ids_remain_opaque_strings": true
+  },
+  "permissions_and_elicitation": {
+    "permission_choice_kinds_unchanged": [
+      "allow_once",
+      "allow_always",
+      "reject_once"
+    ],
+    "swallowtail_one_shot_allow_or_reject_subset_unchanged": true,
+    "new_permission_meta_is_air_gated": true,
+    "elicitation_question_keys_unchanged": [
+      "question_<n>",
+      "question_<n>_custom"
+    ],
+    "custom_answer_meta_added_for_air_only": true,
+    "no_persistent_permission_grant_added": true
+  },
+  "configuration_and_usage": {
+    "model_option_id_category": [
+      "model",
+      "model"
+    ],
+    "effort_option_id_category": [
+      "effort",
+      "thought_level"
+    ],
+    "mode_option_id_category": [
+      "mode",
+      "mode"
+    ],
+    "plan_and_acceptEdits_remain_available": true,
+    "provider_denied_models_only_filter_choices_the_cli_refuses": true,
+    "agent_config_option_is_provider_specific_and_unmapped": true,
+    "usage_fields_unchanged": [
+      "inputTokens",
+      "outputTokens",
+      "cachedReadTokens",
+      "cachedWriteTokens",
+      "totalTokens"
+    ],
+    "usage_total_equals_sum_of_four_counters": true,
+    "selected_stop_reason_domain_unchanged": [
+      "end_turn",
+      "cancelled",
+      "max_tokens",
+      "max_turn_requests",
+      "refusal"
+    ],
+    "unknown_stop_reason_fails_closed": true
+  },
+  "separate_live_gate": {
+    "http_mcp_mapping_claimed_at_exact_points_only": [
+      "0.79.0",
+      "0.81.2"
+    ],
+    "newer_http_mcp_live_evidence": false
+  },
+  "selected_compatible_because": [
+    "stable v1 remains the only negotiated protocol",
+    "non-AIR initialize, mode, permission, and elicitation outputs remain within the decoder and public mapping",
+    "tool_call_update omission follows ACP replacement semantics and is handled by the existing optional-field decoder and projection",
+    "session, cancel, permission, configuration, usage, and stop-reason method surfaces remain selected as before",
+    "provider-only or capability-gated additions are not promoted to Swallowtail operations",
+    "HTTP MCP live honouring stays exact to 0.79.0 and 0.81.2"
+  ],
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false
+}

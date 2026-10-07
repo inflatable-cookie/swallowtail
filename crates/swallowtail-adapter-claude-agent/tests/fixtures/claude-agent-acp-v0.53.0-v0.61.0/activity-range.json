@@ -1,6 +1,6 @@
 {
   "fixture_schema": 1,
-  "evidence_checked": "2026-08-18",
+  "evidence_checked": "2026-10-07",
   "axis": "claude-agent.acp-adapter",
   "transport": "acp_v1_stdio_ndjson",
   "wire_version": 1,
@@ -60,7 +60,7 @@
       "revision": "host-steering-option-and-form-marker-display"
     },
     {
-      "range": "0.66.0..=0.81.2",
+      "range": "0.66.0..=0.87.0",
       "introduced_by": "0.66.0",
       "tag_commit": "59a7e9367b3931a50178de4783cf6074b20060cd",
       "acp_sdk": "1.3.0",
@@ -238,6 +238,69 @@
       "classification": "qualified",
       "profile": "0.81.2-guarantee",
       "activity_delta": "native-subagent-and-exit-plan-unmapped"
+    },
+    {
+      "version": "0.82.0",
+      "published_at": "2026-09-28T14:06:22.315Z",
+      "tag_commit": "18de37624071b48e95aed9ec5382823e2d72cd39",
+      "source_sha256": "f6592f34d2bb0c247695049ce02daf6153b6faaf62e31adfd9bea91478a1da1b",
+      "classification": "qualified",
+      "profile": "0.87.0-guarantee",
+      "activity_delta": "partial-tool-call-update-fields-supported-by-existing-decoder"
+    },
+    {
+      "version": "0.83.0",
+      "published_at": "2026-09-28T16:01:42.778Z",
+      "tag_commit": "691328a9190d8729387149afad9bdb012450028b",
+      "source_sha256": "118db0410ec19acd855155da1c71e1a3cdf4926a0df7ddc82058d05c580015bc",
+      "classification": "qualified",
+      "profile": "0.87.0-guarantee",
+      "activity_delta": "selected-acp-v1-activity-contract-unchanged"
+    },
+    {
+      "version": "0.84.0",
+      "published_at": "2026-09-28T19:18:31.748Z",
+      "tag_commit": "bdb50ad984336e62dde1d41339f04071f6617085",
+      "source_sha256": "118db0410ec19acd855155da1c71e1a3cdf4926a0df7ddc82058d05c580015bc",
+      "classification": "qualified",
+      "profile": "0.87.0-guarantee",
+      "activity_delta": "selected-acp-v1-activity-contract-unchanged"
+    },
+    {
+      "version": "0.85.0",
+      "published_at": "2026-10-01T11:40:57.777Z",
+      "tag_commit": "c84845272fe3c55c1f97759f00ee48a1356fccae",
+      "source_sha256": "d5ef615bbfabf27397e24e22d45dacde98aa2f11f07ccb68d228c8e7a893a068",
+      "classification": "qualified",
+      "profile": "0.87.0-guarantee",
+      "activity_delta": "selected-acp-v1-activity-contract-unchanged"
+    },
+    {
+      "version": "0.85.1",
+      "published_at": "2026-10-02T09:00:37.749Z",
+      "tag_commit": "686c0c99b3b89217b74d1f5de8272e7c9ef1aab4",
+      "source_sha256": "644daa80157fcdfe7b806cbd23b56f75be4fed146a890aa5e219204e689aca13",
+      "classification": "qualified",
+      "profile": "0.87.0-guarantee",
+      "activity_delta": "cancel-handler-rework-keeps-selected-method"
+    },
+    {
+      "version": "0.86.0",
+      "published_at": "2026-10-05T13:18:45.542Z",
+      "tag_commit": "7b5c61a4ed55c03028ac60e1768bc57d92df24a4",
+      "source_sha256": "fc5b393d5b5f5b17dc796275581dd00eef60dd6b660c4892f067c19ac4565141",
+      "classification": "qualified",
+      "profile": "0.87.0-guarantee",
+      "activity_delta": "load-replay-rework-keeps-selected-response"
+    },
+    {
+      "version": "0.87.0",
+      "published_at": "2026-10-07T13:30:51.218Z",
+      "tag_commit": "b2dbc8f5a1b84f48cc1512d06f50a9d85d6e757b",
+      "source_sha256": "7d0d20d1c558c68fafeaf81f4d6f92f86ececb7c28b4679d0873b1b29b4ac8e5",
+      "classification": "qualified",
+      "profile": "0.87.0-guarantee",
+      "activity_delta": "failed-tool-call-update-maps-to-existing-status"
     }
   ],
   "emitted_updates": [

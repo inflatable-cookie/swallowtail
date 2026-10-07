@@ -1,0 +1,108 @@
+{
+  "axis": "claude-agent.acp-adapter",
+  "npm_package": "@agentclientprotocol/claude-agent-acp",
+  "not_claude_code": true,
+  "observed_at": "2026-10-07",
+  "official_channel_observation": {
+    "npm_latest": "0.87.0",
+    "npm_preview": "0.86.1-preview.3",
+    "acp_registry_id": "claude-acp",
+    "acp_registry_version": "0.87.0",
+    "github_repository": "https://github.com/agentclientprotocol/claude-agent-acp"
+  },
+  "official_current": {
+    "version": "0.87.0",
+    "published_at": "2026-10-07T13:30:51.218Z",
+    "npm_tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.87.0.tgz",
+    "npm_integrity": "sha512-ylCn0Y9otQxNPcUJtiHTBwhceXqDziwBw6hsJuXqlHUlKTYjnwkMVFm3RF/BQwN1+TZi4xSTgLDVaH44Av1Jww==",
+    "tarball_sha256": "4c21b1168754fdb5343cf4a4f1661ece28a5d518d3d7738a6d92988855dd4705",
+    "github_tag": "v0.87.0",
+    "github_commit": "b2dbc8f5a1b84f48cc1512d06f50a9d85d6e757b",
+    "npm_gitHead": "b2dbc8f5a1b84f48cc1512d06f50a9d85d6e757b",
+    "gitHead_matches_tag": true,
+    "acp_registry_version": "0.87.0",
+    "acp_sdk": "1.7.0",
+    "agent_sdk": "0.3.287",
+    "node_engine": ">=22",
+    "bin": "dist/index.js"
+  },
+  "previous_ceiling": "0.81.2",
+  "published_stable_hops_from_previous_ceiling": [
+    "0.82.0",
+    "0.83.0",
+    "0.84.0",
+    "0.85.0",
+    "0.85.1",
+    "0.86.0",
+    "0.87.0"
+  ],
+  "preview_only_patch_lines": [
+    "0.81.3",
+    "0.82.1",
+    "0.83.1",
+    "0.84.1",
+    "0.85.2",
+    "0.86.1"
+  ],
+  "stable_holes_preserved": [
+    "0.52.0",
+    "0.58.0"
+  ],
+  "claim_at_observation": {
+    "claim_id": "claude-agent.acp.window-2",
+    "baseline": "0.53.0",
+    "latest_qualified": "0.81.2",
+    "posture": "allow_unverified",
+    "excluded": [
+      "0.52.0",
+      "0.58.0"
+    ]
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "extend_behavior": "claude-agent.acp.initialize-meta-extensions-v7",
+    "extend_v7": "0.66.0..=0.87.0",
+    "raise_latest_qualified_to": "0.87.0",
+    "keep_baseline": "0.53.0",
+    "keep_claim_id": "claude-agent.acp.window-2",
+    "keep_exclusions": [
+      "0.52.0",
+      "0.58.0"
+    ],
+    "keep_allow_unverified": true,
+    "qualify_published_hops": [
+      "0.82.0",
+      "0.83.0",
+      "0.84.0",
+      "0.85.0",
+      "0.85.1",
+      "0.86.0",
+      "0.87.0"
+    ],
+    "later_stable_unverified": "0.88.0",
+    "prerelease_points_unqualified": true,
+    "new_milestone": false,
+    "consumer_visible_narrowing": false,
+    "new_public_mapped_operation": false
+  },
+  "separate_gates": {
+    "http_mcp_honouring_exact_points": [
+      "0.79.0",
+      "0.81.2"
+    ],
+    "http_mcp_honouring_extended": false,
+    "repo_local_npm_dependency_pin": "0.81.2",
+    "dependency_pin_changed": false
+  },
+  "inspection_boundary": {
+    "official_binary_executed": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false,
+    "credentials_used": false,
+    "package_installed": false,
+    "host_installed_or_updated": false,
+    "tarball_integrity_verified": true,
+    "source_review_static_only": true,
+    "tree_inventory": "dist-inventory.json"
+  }
+}

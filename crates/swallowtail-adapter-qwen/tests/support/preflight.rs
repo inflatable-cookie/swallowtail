@@ -24,6 +24,16 @@ pub fn plan() -> PreflightPlan {
     )
 }
 
+pub fn plan_at_package_version(version: &str) -> PreflightPlan {
+    bound_plan_with(
+        ExecutionHostId::new("host.local").expect("host id is valid"),
+        ConfiguredInstanceId::new("qwen-headless.local").expect("instance id is valid"),
+        InstanceTargetRef::new("qwen-executable").expect("target is valid"),
+        [qwen_package(version)],
+        capabilities(),
+    )
+}
+
 pub fn plan_for(topology: &swallowtail_testkit::ExecutionTopologyFixture) -> PreflightPlan {
     bound_plan(
         topology.execution_host_id().clone(),
@@ -121,6 +131,7 @@ fn bound_plan_with(
         HostServiceKind::Task,
         HostServiceKind::Process,
         HostServiceKind::Time,
+        HostServiceKind::WorkingResource,
     ];
     let operation = OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,

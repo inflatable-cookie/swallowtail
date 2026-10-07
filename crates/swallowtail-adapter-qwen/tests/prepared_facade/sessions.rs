@@ -1,7 +1,7 @@
 #[test]
 fn prepared_session_uses_only_the_exact_private_resume_id_on_later_turns() {
     let host_id = ExecutionHostId::new("fixture.qwen.interactive").expect("valid host");
-    let (discovery_process, _) = FakeProcessService::completed("0.19.11\n");
+    let (discovery_process, _) = FakeProcessService::completed("0.25.0\n");
     let (discovery_services, _) = host_services_for(
         host_id.clone(),
         discovery_process,
@@ -171,4 +171,89 @@ fn qwen_session_mismatch_fails_closed_without_starting_another_child() {
     );
     assert_eq!(states.len(), 2);
     assert_eq!(block_on(close_session(session, services)), CleanupOutcome::Clean);
+}
+
+#[test]
+fn qwen_session_blocks_reserved_ssh_workspace_before_starting_a_turn() {
+    use std::fs;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    static NEXT_FIXTURE: AtomicUsize = AtomicUsize::new(0);
+    let fixture_root = std::env::temp_dir().join(format!(
+        "swallowtail-qwen-session-{}-{}-{}",
+        std::process::id(),
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("system time is after the epoch")
+            .as_nanos(),
+        NEXT_FIXTURE.fetch_add(1, Ordering::SeqCst)
+    ));
+    let reserved_workspace = fixture_root
+        .join("qwen-home")
+        .join("ssh-workspaces")
+        .join("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
+        .join("workspace");
+    fs::create_dir_all(&reserved_workspace).expect("reserved fixture path is created");
+
+    let host_id = ExecutionHostId::new("fixture.qwen.ssh-guard").expect("valid host");
+    let (discovery_process, _) = FakeProcessService::completed("0.19.11\n");
+    let (discovery_services, _) = host_services_for(
+        host_id.clone(),
+        discovery_process,
+        Arc::new(PendingTimeService),
+    );
+    let prepared = block_on(prepare_qwen_headless(
+        preparation_input(host_id.clone()),
+        probe(),
+        discovery_services,
+    ))
+    .expect("Qwen prepares");
+    let profile = prepared
+        .prepare_session(QwenSessionProfileInput::new(
+            RequestId::new("qwen-ssh-guard-session").expect("valid request"),
+            QwenModelSelection::new(
+                ModelRouteId::new("qwen.ssh-guard.route").expect("valid route"),
+                ModelRouteRevision::new("1").expect("valid route revision"),
+                ProviderId::new("alibaba-modelstudio").expect("valid provider"),
+                ModelId::new("qwen3-coder-plus").expect("valid model"),
+            ),
+            WorkingResourceRef::new("qwen.ssh-guard.workspace").expect("valid resource"),
+        ))
+        .expect("Qwen session prepares");
+    let (process, process_state) = FakeProcessService::completed("");
+    let resource_service =
+        FakeWorkingResourceService::new(reserved_workspace.to_string_lossy().into_owned());
+    let resource_state = resource_service.state();
+    let (services, _) = host_services_with_resource(
+        host_id,
+        process,
+        Arc::new(PendingTimeService),
+        resource_service,
+    );
+    let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
+    let result = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("qwen-ssh-guard-turn").expect("valid turn"),
+            OperationContent::new("must not reach Qwen").expect("valid content"),
+        )
+        .with_deadline(Deadline::at(MonotonicInstant::from_ticks(1_000))),
+        services.clone(),
+    ));
+    let error = match result {
+        Ok(_) => panic!("reserved SSH workspace is rejected before process start"),
+        Err(error) => error,
+    };
+
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.qwen.headless.ssh_workspace_rejected"
+    );
+    assert!(!process_state.started());
+    assert_eq!(resource_state.releases(), 1);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
+    let _ = fs::remove_dir_all(fixture_root);
 }

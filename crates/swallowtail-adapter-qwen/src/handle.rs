@@ -1,3 +1,4 @@
+use crate::working_resource::{QwenWorkingResourceLease, combine_cleanup};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::{CancellationScope, RunRef, SafeDiagnostic};
@@ -55,6 +56,7 @@ pub(crate) struct QwenRunHandle {
     terminal: Option<BoxFuture<'static, TerminalOutcome>>,
     cancellation: Arc<QwenProcessCancellation>,
     task: Box<dyn JoinedTask>,
+    working_resource: QwenWorkingResourceLease,
 }
 
 impl QwenRunHandle {
@@ -65,6 +67,7 @@ impl QwenRunHandle {
         terminal: BoxFuture<'static, TerminalOutcome>,
         cancellation: Arc<QwenProcessCancellation>,
         task: Box<dyn JoinedTask>,
+        working_resource: QwenWorkingResourceLease,
     ) -> Self {
         Self {
             request_id,
@@ -73,6 +76,7 @@ impl QwenRunHandle {
             terminal: Some(terminal),
             cancellation,
             task,
+            working_resource,
         }
     }
 }
@@ -104,13 +108,14 @@ impl RunHandle for QwenRunHandle {
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            match self.task.join().await {
+            let task_cleanup = match self.task.join().await {
                 Ok(()) => CleanupOutcome::Clean,
                 Err(_) => CleanupOutcome::Failed(SafeDiagnostic::new(
                     "swallowtail.qwen.headless.task_join_failed",
                     "Qwen headless operation task could not be joined",
                 )),
-            }
+            };
+            combine_cleanup(task_cleanup, self.working_resource.release().await)
         })
     }
 }

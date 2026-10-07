@@ -8,6 +8,7 @@ use crate::command::{
 use crate::handle::QwenProcessCancellation;
 use crate::pump::{QwenPumpContext, cleanup_failed_start, pump_with_session};
 use crate::validation::failure;
+use crate::working_resource::QwenWorkingResourceLease;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::{CancellationScope, TurnRef};
@@ -66,6 +67,12 @@ impl QwenSessionHandle {
                     "Qwen turn scope was invalid",
                 )
             })?;
+        let working_resource_lease = QwenWorkingResourceLease::resolve(
+            &self.services,
+            scope.clone(),
+            self.working_resource.clone(),
+        )
+        .await?;
         let process_request =
             ProcessRequest::new(ExecutableRef::from_instance_target(&self.target))
                 .with_arguments(
@@ -103,6 +110,7 @@ impl QwenSessionHandle {
                     .lock()
                     .expect("Qwen session lock poisoned")
                     .usable = false;
+                let _ = working_resource_lease.release().await;
                 return Err(error);
             }
         };
@@ -115,6 +123,7 @@ impl QwenSessionHandle {
                         .expect("Qwen session lock poisoned")
                         .usable = false;
                     cleanup_failed_start(process.as_ref()).await;
+                    let _ = working_resource_lease.release().await;
                     return Err(error);
                 }
             };
@@ -123,13 +132,25 @@ impl QwenSessionHandle {
             .time()
             .expect("validated Qwen time")
             .wait_until(deadline);
-        let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
+        let (event_sender, event_stream) = match runtime_event_channel(EVENT_CAPACITY) {
+            Ok(channel) => channel,
+            Err(error) => {
+                self.state
+                    .lock()
+                    .expect("Qwen session lock poisoned")
+                    .usable = false;
+                cleanup_failed_start(process.as_ref()).await;
+                let _ = working_resource_lease.release().await;
+                return Err(error);
+            }
+        };
         if let Err(error) = event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started)) {
             self.state
                 .lock()
                 .expect("Qwen session lock poisoned")
                 .usable = false;
             cleanup_failed_start(process.as_ref()).await;
+            let _ = working_resource_lease.release().await;
             return Err(error);
         }
         let cancellation = Arc::new(QwenProcessCancellation::with_scope(
@@ -195,6 +216,7 @@ impl QwenSessionHandle {
                     .expect("Qwen session lock poisoned")
                     .usable = false;
                 cleanup_failed_start(process.as_ref()).await;
+                let _ = working_resource_lease.release().await;
                 return Err(error);
             }
         };
@@ -204,6 +226,7 @@ impl QwenSessionHandle {
             task: Some(task),
             cancellation: Arc::clone(&cancellation),
             terminal: Arc::clone(&terminal_flag),
+            working_resource: Some(working_resource_lease),
         });
         Ok(Box::new(QwenTurnHandle {
             turn_id,

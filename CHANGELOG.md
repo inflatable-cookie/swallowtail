@@ -6,6 +6,15 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
+  `0.25.0` on the existing `qwen-code.headless.v0.21.15-reasoning-control`
+  revision. Research 374 freezes all six published hops after `0.24.2`, with
+  complete npm tree inventories and per-hop mapped-source review. A private
+  read-only working-resource guard rejects the Qwen SSH workspace path before
+  run or turn process start while preserving local resource and delegated-auth
+  bindings. The `0.22.4` and `0.23.5` exclusions, Plan limit at `0.22.3`, and
+  exact `0.21.15` reasoning and budget controls remain unchanged; no provider
+  work or artifact execution occurred.
 - keep the `gemini-cli.acp` qualified ceiling at `0.61.0`. The current
   official stable `0.63.0` is not qualified: `0.62.0` adds existing ACP v1
   pending/failed tool-call updates, and `0.63.0` adds confirmation and real

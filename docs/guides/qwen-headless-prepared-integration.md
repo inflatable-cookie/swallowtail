@@ -20,13 +20,22 @@ evidence, and bounded discovery cancellation and deadline. Operations bind the
 task, process, time, credential, and read-only working-resource services in
 their immutable plan.
 
+Before each run or turn starts a Qwen child, the adapter resolves that exact
+read-only resource under the bound execution host and canonicalizes its
+filesystem path. It rejects the reserved
+`ssh-workspaces/<64-hex-connection-hash>/workspace` path before process start,
+including paths that canonicalize through aliases. This prevents Qwen's
+implicit SSH workspace selection. Ordinary local resources retain their
+working-resource reference, and the delegated environment reference passes to
+the child unchanged. This route does not support remote Qwen workspaces.
+
 Swallowtail does not install Qwen Code, search `PATH`, log in, choose a
 provider, model, credential, workspace, billing route, sandbox, or fallback.
 The delegated credential is an opaque scoped lease. Ambient harness
 configuration and `--safe-mode` do not prove host containment.
 
 Qualified versions are `0.19.11..=0.20.1`, `0.21.0..=0.21.14`, exact
-`0.21.15`, and `0.22.0..=0.24.2` excluding unpublished `0.22.4` and
+`0.21.15`, and `0.22.0..=0.25.0` excluding unpublished `0.22.4` and
 `0.23.5`; the 0.21+ segments have the image-only catalogue
 filter. Later stable releases may remain visible `UnverifiedNewer` under
 the latest qualified behavior. The unpublished `0.20.2`, `0.21.16`,
@@ -159,6 +168,9 @@ from ambient configuration or provider session state.
 For every turn, drain events and terminal concurrently, then close the turn.
 Active-turn interruption stops only that child. Closing the session joins
 local work and preserves any Qwen-owned state.
+
+Each turn applies the same read-only working-resource and reserved SSH
+workspace check before launching its child.
 
 `prepare_working_state_restoration` opens a fresh context-losing replacement
 after process loss. It does not recover the private session ID, transcript, or

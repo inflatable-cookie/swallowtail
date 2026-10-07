@@ -4,19 +4,24 @@ mod preflight;
 mod process;
 mod task;
 mod time;
+mod working_resource;
 
 #[allow(unused_imports)]
 pub use preflight::{
-    plan, plan_for, plan_request, plan_with_decoy_plan_axis, request, request_for, working_resource,
+    plan, plan_at_package_version, plan_for, plan_request, plan_with_decoy_plan_axis, request,
+    request_for, working_resource,
 };
 #[allow(unused_imports)]
 pub use process::{FakeProcessService, ProcessState, ScriptedProcessService};
 pub use task::TaskState;
 pub use time::{ImmediateTimeService, PendingTimeService};
+pub use working_resource::{
+    FakeWorkingResourceService, ResolvedWorkingResource, WorkingResourceState,
+};
 
 use std::sync::Arc;
 use swallowtail_core::ExecutionHostId;
-use swallowtail_runtime::{HostServices, ProcessService, TimeService};
+use swallowtail_runtime::{HostServices, ProcessService, TimeService, WorkingResourceService};
 
 pub fn host_services(process: Arc<dyn ProcessService>, time: Arc<dyn TimeService>) -> HostServices {
     host_services_for(
@@ -32,10 +37,20 @@ pub fn host_services_for(
     process: Arc<dyn ProcessService>,
     time: Arc<dyn TimeService>,
 ) -> (HostServices, Arc<TaskState>) {
+    host_services_with_resource(host, process, time, FakeWorkingResourceService::local())
+}
+
+pub fn host_services_with_resource(
+    host: ExecutionHostId,
+    process: Arc<dyn ProcessService>,
+    time: Arc<dyn TimeService>,
+    working_resource: Arc<dyn WorkingResourceService>,
+) -> (HostServices, Arc<TaskState>) {
     let task = Arc::new(TaskState::default());
     let services = HostServices::new(host)
         .with_task(Arc::new(task::ThreadTaskService::new(Arc::clone(&task))))
         .with_process(process)
-        .with_time(time);
+        .with_time(time)
+        .with_working_resource(working_resource);
     (services, task)
 }

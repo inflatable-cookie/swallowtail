@@ -62,6 +62,12 @@ section = "Research Records"
 "validate:current-codex-exec" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-codex --lib --test codex_0_161_0_identity --test exec_currentness --test prepared_profiles --test app_server -E 'binary(codex_0_161_0_identity) | binary(exec_currentness) | test(/^(exec_deadline|exec_run|exec_validation|exec_verbosity|installed_discovery|prepared_profiles|structured_run_parity|version_range)::/) | test(exec_runs_at_every_qualified_point) | test(exec_policy_mismatch_rejects_before_process_work) | test(parser_ignores_additive_web_search_results_and_keeps_query_progress)'"
 "validate:current-gemini-cli-headless" = "cargo nextest run --locked --profile sdk-usage -p swallowtail-adapter-gemini --lib --test headless_structured_run --test gemini_cli_0_63_0_delta_ledger -E 'binary(headless_structured_run) | binary(gemini_cli_0_63_0_delta_ledger) | test(published_headless_releases_are_qualified_and_later_stable_is_visible) | test(exact_gemini_corpus_projects_assistant_tools_and_excludes_private_bodies)'"
 "check:current-gemini-cli-headless" = "cargo check --locked -p swallowtail-adapter-gemini --all-targets"
+"validate:current-qwen-headless" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-qwen --lib --test compatibility_corpus --test conformance --test current_qwen_headless --test driver --test interactive_session_corpus --test prepared_facade --test protocol_fixtures --test qwen_code_0_24_2_identity --test qwen_code_0_25_0_identity --test qwen_headless_identity"
+"check:current-qwen-headless" = "cargo check --locked -p swallowtail-adapter-qwen --all-targets"
+"format:current-qwen-headless" = [
+  "cargo fmt -p swallowtail-adapter-qwen",
+  "cargo fmt -p swallowtail-adapter-qwen -- --check",
+]
 "format:sdk-registered-lifetime" = [
   "cargo fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent",
   "cargo fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent -- --check",

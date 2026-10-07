@@ -4,7 +4,10 @@ mod support;
 
 use futures_executor::block_on;
 use std::sync::Arc;
-use support::{FakeProcessService, PendingTimeService, ScriptedProcessService, host_services_for};
+use support::{
+    FakeProcessService, FakeWorkingResourceService, PendingTimeService, ScriptedProcessService,
+    host_services_for, host_services_with_resource,
+};
 use swallowtail_adapter_qwen::{
     QWEN_CODE_AXIS, QwenCatalogueProfileInput, QwenHeadlessBudgets, QwenHeadlessDriver,
     QwenModelSelection, QwenPreparationInput, QwenPreparationProbe, QwenRunProfileInput,

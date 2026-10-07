@@ -70,6 +70,27 @@ mutation, or release/tag action. The exec findings are retained in
 [Research 370](../../research/370-codex-exec-currentness-stop.md); app-server
 has a separate evidence record and qualification path.
 
+### Codex App-Server Protected AWS Directory
+
+Tom, 2026-10-07: "Approve", accepting Codex app-server `0.159.0`'s
+read-only protection for an existing top-level `.aws` directory inside the
+consumer-approved writable root. Document that exact version-specific
+workspace-write limitation; do not add a write exception or bypass the
+protection. Upstream protects AWS configuration because it can select
+executable credential helpers.
+
+Preserve earlier qualified behaviour and segments, read-only defaults, and
+the approved-root boundary. Qualification must prove ordinary root writes,
+protected `.aws` write denial, no access expansion, and honest failure
+projection, alongside the previously authorized startup/alias proofs and
+remaining per-hop semantic review. Name any necessary behaviour revision
+from that evidence. This accepts the specified consumer-visible limitation;
+it does not settle Contract 036 patch compatibility or waive any release
+gate. Further authority changes, consumer narrowing, public API/lifecycle
+changes, or live-proof needs still return for a separate ruling. The existing
+exclusions on live work, credentials, host/workflow mutation and release/tag
+actions remain in force.
+
 ## Native Sandbox Boundary
 
 Provider-native sandboxing is optional. A configured route may select

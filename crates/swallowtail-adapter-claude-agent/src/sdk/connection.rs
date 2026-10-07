@@ -16,6 +16,8 @@ use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
 use std::future::Future;
 use std::pin::Pin;
+#[cfg(test)]
+use std::sync::Barrier;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
@@ -47,6 +49,8 @@ pub(crate) struct SdkConnection {
     terminal_error: Mutex<Option<SafeDiagnostic>>,
     stderr_tail: Mutex<StderrTail>,
     exit: Mutex<Option<ProcessExit>>,
+    #[cfg(test)]
+    send_registration_gate: Mutex<Option<Arc<(Barrier, Barrier)>>>,
 }
 
 impl SdkConnection {
@@ -61,6 +65,8 @@ impl SdkConnection {
             terminal_error: Mutex::new(None),
             stderr_tail: Mutex::new(StderrTail::default()),
             exit: Mutex::new(None),
+            #[cfg(test)]
+            send_registration_gate: Mutex::new(None),
         })
     }
 
@@ -88,6 +94,16 @@ impl SdkConnection {
         if self.closed.load(Ordering::SeqCst) {
             return Err(self.closed_failure());
         }
+        #[cfg(test)]
+        if let Some(gate) = self
+            .send_registration_gate
+            .lock()
+            .expect("SDK test send gate lock poisoned")
+            .clone()
+        {
+            gate.0.wait();
+            gate.1.wait();
+        }
         if !self
             .used_ids
             .lock()
@@ -105,6 +121,12 @@ impl SdkConnection {
                 .pending
                 .lock()
                 .expect("SDK sidecar pending lock poisoned");
+            // The pump can close the connection after the fast check above.
+            // Recheck under the lock used to drain pending work, so a sender
+            // cannot register after that drain and wait forever.
+            if self.closed.load(Ordering::SeqCst) {
+                return Err(self.closed_failure());
+            }
             if pending.len() >= MAXIMUM_PENDING_COMMANDS {
                 return Err(failure(
                     "swallowtail.claude-agent.sdk.command_capacity_exceeded",
@@ -210,13 +232,37 @@ impl SdkConnection {
         *self.exit.lock().expect("SDK sidecar exit lock poisoned")
     }
 
-    /// Records the terminal transport failure before the closed flag so a
-    /// later command observes the exact cause instead of a generic close.
-    pub(crate) fn record_terminal_error(&self, error: &RuntimeFailure) {
-        *self
-            .terminal_error
+    /// Closes command admission and resolves every waiter when the pump can no
+    /// longer receive responses. The pending lock makes closure and draining
+    /// one linearized transition with command registration.
+    pub(crate) fn fail_connection(&self, error: &RuntimeFailure) {
+        let pending = {
+            let mut pending = self
+                .pending
+                .lock()
+                .expect("SDK sidecar pending lock poisoned");
+            *self
+                .terminal_error
+                .lock()
+                .expect("SDK sidecar terminal-error lock poisoned") =
+                Some(error.diagnostic().clone());
+            self.closed.store(true, Ordering::SeqCst);
+            std::mem::take(&mut *pending)
+        };
+        for (_, command) in pending {
+            command
+                .sender
+                .complete(Err(RuntimeFailure::new(error.diagnostic().clone())));
+        }
+        if let Some(turn) = self
+            .active_turn
             .lock()
-            .expect("SDK sidecar terminal-error lock poisoned") = Some(error.diagnostic().clone());
+            .expect("SDK sidecar active lock poisoned")
+            .take()
+            && !turn.is_finished()
+        {
+            turn.fail_connection(error.diagnostic().clone());
+        }
     }
 
     pub(crate) fn record_stderr(&self, bytes: &[u8]) {
@@ -258,6 +304,9 @@ impl SdkConnection {
         }
     }
 }
+
+#[cfg(test)]
+mod connection_tests;
 
 struct PendingCommand {
     command: ClaudeAgentSdkCommand,

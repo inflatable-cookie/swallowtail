@@ -6,6 +6,11 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- close the Claude Agent SDK command-admission race when its pump rejects an
+  unsolicited event or reaches EOF. The pump now closes admission and resolves
+  pending commands before escalation and process wait; command registration
+  rechecks under the pending lock, so close cannot wait for a response from a
+  stopped reader.
 - project one validated `claude-agent.sdk` main-loop usage snapshot per
   completed SDK result through `ProviderObservation::Usage`, including
   input/output and cache-read/cache-write token dimensions. Required counts

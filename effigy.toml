@@ -54,10 +54,20 @@ section = "Research Records"
   "cargo fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent -- --check",
 ]
 "check:sdk-registered-lifetime" = "cargo check --locked --all-targets -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent"
+"check:sdk-unsolicited-close" = "cargo check --locked --all-targets -p swallowtail-adapter-claude-agent"
+"lint:sdk-unsolicited-close" = "cargo clippy --locked --all-targets -p swallowtail-adapter-claude-agent -- -D warnings"
 "validate:sdk-registered-lifetime" = [
   "cargo nextest run --profile ci -p swallowtail-runtime --lib -E 'test(an_expired_call_never_reaches_the_dispatcher) | test(the_effective_call_deadline_takes_the_earliest_bound) | test(a_session_lease_ignores_its_elapsed_open_deadline) | test(an_explicit_session_lease_deadline_rejects_late_calls)'",
   "cargo nextest run --profile ci -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy -E 'test(mounted_proxy_expired_deadline_rejects_the_callable_frame_before_dispatch)'",
   "cargo nextest run --profile ci-process -p swallowtail-adapter-claude-agent --test claude_agent_sdk_driver -E 'test(registered_session_lease_survives_open_deadline_and_later_turn_calls) | test(open_declares_the_reserved_courier_and_round_trips_one_mediated_call) | test(cancellation_during_a_registered_call_joins_the_lease) | test(close_joins_the_registered_listener) | test(a_courier_that_cannot_exec_names_its_own_cause) | test(the_card_132_registered_open_request_yields_a_typed_failed_open_receipt)'",
+]
+"format:sdk-unsolicited-close" = [
+  "cargo fmt -p swallowtail-adapter-claude-agent",
+  "cargo fmt -p swallowtail-adapter-claude-agent -- --check",
+]
+"validate:sdk-unsolicited-close" = [
+  "cargo nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --lib -E 'test(a_pump_failure_between_command_check_and_registration_rejects_the_command)'",
+  "cargo nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test claude_agent_sdk_driver -E 'test(events_outside_an_active_turn_fail_closed) | test(open_streams_one_turn_and_closes_without_claiming_tree_completion) | test(closing_a_session_with_a_live_turn_resolves_it_instead_of_waiting_on_its_deadline) | test(dropping_close_after_one_pending_poll_hands_the_guardian_to_the_host) | test(close_joins_the_registered_listener)'",
 ]
 "validate:focused" = "bash scripts/validate-focused-packages.sh {args}"
 "validate:card116-mediated-stdio" = "cargo test -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy"

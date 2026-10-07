@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- project one validated `claude-agent.sdk` main-loop usage snapshot per
+  completed SDK result through `ProviderObservation::Usage`, including
+  input/output and cache-read/cache-write token dimensions. Required counts
+  are checked numeric safe integers; omitted cache dimensions stay absent;
+  cumulative `modelUsage`, cost and context fields are not projected.
+  Research 368 records the exact `0.3.284` declarations and the separate
+  `Query.getContextUsage` access path. The prepared sidecar does not expose
+  current context occupancy, which cannot be derived from token usage alone.
 - rebind the Claude Agent SDK exact one-point package/native tuple to official
   npm `@anthropic-ai/claude-agent-sdk` `0.3.284` carrying native `2.1.284`:
   Research 367 freezes all thirteen published hops after the `0.3.270` ceiling

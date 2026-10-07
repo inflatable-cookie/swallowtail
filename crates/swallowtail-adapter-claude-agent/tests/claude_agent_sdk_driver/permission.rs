@@ -68,6 +68,13 @@ fn the_default_profile_prepares_the_unchanged_read_only_plan() {
         prepared.plan().instance_policy_id().as_str(),
         "claude-agent-sdk-ambient-read"
     );
+    assert!(
+        prepared
+            .plan()
+            .requirements()
+            .capabilities()
+            .any(|required| required.capability() == Capability::UsageReporting)
+    );
 }
 
 #[test]

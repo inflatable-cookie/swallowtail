@@ -26,3 +26,10 @@ default-filter = "not (binary(claude_agent_sdk_sidecar_asset) | binary(claude_ag
 inherits = "default"
 slow-timeout = { period = "60s", terminate-after = 2 }
 default-filter = "binary(claude_agent_sdk_sidecar_asset) | binary(claude_agent_sdk_driver) | binary(sidecar_driver) | binary(claude_code_structured_run) | binary(local_process) | binary(watcher_service)"
+
+# Narrow provider-free Claude SDK usage projection proofs. Reuse the process
+# fixture timeout and forced termination, while allowing the decoder unit-test
+# binary selected by this focused task.
+[profile.sdk-usage]
+inherits = "ci-process"
+default-filter = "all()"

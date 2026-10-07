@@ -22,6 +22,7 @@ mod claude_agent_sdk_driver {
     pub mod resume;
     pub mod selected_skill;
     pub mod stalls;
+    pub mod usage;
 }
 
 use swallowtail_core::ExecutionHostId;

@@ -15,6 +15,13 @@ annotated Git tags from the canonical repository.
   exclusions, and independent app-server claim are unchanged. Research 370
   freezes npm/GitHub identities, every wrapper/platform file digest, and
   source-hop classifications. No downloaded artifact was executed.
+- record official Gemini CLI headless currentness through `0.63.0` without
+  advancing the existing `0.61.0` ceiling: Research 371 freezes published
+  hops `0.62.0` and `0.63.0` plus complete npm/source trees. The selected
+  `0.63.0` Plan Mode authority, noninteractive permission, and
+  tool-output/context changes need an operator ruling before qualification;
+  both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
+  and `0.59.1` exclusions remain in force.
 - project one validated `claude-agent.sdk` main-loop usage snapshot per
   completed SDK result through `ProviderObservation::Usage`, including
   input/output and cache-read/cache-write token dimensions. Required counts

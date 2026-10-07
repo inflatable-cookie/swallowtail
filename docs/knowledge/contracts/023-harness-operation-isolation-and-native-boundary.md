@@ -137,6 +137,30 @@ or required live proof return for a separate ruling. This authority includes
 no live providers, credentials, installation, host/workflow mutation, or
 release/tag action, and waives no release gate.
 
+## Claude Code Response-Only Linked Instructions
+
+Tom, 2026-10-07: "Accept" (decision
+`a9f8a8cd-ca40-46b1-8b3c-e197944171bd`). This accepts Claude Code
+`2.1.282` and newer releases' reduced symlink-linked project-instruction read
+set as a documented version-specific limit for `claude-code.response-only`
+and authorizes provider-free qualification under the existing public
+response-only contract.
+
+Preserve the upstream restriction. Do not restore blocked instruction reads
+or expand filesystem authority. Record the changed read boundary explicitly;
+use a private behaviour milestone where Contract 029 requires it, supported
+by frozen artifact evidence and selected-route proof before changing claims.
+Preserve older qualified segments and exclusions. The current guide's
+ambient instruction discovery is not a guarantee that every linked file is
+read, and provider flags are not host containment.
+
+Do not infer an unidentified internal resolver function from bundled hook
+symbols or treat release notes alone as conformance proof. Further narrowing,
+new public API/lifecycle needs, or required live proof return for a separate
+ruling. Assess Contract 036 patch compatibility independently. This ruling
+confers no qualification, live spend, credential, installation, host/workflow
+mutation, or release/tag authority and waives no evidence gate.
+
 ## Native Sandbox Boundary
 
 Provider-native sandboxing is optional. A configured route may select

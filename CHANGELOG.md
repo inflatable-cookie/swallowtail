@@ -6,6 +6,11 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- close the Claude Agent SDK command-admission race when its pump rejects an
+  unsolicited event or reaches EOF. The pump now closes admission and resolves
+  pending commands before escalation and process wait; command registration
+  rechecks under the pending lock, so close cannot wait for a response from a
+  stopped reader.
 - keep the `codex.exec` qualified ceiling at `0.155.1` after the currentness
   sweep to official `0.161.0`. `0.156.0` changes projectless thread-start
   trust behavior; `0.157.0` binds host-managed application network policy to

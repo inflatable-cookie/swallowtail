@@ -56,6 +56,15 @@ annotated Git tags from the canonical repository.
   379 freezes the release identities and complete source trees and names the
   ruling/adaptation needed before the claim can move again. No local runtime,
   provider prompt, model download, or host mutation occurred.
+- qualify `grok-build.acp` through current official npm `@xai-official/grok`
+  `1.0.46`. Research 340 freezes published stable hops `1.0.31..=1.0.41`
+  after the exact `1.0.30` catalogue ceiling; Research 382 freezes hops
+  `1.0.42..=1.0.46`, their wrapper and platform package trees, runtime digests,
+  and selected ACP surface inventories. Mapped wire and lifecycle evidence
+  stays on `grok-build.acp-v1.cached-token-model-4-6-v3`.
+  Published `1.0.47` through `1.0.49` remain `UnverifiedNewer`; alpha-tagged
+  `1.0.50` is excluded. The `1.0.30` catalogue, exact `1.0.4`/`1.0.5`
+  registered-tool courier, and HTTP MCP evidence remain independently bounded.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,
@@ -274,19 +283,6 @@ annotated Git tags from the canonical repository.
   directory. The nine `@builtin` plugins that `--safe-mode` keeps from
   `2.1.280` are disclosed in the Claude prepared guide. Watcher stays exact
   `2.1.251`. Research 348.
-- raise the Grok Build ACP executable window through the current official
-  npm `@xai-official/grok` `1.0.41`: Research 340 freezes all eleven
-  published stables `1.0.31..=1.0.41` after the `1.0.30` ceiling with
-  verified linux-x64 identity, a darwin-arm64 cross-check that reproduces
-  Research 314, a byte-identical selected-literal presence map, an
-  unchanged `grok-4.6` model document, the 62 mapped-core ACP modules, and
-  a complete shipped-file inventory. The `1.0.41` hop adds one unmapped
-  `subagent_handoff` module and moves no mapped surface. The claim keeps
-  baseline `0.2.114`, claim id `grok-build.acp.executable-window-2`,
-  behavior `grok-build.acp-v1.cached-token-model-4-6-v3`, and
-  `AllowUnverified`, and extends the maintained window `1.0.4..=1.0.41`.
-  The exact `1.0.30` catalogue claim and the `1.0.4`/`1.0.5`
-  registered-tool courier stay independently bounded.
 - freeze Claude Code `2.1.280` and `2.1.281` official artifacts and built-in
   hooks in Research 341. The `2.1.281` default-enabled `agents-md` hook can
   add project instructions despite `--safe-mode`; no selected writable

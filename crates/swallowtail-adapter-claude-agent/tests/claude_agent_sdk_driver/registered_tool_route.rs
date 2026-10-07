@@ -166,8 +166,12 @@ impl CourierClient {
     }
 
     fn call_tool(&self, name: &str, arguments: &str) -> String {
+        self.call_tool_with_id(3, name, arguments)
+    }
+
+    fn call_tool_with_id(&self, id: u64, name: &str, arguments: &str) -> String {
         let request = format!(
-            "{{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{arguments}}}}}"
+            "{{\"jsonrpc\":\"2.0\",\"id\":{id},\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{arguments}}}}}"
         );
         self.request(request.as_bytes())
     }
@@ -814,6 +818,51 @@ fn open_declares_the_reserved_courier_and_round_trips_one_mediated_call() {
         "dispatch is kernel-admitted: {:?}",
         admission.observed_phases()
     );
+    close_route(opened);
+}
+
+#[test]
+fn registered_session_lease_survives_open_deadline_and_later_turn_calls() {
+    let host = host_id("claude-agent-sdk.fixture.registered-session-lifetime");
+    let calls = Arc::new(AtomicUsize::new(0));
+    let opened = open_route(
+        host,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::new(ScriptedAdmissionPort::current()),
+    );
+    opened.courier.handshake();
+
+    // Model approval arriving after a delayed review. The server reached
+    // ready before this virtual-time step, but the session still owns it.
+    opened
+        .fixture
+        .advance_time_to_ticks(OPEN_DEADLINE_TICKS + 20_000_000_000);
+    let approved =
+        opened
+            .courier
+            .call_tool_with_id(3, &tool_id().to_string(), r#"{"path":"workspace/file"}"#);
+    assert!(
+        approved.contains("from-dispatcher"),
+        "approved call: {approved}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+
+    // A later turn reuses the same connected courier after more virtual time.
+    opened
+        .fixture
+        .advance_time_to_ticks(OPEN_DEADLINE_TICKS + 40_000_000_000);
+    let later_turn = opened.courier.call_tool_with_id(
+        4,
+        &tool_id().to_string(),
+        r#"{"path":"workspace/second-file"}"#,
+    );
+    assert!(
+        later_turn.contains("from-dispatcher"),
+        "later-turn call: {later_turn}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 2);
     close_route(opened);
 }
 

@@ -631,6 +631,13 @@ live verdicts. Close joins the single listener; Drop hands the lease to the
 guardian and does not join on the dropping thread. Omitting the binding keeps
 the previous open, including the empty `mcpServers` omission.
 
+For this route, the open deadline ends after acquisition and authenticated
+readiness. The registered-tool lease stays live for the SDK session and closes
+with that session; an explicit lease deadline, if supplied by a consumer,
+continues to bound calls. Each call still has its own caller deadline and the
+declared maximum call duration. Other operation-scoped bridge users continue to
+apply their operation deadline to calls.
+
 Resume and listing refuse a bound selection. The Contract 061 projection was
 qualified on the exact accepted Card 318 live tuple (Research 301): SDK
 `0.3.259`, native `2.1.259`, Node `22.23.2`, the `0.4.4` sidecar source tag,

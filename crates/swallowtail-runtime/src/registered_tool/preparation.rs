@@ -67,6 +67,8 @@ impl RegisteredToolPreparation {
     /// Validates identity, limits, port availability, and selected topology.
     ///
     /// Preparation opens nothing, starts no provider, and chooses no route.
+    /// The deadline bounds both opening and the live lease, preserving the
+    /// operation-scoped behavior of this entry point.
     pub fn prepare(
         &self,
         hosts: &HostServices,
@@ -74,6 +76,33 @@ impl RegisteredToolPreparation {
         operation_scope: ScopeId,
         turn: RuntimeTurnId,
         deadline: Deadline,
+    ) -> Result<PreparedRegisteredToolBinding, RuntimeFailure> {
+        self.prepare_with_lease_deadline(
+            hosts,
+            configured_identity,
+            operation_scope,
+            turn,
+            deadline,
+            Some(deadline),
+        )
+    }
+
+    /// Prepares a lease with an opening deadline and an optional lease deadline.
+    ///
+    /// The opening deadline always bounds acquisition and readiness. A lease
+    /// deadline additionally bounds every call; `None` keeps the lease live
+    /// until its owning session closes it. This is route plumbing for
+    /// integrations that own the session lifetime; consumer code should use
+    /// [`Self::prepare`].
+    #[doc(hidden)]
+    pub fn prepare_with_lease_deadline(
+        &self,
+        hosts: &HostServices,
+        configured_identity: ConfiguredInstanceId,
+        operation_scope: ScopeId,
+        turn: RuntimeTurnId,
+        open_deadline: Deadline,
+        lease_deadline: Option<Deadline>,
     ) -> Result<PreparedRegisteredToolBinding, RuntimeFailure> {
         if !Arc::ptr_eq(&self.snapshot, self.selection.snapshot())
             && self.snapshot.as_ref() != self.selection.snapshot().as_ref()
@@ -99,7 +128,8 @@ impl RegisteredToolPreparation {
             configured_identity,
             operation_scope,
             turn,
-            deadline,
+            open_deadline,
+            lease_deadline,
             selection: self.selection.clone(),
             admission: self.admission.clone(),
             effective_bounds,
@@ -117,7 +147,8 @@ pub struct PreparedRegisteredToolBinding {
     configured_identity: ConfiguredInstanceId,
     operation_scope: ScopeId,
     turn: RuntimeTurnId,
-    deadline: Deadline,
+    open_deadline: Deadline,
+    lease_deadline: Option<Deadline>,
     selection: RegisteredToolSelection,
     admission: ConsumerAdmissionBinding,
     effective_bounds: RegisteredToolBounds,
@@ -150,10 +181,10 @@ impl PreparedRegisteredToolBinding {
         &self.turn
     }
 
-    /// Returns the operation deadline bound at prepare.
+    /// Returns the opening deadline bound at prepare.
     #[must_use]
     pub const fn deadline(&self) -> Deadline {
-        self.deadline
+        self.open_deadline
     }
 
     /// Returns the immutable selection bound at prepare.
@@ -184,8 +215,9 @@ impl PreparedRegisteredToolBinding {
                 self.turn.clone(),
                 self.selection.clone(),
                 self.admission.clone(),
-                self.deadline,
+                self.open_deadline,
             )
+            .with_lease_deadline(self.lease_deadline)
             .with_consumer_limits(self.limits),
         )
     }
@@ -199,6 +231,8 @@ impl std::fmt::Debug for PreparedRegisteredToolBinding {
             .field("configured_identity", &self.configured_identity)
             .field("operation_scope", &self.operation_scope)
             .field("turn", &self.turn)
+            .field("open_deadline", &self.open_deadline)
+            .field("lease_deadline", &self.lease_deadline)
             .field("selection", &self.selection)
             .field("effective_bounds", &self.effective_bounds)
             .field("readiness", &self.readiness)

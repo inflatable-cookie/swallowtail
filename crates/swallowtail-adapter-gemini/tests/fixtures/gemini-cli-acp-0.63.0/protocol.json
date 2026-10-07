@@ -1,0 +1,95 @@
+{
+  "fixture_schema": 1,
+  "observed_at": "2026-10-07",
+  "official_version": "0.63.0",
+  "axis": "gemini-cli.acp-agent",
+  "acp_sdk": "@agentclientprotocol/sdk@0.16.1",
+  "wire_version": 1,
+  "selected_agent_methods": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel"
+  ],
+  "selected_client_methods": [
+    "session/update"
+  ],
+  "selected_callbacks": [
+    "fs.readTextFile",
+    "fs.writeTextFile"
+  ],
+  "permission_request": "reject-and-cancel; no approval response",
+  "profile_under_review": {
+    "approval_mode": "auto_edit",
+    "agent_mode_id": "autoEdit",
+    "bounded_host_text_write": true
+  },
+  "hop_observations": {
+    "0.61.0..0.62.0": {
+      "acp_session_delta": [
+        "send an existing ACP v1 tool_call with status pending before requesting permission",
+        "on cancellation send an existing ACP v1 tool_call_update with status failed"
+      ],
+      "wire_method_added": false,
+      "activity_status_values_added": false,
+      "provider_tool_display_values_changed": true,
+      "shell_background_tool_lifecycle_changed": true
+    },
+    "0.62.0..0.63.0": {
+      "session_new_lifecycle_changed": "reuse getChat when the client is already initialized; otherwise startChat",
+      "session_load_lifecycle_changed": "resolve stored session before config initialization; load remains unclaimed",
+      "permission_and_path_changes": [
+        ".gemini configuration modifications now require ASK_USER",
+        "command-prefix redirection without explicit allowRedirection now requires ASK_USER",
+        "non-interactive ASK_USER decisions become DENY",
+        "read-file sanitizes, resolves the real path, and revalidates access before reading",
+        ".env.* path filtering broadens except for .env.example, .env.sample, .env.template, and .env.dist"
+      ],
+      "provider_tool_output_changes": [
+        "large stored tool results are truncated at 64 KiB",
+        "MCP resource and web-search text is wrapped as untrusted context"
+      ]
+    }
+  },
+  "permission_boundary": {
+    "adapter_permission_outcome": "session/request_permission is observed, rejected, and cancelled; no consumer approval callback exists",
+    "consumer_visible_narrowing": true,
+    "affected_cases": [
+      "bounded-write operations to .gemini configuration paths that trigger the provider safety check",
+      "shell commands that match a prefix policy rule and use redirection without explicit allowRedirection",
+      "file reads whose resolved real path fails the provider's revalidation boundary"
+    ],
+    "decision": "stop currentness extension and request an operator ruling or a contract-compatible adaptation"
+  },
+  "http_mcp": {
+    "mapping_sources": [
+      "packages/cli/src/acp/acpRpcDispatcher.ts",
+      "packages/cli/src/acp/acpSessionManager.ts",
+      "packages/core/src/tools/mcp-client.ts"
+    ],
+    "http_maps_to": "httpUrl",
+    "sse_maps_to": "url",
+    "header_mapping": "name/value list -> Object.fromEntries -> MCPServerConfig.headers",
+    "live_honouring_research": "362",
+    "live_honouring_exact_version": "0.61.0",
+    "live_honouring_transferred": false
+  },
+  "claim": {
+    "claim_id": "gemini-cli.acp.window-1",
+    "behavior_revision": "gemini-cli.acp.v0.51.0",
+    "baseline": "0.51.0",
+    "latest_qualified": "0.61.0",
+    "published_excluded_interior_points": [
+      "0.56.1",
+      "0.59.1"
+    ],
+    "0.62.0": "unverified_newer",
+    "0.63.0": "unverified_newer",
+    "claim_changed": false,
+    "headless_claim_touched": false
+  },
+  "provider_prompt_sent": false,
+  "live_catalogue_or_session": false,
+  "credential_or_install_mutation": false,
+  "downloaded_artifacts_executed": false
+}

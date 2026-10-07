@@ -197,7 +197,7 @@ that evidence authoritative.
 ### Claude Agent ACP
 
 The qualified Claude Agent ACP `0.53.0..=0.87.0` range advertises independent
-close and delete capabilities at every supported point (Research 372). Exact
+close and delete capabilities at every supported point (Research 373). Exact
 tagged handler, test, ACP SDK, and Agent SDK evidence qualifies:
 
 - native close for one active session; it preserves persistent history

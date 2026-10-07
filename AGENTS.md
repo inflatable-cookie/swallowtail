@@ -56,9 +56,11 @@ agent platform's skill installer, then start a fresh agent context. Keep
 Swallowtail's selectors and guardrails here. The `effigy` executable is
 separate; if it is missing, use the [Effigy installation
 instructions](https://github.com/inflatable-cookie/effigy#install). Before
-admission-aware validation, check `command -v effigy` and
-`effigy admission status --json`; require `result.schema` to be
-`effigy.admission.status.v1`.
+validation, check `command -v effigy` and `effigy --version`. Run checks
+through Effigy selectors; heavy work routes through the Queue/Nucleus
+scheduler. A `scheduler_unreachable` result is a blocker, never permission
+for raw-tool or direct-execution fallback. Effigy v0.14 has no local
+admission query (Tom approved this preflight replacement, 2026-10-07).
 
 ## Product rules
 

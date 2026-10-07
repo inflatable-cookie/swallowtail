@@ -6,6 +6,13 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- keep the `gemini-cli.acp` qualified ceiling at `0.61.0`. The current
+  official stable `0.63.0` is not qualified: `0.62.0` adds existing ACP v1
+  pending/failed tool-call updates, and `0.63.0` adds confirmation and real
+  path checks that can stop bounded-write operations under the route's
+  reject-and-cancel permission policy. Research 372 records the exact
+  adaptation or ruling needed. HTTP MCP live honouring remains exact
+  `0.61.0`; the headless claim is untouched.
 - close the Claude Agent SDK command-admission race when its pump rejects an
   unsolicited event or reaches EOF. The pump now closes admission and resolves
   pending commands before escalation and process wait; command registration

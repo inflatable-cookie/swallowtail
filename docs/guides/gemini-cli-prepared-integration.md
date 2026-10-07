@@ -36,6 +36,14 @@ Plan Mode permission, authority, and tool-output/context ruling in Research
 371. Later stable releases may prepare as visible `UnverifiedNewer`; older and
 excluded releases do not prepare and newer releases gain no capability.
 
+The current official stable is `0.63.0`. `0.62.0` and `0.63.0` remain
+`UnverifiedNewer` for ACP pending the permission and file-boundary adaptation
+in [Research 372](../research/372-gemini-cli-0-63-0-acp-currentness-stop.md).
+At `0.63.0`, `.gemini` writes and some redirected shell commands can require
+provider confirmation, which this route rejects and cancels. The
+`0.61.0` bounded-write ceiling and the exact `0.61.0` HTTP MCP honouring
+evidence remain unchanged.
+
 ## Prepare The Installation
 
 Build `GeminiCliPreparationInput` with `GeminiCliPreparedDriver::Acp` or

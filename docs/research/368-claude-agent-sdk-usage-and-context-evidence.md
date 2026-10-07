@@ -82,10 +82,18 @@ The declaration details used here are:
   `value` and optional `resolvedModel`.
 - `Query.getContextUsage()` supports `summary` and `full` and returns the
   current context usage response described above.
-- `SDKUsageReport` is declared as an optional sibling property on an SDK user
-  message for synthetic `/usage` output. It is not the result's `usage`
-  snapshot. The sidecar does not map that experimental wrapper message;
-  `usage_report` remains an unknown private-wire event.
+- `SDKUsageReport` is declared as an optional sibling property on an
+  `SDKAssistantMessage` for synthetic `/usage` output. It is not either
+  result variant's `usage` snapshot. The sidecar does not map that experimental
+  wrapper message; `usage_report` remains an unknown private-wire event.
+
+The auditable declaration excerpts are retained beside the pinned identity in
+[`sdk-declarations.d.ts`](../../crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.284/sdk-declarations.d.ts)
+and their fixture index. The wrapper imports `BetaUsage` from
+`@anthropic-ai/sdk/resources/beta/messages/messages.mjs` and declares
+`NonNullableUsage` as its non-null mapped form. The wrapper's peer range is
+`>=0.93.0`, not an exact peer version; this evidence does not claim a wider
+frozen peer schema than the four runtime-validated fields the sidecar reads.
 
 The frozen Research 367 identity fixtures are unchanged. This record adds no
 version claim, model limit, provider observation, or live-provider evidence.

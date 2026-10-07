@@ -369,7 +369,7 @@ export function query({ prompt, options }) {
           return { value: { type: "assistant", message: { content: [] } }, done: false };
         }
         if (SCENARIO === "init-not-first") {
-          return { value: { type: "result", subtype: "success", is_error: false }, done: false };
+          return { value: resultMessage(), done: false };
         }
         return { value: initMessage(options), done: false };
       }
@@ -637,7 +637,7 @@ function bashSession(prompt, options, child) {
         command: `node -e "require('fs').writeFileSync('allowed.txt','allowed')" ${"x".repeat(180)}`,
         description: "d".repeat(180),
       });
-      yield { type: "result", subtype: "success", is_error: false };
+      yield resultMessage();
     }
   }
 
@@ -723,7 +723,7 @@ function editingSession(prompt, options, child) {
       // narrowing is visible: edits skip admission, reads never do.
       await admit("Read", { file_path: path.join(options.cwd, "read-me.txt") });
       await attemptWrite(index);
-      yield { type: "result", subtype: "success", is_error: false };
+      yield resultMessage();
     }
   }
 
@@ -847,7 +847,7 @@ function mcpSession(prompt, options, child) {
       void message;
       await admit("mcp__fixture__search", { query: "alpha" });
       await admit("mcp__fixture__echo", { text: "nope" });
-      yield { type: "result", subtype: "success", is_error: false };
+      yield resultMessage();
     }
   }
 

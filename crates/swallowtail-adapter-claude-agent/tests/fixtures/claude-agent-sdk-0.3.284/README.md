@@ -24,7 +24,11 @@ recorded and ignored. Research 367 is the identity record.
 - `sdk-declarations.d.ts` — reproducible excerpts of the pinned `sdk.d.ts`
   for `query()`, `AccountInfo`, `SpawnedProcess`, `SpawnOptions`,
   `CanUseTool`, `PermissionResult`, stdio MCP config, `McpServerStatus`,
-  `mcpServers`, `strictMcpConfig`, `mcpServerStatus()`, and `close()`.
+  `mcpServers`, `strictMcpConfig`, `mcpServerStatus()`, and `close()`, plus
+  `SDKResultSuccess`/`SDKResultError` usage fields, `ModelUsage`,
+  `Query.getContextUsage()`, its context response, model identifiers, and the
+  separate assistant-message `usage_report` field. The added excerpts cite the
+  exact declaration locations and the pinned `sdk.d.ts` digest.
 - `mcp-protocol.json` — the MCP protocol-version constants the pinned bundle
   carries, recovered from `package/sdk.mjs` by literal string search. The
   version list is identical to `0.3.270`; that equality is not live evidence.

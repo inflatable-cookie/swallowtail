@@ -289,3 +289,167 @@ export declare type McpServerStatus = {
      * After calling close(), no further messages will be received.
      */
     close(): void;
+
+/**
+ * Usage and context excerpts copied from official npm
+ * @anthropic-ai/claude-agent-sdk 0.3.284 package/sdk.d.ts. The source
+ * tarball SHA-256 is 4550e830246026133fc1802a2208dd0f3a785cae1eec83f261d114c33d797771;
+ * package/sdk.d.ts SHA-256 is 048ae2e6c796cc2aa3c423afaad59a08972cb48c271ffcc9847d910ff65f61b2.
+ */
+
+// package/sdk.d.ts:1-3 — BetaUsage comes from the declared peer package.
+import type { BetaUsage } from '@anthropic-ai/sdk/resources/beta/messages/messages.mjs';
+
+// ModelUsage — package/sdk.d.ts:1425-1450
+export declare type ModelUsage = {
+    inputTokens: number;
+    outputTokens: number;
+    /**
+     * Thinking tokens, already counted inside outputTokens. Counts only turns run on CLI versions that record this field: absent when none did, and partial for a resumed session that began on an older version.
+     */
+    thinkingTokens?: number;
+    cacheReadInputTokens: number;
+    cacheCreationInputTokens: number;
+    webSearchRequests: number;
+    costUSD: number;
+    contextWindow: number;
+    maxOutputTokens: number;
+    /**
+     * Canonical model id used for the pricing lookup (e.g. 'claude-opus-4-7'). May differ from the raw model string this entry is keyed by (provider-specific ids, aliases).
+     */
+    canonicalModel?: string;
+    /**
+     * API provider that served this model (e.g. 'firstParty', 'bedrock', 'vertex', 'foundry', 'anthropicAws', 'mantle', 'gateway').
+     */
+    provider?: string;
+    /**
+     * Which price table the most recent request for this model was priced at: Claude Code's built-in list prices ('list'), the organization's managed-settings modelPricing rates or multiplier ('managed'), or neither ('unknown' — no pricing row and no built-in price matched the model ID, so costUSD is a guess at the default model's rate). Overwritten per request like canonicalModel, so a consumer that differences the cumulative costUSD per turn gets that turn's basis. Absent until this process has priced a request for the model (e.g. right after --resume) and on builds that predate the field; treat as 'list'.
+     */
+    costBasis?: 'list' | 'managed' | 'unknown';
+};
+
+// NonNullableUsage — package/sdk.d.ts:1452-1454
+export declare type NonNullableUsage = {
+    [K in keyof BetaUsage]: NonNullable<BetaUsage[K]>;
+};
+
+// SDKResultError — package/sdk.d.ts:5620-5626
+/**
+ * MAIN AGENT LOOP ONLY — excludes Task subagent, sidechain, and auxiliary model calls, and is per-turn in streaming-input sessions. Prefer modelUsage for token/cost accounting.
+ */
+usage: NonNullableUsage;
+/**
+ * Per-model totals for every model call made through the query pipeline during this query() call — main loop, Task subagents, sidechains, and internal calls such as compaction and Workflow agents. Cumulative across turns in streaming-input sessions: each result carries the running total so far, so read the latest result rather than summing across results. Internal helper calls outside the query pipeline (e.g. the permission classifier, token-count probes) are excluded; crash/startup-error results may carry zeroed usage, a resumed or forked session continues from the totals its transcript saved, when it has them (so the first result already carries the earlier turns), and a mid-session /clear resets the running total. The correct field for token/cost accounting; treat it as an estimate, not a billing statement.
+ */
+modelUsage: Record<string, ModelUsage>;
+
+// SDKResultSuccess — package/sdk.d.ts:5707-5713; same field contracts as SDKResultError.
+/**
+ * MAIN AGENT LOOP ONLY — excludes Task subagent, sidechain, and auxiliary model calls, and is per-turn in streaming-input sessions. Prefer modelUsage for token/cost accounting.
+ */
+usage: NonNullableUsage;
+/**
+ * Per-model totals for every model call made through the query pipeline during this query() call — main loop, Task subagents, sidechains, and internal calls such as compaction and Workflow agents. Cumulative across turns in streaming-input sessions: each result carries the running total so far, so read the latest result rather than summing across results. Internal helper calls outside the query pipeline (e.g. the permission classifier, token-count probes) are excluded; crash/startup-error results may carry zeroed usage, a resumed or forked session continues from the totals its transcript saved, when it has them (so the first result already carries the earlier turns), and a mid-session /clear resets the running total. The correct field for token/cost accounting; treat it as an estimate, not a billing statement.
+ */
+modelUsage: Record<string, ModelUsage>;
+
+// Query.supportedModels and Query.getContextUsage — package/sdk.d.ts:2995-2999, 3012-3024
+supportedModels(): Promise<ModelInfo[]>;
+/**
+ * Get a breakdown of current context window usage by category
+ * (system prompt, tools, messages, MCP tools, memory files, etc.).
+ *
+ * `detail: 'full'` counts each category with the token-count API;
+ * `'summary'` answers from the last response's usage and local estimates
+ * without the per-category token-count calls. Defaults to `'full'`.
+ *
+ * @returns Context usage breakdown including token counts per category and total usage
+ */
+getContextUsage(opts?: {
+    detail?: 'summary' | 'full';
+}): Promise<SDKControlGetContextUsageResponse>;
+
+// SDKControlGetContextUsageResponse — package/sdk.d.ts:3931-3947, 3956 (selected fields)
+export declare type SDKControlGetContextUsageResponse = {
+    categories: {
+        name: string;
+        tokens: number;
+        color: string;
+        isDeferred?: boolean;
+        /**
+         * What the row is, the same classification the /context result's context_usage rows carry: 'used' content occupies the window; 'free' is the remaining window; 'buffer' is the compaction reserve; 'deferred' rows are out-of-window tool schemas. Classify on this, never on the English name.
+         */
+        kind: 'used' | 'free' | 'buffer' | 'deferred';
+    }[];
+    totalTokens: number;
+    maxTokens: number;
+    rawMaxTokens: number;
+    percentage: number;
+    // The source declaration also includes grid, tool, memory, agent and other breakdown fields.
+    model: string;
+};
+
+// ModelInfo — package/sdk.d.ts:1384-1423; no context-window field is declared.
+export declare type ModelInfo = {
+    /**
+     * Model identifier to use in API calls
+     */
+    value: string;
+    /**
+     * Canonical wire model id this row's `value` resolves to (e.g. 'sonnet' → 'claude-sonnet-5'). Lets hosts match a persisted explicit id against the alias row that covers it.
+     */
+    resolvedModel?: string;
+    /**
+     * Human-readable display name
+     */
+    displayName: string;
+    /**
+     * Description of the model's capabilities
+     */
+    description: string;
+    /**
+     * Whether this model supports effort levels
+     */
+    supportsEffort?: boolean;
+    /**
+     * Available effort levels for this model
+     */
+    supportedEffortLevels?: ('low' | 'medium' | 'high' | 'xhigh' | 'max')[];
+    /**
+     * Whether this model supports adaptive thinking (Claude decides when and how much to think)
+     */
+    supportsAdaptiveThinking?: boolean;
+    /**
+     * Whether this model supports fast mode
+     */
+    supportsFastMode?: boolean;
+    /**
+     * Whether this model supports auto mode
+     */
+    supportsAutoMode?: boolean;
+};
+
+// SDKAssistantMessage — package/sdk.d.ts:3654-3656
+/**
+ * Structured twin of the /usage report, carried on the synthetic assistant message that delivers its text: the session totals, the plan's usage rows and extra-usage spend, for remote clients that render a card from data. Present only on /usage results from CLIs new enough to attach it and from claude.ai-subscriber sessions; the text in message.content remains the canonical fallback. Wrapper-level sibling — never inside `message.content` — so it is not replayed to the model.
+ */
+usage_report?: SDKUsageReport;
+
+// SDKUsageReport — package/sdk.d.ts:6071-6085 (session excerpt)
+/**
+ * Structured twin of a /usage result, carried beside its text: the session's totals, the plan's usage rows as the server sent them and the extra-usage spend, and nothing else from the usage body (the get_usage control reply carries the rest). Experimental — the shape may change.
+ */
+export declare type SDKUsageReport = {
+    /**
+     * Cost and usage accumulated by the current session.
+     */
+    session: {
+        total_cost_usd: number;
+        total_api_duration_ms: number;
+        total_duration_ms: number;
+        total_lines_added: number;
+        total_lines_removed: number;
+        model_usage: Record<string, ModelUsage>;
+    };
+    // Plan rate-limit rows and extra-usage spend are omitted from this excerpt.
+};

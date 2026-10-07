@@ -1,0 +1,596 @@
+{
+  "task": "swallowtail#095",
+  "axis": "codex.cli",
+  "package": "@openai/codex",
+  "officialChannels": {
+    "npmLatest": "0.161.0",
+    "githubLatestStableTag": "rust-v0.161.0",
+    "githubLatestStablePublishedAt": "2026-10-07T15:58:45Z",
+    "observedOn": "2026-10-07",
+    "prereleaseIgnored": "0.162.0-alpha.18"
+  },
+  "qualifiedBaseline": "0.155.1",
+  "stablePoints": [
+    "0.155.1",
+    "0.156.0",
+    "0.156.1",
+    "0.157.0",
+    "0.157.1",
+    "0.158.0",
+    "0.159.0",
+    "0.159.1",
+    "0.159.2",
+    "0.159.3",
+    "0.160.0",
+    "0.160.1",
+    "0.161.0"
+  ],
+  "sourceTags": [
+    {
+      "version": "0.155.1",
+      "tag": "rust-v0.155.1",
+      "publishedAt": "2026-09-18T20:03:04Z",
+      "commit": "be2951ea34f0d295ed0becf97079f92fa5f6950e",
+      "tagObject": "4e21628f9ec9ee656650cd2b62ef92225725b5ac"
+    },
+    {
+      "version": "0.156.0",
+      "tag": "rust-v0.156.0",
+      "publishedAt": "2026-09-22T19:51:01Z",
+      "commit": "fe74a774532af67b5a4a3dec03ce9469e17f89af",
+      "tagObject": "476ac1aae33835e6e4c2d311c254b9b6ce9b2f4c"
+    },
+    {
+      "version": "0.156.1",
+      "tag": "rust-v0.156.1",
+      "publishedAt": "2026-09-23T02:41:36Z",
+      "commit": "b412ff32c417f855c2b2d1581b77058eed87c84b",
+      "tagObject": "81e8e29b2956dfe9b092c63953a9ed282781e77c"
+    },
+    {
+      "version": "0.157.0",
+      "tag": "rust-v0.157.0",
+      "publishedAt": "2026-09-25T02:31:06Z",
+      "commit": "00c972ed5d6ff6499317fd41b7f23605b8e6850d",
+      "tagObject": "ac21625ddf7f9dd5f34b2802212cf20295fdff95"
+    },
+    {
+      "version": "0.157.1",
+      "tag": "rust-v0.157.1",
+      "publishedAt": "2026-09-26T01:02:31Z",
+      "commit": "36650394c5b38c2990ccf2a3457165ca3e9d9726",
+      "tagObject": "ac0e23e5232692b95268583c8278c50b8c436d2b"
+    },
+    {
+      "version": "0.158.0",
+      "tag": "rust-v0.158.0",
+      "publishedAt": "2026-09-28T05:07:23Z",
+      "commit": "064c6b8c737f5b41d171fdda80bd9ef10ad06eb3",
+      "tagObject": "54e1bd264b4122fe9471ee7d54c4d021a76bb8ff"
+    },
+    {
+      "version": "0.159.0",
+      "tag": "rust-v0.159.0",
+      "publishedAt": "2026-09-29T08:05:42Z",
+      "commit": "687a119f0fcaace47e1f1abcc77cec6c813fd6da",
+      "tagObject": "377f7f557a6bdea0f3a2d26d4d899c66db4789d0"
+    },
+    {
+      "version": "0.159.1",
+      "tag": "rust-v0.159.1",
+      "publishedAt": "2026-09-29T20:32:34Z",
+      "commit": "8e68a98ef03cdde76d2e6800791ebdf1b3b95b24",
+      "tagObject": "dd48cd3d094a133f2781ab10343dc665a37e5bc0"
+    },
+    {
+      "version": "0.159.2",
+      "tag": "rust-v0.159.2",
+      "publishedAt": "2026-09-29T23:57:16Z",
+      "commit": "ff6aec96948b70d94983af2641a6b67c94faeff5",
+      "tagObject": "8b9fa496bbf2c47aebd62e85a080b9a522a455b5"
+    },
+    {
+      "version": "0.159.3",
+      "tag": "rust-v0.159.3",
+      "publishedAt": "2026-09-30T22:57:34Z",
+      "commit": "01fc69f4026735edfdf6789820549727a4867b11",
+      "tagObject": "8e46774a94a745ffdf676bd7a8aa36466bbd4f99"
+    },
+    {
+      "version": "0.160.0",
+      "tag": "rust-v0.160.0",
+      "publishedAt": "2026-10-01T20:19:13Z",
+      "commit": "a956835d020762cb2b570053af06f643a11c0ecc",
+      "tagObject": "79b1b666f2e8551f8abbbca34957227f67f3f553"
+    },
+    {
+      "version": "0.160.1",
+      "tag": "rust-v0.160.1",
+      "publishedAt": "2026-10-05T18:29:37Z",
+      "commit": "d27764b82f7118f674371e6d6e76271d9d606edb",
+      "tagObject": "c3e23d4c4385619ecec78408766e46b7fa7dd9ad"
+    },
+    {
+      "version": "0.161.0",
+      "tag": "rust-v0.161.0",
+      "publishedAt": "2026-10-07T15:58:45Z",
+      "commit": "979011409de0a60b52f179721948e65531d26144",
+      "tagObject": "7e21416b38834816c224ea0dfd135c3de94b2f15"
+    }
+  ],
+  "artifacts": [
+    {
+      "version": "0.155.1",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.155.1",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.155.1.tgz",
+          "integrity": "sha512-02fAAGyBtlA1zPjEo3kTj/bOSYbPz5DvjLwRZJdV7weFFEDzNFOMjQGmZ/+5CuirYV0hE+AZTrnjzwXYU4AdAQ==",
+          "sha256": "fded5b71797aaaf9b1c3229c0e2747b53b39887ef25f36ec7196f6d511db1a66",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.155.1-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.155.1-darwin-arm64.tgz",
+          "integrity": "sha512-cYxzGcRRoBrncyHlR8ed4yXwcoVJZC1pipGULSyJkGFKXJw/Uu57BklvzayuAptjJIipamnOk32CfUkk1F0bLw==",
+          "sha256": "93cc218b25b71c8da3edb50a013fbd22acf8f39058fb64083fefff638a084976",
+          "files": 44,
+          "unpackedBytes": 317014114
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.155.1-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.155.1-linux-x64.tgz",
+          "integrity": "sha512-atv3HF0mubqB0J/XkQ2JopqKzXJ+/7aQtTB2MkJ9MrraujMIz8zbCCLylLkN3PzpVGTJzzQFN/wD1oq8oJPJKg==",
+          "sha256": "f110cccdd50b0be8130b84f45b3144ea775c233f1c8bd8226da6ee719d63d206",
+          "files": 46,
+          "unpackedBytes": 370485590
+        }
+      }
+    },
+    {
+      "version": "0.156.0",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.156.0",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.156.0.tgz",
+          "integrity": "sha512-47dfpl2e8F47baSQTE+QaWzF/kKoOeR9YQ2fIBdRGzZZP2/QZ6D0uwLY2ZamS8ypov4UFtg92jZh8m+w65bsGg==",
+          "sha256": "5ce491a5ba3c0c2489594dfb6807c7c0b51166882e080772659f06f0c1fdc5d6",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.156.0-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.156.0-darwin-arm64.tgz",
+          "integrity": "sha512-43/9bryLjRA+g7z1AGeFS8AQiChmG52nIhzMkxjNAXcxEBMVsA88YGBosk0ndThjgTGB42vK82BQV3DR6OBsGQ==",
+          "sha256": "c3febbf01bacd7dfe4746b442123e54fa4988d0e8ce2cc632202754232f5ecd3",
+          "files": 44,
+          "unpackedBytes": 326229438
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.156.0-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.156.0-linux-x64.tgz",
+          "integrity": "sha512-/PX399ISB715skgBBOtOX5aqLxmPQhYC7wDasZnAJhRrtzt3qgs6kjSnimN9T8OFKv4LDAp+uJdN896tQYaTrA==",
+          "sha256": "e16d3ee5f51562cdb83a523ac5f2b8929fe4693c744e1484d478112f52e3a239",
+          "files": 46,
+          "unpackedBytes": 386833426
+        }
+      }
+    },
+    {
+      "version": "0.156.1",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.156.1",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.156.1.tgz",
+          "integrity": "sha512-nI1iVl/n2SO2lSvlwEsJx63zdSI4C4Me2gR7AG0OWMJiGSakz2tY2hx43E39Zq5aEoeB5bZjJXzp5Sqhog6vyA==",
+          "sha256": "08f128dd29bc659a62c16110dc4e8acad6858ba884a9b420631fbfa270b941d1",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.156.1-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.156.1-darwin-arm64.tgz",
+          "integrity": "sha512-Jg6wbdV+wmMZczhwE74GSxOYEZlViKXn6KyCw/yfrz3PAKFD14xljuPopmdhWC1+8IKU2WdN5fdmXNPt2q4HPA==",
+          "sha256": "89823dd350364d5e0cb8a74c1ea585ec2b7307931d9dc0ac4195b8bc8f9e2dfa",
+          "files": 44,
+          "unpackedBytes": 326379086
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.156.1-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.156.1-linux-x64.tgz",
+          "integrity": "sha512-2ePo0wgOcnONKsuzp8vBjOmNY+IdsKaouaDDIdiKq9HOWNuV/GI22OeXft2A/1GaoL71ictO0/pLAsCEnQ6wew==",
+          "sha256": "ded9840babeb511e79738ae708044ae489fbce50db7002b943b3195cf5ae6a25",
+          "files": 46,
+          "unpackedBytes": 386911210
+        }
+      }
+    },
+    {
+      "version": "0.157.0",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.157.0",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.157.0.tgz",
+          "integrity": "sha512-st1R2MhP3ndngOqj2SVh1qk6ED1lpgtlDxipDUyxlKfbsna0imwU2FdTnCjohFQpVh4bR5D5m1hA05AuW2v8Xg==",
+          "sha256": "f15a756cb568359327c47afcb5a6c5a5ce03215a96bbb284eef9e0ebd991f214",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.157.0-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.157.0-darwin-arm64.tgz",
+          "integrity": "sha512-mcaLbR+tTizMr7nzxBscNfPpGrdxmsyyDqXnpPPd2419YXorDiLGpF5QmtA29gUUFg9ppjhZjM854R4tXNHzVQ==",
+          "sha256": "8ed1854086533492068d2c103e4b13c627b0def7716d038874f05474cb4fc718",
+          "files": 44,
+          "unpackedBytes": 328983694
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.157.0-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.157.0-linux-x64.tgz",
+          "integrity": "sha512-3TEPslRaNmlgJST5xMJJ9ZWXW1hr4RlVEpF0tO4NULNGj4b5naWlHa6PlSRiDpnMz322aJkz0uvyyKqc37rLJQ==",
+          "sha256": "8cc62b1a3b0d7fd2c3227c2b82a8c442bedff52a7b30b69850686e6f5129abd3",
+          "files": 46,
+          "unpackedBytes": 391167018
+        }
+      }
+    },
+    {
+      "version": "0.157.1",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.157.1",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.157.1.tgz",
+          "integrity": "sha512-qJ/UZ0bmYP+/Umav1L9WpmtMYeA6q1+4r4qILSYOKQZhP7WRdjyTQWz3O0dTImZ9RT7AazZa85D87xRDHogcHw==",
+          "sha256": "813e2a944f4474b7e1826d9ce8bf696ad8d80c68f43f7a7067beec51fa8f5b73",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.157.1-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.157.1-darwin-arm64.tgz",
+          "integrity": "sha512-62/e4TZ34z93KK3FYIHmo/K88aH0JRPA8x7SAVBdK4iG9f9HPO2tsDrJcmOj9z6DrFpMvPEVymomCbYpqN+ylQ==",
+          "sha256": "c5196640f2e5e1c9a4e1a1c1247ad32f0cbe6b19e7063db39d1204306344b283",
+          "files": 44,
+          "unpackedBytes": 328952270
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.157.1-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.157.1-linux-x64.tgz",
+          "integrity": "sha512-Eac8XlC0nCXSeUjDU9l8yLJ6P9evv1mO+AnvILoNwlegBC7B3AVXqJ05QcMhQX7RcJ3Lk2618ykCb2X2ui8VAQ==",
+          "sha256": "7f12677740f439fe4884c7031d9d703e571cecf5ea9fa3a05abd1bbccc2162a8",
+          "files": 46,
+          "unpackedBytes": 391130194
+        }
+      }
+    },
+    {
+      "version": "0.158.0",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.158.0",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.158.0.tgz",
+          "integrity": "sha512-GBhcKpQmVLsCtEP5mUf6WFye6QQgTKotwsXrYPM0GFmEsoOSahik6hkf2FHabX9kZBl0Y0/PQowLu7uYMKT8dg==",
+          "sha256": "0f20acf17c7985b76510bf7915cf7729fbe2ff52f14b07a827843d63bc36b81b",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.158.0-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.158.0-darwin-arm64.tgz",
+          "integrity": "sha512-0OKSjlWY1j4Ld1fT87QttNw3Y2SthcXi4GcrWSHjleZg1n86eG3+shJl4Pv+siUmsBJhWlNmm6rRO4Yv8ZyQLg==",
+          "sha256": "7849f8aa87c3956823cef082d83b538980a0ced6e468cca4f39c1cf606ea8dae",
+          "files": 44,
+          "unpackedBytes": 331047086
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.158.0-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.158.0-linux-x64.tgz",
+          "integrity": "sha512-mY12GZPM8TuOWVGxCyNV2NSA8t1uIupm9Nhu9VeQVEvvxBKN08U8bLH+vn7oISUHZPC8bwhROIbo/ZUxqV6XMg==",
+          "sha256": "3fe84106aaf2fbfc13299068510d34b3d0157eeb9af4b37be8cf5416f485a6bb",
+          "files": 46,
+          "unpackedBytes": 444132922
+        }
+      }
+    },
+    {
+      "version": "0.159.0",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.0",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.0.tgz",
+          "integrity": "sha512-nQWxAkzn+Rhr8TgtIhVhSlqvCytrMoqe+P8xoo4xxhCIBnzOfRs6SEmkMJfTPjkU3BYlsplwDOY2dbSp4+514g==",
+          "sha256": "3d4b2632edebabe1d8819ed35b1c9272cb24d49e1946b24f0074ad5c98bc36d8",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.0-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.0-darwin-arm64.tgz",
+          "integrity": "sha512-D1x+5n2y0TE43ERJs3CbBDRPLQl968hpqsInOwYNhfnTOTT53McpfFa6+VfPWwmPi0zW0aJ0C97K+6MhNHYe6A==",
+          "sha256": "36034ef21c4fd7992e3ca4d041dff869dbf8c5d742b68e5c9fad0c3636cf61ce",
+          "files": 44,
+          "unpackedBytes": 331552702
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.0-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.0-linux-x64.tgz",
+          "integrity": "sha512-7ks+EeQjX33wfJXbggseyF0CJRFVgzDHA6BzC7mJjFsJKmdAuOFWMFeMeZe8vL/G6xEpL29wOdwR85sK49F0iA==",
+          "sha256": "27a80e1904c7337fe65d94f881779ba7700f42a8a87f3d06352b543b0115df98",
+          "files": 46,
+          "unpackedBytes": 444292698
+        }
+      }
+    },
+    {
+      "version": "0.159.1",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.1",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.1.tgz",
+          "integrity": "sha512-tCAmvOk40hcmVDefwV4Jae/i5eAMrl7qUCRYUq1uYiQGZoIIVSCa/b3Fs+0uXG46p4jaG2DzqhG/RIunvnOa1g==",
+          "sha256": "ee2532f6abd38c08a7358c6a22fb4d5d58fe29f81812e11fe1842a0564e88016",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.1-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.1-darwin-arm64.tgz",
+          "integrity": "sha512-asbXtXQerzPO8CL3t/5++Whj00k+NkbE4ngT56pCwx2/5JJVCI0glEjCECGK8rA0v4zb94EAZonxAcfOd+/1MA==",
+          "sha256": "1dd7f5612d51b8c5347ad0f950f5ccc9cd5fdaf1de57c436616c01d21c4af259",
+          "files": 44,
+          "unpackedBytes": 331668142
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.1-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.1-linux-x64.tgz",
+          "integrity": "sha512-NmXTe4LDsShovyGYH5Q5AP2S5kRtY6wEWkAMGm28pYGQsjUd1MMSPBK7obnepYgaqX774jDF0w8jpDPmOLSx3w==",
+          "sha256": "9d6476abf421afe566c7afade3bb3c4aa1586c6f673c6a9e346b625e6b19561f",
+          "files": 46,
+          "unpackedBytes": 444427906
+        }
+      }
+    },
+    {
+      "version": "0.159.2",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.2",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.2.tgz",
+          "integrity": "sha512-SE13C3nZCYoVL569BdegoOl6vwjb7o2sXOo7ivwVzaVoY0cswwi0/6pIE0TyO/C0vIkQh3jslExitET7PBTfIg==",
+          "sha256": "cf1e5d7b6e317a4a1d36dbff2ebd9b3cf048ac98d06fcb6682c57248e023cad2",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.2-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.2-darwin-arm64.tgz",
+          "integrity": "sha512-7SPaPFU0tdqapQ5VEgrF+wb+p9dxfWfLMXMKZMRKoWPn/tLMajlMjYBBnu8o6VtaVH2DHQ6kpnp5TMkv5bqvrg==",
+          "sha256": "4e491428fef0a676f8ed1c6b392183c24793940c958fa1e7bd99dbcb982d7cc6",
+          "files": 44,
+          "unpackedBytes": 331570126
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.2-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.2-linux-x64.tgz",
+          "integrity": "sha512-RrCZ1X52wpa1lOsXtCtSyhjOFdQPh7LH5Ccv8HsKmd/2UXbUwxXFqWXFK3JzatquUNGtW/TLox5Y7qVOGkV0/Q==",
+          "sha256": "84a6b35fb45bdcb94cef9fcb329438045a8911f53876cc9a9a7e6f9bb1382eba",
+          "files": 46,
+          "unpackedBytes": 444337794
+        }
+      }
+    },
+    {
+      "version": "0.159.3",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.3",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.3.tgz",
+          "integrity": "sha512-hg4nlqCwRb87GocxNnHvz4sadOrdJ71mO0a4CUYWXjAozJe2gtuAdRFldKGSQXw9m7SgR4ydis12KDVVPgzDkQ==",
+          "sha256": "31d5e584e93e118dd37dbb8bc89ddbbe9998178fc437dc0b9d0f7cc72ef0cf79",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.3-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.3-darwin-arm64.tgz",
+          "integrity": "sha512-aI4UY14YURYxJxnRK+AE4QU+aek0mgtyyo7Rw9rNbCQUYETRQ0NYdJzU9ytljERGpPlht3dHHI1u4NhqHoDJDQ==",
+          "sha256": "b2838cc82cfd0a9253bab7abbadec09c71fba46b34742a1338b30ca255f41237",
+          "files": 44,
+          "unpackedBytes": 331770462
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.159.3-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.159.3-linux-x64.tgz",
+          "integrity": "sha512-xlHydfOksnNt/qz4BEVFvjMWunweaVSNtha/DkVUwWZnVZxbqiJwsXSl2iZDk04b6k/g0OI7jU06XqzHB2s5og==",
+          "sha256": "0719027cfe326e248971a2dff0a391c3532a3d838b4e3cc660bf93b2a606d2ce",
+          "files": 46,
+          "unpackedBytes": 444673794
+        }
+      }
+    },
+    {
+      "version": "0.160.0",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.160.0",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.160.0.tgz",
+          "integrity": "sha512-kEtVGzjRAYAMOwJxN39bGcna7LT3IDQgq64NNJ/dDTfu4OzZaocJcyNb5/gGJ/IVF/Vj7oK7E2m3nmTan7lpjg==",
+          "sha256": "373517768e912eeb5054024ae9215e2c90a1420957b66fe134ef745a00948d4a",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.160.0-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.160.0-darwin-arm64.tgz",
+          "integrity": "sha512-aefV6cqZA2REZgR//4McyXlp7zLcTti4CI2v3j9IVgNndPBv2kCeNEcz07qeelXcwOdSFPUKb6roA48vZmDgrQ==",
+          "sha256": "fc789bcd655d903f92e1a23c8dc5315ba38f43b3586eafb7bd3b195970b57466",
+          "files": 44,
+          "unpackedBytes": 332972398
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.160.0-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.160.0-linux-x64.tgz",
+          "integrity": "sha512-KI/73OqGrHmR18s7ya7E1NqV6rT0y3lxr0s8S1qR2m6zU6QRF/HlR529jALLh5vjdUnsRT4Ahoxt0axb4kY99g==",
+          "sha256": "37a41d61c3399182b8c727b77090cc7a1566bd849d0f09070a0bbc6fec4c58dc",
+          "files": 46,
+          "unpackedBytes": 446689074
+        }
+      }
+    },
+    {
+      "version": "0.160.1",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.160.1",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.160.1.tgz",
+          "integrity": "sha512-f1yrJhwgimKQI1kYQlxdPJcFwkNZxZrbz7Hf89EAcnLqkQ7TiESzr2FgSZn13Ga5RuHjlVUfurzwq10wk9zw2g==",
+          "sha256": "d84454cfa82f61add78b3270073c6e254923e89657c7f0dd1a88cc5659b4e0c0",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.160.1-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.160.1-darwin-arm64.tgz",
+          "integrity": "sha512-6Znu97O7+Ie/cnUpsWLx6NlcPc7DNuj6sAs58xpt0/tKRgx4+xgE9zca1YrwqQUBjUQO1HexudyimmhpZjdWlA==",
+          "sha256": "93121cae6c2fe77cdb20f88f611783dbec77a3e241948ad018da120480a6f296",
+          "files": 44,
+          "unpackedBytes": 332940366
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.160.1-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.160.1-linux-x64.tgz",
+          "integrity": "sha512-sIDhqV+bsZKKVaVFVY5iB+pAzyOz2XRm3H1KXCsSJwGj5p98qnrT0Fweo1Hfe7WnyTp8mfBNdbVzUeO+mHYugA==",
+          "sha256": "dc9ebd133d3af19ccac4bd5515a5049005b8b05ef3bd558d257d44f32a94f758",
+          "files": 46,
+          "unpackedBytes": 446758666
+        }
+      }
+    },
+    {
+      "version": "0.161.0",
+      "artifacts": {
+        "wrapper": {
+          "package": "@openai/codex",
+          "packageVersion": "0.161.0",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.161.0.tgz",
+          "integrity": "sha512-+ZnJFGBbQBwYnjUTs+PoacgYVxmNyxMLiadIz6eSJ0AzQW0mRVxuuOQizSbz2qeNAJia9Syxag6j2uGf7guD2Q==",
+          "sha256": "4e472c1098f1162e1b46d4935e5f2264f7076182949b95bb47d839b35108c5f0",
+          "files": 3,
+          "unpackedBytes": 13206
+        },
+        "darwin-arm64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.161.0-darwin-arm64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.161.0-darwin-arm64.tgz",
+          "integrity": "sha512-arxKLYB3uKjewwOpGFo5/MGe8+4JzNB17KIYBmGfF4k3QU+QC4ieXVUwqHmQX2nXrB1BzNMN0gtAgm1AGBTg8w==",
+          "sha256": "21c99b848b25ed91b92afadabe3751cc33878d2684f3e2d01cc1782e6d0abc7a",
+          "files": 44,
+          "unpackedBytes": 336607838
+        },
+        "linux-x64": {
+          "package": "@openai/codex",
+          "packageVersion": "0.161.0-linux-x64",
+          "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.161.0-linux-x64.tgz",
+          "integrity": "sha512-AVkNzeJWyCHHPyg5vxD8UE6aFsYaOwq0/x6mtmkOKy6LdjvsyxLr7Q7UULlk+Ma3+PnrN8uIxG2/XGPQ936hgA==",
+          "sha256": "d50e02c2755be551b576527b2b13c6b6a4af3340149afdf792d5491e5d899978",
+          "files": 46,
+          "unpackedBytes": 450401234
+        }
+      }
+    }
+  ],
+  "claimDecision": {
+    "shape": "stop-before-current",
+    "latestQualifiedRemains": "0.155.1",
+    "currentStable": "0.161.0",
+    "unverifiedStablePoints": [
+      "0.156.0",
+      "0.156.1",
+      "0.157.0",
+      "0.157.1",
+      "0.158.0",
+      "0.159.0",
+      "0.159.1",
+      "0.159.2",
+      "0.159.3",
+      "0.160.0",
+      "0.160.1",
+      "0.161.0"
+    ],
+    "firstStopHop": {
+      "from": "0.155.1",
+      "to": "0.156.0"
+    },
+    "reason": "Codex exec starts an in-process thread with an explicit cwd. In 0.156.0, thread/start no longer automatically persists project trust when config classifies the directory as projectless. This changes trust authority for the selected route. In 0.157.0, managed system and macOS MDM application network requirements add a separate destination allowlist policy to regular exec network clients.",
+    "adaptation": "Resolve both stops independently before any ceiling increase: projectless thread-start trust classification and host-managed application network policy.",
+    "claimIds": [
+      "codex.exec.cli-window-2"
+    ],
+    "appServerClaimChanged": false,
+    "downloadedArtifactsExecuted": false,
+    "stops": [
+      {
+        "from": "0.155.1",
+        "to": "0.156.0",
+        "kind": "projectless-auto-trust",
+        "finding": "thread/start stops auto-persisting project trust for a projectless directory even when cwd is explicit; Codex exec uses thread/start with cwd from its configured working directory.",
+        "adaptation": "Prove the exact ephemeral exec/thread-start path with provider-free fixtures for projectless and marked directories, then obtain a ruling on whether the projectless trust behavior preserves the codex.exec contract or needs a distinct behavior milestone. Never restore trust persistence by bypassing the upstream gate."
+      },
+      {
+        "from": "0.156.1",
+        "to": "0.157.0",
+        "kind": "host-managed-network-policy",
+        "finding": "normal exec now loads system and macOS MDM application network requirements and applies allowed-host restrictions to regular network clients.",
+        "adaptation": "Add provider-free allowed-host and denied-host fixtures for the prepared exec path and obtain a ruling on how host-managed egress policy fits the route contract. Do not disable or bypass host policy."
+      }
+    ]
+  },
+  "hostObservation": {
+    "binary": "codex-cli 0.159.0",
+    "sha256": "e89718aa1969bfc4a471277bdc4679a3a3529293de0a309909822dfd67ddb77a",
+    "sizeBytes": 240166592,
+    "codeSignature": "Developer ID Application OpenAI OpCo, LLC; TeamIdentifier 2DC432GLL2",
+    "localPathRecorded": false
+  },
+  "downloadedArtifactsExecuted": false,
+  "liveProviderCalls": false,
+  "providerCredentialsUsed": false,
+  "hostUpdatedOrInstalled": false
+}

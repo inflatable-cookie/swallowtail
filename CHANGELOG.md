@@ -11,6 +11,15 @@ annotated Git tags from the canonical repository.
   pending commands before escalation and process wait; command registration
   rechecks under the pending lock, so close cannot wait for a response from a
   stopped reader.
+- keep the `codex.exec` qualified ceiling at `0.155.1` after the currentness
+  sweep to official `0.161.0`. `0.156.0` changes projectless thread-start
+  trust behavior; `0.157.0` binds host-managed application network policy to
+  ordinary exec. Both need provider-free adaptation and an operator ruling
+  before qualification can move. The intervening and later stable points
+  remain visible `UnverifiedNewer`; the claim, behavior revisions, segments,
+  exclusions, and independent app-server claim are unchanged. Research 370
+  freezes npm/GitHub identities, every wrapper/platform file digest, and
+  source-hop classifications. No downloaded artifact was executed.
 - project one validated `claude-agent.sdk` main-loop usage snapshot per
   completed SDK result through `ProviderObservation::Usage`, including
   input/output and cache-read/cache-write token dimensions. Required counts

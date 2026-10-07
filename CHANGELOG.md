@@ -34,6 +34,14 @@ annotated Git tags from the canonical repository.
   tool-output/context changes need an operator ruling before qualification;
   both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
   and `0.59.1` exclusions remain in force.
+- keep the `codex.app-server` qualified ceiling at `0.155.1` after re-probing
+  official npm/GitHub stable `0.161.0`. Research 373 freezes all twelve
+  published hops and identifies selected stops in `0.156.0` managed provider
+  revalidation, fail-closed permission materialization, default bootstrap
+  proxy fallback, and explicit Windows MxC sandbox selection, followed by
+  `0.157.0` app-server application-network policy. The prior bounded trust,
+  path-alias, linked-`.git`, and `.aws` rulings remain distinct; no route claim
+  moves, and the `.aws` narrowing still needs Contract 036 classification.
 - project one validated `claude-agent.sdk` main-loop usage snapshot per
   completed SDK result through `ProviderObservation::Usage`, including
   input/output and cache-read/cache-write token dimensions. Required counts

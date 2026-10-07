@@ -55,6 +55,21 @@ fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
     .expect("bounded workspace session opens");
 
     let thread = message(&state.messages(), "thread/start");
+    assert_eq!(
+        thread["params"]
+            .as_object()
+            .expect("thread start parameters are an object")
+            .keys()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>(),
+        BTreeSet::from([
+            "approvalPolicy",
+            "cwd",
+            "model",
+            "runtimeWorkspaceRoots",
+            "sandbox",
+        ])
+    );
     assert_eq!(thread["params"]["sandbox"], "workspace-write");
     assert_eq!(thread["params"]["approvalPolicy"], "never");
     assert_eq!(thread["params"]["cwd"], "/private/recording/workspace");
@@ -110,6 +125,83 @@ fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
         CleanupOutcome::Clean
     );
     assert_eq!(recording.count(RecordedHostCall::WorkingResourceResolve), 1);
+    assert_eq!(recording.count(RecordedHostCall::WorkingResourceRelease), 1);
+}
+
+#[test]
+fn failed_workspace_turn_is_projected_as_provider_failed() {
+    let recording = RecordingHostServices::default();
+    let (process, state) = ScriptedAppServer::new(AppServerMode::FailedTurn);
+    let services = host_services_with(process, &recording, [HostServiceKind::WorkingResource]);
+    let mut session = block_on(driver().open_session(
+        bounded_workspace_plan_for_version(
+            ExecutionHostId::new("host.local").unwrap(),
+            ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
+            InstanceTargetRef::new("codex-app-server-executable").unwrap(),
+            "0.155.1",
+        ),
+        OpenSessionRequest::new(
+            RequestId::new("workspace-failed-turn").expect("request id is valid"),
+            working_resource(),
+            None,
+            app_server_session_agreement(codex_bounded_workspace_access_policy()),
+        ),
+        services.clone(),
+    ))
+    .expect("bounded workspace session opens");
+
+    let thread = message(&state.messages(), "thread/start");
+    assert_eq!(thread["params"]["sandbox"], "workspace-write");
+    assert_eq!(
+        thread["params"]["runtimeWorkspaceRoots"],
+        serde_json::json!(["/private/recording/workspace"])
+    );
+
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("workspace-failed-turn").expect("turn id is valid"),
+            OperationContent::new("write inside approved workspace").expect("content is valid"),
+        ),
+        services.clone(),
+    ))
+    .expect("workspace turn starts");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    let TerminalStatus::ProviderFailed(diagnostic) = terminal.status() else {
+        panic!("provider failed status must not be reported as success");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.codex.app_server.turn_failed"
+    );
+    assert_eq!(diagnostic.message(), "Codex app-server turn failed");
+
+    let sandbox = &message(&state.messages(), "turn/start")["params"]["sandboxPolicy"];
+    assert_eq!(
+        sandbox
+            .as_object()
+            .expect("workspace sandbox policy is an object")
+            .keys()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>(),
+        BTreeSet::from([
+            "excludeSlashTmp",
+            "excludeTmpdirEnvVar",
+            "networkAccess",
+            "type",
+            "writableRoots",
+        ])
+    );
+    assert_eq!(sandbox["type"], "workspaceWrite");
+    assert_eq!(sandbox["writableRoots"], serde_json::json!(["/private/recording/workspace"]));
+    assert_eq!(sandbox["networkAccess"], false);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
     assert_eq!(recording.count(RecordedHostCall::WorkingResourceRelease), 1);
 }
 

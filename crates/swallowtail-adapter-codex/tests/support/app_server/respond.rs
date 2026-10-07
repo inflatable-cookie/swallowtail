@@ -230,6 +230,7 @@ fn respond(&self, message: &serde_json::Value) {
                 }));
                 match self.mode {
                     AppServerMode::CompleteTurn => self.complete_turn("completed"),
+                    AppServerMode::FailedTurn => self.complete_turn("failed"),
                     AppServerMode::HoldCatalog
                     | AppServerMode::HoldTurn
                     | AppServerMode::MismatchedTurnSession

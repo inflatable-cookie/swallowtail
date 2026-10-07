@@ -11,6 +11,7 @@ use swallowtail_runtime::{
 #[derive(Clone, Copy)]
 pub enum AppServerMode {
     CompleteTurn,
+    FailedTurn,
     HoldCatalog,
     HoldTurn,
     RequestCallback,

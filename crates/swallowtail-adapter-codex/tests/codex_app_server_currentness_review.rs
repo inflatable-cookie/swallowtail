@@ -1,0 +1,854 @@
+use std::collections::BTreeSet;
+
+use serde_json::Value;
+
+const REVIEW: &str = include_str!("fixtures/codex-app-server-0.161.0/selected-source-review.json");
+const BASELINE_PROTOCOL: &str = include_str!("fixtures/codex-cli-0.155.1/protocol.json");
+const SOURCE_INVENTORY: &str =
+    include_str!("fixtures/codex-app-server-0.161.0/source-inventory.json");
+
+fn json(source: &str) -> Value {
+    serde_json::from_str(source).expect("currentness evidence is valid JSON")
+}
+
+fn strings(value: &Value) -> Vec<&str> {
+    value
+        .as_array()
+        .expect("value is an array")
+        .iter()
+        .map(|entry| entry.as_str().expect("entry is text"))
+        .collect()
+}
+
+fn assert_exact_keys(value: &Value, expected: &[&str]) {
+    let actual = value
+        .as_object()
+        .expect("value is an object")
+        .keys()
+        .map(String::as_str)
+        .collect::<BTreeSet<_>>();
+    let expected = expected.iter().copied().collect::<BTreeSet<_>>();
+    assert_eq!(actual, expected);
+}
+
+#[test]
+fn official_identity_and_full_source_hops_match_the_selected_review() {
+    let review = json(REVIEW);
+    assert_exact_keys(
+        &review,
+        &[
+            "candidate",
+            "claim_state",
+            "frozen_semantic_sources",
+            "hops",
+            "official_channels",
+            "package",
+            "route",
+            "runtime_artifact",
+            "selected_route",
+            "source_inventory",
+            "baseline",
+        ],
+    );
+    assert_eq!(review["route"], "codex.app-server");
+    assert_eq!(review["package"], "@openai/codex");
+    assert_eq!(review["baseline"], "0.155.1");
+    assert_eq!(review["candidate"], "0.161.0");
+    assert_eq!(review["official_channels"]["npm_latest"], "0.161.0");
+    assert_eq!(
+        review["official_channels"]["github_latest_non_prerelease"],
+        "rust-v0.161.0"
+    );
+    assert_eq!(review["official_channels"]["agreement"], true);
+    assert_eq!(
+        review["official_channels"]["alpha_excluded"],
+        "0.162.0-alpha.18"
+    );
+    assert_eq!(
+        review["runtime_artifact"]["sha256"],
+        "12ac11d2c7eee27cfae34393986d7b7c9ed0dea537cb749831cdd7033893e6de"
+    );
+    assert_eq!(review["runtime_artifact"]["size_bytes"], 245096256);
+    assert_eq!(review["runtime_artifact"]["executed"], false);
+    assert_eq!(review["source_inventory"]["tags"], 13);
+    assert_eq!(review["source_inventory"]["published_hops"], 12);
+
+    let baseline = json(BASELINE_PROTOCOL);
+    assert_eq!(
+        strings(&review["selected_route"]["methods"]),
+        strings(&baseline["schema"]["methods_present"])
+    );
+    assert_eq!(
+        strings(&review["selected_route"]["route_regressions"]),
+        vec![
+            "tests/app_server_workspace.rs::bounded_workspace_maps_one_host_authorized_root_and_denies_network",
+            "tests/app_server_workspace.rs::declared_approval_and_user_input_requests_are_observed_then_stop",
+            "tests/app_server_workspace.rs::failed_workspace_turn_is_projected_as_provider_failed",
+            "tests/app_server_workspace.rs::read_only_session_request_shape_remains_unchanged",
+        ]
+    );
+    assert_eq!(
+        review["selected_route"]["workspace_boundary"]["thread_start"],
+        "approvalPolicy=never; sandbox=workspace-write; cwd=the preflight-approved root; runtimeWorkspaceRoots contains only that same root"
+    );
+    assert_eq!(
+        review["selected_route"]["workspace_boundary"]["turn_start"],
+        "sandboxPolicy.type=workspaceWrite; writableRoots contains only that same root; networkAccess=false; excludeSlashTmp=true; excludeTmpdirEnvVar=true"
+    );
+    assert_eq!(
+        review["selected_route"]["workspace_boundary"]["request_overlay"],
+        "No config, trust, home, path alias, linked .git, or .aws write exception is sent by the adapter."
+    );
+    assert_eq!(
+        review["selected_route"]["workspace_boundary"]["meaning"],
+        "The route supplies one unchanged approved root and retains its read-only default; upstream version-specific rules may further restrict writes inside it."
+    );
+    assert_eq!(
+        review["selected_route"]["failure_projection"],
+        "The driver ignores provider-specific error details; request errors become request_failed, turn status failed becomes a generic ProviderFailed terminal, and notifications are not upgraded into success from error payloads."
+    );
+
+    let hops = review["hops"].as_array().expect("per-hop ledger");
+    assert_eq!(hops.len(), 12);
+    let expected_versions = [
+        ("0.155.1", "0.156.0"),
+        ("0.156.0", "0.156.1"),
+        ("0.156.1", "0.157.0"),
+        ("0.157.0", "0.157.1"),
+        ("0.157.1", "0.158.0"),
+        ("0.158.0", "0.159.0"),
+        ("0.159.0", "0.159.1"),
+        ("0.159.1", "0.159.2"),
+        ("0.159.2", "0.159.3"),
+        ("0.159.3", "0.160.0"),
+        ("0.160.0", "0.160.1"),
+        ("0.160.1", "0.161.0"),
+    ];
+    for (hop, (from, to)) in hops.iter().zip(expected_versions) {
+        assert_exact_keys(
+            hop,
+            &[
+                "changed_source_files",
+                "classification",
+                "disposition",
+                "from",
+                "selected_schema_files",
+                "source_regressions",
+                "to",
+                "unselected_schema_files",
+            ],
+        );
+        assert_eq!(hop["from"], from);
+        assert_eq!(hop["to"], to);
+        assert!(!hop["classification"].as_str().unwrap().is_empty());
+        assert!(!hop["disposition"].as_str().unwrap().is_empty());
+    }
+
+    let expected_selected_schemas: [&[&str]; 12] = [
+        &[
+            "codex-rs/app-server-protocol/schema/json/ClientRequest.json",
+            "codex-rs/app-server-protocol/schema/json/ServerNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ItemCompletedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ItemStartedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ModelListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadReadResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadResumeParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadResumeResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadStartParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadStartResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadStartedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnCompletedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartedNotification.json",
+        ],
+        &[],
+        &[],
+        &[],
+        &[
+            "codex-rs/app-server-protocol/schema/json/ServerNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadReadResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadResumeResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadStartResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnCompletedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartResponse.json",
+            "codex-rs/app-server-protocol/schema/typescript/v2/CodexErrorInfo.ts",
+        ],
+        &[
+            "codex-rs/app-server-protocol/schema/json/ServerNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadReadResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadResumeResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadStartResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnCompletedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartResponse.json",
+            "codex-rs/app-server-protocol/schema/typescript/v2/CodexErrorInfo.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/Turn.ts",
+        ],
+        &[],
+        &[],
+        &[],
+        &[],
+        &[],
+        &[
+            "codex-rs/app-server-protocol/schema/json/ServerNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadReadResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadResumeResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadStartResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnCompletedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartResponse.json",
+            "codex-rs/app-server-protocol/schema/typescript/v2/CodexErrorInfo.ts",
+        ],
+    ];
+    let expected_unselected_schemas: [&[&str]; 12] = [
+        &[
+            "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.schemas.json",
+            "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ConfigBatchWriteParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ConfigReadResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ConfigRequirementsReadResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/GetAccountResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ListMcpServerStatusResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/PluginReadResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/RawResponseItemCompletedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ReviewStartResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadForkResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadItemsListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadMetadataUpdateResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadRevertResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadSettingsUpdatedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadTurnsListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadUnarchiveResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnSteerParams.json",
+            "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-experimental.json.zst",
+            "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-stable.json.zst",
+            "codex-rs/app-server-protocol/schema/typescript/ClientRequest.ts",
+            "codex-rs/app-server-protocol/schema/typescript/ContentItem.ts",
+            "codex-rs/app-server-protocol/schema/typescript/FunctionCallOutputContentItem.ts",
+            "codex-rs/app-server-protocol/schema/typescript/Personality.ts",
+            "codex-rs/app-server-protocol/schema/typescript/ToolExposureSurface.ts",
+            "codex-rs/app-server-protocol/schema/typescript/index.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/AccountRoutingOverride.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/AppsConfig.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ConfigBatchWriteParams.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ConfigRequirements.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/GetAccountResponse.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/McpAppDisplayMode.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/McpAppUi.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/McpServerStatus.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/Model.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ModelAccessPrograms.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginDetail.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/Thread.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadForkResponse.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadItem.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadResumeParams.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadResumeResponse.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadSettings.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadStartParams.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadStartResponse.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/TurnStartParams.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/UserInput.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/WindowsSandboxImplementation.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/WorkspaceRouting.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/index.ts",
+        ],
+        &[],
+        &[
+            "codex-rs/app-server-protocol/schema/json/ClientRequest.json",
+            "codex-rs/app-server-protocol/schema/json/ServerNotification.json",
+            "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.schemas.json",
+            "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json",
+            "codex-rs/app-server-protocol/schema/json/v1/InitializeParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/GatewayOAuthCancelResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/GatewayOAuthChangedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/GatewayOAuthLoginResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/GatewayOAuthReadResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ListMcpServerStatusResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/McpResourceReadParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/PluginInstalledResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/PluginListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/PluginReadResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/PluginShareListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadItemsListResponse.json",
+            "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-experimental.json.zst",
+            "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-stable.json.zst",
+            "codex-rs/app-server-protocol/schema/typescript/ClientRequest.ts",
+            "codex-rs/app-server-protocol/schema/typescript/InitializeCapabilities.ts",
+            "codex-rs/app-server-protocol/schema/typescript/ServerNotification.ts",
+            "codex-rs/app-server-protocol/schema/typescript/ServerNotificationEnvelope.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/GatewayOAuthCancelResponse.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/GatewayOAuthChangedNotification.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/GatewayOAuthLoginResponse.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/GatewayOAuthReadResponse.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/GatewayOAuthStatus.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/McpResourceReadParams.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/McpResourceReadTarget.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/McpServerStatus.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginEntrypoint.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginExtensions.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginIcon.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginQuickAction.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginQuickActionTarget.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginSearchProvider.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginSearchProviderCall.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginSettings.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginSummary.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadItemEntry.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/index.ts",
+        ],
+        &[],
+        &[
+            "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.schemas.json",
+            "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json",
+            "codex-rs/app-server-protocol/schema/json/v2/AccountRateLimitsUpdatedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/AccountUpdatedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ErrorNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/GetAccountRateLimitsResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/GetAccountResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/PluginInstalledResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/PluginListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/PluginReadResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/PluginShareListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ReviewStartResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadForkResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadMetadataUpdateResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadRevertResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadStartedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadTurnsListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadUnarchiveResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartedNotification.json",
+            "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-experimental.json.zst",
+            "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-stable.json.zst",
+            "codex-rs/app-server-protocol/schema/typescript/PlanType.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/PluginSummary.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/index.ts",
+        ],
+        &[
+            "codex-rs/app-server-protocol/schema/json/ClientRequest.json",
+            "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.schemas.json",
+            "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ErrorNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ListMcpServerStatusParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ReviewStartResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadForkResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadItemsListParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadMetadataUpdateResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadRevertResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadStartedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadTurnsListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadUnarchiveResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartedNotification.json",
+            "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-experimental.json.zst",
+            "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-stable.json.zst",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ListMcpServerStatusParams.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadItemsListAnchor.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadItemsListCursor.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadItemsListParams.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/index.ts",
+        ],
+        &[],
+        &[],
+        &[],
+        &[],
+        &[],
+        &[
+            "codex-rs/app-server-protocol/schema/json/ClientRequest.json",
+            "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.schemas.json",
+            "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ErrorNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/McpServerOauthLoginCompletedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/McpServerOauthLoginResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ModelListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ReviewStartResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadForkResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadGoalClearParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadGoalSetParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadMetadataUpdateResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadPredictionUpdatedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadRevertResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadStartedNotification.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadTurnsListResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/ThreadUnarchiveResponse.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartParams.json",
+            "codex-rs/app-server-protocol/schema/json/v2/TurnStartedNotification.json",
+            "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-experimental.json.zst",
+            "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-stable.json.zst",
+            "codex-rs/app-server-protocol/schema/typescript/ServerNotification.ts",
+            "codex-rs/app-server-protocol/schema/typescript/ServerNotificationEnvelope.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/CyberAccessProgram.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/McpServerOauthLoginCompletedNotification.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/McpServerOauthLoginResponse.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadGoalClearParams.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadGoalMutationOrigin.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadGoalSetParams.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadPredictionResult.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/ThreadPredictionUpdatedNotification.ts",
+            "codex-rs/app-server-protocol/schema/typescript/v2/index.ts",
+        ],
+    ];
+    for (index, hop) in hops.iter().enumerate() {
+        assert_eq!(
+            strings(&hop["selected_schema_files"]),
+            expected_selected_schemas[index]
+        );
+        assert_eq!(
+            strings(&hop["unselected_schema_files"]),
+            expected_unselected_schemas[index]
+        );
+    }
+
+    let inventory = json(SOURCE_INVENTORY);
+    assert_exact_keys(&inventory, &["hops", "tags", "versions"]);
+    let inventory_hops = inventory["hops"].as_array().expect("full source inventory");
+    for hop in hops {
+        let to = hop["to"].as_str().expect("hop target");
+        let inventory_hop = inventory_hops
+            .iter()
+            .find(|candidate| candidate["to"] == to)
+            .expect("source inventory hop exists");
+        let changed = strings(&inventory_hop["added"])
+            .into_iter()
+            .chain(strings(&inventory_hop["changed"]))
+            .collect::<BTreeSet<_>>();
+        let selected_sources = strings(&hop["changed_source_files"]);
+        assert!(selected_sources.windows(2).all(|pair| pair[0] < pair[1]));
+        assert!(selected_sources.iter().all(|path| changed.contains(path)));
+        let changed_schemas = changed
+            .iter()
+            .copied()
+            .filter(|path| {
+                path.contains("app-server-protocol/schema/")
+                    && (path.ends_with(".json")
+                        || path.ends_with(".ts")
+                        || path.ends_with(".zst"))
+            })
+            .collect::<BTreeSet<_>>();
+        let selected_schemas = strings(&hop["selected_schema_files"])
+            .into_iter()
+            .collect::<BTreeSet<_>>();
+        let unselected_schemas = strings(&hop["unselected_schema_files"])
+            .into_iter()
+            .collect::<BTreeSet<_>>();
+        assert!(strings(&hop["selected_schema_files"])
+            .windows(2)
+            .all(|pair| pair[0] < pair[1]));
+        assert!(strings(&hop["unselected_schema_files"])
+            .windows(2)
+            .all(|pair| pair[0] < pair[1]));
+        assert!(selected_schemas.is_disjoint(&unselected_schemas));
+        assert_eq!(
+            selected_schemas
+                .union(&unselected_schemas)
+                .copied()
+                .collect::<BTreeSet<_>>(),
+            changed_schemas
+        );
+    }
+}
+
+#[test]
+fn selected_source_path_sets_keep_the_network_stop_and_approved_boundaries_exact() {
+    let review = json(REVIEW);
+    let hops = review["hops"].as_array().expect("per-hop ledger");
+
+    assert_eq!(
+        strings(&hops[0]["changed_source_files"]),
+        vec![
+            "codex-rs/app-server/src/config_manager.rs",
+            "codex-rs/app-server/src/config_manager_provider_tests.rs",
+            "codex-rs/app-server/src/model_catalog.rs",
+            "codex-rs/app-server/src/request_processors/command_exec_processor.rs",
+            "codex-rs/app-server/src/request_processors/thread_processor.rs",
+            "codex-rs/app-server/src/request_processors/thread_processor_tests.rs",
+            "codex-rs/app-server/src/request_processors/thread_queue_processor.rs",
+            "codex-rs/app-server/src/request_processors/turn_processor.rs",
+            "codex-rs/app-server/tests/suite/v2/config_model_provider_requirements_tests.rs",
+            "codex-rs/app-server/tests/suite/v2/model_provider_enforcement_tests.rs",
+            "codex-rs/backend-client/src/client.rs",
+            "codex-rs/backend-client/src/client_request_tests.rs",
+            "codex-rs/config/src/loader/managed_requirements.rs",
+            "codex-rs/config/src/loader/mod.rs",
+            "codex-rs/config/src/loader/projectless_directory_tests.rs",
+            "codex-rs/config/src/model_provider_requirements.rs",
+            "codex-rs/config/src/model_provider_requirements_tests.rs",
+            "codex-rs/config/src/permissions_toml.rs",
+            "codex-rs/config/src/types.rs",
+            "codex-rs/core/src/config/config_tests.rs",
+            "codex-rs/core/src/config/mod.rs",
+            "codex-rs/core/src/config/permission_path.rs",
+            "codex-rs/core/src/config/permission_path_tests.rs",
+            "codex-rs/core/src/config/permissions.rs",
+            "codex-rs/core/src/config/permissions_tests.rs",
+            "codex-rs/core/src/config/windows_sandbox_config.rs",
+            "codex-rs/core/src/config/windows_sandbox_config_tests.rs",
+            "codex-rs/core/src/sandbox_tags.rs",
+            "codex-rs/core/src/sandboxing/mod.rs",
+            "codex-rs/core/src/session/session.rs",
+            "codex-rs/core/src/session/turn_context.rs",
+            "codex-rs/core/src/thread_manager.rs",
+            "codex-rs/core/src/tools/orchestrator.rs",
+            "codex-rs/core/src/tools/sandboxing.rs",
+            "codex-rs/core/src/tools/sandboxing_tests.rs",
+            "codex-rs/core/src/windows_sandbox.rs",
+            "codex-rs/core/src/windows_sandbox_tests.rs",
+            "codex-rs/features/src/lib.rs",
+            "codex-rs/http-client/src/outbound_proxy.rs",
+            "codex-rs/http-client/src/outbound_proxy_redirect_coverage_tests.rs",
+            "codex-rs/mxc-sandbox/src/lib.rs",
+            "codex-rs/mxc-sandbox/src/native.rs",
+            "codex-rs/mxc-sandbox/src/policy.rs",
+            "codex-rs/mxc-sandbox/src/policy_tests.rs",
+            "codex-rs/mxc-sandbox/src/transport.rs",
+            "codex-rs/mxc-sandbox/src/transport_tests.rs",
+            "codex-rs/mxc-sandbox/src/windows.rs",
+            "codex-rs/protocol/src/models.rs",
+            "codex-rs/protocol/src/permissions.rs",
+            "codex-rs/protocol/src/permissions/target.rs",
+            "codex-rs/protocol/src/permissions/target_tests.rs",
+            "codex-rs/protocol/src/sandbox.rs",
+            "codex-rs/thread-store/src/live_thread.rs",
+            "codex-rs/thread-store/src/local/delete_thread.rs",
+            "codex-rs/thread-store/src/local/mod.rs",
+            "codex-rs/thread-store/src/local/tests/acquisition_tests.rs",
+            "codex-rs/thread-store/src/store.rs",
+            "codex-rs/thread-store/src/types.rs",
+        ]
+    );
+    assert_eq!(
+        strings(&hops[2]["changed_source_files"]),
+        vec![
+            "codex-rs/app-server/src/application_network.rs",
+            "codex-rs/app-server/src/application_network_tests.rs",
+            "codex-rs/app-server/src/config_manager.rs",
+            "codex-rs/app-server/src/request_processors/thread_processor.rs",
+            "codex-rs/app-server/tests/suite/v2/application_network.rs",
+            "codex-rs/config/src/loader/application.rs",
+            "codex-rs/http-client/src/network_policy.rs",
+        ]
+    );
+    assert_eq!(
+        strings(&hops[4]["changed_source_files"]),
+        vec![
+            "codex-rs/app-server/src/request_processors/thread_processor.rs",
+            "codex-rs/protocol/src/permissions.rs",
+            "codex-rs/protocol/src/permissions/local_aliases.rs",
+            "codex-rs/protocol/src/permissions/local_aliases_tests.rs",
+            "codex-rs/protocol/src/permissions/target.rs",
+        ]
+    );
+    assert_eq!(
+        strings(&hops[5]["changed_source_files"]),
+        vec![
+            "codex-rs/app-server/src/request_processors/thread_processor.rs",
+            "codex-rs/protocol/src/permissions.rs",
+            "codex-rs/protocol/src/permissions/target.rs",
+            "codex-rs/protocol/src/permissions/target_approved_materialization_tests.rs",
+        ]
+    );
+    assert_eq!(
+        strings(&hops[9]["changed_source_files"]),
+        vec![
+            "codex-rs/app-server/src/thread_status.rs",
+            "codex-rs/protocol/src/error.rs",
+        ]
+    );
+    assert_eq!(
+        strings(&hops[11]["changed_source_files"]),
+        vec![
+            "codex-rs/app-server-protocol/src/protocol/v2/thread.rs",
+            "codex-rs/app-server/src/request_processors/thread_goal_processor.rs",
+            "codex-rs/app-server/src/request_processors/thread_processor.rs",
+            "codex-rs/app-server/src/request_processors/thread_processor_tests.rs",
+            "codex-rs/app-server/src/thread_state.rs",
+            "codex-rs/core/src/config/config_tests.rs",
+            "codex-rs/core/src/config/mod.rs",
+            "codex-rs/core/src/config/windows_sandbox_config.rs",
+            "codex-rs/core/src/session/session.rs",
+            "codex-rs/core/src/session/turn_context.rs",
+            "codex-rs/core/src/tools/orchestrator.rs",
+            "codex-rs/core/src/tools/sandboxing.rs",
+            "codex-rs/core/src/tools/sandboxing_tests.rs",
+            "codex-rs/core/tests/suite/windows_sandbox.rs",
+            "codex-rs/features/src/lib.rs",
+            "codex-rs/protocol/src/error.rs",
+            "codex-rs/protocol/src/models.rs",
+            "codex-rs/thread-store/src/in_memory.rs",
+            "codex-rs/thread-store/src/local/helpers.rs",
+            "codex-rs/thread-store/src/local/rollout_lineage.rs",
+            "codex-rs/thread-store/src/local/rollout_lineage_tests.rs",
+            "codex-rs/thread-store/src/thread_metadata_sync.rs",
+        ]
+    );
+    for index in [1, 3, 6, 7, 8, 10] {
+        assert!(strings(&hops[index]["changed_source_files"]).is_empty());
+        assert!(strings(&hops[index]["selected_schema_files"]).is_empty());
+    }
+
+    for index in [1, 3, 6, 7, 8, 10] {
+        assert!(strings(&hops[index]["source_regressions"]).is_empty());
+    }
+
+    assert!(hops[0]["disposition"].as_str().unwrap().contains("d7dbacde"));
+    assert!(hops[4]["disposition"].as_str().unwrap().contains("d7dbacde"));
+    assert!(hops[5]["disposition"].as_str().unwrap().contains("cb18500a"));
+    assert!(hops[0]["disposition"].as_str().unwrap().starts_with("STOP:"));
+    assert!(hops[2]["disposition"].as_str().unwrap().starts_with("STOP:"));
+    assert!(hops[0]["classification"]
+        .as_str()
+        .unwrap()
+        .contains("selected model/list and turn/start paths"));
+    assert!(hops[2]["classification"]
+        .as_str()
+        .unwrap()
+        .contains("separate from the adapter's turn/start sandboxPolicy.networkAccess=false"));
+    assert_eq!(
+        strings(&hops[0]["source_regressions"]),
+        vec![
+            "codex-rs/config/src/loader/projectless_directory_tests.rs::unmarked_directory_is_projectless_even_with_saved_trust",
+            "codex-rs/config/src/loader/projectless_directory_tests.rs::project_markers_and_local_layers_prevent_projectless_classification",
+            "codex-rs/app-server/src/config_manager_provider_tests.rs::provider_requirements_ignore_system_defaults_but_reject_requirement_changes",
+            "codex-rs/app-server/src/config_manager_provider_tests.rs::provider_requirement_load_errors_reject_input",
+            "codex-rs/app-server/tests/suite/v2/model_provider_enforcement_tests.rs::provider_requirement_changes_reject_inputs_to_existing_threads",
+            "codex-rs/core/src/config/permission_path_tests.rs::interior_dot_workspace_glob_fails_closed_for_every_path_convention",
+            "codex-rs/core/src/config/config_tests.rs::system_proxy_fallback_config_matches_bootstrap",
+            "codex-rs/core/src/config/config_tests.rs::system_proxy_fallback_honors_feature_requirements",
+            "codex-rs/core/src/config/windows_sandbox_config_tests.rs::configured_mode_takes_priority_without_persisting_feature_fallback",
+            "codex-rs/core/src/tools/sandboxing_tests.rs::windows_sandbox_selection_distinguishes_configured_and_executor_defaults",
+        ]
+    );
+    assert_eq!(
+        strings(&hops[2]["source_regressions"]),
+        vec![
+            "codex-rs/app-server/src/application_network_tests.rs::embedded_transports_stay_blocked_until_the_same_policy_is_published",
+            "codex-rs/app-server/src/application_network_tests.rs::embedded_caller_activation_uses_cloud_requirements",
+            "codex-rs/app-server/tests/suite/v2/application_network.rs::standalone_startup_applies_local_policy_before_fetching_stored_account_requirements",
+            "codex-rs/app-server/tests/suite/v2/application_network.rs::explicit_reloads_apply_local_edits_and_cancel_active_responses",
+        ]
+    );
+    assert_eq!(
+        strings(&hops[4]["source_regressions"]),
+        vec![
+            "codex-rs/protocol/src/permissions/local_aliases_tests.rs::local_aliases_keep_read_only_and_deny_overrides",
+            "codex-rs/protocol/src/permissions/local_aliases_tests.rs::equivalent_alias_entries_keep_restrictive_precedence",
+            "codex-rs/protocol/src/permissions.rs::writable_roots_protect_gitdir_target_outside_alias_root",
+            "codex-rs/protocol/src/permissions.rs::preserving_mutable_paths_normalizes_top_level_aliases_consistently",
+        ]
+    );
+    assert_eq!(
+        strings(&hops[5]["source_regressions"]),
+        vec![
+            "codex-rs/protocol/src/permissions.rs::legacy_workspace_write_projection_accepts_relative_cwd",
+            "codex-rs/protocol/src/permissions.rs::filesystem_policy_blocks_protected_metadata_path_writes_by_default",
+        ]
+    );
+    assert_eq!(
+        strings(&hops[9]["source_regressions"]),
+        vec![
+            "codex-rs/app-server/src/thread_status.rs::running_turn_watch_notifies_only_when_count_changes",
+        ]
+    );
+    assert_eq!(
+        strings(&hops[11]["source_regressions"]),
+        vec![
+            "codex-rs/core/src/config/config_tests.rs::local_mxc_preference_preserves_configured_backend",
+            "codex-rs/thread-store/src/local/mod.rs::resume_thread_reopens_live_writer_and_appends_with_stale_sqlite_path",
+        ]
+    );
+    assert!(hops[0]["classification"].as_str().unwrap().contains("Permission materialization fails closed"));
+    assert!(hops[0]["classification"].as_str().unwrap().contains("SystemProxyFallback"));
+    assert!(hops[0]["classification"].as_str().unwrap().contains("windows.sandbox=mxc"));
+    assert!(hops[11]["classification"].as_str().unwrap().contains("revision still matches"));
+    assert!(hops[11]["disposition"].as_str().unwrap().contains("MxC backend"));
+    assert_eq!(review["claim_state"]["movement"], "frozen");
+    assert_eq!(review["claim_state"]["codex_app_server_ceiling"], "0.155.1");
+    assert_eq!(review["claim_state"]["codex_exec_ceiling"], "0.155.1");
+    assert_eq!(
+        strings(&review["claim_state"]["newly_observed_unresolved_stops"]),
+        vec![
+            "0.156.0 selected model/list and turn/start managed model-provider requirement revalidation",
+            "0.156.0 fail-closed permission materialization for unavailable home-relative denials and invalid workspace globs",
+            "0.156.0 default-enabled safe-replay bootstrap fallback through the host system proxy",
+            "0.156.0 explicit ambient windows.sandbox=mxc tool backend selection",
+            "0.157.0 app-server managed application-network policy for provider/API traffic",
+        ]
+    );
+    assert!(review["claim_state"]["contract_036_patch_compatibility_open"]
+        .as_str()
+        .unwrap()
+        .contains("consumer-visible workspace-write narrowing"));
+}
+
+#[test]
+fn critical_frozen_source_identities_are_exact() {
+    let review = json(REVIEW);
+    let sources = review["frozen_semantic_sources"]
+        .as_array()
+        .expect("frozen source identities");
+    assert_eq!(sources.len(), 136);
+    let identities = sources
+        .iter()
+        .map(|source| {
+            assert_exact_keys(source, &["git_blob", "path", "sha256", "tag"]);
+            let tag = source["tag"].as_str().expect("tag");
+            let path = source["path"].as_str().expect("path");
+            let blob = source["git_blob"].as_str().expect("Git blob id");
+            let sha256 = source["sha256"].as_str().expect("SHA-256");
+            assert_eq!(blob.len(), 40);
+            assert_eq!(sha256.len(), 64);
+            (tag, path, blob, sha256)
+        })
+        .collect::<BTreeSet<_>>();
+    let expected_identities = BTreeSet::from([
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/ClientRequest.json", "9ac17b8a03bd8627a6c01cab7f981f5832c8cc4c", "8e5a1b6a7103fea63a53ef96d7ab1062decbd6571701542f5a969953e23a64f5"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/ServerNotification.json", "70eb9c821c8dd29197aa1fa31c2ced8a9ab3104f", "df70f8f8ded90d8da63c744ccfef7018223d99e918e5e0aefa0d90856a7f67cc"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/ItemCompletedNotification.json", "61ea1e89bfe11acacbcdc1730f2dd5a3f94044a1", "d04b9153de38cd8302a2a418a44a65e8265d4c7586d46ea2cc801b594c6acf5b"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/ItemStartedNotification.json", "8ea3e731259803dcc16bcc7b9e0f915d53b37bd6", "7574788d2a352747f50d44be3ef649011cb8de8069da4c655faff14d0aee32c4"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/ModelListResponse.json", "8169ec1e8d3fb0b7bac5299d4f14f44a21d958b9", "bfbb3ee9f6e203e0b767587c17de94b9cb42f712d0d8168afbbbc3fcb4492f30"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadListResponse.json", "61cdd1bed2147a0b3c8098c73de44b52e11c256b", "b742a2035533288a7f08a1a4a235b16c94fb52eddadf0f94e49ac8df63a936c2"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadReadResponse.json", "2c3e187bb1b6b466331b1999fdb3d880410db79f", "d6c23e33656f3c3a88dada2bbe419b744979b080db8c6caced1b2c328ce6a290"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadResumeParams.json", "15f5fa0638cd21e192163192bfcdb871bf91b640", "c818e26d830ac4430791eab7d4a872d2384fa6006b14c505d8caf46e7e093527"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadResumeResponse.json", "1ddad74a5808e9876c78edd3008316852a0a8e68", "be06c45049302cb6eb86f0b39fe05aaa768208d940a92cfcac66065e08270614"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadStartParams.json", "5164caf6a208e4e0aa1d21baff108df8430c9d54", "e9c6d3cc18d049bfbc0249add3808fb8e5a27e1a0b5a423767aafbc3859a9428"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadStartResponse.json", "e46750676a04188b15543455c8509615f157ca35", "daaeb4c716e78d93e53c646224e4bfe11ca13bd6aa23ae6ee60103a12da30745"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadStartedNotification.json", "dc40dfe804bc6a802d78608e874aa4a335371ee0", "1efdfc25f52ba68effe939fac9be5ae786fa5234e60ba8758cfc73c7d8cd9b79"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/TurnCompletedNotification.json", "a219cf31e40894cb7fe1b3ab8f36aed9ee2e45f9", "20052f79e907069a0d7948b93ba0927fa08f9a2faac23a63a0e8e527ae6bf0f7"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/TurnStartParams.json", "c0cb6dfd4a0ab6f6c75b92a5ce54addde5ef7b7a", "2dfcf68705896fadc344ccfeb2e9fe5a6bcbbb8b9a90cf449ce232b636daf05a"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/TurnStartResponse.json", "259f3cf717845bedde0db25a6f28f15a3d35f394", "e3c4abb778e60adefef03d19d65ca20f741f37eea411098ad0485eaab61fa8f6"),
+        ("rust-v0.156.0", "codex-rs/app-server-protocol/schema/json/v2/TurnStartedNotification.json", "b8bb6240faa74d547e6b2d533d47219e72cd3759", "cf35428997e1eed4fe7f3d0318a476e0f210f58a1f7616cf1945e3f1851e8c85"),
+        ("rust-v0.156.0", "codex-rs/app-server/src/config_manager.rs", "cb2c6d3023c058603cb225fd63090adc200ce57b", "ec35b4c9ce10eb58d5a44baa58598006fbb63f0310d2fa5ca03f2d6bf8884bb2"),
+        ("rust-v0.156.0", "codex-rs/app-server/src/config_manager_provider_tests.rs", "253b9018d506b9341475de5d410c1719961fc400", "8f874ab2dd0293ec0a05d0c1280aa1ee25629c86cdff480a598eeb873f4b0e8e"),
+        ("rust-v0.156.0", "codex-rs/app-server/src/model_catalog.rs", "54d7ff8501a73f8e385e0113283f3908758d822d", "2a40095f47b432ca1d6dc5fb4f0c6b6e4199d03a289475e0a25e74a1d7d05299"),
+        ("rust-v0.156.0", "codex-rs/app-server/src/request_processors/command_exec_processor.rs", "c82f9a48e2c956049a6b7ad062649be38eb294a6", "41762b70772c7b2a08078e424bac4f011000bce6f6b73edb2d63293adfe7b867"),
+        ("rust-v0.156.0", "codex-rs/app-server/src/request_processors/thread_processor.rs", "b7affb2367ad0ea7f0ea785289dfe51d8c10ee63", "57e6398917825662f3b457197419607274b141e21b93e17c67ea6a1e328f3033"),
+        ("rust-v0.156.0", "codex-rs/app-server/src/request_processors/thread_processor_tests.rs", "44c29bda15835c92e8fa041c30a62d0592c59a6f", "3da6763d33a64ec9552d674a5ed360fc283cbd13bbffe40661c9bc50155998ca"),
+        ("rust-v0.156.0", "codex-rs/app-server/src/request_processors/thread_queue_processor.rs", "ea6ec7ddab9148b81852644217fe394cb4ebc3e5", "c5b6119ad7a5416b4b7b850e15a1f6c0024207975ff8dfa374578cae178698a4"),
+        ("rust-v0.156.0", "codex-rs/app-server/src/request_processors/turn_processor.rs", "df3b049d815b7b328c0a78cc74b45cde062a7edf", "b9ca108e83d4ba0df46f4f49f8a37e10f4ade0120f7c65beca19ad37af00a3fc"),
+        ("rust-v0.156.0", "codex-rs/app-server/tests/suite/v2/config_model_provider_requirements_tests.rs", "45331292621a77427ad5d1a5e3892598e64fa4d6", "14459b7238298ca856bfb47a7cd6f49f41f4f2f9c578ec53256b1a6f1a5f6514"),
+        ("rust-v0.156.0", "codex-rs/app-server/tests/suite/v2/model_provider_enforcement_tests.rs", "a0b3f772af86fda664960b570318376830ef10a5", "397bc2d3e58d09886dc212993be7a112a9a086a55d1d7044b1a3244d2d876979"),
+        ("rust-v0.156.0", "codex-rs/backend-client/src/client.rs", "06d57377b1e82ae468f378f51040f6e33cb40360", "6e7212a85be1770bff4c7e704ac3d9371f808f1561cfd49e296fc0d94041ab9e"),
+        ("rust-v0.156.0", "codex-rs/backend-client/src/client_request_tests.rs", "4dfe774fecef1667f247287e98dcdacf1c8bd48c", "49806becad2f001c843a727648b429a1b390027b7a7644cff364d642f6ed7ee5"),
+        ("rust-v0.156.0", "codex-rs/config/src/loader/managed_requirements.rs", "c3efe1abee6128d06522132b47925fbb479eb55d", "d59e2bd253451c16fa8054c9466445aff1d537a4b4916b1b3a7b67ad554810de"),
+        ("rust-v0.156.0", "codex-rs/config/src/loader/mod.rs", "8dbaad22f27f7fc032a5b2559ec432ddddd25260", "de2afb184ca5e6807ab753f82ba18ba651aec7a8f75bc53722e5aab5b799d5b2"),
+        ("rust-v0.156.0", "codex-rs/config/src/loader/projectless_directory_tests.rs", "6b9cbd0bd200b640698d86041f38dd5eeaeb606a", "6e770f98bd9dd59d36712b44d684faa5d0e990e1a1661b5d72b04cb407757746"),
+        ("rust-v0.156.0", "codex-rs/config/src/model_provider_requirements.rs", "ce0b49b22b86ad76e4f37b06deb3ca3cf5a655f1", "951bd5b1c11256e08768b95439339509c294691e73d1315ceb7800480fd8e16c"),
+        ("rust-v0.156.0", "codex-rs/config/src/model_provider_requirements_tests.rs", "0862dcfdee6e90ade6a9ae973161f66e93e825fe", "66862550b183fce55675cc7846ea43f4523cf013f41ba4bbeb2ee197fcfa8bc2"),
+        ("rust-v0.156.0", "codex-rs/config/src/permissions_toml.rs", "8853f73db2d8091c2caa5570d736437e6001434e", "f410e2da8b23102c3236ea47d37637666b2e07ea37d4dbb8be5ad0566b632810"),
+        ("rust-v0.156.0", "codex-rs/config/src/types.rs", "96a0222d6b84937e413807d24716abae3ccddf51", "5eb45c22b58c0b022ef61e3527c90c10080267a165c733c5b5885115b1073727"),
+        ("rust-v0.156.0", "codex-rs/core/src/config/config_tests.rs", "0bf3dcf63868e4c6d31a73ae92d2757e64c216e5", "f78b32a638544793ac52d70db1eda30ea6942df0fde49d143ba6bc8bfccf79ce"),
+        ("rust-v0.156.0", "codex-rs/core/src/config/mod.rs", "e71ad88dde0f7ffc3d2e1bc61d4b34a2ade13a46", "9f44253d22309f25fa4084f6f15b26dd313f3757e5b133e27cb380498e3d05ba"),
+        ("rust-v0.156.0", "codex-rs/core/src/config/permission_path.rs", "0e36c20fd225d8e15e9a34b6fcefa102ebc73718", "07b5d3c9a9d1cd897b49db3caccb88c6d7295dc5761dc815cbd5c0e435a5bbb6"),
+        ("rust-v0.156.0", "codex-rs/core/src/config/permission_path_tests.rs", "34fb5c73e865cc88c6a1d082f2fcd09014346369", "4e2ccdc4c0673c16a1b18b17431cca228dde843d81d19d0cdfe97da571ac3943"),
+        ("rust-v0.156.0", "codex-rs/core/src/config/permissions.rs", "9cef5b075adfc6f62618e16b82deeef2b73fd4a5", "cda9109f6a5405dbf2abbe7d53883b755419c5b6d0b3e7f5834c65710db3479a"),
+        ("rust-v0.156.0", "codex-rs/core/src/config/permissions_tests.rs", "6b385ff25ba09f1cf5beb93890450bc98ea01847", "b4f5168adc9e2098bfda43292ef30b46c5c62a4874b72103c1d0f7a2092982bd"),
+        ("rust-v0.156.0", "codex-rs/core/src/config/windows_sandbox_config.rs", "3b7ab6db21c8c6386d9f8bcf3fc7407ddbab82f0", "7923d0f2789b44e478f334f7a2d6d6f9a097144e49122b72c302114803886c73"),
+        ("rust-v0.156.0", "codex-rs/core/src/config/windows_sandbox_config_tests.rs", "14ff5f4d9c00b5294722f6d9b3665bed16f2fddf", "548b6ceabaca91a0b52a30f91ff028c17107a527050836b2c68b1af5f2e7dd6e"),
+        ("rust-v0.156.0", "codex-rs/core/src/sandbox_tags.rs", "93e9383c487ddbad266879ac222cce03d763363b", "55380002ca049922a8a64635d0e059b2802e18172febae267a689a8de36413bb"),
+        ("rust-v0.156.0", "codex-rs/core/src/sandboxing/mod.rs", "43003e8ad09666b4ebdd3630375b304591c9a64e", "97a92c489ed2053f147209e873257f55c0621f53c7e031e04093b0eac36d156f"),
+        ("rust-v0.156.0", "codex-rs/core/src/session/session.rs", "92c1481375041da2e2f9c351b89219522bb446c7", "faf4a49fa9a1f8f082b3aaaaecda03164e1f0bc20a9ffd3a2acfca046a281237"),
+        ("rust-v0.156.0", "codex-rs/core/src/session/turn_context.rs", "165be6294776fc8a951ed97acebd5a9adc54b82d", "de29f1dfbc5d4e4516e3720b88dcaa86628c572d69e636d87391361b1e9bdbdf"),
+        ("rust-v0.156.0", "codex-rs/core/src/thread_manager.rs", "a0d7a8cdd00e08741b4a0e4177bc09fd39d5014a", "948b25d26209dae25d319e80fd05c6d83413a30ee3d9681633b81d0451cca363"),
+        ("rust-v0.156.0", "codex-rs/core/src/tools/orchestrator.rs", "f17241a94c6a01bd0b0b5812625dcfc60d79a29b", "d098eafe1136144c7c0eb9627afc3d2bf91c0891a221c61f0c9b86174dcec3e8"),
+        ("rust-v0.156.0", "codex-rs/core/src/tools/sandboxing.rs", "85185947d940141d0b2b3d27bd5c6ea1f9206e20", "4eff60e76106b5c20d4a908a000a9059677c10afc45f6c1370a9d37ffcf07890"),
+        ("rust-v0.156.0", "codex-rs/core/src/tools/sandboxing_tests.rs", "0142440f6c95c9b8958c5b90b941c7d575dfb183", "f767bdb990cf10075f4dbdb5f2e6de6b0429763a9da06fc643475fc9ec2c4b29"),
+        ("rust-v0.156.0", "codex-rs/core/src/windows_sandbox.rs", "316e9ff7fc86dce74425796f76dd81f24f87b0df", "07bfd32ee68ac053dd5965cf595ca06a63cf7f46129d9fa5ec2ba9f6fa699989"),
+        ("rust-v0.156.0", "codex-rs/core/src/windows_sandbox_tests.rs", "862d05a2b8c83c816c74afb94045bcb21bd4cd40", "aa95f17c9af991bb7b6a2b594df86eb0f6460d8b7df366d56892d7a65e9be06e"),
+        ("rust-v0.156.0", "codex-rs/features/src/lib.rs", "30318ae47b3ac53c639ebed22912c7a8f62051b8", "d5f1bf1e16c3053df8a739d48e57d743ee76822e532219cee46cff5a9b1d8d78"),
+        ("rust-v0.156.0", "codex-rs/http-client/src/outbound_proxy.rs", "429711f0bbe9245d4aea41b8847501bde77bda42", "925a4af65a326b9084a212a743e23674fe8fbdd845aee9490d518e3af52970eb"),
+        ("rust-v0.156.0", "codex-rs/http-client/src/outbound_proxy_redirect_coverage_tests.rs", "8aefa93f1ea995cd85d638f2bb24f9a8854617dc", "064b6a8405e66c4a7c6615718f670e4a0a0668171169409ff937b7dd27d08dea"),
+        ("rust-v0.156.0", "codex-rs/mxc-sandbox/src/lib.rs", "cb006b0e344513414f65cf2b9b1a38acde62c914", "692d44845a920a8ebdd7b05411d4b9e7f9bcf4d71015268110ee87ef2473de21"),
+        ("rust-v0.156.0", "codex-rs/mxc-sandbox/src/native.rs", "2121711e4c8ecc90376566bd0f932d5c00e969d5", "ec97c3bea1a360cc1e05e319a9408cc17fbab6a078a20987a85f8f4031d04e33"),
+        ("rust-v0.156.0", "codex-rs/mxc-sandbox/src/policy.rs", "5d5b427c7fbe8f9b187e9080854f70a332708a6d", "6415f2c38a45656605c8edaa9bcc973f155d8a99bf151fac63f025dcd50edccb"),
+        ("rust-v0.156.0", "codex-rs/mxc-sandbox/src/policy_tests.rs", "2c6ece44bafd45e46d37a519682d9aa90a69c767", "844ff0985c7a850acd69c6ebe9631b5374737b66c874be7452c88fe14c336ad0"),
+        ("rust-v0.156.0", "codex-rs/mxc-sandbox/src/transport.rs", "24bdb0a7e5ab8eee2f1621f9150cc1982d9b3e4f", "2910e28b3e3446feabcdd72d951385b099ec48471bc6e134d5d313055d94f60c"),
+        ("rust-v0.156.0", "codex-rs/mxc-sandbox/src/transport_tests.rs", "1c8a520963ec47da882c0b9f9a45550dddb9a024", "edd1ee11bad0576afe85a8b465c139351e6616d02533db7eb2e33ab95e1b622a"),
+        ("rust-v0.156.0", "codex-rs/mxc-sandbox/src/windows.rs", "872792ecbcaf812dc9d74bfac991b1051ed9836d", "d68ad71e9a322b2e593d0bc18d994db21f24b7babef0e8a7d790521b40b6fa71"),
+        ("rust-v0.156.0", "codex-rs/protocol/src/models.rs", "d51ded354c4ee8fdd02e299fdee27658fb3e01f1", "d34f7b4f81f189e3446f27bb58de90e9c3d6d473ba3fa9a9aaa64371b23ab671"),
+        ("rust-v0.156.0", "codex-rs/protocol/src/permissions.rs", "c7e802dd082ef099df9b72a4607eef5a69c633a2", "0654f2ff45ecb6b0afedfa1ab2e71e22ed0feae0346d2fd460b5b82443930b0a"),
+        ("rust-v0.156.0", "codex-rs/protocol/src/permissions/target.rs", "22037e800fed64650854b5bb10f93c666c386e9f", "e7c44e9e8e15e0579ee9081ac8b7b6f8d34cc53a48ca8a5594838cd0d962efdd"),
+        ("rust-v0.156.0", "codex-rs/protocol/src/permissions/target_tests.rs", "229705f702bd18aed1241ab62d29af3205b98646", "460504e6887e16b5e13947f08ac491ecb113513672687018cae9a3f74762bfd5"),
+        ("rust-v0.156.0", "codex-rs/protocol/src/sandbox.rs", "b0304634ad8fb45be9b35b48591ef6c6a4e62099", "44f482ec2de0fa97339b7748c1c8b879c10ba45e122d7175b0dc08e2e18f0112"),
+        ("rust-v0.156.0", "codex-rs/thread-store/src/live_thread.rs", "5f75a30404376441af44c971985ef5855436dae5", "36e2fdfd41e312e30d04ecab911ea8fd28d6fb2f79f6328209ce653f3c1cca74"),
+        ("rust-v0.156.0", "codex-rs/thread-store/src/local/delete_thread.rs", "103b12d49fd9caaa6aa31284b6ee0117a09b9213", "5401321672d308be7d4628c44fc6adbd8de2b25d64173acbdf0c0b6e42bc5884"),
+        ("rust-v0.156.0", "codex-rs/thread-store/src/local/mod.rs", "3bc268268a9451c43ea4b51964044ca8c074e437", "76783de7731431492743bbebdbaead0432f991b427b98e4ea55786a58e008363"),
+        ("rust-v0.156.0", "codex-rs/thread-store/src/local/tests/acquisition_tests.rs", "db026605711db5811fe2d72a3682cced339bc90a", "cfe634ab824fecb68b275ec4ab6a9ca541403a23aefac1523353aef64a65dc53"),
+        ("rust-v0.156.0", "codex-rs/thread-store/src/store.rs", "58c54db1561f9a7381ce7068a3a8076a9818dfc0", "5d9d37998d02b27e3b42b9d779865a2e2ff4c818b2e28c913a5c8c6b07a5194a"),
+        ("rust-v0.156.0", "codex-rs/thread-store/src/types.rs", "28568b3e2b834e064fb320e57e5608e827720bd6", "fdbbe23e9b54d763fe13072c1714e3f33dd504c460cb2cac5cf9238cb191d314"),
+        ("rust-v0.157.0", "codex-rs/app-server/src/application_network.rs", "0641a80e0be24fcad3cc52a8f9856469208fd157", "210f384f48bea9d1d32a1003f008893986d797943a775430afe49e0d48cfde0b"),
+        ("rust-v0.157.0", "codex-rs/app-server/src/application_network_tests.rs", "20a63a2d69b3ef01bd21820f4461e1225a216a25", "713d590b610f3c60e3b7c0a2f61dd030ad2f93f59aa4a2dc1db21df072d11d79"),
+        ("rust-v0.157.0", "codex-rs/app-server/src/config_manager.rs", "2467d4d4f1c7de318f671d94052a81ad431795d8", "9aab02f8480f984ed1421293cd6294d86b044b9f3cc01dc424ac5a92d33c084c"),
+        ("rust-v0.157.0", "codex-rs/app-server/src/request_processors/thread_processor.rs", "57c10fe833cb800440e48c3cfaad1246d1d91a97", "6cbb64f37da05dfe25ff7f82b5f8a32b727fd25fd79ca98f431d508b365475d1"),
+        ("rust-v0.157.0", "codex-rs/app-server/tests/suite/v2/application_network.rs", "71460ab5689df49bd5d9ae678298376bc23ab48d", "3aab19b516dd784b64f2dc573b6fc1f421704c4e63a8a51e78016622ad0e9909"),
+        ("rust-v0.157.0", "codex-rs/config/src/loader/application.rs", "ab0786c35f00cef372bbae230f8ed7d145bd17ea", "2ba93ecbbfbc777ea004a135a2241a4df0ec68c1a7946cb16b51fc853a810da3"),
+        ("rust-v0.157.0", "codex-rs/http-client/src/network_policy.rs", "4c3ce3e5f09e97deecfd8b11c94baa1bfbcf622c", "65569bcb7f943980ab0ff8f75352d3de4f738bd369c527cff0018a03c30bd8bf"),
+        ("rust-v0.158.0", "codex-rs/app-server-protocol/schema/json/ServerNotification.json", "27c71f25669a6ce0db2a591970ed30d21953adb2", "a132b7abca4a45a874e8b267a654cfa9ba5cc415443b6aec65ad275f100587c1"),
+        ("rust-v0.158.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadReadResponse.json", "7d9935ab2ce56cb83ec0514663d1f36e3f107d34", "c315f60f40ddfc8dabcb60defcc6f7e0aeef16f40542ee7d372372b6e6296c91"),
+        ("rust-v0.158.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadResumeResponse.json", "76efd1e76eba5b5fd83dea86e88ddc5206823ef1", "b37dc7eeb3606efb2f8140c5209b2bb3ec594d041ff30b9b09dd11fa721a7a78"),
+        ("rust-v0.158.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadStartResponse.json", "66a0b378b9b274bcb6ecd62ccf9112b6f0572113", "185324ac7860327db6ceeff644d16ee6e7d7c60a899925007b23553ef69eb125"),
+        ("rust-v0.158.0", "codex-rs/app-server-protocol/schema/json/v2/TurnCompletedNotification.json", "1596283e07e1843842216b94665d01b6ec002de1", "b6f418007f28a0511c3798a5bd2c6b6365e4e60df21ccaf2ef1e3321d43347bf"),
+        ("rust-v0.158.0", "codex-rs/app-server-protocol/schema/json/v2/TurnStartResponse.json", "cc196125b01e2a31a038cc83f1dfc7f952ed13bc", "6c76a2d3917e7ef16fd3962016126cc21f23d149d022e156711e9ce2f27cf545"),
+        ("rust-v0.158.0", "codex-rs/app-server-protocol/schema/typescript/v2/CodexErrorInfo.ts", "90aa55ff974ccef001691ef1fe1d47a7c7d6b669", "a478e86f870f816c0fc93d7d3398635db83039a7d318dfafd442dac1e3b3e61c"),
+        ("rust-v0.158.0", "codex-rs/app-server/src/request_processors/thread_processor.rs", "055edd1ea682c8b11d5fca6b05a6d8174a74cdb9", "77f7a1b602d0225388d353076da99baacd19f6828f0d2d21d3483d55142df65a"),
+        ("rust-v0.158.0", "codex-rs/protocol/src/permissions.rs", "9059437b02264aa2dd63468a97ea4e82dcd3c625", "9195d43702fc0442ff9ad6d3cc7653324130996f035a008ac94489a7f20bd3e7"),
+        ("rust-v0.158.0", "codex-rs/protocol/src/permissions/local_aliases.rs", "83c8ba0dd5fa923cede3e57168a00e1a7106e873", "42b473a82680c70027df1ab0d8fd880878c5b13aa7d7932ee9e64bdc6277384b"),
+        ("rust-v0.158.0", "codex-rs/protocol/src/permissions/local_aliases_tests.rs", "2e06e016c350b7c67ca6dde2b85cb039c8e08562", "614e364db6495330011c59449384d84e4e1fa394169cab4b572db244f53734c3"),
+        ("rust-v0.158.0", "codex-rs/protocol/src/permissions/target.rs", "22037e800fed64650854b5bb10f93c666c386e9f", "e7c44e9e8e15e0579ee9081ac8b7b6f8d34cc53a48ca8a5594838cd0d962efdd"),
+        ("rust-v0.159.0", "codex-rs/app-server-protocol/schema/json/ServerNotification.json", "1e20ed648d1d41e8a26655ac4abb9f6eae60435e", "d3479ecf59ca421a8b052d3d15e8196d23d297a0bd85ae5a270a34ddd9c865c9"),
+        ("rust-v0.159.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadReadResponse.json", "9f11927d728a0b81a65ddcac85b6ac468c552611", "3a0aaf9cff80796d07130b85723ca825f9203796d15c878f452083cf9f9a6f0a"),
+        ("rust-v0.159.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadResumeResponse.json", "9220eeecaa477e0ad08864e2847da3711c6eb7b9", "e7751c8dba039fa5f55971307e89e8b8541f2853840650ea8968bad8c23698d6"),
+        ("rust-v0.159.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadStartResponse.json", "01af33c3cc3e947a7d81d851904008977b971724", "70d9c9a3a064edb76662ec7cd066d142ed9252b768272bc3a7d00788386755c0"),
+        ("rust-v0.159.0", "codex-rs/app-server-protocol/schema/json/v2/TurnCompletedNotification.json", "2d61e080429dd68e3102f1fa4392851892c84ae8", "016870158603b0f84bd9f8f65f927161c9fd5128e5ec632087616462dc44e085"),
+        ("rust-v0.159.0", "codex-rs/app-server-protocol/schema/json/v2/TurnStartResponse.json", "82e5c34ef646dfa706251bd4f65932da3dfca8a1", "12c5151421bb061297c9790ff795a44aa4b9bdb91fbb68012dcf0a08cf4198b1"),
+        ("rust-v0.159.0", "codex-rs/app-server-protocol/schema/typescript/v2/CodexErrorInfo.ts", "294998e7ff4d8b4d8172c0bae6caf0bdbde7f477", "5fbe41b47418f8773c377e1a0c82c25fff69776a868ca36052f2758f33db9a5c"),
+        ("rust-v0.159.0", "codex-rs/app-server-protocol/schema/typescript/v2/Turn.ts", "e804fa974c3dd2bcb69cfbba1f71872fa75fbe8b", "a304905165c888f74ea402b6083175a27d100eab164657dd62a38e0965e28536"),
+        ("rust-v0.159.0", "codex-rs/app-server/src/request_processors/thread_processor.rs", "289cb63953662eb5fba00222ec49432dd976b944", "786c0549e5c1b57421e03472f3b8c3519090849fb8401163f3da5cc2c55b66be"),
+        ("rust-v0.159.0", "codex-rs/protocol/src/permissions.rs", "140090f5ef1649ed9e4717643dc85773be93da5f", "78a1c80b9b5cda29c563538d90003005d26c411eea533bd00db54a185a6aed54"),
+        ("rust-v0.159.0", "codex-rs/protocol/src/permissions/target.rs", "6d9f51b2c5641bc81fcbff96021905b838af0ee7", "df4ed6069d7d64396066dc6a2ca87f540f1f05f6589ab4c990592b5648ae4219"),
+        ("rust-v0.159.0", "codex-rs/protocol/src/permissions/target_approved_materialization_tests.rs", "39cf6c09b0bbf5e21e6b1a72e6300523f70f146e", "9087dc5d0967454f635f4e96929a3335a119c9f38ffcd2a2f56b3cb370c9e7f7"),
+        ("rust-v0.160.0", "codex-rs/app-server/src/thread_status.rs", "c627db4b7f0e8fc43f1ea8c1a3af9b224f3f15a6", "7948ede1c98af3467d8a1b1ec4cd3fe5487574b0789dfc4fac10987e6f1238f1"),
+        ("rust-v0.160.0", "codex-rs/protocol/src/error.rs", "d0dad844bd548505d0bd9109dec3d0c0019d93a3", "7cda4a589cec5c36f73ca3c3754adbde372bbf9cae6d4c0d34445a43e54ee646"),
+        ("rust-v0.161.0", "codex-rs/app-server-protocol/schema/json/ServerNotification.json", "7cc907203b7f916deaed9dbbce23bea379c3b04b", "1b0c1562226b8e2a9a5ea9ab89509742c90b8b2ee18af44da03e309bab189c72"),
+        ("rust-v0.161.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadReadResponse.json", "32c44a7fe587f30bc3097b3055d87cef454718c9", "ba6168f666c09b4e37d2f4f9abe113dfd4b03b9ada141fb8576554d262c00dda"),
+        ("rust-v0.161.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadResumeResponse.json", "90f142dce6c7c2fab22edba9e5d93b06fc3f5c2e", "65aa8b6aad04174627278345826321b1fa2a5d2befac529638980f4b10a90e18"),
+        ("rust-v0.161.0", "codex-rs/app-server-protocol/schema/json/v2/ThreadStartResponse.json", "ef13faffe3a19cce0b469d829f359a03e4ff257e", "c35a569dc1533b3c3ab2c22cdd31249f8ad165e1ed249e68e40609eac6372cb4"),
+        ("rust-v0.161.0", "codex-rs/app-server-protocol/schema/json/v2/TurnCompletedNotification.json", "70487c9d29c99cdd3123bb9cb405f4484f86ee30", "4669009c1bad2d8a26da821d9aaaef847865085bba3c8293d8cc92a6919237fb"),
+        ("rust-v0.161.0", "codex-rs/app-server-protocol/schema/json/v2/TurnStartResponse.json", "047017e9b1b2fe74ebb4bbb677831947a904c6fd", "92d0c40c75ff98bb31aca940a5484885e475bbf2920bb18198ff4fd5450b3a4a"),
+        ("rust-v0.161.0", "codex-rs/app-server-protocol/schema/typescript/v2/CodexErrorInfo.ts", "43598b28e01d3288768aba23bd0673daa5af965a", "28d52fe80c9ed96079286c0329a651fdc097b5aa7f577ea414d771d83e1da539"),
+        ("rust-v0.161.0", "codex-rs/app-server-protocol/src/protocol/v2/thread.rs", "9eee37dcac9756c899f7facb17053d193486ae9e", "ee738dfe716fbbd61eb97006714d2c6bf31d6c7dae425ca6d6e60b648b701c6f"),
+        ("rust-v0.161.0", "codex-rs/app-server/src/request_processors/thread_goal_processor.rs", "bada44de510d3fb2e22b5d8fa5ba25a1aa6896ea", "835fac66bc2ae9eb0e29b7a5a3da09cfea11cf2ca3dbd0384a296ce54db9b3e6"),
+        ("rust-v0.161.0", "codex-rs/app-server/src/request_processors/thread_processor.rs", "e36ca147e7413df74afb55057551c42706661fab", "2c4786cb9b9fc2a4401d4bdd6f4af53fb18c8481cdb0277ba26c719d5f0a91e4"),
+        ("rust-v0.161.0", "codex-rs/app-server/src/request_processors/thread_processor_tests.rs", "102696601d9fa23bb04e816eab1b7b81bc7d5303", "35a4d35daeec615f12d25d131e34f378f5833876914ed24565de410b8ec3952e"),
+        ("rust-v0.161.0", "codex-rs/app-server/src/thread_state.rs", "a19c41b19ff8aea40842771f261f195661b33ec5", "3c17b7e5abda4e27f3006ac7027cf1f47264a4508a8ae385d5ad6d294df86f5e"),
+        ("rust-v0.161.0", "codex-rs/core/src/config/config_tests.rs", "79ab58e75c28c6f007190c7ccc1d003d154e43f2", "050c4023685b23e3333ceb9f9d5149ef044499cd901292334c24c4c527dfacf0"),
+        ("rust-v0.161.0", "codex-rs/core/src/config/mod.rs", "fe062799547c5bb1eb4dbab866ff58a6c4586d72", "45250dde1184d339a3ceb3100f18caee86ccd04de22b5d044b03f79a17b8bc97"),
+        ("rust-v0.161.0", "codex-rs/core/src/config/windows_sandbox_config.rs", "75ff2013c55167a8dfcf7b155eaf6987e8016b45", "6a38ebeef54009b5e6482e9ee43bc105efb5f52e1434c7e784b12d24d2122b75"),
+        ("rust-v0.161.0", "codex-rs/core/src/session/session.rs", "945204017870da92ecec2f52002b9d9c1be6d958", "4af3b7344d5ed76e2ae296189a3c4f06f72a0ffd092faa2a8f733ea8bf2f9ee1"),
+        ("rust-v0.161.0", "codex-rs/core/src/session/turn_context.rs", "4db28491b2f33a5f56a9d41173a2d15be507cfa1", "7bd7497da6ac4a4767a83cb0f9c4b32cc6b4a4243e1d9efe69651adf1a7b56af"),
+        ("rust-v0.161.0", "codex-rs/core/src/tools/orchestrator.rs", "3d7e2b62c5227910980c56fc6be5f426d35e20c1", "06b6b1fe59b6346a5d5ae263249de86342e5cefc2dfca10f6f00255c6516fde7"),
+        ("rust-v0.161.0", "codex-rs/core/src/tools/sandboxing.rs", "bf1fd2d79e6adae7bcb7cc1aa7cd36df1221bced", "eacb70e5c7b746834d16b11eca6f37aecd5655ef3dfbb38440e1013c59da987a"),
+        ("rust-v0.161.0", "codex-rs/core/src/tools/sandboxing_tests.rs", "95731415baf4906cf0a2834b991264df0cff9ba4", "8808189491ba4b9a79c543db385aa0e9762482b1ae72611b9e4a1f0c32729855"),
+        ("rust-v0.161.0", "codex-rs/core/tests/suite/windows_sandbox.rs", "8369249ed7867b1cdac980736e8891650fb0edae", "bca072fc7efff6f86aedc076eb3bc56594538c6df0f77de6d14c9b586b5e4d27"),
+        ("rust-v0.161.0", "codex-rs/features/src/lib.rs", "4ff27c25d874dda6b8c666d927b445fd48c293ea", "caee3c3e0385cf457b53476d3b7135de8646f7bb362142574b6443a473b07062"),
+        ("rust-v0.161.0", "codex-rs/protocol/src/error.rs", "4a89f709db2368c74efc007dc0c6d922accd72c3", "bbafb0bda86e688a76aa9221926759a793914dcf6442aa70a19324b5520afa4a"),
+        ("rust-v0.161.0", "codex-rs/protocol/src/models.rs", "bb29f84985f57febc38c28eb573371feba7a9aca", "59c29630f8351fdfdab51fc48e4b468e9749bbff4a043984c57470b49da7fe40"),
+        ("rust-v0.161.0", "codex-rs/thread-store/src/in_memory.rs", "1e670fee773093f7cd0d0266e52dc4eb4ae8f819", "14c75d081eac6d3e7d5005db77547164b8e214d02928841ccced82d77e453961"),
+        ("rust-v0.161.0", "codex-rs/thread-store/src/local/helpers.rs", "677ce0cd91acaf265399da3b67a6b2fb26dc2364", "cc16b2adcdd3ba4f7a3c070c13f8613a4436ef08934da8bf8209067fead33318"),
+        ("rust-v0.161.0", "codex-rs/thread-store/src/local/rollout_lineage.rs", "556ca03767bc97a75c05cb97afe6e76c4d7e4592", "f379d3715e0cd3316e6833e57874fb34c3c2ae0a2f492f4dbb3f428b848355ea"),
+        ("rust-v0.161.0", "codex-rs/thread-store/src/local/rollout_lineage_tests.rs", "be93f4a38cc1298c9788165e5a909ef5855d0dac", "e7da8fd3d3cc754883da1d9934224da215e7c792269e0ec21da723893a7f9bd4"),
+        ("rust-v0.161.0", "codex-rs/thread-store/src/thread_metadata_sync.rs", "55edd7472eda02bae61ae9bfefeb2fa2c84f7a2d", "6f72a17d629feaa34ee1ff795891b72dedead8908c99ea914df98f0ef199d249"),
+    ]);
+    assert_eq!(identities, expected_identities);
+    let identified_paths = identities
+        .iter()
+        .map(|(tag, path, _, _)| (*tag, *path))
+        .collect::<BTreeSet<_>>();
+    for hop in review["hops"].as_array().expect("hop ledger") {
+        let tag = format!("rust-v{}", hop["to"].as_str().expect("hop tag"));
+        for path in strings(&hop["selected_schema_files"]) {
+            assert!(identified_paths.contains(&(tag.as_str(), path)));
+        }
+    }
+}

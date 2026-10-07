@@ -767,7 +767,6 @@ fn a_session_lease_ignores_its_elapsed_open_deadline() {
         RegisteredToolExecutionDisposition::Executed
     );
     assert_eq!(lease.deadline().instant().ticks(), 500);
-    assert_eq!(lease.lease_deadline(), None);
     assert_eq!(kernel.outstanding_calls(), 0);
 }
 

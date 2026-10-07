@@ -91,7 +91,10 @@ impl RegisteredToolPreparation {
     ///
     /// The opening deadline always bounds acquisition and readiness. A lease
     /// deadline additionally bounds every call; `None` keeps the lease live
-    /// until its owning session closes it.
+    /// until its owning session closes it. This is route plumbing for
+    /// integrations that own the session lifetime; consumer code should use
+    /// [`Self::prepare`].
+    #[doc(hidden)]
     pub fn prepare_with_lease_deadline(
         &self,
         hosts: &HostServices,
@@ -182,12 +185,6 @@ impl PreparedRegisteredToolBinding {
     #[must_use]
     pub const fn deadline(&self) -> Deadline {
         self.open_deadline
-    }
-
-    /// Returns the optional lease deadline bound at prepare.
-    #[must_use]
-    pub const fn lease_deadline(&self) -> Option<Deadline> {
-        self.lease_deadline
     }
 
     /// Returns the immutable selection bound at prepare.

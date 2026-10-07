@@ -318,6 +318,7 @@ impl RegisteredToolOperationKernel {
     /// the lease deadline and maximum duration at its serialized admission
     /// point.
     #[must_use]
+    #[doc(hidden)]
     pub fn next_call_deadline(&self) -> Deadline {
         let now = self.time.now();
         let bounded = self.maximum_call_deadline(now);
@@ -333,10 +334,9 @@ impl RegisteredToolOperationKernel {
                 .as_nanos(),
         )
         .unwrap_or(u64::MAX);
-        let bounded = Deadline::at(MonotonicInstant::from_ticks(
+        Deadline::at(MonotonicInstant::from_ticks(
             started.ticks().saturating_add(max_duration_ticks),
-        ));
-        bounded
+        ))
     }
 
     async fn admit_progress(&self, progress: RegisteredToolProgress) -> Result<(), RuntimeFailure> {

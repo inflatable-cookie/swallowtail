@@ -30,7 +30,7 @@ impl SessionCleanupRequest {
 /// The cleanup future is abandoned and reported as failed when the host
 /// observes the deadline. A ready cleanup result is accepted only while a
 /// fresh host-time observation remains before the boundary.
-#[must_use]
+#[must_use = "the cleanup future must be polled to join its resources"]
 pub fn bound_session_cleanup(
     expected_execution_host_id: ExecutionHostId,
     request: SessionCleanupRequest,

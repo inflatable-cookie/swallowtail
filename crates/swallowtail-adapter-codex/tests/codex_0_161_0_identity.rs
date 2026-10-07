@@ -255,12 +255,10 @@ fn exact_exec_claim_segments_and_exclusions_remain_unchanged() {
         ]
     );
 
-    for point in ["0.155.1"] {
-        assert!(matches!(
-            claim.assess(&version(point)),
-            InterfaceCompatibilityAssessment::Qualified(_)
-        ));
-    }
+    assert!(matches!(
+        claim.assess(&version("0.155.1")),
+        InterfaceCompatibilityAssessment::Qualified(_)
+    ));
     let decision = &json(IDENTITY)["claimDecision"];
     assert_eq!(decision["latestQualifiedRemains"], "0.155.1");
     assert_eq!(decision["firstStopHop"]["from"], "0.155.1");

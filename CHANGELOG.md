@@ -6,6 +6,12 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- separate registered-tool opening and lease deadlines. Claude Agent SDK
+  registered tools now live until their session closes after ready, while
+  per-call bounds and an optional explicit lease deadline remain enforced.
+  Existing operation-scoped callers keep their previous deadline behavior.
+  A virtual-clock fake-SDK regression covers a delayed call after open expiry
+  and a later call on the same connected courier.
 - rebind the Claude Agent SDK exact one-point package/native tuple to official
   npm `@anthropic-ai/claude-agent-sdk` `0.3.284` carrying native `2.1.284`:
   Research 367 freezes all thirteen published hops after the `0.3.270` ceiling

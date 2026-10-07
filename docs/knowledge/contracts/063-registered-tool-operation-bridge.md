@@ -202,7 +202,8 @@ Opening a server lease binds:
 - the one-to-one Swallowtail operation/turn attempt and lease generation;
 - exact registration revision and selected tools;
 - transport generation and negotiated protocol version; and
-- deadline, cancellation, and maximum concurrency.
+- opening deadline, optional lease deadline, cancellation, and maximum
+  concurrency.
 
 The authenticated Desktop host binding supplies identity; model arguments,
 provider session IDs, tool arguments, and PID never do. PID is diagnostic only.
@@ -218,6 +219,12 @@ Production and development control profiles remain distinct, but their roles are
 inverted from the original decision. Longhorn's Contract 022 `agent-control`
 server is the production MCP; this bridge is retained for development and
 non-production profiles and is not a production tool surface.
+
+The opening deadline bounds acquisition and readiness only. A session-scoped
+lease remains live until its owning session closes it. An optional explicit
+lease deadline bounds calls independently. Existing operation-scoped callers
+bind their operation deadline as both the opening and lease deadline, keeping
+their prior call bound.
 
 ### Transport And Reconnect
 
@@ -441,7 +448,7 @@ SessionOptions, TurnRequest, watcher records or public constructible structs.
 | RegisteredToolSnapshot | Immutable server ID/revision; unique namespaced tool IDs/kinds; schemas/digests; effect declarations; limits; no runtime resource |
 | RegisteredToolSelection | Snapshot reference, selected IDs, exact transport/protocol, effective bounds; immutable after prepare |
 | ConsumerAdmissionBinding | Trusted opaque incarnation, workspace/task generations, session/task/attempt IDs and live revocation source; no serialized bearer |
-| RegisteredToolOpenRequest | Configured/prepared identity, operation scope/turn, selection, admission binding, deadline |
+| RegisteredToolOpenRequest | Configured/prepared identity, operation scope/turn, selection, admission binding, opening deadline, optional lease deadline |
 | RegisteredToolBridgeLease | Non-Clone scoped kernel token, safe binding accessors, driver-private endpoint/auth; nonserializable; defensive Drop |
 | RegisteredToolCall | Validated binding, unique call ID, selected tool, bounded arguments and deadline |
 | RegisteredToolProgress | Same binding/call plus monotonic sequence and bounded payload |
@@ -493,10 +500,11 @@ once remote execution. Cleanup failure is visible and never a successful close.
 Maximum one outstanding call per lease; 64 selected tools; 64 KiB per schema;
 1 MiB aggregate schema bytes; 256 KiB arguments or result; 64 KiB progress item;
 32 queued progress items; 64 KiB total selected skill/reference content.
-Consumer limits may narrow these ceilings. Calls expire at the earlier of their
-operation deadline or 60 seconds; opening and joined cleanup are bounded by
-10 seconds each and the parent lifecycle budget. Reject overflow before work,
-never silently truncate required content. Tests use virtual clocks where feasible.
+Consumer limits may narrow these ceilings. Calls expire at the earlier of an
+optional lease deadline, caller deadline, or 60 seconds; opening and joined
+cleanup are bounded by 10 seconds each and the parent lifecycle budget. Reject
+overflow before work, never silently truncate required content. Tests use
+virtual clocks where feasible.
 
 Protocol versions are an explicit nonempty subset of frozen qualified route
 artifacts; no latest/default negotiation or production route is enabled by

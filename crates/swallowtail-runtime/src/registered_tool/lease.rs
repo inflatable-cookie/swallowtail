@@ -187,14 +187,17 @@ pub struct RegisteredToolOpenRequest {
     selection: RegisteredToolSelection,
     admission: ConsumerAdmissionBinding,
     deadline: Deadline,
+    lease_deadline: Option<Deadline>,
     effective_bounds: RegisteredToolBounds,
 }
 
 impl RegisteredToolOpenRequest {
-    /// Binds configured and prepared identity, selection, admission, deadline.
+    /// Binds identity, selection, admission, and operation-scoped deadlines.
     ///
     /// The effective bounds start at the selection's bounds. A consumer
-    /// narrowing is applied with [`Self::with_consumer_limits`].
+    /// narrowing is applied with [`Self::with_consumer_limits`]. The supplied
+    /// deadline bounds opening and the live lease for the operation-scoped
+    /// route.
     #[must_use]
     pub fn new(
         execution_host_id: ExecutionHostId,
@@ -214,8 +217,20 @@ impl RegisteredToolOpenRequest {
             selection,
             admission,
             deadline,
+            lease_deadline: Some(deadline),
             effective_bounds,
         }
+    }
+
+    /// Sets the optional deadline that bounds the live lease and its calls.
+    ///
+    /// The open deadline remains independently enforced while the host
+    /// acquires and readies the transport. `None` makes the lease live until
+    /// its owning session closes it.
+    #[must_use]
+    pub(crate) fn with_lease_deadline(mut self, deadline: Option<Deadline>) -> Self {
+        self.lease_deadline = deadline;
+        self
     }
 
     /// Narrows the effective bounds with consumer-selected limits.
@@ -271,10 +286,16 @@ impl RegisteredToolOpenRequest {
         &self.admission
     }
 
-    /// Returns the operation deadline.
+    /// Returns the opening deadline that bounds acquisition and readiness.
     #[must_use]
     pub const fn deadline(&self) -> Deadline {
         self.deadline
+    }
+
+    /// Returns the optional deadline that bounds the live lease and its calls.
+    #[must_use]
+    pub(crate) const fn lease_deadline(&self) -> Option<Deadline> {
+        self.lease_deadline
     }
 }
 
@@ -394,10 +415,20 @@ impl RegisteredToolBridgeLease {
         self.selection.transport()
     }
 
-    /// Returns the operation deadline bound at open.
+    /// Returns the opening deadline that bounded acquisition and readiness.
     #[must_use]
     pub const fn deadline(&self) -> Deadline {
         self.deadline
+    }
+
+    /// Returns a new call deadline bounded by the lease and maximum call time.
+    ///
+    /// This is for carriers that do not receive a caller-owned deadline. The
+    /// kernel applies the same bounds again when it admits the call.
+    #[must_use]
+    #[doc(hidden)]
+    pub fn next_call_deadline(&self) -> Deadline {
+        self.kernel.next_call_deadline()
     }
 }
 

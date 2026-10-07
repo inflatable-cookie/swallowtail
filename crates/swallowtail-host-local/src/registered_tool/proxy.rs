@@ -41,7 +41,7 @@ struct ProxyState {
     kernel: Arc<RegisteredToolOperationKernel>,
     selection: RegisteredToolSelection,
     time: Arc<dyn TimeService>,
-    deadline: Deadline,
+    open_deadline: Deadline,
     connection_claimed: std::sync::atomic::AtomicU64,
     rendezvous_claimed: AtomicBool,
     rendezvous: Mutex<Option<Arc<RendezvousState>>>,
@@ -57,7 +57,7 @@ impl RegisteredToolProxyServer {
         kernel: Arc<RegisteredToolOperationKernel>,
         selection: RegisteredToolSelection,
         time: Arc<dyn TimeService>,
-        deadline: Deadline,
+        open_deadline: Deadline,
     ) -> Result<Self, RuntimeFailure> {
         let endpoint = listener.endpoint();
         let bearer = listener.bearer();
@@ -69,7 +69,7 @@ impl RegisteredToolProxyServer {
             kernel,
             selection,
             time,
-            deadline,
+            open_deadline,
             connection_claimed: AtomicU64::new(0),
             rendezvous_claimed: AtomicBool::new(false),
             rendezvous: Mutex::new(None),
@@ -108,11 +108,11 @@ impl RegisteredToolProxyServer {
     /// Returns whether the courier completed the MCP ready barrier.
     ///
     /// The wait is wall-clock, capped at `min(open remainder, 10s)` from the
-    /// lease deadline already stored on this proxy.
+    /// opening deadline stored on this proxy.
     pub(crate) fn wait_until_ready(&self) -> Result<(), RuntimeFailure> {
         let remaining = Duration::from_nanos(
             self.state
-                .deadline
+                .open_deadline
                 .instant()
                 .ticks()
                 .saturating_sub(self.state.time.now().ticks()),
@@ -175,7 +175,7 @@ impl RegisteredToolProxyServer {
             lease.generation().get(),
             lease.transport_generation().get(),
             lease.selection().protocol_version(),
-            connect_timeout_millis(self.state.deadline, self.state.time.now()),
+            connect_timeout_millis(self.state.open_deadline, self.state.time.now()),
         );
         let rendezvous = RegisteredToolProxyRendezvous::create(document)?;
         *self
@@ -521,7 +521,7 @@ fn dispatch_tool(
     };
     let outcome = block_on(RegisteredToolOperationKernel::issue(
         &state.kernel,
-        RegisteredToolCallRequest::new(call_id, tool, arguments, state.deadline),
+        RegisteredToolCallRequest::new(call_id, tool, arguments, state.kernel.next_call_deadline()),
     ));
     let Ok(outcome) = outcome else {
         return (

@@ -193,7 +193,7 @@ OpenHands adds a package without a production route.
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
   sessions for Claude Agent ACP `0.53.0..=0.87.0`, excluding `0.58.0`, over
-  ACP v1 stdio (Research 371); stable newer versions remain visible and
+  ACP v1 stdio (Research 372); stable newer versions remain visible and
   unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
@@ -993,7 +993,7 @@ installed `0.51.0` probe is separately gated and ignored by default.
 The original Claude Agent lifecycle corpus freezes close and delete through
 `0.61.0` plus the unpublished-package exclusion. Exact source deltas and
 adapter conformance carry that unchanged mapping through the newer private
-`0.62.0` through `0.87.0` behavior milestones (Research 371).
+`0.62.0` through `0.87.0` behavior milestones (Research 372).
 Qualified close tears down only active in-memory resources and preserves
 history. Qualified delete tears down an active target when present, then uses
 the exact Agent SDK path that removes the primary local transcript and sibling

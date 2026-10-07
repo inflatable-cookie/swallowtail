@@ -51,19 +51,33 @@ section = "Research Records"
 ]
 "check:current-claude-agent-acp" = "cargo check --locked --all-targets -p swallowtail-adapter-claude-agent"
 "validate:current-claude-agent-acp" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --lib --test integration -E 'test(/identity_and_claim_qualify_current_0_87_0_with_exact_hop_evidence|historical_0_81_2_identity_remains_qualified_after_0_87_0|production_claim_keeps_the_frozen_corpus_inside_the_raised_window|every_qualified_claude_segment_has_exact_activity_provenance|qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_shape|qualified_versions_load_ordered_replay_and_resume_without_replay|qualified_native_close_ends_active_work_without_deleting_history|one_prompt_run_preserves_version_topology_retention_and_native_close|permission_stops_as_provider_request_without_auto_approval_or_callback|cancellation_stops_the_turn_then_joins_the_clean_operation_cleanup|operation_deadline_times_out_the_turn_then_joins_a_clean_session_cleanup|exact_wrapper_versions_probe_only_the_host_approved_target|qualified_behavior_segments_share_one_delete_and_cleanup_contract|tool_title_refines_and_survives_payload_only_completion/)'"
+"check:current-codex-exec" = "cargo check --locked --all-targets -p swallowtail-adapter-codex"
 "check:examples" = "cargo check --workspace --examples --locked"
 "lint:rust" = "cargo clippy --workspace --all-targets -- -D warnings"
 "test:rust" = "cargo nextest run"
 "validate:sdk-usage-projection" = "cargo nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --lib --test claude_agent_sdk_driver --test claude_agent_sdk_sidecar_asset -E 'test(/usage|turn_end_rejects_malformed_or_missing_usage_counts|qualified_corpora_decode|first_turn_init_rejections_expose_their_fixed_sidecar_code|bash_is_host_mediated_in_every_permission_mode_with_bounded_views|a_two_turn_editing_session_writes_only_what_the_host_admitted|a_declared_stdio_mcp_server_connects_and_its_tool_is_mediated/)'"
+"validate:current-codex-exec" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-codex --lib --test codex_0_161_0_identity --test exec_currentness --test prepared_profiles --test app_server -E 'binary(codex_0_161_0_identity) | binary(exec_currentness) | test(/^(exec_deadline|exec_run|exec_validation|exec_verbosity|installed_discovery|prepared_profiles|structured_run_parity|version_range)::/) | test(exec_runs_at_every_qualified_point) | test(exec_policy_mismatch_rejects_before_process_work) | test(parser_ignores_additive_web_search_results_and_keeps_query_progress)'"
+"validate:current-gemini-cli-headless" = "cargo nextest run --locked --profile sdk-usage -p swallowtail-adapter-gemini --lib --test headless_structured_run --test gemini_cli_0_63_0_delta_ledger -E 'binary(headless_structured_run) | binary(gemini_cli_0_63_0_delta_ledger) | test(published_headless_releases_are_qualified_and_later_stable_is_visible) | test(exact_gemini_corpus_projects_assistant_tools_and_excludes_private_bodies)'"
+"check:current-gemini-cli-headless" = "cargo check --locked -p swallowtail-adapter-gemini --all-targets"
 "format:sdk-registered-lifetime" = [
   "cargo fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent",
   "cargo fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent -- --check",
 ]
 "check:sdk-registered-lifetime" = "cargo check --locked --all-targets -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent"
+"check:sdk-unsolicited-close" = "cargo check --locked --all-targets -p swallowtail-adapter-claude-agent"
+"lint:sdk-unsolicited-close" = "cargo clippy --locked --all-targets -p swallowtail-adapter-claude-agent -- -D warnings"
 "validate:sdk-registered-lifetime" = [
   "cargo nextest run --profile ci -p swallowtail-runtime --lib -E 'test(an_expired_call_never_reaches_the_dispatcher) | test(the_effective_call_deadline_takes_the_earliest_bound) | test(a_session_lease_ignores_its_elapsed_open_deadline) | test(an_explicit_session_lease_deadline_rejects_late_calls)'",
   "cargo nextest run --profile ci -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy -E 'test(mounted_proxy_expired_deadline_rejects_the_callable_frame_before_dispatch)'",
   "cargo nextest run --profile ci-process -p swallowtail-adapter-claude-agent --test claude_agent_sdk_driver -E 'test(registered_session_lease_survives_open_deadline_and_later_turn_calls) | test(open_declares_the_reserved_courier_and_round_trips_one_mediated_call) | test(cancellation_during_a_registered_call_joins_the_lease) | test(close_joins_the_registered_listener) | test(a_courier_that_cannot_exec_names_its_own_cause) | test(the_card_132_registered_open_request_yields_a_typed_failed_open_receipt)'",
+]
+"format:sdk-unsolicited-close" = [
+  "cargo fmt -p swallowtail-adapter-claude-agent",
+  "cargo fmt -p swallowtail-adapter-claude-agent -- --check",
+]
+"validate:sdk-unsolicited-close" = [
+  "cargo nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --lib -E 'test(a_pump_failure_between_command_check_and_registration_rejects_the_command)'",
+  "cargo nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test claude_agent_sdk_driver -E 'test(events_outside_an_active_turn_fail_closed) | test(open_streams_one_turn_and_closes_without_claiming_tree_completion) | test(closing_a_session_with_a_live_turn_resolves_it_instead_of_waiting_on_its_deadline) | test(dropping_close_after_one_pending_poll_hands_the_guardian_to_the_host) | test(close_joins_the_registered_listener)'",
 ]
 "validate:focused" = "bash scripts/validate-focused-packages.sh {args}"
 "validate:card116-mediated-stdio" = "cargo test -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy"

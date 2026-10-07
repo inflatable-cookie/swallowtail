@@ -1,4 +1,4 @@
-# Research 371: Claude Agent ACP 0.87.0 Identity and Currentness
+# Research 372: Claude Agent ACP 0.87.0 Identity and Currentness
 
 Swallowtail#099; evidence checked 2026-10-07 for `claude-agent.acp` only.
 

@@ -7,7 +7,6 @@ use crate::sdk::wire::{
 };
 use serde_json::json;
 use std::sync::Arc;
-use std::sync::atomic::Ordering;
 use swallowtail_runtime::{
     DebugObservation, DebugObservationKind, ProcessOutputStream, RuntimeFailure,
 };
@@ -58,14 +57,7 @@ impl SdkConnection {
             self.emit_protocol_debug(&error, "sdk.pump.finish");
             transport_failure = Some(error);
         }
-        if transport_failure.is_some() {
-            let _ = self.escalate().await;
-        }
-        // An observed exit is the only evidence of exit, and it carries the
-        // host's own owned-tree completion evidence. A wait failure records no
-        // exit at all, never a clean stop.
-        let observed = self.process.wait().await.ok();
-        *self.exit.lock().expect("SDK sidecar exit lock poisoned") = observed;
+        let needs_escalation = transport_failure.is_some();
         let error = transport_failure.unwrap_or_else(|| {
             failure(
                 "swallowtail.claude-agent.sdk.connection_ended",
@@ -73,18 +65,18 @@ impl SdkConnection {
             )
         });
         let error = self.terminal_error_with_stderr(error);
-        self.record_terminal_error(&error);
-        self.closed.store(true, Ordering::SeqCst);
-        if let Some(turn) = self
-            .active_turn
-            .lock()
-            .expect("SDK sidecar active lock poisoned")
-            .take()
-            && !turn.is_finished()
-        {
-            turn.fail_connection(error.diagnostic().clone());
+        // No response can arrive after this pump has ended. Close command
+        // admission and resolve existing waiters before force-stop or process
+        // wait can suspend, so cleanup cannot wait on a dead reader.
+        self.fail_connection(&error);
+        if needs_escalation {
+            let _ = self.escalate().await;
         }
-        self.fail_pending(error);
+        // An observed exit is the only evidence of exit, and it carries the
+        // host's own owned-tree completion evidence. A wait failure records no
+        // exit at all, never a clean stop.
+        let observed = self.process.wait().await.ok();
+        *self.exit.lock().expect("SDK sidecar exit lock poisoned") = observed;
     }
 
     async fn dispatch(
@@ -242,19 +234,5 @@ impl SdkConnection {
                 .with_stage("open-sdk-identity")
                 .with_correlated_code("sdk_version_mismatch"),
         );
-    }
-
-    fn fail_pending(&self, error: RuntimeFailure) {
-        let pending = std::mem::take(
-            &mut *self
-                .pending
-                .lock()
-                .expect("SDK sidecar pending lock poisoned"),
-        );
-        for (_, command) in pending {
-            command
-                .sender
-                .complete(Err(RuntimeFailure::new(error.diagnostic().clone())));
-        }
     }
 }

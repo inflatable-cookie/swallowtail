@@ -466,7 +466,7 @@ See the compile-tested
 ## Repo-Local ACP Sidecar
 
 The root `package.json` keeps `@agentclientprotocol/claude-agent-acp` pinned to
-exact `0.81.2` for development and live probes. Research 371 separately
+exact `0.81.2` for development and live probes. Research 372 separately
 qualifies the wrapper claim through `0.87.0`; the local dependency pin is not
 currentness or live MCP evidence and remains unchanged. Development and live
 probes use:
@@ -490,7 +490,7 @@ integration.
 ## ACP Version Posture
 
 Discovery records the exact Claude Agent ACP wrapper version. Qualified
-wrappers are `0.53.0..=0.87.0`, excluding unpublished `0.58.0` (Research 371).
+wrappers are `0.53.0..=0.87.0`, excluding unpublished `0.58.0` (Research 372).
 Those milestones remain guaranteed. A newer stable release is admitted as
 unverified, remains inspectable in evidence, and must identify itself as that
 same exact version during ACP initialization. Excluded and older versions do

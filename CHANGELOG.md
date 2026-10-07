@@ -9,7 +9,7 @@ annotated Git tags from the canonical repository.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,
-  and `0.87.0`. Research 371 freezes every tarball digest, matching GitHub tag,
+  and `0.87.0`. Research 372 freezes every tarball digest, matching GitHub tag,
   complete package tree, and per file classification. Compatible extension of
   `initialize-meta-extensions-v7`; baseline, exclusions, ACP v1 operation
   surface, and `AllowUnverified` stay. Partial tool updates remain within the
@@ -17,6 +17,27 @@ annotated Git tags from the canonical repository.
   `0.81.2`; the repo local `0.81.2` development pin is unchanged. No package
   install, artifact execution, provider prompt, live initialize, or host
   mutation occurred.
+- close the Claude Agent SDK command-admission race when its pump rejects an
+  unsolicited event or reaches EOF. The pump now closes admission and resolves
+  pending commands before escalation and process wait; command registration
+  rechecks under the pending lock, so close cannot wait for a response from a
+  stopped reader.
+- keep the `codex.exec` qualified ceiling at `0.155.1` after the currentness
+  sweep to official `0.161.0`. `0.156.0` changes projectless thread-start
+  trust behavior; `0.157.0` binds host-managed application network policy to
+  ordinary exec. Both need provider-free adaptation and an operator ruling
+  before qualification can move. The intervening and later stable points
+  remain visible `UnverifiedNewer`; the claim, behavior revisions, segments,
+  exclusions, and independent app-server claim are unchanged. Research 370
+  freezes npm/GitHub identities, every wrapper/platform file digest, and
+  source-hop classifications. No downloaded artifact was executed.
+- record official Gemini CLI headless currentness through `0.63.0` without
+  advancing the existing `0.61.0` ceiling: Research 371 freezes published
+  hops `0.62.0` and `0.63.0` plus complete npm/source trees. The selected
+  `0.63.0` Plan Mode authority, noninteractive permission, and
+  tool-output/context changes need an operator ruling before qualification;
+  both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
+  and `0.59.1` exclusions remain in force.
 - project one validated `claude-agent.sdk` main-loop usage snapshot per
   completed SDK result through `ProviderObservation::Usage`, including
   input/output and cache-read/cache-write token dimensions. Required counts
@@ -59,7 +80,7 @@ annotated Git tags from the canonical repository.
   subagent and exit-plan surfaces. HTTP MCP honouring is accepted on exact
   `0.79.0` and `0.81.2` (Research 361, 364). Unpublished gaps stay
   incompatible. At the Research 363 checkpoint, synthetic `0.82.0` was the
-  next visible `UnverifiedNewer`; Research 371 later qualified published
+  next visible `UnverifiedNewer`; Research 372 later qualified published
   `0.82.0` through `0.87.0`. The repo-local sidecar pin follows `0.81.2`.
   Claude Code stream-JSON and the Claude Agent SDK sidecar stay separate
   families. Research 363.

@@ -318,6 +318,7 @@ export function query({ prompt, options }) {
     env: options.env,
     signal: new AbortController().signal,
   };
+  const usageOnly = SCENARIO.startsWith("usage-");
   const child = invokeSpawnHook(options.spawnClaudeCodeProcess, spawnOptions);
 
   if (SCENARIO === "editing") {
@@ -431,6 +432,9 @@ export function query({ prompt, options }) {
       }
       if (!settled) {
         settled = true;
+        if (usageOnly) {
+          return { value: resultMessage(), done: false };
+        }
         if (SCENARIO === "pinned-error-result") {
           return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true }), errors: ["private provider detail"] }, done: false };
         }

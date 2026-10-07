@@ -295,7 +295,7 @@ fn bash_callbacks_carry_a_bounded_truncation_flagged_command_view() {
 }
 
 #[test]
-fn events_decode_their_qualified_payloads_and_reject_the_rest() {
+fn usage_events_decode_qualified_payloads_and_reject_unknown_usage_report() {
     let bytes = serde_json::to_vec(
         &json!({"type": "event", "event": "tool_ended", "toolCallId": "t-1", "isError": true}),
     )

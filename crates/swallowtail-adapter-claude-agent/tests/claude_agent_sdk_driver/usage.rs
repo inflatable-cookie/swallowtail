@@ -5,8 +5,8 @@ use crate::sdk_support::{
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use swallowtail_runtime::{
-    BoxEventStream, CleanupOutcome, ProviderObservation, RuntimeEventKind, TerminalStatus,
-    TokenUsage,
+    BoxEventStream, CleanupOutcome, InteractiveSessionHandle, ProviderObservation,
+    RuntimeEventKind, TerminalStatus, TokenUsage,
 };
 
 fn usage_snapshots(events: &mut BoxEventStream) -> Vec<TokenUsage> {

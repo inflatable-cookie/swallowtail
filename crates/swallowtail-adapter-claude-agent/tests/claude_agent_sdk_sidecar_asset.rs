@@ -514,7 +514,7 @@ fn an_unmapped_message_stays_terminal_without_crossing_its_type_or_error_text() 
 fn usage_projection_keeps_only_bounded_per_turn_counters_and_rejects_invalid_snapshots() {
     for (scenario, expected) in [
         (
-            "read-only",
+            "usage-valid",
             json!({
                 "inputTokens": 21,
                 "outputTokens": 5,

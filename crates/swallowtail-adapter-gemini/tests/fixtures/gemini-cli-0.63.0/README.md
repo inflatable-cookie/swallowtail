@@ -1,31 +1,26 @@
-# Gemini CLI 0.63.0 ACP currentness stop
+# Gemini CLI 0.63.0 identity and source evidence
 
-Secret-free identity and source corpus for official npm
-`@google/gemini-cli` `0.61.0` through `0.63.0` and GitHub tags `v0.61.0`
-through `v0.63.0`. Research 371 records the decision.
+These fixtures freeze official npm `@google/gemini-cli` and GitHub
+`google-gemini/gemini-cli` artifacts observed on 2026-10-07. The npm tarballs
+and GitHub source archives were downloaded and inspected without executing
+them. No Gemini prompt, login, credential, install, or host update was used.
 
-On 2026-10-07 npm `latest` and the latest GitHub stable release agree on
-`0.63.0`. The published stable hops after the qualified `0.61.0` ceiling are
-`0.62.0` and `0.63.0`. Research 358's exact `0.61.0` identities reproduce.
-No downloaded artifact was executed. The installed host was read for
-`--version` and its bundle digest only; it remains exact `0.61.0`.
+- `identity.json` records the npm/GitHub channel reconciliation, exact
+  identities for `0.61.0`, `0.62.0`, and `0.63.0`, the pre-existing claim,
+  and the decision to stop at the existing `0.61.0` ceiling.
+- `protocol.json` records the selected headless command and external stream
+  contract, mapped source hashes, and the per-hop behavior classification.
+- `npm-tree-inventory.json` records a SHA-256 for every file in each complete
+  449-file npm package tree and deterministic sorted hop inventories.
+- `source-tree-inventory.json` records a SHA-256 for every file and symlink in
+  each complete tagged source tree, deterministic hop inventories, and a
+  classification for every changed source path. Each source manifest digest
+  hashes sorted UTF-8 rows of `path NUL kind:sha256 LF`; symlink hashes cover
+  the link target bytes.
 
-`identity.json` freezes the npm integrity, shasum, tarball, package and bin
-entry identities, GitHub source archive and tag identities, and release
-runtime asset digests. `npm-package-inventory.json` hashes every regular file
-in each npm package and freezes each hop's added, removed, changed and
-identical file sets. `surface-ledger.json` hashes every regular file in each
-tagged source archive and freezes each hop's complete changed-path set plus
-selected-source classifications. The only non-regular source path in each
-archive is the `docs/CONTRIBUTING.md` symlink.
+The npm tree manifest uses the same row format with kind `file`. The ledger
+recomputes both tree manifest digests from every path and file hash.
 
-The `0.62.0` ACP session adds existing ACP v1 pending and failed tool-call
-updates. The `0.63.0` selected permission and file paths change: `.gemini`
-configuration writes and some redirected shell commands now require user
-confirmation, which this route rejects and cancels; file reads also revalidate
-the resolved real path. The current claim remains through `0.61.0`, with
-`0.62.0` and `0.63.0` visible as `UnverifiedNewer` pending the adaptation
-described in Research 371. No headless claim or live HTTP MCP evidence moves.
-
-No fixture contains credentials, a private host path, account identity,
-provider payload, prompt, or session id.
+The selected Plan Mode permission, authority, and tool-output/context changes
+in `0.63.0` are unqualified pending an operator ruling. These fixtures do not
+extend either Gemini route claim.

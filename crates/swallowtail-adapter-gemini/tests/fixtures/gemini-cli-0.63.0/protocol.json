@@ -1,95 +1,224 @@
 {
+  "axis": "gemini-cli.headless-stream-json",
+  "credential_used": false,
   "fixture_schema": 1,
-  "observed_at": "2026-10-07",
-  "official_version": "0.63.0",
-  "axis": "gemini-cli.acp-agent",
-  "acp_sdk": "@agentclientprotocol/sdk@0.16.1",
-  "wire_version": 1,
-  "selected_agent_methods": [
-    "initialize",
-    "session/new",
-    "session/prompt",
-    "session/cancel"
-  ],
-  "selected_client_methods": [
-    "session/update"
-  ],
-  "selected_callbacks": [
-    "fs.readTextFile",
-    "fs.writeTextFile"
-  ],
-  "permission_request": "reject-and-cancel; no approval response",
-  "profile_under_review": {
-    "approval_mode": "auto_edit",
-    "agent_mode_id": "autoEdit",
-    "bounded_host_text_write": true
-  },
-  "hop_observations": {
+  "hop_classification": {
     "0.61.0..0.62.0": {
-      "acp_session_delta": [
-        "send an existing ACP v1 tool_call with status pending before requesting permission",
-        "on cancellation send an existing ACP v1 tool_call_update with status failed"
-      ],
-      "wire_method_added": false,
-      "activity_status_values_added": false,
-      "provider_tool_display_values_changed": true,
-      "shell_background_tool_lifecycle_changed": true
+      "headless_option_and_stream_sources": "byte-identical",
+      "selected_failure_lifecycle": {
+        "adapter_observation": "stderr is not parsed; generic nonzero exit or missing terminal evidence remains a failure; exact behavior on rare uncaught cleanup is not live-qualified",
+        "classification": "adds a general uncaught-exception handler that writes stderr, runs registered CLI cleanup, and exits 1; normal stream-json success and handled error paths remain in byte-identical nonInteractiveCli.ts and output formatter sources",
+        "path": "packages/cli/src/gemini.tsx"
+      },
+      "selected_tool_surface": {
+        "classification": "MCP tool display/explanation formatting only; excluded because selected invocation disables external MCP servers",
+        "path": "packages/core/src/tools/tool-registry.ts"
+      }
     },
     "0.62.0..0.63.0": {
-      "session_new_lifecycle_changed": "reuse getChat when the client is already initialized; otherwise startChat",
-      "session_load_lifecycle_changed": "resolve stored session before config initialization; load remains unclaimed",
-      "permission_and_path_changes": [
-        ".gemini configuration modifications now require ASK_USER",
-        "command-prefix redirection without explicit allowRedirection now requires ASK_USER",
-        "non-interactive ASK_USER decisions become DENY",
-        "read-file sanitizes, resolves the real path, and revalidates access before reading",
-        ".env.* path filtering broadens except for .env.example, .env.sample, .env.template, and .env.dist"
-      ],
-      "provider_tool_output_changes": [
-        "large stored tool results are truncated at 64 KiB",
-        "MCP resource and web-search text is wrapped as untrusted context"
-      ]
+      "external_stream": {
+        "classification": "selected invocation/options and stream-json formatter/types remain byte-identical; no output framing change identified"
+      },
+      "selected_file_read": {
+        "classification": "resolves a defensive path and checks access against it before reading; read_file is an available Plan Mode tool",
+        "path": "packages/core/src/tools/read-file.ts"
+      },
+      "selected_file_safety": {
+        "classification": "adds ASK_USER for changes to .gemini config files; non-interactive policy then denies ASK_USER",
+        "path": "packages/core/src/safety/built-in.ts"
+      },
+      "selected_noninteractive_policy": {
+        "classification": "non-interactive ASK_USER decisions are now converted to DENY; shell redirection and exact rule checks also change",
+        "path": "packages/core/src/policy/policy-engine.ts"
+      },
+      "selected_plan_permission": {
+        "classification": "changes non-interactive Plan Mode from consultation/wait instructions to autonomous strategy and plan drafting; exit_plan_mode is prompted to begin implementation",
+        "path": "packages/core/src/prompts/snippets.ts"
+      },
+      "selected_tool_output": {
+        "classification": "caps stored tool output and collapses older function responses under context pressure; this changes content supplied by selected Plan Mode tools and its exact bound is not qualified",
+        "paths": [
+          "packages/core/src/scheduler/tool-executor.ts",
+          "packages/core/src/agents/local-executor.ts"
+        ]
+      },
+      "unselected_mcp_changes": {
+        "classification": "MCP is disabled by the selected empty allowed-server list",
+        "paths": [
+          "packages/core/src/tools/tool-registry.ts",
+          "packages/cli/src/config/mcp/mcpServerEnablement.ts"
+        ]
+      },
+      "unselected_resumed_session_recording": {
+        "classification": "best-effort cleanup of a previous session recording when resumed session data points to a different file; the selected fresh one-prompt path does not supply resumed session data",
+        "path": "packages/core/src/core/client.ts"
+      },
+      "unselected_tool_changes": {
+        "classification": "not selected in the read-only Plan Mode tool set before exit_plan_mode; exact post-transition behavior is part of the unresolved authority ruling",
+        "paths": [
+          "packages/core/src/tools/shell.ts",
+          "packages/core/src/tools/write-file.ts",
+          "packages/core/src/tools/edit.ts"
+        ]
+      }
     }
   },
-  "permission_boundary": {
-    "adapter_permission_outcome": "session/request_permission is observed, rejected, and cancelled; no consumer approval callback exists",
-    "consumer_visible_narrowing": true,
-    "affected_cases": [
-      "bounded-write operations to .gemini configuration paths that trigger the provider safety check",
-      "shell commands that match a prefix policy rule and use redirection without explicit allowRedirection",
-      "file reads whose resolved real path fails the provider's revalidation boundary"
-    ],
-    "decision": "stop currentness extension and request an operator ruling or a contract-compatible adaptation"
+  "host_install_changed": false,
+  "identity_decision": {
+    "claim_move": "none",
+    "next_adaptation": "Tom must decide whether gemini-cli.headless keeps this plan-mode authority boundary or adopts the new non-interactive plan-to-implementation behavior; then qualify the chosen permission/lifecycle behavior with deterministic fixtures before moving the ceiling.",
+    "reason": "the selected --approval-mode plan invocation now directs a non-interactive CLI to proceed autonomously from strategy through plan drafting and implementation; policy decisions requiring ASK_USER are denied, and read-path safety changes. This changes the permission/authority contract and cannot be accepted under the current scope without an operator ruling.",
+    "shape": "stop"
   },
-  "http_mcp": {
-    "mapping_sources": [
-      "packages/cli/src/acp/acpRpcDispatcher.ts",
-      "packages/cli/src/acp/acpSessionManager.ts",
-      "packages/core/src/tools/mcp-client.ts"
-    ],
-    "http_maps_to": "httpUrl",
-    "sse_maps_to": "url",
-    "header_mapping": "name/value list -> Object.fromEntries -> MCPServerConfig.headers",
-    "live_honouring_research": "362",
-    "live_honouring_exact_version": "0.61.0",
-    "live_honouring_transferred": false
+  "live_session": false,
+  "mapped_source_sha256": {
+    "0.61.0": {
+      "packages/cli/src/config/config.ts": "bdb490bbf0ea1803d74e8bc1748432096eff7063abec0447e5e7aa467e4187b8",
+      "packages/cli/src/gemini.tsx": "1ac297b1af4cca39f358fc5c90c18059e275c4c393cfba152f73215e03ead828",
+      "packages/cli/src/nonInteractiveCli.ts": "fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298",
+      "packages/cli/src/utils/sessionCleanup.ts": "6c7a2005d1a2054dfa0deb2ca3708a5ab1966d3e1f5dcbf284a22f0b71968189",
+      "packages/cli/src/utils/sessions.ts": "fa8a3ab8ce762cd4b714362d843bdd73e73f0894f0480778fcdf2254a507af50",
+      "packages/core/src/agents/local-executor.ts": "5441708ace2518cf447a065e24d34129763b628e6714e9ed375b0ba10f1d3854",
+      "packages/core/src/core/client.ts": "6a6935054eedede5561272c9e53026ac50e604721ec9fbed95fe14d615a6676c",
+      "packages/core/src/core/geminiChat.ts": "446b5cd55e91b4b79273d0c4a20bdac923ba6a6bf2cebc5016c74a49519e6717",
+      "packages/core/src/core/turn.ts": "d4f95a7d330b6065fc0c194b82375c7ed9db9ce9b1a126dae4250b668e5801aa",
+      "packages/core/src/output/stream-json-formatter.ts": "f78377bb9cbb56cfe3509655ff6ebfaef8873641942139562dc4ab7a3347e721",
+      "packages/core/src/output/types.ts": "23f7ea24497c88a703e0e4f8b6deb8bda969c2c2a32ca213beacfae46d798341",
+      "packages/core/src/policy/config.ts": "522fa65371cf269bea9bce5fe558de9757db698c542f5da84b98869ce8423ee9",
+      "packages/core/src/policy/policy-engine.ts": "3483535ed1d106e75cf1953da7255815f336003ad91a8e841db5df516592cfb1",
+      "packages/core/src/prompts/snippets.ts": "cd6013ea25ef66ba9353546f899fdf4751eae1bf711d156841eb9ad2358f2976",
+      "packages/core/src/safety/built-in.ts": "e59fb30b90906aac439fe6e790dd0613c26b21ef6ec7e29af1c86f01815a206d",
+      "packages/core/src/scheduler/tool-executor.ts": "a70086b7ecda8edb1701ce1918410d5471f78bd84d1cee5017af808652fec593",
+      "packages/core/src/tools/edit.ts": "6f80e032ef4eb108921c65e4cf873d774c9caad674c85a5ffc51e309c605a2df",
+      "packages/core/src/tools/read-file.ts": "51c2a2e2c78519e09af956485bdd2c14b3e261f9bcd2cdcbdc53d0db84ac17c8",
+      "packages/core/src/tools/shell.ts": "4377c7940635a8f551fa4be1957c9adc4eadcd3dc535bdd48a3f1f6b815df84a",
+      "packages/core/src/tools/tool-registry.ts": "13aa95f450e9e94624b57d0222e482b866e56150a3a66c5094356493aefef2b6",
+      "packages/core/src/tools/write-file.ts": "eca226d68b31064c12c030663308df86c17d69eb653213dd6420e9c138e7204a",
+      "packages/core/src/utils/exitCodes.ts": "3f540276cf593a187d5c5180a242457ee5de038df35524e2c6b9c811bab87839",
+      "packages/core/src/utils/sessionOperations.ts": "21ac4a3153dd94770a7d0cd87480cfece9c6c1777e520b3eef12b702be03f24b"
+    },
+    "0.62.0": {
+      "packages/cli/src/config/config.ts": "bdb490bbf0ea1803d74e8bc1748432096eff7063abec0447e5e7aa467e4187b8",
+      "packages/cli/src/gemini.tsx": "72410f158bcd7a75c9654a8bfffba34daba3cc79f1e4bcf15cb09c98e848aa0c",
+      "packages/cli/src/nonInteractiveCli.ts": "fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298",
+      "packages/cli/src/utils/sessionCleanup.ts": "6c7a2005d1a2054dfa0deb2ca3708a5ab1966d3e1f5dcbf284a22f0b71968189",
+      "packages/cli/src/utils/sessions.ts": "fa8a3ab8ce762cd4b714362d843bdd73e73f0894f0480778fcdf2254a507af50",
+      "packages/core/src/agents/local-executor.ts": "5441708ace2518cf447a065e24d34129763b628e6714e9ed375b0ba10f1d3854",
+      "packages/core/src/core/client.ts": "6a6935054eedede5561272c9e53026ac50e604721ec9fbed95fe14d615a6676c",
+      "packages/core/src/core/geminiChat.ts": "446b5cd55e91b4b79273d0c4a20bdac923ba6a6bf2cebc5016c74a49519e6717",
+      "packages/core/src/core/turn.ts": "d4f95a7d330b6065fc0c194b82375c7ed9db9ce9b1a126dae4250b668e5801aa",
+      "packages/core/src/output/stream-json-formatter.ts": "f78377bb9cbb56cfe3509655ff6ebfaef8873641942139562dc4ab7a3347e721",
+      "packages/core/src/output/types.ts": "23f7ea24497c88a703e0e4f8b6deb8bda969c2c2a32ca213beacfae46d798341",
+      "packages/core/src/policy/config.ts": "522fa65371cf269bea9bce5fe558de9757db698c542f5da84b98869ce8423ee9",
+      "packages/core/src/policy/policy-engine.ts": "3483535ed1d106e75cf1953da7255815f336003ad91a8e841db5df516592cfb1",
+      "packages/core/src/prompts/snippets.ts": "cd6013ea25ef66ba9353546f899fdf4751eae1bf711d156841eb9ad2358f2976",
+      "packages/core/src/safety/built-in.ts": "e59fb30b90906aac439fe6e790dd0613c26b21ef6ec7e29af1c86f01815a206d",
+      "packages/core/src/scheduler/tool-executor.ts": "a70086b7ecda8edb1701ce1918410d5471f78bd84d1cee5017af808652fec593",
+      "packages/core/src/tools/edit.ts": "6f80e032ef4eb108921c65e4cf873d774c9caad674c85a5ffc51e309c605a2df",
+      "packages/core/src/tools/read-file.ts": "51c2a2e2c78519e09af956485bdd2c14b3e261f9bcd2cdcbdc53d0db84ac17c8",
+      "packages/core/src/tools/shell.ts": "d1aea4b1e3fb3724ad637985aebf0f8a2d2fcfeb13cfa11932b8681ed617e139",
+      "packages/core/src/tools/tool-registry.ts": "172906fe3caa29e71d5accd04b9e94e16a52c799dcf88b1f12e690835f24f5c0",
+      "packages/core/src/tools/write-file.ts": "eca226d68b31064c12c030663308df86c17d69eb653213dd6420e9c138e7204a",
+      "packages/core/src/utils/exitCodes.ts": "3f540276cf593a187d5c5180a242457ee5de038df35524e2c6b9c811bab87839",
+      "packages/core/src/utils/sessionOperations.ts": "21ac4a3153dd94770a7d0cd87480cfece9c6c1777e520b3eef12b702be03f24b"
+    },
+    "0.63.0": {
+      "packages/cli/src/config/config.ts": "bdb490bbf0ea1803d74e8bc1748432096eff7063abec0447e5e7aa467e4187b8",
+      "packages/cli/src/gemini.tsx": "72410f158bcd7a75c9654a8bfffba34daba3cc79f1e4bcf15cb09c98e848aa0c",
+      "packages/cli/src/nonInteractiveCli.ts": "fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298",
+      "packages/cli/src/utils/sessionCleanup.ts": "6c7a2005d1a2054dfa0deb2ca3708a5ab1966d3e1f5dcbf284a22f0b71968189",
+      "packages/cli/src/utils/sessions.ts": "fa8a3ab8ce762cd4b714362d843bdd73e73f0894f0480778fcdf2254a507af50",
+      "packages/core/src/agents/local-executor.ts": "59f739ac6416ff41b408560eaf4387f907a3b3f752a848045b758a8f1e33023d",
+      "packages/core/src/core/client.ts": "16fd5149220cc0c7aa2215b38253b331d0e98d863a13b0d01927a47b734a7dad",
+      "packages/core/src/core/geminiChat.ts": "446b5cd55e91b4b79273d0c4a20bdac923ba6a6bf2cebc5016c74a49519e6717",
+      "packages/core/src/core/turn.ts": "d4f95a7d330b6065fc0c194b82375c7ed9db9ce9b1a126dae4250b668e5801aa",
+      "packages/core/src/output/stream-json-formatter.ts": "f78377bb9cbb56cfe3509655ff6ebfaef8873641942139562dc4ab7a3347e721",
+      "packages/core/src/output/types.ts": "23f7ea24497c88a703e0e4f8b6deb8bda969c2c2a32ca213beacfae46d798341",
+      "packages/core/src/policy/config.ts": "522fa65371cf269bea9bce5fe558de9757db698c542f5da84b98869ce8423ee9",
+      "packages/core/src/policy/policy-engine.ts": "3b7118ceadaa36589f64def7669a503d64bd805fbff696077f5f7929361dfad2",
+      "packages/core/src/prompts/snippets.ts": "b2cccbd0cf68e33d057f33938e457fe3c781cc7e65c593f7a3974d70c5c68fe7",
+      "packages/core/src/safety/built-in.ts": "a3d88b1b5a9289194edf7cdcb59964e4ba99c8eb4a4b100eca7bb64c6f61657e",
+      "packages/core/src/scheduler/tool-executor.ts": "5879f47abe2b64fc6ea1ca361b4502f39a7e597bdcfa0e20450b4226d6031f58",
+      "packages/core/src/tools/edit.ts": "6f80e032ef4eb108921c65e4cf873d774c9caad674c85a5ffc51e309c605a2df",
+      "packages/core/src/tools/read-file.ts": "5377927463fa737d276852097ad63a20357b19b51f3458c4252028b6019033de",
+      "packages/core/src/tools/shell.ts": "981d96965fbc84fab420f30f1b265cee15c7b4b0486fdde42324021a95f22be4",
+      "packages/core/src/tools/tool-registry.ts": "172906fe3caa29e71d5accd04b9e94e16a52c799dcf88b1f12e690835f24f5c0",
+      "packages/core/src/tools/write-file.ts": "eca226d68b31064c12c030663308df86c17d69eb653213dd6420e9c138e7204a",
+      "packages/core/src/utils/exitCodes.ts": "3f540276cf593a187d5c5180a242457ee5de038df35524e2c6b9c811bab87839",
+      "packages/core/src/utils/sessionOperations.ts": "21ac4a3153dd94770a7d0cd87480cfece9c6c1777e520b3eef12b702be03f24b"
+    }
   },
-  "claim": {
-    "claim_id": "gemini-cli.acp.window-1",
-    "behavior_revision": "gemini-cli.acp.v0.51.0",
-    "baseline": "0.51.0",
-    "latest_qualified": "0.61.0",
-    "published_excluded_interior_points": [
-      "0.56.1",
-      "0.59.1"
-    ],
-    "0.62.0": "unverified_newer",
-    "0.63.0": "unverified_newer",
-    "claim_changed": false,
-    "headless_claim_touched": false
-  },
+  "observed_at": "2026-10-07",
+  "official_latest": "0.63.0",
+  "previous_ceiling": "0.61.0",
   "provider_prompt_sent": false,
-  "live_catalogue_or_session": false,
-  "credential_or_install_mutation": false,
-  "downloaded_artifacts_executed": false
+  "route": "gemini-cli.headless",
+  "runtime_plan_prompt_chunks": {
+    "0.61.0": {
+      "path": "bundle/chunk-JDPZ4CE3.js",
+      "sha256": "901004474485b55896feaed563d2e1f75bce021a9245ffbd50724028f7926ba6"
+    },
+    "0.62.0": {
+      "path": "bundle/chunk-MLY4WQFO.js",
+      "sha256": "c67737944afddc18a1cee05b556367c1beab2235bf608d5fdf57bb0cfc42cce0"
+    },
+    "0.63.0": {
+      "path": "bundle/chunk-RWBXO4OP.js",
+      "sha256": "3734d78897bc515eef42341316b37341144d07cd84ee76e5bd6c788dad6ec916"
+    }
+  },
+  "selected_event_types": [
+    "init",
+    "message",
+    "tool_use",
+    "tool_result",
+    "error",
+    "result"
+  ],
+  "selected_external_wire_shape_unchanged": true,
+  "selected_invocation": [
+    "gemini",
+    "--output-format",
+    "stream-json",
+    "--model",
+    "<MODEL>",
+    "--approval-mode",
+    "plan",
+    "--extensions",
+    "none",
+    "--allowed-mcp-server-names",
+    "",
+    "--skip-trust",
+    "--session-id",
+    "<SESSION_ID>"
+  ],
+  "selected_options": {
+    "allowed_mcp_server_names": [],
+    "approval_mode": "plan",
+    "extensions": "none",
+    "output_format": "stream-json",
+    "session_id": "caller-bound",
+    "skip_trust": true
+  },
+  "selected_retention": {
+    "default": "durable",
+    "owned_cleanup": "one exact delete-session attempt; no list confirmation"
+  },
+  "selected_terminal": {
+    "native_exit_codes": [
+      41,
+      42,
+      44,
+      52,
+      53,
+      54,
+      55,
+      130
+    ],
+    "result_statuses": [
+      "success",
+      "error"
+    ],
+    "terminal_record_required": true
+  }
 }

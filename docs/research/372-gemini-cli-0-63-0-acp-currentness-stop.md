@@ -1,4 +1,4 @@
-# 371 Gemini CLI 0.63.0 ACP Currentness Stop
+# 372 Gemini CLI 0.63.0 ACP Currentness Stop
 
 Status: currentness stop; no claim change
 Owner: Tom
@@ -42,7 +42,7 @@ npm `0.61.0` bin entry. The host was read for its version and digest only.
 There was no prompt, login, credential use, installation, host update,
 catalogue request, or ACP session.
 
-`crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-0.63.0/` freezes
+`crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-acp-0.63.0/` freezes
 the npm file hash maps, tagged-source regular-file hash maps, complete hop
 path sets, and relevant source classifications. It reproduces Research 358's
 `0.61.0` tarball, source archive, and bin-entry identities. Each source tree
@@ -139,4 +139,4 @@ honouring remains exact `0.61.0`; no live operation was attempted.
 - [GitHub `v0.63.0` release](https://github.com/google-gemini/gemini-cli/releases/tag/v0.63.0)
 - [GitHub `v0.62.0` release](https://github.com/google-gemini/gemini-cli/releases/tag/v0.62.0)
 - [GitHub `v0.61.0` release](https://github.com/google-gemini/gemini-cli/releases/tag/v0.61.0)
-- frozen corpus: `crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-0.63.0/`
+- frozen corpus: `crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-acp-0.63.0/`

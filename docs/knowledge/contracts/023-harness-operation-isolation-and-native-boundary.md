@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-21
+Updated: 2026-10-07
 
 ## Purpose
 
@@ -39,6 +39,36 @@ harness process, its descendants, or unmediated filesystem and network access.
 Swallowtail may require exact provider flags as part of a driver contract. It
 reports only the isolation posture independently proven by the configured
 route. A read-only tool posture under `AmbientHost` remains ambient.
+
+## Codex Trust, Workspace And Managed Network Changes
+
+Tom, 2026-10-07: "Yeah that's fine", accepting separate provider-free
+`codex.app-server` and `codex.exec` adaptations for the following upstream
+changes discovered in the pre-v0.5.2 sweep:
+
+- both routes may accept skipped automatic persisted trust for projectless
+  working directories; Swallowtail must not restore that persistence;
+- app-server may accept path normalization and linked `.git` read-only
+  protections within approved writable roots; Swallowtail must not bypass
+  those protections or expand consumer-approved access;
+- exec may honour host-managed application network restrictions, including
+  system and macOS MDM allowlists; Swallowtail must not disable or weaken them
+  with `ignore_managed_requirements`.
+
+This is adaptation authority, not qualification evidence. Each route needs
+its own frozen source and deterministic regression proof before a claim
+moves. Prove projectless and marked-directory startup, app-server root and
+alias boundaries, and exec allowed/denied network-policy outcomes as
+applicable. Preserve read-only defaults, existing qualified points, and honest
+failure projection. A provider restriction is not proof of process containment
+or a new isolation posture.
+
+Return any unproven boundary, further authority change, consumer-contract
+narrowing, or public API/lifecycle change for a separate ruling. This authority
+includes no live provider turns, credentials, installations, host or workflow
+mutation, or release/tag action. The exec findings are retained in
+[Research 370](../../research/370-codex-exec-currentness-stop.md); app-server
+has a separate evidence record and qualification path.
 
 ## Native Sandbox Boundary
 

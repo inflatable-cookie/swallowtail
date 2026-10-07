@@ -6,10 +6,10 @@ use serde_json::{Value, json};
 use swallowtail_adapter_gemini::gemini_cli_acp_claim;
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
-const IDENTITY: &str = include_str!("fixtures/gemini-cli-0.63.0/identity.json");
-const SURFACE: &str = include_str!("fixtures/gemini-cli-0.63.0/surface-ledger.json");
-const NPM: &str = include_str!("fixtures/gemini-cli-0.63.0/npm-package-inventory.json");
-const PROTOCOL: &str = include_str!("fixtures/gemini-cli-0.63.0/protocol.json");
+const IDENTITY: &str = include_str!("fixtures/gemini-cli-acp-0.63.0/identity.json");
+const SURFACE: &str = include_str!("fixtures/gemini-cli-acp-0.63.0/surface-ledger.json");
+const NPM: &str = include_str!("fixtures/gemini-cli-acp-0.63.0/npm-package-inventory.json");
+const PROTOCOL: &str = include_str!("fixtures/gemini-cli-acp-0.63.0/protocol.json");
 const PRIOR: &str = include_str!("fixtures/gemini-cli-0.61.0/identity.json");
 const VERSIONS: [&str; 3] = ["0.61.0", "0.62.0", "0.63.0"];
 

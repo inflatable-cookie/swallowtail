@@ -511,6 +511,69 @@ fn an_unmapped_message_stays_terminal_without_crossing_its_type_or_error_text() 
 }
 
 #[test]
+fn usage_projection_keeps_only_bounded_per_turn_counters_and_rejects_invalid_snapshots() {
+    for (scenario, expected) in [
+        (
+            "usage-valid",
+            json!({
+                "inputTokens": 21,
+                "outputTokens": 5,
+                "cacheReadInputTokens": 8,
+                "cacheWriteInputTokens": 9
+            }),
+        ),
+        (
+            "usage-cache-omitted",
+            json!({
+                "inputTokens": 21,
+                "outputTokens": 5,
+                "cacheReadInputTokens": null,
+                "cacheWriteInputTokens": null
+            }),
+        ),
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], true, "{scenario} opens: {open}");
+        sidecar.command("query-1", "query", json!({"text": "usage"}));
+        let ended = sidecar.wait_for_turn_end_record();
+        assert_eq!(ended["usage"], expected, "usage projection: {ended}");
+        assert_eq!(ended["resultFieldPresence"]["modelUsage"], true);
+        assert!(ended.get("modelUsage").is_none());
+        assert!(!ended.to_string().contains("777"));
+        assert!(!ended.to_string().contains("4.25"));
+        assert!(!ended.to_string().contains("contextWindow"));
+        let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
+        assert_eq!(close["success"], true);
+    }
+
+    for scenario in [
+        "usage-negative",
+        "usage-overflow",
+        "usage-fraction",
+        "usage-missing-output",
+        "usage-wrong-type",
+    ] {
+        let mut sidecar = SidecarProcess::start_scenario(scenario);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], true, "{scenario} opens: {open}");
+        let terminal = sidecar.terminal_after_query("query-1", json!({"text": "usage"}));
+        assert_eq!(
+            terminal["failure"]["code"], "unknown_message",
+            "invalid usage fails closed: {terminal}"
+        );
+    }
+}
+
+#[test]
 fn pinned_advisory_rate_limits_allow_reply_and_successful_result() {
     for scenario in ["rate-allowed", "rate-allowed_warning"] {
         let mut sidecar = SidecarProcess::start_scenario(scenario);

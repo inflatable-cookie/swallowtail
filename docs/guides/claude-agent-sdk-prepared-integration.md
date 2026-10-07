@@ -25,8 +25,9 @@ only with a read-write working resource lease, and may bind declared stdio MCP
 servers beside the Copy session profile. Reject it when the application
 cannot provision the Node runtime, sidecar asset, SDK package, and platform
 binary, or needs load with replay, fork, provider-session management, usage
-detail, thinking control, managed or SSE/HTTP MCP, MCP resources or prompts, hooks, plugins, skills, subagents, checkpoints,
-or terminal execution. Those are
+pipeline detail or current context occupancy, thinking control, managed or
+SSE/HTTP MCP, MCP resources or prompts, hooks, plugins, skills, subagents,
+checkpoints, or terminal execution. Those are
 later layers or separate routes, not withheld defaults.
 
 All four Claude routes remain distinct. `claude-agent.acp` speaks ACP v1 over
@@ -839,10 +840,11 @@ also carries the bounded sidecar cause as `sidecar_terminated: <code>`, for
 example `unknown_message`, `callback_invalid`, or `internal_error`. The sidecar
 message field is validated but never surfaced.
 
-A failed `turn_ended` carries the sanitized fields `subtype`, `stopReason`,
+Each `turn_ended` carries the sanitized fields `subtype`, `stopReason`,
 `isError`, `numTurns`, `durationMs`, `errorTextPresent`, `errorTextType`,
 the validated structured facts `apiErrorStatus`, `terminalReason`, and
-`rateLimitStatus`, and the fixed result-field presence map.
+`rateLimitStatus`, the fixed result-field presence map, and one validated
+per-turn `usage` snapshot.
 `errorTextPresent` and `errorTextType`
 describe `errors`, legacy `error`, or `result` when `is_error` is true, in
 that precedence order; the text itself never crosses the sidecar wire. A present
@@ -885,6 +887,43 @@ Malformed rate-limit envelopes and statuses, and genuinely unmapped message
 types, still terminate as `unknown_message`. The raw type and provider payload
 are not included in that safe diagnostic. Provider-free sequence tests qualify
 this behavior; they do not establish the cause of a particular live failure.
+
+## Token Usage and Context Window
+
+Each SDK `result` projects its validated main-loop `usage` as one
+`ProviderObservation::Usage` for that turn. The route maps `input_tokens`,
+`output_tokens`, `cache_read_input_tokens`, and
+`cache_creation_input_tokens` to provider-neutral input, output, cache-read,
+and cache-write token counts. Input and output are required non-negative safe
+integers; absent cache dimensions remain `None`. Invalid values fail closed.
+The report is emitted once at the result boundary, including a provider-failed
+result that carries usage. Streamed deltas do not carry token usage.
+
+For SDK `0.3.284`, `SDKResultSuccess` and `SDKResultError` document `usage` as
+main-agent-loop-only and per-turn for streaming-input sessions; Task subagents,
+sidechains, and auxiliary model calls are excluded. `modelUsage` has a
+different scope: it is cumulative across turns and includes query-pipeline
+subagents, sidechains, and internal calls. The sidecar records only whether
+`modelUsage` was present. It does not forward or sum that cumulative map,
+`total_cost_usd`, `costUSD`, rate or quota data, `contextWindow`, or
+`maxOutputTokens`. Repeated cumulative snapshots are not converted into usage
+steps. Each result's per-turn snapshot remains its own observation.
+
+The exact SDK `0.3.284` declaration also exposes
+`Query.getContextUsage`, which takes `{detail: 'summary' | 'full'}` and returns
+the query's selected `model`,
+`totalTokens`, `maxTokens`, `rawMaxTokens`, `percentage`, and context categories.
+Summary uses the last response and local estimates; full asks the token-count
+API for per-category counts. The SDK's result `modelUsage[model].contextWindow`
+is a per-model window value, not current occupancy. `supportedModels()` maps
+advertised values to an optional `resolvedModel`, but publishes no window
+limit. The sidecar does not call or expose `getContextUsage`, and the prepared
+facade has no compatible current-context observation. Desktop can rely on the
+route's per-turn token usage only. It cannot derive current occupancy from
+those counts or from the result's model/window maximum.
+
+Frozen declaration source and the field-by-field boundary are retained in
+[Research 368](../research/368-claude-agent-sdk-usage-and-context-evidence.md).
 
 ## Normal Path
 

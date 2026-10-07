@@ -302,7 +302,7 @@ if classification_counts != Counter(
         "shared_contract_expansion_required": 2,
         "upstream_ordering_blocked": 1,
         "separate_route_and_contract_required": 5,
-        "selected_surface_absence": 205,
+        "selected_surface_absence": 204,
         "non_authoritative_cost_evidence": 4,
         "exact_release_only": 15,
         "missing_shared_contract_or_currentness_evidence": 10,

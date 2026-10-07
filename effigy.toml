@@ -44,9 +44,11 @@ section = "Research Records"
 
 "format:check" = "cargo fmt --all -- --check"
 "check:rust" = "cargo check --workspace --all-targets"
+"check:sdk-usage-projection" = "cargo check --locked -p swallowtail-adapter-claude-agent --all-targets"
 "check:examples" = "cargo check --workspace --examples --locked"
 "lint:rust" = "cargo clippy --workspace --all-targets -- -D warnings"
 "test:rust" = "cargo nextest run"
+"validate:sdk-usage-projection" = "cargo nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --lib --test claude_agent_sdk_driver --test claude_agent_sdk_sidecar_asset -E 'test(/usage|turn_end_rejects_malformed_or_missing_usage_counts|qualified_corpora_decode|first_turn_init_rejections_expose_their_fixed_sidecar_code|bash_is_host_mediated_in_every_permission_mode_with_bounded_views|a_two_turn_editing_session_writes_only_what_the_host_admitted|a_declared_stdio_mcp_server_connects_and_its_tool_is_mediated/)'"
 "format:sdk-registered-lifetime" = [
   "cargo fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent",
   "cargo fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent -- --check",

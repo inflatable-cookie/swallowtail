@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- project one validated `claude-agent.sdk` main-loop usage snapshot per
+  completed SDK result through `ProviderObservation::Usage`, including
+  input/output and cache-read/cache-write token dimensions. Required counts
+  are checked numeric safe integers; omitted cache dimensions stay absent;
+  cumulative `modelUsage`, cost and context fields are not projected.
+  Research 368 records the exact `0.3.284` declarations and the separate
+  `Query.getContextUsage` access path. The prepared sidecar does not expose
+  current context occupancy, which cannot be derived from token usage alone.
 - separate registered-tool opening and lease deadlines. Claude Agent SDK
   registered tools now live until their session closes after ready, while
   per-call bounds and an optional explicit lease deadline remain enforced.

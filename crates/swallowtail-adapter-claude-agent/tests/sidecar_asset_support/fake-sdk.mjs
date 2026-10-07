@@ -215,12 +215,43 @@ function initializeResponse(options) {
 }
 
 function resultMessage({ subtype = "success", isError = false, error, apiErrorStatus, terminalReason } = {}) {
+  const usage = {
+    input_tokens: 21,
+    output_tokens: 5,
+    cache_read_input_tokens: 8,
+    cache_creation_input_tokens: 9,
+  };
+  if (SCENARIO === "usage-cache-omitted") {
+    delete usage.cache_read_input_tokens;
+    delete usage.cache_creation_input_tokens;
+  } else if (SCENARIO === "usage-negative") {
+    usage.input_tokens = -1;
+  } else if (SCENARIO === "usage-overflow") {
+    usage.input_tokens = Number.MAX_SAFE_INTEGER + 1;
+  } else if (SCENARIO === "usage-fraction") {
+    usage.output_tokens = 1.5;
+  } else if (SCENARIO === "usage-missing-output") {
+    delete usage.output_tokens;
+  } else if (SCENARIO === "usage-wrong-type") {
+    usage.cache_read_input_tokens = "8";
+  }
   const result = {
     type: "result",
     subtype,
     is_error: isError,
     num_turns: 1,
     duration_ms: 7,
+    usage,
+    // These fields are deliberately plausible but must never cross the wire.
+    modelUsage: {
+      "claude-sonnet-5": {
+        inputTokens: 777,
+        outputTokens: 888,
+        cacheReadInputTokens: 999,
+        costUSD: 4.25,
+        contextWindow: 200000,
+      },
+    },
   };
   if (error !== undefined) {
     result.error = error;
@@ -287,6 +318,7 @@ export function query({ prompt, options }) {
     env: options.env,
     signal: new AbortController().signal,
   };
+  const usageOnly = SCENARIO.startsWith("usage-");
   const child = invokeSpawnHook(options.spawnClaudeCodeProcess, spawnOptions);
 
   if (SCENARIO === "editing") {
@@ -337,7 +369,7 @@ export function query({ prompt, options }) {
           return { value: { type: "assistant", message: { content: [] } }, done: false };
         }
         if (SCENARIO === "init-not-first") {
-          return { value: { type: "result", subtype: "success", is_error: false }, done: false };
+          return { value: resultMessage(), done: false };
         }
         return { value: initMessage(options), done: false };
       }
@@ -400,6 +432,9 @@ export function query({ prompt, options }) {
       }
       if (!settled) {
         settled = true;
+        if (usageOnly) {
+          return { value: resultMessage(), done: false };
+        }
         if (SCENARIO === "pinned-error-result") {
           return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true }), errors: ["private provider detail"] }, done: false };
         }
@@ -602,7 +637,7 @@ function bashSession(prompt, options, child) {
         command: `node -e "require('fs').writeFileSync('allowed.txt','allowed')" ${"x".repeat(180)}`,
         description: "d".repeat(180),
       });
-      yield { type: "result", subtype: "success", is_error: false };
+      yield resultMessage();
     }
   }
 
@@ -688,7 +723,7 @@ function editingSession(prompt, options, child) {
       // narrowing is visible: edits skip admission, reads never do.
       await admit("Read", { file_path: path.join(options.cwd, "read-me.txt") });
       await attemptWrite(index);
-      yield { type: "result", subtype: "success", is_error: false };
+      yield resultMessage();
     }
   }
 
@@ -812,7 +847,7 @@ function mcpSession(prompt, options, child) {
       void message;
       await admit("mcp__fixture__search", { query: "alpha" });
       await admit("mcp__fixture__echo", { text: "nope" });
-      yield { type: "result", subtype: "success", is_error: false };
+      yield resultMessage();
     }
   }
 

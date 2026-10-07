@@ -119,6 +119,10 @@ pub enum SdkScenario {
     TerminalUnknownMessage,
     /// The sidecar reports a failed SDK result with all sanitized fields.
     TurnEndedError,
+    /// The first query returns a failed result; later queries complete.
+    TurnErrorThenComplete,
+    /// The sidecar repeats the same turn result after its terminal boundary.
+    DuplicateTurnEnd,
     /// A failed `turn_ended` carrying validated `402`/`api_error`/`rejected`
     /// structured facts: the only billing-specific classification.
     TurnEndedBilling402,

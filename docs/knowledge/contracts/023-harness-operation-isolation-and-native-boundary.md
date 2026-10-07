@@ -70,6 +70,97 @@ mutation, or release/tag action. The exec findings are retained in
 [Research 370](../../research/370-codex-exec-currentness-stop.md); app-server
 has a separate evidence record and qualification path.
 
+### Codex App-Server Protected AWS Directory
+
+Tom, 2026-10-07: "Approve", accepting Codex app-server `0.159.0`'s
+read-only protection for an existing top-level `.aws` directory inside the
+consumer-approved writable root. Document that exact version-specific
+workspace-write limitation; do not add a write exception or bypass the
+protection. Upstream protects AWS configuration because it can select
+executable credential helpers.
+
+Preserve earlier qualified behaviour and segments, read-only defaults, and
+the approved-root boundary. Qualification must prove ordinary root writes,
+protected `.aws` write denial, no access expansion, and honest failure
+projection, alongside the previously authorized startup/alias proofs and
+remaining per-hop semantic review. Name any necessary behaviour revision
+from that evidence. This accepts the specified consumer-visible limitation;
+it does not settle Contract 036 patch compatibility or waive any release
+gate. Further authority changes, consumer narrowing, public API/lifecycle
+changes, or live-proof needs still return for a separate ruling. The existing
+exclusions on live work, credentials, host/workflow mutation and release/tag
+actions remain in force.
+
+## Gemini Headless Currentness Adaptation
+
+Tom, operator board, 2026-10-07: "Approve bounded adaptation with
+authority-preserving proof" (decision `de317828-daf8-4bb3-a2b3-d75bd9f5a833`).
+This authorizes a separate provider-free `gemini-cli.headless` adaptation for
+[Research 371](../../research/371-gemini-cli-0-63-0-headless-currentness-stop.md).
+Preserve the selected authority and existing consumer contract: no automatic
+transition from Plan Mode into implementation, no `ASK_USER` approval bypass,
+defensive read checks honoured, and truthful bounded/truncated tool-output
+semantics. Prove those boundaries with frozen selected-route evidence and
+deterministic regressions before qualifying newer versions.
+
+Preserve older qualified segments and keep ACP independent. A justified
+private behaviour milestone requires evidence that the public contract stays
+intact. An inability to preserve those promises, further authority change,
+consumer narrowing, new public API/lifecycle need, or live-proof requirement
+returns for a separate ruling. This includes no live providers, credentials,
+installation, host/workflow mutation, or release/tag action. It does not
+approve the distinct ACP restrictions in Research 372.
+
+## Gemini ACP Permission And Filesystem Restrictions
+
+Tom, operator board, 2026-10-07: "Accept documented restrictions and bounded
+adaptation" (decision `b0a9a93a-282b-4029-baa2-57f7f2cfd198`). This accepts
+Gemini CLI ACP `0.63.0`'s exact permission/filesystem restrictions as documented
+version-specific limits and authorizes separate provider-free adaptation and
+qualification of the selected route. Evidence is
+[Research 372](../../research/372-gemini-cli-0-63-0-acp-currentness-stop.md).
+
+Preserve reject-and-cancel: no new consumer approval callback, `YOLO` override,
+or permission bypass. Honour `.gemini` configuration-write protections,
+redirection requiring `ASK_USER`, defensive real-path checks, and protected
+`.env.*` reads, including upstream's named example/template exceptions.
+Document the resulting limits; prove ordinary bounded writes and exact
+refused/cancelled outcomes with deterministic mode-specific regressions before
+a claim moves. Report provider tool-output bounds and truncation honestly.
+
+Preserve older qualified segments, exclusions, and independent headless
+behaviour; name any necessary behaviour revision from evidence and assess
+Contract 036 release compatibility separately. HTTP MCP live honouring remains
+bound to exact `0.61.0`; no newer live claim follows from unchanged mapping.
+Further authority changes, consumer narrowing, new public API/lifecycle needs,
+or required live proof return for a separate ruling. This authority includes
+no live providers, credentials, installation, host/workflow mutation, or
+release/tag action, and waives no release gate.
+
+## Claude Code Response-Only Linked Instructions
+
+Tom, 2026-10-07: "Accept" (decision
+`a9f8a8cd-ca40-46b1-8b3c-e197944171bd`). This accepts Claude Code
+`2.1.282` and newer releases' reduced symlink-linked project-instruction read
+set as a documented version-specific limit for `claude-code.response-only`
+and authorizes provider-free qualification under the existing public
+response-only contract.
+
+Preserve the upstream restriction. Do not restore blocked instruction reads
+or expand filesystem authority. Record the changed read boundary explicitly;
+use a private behaviour milestone where Contract 029 requires it, supported
+by frozen artifact evidence and selected-route proof before changing claims.
+Preserve older qualified segments and exclusions. The current guide's
+ambient instruction discovery is not a guarantee that every linked file is
+read, and provider flags are not host containment.
+
+Do not infer an unidentified internal resolver function from bundled hook
+symbols or treat release notes alone as conformance proof. Further narrowing,
+new public API/lifecycle needs, or required live proof return for a separate
+ruling. Assess Contract 036 patch compatibility independently. This ruling
+confers no qualification, live spend, credential, installation, host/workflow
+mutation, or release/tag authority and waives no evidence gate.
+
 ## Native Sandbox Boundary
 
 Provider-native sandboxing is optional. A configured route may select

@@ -15,6 +15,17 @@ annotated Git tags from the canonical repository.
   bindings. The `0.22.4` and `0.23.5` exclusions, Plan limit at `0.22.3`, and
   exact `0.21.15` reasoning and budget controls remain unchanged; no provider
   work or artifact execution occurred.
+- qualify the current `claude-agent.acp` stable point through official npm
+  `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
+  stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,
+  and `0.87.0`. Research 373 freezes every tarball digest, matching GitHub tag,
+  complete package tree, and per file classification. Compatible extension of
+  `initialize-meta-extensions-v7`; baseline, exclusions, ACP v1 operation
+  surface, and `AllowUnverified` stay. Partial tool updates remain within the
+  existing decoder. HTTP MCP live honouring remains exact to `0.79.0` and
+  `0.81.2`; the repo local `0.81.2` development pin is unchanged. No package
+  install, artifact execution, provider prompt, live initialize, or host
+  mutation occurred.
 - keep the `gemini-cli.acp` qualified ceiling at `0.61.0`. The current
   official stable `0.63.0` is not qualified: `0.62.0` adds existing ACP v1
   pending/failed tool-call updates, and `0.63.0` adds confirmation and real
@@ -22,6 +33,13 @@ annotated Git tags from the canonical repository.
   reject-and-cancel permission policy. Research 372 records the exact
   adaptation or ruling needed. HTTP MCP live honouring remains exact
   `0.61.0`; the headless claim is untouched.
+- keep `claude-code.headless` qualified through `2.1.281` after the official
+  currentness sweep to `2.1.293`. Research 373 freezes every published hop;
+  `2.1.287` changes `stream-json` behavior for slash-skill prompts and
+  `2.1.290` changes permission checks after `PreToolUse` rewrites. These
+  selected changes need an adaptation or ruling before qualification moves;
+  later stable points remain `UnverifiedNewer`, with existing segments and
+  exclusions unchanged.
 - close the Claude Agent SDK command-admission race when its pump rejects an
   unsolicited event or reaches EOF. The pump now closes admission and resolves
   pending commands before escalation and process wait; command registration
@@ -84,10 +102,11 @@ annotated Git tags from the canonical repository.
   `0.81.1` extracts managed-policy env apply; `0.81.2` adds unmapped native
   subagent and exit-plan surfaces. HTTP MCP honouring is accepted on exact
   `0.79.0` and `0.81.2` (Research 361, 364). Unpublished gaps stay
-  incompatible; synthetic unpublished `0.82.0` remains visible
-  `UnverifiedNewer`. The repo-local sidecar pin
-  follows `0.81.2`. Claude Code stream-JSON and the Claude Agent SDK sidecar
-  stay separate families. Research 363.
+  incompatible. At the Research 363 checkpoint, synthetic `0.82.0` was the
+  next visible `UnverifiedNewer`; Research 373 later qualified published
+  `0.82.0` through `0.87.0`. The repo-local sidecar pin follows `0.81.2`.
+  Claude Code stream-JSON and the Claude Agent SDK sidecar stay separate
+  families. Research 363.
 - accept `gemini-cli.acp` HTTP MCP honouring on host exact `0.61.0`.
   Research 362: frozen `0.61.0` Plan mode excludes unannotated MCP tools
   (Research 360 `tool_not_called`); `--approval-mode default` plus

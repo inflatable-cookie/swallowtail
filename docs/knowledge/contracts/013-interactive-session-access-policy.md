@@ -125,6 +125,32 @@ The host-service execution id, configured-instance execution host, preflight
 plan, resource lease, session, and turn must agree. A local process service
 labelled with a remote host id is not remote execution.
 
+## Qwen Implicit SSH Workspace Selection
+
+Tom, operator board, 2026-10-07: "Block implicit SSH selection; preserve local
+route and auth" (decision `977ff17f-4b95-48fc-84ff-ff3e438d41ea`). The
+`qwen.headless` route must not infer a remote execution target because the
+approved working directory lies beneath
+`QWEN_HOME/ssh-workspaces/<connection-hash>/workspace`. That provider selection
+must be blocked before provider work, preserving the approved execution-host
+and resource binding, delegated authentication, and ordinary local resources.
+
+Use a proven official local-only/disable mechanism where available; otherwise
+fail closed on the exact provider-resolved reserved workspace, with path and
+alias coverage. Do not relocate or delete credential state, weaken delegated
+authentication, or describe the ambient profile as filesystem containment.
+Explicit remote-workspace support would require a separate contract and
+remote target/access evidence; it is outside this adaptation.
+
+This is provider-free private-mapping authority, not qualification evidence.
+Prove the selected invocation, blocked reserved-path and alias cases, ordinary
+local resource handling, and unchanged delegated-auth inputs before raising the
+ceiling. Preserve older qualified points and exclusions. Return public
+API/lifecycle changes, further consumer narrowing or authority changes, and
+required live proof for a separate ruling. No SSH connection, live provider,
+credentials, installation, host/workflow mutation, or release/tag action is
+authorized. Assess release compatibility separately; no gate is waived.
+
 ## Approval And Provider Requests
 
 Approval posture and callback handling are separate:

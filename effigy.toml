@@ -45,6 +45,12 @@ section = "Research Records"
 "format:check" = "cargo fmt --all -- --check"
 "check:rust" = "cargo check --workspace --all-targets"
 "check:sdk-usage-projection" = "cargo check --locked -p swallowtail-adapter-claude-agent --all-targets"
+"format:current-claude-agent-acp" = [
+  "cargo fmt -p swallowtail-adapter-claude-agent",
+  "cargo fmt -p swallowtail-adapter-claude-agent -- --check",
+]
+"check:current-claude-agent-acp" = "cargo check --locked --all-targets -p swallowtail-adapter-claude-agent"
+"validate:current-claude-agent-acp" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --lib --test integration -E 'test(/identity_and_claim_qualify_current_0_87_0_with_exact_hop_evidence|historical_0_81_2_identity_remains_qualified_after_0_87_0|production_claim_keeps_the_frozen_corpus_inside_the_raised_window|every_qualified_claude_segment_has_exact_activity_provenance|qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_shape|qualified_versions_load_ordered_replay_and_resume_without_replay|qualified_native_close_ends_active_work_without_deleting_history|one_prompt_run_preserves_version_topology_retention_and_native_close|permission_stops_as_provider_request_without_auto_approval_or_callback|cancellation_stops_the_turn_then_joins_the_clean_operation_cleanup|operation_deadline_times_out_the_turn_then_joins_a_clean_session_cleanup|exact_wrapper_versions_probe_only_the_host_approved_target|qualified_behavior_segments_share_one_delete_and_cleanup_contract|unverified_newer_delete_requires_explicit_acceptance_and_close_is_not_promoted|tool_title_refines_and_survives_payload_only_completion/)'"
 "check:current-codex-exec" = "cargo check --locked --all-targets -p swallowtail-adapter-codex"
 "check:examples" = "cargo check --workspace --examples --locked"
 "lint:rust" = "cargo clippy --workspace --all-targets -- -D warnings"
@@ -68,6 +74,8 @@ section = "Research Records"
   "cargo fmt -p swallowtail-adapter-qwen",
   "cargo fmt -p swallowtail-adapter-qwen -- --check",
 ]
+"validate:current-claude-code-headless" = "cargo nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --lib --test integration --test claude_code_structured_run -E 'binary(claude_code_structured_run) | test(/claude_code_2_1_293_identity::/) | test(/claude_code_selection::tests::qualified_window_covers_published_hops/) | test(/claude_code_command::tests::omitted_maximum_turns_preserves_the_exact_prior_command/)'"
+"check:current-claude-code-headless" = "cargo check --locked -p swallowtail-adapter-claude-agent --all-targets"
 "format:sdk-registered-lifetime" = [
   "cargo fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent",
   "cargo fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent -- --check",

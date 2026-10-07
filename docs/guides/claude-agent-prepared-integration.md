@@ -271,7 +271,11 @@ capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.281`,
 excluding unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
 `2.1.262`, `2.1.264`, and `2.1.279`; later stable versions remain visible
 `UnverifiedNewer`. Headless does not pass `--safe-mode` and already admits
-ambient project instructions.
+ambient project instructions. Research 373 observed official npm and GitHub
+latest `2.1.293`; it remains `UnverifiedNewer` because `2.1.287` changes
+stream-JSON behavior for slash-skill prompts and `2.1.290` changes permission
+checks after `PreToolUse` rewrites. Qualification stays at `2.1.281` pending
+the required adaptation or ruling.
 
 ### Maximum Agentic Turns
 
@@ -465,8 +469,11 @@ See the compile-tested
 
 ## Repo-Local ACP Sidecar
 
-Swallowtail pins `@agentclientprotocol/claude-agent-acp` to exact `0.81.2`
-in the root `package.json`. Development and live probes use:
+The root `package.json` keeps `@agentclientprotocol/claude-agent-acp` pinned to
+exact `0.81.2` for development and live probes. Research 373 separately
+qualifies the wrapper claim through `0.87.0`; the local dependency pin is not
+currentness or live MCP evidence and remains unchanged. Development and live
+probes use:
 
 ```sh
 effigy bootstrap:claude-agent-acp
@@ -487,11 +494,11 @@ integration.
 ## ACP Version Posture
 
 Discovery records the exact Claude Agent ACP wrapper version. Qualified
-wrappers are `0.53.0..=0.81.2`, excluding unpublished `0.58.0`. Those
-milestones remain guaranteed. A newer stable release is admitted as
+wrappers are `0.53.0..=0.87.0`, excluding unpublished `0.58.0` (Research 373).
+Those milestones remain guaranteed. A newer stable release is admitted as
 unverified, remains inspectable in evidence, and must identify itself as that
 same exact version during ACP initialization. Excluded and older versions do
-not prepare.
+not prepare. HTTP MCP live honouring remains exact to `0.79.0` and `0.81.2`.
 
 ACP `available_commands_update`, `config_option_update`, and
 `current_mode_update` metadata is accepted whether it arrives between session

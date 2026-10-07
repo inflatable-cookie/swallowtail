@@ -91,6 +91,26 @@ changes, or live-proof needs still return for a separate ruling. The existing
 exclusions on live work, credentials, host/workflow mutation and release/tag
 actions remain in force.
 
+## Gemini Headless Currentness Adaptation
+
+Tom, operator board, 2026-10-07: "Approve bounded adaptation with
+authority-preserving proof" (decision `de317828-daf8-4bb3-a2b3-d75bd9f5a833`).
+This authorizes a separate provider-free `gemini-cli.headless` adaptation for
+[Research 371](../../research/371-gemini-cli-0-63-0-headless-currentness-stop.md).
+Preserve the selected authority and existing consumer contract: no automatic
+transition from Plan Mode into implementation, no `ASK_USER` approval bypass,
+defensive read checks honoured, and truthful bounded/truncated tool-output
+semantics. Prove those boundaries with frozen selected-route evidence and
+deterministic regressions before qualifying newer versions.
+
+Preserve older qualified segments and keep ACP independent. A justified
+private behaviour milestone requires evidence that the public contract stays
+intact. An inability to preserve those promises, further authority change,
+consumer narrowing, new public API/lifecycle need, or live-proof requirement
+returns for a separate ruling. This includes no live providers, credentials,
+installation, host/workflow mutation, or release/tag action. It does not
+approve the distinct ACP restrictions in Research 372.
+
 ## Native Sandbox Boundary
 
 Provider-native sandboxing is optional. A configured route may select

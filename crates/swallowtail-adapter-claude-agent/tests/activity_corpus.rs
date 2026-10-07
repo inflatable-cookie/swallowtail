@@ -37,7 +37,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_sha(segment, "tag_commit", 40);
         assert_sha(segment, "source_sha256", 64);
     }
-    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.81.2");
+    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.87.0");
     assert_eq!(range["current_external_releases"][2]["version"], "0.64.0");
     assert_eq!(
         range["current_external_releases"][2]["classification"],
@@ -247,13 +247,74 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         range["current_external_releases"][18]["activity_delta"],
         "native-subagent-and-exit-plan-unmapped"
     );
-    assert_eq!(
-        range["current_external_releases"]
-            .as_array()
-            .expect("releases")
-            .len(),
-        19
-    );
+    let expected_current_hops = [
+        (
+            "0.82.0",
+            "2026-09-28T14:06:22.315Z",
+            "18de37624071b48e95aed9ec5382823e2d72cd39",
+            "f6592f34d2bb0c247695049ce02daf6153b6faaf62e31adfd9bea91478a1da1b",
+            "partial-tool-call-update-fields-supported-by-existing-decoder",
+        ),
+        (
+            "0.83.0",
+            "2026-09-28T16:01:42.778Z",
+            "691328a9190d8729387149afad9bdb012450028b",
+            "118db0410ec19acd855155da1c71e1a3cdf4926a0df7ddc82058d05c580015bc",
+            "selected-acp-v1-activity-contract-unchanged",
+        ),
+        (
+            "0.84.0",
+            "2026-09-28T19:18:31.748Z",
+            "bdb50ad984336e62dde1d41339f04071f6617085",
+            "118db0410ec19acd855155da1c71e1a3cdf4926a0df7ddc82058d05c580015bc",
+            "selected-acp-v1-activity-contract-unchanged",
+        ),
+        (
+            "0.85.0",
+            "2026-10-01T11:40:57.777Z",
+            "c84845272fe3c55c1f97759f00ee48a1356fccae",
+            "d5ef615bbfabf27397e24e22d45dacde98aa2f11f07ccb68d228c8e7a893a068",
+            "selected-acp-v1-activity-contract-unchanged",
+        ),
+        (
+            "0.85.1",
+            "2026-10-02T09:00:37.749Z",
+            "686c0c99b3b89217b74d1f5de8272e7c9ef1aab4",
+            "644daa80157fcdfe7b806cbd23b56f75be4fed146a890aa5e219204e689aca13",
+            "cancel-handler-rework-keeps-selected-method",
+        ),
+        (
+            "0.86.0",
+            "2026-10-05T13:18:45.542Z",
+            "7b5c61a4ed55c03028ac60e1768bc57d92df24a4",
+            "fc5b393d5b5f5b17dc796275581dd00eef60dd6b660c4892f067c19ac4565141",
+            "load-replay-rework-keeps-selected-response",
+        ),
+        (
+            "0.87.0",
+            "2026-10-07T13:30:51.218Z",
+            "b2dbc8f5a1b84f48cc1512d06f50a9d85d6e757b",
+            "7d0d20d1c558c68fafeaf81f4d6f92f86ececb7c28b4679d0873b1b29b4ac8e5",
+            "failed-tool-call-update-maps-to-existing-status",
+        ),
+    ];
+    let releases = range["current_external_releases"]
+        .as_array()
+        .expect("releases");
+    assert_eq!(releases.len(), 19 + expected_current_hops.len());
+    for (release, (version, published_at, tag_commit, source_sha256, activity_delta)) in
+        releases.iter().skip(19).zip(expected_current_hops)
+    {
+        assert_eq!(release["version"], version);
+        assert_eq!(release["published_at"], published_at);
+        assert_eq!(release["tag_commit"], tag_commit);
+        assert_eq!(release["source_sha256"], source_sha256);
+        assert_eq!(release["classification"], "qualified");
+        assert_eq!(release["profile"], "0.87.0-guarantee");
+        assert_eq!(release["activity_delta"], activity_delta);
+        assert_sha(&release, "tag_commit", 40);
+        assert_sha(&release, "source_sha256", 64);
+    }
 }
 
 #[test]

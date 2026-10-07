@@ -9,7 +9,7 @@ annotated Git tags from the canonical repository.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,
-  and `0.87.0`. Research 370 freezes every tarball digest, matching GitHub tag,
+  and `0.87.0`. Research 371 freezes every tarball digest, matching GitHub tag,
   complete package tree, and per file classification. Compatible extension of
   `initialize-meta-extensions-v7`; baseline, exclusions, ACP v1 operation
   surface, and `AllowUnverified` stay. Partial tool updates remain within the
@@ -59,7 +59,7 @@ annotated Git tags from the canonical repository.
   subagent and exit-plan surfaces. HTTP MCP honouring is accepted on exact
   `0.79.0` and `0.81.2` (Research 361, 364). Unpublished gaps stay
   incompatible. At the Research 363 checkpoint, synthetic `0.82.0` was the
-  next visible `UnverifiedNewer`; Research 370 later qualified published
+  next visible `UnverifiedNewer`; Research 371 later qualified published
   `0.82.0` through `0.87.0`. The repo-local sidecar pin follows `0.81.2`.
   Claude Code stream-JSON and the Claude Agent SDK sidecar stay separate
   families. Research 363.

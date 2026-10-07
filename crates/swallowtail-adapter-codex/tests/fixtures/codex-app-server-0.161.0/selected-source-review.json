@@ -56,7 +56,8 @@
     "route_regressions": [
       "tests/app_server_workspace.rs::bounded_workspace_maps_one_host_authorized_root_and_denies_network",
       "tests/app_server_workspace.rs::declared_approval_and_user_input_requests_are_observed_then_stop",
-      "tests/app_server_workspace.rs::failed_workspace_turn_is_projected_as_provider_failed",
+      "tests/app_server_workspace.rs::failed_protected_aws_path_write_is_projected_as_provider_failed",
+      "tests/app_server_workspace.rs::projectless_marked_and_alias_roots_do_not_expand_the_selected_sandbox",
       "tests/app_server_workspace.rs::read_only_session_request_shape_remains_unchanged"
     ]
   },
@@ -195,7 +196,7 @@
         "codex-rs/app-server-protocol/schema/typescript/v2/index.ts"
       ],
       "classification": "The selected thread/start trust path skips automatic persisted Trusted state for projectless layer stacks; marked roots retain the existing path. Selected model/list and turn/start now revalidate managed model-provider requirements and reject a changed selection/definition or requirement load error before provider work. Permission materialization fails closed for home-relative denials without a home fact and for invalid workspace globs; the fallback can remove all write grants. Default-enabled SystemProxyFallback adds a safe-to-replay bootstrap GET retry through the host system proxy after connect/timeout failures. Explicit ambient windows.sandbox=mxc can select the new Windows MxC tool backend; the adapter sends no such config or setup RPC. Local thread-store changes add cancellation-owned startup persistence and delete local agent message-board data before hard-deleting rollouts. Selected required wire fields stay present; optional additions and unselected RPCs remain unmapped.",
-      "disposition": "STOP: decision d7dbacde-6381-47c5-8255-6729d309b147 authorizes the bounded projectless trust skip, but route proof remains required. No app-server ruling covers managed provider revalidation, fail-closed permission materialization, the new default proxy fallback, or selecting the MxC tool sandbox from ambient config. Keep the ceiling frozen; resolve these exact selected-path policy boundaries before claiming this hop.",
+      "disposition": "STOP: decision d7dbacde-6381-47c5-8255-6729d309b147 authorizes the bounded projectless trust skip, and selected-route fixtures now preserve the exact approved-root request without trust overrides. No app-server ruling covers managed provider revalidation, fail-closed permission materialization, the new default proxy fallback, or selecting the MxC tool sandbox from ambient config. Keep the ceiling frozen; resolve these exact selected-path policy boundaries before claiming this hop.",
       "source_regressions": [
         "codex-rs/config/src/loader/projectless_directory_tests.rs::unmarked_directory_is_projectless_even_with_saved_trust",
         "codex-rs/config/src/loader/projectless_directory_tests.rs::project_markers_and_local_layers_prevent_projectless_classification",
@@ -301,8 +302,7 @@
         "codex-rs/app-server/src/request_processors/thread_processor.rs",
         "codex-rs/protocol/src/permissions.rs",
         "codex-rs/protocol/src/permissions/local_aliases.rs",
-        "codex-rs/protocol/src/permissions/local_aliases_tests.rs",
-        "codex-rs/protocol/src/permissions/target.rs"
+        "codex-rs/protocol/src/permissions/local_aliases_tests.rs"
       ],
       "selected_schema_files": [
         "codex-rs/app-server-protocol/schema/json/ServerNotification.json",
@@ -341,7 +341,7 @@
         "codex-rs/app-server-protocol/schema/typescript/v2/index.ts"
       ],
       "classification": "The permission source normalizes path aliases and accounts for linked .git targets as read-only carveouts inside a broader writable root; it does not grant access beyond the selected root. A new approval helper is not selected because this route observes and stops provider approval requests. CodexErrorInfo adds an error variant; the adapter projects failures generically.",
-      "disposition": "Contract 023 decision d7dbacde-6381-47c5-8255-6729d309b147 authorizes the bounded alias and linked-.git behavior, subject to route regression proof.",
+      "disposition": "Contract 023 decision d7dbacde-6381-47c5-8255-6729d309b147 authorizes the bounded alias and linked-.git behavior; selected-route fixtures now assert those root inputs do not expand the one approved workspace root.",
       "source_regressions": [
         "codex-rs/protocol/src/permissions/local_aliases_tests.rs::local_aliases_keep_read_only_and_deny_overrides",
         "codex-rs/protocol/src/permissions/local_aliases_tests.rs::equivalent_alias_entries_keep_restrictive_precedence",
@@ -392,7 +392,7 @@
         "codex-rs/app-server-protocol/schema/typescript/v2/ThreadItemsListParams.ts",
         "codex-rs/app-server-protocol/schema/typescript/v2/index.ts"
       ],
-      "classification": "Codex adds an existing top-level <writable-root>/.aws directory to its default read-only subpaths. Its frozen regression test shows a write to .aws/config is denied; the rationale is to block credential-helper execution. The adapter still sends exactly one approved root and no .aws write exception. The turn error enum/text changes do not change the selected status/error shape used by the adapter.",
+      "classification": "Codex adds an existing top-level <writable-root>/.aws directory to its default read-only subpaths. Its frozen regression tests show a normal src/main.rs path remains writable while a write to .aws/config is denied; the rationale is to block credential-helper execution. The adapter still sends exactly one approved root and no .aws write exception. The turn error enum/text changes do not change the selected status/error shape used by the adapter.",
       "disposition": "Contract 023 decision cb18500a-499a-4cbe-ae1b-8daec34d5ebe accepts this exact read-only carveout. Document it as a version-specific workspace-write limitation; do not restore writes. Contract 036 patch compatibility remains for planner review.",
       "source_regressions": [
         "codex-rs/protocol/src/permissions.rs::legacy_workspace_write_projection_accepts_relative_cwd",

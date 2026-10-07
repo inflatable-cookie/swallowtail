@@ -15,11 +15,9 @@ official stable `0.63.0`?
 
 ## Answer
 
-Not yet. Official npm `latest` and the newest GitHub stable release agree on
-`0.63.0`. The published hops are `0.62.0` and `0.63.0`. Source review found
-an ACP lifecycle extension at `0.62.0`, then permission and file-boundary
-changes at `0.63.0` that can stop bounded-write operations under the route's
-fixed reject-and-cancel permission policy. This is a consumer-visible
+Not yet. The selected delta includes an ACP lifecycle extension and
+permission and file-boundary changes that can stop bounded-write operations
+under the route's fixed reject-and-cancel policy. This is a consumer-visible
 narrowing that needs an operator ruling or a contract-compatible adaptation.
 
 Keep `gemini-cli.acp.window-1`, behavior revision

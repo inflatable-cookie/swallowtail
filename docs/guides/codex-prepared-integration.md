@@ -80,6 +80,19 @@ increase. Current official stable `0.161.0` remains `UnverifiedNewer`; see
 [Research 370](../research/370-codex-exec-currentness-stop.md). The app-server
 claim is independent and was not changed by this exec review.
 
+The separate app-server currentness review also keeps its `0.155.1` ceiling.
+Its unresolved selected-policy changes are the `0.156.0` managed provider
+revalidation, fail-closed permission materialization, default system-proxy
+bootstrap fallback, and explicit Windows MxC tool backend, plus the `0.157.0`
+app-server application-network policy. `0.161.0` remains
+`UnverifiedNewer`. At `0.159.0`, an existing top-level `.aws` directory
+inside the approved writable root becomes read-only; this exact
+version-specific limitation is accepted, and the route sends no `.aws` write
+exception. Planner still needs to classify that workspace-write narrowing
+under Contract 036 before release. See
+[Research 374](../research/374-codex-app-server-currentness-stop.md) for the
+complete hop ledger and remaining qualification gates.
+
 ## Normal Flow
 
 1. The consumer selects the Codex driver: app-server or structured exec.

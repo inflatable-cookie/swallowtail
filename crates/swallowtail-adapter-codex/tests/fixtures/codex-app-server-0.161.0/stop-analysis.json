@@ -25,7 +25,8 @@
     "qualified_ceiling": "0.155.1",
     "route": "codex.app-server"
   },
-  "decision": "stop at the 0.159.0 default read-only .aws carveout pending a separate operator ruling; no compatibility claim, selection, guide, matrix, changelog, or release file changed",
+  "decision": "the 0.159.0 read-only .aws carveout is accepted by decision cb18500a-499a-4cbe-ae1b-8daec34d5ebe; the app-server claim remains at 0.155.1 pending rulings or scoped adaptations for the remaining selected-policy stops",
+  "prior_stop_decision": "stop at the 0.159.0 default read-only .aws carveout pending a separate operator ruling; no compatibility claim, selection, guide, matrix, changelog, or release file changed",
   "host_observation": {
     "interpretation": "launcher stub identity only; no update performed",
     "observed_date": "2026-10-07",
@@ -44,9 +45,9 @@
     "tag_count": 13
   },
   "next_ruling": [
-    "Does the bounded codex.app-server workspace-write contract accept the 0.159.0 default read-only carveout for an existing top-level .aws directory under the approved root?",
-    "If not, define a scoped adaptation that preserves prior behavior without expanding the approved root, or explicitly resolve the consumer-facing narrowing.",
-    "After that ruling, complete deterministic regression proof for the authorized 0.156.0 projectless trust skip and 0.158.0 path-alias and linked-.git protections, then finish the per-hop semantic review."
+    "Obtain rulings or scoped adaptations for the remaining 0.156.0 selected managed-provider revalidation, fail-closed permission materialization, default system-proxy bootstrap fallback, explicit windows.sandbox=mxc backend selection, and 0.157.0 app-server application-network policy.",
+    "The accepted projectless-trust, path-alias, linked-.git, and .aws boundaries now have selected-route request and failure-projection regressions; the complete source and artifact review through 0.161.0 is frozen. Reconsider the ceiling only after the listed stops are resolved and the official stable is re-probed.",
+    "Planner must classify the accepted .aws workspace-write narrowing under Contract 036; do not infer or waive release compatibility."
   ],
   "official_channel": {
     "agreement": true,
@@ -110,7 +111,7 @@
       "after": "the same condition additionally requires !config.config_layer_stack.is_projectless()",
       "before": "requested_cwd.is_some() && active_project.trust_level.is_none() && effective_permissions_trust_project",
       "category": "project trust and authority flow",
-      "decision": "Tom authorized acceptance; deterministic regression proof is required before extending the route claim",
+      "decision": "Tom authorized acceptance; selected-route fixtures now exercise projectless and marked startup request shapes without adding trust overrides; the claim remains frozen for other 0.156.0 stops",
       "files": [
         "codex-rs/app-server/src/request_processors/thread_processor.rs",
         "codex-rs/config/src/loader/mod.rs",
@@ -125,7 +126,7 @@
     },
     {
       "category": "filesystem permission boundary",
-      "decision": "Tom authorized acceptance; deterministic regression proof is required before extending the route claim",
+      "decision": "Tom authorized acceptance; selected-route fixtures now exercise alias and linked-.git roots without expanding the approved root; the claim remains frozen for later policy stops",
       "details": [
         "WritableRootPathResolution::PreserveMutableComponents now normalizes system aliases.",
         "LocalFileSystemPolicyMatcher resolves policy and target aliases on macOS.",
@@ -148,7 +149,7 @@
       "after": "PROTECTED_METADATA_AWS_PATH_NAME is added to PROTECTED_METADATA_PATH_NAMES; default_read_only_subpaths_for_writable_root adds an existing top-level .aws directory; the upstream regression test denies writes to .aws/config under a writable root",
       "before": "the protected metadata names are .git, .agents, and .codex; .aws is not a default read-only subpath",
       "category": "security boundary and consumer-visible workspace-write narrowing",
-      "decision": "separate operator ruling required before extending the route claim",
+      "decision": "accepted by decision cb18500a-499a-4cbe-ae1b-8daec34d5ebe; keep this version-specific read-only limitation and do not restore writes",
       "files": [
         "codex-rs/protocol/src/permissions.rs",
         "codex-rs/protocol/src/permissions/target.rs"

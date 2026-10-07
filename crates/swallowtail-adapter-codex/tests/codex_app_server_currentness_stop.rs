@@ -351,6 +351,10 @@ fn authority_changes_are_frozen_and_the_existing_claim_stays_at_0_155_1() {
     let analysis = json(ANALYSIS);
     assert_eq!(
         analysis["decision"],
+        "the 0.159.0 read-only .aws carveout is accepted by decision cb18500a-499a-4cbe-ae1b-8daec34d5ebe; the app-server claim remains at 0.155.1 pending rulings or scoped adaptations for the remaining selected-policy stops"
+    );
+    assert_eq!(
+        analysis["prior_stop_decision"],
         "stop at the 0.159.0 default read-only .aws carveout pending a separate operator ruling; no compatibility claim, selection, guide, matrix, changelog, or release file changed"
     );
     assert_eq!(analysis["official_channel"]["npm_latest"], "0.161.0");
@@ -467,6 +471,18 @@ fn authority_changes_are_frozen_and_the_existing_claim_stays_at_0_155_1() {
             .expect("effect")
             .contains("no explicit .aws write exception")
     );
+    assert!(
+        analysis["next_ruling"][0]
+            .as_str()
+            .expect("next policy ruling")
+            .contains("0.156.0 selected managed-provider revalidation")
+    );
+    assert!(
+        reasons[2]["decision"]
+            .as_str()
+            .expect("accepted .aws ruling")
+            .contains("cb18500a-499a-4cbe-ae1b-8daec34d5ebe")
+    );
 
     let boundary = &analysis["route_boundary"];
     assert_eq!(
@@ -510,7 +526,7 @@ fn authority_changes_are_frozen_and_the_existing_claim_stays_at_0_155_1() {
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
         claim.assess(&version("0.161.0"))
     else {
-        panic!("0.161.0 stays unverified until the ruling and qualification");
+        panic!("0.161.0 stays unverified until open policy decisions and qualification");
     };
     assert_eq!(unverified.latest_qualified().as_str(), "0.155.1");
     assert_eq!(

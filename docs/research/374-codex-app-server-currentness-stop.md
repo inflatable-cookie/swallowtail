@@ -1,4 +1,4 @@
-# Research 373: Codex App-Server Currentness Stop at 0.161.0
+# Research 374: Codex App-Server Currentness Stop at 0.161.0
 
 Status: stopped for operator rulings; no compatibility claim changed
 
@@ -14,8 +14,8 @@ official stable `0.161.0` for the v0.5.2 version sweep?
 Answer: no claim moved. Source review found selected-path policy and security
 changes in `0.156.0` and `0.157.0` that have no app-server ruling. The earlier
 projectless-trust, path-alias, linked-`.git`, and `.aws` boundaries have exact
-operator rulings, but their route proof does not qualify the unresolved later
-behavior.
+operator rulings and selected-route regressions; those do not settle the
+remaining policy stops.
 
 ## Identity and method
 
@@ -38,11 +38,23 @@ required request field. The adapter's exact request fixture sends one approved
 root, retains read-only defaults, and sends no trust, home, config, path-alias,
 linked-`.git`, or `.aws` override.
 
-The deterministic route fixture also covers the approved root and denied
-network policy, read-only sessions, observable approval and user-input
-requests, generic failed-turn projection, and cleanup. No Codex artifact was
-executed. There was no provider prompt, live session, credential use,
-installation, host update, release, or `codex.exec` claim change.
+The deterministic route fixtures cover a successful ordinary turn inside one
+approved root, read-only sessions, approval and user-input requests, cleanup,
+and generic failure projection. Synthetic projectless, marked, path-alias,
+and linked-`.git` root labels exercise request shape only: each request carries
+only that host-authorized root, the existing bounded sandbox, and no trust or
+permission override. The frozen `0.159.0`
+`legacy_workspace_write_projection_accepts_relative_cwd` source regression
+shows an ordinary `src/main.rs` path remains writable; the frozen
+`filesystem_policy_blocks_protected_metadata_path_writes_by_default`
+regression denies `.aws/config` under the same one-root writable policy. A
+separate selected-route fixture sends a `.aws/config` write request and checks
+that a failed turn projects as `ProviderFailed`. Frozen Codex source
+regressions establish project-marker, alias, linked-`.git`, and protected
+`.aws` policy behavior; these adapter fixtures check that the selected route
+does not expand or override those policies. No Codex artifact was executed.
+There was no provider prompt, live session, credential use, installation,
+host update, release, or `codex.exec` claim change.
 
 ## Stops
 
@@ -136,21 +148,23 @@ all supported segments, holes, exclusions, claim IDs, and behavior revisions.
 The `codex.exec` claim is separate and unchanged. No adapter operation or
 provider capability was added.
 
-Before reconsidering the ceiling, obtain rulings or scoped adaptation briefs
-for the exact `0.156.0` managed provider checks, fail-closed permission
+The accepted projectless-trust, alias/linked-`.git`, and `.aws` boundaries
+now have deterministic selected-route request and failure-projection
+regressions. The complete source and artifact review through `0.161.0` is
+frozen. Before reconsidering the ceiling, obtain rulings or scoped adaptation
+briefs for the exact `0.156.0` managed provider checks, fail-closed permission
 materialization, default bootstrap proxy fallback, explicit MxC tool backend,
-and `0.157.0` app-server application-network policy. Then finish the approved
-projectless-trust, alias/linked-`.git`, and `.aws` route regressions and the
-complete per-hop review at the current official stable. Do not restore trust,
-add a `.aws` write exception, bypass managed policy, expand the approved root,
-or infer a release compatibility waiver.
+and `0.157.0` app-server application-network policy. Re-probe the official
+stable before any later qualification, then extend the per-hop ledger if it
+has moved. Do not restore trust, add a `.aws` write exception, bypass managed
+policy, expand the approved root, or infer a release compatibility waiver.
 
 Sources: [official npm package](https://www.npmjs.com/package/%40openai/codex),
 [GitHub release `rust-v0.161.0`](https://github.com/openai/codex/releases/tag/rust-v0.161.0),
 [official package and release identities](../../crates/swallowtail-adapter-codex/tests/fixtures/codex-app-server-0.161.0/published-artifacts.json),
 [complete tagged-source inventory](../../crates/swallowtail-adapter-codex/tests/fixtures/codex-app-server-0.161.0/source-inventory.json),
 [selected-source review and exact identities](../../crates/swallowtail-adapter-codex/tests/fixtures/codex-app-server-0.161.0/selected-source-review.json),
-[Contract 023 Codex trust and workspace changes](../knowledge/contracts/023-codex-trust-workspace-and-managed-network-changes.md),
+[Contract 023 Codex trust, workspace, and managed-network ruling](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md#codex-trust-workspace-and-managed-network-changes),
 [Contract 029 upgrade workflow](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md#upgrade-workflow),
 [version-currentness checkpoint procedure](../knowledge/operations/version-currentness-checkpoint.md),
 [Research 369 all-route checkpoint](./369-all-route-version-currentness-checkpoint.md).

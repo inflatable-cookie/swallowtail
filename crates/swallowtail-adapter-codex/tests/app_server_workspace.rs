@@ -3,11 +3,12 @@ use crate::support;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::collections::BTreeSet;
+use std::sync::Arc;
 use support::app_server::{AppServerMode, ScriptedAppServer};
 use support::{
     app_server_plan, app_server_session_agreement, bounded_workspace_plan,
     bounded_workspace_plan_for, bounded_workspace_plan_for_version, host_services,
-    host_services_with, host_services_with_for, working_resource,
+    host_services_for, host_services_with, host_services_with_for, working_resource,
 };
 use swallowtail_adapter_codex::{
     CodexAppServerDriver, codex_approval_request_extension, codex_bounded_workspace_access_policy,
@@ -17,10 +18,12 @@ use swallowtail_core::{
     ConfiguredInstanceId, DriverRole, ExecutionHostId, HostServiceKind, InstanceTargetRef,
 };
 use swallowtail_runtime::{
-    CallbackPayload, CallbackRequestKind, CallbackResponse, CallbackResult, CleanupOutcome,
-    EnvironmentRef, InteractiveSessionDriver, OpenSessionRequest, OperationContent,
-    ProviderRequestObservation, RequestId, RuntimeTurnId, SessionAccessPolicy, TerminalStatus,
-    TurnRequest,
+    BoxFuture, CallbackPayload, CallbackRequestKind, CallbackResponse, CallbackResult,
+    CleanupOutcome, EnvironmentRef, HostServices, InteractiveSessionDriver,
+    MaterializedResourceRef, OpenSessionRequest, OperationContent, ProviderRequestObservation,
+    RequestId, ResourceAccess, ResourceLease, ResourceRepresentation, RuntimeFailure,
+    RuntimeTurnId, ScopeId, SessionAccessPolicy, TerminalStatus, TurnRequest, WorkingResourceRef,
+    WorkingResourceService,
 };
 use swallowtail_testkit::{
     ExecutionTopologyFixture, RecordedHostCall, RecordingHostServices, RecordingOutcome,
@@ -30,6 +33,55 @@ fn driver() -> CodexAppServerDriver {
     CodexAppServerDriver::new(
         EnvironmentRef::new("codex-saved-login").expect("environment is valid"),
     )
+}
+
+struct FixtureWorkingResource(&'static str);
+
+impl WorkingResourceService for FixtureWorkingResource {
+    fn resolve(
+        &self,
+        scope: ScopeId,
+        reference: WorkingResourceRef,
+        access: ResourceAccess,
+        representation: ResourceRepresentation,
+    ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        let root = self.0;
+        Box::pin(async move {
+            Ok(
+                ResourceLease::consumer_owned(scope, reference, access, representation)
+                    .with_filesystem(
+                        MaterializedResourceRef::new(root)
+                            .expect("fixture root is a valid materialized resource"),
+                    ),
+            )
+        })
+    }
+
+    fn create_temporary(
+        &self,
+        _scope: ScopeId,
+        _access: ResourceAccess,
+        _representation: ResourceRepresentation,
+    ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        Box::pin(async {
+            Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "fixture.temporary_resource_unsupported",
+                "Fixture does not create temporary resources",
+            )))
+        })
+    }
+
+    fn release(&self, _lease: ResourceLease) -> BoxFuture<'static, CleanupOutcome> {
+        Box::pin(async { CleanupOutcome::NotApplicable })
+    }
+}
+
+fn host_services_with_root(process: Arc<ScriptedAppServer>, root: &'static str) -> HostServices {
+    host_services_for(
+        ExecutionHostId::new("host.local").expect("host id is valid"),
+        process,
+    )
+    .with_working_resource(Arc::new(FixtureWorkingResource(root)))
 }
 
 #[test]
@@ -82,13 +134,16 @@ fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
         true
     );
 
-    let mut turn = block_on(session.start_turn(
-        TurnRequest::new(
-            RuntimeTurnId::new("workspace-turn").expect("turn id is valid"),
-            OperationContent::new("perform bounded work").expect("content is valid"),
+    let mut turn = block_on(
+        session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("workspace-turn").expect("turn id is valid"),
+                OperationContent::new("write an ordinary file inside the approved workspace")
+                    .expect("content is valid"),
+            ),
+            services.clone(),
         ),
-        services.clone(),
-    ))
+    )
     .expect("workspace turn starts");
     let terminal = block_on(
         turn.take_terminal_outcome()
@@ -129,7 +184,7 @@ fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
 }
 
 #[test]
-fn failed_workspace_turn_is_projected_as_provider_failed() {
+fn failed_protected_aws_path_write_is_projected_as_provider_failed() {
     let recording = RecordingHostServices::default();
     let (process, state) = ScriptedAppServer::new(AppServerMode::FailedTurn);
     let services = host_services_with(process, &recording, [HostServiceKind::WorkingResource]);
@@ -157,13 +212,16 @@ fn failed_workspace_turn_is_projected_as_provider_failed() {
         serde_json::json!(["/private/recording/workspace"])
     );
 
-    let mut turn = block_on(session.start_turn(
-        TurnRequest::new(
-            RuntimeTurnId::new("workspace-failed-turn").expect("turn id is valid"),
-            OperationContent::new("write inside approved workspace").expect("content is valid"),
+    let mut turn = block_on(
+        session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("workspace-failed-turn").expect("turn id is valid"),
+                OperationContent::new("write to the protected workspace .aws/config path")
+                    .expect("content is valid"),
+            ),
+            services.clone(),
         ),
-        services.clone(),
-    ))
+    )
     .expect("workspace turn starts");
     let terminal = block_on(
         turn.take_terminal_outcome()
@@ -195,7 +253,10 @@ fn failed_workspace_turn_is_projected_as_provider_failed() {
         ])
     );
     assert_eq!(sandbox["type"], "workspaceWrite");
-    assert_eq!(sandbox["writableRoots"], serde_json::json!(["/private/recording/workspace"]));
+    assert_eq!(
+        sandbox["writableRoots"],
+        serde_json::json!(["/private/recording/workspace"])
+    );
     assert_eq!(sandbox["networkAccess"], false);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
     assert_eq!(
@@ -203,6 +264,119 @@ fn failed_workspace_turn_is_projected_as_provider_failed() {
         CleanupOutcome::Clean
     );
     assert_eq!(recording.count(RecordedHostCall::WorkingResourceRelease), 1);
+}
+
+#[test]
+fn projectless_marked_and_alias_roots_do_not_expand_the_selected_sandbox() {
+    let scenarios = [
+        (
+            "projectless-with-saved-trust",
+            "/private/recording/projectless-with-saved-trust",
+        ),
+        ("marked-project", "/private/recording/marked-project"),
+        ("path-alias-root", "/private/recording/path-alias-root"),
+        (
+            "alias-with-linked-gitdir",
+            "/private/recording/alias-with-linked-gitdir",
+        ),
+    ];
+
+    for (scenario, root) in scenarios {
+        // These synthetic roots exercise only the adapter request boundary. The frozen
+        // Codex source regressions bind project-marker and filesystem-policy behavior.
+        let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+        let services = host_services_with_root(Arc::clone(&process), root);
+        let mut session = block_on(
+            driver().open_session(
+                bounded_workspace_plan_for_version(
+                    ExecutionHostId::new("host.local").unwrap(),
+                    ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
+                    InstanceTargetRef::new("codex-app-server-executable").unwrap(),
+                    "0.155.1",
+                ),
+                OpenSessionRequest::new(
+                    RequestId::new(format!("workspace-{scenario}")).expect("request id is valid"),
+                    WorkingResourceRef::new(format!("workspace.{scenario}"))
+                        .expect("resource reference is valid"),
+                    None,
+                    app_server_session_agreement(codex_bounded_workspace_access_policy()),
+                ),
+                services.clone(),
+            ),
+        )
+        .expect("bounded workspace session opens for each fixture root");
+
+        let thread = message(&state.messages(), "thread/start");
+        assert_eq!(
+            thread["params"]
+                .as_object()
+                .expect("thread start parameters are an object")
+                .keys()
+                .map(String::as_str)
+                .collect::<BTreeSet<_>>(),
+            BTreeSet::from([
+                "approvalPolicy",
+                "cwd",
+                "model",
+                "runtimeWorkspaceRoots",
+                "sandbox",
+            ]),
+            "unexpected thread/start field for {scenario}"
+        );
+        assert_eq!(thread["params"]["sandbox"], "workspace-write");
+        assert_eq!(thread["params"]["approvalPolicy"], "never");
+        assert_eq!(thread["params"]["cwd"], root);
+        assert_eq!(
+            thread["params"]["runtimeWorkspaceRoots"],
+            serde_json::json!([root])
+        );
+
+        let mut turn = block_on(
+            session.start_turn(
+                TurnRequest::new(
+                    RuntimeTurnId::new(format!("turn-{scenario}")).expect("turn id is valid"),
+                    OperationContent::new("perform ordinary work within this approved root")
+                        .expect("content is valid"),
+                ),
+                services.clone(),
+            ),
+        )
+        .expect("bounded workspace turn starts");
+        let terminal = block_on(
+            turn.take_terminal_outcome()
+                .expect("terminal outcome is available"),
+        );
+        assert_eq!(terminal.status(), &TerminalStatus::Completed);
+
+        let sandbox = &message(&state.messages(), "turn/start")["params"]["sandboxPolicy"];
+        assert_eq!(
+            sandbox
+                .as_object()
+                .expect("workspace sandbox policy is an object")
+                .keys()
+                .map(String::as_str)
+                .collect::<BTreeSet<_>>(),
+            BTreeSet::from([
+                "excludeSlashTmp",
+                "excludeTmpdirEnvVar",
+                "networkAccess",
+                "type",
+                "writableRoots",
+            ]),
+            "unexpected turn/start field for {scenario}"
+        );
+        assert_eq!(sandbox["type"], "workspaceWrite");
+        assert_eq!(sandbox["writableRoots"], serde_json::json!([root]));
+        assert_eq!(sandbox["networkAccess"], false);
+        assert_eq!(sandbox["excludeSlashTmp"], true);
+        assert_eq!(sandbox["excludeTmpdirEnvVar"], true);
+
+        assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+        assert_eq!(
+            block_on(support::close_session(session, services)),
+            CleanupOutcome::Clean
+        );
+    }
 }
 
 #[test]

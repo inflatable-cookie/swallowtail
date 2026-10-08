@@ -26,6 +26,7 @@ use swallowtail_runtime::{ProcessOutputChunk, ProcessOutputStream, RuntimeFailur
 
 pub(super) fn respond(
     scenario: SidecarScenario,
+    sdk_version: &str,
     command: &Value,
     state: &mut ProcessState,
 ) -> Result<(), RuntimeFailure> {
@@ -45,7 +46,7 @@ pub(super) fn respond(
                         "id": id,
                         "command": "bootstrap",
                         "success": true,
-                        "data": catalogue_identity()
+                        "data": catalogue_identity(sdk_version)
                     }),
                 );
                 return Ok(());
@@ -75,7 +76,7 @@ pub(super) fn respond(
                 if matches!(scenario, SidecarScenario::BootstrapVersionMismatch) {
                     ("0.84.1", "22.23.1")
                 } else {
-                    ("0.84.2", "22.23.3")
+                    (sdk_version, "22.23.3")
                 };
             let effective_cwd = if matches!(scenario, SidecarScenario::BootstrapCwdMismatch) {
                 "/fixture/other-workspace"
@@ -273,12 +274,12 @@ pub(super) fn respond(
     Ok(())
 }
 
-fn catalogue_identity() -> Value {
+fn catalogue_identity(sdk_version: &str) -> Value {
     json!({
         "wire": "swallowtail-pi-sdk-jsonl-v1",
         "behavior": "pi.sdk-sidecar-v1",
         "sdkPackage": "@earendil-works/pi-coding-agent",
-        "sdkVersion": "0.84.2",
+        "sdkVersion": sdk_version,
         "nodeVersion": "22.23.3",
         "models": [
             {"provider": "fixture-provider", "id": "fixture-model"},

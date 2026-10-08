@@ -5,6 +5,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
 use std::task::Waker;
 use std::time::Duration;
+use swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SDK_VERSION;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentFileLease, AttachmentService, BlockingJob, BlockingWorkService,
@@ -59,6 +60,7 @@ pub const FIXTURE_SESSION_REF: &str = "00000000-0000-0000-0000-000000000000";
 pub struct SidecarFixtureHost {
     shared: Arc<Shared>,
     scenario: SidecarScenario,
+    sdk_version: &'static str,
     process_wait_failure: bool,
     process_exit_failure: bool,
     deadline_task_spawn_failure: bool,
@@ -107,10 +109,16 @@ impl SidecarFixtureHost {
                 task_spawns: AtomicUsize::new(0),
             }),
             scenario,
+            sdk_version: PI_SDK_SIDECAR_SDK_VERSION,
             process_wait_failure: false,
             process_exit_failure: false,
             deadline_task_spawn_failure: false,
         }
+    }
+
+    pub fn with_sdk_version(mut self, version: &'static str) -> Self {
+        self.sdk_version = version;
+        self
     }
 
     pub fn with_immediate_time(self) -> Self {

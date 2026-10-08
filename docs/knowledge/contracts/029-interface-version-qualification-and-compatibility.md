@@ -135,6 +135,31 @@ The claim has its own revision. Changing qualified membership, exclusions,
 newer-version posture, evidence, or support authority changes that revision
 and therefore invalidates stale plans.
 
+## Finite Exact Opaque-Set Design Authority
+
+Tom's 2026-10-08 board answer to decision
+`81c79a19-0035-4b5e-b241-a400380c7f4a` is “Approve exact opaque-set
+contract/design extension”. A separately reviewed design may extend the core
+claim representation to a bounded finite set of exact opaque runtime points
+under the same axis. Preserve existing exact points and callers; each added
+point needs its own frozen identity and behavior evidence. Opaque claims stay
+`QualifiedOnly`, with no ordered interval, inferred interior or forward
+support, silent upgrade, or replacement of existing consumers. A semantic
+release tag is not an opaque runtime identity.
+
+First review the precise representation, bounds, validation, classification,
+preflight and serialization/public API compatibility design. Implement the
+reviewed scope in a separate bounded task before resuming route qualification.
+Until that implementation is independently reviewed, the current core
+one-point restriction and existing route claims remain in force. For llama.cpp,
+retain attached `b9910-f5525f7e7` and owned `b10069-178a6c449`; newer `b11429`
+and its correlation to release `v0.6.0` require independent route proof and
+selection adaptation. This design approval supplies neither behavioral
+qualification nor artifact execution, authentication, live work, installation
+or tag authority. Any other public authority or lifecycle change returns for
+a separate ruling; Contract 036 release compatibility remains independent.
+
+
 ## Upgrade Workflow
 
 Supporting upstream movement should normally require:

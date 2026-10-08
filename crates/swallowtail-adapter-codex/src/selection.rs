@@ -24,7 +24,7 @@ pub const CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION: &str = "0.105.0";
 /// Most recent qualified Codex CLI version for the exec route.
 pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.155.1";
 /// Most recent qualified Codex CLI version for the app-server route.
-pub const CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.161.0";
+pub(crate) const CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.161.0";
 /// Unpublished app-server stables inside the selected catalogue window.
 /// Keep the exec route's `0.155.2` unverified posture independent.
 const CODEX_APP_SERVER_UNPUBLISHED_GAPS: &[&str] = &[

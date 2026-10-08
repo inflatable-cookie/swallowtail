@@ -17,6 +17,26 @@ pub(crate) struct CommandCodePumpResult {
     pub(crate) session_id: Option<String>,
 }
 
+pub(crate) struct PumpContext {
+    operation_id: ActivityOperationId,
+    model_selection: ModelSelectionDebugContext,
+    services: HostServices,
+}
+
+impl PumpContext {
+    pub(crate) fn new(
+        operation_id: ActivityOperationId,
+        model_selection: ModelSelectionDebugContext,
+        services: HostServices,
+    ) -> Self {
+        Self {
+            operation_id,
+            model_selection,
+            services,
+        }
+    }
+}
+
 #[derive(Clone)]
 pub(crate) struct ModelSelectionDebugContext {
     requested_model_id: ModelId,
@@ -61,22 +81,11 @@ pub(crate) async fn pump(
     events: RuntimeEventSender,
     cancellation: Arc<CommandCodeCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
-    operation_id: ActivityOperationId,
-    model_selection: ModelSelectionDebugContext,
-    services: HostServices,
+    context: PumpContext,
 ) -> TerminalOutcome {
-    pump_with_session(
-        process,
-        events,
-        cancellation,
-        deadline,
-        None,
-        operation_id,
-        model_selection,
-        services,
-    )
-    .await
-    .outcome
+    pump_with_session(process, events, cancellation, deadline, None, context)
+        .await
+        .outcome
 }
 
 pub(crate) async fn pump_with_session(
@@ -85,14 +94,12 @@ pub(crate) async fn pump_with_session(
     cancellation: Arc<CommandCodeCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
     expected_session_id: Option<String>,
-    operation_id: ActivityOperationId,
-    model_selection: ModelSelectionDebugContext,
-    services: HostServices,
+    context: PumpContext,
 ) -> CommandCodePumpResult {
     let mut parser = CommandCodeHeadlessEventParser::with_expected_session(
-        operation_id,
+        context.operation_id,
         expected_session_id,
-        model_selection.enabled,
+        context.model_selection.enabled,
     );
     let mut deadline = Some(deadline);
     loop {
@@ -107,8 +114,8 @@ pub(crate) async fn pump_with_session(
                 match parser.push(chunk.bytes()) {
                     Ok(parsed) => {
                         emit_model_selection_debug(
-                            &services,
-                            &model_selection,
+                            &context.services,
+                            &context.model_selection,
                             parser.take_model_request_models(),
                         );
                         if send_all(&events, parsed).is_err() {
@@ -117,7 +124,7 @@ pub(crate) async fn pump_with_session(
                         }
                     }
                     Err(failure) => {
-                        emit_protocol_debug(&services, &failure, "headless.pump.decode");
+                        emit_protocol_debug(&context.services, &failure, "headless.pump.decode");
                         let cleanup = force_cleanup(process.as_ref()).await;
                         return result(TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
@@ -129,7 +136,7 @@ pub(crate) async fn pump_with_session(
             NextOutput::Process(Ok(Some(_))) => {}
             NextOutput::Process(Ok(None)) => break,
             NextOutput::Process(Err(failure)) => {
-                emit_host_process_debug(&services, &failure, "headless.pump.read");
+                emit_host_process_debug(&context.services, &failure, "headless.pump.read");
                 let cleanup = force_cleanup(process.as_ref()).await;
                 return result(TerminalOutcome::new(
                     TerminalStatus::HostFailed(failure.diagnostic().clone()),
@@ -147,19 +154,23 @@ pub(crate) async fn pump_with_session(
         ));
     }
     match (parser.finish(), exit) {
-        (Ok((trailing, parsed, session_id, model_request_models)), Ok(exit)) => {
-            emit_model_selection_debug(&services, &model_selection, model_request_models);
-            if send_all(&events, trailing).is_err() {
+        (Ok(finished), Ok(exit)) => {
+            emit_model_selection_debug(
+                &context.services,
+                &context.model_selection,
+                finished.model_request_models,
+            );
+            if send_all(&events, finished.events).is_err() {
                 result(event_delivery_failed(CleanupOutcome::Clean))
             } else {
                 CommandCodePumpResult {
-                    outcome: parsed.outcome(exit),
-                    session_id,
+                    outcome: finished.terminal.outcome(exit),
+                    session_id: finished.session_id,
                 }
             }
         }
         (Err(failure), exit) => {
-            emit_protocol_debug(&services, &failure, "headless.pump.finish");
+            emit_protocol_debug(&context.services, &failure, "headless.pump.finish");
             result(TerminalOutcome::new(
                 TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
                 cleanup_from_wait(&exit),
@@ -170,7 +181,7 @@ pub(crate) async fn pump_with_session(
                 "swallowtail.command_code.headless.process_wait_failed",
                 "Command Code process wait failed",
             );
-            services.emit_failure_debug(
+            context.services.emit_failure_debug(
                 DebugObservationKind::HostProcess,
                 ROUTE,
                 "headless.pump.wait",

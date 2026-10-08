@@ -13,10 +13,10 @@ fn run_all(lines: &[&str]) -> Result<(Vec<RuntimeEvent>, ParsedTerminal), Runtim
     for line in lines {
         events.extend(parser.push(format!("{line}\n").as_bytes())?);
     }
-    let (trailing, terminal, _session_id, model_request_models) = parser.finish()?;
-    assert!(model_request_models.is_empty());
-    events.extend(trailing);
-    Ok((events, terminal))
+    let finished = parser.finish()?;
+    assert!(finished.model_request_models.is_empty());
+    events.extend(finished.events);
+    Ok((events, finished.terminal))
 }
 
 #[test]
@@ -173,7 +173,10 @@ fn model_request_start_captures_the_cli_selected_model_without_public_activity()
         .expect("model request event parses");
     assert!(projected.is_empty(), "model selection stays private");
 
-    let (_, _, _, effective_models) = parser.finish().expect("stream finishes");
+    let effective_models = parser
+        .finish()
+        .expect("stream finishes")
+        .model_request_models;
     assert_eq!(
         effective_models,
         [Some(
@@ -190,7 +193,10 @@ fn model_request_start_captures_the_cli_selected_model_without_public_activity()
         .push(line.as_bytes())
         .expect("historical model request event parses");
     assert!(projected.is_empty(), "the v1 route keeps the event ignored");
-    let (_, _, _, effective_models) = parser.finish().expect("stream finishes");
+    let effective_models = parser
+        .finish()
+        .expect("stream finishes")
+        .model_request_models;
     assert!(
         effective_models.is_empty(),
         "v1 does not capture model selection"
@@ -207,7 +213,10 @@ fn model_request_start_keeps_unreported_or_unbounded_ids_unknown() {
     parser
         .push(records.as_bytes())
         .expect("unknown model detail does not change stream acceptance");
-    let (_, _, _, effective_models) = parser.finish().expect("stream finishes");
+    let effective_models = parser
+        .finish()
+        .expect("stream finishes")
+        .model_request_models;
     assert_eq!(effective_models, [None, None]);
 }
 

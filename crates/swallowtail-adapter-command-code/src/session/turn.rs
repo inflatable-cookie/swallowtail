@@ -4,7 +4,9 @@ use crate::command::{interactive_arguments, resumed_arguments};
 use crate::driver::write_prompt;
 use crate::failure::{failure, unsupported};
 use crate::handle::CommandCodeCancellation;
-use crate::pump::{ModelSelectionDebugContext, cleanup_failed_start, pump_with_session};
+use crate::pump::{
+    ModelSelectionDebugContext, PumpContext, cleanup_failed_start, pump_with_session,
+};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::{CancellationScope, TurnRef};
@@ -129,9 +131,11 @@ impl CommandCodeSessionHandle {
                     task_cancellation,
                     deadline,
                     task_expected,
-                    ActivityOperationId::Turn(task_turn_id),
-                    task_model_selection,
-                    task_services,
+                    PumpContext::new(
+                        ActivityOperationId::Turn(task_turn_id),
+                        task_model_selection,
+                        task_services,
+                    ),
                 )
                 .await;
                 {

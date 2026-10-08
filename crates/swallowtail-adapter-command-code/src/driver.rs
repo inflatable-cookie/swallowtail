@@ -160,9 +160,7 @@ impl CommandCodeHeadlessDriver {
                         event_sender.clone(),
                         cancellation,
                         time_service.wait_until(deadline),
-                        operation_id,
-                        model_selection,
-                        services,
+                        crate::pump::PumpContext::new(operation_id, model_selection, services),
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);

@@ -51,6 +51,13 @@ pub(crate) struct CommandCodeHeadlessEventParser {
     activity: CommandCodeHeadlessActivityProjection,
 }
 
+pub(crate) struct FinishedEventStream {
+    pub(crate) events: Vec<RuntimeEvent>,
+    pub(crate) terminal: ParsedTerminal,
+    pub(crate) session_id: Option<String>,
+    pub(crate) model_request_models: Vec<Option<String>>,
+}
+
 impl CommandCodeHeadlessEventParser {
     pub(crate) fn with_expected_session(
         operation_id: ActivityOperationId,
@@ -95,34 +102,24 @@ impl CommandCodeHeadlessEventParser {
         Ok(events)
     }
 
-    pub(crate) fn finish(
-        mut self,
-    ) -> Result<
-        (
-            Vec<RuntimeEvent>,
-            ParsedTerminal,
-            Option<String>,
-            Vec<Option<String>>,
-        ),
-        RuntimeFailure,
-    > {
+    pub(crate) fn finish(mut self) -> Result<FinishedEventStream, RuntimeFailure> {
         let mut events = Vec::new();
         if !self.pending.is_empty() {
             let line = std::mem::take(&mut self.pending);
             events.extend(self.parse_line(&line)?);
         }
         let model_request_models = std::mem::take(&mut self.model_request_models);
-        Ok((
+        Ok(FinishedEventStream {
             events,
-            ParsedTerminal::new(
+            terminal: ParsedTerminal::new(
                 self.final_output,
                 self.terminal_seen,
                 self.result_subtype,
                 self.credit_signal,
             ),
-            self.session_id,
+            session_id: self.session_id,
             model_request_models,
-        ))
+        })
     }
 
     fn parse_line(&mut self, line: &[u8]) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {

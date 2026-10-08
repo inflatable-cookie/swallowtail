@@ -44,9 +44,11 @@ qualified on the distinct `oh-my-pi.rpc-v2-v18.0.0` behavior revision. The
 `17.x` segment reports `Deprecated` while remaining executable; `18.x` is
 maintained. GitHub-only stable tags `18.0.2`, `18.1.7`, `18.4.7`, and
 `18.6.2` are excluded. The `17.4.3` and `17.4.4` tags remain incompatible,
-and later stable versions remain visible unverified newer. Research 379
-freezes the exact npm artifact, all 32 published hops, and the complete tree
-ledger. The provider adds `proc://`, `cfg://`, `attachment://`, and
+and later stable versions remain visible unverified newer. A final
+re-probe found official stable `18.8.4` after the identity freeze; it remains
+`UnverifiedNewer` pending a separate currentness qualification. Research 382
+freezes the exact `18.8.3` npm artifact, all 32 published hops, and the
+complete tree ledger. The provider adds `proc://`, `cfg://`, `attachment://`, and
 `conflict://` resources inside its existing ambient `read` tool; `cfg://`
 redacts credentials, while writes remain outside the selected tool set.
 

@@ -80,7 +80,28 @@ and [`protocol.json`](../../crates/swallowtail-adapter-oh-my-pi/tests/fixtures/o
 GitHub-only stable tags `18.0.2`, `18.1.7`, `18.4.7`, and `18.6.2` have no
 published npm artifact and remain excluded. The older `17.4.3` and `17.4.4`
 exclusions remain unchanged. `18.8.4` is the synthetic later-stable point;
-it was not observed as a published artifact in this freeze.
+at the identity observation it was not observed as a published artifact.
+
+## Latest movement after the identity commit
+
+The frozen identity was observed at `2026-10-08T02:28:44.734Z`. A fresh
+official-channel re-probe at `2026-10-08T03:44:31.209Z` found npm `latest`
+`18.8.4`, published at `2026-10-08T03:30:01.828Z`, with integrity
+`sha512-MIiecZZbQT45Lnn1fJwq2gCG2+LBJwQ0cyQodqIPxnzcIRgawapLEaYZn/zXBo+0tn2oCZO6QiJrgKHe1OrsHg==`,
+SHA-1 `eda73035c913b964d9c335e3b6bbf2a24520e749`, and `gitHead: null`.
+GitHub's latest non-prerelease is [`v18.8.4`](https://github.com/can1357/oh-my-pi/releases/tag/v18.8.4),
+published at `2026-10-08T03:25:18Z`, tag commit
+[`40e9368ef0458fd9073329cdff4174895f91bc6b`](https://github.com/can1357/oh-my-pi/commit/40e9368ef0458fd9073329cdff4174895f91bc6b).
+The channels agree on `18.8.4`.
+
+This stable appeared after the identity commit, so Contract 029 records it as
+`UnverifiedNewer` and keeps the qualified ceiling at `18.8.3`. Release notes
+were checked for discovery and list changes across auth, usage, model
+selection, and Tern UI, including a breaking `pi-ai` function signature; they
+do not establish the selected RPC behavior. No `18.8.4` npm tarball was
+downloaded or source tree classified, so no compatibility claim is made for
+it. A follow-up family qualification must verify that exact npm artifact and
+classify its selected-source hop before extending the claim.
 
 ## Selected RPC boundary and claim
 
@@ -109,9 +130,9 @@ extension: maintained `18.0.0..=18.8.3` on the same private
 `oh-my-pi.rpc-v2-v18.0.0` behavior revision. Keep deprecated
 `17.2.9..=17.4.2` on `oh-my-pi.rpc-v2-v17.2.9`, all four `18.x` unpublished
 gaps, incompatible `17.4.3`/`17.4.4`, `AllowUnverified`, and the frozen
-`oh-my-pi-rpc-17.2.9` decoder corpus. `18.8.4` remains visible as
-`UnverifiedNewer`. The `pi.package` and `pi.sdk-sidecar.package` axes remain
-separate.
+`oh-my-pi-rpc-17.2.9` decoder corpus. Official stable `18.8.4` remains
+visible as `UnverifiedNewer` after the post-identity movement. The `pi.package`
+and `pi.sdk-sidecar.package` axes remain separate.
 
 No artifact was executed. There was no provider prompt, login, live catalogue
 or session, credential use, installation, host update, workflow change, or

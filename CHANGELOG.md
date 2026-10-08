@@ -22,7 +22,9 @@ annotated Git tags from the canonical repository.
   tools, frame bounds, lifecycle/failure/usage mapping, and permission
   tier stay fixed. Provider-internal URI resources remain within Oh My Pi's
   existing ambient `read` tool; new RPC commands stay unselected. No provider
-  work, artifact execution, install, or host update occurred.
+  work, artifact execution, install, or host update occurred. A final channel
+  recheck found official `18.8.4` published after the identity commit; it stays
+  `UnverifiedNewer` pending a separate currentness qualification.
 - qualify only `antigravity.catalogue` through official Antigravity CLI `1.3.1`
   after published stable hops `1.2.12`–`1.2.17`, `1.3.0`, and `1.3.1`.
   Research 380 freezes source commits, complete release asset manifests, and

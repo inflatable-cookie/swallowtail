@@ -395,7 +395,8 @@ OpenHands adds a package without a production route.
   and optional reasoning selection, and owns bounded physical/logical frame
   decoding. Its first catalogue, run, and session subset omits write tools,
   permission exchange, session switching, host-tool injection, and subagent
-  authority
+  authority. Official stable `18.8.4` appeared after identity freeze and
+  remains `UnverifiedNewer` without widening the `18.x` claim (Research 382).
 - `swallowtail-adapter-muse` implements exact signed Muse Code payload
   `0.2.1-R1215.1` as one read-only `muse-code.headless` structured-run route.
   Its prepared facade binds provider-owned local Meta account state without a

@@ -119,7 +119,10 @@ fn catalogue_and_acp_qualify_three_published_hops_without_advancing_headless() {
         assert!(headless.supports(&version(release)), "{release}");
     }
     for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
-        assert!(headless.permits(&version(release)), "{release} stays visible");
+        assert!(
+            headless.permits(&version(release)),
+            "{release} stays visible"
+        );
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
             headless.assess(&version(release))
         else {

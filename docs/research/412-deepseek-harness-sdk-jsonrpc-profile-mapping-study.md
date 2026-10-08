@@ -48,10 +48,10 @@ per-member byte counts and SHA-256 digests are in the [npm package inventory](./
 | `@deepseek-ai/dsh-sdk-protocol` | `0.2.0-rc.2` | 9 | `hs4Kl2x17wAuhSMUWuNpeHvv1mOm+F+A2EQnYu1QmxVux50PR3xHthee7IX/PylpgZybcfBn1JAigKvOFs5GPA==` |
 
 The corresponding upstream source tag is `dsh-v0.2.0-rc.2`, resolving to
-commit `639ed015397290b3745d163aafe02ffee4aa3f84`. Its downloaded GitHub
-source archive SHA-256 is
-`ea09af29bfbcd26467579da0a92875f9a81b175da2f01643ffb855e995627f24`.
-Selected source-file hashes are retained in the [tagged source file inventory](./deepseek-harness-sdk-jsonrpc-profile-mapping-source-files.tsv).
+commit `639ed015397290b3745d163aafe02ffee4aa3f84`. Selected source-file
+hashes are retained in the [tagged source file inventory](./deepseek-harness-sdk-jsonrpc-profile-mapping-source-files.tsv).
+The source archive container digest is omitted because it was not
+independently reproducible.
 The npm package manifests name this repository and matching package paths and
 versions, but the published package metadata has no `gitHead`. The tag is
 therefore a separately frozen source snapshot, not proof that the PyPI wheel's

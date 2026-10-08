@@ -4,8 +4,9 @@
 //! for initialize plus one bounded `session/prompt` through
 //! `prepare_deepagents_acp`. `npx`, library embed, `--workspace` / `--model`,
 //! `session/load`, slash commands, and `session/prompt` field `content` stay
-//! out. CLI `agentInfo.version` is the constructor default `0.0.1`, not npm
-//! `0.1.30`.
+//! out. The qualified npm package window is `0.1.30..=0.1.34`. CLI
+//! `agentInfo.version` is the constructor default `0.0.1`, not that package
+//! version.
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]

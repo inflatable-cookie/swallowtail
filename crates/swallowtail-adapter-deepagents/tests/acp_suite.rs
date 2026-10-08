@@ -10,8 +10,7 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use support::{FixtureHost, Scenario, close_session, selection, selection_with_access};
 use swallowtail_adapter_deepagents::{
-    DEEPAGENTS_ACP_EXECUTABLE_NAME, DEEPAGENTS_ACP_PACKAGE_AXIS, DEEPAGENTS_ACP_PACKAGE_VERSION,
-    DeepAgentsAcpDriver,
+    DEEPAGENTS_ACP_EXECUTABLE_NAME, DEEPAGENTS_ACP_PACKAGE_AXIS, DeepAgentsAcpDriver,
 };
 use swallowtail_core::{
     DiscoveryStatus, ExecutionHostId, InterfaceVersionAxis, ProviderRequestHandling, ResourceAccess,
@@ -454,36 +453,42 @@ fn session_deadline_is_rejected_before_spawn() {
 }
 
 #[test]
-fn installed_executable_probe_accepts_exact_release_stdout() {
-    let host_id = ExecutionHostId::new("fixture.host.discovery").expect("valid host id");
-    let discovery = DiscoveryHost::new(DEEPAGENTS_ACP_PACKAGE_VERSION);
+fn installed_executable_probe_accepts_every_qualified_release() {
     let driver = DeepAgentsAcpDriver::new(
         swallowtail_runtime::EnvironmentRef::new("deepagents.fixture.isolated")
             .expect("valid environment"),
     );
-    let outcome = block_on(
-        driver.discover_installed_executable(
-            InstalledExecutableDiscoveryRequest::new(
-                RequestId::new("deepagents-probe").expect("request"),
-                ScopeId::new("deepagents-probe").expect("scope"),
-                host_id.clone(),
-                InstalledExecutableTarget::new(
-                    ExecutableRef::new(format!("/fixture/bin/{DEEPAGENTS_ACP_EXECUTABLE_NAME}"))
+    for version in ["0.1.30", "0.1.31", "0.1.32", "0.1.33", "0.1.34"] {
+        let host_id = ExecutionHostId::new(format!("fixture.host.discovery.{version}"))
+            .expect("valid host id");
+        let discovery = DiscoveryHost::new(version);
+        let outcome = block_on(
+            driver.discover_installed_executable(
+                InstalledExecutableDiscoveryRequest::new(
+                    RequestId::new(format!("deepagents-probe.{version}")).expect("request"),
+                    ScopeId::new(format!("deepagents-probe.{version}")).expect("scope"),
+                    host_id.clone(),
+                    InstalledExecutableTarget::new(
+                        ExecutableRef::new(format!(
+                            "/fixture/bin/{DEEPAGENTS_ACP_EXECUTABLE_NAME}"
+                        ))
                         .expect("executable"),
-                    InterfaceVersionAxis::new(DEEPAGENTS_ACP_PACKAGE_AXIS).expect("axis"),
+                        InterfaceVersionAxis::new(DEEPAGENTS_ACP_PACKAGE_AXIS).expect("axis"),
+                    ),
+                    Deadline::at(MonotonicInstant::from_ticks(1_000)),
+                    DiscoveryCancellation::new(),
                 ),
-                Deadline::at(MonotonicInstant::from_ticks(1_000)),
-                DiscoveryCancellation::new(),
+                discovery.services(host_id),
             ),
-            discovery.services(host_id),
-        ),
-    )
-    .expect("exact release discovers");
-    assert_eq!(outcome.status(), DiscoveryStatus::Discovered);
-    assert_eq!(
-        discovery.observed_process().expect("probe ran").arguments,
-        ["--version"]
-    );
+        )
+        .expect("qualified release discovers");
+        assert_eq!(outcome.status(), DiscoveryStatus::Discovered, "{version}");
+        assert_eq!(
+            discovery.observed_process().expect("probe ran").arguments,
+            ["--version"],
+            "{version}"
+        );
+    }
 }
 
 fn open(

@@ -1,0 +1,61 @@
+{
+  "claim": {
+    "axis": "claude-agent.sdk.node",
+    "exclusions": [],
+    "first_later_unqualified_point": "22.23.4",
+    "id": "claude-agent.sdk.node-window-1",
+    "posture": "qualified_only",
+    "scheme": "semantic",
+    "segments": [
+      {
+        "behavior_revision": "claude-agent.sdk-v1",
+        "maximum": "22.23.3",
+        "minimum": "22.23.2",
+        "support": "maintained"
+      }
+    ]
+  },
+  "frozen_evidence": {
+    "distribution_tree": "dist-inventory.json",
+    "identity": "identity.json",
+    "source_hop": "source-delta.json"
+  },
+  "route": "claude-agent.sdk",
+  "schema": 1,
+  "selected_behavior": {
+    "changed_distribution_paths": [
+      "bin/node"
+    ],
+    "fake_proofs": [
+      "sidecar SDK option/callback surface",
+      "identity and open readiness",
+      "driver wire decoding and lifecycle",
+      "usage and registered-tool mediation"
+    ],
+    "node_sidecar_transport": "strict LF JSONL over local stdio",
+    "runtime_platform": "darwin-arm64",
+    "sdk_native_wire_permission_usage_configuration_and_tool_mappings_unchanged": true,
+    "sidecar_entry_type": "ES module",
+    "source_change": "ESM internals now use the fs module object so patches to fs are observed; sidecar does not patch fs",
+    "source_changed_paths": [
+      "lib/internal/modules/esm/load.js",
+      "lib/internal/modules/esm/resolve.js",
+      "lib/internal/modules/esm/translators.js"
+    ]
+  },
+  "tuple": {
+    "behavior_revision": "claude-agent.sdk-v1",
+    "native_version": "2.1.284",
+    "node_runtime": "22.23.3",
+    "sdk_package": "@anthropic-ai/claude-agent-sdk",
+    "sdk_version": "0.3.284",
+    "sidecar_source_tag": "swallowtail-claude-agent-sdk-sidecar@0.5.1",
+    "wire": "swallowtail-claude-agent-sdk-jsonl-v1"
+  },
+  "unmapped_runtime_deltas": {
+    "node_api": "SharedArrayBuffer N-API additions are not used by the JavaScript wrapper/spawned native CLI route",
+    "package_manager": "bundled npm/Corepack assets are not invoked by the sidecar launch recipe",
+    "platform_support": "Windows remains unsupported; no Linux route/environment proof is added",
+    "tls_dns_global_http_http2": "Node runtime internals changed; the sidecar makes no provider HTTP requests and no live provider/HTTP-MCP evidence transfers"
+  }
+}

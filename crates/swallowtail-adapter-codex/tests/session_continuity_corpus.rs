@@ -13,16 +13,18 @@ fn version(value: &serde_json::Value, field: &str) -> Version {
 fn continuity_segments_freeze_the_exact_maintained_window() {
     let corpus: serde_json::Value = serde_json::from_str(CORPUS).expect("corpus parses");
     assert_eq!(corpus["qualified_range"]["baseline"], "0.80.0");
-    assert_eq!(corpus["qualified_range"]["latest"], "0.155.1");
+    assert_eq!(corpus["qualified_range"]["latest"], "0.161.0");
     assert_eq!(corpus["selected_method"], "thread/resume");
 
     let segments = corpus["segments"].as_array().expect("segments");
-    assert_eq!(segments.len(), 6);
+    assert_eq!(segments.len(), 7);
     for checkpoint in [
         "0.80.0", "0.81.0", "0.84.0", "0.99.0", "0.100.0", "0.107.0", "0.110.0", "0.128.0",
         "0.129.0", "0.130.0", "0.131.0", "0.145.0", "0.146.0", "0.147.0", "0.148.0", "0.149.0",
         "0.149.1", "0.150.0", "0.150.1", "0.151.0", "0.152.0", "0.152.1", "0.153.0", "0.153.1",
-        "0.153.2", "0.153.3", "0.153.4", "0.154.0", "0.155.0", "0.155.1",
+        "0.153.2", "0.153.3", "0.153.4", "0.154.0", "0.155.0", "0.155.1", "0.156.0", "0.156.1",
+        "0.157.0", "0.157.1", "0.158.0", "0.159.0", "0.159.1", "0.159.2", "0.159.3", "0.160.0",
+        "0.160.1", "0.161.0",
     ] {
         let checkpoint = Version::parse(checkpoint).expect("checkpoint");
         assert_eq!(
@@ -37,7 +39,7 @@ fn continuity_segments_freeze_the_exact_maintained_window() {
             "{checkpoint} maps exactly once"
         );
     }
-    for excluded in ["0.82.0", "0.83.0", "0.108.0", "0.109.0"] {
+    for excluded in ["0.82.0", "0.83.0", "0.108.0", "0.109.0", "0.155.2"] {
         let excluded = Version::parse(excluded).expect("excluded version");
         assert!(!segments.iter().any(|segment| {
             version(segment, "minimum") <= excluded && excluded <= version(segment, "maximum")

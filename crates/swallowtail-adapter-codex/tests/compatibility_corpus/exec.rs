@@ -47,6 +47,6 @@ fn exec_corpus_freezes_baseline_checkpoints_and_rejections() {
         }
     }
     assert_eq!(strings(&corpus["synthetic_rejections"]), ["not-a-version"]);
-    assert_unverified_newer(&corpus);
+    assert_unverified_newer(&corpus, "0.155.2");
 }
 

@@ -206,9 +206,10 @@ OpenHands adds a package without a production route.
   structured-output capability. The same crate also implements the separate
   `claude-agent.sdk` route: Anthropic's official Claude Agent SDK at exact
   `0.3.284`, carrying native `2.1.284`, running in a source-tagged Node
-  sidecar (exact Node `22.23.2`) over the private bounded
-  `swallowtail-claude-agent-sdk-jsonl-v1` wire, with five qualified-only
-  one-point version axes, an application-provisioned launch recipe and
+  sidecar (maintained Node `22.23.2..=22.23.3`; Research 387) over the private
+  bounded `swallowtail-claude-agent-sdk-jsonl-v1` wire, with four
+  qualified-only one-point version axes and one maintained Node 22 patch
+  segment, an application-provisioned launch recipe and
   environment, no credential custody (delegated lease plus first-party
   `oauth` readiness only), read-only tools, consumer-mediated tool admission,
   capability-gated interrupt, and caller-bounded open, turn, interrupt, and
@@ -271,7 +272,8 @@ OpenHands adds a package without a production route.
   entitled set and may substitute that model's default, while this route
   selects no model. The route therefore exposes no portable
   `ReasoningSelection` and retains its exact absent-effort argv.
-- `swallowtail-adapter-mistral-vibe` implements exact GitHub/PyPI `2.25.4`
+- `swallowtail-adapter-mistral-vibe` implements maintained GitHub/PyPI
+  `2.25.4..=2.26.0`, excluding unpublished `2.25.6` and `2.25.9`
   discovery and one bounded `vibe --prompt --output streaming` structured
   run with typed caller-decreasing `MistralVibeMaxTurns` `1..=8`; omission
   keeps `--max-turns 8`, then fixed `--trust --agent plan --workdir
@@ -286,7 +288,7 @@ OpenHands adds a package without a production route.
   `--permission-mode dont_ask`, adapter-owned `--max-turns 8`,
   `--no-session-persistence --cwd` through `prepare_qoder_headless`.
   Maintained stable points are `1.1.54..=1.1.65` under `QualifiedOnly`
-  (Research 385); `error_max_turns` with the configured bound maps to provider
+  (Research 389); `error_max_turns` with the configured bound maps to provider
   failure. The `1.1.61` repeated-tool-denial reason remains a generic provider
   failure.
   `--acp`, SDK stdio, TUI, `--yolo` / `bypass_permissions` / `accept_edits`,
@@ -333,9 +335,12 @@ OpenHands adds a package without a production route.
 - `swallowtail-adapter-bedrock` pins the provider-supported
   `aws-sdk-bedrockruntime = 1.148.0` in-process Rust boundary and implements
   one exact `ConverseStream` production route; its native catalogue fixture
-  boundary pins `aws-sdk-bedrock = 1.148.0`, the distinct regional control-
-  plane audience, generated request, summary, lifecycle and error types, and
-  bounded provider-neutral projection
+  boundary uses `aws-sdk-bedrock = 1.161.0` for the selected
+  `ListFoundationModels` request, summary, lifecycle and error types, and
+  bounded provider-neutral projection. Its semantic SDK claim retains exact
+  `1.148.0`, qualifies `1.150.0..=1.155.0` and `1.157.0..=1.161.0`, and
+  excludes `1.149.0` and yanked `1.156.0`; the regional control-plane
+  audience and exact service revision remain separate
 - `swallowtail-adapter-gemini` implements the qualified Gemini CLI
   `0.51.0..=0.61.0` (excluding unpublished `0.56.1` and `0.59.1`) ambient-host interactive
   subset with separate read-only
@@ -685,9 +690,10 @@ Crate status:
   with qualified-only claim, visible public preview, host-account access,
   and no credential lease. The package remains an unreleased additive
   candidate after `v0.3.2`.
-- `swallowtail-adapter-mistral-vibe` — realized for exact GitHub/PyPI
-  `2.25.4` headless discovery, one bounded streaming-NDJSON structured
-  run, and `prepare_mistral_vibe_headless`. The package remains an
+- `swallowtail-adapter-mistral-vibe` — realized for maintained GitHub/PyPI
+  `2.25.4..=2.26.0` headless discovery and one bounded streaming-NDJSON
+  structured run; unpublished `2.25.6` and `2.25.9` remain excluded. Use
+  `prepare_mistral_vibe_headless`. The package remains an
   unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-qoder` — realized for maintained npm
   `1.1.54..=1.1.65` headless discovery, one bounded stream-json structured run
@@ -1710,9 +1716,12 @@ ambient AWS region, credential, profile, file, container, or instance-metadata
 chains. Runtime binds `aws-sdk-bedrockruntime = 1.148.0`,
 `ConverseStream`, one exact model route and underlying provider, bounded text
 output, and one structured attempt. Catalogue binds
-`aws-sdk-bedrock = 1.148.0`, `ListFoundationModels`, its own access and
-regional control-plane target, and no model route. Their prepared evidence
-retains separate SDK and service interface axes. Bound operations delegate to
+`aws-sdk-bedrock = 1.161.0`, `ListFoundationModels`, its own access and
+regional control-plane target, and no model route. Its semantic SDK claim
+retains exact `1.148.0`, qualifies `1.150.0..=1.155.0` and
+`1.157.0..=1.161.0`, and leaves `1.149.0` and yanked `1.156.0` incompatible.
+Their prepared evidence retains separate SDK and service interface axes.
+Bound operations delegate to
 the unchanged one-attempt drivers; private SDK work joins before credential
 release. Catalogue observations cannot construct Runtime capability,
 entitlement, availability, or route truth.

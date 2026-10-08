@@ -6,7 +6,7 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 | Route | Driver ID and operation | Transport and SDK |
 | --- | --- | --- |
 | `bedrock.runtime` | `swallowtail.amazon-bedrock.direct`; `BedrockPreparedInferenceAttempt` | Rust SDK EventStream; `aws-sdk-bedrockruntime = 1.148.0` |
-| `bedrock.catalogue` | `swallowtail.amazon-bedrock.catalogue`; `BedrockPreparedCatalogue` | Rust SDK control plane; `aws-sdk-bedrock = 1.148.0` |
+| `bedrock.catalogue` | `swallowtail.amazon-bedrock.catalogue`; `BedrockPreparedCatalogue` | Rust SDK control plane; `aws-sdk-bedrock = 1.161.0` |
 
 They do not share a configured instance, driver, access profile, endpoint
 audience, plan, request, or operation method.
@@ -117,10 +117,15 @@ Runtime and catalogue evidence separately retain:
 Runtime qualifies the semantic SDK points `1.136.0` and `1.139.0..=1.148.0`
 under `amazon-bedrock.runtime-sdk-1`, with `1.137.0`, `1.138.0`, and yanked
 `1.144.0` excluded. Later stable SDK versions may be visible as
-`UnverifiedNewer`. The Runtime service API stays exact. Catalogue keeps its
-exact control-plane SDK and service API revisions. [Research 381](../research/381-bedrock-runtime-sdk-1-148-0-identity.md)
-freezes the official artifacts and selected request, EventStream, usage, and
-failure boundaries.
+`UnverifiedNewer`. The Runtime service API and catalogue service API stay
+exact. Catalogue retains exact `1.148.0` and qualifies semantic SDK segments
+`1.150.0..=1.155.0` and `1.157.0..=1.161.0`; `1.149.0` remains an
+unqualified gap and yanked `1.156.0` stays excluded. Later catalogue SDK
+stables remain `UnverifiedNewer`. [Research 381](../research/381-bedrock-runtime-sdk-1-148-0-identity.md)
+freezes the Runtime artifacts and selected request, EventStream, usage, and
+failure boundaries. [Research 386](../research/386-bedrock-catalogue-sdk-1-161-0-identity.md)
+freezes the catalogue artifacts and selected request, response, and failure
+boundaries.
 
 Prepared operations expose `plan`, `request`, `low_level_driver`, and
 `into_parts`. Advanced consumers may still assemble and call the low-level

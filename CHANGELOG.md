@@ -6,6 +6,31 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- extend the Qoder `qoder.headless` claim from `1.1.54` through maintained
+  stable `1.1.65`, retaining `QualifiedOnly`, the baseline, claim id and
+  `qoder.headless.stdio-stream-json-v2` behavior revision. Research 389 freezes
+  all eleven published hops and the `1.1.61` generic failure projection for
+  `repeated_tool_call_denied`; Research 328's adapter-owned `--max-turns 8`
+  AgentLoop ceiling and the historical `1.1.25` decoder specimens remain.
+  Research 256's independent empty skill-visibility disposition is unchanged.
+- qualify only the `claude-agent.sdk.node` runtime axis through official
+  Node 22.23.3. Research 387 freezes the single published hop after 22.23.2,
+  signed Darwin arm64 artifacts, complete distribution inventories, and all
+  Node source-path changes. Keep the existing Node claim and behavior revision,
+  preserve Node 22.23.2, and leave the SDK, native, wire, sidecar, platform,
+  registered-tool live, and HTTP MCP live evidence unchanged. No Node
+  installation, host update, provider call, or credential use occurred.
+- qualify `mistral-vibe.headless` through official PyPI and GitHub stable
+  `2.26.0`. Research 384 freezes all four published hops after `2.25.4`,
+  complete wheel trees, runtime/source identities, and per-hop selected-surface
+  classifications. Extend the maintained segment to `2.25.4..=2.26.0`, retain
+  the claim and behavior revisions, and exclude unpublished `2.25.6` and
+  `2.25.9`. The one-prompt streaming command, Plan permission profile, legacy
+  Python harness pin, and lifecycle remain unchanged; later stable versions are
+  visible as `UnverifiedNewer`. The approved environment must leave `VIBE_CLI`
+  unset or set to `python` on Vibe `2.25.7+`; Rust TUI and Unified Harness stay
+  unmapped. No artifact execution, provider prompt, credential use,
+  installation, or host update occurred.
 - qualify `pi.rpc` through official npm `latest` and GitHub latest stable
   `1.1.0` after every published hop following `0.86.1`. Research 383 freezes
   exact package and source identity, complete npm trees, runtime chunks, and
@@ -18,10 +43,18 @@ annotated Git tags from the canonical repository.
   credential use, installation, or host update occurred.
 - qualify `bedrock.runtime`'s Rust SDK through official `aws-sdk-bedrockruntime`
   `1.148.0`, preserving exact `1.136.0`, the `1.137.0` and `1.138.0` gaps,
-  and the yanked `1.144.0` exclusion. The Runtime service axis and both
-  catalogue axes stay exact. Research 381 freezes every selected-channel hop
+  and the yanked `1.144.0` exclusion. The Runtime service and Bedrock
+  catalogue service axes stay exact; catalogue SDK currentness is qualified
+  separately in Research 386. Research 381 freezes every selected-channel hop
   and full package trees, plus the ConverseStream request, EventStream, usage,
   and failure boundaries; no AWS calls or host mutation occurred.
+- qualify `bedrock.catalogue`'s control-plane SDK through official
+  `aws-sdk-bedrock 1.161.0`; retain exact `1.148.0`, qualify
+  `1.150.0..=1.155.0` and `1.157.0..=1.161.0`, and preserve unqualified
+  `1.149.0` and yanked `1.156.0` gaps. Research 386 freezes all twelve stable
+  artifacts, complete source trees and every changed-file hop, plus the
+  selected request, response, error, retry, telemetry, and access boundaries;
+  no AWS calls or host mutation occurred.
 - qualify `oh-my-pi.rpc` through official npm `latest` and GitHub latest
   stable `18.8.3` on the existing `oh-my-pi.rpc-v2-v18.0.0` revision.
   Research 382 freezes all 32 published hops after `18.2.7`, exact npm
@@ -81,7 +114,7 @@ annotated Git tags from the canonical repository.
   provider prompt, model download, or host mutation occurred.
 - qualify `grok-build.acp` through current official npm `@xai-official/grok`
   `1.0.46`. Research 340 freezes published stable hops `1.0.31..=1.0.41`
-  after the exact `1.0.30` catalogue ceiling; Research 386 freezes hops
+  after the exact `1.0.30` catalogue ceiling; Research 385 freezes hops
   `1.0.42..=1.0.46`, their wrapper and platform package trees, runtime digests,
   and selected ACP surface inventories. Mapped wire and lifecycle evidence
   stays on `grok-build.acp-v1.cached-token-model-4-6-v3`.
@@ -141,6 +174,15 @@ annotated Git tags from the canonical repository.
   tool-output/context changes need an operator ruling before qualification;
   both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
   and `0.59.1` exclusions remain in force.
+- qualify only `codex.app-server` through official npm/GitHub stable `0.161.0`;
+  Research 388 freezes package and runtime identities, complete source trees,
+  all twelve selected stable hops, and the exact selected-route policy proof.
+  The claim keeps its baseline, ID, prior segments, behavior revisions, and
+  exclusions, with private revisions for accepted managed policies and the
+  existing top-level `.aws` read-only protection. `codex.exec` remains
+  independently qualified through `0.155.1`. The `.aws` workspace-write
+  narrowing still needs Contract 036 patch-compatibility classification before
+  v0.5.2.
 - project one validated `claude-agent.sdk` main-loop usage snapshot per
   completed SDK result through `ProviderObservation::Usage`, including
   input/output and cache-read/cache-write token dimensions. Required counts
@@ -319,13 +361,14 @@ annotated Git tags from the canonical repository.
   `session/prompt` into the adapter diagnostic
   `swallowtail.goose.acp.auth_required`. Research 319's historical stop and
   the independently gated builtin, mode, lifecycle, and effort surfaces stand.
-- extend the Qoder `qoder.headless` claim from `1.1.54` through maintained
-  stable `1.1.65`, retaining `QualifiedOnly`, the baseline, claim id and
-  `qoder.headless.stdio-stream-json-v2` behavior revision. Research 385 freezes
-  all eleven published hops and the `1.1.61` generic failure projection for
-  `repeated_tool_call_denied`; Research 328's adapter-owned `--max-turns 8`
-  AgentLoop ceiling and the historical `1.1.25` decoder specimens remain.
-  Research 256's independent empty skill-visibility disposition is unchanged.
+- advance the Qoder `qoder.headless` claim to one exact `1.1.54`
+  `QualifiedOnly` point on the new adapter-private
+  `qoder.headless.stdio-stream-json-v2` behavior revision. Research 328 froze
+  official npm `1.1.54` after the `1.1.52` stop and recorded the deliberate
+  adapter-owned `--max-turns 8` AgentLoop ceiling plus its
+  `error_max_turns` provider-failure shape. The historical `1.1.25` decoder
+  specimens and Research 256's independent empty skill-visibility disposition
+  remain unchanged.
 
 ### Added
 - prove the `gemini-cli.acp` consumer HTTP MCP live harness against a fake

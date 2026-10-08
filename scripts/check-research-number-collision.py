@@ -38,12 +38,6 @@ ALLOWLISTED_COLLISIONS = {
             "opencode-acp-unavailable-cells",
         }
     ),
-    "382": frozenset(
-        {
-            "grok-build-acp-1-0-46-identity",
-            "oh-my-pi-18-8-3-identity-and-qualification",
-        }
-    ),
 }
 
 

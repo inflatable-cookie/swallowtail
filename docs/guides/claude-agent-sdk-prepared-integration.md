@@ -142,15 +142,17 @@ sandbox.
 
 ## Version Posture
 
-Five separate axes carry qualified-only one-point claims. The claims stay
-exact; the open path has one narrow observation-only exception for a newer Node
-runtime that passes the sidecar floor:
+Five separate axes carry qualified-only claims. The package, native, wire, and
+sidecar claims remain exact one-point claims. The Node claim now covers the
+maintained `22.23.2..=22.23.3` segment; the open path has one narrow
+observation-only exception for a newer Node runtime that passes the sidecar
+floor:
 
 - `claude-agent.sdk.package`: exact `@anthropic-ai/claude-agent-sdk@0.3.284`
 - `claude-agent.sdk.native`: exact native `2.1.284`, as the shipped
   `manifest.json` declares it
-- `claude-agent.sdk.node`: exact Node `22.23.2` (satisfying the upstream
-  `>=18.0.0` requirement)
+- `claude-agent.sdk.node`: maintained Node `22.23.2..=22.23.3` (satisfying the
+  upstream `>=18.0.0` requirement; Research 387)
 - `claude-agent.sdk.wire`: exact `swallowtail-claude-agent-sdk-jsonl-v1`
   (opaque)
 - `claude-agent.sdk.sidecar`: the exact source-tagged sidecar revision

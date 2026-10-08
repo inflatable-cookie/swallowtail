@@ -80,15 +80,10 @@ fn runtime_sdk_claim() -> InterfaceCompatibilityClaim {
 }
 
 #[must_use]
-/// Returns qualified-only SDK and service claims for the Bedrock catalogue.
+/// Returns the semantic SDK and exact service claims for the Bedrock catalogue.
 pub fn bedrock_catalogue_interface_claims() -> [InterfaceCompatibilityClaim; 2] {
     [
-        exact_claim(
-            "amazon-bedrock.catalogue-sdk-window-1",
-            CATALOGUE_SDK_AXIS,
-            crate::CATALOGUE_SDK_VERSION,
-            "amazon-bedrock.catalogue-sdk-1",
-        ),
+        catalogue_sdk_claim(),
         exact_claim(
             "amazon-bedrock.catalogue-service-window-1",
             CATALOGUE_SERVICE_AXIS,
@@ -96,6 +91,51 @@ pub fn bedrock_catalogue_interface_claims() -> [InterfaceCompatibilityClaim; 2] 
             "amazon-bedrock.catalogue-service-1",
         ),
     ]
+}
+
+fn catalogue_sdk_claim() -> InterfaceCompatibilityClaim {
+    InterfaceCompatibilityClaim::new(
+        valid(
+            InterfaceCompatibilityClaimId::new,
+            "amazon-bedrock.catalogue-sdk-window-1",
+        ),
+        valid(InterfaceVersionAxis::new, CATALOGUE_SDK_AXIS),
+        InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::AllowUnverified,
+        [
+            InterfaceVersionSegment::exact(
+                valid(InterfaceVersion::new, "1.148.0"),
+                valid(
+                    InterfaceBehaviorRevision::new,
+                    "amazon-bedrock.catalogue-sdk-1",
+                ),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                valid(InterfaceVersion::new, "1.150.0"),
+                valid(InterfaceVersion::new, "1.155.0"),
+                valid(
+                    InterfaceBehaviorRevision::new,
+                    "amazon-bedrock.catalogue-sdk-1",
+                ),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                valid(InterfaceVersion::new, "1.157.0"),
+                valid(InterfaceVersion::new, crate::CATALOGUE_SDK_VERSION),
+                valid(
+                    InterfaceBehaviorRevision::new,
+                    "amazon-bedrock.catalogue-sdk-1",
+                ),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
+        [
+            valid(InterfaceVersion::new, "1.149.0"),
+            valid(InterfaceVersion::new, "1.156.0"),
+        ],
+    )
+    .expect("static Bedrock catalogue SDK compatibility claim is valid")
 }
 
 fn binding(axis: &str, version: &str) -> InterfaceVersionBinding {

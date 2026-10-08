@@ -8,6 +8,9 @@ fn prepared_actions_share_exact_codex_lifecycle_mapping() {
         ("0.92.0", "restore"),
         ("0.140.0", "delete"),
         ("0.145.0", "delete"),
+        ("0.161.0", "archive"),
+        ("0.161.0", "restore"),
+        ("0.161.0", "delete"),
     ] {
         let prepared_app = prepared(
             CodexPreparedDriver::AppServer,
@@ -106,13 +109,13 @@ fn lifecycle_preparation_stops_unsupported_and_unverified_routes() {
 
     let newer = prepared(
         CodexPreparedDriver::AppServer,
-        "0.155.2",
+        "0.161.1",
         &RecordingHostServices::default(),
         false,
     );
     let input = CodexSessionManagementInput::new(
         RequestId::new("newer-archive").unwrap(),
-        lifecycle_binding(&newer, "0.155.2"),
+        lifecycle_binding(&newer, "0.161.1"),
     );
     assert!(newer.prepare_archive_session(input.clone()).is_err());
     assert!(

@@ -161,6 +161,138 @@ ruling. Assess Contract 036 patch compatibility independently. This ruling
 confers no qualification, live spend, credential, installation, host/workflow
 mutation, or release/tag authority and waives no evidence gate.
 
+## Codex App-Server Managed Policy Qualification
+
+Tom ruled on 2026-10-08, answering “Accept and approve all” to decision
+`d9a1fe6e-6481-433c-b643-ada177613e07` in the seven-decision batch.
+Provider-free qualification may accept these selected upstream boundaries:
+
+- managed model-provider revalidation can refuse `model/list` or `turn/start`,
+  including retained threads;
+- unresolved home-relative denials and invalid deny globs fail closed without
+  materializing write grants;
+- safe-to-replay bootstrap GET requests may fall back to the host system proxy,
+  subject to applicable provider-network policy;
+- explicitly configured Windows MxC may be inherited only within the approved
+  host/resource and managed-policy boundary, without automatic setup or a
+  stronger isolation claim;
+- `application.network` restricts provider/API HTTP independently of the tool
+  sandbox's `networkAccess=false`.
+
+Each path requires exact selected-route proof, truthful refusal and joined
+cleanup, with no bypass or access expansion. Source-only Windows evidence does
+not qualify runtime isolation. Preserve older qualified points and document
+justified private milestones. Further narrowing, public API/lifecycle changes,
+unpreserved authority or live-proof needs return for a separate ruling.
+Contract 036 patch compatibility, including the protected `.aws` limitation,
+remains a separate assessment.
+
+## Claude Code Headless Safety And Stream Adaptation
+
+Tom's 2026-10-08 “Accept and approve all” answers decision
+`0e2d4a38-33d4-43cd-b475-e901e41fe36b`. A provider-free private adaptation may
+qualify the selected `2.1.287` forked-skill stream change and `2.1.290`
+permission/safety rechecks after `PreToolUse` input rewrites. Preserve read-only
+plan-mode authority, the approved resource boundary, bounded truthful stream
+and usage, and the existing public lifecycle. Honour rechecks without bypass.
+
+Complete every published-hop semantic review and route-facing proof before
+moving claims; preserve older qualified segments. Further narrowing, new
+public API/lifecycle or live-proof needs return for a separate ruling.
+Contract 036 patch compatibility is assessed independently.
+
+## Antigravity Headless Denial And Child Status
+
+Tom's 2026-10-08 “Accept and approve all” answers decision
+`4d072a6a-4dd8-47a8-9598-efa64a8f8895`. Provider-free adaptation may represent
+`1.2.15` denial semantics with exact denial/failure fixtures and a private
+behavior milestone. Denial must not trigger alternate-command or tool
+workarounds; existing operations and the no-approval-bypass boundary remain.
+
+For `1.3.1` child status, obtain exact selected-stream evidence first. Map a
+proven error field to `Failed` within the existing vocabulary. TUI release
+notes, missing fields or disassembly alone cannot prove a successful child.
+Tom answered the two follow-up decisions on 2026-10-08:
+“Approve both from your previous message”. Decision
+`48b9bd88-5406-49bb-a158-a433fab35992` authorizes preserving reported child
+identities with `SubagentStatus::Unknown` when the selected stream provides
+no usable child status. Do not infer completion from child identity, the
+enclosing step, or whole-run success. Keep tool-step, outer-run and child
+outcomes distinct. Prove the fallback through provider-free fixtures and a
+justified private behavior milestone. Preserve older qualified points and
+released contracts; any inability to do so without a public API, lifecycle
+or authority change returns for another ruling.
+
+Decision `24e5b91b-4969-4990-aaae-8ffcdbebebff` accepts documented soft denial
+as a route limitation: an approval-required tool may be denied while the
+outer run continues and exits zero. Run completion does not prove every
+requested tool executed. Preserve provider denial without alternate-tool
+workarounds or approval bypass. No typed soft-denial observation is
+established by the selected stdout stream. Do not invent a stdout event or
+parse unspecified human-readable stderr notices into a denial outcome.
+Structured denial mapping remains unclaimed pending exact selected evidence
+and its concrete Contract 029 proof/adaptation follow-up; synthetic tool or
+run errors do not establish it.
+
+These rulings authorize bounded provider-free adaptation and documentation,
+not qualification by themselves. Windows sandbox artifact/runtime and
+approved-environment retry/authentication proof remain gates. Contract 036
+patch compatibility remains a separate assessment.
+
+Preserve older points and `AGY_CLI_MODEL_API_MAX_RETRIES=0`. Complete all-hop
+semantic evidence without transferring catalogue proof. New public API,
+Windows/runtime evidence, authentication/network boundaries or live-proof
+needs return separately. No Antigravity live usage is authorized.
+
+## Copilot ACP Offline Artifact Proof
+
+Tom's 2026-10-08 “Accept and approve all” answers decision
+`8b713287-49bf-4b77-a172-01148166ee38`. A separate provider-free, no-network
+artifact harness may investigate exact stable permission requests,
+denial/cancellation and absence of tool effects at the preserved `1.0.80`,
+first affected stable `1.0.81` and current stable, observed `1.0.93` when asked.
+Re-probe official channels before selecting the target.
+
+Prove containment and the harness against fakes first; persist the execution
+record before exact-artifact execution. Use task-owned isolated scratch,
+fake authentication/model responses, and no real credentials or outbound
+network. No live provider turn, spend, installation or host update is granted.
+If the selected path cannot be exercised without real authentication/network,
+stop for separate authority. An evidenced authority/lifecycle narrowing needs
+its own mapping ruling before adaptation or claim movement. Fake-provider
+proof does not establish live permission or MCP honouring. A prerelease issue
+report does not qualify a final stable.
+
+## Command Code Explicit Model Precedence
+
+Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision
+`f92bc2d0-ebac-4ca0-99fb-5db67018e9e1`: the consumer's explicit `-m` model
+remains authoritative when `featureModels.planning` is configured. Provider-free
+investigation may prove a non-persistent private per-invocation mechanism
+preserving that selection on `1.73.0` and later points.
+
+No persistent `--config` update, authentication/home relocation, new operation
+or silent model substitution is allowed. No safe mechanism is assumed merely
+from this ruling. If none can be proven without a new API, authority or
+consumer-visible narrowing, return the exact proposed adaptation for a
+separate ruling before moving claims. Preserve older qualified points;
+Contract 036 compatibility remains independent.
+
+## Kiro ACP Explicit Environment
+
+Tom's 2026-10-08 “Accept and approve all” answers decision
+`8079018e-2ec0-45fd-aaf3-0351cc57716f`. Qualification may accept `2.24.0` and
+later Kiro's removal of automatic project `.env` loading as a documented
+version-specific boundary. Only explicitly host-approved delegated process
+environment is inherited; preserve all older qualified points.
+
+Swallowtail must not implicitly read project `.env`, inject its values or
+change persistent configuration. A consumer requiring those values needs a
+separate adaptation defining their admission into the approved environment.
+Further authority, public API/lifecycle or live-proof needs return for a
+separate ruling. Frozen identity and provider-free route proof must precede
+qualification; Contract 036 patch compatibility remains separate.
+
 ## Native Sandbox Boundary
 
 Provider-native sandboxing is optional. A configured route may select

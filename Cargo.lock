@@ -302,9 +302,9 @@ dependencies = [
 
 [[package]]
 name = "aws-sdk-bedrock"
-version = "1.150.0"
+version = "1.161.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81186bb96a4e98ff93f7b4336deec0afc1f90ca282099fc5395fcf5de6c0389d"
+checksum = "254169f7bd61c2189a0142067000ed89ab15a032b8b8cebf426fabeb425ad611"
 dependencies = [
  "arc-swap",
  "aws-credential-types",
@@ -320,7 +320,6 @@ dependencies = [
  "aws-types",
  "bytes",
  "fastrand",
- "http 0.2.12",
  "http 1.5.0",
  "regex-lite",
  "tracing",
@@ -2899,6 +2898,7 @@ dependencies = [
  "futures-util",
  "semver",
  "serde_json",
+ "sha2 0.10.9",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-protocol-acp",
@@ -3184,6 +3184,7 @@ dependencies = [
  "futures-util",
  "semver",
  "serde_json",
+ "sha2 0.10.9",
  "swallowtail-core",
  "swallowtail-runtime",
  "swallowtail-testkit",

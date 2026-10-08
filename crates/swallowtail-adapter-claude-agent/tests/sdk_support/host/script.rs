@@ -233,7 +233,7 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
         "sdkPackage": "@anthropic-ai/claude-agent-sdk",
         "sdkVersion": "0.3.284",
         "nativeVersion": "2.1.284",
-        "nodeVersion": "22.23.2",
+        "nodeVersion": "22.23.3",
         "cwd": FIXTURE_CWD,
         "requestedModel": FIXTURE_MODEL,
         "supportedModels": [FIXTURE_MODEL],

@@ -19,7 +19,9 @@ publication, or harness installation in this route.
 `prepare_deepseek_harness_web` requires:
 
 - exact host-approved `dsh` target and `deepseek-harness.web` axis
-- exact `0.1.0-rc.6` Web release evidence
+- one exact qualified Web release observation: `0.1.0-rc.6`, `0.1.0-rc.7`,
+  `0.1.0-rc.8`, `0.1.1-rc.1`, or `0.1.1-rc.2`; `0.1.2-rc.1` and later
+  fail closed pending the browser-auth adaptation in Research 411
 - host-approved Web `--patch` overlay path as the environment reference
 - loopback endpoint, defaulting to `http://127.0.0.1:3080`
 - local unauthenticated access evidence with no credential reference or lease
@@ -66,7 +68,9 @@ history, native fork, and archive subset.
 ## Process and network boundary
 
 The structured operation starts `dsh web --patch <overlay>` with the host-approved
-Web Cordis overlay path. That overlay is not the JSON-RPC runtime plugin tree.
+Web Cordis overlay path. From `0.1.0-rc.8`, it also passes `--no-open` to keep
+the adapter-owned process from opening a host browser. That overlay is not the
+JSON-RPC runtime plugin tree.
 HTTP is JSON-only POST to `/api/<method>`;
 WebSocket downlinks are limited to the mux and host channels. The endpoint is
 loopback-only, the host network grant is audience-bound, redirects and proxy

@@ -32,7 +32,7 @@ The claim is qualified-only. Later packages do not inherit this route.
 `UnverifiedNewer` is not a Copilot CLI ACP execution posture. Public preview is
 visible as `ExperimentalObserved` and `COPILOT_CLI_ACP_MATURITY`.
 
-Research 403 froze the exact `1.0.80`, first affected stable `1.0.81`, and
+Research 404 froze the exact `1.0.80`, first affected stable `1.0.81`, and
 current stable `1.0.93` Darwin ARM64 artifacts. Under the no-network sandbox,
 all three initialized, advertised the `copilot-login` auth method, and returned
 JSON-RPC `-32000 Authentication required` for `session/new` with only a

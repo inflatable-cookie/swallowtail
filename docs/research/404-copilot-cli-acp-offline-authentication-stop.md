@@ -1,4 +1,4 @@
-# Copilot CLI ACP 1.0.80, 1.0.81, and 1.0.93 Authentication Stop
+# Research 404: Copilot CLI ACP 1.0.80, 1.0.81, and 1.0.93 Authentication Stop
 
 Date: 2026-10-08
 

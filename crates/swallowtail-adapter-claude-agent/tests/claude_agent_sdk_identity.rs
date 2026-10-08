@@ -35,7 +35,7 @@ fn protocol() -> serde_json::Value {
 }
 
 #[test]
-fn the_route_binds_five_independent_exact_identities() {
+fn the_route_binds_four_exact_identities_and_a_separate_node_window() {
     let descriptor = claude_agent_sdk_descriptor();
     assert_eq!(
         descriptor.identity().id().as_str(),
@@ -48,7 +48,6 @@ fn the_route_binds_five_independent_exact_identities() {
     for (axis, point) in [
         ("claude-agent.sdk.package", CLAUDE_AGENT_SDK_VERSION),
         ("claude-agent.sdk.native", CLAUDE_AGENT_SDK_NATIVE_VERSION),
-        ("claude-agent.sdk.node", CLAUDE_AGENT_SDK_NODE_RUNTIME),
         ("claude-agent.sdk.wire", CLAUDE_AGENT_SDK_WIRE),
         (
             "claude-agent.sdk.sidecar",
@@ -64,12 +63,32 @@ fn the_route_binds_five_independent_exact_identities() {
             swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
             "no axis may inherit an unverified-newer posture"
         );
-        assert_eq!(claim.milestones().len(), 1, "each axis starts at one point");
+        assert_eq!(claim.milestones().len(), 1, "exact axis stays at one point");
         let point = swallowtail_core::InterfaceVersion::new(point).expect("valid version");
         assert_eq!(claim.baseline(), &point);
         assert_eq!(claim.latest_qualified(), &point);
         assert_eq!(claim.exclusions().len(), 0);
     }
+    let node_axis =
+        swallowtail_core::InterfaceVersionAxis::new("claude-agent.sdk.node").expect("valid axis");
+    let node_claim = descriptor
+        .interface_compatibility(&node_axis)
+        .expect("the Node axis is bound");
+    assert_eq!(
+        node_claim.newer_version_posture(),
+        swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly
+    );
+    assert_eq!(node_claim.milestones().len(), 1);
+    assert_eq!(
+        node_claim.baseline().as_str(),
+        "22.23.2",
+        "the prior qualified Node point remains the baseline"
+    );
+    assert_eq!(
+        node_claim.latest_qualified().as_str(),
+        CLAUDE_AGENT_SDK_NODE_RUNTIME
+    );
+    assert_eq!(node_claim.exclusions().len(), 0);
     // The SDK wrapper and the native binary it delivers are coupled but never
     // equal, and neither is the Claude Code axis.
     assert_ne!(CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_NATIVE_VERSION);
@@ -86,10 +105,10 @@ fn the_route_binds_five_independent_exact_identities() {
 }
 
 #[test]
-fn research_287_admits_no_range_so_exact_pins_and_claim_ids_stay() {
-    // Research 287 Decision table (lines 124-139) admits no candidate range.
-    // Card 087 therefore keeps the five QualifiedOnly one-point claims and
-    // does not mint `-window-2` ids or enable AllowUnverified.
+fn research_287_exact_pins_remain_and_authorized_node_range_keeps_its_claim() {
+    // Research 287 froze the earlier Node ceiling. Task 110 extends only that
+    // runtime axis while retaining all five claim ids and QualifiedOnly
+    // posture; no axis enables AllowUnverified or gets a new claim id.
     let claims = [
         (
             claude_agent_sdk_package_claim(),
@@ -100,11 +119,6 @@ fn research_287_admits_no_range_so_exact_pins_and_claim_ids_stay() {
             claude_agent_sdk_native_claim(),
             "claude-agent.sdk.native-window-1",
             CLAUDE_AGENT_SDK_NATIVE_VERSION,
-        ),
-        (
-            claude_agent_sdk_node_claim(),
-            "claude-agent.sdk.node-window-1",
-            CLAUDE_AGENT_SDK_NODE_RUNTIME,
         ),
         (
             claude_agent_sdk_wire_claim(),
@@ -131,13 +145,33 @@ fn research_287_admits_no_range_so_exact_pins_and_claim_ids_stay() {
         assert!(claim.permits(&point));
     }
 
+    let node = claude_agent_sdk_node_claim();
+    assert_eq!(node.id().as_str(), "claude-agent.sdk.node-window-1");
+    assert_eq!(
+        node.newer_version_posture(),
+        swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly
+    );
+    assert_eq!(node.milestones().len(), 1);
+    assert_eq!(node.baseline().as_str(), "22.23.2");
+    assert_eq!(
+        node.latest_qualified().as_str(),
+        CLAUDE_AGENT_SDK_NODE_RUNTIME
+    );
+    assert_eq!(node.exclusions().len(), 0);
+    for qualified in ["22.23.2", "22.23.3"] {
+        assert!(
+            node.permits(&swallowtail_core::InterfaceVersion::new(qualified).expect("valid Node")),
+            "missing Node {qualified}"
+        );
+    }
+
     let version =
         |value: &str| swallowtail_core::InterfaceVersion::new(value).expect("valid version");
     // Wrapper stable-newer is not UnverifiedNewer: Research 287, line 131.
     assert!(!claude_agent_sdk_package_claim().permits(&version("0.3.260")));
     // Host native 2.1.258 is inventory-only, not a crossing: Research 287, lines 97-98, 133.
     assert!(!claude_agent_sdk_native_claim().permits(&version("2.1.258")));
-    // Node 26.7.0 is refused-with-code/unresolved: Research 287, lines 70, 82-84, 135.
+    // Node 26.7.0 remains outside the independently qualified Node 22 axis.
     assert!(!claude_agent_sdk_node_claim().permits(&version("26.7.0")));
     // Older native points in 2.1.227..=2.1.258 were not probed: Research 287, lines 99-100.
     assert!(!claude_agent_sdk_native_claim().permits(&version("2.1.227")));

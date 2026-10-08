@@ -11,6 +11,7 @@ mod sidecar_asset_support;
 
 use serde_json::{Value, json};
 use sidecar_asset_support::SidecarProcess;
+use swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_node_claim;
 
 const EVIDENCE_BOUNDS: &str = include_str!("fixtures/claude-agent-sdk/model-evidence-bounds.json");
 const CARD126_SELECTED_SKILL: &str =
@@ -27,6 +28,15 @@ fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
     assert_eq!(open["success"], true, "matching identity opens: {open}");
     assert_eq!(open["data"]["sdkPackage"], "@anthropic-ai/claude-agent-sdk");
     assert_eq!(open["data"]["sdkVersion"], "0.3.284");
+    let node_version = open["data"]["nodeVersion"]
+        .as_str()
+        .expect("the sidecar reports its executing Node version");
+    assert!(
+        claude_agent_sdk_node_claim().permits(
+            &swallowtail_core::InterfaceVersion::new(node_version)
+                .expect("the sidecar reports a semantic Node version")
+        )
+    );
     assert!(sidecar.sdk_was_constructed());
     let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
     assert_eq!(close["success"], true);

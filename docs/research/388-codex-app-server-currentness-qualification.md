@@ -1,4 +1,4 @@
-# Research 387: Codex App-Server 0.161.0 Identity and Qualification
+# Research 388: Codex App-Server 0.161.0 Identity and Qualification
 
 Status: qualified through official stable `0.161.0`
 

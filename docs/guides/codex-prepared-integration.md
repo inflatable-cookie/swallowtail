@@ -87,7 +87,7 @@ claim is independent and was not changed by this exec review.
 The app-server claim now qualifies official stable `0.161.0`; its independent
 `codex.app-server.cli-window-2` bound does not change `codex.exec`, which
 remains qualified through `0.155.1` and leaves `0.156.0..=0.161.0`
-`UnverifiedNewer` (Research 370). Research 387 freezes all twelve selected
+`UnverifiedNewer` (Research 370). Research 388 freezes all twelve selected
 stable hops, package and runtime identities, complete tagged-source inventories,
 and exact selected-source classifications. It preserves the app-server claim
 ID and its older behavior revisions, feature bounds, and exclusions.
@@ -100,7 +100,7 @@ projectless starts skip automatic persisted trust; path aliases and linked
 existing top-level `.aws` directory is read-only from `0.159.0`; managed
 provider checks, fail-closed permission materialization, safe bootstrap GET
 proxy fallback, explicit ambient MxC, and `application.network` remain subject
-to the exact selected policy semantics frozen in Research 387. MxC qualification
+to the exact selected policy semantics frozen in Research 388. MxC qualification
 makes no Windows runtime-isolation claim. `networkAccess=false` continues to
 bound tool traffic independently from `application.network` provider/API
 traffic. The `.aws` read-only limitation narrows workspace writes and remains

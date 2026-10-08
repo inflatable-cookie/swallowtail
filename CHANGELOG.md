@@ -6,6 +6,13 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only the `claude-agent.sdk.node` runtime axis through official
+  Node 22.23.3. Research 387 freezes the single published hop after 22.23.2,
+  signed Darwin arm64 artifacts, complete distribution inventories, and all
+  Node source-path changes. Keep the existing Node claim and behavior revision,
+  preserve Node 22.23.2, and leave the SDK, native, wire, sidecar, platform,
+  registered-tool live, and HTTP MCP live evidence unchanged. No Node
+  installation, host update, provider call, or credential use occurred.
 - qualify `mistral-vibe.headless` through official PyPI and GitHub stable
   `2.26.0`. Research 384 freezes all four published hops after `2.25.4`,
   complete wheel trees, runtime/source identities, and per-hop selected-surface
@@ -161,7 +168,7 @@ annotated Git tags from the canonical repository.
   both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
   and `0.59.1` exclusions remain in force.
 - qualify only `codex.app-server` through official npm/GitHub stable `0.161.0`;
-  Research 387 freezes package and runtime identities, complete source trees,
+  Research 388 freezes package and runtime identities, complete source trees,
   all twelve selected stable hops, and the exact selected-route policy proof.
   The claim keeps its baseline, ID, prior segments, behavior revisions, and
   exclusions, with private revisions for accepted managed policies and the

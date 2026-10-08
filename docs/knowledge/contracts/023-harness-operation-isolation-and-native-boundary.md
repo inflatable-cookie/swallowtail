@@ -212,8 +212,32 @@ workarounds; existing operations and the no-approval-bypass boundary remain.
 For `1.3.1` child status, obtain exact selected-stream evidence first. Map a
 proven error field to `Failed` within the existing vocabulary. TUI release
 notes, missing fields or disassembly alone cannot prove a successful child.
-If no usable field can be established, return the proposed unknown/omitted
-lifecycle projection for a separate ruling before changing `Completed`.
+Tom answered the two follow-up decisions on 2026-10-08:
+“Approve both from your previous message”. Decision
+`48b9bd88-5406-49bb-a158-a433fab35992` authorizes preserving reported child
+identities with `SubagentStatus::Unknown` when the selected stream provides
+no usable child status. Do not infer completion from child identity, the
+enclosing step, or whole-run success. Keep tool-step, outer-run and child
+outcomes distinct. Prove the fallback through provider-free fixtures and a
+justified private behavior milestone. Preserve older qualified points and
+released contracts; any inability to do so without a public API, lifecycle
+or authority change returns for another ruling.
+
+Decision `24e5b91b-4969-4990-aaae-8ffcdbebebff` accepts documented soft denial
+as a route limitation: an approval-required tool may be denied while the
+outer run continues and exits zero. Run completion does not prove every
+requested tool executed. Preserve provider denial without alternate-tool
+workarounds or approval bypass. No typed soft-denial observation is
+established by the selected stdout stream. Do not invent a stdout event or
+parse unspecified human-readable stderr notices into a denial outcome.
+Structured denial mapping remains unclaimed pending exact selected evidence
+and its concrete Contract 029 proof/adaptation follow-up; synthetic tool or
+run errors do not establish it.
+
+These rulings authorize bounded provider-free adaptation and documentation,
+not qualification by themselves. Windows sandbox artifact/runtime and
+approved-environment retry/authentication proof remain gates. Contract 036
+patch compatibility remains a separate assessment.
 
 Preserve older points and `AGY_CLI_MODEL_API_MAX_RETRIES=0`. Complete all-hop
 semantic evidence without transferring catalogue proof. New public API,

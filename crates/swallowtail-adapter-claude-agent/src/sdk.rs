@@ -86,9 +86,10 @@ pub const CLAUDE_AGENT_SDK_VERSION: &str = "0.3.284";
 /// and native axes are coupled but never equal, and neither transfers a
 /// Claude Code qualification to this route.
 pub const CLAUDE_AGENT_SDK_NATIVE_VERSION: &str = "2.1.284";
-/// Exact approved Node runtime version satisfying the upstream `>=18.0.0`
-/// requirement.
-pub const CLAUDE_AGENT_SDK_NODE_RUNTIME: &str = "22.23.2";
+/// Current official Node 22 runtime version satisfying the upstream `>=18.0.0`
+/// requirement. The qualified Node claim also retains the prior `22.23.2`
+/// point.
+pub const CLAUDE_AGENT_SDK_NODE_RUNTIME: &str = "22.23.3";
 
 /// Reports whether this route is supported on the running execution host
 /// platform.

@@ -740,8 +740,9 @@ fn the_newer_compiled_tuple_holds_the_live_evidence_without_inheriting_it() {
         NATIVE_VERSION,
         CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION
     );
-    // The compiled route rebound past the live evidence: the new tuple is
-    // exact and independent, never a second live-qualified point.
+    // The compiled SDK/native tuple remains separate from live acceptance.
+    // The Node-only window retains the exact runtime used by the older live
+    // tuple; that does not qualify the newer SDK/native tuple for live use.
     assert_eq!(
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_VERSION,
         "0.3.284"
@@ -750,9 +751,15 @@ fn the_newer_compiled_tuple_holds_the_live_evidence_without_inheriting_it() {
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_VERSION,
         "2.1.284"
     );
+    assert_eq!(NODE_VERSION, "22.23.2");
+    assert!(
+        swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_node_claim().permits(
+            &swallowtail_core::InterfaceVersion::new(NODE_VERSION).expect("frozen Node version")
+        )
+    );
     assert_eq!(
-        NODE_VERSION,
-        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NODE_RUNTIME
+        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NODE_RUNTIME,
+        "22.23.3"
     );
     // The sidecar source tag moves with every coordinated release, so the
     // live tag at this head is not the tag the capsules ran. The evidence

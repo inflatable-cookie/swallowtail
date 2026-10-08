@@ -1,5 +1,6 @@
 use crate::command::arguments;
 use crate::handle::{CommandCodeCancellation, CommandCodeRunHandle};
+use crate::pump::ModelSelectionDebugContext;
 use std::sync::Arc;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, DriverDescriptor, DriverRole, ExecutionLayer,
@@ -111,6 +112,11 @@ impl CommandCodeHeadlessDriver {
             .expect("validated process service");
         let time_service = services.time().cloned().expect("validated time service");
         let model = plan.model_id().cloned().expect("validated model route");
+        let model_selection = ModelSelectionDebugContext::for_request(
+            model.clone(),
+            request.request_id().clone(),
+            crate::selection::model_selection_observation_enabled(&plan),
+        );
         let working_resource = request
             .working_resource()
             .cloned()
@@ -147,14 +153,14 @@ impl CommandCodeHeadlessDriver {
                 let process = Arc::clone(&process);
                 let operation_id = ActivityOperationId::Run(run_id.clone());
                 let services = services.clone();
+                let model_selection = model_selection.clone();
                 async move {
                     let outcome = crate::pump::pump(
                         process,
                         event_sender.clone(),
                         cancellation,
                         time_service.wait_until(deadline),
-                        operation_id,
-                        services,
+                        crate::pump::PumpContext::new(operation_id, model_selection, services),
                     )
                     .await;
                     let _ = terminal_sender.complete(outcome);

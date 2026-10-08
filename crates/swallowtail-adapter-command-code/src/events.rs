@@ -11,6 +11,7 @@ use swallowtail_runtime::{
 const MAXIMUM_LINE_BYTES: usize = 1024 * 1024;
 const MAXIMUM_EVENT_COUNT: usize = 4096;
 const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
+const MAXIMUM_MODEL_ID_BYTES: usize = 128;
 
 /// Lifecycle-only event types that are recognized but never projected.
 ///
@@ -22,7 +23,6 @@ const IGNORED_LIFECYCLE_EVENT_TYPES: &[&str] = &[
     "message_start",
     "message_update",
     "message_end",
-    "model_request_start",
     "model_trace",
     "run_end",
 ];
@@ -46,13 +46,23 @@ pub(crate) struct CommandCodeHeadlessEventParser {
     terminal_seen: bool,
     result_subtype: Option<ResultSubtype>,
     credit_signal: bool,
+    observe_model_selection: bool,
+    model_request_models: Vec<Option<String>>,
     activity: CommandCodeHeadlessActivityProjection,
+}
+
+pub(crate) struct FinishedEventStream {
+    pub(crate) events: Vec<RuntimeEvent>,
+    pub(crate) terminal: ParsedTerminal,
+    pub(crate) session_id: Option<String>,
+    pub(crate) model_request_models: Vec<Option<String>>,
 }
 
 impl CommandCodeHeadlessEventParser {
     pub(crate) fn with_expected_session(
         operation_id: ActivityOperationId,
         expected_session_id: Option<String>,
+        observe_model_selection: bool,
     ) -> Self {
         Self {
             pending: Vec::new(),
@@ -66,8 +76,14 @@ impl CommandCodeHeadlessEventParser {
             terminal_seen: false,
             result_subtype: None,
             credit_signal: false,
+            observe_model_selection,
+            model_request_models: Vec::new(),
             activity: CommandCodeHeadlessActivityProjection::new(operation_id),
         }
+    }
+
+    pub(crate) fn take_model_request_models(&mut self) -> Vec<Option<String>> {
+        std::mem::take(&mut self.model_request_models)
     }
 
     pub(crate) fn push(&mut self, bytes: &[u8]) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
@@ -86,24 +102,24 @@ impl CommandCodeHeadlessEventParser {
         Ok(events)
     }
 
-    pub(crate) fn finish(
-        mut self,
-    ) -> Result<(Vec<RuntimeEvent>, ParsedTerminal, Option<String>), RuntimeFailure> {
+    pub(crate) fn finish(mut self) -> Result<FinishedEventStream, RuntimeFailure> {
         let mut events = Vec::new();
         if !self.pending.is_empty() {
             let line = std::mem::take(&mut self.pending);
             events.extend(self.parse_line(&line)?);
         }
-        Ok((
+        let model_request_models = std::mem::take(&mut self.model_request_models);
+        Ok(FinishedEventStream {
             events,
-            ParsedTerminal::new(
+            terminal: ParsedTerminal::new(
                 self.final_output,
                 self.terminal_seen,
                 self.result_subtype,
                 self.credit_signal,
             ),
-            self.session_id,
-        ))
+            session_id: self.session_id,
+            model_request_models,
+        })
     }
 
     fn parse_line(&mut self, line: &[u8]) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
@@ -140,6 +156,12 @@ impl CommandCodeHeadlessEventParser {
     ) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
         match event_type {
             "run_start" => self.run_start(event),
+            "model_request_start" => {
+                self.model_request_start(event);
+                // This event is an internal source for the opt-in model
+                // selection observation. It has never been a public activity.
+                Ok(Vec::new())
+            }
             "thinking_start" => {
                 let observations = self.activity.thought_start()?;
                 Ok(self.activity_events(observations))
@@ -161,6 +183,18 @@ impl CommandCodeHeadlessEventParser {
                 Ok(self.activity_events(observations))
             }
         }
+    }
+
+    fn model_request_start(&mut self, event: &Value) {
+        if !self.observe_model_selection {
+            return;
+        }
+        let model_id = event
+            .get("model")
+            .and_then(Value::as_str)
+            .and_then(bounded_model_id)
+            .map(str::to_owned);
+        self.model_request_models.push(model_id);
     }
 
     fn run_start(&mut self, event: &Value) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
@@ -501,6 +535,18 @@ fn bounded_identifier(value: &str) -> Result<&str, RuntimeFailure> {
         Err(malformed_stream())
     } else {
         Ok(value)
+    }
+}
+
+fn bounded_model_id(value: &str) -> Option<&str> {
+    if value.is_empty()
+        || value.len() > MAXIMUM_MODEL_ID_BYTES
+        || value.trim() != value
+        || value.chars().any(char::is_control)
+    {
+        None
+    } else {
+        Some(value)
     }
 }
 

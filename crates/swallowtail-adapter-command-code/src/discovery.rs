@@ -68,7 +68,8 @@ mod tests {
         );
         for rejected in [
             b"1.54.0\n".as_slice(),
-            b"1.65.1\n".as_slice(),
+            b"1.65.6\n".as_slice(),
+            b"1.79.2\n".as_slice(),
             b"command-code 1.65.0\n".as_slice(),
             b"1.65.0 \n".as_slice(),
             b"1.65.0\n\n".as_slice(),

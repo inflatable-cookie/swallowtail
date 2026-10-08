@@ -239,10 +239,13 @@ OpenHands adds a package without a production route.
   credential-last cleanup; dispatch does not claim effective reasoning depth
 - `swallowtail-adapter-deepseek-harness` implements two distinct exact routes:
   `0.1.0rc6` JSON-RPC over one host-owned NDJSON stdio process, and
-  `0.1.0-rc.6` Web `/api` over one host-owned loopback `dsh web` process. The
-  JSON-RPC route owns bounded idle-folded structured runs and process-kill
-  cancellation. The Web route owns bounded structured runs, catalogue/search/
-  models, control-free history, native cancel/fork, and target-only archive.
+  Web `/api` over one host-owned loopback `dsh web` process, qualified at exact
+  RC points `0.1.0-rc.6`, `0.1.0-rc.7`, `0.1.0-rc.8`, `0.1.1-rc.1`, and
+  `0.1.1-rc.2`; `0.1.2-rc.1` onward remains unqualified pending browser-auth
+  and typed-stream adaptation (Research 411). The JSON-RPC route owns bounded
+  idle-folded structured runs and process-kill cancellation. The Web route
+  owns bounded structured runs, catalogue/search/models, control-free history,
+  native cancel/fork, and target-only archive.
   Neither route qualifies ACP, browser UI, interactive continuity, or
   DeepSeek-official SSE behavior.
 - `swallowtail-adapter-zcode` implements one exact `0.16.3` app-server route
@@ -381,8 +384,11 @@ OpenHands adds a package without a production route.
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process
   cleanup. Headless qualifies `0.29.0..=0.32.0` under
-  `kimi.headless.stream-json.v1` and `0.33.0..=0.43.0` under
-  `kimi.headless.stream-json.v2` with a matching `system.version` preamble.
+  `kimi.headless.stream-json.v1` and `0.33.0..=0.43.1`, `2.0.0..=2.1.1`
+  under `kimi.headless.stream-json.v2` with a matching `system.version`
+  preamble. Unpublished `0.43.2`, `1.x`, and `2.0.3` stay outside those
+  segments; exact `2.1.0` is excluded for its effective filesystem-authority
+  change.
   Public facade `kimi-headless-stream-json-v1` covers both revisions. One
   installed facade requires explicit ACP or headless selection.
   The separate local-server route owns authenticated catalogue, retained
@@ -686,8 +692,11 @@ Crate status:
   finals, private continuation, cache usage, consumer-authorized attempts,
   failure, cancellation, disconnect, drift, and both host topologies
 - `swallowtail-adapter-deepseek-harness` — realized for the exact `0.1.0rc6`
-  runtime-bin JSON-RPC structured-run route and exact `0.1.0-rc.6` Web `/api`
-  local-server route. The JSON-RPC branch binds host-approved Cordis
+  runtime-bin JSON-RPC structured-run route and exact selected Web `/api`
+  local-server RC points `0.1.0-rc.6`, `0.1.0-rc.7`, `0.1.0-rc.8`,
+  `0.1.1-rc.1`, and `0.1.1-rc.2`; `0.1.2-rc.1` onward remains unqualified
+  pending browser-auth and typed-stream adaptation (Research 411). The
+  JSON-RPC branch binds host-approved Cordis
   configuration, explicit provider/model, bounded stream parsing, namespaced
   unknown observations, process-kill cancellation, and joined cleanup. The
   Web branch binds loopback HTTP/WebSocket, the frozen method allowlist,
@@ -862,7 +871,12 @@ user configuration and rules, permits a host-approved non-Git resource, denies
 approval prompts, prevents tool subprocess environment inheritance, and states
 read-only sandbox and web-search policy explicitly. Deadline expiry and
 operator cancellation remain separate terminal outcomes; both join the process
-and release every lease.
+and release every lease. For a projectless cwd, Codex may skip automatic
+persisted project trust and the adapter does not recreate that trust. System
+and macOS MDM `application.network` allowlists and refresh remain authoritative
+for Codex network requests; host-approved search may still be denied by those
+requirements. Exec does not pass `ignore_managed_requirements` or weaken that
+policy. These host rules do not establish process containment.
 
 The separate Codex app-server driver owns long-lived JSONL-RPC framing and
 request correlation over a shared process handle. A joined reader task routes

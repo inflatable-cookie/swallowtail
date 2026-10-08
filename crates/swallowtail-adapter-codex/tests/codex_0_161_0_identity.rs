@@ -1,4 +1,5 @@
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::PathBuf;
@@ -195,8 +196,49 @@ fn every_npm_archive_has_exact_identity_and_complete_file_hash_inventory() {
     assert_eq!(json(IDENTITY)["downloadedArtifactsExecuted"], false);
 }
 
+fn assert_sha256(value: &str, expected: &str) {
+    let digest = Sha256::digest(value.as_bytes());
+    let rendered = digest
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect::<String>();
+    assert_eq!(rendered, expected);
+}
+
 #[test]
-fn exact_exec_claim_segments_and_exclusions_remain_unchanged() {
+fn reused_research_370_identity_and_inventories_are_digest_pinned() {
+    assert_sha256(
+        IDENTITY,
+        "cde427fdd726db08ad20b980b5dc4a78aa4003ccfe17a9472efad06603da34ea",
+    );
+    assert_sha256(
+        ARTIFACTS,
+        "f21cd03b8853694769f463569aaeebca36a4ef462259cac25e1279ecacbe4e24",
+    );
+    assert_sha256(
+        FILE_INVENTORY,
+        "7cfb5077df20a1f0c92ad992e4bff3fd969fb683a6d99c4773b8e469aaafb805",
+    );
+    assert_sha256(
+        SOURCE_TAGS,
+        "f57d6c08ce524044c45b16ec568b089fb7c03b6d4229e35f7f4ff7dd894df3d3",
+    );
+    assert_sha256(
+        SOURCE_HOPS,
+        "2098fa5860a092883bfc0b667071d547dd97acb4046c29ca76243e646d762741",
+    );
+    assert_sha256(
+        SELECTED_SOURCE_MAP,
+        "230e68f76c5682ed68468cdfa1109771f8bea95fd92119e31350a42165925ebb",
+    );
+    assert_sha256(
+        include_str!("../../../docs/research/370-codex-exec-currentness-stop.md"),
+        "4ed374209f0d071b8c451188c148e0d257ad8ff1f7f994fb598490fcce07a569",
+    );
+}
+
+#[test]
+fn exact_exec_claim_extends_as_a_compatible_behavior_preserving_extension() {
     let claim = codex_exec_claim();
     assert_eq!(claim.id().as_str(), "codex.exec.cli-window-2");
     assert_eq!(claim.axis().as_str(), "codex.cli");
@@ -243,6 +285,12 @@ fn exact_exec_claim_segments_and_exclusions_remain_unchanged() {
                 "codex.exec.jsonl-v1",
                 InterfaceSupportStatus::Maintained
             ),
+            (
+                "0.156.0",
+                "0.161.0",
+                "codex.exec.jsonl-v1",
+                InterfaceSupportStatus::Maintained
+            ),
         ]
     );
     assert_eq!(
@@ -254,11 +302,6 @@ fn exact_exec_claim_segments_and_exclusions_remain_unchanged() {
             "0.108.0", "0.109.0", "0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.154.1",
         ]
     );
-
-    assert!(matches!(
-        claim.assess(&version("0.155.1")),
-        InterfaceCompatibilityAssessment::Qualified(_)
-    ));
     let decision = &json(IDENTITY)["claimDecision"];
     assert_eq!(decision["latestQualifiedRemains"], "0.155.1");
     assert_eq!(decision["firstStopHop"]["from"], "0.155.1");
@@ -269,16 +312,11 @@ fn exact_exec_claim_segments_and_exclusions_remain_unchanged() {
     assert_eq!(newer.len(), STABLE_POINTS.len() - 1);
     for point in newer {
         let point = point.as_str().expect("unverified point is text");
-        let InterfaceCompatibilityAssessment::UnverifiedNewer(assessment) =
-            claim.assess(&version(point))
-        else {
-            panic!("{point} stays visible as UnverifiedNewer");
-        };
-        assert_eq!(assessment.latest_qualified().as_str(), "0.155.1");
+        assert!(STABLE_POINTS.contains(&point));
     }
     for gap in [
         "0.82.0", "0.83.0", "0.108.0", "0.109.0", "0.149.2", "0.150.2", "0.151.1", "0.152.2",
-        "0.154.1",
+        "0.154.1", "0.155.2",
     ] {
         assert_eq!(
             claim.assess(&version(gap)),
@@ -286,6 +324,27 @@ fn exact_exec_claim_segments_and_exclusions_remain_unchanged() {
             "{gap} remains a gap"
         );
     }
+
+    for point in STABLE_POINTS {
+        assert!(matches!(
+            claim.assess(&version(point)),
+            InterfaceCompatibilityAssessment::Qualified(_)
+        ));
+    }
+    for gap in [
+        "0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.154.1", "0.155.2",
+    ] {
+        assert_eq!(
+            claim.assess(&version(gap)),
+            InterfaceCompatibilityAssessment::Incompatible
+        );
+    }
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+        claim.assess(&version("0.161.1"))
+    else {
+        panic!("newer exec releases remain permitted as unverified");
+    };
+    assert_eq!(newer.latest_qualified().as_str(), "0.161.0");
 }
 
 #[test]
@@ -364,6 +423,19 @@ fn exact_source_hops_pin_both_authority_stops_and_keep_exec_only_scope() {
             "codex-rs/app-server/src/application_network_tests.rs",
             "codex-rs/app-server/src/in_process_bootstrap_tests.rs",
             "codex-rs/app-server/tests/suite/v2/application_network.rs",
+        ])
+    );
+    let refresh_files = selected
+        .iter()
+        .filter(|row| row[0] == "0.160.1-0.161.0" && row[3] == "network-policy-refresh")
+        .map(|row| row[2])
+        .collect::<BTreeSet<_>>();
+    assert_eq!(
+        refresh_files,
+        BTreeSet::from([
+            "codex-rs/app-server/src/application_network.rs",
+            "codex-rs/app-server/src/in_process_bootstrap.rs",
+            "codex-rs/app-server/src/in_process_bootstrap_tests.rs",
         ])
     );
 }

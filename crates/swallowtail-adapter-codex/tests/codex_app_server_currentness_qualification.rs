@@ -688,10 +688,17 @@ fn accepted_policy_changes_and_exact_claim_milestones_are_frozen() {
     assert!(!lifecycle.assess(&version("0.155.2")).is_permitted());
 
     let exec = codex_exec_claim();
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(exec_unverified) =
+    let InterfaceCompatibilityAssessment::Qualified(exec_qualified) =
         exec.assess(&version("0.161.0"))
     else {
-        panic!("the separate exec claim remains unchanged");
+        panic!("exec is qualified separately through current stable");
     };
-    assert_eq!(exec_unverified.latest_qualified().as_str(), "0.155.1");
+    assert_eq!(
+        exec_qualified.support_status(),
+        InterfaceSupportStatus::Maintained
+    );
+    assert_eq!(
+        exec_qualified.behavior_revision().as_str(),
+        "codex.exec.jsonl-v1"
+    );
 }

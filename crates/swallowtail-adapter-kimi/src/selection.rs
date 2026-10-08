@@ -33,13 +33,11 @@ pub const KIMI_CODE_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
 pub const KIMI_HEADLESS_BASELINE_VERSION: &str = "0.29.0";
 /// Most recent qualified Kimi Code headless version.
 ///
-/// The g05.077 currentness run requalified the selected v2 route through
-/// official `0.43.0`. The dispatch switch, the `prompt-render` writers, the
-/// `system.version` preamble, the `session.resume_hint`, the retry payload,
-/// and the `--output-format stream-json` option surface are byte-identical
-/// from `0.39.1`; only internal dependency-injection, telemetry, and shutdown
-/// mechanics move.
-pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.43.0";
+/// Research 403 qualifies the selected v2 route through official `2.1.1`.
+/// The intervening `2.1.0` filesystem-authority change remains explicitly
+/// excluded; the unpublished `2.0.3` point and the unqualified `1.x` line
+/// also stay outside the qualified segments.
+pub const KIMI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.1";
 
 /// Newest Kimi Code release whose default `kimi -p` engine is agent-core v1.
 ///
@@ -58,6 +56,8 @@ const HEADLESS_V2_DEFAULT_BASELINE: &str = "0.33.0";
 /// These exclusions stay as recorded evidence of why the cap exists; they are
 /// not a growing deny-list.
 const ACP_EXCLUDED_AUTHORITY_VERSIONS: [&str; 2] = ["0.39.0", "0.39.1"];
+/// Unpublished holes and the authority-changing release excluded from headless.
+const HEADLESS_EXCLUDED_VERSIONS: [&str; 2] = ["2.0.3", "2.1.0"];
 
 pub(crate) const LEGACY_REASONING_BEHAVIOR: &str = "kimi.acp.reasoning.legacy-select-v1";
 pub(crate) const DECLARED_EFFORT_BEHAVIOR: &str = "kimi.acp.reasoning.declared-effort-v2";
@@ -168,13 +168,21 @@ pub fn kimi_headless_claim() -> InterfaceCompatibilityClaim {
             ),
             InterfaceVersionSegment::new(
                 version(HEADLESS_V2_DEFAULT_BASELINE).expect("static Kimi version is valid"),
+                version("0.43.1").expect("static Kimi version is valid"),
+                behavior(HEADLESS_BEHAVIOR_V2),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                version("2.0.0").expect("static Kimi version is valid"),
                 version(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION)
                     .expect("static Kimi version is valid"),
                 behavior(HEADLESS_BEHAVIOR_V2),
                 InterfaceSupportStatus::Maintained,
             ),
         ],
-        [],
+        HEADLESS_EXCLUDED_VERSIONS
+            .iter()
+            .map(|value| version(value).expect("static Kimi exclusion is valid")),
     )
     .expect("static Kimi headless compatibility claim is valid")
 }
@@ -405,6 +413,7 @@ mod tests {
         for v2_point in [
             "0.33.0", "0.34.0", "0.35.0", "0.36.0", "0.36.1", "0.37.0", "0.37.1", "0.37.2",
             "0.38.0", "0.39.0", "0.39.1", "0.40.0", "0.40.1", "0.41.0", "0.42.0", "0.43.0",
+            "0.43.1", "2.0.0", "2.0.1", "2.0.2", "2.1.1",
         ] {
             let InterfaceCompatibilityAssessment::Qualified(v2) = claim.assess(&version(v2_point))
             else {
@@ -413,13 +422,26 @@ mod tests {
             assert_eq!(v2.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);
             assert_eq!(v2.support_status(), InterfaceSupportStatus::Maintained);
         }
-        // The boundary is exact and the two segments are adjacent published
-        // points, so no gap opens between them.
+        // Keep package-release holes and the authority-changing security hop
+        // outside the two v2 windows, even though later stable points qualify.
+        for excluded in ["0.43.2", "1.0.0", "2.0.3", "2.1.0"] {
+            assert_eq!(
+                claim.assess(&version(excluded)),
+                InterfaceCompatibilityAssessment::Incompatible,
+                "{excluded} remains unsupported"
+            );
+            assert!(!claim.permits(&version(excluded)));
+        }
+        // The v1/v2 boundary is exact and adjacent published points.
         assert_eq!(HEADLESS_V1_DEFAULT_CEILING, "0.32.0");
         assert_eq!(HEADLESS_V2_DEFAULT_BASELINE, "0.33.0");
         let segments = claim.milestones().collect::<Vec<_>>();
+        assert_eq!(segments.len(), 3);
         assert_eq!(segments[0].maximum().as_str(), HEADLESS_V1_DEFAULT_CEILING);
         assert_eq!(segments[1].minimum().as_str(), HEADLESS_V2_DEFAULT_BASELINE);
+        assert_eq!(segments[1].maximum().as_str(), "0.43.1");
+        assert_eq!(segments[2].minimum().as_str(), "2.0.0");
+        assert_eq!(segments[2].maximum().as_str(), "2.1.1");
 
         // The headless axis carries no ACP authority exclusion: the print
         // route never constructs the ACP runtime provider.
@@ -428,12 +450,12 @@ mod tests {
         }
 
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.43.1"))
+            claim.assess(&version("2.1.2"))
         else {
             panic!("stable newer release remains unverified");
         };
         assert_eq!(newer.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);
-        assert_eq!(newer.latest_qualified().as_str(), "0.43.0");
+        assert_eq!(newer.latest_qualified().as_str(), "2.1.1");
     }
 
     #[test]

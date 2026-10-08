@@ -1,0 +1,62 @@
+{
+  "fixture_schema": 1,
+  "artifact": {
+    "package": "@google/gemini-cli",
+    "version": "0.63.0",
+    "github_tag": "v0.63.0",
+    "github_commit": "573846625af9e93b3b968e0e0b86bb093a4c9b16",
+    "github_tree": "a6a023123538ba75eb8412528b9942d0de8917e3",
+    "source_file_count": 3019,
+    "source_tree_manifest_sha256": "fbb5d78fd631e4a53e26a62284f8c15d5d90a1ef2743d4d79a5517218dfc6e51"
+  },
+  "selected_source_sha256": {
+    "packages/core/src/prompts/snippets.ts": "b2cccbd0cf68e33d057f33938e457fe3c781cc7e65c593f7a3974d70c5c68fe7",
+    "packages/core/src/policy/policies/plan.toml": "cbc98437f7a0c3df44465e853863c1016d66d725da2b9a223946e802ffd2b777",
+    "packages/core/src/policy/policy-engine.ts": "3b7118ceadaa36589f64def7669a503d64bd805fbff696077f5f7929361dfad2",
+    "packages/core/src/tools/exit-plan-mode.ts": "1e1589584223a824c817a24be784cf84922fc67785c544ec99e10dfe1e889435",
+    "packages/core/src/tools/read-file.ts": "5377927463fa737d276852097ad63a20357b19b51f3458c4252028b6019033de",
+    "packages/core/src/safety/built-in.ts": "a3d88b1b5a9289194edf7cdcb59964e4ba99c8eb4a4b100eca7bb64c6f61657e",
+    "packages/core/src/scheduler/tool-executor.ts": "5879f47abe2b64fc6ea1ca361b4502f39a7e597bdcfa0e20450b4226d6031f58",
+    "packages/core/src/agents/local-executor.ts": "59f739ac6416ff41b408560eaf4387f907a3b3f752a848045b758a8f1e33023d",
+    "packages/cli/src/nonInteractiveCli.ts": "fe569c4ac3436a851c991e0e916554b63bd9b9eb0bf5dee644f9258fad5ba298"
+  },
+  "selected_authority": {
+    "plan_mode_prompt": {
+      "noninteractive_strategy": "draft_autonomously",
+      "transition_tool": "exit_plan_mode",
+      "transition_effect": "begin_implementation"
+    },
+    "plan_mode_policy": {
+      "tool_name": "exit_plan_mode",
+      "decision": "allow",
+      "priority": 70,
+      "modes": ["plan"],
+      "interactive": false
+    },
+    "noninteractive_policy": {
+      "default_decision": "deny",
+      "ask_user_decision": "deny"
+    },
+    "allowed_exit_transition": {
+      "noninteractive_approval_mode": "yolo"
+    },
+    "stream_order": {
+      "tool_use_emitted_before_scheduler": true
+    },
+    "selected_adapter": {
+      "approval_mode": "plan",
+      "prompt_transport": "stdin",
+      "extensions_disabled": true,
+      "external_mcp_disabled": true,
+      "exit_plan_mode_interceptor": false
+    }
+  },
+  "other_mapped_changes": {
+    "read_file_real_path_before_access_check": true,
+    "gemini_config_write_safety_decision": "ask_user",
+    "noninteractive_ask_user_result": "deny",
+    "stored_tool_output_cap_bytes": 65536,
+    "context_pressure": "collapse_older_function_responses",
+    "stream_formatter_and_types": "byte_identical_to_0.61.0"
+  }
+}

@@ -6,6 +6,34 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only `kimi-code.headless` through official npm and GitHub stable
+  `2.1.1` after every published hop from the qualified `0.43.0` ceiling.
+  Research 413 freezes the exact package/source identities, complete trees,
+  per-hop classifications, and selected bundle oracles. Preserve the legacy
+  v1 segment; qualify v2 `0.33.0..=0.43.1` and `2.0.0..=2.1.1`, while keeping
+  unpublished `0.43.2`, `1.x`, and `2.0.3` outside the claim and exact `2.1.0`
+  excluded for its effective filesystem-authority change. The operator ruling
+  qualifies `2.1.1` with `2.1.0` unsupported. No public API or behavior revision
+  changes; ACP and local-server claims remain separate. No provider prompt,
+  credentials, live session, artifact execution, host update, release, or tag.
+- qualify only `codex.exec` through official stable `0.161.0` as a compatible
+  extension on `codex.exec.jsonl-v1`. Research 410 reuses the reviewed
+  `0.155.1`→`0.161.0` source and artifact chain from Research 370 with
+  independent digest checks. Projectless startup does not restore persisted
+  trust; system/macOS MDM managed-network allowlists and refresh remain
+  authoritative, and provider denial remains a bounded failure. Keep the
+  unpublished `0.155.2` gap, prior exclusions, and independent app-server
+  claim. No provider prompt, live session, credential, installation, or host
+  update was used.
+- keep `gemini-cli.headless` at its `0.61.0` ceiling after the
+  authority-preserving adaptation to official stable `0.63.0` stops on the
+  noninteractive Plan Mode exit path. Research 417 pins the source behavior:
+  noninteractive policy allows `exit_plan_mode`, whose allowed transition
+  selects YOLO; the selected adapter has no guard. This cannot preserve the
+  no-automatic-implementation-transition contract within the approved scope.
+  Keep `0.62.0` and `0.63.0` `UnverifiedNewer`, preserve the unpublished
+  `0.56.1` and `0.59.1` exclusions, and leave ACP independent. Any new
+  enforcement design or authority/lifecycle change needs a separate ruling.
 - Keep `kimi-code.acp` at its `0.38.0` ceiling while the official npm and
   GitHub stable `2.1.1` remains blocked by the same unmediated terminal process
   spawn from both the terminal-disabled branch and non-Bash fallback. Research
@@ -25,6 +53,15 @@ annotated Git tags from the canonical repository.
   and historical schema corpora, provider version ranges, and feature cells
   remain unchanged. No provider session, credential, installation, or host
   update was used.
+- qualify `deepseek-harness.web` at published RC points `0.1.0-rc.6`,
+  `0.1.0-rc.7`, `0.1.0-rc.8`, `0.1.1-rc.1`, and `0.1.1-rc.2` under the
+  existing `deepseek-harness.apiproxy-v1` facade. The adapter suppresses the
+  default browser handoff from `0.1.0-rc.8` with the published `--no-open`
+  flag. Research 411 freezes these artifacts and stops at `0.1.2-rc.1`, where
+  `/api` requires persistent DSH browser authentication. Current npm
+  `latest`/`next` `0.2.0-rc.2` remains unqualified pending a ruling and tested
+  authentication/stream adaptation. No host DSH, browser, credentials, server,
+  catalogue, or session was accessed.
 - qualify only `cursor-agent.headless` through official ACP registry stable
   `2026.10.01-14929f9`, after every published hop following
   `2026.09.18-9a7762b`. Research 399 freezes both platform archives, complete
@@ -301,9 +338,10 @@ annotated Git tags from the canonical repository.
   advancing the existing `0.61.0` ceiling: Research 371 freezes published
   hops `0.62.0` and `0.63.0` plus complete npm/source trees. The selected
   `0.63.0` Plan Mode authority, noninteractive permission, and
-  tool-output/context changes need an operator ruling before qualification;
-  both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
-  and `0.59.1` exclusions remain in force.
+  tool-output/context changes were assessed under the bounded adaptation
+  approved in decision de317828. Research 417 records the source-level stop
+  and remaining enforcement gate. Both later points remain `UnverifiedNewer`,
+  and the unpublished `0.56.1` and `0.59.1` exclusions remain in force.
 - qualify only `codex.app-server` through official npm/GitHub stable `0.161.0`;
   Research 388 freezes package and runtime identities, complete source trees,
   all twelve selected stable hops, and the exact selected-route policy proof.

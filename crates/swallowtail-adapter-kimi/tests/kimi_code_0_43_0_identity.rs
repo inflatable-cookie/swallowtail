@@ -100,10 +100,7 @@ fn the_fixture_decision_is_the_shape_production_encodes() {
     );
 
     assert_eq!(decision["headless"]["verdict"], "compatible-extension");
-    assert_eq!(
-        decision["headless"]["raise_latest_qualified_to"],
-        KIMI_HEADLESS_LATEST_QUALIFIED_VERSION
-    );
+    assert_eq!(decision["headless"]["raise_latest_qualified_to"], "0.43.0");
     assert_eq!(decision["headless"]["raise_range_to"], "0.33.0..=0.43.0");
     assert_eq!(
         decision["headless"]["behavior_revision_stays"],
@@ -325,7 +322,7 @@ fn the_a2_containment_gap_is_fail_closed_and_reachable() {
 }
 
 #[test]
-fn headless_v2_extends_to_0_43_0_without_a_new_revision() {
+fn headless_v2_keeps_the_legacy_window_and_qualifies_supported_later_points() {
     let claim = kimi_headless_claim();
     assert_eq!(claim.id().as_str(), "kimi.headless.executable-window-2");
     assert_eq!(
@@ -333,10 +330,10 @@ fn headless_v2_extends_to_0_43_0_without_a_new_revision() {
         InterfaceNewerVersionPosture::AllowUnverified
     );
     assert_eq!(KIMI_HEADLESS_BASELINE_VERSION, "0.29.0");
-    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.1");
 
     let segments = claim.milestones().collect::<Vec<_>>();
-    assert_eq!(segments.len(), 2);
+    assert_eq!(segments.len(), 3);
     assert_eq!(segments[0].minimum().as_str(), "0.29.0");
     assert_eq!(segments[0].maximum().as_str(), "0.32.0");
     assert_eq!(
@@ -344,16 +341,25 @@ fn headless_v2_extends_to_0_43_0_without_a_new_revision() {
         "kimi.headless.stream-json.v1"
     );
     assert_eq!(segments[1].minimum().as_str(), "0.33.0");
-    assert_eq!(segments[1].maximum().as_str(), "0.43.0");
+    assert_eq!(segments[1].maximum().as_str(), "0.43.1");
     assert_eq!(
         segments[1].behavior_revision().as_str(),
         "kimi.headless.stream-json.v2"
     );
-    assert_eq!(claim.latest_qualified().as_str(), "0.43.0");
+    assert_eq!(segments[2].minimum().as_str(), "2.0.0");
+    assert_eq!(segments[2].maximum().as_str(), "2.1.1");
+    assert_eq!(
+        segments[2].behavior_revision().as_str(),
+        "kimi.headless.stream-json.v2"
+    );
+    assert_eq!(claim.latest_qualified().as_str(), "2.1.1");
 
     // Every newly admitted point classifies v2 Maintained, and no ACP
     // exclusion leaks onto the headless axis.
-    for point in ["0.39.1", "0.40.0", "0.40.1", "0.41.0", "0.42.0", "0.43.0"] {
+    for point in [
+        "0.39.1", "0.40.0", "0.40.1", "0.41.0", "0.42.0", "0.43.0", "0.43.1", "2.0.0", "2.0.1",
+        "2.0.2", "2.1.1",
+    ] {
         let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version(point))
         else {
             panic!("{point} qualifies under v2");
@@ -365,11 +371,19 @@ fn headless_v2_extends_to_0_43_0_without_a_new_revision() {
         assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
     }
 
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) = claim.assess(&version("0.43.1"))
+    for excluded in ["0.43.2", "1.0.0", "2.0.3", "2.1.0"] {
+        assert_eq!(
+            claim.assess(&version(excluded)),
+            InterfaceCompatibilityAssessment::Incompatible,
+            "{excluded} stays outside the supported windows"
+        );
+    }
+
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) = claim.assess(&version("2.1.2"))
     else {
-        panic!("0.43.1 stays the first later unverified-newer point");
+        panic!("2.1.2 stays unverified newer");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.43.0");
+    assert_eq!(newer.latest_qualified().as_str(), "2.1.1");
 }
 
 #[test]

@@ -148,12 +148,13 @@ pub(in crate::sdk) async fn prepare_registered(
             "Claude Agent SDK registered-tool open requires the session deadline",
         )
     })?;
-    let prepared = binding.preparation().prepare(
+    let prepared = binding.preparation().prepare_with_lease_deadline(
         services,
         plan.instance_id().clone(),
         scope,
         turn,
         deadline,
+        None,
     )?;
     let lease = prepared.open().await?;
     let launch = host.registered_tool_proxy_launch(&lease)?;

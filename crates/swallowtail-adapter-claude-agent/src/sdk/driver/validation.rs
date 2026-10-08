@@ -116,6 +116,7 @@ pub(super) fn validate_open(
     }
     require_capability(plan, Capability::InteractiveSession)?;
     require_capability(plan, Capability::StreamingEvents)?;
+    require_capability(plan, Capability::UsageReporting)?;
     require_capability(plan, Capability::ToolCalls)?;
     require_constraint(
         plan,

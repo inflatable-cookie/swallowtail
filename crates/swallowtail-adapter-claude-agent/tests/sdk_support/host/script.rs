@@ -44,14 +44,29 @@ fn mcp_status_echo(params: &Value, status: &str, failure_code: Option<&str>) -> 
     )
 }
 
-fn turn_ended_record(failed: bool) -> Value {
+fn fixture_usage(query_number: u64) -> Value {
+    json!({
+        "inputTokens": query_number * 10,
+        "outputTokens": query_number * 4,
+        "cacheReadInputTokens": query_number * 2,
+        "cacheWriteInputTokens": query_number * 3
+    })
+}
+
+fn turn_ended_record(failed: bool, query_number: u64) -> Value {
     let mut result_field_presence = serde_json::Map::new();
     for field in super::super::capture::SDK_RESULT_FIELD_NAMES {
         result_field_presence.insert(
             (*field).to_owned(),
             json!(matches!(
                 *field,
-                "type" | "subtype" | "duration_ms" | "is_error" | "num_turns"
+                "type"
+                    | "subtype"
+                    | "duration_ms"
+                    | "is_error"
+                    | "num_turns"
+                    | "usage"
+                    | "modelUsage"
             )),
         );
     }
@@ -68,6 +83,7 @@ fn turn_ended_record(failed: bool) -> Value {
         "durationMs": 7,
         "errorTextPresent": failed,
         "errorTextType": if failed { "string" } else { "absent" },
+        "usage": fixture_usage(query_number),
         "resultFieldPresence": result_field_presence,
         "apiErrorStatus": null,
         "terminalReason": null,
@@ -83,6 +99,7 @@ fn structured_turn_ended_record(
     api_error_status: Value,
     terminal_reason: Value,
     rate_limit_status: Value,
+    query_number: u64,
 ) -> Value {
     let mut result_field_presence = serde_json::Map::new();
     for field in super::super::capture::SDK_RESULT_FIELD_NAMES {
@@ -95,6 +112,8 @@ fn structured_turn_ended_record(
                     | "duration_ms"
                     | "is_error"
                     | "num_turns"
+                    | "usage"
+                    | "modelUsage"
                     | "api_error_status"
                     | "terminal_reason"
             )),
@@ -111,6 +130,7 @@ fn structured_turn_ended_record(
         "durationMs": 7,
         "errorTextPresent": true,
         "errorTextType": "array",
+        "usage": fixture_usage(query_number),
         "resultFieldPresence": result_field_presence,
         "apiErrorStatus": api_error_status,
         "terminalReason": terminal_reason,
@@ -309,6 +329,12 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
 }
 
 fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
+    let query_count = state
+        .input
+        .iter()
+        .filter(|input| input["command"] == "query")
+        .count();
+    let query_number = u64::try_from(query_count).expect("fixture query count fits u64");
     if matches!(scenario, SdkScenario::QueryHold) {
         // No response and no exit: only the caller's turn deadline ends this.
         return;
@@ -519,19 +545,41 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         }
         SdkScenario::TurnEndedError => {
             push_stderr(state, b"fixture failed result stderr");
-            push(state, turn_ended_record(true));
+            push(state, turn_ended_record(true, query_number));
+        }
+        SdkScenario::TurnErrorThenComplete if query_number == 1 => {
+            push_stderr(state, b"fixture failed result stderr");
+            push(state, turn_ended_record(true, query_number));
+        }
+        SdkScenario::TurnErrorThenComplete => {
+            push(state, turn_ended_record(false, query_number));
+        }
+        SdkScenario::DuplicateTurnEnd => {
+            let result = turn_ended_record(false, query_number);
+            push(state, result.clone());
+            push(state, result);
         }
         SdkScenario::TurnEndedBilling402 => {
             push_stderr(state, b"fixture billing failure stderr");
             push(
                 state,
-                structured_turn_ended_record(json!(402), json!("api_error"), json!("rejected")),
+                structured_turn_ended_record(
+                    json!(402),
+                    json!("api_error"),
+                    json!("rejected"),
+                    query_number,
+                ),
             );
         }
         SdkScenario::TurnEndedMixed400 => {
             push(
                 state,
-                structured_turn_ended_record(json!(400), json!("api_error"), Value::Null),
+                structured_turn_ended_record(
+                    json!(400),
+                    json!("api_error"),
+                    Value::Null,
+                    query_number,
+                ),
             );
         }
         SdkScenario::TurnEndedMixed429 => {
@@ -541,24 +589,33 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                     json!(429),
                     json!("api_error"),
                     json!("allowed_warning"),
+                    query_number,
                 ),
             );
         }
         SdkScenario::TurnEndedUnknownStatus => {
             push(
                 state,
-                structured_turn_ended_record(json!(503), Value::Null, Value::Null),
+                structured_turn_ended_record(json!(503), Value::Null, Value::Null, query_number),
             );
         }
         SdkScenario::TurnEndedMalformedStatus => {
-            let mut record =
-                structured_turn_ended_record(json!(402), json!("api_error"), Value::Null);
+            let mut record = structured_turn_ended_record(
+                json!(402),
+                json!("api_error"),
+                Value::Null,
+                query_number,
+            );
             record["apiErrorStatus"] = json!("402");
             push(state, record);
         }
         SdkScenario::TurnEndedMalformedReason => {
-            let mut record =
-                structured_turn_ended_record(json!(402), json!("api_error"), Value::Null);
+            let mut record = structured_turn_ended_record(
+                json!(402),
+                json!("api_error"),
+                Value::Null,
+                query_number,
+            );
             record["terminalReason"] = json!("API Error: overloaded");
             push(state, record);
         }
@@ -566,7 +623,7 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
         // already written arrives. The wire order is what a real interrupt or
         // deadline race produces.
         SdkScenario::AdmissionAfterResult => {
-            push(state, turn_ended_record(false));
+            push(state, turn_ended_record(false, query_number));
             push(
                 state,
                 json!({"type": "callback", "id": "cb-late", "callback": "can_use_tool",
@@ -596,7 +653,7 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                        "isError": false}),
             );
             push_stderr(state, b"fixture native stderr tail\n");
-            push(state, turn_ended_record(false));
+            push(state, turn_ended_record(false, query_number));
         }
     }
 }

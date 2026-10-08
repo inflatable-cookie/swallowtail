@@ -741,6 +741,73 @@ fn the_effective_call_deadline_takes_the_earliest_bound() {
 }
 
 #[test]
+fn a_session_lease_ignores_its_elapsed_open_deadline() {
+    let hosts = ready_hosts();
+    let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
+        .require_ready()
+        .expect("proof");
+    let clock = Arc::new(FixedClock::default());
+    let (kernel, lease) = RegisteredToolOperationKernel::open(
+        open_request(selection(), Deadline::at(MonotonicInstant::from_ticks(500)))
+            .with_lease_deadline(None),
+        &proof,
+        Arc::new(EchoDispatcher),
+        Arc::clone(&clock) as Arc<dyn TimeService>,
+        RegisteredToolLeaseGeneration::initial(),
+        RegisteredToolTransportGeneration::initial(),
+    )
+    .expect("session lease opens");
+    clock.set(501);
+    let call_deadline = lease.next_call_deadline();
+    assert_eq!(
+        call_deadline.instant().ticks(),
+        501 + u64::try_from(REGISTERED_TOOL_MAX_CALL_DURATION.as_nanos()).expect("bounded"),
+        "an unbounded session lease still gives each call its maximum lifetime"
+    );
+
+    let outcome = block(lease.call(call_request("after-open-deadline")))
+        .expect("the open deadline does not expire a session-scoped lease");
+
+    assert_eq!(
+        outcome.disposition(),
+        RegisteredToolExecutionDisposition::Executed
+    );
+    assert_eq!(lease.deadline().instant().ticks(), 500);
+    assert_eq!(lease.lease_deadline(), None);
+    assert_eq!(kernel.outstanding_calls(), 0);
+}
+
+#[test]
+fn an_explicit_session_lease_deadline_rejects_late_calls() {
+    let hosts = ready_hosts();
+    let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
+        .require_ready()
+        .expect("proof");
+    let clock = Arc::new(FixedClock::default());
+    let dispatcher = Arc::new(EchoDispatcher);
+    let (kernel, lease) = RegisteredToolOperationKernel::open(
+        open_request(selection(), Deadline::at(MonotonicInstant::from_ticks(500)))
+            .with_lease_deadline(Some(Deadline::at(MonotonicInstant::from_ticks(50)))),
+        &proof,
+        dispatcher,
+        Arc::clone(&clock) as Arc<dyn TimeService>,
+        RegisteredToolLeaseGeneration::initial(),
+        RegisteredToolTransportGeneration::initial(),
+    )
+    .expect("bounded session lease opens");
+    clock.set(50);
+
+    let error = block(lease.call(call_request("after-lease-deadline")))
+        .expect_err("an explicit lease deadline remains enforced");
+
+    assert_eq!(
+        error.diagnostic().code(),
+        RegisteredToolFailureKind::DeadlineExceeded.code()
+    );
+    assert_eq!(kernel.outstanding_calls(), 0);
+}
+
+#[test]
 fn swallowtail_enforced_posture_never_widens() {
     assert!(!RegisteredToolEnforcedPosture::automatic_replay_allowed());
     assert!(!RegisteredToolEnforcedPosture::reconnect_replays_calls());

@@ -16,6 +16,9 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from provider_route_matrix.route_inventory import (  # noqa: E402
     production_routes as inventory_production_routes,
 )
+from provider_route_matrix.release_inventory import (  # noqa: E402
+    validate_non_decreasing_routes,
+)
 REPOSITORY = "https://github.com/inflatable-cookie/swallowtail"
 
 
@@ -138,13 +141,10 @@ if current_routes != expected_routes:
     fail(f"current source route inventory drifted; missing={missing}, extra={extra}")
 immutable_relative = f"release-baselines/production-routes-{previous_version}.txt"
 immutable_routes = set(read(immutable_relative).splitlines())
-if not immutable_routes < current_routes:
-    fail(
-        "current source route inventory must strictly extend the frozen tagged "
-        f"v{previous_version} inventory; post-tag additions "
-        f"{sorted(current_routes - immutable_routes)} must stay declared while "
-        f"v{previous_version} stays frozen, otherwise the split collapses"
-    )
+try:
+    validate_non_decreasing_routes(immutable_routes, current_routes)
+except ValueError as error:
+    fail(f"current source route inventory against frozen v{previous_version}: {error}")
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))
 if not documented_routes:

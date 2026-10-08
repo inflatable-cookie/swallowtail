@@ -389,17 +389,53 @@ fn events_outside_an_active_turn_fail_closed() {
     let services = fixture.services(host);
     let services_for_cleanup = services.clone();
     let session = block_on(prepared.open_session(services)).expect("SDK sidecar session opens");
+    // No turn exists at injection, so there is no consumer event stream that
+    // can receive this frame.
     fixture.emit(serde_json::json!({"type": "event", "event": "output_delta", "delta": "x"}));
     let outcome = block_on(session.close(cleanup_request(), services_for_cleanup.clone()));
-    assert!(
-        matches!(outcome, swallowtail_runtime::CleanupOutcome::Degraded(_)),
-        "an unsolicited event breaks the wire, so close can only be escalated"
+    let swallowtail_runtime::CleanupOutcome::Degraded(diagnostic) = outcome else {
+        panic!("an unsolicited event breaks the wire, so close is degraded: {outcome:?}");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.claude-agent.sdk.close_root_only_degraded"
     );
     assert!(
         fixture
             .cleanup_events()
             .contains(&crate::sdk_support::CleanupEvent::ProcessForceStop)
     );
+    let cleanup = fixture.cleanup_events();
+    let positions = [
+        crate::sdk_support::CleanupEvent::ProcessForceStop,
+        crate::sdk_support::CleanupEvent::ProcessWait,
+        crate::sdk_support::CleanupEvent::ResourceRelease,
+        crate::sdk_support::CleanupEvent::CredentialRelease,
+    ]
+    .map(|event| {
+        cleanup
+            .iter()
+            .position(|candidate| *candidate == event)
+            .unwrap_or_else(|| panic!("cleanup event {event:?} is missing from {cleanup:?}"))
+    });
+    assert!(
+        positions.windows(2).all(|pair| pair[0] < pair[1]),
+        "process and lease cleanup must settle in order: {cleanup:?}"
+    );
+    assert!(
+        fixture.spawned_registered_courier().is_none(),
+        "the fixture opened no registered courier to leave behind"
+    );
+    assert!(
+        fixture
+            .inputs()
+            .iter()
+            .all(|input| input["command"] != "query"),
+        "no turn command was opened for consumer event delivery"
+    );
+    // The fixture's outer host owner joins any reservation-backed worker that
+    // legitimately outlives its public cleanup result.
+    fixture.reaper().shutdown();
 }
 
 #[test]

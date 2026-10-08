@@ -358,7 +358,7 @@ impl ClaudeAgentSdkRegisteredToolMediator {
                 call_id,
                 tool.id().clone(),
                 payload,
-                self.lease.deadline(),
+                self.lease.next_call_deadline(),
             ))
             .await;
         Ok(match outcome {

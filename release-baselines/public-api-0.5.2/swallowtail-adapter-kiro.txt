@@ -1,0 +1,50 @@
+pub mod swallowtail_adapter_kiro
+pub struct swallowtail_adapter_kiro::KiroAcpDriver
+impl swallowtail_adapter_kiro::KiroAcpDriver
+pub const fn swallowtail_adapter_kiro::KiroAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_kiro::KiroAcpDriver
+pub fn swallowtail_adapter_kiro::KiroAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kiro::KiroAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_kiro::KiroAcpDriver
+pub fn swallowtail_adapter_kiro::KiroAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_kiro::KiroAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_kiro::KiroPreparationInput
+impl swallowtail_adapter_kiro::KiroPreparationInput
+pub const fn swallowtail_adapter_kiro::KiroPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_kiro::KiroPreparationProbe
+impl swallowtail_adapter_kiro::KiroPreparationProbe
+pub const fn swallowtail_adapter_kiro::KiroPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_kiro::KiroPreparedIntegration
+impl swallowtail_adapter_kiro::KiroPreparedIntegration
+pub const fn swallowtail_adapter_kiro::KiroPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_kiro::KiroPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_kiro::KiroPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_kiro::KiroPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_kiro::KiroPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_kiro::KiroPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_kiro::KiroAcpDriver
+pub const fn swallowtail_adapter_kiro::KiroPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_kiro::KiroPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_kiro::KiroPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_kiro::KiroPreparedIntegration
+pub fn swallowtail_adapter_kiro::KiroPreparedIntegration::prepare_session(&self, swallowtail_adapter_kiro::KiroSessionProfileInput) -> core::result::Result<swallowtail_adapter_kiro::KiroPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_kiro::KiroPreparedSession
+impl swallowtail_adapter_kiro::KiroPreparedSession
+pub fn swallowtail_adapter_kiro::KiroPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_kiro::KiroPreparedSession
+pub const fn swallowtail_adapter_kiro::KiroPreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_kiro::KiroPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_kiro::KiroPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_kiro::KiroPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_kiro::KiroPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_kiro::KiroSessionProfileInput
+impl swallowtail_adapter_kiro::KiroSessionProfileInput
+pub const fn swallowtail_adapter_kiro::KiroSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub const swallowtail_adapter_kiro::KIRO_CLI_EXECUTABLE_NAME: &str
+pub const swallowtail_adapter_kiro::KIRO_CLI_RELEASE_AXIS: &str
+pub const swallowtail_adapter_kiro::KIRO_CLI_RELEASE_VERSION: &str
+pub const swallowtail_adapter_kiro::KIRO_LOCAL_ACCOUNT_AUDIENCE: &str
+pub fn swallowtail_adapter_kiro::kiro_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_kiro::kiro_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_kiro::kiro_cli_release_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_kiro::kiro_local_account_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub async fn swallowtail_adapter_kiro::prepare_kiro_acp(swallowtail_adapter_kiro::KiroPreparationInput, swallowtail_adapter_kiro::KiroPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_kiro::KiroPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

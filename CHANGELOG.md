@@ -5,6 +5,16 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-10-08
+
+### Fixed
+- keep registered Claude Agent SDK tools available for the lifetime of their
+  session after the open deadline, bound each call by its own deadline and any
+  explicit lease deadline, and join the pending-call sender during pump failure.
+- project the SDK's four per-turn input, output, cache-read, and cache-creation
+  counters through existing usage records with usage provenance. Cumulative
+  model usage and context occupancy are not reported.
+
 ## [0.5.1] - 2026-09-13
 
 ### Added

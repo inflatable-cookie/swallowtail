@@ -36,6 +36,19 @@ fn protocol() -> serde_json::Value {
 
 #[test]
 fn the_route_binds_five_independent_exact_identities() {
+    assert_eq!(env!("CARGO_PKG_VERSION"), "0.5.2");
+    assert_eq!(
+        CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG,
+        concat!(
+            "swallowtail-claude-agent-sdk-sidecar@",
+            env!("CARGO_PKG_VERSION")
+        )
+    );
+    assert_eq!(
+        CLAUDE_AGENT_SDK_SIDECAR_SOURCE,
+        include_str!("../sidecar/claude-agent-sdk-sidecar.mjs")
+    );
+
     let descriptor = claude_agent_sdk_descriptor();
     assert_eq!(
         descriptor.identity().id().as_str(),

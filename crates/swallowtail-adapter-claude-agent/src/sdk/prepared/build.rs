@@ -54,6 +54,7 @@ pub(super) fn prepare(
     let mut capability_requirements = vec![
         CapabilityRequirement::new(Capability::InteractiveSession, []),
         CapabilityRequirement::new(Capability::StreamingEvents, []),
+        CapabilityRequirement::new(Capability::UsageReporting, []),
         CapabilityRequirement::new(Capability::ToolCalls, []),
         CapabilityRequirement::new(
             Capability::Interruption,

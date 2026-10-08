@@ -105,7 +105,7 @@ Tom ruled on 2026-10-08, answering “Accept and approve all” to decision
 model-store migration on Ollama `0.40.0` is a disclosed possible inference
 side effect. The adapter binds the preflight tag and digest, pins `ggml` or
 `llamacpp` from the matching catalogue row, observes extra same-tag sibling
-rows, skips unmapped non-gguf or unknown-runner siblings, and fails closed
+rows, skips unmapped non-gguf, empty-family, or unknown-runner siblings, and fails closed
 when the selected tag is present only under another digest. Preparation
 issues no mutation. Runtime ownership stays downstream.
 

@@ -96,7 +96,9 @@ From `0.40.0`, chat scheduling can start provider-owned background local
 compatibility migration for supported legacy GGUF models. Later `/api/tags`
 responses can return one row per child runner for the same display name. The
 adapter binds the preflight tag and digest, pins `ggml` or `llamacpp` from the
-matching row, and treats extra same-tag rows as sibling observations. It does
+matching row, and treats extra same-tag rows as sibling observations. It skips
+unmapped non-gguf, empty-family, and unknown-runner rows rather than failing
+the catalogue. Empty family fails only for the selected tag and digest. It does
 not treat a new runner row as the old artifact. Preparation still performs no
 inference or model-store write. See Contract 031 for the ruling and
 Research 418 for the adaptation; Research 379 remains the historical

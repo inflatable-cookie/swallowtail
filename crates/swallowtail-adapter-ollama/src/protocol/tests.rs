@@ -372,6 +372,44 @@ fn manifest_list_binds_tag_and_digest_and_skips_unmapped_siblings() {
     let selected = bind_selected_inventory(&unmapped, &model_tag(), &digest())
         .expect("mapped ggml row remains selectable");
     assert_eq!(selected.runner, Some(OllamaNativeRunner::Ggml));
+
+    let empty_family = parse_inventory_rows(
+        &response(200, fixture_bytes_0401!("tags-unrelated-empty-family.json")),
+        AttachedModelObservationScope::InstalledInventory,
+        &binding,
+    )
+    .expect("unrelated empty-family GGUF row is skipped");
+    assert_eq!(empty_family.mapped.len(), 1);
+    let selected = bind_selected_inventory(&empty_family, &model_tag(), &digest())
+        .expect("selected ggml row remains selectable");
+    assert_eq!(selected.runner, Some(OllamaNativeRunner::Ggml));
+    let other_tag = AttachedModelTag::new("other-model:7b").expect("other tag is valid");
+    let other_digest = ModelManifestDigest::new(
+        "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    )
+    .expect("other digest is valid");
+    let skipped = bind_selected_inventory(&empty_family, &other_tag, &other_digest)
+        .expect_err("unrelated empty-family row is unmapped");
+    assert_eq!(
+        skipped.diagnostic().code(),
+        "swallowtail.ollama.semantics_unsupported"
+    );
+
+    let selected_empty = parse_inventory_rows(
+        &response(
+            200,
+            br#"{"models":[{"name":"fixture-model:8b","model":"fixture-model:8b","digest":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","details":{"format":"gguf","family":""}}]}"#,
+        ),
+        AttachedModelObservationScope::InstalledInventory,
+        &binding,
+    )
+    .expect("selected empty-family row is retained as unmapped identity");
+    let error = bind_selected_inventory(&selected_empty, &model_tag(), &digest())
+        .expect_err("empty family fails only for the selected tag and digest");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.ollama.semantics_unsupported"
+    );
 }
 
 #[test]

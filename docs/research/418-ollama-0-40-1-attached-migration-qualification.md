@@ -59,7 +59,7 @@ The adapter:
 - binds the preflight model tag and manifest digest together
 - pins `ggml` or `llamacpp` from the matching `/api/tags` row on show/chat
 - observes extra same-tag sibling rows without substituting them
-- skips unmapped non-gguf and unknown-runner siblings
+- skips unmapped non-gguf, empty-family, and unknown-runner siblings; empty family fails only when it is the selected tag and digest
 - fails closed on `remote_model` / `remote_host`
 - fails `swallowtail.ollama.selected_identity_drift` when the selected tag is
   present only under another digest

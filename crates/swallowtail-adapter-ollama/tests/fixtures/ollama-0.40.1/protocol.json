@@ -40,7 +40,7 @@
       "selected_routes": "routes.go adds unselected /api/balance and /api/usage. List, show, ps, chat, and StartLocalCompatibilityMigration remain the 0.40.0 mapping.",
       "selected_catalogue": "Manifest-list /api/tags rows still share name.DisplayShortest() with distinct child digests and details.runner. The adapter binds tag and digest and pins ggml or llamacpp from the matching row.",
       "selected_store": "manifest.go and paths.go add store locks and Windows copy-in-place. Catalogue wire fields are unchanged.",
-      "unmapped_siblings": "Non-gguf and unknown-runner siblings are skipped. remote_model/remote_host stay fail-closed."
+      "unmapped_siblings": "Non-gguf, empty-family, and unknown-runner siblings are skipped. Empty family fails only for the selected tag and digest. remote_model/remote_host stay fail-closed."
     }
   },
   "behavior_revision": "ollama.native-text-v1.manifest-list-runner",

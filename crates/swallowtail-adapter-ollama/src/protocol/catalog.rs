@@ -263,11 +263,8 @@ fn inventory_row(
         .as_deref()
         .or(model.runner.as_deref())
         .filter(|value| !value.is_empty());
-    if model.details.format != "gguf" {
+    if model.details.format != "gguf" || model.details.family.trim().is_empty() {
         return Ok(InventoryRowKind::Unmapped { tag, digest });
-    }
-    if model.details.family.trim().is_empty() {
-        return Err(unsupported_semantics());
     }
     let runner = match runner {
         Some(value) => match OllamaNativeRunner::parse(value) {

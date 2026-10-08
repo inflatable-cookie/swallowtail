@@ -13,7 +13,9 @@ annotated Git tags from the canonical repository.
   and unpublished gaps. From `0.40.0`, chat may start provider-owned
   background local compatibility migration; the adapter binds the selected
   tag and digest, pins `ggml` or `llamacpp` from the matching row, observes
-  sibling manifest-list rows, and fails closed on identity drift. Public
+  sibling manifest-list rows, and fails closed on identity drift. Unrelated
+  empty-family GGUF rows are skipped; empty family fails only for the selected
+  tag and digest. Public
   operation shape is unchanged. Preparation still issues no mutation.
   Research 418 records the qualification; Research 379 remains the historical
   `0.40.0` stop. No local runtime, provider prompt, model download, or host

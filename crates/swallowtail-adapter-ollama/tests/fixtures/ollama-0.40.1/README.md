@@ -11,9 +11,9 @@ chat scheduling. Later `/api/tags` can return one row per child runner for the
 same display name. Tom ruling `29ebdfbc-ef0b-47f1-9a6b-47b5cd24245b` accepts
 that migration as a disclosed inference side effect. The adapter binds the
 preflight tag and digest, pins `ggml` or `llamacpp` from the matching row,
-observes extra same-tag sibling rows, skips unmapped non-gguf or unknown
-runners, and fails closed when the selected tag is present only under another
-digest.
+observes extra same-tag sibling rows, skips unmapped non-gguf, empty-family,
+or unknown runners, and fails closed when the selected tag is present only
+under another digest. Empty family fails only for the selected tag and digest.
 
 `0.40.1` keeps the selected types, list, migrate, show, and chat mapping on
 milestone `ollama.native-text-v1.manifest-list-runner`. Prior qualified

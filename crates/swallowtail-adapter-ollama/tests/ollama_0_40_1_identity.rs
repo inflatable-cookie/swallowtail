@@ -461,6 +461,21 @@ fn http_fixtures_cover_manifest_list_drift_and_unmapped_siblings() {
     .expect("mlx sibling is skipped");
     assert_eq!(unmapped.len(), 1);
 
+    let empty_family = parse_inventory(
+        &response(include_bytes!(
+            "fixtures/ollama-0.40.1/tags-unrelated-empty-family.json"
+        )),
+        AttachedModelObservationScope::InstalledInventory,
+        &binding,
+    )
+    .expect("unrelated empty-family GGUF row does not fail the catalogue");
+    assert_eq!(empty_family.len(), 1);
+    assert_eq!(empty_family[0].model_tag().as_str(), "fixture-model:8b");
+    assert_eq!(
+        empty_family[0].manifest_digest().unwrap().as_str(),
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    );
+
     let decision = parse_model_detail(
         &response(
             br#"{"capabilities":["decision"],"details":{"format":"gguf","family":"fixture"}}"#,

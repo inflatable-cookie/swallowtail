@@ -7,14 +7,17 @@ annotated Git tags from the canonical repository.
 
 ### Notes
 - qualify only `ollama.attached` from preserved `0.35.1` through official
-  GitHub stable `0.40.1`. Keep `ollama.native-text-v1`, the prior exclusions,
-  and unpublished gaps. Add maintained `0.40.0..=0.40.1`. From `0.40.0`, chat
-  may start provider-owned background local compatibility migration; the
-  adapter binds the selected tag and digest, pins `ggml` or `llamacpp` from
-  the matching row, observes sibling manifest-list rows, and fails closed on
-  identity drift. Preparation still issues no mutation. Research 418 records
-  the qualification; Research 379 remains the historical `0.40.0` stop. No
-  local runtime, provider prompt, model download, or host mutation occurred.
+  GitHub stable `0.40.1`. Add maintained `0.40.0..=0.40.1` on adapter-private
+  milestone `ollama.native-text-v1.manifest-list-runner`. Retain prior
+  `ollama.native-text-v1` segments as Deprecated, plus the existing exclusions
+  and unpublished gaps. From `0.40.0`, chat may start provider-owned
+  background local compatibility migration; the adapter binds the selected
+  tag and digest, pins `ggml` or `llamacpp` from the matching row, observes
+  sibling manifest-list rows, and fails closed on identity drift. Public
+  operation shape is unchanged. Preparation still issues no mutation.
+  Research 418 records the qualification; Research 379 remains the historical
+  `0.40.0` stop. No local runtime, provider prompt, model download, or host
+  mutation occurred.
 - qualify only `gemini-cli.acp` through official stable `0.63.0`. Preserve
   `0.51.0..=0.61.0` on its existing behavior revision and the published
   exclusions; qualify exact `0.62.0` on the pending/failed tool-update

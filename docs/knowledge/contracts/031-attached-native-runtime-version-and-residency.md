@@ -115,10 +115,13 @@ silently substitute a model or treat new per-runner rows as proof of the old
 artifact identity. If selection cannot be preserved, or public API, consumer
 opt-in or further authority is needed, return for a separate ruling.
 
-Preserve older qualified runtime points. No live model-store mutation is
-authorized by this provider-free proof. Contract 036 release compatibility
-is a separate gate. Qualification of exact `0.40.0` and `0.40.1` is the
-adapter adaptation that follows this ruling, not the ruling text itself.
+Preserve older qualified runtime points. Those points stay on Deprecated
+`ollama.native-text-v1`. Exact `0.40.0` and `0.40.1` use Maintained
+`ollama.native-text-v1.manifest-list-runner`. Public operation shape is
+unchanged. No live model-store mutation is authorized by this provider-free
+proof. Contract 036 release compatibility is a separate gate. Qualification
+of exact `0.40.0` and `0.40.1` is the adapter adaptation that follows this
+ruling, not the ruling text itself.
 
 ## Native Streaming
 

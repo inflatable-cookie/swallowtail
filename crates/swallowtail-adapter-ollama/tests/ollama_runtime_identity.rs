@@ -95,13 +95,22 @@ fn identity_and_claim_qualify_0_32_14_as_compatible_extension() {
     for version in [
         "0.14.0", "0.32.1", "0.32.3", "0.32.9", "0.32.11", "0.32.14", "0.32.15", "0.33.0",
         "0.33.1", "0.33.2", "0.33.3", "0.34.0", "0.34.1", "0.34.2", "0.34.3", "0.34.4", "0.35.0",
-        "0.35.1", "0.40.0", "0.40.1",
+        "0.35.1",
     ] {
         assert!(matches!(
             claim.assess(&version_value(version)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
                     && matched.behavior_revision().as_str() == "ollama.native-text-v1"
+        ));
+    }
+    for version in ["0.40.0", "0.40.1"] {
+        assert!(matches!(
+            claim.assess(&version_value(version)),
+            InterfaceCompatibilityAssessment::Qualified(matched)
+                if matched.support_status() == InterfaceSupportStatus::Maintained
+                    && matched.behavior_revision().as_str()
+                        == "ollama.native-text-v1.manifest-list-runner"
         ));
     }
     for version in ["0.32.2", "0.32.10", "0.32.3-rc.0", "0.13.5"] {
@@ -215,13 +224,21 @@ fn identity_and_claim_qualify_0_32_15_as_compatible_extension() {
     assert!(matches!(
         claim.assess(&version_value("0.32.14")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
+                && matched.behavior_revision().as_str() == "ollama.native-text-v1"
     ));
     assert!(matches!(
         claim.assess(&version_value("0.34.4")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
                 && matched.behavior_revision().as_str() == "ollama.native-text-v1"
+    ));
+    assert!(matches!(
+        claim.assess(&version_value("0.40.1")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == InterfaceSupportStatus::Maintained
+                && matched.behavior_revision().as_str()
+                    == "ollama.native-text-v1.manifest-list-runner"
     ));
     assert!(matches!(
         claim.assess(&version_value("0.41.0")),

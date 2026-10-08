@@ -3,9 +3,11 @@
 **Task:** swallowtail#145, `ollama.attached` only  
 **Observed:** 2026-10-08  
 **Previous qualified ceiling:** `0.35.1`  
-**Result:** compatible extension through official GitHub stable `0.40.1` under
-`ollama.native-text-v1`, adapting the `0.40.0` inference-triggered
-provider-owned background model-store migration.
+**Result:** compatible extension through official GitHub stable `0.40.1` on
+adapter-private milestone `ollama.native-text-v1.manifest-list-runner`,
+adapting the `0.40.0` inference-triggered provider-owned background
+model-store migration. Prior qualified points stay on Deprecated
+`ollama.native-text-v1`.
 
 ## Channel and artifact identity
 
@@ -63,12 +65,14 @@ The adapter:
 
 No public `ProviderObservation` or residency variant was added. Runner pinning
 is adapter-private on existing show/chat. Claim id
-`ollama.native-runtime-window-2`, behavior `ollama.native-text-v1`, baseline
-`0.14.0`, exclusions `0.32.2` and `0.32.10`, and `AllowUnverified` stay.
-Maintained segments are `0.14.0..=0.34.4`, `0.35.0..=0.35.1`, and
-`0.40.0..=0.40.1`. Unpublished `0.34.5` and `0.35.2` through `0.39.x` are
+`ollama.native-runtime-window-2`, baseline `0.14.0`, exclusions `0.32.2` and
+`0.32.10`, and `AllowUnverified` stay. Contract 029 requires a distinct
+behavior revision for this adapter-private mapping: Maintained
+`0.40.0..=0.40.1` is `ollama.native-text-v1.manifest-list-runner`. Prior
+`0.14.0..=0.34.4` and `0.35.0..=0.35.1` remain `ollama.native-text-v1` and
+are Deprecated. Unpublished `0.34.5` and `0.35.2` through `0.39.x` are
 interior gaps. Synthetic `0.41.0` is the first visible `UnverifiedNewer`
-point.
+point and carries the newest qualified revision.
 
 ## Verification boundary
 

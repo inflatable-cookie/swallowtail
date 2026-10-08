@@ -193,7 +193,7 @@ fn identity_freezes_0_33_x_hops_and_names_the_0_33_3_stop() {
         assert!(matches!(
             claim.assess(&version_value(version)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
         ));
     }
     assert!(matches!(

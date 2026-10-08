@@ -451,7 +451,9 @@ OpenHands adds a package without a production route.
   mapping now use the common compatible-chat framing and envelope codec
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
-  `0.14.0..=0.34.4` plus `0.35.0..=0.35.1` and `0.40.0..=0.40.1`; exact runtime, installed and
+  `0.14.0..=0.34.4` and `0.35.0..=0.35.1` on Deprecated `ollama.native-text-v1`,
+  plus Maintained `0.40.0..=0.40.1` on `ollama.native-text-v1.manifest-list-runner`;
+  exact runtime, installed and
   running model observations, NDJSON output, and inference-caused residency
   remain distinct, with optional adapter-local `options.num_ctx` dispatch on
   structured runs and interactive replay. From `0.40.0`, chat may disclose
@@ -1773,13 +1775,14 @@ installed inventory, running inventory, and selected-model detail without
 inference or model mutation. Prepared inventory and one-attempt inference stay
 separate. Inference declares runtime-managed residency but grants no pull,
 unload, restoration, process, or server authority. Exact endpoint and runtime
-drift fail before operation effects. Maintained `0.14.0..=0.34.4` and
-`0.35.0..=0.35.1` and `0.40.0..=0.40.1` segments, exact `0.32.2` and `0.32.10`
+drift fail before operation effects. Deprecated `0.14.0..=0.34.4` and
+`0.35.0..=0.35.1` stay on `ollama.native-text-v1`. Maintained `0.40.0..=0.40.1`
+uses `ollama.native-text-v1.manifest-list-runner`. Exact `0.32.2` and `0.32.10`
 exclusions, unpublished gaps, and prerelease closure remain explicit. From
 `0.40.0`, chat may start provider-owned background local compatibility
 migration; the adapter binds the selected tag and digest, observes sibling
 manifest-list rows, and does not treat a new runner row as the old identity
-(Contract 031; Research 379). Synthetic `0.41.0` is the first visible
+(Contract 031; Research 418). Synthetic `0.41.0` is the first visible
 `UnverifiedNewer` point.
 
 llama.cpp completes the local-runtime family with deliberately separate

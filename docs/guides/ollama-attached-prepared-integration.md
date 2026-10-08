@@ -85,8 +85,9 @@ version, qualified or unverified-newer assessment, installed and running
 observations, selected detail, route selection, configured instance, access
 provenance, and low-level driver escape hatch.
 
-Maintained points are `0.14.0..=0.34.4`, `0.35.0..=0.35.1`, and
-`0.40.0..=0.40.1` under `ollama.native-text-v1`. Exact `0.32.2` and `0.32.10`
+Deprecated `ollama.native-text-v1` points are `0.14.0..=0.34.4` and
+`0.35.0..=0.35.1`. Maintained `0.40.0..=0.40.1` uses
+`ollama.native-text-v1.manifest-list-runner`. Exact `0.32.2` and `0.32.10`
 stay excluded; unpublished `0.34.5` and `0.35.2` through `0.39.x` remain
 interior incompatibilities. Semantic prereleases fail. Synthetic `0.41.0` is
 the first visible `UnverifiedNewer` point under `AllowUnverified`.

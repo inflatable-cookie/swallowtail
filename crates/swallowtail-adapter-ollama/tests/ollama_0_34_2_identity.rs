@@ -231,7 +231,7 @@ fn identity_freezes_0_33_3_through_0_34_2_and_names_compatible_extension() {
         assert!(matches!(
             claim.assess(&version_value(version)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
         ));
     }
     assert!(matches!(

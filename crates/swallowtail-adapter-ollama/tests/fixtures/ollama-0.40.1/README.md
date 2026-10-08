@@ -15,9 +15,11 @@ observes extra same-tag sibling rows, skips unmapped non-gguf or unknown
 runners, and fails closed when the selected tag is present only under another
 digest.
 
-`0.40.1` keeps the selected types, list, migrate, show, and chat mapping.
-`server/routes.go` adds unselected cloud `/api/balance` and `/api/usage`.
-Store lock and Windows copy changes do not alter catalogue wire fields.
+`0.40.1` keeps the selected types, list, migrate, show, and chat mapping on
+milestone `ollama.native-text-v1.manifest-list-runner`. Prior qualified
+points stay on Deprecated `ollama.native-text-v1`. `server/routes.go` adds
+unselected cloud `/api/balance` and `/api/usage`. Store lock and Windows
+copy changes do not alter catalogue wire fields.
 
 No local runtime was reachable or started. No provider prompt, inference,
 model download, host mutation, or model-store write occurred.

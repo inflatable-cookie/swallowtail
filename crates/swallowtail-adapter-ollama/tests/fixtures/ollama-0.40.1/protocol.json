@@ -43,6 +43,8 @@
       "unmapped_siblings": "Non-gguf and unknown-runner siblings are skipped. remote_model/remote_host stay fail-closed."
     }
   },
+  "behavior_revision": "ollama.native-text-v1.manifest-list-runner",
+  "prior_behavior_revision": "ollama.native-text-v1",
   "manifest_list_and_runner_mapping_added": true,
   "new_public_swallowtail_operation": false,
   "new_public_swallowtail_capability": false,

@@ -36,7 +36,7 @@ fn protocol() -> serde_json::Value {
 
 #[test]
 fn the_route_binds_five_independent_exact_identities() {
-    assert_eq!(env!("CARGO_PKG_VERSION"), "0.5.2");
+    assert_eq!(env!("CARGO_PKG_VERSION"), "0.5.3");
     assert_eq!(
         CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG,
         concat!(

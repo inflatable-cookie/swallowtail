@@ -24,7 +24,9 @@ route qualification.
 | Opaque ordering | `compare_versions` uses `InterfaceVersion` text `Ord`; construction still demands a single equal pair | Text `Ord` is storage canonicalization only; membership is equality |
 | `QualifiedOnly` | Opaque with `AllowUnverified` is refused | Unchanged |
 | Classification | Exact equality against the one segment | Exact equality against the membership set; no interior or forward inference |
-| Public constructors | `InterfaceCompatibilityClaim::new` plus `InterfaceVersionSegment::exact` | Same constructors; `new` accepts 1..=32 exact Opaque members |
+| Public constructors | `InterfaceCompatibilityClaim::new` plus `InterfaceVersionSegment::exact` | Same constructors; Opaque `new` streams 1..=32 exact members |
+| Opaque construction | `new` collects both `IntoIterator`s, then `validate()` | Opaque `new` streams both iterators and refuses the 33rd raw yield without consuming the tail |
+| Opaque support status | `validate()` does not inspect `support_status`; a Deprecated singleton is accepted | Singleton still accepts Maintained or Deprecated; two or more members require one Maintained revision identity |
 | Production claims | All Opaque claims remain one point | Unchanged by this spec and by the later core implementation |
 
 The one-point restriction in
@@ -40,7 +42,15 @@ remains in force until that implementation is independently reviewed.
 `exclusions: BTreeSet<InterfaceVersion>`. There is no serde. Equality is
 structural, so `Vec` order is part of `Eq`.
 
-Construction (`InterfaceCompatibilityClaim::new`) validates then returns.
+Construction (`InterfaceCompatibilityClaim::new`) currently does
+`segments.into_iter().collect()` into a `Vec` and
+`exclusions.into_iter().collect()` into a `BTreeSet`, then calls
+`validate()`. There is no count cap, so an arbitrary iterator is fully
+consumed before any Opaque rule runs. `validate()` does not inspect
+`support_status`. A currently accepted constructor call is `new(...,
+Opaque, QualifiedOnly, [exact(..., Deprecated)], [])`; `classify`
+returns the stored `Deprecated`.
+
 Opaque-specific rules today:
 
 - `segments` must be non-empty
@@ -170,62 +180,112 @@ substitute for a range.
 
 | Bound | Value | Why |
 | --- | --- | --- |
-| Maximum exact members | 32 | Research 407 lists 7 owned identities from `b10069` through `b11429` if every hop were later claimed. Research 369's largest published-hop counts on other families stay below this when expressed as exact pins. 32 is large enough for a maintained exact-pin window and small enough that construction, `Eq`, diagnostics, and review stay bounded. |
-| Maximum exclusions | 32 | Same identity-object cost as members. Known-bad points may sit outside membership (Contract 029). |
+| Maximum exact members | 32 raw iterator yields | Research 407 lists 7 owned identities from `b10069` through `b11429` if every hop were later claimed. Research 369's largest published-hop counts on other families stay below this when expressed as exact pins. 32 is large enough for a maintained exact-pin window and small enough that construction, `Eq`, diagnostics, and review stay bounded. The cap is raw `next()` yields, not unique stored size. |
+| Maximum exclusions | 32 raw iterator yields | Same identity-object cost as members. Known-bad points may sit outside membership (Contract 029). The cap is raw yields; duplicates within the cap collapse in the stored `BTreeSet`. |
 | Maximum UTF-8 bytes per Opaque version text, at claim validation | 256 | Existing facade strings fit (Gemini Live current point is 107 bytes). Blank text is already refused by `InterfaceVersion::new`. This bound is enforced when the version is used as an Opaque member or Opaque exclusion, not by shrinking `InterfaceVersion::new` globally. |
 | Maximum UTF-8 bytes per behavior-revision text on an Opaque member | 256 | Same diagnostic bound. Existing revision ids are short. |
 
-Refuse construction when any bound is exceeded. Do not truncate.
+Refuse construction when any bound is exceeded. Do not truncate. Do not
+enforce a count cap by collecting an arbitrary `IntoIterator` and then
+checking `len()`.
 
 A later family that needs more than 32 independently evidenced exact points
 on one Opaque axis returns for a separate bound ruling. Do not raise the
 bound inside the core implementation task.
 
+## Opaque Construction Bound
+
+When `scheme == Opaque`, `InterfaceCompatibilityClaim::new` streams both
+iterators. It must not `collect()` either iterator before the count cap is
+enforced.
+
+Stream the segments iterator first. Count raw yields.
+
+- While fewer than 32 items are stored, call `next()`.
+  - `Some(item)`: store it.
+  - `None`: the iterator is exhausted within the cap. Stop. Do not call
+    `next()` again.
+- After 32 items are stored, call `next()` once more.
+  - `Some(_)`: refuse
+    `Opaque compatibility claims permit at most 32 exact members`.
+    Do not call `next()` again. Drop the remaining iterator without
+    draining it. Do not store the 33rd item. Do not start the exclusions
+    iterator.
+  - `None`: the iterator is exhausted at the cap.
+
+Then stream the exclusions iterator the same way, refusing
+`Opaque compatibility claims permit at most 32 exclusions` on the 33rd
+raw yield. The extra `next()` runs only after 32 raw exclusion yields.
+
+The cap counts raw yields, not unique stored size. Duplicate exclusion
+texts within the cap collapse in the stored `BTreeSet` and are not an
+error. Duplicate member version strings within the cap still fail the
+later uniqueness rule.
+
+Acceptance: a counting iterator that would yield 40 distinct exact Opaque
+segments must, after `new` returns the oversized error, have had `next()`
+called exactly 33 times.
+
+Semantic, Integer, and CalendarDate construction keeps today's unbounded
+`collect()` then `validate()`. These count caps do not apply to those
+schemes.
+
 ## Validation Rules
 
-On `InterfaceCompatibilityClaim::new` when `scheme == Opaque`:
+On `InterfaceCompatibilityClaim::new` when `scheme == Opaque`, after the
+streams above succeed:
 
 1. Posture is `QualifiedOnly`. Otherwise refuse:
    `Opaque compatibility claims must remain qualified-only`.
 2. `segments` is non-empty. Otherwise refuse the existing empty-window
-   message.
-3. `segments.len() <= 32`. Otherwise refuse:
-   `Opaque compatibility claims permit at most 32 exact members`.
-4. Each segment: both bounds pass `validate_version`; `minimum == maximum`
+   message. Stored member count is then 1..=32 as a consequence of the
+   stream plus this rule. Do not re-implement the cap as a post-collect
+   `len()` check.
+3. Each segment: both bounds pass `validate_version`; `minimum == maximum`
    by version text equality. A two-bound Opaque window is still invalid:
    `Compatibility segment boundaries are invalid`.
-5. Each member version text is at most 256 UTF-8 bytes. Otherwise refuse:
+4. Each member version text is at most 256 UTF-8 bytes. Otherwise refuse:
    `Opaque version text exceeds 256 bytes`.
-6. Each member behavior revision is at most 256 UTF-8 bytes. Otherwise
+5. Each member behavior revision is at most 256 UTF-8 bytes. Otherwise
    refuse: `Opaque behavior revision text exceeds 256 bytes`.
-7. Member version strings are unique. Duplicates refuse:
+6. Member version strings are unique. Duplicates refuse:
    `Opaque compatibility members must be unique`.
-8. Two members with the same version and disagreeing behavior revision
+7. Two members with the same version and disagreeing behavior revision
    cannot occur once uniqueness holds. Do not add a second path that could.
-9. Exclusions: at most 32; each at most 256 bytes; each passes
-   `validate_version`. An exclusion equal to a member version refuses:
+8. Exclusions: stored unique size is at most 32 as a consequence of the
+   raw-yield cap; each at most 256 bytes; each passes `validate_version`.
+   An exclusion equal to a member version refuses:
    `Opaque exclusions cannot name a claimed member`.
-10. Support labels:
+9. Support labels, split by stored member count:
+
+    When `segments.len() == 1`: the single member may be `Maintained` or
+    `Deprecated`. Do not require a Maintained member. `classify` / `assess`
+    return the stored status. This is current constructor behavior.
+
+    When `segments.len() >= 2`:
     - at least one member is `Maintained`
     - every `Maintained` member shares one behavior-revision identity
     - every `Deprecated` member uses a different behavior-revision identity
       from that Maintained revision
 
-    Zero Maintained, split Maintained revisions, or a Deprecated member
-    that shares the Maintained revision refuse with:
+    For multi-member sets, zero Maintained (including all-Deprecated),
+    split Maintained revisions, or a Deprecated member that shares the
+    Maintained revision refuse with:
     `Opaque support status must follow the claim's maintained behavior revision`.
 
-    A single-revision Opaque set is Maintained throughout. Mixed revisions
-    mark the current mapping Maintained and older mappings Deprecated.
-    "Current" is the unique Maintained behavior-revision identity. It is
-    not inferred from version text order.
+    A multi-member Opaque set with one Maintained revision identity is
+    Maintained for members carrying that identity. Other members with
+    other revisions are Deprecated. "Current" is the unique Maintained
+    behavior-revision identity. It is not inferred from version text
+    order. A singleton Opaque set is not required to be Maintained.
 
-11. After those checks, sort members by version text and store that order.
+10. After those checks, sort members by version text and store that order.
     Skip the ordered `windows(2)` non-overlap rule for Opaque. That rule is
     interval logic.
 
 Semantic, integer, and calendar validation is unchanged, including the
-ordered non-overlap rule.
+ordered non-overlap rule and today's unbounded `collect()`. Support-status
+and count-cap rules above apply only when `scheme == Opaque`.
 
 Malformed `InterfaceVersion` values (blank) still fail at
 `InterfaceVersion::new` with `ValueRequired`, before claim validation.
@@ -266,10 +326,12 @@ behavior.
 Preserve:
 
 - `InterfaceCompatibilityClaim::new` and `InterfaceVersionSegment::exact`
-  for one exact Opaque member. Singleton results stay identical: one
-  Maintained member, `baseline() == latest_qualified()`, `milestones().len()
-  == 1`, `QualifiedOnly`, `assess` of that point is `Qualified`, any other
-  point is `Incompatible`.
+  for one exact Opaque member. Singleton results stay identical for
+  currently valid one-point Opaque claims, whether the member is
+  Maintained or Deprecated: `baseline() == latest_qualified()`,
+  `milestones().len() == 1`, `QualifiedOnly`, `assess` of that point is
+  `Qualified` with the stored support status, any other point is
+  `Incompatible`.
 - Method signatures in the v0.5.1 `swallowtail-core` baseline.
 - Diagnostic code `swallowtail.interface_compatibility_claim_rejected`.
 - `scheme() == Opaque` as the discriminator that ordering is unavailable.
@@ -315,9 +377,9 @@ of observations must still omit host paths and raw stdout.
 The later core implementation, if it follows this spec:
 
 - keeps every released method signature
-- keeps every currently valid singleton Opaque claim succeeding with the
-  same `classify` / `assess` / `baseline` / `latest_qualified` / `permits`
-  results
+- keeps every currently valid singleton Opaque claim succeeding, including
+  a Deprecated singleton, with the same `classify` / `assess` / `baseline`
+  / `latest_qualified` / `permits` results and stored support status
 - expands `new` so some inputs that today return
   `InvalidInterfaceCompatibilityClaim` become `Ok`
 - may add `has_version_interval`
@@ -360,6 +422,22 @@ lifecycle change still returns under Contract 036 / 029.
 Do not rename llama.cpp runtime axes, fold attached into owned, or treat
 `v0.6.0` as an Opaque runtime member.
 
+Rejected details of option A that would silently weaken validation or
+change current constructor results:
+
+- Applying the multi-member Maintained-revision invariant to a one-member
+  Opaque claim would refuse `new(..., Opaque, QualifiedOnly, [exact(...,
+  Deprecated)], [])`, which current `validate()` accepts. That is a
+  consumer-visible constructor change and would make the core
+  implementation a Contract 036 minor. Keep that invariant on
+  `len() >= 2` only.
+- Checking `segments.len() <= 32` or unique exclusion size after
+  `into_iter().collect()` is not a bound. An arbitrary `IntoIterator` can
+  allocate or run side effects for every item before the cap is observed.
+  Duplicate exclusions collapsing in a `BTreeSet` would leave the raw
+  iterator unbounded. Opaque construction must refuse on the 33rd raw
+  `next()` and drop the iterator.
+
 ## Design Tables
 
 These tables exercise the proposed rules. They do not qualify `b11429`,
@@ -384,6 +462,23 @@ Axis `llama.cpp.attached-runtime`. Members:
 | empty / blank | `InterfaceVersion::new` fails |
 
 `baseline()` and `latest_qualified()` are both `b9910-f5525f7e7`.
+
+### Deprecated singleton (constructor compatibility)
+
+Same constructors, any Opaque axis. Members: one exact point labeled
+`Deprecated`. Current `validate()` accepts this shape. The later
+implementation must keep accepting it.
+
+| Observed | Assessment |
+| --- | --- |
+| that exact point | Qualified, stored behavior, Deprecated; `permits` is true |
+| any other string | Incompatible |
+
+`baseline() == latest_qualified()`. `milestones().len() == 1`. No
+Maintained member is required.
+
+A two-or-more-member Opaque claim whose every member is Deprecated is
+construction refuse.
 
 ### Attached hypothetical two-member set
 
@@ -433,6 +528,11 @@ separation.
 | Member `b10069-178a6c449` also listed in exclusions | Construction refuse |
 | Exclusion `b10566-…` not a member | Construction ok; that point is `Incompatible` |
 | 33 members | Construction refuse, oversized |
+| counting iterator that would yield 40 members | Construction refuse on the 33rd raw yield; `next()` called exactly 33 times; tail not consumed |
+| 33 raw exclusions, including duplicates that would collapse in a `BTreeSet` | Construction refuse, raw cap |
+| 32 raw duplicate exclusions of one non-member | Construction ok; stored unique size 1 |
+| Opaque singleton Deprecated | Construction ok; classify of that point is Qualified Deprecated |
+| two-member all-Deprecated | Construction refuse |
 | Member version 257 bytes | Construction refuse |
 | `AllowUnverified` | Construction refuse |
 | Hosted singleton Gemini Live current facade | Unchanged: that point Qualified; superseded Live facade strings remain Incompatible because they are not members |
@@ -452,8 +552,8 @@ no host mutation.
 
 ### Code
 
-- `crates/swallowtail-core/src/interface_version/claim.rs` validation,
-  canonical sort, Opaque classify/assess equality lookup
+- `crates/swallowtail-core/src/interface_version/claim.rs` Opaque streaming
+  construction in `new`, validation, canonical sort, equality classify/assess
 - `crates/swallowtail-core/src/interface_version.rs` additive
   `has_version_interval`
 - `crates/swallowtail-core/src/interface_version/tests.rs` and existing
@@ -480,18 +580,27 @@ or `qa`.
 
 Construction and bounds:
 
-- singleton `new` + `exact` still succeeds with today's results
+- singleton `new` + `exact` still succeeds with today's results for both
+  Maintained and Deprecated members; Deprecated classify stays Deprecated
 - two exact members succeed and canonicalize constructor order
 - 32 members succeed; 33 refuse
+- a counting iterator that would yield more than 32 members is refused
+  without consuming the tail (`next()` called exactly 33 times)
+- 32 raw duplicate exclusions of one non-member succeed with unique size 1
+- 33 raw exclusions refuse even when they would collapse in a `BTreeSet`
 - duplicate version refuse
 - `min != max` refuse
 - `AllowUnverified` refuse
 - member-also-excluded refuse
 - oversized version text refuse
-- zero Maintained, split Maintained revisions, Deprecated sharing the
-  Maintained revision refuse
+- multi-member zero Maintained (including all-Deprecated), split
+  Maintained revisions, and Deprecated sharing the Maintained revision
+  refuse
+- singleton Deprecated does **not** take that multi-member refuse path
 - empty claim still refuse
 - Semantic overlapping windows still refuse (non-regression)
+- Semantic windows with several Deprecated segments plus one Maintained
+  stay unbounded by these Opaque caps (non-regression)
 
 Classification:
 
@@ -525,6 +634,8 @@ Singleton regressions:
 - keep `qualified_only_and_opaque_claims_do_not_infer_forward_execution`
 - keep `opaque_windows_are_exact_only` as `min != max` refusal
 - keep `installed_executable` and `connection_lifecycle/update` tests
+- keep a Deprecated singleton Opaque constructor succeeding with stored
+  Deprecated classify
 - fixture shaped like a hosted facade singleton (long opaque string)
 - fixture shaped like attached `b9910-f5525f7e7` and owned
   `b10069-178a6c449` on **separate** axes; do not merge them

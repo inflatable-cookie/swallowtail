@@ -27,7 +27,7 @@ impl StructuredRunDriver for PiRpcDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn RunHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            validate_run(&plan, &request, &services, &self.credential)?;
+            let version_features = validate_run(&plan, &request, &services, &self.credential)?;
             let cleanup =
                 SessionCleanupRequest::new(request.deadline().expect("validated Pi run deadline"));
             let run_id = RuntimeRunId::new(format!("pi-rpc:run:{}", request.request_id().as_str()))
@@ -54,7 +54,7 @@ impl StructuredRunDriver for PiRpcDriver {
                 ),
             );
             let mut session = self
-                .start_session(plan, open_request, services.clone())
+                .start_session(plan, open_request, services.clone(), version_features)
                 .await?;
             let turn_request = TurnRequest::new(turn_id, request.content().clone())
                 .with_deadline(request.deadline().expect("validated Pi run deadline"))

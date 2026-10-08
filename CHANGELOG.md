@@ -6,9 +6,19 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify `pi.rpc` through official npm `latest` and GitHub latest stable
+  `1.1.0` after every published hop following `0.86.1`. Research 382 freezes
+  exact package and source identity, complete npm trees, runtime chunks, and
+  per-hop selected-source classifications. Preserve baseline `0.80.10`, the
+  existing claim and behavior revisions, all prior segments and gaps. Add
+  private command-disposition mappings from `0.99.0` and the
+  `agent_settled.aborted` mapping at maintained `1.1.0`; RPC operations,
+  framing, permissions, and lifecycle contract remain unchanged. Later stable
+  points remain unverified. No artifact execution, provider prompt, live RPC,
+  credential use, installation, or host update occurred.
 - qualify only `antigravity.catalogue` through official Antigravity CLI `1.3.1`
   after published stable hops `1.2.12`–`1.2.17`, `1.3.0`, and `1.3.1`.
-  Research 379 freezes source commits, complete release asset manifests, and
+  Research 380 freezes source commits, complete release asset manifests, and
   verified Linux x64 and Mac ARM64 artifact trees. The maintained segment keeps
   baseline `1.1.9`, claim and behavior revision, with unpublished `1.2.18`
   excluded and later `1.3.2` visibly unverified. `antigravity.headless` stays

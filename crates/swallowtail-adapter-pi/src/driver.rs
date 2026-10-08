@@ -16,6 +16,7 @@ use swallowtail_runtime::{
 
 mod catalogue;
 mod descriptor;
+mod disposition;
 mod handle;
 mod input;
 mod launch;
@@ -52,7 +53,7 @@ impl InteractiveSessionDriver for PiRpcDriver {
         services: HostServices,
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
-            validate_open(&plan, &request, &services, &self.credential)?;
+            let version_features = validate_open(&plan, &request, &services, &self.credential)?;
             if request.deadline().is_some_and(|deadline| {
                 services.time().expect("validated Pi time service").now() >= deadline.instant()
             }) {
@@ -61,7 +62,7 @@ impl InteractiveSessionDriver for PiRpcDriver {
                     "Pi RPC session deadline elapsed before startup",
                 ));
             }
-            self.start_session(plan, request, services)
+            self.start_session(plan, request, services, version_features)
                 .await
                 .map(|session| Box::new(session) as Box<dyn InteractiveSessionHandle>)
         })
@@ -83,6 +84,7 @@ impl PiRpcDriver {
         plan: PreflightPlan,
         request: OpenSessionRequest,
         services: HostServices,
+        version_features: crate::selection::PiRpcVersionFeatures,
     ) -> Result<PiSessionHandle, RuntimeFailure> {
         let scope = ScopeId::new(format!("pi-rpc:session:{}", request.request_id().as_str()))
             .map_err(|_| {
@@ -240,6 +242,7 @@ impl PiRpcDriver {
             credential,
             active,
             completed_prompts: Arc::new(AtomicU32::new(0)),
+            version_features,
             image_attachments: plan
                 .requirements()
                 .capabilities()

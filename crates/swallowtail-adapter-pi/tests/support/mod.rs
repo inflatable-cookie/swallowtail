@@ -13,7 +13,8 @@ mod sidecar_selection;
 pub use host::{CleanupEvent, FixtureHost, Scenario};
 #[allow(unused_imports)]
 pub use selection::{
-    FixtureSelection, open_request, selection, selection_for_topology, turn_request,
+    FixtureSelection, open_request, selection, selection_at_version, selection_for_topology,
+    turn_request,
 };
 #[allow(unused_imports)]
 pub use selection::{run_request, run_selection_for_topology};

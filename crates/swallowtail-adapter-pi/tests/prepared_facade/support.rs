@@ -32,7 +32,7 @@ fn assert_prompt_image(host: &FixtureHost) {
 #[test]
 fn latest_pi_is_qualified_and_later_stable_remains_unverified() {
     let host_id = ExecutionHostId::new("fixture.pi.prepared.newer").expect("valid host");
-    let discovery = FixtureHost::version_probe("0.86.1");
+    let discovery = FixtureHost::version_probe("1.1.0");
     let prepared = block_on(prepare_pi_rpc(
         preparation_input(host_id.clone()),
         probe(),
@@ -46,7 +46,7 @@ fn latest_pi_is_qualified_and_later_stable_remains_unverified() {
     };
     assert_eq!(
         assessment.behavior_revision().as_str(),
-        "pi.rpc.strict-lf-v0.84.0-message-update-delta"
+        "pi.rpc.strict-lf-v1.1.0-aborted-settled"
     );
     let run = prepared
         .prepare_run(PiRunProfileInput::new(
@@ -64,7 +64,7 @@ fn latest_pi_is_qualified_and_later_stable_remains_unverified() {
             .expect("exact version is planned")
             .version()
             .as_str(),
-        "0.86.1"
+        "1.1.0"
     );
     let basis = run
         .evidence()
@@ -75,11 +75,11 @@ fn latest_pi_is_qualified_and_later_stable_remains_unverified() {
         .expect("activity basis is available");
     assert_eq!(
         basis.behavior_revision().as_str(),
-        "pi.rpc.strict-lf-v0.84.0-message-update-delta"
+        "pi.rpc.strict-lf-v1.1.0-aborted-settled"
     );
 
     let host_id = ExecutionHostId::new("fixture.pi.prepared.later").expect("valid host");
-    let discovery = FixtureHost::version_probe("0.86.2");
+    let discovery = FixtureHost::version_probe("1.1.1");
     let prepared = block_on(prepare_pi_rpc(
         preparation_input(host_id.clone()),
         probe(),

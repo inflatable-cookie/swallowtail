@@ -62,6 +62,7 @@ pub(crate) struct ActiveTurn {
     follow_up_scheduled: AtomicBool,
     cancelled: AtomicBool,
     timed_out: AtomicBool,
+    require_aborted_settled: bool,
     finished: AtomicBool,
     completed_prompts: Arc<AtomicU32>,
     finish_signal: Arc<Mutex<FinishedState>>,
@@ -72,6 +73,7 @@ impl ActiveTurn {
         runtime_id: RuntimeTurnId,
         completed_prompts: Arc<AtomicU32>,
         connection: Weak<PiConnection>,
+        require_aborted_settled: bool,
     ) -> Result<
         (
             Arc<Self>,
@@ -101,6 +103,7 @@ impl ActiveTurn {
                 follow_up_scheduled: AtomicBool::new(false),
                 cancelled: AtomicBool::new(false),
                 timed_out: AtomicBool::new(false),
+                require_aborted_settled,
                 finished: AtomicBool::new(false),
                 completed_prompts,
                 finish_signal: Arc::new(Mutex::new(FinishedState::default())),
@@ -182,10 +185,16 @@ impl ActiveTurn {
                 ));
                 Ok(())
             }
-            PiAgentEvent::Settled => {
+            PiAgentEvent::Settled { aborted } => {
+                if self.require_aborted_settled && aborted.is_none() {
+                    return Err(failure(
+                        "swallowtail.pi.rpc.settled_aborted_missing",
+                        "Pi RPC omitted the qualified agent-settled abort state",
+                    ));
+                }
                 let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
                     (TerminalStatus::TimedOut, ActivityStatus::Failed)
-                } else if self.cancelled.load(Ordering::SeqCst) {
+                } else if self.cancelled.load(Ordering::SeqCst) || aborted == Some(true) {
                     (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
                 } else {
                     self.completed_prompts.fetch_add(1, Ordering::SeqCst);

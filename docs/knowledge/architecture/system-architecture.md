@@ -474,7 +474,7 @@ OpenHands adds a package without a production route.
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
   tag share one source commit; `1.1.8` is not independently qualified.
   Catalogue support extends through official `1.3.1` with the same
-  catalogue revision; Research 379 freezes all eight published hops after
+  catalogue revision; Research 380 freezes all eight published hops after
   `1.2.11`, excludes unpublished `1.2.18`, and classifies no published note
   as changing the selected `agy models` path. Research 353 records the earlier
   catalogue extension and raises the headless Contract 023 acceptance options
@@ -1181,36 +1181,45 @@ configuration lease and capability-scoped service are contracted. Absent
 posture remains unmigrated state, not an ambient alias; no posture falls back
 to another.
 
-The Pi RPC records compose with the existing long-lived RPC profile. Exact
-published points from baseline `0.80.10` through `0.84.4` now form six
-behavior segments. They retain strict-LF framing while separately
-recording thinking-level and nested-usage evidence, summarization-retry events,
-direct-bash correlation, the later direct-bash extension hook, and the `0.84.0`
-message-update delta shape. Swallowtail
-does not expose direct bash or extensions, and retry evidence still fails under
-the disabled-retry policy. Later stable points remain visible unverified;
-unpublished gaps including `0.83.1` and prereleases remain incompatible. One
-restrictive policy binds one active operation, two completed prompts, one
-pending steering message, one pending follow-up, no ambient customization, no
-update, telemetry, package, or automatic-retry action, and explicit
-`AmbientHost` read intent without a filesystem boundary. Command acceptance is
-separate from model lifecycle. Correlated dialogs use callback exchange;
-display-only UI becomes bounded semantic observation. The first adapter-private
-corpus binds package `0.80.10`, strict LF JSONL, exact provider/model argv, and
-offline startup without launching Pi or contacting a provider. The separate
-production driver binds that exact point to one host-approved executable,
-delegated harness credential, filesystem working resource, provider, model,
-and `AmbientHost` read-intent policy. Its supervised connection keeps command
-acknowledgement separate from model settlement, relays bounded extension UI,
-uses native abort for cancellation and deadline requests without claiming
-provider stop, and joins process work before resource and credential release.
-The production fixture matrix passes the unchanged long-lived RPC profile and
-the separate scheduling/UI assertion pack under local and remote-authoritative
-host identities. It proves prompt-before-steering-before-follow-up ordering,
-command acknowledgement before model settlement, deterministic callback
-expiry and late-response rejection, distinct provider/retry/disconnect/format
-failures, bounded prompt concurrency, redaction, and visible cleanup failure
-without weakening terminal provider truth.
+The Pi RPC records compose with the existing long-lived RPC profile. Baseline
+`0.80.10`, all prior exact segments through `0.86.1`, and their behavior
+revisions remain. The earlier points separately record thinking-level and
+nested-usage evidence, summarization-retry events, direct-bash correlation,
+the later direct-bash extension hook, and the `0.84.0` message-update delta
+shape. Swallowtail does not expose direct bash or extensions, and retry
+evidence still fails under the disabled-retry policy. Research 382 qualifies
+published hops `0.87.0` through `1.1.0`: `0.87.0..=0.87.1` retain
+message-update behavior; `0.99.0..=0.99.2` and `1.0.0..=1.0.4` add private
+command-disposition milestones; maintained `1.1.0` adds the private
+`agent_settled.aborted` milestone. The claim remains
+`pi.rpc.package-window-2`; strict-LF framing, selected commands, public
+lifecycle operations, permission posture and exclusions are unchanged. The
+adapter fails a prompt marked `handled` because Pi starts no run, and rejects
+handled steering or follow-up because Pi consumed the message without queuing
+it. At `1.1.0`, `aborted=true` maps to existing terminal cancellation while
+`false` keeps the existing completion and usage checks. Older qualified points
+keep the field optional. Unpublished and unqualified holes remain incompatible,
+and later stable points stay visible unverified. One restrictive policy binds
+one active operation, two completed prompts, one pending steering message, one
+pending follow-up, no ambient customization, no update, telemetry, package, or
+automatic-retry action, and explicit `AmbientHost` read intent without a
+filesystem boundary. Command acceptance stays separate from model lifecycle.
+Correlated dialogs use callback exchange; display-only UI becomes bounded
+semantic observation. The first adapter-private corpus binds package
+`0.80.10`, strict LF JSONL, exact provider/model argv, and offline startup
+without launching Pi or contacting a provider. The production driver binds an
+exact point to one host-approved executable, delegated harness credential,
+filesystem working resource, provider, model, and `AmbientHost` read-intent
+policy. Its supervised connection keeps command acknowledgement separate from
+model settlement, relays bounded extension UI, uses native abort for
+cancellation and deadline requests without claiming provider stop, and joins
+process work before resource and credential release. The production fixture
+matrix exercises prompt-before-steering-before-follow-up ordering, command
+acknowledgement before model settlement, deterministic callback expiry and
+late-response rejection, distinct provider/retry/disconnect/format failures,
+bounded prompt concurrency, redaction, and visible cleanup failure without
+weakening terminal provider truth. Research 382 retains exact source, complete
+artifact trees, per-hop classifications, and deterministic fixture coverage.
 
 Pi RPC provider-session continuity remains outside the RPC descriptor.
 Research 053 plus the g03.010 range corpus check every stable point from

@@ -109,6 +109,9 @@ collision_deletion=$scratch/collision-deletion
 collision_changed=$scratch/collision-changed
 collision_in_place=$scratch/collision-in-place
 collision_occupied=$scratch/collision-occupied
+modern_seed=$scratch/modern-seed
+modern_canonical=$scratch/modern-canonical.git
+modern_worker=$scratch/modern-worker
 mkdir -p "$collision_seed/docs/research"
 git_test "$collision_seed" init -q -b main
 write_numbered_record "$collision_seed" 373-first.md \
@@ -162,5 +165,23 @@ expect_pass "${checker[@]}" --root "$collision_worker" \
 expect_failure 'cannot refresh canonical main' \
   "${checker[@]}" --root "$collision_worker" \
   --authority "$scratch/missing-canonical.git"
+
+# Current numbered-heading records can also be moved with evidence intact.
+mkdir -p "$modern_seed/docs/research"
+git_test "$modern_seed" init -q -b main
+write_numbered_record "$modern_seed" 375-first.md \
+  $'# 375 First canonical record\nFirst record evidence.\n'
+write_numbered_record "$modern_seed" 375-second.md \
+  $'# 375 Second canonical record\nSecond record evidence.\n'
+git_test "$modern_seed" add docs
+git_test "$modern_seed" commit -q -m 'seed modern numbered research records'
+git_test "$scratch" clone -q --bare "$modern_seed" "$modern_canonical"
+git_test "$scratch" clone -q "$modern_canonical" "$modern_worker"
+rm "$modern_worker/docs/research/375-second.md"
+write_numbered_record "$modern_worker" 377-second.md \
+  $'# 377 Second canonical record\nSecond record evidence.\n'
+expect_pass "${checker[@]}" --root "$modern_worker" --local-base main
+expect_pass "${checker[@]}" --root "$modern_worker" \
+  --authority "$modern_canonical"
 
 printf 'research number collision tests passed\n'

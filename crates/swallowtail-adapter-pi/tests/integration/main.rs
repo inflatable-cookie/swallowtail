@@ -13,6 +13,8 @@ mod pi_acp_identity;
 mod pi_rpc_0_84_4_identity;
 #[path = "../pi_rpc_0_85_1_identity.rs"]
 mod pi_rpc_0_85_1_identity;
+#[path = "../pi_rpc_1_1_0_identity.rs"]
+mod pi_rpc_1_1_0_identity;
 #[path = "../pi_rpc_identity.rs"]
 mod pi_rpc_identity;
 #[path = "../pi_sdk_sidecar_identity.rs"]

@@ -96,7 +96,7 @@ fn identity_and_claim_qualify_0_84_3_as_compatible_extension() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(PI_PACKAGE_BASELINE_VERSION, "0.80.10");
-    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "0.86.1");
+    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.1.0");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.84.2"
@@ -116,7 +116,7 @@ fn identity_and_claim_qualify_0_84_3_as_compatible_extension() {
         assert!(matches!(
             claim.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
                     && matched.behavior_revision().as_str()
                         == "pi.rpc.strict-lf-v0.84.0-message-update-delta"
         ));
@@ -126,7 +126,7 @@ fn identity_and_claim_qualify_0_84_3_as_compatible_extension() {
     assert!(!claim.permits(&version("0.85.2")));
     assert!(matches!(
         claim.assess(&version("0.86.2")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        InterfaceCompatibilityAssessment::Incompatible
     ));
     assert_eq!(
         pi_package_binding("0.84.3")

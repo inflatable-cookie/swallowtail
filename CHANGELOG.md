@@ -15,6 +15,13 @@ annotated Git tags from the canonical repository.
   bindings. The `0.22.4` and `0.23.5` exclusions, Plan limit at `0.22.3`, and
   exact `0.21.15` reasoning and budget controls remain unchanged; no provider
   work or artifact execution occurred.
+- qualify `opencode.acp` through the official current stable `1.18.35` after
+  published hops `1.18.33`, `1.18.34`, and `1.18.35`. Research 376 freezes
+  exact npm and GitHub source identities, full package trees, and every source
+  hop. The existing ACP v1 v2 behavior, claim, baseline, exclusions, and
+  `AllowUnverified` posture stay. HTTP MCP live honouring remains exact to
+  `1.18.18`; no newer point inherits it. No provider prompt, live session,
+  credential use, package installation, or artifact execution occurred.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,

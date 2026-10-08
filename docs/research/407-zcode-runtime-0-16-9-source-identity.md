@@ -3,7 +3,6 @@
 Status: promoted; identity discovery only, no qualification or claim change
 Owner: Swallowtail worker
 Date: 2026-10-08
-Task: swallowtail#138
 
 ## Question
 
@@ -29,10 +28,13 @@ axis.
 
 On 2026-10-08, read the official [install page](https://zcode.z.ai/en/docs/install)
 and [release notes](https://zcode.z.ai/en/changelog). Both identify `3.14.4`
-as current; the release notes date it to 2026-09-29. The install page linked
-the versioned CDN artifact recorded below. The GET returned HTTP 200 with
-`Last-Modified: 2026-09-29T03:53:32Z`, an OSS multipart ETag, and a CRC64 value.
-No vendor SHA-256 manifest was linked or found for this CDN object.
+as current; the release notes date it to 2026-09-29. The changelog's release
+metadata links the macOS arm64 installer and its version-scoped `latest.yml`
+manifest. The manifest GET returned HTTP 200. Its `files` entry for the DMG
+publishes a SHA-512 and size that match the downloaded artifact. The top-level
+`path` and `sha512` in that manifest refer to the ZIP entry, not the DMG. The
+manifest does not publish SHA-256. The DMG response also returned
+`Last-Modified: 2026-09-29T03:53:32Z`, a multipart OSS ETag, and CRC64.
 
 The official [ZCode GitHub repository](https://github.com/zai-org/ZCode)
 advertises the vendor site. Read-only GitHub API and tag queries found source
@@ -60,6 +62,8 @@ requests.
 | --- | --- |
 | Official current product release | ZCode `3.14.4`, released 2026-09-29; official install page labels it latest |
 | Official asset URL | <https://cdn-zcode.z.ai/zcode/electron/releases/3.14.4/macos-arm64/ZCode-3.14.4-mac-arm64.dmg> |
+| Vendor manifest | <https://cdn-zcode.z.ai/zcode/electron/releases/3.14.4/macos-arm64/latest.yml>; changelog metadata points to this manifest for `darwin-aarch64` |
+| Manifest DMG entry | `ZCode-3.14.4-mac-arm64.dmg`; SHA-512 (base64) `JPdNfNzhgvMFElXxzQNUjbYRISe7qVPeXoAFTc4EhOXonmxTpfjMuZD6QjFKu8AbJ6dF2lNWAvtYTdT9x/wl1g==`; size `255221085`; both match the downloaded DMG |
 | Asset identity | 255,221,085 bytes; SHA-256 `d7a5ade455a1eab3ead02d0a6f7005a107788a65113eda38ed61d96f5a8bdeb1`; HTTP ETag `53E4BB8827DB504DB4788CDF35A8EA11-25` is multipart, not SHA-256 |
 | Disk-image check | `hdiutil verify` reported a valid CRC32 checksum |
 | Signed app | Bundle `dev.zcode.app`, version `3.14.4`, build `3.14.4.7912`; `codesign --verify --strict --deep` passed and the bundle satisfied its designated requirement |
@@ -67,9 +71,10 @@ requests.
 | Selected runtime payload | `Contents/Resources/glm/zcode.cjs`; static version `0.16.9`; 14,820,968 bytes; SHA-256 `fad4c35c4c36ec210d8a06d3fa0e77de23c8545e2eb6ff90aea1eb38d1e6275f` |
 | Source version | Official `zcode-cli` source package `0.16.9` at tag `v3.14.3`, source commit `29628c9acdb81b703bbd4080c207a0e7ce5e276e` |
 
-The runtime payload is sealed by the signed app bundle. The exact downloaded
-DMG and extracted runtime hashes above identify the observed copy even though
-the CDN did not publish a SHA-256 manifest. The `3.14.4` runtime has
+The runtime payload is sealed by the signed app bundle. The version-scoped
+vendor manifest corroborates the exact downloaded DMG with SHA-512 and size;
+the recorded SHA-256 and extracted runtime hash identify the observed copy.
+The `3.14.4` runtime has
 version-level correlation to the official source package, but no
 `3.14.4` source tag or commit is available to claim source-commit parity.
 This observation covers macOS arm64 only; do not transfer these hashes to
@@ -103,5 +108,6 @@ was sent.
 - [Official `v3.14.3` `zcode-cli` package manifest](https://github.com/zai-org/ZCode/blob/v3.14.3/apps/zcode-cli/package.json)
 - [Official `v3.14.3` CLI build version injection](https://github.com/zai-org/ZCode/blob/v3.14.3/apps/zcode-cli/packages/cli/scripts/build.mjs)
 - [ZCode CDN artifact](https://cdn-zcode.z.ai/zcode/electron/releases/3.14.4/macos-arm64/ZCode-3.14.4-mac-arm64.dmg)
+- [ZCode macOS arm64 `3.14.4` update manifest](https://cdn-zcode.z.ai/zcode/electron/releases/3.14.4/macos-arm64/latest.yml)
 - [Research 369 currentness checkpoint](./369-all-route-version-currentness-checkpoint.md)
 - [Research 126 original ZCode app-server qualification](./126-zcode-app-server-route-qualification.md)

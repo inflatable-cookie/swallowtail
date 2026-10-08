@@ -27,6 +27,7 @@ swallowtail-runtime.workspace = true
 futures-executor = "0.3"
 futures-util = "0.3"
 swallowtail-testkit.workspace = true
+sha2 = "0.10"
 
 [lints]
 workspace = true
@@ -54,3 +55,7 @@ path = "tests/consumer_route_projection.rs"
 [[test]]
 name = "goose_1_50_0_delta_ledger"
 path = "tests/goose_1_50_0_delta_ledger.rs"
+
+[[test]]
+name = "goose_acp_currentness_1_53_0"
+path = "tests/goose_acp_currentness_1_53_0.rs"

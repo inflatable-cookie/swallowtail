@@ -1,13 +1,15 @@
 //! Historical identity and currentness evidence for the Goose ACP route.
 //!
 //! The historical corpus records the original `1.46.0` stop. Currentness
-//! extends it through official `1.50.1`; at the hop `1.46.0..1.47.0`
+//! prior currentness extended it through official `1.50.1`; at the hop
+//! `1.46.0..1.47.0`
 //! provider-authentication failure stops being generic text plus `end_turn`
 //! and becomes a typed JSON-RPC `auth_required` error on the selected
 //! `session/new` and `session/prompt` paths. The assertions here are
 //! mutation-sensitive: they fail if the tagged source trees, the per-hop
-//! module ledger, the selected-surface classification, or the unchanged
-//! production claim drifts.
+//! module ledger, the selected-surface classification, or the preserved
+//! historical currentness finding drifts. The current production claim is
+//! checked by the 1.53.0 qualification test.
 
 use serde_json::Value;
 use swallowtail_adapter_goose::{GOOSE_RELEASE_VERSION, goose_acp_claim, goose_release_binding};
@@ -21,6 +23,7 @@ const CURRENTNESS: &str = include_str!("fixtures/goose-acp-1.50.1/currentness.js
 const BASELINE: &str = "1.46.0";
 const HISTORICAL_OFFICIAL: &str = "1.50.0";
 const OFFICIAL: &str = "1.50.1";
+const CURRENT: &str = "1.53.0";
 
 fn fixture(body: &str, name: &str) -> Value {
     serde_json::from_str(body).unwrap_or_else(|error| panic!("{name}: {error}"))
@@ -248,16 +251,22 @@ fn protocol_freezes_the_stop_boundary_and_the_stable_surface() {
 }
 
 #[test]
-fn production_claim_reopens_at_exact_1_50_1_with_typed_auth_revision() {
-    assert_eq!(GOOSE_RELEASE_VERSION, OFFICIAL);
+fn production_claim_preserves_1_50_1_and_qualifies_current_1_53_0() {
+    assert_eq!(GOOSE_RELEASE_VERSION, CURRENT);
     let claim = goose_acp_claim();
     let baseline = InterfaceVersion::new(BASELINE).expect("baseline");
     let official = InterfaceVersion::new(OFFICIAL).expect("official");
     assert!(!claim.assess(&baseline).is_permitted());
-    let assessment = claim.assess(&official);
-    assert!(assessment.is_permitted());
+    let retained = claim.assess(&official);
+    assert!(retained.is_permitted());
     assert_eq!(
-        assessment.behavior_revision().expect("behavior").as_str(),
+        retained.behavior_revision().expect("behavior").as_str(),
+        "goose.acp.stdio-v2.auth-required"
+    );
+    let current = claim.assess(&InterfaceVersion::new(CURRENT).expect("current"));
+    assert!(current.is_permitted());
+    assert_eq!(
+        current.behavior_revision().expect("behavior").as_str(),
         "goose.acp.stdio-v2.auth-required"
     );
     assert!(goose_release_binding(OFFICIAL).is_some());

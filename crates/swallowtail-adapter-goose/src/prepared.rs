@@ -8,12 +8,14 @@ mod session;
 pub use session::{GoosePreparedSession, GooseSessionProfileInput};
 
 use crate::GooseAcpDriver;
+use crate::selection::GOOSE_ACP_BEHAVIOR;
 use std::collections::BTreeSet;
 use swallowtail_core::{
     AccessProfile, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism, DiscoveryOutcome,
     DiscoveryStatus, EntitlementMetering, ExecutionHostId, HarnessConfigurationPosture,
-    HostServiceKind, InstalledExecutableObservation, InstanceOwnership, InstancePolicyId,
-    InstanceRevision, InstanceTargetRef, ProtocolFacadeId, SupportAuthority,
+    HostServiceKind, InstalledExecutableCompatibility, InstalledExecutableObservation,
+    InstanceOwnership, InstancePolicyId, InstanceRevision, InstanceTargetRef, ProtocolFacadeId,
+    SupportAuthority,
 };
 use swallowtail_runtime::{
     Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef, HostServices,
@@ -234,12 +236,16 @@ fn promote(
         .ok_or_else(|| discovery_outcome_failure(&outcome))?;
     if observation.execution_host_id() != &input.execution_host_id
         || observation.version().axis() != input.target.version_axis()
-        || observation.version().version().as_str() != crate::GOOSE_RELEASE_VERSION
+        || !matches!(
+            observation.compatibility(),
+            InstalledExecutableCompatibility::Qualified(matched)
+                if matched.behavior_revision().as_str() == GOOSE_ACP_BEHAVIOR
+        )
     {
         return Err(failure(
             PreparationStage::CompatibilityClassification,
             "swallowtail.goose.acp.preparation.observation_mismatch",
-            "Goose discovery observation does not match the prepared host and release",
+            "Goose discovery observation does not match the prepared host or qualified ACP behavior",
         ));
     }
     let instance = configured_instance(&input, &observation)?;

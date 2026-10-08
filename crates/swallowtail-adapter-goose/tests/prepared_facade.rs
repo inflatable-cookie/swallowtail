@@ -140,6 +140,51 @@ fn prepared_session_names_goose_acp_and_release_then_drains_one_prompt() {
     assert_eq!(operation.releases(), 1);
 }
 
+#[test]
+fn preparation_admits_each_qualified_release_and_rejects_unverified_newer() {
+    for (host_name, version) in [
+        ("fixture.prepared.qualified.1_50_1", "1.50.1"),
+        ("fixture.prepared.qualified.1_51_0", "1.51.0"),
+        ("fixture.prepared.qualified.1_52_0", "1.52.0"),
+        ("fixture.prepared.qualified.1_53_0", "1.53.0"),
+    ] {
+        let host_id = ExecutionHostId::new(host_name).expect("host");
+        let discovery = DiscoveryHost::new(version);
+        let prepared = block_on(prepare_goose_acp(
+            preparation_input(host_id.clone()),
+            probe(),
+            discovery.services(host_id),
+        ))
+        .unwrap_or_else(|error| panic!("qualified {version} should prepare: {error:?}"));
+
+        assert_eq!(prepared.observation().version().version().as_str(), version);
+        match prepared.observation().compatibility() {
+            swallowtail_core::InstalledExecutableCompatibility::Qualified(matched) => assert_eq!(
+                matched.behavior_revision().as_str(),
+                "goose.acp.stdio-v2.auth-required"
+            ),
+            _ => panic!("{version} must be qualified"),
+        }
+    }
+
+    let host_id = ExecutionHostId::new("fixture.prepared.unverified-newer").expect("host");
+    let discovery = DiscoveryHost::new("1.53.1");
+    let error = block_on(prepare_goose_acp(
+        preparation_input(host_id.clone()),
+        probe(),
+        discovery.services(host_id),
+    ))
+    .expect_err("UnverifiedNewer must not prepare");
+    assert_eq!(
+        error.stage(),
+        swallowtail_runtime::PreparationStage::CompatibilityClassification
+    );
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.goose.acp.preparation.observation_mismatch"
+    );
+}
+
 const HTTP_CANARY_URL: &str = "http://127.0.0.1:9/mcp/g06-036-redaction-canary";
 const HTTP_CANARY_HEADER: &str = "Bearer g06-036-redaction-canary";
 

@@ -71,7 +71,7 @@ annotated Git tags from the canonical repository.
   provider prompt, model download, or host mutation occurred.
 - qualify `grok-build.acp` through current official npm `@xai-official/grok`
   `1.0.46`. Research 340 freezes published stable hops `1.0.31..=1.0.41`
-  after the exact `1.0.30` catalogue ceiling; Research 382 freezes hops
+  after the exact `1.0.30` catalogue ceiling; Research 384 freezes hops
   `1.0.42..=1.0.46`, their wrapper and platform package trees, runtime digests,
   and selected ACP surface inventories. Mapped wire and lifecycle evidence
   stays on `grok-build.acp-v1.cached-token-model-4-6-v3`.

@@ -56,3 +56,7 @@ path = "tests/qoder_1_1_52_delta_ledger.rs"
 [[test]]
 name = "qoder_1_1_54_reopen"
 path = "tests/qoder_1_1_54_reopen.rs"
+
+[[test]]
+name = "qoder_1_1_65_delta_ledger"
+path = "tests/qoder_1_1_65_delta_ledger.rs"

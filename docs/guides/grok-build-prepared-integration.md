@@ -93,6 +93,12 @@ claim `grok-build.catalogue.executable-1-0-30`
 closed before any process starts. Preparation also requires the same delegated
 subscription access readiness as the ACP operations.
 
+Research 405 freezes the current official `1.0.46` identity and records a new
+default-not-in-list header that this mapping rejects. The catalogue claim
+therefore remains exact `1.0.30`; no newer point is admitted until a
+same-contract mapping is proved or an operator rules on any required contract
+change.
+
 The catalogue is an authenticated, non-inference metadata operation under
 `HarnessConfigurationPosture::Ambient`: it binds the prepared ambient
 environment and may refresh authentication or bounded catalogue metadata, but
@@ -124,7 +130,9 @@ bullet grammar, and embedded default-model document identical at every
 published stable from the previous `1.0.25` point through `1.0.30`, and freezes
 the accepted live capsule; Research 306 keeps the corrected boundary and the
 historical `1.0.25` capsule, and Research 305 keeps the static command/output
-evidence with a correction note.
+evidence with a correction note. Research 405 preserves the later static hop
+ledger and its `1.0.46` default-not-in-list stop; it includes no live catalogue
+observation.
 
 ## Structured Run
 

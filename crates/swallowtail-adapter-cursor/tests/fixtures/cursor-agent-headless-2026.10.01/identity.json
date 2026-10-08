@@ -1,0 +1,583 @@
+{
+  "schema": "swallowtail.cursor-agent.headless-currentness.v1",
+  "observed_at": "2026-10-08",
+  "axis": "cursor-agent.release-date",
+  "qualified_route": "cursor-agent.headless",
+  "selected_channel": "official ACP registry Cursor entry and the archive URLs it publishes",
+  "registry": {
+    "id": "cursor",
+    "latest_stable": "2026.10.01-14929f9",
+    "observed_repository_main": "a1c535174151467335d39083cc2167b210b7e3c1",
+    "published_hops_after_ceiling": [
+      {
+        "date": "2026-09-28",
+        "message": "cursor: 2026.09.18 -> 2026.09.26 (#631)",
+        "sha": "b62398f8201ca95926c16c93d0aaf7d7e8cf9d94",
+        "version": "2026.09.26-dd393fe"
+      },
+      {
+        "date": "2026-09-30",
+        "message": "cursor: 2026.09.26 -> 2026.09.28 (#640)",
+        "sha": "3a6bcd28d931a154338602f966418d00f8c71229",
+        "version": "2026.09.28-64d2043"
+      },
+      {
+        "date": "2026-10-02",
+        "message": "cursor: 2026.09.28 -> 2026.10.01 (#646)",
+        "sha": "310074e4c18c5ff39ec178e84d0f461f8ff73fe0",
+        "version": "2026.10.01-14929f9"
+      }
+    ],
+    "repository": "https://github.com/agentclientprotocol/registry",
+    "selected_channel": "official ACP registry Cursor entry and the archive URLs it publishes",
+    "source": "https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json",
+    "version": "2026.10.01"
+  },
+  "host_observation": {
+    "artifact_kind": "path-version-observation",
+    "note": "Observed installed ceiling matches the previously qualified archive. No installation or update was requested or performed.",
+    "present": true,
+    "runtime_index_sha256": "19af19274b07dcb8ad9bd86915320b7b49a62de763af10c6857ab45257c8a14b",
+    "source": "isolated cursor-agent --version probe",
+    "version": "2026.09.18-9a7762b"
+  },
+  "previous_ceiling": {
+    "build_revision": "9a7762b",
+    "darwin_arm64_archive_sha256": "4e67b9ac80cc4a56e0a91b3b437894e0ba489ef7ec37f120d8084d2bfd02095d",
+    "darwin_arm64_archive_url": "https://downloads.cursor.com/lab/2026.09.18-9a7762b/darwin/arm64/agent-cli-package.tar.gz",
+    "darwin_arm64_runtime_index_sha256": "19af19274b07dcb8ad9bd86915320b7b49a62de763af10c6857ab45257c8a14b",
+    "launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+    "linux_x64_archive_sha256": "b1308f5a2fc05458b9d8966752986bb23a971bbcc67c842c1df94c4b8132bad9",
+    "linux_x64_archive_url": "https://downloads.cursor.com/lab/2026.09.18-9a7762b/linux/x64/agent-cli-package.tar.gz",
+    "release_date": "2026-09-18",
+    "source": "official-acp-registry-artifact",
+    "version": "2026.09.18-9a7762b"
+  },
+  "current_official_stable": "2026.10.01-14929f9",
+  "published_stables_after_ceiling": [
+    "2026.09.26-dd393fe",
+    "2026.09.28-64d2043",
+    "2026.10.01-14929f9"
+  ],
+  "independently_unqualified_older_published": [
+    "2026.08.25-3e8eec8",
+    "2026.09.08-6caf4ff"
+  ],
+  "complete_artifact_evidence": {
+    "artifact_identity_fixture": "crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-2026.10.01/identity.json",
+    "artifact_identity_sha256": "55a51a3d3192285fe07ff115150a2008aba94f66fe2f705e398b353a902af231",
+    "complete_tree_inventory_fixture": "crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-2026.10.01/dist-inventory.json",
+    "complete_tree_inventory_sha256": "84473ea98c85ed1474b9d9ea14921030a48821ac9ae99d8343d6dd259994d4fc",
+    "versions": [
+      "2026.09.18-9a7762b",
+      "2026.09.26-dd393fe",
+      "2026.09.28-64d2043",
+      "2026.10.01-14929f9"
+    ],
+    "platforms": [
+      "darwin-arm64",
+      "linux-x64"
+    ],
+    "note": "These fixtures provide exact package identity and complete tree evidence. Headless route behavior was re-inspected independently; Research 393 catalogue behavior was not transferred."
+  },
+  "artifacts": [
+    {
+      "version": "2026.09.18-9a7762b",
+      "platform": "darwin-arm64",
+      "archive_url": "https://downloads.cursor.com/lab/2026.09.18-9a7762b/darwin/arm64/agent-cli-package.tar.gz",
+      "archive_sha256": "4e67b9ac80cc4a56e0a91b3b437894e0ba489ef7ec37f120d8084d2bfd02095d",
+      "package_file_count": 445,
+      "complete_tree_manifest_sha256": "ee5d619e7026b0b36b199a2fa242fe5ff3edf4369a8b330df6892f49ce390a5c",
+      "runtime_index": {
+        "path": "dist-package/index.js",
+        "sha256": "19af19274b07dcb8ad9bd86915320b7b49a62de763af10c6857ab45257c8a14b",
+        "size": 8611206
+      },
+      "headless_writer_chunk": {
+        "path": "dist-package/1218.index.js",
+        "sha256": "585414d66d3759f374326ea903a3e117f09e0c4a6d9f55d2d407e3882d2a94e6",
+        "size": 1106311
+      }
+    },
+    {
+      "version": "2026.09.18-9a7762b",
+      "platform": "linux-x64",
+      "archive_url": "https://downloads.cursor.com/lab/2026.09.18-9a7762b/linux/x64/agent-cli-package.tar.gz",
+      "archive_sha256": "b1308f5a2fc05458b9d8966752986bb23a971bbcc67c842c1df94c4b8132bad9",
+      "package_file_count": 453,
+      "complete_tree_manifest_sha256": "a645783d7179ee0943f1523378603789e914bae0eb857dec19a172dceea1dcf1",
+      "runtime_index": {
+        "path": "dist-package/index.js",
+        "sha256": "c4f1fb0ebae82b89261f6beffb9167ce03df95c7b114c2c0ce066f0271529c03",
+        "size": 7927473
+      },
+      "headless_writer_chunk": {
+        "path": "dist-package/7021.index.js",
+        "sha256": "e92538763e1bde7afff7be24eb504a51d2ff0afbcc6ad3c94d32b1f0ad4feb18",
+        "size": 1064314
+      }
+    },
+    {
+      "version": "2026.09.26-dd393fe",
+      "platform": "darwin-arm64",
+      "archive_url": "https://downloads.cursor.com/lab/2026.09.26-dd393fe/darwin/arm64/agent-cli-package.tar.gz",
+      "archive_sha256": "538827d96a779bab854a865c8e42859e8e87db34b5f69770261b90fc8cfff191",
+      "package_file_count": 446,
+      "complete_tree_manifest_sha256": "1cc6d2ae66858469d31c4ef76247ab511dc6d01723365cb76f174df0c2d81e5e",
+      "runtime_index": {
+        "path": "dist-package/index.js",
+        "sha256": "f8bd1c549f844859f8aeb9f06c01420f299bee22fe136695fe891eaf18674b12",
+        "size": 8887649
+      },
+      "headless_writer_chunk": {
+        "path": "dist-package/9352.index.js",
+        "sha256": "188134bf2f3a4f17e47dc20ad0f295b77a59b8c825d16594b45b5744fd3cebb9",
+        "size": 1116999
+      }
+    },
+    {
+      "version": "2026.09.26-dd393fe",
+      "platform": "linux-x64",
+      "archive_url": "https://downloads.cursor.com/lab/2026.09.26-dd393fe/linux/x64/agent-cli-package.tar.gz",
+      "archive_sha256": "8085fd120f5c71f4eae7fea26a043718e5644e3071e4fab3220a0e58c51f9593",
+      "package_file_count": 454,
+      "complete_tree_manifest_sha256": "6e82b78b0924c63ce5c03a8c563fb826d76bba896d94a6ffd181017053cfac62",
+      "runtime_index": {
+        "path": "dist-package/index.js",
+        "sha256": "abc8b0878cc059942b6038cef0c631b755d7911dcb8eade3855166d6575cb4b7",
+        "size": 8152443
+      },
+      "headless_writer_chunk": {
+        "path": "dist-package/7021.index.js",
+        "sha256": "8372a83c3853a0ccbf1f1c02d34be64258fa75ae1d29d9fdccb293f773061c0f",
+        "size": 1074837
+      }
+    },
+    {
+      "version": "2026.09.28-64d2043",
+      "platform": "darwin-arm64",
+      "archive_url": "https://downloads.cursor.com/lab/2026.09.28-64d2043/darwin/arm64/agent-cli-package.tar.gz",
+      "archive_sha256": "c0d7e9cd2e62438610b886d3439907dc1f98c2923b07b3a41416cc919aaf53c7",
+      "package_file_count": 447,
+      "complete_tree_manifest_sha256": "848402ca013e37a33da602ca1902d7e0953e743a115a0e6ce6dbcad6360be778",
+      "runtime_index": {
+        "path": "dist-package/index.js",
+        "sha256": "0d0c83f5478c3dcd806cb9697123cee3f548005fbcd3acafe31f102d659f5a7b",
+        "size": 8200103
+      },
+      "headless_writer_chunk": {
+        "path": "dist-package/6949.index.js",
+        "sha256": "638d60026e23ff5993daa1fd911bdb807a0e5ea70037297909456cb5cfa7d4f5",
+        "size": 1023423
+      }
+    },
+    {
+      "version": "2026.09.28-64d2043",
+      "platform": "linux-x64",
+      "archive_url": "https://downloads.cursor.com/lab/2026.09.28-64d2043/linux/x64/agent-cli-package.tar.gz",
+      "archive_sha256": "6e4cd936a4866b8a77c50ff51a564460d715772fabc477a01aa0f0455d9559f0",
+      "package_file_count": 455,
+      "complete_tree_manifest_sha256": "f71e8f6dc552b10d034d55810a6f2b1bf43c8164b35b1e0e0966e38585692116",
+      "runtime_index": {
+        "path": "dist-package/index.js",
+        "sha256": "45d9b1df85d0165cb2e690f96fa5fbe4b59e8a71ddd22176a301ba7e5b18a0b9",
+        "size": 7549229
+      },
+      "headless_writer_chunk": {
+        "path": "dist-package/7000.index.js",
+        "sha256": "749a10b62a2094860d219683b5c5bb36e12c1fb036fcd31e08789f0085b2f5bd",
+        "size": 981259
+      }
+    },
+    {
+      "version": "2026.10.01-14929f9",
+      "platform": "darwin-arm64",
+      "archive_url": "https://downloads.cursor.com/lab/2026.10.01-14929f9/darwin/arm64/agent-cli-package.tar.gz",
+      "archive_sha256": "778d04e542adc5c8b6760fda3ebe0757f903b1764f2792c232ef9a35e6e2151b",
+      "package_file_count": 447,
+      "complete_tree_manifest_sha256": "c21440a7188f442e6e3c98207937b8f916aa68eafdc9e56870411c7c2ba5f5e6",
+      "runtime_index": {
+        "path": "dist-package/index.js",
+        "sha256": "ad1d9d915946a57ff1bf0d8364a82b91870035a09f19c502ffac9bb5b95edc5d",
+        "size": 8200099
+      },
+      "headless_writer_chunk": {
+        "path": "dist-package/1962.index.js",
+        "sha256": "ecc9ccc254e97606503b982e724dd7948fa2e94ee055bb1c4b1111bd73c3d2a5",
+        "size": 1023424
+      }
+    },
+    {
+      "version": "2026.10.01-14929f9",
+      "platform": "linux-x64",
+      "archive_url": "https://downloads.cursor.com/lab/2026.10.01-14929f9/linux/x64/agent-cli-package.tar.gz",
+      "archive_sha256": "ba9a855f8f813c91b9f2707127572d2dc9ae5a62818e1c36719625d0fb8bd452",
+      "package_file_count": 455,
+      "complete_tree_manifest_sha256": "908061cf1d0d0e2d18714dfe115c1321696adf9a12bd2fdc3513ad7690852a34",
+      "runtime_index": {
+        "path": "dist-package/index.js",
+        "sha256": "7e14af745050e80afc473c8b8fa2b7bba64197ca96f0181b4b5c2d359193bee1",
+        "size": 7549254
+      },
+      "headless_writer_chunk": {
+        "path": "dist-package/7000.index.js",
+        "sha256": "e25d67ad6b2c9a78e4480098b5e161cf5c51f8b4b23e24aee132fdd180b6b3a1",
+        "size": 981259
+      }
+    }
+  ],
+  "selected_file_hop_classification": [
+    {
+      "platform": "darwin-arm64",
+      "from": "2026.09.18-9a7762b",
+      "to": "2026.09.26-dd393fe",
+      "runtime_index": {
+        "category": "changed",
+        "from": {
+          "path": "dist-package/index.js",
+          "sha256": "19af19274b07dcb8ad9bd86915320b7b49a62de763af10c6857ab45257c8a14b",
+          "size": 8611206
+        },
+        "to": {
+          "path": "dist-package/index.js",
+          "sha256": "f8bd1c549f844859f8aeb9f06c01420f299bee22fe136695fe891eaf18674b12",
+          "size": 8887649
+        }
+      },
+      "headless_writer_chunk": {
+        "category": "removed-and-added",
+        "removed_path": "dist-package/1218.index.js",
+        "added_path": "dist-package/9352.index.js",
+        "from": {
+          "path": "dist-package/1218.index.js",
+          "sha256": "585414d66d3759f374326ea903a3e117f09e0c4a6d9f55d2d407e3882d2a94e6",
+          "size": 1106311
+        },
+        "to": {
+          "path": "dist-package/9352.index.js",
+          "sha256": "188134bf2f3a4f17e47dc20ad0f295b77a59b8c825d16594b45b5744fd3cebb9",
+          "size": 1116999
+        }
+      },
+      "complete_package_delta_reference": {
+        "fixture": "crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-2026.10.01/dist-inventory.json",
+        "sha256": "84473ea98c85ed1474b9d9ea14921030a48821ac9ae99d8343d6dd259994d4fc",
+        "transition_key": "2026.09.18-9a7762b_to_2026.09.26-dd393fe",
+        "counts": {
+          "added": 63,
+          "removed": 62,
+          "changed": 54,
+          "identical": 329
+        },
+        "path_set_sha256": {
+          "added": "cf4912eb630ba4917af5be0608e8cb373caaaa93e8f7456530850129e474684b",
+          "removed": "efde8cbf99a7a5a20b1a779206cef0f9d3672b6ff8e3fca925bd2703434fd831",
+          "changed": "497bc108b60d65741f39aeb9021f7e21fcdad60b44421ce3d0aa0fa1573d6bc5",
+          "identical": "64a4378f8e7534c1294fb3fbfdedce2491f44755cc6da0145403104ff351747e"
+        }
+      },
+      "selected_behavior_classification": {
+        "runtime_index": "Changed file. The selected --print, --output-format stream-json, --model, --trust, and --mode option registration remains present with unchanged selected dispatch; remaining CLI/provider internals are not mapped.",
+        "headless_writer_chunk": "Changed file. Newline-delimited JSON writer and selected event fields remain compatible with the existing decoder and driver; other payload fields remain private or ignored.",
+        "remaining_changed_files": "All remaining added, removed, or changed package files are covered by the exact full delta above and were classified outside the selected headless wire, lifecycle, failure, permission, usage, configuration, and tool mapping. Native/SEA worker and provider-internal changes remain unmapped."
+      }
+    },
+    {
+      "platform": "linux-x64",
+      "from": "2026.09.18-9a7762b",
+      "to": "2026.09.26-dd393fe",
+      "runtime_index": {
+        "category": "changed",
+        "from": {
+          "path": "dist-package/index.js",
+          "sha256": "c4f1fb0ebae82b89261f6beffb9167ce03df95c7b114c2c0ce066f0271529c03",
+          "size": 7927473
+        },
+        "to": {
+          "path": "dist-package/index.js",
+          "sha256": "abc8b0878cc059942b6038cef0c631b755d7911dcb8eade3855166d6575cb4b7",
+          "size": 8152443
+        }
+      },
+      "headless_writer_chunk": {
+        "category": "changed",
+        "from": {
+          "path": "dist-package/7021.index.js",
+          "sha256": "e92538763e1bde7afff7be24eb504a51d2ff0afbcc6ad3c94d32b1f0ad4feb18",
+          "size": 1064314
+        },
+        "to": {
+          "path": "dist-package/7021.index.js",
+          "sha256": "8372a83c3853a0ccbf1f1c02d34be64258fa75ae1d29d9fdccb293f773061c0f",
+          "size": 1074837
+        }
+      },
+      "complete_package_delta_reference": {
+        "fixture": "crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-2026.10.01/dist-inventory.json",
+        "sha256": "84473ea98c85ed1474b9d9ea14921030a48821ac9ae99d8343d6dd259994d4fc",
+        "transition_key": "2026.09.18-9a7762b_to_2026.09.26-dd393fe",
+        "counts": {
+          "added": 5,
+          "removed": 4,
+          "changed": 44,
+          "identical": 405
+        },
+        "path_set_sha256": {
+          "added": "7bd3e285f7e324c5598d851a9d304c93e004ad351728360db9d71beec3cd09fd",
+          "removed": "eef487bd41016e836bc12e72f3ac39a83007f91d51953e360490941baa389148",
+          "changed": "dcf1b7bb68461ddae44590d447258f98290da66dabfa5fb63475bb2f54577d5e",
+          "identical": "7adcf2a05b330a7828a602934209f6bdd2c6e7668e14df8e6a183979af62d370"
+        }
+      },
+      "selected_behavior_classification": {
+        "runtime_index": "Changed file. The selected --print, --output-format stream-json, --model, --trust, and --mode option registration remains present with unchanged selected dispatch; remaining CLI/provider internals are not mapped.",
+        "headless_writer_chunk": "Changed file. Newline-delimited JSON writer and selected event fields remain compatible with the existing decoder and driver; other payload fields remain private or ignored.",
+        "remaining_changed_files": "All remaining added, removed, or changed package files are covered by the exact full delta above and were classified outside the selected headless wire, lifecycle, failure, permission, usage, configuration, and tool mapping. Native/SEA worker and provider-internal changes remain unmapped."
+      }
+    },
+    {
+      "platform": "darwin-arm64",
+      "from": "2026.09.26-dd393fe",
+      "to": "2026.09.28-64d2043",
+      "runtime_index": {
+        "category": "changed",
+        "from": {
+          "path": "dist-package/index.js",
+          "sha256": "f8bd1c549f844859f8aeb9f06c01420f299bee22fe136695fe891eaf18674b12",
+          "size": 8887649
+        },
+        "to": {
+          "path": "dist-package/index.js",
+          "sha256": "0d0c83f5478c3dcd806cb9697123cee3f548005fbcd3acafe31f102d659f5a7b",
+          "size": 8200103
+        }
+      },
+      "headless_writer_chunk": {
+        "category": "removed-and-added",
+        "removed_path": "dist-package/9352.index.js",
+        "added_path": "dist-package/6949.index.js",
+        "from": {
+          "path": "dist-package/9352.index.js",
+          "sha256": "188134bf2f3a4f17e47dc20ad0f295b77a59b8c825d16594b45b5744fd3cebb9",
+          "size": 1116999
+        },
+        "to": {
+          "path": "dist-package/6949.index.js",
+          "sha256": "638d60026e23ff5993daa1fd911bdb807a0e5ea70037297909456cb5cfa7d4f5",
+          "size": 1023423
+        }
+      },
+      "complete_package_delta_reference": {
+        "fixture": "crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-2026.10.01/dist-inventory.json",
+        "sha256": "84473ea98c85ed1474b9d9ea14921030a48821ac9ae99d8343d6dd259994d4fc",
+        "transition_key": "2026.09.26-dd393fe_to_2026.09.28-64d2043",
+        "counts": {
+          "added": 65,
+          "removed": 64,
+          "changed": 82,
+          "identical": 300
+        },
+        "path_set_sha256": {
+          "added": "5909211d64f527a70d68d3b91c5b9b487a256fae954677e28ce7150cf6d6e996",
+          "removed": "488267fe77d35de2a57beecc0b6ff9fe1956591f7a4b142ead36ff85e882894f",
+          "changed": "4bbccdd226d3965e81e815e0d9f2ad6b6be8e294918d8d1786cb4c7d14d8b2d2",
+          "identical": "afef5fd6e5a6452b2bec63fa3bf5439300f73a12266b6eadbb1919ef9ad58e9f"
+        }
+      },
+      "selected_behavior_classification": {
+        "runtime_index": "Changed file. The selected --print, --output-format stream-json, --model, --trust, and --mode option registration remains present with unchanged selected dispatch; remaining CLI/provider internals are not mapped.",
+        "headless_writer_chunk": "Changed file. Newline-delimited JSON writer and selected event fields remain compatible with the existing decoder and driver; other payload fields remain private or ignored.",
+        "remaining_changed_files": "All remaining added, removed, or changed package files are covered by the exact full delta above and were classified outside the selected headless wire, lifecycle, failure, permission, usage, configuration, and tool mapping. Native/SEA worker and provider-internal changes remain unmapped."
+      }
+    },
+    {
+      "platform": "linux-x64",
+      "from": "2026.09.26-dd393fe",
+      "to": "2026.09.28-64d2043",
+      "runtime_index": {
+        "category": "changed",
+        "from": {
+          "path": "dist-package/index.js",
+          "sha256": "abc8b0878cc059942b6038cef0c631b755d7911dcb8eade3855166d6575cb4b7",
+          "size": 8152443
+        },
+        "to": {
+          "path": "dist-package/index.js",
+          "sha256": "45d9b1df85d0165cb2e690f96fa5fbe4b59e8a71ddd22176a301ba7e5b18a0b9",
+          "size": 7549229
+        }
+      },
+      "headless_writer_chunk": {
+        "category": "removed-and-added",
+        "removed_path": "dist-package/7021.index.js",
+        "added_path": "dist-package/7000.index.js",
+        "from": {
+          "path": "dist-package/7021.index.js",
+          "sha256": "8372a83c3853a0ccbf1f1c02d34be64258fa75ae1d29d9fdccb293f773061c0f",
+          "size": 1074837
+        },
+        "to": {
+          "path": "dist-package/7000.index.js",
+          "sha256": "749a10b62a2094860d219683b5c5bb36e12c1fb036fcd31e08789f0085b2f5bd",
+          "size": 981259
+        }
+      },
+      "complete_package_delta_reference": {
+        "fixture": "crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-2026.10.01/dist-inventory.json",
+        "sha256": "84473ea98c85ed1474b9d9ea14921030a48821ac9ae99d8343d6dd259994d4fc",
+        "transition_key": "2026.09.26-dd393fe_to_2026.09.28-64d2043",
+        "counts": {
+          "added": 64,
+          "removed": 63,
+          "changed": 23,
+          "identical": 368
+        },
+        "path_set_sha256": {
+          "added": "33c959de64bf4eec5c8d8a2b3d5c3b1c38e098858617b758e0c7c9227abfa059",
+          "removed": "39ba20fedd231c06d72cec377d59a382a0da0c88b0430a28fd6523ec00e8f34b",
+          "changed": "23fc9553e3713312aa69cbd1bca16b299ce308ae57ad41cbd883df1867b0e425",
+          "identical": "39e121d02502f2b12f9ec500584e843301025f5a5bd08f964c2d6d7707cb4c10"
+        }
+      },
+      "selected_behavior_classification": {
+        "runtime_index": "Changed file. The selected --print, --output-format stream-json, --model, --trust, and --mode option registration remains present with unchanged selected dispatch; remaining CLI/provider internals are not mapped.",
+        "headless_writer_chunk": "Changed file. Newline-delimited JSON writer and selected event fields remain compatible with the existing decoder and driver; other payload fields remain private or ignored.",
+        "remaining_changed_files": "All remaining added, removed, or changed package files are covered by the exact full delta above and were classified outside the selected headless wire, lifecycle, failure, permission, usage, configuration, and tool mapping. Native/SEA worker and provider-internal changes remain unmapped."
+      }
+    },
+    {
+      "platform": "darwin-arm64",
+      "from": "2026.09.28-64d2043",
+      "to": "2026.10.01-14929f9",
+      "runtime_index": {
+        "category": "changed",
+        "from": {
+          "path": "dist-package/index.js",
+          "sha256": "0d0c83f5478c3dcd806cb9697123cee3f548005fbcd3acafe31f102d659f5a7b",
+          "size": 8200103
+        },
+        "to": {
+          "path": "dist-package/index.js",
+          "sha256": "ad1d9d915946a57ff1bf0d8364a82b91870035a09f19c502ffac9bb5b95edc5d",
+          "size": 8200099
+        }
+      },
+      "headless_writer_chunk": {
+        "category": "removed-and-added",
+        "removed_path": "dist-package/6949.index.js",
+        "added_path": "dist-package/1962.index.js",
+        "from": {
+          "path": "dist-package/6949.index.js",
+          "sha256": "638d60026e23ff5993daa1fd911bdb807a0e5ea70037297909456cb5cfa7d4f5",
+          "size": 1023423
+        },
+        "to": {
+          "path": "dist-package/1962.index.js",
+          "sha256": "ecc9ccc254e97606503b982e724dd7948fa2e94ee055bb1c4b1111bd73c3d2a5",
+          "size": 1023424
+        }
+      },
+      "complete_package_delta_reference": {
+        "fixture": "crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-2026.10.01/dist-inventory.json",
+        "sha256": "84473ea98c85ed1474b9d9ea14921030a48821ac9ae99d8343d6dd259994d4fc",
+        "transition_key": "2026.09.28-64d2043_to_2026.10.01-14929f9",
+        "counts": {
+          "added": 60,
+          "removed": 60,
+          "changed": 80,
+          "identical": 307
+        },
+        "path_set_sha256": {
+          "added": "8c0479d4fec9d03199d930475bd8ce91b8c7797474802cc71ba8f323ffb98dba",
+          "removed": "6a4767e5d58b234ce4bf6a29538c502dad8ec7db0dbb24b3108fe52e1e623c27",
+          "changed": "0d913299f3c5f6a7b0d79d2445db76c6d9eb1aaaf68ff3bdf17b3834ac842477",
+          "identical": "d00beef57f88cb7b835c7d34654aabe4193580e4111519c8cff3f52e012eff39"
+        }
+      },
+      "selected_behavior_classification": {
+        "runtime_index": "Changed file. The selected --print, --output-format stream-json, --model, --trust, and --mode option registration remains present with unchanged selected dispatch; remaining CLI/provider internals are not mapped.",
+        "headless_writer_chunk": "Changed file. Newline-delimited JSON writer and selected event fields remain compatible with the existing decoder and driver; other payload fields remain private or ignored.",
+        "remaining_changed_files": "All remaining added, removed, or changed package files are covered by the exact full delta above and were classified outside the selected headless wire, lifecycle, failure, permission, usage, configuration, and tool mapping. Native/SEA worker and provider-internal changes remain unmapped."
+      }
+    },
+    {
+      "platform": "linux-x64",
+      "from": "2026.09.28-64d2043",
+      "to": "2026.10.01-14929f9",
+      "runtime_index": {
+        "category": "changed",
+        "from": {
+          "path": "dist-package/index.js",
+          "sha256": "45d9b1df85d0165cb2e690f96fa5fbe4b59e8a71ddd22176a301ba7e5b18a0b9",
+          "size": 7549229
+        },
+        "to": {
+          "path": "dist-package/index.js",
+          "sha256": "7e14af745050e80afc473c8b8fa2b7bba64197ca96f0181b4b5c2d359193bee1",
+          "size": 7549254
+        }
+      },
+      "headless_writer_chunk": {
+        "category": "changed",
+        "from": {
+          "path": "dist-package/7000.index.js",
+          "sha256": "749a10b62a2094860d219683b5c5bb36e12c1fb036fcd31e08789f0085b2f5bd",
+          "size": 981259
+        },
+        "to": {
+          "path": "dist-package/7000.index.js",
+          "sha256": "e25d67ad6b2c9a78e4480098b5e161cf5c51f8b4b23e24aee132fdd180b6b3a1",
+          "size": 981259
+        }
+      },
+      "complete_package_delta_reference": {
+        "fixture": "crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-2026.10.01/dist-inventory.json",
+        "sha256": "84473ea98c85ed1474b9d9ea14921030a48821ac9ae99d8343d6dd259994d4fc",
+        "transition_key": "2026.09.28-64d2043_to_2026.10.01-14929f9",
+        "counts": {
+          "added": 0,
+          "removed": 0,
+          "changed": 20,
+          "identical": 435
+        },
+        "path_set_sha256": {
+          "added": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "removed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "changed": "49540b305a6e6fab198e916cbe43b8cbfc71f05296947a741f8bf4544da832b9",
+          "identical": "af5d54c5dd4f2fdf55b40d38089a6a14261fa40819fa393d46fcff84a026ecac"
+        }
+      },
+      "selected_behavior_classification": {
+        "runtime_index": "Changed file. The selected --print, --output-format stream-json, --model, --trust, and --mode option registration remains present with unchanged selected dispatch; remaining CLI/provider internals are not mapped.",
+        "headless_writer_chunk": "Changed file. Newline-delimited JSON writer and selected event fields remain compatible with the existing decoder and driver; other payload fields remain private or ignored.",
+        "remaining_changed_files": "All remaining added, removed, or changed package files are covered by the exact full delta above and were classified outside the selected headless wire, lifecycle, failure, permission, usage, configuration, and tool mapping. Native/SEA worker and provider-internal changes remain unmapped."
+      }
+    }
+  ],
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "route": "cursor-agent.headless",
+    "claim_id": "cursor-agent.headless.release-window-3",
+    "behavior_revision": "cursor-agent.stream-json.structured-v1",
+    "keep_baseline": "2026.07.01-41b2de7",
+    "preserve_previous_exact_points": true,
+    "add_exact_milestones": [
+      "2026.09.26-dd393fe",
+      "2026.09.28-64d2043",
+      "2026.10.01-14929f9"
+    ],
+    "raise_headless_ceiling_to": "2026.10.01-14929f9",
+    "keep_acp_ceiling": "2026.09.18-9a7762b",
+    "keep_catalogue_claim_unchanged": true,
+    "infer_calendar_gap": false,
+    "new_behavior_revision": false,
+    "new_public_operation": false,
+    "consumer_visible_narrowing": false,
+    "new_authority_or_security_behavior": false,
+    "host_install_or_update": false,
+    "artifact_execution": false,
+    "provider_prompt_sent": false,
+    "credentials_used": false,
+    "authenticated_catalogue_or_session_called": false
+  }
+}

@@ -1,0 +1,3560 @@
+{
+  "observed_at_utc": "2026-10-08T13:27:09Z",
+  "packages": [
+    {
+      "dist_tags_at_observation": {
+        "latest": "1.0.93",
+        "prerelease": "1.0.94-4"
+      },
+      "name": "@github/copilot",
+      "versions": [
+        {
+          "archive_bytes": 5450,
+          "archive_sha256": "799457937f8f87de6fdc95599380de5f5a0f761ab2fdfbba7f8d1c82d2988892",
+          "dist": {
+            "fileCount": 4,
+            "integrity": "sha512-6tf93ZF56KOiTTAjK/UhLZkl1W543IzaTQly288kockJZFswpRTnQEI00Yvacpb39DTvTYu3/ha9SeKpo/pgZQ==",
+            "shasum": "5f18fe4252bfe70ce86a4d186f6cadfdf920fae1",
+            "signatures": [
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEQCIHyAYrwyOeP4iiqhZ0kWCZXDUAb11nfFLOa7R2zqlW2GAiBcUq3KVj23kQXMLP4IIfGJzFwcc0l0HOLHvaDDmExmMQ=="
+              },
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEUCIF4beGNpLRdnwQZXlzB1FMDhgxdRFiNAaezAd97uJpecAiEApqo4CT4jX3mS0951jetxqlo1hYFDC7Hwqh6oL5bRCoQ="
+              }
+            ],
+            "tarball": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.80.tgz",
+            "unpackedSize": 12967
+          },
+          "files": [
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/LICENSE.md",
+              "sha256": "b9680937e10425bf19862908856c16ed274e6b81a1368bd62be7a757eab21628",
+              "size": 2955
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/README.md",
+              "sha256": "33657f2e7383f2167b47d5f8c549a6071905a5c93d5d67d17e5c5399f126f07b",
+              "size": 7740
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/npm-loader.js",
+              "sha256": "0ea824a86be5757533fdb092eff7050871bd7a711a46babde0ffe0e44ac5ad88",
+              "size": 1185
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/package.json",
+              "sha256": "ea1e51458998a9ee87379137fa7e10dc38467596a0d8792acdcf76eea8401c88",
+              "size": 1087
+            }
+          ],
+          "inventory_sha256": "ed5319d2137d30af224067bfadb163b9a2852de67201b767034c7989c2ccc42f",
+          "published_at": "2026-08-14T02:30:35.923Z",
+          "version": "1.0.80"
+        },
+        {
+          "archive_bytes": 5451,
+          "archive_sha256": "0b0205dbb634579e3edc876d2f6facc5fde67c041dedc4eb037ef6f531fda08d",
+          "dist": {
+            "fileCount": 4,
+            "integrity": "sha512-Yif+wnRY1rT6FMmxr+SMZCq60mBTTPvbAHGd42Jty9wf1ZmeTsJYAcaGDXC9oyNm3RYRc3wkL0MSscNiEZADAA==",
+            "shasum": "59288b7fd395299d80790cc0a674f3a2e0d51cc8",
+            "signatures": [
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEQCICDwQG2mROD9daw7tyqMc9Mzh+UaxMxYqi9YOgSzZAF/AiAfHKFNRRsYVvJ6wpzulN1M45UjlobujQDpOYSd9y7L1w=="
+              },
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEQCIANEIiKzl4ff0yCNucYiRF/88te/NgKCpClfkGM0SHBTAiB9R6N7Ah+WoVBiBSpjAY38IkzlE81AcLwF4EL5BbnJvg=="
+              }
+            ],
+            "tarball": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.81.tgz",
+            "unpackedSize": 12967
+          },
+          "files": [
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/LICENSE.md",
+              "sha256": "b9680937e10425bf19862908856c16ed274e6b81a1368bd62be7a757eab21628",
+              "size": 2955
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/README.md",
+              "sha256": "33657f2e7383f2167b47d5f8c549a6071905a5c93d5d67d17e5c5399f126f07b",
+              "size": 7740
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/npm-loader.js",
+              "sha256": "0ea824a86be5757533fdb092eff7050871bd7a711a46babde0ffe0e44ac5ad88",
+              "size": 1185
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/package.json",
+              "sha256": "7caa97a95b664fffb7027c2541ffbb8f245972ef6794e717a85b0be2db425d3f",
+              "size": 1087
+            }
+          ],
+          "inventory_sha256": "d4d5fbf7f15dd91a158a5f0ef97f6fdb4338434852ae521eb61cc245cbb3f755",
+          "published_at": "2026-08-27T17:10:54.643Z",
+          "version": "1.0.81"
+        },
+        {
+          "archive_bytes": 5454,
+          "archive_sha256": "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1",
+          "dist": {
+            "fileCount": 4,
+            "integrity": "sha512-rfkBL3hCIu73XNpOL9a0epZYmbCBtkoNzMVVjpZlGpLE2Aj7CeMCr0NweZKnHqL9VpMaoJyfWbSd1aI0I9Bt3w==",
+            "shasum": "dbf4ab103103983f3c0bd541c6aaf05dddfbb2a5",
+            "signatures": [
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEUCIDaqhy82XYDTInFC3chhOntLc44fgDyC72F2RhaprYdsAiEAwIAChgJjbKG5HGpajDr0fuzsMsBjk/db3v75K7Ezqmw="
+              },
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEYCIQDnX2NqvGNq3D8o+yghDdv1/yKVt0rDU55UK//UQIcMIwIhANqZ2lxUuKUzoa2u4P4r1Vg/cgUv3pAIfC8BFItMR6DY"
+              }
+            ],
+            "tarball": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.93.tgz",
+            "unpackedSize": 12971
+          },
+          "files": [
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/LICENSE.md",
+              "sha256": "b9680937e10425bf19862908856c16ed274e6b81a1368bd62be7a757eab21628",
+              "size": 2955
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/README.md",
+              "sha256": "33657f2e7383f2167b47d5f8c549a6071905a5c93d5d67d17e5c5399f126f07b",
+              "size": 7740
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/npm-loader.js",
+              "sha256": "0ea824a86be5757533fdb092eff7050871bd7a711a46babde0ffe0e44ac5ad88",
+              "size": 1185
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/package.json",
+              "sha256": "5f29c2061d18be20a8cb1677161359253a85bb49a7b4ea1e6c11db8ae1d9b64b",
+              "size": 1091
+            }
+          ],
+          "inventory_sha256": "5334a96e0e54b33578ede41a5f478654a4014bcfedf2bad54cb8988b97507b7e",
+          "published_at": "2026-10-07T14:09:49.114Z",
+          "version": "1.0.93"
+        }
+      ]
+    },
+    {
+      "dist_tags_at_observation": {
+        "canary": "1.0.84",
+        "latest": "1.0.93",
+        "prerelease": "1.0.94-4"
+      },
+      "name": "@github/copilot-darwin-arm64",
+      "versions": [
+        {
+          "archive_bytes": 164645416,
+          "archive_sha256": "98640ca0de6576807f369c533c839b5742b038f105a970bdd7cb0d7efc8a7a71",
+          "dist": {
+            "fileCount": 241,
+            "integrity": "sha512-fzn4PnSx3+O/a3ip72KVsjnzORsEygK+0i21bFAnFBYS+0Wi1Pk+o/CmNsJ7aRbf1enSJrcH8UDVkyc9pMGEBg==",
+            "shasum": "3bb3de320f1036b2d59abda8249d95546cacc262",
+            "signatures": [
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEQCIB43SiACvxG4MMsD9mITgPwTlUbGjBTcyduYp1JT0ReZAiAn/BHqCAuF4t1nec1B7FSSIqmoiVEmP7qtmn49hw244A=="
+              }
+            ],
+            "tarball": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.80.tgz",
+            "unpackedSize": 341538579
+          },
+          "files": [
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/LICENSE.md",
+              "sha256": "b9680937e10425bf19862908856c16ed274e6b81a1368bd62be7a757eab21628",
+              "size": 2955
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/README.md",
+              "sha256": "83fe30a999c46011043f9bfe0de1efccde6b25ee17bdf6f9b6c16ea22d582f4e",
+              "size": 353
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/app.js",
+              "sha256": "fa438a4959c3f8b44c123dd95cc0d8b0760faa055a458f81ddd0dcf8a2ae8f58",
+              "size": 9173451
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/assets/copilot.png",
+              "sha256": "601aea9338888b3e0065b6b6bcb5793bf1215f205b6e781a47b1893d96fd67d1",
+              "size": 51687
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/builtin-skills/customize-cloud-agent/SKILL.md",
+              "sha256": "6acee791cd48a31eb881431c0f1394d3c79d33d62f0d58b2d9b699e4a275ea93",
+              "size": 18679
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/builtin-skills/github-pr-media/SKILL.md",
+              "sha256": "eba36e66d053b3db19e8f51cfb7d28186ef2baf90159f51bf2333747b150070b",
+              "size": 4938
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/builtin/customize-cloud-agent/SKILL.md",
+              "sha256": "6acee791cd48a31eb881431c0f1394d3c79d33d62f0d58b2d9b699e4a275ea93",
+              "size": 18679
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/builtin/github-pr-media/SKILL.md",
+              "sha256": "eba36e66d053b3db19e8f51cfb7d28186ef2baf90159f51bf2333747b150070b",
+              "size": 4938
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/changelog.json",
+              "sha256": "79192e19dca082ad3d26937189f2779c4a2746be0f0786d7cf2967bdb5faa693",
+              "size": 916745
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/index.js",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "size": 0
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard-darwin-arm64/README.md",
+              "sha256": "b875c53d40b6297e97e77c73ec3a50f5748af5fccf16b0b36ef40c47bde54f8c",
+              "size": 108
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard-darwin-arm64/clipboard.darwin-arm64.node",
+              "sha256": "3e148cbd732cca5c9b2239e452882f717a8dd46dfb2c2bef677b5d9d4a358a5b",
+              "size": 1530064
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard-darwin-arm64/package.json",
+              "sha256": "69084b3e3403ab9725b526f4c2c1ca17f532e79e2bc154868324057d39129b91",
+              "size": 713
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/LICENSE",
+              "sha256": "02965ed67e29f871a53f7a7afa593a0ddc8020f86ccce0faaf1aa59215b5269e",
+              "size": 1071
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/README.md",
+              "sha256": "8fc27c2fc9946d167cf18d8ea57679ab95cc8827d8730709c3430ec02f411bb6",
+              "size": 12170
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/clipboard.darwin-arm64.node",
+              "sha256": "3e148cbd732cca5c9b2239e452882f717a8dd46dfb2c2bef677b5d9d4a358a5b",
+              "size": 1530064
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/clipboard.darwin-x64.node",
+              "sha256": "b441f0a1476d98d913dd409f4a666dc4fbfb43426f02de1b3ddde7281882dbb4",
+              "size": 1641112
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/clipboard.linux-arm64-gnu.node",
+              "sha256": "ff57b7f436b8c021d5cb381e33510bbb0de147a5bbbd7f323dbe33db5c13ee3b",
+              "size": 2033784
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/clipboard.linux-x64-gnu.node",
+              "sha256": "e423b7efa67728660a26530c566feade9df5f262a2326783f7e1e2809cbbe9d9",
+              "size": 2242912
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/clipboard.win32-arm64-msvc.node",
+              "sha256": "b583c6f4e18c1baec785a353882e56f914e235d2bca735afc0621382aea453fb",
+              "size": 1388032
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/clipboard.win32-x64-msvc.node",
+              "sha256": "d36b0433aec17094762fca631359ce5b69eac0f3458e1c57dd574fad0c564b41",
+              "size": 1680384
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/index.d.ts",
+              "sha256": "d51e120e1ebe3780c43893523d10f50675554fb622c92f583f93b2b788553a69",
+              "size": 6497
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/index.js",
+              "sha256": "4a198671d4288f3ea8f3cbf79303670c12d89736f2cbb7f60987c1e921b70fe8",
+              "size": 25604
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/clipboard/node_modules/@teddyzhu/clipboard/package.json",
+              "sha256": "8342efe11a207b1c717d5e2ed6fac8790ca33a57bfffff0f10f41ece3460f74d",
+              "size": 3042
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/copilot",
+              "sha256": "fe779da7dd2342c1d23f0744873fa27d0251eaaee4dc6637fa53093639c0f3c9",
+              "size": 160804656
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/canvas.d.ts",
+              "sha256": "2f5c82d47a8a1abd27466f9dc093106a59d83f685d4f6c29367e2ce25f44b700",
+              "size": 5858
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/client.d.ts",
+              "sha256": "558f5dbc9d4b9760999d72dac1bafc16eab19aa89a3bc616aff40449e92b7d52",
+              "size": 18179
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/copilotRequestHandler.d.ts",
+              "sha256": "730762ae75ad87be8cbef0080a2f5150919f0a9c53e52b6aaaa3f366f2c17d79",
+              "size": 3443
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/docs/agent-author.md",
+              "sha256": "be7d579f5c410b8270baf7a6d0db668e381320d25dc9c71d76fd9898c17f5ab5",
+              "size": 10373
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/docs/examples.md",
+              "sha256": "b98771693f8b4c730623f4b64607cdf513b9d18701fac663d5dc7dfc455e5d30",
+              "size": 21118
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/docs/extensions.md",
+              "sha256": "2e2bf62c25a87e0ddb9e7c17b7ae4c8c6650359105ff221f9a00288afa835b71",
+              "size": 3202
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/docs/factories.md",
+              "sha256": "2f9dbd7f234e06c5412bfb3dccb60890a347488c0f395f9a02aca1eda09c2f41",
+              "size": 16106
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/docs/factory-patterns.md",
+              "sha256": "e520a0758e592e4229bb1802b459c5db6a0f971dc132b4549a318239be6f6f96",
+              "size": 8050
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/extension.d.ts",
+              "sha256": "7daf84dbb5c87601b36702afe8bf487a651b1469c684f1d52d6ec25617952032",
+              "size": 1865
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/extension.js",
+              "sha256": "848af474839fa78930a81ca902d6ca8ca1707480921b74fce8008fa22787bbe4",
+              "size": 429692
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/factory.d.ts",
+              "sha256": "a374ead306ae51c28ca2d16e7d61cec363d93bd8691c44277092c450429714bf",
+              "size": 12647
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/ffiRuntimeHost.d.ts",
+              "sha256": "93ba596e62949821ec648ec9c8af45473c6682912ea60ff123d67d399d943367",
+              "size": 1809
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/generated/rpc.d.ts",
+              "sha256": "365b753fd7ccca0365c5f739958dcd58effed4b24d9c012779e33009b71f6e92",
+              "size": 692013
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/generated/session-events.d.ts",
+              "sha256": "727881c00bedf3e2fe388c77a5c43ba25486eddb5e4a8b72204730f2dcaf5cff",
+              "size": 290702
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/index.d.ts",
+              "sha256": "dae9d448c8a657515aae180906176c0a9978cfa9dce08b8f0b2f4dfc4ea3e7b7",
+              "size": 3926
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/index.js",
+              "sha256": "c5457b7460a3b3de517b24a5f7f745cdfa106d1234ea3b6819bb4274fe60c7a5",
+              "size": 434115
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/sdkProtocolVersion.d.ts",
+              "sha256": "344a1c9669d1617346e2bb71d24081797b69b6cfd37c17b04b2aebf8e7a87260",
+              "size": 300
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/session.d.ts",
+              "sha256": "a9e51264abcfad003a7a270d7304ed3ba6bac78537fc020bc040c1f5fa23bf85",
+              "size": 12469
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/sessionFsProvider.d.ts",
+              "sha256": "6aa732885a832f7117a5d85853eb05b26052bc446a278c17b9463b7bdb06094d",
+              "size": 5545
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/telemetry.d.ts",
+              "sha256": "0721ce90ecd3a15eeb86d7787ca62236b1b545b0e93139ed5ef4419b16544722",
+              "size": 528
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/toolSet.d.ts",
+              "sha256": "41e53ae25809c90fd1a78f493cb912c6a9194c6e0a02e3e32545971c41a1cb56",
+              "size": 2725
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/types.d.ts",
+              "sha256": "9233c40bf06500bd13cba1e3ea9469e4cdb2d7eb03f46aa47291369f28c0f4d3",
+              "size": 102343
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/code-review.agent.yaml",
+              "sha256": "3789b9c2b44266adc1e9faf9dcaf5b032a89e5e5220e7dc9b77ab4c1c84a6601",
+              "size": 4371
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/explore.agent.yaml",
+              "sha256": "273539faa6372b2b4fb893d04c0db3b69460ac47ce6459dc097ddcfa17c5aceb",
+              "size": 2670
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/rem-agent.agent.yaml",
+              "sha256": "895ac0f7d0ce5cd006501eed7f1abfd38405ba93c30d16be9c7205bed6f335bf",
+              "size": 968
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/research.agent.yaml",
+              "sha256": "00a8057b2bbdc07c5e2243d56722c66618efd89cef9e9578dd8f03e5ab49d7a7",
+              "size": 6136
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/rubber-duck.agent.yaml",
+              "sha256": "eb624f30ef69f8cfd18e7f3f14bcca63e13d1a0d3e05af006372b8d537bbd15d",
+              "size": 4820
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/security-review.agent.yaml",
+              "sha256": "21e41700f1dc48e82ca48719661da2adb865ac2f226c15c081cc02781983d54e",
+              "size": 14237
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/cloud-session-search.yaml",
+              "sha256": "0eaa7fe8f8cecb923c87c9598e22c4e338bfdc069cc9c78325eb6b589fa94bcd",
+              "size": 1809
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/github-context-memory.yaml",
+              "sha256": "f71dd24375d05cbed0395c37811aba940096521d69a294154dd324165434050d",
+              "size": 2307
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/github-context.yaml",
+              "sha256": "9b7692e969e9ab36d7053fb2ef99ba9dd2ae78f6df75e645f54eb3cdb3fc6252",
+              "size": 2200
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/session-search.yaml",
+              "sha256": "8b6f48742fe847002e5ba6e00b05abc5339a5891387cd306790eb3b8c7dd8c11",
+              "size": 1889
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/subconscious-agent.yaml",
+              "sha256": "9fb4cb881677adc08c69818ecdde127276b1afe006817802c381a3ff5fb5887f",
+              "size": 2616
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/test-sidekick-context-changed.yaml",
+              "sha256": "117edd3750a403c6cabf7964f217ae8129b16f9d0a6d2503e09ebe79d64f9d50",
+              "size": 1029
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/test-sidekick-persistent.yaml",
+              "sha256": "a5ab1c16dd5f9a030010a375f7f26bca56aa196b212ea52ac2c5736cd80f3989",
+              "size": 861
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/test-sidekick-restart.yaml",
+              "sha256": "21e44442b8380a758793d637a60fe94c226a6547d23c5bea3a14546f7f3e60ec",
+              "size": 831
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/test-sidekick-trigger-once.yaml",
+              "sha256": "14a7cedf6ead133828280744b293e90402a2d47568c98a67273c1d7c3acdd53e",
+              "size": 828
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/task.agent.yaml",
+              "sha256": "6625b8a1be22ce2fd7566fce684dd07aca4aed8ceb4fa76b350ff62dcb9093e1",
+              "size": 2074
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/index.js",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "size": 0
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/README.md",
+              "sha256": "ff79555febdbf1ea12b10bef4f6bdcb08812205ba2efe568b048b0ecdd127bf4",
+              "size": 12375
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/deps_versions.json",
+              "sha256": "43ccda9b18ba2577033d7bf24580785fd1227828d9ab06b8011ddfeee57af8e9",
+              "size": 370
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/catalog.d.ts",
+              "sha256": "aa0db4dee8e54431e2e01d14fd7977d28cd3032f9c4940cc5b926b77d5469dd5",
+              "size": 3613
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/catalog.js",
+              "sha256": "c2cb5abd5e01162186cb43e67a0a6e49d4d9a556a7382b7dc1840d6c5c2a6b6b",
+              "size": 11418
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/configuration.d.ts",
+              "sha256": "900ba0e99ac907a92d07c08b179ba7d4379326fb71de2d338eb8434860338973",
+              "size": 2067
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/configuration.js",
+              "sha256": "7b01b6d5e18b7a8a2e465f0d75214a0b9884ffe57df95af1b2708a5a4c4d7bc5",
+              "size": 1645
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/coreInterop.d.ts",
+              "sha256": "80bb839431d2ee4c935d2def128faa4993acbe8d75fa403df5b50a61c2f92ff8",
+              "size": 980
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/coreInterop.js",
+              "sha256": "466e3287e579f2b4180fafcb33479549dd2bd683b687456e1b664cd84da524d1",
+              "size": 5557
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/model.d.ts",
+              "sha256": "8f219d0af8f00e9a0119ea8d69eb3d92bc2b5e25ce9e17ac218fcb4a8f88355c",
+              "size": 5311
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/model.js",
+              "sha256": "8f553a823eb0dda46eacdd53835449abd5f6e030d66d684d9a4e9c88396317ec",
+              "size": 6663
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/modelLoadManager.d.ts",
+              "sha256": "1a2e8b44486f02548f6d30a942f074d052175d7d14d6f5cd7918151cc1ff2552",
+              "size": 1045
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/modelLoadManager.js",
+              "sha256": "1a7888fe6fb620acc9b1d7ff8d17c5563139b0bd32834bdaabc4d36cc54343c2",
+              "size": 3288
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/modelVariant.d.ts",
+              "sha256": "a7af8a0359d36ed90322738bde975c534b9a3b69dcb0e0393cf6f88da7e1b486",
+              "size": 4649
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/modelVariant.js",
+              "sha256": "d62acc4da20f11fb40102f79ded6f45e3cf2f684db1f97c7888c26e84f86eef7",
+              "size": 7217
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/foundryLocalManager.d.ts",
+              "sha256": "812e9e2eec43997439392d139b995793aa3839f573aea38d115e90573f986cf5",
+              "size": 7846
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/foundryLocalManager.js",
+              "sha256": "bfbca8d6235ba998ce3e82ddc9970900a7e2511653341e1315786c6851c1f380",
+              "size": 9451
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/imodel.d.ts",
+              "sha256": "26244ca6cdfb41849ca8e8edef23c5a6681ed18a4acfb2b714c7d2beb0f592fb",
+              "size": 2156
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/imodel.js",
+              "sha256": "6ab1971ca21097ea33a2b7b423aee408c093fec343292bcbbc59971d3e253713",
+              "size": 45
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/index.d.ts",
+              "sha256": "977e345d9eb116eaf3d4db1f972222480fd0fc6e59d3ac273aef1801dbead4f0",
+              "size": 1109
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/index.js",
+              "sha256": "e030b97bdb052ed99f00df928c2fc42f7ac165021d86df792290225c30c5376f",
+              "size": 929
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/audioClient.d.ts",
+              "sha256": "7a0d9fe37f7e6f253be258a7938667334deadeb930c2b8872f22e517d1963762",
+              "size": 2253
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/audioClient.js",
+              "sha256": "04264c41f3567811940ef28b48d97684b333ccbac9829cce8b3d0db8e763b51f",
+              "size": 9895
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/chatClient.d.ts",
+              "sha256": "a9da4a98dc50b1425e2ace9ffb044a3aa872e678947bf035339c9b8703dd6d1e",
+              "size": 3283
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/chatClient.js",
+              "sha256": "c59a093318d05a3e38a2f68693f3b64a24603472c73517743302d5a507331063",
+              "size": 13835
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/embeddingClient.d.ts",
+              "sha256": "a1875a29cd2825fa23c6fe7bf7f4e04c4e2e574e142e0e5fb0c0291b2206528d",
+              "size": 1470
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/embeddingClient.js",
+              "sha256": "bd55fbceb7fea625d30144a462d1c18dd857e6a2539a4179734d3b3237656428",
+              "size": 2554
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/liveAudioSession.d.ts",
+              "sha256": "f2ed7df5665add334b18ad793866c814333863345f8077b8c925cb9b0aed66e4",
+              "size": 3441
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/liveAudioSession.js",
+              "sha256": "889d7adcb9a64858113cd881a77f56962fa85266d2a7ac58c319ecc45be745bf",
+              "size": 12816
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/liveAudioTypes.d.ts",
+              "sha256": "831434a52d2643186dd76bbb657c3acf2f0635cafaa94763a0ff2f728242146f",
+              "size": 2387
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/liveAudioTypes.js",
+              "sha256": "f78e54d6ed3b9b0fba913e7ceec41b36364279e1d93d8b006b62af55806d027c",
+              "size": 1840
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/responsesClient.d.ts",
+              "sha256": "3126a17df66edb893fb5d26bd6ea80a05f5bb516e47da661e927c0936e86d0d2",
+              "size": 5737
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/responsesClient.js",
+              "sha256": "76b477538feb61c41bc0ff7cf8f23b7dbe75bc2fda4720e29c70ff3cac9afc7f",
+              "size": 15246
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/types.d.ts",
+              "sha256": "cca44657b82f9b3c0cd7528e6dbddf5f949e42f5d34afe60c0d566f28e3fc0b0",
+              "size": 9844
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/types.js",
+              "sha256": "ca23f484beade559e7ed612347ac8f615c2c4cc97c2e1b0a74b9c882db7f6f38",
+              "size": 297
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/LICENSE",
+              "sha256": "6bb5b2d4c07d793ca928daa63a8899c6914fafb5ac3aa04ec10cae07f3d57dca",
+              "size": 1106
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/README.md",
+              "sha256": "1aa164b27b6e129f9a3c061621031aefbabebf1c7cbacba47e03f91582fb15ea",
+              "size": 2797
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/adm-zip.js",
+              "sha256": "06fcb246963fa166f92ad4626d012506ceff708cf247044f495856aeb1b62835",
+              "size": 38291
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/headers/entryHeader.js",
+              "sha256": "51233162e8fb1affd4a4f45a196b5a50d38a78bd0979370f7fd2e81518c64376",
+              "size": 12209
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/headers/index.js",
+              "sha256": "536e4b5bf009a3d9f6eccfbbc4157cb6de663d889e0826ea5f6e5fa17aaeb8bf",
+              "size": 94
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/headers/mainHeader.js",
+              "sha256": "28dd1a0db451bc94d8f3234e57d8192ba17154118f841c398e0de35acea286ee",
+              "size": 4445
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/methods/deflater.js",
+              "sha256": "6dc41b2460594cfa5136b797653c166b2f7403820a40f2fca17cca35a5de1b5f",
+              "size": 1021
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/methods/index.js",
+              "sha256": "d67714f1a04be942f90be77069af3ff4214aa8ee84b26edeff3a87eb0d8e2dc0",
+              "size": 128
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/methods/inflater.js",
+              "sha256": "c5e4531a11385050d77a5069487b0be8e85c8e44fe6b214d68def321e74528ce",
+              "size": 1162
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/methods/zipcrypto.js",
+              "sha256": "23365c7eda0ea098385dc7ec649517fc110ce2764d2e707c37bf6b528604e25a",
+              "size": 5806
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/package.json",
+              "sha256": "7a2b15cf80592c1c12b1ccaf60e771f29b24dd08c1645342e254a762bf953a97",
+              "size": 1365
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/constants.js",
+              "sha256": "208e943a2e5faad056047f3c7991cce3cde637d8e272a564f2546210ebdf2069",
+              "size": 6374
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/decoder.js",
+              "sha256": "73a0ebb00c4dce2124f07acf0b34374cb03a4384cccd1cd6f58aee27c35953d9",
+              "size": 130
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/errors.js",
+              "sha256": "d2d243647737c795c2db8aeba2e1f3841d5f76370b521d436cf465322dd4aab7",
+              "size": 2868
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/fattr.js",
+              "sha256": "31c93eb386a2bfbf19ad92a6bf20d510a8f1e7e90cc71d33dd888f89da12362d",
+              "size": 1892
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/index.js",
+              "sha256": "dc5b230ed853947ea55c0bf69f0e525fbeffefff09aa3da296d541bb8898314e",
+              "size": 226
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/utils.js",
+              "sha256": "03318ffbe6d9447fdbcc5a92b4996590f15bfc3c08da8cf684f75ee34be5dfd9",
+              "size": 10550
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/zipEntry.js",
+              "sha256": "61b6fcc1675725efbd7f0bc7c17529806bd3819b43e3794ffd067eeb7bb88e5c",
+              "size": 15625
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/zipFile.js",
+              "sha256": "f95d3d6687e5ed959559943380e3bcf61f3e8849286d740afa45dedb28ffa16d",
+              "size": 15795
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/package.json",
+              "sha256": "07d0242f84fdcfc8f4a0e601dc35f01fa153535c67f95262e0bd750ba7cfa418",
+              "size": 1296
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/prebuilds/darwin-arm64/foundry_local_napi.node",
+              "sha256": "1cb33a3264bd3843f092be626ee0b4181646ef632cbf7f671b3624b1d44c283c",
+              "size": 55032
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/script/install-utils.cjs",
+              "sha256": "0831c932b10389283e805f88a204b0f6a5a8053f2ee520e56a0f0adf1352aa8b",
+              "size": 10443
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/index.js",
+              "sha256": "8cf5178f272b101c2a0b9d5fa9db13704ddcd4ea33f90274bda2f7d917a9ff8d",
+              "size": 13554
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/napi-oop-runtime/index.js",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "size": 0
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/napi-oop-runtime/node_modules/napi-oop-runtime/dist/codegen-cli.js",
+              "sha256": "63bf97792ad2722a797d3d55a9dce5bb0d334f3b92e905a3f56843145e25712d",
+              "size": 5655
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/napi-oop-runtime/node_modules/napi-oop-runtime/dist/index.js",
+              "sha256": "d89dc354d6c3439d39c5a8aa3a16cb11df317fb2aec7f657a66fccf9bc63c517",
+              "size": 52444
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/napi-oop-runtime/node_modules/napi-oop-runtime/dist/sync-worker.js",
+              "sha256": "1cbdcc179583682b6baee1917e8381327b442cfabf75a4ffa4f366572c03a267",
+              "size": 44675
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/napi-oop-runtime/node_modules/napi-oop-runtime/package.json",
+              "sha256": "246605a336d8646c4930382d2bf4287dc4597e1f44edece66265c60006c3930a",
+              "size": 564
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/npm-loader.js",
+              "sha256": "0ea824a86be5757533fdb092eff7050871bd7a711a46babde0ffe0e44ac5ad88",
+              "size": 1185
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/package.json",
+              "sha256": "9faf9b290dc9a99b66aaad8d6b06fa2154c153e032cc5d259cf4e3a730f0c476",
+              "size": 666
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/.mcp.json",
+              "sha256": "a3dc47942ea9a540e1c26151ced72c4cb6cf26bcc2c2df9219d7357f0ec530e0",
+              "size": 177
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/.plugin/plugin.json",
+              "sha256": "5ff5613ee67b1491a8439fe495a078d8a325da0565e2e8824a948d712ecc6164",
+              "size": 124
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/CodeResources",
+              "sha256": "d8e4bf41cf60babcefa82d002d262aed7ad50f17f8e945b27dc92a3cac1c82d3",
+              "size": 1653
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/Info.plist",
+              "sha256": "929664e33c9b43dc9bede0e72648dfd3f0687b016e89ebc01bd8e2be7f8259ce",
+              "size": 1266
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/MacOS/Copilot Computer Use",
+              "sha256": "75682a835850e5fb5082a3d08e1eda8bed9418cda87ee27aff38e7268f4b2619",
+              "size": 2478288
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/PkgInfo",
+              "sha256": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0",
+              "size": 8
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/Resources/Assets.car",
+              "sha256": "19f96e7a8041d28d4decf3bcebe6578576e5b76fc8d1eb97cfa5dfb320b0d383",
+              "size": 1522472
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/Resources/icon.icns",
+              "sha256": "9539084c7bffa36162651c304d8640d7734f9b1cd1cf3e0f0a2d14377239b1bb",
+              "size": 559537
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/_CodeSignature/CodeResources",
+              "sha256": "69525013976c35b45829c15500fb4e00165ae069150e2b4a81dfc92327fa018f",
+              "size": 2666
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/plugins/computer-use/computer-use-mcp",
+              "sha256": "b80bf073c2c63457cc57895654c26d87313c2c7c7b44dbb5ec5e1f64a223bb4a",
+              "size": 2992304
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/prebuilds/darwin-arm64/cli-native.node",
+              "sha256": "6b6afa7d79a16e1d649a3c8448a60310d68739b09d89b3566b6eb77d753966ed",
+              "size": 867920
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/prebuilds/darwin-arm64/mediaremote-adapter/LICENSE",
+              "sha256": "a489c16a6be195584fa0b35e28fca54abc8492eb0cc05d851dd24f522f4900a2",
+              "size": 1521
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/prebuilds/darwin-arm64/mediaremote-adapter/MediaRemoteAdapter.framework/MediaRemoteAdapter",
+              "sha256": "441178d9374b873351ca6078203e32582053e94606670c8905cfb6554e9b55a0",
+              "size": 168112
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/prebuilds/darwin-arm64/mediaremote-adapter/mediaremote-adapter.pl",
+              "sha256": "984d622eeebbcb17656d157a49272b02fb741593ae2ec624d1926c12d955c8a1",
+              "size": 8444
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/prebuilds/darwin-arm64/runtime.node",
+              "sha256": "58e504c1203a3b562c36125588047e7611105d816aee15057fe92440836e0f8b",
+              "size": 103188160
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/preloads/extension_bootstrap.mjs",
+              "sha256": "2e24513650ff736eb9e052ef084cb920b5aed9553d875f747bb53d3c8dcdb286",
+              "size": 2824
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/preloads/extension_sdk_resolver.mjs",
+              "sha256": "e57d71730c8f937315a72b66187c56cc4fa78ecbd13590795136996e2851bf19",
+              "size": 1331
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/index.js",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "size": 0
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/README.md",
+              "sha256": "7eb46bc4bdba8002da1165107fc729ee816f58063a8e8d6d0083a3fb81898683",
+              "size": 1675
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/errors.js",
+              "sha256": "14b373ef00a0bf0fceb5abe86a6628f914a466b2403ba376f78b025cff05e92b",
+              "size": 2528
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/index.js",
+              "sha256": "a99551364022401340991df2d74e1c949290e920aa9247d22c262e26b768a0f0",
+              "size": 748
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/platforms.js",
+              "sha256": "9eb9c4c2af151391c4966bdaf15364d15362996915e8f5fa685daca1c3f81359",
+              "size": 6404
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/pv_recorder.js",
+              "sha256": "3323ebdbad3d524dc4330d25cb226cc17a0f7f365b738f471faf883d71de658d",
+              "size": 6154
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/pv_recorder_status_t.js",
+              "sha256": "c7c94cd144fb0fcf5f844e76ff83d754dc6b835e45893c2cc81de5f0c3ddccbb",
+              "size": 1519
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/types/errors.d.ts",
+              "sha256": "5250616ee995097ea36daa3285d957e3adcdd9c76a6dd13ea3d10174c38a8668",
+              "size": 236
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/types/index.d.ts",
+              "sha256": "6b27f29a807ef113c326fcc2139ddde257e74585cb58591ad9753dcbfd00c03f",
+              "size": 98
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/types/platforms.d.ts",
+              "sha256": "a11acc208b8d403db8882b97e0101f549a5dd7a1ca656ff46d9378277a100064",
+              "size": 142
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/types/pv_recorder.d.ts",
+              "sha256": "6b06821393cd5fbab4874a11c46634e7bb1ff91848bbf34a1e5008ccea6929bf",
+              "size": 2741
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/types/pv_recorder_status_t.d.ts",
+              "sha256": "b35985d2b520dc2570f90f23e6db7e6ce37369db6e35c27bc532de349421175e",
+              "size": 337
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/lib/mac/arm64/pv_recorder.node",
+              "sha256": "f5bc73a9e4e4506bc1882a1c3eb318f51848621c2620fb6eaa177faefc2fa648",
+              "size": 625648
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/package.json",
+              "sha256": "e44a9dde00f1344251f22bce37520ea1bbbde5af2965cab7e612758854ee3a99",
+              "size": 1197
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/bash-highlights.scm",
+              "sha256": "77860b9f127ca82681e3691bba003e62d1d8dbced05e4fe96041d26fd8944656",
+              "size": 5776
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/c-highlights.scm",
+              "sha256": "a99c4c0bf9d9b9f7de0124c529a4229fddada96d65bf5fb0c9d487266e15d483",
+              "size": 6332
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/cpp-highlights.scm",
+              "sha256": "69d1dbed8d49c498e93a75db6afedfb8769fa2fed455a64d588dc347281d642f",
+              "size": 4904
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/csharp-highlights.scm",
+              "sha256": "4b79059a52926e8cd08a1d80af70ba02acefb86bc8ed82315897fb104ed1a338",
+              "size": 8302
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/css-highlights.scm",
+              "sha256": "6641fed120530bfbce5682ab88b2a8d14d99bfcd971ac9f78cd91738b4b0578a",
+              "size": 1177
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/go-highlights.scm",
+              "sha256": "c58a7336d4834ebfbb038002c6ab033f792cd1b8d3e7e1682bdaa982bee7f6b1",
+              "size": 3934
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/html-highlights.scm",
+              "sha256": "1ebb3811a8cdc054385b847a3aac6fbf7079faefd5b3dfab5bbad256cd5afdcf",
+              "size": 197
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/java-highlights.scm",
+              "sha256": "c68c0e7e9ae36d94c9e5ab06556b34c5e8568d1ce1867043d92bbe4b3b4dcf2f",
+              "size": 4425
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/javascript-highlights.scm",
+              "sha256": "d3630ae6dc9b2b27b230b5f8bb92b05cd491fb12bff353dae62a0a6d780461ee",
+              "size": 2739
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/json-highlights.scm",
+              "sha256": "6ab09656820f0e8dac860c96dced341221284544c05308ee337727f5db937101",
+              "size": 412
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/php-highlights.scm",
+              "sha256": "a2a7367659cff3b4be09961c8117d69a9b8703bfc266f8092e089b1760f197e9",
+              "size": 3207
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/python-highlights.scm",
+              "sha256": "a6708f209381618e2b398972c8f1ccd892f0c064eab35a2a3f911c3e22e79a7e",
+              "size": 1957
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/ruby-highlights.scm",
+              "sha256": "1cc8fc205e4cce4fe9e0d63bb1be903e49ea0f2eda77ae9368898a31ff98bc18",
+              "size": 4068
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/rust-highlights.scm",
+              "sha256": "c649a4785322ab72af84874b9dc03c7a4f5d9a05de45a85919a60770d7d5457d",
+              "size": 8610
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/scala-highlights.scm",
+              "sha256": "e9e89654a7df214f4c79c28af7bc50bdb5c6cc5abb9690e3e1ce19c35b797991",
+              "size": 4858
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/typescript-highlights.scm",
+              "sha256": "e0c35adb819127bfd4f853fac5419e7d8ba44760246201d04a4a5ce0228a10c5",
+              "size": 515
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/ripgrep/bin/darwin-arm64/rg",
+              "sha256": "a9ce4ddf659816ee459ce1fd3ea83cfe55b37302c0e03d33460d2b6f23c50188",
+              "size": 4520448
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/schemas/api.schema.json",
+              "sha256": "8483722c15606ca2809e4f5ea98d1ac7752fc5f7508475c427b35541edb0e767",
+              "size": 1323728
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/schemas/session-events.schema.json",
+              "sha256": "350df35914d4e2fdbadb8932ca66f1e58d759aad79b5be9291857c9052d31301",
+              "size": 612289
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/sdk/index.d.ts",
+              "sha256": "0c8c34e50b185029abafa5d29c6b648b46f211d20c9711d62026e148a1e07b6a",
+              "size": 1733727
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/sdk/index.js",
+              "sha256": "ace6f06ca41c0d4172573422a949c60e8ff8c20368ebd281c65e8911318de637",
+              "size": 2337370
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/sea-loader.js",
+              "sha256": "8f9eca84ce6cb81e05ff5638553d007b87e1379abf6a05de6fa1750ae88af4fa",
+              "size": 92727
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/tgrep/bin/darwin-arm64/tgrep",
+              "sha256": "c40c23f7d616dba77d08c893b8309b20ca6978d0dc12fcf231c6bd27135190ef",
+              "size": 4709648
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-bash.wasm",
+              "sha256": "8292919c88a0f7d3fb31d0cd0253ca5a9531bc1ede82b0537f2c63dd8abe6a7a",
+              "size": 1358224
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-c.wasm",
+              "sha256": "c852c2a85ebf2beb636aa3b0ef7f7e70458684d74f6741b20dcb296885bed9f9",
+              "size": 625918
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-c_sharp.wasm",
+              "sha256": "6f69e1cae44e1c32c1eccc170dc5a9778fb94ff716f71113fe1f8c4299aa2f40",
+              "size": 5350581
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-cpp.wasm",
+              "sha256": "174eb0deb75b2ec7881bcacda9f995648d8e683956e5c2267e69ab6dc503fcbf",
+              "size": 3434931
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-css.wasm",
+              "sha256": "8a23977fe271357cce6f254ef88c9bebf3854602d8046605aef6a45c02135c59",
+              "size": 128668
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-go.wasm",
+              "sha256": "9504573f352b20be7f2f1911754d710622aedc15afff16d5ed8fb5645681aee7",
+              "size": 217182
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-html.wasm",
+              "sha256": "c48fcd82c7ea8bf943180088ba7f28c48b2bb5287874179168bf9d31e394cf85",
+              "size": 18385
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-java.wasm",
+              "sha256": "4fdeac4ca6ca089f06c6f7e562abcac1733cd465728cc7031ebb73c2019122c4",
+              "size": 414641
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-javascript.wasm",
+              "sha256": "5fb488d0cabb4775a594bab85682de5ad6ce83c0d6ac997a9f82dd084d571240",
+              "size": 411770
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-json.wasm",
+              "sha256": "d2119fb98d5912719b13f9458574f8608d2d29dfbe45f6be1f860ea1fe2a2405",
+              "size": 5596
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-php.wasm",
+              "sha256": "d4df6a6ff08c87c3ec4f9cbb785fe09998a0cb570e03f57d7b19b3acfb146aa7",
+              "size": 1058041
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-python.wasm",
+              "sha256": "16108b50df4ee9a30168794252ab55e7c93bfc5765d7fa0aa3e335752c515f47",
+              "size": 457883
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-ruby.wasm",
+              "sha256": "09a96427d7c72f0613ed470cd9812223fc4a91d6a9c025c0235cc6bd59ff96f4",
+              "size": 2106352
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-rust.wasm",
+              "sha256": "f65f354215611fd94ad34134b3427eb3d58cbb745df7b6509ba722184db73d57",
+              "size": 1102547
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-scala.wasm",
+              "sha256": "b7ec2bb29c19827abcefd18ed5cb5a43596009f96a5d53c5b9d1f9676d7521c3",
+              "size": 3786700
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-tsx.wasm",
+              "sha256": "79e5da75ea62855a0cd67177685f0164eac87d5f630b3cbe1e0a099751ad30f8",
+              "size": 1445638
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-typescript.wasm",
+              "sha256": "778025db5a8be0e70f8ccc3671e486dfeddd048c25d9e8a70c26de2e1bf6f97d",
+              "size": 1413849
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/tree-sitter.wasm",
+              "sha256": "f38dcc4b43b818f9a0785bc1c6d5611a75ac4cdd428ff3f02757c34ca4e46d7f",
+              "size": 205488
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/voice-engine.worker.js",
+              "sha256": "9a1bae5d3c003f0e1164d465b1b8eff60d4247235c09888ecd46ea2b7b490cdc",
+              "size": 112186
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/voice-installer.worker.js",
+              "sha256": "77c51d5a9b182d02c7f244115a04cdff5222c7b8be9b38e1eb1e06c28e383c12",
+              "size": 10842
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/voice-server.js",
+              "sha256": "2ac5e135328b90119953d20f9cb5331c420a3e1873825be9362afcbc9db80ec6",
+              "size": 137042
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/index.js",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "size": 0
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview-darwin-arm64/README.md",
+              "sha256": "f7fac36538af09475752019eedaf6299ff21f36cf9e7cb4a6c676c7974afff0b",
+              "size": 106
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview-darwin-arm64/package.json",
+              "sha256": "e9241663ed145cdb282dbc65933b7c14cb30a3da2cb47a0b5f657e23d5889084",
+              "size": 638
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview-darwin-arm64/webview.darwin-arm64.node",
+              "sha256": "85089cd40b59cd4cb087ad43d448c308b3461106fae78795d5852d5eedea585f",
+              "size": 3997792
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/LICENSE",
+              "sha256": "9cac72e0573f14d3f9bcb8f70922d589ba07dd1051a5c12229f111e154923f0a",
+              "size": 1065
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/README.md",
+              "sha256": "69c2e106db45187b981358c938e41b8bfb67fb3a451930f102a63b471c0da675",
+              "size": 16477
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/cli/build.mjs",
+              "sha256": "bcb69c0cc8356b78d07c53719ccaa372f1d6b6c381973b76508681573a7b1db4",
+              "size": 3640
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/webview/node_modules/@webviewjs/webview/cli/index.mjs",
+              "sha256": "3d6d86fc751897b67e1b94f0b1d0a667d79e6256b278a7e801467bfd67ad2689",
+              "size": 3837
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/cli/utils.mjs",
+              "sha256": "fb7a2fc54e53c777de835f50c7d4483bee60d1aece0c1deddbe2f232f571d8f1",
+              "size": 193
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/CNAME",
+              "sha256": "405d5f5a242885480dc01db6227484ed4b6d723fd7c3b2547f9f36e46decac15",
+              "size": 14
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/README.md",
+              "sha256": "65578b7f73cc6c145a9d962ca6f2ee56b06153a8277eea8c3c3cadc7d602f155",
+              "size": 15717
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/application.md",
+              "sha256": "44227367accc4a9f5b8468e19680ffd1229891d59c0652e8f45370c0872160bd",
+              "size": 6074
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/browser-window.md",
+              "sha256": "597920a56d3ff8c87b6990473e5150a454f109bd7e639125c8a82d039ade7487",
+              "size": 11107
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/menu.md",
+              "sha256": "838a998eba786e959bec89e148fae7d547df1b13e490b55c890d58100fd77b98",
+              "size": 3828
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/notification.md",
+              "sha256": "8e90225a0f40ebcd2a69bc9e0b8d51c645810faa4fcaae3651101bcaa686d101",
+              "size": 5622
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/tray.md",
+              "sha256": "f071ca7d3a5cc7cb271ceb9e2712db9c6c80d5c8ab33b4a8fc3b168e5d9dd3aa",
+              "size": 1628
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/types.md",
+              "sha256": "e006fb8428d0e58943468f62c77ec78bcba1bb7b0bc41ce3e2258417fe51320c",
+              "size": 5711
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/web-context.md",
+              "sha256": "92b9ed94a8868a1ff8b0f3e4ef92be2a0b2564f7beb1fc8b6107b7f1bca96429",
+              "size": 1774
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/webview.md",
+              "sha256": "78ade1e288c7a6169678d4bb64f9e450ed4e855324c310354686c11f127bd494",
+              "size": 6279
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/getting-started/event-loop.md",
+              "sha256": "28b1f847d6ff3c71c5b3fbf9f46d531b6fbd9ba585365cfbe9a2292e698171bb",
+              "size": 2511
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/getting-started/installation.md",
+              "sha256": "06acf9a3d61c0d84f0dcc65153f43d288e1bb139a0e16df69253fae68c2c6c76",
+              "size": 1173
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/getting-started/quick-start.md",
+              "sha256": "55cdf7992b7ad793b204ac80268c66600975ee20c474c2ca029cdd6db58073b6",
+              "size": 1995
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/building-executables.md",
+              "sha256": "18a1d5d2596e0e0b05758643981d7ffe5b9d9f32bf0884c84978c647bf2419e9",
+              "size": 5026
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/cookies-and-storage.md",
+              "sha256": "0eb9abdd246e5a2a0d4a8578c6b565781fdb9d7b99463b50c05a6851c3eed365",
+              "size": 1783
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/custom-protocols.md",
+              "sha256": "1c72110266d09b04f544c0d20aa7fe1f4b6ad84ffa9e171b7f6e55832d39c4c1",
+              "size": 3148
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/ipc-messaging.md",
+              "sha256": "d03b307d46cafe92ad0297cad0a0ee1b3af410143281be4be5ab2dbc31e2e74e",
+              "size": 1790
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/menus.md",
+              "sha256": "88b791fa71cbb51351cd3a220184ea54a53426cca00eab0c185acd139053fe6d",
+              "size": 2764
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/multiple-windows.md",
+              "sha256": "6d05fa117efc95207d4707bbf2728ae31f482bc6e9f29a8a436389fdaae003cd",
+              "size": 1835
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/platform/android.md",
+              "sha256": "646dc6f1ac30a4f2bd25faec682a2d6f0262ea59193ac44490d5914cf1294cd0",
+              "size": 326
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/platform/ios.md",
+              "sha256": "b8b1c2bc59611d633971556fb94720bdb411e2de89771fb372217d1a17b53cb7",
+              "size": 420
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/platform/linux.md",
+              "sha256": "cbd1df68b7c899f826aff9e0fd2d13e9f9e19892ad16fd47a6fea5c625dc0e8b",
+              "size": 1986
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/platform/macos.md",
+              "sha256": "9b5b1d9c4065d7904c02e3dc79517b6df4f8a44dd95902e30502d130cdef5d71",
+              "size": 2260
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/platform/windows.md",
+              "sha256": "5a84a310a20d42e0b24492472efd5512aae11c68668620f071a3d85c3583512a",
+              "size": 2136
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/index.d.ts",
+              "sha256": "49610270556eaff855f8efc8026a595c354309ea325d846d33a617ad54039a39",
+              "size": 13502
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/index.js",
+              "sha256": "9bce1f609372abd7da4973967276ba591c43f9b933bcd52030edb1ad6ee3b8db",
+              "size": 22727
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/js-bindings.d.ts",
+              "sha256": "f2f384ab7913a7e38369155a5abda97c0af3b72db6021df341e8da2288ceceaf",
+              "size": 20365
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/js-bindings.js",
+              "sha256": "e6a970a01839ed97c9a9636a01bf1c77c298a8270b3f1708c4927191856a3bcc",
+              "size": 28518
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/package.json",
+              "sha256": "0a71bc7c23521db3890aadb13763297422e1988e9a68f95ec8b8832c07d33b89",
+              "size": 3442
+            }
+          ],
+          "inventory_sha256": "bce437715d370d3e7baf81351c3376c7051b17ae61085b7cf25af727ee336817",
+          "published_at": "2026-08-14T02:23:45.796Z",
+          "version": "1.0.80"
+        },
+        {
+          "archive_bytes": 135647735,
+          "archive_sha256": "be324ba249b5744cb07fb7cfc275d52a0694136bc476d0299a9391bb3c0aa299",
+          "dist": {
+            "fileCount": 225,
+            "integrity": "sha512-VKHJTwRVaNXOmSkMjuFAotZxWNsNLSz3ZEiB1vpUqOYT3AsGMPrj8MIwh64AGfoLa91n4GyotGVbxwnsW8+K4g==",
+            "shasum": "27464a84c8f5feb06ffd21e3b23c95c1bfee72d0",
+            "signatures": [
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEUCIEzUqDNJXHHScMqk1AECgIc43t8fJXgHge0DXXMg7yvJAiEAmOmp52mkcwO6RT58cIXLm8Kb8bZNTs4fDnFR1lLQeJA="
+              }
+            ],
+            "tarball": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.81.tgz",
+            "unpackedSize": 277815706
+          },
+          "files": [
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/LICENSE.md",
+              "sha256": "b9680937e10425bf19862908856c16ed274e6b81a1368bd62be7a757eab21628",
+              "size": 2955
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/README.md",
+              "sha256": "83fe30a999c46011043f9bfe0de1efccde6b25ee17bdf6f9b6c16ea22d582f4e",
+              "size": 353
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/animations/app-install-nudge.json.gz",
+              "sha256": "8a4165e6e95f127fe3123e647580c31def2d52b7824f2c4e48b505339132543e",
+              "size": 9900
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/animations/banner.json.gz",
+              "sha256": "cc6dcef840f5f63c9683e84bd55478e6fd2a22130bf1be6f53dece870e996446",
+              "size": 4887
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/app.js",
+              "sha256": "d93ad0e65559f599ac31a6646c5538f3617d2d42e374624532bb764a754b70fe",
+              "size": 7459669
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/assets/copilot.png",
+              "sha256": "601aea9338888b3e0065b6b6bcb5793bf1215f205b6e781a47b1893d96fd67d1",
+              "size": 51687
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/builtin-skills/customize-cloud-agent/SKILL.md",
+              "sha256": "6acee791cd48a31eb881431c0f1394d3c79d33d62f0d58b2d9b699e4a275ea93",
+              "size": 18679
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/builtin-skills/github-pr-media/SKILL.md",
+              "sha256": "eba36e66d053b3db19e8f51cfb7d28186ef2baf90159f51bf2333747b150070b",
+              "size": 4938
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/builtin/customize-cloud-agent/SKILL.md",
+              "sha256": "6acee791cd48a31eb881431c0f1394d3c79d33d62f0d58b2d9b699e4a275ea93",
+              "size": 18679
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/builtin/github-pr-media/SKILL.md",
+              "sha256": "eba36e66d053b3db19e8f51cfb7d28186ef2baf90159f51bf2333747b150070b",
+              "size": 4938
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/changelog.json",
+              "sha256": "70af10349f06a70c7849fe858621a871d992e8e79e77b7e68155885dadca4629",
+              "size": 967946
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/copilot",
+              "sha256": "0f2ba6429dbee9f5adcdc2ad09ded7f5a0511f5da9af10c3a0dbc6ed070f004f",
+              "size": 146260080
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/canvas.d.ts",
+              "sha256": "2f5c82d47a8a1abd27466f9dc093106a59d83f685d4f6c29367e2ce25f44b700",
+              "size": 5858
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/client.d.ts",
+              "sha256": "558f5dbc9d4b9760999d72dac1bafc16eab19aa89a3bc616aff40449e92b7d52",
+              "size": 18179
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/copilotRequestHandler.d.ts",
+              "sha256": "730762ae75ad87be8cbef0080a2f5150919f0a9c53e52b6aaaa3f366f2c17d79",
+              "size": 3443
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/docs/agent-author.md",
+              "sha256": "be7d579f5c410b8270baf7a6d0db668e381320d25dc9c71d76fd9898c17f5ab5",
+              "size": 10373
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/docs/examples.md",
+              "sha256": "b98771693f8b4c730623f4b64607cdf513b9d18701fac663d5dc7dfc455e5d30",
+              "size": 21118
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/docs/extensions.md",
+              "sha256": "2e2bf62c25a87e0ddb9e7c17b7ae4c8c6650359105ff221f9a00288afa835b71",
+              "size": 3202
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/docs/factories.md",
+              "sha256": "2f9dbd7f234e06c5412bfb3dccb60890a347488c0f395f9a02aca1eda09c2f41",
+              "size": 16106
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/docs/factory-patterns.md",
+              "sha256": "e520a0758e592e4229bb1802b459c5db6a0f971dc132b4549a318239be6f6f96",
+              "size": 8050
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/extension.d.ts",
+              "sha256": "7daf84dbb5c87601b36702afe8bf487a651b1469c684f1d52d6ec25617952032",
+              "size": 1865
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/extension.js",
+              "sha256": "848af474839fa78930a81ca902d6ca8ca1707480921b74fce8008fa22787bbe4",
+              "size": 429692
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/factory.d.ts",
+              "sha256": "a374ead306ae51c28ca2d16e7d61cec363d93bd8691c44277092c450429714bf",
+              "size": 12647
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/ffiRuntimeHost.d.ts",
+              "sha256": "93ba596e62949821ec648ec9c8af45473c6682912ea60ff123d67d399d943367",
+              "size": 1809
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/generated/rpc.d.ts",
+              "sha256": "365b753fd7ccca0365c5f739958dcd58effed4b24d9c012779e33009b71f6e92",
+              "size": 692013
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/generated/session-events.d.ts",
+              "sha256": "727881c00bedf3e2fe388c77a5c43ba25486eddb5e4a8b72204730f2dcaf5cff",
+              "size": 290702
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/index.d.ts",
+              "sha256": "dae9d448c8a657515aae180906176c0a9978cfa9dce08b8f0b2f4dfc4ea3e7b7",
+              "size": 3926
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/index.js",
+              "sha256": "c5457b7460a3b3de517b24a5f7f745cdfa106d1234ea3b6819bb4274fe60c7a5",
+              "size": 434115
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/sdkProtocolVersion.d.ts",
+              "sha256": "344a1c9669d1617346e2bb71d24081797b69b6cfd37c17b04b2aebf8e7a87260",
+              "size": 300
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/session.d.ts",
+              "sha256": "a9e51264abcfad003a7a270d7304ed3ba6bac78537fc020bc040c1f5fa23bf85",
+              "size": 12469
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/sessionFsProvider.d.ts",
+              "sha256": "6aa732885a832f7117a5d85853eb05b26052bc446a278c17b9463b7bdb06094d",
+              "size": 5545
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/telemetry.d.ts",
+              "sha256": "0721ce90ecd3a15eeb86d7787ca62236b1b545b0e93139ed5ef4419b16544722",
+              "size": 528
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/toolSet.d.ts",
+              "sha256": "41e53ae25809c90fd1a78f493cb912c6a9194c6e0a02e3e32545971c41a1cb56",
+              "size": 2725
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/copilot-sdk/types.d.ts",
+              "sha256": "9233c40bf06500bd13cba1e3ea9469e4cdb2d7eb03f46aa47291369f28c0f4d3",
+              "size": 102343
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/code-review.agent.yaml",
+              "sha256": "1290258ee70b44faca1f0c74be26254f13e8401e825713ff3f5523b848b361f9",
+              "size": 4604
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/explore.agent.yaml",
+              "sha256": "35e599117cd266cad7fb716741bf8b0c8dcc667b7b225caef305b841198757b3",
+              "size": 2687
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/rem-agent.agent.yaml",
+              "sha256": "895ac0f7d0ce5cd006501eed7f1abfd38405ba93c30d16be9c7205bed6f335bf",
+              "size": 968
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/research.agent.yaml",
+              "sha256": "82726101e23ed841a200f301546a6ae9f19739ca106686f2ca2c73a1afcffecc",
+              "size": 5596
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/rubber-duck.agent.yaml",
+              "sha256": "eb624f30ef69f8cfd18e7f3f14bcca63e13d1a0d3e05af006372b8d537bbd15d",
+              "size": 4820
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/security-review.agent.yaml",
+              "sha256": "7b6769eb585913a0ad59dadb3bf2e42cd9cfadb1540b341f23a28e5728be2d53",
+              "size": 14222
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/cloud-session-search.yaml",
+              "sha256": "0eaa7fe8f8cecb923c87c9598e22c4e338bfdc069cc9c78325eb6b589fa94bcd",
+              "size": 1809
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/github-context-memory.yaml",
+              "sha256": "7942c4d67f2f85c094e609510b8509e9191e9ec331543e85d95b0d9f46649859",
+              "size": 4097
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/github-context.yaml",
+              "sha256": "9b7692e969e9ab36d7053fb2ef99ba9dd2ae78f6df75e645f54eb3cdb3fc6252",
+              "size": 2200
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/session-search.yaml",
+              "sha256": "8b6f48742fe847002e5ba6e00b05abc5339a5891387cd306790eb3b8c7dd8c11",
+              "size": 1889
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/subconscious-agent.yaml",
+              "sha256": "9fb4cb881677adc08c69818ecdde127276b1afe006817802c381a3ff5fb5887f",
+              "size": 2616
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/test-sidekick-context-changed.yaml",
+              "sha256": "117edd3750a403c6cabf7964f217ae8129b16f9d0a6d2503e09ebe79d64f9d50",
+              "size": 1029
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/test-sidekick-persistent.yaml",
+              "sha256": "a5ab1c16dd5f9a030010a375f7f26bca56aa196b212ea52ac2c5736cd80f3989",
+              "size": 861
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/test-sidekick-restart.yaml",
+              "sha256": "21e44442b8380a758793d637a60fe94c226a6547d23c5bea3a14546f7f3e60ec",
+              "size": 831
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/sidekick/test-sidekick-trigger-once.yaml",
+              "sha256": "14a7cedf6ead133828280744b293e90402a2d47568c98a67273c1d7c3acdd53e",
+              "size": 828
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/definitions/task.agent.yaml",
+              "sha256": "6625b8a1be22ce2fd7566fce684dd07aca4aed8ceb4fa76b350ff62dcb9093e1",
+              "size": 2074
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/index.js",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "size": 0
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/README.md",
+              "sha256": "ff79555febdbf1ea12b10bef4f6bdcb08812205ba2efe568b048b0ecdd127bf4",
+              "size": 12375
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/deps_versions.json",
+              "sha256": "43ccda9b18ba2577033d7bf24580785fd1227828d9ab06b8011ddfeee57af8e9",
+              "size": 370
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/catalog.d.ts",
+              "sha256": "aa0db4dee8e54431e2e01d14fd7977d28cd3032f9c4940cc5b926b77d5469dd5",
+              "size": 3613
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/catalog.js",
+              "sha256": "c2cb5abd5e01162186cb43e67a0a6e49d4d9a556a7382b7dc1840d6c5c2a6b6b",
+              "size": 11418
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/configuration.d.ts",
+              "sha256": "900ba0e99ac907a92d07c08b179ba7d4379326fb71de2d338eb8434860338973",
+              "size": 2067
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/configuration.js",
+              "sha256": "7b01b6d5e18b7a8a2e465f0d75214a0b9884ffe57df95af1b2708a5a4c4d7bc5",
+              "size": 1645
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/coreInterop.d.ts",
+              "sha256": "80bb839431d2ee4c935d2def128faa4993acbe8d75fa403df5b50a61c2f92ff8",
+              "size": 980
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/coreInterop.js",
+              "sha256": "466e3287e579f2b4180fafcb33479549dd2bd683b687456e1b664cd84da524d1",
+              "size": 5557
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/model.d.ts",
+              "sha256": "8f219d0af8f00e9a0119ea8d69eb3d92bc2b5e25ce9e17ac218fcb4a8f88355c",
+              "size": 5311
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/model.js",
+              "sha256": "8f553a823eb0dda46eacdd53835449abd5f6e030d66d684d9a4e9c88396317ec",
+              "size": 6663
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/modelLoadManager.d.ts",
+              "sha256": "1a2e8b44486f02548f6d30a942f074d052175d7d14d6f5cd7918151cc1ff2552",
+              "size": 1045
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/modelLoadManager.js",
+              "sha256": "1a7888fe6fb620acc9b1d7ff8d17c5563139b0bd32834bdaabc4d36cc54343c2",
+              "size": 3288
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/modelVariant.d.ts",
+              "sha256": "a7af8a0359d36ed90322738bde975c534b9a3b69dcb0e0393cf6f88da7e1b486",
+              "size": 4649
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/detail/modelVariant.js",
+              "sha256": "d62acc4da20f11fb40102f79ded6f45e3cf2f684db1f97c7888c26e84f86eef7",
+              "size": 7217
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/foundryLocalManager.d.ts",
+              "sha256": "812e9e2eec43997439392d139b995793aa3839f573aea38d115e90573f986cf5",
+              "size": 7846
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/foundryLocalManager.js",
+              "sha256": "bfbca8d6235ba998ce3e82ddc9970900a7e2511653341e1315786c6851c1f380",
+              "size": 9451
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/imodel.d.ts",
+              "sha256": "26244ca6cdfb41849ca8e8edef23c5a6681ed18a4acfb2b714c7d2beb0f592fb",
+              "size": 2156
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/imodel.js",
+              "sha256": "6ab1971ca21097ea33a2b7b423aee408c093fec343292bcbbc59971d3e253713",
+              "size": 45
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/index.d.ts",
+              "sha256": "977e345d9eb116eaf3d4db1f972222480fd0fc6e59d3ac273aef1801dbead4f0",
+              "size": 1109
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/index.js",
+              "sha256": "e030b97bdb052ed99f00df928c2fc42f7ac165021d86df792290225c30c5376f",
+              "size": 929
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/audioClient.d.ts",
+              "sha256": "7a0d9fe37f7e6f253be258a7938667334deadeb930c2b8872f22e517d1963762",
+              "size": 2253
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/audioClient.js",
+              "sha256": "04264c41f3567811940ef28b48d97684b333ccbac9829cce8b3d0db8e763b51f",
+              "size": 9895
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/chatClient.d.ts",
+              "sha256": "a9da4a98dc50b1425e2ace9ffb044a3aa872e678947bf035339c9b8703dd6d1e",
+              "size": 3283
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/chatClient.js",
+              "sha256": "c59a093318d05a3e38a2f68693f3b64a24603472c73517743302d5a507331063",
+              "size": 13835
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/embeddingClient.d.ts",
+              "sha256": "a1875a29cd2825fa23c6fe7bf7f4e04c4e2e574e142e0e5fb0c0291b2206528d",
+              "size": 1470
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/embeddingClient.js",
+              "sha256": "bd55fbceb7fea625d30144a462d1c18dd857e6a2539a4179734d3b3237656428",
+              "size": 2554
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/liveAudioSession.d.ts",
+              "sha256": "f2ed7df5665add334b18ad793866c814333863345f8077b8c925cb9b0aed66e4",
+              "size": 3441
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/liveAudioSession.js",
+              "sha256": "889d7adcb9a64858113cd881a77f56962fa85266d2a7ac58c319ecc45be745bf",
+              "size": 12816
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/liveAudioTypes.d.ts",
+              "sha256": "831434a52d2643186dd76bbb657c3acf2f0635cafaa94763a0ff2f728242146f",
+              "size": 2387
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/liveAudioTypes.js",
+              "sha256": "f78e54d6ed3b9b0fba913e7ceec41b36364279e1d93d8b006b62af55806d027c",
+              "size": 1840
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/responsesClient.d.ts",
+              "sha256": "3126a17df66edb893fb5d26bd6ea80a05f5bb516e47da661e927c0936e86d0d2",
+              "size": 5737
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/openai/responsesClient.js",
+              "sha256": "76b477538feb61c41bc0ff7cf8f23b7dbe75bc2fda4720e29c70ff3cac9afc7f",
+              "size": 15246
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/types.d.ts",
+              "sha256": "cca44657b82f9b3c0cd7528e6dbddf5f949e42f5d34afe60c0d566f28e3fc0b0",
+              "size": 9844
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/dist/types.js",
+              "sha256": "ca23f484beade559e7ed612347ac8f615c2c4cc97c2e1b0a74b9c882db7f6f38",
+              "size": 297
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/LICENSE",
+              "sha256": "6bb5b2d4c07d793ca928daa63a8899c6914fafb5ac3aa04ec10cae07f3d57dca",
+              "size": 1106
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/README.md",
+              "sha256": "1aa164b27b6e129f9a3c061621031aefbabebf1c7cbacba47e03f91582fb15ea",
+              "size": 2797
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/adm-zip.js",
+              "sha256": "06fcb246963fa166f92ad4626d012506ceff708cf247044f495856aeb1b62835",
+              "size": 38291
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/headers/entryHeader.js",
+              "sha256": "51233162e8fb1affd4a4f45a196b5a50d38a78bd0979370f7fd2e81518c64376",
+              "size": 12209
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/headers/index.js",
+              "sha256": "536e4b5bf009a3d9f6eccfbbc4157cb6de663d889e0826ea5f6e5fa17aaeb8bf",
+              "size": 94
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/headers/mainHeader.js",
+              "sha256": "28dd1a0db451bc94d8f3234e57d8192ba17154118f841c398e0de35acea286ee",
+              "size": 4445
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/methods/deflater.js",
+              "sha256": "6dc41b2460594cfa5136b797653c166b2f7403820a40f2fca17cca35a5de1b5f",
+              "size": 1021
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/methods/index.js",
+              "sha256": "d67714f1a04be942f90be77069af3ff4214aa8ee84b26edeff3a87eb0d8e2dc0",
+              "size": 128
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/methods/inflater.js",
+              "sha256": "c5e4531a11385050d77a5069487b0be8e85c8e44fe6b214d68def321e74528ce",
+              "size": 1162
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/methods/zipcrypto.js",
+              "sha256": "23365c7eda0ea098385dc7ec649517fc110ce2764d2e707c37bf6b528604e25a",
+              "size": 5806
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/package.json",
+              "sha256": "7a2b15cf80592c1c12b1ccaf60e771f29b24dd08c1645342e254a762bf953a97",
+              "size": 1365
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/constants.js",
+              "sha256": "208e943a2e5faad056047f3c7991cce3cde637d8e272a564f2546210ebdf2069",
+              "size": 6374
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/decoder.js",
+              "sha256": "73a0ebb00c4dce2124f07acf0b34374cb03a4384cccd1cd6f58aee27c35953d9",
+              "size": 130
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/errors.js",
+              "sha256": "d2d243647737c795c2db8aeba2e1f3841d5f76370b521d436cf465322dd4aab7",
+              "size": 2868
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/fattr.js",
+              "sha256": "31c93eb386a2bfbf19ad92a6bf20d510a8f1e7e90cc71d33dd888f89da12362d",
+              "size": 1892
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/index.js",
+              "sha256": "dc5b230ed853947ea55c0bf69f0e525fbeffefff09aa3da296d541bb8898314e",
+              "size": 226
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/util/utils.js",
+              "sha256": "03318ffbe6d9447fdbcc5a92b4996590f15bfc3c08da8cf684f75ee34be5dfd9",
+              "size": 10550
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/zipEntry.js",
+              "sha256": "61b6fcc1675725efbd7f0bc7c17529806bd3819b43e3794ffd067eeb7bb88e5c",
+              "size": 15625
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/node_modules/adm-zip/zipFile.js",
+              "sha256": "f95d3d6687e5ed959559943380e3bcf61f3e8849286d740afa45dedb28ffa16d",
+              "size": 15795
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/package.json",
+              "sha256": "07d0242f84fdcfc8f4a0e601dc35f01fa153535c67f95262e0bd750ba7cfa418",
+              "size": 1296
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/prebuilds/darwin-arm64/foundry_local_napi.node",
+              "sha256": "1cb33a3264bd3843f092be626ee0b4181646ef632cbf7f671b3624b1d44c283c",
+              "size": 55032
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/foundry-local-sdk/node_modules/foundry-local-sdk/script/install-utils.cjs",
+              "sha256": "0831c932b10389283e805f88a204b0f6a5a8053f2ee520e56a0f0adf1352aa8b",
+              "size": 10443
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/index.js",
+              "sha256": "94d1065a78045d9710de0a5104cd068ee5bdf25f30841db92cd986bc1004831d",
+              "size": 19452
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/npm-loader.js",
+              "sha256": "0ea824a86be5757533fdb092eff7050871bd7a711a46babde0ffe0e44ac5ad88",
+              "size": 1185
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/package.json",
+              "sha256": "7385115721e66c343d2d98e3965a32e9198bef6eda2300558b1c9bece71c9d11",
+              "size": 576
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/.mcp.json",
+              "sha256": "a3dc47942ea9a540e1c26151ced72c4cb6cf26bcc2c2df9219d7357f0ec530e0",
+              "size": 177
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/.plugin/plugin.json",
+              "sha256": "9cfc5e747fd15359b800297e6be7d4a003ac52575ad5fed0b7139cd01947379a",
+              "size": 124
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/.release-target",
+              "sha256": "8d881856b9e9a2991794a6cb91599bddc227db867a3ff50402438c3d5a02cb57",
+              "size": 13
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/CodeResources",
+              "sha256": "de450c7c24f1b0bc337ac374d5eaa7a2d778bb49ffa48a9bf3d7e742bb2ad3da",
+              "size": 1653
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/Info.plist",
+              "sha256": "73df9547290b86ae6e7cce96f138dec7c5e19680bb289e7cf58f25f01153070a",
+              "size": 1312
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/MacOS/Copilot Computer Use",
+              "sha256": "5bf5e9f9682fca24f4ef456da907a5e531d2c5cd0c21e4177cde49665b18e83d",
+              "size": 2776624
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/PkgInfo",
+              "sha256": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0",
+              "size": 8
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/Resources/Assets.car",
+              "sha256": "19f96e7a8041d28d4decf3bcebe6578576e5b76fc8d1eb97cfa5dfb320b0d383",
+              "size": 1522472
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/Resources/icon.icns",
+              "sha256": "9539084c7bffa36162651c304d8640d7734f9b1cd1cf3e0f0a2d14377239b1bb",
+              "size": 559537
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/plugins/computer-use/Copilot Computer Use.app/Contents/_CodeSignature/CodeResources",
+              "sha256": "69525013976c35b45829c15500fb4e00165ae069150e2b4a81dfc92327fa018f",
+              "size": 2666
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/plugins/computer-use/computer-use-mcp",
+              "sha256": "3d9b34e3da5ee9cdc3b1bb4f39c1bef3d8e44590ce4db70b6c6bff4175e1f013",
+              "size": 2199008
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/prebuilds/darwin-arm64/cli-native.node",
+              "sha256": "0b0133a7336f08dc784272355c08cd2af48aea65af2ccb5ef09fb3ec0acad077",
+              "size": 1787952
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/prebuilds/darwin-arm64/copilot-runtime",
+              "sha256": "55a5818aeb32d3c5b40c46dbad99553bb3857c7032a76f9a8dc3f2027ebdc7bc",
+              "size": 386960
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/prebuilds/darwin-arm64/copilot-runtime-bin",
+              "sha256": "70325efcff9a547592721d08052c27a8a25fb6460662c9fa7ca710cff9edf7db",
+              "size": 386976
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/prebuilds/darwin-arm64/mediaremote-adapter/LICENSE",
+              "sha256": "a489c16a6be195584fa0b35e28fca54abc8492eb0cc05d851dd24f522f4900a2",
+              "size": 1521
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/prebuilds/darwin-arm64/mediaremote-adapter/MediaRemoteAdapter.framework/MediaRemoteAdapter",
+              "sha256": "f9180d3d06290fe9e193c639ef0e90dfbf90990654ca7a9c8359a48a06755d14",
+              "size": 168112
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/prebuilds/darwin-arm64/mediaremote-adapter/mediaremote-adapter.pl",
+              "sha256": "984d622eeebbcb17656d157a49272b02fb741593ae2ec624d1926c12d955c8a1",
+              "size": 8444
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/prebuilds/darwin-arm64/runtime.node",
+              "sha256": "b4ed38ba8932b419b1908606745a5423ff2a03432539eca1846a1fdc5d60a7eb",
+              "size": 68217360
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/preloads/extension_bootstrap.mjs",
+              "sha256": "2e24513650ff736eb9e052ef084cb920b5aed9553d875f747bb53d3c8dcdb286",
+              "size": 2824
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/preloads/extension_sdk_resolver.mjs",
+              "sha256": "e57d71730c8f937315a72b66187c56cc4fa78ecbd13590795136996e2851bf19",
+              "size": 1331
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/index.js",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "size": 0
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/README.md",
+              "sha256": "7eb46bc4bdba8002da1165107fc729ee816f58063a8e8d6d0083a3fb81898683",
+              "size": 1675
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/errors.js",
+              "sha256": "14b373ef00a0bf0fceb5abe86a6628f914a466b2403ba376f78b025cff05e92b",
+              "size": 2528
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/index.js",
+              "sha256": "a99551364022401340991df2d74e1c949290e920aa9247d22c262e26b768a0f0",
+              "size": 748
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/platforms.js",
+              "sha256": "9eb9c4c2af151391c4966bdaf15364d15362996915e8f5fa685daca1c3f81359",
+              "size": 6404
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/pv_recorder.js",
+              "sha256": "3323ebdbad3d524dc4330d25cb226cc17a0f7f365b738f471faf883d71de658d",
+              "size": 6154
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/pv_recorder_status_t.js",
+              "sha256": "c7c94cd144fb0fcf5f844e76ff83d754dc6b835e45893c2cc81de5f0c3ddccbb",
+              "size": 1519
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/types/errors.d.ts",
+              "sha256": "5250616ee995097ea36daa3285d957e3adcdd9c76a6dd13ea3d10174c38a8668",
+              "size": 236
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/types/index.d.ts",
+              "sha256": "6b27f29a807ef113c326fcc2139ddde257e74585cb58591ad9753dcbfd00c03f",
+              "size": 98
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/types/platforms.d.ts",
+              "sha256": "a11acc208b8d403db8882b97e0101f549a5dd7a1ca656ff46d9378277a100064",
+              "size": 142
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/types/pv_recorder.d.ts",
+              "sha256": "6b06821393cd5fbab4874a11c46634e7bb1ff91848bbf34a1e5008ccea6929bf",
+              "size": 2741
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/dist/types/pv_recorder_status_t.d.ts",
+              "sha256": "b35985d2b520dc2570f90f23e6db7e6ce37369db6e35c27bc532de349421175e",
+              "size": 337
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/lib/mac/arm64/pv_recorder.node",
+              "sha256": "f5bc73a9e4e4506bc1882a1c3eb318f51848621c2620fb6eaa177faefc2fa648",
+              "size": 625648
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/pvrecorder/node_modules/@picovoice/pvrecorder-node/package.json",
+              "sha256": "e44a9dde00f1344251f22bce37520ea1bbbde5af2965cab7e612758854ee3a99",
+              "size": 1197
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/bash-highlights.scm",
+              "sha256": "77860b9f127ca82681e3691bba003e62d1d8dbced05e4fe96041d26fd8944656",
+              "size": 5776
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/c-highlights.scm",
+              "sha256": "a99c4c0bf9d9b9f7de0124c529a4229fddada96d65bf5fb0c9d487266e15d483",
+              "size": 6332
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/cpp-highlights.scm",
+              "sha256": "69d1dbed8d49c498e93a75db6afedfb8769fa2fed455a64d588dc347281d642f",
+              "size": 4904
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/csharp-highlights.scm",
+              "sha256": "4b79059a52926e8cd08a1d80af70ba02acefb86bc8ed82315897fb104ed1a338",
+              "size": 8302
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/css-highlights.scm",
+              "sha256": "6641fed120530bfbce5682ab88b2a8d14d99bfcd971ac9f78cd91738b4b0578a",
+              "size": 1177
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/go-highlights.scm",
+              "sha256": "c58a7336d4834ebfbb038002c6ab033f792cd1b8d3e7e1682bdaa982bee7f6b1",
+              "size": 3934
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/html-highlights.scm",
+              "sha256": "1ebb3811a8cdc054385b847a3aac6fbf7079faefd5b3dfab5bbad256cd5afdcf",
+              "size": 197
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/java-highlights.scm",
+              "sha256": "c68c0e7e9ae36d94c9e5ab06556b34c5e8568d1ce1867043d92bbe4b3b4dcf2f",
+              "size": 4425
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/javascript-highlights.scm",
+              "sha256": "d3630ae6dc9b2b27b230b5f8bb92b05cd491fb12bff353dae62a0a6d780461ee",
+              "size": 2739
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/json-highlights.scm",
+              "sha256": "6ab09656820f0e8dac860c96dced341221284544c05308ee337727f5db937101",
+              "size": 412
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/php-highlights.scm",
+              "sha256": "a2a7367659cff3b4be09961c8117d69a9b8703bfc266f8092e089b1760f197e9",
+              "size": 3207
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/python-highlights.scm",
+              "sha256": "a6708f209381618e2b398972c8f1ccd892f0c064eab35a2a3f911c3e22e79a7e",
+              "size": 1957
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/ruby-highlights.scm",
+              "sha256": "1cc8fc205e4cce4fe9e0d63bb1be903e49ea0f2eda77ae9368898a31ff98bc18",
+              "size": 4068
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/rust-highlights.scm",
+              "sha256": "c649a4785322ab72af84874b9dc03c7a4f5d9a05de45a85919a60770d7d5457d",
+              "size": 8610
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/scala-highlights.scm",
+              "sha256": "e9e89654a7df214f4c79c28af7bc50bdb5c6cc5abb9690e3e1ce19c35b797991",
+              "size": 4858
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/queries/typescript-highlights.scm",
+              "sha256": "e0c35adb819127bfd4f853fac5419e7d8ba44760246201d04a4a5ce0228a10c5",
+              "size": 515
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/ripgrep/bin/darwin-arm64/rg",
+              "sha256": "2720be6fb95c4809010ade30e0067aa3b4f9459ac62b3a886a808477aa60667f",
+              "size": 4520448
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/schemas/api.schema.json",
+              "sha256": "9a479b80adc06bac35f3347f7b12552e07809ba76d5eecdb265c9592e5231c61",
+              "size": 1571151
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/schemas/session-events.schema.json",
+              "sha256": "24c7f581ec307f8bf0ddd9267ebb45e36b73b286dc8c713c37464a9be8bb5c4f",
+              "size": 739807
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/sdk/index.js",
+              "sha256": "0c1d23423721c52fcbe3138d4fae9a2f48bf483203ca3768930c0506db09b6d2",
+              "size": 1140557
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/sea-loader.js",
+              "sha256": "b8a1163ec26aa0a787b08464a0b652f1a249553331e26637f834b3252ee42e3a",
+              "size": 93933
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/tgrep/bin/darwin-arm64/tgrep",
+              "sha256": "0916c322459d921ac2b5aba46ce8b5cf7d825f6fcb2c59a17812d434a37b65a2",
+              "size": 5689152
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-bash.wasm",
+              "sha256": "8292919c88a0f7d3fb31d0cd0253ca5a9531bc1ede82b0537f2c63dd8abe6a7a",
+              "size": 1358224
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-c.wasm",
+              "sha256": "c852c2a85ebf2beb636aa3b0ef7f7e70458684d74f6741b20dcb296885bed9f9",
+              "size": 625918
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-c_sharp.wasm",
+              "sha256": "6f69e1cae44e1c32c1eccc170dc5a9778fb94ff716f71113fe1f8c4299aa2f40",
+              "size": 5350581
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-cpp.wasm",
+              "sha256": "174eb0deb75b2ec7881bcacda9f995648d8e683956e5c2267e69ab6dc503fcbf",
+              "size": 3434931
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-css.wasm",
+              "sha256": "8a23977fe271357cce6f254ef88c9bebf3854602d8046605aef6a45c02135c59",
+              "size": 128668
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-go.wasm",
+              "sha256": "9504573f352b20be7f2f1911754d710622aedc15afff16d5ed8fb5645681aee7",
+              "size": 217182
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-html.wasm",
+              "sha256": "c48fcd82c7ea8bf943180088ba7f28c48b2bb5287874179168bf9d31e394cf85",
+              "size": 18385
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-java.wasm",
+              "sha256": "4fdeac4ca6ca089f06c6f7e562abcac1733cd465728cc7031ebb73c2019122c4",
+              "size": 414641
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-javascript.wasm",
+              "sha256": "5fb488d0cabb4775a594bab85682de5ad6ce83c0d6ac997a9f82dd084d571240",
+              "size": 411770
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-json.wasm",
+              "sha256": "d2119fb98d5912719b13f9458574f8608d2d29dfbe45f6be1f860ea1fe2a2405",
+              "size": 5596
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-php.wasm",
+              "sha256": "d4df6a6ff08c87c3ec4f9cbb785fe09998a0cb570e03f57d7b19b3acfb146aa7",
+              "size": 1058041
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-python.wasm",
+              "sha256": "16108b50df4ee9a30168794252ab55e7c93bfc5765d7fa0aa3e335752c515f47",
+              "size": 457883
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-ruby.wasm",
+              "sha256": "09a96427d7c72f0613ed470cd9812223fc4a91d6a9c025c0235cc6bd59ff96f4",
+              "size": 2106352
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-rust.wasm",
+              "sha256": "f65f354215611fd94ad34134b3427eb3d58cbb745df7b6509ba722184db73d57",
+              "size": 1102547
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-scala.wasm",
+              "sha256": "b7ec2bb29c19827abcefd18ed5cb5a43596009f96a5d53c5b9d1f9676d7521c3",
+              "size": 3786700
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-tsx.wasm",
+              "sha256": "79e5da75ea62855a0cd67177685f0164eac87d5f630b3cbe1e0a099751ad30f8",
+              "size": 1445638
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/tree-sitter-typescript.wasm",
+              "sha256": "778025db5a8be0e70f8ccc3671e486dfeddd048c25d9e8a70c26de2e1bf6f97d",
+              "size": 1413849
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/tree-sitter.wasm",
+              "sha256": "f38dcc4b43b818f9a0785bc1c6d5611a75ac4cdd428ff3f02757c34ca4e46d7f",
+              "size": 205488
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/voice-engine.worker.js",
+              "sha256": "48c99f71a9c52f4a67d798349a80cd721e92f8d24e4544b4cd953362868e476b",
+              "size": 120866
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/voice-installer.worker.js",
+              "sha256": "b17002115ba0e6789b1349c4e2991acda075f2cd74f5bb7b111e75ef58343461",
+              "size": 20270
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/voice-server.js",
+              "sha256": "a35471529099729fa3f3abe74267290ec13e35ca945871061c6ab14142fddd42",
+              "size": 126655
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/index.js",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "size": 0
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview-darwin-arm64/README.md",
+              "sha256": "f7fac36538af09475752019eedaf6299ff21f36cf9e7cb4a6c676c7974afff0b",
+              "size": 106
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview-darwin-arm64/package.json",
+              "sha256": "e9241663ed145cdb282dbc65933b7c14cb30a3da2cb47a0b5f657e23d5889084",
+              "size": 638
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview-darwin-arm64/webview.darwin-arm64.node",
+              "sha256": "85089cd40b59cd4cb087ad43d448c308b3461106fae78795d5852d5eedea585f",
+              "size": 3997792
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/LICENSE",
+              "sha256": "9cac72e0573f14d3f9bcb8f70922d589ba07dd1051a5c12229f111e154923f0a",
+              "size": 1065
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/README.md",
+              "sha256": "69c2e106db45187b981358c938e41b8bfb67fb3a451930f102a63b471c0da675",
+              "size": 16477
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/cli/build.mjs",
+              "sha256": "bcb69c0cc8356b78d07c53719ccaa372f1d6b6c381973b76508681573a7b1db4",
+              "size": 3640
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/webview/node_modules/@webviewjs/webview/cli/index.mjs",
+              "sha256": "3d6d86fc751897b67e1b94f0b1d0a667d79e6256b278a7e801467bfd67ad2689",
+              "size": 3837
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/cli/utils.mjs",
+              "sha256": "fb7a2fc54e53c777de835f50c7d4483bee60d1aece0c1deddbe2f232f571d8f1",
+              "size": 193
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/CNAME",
+              "sha256": "405d5f5a242885480dc01db6227484ed4b6d723fd7c3b2547f9f36e46decac15",
+              "size": 14
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/README.md",
+              "sha256": "65578b7f73cc6c145a9d962ca6f2ee56b06153a8277eea8c3c3cadc7d602f155",
+              "size": 15717
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/application.md",
+              "sha256": "44227367accc4a9f5b8468e19680ffd1229891d59c0652e8f45370c0872160bd",
+              "size": 6074
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/browser-window.md",
+              "sha256": "597920a56d3ff8c87b6990473e5150a454f109bd7e639125c8a82d039ade7487",
+              "size": 11107
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/menu.md",
+              "sha256": "838a998eba786e959bec89e148fae7d547df1b13e490b55c890d58100fd77b98",
+              "size": 3828
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/notification.md",
+              "sha256": "8e90225a0f40ebcd2a69bc9e0b8d51c645810faa4fcaae3651101bcaa686d101",
+              "size": 5622
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/tray.md",
+              "sha256": "f071ca7d3a5cc7cb271ceb9e2712db9c6c80d5c8ab33b4a8fc3b168e5d9dd3aa",
+              "size": 1628
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/types.md",
+              "sha256": "e006fb8428d0e58943468f62c77ec78bcba1bb7b0bc41ce3e2258417fe51320c",
+              "size": 5711
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/web-context.md",
+              "sha256": "92b9ed94a8868a1ff8b0f3e4ef92be2a0b2564f7beb1fc8b6107b7f1bca96429",
+              "size": 1774
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/api/webview.md",
+              "sha256": "78ade1e288c7a6169678d4bb64f9e450ed4e855324c310354686c11f127bd494",
+              "size": 6279
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/getting-started/event-loop.md",
+              "sha256": "28b1f847d6ff3c71c5b3fbf9f46d531b6fbd9ba585365cfbe9a2292e698171bb",
+              "size": 2511
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/getting-started/installation.md",
+              "sha256": "06acf9a3d61c0d84f0dcc65153f43d288e1bb139a0e16df69253fae68c2c6c76",
+              "size": 1173
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/getting-started/quick-start.md",
+              "sha256": "55cdf7992b7ad793b204ac80268c66600975ee20c474c2ca029cdd6db58073b6",
+              "size": 1995
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/building-executables.md",
+              "sha256": "18a1d5d2596e0e0b05758643981d7ffe5b9d9f32bf0884c84978c647bf2419e9",
+              "size": 5026
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/cookies-and-storage.md",
+              "sha256": "0eb9abdd246e5a2a0d4a8578c6b565781fdb9d7b99463b50c05a6851c3eed365",
+              "size": 1783
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/custom-protocols.md",
+              "sha256": "1c72110266d09b04f544c0d20aa7fe1f4b6ad84ffa9e171b7f6e55832d39c4c1",
+              "size": 3148
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/ipc-messaging.md",
+              "sha256": "d03b307d46cafe92ad0297cad0a0ee1b3af410143281be4be5ab2dbc31e2e74e",
+              "size": 1790
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/menus.md",
+              "sha256": "88b791fa71cbb51351cd3a220184ea54a53426cca00eab0c185acd139053fe6d",
+              "size": 2764
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/guides/multiple-windows.md",
+              "sha256": "6d05fa117efc95207d4707bbf2728ae31f482bc6e9f29a8a436389fdaae003cd",
+              "size": 1835
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/platform/android.md",
+              "sha256": "646dc6f1ac30a4f2bd25faec682a2d6f0262ea59193ac44490d5914cf1294cd0",
+              "size": 326
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/platform/ios.md",
+              "sha256": "b8b1c2bc59611d633971556fb94720bdb411e2de89771fb372217d1a17b53cb7",
+              "size": 420
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/platform/linux.md",
+              "sha256": "cbd1df68b7c899f826aff9e0fd2d13e9f9e19892ad16fd47a6fea5c625dc0e8b",
+              "size": 1986
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/platform/macos.md",
+              "sha256": "9b5b1d9c4065d7904c02e3dc79517b6df4f8a44dd95902e30502d130cdef5d71",
+              "size": 2260
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/docs/platform/windows.md",
+              "sha256": "5a84a310a20d42e0b24492472efd5512aae11c68668620f071a3d85c3583512a",
+              "size": 2136
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/index.d.ts",
+              "sha256": "49610270556eaff855f8efc8026a595c354309ea325d846d33a617ad54039a39",
+              "size": 13502
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/index.js",
+              "sha256": "9bce1f609372abd7da4973967276ba591c43f9b933bcd52030edb1ad6ee3b8db",
+              "size": 22727
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/js-bindings.d.ts",
+              "sha256": "f2f384ab7913a7e38369155a5abda97c0af3b72db6021df341e8da2288ceceaf",
+              "size": 20365
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/js-bindings.js",
+              "sha256": "e6a970a01839ed97c9a9636a01bf1c77c298a8270b3f1708c4927191856a3bcc",
+              "size": 28518
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/webview/node_modules/@webviewjs/webview/package.json",
+              "sha256": "0a71bc7c23521db3890aadb13763297422e1988e9a68f95ec8b8832c07d33b89",
+              "size": 3442
+            }
+          ],
+          "inventory_sha256": "8e46b7ff27be330301d24a7ff2dd1998a2fc5010206ebac6311a1f1f45ecf36e",
+          "published_at": "2026-08-27T17:05:47.806Z",
+          "version": "1.0.81"
+        },
+        {
+          "archive_bytes": 100354094,
+          "archive_sha256": "f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb",
+          "dist": {
+            "fileCount": 4,
+            "integrity": "sha512-04a+20y9WcM3oTD7PpfSzC154MpNKGInfzgm49u0FmSBodOiaq1FzpQ28rKmFhgdLVi0cv9IO8NNn+aewNeQ2Q==",
+            "shasum": "a1bb3018040f82a1c6e79ed4963a58cce0a61775",
+            "signatures": [
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEQCIGquNly0WEszV1Qoj1ItnBvb4autfnqzt8H6etciXn2NAiAlqoFfM0MVYzDn+XqvJjzOmmDNuKJxPnDC0fVwAcdWNg=="
+              },
+              {
+                "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+                "sig": "MEYCIQD2seUVJSNdMgi3V/bbyBGwO/h2NGqyiVuRKfp7j+WUgwIhAKNvROKKWiNPjowMjkHgi/bhFuU3ssTEEmIYw6M5iCn0"
+              }
+            ],
+            "tarball": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.93.tgz",
+            "unpackedSize": 161513169
+          },
+          "files": [
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/LICENSE.md",
+              "sha256": "b9680937e10425bf19862908856c16ed274e6b81a1368bd62be7a757eab21628",
+              "size": 2955
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/README.md",
+              "sha256": "56746543469bfbe86eb179359b947ecac42db726220c0b031f128343b780bc7a",
+              "size": 383
+            },
+            {
+              "kind": "file",
+              "mode": "0755",
+              "path": "package/copilot",
+              "sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+              "size": 161509168
+            },
+            {
+              "kind": "file",
+              "mode": "0644",
+              "path": "package/package.json",
+              "sha256": "44de35dc12ce1b582678cf565d9f8ddddb786b00dd083373948d6e453e1eb729",
+              "size": 663
+            }
+          ],
+          "inventory_sha256": "67666c08135a9cbe4e433fd45653018ed17e8131a932d8317ea77991d3732fd5",
+          "published_at": "2026-10-07T14:09:56.566Z",
+          "version": "1.0.93"
+        }
+      ]
+    }
+  ],
+  "platform": "darwin-arm64",
+  "registry": "https://registry.npmjs.org",
+  "schema": "copilot-cli-acp-offline-artifact-inventory.v1",
+  "stable_channel_cross_check": {
+    "github_latest_release": {
+      "prerelease": false,
+      "published_at": "2026-10-07T14:06:47Z",
+      "tag": "v1.0.93",
+      "url": "https://github.com/github/copilot-cli/releases/tag/v1.0.93"
+    },
+    "native_latest": "1.0.93",
+    "npm_latest": "1.0.93",
+    "npm_prerelease": "1.0.94-4"
+  }
+}

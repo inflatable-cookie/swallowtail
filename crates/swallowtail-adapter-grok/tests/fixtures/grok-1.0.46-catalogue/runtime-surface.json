@@ -1,0 +1,739 @@
+{
+  "method": "Static strings and embedded-document inspection of brotli-decompressed official tarball payloads; binaries were not executed.",
+  "observations": {
+    "1.0.30": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 141869568,
+      "runtime_sha256": "d53b6e543e482716236748914331db50145c696ac7af91f1ebdedcf5654cfecb"
+    },
+    "1.0.31": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 142384128,
+      "runtime_sha256": "6444143255f8c5095d26b40ebd362bbedee76bddb98fa8f634efe871fde8ba23"
+    },
+    "1.0.32": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 142517376,
+      "runtime_sha256": "7bfcd0938367a3696dcde7b53f66549e7f274918a67887500dda06272c7d810f"
+    },
+    "1.0.33": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 142849840,
+      "runtime_sha256": "43a51b2c913683b6fe56dcba561a1c7df412bd9afa848e592922dfda3a1bee5d"
+    },
+    "1.0.34": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 143016096,
+      "runtime_sha256": "9cd26b579840f0f5c9148a8059ad651904c08b41b7f2ef0b4ec04b9ba898844e"
+    },
+    "1.0.35": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 143697568,
+      "runtime_sha256": "948d44c6491c389d65338f2bc7cf4faf34baea787a7ed35f9e31f925abe8e41c"
+    },
+    "1.0.36": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 143961776,
+      "runtime_sha256": "14a3dda68b368f933a7eaa2e970a30b4ff2149ba42be7dd90eb81c99b6ae3c9a"
+    },
+    "1.0.37": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 144209984,
+      "runtime_sha256": "0fdb8a2e05cbe5ba623558b076f08475d5b4de257549dfc632eee7967d6d6f68"
+    },
+    "1.0.38": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 144397280,
+      "runtime_sha256": "a3c5c279339a1294cc99b4d105fe7c67a9f64d20647f2edf131ee72d70f94ed1"
+    },
+    "1.0.39": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 145226432,
+      "runtime_sha256": "da2011c9a4e011e61d59651bb243b30304727eda8b987bdddd5836c279609453"
+    },
+    "1.0.40": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 145308720,
+      "runtime_sha256": "3f2aef9618191a2c60d18a5044fa462c9c77bdc4187b02ed716b0394e8d4fef2"
+    },
+    "1.0.41": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 145657952,
+      "runtime_sha256": "9c844eb13365180787d9ad22b2b3748a024be8e1ed845253cc114781b31c591d"
+    },
+    "1.0.42": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 158,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 147167808,
+      "runtime_sha256": "01ff85ca48e3805981dad9e548ca19412c0407d6d1c0b43b7d058c9fd6362853"
+    },
+    "1.0.43": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 164,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 147771024,
+      "runtime_sha256": "630b7ec3853d903a1d903e4ee95817a461f82f699dd6fd364d47b93859b39a71"
+    },
+    "1.0.44": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 164,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 147854432,
+      "runtime_sha256": "b637a934c22ee480cc133a783712f5abd845ae87f7b0aa646c220af3d67f7c28"
+    },
+    "1.0.45": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 164,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 149769664,
+      "runtime_sha256": "7c850a97f900fee60b4cbe6b4aa2d873a0ceec9d11430e3a7917728e8c6091e1"
+    },
+    "1.0.46": {
+      "embedded_default_models": [
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        },
+        {
+          "bytes": 2323,
+          "default": "grok-4.6",
+          "efforts": null,
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ],
+          "sha256": "9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a",
+          "sha256_with_trailing_newline": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a"
+        }
+      ],
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 153,
+        " (default)\\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "xai-grok-pager/src/models.rs": 1
+      },
+      "runtime_bytes": 150374256,
+      "runtime_sha256": "e8daa302364c9c3b6a5546d511cfbd1ab5e5d407a9b04282f660665ea405f9f3"
+    }
+  },
+  "schema": "swallowtail.grok-build-catalogue.runtime-surface.v1",
+  "source_package": "@xai-official/grok-darwin-arm64",
+  "target": "darwin-arm64"
+}

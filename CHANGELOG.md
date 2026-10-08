@@ -16,6 +16,27 @@ annotated Git tags from the canonical repository.
   qualifies `2.1.1` with `2.1.0` unsupported. No public API or behavior revision
   changes; ACP and local-server claims remain separate. No provider prompt,
   credentials, live session, artifact execution, host update, release, or tag.
+- qualify shared stable ACP schema from `schema-v1.20.0` through current
+  official `schema-v1.24.1`, covering all five published hops. Research 406
+  freezes each tag, all four release assets, the complete per-hop file ledger,
+  and the selected wire subset. Wire `protocolVersion` remains `1`. The
+  selected Claude Agent form-elicitation subset was already mapped; optional
+  tool names remain unmapped; lifecycle, permission, usage, and other selected
+  configuration, activity, lifecycle, permission, and usage fields are
+  unchanged. Unstable schema assets stay outside the axis,
+  and historical schema corpora, provider version ranges, and feature cells
+  remain unchanged. No provider session, credential, installation, or host
+  update was used.
+- qualify only `cursor-agent.headless` through official ACP registry stable
+  `2026.10.01-14929f9`, after every published hop following
+  `2026.09.18-9a7762b`. Research 399 freezes both platform archives, complete
+  package trees, and the per-hop selected-file ledger. Preserve the headless
+  baseline, claim, behavior revision, prior points, and gaps; ACP is separately
+  qualified through `2026.10.01` by Research 395, and the catalogue claim is
+  unchanged. The selected CLI options, NDJSON event mapping, usage, failure
+  boundary, permission selection, and lifecycle remain compatible. No archive
+  execution, provider prompt, authenticated catalogue/session, credential use,
+  installation, or host update occurred.
 - qualify only `command-code.headless` through official npm `latest`
   `1.79.1`, with an exact segment for each of the 33 published stable points,
   including the existing `1.65.0` baseline. Research 402 freezes each package
@@ -88,8 +109,8 @@ annotated Git tags from the canonical repository.
   `2026.10.01-14929f9`, after every published hop following `2026.09.18-9a7762b`.
   Research 393 freezes exact Darwin ARM64 and Linux x64 artifacts, complete
   package trees, and per-hop selected-file classifications. Keep the baseline,
-  claim, behavior revision, prior points, and gaps; Headless remains at
-  `2026.09.18-9a7762b`; ACP is qualified separately in Research 395. The
+  claim, behavior revision, prior points, and gaps; Headless is separately
+  qualified through `2026.10.01-14929f9` by Research 399; ACP is qualified in Research 395. The
   selected `models` command, account options,
   model identity/display mapping, failure boundary, and process lifecycle are
   unchanged. No archive execution, authenticated catalogue, provider prompt,
@@ -101,8 +122,8 @@ annotated Git tags from the canonical repository.
   only the ACP claim through `2026.09.26-dd393fe`, `2026.09.28-64d2043`, and
   `2026.10.01-14929f9`; retain its baseline, claim id, behavior revision, exact
   gaps, and blocked continuation. Catalogue is separately qualified through
-  `2026.10.01-14929f9` (Research 393); Headless remains at
-  `2026.09.18-9a7762b`. The general installer build `2026.10.01-e373342`
+  `2026.10.01-14929f9` (Research 393); Headless is separately qualified
+  through `2026.10.01-14929f9` by Research 399. The general installer build `2026.10.01-e373342`
   remains a separate channel. No public operation, permission, or lifecycle
   behavior changes. No provider prompt, live session, credential use, artifact
   execution, installation, or host update occurred.
@@ -226,6 +247,12 @@ annotated Git tags from the canonical repository.
   Published `1.0.47` through `1.0.49` remain `UnverifiedNewer`; alpha-tagged
   `1.0.50` is excluded. The `1.0.30` catalogue, exact `1.0.4`/`1.0.5`
   registered-tool courier, and HTTP MCP evidence remain independently bounded.
+- keep `grok-build.catalogue` at exact `1.0.30` under `QualifiedOnly`. Research
+  405 freezes all selected stable hops through official `1.0.46` and records a
+  new default-not-in-list header that the current parser rejects. A same-
+  contract mapping or operator ruling is needed before the catalogue claim can
+  move. No live catalogue, prompt, credential, installation, or host mutation
+  occurred.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,

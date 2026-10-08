@@ -27,6 +27,12 @@ Earlier immutable releases remain documented at [`v0.4.1`](0.4.1.md),
 release line includes no crates.io publication, GitHub Release object, binary,
 sidecar, installer, or model artifact.
 
+## Preparatory Backport Evidence
+
+- [v0.5.2 SDK backport proof](sdk-v0.5.2-backport.md) — reproducible,
+  provider-free patch recipe against immutable `v0.5.1`; not a release
+  candidate or new route qualification
+
 ## Consumer Handoffs
 
 These records preserve bounded adoption evidence. They supplement the current

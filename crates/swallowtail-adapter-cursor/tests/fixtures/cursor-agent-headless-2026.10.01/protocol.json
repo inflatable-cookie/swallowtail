@@ -1,0 +1,63 @@
+{
+  "route": "cursor-agent.headless",
+  "behavior_revision": "cursor-agent.stream-json.structured-v1",
+  "selected_cli": {
+    "mode": "--print --output-format stream-json --model <exact-model> --trust --mode plan|ask; ask remains admitted only by its existing exact qualified release and read-authority gate.",
+    "selected_option_registration_present_at_every_hop": true,
+    "selected_mode_dispatch_unchanged": true,
+    "new_operation_or_authority": false
+  },
+  "wire": {
+    "framing": "JSON event per line, each serialized event terminated by LF.",
+    "system_init": "One initial system/init event must carry a nonempty session_id, the selected model, and permissionMode default.",
+    "user": "Session identity is validated; event produces no mapped output.",
+    "assistant": "message.content text blocks are concatenated and projected as output deltas; other content blocks are ignored.",
+    "thinking": "delta text becomes reasoning progress; completed closes the current thought projection.",
+    "tool_call": "started/completed with call_id; tool case maps to bounded tool activity; raw tool payload stays private.",
+    "result": "success with is_error=false, duration_ms, duration_api_ms, nonempty request_id, and result; terminal output must agree with assistant text when both exist.",
+    "usage": "Optional inputTokens/outputTokens and optional cacheReadTokens/cacheWriteTokens become token usage; malformed counts fail closed.",
+    "session": "All non-init events must use the initialized session_id."
+  },
+  "failure_and_lifecycle": {
+    "malformed_json_or_selected_fields": "typed sanitized failure; stream size/event limits retained.",
+    "process_nonzero": "provider process failure with sanitized diagnostic.",
+    "missing_success_terminal": "incomplete-stream failure.",
+    "cancellation_and_deadline": "existing force-stop, wait, join and cleanup path retained.",
+    "permissions": "selected default permissionMode and existing plan/ask/read-write selection unchanged; no inferred provider enforcement."
+  },
+  "static_review": {
+    "platforms": [
+      "darwin-arm64",
+      "linux-x64"
+    ],
+    "versions": [
+      "2026.09.18-9a7762b",
+      "2026.09.26-dd393fe",
+      "2026.09.28-64d2043",
+      "2026.10.01-14929f9"
+    ],
+    "headless_writer_chunks_contain_selected_print_and_stream_json_strings": true,
+    "selected_option_literals_unchanged": [
+      "--print",
+      "--output-format",
+      "stream-json",
+      "--model",
+      "--trust",
+      "--mode",
+      "plan",
+      "ask"
+    ],
+    "selected_wire_shape_unchanged": true,
+    "usage_mapping_unchanged": true,
+    "only_headless_selected_surface_qualified": true,
+    "provider_internal_and_native_changes_mapped": false,
+    "catalogue_or_acp_evidence_transferred": false
+  },
+  "safety": {
+    "downloaded_archive_executed": false,
+    "host_install_or_update": false,
+    "provider_prompt_sent": false,
+    "authenticated_catalogue_or_session_called": false,
+    "credentials_used": false
+  }
+}

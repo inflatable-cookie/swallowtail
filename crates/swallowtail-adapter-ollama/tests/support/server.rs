@@ -7,6 +7,11 @@ use std::time::Duration;
 
 const VERSION: &str = include_str!("../fixtures/ollama-native-v0.14.0-v0.32.1/version-0.30.0.json");
 const TAGS: &str = include_str!("../fixtures/ollama-native-v0.14.0-v0.32.1/tags.json");
+const TAGS_MANIFEST_LIST: &str = include_str!("../fixtures/ollama-0.40.1/tags-manifest-list.json");
+const TAGS_IDENTITY_DRIFT: &str =
+    include_str!("../fixtures/ollama-0.40.1/tags-identity-drift.json");
+const TAGS_UNMAPPED_SIBLING: &str =
+    include_str!("../fixtures/ollama-0.40.1/tags-unmapped-sibling.json");
 const RUNNING: &str = include_str!("../fixtures/ollama-native-v0.14.0-v0.32.1/ps.json");
 const SHOW: &str = include_str!("../fixtures/ollama-native-v0.14.0-v0.32.1/show.json");
 const SUCCESS: &str = include_str!("../fixtures/ollama-native-v0.14.0-v0.32.1/chat-success.ndjson");
@@ -34,6 +39,15 @@ pub enum VersionFixture {
 }
 
 #[derive(Clone, Copy)]
+pub enum CatalogueFixture {
+    SingleModel,
+    ManifestList,
+    SelectedIdentityDrift,
+    SiblingAfterChat,
+    UnmappedSibling,
+}
+
+#[derive(Clone, Copy)]
 pub enum StreamFixture {
     Success,
     MidstreamError,
@@ -48,6 +62,7 @@ pub struct FixtureServer {
     endpoint: String,
     targets: Arc<Mutex<Vec<String>>>,
     bodies: Arc<Mutex<Vec<Vec<u8>>>>,
+    show_bodies: Arc<Mutex<Vec<Vec<u8>>>>,
     inference_attempts: Arc<AtomicUsize>,
     version_requests: Arc<AtomicUsize>,
     stop: Arc<AtomicBool>,
@@ -60,15 +75,25 @@ impl FixtureServer {
     }
 
     pub fn start_with(version: VersionFixture, stream_fixture: StreamFixture) -> Self {
+        Self::start_with_catalogue(version, stream_fixture, CatalogueFixture::SingleModel)
+    }
+
+    pub fn start_with_catalogue(
+        version: VersionFixture,
+        stream_fixture: StreamFixture,
+        catalogue: CatalogueFixture,
+    ) -> Self {
         let listener = TcpListener::bind("127.0.0.1:0").expect("fixture listener binds");
         let endpoint = format!("http://{}", listener.local_addr().expect("address exists"));
         let targets = Arc::new(Mutex::new(Vec::new()));
         let bodies = Arc::new(Mutex::new(Vec::new()));
+        let show_bodies = Arc::new(Mutex::new(Vec::new()));
         let inference_attempts = Arc::new(AtomicUsize::new(0));
         let version_requests = Arc::new(AtomicUsize::new(0));
         let stop = Arc::new(AtomicBool::new(false));
         let server_targets = Arc::clone(&targets);
         let server_bodies = Arc::clone(&bodies);
+        let server_show_bodies = Arc::clone(&show_bodies);
         let server_attempts = Arc::clone(&inference_attempts);
         let server_versions = Arc::clone(&version_requests);
         let server_stop = Arc::clone(&stop);
@@ -91,6 +116,12 @@ impl FixtureServer {
                             .expect("body lock is available")
                             .push(request.body.clone());
                     }
+                    if request.method == "POST" && request.target == "/api/show" {
+                        server_show_bodies
+                            .lock()
+                            .expect("show body lock is available")
+                            .push(request.body.clone());
+                    }
                     respond(
                         &mut stream,
                         &request,
@@ -98,6 +129,7 @@ impl FixtureServer {
                         &server_versions,
                         version,
                         stream_fixture,
+                        catalogue,
                     );
                 }
             }
@@ -106,6 +138,7 @@ impl FixtureServer {
             endpoint,
             targets,
             bodies,
+            show_bodies,
             inference_attempts,
             version_requests,
             stop,
@@ -130,6 +163,13 @@ impl FixtureServer {
 
     pub fn inference_bodies(&self) -> Vec<Vec<u8>> {
         self.bodies.lock().expect("body lock is available").clone()
+    }
+
+    pub fn show_bodies(&self) -> Vec<Vec<u8>> {
+        self.show_bodies
+            .lock()
+            .expect("show body lock is available")
+            .clone()
     }
 
     pub fn version_requests(&self) -> usize {
@@ -206,6 +246,7 @@ fn respond(
     version_requests: &AtomicUsize,
     version: VersionFixture,
     stream_fixture: StreamFixture,
+    catalogue: CatalogueFixture,
 ) {
     match (request.method.as_str(), request.target.as_str()) {
         ("GET", "/api/version") => {
@@ -217,11 +258,23 @@ fn respond(
                 VersionFixture::DriftAfterPreparation => VERSION.replace("0.30.0", "0.32.1"),
                 VersionFixture::Excluded => VERSION.replace("0.30.0", "0.32.2"),
                 VersionFixture::InteriorHole => VERSION.replace("0.30.0", "0.34.5"),
-                VersionFixture::Newer => VERSION.replace("0.30.0", "0.40.0"),
+                VersionFixture::Newer => VERSION.replace("0.30.0", "0.41.0"),
             };
             respond_with(stream, 200, "application/json", &body);
         }
-        ("GET", "/api/tags") => respond_with(stream, 200, "application/json", TAGS),
+        ("GET", "/api/tags") => {
+            let body = match catalogue {
+                CatalogueFixture::SingleModel => TAGS,
+                CatalogueFixture::ManifestList => TAGS_MANIFEST_LIST,
+                CatalogueFixture::SiblingAfterChat if attempts.load(Ordering::SeqCst) > 0 => {
+                    TAGS_MANIFEST_LIST
+                }
+                CatalogueFixture::SiblingAfterChat => TAGS,
+                CatalogueFixture::SelectedIdentityDrift => TAGS_IDENTITY_DRIFT,
+                CatalogueFixture::UnmappedSibling => TAGS_UNMAPPED_SIBLING,
+            };
+            respond_with(stream, 200, "application/json", body);
+        }
         ("GET", "/api/ps") => respond_with(stream, 200, "application/json", RUNNING),
         ("POST", "/api/show") => respond_with(stream, 200, "application/json", SHOW),
         ("POST", "/api/chat") => {

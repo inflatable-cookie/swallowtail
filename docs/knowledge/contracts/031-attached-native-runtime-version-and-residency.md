@@ -102,12 +102,13 @@ acceptable before execution.
 
 Tom ruled on 2026-10-08, answering “Accept and approve all” to decision
 `29ebdfbc-ef0b-47f1-9a6b-47b5cd24245b`. Provider-owned background local
-model-store migration on Ollama `0.40.0` may be accepted as a disclosed
-possible inference side effect, subject to provider-free adaptation and
-qualification proving manifest-list catalogue rows, exact selected tag/digest
-binding, identity drift and migration failure handling.
+model-store migration on Ollama `0.40.0` is a disclosed possible inference
+side effect. The adapter binds the preflight tag and digest, pins `ggml` or
+`llamacpp` from the matching catalogue row, observes extra same-tag sibling
+rows, skips unmapped non-gguf or unknown-runner siblings, and fails closed
+when the selected tag is present only under another digest. Preparation
+issues no mutation. Runtime ownership stays downstream.
 
-Preparation remains mutation-free and runtime ownership stays downstream.
 This grants no pull, migration administration or serving-process ownership.
 Residency acceptance alone is not migration permission. The adapter must not
 silently substitute a model or treat new per-runner rows as proof of the old
@@ -116,7 +117,8 @@ opt-in or further authority is needed, return for a separate ruling.
 
 Preserve older qualified runtime points. No live model-store mutation is
 authorized by this provider-free proof. Contract 036 release compatibility
-is a separate gate, and this ruling alone qualifies no runtime version.
+is a separate gate. Qualification of exact `0.40.0` and `0.40.1` is the
+adapter adaptation that follows this ruling, not the ruling text itself.
 
 ## Native Streaming
 

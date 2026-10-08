@@ -448,12 +448,12 @@ OpenHands adds a package without a production route.
   mapping now use the common compatible-chat framing and envelope codec
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
-  `0.14.0..=0.34.4` plus `0.35.0..=0.35.1`; exact runtime, installed and
+  `0.14.0..=0.34.4` plus `0.35.0..=0.35.1` and `0.40.0..=0.40.1`; exact runtime, installed and
   running model observations, NDJSON output, and inference-caused residency
   remain distinct, with optional adapter-local `options.num_ctx` dispatch on
-  structured runs and interactive replay. Current official `0.40.0` is
-  unverified because chat can start local compatibility migration; Research
-  379 records the adapter and authority gate. The adapter adds no installation,
+  structured runs and interactive replay. From `0.40.0`, chat may disclose
+  provider-owned local compatibility migration; the adapter binds tag and
+  digest and does not substitute sibling runner rows. The adapter adds no installation,
   model acquisition, cloud access, unload, or server ownership.
 - `swallowtail-adapter-xai` implements resource-free direct inference over one
   host-approved Responses WebSocket as either one bounded response without
@@ -1771,11 +1771,13 @@ inference or model mutation. Prepared inventory and one-attempt inference stay
 separate. Inference declares runtime-managed residency but grants no pull,
 unload, restoration, process, or server authority. Exact endpoint and runtime
 drift fail before operation effects. Maintained `0.14.0..=0.34.4` and
-`0.35.0..=0.35.1` segments, exact `0.32.2` and `0.32.10` exclusions,
-unpublished gaps, and prerelease closure remain explicit. Current official
-`0.40.0` remains `UnverifiedNewer`: its chat scheduler can start background
-local model-store migration, which needs an operator ruling before this
-attached-runtime lifecycle is qualified (Research 379).
+`0.35.0..=0.35.1` and `0.40.0..=0.40.1` segments, exact `0.32.2` and `0.32.10`
+exclusions, unpublished gaps, and prerelease closure remain explicit. From
+`0.40.0`, chat may start provider-owned background local compatibility
+migration; the adapter binds the selected tag and digest, observes sibling
+manifest-list rows, and does not treat a new runner row as the old identity
+(Contract 031; Research 379). Synthetic `0.41.0` is the first visible
+`UnverifiedNewer` point.
 
 llama.cpp completes the local-runtime family with deliberately separate
 prepared types. `prepare_llama_cpp_attached` binds one host-approved external

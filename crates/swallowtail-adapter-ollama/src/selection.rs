@@ -10,11 +10,11 @@ use swallowtail_core::{
 pub const OLLAMA_BASELINE_VERSION: &str = "0.14.0";
 /// Newest Ollama runtime release qualified for the native text facade.
 ///
-/// Exact stable points `0.35.0` and `0.35.1` retain
-/// `ollama.native-text-v1`. `0.40.0` adds an inference-triggered local
-/// compatibility migration, so it remains visibly unverified pending an
-/// adapter and authority ruling (Research 379).
-pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.35.1";
+/// Maintained segments are `0.14.0..=0.34.4`, `0.35.0..=0.35.1`, and
+/// `0.40.0..=0.40.1` under `ollama.native-text-v1`. Unpublished
+/// `0.35.2` through `0.39.x` stay interior gaps. `0.41.0` is the first
+/// visible `UnverifiedNewer` point.
+pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.40.1";
 pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";
 /// Exact text-only native API facade selected by this adapter.
@@ -61,6 +61,13 @@ pub fn ollama_runtime_claim() -> InterfaceCompatibilityClaim {
             ),
             InterfaceVersionSegment::new(
                 InterfaceVersion::new("0.35.0").expect("first qualified point is valid"),
+                InterfaceVersion::new("0.35.1").expect("second segment ceiling is valid"),
+                InterfaceBehaviorRevision::new("ollama.native-text-v1")
+                    .expect("static behavior revision is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                InterfaceVersion::new("0.40.0").expect("migration window floor is valid"),
                 InterfaceVersion::new(OLLAMA_LATEST_QUALIFIED_VERSION).expect("latest is valid"),
                 InterfaceBehaviorRevision::new("ollama.native-text-v1")
                     .expect("static behavior revision is valid"),
@@ -140,7 +147,7 @@ mod tests {
         for version in [
             "0.14.0", "0.18.0", "0.30.0", "0.32.1", "0.32.9", "0.32.14", "0.32.15", "0.33.0",
             "0.33.1", "0.33.2", "0.33.3", "0.34.0", "0.34.1", "0.34.2", "0.34.3", "0.34.4",
-            "0.35.0", "0.35.1",
+            "0.35.0", "0.35.1", "0.40.0", "0.40.1",
         ] {
             assert_eq!(
                 descriptor
@@ -161,6 +168,7 @@ mod tests {
             "0.34.5",
             "0.35.2",
             "0.39.0",
+            "0.40.2-rc.0",
         ] {
             assert!(!descriptor.supports_interface_version(
                 &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
@@ -168,7 +176,7 @@ mod tests {
         }
         assert!(matches!(
             descriptor.assess_interface_version(
-                &ollama_runtime_binding("0.40.0").expect("fixture Ollama version is valid"),
+                &ollama_runtime_binding("0.41.0").expect("fixture Ollama version is valid"),
             ),
             swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
@@ -177,7 +185,9 @@ mod tests {
     #[test]
     fn claim_keeps_historical_and_new_exact_points_under_one_behavior() {
         let claim = ollama_runtime_claim();
-        for version in ["0.14.0", "0.32.15", "0.34.4", "0.35.0", "0.35.1"] {
+        for version in [
+            "0.14.0", "0.32.15", "0.34.4", "0.35.0", "0.35.1", "0.40.0", "0.40.1",
+        ] {
             let swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched) =
                 claim.assess(&InterfaceVersion::new(version).unwrap())
             else {
@@ -189,14 +199,12 @@ mod tests {
                 "ollama.native-text-v1"
             );
         }
-        for version in ["0.32.2", "0.32.10", "0.34.5"] {
+        for version in ["0.32.2", "0.32.10", "0.34.5", "0.35.2", "0.39.0"] {
             assert!(!claim.permits(&InterfaceVersion::new(version).unwrap()));
         }
-        for version in ["0.35.2", "0.39.0", "0.40.0"] {
-            assert!(matches!(
-                claim.assess(&InterfaceVersion::new(version).unwrap()),
-                swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-            ));
-        }
+        assert!(matches!(
+            claim.assess(&InterfaceVersion::new("0.41.0").unwrap()),
+            swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
     }
 }

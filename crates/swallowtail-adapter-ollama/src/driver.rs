@@ -1,6 +1,7 @@
 use crate::failure::failure;
 use crate::protocol::{
-    ObservationBinding, Request, parse_inventory, parse_model_detail, parse_version,
+    ObservationBinding, OllamaNativeRunner, Request, bind_selected_inventory, parse_inventory_rows,
+    parse_model_detail, parse_version,
 };
 use crate::selection::{OLLAMA_DRIVER_ID, OLLAMA_NATIVE_FACADE};
 use crate::transport::{CurlTransport, Subscription};

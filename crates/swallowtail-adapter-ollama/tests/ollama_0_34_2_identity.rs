@@ -223,7 +223,7 @@ fn identity_freezes_0_33_3_through_0_34_2_and_names_compatible_extension() {
     }
 
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.35.1");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.40.1");
     let claim = ollama_runtime_claim();
     for version in [
         "0.14.0", "0.33.2", "0.33.3", "0.34.0", "0.34.1", "0.34.2", "0.34.3", "0.34.4",
@@ -235,7 +235,7 @@ fn identity_freezes_0_33_3_through_0_34_2_and_names_compatible_extension() {
         ));
     }
     assert!(matches!(
-        claim.assess(&version_value("0.40.0")),
+        claim.assess(&version_value("0.41.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(!claim.permits(&version_value("0.34.5")));

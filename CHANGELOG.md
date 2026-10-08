@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only `ollama.attached` from preserved `0.35.1` through official
+  GitHub stable `0.40.1`. Keep `ollama.native-text-v1`, the prior exclusions,
+  and unpublished gaps. Add maintained `0.40.0..=0.40.1`. From `0.40.0`, chat
+  may start provider-owned background local compatibility migration; the
+  adapter binds the selected tag and digest, pins `ggml` or `llamacpp` from
+  the matching row, observes sibling manifest-list rows, and fails closed on
+  identity drift. Preparation still issues no mutation. Research 418 records
+  the qualification; Research 379 remains the historical `0.40.0` stop. No
+  local runtime, provider prompt, model download, or host mutation occurred.
+
 - qualify only `codex.exec` through official stable `0.161.0` as a compatible
   extension on `codex.exec.jsonl-v1`. Research 410 reuses the reviewed
   `0.155.1`→`0.161.0` source and artifact chain from Research 370 with

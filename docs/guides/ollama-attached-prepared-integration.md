@@ -85,20 +85,20 @@ version, qualified or unverified-newer assessment, installed and running
 observations, selected detail, route selection, configured instance, access
 provenance, and low-level driver escape hatch.
 
-Maintained points are `0.14.0..=0.34.4` and `0.35.0..=0.35.1` under
-`ollama.native-text-v1`. Exact `0.32.2` and `0.32.10` stay excluded;
-unpublished `0.34.5` remains an interior incompatibility. `0.35.2` and absent
-later stable points are not qualified and remain visibly `UnverifiedNewer`
-under `AllowUnverified`; semantic prereleases fail. The current official
-stable `0.40.0` is also `UnverifiedNewer`.
-Its chat scheduler starts background local compatibility migration for
-supported legacy GGUF models, which can write converted blobs and
-manifest-list entries in the attached runtime's model store. Later `/api/tags`
-responses can return one row per child runner. This behavior exceeds the
-qualified lifecycle and catalogue contract; see Research 379 for the exact
-ruling and adaptation needed before extending the claim. The existing
-`AllowUnverified` posture remains in force, so the version assessment alone
-does not suppress an attempt on `0.40.0`.
+Maintained points are `0.14.0..=0.34.4`, `0.35.0..=0.35.1`, and
+`0.40.0..=0.40.1` under `ollama.native-text-v1`. Exact `0.32.2` and `0.32.10`
+stay excluded; unpublished `0.34.5` and `0.35.2` through `0.39.x` remain
+interior incompatibilities. Semantic prereleases fail. Synthetic `0.41.0` is
+the first visible `UnverifiedNewer` point under `AllowUnverified`.
+
+From `0.40.0`, chat scheduling can start provider-owned background local
+compatibility migration for supported legacy GGUF models. Later `/api/tags`
+responses can return one row per child runner for the same display name. The
+adapter binds the preflight tag and digest, pins `ggml` or `llamacpp` from the
+matching row, and treats extra same-tag rows as sibling observations. It does
+not treat a new runner row as the old artifact. Preparation still performs no
+inference or model-store write. See Contract 031 and Research 379 for the
+ruling; the `0.40.1` identity corpus records the adaptation.
 
 ## Observe Inventory
 

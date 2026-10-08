@@ -15,6 +15,25 @@ annotated Git tags from the canonical repository.
   The headless claim remains through `0.61.0`, and HTTP MCP live honouring
   remains exact `0.61.0`. No public API or lifecycle changed, and no provider
   was run.
+- qualify only `kimi-code.headless` through official npm and GitHub stable
+  `2.1.1` after every published hop from the qualified `0.43.0` ceiling.
+  Research 413 freezes the exact package/source identities, complete trees,
+  per-hop classifications, and selected bundle oracles. Preserve the legacy
+  v1 segment; qualify v2 `0.33.0..=0.43.1` and `2.0.0..=2.1.1`, while keeping
+  unpublished `0.43.2`, `1.x`, and `2.0.3` outside the claim and exact `2.1.0`
+  excluded for its effective filesystem-authority change. The operator ruling
+  qualifies `2.1.1` with `2.1.0` unsupported. No public API or behavior revision
+  changes; ACP and local-server claims remain separate. No provider prompt,
+  credentials, live session, artifact execution, host update, release, or tag.
+- qualify only `codex.exec` through official stable `0.161.0` as a compatible
+  extension on `codex.exec.jsonl-v1`. Research 410 reuses the reviewed
+  `0.155.1`→`0.161.0` source and artifact chain from Research 370 with
+  independent digest checks. Projectless startup does not restore persisted
+  trust; system/macOS MDM managed-network allowlists and refresh remain
+  authoritative, and provider denial remains a bounded failure. Keep the
+  unpublished `0.155.2` gap, prior exclusions, and independent app-server
+  claim. No provider prompt, live session, credential, installation, or host
+  update was used.
 - Keep `kimi-code.acp` at its `0.38.0` ceiling while the official npm and
   GitHub stable `2.1.1` remains blocked by the same unmediated terminal process
   spawn from both the terminal-disabled branch and non-Bash fallback. Research
@@ -34,6 +53,15 @@ annotated Git tags from the canonical repository.
   and historical schema corpora, provider version ranges, and feature cells
   remain unchanged. No provider session, credential, installation, or host
   update was used.
+- qualify `deepseek-harness.web` at published RC points `0.1.0-rc.6`,
+  `0.1.0-rc.7`, `0.1.0-rc.8`, `0.1.1-rc.1`, and `0.1.1-rc.2` under the
+  existing `deepseek-harness.apiproxy-v1` facade. The adapter suppresses the
+  default browser handoff from `0.1.0-rc.8` with the published `--no-open`
+  flag. Research 411 freezes these artifacts and stops at `0.1.2-rc.1`, where
+  `/api` requires persistent DSH browser authentication. Current npm
+  `latest`/`next` `0.2.0-rc.2` remains unqualified pending a ruling and tested
+  authentication/stream adaptation. No host DSH, browser, credentials, server,
+  catalogue, or session was accessed.
 - qualify only `cursor-agent.headless` through official ACP registry stable
   `2026.10.01-14929f9`, after every published hop following
   `2026.09.18-9a7762b`. Research 399 freezes both platform archives, complete

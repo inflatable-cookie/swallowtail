@@ -39,6 +39,8 @@ model, credential, or host state was changed.
 ## Hop classification
 
 `0.40.0` → `0.40.1`: 3 added, 1 removed, 17 changed, 1,413 identical files.
+The hop ledger freezes those identical paths as `unchanged_path_list_sha256`
+`b14ca9250dec8412ab4213f1dd6dc9bb9489a8e8ffa0a4357f722b13312558e8`.
 Selected `api/types.go`, `server/model_list.go`, and
 `compatmigrate/migrate.go` are byte-identical. `server/routes.go` adds
 unselected `/api/balance` and `/api/usage`. `manifest/manifest.go` and

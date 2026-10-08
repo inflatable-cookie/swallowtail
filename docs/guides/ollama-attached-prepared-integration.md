@@ -98,8 +98,9 @@ responses can return one row per child runner for the same display name. The
 adapter binds the preflight tag and digest, pins `ggml` or `llamacpp` from the
 matching row, and treats extra same-tag rows as sibling observations. It does
 not treat a new runner row as the old artifact. Preparation still performs no
-inference or model-store write. See Contract 031 and Research 379 for the
-ruling; the `0.40.1` identity corpus records the adaptation.
+inference or model-store write. See Contract 031 for the ruling and
+Research 418 for the adaptation; Research 379 remains the historical
+`0.40.0` stop.
 
 ## Observe Inventory
 

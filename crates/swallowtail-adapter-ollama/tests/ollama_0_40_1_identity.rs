@@ -1,4 +1,5 @@
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use swallowtail_adapter_ollama::{
     OLLAMA_BASELINE_VERSION, OLLAMA_LATEST_QUALIFIED_VERSION, ollama_runtime_binding,
@@ -301,6 +302,11 @@ fn identity_freezes_official_hops_from_the_0351_ceiling_through_0401() {
         "changed paths must match the complete 0.40.0/0.40.1 trees"
     );
     assert_eq!(derived_unchanged.len(), 1413);
+    assert_eq!(
+        hop["unchanged_path_list_sha256"],
+        path_list_sha256(&derived_unchanged),
+        "unchanged paths must match the frozen hop digest"
+    );
     assert_eq!(hop["added_file_count"], derived_added.len());
     assert_eq!(hop["removed_file_count"], derived_removed.len());
     assert_eq!(hop["changed_file_count"], derived_changed.len());
@@ -505,6 +511,20 @@ fn hop_paths(rows: &Value) -> BTreeSet<String> {
         .expect("hop rows are an array")
         .iter()
         .map(|row| row["path"].as_str().expect("path is text").to_owned())
+        .collect()
+}
+
+fn path_list_sha256(paths: &BTreeSet<String>) -> String {
+    let mut bytes = paths
+        .iter()
+        .map(String::as_str)
+        .collect::<Vec<_>>()
+        .join("\n")
+        .into_bytes();
+    bytes.push(b'\n');
+    Sha256::digest(bytes)
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
         .collect()
 }
 

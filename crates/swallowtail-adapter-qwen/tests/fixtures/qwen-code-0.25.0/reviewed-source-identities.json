@@ -1,0 +1,68 @@
+{
+  "ssh_workspace_store": {
+    "0.24.4": {
+      "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+      "bytes": 4449,
+      "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+    },
+    "0.24.5": {
+      "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+      "bytes": 4449,
+      "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+    },
+    "0.24.6": {
+      "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+      "bytes": 4449,
+      "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+    },
+    "0.24.7": {
+      "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+      "bytes": 4449,
+      "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+    },
+    "0.25.0": {
+      "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+      "bytes": 4449,
+      "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+    }
+  },
+  "ssh_workspace_store_test": {
+    "0.24.4": {
+      "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+      "bytes": 4585,
+      "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+    },
+    "0.24.5": {
+      "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+      "bytes": 4585,
+      "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+    },
+    "0.24.6": {
+      "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+      "bytes": 4585,
+      "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+    },
+    "0.24.7": {
+      "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+      "bytes": 4585,
+      "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+    },
+    "0.25.0": {
+      "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+      "bytes": 4585,
+      "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+    }
+  },
+  "approval_mode_value": {
+    "0.24.7": {
+      "path": "packages/cli/src/config/approval-mode-value.ts",
+      "bytes": 1170,
+      "sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467"
+    },
+    "0.25.0": {
+      "path": "packages/cli/src/config/approval-mode-value.ts",
+      "bytes": 1170,
+      "sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467"
+    }
+  }
+}

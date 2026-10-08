@@ -5,6 +5,7 @@ use crate::control::establish_reasoning_and_write_user;
 use crate::handle::{QwenProcessCancellation, QwenRunHandle};
 use crate::pump::{cleanup_failed_start, pump};
 use crate::validation::{failure, validate};
+use crate::working_resource::QwenWorkingResourceLease;
 use std::sync::Arc;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, DriverDescriptor, DriverRole, ExecutionLayer,
@@ -78,6 +79,7 @@ pub fn qwen_headless_descriptor() -> DriverDescriptor {
             HostServiceKind::Task,
             HostServiceKind::Process,
             HostServiceKind::Time,
+            HostServiceKind::WorkingResource,
         ],
     )
     .with_required_host_services(
@@ -86,6 +88,7 @@ pub fn qwen_headless_descriptor() -> DriverDescriptor {
             HostServiceKind::Task,
             HostServiceKind::Process,
             HostServiceKind::Time,
+            HostServiceKind::WorkingResource,
         ],
     )
     .with_required_host_services(
@@ -150,7 +153,16 @@ impl QwenHeadlessDriver {
             .expect("request id produces a non-empty run id");
         let scope = ScopeId::new(format!("qwen-headless:{}", request.request_id().as_str()))
             .expect("request id produces a non-empty scope id");
-        let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
+        let working_resource_lease =
+            QwenWorkingResourceLease::resolve(&services, scope.clone(), working_resource.clone())
+                .await?;
+        let (event_sender, event_stream) = match runtime_event_channel(EVENT_CAPACITY) {
+            Ok(channel) => channel,
+            Err(error) => {
+                let _ = working_resource_lease.release().await;
+                return Err(error);
+            }
+        };
         let executable = ExecutableRef::from_instance_target(plan.instance_target_ref());
         let process_request = ProcessRequest::new(executable)
             .with_arguments(if request.policy().reasoning_mode().is_some() {
@@ -160,11 +172,14 @@ impl QwenHeadlessDriver {
             })
             .with_environment([self.environment.clone()])
             .with_working_resource(working_resource);
-        let process: Arc<dyn ProcessHandle> = Arc::from(
-            process_service
-                .start(scope.clone(), process_request)
-                .await?,
-        );
+        let process: Arc<dyn ProcessHandle> =
+            match process_service.start(scope.clone(), process_request).await {
+                Ok(process) => Arc::from(process),
+                Err(error) => {
+                    let _ = working_resource_lease.release().await;
+                    return Err(error);
+                }
+            };
         let buffered_values = if let Some(reasoning) = request.policy().reasoning_mode() {
             match establish_reasoning_and_write_user(
                 process.as_ref(),
@@ -177,12 +192,14 @@ impl QwenHeadlessDriver {
                 Ok(buffered_values) => buffered_values,
                 Err(error) => {
                     cleanup_failed_start(process.as_ref()).await;
+                    let _ = working_resource_lease.release().await;
                     return Err(error);
                 }
             }
         } else {
             if let Err(error) = write_prompt(process.as_ref(), request.content()).await {
                 cleanup_failed_start(process.as_ref()).await;
+                let _ = working_resource_lease.release().await;
                 return Err(error);
             }
             Vec::new()
@@ -190,6 +207,7 @@ impl QwenHeadlessDriver {
         let deadline = time_service.wait_until(deadline);
         if let Err(error) = event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started)) {
             cleanup_failed_start(process.as_ref()).await;
+            let _ = working_resource_lease.release().await;
             return Err(error);
         }
         let (terminal_sender, terminal_future) = terminal_outcome_channel();
@@ -225,6 +243,7 @@ impl QwenHeadlessDriver {
             Ok(task) => task,
             Err(error) => {
                 cleanup_failed_start(process.as_ref()).await;
+                let _ = working_resource_lease.release().await;
                 return Err(error);
             }
         };
@@ -235,6 +254,7 @@ impl QwenHeadlessDriver {
             Box::pin(terminal_future),
             cancellation,
             task,
+            working_resource_lease,
         )))
     }
 }

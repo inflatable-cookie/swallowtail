@@ -1,0 +1,514 @@
+{
+  "scope": "Static strings in the official platform runtime package/claude; no artifact execution.",
+  "plugin_name_from_frozen_2_1_281_hook_ledger": "agents-md",
+  "route_facing_symbols": [
+    "prompt.context",
+    "session.start",
+    "fs.ancestors",
+    "instructionFiles",
+    "AGENTS_NAMES",
+    "CLAUDE_NAMES",
+    "projectDirOf",
+    "registerPlugin",
+    "--safe-mode",
+    "--disable-slash-commands",
+    "--strict-mcp-config"
+  ],
+  "route_facing_symbols_are_not_internal_function_names": true,
+  "versions": {
+    "2.1.281": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "a922981f6f3b55a251ef9f9dbaa0621a5f99cbcb5ca67f8a797476ccfc83f626",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "56fe3da88458465fb27d7e9299dddb3fead55750fb9c2de795f233b5eea6dce1",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.282": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "fcfd837103965c64de34a6b9b94370d77a347ea71819715a27d5f0ef01775ea4",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "3afe8535c0cc33f0e24f7b25dab7a1727b8b592196f8496a8bc302ba2161eed3",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.283": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "d8cb1e5c79684cc12a8bfc813e3a2073406921b6245744b3009be3ab5651d21e",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "1859583ce32920595c61ef868bee52e1b1594f7486db209935e01f1e5e804ae2",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.284": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "50a14c2f50f56668380fdda490167f1d3630d5cc18fb8aed3073c2c7ea7314fe",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "5cd90aabd83f8a15136c35aa37bb1d92b348993573316643dc3fe4e04afbf88f",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.285": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "51f09bd1e021d9fa8a1864c179799bd37cb39962a937935c5cf6823398e86db4",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "33dad1ec615a2e08cc78b494f05c110e49916de2c79d78ec8799ebf46b233d29",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.286": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "75e3016e9d2570767b08e43a7467d4817a4f149232c169ca295f2c95fef21433",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "fe503f65c6289d59c23e5b21ae44f03583f997dd33a2cbfc75ab4f96fb8fc73f",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.287": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "6eab8333fe2121553100d8f40bfada384a3e989b94f947e18ba6677a6fcb41ea",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "3920489a5109cff5786a1a392c25277408ff22bc796d5edb9c16a60e5a1718f0",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.288": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "bbe93063f7a0879a1021b2891e5c9354e5b3b98433e32efe6750f7710afed750",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "0298068b686e7fdbaf9402a7a587bb7f49c0b0e084de09f69145a0719207640c",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.289": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "03d66745e3bb69ec727d66023696f3820bc0a00a8a5ba725eb6706d0c67cbe69",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "a186b99e4a9c88366cd49df2f7dad56c61fc306ef0140b19ee64b7c42a8d1348",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.290": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "b8412a3826b2dc8ecb1c0605970c28dea28355de5faa740407dd881acdd40237",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "ea38ee1a1f946eea9bc6e97fb912dbe71fc379b25cc605d91b308afa1ca08be7",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.291": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "9a1d2ed6bb4421e8fc80c892c0413f293be3ee50ae3d7dda1a7622197a056690",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "078fad28d0297c9a25d306b635b2d8816c6839347520f29eb54ffea5d56142fb",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.292": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "97a01e5bc74a199e67189435d0331ea3a24eac2e07db4b76d9148c5b0386138f",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "a967e7b1d8b4e47ee421d5433027880347952b0c0857abf880e2c942a4ec93b3",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    },
+    "2.1.293": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "4e21122a227857da1178aca3299700c1fd7f2b77c93f12e73c2c76db796a105e",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "package/claude",
+        "artifact_sha256": "8968405e26db478af44eabc4635ab5ca557057b702a54460a59c13e1b253e978",
+        "static_markers_observed": [
+          "prompt.context",
+          "session.start",
+          "fs.ancestors",
+          "instructionFiles",
+          "AGENTS_NAMES",
+          "CLAUDE_NAMES",
+          "projectDirOf",
+          "registerPlugin",
+          "--safe-mode",
+          "--disable-slash-commands",
+          "--strict-mcp-config"
+        ],
+        "all_route_facing_markers_observed": true
+      }
+    }
+  }
+}

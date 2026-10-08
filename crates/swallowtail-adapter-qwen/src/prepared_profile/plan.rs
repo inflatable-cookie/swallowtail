@@ -141,6 +141,7 @@ pub(super) fn requirements(
         HostServiceKind::Task,
         HostServiceKind::Process,
         HostServiceKind::Time,
+        HostServiceKind::WorkingResource,
     ])
     .with_capabilities(capabilities)
     .with_interface_versions([prepared.observation().version().clone()])

@@ -5,7 +5,9 @@ use swallowtail_adapter_claude_agent::{
     CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION, claude_code_headless_claim,
     claude_code_response_only_claim,
 };
-use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+use swallowtail_core::{
+    InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
+};
 
 const IDENTITY: &str = include_str!("fixtures/claude-code-2.1.280/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/claude-code-2.1.280/protocol.json");
@@ -234,7 +236,7 @@ fn dist_inventory_changes_only_version_pins_and_the_binary() {
 }
 
 #[test]
-fn identity_stop_is_frozen_and_production_now_qualifies_through_2_1_281() {
+fn identity_stop_is_frozen_and_headless_qualifies_through_2_1_281() {
     let identity = json(IDENTITY);
     let decision = &identity["identity_decision"];
     assert_eq!(
@@ -252,7 +254,7 @@ fn identity_stop_is_frozen_and_production_now_qualifies_through_2_1_281() {
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.281"
+        "2.1.293"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
@@ -277,7 +279,9 @@ fn identity_stop_is_frozen_and_production_now_qualifies_through_2_1_281() {
     ));
     assert!(matches!(
         response.assess(&version("2.1.282")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.behavior_revision().as_str() == "claude-code.response-only.stream-json.v3"
+                && matched.support_status() == InterfaceSupportStatus::Maintained
     ));
     assert!(!headless.permits(&version("2.1.244")));
     assert!(!response.permits(&version("2.1.244")));

@@ -19,8 +19,14 @@ fn exact_version_codec_separates_qualified_unverified_and_incompatible_points() 
         swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == swallowtail_core::InterfaceSupportStatus::Maintained
     ));
-    let above = parse_version(&response(200, br#"{"version":"0.34.5"}"#))
-        .expect("first unpublished version past official is preserved");
+    let gap = parse_version(&response(200, br#"{"version":"0.34.5"}"#))
+        .expect_err("the interior version gap is incompatible");
+    assert_eq!(
+        gap.diagnostic().code(),
+        "swallowtail.ollama.version_unsupported"
+    );
+    let above = parse_version(&response(200, br#"{"version":"0.40.0"}"#))
+        .expect("current official stable is preserved for an unverified attempt");
     assert!(matches!(
         crate::selection::ollama_runtime_claim().assess(above.version()),
         swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)

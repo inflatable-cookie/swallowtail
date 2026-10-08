@@ -9,9 +9,53 @@ annotated Git tags from the canonical repository.
 - qualify `bedrock.runtime`'s Rust SDK through official `aws-sdk-bedrockruntime`
   `1.148.0`, preserving exact `1.136.0`, the `1.137.0` and `1.138.0` gaps,
   and the yanked `1.144.0` exclusion. The Runtime service axis and both
-  catalogue axes stay exact. Research 375 freezes every selected-channel hop
+  catalogue axes stay exact. Research 381 freezes every selected-channel hop
   and full package trees, plus the ConverseStream request, EventStream, usage,
   and failure boundaries; no AWS calls or host mutation occurred.
+- qualify only `antigravity.catalogue` through official Antigravity CLI `1.3.1`
+  after published stable hops `1.2.12`–`1.2.17`, `1.3.0`, and `1.3.1`.
+  Research 380 freezes source commits, complete release asset manifests, and
+  verified Linux x64 and Mac ARM64 artifact trees. The maintained segment keeps
+  baseline `1.1.9`, claim and behavior revision, with unpublished `1.2.18`
+  excluded and later `1.3.2` visibly unverified. `antigravity.headless` stays
+  at exact `1.2.11` with its existing gaps and pin unchanged. No downloaded
+  binary was executed, and no provider prompt, live catalogue, credential,
+  installation, or host update occurred.
+- qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
+  `0.25.0` on the existing `qwen-code.headless.v0.21.15-reasoning-control`
+  revision. Research 375 freezes all six published hops after `0.24.2`, with
+  complete npm tree inventories and per-hop mapped-source review. A private
+  read-only working-resource guard rejects the Qwen SSH workspace path before
+  run or turn process start while preserving local resource and delegated-auth
+  bindings. The `0.22.4` and `0.23.5` exclusions, Plan limit at `0.22.3`, and
+  exact `0.21.15` reasoning and budget controls remain unchanged; no provider
+  work or artifact execution occurred.
+- qualify only `claude-code.response-only` through official npm `latest` and
+  GitHub latest stable `2.1.293`; npm `stable` remains the delayed `2.1.285`
+  channel. Research 378 freezes every published hop after `2.1.281` across
+  the npm wrapper, Darwin arm64, and Linux x64 trees. Preserve the supported
+  v1 and v2 segments and existing exclusions; add maintained v3
+  `2.1.282..=2.1.293` for the accepted version-specific reduction in
+  symlink-linked project-instruction reads. The route remains one text-only
+  turn with empty tools/MCP and no session persistence. The `.288` SIGTERM
+  note is outside host-local `force_stop`, which uses SIGKILL. No artifact was
+  executed, and no provider prompt, install, or host update occurred.
+- qualify `opencode.acp` through the official current stable `1.18.35` after
+  published hops `1.18.33`, `1.18.34`, and `1.18.35`. Research 377 freezes
+  exact npm and GitHub source identities, full package trees, and every source
+  hop. The existing ACP v1 v2 behavior, claim, baseline, exclusions, and
+  `AllowUnverified` posture stay. HTTP MCP live honouring remains exact to
+  `1.18.18`; no newer point inherits it. No provider prompt, live session,
+  credential use, package installation, or artifact execution occurred.
+- extend `ollama.attached` through the exact official stable points `0.35.0`
+  and `0.35.1`, retaining `ollama.native-text-v1`, the prior exclusions, and
+  unpublished gaps. Current official stable `0.40.0` remains
+  `UnverifiedNewer`: chat scheduling starts background local compatibility
+  migration that can write converted model blobs and manifest-list entries,
+  changing the attached store lifecycle and later catalogue shape. Research
+  379 freezes the release identities and complete source trees and names the
+  ruling/adaptation needed before the claim can move again. No local runtime,
+  provider prompt, model download, or host mutation occurred.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,
@@ -23,6 +67,13 @@ annotated Git tags from the canonical repository.
   `0.81.2`; the repo local `0.81.2` development pin is unchanged. No package
   install, artifact execution, provider prompt, live initialize, or host
   mutation occurred.
+- raise the qualified OpenCode HTTP ceiling from `1.18.31` to official npm
+  `opencode-ai` and GitHub stable `1.18.35`. Four published hops qualify as a
+  compatible extension of `opencode.http-sse.surface-19`; route declarations
+  and OpenAPI remain unchanged, while provider-specific value and request
+  changes are classified in Research 376. Keep baseline `1.14.48`, claim id,
+  supported segments, historical gaps, and `AllowUnverified`; `1.18.36` stays
+  unverified. ACP and client MCP claims are unchanged.
 - keep the `gemini-cli.acp` qualified ceiling at `0.61.0`. The current
   official stable `0.63.0` is not qualified: `0.62.0` adds existing ACP v1
   pending/failed tool-call updates, and `0.63.0` adds confirmation and real

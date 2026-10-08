@@ -118,7 +118,7 @@ Runtime qualifies the semantic SDK points `1.136.0` and `1.139.0..=1.148.0`
 under `amazon-bedrock.runtime-sdk-1`, with `1.137.0`, `1.138.0`, and yanked
 `1.144.0` excluded. Later stable SDK versions may be visible as
 `UnverifiedNewer`. The Runtime service API stays exact. Catalogue keeps its
-exact control-plane SDK and service API revisions. [Research 375](../research/375-bedrock-runtime-sdk-1-148-0-identity.md)
+exact control-plane SDK and service API revisions. [Research 381](../research/381-bedrock-runtime-sdk-1-148-0-identity.md)
 freezes the official artifacts and selected request, EventStream, usage, and
 failure boundaries.
 

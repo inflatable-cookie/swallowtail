@@ -1,0 +1,383 @@
+{
+  "axis": "qwen-code.package",
+  "observed_at": "2026-10-07",
+  "official_source": "npm dist-tag latest for @qwen-code/qwen-code",
+  "npm_package": "@qwen-code/qwen-code",
+  "npm_latest": "0.25.0",
+  "npm_other_dist_tags": {
+    "preview": "0.25.1-preview.0",
+    "nightly": "0.25.0-nightly.20261007.8003d28042"
+  },
+  "published_stable_hops_after_previous_ceiling": [
+    "0.24.3",
+    "0.24.4",
+    "0.24.5",
+    "0.24.6",
+    "0.24.7",
+    "0.25.0"
+  ],
+  "previous_ceiling": "0.24.2",
+  "not_the_selected_product": "GitHub TypeScript SDK releases/tags are a separate product and do not establish npm CLI identity",
+  "runtime_context": {
+    "node": "22.23.2",
+    "installed_global_qwen": "0.21.2",
+    "official_package_installed_globally": false,
+    "qualification_uses": "exact npm artifacts and official source tags only"
+  },
+  "versions": [
+    {
+      "published_at": "2026-09-20T14:28:21.292Z",
+      "integrity": "sha512-Dx9A8SVIPcT7P9R3hyoBy7aWn1askUssB60OO0E0MCKAcbrPqrGStHB5lgHoLFREfAopRzjNiYUIUr5MNEQZlA==",
+      "shasum": "2146374639fc36a807c3617d2fddbef0979ebb3a",
+      "tarball_sha256": "ea8b977eac79977603f52c9a3f4d279f3f70e230910a087372a51d70cd2759fa",
+      "source_commit": "1026c4a50f4a32f77da98bdacfba2e5faa8cc70a",
+      "npm_git_head": "1026c4a50f4a32f77da98bdacfba2e5faa8cc70a",
+      "npm_version": "0.24.2",
+      "npm_dist_file_count": 1267,
+      "npm_dist_unpacked_size": 124177702,
+      "inventory_file": "dist-inventory-0.24.2.json",
+      "inventory_sha256": "19fb6938a5cc9c8b6828babf73c7e527b7debb3d0867da2e39e899ab04591d05",
+      "inventory_entries": 1267,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-09-21T14:36:03.483Z",
+      "integrity": "sha512-DAwXSdLFNmP2udO0TXxpj1U16EJKOmxc4OBrZvlgvzMQLwbG7c403UjZVLpHldISnQxX7bbFtltWuBr+FGXCiw==",
+      "shasum": "450fc47746eee14b67a13b5077c6dd6d6f961876",
+      "tarball_sha256": "116e7c65b851ff8d318c06b1eef1648815deac0c204e16977791de017c0165f1",
+      "source_commit": "557f36ba83bcf98bc031eefc94e60991289dc4f2",
+      "npm_git_head": "557f36ba83bcf98bc031eefc94e60991289dc4f2",
+      "npm_version": "0.24.3",
+      "npm_dist_file_count": 1276,
+      "npm_dist_unpacked_size": 124420686,
+      "inventory_file": "dist-inventory-0.24.3.json",
+      "inventory_sha256": "3c723e725eda0b4b5834f16c77ecc41bcbfba6bc3f7dfa2fd1a2b5866dffb361",
+      "inventory_entries": 1276,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-09-22T15:32:25.511Z",
+      "integrity": "sha512-pmexy/Nj+BKd3Un1ogqGQE8V4GJn5B6N9PQOrU1GH+lMR29kn6Bgf6YdbZa8hNIoTmAKT1LTPK+P8TibZRPPVg==",
+      "shasum": "0e3eacbf406c2c291649cc3a49671ca9a4451a43",
+      "tarball_sha256": "7840ff5c70010be9bd7c903d1ec0893893f5429fde5b4e8a189f61450269d8f4",
+      "source_commit": "9674d6efdc8ac16583270bd2a55cfa49e3ec254e",
+      "npm_git_head": null,
+      "npm_version": "0.24.4",
+      "npm_dist_file_count": 1286,
+      "npm_dist_unpacked_size": 124672583,
+      "inventory_file": "dist-inventory-0.24.4.json",
+      "inventory_sha256": "3b998082b6317c9a63c5a2c45cef6958f7c592425c6a6974cad6f6d056940ed6",
+      "inventory_entries": 1286,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-09-24T17:16:56.822Z",
+      "integrity": "sha512-m1YqzSqwXLUFXvLLwnH8qAewEtMCV+gjYVWZbvvGaEZivFXhiXMBsh3C/hlZ7EGgj0BjVKS4i0PE3KwPYGIsLw==",
+      "shasum": "a7cb1fdeeb28e289c63861fde356d876034e47c9",
+      "tarball_sha256": "539b8deb2cbc2108df3d1d763f420566acfc83d2d3afa202f7da585f1c2e4f2d",
+      "source_commit": "59c8e93c0e9b34db77beb1b087e4076916532513",
+      "npm_git_head": null,
+      "npm_version": "0.24.5",
+      "npm_dist_file_count": 1289,
+      "npm_dist_unpacked_size": 125027594,
+      "inventory_file": "dist-inventory-0.24.5.json",
+      "inventory_sha256": "9daa64eb16c8c5e7c662542c8f8a3e12efef9c32b8303f387c891c747981e995",
+      "inventory_entries": 1289,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-09-26T00:57:41.243Z",
+      "integrity": "sha512-bifj+Nw4xOn72RHKuNRt2avZxHFkIxt/Qaa/Rs2AERNJ53Yh6BRAXCidw89hTITaL0CHNl1aMvG9ZT+mT9PBzw==",
+      "shasum": "39568c78af703d4e04d382d03c374884dfc7912b",
+      "tarball_sha256": "9f0e7ba70009cc0a5133208cf8edc21f26eef211e9d14d0d3f497cd42a9e31f2",
+      "source_commit": "753bd075a24ca886b7d0119ca53d97bd65c09e4a",
+      "npm_git_head": null,
+      "npm_version": "0.24.6",
+      "npm_dist_file_count": 1302,
+      "npm_dist_unpacked_size": 108167512,
+      "inventory_file": "dist-inventory-0.24.6.json",
+      "inventory_sha256": "ef40a77507f5f5085364d06de19594c1e02bee7898c2850e5f69419038dd8299",
+      "inventory_entries": 1302,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-09-29T14:23:39.669Z",
+      "integrity": "sha512-NE+Ps9juMJS7DaHEVENIAJWCrzTiO/2bNq2TidmxmFc0ZbSMVKCfX3tlu2RY+CoP8xHFfUcy3MfQDQNszBJpJQ==",
+      "shasum": "4069abba916a257afab21dedca17d4fe7919c217",
+      "tarball_sha256": "64430248ab6e996fc0c6b9a0789361f868c3b97f83d16210e0424e51dffc5fa9",
+      "source_commit": "b12edec1401a28fc53cd9e714d5928b285071fc8",
+      "npm_git_head": null,
+      "npm_version": "0.24.7",
+      "npm_dist_file_count": 1327,
+      "npm_dist_unpacked_size": 109140236,
+      "inventory_file": "dist-inventory-0.24.7.json",
+      "inventory_sha256": "010d292fe876bfe002b76e2f2a72dcfcf452cacace9fc52c6f69032b631003f7",
+      "inventory_entries": 1327,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-10-05T09:55:55.980Z",
+      "integrity": "sha512-XlqtxN7UKEkXLpuKioorDTBoIR/rWMdNHMtO/aPuQb7HDsTswMPqkEMYsVY56wuF3xSaI9PKgh9Q2NU/CSTkAQ==",
+      "shasum": "759806b6028175c794afabe10713e2f05f1026cd",
+      "tarball_sha256": "afeab0c85d682f201101319ce05decf3302d7ed7fb6319baa6a592051ea1a1ba",
+      "source_commit": "6788c035698a0ada471c958d1e789e96c6cddd9b",
+      "npm_git_head": null,
+      "npm_version": "0.25.0",
+      "npm_dist_file_count": 1358,
+      "npm_dist_unpacked_size": 116286799,
+      "inventory_file": "dist-inventory-0.25.0.json",
+      "inventory_sha256": "d04c0285438dc25e308647a6c35d6484c7e2767ec3fb552f16a15786a934c1b6",
+      "inventory_entries": 1358,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    }
+  ],
+  "hops": [
+    {
+      "from": "0.24.2",
+      "to": "0.24.3",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.24.2-to-0.24.3.json",
+      "dist_diff_sha256": "cf57f262d1522892b6956ad1915366e3f4cbce0e0810c7b7ae3423f10e14bfe0",
+      "added": 361,
+      "removed": 352,
+      "changed": 15,
+      "identical": 900,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "ee86208aceec9c4e72e0c3a236dd70749520c627fe09c5a5118c1a05f22aa08b",
+          "after_sha256": "131dbe4d06435affa8aaa564ca2d2e95b19a5ddbc2a70c6c0cd7806c135a49b3"
+        }
+      ]
+    },
+    {
+      "from": "0.24.3",
+      "to": "0.24.4",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.24.3-to-0.24.4.json",
+      "dist_diff_sha256": "b3e2bc153746f578a289941b5f3644bf0d65644a31d81a13e33e2d20e7b3c556",
+      "added": 435,
+      "removed": 425,
+      "changed": 15,
+      "identical": 836,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "131dbe4d06435affa8aaa564ca2d2e95b19a5ddbc2a70c6c0cd7806c135a49b3",
+          "after_sha256": "2f107e4ab20e844d1d839189e1e5a4c9e7402eb903aaed388859ab85de6f83df"
+        }
+      ]
+    },
+    {
+      "from": "0.24.4",
+      "to": "0.24.5",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.24.4-to-0.24.5.json",
+      "dist_diff_sha256": "9e79e9f2774b4e3075e488ab7c999d158e3ebd033b645365cf04debfd40ea27f",
+      "added": 312,
+      "removed": 309,
+      "changed": 34,
+      "identical": 943,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "2f107e4ab20e844d1d839189e1e5a4c9e7402eb903aaed388859ab85de6f83df",
+          "after_sha256": "0307d66863e1d78029bea8d5acb61b1b3cc78e88f7e9290ad09043b284049bf7"
+        }
+      ]
+    },
+    {
+      "from": "0.24.5",
+      "to": "0.24.6",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.24.5-to-0.24.6.json",
+      "dist_diff_sha256": "766e852ab54ed11aa2f0dad2fe367a9076707604375fbb05e07677605c07f94c",
+      "added": 673,
+      "removed": 660,
+      "changed": 22,
+      "identical": 607,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "0307d66863e1d78029bea8d5acb61b1b3cc78e88f7e9290ad09043b284049bf7",
+          "after_sha256": "a62f00d6a23edff39ec197923e059cff824fbf35a74d19c54ae23803128399ff"
+        },
+        {
+          "key": "dashscope",
+          "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "before_sha256": "ff88b5208b07dd3e695630d98e8e56206f9a55da2af1894caddb3814ab79acaa",
+          "after_sha256": "94a4c8ebecf24852b70e7bdc32509cc6a7dfbe23d71b4a859a109cc0be1044c0"
+        },
+        {
+          "key": "top_level_options",
+          "path": "packages/cli/src/config/top-level-options.ts",
+          "before_sha256": "ae4288d7776cf6d58c3e9bea0833ed1aebbd3d08895930e09629fc4005cf6889",
+          "after_sha256": "83831f030ea40a994f746f71ed298eb55c5e9f023dc74bb6f098d19546921e1c"
+        }
+      ]
+    },
+    {
+      "from": "0.24.6",
+      "to": "0.24.7",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.24.6-to-0.24.7.json",
+      "dist_diff_sha256": "a27b5470a97f102027eec315fed1cc49c86e8d847dfd21270ed2346f6403d93d",
+      "added": 502,
+      "removed": 477,
+      "changed": 40,
+      "identical": 785,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "a62f00d6a23edff39ec197923e059cff824fbf35a74d19c54ae23803128399ff",
+          "after_sha256": "2b6712e084247265079ad907da6101f4f7ead0cf507fb628abaa921381a10315"
+        },
+        {
+          "key": "stream_types",
+          "path": "packages/cli/src/nonInteractive/types.ts",
+          "before_sha256": "aa7e3a847a986ba6e20137e08b86917aa6169444ffb2ebc40b6e792a7048e9f6",
+          "after_sha256": "4670f2ec4dbb9af8ce1133b9e7639d88736ad201e37d567e7bbee9f4a691d487"
+        },
+        {
+          "key": "system_controller",
+          "path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+          "before_sha256": "028b03a30246c8f6edf9a25cdd6fe38868564c2c576fe4a20b10b32882a4be56",
+          "after_sha256": "c0e6c8bf6bcdcc7951aed0562d96e7e09fe91e0a9656baafb2dfdf1ac265da87"
+        }
+      ]
+    },
+    {
+      "from": "0.24.7",
+      "to": "0.25.0",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.24.7-to-0.25.0.json",
+      "dist_diff_sha256": "1718691798ac71c67c78a85232fb24672b1e399ee430332da19f8fe28ea7c62c",
+      "added": 522,
+      "removed": 491,
+      "changed": 28,
+      "identical": 808,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "2b6712e084247265079ad907da6101f4f7ead0cf507fb628abaa921381a10315",
+          "after_sha256": "0406213ab82a46ee9f05e751bf7f1d7c88bc4b63007c26adac52e5a0aedc1fae"
+        },
+        {
+          "key": "top_level_options",
+          "path": "packages/cli/src/config/top-level-options.ts",
+          "before_sha256": "83831f030ea40a994f746f71ed298eb55c5e9f023dc74bb6f098d19546921e1c",
+          "after_sha256": "2dc7219ef7cb417b4d2093ed7aa99d36d151256ee08fdce96821367dccc3277b"
+        }
+      ]
+    }
+  ],
+  "channel_reprobe": {
+    "command": "npm view @qwen-code/qwen-code dist-tags versions time --json",
+    "result": "latest=0.25.0; preview=0.25.1-preview.0; nightly=0.25.0-nightly.20261007.8003d28042",
+    "stable_current": true
+  },
+  "evidence_limits": {
+    "tarballs_executed": false,
+    "tarballs_retained_in_repository": false,
+    "complete_package_tree_manifests": true,
+    "complete_per_hop_path_diffs": true,
+    "selected_source_snapshots": true,
+    "provider_turns": false,
+    "credentials_read": false,
+    "host_installed_or_updated": false
+  },
+  "selected_source_identities_file": "selected-source-identities.json",
+  "selected_source_identities_sha256": "400b11154871b885644de401ec50d83da76328de0703077414bed91ba83ffcc8",
+  "reviewed_source_identities_file": "reviewed-source-identities.json",
+  "reviewed_source_identities_sha256": "24a9fa1244efd632cbd613d954ee8ba7b7461135c5910df628b455455d5432d9"
+}

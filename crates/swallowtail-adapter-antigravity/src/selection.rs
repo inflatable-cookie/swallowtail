@@ -14,15 +14,14 @@ pub const ANTIGRAVITY_RELEASE_AXIS: &str = "antigravity-cli.release";
 /// Oldest release in the current maintained qualification window.
 pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
 /// Latest catalogue release in the current maintained qualification window.
-pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.2.11";
+pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.3.1";
 /// Latest headless release in the current maintained qualification window.
 /// Exact `1.2.11` qualifies on the retry-disabled behaviour revision under
 /// Research 359; `1.1.18..=1.2.10` stay unqualified (no pin evidence).
 pub const ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "1.2.11";
-/// Historical shared ceiling. Both claims now end at `1.2.11`: the catalogue
-/// claim advanced under Research 353 and exact headless `1.2.11` qualifies on
-/// the retry-disabled revision under Research 359 with
-/// `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned in its approved environment.
+/// Historical common ceiling. Headless remains at exact `1.2.11` under
+/// Research 359 with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned in its approved
+/// environment; catalogue has its family-specific ceiling above.
 pub const ANTIGRAVITY_LATEST_QUALIFIED_VERSION: &str = "1.2.11";
 /// Required retry-pin control for the `1.2.11` headless segment.
 pub const ANTIGRAVITY_HEADLESS_RETRY_PIN_NAME: &str = "AGY_CLI_MODEL_API_MAX_RETRIES";
@@ -77,7 +76,7 @@ pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
                 .expect("static Antigravity behavior is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [],
+        [version("1.2.18").expect("unpublished Antigravity point is valid")],
     )
     .expect("static Antigravity compatibility claim is valid")
 }
@@ -248,9 +247,21 @@ mod tests {
         assert!(claim.supports(&version("1.2.9")));
         assert!(claim.supports(&version("1.2.10")));
         assert!(claim.supports(&version("1.2.11")));
+        assert!(claim.supports(&version("1.2.12")));
+        assert!(claim.supports(&version("1.2.13")));
+        assert!(claim.supports(&version("1.2.14")));
+        assert!(claim.supports(&version("1.2.15")));
+        assert!(claim.supports(&version("1.2.16")));
+        assert!(claim.supports(&version("1.2.17")));
+        assert!(claim.supports(&version("1.3.0")));
+        assert!(claim.supports(&version("1.3.1")));
         assert!(!claim.permits(&version("1.1.8")));
+        assert!(matches!(
+            claim.assess(&version("1.2.18")),
+            InterfaceCompatibilityAssessment::Incompatible
+        ));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("1.2.12"))
+            claim.assess(&version("1.3.2"))
         else {
             panic!("later Antigravity release remains visibly unverified");
         };

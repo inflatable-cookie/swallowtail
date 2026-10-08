@@ -41,6 +41,12 @@ pub(crate) fn validate(
         HostServiceKind::Time,
         "time",
     )?;
+    require_service(
+        plan,
+        services.working_resource().is_some(),
+        HostServiceKind::WorkingResource,
+        "working-resource",
+    )?;
 
     if plan.ownership() != InstanceOwnership::HostOwnedEphemeral {
         return Err(plan_mismatch("instance ownership"));

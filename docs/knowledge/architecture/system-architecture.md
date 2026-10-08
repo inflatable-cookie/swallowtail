@@ -304,7 +304,7 @@ OpenHands adds a package without a production route.
   `--workspace` / `--model`, `session/load`, and field `content` stay
   out. `deepagents.acp` is a production route.
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
-  `1.14.48..=1.18.31` model discovery and ambient-host interactive sessions with
+  `1.14.48..=1.18.35` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
   stable newer releases may run as visibly unverified without extending
   guaranteed support; a separate 61-release deletion corpus freezes two
@@ -313,7 +313,7 @@ OpenHands adds a package without a production route.
   uncertainty without yet advertising production deletion. The same crate
   implements a separate `opencode.acp` family on `opencode.executable`: ACP v1
   stdio on host-approved `opencode acp --pure`, deprecated `1.18.18..=1.18.30`
-  and maintained `1.18.31..=1.18.32`, ProviderSupported host-owned login
+  and maintained `1.18.31..=1.18.35`, ProviderSupported host-owned login
   without a credential lease, one admitted stdio MCP name, and URL-plus-header
   MCP modelled behind the contract gate. The HTTP and ACP axes stay unflattened.
 - `swallowtail-adapter-anthropic` implements provider-supported `2023-06-01`
@@ -420,11 +420,13 @@ OpenHands adds a package without a production route.
   mapping now use the common compatible-chat framing and envelope codec
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
-  `0.14.0..=0.34.4`; exact runtime, installed and running model observations,
-  NDJSON output, and inference-caused residency remain distinct, with optional
-  adapter-local `options.num_ctx` dispatch on structured runs and interactive
-  replay, with no installation, model acquisition, cloud access, unload, or
-  server ownership
+  `0.14.0..=0.34.4` plus `0.35.0..=0.35.1`; exact runtime, installed and
+  running model observations, NDJSON output, and inference-caused residency
+  remain distinct, with optional adapter-local `options.num_ctx` dispatch on
+  structured runs and interactive replay. Current official `0.40.0` is
+  unverified because chat can start local compatibility migration; Research
+  379 records the adapter and authority gate. The adapter adds no installation,
+  model acquisition, cloud access, unload, or server ownership.
 - `swallowtail-adapter-xai` implements resource-free direct inference over one
   host-approved Responses WebSocket as either one bounded response without
   continuation or serial interactive turns with private continuation; both
@@ -471,11 +473,12 @@ OpenHands adds a package without a production route.
   entries preserve only opaque model identity and do not imply entitlement or
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
   tag share one source commit; `1.1.8` is not independently qualified.
-  Catalogue support extends through official `1.2.11` with the same
-  catalogue revision because no published release-note change touches the
-  selected `agy models` path after the classified `1.1.23` stdin repair.
-  Research 353 advances the catalogue claim to `1.2.11` and raises the
-  headless Contract 023 acceptance options to the operator. Research 359
+  Catalogue support extends through official `1.3.1` with the same
+  catalogue revision; Research 379 freezes all eight published hops after
+  `1.2.11`, excludes unpublished `1.2.18`, and classifies no published note
+  as changing the selected `agy models` path. Research 353 records the earlier
+  catalogue extension and raises the headless Contract 023 acceptance options
+  to the operator. Research 359
   then proves the `1.2.11` artifact honours `AGY_CLI_MODEL_API_MAX_RETRIES`
   (`0` disables provider-managed model-request retry, finite `N` allows
   `N+1` attempts), so exact `1.2.11` headless qualifies on a
@@ -511,12 +514,14 @@ OpenHands adds a package without a production route.
   reports key-visible entries without inferring background or Realtime support
 - `swallowtail-adapter-qwen` implements qualified Qwen Code
   `0.19.11..=0.20.1`, `0.21.0..=0.21.14`, exact `0.21.15`, and
-  `0.22.0..=0.24.2` excluding unpublished `0.22.4` and `0.23.5` headless
+  `0.22.0..=0.25.0` excluding unpublished `0.22.4` and `0.23.5` headless
   behavior segments with
   exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined
-  process cleanup, and `AmbientHost` isolation without a sandbox claim; the
+  process cleanup, a read-only working-resource lease that blocks implicit
+  Qwen SSH workspace selection, and `AmbientHost` isolation without a sandbox
+  claim; the
   production driver passes the provider-neutral one-shot profile under local
   and remote-authoritative host identities. Exact `0.21.15` additionally binds
   portable `low|medium|high|xhigh|max` reasoning for `qwen3.8-max` and
@@ -1116,13 +1121,13 @@ follows the Upgrade Workflow. The operator runbook is the
 version-currentness checkpoint guide.
 
 The OpenCode HTTP adapter has a closed qualified server-version boundary.
-Tagged OpenAPI and artifact-tree evidence for 72 stable releases from `1.14.48`
-through `1.18.31` closes six selected operations through every transitive local schema
+Tagged OpenAPI and artifact-tree evidence for 76 stable releases from `1.14.48`
+through `1.18.35` closes six selected operations through every transitive local schema
 reference. Nineteen closed surfaces map to 21 contiguous segments so
 unpublished patches and cross-minor synthetic versions remain unsupported.
 The production descriptor publishes the `opencode.server` claim. Configured
 instances, requirements, and immutable plans must bind one matching exact
-release. Stable exact releases above `1.18.31` may execute as unverified through
+release. Stable exact releases above `1.18.35` may execute as unverified through
 surface 19 without widening the qualified range. `GET /global/health` produces
 only that safe binding and three-way assessment; no endpoint, credential, raw
 payload, configured instance, or execution authority enters the observation.
@@ -1705,9 +1710,12 @@ installed inventory, running inventory, and selected-model detail without
 inference or model mutation. Prepared inventory and one-attempt inference stay
 separate. Inference declares runtime-managed residency but grants no pull,
 unload, restoration, process, or server authority. Exact endpoint and runtime
-drift fail before operation effects. The guaranteed `0.14.0` through `0.34.4`
-window, exact `0.32.2` and `0.32.10` exclusions, prerelease closure, and
-visibly unverified later stable execution remain explicit.
+drift fail before operation effects. Maintained `0.14.0..=0.34.4` and
+`0.35.0..=0.35.1` segments, exact `0.32.2` and `0.32.10` exclusions,
+unpublished gaps, and prerelease closure remain explicit. Current official
+`0.40.0` remains `UnverifiedNewer`: its chat scheduler can start background
+local model-store migration, which needs an operator ruling before this
+attached-runtime lifecycle is qualified (Research 379).
 
 llama.cpp completes the local-runtime family with deliberately separate
 prepared types. `prepare_llama_cpp_attached` binds one host-approved external

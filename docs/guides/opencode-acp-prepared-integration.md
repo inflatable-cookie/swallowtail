@@ -18,7 +18,7 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Preparation requires all of the following:
 
 - executable axis `opencode.executable`
-- a permitted OpenCode package in `1.18.18..=1.18.32`, or a later stable
+- a permitted OpenCode package in `1.18.18..=1.18.35`, or a later stable
   visible as `UnverifiedNewer`
 - host-approved `opencode` executable and isolated environment
 - `opencode_acp_host_account_access_profile` with no credential reference
@@ -28,8 +28,9 @@ Preparation requires all of the following:
 The claim is `opencode.acp.executable-window-1`. Behavior
 `opencode.acp-v1.client-mcp-servers-v1` covers accepted-but-older
 `1.18.18..=1.18.30`. Compiled behavior
-`opencode.acp-v1.client-mcp-servers-v2` covers `1.18.31..=1.18.32`. Later
-stables may run as visibly unverified without extending guaranteed support.
+`opencode.acp-v1.client-mcp-servers-v2` covers `1.18.31..=1.18.35`. Later
+stables, starting at `1.18.36`, may run as visibly unverified without
+extending guaranteed support.
 
 OpenCode answers `protocolVersion` `1` regardless of the requested revision.
 The driver records that provider-fixed value and does not infer that its

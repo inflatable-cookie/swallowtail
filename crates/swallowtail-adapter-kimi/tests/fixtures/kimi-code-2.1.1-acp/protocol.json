@@ -6236,37 +6236,37 @@
       "from": "0.43.0",
       "to": "0.43.1",
       "class": "all 25 bundled ACP server module regions are identical; package/bundle and web assets change",
-      "research": "398"
+      "research": "403"
     },
     {
       "from": "0.43.1",
       "to": "2.0.0",
       "class": "slash.ts adds a filter for skills with explicit scopes in available-command discovery; ACP adapter suppresses AvailableCommands; runner remains identical",
-      "research": "398"
+      "research": "403"
     },
     {
       "from": "2.0.0",
       "to": "2.0.1",
       "class": "generated ACP server bundle initializer rename only; raw server.ts blob remains identical",
-      "research": "398"
+      "research": "403"
     },
     {
       "from": "2.0.1",
       "to": "2.0.2",
       "class": "generated ACP bundle initializer renames only; corresponding raw source files remain identical",
-      "research": "398"
+      "research": "403"
     },
     {
       "from": "2.0.2",
       "to": "2.1.0",
       "class": "all 25 bundled ACP server module regions are identical",
-      "research": "398"
+      "research": "403"
     },
     {
       "from": "2.1.0",
       "to": "2.1.1",
       "class": "all 25 bundled ACP server module regions are identical",
-      "research": "398"
+      "research": "403"
     }
   ],
   "github_source_blobs": [
@@ -6334,9 +6334,81 @@
       "terminal": false,
       "auth_terminal": false,
       "terminal_request_dispatch": "unsupported/method-not-found",
-      "protocol_fake_test": "initialization_observes_exact_capabilities_without_accepting_login_authority"
+      "protocol_fake_test": "initialization_observes_exact_capabilities_without_accepting_login_authority",
+      "protocol_fake_test_scope": "adapter-side ACP fake only; does not execute the Kimi provider-local process runner or prove its child lifecycle"
     },
     "contract": "Contract 015: terminal callbacks are execution-host callbacks and the route advertises no terminal capability. No adapter or runtime control mediates this provider-local spawn."
+  },
+  "spawn_control_investigation": {
+    "source_commit": "f67e6398fb3210ad8ace970e2dfd5bcc984ed61f",
+    "source_files": {
+      "packages/acp-server/src/acp-terminal/acpTerminalRunner.ts": "9016d48b643f35b263449d98dee25597a9a24d30",
+      "packages/acp-server/src/acp-fs/acpConnection.ts": "9d12773ec1339219d66bb1e05712157c51da61b2",
+      "packages/acp-server/src/server.ts": "c2157face164225d307fa434f413abdbe8cac02d",
+      "packages/acp-server/src/config-options.ts": "beeb4300833e6db38bd16f35dd5e57607c841fad",
+      "packages/acp-server/src/start.ts": "5b60cac574d754878f02b8cac47414fec3da7802",
+      "docs/en/reference/kimi-acp.md": "9c24d7a0e9482877872089e26eb06a3d60de9577",
+      "docs/en/reference/kimi-command.md": "092a67e1f2a57d709db3ef2d8c2bc8640ded94ec",
+      "docs/en/configuration/config-files.md": "19a644393f9dfaef9d73858783b2a6956ac8f21d",
+      "docs/en/configuration/overrides.md": "512ba61d9f9302694ee7487e10a92b5ce6be0365",
+      "docs/en/customization/hooks.md": "72ac0d77a7c4ec90495f6afe0b6af52872511131"
+    },
+    "branches": [
+      {
+        "id": "terminal_disabled",
+        "guard": "!this.connection.terminalEnabled",
+        "action": "this.local.spawn(command, args, { ...options, cwd: options?.cwd ?? this.cwd })",
+        "disposition": "provider-local spawn; adapter advertises terminal false"
+      },
+      {
+        "id": "non_recognized_shape_fallback",
+        "guard": "!isBashToolInvocation(args, options)",
+        "predicate_shape": "args.length === 2; args[0] === '-c'; env.NO_COLOR === '1'; env.TERM === 'dumb'",
+        "predicate_checks_executable": false,
+        "action": "this.local.spawn(command, args, { ...options, cwd: options?.cwd ?? this.cwd })",
+        "disposition": "provider-local spawn for every call outside the args/env shape, including non-Bash calls, even when terminal capability is true"
+      },
+      {
+        "id": "predicate_match_with_terminal",
+        "guard": "this.connection.terminalEnabled && isBashToolInvocation(args, options)",
+        "predicate_checks_executable": false,
+        "action": "this.connection.get().createTerminal(...) then AcpTerminalProcess",
+        "disposition": "ACP client callback applies only to the exact argument/environment predicate shape; executable name is not checked"
+      }
+    ],
+    "shipped_controls": [
+      {
+        "id": "clientCapabilities.terminal",
+        "scope": "ACP initialize capability; selects client callback only when the argument/environment predicate matches",
+        "covers_every_spawn_branch": false
+      },
+      {
+        "id": "tools.enabled_disabled",
+        "scope": "persistent global agent tool visibility and execution policy",
+        "covers_every_spawn_branch": false
+      },
+      {
+        "id": "permission.rules",
+        "scope": "persistent agent tool authorization policy",
+        "covers_every_spawn_branch": false
+      },
+      {
+        "id": "PreToolUse hooks",
+        "scope": "persistent tool-call lifecycle hooks that run local scripts",
+        "covers_every_spawn_branch": false
+      },
+      {
+        "id": "ACP session config options",
+        "scope": "model, thinking, and mode only",
+        "covers_every_spawn_branch": false
+      },
+      {
+        "id": "kimi acp and KIMI_CODE_HOME",
+        "scope": "documented ACP command and persistent config/data-home selection",
+        "covers_every_spawn_branch": false
+      }
+    ],
+    "result": "No qualifying shipped per-session control was identified that disables or host-mediates both provider-local spawn branches."
   },
   "unmapped_bundle_churn": "Every added, removed, or changed bundle source region is enumerated above with exact paths and digests. ACP server modules are separately frozen above; remaining provider and dependency changes are unmapped and do not transfer Swallowtail support or contain the local process spawn."
 }

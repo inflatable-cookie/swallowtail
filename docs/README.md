@@ -8,8 +8,9 @@ What is true now:
 
 - Production route claims follow the Contract 029 exact-artifact procedure.
   Currentness stops stay visible: `kimi-code.acp` remains qualified through
-  `0.38.0` while official stable `2.1.1` retains the terminal process-authority
-  gap (Research 398).
+  `0.38.0` while official stable `2.1.1` retains the local-spawn process-
+  authority stop (Research 403); a host-terminal API design awaits separate
+  review.
 - Contract 063 admits a consumer-supplied streamable-HTTP MCP placement.
   `opencode.acp` is live-proven honouring it. `claude-agent.acp` honours it
   on exact `0.81.2` (Research 364) after Research 352's `cleanup_failed`

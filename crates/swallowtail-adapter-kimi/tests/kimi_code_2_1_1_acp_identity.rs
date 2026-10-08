@@ -1,4 +1,4 @@
-//! Research 398 freezes the current official Kimi Code ACP identity and stop.
+//! Research 403 freezes the current official Kimi Code ACP identity and stop.
 
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -75,7 +75,7 @@ fn identity_inventories_and_selected_bundle_changes_are_frozen() {
     );
     assert_sha256(
         PROTOCOL,
-        "4c9d4deffa1f1e480fd1d5c7bd403d9d1a8cf3d55759ff416efa63956a5d4422",
+        "22bc8681cdd3a5f8cac83de28f07a442d97d50dc4140268b1ed089e0acdda7cb",
     );
 
     let identity = json(IDENTITY);
@@ -203,6 +203,13 @@ fn identity_inventories_and_selected_bundle_changes_are_frozen() {
         authority["github_blob"],
         "9016d48b643f35b263449d98dee25597a9a24d30"
     );
+    assert_eq!(
+        text(
+            authority,
+            &["adapter_capabilities", "protocol_fake_test_scope"]
+        ),
+        "adapter-side ACP fake only; does not execute the Kimi provider-local process runner or prove its child lifecycle"
+    );
     let runner_points = authority["npm_region_sha256_by_point"]
         .as_object()
         .expect("runner region map");
@@ -234,13 +241,128 @@ fn identity_inventories_and_selected_bundle_changes_are_frozen() {
         .as_array()
         .expect("all published hops are classified");
     assert_eq!(hop_notes.len(), 13);
-    assert!(hop_notes[7..].iter().all(|hop| hop["research"] == "398"));
+    assert!(hop_notes[7..].iter().all(|hop| hop["research"] == "403"));
     assert_eq!(hop_notes[8]["from"], "0.43.1");
     assert_eq!(hop_notes[8]["to"], "2.0.0");
     assert!(text(&hop_notes[8], &["class"]).contains("available-command discovery"));
     assert_eq!(
         changed_modules(&modules["0.43.1"], &modules["2.0.0"]),
         ["slash.ts"]
+    );
+
+    let spawn = &protocol["spawn_control_investigation"];
+    assert_eq!(
+        text(spawn, &["source_commit"]),
+        "f67e6398fb3210ad8ace970e2dfd5bcc984ed61f"
+    );
+    let source_files = spawn["source_files"]
+        .as_object()
+        .expect("pinned source file and blob map");
+    assert_eq!(source_files.len(), 10);
+    for (path, blob) in [
+        (
+            "packages/acp-server/src/acp-terminal/acpTerminalRunner.ts",
+            "9016d48b643f35b263449d98dee25597a9a24d30",
+        ),
+        (
+            "packages/acp-server/src/acp-fs/acpConnection.ts",
+            "9d12773ec1339219d66bb1e05712157c51da61b2",
+        ),
+        (
+            "packages/acp-server/src/server.ts",
+            "c2157face164225d307fa434f413abdbe8cac02d",
+        ),
+        (
+            "packages/acp-server/src/config-options.ts",
+            "beeb4300833e6db38bd16f35dd5e57607c841fad",
+        ),
+        (
+            "packages/acp-server/src/start.ts",
+            "5b60cac574d754878f02b8cac47414fec3da7802",
+        ),
+        (
+            "docs/en/reference/kimi-acp.md",
+            "9c24d7a0e9482877872089e26eb06a3d60de9577",
+        ),
+        (
+            "docs/en/reference/kimi-command.md",
+            "092a67e1f2a57d709db3ef2d8c2bc8640ded94ec",
+        ),
+        (
+            "docs/en/configuration/config-files.md",
+            "19a644393f9dfaef9d73858783b2a6956ac8f21d",
+        ),
+        (
+            "docs/en/configuration/overrides.md",
+            "512ba61d9f9302694ee7487e10a92b5ce6be0365",
+        ),
+        (
+            "docs/en/customization/hooks.md",
+            "72ac0d77a7c4ec90495f6afe0b6af52872511131",
+        ),
+    ] {
+        assert_eq!(text(spawn, &["source_files", path]), blob);
+    }
+    let branches = spawn["branches"].as_array().expect("spawn branch ledger");
+    assert_eq!(branches.len(), 3);
+    assert_eq!(text(&branches[0], &["id"]), "terminal_disabled");
+    assert_eq!(
+        text(&branches[0], &["guard"]),
+        "!this.connection.terminalEnabled"
+    );
+    assert_eq!(text(&branches[1], &["id"]), "non_recognized_shape_fallback");
+    assert_eq!(
+        text(&branches[1], &["guard"]),
+        "!isBashToolInvocation(args, options)"
+    );
+    assert_eq!(
+        text(&branches[1], &["predicate_shape"]),
+        "args.length === 2; args[0] === '-c'; env.NO_COLOR === '1'; env.TERM === 'dumb'"
+    );
+    assert_eq!(
+        branches[1]["predicate_checks_executable"].as_bool(),
+        Some(false)
+    );
+    assert_eq!(
+        text(&branches[0], &["action"]),
+        text(&branches[1], &["action"])
+    );
+    assert_eq!(text(&branches[2], &["id"]), "predicate_match_with_terminal");
+    assert_eq!(
+        branches[2]["predicate_checks_executable"].as_bool(),
+        Some(false)
+    );
+    assert_eq!(
+        text(&branches[2], &["action"]),
+        "this.connection.get().createTerminal(...) then AcpTerminalProcess"
+    );
+
+    let controls = spawn["shipped_controls"]
+        .as_array()
+        .expect("shipped control ledger");
+    assert_eq!(controls.len(), 6);
+    assert_eq!(
+        controls
+            .iter()
+            .map(|control| text(control, &["id"]))
+            .collect::<Vec<_>>(),
+        [
+            "clientCapabilities.terminal",
+            "tools.enabled_disabled",
+            "permission.rules",
+            "PreToolUse hooks",
+            "ACP session config options",
+            "kimi acp and KIMI_CODE_HOME",
+        ]
+    );
+    assert!(
+        controls
+            .iter()
+            .all(|control| control["covers_every_spawn_branch"].as_bool() == Some(false))
+    );
+    assert_eq!(
+        text(spawn, &["result"]),
+        "No qualifying shipped per-session control was identified that disables or host-mediates both provider-local spawn branches."
     );
 }
 

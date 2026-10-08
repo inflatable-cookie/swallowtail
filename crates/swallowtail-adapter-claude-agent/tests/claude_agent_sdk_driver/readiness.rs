@@ -9,6 +9,7 @@ use futures_util::StreamExt;
 use serde_json::Value;
 use std::fs;
 use std::io;
+use std::path::PathBuf;
 use std::process::{Child, Command, ExitStatus, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
@@ -22,7 +23,37 @@ use swallowtail_runtime::{
 
 const CAPTURE_CHILD_ENV: &str = "SWALLOWTAIL_CARD100_CAPTURE_CHILD";
 const CAPTURE_JOURNAL_ENV: &str = "SWALLOWTAIL_CARD100_CAPTURE_JOURNAL";
+const CAPTURE_READY_ENV: &str = "SWALLOWTAIL_CARD100_CAPTURE_READY";
 static NEXT_CAPTURE_JOURNAL: AtomicU64 = AtomicU64::new(0);
+
+struct CaptureTempDirectory(PathBuf);
+
+impl CaptureTempDirectory {
+    fn create() -> Self {
+        loop {
+            let sequence = NEXT_CAPTURE_JOURNAL.fetch_add(1, Ordering::Relaxed);
+            let path = std::env::temp_dir().join(format!(
+                "swallowtail-card100-capture-{}-{sequence}",
+                std::process::id()
+            ));
+            match fs::create_dir(&path) {
+                Ok(()) => return Self(path),
+                Err(error) if error.kind() == io::ErrorKind::AlreadyExists => continue,
+                Err(error) => panic!("capture fixture directory is created: {error}"),
+            }
+        }
+    }
+
+    fn path(&self) -> &std::path::Path {
+        &self.0
+    }
+}
+
+impl Drop for CaptureTempDirectory {
+    fn drop(&mut self) {
+        let _ = fs::remove_dir_all(&self.0);
+    }
+}
 
 #[derive(Default)]
 struct RecordingObserver {
@@ -96,6 +127,7 @@ fn open_failure(scenario: SdkScenario) -> (String, Vec<CleanupEvent>) {
 fn wrapper_death_preserves_partial_capture_journal() {
     if std::env::var_os(CAPTURE_CHILD_ENV).is_some() {
         let path = std::env::var_os(CAPTURE_JOURNAL_ENV).expect("journal path is passed");
+        let ready_path = std::env::var_os(CAPTURE_READY_ENV).expect("readiness path is passed");
         let mut journal = SanitizedCaptureJournal::create(path).expect("journal is created");
         let capture = SanitizedWireCapture {
             open_sidecar_code: Some("construction_failed".to_owned()),
@@ -104,22 +136,24 @@ fn wrapper_death_preserves_partial_capture_journal() {
         journal
             .append_snapshot(&capture)
             .expect("partial capture is persisted");
+        // append_snapshot returns only after flush and sync_data. Creating this
+        // directory is the atomic acknowledgement that the durable append is
+        // complete, so the parent never kills the child during its first write.
+        fs::create_dir(ready_path).expect("durable journal readiness is acknowledged");
         loop {
             thread::sleep(Duration::from_millis(25));
         }
     }
 
-    let sequence = NEXT_CAPTURE_JOURNAL.fetch_add(1, Ordering::Relaxed);
-    let path = std::env::temp_dir().join(format!(
-        "swallowtail-card100-capture-{}-{}.jsonl",
-        std::process::id(),
-        sequence
-    ));
+    let temp_directory = CaptureTempDirectory::create();
+    let path = temp_directory.path().join("journal.jsonl");
+    let ready_path = temp_directory.path().join("journal-ready");
     let mut child = ReapOnDrop::new(
         Command::new(std::env::current_exe().expect("test binary path"))
             .arg("wrapper_death_preserves_partial_capture_journal")
             .env(CAPTURE_CHILD_ENV, "1")
             .env(CAPTURE_JOURNAL_ENV, &path)
+            .env(CAPTURE_READY_ENV, &ready_path)
             .stdout(Stdio::null())
             .stderr(Stdio::null())
             .spawn()
@@ -127,10 +161,10 @@ fn wrapper_death_preserves_partial_capture_journal() {
     );
 
     let deadline = Instant::now() + Duration::from_secs(5);
-    while !path.exists() {
+    while !ready_path.is_dir() {
         assert!(
             Instant::now() < deadline,
-            "capture wrapper did not persist before the kill"
+            "capture wrapper did not acknowledge its durable append before the kill"
         );
         thread::sleep(Duration::from_millis(10));
     }
@@ -139,19 +173,22 @@ fn wrapper_death_preserves_partial_capture_journal() {
         .expect("capture wrapper status is observed");
     assert!(!status.success(), "killed wrapper must not report success");
 
-    let line = fs::read_to_string(&path)
-        .expect("partial capture remains readable after wrapper death")
-        .lines()
+    let contents =
+        fs::read_to_string(&path).expect("partial capture remains readable after wrapper death");
+    let mut lines = contents.lines();
+    let line = lines
         .next()
-        .expect("partial capture has one durable record")
-        .to_owned();
-    let record: Value = serde_json::from_str(&line).expect("durable record is JSON");
+        .expect("partial capture has one durable record");
+    assert!(
+        lines.next().is_none(),
+        "journal has only the acknowledged snapshot"
+    );
+    let record: Value = serde_json::from_str(line).expect("durable record is JSON");
     assert_eq!(
         record["openSidecarCode"],
         Value::String("construction_failed".to_owned())
     );
     assert_eq!(record["stderrTailPresent"], Value::Bool(false));
-    fs::remove_file(path).expect("capture journal is removed");
 }
 
 fn first_turn_failure(scenario: SdkScenario) -> String {

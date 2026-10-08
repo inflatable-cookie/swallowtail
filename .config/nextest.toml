@@ -25,7 +25,7 @@ default-filter = "binary(claude_agent_sdk_sidecar_asset) | binary(claude_agent_s
 inherits = "default"
 slow-timeout = { period = "60s", terminate-after = 2 }
 
-# Bounded source-only v0.5.2 candidate regressions (24 named cases).
+# Bounded source-only v0.5.2 candidate regressions (28 named cases).
 [profile.sdk-patch-candidate]
 inherits = "default"
 slow-timeout = { period = "60s", terminate-after = 2 }

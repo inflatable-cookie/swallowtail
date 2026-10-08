@@ -536,12 +536,11 @@ fn source_hop_classifies_selected_loader_and_keeps_other_runtime_deltas_bounded(
             row["path"]
         );
         assert!(classified_source_paths.contains(row["path"].as_str().unwrap()));
-        assert_eq!(
+        assert!(
             source["classifications"][row["classification"].as_str().unwrap()]["paths"]
                 .as_array()
                 .unwrap()
                 .contains(&row["path"]),
-            true,
             "source path has exactly its recorded classification"
         );
     }

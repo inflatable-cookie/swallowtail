@@ -309,14 +309,13 @@ annotated Git tags from the canonical repository.
   `session/prompt` into the adapter diagnostic
   `swallowtail.goose.acp.auth_required`. Research 319's historical stop and
   the independently gated builtin, mode, lifecycle, and effort surfaces stand.
-- advance the Qoder `qoder.headless` claim to one exact `1.1.54`
-  `QualifiedOnly` point on the new adapter-private
-  `qoder.headless.stdio-stream-json-v2` behavior revision. Research 328 froze
-  official npm `1.1.54` after the `1.1.52` stop and recorded the deliberate
-  adapter-owned `--max-turns 8` AgentLoop ceiling plus its
-  `error_max_turns` provider-failure shape. The historical `1.1.25` decoder
-  specimens and Research 256's independent empty skill-visibility disposition
-  remain unchanged.
+- extend the Qoder `qoder.headless` claim from `1.1.54` through maintained
+  stable `1.1.65`, retaining `QualifiedOnly`, the baseline, claim id and
+  `qoder.headless.stdio-stream-json-v2` behavior revision. Research 385 freezes
+  all eleven published hops and the `1.1.61` generic failure projection for
+  `repeated_tool_call_denied`; Research 328's adapter-owned `--max-turns 8`
+  AgentLoop ceiling and the historical `1.1.25` decoder specimens remain.
+  Research 256's independent empty skill-visibility disposition is unchanged.
 
 ### Added
 - prove the `gemini-cli.acp` consumer HTTP MCP live harness against a fake

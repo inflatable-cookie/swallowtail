@@ -454,7 +454,10 @@ mod tests {
             .expect("finalize");
         match outcome.status() {
             TerminalStatus::ProviderFailed(diagnostic) => {
-                assert_eq!(diagnostic.code(), "swallowtail.qoder.headless.provider_failed");
+                assert_eq!(
+                    diagnostic.code(),
+                    "swallowtail.qoder.headless.provider_failed"
+                );
             }
             other => panic!("expected generic provider failure, got {other:?}"),
         }

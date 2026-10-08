@@ -13,10 +13,11 @@ fn fixture(body: &str, name: &str) -> Value {
 }
 
 #[test]
-fn current_identity_is_one_exact_private_milestone_point() {
+fn frozen_identity_stays_qualified_after_the_window_extends() {
     let identity = fixture(IDENTITY, "identity");
-    assert_eq!(QODER_PACKAGE_VERSION, "1.1.54");
+    assert_eq!(QODER_PACKAGE_VERSION, "1.1.65");
     assert_eq!(identity["npm_channel"]["latest"], "1.1.54");
+    assert_eq!(identity["official"]["version"], "1.1.54");
     assert_eq!(identity["npm_channel"]["beta"], "1.1.54-beta.1");
     assert_eq!(identity["previous_ceiling"], "1.1.52");
     assert_eq!(
@@ -50,13 +51,23 @@ fn current_identity_is_one_exact_private_milestone_point() {
             .is_permitted()
     );
     assert!(
+        claim
+            .assess(&InterfaceVersion::new("1.1.55").expect("first extended hop"))
+            .is_permitted()
+    );
+    assert!(
+        claim
+            .assess(&InterfaceVersion::new("1.1.65").expect("latest qualified"))
+            .is_permitted()
+    );
+    assert!(
         !claim
             .assess(&InterfaceVersion::new("1.1.25").expect("historical"))
             .is_permitted()
     );
     assert!(
         !claim
-            .assess(&InterfaceVersion::new("1.1.55").expect("next"))
+            .assess(&InterfaceVersion::new("1.1.66").expect("first newer stable"))
             .is_permitted()
     );
 }

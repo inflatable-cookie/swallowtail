@@ -5,8 +5,9 @@ run. The route is `qoder.headless`; the driver ID is
 `swallowtail.qoder.headless`. It owns one
 `qodercli --print --output-format stream-json --permission-mode dont_ask
 --max-turns 8 --no-session-persistence --cwd` child over stream-json NDJSON.
-Exact npm `1.1.54` receives an explicit adapter-owned `--max-turns 8` bound;
-the selected CLI headless AgentLoop therefore cannot run as an effectively
+The maintained qualified stable window is npm `1.1.54..=1.1.65` on the same
+behavior revision. Every selected run receives an explicit adapter-owned
+`--max-turns 8` bound; the CLI headless AgentLoop cannot run as an effectively
 unbounded loop.
 
 This is a separate family from Qoder ACP, SDK stdio, the TUI, and the `qoder`
@@ -25,14 +26,14 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Preparation requires all of the following:
 
 - exact package axis `qoder.package`
-- exact npm `@qoder-ai/qodercli@1.1.54`
+- qualified stable npm `@qoder-ai/qodercli` points `1.1.54..=1.1.65`
 - host-approved `qodercli` executable and isolated environment
 - `qoder_local_config_access_profile` with no credential reference
 - working resource, plus host services for task, process, time, and
   working-resource ownership
 - a host process deadline on the print run
 
-The claim is qualified-only. Later releases do not inherit this route.
+The claim is qualified-only. Stable releases above `1.1.65` are rejected;
 `UnverifiedNewer` is not a Qoder headless execution posture.
 
 Swallowtail does not install Qoder, search `PATH`, read provider config, or
@@ -106,8 +107,10 @@ evidence, and matrix coverage. An advertised CLI flag alone is insufficient.
 ## Deterministic Validation
 
 ```sh
-effigy validate:focused swallowtail-adapter-qoder
-effigy check:examples
+effigy validate:current-qoder-headless
+effigy check:current-qoder-headless
+effigy qa:docs
+effigy qa:routes
 ```
 
 No login, install, or authenticated prompt is part of deterministic acceptance.

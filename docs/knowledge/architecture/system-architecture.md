@@ -280,11 +280,15 @@ OpenHands adds a package without a production route.
   harness-rollout selection; the Unified Harness stays unmapped. Native
   limit remains provider-failed. `vibe-acp`, TUI, `--continue`/`--resume`,
   teleport, and `--auto-approve`/`--yolo` stay out.
-- `swallowtail-adapter-qoder` implements exact npm `1.1.54` discovery and one
-  `qodercli --print --output-format stream-json` structured run with
+- `swallowtail-adapter-qoder` implements the maintained npm
+  `1.1.54..=1.1.65` window and one `qodercli --print --output-format
+  stream-json` structured run with
   `--permission-mode dont_ask`, adapter-owned `--max-turns 8`,
   `--no-session-persistence --cwd` through `prepare_qoder_headless`.
-  `error_max_turns` with the configured bound maps to provider failure.
+  Maintained stable points are `1.1.54..=1.1.65` under `QualifiedOnly`
+  (Research 385); `error_max_turns` with the configured bound maps to provider
+  failure. The `1.1.61` repeated-tool-denial reason remains a generic provider
+  failure.
   `--acp`, SDK stdio, TUI, `--yolo` / `bypass_permissions` / `accept_edits`,
   and the `qoder` IDE dispatcher stay out.
 - `swallowtail-adapter-openhands` holds exact PyPI `1.42.1` discovery, owned
@@ -685,10 +689,11 @@ Crate status:
   `2.25.4` headless discovery, one bounded streaming-NDJSON structured
   run, and `prepare_mistral_vibe_headless`. The package remains an
   unreleased additive candidate after `v0.3.2`.
-- `swallowtail-adapter-qoder` — realized for exact npm `1.1.54` headless
-  discovery, one bounded stream-json structured run with an adapter-owned
-  eight-turn AgentLoop ceiling, and `prepare_qoder_headless`. The package
-  remains an unreleased additive candidate after `v0.3.2`.
+- `swallowtail-adapter-qoder` — realized for maintained npm
+  `1.1.54..=1.1.65` headless discovery, one bounded stream-json structured run
+  with an adapter-owned eight-turn AgentLoop ceiling, and
+  `prepare_qoder_headless`. The package remains an unreleased additive
+  candidate after `v0.3.2`.
 - `swallowtail-adapter-openhands` — realized for exact PyPI `1.42.1`
   Agent Server discovery, owned loopback spawn, and
   `prepare_openhands_agent_server`. `openhands.agent-server` is deferred:

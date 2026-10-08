@@ -161,8 +161,9 @@ impl CommandCodeHeadlessEventParser {
             "run_start" => self.run_start(event),
             "model_request_start" => {
                 self.model_request_start(event);
-                let observations = self.activity.unknown(event_type)?;
-                Ok(self.activity_events(observations))
+                // This event is an internal source for the opt-in model
+                // selection observation. It has never been a public activity.
+                Ok(Vec::new())
             }
             "thinking_start" => {
                 let observations = self.activity.thought_start()?;

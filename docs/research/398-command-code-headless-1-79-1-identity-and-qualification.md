@@ -60,6 +60,9 @@ every hop. The selected JSON event serializer, model_request_start.model,
 fixed command options, selected event/result/usage/failure keys, and mapped
 lifecycle paths remain present. The first resolveLaneModel implementation and
 documented feature-model:planning setting appear at 1.73.0.
+`model_request_start` remains ignored by the public event projection in both
+behavior segments; v2 reads its model value only for the opt-in private debug
+observation.
 
 The ledger classifies each changed file at each hop. It separates the selected
 model-lane transition from package-version metadata, changelog discovery,

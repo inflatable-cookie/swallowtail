@@ -177,6 +177,7 @@
     "message_start",
     "message_update",
     "message_end",
+    "model_request_start",
     "model_trace",
     "run_end"
   ],

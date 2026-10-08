@@ -8,13 +8,14 @@ annotated Git tags from the canonical repository.
 ### Notes
 - qualify only `command-code.headless` through official npm `latest`
   `1.79.1`, with an exact segment for each of the 33 published stable points,
-  including the existing `1.65.0` baseline. Research 396 freezes each package
+  including the existing `1.65.0` baseline. Research 398 freezes each package
   tree and every adjacent hop. Keep the existing behavior through `1.72.4`;
   from `1.73.0`, Command Code may select configured
   `featureModels.planning` ahead of `-m` in plan mode. A private opt-in
   observation reports requested and CLI-selected model IDs with a 128-byte
-  bound, without asserting which remote backend served the request. Published
-  holes remain excluded and no unverified-newer execution is allowed.
+  bound; `model_request_start` remains private and emits no public activity.
+  The observation does not assert which remote backend served the request.
+  Published holes remain excluded and no unverified-newer execution is allowed.
   Research 347 live proof remains exact `1.65.0`; the guarantee change is
   assessed for a pre-1.0 minor under Contract 036, not the urgent `v0.5.2`
   patch. No provider prompt, credential use, package execution, settings write,

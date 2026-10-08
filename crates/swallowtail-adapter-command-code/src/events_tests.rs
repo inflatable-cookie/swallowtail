@@ -150,7 +150,7 @@ fn negative_cases_are_all_rejected() {
 }
 
 #[test]
-fn model_request_start_captures_only_the_cli_selected_model_id_for_the_new_milestone() {
+fn model_request_start_captures_the_cli_selected_model_without_public_activity() {
     let fixture: Value = serde_json::from_str(include_str!(
         "../tests/fixtures/command-code-1.79.1/plan-model-selection.json"
     ))
@@ -171,16 +171,7 @@ fn model_request_start_captures_only_the_cli_selected_model_id_for_the_new_miles
     let projected = parser
         .push(line.as_bytes())
         .expect("model request event parses");
-    assert_eq!(projected.len(), 1);
-    assert!(matches!(
-        projected[0].kind(),
-        RuntimeEventKind::Activity(activity)
-            if matches!(
-                activity.kind(),
-                swallowtail_runtime::ActivityKind::Unknown(namespace)
-                    if namespace.as_str() == "command-code.headless.event.model_request_start"
-            )
-    ));
+    assert!(projected.is_empty(), "model selection stays private");
 
     let (_, _, _, effective_models) = parser.finish().expect("stream finishes");
     assert_eq!(
@@ -191,6 +182,18 @@ fn model_request_start_captures_only_the_cli_selected_model_id_for_the_new_miles
                 .unwrap()
                 .to_owned()
         )]
+    );
+
+    let mut parser =
+        CommandCodeHeadlessEventParser::with_expected_session(operation(), None, false);
+    let projected = parser
+        .push(line.as_bytes())
+        .expect("historical model request event parses");
+    assert!(projected.is_empty(), "the v1 route keeps the event ignored");
+    let (_, _, _, effective_models) = parser.finish().expect("stream finishes");
+    assert!(
+        effective_models.is_empty(),
+        "v1 does not capture model selection"
     );
 }
 

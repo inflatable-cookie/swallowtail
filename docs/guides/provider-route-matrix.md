@@ -134,11 +134,12 @@ ACP adapters may compose instead of their stdio transport.
 `muse-code.headless` carries no `prepare_working_state_restoration` (no
 interactive route). `command-code.headless` interactive continuity is private
 exact-id only; prepared sessions expose only fresh context-losing restoration
-and no public load/resume. Research 396 qualifies the exact published points
+and no public load/resume. Research 398 qualifies the exact published points
 from `1.65.0` through `1.79.1`, preserving the `1.65.0` baseline and published
 gaps. Starting at `1.73.0`, configured plan-lane models may take precedence
 over `-m`; an opt-in bounded debug observation reports requested and
-CLI-selected IDs without claiming remote backend identity. Research 347 live
+CLI-selected IDs without claiming remote backend identity; the
+`model_request_start` event remains absent from public activity. Research 347 live
 acceptance remains bound to exact `1.65.0` on
 `deepseek/deepseek-v4-flash`. Research 330 stays the
 exact-`1.54.0` paid-model record. Research 116/118 remain bound to
@@ -303,7 +304,7 @@ delete.
 | `kimi-code.headless` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact qualified `0.29.0..=0.32.0` under v1; `0.33.0..=0.43.0` qualified under v2 with `system.version` preamble; later stable points may be visible `UnverifiedNewer` on the assessed revision; each run may retain provider-owned session state without exposing its identity | process and task cleanup only; provider state is preserved |
 | `kimi-code.local-server` | `supported` | `yes` | `supported` | `supported` | `unsupported` | `unsupported` | exact qualified `0.28.1` plus `0.29.0..=0.39.1`, `0.40.0..=0.43.1`, and `2.0.0..=2.1.1` under `AllowUnverified`; profile and disabled-tool controls require `0.29.0`; `0.31.0` has a distinct subagent-status revision, `0.31.1` a refresh-stable revision, `0.32.0..=0.34.0` optional-meta-flags, and `0.35.0..=0.39.1`, `0.40.0..=0.43.1`, and `2.0.0..=2.1.1` heartbeat-ping; from `0.40.0` Bash `cwd` is not checked against the workspace; unpublished `0.39.2`, `0.40.2`, `0.41.1`, `0.42.1`, `0.43.2`, `1.x`, and `2.0.3` stay incompatible; later stables may be visible unverified newer | joins WebSocket and task work, answers application ping with pong, releases the server-bearer lease, preserves provider state, and stops only an owned foreground child |
 | `muse-code.headless` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `0.2.1-R1215.1`; every run disables the session log and admits no reusable provider-session identity | process and task cleanup only; local Meta account/config state is preserved |
-| `command-code.headless` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact `1.65.0`; structured runs use `--no-session`; interactive turns privately retain only an exact session id with no public load/resume binding | process and task cleanup only; local Command Code account/config state and project transcripts are preserved |
+| `command-code.headless` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | 33 exact published points from `1.65.0` through `1.79.1` (Research 398); behavior v1 through `1.72.4`, model-selection v2 from `1.73.0`; structured runs use `--no-session`; interactive turns privately retain only an exact session id with no public load/resume binding | process and task cleanup only; local Command Code account/config state and project transcripts are preserved |
 | `cline.acp` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | maintained `3.0.55..=3.0.70` except unpublished `3.0.59`; Swallowtail exposes no close, load, or delete operation; upstream `session/load` is not mapped | connection, process, and task cleanup only; provider-owned session state is preserved |
 | `cline.headless` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | published `3.0.55`–`3.0.70` excluding `3.0.59`; one print run and no reusable provider-session identity | process and task cleanup only; local Cline account/config state is preserved |
 | `goose.acp` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | exact points `1.50.1`, `1.51.0`, `1.52.0`, and `1.53.0`; selected ACP route advertises no close, load, or delete | connection, process, and task cleanup only; provider-owned session state is preserved |

@@ -29,7 +29,7 @@ fn official_identity_and_claim_cover_exact_published_points() {
     let claim = swallowtail_adapter_command_code::command_code_headless_claim();
 
     assert_eq!(COMMAND_CODE_RELEASE_VERSION, "1.79.1");
-    assert_eq!(identity["research_id"], 396);
+    assert_eq!(identity["research_id"], 398);
     assert_eq!(identity["official_channel"], "npm dist-tags.latest");
     assert_eq!(identity["stable_chain"], serde_json::json!(RELEASES));
     assert_eq!(identity["published_stable_count"], RELEASES.len());
@@ -243,6 +243,24 @@ fn selected_model_lane_and_debug_evidence_are_bounded_and_exact() {
     assert_eq!(protocol["route_id"], "command-code.headless");
     assert_eq!(protocol["axis"], "command-code.npm");
     assert_eq!(protocol["artifact_revision"], "1.79.1");
+    assert_eq!(
+        string_set(&protocol["mapped_debug_event_types"]),
+        BTreeSet::from(["model_request_start"])
+    );
+    assert!(!string_set(&protocol["projected_event_types"]).contains("model_request_start"));
+    assert_eq!(
+        string_set(&protocol["ignored_lifecycle_event_types"]),
+        BTreeSet::from([
+            "message_end",
+            "message_start",
+            "message_update",
+            "model_request_start",
+            "model_trace",
+            "run_end",
+            "turn_end",
+            "turn_start",
+        ])
+    );
     assert_eq!(
         protocol["model_selection_evidence"]["first_lane_release"],
         "1.73.0"

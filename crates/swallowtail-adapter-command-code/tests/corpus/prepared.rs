@@ -61,6 +61,17 @@ fn prepared_run_uses_local_account_ambient_host_and_exact_read_only_cli_binding(
         .expect("events parse");
     let terminal = block_on(handle.take_terminal_outcome().expect("terminal"));
     assert!(!events.is_empty());
+    assert!(!events.iter().any(|event| {
+        matches!(
+            event.kind(),
+            RuntimeEventKind::Activity(activity)
+                if matches!(
+                    activity.kind(),
+                    ActivityKind::Unknown(namespace)
+                        if namespace.as_str() == "command-code.headless.event.model_request_start"
+                )
+        )
+    }));
     assert_eq!(terminal.status(), &TerminalStatus::Completed);
     assert_eq!(
         terminal
@@ -170,6 +181,17 @@ fn plan_lane_model_observation_reports_requested_and_cli_selected_ids() {
         Some("command-code.fixture.run.model-selection")
     );
     let detail: Value = serde_json::from_str(observation.detail()).expect("bounded JSON detail");
+    assert!(!events.iter().any(|event| {
+        matches!(
+            event.kind(),
+            RuntimeEventKind::Activity(activity)
+                if matches!(
+                    activity.kind(),
+                    ActivityKind::Unknown(namespace)
+                        if namespace.as_str() == "command-code.headless.event.model_request_start"
+                )
+        )
+    }));
     assert_eq!(detail["requested_model_id"], fixture["requested_model_id"]);
     assert_eq!(
         detail["effective_model_id"],

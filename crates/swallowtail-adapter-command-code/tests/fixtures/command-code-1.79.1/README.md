@@ -20,7 +20,9 @@ model ahead of the caller model forwarded with `-m`, subject to its own
 configuration and model-access checks. The adapter records the requested ID
 from its prepared plan and the CLI-selected ID from that event. The latter is
 the model sent into the SDK request path; it does not prove which remote
-provider or backend ultimately served it.
+provider or backend ultimately served it. The event remains ignored by the
+public runtime activity projection; only the v2 opt-in debug observation reads
+its model field.
 
 All other changes are classified as package-version metadata, changelog
 discovery, bundled documentation, or the unselected VS Code extension. The

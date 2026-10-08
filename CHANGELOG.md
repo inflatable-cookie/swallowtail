@@ -7,7 +7,7 @@ annotated Git tags from the canonical repository.
 
 ### Notes
 - qualify only `codex.exec` through official stable `0.161.0` as a compatible
-  extension on `codex.exec.jsonl-v1`. Research 409 reuses the reviewed
+  extension on `codex.exec.jsonl-v1`. Research 410 reuses the reviewed
   `0.155.1`→`0.161.0` source and artifact chain from Research 370 with
   independent digest checks. Projectless startup does not restore persisted
   trust; system/macOS MDM managed-network allowlists and refresh remain
@@ -15,6 +15,14 @@ annotated Git tags from the canonical repository.
   unpublished `0.155.2` gap, prior exclusions, and independent app-server
   claim. No provider prompt, live session, credential, installation, or host
   update was used.
+- Keep `kimi-code.acp` at its `0.38.0` ceiling while the official npm and
+  GitHub stable `2.1.1` remains blocked by the same unmediated terminal process
+  spawn from both the terminal-disabled branch and non-Bash fallback. Research
+  403 freezes all thirteen published hops after `0.38.0`, the complete npm
+  trees from `0.43.0` through `2.1.1`, and the selected ACP bundle changes
+  across the `2.0.0` reset. No shipped per-session control covers both local
+  spawn branches; a host-terminal API design is proposed for separate review.
+  No claim, exclusion, public operation, or capability changes.
 - qualify shared stable ACP schema from `schema-v1.20.0` through current
   official `schema-v1.24.1`, covering all five published hops. Research 406
   freezes each tag, all four release assets, the complete per-hop file ledger,

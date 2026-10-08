@@ -315,6 +315,58 @@ its own mapping ruling before adaptation or claim movement. Fake-provider
 proof does not establish live permission or MCP honouring. A prerelease issue
 report does not qualify a final stable.
 
+## DeepSeek Harness Artifact/Profile Mapping Study
+
+Tom's 2026-10-08 board answer to decision
+`f3ca9685-76b4-4e89-88f3-45f82bf8b4b2` is “Approve bounded mapping study;
+decide adaptation after exact evidence”. This permits provider-free inspection
+of exact shipped wrappers, runtime artifacts and source for the existing
+structured-run route. The npm CLI `0.2.0-rc.2` and PyPI runtime-bin `0.1.5rc1`
+are independently identified artifacts; their version numbers or JSON-RPC
+labels do not establish compatible executable identity or provenance.
+
+Reuse retained evidence. Freeze exact executable selection/profile invocation
+and published runtime-bin hops from `0.1.0rc6`; map initialize, prompt, idle,
+shutdown, forced cancellation and join, plus approved host, Cordis, provider,
+model, working-resource, authentication, tool and permission boundaries.
+Return either exact evidence for a same-contract private mapping with a
+proposed behavior milestone/axis ledger, or a concrete distinct-route/axis
+contract proposal for another ruling. No runtime or public API implementation,
+claim change, artifact execution, live work, authentication, installation or
+tag authority is included. Preserve the existing exact `0.1.0rc6` point,
+released consumers and separation from the local-server route until the
+classification is independently reviewed and adaptation is authorized.
+
+## Copilot ACP Bounded Authenticated Proof
+
+Tom's 2026-10-08 board answer to decision
+`5b8ae2a2-8f68-40c7-8c4b-58c00652d5e2` is “Approve bounded authenticated
+proof and name existing access/model”. The offline artifact proof could not
+reach permission exchange: exact `1.0.80`, `1.0.81` and `1.0.93` each required
+authentication at `session/new`.
+
+A separately scoped proof may use one bounded ACP prompt per exact version,
+three total, after the operator identifies the existing approved account or
+access profile and model. Bind delegated credential mechanism, entitlement
+and exact authentication/provider network audiences before dispatch. The
+answer does not itself identify that account, profile or model. Tom clarified
+in chat the same day: “I don't have a copilot account yet”. Authenticated
+execution therefore awaits approved existing access; no account creation,
+subscription or substitute credential authority is implied. Do not extract
+secrets, create or switch accounts, log in, relocate authentication/home state,
+or change settings. Access identifiers are sufficient; never request tokens.
+
+Prove containment and the harness against fakes, then persist an execution
+record before each live invocation. Reject or cancel a benign task-owned
+action requiring permission; never approve it. Observe exact permission,
+cancellation and absence of tool effects, with bounded host stop/join. No
+retry, resend or additional reviewer live spend is allowed. Establish selected
+retry/fallback and effect budgets first; stop for a ruling if they cannot be
+bounded. No installation, consumer mutation, qualification or tag authority
+is included. Keep the existing exact `1.0.80` claim until independent review
+establishes the selected shipped behavior and any mapping change is ruled.
+This proof belongs to the minor currentness sweep, not the urgent SDK patch.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

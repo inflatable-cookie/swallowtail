@@ -368,9 +368,13 @@ OpenHands adds a package without a production route.
 - `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
   route-specific behavior segments whose bounds differ per route.
   `kimi-code.acp` qualifies `0.29.0..=0.38.0` under `QualifiedOnly` and
-  excludes exact `0.39.0` and `0.39.1`; the uncontained ACP terminal-runner
-  local spawn is byte-identical through `0.43.0`, so every point above
-  `0.38.0` fails closed, including the published `0.40.0..=0.43.0` gap. Its
+  excludes exact `0.39.0` and `0.39.1`; the ACP runner locally spawns when
+  terminal is disabled or the call misses its argument/environment predicate,
+  unchanged through official stable `2.1.1` (Research 403). No shipped per-session
+  control covers both branches; the host-terminal design awaits separate
+  review. Every point above `0.38.0` fails closed, including published
+  `0.40.0..=0.43.1` and `2.0.0..=2.1.1`; the `2.0.0` reset adds an unmapped
+  available-command filter without changing the stop. Its
   ACP route owns ambient-host
   interactive new, load-with-replay, replay-free resume, bounded writes, and
   negotiated model evidence. Its separate headless route owns one default-

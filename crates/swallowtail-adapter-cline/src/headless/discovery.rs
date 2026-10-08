@@ -32,7 +32,7 @@ impl DiscoveryDriver for ClineHeadlessDriver {
             request,
             services,
             cline_headless_claim(),
-            crate::selection::parse_cline_version_output,
+            crate::selection::parse_cline_headless_version_output,
             SWALLOWTAIL_CLINE_HEADLESS_PROBE_CODES,
             "Cline",
         ))

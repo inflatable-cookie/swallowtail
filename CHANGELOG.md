@@ -8,7 +8,7 @@ annotated Git tags from the canonical repository.
 ### Notes
 - qualify only `cline.headless` through official npm stable `3.0.70` after
   every published hop from `3.0.55`; preserve `3.0.55`, the existing behavior
-  revision, and the unpublished `3.0.59` exclusion. Research 389 freezes all
+  revision, and the unpublished `3.0.59` exclusion. Research 390 freezes all
   wrapper and selected Darwin ARM64 runtime file trees, all six platform
   package identities, twelve tagged source paths, and the per-hop change
   ledger. Headless keeps its JSON envelope and fail-closed media handling;

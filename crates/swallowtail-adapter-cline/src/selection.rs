@@ -30,11 +30,19 @@ impl ClinePlanSelection {
     }
 }
 
-/// Parses installed `--version` stdout into a syntactically valid Cline binding.
-///
-/// Route-specific compatibility claims decide whether the observation is qualified.
+/// Parses installed `--version` stdout into the exact Cline ACP baseline binding.
 #[must_use]
-pub(crate) fn parse_cline_version_output(output: &[u8]) -> Option<InterfaceVersionBinding> {
+pub(crate) fn parse_cline_acp_version_output(output: &[u8]) -> Option<InterfaceVersionBinding> {
+    let output = std::str::from_utf8(output).ok()?;
+    let exact = output.strip_suffix('\n').unwrap_or(output);
+    cline_package_binding(exact)
+}
+
+/// Parses a headless installed version candidate before applying its route claim.
+#[must_use]
+pub(crate) fn parse_cline_headless_version_output(
+    output: &[u8],
+) -> Option<InterfaceVersionBinding> {
     let output = std::str::from_utf8(output).ok()?;
     let exact = output.strip_suffix('\n').unwrap_or(output);
     package_version_binding(exact)
@@ -43,8 +51,9 @@ pub(crate) fn parse_cline_version_output(output: &[u8]) -> Option<InterfaceVersi
 /// Returns the frozen baseline Cline package binding.
 ///
 /// This identity helper deliberately remains pinned to the original `3.0.55`
-/// point. Installed-version discovery parses candidates separately and applies
-/// the selected route's compatibility claim before promotion.
+/// point. Headless discovery parses candidates separately and applies its
+/// compatibility claim before promotion; ACP discovery stays on this exact
+/// binding.
 #[must_use]
 pub fn cline_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
     if value != CLINE_PACKAGE_VERSION {
@@ -251,17 +260,30 @@ mod tests {
     }
 
     #[test]
-    fn version_stdout_parser_parses_candidates_before_route_classification() {
+    fn acp_version_stdout_parser_keeps_the_exact_baseline() {
         assert_eq!(
-            parse_cline_version_output(b"3.0.55\n")
+            parse_cline_acp_version_output(b"3.0.55\n")
                 .expect("baseline parses")
                 .version()
                 .as_str(),
             "3.0.55"
         );
         for candidate in [b"3.0.56\n".as_slice(), b"3.0.59\n", b"3.0.70\n"] {
-            assert!(parse_cline_version_output(candidate).is_some());
+            assert!(parse_cline_acp_version_output(candidate).is_none());
         }
-        assert!(parse_cline_version_output(b"cline 3.0.55\n").is_none());
+        assert!(parse_cline_acp_version_output(b"cline 3.0.55\n").is_none());
+    }
+
+    #[test]
+    fn headless_version_stdout_parser_parses_candidates_before_route_classification() {
+        for candidate in [
+            b"3.0.55\n".as_slice(),
+            b"3.0.56\n",
+            b"3.0.59\n",
+            b"3.0.70\n",
+        ] {
+            assert!(parse_cline_headless_version_output(candidate).is_some());
+        }
+        assert!(parse_cline_headless_version_output(b"cline 3.0.55\n").is_none());
     }
 }

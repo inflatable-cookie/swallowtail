@@ -68,3 +68,7 @@ path = "tests/cursor_agent_2026_09_18_identity.rs"
 [[test]]
 name = "cursor_agent_2026_10_01_identity"
 path = "tests/cursor_agent_2026_10_01_identity.rs"
+
+[[test]]
+name = "cursor_agent_2026_10_01_acp_identity"
+path = "tests/cursor_agent_2026_10_01_acp_identity.rs"

@@ -28,6 +28,7 @@ impl ProcessService for SidecarFixtureHost {
         let handle = SidecarFixtureProcess {
             shared: Arc::clone(&self.shared),
             scenario: self.scenario,
+            sdk_version: self.sdk_version,
             wait_failure: self.process_wait_failure,
             exit_failure: self.process_exit_failure,
         };
@@ -38,6 +39,7 @@ impl ProcessService for SidecarFixtureHost {
 struct SidecarFixtureProcess {
     shared: Arc<Shared>,
     scenario: SidecarScenario,
+    sdk_version: &'static str,
     wait_failure: bool,
     exit_failure: bool,
 }
@@ -56,7 +58,7 @@ impl ProcessHandle for SidecarFixtureProcess {
                 .lock()
                 .expect("sidecar fixture state lock poisoned");
             state.input.push(value.clone());
-            respond(self.scenario, &value, &mut state)?;
+            respond(self.scenario, self.sdk_version, &value, &mut state)?;
             self.shared.changed.notify_all();
             Ok(())
         })();

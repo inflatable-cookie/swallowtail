@@ -1,0 +1,1283 @@
+{
+  "packages": {
+    "@earendil-works/pi-agent-core": [
+      {
+        "file_count": 202,
+        "git_head": "914cf1472e715297caa30db4b9535d534a9eb718",
+        "npm_integrity": "sha512-8Pn3wSCxj0cfo5I6jxQYVB/3uuQRmHhAlEclyjqpOuMEdQMIODHizRogv56FLdbU+dTiGnybeHQ2N+sV1/L2YA==",
+        "npm_shasum_sha1": "2a3212465902f2553dc08d06a8af5926d63d21a0",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.84.2.tgz",
+        "root_declared_range": "^0.84.2",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "43cc779ddaf90df41768d3d2d0f7d7ba8b8bce7bedc9dc6062ca8b4de84ae880",
+          "dist/agent.js": "d84351e451b9fef40fe2532c446aca90d26a4be9038b2d77d3d45dd6eab21d41",
+          "dist/index.js": "aeecb12a48528008887b2391fe93ef28c18ee6aa16bf81ec9d8eff57fb0a3647",
+          "dist/types.d.ts": "70c8fb25d1497ab5ddeb35e0e97c54f77eb8a0374a0b4b2e57725ebb4071cea3"
+        },
+        "tarball_sha256": "565b5d2c6f6c09ff69d915d28692a15d72dedc43a7dbe41fb422bb4bfad3bdcf",
+        "version": "0.84.2"
+      },
+      {
+        "file_count": 202,
+        "git_head": "bfb004d4418ff05c6f909eaaab856cbe75c1fde0",
+        "npm_integrity": "sha512-VURr+xBRl3RxYcw3kT9Pn3yfi6LbRoCJgHF7h1mAblMjtLNV/MfG/RyF0uJizBAM886AEakSiw3j9c/aSngppg==",
+        "npm_shasum_sha1": "5e990fec25188c48afde874c9ffe003f4ca87ba2",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.84.3.tgz",
+        "root_declared_range": "^0.84.3",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "43cc779ddaf90df41768d3d2d0f7d7ba8b8bce7bedc9dc6062ca8b4de84ae880",
+          "dist/agent.js": "d84351e451b9fef40fe2532c446aca90d26a4be9038b2d77d3d45dd6eab21d41",
+          "dist/index.js": "aeecb12a48528008887b2391fe93ef28c18ee6aa16bf81ec9d8eff57fb0a3647",
+          "dist/types.d.ts": "70c8fb25d1497ab5ddeb35e0e97c54f77eb8a0374a0b4b2e57725ebb4071cea3"
+        },
+        "tarball_sha256": "6a361cb784251820dc9d8ac484d80bc454dad61934ec3a5f60f568dde156e31d",
+        "version": "0.84.3"
+      },
+      {
+        "file_count": 202,
+        "git_head": "b79e4cc834970cca69daebffab7df1da7d1e52c4",
+        "npm_integrity": "sha512-HyUnjaOXj6oN/6SNcr8A1J/ElRQA50FtIE0XUTSKAQVqmdlb9qdojOyUQwF/jULE5+yOEtGuVgi/N1RnBiNG+g==",
+        "npm_shasum_sha1": "451e9e76b6c7fecd2a49ed5bf905f8dd6c7ce876",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.84.4.tgz",
+        "root_declared_range": "^0.84.4",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "7b75576c0770e8d82c5d74229f5464611d2f1c01b69a6b592eb0862215429f2c",
+          "dist/agent.js": "d84351e451b9fef40fe2532c446aca90d26a4be9038b2d77d3d45dd6eab21d41",
+          "dist/index.js": "aeecb12a48528008887b2391fe93ef28c18ee6aa16bf81ec9d8eff57fb0a3647",
+          "dist/types.d.ts": "b00f96a39f305daf0e62803a0c24f2c46cc1f0c866aadbc5e100a31c95b590eb"
+        },
+        "tarball_sha256": "3ceb710d18b4c993d5de2e37a65131015b44bda46330391b4e5030d65c35004a",
+        "version": "0.84.4"
+      },
+      {
+        "file_count": 362,
+        "git_head": "107d79f11072bbc8a3a757ed7fd69596bee7d68c",
+        "npm_integrity": "sha512-uOvSDEG5B/P1mpxnuXCkvlvEKcFpyQ9qgCB2r+LY3YTko996iCCq6OEUWk/Af4xCPXx92Pj73ilNoYa40M7EQg==",
+        "npm_shasum_sha1": "57b58635cfaae9eef23222c8e5b1d4ca909c5f87",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.85.0.tgz",
+        "root_declared_range": "^0.85.0",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "6732a1c65c09577d2ffcb716b48e4f4673e57e3e333f10ebfce5132d82e4d7a2",
+          "dist/agent.js": "d84351e451b9fef40fe2532c446aca90d26a4be9038b2d77d3d45dd6eab21d41",
+          "dist/index.js": "4a551a8b128525e90f3da827f5c459a6f6ba39796c63b2ba73d0f0bfb7be9e72",
+          "dist/types.d.ts": "2ae8602b59de73435b6d9bd7d4c9dd1b344b7f1d1214866bc08feb04fc490061"
+        },
+        "tarball_sha256": "853eb1a03fdb47213bf0b1d9c655c7d718084fe15d9fc52afa10076db5e03653",
+        "version": "0.85.0"
+      },
+      {
+        "file_count": 362,
+        "git_head": "d981de1229ef899957bbe968bc8dcda02a21f477",
+        "npm_integrity": "sha512-hIXIP3eAWueAYiAl8aMvWCvvZ8Q5gT3Dip5bE5uJyIGh4+YlWRjtMLI4BaeoXoSs93zndjue61u1B/vhefLnuA==",
+        "npm_shasum_sha1": "8a85116c0d4494e4d9e82341237d91ad360fdc2a",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.85.1.tgz",
+        "root_declared_range": "^0.85.1",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "6732a1c65c09577d2ffcb716b48e4f4673e57e3e333f10ebfce5132d82e4d7a2",
+          "dist/agent.js": "d84351e451b9fef40fe2532c446aca90d26a4be9038b2d77d3d45dd6eab21d41",
+          "dist/index.js": "4a551a8b128525e90f3da827f5c459a6f6ba39796c63b2ba73d0f0bfb7be9e72",
+          "dist/types.d.ts": "2ae8602b59de73435b6d9bd7d4c9dd1b344b7f1d1214866bc08feb04fc490061"
+        },
+        "tarball_sha256": "4a579c49ca343dcf73417891191acca8db085cffb9859cfdc794d8cb28a4adfe",
+        "version": "0.85.1"
+      },
+      {
+        "file_count": 466,
+        "git_head": "ecac0a9c4edad3dac5d9f8b40e0c7db7a56471fc",
+        "npm_integrity": "sha512-0nGRbPeR2Sx+TXCP+xTNeCoZDegRXshQ9ROWE+wc1XR2l6bARgbelkjiiFwVVJRslbwQa5Hmo/r2JXfAqqkK+A==",
+        "npm_shasum_sha1": "163c08b2b62ed5b3c1ac76222dd599cebcdc5b37",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.86.0.tgz",
+        "root_declared_range": "^0.86.0",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "aedd3264c31a3b9f1c3dc52826871894c0653718021583abbdfbe1e6763cd3e6",
+          "dist/agent.js": "d81d9c9b57d61e052542b70f772e2ac0ff7b9d9e43910583b42c47709cad39e6",
+          "dist/index.js": "4a551a8b128525e90f3da827f5c459a6f6ba39796c63b2ba73d0f0bfb7be9e72",
+          "dist/types.d.ts": "796784dec2d962c9e8a1933b920299ad0510e4e8758530843af8a982afeb3f26"
+        },
+        "tarball_sha256": "af8e80b8e754f20d87a790c76f6a0b5debea6b11839f98ce7f0130ebf75fbf33",
+        "version": "0.86.0"
+      },
+      {
+        "file_count": 466,
+        "git_head": "13cbf77df2396303013a41646bcfa77b4271ae56",
+        "npm_integrity": "sha512-8TbBzhYsDeu5V1Zl2NsyrBqJAzX1EiEL3Np3ZjGpy0pSDdGRVOpcyW1qruLqfWmEqGcnxmvgnTMLS/wJNZO2XQ==",
+        "npm_shasum_sha1": "f47cc64ff4ba12b1836e38c144106fbf2d46d105",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.86.1.tgz",
+        "root_declared_range": "^0.86.1",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "aedd3264c31a3b9f1c3dc52826871894c0653718021583abbdfbe1e6763cd3e6",
+          "dist/agent.js": "d81d9c9b57d61e052542b70f772e2ac0ff7b9d9e43910583b42c47709cad39e6",
+          "dist/index.js": "4a551a8b128525e90f3da827f5c459a6f6ba39796c63b2ba73d0f0bfb7be9e72",
+          "dist/types.d.ts": "796784dec2d962c9e8a1933b920299ad0510e4e8758530843af8a982afeb3f26"
+        },
+        "tarball_sha256": "6a14bbc316ad2e5e74ff0fe6fde85790d263ca19d05547e3c04d09c2c19a39a0",
+        "version": "0.86.1"
+      },
+      {
+        "file_count": 466,
+        "git_head": "16787ad5b2dc748047f314ca1bfe7708f30f54f3",
+        "npm_integrity": "sha512-c5b2FMdJ7C++HBa6AyBmusdf96gdgRqpF7J+UCq2yVGB28UETJvJ190HkgDWUaLPnOQQPbanjKMAm/TgRmFE2w==",
+        "npm_shasum_sha1": "cd8ec116e33c38e2dd551030fb83654bf5ce33af",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.87.0.tgz",
+        "root_declared_range": "^0.87.0",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "75da7290cd348c070328de834a810503d00fd5ff1ea2cc204786fb498bd046df",
+          "dist/agent.js": "3a890712a7a02fc29754a2af61b758cba43eec97d289e446cd7e432ed0093085",
+          "dist/index.js": "4a551a8b128525e90f3da827f5c459a6f6ba39796c63b2ba73d0f0bfb7be9e72",
+          "dist/types.d.ts": "3b65a90fd37c02caf0f9a35d00041a933c852f0b8f8b454542fb7ed89b32b46b"
+        },
+        "tarball_sha256": "5985245c3f2bf7959975b68ed0e689bd7e46f05f151a38b95e97f6eba8ba5f12",
+        "version": "0.87.0"
+      },
+      {
+        "file_count": 466,
+        "git_head": "f07218c4d4bbc12bef056a7058c3dd49dfe41abe",
+        "npm_integrity": "sha512-Zev3B0HK7YS5A4EZQ2XnEqiJuirx6QBiltJ+LpmjV5a/+2IU0cfKtIfnkNkORK707XOvKBY2WRtk7cAwHpbh2Q==",
+        "npm_shasum_sha1": "bfea5c2d96dd33f8e150b7f85f693dbc72973674",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.87.1.tgz",
+        "root_declared_range": "^0.87.1",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "75da7290cd348c070328de834a810503d00fd5ff1ea2cc204786fb498bd046df",
+          "dist/agent.js": "3a890712a7a02fc29754a2af61b758cba43eec97d289e446cd7e432ed0093085",
+          "dist/index.js": "4a551a8b128525e90f3da827f5c459a6f6ba39796c63b2ba73d0f0bfb7be9e72",
+          "dist/types.d.ts": "3b65a90fd37c02caf0f9a35d00041a933c852f0b8f8b454542fb7ed89b32b46b"
+        },
+        "tarball_sha256": "646267cfa782ae4efcbb936728373e73568f1e16b8520d244f8c1d91088c12c4",
+        "version": "0.87.1"
+      },
+      {
+        "file_count": 470,
+        "git_head": "4b060d3a98618019adb9985d517516c8e99a2bbe",
+        "npm_integrity": "sha512-3ZFAZ6GnR+r41VVcI47svtvHJ01T/RGDcm3fL8l25VeJ3RwDxnzZ7/XSD56ldE/EOoLA7riwiqc7UEOLyoib1g==",
+        "npm_shasum_sha1": "f8b7115a1bbe6fbc281763348d12ae1333fcf62a",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.99.0.tgz",
+        "root_declared_range": "^0.99.0",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "65def8c7f3fa01e38fe05467520efc8673c22ea8197833a3b04b29c8a60cb1e3",
+          "dist/agent.js": "163ad28551f1c38b8eb899a5c9dd89cd9d9005fb7dd9c4abeb008ee380e98c51",
+          "dist/index.js": "4a551a8b128525e90f3da827f5c459a6f6ba39796c63b2ba73d0f0bfb7be9e72",
+          "dist/types.d.ts": "a4cc438f7ec8f75c2170d6190b64db0efb34904b467469d4bd719db0c9973997"
+        },
+        "tarball_sha256": "5a04569a4b892726069e4b9355fac5da37806785277c75677e816bd7b8e05088",
+        "version": "0.99.0"
+      },
+      {
+        "file_count": 470,
+        "git_head": "d86654abb8862e201933517d6f1fce9f88dd117f",
+        "npm_integrity": "sha512-zywvWnj5FujeuFI/x/CJHwwxhcLIQgjqseTA+bQgX4O8gJTcgjRd/I8SZnQDqJvxC9QcV12ujiGLviv6EgwcCg==",
+        "npm_shasum_sha1": "e918b147f4d3ae1c8c5d435229a2d56d76a3191c",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.99.1.tgz",
+        "root_declared_range": "^0.99.1",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "65def8c7f3fa01e38fe05467520efc8673c22ea8197833a3b04b29c8a60cb1e3",
+          "dist/agent.js": "163ad28551f1c38b8eb899a5c9dd89cd9d9005fb7dd9c4abeb008ee380e98c51",
+          "dist/index.js": "4a551a8b128525e90f3da827f5c459a6f6ba39796c63b2ba73d0f0bfb7be9e72",
+          "dist/types.d.ts": "a4cc438f7ec8f75c2170d6190b64db0efb34904b467469d4bd719db0c9973997"
+        },
+        "tarball_sha256": "16cb1adf63bb599405368313faf2c7ca59290c93762540138a0bd62360cf0e0b",
+        "version": "0.99.1"
+      },
+      {
+        "file_count": 470,
+        "git_head": "005af57d88ee23b33778f343a9595b32e67ff788",
+        "npm_integrity": "sha512-VX0QMcg8HKBsv1bYP2NwmutBYa44OrwmtqR6Dq7QC3Ln8X/IlpHhUxB5L1JgnXNUUkTm8Wg/HZhzS797NBDMCQ==",
+        "npm_shasum_sha1": "815139a01dd6b8a2c874c917bb98a2af63551bdb",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-0.99.2.tgz",
+        "root_declared_range": "^0.99.2",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "65def8c7f3fa01e38fe05467520efc8673c22ea8197833a3b04b29c8a60cb1e3",
+          "dist/agent.js": "163ad28551f1c38b8eb899a5c9dd89cd9d9005fb7dd9c4abeb008ee380e98c51",
+          "dist/index.js": "4a551a8b128525e90f3da827f5c459a6f6ba39796c63b2ba73d0f0bfb7be9e72",
+          "dist/types.d.ts": "a4cc438f7ec8f75c2170d6190b64db0efb34904b467469d4bd719db0c9973997"
+        },
+        "tarball_sha256": "74c3d895dcb82d42c46057bf0023a13c926414b0ce6409e6eb03a4b287442ece",
+        "version": "0.99.2"
+      },
+      {
+        "file_count": 26,
+        "git_head": "a13d35a742c6ef8462812a28fbe1d8c8b7431c32",
+        "npm_integrity": "sha512-bHFONjtEBDqiV+g1DmmtkSlfAaqHELr+XO+6I5Nah4gswwZrLJO4yZB/JjsnlI4AKWTayBLfgS6DCbeBBz9e2Q==",
+        "npm_shasum_sha1": "85f539d807600de676919cc93d70df84e850a218",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-1.0.0.tgz",
+        "root_declared_range": "^1.0.0",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "65def8c7f3fa01e38fe05467520efc8673c22ea8197833a3b04b29c8a60cb1e3",
+          "dist/agent.js": "163ad28551f1c38b8eb899a5c9dd89cd9d9005fb7dd9c4abeb008ee380e98c51",
+          "dist/index.js": "40cb358d7f05594e9b67845a78ae50ad05e8375f0cfa8cee8a74801556c09afd",
+          "dist/types.d.ts": "a4cc438f7ec8f75c2170d6190b64db0efb34904b467469d4bd719db0c9973997"
+        },
+        "tarball_sha256": "1deb25d4636da921baba605376b7eb0abd2ab35e10e6a931a0b8dc227be88f9f",
+        "version": "1.0.0"
+      },
+      {
+        "file_count": 26,
+        "git_head": "a7229ddc21810d6245105978033b7df645ecc2f7",
+        "npm_integrity": "sha512-os85rJM2hgCOOLdtcQ5WxRRhAbQiTNq9+48/pj6dOUU7czJhU8NTdHmDs41hBfAXR/ZQgstIgrjowEICEXimbQ==",
+        "npm_shasum_sha1": "6e6542ad7996f5185bc9dff813132ce02034a9b3",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-1.0.1.tgz",
+        "root_declared_range": "^1.0.1",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "65def8c7f3fa01e38fe05467520efc8673c22ea8197833a3b04b29c8a60cb1e3",
+          "dist/agent.js": "163ad28551f1c38b8eb899a5c9dd89cd9d9005fb7dd9c4abeb008ee380e98c51",
+          "dist/index.js": "40cb358d7f05594e9b67845a78ae50ad05e8375f0cfa8cee8a74801556c09afd",
+          "dist/types.d.ts": "a4cc438f7ec8f75c2170d6190b64db0efb34904b467469d4bd719db0c9973997"
+        },
+        "tarball_sha256": "eb7b19bc41a91d814b972f3b87615fe973f1af71acc7f4b5da132a59fc0b8a0a",
+        "version": "1.0.1"
+      },
+      {
+        "file_count": 26,
+        "git_head": "cd32f7725fdbddbaecdff5b1e68491563394e0ca",
+        "npm_integrity": "sha512-VRfewY1R5mbedJzlm01PxdCmqU8QrSXjXXhV50bp6rvVuT8YYQv1inTXRY4YzssmGAYpkC2rXipJKP5BpBFXew==",
+        "npm_shasum_sha1": "3c4925221694722007e26762310ee5c5e682dd7a",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-1.0.2.tgz",
+        "root_declared_range": "^1.0.2",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "65def8c7f3fa01e38fe05467520efc8673c22ea8197833a3b04b29c8a60cb1e3",
+          "dist/agent.js": "163ad28551f1c38b8eb899a5c9dd89cd9d9005fb7dd9c4abeb008ee380e98c51",
+          "dist/index.js": "40cb358d7f05594e9b67845a78ae50ad05e8375f0cfa8cee8a74801556c09afd",
+          "dist/types.d.ts": "a4cc438f7ec8f75c2170d6190b64db0efb34904b467469d4bd719db0c9973997"
+        },
+        "tarball_sha256": "2f68f6d0908ebab5b8878c12651d4132418cb1af028c0b555574a65646ec8031",
+        "version": "1.0.2"
+      },
+      {
+        "file_count": 26,
+        "git_head": "d78dc83d633229d12f8b79631384c4c2717c399f",
+        "npm_integrity": "sha512-lnvi2PJYaq8mDLzwWBttNqfxrLS63SSMONUJnTCypdvt/flmNJchXwWXsXUOJ5Yhe/mN+iHkrXu696lWZZ8o+w==",
+        "npm_shasum_sha1": "300388ec6ae56d402b1a85c61fefafff5ee8f3e7",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-1.0.3.tgz",
+        "root_declared_range": "^1.0.3",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "65def8c7f3fa01e38fe05467520efc8673c22ea8197833a3b04b29c8a60cb1e3",
+          "dist/agent.js": "163ad28551f1c38b8eb899a5c9dd89cd9d9005fb7dd9c4abeb008ee380e98c51",
+          "dist/index.js": "40cb358d7f05594e9b67845a78ae50ad05e8375f0cfa8cee8a74801556c09afd",
+          "dist/types.d.ts": "a4cc438f7ec8f75c2170d6190b64db0efb34904b467469d4bd719db0c9973997"
+        },
+        "tarball_sha256": "1a6466c6d10849960f62f6066ce6d159c721c4d294bcf3536519f65684a719e1",
+        "version": "1.0.3"
+      },
+      {
+        "file_count": 26,
+        "git_head": "7c10bd4337495ee613f2224843ecdf349b80d1df",
+        "npm_integrity": "sha512-/xGICE+N/+G9N7KfYFSxlE8G8fQcBlLHKiY+j1Ehz9vvb1zhvGneWosFK56d2qmA5oteafeG7yKr2nqU4ed9ig==",
+        "npm_shasum_sha1": "3a52d338895a16e5a7e4eecd0f55919c7fa474af",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-1.0.4.tgz",
+        "root_declared_range": "^1.0.4",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "65def8c7f3fa01e38fe05467520efc8673c22ea8197833a3b04b29c8a60cb1e3",
+          "dist/agent.js": "163ad28551f1c38b8eb899a5c9dd89cd9d9005fb7dd9c4abeb008ee380e98c51",
+          "dist/index.js": "40cb358d7f05594e9b67845a78ae50ad05e8375f0cfa8cee8a74801556c09afd",
+          "dist/types.d.ts": "a4cc438f7ec8f75c2170d6190b64db0efb34904b467469d4bd719db0c9973997"
+        },
+        "tarball_sha256": "5906d63d015e50eb610bae42175c8f10e43ed291bbd786b2c7ec4e1f229ff59b",
+        "version": "1.0.4"
+      },
+      {
+        "file_count": 26,
+        "git_head": null,
+        "npm_integrity": "sha512-aX1KZomNCPmwYnXa3OivF3VYLJ+WPUkIJlEIZTgwdOZdY/+oToWTQ334WYpQeOz9POpiYFNMJLPwIhXQ4e48kg==",
+        "npm_shasum_sha1": "7db4b8758a193d4fb86b54c45168256dc1cff233",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-agent-core/-/pi-agent-core-1.1.0.tgz",
+        "root_declared_range": "^1.1.0",
+        "selected_files_sha256": {
+          "dist/agent-loop.js": "4d56e5352826e0dbe324eedd2b632d19867aff8844d1f010b3cdcd34069da7fb",
+          "dist/agent.js": "163ad28551f1c38b8eb899a5c9dd89cd9d9005fb7dd9c4abeb008ee380e98c51",
+          "dist/index.js": "40cb358d7f05594e9b67845a78ae50ad05e8375f0cfa8cee8a74801556c09afd",
+          "dist/types.d.ts": "298f599e6b24c0cfeb5f6e593cbe1a85b373b04ebc221491cb178b941dbef584"
+        },
+        "tarball_sha256": "09c9b2865ec592990ceb57bd0d117b1d67d04453530b80973d9d5518f2d18c16",
+        "version": "1.1.0"
+      }
+    ],
+    "@earendil-works/pi-ai": [
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "provider": "anthropic",
+          "reasoning": true
+        },
+        "claude_opus_4_5_registry_key": "claude-opus-4-5",
+        "file_count": 742,
+        "git_head": "914cf1472e715297caa30db4b9535d534a9eb718",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "3640032062f2aced8e15f111eebc6e92ce373241987c4a1443df248be225f56d",
+        "npm_integrity": "sha512-6MzsrYIYNVlE7SfpbL2yYb67Qo58p/7Q+xWG1RZvoX1P80aRCHSod2/13aFpxkow1lPO2LEh3c495J0Gwmyjig==",
+        "npm_shasum_sha1": "708f13d19c0f5cfd9432fee704b0cde46e4d906f",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.84.2.tgz",
+        "root_declared_range": "^0.84.2",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "a084ca44b7151e5bc33fddc5b6da458220920c797b2485c7651c685c8dd31faa",
+          "dist/models.js": "3640032062f2aced8e15f111eebc6e92ce373241987c4a1443df248be225f56d",
+          "dist/providers/all.js": "eb283b6d03ed3f697e6baba6d89826997bc73133799d8aafc10baf9e08413485",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "e22c277e3a1ffddc3d2701b72787c9e0bd67b835de6b4cb806677b6b6a89a2f7",
+          "dist/types.d.ts": "9f954629e7cca259965ffe8937a3491abe66e1ad7594832055028e07bf33a1b9"
+        },
+        "tarball_sha256": "0262785a76b0eb2eec596cd8a7ab2ee23eef89d2ef1bb1211c4f0a1944dacf41",
+        "version": "0.84.2"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "provider": "anthropic",
+          "reasoning": true
+        },
+        "claude_opus_4_5_registry_key": "claude-opus-4-5",
+        "file_count": 746,
+        "git_head": "bfb004d4418ff05c6f909eaaab856cbe75c1fde0",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "3640032062f2aced8e15f111eebc6e92ce373241987c4a1443df248be225f56d",
+        "npm_integrity": "sha512-M0YUV8vNO3y2WwWSyY8ijKJV5W4gkSUixuvk+Z00ZBjsyMfsdXfITsHEwP1UIf09YRWXT6oGn0GlCamt+P32XQ==",
+        "npm_shasum_sha1": "242bcf5cee37f49e7c79bc61b86bc0acc06a9aaa",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.84.3.tgz",
+        "root_declared_range": "^0.84.3",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "b57b6697c2b85304c8c22d6ea6ed1754ff2d862cb460cedafabc4723198c2846",
+          "dist/models.js": "3640032062f2aced8e15f111eebc6e92ce373241987c4a1443df248be225f56d",
+          "dist/providers/all.js": "eb283b6d03ed3f697e6baba6d89826997bc73133799d8aafc10baf9e08413485",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "4d44dd3f78d21dd1d0fba878bd58026914ba98dba3083212059b4710dc13eeb3",
+          "dist/types.d.ts": "66d2626c68a13d37581214feeeda1d2dc0d1dc2c4d40ccbcc60302cb9310738e"
+        },
+        "tarball_sha256": "9c40af2f43950f8e94e7bbcd0c1b3548f000972da00c4fb9c0d0529d4d7d5431",
+        "version": "0.84.3"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "provider": "anthropic",
+          "reasoning": true
+        },
+        "claude_opus_4_5_registry_key": "claude-opus-4-5",
+        "file_count": 746,
+        "git_head": "b79e4cc834970cca69daebffab7df1da7d1e52c4",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "3640032062f2aced8e15f111eebc6e92ce373241987c4a1443df248be225f56d",
+        "npm_integrity": "sha512-AClAZxf5+c4RRu44NJPS6wyQy+Nmq+Mzyyrdvm4ZVMNuixelO02RZX4G4Aq1F145Yzp43wnM5S+hLlSI7ypfVw==",
+        "npm_shasum_sha1": "348f1be5c2a0f4d17cc167fe1e5a7cabb191d079",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.84.4.tgz",
+        "root_declared_range": "^0.84.4",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "b57b6697c2b85304c8c22d6ea6ed1754ff2d862cb460cedafabc4723198c2846",
+          "dist/models.js": "3640032062f2aced8e15f111eebc6e92ce373241987c4a1443df248be225f56d",
+          "dist/providers/all.js": "eb283b6d03ed3f697e6baba6d89826997bc73133799d8aafc10baf9e08413485",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "4d44dd3f78d21dd1d0fba878bd58026914ba98dba3083212059b4710dc13eeb3",
+          "dist/types.d.ts": "09cba5010f003cc34be818fdba4d54cea691b46caf7a215d2e2f734dd6bc6fd5"
+        },
+        "tarball_sha256": "dfd3c929cee5a7387199a0a24dfc1be2096f1ea8f59ffb8285198a0ed01ebf93",
+        "version": "0.84.4"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "provider": "anthropic",
+          "reasoning": true
+        },
+        "claude_opus_4_5_registry_key": "claude-opus-4-5",
+        "file_count": 750,
+        "git_head": "107d79f11072bbc8a3a757ed7fd69596bee7d68c",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "42610d47fe293d99f4b05b147971e181c7312ea47c9be2906a4803955276a8a4",
+        "npm_integrity": "sha512-CbeeZH3NHav7Rs182tYq0eoCAWfDd1MvOAXKzonIF4uN3uO99EB8iT1HfyGofJmPkAf8MeIwOBQtqqd0zgrPWA==",
+        "npm_shasum_sha1": "93e0c324dd74160db01b926ad9801f9b8870c5a0",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.85.0.tgz",
+        "root_declared_range": "^0.85.0",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "f748560c80fe91bb5736b62f6f34c5e2e2bfa224cd5eb959134ca903c226b604",
+          "dist/models.js": "42610d47fe293d99f4b05b147971e181c7312ea47c9be2906a4803955276a8a4",
+          "dist/providers/all.js": "eb283b6d03ed3f697e6baba6d89826997bc73133799d8aafc10baf9e08413485",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "c0e1cfcef8531b5d0852c0e74790290f130dbcb4591b6578bb0d8a4b464231c0",
+          "dist/types.d.ts": "44ad1333a2a79fc1b135f9b95eb7f011467e6e7790a77c9c318e4450a1034b53"
+        },
+        "tarball_sha256": "46188bdacb555a07466a0111f3963f20932a16199e4d6cfb8d44a7fe5fc6e342",
+        "version": "0.85.0"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "provider": "anthropic",
+          "reasoning": true
+        },
+        "claude_opus_4_5_registry_key": "claude-opus-4-5",
+        "file_count": 750,
+        "git_head": "d981de1229ef899957bbe968bc8dcda02a21f477",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "42610d47fe293d99f4b05b147971e181c7312ea47c9be2906a4803955276a8a4",
+        "npm_integrity": "sha512-+VgVIJDkDO2efYJKEEqvPTH4zmnIaXdAppGbO+vKFA9qy5PdhFiAenuFAkU+oiCSfOC4dMHDyrjdQeL4ZoC5CQ==",
+        "npm_shasum_sha1": "3f5726032c30149f6060a3aeacb79436c7387a37",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.85.1.tgz",
+        "root_declared_range": "^0.85.1",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "f748560c80fe91bb5736b62f6f34c5e2e2bfa224cd5eb959134ca903c226b604",
+          "dist/models.js": "42610d47fe293d99f4b05b147971e181c7312ea47c9be2906a4803955276a8a4",
+          "dist/providers/all.js": "eb283b6d03ed3f697e6baba6d89826997bc73133799d8aafc10baf9e08413485",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "c0e1cfcef8531b5d0852c0e74790290f130dbcb4591b6578bb0d8a4b464231c0",
+          "dist/types.d.ts": "8c11014ea6c454bf60c7c22b65cdb00bebd834e4e9ebb07d3f0fffb6a58ea78a"
+        },
+        "tarball_sha256": "af7d11986179445ce6fe88b37d57de22f823c0ffd3a65cae31c555b7f5e99253",
+        "version": "0.85.1"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true
+        },
+        "claude_opus_4_5_registry_key": "claude-opus-4-5",
+        "file_count": 759,
+        "git_head": "ecac0a9c4edad3dac5d9f8b40e0c7db7a56471fc",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "75fa33149fb608bc4a7b7a0586c8ca8f0024465d580091b0c426c0baf3fbc80a",
+        "npm_integrity": "sha512-7jc4tNTBiJrfg+2/nra6JPz2d3OGiGHDKrSVHpnfvsMgMy0uy4noGb7WidDNcqSEAK1S0kcRRTmpYAK66ZlTSw==",
+        "npm_shasum_sha1": "4221655f8a06da0f311453f5d91998406061d1b9",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.86.0.tgz",
+        "root_declared_range": "^0.86.0",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "54f32708dc88d951d4c1aacd9e2e531da098967cb61b98a726b43e99277e7754",
+          "dist/models.js": "75fa33149fb608bc4a7b7a0586c8ca8f0024465d580091b0c426c0baf3fbc80a",
+          "dist/providers/all.js": "eb283b6d03ed3f697e6baba6d89826997bc73133799d8aafc10baf9e08413485",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "06034879a67b6ce37e80c91ec0894e30baff97f2640b4c4f8868180ca39eb0e9",
+          "dist/types.d.ts": "e3ca23bf2ae885f456908d585823b527c118faa103d76ca2543306a88bc84ebd"
+        },
+        "tarball_sha256": "d52448c827a72c8fdcf9f0c96c9966704a8525a6a0ae181f4bd886c584d727e3",
+        "version": "0.86.0"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true
+        },
+        "claude_opus_4_5_registry_key": "claude-opus-4-5",
+        "file_count": 772,
+        "git_head": "13cbf77df2396303013a41646bcfa77b4271ae56",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "75fa33149fb608bc4a7b7a0586c8ca8f0024465d580091b0c426c0baf3fbc80a",
+        "npm_integrity": "sha512-1XHhI6D/fyQdsBieHC/E/4zGKVOoGe4yDyX67VXvzoYkFsX/qE7NpZE7E1RC8e6Bz8B9oG/P+MQFXikv2/BGEg==",
+        "npm_shasum_sha1": "ece82487686aa5700c6db8b36d90a2daf1a78ba9",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.86.1.tgz",
+        "root_declared_range": "^0.86.1",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "54f32708dc88d951d4c1aacd9e2e531da098967cb61b98a726b43e99277e7754",
+          "dist/models.js": "75fa33149fb608bc4a7b7a0586c8ca8f0024465d580091b0c426c0baf3fbc80a",
+          "dist/providers/all.js": "431a2f530214b57ed74ffb6745883b7b221df603c872e00fee5ae27e16e4e9d3",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "06034879a67b6ce37e80c91ec0894e30baff97f2640b4c4f8868180ca39eb0e9",
+          "dist/types.d.ts": "2527dc035a85e40708478ba1349f35cf7e71c64c4ba50ae547a4188950b1b22b"
+        },
+        "tarball_sha256": "f3c35bf3c606b09f62ba92d2c7c89e63e0ca18075470102d5565684c524b7efd",
+        "version": "0.86.1"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true
+        },
+        "claude_opus_4_5_registry_key": "claude-opus-4-5",
+        "file_count": 772,
+        "git_head": "16787ad5b2dc748047f314ca1bfe7708f30f54f3",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "75fa33149fb608bc4a7b7a0586c8ca8f0024465d580091b0c426c0baf3fbc80a",
+        "npm_integrity": "sha512-lbRm+EMY6Jx3l+HLpbqbm9Yrhkc5u7EffLk2id+zJQEoBuR5I+tijGiZU8zlnuuCclmQOgH0PVjL9PLbeqJ9MQ==",
+        "npm_shasum_sha1": "e81ec36ab4e9f44bafa2c980c7ec3cf8cda32f8d",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.87.0.tgz",
+        "root_declared_range": "^0.87.0",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "54f32708dc88d951d4c1aacd9e2e531da098967cb61b98a726b43e99277e7754",
+          "dist/models.js": "75fa33149fb608bc4a7b7a0586c8ca8f0024465d580091b0c426c0baf3fbc80a",
+          "dist/providers/all.js": "431a2f530214b57ed74ffb6745883b7b221df603c872e00fee5ae27e16e4e9d3",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "717d8a8b18435ce944aa950f899bbee3ae8ef27f3031bb8af1fcfe7298728d69",
+          "dist/types.d.ts": "5e08c1db4740b95b7107d3c3540a6d0e414a82d9c75fab950150827c994e14a3"
+        },
+        "tarball_sha256": "f2adf9de809d035f76f8dadf3d148720ebeef4606a848ab36ee834d895ae812f",
+        "version": "0.87.0"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true
+        },
+        "claude_opus_4_5_registry_key": "claude-opus-4-5",
+        "file_count": 772,
+        "git_head": "f07218c4d4bbc12bef056a7058c3dd49dfe41abe",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "75fa33149fb608bc4a7b7a0586c8ca8f0024465d580091b0c426c0baf3fbc80a",
+        "npm_integrity": "sha512-X/3PfQBnnoeVdO9Cv8zHghUMglzlgNZYGNzoPnbRoGnHl3Rw3TlA2UKSUB7BRHUOxMryHXYa8dnjWZlbRheDZA==",
+        "npm_shasum_sha1": "7d1f174120d5e6d33f301503677ec3281f217e2a",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.87.1.tgz",
+        "root_declared_range": "^0.87.1",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "97de17d406264322ff7927fa0c20e1c61b46386b5e14f9c6e0012599c01664f7",
+          "dist/models.js": "75fa33149fb608bc4a7b7a0586c8ca8f0024465d580091b0c426c0baf3fbc80a",
+          "dist/providers/all.js": "431a2f530214b57ed74ffb6745883b7b221df603c872e00fee5ae27e16e4e9d3",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "474a010cd96c759d60419a6ba745747d9a87f172276dc85b7568da9d072b4e75",
+          "dist/types.d.ts": "5e08c1db4740b95b7107d3c3540a6d0e414a82d9c75fab950150827c994e14a3"
+        },
+        "tarball_sha256": "35b4432f27cc2665f86beebb9af6a39b1251970883c3044bd8be4f4e8c731ca0",
+        "version": "0.87.1"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true,
+          "type": "chat"
+        },
+        "claude_opus_4_5_registry_key": "chat:claude-opus-4-5",
+        "file_count": 813,
+        "git_head": "4b060d3a98618019adb9985d517516c8e99a2bbe",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+        "npm_integrity": "sha512-pJVG2aytD6x1xckiM4co7DlK6xXwfH7LKcMoI6SFDuJ4OvVqedUUAYFFekX4WkeqOoRNCIjUwka/l7mWb/mjsQ==",
+        "npm_shasum_sha1": "49eecf13c9cb9a90b69ee2162a504170521ec392",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.99.0.tgz",
+        "root_declared_range": "^0.99.0",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "d0e2a3c24649be616c74c90f3b0316a033a9efc047ee3dc9e513377ff2d01b5c",
+          "dist/models.js": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+          "dist/providers/all.js": "3435bd777ed87f7271503c40eb81196f3db388a87b47c5b8bffa0618d18edc41",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "3ff00b68990382e42626ebd1b65dcc28ae3cad9e6faa8920331ba92f067f1b3a",
+          "dist/types.d.ts": "7e6a457a6f60029187b722456fa883d4eb6e5219f871c65bba323c1f8bb4eca2"
+        },
+        "tarball_sha256": "80566a06c66d3b2ab7f0cf2ffde7fb62657b4f08ca7b06e69833426a375f9746",
+        "version": "0.99.0"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true,
+          "type": "chat"
+        },
+        "claude_opus_4_5_registry_key": "chat:claude-opus-4-5",
+        "file_count": 813,
+        "git_head": "d86654abb8862e201933517d6f1fce9f88dd117f",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+        "npm_integrity": "sha512-4nV9JKc94iPX8bwdGPc2nTuVPKIPsffhnp3WoN9NYCNqbtoOF8LhYcIs/+Sn/alroqJK/5QRu6/Z6Ck+n0hyBA==",
+        "npm_shasum_sha1": "2945bf014fbb314bd37b919e83317560e0a8fa1d",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.99.1.tgz",
+        "root_declared_range": "^0.99.1",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "d0e2a3c24649be616c74c90f3b0316a033a9efc047ee3dc9e513377ff2d01b5c",
+          "dist/models.js": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+          "dist/providers/all.js": "3435bd777ed87f7271503c40eb81196f3db388a87b47c5b8bffa0618d18edc41",
+          "dist/providers/anthropic.js": "a336a632990d2f50a17911ee4710ab3fd8680bfb1ad473763b7d4def8904bc17",
+          "dist/providers/data/anthropic.json": "3ff00b68990382e42626ebd1b65dcc28ae3cad9e6faa8920331ba92f067f1b3a",
+          "dist/types.d.ts": "7e6a457a6f60029187b722456fa883d4eb6e5219f871c65bba323c1f8bb4eca2"
+        },
+        "tarball_sha256": "f9f44692157d0bf5679c4a17304a310028231d7daaeaaea3b73252f4b7a264d3",
+        "version": "0.99.1"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true,
+          "type": "chat"
+        },
+        "claude_opus_4_5_registry_key": "chat:claude-opus-4-5",
+        "file_count": 813,
+        "git_head": "005af57d88ee23b33778f343a9595b32e67ff788",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+        "npm_integrity": "sha512-9RFOEdY+ZTJ1AI+UuAFs4RM0tF2Tje/R/CEv9gWTJHt0iTu8XHZs64U/EIZxNSllFmec/4HfwsOxYj1qQek9bg==",
+        "npm_shasum_sha1": "82dc270963b8b7650dfb65ed9ba2e11afeabd761",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-0.99.2.tgz",
+        "root_declared_range": "^0.99.2",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "a0644ab05cf7ee3e4d566f21113d5b6c2361588237c999a45fa0d7935b68af10",
+          "dist/models.js": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+          "dist/providers/all.js": "3435bd777ed87f7271503c40eb81196f3db388a87b47c5b8bffa0618d18edc41",
+          "dist/providers/anthropic.js": "55a84e43fa8ee4382c41aa6872985f098080eaf73a5b8aa4451d7ce6db8c131d",
+          "dist/providers/data/anthropic.json": "3ff00b68990382e42626ebd1b65dcc28ae3cad9e6faa8920331ba92f067f1b3a",
+          "dist/types.d.ts": "7e6a457a6f60029187b722456fa883d4eb6e5219f871c65bba323c1f8bb4eca2"
+        },
+        "tarball_sha256": "0b3df8791b488216f309d908789294a744bb61bbaad123d94098e56df9538d25",
+        "version": "0.99.2"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true,
+          "type": "chat"
+        },
+        "claude_opus_4_5_registry_key": "chat:claude-opus-4-5",
+        "file_count": 813,
+        "git_head": "a13d35a742c6ef8462812a28fbe1d8c8b7431c32",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+        "npm_integrity": "sha512-3/W1vdDaVtpeMd23ElvJC12HLA5yS/BGqqcXF+0SK082dN7cbgNcCwguTBRBC258Ke8SzSvUW1B75iAf8w8IxA==",
+        "npm_shasum_sha1": "48afaafcffeafdb951bee89b25c69daf4985c725",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-1.0.0.tgz",
+        "root_declared_range": "^1.0.0",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "a0644ab05cf7ee3e4d566f21113d5b6c2361588237c999a45fa0d7935b68af10",
+          "dist/models.js": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+          "dist/providers/all.js": "3435bd777ed87f7271503c40eb81196f3db388a87b47c5b8bffa0618d18edc41",
+          "dist/providers/anthropic.js": "55a84e43fa8ee4382c41aa6872985f098080eaf73a5b8aa4451d7ce6db8c131d",
+          "dist/providers/data/anthropic.json": "3ff00b68990382e42626ebd1b65dcc28ae3cad9e6faa8920331ba92f067f1b3a",
+          "dist/types.d.ts": "7e6a457a6f60029187b722456fa883d4eb6e5219f871c65bba323c1f8bb4eca2"
+        },
+        "tarball_sha256": "f39b99c29b8598f175b10840e5d2a81983e7c0ce5cae4d7df83a1007447d2c2b",
+        "version": "1.0.0"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true,
+          "type": "chat"
+        },
+        "claude_opus_4_5_registry_key": "chat:claude-opus-4-5",
+        "file_count": 813,
+        "git_head": "a7229ddc21810d6245105978033b7df645ecc2f7",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+        "npm_integrity": "sha512-eSA53pdfDLuQTTJn3yz1VC8BBmcX33OKkk8WihOXdVBvbgqqC4zuR6Sf+TeeWuAmh8LuqARoK14R1s2HZqVcsw==",
+        "npm_shasum_sha1": "6f3df9843292c0dc9a1f56257906c717fe7c577b",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-1.0.1.tgz",
+        "root_declared_range": "^1.0.1",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "beb7ec1ad646151f73ee0199c2b30b944d4066e9ba0fa47421aa446ab3d7ec96",
+          "dist/models.js": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+          "dist/providers/all.js": "3435bd777ed87f7271503c40eb81196f3db388a87b47c5b8bffa0618d18edc41",
+          "dist/providers/anthropic.js": "55a84e43fa8ee4382c41aa6872985f098080eaf73a5b8aa4451d7ce6db8c131d",
+          "dist/providers/data/anthropic.json": "3ff00b68990382e42626ebd1b65dcc28ae3cad9e6faa8920331ba92f067f1b3a",
+          "dist/types.d.ts": "c1cad96358be23269443a25171c76d6456c00dcc2ec7ef7b1dad812bcb2ea0f0"
+        },
+        "tarball_sha256": "8a9e69b1309cf93405d87729fa123c8b11c6be7c646b16f34f8bef7b792f9138",
+        "version": "1.0.1"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true,
+          "type": "chat"
+        },
+        "claude_opus_4_5_registry_key": "chat:claude-opus-4-5",
+        "file_count": 813,
+        "git_head": "cd32f7725fdbddbaecdff5b1e68491563394e0ca",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+        "npm_integrity": "sha512-JP59xGlSAQ/HhQ6EHN5qmneBlWfDyu6FPPryAvAaSo8A38ubAsEpS9YisCM5Jbbns0srrDffLZonE0OXorHI5A==",
+        "npm_shasum_sha1": "491b32ed7dd8e333a58a55dfc18ff61e31bc43c9",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-1.0.2.tgz",
+        "root_declared_range": "^1.0.2",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "beb7ec1ad646151f73ee0199c2b30b944d4066e9ba0fa47421aa446ab3d7ec96",
+          "dist/models.js": "2efdb7beab5730e2a77163c807b3648a97cd4593d0bda462eb79f69f0630613f",
+          "dist/providers/all.js": "3435bd777ed87f7271503c40eb81196f3db388a87b47c5b8bffa0618d18edc41",
+          "dist/providers/anthropic.js": "55a84e43fa8ee4382c41aa6872985f098080eaf73a5b8aa4451d7ce6db8c131d",
+          "dist/providers/data/anthropic.json": "3ff00b68990382e42626ebd1b65dcc28ae3cad9e6faa8920331ba92f067f1b3a",
+          "dist/types.d.ts": "263023d5180c6742e549b1dfd5375039324859a2e22cf7b5b558b25a63371442"
+        },
+        "tarball_sha256": "8ac8e5fabd65e0f0ecb8538b6211824859f5997594005d7a03e1f70b38438a17",
+        "version": "1.0.2"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true,
+          "type": "chat"
+        },
+        "claude_opus_4_5_registry_key": "chat:claude-opus-4-5",
+        "file_count": 817,
+        "git_head": "d78dc83d633229d12f8b79631384c4c2717c399f",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "633161a0067abbb20a434acc3605f8f25d2fa6d32f903cc7edcdcaa7e0ba7083",
+        "npm_integrity": "sha512-p+/EUrbmfT0xWOtL/NJRtWOsyzcKKFSyiivHLDBMG0DUVpHdaIykd5jFibq0YZDFGBN/nv61zdOelMb+ylPfSg==",
+        "npm_shasum_sha1": "31463068aa4f979db0f066aa8c1b79b57d310e35",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-1.0.3.tgz",
+        "root_declared_range": "^1.0.3",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "beb7ec1ad646151f73ee0199c2b30b944d4066e9ba0fa47421aa446ab3d7ec96",
+          "dist/models.js": "633161a0067abbb20a434acc3605f8f25d2fa6d32f903cc7edcdcaa7e0ba7083",
+          "dist/providers/all.js": "b152eb706e7968debded248f538fda008869e93fea2042ba089fe64793c40340",
+          "dist/providers/anthropic.js": "55a84e43fa8ee4382c41aa6872985f098080eaf73a5b8aa4451d7ce6db8c131d",
+          "dist/providers/data/anthropic.json": "3ff00b68990382e42626ebd1b65dcc28ae3cad9e6faa8920331ba92f067f1b3a",
+          "dist/types.d.ts": "2c7f376a17195980ec4795d7ed0efd03bee4ff049b998dff7b26510d872d02b0"
+        },
+        "tarball_sha256": "dd8995fb1df3ca3e2bd033053bd2c28b40c44bb7f53c253578ca68082611e0ee",
+        "version": "1.0.3"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true,
+          "type": "chat"
+        },
+        "claude_opus_4_5_registry_key": "chat:claude-opus-4-5",
+        "file_count": 817,
+        "git_head": "7c10bd4337495ee613f2224843ecdf349b80d1df",
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "633161a0067abbb20a434acc3605f8f25d2fa6d32f903cc7edcdcaa7e0ba7083",
+        "npm_integrity": "sha512-/Eu5R0gfor6wcmRcVyOmulUiZmsHJ0bKu5wXXnpCoSHF3y4FnW4fgnjRlLjNza8NJWXdvW5Uew90Zukx7Sh2rw==",
+        "npm_shasum_sha1": "f398aa4469437bfa0c6326bcb61f7bc4f25840e6",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-1.0.4.tgz",
+        "root_declared_range": "^1.0.4",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "beb7ec1ad646151f73ee0199c2b30b944d4066e9ba0fa47421aa446ab3d7ec96",
+          "dist/models.js": "633161a0067abbb20a434acc3605f8f25d2fa6d32f903cc7edcdcaa7e0ba7083",
+          "dist/providers/all.js": "b152eb706e7968debded248f538fda008869e93fea2042ba089fe64793c40340",
+          "dist/providers/anthropic.js": "55a84e43fa8ee4382c41aa6872985f098080eaf73a5b8aa4451d7ce6db8c131d",
+          "dist/providers/data/anthropic.json": "3ff00b68990382e42626ebd1b65dcc28ae3cad9e6faa8920331ba92f067f1b3a",
+          "dist/types.d.ts": "2c7f376a17195980ec4795d7ed0efd03bee4ff049b998dff7b26510d872d02b0"
+        },
+        "tarball_sha256": "2fd5bf57c6a5b5b82d4563b18a2627b14d74dc4aacbf69a3dcf91c091e6038cf",
+        "version": "1.0.4"
+      },
+      {
+        "claude_opus_4_5_model": {
+          "api": "anthropic-messages",
+          "baseUrl": "https://api.anthropic.com",
+          "compat": {
+            "supportsStrictTools": true
+          },
+          "contextWindow": 200000,
+          "cost": {
+            "cacheRead": 0.5,
+            "cacheWrite": 6.25,
+            "input": 5,
+            "output": 25
+          },
+          "id": "claude-opus-4-5",
+          "input": [
+            "text",
+            "image"
+          ],
+          "inputLimits": {
+            "images": {
+              "maxPerRequest": 100,
+              "resize": {
+                "jpegQuality": 80,
+                "maxBytes": 4718592,
+                "maxHeight": 2000,
+                "maxWidth": 2000
+              }
+            },
+            "maxRequestBytes": 33554432
+          },
+          "maxTokens": 64000,
+          "name": "Claude Opus 4.5 (latest)",
+          "promptCache": {
+            "long": 3600,
+            "short": 300
+          },
+          "provider": "anthropic",
+          "reasoning": true,
+          "type": "chat"
+        },
+        "claude_opus_4_5_registry_key": "chat:claude-opus-4-5",
+        "file_count": 829,
+        "git_head": null,
+        "models_lookup_by_provider_and_id": true,
+        "models_lookup_implementation_sha256": "0911bab242726dc56517fe62ca422d0602d6eab8aa63841a560f61e1c35a0cd7",
+        "npm_integrity": "sha512-1T7LAkc/5Bvc0v6w4vAGVdCrli0o/E0pEmYKTnixu95vSFArBjvbhS/G4ZwI0RUePgf0Imcu0VyqlM4EcXxqfw==",
+        "npm_shasum_sha1": "7729247848ae3c5481cd66367790472ab4a6e4f3",
+        "npm_tarball": "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-1.1.0.tgz",
+        "root_declared_range": "^1.1.0",
+        "selected_files_sha256": {
+          "dist/api/anthropic-messages.js": "beb7ec1ad646151f73ee0199c2b30b944d4066e9ba0fa47421aa446ab3d7ec96",
+          "dist/models.js": "0911bab242726dc56517fe62ca422d0602d6eab8aa63841a560f61e1c35a0cd7",
+          "dist/providers/all.js": "b152eb706e7968debded248f538fda008869e93fea2042ba089fe64793c40340",
+          "dist/providers/anthropic.js": "55a84e43fa8ee4382c41aa6872985f098080eaf73a5b8aa4451d7ce6db8c131d",
+          "dist/providers/data/anthropic.json": "aa4342dfb96feb1619794113619d6630088d6ac544c547a4f9899a0a7f26419b",
+          "dist/types.d.ts": "3f955155de2ab15e03e509d30d6f800ba8b7c81216b2c86edfbf68e6e59260bc"
+        },
+        "tarball_sha256": "6caab33cec57480ed02c57fe37428a030a77cc2a0662814b435a5cf8932ad829",
+        "version": "1.1.0"
+      }
+    ]
+  },
+  "schema_version": 1,
+  "scope": "Exact matching direct package artifacts and selected model, provider API, usage and Agent event files; no artifact execution"
+}

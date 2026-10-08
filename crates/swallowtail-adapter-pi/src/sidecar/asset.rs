@@ -11,6 +11,6 @@ pub const PI_SDK_SIDECAR_ENTRY_FILE: &str = "pi-sdk-sidecar.mjs";
 /// Complete sidecar source packaged with this adapter crate.
 pub const PI_SDK_SIDECAR_SOURCE: &str = include_str!("../../sidecar/pi-sdk-sidecar.mjs");
 
-/// Source tag identifying the adapter source revision that ships the sidecar.
+/// Source tag identifying the adapter release that ships the sidecar.
 pub const PI_SDK_SIDECAR_SOURCE_TAG: &str =
     concat!("swallowtail-pi-sdk-sidecar@", env!("CARGO_PKG_VERSION"));

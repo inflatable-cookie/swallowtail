@@ -24,7 +24,7 @@ pub use sidecar_host::{FIXTURE_SESSION_REF, SidecarFixtureHost, SidecarScenario}
 pub use sidecar_selection::{
     SidecarFixtureSelection, reasoning_options, sidecar_catalogue_selection, sidecar_open_request,
     sidecar_reasoning_selection, sidecar_selection, sidecar_selection_with_attachments,
-    sidecar_selection_with_instance_versions, sidecar_versions,
+    sidecar_selection_with_instance_versions, sidecar_versions, sidecar_versions_for_sdk,
 };
 
 #[allow(dead_code)]

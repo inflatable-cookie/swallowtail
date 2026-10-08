@@ -1,0 +1,182 @@
+{
+  "family": "opencode.acp",
+  "observed_at": "2026-10-08",
+  "official_channels": {
+    "npm_package": "opencode-ai",
+    "npm_dist_tag_latest": "1.18.35",
+    "github_repository": "anomalyco/opencode",
+    "github_latest_stable_tag": "v1.18.35",
+    "channels_agree": true,
+    "next_stable_not_published": "1.18.36"
+  },
+  "qualification_window": {
+    "previous_ceiling": "1.18.32",
+    "new_ceiling": "1.18.35",
+    "published_stable_hops": [
+      "1.18.33",
+      "1.18.34",
+      "1.18.35"
+    ],
+    "selected_axis": "opencode.executable",
+    "baseline": "1.18.18",
+    "v1_segment": "1.18.18..=1.18.30",
+    "v2_segment": "1.18.31..=1.18.35",
+    "next_stable_posture": "1.18.36 is AllowUnverified / UnverifiedNewer"
+  },
+  "github_tag_sources": {
+    "1.18.32": {
+      "tag": "v1.18.32",
+      "commit": "545f51d26cc39a907d2867492d498d9607ea5fa4",
+      "source_archive_sha256": "65e95c9a6666ca65bbd17de1e7cecddac1504e66eeebbcfaf5ac68f97e6f392b",
+      "regular_file_count": 6572,
+      "repository_tree_manifest_sha256": "a6d65679052a5e6a93abf2fee6332abc2110857b258acbd99a0d29913b1fc7c6",
+      "acp_sdk_pin": "0.21.0",
+      "release_published_at": "2026-09-21T22:51:20Z"
+    },
+    "1.18.33": {
+      "tag": "v1.18.33",
+      "commit": "51ef4be1d3c122f18fefb510dca8d778571f4f18",
+      "source_archive_sha256": "34a4b810f4e839f2c4ac62206bbc64d736006f3c96712b903cda83ca60271301",
+      "regular_file_count": 6578,
+      "repository_tree_manifest_sha256": "ac0b01170d5d4700cfc7e3946e782d86b12333ad20f06ea37d285dd80874618f",
+      "acp_sdk_pin": "0.21.0",
+      "release_published_at": "2026-09-28T04:22:46Z"
+    },
+    "1.18.34": {
+      "tag": "v1.18.34",
+      "commit": "aec0b9a6d8898f68f923aaf08b7306d931fd9d76",
+      "source_archive_sha256": "c2c60efde22639b64c7bfa740da39b9c8079391a7540e2f67bf91b36e5797f17",
+      "regular_file_count": 6581,
+      "repository_tree_manifest_sha256": "b2996d3cf845e5c97ecf04443b0f1b1a526867b8294e6cc959ebb1074bc56bcf",
+      "acp_sdk_pin": "0.21.0",
+      "release_published_at": "2026-09-30T22:39:45Z"
+    },
+    "1.18.35": {
+      "tag": "v1.18.35",
+      "commit": "53d1eabb61e21162157817bf677da0a4ad3332e3",
+      "source_archive_sha256": "3092a7b9f55d80c42a9c1bb2e2cc0a9961316673faf92b741577257a1576dd59",
+      "regular_file_count": 6568,
+      "repository_tree_manifest_sha256": "1df5c289455d4a29efd987baba7338d3c612bd10d91b7ac51095dc7af893672d",
+      "acp_sdk_pin": "0.21.0",
+      "release_published_at": "2026-10-06T20:18:39Z"
+    }
+  },
+  "npm_artifacts": {
+    "opencode-ai": {
+      "1.18.32": {
+        "published_at": "2026-09-21T22:50:42.463Z",
+        "integrity": "sha512-SCrZWdq44y/EoH2+fE4HLcXS+DzpVqHPzmXk3p2RrufYy8LWvpfhRhKtijb5ktvx8r94ScqToqwHxR0BwS65OQ==",
+        "tarball_sha256": "454fbb032ade95a21323891138d4b425573f67631e7e888e516da893dc4be8ba",
+        "file_count": 4,
+        "npm_gitHead_present": false
+      },
+      "1.18.33": {
+        "published_at": "2026-09-28T04:23:28.113Z",
+        "integrity": "sha512-58P1ffLRXiAY4QeoABqUjqf6DEzm1ihpovvn9Ad+oOLbLiwK/rf88wruT9IATJ7AtNjmi8iA7pC8tN4o5y799Q==",
+        "tarball_sha256": "6fed32445d04df1d9d56aef0f15ae200618663ef532f7ec4241432024f84097c",
+        "file_count": 4,
+        "npm_gitHead_present": false
+      },
+      "1.18.34": {
+        "published_at": "2026-09-30T22:38:58.987Z",
+        "integrity": "sha512-9WUS2T0t4HHDVzXvuwTHF0nvhXvZ9mQ0r+ozCvKdJu0LVoQpOzqAW4qWTC3ygNc5Oedcc7j+Oct24JYlQYnySA==",
+        "tarball_sha256": "279923bb5754e810b173a8a7401cf17699fccad3c1159500c10c477887f0b53b",
+        "file_count": 4,
+        "npm_gitHead_present": false
+      },
+      "1.18.35": {
+        "published_at": "2026-10-06T20:21:30.784Z",
+        "integrity": "sha512-tDQKThIZ3amp8NSn3XDP2Dj5BlhRbZC0VkIxgYuf6gvRSXkseqD31j/U4KfpPwha593i8M59hdsDfz32yJx4Og==",
+        "tarball_sha256": "4d3408d0950d70cf870efe3f86e8bd0271d8149bea0767008d42de14f0986a04",
+        "file_count": 4,
+        "npm_gitHead_present": false
+      }
+    },
+    "opencode-darwin-arm64": {
+      "1.18.32": {
+        "published_at": "2026-09-21T22:51:16.356Z",
+        "integrity": "sha512-sDsHk/A6FNqeN5NuAiII6AAhi4pJIFcIY0S2yjG9gToIIVaqrQRaHQ6g0kpoVqTiMci8tvaND6tWD4eDT3ahFw==",
+        "tarball_sha256": "a1707bb6cc9deaccca501c4097f1580b8af70dfc227f194ae0f576f32abbdebe",
+        "file_count": 2,
+        "npm_gitHead_present": false
+      },
+      "1.18.33": {
+        "published_at": "2026-09-28T04:23:10.347Z",
+        "integrity": "sha512-rZm4Phz7eu/kVz2lynergU/LzKS/L0ofErB2fRXfaoAH528b3EnVcISZ/13dwk78FPxVhop7hWXshowT88C8Yw==",
+        "tarball_sha256": "cd2c704ad653137b62992bca2b32383f8daa31b3c9462e566278e1efba07b31d",
+        "file_count": 2,
+        "npm_gitHead_present": false
+      },
+      "1.18.34": {
+        "published_at": "2026-09-30T22:40:00.944Z",
+        "integrity": "sha512-ioBEvc3nUA64waDIVsphh92LgJgyTbq+uRd0OurdqqT9WEI9rp4J7NrA24NfL6epCa1Xr06TnRx5+th9W3T/sA==",
+        "tarball_sha256": "9a336191ee84c8f54364b5d1990ec87abb2acbb00dea189f11dda5e968d7bf05",
+        "file_count": 2,
+        "npm_gitHead_present": false
+      },
+      "1.18.35": {
+        "published_at": "2026-10-06T20:22:28.410Z",
+        "integrity": "sha512-WlM5yNbT6OppyXBaTgnri0tnsi/axeLl16vlIrfIdjm4yEvuZVD0JBpBNOLBI21jig0Rw7/HRAO0XWokgJge9g==",
+        "tarball_sha256": "b626543f4427cbd7a59756c24045f6f32dbc4cf7347ab5a8613f5c9fd6b0eeb3",
+        "file_count": 2,
+        "npm_gitHead_present": false
+      }
+    }
+  },
+  "complete_inventory": {
+    "source_file": "source-tree.tsv",
+    "source_scope": "Every directory, regular file, and symlink in each GitHub tag source archive, with paths relative to the archive root; regular files include exact byte size and SHA-256, symlinks include target. Directories have no content digest.",
+    "source_canonical_tsv_sha256": "6ccadbecb9d91183cb79e236b046cf89ffe031602e96a1451c3c88e64102faff",
+    "source_canonical_tsv_bytes": 3633504,
+    "source_counts_by_version": {
+      "1.18.32": {
+        "archive_file_count": 6572,
+        "directory_count": 772,
+        "inventory_entries": 7404,
+        "symlink_count": 60
+      },
+      "1.18.33": {
+        "archive_file_count": 6578,
+        "directory_count": 773,
+        "inventory_entries": 7411,
+        "symlink_count": 60
+      },
+      "1.18.34": {
+        "archive_file_count": 6581,
+        "directory_count": 773,
+        "inventory_entries": 7414,
+        "symlink_count": 60
+      },
+      "1.18.35": {
+        "archive_file_count": 6568,
+        "directory_count": 768,
+        "inventory_entries": 7396,
+        "symlink_count": 60
+      }
+    },
+    "npm_scope": "Every regular file in the exact opencode-ai and opencode-darwin-arm64 npm tarballs, with exact byte size and SHA-256 in dist-inventory.json."
+  },
+  "no_live_or_mutating_actions": true,
+  "claim": {
+    "id": "opencode.acp.executable-window-1",
+    "axis": "opencode.executable",
+    "scheme": "semantic",
+    "behavior_revisions": {
+      "1.18.18..=1.18.30": "opencode.acp-v1.client-mcp-servers-v1",
+      "1.18.31..=1.18.35": "opencode.acp-v1.client-mcp-servers-v2"
+    },
+    "newer_version_posture": "allow_unverified",
+    "excluded_versions": [],
+    "http_mcp_live_honouring_exact_version": "1.18.18"
+  },
+  "observed_runtime": {
+    "reported_version": "1.18.32",
+    "platform_package": "opencode-darwin-arm64",
+    "architecture": "darwin-arm64",
+    "binary_sha256": "a3c45d4e1d6620b436851f1ef6b25c71befcf06a382e279a1eb1c2196424395e",
+    "matches_official_package_version": "1.18.32",
+    "matches_official_package_binary": true,
+    "installed_or_updated": false,
+    "binary_executed_during_this_review": false
+  }
+}

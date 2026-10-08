@@ -146,7 +146,7 @@ fn prepared_run_names_cline_headless_and_package_then_drains_one_print() {
 #[test]
 fn preparation_promotes_the_latest_qualified_headless_point() {
     let host_id = ExecutionHostId::new("fixture.prepared.headless.current").expect("host");
-    let discovery = DiscoveryHost::new("3.0.69");
+    let discovery = DiscoveryHost::new("3.0.70");
     let prepared = block_on(prepare_cline_headless(
         preparation_input(host_id.clone()),
         probe(),
@@ -156,7 +156,7 @@ fn preparation_promotes_the_latest_qualified_headless_point() {
 
     assert_eq!(
         prepared.observation().version().version().as_str(),
-        "3.0.69"
+        "3.0.70"
     );
     assert_eq!(
         discovery

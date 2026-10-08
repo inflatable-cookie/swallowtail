@@ -84,6 +84,12 @@
       "file_count": 142,
       "tree_manifest_sha256": "f0317a29452e1f23b44c4d218385971b631078cc0e1246626668c6c0a58e816f",
       "unpacked_size": 94996272
+    },
+    "3.0.70": {
+      "bin_cline_sha256": "3ae76234a92f4de4fe6f9bf22635ac656994b29af83ea6d5c144b7eeea5a9ae7",
+      "file_count": 142,
+      "tree_manifest_sha256": "e4ef11780c7ac862353e572378ab57f1265a8161d71be57b3c8e5dbd010ddd85",
+      "unpacked_size": 95111856
     }
   },
   "versions": {
@@ -10202,6 +10208,718 @@
       {
         "path": "package.json",
         "sha256": "813b6a515619f201c43a2813a6f31fdad6da8d07dfe442b7b0415b1ef54d0751",
+        "size": 337
+      }
+    ],
+    "3.0.70": [
+      {
+        "path": "bin/cline",
+        "sha256": "3ae76234a92f4de4fe6f9bf22635ac656994b29af83ea6d5c144b7eeea5a9ae7",
+        "size": 88332402
+      },
+      {
+        "path": "cline-hub/webview/32x32.png",
+        "sha256": "4fcf74366693987c1aa510571dd8d68603208a72759c6d3f9825d5b5035a37fd",
+        "size": 1748
+      },
+      {
+        "path": "cline-hub/webview/assets/Chat-ta9MveJG.js",
+        "sha256": "66dd511cc23b3ddcc237b16c4b7500c814fd9b7ba99ffc6c4949c2e561e3ca42",
+        "size": 907298
+      },
+      {
+        "path": "cline-hub/webview/assets/abnfDiagram-N423BO3Z-CA3n4CVB.js",
+        "sha256": "0d8b96ec6324d3bb982938c5552ab29576bec9e540ad82272c95273f2c238cce",
+        "size": 1893
+      },
+      {
+        "path": "cline-hub/webview/assets/arc-3UKfLtkz.js",
+        "sha256": "ce50be5dfe11aaa0943aced0b641d17c11999b6b2ad2eb3e2fd50679e203cf4c",
+        "size": 3474
+      },
+      {
+        "path": "cline-hub/webview/assets/architectureDiagram-T3A2C74G-BGNrlwUL.js",
+        "sha256": "79a67942c723070d545cf7e30c626be9cb8e0689a4789472d77d8d6c2f15eff1",
+        "size": 26857
+      },
+      {
+        "path": "cline-hub/webview/assets/array-BifhSqXX.js",
+        "sha256": "63126646dbf611a0cf9e2293a9f636ac3c93c815a8f7d1e97d783151ab8529b9",
+        "size": 107
+      },
+      {
+        "path": "cline-hub/webview/assets/badge-X4W3Q0cc.js",
+        "sha256": "998a369abbdfb3d8bdd9261980324e413d55e7ef26d47c8cb9ef74e80ef26929",
+        "size": 1642
+      },
+      {
+        "path": "cline-hub/webview/assets/bash-B7CDPTg5.js",
+        "sha256": "d4efcb4b33d3ec1114bee9eec491718886de8f07f63e6c29dbda74c404ee2738",
+        "size": 62
+      },
+      {
+        "path": "cline-hub/webview/assets/blockDiagram-VBNYF7ZC-CvIo5nET.js",
+        "sha256": "a8c5f6ec47b94e8385402882fbc6ed6b7bee0bec576e2b970241a059c7a58659",
+        "size": 72721
+      },
+      {
+        "path": "cline-hub/webview/assets/bundle-mjs-CyB9GzWm.js",
+        "sha256": "7224b91e659cc2680a5fd11d2eff3451cc0baec9d830134b3c10a61d6144fed8",
+        "size": 38634
+      },
+      {
+        "path": "cline-hub/webview/assets/c4Diagram-5PPSVZJV-B91Sv2Na.js",
+        "sha256": "f825d4808d121229fb361ce4d0e82d498ef6315f200ccfbc1ff0aa5e8179ddb8",
+        "size": 69161
+      },
+      {
+        "path": "cline-hub/webview/assets/channel-Cn9dB4WD.js",
+        "sha256": "1684f70d3c812dce143476cf085890b01e33f8afe1d69e32bfc13bb355cfa0d9",
+        "size": 114
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-2GRJ4B5K-u4MGLwtv.js",
+        "sha256": "c2af4a358dc833e721ac4619a0dcb54815b8d3c5864692cbd52396dba2c5eda0",
+        "size": 1972
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-2Q5K7J3B-C1jixKkw.js",
+        "sha256": "675dd6cbaeea3bf091ba6afb397cf4c3debf6b66cc7bee6d115d87fa831e05fc",
+        "size": 191
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-4I5QYGJK-0RNwvBrV.js",
+        "sha256": "8308b3bc4d8bc1622c5e2542cfbe5fac98b34575e18f6f0d2bb52abcd94c75b8",
+        "size": 5833
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-5RXB4S5H-BHjkdRhh.js",
+        "sha256": "2b99f08bf58820c95413ac1be8feb6351ac5ae1a569e881a7c3f61d4c13fc1f2",
+        "size": 37726
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-5VM5RSS4-ZNzvKenW.js",
+        "sha256": "cee7c98f98440b1fbf0548b756d421097642c784547b835515f1124b9cdd4351",
+        "size": 362
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-6Q2QTUOP-CLgL8rxg.js",
+        "sha256": "f26bc5595f9daef7b29ad97df36ecd29e32501371def26214eacbabf791d4ce6",
+        "size": 15644
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-7BUUIJ7U-Bb538aSH.js",
+        "sha256": "713d44d47668389e28fd9aecb4c6a5938a9d7ee7eceae04ec3857a98f58b87f3",
+        "size": 2105
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-7Z6QIM7H-C6_Ywz3w.js",
+        "sha256": "bfd22ec803770be6773374ff08caa4a6bcbaecc90777d3487064c22fb0efab6a",
+        "size": 33956
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-GF5L2VYU-iIVxDVKm.js",
+        "sha256": "ae646755a4900925237a437dbbd38bfee8df2a945e23aa01716a8012c2209cdf",
+        "size": 48829
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-I66GZJ75-DXqP3B91.js",
+        "sha256": "6134124a06f2a2d68abe56d23957973f347cbcf57228eff5bd9dc03daa1f6bf0",
+        "size": 207909
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-JQJVKLGR-CmK9TOTe.js",
+        "sha256": "2f67aac7f930247ac0aa85f155ef482e51c5048c9d738809cf5764044cbb20b2",
+        "size": 60157
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-JWPE2WC7-DVXcaiue.js",
+        "sha256": "11e56beaf2526e7304036d27b4e083ed68ced60066faded0e683115da3dfa099",
+        "size": 223
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-KBJHAD2P-L-89C026.js",
+        "sha256": "4313a76f40c64d34456d4a780468ad27116f0305d39e8f65aee4b38f6ab05a66",
+        "size": 574
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-NSK5VX7P-D5026Kzu.js",
+        "sha256": "2ea34206073f6ca4ecb47044c4784fa6a87202a80eb27ed5592dbde5944bb60b",
+        "size": 30755
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-QR6OTTB3-DgKOIk7B.js",
+        "sha256": "a812a00d5b07b67d55fd05d65214bf7b89467899bc32f6b7c341575054299e21",
+        "size": 101850
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-RYQCIY6F-BUc8VYLJ.js",
+        "sha256": "c17446b165308a7971923318bb419edd1a6b3b9cc21b3d38530b1628d817c4ab",
+        "size": 6498
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-UBXNYLIW-DzzRI8B_.js",
+        "sha256": "063ef32411400574341ed4d3a359924ab4873d5975fe8b9bfd79c106029592e1",
+        "size": 968
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-W5SLKNZC-jIqX_Eb5.js",
+        "sha256": "2db334887247e7eab298f1fe9c58987557b703a58cd4282482ba7b7a2b7ea573",
+        "size": 1849
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-WRU74C26-BSENSjFs.js",
+        "sha256": "6a824ea0b073c86ce3d729129c5c1866db6b490918833144c57b4f4b650b36db",
+        "size": 46834
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-XXDRQBXY-DR-hrsFH.js",
+        "sha256": "985055470cacca8d38b69bf8f974f79e9bd8311634fe881376ef8e686de20245",
+        "size": 262
+      },
+      {
+        "path": "cline-hub/webview/assets/chunk-Y2CYZVJY-DsF7k-Jl.js",
+        "sha256": "a74e3669f356ad0d67cc5232f1e0f62ff4544fdb8e7057cf9a5001a0ea6fc2cc",
+        "size": 155
+      },
+      {
+        "path": "cline-hub/webview/assets/classDiagram-JCYQIIEL-BMEETwfQ.js",
+        "sha256": "a2a03d41c418ac5e166d97ac0ee8adf31849a82f2debc90785ba90ff5558ffe3",
+        "size": 778
+      },
+      {
+        "path": "cline-hub/webview/assets/classDiagram-v2-OCEON4UE-BMEETwfQ.js",
+        "sha256": "a2a03d41c418ac5e166d97ac0ee8adf31849a82f2debc90785ba90ff5558ffe3",
+        "size": 778
+      },
+      {
+        "path": "cline-hub/webview/assets/cose-bilkent-JH36ORCC-DFv1GHTs.js",
+        "sha256": "94b90ab9164a66dfe6bab302490b8e74f002e4df81f624dbe218b5ca810abc6b",
+        "size": 4202
+      },
+      {
+        "path": "cline-hub/webview/assets/css-BsVw1vtW.js",
+        "sha256": "719c0b08e7db5e31f32321a99f6e619565c25f20dd090c809895dc4fa0816326",
+        "size": 49034
+      },
+      {
+        "path": "cline-hub/webview/assets/cynefinDiagram-MW4NZA55-CIoeFR2b.js",
+        "sha256": "d8d4fcca6f66f1d993ce3108c8708f8d19e2bee32c71a8fecb285d7393714781",
+        "size": 9933
+      },
+      {
+        "path": "cline-hub/webview/assets/dagre-VZM6K2ZE-CXd9m4cA.js",
+        "sha256": "4158b479db69ff12b9f45271dbd8ef684f5c65488ddf0a9d67cfbd185813166a",
+        "size": 8783
+      },
+      {
+        "path": "cline-hub/webview/assets/defaultLocale-BFoDCU3G.js",
+        "sha256": "098cc4b380fbfa5bf43b3dc6afaa137a43b0df3f079845fc096dca41e38fb341",
+        "size": 4634
+      },
+      {
+        "path": "cline-hub/webview/assets/diagram-7IWD3JNH-CgiYOAGC.js",
+        "sha256": "7ba660c37b01623c55214f05a1d501cd1acefecb87057da3d8386bafc5e50a09",
+        "size": 8308
+      },
+      {
+        "path": "cline-hub/webview/assets/diagram-B4RE2ZJO-i1LZz3qn.js",
+        "sha256": "deddae438eb2498e1b2f8bb74df297ec1b6b69e02de9f70da033e829a51eaa0f",
+        "size": 10661
+      },
+      {
+        "path": "cline-hub/webview/assets/diagram-LBJQPF4R-GOvZ7wow.js",
+        "sha256": "2b6c0779f8b389487136c1ea5c663d713e5d5ef56027bbd344ba5521de35d95f",
+        "size": 4275
+      },
+      {
+        "path": "cline-hub/webview/assets/diagram-Q27KOJAE-C-x1hqFU.js",
+        "sha256": "082ff822cffd2c790ddf9e7147eb2d15aac920adb1760ac66f356cd81ec30b68",
+        "size": 15750
+      },
+      {
+        "path": "cline-hub/webview/assets/diagram-UB23O5K3-Ds1emBxU.js",
+        "sha256": "ec03628566aba195eac5e38041b5fdaa9967d0309b60485a266f61464dd10965",
+        "size": 6064
+      },
+      {
+        "path": "cline-hub/webview/assets/diff-woXpYk--.js",
+        "sha256": "80befa61827dedd8e1a37e5521dd2ef55fad173bbbd9f36db966fc0b088079e6",
+        "size": 2562
+      },
+      {
+        "path": "cline-hub/webview/assets/dist-BDCdLWk4.js",
+        "sha256": "6f47c41d2658f412c34a96c7052c4cc78252ec804f832f98d9c1863982ca579d",
+        "size": 2173
+      },
+      {
+        "path": "cline-hub/webview/assets/ebnfDiagram-BXEA7PRR-Bmu-47tU.js",
+        "sha256": "7e33e1e531f774353ffebb38c154a5f6c0d29e290870e5b955e451da58679d2f",
+        "size": 2106
+      },
+      {
+        "path": "cline-hub/webview/assets/erDiagram-JOGREHBK--TO8WYZl.js",
+        "sha256": "c0d6399cd6a44a0bc1fd6608d312dfdb8483cad5c4312a859bdb296d63115bed",
+        "size": 27098
+      },
+      {
+        "path": "cline-hub/webview/assets/extensions-view-Bse6hXDh.js",
+        "sha256": "65403585dcd9f6fec8b21b6ebf86afbf351d44f9e5e212d8381d4f63c40d9099",
+        "size": 46688
+      },
+      {
+        "path": "cline-hub/webview/assets/flowDiagram-UKHOOZJN-epuPN-mi.js",
+        "sha256": "6d51cecc746062f7563e515f326dff445da63f21f4d218306b02cc17991d2a44",
+        "size": 575
+      },
+      {
+        "path": "cline-hub/webview/assets/ganttDiagram-PKOTCBZU-BJMCqdx8.js",
+        "sha256": "89ba5f0cf6b1f86ee9aedbb9a67b43dbfe8d69895f24df5b2612ab31453a0e7a",
+        "size": 69354
+      },
+      {
+        "path": "cline-hub/webview/assets/geist-mono-cyrillic-ext-wght-normal-X_5orZeX.woff2",
+        "sha256": "cd8800999070b729e1cc0bf7a48da6c3ac096a044251171b9a7574b56d96d4b4",
+        "size": 6176
+      },
+      {
+        "path": "cline-hub/webview/assets/geist-mono-cyrillic-wght-normal-DiZS0aHC.woff2",
+        "sha256": "4866787fc952dbdbd591d6923d67bc21c2d894b93f34ab69d0cdf25d47bfb2df",
+        "size": 12940
+      },
+      {
+        "path": "cline-hub/webview/assets/geist-mono-latin-ext-wght-normal-Bwz-egvJ.woff2",
+        "sha256": "1a189eb997c3e2ece68373e387afaec9e8617424186c4b1ab3cff7c54ba6223b",
+        "size": 14696
+      },
+      {
+        "path": "cline-hub/webview/assets/geist-mono-latin-wght-normal-XN7g48iV.woff2",
+        "sha256": "684ad5b531f81d43c1e8c7038262d5db7cdc1f68006e04d6c7769efa8d33c8cc",
+        "size": 23128
+      },
+      {
+        "path": "cline-hub/webview/assets/geist-mono-symbols2-wght-normal-CO5SzqOn.woff2",
+        "sha256": "5bb66d8319ba1602bb2eb67dce8d79c2b4687be8ce183a0574433e949b3c60ad",
+        "size": 5812
+      },
+      {
+        "path": "cline-hub/webview/assets/geist-mono-vietnamese-wght-normal-DadHysG0.woff2",
+        "sha256": "d39b60889a94a527a7f73c7988a2d6efb6c081614aef683b0b386c02d74c2175",
+        "size": 7696
+      },
+      {
+        "path": "cline-hub/webview/assets/gitGraphDiagram-DS77QQ5N-CFngxqjY.js",
+        "sha256": "195b62837c2cf339b10c8ea2db2b7e8ac1bedfc4b8f6610e2317cd10c2536314",
+        "size": 29008
+      },
+      {
+        "path": "cline-hub/webview/assets/github-dark-C-LZuMrd.js",
+        "sha256": "4b20a66425669986c784d2f948aab0f38add042b7b167a2245d0c86a781706e1",
+        "size": 11402
+      },
+      {
+        "path": "cline-hub/webview/assets/github-light-EUqPIrTm.js",
+        "sha256": "b41057cac4d9e62754f5d64f241ec9153a0c3d53f5eaa2464d3acf9a644e8852",
+        "size": 11181
+      },
+      {
+        "path": "cline-hub/webview/assets/highlighted-body-KPVGNVTW-D_zYfwaW.js",
+        "sha256": "9f3a1bc47d226de6648e3b3c6a178547795735a2e77a1e020025a32b7d71d0c0",
+        "size": 587
+      },
+      {
+        "path": "cline-hub/webview/assets/html-BY76lXLH.js",
+        "sha256": "9cf910364d275a0e86edbb3b2e8450d14922710d8176727b2337e8e601fb6a94",
+        "size": 57244
+      },
+      {
+        "path": "cline-hub/webview/assets/index-hEQUiqGA.css",
+        "sha256": "94826d2b2d235bb977c53e24b05a51a096d908bb74c735b0dc812d96a2c504ac",
+        "size": 142382
+      },
+      {
+        "path": "cline-hub/webview/assets/index-zeBm5jOA.js",
+        "sha256": "64f2894fb715fd733a9611d17ce935b4d36e4ae9d5abe378ff8e6ac044685bf8",
+        "size": 287399
+      },
+      {
+        "path": "cline-hub/webview/assets/infoDiagram-6WML65LV-HYF3E1dT.js",
+        "sha256": "086f593d63146ffe28788971a4b3b86aabc7bf46ab6fd0cd4a4e757cce1aeef2",
+        "size": 651
+      },
+      {
+        "path": "cline-hub/webview/assets/init-C-OQMol4.js",
+        "sha256": "cb5c97a434bb5c3eeb4f6d38072ad7d8e4ac454d14e039a1fb6e8262c5ce82bc",
+        "size": 140
+      },
+      {
+        "path": "cline-hub/webview/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2",
+        "sha256": "ca157063339ac4ad418f214f3abfed119b0798ab4d377386ce5c9e5a7a435ebd",
+        "size": 25960
+      },
+      {
+        "path": "cline-hub/webview/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2",
+        "sha256": "71d5ee93cc1e9f1d520a3a8b66456de18c7879d8df09d57fcd2eaff75fef0075",
+        "size": 18748
+      },
+      {
+        "path": "cline-hub/webview/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2",
+        "sha256": "6e9e020a25f9b56d418f2c085b1d3c09725a4da23fe693a5b463064606732190",
+        "size": 11232
+      },
+      {
+        "path": "cline-hub/webview/assets/inter-greek-wght-normal-CkhJZR-_.woff2",
+        "sha256": "1be3448e292fbf05ffe176fe1e43f135013d50b1e7d324ad1a558f623d3bb6f6",
+        "size": 18996
+      },
+      {
+        "path": "cline-hub/webview/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2",
+        "sha256": "34b9c504cab7a73e37b746343a449132e56cf7b5481af2cb81dc74dcff25c956",
+        "size": 85068
+      },
+      {
+        "path": "cline-hub/webview/assets/inter-latin-wght-normal-Dx4kXJAl.woff2",
+        "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62",
+        "size": 48256
+      },
+      {
+        "path": "cline-hub/webview/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2",
+        "sha256": "5c66f9e07e90c6d4ac4922cc68d60de26c17b1858e677fb5e603fce3952b3ff2",
+        "size": 10252
+      },
+      {
+        "path": "cline-hub/webview/assets/ishikawaDiagram-WSZJBQD7-BXMe4UcZ.js",
+        "sha256": "5b06823e45892943ed55e20da7a3392d9c880077f9fdf6b6d203fcc3e4eaf9c9",
+        "size": 17311
+      },
+      {
+        "path": "cline-hub/webview/assets/javascript-BgS3c2Ky.js",
+        "sha256": "03c9deebead01027aeae2794a9ea2dc97dac5b9e93c55fac775856c913ddb7a9",
+        "size": 174820
+      },
+      {
+        "path": "cline-hub/webview/assets/journeyDiagram-NVQOT4AX-CRKFmsae.js",
+        "sha256": "2dd148a6ad4234a4db8499a0c4f251769098acdab54981709b07ceb70a371bc4",
+        "size": 23157
+      },
+      {
+        "path": "cline-hub/webview/assets/json-qhed-kSA.js",
+        "sha256": "cde89b6485baf9a68c80f28098ff191e7ba063cd0c5c50d2f9abf57f5e4be826",
+        "size": 2817
+      },
+      {
+        "path": "cline-hub/webview/assets/jsonc-CYpm1nAK.js",
+        "sha256": "60b006733ee4e7b7d220af80da422980966b9527c91438aec90040c9dbde1088",
+        "size": 3102
+      },
+      {
+        "path": "cline-hub/webview/assets/jsx-Bz0zcwM4.js",
+        "sha256": "e2b4114d3baef8c939630fafbcdbc4b2ea14f796c4d453ff322da0beb47f41f1",
+        "size": 177785
+      },
+      {
+        "path": "cline-hub/webview/assets/kanban-definition-27J2QSJJ-fGza5kV5.js",
+        "sha256": "4c5aac0866f3368a6074d9b9ff906c4014c0c52e0857960d8fd8ec50f3006477",
+        "size": 20220
+      },
+      {
+        "path": "cline-hub/webview/assets/label-CUBxnFlQ.js",
+        "sha256": "6e49c4e00feb0af51ff0348ffc3f71078391d09fb807c118c1a7b3545d0e4778",
+        "size": 332052
+      },
+      {
+        "path": "cline-hub/webview/assets/line-BImJQVif.js",
+        "sha256": "52e1cffa95ee1cfe419cb1627e218986467576443e615fce5031fb289f60558e",
+        "size": 943
+      },
+      {
+        "path": "cline-hub/webview/assets/linear-CmpaHCv3.js",
+        "sha256": "1d8545a2322145bcc89058c871705bfbd213432a87deef6570101b9c815260c6",
+        "size": 5519
+      },
+      {
+        "path": "cline-hub/webview/assets/markdown-BYOwaDjH.js",
+        "sha256": "024bf1ea6f860d9477d5ef72a2553f1ae4b0ff3d07f5d24d2e270e4f4f5a9b95",
+        "size": 59328
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-HWGCJPDP-NlsJ0x2Y.js",
+        "sha256": "23af7423490f98108e3ce7200ef84683dcc6f57f8682658ea0994a62680a3de1",
+        "size": 60
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-layout-BadlRzDJ.js",
+        "sha256": "db7ef16b1faa3fe628e6e524a994c3ba925c1d96015850f282b90b7b05284808",
+        "size": 141035
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-layout-BqskXFQG.js",
+        "sha256": "1cffebe4cc64067d86eda6c70b6f676bf92c9475dfdcd13968e15f9006814cdb",
+        "size": 63700
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-layout-C40rDmm9.js",
+        "sha256": "fea812202f6bb54afbace563c94c7652b677e04f7f4c72020dbbfee8da999745",
+        "size": 29356
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-layout-CD-JajuE.js",
+        "sha256": "7d0babeaf08153a3bcb04f22773604d435cd5241a23225329f3d266d11ec1a6f",
+        "size": 26263
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-layout-CGd-uY3x.js",
+        "sha256": "09787849f984891f78c4614d1346102d48e19abd29156d3b6f1ac5558b6321c3",
+        "size": 434924
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-markup-D01n6Kcj.js",
+        "sha256": "31d1b496cf4d36dcdf658c6a976ac5aa5e2d9548cd196f53c95de450094b1228",
+        "size": 286179
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-parser-B74RvNk1.js",
+        "sha256": "93a6251130fe86a00b1492edebb407287ef5431430ef14c8303531f02960fefd",
+        "size": 6988
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-parser-ByV-ZOdd.js",
+        "sha256": "df2129d236085d3f3e383666a2c0f14e884e3e37910e10d313ec7f7eb7cc1e08",
+        "size": 338
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-parser-C2jETkNP.js",
+        "sha256": "162fe1aef35c2e748dd5961542138ce161524aad14f8b189b51e5e4f3806e584",
+        "size": 3676
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-parser-C3SJa12Y.js",
+        "sha256": "ea160b2ce95a9188891c7d51bfc4b6a8b67a9bad0926a037f935fff4cff6131d",
+        "size": 771
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-parser-CFqrADy2.js",
+        "sha256": "9095c5fa4184e9b20ca0554fd79c289904af8b51945971b856c52ce5d2c7943a",
+        "size": 5796
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-parser-CiEp2wH6.js",
+        "sha256": "a203881992e856255d1c896bda633521851e1aba7d511d36fc95dee39252da63",
+        "size": 196
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-parser-DHwB1DNv.js",
+        "sha256": "2efd9c0d3363ce7ce186293f0560e3f80171e267c88dedbb16a4f971c489b2d9",
+        "size": 662120
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-parser-DgB__rYs.js",
+        "sha256": "d939785a47e3b56b7bdab93fed98bbb4d86e9b496c208f91687e2ed9de8ea3cf",
+        "size": 452
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid-parser-HclGiUj8.js",
+        "sha256": "bba5840eec0028b00854bcd58fba80694d02d41e98417656424c05b26db7120c",
+        "size": 1211
+      },
+      {
+        "path": "cline-hub/webview/assets/mermaid.core-CNhdxt2h.js",
+        "sha256": "c3483377c3028ddf8bc5483669b1e7c5f900d54da9aa6a3dba56128ded146e97",
+        "size": 80641
+      },
+      {
+        "path": "cline-hub/webview/assets/mindmap-definition-FAOFIHXS-CSIdPH6Q.js",
+        "sha256": "6ee54200eb156c20c2bb349126afebab01bef897c7cf05a47c17d069fbc8554d",
+        "size": 23687
+      },
+      {
+        "path": "cline-hub/webview/assets/ordinal-BDEzSJ7C.js",
+        "sha256": "1a236cf33d69c13da184852fe890a0d5d4083636373cb3ce166537b3e8cc0dcb",
+        "size": 1174
+      },
+      {
+        "path": "cline-hub/webview/assets/path-fybaL0A-.js",
+        "sha256": "71b62c60fd6659668995a83955af7c0ffd1bc05496148191841e017441afe36b",
+        "size": 2278
+      },
+      {
+        "path": "cline-hub/webview/assets/pegDiagram-VL7TDLO6-C6mMcz9U.js",
+        "sha256": "bb8cbac612108bfc4e8154da1da9167cfb64da350a1586783354ad9d070e57bb",
+        "size": 2053
+      },
+      {
+        "path": "cline-hub/webview/assets/pieDiagram-7S7Q4E2Y-_Em6O_U1.js",
+        "sha256": "7cbf174f4c916fe34e6c873104a3f2283f28bf76b16fb5c0a5a07be5f4738c8d",
+        "size": 6211
+      },
+      {
+        "path": "cline-hub/webview/assets/python-gzcpVVnB.js",
+        "sha256": "be0bae300e9d8dbae905d9faa24b84adc622796c87170848bf0460d01ad4049c",
+        "size": 69945
+      },
+      {
+        "path": "cline-hub/webview/assets/quadrantDiagram-CIZ2JOQS-DAUZ-M5i.js",
+        "sha256": "4a8200c6a1240d2dbb5128726d34eadf52621070c22fc5ac1d3114140d42163f",
+        "size": 33515
+      },
+      {
+        "path": "cline-hub/webview/assets/railroadDiagram-AXF67PYL-D-nONgIY.js",
+        "sha256": "c972c23954a42c802595956473cd5d0e2767dfb2a168e67c28b5891c53319bfd",
+        "size": 1706
+      },
+      {
+        "path": "cline-hub/webview/assets/requirementDiagram-LRYGKXZP--TyKFbQR.js",
+        "sha256": "38526688cb344818c81132aed8177cb0972500497e69e0d67c6241746ecbe6b6",
+        "size": 30998
+      },
+      {
+        "path": "cline-hub/webview/assets/rolldown-runtime-B0Z9INg1.js",
+        "sha256": "5e9b0d884d2ebb14e241ab38b43e41efb61bce2e74d71507b0b95b264fba4047",
+        "size": 901
+      },
+      {
+        "path": "cline-hub/webview/assets/rough.esm-Dy-Kn_BL.js",
+        "sha256": "ef405c5eaa3316c75428f63ec698e39993bdcc2da358dbc7ebd355d18901f63f",
+        "size": 27109
+      },
+      {
+        "path": "cline-hub/webview/assets/sankeyDiagram-W5VNT64P-D_L0wHGo.js",
+        "sha256": "1bdc88451c134aeb4b7fedaf1600ef214b55bb91aa6d8db77227053cb8e629dd",
+        "size": 22792
+      },
+      {
+        "path": "cline-hub/webview/assets/sequenceDiagram-SI44F4Z6-DQZqzwJM.js",
+        "sha256": "3283e1935ef4db38305cf8c7bb36e085c9ee26b480d859e549e7b17c03809f65",
+        "size": 115744
+      },
+      {
+        "path": "cline-hub/webview/assets/settings-view-DlWCiAz0.js",
+        "sha256": "ce21845f52c219268be777b961f188600dd82ea684efd2d28489981203735b20",
+        "size": 132625
+      },
+      {
+        "path": "cline-hub/webview/assets/shellscript-CLZ0U2zV.js",
+        "sha256": "c1988bee5cd7a3ecc9f95a549ca16e93e6932d81684caf08d004346df88d1f7c",
+        "size": 41472
+      },
+      {
+        "path": "cline-hub/webview/assets/sizeCapture-X5ZJPWSS-B0uUizjq.js",
+        "sha256": "a72637dd3244cfb0f1b1ef936e53a5c642dbb29bc5de087acc4abbc69f283523",
+        "size": 875
+      },
+      {
+        "path": "cline-hub/webview/assets/src-BY_WSiz7.js",
+        "sha256": "55c1fbd34a945e134fae20fe8673592c94f4db252706f5fff9de436fdf278b3e",
+        "size": 45680
+      },
+      {
+        "path": "cline-hub/webview/assets/stateDiagram-OKZ733FA-CRrKMpks.js",
+        "sha256": "985c1a6c1a28b763869a880a0eff775de8d5028663797b2fb3ccbf4a46ddc132",
+        "size": 10617
+      },
+      {
+        "path": "cline-hub/webview/assets/stateDiagram-v2-UEYNNEHI-gzRtUcKB.js",
+        "sha256": "cb867503c620ac6a34d4a7b260f705069d66f2185680ad19a44066ba62211357",
+        "size": 781
+      },
+      {
+        "path": "cline-hub/webview/assets/swimlanes-SLNWSIFB-z7E3j6mU.js",
+        "sha256": "5a6e0b1b09ebd8e9f00b9fcfd2aaeccfbeb062ff1bc0b20b576685ebb2ce87f0",
+        "size": 114133
+      },
+      {
+        "path": "cline-hub/webview/assets/swimlanesDiagram-ULZ7WXOC-eylwAnWt.js",
+        "sha256": "6649b6165fb51c8e39826ae9c6530c3028f9f388c9f7409430ad2946f30624e5",
+        "size": 834
+      },
+      {
+        "path": "cline-hub/webview/assets/switch-DrjcFF6_.js",
+        "sha256": "cff85ccbc70bca9f53a490d2b7a7cf8ea0bdd4fb41b17253d6064a81aeb437c8",
+        "size": 4722
+      },
+      {
+        "path": "cline-hub/webview/assets/timeline-definition-Z64GVDOM-s7-rEymV.js",
+        "sha256": "c1ccee8d57ceab0968f7aa15a3697c6eeb4e8574a7c86d39ec1d332ada1b687e",
+        "size": 30373
+      },
+      {
+        "path": "cline-hub/webview/assets/tsx-udAQXfEw.js",
+        "sha256": "9fc069255af55a76568fef90e87c0e2fa53f6ae74ed8eb8b364f5e6f9a61fee7",
+        "size": 175529
+      },
+      {
+        "path": "cline-hub/webview/assets/typescript-bsJCZSQ-.js",
+        "sha256": "95d1a5778c7f670197b7bb6cb0e95faa400d09f66c34486b4ba54a3fd597e3a1",
+        "size": 181073
+      },
+      {
+        "path": "cline-hub/webview/assets/vennDiagram-T6HMQDX7-HuTwN2dY.js",
+        "sha256": "3c54d616ea04e9ec0f66d491c3292bb2045ff85af382162df84a6a793e917cf8",
+        "size": 41157
+      },
+      {
+        "path": "cline-hub/webview/assets/vscode-CFosRdBr.js",
+        "sha256": "bce1e0e94375d12b56b1318e0b4ad3910792a99918b044c541a9806e038f190f",
+        "size": 108747
+      },
+      {
+        "path": "cline-hub/webview/assets/wardleyDiagram-T6FBY63Y-BG9WRwXn.js",
+        "sha256": "6abcadfb5c62a28cf592d5fea8f28588c9f2e50a6cf28bea7940f1548baa38f8",
+        "size": 25197
+      },
+      {
+        "path": "cline-hub/webview/assets/xychartDiagram-ELKLHX3M-C0kPny3I.js",
+        "sha256": "fc3d1809296528aa1b7a21d96327ad4d32a1025e190377f71076f59f0a1f9202",
+        "size": 41602
+      },
+      {
+        "path": "cline-hub/webview/assets/yaml-rwi0_p6S.js",
+        "sha256": "db14bd07972e830c86a4c8109530090c59def0c02864c923507b272d069b41a0",
+        "size": 10499
+      },
+      {
+        "path": "cline-hub/webview/assets/zap-BF3XOCN3.js",
+        "sha256": "17377daafe9b1f85edc60d639c8c852f8a781a8e5d173b2895d38ea9b047c40c",
+        "size": 1127
+      },
+      {
+        "path": "cline-hub/webview/cline-logo-filled.svg",
+        "sha256": "6aab009bf089a8dc1b5452c05c471244a08595b78fd639835eacc0821b887c06",
+        "size": 3574
+      },
+      {
+        "path": "cline-hub/webview/favicon.svg",
+        "sha256": "710a3a2710fadd73a663f61c579a6e1a1f67fae981610b1fa366d9b954c46af2",
+        "size": 3659
+      },
+      {
+        "path": "cline-hub/webview/icon.ico",
+        "sha256": "4fd362bc06ea6b3719bdf214146eccc43cedbc11b506606ab1e481079c2de955",
+        "size": 26712
+      },
+      {
+        "path": "cline-hub/webview/icon.png",
+        "sha256": "3c3b09e9f1bba05a62b709d431c2ea03d0b0782db760c72862962492ed9d8fbb",
+        "size": 29069
+      },
+      {
+        "path": "cline-hub/webview/icon.svg",
+        "sha256": "6aab009bf089a8dc1b5452c05c471244a08595b78fd639835eacc0821b887c06",
+        "size": 3574
+      },
+      {
+        "path": "cline-hub/webview/index.html",
+        "sha256": "e1c0b1011aaace03c40ae08423645a8fc29db0105a4103d1aebfaba3fea9281e",
+        "size": 796
+      },
+      {
+        "path": "extensions/plugin-sandbox-bootstrap.js",
+        "sha256": "a2e72aa3324ca97ad20fbd1a2e2d4315869aed1dbaa00367554f4ae2609157a9",
+        "size": 14744
+      },
+      {
+        "path": "package.json",
+        "sha256": "d1d8a49ea1b439b8a9b694959c8cca54e7dad952a1af6255739231212696978f",
         "size": 337
       }
     ]

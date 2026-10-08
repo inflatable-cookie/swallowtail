@@ -13,7 +13,7 @@ pub const CLINE_EXECUTABLE_NAME: &str = "cline";
 pub const CLINE_PACKAGE_AXIS: &str = "cline.package";
 /// Frozen qualified baseline Cline npm wrapper shared by ACP and headless.
 pub const CLINE_PACKAGE_VERSION: &str = "3.0.55";
-const CLINE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "3.0.69";
+const CLINE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "3.0.70";
 
 pub(crate) const CLINE_ACP_BEHAVIOR: &str = "cline.acp.stdio-v1";
 pub(crate) const CLINE_HEADLESS_BEHAVIOR: &str = "cline.headless.stdio-json-v1";
@@ -221,11 +221,11 @@ mod tests {
         let headless = cline_headless_claim();
         for qualified in [
             "3.0.55", "3.0.56", "3.0.57", "3.0.58", "3.0.60", "3.0.61", "3.0.62", "3.0.63",
-            "3.0.64", "3.0.65", "3.0.66", "3.0.67", "3.0.68", "3.0.69",
+            "3.0.64", "3.0.65", "3.0.66", "3.0.67", "3.0.68", "3.0.69", "3.0.70",
         ] {
             assert!(headless.permits(&InterfaceVersion::new(qualified).expect("version")));
         }
-        for rejected in ["3.0.54", "3.0.59", "3.0.70"] {
+        for rejected in ["3.0.54", "3.0.59", "3.0.71"] {
             assert!(!headless.permits(&InterfaceVersion::new(rejected).expect("version")));
         }
         assert_eq!(headless.baseline().as_str(), CLINE_PACKAGE_VERSION);
@@ -243,7 +243,7 @@ mod tests {
 
         let acp = cline_acp_claim();
         assert!(acp.permits(&InterfaceVersion::new(CLINE_PACKAGE_VERSION).expect("baseline")));
-        assert!(!acp.permits(&InterfaceVersion::new("3.0.69").expect("latest")));
+        assert!(!acp.permits(&InterfaceVersion::new("3.0.70").expect("headless latest")));
         assert_ne!(
             cline_acp_claim().id().as_str(),
             cline_headless_claim().id().as_str()
@@ -259,7 +259,11 @@ mod tests {
                 .as_str(),
             "3.0.55"
         );
-        for candidate in [b"3.0.56\n".as_slice(), b"3.0.59\n", b"3.0.69\n"] {
+        for candidate in [
+            b"3.0.56\n".as_slice(),
+            b"3.0.59\n",
+            b"3.0.70\n",
+        ] {
             assert!(parse_cline_version_output(candidate).is_some());
         }
         assert!(parse_cline_version_output(b"cline 3.0.55\n").is_none());

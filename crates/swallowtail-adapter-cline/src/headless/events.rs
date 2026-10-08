@@ -398,7 +398,7 @@ mod tests {
 
     const SUCCESS: &str = include_str!("../../tests/fixtures/cline-headless-3.0.55/success.jsonl");
     const ABORT: &str = include_str!("../../tests/fixtures/cline-headless-3.0.55/abort.jsonl");
-    const MEDIA: &str = include_str!("../../tests/fixtures/cline-headless-3.0.69/media.jsonl");
+    const MEDIA: &str = include_str!("../../tests/fixtures/cline-headless-3.0.70/media.jsonl");
 
     fn parser() -> ClineHeadlessEventParser {
         ClineHeadlessEventParser::new(ActivityOperationId::Run(

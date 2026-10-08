@@ -19,7 +19,7 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Preparation requires all of the following:
 
 - exact package axis `cline.package`
-- npm wrapper from `3.0.55` through `3.0.69`, excluding unpublished `3.0.59`
+- npm wrapper from `3.0.55` through `3.0.70`, excluding unpublished `3.0.59`
 - host-approved `cline` executable and isolated environment
 - `cline_local_account_access_profile` with no credential reference
 - working resource, plus host services for task, process, time, and
@@ -27,8 +27,9 @@ Preparation requires all of the following:
 - a host process deadline on the print run
 
 The claim is qualified-only. Published points in the supported window share
-the headless JSON mapping; unpublished `3.0.59` and later packages are not
-qualified. `UnverifiedNewer` is not a Cline headless execution posture.
+the headless JSON mapping; unpublished `3.0.59` and packages above `3.0.70`
+are not qualified. `UnverifiedNewer` is not a Cline headless execution
+posture.
 
 Swallowtail does not install Cline, search `PATH`, run OAuth `authenticate`,
 read `CLINE_API_KEY`, or default auto-approve. Host-owned account state and

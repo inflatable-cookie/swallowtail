@@ -23,7 +23,7 @@
     "provider_prompt_sent": false,
     "public_operations_added": false,
     "qualify_each_published_stable_hop": true,
-    "raise_latest_qualified_to": "3.0.69",
+    "raise_latest_qualified_to": "3.0.70",
     "retain_baseline": "3.0.55",
     "retain_behavior_revision": "cline.headless.stdio-json-v1",
     "retain_claim_id": "cline.headless.package-window-1",
@@ -48,7 +48,8 @@
     "3.0.66",
     "3.0.67",
     "3.0.68",
-    "3.0.69"
+    "3.0.69",
+    "3.0.70"
   ],
   "qualified_shape": {
     "baseline": "3.0.55",
@@ -56,17 +57,17 @@
     "excluded_points": [
       "3.0.59"
     ],
-    "latest_qualified": "3.0.69",
+    "latest_qualified": "3.0.70",
     "newer_version_posture": "QualifiedOnly",
     "support_status": "Maintained"
   },
-  "qualified_target": "3.0.69",
+  "qualified_target": "3.0.70",
   "runtime_inventory_scope": "All six optional platform package tarballs are bound by exact registry SHA-512 integrity, shasum, file count and unpacked size for every published hop. A complete extracted file tree is frozen for darwin-arm64; no runtime binary was executed.",
   "selected_channel": {
     "name": "official npm stable dist-tag latest",
-    "observed_latest": "3.0.69",
+    "observed_latest": "3.0.70",
     "package": "cline",
-    "published_at": "2026-10-07T06:13:57.143Z",
+    "published_at": "2026-10-08T05:56:02.947Z",
     "registry": "https://registry.npmjs.org/cline/latest"
   },
   "selected_invocation": [
@@ -76,7 +77,9 @@
     "false"
   ],
   "selected_mapped_source_paths": [
+    "apps/cli/src/commands/program.ts",
     "apps/cli/src/main.ts",
+    "apps/cli/src/runtime/defaults.ts",
     "apps/cli/src/runtime/run-agent.ts",
     "apps/cli/src/runtime/session-events.ts",
     "apps/cli/src/runtime/tool-policies.ts",
@@ -87,7 +90,7 @@
     "sdk/packages/agents/src/agent-runtime.ts",
     "sdk/packages/shared/src/agents/types.ts"
   ],
-  "source_identity_note": "GitHub annotated cli-v<version> tag object and peeled commit are frozen per published npm stable; ten selected source files are hashed for each tag. Full repository source archives were not used as a substitute for package identity.",
+  "source_identity_note": "GitHub annotated cli-v<version> tag object and peeled commit are frozen per published npm stable; twelve selected source files cover the CLI argument boundary, invocation, mapped runtime/output, and agent envelope types for each tag. Full repository source archives were not used as a substitute for package identity.",
   "unpublished_interior_gaps": [
     {
       "decision": "exclude; GitHub source tag is not the selected npm artifact channel",
@@ -1846,6 +1849,136 @@
       },
       "published_at": "2026-10-07T06:13:57.143Z",
       "version": "3.0.69"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-9iroOPN4LDYwveiJw8Qfjsak9pZvZsDdTgHfHvkwtBIEdIBJB/Cv8VRGK02GjEYgspMCNPML3bK4K8jsuL5ICw==",
+          "shasum": "00dac8fb1ef2b08924160f2265b7eec0ef7e15ab",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.92.tgz",
+          "unpackedSize": 197604,
+          "version": "0.0.92"
+        },
+        "@cline/core": {
+          "fileCount": 340,
+          "integrity": "sha512-5FQCx+MZCHG8BVBCT6EaxkXUuts4qruZ6XZPUZ+MYRFMetOpEGpxKcsXr1bB5tCk43djUYMGDzEnnJk9NPpjIw==",
+          "shasum": "7ee27e7b70f99207c4a6f0ddebd08bc791e3f22c",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.92.tgz",
+          "unpackedSize": 4006103,
+          "version": "0.0.92"
+        },
+        "@cline/llms": {
+          "fileCount": 165,
+          "integrity": "sha512-yyvMRTRynAiwrVzBIm4Nx/cu+ktsKDgfLzndr3HzKNcOuJSTOPSUe3ed2xumS2351CxKyGw3ebmWOj0S9+ixdQ==",
+          "shasum": "563d39fe2eefac9232d679a8211644749e8b345a",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.92.tgz",
+          "unpackedSize": 11172418,
+          "version": "0.0.92"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-TkQfPhgYMMLjPD8UcymeVHcX2mO63m5KF7f5dGmSrZii5olMj9GUbc+Pzst8P07bYfF8u7HLkssNlOWy788UOg==",
+          "shasum": "011e817b4ae15934211df6eb15782f27f3e89d59",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.92.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.92"
+        },
+        "@cline/shared": {
+          "fileCount": 109,
+          "integrity": "sha512-R+9qeqjZXfDmaBhM8gncAa0uxL8WbDWm9ug03t1ROY6n+ajyAifNSY5eLDIAvt9pkvJ67iytyh8wbNNioEA9og==",
+          "shasum": "7ec87673fc9380d9e34410ad97356d5caa71db69",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.92.tgz",
+          "unpackedSize": 956529,
+          "version": "0.0.92"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "6c21659d8e5ef8b881dc1972e4aa8112bb9af367",
+        "peeled_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+        "tag": "cli-v3.0.70"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.92",
+          "@cline/core": "0.0.92",
+          "@cline/llms": "0.0.92",
+          "@cline/sdk": "0.0.92",
+          "@cline/shared": "0.0.92"
+        },
+        "file_count": 6,
+        "integrity": "sha512-ekeGJ7YdVKL9p//KF0F5nxFXMvgSuhwPxvCUkS+SaBDJJoOUt+HMeJS+J+hkF3ezPekbSvpK1wCPGraZbAEO8A==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.70",
+          "@cline/cli-darwin-x64": "3.0.70",
+          "@cline/cli-linux-arm64": "3.0.70",
+          "@cline/cli-linux-x64": "3.0.70",
+          "@cline/cli-windows-arm64": "3.0.70",
+          "@cline/cli-windows-x64": "3.0.70"
+        },
+        "shasum": "837f68cd31378bd5fcd7a38510625bdc9c33adbb",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.70.tgz",
+        "tarball_sha256": "4081fba9ec0867e32267b3875fbbe322edff8d55b7a11c1dcd0ff3066c88760b",
+        "tree_manifest_sha256": "e34201854e1d814d6b099fe2a57afde456d9fcce61348fb34c6d62221cc87a94",
+        "unpacked_size": 48236
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-c+GHUmyL2exX4iC3BOhqQVfaToUJNMUPvuRDJGr3adILhhVL0II53XokBAWDrgpHAoyoQkiVs2nSGgzQhSXz5g==",
+          "shasum": "62e671818b00dfad5e2e4c6921cfa491cb73dcb7",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.70.tgz",
+          "unpackedSize": 95111856,
+          "version": "3.0.70"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-gM07xL3mTlRbw/qbBvunexPQYb3Ezlb1dAYW4Bv941gl6kbDJ/dP9i2J1Ad0AuuMVJkkTKddEji/sgt1GkkUmg==",
+          "shasum": "184fc992f791ff811fd3da32481fd067af6c6454",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.70.tgz",
+          "unpackedSize": 101999432,
+          "version": "3.0.70"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-eykLoKguwd1RCrckI2e+Ol5RnvIAQZUEjEUfvvc09/okyJeWVhPmW1CI/nnOlncRZ6WWbl+KqkNVfy0+sy9BGQ==",
+          "shasum": "38dd3a8fd1a0633a238a3f8c0b68b839071d4346",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.70.tgz",
+          "unpackedSize": 137771875,
+          "version": "3.0.70"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-vNYoWu4UPioXggb/o1UFDr5689yaXzxrH8oka+JSM6iULLBC25hFfSYdt9oaZkcCH9tuK/c9DB0FQtNT4Ykz0A==",
+          "shasum": "8d76b355b4010a49c637fe47938939d7994f6fbd",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.70.tgz",
+          "unpackedSize": 137361429,
+          "version": "3.0.70"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-M6R6yTRK5xwSWkD+XCZaTKEfpt2SwBrl5HrLNkgI5hHvJh3JsZmbXOI7MzREpKzmtzac+oyLY8ytxpSOQNmuaw==",
+          "shasum": "167d76bda9df6fc5ebb3ec06a914c08cec3ec085",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.70.tgz",
+          "unpackedSize": 110059419,
+          "version": "3.0.70"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-QH6WcyEuDdItdwx8aHs/6JEa1TZ/R8mRpsLh2ED56HN+HzOcoXxzqq/pPUEdwfHnF13H9xtOnT23DnbhjjISWA==",
+          "shasum": "fafad3b564024461c285623de6038a5bcf4023bd",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.70.tgz",
+          "unpackedSize": 118787989,
+          "version": "3.0.70"
+        }
+      },
+      "published_at": "2026-10-08T05:56:02.947Z",
+      "version": "3.0.70"
     }
-  ]
+  ],
+  "unpublished_next_stable": {
+    "github_tag_exists": false,
+    "npm_published": false,
+    "version": "3.0.71"
+  }
 }

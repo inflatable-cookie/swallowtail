@@ -1,6 +1,8 @@
 {
   "paths": [
+    "apps/cli/src/commands/program.ts",
     "apps/cli/src/main.ts",
+    "apps/cli/src/runtime/defaults.ts",
     "apps/cli/src/runtime/run-agent.ts",
     "apps/cli/src/runtime/session-events.ts",
     "apps/cli/src/runtime/tool-policies.ts",
@@ -14,9 +16,17 @@
   "schema": "cline-selected-source-tree/v1",
   "versions": {
     "3.0.55": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38680,
         "sha256": "1b7a0a5b680aa6f3f736826c449f64e9a62dbe7b57e0b55cbc74379d45f37274"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11781,
@@ -56,9 +66,17 @@
       }
     },
     "3.0.56": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38760,
         "sha256": "b678a24780bb4e5e9540530eb0b0917a52a91b66f65be3b4c368ac5b28826320"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -98,9 +116,17 @@
       }
     },
     "3.0.57": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38760,
         "sha256": "b678a24780bb4e5e9540530eb0b0917a52a91b66f65be3b4c368ac5b28826320"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -140,9 +166,17 @@
       }
     },
     "3.0.58": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38760,
         "sha256": "b678a24780bb4e5e9540530eb0b0917a52a91b66f65be3b4c368ac5b28826320"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -182,9 +216,17 @@
       }
     },
     "3.0.60": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38760,
         "sha256": "b678a24780bb4e5e9540530eb0b0917a52a91b66f65be3b4c368ac5b28826320"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -224,9 +266,17 @@
       }
     },
     "3.0.61": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38760,
         "sha256": "b678a24780bb4e5e9540530eb0b0917a52a91b66f65be3b4c368ac5b28826320"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -266,9 +316,17 @@
       }
     },
     "3.0.62": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38786,
         "sha256": "4320ab8bc4d7c67b496daa1d7d5c02e7d75aa6c40cd933e9b673328017fa9fd2"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -308,9 +366,17 @@
       }
     },
     "3.0.63": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38948,
         "sha256": "cd5615c6fcd8568fc1b5a63eb536787607b9ed40d51eb881d84e2127a98232bd"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -350,9 +416,17 @@
       }
     },
     "3.0.64": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38948,
         "sha256": "cd5615c6fcd8568fc1b5a63eb536787607b9ed40d51eb881d84e2127a98232bd"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -392,9 +466,17 @@
       }
     },
     "3.0.65": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38948,
         "sha256": "cd5615c6fcd8568fc1b5a63eb536787607b9ed40d51eb881d84e2127a98232bd"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -434,9 +516,17 @@
       }
     },
     "3.0.66": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38948,
         "sha256": "cd5615c6fcd8568fc1b5a63eb536787607b9ed40d51eb881d84e2127a98232bd"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -476,9 +566,17 @@
       }
     },
     "3.0.67": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38948,
         "sha256": "cd5615c6fcd8568fc1b5a63eb536787607b9ed40d51eb881d84e2127a98232bd"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -518,9 +616,17 @@
       }
     },
     "3.0.68": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7429,
+        "sha256": "392401e42a77120d80b852eed43b81a8f24f1b2fe1d399a2a952181583692aec"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 38948,
         "sha256": "cd5615c6fcd8568fc1b5a63eb536787607b9ed40d51eb881d84e2127a98232bd"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,
@@ -560,9 +666,67 @@
       }
     },
     "3.0.69": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7295,
+        "sha256": "78e2e03d16a2edc192c45ef68c6a7de06a65b2127e59e9a51d5748a387024304"
+      },
       "apps/cli/src/main.ts": {
         "bytes": 39000,
         "sha256": "bc1eea2ef2bb65182d73411ba8acb79218ea5b6ae1f8e5b44be4b8d901e5111f"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 510,
+        "sha256": "5e16b633fdc3342bfe01e2209347e81675e21ec40c3230bf7f56ffe2e2d3a633"
+      },
+      "apps/cli/src/runtime/run-agent.ts": {
+        "bytes": 11810,
+        "sha256": "28c47e306314bed1a87ecffc704ec8af71b73721609a82dc7b4d4129f98e6162"
+      },
+      "apps/cli/src/runtime/session-events.ts": {
+        "bytes": 4750,
+        "sha256": "547c3d9a79a80790681bc6c1d414183c7ca6debe3fdb67ea0d3ed6d7b98088ba"
+      },
+      "apps/cli/src/runtime/tool-policies.ts": {
+        "bytes": 2351,
+        "sha256": "a98391c0feeacbce3dd9425568c296c4ba9538091913b1b0477e32e3712f54fb"
+      },
+      "apps/cli/src/utils/events.ts": {
+        "bytes": 10380,
+        "sha256": "5edc23eb3e46f7bbd8c9e5c19a6d92e7af5328f633e8911b86ad1223d5f6c14b"
+      },
+      "apps/cli/src/utils/helpers.ts": {
+        "bytes": 16802,
+        "sha256": "61330c996391129868de943cd04d093532c4e4bee865f4b0b44aca521666488e"
+      },
+      "apps/cli/src/utils/output.ts": {
+        "bytes": 5582,
+        "sha256": "f1b8131f50d69dcacc773d7e968c363c2db3ab508048691a67916c073e257a5e"
+      },
+      "apps/cli/src/utils/startup-settings.ts": {
+        "bytes": 1346,
+        "sha256": "ca5868e8d82202d9f57e215ca1f3b857c968bc4e361761a4321131780993fcf7"
+      },
+      "sdk/packages/agents/src/agent-runtime.ts": {
+        "bytes": 93802,
+        "sha256": "c38706e622cc7e7ecf1b1ea4bc702814822fd796f479be05448d2142edc5c896"
+      },
+      "sdk/packages/shared/src/agents/types.ts": {
+        "bytes": 32755,
+        "sha256": "c107d5d04f8746d78a48454f6d2962ad61a193901da4baec661fd6436083d13a"
+      }
+    },
+    "3.0.70": {
+      "apps/cli/src/commands/program.ts": {
+        "bytes": 7488,
+        "sha256": "87e246a18e55cb40f594cdf29d33f10ca39b978c109e8a29cc80846ddef73506"
+      },
+      "apps/cli/src/main.ts": {
+        "bytes": 38166,
+        "sha256": "fb55ddb82cf0acce64f372ed3a95ed4076cf5f23cc92d815e1a0f8f4018d0447"
+      },
+      "apps/cli/src/runtime/defaults.ts": {
+        "bytes": 718,
+        "sha256": "d85a609d98501f3949765416a5891451ceae38549cf9771b548a6409f414486d"
       },
       "apps/cli/src/runtime/run-agent.ts": {
         "bytes": 11810,

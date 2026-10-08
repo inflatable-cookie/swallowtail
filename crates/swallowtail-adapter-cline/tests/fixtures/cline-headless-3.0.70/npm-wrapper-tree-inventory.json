@@ -84,6 +84,12 @@
       "file_count": 6,
       "tree_manifest_sha256": "3911b28cf5bea1e500949fe072118c9e025b917609595e51b6fef9032c84bc3d",
       "unpacked_size": 47364
+    },
+    "3.0.70": {
+      "bin_cline_sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+      "file_count": 6,
+      "tree_manifest_sha256": "e34201854e1d814d6b099fe2a57afde456d9fcce61348fb34c6d62221cc87a94",
+      "unpacked_size": 48236
     }
   },
   "versions": {
@@ -527,6 +533,38 @@
       {
         "path": "package.json",
         "sha256": "27fe3e8cec73d46af9394f1f5a862f6cfc4f53b99283af3a8285717087d08254",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.70": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "13b4a3428acfdd1b3521ba0bf5d5570dda9104457362bcc02d3c4ecd36cfc961",
+        "size": 17284
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+        "size": 5439
+      },
+      {
+        "path": "package.json",
+        "sha256": "040944f897fb836a6a6ada1b749dfd3f797853b54e4156ed19f878ba7955b8dd",
         "size": 1231
       },
       {

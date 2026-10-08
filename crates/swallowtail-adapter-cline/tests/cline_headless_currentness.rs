@@ -3,18 +3,47 @@ use std::collections::{BTreeMap, BTreeSet};
 use swallowtail_adapter_cline::{CLINE_PACKAGE_VERSION, cline_acp_claim, cline_headless_claim};
 use swallowtail_core::{InterfaceSupportStatus, InterfaceVersion};
 
-const IDENTITY: &str = include_str!("fixtures/cline-headless-3.0.69/identity.json");
+const IDENTITY: &str = include_str!("fixtures/cline-headless-3.0.70/identity.json");
 const WRAPPER_TREE: &str =
-    include_str!("fixtures/cline-headless-3.0.69/npm-wrapper-tree-inventory.json");
+    include_str!("fixtures/cline-headless-3.0.70/npm-wrapper-tree-inventory.json");
 const DARWIN_TREE: &str =
-    include_str!("fixtures/cline-headless-3.0.69/darwin-arm64-runtime-tree-inventory.json");
+    include_str!("fixtures/cline-headless-3.0.70/darwin-arm64-runtime-tree-inventory.json");
 const SOURCE_TREE: &str =
-    include_str!("fixtures/cline-headless-3.0.69/selected-source-tree-inventory.json");
-const HOP_LEDGER: &str = include_str!("fixtures/cline-headless-3.0.69/hop-ledger.json");
+    include_str!("fixtures/cline-headless-3.0.70/selected-source-tree-inventory.json");
+const HOP_LEDGER: &str = include_str!("fixtures/cline-headless-3.0.70/hop-ledger.json");
 
-const RELEASES: [&str; 14] = [
+const RELEASES: [&str; 15] = [
     "3.0.55", "3.0.56", "3.0.57", "3.0.58", "3.0.60", "3.0.61", "3.0.62", "3.0.63", "3.0.64",
-    "3.0.65", "3.0.66", "3.0.67", "3.0.68", "3.0.69",
+    "3.0.65", "3.0.66", "3.0.67", "3.0.68", "3.0.69", "3.0.70",
+];
+const SELECTED_SOURCE_PATHS: [&str; 12] = [
+    "apps/cli/src/commands/program.ts",
+    "apps/cli/src/main.ts",
+    "apps/cli/src/runtime/defaults.ts",
+    "apps/cli/src/runtime/run-agent.ts",
+    "apps/cli/src/runtime/session-events.ts",
+    "apps/cli/src/runtime/tool-policies.ts",
+    "apps/cli/src/utils/events.ts",
+    "apps/cli/src/utils/helpers.ts",
+    "apps/cli/src/utils/output.ts",
+    "apps/cli/src/utils/startup-settings.ts",
+    "sdk/packages/agents/src/agent-runtime.ts",
+    "sdk/packages/shared/src/agents/types.ts",
+];
+const PLATFORM_ARTIFACTS: [&str; 6] = [
+    "@cline/cli-darwin-arm64",
+    "@cline/cli-darwin-x64",
+    "@cline/cli-linux-arm64",
+    "@cline/cli-linux-x64",
+    "@cline/cli-windows-arm64",
+    "@cline/cli-windows-x64",
+];
+const DEPENDENCY_ARTIFACTS: [&str; 5] = [
+    "@cline/agents",
+    "@cline/core",
+    "@cline/llms",
+    "@cline/sdk",
+    "@cline/shared",
 ];
 
 fn fixture(body: &str, name: &str) -> Value {
@@ -133,12 +162,15 @@ fn official_stable_points_and_headless_claim_preserve_the_only_gap() {
     assert_eq!(identity["axis"], "cline.package");
     assert_eq!(identity["family"], "cline.headless");
     assert_eq!(identity["selected_channel"]["package"], "cline");
-    assert_eq!(identity["selected_channel"]["observed_latest"], "3.0.69");
+    assert_eq!(identity["selected_channel"]["observed_latest"], "3.0.70");
     assert_eq!(
         identity["previous_qualified_ceiling"],
         CLINE_PACKAGE_VERSION
     );
-    assert_eq!(identity["qualified_target"], "3.0.69");
+    assert_eq!(identity["qualified_target"], "3.0.70");
+    assert_eq!(identity["unpublished_next_stable"]["version"], "3.0.71");
+    assert_eq!(identity["unpublished_next_stable"]["npm_published"], false);
+    assert_eq!(identity["unpublished_next_stable"]["github_tag_exists"], false);
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "3.0.55"
@@ -179,7 +211,7 @@ fn official_stable_points_and_headless_claim_preserve_the_only_gap() {
     let claim = cline_headless_claim();
     assert_eq!(claim.id().as_str(), "cline.headless.package-window-1");
     assert_eq!(claim.baseline().as_str(), "3.0.55");
-    assert_eq!(claim.latest_qualified().as_str(), "3.0.69");
+    assert_eq!(claim.latest_qualified().as_str(), "3.0.70");
     assert_eq!(claim.milestones().len(), 1);
     assert_eq!(
         claim
@@ -199,11 +231,11 @@ fn official_stable_points_and_headless_claim_preserve_the_only_gap() {
             "cline.headless.stdio-json-v1"
         );
     }
-    for excluded in ["3.0.54", "3.0.59", "3.0.70"] {
+    for excluded in ["3.0.54", "3.0.59", "3.0.71"] {
         assert!(!claim.permits(&InterfaceVersion::new(excluded).expect("semver")));
     }
     assert!(cline_acp_claim().permits(&InterfaceVersion::new("3.0.55").expect("baseline")));
-    assert!(!cline_acp_claim().permits(&InterfaceVersion::new("3.0.69").expect("headless")));
+    assert!(!cline_acp_claim().permits(&InterfaceVersion::new("3.0.70").expect("headless")));
 }
 
 #[test]
@@ -222,7 +254,23 @@ fn npm_source_and_runtime_identities_are_complete_for_every_published_hop() {
     let native_versions = object(&native["versions"], "native versions");
     let source_versions = object(&sources["versions"], "source versions");
     let selected_paths = strings(&sources["paths"], "selected source paths");
-    assert_eq!(selected_paths.len(), 10);
+    assert_eq!(
+        strings(
+            &identity["selected_mapped_source_paths"],
+            "identity selected source paths"
+        ),
+        SELECTED_SOURCE_PATHS
+            .iter()
+            .map(|path| (*path).to_owned())
+            .collect::<Vec<_>>()
+    );
+    assert_eq!(
+        selected_paths,
+        SELECTED_SOURCE_PATHS
+            .iter()
+            .map(|path| (*path).to_owned())
+            .collect::<Vec<_>>()
+    );
     assert!(selected_paths.windows(2).all(|pair| pair[0] < pair[1]));
     for (index, version) in RELEASES.iter().enumerate() {
         let identity_point = &versions[index];
@@ -306,6 +354,34 @@ fn npm_source_and_runtime_identities_are_complete_for_every_published_hop() {
                 .len(),
             5
         );
+        assert_eq!(
+            object(&identity_point["platform_artifacts"], "platform artifacts")
+                .keys()
+                .map(String::as_str)
+                .collect::<Vec<_>>(),
+            PLATFORM_ARTIFACTS.to_vec()
+        );
+        assert_eq!(
+            object(&identity_point["dependency_artifacts"], "dependency artifacts")
+                .keys()
+                .map(String::as_str)
+                .collect::<Vec<_>>(),
+            DEPENDENCY_ARTIFACTS.to_vec()
+        );
+        assert_eq!(
+            object(&wrapper["optional_dependencies"], "optional dependencies")
+                .keys()
+                .map(String::as_str)
+                .collect::<Vec<_>>(),
+            PLATFORM_ARTIFACTS.to_vec()
+        );
+        assert_eq!(
+            object(&wrapper["dependencies"], "root dependencies")
+                .keys()
+                .map(String::as_str)
+                .collect::<Vec<_>>(),
+            DEPENDENCY_ARTIFACTS.to_vec()
+        );
         for artifact in identity_point["platform_artifacts"]
             .as_object()
             .unwrap()
@@ -329,6 +405,43 @@ fn npm_source_and_runtime_identities_are_complete_for_every_published_hop() {
     assert_eq!(
         identity["versions"][13]["github_source"]["peeled_commit"],
         "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576"
+    );
+    assert_eq!(identity["versions"][14]["version"], "3.0.70");
+    assert_eq!(
+        identity["versions"][14]["npm_wrapper"]["integrity"],
+        "sha512-ekeGJ7YdVKL9p//KF0F5nxFXMvgSuhwPxvCUkS+SaBDJJoOUt+HMeJS+J+hkF3ezPekbSvpK1wCPGraZbAEO8A=="
+    );
+    assert_eq!(
+        identity["versions"][14]["github_source"]["peeled_commit"],
+        "0322bc5d510000a33ef5eadc3b4c84df7fcef285"
+    );
+    assert_eq!(
+        identity["versions"][14]["platform_artifacts"]["@cline/cli-darwin-arm64"]["integrity"],
+        "sha512-c+GHUmyL2exX4iC3BOhqQVfaToUJNMUPvuRDJGr3adILhhVL0II53XokBAWDrgpHAoyoQkiVs2nSGgzQhSXz5g=="
+    );
+    assert_eq!(
+        identity["versions"][14]["npm_wrapper"]["tarball_sha256"],
+        "4081fba9ec0867e32267b3875fbbe322edff8d55b7a11c1dcd0ff3066c88760b"
+    );
+    assert_eq!(
+        identity["versions"][14]["npm_wrapper"]["tree_manifest_sha256"],
+        "e34201854e1d814d6b099fe2a57afde456d9fcce61348fb34c6d62221cc87a94"
+    );
+    assert_eq!(
+        identity["versions"][14]["npm_wrapper"]["shasum"],
+        "837f68cd31378bd5fcd7a38510625bdc9c33adbb"
+    );
+    assert_eq!(
+        source_versions["3.0.70"]["apps/cli/src/runtime/defaults.ts"]["sha256"],
+        "d85a609d98501f3949765416a5891451ceae38549cf9771b548a6409f414486d"
+    );
+    assert_eq!(
+        native["summaries"]["3.0.70"]["tree_manifest_sha256"],
+        "e4ef11780c7ac862353e572378ab57f1265a8161d71be57b3c8e5dbd010ddd85"
+    );
+    assert_eq!(
+        native["summaries"]["3.0.70"]["bin_cline_sha256"],
+        "3ae76234a92f4de4fe6f9bf22635ac656994b29af83ea6d5c144b7eeea5a9ae7"
     );
 }
 
@@ -388,4 +501,36 @@ fn each_published_hop_classifies_every_wrapper_runtime_and_selected_source_path(
             assert!(!row["classification"].as_str().unwrap().trim().is_empty());
         }
     }
+
+    let wrapper_latest = &ledger["wrapper_hops"][13];
+    assert_eq!(
+        strings(&wrapper_latest["changed"], "3.0.70 wrapper changes"),
+        ["README.md".to_owned(), "package.json".to_owned()]
+    );
+    assert!(strings(&wrapper_latest["added"], "3.0.70 wrapper additions").is_empty());
+    assert!(strings(&wrapper_latest["removed"], "3.0.70 wrapper removals").is_empty());
+
+    let runtime_latest = &ledger["darwin_arm64_runtime_hops"][13];
+    assert_eq!(
+        strings(&runtime_latest["changed"], "3.0.70 runtime changes"),
+        ["bin/cline".to_owned(), "package.json".to_owned()]
+    );
+    assert!(strings(&runtime_latest["added"], "3.0.70 runtime additions").is_empty());
+    assert!(strings(&runtime_latest["removed"], "3.0.70 runtime removals").is_empty());
+
+    let source_latest = source_hops[13]["changed"]
+        .as_array()
+        .expect("3.0.70 selected source changes");
+    let source_changes = source_latest
+        .iter()
+        .map(|row| row["path"].as_str().expect("source path"))
+        .collect::<Vec<_>>();
+    assert_eq!(
+        source_changes,
+        [
+            "apps/cli/src/commands/program.ts",
+            "apps/cli/src/main.ts",
+            "apps/cli/src/runtime/defaults.ts",
+        ]
+    );
 }

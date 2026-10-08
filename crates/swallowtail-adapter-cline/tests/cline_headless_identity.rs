@@ -63,13 +63,13 @@ fn frozen_identity_keeps_headless_json_separate_from_acp_and_auto_approve() {
     let claim = cline_headless_claim();
     let version = InterfaceVersion::new(CLINE_PACKAGE_VERSION).expect("qualified version");
     assert!(claim.assess(&version).is_permitted());
-    for qualified in ["3.0.56", "3.0.69"] {
+    for qualified in ["3.0.56", "3.0.69", "3.0.70"] {
         assert!(claim.permits(&InterfaceVersion::new(qualified).expect("qualified")));
     }
     assert!(!claim.permits(&InterfaceVersion::new("3.0.59").expect("hole")));
-    assert!(!claim.permits(&InterfaceVersion::new("3.0.70").expect("newer")));
+    assert!(!claim.permits(&InterfaceVersion::new("3.0.71").expect("newer")));
     assert!(cline_acp_claim().permits(&version));
-    assert!(!cline_acp_claim().permits(&InterfaceVersion::new("3.0.69").expect("headless")));
+    assert!(!cline_acp_claim().permits(&InterfaceVersion::new("3.0.70").expect("headless")));
 }
 
 #[test]

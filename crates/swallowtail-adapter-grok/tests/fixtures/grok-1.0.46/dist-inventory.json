@@ -1,0 +1,753 @@
+{
+  "baseline": "1.0.41",
+  "classification": "No file names were added or removed in any selected package. Wrapper package.json changed on every hop. Linux and Darwin package.json and bin/grok.br changed on every hop; their README and THIRD_PARTY_NOTICES files stayed byte-identical.",
+  "compared": [
+    "1.0.41",
+    "1.0.42",
+    "1.0.43",
+    "1.0.44",
+    "1.0.45",
+    "1.0.46"
+  ],
+  "complete_trees": {
+    "1.0.41": {
+      "darwin_arm64": {
+        "README.md": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "f3d4ad9e61cd9fd1e81e311b96c25d924428dc50b9295b630353d77ea195c725",
+        "package.json": "8bc7eec9e5203b03de5921f68b4a7e7a133f5cf7e8e6ca329baed25c53710ed8"
+      },
+      "linux_x64": {
+        "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "90f67689153380f2a363cf3c6a7e5e1ab303e9b7eb07f8092dca86471f1fce5d",
+        "package.json": "8215a598c1d300612d89a14b1614483f6614883e9d9147950332375d537326d7"
+      },
+      "wrapper": {
+        "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+        "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+        "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+        "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+        "package.json": "fbb144c26a2d59f8a0bc6dc12c17f1ca7f6ecd8c6aa73013752f86132669d606"
+      }
+    },
+    "1.0.42": {
+      "darwin_arm64": {
+        "README.md": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "c48cba4f96fd5f61b7af54cd176d95cbce3e1ca416b7c80f04c418d4c422a469",
+        "package.json": "fcf2a8a316f16d163a63bd70f66b2cffc4ade3205304f7d793e2dd879c4e733e"
+      },
+      "linux_x64": {
+        "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "74708d55f0f8585dd7a857b5aac587a229b7407575a4764188181e5896595cf1",
+        "package.json": "cc8039bd6fa50c1307537242e5d8c2ce6aeeb6699964a4aef1eaf06b73a7b63e"
+      },
+      "wrapper": {
+        "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+        "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+        "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+        "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+        "package.json": "79192b89a8a8fda507dc72aadb1f3df15793a5c86522dd68fb47a0838c5cdc44"
+      }
+    },
+    "1.0.43": {
+      "darwin_arm64": {
+        "README.md": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "6ee1c5bd2286c31dd0d7642614ded3dbb1a7aa3962055d90f73e5ec211ce510e",
+        "package.json": "4695f6e2cb59cfadc26840f8afc439bfcb826a11eafbd21cadf058f00315c9f7"
+      },
+      "linux_x64": {
+        "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "62f13a96d0340ecdd5fd3a2249a8316d1d0e98a74ea3abd3b8729f4b12a60a9c",
+        "package.json": "55b73998bac46fe73b482077cbcfe542324aeb1ab5a9125623586fc7b297c770"
+      },
+      "wrapper": {
+        "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+        "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+        "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+        "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+        "package.json": "c04a7e9423e8d97266929c72660abe3a129a38196e9b1414b586d1271c280d46"
+      }
+    },
+    "1.0.44": {
+      "darwin_arm64": {
+        "README.md": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "f2aa0cf5d098f6d71e2bd6dd6f9ef3a56db19e02b577fc475d7c407bd0afe643",
+        "package.json": "a59cbb465110349edb5988b53efa349cdeee67d2158c9fbb7f88104981218396"
+      },
+      "linux_x64": {
+        "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "a6e6fbc5f43c2dcd575617472a3a365594dd3153affd75a4b6988d07b7bdf446",
+        "package.json": "f14c7aaa10b08914160201432313744180d52d3b4c6880652e8b4771686befcc"
+      },
+      "wrapper": {
+        "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+        "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+        "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+        "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+        "package.json": "01fd72595e895d740f7e1329f70adbe55efb71734c6c6eff4e9f858da28b7340"
+      }
+    },
+    "1.0.45": {
+      "darwin_arm64": {
+        "README.md": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "5a1c4c516753b2579543fb2886ce00203cbc538a2911ede8b35bf5987c8d2bb0",
+        "package.json": "10411ccf3c520257f74ffdd1dcf62206b88da167c88cc2a51d073370bf5b5b63"
+      },
+      "linux_x64": {
+        "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "edeef9bcbb662eb4cae9f61e1bb5770f826dc26632405d7a5f28d1c2356b738b",
+        "package.json": "a8a5ebcea4514dea3f96245329be1af2697186f3238d3a2e02d5c215dd49c2c1"
+      },
+      "wrapper": {
+        "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+        "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+        "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+        "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+        "package.json": "1bf9ac915ab643ea91520ea8287d45bee1b4b05aaaf5dd63d72a864b7d8ba617"
+      }
+    },
+    "1.0.46": {
+      "darwin_arm64": {
+        "README.md": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "70b859111ff2f06b0f71d4df8cff4847fe8366376325e66e6f190fff9c52313f",
+        "package.json": "c448ed142fe3da37359da82bb25914ed5a8b70fd02c8296e0becf8b873367d21"
+      },
+      "linux_x64": {
+        "README.md": "1b74f13698d746e9e3f3ce84ac4112f7d5cff4cdb33bc2f6f48ba14a76fa9ebb",
+        "THIRD_PARTY_NOTICES.md": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50",
+        "bin/grok.br": "554b7b7878da3a99fda68de20aeb6ab02c50cb1bf00b694f1f271964a2110f4f",
+        "package.json": "53dc27ab34a61103e249601fe892f9b9930a06e3230d21e5caf2d54813f56bf7"
+      },
+      "wrapper": {
+        "README.md": "75d71c9c0839562335ff62a28095266351aab853ad70127aceb990aa58af2b6f",
+        "bin/grok": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51",
+        "bin/grok-bootstrap.js": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e",
+        "bin/postinstall.js": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d",
+        "package.json": "1ee926c330f464f215ff17e3c092ea7fee29a81fe49c74b39cdaf094e6729177"
+      }
+    }
+  },
+  "delta_from_1_0_41": {
+    "1.0.42": {
+      "darwin_arm64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "linux_x64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    },
+    "1.0.43": {
+      "darwin_arm64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "linux_x64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    },
+    "1.0.44": {
+      "darwin_arm64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "linux_x64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    },
+    "1.0.45": {
+      "darwin_arm64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "linux_x64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    },
+    "1.0.46": {
+      "darwin_arm64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "linux_x64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    }
+  },
+  "identical_through_all_hops": {
+    "darwin_arm64": [
+      "README.md",
+      "THIRD_PARTY_NOTICES.md"
+    ],
+    "linux_x64": [
+      "README.md",
+      "THIRD_PARTY_NOTICES.md"
+    ],
+    "wrapper": [
+      "README.md",
+      "bin/grok",
+      "bin/grok-bootstrap.js",
+      "bin/postinstall.js"
+    ]
+  },
+  "package_file_counts": {
+    "1.0.41": {
+      "darwin_arm64": 4,
+      "linux_x64": 4,
+      "wrapper": 5
+    },
+    "1.0.42": {
+      "darwin_arm64": 4,
+      "linux_x64": 4,
+      "wrapper": 5
+    },
+    "1.0.43": {
+      "darwin_arm64": 4,
+      "linux_x64": 4,
+      "wrapper": 5
+    },
+    "1.0.44": {
+      "darwin_arm64": 4,
+      "linux_x64": 4,
+      "wrapper": 5
+    },
+    "1.0.45": {
+      "darwin_arm64": 4,
+      "linux_x64": 4,
+      "wrapper": 5
+    },
+    "1.0.46": {
+      "darwin_arm64": 4,
+      "linux_x64": 4,
+      "wrapper": 5
+    }
+  },
+  "package_identity": {
+    "1.0.41": {
+      "darwin_arm64": {
+        "file_count": 4,
+        "gitHead": "4220f3b224a672ff2641e35ba78ef6b0c6fd7069",
+        "integrity": "sha512-EVyCWTOe1ZDdURiK8EvRUw9Q8BPU2Upnc6o+ECwXYXSCtRmlR9/MxqNt6beZtOujjyAsAWE7VRBvjZrtyCTFWw==",
+        "shasum": "193f94408c15c09b885d3b57dc0a322b379a5393",
+        "tarball_sha256": "00d42a30f02a909e5e023e724dfac8f9b99cf6e98aa8f4fdafb1e0f02bc9c558",
+        "unpacked_size": 42526252
+      },
+      "gitHead": "4220f3b224a672ff2641e35ba78ef6b0c6fd7069",
+      "linux_x64": {
+        "brotli_sha256": "90f67689153380f2a363cf3c6a7e5e1ab303e9b7eb07f8092dca86471f1fce5d",
+        "brotli_size": 49174987,
+        "executable_sha256": "9ce03ed23e16ea01072b4496263d6213a27899e1e3e107f008d36edf82e70407",
+        "executable_size": 165967424,
+        "name": "@xai-official/grok-linux-x64",
+        "other_platform_integrities": {
+          "grok-darwin-arm64": "sha512-EVyCWTOe1ZDdURiK8EvRUw9Q8BPU2Upnc6o+ECwXYXSCtRmlR9/MxqNt6beZtOujjyAsAWE7VRBvjZrtyCTFWw==",
+          "grok-darwin-x64": "sha512-f7BK6JwObPuDwkV6T5H7HuH46Txa522k1F+mKIxdcgu9C+mPGTiSZSzcGXFShifJ4IZuh4Tq7vqOQacQNEEWWA==",
+          "grok-linux-arm64": "sha512-6g8fHFwKb/jdo3XTGXMiA5FrzzUi6q5nKtT3+eXNbNKGtMOmN4t7NNh+IK3S6FlWcG+slL1Po2YDaNgMZ6swqg==",
+          "grok-linux-x64": "sha512-5KS0AMeGYQh3++0EEZPKVjAcalFQma8K5SKMhBu1k1OVNpA/lO+fRgecS1/kOsLaGaPDPfQm611Z+a5J9dLfAg==",
+          "grok-win32-arm64": "sha512-J+QqtMi7cmvYzSFU4ccyfxYoEJZQiliDHrIgRRB9lP0lSfub9Ij3uLf1SbjkNeo4bbE5dWHIJOe2zcG+Tg7umQ==",
+          "grok-win32-x64": "sha512-1Z/0+cXzTJJlnqu45lfQMFErBARASXglFYpDNk0rQJVIuKAB0h4bxKCvc3SRlxX908badaSA+9ZB+KjwDO7opw=="
+        },
+        "tarball_sha256": "d1e7cf2ba549918f8c7b36f29f9d586406e2b57e8b53c1225363554d2162154d"
+      },
+      "wrapper": {
+        "file_count": 5,
+        "integrity": "sha512-eRAK7JzMb/sHVfj8VtLJ26LFqVwiI+PPp6lIMxtN/Ys+/AU5XvE20liO2iDitVw4kAlC5iziomgnemGuy/QAPw==",
+        "shasum": "480515a8e3edbaef9a5c9a9eb162b35cc4e57fc8",
+        "tarball_sha256": "a70e301e5e2e66053a742b212b947cce69a9815533850cfa4d91a1878f31f399",
+        "unpacked_size": 18363
+      }
+    },
+    "1.0.42": {
+      "darwin_arm64": {
+        "file_count": 4,
+        "gitHead": null,
+        "integrity": "sha512-oTWxS12Ha0XW5d/luBrFJ4lqRaPGssL2OGcmbAkMrIy+TGefJl551tpQJh+5/ncZ5IlfOT8I10ykqanpdS9KHQ==",
+        "shasum": "267bff332bf08f0dabb60dbe469558130f4b1db8",
+        "tarball_sha256": "481fdc4dcf6b048425dc5732d42d1818812168a7af4aa632ed356504feb49e4a",
+        "unpacked_size": 43005503
+      },
+      "linux_x64": {
+        "file_count": 4,
+        "gitHead": null,
+        "integrity": "sha512-pgiWPZzJ9L1UrLyTEY5IoRa1qtes1B24nxJ7ld76jbG3X8FhEaZrV9XWgRUX4kvbeLbAfifja00mhPFo8GXEuQ==",
+        "shasum": "8bb25eb33d760a813c8a97fd5849d92dbd41a6d3",
+        "tarball_sha256": "9d9b9bf5820150bc347c8c8ace4d601ba8b4bc1374244f761915150668d0820c",
+        "unpacked_size": 49692132
+      },
+      "wrapper": {
+        "file_count": 5,
+        "gitHead": null,
+        "integrity": "sha512-6yKtCaoa+I2q6yGugJ5DAt7zsWKCw/z54znaZh2CNbzdQ3c72M5V6UetTPzyOiqIPugWZRcl+PpnsInA0JoqAg==",
+        "shasum": "87c6cf979c51f01203a43898718304fc4d7acc5a",
+        "tarball_sha256": "d6fe1baf56a596e85b754994513c89ac7a3bf99fd16297e39f8fb58ff5e17154",
+        "unpacked_size": 18363
+      }
+    },
+    "1.0.43": {
+      "darwin_arm64": {
+        "file_count": 4,
+        "gitHead": "65c3c58030564de7dcc16c1ced738a4864e939f3",
+        "integrity": "sha512-ceAtQ9fpSO+ReM6ajuYg9FzVUmcRvljy+Tzg4TevlYFqTkckT1RGZk6seINqHQvFPfbiOsZsMKpPeokfAL3CTg==",
+        "shasum": "5476a3bde5ee0afd7ac4fffd5f20b3ec111420ef",
+        "tarball_sha256": "3ceb6cdc571cb036ceb7d47a7144fe755675ea8c1e6681561156db00e4ea121b",
+        "unpacked_size": 43145880
+      },
+      "linux_x64": {
+        "file_count": 4,
+        "gitHead": "65c3c58030564de7dcc16c1ced738a4864e939f3",
+        "integrity": "sha512-VvgnlKzHhqZ3k49GLRVB6Dm6EfFbTLrRoWSNTmWr7jnjGAdyyU2H9Ib+0lV84aDVrQX8kb8gwfMz9XAvCy2Rgw==",
+        "shasum": "4ed39e109a13917a7c44d8e5a58422ad366245da",
+        "tarball_sha256": "d9058724467d8809c7adc9624a93a4bba56d7b9544a0b92f18b9249eef6bb773",
+        "unpacked_size": 49879938
+      },
+      "wrapper": {
+        "file_count": 5,
+        "gitHead": "65c3c58030564de7dcc16c1ced738a4864e939f3",
+        "integrity": "sha512-aeXSQ/+RDSKw97n2QGNaARgHmf3Dl2PdBFebHgWi22aVirskFik4TQDlHIrslhvCh6p61nysQXz6uvaA2+qstg==",
+        "shasum": "3d5765a4641ac4deaabd2a3b2d84f9bb63a6f58c",
+        "tarball_sha256": "58938b08dcff84fe0e1ce42ead47e0bde31d8206c1c1fcad6569682ce036880d",
+        "unpacked_size": 18363
+      }
+    },
+    "1.0.44": {
+      "darwin_arm64": {
+        "file_count": 4,
+        "gitHead": "5b807183dd7978a460f309132cf0d1183d743526",
+        "integrity": "sha512-c/R2uQA1MA5644IIXPxV4xSiph3Pf8XhGxUwpafEhvSJWEb1sakOfuBDGjCLPKQ/ZNLJb+473NUjuFkTyB6u/w==",
+        "shasum": "3396a85cdb3069274e9ab6f54a6665797900781d",
+        "tarball_sha256": "36fd4d530e9b7427dc5ab2d9a3d958de8c275de21a5745ca4ffdc5fc63a564bd",
+        "unpacked_size": 43173480
+      },
+      "linux_x64": {
+        "file_count": 4,
+        "gitHead": "5b807183dd7978a460f309132cf0d1183d743526",
+        "integrity": "sha512-0ZBP5+9e+IaUHfa++bgrECRjEQFc06hxSWfhY7veFKNnN7wX4v7Z6RcJh44K9IPROqsh/KG63txhEyq1trUFDw==",
+        "shasum": "7ee511aa509194504ebcb3bd98cd6c4edc6250aa",
+        "tarball_sha256": "29b21de34d8f2cb77229bf483321c3d9cd2fceaf1d8efd19a13706fe978763e3",
+        "unpacked_size": 49907571
+      },
+      "wrapper": {
+        "file_count": 5,
+        "gitHead": "5b807183dd7978a460f309132cf0d1183d743526",
+        "integrity": "sha512-b0i31WJZ2kmE1nG2Nwm3Is9CgiWNEnXS9zdNd1/jxULb0gkzr9jwaB5S36hn1mWfclmbXHosiIyXykB5urq90g==",
+        "shasum": "95cced0b7a4aa12446e6f076e22129394c90651b",
+        "tarball_sha256": "cf535faad0a3075f7a7eae530f8a7030293db2fa756d5bf66be5e5b0db267051",
+        "unpacked_size": 18363
+      }
+    },
+    "1.0.45": {
+      "darwin_arm64": {
+        "file_count": 4,
+        "gitHead": "c33bff361a6fe64f69c4575eac2b7e29b542f7a4",
+        "integrity": "sha512-FN5M1J2M2q8ETKaTmXrOfmvvXgGwAC/t/UpzuXrMGwZh9ZyeEhB4NWHueWQkSJ/Pf0GPaPgvY4YNQPD7gm2Lfg==",
+        "shasum": "74b5e65acba8596a2ce5243a55717f5232fd27a0",
+        "tarball_sha256": "cb9e09a82970f6fe802ae7f6fef7a6fd518e8f03b0a809a779c62f3a624fc6c3",
+        "unpacked_size": 43727365
+      },
+      "linux_x64": {
+        "file_count": 4,
+        "gitHead": "c33bff361a6fe64f69c4575eac2b7e29b542f7a4",
+        "integrity": "sha512-52z5ucMAljBdDQnsQ+yPSCL1IxS6/9pU7z40bjk8FPjPuwSqFYCj6VjQeG7bUvQ8scewsY6QFrJUSaYD9VQ7kg==",
+        "shasum": "669b8d32453535fbd14215978d807dfe87f9f7e8",
+        "tarball_sha256": "528a7f32e3384b1b1424586d47ee6f0ee80ac3f7e5484ee284f753d3a534b8d4",
+        "unpacked_size": 50513422
+      },
+      "wrapper": {
+        "file_count": 5,
+        "gitHead": "c33bff361a6fe64f69c4575eac2b7e29b542f7a4",
+        "integrity": "sha512-hglVvSsqhO1YJUQtOtJcbJB66AWWkAH9OBsH9Rlm9sv8E8ct1YH9vVoxTl2IQSThNfxyE4cnWmHPNcncIp7HGw==",
+        "shasum": "177501b84c698c6af217a8356617f32427678a89",
+        "tarball_sha256": "eac12266d80b4192a26358f949498050005d86e0078a158b44af6f72810ef7ce",
+        "unpacked_size": 18363
+      }
+    },
+    "1.0.46": {
+      "darwin_arm64": {
+        "file_count": 4,
+        "gitHead": "2765805b944289c3512e059257732b64cf312853",
+        "integrity": "sha512-u/JdKgd6Ef1PSmaMbdV32vFc3ISLI/NE7h9rbaYj+iic7oAn0q1uHo8Ijdm5Ztg8gYwTuhRBZsMnHJr5zcKEXA==",
+        "shasum": "e702504e1bf37e87ac67f08edb1889f64fbd0ed1",
+        "tarball_sha256": "537b80ea602e148dc076ee9b2f68bf65bd5bb32131eafa3557e948324e76b167",
+        "unpacked_size": 43900391
+      },
+      "linux_x64": {
+        "file_count": 4,
+        "gitHead": "2765805b944289c3512e059257732b64cf312853",
+        "integrity": "sha512-a9HSDEiXmCFW1sou2xYBZAM1jCDALWU2aNacmsFHztI6kukb8akdI0SlTI43q2uULHzNQlwhrI7GkPcraxM6bQ==",
+        "shasum": "185e5f757bdf24df0af57b682d60530c974c7e35",
+        "tarball_sha256": "9e52e3cc86e14c621fa2a80a33b675118a4e2ec15af51dab274514e335be902a",
+        "unpacked_size": 50732940
+      },
+      "wrapper": {
+        "file_count": 5,
+        "gitHead": "2765805b944289c3512e059257732b64cf312853",
+        "integrity": "sha512-qXO4myJFAQCIZNjMJWAaJ0TTUgi2WrQpnYYtrdd9hQ8TYezPH0slSHBYgxqedlwgcHVdqBiiDXULHkIdBDzkyQ==",
+        "shasum": "5e2c129a08212d0f380f48f5b33c26b7430d96dd",
+        "tarball_sha256": "9fbc80ce4c4c4f8468f9c3caf2c2a0c9620ae0439095690ee9e67b8b38b326a5",
+        "unpacked_size": 18363
+      }
+    }
+  },
+  "per_hop_delta": {
+    "1.0.42": {
+      "darwin_arm64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "linux_x64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    },
+    "1.0.43": {
+      "darwin_arm64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "linux_x64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    },
+    "1.0.44": {
+      "darwin_arm64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "linux_x64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    },
+    "1.0.45": {
+      "darwin_arm64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "linux_x64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    },
+    "1.0.46": {
+      "darwin_arm64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "linux_x64": {
+        "added": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ],
+        "removed": []
+      },
+      "wrapper": {
+        "added": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ],
+        "removed": []
+      }
+    }
+  },
+  "platform_package_scope": {
+    "darwin_arm64": "@xai-official/grok-darwin-arm64",
+    "linux_x64": "@xai-official/grok-linux-x64",
+    "wrapper": "@xai-official/grok"
+  }
+}

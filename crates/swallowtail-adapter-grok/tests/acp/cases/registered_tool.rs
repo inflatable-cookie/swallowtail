@@ -1239,7 +1239,7 @@ fn the_qualified_route_binds_the_accepted_live_capsule_identities() {
     }
     assert_eq!(
         swallowtail_adapter_grok::GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION,
-        "1.0.41",
+        "1.0.46",
         "the executable window now ends at the newly qualified stable"
     );
     // The registered-tool qualification is keyed to the exact accepted live
@@ -1282,7 +1282,7 @@ fn the_qualified_route_binds_the_accepted_live_capsule_identities() {
     // the decoupling that keeps the ACP window extension from widening the
     // registered-tool claim.
     for outside in [
-        "0.2.114", "0.2.117", "1.0.3", "1.0.6", "1.0.17", "1.0.30", "1.0.40", "1.0.41",
+        "0.2.114", "0.2.117", "1.0.3", "1.0.6", "1.0.17", "1.0.30", "1.0.40", "1.0.41", "1.0.42", "1.0.43", "1.0.44", "1.0.45", "1.0.46",
     ] {
         let version = swallowtail_core::InterfaceVersion::new(outside).expect("version");
         assert_eq!(
@@ -1294,12 +1294,17 @@ fn the_qualified_route_binds_the_accepted_live_capsule_identities() {
         );
     }
     // The executable-axis points stay distinct: 1.0.3 is incompatible,
-    // newly interior 1.0.41 is qualified, and 1.0.42 is unverified newer.
+    // newly interior 1.0.46 is qualified, and 1.0.47 is unverified newer.
     for (outside, expected) in [
         ("1.0.3", "incompatible"),
         ("1.0.40", "qualified"),
         ("1.0.41", "qualified"),
-        ("1.0.42", "unverified-newer"),
+        ("1.0.42", "qualified"),
+        ("1.0.43", "qualified"),
+        ("1.0.44", "qualified"),
+        ("1.0.45", "qualified"),
+        ("1.0.46", "qualified"),
+        ("1.0.47", "unverified-newer"),
     ] {
         let version = swallowtail_core::InterfaceVersion::new(outside).expect("version");
         let assessment = swallowtail_adapter_grok::grok_build_acp_claim().assess(&version);

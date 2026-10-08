@@ -1,4 +1,4 @@
-# Research 410: Gemini CLI 0.63.0 ACP Policy Adaptation
+# Research 415: Gemini CLI 0.63.0 ACP Policy Adaptation
 
 Status: selected ACP qualification through the observed official stable
 Owner: Swallowtail

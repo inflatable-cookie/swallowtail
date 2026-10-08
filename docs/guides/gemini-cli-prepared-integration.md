@@ -30,7 +30,7 @@ credential, model, workspace, sandbox, endpoint, billing route, or fallback.
 ACP `0.51.0..=0.61.0` excluding unpublished `0.56.1` and `0.59.1` retains
 `gemini-cli.acp.v0.51.0`. Exact `0.62.0` uses the private
 `gemini-cli.acp.v0.62.0-tool-updates` milestone, and exact `0.63.0` uses
-`gemini-cli.acp.v0.63.0-restricted-files` ([Research 410](../research/410-gemini-cli-0-63-0-acp-policy-adaptation.md)).
+`gemini-cli.acp.v0.63.0-restricted-files` ([Research 415](../research/415-gemini-cli-0-63-0-acp-policy-adaptation.md)).
 Headless remains qualified through `0.61.0` with the same unpublished
 exclusions; `0.62.0` and `0.63.0` remain `UnverifiedNewer` for headless under
 Research 371. Later stable releases may prepare as visible

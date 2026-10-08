@@ -11,7 +11,7 @@ annotated Git tags from the canonical repository.
   exclusions; qualify exact `0.62.0` on the pending/failed tool-update
   milestone and exact `0.63.0` on the restricted-file milestone. Document
   `.gemini` and shell-redirection permission stops, real-path reads, protected
-  `.env.*` exceptions, and the 64 KiB stored-tool-output cap in Research 410.
+  `.env.*` exceptions, and the 64 KiB stored-tool-output cap in Research 415.
   The headless claim remains through `0.61.0`, and HTTP MCP live honouring
   remains exact `0.61.0`. No public API or lifecycle changed, and no provider
   was run.

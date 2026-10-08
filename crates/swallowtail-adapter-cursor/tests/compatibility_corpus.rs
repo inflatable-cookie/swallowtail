@@ -65,7 +65,7 @@ fn selected_route_evidence_retains_three_behaviors_and_no_new_authority() {
 }
 
 #[test]
-fn catalogue_and_acp_qualify_three_published_hops_without_advancing_headless() {
+fn catalogue_acp_and_headless_qualify_their_exact_published_hops() {
     let historical = [
         "2026-07-01",
         "2026-07-23",
@@ -120,15 +120,9 @@ fn catalogue_and_acp_qualify_three_published_hops_without_advancing_headless() {
     }
     for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
         assert!(
-            headless.permits(&version(release)),
-            "{release} stays visible"
+            headless.supports(&version(release)),
+            "headless qualifies {release}"
         );
-        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            headless.assess(&version(release))
-        else {
-            panic!("{release} stays unverified on Headless");
-        };
-        assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
     }
     for claim in [&acp, &headless] {
         for gap in [
@@ -147,7 +141,7 @@ fn catalogue_and_acp_qualify_three_published_hops_without_advancing_headless() {
     else {
         panic!("later Headless dates remain visibly unverified");
     };
-    assert_eq!(headless_newer.latest_qualified().as_str(), "2026-09-18");
+    assert_eq!(headless_newer.latest_qualified().as_str(), "2026-10-01");
 }
 
 #[test]
@@ -162,6 +156,9 @@ fn every_qualified_date_requires_its_exact_build_revision() {
         "2026.09.10-fd3934a",
         "2026.09.15-d2fe57e",
         "2026.09.18-9a7762b",
+        "2026.09.26-dd393fe",
+        "2026.09.28-64d2043",
+        "2026.10.01-14929f9",
     ] {
         assert!(cursor_agent_release_binding(accepted).is_some());
     }
@@ -175,6 +172,9 @@ fn every_qualified_date_requires_its_exact_build_revision() {
         "2026.09.10-deadbee",
         "2026.09.15-deadbee",
         "2026.09.18-deadbee",
+        "2026.09.26-deadbee",
+        "2026.09.28-deadbee",
+        "2026.10.01-deadbee",
     ] {
         assert!(cursor_agent_release_binding(rejected).is_none());
     }

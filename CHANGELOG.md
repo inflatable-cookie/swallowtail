@@ -8,7 +8,7 @@ annotated Git tags from the canonical repository.
 ### Notes
 - qualify only `command-code.headless` through official npm `latest`
   `1.79.1`, with an exact segment for each of the 33 published stable points,
-  including the existing `1.65.0` baseline. Research 398 freezes each package
+  including the existing `1.65.0` baseline. Research 402 freezes each package
   tree and every adjacent hop. Keep the existing behavior through `1.72.4`;
   from `1.73.0`, Command Code may select configured
   `featureModels.planning` ahead of `-m` in plan mode. A private opt-in

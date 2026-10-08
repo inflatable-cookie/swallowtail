@@ -10,7 +10,7 @@ This package is additive unreleased source after `v0.3.1`. Consumers must pin
 an explicitly reviewed commit containing it. Immutable `v0.3.1` and earlier
 tags do not contain the package or route.
 
-Research 398 qualifies the 33 exact published stable points from `1.65.0`
+Research 402 qualifies the 33 exact published stable points from `1.65.0`
 through official npm `latest` `1.79.1`. The existing behavior revision remains
 through `1.72.4`; a private model-selection evidence milestone covers exact
 published points from `1.73.0` through `1.79.1`. Published gaps remain

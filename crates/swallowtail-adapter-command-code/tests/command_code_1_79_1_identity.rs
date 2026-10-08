@@ -29,7 +29,7 @@ fn official_identity_and_claim_cover_exact_published_points() {
     let claim = swallowtail_adapter_command_code::command_code_headless_claim();
 
     assert_eq!(COMMAND_CODE_RELEASE_VERSION, "1.79.1");
-    assert_eq!(identity["research_id"], 398);
+    assert_eq!(identity["research_id"], 402);
     assert_eq!(identity["official_channel"], "npm dist-tags.latest");
     assert_eq!(identity["stable_chain"], serde_json::json!(RELEASES));
     assert_eq!(identity["published_stable_count"], RELEASES.len());

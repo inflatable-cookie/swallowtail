@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "research_id": 398,
+  "research_id": 402,
   "observed_at_utc": "2026-10-08T12:42:45Z",
   "route_id": "command-code.headless",
   "axis": "command-code.npm",

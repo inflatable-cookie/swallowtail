@@ -62,7 +62,7 @@ fn frozen_326_decision_still_records_fail_closed_at_observation() {
 #[test]
 fn sibling_kimi_families_do_not_move() {
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
-    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.1");
     assert_eq!(
         kimi_acp_claim().assess(&version("0.43.0")),
         InterfaceCompatibilityAssessment::Incompatible

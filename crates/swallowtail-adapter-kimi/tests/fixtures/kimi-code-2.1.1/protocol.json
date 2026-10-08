@@ -1,0 +1,1106 @@
+{
+  "selected_route": "kimi-code.headless",
+  "selected_axis": "kimi-code.executable",
+  "selected_path": {
+    "argv": [
+      "--model",
+      "<model>",
+      "--prompt",
+      "<content>",
+      "--output-format",
+      "stream-json"
+    ],
+    "npm_bin": "dist/main.mjs",
+    "default_engine": "agent-core-v2 runV2Print",
+    "v2_default_since": "0.33.0",
+    "major_reset_at": "2.0.0",
+    "major_reset_scope": "headless v2 system.version selected surface only"
+  },
+  "mapped_stream": {
+    "roles": [
+      "meta",
+      "assistant",
+      "tool"
+    ],
+    "meta_types": [
+      "system.version",
+      "turn.step.retrying",
+      "session.resume_hint"
+    ],
+    "retry_fields": [
+      "failed_attempt",
+      "next_attempt",
+      "max_attempts",
+      "delay_ms",
+      "error_name",
+      "error_message",
+      "status_code"
+    ],
+    "tool_fields": [
+      "tool_call_id",
+      "content"
+    ],
+    "output_format_choices": [
+      "text",
+      "stream-json"
+    ],
+    "dispatch_case_labels": [
+      "turn.step.started",
+      "turn.step.interrupted",
+      "turn.step.retrying",
+      "assistant.delta",
+      "hook.result",
+      "thinking.delta",
+      "tool.call.started",
+      "tool.call.delta",
+      "tool.result",
+      "tool.progress"
+    ],
+    "decoder_corpus": "kimi-code-0.38.0-headless-v2",
+    "public_facade_id": "kimi-headless-stream-json-v1"
+  },
+  "selected_source_ledger": {
+    "apps/kimi-code/src/cli/commands.ts": {
+      "0.43.0": "e6022a8f119f8a79185d6fec75ab22732d4ffcd4",
+      "0.43.1": "e6022a8f119f8a79185d6fec75ab22732d4ffcd4",
+      "2.0.0": "063154020b87107056ad926f8e01b45b56573436",
+      "2.0.1": "bfd9385b149b20477f17954a1fec97f32d7d2526",
+      "2.0.2": "bfd9385b149b20477f17954a1fec97f32d7d2526",
+      "2.1.0": "bfd9385b149b20477f17954a1fec97f32d7d2526",
+      "2.1.1": "bfd9385b149b20477f17954a1fec97f32d7d2526"
+    },
+    "apps/kimi-code/src/cli/experimental-v2.ts": {
+      "0.43.0": null,
+      "0.43.1": null,
+      "2.0.0": null,
+      "2.0.1": null,
+      "2.0.2": null,
+      "2.1.0": null,
+      "2.1.1": null
+    },
+    "apps/kimi-code/src/cli/options.ts": {
+      "0.43.0": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "0.43.1": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "2.0.0": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "2.0.1": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "2.0.2": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "2.1.0": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95",
+      "2.1.1": "004fd7cabdf622dba31ec8c5c3037c0b797fdb95"
+    },
+    "apps/kimi-code/src/cli/prompt-render.ts": {
+      "0.43.0": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "0.43.1": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "2.0.0": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "2.0.1": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "2.0.2": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "2.1.0": "0e2f35238db066a13b53ad2cfff11bdff2f76724",
+      "2.1.1": "0e2f35238db066a13b53ad2cfff11bdff2f76724"
+    },
+    "apps/kimi-code/src/cli/run-prompt.ts": {
+      "0.43.0": "65a49446872c9fb939343324cef5ff8e15f3cc76",
+      "0.43.1": "65a49446872c9fb939343324cef5ff8e15f3cc76",
+      "2.0.0": "65a49446872c9fb939343324cef5ff8e15f3cc76",
+      "2.0.1": "65a49446872c9fb939343324cef5ff8e15f3cc76",
+      "2.0.2": "65a49446872c9fb939343324cef5ff8e15f3cc76",
+      "2.1.0": "65a49446872c9fb939343324cef5ff8e15f3cc76",
+      "2.1.1": "65a49446872c9fb939343324cef5ff8e15f3cc76"
+    },
+    "apps/kimi-code/src/cli/v2/run-v2-print.ts": {
+      "0.43.0": "3e0e6755a9fdc1015dcb2d30cc1e7fcbe3c29108",
+      "0.43.1": "3e0e6755a9fdc1015dcb2d30cc1e7fcbe3c29108",
+      "2.0.0": "3e0e6755a9fdc1015dcb2d30cc1e7fcbe3c29108",
+      "2.0.1": "77f94e829e83d33b9759a2b30b0fe372cb80f88e",
+      "2.0.2": "77f94e829e83d33b9759a2b30b0fe372cb80f88e",
+      "2.1.0": "77f94e829e83d33b9759a2b30b0fe372cb80f88e",
+      "2.1.1": "77f94e829e83d33b9759a2b30b0fe372cb80f88e"
+    },
+    "packages/agent-core-v2/src/agent/loop/loopService.ts": {
+      "0.43.0": "773642156e3153690518638c6b69a46316a3a3bd",
+      "0.43.1": "773642156e3153690518638c6b69a46316a3a3bd",
+      "2.0.0": "4fcbf7ca505554c702a725aa1e75272cd9d6b1ab",
+      "2.0.1": "4df14baaf4c1089ee45f37a13ec6842f6622080d",
+      "2.0.2": "301fcf4b5edb105a7805edf4affaf851e2852742",
+      "2.1.0": "2c2d69c6def7275751c5ed0c418fc007d5cba164",
+      "2.1.1": "2c2d69c6def7275751c5ed0c418fc007d5cba164"
+    },
+    "packages/agent-core-v2/src/agent/loop/machine/engine.ts": {
+      "0.43.0": "1cc9e42aef6d56b6457e5ef2c4e4567d08d48349",
+      "0.43.1": "1cc9e42aef6d56b6457e5ef2c4e4567d08d48349",
+      "2.0.0": "590ff8adaac00eddcb1d820173c0919eb06280f3",
+      "2.0.1": "8ec6620a41e9d941c6681a8b7ab107ce58134faf",
+      "2.0.2": "9a8e98d53db6fa4a6da0d38ff7cbc4e737e021bb",
+      "2.1.0": "be312fc0c54a7d777d5470f49e0f75142e2f85f7",
+      "2.1.1": "be312fc0c54a7d777d5470f49e0f75142e2f85f7"
+    },
+    "packages/agent-core-v2/src/agent/loop/turnOps.ts": {
+      "0.43.0": "c624a2fc2ceb7c797cdf42f602d3ddf173978df8",
+      "0.43.1": "c624a2fc2ceb7c797cdf42f602d3ddf173978df8",
+      "2.0.0": "c624a2fc2ceb7c797cdf42f602d3ddf173978df8",
+      "2.0.1": "ec3921a37b4333e8034ccfa0d69380026b819e98",
+      "2.0.2": "ec3921a37b4333e8034ccfa0d69380026b819e98",
+      "2.1.0": "ec3921a37b4333e8034ccfa0d69380026b819e98",
+      "2.1.1": "ec3921a37b4333e8034ccfa0d69380026b819e98"
+    },
+    "packages/agent-core-v2/src/agent/loop/machine/storeJournal.ts": {
+      "0.43.0": "cdac16ba5fe1fadd8c4a8134e5785590463f79c4",
+      "0.43.1": "cdac16ba5fe1fadd8c4a8134e5785590463f79c4",
+      "2.0.0": "cdac16ba5fe1fadd8c4a8134e5785590463f79c4",
+      "2.0.1": "cdac16ba5fe1fadd8c4a8134e5785590463f79c4",
+      "2.0.2": "2ad13f16dfabcd93e966aef1a52789eb3ccd29e5",
+      "2.1.0": "2ad13f16dfabcd93e966aef1a52789eb3ccd29e5",
+      "2.1.1": "2ad13f16dfabcd93e966aef1a52789eb3ccd29e5"
+    },
+    "packages/agent-core-v2/src/agent/loop/machine/tools.ts": {
+      "0.43.0": "c05ad3e40d8df206238dca0d039bfbd9300c91b7",
+      "0.43.1": "c05ad3e40d8df206238dca0d039bfbd9300c91b7",
+      "2.0.0": "c05ad3e40d8df206238dca0d039bfbd9300c91b7",
+      "2.0.1": "c05ad3e40d8df206238dca0d039bfbd9300c91b7",
+      "2.0.2": "c05ad3e40d8df206238dca0d039bfbd9300c91b7",
+      "2.1.0": "d94ae04d7e8eebb1a523ed2b7a449282f5a8c93a",
+      "2.1.1": "d94ae04d7e8eebb1a523ed2b7a449282f5a8c93a"
+    },
+    "packages/agent-core-v2/src/agent/stepRetry/stepRetryService.ts": {
+      "0.43.0": null,
+      "0.43.1": null,
+      "2.0.0": null,
+      "2.0.1": null,
+      "2.0.2": null,
+      "2.1.0": null,
+      "2.1.1": null
+    },
+    "packages/agent-core-v2/src/agent/loop/turnEvents.ts": {
+      "0.43.0": "f0163142e58b2e113e37fc7224700e36c7c89aa8",
+      "0.43.1": "f0163142e58b2e113e37fc7224700e36c7c89aa8",
+      "2.0.0": "f0163142e58b2e113e37fc7224700e36c7c89aa8",
+      "2.0.1": "f0163142e58b2e113e37fc7224700e36c7c89aa8",
+      "2.0.2": "f0163142e58b2e113e37fc7224700e36c7c89aa8",
+      "2.1.0": "f0163142e58b2e113e37fc7224700e36c7c89aa8",
+      "2.1.1": "f0163142e58b2e113e37fc7224700e36c7c89aa8"
+    },
+    "packages/agent-core-v2/src/agent/permissionPolicy/permissionPolicyService.ts": {
+      "0.43.0": "1956a2bae35b1da988bc83fcc6a86df055fef93b",
+      "0.43.1": "1956a2bae35b1da988bc83fcc6a86df055fef93b",
+      "2.0.0": "1956a2bae35b1da988bc83fcc6a86df055fef93b",
+      "2.0.1": "1956a2bae35b1da988bc83fcc6a86df055fef93b",
+      "2.0.2": "1956a2bae35b1da988bc83fcc6a86df055fef93b",
+      "2.1.0": "1956a2bae35b1da988bc83fcc6a86df055fef93b",
+      "2.1.1": "1956a2bae35b1da988bc83fcc6a86df055fef93b"
+    },
+    "packages/agent-core-v2/src/agent/permissionPolicy/policies/auto-mode-approve.ts": {
+      "0.43.0": "5fe0b14bf39aaf5e4c5d80f530454a2f556e7cf0",
+      "0.43.1": "5fe0b14bf39aaf5e4c5d80f530454a2f556e7cf0",
+      "2.0.0": "5fe0b14bf39aaf5e4c5d80f530454a2f556e7cf0",
+      "2.0.1": "5fe0b14bf39aaf5e4c5d80f530454a2f556e7cf0",
+      "2.0.2": "5fe0b14bf39aaf5e4c5d80f530454a2f556e7cf0",
+      "2.1.0": "5fe0b14bf39aaf5e4c5d80f530454a2f556e7cf0",
+      "2.1.1": "5fe0b14bf39aaf5e4c5d80f530454a2f556e7cf0"
+    },
+    "packages/agent-core-v2/src/agent/permissionPolicy/policies/auto-mode-ask-user-question-deny.ts": {
+      "0.43.0": "a9e36020da0930628a97063da7a26a495ebf518a",
+      "0.43.1": "a9e36020da0930628a97063da7a26a495ebf518a",
+      "2.0.0": "a9e36020da0930628a97063da7a26a495ebf518a",
+      "2.0.1": "4d880a6bae1fbabac39e89b379031ec61ba34c19",
+      "2.0.2": "4d880a6bae1fbabac39e89b379031ec61ba34c19",
+      "2.1.0": "4d880a6bae1fbabac39e89b379031ec61ba34c19",
+      "2.1.1": "4d880a6bae1fbabac39e89b379031ec61ba34c19"
+    },
+    "packages/agent-core-v2/src/agent/permissionPolicy/policies/dangerous-command-ask.ts": {
+      "0.43.0": "20dbfc2fdbfb3b94fce5719a5caf39a1522dea99",
+      "0.43.1": "20dbfc2fdbfb3b94fce5719a5caf39a1522dea99",
+      "2.0.0": "20dbfc2fdbfb3b94fce5719a5caf39a1522dea99",
+      "2.0.1": "dc8593b9567b0f76e4434527512b547a057012cc",
+      "2.0.2": "dc8593b9567b0f76e4434527512b547a057012cc",
+      "2.1.0": "dc8593b9567b0f76e4434527512b547a057012cc",
+      "2.1.1": "dc8593b9567b0f76e4434527512b547a057012cc"
+    },
+    "packages/agent-core-v2/src/agent/permissionPolicy/policies/git-cwd-write-approve.ts": {
+      "0.43.0": "b48d71cf7034ef5d478ebfe0f76805209cc3387a",
+      "0.43.1": "b48d71cf7034ef5d478ebfe0f76805209cc3387a",
+      "2.0.0": "b48d71cf7034ef5d478ebfe0f76805209cc3387a",
+      "2.0.1": "b48d71cf7034ef5d478ebfe0f76805209cc3387a",
+      "2.0.2": "b48d71cf7034ef5d478ebfe0f76805209cc3387a",
+      "2.1.0": "bc12b9a92015202cb35d9728f85ea9b0698c3540",
+      "2.1.1": "b48d71cf7034ef5d478ebfe0f76805209cc3387a"
+    },
+    "packages/agent-core-v2/src/agent/toolExecutor/toolExecutor.ts": {
+      "0.43.0": "c1cf3349d0e50c9593a6ee1f34577a24891b5219",
+      "0.43.1": "c1cf3349d0e50c9593a6ee1f34577a24891b5219",
+      "2.0.0": "c1cf3349d0e50c9593a6ee1f34577a24891b5219",
+      "2.0.1": "c1cf3349d0e50c9593a6ee1f34577a24891b5219",
+      "2.0.2": "c1cf3349d0e50c9593a6ee1f34577a24891b5219",
+      "2.1.0": "5be15344f39f7ffb5f8bb8ad9c18a47872b52748",
+      "2.1.1": "5be15344f39f7ffb5f8bb8ad9c18a47872b52748"
+    },
+    "packages/agent-core-v2/src/agent/toolExecutor/toolExecutorService.ts": {
+      "0.43.0": "0432fe51ae6c6a9386d63f6b977531e821cfcf1c",
+      "0.43.1": "0432fe51ae6c6a9386d63f6b977531e821cfcf1c",
+      "2.0.0": "0432fe51ae6c6a9386d63f6b977531e821cfcf1c",
+      "2.0.1": "0432fe51ae6c6a9386d63f6b977531e821cfcf1c",
+      "2.0.2": "0432fe51ae6c6a9386d63f6b977531e821cfcf1c",
+      "2.1.0": "764cb2fe3ba36c233791788575c86ee8331be54f",
+      "2.1.1": "764cb2fe3ba36c233791788575c86ee8331be54f"
+    },
+    "packages/agent-core-v2/src/agent/tools/agent/agentTool.ts": {
+      "0.43.0": "64ea484f8117ca3b6a8b7f17584cf947f2706fad",
+      "0.43.1": "64ea484f8117ca3b6a8b7f17584cf947f2706fad",
+      "2.0.0": "69ef06fb884354b8a9f5d60e804bc5eb651f7ccc",
+      "2.0.1": "f7bd4b8ff1bf4f7035ee4a49ba8f999bf706a099",
+      "2.0.2": "f7bd4b8ff1bf4f7035ee4a49ba8f999bf706a099",
+      "2.1.0": "f7bd4b8ff1bf4f7035ee4a49ba8f999bf706a099",
+      "2.1.1": "f7bd4b8ff1bf4f7035ee4a49ba8f999bf706a099"
+    },
+    "packages/agent-core-v2/src/agent/tools/edit/editTool.ts": {
+      "0.43.0": "a3ef1f35cb09e9cc1aa42bf9ba2362690bb99b97",
+      "0.43.1": "a3ef1f35cb09e9cc1aa42bf9ba2362690bb99b97",
+      "2.0.0": "a3ef1f35cb09e9cc1aa42bf9ba2362690bb99b97",
+      "2.0.1": "a3ef1f35cb09e9cc1aa42bf9ba2362690bb99b97",
+      "2.0.2": "a3ef1f35cb09e9cc1aa42bf9ba2362690bb99b97",
+      "2.1.0": "7181f52b5d3abd5c7612c1e5b222a8569576f641",
+      "2.1.1": "a3ef1f35cb09e9cc1aa42bf9ba2362690bb99b97"
+    },
+    "packages/agent-core-v2/src/agent/tools/os/glob/globTool.ts": {
+      "0.43.0": "7be6dda07a62a8c333b20699b06d41b40ae8d7b2",
+      "0.43.1": "7be6dda07a62a8c333b20699b06d41b40ae8d7b2",
+      "2.0.0": "7be6dda07a62a8c333b20699b06d41b40ae8d7b2",
+      "2.0.1": "7be6dda07a62a8c333b20699b06d41b40ae8d7b2",
+      "2.0.2": "7be6dda07a62a8c333b20699b06d41b40ae8d7b2",
+      "2.1.0": "16c5e3c66087a92c7dea88e5a586f8c758ed9c16",
+      "2.1.1": "7be6dda07a62a8c333b20699b06d41b40ae8d7b2"
+    },
+    "packages/agent-core-v2/src/agent/tools/os/grep/grepTool.ts": {
+      "0.43.0": "174817c6e278d6e1b332d508d40c8929a90d0a36",
+      "0.43.1": "174817c6e278d6e1b332d508d40c8929a90d0a36",
+      "2.0.0": "174817c6e278d6e1b332d508d40c8929a90d0a36",
+      "2.0.1": "174817c6e278d6e1b332d508d40c8929a90d0a36",
+      "2.0.2": "174817c6e278d6e1b332d508d40c8929a90d0a36",
+      "2.1.0": "f85f8b4c4a2707fbe3d7b3062c3be97ac99f15ba",
+      "2.1.1": "174817c6e278d6e1b332d508d40c8929a90d0a36"
+    },
+    "packages/agent-core-v2/src/agent/tools/os/read/readTool.ts": {
+      "0.43.0": "8f3b98b42822f319dc5533fe305c7fadbbddd0c9",
+      "0.43.1": "8f3b98b42822f319dc5533fe305c7fadbbddd0c9",
+      "2.0.0": "8f3b98b42822f319dc5533fe305c7fadbbddd0c9",
+      "2.0.1": "456f9d10b8634e56968a4a491773c050409cd933",
+      "2.0.2": "456f9d10b8634e56968a4a491773c050409cd933",
+      "2.1.0": "a742bf749bc4fa55af2d92be649cded377e07f12",
+      "2.1.1": "456f9d10b8634e56968a4a491773c050409cd933"
+    },
+    "packages/agent-core-v2/src/agent/tools/os/write/writeTool.ts": {
+      "0.43.0": "e9cc37ddb3f477679e93e1b56564cdddd99d6855",
+      "0.43.1": "e9cc37ddb3f477679e93e1b56564cdddd99d6855",
+      "2.0.0": "e9cc37ddb3f477679e93e1b56564cdddd99d6855",
+      "2.0.1": "e9cc37ddb3f477679e93e1b56564cdddd99d6855",
+      "2.0.2": "e9cc37ddb3f477679e93e1b56564cdddd99d6855",
+      "2.1.0": "e556894b2f398cc066d06c90ed5de41e61acbbb7",
+      "2.1.1": "e9cc37ddb3f477679e93e1b56564cdddd99d6855"
+    },
+    "packages/agent-core-v2/src/agent/tools/read-media-file/readMediaFileTool.ts": {
+      "0.43.0": "fff7ef5bae490e3eff727dfe8b7b2b05c3705c46",
+      "0.43.1": "fff7ef5bae490e3eff727dfe8b7b2b05c3705c46",
+      "2.0.0": "da02e7275c61b1a820596ae86efecf1dd35a5de9",
+      "2.0.1": "da02e7275c61b1a820596ae86efecf1dd35a5de9",
+      "2.0.2": "da02e7275c61b1a820596ae86efecf1dd35a5de9",
+      "2.1.0": "50e6cd71db78392e2d90c120dd16055ab0396ac8",
+      "2.1.1": "da02e7275c61b1a820596ae86efecf1dd35a5de9"
+    },
+    "packages/agent-core-v2/src/agent/tools/select-tools/selectToolsTool.ts": {
+      "0.43.0": "c12ce617f10e7185955ffb135f833118e68d4d49",
+      "0.43.1": "c12ce617f10e7185955ffb135f833118e68d4d49",
+      "2.0.0": "c12ce617f10e7185955ffb135f833118e68d4d49",
+      "2.0.1": "a501a21c6ff3279cb2093f4292322456d6ce6bd7",
+      "2.0.2": "a501a21c6ff3279cb2093f4292322456d6ce6bd7",
+      "2.1.0": "a501a21c6ff3279cb2093f4292322456d6ce6bd7",
+      "2.1.1": "a501a21c6ff3279cb2093f4292322456d6ce6bd7"
+    },
+    "packages/agent-core-v2/src/agent/tools/task/task-list/taskListTool.ts": {
+      "0.43.0": "fd2a6e841e07ff2ea2606db4f72055900b3a462f",
+      "0.43.1": "fd2a6e841e07ff2ea2606db4f72055900b3a462f",
+      "2.0.0": "fd2a6e841e07ff2ea2606db4f72055900b3a462f",
+      "2.0.1": "fd2a6e841e07ff2ea2606db4f72055900b3a462f",
+      "2.0.2": "fd2a6e841e07ff2ea2606db4f72055900b3a462f",
+      "2.1.0": "aafb7bd9f5a438642b8b62037d1431f8688fe374",
+      "2.1.1": "aafb7bd9f5a438642b8b62037d1431f8688fe374"
+    },
+    "packages/agent-core-v2/src/agent/tools/task/task-output/taskOutputTool.ts": {
+      "0.43.0": "ebf691ff4060da7259181dee1f338abb89e45c96",
+      "0.43.1": "ebf691ff4060da7259181dee1f338abb89e45c96",
+      "2.0.0": "ebf691ff4060da7259181dee1f338abb89e45c96",
+      "2.0.1": "ebf691ff4060da7259181dee1f338abb89e45c96",
+      "2.0.2": "ebf691ff4060da7259181dee1f338abb89e45c96",
+      "2.1.0": "0421444f95799e14a71e2c88ba2876451967823d",
+      "2.1.1": "0421444f95799e14a71e2c88ba2876451967823d"
+    },
+    "packages/agent-core-v2/src/agent/tools/task/task-stop/taskStopTool.ts": {
+      "0.43.0": "40f873c65099f1f38b07f2c5733ee1134f587d7b",
+      "0.43.1": "40f873c65099f1f38b07f2c5733ee1134f587d7b",
+      "2.0.0": "40f873c65099f1f38b07f2c5733ee1134f587d7b",
+      "2.0.1": "40f873c65099f1f38b07f2c5733ee1134f587d7b",
+      "2.0.2": "40f873c65099f1f38b07f2c5733ee1134f587d7b",
+      "2.1.0": "fe474384af3c2373c16f7ec2ce9669b50bd7da87",
+      "2.1.1": "fe474384af3c2373c16f7ec2ce9669b50bd7da87"
+    },
+    "packages/agent-core-v2/src/agent/tools/task/task-wait/taskWaitTool.ts": {
+      "0.43.0": "9856173d31d61c26ded061d18811d428ccc5bd7e",
+      "0.43.1": "9856173d31d61c26ded061d18811d428ccc5bd7e",
+      "2.0.0": "9856173d31d61c26ded061d18811d428ccc5bd7e",
+      "2.0.1": "9856173d31d61c26ded061d18811d428ccc5bd7e",
+      "2.0.2": "9856173d31d61c26ded061d18811d428ccc5bd7e",
+      "2.1.0": "81d570d91839aa98299b665dc937be50e28cb60b",
+      "2.1.1": "81d570d91839aa98299b665dc937be50e28cb60b"
+    },
+    "packages/agent-core-v2/src/tool/args-validator.ts": {
+      "0.43.0": "3585f03f7ff237521df1c1cad2a9d4c4a6f98967",
+      "0.43.1": "3585f03f7ff237521df1c1cad2a9d4c4a6f98967",
+      "2.0.0": "3585f03f7ff237521df1c1cad2a9d4c4a6f98967",
+      "2.0.1": "3585f03f7ff237521df1c1cad2a9d4c4a6f98967",
+      "2.0.2": "3585f03f7ff237521df1c1cad2a9d4c4a6f98967",
+      "2.1.0": "281cf33b6e2ea609d04512ed7e9f7164522d23a9",
+      "2.1.1": "281cf33b6e2ea609d04512ed7e9f7164522d23a9"
+    },
+    "packages/agent-core-v2/src/tool/path-access.ts": {
+      "0.43.0": "7e11c46313f1636ba427a22cf68484e69e8047d9",
+      "0.43.1": "7e11c46313f1636ba427a22cf68484e69e8047d9",
+      "2.0.0": "7e11c46313f1636ba427a22cf68484e69e8047d9",
+      "2.0.1": "7e11c46313f1636ba427a22cf68484e69e8047d9",
+      "2.0.2": "7e11c46313f1636ba427a22cf68484e69e8047d9",
+      "2.1.0": "8d57130ffef89b145571149b5a45e2afe64da616",
+      "2.1.1": "7e11c46313f1636ba427a22cf68484e69e8047d9"
+    },
+    "packages/agent-core-v2/src/tool/realpath-access.ts": {
+      "0.43.0": null,
+      "0.43.1": null,
+      "2.0.0": null,
+      "2.0.1": null,
+      "2.0.2": null,
+      "2.1.0": "aaebec687a4801ad2344921a94f964ae1006f5c4",
+      "2.1.1": null
+    }
+  },
+  "bundle_oracle": {
+    "markers": {
+      "prompt_json_writer": "PromptJsonWriter = class {",
+      "prompt_transcript_writer": "PromptTranscriptWriter = class {",
+      "write_experimental_version": "function writeExperimentalVersion(",
+      "write_resume_hint": "function writeResumeHint(",
+      "stringify_tool_output": "function stringifyToolOutput(",
+      "dispatch_native_event": "function dispatchNativeEvent(",
+      "run_prompt_dispatch": "async function runPrompt(",
+      "run_v2_print": "async function runV2Print(",
+      "apply_print_background_policy": "async function applyPrintBackgroundPolicy("
+    },
+    "points": {
+      "0.43.0": {
+        "prompt_json_writer": {
+          "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+          "size": 2567
+        },
+        "prompt_transcript_writer": {
+          "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+          "size": 851
+        },
+        "write_experimental_version": {
+          "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+          "size": 300
+        },
+        "write_resume_hint": {
+          "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+          "size": 419
+        },
+        "stringify_tool_output": {
+          "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+          "size": 138
+        },
+        "dispatch_native_event": {
+          "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+          "size": 1145
+        },
+        "run_prompt_dispatch": {
+          "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+          "size": 47
+        },
+        "run_v2_print": {
+          "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+          "size": 48
+        },
+        "apply_print_background_policy": {
+          "sha256": "b2815ff488422ec1d13b604326ce47a20459cafa6ec78f75874d0016aa4f032b",
+          "size": 1761
+        }
+      },
+      "0.43.1": {
+        "prompt_json_writer": {
+          "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+          "size": 2567
+        },
+        "prompt_transcript_writer": {
+          "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+          "size": 851
+        },
+        "write_experimental_version": {
+          "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+          "size": 300
+        },
+        "write_resume_hint": {
+          "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+          "size": 419
+        },
+        "stringify_tool_output": {
+          "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+          "size": 138
+        },
+        "dispatch_native_event": {
+          "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+          "size": 1145
+        },
+        "run_prompt_dispatch": {
+          "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+          "size": 47
+        },
+        "run_v2_print": {
+          "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+          "size": 48
+        },
+        "apply_print_background_policy": {
+          "sha256": "b2815ff488422ec1d13b604326ce47a20459cafa6ec78f75874d0016aa4f032b",
+          "size": 1761
+        }
+      },
+      "2.0.0": {
+        "prompt_json_writer": {
+          "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+          "size": 2567
+        },
+        "prompt_transcript_writer": {
+          "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+          "size": 851
+        },
+        "write_experimental_version": {
+          "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+          "size": 300
+        },
+        "write_resume_hint": {
+          "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+          "size": 419
+        },
+        "stringify_tool_output": {
+          "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+          "size": 138
+        },
+        "dispatch_native_event": {
+          "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+          "size": 1145
+        },
+        "run_prompt_dispatch": {
+          "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+          "size": 47
+        },
+        "run_v2_print": {
+          "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+          "size": 48
+        },
+        "apply_print_background_policy": {
+          "sha256": "b2815ff488422ec1d13b604326ce47a20459cafa6ec78f75874d0016aa4f032b",
+          "size": 1761
+        }
+      },
+      "2.0.1": {
+        "prompt_json_writer": {
+          "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+          "size": 2567
+        },
+        "prompt_transcript_writer": {
+          "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+          "size": 851
+        },
+        "write_experimental_version": {
+          "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+          "size": 300
+        },
+        "write_resume_hint": {
+          "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+          "size": 419
+        },
+        "stringify_tool_output": {
+          "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+          "size": 138
+        },
+        "dispatch_native_event": {
+          "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+          "size": 1145
+        },
+        "run_prompt_dispatch": {
+          "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+          "size": 47
+        },
+        "run_v2_print": {
+          "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+          "size": 48
+        },
+        "apply_print_background_policy": {
+          "sha256": "766b441016e200c6da90cc4a7036e06c33c744ebb3d38910d09569af590caa16",
+          "size": 2157
+        }
+      },
+      "2.0.2": {
+        "prompt_json_writer": {
+          "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+          "size": 2567
+        },
+        "prompt_transcript_writer": {
+          "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+          "size": 851
+        },
+        "write_experimental_version": {
+          "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+          "size": 300
+        },
+        "write_resume_hint": {
+          "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+          "size": 419
+        },
+        "stringify_tool_output": {
+          "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+          "size": 138
+        },
+        "dispatch_native_event": {
+          "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+          "size": 1145
+        },
+        "run_prompt_dispatch": {
+          "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+          "size": 47
+        },
+        "run_v2_print": {
+          "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+          "size": 48
+        },
+        "apply_print_background_policy": {
+          "sha256": "766b441016e200c6da90cc4a7036e06c33c744ebb3d38910d09569af590caa16",
+          "size": 2157
+        }
+      },
+      "2.1.0": {
+        "prompt_json_writer": {
+          "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+          "size": 2567
+        },
+        "prompt_transcript_writer": {
+          "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+          "size": 851
+        },
+        "write_experimental_version": {
+          "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+          "size": 300
+        },
+        "write_resume_hint": {
+          "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+          "size": 419
+        },
+        "stringify_tool_output": {
+          "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+          "size": 138
+        },
+        "dispatch_native_event": {
+          "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+          "size": 1145
+        },
+        "run_prompt_dispatch": {
+          "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+          "size": 47
+        },
+        "run_v2_print": {
+          "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+          "size": 48
+        },
+        "apply_print_background_policy": {
+          "sha256": "766b441016e200c6da90cc4a7036e06c33c744ebb3d38910d09569af590caa16",
+          "size": 2157
+        }
+      },
+      "2.1.1": {
+        "prompt_json_writer": {
+          "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+          "size": 2567
+        },
+        "prompt_transcript_writer": {
+          "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+          "size": 851
+        },
+        "write_experimental_version": {
+          "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+          "size": 300
+        },
+        "write_resume_hint": {
+          "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+          "size": 419
+        },
+        "stringify_tool_output": {
+          "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+          "size": 138
+        },
+        "dispatch_native_event": {
+          "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+          "size": 1145
+        },
+        "run_prompt_dispatch": {
+          "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+          "size": 47
+        },
+        "run_v2_print": {
+          "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+          "size": 48
+        },
+        "apply_print_background_policy": {
+          "sha256": "766b441016e200c6da90cc4a7036e06c33c744ebb3d38910d09569af590caa16",
+          "size": 2157
+        }
+      }
+    }
+  },
+  "hop_classification": [
+    {
+      "from": "0.43.0",
+      "to": "0.43.1",
+      "verdict": "candidate-compatible",
+      "selected_behavior": "selected CLI, loop, tool, and permission source paths did not change; npm bundle selected writer/dispatcher digests match; package changes are in web assets, native prebuilds, and package/main bundle inventory"
+    },
+    {
+      "from": "0.43.1",
+      "to": "2.0.0",
+      "verdict": "candidate-compatible",
+      "selected_behavior": "headless CLI/writer unchanged; agent-loop changes add internal metadata/cancellation plumbing and reorder a steering event; subagent resume and media-upload tool internals changed; no mapped stream schema or public operation change"
+    },
+    {
+      "from": "2.0.0",
+      "to": "2.0.1",
+      "verdict": "candidate-compatible",
+      "selected_behavior": "print background policy now waits for an in-flight cron-steered turn; JSONL writer/dispatcher unchanged; AskUserQuestion denial text is changed provider tool output data; dangerous-command yolo branch is omitted by nonInteractive true; loop, subagent, read-media, select-tools, and tool feedback internals changed"
+    },
+    {
+      "from": "2.0.1",
+      "to": "2.0.2",
+      "verdict": "candidate-compatible",
+      "selected_behavior": "duplicate TurnSteer dispatch is suppressed for the current message and initial journal records are appended; private session/loop behavior only"
+    },
+    {
+      "from": "2.0.2",
+      "to": "2.1.0",
+      "verdict": "unsupported-security-authority-gap",
+      "selected_behavior": "new realpath checks in built-in Read/Write/Edit/Glob/Grep/ReadMediaFile restrict symlink escapes, sensitive paths, dangling links, and writes through aliases to .kimi-code/local.toml; this is an effective filesystem authority change in the agent-core-v2 tools used by headless; separate git-cwd config policy is preempted by auto-mode-approve; task tool outputs and duration metadata also change"
+    },
+    {
+      "from": "2.1.0",
+      "to": "2.1.1",
+      "verdict": "qualify-after-excluded-security-hop",
+      "selected_behavior": "the 2.1.0 realpath helper and tool guards are removed; exact prior tool source is restored. The npm bundle no longer carries realpath guard symbols. Qualify 2.1.1 and retain exact 2.1.0 as an unsupported security-authority gap."
+    }
+  ],
+  "permission_path_proof": {
+    "run_v2_print_sets_mode": "auto",
+    "run_v2_print_sets_non_interactive": true,
+    "policy_order": [
+      "auto-mode-ask-user-question-deny",
+      "user-configured-deny",
+      "dangerous-command-ask omitted when nonInteractive",
+      "auto-mode-approve",
+      "session-history",
+      "user-configured-ask",
+      "user-configured-allow",
+      "sensitive-file-ask",
+      "git-control-path-access-ask",
+      "yolo-mode-approve",
+      "default-tool-approve",
+      "git-cwd-write-approve",
+      "fallback-ask"
+    ],
+    "policy_order_blob_changes_after_0_43_0": false,
+    "auto_mode_approve_blob_changes_after_0_43_0": false,
+    "effect": "The 2.1.0 git-cwd-write-approve path check is unreachable in the selected auto-mode route; realpath checks execute in tool implementations before results are emitted and remain the independent authority change."
+  },
+  "safety": {
+    "downloaded_artifacts_executed": false,
+    "credentials_used": false,
+    "provider_prompt_sent": false,
+    "authentication_performed": false,
+    "live_session_started": false,
+    "host_install_changed": false,
+    "local_server_started": false
+  },
+  "selected_change_inventory": [
+    {
+      "from": "0.43.0",
+      "to": "0.43.1",
+      "changed_source_files": []
+    },
+    {
+      "from": "0.43.1",
+      "to": "2.0.0",
+      "changed_source_files": [
+        {
+          "status": "M",
+          "path": "apps/kimi-code/src/cli/commands.ts",
+          "category": "selected-cli-lifecycle-or-unselected-cli-command"
+        },
+        {
+          "status": "A",
+          "path": "apps/kimi-code/src/cli/sub/install-app.ts",
+          "category": "selected-cli-lifecycle-or-unselected-cli-command"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/loopService.ts",
+          "category": "provider-agent-loop-internal"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/machine/engine.ts",
+          "category": "provider-agent-loop-internal"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/agent/agentTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/read-media-file/readMediaFileTool.ts",
+          "category": "provider-tool-permission-or-path"
+        }
+      ]
+    },
+    {
+      "from": "2.0.0",
+      "to": "2.0.1",
+      "changed_source_files": [
+        {
+          "status": "M",
+          "path": "apps/kimi-code/src/cli/commands.ts",
+          "category": "selected-cli-lifecycle-or-unselected-cli-command"
+        },
+        {
+          "status": "D",
+          "path": "apps/kimi-code/src/cli/sub/install-app.ts",
+          "category": "selected-cli-lifecycle-or-unselected-cli-command"
+        },
+        {
+          "status": "A",
+          "path": "apps/kimi-code/src/cli/sub/install-desktop.ts",
+          "category": "selected-cli-lifecycle-or-unselected-cli-command"
+        },
+        {
+          "status": "M",
+          "path": "apps/kimi-code/src/cli/sub/provider.ts",
+          "category": "selected-cli-lifecycle-or-unselected-cli-command"
+        },
+        {
+          "status": "M",
+          "path": "apps/kimi-code/src/cli/v2/run-v2-print.ts",
+          "category": "selected-cli-lifecycle-or-unselected-cli-command"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/loopService.ts",
+          "category": "provider-agent-loop-internal"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/machine/engine.ts",
+          "category": "provider-agent-loop-internal"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/turnOps.ts",
+          "category": "provider-agent-loop-internal"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/permissionPolicy/policies/auto-mode-ask-user-question-deny.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/permissionPolicy/policies/dangerous-command-ask.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/agent/agentTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/os/read/readTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/select-tools/selectToolsTool.ts",
+          "category": "provider-tool-permission-or-path"
+        }
+      ]
+    },
+    {
+      "from": "2.0.1",
+      "to": "2.0.2",
+      "changed_source_files": [
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/loopService.ts",
+          "category": "provider-agent-loop-internal"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/machine/engine.ts",
+          "category": "provider-agent-loop-internal"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/machine/storeJournal.ts",
+          "category": "provider-agent-loop-internal"
+        }
+      ]
+    },
+    {
+      "from": "2.0.2",
+      "to": "2.1.0",
+      "changed_source_files": [
+        {
+          "status": "M",
+          "path": "apps/kimi-code/src/cli/run-shell.ts",
+          "category": "selected-cli-lifecycle-or-unselected-cli-command"
+        },
+        {
+          "status": "M",
+          "path": "apps/kimi-code/src/cli/sub/web/run.ts",
+          "category": "selected-cli-lifecycle-or-unselected-cli-command"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/loopService.ts",
+          "category": "provider-agent-loop-internal"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/machine/engine.ts",
+          "category": "provider-agent-loop-internal"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/loop/machine/tools.ts",
+          "category": "provider-agent-loop-internal"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/permissionPolicy/policies/git-cwd-write-approve.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/toolExecutor/toolExecutor.ts",
+          "category": "provider-tool-execution-metadata"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/toolExecutor/toolExecutorService.ts",
+          "category": "provider-tool-execution-metadata"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/edit/editTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/os/glob/globTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/os/grep/grepTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/os/read/readTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/os/write/writeTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/read-media-file/readMediaFileTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/task/task-list/taskListTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/task/task-output/taskOutputTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/task/task-stop/taskStopTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/task/task-wait/taskWaitTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/tool/args-validator.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/tool/path-access.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "A",
+          "path": "packages/agent-core-v2/src/tool/realpath-access.ts",
+          "category": "provider-tool-permission-or-path"
+        }
+      ]
+    },
+    {
+      "from": "2.1.0",
+      "to": "2.1.1",
+      "changed_source_files": [
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/permissionPolicy/policies/git-cwd-write-approve.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/edit/editTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/os/glob/globTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/os/grep/grepTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/os/read/readTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/os/write/writeTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/agent/tools/read-media-file/readMediaFileTool.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "M",
+          "path": "packages/agent-core-v2/src/tool/path-access.ts",
+          "category": "provider-tool-permission-or-path"
+        },
+        {
+          "status": "D",
+          "path": "packages/agent-core-v2/src/tool/realpath-access.ts",
+          "category": "provider-tool-permission-or-path"
+        }
+      ]
+    }
+  ],
+  "npm_bundle_static_marker_counts": {
+    "0.43.0": {
+      "assertRealPathWithinWorkspace": 0,
+      "checkRealPathWriteTarget": 0,
+      "isProjectLocalConfigPath": 0,
+      "PATH_SYMLINK_ESCAPE": 0,
+      "AskUserQuestion is disabled while auto permission mode is active": 1
+    },
+    "0.43.1": {
+      "assertRealPathWithinWorkspace": 0,
+      "checkRealPathWriteTarget": 0,
+      "isProjectLocalConfigPath": 0,
+      "PATH_SYMLINK_ESCAPE": 0,
+      "AskUserQuestion is disabled while auto permission mode is active": 1
+    },
+    "2.0.0": {
+      "assertRealPathWithinWorkspace": 0,
+      "checkRealPathWriteTarget": 0,
+      "isProjectLocalConfigPath": 0,
+      "PATH_SYMLINK_ESCAPE": 0,
+      "AskUserQuestion is disabled while auto permission mode is active": 1
+    },
+    "2.0.1": {
+      "assertRealPathWithinWorkspace": 0,
+      "checkRealPathWriteTarget": 0,
+      "isProjectLocalConfigPath": 0,
+      "PATH_SYMLINK_ESCAPE": 0,
+      "AskUserQuestion is disabled while auto permission mode is active": 1
+    },
+    "2.0.2": {
+      "assertRealPathWithinWorkspace": 0,
+      "checkRealPathWriteTarget": 0,
+      "isProjectLocalConfigPath": 0,
+      "PATH_SYMLINK_ESCAPE": 0,
+      "AskUserQuestion is disabled while auto permission mode is active": 1
+    },
+    "2.1.0": {
+      "assertRealPathWithinWorkspace": 3,
+      "checkRealPathWriteTarget": 3,
+      "isProjectLocalConfigPath": 4,
+      "PATH_SYMLINK_ESCAPE": 4,
+      "AskUserQuestion is disabled while auto permission mode is active": 1
+    },
+    "2.1.1": {
+      "assertRealPathWithinWorkspace": 0,
+      "checkRealPathWriteTarget": 0,
+      "isProjectLocalConfigPath": 0,
+      "PATH_SYMLINK_ESCAPE": 0,
+      "AskUserQuestion is disabled while auto permission mode is active": 1
+    }
+  },
+  "claim_shape_at_observation": {
+    "claim_id": "kimi.headless.executable-window-2",
+    "baseline": "0.29.0",
+    "legacy_v1_segment": "0.29.0..=0.32.0",
+    "v2_segment_before": "0.33.0..=0.43.0",
+    "behavior_revision": "kimi.headless.stream-json.v2",
+    "posture": "AllowUnverified",
+    "preserve_acp_and_local_server_axes": true
+  },
+  "claim_shape_after_operator_ruling": {
+    "claim_id": "kimi.headless.executable-window-2",
+    "baseline": "0.29.0",
+    "legacy_v1_segment": "0.29.0..=0.32.0",
+    "v2_segments": [
+      "0.33.0..=0.43.1",
+      "2.0.0..=2.1.1"
+    ],
+    "excluded_versions": [
+      "2.0.3",
+      "2.1.0"
+    ],
+    "behavior_revision": "kimi.headless.stream-json.v2",
+    "posture": "AllowUnverified",
+    "preserve_acp_and_local_server_axes": true
+  },
+  "operator_ruling": {
+    "date": "2026-10-08",
+    "decision": "Qualify 2.1.1 with 2.1.0 left unsupported."
+  }
+}

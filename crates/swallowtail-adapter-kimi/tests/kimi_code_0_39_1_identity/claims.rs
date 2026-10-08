@@ -40,7 +40,7 @@ fn the_fixture_decision_is_the_shape_production_actually_encodes() {
     // Research 325 later extended the live range to 0.43.0; this corpus keeps
     // the destination it recorded.
     assert_eq!(decision["raise_headless_latest_qualified_to"], "0.39.1");
-    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.1");
     assert_eq!(
         decision["synthetic_later_unverified_newer_headless"],
         "0.39.2"
@@ -85,7 +85,7 @@ fn headless_v1_corrects_down_and_v2_corrects_down_and_extends() {
     assert_eq!(KIMI_HEADLESS_BASELINE_VERSION, "0.29.0");
 
     let segments = claim.milestones().collect::<Vec<_>>();
-    assert_eq!(segments.len(), 2);
+    assert_eq!(segments.len(), 3);
     assert_eq!(segments[0].minimum().as_str(), "0.29.0");
     assert_eq!(
         segments[0].maximum().as_str(),
@@ -97,12 +97,19 @@ fn headless_v1_corrects_down_and_v2_corrects_down_and_extends() {
         "kimi.headless.stream-json.v1"
     );
     assert_eq!(segments[1].minimum().as_str(), "0.33.0");
+    assert_eq!(segments[1].maximum().as_str(), "0.43.1");
     assert_eq!(
         segments[1].behavior_revision().as_str(),
         "kimi.headless.stream-json.v2"
     );
-    // Research 325 extended the live v2 ceiling past this corpus's 0.39.1.
-    assert_eq!(claim.latest_qualified().as_str(), "0.43.0");
+    assert_eq!(segments[2].minimum().as_str(), "2.0.0");
+    assert_eq!(segments[2].maximum().as_str(), "2.1.1");
+    assert_eq!(
+        segments[2].behavior_revision().as_str(),
+        "kimi.headless.stream-json.v2"
+    );
+    // Research 403 qualified the published 2.x v2 line after this corpus.
+    assert_eq!(claim.latest_qualified().as_str(), "2.1.1");
 
     let identity = json(IDENTITY);
     let reason = text(
@@ -139,18 +146,18 @@ fn a_later_exact_stable_stays_unverified_newer_on_the_headless_axis() {
         json(IDENTITY)["publication_adjacency"]["unpublished_0_39_2"],
         true
     );
-    // 0.39.2 was the first later stable this corpus observed. Research 325 has
-    // since qualified through 0.43.0, so the live first-later point moved.
+    // 0.39.2 was the first later stable this corpus observed. Research 403 has
+    // since qualified through 2.1.1, so later stable points stay unverified.
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        kimi_headless_claim().assess(&version("0.43.1"))
+        kimi_headless_claim().assess(&version("2.1.2"))
     else {
-        panic!("0.43.1 stays unverified newer");
+        panic!("2.1.2 stays unverified newer");
     };
     assert_eq!(
         newer.behavior_revision().as_str(),
         "kimi.headless.stream-json.v2"
     );
-    assert_eq!(newer.latest_qualified().as_str(), "0.43.0");
+    assert_eq!(newer.latest_qualified().as_str(), "2.1.1");
 }
 
 #[test]

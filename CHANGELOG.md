@@ -6,6 +6,15 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only `codex.exec` through official stable `0.161.0` as a compatible
+  extension on `codex.exec.jsonl-v1`. Research 407 reuses the reviewed
+  `0.155.1`→`0.161.0` source and artifact chain from Research 370 with
+  independent digest checks. Projectless startup does not restore persisted
+  trust; system/macOS MDM managed-network allowlists and refresh remain
+  authoritative, and provider denial remains a bounded failure. Keep the
+  unpublished `0.155.2` gap, prior exclusions, and independent app-server
+  claim. No provider prompt, live session, credential, installation, or host
+  update was used.
 - qualify shared stable ACP schema from `schema-v1.20.0` through current
   official `schema-v1.24.1`, covering all five published hops. Research 406
   freezes each tag, all four release assets, the complete per-hop file ledger,

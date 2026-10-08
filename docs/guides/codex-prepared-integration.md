@@ -64,8 +64,9 @@ profiles.
 
 Swallowtail does not install Codex, search `PATH`, log in, choose a model,
 select billing, read an auth store, or infer a writable workspace. Exec admits
-`0.80.0..=0.81.0`, `0.84.0..=0.107.0`, and `0.110.0..=0.155.1`; support is
-deprecated through `0.121.0` and maintained from `0.122.0`. App-server admits
+`0.80.0..=0.81.0`, `0.84.0..=0.107.0`, `0.110.0..=0.155.1`, and
+`0.156.0..=0.161.0`; support is deprecated through `0.121.0` and maintained
+from `0.122.0`. App-server admits
 `0.80.0..=0.81.0`, `0.84.0..=0.107.0`, `0.110.0..=0.130.0`,
 `0.131.0..=0.155.1`, `0.156.0..=0.156.1`, `0.157.0..=0.157.1`, `0.158.0`,
 and `0.159.0..=0.161.0`; `0.131.0..=0.155.1` retains its maintained status,
@@ -76,13 +77,17 @@ Unpublished `0.149.2`, `0.150.2`, `0.151.1`, `0.152.2`, `0.154.1`, and
 `0.155.2` stay incompatible. Later stable versions may remain visible
 `UnverifiedNewer` without gaining capabilities.
 
-The exec ceiling remains `0.155.1` after the 2026-10-07 sweep. The first
-unqualified stable `0.156.0` changes projectless `thread/start` trust
-behavior; `0.157.0` adds host-managed application network restrictions to
-regular exec. Both need provider-free adaptation and a ruling before a ceiling
-increase. Current official stable `0.161.0` remains `UnverifiedNewer`; see
-[Research 370](../research/370-codex-exec-currentness-stop.md). The app-server
-claim is independent and was not changed by this exec review.
+Exec is qualified through current official stable `0.161.0` on the existing
+`codex.exec.jsonl-v1` behavior revision. The projectless trust change is
+accepted: upstream may skip automatic persisted project trust, and Swallowtail
+does not recreate it. System and macOS MDM `application.network` allowlists
+remain authoritative and may deny model or search destinations; the adapter
+does not set `ignore_managed_requirements` or weaken those rules. The 0.156.0
+additive search results remain ignored while query progress is preserved. The
+unpublished `0.155.2` point stays a gap. Research 407 reuses and independently
+digest-pins Research 370's full hop inventory and records the adapted policy
+and prepared-path regression evidence. The app-server claim remains
+independent.
 
 The app-server claim now qualifies official stable `0.161.0`; its independent
 `codex.app-server.cli-window-2` bound does not change `codex.exec`, which
@@ -394,7 +399,9 @@ or management. See
   preparation. Turn deadlines remain available on `TurnRequest`.
 - Structured exec supports no declared tools, at most one image attachment,
   JSON Schema structured output, and either offline execution or host-approved
-  external search.
+  external search. Host-approved search remains subject to system and macOS
+  MDM `application.network` allowlists and policy refresh; provider-managed
+  denial remains a bounded provider failure.
 - `CodexExecProfileInput::with_model_verbosity()` selects closed adapter-local
   `low|medium|high` on exact published `0.147.0`, `0.148.0`, `0.149.0`, and
   `0.149.1` for exact Research 213 slugs. Omission leaves the current argv.

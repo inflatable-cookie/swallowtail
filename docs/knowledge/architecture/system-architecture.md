@@ -857,7 +857,12 @@ user configuration and rules, permits a host-approved non-Git resource, denies
 approval prompts, prevents tool subprocess environment inheritance, and states
 read-only sandbox and web-search policy explicitly. Deadline expiry and
 operator cancellation remain separate terminal outcomes; both join the process
-and release every lease.
+and release every lease. For a projectless cwd, Codex may skip automatic
+persisted project trust and the adapter does not recreate that trust. System
+and macOS MDM `application.network` allowlists and refresh remain authoritative
+for Codex network requests; host-approved search may still be denied by those
+requirements. Exec does not pass `ignore_managed_requirements` or weaken that
+policy. These host rules do not establish process containment.
 
 The separate Codex app-server driver owns long-lived JSONL-RPC framing and
 request correlation over a shared process handle. A joined reader task routes

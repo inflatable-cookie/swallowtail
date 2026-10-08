@@ -344,6 +344,37 @@ require a disposable rehearsal checkout merely to avoid consuming local
 authority. One-shot limits remain appropriate for provider calls and external
 release mutations such as tag creation or push.
 
+## SDK Patch And Currentness Release Separation
+
+Tom's 2026-10-08 board answer to decision
+`6fd8ba99-46d5-4442-9f40-d79199034bc4` is “Separate urgent SDK patch; sweep in
+minor”. Prepare a separately reviewed `v0.5.2` SDK correction candidate from
+the released `v0.5.1` source at
+`e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27`. Include only patch-compatible
+registered-tool lifetime and usage corrections, their proved necessary
+dependencies, and corresponding release evidence. Preserve the released
+consumer API, route versions and behavior guarantees unless an exact
+patch-compatible extension is independently established. Backport dependency
+closure and compatibility must be proved; reviewed changes on `main` alone
+do not establish an isolated patch candidate.
+
+The full approved currentness sweep continues toward a pre-1.0 minor release.
+Its evidence stops, adaptation obligations and operator gates remain; none
+is waived or abandoned. This split replaces the requirement to complete that
+full sweep before the urgent SDK patch. Breaking behavior corrections and
+consumer-visible restrictions belong to the independently assessed minor
+candidate. Keep the patch branch separate from `main`; do not merge a narrow
+released-line tree over the ongoing sweep or transfer newer route proof into
+the patch.
+
+Each candidate still requires its exact source identity, API and semantic
+compatibility assessment, normal consumer evidence, dependency/security
+review, Queue-owned milestone QA and qualifying hosted CI. This direction
+authorizes candidate preparation, not a tag, publication, consumer repin or
+live proof. Tag creation and push still require Tom to name the final SHA.
+The minor version is determined by its reviewed change; `v0.6.0` is a planning
+target, not a prepared or authorized tag.
+
 ## Hosted Gate Delegation
 
 `lint`, `lint:no-features`, `test`, and `floor` are satisfied for a candidate by

@@ -114,7 +114,7 @@ Status: open
 Asked: 2026-10-08
 Gate owner: Tom, Swallowtail operator
 
-Research 383 confirms that Cline advertises and implements ACP `session/load`.
+Research 394 confirms that Cline advertises and implements ACP `session/load`.
 The qualified Swallowtail route creates a new session and sends one bounded
 prompt, but has no public load or resume mapping. This qualification preserves
 that surface and adds no public operation.

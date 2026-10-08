@@ -19,15 +19,15 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Preparation requires all of the following:
 
 - exact package axis `cline.package`
-- official npm wrapper `3.0.55..=3.0.69`, excluding unpublished `3.0.59`
+- official npm wrapper `3.0.55..=3.0.70`, excluding unpublished `3.0.59`
 - host-approved `cline` executable and isolated environment
 - `cline_local_account_access_profile` with no credential reference
 - working resource, plus host services for task, process, and working-resource
   ownership
 
 The ACP claim keeps its `3.0.55` baseline and behavior revision, qualifies
-published stable versions through `3.0.69`, and excludes unpublished `3.0.59`
-(Research 383). Later stable points remain visible as `UnverifiedNewer` under
+published stable versions through `3.0.70`, and excludes unpublished `3.0.59`
+(Research 394). Later stable points remain visible as `UnverifiedNewer` under
 the claim.
 
 Swallowtail does not install Cline, search `PATH`, run OAuth `authenticate`,
@@ -105,9 +105,9 @@ usage, session load, or live qualification requires a separate card, exact
 version evidence, and matrix coverage. An advertised ACP capability or CLI flag
 alone is insufficient.
 
-Research 383 freezes the published npm package hops, wrapper and Darwin ARM64
+Research 394 freezes the published npm package hops, wrapper and Darwin ARM64
 runtime trees, platform provenance, and selected ACP source deltas through
-`3.0.69`. It does not add provider model catalogue, media output, request
+`3.0.70`. It does not add provider model catalogue, media output, request
 identity, usage, or session-load mappings. Q-006 owns the open disposition of
 the unmapped `load_session` feature cell.
 

@@ -3,10 +3,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use base64::{Engine, engine::general_purpose::STANDARD};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
-use swallowtail_adapter_cline::{
-    CLINE_PACKAGE_VERSION, cline_acp_claim, cline_headless_claim, cline_package_binding,
-};
-use swallowtail_core::InterfaceCompatibilityAssessment;
+use swallowtail_adapter_cline::{CLINE_PACKAGE_VERSION, cline_acp_claim, cline_headless_claim};
+use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
 const IDENTITY: &str = include_str!("fixtures/cline-acp-3.0.70/release-identity.json");
 const DIST: &str = include_str!("fixtures/cline-acp-3.0.70/dist-inventory.json");
@@ -101,24 +99,26 @@ fn official_latest_extends_only_the_existing_acp_window() {
     );
     assert_eq!(claim.id().as_str(), "cline.acp.package-window-1");
     for version in VERSIONS {
-        let binding = cline_package_binding(version).expect("published stable exact version");
-        assert!(claim.assess(binding.version()).is_permitted(), "{version}");
+        let version = InterfaceVersion::new(*version).expect("published stable version");
+        assert!(
+            claim.assess(&version).is_permitted(),
+            "{}",
+            version.as_str()
+        );
     }
-    let excluded = cline_package_binding("3.0.59").expect("unpublished stable parses");
-    assert!(!claim.assess(excluded.version()).is_permitted());
-    let unverified = cline_package_binding("3.0.71").expect("next stable exact version");
+    let excluded = InterfaceVersion::new("3.0.59").expect("unpublished stable version");
+    assert!(!claim.assess(&excluded).is_permitted());
+    let unverified = InterfaceVersion::new("3.0.71").expect("next stable version");
     assert!(matches!(
-        claim.assess(unverified.version()),
+        claim.assess(&unverified),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 
     let headless = cline_headless_claim();
-    assert_eq!(headless.latest_qualified().as_str(), CLINE_PACKAGE_VERSION);
-    assert!(
-        !headless
-            .assess(cline_package_binding("3.0.70").unwrap().version())
-            .is_permitted()
-    );
+    assert_eq!(headless.baseline().as_str(), CLINE_PACKAGE_VERSION);
+    assert_eq!(headless.latest_qualified().as_str(), "3.0.70");
+    assert!(headless.permits(&InterfaceVersion::new("3.0.70").expect("headless ceiling")));
+    assert!(!headless.permits(&excluded));
 }
 
 #[test]

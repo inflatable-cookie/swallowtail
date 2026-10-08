@@ -69,7 +69,7 @@ fn frozen_identity_keeps_headless_json_separate_from_acp_and_auto_approve() {
     assert!(!claim.permits(&InterfaceVersion::new("3.0.59").expect("hole")));
     assert!(!claim.permits(&InterfaceVersion::new("3.0.71").expect("newer")));
     assert!(cline_acp_claim().permits(&version));
-    assert!(!cline_acp_claim().permits(&InterfaceVersion::new("3.0.70").expect("headless")));
+    assert!(cline_acp_claim().permits(&InterfaceVersion::new("3.0.70").expect("qualified ACP")));
 }
 
 #[test]

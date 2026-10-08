@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:docs/research/383-cline-acp-3-0-69-identity-and-qualification.md
-# Research 383: Cline ACP 3.0.69 Identity and Qualification
-========
-# Research 385: Cline ACP 3.0.70 Identity and Qualification
->>>>>>>> be78dc6 (Extend Cline ACP qualification to 3.0.70):docs/research/385-cline-acp-3-0-70-identity-and-qualification.md
+# Research 394: Cline ACP 3.0.70 Identity and Qualification
 
 Status: promoted.
 
@@ -86,7 +82,9 @@ does not alter a selected Swallowtail capability or contract.
 Extend only the ACP package claim as Maintained `3.0.55..=3.0.70`, excluding
 `3.0.59`, with `AllowUnverified` for newer stable versions. Retain the claim
 id, `cline.acp.stdio-v1` behavior revision, baseline, and existing exclusions.
-The headless claim remains exact `3.0.55`. Provider model catalogues, generated
+The independently qualified headless claim remains Maintained
+`3.0.55..=3.0.70` except unpublished `3.0.59`, with its own behavior revision
+and claim id. Provider model catalogues, generated
 image/media output, request identity headers, usage, and `session/load` remain
 outside Swallowtail's mapped surface. No public operation, authority, or
 consumer-visible lifecycle change is introduced.

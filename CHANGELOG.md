@@ -15,6 +15,15 @@ annotated Git tags from the canonical repository.
   qualify newer points; HTTP MCP live honouring remains exact `2.21.4`. No
   artifact execution, provider work, credential use, installation, or host
   mutation occurred.
+- qualify only `cline.acp` from its existing `3.0.55` baseline through official
+  npm `latest` `3.0.70`, excluding unpublished `3.0.59`. Research 394 freezes
+  all fourteen published hops, wrapper and six-platform package provenance,
+  complete wrapper and Darwin ARM64 runtime trees, and selected ACP source
+  changes. Preserve `cline.acp.stdio-v1`, existing route limits, and the
+  `load_session` evidence gate in Q-006. The independently qualified headless
+  window through `3.0.70` is unchanged. No artifact was executed and no
+  provider prompt, live session, credential, installation, or host update
+  occurred.
 - qualify only `cline.headless` through official npm stable `3.0.70` after
   every published hop from `3.0.55`; preserve `3.0.55`, the existing behavior
   revision, and the unpublished `3.0.59` exclusion. Research 390 freezes all
@@ -23,7 +32,8 @@ annotated Git tags from the canonical repository.
   ledger. Headless keeps its JSON envelope and fail-closed media handling;
   Cline may retry or continue provider work internally from `3.0.62`, while
   Swallowtail still launches one bounded process and exposes no attempt or
-  usage records. ACP remains exact `3.0.55`. No artifact ran and no provider
+  usage records. ACP is independently qualified through `3.0.70` under
+  Research 394. No artifact ran and no provider
   prompt, credentials, install, or host update occurred.
 - extend the Qoder `qoder.headless` claim from `1.1.54` through maintained
   stable `1.1.65`, retaining `QualifiedOnly`, the baseline, claim id and

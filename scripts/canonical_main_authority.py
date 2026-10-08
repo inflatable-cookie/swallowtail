@@ -6,6 +6,7 @@ import os
 import re
 import subprocess
 import tempfile
+from collections import defaultdict
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
@@ -18,6 +19,9 @@ ISOLATED_CONFIG = (
     "http.sslVerify=true",
     "http.followRedirects=false",
     "core.quotePath=false",
+)
+NUMBERED_RESEARCH = re.compile(
+    r"^docs/research/(?P<number>\d{3})-(?P<slug>.+)\.(?:md|tsv|csv)$"
 )
 
 
@@ -184,9 +188,46 @@ def occupancy_paths(store: Path, env: dict[str, str], sha: str) -> list[str]:
     return decode_z_paths(proc.stdout)
 
 
-def refresh_authority(authority: str, ref: str) -> tuple[str, list[str]]:
+def colliding_research_paths(paths: list[str]) -> list[str]:
+    grouped: dict[str, set[str]] = defaultdict(set)
+    for path in paths:
+        match = NUMBERED_RESEARCH.fullmatch(path)
+        if match is not None:
+            grouped[match.group("number")].add(match.group("slug"))
+    collisions = {
+        number for number, slugs in grouped.items() if len(slugs) > 1
+    }
+    return [
+        path
+        for path in paths
+        if (match := NUMBERED_RESEARCH.fullmatch(path)) is not None
+        and match.group("number") in collisions
+    ]
+
+
+def research_contents(
+    store: Path, env: dict[str, str], sha: str, paths: list[str]
+) -> dict[str, bytes]:
+    contents: dict[str, bytes] = {}
+    for path in paths:
+        proc = isolated_git(store, env, "show", f"{sha}:{path}", text=False)
+        if proc.returncode != 0:
+            raise AuthorityError(
+                f"cannot read canonical research record {path}: {git_detail(proc)}"
+            )
+        contents[path] = proc.stdout
+    return contents
+
+
+def refresh_authority(
+    authority: str, ref: str
+) -> tuple[str, list[str], dict[str, bytes]]:
     with isolated_git_store() as (store, env):
         resolved_authority_url(store, env, authority)
         sha = advertised_authority_sha(store, env, authority, ref)
         fetch_authority_sha(store, env, authority, sha)
-        return sha, occupancy_paths(store, env, sha)
+        paths = occupancy_paths(store, env, sha)
+        contents = research_contents(
+            store, env, sha, colliding_research_paths(paths)
+        )
+        return sha, paths, contents

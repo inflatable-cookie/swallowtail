@@ -60,7 +60,9 @@ def format_slugs(slugs: set[str] | frozenset[str]) -> str:
     return ", ".join(sorted(slugs))
 
 
-def occupancy_from_paths(paths: list[str], source: str) -> dict[str, set[str]]:
+def occupancy_from_paths(
+    paths: list[str], source: str, *, reject_collisions: bool = True
+) -> dict[str, set[str]]:
     grouped: dict[str, set[str]] = defaultdict(set)
     for relative in paths:
         record = classify(relative)
@@ -71,13 +73,25 @@ def occupancy_from_paths(paths: list[str], source: str) -> dict[str, set[str]]:
 
     occupancy: dict[str, set[str]] = {}
     for number, slugs in sorted(grouped.items()):
-        if len(slugs) > 1 and ALLOWLISTED_COLLISIONS.get(number) != slugs:
+        if (
+            reject_collisions
+            and len(slugs) > 1
+            and ALLOWLISTED_COLLISIONS.get(number) != slugs
+        ):
             fail(
                 f"{source} research number {number} is assigned to different "
                 f"records ({format_slugs(slugs)})"
             )
         occupancy[number] = slugs
     return occupancy
+
+
+def record_identity(relative: str) -> tuple[str, str, str] | None:
+    record = classify(relative)
+    if record is None:
+        return None
+    number, slug = record
+    return number, slug, Path(relative).suffix
 
 
 def working_tree_paths(root: Path) -> list[str]:
@@ -140,10 +154,128 @@ def resolve_commit(root: Path, ref: str) -> str | None:
     return sha or None
 
 
+def git_file_contents(root: Path, commit: str, relative: str) -> bytes:
+    proc = subprocess.run(
+        ["git", "-C", str(root), "show", f"{commit}:{relative}"],
+        check=False,
+        capture_output=True,
+    )
+    if proc.returncode != 0:
+        detail = (
+            proc.stderr.decode("utf-8", "replace").strip()
+            or proc.stdout.decode("utf-8", "replace").strip()
+            or f"exit {proc.returncode}"
+        )
+        fail(f"cannot read base research record {relative}: {detail}")
+    return proc.stdout
+
+
+def renumbered_record_matches(
+    original: bytes, candidate: bytes, original_number: str, new_number: str
+) -> bool:
+    if original == candidate:
+        return True
+    original_heading = f"# Research {original_number}:".encode()
+    if not original.startswith(original_heading):
+        return False
+    candidate_heading = f"# Research {new_number}:".encode()
+    expected = candidate_heading + original[len(original_heading) :]
+    return candidate == expected
+
+
+def base_record_contents(
+    root: Path,
+    relative: str,
+    contents: dict[str, bytes],
+    commit: str | None,
+) -> bytes:
+    original = contents.get(relative)
+    if original is not None:
+        return original
+    if commit is None:
+        fail(
+            "canonical authority omitted bytes needed to prove retention of "
+            f"{relative}"
+        )
+    return git_file_contents(root, commit, relative)
+
+
 def check_against_base(
-    head: dict[str, set[str]], base_paths: list[str], base_label: str
+    root: Path,
+    head: dict[str, set[str]],
+    head_paths: list[str],
+    base_paths: list[str],
+    base_contents: dict[str, bytes],
+    base_label: str,
+    base_commit: str | None = None,
 ) -> None:
-    base = occupancy_from_paths(base_paths, base_label)
+    base = occupancy_from_paths(base_paths, base_label, reject_collisions=False)
+    unapproved_base_collisions = {
+        number
+        for number, slugs in base.items()
+        if len(slugs) > 1 and ALLOWLISTED_COLLISIONS.get(number) != slugs
+    }
+    head_path_set = set(head_paths)
+    head_identities = [
+        (relative, record_identity(relative)) for relative in head_paths
+    ]
+
+    for number in sorted(unapproved_base_collisions):
+        colliding_paths = [
+            relative
+            for relative in base_paths
+            if (identity := record_identity(relative)) is not None
+            and identity[0] == number
+        ]
+        for original_path in colliding_paths:
+            if original_path in head_path_set:
+                original = base_record_contents(
+                    root, original_path, base_contents, base_commit
+                )
+                if (root / original_path).read_bytes() != original:
+                    fail(
+                        f"canonical collision record {original_path} changed in "
+                        "place; preserve its evidence bytes"
+                    )
+                continue
+            identity = record_identity(original_path)
+            assert identity is not None
+            original_number, slug, extension = identity
+            candidates = [
+                relative
+                for relative, candidate_identity in head_identities
+                if candidate_identity is not None
+                and candidate_identity[0] != original_number
+                and candidate_identity[1] == slug
+                and candidate_identity[2] == extension
+            ]
+            if len(candidates) != 1:
+                fail(
+                    f"canonical collision repair must retain {original_path}; "
+                    "keep it or move the same record to one fresh unused number"
+                )
+
+            candidate_path = candidates[0]
+            candidate_identity = record_identity(candidate_path)
+            assert candidate_identity is not None
+            new_number = candidate_identity[0]
+            if new_number in base:
+                fail(
+                    f"canonical collision repair target {new_number} is already "
+                    f"occupied in {base_label}"
+                )
+            original = base_record_contents(
+                root, original_path, base_contents, base_commit
+            )
+            candidate = (root / candidate_path).read_bytes()
+            if not renumbered_record_matches(
+                original, candidate, original_number, new_number
+            ):
+                fail(
+                    f"canonical collision repair changed {original_path}; only "
+                    "its numbered heading and path may change"
+                )
+
     collisions: list[str] = []
     for number, head_slugs in sorted(head.items()):
         base_slugs = base.get(number)
@@ -211,7 +343,8 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     root = args.root.resolve()
-    head = occupancy_from_paths(working_tree_paths(root), "working tree")
+    head_paths = working_tree_paths(root)
+    head = occupancy_from_paths(head_paths, "working tree")
     if args.local_base:
         base_sha = resolve_commit(root, args.local_base)
         if base_sha is None:
@@ -221,13 +354,24 @@ def main(argv: list[str] | None = None) -> None:
             )
         base_label = f"local base {args.local_base}"
         base_paths = git_paths(root, base_sha)
+        base_contents: dict[str, bytes] = {}
     else:
         try:
-            _base_sha, base_paths = refresh_authority(args.authority, args.ref)
+            _base_sha, base_paths, base_contents = refresh_authority(
+                args.authority, args.ref
+            )
         except AuthorityError as exc:
             fail_refresh(args.authority, args.ref, str(exc))
         base_label = f"canonical main ({args.authority} {args.ref})"
-    check_against_base(head, base_paths, base_label)
+    check_against_base(
+        root,
+        head,
+        head_paths,
+        base_paths,
+        base_contents,
+        base_label,
+        base_sha if args.local_base else None,
+    )
 
 
 if __name__ == "__main__":

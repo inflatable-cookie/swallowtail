@@ -123,8 +123,12 @@ actual_files = {path.name for path in candidate.iterdir() if path.is_file()}
 if actual_files != expected_files:
     raise SystemExit("candidate API baseline has a missing or unexpected file")
 for package in packages:
-    old = set((previous / f"{package}.txt").read_text(encoding="utf-8").splitlines())
-    new = set((candidate / f"{package}.txt").read_text(encoding="utf-8").splitlines())
+    old_text = (previous / f"{package}.txt").read_text(encoding="utf-8")
+    new_text = (candidate / f"{package}.txt").read_text(encoding="utf-8")
+    if package != "swallowtail-runtime" and new_text != old_text:
+        raise SystemExit(f"candidate baseline changes unchanged API package {package}")
+    old = set(old_text.splitlines())
+    new = set(new_text.splitlines())
     removed = sorted(old - new)
     if removed:
         raise SystemExit(f"candidate API baseline removes {package} items: {removed}")
@@ -206,11 +210,15 @@ candidate_prepare_baselines() {
   previous="$candidate_repo_root/release-baselines/public-api-0.5.1"
   current="$candidate_repo_root/release-baselines/public-api-$candidate_version"
   [[ -d $previous ]] || candidate_die "immutable v0.5.1 API baseline is missing"
-  [[ ! -e $current ]] || candidate_die "refusing to overwrite candidate API baselines"
-  [[ ! -e "$candidate_repo_root/release-baselines/production-routes-$candidate_version.txt" ]] ||
-    candidate_die "refusing to overwrite candidate route baseline"
-  [[ ! -e "$candidate_repo_root/release-baselines/internal-dependencies-$candidate_version.tsv" ]] ||
-    candidate_die "refusing to overwrite candidate dependency baseline"
+  if [[ -e $current ]]; then
+    [[ -d $current ]] || candidate_die "candidate API baseline path is not a directory"
+    candidate_check_api_baselines
+  else
+    [[ ! -e "$candidate_repo_root/release-baselines/production-routes-$candidate_version.txt" ]] ||
+      candidate_die "candidate route baseline exists without its API baseline"
+    [[ ! -e "$candidate_repo_root/release-baselines/internal-dependencies-$candidate_version.tsv" ]] ||
+      candidate_die "candidate dependency baseline exists without its API baseline"
+  fi
   scratch=$(candidate_scratch)
   candidate_active_scratch=$scratch
   output_root="$scratch/api"
@@ -222,8 +230,9 @@ candidate_prepare_baselines() {
       cd "$candidate_repo_root"
       CARGO_TARGET_DIR="$target_root" cargo +"$toolchain" public-api \
         --package "$package" --all-features \
-        --simplified --simplified --simplified --color never
-    ) | LC_ALL=C sort > "$output_root/$package.txt"
+        --simplified --simplified --simplified --color never \
+        > "$output_root/$package.txt"
+    )
     python3 - "$package" "$output_root/$package.txt" "$previous/$package.txt" "$candidate_manifest" <<'PY'
 import json
 import sys
@@ -247,15 +256,18 @@ if missing or unexpected or len(added) != len(expected):
 PY
   done < <(candidate_manifest_value api_packages)
 
-  cp -R "$previous" "$current"
+  [[ -d $current ]] || cp -R "$previous" "$current"
   while IFS= read -r package; do
     [[ -n $package ]] || continue
     cp "$output_root/$package.txt" "$current/$package.txt"
   done < <(candidate_manifest_value api_packages)
-  cp "$candidate_repo_root/release-baselines/production-routes-0.5.1.txt" \
-    "$candidate_repo_root/release-baselines/production-routes-$candidate_version.txt"
-  python3 - "$candidate_repo_root/release-baselines/internal-dependencies-0.5.1.tsv" \
-    "$candidate_repo_root/release-baselines/internal-dependencies-$candidate_version.tsv" <<'PY'
+  if [[ ! -e "$candidate_repo_root/release-baselines/production-routes-$candidate_version.txt" ]]; then
+    cp "$candidate_repo_root/release-baselines/production-routes-0.5.1.txt" \
+      "$candidate_repo_root/release-baselines/production-routes-$candidate_version.txt"
+  fi
+  if [[ ! -e "$candidate_repo_root/release-baselines/internal-dependencies-$candidate_version.tsv" ]]; then
+    python3 - "$candidate_repo_root/release-baselines/internal-dependencies-0.5.1.tsv" \
+      "$candidate_repo_root/release-baselines/internal-dependencies-$candidate_version.tsv" <<'PY'
 from pathlib import Path
 import sys
 
@@ -265,6 +277,7 @@ if "^0.5.1" not in contents:
     raise SystemExit("v0.5.1 internal dependency inventory has no coordinated requirements")
 destination.write_text(contents.replace("^0.5.1", "^0.5.2"), encoding="utf-8")
 PY
+  fi
   printf 'prepared v0.5.2 package, route, dependency, and API baselines from the actual candidate; v0.5.1 files were not changed\n'
   printf 'API baseline generation used only the three affected packages; temporary output was removed\n'
   rm -rf "$scratch"

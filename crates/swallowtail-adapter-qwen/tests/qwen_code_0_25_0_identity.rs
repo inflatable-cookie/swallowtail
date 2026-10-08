@@ -175,7 +175,7 @@ fn official_identity_freezes_npm_latest_and_preserves_the_claim_shape() {
         InterfaceCompatibilityAssessment::Incompatible
     );
     assert!(matches!(
-        claim.assess(&version("0.26.0")),
+        claim.assess(&version("0.25.1")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

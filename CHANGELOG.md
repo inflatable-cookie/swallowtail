@@ -8,7 +8,7 @@ annotated Git tags from the canonical repository.
 ### Notes
 - qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
   `0.25.0` on the existing `qwen-code.headless.v0.21.15-reasoning-control`
-  revision. Research 374 freezes all six published hops after `0.24.2`, with
+  revision. Research 375 freezes all six published hops after `0.24.2`, with
   complete npm tree inventories and per-hop mapped-source review. A private
   read-only working-resource guard rejects the Qwen SSH workspace path before
   run or turn process start while preserving local resource and delegated-auth

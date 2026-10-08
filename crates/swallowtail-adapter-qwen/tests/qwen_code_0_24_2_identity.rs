@@ -123,7 +123,7 @@ fn production_claim_excludes_the_documented_unpublished_interior_gaps() {
         InterfaceCompatibilityAssessment::Incompatible
     );
     assert!(matches!(
-        claim.assess(&version("0.26.0")),
+        claim.assess(&version("0.25.1")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

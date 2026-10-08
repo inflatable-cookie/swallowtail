@@ -1,8 +1,13 @@
-# Research 374: Qwen Code 0.25.0 Identity And Headless Qualification
+# Research 375: Qwen Code 0.25.0 Identity And Headless Qualification
 
 Observed 2026-10-07. This record qualifies only `qwen.headless` on the npm
 package `@qwen-code/qwen-code`. It follows Research 334's `0.24.2` ceiling
 and does not borrow evidence from a sibling Qwen route.
+
+The 2026-10-08 pre-push recheck of `npm view @qwen-code/qwen-code dist-tags
+--json` returned `latest=0.25.0`, `preview=0.25.1-preview.0`, and
+`nightly=0.25.0-nightly.20261007.8003d28042`. No new stable hop appeared
+after `0.25.0`, so the frozen hop ledger and qualification point remain current.
 
 ## Decision
 

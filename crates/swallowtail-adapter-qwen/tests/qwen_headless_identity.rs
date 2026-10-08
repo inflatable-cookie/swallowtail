@@ -428,7 +428,7 @@ fn identity_and_claim_qualify_0_22_1_as_compatible_extension() {
         InterfaceCompatibilityAssessment::Incompatible
     );
     assert!(matches!(
-        claim.assess(&version("0.26.0")),
+        claim.assess(&version("0.25.1")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
@@ -544,7 +544,7 @@ fn identity_and_claim_qualify_0_22_2_as_compatible_extension() {
         InterfaceCompatibilityAssessment::Incompatible
     );
     assert!(matches!(
-        claim.assess(&version("0.26.0")),
+        claim.assess(&version("0.25.1")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(
@@ -671,7 +671,7 @@ fn identity_and_claim_qualify_0_22_3_as_compatible_extension() {
         InterfaceCompatibilityAssessment::Incompatible
     );
     assert!(matches!(
-        claim.assess(&version("0.26.0")),
+        claim.assess(&version("0.25.1")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(

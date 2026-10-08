@@ -229,7 +229,7 @@ mod tests {
             InterfaceCompatibilityAssessment::Incompatible
         );
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.26.0"))
+            claim.assess(&version("0.25.1"))
         else {
             panic!("later stable Qwen remains unverified");
         };

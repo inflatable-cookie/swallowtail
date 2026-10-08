@@ -1,4 +1,4 @@
-# Research 407: Gemini CLI 0.63.0 Headless Authority Adaptation Stop
+# Research 410: Gemini CLI 0.63.0 Headless Authority Adaptation Stop
 
 Status: promoted; no compatibility claim moves
 

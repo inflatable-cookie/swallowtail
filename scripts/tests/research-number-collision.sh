@@ -60,13 +60,15 @@ write_record "$seed" 328-goose-acp-1-50-1-failure-binding-reopen.md
 write_record "$seed" 328-qoder-headless-1-1-54-identity.md
 write_record "$seed" 337-opencode-acp-1-18-32-identity.md
 write_record "$seed" 337-opencode-acp-unavailable-cells.tsv
+write_record "$seed" 382-grok-build-acp-1-0-46-identity.md
+write_record "$seed" 382-oh-my-pi-18-8-3-identity-and-qualification.md
 git_test "$seed" add docs
 git_test "$seed" commit -q -m 'seed research records'
 git_test "$scratch" clone -q --bare "$seed" "$canonical"
 git_test "$scratch" clone -q "$canonical" "$worker"
 git_test "$scratch" clone -q "$canonical" "$updater"
 
-# Same-slug companions and the exact 328 and 337 pairs remain valid.
+# Same-slug companions and the exact 328, 337, and 382 pairs remain valid.
 write_record "$worker" 101-companion.md
 write_record "$worker" 101-companion.tsv
 write_record "$worker" 101-companion.csv

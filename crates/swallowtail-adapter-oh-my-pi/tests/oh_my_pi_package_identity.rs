@@ -79,7 +79,7 @@ fn identity_and_claim_qualify_17_3_7_as_compatible_extension() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(OH_MY_PI_PACKAGE_BASELINE_VERSION, "17.2.9");
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.2.7");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.8.3");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "17.2.9"
@@ -182,7 +182,7 @@ fn identity_and_claim_qualify_17_3_8_as_compatible_extension() {
     assert_eq!(protocol["decoder_corpus"], "oh-my-pi-rpc-17.2.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.2.7");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.8.3");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "17.3.7"
@@ -292,7 +292,7 @@ fn identity_and_claim_qualify_17_4_0_as_compatible_extension() {
     assert_eq!(protocol["decoder_corpus"], "oh-my-pi-rpc-17.2.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.2.7");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.8.3");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "17.3.8"
@@ -398,7 +398,7 @@ fn identity_stops_18_0_5_after_official_latest_moved() {
     assert_eq!(protocol["decoder_corpus"], "oh-my-pi-rpc-17.2.9");
     assert_eq!(protocol["provider_prompt_sent"], false);
 
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.2.7");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.8.3");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "17.4.0"
@@ -422,6 +422,7 @@ fn identity_stops_18_0_5_after_official_latest_moved() {
     }
     for value in [
         "18.0.5", "18.0.6", "18.0.0", "18.0.1", "18.0.3", "18.1.16", "18.1.22", "18.2.0", "18.2.7",
+        "18.8.3",
     ] {
         assert!(
             matches!(
@@ -432,7 +433,7 @@ fn identity_stops_18_0_5_after_official_latest_moved() {
             "{value} is qualified on the 18.x segment"
         );
     }
-    for value in ["18.0.2", "18.1.7"] {
+    for value in ["18.0.2", "18.1.7", "18.4.7", "18.6.2"] {
         assert!(
             matches!(
                 claim.assess(&version(value)),
@@ -442,7 +443,7 @@ fn identity_stops_18_0_5_after_official_latest_moved() {
         );
     }
     assert!(matches!(
-        claim.assess(&version("18.2.8")),
+        claim.assess(&version("18.8.4")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

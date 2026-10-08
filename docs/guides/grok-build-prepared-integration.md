@@ -47,8 +47,10 @@ or fall back to an API key. ACP activation uses only the advertised
 `cached_token` mechanism after initialization.
 
 Versions `0.2.114..=0.2.117` remain permitted as deprecated segments on
-`grok-build.executable`. `1.0.4` through `1.0.41` are the maintained window
-and bind `grok-4.6`. Exact `0.2.117` keeps its private task-control behavior
+`grok-build.executable`. `1.0.4` through `1.0.46` are the maintained window
+and bind `grok-4.6`. Official npm `latest` is `1.0.46`; published
+`1.0.47` through `1.0.49` have no selected-channel tag and remain
+`UnverifiedNewer`. The `alpha` tag at `1.0.50` is excluded. Exact `0.2.117` keeps its private task-control behavior
 revision. Mid-gap `0.2.118..=0.2.121` and unprobed `1.0.0..=1.0.3`
 are incompatible.
 
@@ -66,7 +68,7 @@ bound to that exact target and host.
 
 Both operations require `GrokModelSelection` for the model qualified to the
 admitted executable behavior: `grok-4.5` on the `0.2` segments, `grok-4.6` on
-`1.0.4` through `1.0.41` and permitted unverified-newer points that inherit that
+`1.0.4` through `1.0.46` and permitted unverified-newer points that inherit that
 milestone. No model fallback is performed. Interactive initialization may expose
 authorized session model options on the returned handle; that observation
 does not become a standalone provider catalogue. That negotiated evidence stays

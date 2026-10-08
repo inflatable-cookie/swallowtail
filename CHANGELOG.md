@@ -7,7 +7,7 @@ annotated Git tags from the canonical repository.
 
 ### Notes
 - qualify `pi.rpc` through official npm `latest` and GitHub latest stable
-  `1.1.0` after every published hop following `0.86.1`. Research 382 freezes
+  `1.1.0` after every published hop following `0.86.1`. Research 383 freezes
   exact package and source identity, complete npm trees, runtime chunks, and
   per-hop selected-source classifications. Preserve baseline `0.80.10`, the
   existing claim and behavior revisions, all prior segments and gaps. Add
@@ -22,6 +22,19 @@ annotated Git tags from the canonical repository.
   catalogue axes stay exact. Research 381 freezes every selected-channel hop
   and full package trees, plus the ConverseStream request, EventStream, usage,
   and failure boundaries; no AWS calls or host mutation occurred.
+- qualify `oh-my-pi.rpc` through official npm `latest` and GitHub latest
+  stable `18.8.3` on the existing `oh-my-pi.rpc-v2-v18.0.0` revision.
+  Research 382 freezes all 32 published hops after `18.2.7`, exact npm
+  artifact and runtime identity, complete package trees, and selected
+  source classifications. Extend maintained `18.0.0..=18.8.3`; retain
+  deprecated `17.2.9..=17.4.2`, claim id, decoder corpus, and exclusions
+  `18.0.2`, `18.1.7`, `18.4.7`, and `18.6.2`. The selected commands,
+  tools, frame bounds, lifecycle/failure/usage mapping, and permission
+  tier stay fixed. Provider-internal URI resources remain within Oh My Pi's
+  existing ambient `read` tool; new RPC commands stay unselected. No provider
+  work, artifact execution, install, or host update occurred. A final channel
+  recheck found official `18.8.4` published after the identity commit; it stays
+  `UnverifiedNewer` pending a separate currentness qualification.
 - qualify only `antigravity.catalogue` through official Antigravity CLI `1.3.1`
   after published stable hops `1.2.12`–`1.2.17`, `1.3.0`, and `1.3.1`.
   Research 380 freezes source commits, complete release asset manifests, and
@@ -66,6 +79,15 @@ annotated Git tags from the canonical repository.
   379 freezes the release identities and complete source trees and names the
   ruling/adaptation needed before the claim can move again. No local runtime,
   provider prompt, model download, or host mutation occurred.
+- qualify `grok-build.acp` through current official npm `@xai-official/grok`
+  `1.0.46`. Research 340 freezes published stable hops `1.0.31..=1.0.41`
+  after the exact `1.0.30` catalogue ceiling; Research 382 freezes hops
+  `1.0.42..=1.0.46`, their wrapper and platform package trees, runtime digests,
+  and selected ACP surface inventories. Mapped wire and lifecycle evidence
+  stays on `grok-build.acp-v1.cached-token-model-4-6-v3`.
+  Published `1.0.47` through `1.0.49` remain `UnverifiedNewer`; alpha-tagged
+  `1.0.50` is excluded. The `1.0.30` catalogue, exact `1.0.4`/`1.0.5`
+  registered-tool courier, and HTTP MCP evidence remain independently bounded.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,
@@ -284,19 +306,6 @@ annotated Git tags from the canonical repository.
   directory. The nine `@builtin` plugins that `--safe-mode` keeps from
   `2.1.280` are disclosed in the Claude prepared guide. Watcher stays exact
   `2.1.251`. Research 348.
-- raise the Grok Build ACP executable window through the current official
-  npm `@xai-official/grok` `1.0.41`: Research 340 freezes all eleven
-  published stables `1.0.31..=1.0.41` after the `1.0.30` ceiling with
-  verified linux-x64 identity, a darwin-arm64 cross-check that reproduces
-  Research 314, a byte-identical selected-literal presence map, an
-  unchanged `grok-4.6` model document, the 62 mapped-core ACP modules, and
-  a complete shipped-file inventory. The `1.0.41` hop adds one unmapped
-  `subagent_handoff` module and moves no mapped surface. The claim keeps
-  baseline `0.2.114`, claim id `grok-build.acp.executable-window-2`,
-  behavior `grok-build.acp-v1.cached-token-model-4-6-v3`, and
-  `AllowUnverified`, and extends the maintained window `1.0.4..=1.0.41`.
-  The exact `1.0.30` catalogue claim and the `1.0.4`/`1.0.5`
-  registered-tool courier stay independently bounded.
 - freeze Claude Code `2.1.280` and `2.1.281` official artifacts and built-in
   hooks in Research 341. The `2.1.281` default-enabled `agents-md` hook can
   add project instructions despite `--safe-mode`; no selected writable

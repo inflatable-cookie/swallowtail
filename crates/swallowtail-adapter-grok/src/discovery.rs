@@ -15,7 +15,7 @@ use crate::failure::failure;
 use crate::{grok_build_acp_binding, grok_build_acp_claim};
 
 const MAX_VERSION_OUTPUT_BYTES: usize = 96;
-const QUALIFIED_SOURCE_REVISIONS: &[(&str, &str)] = &[
+const QUALIFIED_RUNTIME_BUILD_IDS: &[(&str, &str)] = &[
     ("0.2.114", "0c785038798"),
     ("0.2.115", "dd16b5eb7d50"),
     ("0.2.116", "99b387d2cc0e"),
@@ -58,6 +58,11 @@ const QUALIFIED_SOURCE_REVISIONS: &[(&str, &str)] = &[
     ("1.0.39", "0b340e9ac868"),
     ("1.0.40", "eb1a2256660d"),
     ("1.0.41", "4220f3b224a6"),
+    ("1.0.42", "4651fbdf9f13"),
+    ("1.0.43", "65c3c5803056"),
+    ("1.0.44", "5b807183dd79"),
+    ("1.0.45", "c33bff361a6f"),
+    ("1.0.46", "2765805b9442"),
 ];
 
 // Vendor source: https://docs.x.ai/build/overview (frozen 2026-09-06).
@@ -336,14 +341,14 @@ fn parse_version(output: &[u8]) -> Option<swallowtail_core::InterfaceVersionBind
     {
         return None;
     }
-    if qualified_source_revision(version).is_some_and(|expected| revision != expected) {
+    if qualified_runtime_build_id(version).is_some_and(|expected| revision != expected) {
         return None;
     }
     grok_build_acp_binding(version)
 }
 
-fn qualified_source_revision(version: &str) -> Option<&'static str> {
-    QUALIFIED_SOURCE_REVISIONS
+fn qualified_runtime_build_id(version: &str) -> Option<&'static str> {
+    QUALIFIED_RUNTIME_BUILD_IDS
         .iter()
         .find_map(|(candidate, revision)| (*candidate == version).then_some(*revision))
 }
@@ -402,9 +407,9 @@ mod tests {
     }
 
     #[test]
-    fn parser_requires_stable_channel_and_every_exact_qualified_revision() {
-        for (version, revision) in super::QUALIFIED_SOURCE_REVISIONS {
-            let output = format!("grok {version} ({revision}) [stable]\n");
+    fn parser_requires_stable_channel_and_every_exact_qualified_build_id() {
+        for (version, build_id) in super::QUALIFIED_RUNTIME_BUILD_IDS {
+            let output = format!("grok {version} ({build_id}) [stable]\n");
             assert_eq!(
                 parse_version(output.as_bytes())
                     .unwrap_or_else(|| panic!("{version} must parse"))
@@ -417,7 +422,7 @@ mod tests {
         // classification is the claim's job, not the version scanner's.
         for (output, version) in [
             ("grok 0.2.118 (123456789abc) [stable]\n", "0.2.118"),
-            ("grok 1.0.42 (04b7ffed98c6) [stable]\n", "1.0.42"),
+            ("grok 1.0.47 (04b7ffed98c6) [stable]\n", "1.0.47"),
             ("grok 1.1.0 (04b7ffed98c6) [stable]\n", "1.1.0"),
         ] {
             assert_eq!(
@@ -440,6 +445,11 @@ mod tests {
             b"grok 1.0.30 (f7e67d6988e2) [stable]\n".as_slice(),
             b"grok 1.0.40 (04b7ffed98c6) [stable]\n".as_slice(),
             b"grok 1.0.41 (04b7ffed98c6) [stable]\n".as_slice(),
+            b"grok 1.0.42 (04b7ffed98c6) [stable]\n".as_slice(),
+            b"grok 1.0.43 (04b7ffed98c6) [stable]\n".as_slice(),
+            b"grok 1.0.44 (04b7ffed98c6) [stable]\n".as_slice(),
+            b"grok 1.0.45 (04b7ffed98c6) [stable]\n".as_slice(),
+            b"grok 1.0.46 (04b7ffed98c6) [stable]\n".as_slice(),
             b"grok 0.2.114 (0c785038798) [alpha]\n".as_slice(),
             b"grok 0.2.114 (0c785038798)\n".as_slice(),
             b"0.2.114\n".as_slice(),

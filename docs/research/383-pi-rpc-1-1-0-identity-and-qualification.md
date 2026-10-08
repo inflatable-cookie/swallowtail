@@ -1,4 +1,4 @@
-# 382 Pi RPC 1.1.0 Identity and Qualification
+# 383 Pi RPC 1.1.0 Identity and Qualification
 
 Observed 2026-10-08. Scope is `pi.rpc` on `pi.package` only. The official npm
 `latest` channel for `@earendil-works/pi-coding-agent` and the GitHub latest

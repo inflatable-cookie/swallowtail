@@ -388,14 +388,15 @@ OpenHands adds a package without a production route.
   persistent new, load-with-replay, and replay-free resume gated on the exact
   host-leased cwd
 - `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.4.2`
-  (retained, deprecated) and `18.0.0..=18.2.7` (maintained) package segments
+  (retained, deprecated) and `18.0.0..=18.8.3` (maintained) package segments
   and `omp` executable over negotiated RPC v2 JSONL stdio. The two segments
   carry separate adapter-private behavior revisions. It uses OMP local
   auth without a Swallowtail credential lease, binds exact provider, model,
   and optional reasoning selection, and owns bounded physical/logical frame
   decoding. Its first catalogue, run, and session subset omits write tools,
   permission exchange, session switching, host-tool injection, and subagent
-  authority
+  authority. Official stable `18.8.4` appeared after identity freeze and
+  remains `UnverifiedNewer` without widening the `18.x` claim (Research 382).
 - `swallowtail-adapter-muse` implements exact signed Muse Code payload
   `0.2.1-R1215.1` as one read-only `muse-code.headless` structured-run route.
   Its prepared facade binds provider-owned local Meta account state without a
@@ -1187,7 +1188,7 @@ revisions remain. The earlier points separately record thinking-level and
 nested-usage evidence, summarization-retry events, direct-bash correlation,
 the later direct-bash extension hook, and the `0.84.0` message-update delta
 shape. Swallowtail does not expose direct bash or extensions, and retry
-evidence still fails under the disabled-retry policy. Research 382 qualifies
+evidence still fails under the disabled-retry policy. Research 383 qualifies
 published hops `0.87.0` through `1.1.0`: `0.87.0..=0.87.1` retain
 message-update behavior; `0.99.0..=0.99.2` and `1.0.0..=1.0.4` add private
 command-disposition milestones; maintained `1.1.0` adds the private
@@ -1218,7 +1219,7 @@ matrix exercises prompt-before-steering-before-follow-up ordering, command
 acknowledgement before model settlement, deterministic callback expiry and
 late-response rejection, distinct provider/retry/disconnect/format failures,
 bounded prompt concurrency, redaction, and visible cleanup failure without
-weakening terminal provider truth. Research 382 retains exact source, complete
+weakening terminal provider truth. Research 383 retains exact source, complete
 artifact trees, per-hop classifications, and deterministic fixture coverage.
 
 Pi RPC provider-session continuity remains outside the RPC descriptor.

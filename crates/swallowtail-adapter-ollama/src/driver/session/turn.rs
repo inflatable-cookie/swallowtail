@@ -55,15 +55,9 @@ impl OllamaSessionHandle {
                 "Ollama interactive transcript reached its bounded message limit",
             ));
         }
-        let chat = Request::chat_history(
-            &self.model,
-            &messages,
-            8,
-            self.context_window.map(crate::OllamaContextWindow::as_u32),
-        )?;
         let scope = operation_scope("turn", request.turn_id().as_str())?;
         let cancelled = Arc::new(AtomicBool::new(false));
-        if let Err(error) = OllamaNativeAttachedDriver::from_transport(self.transport.clone())
+        let catalogue = match OllamaNativeAttachedDriver::from_transport(self.transport.clone())
             .observe_catalogue(
                 scope.clone(),
                 &self.endpoint,
@@ -74,12 +68,23 @@ impl OllamaSessionHandle {
             )
             .await
         {
-            self.state
-                .lock()
-                .expect("Ollama session lock poisoned")
-                .usable = false;
-            return Err(error);
-        }
+            Ok(catalogue) => catalogue,
+            Err(error) => {
+                self.state
+                    .lock()
+                    .expect("Ollama session lock poisoned")
+                    .usable = false;
+                return Err(error);
+            }
+        };
+        let runner = catalogue.selected_runner;
+        let chat = Request::chat_history(
+            &self.model,
+            &messages,
+            8,
+            self.context_window.map(crate::OllamaContextWindow::as_u32),
+            runner,
+        )?;
         let subscription = self.transport.subscribe(
             scope.clone(),
             self.endpoint.clone(),
@@ -102,6 +107,7 @@ impl OllamaSessionHandle {
         let task_completion = Arc::clone(&completion);
         let history_model = self.model.clone();
         let history_context_window = self.context_window.map(crate::OllamaContextWindow::as_u32);
+        let history_runner = runner;
         let terminal_flag = Arc::new(AtomicBool::new(false));
         let task_terminal = Arc::clone(&terminal_flag);
         let (terminal_sender, terminal_future) = terminal_outcome_channel();
@@ -143,6 +149,7 @@ impl OllamaSessionHandle {
                                     &committed,
                                     8,
                                     history_context_window,
+                                    history_runner,
                                 ) {
                                     Ok(_) if committed.len() <= 48 => {
                                         TurnCompletion::Commit(user, assistant)

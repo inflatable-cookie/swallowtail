@@ -1,5 +1,5 @@
 use super::fixtures::{attempt_input, inventory_input, preparation_input, prepared, probe};
-use crate::support::{Fixture, FixtureServer, StreamFixture, VersionFixture};
+use crate::support::{CatalogueFixture, Fixture, FixtureServer, StreamFixture, VersionFixture};
 use futures_executor::block_on;
 use swallowtail_adapter_ollama::prepare_ollama_attached;
 use swallowtail_core::{InstanceTargetRef, InterfaceCompatibilityAssessment, ReasoningMode};
@@ -19,7 +19,7 @@ fn exact_stable_newer_is_visible_while_known_exclusion_stays_closed() {
     else {
         panic!("newer stable Ollama must remain visibly unverified");
     };
-    assert_eq!(assessment.version().as_str(), "0.40.0");
+    assert_eq!(assessment.version().as_str(), "0.41.0");
     assert_eq!(
         prepared
             .instance()
@@ -28,7 +28,7 @@ fn exact_stable_newer_is_visible_while_known_exclusion_stays_closed() {
             .unwrap()
             .version()
             .as_str(),
-        "0.40.0"
+        "0.41.0"
     );
     let inventory = prepared
         .prepare_inventory(inventory_input("newer-inventory"))
@@ -80,6 +80,46 @@ fn exact_stable_newer_is_visible_while_known_exclusion_stays_closed() {
         PreparationStage::CompatibilityClassification
     );
     assert_eq!(hole.server.targets(), ["/api/version"]);
+}
+
+#[test]
+fn preparation_binds_manifest_list_without_inference() {
+    let fixture = Fixture::with_server(FixtureServer::start_with_catalogue(
+        VersionFixture::Expected,
+        StreamFixture::Success,
+        CatalogueFixture::ManifestList,
+    ));
+    let prepared = prepared(&fixture);
+    assert_eq!(
+        prepared.runtime().runtime_version().version().as_str(),
+        "0.30.0"
+    );
+    assert_eq!(fixture.server.inference_attempts(), 0);
+    let show: serde_json::Value =
+        serde_json::from_slice(&fixture.server.show_bodies()[0]).expect("show JSON parses");
+    assert_eq!(show["runner"], "ggml");
+    assert!(fixture.server.is_reachable());
+}
+
+#[test]
+fn preparation_fails_closed_on_selected_identity_drift() {
+    let fixture = Fixture::with_server(FixtureServer::start_with_catalogue(
+        VersionFixture::Expected,
+        StreamFixture::Success,
+        CatalogueFixture::SelectedIdentityDrift,
+    ));
+    let failure = block_on(prepare_ollama_attached(
+        preparation_input(&fixture),
+        probe(&fixture, DiscoveryCancellation::new()),
+        fixture.services(),
+    ))
+    .expect_err("converted sibling is not the selected identity");
+    assert_eq!(failure.stage(), PreparationStage::BoundedOutput);
+    assert_eq!(
+        failure.diagnostic().safe().code(),
+        "swallowtail.ollama.selected_identity_drift"
+    );
+    assert_eq!(fixture.server.inference_attempts(), 0);
 }
 
 #[test]

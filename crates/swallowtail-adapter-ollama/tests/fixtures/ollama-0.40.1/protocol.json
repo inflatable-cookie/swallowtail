@@ -1,0 +1,54 @@
+{
+  "selected_routes": [
+    "GET /api/version",
+    "GET /api/tags",
+    "GET /api/ps",
+    "POST /api/show",
+    "POST /api/chat"
+  ],
+  "selected_routes_registered_at_both_frozen_points": true,
+  "prior_research_379_stop_corpus_preserved": true,
+  "compatible_points": ["0.40.0", "0.40.1"],
+  "unverified_newer_synthetic": "0.41.0",
+  "selected_request_shapes": {
+    "show": ["model"],
+    "show_with_runner": ["model", "runner"],
+    "chat": ["model", "messages", "options", "stream"],
+    "runner_selector_sent_when_matching_row_has_runner": true,
+    "runner_selector_omitted_when_row_has_no_runner": true,
+    "all_manifests_sent": false
+  },
+  "selected_path_blobs": {
+    "api/types.go_0.40.0_and_0.40.1": "e19de536fdaf350af615f24b52a2af9fedf44e54",
+    "server/model_list.go_0.40.0_and_0.40.1": "9976b4b6688c8a6261f154746cc5abb34fc61d48",
+    "compatmigrate/migrate.go_0.40.0_and_0.40.1": "d6a5ce939218e4f6092b30322cb39b1fc9dad35e",
+    "server/routes.go": {
+      "v0.40.0": "90ed6789a49f58221cefaa6b9c1a92347b3aba48",
+      "v0.40.1": "addc6c189b2455554a00b1a08f906a04945b4551"
+    },
+    "manifest/manifest.go": {
+      "v0.40.0": "61c808324cf40a5da23baa9fe259cd3af8cb4e43",
+      "v0.40.1": "f476743b4f1c9367707d8438fd048df8510a8cf7"
+    },
+    "manifest/paths.go": {
+      "v0.40.0": "79af2e7f4baf0eed9df71af25c1e6aef8565a388",
+      "v0.40.1": "cf3bfa2569bf1a3fbc69ef12455566e259515a2d"
+    }
+  },
+  "selected_hop_classification": {
+    "0.40.0_to_0.40.1": {
+      "selected_routes": "routes.go adds unselected /api/balance and /api/usage. List, show, ps, chat, and StartLocalCompatibilityMigration remain the 0.40.0 mapping.",
+      "selected_catalogue": "Manifest-list /api/tags rows still share name.DisplayShortest() with distinct child digests and details.runner. The adapter binds tag and digest and pins ggml or llamacpp from the matching row.",
+      "selected_store": "manifest.go and paths.go add store locks and Windows copy-in-place. Catalogue wire fields are unchanged.",
+      "unmapped_siblings": "Non-gguf, empty-family, and unknown-runner siblings are skipped. Empty family fails only for the selected tag and digest. remote_model/remote_host stay fail-closed."
+    }
+  },
+  "behavior_revision": "ollama.native-text-v1.manifest-list-runner",
+  "prior_behavior_revision": "ollama.native-text-v1",
+  "manifest_list_and_runner_mapping_added": true,
+  "new_public_swallowtail_operation": false,
+  "new_public_swallowtail_capability": false,
+  "public_runner_type_exported": false,
+  "provider_prompt_sent": false,
+  "attached_server_started": false
+}

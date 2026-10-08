@@ -19,6 +19,19 @@ impl StructuredRunDriver for OllamaNativeAttachedDriver {
                 .maximum_output_tokens()
                 .expect("validated maximum")
                 .get();
+            let scope = operation_scope("run", request.request_id().as_str())?;
+            let endpoint = authorize_endpoint(&plan, scope.clone(), &services).await?;
+            let cancelled = Arc::new(AtomicBool::new(false));
+            let catalogue = self
+                .observe_catalogue(
+                    scope.clone(),
+                    &endpoint,
+                    &plan,
+                    request.deadline(),
+                    &services,
+                    Arc::clone(&cancelled),
+                )
+                .await?;
             let chat = Request::chat_with_context_window(
                 &model,
                 request.content().as_str(),
@@ -26,19 +39,8 @@ impl StructuredRunDriver for OllamaNativeAttachedDriver {
                 self.context_window().map(crate::OllamaContextWindow::as_u32),
                 request.policy().reasoning_mode(),
                 request.structured_output(),
+                catalogue.selected_runner,
             )?;
-            let scope = operation_scope("run", request.request_id().as_str())?;
-            let endpoint = authorize_endpoint(&plan, scope.clone(), &services).await?;
-            let cancelled = Arc::new(AtomicBool::new(false));
-            self.observe_catalogue(
-                scope.clone(),
-                &endpoint,
-                &plan,
-                request.deadline(),
-                &services,
-                Arc::clone(&cancelled),
-            )
-            .await?;
             let subscription = self.transport.subscribe(
                 scope.clone(),
                 endpoint,

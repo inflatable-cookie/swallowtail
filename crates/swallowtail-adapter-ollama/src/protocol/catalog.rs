@@ -33,6 +33,47 @@ pub enum OllamaModelCapability {
     Thinking,
 }
 
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+/// Native runner variant observed on one mapped catalogue row.
+pub(crate) enum OllamaNativeRunner {
+    /// Legacy GGUF runner that can start provider-owned compatibility migration.
+    Ggml,
+    /// Converted llama.cpp GGUF child in a manifest list.
+    LlamaCpp,
+}
+
+impl OllamaNativeRunner {
+    /// Returns the native `runner` request value for this variant.
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Ggml => "ggml",
+            Self::LlamaCpp => "llamacpp",
+        }
+    }
+
+    fn parse(value: &str) -> Option<Self> {
+        match value {
+            "ggml" => Some(Self::Ggml),
+            "llamacpp" | "llama.cpp" | "llama-cpp" | "llama_cpp" => Some(Self::LlamaCpp),
+            _ => None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+/// One mapped installed or running catalogue row, including optional runner pin.
+pub(crate) struct OllamaInventoryRow {
+    pub observation: AttachedModelObservation,
+    pub runner: Option<OllamaNativeRunner>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct OllamaInventoryParse {
+    pub mapped: Vec<OllamaInventoryRow>,
+    unmapped: Vec<(AttachedModelTag, ModelManifestDigest)>,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 /// Selected-model observation paired with its admitted native capabilities.
 pub struct SelectedModelDetail {
@@ -89,6 +130,19 @@ pub fn parse_inventory(
     scope: AttachedModelObservationScope,
     binding: &ObservationBinding,
 ) -> Result<Vec<AttachedModelObservation>, RuntimeFailure> {
+    Ok(parse_inventory_rows(response, scope, binding)?
+        .mapped
+        .into_iter()
+        .map(|row| row.observation)
+        .collect())
+}
+
+/// Parses mapped catalogue rows plus unmapped sibling identities.
+pub(crate) fn parse_inventory_rows(
+    response: &Response,
+    scope: AttachedModelObservationScope,
+    binding: &ObservationBinding,
+) -> Result<OllamaInventoryParse, RuntimeFailure> {
     if scope == AttachedModelObservationScope::SelectedModelDetail {
         return Err(protocol_failure("inventory scope"));
     }
@@ -97,11 +151,52 @@ pub fn parse_inventory(
     if inventory.models.len() > MAX_CATALOG_MODELS {
         return Err(super::limit_failure());
     }
-    inventory
-        .models
-        .into_iter()
-        .map(|model| inventory_observation(model, scope, binding))
-        .collect()
+    let mut mapped = Vec::new();
+    let mut unmapped = Vec::new();
+    for model in inventory.models {
+        match inventory_row(model, scope, binding)? {
+            InventoryRowKind::Mapped(row) => mapped.push(row),
+            InventoryRowKind::Unmapped { tag, digest } => unmapped.push((tag, digest)),
+        }
+    }
+    Ok(OllamaInventoryParse { mapped, unmapped })
+}
+
+/// Binds the preflight tag and digest without treating sibling runner rows as
+/// the selected identity.
+pub(crate) fn bind_selected_inventory<'a>(
+    parse: &'a OllamaInventoryParse,
+    model_tag: &AttachedModelTag,
+    manifest_digest: &ModelManifestDigest,
+) -> Result<&'a OllamaInventoryRow, RuntimeFailure> {
+    if parse
+        .unmapped
+        .iter()
+        .any(|(tag, digest)| tag == model_tag && digest == manifest_digest)
+    {
+        return Err(unsupported_semantics());
+    }
+    if let Some(row) = parse.mapped.iter().find(|row| {
+        row.observation.model_tag() == model_tag
+            && row.observation.manifest_digest() == Some(manifest_digest)
+    }) {
+        return Ok(row);
+    }
+    if parse
+        .mapped
+        .iter()
+        .any(|row| row.observation.model_tag() == model_tag)
+        || parse.unmapped.iter().any(|(tag, _)| tag == model_tag)
+    {
+        return Err(crate::failure::failure(
+            "swallowtail.ollama.selected_identity_drift",
+            "The preflight-bound Ollama model tag is present only under a different manifest digest",
+        ));
+    }
+    Err(crate::failure::failure(
+        "swallowtail.ollama.model_not_installed",
+        "The preflight-bound Ollama model is not installed",
+    ))
 }
 
 /// Parses detail for the exact selected local model tag and manifest digest.
@@ -141,21 +236,47 @@ pub fn parse_model_detail(
     })
 }
 
-fn inventory_observation(
+enum InventoryRowKind {
+    Mapped(OllamaInventoryRow),
+    Unmapped {
+        tag: AttachedModelTag,
+        digest: ModelManifestDigest,
+    },
+}
+
+fn inventory_row(
     model: InventoryModel,
     scope: AttachedModelObservationScope,
     binding: &ObservationBinding,
-) -> Result<AttachedModelObservation, RuntimeFailure> {
-    if model.name != model.model
-        || model.remote_model.is_some()
-        || model.remote_host.is_some()
-        || model.details.format != "gguf"
-    {
+) -> Result<InventoryRowKind, RuntimeFailure> {
+    if model.name != model.model {
+        return Err(protocol_failure("model tag"));
+    }
+    if model.remote_model.is_some() || model.remote_host.is_some() {
         return Err(unsupported_semantics());
     }
     let tag = AttachedModelTag::new(model.model).map_err(|_| protocol_failure("model tag"))?;
     let digest = normalized_digest(&model.digest)?;
-    Ok(observation(scope, binding, tag, digest))
+    let runner = model
+        .details
+        .runner
+        .as_deref()
+        .or(model.runner.as_deref())
+        .filter(|value| !value.is_empty());
+    if model.details.format != "gguf" || model.details.family.trim().is_empty() {
+        return Ok(InventoryRowKind::Unmapped { tag, digest });
+    }
+    let runner = match runner {
+        Some(value) => match OllamaNativeRunner::parse(value) {
+            Some(runner) => Some(runner),
+            None => return Ok(InventoryRowKind::Unmapped { tag, digest }),
+        },
+        None => None,
+    };
+    Ok(InventoryRowKind::Mapped(OllamaInventoryRow {
+        observation: observation(scope, binding, tag, digest),
+        runner,
+    }))
 }
 
 fn observation(
@@ -201,6 +322,8 @@ struct InventoryModel {
     digest: String,
     details: ModelDetails,
     #[serde(default)]
+    runner: Option<String>,
+    #[serde(default)]
     remote_model: Option<String>,
     #[serde(default)]
     remote_host: Option<String>,
@@ -220,4 +343,6 @@ struct ShowResponse {
 struct ModelDetails {
     format: String,
     family: String,
+    #[serde(default)]
+    runner: Option<String>,
 }

@@ -238,7 +238,7 @@ fn official_stable_points_and_headless_claim_preserve_the_only_gap() {
         assert!(!claim.permits(&InterfaceVersion::new(excluded).expect("semver")));
     }
     assert!(cline_acp_claim().permits(&InterfaceVersion::new("3.0.55").expect("baseline")));
-    assert!(!cline_acp_claim().permits(&InterfaceVersion::new("3.0.70").expect("headless")));
+    assert!(cline_acp_claim().permits(&InterfaceVersion::new("3.0.70").expect("latest ACP")));
 }
 
 #[test]

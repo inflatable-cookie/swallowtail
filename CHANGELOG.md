@@ -14,6 +14,17 @@ annotated Git tags from the canonical repository.
   across the `2.0.0` reset. No shipped per-session control covers both local
   spawn branches; a host-terminal API design is proposed for separate review.
   No claim, exclusion, public operation, or capability changes.
+- qualify only `pi.sdk-sidecar.package` through agreed official npm/GitHub
+  stable `1.1.0`, after every published hop from the exact `0.84.2`
+  ceiling. Research 400 freezes all 18 exact package artifacts, complete
+  package trees, per-hop file ledgers, selected SDK source classifications,
+  and the corresponding `pi-ai` and `pi-agent-core` identities. Preserve
+  exact unpublished gaps, claim and behavior revision, source-tag, exact Node
+  and wire axes, and all route capabilities. The
+  private sidecar disables the SDK 0.86 cache warmer; added model registry,
+  tool modifier, and event fields do not change the selected facade. No
+  package execution, provider prompt, credential use, install, or host update
+  occurred.
 - keep `kiro.acp` at its existing exact `2.21.4` point; official Kiro CLI
   stable `2.28.0` and all twelve published successor hops remain unqualified
   pending exact ACP V2 owner-sweep reachability and session, path, and failure
@@ -23,6 +34,15 @@ annotated Git tags from the canonical repository.
   qualify newer points; HTTP MCP live honouring remains exact `2.21.4`. No
   artifact execution, provider work, credential use, installation, or host
   mutation occurred.
+- qualify only `cline.acp` from its existing `3.0.55` baseline through official
+  npm `latest` `3.0.70`, excluding unpublished `3.0.59`. Research 397 freezes
+  all fourteen published hops, wrapper and six-platform package provenance,
+  complete wrapper and Darwin ARM64 runtime trees, and selected ACP source
+  changes. Preserve `cline.acp.stdio-v1`, existing route limits, and the
+  `load_session` evidence gate in Q-006. The independently qualified headless
+  window through `3.0.70` is unchanged. No artifact was executed and no
+  provider prompt, live session, credential, installation, or host update
+  occurred.
 - qualify only `cline.headless` through official npm stable `3.0.70` after
   every published hop from `3.0.55`; preserve `3.0.55`, the existing behavior
   revision, and the unpublished `3.0.59` exclusion. Research 390 freezes all
@@ -31,7 +51,8 @@ annotated Git tags from the canonical repository.
   ledger. Headless keeps its JSON envelope and fail-closed media handling;
   Cline may retry or continue provider work internally from `3.0.62`, while
   Swallowtail still launches one bounded process and exposes no attempt or
-  usage records. ACP remains exact `3.0.55`. No artifact ran and no provider
+  usage records. ACP is independently qualified through `3.0.70` under
+  Research 397. No artifact ran and no provider
   prompt, credentials, install, or host update occurred.
 - extend the Qoder `qoder.headless` claim from `1.1.54` through maintained
   stable `1.1.65`, retaining `QualifiedOnly`, the baseline, claim id and
@@ -51,11 +72,33 @@ annotated Git tags from the canonical repository.
   `2026.10.01-14929f9`, after every published hop following `2026.09.18-9a7762b`.
   Research 393 freezes exact Darwin ARM64 and Linux x64 artifacts, complete
   package trees, and per-hop selected-file classifications. Keep the baseline,
-  claim, behavior revision, prior points, and gaps; ACP and headless retain
-  their `2026.09.18` ceilings. The selected `models` command, account options,
+  claim, behavior revision, prior points, and gaps; Headless remains at
+  `2026.09.18-9a7762b`; ACP is qualified separately in Research 395. The
+  selected `models` command, account options,
   model identity/display mapping, failure boundary, and process lifecycle are
   unchanged. No archive execution, authenticated catalogue, provider prompt,
   credential use, installation, or host update occurred.
+- qualify only `cursor-agent.acp` through official ACP registry stable
+  `2026.10.01-14929f9`, after each published selected-channel hop following
+  `2026.09.18-9a7762b`. Research 395 freezes the exact Darwin ARM64 and Linux
+  x64 archives, complete package inventories, and selected ACP surfaces. Extend
+  only the ACP claim through `2026.09.26-dd393fe`, `2026.09.28-64d2043`, and
+  `2026.10.01-14929f9`; retain its baseline, claim id, behavior revision, exact
+  gaps, and blocked continuation. Catalogue is separately qualified through
+  `2026.10.01-14929f9` (Research 393); Headless remains at
+  `2026.09.18-9a7762b`. The general installer build `2026.10.01-e373342`
+  remains a separate channel. No public operation, permission, or lifecycle
+  behavior changes. No provider prompt, live session, credential use, artifact
+  execution, installation, or host update occurred.
+- qualify only `pi.sdk-sidecar.node` from `22.23.2` through official Node 22
+  stable `22.23.3`, preserving the prior point and every other Pi SDK axis.
+  Research 396 freezes signed Darwin ARM64 artifacts, complete distribution
+  delta classifications, the bundled root set, and offline default-TLS failure
+  proof. Node `22.23.3` carries the NSS 3.125 trust snapshot with 26 prior root
+  identities removed or changed; certificate and hostname verification remain
+  enabled. Provider endpoint compatibility and custom or system trust are not
+  inferred. No provider request, credential use, installation, or host update
+  occurred.
 - qualify `mistral-vibe.headless` through official PyPI and GitHub stable
   `2.26.0`. Research 384 freezes all four published hops after `2.25.4`,
   complete wheel trees, runtime/source identities, and per-hop selected-surface

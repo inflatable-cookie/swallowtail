@@ -306,6 +306,33 @@ Filesystem write support is governed by Contract 017 and still needs an exact
 write-capable host service. Terminal support needs a later contract. Process
 ownership implies neither callback authority nor filesystem containment.
 
+## Kimi ACP Provider-Local Spawn Boundary
+
+Tom's 2026-10-08 board answer, “Require disabled or host-mediated spawn;
+authorize bounded proof/design investigation”, answers decision
+`99b70b79-a36f-4d44-8108-ba118442b4e2`.
+Every selected provider-local process-spawn branch must be disabled or
+mediated by the approved execution host before newer Kimi ACP qualification.
+This includes terminal-disabled and non-Bash fallback branches; advertising
+terminal support alone does not establish mediation of every spawn path.
+
+Provider-free investigation may establish an exact shipped configurable
+mechanism preserving the selected permission and cancellation policy and
+host, principal, environment and working-resource boundaries. Prove every
+selected branch and cancellation, stop and join against fakes before raising
+claims. Do not infer containment from process ownership or introduce an
+unmediated spawn exception, persistent settings or authentication/home change,
+or provider fork. The separate local-server AmbientHost route supplies no ACP
+authority.
+
+If no shipped mechanism satisfies this boundary, return a concrete
+host-terminal contract or API adaptation for separate review before
+implementing runtime or API behavior. Preserve existing qualified points and
+retained evidence; an evidence stop is not a terminal unsupported result.
+An AmbientHost exception is not approved. This ruling includes no live
+provider work, credential access, installation or release/tag authority.
+Contract 036 owns release compatibility assessment.
+
 ## Extensions And Failure
 
 Raw JSON-RPC envelopes, prompts, filesystem content, permission bodies,

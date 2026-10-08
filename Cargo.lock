@@ -2913,12 +2913,14 @@ dependencies = [
 name = "swallowtail-adapter-cline"
 version = "0.5.1"
 dependencies = [
+ "base64",
  "futures-channel",
  "futures-core",
  "futures-executor",
  "futures-util",
  "semver",
  "serde_json",
+ "sha2 0.10.9",
  "swallowtail-core",
  "swallowtail-protocol-acp",
  "swallowtail-runtime",

@@ -19,7 +19,7 @@ structured runs, typed UI questions, writes, permission
 exchange, or provider-session lifecycle management. Optional portable
 `ReasoningSelection` is available only for the closed Research 228 row:
 `anthropic` / `claude-opus-4-5` with `off`, `minimal`, `low`, `medium`, or
-`high` on exact Pi `0.84.2`.
+`high` on each exact Pi SDK package point qualified in Research 400.
 
 Both Pi routes remain production. `pi.rpc` needs only one installed upstream
 executable and speaks an upstream-owned wire, but stays fresh-only: Research
@@ -59,19 +59,33 @@ a sandbox.
 
 ## Version Posture
 
-Four separate axes carry qualified-only one-point claims; none admits an
+Four separate axes carry qualified-only claims; none admits an
 unverified-newer point:
 
-- `pi.sdk-sidecar.package`: exact `@earendil-works/pi-coding-agent@0.84.2`
-- `pi.sdk-sidecar.node`: exact Node `22.23.2` (satisfying the upstream
-  `>=22.19.0` requirement)
+- `pi.sdk-sidecar.package`: exact `@earendil-works/pi-coding-agent` points
+  `0.84.2`, `0.84.3`, `0.84.4`, `0.85.0`, `0.85.1`, `0.86.0`,
+  `0.86.1`, `0.87.0`, `0.87.1`, `0.99.0`, `0.99.1`, `0.99.2`,
+  `1.0.0`, `1.0.1`, `1.0.2`, `1.0.3`, `1.0.4`, and `1.1.0`
+- `pi.sdk-sidecar.node`: maintained Node `22.23.2..=22.23.3` (satisfying the
+  upstream `>=22.19.0` requirement; Research 396)
 - `pi.sdk-sidecar.wire`: exact `swallowtail-pi-sdk-jsonl-v1` (opaque)
-- `pi.sdk-sidecar.sidecar`: the exact source-tagged sidecar revision
-  (opaque)
+- `pi.sdk-sidecar.sidecar`: the unchanged exact source tag
+  `swallowtail-pi-sdk-sidecar@0.5.1`; Research 400 freezes the shipped
+  sidecar asset's content hash
 
-Older, newer, and prerelease points on any axis do not prepare. The claim
-does not inherit the RPC package window or its unverified-newer posture even
-though both routes qualify the same upstream package release.
+Unlisted package points, including unpublished gaps and prereleases, do not
+prepare. No package range is inferred between exact points. The claim does not
+inherit the RPC package window or its unverified-newer posture even though
+both routes qualify the same upstream package releases.
+
+Node `22.23.3` carries a version-specific bundled TLS root snapshot (NSS
+3.125): the frozen comparison has 145 roots at `22.23.2` and 119 at
+`22.23.3`, with 26 prior identities removed or changed. The sidecar keeps
+Node's default certificate and hostname verification and adds no CA or TLS
+override. This qualifies the runtime's default trust boundary; it does not
+claim compatibility for a provider endpoint that depends on a removed root,
+custom CA, or system trust store. No provider endpoint was contacted
+(Research 396).
 
 ## Execution Boundary
 
@@ -155,8 +169,9 @@ binding, bounded fixtures, and route-matrix coverage.
 ## Deterministic Validation
 
 ```sh
-effigy validate:focused swallowtail-adapter-pi
-effigy check:examples
+effigy format:current-pi-sdk-sidecar
+effigy validate:current-pi-sdk-sidecar
+effigy check:current-pi-sdk-sidecar
 ```
 
 No Node install, package resolution, configured provider call, credential

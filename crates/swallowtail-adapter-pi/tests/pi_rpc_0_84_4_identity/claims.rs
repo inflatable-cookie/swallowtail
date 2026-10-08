@@ -1,5 +1,4 @@
 use super::support::{IDENTITY, json, strings, version};
-use swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SDK_VERSION;
 use swallowtail_adapter_pi::{
     PI_PACKAGE_BASELINE_VERSION, PI_PACKAGE_LATEST_QUALIFIED_VERSION, PI_SDK_SIDECAR_PACKAGE_AXIS,
     pi_package_binding, pi_rpc_claim, pi_sdk_sidecar_package_claim,
@@ -100,14 +99,13 @@ fn unpublished_gaps_and_later_0_84_5_stay_classified() {
 }
 
 #[test]
-fn sdk_sidecar_stays_exact_0_84_2() {
+fn sdk_sidecar_keeps_its_observed_baseline_independent_of_rpc() {
     let identity = json(IDENTITY);
     assert_eq!(identity["sidecar_package_at_observation"], "0.84.2");
     assert_eq!(
         identity["claim_at_observation"]["sidecar_latest_qualified"],
         "0.84.2"
     );
-    assert_eq!(PI_SDK_SIDECAR_SDK_VERSION, "0.84.2");
     let sidecar = pi_sdk_sidecar_package_claim();
     assert_eq!(sidecar.axis().as_str(), PI_SDK_SIDECAR_PACKAGE_AXIS);
     assert!(matches!(
@@ -115,9 +113,10 @@ fn sdk_sidecar_stays_exact_0_84_2() {
         InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.support_status() == InterfaceSupportStatus::Maintained
     ));
-    assert!(!sidecar.permits(&version("0.84.4")));
+    assert!(sidecar.permits(&version("1.1.0")));
+    assert!(!sidecar.permits(&version("0.84.5")));
     assert!(!matches!(
-        sidecar.assess(&version("0.84.4")),
+        sidecar.assess(&version("0.84.5")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

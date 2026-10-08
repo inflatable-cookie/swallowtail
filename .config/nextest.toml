@@ -38,3 +38,9 @@ default-filter = "all()"
 [profile.current-codex-app-server]
 inherits = "ci-process"
 default-filter = "all()"
+
+# Pi SDK sidecar identity and lifecycle regression proof. Keep the process
+# fixture timeout while allowing the focused task to select sidecar_driver.
+[profile.current-pi-sdk-sidecar]
+inherits = "ci-process"
+default-filter = "all()"

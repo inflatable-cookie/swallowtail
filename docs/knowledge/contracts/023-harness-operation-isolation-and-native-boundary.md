@@ -280,6 +280,22 @@ proof. Environment preparation that changes VM configuration or provisions a
 disposable environment needs separate authority under the no-configuration-
 change boundary; availability alone does not establish isolation.
 
+Tom's 2026-10-08 chat answer “approve” to decision
+`a8182378-017f-4797-8a1d-568f02cd495f` authorizes a disposable native ARM64
+clone of the identified Parallels Windows 11 VM
+`67f62782-c64a-4c02-ba9a-7d9b24d107ce`. Leave the original suspended VM,
+configuration and disks untouched. In the clone only, disable all network
+adapters and host shared folders, profile, clipboard, application and device
+integration before boot. Use a fresh unprivileged local test account and
+task-owned scratch with fake authentication/provider/tool fixtures. Stage only
+verified tools and original artifacts without host-wide installation or real
+credential-store access. Prove no outbound provider traffic or host-file access
+before vendor execution; never actually elevate the provider/tool probes or
+alter original-host security. Record process/VM identities and exits and retain
+the clone/results for independent review; deletion requires separate scope.
+If cloning or containment requires touching the original, stop. Native x64
+remains unproved and emulation is not a substitute.
+
 ## Copilot ACP Offline Artifact Proof
 
 Tom's 2026-10-08 “Accept and approve all” answers decision
@@ -321,15 +337,42 @@ the proposed upstream model-lane prototype, patch or fork the provider, or
 claim a hypothetical startup fix. No upstream publication or patched-runtime
 qualification is authorized.
 
-This answer does not establish a shipped mechanism preserving explicit model
-selection. The recorded `1.79.1` planning-lane precedence still conflicts with
-the earlier explicit-model guarantee. Before qualification, settle whether
-the route may document provider-configured planning-model precedence as a
-version-specific limit or must preserve the explicit-model guarantee through
-an actually shipped mechanism. Do not infer that forwarding `-m` proves the
-effective model, silently substitute a model, change permission mode to escape
-the planning lane, write persistent settings or relocate authentication/home.
-Preserve current qualified points and the separate release compatibility gate.
+Tom's later 2026-10-08 chat answer “approve” to decision
+`3d693da8-b1cb-4c10-a405-a3a085e0a583` accepts a version-specific change to
+the model guarantee: in plan mode on `1.73.0` and later official shipped
+artifacts, configured `featureModels.planning` may take precedence over the
+base model forwarded with `-m`. This supersedes the explicit-model guarantee
+for those newly qualified points only; preserve older qualified behavior.
+
+A bounded one-family contract/adapter adaptation must report requested versus
+effective model truthfully, prove conflicting configuration cases and add a
+justified private behavior milestone. Forwarded argv is not effective-model
+evidence. If existing public vocabulary cannot express this boundary, return
+the exact API change before implementation. Keep plan permission and no-bypass
+semantics; no persistent settings writes, authentication/home relocation,
+silent model substitution, provider patch/fork or live work. This accepts a
+consumer-visible guarantee change for the separate minor release under
+Contract 036, not the urgent SDK patch or tag authority.
+
+## Pi SDK Node Bundled TLS Roots
+
+Tom's 2026-10-08 chat answer “approve” to decision
+`1e7a9fff-9472-4e5b-93db-250779aa5c8e` accepts Node `22.23.3`'s shipped
+bundled TLS-root update as a version-specific provider trust boundary for the
+Pi SDK Node axis. Preserve exact `22.23.2`, the approved Pi package, wire and
+sidecar-source tuple, host environment and normal certificate/hostname
+verification. Do not restore removed roots, inject CAs, disable verification
+or change proxy, authentication or network policy.
+
+Before qualification, prove exact root identities/removals and selected Pi
+HTTP/TLS trust-source and failure paths through bounded task-owned offline
+fixtures, and complete the remaining Node-hop semantic review. No actual
+provider endpoint compatibility or live evidence follows from root inventories
+or fake fixtures. Custom/system trust needs, affected required endpoints,
+further authority or public-contract narrowing return for a separate ruling.
+No real credentials, provider traffic, installation, host mutation or tag
+approval is included. This axis belongs to the separate currentness minor;
+Claude's Node proof does not qualify Pi's provider-HTTP trust path.
 
 ## Kiro ACP Explicit Environment
 
@@ -371,6 +414,39 @@ outside approved working resources, and a public API or lifecycle change need
 another ruling. This ruling authorizes no artifact execution, credential
 access, live provider work, installation, host mutation or release/tag action.
 Contract 036 release compatibility remains separate.
+
+## Kiro ACP Isolated Owner-State Proof
+
+Tom's 2026-10-08 board answer, “Approve isolated proof and name the Linux ARM64
+environment”, answers decision `99de6453-9492-4537-a346-ce7803dbfea3`.
+It approves bounded offline proof comparing original Kiro `2.26.1` control
+with `2.27.0`, `2.27.1` and `2.28.0`. The disposable native Linux aarch64 GNU
+VM or container must be explicitly designated before vendor execution.
+Tom's later 2026-10-08 chat designates a fresh Linux container through local
+Colima or Docker (decision `e49192c0-3483-4275-a34c-7f4fd56891a8`). Use a
+task-owned native Linux ARM64 GNU container named `swallowtail-kiro-owner-proof`,
+reached through the local container CLI. Verify native architecture and GNU
+runtime; emulation is not evidence. A task-owned fresh Colima profile may
+supply the backend when neither local backend is running. Starting that
+isolated backend and staging public images or artifacts is preparation, not
+permission for provider traffic. Do not alter existing profiles, install host
+software or change host settings. Verify external egress and all host mounts
+are denied before fake or vendor execution; retain the isolated environment
+for review. Return unavailable containment or required host changes separately.
+
+Deny external egress and host mounts before execution. Use two synthetic
+unprivileged UIDs and task-owned home, working directory, temporary files and
+session state inside that environment. Access no real credentials or
+authentication store, and make no provider or tool turns. Prove containment
+against fakes and persist the execution record before running original
+artifacts. Observe only ACP initialization, session creation and owner-state
+path, symlink, access and failure effects. Stop if real authentication or
+unavailable containment prevents exact reachability.
+
+Preserve the existing `2.21.4` claim, public lifecycle and exact HTTP MCP
+guarantees. Evidence does not automatically qualify newer versions. No host
+installation or mutation, consumer repin, live work or release/tag authority
+is included. Contract 036 compatibility assessment remains separate.
 
 ## Native Sandbox Boundary
 

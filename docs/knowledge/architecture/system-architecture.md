@@ -247,9 +247,10 @@ OpenHands adds a package without a production route.
   a required runtime-preferences reply during create, and process-kill
   cancellation. It does not qualify OpenCode HTTP, hosted GLM / Z.AI
   official, `--print`, ACP, or native `session/stop`.
-- `swallowtail-adapter-cline` implements exact `3.0.55` ACP v1 stdio on
-  `cline --acp` and a maintained headless envelope-NDJSON window from npm
-  `3.0.55` through `3.0.70`, excluding unpublished `3.0.59`, on
+- `swallowtail-adapter-cline` implements maintained ACP v1 stdio from npm
+  `3.0.55..=3.0.70` except unpublished `3.0.59` on `cline --acp` (Research
+  397). Its separate maintained headless envelope-NDJSON window covers the
+  same package points on
   `cline --json --auto-approve false` with optional portable
   `HarnessMode::Plan` as canonical `--plan`. Credentials stay host-owned
   `LocalUnauthenticated`. `--auto-approve true`, `--id`, hub/TUI, and
@@ -396,10 +397,12 @@ OpenHands adds a package without a production route.
   extension UI, native abort, deadlines, joined credential-last cleanup, and
   a separate provider-suppressed `get_available_models` operation. The same
   crate also implements the separate `pi.sdk-sidecar` route: Pi's official
-  TypeScript SDK at exact `0.84.2` running in a source-tagged Node sidecar
-  (exact Node `22.23.2`) over the private bounded
-  `swallowtail-pi-sdk-jsonl-v1` wire, with four qualified-only one-point
-  version axes, application-provisioned launch recipe and environment,
+  TypeScript SDK at 18 exact published package points through `1.1.0`,
+  running in a source-tagged Node sidecar (maintained Node
+  `22.23.2..=22.23.3`; Research 396) over the private bounded
+  `swallowtail-pi-sdk-jsonl-v1` wire; the wire and source-tag axes remain exact
+  and independent (Research 400). It uses an application-provisioned launch
+  recipe and environment,
   `AmbientHost` read-only tools, fresh-session parity with the RPC route, and
   persistent new, load-with-replay, and replay-free resume gated on the exact
   host-leased cwd
@@ -689,9 +692,10 @@ Crate status:
   `build`, bounded stream parsing, namespaced unknown observations,
   process-kill cancellation, and joined cleanup. The package remains an
   unreleased additive candidate after `v0.3.2`.
-- `swallowtail-adapter-cline` — realized for exact npm `3.0.55` ACP and
-  headless print-run through published `3.0.70` excluding `3.0.59`, with separate constructors, qualified-only
-  claims, local-account access, and no credential lease. The package
+- `swallowtail-adapter-cline` — realized for separate maintained ACP and
+  headless windows `3.0.55..=3.0.70`, excluding unpublished `3.0.59`, with
+  separate constructors and claims (`AllowUnverified` for ACP, `QualifiedOnly`
+  for headless), local-account access, and no credential lease. The package
   remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-goose` — realized for GitHub ACP exact points `1.50.1`,
   `1.51.0`, `1.52.0`, and `1.53.0` with maintained claim, typed auth-failure

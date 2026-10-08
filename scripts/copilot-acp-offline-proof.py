@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import os
+import platform
 import selectors
 import signal
 import subprocess
@@ -30,7 +31,7 @@ FIXTURE_DIR = (
 INVENTORY_PATH = FIXTURE_DIR / "artifact-inventory.json"
 VERSIONS = ("1.0.80", "1.0.81", "1.0.93")
 MAX_FRAME_BYTES = 256 * 1024
-READ_TIMEOUT_SECONDS = 5.0
+READ_TIMEOUT_SECONDS = 20.0
 RUN_TIMEOUT_SECONDS = 18.0
 FAKE_TOKEN = "SWALLOWTAIL_OFFLINE_FAKE_TOKEN"
 
@@ -257,6 +258,45 @@ def wait_for_response(
         evidence["unexpected_messages"] += 1
 
 
+def record_rpc_error(
+    stage: str,
+    response: dict[str, Any],
+    evidence: dict[str, Any],
+) -> bool:
+    error = response.get("error")
+    if not isinstance(error, dict):
+        return False
+    code = error.get("code")
+    safe_code = code if isinstance(code, int) and not isinstance(code, bool) else None
+    authentication_required = (
+        safe_code == -32000 and error.get("message") == "Authentication required"
+    )
+    evidence[stage] = (
+        "authentication-required" if authentication_required else "json-rpc-error"
+    )
+    evidence[f"{stage}_error"] = {
+        "code": safe_code,
+        "message": "Authentication required" if authentication_required else "redacted",
+        "data_omitted": "data" in error,
+    }
+    return True
+
+
+def auth_method_ids(result: dict[str, Any]) -> list[str]:
+    methods = result.get("authMethods", [])
+    if not isinstance(methods, list):
+        return []
+    ids = {
+        method["id"]
+        for method in methods
+        if isinstance(method, dict)
+        and isinstance(method.get("id"), str)
+        and 0 < len(method["id"]) <= 80
+        and all(character.isalnum() or character in "_.:-" for character in method["id"])
+    }
+    return sorted(ids)
+
+
 def stop_process(process: subprocess.Popen[bytes], grace_seconds: float = 1.0) -> tuple[int | None, bool]:
     if process.stdin is not None:
         try:
@@ -392,6 +432,7 @@ def launch_acp(
             else ["python3", "fake ACP agent"]
         ),
         "initialize": "not-reached",
+        "auth_method_ids": [],
         "session_new": "not-reached",
         "session_prompt": "not-reached",
         "permission_request_observed": False,
@@ -414,11 +455,17 @@ def launch_acp(
             }
         )
         response = wait_for_response(client, 1, evidence, READ_TIMEOUT_SECONDS)
-        if response is None or "result" not in response:
+        if response is None:
             evidence["initialize"] = "no-result"
+            return evidence
+        if record_rpc_error("initialize", response, evidence):
+            return evidence
+        if "result" not in response or not isinstance(response["result"], dict):
+            evidence["initialize"] = "invalid-response"
             return evidence
         evidence["initialize"] = "success"
         result = response["result"]
+        evidence["auth_method_ids"] = auth_method_ids(result)
         reported = result.get("agentInfo", {}).get("version")
         evidence["reported_version_matches"] = (
             reported == exact_version if exact_version else reported == "fake"
@@ -433,8 +480,13 @@ def launch_acp(
             }
         )
         response = wait_for_response(client, 2, evidence, READ_TIMEOUT_SECONDS)
-        if response is None or "result" not in response:
+        if response is None:
             evidence["session_new"] = "no-result"
+            return evidence
+        if record_rpc_error("session_new", response, evidence):
+            return evidence
+        if "result" not in response or not isinstance(response["result"], dict):
+            evidence["session_new"] = "invalid-response"
             return evidence
         evidence["session_new"] = "success"
         session_id = response["result"].get("sessionId")
@@ -474,6 +526,8 @@ def launch_acp(
                 evidence["session_prompt"] = str(
                     response["result"].get("stopReason", "result")
                 )[:40]
+            elif record_rpc_error("session_prompt", response, evidence):
+                pass
             else:
                 evidence["session_prompt"] = "error-response"
         else:
@@ -584,6 +638,8 @@ def prepare_record(record_path: Path) -> None:
             previous_preflights.append(previous["preflight"])
     inventory = verify_inventory()
     fake_proof = self_test()
+    inventory_digest = hashlib.sha256(INVENTORY_PATH.read_bytes()).hexdigest()
+    harness_digest = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     record = {
         "schema": "copilot-cli-acp-offline-execution-record.v1",
         "recorded_at_utc": utc_now(),
@@ -595,8 +651,20 @@ def prepare_record(record_path: Path) -> None:
             "authentication": "synthetic placeholder only",
         },
         "artifact_inventory_observed_at_utc": inventory["observed_at_utc"],
+        "artifact_inventory_sha256_at_execution": inventory_digest,
+        "artifact_inventory_sha256_committed": inventory_digest,
+        "harness_source": "scripts/copilot-acp-offline-proof.py",
+        "harness_sha256": harness_digest,
+        "harness_sha256_recorded_at_utc": utc_now(),
+        "execution_host": {
+            "architecture": platform.machine().lower(),
+            "host_name_recorded": False,
+            "os": f"{platform.system()} {platform.release()}",
+        },
         "pre_execution_record_persisted": True,
         "artifact_execution_started": False,
+        "permission_boundary_proven_for_all_targets": False,
+        "exact_permission_path_reached": False,
         "preflight": fake_proof,
         "preflight_attempts": [*previous_preflights, fake_proof],
         "executions": [],
@@ -700,6 +768,18 @@ def execute_artifacts(record_path: Path, artifact_root: Path) -> None:
     record["permission_boundary_proven_for_all_targets"] = all(
         attempt.get("permission_evidence_complete") is True for attempt in record["executions"]
     )
+    record["exact_permission_path_reached"] = any(
+        attempt.get("permission_request_observed")
+        or attempt.get("session_prompt") not in ("not-reached", None)
+        for attempt in record["executions"]
+    )
+    if not record["permission_boundary_proven_for_all_targets"]:
+        record["limitation"] = (
+            "All exact stable artifacts advertised copilot-login and rejected session/new "
+            "with Authentication required under the synthetic placeholder. No real "
+            "authentication or network access was used, so no permission request, "
+            "cancellation, or tool-effect boundary is claimed."
+        )
     record["completion_recorded_at_utc"] = utc_now()
     write_json_durable(record_path, record)
 

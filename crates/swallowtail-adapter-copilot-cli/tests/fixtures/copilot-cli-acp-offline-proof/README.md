@@ -14,13 +14,14 @@ permission cancellation, and absence of a tool effect. Exact artifact
 invocations used only a synthetic auth placeholder and the `copilot --acp
 --stdio` entry point under the same deny-network profile.
 
-The exact artifacts did not reach a permission request. `1.0.80` produced no
-initialize result before the bounded timeout; `1.0.81` and `1.0.93` initialized
-and reported their frozen versions, but produced no result for `session/new`.
-No prompt, permission request, cancellation exchange, or tool call occurred.
-The absence of a tool effect in those incomplete runs does not prove a stable
-permission boundary. The record therefore keeps permission proof false and
-does not support moving any production claim.
+The harness allows twenty seconds for each ACP response and retains sanitized
+JSON-RPC error evidence. All three exact artifacts initialized, reported their
+frozen versions, and advertised `copilot-login`. Each returned `-32000`
+`Authentication required` from `session/new` under the synthetic token
+placeholder. Provider-supplied error data is omitted. The no-network task did
+not attempt authentication, so no session, prompt, permission request,
+cancellation exchange, or tool call occurred. The record keeps permission
+proof false and does not support moving any production claim.
 
 To reacquire the artifacts, run `python3 scripts/stage-copilot-acp-offline-artifacts.py`
 and retain its output in fresh task-owned scratch. It verifies pinned public
@@ -28,5 +29,7 @@ registry metadata and inventories each extracted tree without installing a
 package. Use a new task-owned scratch record for the harness `--prepare`
 preflight before any exact execution; pass the staging helper's `artifact_root`
 to `scripts/copilot-acp-offline-proof.py --execute` only after reviewing the
-record. The committed execution record describes the completed run; do not
-repeat the exact binary attempts as part of validation.
+record. A matching `Authentication required` response is the stop condition
+when running without auth or network. The committed execution record describes
+the completed run; do not repeat the exact binary attempts as part of routine
+validation.

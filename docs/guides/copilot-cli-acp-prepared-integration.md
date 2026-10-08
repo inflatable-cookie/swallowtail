@@ -32,12 +32,13 @@ The claim is qualified-only. Later packages do not inherit this route.
 `UnverifiedNewer` is not a Copilot CLI ACP execution posture. Public preview is
 visible as `ExperimentalObserved` and `COPILOT_CLI_ACP_MATURITY`.
 
-Research 398 froze the exact `1.0.80`, first affected stable `1.0.81`, and
-current stable `1.0.93` Darwin ARM64 artifacts and attempted their selected ACP
-entry point under a no-network sandbox. All attempts stopped before a
-permission request (`1.0.80` before initialize; `1.0.81` and `1.0.93` before
-session creation). This does not establish shipped permission, cancellation,
-or tool-effect behavior, and it does not change the exact `1.0.80` claim.
+Research 403 froze the exact `1.0.80`, first affected stable `1.0.81`, and
+current stable `1.0.93` Darwin ARM64 artifacts. Under the no-network sandbox,
+all three initialized, advertised the `copilot-login` auth method, and returned
+JSON-RPC `-32000 Authentication required` for `session/new` with only a
+synthetic token placeholder. No session, permission request, cancellation, or
+tool call followed. This does not establish shipped permission behavior or
+change the exact `1.0.80` claim.
 
 Swallowtail does not install Copilot CLI, search `PATH`, run GitHub login, bind
 `GH_TOKEN` / `GITHUB_TOKEN` as a Swallowtail lease, or default `--yolo`.

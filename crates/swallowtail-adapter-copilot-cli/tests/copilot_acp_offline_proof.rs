@@ -153,9 +153,13 @@ fn execution_record_is_secret_free_and_keeps_the_permission_stop_explicit() {
     );
     assert_eq!(
         record["harness_sha256"],
-        "5ea9c219a75332f6f5a4ed448479e32acc4c0f72bbd96671624f1bec2b50996e"
+        "65e8357d2942c8dd554b8973d35e065ed7a4e7a9596bf1c103298396338acb2d"
     );
     assert_eq!(record["scope"]["network"], "denied, including loopback");
+    assert_eq!(
+        record["limitation"],
+        "All exact stable artifacts advertised copilot-login and rejected session/new with Authentication required under the synthetic placeholder. No real authentication or network access was used, so no permission request, cancellation, or tool-effect boundary is claimed."
+    );
     assert_eq!(
         record["scope"]["authentication"],
         "synthetic placeholder only"
@@ -185,12 +189,21 @@ fn execution_record_is_secret_free_and_keeps_the_permission_stop_explicit() {
         assert_eq!(run["permission_evidence_complete"], false);
         assert_eq!(run["effect_marker_present"], false);
     }
-    assert_eq!(executions[0]["initialize"], "no-result");
-    for run in &executions[1..] {
+    for (run, version) in executions.iter().zip(["1.0.80", "1.0.81", "1.0.93"]) {
         assert_eq!(run["initialize"], "success");
         assert_eq!(run["reported_version_matches"], true);
-        assert_eq!(run["session_new"], "no-result");
+        assert_eq!(run["auth_method_ids"], serde_json::json!(["copilot-login"]));
+        assert_eq!(run["session_new"], "authentication-required", "{version}");
+        assert_eq!(run["session_new_error"]["code"], -32000);
+        assert_eq!(
+            run["session_new_error"]["message"],
+            "Authentication required"
+        );
+        assert_eq!(run["session_new_error"].get("data"), None);
+        assert_eq!(run["session_new_error"]["data_omitted"], false);
         assert_eq!(run["session_prompt"], "not-reached");
+        assert_eq!(run["timed_out"], false);
+        assert_eq!(run["forced_process_group_kill"], false);
     }
 
     let serialized = record.to_string();

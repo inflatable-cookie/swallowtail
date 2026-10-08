@@ -14,7 +14,9 @@ pub use preflight::{
 #[allow(unused_imports)]
 pub use process::{FakeProcessService, ProcessState, ScriptedProcessService};
 pub use task::TaskState;
+#[allow(unused_imports)]
 pub use time::{ImmediateTimeService, PendingTimeService};
+#[allow(unused_imports)]
 pub use working_resource::{
     FakeWorkingResourceService, ResolvedWorkingResource, WorkingResourceState,
 };

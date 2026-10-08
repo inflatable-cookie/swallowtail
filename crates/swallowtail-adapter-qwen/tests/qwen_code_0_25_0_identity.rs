@@ -328,12 +328,13 @@ fn ssh_selection_and_approval_helper_sources_are_frozen_with_exact_coverage() {
         identity["reviewed_source_identities_sha256"],
         sha256(REVIEWED_SOURCES.as_bytes())
     );
-    let keys = reviewed
+    let mut keys = reviewed
         .as_object()
         .unwrap()
         .keys()
         .map(String::as_str)
         .collect::<Vec<_>>();
+    keys.sort_unstable();
     assert_eq!(
         keys.as_slice(),
         [
@@ -357,7 +358,8 @@ fn ssh_selection_and_approval_helper_sources_are_frozen_with_exact_coverage() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     for (key, versions) in expected_versions {
         let records = reviewed[key].as_object().unwrap();
-        let actual_versions = records.keys().map(String::as_str).collect::<Vec<_>>();
+        let mut actual_versions = records.keys().map(String::as_str).collect::<Vec<_>>();
+        actual_versions.sort_unstable();
         assert_eq!(
             actual_versions.as_slice(),
             versions,

@@ -108,3 +108,29 @@ Recommendation: keep the ruling scoped to those hops. Future Antigravity
 qualification follows Contract 029: artifact evidence decides, release notes
 only find candidates, as Research 353 and 359 did.
 
+## Q-006 — Should Cline ACP expose its advertised `session/load` operation?
+
+Status: open
+Asked: 2026-10-08
+Gate owner: Tom, Swallowtail operator
+
+Research 383 confirms that Cline advertises and implements ACP `session/load`.
+The qualified Swallowtail route creates a new session and sends one bounded
+prompt, but has no public load or resume mapping. This qualification preserves
+that surface and adds no public operation.
+
+Decision tree:
+
+- If exact Cline artifact evidence shows that its advertised load cannot meet
+  the `load_session` cell under the approved route, classify the cell as
+  `provider_limitation` and cite that frozen evidence.
+- If Cline supports the required load semantics and Swallowtail lacks the
+  mapping, classify the cell as `producer_gap` and give the exact Queue lane
+  key that will build it.
+- Keep the cell `evidence_pending` while the gate owner has not established
+  which condition applies; keep this question open until the matrix cites one
+  of those outcomes.
+
+Evidence gate scope:
+
+- `cline.acp load_session`

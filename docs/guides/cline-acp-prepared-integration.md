@@ -27,7 +27,7 @@ Preparation requires all of the following:
 
 The ACP claim keeps its `3.0.55` baseline and behavior revision, qualifies
 published stable versions through `3.0.69`, and excludes unpublished `3.0.59`
-(Research 382). Later stable points remain visible as `UnverifiedNewer` under
+(Research 383). Later stable points remain visible as `UnverifiedNewer` under
 the claim.
 
 Swallowtail does not install Cline, search `PATH`, run OAuth `authenticate`,
@@ -90,8 +90,9 @@ See the compile-tested
 ## Restart, Failure, And Promotion
 
 Upstream Cline ACP advertises and implements `session/load`; Swallowtail does
-not map that operation or expose its provider session identity. The route also
-has no resume binding. `prepare_working_state_restoration` opens a fresh
+not map that operation or expose its provider session identity. Its matrix
+disposition is pending Q-006. The route also has no resume binding.
+`prepare_working_state_restoration` opens a fresh
 context-losing session after process loss; it does not recover the interrupted
 turn or transcript.
 
@@ -104,10 +105,11 @@ usage, session load, or live qualification requires a separate card, exact
 version evidence, and matrix coverage. An advertised ACP capability or CLI flag
 alone is insufficient.
 
-Research 382 freezes the published npm package hops, wrapper and Darwin ARM64
+Research 383 freezes the published npm package hops, wrapper and Darwin ARM64
 runtime trees, platform provenance, and selected ACP source deltas through
 `3.0.69`. It does not add provider model catalogue, media output, request
-identity, usage, or session-load mappings.
+identity, usage, or session-load mappings. Q-006 owns the open disposition of
+the unmapped `load_session` feature cell.
 
 ## Deterministic Validation
 

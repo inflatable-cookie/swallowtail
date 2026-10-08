@@ -27,7 +27,7 @@ Preparation requires all of the following:
 
 The ACP claim keeps its `3.0.55` baseline and behavior revision, qualifies
 published stable versions through `3.0.70`, and excludes unpublished `3.0.59`
-(Research 395). Later stable points remain visible as `UnverifiedNewer` under
+(Research 397). Later stable points remain visible as `UnverifiedNewer` under
 the claim.
 
 Swallowtail does not install Cline, search `PATH`, run OAuth `authenticate`,
@@ -105,7 +105,7 @@ usage, session load, or live qualification requires a separate card, exact
 version evidence, and matrix coverage. An advertised ACP capability or CLI flag
 alone is insufficient.
 
-Research 395 freezes the published npm package hops, wrapper and Darwin ARM64
+Research 397 freezes the published npm package hops, wrapper and Darwin ARM64
 runtime trees, platform provenance, and selected ACP source deltas through
 `3.0.70`. It does not add provider model catalogue, media output, request
 identity, usage, or session-load mappings. Q-006 owns the open disposition of

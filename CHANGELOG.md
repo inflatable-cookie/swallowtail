@@ -17,7 +17,7 @@ annotated Git tags from the canonical repository.
   work or artifact execution occurred.
 - qualify only `claude-code.response-only` through official npm `latest` and
   GitHub latest stable `2.1.293`; npm `stable` remains the delayed `2.1.285`
-  channel. Research 376 freezes every published hop after `2.1.281` across
+  channel. Research 377 freezes every published hop after `2.1.281` across
   the npm wrapper, Darwin arm64, and Linux x64 trees. Preserve the supported
   v1 and v2 segments and existing exclusions; add maintained v3
   `2.1.282..=2.1.293` for the accepted version-specific reduction in
@@ -36,6 +36,13 @@ annotated Git tags from the canonical repository.
   `0.81.2`; the repo local `0.81.2` development pin is unchanged. No package
   install, artifact execution, provider prompt, live initialize, or host
   mutation occurred.
+- raise the qualified OpenCode HTTP ceiling from `1.18.31` to official npm
+  `opencode-ai` and GitHub stable `1.18.35`. Four published hops qualify as a
+  compatible extension of `opencode.http-sse.surface-19`; route declarations
+  and OpenAPI remain unchanged, while provider-specific value and request
+  changes are classified in Research 376. Keep baseline `1.14.48`, claim id,
+  supported segments, historical gaps, and `AllowUnverified`; `1.18.36` stays
+  unverified. ACP and client MCP claims are unchanged.
 - keep the `gemini-cli.acp` qualified ceiling at `0.61.0`. The current
   official stable `0.63.0` is not qualified: `0.62.0` adds existing ACP v1
   pending/failed tool-call updates, and `0.63.0` adds confirmation and real

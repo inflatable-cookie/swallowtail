@@ -1,0 +1,210 @@
+{
+  "selected_routes": [
+    "global.health",
+    "provider.list",
+    "session.create",
+    "session.prompt_async",
+    "event.subscribe",
+    "session.abort",
+    "session.delete",
+    "session.list",
+    "session.status",
+    "session.get",
+    "session.messages"
+  ],
+  "selected_route_declaration_and_handler_files_byte_identical": true,
+  "mapped_stable_files": [
+    "packages/opencode/src/server/routes/instance/httpapi/groups/event.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/groups/provider.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/groups/session.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/event.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/provider.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/lifecycle.ts",
+    "packages/opencode/src/session/compaction.ts",
+    "packages/opencode/src/session/message-v2.ts",
+    "packages/opencode/src/session/session.ts",
+    "packages/opencode/src/session/status.ts",
+    "packages/sdk/openapi.json"
+  ],
+  "openapi_deltas": {
+    "selected_operation_objects_changed": false,
+    "sha256": {
+      "1.18.31": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3",
+      "1.18.32": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3",
+      "1.18.33": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3",
+      "1.18.34": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3",
+      "1.18.35": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3"
+    }
+  },
+  "classified_mapped_deltas": [
+    {
+      "hop": "1.18.31_to_1.18.32",
+      "file": "packages/opencode/src/session/message-v2.ts",
+      "classification": "Bedrock tool-result image hoisting is narrowed to Claude/Nova/Llama4; provider output conversion only, with persisted message and HTTP response shapes unchanged."
+    },
+    {
+      "hop": "1.18.31_to_1.18.32",
+      "file": "packages/opencode/package.json",
+      "classification": "@ai-sdk/togetherai changes 2.0.41 to 2.0.68; provider-specific stream usage reporting may change numeric values, while usage wire shape and Swallowtail decoder mapping remain unchanged."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/provider/provider.ts",
+      "classification": "Cloudflare AI Gateway provider-specific timeout behavior; provider catalogue and request handling internals, with no HTTP endpoint, schema, or Swallowtail control change."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/provider/transform.ts",
+      "classification": "Gemini model-specific reasoning variants change the dynamic Model.variants values returned by provider.list; the schema stays unchanged and Swallowtail uses only exact catalogue-reported variants."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/plugin/openai/codex.ts",
+      "classification": "Adds provider-specific model IDs to catalogue values; no static model aliases or new adapter operation are added."
+    },
+    {
+      "hop": "1.18.33_to_1.18.34",
+      "file": "packages/core/src/session/runner/llm.ts",
+      "classification": "Outbound provider requests gain session and parent-session headers whose values were already sent through existing affinity/session headers; this does not alter OpenCode HTTP/SSE request or response payloads or authority."
+    },
+    {
+      "hop": "1.18.33_to_1.18.34",
+      "file": "packages/opencode/src/session/llm/request.ts",
+      "classification": "Outbound provider requests gain x-opencode-session-id and x-opencode-parent-session-id from existing session identity values; no new identity data, credential, authority, or OpenCode HTTP/SSE lifecycle."
+    },
+    {
+      "hop": "1.18.34_to_1.18.35",
+      "file": "packages/opencode/src/session/message-v2.ts",
+      "classification": "Filters unsupported xAI tool-result image formats in provider-output conversion; persisted session message and HTTP response shapes remain unchanged."
+    },
+    {
+      "hop": "1.18.34_to_1.18.35",
+      "file": "packages/opencode/package.json",
+      "classification": "@ai-sdk/xai changes 3.0.102 to 3.0.139 and gitlab-ai-provider changes 6.18.0 to 6.19.0; provider-facing dependencies with no OpenCode HTTP route schema or decoder change."
+    }
+  ],
+  "classified_unmapped_deltas": [
+    {
+      "hop": "1.18.31_to_1.18.32",
+      "file": "packages/core/src/filesystem/search.ts",
+      "classification": "Refactors search result schema imports without changing public Entry/Match shape; filesystem search internals are not selected HTTP behavior."
+    },
+    {
+      "hop": "1.18.31_to_1.18.32",
+      "file": "packages/core/src/npm.ts",
+      "classification": "Changes Node package entry resolution for plugin/runtime loading; no selected HTTP/SSE endpoint, response, or capability change."
+    },
+    {
+      "hop": "1.18.31_to_1.18.32",
+      "file": "packages/core/package.json",
+      "classification": "Together SDK dependency update only; accounted for with the matching provider-facing OpenCode dependency."
+    },
+    {
+      "hop": "1.18.31_to_1.18.32",
+      "file": "packages/sdk/js/package.json",
+      "classification": "SDK package metadata version bump only; generated OpenAPI schema is byte-identical."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/core/src/open.ts",
+      "classification": "Adds an http/https-only browser-opening helper used by CLI and MCP-client surfaces; these are not selected server routes."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/cli/cmd/debug/config.ts",
+      "classification": "Redacts sensitive data from local debug config output; CLI diagnostic output is outside the selected HTTP/SSE surface."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/cli/cmd/debug/redact.ts",
+      "classification": "New local debug-output redaction helper; no selected HTTP/SSE behavior."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/cli/cmd/account.ts",
+      "classification": "Uses the browser-opening helper for account flow; interactive CLI behavior, not server routes."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/cli/cmd/web.ts",
+      "classification": "Uses the browser-opening helper for web flow; interactive CLI behavior, not server routes."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/mcp/browser.ts",
+      "classification": "Reports early browser launcher failures for the OpenCode MCP client; not the attached HTTP/SSE provider surface."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/mcp/oauth-provider.ts",
+      "classification": "Rejects non-http(s) OAuth URL schemes for OpenCode MCP client connections; client MCP capability is outside this selected server route family."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/plugin/digitalocean.ts",
+      "classification": "Uses the browser-opening helper in a provider login flow; no route or capability mapping change."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/src/plugin/snowflake-cortex.ts",
+      "classification": "Uses the browser-opening helper in a provider login flow; no route or capability mapping change."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/opencode/package.json",
+      "classification": "Moves open 10.1.2 from opencode to core and updates gitlab-ai-provider 6.15.0 to 6.18.0; packaging/provider dependencies, not selected route contracts."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/core/package.json",
+      "classification": "Receives the open browser helper dependency and the gitlab-ai-provider bump; internal dependency placement only."
+    },
+    {
+      "hop": "1.18.32_to_1.18.33",
+      "file": "packages/sdk/js/package.json",
+      "classification": "SDK package metadata version bump only; generated OpenAPI schema is byte-identical."
+    },
+    {
+      "hop": "1.18.33_to_1.18.34",
+      "file": "packages/opencode/package.json",
+      "classification": "Package version metadata only; no package dependency changes across this hop."
+    },
+    {
+      "hop": "1.18.33_to_1.18.34",
+      "file": "packages/core/package.json",
+      "classification": "Package version metadata only; no package dependency changes across this hop."
+    },
+    {
+      "hop": "1.18.33_to_1.18.34",
+      "file": "packages/sdk/js/package.json",
+      "classification": "SDK package metadata version bump only; generated OpenAPI schema is byte-identical."
+    },
+    {
+      "hop": "1.18.34_to_1.18.35",
+      "file": "packages/core/package.json",
+      "classification": "Provider SDK dependency updates match packages/opencode/package.json; provider-facing implementation dependencies only."
+    },
+    {
+      "hop": "1.18.34_to_1.18.35",
+      "file": "packages/sdk/js/package.json",
+      "classification": "SDK package metadata version bump only; generated OpenAPI schema is byte-identical."
+    }
+  ],
+  "bounded_unmapped_delta_categories": [
+    "cli-account-web-debug-and-browser-launcher",
+    "opencode-mcp-client-oauth-and-browser",
+    "filesystem-search-and-plugin-module-resolution",
+    "provider-sdk-dependencies-and-lockfile",
+    "provider-plugin-login-helpers",
+    "console-stats-web-ui-docs-and-localization",
+    "build-release-signing-nix-and-package-metadata",
+    "tests-and-fixtures-unrelated-to-selected-http-routes"
+  ],
+  "provider_catalogue_basis": "OpenCode provider.list reports dynamic provider/model data. Schema and decoder remain fixed; Gemini variants and provider model IDs can change with upstream values, and no Swallowtail hardcoded aliases are introduced.",
+  "decoder_corpus": "opencode-1.14.48",
+  "provider_prompt_sent": false,
+  "live_server_started": false,
+  "downloaded_artifact_executed": false,
+  "host_install_changed": false
+}

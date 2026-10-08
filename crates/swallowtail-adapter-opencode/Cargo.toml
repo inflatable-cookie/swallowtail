@@ -61,6 +61,10 @@ name = "protocol_fixtures"
 path = "tests/protocol_suite.rs"
 
 [[test]]
+name = "opencode_http_1_18_35_delta_ledger"
+path = "tests/opencode_http_1_18_35_delta_ledger.rs"
+
+[[test]]
 name = "acp_suite"
 path = "tests/acp_suite.rs"
 

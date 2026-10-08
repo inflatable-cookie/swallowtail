@@ -33,7 +33,7 @@ impl DiscoveryDriver for ClineAcpDriver {
             request,
             services,
             cline_acp_claim(),
-            crate::selection::parse_cline_version_output,
+            crate::selection::parse_cline_acp_version_output,
             SWALLOWTAIL_CLINE_PROBE_CODES,
             "Cline",
         ))

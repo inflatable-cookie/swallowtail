@@ -118,7 +118,11 @@ fn ambient_read_run_projects_steps_subagents_and_exact_usage() {
         .expect("documented child identity is retained");
     assert_eq!(child_activity.subagents().len(), 1);
     assert_eq!(
-        child_activity.subagents()[0].status(),
+        child_activity
+            .subagents()
+            .next()
+            .expect("reported child identity")
+            .status(),
         SubagentStatus::Unknown
     );
     let public = format!("{events:?}{terminal:?}");
@@ -309,7 +313,11 @@ fn documented_outer_run_error_does_not_classify_child_lifecycle() {
         .expect("child identity is separate from outer-run status");
     assert_eq!(child_activity.subagents().len(), 1);
     assert_eq!(
-        child_activity.subagents()[0].status(),
+        child_activity
+            .subagents()
+            .next()
+            .expect("reported child identity")
+            .status(),
         SubagentStatus::Unknown
     );
     assert!(

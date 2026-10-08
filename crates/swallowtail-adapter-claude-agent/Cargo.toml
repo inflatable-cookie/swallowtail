@@ -31,6 +31,7 @@ url = "2"
 [dev-dependencies]
 async-tungstenite = { version = "=0.34.1", default-features = false, features = ["tokio-rustls-webpki-roots"] }
 futures-util = "0.3"
+sha2 = "0.10"
 swallowtail-testkit.workspace = true
 swallowtail-transport-acp-remote.workspace = true
 tokio = { version = "1.52", default-features = false, features = ["macros", "net", "rt", "sync", "time"] }
@@ -68,6 +69,10 @@ path = "tests/claude_agent_sdk_driver.rs"
 [[test]]
 name = "claude_agent_sdk_sidecar_asset"
 path = "tests/claude_agent_sdk_sidecar_asset.rs"
+
+[[test]]
+name = "claude_agent_sdk_node_22_23_3_identity"
+path = "tests/claude_agent_sdk_node_22_23_3_identity.rs"
 
 [[test]]
 name = "claude_code_structured_run"

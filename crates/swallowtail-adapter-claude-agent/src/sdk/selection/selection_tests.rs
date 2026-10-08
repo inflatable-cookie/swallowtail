@@ -55,10 +55,33 @@ fn native_and_node_axes_stay_separate_from_the_wrapper_axis() {
 
     let node = claude_agent_sdk_node_claim();
     assert_eq!(node.axis().as_str(), CLAUDE_AGENT_SDK_NODE_AXIS);
-    assert!(node.permits(&version(CLAUDE_AGENT_SDK_NODE_RUNTIME)));
-    for rejected in ["22.23.1", "22.23.3", "18.0.0", "23.0.0"] {
+    assert_eq!(node.id().as_str(), "claude-agent.sdk.node-window-1");
+    assert_eq!(
+        node.newer_version_posture(),
+        swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly
+    );
+    assert_eq!(node.milestones().len(), 1);
+    assert_eq!(
+        node.milestones()
+            .next()
+            .expect("Node claim has its qualified segment")
+            .behavior_revision()
+            .as_str(),
+        CLAUDE_AGENT_SDK_BEHAVIOR
+    );
+    assert_eq!(node.baseline(), &version("22.23.2"));
+    assert_eq!(
+        node.latest_qualified(),
+        &version(CLAUDE_AGENT_SDK_NODE_RUNTIME)
+    );
+    assert_eq!(node.exclusions().len(), 0);
+    for qualified in ["22.23.2", "22.23.3"] {
+        assert!(node.permits(&version(qualified)), "missing {qualified}");
+    }
+    for rejected in ["22.23.1", "22.23.4", "18.0.0", "23.0.0"] {
         assert!(!node.permits(&version(rejected)));
     }
+    assert_eq!(CLAUDE_AGENT_SDK_NODE_RUNTIME, "22.23.3");
     assert!(claude_agent_sdk_node_binding(CLAUDE_AGENT_SDK_NODE_RUNTIME).is_some());
     assert!(claude_agent_sdk_node_binding("22.x").is_none());
 }

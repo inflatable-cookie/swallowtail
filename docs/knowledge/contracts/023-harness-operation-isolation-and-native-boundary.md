@@ -293,6 +293,32 @@ Further authority, public API/lifecycle or live-proof needs return for a
 separate ruling. Frozen identity and provider-free route proof must precede
 qualification; Contract 036 patch compatibility remains separate.
 
+## Kiro ACP Owner-Only State
+
+Tom's 2026-10-08 board ruling, “Accept owner-only boundary; require exact ACP
+proof”, answers decision `73ff6b53-f8be-4d7f-9031-c8b0a81e3ff1`.
+Qualification may accept Kiro `2.27.0` and later owner-only home and prior-session
+state as a documented provider boundary. Preserve the approved execution
+principal and delegated environment, local-account authentication,
+`session/new.cwd`, read-only working resource and reject-and-cancel policy.
+Preserve all older qualified points.
+
+Qualification still requires exact selected ACP entrypoint reachability,
+affected paths, symlink and ownership treatment, failure behavior and
+session-access effects. Vendor documentation and filename strings alone do
+not establish those effects. Provider-free static control-flow proof may
+establish only the behavior it actually maps. If it cannot establish the ACP
+effects, retain the existing `2.21.4` claim and record the finite missing proof
+with a concrete isolated provider-free runtime harness for separate approval.
+Do not infer compatibility, weaken ownership permissions or repeat an
+unchanged strings-only inspection.
+
+Cross-user access, a change of principal, authentication or home, mutation
+outside approved working resources, and a public API or lifecycle change need
+another ruling. This ruling authorizes no artifact execution, credential
+access, live provider work, installation, host mutation or release/tag action.
+Contract 036 release compatibility remains separate.
+
 ## Native Sandbox Boundary
 
 Provider-native sandboxing is optional. A configured route may select

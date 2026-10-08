@@ -93,10 +93,17 @@ const RUNTIME_BASELINE_FILES: [&str; 25] = [
     "README.md",
 ];
 
-const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
-    (
-        "1.13.4..1.13.5",
-        &[
+struct RuntimeHop {
+    versions: &'static str,
+    added: &'static [&'static str],
+    removed: &'static [&'static str],
+    changed: &'static [&'static str],
+}
+
+const RUNTIME_HOPS: [RuntimeHop; 4] = [
+    RuntimeHop {
+        versions: "1.13.4..1.13.5",
+        added: &[
             "dist/langsmith-CG8px69t.cjs",
             "dist/langsmith-CG8px69t.cjs.map",
             "dist/langsmith-CY7MawjU.js",
@@ -106,7 +113,7 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/src-C2ZohcHT.cjs",
             "dist/src-C2ZohcHT.cjs.map",
         ],
-        &[
+        removed: &[
             "dist/langsmith-BAO_h4J6.js",
             "dist/langsmith-BAO_h4J6.js.map",
             "dist/langsmith-yA3yhBRa.cjs",
@@ -116,7 +123,7 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/src-D_XxmEak.cjs",
             "dist/src-D_XxmEak.cjs.map",
         ],
-        &[
+        changed: &[
             "dist/browser.cjs",
             "dist/browser.js",
             "dist/index.cjs",
@@ -125,10 +132,10 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/node.js",
             "package.json",
         ],
-    ),
-    (
-        "1.13.5..1.14.0",
-        &[
+    },
+    RuntimeHop {
+        versions: "1.13.5..1.14.0",
+        added: &[
             "dist/agent-CrQgOsbl.d.cts",
             "dist/agent-DGkf2K7U.d.ts",
             "dist/langsmith-3LzYb-m7.js",
@@ -140,7 +147,7 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/src-gIoHrhh3.js",
             "dist/src-gIoHrhh3.js.map",
         ],
-        &[
+        removed: &[
             "dist/agent-CVBXKZAu.d.ts",
             "dist/agent-D7nWARfg.d.cts",
             "dist/langsmith-CG8px69t.cjs",
@@ -152,7 +159,7 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/src-C2ZohcHT.cjs",
             "dist/src-C2ZohcHT.cjs.map",
         ],
-        &[
+        changed: &[
             "dist/browser.cjs",
             "dist/browser.d.cts",
             "dist/browser.d.ts",
@@ -167,10 +174,10 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/node.js",
             "package.json",
         ],
-    ),
-    (
-        "1.14.0..1.14.1",
-        &[
+    },
+    RuntimeHop {
+        versions: "1.14.0..1.14.1",
+        added: &[
             "dist/agent-B05mw_iK.d.cts",
             "dist/agent-CxEdojMv.d.ts",
             "dist/langsmith-Bgi_Ta-k.js",
@@ -182,7 +189,7 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/src-CB_Eac87.cjs",
             "dist/src-CB_Eac87.cjs.map",
         ],
-        &[
+        removed: &[
             "dist/agent-CrQgOsbl.d.cts",
             "dist/agent-DGkf2K7U.d.ts",
             "dist/langsmith-3LzYb-m7.js",
@@ -194,7 +201,7 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/src-gIoHrhh3.js",
             "dist/src-gIoHrhh3.js.map",
         ],
-        &[
+        changed: &[
             "dist/browser.cjs",
             "dist/browser.d.cts",
             "dist/browser.d.ts",
@@ -209,10 +216,10 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/node.js",
             "package.json",
         ],
-    ),
-    (
-        "1.14.1..1.14.2",
-        &[
+    },
+    RuntimeHop {
+        versions: "1.14.1..1.14.2",
+        added: &[
             "dist/agent-3XynVB9Z.d.cts",
             "dist/agent-BKShWAoi.d.ts",
             "dist/langsmith--RbtjNdQ.js",
@@ -224,7 +231,7 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/src-YqBMARBL.js",
             "dist/src-YqBMARBL.js.map",
         ],
-        &[
+        removed: &[
             "dist/agent-B05mw_iK.d.cts",
             "dist/agent-CxEdojMv.d.ts",
             "dist/langsmith-Bgi_Ta-k.js",
@@ -236,7 +243,7 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/src-CB_Eac87.cjs",
             "dist/src-CB_Eac87.cjs.map",
         ],
-        &[
+        changed: &[
             "dist/browser.cjs",
             "dist/browser.d.cts",
             "dist/browser.d.ts",
@@ -251,7 +258,7 @@ const RUNTIME_HOPS: [(&str, &[&str], &[&str], &[&str]); 4] = [
             "dist/node.js",
             "package.json",
         ],
-    ),
+    },
 ];
 
 fn fixture(body: &str, name: &str) -> Value {
@@ -514,7 +521,13 @@ fn complete_package_trees_and_per_hop_file_sets_are_closed() {
             .expect("baseline runtime package metadata")["sha256"],
         identity_baseline["package_json_sha256"]
     );
-    for (hop, expected_added, expected_removed, expected_changed) in RUNTIME_HOPS {
+    for RuntimeHop {
+        versions: hop,
+        added: expected_added,
+        removed: expected_removed,
+        changed: expected_changed,
+    } in RUNTIME_HOPS
+    {
         let entry = &runtime_hops[hop];
         let before_files = expected_files.clone();
         assert_eq!(

@@ -56,6 +56,7 @@ section = "Research Records"
   "cargo fmt -p swallowtail-adapter-deepagents",
   "cargo fmt -p swallowtail-adapter-deepagents -- --check",
 ]
+"lint:current-deepagents-acp" = "cargo clippy --locked --all-features -p swallowtail-adapter-deepagents --test deepagents_acp_0_1_34_delta_ledger -- -D warnings"
 "check:current-deepagents-acp" = "cargo check --locked --all-targets -p swallowtail-adapter-deepagents"
 "validate:current-deepagents-acp" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-deepagents --lib --test deepagents_acp_identity --test deepagents_acp_0_1_30_delta_ledger --test deepagents_acp_0_1_34_delta_ledger --test activity_corpus --test acp_suite --test prepared_facade -E 'binary(deepagents_acp_identity) | binary(deepagents_acp_0_1_30_delta_ledger) | binary(deepagents_acp_0_1_34_delta_ledger) | binary(activity_corpus) | binary(acp_suite) | binary(prepared_facade) | test(/selection::tests::/)'"
 "format:current-pi-rpc" = [

@@ -84,18 +84,16 @@ does not recreate it. System and macOS MDM `application.network` allowlists
 remain authoritative and may deny model or search destinations; the adapter
 does not set `ignore_managed_requirements` or weaken those rules. The 0.156.0
 additive search results remain ignored while query progress is preserved. The
-unpublished `0.155.2` point stays a gap. Research 407 reuses and independently
+unpublished `0.155.2` point stays a gap. Research 408 reuses and independently
 digest-pins Research 370's full hop inventory and records the adapted policy
 and prepared-path regression evidence. The app-server claim remains
 independent.
 
-The app-server claim now qualifies official stable `0.161.0`; its independent
-`codex.app-server.cli-window-2` bound does not change `codex.exec`, which
-remains qualified through `0.155.1` and leaves `0.156.0..=0.161.0`
-`UnverifiedNewer` (Research 370). Research 388 freezes all twelve selected
-stable hops, package and runtime identities, complete tagged-source inventories,
-and exact selected-source classifications. It preserves the app-server claim
-ID and its older behavior revisions, feature bounds, and exclusions.
+The app-server claim independently qualifies official stable `0.161.0`.
+Research 388 freezes all twelve selected stable hops, package and runtime
+identities, complete tagged-source inventories, and exact selected-source
+classifications. Its claim ID, older behavior revisions, feature bounds, and
+exclusions remain independent of the exec qualification in Research 408.
 
 The app-server sends one host-approved writable root, keeps read-only defaults,
 and sends no trust, config, permission, proxy, Windows sandbox, or

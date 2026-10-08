@@ -71,7 +71,9 @@ pub(crate) struct PiRpcResponse {
 
 pub(crate) enum PiAgentEvent {
     Started,
-    Settled,
+    Settled {
+        aborted: Option<bool>,
+    },
     MessageStarted,
     MessageEnded(Option<TokenUsage>),
     OutputDelta(String),
@@ -161,7 +163,7 @@ fn decode_response(value: &Value) -> Result<PiRpcResponse, PiRpcProtocolFailure>
 fn decode_event(kind: &str, value: &Value) -> Result<PiAgentEvent, PiRpcProtocolFailure> {
     match kind {
         "agent_start" => Ok(PiAgentEvent::Started),
-        "agent_settled" => Ok(PiAgentEvent::Settled),
+        "agent_settled" => decode_settled(value),
         "message_start" => decode_message_start(value),
         "message_update" => decode_message_update(value),
         "message_end" => decode_message_end(value),
@@ -184,6 +186,15 @@ fn decode_event(kind: &str, value: &Value) -> Result<PiAgentEvent, PiRpcProtocol
             .map(PiAgentEvent::Unknown)
             .ok_or_else(|| failure(PiRpcProtocolFailureKind::UnknownRecord)),
     }
+}
+
+fn decode_settled(value: &Value) -> Result<PiAgentEvent, PiRpcProtocolFailure> {
+    let aborted = match value.get("aborted") {
+        None => None,
+        Some(Value::Bool(aborted)) => Some(*aborted),
+        Some(_) => return Err(failure(PiRpcProtocolFailureKind::UnknownRecord)),
+    };
+    Ok(PiAgentEvent::Settled { aborted })
 }
 
 fn decode_message_end(value: &Value) -> Result<PiAgentEvent, PiRpcProtocolFailure> {

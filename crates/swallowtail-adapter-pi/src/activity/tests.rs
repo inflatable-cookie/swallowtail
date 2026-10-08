@@ -19,7 +19,7 @@ fn exact_pi_corpus_projects_message_reasoning_tool_compaction_and_unknown() {
             panic!("activity corpus contains only agent events");
         };
         observations.extend(projection.project(&event).expect("event projects"));
-        if matches!(event, PiAgentEvent::Settled) {
+        if matches!(event, PiAgentEvent::Settled { .. }) {
             observations.extend(
                 projection
                     .complete(ActivityStatus::Completed)

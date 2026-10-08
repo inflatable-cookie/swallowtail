@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify `pi.rpc` through official npm `latest` and GitHub latest stable
+  `1.1.0` after every published hop following `0.86.1`. Research 383 freezes
+  exact package and source identity, complete npm trees, runtime chunks, and
+  per-hop selected-source classifications. Preserve baseline `0.80.10`, the
+  existing claim and behavior revisions, all prior segments and gaps. Add
+  private command-disposition mappings from `0.99.0` and the
+  `agent_settled.aborted` mapping at maintained `1.1.0`; RPC operations,
+  framing, permissions, and lifecycle contract remain unchanged. Later stable
+  points remain unverified. No artifact execution, provider prompt, live RPC,
+  credential use, installation, or host update occurred.
 - qualify `bedrock.runtime`'s Rust SDK through official `aws-sdk-bedrockruntime`
   `1.148.0`, preserving exact `1.136.0`, the `1.137.0` and `1.138.0` gaps,
   and the yanked `1.144.0` exclusion. The Runtime service axis and both

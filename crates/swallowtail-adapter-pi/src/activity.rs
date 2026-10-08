@@ -273,7 +273,7 @@ impl PiActivityProjection {
                 )?])
             }
             PiAgentEvent::Started
-            | PiAgentEvent::Settled
+            | PiAgentEvent::Settled { .. }
             | PiAgentEvent::Progress
             | PiAgentEvent::ProviderFailed => Ok(Vec::new()),
         }

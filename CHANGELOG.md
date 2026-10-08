@@ -275,13 +275,12 @@ annotated Git tags from the canonical repository.
   credential use, package installation, or artifact execution occurred.
 - extend `ollama.attached` through the exact official stable points `0.35.0`
   and `0.35.1`, retaining `ollama.native-text-v1`, the prior exclusions, and
-  unpublished gaps. Current official stable `0.40.0` remains
-  `UnverifiedNewer`: chat scheduling starts background local compatibility
-  migration that can write converted model blobs and manifest-list entries,
-  changing the attached store lifecycle and later catalogue shape. Research
-  379 freezes the release identities and complete source trees and names the
-  ruling/adaptation needed before the claim can move again. No local runtime,
-  provider prompt, model download, or host mutation occurred.
+  unpublished gaps. Research 379 froze `0.40.0` as `UnverifiedNewer` because
+  chat scheduling starts background local compatibility migration that can
+  write converted model blobs and manifest-list entries, changing the attached
+  store lifecycle and later catalogue shape. That stop remains historical;
+  current official stable `0.40.1` is qualified above (Research 418). No local
+  runtime, provider prompt, model download, or host mutation occurred.
 - qualify `grok-build.acp` through current official npm `@xai-official/grok`
   `1.0.46`. Research 340 freezes published stable hops `1.0.31..=1.0.41`
   after the exact `1.0.30` catalogue ceiling; Research 385 freezes hops

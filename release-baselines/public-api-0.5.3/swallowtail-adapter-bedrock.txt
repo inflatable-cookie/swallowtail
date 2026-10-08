@@ -1,0 +1,189 @@
+pub mod swallowtail_adapter_bedrock
+pub enum swallowtail_adapter_bedrock::DecodeFailure
+pub swallowtail_adapter_bedrock::DecodeFailure::EventOutOfOrder
+pub swallowtail_adapter_bedrock::DecodeFailure::MissingRequiredField
+pub swallowtail_adapter_bedrock::DecodeFailure::UnknownSdkVariant
+pub swallowtail_adapter_bedrock::DecodeFailure::UnsupportedSemanticEvent
+pub swallowtail_adapter_bedrock::DecodeFailure::UsageOutOfRange
+pub enum swallowtail_adapter_bedrock::ProviderFailureKind
+pub swallowtail_adapter_bedrock::ProviderFailureKind::AuthenticationOrPermissionDenied
+pub swallowtail_adapter_bedrock::ProviderFailureKind::InvalidRequest
+pub swallowtail_adapter_bedrock::ProviderFailureKind::ModelTimedOut
+pub swallowtail_adapter_bedrock::ProviderFailureKind::ModelUnavailable
+pub swallowtail_adapter_bedrock::ProviderFailureKind::ProtocolFailed
+pub swallowtail_adapter_bedrock::ProviderFailureKind::ProviderFailed
+pub swallowtail_adapter_bedrock::ProviderFailureKind::ProviderOverloaded
+pub swallowtail_adapter_bedrock::ProviderFailureKind::RateLimited
+pub swallowtail_adapter_bedrock::ProviderFailureKind::ResourceNotFound
+pub swallowtail_adapter_bedrock::ProviderFailureKind::TransportFailed
+pub enum swallowtail_adapter_bedrock::StopKind
+pub swallowtail_adapter_bedrock::StopKind::EndTurn
+pub swallowtail_adapter_bedrock::StopKind::MaximumTokens
+pub swallowtail_adapter_bedrock::StopKind::StopSequence
+pub enum swallowtail_adapter_bedrock::StreamUpdate
+pub swallowtail_adapter_bedrock::StreamUpdate::ContentBlockStopped
+pub swallowtail_adapter_bedrock::StreamUpdate::MessageStarted
+pub swallowtail_adapter_bedrock::StreamUpdate::MessageStopped(swallowtail_adapter_bedrock::StopKind)
+pub swallowtail_adapter_bedrock::StreamUpdate::TextDelta(alloc::string::String)
+pub swallowtail_adapter_bedrock::StreamUpdate::Usage(swallowtail_adapter_bedrock::TokenUsage)
+pub struct swallowtail_adapter_bedrock::BedrockCatalogueBinding
+impl swallowtail_adapter_bedrock::BedrockCatalogueBinding
+pub const fn swallowtail_adapter_bedrock::BedrockCatalogueBinding::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_adapter_bedrock::BedrockRegion, swallowtail_adapter_bedrock::BedrockCredentialProvider) -> Self
+pub struct swallowtail_adapter_bedrock::BedrockCatalogueDriver
+impl swallowtail_adapter_bedrock::BedrockCatalogueDriver
+pub fn swallowtail_adapter_bedrock::BedrockCatalogueDriver::new(swallowtail_adapter_bedrock::BedrockCatalogueBinding) -> Self
+impl swallowtail_runtime::roles::ModelCatalogDriver for swallowtail_adapter_bedrock::BedrockCatalogueDriver
+pub fn swallowtail_adapter_bedrock::BedrockCatalogueDriver::list_models(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_bedrock::BedrockCataloguePreparationInput
+impl swallowtail_adapter_bedrock::BedrockCataloguePreparationInput
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence, swallowtail_adapter_bedrock::BedrockCloudClientConfig) -> Self
+pub struct swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence
+impl swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence::region(&self) -> &swallowtail_adapter_bedrock::BedrockRegion
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence::sdk_crate(&self) -> &'static str
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence::sdk_version(&self) -> &'static str
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence::service_api(&self) -> &'static str
+pub struct swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration
+impl swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_bedrock::BedrockCatalogueDriver
+pub fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::prepare_catalogue(&self, swallowtail_adapter_bedrock::BedrockCatalogueProfileInput) -> core::result::Result<swallowtail_adapter_bedrock::BedrockPreparedCatalogue, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::region(&self) -> &swallowtail_adapter_bedrock::BedrockRegion
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::sdk_crate(&self) -> &'static str
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::sdk_version(&self) -> &'static str
+pub const fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::service_api(&self) -> &'static str
+pub fn swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_bedrock::BedrockCatalogueProfileInput
+impl swallowtail_adapter_bedrock::BedrockCatalogueProfileInput
+pub const fn swallowtail_adapter_bedrock::BedrockCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self
+pub const fn swallowtail_adapter_bedrock::BedrockCatalogueProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_bedrock::BedrockCatalogueRouteInput
+impl swallowtail_adapter_bedrock::BedrockCatalogueRouteInput
+pub const fn swallowtail_adapter_bedrock::BedrockCatalogueRouteInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_bedrock::BedrockCloudClientConfig
+impl swallowtail_adapter_bedrock::BedrockCloudClientConfig
+pub const fn swallowtail_adapter_bedrock::BedrockCloudClientConfig::new(swallowtail_adapter_bedrock::BedrockRegion, swallowtail_adapter_bedrock::BedrockCredentialProvider) -> Self
+pub const fn swallowtail_adapter_bedrock::BedrockCloudClientConfig::region(&self) -> &swallowtail_adapter_bedrock::BedrockRegion
+pub struct swallowtail_adapter_bedrock::BedrockCredentialProvider(_)
+impl swallowtail_adapter_bedrock::BedrockCredentialProvider
+pub fn swallowtail_adapter_bedrock::BedrockCredentialProvider::new(impl aws_credential_types::provider::credentials::ProvideCredentials + 'static) -> Self
+impl core::fmt::Debug for swallowtail_adapter_bedrock::BedrockCredentialProvider
+pub fn swallowtail_adapter_bedrock::BedrockCredentialProvider::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_bedrock::BedrockDirectDriver
+impl swallowtail_adapter_bedrock::BedrockDirectDriver
+pub fn swallowtail_adapter_bedrock::BedrockDirectDriver::new(swallowtail_adapter_bedrock::BedrockDriverBinding) -> Self
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_bedrock::BedrockDirectDriver
+pub fn swallowtail_adapter_bedrock::BedrockDirectDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_bedrock::BedrockDriverBinding
+impl swallowtail_adapter_bedrock::BedrockDriverBinding
+pub const fn swallowtail_adapter_bedrock::BedrockDriverBinding::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_adapter_bedrock::BedrockRegion, swallowtail_adapter_bedrock::BedrockCredentialProvider) -> Self
+pub struct swallowtail_adapter_bedrock::BedrockFacade
+impl swallowtail_adapter_bedrock::BedrockFacade
+pub fn swallowtail_adapter_bedrock::BedrockFacade::catalogue(&self, swallowtail_adapter_bedrock::BedrockCatalogueRouteInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_bedrock::BedrockFacade::execution_host_id(&self) -> &swallowtail_core::runtime_identity::ExecutionHostId
+pub const fn swallowtail_adapter_bedrock::BedrockFacade::region(&self) -> &swallowtail_adapter_bedrock::BedrockRegion
+pub fn swallowtail_adapter_bedrock::BedrockFacade::runtime(&self, swallowtail_adapter_bedrock::BedrockRuntimeRouteInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_bedrock::BedrockFacadePreparationInput
+impl swallowtail_adapter_bedrock::BedrockFacadePreparationInput
+pub const fn swallowtail_adapter_bedrock::BedrockFacadePreparationInput::new(swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_adapter_bedrock::BedrockCloudClientConfig) -> Self
+pub struct swallowtail_adapter_bedrock::BedrockModelSelection
+impl swallowtail_adapter_bedrock::BedrockModelSelection
+pub const fn swallowtail_adapter_bedrock::BedrockModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_core::model::ProviderId) -> Self
+pub struct swallowtail_adapter_bedrock::BedrockPreparedCatalogue
+impl swallowtail_adapter_bedrock::BedrockPreparedCatalogue
+pub fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_bedrock::BedrockPreparedCatalogue
+pub const fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::evidence(&self) -> &swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence
+pub fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::into_parts(self) -> (swallowtail_adapter_bedrock::BedrockCataloguePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ModelCatalogRequest, swallowtail_adapter_bedrock::BedrockCatalogueDriver)
+pub fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::list_models(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_core::model::ModelCatalogEntry>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::low_level_driver(&self) -> swallowtail_adapter_bedrock::BedrockCatalogueDriver
+pub const fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_bedrock::BedrockPreparedCatalogue::request(&self) -> &swallowtail_runtime::roles::ModelCatalogRequest
+pub struct swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt
+impl swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt
+pub fn swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt
+pub const fn swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt::evidence(&self) -> &swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence
+pub fn swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt::into_parts(self) -> (swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_adapter_bedrock::BedrockDirectDriver)
+pub fn swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt::low_level_driver(&self) -> swallowtail_adapter_bedrock::BedrockDirectDriver
+pub const fn swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_bedrock::BedrockRegion(_)
+impl swallowtail_adapter_bedrock::BedrockRegion
+pub fn swallowtail_adapter_bedrock::BedrockRegion::as_str(&self) -> &str
+pub fn swallowtail_adapter_bedrock::BedrockRegion::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
+pub struct swallowtail_adapter_bedrock::BedrockRuntimePreparationInput
+impl swallowtail_adapter_bedrock::BedrockRuntimePreparationInput
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence, swallowtail_adapter_bedrock::BedrockCloudClientConfig) -> Self
+pub struct swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence
+impl swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence::region(&self) -> &swallowtail_adapter_bedrock::BedrockRegion
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence::sdk_crate(&self) -> &'static str
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence::sdk_version(&self) -> &'static str
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedEvidence::service_api(&self) -> &'static str
+pub struct swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration
+impl swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_bedrock::BedrockDirectDriver
+pub fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::prepare_inference_attempt(&self, swallowtail_adapter_bedrock::BedrockRuntimeProfileInput) -> core::result::Result<swallowtail_adapter_bedrock::BedrockPreparedInferenceAttempt, swallowtail_runtime::preparation::PreparationFailure>
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::region(&self) -> &swallowtail_adapter_bedrock::BedrockRegion
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::sdk_crate(&self) -> &'static str
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::sdk_version(&self) -> &'static str
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::service_api(&self) -> &'static str
+pub fn swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_core::runtime_identity::InstanceTargetRef) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_bedrock::BedrockRuntimeProfileInput
+impl swallowtail_adapter_bedrock::BedrockRuntimeProfileInput
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimeProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_bedrock::BedrockModelSelection, swallowtail_runtime::content::OperationContent, core::num::nonzero::NonZeroU64) -> Self
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimeProfileInput::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_adapter_bedrock::BedrockRuntimeRouteInput
+impl swallowtail_adapter_bedrock::BedrockRuntimeRouteInput
+pub const fn swallowtail_adapter_bedrock::BedrockRuntimeRouteInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_bedrock::StreamDecoder
+impl swallowtail_adapter_bedrock::StreamDecoder
+pub const fn swallowtail_adapter_bedrock::StreamDecoder::is_complete(&self) -> bool
+pub fn swallowtail_adapter_bedrock::StreamDecoder::push(&mut self, aws_sdk_bedrockruntime::types::_converse_stream_output::ConverseStreamOutput) -> core::result::Result<swallowtail_adapter_bedrock::StreamUpdate, swallowtail_adapter_bedrock::DecodeFailure>
+pub struct swallowtail_adapter_bedrock::TokenUsage
+pub swallowtail_adapter_bedrock::TokenUsage::input: u64
+pub swallowtail_adapter_bedrock::TokenUsage::output: u64
+pub swallowtail_adapter_bedrock::TokenUsage::total: u64
+pub const swallowtail_adapter_bedrock::BEDROCK_CATALOGUE_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_bedrock::BEDROCK_CATALOGUE_FACADE_REVISION: &str
+pub const swallowtail_adapter_bedrock::BEDROCK_CATALOGUE_INSTANCE_POLICY_ID: &str
+pub const swallowtail_adapter_bedrock::BEDROCK_CATALOGUE_SERVICE_REVISION: &str
+pub const swallowtail_adapter_bedrock::BEDROCK_CONTROL_PLANE_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_bedrock::BEDROCK_RUNTIME_ACCESS_PROFILE_ID: &str
+pub const swallowtail_adapter_bedrock::BEDROCK_RUNTIME_ENDPOINT_AUDIENCE: &str
+pub const swallowtail_adapter_bedrock::BEDROCK_RUNTIME_FACADE_REVISION: &str
+pub const swallowtail_adapter_bedrock::BEDROCK_RUNTIME_INSTANCE_POLICY_ID: &str
+pub const swallowtail_adapter_bedrock::BEDROCK_RUNTIME_SERVICE_REVISION: &str
+pub const swallowtail_adapter_bedrock::CATALOGUE_SDK_CRATE: &str
+pub const swallowtail_adapter_bedrock::CATALOGUE_SDK_VERSION: &str
+pub const swallowtail_adapter_bedrock::CATALOGUE_SERVICE_API: &str
+pub const swallowtail_adapter_bedrock::SDK_CRATE: &str
+pub const swallowtail_adapter_bedrock::SDK_VERSION: &str
+pub const swallowtail_adapter_bedrock::SERVICE_API: &str
+pub fn swallowtail_adapter_bedrock::bedrock_catalogue_access_profile(swallowtail_core::runtime_identity::CredentialRef) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_bedrock::bedrock_catalogue_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_bedrock::bedrock_catalogue_interface_bindings() -> [swallowtail_core::interface_version::InterfaceVersionBinding; 2]
+pub fn swallowtail_adapter_bedrock::bedrock_catalogue_interface_claims() -> [swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim; 2]
+pub fn swallowtail_adapter_bedrock::bedrock_direct_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_bedrock::bedrock_runtime_access_profile(swallowtail_core::runtime_identity::CredentialRef) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_bedrock::bedrock_runtime_interface_bindings() -> [swallowtail_core::interface_version::InterfaceVersionBinding; 2]
+pub fn swallowtail_adapter_bedrock::bedrock_runtime_interface_claims() -> [swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim; 2]
+pub fn swallowtail_adapter_bedrock::classify_converse_failure(&aws_sdk_bedrockruntime::operation::converse_stream::ConverseStreamError) -> swallowtail_adapter_bedrock::ProviderFailureKind
+pub fn swallowtail_adapter_bedrock::classify_output_failure(&aws_sdk_bedrockruntime::types::error::ConverseStreamOutputError) -> swallowtail_adapter_bedrock::ProviderFailureKind
+pub fn swallowtail_adapter_bedrock::prepare_bedrock(swallowtail_adapter_bedrock::BedrockFacadePreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_bedrock::BedrockFacade, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_bedrock::prepare_bedrock_catalogue(swallowtail_adapter_bedrock::BedrockCataloguePreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_bedrock::BedrockCataloguePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_bedrock::prepare_bedrock_runtime(swallowtail_adapter_bedrock::BedrockRuntimePreparationInput, &swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_bedrock::BedrockRuntimePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

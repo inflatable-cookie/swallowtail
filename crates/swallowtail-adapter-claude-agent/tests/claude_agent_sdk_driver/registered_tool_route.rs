@@ -220,8 +220,9 @@ pub(super) fn courier_binary() -> &'static Path {
             .parent()
             .expect("workspace")
             .to_path_buf();
-        // Nested cargo must not share the outer `cargo test` target lock.
-        let nested_target = workspace.join("target").join("card125-courier");
+        // Nested cargo must not share the outer target lock or another task's
+        // fixture output. Give this test process a fresh scratch target.
+        let nested_target = fresh_courier_target();
         let binary = nested_target
             .join("debug")
             .join("swallowtail-registered-tool-courier");
@@ -233,6 +234,29 @@ pub(super) fn courier_binary() -> &'static Path {
         );
         published
     })
+}
+
+fn fresh_courier_target() -> PathBuf {
+    let parent = std::env::var_os("CARGO_TARGET_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(std::env::temp_dir);
+    std::fs::create_dir_all(&parent).expect("the test target directory exists");
+    let template = parent.join("sdk-courier.XXXXXXXX");
+    let output = std::process::Command::new("mktemp")
+        .arg("-d")
+        .arg(template)
+        .output()
+        .expect("mktemp creates an isolated courier target");
+    assert!(
+        output.status.success(),
+        "mktemp courier target failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    PathBuf::from(
+        String::from_utf8(output.stdout)
+            .expect("mktemp path is UTF-8")
+            .trim(),
+    )
 }
 
 /// Builds the courier and reads the completed artifact, retrying the pair
@@ -571,6 +595,22 @@ pub(super) fn preparation_for(
     executable: ExecutableRef,
     environment: EnvironmentRef,
 ) -> RegisteredToolPreparation {
+    preparation_for_with_limits(
+        host,
+        admission,
+        executable,
+        environment,
+        RegisteredToolLimits::ceiling(),
+    )
+}
+
+fn preparation_for_with_limits(
+    host: ExecutionHostId,
+    admission: swallowtail_runtime::ConsumerAdmissionBinding,
+    executable: ExecutableRef,
+    environment: EnvironmentRef,
+    limits: RegisteredToolLimits,
+) -> RegisteredToolPreparation {
     let snapshot = Arc::new(snapshot(&host, executable.clone(), environment.clone()));
     let recipe =
         RegisteredToolProxyRecipe::new(executable, environment, REGISTERED_TOOL_PROXY_WIRE_TAG)
@@ -585,12 +625,7 @@ pub(super) fn preparation_for(
     .expect("selection")
     .with_attachment(RegisteredToolAttachment::MediatedStdioProxy)
     .with_proxy_recipe(recipe);
-    RegisteredToolPreparation::new(
-        snapshot,
-        selection,
-        admission,
-        RegisteredToolLimits::ceiling(),
-    )
+    RegisteredToolPreparation::new(snapshot, selection, admission, limits)
 }
 
 struct OpenedRoute {
@@ -606,7 +641,13 @@ fn open_route(
     dispatcher: Arc<dyn RegisteredToolDispatcher>,
     admission: Arc<ScriptedAdmissionPort>,
 ) -> OpenedRoute {
-    open_route_with_scenario(host, dispatcher, admission, SdkScenario::McpConnected)
+    open_route_with_scenario(
+        host,
+        dispatcher,
+        admission,
+        SdkScenario::McpConnected,
+        RegisteredToolLimits::ceiling(),
+    )
 }
 
 /// Card 144: opens the registered route against an arbitrary sidecar
@@ -617,6 +658,7 @@ fn open_route_with_scenario(
     dispatcher: Arc<dyn RegisteredToolDispatcher>,
     admission: Arc<ScriptedAdmissionPort>,
     scenario: SdkScenario,
+    limits: RegisteredToolLimits,
 ) -> OpenedRoute {
     let fixture = SdkFixtureHost::new(scenario);
     let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
@@ -634,11 +676,12 @@ fn open_route_with_scenario(
         .with_credential(Arc::new(fixture.clone()))
         .with_working_resource(Arc::new(fixture.clone()))
         .with_time(Arc::new(fixture.clone()));
-    let preparation = preparation_for(
+    let preparation = preparation_for_with_limits(
         host.clone(),
         fixture_admission(Arc::clone(&admission)),
         executable,
         environment,
+        limits,
     );
     let prepared = prepare_claude_agent_sdk_session(
         ClaudeAgentSdkSessionPreparation::new(
@@ -856,8 +899,13 @@ fn registered_session_lease_survives_open_deadline_and_pending_permission() {
         admission.observed_phases()
     );
 
-    // The permission decision arrives after the opening deadline, while the
-    // call stays inside its independent 60 second maximum.
+    // This is a real elapsed wait through the real courier and fake SDK
+    // producer, not only a virtual-clock jump. The permission decision arrives
+    // more than ten seconds after open while the call stays inside its
+    // independent 60 second maximum.
+    let approval_started = Instant::now();
+    std::thread::sleep(Duration::from_millis(20_001));
+    assert!(approval_started.elapsed() >= Duration::from_secs(20));
     opened
         .fixture
         .advance_time_to_ticks(OPEN_DEADLINE_TICKS + 20_000_000_000);
@@ -885,6 +933,80 @@ fn registered_session_lease_survives_open_deadline_and_pending_permission() {
         "later-turn call: {later_turn}"
     );
     assert_eq!(calls.load(Ordering::SeqCst), 2);
+    close_route(opened);
+}
+
+#[test]
+fn expired_call_returns_one_correlated_error_then_the_courier_accepts_a_new_call() {
+    let host = host_id("claude-agent-sdk.fixture.registered-call-expiry");
+    let calls = Arc::new(AtomicUsize::new(0));
+    let admission = Arc::new(ScriptedAdmissionPort::current());
+    let short_call_bounds = RegisteredToolBounds::new(
+        1,
+        256 * 1024,
+        256 * 1024,
+        64 * 1024,
+        32,
+        Duration::from_secs(1),
+    )
+    .expect("positive call bound within the Contract 063 ceiling");
+    let opened = open_route_with_scenario(
+        host,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::clone(&admission),
+        SdkScenario::McpConnected,
+        RegisteredToolLimits::new(short_call_bounds),
+    );
+    opened.courier.handshake();
+
+    let validations_before = admission.validation_count();
+    admission.hold();
+    let courier = CourierClient {
+        process: Arc::clone(&opened.courier.process),
+    };
+    let pending_call = std::thread::spawn(move || {
+        courier.call_tool_with_id(5, &tool_id().to_string(), r#"{"path":"workspace/expired"}"#)
+    });
+    let wait_deadline = Instant::now() + Duration::from_secs(5);
+    while admission.validation_count() == validations_before {
+        assert!(
+            Instant::now() < wait_deadline,
+            "expired call reaches the controlled permission wait"
+        );
+        std::thread::yield_now();
+    }
+    opened
+        .fixture
+        .advance_time_to_ticks(OPEN_DEADLINE_TICKS + 1_000_000_000);
+    admission.release();
+    let expired = pending_call.join().expect("expired call returns once");
+    assert!(expired.contains("\"id\":5"), "correlated expiry: {expired}");
+    assert!(
+        expired.contains("-32000"),
+        "expired call returns an error: {expired}"
+    );
+    assert_eq!(
+        calls.load(Ordering::SeqCst),
+        0,
+        "expired call has no effect"
+    );
+
+    let later = opened.courier.call_tool_with_id(
+        6,
+        &tool_id().to_string(),
+        r#"{"path":"workspace/later"}"#,
+    );
+    assert!(
+        later.contains("\"id\":6"),
+        "later response correlates: {later}"
+    );
+    assert!(
+        later.contains("from-dispatcher"),
+        "later call succeeds: {later}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 1, "no retry occurred");
     close_route(opened);
 }
 

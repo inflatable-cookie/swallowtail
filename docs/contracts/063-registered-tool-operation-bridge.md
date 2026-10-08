@@ -631,3 +631,32 @@ and resolves the executable reference. A conforming consumer-built courier is
 admitted, bound by the wire specification and its falsifiers, never by the
 artifact. Any claim that an external courier conforms requires the wire
 module to have been promoted to its own crate with a frozen version.
+
+## Mediated Courier Call-Wait Boundary — 2026-10-08
+
+The kernel is the only authority for caller, per-call, and optional lease
+deadlines. The courier waits for the authenticated host response without
+applying the opening timeout to an approval. The host dispatcher must cooperate
+with cancellation and settle within the effective deadline; an uncooperative
+dispatcher still retains failed cleanup and cannot be detached or replayed.
+
+The courier keeps a 65-second transport-stall guard above Contract 063's
+60-second maximum call duration. This guard detects a broken or stalled
+transport; it is not a second call deadline. Connection acquisition and
+readiness retain the existing lesser-of-open-remainder and ten-second bounds.
+Request and response frames remain byte bounded, and HTTP headers, response
+bodies, and stdio records remain absolutely bounded.
+
+A settled call error must be returned once with the matching JSON-RPC id. A
+correlated application error does not terminate the courier, so later calls on
+the same valid lease can proceed. A malformed, partial, oversized, stalled,
+foreign, or late transport response fails closed; it is never associated with
+a later call. Lease expiry, revocation, terminal close, and actual transport
+loss keep their existing fail-closed behavior. The courier adds no reconnect,
+retry, or replay path.
+
+The released-line proof uses the real courier, the prepared Claude SDK facade,
+and the matching source sidecar with a fake SDK producer. It holds approval for
+more than twenty elapsed seconds, then proves correlated expiry, later-turn
+reuse, denial without dispatch, and joined close without changing SDK, native,
+Node, sidecar wire, or route qualification pins.

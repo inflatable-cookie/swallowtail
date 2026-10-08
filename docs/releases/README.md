@@ -6,7 +6,9 @@ mutations.
 
 ## Current Release
 
-- [Swallowtail 0.5.2](0.5.2.md) — candidate over immutable `v0.5.1`; source-only SDK correction patch for session-lived registered-tool leases, bounded calls and exact per-turn usage; candidate tag not authorized or created
+- [Swallowtail 0.5.3](0.5.3.md) — source-only courier call-wait correction candidate over immutable `v0.5.2`; tag not authorized or created
+
+- [Swallowtail 0.5.2](0.5.2.md) — immutable source base `b83db0bdca4292e0d21775b9c0dc8b80ec05d003`; tag object `4d54ed92ec2dcdf44ebce019463d124996267810`; tree `949d9ef1199cd21c188959dcb2c9e9bc5f2086ec`
 
 - [Swallowtail 0.5.1](0.5.1.md) — candidate over immutable `v0.5.0`; source-only additive patch carrying the OpenCode HTTP `1.18.30` qualification and the Grok Build `1.0.25` authenticated non-inference model catalogue with additive route `grok-build.catalogue`; every `crates/` path byte-identical to Desktop-qualified source `0209dd7f`; tag not authorized and absent; source-only, not published
 

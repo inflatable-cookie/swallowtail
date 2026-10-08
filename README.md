@@ -19,15 +19,15 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`v0.5.1` is the coordinated candidate version; the current source tag
-remains `v0.5.0` until the separately authorized `v0.5.1` annotated tag
-exists. Releases are distributed as
+`v0.5.2` is the current immutable source tag; `0.5.3` is the coordinated
+source-only candidate. Its annotated tag requires separate authority for the
+exact reviewed source. Releases are distributed as
 annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The 40 packages share coordinated version `0.5.1` and provide 50 production
+The 40 packages share candidate version `0.5.3` and provide 50 production
 routes, including `pi.sdk-sidecar`, `claude-agent.sdk`, and additive
 `grok-build.catalogue`. OpenHands remains a
 package without a production route. The release line preserves the Rust
@@ -59,10 +59,10 @@ a typical application:
 <!-- source-install:start -->
 ```toml
 [dependencies]
-swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.2" }
-swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.2" }
-swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.2" }
-swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.2" }
+swallowtail-core = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.3" }
+swallowtail-runtime = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.3" }
+swallowtail-host-local = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.3" }
+swallowtail-adapter-codex = { git = "https://github.com/inflatable-cookie/swallowtail", tag = "v0.5.3" }
 ```
 <!-- source-install:end -->
 

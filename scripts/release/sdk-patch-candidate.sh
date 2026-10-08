@@ -6,8 +6,8 @@ candidate_repo_root=$(cd "$candidate_script_dir/../../.." && pwd)
 candidate_manifest="$candidate_script_dir/manifest.json"
 candidate_identity="$candidate_script_dir/check_identity.py"
 candidate_consumer="$candidate_script_dir/consumer"
-candidate_version=0.5.2
-candidate_base=e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27
+candidate_version=0.5.3
+candidate_base=b83db0bdca4292e0d21775b9c0dc8b80ec05d003
 candidate_active_scratch=
 
 candidate_cleanup() {
@@ -50,18 +50,29 @@ candidate_check_manifest() {
 import json
 import re
 import sys
+from pathlib import Path
 
 with open(sys.argv[1], encoding="utf-8") as stream:
     manifest = json.load(stream)
-if manifest.get("schema_version") != 1 or manifest.get("candidate_version") != "0.5.2":
+if manifest.get("schema_version") != 1 or manifest.get("candidate_version") != "0.5.3":
     raise SystemExit("candidate manifest version or schema is unsupported")
-if manifest.get("base_commit") != "e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27":
-    raise SystemExit("candidate manifest does not name the exact released v0.5.1 base")
-if manifest.get("intermediate_tree") != "35252ecf3dcb4254f66a9ed16caf813d2397f5f7":
-    raise SystemExit("candidate manifest does not name the reviewed intermediate tree")
+if manifest.get("base_commit") != "b83db0bdca4292e0d21775b9c0dc8b80ec05d003":
+    raise SystemExit("candidate manifest does not name the exact immutable v0.5.2 base")
+if manifest.get("base_tag_object") != "4d54ed92ec2dcdf44ebce019463d124996267810":
+    raise SystemExit("candidate manifest does not name the immutable v0.5.2 tag object")
+if manifest.get("base_tree") != "949d9ef1199cd21c188959dcb2c9e9bc5f2086ec":
+    raise SystemExit("candidate manifest does not name the immutable v0.5.2 tree")
+for key in ("intermediate_commit", "intermediate_tree"):
+    if not re.fullmatch(r"[0-9a-f]{40}", manifest.get(key, "")):
+        raise SystemExit(f"candidate manifest has an invalid {key}")
 files = manifest.get("patch_files", [])
-if len(files) != 29 or len(set(files)) != 29:
-    raise SystemExit("candidate manifest must preserve the exact reviewed 29-path patch inventory")
+if (
+    not isinstance(files, list)
+    or not files
+    or any(not isinstance(path, str) or path.startswith("/") or ".." in Path(path).parts for path in files)
+    or len(set(files)) != len(files)
+):
+    raise SystemExit("candidate manifest must contain a unique reviewed patch inventory")
 for key in ("patch_sha256", "sidecar_source_sha256"):
     if not re.fullmatch(r"[0-9a-f]{64}", manifest.get(key, "")):
         raise SystemExit(f"candidate manifest has an invalid {key}")
@@ -74,12 +85,44 @@ candidate_check_clean_head() {
     candidate_die "candidate checkout must be clean before its release proof"
   head=$(git -C "$candidate_repo_root" rev-parse HEAD)
   merge_base=$(git -C "$candidate_repo_root" merge-base "$head" "$candidate_base") ||
-    candidate_die "candidate does not descend from released v0.5.1"
+    candidate_die "candidate does not descend from immutable v0.5.2"
   [[ $merge_base == "$candidate_base" ]] ||
-    candidate_die "candidate base is not the exact released v0.5.1 commit"
+    candidate_die "candidate base is not the exact immutable v0.5.2 commit"
+  [[ $(git -C "$candidate_repo_root" rev-parse "$candidate_base^{tree}") == \
+    "$(candidate_manifest_value base_tree)" ]] ||
+    candidate_die "immutable v0.5.2 tree differs from the candidate manifest"
+  [[ $(git -C "$candidate_repo_root" rev-parse "$(candidate_manifest_value base_tag_object)^{commit}") == \
+    "$candidate_base" ]] ||
+    candidate_die "immutable v0.5.2 tag object does not name the candidate base"
   merges=$(git -C "$candidate_repo_root" rev-list --merges "$candidate_base..$head")
-  [[ -z $merges ]] || candidate_die "candidate contains a merge commit after v0.5.1"
+  [[ -z $merges ]] || candidate_die "candidate contains a merge commit after v0.5.2"
+  candidate_check_intermediate "$head"
   printf '%s\n' "$head"
+}
+
+candidate_check_intermediate() {
+  local head=$1 intermediate tree merge_base merges expected_files actual_files actual_sha256
+  intermediate=$(candidate_manifest_value intermediate_commit)
+  tree=$(git -C "$candidate_repo_root" rev-parse "$intermediate^{tree}") ||
+    candidate_die "reviewed source patch commit is unavailable"
+  [[ $tree == "$(candidate_manifest_value intermediate_tree)" ]] ||
+    candidate_die "reviewed source patch tree differs from the manifest"
+  git -C "$candidate_repo_root" merge-base --is-ancestor "$intermediate" "$head" ||
+    candidate_die "reviewed source patch is not an ancestor of the candidate"
+  merge_base=$(git -C "$candidate_repo_root" merge-base "$intermediate" "$candidate_base") ||
+    candidate_die "reviewed source patch does not descend from immutable v0.5.2"
+  [[ $merge_base == "$candidate_base" ]] ||
+    candidate_die "reviewed source patch base is not immutable v0.5.2"
+  merges=$(git -C "$candidate_repo_root" rev-list --merges "$candidate_base..$intermediate")
+  [[ -z $merges ]] || candidate_die "reviewed source patch contains a merge commit"
+  expected_files=$(candidate_manifest_value patch_files | LC_ALL=C sort)
+  actual_files=$(git -C "$candidate_repo_root" diff --name-only "$candidate_base" "$intermediate" | LC_ALL=C sort)
+  [[ $actual_files == "$expected_files" ]] ||
+    candidate_die "reviewed source patch path inventory differs from the manifest"
+  actual_sha256=$(git -C "$candidate_repo_root" diff --binary "$candidate_base" "$intermediate" |
+    python3 -c 'import hashlib,sys; print(hashlib.sha256(sys.stdin.buffer.read()).hexdigest())')
+  [[ $actual_sha256 == "$(candidate_manifest_value patch_sha256)" ]] ||
+    candidate_die "reviewed source patch digest differs from the manifest"
 }
 
 candidate_check_fixture_hashes() {
@@ -112,12 +155,12 @@ from pathlib import Path
 
 root, manifest_path = Path(sys.argv[1]), Path(sys.argv[2])
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-previous = root / "release-baselines/public-api-0.5.1"
+previous = root / "release-baselines/public-api-0.5.2"
 candidate = root / f"release-baselines/public-api-{manifest['candidate_version']}"
 packages = (previous / "packages.txt").read_text(encoding="utf-8").splitlines()
 candidate_packages = (candidate / "packages.txt").read_text(encoding="utf-8").splitlines()
 if candidate_packages != packages:
-    raise SystemExit("candidate package inventory differs from immutable v0.5.1")
+    raise SystemExit("candidate package inventory differs from immutable v0.5.2")
 expected_files = {"packages.txt", *(f"{name}.txt" for name in packages)}
 actual_files = {path.name for path in candidate.iterdir() if path.is_file()}
 if actual_files != expected_files:
@@ -141,15 +184,15 @@ for package in packages:
             f"unexpected {package} baseline additions: missing {missing}; unexpected {unexpected}"
         )
 
-old_routes = (root / "release-baselines/production-routes-0.5.1.txt").read_bytes()
+old_routes = (root / "release-baselines/production-routes-0.5.2.txt").read_bytes()
 new_routes = (root / f"release-baselines/production-routes-{manifest['candidate_version']}.txt").read_bytes()
 if old_routes != new_routes:
-    raise SystemExit("candidate route inventory differs from immutable v0.5.1")
-old_edges = (root / "release-baselines/internal-dependencies-0.5.1.tsv").read_text(encoding="utf-8")
+    raise SystemExit("candidate route inventory differs from immutable v0.5.2")
+old_edges = (root / "release-baselines/internal-dependencies-0.5.2.tsv").read_text(encoding="utf-8")
 new_edges = (root / f"release-baselines/internal-dependencies-{manifest['candidate_version']}.tsv").read_text(encoding="utf-8")
-if old_edges.replace("^0.5.1", "^0.5.2") != new_edges:
+if old_edges.replace("^0.5.2", "^0.5.3") != new_edges:
     raise SystemExit("candidate internal dependency inventory differs beyond coordinated version")
-print("candidate inventories passed: seven runtime additions, zero removals, unchanged routes and edges")
+print("candidate inventories passed: zero API additions or removals, unchanged routes and coordinated internal edges")
 PY
 }
 
@@ -201,15 +244,16 @@ candidate_prepare_baselines() {
   local scratch output_root target_root previous current package tool_version toolchain
   candidate_check_manifest
   candidate_identity_check "$candidate_repo_root"
+  candidate_check_intermediate "$(git -C "$candidate_repo_root" rev-parse HEAD)"
   tool_version=$(candidate_manifest_value api_tool_version)
   toolchain=$(candidate_manifest_value api_toolchain)
   [[ $(cargo-public-api --version 2>/dev/null) == "$tool_version" ]] ||
     candidate_die "required public API tool is $tool_version"
   rustup run "$toolchain" rustc --version >/dev/null 2>&1 ||
     candidate_die "required public API Rust toolchain is unavailable: $toolchain"
-  previous="$candidate_repo_root/release-baselines/public-api-0.5.1"
+  previous="$candidate_repo_root/release-baselines/public-api-0.5.2"
   current="$candidate_repo_root/release-baselines/public-api-$candidate_version"
-  [[ -d $previous ]] || candidate_die "immutable v0.5.1 API baseline is missing"
+  [[ -d $previous ]] || candidate_die "immutable v0.5.2 API baseline is missing"
   if [[ -e $current ]]; then
     [[ -d $current ]] || candidate_die "candidate API baseline path is not a directory"
     candidate_check_api_baselines
@@ -262,23 +306,23 @@ PY
     cp "$output_root/$package.txt" "$current/$package.txt"
   done < <(candidate_manifest_value api_packages)
   if [[ ! -e "$candidate_repo_root/release-baselines/production-routes-$candidate_version.txt" ]]; then
-    cp "$candidate_repo_root/release-baselines/production-routes-0.5.1.txt" \
+    cp "$candidate_repo_root/release-baselines/production-routes-0.5.2.txt" \
       "$candidate_repo_root/release-baselines/production-routes-$candidate_version.txt"
   fi
   if [[ ! -e "$candidate_repo_root/release-baselines/internal-dependencies-$candidate_version.tsv" ]]; then
-    python3 - "$candidate_repo_root/release-baselines/internal-dependencies-0.5.1.tsv" \
+    python3 - "$candidate_repo_root/release-baselines/internal-dependencies-0.5.2.tsv" \
       "$candidate_repo_root/release-baselines/internal-dependencies-$candidate_version.tsv" <<'PY'
 from pathlib import Path
 import sys
 
 source, destination = map(Path, sys.argv[1:3])
 contents = source.read_text(encoding="utf-8")
-if "^0.5.1" not in contents:
-    raise SystemExit("v0.5.1 internal dependency inventory has no coordinated requirements")
-destination.write_text(contents.replace("^0.5.1", "^0.5.2"), encoding="utf-8")
+if "^0.5.2" not in contents:
+    raise SystemExit("v0.5.2 internal dependency inventory has no coordinated requirements")
+destination.write_text(contents.replace("^0.5.2", "^0.5.3"), encoding="utf-8")
 PY
   fi
-  printf 'prepared v0.5.2 package, route, dependency, and API baselines from the actual candidate; v0.5.1 files were not changed\n'
+  printf 'prepared v0.5.3 package, route, dependency, and API baselines from the actual candidate; v0.5.2 files were not changed\n'
   printf 'API baseline generation used only the three affected packages; temporary output was removed\n'
   rm -rf "$scratch"
   candidate_active_scratch=
@@ -289,8 +333,8 @@ candidate_format() {
   local scratch consumer
   scratch=$(candidate_scratch)
   candidate_active_scratch=$scratch
-  (cd "$candidate_repo_root" && cargo fmt -p swallowtail-runtime \
-    -p swallowtail-host-local -p swallowtail-adapter-claude-agent -- --check)
+  (cd "$candidate_repo_root" && cargo fmt -p swallowtail-host-local \
+    -p swallowtail-adapter-claude-agent -- --check)
   consumer="$scratch/consumer-format"
   mkdir -p "$consumer/src"
   cp "$candidate_consumer/src/main.rs" "$consumer/src/main.rs"
@@ -345,7 +389,8 @@ candidate_check() {
   candidate_packages=(--package swallowtail-runtime --package swallowtail-host-local \
     --package swallowtail-adapter-claude-agent)
   CARGO_TARGET_DIR="$scratch/target-check" cargo check --locked \
-    --manifest-path "$candidate_repo_root/Cargo.toml" --all-targets "${candidate_packages[@]}"
+    --manifest-path "$candidate_repo_root/Cargo.toml" --all-targets \
+    --features swallowtail-host-local/mediated-stdio-proxy "${candidate_packages[@]}"
   candidate_run_external_consumer "$scratch" "$head"
   printf 'candidate check passed at commit %s; intermediate reviewed source tree %s\n' \
     "$head" "$(candidate_manifest_value intermediate_tree)"
@@ -354,33 +399,12 @@ candidate_check() {
 
 candidate_validate() {
   (($# == 0)) || candidate_die "validate takes no arguments"
-  local head scratch test_filter
+  local head
   candidate_check_manifest
   head=$(candidate_check_clean_head)
   candidate_identity_check "$candidate_repo_root"
-  test_filter='test(/a_session_lease_ignores_its_elapsed_open_deadline/) | test(/an_explicit_session_lease_deadline_rejects_late_calls/) | test(/the_effective_call_deadline_takes_the_earliest_bound/) | test(/an_expired_call_never_reaches_the_dispatcher/) | test(/the_kernel_is_the_only_lease_and_binding_source/) | test(/mounted_proxy_expired_deadline_rejects_the_callable_frame_before_dispatch/) | test(/a_pump_failure_between_command_check_and_registration_rejects_the_command/) | test(/registered_session_lease_survives_open_deadline_and_pending_permission/) | test(/cancellation_during_a_registered_call_joins_the_lease/) | test(/close_joins_the_registered_listener/) | test(/events_outside_an_active_turn_fail_closed/) | test(/closing_a_session_with_a_live_turn_resolves_it_instead_of_waiting_on_its_deadline/) | test(/usage_snapshots_keep_each_turn_independent_across_failure_and_reset/) | test(/usage_duplicate_result_after_turn_end_is_not_correlated_or_counted_twice/) | test(/usage_projection_keeps_only_bounded_per_turn_counters_and_rejects_invalid_snapshots/) | test(/usage_events_decode_qualified_payloads_and_reject_unknown_usage_report/) | test(/usage_turn_end_decodes_every_sanitized_result_observation_without_result_text/) | test(/turn_end_rejects_malformed_usage_and_accepts_legacy_missing_usage/) | test(/qualified_corpora_decode/) | test(/a_declared_stdio_mcp_server_connects_and_its_tool_is_mediated/) | test(/wrapper_death_preserves_partial_capture_journal/) | test(/first_turn_init_missing_and_initialization_failure_stay_distinct/) | test(/open_rejection_surfaces_the_fixed_sidecar_code_without_raw_details/) | test(/an_open_that_never_reaches_readiness_expires_on_the_host_deadline/) | test(/the_route_binds_five_independent_exact_identities/) | test(/the_lifecycle_and_credential_invariants_survived_the_hop/) | test(/identity_and_claim_qualify_0_69_0_as_compatible_extension/) | test(/prepared_route_returns_one_ordinary_text_result_without_authority/)'
-  scratch=$(candidate_scratch)
-  candidate_active_scratch=$scratch
-  export CARGO_TARGET_DIR="$scratch"
-  (
-    cd "$candidate_repo_root"
-    cargo nextest run --locked --profile sdk-patch-candidate \
-      -p swallowtail-runtime --lib -E "$test_filter"
-  )
-  (
-    cd "$candidate_repo_root"
-    cargo nextest run --locked --profile sdk-patch-candidate \
-      -p swallowtail-host-local --features mediated-stdio-proxy \
-      --test registered_tool_proxy -E "$test_filter"
-  )
-  (
-    cd "$candidate_repo_root"
-    cargo nextest run --locked --profile sdk-patch-candidate \
-      -p swallowtail-adapter-claude-agent --lib \
-      --test claude_agent_sdk_driver --test claude_agent_sdk_sidecar_asset \
-      --test integration -E "$test_filter"
-  )
-  printf '28 candidate regressions passed at commit %s\n' "$head"
+  bash "$candidate_repo_root/scripts/release/sdk-courier-timeout.sh" run-tests
+  printf 'targeted courier candidate regressions passed at commit %s\n' "$head"
 }
 
 candidate_main() {

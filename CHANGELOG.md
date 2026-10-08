@@ -6,6 +6,13 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- extend the Qoder `qoder.headless` claim from `1.1.54` through maintained
+  stable `1.1.65`, retaining `QualifiedOnly`, the baseline, claim id and
+  `qoder.headless.stdio-stream-json-v2` behavior revision. Research 389 freezes
+  all eleven published hops and the `1.1.61` generic failure projection for
+  `repeated_tool_call_denied`; Research 328's adapter-owned `--max-turns 8`
+  AgentLoop ceiling and the historical `1.1.25` decoder specimens remain.
+  Research 256's independent empty skill-visibility disposition is unchanged.
 - qualify only the `claude-agent.sdk.node` runtime axis through official
   Node 22.23.3. Research 387 freezes the single published hop after 22.23.2,
   signed Darwin arm64 artifacts, complete distribution inventories, and all

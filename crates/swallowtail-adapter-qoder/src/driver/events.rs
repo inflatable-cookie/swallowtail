@@ -440,6 +440,34 @@ mod tests {
     }
 
     #[test]
+    fn repeated_tool_call_denial_stays_a_generic_provider_failure() {
+        let mut parser = parser();
+        parser
+            .push_stdout(
+                br#"{"type":"result","subtype":"error_during_execution","is_error":true,"terminal_reason":"repeated_tool_call_denied","error_code":"private-provider-code","errors":["Repeated tool call denied"]}
+"#,
+            )
+            .expect("provider failure parses");
+        let (_, terminal) = parser.finish().expect("finish");
+        let (_, outcome) = terminal
+            .finalize(ProcessExit::new(true, Some(0)))
+            .expect("finalize");
+        match outcome.status() {
+            TerminalStatus::ProviderFailed(diagnostic) => {
+                assert_eq!(
+                    diagnostic.code(),
+                    "swallowtail.qoder.headless.provider_failed"
+                );
+            }
+            other => panic!("expected generic provider failure, got {other:?}"),
+        }
+        let rendered = format!("{outcome:?}");
+        assert!(!rendered.contains("repeated_tool_call_denied"));
+        assert!(!rendered.contains("private-provider-code"));
+        assert!(!rendered.contains("Repeated tool call denied"));
+    }
+
+    #[test]
     fn json_dump_and_acp_jsonrpc_are_wrong_or_malformed_wire() {
         let mut dump = parser();
         assert_eq!(

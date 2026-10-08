@@ -1,0 +1,254 @@
+{
+  "fixture_schema": 1,
+  "evidence_checked": "2026-10-08",
+  "axis": "qoder.package",
+  "route": "qoder.headless",
+  "npm_package": "@qoder-ai/qodercli",
+  "registry": "https://registry.npmjs.org/@qoder-ai/qodercli",
+  "source_correlation": {
+    "repository": null,
+    "commit": null,
+    "authority": "exact published npm tarball trees"
+  },
+  "host": {
+    "qoder_present": false,
+    "qodercli_present": false,
+    "node": "22.23.2",
+    "node_satisfies_engine": true
+  },
+  "npm_channel": {
+    "dist_tags": {
+      "latest": "1.1.65",
+      "beta": "1.1.54-beta.1"
+    },
+    "latest": "1.1.65",
+    "beta": "1.1.54-beta.1",
+    "beta_is_not_stable_authority": true
+  },
+  "previous_ceiling": "1.1.54",
+  "published_stables_since_previous_ceiling": [
+    "1.1.55",
+    "1.1.56",
+    "1.1.57",
+    "1.1.58",
+    "1.1.59",
+    "1.1.60",
+    "1.1.61",
+    "1.1.62",
+    "1.1.63",
+    "1.1.64",
+    "1.1.65"
+  ],
+  "published_stable_points": {
+    "1.1.54": {
+      "published_at": "2026-09-16T15:56:43.751Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.54.tgz",
+      "tarball_sha256": "a2c52c5d1edbf9ebb70af6c47a052ce705ba55b0c4e6221eddc1ce2563c61a9b",
+      "shasum": "6835275d449fe32d97a6d63ff6eac9d5a48928c5",
+      "integrity": "sha512-8kQIvny9G0ZAcQAjoBvAEXrF/AJxLpDver0FsPQTFZcEI6wbprDFHhP0YWSmgMvJ5Q2JdGHKz9f+O7GbU+kkyA==",
+      "file_count": 30,
+      "unpacked_size": 69199769,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.55": {
+      "published_at": "2026-09-17T12:58:49.815Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.55.tgz",
+      "tarball_sha256": "ccb7f9e2a5c3e6bd7f3a853d34dce039f6ea827d9e1673149fb31ac53fc6f86a",
+      "shasum": "64e3361f13813f6f5027e4f2fd4cdf5ed5728645",
+      "integrity": "sha512-ANxkjsPYiSvJeV7klgB9ajHaiaTBJxb3hV+xSP2Md8XUGcYXIMDDbP2uKt4/JLAGsS5JaOp/4FkVpjks/AngOA==",
+      "file_count": 30,
+      "unpacked_size": 69422452,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.56": {
+      "published_at": "2026-09-18T14:06:39.902Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.56.tgz",
+      "tarball_sha256": "3266dba5ca02ed6e0c3366ee1b976bad95aedbfb1fd7c9867708f612a369d301",
+      "shasum": "5c509c6ac5c034f719f946209adf8efb2a0c206f",
+      "integrity": "sha512-yLFn/w4i9yNAsA+PJWAPVHAQp11So4dGq4AxbC/ZIwq8e7vbhMEjMDX+2ho8tBgINJQOeqYPBuJlQxU7MFnJ6g==",
+      "file_count": 30,
+      "unpacked_size": 69671799,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.57": {
+      "published_at": "2026-09-19T04:06:50.648Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.57.tgz",
+      "tarball_sha256": "d7b52026cc969353b59c77a19fcdb42e5bdd6da939299a9f0a84c03f7ecc2f24",
+      "shasum": "238932c0c4c556be58edcc2d4b162effa8e369cc",
+      "integrity": "sha512-J0/B6EbZpIhbrjGE3MsklMo5cAMLZ142GfS/P/npC/woUIX91QLpYdMd/AE+g93y6b+V6UufGgTPDsYTWR0FeQ==",
+      "file_count": 30,
+      "unpacked_size": 69544732,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.58": {
+      "published_at": "2026-09-19T15:59:50.430Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.58.tgz",
+      "tarball_sha256": "b3239185f2c9a64c7fe9e0661204de889fc008f49f955ef50ca37943e7348b85",
+      "shasum": "19d18035408665821ba4464672dd156de57c6db8",
+      "integrity": "sha512-4pOzj4BcOYoqpGoISu+m7QTcZP8orAKQPbdbqcaN1IPo4Fz4WjnYuO33b2nQ6ByuSiLBNSa4JEKU+omaGrfcJw==",
+      "file_count": 30,
+      "unpacked_size": 69545014,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.59": {
+      "published_at": "2026-09-20T11:26:41.812Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.59.tgz",
+      "tarball_sha256": "55b5fb6beeee33c03bc56c791d9455af01d22c369765fde944430dd369202d49",
+      "shasum": "65cf55f0fab1b930b72208ea2dcc20a047ed38cb",
+      "integrity": "sha512-CiQ/njb5xLbm3+l0/k1gM74k+ZA5y0ITjG+ThJmoEKM6tXJtNaMG7B2uGxzHEqUHnL3Jt2faVJdWDPQbg+eGRw==",
+      "file_count": 30,
+      "unpacked_size": 69747203,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.60": {
+      "published_at": "2026-09-21T12:53:39.394Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.60.tgz",
+      "tarball_sha256": "41cae030690b8a4e8d9e097bf62d3ce5af4ca4fe63e60f90cfb93ec4229d08a5",
+      "shasum": "bd0c833831d371fc543e1aad6e87031a25627784",
+      "integrity": "sha512-hqQWvlHxSz9gYXm/IRflJFnX2Uzk3gt4gLpUAMdH/gd6wWrq1jy1qkVsvKsQUKPBZFvD56ggvbwXntjtlLomhA==",
+      "file_count": 30,
+      "unpacked_size": 67487724,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.61": {
+      "published_at": "2026-09-22T12:35:31.537Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.61.tgz",
+      "tarball_sha256": "633df764e53e20afa881c8805858daf0df7d9476ac0ed3cda67f048418e86265",
+      "shasum": "1c5f4caff866367762513a73b90a1a368321cafd",
+      "integrity": "sha512-u8UcKghB+8FnrrVFmp3JZLlGTRlAj1TQRcJz/8P6gvqXEQgZ7L864M2aDGfOG8GK7Acs/sZ2q8QAY21PSuqD3Q==",
+      "file_count": 30,
+      "unpacked_size": 67828383,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.62": {
+      "published_at": "2026-09-23T10:25:22.576Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.62.tgz",
+      "tarball_sha256": "60988bd5d1ea9bdf4944f9dd156b1b845ab0fc0047e866bc6032f72b5e3cf9c2",
+      "shasum": "1aaf6294f4215a3f2e9fdf7a358a2e8d56d57092",
+      "integrity": "sha512-mQjP+sBi/mSmsJ5ToWXr7IsMjATIm2bBMtu/Ztdw+NagU3J2/hltoAc2zxAujxsULNlq8haVkvcbyeXdVQxv6g==",
+      "file_count": 30,
+      "unpacked_size": 67837865,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.63": {
+      "published_at": "2026-09-24T10:26:22.544Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.63.tgz",
+      "tarball_sha256": "d7f7eaa64f0d162ebfa1de2df66010714efae61778446bf867032815ff6fdd81",
+      "shasum": "47f54a0852d7df3f0bf39aff1fde3b37bb3fa824",
+      "integrity": "sha512-Ao4rqq7ugMHnT5v9qd354E+4hOMcHzVdQXGM/rqOAzUhS+9eqlsQklR3iPHrkEJyS6iHCkZCrXtud63E4eKZyQ==",
+      "file_count": 30,
+      "unpacked_size": 67918057,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.64": {
+      "published_at": "2026-09-25T18:59:11.584Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.64.tgz",
+      "tarball_sha256": "ba61cfcfede367b7514c0de096f605fc98337d3fa5946aebe0d73cca190a79dd",
+      "shasum": "71336555934a1c4aa9a40ba4dcdc98d28b2e97a1",
+      "integrity": "sha512-2S5oOfEv4zywrRUy8GG37/pegvt0ta7ZZ/ce7kWF9MUdEFupd5JcWEEoXYBIfNGrFwYsNN3aRRbMdDES+AZlZA==",
+      "file_count": 30,
+      "unpacked_size": 67927856,
+      "source_repository": null,
+      "deprecated": false
+    },
+    "1.1.65": {
+      "published_at": "2026-09-30T11:19:47.785Z",
+      "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.65.tgz",
+      "tarball_sha256": "04e996fb9ed3b718098b477f269a32ef8aa00017b8e2c533eca3a653cd7ed824",
+      "shasum": "c677b402b88e0022de7ba0f8ee0af99513f0884b",
+      "integrity": "sha512-dwJXur4lFovjNFGEjoSG04HhrrC+Ai/ENzBLkSlgk4xKEjEnsAO1wgIoufFBLAox8xlm6c+29LxKNT3RjDD2wA==",
+      "file_count": 30,
+      "unpacked_size": 68028943,
+      "source_repository": null,
+      "deprecated": false
+    }
+  },
+  "first_unpublished_later_stable": "1.1.66",
+  "first_unpublished_verified": true,
+  "missing_published_hops": [],
+  "withdrawn_published_hops": [],
+  "compared": [
+    "1.1.54",
+    "1.1.55",
+    "1.1.56",
+    "1.1.57",
+    "1.1.58",
+    "1.1.59",
+    "1.1.60",
+    "1.1.61",
+    "1.1.62",
+    "1.1.63",
+    "1.1.64",
+    "1.1.65"
+  ],
+  "official": {
+    "version": "1.1.65",
+    "published_at": "2026-09-30T11:19:47.785Z",
+    "tarball": "https://registry.npmjs.org/@qoder-ai/qodercli/-/qodercli-1.1.65.tgz",
+    "tarball_sha256": "04e996fb9ed3b718098b477f269a32ef8aa00017b8e2c533eca3a653cd7ed824",
+    "shasum": "c677b402b88e0022de7ba0f8ee0af99513f0884b",
+    "integrity": "sha512-dwJXur4lFovjNFGEjoSG04HhrrC+Ai/ENzBLkSlgk4xKEjEnsAO1wgIoufFBLAox8xlm6c+29LxKNT3RjDD2wA==",
+    "file_count": 30,
+    "unpacked_size": 68028943,
+    "source_repository": null,
+    "deprecated": false
+  },
+  "claim_at_observation": {
+    "id": "qoder.headless.package-window-2",
+    "baseline": "1.1.54",
+    "latest_qualified": "1.1.54",
+    "scheme": "semantic",
+    "newer_version_posture": "QualifiedOnly",
+    "behavior_revision": "qoder.headless.stdio-stream-json-v2",
+    "segments": [
+      {
+        "minimum": "1.1.54",
+        "maximum": "1.1.54",
+        "support_status": "Maintained"
+      }
+    ],
+    "exclusions": []
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "baseline_retained": true,
+    "previous_point_retained": true,
+    "claim_id_retained": true,
+    "behavior_revision_retained": true,
+    "posture_retained": "QualifiedOnly",
+    "segment": {
+      "minimum": "1.1.54",
+      "maximum": "1.1.65",
+      "support_status": "Maintained"
+    },
+    "exclusions_retained": [],
+    "new_operations": false,
+    "selected_skill_visibility_promoted": false
+  },
+  "artifact_verification": {
+    "registry_shasum_verified": true,
+    "registry_integrity_verified": true,
+    "tarball_sha256_recorded": true,
+    "complete_tree_inventory": "dist-inventory.json",
+    "artifact_execution": false,
+    "npm_install": false,
+    "postinstall_execution": false
+  },
+  "live_evidence_disposition": {
+    "provider_operation": false,
+    "provider_prompt": false,
+    "credentials_used": false,
+    "host_install_changed": false,
+    "downloaded_artifact_executed": false
+  }
+}

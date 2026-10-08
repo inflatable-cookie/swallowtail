@@ -508,7 +508,7 @@ fn bounded_unmapped_surfaces_and_the_independent_skill_stop_are_recorded() {
 fn the_production_claim_rejects_the_historical_stop_and_binds_current_point() {
     let identity = fixture(IDENTITY, "identity");
     assert_eq!(identity["identity_decision"]["claim_change"], false);
-    assert_eq!(QODER_PACKAGE_VERSION, "1.1.54");
+    assert_eq!(QODER_PACKAGE_VERSION, "1.1.65");
     assert_eq!(identity["claim_at_observation"]["point"], BASELINE);
 
     let claim = qoder_headless_claim();

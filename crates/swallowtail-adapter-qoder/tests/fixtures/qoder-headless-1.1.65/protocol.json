@@ -1,0 +1,155 @@
+{
+  "fixture_schema": 1,
+  "artifact_revision": "1.1.65",
+  "compared": [
+    "1.1.54",
+    "1.1.55",
+    "1.1.56",
+    "1.1.57",
+    "1.1.58",
+    "1.1.59",
+    "1.1.60",
+    "1.1.61",
+    "1.1.62",
+    "1.1.63",
+    "1.1.64",
+    "1.1.65"
+  ],
+  "route_id": "qoder.headless",
+  "axis": "qoder.package",
+  "protocol_facade_revision": "qoder.headless.stdio-stream-json-v1",
+  "selected_invocation": {
+    "argv": [
+      "qodercli",
+      "--print",
+      "--output-format",
+      "stream-json",
+      "--permission-mode",
+      "dont_ask",
+      "--max-turns",
+      "8",
+      "--no-session-persistence",
+      "--cwd",
+      "<cwd>",
+      "<prompt>"
+    ],
+    "prompt_argv_operand": true,
+    "stdin_prompt_unselected": true
+  },
+  "selected_presence_all_hops": {
+    "--print": true,
+    "--output-format": true,
+    "stream-json": true,
+    "--permission-mode": true,
+    "dont_ask": true,
+    "--max-turns": true,
+    "--no-session-persistence": true,
+    "--cwd": true,
+    "error_max_turns": true,
+    "Maximum turns exceeded": true,
+    "num_turns": true,
+    "error_during_execution": true,
+    "Operation aborted": true,
+    "aborted_streaming": true,
+    "protocol_version": true,
+    "stream_event": true
+  },
+  "selected_behaviour": {
+    "stream_json_ndjson": true,
+    "assistant_text_and_result_decoder": true,
+    "permission_mode_dont_ask": true,
+    "no_session_persistence": true,
+    "adapter_owned_max_turns_8": true,
+    "one_owned_stdio_child": true,
+    "abort_and_join_cleanup": true,
+    "host_process_deadline": true
+  },
+  "mode_dispatch": {
+    "remote_control_precedes_acp_and_print": true,
+    "acp_precedes_print": true,
+    "sdk_entrypoint_is_separate": true,
+    "print_selects_headless": true,
+    "flatten_onto_acp": false,
+    "flatten_onto_sdk_stdio": false,
+    "flatten_onto_tui": false
+  },
+  "selected_failure": {
+    "max_turns_subtype": "error_max_turns",
+    "max_turns_is_error": true,
+    "max_turns_num_turns": 8,
+    "aborted_terminal_reason": "aborted_streaming",
+    "other_error_terminal_projection": "provider_failed"
+  },
+  "classified_deltas": {
+    "1.1.54..1.1.55": "qodercli.js and qoder-worker-runtime.mjs changed; selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions.",
+    "1.1.55..1.1.56": "qodercli.js and qoder-worker-runtime.mjs changed; selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions.",
+    "1.1.56..1.1.57": "qodercli.js and qoder-worker-runtime.mjs changed; selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions.",
+    "1.1.57..1.1.58": "qodercli.js and qoder-worker-runtime.mjs changed; selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions.",
+    "1.1.58..1.1.59": "qodercli.js and qoder-worker-runtime.mjs changed; selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions.",
+    "1.1.59..1.1.60": "qodercli.js and qoder-worker-runtime.mjs changed; selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions.",
+    "1.1.60..1.1.61": "qodercli.js and qoder-worker-runtime.mjs changed; the runtime adds private repeated_tool_call_denied error-code normalization while preserving the result envelope for the adapter generic failure projection. Selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions.",
+    "1.1.61..1.1.62": "qodercli.js and qoder-worker-runtime.mjs changed; selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions.",
+    "1.1.62..1.1.63": "qodercli.js and qoder-worker-runtime.mjs changed; selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions.",
+    "1.1.63..1.1.64": "qodercli.js and qoder-worker-runtime.mjs changed; selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions.",
+    "1.1.64..1.1.65": "qodercli.js and qoder-worker-runtime.mjs changed; selected invocation and terminal markers remain present. package.json changes only release and optional ripgrep versions."
+  },
+  "unmapped_boundaries": {
+    "cli_options": [
+      "--acp",
+      "--sdk",
+      "--input-format stream-json",
+      "--output-format text",
+      "--output-format json",
+      "--yolo",
+      "--dangerously-skip-permissions",
+      "--continue",
+      "--resume",
+      "--session-id",
+      "--remote-control",
+      "--sandbox",
+      "--max-output-tokens",
+      "login",
+      "ide"
+    ],
+    "provider_surfaces": [
+      "ACP",
+      "SDK stdio",
+      "daemon",
+      "remote worker",
+      "interactive TUI",
+      "provider tool implementations",
+      "provider usage payloads",
+      "Qoder Security plugin hooks"
+    ],
+    "skills_and_plugins": {
+      "selected_skill_bundle": false,
+      "init_skills_field_mapped": false,
+      "init_plugins_field_mapped": false,
+      "research": 256,
+      "independent_gate_remains_open": true
+    },
+    "classification": "The route fixes argv and decodes assistant text plus known terminal result shapes. It does not select or project Qoder skills, plugins, provider tool implementations or usage. Unknown stream types still fail closed."
+  },
+  "live_evidence_disposition": {
+    "provider_operation": false,
+    "provider_prompt": false,
+    "credentials_used": false,
+    "downloaded_artifact_executed": false,
+    "host_install_changed": false
+  },
+  "versioned_selected_failure_markers": {
+    "repeated_tool_call_denied": {
+      "first_seen": "1.1.61",
+      "present_on": [
+        "1.1.61",
+        "1.1.62",
+        "1.1.63",
+        "1.1.64",
+        "1.1.65"
+      ],
+      "runtime_action": "normalizes the private error_code from terminal_reason while preserving the incoming result envelope fields",
+      "adapter_projection": "error_during_execution with is_error true maps to generic provider_failed",
+      "dedicated_adapter_mapping": false
+    }
+  }
+}

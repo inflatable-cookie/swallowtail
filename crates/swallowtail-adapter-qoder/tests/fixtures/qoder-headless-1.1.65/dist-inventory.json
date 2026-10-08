@@ -1,0 +1,2495 @@
+{
+  "fixture_schema": 1,
+  "compared": [
+    "1.1.54",
+    "1.1.55",
+    "1.1.56",
+    "1.1.57",
+    "1.1.58",
+    "1.1.59",
+    "1.1.60",
+    "1.1.61",
+    "1.1.62",
+    "1.1.63",
+    "1.1.64",
+    "1.1.65"
+  ],
+  "package_file_counts": {
+    "1.1.54": 30,
+    "1.1.55": 30,
+    "1.1.56": 30,
+    "1.1.57": 30,
+    "1.1.58": 30,
+    "1.1.59": 30,
+    "1.1.60": 30,
+    "1.1.61": 30,
+    "1.1.62": 30,
+    "1.1.63": 30,
+    "1.1.64": 30,
+    "1.1.65": 30
+  },
+  "package_unpacked_sizes": {
+    "1.1.54": 69199769,
+    "1.1.55": 69422452,
+    "1.1.56": 69671799,
+    "1.1.57": 69544732,
+    "1.1.58": 69545014,
+    "1.1.59": 69747203,
+    "1.1.60": 67487724,
+    "1.1.61": 67828383,
+    "1.1.62": 67837865,
+    "1.1.63": 67918057,
+    "1.1.64": 67927856,
+    "1.1.65": 68028943
+  },
+  "files": {
+    "1.1.54": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "f0ca3b8b6d986b0a1edea55fd6556c74b872b5a95800733fe05850d50796def7",
+        "size": 34802018
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "d4fa03671e987d0d17cafc726e7e265fd9682a3fbe90c0e1ac0632c34891d417",
+        "size": 33354494
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "510ad2eaf12a74250428050812a49b0fac760a3f20e0f3cd4a601bbe6db06ea9",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "a914f239730bf7fc1a93b4ed36e743957173d7c068553ece273305a32f888068",
+        "size": 613
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "01d0820affff5e1a224ab64d8db4196772a6f5bed7cce4ea802e5a3a95fab703",
+        "size": 18532
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "6499c812bb873a65862391a136703abca43a60decc89d5acfc29ffb33c2c1e92",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "dba78994cce6eec5102509926edc6477c030ed880677bb31917192a4ae75831d",
+        "size": 7423
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "1fa7ed521781a85ba93f82cedc0fee6de7fe53b54b55659ad435b04a98702839",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "6b0d41d3bdfb4c54624fcb611553fcbb636e51afa95857a0310355758f62eec2",
+        "size": 16668
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "549e49bf4a97414b7d67d5fe3968c6e556a8691a36ee48c0d4b26ea6a2ab0f78",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.55": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "aa990d3d5c3031e2b2d2b861b02cddbd94d2d7d3b594d49726f41ed8442995fa",
+        "size": 34914283
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "221c925e3eb940fe293c9bfe713061d76452c8ac6a8335fe9fd712148ded8950",
+        "size": 33464912
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "510ad2eaf12a74250428050812a49b0fac760a3f20e0f3cd4a601bbe6db06ea9",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "a914f239730bf7fc1a93b4ed36e743957173d7c068553ece273305a32f888068",
+        "size": 613
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "01d0820affff5e1a224ab64d8db4196772a6f5bed7cce4ea802e5a3a95fab703",
+        "size": 18532
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "6499c812bb873a65862391a136703abca43a60decc89d5acfc29ffb33c2c1e92",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "dba78994cce6eec5102509926edc6477c030ed880677bb31917192a4ae75831d",
+        "size": 7423
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "1fa7ed521781a85ba93f82cedc0fee6de7fe53b54b55659ad435b04a98702839",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "6b0d41d3bdfb4c54624fcb611553fcbb636e51afa95857a0310355758f62eec2",
+        "size": 16668
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "32dddd6b0e8fa2bd34d8465137b426a4d0d3dd40b6cdbb45241cba5c788eef10",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.56": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "26b014cc855930ce0f9c6ae55cfa840db9c766eabb576f415573cbd6a7ff492c",
+        "size": 35037170
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "09dc6320672c20b9367359fe476ae446d18dc498ef75fca9b30394d1966f162f",
+        "size": 33591372
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "510ad2eaf12a74250428050812a49b0fac760a3f20e0f3cd4a601bbe6db06ea9",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "a914f239730bf7fc1a93b4ed36e743957173d7c068553ece273305a32f888068",
+        "size": 613
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "01d0820affff5e1a224ab64d8db4196772a6f5bed7cce4ea802e5a3a95fab703",
+        "size": 18532
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "6499c812bb873a65862391a136703abca43a60decc89d5acfc29ffb33c2c1e92",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "dba78994cce6eec5102509926edc6477c030ed880677bb31917192a4ae75831d",
+        "size": 7423
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "1fa7ed521781a85ba93f82cedc0fee6de7fe53b54b55659ad435b04a98702839",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "6b0d41d3bdfb4c54624fcb611553fcbb636e51afa95857a0310355758f62eec2",
+        "size": 16668
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "1a059ed3c7671c66a121dcbaf152e9be9f0befd0f61ec38b4b5d859457979f94",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.57": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "f05bb4e0ffed669952a6934a7d4356d438bdf654145a42964dceb1e38a9e033e",
+        "size": 34973703
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "6faccad52f0a5fe3cf8a98ddaa795e32fc5963ad1e50c1592ed6d9f6dc4daea7",
+        "size": 33527772
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "510ad2eaf12a74250428050812a49b0fac760a3f20e0f3cd4a601bbe6db06ea9",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "a914f239730bf7fc1a93b4ed36e743957173d7c068553ece273305a32f888068",
+        "size": 613
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "01d0820affff5e1a224ab64d8db4196772a6f5bed7cce4ea802e5a3a95fab703",
+        "size": 18532
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "6499c812bb873a65862391a136703abca43a60decc89d5acfc29ffb33c2c1e92",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "dba78994cce6eec5102509926edc6477c030ed880677bb31917192a4ae75831d",
+        "size": 7423
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "1fa7ed521781a85ba93f82cedc0fee6de7fe53b54b55659ad435b04a98702839",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "6b0d41d3bdfb4c54624fcb611553fcbb636e51afa95857a0310355758f62eec2",
+        "size": 16668
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "c80ce94f1622b7d15b60e8365bb6473de380b7bc122c97fc376d26f76282b310",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.58": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "2f1ba0309b65544e68653dd5b2152896f7dd47e23a36061be9f2b1653ae31cd1",
+        "size": 34973844
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "3e0dbf4ee646db23931c88b5f799cf7362708cbe35f163aaf8265da3c2e9c970",
+        "size": 33527913
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "510ad2eaf12a74250428050812a49b0fac760a3f20e0f3cd4a601bbe6db06ea9",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "a914f239730bf7fc1a93b4ed36e743957173d7c068553ece273305a32f888068",
+        "size": 613
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "01d0820affff5e1a224ab64d8db4196772a6f5bed7cce4ea802e5a3a95fab703",
+        "size": 18532
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "6499c812bb873a65862391a136703abca43a60decc89d5acfc29ffb33c2c1e92",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "dba78994cce6eec5102509926edc6477c030ed880677bb31917192a4ae75831d",
+        "size": 7423
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "1fa7ed521781a85ba93f82cedc0fee6de7fe53b54b55659ad435b04a98702839",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "6b0d41d3bdfb4c54624fcb611553fcbb636e51afa95857a0310355758f62eec2",
+        "size": 16668
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "95ccd41b74a526dd817dbb28092981573ccbe0b82172518ace80a339556b20da",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.59": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "d0126cadcbe404bf2be9a1fc77dd1f2889cedfc98db5af0fc93b0731209fe042",
+        "size": 35071104
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "1e92acfed1f0029218a576d4977bcd1f0b3d654233a11b995e46ff584634d8b6",
+        "size": 33624538
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "a93b9c3c907858648b77ff24f33b038301c7f73c5f158cd20c0ee3e229318aa4",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+        "size": 923
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "0b904a96d198b5c0e7478760ab3914ffbbe5b28e18a4f843b2eaf8a124edd300",
+        "size": 20701
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "59c7bb94523f7360515b22894e3106f109c3a602985d8ff5c84883f4d016fe2d",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "8d401609f552c0303e8d5ef36489787bddf6b1f3699feb655df5257f9ac8f485",
+        "size": 7527
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "d56b243a0d97f00dae8bd9d463e32afc8929748bdba0bf79ab190a550b79c9a1",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+        "size": 22389
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "3d36aaef11abdf7973ade6924744adc17c018cd4671609aca2d942cc80860ac2",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.60": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "bbe396aa27be8ca0def180d944297e01716f82fc9e6613e16b3dc941dd4752db",
+        "size": 33467881
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "142517b77df692a2920f40ebfd60c200493a8c0034e862eed24f7f1e9e7bf5d4",
+        "size": 32968282
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "7d91759baca957c89a482cf43364f437fde0c8cb8da7438195e6f66fd20eebf2",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+        "size": 923
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "5cb2e01202cfb97c28c0b7ee35bc7d5058af3760a9bc32f40aa03c88007b6c58",
+        "size": 20701
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "8eac54caba3b674f3c3ffe39eae258cc1789d001a8f8de10f0d9f48a9654c5e2",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "8d401609f552c0303e8d5ef36489787bddf6b1f3699feb655df5257f9ac8f485",
+        "size": 7527
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "86e59a81c91880d210f54a03ecc2594ac1ceee55c936db019b29ea1d4dc2e98a",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+        "size": 22389
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "69b6af2afd8c9b0f373b78f11ac598da4d21a031b1609383a8b98e080cdd54d9",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.61": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "fa037b6b217815ff1c97ead255098de7119c7537df232eb01e3128128aa6bfcd",
+        "size": 33637957
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "34875088fd8af9c97e88446cbbfa11bca24c1b6558cec048ac1152bd5486f4e9",
+        "size": 33138865
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "7d91759baca957c89a482cf43364f437fde0c8cb8da7438195e6f66fd20eebf2",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+        "size": 923
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "5cb2e01202cfb97c28c0b7ee35bc7d5058af3760a9bc32f40aa03c88007b6c58",
+        "size": 20701
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "8eac54caba3b674f3c3ffe39eae258cc1789d001a8f8de10f0d9f48a9654c5e2",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "8d401609f552c0303e8d5ef36489787bddf6b1f3699feb655df5257f9ac8f485",
+        "size": 7527
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "86e59a81c91880d210f54a03ecc2594ac1ceee55c936db019b29ea1d4dc2e98a",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+        "size": 22389
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "42b5434198de0a8efb1e317540d4b4ef1c375143e5b30bb2f18661ce8ab5411e",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.62": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "8fedec957db81da0ba1c58f076c737ec6d959351cb523798834a31e5c1da98d9",
+        "size": 33642591
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "29b27d5b440a71a57d42561355306e3a6f5b0196a046b1f57a09b67adbbc00ff",
+        "size": 33143713
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "7d91759baca957c89a482cf43364f437fde0c8cb8da7438195e6f66fd20eebf2",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+        "size": 923
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "5cb2e01202cfb97c28c0b7ee35bc7d5058af3760a9bc32f40aa03c88007b6c58",
+        "size": 20701
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "8eac54caba3b674f3c3ffe39eae258cc1789d001a8f8de10f0d9f48a9654c5e2",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "8d401609f552c0303e8d5ef36489787bddf6b1f3699feb655df5257f9ac8f485",
+        "size": 7527
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "86e59a81c91880d210f54a03ecc2594ac1ceee55c936db019b29ea1d4dc2e98a",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+        "size": 22389
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "c53f3bd49882b19dccdbcc9d6f35981f36c630ce50f415b174998236d138f8cb",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.63": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "957d727ffc9c5cdd4caf77dfa697cb270e6eb5b5b883cb1df91472ad737c3480",
+        "size": 33683054
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "c4604452562aa1b9a315d0da07d89faee540f4ddf87168f6b8943b2be1c1559a",
+        "size": 33183442
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "7d91759baca957c89a482cf43364f437fde0c8cb8da7438195e6f66fd20eebf2",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+        "size": 923
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "5cb2e01202cfb97c28c0b7ee35bc7d5058af3760a9bc32f40aa03c88007b6c58",
+        "size": 20701
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "8eac54caba3b674f3c3ffe39eae258cc1789d001a8f8de10f0d9f48a9654c5e2",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "8d401609f552c0303e8d5ef36489787bddf6b1f3699feb655df5257f9ac8f485",
+        "size": 7527
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "86e59a81c91880d210f54a03ecc2594ac1ceee55c936db019b29ea1d4dc2e98a",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+        "size": 22389
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "bc1a2c3b61295edcc0584767b83799cbc2f333a93870fdc12589bbcdda4f192e",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.64": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "293e64d1e6bdc88b459d503bcfa25aef7e6e77d244793bf143f948f1e52581c5",
+        "size": 33687994
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "7568b1fadf9e514b5d084178810aeed16e6947ffc7adab94691dc5f4f975df1f",
+        "size": 33188301
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "7d91759baca957c89a482cf43364f437fde0c8cb8da7438195e6f66fd20eebf2",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+        "size": 923
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "5cb2e01202cfb97c28c0b7ee35bc7d5058af3760a9bc32f40aa03c88007b6c58",
+        "size": 20701
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "8eac54caba3b674f3c3ffe39eae258cc1789d001a8f8de10f0d9f48a9654c5e2",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "8d401609f552c0303e8d5ef36489787bddf6b1f3699feb655df5257f9ac8f485",
+        "size": 7527
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "86e59a81c91880d210f54a03ecc2594ac1ceee55c936db019b29ea1d4dc2e98a",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+        "size": 22389
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "77478eb78ee0784af93848f552ea19096b75c45e7872614ffe7bc0f18e836576",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ],
+    "1.1.65": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+        "size": 11357
+      },
+      {
+        "path": "package/README.md",
+        "sha256": "f9992495ec2cf7ab9feaf63e073fb1d483ca8b0a6890492f2e23d882300844d3",
+        "size": 10309
+      },
+      {
+        "path": "package/bundle/builtin/agent-creator/SKILL.md",
+        "sha256": "bfc380be50066d70cd45412cb24b81ff274b7c844d53b3a035a2f120364dca07",
+        "size": 10028
+      },
+      {
+        "path": "package/bundle/builtin/hook-config/SKILL.md",
+        "sha256": "12a9aa2a2d3c2cfd74307b72c5beb0df576322ccade35dc2126d893e0533c6a5",
+        "size": 22335
+      },
+      {
+        "path": "package/bundle/builtin/sdk/SKILL.md",
+        "sha256": "47aba23469df07c36ab8d2be59977d87c33787f4a85e5beb388312fcad46d8c6",
+        "size": 10449
+      },
+      {
+        "path": "package/bundle/builtin/skill-creator/SKILL.md",
+        "sha256": "06a878e73ea4c5ac5b4f32cbbfe7d0dd110e18fd2d49e0021a6c9f77224ec596",
+        "size": 10529
+      },
+      {
+        "path": "package/bundle/proto/chat.proto",
+        "sha256": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+        "size": 8366
+      },
+      {
+        "path": "package/bundle/qoder-npm-dispatcher.cjs",
+        "sha256": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+        "size": 8262
+      },
+      {
+        "path": "package/bundle/qoder-worker-runtime.mjs",
+        "sha256": "ccec40397597c4c1a17d38981c8066dd5b8cec6fc5f7cb8361221311680c710d",
+        "size": 33734492
+      },
+      {
+        "path": "package/bundle/qodercli.js",
+        "sha256": "fbb5ea617e687cfa6387ad80aeb897917545e3f7e0ba23de3577184f8834a330",
+        "size": 33239251
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "sha256": "e22c9b81a8fd9df233c11f3e9b7576c3cdbb230a55bcde1500d6f60fa96e094d",
+        "size": 752
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "sha256": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+        "size": 923
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "sha256": "b1a9d1cc6c31d190a7b8af4035c1f89d0428e95674f90d4f8ae4a326827acde9",
+        "size": 9496
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "sha256": "c2b30381de223c6f4be66f6cd353b619390db90e9759d4e586b394a1b6577ede",
+        "size": 6053
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "sha256": "a551bf5f05c69284cbbf0410c9d2619b180f498237fc3c817e4aa20fad6645c5",
+        "size": 6146
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "sha256": "a0c58d00cf885f5e2af0f87bee762ac7cb5953c434905afc0bf68a95a43a0f5e",
+        "size": 20701
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "sha256": "9fc398e90349884392ff52057abe2817283b67ce5009ecf08c033ade61786a2a",
+        "size": 13300
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "sha256": "fc760bbe34df747669dda1aa132a3f274a2a8dca4cd84f3a4eca7075a68d666e",
+        "size": 10845
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "sha256": "ef0adb1550a240c801b5808f0ff38f387b66a07a2bd6b4225dd88a27dc9ae44a",
+        "size": 8736
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "sha256": "ac4b084f365e2122dd00d18bda9a053bb553bc0f27391abcf20d40ba52753d12",
+        "size": 173
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "sha256": "5473a453f76b85f4165e9b50a76284331519f4b7c4a0f40ef935aee71a0ee003",
+        "size": 140
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/config.yaml.example",
+        "sha256": "a66cee51e8359712e535e82a4a7ed15eef3c92d81bb3085c2255fbffa1a860bc",
+        "size": 9961
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/package.json",
+        "sha256": "063d71c152011c6a9859ecb257fe7136144042551e562d27f21d06e795cdf037",
+        "size": 272
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "sha256": "ee816dbfeb81dd40a36d2eeac4de39cb47bf3ac3e996e92eeae600cd1bf9019c",
+        "size": 687
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "sha256": "1ffc82204a691a71878700636d02807374aa4d3fa508eafdc0ed613efb6eb330",
+        "size": 2757
+      },
+      {
+        "path": "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "sha256": "d8de096cf63195e8dbac28937c8059cfff96d202f77642034804e1a02991285c",
+        "size": 23594
+      },
+      {
+        "path": "package/bundle/vendor/sites/artifact.json",
+        "sha256": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+        "size": 446
+      },
+      {
+        "path": "package/bundle/vendor/sites/sites.zip",
+        "sha256": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+        "size": 840593
+      },
+      {
+        "path": "package/package.json",
+        "sha256": "9bdce1e1442d6c919ab9daae1a974dcd264176e38feaef42da6c42d6186d2018",
+        "size": 1177
+      },
+      {
+        "path": "package/postinstall.cjs",
+        "sha256": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+        "size": 6813
+      }
+    ]
+  },
+  "identical_through_1_1_54_to_1_1_65": [
+    "package/LICENSE",
+    "package/README.md",
+    "package/bundle/builtin/agent-creator/SKILL.md",
+    "package/bundle/builtin/hook-config/SKILL.md",
+    "package/bundle/builtin/sdk/SKILL.md",
+    "package/bundle/builtin/skill-creator/SKILL.md",
+    "package/bundle/proto/chat.proto",
+    "package/bundle/qoder-npm-dispatcher.cjs",
+    "package/bundle/vendor/qoder-security/assets/logo.svg",
+    "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+    "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+    "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+    "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+    "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+    "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+    "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+    "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+    "package/bundle/vendor/sites/artifact.json",
+    "package/bundle/vendor/sites/sites.zip",
+    "package/postinstall.cjs"
+  ],
+  "from_hop_to_hop": {
+    "1.1.54..1.1.55": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.55..1.1.56": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.56..1.1.57": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.57..1.1.58": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.58..1.1.59": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.59..1.1.60": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.60..1.1.61": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.61..1.1.62": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.62..1.1.63": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.63..1.1.64": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    },
+    "1.1.64..1.1.65": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        "package/bundle/qoder-worker-runtime.mjs",
+        "package/bundle/qodercli.js",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh",
+        "package/bundle/vendor/qoder-security/config.yaml.example",
+        "package/bundle/vendor/qoder-security/package.json",
+        "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md",
+        "package/package.json"
+      ],
+      "identical": [
+        "package/LICENSE",
+        "package/README.md",
+        "package/bundle/builtin/agent-creator/SKILL.md",
+        "package/bundle/builtin/hook-config/SKILL.md",
+        "package/bundle/builtin/sdk/SKILL.md",
+        "package/bundle/builtin/skill-creator/SKILL.md",
+        "package/bundle/proto/chat.proto",
+        "package/bundle/qoder-npm-dispatcher.cjs",
+        "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json",
+        "package/bundle/vendor/qoder-security/assets/logo.svg",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.cmd",
+        "package/bundle/vendor/qoder-security/bin/bootstrap.sh",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.cmd",
+        "package/bundle/vendor/qoder-security/bin/qodersec-update.sh",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.cmd",
+        "package/bundle/vendor/qoder-security/bin/security-scan-settings.sh",
+        "package/bundle/vendor/qoder-security/scripts/postinstall.sh",
+        "package/bundle/vendor/qoder-security/security-patterns.yaml.example",
+        "package/bundle/vendor/sites/artifact.json",
+        "package/bundle/vendor/sites/sites.zip",
+        "package/postinstall.cjs"
+      ]
+    }
+  },
+  "hashes": {
+    "package/package.json": {
+      "1.1.54": "549e49bf4a97414b7d67d5fe3968c6e556a8691a36ee48c0d4b26ea6a2ab0f78",
+      "1.1.55": "32dddd6b0e8fa2bd34d8465137b426a4d0d3dd40b6cdbb45241cba5c788eef10",
+      "1.1.56": "1a059ed3c7671c66a121dcbaf152e9be9f0befd0f61ec38b4b5d859457979f94",
+      "1.1.57": "c80ce94f1622b7d15b60e8365bb6473de380b7bc122c97fc376d26f76282b310",
+      "1.1.58": "95ccd41b74a526dd817dbb28092981573ccbe0b82172518ace80a339556b20da",
+      "1.1.59": "3d36aaef11abdf7973ade6924744adc17c018cd4671609aca2d942cc80860ac2",
+      "1.1.60": "69b6af2afd8c9b0f373b78f11ac598da4d21a031b1609383a8b98e080cdd54d9",
+      "1.1.61": "42b5434198de0a8efb1e317540d4b4ef1c375143e5b30bb2f18661ce8ab5411e",
+      "1.1.62": "c53f3bd49882b19dccdbcc9d6f35981f36c630ce50f415b174998236d138f8cb",
+      "1.1.63": "bc1a2c3b61295edcc0584767b83799cbc2f333a93870fdc12589bbcdda4f192e",
+      "1.1.64": "77478eb78ee0784af93848f552ea19096b75c45e7872614ffe7bc0f18e836576",
+      "1.1.65": "9bdce1e1442d6c919ab9daae1a974dcd264176e38feaef42da6c42d6186d2018"
+    },
+    "package/bundle/qodercli.js": {
+      "1.1.54": "d4fa03671e987d0d17cafc726e7e265fd9682a3fbe90c0e1ac0632c34891d417",
+      "1.1.55": "221c925e3eb940fe293c9bfe713061d76452c8ac6a8335fe9fd712148ded8950",
+      "1.1.56": "09dc6320672c20b9367359fe476ae446d18dc498ef75fca9b30394d1966f162f",
+      "1.1.57": "6faccad52f0a5fe3cf8a98ddaa795e32fc5963ad1e50c1592ed6d9f6dc4daea7",
+      "1.1.58": "3e0dbf4ee646db23931c88b5f799cf7362708cbe35f163aaf8265da3c2e9c970",
+      "1.1.59": "1e92acfed1f0029218a576d4977bcd1f0b3d654233a11b995e46ff584634d8b6",
+      "1.1.60": "142517b77df692a2920f40ebfd60c200493a8c0034e862eed24f7f1e9e7bf5d4",
+      "1.1.61": "34875088fd8af9c97e88446cbbfa11bca24c1b6558cec048ac1152bd5486f4e9",
+      "1.1.62": "29b27d5b440a71a57d42561355306e3a6f5b0196a046b1f57a09b67adbbc00ff",
+      "1.1.63": "c4604452562aa1b9a315d0da07d89faee540f4ddf87168f6b8943b2be1c1559a",
+      "1.1.64": "7568b1fadf9e514b5d084178810aeed16e6947ffc7adab94691dc5f4f975df1f",
+      "1.1.65": "fbb5ea617e687cfa6387ad80aeb897917545e3f7e0ba23de3577184f8834a330"
+    },
+    "package/bundle/qoder-worker-runtime.mjs": {
+      "1.1.54": "f0ca3b8b6d986b0a1edea55fd6556c74b872b5a95800733fe05850d50796def7",
+      "1.1.55": "aa990d3d5c3031e2b2d2b861b02cddbd94d2d7d3b594d49726f41ed8442995fa",
+      "1.1.56": "26b014cc855930ce0f9c6ae55cfa840db9c766eabb576f415573cbd6a7ff492c",
+      "1.1.57": "f05bb4e0ffed669952a6934a7d4356d438bdf654145a42964dceb1e38a9e033e",
+      "1.1.58": "2f1ba0309b65544e68653dd5b2152896f7dd47e23a36061be9f2b1653ae31cd1",
+      "1.1.59": "d0126cadcbe404bf2be9a1fc77dd1f2889cedfc98db5af0fc93b0731209fe042",
+      "1.1.60": "bbe396aa27be8ca0def180d944297e01716f82fc9e6613e16b3dc941dd4752db",
+      "1.1.61": "fa037b6b217815ff1c97ead255098de7119c7537df232eb01e3128128aa6bfcd",
+      "1.1.62": "8fedec957db81da0ba1c58f076c737ec6d959351cb523798834a31e5c1da98d9",
+      "1.1.63": "957d727ffc9c5cdd4caf77dfa697cb270e6eb5b5b883cb1df91472ad737c3480",
+      "1.1.64": "293e64d1e6bdc88b459d503bcfa25aef7e6e77d244793bf143f948f1e52581c5",
+      "1.1.65": "ccec40397597c4c1a17d38981c8066dd5b8cec6fc5f7cb8361221311680c710d"
+    },
+    "package/bundle/qoder-npm-dispatcher.cjs": {
+      "1.1.54": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.55": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.56": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.57": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.58": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.59": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.60": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.61": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.62": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.63": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.64": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120",
+      "1.1.65": "37cc389f07b046d78a2c80ff8d9ab54f433d38f94bf1f221a9e7e1dea297d120"
+    },
+    "package/bundle/proto/chat.proto": {
+      "1.1.54": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.55": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.56": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.57": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.58": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.59": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.60": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.61": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.62": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.63": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.64": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372",
+      "1.1.65": "852c39ce8447854dc1c452e44304db81978595b4961ec4beaef4762ee5141372"
+    },
+    "package/postinstall.cjs": {
+      "1.1.54": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.55": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.56": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.57": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.58": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.59": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.60": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.61": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.62": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.63": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.64": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220",
+      "1.1.65": "5b9995a17600678f17b4226582ed45dce097c6f79249d9a546c7453fc5f8f220"
+    },
+    "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json": {
+      "1.1.54": "510ad2eaf12a74250428050812a49b0fac760a3f20e0f3cd4a601bbe6db06ea9",
+      "1.1.55": "510ad2eaf12a74250428050812a49b0fac760a3f20e0f3cd4a601bbe6db06ea9",
+      "1.1.56": "510ad2eaf12a74250428050812a49b0fac760a3f20e0f3cd4a601bbe6db06ea9",
+      "1.1.57": "510ad2eaf12a74250428050812a49b0fac760a3f20e0f3cd4a601bbe6db06ea9",
+      "1.1.58": "510ad2eaf12a74250428050812a49b0fac760a3f20e0f3cd4a601bbe6db06ea9",
+      "1.1.59": "a93b9c3c907858648b77ff24f33b038301c7f73c5f158cd20c0ee3e229318aa4",
+      "1.1.60": "7d91759baca957c89a482cf43364f437fde0c8cb8da7438195e6f66fd20eebf2",
+      "1.1.61": "7d91759baca957c89a482cf43364f437fde0c8cb8da7438195e6f66fd20eebf2",
+      "1.1.62": "7d91759baca957c89a482cf43364f437fde0c8cb8da7438195e6f66fd20eebf2",
+      "1.1.63": "7d91759baca957c89a482cf43364f437fde0c8cb8da7438195e6f66fd20eebf2",
+      "1.1.64": "7d91759baca957c89a482cf43364f437fde0c8cb8da7438195e6f66fd20eebf2",
+      "1.1.65": "e22c9b81a8fd9df233c11f3e9b7576c3cdbb230a55bcde1500d6f60fa96e094d"
+    },
+    "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json": {
+      "1.1.54": "a914f239730bf7fc1a93b4ed36e743957173d7c068553ece273305a32f888068",
+      "1.1.55": "a914f239730bf7fc1a93b4ed36e743957173d7c068553ece273305a32f888068",
+      "1.1.56": "a914f239730bf7fc1a93b4ed36e743957173d7c068553ece273305a32f888068",
+      "1.1.57": "a914f239730bf7fc1a93b4ed36e743957173d7c068553ece273305a32f888068",
+      "1.1.58": "a914f239730bf7fc1a93b4ed36e743957173d7c068553ece273305a32f888068",
+      "1.1.59": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+      "1.1.60": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+      "1.1.61": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+      "1.1.62": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+      "1.1.63": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+      "1.1.64": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275",
+      "1.1.65": "14114331f8dc78a4520ff58dfe019f282d4357f002a21c97dc08e739c6501275"
+    },
+    "package/bundle/vendor/qoder-security/package.json": {
+      "1.1.54": "1fa7ed521781a85ba93f82cedc0fee6de7fe53b54b55659ad435b04a98702839",
+      "1.1.55": "1fa7ed521781a85ba93f82cedc0fee6de7fe53b54b55659ad435b04a98702839",
+      "1.1.56": "1fa7ed521781a85ba93f82cedc0fee6de7fe53b54b55659ad435b04a98702839",
+      "1.1.57": "1fa7ed521781a85ba93f82cedc0fee6de7fe53b54b55659ad435b04a98702839",
+      "1.1.58": "1fa7ed521781a85ba93f82cedc0fee6de7fe53b54b55659ad435b04a98702839",
+      "1.1.59": "d56b243a0d97f00dae8bd9d463e32afc8929748bdba0bf79ab190a550b79c9a1",
+      "1.1.60": "86e59a81c91880d210f54a03ecc2594ac1ceee55c936db019b29ea1d4dc2e98a",
+      "1.1.61": "86e59a81c91880d210f54a03ecc2594ac1ceee55c936db019b29ea1d4dc2e98a",
+      "1.1.62": "86e59a81c91880d210f54a03ecc2594ac1ceee55c936db019b29ea1d4dc2e98a",
+      "1.1.63": "86e59a81c91880d210f54a03ecc2594ac1ceee55c936db019b29ea1d4dc2e98a",
+      "1.1.64": "86e59a81c91880d210f54a03ecc2594ac1ceee55c936db019b29ea1d4dc2e98a",
+      "1.1.65": "063d71c152011c6a9859ecb257fe7136144042551e562d27f21d06e795cdf037"
+    },
+    "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md": {
+      "1.1.54": "6b0d41d3bdfb4c54624fcb611553fcbb636e51afa95857a0310355758f62eec2",
+      "1.1.55": "6b0d41d3bdfb4c54624fcb611553fcbb636e51afa95857a0310355758f62eec2",
+      "1.1.56": "6b0d41d3bdfb4c54624fcb611553fcbb636e51afa95857a0310355758f62eec2",
+      "1.1.57": "6b0d41d3bdfb4c54624fcb611553fcbb636e51afa95857a0310355758f62eec2",
+      "1.1.58": "6b0d41d3bdfb4c54624fcb611553fcbb636e51afa95857a0310355758f62eec2",
+      "1.1.59": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+      "1.1.60": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+      "1.1.61": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+      "1.1.62": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+      "1.1.63": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+      "1.1.64": "53896171d97d0a5c6bf307781eaf7523eabeb93c391d8428f19cf756474cadc4",
+      "1.1.65": "d8de096cf63195e8dbac28937c8059cfff96d202f77642034804e1a02991285c"
+    },
+    "package/bundle/vendor/sites/artifact.json": {
+      "1.1.54": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.55": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.56": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.57": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.58": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.59": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.60": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.61": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.62": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.63": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.64": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46",
+      "1.1.65": "a24223e746eb2d082374f06c1623da0b4d98c6e7a34826a83e3ae46fee2b8c46"
+    },
+    "package/bundle/vendor/sites/sites.zip": {
+      "1.1.54": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.55": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.56": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.57": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.58": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.59": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.60": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.61": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.62": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.63": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.64": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c",
+      "1.1.65": "5751bf07de10c632834c2a96d5a6817d9d65c815d1e6bcadcf5877d6d5e6a51c"
+    }
+  },
+  "changed_file_classifications": {
+    "package/bundle/qodercli.js": "selected CLI bundle; the npm artifact includes the chosen print, stream-json, permission, persistence and AgentLoop-bound implementation; private internals remain outside Swallowtail mapping; the 1.1.61 repeated-tool-denial normalization still leaves provider error details outside the selected route mapping",
+    "package/bundle/qoder-worker-runtime.mjs": "provider runtime bundle; versioned internal tool and stream implementation; only the frozen headless event fields and fail-closed decoder boundary are claimed; from 1.1.61 it classifies terminal_reason repeated_tool_call_denied into a private error_code while preserving other result fields",
+    "package/package.json": "release metadata; version and optional platform ripgrep package versions move with the release; package name, entrypoints, runtime floor, dependencies and install script remain stable",
+    "package/bundle/vendor/qoder-security/.qoder-plugin/plugin.json": "vendored provider plugin metadata; plugin capability and selected-skill visibility are outside qoder.headless",
+    "package/bundle/vendor/qoder-security/.qoder-plugin/qoder-hooks.json": "vendored plugin hooks; hooks are not selected or asserted by the headless route",
+    "package/bundle/vendor/qoder-security/bin/qodersec-launch.cmd": "vendored plugin launcher; provider-internal and not invoked by the selected Swallowtail argv",
+    "package/bundle/vendor/qoder-security/bin/qodersec-launch.sh": "vendored plugin launcher; provider-internal and not invoked by the selected Swallowtail argv",
+    "package/bundle/vendor/qoder-security/config.yaml.example": "vendored plugin example configuration; no Swallowtail configuration mapping",
+    "package/bundle/vendor/qoder-security/package.json": "vendored plugin package metadata; plugin release remains outside the qoder.package headless mapping",
+    "package/bundle/vendor/qoder-security/skills/security-scan/SKILL.md": "vendored plugin skill text; selected-run skills visibility remains unqualified under Research 256 and its independent gate"
+  }
+}

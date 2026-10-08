@@ -1,7 +1,8 @@
 use std::num::NonZeroU32;
+use swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SDK_VERSION;
 use swallowtail_adapter_pi::{
     PI_SDK_SIDECAR_NODE_AXIS, PI_SDK_SIDECAR_PACKAGE_AXIS, PI_SDK_SIDECAR_SIDECAR_AXIS,
-    PI_SDK_SIDECAR_SDK_VERSION, PI_SDK_SIDECAR_WIRE_AXIS, pi_sdk_sidecar_descriptor,
+    PI_SDK_SIDECAR_WIRE_AXIS, pi_sdk_sidecar_descriptor,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability,

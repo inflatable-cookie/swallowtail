@@ -6,6 +6,17 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only `pi.sdk-sidecar.package` through agreed official npm/GitHub
+  stable `1.1.0`, after every published hop from the exact `0.84.2`
+  ceiling. Research 396 freezes all 18 exact package artifacts, complete
+  package trees, per-hop file ledgers, selected SDK source classifications,
+  and the corresponding `pi-ai` and `pi-agent-core` identities. Preserve
+  exact unpublished gaps, claim and behavior revision, source-tag, exact Node
+  and wire axes, and all route capabilities. The
+  private sidecar disables the SDK 0.86 cache warmer; added model registry,
+  tool modifier, and event fields do not change the selected facade. No
+  package execution, provider prompt, credential use, install, or host update
+  occurred.
 - keep `kiro.acp` at its existing exact `2.21.4` point; official Kiro CLI
   stable `2.28.0` and all twelve published successor hops remain unqualified
   pending exact ACP V2 owner-sweep reachability and session, path, and failure

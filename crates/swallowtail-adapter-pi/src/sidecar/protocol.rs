@@ -242,8 +242,20 @@ mod tests {
             .split(");")
             .next()
             .expect("SDK allowlist closes");
-        let source_points: Vec<String> = serde_json::from_str(source_points.trim())
-            .expect("SDK allowlist is a JSON array");
+        let source_points: Vec<String> = source_points
+            .trim()
+            .strip_prefix('[')
+            .expect("SDK allowlist opens as an array")
+            .strip_suffix(']')
+            .expect("SDK allowlist closes as an array")
+            .lines()
+            .map(str::trim)
+            .filter(|line| !line.is_empty())
+            .map(|line| {
+                serde_json::from_str(line.trim_end_matches(','))
+                    .expect("SDK allowlist entry is a JSON string")
+            })
+            .collect();
         assert_eq!(qualified, source_points);
         assert!(FIXTURES.ends_with("pi-sdk-sidecar-v1"));
     }

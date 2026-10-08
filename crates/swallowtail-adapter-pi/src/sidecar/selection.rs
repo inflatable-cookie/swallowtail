@@ -6,10 +6,9 @@
 //! leaves unpublished or independently unqualified points rejected.
 
 use super::{
-    PI_SDK_SIDECAR_BEHAVIOR, PI_SDK_SIDECAR_NODE_RUNTIME, PI_SDK_SIDECAR_SDK_VERSION,
-    PI_SDK_SIDECAR_SOURCE_TAG, PI_SDK_SIDECAR_WIRE,
+    PI_SDK_SIDECAR_BEHAVIOR, PI_SDK_SIDECAR_NODE_RUNTIME, PI_SDK_SIDECAR_SOURCE_TAG,
+    PI_SDK_SIDECAR_WIRE,
 };
-use super::asset::PI_SDK_SIDECAR_PREVIOUS_SOURCE_TAG;
 use crate::failure::failure;
 use swallowtail_core::{
     InterfaceBehaviorRevision, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
@@ -28,9 +27,8 @@ pub const PI_SDK_SIDECAR_WIRE_AXIS: &str = "pi.sdk-sidecar.wire";
 pub const PI_SDK_SIDECAR_SIDECAR_AXIS: &str = "pi.sdk-sidecar.sidecar";
 
 const QUALIFIED_SDK_VERSIONS: [&str; 18] = [
-    "0.84.2", "0.84.3", "0.84.4", "0.85.0", "0.85.1", "0.86.0", "0.86.1", "0.87.0",
-    "0.87.1", "0.99.0", "0.99.1", "0.99.2", "1.0.0", "1.0.1", "1.0.2", "1.0.3", "1.0.4",
-    "1.1.0",
+    "0.84.2", "0.84.3", "0.84.4", "0.85.0", "0.85.1", "0.86.0", "0.86.1", "0.87.0", "0.87.1",
+    "0.99.0", "0.99.1", "0.99.2", "1.0.0", "1.0.1", "1.0.2", "1.0.3", "1.0.4", "1.1.0",
 ];
 
 /// Parses one exact sidecar SDK package semantic-version binding.
@@ -67,7 +65,7 @@ pub fn pi_sdk_sidecar_wire_binding(value: &str) -> Option<InterfaceVersionBindin
 /// Binds the exact opaque sidecar source tag.
 #[must_use]
 pub fn pi_sdk_sidecar_sidecar_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    if value != PI_SDK_SIDECAR_SOURCE_TAG && value != PI_SDK_SIDECAR_PREVIOUS_SOURCE_TAG {
+    if value != PI_SDK_SIDECAR_SOURCE_TAG {
         return None;
     }
     Some(InterfaceVersionBinding::new(
@@ -85,7 +83,9 @@ pub fn pi_sdk_sidecar_package_claim() -> InterfaceCompatibilityClaim {
         InterfaceVersionAxis::new(PI_SDK_SIDECAR_PACKAGE_AXIS)
             .expect("static sidecar axis is valid"),
         InterfaceVersionScheme::Semantic,
-        QUALIFIED_SDK_VERSIONS.into_iter().map(exact_segment),
+        QUALIFIED_SDK_VERSIONS
+            .into_iter()
+            .map(exact_package_segment),
     )
 }
 
@@ -112,17 +112,16 @@ pub fn pi_sdk_sidecar_wire_claim() -> InterfaceCompatibilityClaim {
     )
 }
 
-/// Returns the qualified-only sidecar source-tag claim, including the previous tag.
+/// Returns the qualified-only one-point sidecar source-tag claim.
 #[must_use]
 pub fn pi_sdk_sidecar_sidecar_claim() -> InterfaceCompatibilityClaim {
-    claim_with_segments(
+    claim(
         "pi.sdk-sidecar.sidecar-v1",
         InterfaceVersionAxis::new(PI_SDK_SIDECAR_SIDECAR_AXIS)
             .expect("static sidecar axis is valid"),
         InterfaceVersionScheme::Opaque,
-        [PI_SDK_SIDECAR_PREVIOUS_SOURCE_TAG, PI_SDK_SIDECAR_SOURCE_TAG]
-            .into_iter()
-            .map(exact_segment),
+        InterfaceVersion::new(PI_SDK_SIDECAR_SOURCE_TAG)
+            .expect("static sidecar source tag is valid"),
     )
 }
 
@@ -136,29 +135,6 @@ pub(crate) fn validate_pi_sdk_sidecar_plan_versions(
         pi_sdk_sidecar_sidecar_claim(),
     ] {
         validate_axis(plan, &claim)?;
-    }
-    validate_source_tuple(plan)?;
-    Ok(())
-}
-
-fn validate_source_tuple(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
-    let package = plan
-        .interface_versions()
-        .find(|binding| binding.axis().as_str() == PI_SDK_SIDECAR_PACKAGE_AXIS)
-        .expect("package axis was validated")
-        .version()
-        .as_str();
-    let source = plan
-        .interface_versions()
-        .find(|binding| binding.axis().as_str() == PI_SDK_SIDECAR_SIDECAR_AXIS)
-        .expect("sidecar axis was validated")
-        .version()
-        .as_str();
-    if source == PI_SDK_SIDECAR_PREVIOUS_SOURCE_TAG && package != "0.84.2" {
-        return Err(failure(
-            "swallowtail.pi.sdk-sidecar.version_incompatible",
-            "Pi SDK sidecar source tag is incompatible with this exact SDK package point",
-        ));
     }
     Ok(())
 }
@@ -203,12 +179,19 @@ fn claim(
     scheme: InterfaceVersionScheme,
     version: InterfaceVersion,
 ) -> InterfaceCompatibilityClaim {
-    claim_with_segments(id, axis, scheme, [exact_segment(version.as_str())])
+    claim_with_segments(id, axis, scheme, [exact_segment(version)])
 }
 
-fn exact_segment(value: &str) -> swallowtail_core::InterfaceVersionSegment {
+fn exact_package_segment(value: &str) -> swallowtail_core::InterfaceVersionSegment {
+    // Callers are limited to the compile-time qualified package-point list.
+    let version = InterfaceVersion::new(value)
+        .unwrap_or_else(|_| unreachable!("qualified SDK package points are valid versions"));
+    exact_segment(version)
+}
+
+fn exact_segment(version: InterfaceVersion) -> swallowtail_core::InterfaceVersionSegment {
     swallowtail_core::InterfaceVersionSegment::exact(
-        InterfaceVersion::new(value).expect("static sidecar version is valid"),
+        version,
         InterfaceBehaviorRevision::new(PI_SDK_SIDECAR_BEHAVIOR)
             .expect("static sidecar behavior revision is valid"),
         InterfaceSupportStatus::Maintained,
@@ -235,10 +218,9 @@ fn claim_with_segments(
 #[cfg(test)]
 mod tests {
     use super::{
-        PI_SDK_SIDECAR_NODE_AXIS, PI_SDK_SIDECAR_PACKAGE_AXIS, PI_SDK_SIDECAR_PREVIOUS_SOURCE_TAG,
-        PI_SDK_SIDECAR_SIDECAR_AXIS, PI_SDK_SIDECAR_WIRE_AXIS, QUALIFIED_SDK_VERSIONS,
-        pi_sdk_sidecar_node_binding, pi_sdk_sidecar_node_claim,
-        pi_sdk_sidecar_package_binding, pi_sdk_sidecar_package_claim,
+        PI_SDK_SIDECAR_NODE_AXIS, PI_SDK_SIDECAR_PACKAGE_AXIS, PI_SDK_SIDECAR_SIDECAR_AXIS,
+        PI_SDK_SIDECAR_WIRE_AXIS, QUALIFIED_SDK_VERSIONS, pi_sdk_sidecar_node_binding,
+        pi_sdk_sidecar_node_claim, pi_sdk_sidecar_package_binding, pi_sdk_sidecar_package_claim,
         pi_sdk_sidecar_sidecar_binding, pi_sdk_sidecar_sidecar_claim, pi_sdk_sidecar_wire_binding,
         pi_sdk_sidecar_wire_claim,
     };
@@ -249,7 +231,7 @@ mod tests {
     use swallowtail_core::InterfaceVersion;
 
     #[test]
-    fn package_claim_qualifies_only_the_exact_sdk_point() {
+    fn package_claim_qualifies_published_exact_points_and_rejects_gaps() {
         let claim = pi_sdk_sidecar_package_claim();
         assert_eq!(claim.axis().as_str(), PI_SDK_SIDECAR_PACKAGE_AXIS);
         let qualified = version(PI_SDK_SIDECAR_SDK_VERSION);
@@ -268,8 +250,17 @@ mod tests {
             );
         }
         for rejected in [
-            "0.84.1", "0.84.5", "0.85.2", "0.86.2", "0.87.2", "0.88.0", "0.99.3",
-            "1.0.5", "1.1.1", "0.84.2-rc.1", "0.80.10",
+            "0.84.1",
+            "0.84.5",
+            "0.85.2",
+            "0.86.2",
+            "0.87.2",
+            "0.88.0",
+            "0.99.3",
+            "1.0.5",
+            "1.1.1",
+            "0.84.2-rc.1",
+            "0.80.10",
         ] {
             assert!(
                 !claim.permits(&version(rejected)),
@@ -309,20 +300,16 @@ mod tests {
         let sidecar = pi_sdk_sidecar_sidecar_claim();
         assert_eq!(sidecar.axis().as_str(), PI_SDK_SIDECAR_SIDECAR_AXIS);
         assert!(sidecar.permits(&version(PI_SDK_SIDECAR_SOURCE_TAG)));
-        assert!(sidecar.permits(&version(PI_SDK_SIDECAR_PREVIOUS_SOURCE_TAG)));
         assert!(!sidecar.permits(&version("swallowtail-pi-sdk-sidecar@0.0.0")));
         assert!(pi_sdk_sidecar_sidecar_binding(PI_SDK_SIDECAR_SOURCE_TAG).is_some());
         assert!(pi_sdk_sidecar_sidecar_binding("").is_none());
     }
 
     #[test]
-    fn current_sidecar_source_tag_is_bound_to_the_asset_digest() {
-        use sha2::{Digest, Sha256};
-
-        let digest = Sha256::digest(crate::sidecar::PI_SDK_SIDECAR_SOURCE.as_bytes());
+    fn source_tag_remains_bound_to_the_adapter_release() {
         assert_eq!(
             PI_SDK_SIDECAR_SOURCE_TAG,
-            format!("swallowtail-pi-sdk-sidecar@sha256-{digest:x}")
+            format!("swallowtail-pi-sdk-sidecar@{}", env!("CARGO_PKG_VERSION"))
         );
     }
 

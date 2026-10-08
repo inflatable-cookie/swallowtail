@@ -3,7 +3,7 @@
   "behavior_revision": "pi.sdk-sidecar-v1",
   "sidecar_entry_file": "pi-sdk-sidecar.mjs",
   "sidecar_source_tag_prefix": "swallowtail-pi-sdk-sidecar@",
-  "sidecar_source_tag": "swallowtail-pi-sdk-sidecar@sha256-b4a87c838d8884813d90eb4dac7306f3c571aef7892ee112a4f448ebfd463415",
+  "sidecar_source_tag": "swallowtail-pi-sdk-sidecar@0.5.1",
   "sdk_package": "@earendil-works/pi-coding-agent",
   "sdk_version": "1.1.0",
   "sdk_exports_used": [
@@ -39,7 +39,6 @@
     "1.0.4",
     "1.1.0"
   ],
-  "previous_sidecar_source_tag": "swallowtail-pi-sdk-sidecar@0.3.3",
   "cache_warming": "off",
   "record_types": [
     "command",

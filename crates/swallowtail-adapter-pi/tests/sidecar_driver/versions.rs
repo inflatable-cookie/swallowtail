@@ -68,35 +68,28 @@ fn missing_ambiguous_or_incompatible_version_bindings_fail_before_process_work()
         );
     }
 
-    // The released exact tuple remains supported, while the old asset tag
-    // cannot be paired with a package point it never qualified.
-    let mut previous_tuple = sidecar_versions_for_sdk("0.84.2").to_vec();
-    previous_tuple.retain(|binding| binding.axis().as_str() != PI_SDK_SIDECAR_SIDECAR_AXIS);
-    previous_tuple.push(binding(
-        PI_SDK_SIDECAR_SIDECAR_AXIS,
-        "swallowtail-pi-sdk-sidecar@0.3.3",
-    ));
-    let host_id = make_host_id("pi.fixture.sdk-sidecar.previous-tuple");
+    // The released exact SDK/source tuple remains supported.
+    let released_tuple = sidecar_versions_for_sdk("0.84.2").to_vec();
+    let host_id = make_host_id("pi.fixture.sdk-sidecar.released-tuple");
     let fixture = SidecarFixtureHost::new(SidecarScenario::Complete).with_sdk_version("0.84.2");
-    let selected = sidecar_selection_with_instance_versions(host_id.clone(), previous_tuple);
+    let selected = sidecar_selection_with_instance_versions(host_id.clone(), released_tuple);
     let services = fixture.services(host_id);
     let session = block_on(driver(selected.credential.clone()).open_session(
         selected.plan,
-        sidecar_open_request("sidecar-previous-tuple", selected.resource),
+        sidecar_open_request("sidecar-released-tuple", selected.resource),
         services.clone(),
     ))
     .expect("released exact SDK/source tuple remains supported");
     let cleanup = block_on(close_session(session, services));
     assert_eq!(cleanup, CleanupOutcome::Clean);
 
-    let mut invalid_previous_tuple = sidecar_versions().to_vec();
-    invalid_previous_tuple
-        .retain(|binding| binding.axis().as_str() != PI_SDK_SIDECAR_SIDECAR_AXIS);
-    invalid_previous_tuple.push(binding(
+    let mut invalid_source_tuple = sidecar_versions().to_vec();
+    invalid_source_tuple.retain(|binding| binding.axis().as_str() != PI_SDK_SIDECAR_SIDECAR_AXIS);
+    invalid_source_tuple.push(binding(
         PI_SDK_SIDECAR_SIDECAR_AXIS,
         "swallowtail-pi-sdk-sidecar@0.3.3",
     ));
-    let error = version_case(invalid_previous_tuple);
+    let error = version_case(invalid_source_tuple);
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.pi.sdk-sidecar.version_incompatible"

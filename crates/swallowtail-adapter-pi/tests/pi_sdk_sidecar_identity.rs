@@ -21,6 +21,10 @@ fn sidecar_identity_and_claims_match_the_frozen_corpus() {
     assert_eq!(protocol["sdk_package"], "@earendil-works/pi-coding-agent");
     assert_eq!(protocol["sdk_version"], "1.1.0");
     assert_eq!(protocol["initial_sdk_version"], "0.84.2");
+    assert_eq!(
+        protocol["sidecar_source_tag"],
+        swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SOURCE_TAG
+    );
     assert_eq!(protocol["node_runtime"], "22.23.2");
     assert_eq!(protocol["node_requirement"], ">=22.19.0");
     assert_eq!(
@@ -73,8 +77,20 @@ fn sidecar_identity_and_claims_match_the_frozen_corpus() {
         .split(");")
         .next()
         .expect("sidecar SDK version allowlist is closed");
-    let source_versions: Vec<String> = serde_json::from_str(source_versions.trim())
-        .expect("sidecar SDK allowlist uses a JSON array");
+    let source_versions: Vec<String> = source_versions
+        .trim()
+        .strip_prefix('[')
+        .expect("sidecar SDK allowlist opens as an array")
+        .strip_suffix(']')
+        .expect("sidecar SDK allowlist closes as an array")
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .map(|line| {
+            serde_json::from_str(line.trim_end_matches(','))
+                .expect("SDK allowlist entry is a JSON string")
+        })
+        .collect();
     assert_eq!(qualified, source_versions);
     assert_eq!(qualified.last().map(String::as_str), Some("1.1.0"));
 
@@ -87,7 +103,9 @@ fn sidecar_identity_and_claims_match_the_frozen_corpus() {
             InterfaceCompatibilityAssessment::Qualified(_)
         ));
     }
-    for gap in ["0.84.5", "0.85.2", "0.86.2", "0.87.2", "0.88.0", "0.99.3", "1.0.5", "1.1.1"] {
+    for gap in [
+        "0.84.5", "0.85.2", "0.86.2", "0.87.2", "0.88.0", "0.99.3", "1.0.5", "1.1.1",
+    ] {
         let gap = InterfaceVersion::new(gap).expect("valid version");
         assert!(!package.permits(&gap));
         assert!(!matches!(
@@ -96,10 +114,12 @@ fn sidecar_identity_and_claims_match_the_frozen_corpus() {
         ));
     }
     let sidecar = pi_sdk_sidecar_sidecar_claim();
-    assert!(sidecar.permits(
-        &InterfaceVersion::new(&protocol["previous_sidecar_source_tag"].as_str().unwrap())
-            .expect("previous source tag is valid")
-    ));
+    assert!(
+        sidecar.permits(
+            &InterfaceVersion::new(protocol["sidecar_source_tag"].as_str().unwrap())
+                .expect("source tag is valid")
+        )
+    );
     assert!(
         swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SOURCE_TAG
             .starts_with(protocol["sidecar_source_tag_prefix"].as_str().unwrap())

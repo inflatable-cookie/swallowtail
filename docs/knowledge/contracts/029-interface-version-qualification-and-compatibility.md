@@ -293,10 +293,13 @@ or evidence revision. They do not invent a semantic version. Runtime capability
 negotiation may narrow qualified behavior or stop an unverified attempt; it
 cannot convert unverified evidence into qualified support.
 
-Exact-only surfaces (Bedrock Runtime service, Bedrock catalogue SDK and
-service, llama-cpp attached and owned) keep this posture by explicit recorded
+Exact-only surfaces (Bedrock Runtime service, Bedrock catalogue service,
+llama-cpp attached and owned) keep this posture by explicit recorded
 disposition rather than by silence: see Exact-Only Claims in the provider
-route matrix. Bedrock Runtime's SDK axis has a separate ordered claim.
+route matrix. Bedrock Runtime's SDK axis has a separate ordered claim. The
+Bedrock catalogue SDK's exact claim was reopened for the approved v0.5.2 sweep
+and now has its own evidence-backed semantic claim; that qualification does
+not infer support for either service API.
 
 ## Conformance
 

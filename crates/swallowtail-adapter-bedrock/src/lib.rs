@@ -53,7 +53,7 @@ pub const SDK_VERSION: &str = "1.148.0";
 pub const SERVICE_API: &str = "Amazon Bedrock Runtime ConverseStream";
 /// AWS SDK crate used for Bedrock control-plane catalogue discovery.
 pub const CATALOGUE_SDK_CRATE: &str = "aws-sdk-bedrock";
-/// Exact AWS SDK version qualified for the control-plane catalogue.
-pub const CATALOGUE_SDK_VERSION: &str = "1.148.0";
+/// AWS SDK version bound to Bedrock control-plane catalogue requests.
+pub const CATALOGUE_SDK_VERSION: &str = "1.161.0";
 /// Bedrock control-plane service operation implemented by this adapter.
 pub const CATALOGUE_SERVICE_API: &str = "Amazon Bedrock ListFoundationModels";

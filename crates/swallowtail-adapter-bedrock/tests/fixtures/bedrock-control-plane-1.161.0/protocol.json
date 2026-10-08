@@ -1,0 +1,289 @@
+{
+  "absent_optional_policy": "unknown",
+  "artifact_execution": false,
+  "authentication": {
+    "default_chain_allowed": false,
+    "mechanism": "cloud_provider_identity",
+    "secret_exposed_by_runtime_lease": false,
+    "source": "host_authorized_delegated_sdk_provider"
+  },
+  "authorization": {
+    "iam_action": "bedrock:ListFoundationModels",
+    "marketplace_side_effect_allowed": false,
+    "resource": "*",
+    "runtime_inference_implied": false
+  },
+  "catalogue_presence_implies": [],
+  "client_configuration": {
+    "automatic_retry": false,
+    "credentials": "explicit delegated provider",
+    "default_chain_loading": false,
+    "endpoint": "explicit host-approved control-plane endpoint",
+    "input_telemetry_capture": false,
+    "region": "explicit configured instance region",
+    "retry_max_attempts": 1
+  },
+  "crate_semver_is_not_service_model_date": true,
+  "credentials_used": false,
+  "endpoint_audience": "bedrock",
+  "endpoint_source": "host_approved_grant",
+  "excluded": [
+    "ambient_aws_environment",
+    "shared_aws_config_files",
+    "instance_or_container_metadata",
+    "bedrock_runtime_endpoint_grant",
+    "model_route_creation",
+    "runtime_capability_widening",
+    "model_invocation",
+    "marketplace_subscription",
+    "provider_onboarding",
+    "bedrock_mantle_models",
+    "automatic_retry",
+    "live_authentication_in_default_qa"
+  ],
+  "failure": {
+    "automatic_retry": false,
+    "provider_messages_retained": false,
+    "selected_sdk_errors": [
+      "AccessDeniedException",
+      "InternalServerException",
+      "ThrottlingException",
+      "ValidationException",
+      "Unhandled"
+    ]
+  },
+  "fixture_schema": 1,
+  "host_updated": false,
+  "observations": [
+    "model_id",
+    "model_name",
+    "provider_display_name",
+    "input_modalities",
+    "output_modalities",
+    "response_streaming_supported",
+    "inference_types",
+    "customization_types",
+    "model_lifecycle"
+  ],
+  "provider_calls": false,
+  "provider_resource_arn": "adapter_private",
+  "published_hop_review": [
+    {
+      "changed_selected_files": [
+        "src/operation/list_foundation_models.rs",
+        "src/config.rs"
+      ],
+      "from": "1.150.0",
+      "reason": "Opt-in telemetry added but disabled by the adapter\u2019s fresh config; its generated request has no byProvider value. Response fields and failure mapping are unchanged.",
+      "selected_behavior_unchanged": true,
+      "to": "1.151.0"
+    },
+    {
+      "changed_selected_files": [],
+      "from": "1.151.0",
+      "reason": "No selected operation, shared configuration, selected response parser, or selected output type changed.",
+      "selected_behavior_unchanged": true,
+      "to": "1.152.0"
+    },
+    {
+      "changed_selected_files": [],
+      "from": "1.152.0",
+      "reason": "Only Advanced Prompt Optimization ModelConfiguration documentation and package metadata change; this type is not in ListFoundationModels output.",
+      "selected_behavior_unchanged": true,
+      "to": "1.153.0"
+    },
+    {
+      "changed_selected_files": [],
+      "from": "1.153.0",
+      "reason": "Only package metadata changes.",
+      "selected_behavior_unchanged": true,
+      "to": "1.154.0"
+    },
+    {
+      "changed_selected_files": [
+        "src/operation/list_foundation_models.rs",
+        "src/config.rs"
+      ],
+      "from": "1.154.0",
+      "reason": "Clock-skew retry classification is added; adapter max_attempts=1 prevents a second request. Service error variants and catalogue decoding are unchanged.",
+      "selected_behavior_unchanged": true,
+      "to": "1.155.0"
+    },
+    {
+      "changed_selected_files": [],
+      "from": "1.155.0",
+      "reason": "The selected operation and response source files are unchanged. 1.156.0 is yanked and remains excluded; changed serializers cover unrelated request shapes.",
+      "selected_behavior_unchanged": true,
+      "to": "1.156.0"
+    },
+    {
+      "changed_selected_files": [],
+      "from": "1.156.0",
+      "reason": "The selected operation and response source files are unchanged. This hop exits the yanked release; the yanked 1.156.0 point stays excluded.",
+      "selected_behavior_unchanged": true,
+      "to": "1.157.0"
+    },
+    {
+      "changed_selected_files": [
+        "src/config.rs"
+      ],
+      "from": "1.157.0",
+      "reason": "The only shared config file change is a documentation example; no executable configuration changed.",
+      "selected_behavior_unchanged": true,
+      "to": "1.158.0"
+    },
+    {
+      "changed_selected_files": [
+        "src/operation/list_foundation_models.rs",
+        "src/protocol_serde/shape_list_foundation_models.rs"
+      ],
+      "from": "1.158.0",
+      "reason": "The selected deserializer receives an additional ConfigBag argument, but the argument is unused and the response/error parsing body is otherwise unchanged.",
+      "selected_behavior_unchanged": true,
+      "to": "1.159.0"
+    },
+    {
+      "changed_selected_files": [],
+      "from": "1.159.0",
+      "reason": "Only package metadata changes.",
+      "selected_behavior_unchanged": true,
+      "to": "1.160.0"
+    },
+    {
+      "changed_selected_files": [],
+      "from": "1.160.0",
+      "reason": "Only package metadata changes.",
+      "selected_behavior_unchanged": true,
+      "to": "1.161.0"
+    }
+  ],
+  "region_source": "configured_instance_exact",
+  "request": {
+    "filters": [],
+    "maximum_entries": 1024,
+    "maximum_provider_requests": 1,
+    "maximum_sdk_attempts": 1,
+    "method": "GET",
+    "operation": "ListFoundationModels",
+    "pagination": "none",
+    "path": "/foundation-models",
+    "query_parameters": []
+  },
+  "sdk_crate": "aws-sdk-bedrock",
+  "sdk_version": "1.161.0",
+  "selected_file_hashes": "dist-inventory.json:selected_file_hashes_by_version",
+  "selected_source_files": [
+    "src/operation/list_foundation_models.rs",
+    "src/protocol_serde/shape_list_foundation_models.rs",
+    "src/protocol_serde/shape_foundation_model_summary_list.rs",
+    "src/protocol_serde/shape_foundation_model_summary.rs",
+    "src/protocol_serde/shape_foundation_model_lifecycle.rs",
+    "src/protocol_serde/shape_model_modality_list.rs",
+    "src/protocol_serde/shape_inference_type_list.rs",
+    "src/protocol_serde/shape_model_customization_list.rs",
+    "src/types/_foundation_model_summary.rs",
+    "src/types/_foundation_model_lifecycle.rs",
+    "src/types/_model_modality.rs",
+    "src/types/_inference_type.rs",
+    "src/types/_model_customization.rs",
+    "src/types/error.rs",
+    "src/types/error/_access_denied_exception.rs",
+    "src/types/error/_internal_server_exception.rs",
+    "src/types/error/_throttling_exception.rs",
+    "src/types/error/_validation_exception.rs",
+    "src/types/error/builders.rs",
+    "src/client.rs",
+    "src/config.rs",
+    "src/config/endpoint.rs",
+    "src/config/retry.rs",
+    "src/operation.rs",
+    "src/protocol_serde.rs"
+  ],
+  "service_api": "Amazon Bedrock ListFoundationModels",
+  "service_api_revision": "bedrock-list-foundation-models",
+  "source": {
+    "commit": "7101aefb7632e44cce586886a1df595151409b5f",
+    "path": "sdk/bedrock",
+    "repository": "https://github.com/awslabs/aws-sdk-rust"
+  },
+  "transport": "in_process_rust_sdk_control_plane_rest_json",
+  "unknown_enum_policy": "bounded_namespaced_observation",
+  "unmapped_sdk_export_hops": [
+    {
+      "from": "1.150.0",
+      "path": "src/lib.rs",
+      "to": "1.151.0"
+    },
+    {
+      "from": "1.151.0",
+      "path": "src/lib.rs",
+      "to": "1.152.0"
+    },
+    {
+      "from": "1.152.0",
+      "path": "src/lib.rs",
+      "to": "1.153.0"
+    },
+    {
+      "from": "1.153.0",
+      "path": "src/lib.rs",
+      "to": "1.154.0"
+    },
+    {
+      "from": "1.154.0",
+      "path": "src/lib.rs",
+      "to": "1.155.0"
+    },
+    {
+      "from": "1.155.0",
+      "path": "src/lib.rs",
+      "to": "1.156.0"
+    },
+    {
+      "from": "1.156.0",
+      "path": "src/lib.rs",
+      "to": "1.157.0"
+    },
+    {
+      "from": "1.157.0",
+      "path": "src/lib.rs",
+      "to": "1.158.0"
+    },
+    {
+      "from": "1.158.0",
+      "path": "src/lib.rs",
+      "to": "1.159.0"
+    },
+    {
+      "from": "1.159.0",
+      "path": "src/lib.rs",
+      "to": "1.160.0"
+    },
+    {
+      "from": "1.160.0",
+      "path": "src/lib.rs",
+      "to": "1.161.0"
+    }
+  ],
+  "unmapped_surface_boundary": "Other generated operations, types, and their serializers remain vendor SDK surfaces outside the one unfiltered ListFoundationModels call; this adapter does not expose them.",
+  "version_boundaries": {
+    "qualified_semantic_segments": [
+      [
+        "1.150.0",
+        "1.155.0"
+      ],
+      [
+        "1.157.0",
+        "1.161.0"
+      ]
+    ],
+    "retained_exact_point": "1.148.0",
+    "synthetic_unpublished_later_stable": "1.162.0",
+    "unqualified_published_gaps": [
+      "1.149.0"
+    ],
+    "yanked_exclusions": [
+      "1.156.0"
+    ]
+  }
+}

@@ -17,7 +17,7 @@ annotated Git tags from the canonical repository.
   work or artifact execution occurred.
 - qualify only `claude-code.response-only` through official npm `latest` and
   GitHub latest stable `2.1.293`; npm `stable` remains the delayed `2.1.285`
-  channel. Research 377 freezes every published hop after `2.1.281` across
+  channel. Research 378 freezes every published hop after `2.1.281` across
   the npm wrapper, Darwin arm64, and Linux x64 trees. Preserve the supported
   v1 and v2 segments and existing exclusions; add maintained v3
   `2.1.282..=2.1.293` for the accepted version-specific reduction in
@@ -25,6 +25,13 @@ annotated Git tags from the canonical repository.
   turn with empty tools/MCP and no session persistence. The `.288` SIGTERM
   note is outside host-local `force_stop`, which uses SIGKILL. No artifact was
   executed, and no provider prompt, install, or host update occurred.
+- qualify `opencode.acp` through the official current stable `1.18.35` after
+  published hops `1.18.33`, `1.18.34`, and `1.18.35`. Research 377 freezes
+  exact npm and GitHub source identities, full package trees, and every source
+  hop. The existing ACP v1 v2 behavior, claim, baseline, exclusions, and
+  `AllowUnverified` posture stay. HTTP MCP live honouring remains exact to
+  `1.18.18`; no newer point inherits it. No provider prompt, live session,
+  credential use, package installation, or artifact execution occurred.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,

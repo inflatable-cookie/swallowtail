@@ -313,7 +313,7 @@ OpenHands adds a package without a production route.
   uncertainty without yet advertising production deletion. The same crate
   implements a separate `opencode.acp` family on `opencode.executable`: ACP v1
   stdio on host-approved `opencode acp --pure`, deprecated `1.18.18..=1.18.30`
-  and maintained `1.18.31..=1.18.32`, ProviderSupported host-owned login
+  and maintained `1.18.31..=1.18.35`, ProviderSupported host-owned login
   without a credential lease, one admitted stdio MCP name, and URL-plus-header
   MCP modelled behind the contract gate. The HTTP and ACP axes stay unflattened.
 - `swallowtail-adapter-anthropic` implements provider-supported `2023-06-01`

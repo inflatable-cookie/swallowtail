@@ -1,4 +1,4 @@
-# Research 407: Muse Code Signed Payload 1.4.4-R5419.1 Identity
+# Research 409: Muse Code Signed Payload 1.4.4-R5419.1 Identity
 
 Date: 2026-10-08
 
@@ -49,8 +49,8 @@ unauthenticated HEAD request to the artifact URL returned HTTP 200; the full
 GET succeeded without credentials. `codesign --verify --strict` passed. The signature reports
 identifier `muse-arm64`, Team ID `V9WTTPBFK9`, authority
 `Developer ID Application: Meta Platforms, Inc. (V9WTTPBFK9)`, and signing
-timestamp 2026-10-07 16:11:29 UTC. The artifact was inspected but never
-executed. The vendor's version-qualified URLs identify the observed bytes;
+timestamp 2026-10-07 16:11:29 BST (2026-10-07 15:11:29 UTC). The artifact was
+inspected but never executed. The vendor's version-qualified URLs identify the observed bytes;
 Meta does not publish a retention or immutability guarantee for those URLs.
 
 No public source commit or source tree was correlated to the shipped runtime.

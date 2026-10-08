@@ -1,0 +1,139 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "observed_at_utc": "2026-10-08T18:58:19Z",
+  "previous_ceiling": "2.1.281",
+  "official_latest_at_observation": "2.1.294",
+  "npm": {
+    "package": "@anthropic-ai/claude-code",
+    "dist_tags": {
+      "stable": "2.1.286",
+      "next": "2.1.295",
+      "latest": "2.1.294"
+    },
+    "published": {
+      "2.1.282": "2026-09-24T15:56:22.706Z",
+      "2.1.283": "2026-09-25T18:46:11.330Z",
+      "2.1.284": "2026-09-28T17:11:59.750Z",
+      "2.1.285": "2026-09-29T17:32:09.173Z",
+      "2.1.286": "2026-09-30T17:14:38.859Z",
+      "2.1.287": "2026-10-01T16:59:25.986Z",
+      "2.1.288": "2026-10-02T18:30:40.093Z",
+      "2.1.289": "2026-10-03T20:12:02.717Z",
+      "2.1.290": "2026-10-05T18:12:44.907Z",
+      "2.1.291": "2026-10-06T03:32:36.856Z",
+      "2.1.292": "2026-10-06T17:10:31.715Z",
+      "2.1.293": "2026-10-07T17:18:04.464Z",
+      "2.1.294": "2026-10-08T03:42:57.084Z"
+    },
+    "registry": "https://registry.npmjs.org/@anthropic-ai%2Fclaude-code",
+    "other_channels": {
+      "next": {
+        "version": "2.1.295",
+        "published_at": "2026-10-08T18:22:58.621Z",
+        "qualified_as_stable": false
+      }
+    }
+  },
+  "github": {
+    "repository": "https://github.com/anthropics/claude-code",
+    "latest_non_prerelease": "v2.1.294",
+    "latest_non_prerelease_published_at": "2026-10-08T05:03:54Z",
+    "latest_release_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.294",
+    "tag_commits": {
+      "2.1.281": "d78be9481b889e11186ec4578b4f5e9301396e25",
+      "2.1.282": "ddcb43a29b2d4da61fd22a55f6030c6d376b0545",
+      "2.1.283": "7779afb12e3635f46f56ec823979d68350ae000b",
+      "2.1.284": "8364969e9f5234ef3d9743cf7c790e9aab0ac3b1",
+      "2.1.285": "ec44ca97dc86c33d934c8d55b24959aabf076871",
+      "2.1.286": "f5f60250a032caa72d1eb47f9ca5f29becc7066f",
+      "2.1.287": "816ec211a648f17a411f63a45cfd44ddf8db00d9",
+      "2.1.288": "1c229fcd1e1e4e452e29a8f116b45fe4cfe2c528",
+      "2.1.289": "2bfb629dfaff0c8318047a4beb93cf1dc5b58b18",
+      "2.1.290": "e8ae451830fb8d1d8edf853c7830ff6c650d3ee3",
+      "2.1.291": "8e60c4cac989c0e0cc6d2c49407a5c67f5a4a8e6",
+      "2.1.292": "fbe20e00e2851fc01506f54f98a8f0b875af3847",
+      "2.1.293": "79babc372d64101f981bd2b52c3dbe588596dc56",
+      "2.1.294": "71cdddec623889d38af14b7a489670a03186f659"
+    }
+  },
+  "published_hops": [
+    "2.1.282",
+    "2.1.283",
+    "2.1.284",
+    "2.1.285",
+    "2.1.286",
+    "2.1.287",
+    "2.1.288",
+    "2.1.289",
+    "2.1.290",
+    "2.1.291",
+    "2.1.292",
+    "2.1.293",
+    "2.1.294"
+  ],
+  "unpublished_between": [],
+  "first_unpublished_after_latest": "2.1.296",
+  "host": {
+    "version": "2.1.286",
+    "sha256": "75e3016e9d2570767b08e43a7467d4817a4f149232c169ca295f2c95fef21433",
+    "size_bytes": 225167728,
+    "signature": {
+      "identifier": "com.anthropic.claude-code",
+      "authority": "Developer ID Application: Anthropic PBC (Q6L2SF6YDW)",
+      "team_identifier": "Q6L2SF6YDW",
+      "cdhash_sha256": "d389f30fdb2d248d644a49b38e94376b65dafc7c92f8517f732a9604be93548d"
+    }
+  },
+  "runtime_artifacts_compared": [
+    "@anthropic-ai/claude-code",
+    "@anthropic-ai/claude-code-darwin-arm64",
+    "@anthropic-ai/claude-code-linux-x64"
+  ],
+  "claim_at_observation": {
+    "claim_id": "claude-code.headless.window-1",
+    "baseline": "2.1.220",
+    "latest_qualified": "2.1.281",
+    "behavior_revision": "claude-code.headless.stream-json.v1",
+    "newer_version_posture": "AllowUnverified",
+    "unpublished_exclusions": [
+      "2.1.244",
+      "2.1.249",
+      "2.1.253",
+      "2.1.254",
+      "2.1.255",
+      "2.1.256",
+      "2.1.262",
+      "2.1.264",
+      "2.1.279"
+    ]
+  },
+  "identity_decision": "stop",
+  "segment_shape": "stop",
+  "stops": [
+    {
+      "version": "2.1.287",
+      "kind": "selected_stream_behavior",
+      "evidence": "The release notes change --output-format stream-json turn streaming for a context: fork skill invoked as the prompt.",
+      "reason": "The headless command accepts a prompt, does not pass --disable-slash-commands, and therefore does not exclude this prompt shape. The mapped stream behavior is not established as unchanged."
+    },
+    {
+      "version": "2.1.290",
+      "kind": "permission_security_authority",
+      "evidence": "The release notes change plan-mode permission and safety checks after a PreToolUse hook rewrites tool input.",
+      "reason": "The headless command selects plan mode and enables user, project, and local settings; hooks are not disabled. This is a selected security boundary change requiring a ruling."
+    },
+    {
+      "version": "2.1.294",
+      "kind": "selected_hook_safety_behavior",
+      "evidence": "The official release notes say instruction-form prompt and agent hooks can now block actions as intended; prompt hooks on Stop and SubagentStop are judged differently.",
+      "reason": "The selected command retains user, project, and local settings and does not disable hooks. This changes configured hook safety and stop behavior outside the approved 2.1.287 stream and 2.1.290 post-PreToolUse recheck adaptation. The task must stop before claims move."
+    }
+  ],
+  "source_runtime_correlation": "The public source tags identify commits, but no source-to-npm-runtime provenance is asserted; published compiled executables are the runtime identity.",
+  "downloaded_artifacts_executed": false,
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "host_install_changed": false,
+  "npm_2.1.296_http_status": 404,
+  "github_tag_v2.1.296_present": false
+}

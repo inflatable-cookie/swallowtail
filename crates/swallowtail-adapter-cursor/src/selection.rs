@@ -24,8 +24,8 @@ pub const CURSOR_AGENT_JULY_23_BUILD_REVISION: &str = "e383d2b";
 pub const CURSOR_AGENT_AUGUST_04_VERSION: &str = "2026-08-04";
 /// Qualified build revision for [`CURSOR_AGENT_AUGUST_04_VERSION`].
 pub const CURSOR_AGENT_AUGUST_04_BUILD_REVISION: &str = "aaa8809";
-/// Latest Cursor release qualified by the original shared ACP and headless claims.
-/// Catalogue and ACP have route-local extensions beyond this point.
+/// Latest Cursor release qualified by the original ACP claim.
+/// Catalogue and headless routes have separate ceilings.
 pub const CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str = "2026-09-18";
 /// Qualified build revision for [`CURSOR_AGENT_LATEST_QUALIFIED_VERSION`].
 pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "9a7762b";
@@ -165,7 +165,7 @@ pub fn cursor_headless_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::CalendarDate,
         InterfaceNewerVersionPosture::AllowUnverified,
-        exact_milestones(CURSOR_HEADLESS_BEHAVIOR),
+        headless_milestones(CURSOR_HEADLESS_BEHAVIOR),
         [],
     )
     .expect("static Cursor headless compatibility claim is valid")
@@ -419,8 +419,8 @@ fn catalogue_milestones(behavior: &str) -> [InterfaceVersionSegment; 12] {
     })
 }
 
-fn exact_milestones(behavior: &str) -> [InterfaceVersionSegment; 9] {
-    shared_qualified_release_builds().map(|(date, _build)| {
+fn headless_milestones(behavior: &str) -> [InterfaceVersionSegment; 12] {
+    qualified_release_builds().map(|(date, _build)| {
         InterfaceVersionSegment::exact(
             version(date).expect("static Cursor release version is valid"),
             InterfaceBehaviorRevision::new(behavior).expect("static Cursor behavior is valid"),
@@ -508,24 +508,42 @@ mod tests {
     }
 
     #[test]
-    fn acp_and_headless_keep_separate_qualified_ceilings() {
+    fn acp_and_headless_qualify_their_exact_published_hops() {
         let catalogue = cursor_catalogue_claim();
         let acp = cursor_acp_claim();
         let headless = cursor_headless_claim();
         assert!(catalogue.supports(&version("2026-10-01")));
         assert!(acp.supports(&version("2026-10-01")));
         for later in ["2026-09-26", "2026-09-28", "2026-10-01"] {
-            let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-                headless.assess(&version(later))
-            else {
-                panic!("{later} stays unverified for headless");
-            };
-            assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
+            assert!(acp.supports(&version(later)), "ACP qualifies {later}");
+            assert!(
+                headless.supports(&version(later)),
+                "headless qualifies {later}"
+            );
+        }
+        for gap in [
+            "2026-09-19",
+            "2026-09-20",
+            "2026-09-25",
+            "2026-09-27",
+            "2026-09-29",
+            "2026-09-30",
+        ] {
+            assert!(
+                !headless.permits(&version(gap)),
+                "{gap} remains a headless gap"
+            );
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
             acp.assess(&version("2026-10-02"))
         else {
             panic!("later ACP release stays visibly unverified newer");
+        };
+        assert_eq!(newer.latest_qualified().as_str(), "2026-10-01");
+        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+            headless.assess(&version("2026-10-02"))
+        else {
+            panic!("later headless release stays visibly unverified newer");
         };
         assert_eq!(newer.latest_qualified().as_str(), "2026-10-01");
     }
@@ -589,12 +607,13 @@ mod tests {
                 ),
                 "catalogue has its separate qualification for {release}"
             );
-            let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-                headless.assess(&version(release))
-            else {
-                panic!("headless must not inherit ACP point {release}");
-            };
-            assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
+            assert!(
+                matches!(
+                    headless.assess(&version(release)),
+                    InterfaceCompatibilityAssessment::Qualified(_)
+                ),
+                "headless has an independent qualification for {release}"
+            );
         }
     }
 

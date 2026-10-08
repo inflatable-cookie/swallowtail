@@ -158,8 +158,11 @@ OpenHands adds a package without a production route.
   plan and tool replacement snapshots, tool terminal state, usage, mode,
   command, configuration, session information, and bounded unknown namespaces
   without exposing raw JSON or deciding provider/runtime policy. Its corpora
-  pin stable schema `v1.20.0` separately from exact Claude Agent, Gemini CLI,
-  and Kimi Code ranges. A separate raw remote-transport corpus freezes
+  retain exact stable schema artifacts `v1.19.0`, `v1.19.1`, and `v1.20.0`
+  separately from exact Claude Agent, Gemini CLI, and Kimi Code ranges. The
+  shared stable schema axis is qualified through `v1.24.1` while wire
+  `protocolVersion` remains `1` (Research 406). A separate raw
+  remote-transport corpus freezes
   HTTP/SSE and WebSocket lifecycle behavior against wire version 1, the Active
   transport RFD, and SDK `2.0.0` without depending on a production client
 - `swallowtail-transport-acp-remote` depends on core, runtime, and the ACP
@@ -424,8 +427,10 @@ OpenHands adds a package without a production route.
   read-only filesystem resource. The mutable update launcher, model catalogue,
   sessions, callbacks, recovery, task-list snapshots, subagents, usage, shell,
   writes, and web tools remain outside the route
-- `swallowtail-adapter-command-code` implements exact npm Command Code
-  `1.65.0` as one read-only `command-code.headless` route family. Structured
+- `swallowtail-adapter-command-code` implements 33 exact published npm
+  Command Code points from `1.65.0` through `1.79.1` as one read-only
+  `command-code.headless` route family (Research 402). Behavior v1 runs through
+  `1.72.4`; private model-selection behavior v2 runs from `1.73.0`. Structured
   runs bind `--no-session` and prohibit provider retention. Interactive turns
   follow Contract 043: first turn retains a project-scoped transcript; later
   turns pass only the exact private `--resume <sessionId>` observed from the
@@ -467,11 +472,13 @@ OpenHands adds a package without a production route.
   `2026.07.01-41b2de7`, `2026.07.23-e383d2b`, `2026.08.04-aaa8809`,
   `2026.08.11-e8db854`, `2026.08.31-4057e58`, `2026.09.02-c22c1a3`,
   `2026.09.10-fd3934a`, `2026.09.15-d2fe57e`, and `2026.09.18-9a7762b` on
-  the ACP and headless routes. Research 393 qualifies only
+  the ACP and headless routes. Research 395 separately qualifies ACP through
+  `2026.09.26-dd393fe`, `2026.09.28-64d2043`, and `2026.10.01-14929f9`.
+  Headless retains its earlier points and adds those same exact builds with
+  Research 399. Research 393 qualifies only
   `cursor-agent.catalogue` at the exact `2026.09.26-dd393fe`,
-  `2026.09.28-64d2043`, and `2026.10.01-14929f9` points; its baseline,
-  behavior revision, prior points, gaps, and separate sibling ceilings remain
-  unchanged. The three routes are:
+  `2026.09.28-64d2043`, and `2026.10.01-14929f9` points. Each route keeps its
+  own claim and exact points; calendar gaps are not inferred. The three routes are:
   authenticated catalogue,
   ACP v1 interactive sessions, and headless stream-JSON structured runs. The
   headless route binds an explicit model and workspace authority, accepts typed
@@ -994,8 +1001,9 @@ a separate provider id instead of forcing it into model identity.
 
 ACP v1 evidence now has a separate protocol package boundary. Wire version,
 schema artifact version, SDK version, and agent version remain distinct.
-The additive lifecycle corpus pins stable schema `v1.20.0` without rewriting
-the historical Gemini or Kimi pins. Independent close-only, delete-only,
+The additive lifecycle corpus stays pinned to stable schema `v1.20.0` without
+rewriting the historical Gemini or Kimi pins. Shared stable schema currentness
+extends through `v1.24.1` (Research 406). Independent close-only, delete-only,
 omitted, null, success, and error fixtures pass through the same bounded
 message codec used by stdio and explicit remote ACP. Portable delete truth
 remains history removal.

@@ -16,7 +16,7 @@ use swallowtail_runtime::{
 };
 
 const FIXTURE: &str = "tests/fixtures/cursor-agent-2026.07.01-41b2de7/headless-success.jsonl";
-const QUALIFIED_RELEASES: [&str; 9] = [
+const QUALIFIED_RELEASES: [&str; 12] = [
     "2026.07.01-41b2de7",
     "2026.07.23-e383d2b",
     "2026.08.04-aaa8809",
@@ -26,6 +26,9 @@ const QUALIFIED_RELEASES: [&str; 9] = [
     "2026.09.10-fd3934a",
     "2026.09.15-d2fe57e",
     "2026.09.18-9a7762b",
+    "2026.09.26-dd393fe",
+    "2026.09.28-64d2043",
+    "2026.10.01-14929f9",
 ];
 
 #[test]
@@ -142,28 +145,27 @@ fn ask_selection_rejects_read_write_authority_before_process_work() {
 
 #[test]
 fn ask_selection_rejects_unqualified_releases_before_process_work() {
-    for release in ["2026.09.19-abcdef1", "2026.09.20-abcdef1"] {
-        let host_id = local_host();
-        let host = FixtureHost::completed([stdout(&fixture())]);
-        let failure = block_on(ask_driver().start_run(
-            plan::headless_plan_with_release(
-                host_id.clone(),
-                "cursor.fixture.executable",
-                ResourceAccess::Read,
-                release,
-            ),
-            request("ask-unqualified"),
-            host.services(host_id),
-        ))
-        .err()
-        .unwrap_or_else(|| panic!("ask rejects {release}"));
-        assert_eq!(
-            failure.diagnostic().code(),
-            "swallowtail.cursor.headless.ask_mode_unqualified",
-            "{release}"
-        );
-        assert!(!host.started(), "{release}");
-    }
+    let release = "2026.10.02-a1b2c3d";
+    let host_id = local_host();
+    let host = FixtureHost::completed([stdout(&fixture())]);
+    let failure = block_on(ask_driver().start_run(
+        plan::headless_plan_with_release(
+            host_id.clone(),
+            "cursor.fixture.executable",
+            ResourceAccess::Read,
+            release,
+        ),
+        request("ask-unqualified"),
+        host.services(host_id),
+    ))
+    .err()
+    .unwrap_or_else(|| panic!("ask rejects {release}"));
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.cursor.headless.ask_mode_unqualified",
+        "{release}"
+    );
+    assert!(!host.started(), "{release}");
 }
 
 /// Proves argv composition only. The shared success fixture is bound to

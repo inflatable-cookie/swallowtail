@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "tag": "v0.5.1",
+  "base_tag_object": "97a6933abe13b2e8f05441e1ab950962e0683e65",
+  "base_commit": "e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27",
+  "base_tree": "d375b3227985e8e552ba9346d8f9b8631936db5f",
+  "sidecar_source_tag": "swallowtail-claude-agent-sdk-sidecar@0.5.1",
+  "expected_tree": "35252ecf3dcb4254f66a9ed16caf813d2397f5f7",
+  "patch_sha256": "e1a55692d10514e31c28848116a921274fdbbfac19aaf73fc9f601a37e2d8281",
+  "consumer_fixture": {
+    "source_commit": "388cbe6b5e67c585a76d5dfa14433b166f799109",
+    "cargo_lock_template_sha256": "a43ab5ecd6ee72dab1ea931fc76c09693c441e87cc26f4f4cd9b76fb84829f26",
+    "cargo_manifest_template_sha256": "f5bf57fb4b3fea3acb6bc6765b00294ec911e13a2d038d09a76ab4335fc54aa9",
+    "main_rs_sha256": "b6dfdcf8bfacdc745ba51aec7c518747a0e38f91454b6b365dffb781d37359c7"
+  },
+  "files": [
+    ".config/nextest.toml",
+    "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/connection.rs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/connection/connection_tests.rs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/connection/pump.rs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/driver/registered.rs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/driver/validation.rs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/prepared/build.rs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/registered_tool/mediation.rs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/turn/events.rs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/wire.rs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/wire/decode.rs",
+    "crates/swallowtail-adapter-claude-agent/src/sdk/wire/wire_tests.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/framing.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/permission.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/registered_tool_route.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/usage.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_sidecar_asset.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/scenario.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/script.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/task_time.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/sidecar_asset_support/fake-sdk.mjs",
+    "crates/swallowtail-adapter-claude-agent/tests/sidecar_asset_support/mod.rs",
+    "crates/swallowtail-host-local/src/registered_tool/proxy.rs",
+    "crates/swallowtail-runtime/src/registered_tool/kernel.rs",
+    "crates/swallowtail-runtime/src/registered_tool/lease.rs",
+    "crates/swallowtail-runtime/src/registered_tool/preparation.rs",
+    "crates/swallowtail-runtime/src/registered_tool/tests.rs"
+  ],
+  "api_packages": [
+    "swallowtail-runtime",
+    "swallowtail-host-local",
+    "swallowtail-adapter-claude-agent"
+  ],
+  "toolchain": {
+    "cargo_public_api": "cargo-public-api 0.52.0",
+    "rust": "nightly-2026-08-05"
+  },
+  "source_fixes": [
+    {
+      "pull_request": 410,
+      "commit": "394a9b18253c567858fb8044305ce248df777b2e",
+      "parent": "49ee5f5c13778c7bd844c16ea673cb4f3eeb4d9c",
+      "merged_as": "998414c997459c33b5e45791e20ef9c1d0737fc1",
+      "purpose": "Separate the SDK open/readiness deadline from the session-lived lease; retain per-call maximum and optional explicit lease deadline."
+    },
+    {
+      "pull_request": 412,
+      "commit": "d3ffd9a1e94b5b75a7acbbb3e3baa448ffd95124",
+      "parent": "257bbd02c5b5dbbcb5801af8edb56bdbf0274ec5",
+      "merged_as": "d338af132c224ac3fbcdae5f2b18207217ef0185",
+      "test_followup": "32595f1b64e67473393f66c476c1e8528ebd2f64",
+      "purpose": "Decode exact SDK per-turn input/output/cache counters and project TokenUsage with usage provenance."
+    },
+    {
+      "pull_request": 415,
+      "commit": "a8e7f40178ab8eed7a0a10b1b9282591c0f38c5c",
+      "parent": "450ae5c47154b298cd3187390a88ba88213be5ae",
+      "merged_as": "f4ab794a4ee3d948f81683421a3550850c88d2b9",
+      "purpose": "Close the failure race where a command can register after pump failure drains pending replies, leaving its waiter unresolved."
+    }
+  ],
+  "dependency_closure": {
+    "provenance_order": [
+      410,
+      412,
+      415
+    ],
+    "patch_application": [
+      "verify exact annotated v0.5.1 tag, commit, and tree",
+      "apply one consolidated text patch",
+      "verify expected resulting tree and exact file inventory"
+    ],
+    "prerequisites": [
+      "exact annotated v0.5.1 tag object, peeled commit, and source tree"
+    ],
+    "additional_cargo_dependencies": [],
+    "pr405_helpers": "excluded; no required helper changes were found in the selected regression closure",
+    "pr415_necessity": "included only for the tested sender-registration versus pump-failure close race"
+  }
+}

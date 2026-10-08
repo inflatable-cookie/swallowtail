@@ -1,0 +1,12 @@
+[package]
+name = "swallowtail-sdk-backport-consumer"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.95.0"
+publish = false
+
+[dependencies]
+swallowtail-adapter-claude-agent = { git = "__SWALLOWTAIL_BACKPORT_SOURCE_URL__", rev = "__SWALLOWTAIL_BACKPORT_SOURCE_COMMIT__" }
+swallowtail-core = { git = "__SWALLOWTAIL_BACKPORT_SOURCE_URL__", rev = "__SWALLOWTAIL_BACKPORT_SOURCE_COMMIT__" }
+swallowtail-host-local = { git = "__SWALLOWTAIL_BACKPORT_SOURCE_URL__", rev = "__SWALLOWTAIL_BACKPORT_SOURCE_COMMIT__" }
+swallowtail-runtime = { git = "__SWALLOWTAIL_BACKPORT_SOURCE_URL__", rev = "__SWALLOWTAIL_BACKPORT_SOURCE_COMMIT__" }

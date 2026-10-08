@@ -311,10 +311,16 @@ fn complete_file_sets_and_selected_surface_deltas_are_mutation_sensitive() {
 }
 
 #[test]
-fn production_claim_qualifies_current_acp_hops_without_transferring_siblings() {
+fn production_claims_qualify_selected_hops_independently() {
     let identity = json(IDENTITY);
     let acp = cursor_acp_claim();
+    let headless = cursor_headless_claim();
     assert_eq!(acp.id().as_str(), "cursor-agent.acp.release-window-3");
+    assert_eq!(
+        headless.id().as_str(),
+        "cursor-agent.headless.release-window-3"
+    );
+    assert_ne!(acp.id(), headless.id());
 
     for hop in identity["published_stables_after_ceiling"]
         .as_array()
@@ -337,7 +343,6 @@ fn production_claim_qualifies_current_acp_hops_without_transferring_siblings() {
 
     assert!(cursor_agent_release_binding("2026.10.01-e373342").is_none());
     let catalogue = cursor_catalogue_claim();
-    let headless = cursor_headless_claim();
     for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
         assert!(
             matches!(
@@ -348,12 +353,16 @@ fn production_claim_qualifies_current_acp_hops_without_transferring_siblings() {
             ),
             "catalogue has its independent qualification for {release}"
         );
-        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            headless.assess(&version(release))
-        else {
-            panic!("ACP qualification must not transfer to headless {release}");
-        };
-        assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
+        assert!(
+            matches!(
+                headless.assess(&version(release)),
+                InterfaceCompatibilityAssessment::Qualified(matched)
+                    if matched.behavior_revision().as_str()
+                        == "cursor-agent.stream-json.structured-v1"
+                        && matched.support_status() == InterfaceSupportStatus::Maintained
+            ),
+            "headless has its independent stream-JSON qualification for {release}"
+        );
     }
 
     for gap in [

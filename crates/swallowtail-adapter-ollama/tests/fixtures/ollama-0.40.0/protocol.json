@@ -1,0 +1,82 @@
+{
+  "selected_routes": [
+    "GET /api/version",
+    "GET /api/tags",
+    "GET /api/ps",
+    "POST /api/show",
+    "POST /api/chat"
+  ],
+  "selected_routes_registered_at_all_four_frozen_points": true,
+  "prior_research_350_and_342_evidence_preserved": true,
+  "compatible_points": ["0.35.0", "0.35.1"],
+  "unverified_current_stable": "0.40.0",
+  "selected_request_shapes": {
+    "show": ["model"],
+    "chat": ["model", "messages", "options", "stream"],
+    "runner_selector_sent": false,
+    "all_manifests_sent": false
+  },
+  "selected_struct_hashes": {
+    "chat_request": {
+      "v0.34.4_through_v0.35.1": "5d4e403b7da9fbe9413a077d59131f49ef0708e454a0e977e874901ad73848ed",
+      "v0.40.0": "5cc80c57c9ccf4807d8b161f3d5926a03756e331af27167188314e030d359dd9"
+    },
+    "message_all_points": "bfc165a63e64996e5b843072e8be965a9798e214dfc1c88cc5974bc802d0c9f9",
+    "chat_response_all_points": "f9deac910407655aa7ecbded4820f8de5d404bb2f49e261b1a64b7db56f2b936",
+    "metrics_all_points": "bbc09305511a40e65370507477be58246ae171095d73ff35935d5f0066b38cb4",
+    "options": {
+      "v0.34.4": "37e4c751ed65c80fede99ae00c871b44f05d3b8a6e26cf088dcb205c13c67583",
+      "v0.35.0_through_v0.40.0": "9a53babf8e98eadc1e01dcd01f3eca5c64fb16849584846fff9ca03718f11baf"
+    },
+    "show_request": {
+      "v0.34.4_through_v0.35.1": "698cdcb3a9942de50bf9be2e65525e945a9ee3613d8309d2c3435b1db207852e",
+      "v0.40.0": "59db3de89ae2aa2d8aab007191a449bef42018b7aa338eee7c2b21fbad22e151"
+    },
+    "show_response": {
+      "v0.34.4_through_v0.35.1": "7e6f60b93930ae251348000e61e6f3b7ea650826759323687292ad05fa58271c",
+      "v0.40.0": "dcd6258768610299c7718094ba82d7039cf3b69cdf5904bb56bbd8157b9c222a"
+    },
+    "process_response": {
+      "v0.34.4_through_v0.35.1": "b54e07d3fd0ee0c6f797a4137a1085117ad5a64035d8458beee33dda85c8e459",
+      "v0.40.0": "ce62e89c6a2bc369dfd0950843efbd30cc79896a5df5b81d9a0f5016fee64e16"
+    }
+  },
+  "selected_handler_hashes": {
+    "list_handler": "66f210f58813fe02cb1b9bfdd0a26368e0d9cd12ec11ba7c6fdae494cb8b61f6",
+    "show_handler": {
+      "v0.34.4_through_v0.35.1": "2077b9ce5d744a7ca84fbbacb710ddc67f1f0b378fdf8607dc70b4027ab70065",
+      "v0.40.0": "bd4dab46b1062a6747436df8891a0eea54a6073ee3b9982391c8802b48ed1c16"
+    },
+    "ps_handler": {
+      "v0.34.4_through_v0.35.1": "b4deea59f7a43c03ccc61f055dfed23539617151b2654367ac825ab3899d6075",
+      "v0.40.0": "aef505462ebc8cd45df43553a89bc85374ab5625520c7639943f1da1bf701aeb"
+    },
+    "chat_handler": {
+      "v0.34.4_through_v0.35.1": "12314badb6cb4bc0d91459dc48d0a065d32d636c8724d750d811ee51b713adf4",
+      "v0.40.0": "aa088d54ff7bb800ac3e28430c3292b82588d6b0b21b7222653977c6343e2756"
+    }
+  },
+  "selected_hop_classification": {
+    "0.34.4_to_0.35.0": {
+      "selected_config": "TypicalP comment changes; this adapter sends no typical_p option.",
+      "selected_routes": "Chat/show/ps mappings remain unchanged; SystemOne adds a separate unselected API operation."
+    },
+    "0.35.0_to_0.35.1": {
+      "selected_catalogue": "Public capabilities now include decision for decision models. The attached decoder only admits completion and thinking, so decision-only detail remains fail-closed.",
+      "selected_routes": "SystemOne implementation changes are outside the selected five routes; regular text model behavior is unchanged."
+    },
+    "0.35.1_to_0.40.0": {
+      "selected_request_envelope": "Optional runner and all_manifests fields are added; this adapter sends neither. Empty runner uses the default resolver for ordinary single-manifest models.",
+      "selected_catalogue": "Manifest-list models return one /api/tags row per child runner; this shape is outside the mapped catalogue contract.",
+      "selected_chat_lifecycle": "ChatHandler schedules a background local compatibility migration for supported legacy GGUF models. The migration can write converted blobs and manifest-list entries into the attached runtime model store.",
+      "selected_failure_and_cleanup": "No live or fake upstream v0.40 runtime was started; the side effect is source-derived and remains unqualified."
+    }
+  },
+  "decision_model_counterexample": "{\"capabilities\":[\"decision\"],\"details\":{\"format\":\"gguf\",\"family\":\"fixture\"}}",
+  "decision_model_counterexample_result": "swallowtail.ollama.semantics_unsupported",
+  "manifest_list_and_runner_mapping_added": false,
+  "new_public_swallowtail_operation": false,
+  "new_public_swallowtail_capability": false,
+  "provider_prompt_sent": false,
+  "attached_server_started": false
+}

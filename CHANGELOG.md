@@ -41,6 +41,15 @@ annotated Git tags from the canonical repository.
   `AllowUnverified` posture stay. HTTP MCP live honouring remains exact to
   `1.18.18`; no newer point inherits it. No provider prompt, live session,
   credential use, package installation, or artifact execution occurred.
+- extend `ollama.attached` through the exact official stable points `0.35.0`
+  and `0.35.1`, retaining `ollama.native-text-v1`, the prior exclusions, and
+  unpublished gaps. Current official stable `0.40.0` remains
+  `UnverifiedNewer`: chat scheduling starts background local compatibility
+  migration that can write converted model blobs and manifest-list entries,
+  changing the attached store lifecycle and later catalogue shape. Research
+  379 freezes the release identities and complete source trees and names the
+  ruling/adaptation needed before the claim can move again. No local runtime,
+  provider prompt, model download, or host mutation occurred.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,

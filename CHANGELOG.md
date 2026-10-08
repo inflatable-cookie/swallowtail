@@ -8,7 +8,7 @@ annotated Git tags from the canonical repository.
 ### Notes
 - qualify only `antigravity.catalogue` through official Antigravity CLI `1.3.1`
   after published stable hops `1.2.12`–`1.2.17`, `1.3.0`, and `1.3.1`.
-  Research 375 freezes source commits, complete release asset manifests, and
+  Research 376 freezes source commits, complete release asset manifests, and
   verified Linux x64 and Mac ARM64 artifact trees. The maintained segment keeps
   baseline `1.1.9`, claim and behavior revision, with unpublished `1.2.18`
   excluded and later `1.3.2` visibly unverified. `antigravity.headless` stays

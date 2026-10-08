@@ -1,6 +1,6 @@
 # Antigravity CLI 1.3.1 catalogue identity
 
-Research record: [375](../../../../../docs/research/375-antigravity-cli-1-3-1-catalogue-identity.md).
+Research record: [376](../../../../../docs/research/376-antigravity-cli-1-3-1-catalogue-identity.md).
 
 identity.json freezes the official channel, exact source commits, full published
 asset manifest for every newly published stable, and verified Linux x64 / Mac

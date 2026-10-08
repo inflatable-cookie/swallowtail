@@ -52,6 +52,42 @@ observed tool error maps to `ActivityStatus::Failed` without adding an approval
 bypass. It is synthetic protocol coverage; it is not evidence that Antigravity
 1.2.15 emits a denial event in stdout.
 
+## Selected path mapping
+
+The adapter builds `--print` plus `--output-format stream-json` in
+`headless_command::arguments`; the provider-enforced profile adds `--sandbox`,
+and the builder never passes `--dangerously-skip-permissions`. The pump parses
+only stdout stream-JSON events. The decoder maps a non-null
+`step_update.tool_info.error` to failed tool activity; it does not turn stderr
+text into a tool failure. Child identity is decoded from `subagent_info` and
+currently projected as `SubagentStatus::Completed`.
+
+Provider-free static inspection of the exact `1.2.15` Mac ARM64 artifact
+(release archive SHA-256
+`66f7e9e8750a506e8a2caaedaadf479f023820f712015c9c55cfb91a2891521b`, extracted
+CLI SHA-256
+`d15693410c904242c1c3423a579f60a81e018444bb51fbccc6505f988b62a91d`) places
+`printmode.session.runTurn` on the selected print-mode path, with calls to
+`store.(*Manager).HeadlessDenials` and
+`printmode.headlessDenialNotice`. The denial collector checks
+`HeadlessSoftDeniedTools`; denial recording is reached from
+`UpdateSubagentSteps`, `addFromDiff`, and `handleToolConfirmation`. This ties
+the release-note change to selected headless tool/permission handling, rather
+than only to an interactive screen. It does not reveal a denial event in
+selected stdout, so it does not authorize a synthetic version-specific stream
+fixture.
+
+Static inspection of the exact `1.3.1` Mac ARM64 artifact (archive SHA-256
+`ef5e385b32afda4cf1612368bb4bf155d3f8f4c55d51488649f508baefe77c86`, extracted
+CLI SHA-256
+`88db8b4d21ece4999fa58e0b54cea77154e47b319ee178d086c446262317f3fa`) places
+`PollPrintmode` through `steps.ExtractSubagentInfo` to
+`streamJSONEmitter.EmitStepUpdate`. The inspected call/output shape exposed no
+child error/status field, but this absence in disassembly does not prove a
+successful child or the complete serialized schema. No exact selected error
+stream is retained; preserve the `Completed` mapping until the contract's
+evidence/ruling gate is resolved.
+
 ## Why qualification stops
 
 The current official [headless guide](https://www.antigravity.google/docs/cli/headless/)

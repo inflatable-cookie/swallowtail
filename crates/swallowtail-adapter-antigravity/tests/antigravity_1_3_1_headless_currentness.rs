@@ -74,6 +74,7 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             "baseline",
             "retry_pin",
             "identity_sources",
+            "static_mapping_evidence",
             "unpublished_points",
             "hops",
             "result",
@@ -97,6 +98,103 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             .as_array()
             .is_some_and(Vec::is_empty)
     );
+
+    let mapping = &currentness["static_mapping_evidence"];
+    assert_exact_keys(
+        mapping,
+        &[
+            "selected_command_builder",
+            "selected_pump",
+            "selected_event_projection",
+            "tool_error_field",
+            "subagent_projection",
+            "subagent_status_projection",
+            "1_2_15_denial_artifact",
+            "1_3_1_child_error_artifact",
+        ],
+    );
+    assert_eq!(
+        mapping["selected_command_builder"],
+        "crates/swallowtail-adapter-antigravity/src/headless_command.rs::arguments"
+    );
+    assert_eq!(
+        mapping["selected_pump"],
+        "crates/swallowtail-adapter-antigravity/src/headless_pump.rs::pump_with_conversation"
+    );
+    assert_eq!(mapping["tool_error_field"], "/tool_info/error");
+    let denial_artifact = &mapping["1_2_15_denial_artifact"];
+    assert_exact_keys(
+        denial_artifact,
+        &[
+            "platform",
+            "release_archive_sha256",
+            "extracted_cli_sha256",
+            "selected_vendor_path",
+            "denial_record_callers",
+            "stdout_denial_event_proven",
+        ],
+    );
+    assert_eq!(denial_artifact["platform"], "mac_arm64");
+    assert_eq!(
+        denial_artifact["release_archive_sha256"],
+        inventory["versions"]["1.2.15"]["mac_arm64"]["published_digest"]
+    );
+    assert_eq!(
+        denial_artifact["extracted_cli_sha256"],
+        inventory["versions"]["1.2.15"]["mac_arm64"]["archive_members"][0]["sha256"]
+    );
+    assert_exact_string_array(
+        &denial_artifact["selected_vendor_path"],
+        &[
+            "printmode.session.runTurn",
+            "store.(*Manager).HeadlessDenials",
+            "printmode.headlessDenialNotice",
+        ],
+    );
+    assert_exact_string_array(
+        &denial_artifact["denial_record_callers"],
+        &[
+            "UpdateSubagentSteps",
+            "addFromDiff",
+            "handleToolConfirmation",
+        ],
+    );
+    assert_eq!(denial_artifact["stdout_denial_event_proven"], false);
+
+    let child_error_artifact = &mapping["1_3_1_child_error_artifact"];
+    assert_exact_keys(
+        child_error_artifact,
+        &[
+            "platform",
+            "release_archive_sha256",
+            "extracted_cli_sha256",
+            "selected_vendor_path",
+            "child_error_status_field_proven",
+            "disassembly_proves_success",
+        ],
+    );
+    assert_eq!(child_error_artifact["platform"], "mac_arm64");
+    assert_eq!(
+        child_error_artifact["release_archive_sha256"],
+        inventory["versions"]["1.3.1"]["mac_arm64"]["published_digest"]
+    );
+    assert_eq!(
+        child_error_artifact["extracted_cli_sha256"],
+        inventory["versions"]["1.3.1"]["mac_arm64"]["archive_members"][0]["sha256"]
+    );
+    assert_exact_string_array(
+        &child_error_artifact["selected_vendor_path"],
+        &[
+            "PollPrintmode",
+            "steps.ExtractSubagentInfo",
+            "streamJSONEmitter.EmitStepUpdate",
+        ],
+    );
+    assert_eq!(
+        child_error_artifact["child_error_status_field_proven"],
+        false
+    );
+    assert_eq!(child_error_artifact["disassembly_proves_success"], false);
 
     assert_exact_keys(
         &identity["official_channel"],

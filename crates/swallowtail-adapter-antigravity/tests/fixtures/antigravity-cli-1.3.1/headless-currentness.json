@@ -23,6 +23,42 @@
     "published_windows_assets_unpacked": false,
     "binaries_executed": false
   },
+  "static_mapping_evidence": {
+    "selected_command_builder": "crates/swallowtail-adapter-antigravity/src/headless_command.rs::arguments",
+    "selected_pump": "crates/swallowtail-adapter-antigravity/src/headless_pump.rs::pump_with_conversation",
+    "selected_event_projection": "crates/swallowtail-adapter-antigravity/src/headless_events.rs::step_update",
+    "tool_error_field": "/tool_info/error",
+    "subagent_projection": "crates/swallowtail-adapter-antigravity/src/headless_events/helpers.rs::subagents",
+    "subagent_status_projection": "crates/swallowtail-adapter-antigravity/src/headless_activity.rs::subagents",
+    "1_2_15_denial_artifact": {
+      "platform": "mac_arm64",
+      "release_archive_sha256": "66f7e9e8750a506e8a2caaedaadf479f023820f712015c9c55cfb91a2891521b",
+      "extracted_cli_sha256": "d15693410c904242c1c3423a579f60a81e018444bb51fbccc6505f988b62a91d",
+      "selected_vendor_path": [
+        "printmode.session.runTurn",
+        "store.(*Manager).HeadlessDenials",
+        "printmode.headlessDenialNotice"
+      ],
+      "denial_record_callers": [
+        "UpdateSubagentSteps",
+        "addFromDiff",
+        "handleToolConfirmation"
+      ],
+      "stdout_denial_event_proven": false
+    },
+    "1_3_1_child_error_artifact": {
+      "platform": "mac_arm64",
+      "release_archive_sha256": "ef5e385b32afda4cf1612368bb4bf155d3f8f4c55d51488649f508baefe77c86",
+      "extracted_cli_sha256": "88db8b4d21ece4999fa58e0b54cea77154e47b319ee178d086c446262317f3fa",
+      "selected_vendor_path": [
+        "PollPrintmode",
+        "steps.ExtractSubagentInfo",
+        "streamJSONEmitter.EmitStepUpdate"
+      ],
+      "child_error_status_field_proven": false,
+      "disassembly_proves_success": false
+    }
+  },
   "unpublished_points": [
     {
       "version": "1.2.18",

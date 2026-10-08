@@ -263,6 +263,22 @@ pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SupportedM
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::ToolsInvalid
 impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode
 pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::as_str(self) -> &'static str
+pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_284Native2_1_284
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_285Native2_1_285
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_286Native2_1_286
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_287Native2_1_287
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_288Native2_1_288
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_289Native2_1_289
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_290Native2_1_290
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_291Native2_1_291
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_292Native2_1_292
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_293Native2_1_293
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair
+pub const swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::DEFAULT: Self
+pub const swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::MAINTAINED: [Self; 10]
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::native_version(self) -> &'static str
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::package_version(self) -> &'static str
 pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode::AcceptEdits
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode::Default
@@ -409,6 +425,7 @@ impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId, swallowtail_runtime::time::Deadline) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId, swallowtail_runtime::time::Deadline) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_mcp_binding(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding) -> Self
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_package_native_pair(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_only(self, swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation, swallowtail_host_local::services::LocalHostServices, swallowtail_core::session_access::ResourceAccess) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_only_binding(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_tool_binding(self, swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding) -> Self

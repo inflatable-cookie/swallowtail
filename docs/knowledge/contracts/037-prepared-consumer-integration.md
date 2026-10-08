@@ -339,6 +339,21 @@ selection, so existing callers remain source-compatible under Contract 036.
 This adaptation is part of the approved currentness minor and is not a
 released-line patch change.
 
+For this approved current-source check, only
+`release-baselines/public-api-0.5.1/swallowtail-adapter-claude-agent.txt` is a
+temporary semantic inventory: it records the additive pair-selection API and
+17 new semantic entries so `effigy package:api` can check the current adapter
+source. The generated delta has no removals, unrelated additions, or
+compiler-generated entries. Generate it with the pinned semantic API tooling
+and review the exact delta; it is not evidence that the API shipped in the
+`0.5.1` tag. No other package inventory or baseline changes under this
+exception. Before preparing the next minor candidate, restore every older
+version-labelled baseline byte-for-byte from its corresponding tag, prove the
+restoration against that tag, then generate the new candidate baseline as
+required by [Contract 036](036-crate-release-and-compatibility-boundary.md).
+This temporary source inventory does not change the Contract 036 release
+boundary or authorize release activity.
+
 Preserve the Node axis, baseline and claim identities, approved host,
 environment and target authority, operations, permission and lifecycle
 contracts. Independently review the exact public API and Contract 036 minor

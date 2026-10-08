@@ -196,6 +196,18 @@ manifest failure, before the SDK is constructed. Research 414 records the
 exact published artifacts; provider-free prepared-facade and shipped-sidecar
 fixtures exercise every maintained pair and reject drift before SDK query.
 
+`ClaudeAgentSdkPackageNativePair` and `with_package_native_pair` are additive
+current-source APIs. Existing preparation calls remain source-compatible and
+continue to select `.293` by default. The only temporary API-inventory update
+for this source check is
+`release-baselines/public-api-0.5.1/swallowtail-adapter-claude-agent.txt`;
+the generated semantic delta adds only the 17 approved pair-selection entries,
+with no removals, unrelated additions, or compiler-generated entries, and
+does not describe the tagged `0.5.1` source.
+Before the next minor candidate, restore all older version-labelled API
+baselines byte-for-byte from their tags before generating its baseline, as
+required by [Contract 036](../knowledge/contracts/036-crate-release-and-compatibility-boundary.md).
+
 The point moved three times already: `0.3.258` was qualified first, Research 280
 rebound both coupled axes to `0.3.259` after a full package-tree inventory,
 Research 315 rebound them to `0.3.270` across the nine published hops

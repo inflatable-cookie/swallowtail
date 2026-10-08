@@ -5,6 +5,8 @@ mod support;
 
 #[path = "acp_lifecycle_protocol_fixtures.rs"]
 mod acp_lifecycle_protocol_fixtures;
+#[path = "acp_schema_1_24_1_identity.rs"]
+mod acp_schema_1_24_1_identity;
 #[path = "activity_corpus.rs"]
 mod activity_corpus;
 #[path = "claude_agent_lifecycle_fixtures.rs"]

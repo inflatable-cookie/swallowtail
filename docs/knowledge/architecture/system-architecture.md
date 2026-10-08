@@ -158,8 +158,11 @@ OpenHands adds a package without a production route.
   plan and tool replacement snapshots, tool terminal state, usage, mode,
   command, configuration, session information, and bounded unknown namespaces
   without exposing raw JSON or deciding provider/runtime policy. Its corpora
-  pin stable schema `v1.20.0` separately from exact Claude Agent, Gemini CLI,
-  and Kimi Code ranges. A separate raw remote-transport corpus freezes
+  retain exact stable schema artifacts `v1.19.0`, `v1.19.1`, and `v1.20.0`
+  separately from exact Claude Agent, Gemini CLI, and Kimi Code ranges. The
+  shared stable schema axis is qualified through `v1.24.1` while wire
+  `protocolVersion` remains `1` (Research 406). A separate raw
+  remote-transport corpus freezes
   HTTP/SSE and WebSocket lifecycle behavior against wire version 1, the Active
   transport RFD, and SDK `2.0.0` without depending on a production client
 - `swallowtail-transport-acp-remote` depends on core, runtime, and the ACP
@@ -994,8 +997,9 @@ a separate provider id instead of forcing it into model identity.
 
 ACP v1 evidence now has a separate protocol package boundary. Wire version,
 schema artifact version, SDK version, and agent version remain distinct.
-The additive lifecycle corpus pins stable schema `v1.20.0` without rewriting
-the historical Gemini or Kimi pins. Independent close-only, delete-only,
+The additive lifecycle corpus stays pinned to stable schema `v1.20.0` without
+rewriting the historical Gemini or Kimi pins. Shared stable schema currentness
+extends through `v1.24.1` (Research 406). Independent close-only, delete-only,
 omitted, null, success, and error fixtures pass through the same bounded
 message codec used by stdio and explicit remote ACP. Portable delete truth
 remains history removal.

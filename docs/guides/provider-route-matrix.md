@@ -24,6 +24,12 @@ exchange and question exchange are separate columns: authorization stays
 provider-specific while losslessly representable questions use one typed
 runtime contract.
 
+ACP routes negotiate wire protocol version `1`; the shared stable JSON Schema
+axis is separately qualified through `schema-v1.24.1` (Research 406). This
+does not change provider-specific version ranges or route capabilities. The
+historical `schema-v1.19.0`, `schema-v1.19.1`, and `schema-v1.20.0` corpora
+remain pinned to their recorded artifacts.
+
 ### Feature Matrix Value Vocabulary
 
 The 39 feature columns use three plain values plus exact exceptions:

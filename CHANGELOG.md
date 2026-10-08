@@ -6,6 +6,17 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify shared stable ACP schema from `schema-v1.20.0` through current
+  official `schema-v1.24.1`, covering all five published hops. Research 406
+  freezes each tag, all four release assets, the complete per-hop file ledger,
+  and the selected wire subset. Wire `protocolVersion` remains `1`. The
+  selected Claude Agent form-elicitation subset was already mapped; optional
+  tool names remain unmapped; lifecycle, permission, usage, and other selected
+  configuration, activity, lifecycle, permission, and usage fields are
+  unchanged. Unstable schema assets stay outside the axis,
+  and historical schema corpora, provider version ranges, and feature cells
+  remain unchanged. No provider session, credential, installation, or host
+  update was used.
 - qualify only `cursor-agent.headless` through official ACP registry stable
   `2026.10.01-14929f9`, after every published hop following
   `2026.09.18-9a7762b`. Research 399 freezes both platform archives, complete

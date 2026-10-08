@@ -20,10 +20,7 @@ fn frozen_identity_keeps_acp_separate_from_npx_library_and_content_field() {
     let identity: Value = serde_json::from_str(IDENTITY).expect("identity fixture");
     assert_eq!(identity["axis"], "deepagents-acp.package");
     assert_eq!(identity["route"], "deepagents.acp");
-    assert_eq!(
-        identity["official"]["version"],
-        DEEPAGENTS_ACP_PACKAGE_VERSION
-    );
+    assert_eq!(identity["official"]["version"], "0.1.30");
     assert_eq!(identity["identity_decision"]["wrap_npx"], false);
     assert_eq!(
         identity["identity_decision"]["wrap_library_start_server"],
@@ -69,11 +66,24 @@ fn frozen_identity_keeps_acp_separate_from_npx_library_and_content_field() {
     assert_eq!(protocol["permission"]["allow_always_unselected"], true);
 
     let claim = deepagents_acp_claim();
-    let version = InterfaceVersion::new(DEEPAGENTS_ACP_PACKAGE_VERSION).expect("qualified version");
-    assert!(claim.assess(&version).is_permitted());
+    for qualified in ["0.1.30", "0.1.31", "0.1.32", "0.1.33", "0.1.34"] {
+        let version = InterfaceVersion::new(qualified).expect("qualified version");
+        assert!(claim.assess(&version).is_permitted(), "{qualified}");
+        assert!(deepagents_acp_package_binding(qualified).is_some());
+    }
     assert!(deepagents_acp_package_binding(DEEPAGENTS_ACP_PACKAGE_VERSION).is_some());
-    assert!(deepagents_acp_package_binding("0.0.1").is_none());
-    assert!(deepagents_acp_package_binding("0.1.7").is_none());
+    assert!(deepagents_acp_package_binding("0.0.1").is_some());
+    assert!(
+        !claim
+            .assess(&InterfaceVersion::new("0.0.1").expect("stable version"))
+            .is_permitted()
+    );
+    assert!(deepagents_acp_package_binding("0.1.7").is_some());
+    assert!(
+        !claim
+            .assess(&InterfaceVersion::new("0.1.7").expect("stable version"))
+            .is_permitted()
+    );
 }
 
 #[test]

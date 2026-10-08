@@ -23,18 +23,19 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Preparation requires all of the following:
 
 - exact package axis `deepagents-acp.package`
-- exact npm package `0.1.30`
+- qualified npm package window `0.1.30..=0.1.34`
 - host-approved `deepagents-acp` executable and isolated environment
 - `deepagents_provider_api_key_access_profile` with no credential reference
 - working resource, plus host services for task, process, and working-resource
   ownership
 
-The claim is qualified-only. Later releases do not inherit this route.
-`UnverifiedNewer` is not a Deep Agents ACP execution posture. Bind npm
-`0.1.30`, not registry `0.1.7`. CLI `agentInfo.version` `0.0.1` is the
-constructor default, not the package axis. Fail closed if present
+The `QualifiedOnly` claim admits only stable npm versions in this window;
+older and later releases fail closed. `UnverifiedNewer` is not a Deep Agents
+ACP execution posture. The preserved baseline is npm `0.1.30`, not registry
+`0.1.7`. CLI `agentInfo.version` `0.0.1` is the constructor default, not the
+package axis. Fail closed if present
 `agentInfo.name` is not `deepagents-acp`. Do not require `agentInfo.version`
-to equal `0.1.30`.
+to equal the npm package version.
 
 Swallowtail does not install Deep Agents, search `PATH`, wrap `npx`, or bind
 `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` as a credential lease. Host-owned

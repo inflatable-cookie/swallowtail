@@ -427,7 +427,7 @@
   "bounded_external_changes": {
     "deepagents-acp flags": "all command behavior is in byte-identical dist/cli.js; unsupported --model, --workspace, --skills, --memory, --debug, and library embedding stay out of scope",
     "deepagents extra behavior": "source-map classifications above identify changed read text, optional skills/subagents, virtual filesystem guard, optional blob offload and model-only unsupported-content/retry logic; none adds an ACP frame, operation, capability, permission choice, usage event, or lifecycle path",
-    "dependency-resolution": "ACP SDK stays declared ^1.1.0 with no npm lockfile; exact resolved SDK/peer packages remain host-controlled and are not claimed",
+    "dependency-resolution": "deepagents-acp keeps @agentclientprotocol/sdk ^1.1.0 and its @langchain/core/^1.1.40 and @langchain/langgraph/^1.4.10 peer floors across the window. deepagents raises its @langchain/core peer floor from ^1.2.9 to ^1.2.14 at 1.14.2; host-resolved SDK and peer trees remain host-controlled and are not claimed",
     "source provenance": "the npm artifact has no registry gitHead; exact package trees and embedded source maps are the evidence authority"
   }
 }

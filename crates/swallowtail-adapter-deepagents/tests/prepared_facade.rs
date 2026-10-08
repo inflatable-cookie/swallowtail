@@ -148,6 +148,16 @@ fn prepared_session_names_deepagents_acp_and_release_then_drains_one_prompt() {
 }
 
 #[test]
+fn prepared_session_keeps_the_original_qualified_baseline() {
+    let host_id = ExecutionHostId::new("fixture.prepared.baseline").expect("host");
+    let prepared = prepare_version(host_id, "0.1.30");
+    assert_eq!(
+        prepared.observation().version().version().as_str(),
+        "0.1.30"
+    );
+}
+
+#[test]
 fn preparation_rejects_access_axis_and_package_drift_before_acp_work() {
     let host_id = ExecutionHostId::new("fixture.prepared.reject").expect("host");
     let prepared = prepare(host_id.clone());
@@ -214,7 +224,7 @@ fn preparation_rejects_access_axis_and_package_drift_before_acp_work() {
     assert!(axis_host.observed_process().is_none());
 
     let newer_host = ExecutionHostId::new("fixture.prepared.newer").expect("host");
-    let newer = DiscoveryHost::new("0.1.26");
+    let newer = DiscoveryHost::new("0.1.35");
     let error = block_on(prepare_deepagents_acp(
         preparation_input(newer_host.clone()),
         probe(),
@@ -223,7 +233,7 @@ fn preparation_rejects_access_axis_and_package_drift_before_acp_work() {
     .expect_err("unqualified package fails");
     assert_eq!(
         error.stage(),
-        swallowtail_runtime::PreparationStage::VersionParse
+        swallowtail_runtime::PreparationStage::CompatibilityClassification
     );
     assert_eq!(
         newer.observed_process().expect("probe ran").arguments,
@@ -253,7 +263,14 @@ fn session_prepare_fails_closed_without_working_resource_authority() {
 fn prepare(
     host_id: ExecutionHostId,
 ) -> swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration {
-    let discovery = DiscoveryHost::new(DEEPAGENTS_ACP_PACKAGE_VERSION);
+    prepare_version(host_id, DEEPAGENTS_ACP_PACKAGE_VERSION)
+}
+
+fn prepare_version(
+    host_id: ExecutionHostId,
+    version: &str,
+) -> swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration {
+    let discovery = DiscoveryHost::new(version);
     let operation = FixtureHost::new(Scenario::Success);
     let mut services = discovery.services(host_id.clone());
     services = services.with_working_resource(

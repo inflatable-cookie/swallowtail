@@ -15,6 +15,16 @@ annotated Git tags from the canonical repository.
   bindings. The `0.22.4` and `0.23.5` exclusions, Plan limit at `0.22.3`, and
   exact `0.21.15` reasoning and budget controls remain unchanged; no provider
   work or artifact execution occurred.
+- qualify only `claude-code.response-only` through official npm `latest` and
+  GitHub latest stable `2.1.293`; npm `stable` remains the delayed `2.1.285`
+  channel. Research 376 freezes every published hop after `2.1.281` across
+  the npm wrapper, Darwin arm64, and Linux x64 trees. Preserve the supported
+  v1 and v2 segments and existing exclusions; add maintained v3
+  `2.1.282..=2.1.293` for the accepted version-specific reduction in
+  symlink-linked project-instruction reads. The route remains one text-only
+  turn with empty tools/MCP and no session persistence. The `.288` SIGTERM
+  note is outside host-local `force_stop`, which uses SIGKILL. No artifact was
+  executed, and no provider prompt, install, or host update occurred.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,

@@ -366,17 +366,23 @@ See the compile-tested
 
 `prepare_claude_code_response_only` accepts a host-approved stable Claude Code
 executable at or above the proven `2.1.227` protocol floor, except any release
-on the route's explicit known-bad deny-list. Two maintained segments share
+on the route's explicit known-bad deny-list. Three supported segments share
 claim id `claude-code.response-only.window-1`:
 
-- `2.1.227` through `2.1.278` keep `claude-code.response-only.stream-json.v1`.
+- `2.1.227` through `2.1.278` keep `claude-code.response-only.stream-json.v1`
+  and remain supported as `Deprecated`.
 - `2.1.280` through `2.1.281` use `claude-code.response-only.stream-json.v2`
-  under the narrowed built-in-hook guarantee.
+  under the narrowed built-in-hook guarantee and remain supported as
+  `Deprecated`.
+- `2.1.282` through `2.1.293` use `claude-code.response-only.stream-json.v3`
+  with the version-specific linked-instruction read limit; this is the
+  maintained segment.
 
 Unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
 `2.1.264`, and `2.1.279` are denied. Later stable releases run provisionally as
-`UnverifiedNewer` on the v2 behavior. It is a distinct route. It does not
-weaken or replace `claude-code.headless`.
+`UnverifiedNewer` on the v3 behavior. The baseline, claim id, denied points,
+and earlier supported segments stay in force. This is a distinct route. It
+does not weaken or replace `claude-code.headless`.
 
 `ClaudeCodeResponseProfileInput::new` accepts only request identity, an exact
 caller-selected model route, one prompt, and a deadline. Optional qualified
@@ -416,10 +422,10 @@ claim.
 Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
-qualification. The v1 segment ends at `2.1.278`. The v2 segment ends at
-`2.1.281`. Newer stable versions are provisional until evidence moves that
-boundary. The static deny-list is unpublished `2.1.244`, `2.1.249`, `2.1.253`
-through `2.1.256`, `2.1.262`, `2.1.264`, and `2.1.279`.
+qualification. The v1 segment ends at `2.1.278`, the v2 segment ends at
+`2.1.281`, and v3 currently ends at `2.1.293`. The static deny-list is
+unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
+`2.1.264`, and `2.1.279`.
 
 From `2.1.280`, `--safe-mode` still loads the provider's nine `@builtin`
 plugins. Swallowtail guarantees what its arguments control: empty tools, empty
@@ -430,7 +436,7 @@ provider surface, disclosed here:
 | Built-in | What it can do | What Swallowtail arguments block |
 | --- | --- | --- |
 | `sec-default` | Policy-only hooks can preserve managed instructions, tool policy, and settings | none; organization-seated policy is provider surface |
-| `agents-md` | Reads ancestor `AGENTS.md` into `prompt.context`; `Read` can add nested instructions. Default off at `2.1.280`, on at `2.1.281` | empty `--tools` blocks the `Read` hook; `prompt.context` still runs |
+| `agents-md` | Reads ancestor `AGENTS.md` into `prompt.context`; `Read` can add nested instructions. Default off at `2.1.280`, on at `2.1.281`; from `2.1.282`, some symlink-linked project instructions may be omitted or require approval | empty `--tools` blocks the `Read` hook; `prompt.context` still runs, with the v3 read limit described below |
 | `telemetry` | Session and engine analytics; can send first-party network requests under provider settings | none on the selected surface; `DISABLE_TELEMETRY`, `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, and `DO_NOT_TRACK` are proven in the frozen module but the approved environment is opaque |
 | `plugin-authoring` | Invocable skill; no hook event | `--disable-slash-commands` and empty tools |
 | `tips` | Session-start tip UI | none mapped onto stream-JSON |
@@ -439,14 +445,24 @@ provider surface, disclosed here:
 | `diff` | Interactive diff UI, command, and git-state hooks | `--disable-slash-commands` and empty tools block command/tool paths |
 | `claude-test` | Command/skill hooks that can launch test assets | `--disable-slash-commands` blocks invocation |
 
-Project instruction files resolve from the launch directory. A consumer `Read`
-working resource is that directory, so `AGENTS.md` joins the existing
-`CLAUDE.md` discovery. Without one, v1 keeps the inherited process cwd; v2
-creates an adapter-owned empty temporary working resource as cwd so those
-files are not supplied. Frozen `instructionFiles` values can stop `agents-md`
-injection (`claude-md`) or drop project/local/user kinds (`managed-only`);
-they are not pinned because the `--settings` JSON path into plugin userConfig
-is not proven.
+Project instruction discovery starts from the launch directory. A consumer
+`Read` working resource supplies that child directory, so `AGENTS.md` joins
+the existing `CLAUDE.md` discovery. Without one, v1 keeps the inherited
+process cwd; v2 and v3 use an adapter-owned empty temporary working resource as
+cwd. That directory is read-only and is not a filesystem containment boundary.
+Frozen `instructionFiles` values can stop `agents-md` injection (`claude-md`)
+or drop project/local/user kinds (`managed-only`); they are not pinned because
+the `--settings` JSON path into plugin userConfig is not proven.
+
+From `2.1.282`, upstream reduces which project instructions can be read through
+repository symlinks. Its release note names traversal into macOS `/Network`,
+`/.vol`-style paths, and `/home`; `2.1.284` changes external `.claude/rules`
+symlinks to an approval path; and `2.1.290` blocks linked `CLAUDE.md`, rules,
+and `AGENTS.md` outside working directories under its named read policies.
+The v3 route does not guarantee that every symlink-linked instruction reaches
+`prompt.context`. No adapter operation restores those reads or broadens
+filesystem authority. The published runtime is opaque and no internal
+resolver function is claimed (Research 376).
 
 The prepared plan records `ProviderSuppressed` harness configuration and
 `AmbientHost` isolation. The first says exact provider flags suppress tools

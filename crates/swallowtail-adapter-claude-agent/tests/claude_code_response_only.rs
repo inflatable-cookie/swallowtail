@@ -192,21 +192,21 @@ fn provisional_newer_binds_init_and_exposes_version_diagnostics() {
     let observer = Arc::new(CapturingDebugObserver::default());
     let local = empty_launch_host(host.clone());
     let prepared =
-        prepared_at_narrowed(host.clone(), "2.1.282", Some(Arc::clone(&observer)), &local);
+        prepared_at_narrowed(host.clone(), "2.1.294", Some(Arc::clone(&observer)), &local);
     assert!(matches!(
         prepared.observation().compatibility(),
         InstalledExecutableCompatibility::UnverifiedNewer(_)
     ));
     assert_eq!(
         prepared.observation().version().version().as_str(),
-        "2.1.282"
+        "2.1.294"
     );
     let run = profile(&prepared, "provisional");
     assert_eq!(
         run.evidence().observation().version().version().as_str(),
-        "2.1.282"
+        "2.1.294"
     );
-    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.282", 1);
+    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.294", 1);
     let (process, state) = FakeProcessService::completed(&output);
     let (services, task) =
         host_services_with_working_resource(host, process, Arc::new(PendingTimeService), &local);
@@ -234,8 +234,107 @@ fn provisional_newer_binds_init_and_exposes_version_diagnostics() {
                 && observation.route() == Some("claude-code.response-only")
                 && observation.stage() == Some(stage)
                 && observation.detail()
-                    == "observed_version=2.1.282; compatibility=unverified-newer"
+                    == "observed_version=2.1.294; compatibility=unverified-newer"
         }));
+    }
+}
+
+#[test]
+fn current_v3_keeps_text_only_contract_and_empty_read_only_launch_location() {
+    let host = swallowtail_core::ExecutionHostId::new("host.response-v3").expect("host is valid");
+    let local = empty_launch_host(host.clone());
+    let prepared = prepared_at_narrowed(host.clone(), "2.1.293", None, &local);
+    assert!(matches!(
+        prepared.observation().compatibility(),
+        InstalledExecutableCompatibility::Qualified(matched)
+            if matched.behavior_revision().as_str() == "claude-code.response-only.stream-json.v3"
+    ));
+
+    let run = profile(&prepared, "response-v3");
+    assert_eq!(run.request().tools().count(), 0);
+    assert!(run.request().working_resource().is_none());
+    assert!(
+        !run.plan()
+            .requirements()
+            .capabilities()
+            .any(|requirement| requirement.capability() == Capability::WorkingResource)
+    );
+    assert!(
+        run.plan()
+            .requirements()
+            .host_services()
+            .any(|service| service == swallowtail_core::HostServiceKind::WorkingResource)
+    );
+
+    let output = response_fixture("response-complete.jsonl").replacen("2.1.228", "2.1.293", 1);
+    let (process, state) = FakeProcessService::completed(&output);
+    let (services, task) =
+        host_services_with_working_resource(host, process, Arc::new(PendingTimeService), &local);
+    let mut handle = block_on(run.start_run(services)).expect("v3 response-only run starts");
+    let _events = block_on(
+        handle
+            .take_events()
+            .expect("event stream is available")
+            .collect::<Vec<_>>(),
+    )
+    .into_iter()
+    .collect::<Result<Vec<_>, _>>()
+    .expect("current-point response events are valid");
+    let outcome = block_on(handle.take_terminal_outcome().expect("terminal outcome"));
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        outcome.output().map(OperationContent::as_str),
+        Some(r#"{"decision":"accept","score":7}"#)
+    );
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert!(state.waited());
+    assert!(task.joined());
+
+    let request = state.request();
+    assert!(request.working_resource.is_some());
+    assert!(
+        request
+            .arguments
+            .windows(2)
+            .any(|pair| pair == ["--tools", ""])
+    );
+    assert!(
+        request
+            .arguments
+            .iter()
+            .any(|argument| argument == "--safe-mode")
+    );
+    assert!(
+        request
+            .arguments
+            .iter()
+            .any(|argument| argument == "--disable-slash-commands")
+    );
+    assert!(
+        request
+            .arguments
+            .windows(2)
+            .any(|pair| { pair == ["--mcp-config", r#"{"mcpServers":{}}"#] })
+    );
+    assert!(
+        request
+            .arguments
+            .iter()
+            .any(|argument| argument == "--strict-mcp-config")
+    );
+    assert!(
+        request
+            .arguments
+            .windows(2)
+            .any(|pair| pair == ["--no-session-persistence", "--model"])
+    );
+    for forbidden in ["--settings", "--add-dir", "--resume", "--continue"] {
+        assert!(
+            !request
+                .arguments
+                .iter()
+                .any(|argument| argument == forbidden)
+        );
     }
 }
 
@@ -441,9 +540,12 @@ fn unsuccessful_process_is_redacted_and_never_becomes_output() {
 #[test]
 fn cancellation_stops_and_reaps_the_provider_process() {
     let host = swallowtail_core::ExecutionHostId::new("host.cancel").expect("host is valid");
-    let run = profile(&prepared(host.clone()), "cancel");
+    let local = empty_launch_host(host.clone());
+    let prepared = prepared_at_narrowed(host.clone(), "2.1.293", None, &local);
+    let run = profile(&prepared, "cancel");
     let (process, state) = FakeProcessService::held_open();
-    let (services, task) = host_services(host, process, Arc::new(PendingTimeService));
+    let (services, task) =
+        host_services_with_working_resource(host, process, Arc::new(PendingTimeService), &local);
     let mut handle = block_on(run.start_run(services)).expect("response-only run starts");
     let acknowledgement = block_on(handle.cancellation().request()).expect("cancellation succeeds");
     assert_eq!(

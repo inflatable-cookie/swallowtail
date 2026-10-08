@@ -6,6 +6,15 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only `antigravity.catalogue` through official Antigravity CLI `1.3.1`
+  after published stable hops `1.2.12`–`1.2.17`, `1.3.0`, and `1.3.1`.
+  Research 379 freezes source commits, complete release asset manifests, and
+  verified Linux x64 and Mac ARM64 artifact trees. The maintained segment keeps
+  baseline `1.1.9`, claim and behavior revision, with unpublished `1.2.18`
+  excluded and later `1.3.2` visibly unverified. `antigravity.headless` stays
+  at exact `1.2.11` with its existing gaps and pin unchanged. No downloaded
+  binary was executed, and no provider prompt, live catalogue, credential,
+  installation, or host update occurred.
 - qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
   `0.25.0` on the existing `qwen-code.headless.v0.21.15-reasoning-control`
   revision. Research 375 freezes all six published hops after `0.24.2`, with

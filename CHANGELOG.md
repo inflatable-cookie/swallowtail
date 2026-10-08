@@ -226,6 +226,12 @@ annotated Git tags from the canonical repository.
   Published `1.0.47` through `1.0.49` remain `UnverifiedNewer`; alpha-tagged
   `1.0.50` is excluded. The `1.0.30` catalogue, exact `1.0.4`/`1.0.5`
   registered-tool courier, and HTTP MCP evidence remain independently bounded.
+- keep `grok-build.catalogue` at exact `1.0.30` under `QualifiedOnly`. Research
+  405 freezes all selected stable hops through official `1.0.46` and records a
+  new default-not-in-list header that the current parser rejects. A same-
+  contract mapping or operator ruling is needed before the catalogue claim can
+  move. No live catalogue, prompt, credential, installation, or host mutation
+  occurred.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,

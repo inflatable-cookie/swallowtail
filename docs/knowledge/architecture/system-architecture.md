@@ -330,9 +330,12 @@ OpenHands adds a package without a production route.
 - `swallowtail-adapter-bedrock` pins the provider-supported
   `aws-sdk-bedrockruntime = 1.148.0` in-process Rust boundary and implements
   one exact `ConverseStream` production route; its native catalogue fixture
-  boundary pins `aws-sdk-bedrock = 1.148.0`, the distinct regional control-
-  plane audience, generated request, summary, lifecycle and error types, and
-  bounded provider-neutral projection
+  boundary uses `aws-sdk-bedrock = 1.161.0` for the selected
+  `ListFoundationModels` request, summary, lifecycle and error types, and
+  bounded provider-neutral projection. Its semantic SDK claim retains exact
+  `1.148.0`, qualifies `1.150.0..=1.155.0` and `1.157.0..=1.161.0`, and
+  excludes `1.149.0` and yanked `1.156.0`; the regional control-plane
+  audience and exact service revision remain separate
 - `swallowtail-adapter-gemini` implements the qualified Gemini CLI
   `0.51.0..=0.61.0` (excluding unpublished `0.56.1` and `0.59.1`) ambient-host interactive
   subset with separate read-only
@@ -1707,9 +1710,12 @@ ambient AWS region, credential, profile, file, container, or instance-metadata
 chains. Runtime binds `aws-sdk-bedrockruntime = 1.148.0`,
 `ConverseStream`, one exact model route and underlying provider, bounded text
 output, and one structured attempt. Catalogue binds
-`aws-sdk-bedrock = 1.148.0`, `ListFoundationModels`, its own access and
-regional control-plane target, and no model route. Their prepared evidence
-retains separate SDK and service interface axes. Bound operations delegate to
+`aws-sdk-bedrock = 1.161.0`, `ListFoundationModels`, its own access and
+regional control-plane target, and no model route. Its semantic SDK claim
+retains exact `1.148.0`, qualifies `1.150.0..=1.155.0` and
+`1.157.0..=1.161.0`, and leaves `1.149.0` and yanked `1.156.0` incompatible.
+Their prepared evidence retains separate SDK and service interface axes.
+Bound operations delegate to
 the unchanged one-attempt drivers; private SDK work joins before credential
 release. Catalogue observations cannot construct Runtime capability,
 entitlement, availability, or route truth.

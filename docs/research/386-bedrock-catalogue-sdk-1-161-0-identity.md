@@ -18,6 +18,11 @@ reported `1.161.0` as the maximum non-yanked stable at
 `1.161.1` were absent. The exact current artifact checksum is
 `254169f7bd61c2189a0142067000ed89ab15a032b8b8cebf426fabeb425ad611`.
 
+A pre-push re-probe of the same API at `2026-10-08T07:20:50.467239Z` still
+returned non-yanked `1.161.0` with that checksum, published at
+`2026-10-01T19:13:56.717166Z`; `1.161.1` and `1.162.0` remained absent.
+The current qualified point therefore did not move during this qualification.
+
 Each downloaded `.crate` archive matched the crates.io API checksum. The
 source is [`awslabs/aws-sdk-rust`](https://github.com/awslabs/aws-sdk-rust),
 package path `sdk/bedrock`. Exact publication time, crate size, source commit,
@@ -39,6 +44,34 @@ requirements, and archive checksum for all twelve artifacts are frozen in
 | 1.159.0 | 2026-09-25 | `42e438d72b1c900df6926ef6cfd4c378432ccb1ab2639dc943921a08f048f3c4` | `2ea89feffd8b76d5b4f1d9030f38f956ec4b6957` | no |
 | 1.160.0 | 2026-09-30 | `fe7904fdf1267ae7c37d42b6ab231b58ccd42d50adbdcad446be243586a6a67d` | `d3d147c208ab27790dfded9cdc724aa9b7bed6b6` | no |
 | 1.161.0 | 2026-10-01 | `254169f7bd61c2189a0142067000ed89ab15a032b8b8cebf426fabeb425ad611` | `7101aefb7632e44cce586886a1df595151409b5f` | no |
+
+## Workspace-resolved SDK runtime identity
+
+The qualified workspace pin resolves the SDK package from crates.io with the
+same `1.161.0` checksum shown above. Its direct runtime dependencies resolve
+through the repository [`Cargo.lock`](../../Cargo.lock) to these exact
+registry artifacts; their checksums are recorded here so the selected build
+identity is distinct from the SDK crate's looser declared requirements.
+
+| Package | Resolved version | Registry crate SHA-256 recorded in Cargo.lock |
+| --- | --- | --- |
+| `arc-swap` | 1.9.2 | `c049c0be4daef0b145cb3555416b3b8ef5b7888a38aea1a3a155801fe7b0810b` |
+| `aws-credential-types` | 1.3.0 | `e93964ffdaf57857f544be3666a5f57570bb699e934700f11b49708f61bb556e` |
+| `aws-runtime` | 1.10.0 | `2b8a9911551b4ea6ca13805ef52ed96f7d2bbb43cc3b4a14cb0776a71f33cfaa` |
+| `aws-smithy-async` | 1.3.0 | `f02e407fb3b54891734224b9ffac8a71fdd35f542500fa1af95754a6b2beb316` |
+| `aws-smithy-http` | 0.64.1 | `639b4d8f8555f24a9be649811c3eb0b4d4616f4d61daf0c32e28873bc1ea9af1` |
+| `aws-smithy-json` | 0.63.1 | `3385d469edbe8b60cc72002784652b5efca39178192aa9cc4b44c9875c6bdc18` |
+| `aws-smithy-observability` | 0.3.0 | `8e86338c869539a581bf161247762a6e87f92c5c075060057b5ed6d06632ed0c` |
+| `aws-smithy-runtime` | 1.16.0 | `d6e302ac1d88b99652489df31abdec6ac42a2ab2ac3982ad0ac49f64dfaf28ba` |
+| `aws-smithy-runtime-api` | 1.19.0 | `c0730c16f91124c6a2abb4932c77e299288b3dd9f967ea2e9ec48cc6731e87a4` |
+| `aws-smithy-schema` | 0.2.1 | `e8f395d93304280b64b7632fea798d177e74897fe7f063416ce627cd6fa24829` |
+| `aws-smithy-types` | 1.8.1 | `69bb407740a197147da48238ecc94498493c9e85445732360cec180296ca45f1` |
+| `aws-types` | 1.6.0 | `209f3a6d82a6e9e5f94abbed94c7a26e1c052341002bf57a5fb5481f625896fc` |
+| `bytes` | 1.12.1 | `fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04` |
+| `fastrand` | 2.5.0 | `da7c62ceae207dd37ea5b845da6a0696c799f85e97da1ab5b7910be3c1c80223` |
+| `http` | 1.5.0 | `918d3568bebf352712bc2ef3d46a8bcf1a75b373be6539de198e9105cbbf9ce0` |
+| `regex-lite` | 0.1.9 | `cab834c73d247e67f4fae452806d17d3c7501756d98c8808d7c9c7aa7d18f973` |
+| `tracing` | 0.1.44 | `63e71662fa4b2a2c3a26f570f037eb95bb1f85397f3cd8076caed2f026a6d100` |
 
 The previously exact `1.148.0` point remains qualified. Published `1.149.0`
 is non-yanked but lies between that point and the existing `1.150.0` pin;

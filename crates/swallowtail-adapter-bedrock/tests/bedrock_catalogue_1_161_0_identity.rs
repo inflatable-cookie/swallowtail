@@ -6,6 +6,8 @@ const IDENTITY: &str = include_str!("fixtures/bedrock-control-plane-1.161.0/iden
 const PROTOCOL: &str = include_str!("fixtures/bedrock-control-plane-1.161.0/protocol.json");
 const DIST_INVENTORY: &str =
     include_str!("fixtures/bedrock-control-plane-1.161.0/dist-inventory.json");
+const ADAPTER_MANIFEST: &str = include_str!("../Cargo.toml");
+const WORKSPACE_LOCK: &str = include_str!("../../../Cargo.lock");
 const IDENTITY_SHA256: &str = "ae32e36da0e27a9533f8af8c48d91dba021dfbc42f0c860f343e3dfb542a0862";
 const PROTOCOL_SHA256: &str = "582ea3a3db7874cbf46046b52a2c6a2c3bf8d207cdca77f73b47cadf1fc339b5";
 const DIST_INVENTORY_SHA256: &str =
@@ -80,6 +82,40 @@ fn classified_paths(value: &Value, from: &str, to: &str) -> BTreeSet<String> {
         .iter()
         .filter(|item| item["from"] == from && item["to"] == to)
         .map(|item| item["path"].as_str().expect("path is text").to_owned())
+        .collect()
+}
+
+fn lock_package(name: &str, version: &str) -> &'static str {
+    let marker = format!("[[package]]\nname = \"{name}\"\nversion = \"{version}\"\n");
+    let start = WORKSPACE_LOCK
+        .find(&marker)
+        .unwrap_or_else(|| panic!("Cargo.lock has no {name} {version} package"));
+    let remaining = &WORKSPACE_LOCK[start..];
+    let end = remaining.find("\n[[package]]").unwrap_or(remaining.len());
+    &remaining[..end]
+}
+
+fn lock_field<'a>(package: &'a str, field: &str) -> &'a str {
+    let prefix = format!("{field} = \"");
+    package
+        .lines()
+        .find_map(|line| line.strip_prefix(&prefix)?.strip_suffix('"'))
+        .unwrap_or_else(|| panic!("Cargo.lock package has no {field} field"))
+}
+
+fn lock_dependencies(package: &str) -> BTreeSet<String> {
+    let dependencies = package
+        .split_once("dependencies = [")
+        .expect("Cargo.lock package has dependencies")
+        .1
+        .split_once(']')
+        .expect("Cargo.lock dependencies are closed")
+        .0;
+    dependencies
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .map(|line| line.trim_end_matches(',').trim_matches('"').to_owned())
         .collect()
 }
 
@@ -282,6 +318,149 @@ fn selected_catalogue_protocol_and_every_hop_keep_the_exact_boundary() {
             .iter()
             .all(|hop| hop["path"] == "src/lib.rs")
     );
+}
+
+#[test]
+fn workspace_lock_freezes_the_sdk_runtime_dependency_identity() {
+    assert!(ADAPTER_MANIFEST.lines().any(|line| {
+        line.trim()
+            == "aws-sdk-bedrock = { version = \"=1.161.0\", default-features = false, features = [\"default-https-client\", \"rt-tokio\"] }"
+    }));
+    assert!(ADAPTER_MANIFEST.lines().any(|line| {
+        line.trim()
+            == "aws-sdk-bedrockruntime = { version = \"=1.148.0\", default-features = false, features = [\"default-https-client\", \"rt-tokio\"] }"
+    }));
+
+    let sdk = lock_package("aws-sdk-bedrock", "1.161.0");
+    assert_eq!(
+        lock_field(sdk, "source"),
+        "registry+https://github.com/rust-lang/crates.io-index"
+    );
+    assert_eq!(
+        lock_field(sdk, "checksum"),
+        "254169f7bd61c2189a0142067000ed89ab15a032b8b8cebf426fabeb425ad611"
+    );
+    assert_eq!(
+        lock_dependencies(sdk),
+        [
+            "arc-swap",
+            "aws-credential-types",
+            "aws-runtime",
+            "aws-smithy-async",
+            "aws-smithy-http",
+            "aws-smithy-json",
+            "aws-smithy-observability",
+            "aws-smithy-runtime",
+            "aws-smithy-runtime-api",
+            "aws-smithy-schema",
+            "aws-smithy-types",
+            "aws-types",
+            "bytes",
+            "fastrand",
+            "http 1.5.0",
+            "regex-lite",
+            "tracing",
+        ]
+        .into_iter()
+        .map(str::to_owned)
+        .collect()
+    );
+
+    let dependencies = [
+        (
+            "arc-swap",
+            "1.9.2",
+            "c049c0be4daef0b145cb3555416b3b8ef5b7888a38aea1a3a155801fe7b0810b",
+        ),
+        (
+            "aws-credential-types",
+            "1.3.0",
+            "e93964ffdaf57857f544be3666a5f57570bb699e934700f11b49708f61bb556e",
+        ),
+        (
+            "aws-runtime",
+            "1.10.0",
+            "2b8a9911551b4ea6ca13805ef52ed96f7d2bbb43cc3b4a14cb0776a71f33cfaa",
+        ),
+        (
+            "aws-smithy-async",
+            "1.3.0",
+            "f02e407fb3b54891734224b9ffac8a71fdd35f542500fa1af95754a6b2beb316",
+        ),
+        (
+            "aws-smithy-http",
+            "0.64.1",
+            "639b4d8f8555f24a9be649811c3eb0b4d4616f4d61daf0c32e28873bc1ea9af1",
+        ),
+        (
+            "aws-smithy-json",
+            "0.63.1",
+            "3385d469edbe8b60cc72002784652b5efca39178192aa9cc4b44c9875c6bdc18",
+        ),
+        (
+            "aws-smithy-observability",
+            "0.3.0",
+            "8e86338c869539a581bf161247762a6e87f92c5c075060057b5ed6d06632ed0c",
+        ),
+        (
+            "aws-smithy-runtime",
+            "1.16.0",
+            "d6e302ac1d88b99652489df31abdec6ac42a2ab2ac3982ad0ac49f64dfaf28ba",
+        ),
+        (
+            "aws-smithy-runtime-api",
+            "1.19.0",
+            "c0730c16f91124c6a2abb4932c77e299288b3dd9f967ea2e9ec48cc6731e87a4",
+        ),
+        (
+            "aws-smithy-schema",
+            "0.2.1",
+            "e8f395d93304280b64b7632fea798d177e74897fe7f063416ce627cd6fa24829",
+        ),
+        (
+            "aws-smithy-types",
+            "1.8.1",
+            "69bb407740a197147da48238ecc94498493c9e85445732360cec180296ca45f1",
+        ),
+        (
+            "aws-types",
+            "1.6.0",
+            "209f3a6d82a6e9e5f94abbed94c7a26e1c052341002bf57a5fb5481f625896fc",
+        ),
+        (
+            "bytes",
+            "1.12.1",
+            "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04",
+        ),
+        (
+            "fastrand",
+            "2.5.0",
+            "da7c62ceae207dd37ea5b845da6a0696c799f85e97da1ab5b7910be3c1c80223",
+        ),
+        (
+            "http",
+            "1.5.0",
+            "918d3568bebf352712bc2ef3d46a8bcf1a75b373be6539de198e9105cbbf9ce0",
+        ),
+        (
+            "regex-lite",
+            "0.1.9",
+            "cab834c73d247e67f4fae452806d17d3c7501756d98c8808d7c9c7aa7d18f973",
+        ),
+        (
+            "tracing",
+            "0.1.44",
+            "63e71662fa4b2a2c3a26f570f037eb95bb1f85397f3cd8076caed2f026a6d100",
+        ),
+    ];
+    for (name, version, checksum) in dependencies {
+        let package = lock_package(name, version);
+        assert_eq!(
+            lock_field(package, "source"),
+            "registry+https://github.com/rust-lang/crates.io-index"
+        );
+        assert_eq!(lock_field(package, "checksum"), checksum);
+    }
 }
 
 #[test]

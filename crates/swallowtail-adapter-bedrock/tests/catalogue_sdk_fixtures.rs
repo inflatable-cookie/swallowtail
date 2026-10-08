@@ -9,7 +9,9 @@ use swallowtail_adapter_bedrock::{
     CATALOGUE_SDK_CRATE, CATALOGUE_SDK_VERSION, CATALOGUE_SERVICE_API,
 };
 
-const PROTOCOL: &str = include_str!("fixtures/bedrock-control-plane-1.148.0/protocol.json");
+const PROTOCOL: &str = include_str!("fixtures/bedrock-control-plane-1.161.0/protocol.json");
+const HISTORICAL_PROTOCOL: &str =
+    include_str!("fixtures/bedrock-control-plane-1.148.0/protocol.json");
 
 #[test]
 fn manifest_binds_control_plane_access_attempt_bounds_and_exclusions() {
@@ -92,4 +94,13 @@ fn generated_config_is_explicit_and_one_attempt_without_default_chain_loading() 
     );
     assert_eq!(config.signing_name(), "bedrock");
     assert!(!format!("{config:?}").contains("fixture-secret-key"));
+}
+
+#[test]
+fn previous_exact_catalogue_sdk_fixture_remains_preserved() {
+    let historical: Value =
+        serde_json::from_str(HISTORICAL_PROTOCOL).expect("historical fixture is valid JSON");
+    assert_eq!(historical["sdk_crate"], CATALOGUE_SDK_CRATE);
+    assert_eq!(historical["sdk_version"], "1.148.0");
+    assert_eq!(historical["service_api"], CATALOGUE_SERVICE_API);
 }

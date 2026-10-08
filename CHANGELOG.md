@@ -329,7 +329,7 @@ annotated Git tags from the canonical repository.
   and a later call on the same connected courier.
 - qualify `claude-agent.sdk` through official npm latest
   `@anthropic-ai/claude-agent-sdk` `0.3.293` carrying embedded native
-  `2.1.293`. Research 382 freezes every published hop from the retained
+  `2.1.293`. Research 394 freezes every published hop from the retained
   `0.3.284`/`2.1.284` baseline, exact npm integrity and native manifest
   identities, complete package trees, and per-hop classifications. The
   package and native claims keep their baselines, claim ids, behavior
@@ -337,8 +337,9 @@ annotated Git tags from the canonical repository.
   query, session, permission, model, tool-admission, MCP-stdio, usage, and
   close mappings stay compatible; the `0.3.285` server `alwaysLoad` metadata
   remains a server-controlled discovery choice, with required servers still
-  requested and mediated. Node, wire, sidecar source, and other axes stay
-  exact. Research 301 live registered-tool acceptance remains bound to
+  requested and mediated. The Node segment remains separately qualified
+  through `22.23.3` (Research 387); wire and sidecar source stay exact.
+  Research 301 live registered-tool acceptance remains bound to
   `0.3.259`/`2.1.259` and does not transfer. No provider operation,
   downloaded-artifact execution, or host mutation occurred.
 - raise the Claude Agent ACP qualified ceiling from `0.79.0` to official npm

@@ -4,7 +4,7 @@
 //! exact digests, never counts alone. If the frozen inventory or the classified
 //! deltas are edited without re-deriving the evidence, this fails. Nothing here
 //! executes a downloaded artifact, contacts a provider, or reads a credential.
-//! This historical ledger freezes the hop only. Research 382 qualifies the
+//! This historical ledger freezes the hop only. Research 394 qualifies the
 //! current package/native segment from `0.3.284`/`2.1.284` through
 //! `0.3.293`/`2.1.293`; Research 301 live evidence stays bound to
 //! `0.3.259`/`2.1.259`.

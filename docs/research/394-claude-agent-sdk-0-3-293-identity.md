@@ -1,4 +1,4 @@
-# 382 Claude Agent SDK 0.3.293 Identity and Currentness
+# 394 Claude Agent SDK 0.3.293 Identity and Currentness
 
 Date: 2026-10-08  
 Route: `claude-agent.sdk`  
@@ -16,8 +16,9 @@ numbers to match. The selected npm channel is `dist-tags.latest`, freshly
 observed at `0.3.293`; `next` also points to `0.3.293`. The official current
 point is bound to the exact wrapper tarball and its embedded native manifest,
 not the installed Claude Code executable. No behavioral change in the selected
-route mapping was found. Node `22.23.2`, wire, sidecar source, and all other
-axes remain unchanged. The exact live registered-tool point remains
+route mapping was found. The independent Node segment remains governed by
+Research 387; wire and sidecar source remain exact. This record does not change
+those axes. The exact live registered-tool point remains
 `0.3.259`/`2.1.259` and is not transferred.
 
 ## Channel and package identity
@@ -138,8 +139,9 @@ The SDK package/native pair is now a maintained segment from baseline
 `0.3.284`/`2.1.284` through `0.3.293`/`2.1.293`, with the original claim IDs
 and behavior revision. The open validator rejects nonmatching package/native
 patch pairs. It leaves exact points `0.3.283`, `0.3.294`, `2.1.283`, and
-`2.1.294` outside the range. Node `22.23.2`, private wire, sidecar source,
-configuration posture, and other claims do not change. Existing `0.3.279`
+`2.1.294` outside the range. The independent Node segment remains governed by
+Research 387; private wire, sidecar source, configuration posture, and other
+claims do not change. Existing `0.3.279`
 absence remains below the segment; there are no published holes in this
 segment. No `AllowUnverified` posture is added.
 

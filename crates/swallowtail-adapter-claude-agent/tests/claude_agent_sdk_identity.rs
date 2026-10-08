@@ -159,7 +159,6 @@ fn package_native_segments_preserve_baselines_claim_ids_and_qualified_only() {
             "2.1.284",
         ),
         (
-
             claude_agent_sdk_wire_claim(),
             "claude-agent.sdk.wire-v1",
             CLAUDE_AGENT_SDK_WIRE,

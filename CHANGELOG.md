@@ -6,9 +6,15 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify `bedrock.runtime`'s Rust SDK through official `aws-sdk-bedrockruntime`
+  `1.148.0`, preserving exact `1.136.0`, the `1.137.0` and `1.138.0` gaps,
+  and the yanked `1.144.0` exclusion. The Runtime service axis and both
+  catalogue axes stay exact. Research 381 freezes every selected-channel hop
+  and full package trees, plus the ConverseStream request, EventStream, usage,
+  and failure boundaries; no AWS calls or host mutation occurred.
 - qualify only `antigravity.catalogue` through official Antigravity CLI `1.3.1`
   after published stable hops `1.2.12`–`1.2.17`, `1.3.0`, and `1.3.1`.
-  Research 379 freezes source commits, complete release asset manifests, and
+  Research 380 freezes source commits, complete release asset manifests, and
   verified Linux x64 and Mac ARM64 artifact trees. The maintained segment keeps
   baseline `1.1.9`, claim and behavior revision, with unpublished `1.2.18`
   excluded and later `1.3.2` visibly unverified. `antigravity.headless` stays

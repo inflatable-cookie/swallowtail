@@ -95,7 +95,7 @@ ACP adapters may compose instead of their stdio transport.
 
 | Route | Crate and driver | Role and transport | Explicit target and access | Version axis | Prepared path | Low-level escape hatch |
 | --- | --- | --- | --- | --- | --- | --- |
-| `antigravity.catalogue` | `swallowtail-adapter-antigravity`; `swallowtail.antigravity.catalogue` | authenticated model catalogue; Antigravity models stdio | approved executable and environment; provider-supported personal Google subscription login owned by Antigravity | `antigravity-cli.release`; maintained `1.1.9..=1.3.1` except unpublished `1.2.18`, plus permitted visible unverified-newer stable points (Research 379) | `prepare_antigravity(Catalogue)` → `prepare_catalogue` → `list_models` | `AntigravityCatalogueDriver`; `ModelCatalogDriver` |
+| `antigravity.catalogue` | `swallowtail-adapter-antigravity`; `swallowtail.antigravity.catalogue` | authenticated model catalogue; Antigravity models stdio | approved executable and environment; provider-supported personal Google subscription login owned by Antigravity | `antigravity-cli.release`; maintained `1.1.9..=1.3.1` except unpublished `1.2.18`, plus permitted visible unverified-newer stable points (Research 380) | `prepare_antigravity(Catalogue)` → `prepare_catalogue` → `list_models` | `AntigravityCatalogueDriver`; `ModelCatalogDriver` |
 | `antigravity.headless` | `swallowtail-adapter-antigravity`; `swallowtail.antigravity.headless` | explicit-model structured runs and exact-id restarted turn-scoped continuation; Antigravity stream JSON over one joined stdio child per run or turn | approved executable and environment; provider-supported personal Google subscription login; explicit ambient read or read-write authority for runs, optional provider sandbox, and ambient read-intent plan mode for continuation | `antigravity-cli.release`; deprecated `1.1.9..=1.1.17` plus qualified exact `1.2.11` on the retry-disabled revision, which requires `AGY_CLI_MODEL_API_MAX_RETRIES=0` in the approved environment and a planned low/medium/high effort in dispatch (Research 359); `1.1.18..=1.2.10` stay unqualified until per-point pin evidence lands; later stable points stay permitted visible unverified-newer | `prepare_antigravity(Headless)` → `prepare_run` → `start_run`, or `prepare_antigravity(Continuation)` → `prepare_session` → `open_session`; later turns privately use only the exact observed conversation id | `AntigravityHeadlessDriver`; `StructuredRunDriver` and `InteractiveSessionDriver` |
 | `codex.exec` | `swallowtail-adapter-codex`; `swallowtail.codex.exec` | structured run with optional adapter-local `model_verbosity` on exact `0.147.0..=0.149.1` slugs; structured CLI | approved executable and environment; caller-selected Codex profile plus matching evidence | `codex.cli`; qualified exec ceiling `0.155.1`; `0.156.0..=0.161.0` remain visible `UnverifiedNewer` pending projectless trust and managed-network adaptation (Research 370) | `prepare_codex(StructuredExec)` → `prepare_structured_exec` → `start_run`; verbosity is dispatch-only against frozen tag metadata | `CodexExecDriver`; `StructuredRunDriver` |
 | `codex.app-server` | `swallowtail-adapter-codex`; `swallowtail.codex.app-server` | catalogue, interactive session with optional exact plan-mode selection, newest-first provider history pages over bounded thread read, exact or session-scoped interrupted-turn reconciliation, optional settled reconcile then bounded load, and inactive provider-thread management; JSONL RPC stdio | approved executable and environment; caller-selected Codex profile plus matching evidence | `codex.cli`; independent app-server, thread-read, and lifecycle behavior segments with permitted visible unverified-newer points | `prepare_codex(AppServer)` → catalogue, session, history, reconciliation, archive, restore, or delete profile → its typed bound operation; a prepared reconciliation and session may compose through `prepare_settled_session_restoration` | `CodexAppServerDriver`; `ModelCatalogDriver`, `InteractiveSessionDriver`, `ProviderSessionHistoryDriver`, `ProviderSessionReconciliationDriver`, and `ProviderSessionManagementDriver` |
@@ -248,7 +248,7 @@ compatibility with the solution transport beside them.
 
 | Route | Crate and driver | Role and transport | Explicit target and access | Version axis | Prepared path | Low-level escape hatch |
 | --- | --- | --- | --- | --- | --- | --- |
-| `bedrock.runtime` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.direct` | structured run; Rust SDK EventStream | approved regional Runtime target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | `amazon-bedrock.runtime-rust-sdk` plus `amazon-bedrock.runtime-service-api`; exact opaque revisions | `prepare_bedrock` → `runtime` → `prepare_inference_attempt` → `start_run` | `BedrockDirectDriver`; `StructuredRunDriver` |
+| `bedrock.runtime` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.direct` | structured run; Rust SDK EventStream | approved regional Runtime target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | semantic SDK points `1.136.0` and `1.139.0..=1.148.0` under `AllowUnverified`, excluding `1.137.0`, `1.138.0`, and yanked `1.144.0`; exact Runtime service revision | `prepare_bedrock` → `runtime` → `prepare_inference_attempt` → `start_run` | `BedrockDirectDriver`; `StructuredRunDriver` |
 | `bedrock.catalogue` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.catalogue` | model catalogue; Rust SDK control plane | approved regional control-plane target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | `amazon-bedrock.control-plane-rust-sdk` plus `amazon-bedrock.control-plane-service-api`; exact opaque revisions | `prepare_bedrock` → `catalogue` → `prepare_catalogue` → `list_models` | `BedrockCatalogueDriver`; `ModelCatalogDriver` |
 
 `prepare_bedrock` binds only the shared execution host, region, and explicit
@@ -281,7 +281,7 @@ delete.
 <!-- provider-session-lifecycle-matrix:start -->
 | Route | Persistent-session posture | Management binding | Archive | Restore | Delete | Deletion strength | Version posture | Driver-owned cleanup |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `antigravity.catalogue` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | maintained `1.1.9..=1.3.1` except unpublished `1.2.18`; later stable points remain visible `UnverifiedNewer` (Research 379); catalogue has no provider session | process and task cleanup only |
+| `antigravity.catalogue` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | maintained `1.1.9..=1.3.1` except unpublished `1.2.18`; later stable points remain visible `UnverifiedNewer` (Research 380); catalogue has no provider session | process and task cleanup only |
 | `antigravity.headless` | `unsupported` | `no` | `unsupported` | `unsupported` | `unsupported` | `unsupported` | deprecated `1.1.9..=1.1.17` plus qualified exact `1.2.11` with `AGY_CLI_MODEL_API_MAX_RETRIES=0` pinned and a planned effort required in dispatch (Research 359, retry disabled, no Contract 023 exception); `1.1.18..=1.2.10` stay unqualified; structured runs and exact-id continuation preserve provider state without exposing public session identity | each run or turn joins its process and task; provider state is preserved |
 | `codex.exec` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | qualified exec segments through `0.155.1`; stable `0.156.0..=0.161.0` stay `UnverifiedNewer` after the projectless trust and managed-network stops (Research 370); no persistent-session claim | run and process cleanup only |
 | `codex.app-server` | `supported` | `yes` | `supported` | `supported` | `supported` | `ProviderHardDeleted` | qualified segments inside `0.80.0..=0.155.1`, excluding `0.82.0..=0.83.0`, `0.108.0..=0.109.0`, unpublished `0.149.2`, unpublished `0.150.2`, unpublished `0.151.1`, unpublished `0.152.2`, and unpublished `0.154.1`: archive from `0.80.0`, restore from `0.92.0`, delete from `0.140.0`; later stable points may be visible `UnverifiedNewer` | attachment and process cleanup only; provider state is preserved |
@@ -327,7 +327,7 @@ delete.
 | `xai.responses-websocket` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `xai.responses-websocket-facade` revision; continuation is connection-local | connection and response cleanup only |
 | `openai.realtime` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `openai.realtime-facade` revision; media session is connection-scoped | response and connection cleanup only |
 | `gemini.live` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `gemini.live-facade` revision; media session is connection-scoped | provider rollover and connection cleanup only |
-| `bedrock.runtime` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact SDK and Runtime service revisions; inference attempt has no provider session | request and EventStream cleanup only |
+| `bedrock.runtime` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | semantic SDK points `1.136.0` and `1.139.0..=1.148.0` under `AllowUnverified`, excluding `1.137.0`, `1.138.0`, and yanked `1.144.0`; exact Runtime service revision; inference attempt has no provider session | request and EventStream cleanup only |
 | `bedrock.catalogue` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact SDK and control-plane service revisions; catalogue has no provider session | request cleanup only |
 | `ollama.attached` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | accepted `ollama.runtime` segments; attached inference has no provider session; current official `0.40.0` remains unverified because chat can start local model-store migration | request cleanup only; for qualified points the external runtime is preserved; the `0.40.0` migration side effect awaits a ruling |
 | `llama-cpp.attached` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque b9910/f5525f7e7 revision; attached inference has no provider session | request cleanup only; the external server is preserved |
@@ -393,24 +393,22 @@ Opaque hosted facades, SDK packages, service revisions, and exact llama.cpp
 runtime revisions are qualified only at named points. They do not infer an
 ordered range or an unverified-newer attempt.
 
-### Claim-Less Disposition (bedrock, llama-cpp)
+### Exact-Only Claims (Bedrock services, llama-cpp)
 
-Bedrock and llama-cpp deliberately carry no `InterfaceCompatibilityClaim`.
-Their version axes (`amazon-bedrock.runtime-rust-sdk`, `amazon-bedrock.
-control-plane-rust-sdk`, `llama.cpp.attached-runtime`, `llama.cpp.
-owned-runtime`) bind exact opaque revisions only, per Contract 029: an
-interface without a trustworthy ordered version observation uses an exact
-dated facade or evidence revision instead of a claim, and never infers an
-ordered window. This disposition is recorded rather than migrated:
+The Bedrock Runtime service API, Bedrock catalogue SDK and service API, and
+llama-cpp attached/owned axes use exact opaque compatibility claims. They do
+not infer ordered ranges or unverified-newer points, per Contract 029. The
+Bedrock Runtime SDK axis has a separate semantic claim backed by
+[Research 381](../research/381-bedrock-runtime-sdk-1-148-0-identity.md); it
+preserves `1.136.0`, adds `1.139.0..=1.148.0`, and permits later stable points
+as unverified.
 
-- bedrock runtime/catalogue and llama-cpp attached/owned prepare and classify
-  against their exact opaque revisions; no baseline, range, or unverified-newer
-  semantics apply
-- the route and feature matrices treat them as opaque-only, distinct from
-  every ordered claim surface
-- if trustworthy ordered version evidence appears for either surface, adding
-  an exact compatibility claim is a separate qualified change, not a
-  relabeling of these axes
+- bedrock Runtime service, catalogue SDK/service, and llama-cpp attached/owned
+  prepare and classify against their exact opaque revisions
+- the route and feature matrices keep those axes distinct from the ordered
+  Bedrock Runtime SDK claim
+- an ordered compatibility range for any of these exact-only axes requires a
+  separate evidence-backed qualification
 
 The active [installed-harness maintenance inventory](../research/074-installed-harness-and-protocol-maintenance-inventory.md)
 records evidence cutoffs, corpus and live-probe posture, shared ACP axes, and

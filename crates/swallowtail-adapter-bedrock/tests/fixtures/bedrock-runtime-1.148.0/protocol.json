@@ -1,0 +1,137 @@
+{
+  "authentication": {
+    "default_chain_allowed": false,
+    "mechanism": "cloud_provider_identity",
+    "secret_exposed_by_runtime_lease": false,
+    "source": "host_authorized_delegated_sdk_provider"
+  },
+  "axis": "amazon-bedrock.runtime-rust-sdk",
+  "client_configuration": {
+    "behavior_version": "latest",
+    "credentials": "explicit_host_authorized_delegated_provider",
+    "default_credential_chain": false,
+    "endpoint": "explicit_host_approved_grant",
+    "region": "exact_configured_region",
+    "retry_max_attempts": 1,
+    "telemetry_capture": false
+  },
+  "endpoint_audience": "bedrock-runtime",
+  "endpoint_source": "host_approved_grant",
+  "excluded": [
+    "ambient_aws_environment",
+    "shared_aws_config_files",
+    "instance_or_container_metadata",
+    "model_catalogue",
+    "cross_region_inference_profile",
+    "global_routing",
+    "provider_tools",
+    "guardrails",
+    "prompt_resources",
+    "attachments",
+    "automatic_retry",
+    "telemetry_capture_or_emission",
+    "live_authentication_in_default_qa"
+  ],
+  "failure": {
+    "automatic_retry": false,
+    "provider_messages_retained": false,
+    "selected_generated_error_enum_file_byte_identical_across_hops": true,
+    "unknown_or_unmapped_failure_semantics": "fail_closed_or_adapter_generic_failure"
+  },
+  "fixture_schema": 1,
+  "metering": "cloud_account_billing",
+  "region_source": "configured_instance_exact",
+  "request": {
+    "body": {
+      "inferenceConfig": {
+        "maxTokens": 7
+      },
+      "messages": [
+        {
+          "content": [
+            {
+              "text": "hello"
+            }
+          ],
+          "role": "user"
+        }
+      ]
+    },
+    "body_key_set": [
+      "inferenceConfig",
+      "messages"
+    ],
+    "content_block_key_set": [
+      "text"
+    ],
+    "maximum_provider_requests": 1,
+    "maximum_sdk_attempts": 1,
+    "message_key_set": [
+      "content",
+      "role"
+    ],
+    "method": "POST",
+    "operation": "ConverseStream",
+    "optional_members_absent": [
+      "additionalModelRequestFields",
+      "additionalModelResponseFieldPaths",
+      "guardrailConfig",
+      "performanceConfig",
+      "promptVariables",
+      "requestMetadata",
+      "system",
+      "toolConfig",
+      "trace",
+      "serviceTier"
+    ],
+    "path": "/model/{modelId}/converse-stream"
+  },
+  "sdk_crate": "aws-sdk-bedrockruntime",
+  "sdk_version": "1.148.0",
+  "service_api": "Amazon Bedrock Runtime ConverseStream",
+  "service_protocol": "aws.protocols#restJson1 with SDK typed EventStream response",
+  "source": {
+    "commit": "7101aefb7632e44cce586886a1df595151409b5f",
+    "crate_sha256": "3f2542c0f038223ba2f9aefe3bd38c7395ccc6899d8fc58a99b8ddfeab3354f5",
+    "edition": "2021",
+    "path": "sdk/bedrockruntime",
+    "repository": "https://github.com/awslabs/aws-sdk-rust",
+    "runtime_dependency_minimums": {
+      "aws-credential-types": "1.3.0",
+      "aws-runtime": "1.10.0",
+      "aws-sigv4": "1.6.0",
+      "aws-smithy-async": "1.3.0",
+      "aws-smithy-eventstream": "0.61.4",
+      "aws-smithy-http": "0.64.1",
+      "aws-smithy-json": "0.63.1",
+      "aws-smithy-observability": "0.3.0",
+      "aws-smithy-runtime": "1.16.0",
+      "aws-smithy-runtime-api": "1.19.0",
+      "aws-smithy-schema": "0.2.1",
+      "aws-smithy-types": "1.8.1",
+      "aws-types": "1.6.0"
+    },
+    "rust_version": "1.94.1",
+    "smithy_codegen_version": "45458fe16965b637108b2e6725ab74276429b1f0"
+  },
+  "stream": {
+    "bounded_projection": true,
+    "selected_event_and_usage_type_files_byte_identical_across_hops": true,
+    "semantic_order": [
+      "message_start",
+      "text_delta",
+      "content_block_stop",
+      "message_stop",
+      "metadata_usage"
+    ],
+    "unknown_sdk_variant": "fail_closed",
+    "unsupported_content_semantics": "fail_closed",
+    "usage_fields": [
+      "input_tokens",
+      "output_tokens",
+      "total_tokens"
+    ]
+  },
+  "support_authority": "provider_supported",
+  "transport": "in_process_rust_sdk_typed_eventstream"
+}

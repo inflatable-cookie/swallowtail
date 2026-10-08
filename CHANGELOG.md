@@ -6,6 +6,12 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify `bedrock.runtime`'s Rust SDK through official `aws-sdk-bedrockruntime`
+  `1.148.0`, preserving exact `1.136.0`, the `1.137.0` and `1.138.0` gaps,
+  and the yanked `1.144.0` exclusion. The Runtime service axis and both
+  catalogue axes stay exact. Research 375 freezes every selected-channel hop
+  and full package trees, plus the ConverseStream request, EventStream, usage,
+  and failure boundaries; no AWS calls or host mutation occurred.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,

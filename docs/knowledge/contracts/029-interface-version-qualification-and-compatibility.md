@@ -293,9 +293,10 @@ or evidence revision. They do not invent a semantic version. Runtime capability
 negotiation may narrow qualified behavior or stop an unverified attempt; it
 cannot convert unverified evidence into qualified support.
 
-Claim-less surfaces (bedrock, llama-cpp) keep this posture by explicit
-recorded disposition rather than by silence: see the Claim-Less Disposition in
-the provider route matrix.
+Exact-only surfaces (Bedrock Runtime service, Bedrock catalogue SDK and
+service, llama-cpp attached and owned) keep this posture by explicit recorded
+disposition rather than by silence: see Exact-Only Claims in the provider
+route matrix. Bedrock Runtime's SDK axis has a separate ordered claim.
 
 ## Conformance
 

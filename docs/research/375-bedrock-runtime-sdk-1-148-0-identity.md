@@ -16,7 +16,9 @@ non-yanked stable. `1.149.0` and `1.148.1` were absent. Selection follows the
 maximum stable non-yanked version, not a `latest` label. The channel was
 re-probed immediately before the identity push at `2026-10-08T00:36:58Z`; it
 still reported `1.148.0`, with the same checksum, and neither `1.149.0` nor
-`1.148.1` had appeared.
+`1.148.1` had appeared. The final qualification re-probe at
+`2026-10-08T00:49:45Z` returned the same stable version and checksum, with
+`1.149.0` and `1.148.1` still absent and `1.148.0` not yanked.
 
 Each `.crate` download matched the checksum returned by the official
 [crates.io versions API](https://crates.io/api/v1/crates/aws-sdk-bedrockruntime/versions).

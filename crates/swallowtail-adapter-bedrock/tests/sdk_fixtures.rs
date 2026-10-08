@@ -1,3 +1,5 @@
+use aws_credential_types::Credentials;
+use aws_sdk_bedrockruntime::config::{BehaviorVersion, Region};
 use aws_sdk_bedrockruntime::operation::converse_stream::ConverseStreamError;
 use aws_sdk_bedrockruntime::types::error::{ModelStreamErrorException, ThrottlingException};
 use aws_sdk_bedrockruntime::types::{
@@ -5,13 +7,14 @@ use aws_sdk_bedrockruntime::types::{
     ConverseStreamMetadataEvent, ConverseStreamMetrics, ConverseStreamOutput, MessageStartEvent,
     MessageStopEvent, StopReason, TokenUsage as AwsTokenUsage,
 };
+use aws_smithy_http_client::test_util::capture_request;
 use serde_json::{Value, json};
 use swallowtail_adapter_bedrock::{
     DecodeFailure, ProviderFailureKind, SDK_CRATE, SDK_VERSION, SERVICE_API, StopKind,
     StreamDecoder, StreamUpdate, TokenUsage, classify_converse_failure,
 };
 
-const PROTOCOL: &str = include_str!("fixtures/bedrock-runtime-1.136.0/protocol.json");
+const PROTOCOL: &str = include_str!("fixtures/bedrock-runtime-1.148.0/protocol.json");
 
 #[test]
 fn manifest_binds_sdk_access_attempt_and_exclusions() {
@@ -31,8 +34,8 @@ fn manifest_binds_sdk_access_attempt_and_exclusions() {
     );
     assert_eq!(fixture["metering"], "cloud_account_billing");
     assert_eq!(fixture["support_authority"], "provider_supported");
-    assert_eq!(fixture["inference"]["maximum_attempts"], 1);
-    assert_eq!(fixture["inference"]["retry_allowed"], false);
+    assert_eq!(fixture["client_configuration"]["retry_max_attempts"], 1);
+    assert_eq!(fixture["failure"]["automatic_retry"], false);
     assert_eq!(fixture["stream"]["bounded_projection"], true);
     assert!(
         fixture["excluded"]
@@ -233,4 +236,68 @@ fn provider_failures_are_classified_without_preserving_raw_messages() {
     );
     assert!(!format!("{:?}", classify_converse_failure(&throttled)).contains("raw throttle"));
     assert!(!format!("{:?}", classify_converse_failure(&stream)).contains("raw stream"));
+}
+
+#[tokio::test]
+async fn frozen_converse_stream_request_is_serialized_by_the_qualified_sdk() {
+    let (capture_client, captured_request) = capture_request(None);
+    let config = aws_sdk_bedrockruntime::Config::builder()
+        .behavior_version(BehaviorVersion::latest())
+        .region(Region::new("us-east-1"))
+        .endpoint_url("https://bedrock-runtime.us-east-1.amazonaws.com")
+        .credentials_provider(Credentials::new(
+            "test-access-key",
+            "test-secret-key",
+            None,
+            None,
+            "swallowtail-test",
+        ))
+        .retry_config(
+            aws_sdk_bedrockruntime::config::retry::RetryConfig::standard().with_max_attempts(1),
+        )
+        .http_client(capture_client)
+        .build();
+    let client = aws_sdk_bedrockruntime::Client::from_conf(config);
+    let message = aws_sdk_bedrockruntime::types::Message::builder()
+        .role(ConversationRole::User)
+        .content(aws_sdk_bedrockruntime::types::ContentBlock::Text(
+            "hello".to_owned(),
+        ))
+        .build()
+        .expect("user message fixture builds");
+    let inference = aws_sdk_bedrockruntime::types::InferenceConfiguration::builder()
+        .max_tokens(7)
+        .build();
+
+    let _ = client
+        .converse_stream()
+        .model_id("test-model")
+        .messages(message)
+        .inference_config(inference)
+        .send()
+        .await;
+
+    let request = captured_request.expect_request();
+    let fixture: Value = serde_json::from_str(PROTOCOL).expect("protocol fixture is valid JSON");
+    let request_fixture = &fixture["request"];
+    assert_eq!(
+        request.method(),
+        request_fixture["method"]
+            .as_str()
+            .expect("fixture method is text")
+    );
+    let expected_path = request_fixture["path"]
+        .as_str()
+        .expect("fixture path is text")
+        .replace("{modelId}", "test-model");
+    assert!(
+        request.uri().ends_with(&expected_path),
+        "captured URI did not end in the frozen path"
+    );
+    let body = request
+        .body()
+        .bytes()
+        .expect("captured request body is in memory");
+    let body: Value = serde_json::from_slice(body).expect("request body is JSON");
+    assert_eq!(body, request_fixture["body"]);
 }

@@ -1,4 +1,4 @@
-# Research 406 DeepSeek Harness Web RC2 Authentication Stop
+# Research 408 DeepSeek Harness Web RC2 Authentication Stop
 
 Status: currentness stop at the browser-authentication boundary
 Owner: Swallowtail
@@ -9,7 +9,7 @@ Date: 2026-10-08
 The npm `latest` and `next` tags both point to `@deepseek-ai/dsh@0.2.0-rc.2`.
 The `alpha` tag points to `0.2.1-alpha.1`. The RC channel published
 `0.1.0-rc.7`, `0.1.0-rc.8`, `0.1.1-rc.1`, `0.1.1-rc.2`, and `0.1.2-rc.1`
-after the existing `0.1.0-rc.6` claim. Research 406 qualifies the first four
+after the existing `0.1.0-rc.6` claim. Research 408 qualifies the first four
 points and preserves `0.1.0-rc.6`. The first security and authority break is
 `0.1.2-rc.1`; no point at or after that release is qualified. Later alpha
 versions remain outside the selected RC channel.

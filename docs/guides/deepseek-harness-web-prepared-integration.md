@@ -21,7 +21,7 @@ publication, or harness installation in this route.
 - exact host-approved `dsh` target and `deepseek-harness.web` axis
 - one exact qualified Web release observation: `0.1.0-rc.6`, `0.1.0-rc.7`,
   `0.1.0-rc.8`, `0.1.1-rc.1`, or `0.1.1-rc.2`; `0.1.2-rc.1` and later
-  fail closed pending the browser-auth adaptation in Research 406
+  fail closed pending the browser-auth adaptation in Research 408
 - host-approved Web `--patch` overlay path as the environment reference
 - loopback endpoint, defaulting to `http://127.0.0.1:3080`
 - local unauthenticated access evidence with no credential reference or lease

@@ -29,7 +29,7 @@ annotated Git tags from the canonical repository.
   `0.1.0-rc.7`, `0.1.0-rc.8`, `0.1.1-rc.1`, and `0.1.1-rc.2` under the
   existing `deepseek-harness.apiproxy-v1` facade. The adapter suppresses the
   default browser handoff from `0.1.0-rc.8` with the published `--no-open`
-  flag. Research 406 freezes these artifacts and stops at `0.1.2-rc.1`, where
+  flag. Research 408 freezes these artifacts and stops at `0.1.2-rc.1`, where
   `/api` requires persistent DSH browser authentication. Current npm
   `latest`/`next` `0.2.0-rc.2` remains unqualified pending a ruling and tested
   authentication/stream adaptation. No host DSH, browser, credentials, server,

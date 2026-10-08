@@ -1,4 +1,4 @@
-# Research 386: Cursor Agent 2026.10.01 Catalogue Identity and Qualification
+# Research 393: Cursor Agent 2026.10.01 Catalogue Identity and Qualification
 
 Status: complete identity evidence for `cursor-agent.catalogue`; production
 claim update is recorded separately in this change.

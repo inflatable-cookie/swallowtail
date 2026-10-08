@@ -30,6 +30,15 @@ annotated Git tags from the canonical repository.
   preserve Node 22.23.2, and leave the SDK, native, wire, sidecar, platform,
   registered-tool live, and HTTP MCP live evidence unchanged. No Node
   installation, host update, provider call, or credential use occurred.
+- qualify only `cursor-agent.catalogue` through official ACP registry stable
+  `2026.10.01-14929f9`, after every published hop following `2026.09.18-9a7762b`.
+  Research 393 freezes exact Darwin ARM64 and Linux x64 artifacts, complete
+  package trees, and per-hop selected-file classifications. Keep the baseline,
+  claim, behavior revision, prior points, and gaps; ACP and headless retain
+  their `2026.09.18` ceilings. The selected `models` command, account options,
+  model identity/display mapping, failure boundary, and process lifecycle are
+  unchanged. No archive execution, authenticated catalogue, provider prompt,
+  credential use, installation, or host update occurred.
 - qualify `mistral-vibe.headless` through official PyPI and GitHub stable
   `2.26.0`. Research 384 freezes all four published hops after `2.25.4`,
   complete wheel trees, runtime/source identities, and per-hop selected-surface

@@ -394,9 +394,10 @@ OpenHands adds a package without a production route.
   a separate provider-suppressed `get_available_models` operation. The same
   crate also implements the separate `pi.sdk-sidecar` route: Pi's official
   TypeScript SDK at exact `0.84.2` running in a source-tagged Node sidecar
-  (exact Node `22.23.2`) over the private bounded
-  `swallowtail-pi-sdk-jsonl-v1` wire, with four qualified-only one-point
-  version axes, application-provisioned launch recipe and environment,
+  (maintained Node `22.23.2..=22.23.3`; Research 396) over the private bounded
+  `swallowtail-pi-sdk-jsonl-v1` wire, with exact qualified package, wire, and
+  sidecar points plus a maintained Node 22 patch segment, application-provisioned
+  launch recipe and environment,
   `AmbientHost` read-only tools, fresh-session parity with the RPC route, and
   persistent new, load-with-replay, and replay-free resume gated on the exact
   host-leased cwd

@@ -71,6 +71,15 @@ annotated Git tags from the canonical repository.
   remains a separate channel. No public operation, permission, or lifecycle
   behavior changes. No provider prompt, live session, credential use, artifact
   execution, installation, or host update occurred.
+- qualify only `pi.sdk-sidecar.node` from `22.23.2` through official Node 22
+  stable `22.23.3`, preserving the prior point and every other Pi SDK axis.
+  Research 396 freezes signed Darwin ARM64 artifacts, complete distribution
+  delta classifications, the bundled root set, and offline default-TLS failure
+  proof. Node `22.23.3` carries the NSS 3.125 trust snapshot with 26 prior root
+  identities removed or changed; certificate and hostname verification remain
+  enabled. Provider endpoint compatibility and custom or system trust are not
+  inferred. No provider request, credential use, installation, or host update
+  occurred.
 - qualify `mistral-vibe.headless` through official PyPI and GitHub stable
   `2.26.0`. Research 384 freezes all four published hops after `2.25.4`,
   complete wheel trees, runtime/source identities, and per-hop selected-surface

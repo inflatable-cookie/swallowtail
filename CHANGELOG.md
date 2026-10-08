@@ -16,7 +16,7 @@ annotated Git tags from the canonical repository.
   artifact execution, provider work, credential use, installation, or host
   mutation occurred.
 - qualify only `cline.acp` from its existing `3.0.55` baseline through official
-  npm `latest` `3.0.70`, excluding unpublished `3.0.59`. Research 394 freezes
+  npm `latest` `3.0.70`, excluding unpublished `3.0.59`. Research 395 freezes
   all fourteen published hops, wrapper and six-platform package provenance,
   complete wrapper and Darwin ARM64 runtime trees, and selected ACP source
   changes. Preserve `cline.acp.stdio-v1`, existing route limits, and the
@@ -33,7 +33,7 @@ annotated Git tags from the canonical repository.
   Cline may retry or continue provider work internally from `3.0.62`, while
   Swallowtail still launches one bounded process and exposes no attempt or
   usage records. ACP is independently qualified through `3.0.70` under
-  Research 394. No artifact ran and no provider
+  Research 395. No artifact ran and no provider
   prompt, credentials, install, or host update occurred.
 - extend the Qoder `qoder.headless` claim from `1.1.54` through maintained
   stable `1.1.65`, retaining `QualifiedOnly`, the baseline, claim id and

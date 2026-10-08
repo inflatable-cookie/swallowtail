@@ -1,4 +1,4 @@
-# Research 390: Goose ACP 1.53.0 Identity and Qualification
+# Research 391: Goose ACP 1.53.0 Identity and Qualification
 
 Status: candidate for independent review  
 Date: 2026-10-08  

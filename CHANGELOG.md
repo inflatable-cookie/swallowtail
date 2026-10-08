@@ -362,7 +362,7 @@ annotated Git tags from the canonical repository.
   `swallowtail.goose.acp.auth_required`. Research 319's historical stop and
   the independently gated builtin, mode, lifecycle, and effort surfaces stand.
 - qualify `goose.acp` from its `1.50.1` ceiling through official GitHub stable
-  `1.53.0`. Research 390 freezes all three published successor hops, complete
+  `1.53.0`. Research 391 freezes all three published successor hops, complete
   source tag trees, Darwin ARM64 asset digests, and per-hop selected-source
   classifications. Preserve baseline `1.50.1`, claim id
   `goose.acp.release-window-1`, and behavior revision

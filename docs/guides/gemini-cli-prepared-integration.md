@@ -30,11 +30,14 @@ credential, model, workspace, sandbox, endpoint, billing route, or fallback.
 ACP `0.51.0..=0.61.0` excluding unpublished `0.56.1` and `0.59.1` is
 qualified. Headless `0.51.0..=0.61.0` excluding unpublished `0.56.1` and
 `0.59.1` is qualified. Official npm `latest` and GitHub's latest stable agree
-on `0.63.0`. Points `0.62.0` and `0.63.0` remain visible `UnverifiedNewer`
-pending the selected
-Plan Mode permission, authority, and tool-output/context ruling in Research
-371. Later stable releases may prepare as visible `UnverifiedNewer`; older and
-excluded releases do not prepare and newer releases gain no capability.
+on `0.63.0`. Points `0.62.0` and `0.63.0` remain visible `UnverifiedNewer`.
+Research 417 confirms that noninteractive Plan Mode can allow
+`exit_plan_mode`, which changes approval mode to YOLO. The selected adapter has
+no guard for that transition, so the current stable remains unqualified until
+a separate enforcement design preserves the no-implementation-authority
+contract. Later stable releases may prepare as visible `UnverifiedNewer`;
+older and excluded releases do not prepare and newer releases gain no
+capability.
 
 The current official stable is `0.63.0`. `0.62.0` and `0.63.0` remain
 `UnverifiedNewer` for ACP pending the permission and file-boundary adaptation

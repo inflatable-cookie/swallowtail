@@ -471,11 +471,12 @@ OpenHands adds a package without a production route.
   entries preserve only opaque model identity and do not imply entitlement or
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
   tag share one source commit; `1.1.8` is not independently qualified.
-  Catalogue support extends through official `1.2.11` with the same
-  catalogue revision because no published release-note change touches the
-  selected `agy models` path after the classified `1.1.23` stdin repair.
-  Research 353 advances the catalogue claim to `1.2.11` and raises the
-  headless Contract 023 acceptance options to the operator. Research 359
+  Catalogue support extends through official `1.3.1` with the same
+  catalogue revision; Research 375 freezes all eight published hops after
+  `1.2.11`, excludes unpublished `1.2.18`, and classifies no published note
+  as changing the selected `agy models` path. Research 353 records the earlier
+  catalogue extension and raises the headless Contract 023 acceptance options
+  to the operator. Research 359
   then proves the `1.2.11` artifact honours `AGY_CLI_MODEL_API_MAX_RETRIES`
   (`0` disables provider-managed model-request retry, finite `N` allows
   `N+1` attempts), so exact `1.2.11` headless qualifies on a

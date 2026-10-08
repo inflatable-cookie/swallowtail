@@ -475,7 +475,7 @@ fn protocol_classifies_every_published_selected_path_change_per_claim() {
 #[test]
 fn per_claim_segments_split_catalogue_from_the_headless_stop() {
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
-    assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.2.11");
+    assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.3.1");
     // Research 359 qualifies exact headless 1.2.11 on the retry-disabled
     // revision; the frozen corpus above still records its earlier stop.
     assert_eq!(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION, "1.2.11");
@@ -483,7 +483,8 @@ fn per_claim_segments_split_catalogue_from_the_headless_stop() {
     let catalogue = antigravity_catalogue_claim();
     for candidate in [
         "1.1.9", "1.1.17", "1.2.2", "1.2.3", "1.2.4", "1.2.5", "1.2.6", "1.2.7", "1.2.8", "1.2.9",
-        "1.2.10", "1.2.11",
+        "1.2.10", "1.2.11", "1.2.12", "1.2.13", "1.2.14", "1.2.15", "1.2.16", "1.2.17", "1.3.0",
+        "1.3.1",
     ] {
         assert!(matches!(
             catalogue.assess(&version(candidate)),
@@ -492,7 +493,11 @@ fn per_claim_segments_split_catalogue_from_the_headless_stop() {
     }
     assert!(!catalogue.permits(&version("1.1.8")));
     assert!(matches!(
-        catalogue.assess(&version("1.2.12")),
+        catalogue.assess(&version("1.2.18")),
+        InterfaceCompatibilityAssessment::Incompatible
+    ));
+    assert!(matches!(
+        catalogue.assess(&version("1.3.2")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 

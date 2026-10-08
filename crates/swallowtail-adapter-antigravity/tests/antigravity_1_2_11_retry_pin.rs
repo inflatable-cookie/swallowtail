@@ -8,7 +8,8 @@ use swallowtail_core::{
     InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
 };
 
-const PIN_EVIDENCE: &str = include_str!("fixtures/antigravity-cli-1.2.11-retry-pin/pin-evidence.json");
+const PIN_EVIDENCE: &str =
+    include_str!("fixtures/antigravity-cli-1.2.11-retry-pin/pin-evidence.json");
 
 const RETRY_DISABLED_BEHAVIOR: &str =
     "antigravity.stream-json.cli-1.1.8-artifact-1.2.11-retry-disabled-v1";
@@ -112,10 +113,7 @@ fn headless_claim_pins_exact_1_2_11_on_the_retry_disabled_revision() {
     let claim = antigravity_headless_claim();
     assert_eq!(claim.axis().as_str(), ANTIGRAVITY_RELEASE_AXIS);
 
-    assert_eq!(
-        claim.id().as_str(),
-        "antigravity.headless.release-window-2"
-    );
+    assert_eq!(claim.id().as_str(), "antigravity.headless.release-window-2");
     for kept in ["1.1.9", "1.1.15", "1.1.17"] {
         assert!(
             matches!(
@@ -149,12 +147,10 @@ fn headless_claim_pins_exact_1_2_11_on_the_retry_disabled_revision() {
             "{gap} stays unqualified until per-point pin evidence lands"
         );
     }
-    assert!(
-        matches!(
-            claim.assess(&version("1.2.12")),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        )
-    );
+    assert!(matches!(
+        claim.assess(&version("1.2.12")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     assert!(!claim.permits(&version("1.1.8")));
 }
 

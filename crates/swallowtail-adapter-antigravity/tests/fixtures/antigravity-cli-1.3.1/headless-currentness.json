@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "record": "docs/research/386-antigravity-headless-1-3-1-currentness-stop.md",
+  "scope": "antigravity.headless",
+  "official_stable_observed_at": "2026-10-08",
+  "official_stable": "1.3.1",
+  "current_ceiling": "1.2.11",
+  "current_claim_id": "antigravity.headless.release-window-2",
+  "baseline": "1.1.9",
+  "retry_pin": {
+    "name": "AGY_CLI_MODEL_API_MAX_RETRIES",
+    "value": "0",
+    "proven_artifact": "1.2.11",
+    "proven_newer_hops": []
+  },
+  "identity_sources": {
+    "release_manifest": "identity.json",
+    "complete_selected_platform_trees": "dist-inventory.json",
+    "platforms_downloaded_and_verified": [
+      "linux_x64",
+      "mac_arm64"
+    ],
+    "published_windows_assets_unpacked": false,
+    "binaries_executed": false
+  },
+  "unpublished_points": [
+    {
+      "version": "1.2.18",
+      "release_present": false,
+      "tag_present": false,
+      "classification": "unpublished point within the semver interval; no claim added"
+    },
+    {
+      "version": "1.3.2",
+      "release_present": false,
+      "tag_present": false,
+      "classification": "first unpublished point after current stable; remains unverified"
+    }
+  ],
+  "hops": [
+    {
+      "from": "1.2.11",
+      "to": "1.2.12",
+      "published_at": "2026-09-27T05:06:09Z",
+      "tag_commit": "8cb7cd1bbab008cada5e8b27b56ed29107f45de0",
+      "source_changed_paths": [
+        "CHANGELOG.md"
+      ],
+      "runtime_inventory_path": "dist-inventory.json#/versions/1.2.12",
+      "classification": "approved-environment-evidence-gate",
+      "selected_change": "GEMINI_API_KEY sessions stop on daily quota, spend-cap, or prepaid-credit exhaustion instead of retrying those cases; short rate limits continue to retry.",
+      "remaining_proof": "EnvironmentRef is opaque and the approved profile has no credential reference; this does not prove GEMINI_API_KEY is absent from the child environment."
+    },
+    {
+      "from": "1.2.12",
+      "to": "1.2.13",
+      "published_at": "2026-09-29T03:58:00Z",
+      "tag_commit": "77b1aad0cb850c184a987661b149985de41a3568",
+      "source_changed_paths": [
+        "CHANGELOG.md"
+      ],
+      "runtime_inventory_path": "dist-inventory.json#/versions/1.2.13",
+      "classification": "retry-control-evidence-gate",
+      "selected_change": "Model API retry delay and quota handling changes: waits the server delay and stops rather than retrying when it exceeds 30 seconds or is a daily/billing cap.",
+      "remaining_proof": "The exact AGY_CLI_MODEL_API_MAX_RETRIES=0 semantics are proven for 1.2.11 only; later artifact semantics are not established."
+    },
+    {
+      "from": "1.2.13",
+      "to": "1.2.14",
+      "published_at": "2026-09-30T04:03:27Z",
+      "tag_commit": "eaf9e06660d2ca8f20f1474ed03f10e3dbfd35e5",
+      "source_changed_paths": [
+        "CHANGELOG.md"
+      ],
+      "runtime_inventory_path": "dist-inventory.json#/versions/1.2.14",
+      "classification": "compatible-selected-schema-extension",
+      "selected_change": "--json-schema now rejects non-object roots and unsupported or missing schema inputs at startup.",
+      "remaining_proof": "The adapter validates object-root schemas and passes inline JSON; no new schema form or operation is selected. Preserve the existing schema regression coverage."
+    },
+    {
+      "from": "1.2.14",
+      "to": "1.2.15",
+      "published_at": "2026-10-02T17:00:58Z",
+      "tag_commit": "ae27bff644d78ed0c759b4d8a6b79506f1bed96d",
+      "source_changed_paths": [
+        "CHANGELOG.md"
+      ],
+      "runtime_inventory_path": "dist-inventory.json#/versions/1.2.15",
+      "classification": "new-private-denial-milestone-needs-selected-stream-proof",
+      "selected_change": "An unapproved permission request is respected and no alternate command, script, or tool workaround is attempted.",
+      "remaining_proof": "Official headless docs say a soft-denied tool continues with exit 0 and a stderr notice. They do not identify an exact denial event in selected stdout; do not synthesize a version-specific denial fixture or add an approval/bypass operation."
+    },
+    {
+      "from": "1.2.15",
+      "to": "1.2.16",
+      "published_at": "2026-10-03T03:56:08Z",
+      "tag_commit": "65a3c69e388148c9327f307efe82ddb1c0c8d7d4",
+      "source_changed_paths": [
+        "CHANGELOG.md"
+      ],
+      "runtime_inventory_path": "dist-inventory.json#/versions/1.2.16",
+      "classification": "selected-lifecycle-extension-child-status-gate",
+      "selected_change": "Headless -p now waits for a background command that finishes after the first turn; image generation is handed to a subagent.",
+      "remaining_proof": "The adapter drains stdout through EOF and then waits for the child. The added child topology feeds the existing subagent projection, whose success status is not independently proven by identity fields."
+    },
+    {
+      "from": "1.2.16",
+      "to": "1.2.17",
+      "published_at": "2026-10-05T06:20:11Z",
+      "tag_commit": "274d81b9929aaa2b91a7266106d0d0b7f19adf52",
+      "source_changed_paths": [
+        "CHANGELOG.md"
+      ],
+      "runtime_inventory_path": "dist-inventory.json#/versions/1.2.17",
+      "classification": "windows-sandbox-runtime-evidence-gate",
+      "selected_change": "The Windows command sandbox no longer needs administrator rights and gains common tool support.",
+      "remaining_proof": "This changes the selected ProviderEnforced --sandbox path. Windows releases have official manifest digests but were not unpacked or exercised; do not narrow platform support."
+    },
+    {
+      "from": "1.2.17",
+      "to": "1.3.0",
+      "published_at": "2026-10-06T06:05:28Z",
+      "tag_commit": "5e9c9c6c3fb1aea16dbc77918d687a842620cd1f",
+      "source_changed_paths": [
+        "CHANGELOG.md"
+      ],
+      "runtime_inventory_path": "dist-inventory.json#/versions/1.3.0",
+      "classification": "selected-path-and-custom-agent-extension-review",
+      "selected_change": "Special-character/Windows paths and project-scoped custom-agent discovery are corrected; default UI verbosity and /diff changes are TUI-only under the explicit stream-json command.",
+      "remaining_proof": "Path and custom-agent configuration are selected inputs. The artifact is opaque and the release note does not freeze the exact stream or path mapping; review remains bounded to existing operations."
+    },
+    {
+      "from": "1.3.0",
+      "to": "1.3.1",
+      "published_at": "2026-10-07T03:22:02Z",
+      "tag_commit": "968f1170bd0e002e9d0914730975bc8a2cc65861",
+      "source_changed_paths": [
+        "CHANGELOG.md"
+      ],
+      "runtime_inventory_path": "dist-inventory.json#/versions/1.3.1",
+      "classification": "child-status-stream-evidence-gate",
+      "selected_change": "Custom-agent relative paths change; subagents that stop on error now show Error in /agents and the running-agent list; GEMINI_API_KEY turns retry dropped connections.",
+      "remaining_proof": "The error-display note names TUI surfaces. Official stream docs list child identity/log/workspace fields but no child error/status field; selected 1.3.1 stream evidence is unavailable without provider work. Do not map a child to Failed or Completed from this evidence."
+    }
+  ],
+  "result": {
+    "qualification": "blocked",
+    "claim_changed": false,
+    "preserve_claim_id": "antigravity.headless.release-window-2",
+    "preserve_baseline": "1.1.9",
+    "preserve_qualified_segments": [
+      "1.1.9..=1.1.17",
+      "1.2.11"
+    ],
+    "preserve_incompatible_hole": "1.1.18..=1.2.10",
+    "preserve_retry_pin": "AGY_CLI_MODEL_API_MAX_RETRIES=0",
+    "proposed_future_shape": "Keep existing segments and gap; if all gates are resolved, add a private behavior milestone beginning at 1.2.15 for the changed denial semantics. Preserve current operations and the no-approval-bypass boundary.",
+    "child_status_ruling_gate": "If no usable selected-stream error field can be established, request a separate ruling for an unknown/omitted child lifecycle projection before changing Completed.",
+    "provider_prompt_sent": false,
+    "live_provider_call": false,
+    "credential_accessed": false,
+    "host_install_or_update": false,
+    "binary_executed": false
+  }
+}

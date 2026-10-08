@@ -65,6 +65,13 @@ section = "Research Records"
 "check:current-antigravity-catalogue" = "cargo check --locked --all-targets -p swallowtail-adapter-antigravity"
 "validate:current-antigravity-catalogue" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-antigravity --lib --test antigravity_release_identity --test foundation --test prepared_suite -E 'test(identity_freezes_each_stable_hop_and_complete_published_asset_manifest) | test(every_published_hop_classifies_the_exact_changed_file_set_per_route) | test(catalogue_claim_extends_while_preserving_baseline_behavior_and_holes) | test(headless_claim_and_its_interior_hole_are_unchanged) | test(exact_installed_release_is_qualified_and_newer_is_visible) | test(catalogue_and_headless_keep_distinct_behavior_claims) | test(exact_plain_text_catalogue_preserves_only_model_identity) | test(malformed_duplicate_and_unbounded_catalogues_fail_closed) | test(exact_and_newer_releases_probe_only_the_host_approved_target) | test(authenticated_catalogue_is_bounded_identity_only_and_topology_neutral) | test(catalogue_failure_is_safe_and_host_mismatch_has_no_effect) | test(facade_keeps_catalogue_run_and_continuation_explicit) | test(per_claim_segments_split_catalogue_from_the_headless_stop) | test(headless_claim_pins_exact_1_2_11_on_the_retry_disabled_revision)'"
 
+"format:current-antigravity-headless" = [
+  "cargo fmt -p swallowtail-adapter-antigravity",
+  "cargo fmt -p swallowtail-adapter-antigravity -- --check",
+]
+"check:current-antigravity-headless" = "cargo check --locked --all-targets -p swallowtail-adapter-antigravity"
+"validate:current-antigravity-headless" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-antigravity --test antigravity_release_identity --test headless_suite -E 'test(headless_currentness_record_freezes_all_hops_and_gates) | test(headless_claim_pins_exact_1_2_11_on_the_retry_disabled_revision) | test(ambient_read_run_projects_steps_subagents_and_exact_usage) | test(documented_tool_error_field_projects_failed_activity_without_permission_bypass)'"
+
 "format:current-opencode-acp" = [
   "cargo fmt -p swallowtail-adapter-opencode",
   "cargo fmt -p swallowtail-adapter-opencode -- --check",

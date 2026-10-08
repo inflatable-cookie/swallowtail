@@ -384,6 +384,7 @@ fn usage_turn_end_decodes_every_sanitized_result_observation_without_result_text
     assert_eq!(duration_ms, Some(41));
     assert!(error_text_present);
     assert_eq!(error_text_type, "string");
+    let usage = usage.expect("usage-bearing turn end retains its snapshot");
     assert_eq!(usage.input_tokens, 21);
     assert_eq!(usage.output_tokens, 5);
     assert_eq!(usage.cache_read_input_tokens, Some(8));
@@ -525,7 +526,7 @@ fn turn_end_rejects_malformed_structured_provider_failure_facts() {
 }
 
 #[test]
-fn turn_end_rejects_malformed_or_missing_usage_counts() {
+fn turn_end_rejects_malformed_usage_and_accepts_legacy_missing_usage() {
     let mut base = json!({
         "type": "event", "event": "turn_ended", "subtype": "success",
         "stopReason": "success", "isError": false, "numTurns": 1,
@@ -561,10 +562,14 @@ fn turn_end_rejects_malformed_or_missing_usage_counts() {
         .expect("base event is an object")
         .remove("usage");
     let bytes = serde_json::to_vec(&base).expect("fixture serializes");
-    assert_eq!(
-        decode_record(&bytes).err().map(|error| error.kind()),
-        Some(ClaudeAgentSdkProtocolFailureKind::InvalidEvent),
-        "missing per-turn usage is not fabricated"
+    assert!(
+        matches!(
+            decode_record(&bytes),
+            Ok(ClaudeAgentSdkRecord::Event(
+                ClaudeAgentSdkEvent::TurnEnded { usage: None, .. }
+            ))
+        ),
+        "legacy wire-v1 turn ends remain decodable without fabricated usage"
     );
 }
 

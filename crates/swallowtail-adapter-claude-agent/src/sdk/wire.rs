@@ -411,7 +411,9 @@ pub(crate) enum ClaudeAgentSdkEvent {
         failed: bool,
     },
     TurnEnded {
-        usage: ClaudeAgentSdkUsage,
+        /// Usage was added to the private sidecar projection after the
+        /// released SDK's wire-v1 contract. Older qualified results omit it.
+        usage: Option<ClaudeAgentSdkUsage>,
         stop_reason: String,
         failed: bool,
         subtype: Option<String>,

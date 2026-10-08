@@ -48,17 +48,19 @@ impl SdkActiveTurn {
                 terminal_reason,
                 rate_limit_status,
             } => {
-                let usage_event = RuntimeEvent::new(
-                    self.next_sequence(),
-                    RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(
-                        TokenUsage::new(Some(usage.input_tokens), Some(usage.output_tokens))
-                            .with_cache_tokens(
-                                usage.cache_read_input_tokens,
-                                usage.cache_write_input_tokens,
-                            ),
-                    )),
-                );
-                self.events.send(usage_event)?;
+                if let Some(usage) = usage {
+                    let usage_event = RuntimeEvent::new(
+                        self.next_sequence(),
+                        RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(
+                            TokenUsage::new(Some(usage.input_tokens), Some(usage.output_tokens))
+                                .with_cache_tokens(
+                                    usage.cache_read_input_tokens,
+                                    usage.cache_write_input_tokens,
+                                ),
+                        )),
+                    );
+                    self.events.send(usage_event)?;
+                }
                 let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
                     (TerminalStatus::TimedOut, ActivityStatus::Failed)
                 } else if failed || stop_reason != "success" {

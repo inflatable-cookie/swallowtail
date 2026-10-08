@@ -138,6 +138,7 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "package:source-consumer" = "bash scripts/verify-source-consumer.sh"
 "prepare:sdk-patch-candidate-baselines" = "bash scripts/release/sdk-patch-candidate.sh prepare-baselines"
 "format:sdk-patch-candidate" = "bash scripts/release/sdk-patch-candidate.sh format"
+"lint:sdk-patch-candidate" = "bash scripts/release/sdk-patch-candidate.sh lint"
 "check:sdk-patch-candidate" = "bash scripts/release/sdk-patch-candidate.sh check"
 "validate:sdk-patch-candidate" = "bash scripts/release/sdk-patch-candidate.sh validate"
 "package:check" = [

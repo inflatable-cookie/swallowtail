@@ -82,7 +82,10 @@ pub(super) fn decode_event(
             failed: required_bool(value, "isError", invalid)?,
         }),
         Some("turn_ended") => {
-            let usage = decode_usage(value.get("usage").ok_or_else(|| failure(invalid))?, invalid)?;
+            let usage = value
+                .get("usage")
+                .map(|usage| decode_usage(usage, invalid))
+                .transpose()?;
             let subtype = nullable_label(value, "subtype", invalid)?;
             let stop_reason = bounded_label_allow_empty(value, "stopReason", invalid)?.to_owned();
             let failed = required_bool(value, "isError", invalid)?;

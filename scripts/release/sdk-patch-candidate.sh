@@ -305,6 +305,31 @@ EOF
   printf 'scoped source and external consumer formatting passed\n'
 }
 
+candidate_lint() {
+  (($# == 0)) || candidate_die "lint takes no arguments"
+  local head scratch toolchain
+  local candidate_packages=(--package swallowtail-runtime --package swallowtail-host-local \
+    --package swallowtail-adapter-claude-agent)
+  candidate_check_manifest
+  head=$(candidate_check_clean_head)
+  candidate_identity_check "$candidate_repo_root"
+  bash "$candidate_repo_root/scripts/tests/sdk-patch-candidate-identity.sh"
+  scratch=$(candidate_scratch)
+  candidate_active_scratch=$scratch
+  for toolchain in 1.95.0 stable; do
+    rustup run "$toolchain" rustc --version >/dev/null 2>&1 ||
+      candidate_die "required lint toolchain is unavailable: $toolchain"
+    CARGO_TARGET_DIR="$scratch/target-$toolchain" cargo +"$toolchain" clippy --locked \
+      --manifest-path "$candidate_repo_root/Cargo.toml" --all-targets --all-features \
+      "${candidate_packages[@]}" -- -D warnings
+    printf 'candidate all-feature lint passed with Rust %s at commit %s\n' "$toolchain" "$head"
+  done
+  CARGO_TARGET_DIR="$scratch/target-stable-no-default" cargo +stable clippy --locked \
+    --manifest-path "$candidate_repo_root/Cargo.toml" --all-targets --no-default-features \
+    "${candidate_packages[@]}" -- -D warnings
+  printf 'candidate no-default-feature lint passed with current stable at commit %s\n' "$head"
+}
+
 candidate_check() {
   (($# == 0)) || candidate_die "check takes no arguments"
   local head scratch candidate_packages
@@ -333,7 +358,7 @@ candidate_validate() {
   candidate_check_manifest
   head=$(candidate_check_clean_head)
   candidate_identity_check "$candidate_repo_root"
-  test_filter='test(/a_session_lease_ignores_its_elapsed_open_deadline/) | test(/an_explicit_session_lease_deadline_rejects_late_calls/) | test(/the_effective_call_deadline_takes_the_earliest_bound/) | test(/an_expired_call_never_reaches_the_dispatcher/) | test(/the_kernel_is_the_only_lease_and_binding_source/) | test(/mounted_proxy_expired_deadline_rejects_the_callable_frame_before_dispatch/) | test(/a_pump_failure_between_command_check_and_registration_rejects_the_command/) | test(/registered_session_lease_survives_open_deadline_and_pending_permission/) | test(/cancellation_during_a_registered_call_joins_the_lease/) | test(/close_joins_the_registered_listener/) | test(/events_outside_an_active_turn_fail_closed/) | test(/closing_a_session_with_a_live_turn_resolves_it_instead_of_waiting_on_its_deadline/) | test(/usage_snapshots_keep_each_turn_independent_across_failure_and_reset/) | test(/usage_duplicate_result_after_turn_end_is_not_correlated_or_counted_twice/) | test(/usage_projection_keeps_only_bounded_per_turn_counters_and_rejects_invalid_snapshots/) | test(/usage_events_decode_qualified_payloads_and_reject_unknown_usage_report/) | test(/usage_turn_end_decodes_every_sanitized_result_observation_without_result_text/) | test(/turn_end_rejects_malformed_or_missing_usage_counts/) | test(/the_route_binds_five_independent_exact_identities/) | test(/the_lifecycle_and_credential_invariants_survived_the_hop/) | test(/identity_and_claim_qualify_0_69_0_as_compatible_extension/) | test(/prepared_route_returns_one_ordinary_text_result_without_authority/)'
+  test_filter='test(/a_session_lease_ignores_its_elapsed_open_deadline/) | test(/an_explicit_session_lease_deadline_rejects_late_calls/) | test(/the_effective_call_deadline_takes_the_earliest_bound/) | test(/an_expired_call_never_reaches_the_dispatcher/) | test(/the_kernel_is_the_only_lease_and_binding_source/) | test(/mounted_proxy_expired_deadline_rejects_the_callable_frame_before_dispatch/) | test(/a_pump_failure_between_command_check_and_registration_rejects_the_command/) | test(/registered_session_lease_survives_open_deadline_and_pending_permission/) | test(/cancellation_during_a_registered_call_joins_the_lease/) | test(/close_joins_the_registered_listener/) | test(/events_outside_an_active_turn_fail_closed/) | test(/closing_a_session_with_a_live_turn_resolves_it_instead_of_waiting_on_its_deadline/) | test(/usage_snapshots_keep_each_turn_independent_across_failure_and_reset/) | test(/usage_duplicate_result_after_turn_end_is_not_correlated_or_counted_twice/) | test(/usage_projection_keeps_only_bounded_per_turn_counters_and_rejects_invalid_snapshots/) | test(/usage_events_decode_qualified_payloads_and_reject_unknown_usage_report/) | test(/usage_turn_end_decodes_every_sanitized_result_observation_without_result_text/) | test(/turn_end_rejects_malformed_usage_and_accepts_legacy_missing_usage/) | test(/qualified_corpora_decode/) | test(/a_declared_stdio_mcp_server_connects_and_its_tool_is_mediated/) | test(/the_route_binds_five_independent_exact_identities/) | test(/the_lifecycle_and_credential_invariants_survived_the_hop/) | test(/identity_and_claim_qualify_0_69_0_as_compatible_extension/) | test(/prepared_route_returns_one_ordinary_text_result_without_authority/)'
   scratch=$(candidate_scratch)
   candidate_active_scratch=$scratch
   export CARGO_TARGET_DIR="$scratch"
@@ -355,16 +380,17 @@ candidate_validate() {
       --test claude_agent_sdk_driver --test claude_agent_sdk_sidecar_asset \
       --test integration -E "$test_filter"
   )
-  printf '22 candidate regressions passed at commit %s\n' "$head"
+  printf '24 candidate regressions passed at commit %s\n' "$head"
 }
 
 candidate_main() {
-  (($# >= 1)) || candidate_die "usage: candidate.sh prepare-baselines | format | check | validate"
+  (($# >= 1)) || candidate_die "usage: candidate.sh prepare-baselines | format | lint | check | validate"
   local command=$1
   shift
   case "$command" in
     prepare-baselines) candidate_prepare_baselines "$@" ;;
     format) candidate_format "$@" ;;
+    lint) candidate_lint "$@" ;;
     check) candidate_check "$@" ;;
     validate) candidate_validate "$@" ;;
     *) candidate_die "unknown command: $command" ;;

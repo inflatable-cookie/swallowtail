@@ -333,10 +333,9 @@ impl RegisteredToolOperationKernel {
                 .as_nanos(),
         )
         .unwrap_or(u64::MAX);
-        let bounded = Deadline::at(MonotonicInstant::from_ticks(
+        Deadline::at(MonotonicInstant::from_ticks(
             started.ticks().saturating_add(max_duration_ticks),
-        ));
-        bounded
+        ))
     }
 
     async fn admit_progress(&self, progress: RegisteredToolProgress) -> Result<(), RuntimeFailure> {

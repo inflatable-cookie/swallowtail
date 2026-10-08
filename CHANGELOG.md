@@ -14,6 +14,12 @@ annotated Git tags from the canonical repository.
 - project the SDK's four per-turn input, output, cache-read, and cache-creation
   counters through existing usage records with usage provenance. Cumulative
   model usage and context occupancy are not reported.
+- continue decoding qualified wire-v1 `turn_ended` records without the
+  additive usage field, while preserving strict validation for usage-bearing
+  results.
+- update the minimum compatible Rustls security closure to `0.23.45` for
+  RUSTSEC-2026-0285; TLS verification and the released provider and SDK pins
+  remain unchanged.
 
 ## [0.5.1] - 2026-09-13
 

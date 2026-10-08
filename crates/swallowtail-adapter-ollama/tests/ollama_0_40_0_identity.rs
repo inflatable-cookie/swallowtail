@@ -175,10 +175,7 @@ fn identity_freezes_official_hops_and_complete_trees_before_the_0400_stop() {
         identity["decision"]["qualified_hops"],
         serde_json::json!(["0.35.0", "0.35.1"])
     );
-    assert_eq!(
-        identity["decision"]["operator_ruling_needed"].is_string(),
-        true
-    );
+    assert!(identity["decision"]["operator_ruling_needed"].is_string());
     assert_eq!(identity["decision"]["provider_prompt_sent"], false);
     assert_eq!(identity["decision"]["attached_server_started"], false);
     assert_eq!(identity["decision"]["model_downloaded"], false);

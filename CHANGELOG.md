@@ -329,7 +329,7 @@ annotated Git tags from the canonical repository.
   and a later call on the same connected courier.
 - qualify `claude-agent.sdk` through official npm latest
   `@anthropic-ai/claude-agent-sdk` `0.3.293` carrying embedded native
-  `2.1.293`. Research 394 freezes every published hop from the retained
+  `2.1.293`. Research 396 freezes every published hop from the retained
   `0.3.284`/`2.1.284` baseline, exact npm integrity and native manifest
   identities, complete package trees, and per-hop classifications. The
   package and native claims keep their baselines, claim ids, behavior

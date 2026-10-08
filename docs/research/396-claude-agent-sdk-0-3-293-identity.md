@@ -1,4 +1,4 @@
-# 394 Claude Agent SDK 0.3.293 Identity and Currentness
+# 396 Claude Agent SDK 0.3.293 Identity and Currentness
 
 Date: 2026-10-08  
 Route: `claude-agent.sdk`  

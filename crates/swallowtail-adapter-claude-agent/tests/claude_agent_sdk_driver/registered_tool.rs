@@ -568,7 +568,7 @@ fn row_with_semantic_id<'a>(
 #[test]
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 fn the_projection_publishes_the_unqualified_truth_on_a_newer_compiled_tuple() {
-    // Research 394 extends the route through 0.3.293/2.1.293 while Research
+    // Research 396 extends the route through 0.3.293/2.1.293 while Research
     // 301 stays frozen on 0.3.259/2.1.259. On the accepted platform the only
     // reason the route projects unqualified is the tuple gate: no live
     // evidence covers the compiled tuple yet.

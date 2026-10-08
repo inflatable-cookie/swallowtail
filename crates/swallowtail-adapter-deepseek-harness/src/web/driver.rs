@@ -1,7 +1,6 @@
 use super::transport::{WebApiTransport, require_loopback_endpoint};
 use super::{
-    DEEPSEEK_HARNESS_WEB_RELEASE_AXIS, DEEPSEEK_HARNESS_WEB_RELEASE_VERSION, WebMethod,
-    matching_workspace, parse_archive, parse_cancel, parse_fork, parse_history,
+    WebMethod, matching_workspace, parse_archive, parse_cancel, parse_fork, parse_history,
     parse_host_description, parse_models, parse_prompt, parse_search, parse_session_create,
     parse_session_list, request_body,
 };
@@ -10,11 +9,10 @@ use std::sync::Arc;
 use std::sync::atomic::AtomicBool;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, Capability,
-    CapabilityConstraint, DiscoveryOutcome, DiscoveryStatus, DriverDescriptor, DriverRole,
-    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
-    InstalledExecutableObservation, InstanceOwnership, IntegrationFamilyId, InterfaceVersion,
-    InterfaceVersionAxis, InterfaceVersionBinding, OperationShape, PreflightPlan,
-    ProviderSessionActivityState, ProviderSessionAffectedScope, ProviderSessionImportAvailability,
+    CapabilityConstraint, DiscoveryOutcome, DriverDescriptor, DriverRole, ExecutionLayer,
+    HarnessConfigurationPosture, HarnessIsolation, HostServiceKind, InstanceOwnership,
+    IntegrationFamilyId, OperationShape, PreflightPlan, ProviderSessionActivityState,
+    ProviderSessionAffectedScope, ProviderSessionImportAvailability,
     ProviderSessionImportUnavailableReason, ProviderSessionManagementAction,
     ProviderSessionManagementEffect, ResourceAccess, ResourceRepresentation, SafeDiagnostic,
     SessionRef, SupportAuthority, TransportFamilyId,
@@ -23,21 +21,24 @@ use swallowtail_runtime::{
     ArchiveProviderSessionRequest, BoxEventStream, BoxFuture, CancellationAcknowledgement,
     CancellationControl, CleanupOutcome, DeleteProviderSessionRequest, DiscoveryDriver,
     DiscoveryRequest, EndpointRef, EnvironmentRef, ExecutableRef, HostServices,
-    ImmediateCancellation, InstalledExecutableDiscoveryRequest, JoinedTask, OperationContent,
-    ProcessHandle, ProcessRequest, ProviderSessionCandidate, ProviderSessionCandidateId,
-    ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan,
-    ProviderSessionCatalogueRequest, ProviderSessionHistoryDriver, ProviderSessionHistoryPage,
-    ProviderSessionHistoryPlan, ProviderSessionHistoryRequest, ProviderSessionHistoryTotal,
-    ProviderSessionManagementDriver, ProviderSessionManagementOutcome,
+    ImmediateCancellation, InstalledExecutableDiscoveryRequest, InstalledProbeCodes, JoinedTask,
+    OperationContent, ProcessHandle, ProcessRequest, ProviderSessionCandidate,
+    ProviderSessionCandidateId, ProviderSessionCatalogueDriver, ProviderSessionCatalogueOutcome,
+    ProviderSessionCataloguePlan, ProviderSessionCatalogueRequest, ProviderSessionHistoryDriver,
+    ProviderSessionHistoryPage, ProviderSessionHistoryPlan, ProviderSessionHistoryRequest,
+    ProviderSessionHistoryTotal, ProviderSessionManagementDriver, ProviderSessionManagementOutcome,
     ProviderSessionManagementPlan, ProviderSessionOperationFailure,
     ProviderSessionOperationFailureStage, RequestId, RestoreProviderSessionRequest, RunHandle,
     RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId, SessionReplayItem,
     StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus,
-    page_provider_session_history_window, runtime_event_channel, terminal_outcome_channel,
-    validate_installed_executable_discovery_services,
+    installed_probe_codes, page_provider_session_history_window,
+    probe_installed_executable_version, runtime_event_channel, terminal_outcome_channel,
     validate_provider_session_catalogue_execution, validate_provider_session_history_execution,
     validate_provider_session_management_request,
 };
+
+const DEEPSEEK_HARNESS_WEB_PROBE_CODES: InstalledProbeCodes =
+    installed_probe_codes!("swallowtail.deepseek_harness.web");
 
 /// Returns the DeepSeek Harness Web `/api` descriptor.
 #[must_use]
@@ -335,49 +336,22 @@ impl DiscoveryDriver for DeepSeekHarnessWebDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
-        Box::pin(async move {
-            validate_installed_executable_discovery_services(&request, &services)?;
-            let claim = super::web_claim();
-            if request.target().version_axis() != claim.axis() {
-                return Err(failure(
-                    "swallowtail.deepseek_harness.web.discovery_axis_mismatch",
-                    "DeepSeek Harness Web discovery target uses a different version axis",
-                ));
-            }
-            if !super::target_is_exact(request.target().executable().as_host_value()) {
-                return Err(failure(
+        if !super::target_is_exact(request.target().executable().as_host_value()) {
+            return Box::pin(async {
+                Err(failure(
                     "swallowtail.deepseek_harness.web.target_not_pinned",
                     "DeepSeek Harness Web discovery requires the exact dsh CLI target",
-                ));
-            }
-            if request.cancellation().is_requested() {
-                return Ok(DiscoveryOutcome::new(
-                    DiscoveryStatus::Cancelled,
-                    Some(SafeDiagnostic::new(
-                        "swallowtail.deepseek_harness.web.discovery_cancelled",
-                        "DeepSeek Harness Web installed discovery was cancelled",
-                    )),
-                ));
-            }
-            let binding = InterfaceVersionBinding::new(
-                InterfaceVersionAxis::new(DEEPSEEK_HARNESS_WEB_RELEASE_AXIS)
-                    .expect("static Web version axis is valid"),
-                InterfaceVersion::new(DEEPSEEK_HARNESS_WEB_RELEASE_VERSION)
-                    .expect("static Web version is valid"),
-            );
-            let observation = InstalledExecutableObservation::classify(
-                request.execution_host_id().clone(),
-                binding,
-                &claim,
-            )
-            .map_err(|_| {
-                failure(
-                    "swallowtail.deepseek_harness.web.discovery_classification_failed",
-                    "DeepSeek Harness Web version observation could not be classified",
-                )
-            })?;
-            Ok(DiscoveryOutcome::installed_executable(observation))
-        })
+                ))
+            });
+        }
+        Box::pin(probe_installed_executable_version(
+            request,
+            services,
+            super::web_claim(),
+            super::selection::parse_web_version_output,
+            DEEPSEEK_HARNESS_WEB_PROBE_CODES,
+            "DeepSeek Harness Web",
+        ))
     }
 }
 
@@ -893,14 +867,15 @@ impl DeepSeekHarnessWebDriver {
             request.request_id().as_str()
         ))
         .map_err(|_| malformed("DeepSeek Harness Web run identity is invalid"))?;
+        let web_version = super::selection::web_version(&plan)
+            .expect("validated Web run has one qualified package version");
+        let process_arguments =
+            super::selection::web_command_arguments(web_version, self.environment.as_host_value())
+                .expect("validated Web run has a supported command mapping");
         let process_request = ProcessRequest::new(ExecutableRef::from_instance_target(
             plan.instance_target_ref(),
         ))
-        .with_arguments([
-            "web".to_owned(),
-            "--patch".to_owned(),
-            self.environment.as_host_value().to_owned(),
-        ])
+        .with_arguments(process_arguments)
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource.clone());
         let process: Arc<dyn ProcessHandle> = Arc::from(

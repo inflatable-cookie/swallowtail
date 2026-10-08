@@ -11,6 +11,9 @@ What is true now:
   `0.38.0` while official stable `2.1.1` retains the local-spawn process-
   authority stop (Research 403); a host-terminal API design awaits separate
   review.
+- DeepSeek Harness Web now includes exact selected RCs through `0.1.1-rc.2`;
+  npm `latest`/`next` `0.2.0-rc.2` remains unqualified pending the browser-auth
+  adaptation in Research 406.
 - Contract 063 admits a consumer-supplied streamable-HTTP MCP placement.
   `opencode.acp` is live-proven honouring it. `claude-agent.acp` honours it
   on exact `0.81.2` (Research 364) after Research 352's `cleanup_failed`

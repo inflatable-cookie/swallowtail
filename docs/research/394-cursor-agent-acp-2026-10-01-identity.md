@@ -1,6 +1,6 @@
 # Research 394: Cursor ACP 2026.10.01 Identity
 
-Status: identity evidence for `cursor-agent.acp`; the production claim remains at `2026.09.18-9a7762b` until its separate claim commit. Scope authority is Tom's approved exact-pin/reset sweep ruling in [the version-currentness checkpoint procedure](../knowledge/operations/version-currentness-checkpoint.md#pre-v052-sweep-authority) and Queue task `swallowtail#127`.
+Status: identity evidence for `cursor-agent.acp`; the separate claim commit in this PR extends the production claim through `2026.10.01-14929f9`. Scope authority is Tom's approved exact-pin/reset sweep ruling in [the version-currentness checkpoint procedure](../knowledge/operations/version-currentness-checkpoint.md#pre-v052-sweep-authority) and Queue task `swallowtail#127`.
 
 ## Official channel and ordered hops
 

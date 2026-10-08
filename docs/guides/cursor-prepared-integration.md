@@ -44,10 +44,12 @@ The catalogue qualifies twelve exact calendar/build pairs:
 - `2026.09.28-64d2043`
 - `2026.10.01-14929f9`
 
-The ACP and headless routes retain their nine exact points through
-`2026.09.18-9a7762b`. The added catalogue points do not qualify those routes.
-Calendar gaps are not inferred. A qualified date with a different opaque
-build is rejected. Later dates remain visibly unverified newer.
+ACP and Catalogue qualify the twelve exact points listed above. Research 394
+adds the three later registry points to ACP; the same points are separately
+qualified for Catalogue by Research 393. Headless retains its nine exact points
+through `2026.09.18-9a7762b`. Calendar gaps are not inferred, and a qualified
+date with a different opaque build is rejected. Later dates remain visibly
+unverified newer on each route.
 
 ## Prepare The Installation
 

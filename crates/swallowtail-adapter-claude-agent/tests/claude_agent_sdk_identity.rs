@@ -57,6 +57,29 @@ fn object_key_set(value: &serde_json::Value) -> BTreeSet<String> {
         .collect()
 }
 
+struct HopPathClassification {
+    hop: &'static str,
+    added: &'static [&'static str],
+    removed: &'static [&'static str],
+    changed: &'static [&'static str],
+}
+
+impl HopPathClassification {
+    fn new(
+        hop: &'static str,
+        added: &'static [&'static str],
+        removed: &'static [&'static str],
+        changed: &'static [&'static str],
+    ) -> Self {
+        Self {
+            hop,
+            added,
+            removed,
+            changed,
+        }
+    }
+}
+
 #[test]
 fn the_route_binds_package_native_segments_and_exact_axes_with_node_window() {
     let descriptor = claude_agent_sdk_descriptor();
@@ -400,8 +423,8 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
         )),
         expected_file_paths
     );
-    let hop_paths: [(&str, &[&str], &[&str], &[&str]); 9] = [
-        (
+    let hop_paths = [
+        HopPathClassification::new(
             "from_0_3_284_to_0_3_285",
             &["core-rf2bg9hj.mjs", "core-w2yya30y.mjs"],
             &["core-3ctbshc7.mjs", "core-eg2e19h0.mjs"],
@@ -417,7 +440,7 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
                 "sdk.mjs",
             ],
         ),
-        (
+        HopPathClassification::new(
             "from_0_3_285_to_0_3_286",
             &["core-5c9xf7pv.mjs", "core-y9rc2t7d.mjs"],
             &["core-rf2bg9hj.mjs", "core-w2yya30y.mjs"],
@@ -432,7 +455,7 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
                 "sdk.mjs",
             ],
         ),
-        (
+        HopPathClassification::new(
             "from_0_3_286_to_0_3_287",
             &["core-kgfyd2t2.mjs", "core-q38rzykt.mjs"],
             &["core-5c9xf7pv.mjs", "core-y9rc2t7d.mjs"],
@@ -447,7 +470,7 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
                 "sdk.mjs",
             ],
         ),
-        (
+        HopPathClassification::new(
             "from_0_3_287_to_0_3_288",
             &["core-ejtftkpy.mjs", "core-wn2j871p.mjs"],
             &["core-kgfyd2t2.mjs", "core-q38rzykt.mjs"],
@@ -462,7 +485,7 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
                 "sdk.mjs",
             ],
         ),
-        (
+        HopPathClassification::new(
             "from_0_3_288_to_0_3_289",
             &["core-8p15jxca.mjs", "core-repw6452.mjs"],
             &["core-ejtftkpy.mjs", "core-wn2j871p.mjs"],
@@ -476,7 +499,7 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
                 "sdk.mjs",
             ],
         ),
-        (
+        HopPathClassification::new(
             "from_0_3_289_to_0_3_290",
             &["core-29pt3grd.mjs", "core-ygywjedj.mjs"],
             &["core-8p15jxca.mjs", "core-repw6452.mjs"],
@@ -493,7 +516,7 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
                 "sdk.mjs",
             ],
         ),
-        (
+        HopPathClassification::new(
             "from_0_3_290_to_0_3_291",
             &["core-fgc83rkd.mjs", "core-ke40g9bw.mjs"],
             &["core-29pt3grd.mjs", "core-ygywjedj.mjs"],
@@ -507,7 +530,7 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
                 "sdk.mjs",
             ],
         ),
-        (
+        HopPathClassification::new(
             "from_0_3_291_to_0_3_292",
             &["core-95ey60bt.mjs", "core-czfq02x9.mjs"],
             &["core-fgc83rkd.mjs", "core-ke40g9bw.mjs"],
@@ -523,7 +546,7 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
                 "sdk.mjs",
             ],
         ),
-        (
+        HopPathClassification::new(
             "from_0_3_292_to_0_3_293",
             &["core-ae32wa3s.mjs", "core-d0szsqzn.mjs"],
             &["core-95ey60bt.mjs", "core-czfq02x9.mjs"],
@@ -539,7 +562,8 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
             ],
         ),
     ];
-    for (hop, added, removed, changed) in hop_paths {
+    for classification in hop_paths {
+        let hop = classification.hop;
         let record = &inventory[hop];
         let set = |items: &[&str]| {
             items
@@ -549,17 +573,17 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
         };
         assert_eq!(
             string_set(&record["added"]),
-            set(added),
+            set(classification.added),
             "added paths in {hop}"
         );
         assert_eq!(
             string_set(&record["removed"]),
-            set(removed),
+            set(classification.removed),
             "removed paths in {hop}"
         );
         assert_eq!(
             string_set(&record["changed"]),
-            set(changed),
+            set(classification.changed),
             "changed paths in {hop}"
         );
         let classified: BTreeSet<String> = record["changed_file_classification"]
@@ -570,7 +594,7 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
             .collect();
         assert_eq!(
             classified,
-            set(changed),
+            set(classification.changed),
             "classification covers exactly each content-changed path in {hop}"
         );
     }

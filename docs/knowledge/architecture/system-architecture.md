@@ -472,7 +472,7 @@ OpenHands adds a package without a production route.
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
   tag share one source commit; `1.1.8` is not independently qualified.
   Catalogue support extends through official `1.3.1` with the same
-  catalogue revision; Research 376 freezes all eight published hops after
+  catalogue revision; Research 377 freezes all eight published hops after
   `1.2.11`, excludes unpublished `1.2.18`, and classifies no published note
   as changing the selected `agy models` path. Research 353 records the earlier
   catalogue extension and raises the headless Contract 023 acceptance options

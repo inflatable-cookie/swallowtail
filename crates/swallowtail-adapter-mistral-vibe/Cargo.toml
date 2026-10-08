@@ -24,6 +24,7 @@ swallowtail-runtime.workspace = true
 [dev-dependencies]
 futures-executor = "0.3"
 futures-util = "0.3"
+sha2 = "0.10"
 swallowtail-testkit.workspace = true
 
 [lints]
@@ -36,6 +37,10 @@ path = "tests/mistral_vibe_headless_identity.rs"
 [[test]]
 name = "mistral_vibe_2_25_4_delta_ledger"
 path = "tests/mistral_vibe_2_25_4_delta_ledger.rs"
+
+[[test]]
+name = "mistral_vibe_2_26_0_delta_ledger"
+path = "tests/mistral_vibe_2_26_0_delta_ledger.rs"
 
 [[test]]
 name = "activity_corpus"

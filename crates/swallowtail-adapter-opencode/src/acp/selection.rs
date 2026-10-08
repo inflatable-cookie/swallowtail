@@ -14,7 +14,7 @@ pub const OPENCODE_ACP_AXIS: &str = "opencode.executable";
 /// Oldest accepted OpenCode ACP executable.
 pub const OPENCODE_ACP_BASELINE_VERSION: &str = "1.18.18";
 /// Newest compiled OpenCode ACP executable.
-pub const OPENCODE_ACP_LATEST_QUALIFIED_VERSION: &str = "1.18.32";
+pub const OPENCODE_ACP_LATEST_QUALIFIED_VERSION: &str = "1.18.35";
 /// Last version of the accepted-but-older `v1` behavior.
 pub const OPENCODE_ACP_V1_MAXIMUM_VERSION: &str = "1.18.30";
 /// First version of the compiled `v2` behavior.
@@ -153,6 +153,7 @@ fn behavior(value: &str) -> InterfaceBehaviorRevision {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use swallowtail_core::InterfaceCompatibilityAssessment;
 
     #[test]
     fn well_formed_semver_binds_and_garbage_does_not() {
@@ -180,8 +181,8 @@ mod tests {
         let v1 = InterfaceVersion::new("1.18.18").expect("v1");
         let v1_max = InterfaceVersion::new("1.18.30").expect("v1 max");
         let v2 = InterfaceVersion::new("1.18.31").expect("v2");
-        let latest = InterfaceVersion::new("1.18.32").expect("latest");
-        let newer = InterfaceVersion::new("1.18.33").expect("unverified");
+        let latest = InterfaceVersion::new("1.18.35").expect("latest");
+        let newer = InterfaceVersion::new("1.18.36").expect("unverified");
         assert_eq!(
             claim
                 .assess(&v1)
@@ -210,14 +211,17 @@ mod tests {
                 .map(|value| value.as_str()),
             Some(OPENCODE_ACP_BEHAVIOR_V2)
         );
-        assert!(claim.assess(&newer).is_permitted());
-        assert_eq!(
-            claim
-                .assess(&newer)
-                .behavior_revision()
-                .map(|value| value.as_str()),
-            Some(OPENCODE_ACP_BEHAVIOR_V2)
-        );
+        for published in ["1.18.32", "1.18.33", "1.18.34", "1.18.35"] {
+            let published = InterfaceVersion::new(published).expect("published stable");
+            assert!(matches!(
+                claim.assess(&published),
+                InterfaceCompatibilityAssessment::Qualified(_)
+            ));
+        }
+        assert!(matches!(
+            claim.assess(&newer),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
         assert_eq!(claim.id().as_str(), "opencode.acp.executable-window-1");
         assert_ne!(claim.axis().as_str(), "opencode.server");
     }

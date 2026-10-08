@@ -11,10 +11,14 @@ use swallowtail_core::{
 mod antigravity_1_1_26_delta_ledger;
 #[path = "antigravity_1_2_11_notes_ledger.rs"]
 mod antigravity_1_2_11_notes_ledger;
+#[path = "antigravity_1_2_11_retry_pin.rs"]
+mod antigravity_1_2_11_retry_pin;
 #[path = "antigravity_1_2_2_notes_ledger.rs"]
 mod antigravity_1_2_2_notes_ledger;
 #[path = "antigravity_1_2_7_notes_ledger.rs"]
 mod antigravity_1_2_7_notes_ledger;
+#[path = "antigravity_1_3_1_catalogue.rs"]
+mod antigravity_1_3_1_catalogue;
 
 const IDENTITY: &str = include_str!("fixtures/antigravity-cli-1.1.14/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/antigravity-cli-1.1.14/protocol.json");

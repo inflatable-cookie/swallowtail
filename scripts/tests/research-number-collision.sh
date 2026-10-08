@@ -21,6 +21,14 @@ write_record() {
   printf '# %s\n' "$name" >"$cwd/docs/research/$name"
 }
 
+write_numbered_record() {
+  local cwd=$1
+  local name=$2
+  local contents=$3
+  mkdir -p "$cwd/docs/research"
+  printf '%s' "$contents" >"$cwd/docs/research/$name"
+}
+
 expect_failure() {
   local expected=$1
   shift
@@ -58,7 +66,7 @@ git_test "$scratch" clone -q --bare "$seed" "$canonical"
 git_test "$scratch" clone -q "$canonical" "$worker"
 git_test "$scratch" clone -q "$canonical" "$updater"
 
-# Same-slug companions and the exact 328 and 337 pairs remain valid.
+# Same-slug companions and the exact historical 328 and 337 pairs remain valid.
 write_record "$worker" 101-companion.md
 write_record "$worker" 101-companion.tsv
 write_record "$worker" 101-companion.csv
@@ -91,5 +99,137 @@ git_test "$updater" push -q origin HEAD:main
 write_record "$worker" 104-stale-worker-record.md
 expect_failure 'canonical main' \
   "${checker[@]}" --root "$worker" --authority "$canonical"
+
+# A canonical collision can be repaired only by retaining every record,
+# moving a record to an unused number, and changing only its numbered heading.
+collision_seed=$scratch/collision-seed
+collision_canonical=$scratch/collision-canonical.git
+collision_worker=$scratch/collision-worker
+collision_deletion=$scratch/collision-deletion
+collision_changed=$scratch/collision-changed
+collision_in_place=$scratch/collision-in-place
+collision_occupied=$scratch/collision-occupied
+modern_seed=$scratch/modern-seed
+modern_canonical=$scratch/modern-canonical.git
+modern_worker=$scratch/modern-worker
+mkdir -p "$collision_seed/docs/research"
+git_test "$collision_seed" init -q -b main
+write_numbered_record "$collision_seed" 373-first.md \
+  $'# Research 373: First canonical record\nFirst record evidence.\n'
+write_numbered_record "$collision_seed" 373-second.md \
+  $'# Research 373: Second canonical record\nSecond record evidence.\n'
+write_numbered_record "$collision_seed" 376-second.tsv \
+  $'# Research 376: Second canonical companion\nCompanion evidence.\n'
+git_test "$collision_seed" add docs
+git_test "$collision_seed" commit -q -m 'seed canonical collision records'
+git_test "$scratch" clone -q --bare "$collision_seed" "$collision_canonical"
+git_test "$scratch" clone -q "$collision_canonical" "$collision_worker"
+git_test "$scratch" clone -q "$collision_canonical" "$collision_deletion"
+git_test "$scratch" clone -q "$collision_canonical" "$collision_changed"
+git_test "$scratch" clone -q "$collision_canonical" "$collision_in_place"
+git_test "$scratch" clone -q "$collision_canonical" "$collision_occupied"
+
+expect_failure 'working tree research number 373' \
+  "${checker[@]}" --root "$collision_worker" --local-base main
+
+rm "$collision_deletion/docs/research/373-second.md"
+expect_failure 'canonical collision repair must retain' \
+  "${checker[@]}" --root "$collision_deletion" --local-base main
+
+rm "$collision_changed/docs/research/373-second.md"
+write_numbered_record "$collision_changed" 374-second.md \
+  $'# Research 374: Second canonical record\nChanged evidence.\n'
+expect_failure 'only its numbered heading and path may change' \
+  "${checker[@]}" --root "$collision_changed" --local-base main
+
+write_numbered_record "$collision_in_place" 373-first.md \
+  $'# Research 373: First canonical record\nChanged evidence.\n'
+rm "$collision_in_place/docs/research/373-second.md"
+write_numbered_record "$collision_in_place" 374-second.md \
+  $'# Research 374: Second canonical record\nSecond record evidence.\n'
+expect_failure 'changed in place; preserve its evidence bytes' \
+  "${checker[@]}" --root "$collision_in_place" --local-base main
+
+rm "$collision_occupied/docs/research/373-second.md"
+write_numbered_record "$collision_occupied" 376-second.md \
+  $'# Research 376: Second canonical record\nSecond record evidence.\n'
+expect_failure 'repair target 376 is already occupied' \
+  "${checker[@]}" --root "$collision_occupied" --local-base main
+
+rm "$collision_worker/docs/research/373-second.md"
+write_numbered_record "$collision_worker" 374-second.md \
+  $'# Research 374: Second canonical record\nSecond record evidence.\n'
+expect_pass "${checker[@]}" --root "$collision_worker" --local-base main
+expect_pass "${checker[@]}" --root "$collision_worker" \
+  --authority "$collision_canonical"
+expect_failure 'cannot refresh canonical main' \
+  "${checker[@]}" --root "$collision_worker" \
+  --authority "$scratch/missing-canonical.git"
+
+# Research 382's Grok/Oh My Pi collision repairs by moving Grok intact to 385.
+grok_seed=$scratch/grok-seed
+grok_canonical=$scratch/grok-canonical.git
+grok_worker=$scratch/grok-worker
+grok_deleted=$scratch/grok-deleted
+grok_changed=$scratch/grok-changed
+grok_occupied=$scratch/grok-occupied
+mkdir -p "$grok_seed/docs/research"
+git_test "$grok_seed" init -q -b main
+write_numbered_record "$grok_seed" 382-grok-build-acp-1-0-46-identity.md \
+  $'# Grok Build ACP 1.0.46 Identity\nFrozen Grok evidence.\n'
+write_numbered_record "$grok_seed" 382-oh-my-pi-18-8-3-identity-and-qualification.md \
+  $'# 382 Oh My Pi 18.8.3 Identity and RPC Qualification\nFrozen Oh My Pi evidence.\n'
+write_numbered_record "$grok_seed" 384-grok-build-acp-1-0-46-identity.tsv \
+  $'occupied same-slug companion\n'
+git_test "$grok_seed" add docs
+git_test "$grok_seed" commit -q -m 'seed Research 382 collision'
+git_test "$scratch" clone -q --bare "$grok_seed" "$grok_canonical"
+git_test "$scratch" clone -q "$grok_canonical" "$grok_worker"
+git_test "$scratch" clone -q "$grok_canonical" "$grok_deleted"
+git_test "$scratch" clone -q "$grok_canonical" "$grok_changed"
+git_test "$scratch" clone -q "$grok_canonical" "$grok_occupied"
+
+expect_failure 'working tree research number 382' \
+  "${checker[@]}" --root "$grok_worker" --local-base main
+
+rm "$grok_deleted/docs/research/382-grok-build-acp-1-0-46-identity.md"
+expect_failure 'canonical collision repair must retain' \
+  "${checker[@]}" --root "$grok_deleted" --local-base main
+
+rm "$grok_changed/docs/research/382-grok-build-acp-1-0-46-identity.md"
+write_numbered_record "$grok_changed" 385-grok-build-acp-1-0-46-identity.md \
+  $'# Grok Build ACP 1.0.46 Identity\nChanged Grok evidence.\n'
+expect_failure 'only its numbered heading and path may change' \
+  "${checker[@]}" --root "$grok_changed" --local-base main
+
+rm "$grok_occupied/docs/research/382-grok-build-acp-1-0-46-identity.md"
+write_numbered_record "$grok_occupied" 384-grok-build-acp-1-0-46-identity.md \
+  $'# Grok Build ACP 1.0.46 Identity\nFrozen Grok evidence.\n'
+expect_failure 'repair target 384 is already occupied' \
+  "${checker[@]}" --root "$grok_occupied" --local-base main
+
+mv "$grok_worker/docs/research/382-grok-build-acp-1-0-46-identity.md" \
+  "$grok_worker/docs/research/385-grok-build-acp-1-0-46-identity.md"
+expect_pass "${checker[@]}" --root "$grok_worker" --local-base main
+expect_pass "${checker[@]}" --root "$grok_worker" \
+  --authority "$grok_canonical"
+
+# Current numbered-heading records can also be moved with evidence intact.
+mkdir -p "$modern_seed/docs/research"
+git_test "$modern_seed" init -q -b main
+write_numbered_record "$modern_seed" 375-first.md \
+  $'# 375 First canonical record\nFirst record evidence.\n'
+write_numbered_record "$modern_seed" 375-second.md \
+  $'# 375 Second canonical record\nSecond record evidence.\n'
+git_test "$modern_seed" add docs
+git_test "$modern_seed" commit -q -m 'seed modern numbered research records'
+git_test "$scratch" clone -q --bare "$modern_seed" "$modern_canonical"
+git_test "$scratch" clone -q "$modern_canonical" "$modern_worker"
+rm "$modern_worker/docs/research/375-second.md"
+write_numbered_record "$modern_worker" 377-second.md \
+  $'# 377 Second canonical record\nSecond record evidence.\n'
+expect_pass "${checker[@]}" --root "$modern_worker" --local-base main
+expect_pass "${checker[@]}" --root "$modern_worker" \
+  --authority "$modern_canonical"
 
 printf 'research number collision tests passed\n'

@@ -45,6 +45,8 @@ mod claude_agent_acp_0_76_identity;
 mod claude_agent_acp_0_81_2_delta_ledger;
 #[path = "../claude_agent_acp_0_81_2_identity.rs"]
 mod claude_agent_acp_0_81_2_identity;
+#[path = "../claude_agent_acp_0_87_0_identity.rs"]
+mod claude_agent_acp_0_87_0_identity;
 #[path = "../claude_agent_acp_identity.rs"]
 mod claude_agent_acp_identity;
 #[path = "../claude_agent_sdk_0_3_259_identity.rs"]
@@ -71,6 +73,8 @@ mod claude_code_2_1_278_identity;
 mod claude_code_2_1_280_identity;
 #[path = "../claude_code_2_1_281_identity.rs"]
 mod claude_code_2_1_281_identity;
+#[path = "../claude_code_2_1_293_identity.rs"]
+mod claude_code_2_1_293_identity;
 #[path = "../claude_code_headless_autocompaction_identity.rs"]
 mod claude_code_headless_autocompaction_identity;
 #[path = "../claude_code_headless_identity.rs"]

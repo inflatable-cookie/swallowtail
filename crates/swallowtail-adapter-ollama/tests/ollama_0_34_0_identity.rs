@@ -187,7 +187,7 @@ fn identity_freezes_0_33_x_hops_and_names_the_0_33_3_stop() {
     assert_eq!(protocol["attached_server_started"], false);
 
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.34.4");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.35.1");
     let claim = ollama_runtime_claim();
     for version in ["0.32.15", "0.33.0", "0.33.1", "0.33.2", "0.33.3", "0.34.0"] {
         assert!(matches!(
@@ -197,9 +197,10 @@ fn identity_freezes_0_33_x_hops_and_names_the_0_33_3_stop() {
         ));
     }
     assert!(matches!(
-        claim.assess(&version_value("0.34.5")),
+        claim.assess(&version_value("0.40.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
+    assert!(!claim.permits(&version_value("0.34.5")));
     assert_eq!(
         ollama_runtime_binding("0.34.0")
             .expect("version binds")

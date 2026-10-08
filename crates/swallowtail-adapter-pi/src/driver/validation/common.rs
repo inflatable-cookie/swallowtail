@@ -2,11 +2,11 @@ fn validate_common(
     plan: &PreflightPlan,
     services: &HostServices,
     credential: &swallowtail_core::CredentialRef,
-) -> Result<(), RuntimeFailure> {
+) -> Result<crate::selection::PiRpcVersionFeatures, RuntimeFailure> {
     if plan.driver_identity().id().as_str() != DRIVER_ID {
         return Err(plan_mismatch("driver"));
     }
-    crate::selection::validate_pi_plan_version(plan)?;
+    let version_features = crate::selection::validate_pi_plan_version(plan)?;
     services.require_execution_host(plan.execution_host_id())?;
     for (service, present) in [
         (HostServiceKind::Task, services.task().is_some()),
@@ -71,6 +71,5 @@ fn validate_common(
             return Err(plan_mismatch("disabled background action"));
         }
     }
-    Ok(())
+    Ok(version_features)
 }
-

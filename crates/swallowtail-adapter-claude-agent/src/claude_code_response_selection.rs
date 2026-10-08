@@ -16,8 +16,10 @@ pub const CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION: &str = "2.1.227";
 const CLAUDE_CODE_RESPONSE_ONLY_V1_CEILING_VERSION: &str = "2.1.278";
 /// First Claude Code version on the narrowed built-in-hook isolation segment.
 const CLAUDE_CODE_RESPONSE_ONLY_V2_BASELINE_VERSION: &str = "2.1.280";
+/// First Claude Code version on the linked-instruction read-limit milestone.
+const CLAUDE_CODE_RESPONSE_ONLY_V3_BASELINE_VERSION: &str = "2.1.282";
 /// Most recent Claude Code version with qualified response-only evidence.
-pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.281";
+pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.293";
 /// Most recent Claude Code version with qualified response-only evidence.
 pub const CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str =
     CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION;
@@ -29,6 +31,7 @@ pub const CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS: &[&str] = &[
 
 pub(crate) const RESPONSE_ONLY_BEHAVIOR: &str = "claude-code.response-only.stream-json.v1";
 pub(crate) const RESPONSE_ONLY_BEHAVIOR_V2: &str = "claude-code.response-only.stream-json.v2";
+pub(crate) const RESPONSE_ONLY_BEHAVIOR_V3: &str = "claude-code.response-only.stream-json.v3";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[must_use]
@@ -72,15 +75,24 @@ fn response_only_claim(denied_versions: &[&str]) -> InterfaceCompatibilityClaim 
                     .expect("static Claude Code response-only v1 ceiling is valid"),
                 InterfaceBehaviorRevision::new(RESPONSE_ONLY_BEHAVIOR)
                     .expect("static Claude Code response-only behavior is valid"),
-                InterfaceSupportStatus::Maintained,
+                InterfaceSupportStatus::Deprecated,
             ),
             InterfaceVersionSegment::new(
                 InterfaceVersion::new(CLAUDE_CODE_RESPONSE_ONLY_V2_BASELINE_VERSION)
                     .expect("static Claude Code response-only v2 baseline is valid"),
-                InterfaceVersion::new(CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION)
-                    .expect("static Claude Code response-only latest version is valid"),
+                InterfaceVersion::new("2.1.281")
+                    .expect("static Claude Code response-only v2 ceiling is valid"),
                 InterfaceBehaviorRevision::new(RESPONSE_ONLY_BEHAVIOR_V2)
                     .expect("static Claude Code response-only v2 behavior is valid"),
+                InterfaceSupportStatus::Deprecated,
+            ),
+            InterfaceVersionSegment::new(
+                InterfaceVersion::new(CLAUDE_CODE_RESPONSE_ONLY_V3_BASELINE_VERSION)
+                    .expect("static Claude Code response-only v3 baseline is valid"),
+                InterfaceVersion::new(CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION)
+                    .expect("static Claude Code response-only latest version is valid"),
+                InterfaceBehaviorRevision::new(RESPONSE_ONLY_BEHAVIOR_V3)
+                    .expect("static Claude Code response-only v3 behavior is valid"),
                 InterfaceSupportStatus::Maintained,
             ),
         ],
@@ -99,10 +111,16 @@ pub(crate) fn observation_uses_narrowed_builtin_hooks(
 ) -> bool {
     match observation.compatibility() {
         InstalledExecutableCompatibility::Qualified(matched) => {
-            matched.behavior_revision().as_str() == RESPONSE_ONLY_BEHAVIOR_V2
+            matches!(
+                matched.behavior_revision().as_str(),
+                RESPONSE_ONLY_BEHAVIOR_V2 | RESPONSE_ONLY_BEHAVIOR_V3
+            )
         }
         InstalledExecutableCompatibility::UnverifiedNewer(newer) => {
-            newer.behavior_revision().as_str() == RESPONSE_ONLY_BEHAVIOR_V2
+            matches!(
+                newer.behavior_revision().as_str(),
+                RESPONSE_ONLY_BEHAVIOR_V2 | RESPONSE_ONLY_BEHAVIOR_V3
+            )
         }
         InstalledExecutableCompatibility::Incompatible => false,
     }
@@ -113,7 +131,12 @@ pub(crate) fn version_uses_narrowed_builtin_hooks(version: &InterfaceVersion) ->
     claude_code_response_only_claim()
         .assess(version)
         .behavior_revision()
-        .is_some_and(|revision| revision.as_str() == RESPONSE_ONLY_BEHAVIOR_V2)
+        .is_some_and(|revision| {
+            matches!(
+                revision.as_str(),
+                RESPONSE_ONLY_BEHAVIOR_V2 | RESPONSE_ONLY_BEHAVIOR_V3
+            )
+        })
 }
 
 pub(crate) fn select_response_only_plan(
@@ -141,7 +164,7 @@ pub(crate) fn select_response_only_plan(
         || assessment.behavior_revision().is_none_or(|revision| {
             !matches!(
                 revision.as_str(),
-                RESPONSE_ONLY_BEHAVIOR | RESPONSE_ONLY_BEHAVIOR_V2
+                RESPONSE_ONLY_BEHAVIOR | RESPONSE_ONLY_BEHAVIOR_V2 | RESPONSE_ONLY_BEHAVIOR_V3
             )
         })
     {
@@ -202,6 +225,21 @@ mod tests {
                     claim.assess(&InterfaceVersion::new(published).unwrap()),
                     InterfaceCompatibilityAssessment::Qualified(matched)
                         if matched.behavior_revision().as_str() == RESPONSE_ONLY_BEHAVIOR_V2
+                            && matched.support_status() == InterfaceSupportStatus::Deprecated
+                ),
+                "{published}"
+            );
+        }
+        for published in [
+            "2.1.282", "2.1.283", "2.1.284", "2.1.285", "2.1.286", "2.1.287", "2.1.288", "2.1.289",
+            "2.1.290", "2.1.291", "2.1.292", "2.1.293",
+        ] {
+            assert!(
+                matches!(
+                    claim.assess(&InterfaceVersion::new(published).unwrap()),
+                    InterfaceCompatibilityAssessment::Qualified(matched)
+                        if matched.behavior_revision().as_str() == RESPONSE_ONLY_BEHAVIOR_V3
+                            && matched.support_status() == InterfaceSupportStatus::Maintained
                 ),
                 "{published}"
             );
@@ -217,9 +255,9 @@ mod tests {
         assert!(!claim.permits(&InterfaceVersion::new("2.1.264").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.279").unwrap()));
         assert!(matches!(
-            claim.assess(&InterfaceVersion::new("2.1.282").unwrap()),
+            claim.assess(&InterfaceVersion::new("2.1.294").unwrap()),
             InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
-                if newer.behavior_revision().as_str() == RESPONSE_ONLY_BEHAVIOR_V2
+                if newer.behavior_revision().as_str() == RESPONSE_ONLY_BEHAVIOR_V3
         ));
         assert_eq!(
             claim
@@ -231,6 +269,12 @@ mod tests {
         );
         assert!(version_uses_narrowed_builtin_hooks(
             &InterfaceVersion::new("2.1.280").unwrap()
+        ));
+        assert!(version_uses_narrowed_builtin_hooks(
+            &InterfaceVersion::new("2.1.293").unwrap()
+        ));
+        assert!(version_uses_narrowed_builtin_hooks(
+            &InterfaceVersion::new("2.1.294").unwrap()
         ));
         assert!(!version_uses_narrowed_builtin_hooks(
             &InterfaceVersion::new("2.1.278").unwrap()

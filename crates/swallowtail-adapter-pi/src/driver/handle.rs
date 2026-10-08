@@ -1,3 +1,4 @@
+use super::disposition::{CommandDisposition, parse_command_disposition};
 use super::input::SharedAttachmentMaterialization;
 use super::session::{ActiveSlot, cleanup_failure};
 use crate::connection::PiConnection;
@@ -108,6 +109,7 @@ pub(super) struct PiTurnHandle {
     connection: Arc<PiConnection>,
     active: ActiveSlot,
     attachment: SharedAttachmentMaterialization,
+    command_dispositions: bool,
 }
 
 pub(super) struct PiTurnBinding {
@@ -115,6 +117,7 @@ pub(super) struct PiTurnBinding {
     pub(super) turn: Arc<ActiveTurn>,
     pub(super) active: ActiveSlot,
     pub(super) attachment: SharedAttachmentMaterialization,
+    pub(super) command_dispositions: bool,
 }
 
 impl PiTurnHandle {
@@ -134,6 +137,7 @@ impl PiTurnHandle {
             connection: binding.connection,
             active: binding.active,
             attachment: binding.attachment,
+            command_dispositions: binding.command_dispositions,
         }
     }
 }
@@ -188,10 +192,28 @@ impl TurnHandle for PiTurnHandle {
                 )
                 .await;
             match result {
-                Ok(response) if response.success => Ok(HarnessCommandResponse::new(
-                    message.command_id().clone(),
-                    HarnessCommandAcknowledgement::Accepted,
-                )),
+                Ok(response) if response.success => match parse_command_disposition(
+                    response.data.as_ref(),
+                    command,
+                    self.command_dispositions,
+                ) {
+                    Ok(Some(CommandDisposition::Handled)) => {
+                        self.cancellation.turn.release_scheduling(class);
+                        Ok(HarnessCommandResponse::new(
+                            message.command_id().clone(),
+                            HarnessCommandAcknowledgement::Rejected,
+                        ))
+                    }
+                    Ok(Some(CommandDisposition::Queued | CommandDisposition::Started))
+                    | Ok(None) => Ok(HarnessCommandResponse::new(
+                        message.command_id().clone(),
+                        HarnessCommandAcknowledgement::Accepted,
+                    )),
+                    Err(error) => {
+                        self.cancellation.turn.release_scheduling(class);
+                        Err(error)
+                    }
+                },
                 Ok(_) => {
                     self.cancellation.turn.release_scheduling(class);
                     Ok(HarnessCommandResponse::new(

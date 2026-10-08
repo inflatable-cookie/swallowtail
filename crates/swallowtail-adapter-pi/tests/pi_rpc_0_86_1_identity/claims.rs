@@ -34,7 +34,7 @@ fn identity_names_compatible_extension_before_the_claim_edit() {
         "unverified_newer"
     );
     assert_eq!(PI_PACKAGE_BASELINE_VERSION, "0.80.10");
-    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "0.86.1");
+    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.1.0");
 
     let claim = pi_rpc_claim();
     assert!(matches!(
@@ -50,14 +50,14 @@ fn identity_names_compatible_extension_before_the_claim_edit() {
         assert!(matches!(
             claim.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.support_status() == InterfaceSupportStatus::Maintained
+                if matched.support_status() == InterfaceSupportStatus::Deprecated
                     && matched.behavior_revision().as_str()
                         == "pi.rpc.strict-lf-v0.84.0-message-update-delta"
         ));
     }
     assert!(matches!(
         claim.assess(&version("0.86.2")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        InterfaceCompatibilityAssessment::Incompatible
     ));
     assert_eq!(
         pi_package_binding("0.86.1")
@@ -105,7 +105,7 @@ fn unpublished_gaps_and_later_0_86_2_stay_classified() {
     assert!(!claim.permits(&version("0.85.2")));
     assert!(matches!(
         claim.assess(&version("0.86.2")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        InterfaceCompatibilityAssessment::Incompatible
     ));
     assert!(!claim.permits(&version("0.86.2-rc.1")));
 }

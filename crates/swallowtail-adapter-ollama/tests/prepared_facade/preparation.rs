@@ -19,7 +19,7 @@ fn exact_stable_newer_is_visible_while_known_exclusion_stays_closed() {
     else {
         panic!("newer stable Ollama must remain visibly unverified");
     };
-    assert_eq!(assessment.version().as_str(), "0.34.5");
+    assert_eq!(assessment.version().as_str(), "0.40.0");
     assert_eq!(
         prepared
             .instance()
@@ -28,7 +28,7 @@ fn exact_stable_newer_is_visible_while_known_exclusion_stays_closed() {
             .unwrap()
             .version()
             .as_str(),
-        "0.34.5"
+        "0.40.0"
     );
     let inventory = prepared
         .prepare_inventory(inventory_input("newer-inventory"))
@@ -64,6 +64,22 @@ fn exact_stable_newer_is_visible_while_known_exclusion_stays_closed() {
         PreparationStage::CompatibilityClassification
     );
     assert_eq!(excluded.server.targets(), ["/api/version"]);
+
+    let hole = Fixture::with_server(FixtureServer::start_with(
+        VersionFixture::InteriorHole,
+        StreamFixture::Success,
+    ));
+    let failure = block_on(prepare_ollama_attached(
+        preparation_input(&hole),
+        probe(&hole, DiscoveryCancellation::new()),
+        hole.services(),
+    ))
+    .expect_err("unpublished interior version gap remains incompatible");
+    assert_eq!(
+        failure.stage(),
+        PreparationStage::CompatibilityClassification
+    );
+    assert_eq!(hole.server.targets(), ["/api/version"]);
 }
 
 #[test]

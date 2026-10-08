@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "task": "swallowtail#106",
+  "axis": "ollama.runtime",
+  "package": "swallowtail-adapter-ollama",
+  "observation_date": "2026-10-08",
+  "github_repository": "ollama/ollama",
+  "selected_channel": {
+    "name": "official GitHub non-prerelease releases",
+    "latest_endpoint": "https://api.github.com/repos/ollama/ollama/releases/latest",
+    "latest_version": "0.40.0",
+    "latest_release_url": "https://github.com/ollama/ollama/releases/tag/v0.40.0",
+    "release_id": 396253453,
+    "draft": false,
+    "prerelease": false,
+    "published_at": "2026-09-25T03:31:52Z",
+    "created_at": "2026-10-06T17:46:39Z",
+    "tag_commit": "0d0720e51fb2fd9aa58781c3d720c06d720c2e7b",
+    "tree": "d65785382b4d8b6dd98b25b09c59a4ec5b22d168",
+    "source_archive_sha256": "9fe3b69d3e539bd0168dfc1cbb7af9f15bac654d31744f96560f13f69672516f",
+    "timestamp_note": "The GitHub release record's published_at precedes created_at and the current tag commit time. The current latest endpoint, release object, tag, commit, tree, and archive digest are frozen separately; the date discrepancy is retained for review."
+  },
+  "host_observation": {
+    "client_version": "0.33.3",
+    "executable_sha256": "75b6b83ab9c06712c7097807c91d2bb86a3ef3dd143d59359a5fbb3314970c0a",
+    "no_runtime_reachable": true,
+    "host_not_mutated": true,
+    "note": "Only the local client version was queried. No local server was reachable or started."
+  },
+  "previous_ceiling": "0.34.4",
+  "published_stables_after_previous_ceiling": [
+    {
+      "version": "0.35.0",
+      "release_id": 398626503,
+      "published_at": "2026-09-28T21:23:22Z",
+      "draft": false,
+      "prerelease": false,
+      "commit": "cc4069396f3ad2c370c53eed2e4a42ac13adab84",
+      "tree": "d663e3c722adf4ddde99352c02d3ffee583cab65",
+      "source_archive_sha256": "2d24c59fe4aec09fa68994816cd24e233dff4d57cbc31ee9b46973fb0b3f55e7"
+    },
+    {
+      "version": "0.35.1",
+      "release_id": 399431834,
+      "published_at": "2026-09-29T20:14:22Z",
+      "draft": false,
+      "prerelease": false,
+      "commit": "b0c1ca4f7549d7acdfa52a7dcffc934bc63a43ce",
+      "tree": "e9516fd9467dfe72505fb2abde9b26e0c5652a01",
+      "source_archive_sha256": "757839465b3eee23d143bddcb655180f148299b72399ce2585d22cb2a342d07e"
+    },
+    {
+      "version": "0.40.0",
+      "release_id": 396253453,
+      "published_at": "2026-09-25T03:31:52Z",
+      "draft": false,
+      "prerelease": false,
+      "commit": "0d0720e51fb2fd9aa58781c3d720c06d720c2e7b",
+      "tree": "d65785382b4d8b6dd98b25b09c59a4ec5b22d168",
+      "source_archive_sha256": "9fe3b69d3e539bd0168dfc1cbb7af9f15bac654d31744f96560f13f69672516f"
+    }
+  ],
+  "absent_stable_tag_patterns_checked": [
+    "v0.34.5*",
+    "v0.35.2*",
+    "v0.36.*",
+    "v0.37.*",
+    "v0.38.*",
+    "v0.39.*",
+    "v0.40.1*"
+  ],
+  "matching_unreleased_prerelease_tag": "v0.40.1-rc0",
+  "current_claim_at_observation": {
+    "baseline": "0.14.0",
+    "latest_qualified": "0.34.4",
+    "claim_id": "ollama.native-runtime-window-2",
+    "behavior_revision": "ollama.native-text-v1",
+    "posture": "AllowUnverified",
+    "known_exclusions": ["0.32.2", "0.32.10"]
+  },
+  "decision": {
+    "shape": "compatible-extension-through-0.35.1-with-0.40.0-stop",
+    "qualified_hops": ["0.35.0", "0.35.1"],
+    "latest_qualified_after_change": "0.35.1",
+    "unverified_current_official_stable": "0.40.0",
+    "reuse_behavior_revision": "ollama.native-text-v1",
+    "keep_baseline": "0.14.0",
+    "keep_claim_id": "ollama.native-runtime-window-2",
+    "keep_exclusions": ["0.32.2", "0.32.10"],
+    "keep_allow_unverified": true,
+    "preserve_unqualified_gaps": ["0.34.5", "0.35.2", "0.36.0..0.39.x"],
+    "new_public_operation": false,
+    "consumer_visible_contract_change": false,
+    "currentness_stop_reason": "v0.40.0 chat scheduling starts background local compatibility migration. Supported legacy GGUF models may gain converted blobs and manifest-list entries; later /api/tags returns per-child rows. This changes model-store lifecycle and catalogue identity beyond the qualified attached-runtime contract.",
+    "operator_ruling_needed": "Decide whether ollama.attached inference may trigger upstream local compatibility migration. If permitted, define the adapter contract for model-store writes and manifest-list catalogue changes and qualify them with exact fake-server coverage. If not permitted, authorize an explicit gate or opt-in before chat; this would be a consumer-visible lifecycle change.",
+    "provider_prompt_sent": false,
+    "attached_server_started": false,
+    "host_install_changed": false,
+    "model_downloaded": false,
+    "live_inference_performed": false
+  }
+}

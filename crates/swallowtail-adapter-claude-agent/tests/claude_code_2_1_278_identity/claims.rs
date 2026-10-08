@@ -152,7 +152,7 @@ fn identity_names_compatible_extension_without_changing_production() {
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.281"
+        "2.1.293"
     );
 
     let headless = claude_code_headless_claim();
@@ -178,12 +178,12 @@ fn identity_names_compatible_extension_without_changing_production() {
     assert!(matches!(
         response.assess(&version("2.1.270")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     assert!(matches!(
         response.assess(&version("2.1.278")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     assert!(!response.permits(&version("2.1.279")));
     assert!(response.supports(&version("2.1.280")));

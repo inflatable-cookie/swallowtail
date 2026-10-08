@@ -237,20 +237,20 @@ fn preparation_rejects_access_axis_and_release_drift_before_stream_work() {
     );
     assert!(axis_host.observed_process().is_none());
 
-    let newer_host = ExecutionHostId::new("fixture.prepared.headless.newer").expect("host");
-    let newer = DiscoveryHost::new("2.25.5");
+    let gap_host = ExecutionHostId::new("fixture.prepared.headless.gap").expect("host");
+    let gap = DiscoveryHost::new("2.25.6");
     let error = block_on(prepare_mistral_vibe_headless(
-        preparation_input(newer_host.clone()),
+        preparation_input(gap_host.clone()),
         probe(),
-        newer.services(newer_host),
+        gap.services(gap_host),
     ))
-    .expect_err("unqualified release fails");
+    .expect_err("unpublished release fails");
     assert_eq!(
         error.stage(),
-        swallowtail_runtime::PreparationStage::VersionParse
+        swallowtail_runtime::PreparationStage::CompatibilityClassification
     );
     assert_eq!(
-        newer.observed_process().expect("probe ran").arguments,
+        gap.observed_process().expect("probe ran").arguments,
         ["--version"]
     );
 }

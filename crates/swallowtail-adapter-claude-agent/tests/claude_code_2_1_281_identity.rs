@@ -4,7 +4,9 @@ use swallowtail_adapter_claude_agent::{
     CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION, claude_code_headless_claim,
     claude_code_response_only_claim,
 };
-use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+use swallowtail_core::{
+    InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
+};
 
 const IDENTITY: &str = include_str!("fixtures/claude-code-2.1.281/identity.json");
 const INVENTORY: &str = include_str!("fixtures/claude-code-2.1.281/dist-inventory.json");
@@ -34,7 +36,7 @@ fn official_hops_and_claim_stop_are_explicit() {
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.281"
+        "2.1.293"
     );
     let headless = claude_code_headless_claim();
     let response = claude_code_response_only_claim();
@@ -50,7 +52,9 @@ fn official_hops_and_claim_stop_are_explicit() {
     ));
     assert!(matches!(
         response.assess(&InterfaceVersion::new("2.1.282").unwrap()),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.behavior_revision().as_str() == "claude-code.response-only.stream-json.v3"
+                && matched.support_status() == InterfaceSupportStatus::Maintained
     ));
 }
 

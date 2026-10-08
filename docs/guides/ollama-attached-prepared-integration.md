@@ -85,11 +85,20 @@ version, qualified or unverified-newer assessment, installed and running
 observations, selected detail, route selection, configured instance, access
 provenance, and low-level driver escape hatch.
 
-The guaranteed window remains `0.14.0` through `0.34.4`. Exact `0.32.2` and
-`0.32.10` stay excluded and semantic prereleases fail. A later exact stable
-version may proceed as visibly unverified through the latest qualified text
-behavior. It does not expand guaranteed support, and every operation rechecks
-exact runtime version and protocol behavior.
+Maintained points are `0.14.0..=0.34.4` and `0.35.0..=0.35.1` under
+`ollama.native-text-v1`. Exact `0.32.2` and `0.32.10` stay excluded;
+unpublished `0.34.5` remains an interior incompatibility. `0.35.2` and absent
+later stable points are not qualified and remain visibly `UnverifiedNewer`
+under `AllowUnverified`; semantic prereleases fail. The current official
+stable `0.40.0` is also `UnverifiedNewer`.
+Its chat scheduler starts background local compatibility migration for
+supported legacy GGUF models, which can write converted blobs and
+manifest-list entries in the attached runtime's model store. Later `/api/tags`
+responses can return one row per child runner. This behavior exceeds the
+qualified lifecycle and catalogue contract; see Research 379 for the exact
+ruling and adaptation needed before extending the claim. The existing
+`AllowUnverified` posture remains in force, so the version assessment alone
+does not suppress an attempt on `0.40.0`.
 
 ## Observe Inventory
 

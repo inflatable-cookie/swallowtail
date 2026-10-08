@@ -192,9 +192,9 @@ OpenHands adds a package without a production route.
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
-  sessions for Claude Agent ACP `0.53.0..=0.81.2`, excluding `0.58.0`, over
-  ACP v1 stdio; stable newer
-  versions remain visible and unverified, while separate local-subscription
+  sessions for Claude Agent ACP `0.53.0..=0.87.0`, excluding `0.58.0`, over
+  ACP v1 stdio (Research 373); stable newer versions remain visible and
+  unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
   joined cleanup stay driver-owned; distinct native Claude Code drivers keep
@@ -271,7 +271,8 @@ OpenHands adds a package without a production route.
   entitled set and may substitute that model's default, while this route
   selects no model. The route therefore exposes no portable
   `ReasoningSelection` and retains its exact absent-effort argv.
-- `swallowtail-adapter-mistral-vibe` implements exact GitHub/PyPI `2.25.4`
+- `swallowtail-adapter-mistral-vibe` implements maintained GitHub/PyPI
+  `2.25.4..=2.26.0`, excluding unpublished `2.25.6` and `2.25.9`
   discovery and one bounded `vibe --prompt --output streaming` structured
   run with typed caller-decreasing `MistralVibeMaxTurns` `1..=8`; omission
   keeps `--max-turns 8`, then fixed `--trust --agent plan --workdir
@@ -304,7 +305,7 @@ OpenHands adds a package without a production route.
   `--workspace` / `--model`, `session/load`, and field `content` stay
   out. `deepagents.acp` is a production route.
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
-  `1.14.48..=1.18.31` model discovery and ambient-host interactive sessions with
+  `1.14.48..=1.18.35` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
   stable newer releases may run as visibly unverified without extending
   guaranteed support; a separate 61-release deletion corpus freezes two
@@ -313,7 +314,7 @@ OpenHands adds a package without a production route.
   uncertainty without yet advertising production deletion. The same crate
   implements a separate `opencode.acp` family on `opencode.executable`: ACP v1
   stdio on host-approved `opencode acp --pure`, deprecated `1.18.18..=1.18.30`
-  and maintained `1.18.31..=1.18.32`, ProviderSupported host-owned login
+  and maintained `1.18.31..=1.18.35`, ProviderSupported host-owned login
   without a credential lease, one admitted stdio MCP name, and URL-plus-header
   MCP modelled behind the contract gate. The HTTP and ACP axes stay unflattened.
 - `swallowtail-adapter-anthropic` implements provider-supported `2023-06-01`
@@ -327,7 +328,7 @@ OpenHands adds a package without a production route.
   session, authoritative events, callbacks, bounded recovery, interruption,
   usage evidence, and ordered deletion
 - `swallowtail-adapter-bedrock` pins the provider-supported
-  `aws-sdk-bedrockruntime = 1.136.0` in-process Rust boundary and implements
+  `aws-sdk-bedrockruntime = 1.148.0` in-process Rust boundary and implements
   one exact `ConverseStream` production route; its native catalogue fixture
   boundary pins `aws-sdk-bedrock = 1.148.0`, the distinct regional control-
   plane audience, generated request, summary, lifecycle and error types, and
@@ -388,14 +389,15 @@ OpenHands adds a package without a production route.
   persistent new, load-with-replay, and replay-free resume gated on the exact
   host-leased cwd
 - `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.4.2`
-  (retained, deprecated) and `18.0.0..=18.2.7` (maintained) package segments
+  (retained, deprecated) and `18.0.0..=18.8.3` (maintained) package segments
   and `omp` executable over negotiated RPC v2 JSONL stdio. The two segments
   carry separate adapter-private behavior revisions. It uses OMP local
   auth without a Swallowtail credential lease, binds exact provider, model,
   and optional reasoning selection, and owns bounded physical/logical frame
   decoding. Its first catalogue, run, and session subset omits write tools,
   permission exchange, session switching, host-tool injection, and subagent
-  authority
+  authority. Official stable `18.8.4` appeared after identity freeze and
+  remains `UnverifiedNewer` without widening the `18.x` claim (Research 382).
 - `swallowtail-adapter-muse` implements exact signed Muse Code payload
   `0.2.1-R1215.1` as one read-only `muse-code.headless` structured-run route.
   Its prepared facade binds provider-owned local Meta account state without a
@@ -420,11 +422,13 @@ OpenHands adds a package without a production route.
   mapping now use the common compatible-chat framing and envelope codec
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
-  `0.14.0..=0.34.4`; exact runtime, installed and running model observations,
-  NDJSON output, and inference-caused residency remain distinct, with optional
-  adapter-local `options.num_ctx` dispatch on structured runs and interactive
-  replay, with no installation, model acquisition, cloud access, unload, or
-  server ownership
+  `0.14.0..=0.34.4` plus `0.35.0..=0.35.1`; exact runtime, installed and
+  running model observations, NDJSON output, and inference-caused residency
+  remain distinct, with optional adapter-local `options.num_ctx` dispatch on
+  structured runs and interactive replay. Current official `0.40.0` is
+  unverified because chat can start local compatibility migration; Research
+  379 records the adapter and authority gate. The adapter adds no installation,
+  model acquisition, cloud access, unload, or server ownership.
 - `swallowtail-adapter-xai` implements resource-free direct inference over one
   host-approved Responses WebSocket as either one bounded response without
   continuation or serial interactive turns with private continuation; both
@@ -471,11 +475,12 @@ OpenHands adds a package without a production route.
   entries preserve only opaque model identity and do not imply entitlement or
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
   tag share one source commit; `1.1.8` is not independently qualified.
-  Catalogue support extends through official `1.2.11` with the same
-  catalogue revision because no published release-note change touches the
-  selected `agy models` path after the classified `1.1.23` stdin repair.
-  Research 353 advances the catalogue claim to `1.2.11` and raises the
-  headless Contract 023 acceptance options to the operator. Research 359
+  Catalogue support extends through official `1.3.1` with the same
+  catalogue revision; Research 380 freezes all eight published hops after
+  `1.2.11`, excludes unpublished `1.2.18`, and classifies no published note
+  as changing the selected `agy models` path. Research 353 records the earlier
+  catalogue extension and raises the headless Contract 023 acceptance options
+  to the operator. Research 359
   then proves the `1.2.11` artifact honours `AGY_CLI_MODEL_API_MAX_RETRIES`
   (`0` disables provider-managed model-request retry, finite `N` allows
   `N+1` attempts), so exact `1.2.11` headless qualifies on a
@@ -511,12 +516,14 @@ OpenHands adds a package without a production route.
   reports key-visible entries without inferring background or Realtime support
 - `swallowtail-adapter-qwen` implements qualified Qwen Code
   `0.19.11..=0.20.1`, `0.21.0..=0.21.14`, exact `0.21.15`, and
-  `0.22.0..=0.24.2` excluding unpublished `0.22.4` and `0.23.5` headless
+  `0.22.0..=0.25.0` excluding unpublished `0.22.4` and `0.23.5` headless
   behavior segments with
   exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined
-  process cleanup, and `AmbientHost` isolation without a sandbox claim; the
+  process cleanup, a read-only working-resource lease that blocks implicit
+  Qwen SSH workspace selection, and `AmbientHost` isolation without a sandbox
+  claim; the
   production driver passes the provider-neutral one-shot profile under local
   and remote-authoritative host identities. Exact `0.21.15` additionally binds
   portable `low|medium|high|xhigh|max` reasoning for `qwen3.8-max` and
@@ -675,9 +682,10 @@ Crate status:
   with qualified-only claim, visible public preview, host-account access,
   and no credential lease. The package remains an unreleased additive
   candidate after `v0.3.2`.
-- `swallowtail-adapter-mistral-vibe` — realized for exact GitHub/PyPI
-  `2.25.4` headless discovery, one bounded streaming-NDJSON structured
-  run, and `prepare_mistral_vibe_headless`. The package remains an
+- `swallowtail-adapter-mistral-vibe` — realized for maintained GitHub/PyPI
+  `2.25.4..=2.26.0` headless discovery and one bounded streaming-NDJSON
+  structured run; unpublished `2.25.6` and `2.25.9` remain excluded. Use
+  `prepare_mistral_vibe_headless`. The package remains an
   unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-qoder` — realized for exact npm `1.1.54` headless
   discovery, one bounded stream-json structured run with an adapter-owned
@@ -993,14 +1001,14 @@ installed `0.51.0` probe is separately gated and ignored by default.
 The original Claude Agent lifecycle corpus freezes close and delete through
 `0.61.0` plus the unpublished-package exclusion. Exact source deltas and
 adapter conformance carry that unchanged mapping through the newer private
-`0.62.0` through `0.81.2` behavior milestones.
+`0.62.0` through `0.87.0` behavior milestones (Research 373).
 Qualified close tears down only active in-memory resources and preserves
 history. Qualified delete tears down an active target when present, then uses
 the exact Agent SDK path that removes the primary local transcript and sibling
 session directory. That evidence supports provider-data deletion with
 provider-defined descendants, but no hard-erasure or Anthropic API service-data
 claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` through
-`0.81.2` add private behavior revisions without changing deletion truth.
+`0.87.0` add private behavior revisions without changing deletion truth.
 Later stable versions remain visible and unverified.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization
@@ -1116,13 +1124,13 @@ follows the Upgrade Workflow. The operator runbook is the
 version-currentness checkpoint guide.
 
 The OpenCode HTTP adapter has a closed qualified server-version boundary.
-Tagged OpenAPI and artifact-tree evidence for 72 stable releases from `1.14.48`
-through `1.18.31` closes six selected operations through every transitive local schema
+Tagged OpenAPI and artifact-tree evidence for 76 stable releases from `1.14.48`
+through `1.18.35` closes six selected operations through every transitive local schema
 reference. Nineteen closed surfaces map to 21 contiguous segments so
 unpublished patches and cross-minor synthetic versions remain unsupported.
 The production descriptor publishes the `opencode.server` claim. Configured
 instances, requirements, and immutable plans must bind one matching exact
-release. Stable exact releases above `1.18.31` may execute as unverified through
+release. Stable exact releases above `1.18.35` may execute as unverified through
 surface 19 without widening the qualified range. `GET /global/health` produces
 only that safe binding and three-way assessment; no endpoint, credential, raw
 payload, configured instance, or execution authority enters the observation.
@@ -1176,36 +1184,45 @@ configuration lease and capability-scoped service are contracted. Absent
 posture remains unmigrated state, not an ambient alias; no posture falls back
 to another.
 
-The Pi RPC records compose with the existing long-lived RPC profile. Exact
-published points from baseline `0.80.10` through `0.84.4` now form six
-behavior segments. They retain strict-LF framing while separately
-recording thinking-level and nested-usage evidence, summarization-retry events,
-direct-bash correlation, the later direct-bash extension hook, and the `0.84.0`
-message-update delta shape. Swallowtail
-does not expose direct bash or extensions, and retry evidence still fails under
-the disabled-retry policy. Later stable points remain visible unverified;
-unpublished gaps including `0.83.1` and prereleases remain incompatible. One
-restrictive policy binds one active operation, two completed prompts, one
-pending steering message, one pending follow-up, no ambient customization, no
-update, telemetry, package, or automatic-retry action, and explicit
-`AmbientHost` read intent without a filesystem boundary. Command acceptance is
-separate from model lifecycle. Correlated dialogs use callback exchange;
-display-only UI becomes bounded semantic observation. The first adapter-private
-corpus binds package `0.80.10`, strict LF JSONL, exact provider/model argv, and
-offline startup without launching Pi or contacting a provider. The separate
-production driver binds that exact point to one host-approved executable,
-delegated harness credential, filesystem working resource, provider, model,
-and `AmbientHost` read-intent policy. Its supervised connection keeps command
-acknowledgement separate from model settlement, relays bounded extension UI,
-uses native abort for cancellation and deadline requests without claiming
-provider stop, and joins process work before resource and credential release.
-The production fixture matrix passes the unchanged long-lived RPC profile and
-the separate scheduling/UI assertion pack under local and remote-authoritative
-host identities. It proves prompt-before-steering-before-follow-up ordering,
-command acknowledgement before model settlement, deterministic callback
-expiry and late-response rejection, distinct provider/retry/disconnect/format
-failures, bounded prompt concurrency, redaction, and visible cleanup failure
-without weakening terminal provider truth.
+The Pi RPC records compose with the existing long-lived RPC profile. Baseline
+`0.80.10`, all prior exact segments through `0.86.1`, and their behavior
+revisions remain. The earlier points separately record thinking-level and
+nested-usage evidence, summarization-retry events, direct-bash correlation,
+the later direct-bash extension hook, and the `0.84.0` message-update delta
+shape. Swallowtail does not expose direct bash or extensions, and retry
+evidence still fails under the disabled-retry policy. Research 383 qualifies
+published hops `0.87.0` through `1.1.0`: `0.87.0..=0.87.1` retain
+message-update behavior; `0.99.0..=0.99.2` and `1.0.0..=1.0.4` add private
+command-disposition milestones; maintained `1.1.0` adds the private
+`agent_settled.aborted` milestone. The claim remains
+`pi.rpc.package-window-2`; strict-LF framing, selected commands, public
+lifecycle operations, permission posture and exclusions are unchanged. The
+adapter fails a prompt marked `handled` because Pi starts no run, and rejects
+handled steering or follow-up because Pi consumed the message without queuing
+it. At `1.1.0`, `aborted=true` maps to existing terminal cancellation while
+`false` keeps the existing completion and usage checks. Older qualified points
+keep the field optional. Unpublished and unqualified holes remain incompatible,
+and later stable points stay visible unverified. One restrictive policy binds
+one active operation, two completed prompts, one pending steering message, one
+pending follow-up, no ambient customization, no update, telemetry, package, or
+automatic-retry action, and explicit `AmbientHost` read intent without a
+filesystem boundary. Command acceptance stays separate from model lifecycle.
+Correlated dialogs use callback exchange; display-only UI becomes bounded
+semantic observation. The first adapter-private corpus binds package
+`0.80.10`, strict LF JSONL, exact provider/model argv, and offline startup
+without launching Pi or contacting a provider. The production driver binds an
+exact point to one host-approved executable, delegated harness credential,
+filesystem working resource, provider, model, and `AmbientHost` read-intent
+policy. Its supervised connection keeps command acknowledgement separate from
+model settlement, relays bounded extension UI, uses native abort for
+cancellation and deadline requests without claiming provider stop, and joins
+process work before resource and credential release. The production fixture
+matrix exercises prompt-before-steering-before-follow-up ordering, command
+acknowledgement before model settlement, deterministic callback expiry and
+late-response rejection, distinct provider/retry/disconnect/format failures,
+bounded prompt concurrency, redaction, and visible cleanup failure without
+weakening terminal provider truth. Research 383 retains exact source, complete
+artifact trees, per-hop classifications, and deterministic fixture coverage.
 
 Pi RPC provider-session continuity remains outside the RPC descriptor.
 Research 053 plus the g03.010 range corpus check every stable point from
@@ -1687,7 +1704,7 @@ Bedrock Runtime and control-plane catalogue now expose separate prepared SDK
 surfaces. Each requires an exact region and an already-selected opaque
 credential provider through `BedrockCloudClientConfig`; neither consults the
 ambient AWS region, credential, profile, file, container, or instance-metadata
-chains. Runtime binds `aws-sdk-bedrockruntime = 1.136.0`,
+chains. Runtime binds `aws-sdk-bedrockruntime = 1.148.0`,
 `ConverseStream`, one exact model route and underlying provider, bounded text
 output, and one structured attempt. Catalogue binds
 `aws-sdk-bedrock = 1.148.0`, `ListFoundationModels`, its own access and
@@ -1705,9 +1722,12 @@ installed inventory, running inventory, and selected-model detail without
 inference or model mutation. Prepared inventory and one-attempt inference stay
 separate. Inference declares runtime-managed residency but grants no pull,
 unload, restoration, process, or server authority. Exact endpoint and runtime
-drift fail before operation effects. The guaranteed `0.14.0` through `0.34.4`
-window, exact `0.32.2` and `0.32.10` exclusions, prerelease closure, and
-visibly unverified later stable execution remain explicit.
+drift fail before operation effects. Maintained `0.14.0..=0.34.4` and
+`0.35.0..=0.35.1` segments, exact `0.32.2` and `0.32.10` exclusions,
+unpublished gaps, and prerelease closure remain explicit. Current official
+`0.40.0` remains `UnverifiedNewer`: its chat scheduler can start background
+local model-store migration, which needs an operator ruling before this
+attached-runtime lifecycle is qualified (Research 379).
 
 llama.cpp completes the local-runtime family with deliberately separate
 prepared types. `prepare_llama_cpp_attached` binds one host-approved external

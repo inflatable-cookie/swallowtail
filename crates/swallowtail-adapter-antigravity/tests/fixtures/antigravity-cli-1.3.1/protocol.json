@@ -1,0 +1,424 @@
+{
+  "schema": 1,
+  "record": "docs/research/380-antigravity-cli-1-3-1-catalogue-identity.md",
+  "authority": "Contract 029 and official release notes as behavioral authority under Tom's 2026-09-15 ruling",
+  "scope": "antigravity.catalogue only",
+  "selected_mapping": {
+    "command": "agy models",
+    "consumer_behavior": "one joined child lists authenticated model identities; catalogue entries do not assert model invocation",
+    "lifecycle": "bounded by the existing catalogue operation deadline, process/task cleanup only; no provider session",
+    "decoder": "antigravity-cli-1.1.9 corpus and existing plain-text catalogue parser",
+    "claim_id": "antigravity.catalogue.release-window-1",
+    "behavior_revision": "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1",
+    "baseline": "1.1.9",
+    "previous_ceiling": "1.2.11",
+    "new_ceiling": "1.3.1",
+    "exact_unpublished_exclusion": "1.2.18",
+    "first_unpublished_later": "1.3.2"
+  },
+  "hops": [
+    {
+      "published_at": "2026-09-27T05:06:09Z",
+      "tag_commit": "8cb7cd1bbab008cada5e8b27b56ed29107f45de0",
+      "source_compare": {
+        "base_tag": "1.2.11",
+        "head_tag": "1.2.12",
+        "ahead_by": 1,
+        "behind_by": 0,
+        "total_commits": 1,
+        "changed_paths": [
+          "CHANGELOG.md"
+        ]
+      },
+      "changed_source_files": [
+        {
+          "path": "CHANGELOG.md",
+          "classification": "discovery and official release-note behavior record",
+          "catalogue_mapping": "no selected agy models wire, lifecycle, output, permission, usage, configuration, or tool change named"
+        }
+      ],
+      "release_note_change_classes": [
+        "scroll coalescing and terminal rendering",
+        "Gemini API-key quota and retry handling",
+        "conversation history replay and keyboard behavior",
+        "terminal multiplexer image probing and Vim input"
+      ],
+      "catalogue_classification": "unchanged",
+      "catalogue_classification_reason": "No note names the agy models command, its list output, decoding, or its process lifecycle. The official headless guide describes agy models as the distinct command that lists model slugs. The 1.2.13 model API retry-delay note is bounded to the request retry path; treating it as outside the model-list subcommand is an inference from the official release notes and the official command documentation, not a live observation.",
+      "runtime_tree_inventory": "dist-inventory.json#1.2.12",
+      "headless_claim_touched": false,
+      "changed_runtime_files": [
+        {
+          "platform": "linux_x64",
+          "path": "antigravity",
+          "from_sha256": "ec7cf797ecb0e1d91ddf3b6d9d6c1d616bb89f78a5b0e43536b72a7fce695f56",
+          "to_sha256": "ce6fdd9e7621ee9ac6eedaa337731ca1f235e412ff57cf9eabcd2aa23b3576ca",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        },
+        {
+          "platform": "mac_arm64",
+          "path": "antigravity",
+          "from_sha256": "42e76bedafb5896bc6a6eefb61902162f6ba08ddf59efd3357767102e3a59a0c",
+          "to_sha256": "6f4785c17acc4b8b539e055e926ddc65cc83279581d24357a3b6e051a2337ae3",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        }
+      ]
+    },
+    {
+      "published_at": "2026-09-29T03:58:00Z",
+      "tag_commit": "77b1aad0cb850c184a987661b149985de41a3568",
+      "source_compare": {
+        "base_tag": "1.2.12",
+        "head_tag": "1.2.13",
+        "ahead_by": 1,
+        "behind_by": 0,
+        "total_commits": 1,
+        "changed_paths": [
+          "CHANGELOG.md"
+        ]
+      },
+      "changed_source_files": [
+        {
+          "path": "CHANGELOG.md",
+          "classification": "discovery and official release-note behavior record",
+          "catalogue_mapping": "no selected agy models wire, lifecycle, output, permission, usage, configuration, or tool change named"
+        }
+      ],
+      "release_note_change_classes": [
+        "model API retry-delay and quota-cap handling",
+        "conversation redraw efficiency",
+        "artifact viewer labels",
+        "narrow-terminal trust/help/sign-in/MCP presentation"
+      ],
+      "catalogue_classification": "unchanged",
+      "catalogue_classification_reason": "No note names the agy models command, its list output, decoding, or its process lifecycle. The official headless guide describes agy models as the distinct command that lists model slugs. The 1.2.13 model API retry-delay note is bounded to the request retry path; treating it as outside the model-list subcommand is an inference from the official release notes and the official command documentation, not a live observation.",
+      "runtime_tree_inventory": "dist-inventory.json#1.2.13",
+      "headless_claim_touched": false,
+      "changed_runtime_files": [
+        {
+          "platform": "linux_x64",
+          "path": "antigravity",
+          "from_sha256": "ce6fdd9e7621ee9ac6eedaa337731ca1f235e412ff57cf9eabcd2aa23b3576ca",
+          "to_sha256": "574b0234656c44564f3ff3b013225c86f14ae79b67d0f3b45f6aaf1b1625440e",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        },
+        {
+          "platform": "mac_arm64",
+          "path": "antigravity",
+          "from_sha256": "6f4785c17acc4b8b539e055e926ddc65cc83279581d24357a3b6e051a2337ae3",
+          "to_sha256": "ef3728208834483754b06fd99963b4b6320740bf237212768dfed5256ae24ddb",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        }
+      ]
+    },
+    {
+      "published_at": "2026-09-30T04:03:27Z",
+      "tag_commit": "eaf9e06660d2ca8f20f1474ed03f10e3dbfd35e5",
+      "source_compare": {
+        "base_tag": "1.2.13",
+        "head_tag": "1.2.14",
+        "ahead_by": 1,
+        "behind_by": 0,
+        "total_commits": 1,
+        "changed_paths": [
+          "CHANGELOG.md"
+        ]
+      },
+      "changed_source_files": [
+        {
+          "path": "CHANGELOG.md",
+          "classification": "discovery and official release-note behavior record",
+          "catalogue_mapping": "no selected agy models wire, lifecycle, output, permission, usage, configuration, or tool change named"
+        }
+      ],
+      "release_note_change_classes": [
+        "queued-message configuration and interruption",
+        "remote-control process startup/status/stop",
+        "conversation loading, titles, and history repair",
+        "sign-in presentation",
+        "JSON Schema startup rejection",
+        "prompt rendering and unsupported-media rejection"
+      ],
+      "catalogue_classification": "unchanged",
+      "catalogue_classification_reason": "No note names the agy models command, its list output, decoding, or its process lifecycle. The official headless guide describes agy models as the distinct command that lists model slugs. The 1.2.13 model API retry-delay note is bounded to the request retry path; treating it as outside the model-list subcommand is an inference from the official release notes and the official command documentation, not a live observation.",
+      "runtime_tree_inventory": "dist-inventory.json#1.2.14",
+      "headless_claim_touched": false,
+      "changed_runtime_files": [
+        {
+          "platform": "linux_x64",
+          "path": "antigravity",
+          "from_sha256": "574b0234656c44564f3ff3b013225c86f14ae79b67d0f3b45f6aaf1b1625440e",
+          "to_sha256": "0d0d3eba22daf29504dd290151c7ed9a4d33b0c6aa0acfc5da27bc3b01d2f029",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        },
+        {
+          "platform": "mac_arm64",
+          "path": "antigravity",
+          "from_sha256": "ef3728208834483754b06fd99963b4b6320740bf237212768dfed5256ae24ddb",
+          "to_sha256": "a33fdf084ecd199df00694f35a243200a3efacb1f4f3adf04ca19d76f7f714c4",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        }
+      ]
+    },
+    {
+      "published_at": "2026-10-02T17:00:58Z",
+      "tag_commit": "ae27bff644d78ed0c759b4d8a6b79506f1bed96d",
+      "source_compare": {
+        "base_tag": "1.2.14",
+        "head_tag": "1.2.15",
+        "ahead_by": 1,
+        "behind_by": 0,
+        "total_commits": 1,
+        "changed_paths": [
+          "CHANGELOG.md"
+        ]
+      },
+      "changed_source_files": [
+        {
+          "path": "CHANGELOG.md",
+          "classification": "discovery and official release-note behavior record",
+          "catalogue_mapping": "no selected agy models wire, lifecycle, output, permission, usage, configuration, or tool change named"
+        }
+      ],
+      "release_note_change_classes": [
+        "Android distribution assets",
+        "usage reset-time display",
+        "command permission suggestions and denial handling",
+        "conversation reconnect and quota failures",
+        "terminal rendering and Vim navigation",
+        "customization-file access",
+        "MCP OAuth registration and large-image scaling"
+      ],
+      "catalogue_classification": "unchanged",
+      "catalogue_classification_reason": "No note names the agy models command, its list output, decoding, or its process lifecycle. The official headless guide describes agy models as the distinct command that lists model slugs. The 1.2.13 model API retry-delay note is bounded to the request retry path; treating it as outside the model-list subcommand is an inference from the official release notes and the official command documentation, not a live observation.",
+      "runtime_tree_inventory": "dist-inventory.json#1.2.15",
+      "headless_claim_touched": false,
+      "changed_runtime_files": [
+        {
+          "platform": "linux_x64",
+          "path": "antigravity",
+          "from_sha256": "0d0d3eba22daf29504dd290151c7ed9a4d33b0c6aa0acfc5da27bc3b01d2f029",
+          "to_sha256": "5f9c16b286895f8f7fdecd423883ca256a85077b8acf9a6bc1111761d34df164",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        },
+        {
+          "platform": "mac_arm64",
+          "path": "antigravity",
+          "from_sha256": "a33fdf084ecd199df00694f35a243200a3efacb1f4f3adf04ca19d76f7f714c4",
+          "to_sha256": "d15693410c904242c1c3423a579f60a81e018444bb51fbccc6505f988b62a91d",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        }
+      ]
+    },
+    {
+      "published_at": "2026-10-03T03:56:08Z",
+      "tag_commit": "65a3c69e388148c9327f307efe82ddb1c0c8d7d4",
+      "source_compare": {
+        "base_tag": "1.2.15",
+        "head_tag": "1.2.16",
+        "ahead_by": 1,
+        "behind_by": 0,
+        "total_commits": 1,
+        "changed_paths": [
+          "CHANGELOG.md"
+        ]
+      },
+      "changed_source_files": [
+        {
+          "path": "CHANGELOG.md",
+          "classification": "discovery and official release-note behavior record",
+          "catalogue_mapping": "no selected agy models wire, lifecycle, output, permission, usage, configuration, or tool change named"
+        }
+      ],
+      "release_note_change_classes": [
+        "configuration setting navigation",
+        "conversation redraw, selection, and queued-message behavior",
+        "image-generator subagent flow",
+        "background command completion and headless wait",
+        "customization discovery and skills",
+        "settings and terminal rendering fixes"
+      ],
+      "catalogue_classification": "unchanged",
+      "catalogue_classification_reason": "No note names the agy models command, its list output, decoding, or its process lifecycle. The official headless guide describes agy models as the distinct command that lists model slugs. The 1.2.13 model API retry-delay note is bounded to the request retry path; treating it as outside the model-list subcommand is an inference from the official release notes and the official command documentation, not a live observation.",
+      "runtime_tree_inventory": "dist-inventory.json#1.2.16",
+      "headless_claim_touched": false,
+      "changed_runtime_files": [
+        {
+          "platform": "linux_x64",
+          "path": "antigravity",
+          "from_sha256": "5f9c16b286895f8f7fdecd423883ca256a85077b8acf9a6bc1111761d34df164",
+          "to_sha256": "a759ce7c7a235d9b6c281a25ead97cbbf2e92314a3ffd224e2f9144f3fae7a86",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        },
+        {
+          "platform": "mac_arm64",
+          "path": "antigravity",
+          "from_sha256": "d15693410c904242c1c3423a579f60a81e018444bb51fbccc6505f988b62a91d",
+          "to_sha256": "7dca095cfc1df2c057a385ed88a76c7ba98dc103258a80be87a8f42e484cb3aa",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        }
+      ]
+    },
+    {
+      "published_at": "2026-10-05T06:20:11Z",
+      "tag_commit": "274d81b9929aaa2b91a7266106d0d0b7f19adf52",
+      "source_compare": {
+        "base_tag": "1.2.16",
+        "head_tag": "1.2.17",
+        "ahead_by": 1,
+        "behind_by": 0,
+        "total_commits": 1,
+        "changed_paths": [
+          "CHANGELOG.md"
+        ]
+      },
+      "changed_source_files": [
+        {
+          "path": "CHANGELOG.md",
+          "classification": "discovery and official release-note behavior record",
+          "catalogue_mapping": "no selected agy models wire, lifecycle, output, permission, usage, configuration, or tool change named"
+        }
+      ],
+      "release_note_change_classes": [
+        "announcement cards",
+        "Windows command sandbox setup",
+        "markdown table rendering",
+        "TIFF image handling"
+      ],
+      "catalogue_classification": "unchanged",
+      "catalogue_classification_reason": "No note names the agy models command, its list output, decoding, or its process lifecycle. The official headless guide describes agy models as the distinct command that lists model slugs. The 1.2.13 model API retry-delay note is bounded to the request retry path; treating it as outside the model-list subcommand is an inference from the official release notes and the official command documentation, not a live observation.",
+      "runtime_tree_inventory": "dist-inventory.json#1.2.17",
+      "headless_claim_touched": false,
+      "changed_runtime_files": [
+        {
+          "platform": "linux_x64",
+          "path": "antigravity",
+          "from_sha256": "a759ce7c7a235d9b6c281a25ead97cbbf2e92314a3ffd224e2f9144f3fae7a86",
+          "to_sha256": "c54ef90651a8646ae67334d39212c81f5946feec373ad6aa335f9ef401662bc5",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        },
+        {
+          "platform": "mac_arm64",
+          "path": "antigravity",
+          "from_sha256": "7dca095cfc1df2c057a385ed88a76c7ba98dc103258a80be87a8f42e484cb3aa",
+          "to_sha256": "132ef8e1c0cba05e9a8259c4ee10ce30375ab93656bf71fa9ec255c7ba292611",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        }
+      ]
+    },
+    {
+      "published_at": "2026-10-06T06:05:28Z",
+      "tag_commit": "5e9c9c6c3fb1aea16dbc77918d687a842620cd1f",
+      "source_compare": {
+        "base_tag": "1.2.17",
+        "head_tag": "1.3.0",
+        "ahead_by": 1,
+        "behind_by": 0,
+        "total_commits": 1,
+        "changed_paths": [
+          "CHANGELOG.md"
+        ]
+      },
+      "changed_source_files": [
+        {
+          "path": "CHANGELOG.md",
+          "classification": "discovery and official release-note behavior record",
+          "catalogue_mapping": "no selected agy models wire, lifecycle, output, permission, usage, configuration, or tool change named"
+        }
+      ],
+      "release_note_change_classes": [
+        "default conversation verbosity",
+        "diff-view navigation",
+        "conversation scrolling",
+        "special-character and Windows path handling"
+      ],
+      "catalogue_classification": "unchanged",
+      "catalogue_classification_reason": "No note names the agy models command, its list output, decoding, or its process lifecycle. The official headless guide describes agy models as the distinct command that lists model slugs. The 1.2.13 model API retry-delay note is bounded to the request retry path; treating it as outside the model-list subcommand is an inference from the official release notes and the official command documentation, not a live observation.",
+      "runtime_tree_inventory": "dist-inventory.json#1.3.0",
+      "headless_claim_touched": false,
+      "changed_runtime_files": [
+        {
+          "platform": "linux_x64",
+          "path": "antigravity",
+          "from_sha256": "c54ef90651a8646ae67334d39212c81f5946feec373ad6aa335f9ef401662bc5",
+          "to_sha256": "19be6af38f7beeaa0db415df9297e314ab3d33fdd6f853434d49f88819bc68e4",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        },
+        {
+          "platform": "mac_arm64",
+          "path": "antigravity",
+          "from_sha256": "132ef8e1c0cba05e9a8259c4ee10ce30375ab93656bf71fa9ec255c7ba292611",
+          "to_sha256": "0e895226cb31f3ca07c780fb1eb13356f74b2470d721d266363467289bb462fb",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        }
+      ]
+    },
+    {
+      "published_at": "2026-10-07T03:22:02Z",
+      "tag_commit": "968f1170bd0e002e9d0914730975bc8a2cc65861",
+      "source_compare": {
+        "base_tag": "1.3.0",
+        "head_tag": "1.3.1",
+        "ahead_by": 1,
+        "behind_by": 0,
+        "total_commits": 1,
+        "changed_paths": [
+          "CHANGELOG.md"
+        ]
+      },
+      "changed_source_files": [
+        {
+          "path": "CHANGELOG.md",
+          "classification": "discovery and official release-note behavior record",
+          "catalogue_mapping": "no selected agy models wire, lifecycle, output, permission, usage, configuration, or tool change named"
+        }
+      ],
+      "release_note_change_classes": [
+        "diff and rewind navigation",
+        "plugin MCP-server replacement lifecycle",
+        "custom-agent path resolution",
+        "subagent and task status",
+        "queued-message and notification behavior",
+        "MCP reload recovery",
+        "sign-in links",
+        "Gemini API-key turn retry"
+      ],
+      "catalogue_classification": "unchanged",
+      "catalogue_classification_reason": "No note names the agy models command, its list output, decoding, or its process lifecycle. The official headless guide describes agy models as the distinct command that lists model slugs. The 1.2.13 model API retry-delay note is bounded to the request retry path; treating it as outside the model-list subcommand is an inference from the official release notes and the official command documentation, not a live observation.",
+      "runtime_tree_inventory": "dist-inventory.json#1.3.1",
+      "headless_claim_touched": false,
+      "changed_runtime_files": [
+        {
+          "platform": "linux_x64",
+          "path": "antigravity",
+          "from_sha256": "19be6af38f7beeaa0db415df9297e314ab3d33fdd6f853434d49f88819bc68e4",
+          "to_sha256": "ce1bdaed3201bb84f35d69d2773caec4f18af52af00e8c25f6cace07e4359615",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        },
+        {
+          "platform": "mac_arm64",
+          "path": "antigravity",
+          "from_sha256": "0e895226cb31f3ca07c780fb1eb13356f74b2470d721d266363467289bb462fb",
+          "to_sha256": "88db8b4d21ece4999fa58e0b54cea77154e47b319ee178d086c446262317f3fa",
+          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+        }
+      ]
+    }
+  ],
+  "bounded_changes": {
+    "binary_scope": "Each downloaded official Linux x64 and Mac ARM64 archive contains exactly one regular file named antigravity; its size and digest are frozen in dist-inventory.json. The public source compare for each tag exposes only CHANGELOG.md. No downloaded binary was executed.",
+    "unmapped": "Release-note changes to conversation UI, headless agent requests, settings, authentication, tools, permissions, usage, files, plugins, remote control, and other commands remain provider-internal or outside the selected catalogue mapping unless a hop says otherwise.",
+    "model_api_retry_note": "The 1.2.13 note describes retry delays for model API requests. The official headless guide identifies agy models separately as the model-slug listing command; no catalogue-specific list-output or lifecycle change is published. This scope classification is an inference from those official materials; static metadata cannot transfer to live catalogue honoring.",
+    "deferred": "No antigravity.headless claim, deferred headless interior point, ACP registry, exact hosted alias, or launcher is qualified here."
+  },
+  "result": {
+    "classification": "compatible-extension",
+    "catalogue_changed_hops": [],
+    "headless_changed": false,
+    "new_operation": false,
+    "consumer_visible_narrowing": false,
+    "security_or_authority_change": false,
+    "public_lifecycle_break": false,
+    "live_proof_transferred": false
+  }
+}

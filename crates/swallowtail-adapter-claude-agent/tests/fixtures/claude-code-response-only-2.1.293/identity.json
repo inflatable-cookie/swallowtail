@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0.0",
+  "family": "claude-code.response-only",
+  "axis": "claude-code.response-only-stream-json",
+  "observed_at": "2026-10-08T00:26:41Z",
+  "official_channels": {
+    "npm": {
+      "package": "@anthropic-ai/claude-code",
+      "dist_tags": {
+        "latest": "2.1.293",
+        "stable": "2.1.285",
+        "next": "2.1.293"
+      },
+      "latest_published_at": "2026-10-07T17:18:04.464Z",
+      "registry_url": "https://registry.npmjs.org/@anthropic-ai/claude-code"
+    },
+    "github_latest_non_prerelease": {
+      "repository": "anthropics/claude-code",
+      "tag": "v2.1.293",
+      "published_at": "2026-10-07T18:10:20Z",
+      "commit": "79babc372d64101f981bd2b52c3dbe588596dc56",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.293"
+    }
+  },
+  "first_unpublished_after_latest": {
+    "version": "2.1.294",
+    "npm_version_endpoint_status": 404,
+    "github_release_endpoint_status": 404
+  },
+  "host_observation": {
+    "executable_available_on_path": true,
+    "version_and_digest": "not_observed",
+    "reason": "The installed CLI may self-update; it was not invoked to protect the host from mutation.",
+    "host_path_recorded": false
+  },
+  "claim_at_observation": {
+    "latest_qualified": "2.1.281",
+    "segments": [
+      {
+        "baseline": "2.1.227",
+        "latest": "2.1.278",
+        "behavior": "claude-code.response-only.stream-json.v1"
+      },
+      {
+        "baseline": "2.1.280",
+        "latest": "2.1.281",
+        "behavior": "claude-code.response-only.stream-json.v2"
+      }
+    ],
+    "denied_versions": [
+      "2.1.244",
+      "2.1.249",
+      "2.1.253",
+      "2.1.254",
+      "2.1.255",
+      "2.1.256",
+      "2.1.262",
+      "2.1.264",
+      "2.1.279"
+    ]
+  },
+  "identity_decision": {
+    "shape": "private-milestone",
+    "new_behavior": "claude-code.response-only.stream-json.v3",
+    "new_segment": {
+      "baseline": "2.1.282",
+      "latest": "2.1.293"
+    },
+    "keep_baseline": "2.1.227",
+    "keep_claim_id": "claude-code.response-only.window-1",
+    "keep_axis": "claude-code.response-only-stream-json",
+    "keep_denied_versions": true,
+    "public_response_only_contract_unchanged": true,
+    "source_to_npm_runtime_provenance_claimed": false
+  },
+  "published_hops_after_previous_ceiling": [
+    "2.1.282",
+    "2.1.283",
+    "2.1.284",
+    "2.1.285",
+    "2.1.286",
+    "2.1.287",
+    "2.1.288",
+    "2.1.289",
+    "2.1.290",
+    "2.1.291",
+    "2.1.292",
+    "2.1.293"
+  ],
+  "published_hops_with_previous_ceiling_for_complete_inventory": [
+    "2.1.281",
+    "2.1.282",
+    "2.1.283",
+    "2.1.284",
+    "2.1.285",
+    "2.1.286",
+    "2.1.287",
+    "2.1.288",
+    "2.1.289",
+    "2.1.290",
+    "2.1.291",
+    "2.1.292",
+    "2.1.293"
+  ],
+  "source_tags": [
+    {
+      "version": "2.1.281",
+      "tag": "v2.1.281",
+      "commit": "d78be9481b889e11186ec4578b4f5e9301396e25",
+      "release_published_at": "2026-09-23T19:19:15Z"
+    },
+    {
+      "version": "2.1.282",
+      "tag": "v2.1.282",
+      "commit": "ddcb43a29b2d4da61fd22a55f6030c6d376b0545",
+      "release_published_at": "2026-09-24T18:38:05Z"
+    },
+    {
+      "version": "2.1.283",
+      "tag": "v2.1.283",
+      "commit": "7779afb12e3635f46f56ec823979d68350ae000b",
+      "release_published_at": "2026-09-25T21:50:12Z"
+    },
+    {
+      "version": "2.1.284",
+      "tag": "v2.1.284",
+      "commit": "8364969e9f5234ef3d9743cf7c790e9aab0ac3b1",
+      "release_published_at": "2026-09-28T18:02:03Z"
+    },
+    {
+      "version": "2.1.285",
+      "tag": "v2.1.285",
+      "commit": "ec44ca97dc86c33d934c8d55b24959aabf076871",
+      "release_published_at": "2026-09-29T19:27:30Z"
+    },
+    {
+      "version": "2.1.286",
+      "tag": "v2.1.286",
+      "commit": "f5f60250a032caa72d1eb47f9ca5f29becc7066f",
+      "release_published_at": "2026-09-30T19:10:13Z"
+    },
+    {
+      "version": "2.1.287",
+      "tag": "v2.1.287",
+      "commit": "816ec211a648f17a411f63a45cfd44ddf8db00d9",
+      "release_published_at": "2026-10-01T18:00:22Z"
+    },
+    {
+      "version": "2.1.288",
+      "tag": "v2.1.288",
+      "commit": "1c229fcd1e1e4e452e29a8f116b45fe4cfe2c528",
+      "release_published_at": "2026-10-02T20:19:57Z"
+    },
+    {
+      "version": "2.1.289",
+      "tag": "v2.1.289",
+      "commit": "2bfb629dfaff0c8318047a4beb93cf1dc5b58b18",
+      "release_published_at": "2026-10-03T23:07:17Z"
+    },
+    {
+      "version": "2.1.290",
+      "tag": "v2.1.290",
+      "commit": "e8ae451830fb8d1d8edf853c7830ff6c650d3ee3",
+      "release_published_at": "2026-10-05T23:33:17Z"
+    },
+    {
+      "version": "2.1.291",
+      "tag": "v2.1.291",
+      "commit": "8e60c4cac989c0e0cc6d2c49407a5c67f5a4a8e6",
+      "release_published_at": "2026-10-06T03:55:19Z"
+    },
+    {
+      "version": "2.1.292",
+      "tag": "v2.1.292",
+      "commit": "fbe20e00e2851fc01506f54f98a8f0b875af3847",
+      "release_published_at": "2026-10-06T18:59:30Z"
+    },
+    {
+      "version": "2.1.293",
+      "tag": "v2.1.293",
+      "commit": "79babc372d64101f981bd2b52c3dbe588596dc56",
+      "release_published_at": "2026-10-07T18:10:20Z"
+    }
+  ],
+  "artifact_inventory": "dist-inventory.json",
+  "route_facing_hook_ledger": "builtin-hook-ledger.json",
+  "artifacts_downloaded_from_official_npm_and_hash_checked_before_resume": true,
+  "downloaded_artifacts_executed": false,
+  "provider_prompt_sent": false,
+  "provider_session_or_catalogue_used": false,
+  "installation_or_host_update_performed": false
+}

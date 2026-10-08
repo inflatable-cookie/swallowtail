@@ -27,6 +27,7 @@ mod reasoning;
 mod selection;
 mod session;
 mod validation;
+mod working_resource;
 
 pub use driver::{QwenHeadlessDriver, qwen_headless_descriptor};
 pub use prepared::{

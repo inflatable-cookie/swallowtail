@@ -1,0 +1,253 @@
+{
+  "axis": "opencode.server",
+  "selected_route_family": "opencode.http",
+  "version": "1.18.35",
+  "observed_at": "2026-10-07",
+  "npm_package": "opencode-ai",
+  "npm_latest": "1.18.35",
+  "github_latest_tag": "v1.18.35",
+  "official_channels_agree": true,
+  "official_stable_hops_from_previous_qualified_ceiling": [
+    "1.18.32",
+    "1.18.33",
+    "1.18.34",
+    "1.18.35"
+  ],
+  "unpublished_or_withdrawn_hops": [],
+  "first_unpublished_later_stable": "1.18.36",
+  "release_artifacts": [
+    {
+      "version": "1.18.31",
+      "npm": {
+        "package": "opencode-ai",
+        "latest_at_observation": false,
+        "published_at": "2026-09-14T17:47:43.078Z",
+        "tarball_url": "https://registry.npmjs.org/opencode-ai/-/opencode-ai-1.18.31.tgz",
+        "tarball_sha256": "b6baa53003cd2e096981474ba9461a33aba2e6948b2b4b08c4aa1a88e6dc1b59",
+        "integrity": "sha512-J95feefeWwtIaw3irx76WjzWcgQXxmuHmDVphvs5ep9X30fBJ6T6bFhw50i9Kx50MG/xPn5w2pafXIfNtdry9w==",
+        "shasum": "af4a04d634555c02e4f410937c232c3c087c8a10",
+        "gitHead": null,
+        "files": {
+          "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+          "package.json": "sha256:955f7ecba06e5f152edf409f743e8c281212089f35ecd704b703aaf0fc5481b6",
+          "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+        }
+      },
+      "github": {
+        "release_url": "https://github.com/anomalyco/opencode/releases/tag/v1.18.31",
+        "published_at": "2026-09-14T17:47:30Z",
+        "tag": "v1.18.31",
+        "tag_commit": "014614d35b397775e5d397a490fc72368c894ec2",
+        "release_target_commit": "a97622c801f4ca571530ddc51076af659a9c32cd",
+        "source_archive_url": "https://github.com/anomalyco/opencode/archive/refs/tags/v1.18.31.tar.gz",
+        "source_archive_sha256": "76f69fe27ec2b44e23fa1749029e7c012eb7e975a0f0c7819e9458198dfd3896",
+        "darwin_arm64_asset_url": "https://github.com/anomalyco/opencode/releases/download/v1.18.31/opencode-darwin-arm64.zip",
+        "darwin_arm64_asset_sha256": "caf7f31fa1aec2353ea859d4ef9ab824c6273d941b016e88d51193fa3028d34e",
+        "darwin_arm64_asset_size": 46273106
+      },
+      "complete_tree_inventory": {
+        "entries": 6626,
+        "files": 6566,
+        "symlinks": 60,
+        "opencode_src_files": 408,
+        "canonical_sha256": "3bd9c7c0e74285434edc771eb0279e28a8fd0634c3cc8f1c804f3d50cfcff21f"
+      }
+    },
+    {
+      "version": "1.18.32",
+      "npm": {
+        "package": "opencode-ai",
+        "latest_at_observation": false,
+        "published_at": "2026-09-21T22:50:42.463Z",
+        "tarball_url": "https://registry.npmjs.org/opencode-ai/-/opencode-ai-1.18.32.tgz",
+        "tarball_sha256": "454fbb032ade95a21323891138d4b425573f67631e7e888e516da893dc4be8ba",
+        "integrity": "sha512-SCrZWdq44y/EoH2+fE4HLcXS+DzpVqHPzmXk3p2RrufYy8LWvpfhRhKtijb5ktvx8r94ScqToqwHxR0BwS65OQ==",
+        "shasum": "11493b166da727403b3ba41455b5a66dbf790fe5",
+        "gitHead": null,
+        "files": {
+          "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+          "package.json": "sha256:e16daf8d0898f73840a3bd2efdefc6e007714f6380577484d07bc9bfd89802b2",
+          "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+        }
+      },
+      "github": {
+        "release_url": "https://github.com/anomalyco/opencode/releases/tag/v1.18.32",
+        "published_at": "2026-09-21T22:51:20Z",
+        "tag": "v1.18.32",
+        "tag_commit": "545f51d26cc39a907d2867492d498d9607ea5fa4",
+        "release_target_commit": "f5ce4f881e477c7b75421cea2d20939f0ddd71fb",
+        "source_archive_url": "https://github.com/anomalyco/opencode/archive/refs/tags/v1.18.32.tar.gz",
+        "source_archive_sha256": "65e95c9a6666ca65bbd17de1e7cecddac1504e66eeebbcfaf5ac68f97e6f392b",
+        "darwin_arm64_asset_url": "https://github.com/anomalyco/opencode/releases/download/v1.18.32/opencode-darwin-arm64.zip",
+        "darwin_arm64_asset_sha256": "fa643f93401c13508d8d513780e54ce9cc01203d501114be9b88d62408b8101f",
+        "darwin_arm64_asset_size": 46299070
+      },
+      "complete_tree_inventory": {
+        "entries": 6632,
+        "files": 6572,
+        "symlinks": 60,
+        "opencode_src_files": 408,
+        "canonical_sha256": "41d939a5f15d7cc72fdc19aff5592a4ef86c341636318594f9510f9458365dff"
+      }
+    },
+    {
+      "version": "1.18.33",
+      "npm": {
+        "package": "opencode-ai",
+        "latest_at_observation": false,
+        "published_at": "2026-09-28T04:23:28.113Z",
+        "tarball_url": "https://registry.npmjs.org/opencode-ai/-/opencode-ai-1.18.33.tgz",
+        "tarball_sha256": "6fed32445d04df1d9d56aef0f15ae200618663ef532f7ec4241432024f84097c",
+        "integrity": "sha512-58P1ffLRXiAY4QeoABqUjqf6DEzm1ihpovvn9Ad+oOLbLiwK/rf88wruT9IATJ7AtNjmi8iA7pC8tN4o5y799Q==",
+        "shasum": "1195faeb9b33cb39ad58fc01be813307d1e3b935",
+        "gitHead": null,
+        "files": {
+          "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+          "package.json": "sha256:6be04b274181b6de60a46fb9afce7dab98f65f2a980eaf3af2fd97ab34aa1026",
+          "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+        }
+      },
+      "github": {
+        "release_url": "https://github.com/anomalyco/opencode/releases/tag/v1.18.33",
+        "published_at": "2026-09-28T04:22:46Z",
+        "tag": "v1.18.33",
+        "tag_commit": "51ef4be1d3c122f18fefb510dca8d778571f4f18",
+        "release_target_commit": "1eacc1bdb919bc54fc1c9f745b0da02e83ebbdf9",
+        "source_archive_url": "https://github.com/anomalyco/opencode/archive/refs/tags/v1.18.33.tar.gz",
+        "source_archive_sha256": "34a4b810f4e839f2c4ac62206bbc64d736006f3c96712b903cda83ca60271301",
+        "darwin_arm64_asset_url": "https://github.com/anomalyco/opencode/releases/download/v1.18.33/opencode-darwin-arm64.zip",
+        "darwin_arm64_asset_sha256": "24b12873e605b3db3387cb355f43ba7451cd6065c180d8c188663337d2eeb553",
+        "darwin_arm64_asset_size": 46317276
+      },
+      "complete_tree_inventory": {
+        "entries": 6638,
+        "files": 6578,
+        "symlinks": 60,
+        "opencode_src_files": 409,
+        "canonical_sha256": "d0b53d2b6099ab2a0d498c25c6efc135b483370463ab4b3f23eabce7f0c05d09"
+      }
+    },
+    {
+      "version": "1.18.34",
+      "npm": {
+        "package": "opencode-ai",
+        "latest_at_observation": false,
+        "published_at": "2026-09-30T22:38:58.987Z",
+        "tarball_url": "https://registry.npmjs.org/opencode-ai/-/opencode-ai-1.18.34.tgz",
+        "tarball_sha256": "279923bb5754e810b173a8a7401cf17699fccad3c1159500c10c477887f0b53b",
+        "integrity": "sha512-9WUS2T0t4HHDVzXvuwTHF0nvhXvZ9mQ0r+ozCvKdJu0LVoQpOzqAW4qWTC3ygNc5Oedcc7j+Oct24JYlQYnySA==",
+        "shasum": "d7f954b669f1cacb24637e8e302b2ec4faaef63e",
+        "gitHead": null,
+        "files": {
+          "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+          "package.json": "sha256:714068a06f26ea8e7b243c8ea81270c4dfc2f57473c67e5d0daed7118ffa5c5b",
+          "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+        }
+      },
+      "github": {
+        "release_url": "https://github.com/anomalyco/opencode/releases/tag/v1.18.34",
+        "published_at": "2026-09-30T22:39:45Z",
+        "tag": "v1.18.34",
+        "tag_commit": "aec0b9a6d8898f68f923aaf08b7306d931fd9d76",
+        "release_target_commit": "e9f8a210b9e2b1e13d375b84906069886eb3b767",
+        "source_archive_url": "https://github.com/anomalyco/opencode/archive/refs/tags/v1.18.34.tar.gz",
+        "source_archive_sha256": "c2c60efde22639b64c7bfa740da39b9c8079391a7540e2f67bf91b36e5797f17",
+        "darwin_arm64_asset_url": "https://github.com/anomalyco/opencode/releases/download/v1.18.34/opencode-darwin-arm64.zip",
+        "darwin_arm64_asset_sha256": "8522b70f545184b3a8d97c5ca4f814093b2476d72aebfda8c48bcd072ec31d1b",
+        "darwin_arm64_asset_size": 45538151
+      },
+      "complete_tree_inventory": {
+        "entries": 6641,
+        "files": 6581,
+        "symlinks": 60,
+        "opencode_src_files": 409,
+        "canonical_sha256": "35d11829d8fdd6e17d2e700be58ddf48cca9afff2d5a79b1708681218425e7f0"
+      }
+    },
+    {
+      "version": "1.18.35",
+      "npm": {
+        "package": "opencode-ai",
+        "latest_at_observation": true,
+        "published_at": "2026-10-06T20:21:30.784Z",
+        "tarball_url": "https://registry.npmjs.org/opencode-ai/-/opencode-ai-1.18.35.tgz",
+        "tarball_sha256": "4d3408d0950d70cf870efe3f86e8bd0271d8149bea0767008d42de14f0986a04",
+        "integrity": "sha512-tDQKThIZ3amp8NSn3XDP2Dj5BlhRbZC0VkIxgYuf6gvRSXkseqD31j/U4KfpPwha593i8M59hdsDfz32yJx4Og==",
+        "shasum": "08cd9a77993031d2c66289d82a99f10227af7fac",
+        "gitHead": null,
+        "files": {
+          "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+          "package.json": "sha256:f3dde440fda02ba64505d1e33beb857c916a29801ba9dd2de592c847c7ae0a41",
+          "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+        }
+      },
+      "github": {
+        "release_url": "https://github.com/anomalyco/opencode/releases/tag/v1.18.35",
+        "published_at": "2026-10-06T20:18:39Z",
+        "tag": "v1.18.35",
+        "tag_commit": "53d1eabb61e21162157817bf677da0a4ad3332e3",
+        "release_target_commit": "4ac0d9c3d169bbe81d9570013effdda3fe24d36e",
+        "source_archive_url": "https://github.com/anomalyco/opencode/archive/refs/tags/v1.18.35.tar.gz",
+        "source_archive_sha256": "3092a7b9f55d80c42a9c1bb2e2cc0a9961316673faf92b741577257a1576dd59",
+        "darwin_arm64_asset_url": "https://github.com/anomalyco/opencode/releases/download/v1.18.35/opencode-darwin-arm64.zip",
+        "darwin_arm64_asset_sha256": "80b05124357a77cd57945bfde36082a028e829c198d222d5e146617f49a2c4b7",
+        "darwin_arm64_asset_size": 45540968
+      },
+      "complete_tree_inventory": {
+        "entries": 6628,
+        "files": 6568,
+        "symlinks": 60,
+        "opencode_src_files": 409,
+        "canonical_sha256": "616f4afe54525f9d0a7cdcbf0818f1f00c6cba722daaa7f1b4f9c2deef1216b2"
+      }
+    }
+  ],
+  "host": {
+    "present": true,
+    "on_path": true,
+    "platform": "darwin-arm64",
+    "observed_version": "1.18.32",
+    "observation_command": "scripts/run-with-isolated-home.sh --home-var OPENCODE_HOME -- opencode --version",
+    "observation_only": true,
+    "installed_or_updated": false,
+    "official_asset_match": true,
+    "host_binary_size": 144602594,
+    "host_binary_sha256": "a3c45d4e1d6620b436851f1ef6b25c71befcf06a382e279a1eb1c2196424395e",
+    "matched_release_asset_version": "1.18.32",
+    "matched_release_asset_sha256": "fa643f93401c13508d8d513780e54ce9cc01203d501114be9b88d62408b8101f",
+    "invoked_beyond_version": false
+  },
+  "prior_claim_at_observation": {
+    "claim_id": "opencode.http.server-window-1",
+    "baseline": "1.14.48",
+    "latest_qualified": "1.18.31",
+    "behavior_revision": "opencode.http-sse.surface-19",
+    "posture": "allow_unverified",
+    "unverified_newer_at_observation": [
+      "1.18.32",
+      "1.18.33",
+      "1.18.34",
+      "1.18.35"
+    ]
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "raise_latest_qualified_to": "1.18.35",
+    "keep_surface_19": true,
+    "keep_baseline_and_historical_segments_and_gaps": true,
+    "selected_route_declarations_and_openapi_byte_identical": true,
+    "selected_internal_deltas_are_classified": true,
+    "new_public_operation": false,
+    "security_or_authority_change": false,
+    "consumer_visible_narrowing": false,
+    "live_provider_or_server_proof_performed": false,
+    "downloaded_artifact_executed": false,
+    "host_install_changed": false,
+    "claim_changed_in_identity_card": false
+  }
+}

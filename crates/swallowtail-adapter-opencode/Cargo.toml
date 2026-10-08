@@ -32,6 +32,7 @@ url = "2"
 [dev-dependencies]
 futures-executor = "0.3"
 futures-util = "0.3"
+sha2 = "0.10"
 swallowtail-host-local.workspace = true
 swallowtail-testkit.workspace = true
 
@@ -61,9 +62,17 @@ name = "protocol_fixtures"
 path = "tests/protocol_suite.rs"
 
 [[test]]
+name = "opencode_http_1_18_35_delta_ledger"
+path = "tests/opencode_http_1_18_35_delta_ledger.rs"
+
+[[test]]
 name = "acp_suite"
 path = "tests/acp_suite.rs"
 
 [[test]]
 name = "acp_prepared_facade"
 path = "tests/acp_prepared_facade.rs"
+
+[[test]]
+name = "opencode_acp_1_18_35_delta_ledger"
+path = "tests/opencode_acp_1_18_35_delta_ledger.rs"

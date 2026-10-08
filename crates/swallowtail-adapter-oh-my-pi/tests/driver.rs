@@ -57,7 +57,7 @@ fn descriptor_is_a_distinct_exact_oh_my_pi_rpc_driver() {
     assert!(
         descriptor.supports_interface_version(&InterfaceVersionBinding::new(
             axis.clone(),
-            InterfaceVersion::new("18.2.7").expect("valid version"),
+            InterfaceVersion::new("18.8.3").expect("valid version"),
         ))
     );
     assert!(
@@ -69,7 +69,7 @@ fn descriptor_is_a_distinct_exact_oh_my_pi_rpc_driver() {
     assert!(
         !descriptor.supports_interface_version(&InterfaceVersionBinding::new(
             axis,
-            InterfaceVersion::new("18.2.8").expect("valid version"),
+            InterfaceVersion::new("18.8.4").expect("valid version"),
         ))
     );
 }

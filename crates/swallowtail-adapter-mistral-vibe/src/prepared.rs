@@ -39,7 +39,7 @@ pub struct MistralVibeHeadlessPreparationInput {
 impl MistralVibeHeadlessPreparationInput {
     #[must_use]
     #[allow(clippy::too_many_arguments)]
-    /// Creates explicit preparation input for one exact Vibe release.
+    /// Creates explicit preparation input for the qualified Vibe release window.
     pub const fn new(
         instance_id: ConfiguredInstanceId,
         instance_revision: InstanceRevision,
@@ -165,7 +165,7 @@ impl MistralVibeHeadlessPreparedIntegration {
     }
 }
 
-/// Discovers and prepares exactly one qualified Vibe headless release.
+/// Discovers and prepares one qualified Vibe headless release.
 pub async fn prepare_mistral_vibe_headless(
     input: MistralVibeHeadlessPreparationInput,
     probe: MistralVibeHeadlessPreparationProbe,
@@ -233,14 +233,19 @@ fn promote(
         .filter(|observation| observation.is_permitted())
         .cloned()
         .ok_or_else(|| discovery_outcome_failure(&outcome))?;
+    let claim = crate::mistral_vibe_headless_claim();
+    let assessment = claim.assess(observation.version().version());
     if observation.execution_host_id() != &input.execution_host_id
         || observation.version().axis() != input.target.version_axis()
-        || observation.version().version().as_str() != crate::MISTRAL_VIBE_RELEASE_VERSION
+        || !assessment.is_permitted()
+        || assessment.behavior_revision().is_none_or(|revision| {
+            revision.as_str() != crate::selection::MISTRAL_VIBE_HEADLESS_BEHAVIOR
+        })
     {
         return Err(failure(
             PreparationStage::CompatibilityClassification,
             "swallowtail.mistral-vibe.headless.preparation.observation_mismatch",
-            "Mistral Vibe discovery observation does not match the prepared host and release",
+            "Mistral Vibe discovery observation does not match the prepared host and qualified release window",
         ));
     }
     let instance = configured_instance(&input, &observation)?;

@@ -1,0 +1,3342 @@
+{
+  "authority": "official PyPI distributions and GitHub stable tags/releases; PyPI wheel file inventories are complete and downloaded bytes match registry digests; artifacts were not executed",
+  "baseline": "2.25.4",
+  "github_tags": {
+    "v2.25.4": "19b5b74faa78d0816b8d4d4c7d7543fc3520678c",
+    "v2.25.5": "c069ffa1e12fb5f2487b489217c40ab97721d553",
+    "v2.25.7": "4a96003186b166d55b9f06895c45bb136eef61cd",
+    "v2.25.8": "7c19608af06f6c61d63f8f7a5c3430da73fba2ab",
+    "v2.26.0": "376f6a33413a3eec9b3795b0c0e004066c47b5c"
+  },
+  "official": "2.26.0",
+  "per_hop_changed_selected_inputs": {
+    "2.25.4..2.25.5": {
+      "from_tag_commit": "19b5b74faa78d0816b8d4d4c7d7543fc3520678c",
+      "to_tag_commit": "c069ffa1e12fb5f2487b489217c40ab97721d553",
+      "unpublished_points_between": {
+        "2.25.5..2.25.7": [],
+        "2.25.8..2.26.0": []
+      },
+      "changed_selected_input_paths": [
+        "vibe/_experimental_harness.py",
+        "vibe/app_server/_runtime.py",
+        "vibe/app_server/events.py",
+        "vibe/app_server/models.py",
+        "vibe/app_server/session.py",
+        "vibe/cli/cli.py",
+        "vibe/cli/entrypoint.py",
+        "vibe/core/agent_loop/__init__.py",
+        "vibe/core/agent_loop/_loop.py",
+        "vibe/core/agent_loop_hooks.py",
+        "vibe/core/auth/mcp_oauth.py",
+        "vibe/core/config/builder.py",
+        "vibe/core/config/fingerprint.py",
+        "vibe/core/config/layers/_base.py",
+        "vibe/core/config/mcp_servers.py",
+        "vibe/core/config/models.py",
+        "vibe/core/config/vibe_schema.py",
+        "vibe/core/git/repo.py",
+        "vibe/core/hooks/config.py",
+        "vibe/core/paths/__init__.py",
+        "vibe/core/paths/_vibe_home.py",
+        "vibe/core/session/image_snapshot.py",
+        "vibe/core/session/last_session_pointer.py",
+        "vibe/core/session/resume_sessions.py",
+        "vibe/core/session/saved_sessions.py",
+        "vibe/core/session/session_index.py",
+        "vibe/core/session/session_interop.py",
+        "vibe/core/session/session_lease.py",
+        "vibe/core/session/session_logger.py",
+        "vibe/core/session/session_permissions.py",
+        "vibe/core/skills/builtins/skill_creator.py",
+        "vibe/core/skills/builtins/vibe.py",
+        "vibe/core/skills/manager.py",
+        "vibe/core/skills/models.py",
+        "vibe/core/skills/parser.py",
+        "vibe/core/skills/registry/_store.py",
+        "vibe/core/system_prompt.py",
+        "vibe/core/telemetry/send.py",
+        "vibe/core/telemetry/session.py",
+        "vibe/core/tools/arity.py",
+        "vibe/core/tools/base.py",
+        "vibe/core/tools/builtins/_shell_command_policy.py",
+        "vibe/core/tools/builtins/_shell_permission_analysis.py",
+        "vibe/core/tools/builtins/bash.py",
+        "vibe/core/tools/builtins/experimental_bash.py",
+        "vibe/core/tools/builtins/skill.py",
+        "vibe/core/tools/builtins/todo.py",
+        "vibe/core/tools/builtins/web_fetch.py",
+        "vibe/core/tools/builtins/windows_shell.py",
+        "vibe/core/tools/connectors/connector_registry.py",
+        "vibe/core/tools/mcp/tools.py",
+        "vibe/core/tools/permissions.py",
+        "vibe/core/trusted_folders.py",
+        "vibe/core/types.py"
+      ],
+      "classifications": [
+        {
+          "change": "modified",
+          "classification": "Unified Harness becomes the default at 2.26.0, but --legacy-harness has first precedence and keeps this route on legacy Python; no Unified Harness capability is mapped.",
+          "from_sha256": "185394340d833f0dd2ac2be0a00875766171e6d69547e27fa6e9e6ffe04ce83b",
+          "path": "vibe/_experimental_harness.py",
+          "to_sha256": "23521cfca587f5683126d51d807b767c33a1bd2159e178c7a864411badadf4e2"
+        },
+        {
+          "change": "modified",
+          "classification": "Runtime configuration gains additive UI, image and utility-model paths; programmatic entrypoint disables title generation, and the selected legacy path/schema remains intact.",
+          "from_sha256": "78d0decb00df2654e5821e59b69b22939016f3e7d990179cfe2cd688257412d3",
+          "path": "vibe/app_server/_runtime.py",
+          "to_sha256": "f756c0d0f798ed5db561df64346155550e1e2c66f63ae60ed2bf05eb2dc16a55"
+        },
+        {
+          "change": "modified",
+          "classification": "Adds a child-session event; the selected headless Plan run creates no child session, and the existing public history stream remains unchanged.",
+          "from_sha256": "19dd6f9ff92753eaf856017abaad1a27887a5db94e8b99e3b5a7cc002b8ae523",
+          "path": "vibe/app_server/events.py",
+          "to_sha256": "7705669f68e231f92e9e999fe063b89ef3147e60562916987c1bc20a580fdfd5"
+        },
+        {
+          "change": "modified",
+          "classification": "Additive app-server fields for child sessions, approval metadata, model state and later worktrees; the selected ProgrammaticOutput wire is unchanged and the adapter ignores unmapped additive fields.",
+          "from_sha256": "ef57e328cbe9370499865da1065b172ecce447571dd3e77cc3ba584161e319aa",
+          "path": "vibe/app_server/models.py",
+          "to_sha256": "d2852c720a7491e9bf37dceab1f3ad743646d518b329ccd85f63160f2a830a3a"
+        },
+        {
+          "change": "modified",
+          "classification": "Adds child-session state and a bounded interrupt wait on cancellation; child sessions are unreachable from the selected Plan profile, and host process ownership/cleanup remains the selected lifecycle.",
+          "from_sha256": "fb4bcd8c947e950bde1fae8ea1e14f11e3ee0e47d3e2161ca16614e879dc4977",
+          "path": "vibe/app_server/session.py",
+          "to_sha256": "8476f2f46238c742904236cc4bd4e98b90587d8e8627493ae0c7d9b3a0fefb72"
+        },
+        {
+          "change": "modified",
+          "classification": "Selected --prompt setup and fixed --agent plan path are unchanged; observed edits cover local-home bootstrap, escaped config errors, TUI clipboard wiring, and CLI setup.",
+          "from_sha256": "96a5895ef4ac16e2710dfe312df83efd2b5b996b94b1def4ca5734b900f9cd9f",
+          "path": "vibe/cli/cli.py",
+          "to_sha256": "192930dea48c51a577d318f368016b3984ec35b43d20f76ade1aeb3299895f41"
+        },
+        {
+          "change": "modified",
+          "classification": "2.25.5 adds secure local Vibe-home bootstrap before dispatch; selected prompt flags and entrypoint remain unchanged.",
+          "from_sha256": "07da7d76af4f02e09ec6509ecea4e1fa8dfbaf63448f9bbf557a9a5812c7562b",
+          "path": "vibe/cli/entrypoint.py",
+          "to_sha256": "7316a251e8b245a51ed62b6b6f1d952d337861894cb03bfee825267ed45baed6"
+        },
+        {
+          "change": "modified",
+          "classification": "Agent-loop changes are teleport/approval provenance/title or duplicate call-ID internals; fixed Plan authority and opaque stream IDs remain compatible.",
+          "from_sha256": "2334b412118ed7f6512bfb9fe96fc9a008dfeb9ccb83ba7088572b797405d553",
+          "path": "vibe/core/agent_loop/__init__.py",
+          "to_sha256": "a81fcde4ef4fafe27f0695e8b4ec86d0c8ba15729f347c5bae2638de1ddae131"
+        },
+        {
+          "change": "modified",
+          "classification": "Changes are teleport refactoring, approval provenance, or internal duplicate tool-call-ID repair; teleport and smart approval are unselected, while tool IDs remain opaque stream values.",
+          "from_sha256": "9c7d64dfb54623705f054a324363975783227019cd5a1f1d16910f599b11f0c2",
+          "path": "vibe/core/agent_loop/_loop.py",
+          "to_sha256": "e6b4c637833ee32458985bc7f38237a48a8b7975bfc03401f9d97e826fdb6644"
+        },
+        {
+          "change": "modified",
+          "classification": "Hook loading/dispatch remains part of Vibe-owned local configuration; no Swallowtail hook operation or authority is added.",
+          "from_sha256": "a7318525b545b62ba6c1ddf14d04ae300c60d36e258cb5b8825cad63647dafac",
+          "path": "vibe/core/agent_loop_hooks.py",
+          "to_sha256": "8c4764da96cacee88fbb5e59ae6824473e546019d86f2fc277be5b1492c285ce"
+        },
+        {
+          "change": "modified",
+          "classification": "MCP OAuth handling is provider-internal and does not add a Swallowtail credential lease or client-MCP operation.",
+          "from_sha256": "67849049cd179e8489e768f14955abc92f152df32c05943022782c98a55bc0ad",
+          "path": "vibe/core/auth/mcp_oauth.py",
+          "to_sha256": "56566fb0d0f37818243c43e8a58f91ab7c9b983a16072e13e50ef7aaf7972156"
+        },
+        {
+          "change": "modified",
+          "classification": "Config merge validation changes report malformed layer shapes as startup errors; it does not alter valid selected settings or the stream.",
+          "from_sha256": "1477675946e74b5730b3e770a5c832a8a23400825c3eb343741a0cc8b13ca281",
+          "path": "vibe/core/config/builder.py",
+          "to_sha256": "76293d8694ae66b68c86e93282cba4cf70c0d8e97b0e6399d73c0e4b3e541722"
+        },
+        {
+          "change": "modified",
+          "classification": "Configuration schema, merge, default, or validation changes remain inside Vibe-owned ambient config; fixed argv and the selected Plan permission overrides are unchanged.",
+          "from_sha256": "31aaa6404dff039f44029be164b74fd4ab04e12d46ff34ed83d02a361fbfe69b",
+          "path": "vibe/core/config/fingerprint.py",
+          "to_sha256": "403e26f0ea7210f0086b92948da3c445bb2c9980e5e37b7085a101c7fe9a67a5"
+        },
+        {
+          "change": "modified",
+          "classification": "Configuration schema, merge, default, or validation changes remain inside Vibe-owned ambient config; fixed argv and the selected Plan permission overrides are unchanged.",
+          "from_sha256": "90a10b6c4101fb103dae188b25ff3ceb9ee8a64c35f3f300282c03717bfb68ea",
+          "path": "vibe/core/config/layers/_base.py",
+          "to_sha256": "9a6d2d12c7591ac3d7d86cca75a8c423109a2b4ffcc1740b57e8e2a4b0d387df"
+        },
+        {
+          "change": "modified",
+          "classification": "Configuration schema, merge, default, or validation changes remain inside Vibe-owned ambient config; fixed argv and the selected Plan permission overrides are unchanged.",
+          "from_sha256": "d8e69fc74e0c0e83ac15108add5116ff7442cfb643ccc56961086d6418e6563c",
+          "path": "vibe/core/config/mcp_servers.py",
+          "to_sha256": "89a2e6157f5f32bf796b19b72fd37351f325604e8873240c49161423f08c1c8a"
+        },
+        {
+          "change": "modified",
+          "classification": "Adds UI and utility model configuration; the 2.26 auto-title default applies only to cli/desktop, not entrypoint=programmatic.",
+          "from_sha256": "8cd3c7c3021078e446b9026cce5489b76b2fb3349dc8d150bb30bfecf8397512",
+          "path": "vibe/core/config/models.py",
+          "to_sha256": "560aa458d6411fd61ee0b4fa4cb148e0ca232eb5b7b0d9306208c5b800ae6c3a"
+        },
+        {
+          "change": "modified",
+          "classification": "Config schema adds unrelated UI/utility/compaction fields; selected argv wins, no title model is invoked for entrypoint=programmatic, and the adapter does not rewrite local config.",
+          "from_sha256": "92c8d33f0c2b3444379a4ca1d490c7ea45bac1d22ac361c711cb175dc2cb26c6",
+          "path": "vibe/core/config/vibe_schema.py",
+          "to_sha256": "3b0b2d5c7c70be9abb6982ec06b0361fdae97fb6d272c9a67f3112f7ff9aa2e8"
+        },
+        {
+          "change": "modified",
+          "classification": "Git repository helper changes affect provider-internal workspace metadata; no selected process, stream, or permission contract changes.",
+          "from_sha256": "028de27fc2fb884d9f51a429efc99f3e11720e6a8e23599a9ba1a1d8840f0034",
+          "path": "vibe/core/git/repo.py",
+          "to_sha256": "5548f923b48dbcbcb98d9794f915279ad562890b9c8e330654d9fd1f6e680c4a"
+        },
+        {
+          "change": "modified",
+          "classification": "Hook loading/dispatch remains part of Vibe-owned local configuration; no Swallowtail hook operation or authority is added.",
+          "from_sha256": "42a501297f36a0437a01ebcdc977407440a4975d961ca6eb2db98a48bbd1196f",
+          "path": "vibe/core/hooks/config.py",
+          "to_sha256": "8f304f988412b6ef1c708ae50a772af16e9191420734f75c886891e5e99b0628"
+        },
+        {
+          "change": "modified",
+          "classification": "Vibe home path resolution changes are provider-internal configuration; Swallowtail neither reads nor mutates that local state.",
+          "from_sha256": "43408cb109f8db57c527d138d035aeb743e15400369ebf1eebd8f844afa20b45",
+          "path": "vibe/core/paths/__init__.py",
+          "to_sha256": "d6383c4e7e60d7eebf34fcbbf5369230152b6395bef55aa9f0ba241fbd023eab"
+        },
+        {
+          "change": "modified",
+          "classification": "Vibe home path resolution changes are provider-internal configuration; Swallowtail neither reads nor mutates that local state.",
+          "from_sha256": "7947de71c1aa22490c60e2a4460ac3ac5d1a52afd5d38ae1759aa25d1cda394b",
+          "path": "vibe/core/paths/_vibe_home.py",
+          "to_sha256": "b52c25dcc0818254fc4502a262b6f2537cc9eb19a47787177014b2b8d5f60ce6"
+        },
+        {
+          "change": "modified",
+          "classification": "Saved-history, index, permission, snapshot, resume, title, or worktree behavior is outside the selected one-prompt path; session close and streaming output remain selected.",
+          "from_sha256": "06e8779578d3ec4877506f3ea9b70507c5c8cd0a13fd62446f6f4148c5db26d1",
+          "path": "vibe/core/session/image_snapshot.py",
+          "to_sha256": "bfedb843d2dc2734aa3defa23ef061f4627abb13de51fbe326d9f04c09c9710b"
+        },
+        {
+          "change": "modified",
+          "classification": "Saved-history, index, permission, snapshot, resume, title, or worktree behavior is outside the selected one-prompt path; session close and streaming output remain selected.",
+          "from_sha256": "b624b60c206615c97ce33974b2fb503e092c4a68bcc4ad91509eb79596fd0cfa",
+          "path": "vibe/core/session/last_session_pointer.py",
+          "to_sha256": "49b2d5b6cebabeb2dff8eb2090ed13ad59a907bcc1fc4f5bc3599067cdbc471d"
+        },
+        {
+          "change": "modified",
+          "classification": "Saved-history, index, permission, snapshot, resume, title, or worktree behavior is outside the selected one-prompt path; session close and streaming output remain selected.",
+          "from_sha256": "b616dfca30409814a772d624641ad7e0b4cf52917495c833730217ebd1c74276",
+          "path": "vibe/core/session/resume_sessions.py",
+          "to_sha256": "6a9c40061be4fc6d8f080017b2d4d80cf77addcf18ad819a230d23bd53cd1f27"
+        },
+        {
+          "change": "modified",
+          "classification": "Saved-history, index, permission, snapshot, resume, title, or worktree behavior is outside the selected one-prompt path; session close and streaming output remain selected.",
+          "from_sha256": "cb221e18b8b10a76c6bf1b099b1f062bc64991ebd0169027455eaea89521d8c1",
+          "path": "vibe/core/session/saved_sessions.py",
+          "to_sha256": "e06ec5a8d339c3a138e1a7c97ed529b7c4c2494bf7bc6fad40aa8fae035bf06f"
+        },
+        {
+          "change": "modified",
+          "classification": "Saved-history, index, permission, snapshot, resume, title, or worktree behavior is outside the selected one-prompt path; session close and streaming output remain selected.",
+          "from_sha256": "ea9c869cf7c61708f68ba9a7c2347b84a5507bc04d2fcf7089ef13432ee2f11f",
+          "path": "vibe/core/session/session_index.py",
+          "to_sha256": "a203bd4bdcfc384b2e7bcb790100b4f413e738ea7c709ce243aaea251b17d0ae"
+        },
+        {
+          "change": "modified",
+          "classification": "Saved-history, index, permission, snapshot, resume, title, or worktree behavior is outside the selected one-prompt path; session close and streaming output remain selected.",
+          "from_sha256": "43dfe9927011bb2eaec80f1d715d28eae52b5c4331094007fdf03751c701a9aa",
+          "path": "vibe/core/session/session_interop.py",
+          "to_sha256": "8ff5f35462988e02da9bbb7ea66f19533877aa0fab352e9f6dca53091f64a3a5"
+        },
+        {
+          "change": "modified",
+          "classification": "Session-lease locking and diagnostics change inside Vibe runtime state; the selected run still closes its one session in finally and exposes no load/resume operation.",
+          "from_sha256": "3b81ddb3fce0b1b486155e4b97ee6f04ec3e7bd514a4c826b76cc3a75989018d",
+          "path": "vibe/core/session/session_lease.py",
+          "to_sha256": "7c67fc2f81b46d4232a59339481130891191f53419e330da97054453499262fd"
+        },
+        {
+          "change": "modified",
+          "classification": "Saved-history, index, permission, snapshot, resume, title, or worktree behavior is outside the selected one-prompt path; session close and streaming output remain selected.",
+          "from_sha256": "7ec756bf56425affc73a7ff2e5c23e5890814f913db872b79302e0988630692b",
+          "path": "vibe/core/session/session_logger.py",
+          "to_sha256": "4f96dae206bca7d7f4f38465bf44bba0cabb117db097d20d647247dd2ad57440"
+        },
+        {
+          "change": "added",
+          "classification": "Saved-history, index, permission, snapshot, resume, title, or worktree behavior is outside the selected one-prompt path; session close and streaming output remain selected.",
+          "from_sha256": null,
+          "path": "vibe/core/session/session_permissions.py",
+          "to_sha256": "45b5285fe7a49985f88cd8b86146e3f08d9cb3d9c0b868f917ff4b69aec7e49b"
+        },
+        {
+          "change": "modified",
+          "classification": "Skill metadata and registry handling support model-invocation policy; no Swallowtail-selected skill bundle is introduced.",
+          "from_sha256": "1bc93da547f36d87c9813e51078c5497c833e0942831fd99d1f35307d33af9f3",
+          "path": "vibe/core/skills/builtins/skill_creator.py",
+          "to_sha256": "cdac00dcd5d0beb70b4e94b05182e317291c9a6f7bb8a18c6e00b49c986c1257"
+        },
+        {
+          "change": "modified",
+          "classification": "Skill metadata and registry handling support model-invocation policy; no Swallowtail-selected skill bundle is introduced.",
+          "from_sha256": "275c5f8ba875324dab6f45acdb1e330b116ac8aea91e3da78e236cf559978b90",
+          "path": "vibe/core/skills/builtins/vibe.py",
+          "to_sha256": "22c673fbf502f21713eaf8e241fa8dd6d0af2f7b1fe716c4e50292a94f8ad785"
+        },
+        {
+          "change": "modified",
+          "classification": "Skill metadata and registry handling support model-invocation policy; no Swallowtail-selected skill bundle is introduced.",
+          "from_sha256": "172c1255886e07452989e5230fe99c25ffd2adfc666502cd7c5169ecdf72b0e7",
+          "path": "vibe/core/skills/manager.py",
+          "to_sha256": "d9da1515a17889f152764c52c45ec3aa7c0ecddb6a7da7afa8df9411c156384e"
+        },
+        {
+          "change": "modified",
+          "classification": "Skill metadata and registry handling support model-invocation policy; no Swallowtail-selected skill bundle is introduced.",
+          "from_sha256": "36b1ef4b5a675bc0e4cdc91ad5f497ac23394579fd6a2c7f47714377da3e23e0",
+          "path": "vibe/core/skills/models.py",
+          "to_sha256": "67dfe46643c04e581c8a329dd47b6c02a3e5f059c1a94ad570069647b357a9c3"
+        },
+        {
+          "change": "modified",
+          "classification": "Skill metadata and registry handling support model-invocation policy; no Swallowtail-selected skill bundle is introduced.",
+          "from_sha256": "70940b54a628b5e76440d3193e478a144d58b795c7e9725e1bdfb4845ce5b2a1",
+          "path": "vibe/core/skills/parser.py",
+          "to_sha256": "7bab20fdaa083c699f9a1224e2043fa47cacea0746292b613d8ad3020b610982"
+        },
+        {
+          "change": "modified",
+          "classification": "Skill metadata and registry handling support model-invocation policy; no Swallowtail-selected skill bundle is introduced.",
+          "from_sha256": "8b31856f314fee2871d0c5be9778be34851d7d58127332ae627e0755e26165b0",
+          "path": "vibe/core/skills/registry/_store.py",
+          "to_sha256": "15324dfcc3ca97203754e04a1b9a9e5448f2839eea0a5d386d7221eb7527adc5"
+        },
+        {
+          "change": "modified",
+          "classification": "Prompt-context composition changes remain Vibe-internal model input; Swallowtail tool authority, wire decoding, and operation shape remain unchanged.",
+          "from_sha256": "43cafd92793d48cd4f4087f3a183d922667f84cee6295482b2c5d4ce95a4b7f2",
+          "path": "vibe/core/system_prompt.py",
+          "to_sha256": "9b04007c7e00ed65246a57f102ec4f9026869e757722ff30c3e6a4fec8013449"
+        },
+        {
+          "change": "modified",
+          "classification": "Telemetry adds internal correlation, approval, or attachment fields; these are not emitted as usage evidence by the selected streaming adapter.",
+          "from_sha256": "88ad7e50f8e88a7fb7c8a908e172e3ac46cdd50c92bd8fa12e9cf4e3b55220fb",
+          "path": "vibe/core/telemetry/send.py",
+          "to_sha256": "25b625bee1fd0e9f0496ebdb4a3eee05e9c0340c7d4f757ee12866e92c66427b"
+        },
+        {
+          "change": "modified",
+          "classification": "Telemetry adds internal correlation, approval, or attachment fields; these are not emitted as usage evidence by the selected streaming adapter.",
+          "from_sha256": "e5a47536d86a51ae2da33022f45889c3b4d4bc8be13fbe18d8f9b136d49ba30b",
+          "path": "vibe/core/telemetry/session.py",
+          "to_sha256": "1adc3640bcf865d092ff8406db70becdfab31ac6dfe35f6d71490af5aedda5e8"
+        },
+        {
+          "change": "modified",
+          "classification": "The selected argv, Plan permission profile, one-prompt lifecycle, and stream envelope remain unchanged; the delta is confined to the named provider-internal subsystem.",
+          "from_sha256": "3c96d723ace67ea113cd8988a59101dce1f414878253b24669c61a8d625655bb",
+          "path": "vibe/core/tools/arity.py",
+          "to_sha256": "97fe5736f2efd45d83095c908eaacb076cfe1a00709086c6a24a8e523d68870b"
+        },
+        {
+          "change": "modified",
+          "classification": "Adds permission-scope metadata for persisted grants; it grants no new authority to the selected Plan profile.",
+          "from_sha256": "52da6c69c6ba5dea79ee45717b4bfe2d954e2a6d39855d243d30a821fc41dc55",
+          "path": "vibe/core/tools/base.py",
+          "to_sha256": "70d706fa373afb9cd5beba6fe50e58720b929017aae0a752949763255cc9ccc2"
+        },
+        {
+          "change": "modified",
+          "classification": "Shell command policy remains outside the selected Plan mapping; no shell grant or new operation is added.",
+          "from_sha256": "28a003eaf8c6916cd618a7cce877ae5c14323963abac1deed30439b15f8fb90a",
+          "path": "vibe/core/tools/builtins/_shell_command_policy.py",
+          "to_sha256": "7a4bf5024a8727ad91ab9235aec9d56da6fa6ecf0ef7d116631251d2baf2d46d"
+        },
+        {
+          "change": "modified",
+          "classification": "Builtin tool implementation/prompt changes are classified under the unchanged selected Plan profile: write_file/edit remain NEVER and approval callbacks fail closed.",
+          "from_sha256": "e4fd8aa2cef513153c747e1355420d57747886064c15eaa1fb381b185865a65e",
+          "path": "vibe/core/tools/builtins/_shell_permission_analysis.py",
+          "to_sha256": "6f789b5299db61c9201a0afca3d059521ef4ec4bb3824a4b084ff668891ee0cb"
+        },
+        {
+          "change": "modified",
+          "classification": "Shell policy implementation changes do not widen Plan authority; this headless route does not pass auto-approve/yolo and denies provider callbacks.",
+          "from_sha256": "6ca5425c27935df16eddab6facb10ca0ff99b6e4ae2846849dbd07ca5178db79",
+          "path": "vibe/core/tools/builtins/bash.py",
+          "to_sha256": "6a01943f9b2542bbb44f6dc50c7ad4a6642782cb4765a888b45b9a988b04587f"
+        },
+        {
+          "change": "modified",
+          "classification": "Builtin tool implementation/prompt changes are classified under the unchanged selected Plan profile: write_file/edit remain NEVER and approval callbacks fail closed.",
+          "from_sha256": "8228b072e0b90672a2af52d48df76249e929a3f2754c76229803fb3968b7628c",
+          "path": "vibe/core/tools/builtins/experimental_bash.py",
+          "to_sha256": "b2ed5d4a6ca014440c701bc6a5b8a5c0df15cbbb99704886650552afb9c4dc9c"
+        },
+        {
+          "change": "modified",
+          "classification": "The skill tool now accepts only model-invocable skills; this narrows ambient skill invocation while Swallowtail still supplies no selected skill bundle and adds no operation.",
+          "from_sha256": "c53644ff1a23d0e0d0158250c495aa29104457788509574dca20140807e05391",
+          "path": "vibe/core/tools/builtins/skill.py",
+          "to_sha256": "42f34102979c8ee6557c916dc7ff297a102faf85c1428d3cb1d8fad49bdfe91b"
+        },
+        {
+          "change": "modified",
+          "classification": "Todo calls retain the local read/write action; typed action and validation changes tighten malformed calls without adding workspace file authority.",
+          "from_sha256": "c1b98eab6695d3b9188b554faa07ae123eb9654eff0e0460bdc96e5d79ce0e29",
+          "path": "vibe/core/tools/builtins/todo.py",
+          "to_sha256": "2d093649369487f8ef6616e417cdffdb38b84bb123653fab9360c59109ed8287"
+        },
+        {
+          "change": "modified",
+          "classification": "URL approval now binds to the normalized origin and follows bounded redirects manually; the selected Plan headless path denies approval callbacks before a fetch.",
+          "from_sha256": "82daaac1adf0e48218790ef5ff897020c4a8a92c0be2341efd6f4faf4ebfedef",
+          "path": "vibe/core/tools/builtins/web_fetch.py",
+          "to_sha256": "89323299ed8174843b9091e39ac7b2e1732e10dc5673faf1e8a19aa1466ff8d2"
+        },
+        {
+          "change": "modified",
+          "classification": "Builtin tool implementation/prompt changes are classified under the unchanged selected Plan profile: write_file/edit remain NEVER and approval callbacks fail closed.",
+          "from_sha256": "88595f22a5c4e0ac75928ba286557f361878b177dcfaa52fdd4cad5001da4051",
+          "path": "vibe/core/tools/builtins/windows_shell.py",
+          "to_sha256": "15648c1f3b73fca5b1c4da1275d983648fb2f1dd8ea4161c72dfcfc75dfb1f84"
+        },
+        {
+          "change": "modified",
+          "classification": "Connector/MCP changes affect internal error or registry handling; they do not change the selected streaming event envelope or add a Swallowtail MCP operation.",
+          "from_sha256": "6b560e8577a2a8a08439d97e362ec4acb1337c1a649cf3c0009c45e9583dea39",
+          "path": "vibe/core/tools/connectors/connector_registry.py",
+          "to_sha256": "e9aa37f32c2554fa0c8122ff890657c133e8f2766ad8e27096dfb88000d75a46"
+        },
+        {
+          "change": "modified",
+          "classification": "MCP HTTP requests gain a Vibe User-Agent default; Swallowtail still exposes no caller-supplied MCP-server operation.",
+          "from_sha256": "8495a89937d02d211489511c8b413264fc6dff41dce2dc41e33be5852feb9faa",
+          "path": "vibe/core/tools/mcp/tools.py",
+          "to_sha256": "c6428f30e02436603f3224a7870e42786fd76d4cff3d421710f67eb967c46611"
+        },
+        {
+          "change": "modified",
+          "classification": "Permission matcher updates affect literal and outside-directory rules; the selected Plan write/edit NEVER rules and read-file allowlist are unchanged.",
+          "from_sha256": "d33e3104445dd28290a80c9423929c609bc694d2fc160baab622a8d6695ad203",
+          "path": "vibe/core/tools/permissions.py",
+          "to_sha256": "ddf54ef6e3caa602ad87b87eeda12cf8d8d221111e443d427dd2929c02086aed"
+        },
+        {
+          "change": "modified",
+          "classification": "Trust-store changes preserve the invocation-scoped --trust binding and do not add persistent trust grants to Swallowtail.",
+          "from_sha256": "255a01b96baa78ac5a2c316a2ecc341860a72d7357de99ede90ea1c90e0fc740",
+          "path": "vibe/core/trusted_folders.py",
+          "to_sha256": "d1919453812685a8418d703ff97a48e446fd47e19fe5ea870c7fcc62349db964"
+        },
+        {
+          "change": "modified",
+          "classification": "Adds session pins/archive state and optional effect approval metadata; no selected driver lifecycle or required stream key changed.",
+          "from_sha256": "a22805c8a86b5e999a84a4115f74fddcec52731bffdf45e55234cf10b1fb7e4f",
+          "path": "vibe/core/types.py",
+          "to_sha256": "222162b1e6d17fca5ce58a26b7b38cd23f8519af94ce269a76755573f56e37ae"
+        }
+      ]
+    },
+    "2.25.5..2.25.7": {
+      "from_tag_commit": "c069ffa1e12fb5f2487b489217c40ab97721d553",
+      "to_tag_commit": "4a96003186b166d55b9f06895c45bb136eef61cd",
+      "unpublished_points_between": {
+        "2.25.5..2.25.7": [
+          "2.25.6"
+        ],
+        "2.25.8..2.26.0": []
+      },
+      "changed_selected_input_paths": [
+        "vibe/app_server/_runtime.py",
+        "vibe/app_server/models.py",
+        "vibe/cli/_rust.py",
+        "vibe/cli/cli.py",
+        "vibe/cli/launcher.py",
+        "vibe/cli/programmatic.py",
+        "vibe/core/agent_loop/_loop.py",
+        "vibe/core/auth/mcp_oauth.py",
+        "vibe/core/config/builder.py",
+        "vibe/core/config/patch.py",
+        "vibe/core/config/vibe_schema.py",
+        "vibe/core/git/repo.py",
+        "vibe/core/prompts/project_context.md",
+        "vibe/core/session/session_lease.py",
+        "vibe/core/skills/builtins/vibe.py",
+        "vibe/core/system_prompt.py",
+        "vibe/core/tools/builtins/_shell_command_policy.py",
+        "vibe/core/tools/builtins/bash.py",
+        "vibe/core/tools/builtins/experimental_bash.py",
+        "vibe/core/tools/builtins/windows_shell.py"
+      ],
+      "classifications": [
+        {
+          "change": "modified",
+          "classification": "Runtime configuration gains additive UI, image and utility-model paths; programmatic entrypoint disables title generation, and the selected legacy path/schema remains intact.",
+          "from_sha256": "f756c0d0f798ed5db561df64346155550e1e2c66f63ae60ed2bf05eb2dc16a55",
+          "path": "vibe/app_server/_runtime.py",
+          "to_sha256": "2750324963c535bfc304525638ae94431e8911128cef080d8fb74d2b1392ec61"
+        },
+        {
+          "change": "modified",
+          "classification": "Additive app-server fields for child sessions, approval metadata, model state and later worktrees; the selected ProgrammaticOutput wire is unchanged and the adapter ignores unmapped additive fields.",
+          "from_sha256": "d2852c720a7491e9bf37dceab1f3ad743646d518b329ccd85f63160f2a830a3a",
+          "path": "vibe/app_server/models.py",
+          "to_sha256": "fe5fa373a9640ba861f5b9416c29ed16aa43f6fd369b18b4dc01a67582ae21cb"
+        },
+        {
+          "change": "added",
+          "classification": "New Rust TUI launcher and binary path; no automatic selection under --legacy-harness, and explicit VIBE_CLI=rust remains out of scope.",
+          "from_sha256": null,
+          "path": "vibe/cli/_rust.py",
+          "to_sha256": "69c03410c6bfd73a3b315430a5bdedab89013b4d86bef1cdcfd2640477b08c42"
+        },
+        {
+          "change": "modified",
+          "classification": "Selected --prompt setup and fixed --agent plan path are unchanged; observed edits cover local-home bootstrap, escaped config errors, TUI clipboard wiring, and CLI setup.",
+          "from_sha256": "192930dea48c51a577d318f368016b3984ec35b43d20f76ade1aeb3299895f41",
+          "path": "vibe/cli/cli.py",
+          "to_sha256": "f974eb40f5945c8f9bde2367a8a3ef5125a644115345de1fc0c84c2c4d1b6c84"
+        },
+        {
+          "change": "added",
+          "classification": "New package launcher selects the Rust TUI only from explicit VIBE_CLI=rust or its TUI rollout; automatic rollout excludes --legacy-harness. Explicit Rust selection remains out of scope.",
+          "from_sha256": null,
+          "path": "vibe/cli/launcher.py",
+          "to_sha256": "10d90f6a0c8247d6fc2be37f8c07a5fb4b8eb6f6b2a9535eabe476526b7cf4df"
+        },
+        {
+          "change": "modified",
+          "classification": "Only the teleport branch changed at 2.25.7; this route never passes --teleport. Streaming serialization is byte-stable.",
+          "from_sha256": "36a5008914136714a851880b3c6921f6ba196371e28422f58a45c8a728b25b34",
+          "path": "vibe/cli/programmatic.py",
+          "to_sha256": "1dbfd951bba336721cd31aee97a672d219933144e7cde357b485d01908a0a214"
+        },
+        {
+          "change": "modified",
+          "classification": "Changes are teleport refactoring, approval provenance, or internal duplicate tool-call-ID repair; teleport and smart approval are unselected, while tool IDs remain opaque stream values.",
+          "from_sha256": "e6b4c637833ee32458985bc7f38237a48a8b7975bfc03401f9d97e826fdb6644",
+          "path": "vibe/core/agent_loop/_loop.py",
+          "to_sha256": "9784cdbc24a863352119bf31b958642c8db0cd0341974d18400dd4e016a68bf4"
+        },
+        {
+          "change": "modified",
+          "classification": "MCP OAuth handling is provider-internal and does not add a Swallowtail credential lease or client-MCP operation.",
+          "from_sha256": "56566fb0d0f37818243c43e8a58f91ab7c9b983a16072e13e50ef7aaf7972156",
+          "path": "vibe/core/auth/mcp_oauth.py",
+          "to_sha256": "53607c8088754b5c909aa691dd7cd9ae2f11e46d30560626060367f2ae20a899"
+        },
+        {
+          "change": "modified",
+          "classification": "Config merge validation changes report malformed layer shapes as startup errors; it does not alter valid selected settings or the stream.",
+          "from_sha256": "76293d8694ae66b68c86e93282cba4cf70c0d8e97b0e6399d73c0e4b3e541722",
+          "path": "vibe/core/config/builder.py",
+          "to_sha256": "a4f1fd48c276295cf39dff0e5b2d7cf35b44534f43f1c5a07f41eb8d1b901c05"
+        },
+        {
+          "change": "modified",
+          "classification": "Configuration schema, merge, default, or validation changes remain inside Vibe-owned ambient config; fixed argv and the selected Plan permission overrides are unchanged.",
+          "from_sha256": "a6e972ef3b684eeb800f335a1c8640364eb3be7784680220dd1243d738b2f0c4",
+          "path": "vibe/core/config/patch.py",
+          "to_sha256": "2110a8903261ac1da206218327fe9f003bc336625cc8843ae8195d37a8e09877"
+        },
+        {
+          "change": "modified",
+          "classification": "Config schema adds unrelated UI/utility/compaction fields; selected argv wins, no title model is invoked for entrypoint=programmatic, and the adapter does not rewrite local config.",
+          "from_sha256": "3b0b2d5c7c70be9abb6982ec06b0361fdae97fb6d272c9a67f3112f7ff9aa2e8",
+          "path": "vibe/core/config/vibe_schema.py",
+          "to_sha256": "d03976051f46be5dd49fcd41390fe7a32964dc6bdcc970a0d23d017062ab2669"
+        },
+        {
+          "change": "modified",
+          "classification": "Git repository helper changes affect provider-internal workspace metadata; no selected process, stream, or permission contract changes.",
+          "from_sha256": "5548f923b48dbcbcb98d9794f915279ad562890b9c8e330654d9fd1f6e680c4a",
+          "path": "vibe/core/git/repo.py",
+          "to_sha256": "775638c941667b3063df3f25612da31cd0053efca3bb8fd6db5c24dab367fb1a"
+        },
+        {
+          "change": "modified",
+          "classification": "Prompt-context composition changes remain Vibe-internal model input; Swallowtail tool authority, wire decoding, and operation shape remain unchanged.",
+          "from_sha256": "8bbbda30842a444b06d3cdd7223fa4203f1e19737e84f1aeb8f31d096c8f5fb2",
+          "path": "vibe/core/prompts/project_context.md",
+          "to_sha256": "de8c8bff140a0efd934957bd7ca277b7d17cd0922e9211be593879193ddc1b91"
+        },
+        {
+          "change": "modified",
+          "classification": "Session-lease locking and diagnostics change inside Vibe runtime state; the selected run still closes its one session in finally and exposes no load/resume operation.",
+          "from_sha256": "7c67fc2f81b46d4232a59339481130891191f53419e330da97054453499262fd",
+          "path": "vibe/core/session/session_lease.py",
+          "to_sha256": "5bdd073a1dfa7da6fa66d1ff96af68d6651f345d6f36817b5031dd969219af12"
+        },
+        {
+          "change": "modified",
+          "classification": "Skill metadata and registry handling support model-invocation policy; no Swallowtail-selected skill bundle is introduced.",
+          "from_sha256": "22c673fbf502f21713eaf8e241fa8dd6d0af2f7b1fe716c4e50292a94f8ad785",
+          "path": "vibe/core/skills/builtins/vibe.py",
+          "to_sha256": "74a007933a766b5130a3f5515ec69ab7be92dc7502c7970df374572a5a0a18a4"
+        },
+        {
+          "change": "modified",
+          "classification": "Prompt-context composition changes remain Vibe-internal model input; Swallowtail tool authority, wire decoding, and operation shape remain unchanged.",
+          "from_sha256": "9b04007c7e00ed65246a57f102ec4f9026869e757722ff30c3e6a4fec8013449",
+          "path": "vibe/core/system_prompt.py",
+          "to_sha256": "4cf4affe543ff2a468ed2ed3bd9caa0326b3a2a21554d580b5323fd949dfa578"
+        },
+        {
+          "change": "modified",
+          "classification": "Shell command policy remains outside the selected Plan mapping; no shell grant or new operation is added.",
+          "from_sha256": "7a4bf5024a8727ad91ab9235aec9d56da6fa6ecf0ef7d116631251d2baf2d46d",
+          "path": "vibe/core/tools/builtins/_shell_command_policy.py",
+          "to_sha256": "b75c5e054b0b6121b76365f32e9fc8573289b7aa4ebd47ba4808e7a0bc68a3f5"
+        },
+        {
+          "change": "modified",
+          "classification": "Shell policy implementation changes do not widen Plan authority; this headless route does not pass auto-approve/yolo and denies provider callbacks.",
+          "from_sha256": "6a01943f9b2542bbb44f6dc50c7ad4a6642782cb4765a888b45b9a988b04587f",
+          "path": "vibe/core/tools/builtins/bash.py",
+          "to_sha256": "3afe2f994f5cbe5e5308070704e75cc1962ac5d0a3882c58e47270e252c0277c"
+        },
+        {
+          "change": "modified",
+          "classification": "Builtin tool implementation/prompt changes are classified under the unchanged selected Plan profile: write_file/edit remain NEVER and approval callbacks fail closed.",
+          "from_sha256": "b2ed5d4a6ca014440c701bc6a5b8a5c0df15cbbb99704886650552afb9c4dc9c",
+          "path": "vibe/core/tools/builtins/experimental_bash.py",
+          "to_sha256": "3237214b1d938236de49cbbcbc2b3e990ee459ab3a57fcd574aef2017161a5a9"
+        },
+        {
+          "change": "modified",
+          "classification": "Builtin tool implementation/prompt changes are classified under the unchanged selected Plan profile: write_file/edit remain NEVER and approval callbacks fail closed.",
+          "from_sha256": "15648c1f3b73fca5b1c4da1275d983648fb2f1dd8ea4161c72dfcfc75dfb1f84",
+          "path": "vibe/core/tools/builtins/windows_shell.py",
+          "to_sha256": "420ea8c8232db0ebe65cd9b6278e434c4b658e0b014e16e7b6086662934f11d7"
+        }
+      ]
+    },
+    "2.25.7..2.25.8": {
+      "from_tag_commit": "4a96003186b166d55b9f06895c45bb136eef61cd",
+      "to_tag_commit": "7c19608af06f6c61d63f8f7a5c3430da73fba2ab",
+      "unpublished_points_between": {
+        "2.25.5..2.25.7": [],
+        "2.25.8..2.26.0": []
+      },
+      "changed_selected_input_paths": [
+        "vibe/app_server/_runtime.py",
+        "vibe/app_server/models.py",
+        "vibe/cli/cli.py",
+        "vibe/core/agents/install.py",
+        "vibe/core/agents/manager.py",
+        "vibe/core/agents/models.py",
+        "vibe/core/auth/mcp_oauth.py",
+        "vibe/core/config/vibe_schema.py",
+        "vibe/core/llm/utility_completion.py",
+        "vibe/core/skills/builtins/vibe.py",
+        "vibe/core/tools/builtins/bash.py",
+        "vibe/core/tools/builtins/experimental_bash.py",
+        "vibe/core/tools/builtins/prompts/todo.md",
+        "vibe/core/tools/builtins/windows_shell.py",
+        "vibe/core/tools/permissions.py",
+        "vibe/core/tools/utils.py",
+        "vibe/core/types.py"
+      ],
+      "classifications": [
+        {
+          "change": "modified",
+          "classification": "Runtime configuration gains additive UI, image and utility-model paths; programmatic entrypoint disables title generation, and the selected legacy path/schema remains intact.",
+          "from_sha256": "2750324963c535bfc304525638ae94431e8911128cef080d8fb74d2b1392ec61",
+          "path": "vibe/app_server/_runtime.py",
+          "to_sha256": "220549d3dd0a77e72bbe8a3ddee461a65dcba1514b24015cd9ffaf69e5a1c426"
+        },
+        {
+          "change": "modified",
+          "classification": "Additive app-server fields for child sessions, approval metadata, model state and later worktrees; the selected ProgrammaticOutput wire is unchanged and the adapter ignores unmapped additive fields.",
+          "from_sha256": "fe5fa373a9640ba861f5b9416c29ed16aa43f6fd369b18b4dc01a67582ae21cb",
+          "path": "vibe/app_server/models.py",
+          "to_sha256": "6c77ed86d2899cbc487723efe2879aa6af0f37142517adf6586c59c826f14629"
+        },
+        {
+          "change": "modified",
+          "classification": "Selected --prompt setup and fixed --agent plan path are unchanged; observed edits cover local-home bootstrap, escaped config errors, TUI clipboard wiring, and CLI setup.",
+          "from_sha256": "f974eb40f5945c8f9bde2367a8a3ef5125a644115345de1fc0c84c2c4d1b6c84",
+          "path": "vibe/cli/cli.py",
+          "to_sha256": "e9fab5aeb523bf165bc3759151d124fb6d4acdd9fe22508c2ded7a8182c5fdcf"
+        },
+        {
+          "change": "added",
+          "classification": "New agent install/uninstall support mutates Vibe-owned config; the fixed builtin Plan path does not call it, and Swallowtail adds no agent install operation.",
+          "from_sha256": null,
+          "path": "vibe/core/agents/install.py",
+          "to_sha256": "211f3dcaed0f505cad566285e32c0e03233fa9d886be81dfc7a735bd172d9ef7"
+        },
+        {
+          "change": "modified",
+          "classification": "Agent discovery metadata changes do not alter the builtin Plan profile or the fixed --agent plan selection; smart approval and other agents remain unmapped.",
+          "from_sha256": "b593a636ff7105d7a789a9c6b976e1c60dfd83afd7d4a58205897096232dd89c",
+          "path": "vibe/core/agents/manager.py",
+          "to_sha256": "c1a7b7064de7a8ff2e92e91ad0615783af935ab6cce971d5c5fd020bc0419444"
+        },
+        {
+          "change": "modified",
+          "classification": "Adds a different built-in agent; the Plan profile and its write/edit NEVER overrides are byte-identical at all hops.",
+          "from_sha256": "fe36db6db7ffbe56ed13ed3ed614d8782e9ebe842e8034ac31ede408091ed559",
+          "path": "vibe/core/agents/models.py",
+          "to_sha256": "28015a29ad37b759c67b89d75e1cd38985ef50b3351f546dc801184debd65b68"
+        },
+        {
+          "change": "modified",
+          "classification": "MCP OAuth handling is provider-internal and does not add a Swallowtail credential lease or client-MCP operation.",
+          "from_sha256": "53607c8088754b5c909aa691dd7cd9ae2f11e46d30560626060367f2ae20a899",
+          "path": "vibe/core/auth/mcp_oauth.py",
+          "to_sha256": "6403c769503d60ff1d65cfe7e17f62cb2722ca38f787620f5ae67c684d6727ae"
+        },
+        {
+          "change": "modified",
+          "classification": "Config schema adds unrelated UI/utility/compaction fields; selected argv wins, no title model is invoked for entrypoint=programmatic, and the adapter does not rewrite local config.",
+          "from_sha256": "d03976051f46be5dd49fcd41390fe7a32964dc6bdcc970a0d23d017062ab2669",
+          "path": "vibe/core/config/vibe_schema.py",
+          "to_sha256": "8036af56388e64637e5ecb1f47f702f6c620739920d2fec32f2361a04583c7db"
+        },
+        {
+          "change": "modified",
+          "classification": "Utility-completion metadata is outside the selected programmatic path, which disables automatic title generation and adds no secondary request.",
+          "from_sha256": "cd5551b710354f0589645cc847bc33dcfea98a223bf25ddca75b46e4aee39986",
+          "path": "vibe/core/llm/utility_completion.py",
+          "to_sha256": "b03791976b32630ab4d12b303c5e72a55155de6c47fa04e802e0d9539d3e5e36"
+        },
+        {
+          "change": "modified",
+          "classification": "Skill metadata and registry handling support model-invocation policy; no Swallowtail-selected skill bundle is introduced.",
+          "from_sha256": "74a007933a766b5130a3f5515ec69ab7be92dc7502c7970df374572a5a0a18a4",
+          "path": "vibe/core/skills/builtins/vibe.py",
+          "to_sha256": "c2ea2e30ded699808c38a29780b03bbf7a681708c27535dc7a55fb6a9bf7ea76"
+        },
+        {
+          "change": "modified",
+          "classification": "Shell policy implementation changes do not widen Plan authority; this headless route does not pass auto-approve/yolo and denies provider callbacks.",
+          "from_sha256": "3afe2f994f5cbe5e5308070704e75cc1962ac5d0a3882c58e47270e252c0277c",
+          "path": "vibe/core/tools/builtins/bash.py",
+          "to_sha256": "2b830335092830998614dc86a3185fcb91a3e0ab7e7f2168d5fd28bba356c1ed"
+        },
+        {
+          "change": "modified",
+          "classification": "Builtin tool implementation/prompt changes are classified under the unchanged selected Plan profile: write_file/edit remain NEVER and approval callbacks fail closed.",
+          "from_sha256": "3237214b1d938236de49cbbcbc2b3e990ee459ab3a57fcd574aef2017161a5a9",
+          "path": "vibe/core/tools/builtins/experimental_bash.py",
+          "to_sha256": "5d8812363e4652c1263c3e503aaed4180b2e53520f9004e876e0e7429be826c0"
+        },
+        {
+          "change": "modified",
+          "classification": "Builtin tool implementation/prompt changes are classified under the unchanged selected Plan profile: write_file/edit remain NEVER and approval callbacks fail closed.",
+          "from_sha256": "cb3e06dc151d0ad2bf7d7f3771cd72e6671561d004495369a88d7df2667eb6e5",
+          "path": "vibe/core/tools/builtins/prompts/todo.md",
+          "to_sha256": "5e15410a0b4c8245063eb7950a1d76a2c7fe0525a19d8d2cc6b3fdd4446789ac"
+        },
+        {
+          "change": "modified",
+          "classification": "Builtin tool implementation/prompt changes are classified under the unchanged selected Plan profile: write_file/edit remain NEVER and approval callbacks fail closed.",
+          "from_sha256": "420ea8c8232db0ebe65cd9b6278e434c4b658e0b014e16e7b6086662934f11d7",
+          "path": "vibe/core/tools/builtins/windows_shell.py",
+          "to_sha256": "bd7bbeafb5217a8a5eac3de149ff27f741b4c099d1c5b01c05b9bd6373d89f51"
+        },
+        {
+          "change": "modified",
+          "classification": "Permission matcher updates affect literal and outside-directory rules; the selected Plan write/edit NEVER rules and read-file allowlist are unchanged.",
+          "from_sha256": "ddf54ef6e3caa602ad87b87eeda12cf8d8d221111e443d427dd2929c02086aed",
+          "path": "vibe/core/tools/permissions.py",
+          "to_sha256": "add097139add377e9b68bcb35b0128c1e1eedfa714056b78b31d6183824df0e7"
+        },
+        {
+          "change": "modified",
+          "classification": "The selected argv, Plan permission profile, one-prompt lifecycle, and stream envelope remain unchanged; the delta is confined to the named provider-internal subsystem.",
+          "from_sha256": "a7db257740ed666d53d58af2a596fd728fadf6712c2a494b806d75cc4eebab4b",
+          "path": "vibe/core/tools/utils.py",
+          "to_sha256": "0c755ecd5ed05c3e464feb410800b26cf85cd5581664ca1a86a4c4a0dc9a7a96"
+        },
+        {
+          "change": "modified",
+          "classification": "Adds session pins/archive state and optional effect approval metadata; no selected driver lifecycle or required stream key changed.",
+          "from_sha256": "222162b1e6d17fca5ce58a26b7b38cd23f8519af94ce269a76755573f56e37ae",
+          "path": "vibe/core/types.py",
+          "to_sha256": "96365bbded4d19ad6031e9261df69e2a478e35b01dd4774a4c531845146548ed"
+        }
+      ]
+    },
+    "2.25.8..2.26.0": {
+      "from_tag_commit": "7c19608af06f6c61d63f8f7a5c3430da73fba2ab",
+      "to_tag_commit": "376f6a33413a3eec9b3795b0c0e004066c47b5c",
+      "unpublished_points_between": {
+        "2.25.5..2.25.7": [],
+        "2.25.8..2.26.0": [
+          "2.25.9"
+        ]
+      },
+      "changed_selected_input_paths": [
+        "vibe/_experimental_harness.py",
+        "vibe/app_server/_runtime.py",
+        "vibe/app_server/models.py",
+        "vibe/cli/_rust.py",
+        "vibe/cli/cli.py",
+        "vibe/cli/entrypoint.py",
+        "vibe/cli/launcher.py",
+        "vibe/core/agent_loop/_loop.py",
+        "vibe/core/auth/mcp_oauth.py",
+        "vibe/core/checkpoints/checkpointer.py",
+        "vibe/core/config/__init__.py",
+        "vibe/core/config/_defaults.py",
+        "vibe/core/config/models.py",
+        "vibe/core/config/vibe_schema.py",
+        "vibe/core/experiments/_constants.py",
+        "vibe/core/experiments/active.py",
+        "vibe/core/experiments/cache.py",
+        "vibe/core/experiments/session.py",
+        "vibe/core/git/repo.py",
+        "vibe/core/llm/utility_completion.py",
+        "vibe/core/middleware.py",
+        "vibe/core/paths/__init__.py",
+        "vibe/core/paths/_vibe_home.py",
+        "vibe/core/session/session_lease.py",
+        "vibe/core/session/title_model.py",
+        "vibe/core/session/worktrees.py",
+        "vibe/core/skills/builtins/vibe.py",
+        "vibe/core/telemetry/session.py",
+        "vibe/core/telemetry/types.py",
+        "vibe/core/tools/connectors/connector_registry.py",
+        "vibe/core/tools/manager.py",
+        "vibe/core/tools/mcp/registry.py",
+        "vibe/core/trusted_folders.py"
+      ],
+      "classifications": [
+        {
+          "change": "modified",
+          "classification": "Unified Harness becomes the default at 2.26.0, but --legacy-harness has first precedence and keeps this route on legacy Python; no Unified Harness capability is mapped.",
+          "from_sha256": "23521cfca587f5683126d51d807b767c33a1bd2159e178c7a864411badadf4e2",
+          "path": "vibe/_experimental_harness.py",
+          "to_sha256": "eace7ceb43ea8913fe94d37a30b88eb183e18b5901f013e12461f72c8fb7cebf"
+        },
+        {
+          "change": "modified",
+          "classification": "Runtime configuration gains additive UI, image and utility-model paths; programmatic entrypoint disables title generation, and the selected legacy path/schema remains intact.",
+          "from_sha256": "220549d3dd0a77e72bbe8a3ddee461a65dcba1514b24015cd9ffaf69e5a1c426",
+          "path": "vibe/app_server/_runtime.py",
+          "to_sha256": "24ee9e336c1268526cf74dbd1bf86f4034356119246cde21c9bb4875f60ee884"
+        },
+        {
+          "change": "modified",
+          "classification": "Additive app-server fields for child sessions, approval metadata, model state and later worktrees; the selected ProgrammaticOutput wire is unchanged and the adapter ignores unmapped additive fields.",
+          "from_sha256": "6c77ed86d2899cbc487723efe2879aa6af0f37142517adf6586c59c826f14629",
+          "path": "vibe/app_server/models.py",
+          "to_sha256": "d5a18de804ffcc17bba5b8428d7b5d998064535a614453e611dd16bd7afac07e"
+        },
+        {
+          "change": "modified",
+          "classification": "New Rust TUI launcher and binary path; no automatic selection under --legacy-harness, and explicit VIBE_CLI=rust remains out of scope.",
+          "from_sha256": "69c03410c6bfd73a3b315430a5bdedab89013b4d86bef1cdcfd2640477b08c42",
+          "path": "vibe/cli/_rust.py",
+          "to_sha256": "db8f1d45de3a979d042aae664301d7bcd5da2300f5f20c90eef0bc3aff2ef73b"
+        },
+        {
+          "change": "modified",
+          "classification": "Selected --prompt setup and fixed --agent plan path are unchanged; observed edits cover local-home bootstrap, escaped config errors, TUI clipboard wiring, and CLI setup.",
+          "from_sha256": "e9fab5aeb523bf165bc3759151d124fb6d4acdd9fe22508c2ded7a8182c5fdcf",
+          "path": "vibe/cli/cli.py",
+          "to_sha256": "6e186997b0e6003486f10cefd38b01e5dc8e5178b7f996b4d7064f71d740d20a"
+        },
+        {
+          "change": "modified",
+          "classification": "2.25.5 adds secure local Vibe-home bootstrap before dispatch; selected prompt flags and entrypoint remain unchanged.",
+          "from_sha256": "7316a251e8b245a51ed62b6b6f1d952d337861894cb03bfee825267ed45baed6",
+          "path": "vibe/cli/entrypoint.py",
+          "to_sha256": "f343aaa95389528037512ae13ba57f005a60bb202d98136dfbe165ef98cc7331"
+        },
+        {
+          "change": "modified",
+          "classification": "New package launcher selects the Rust TUI only from explicit VIBE_CLI=rust or its TUI rollout; automatic rollout excludes --legacy-harness. Explicit Rust selection remains out of scope.",
+          "from_sha256": "10d90f6a0c8247d6fc2be37f8c07a5fb4b8eb6f6b2a9535eabe476526b7cf4df",
+          "path": "vibe/cli/launcher.py",
+          "to_sha256": "db6a00e04258fd74c25665dbe959f84325e6cb06bbb808f18525d68aab295ccd"
+        },
+        {
+          "change": "modified",
+          "classification": "Changes are teleport refactoring, approval provenance, or internal duplicate tool-call-ID repair; teleport and smart approval are unselected, while tool IDs remain opaque stream values.",
+          "from_sha256": "9784cdbc24a863352119bf31b958642c8db0cd0341974d18400dd4e016a68bf4",
+          "path": "vibe/core/agent_loop/_loop.py",
+          "to_sha256": "02a2f790ff2b1f8c3bef07a3eb1bda9ed9f7b4ba7721cfb132649b963e3b1f7a"
+        },
+        {
+          "change": "modified",
+          "classification": "MCP OAuth handling is provider-internal and does not add a Swallowtail credential lease or client-MCP operation.",
+          "from_sha256": "6403c769503d60ff1d65cfe7e17f62cb2722ca38f787620f5ae67c684d6727ae",
+          "path": "vibe/core/auth/mcp_oauth.py",
+          "to_sha256": "1101fbf6b0f7f1254b4c734a6c16dbd2777c3ad8b248a826f936dae636d6190b"
+        },
+        {
+          "change": "modified",
+          "classification": "Checkpoint storage is internal; ProgrammaticOutput continues to ignore checkpoint events and the adapter does not expose checkpoint operations.",
+          "from_sha256": "05e1c17717923dfe85f76ff76b90842a949b259b2722cc1e3a012b6d55456bf9",
+          "path": "vibe/core/checkpoints/checkpointer.py",
+          "to_sha256": "87d5211d0e42c75e1ccd361dd26ae6fef694ca4153f1bb79490f33e0cef93a5c"
+        },
+        {
+          "change": "modified",
+          "classification": "Configuration schema, merge, default, or validation changes remain inside Vibe-owned ambient config; fixed argv and the selected Plan permission overrides are unchanged.",
+          "from_sha256": "feb88c0bc89a786d74a1fbfe1bebcb13b9d5b64c9f56a238121713706c7ebfa9",
+          "path": "vibe/core/config/__init__.py",
+          "to_sha256": "a18c9fa37985721cfe41cc7a998165214567ef103ff70d1d158a019c04fad756"
+        },
+        {
+          "change": "modified",
+          "classification": "Configuration schema, merge, default, or validation changes remain inside Vibe-owned ambient config; fixed argv and the selected Plan permission overrides are unchanged.",
+          "from_sha256": "27a7dcd2821f402d0ecd3c56781c061ab4319379d097b904a14779edff0fac70",
+          "path": "vibe/core/config/_defaults.py",
+          "to_sha256": "58c677f8e675e78298db8655ccda9f0df91bd97ef5e0ae3ca5fbd045efd2d79a"
+        },
+        {
+          "change": "modified",
+          "classification": "Adds UI and utility model configuration; the 2.26 auto-title default applies only to cli/desktop, not entrypoint=programmatic.",
+          "from_sha256": "560aa458d6411fd61ee0b4fa4cb148e0ca232eb5b7b0d9306208c5b800ae6c3a",
+          "path": "vibe/core/config/models.py",
+          "to_sha256": "22519eb2a6367cde022991cae7eca07e0165d45be611e722094d03908dec71b4"
+        },
+        {
+          "change": "modified",
+          "classification": "Config schema adds unrelated UI/utility/compaction fields; selected argv wins, no title model is invoked for entrypoint=programmatic, and the adapter does not rewrite local config.",
+          "from_sha256": "8036af56388e64637e5ecb1f47f702f6c620739920d2fec32f2361a04583c7db",
+          "path": "vibe/core/config/vibe_schema.py",
+          "to_sha256": "d433cef9d8f5d5a747b92f3c227f8ef46fd957e0544fbc1fe9415dd00d23652d"
+        },
+        {
+          "change": "modified",
+          "classification": "Experiment-cache and rollout handling cannot select Unified Harness because --legacy-harness has first precedence; Rust TUI remains outside the selected route.",
+          "from_sha256": "a7dd4fae7df8115d95257d857a08ceb1862708e8def729ddd12875ad42976323",
+          "path": "vibe/core/experiments/_constants.py",
+          "to_sha256": "4c24e4a7ea52c67359fbdfa7c1d2e6665ea9951372db8bae34b1c55b0c4f0476"
+        },
+        {
+          "change": "modified",
+          "classification": "Experiment-cache and rollout handling cannot select Unified Harness because --legacy-harness has first precedence; Rust TUI remains outside the selected route.",
+          "from_sha256": "5579f0852fea6b1cbaf9178382c9587c573e4d36cf8ceed6cf6833a11cd7667a",
+          "path": "vibe/core/experiments/active.py",
+          "to_sha256": "4f31216a9e35acaf3bc368ff2dfb4e5f7063eb69aa9ed41c9e9e42435ed5c922"
+        },
+        {
+          "change": "modified",
+          "classification": "Experiment-cache and rollout handling cannot select Unified Harness because --legacy-harness has first precedence; Rust TUI remains outside the selected route.",
+          "from_sha256": "880f5a4435d6cf41e4f960c5c937c3f4a5066a80c3127d40d9ad110d70cad503",
+          "path": "vibe/core/experiments/cache.py",
+          "to_sha256": "76d76e41cab1a42ef482da1ba0e352d52dc14337261d76251a38bd0b74310fb5"
+        },
+        {
+          "change": "modified",
+          "classification": "Experiment-cache and rollout handling cannot select Unified Harness because --legacy-harness has first precedence; Rust TUI remains outside the selected route.",
+          "from_sha256": "c816c3679a5017359a58f8c762607d24a1de8e1e601dd0ced47064a635a2b818",
+          "path": "vibe/core/experiments/session.py",
+          "to_sha256": "47743ef55f83f5bf7fd5fe5705fac881815ad5a4bd601eb1a2daab601a35078c"
+        },
+        {
+          "change": "modified",
+          "classification": "Git repository helper changes affect provider-internal workspace metadata; no selected process, stream, or permission contract changes.",
+          "from_sha256": "775638c941667b3063df3f25612da31cd0053efca3bb8fd6db5c24dab367fb1a",
+          "path": "vibe/core/git/repo.py",
+          "to_sha256": "e4b235f2ffb3c47064d92a1d88703d8756646558c008e48612a79602808d96fb"
+        },
+        {
+          "change": "modified",
+          "classification": "Utility-completion metadata is outside the selected programmatic path, which disables automatic title generation and adds no secondary request.",
+          "from_sha256": "b03791976b32630ab4d12b303c5e72a55155de6c47fa04e802e0d9539d3e5e36",
+          "path": "vibe/core/llm/utility_completion.py",
+          "to_sha256": "6bab73ebd495e25d38a84b9dc36994f7926d6a3786bad8c7e3153d68cf530689"
+        },
+        {
+          "change": "modified",
+          "classification": "2.26.0 changes only the text of the context-budget notice; threshold behavior and outer notice frame remain supported by the existing decoder.",
+          "from_sha256": "ede809d72ced3328986a3a7c93d4793f66506467182e45f89168fd8ae8343a7a",
+          "path": "vibe/core/middleware.py",
+          "to_sha256": "10e3bf993fd2dc21e02d358b589c80d5752bb4a78d5c512896a3d4669108384e"
+        },
+        {
+          "change": "modified",
+          "classification": "Vibe home path resolution changes are provider-internal configuration; Swallowtail neither reads nor mutates that local state.",
+          "from_sha256": "d6383c4e7e60d7eebf34fcbbf5369230152b6395bef55aa9f0ba241fbd023eab",
+          "path": "vibe/core/paths/__init__.py",
+          "to_sha256": "a2175d85ec149957974e89a054003ef231e1c08fab664d97c7b0ba5cff69d4dd"
+        },
+        {
+          "change": "modified",
+          "classification": "Vibe home path resolution changes are provider-internal configuration; Swallowtail neither reads nor mutates that local state.",
+          "from_sha256": "b52c25dcc0818254fc4502a262b6f2537cc9eb19a47787177014b2b8d5f60ce6",
+          "path": "vibe/core/paths/_vibe_home.py",
+          "to_sha256": "a8d5db21a6b12c5266e574da2b514a5fc07c8c7bfef47f8903d1823b1339b4e7"
+        },
+        {
+          "change": "modified",
+          "classification": "Session-lease locking and diagnostics change inside Vibe runtime state; the selected run still closes its one session in finally and exposes no load/resume operation.",
+          "from_sha256": "5bdd073a1dfa7da6fa66d1ff96af68d6651f345d6f36817b5031dd969219af12",
+          "path": "vibe/core/session/session_lease.py",
+          "to_sha256": "c8ec324e61931ad5f8f6038f4b45b1e298e664ead0fcfc68eea0bae2bf475a3c"
+        },
+        {
+          "change": "modified",
+          "classification": "Saved-history, index, permission, snapshot, resume, title, or worktree behavior is outside the selected one-prompt path; session close and streaming output remain selected.",
+          "from_sha256": "241124f8f1ca2677f527677c2301953b69b5a1df2974f5ce0fb5e025cc0730f3",
+          "path": "vibe/core/session/title_model.py",
+          "to_sha256": "064339ce021d18abeb946758ae6cbdaf5bc45a4787ac038de7e0b28b0e329ac5"
+        },
+        {
+          "change": "modified",
+          "classification": "Saved-history, index, permission, snapshot, resume, title, or worktree behavior is outside the selected one-prompt path; session close and streaming output remain selected.",
+          "from_sha256": "095c8f76ac62ce0ca517d0e36f7eff7893ad467fbbe09f84c0a0a05b6ebba963",
+          "path": "vibe/core/session/worktrees.py",
+          "to_sha256": "97403ecea663ce39383cc9efc3101ee85595e33f667cf3a5887584057b93abb1"
+        },
+        {
+          "change": "modified",
+          "classification": "Skill metadata and registry handling support model-invocation policy; no Swallowtail-selected skill bundle is introduced.",
+          "from_sha256": "c2ea2e30ded699808c38a29780b03bbf7a681708c27535dc7a55fb6a9bf7ea76",
+          "path": "vibe/core/skills/builtins/vibe.py",
+          "to_sha256": "fb0c65a2d847c70da3b0bc9cdebc19b7b2b3f8efe94c420909b2bcf91945260c"
+        },
+        {
+          "change": "modified",
+          "classification": "Telemetry adds internal correlation, approval, or attachment fields; these are not emitted as usage evidence by the selected streaming adapter.",
+          "from_sha256": "1adc3640bcf865d092ff8406db70becdfab31ac6dfe35f6d71490af5aedda5e8",
+          "path": "vibe/core/telemetry/session.py",
+          "to_sha256": "bfc232ccdded5452f19287c924e9b4c6f2bced5b1055df75e00a8f597b3f8113"
+        },
+        {
+          "change": "modified",
+          "classification": "Telemetry adds internal correlation, approval, or attachment fields; these are not emitted as usage evidence by the selected streaming adapter.",
+          "from_sha256": "c1ea19a53a90288e8f74ad1e0c772e223edf750bbc8fd56f62188c12519c07a2",
+          "path": "vibe/core/telemetry/types.py",
+          "to_sha256": "ea2b19e1a03d467388927c3cb484675219c0d2f399f14fb6eeb29063aac210f4"
+        },
+        {
+          "change": "modified",
+          "classification": "Connector/MCP changes affect internal error or registry handling; they do not change the selected streaming event envelope or add a Swallowtail MCP operation.",
+          "from_sha256": "e9aa37f32c2554fa0c8122ff890657c133e8f2766ad8e27096dfb88000d75a46",
+          "path": "vibe/core/tools/connectors/connector_registry.py",
+          "to_sha256": "6f6b68f64624fb953df84b1e3dd5286c8619590e2184c4fcd1053e5ddb143c05"
+        },
+        {
+          "change": "modified",
+          "classification": "Tool configuration keeps the class permission default when no override exists; no selected Plan authority or registered-tool operation is added.",
+          "from_sha256": "3818d43817887e4341f4f64b56d8b8cf1b83d35d858761c50e1bcf95d2ec5db3",
+          "path": "vibe/core/tools/manager.py",
+          "to_sha256": "893f1f02d7141b8972af6fbe82cca9e858bee05026e5638227a531b3ffdf1b67"
+        },
+        {
+          "change": "modified",
+          "classification": "Connector/MCP changes affect internal error or registry handling; they do not change the selected streaming event envelope or add a Swallowtail MCP operation.",
+          "from_sha256": "8a4406d00e3f1fd100faa786ba2a68eebe5a8614d6b40194ba1585fe5c917000",
+          "path": "vibe/core/tools/mcp/registry.py",
+          "to_sha256": "57a6efc78fdebcd9dd310e0695c1f80d17b9f4aa7b5104bc3b1a8d6c8b8f4404"
+        },
+        {
+          "change": "modified",
+          "classification": "Trust-store changes preserve the invocation-scoped --trust binding and do not add persistent trust grants to Swallowtail.",
+          "from_sha256": "d1919453812685a8418d703ff97a48e446fd47e19fe5ea870c7fcc62349db964",
+          "path": "vibe/core/trusted_folders.py",
+          "to_sha256": "185f7b534414af53f3629670c17f81ab83c6dd7bea04a77f7956a82299ad895e"
+        }
+      ]
+    }
+  },
+  "platform_inventory": {
+    "native_payload": "2.25.7 adds platform-specific mistralai_vibe_local_harness native modules and vibe/_bin/vibe-rs; each exact binary is included in dist-inventory.json",
+    "scope": "the adapter pins the legacy Python harness; the bundled native Unified Harness and Rust TUI remain unmapped",
+    "wheel_python_source": "all 616/earlier version Python paths are present on all five platform wheels; platform Python bytes differ only by Windows CRLF line endings"
+  },
+  "pypi_distributions": {
+    "2.25.4": {
+      "files": [
+        {
+          "filename": "mistral_vibe-2.25.4-py3-none-any.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-12T18:40:08.231174Z",
+          "sha256": "d43aa028e1931f3d05d735111384eadc937b4d47b7a05eb2ee04313fd860662f",
+          "size": 1512105,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.25.4.tar.gz",
+          "packagetype": "sdist",
+          "published_at": "2026-09-12T18:40:10.773863Z",
+          "sha256": "9e3ecadfa8d9be4a2693b19d5c2cf71ec914bc623649463b93b478be423f7fb8",
+          "size": 2647663,
+          "yanked": false
+        }
+      ],
+      "pypi_latest_as_of_observation": false
+    },
+    "2.25.5": {
+      "files": [
+        {
+          "filename": "mistral_vibe-2.25.5-py3-none-any.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-18T11:10:14.891447Z",
+          "sha256": "070a29850246e5e99158ce55ad2c71a547661410ab030bd47db01e74c2da4420",
+          "size": 1597482,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.25.5.tar.gz",
+          "packagetype": "sdist",
+          "published_at": "2026-09-18T11:10:17.128942Z",
+          "sha256": "acc73923c0636540f904d6e1327c72c4861674147c5df8b0b6f5ecc21a730c84",
+          "size": 2815884,
+          "yanked": false
+        }
+      ],
+      "pypi_latest_as_of_observation": false
+    },
+    "2.25.7": {
+      "files": [
+        {
+          "filename": "mistral_vibe-2.25.7-cp312-abi3-macosx_11_0_arm64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-22T08:40:12.023770Z",
+          "sha256": "036aeaecf3c464e461bca8d81659956ccdbdc5c18476ff30963c2e955e92bbab",
+          "size": 34333412,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.25.7-cp312-abi3-macosx_11_0_x86_64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-22T08:40:15.488475Z",
+          "sha256": "ae3062dffd8688e1c22546eb7695575ddaf636fabe9ba4ba4c07c6c7784af6e3",
+          "size": 35555937,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.25.7-cp312-abi3-manylinux_2_28_aarch64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-22T08:40:18.931088Z",
+          "sha256": "fb3331f73c7cdfa70f8692de1ede71c4a0aee4f9448dc07bddf9356cb9bc8160",
+          "size": 51986314,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.25.7-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-22T08:40:22.441687Z",
+          "sha256": "7483256254e690c89d635dcd28fdefdde4f0453263f4943d6350227143a60664",
+          "size": 55877323,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.25.7-cp312-abi3-win_amd64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-22T08:40:25.779068Z",
+          "sha256": "b9f396192a3e6e72eb10a7335d57499e4033b4d8bb6f519a643b6220b77cc7c9",
+          "size": 33366048,
+          "yanked": false
+        }
+      ],
+      "pypi_latest_as_of_observation": false
+    },
+    "2.25.8": {
+      "files": [
+        {
+          "filename": "mistral_vibe-2.25.8-cp312-abi3-macosx_11_0_arm64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-23T15:37:39.469122Z",
+          "sha256": "9b2a3f9c1078e8cf2bd0a2cd860336b3ad8039894ecf423994588be4545d73ea",
+          "size": 35323356,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.25.8-cp312-abi3-macosx_11_0_x86_64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-23T15:37:43.136995Z",
+          "sha256": "22a3eef4015ae16cdd3654be41cd5d1bdeb23a18cc5bf845d0cdf291277ed824",
+          "size": 36504139,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.25.8-cp312-abi3-manylinux_2_28_aarch64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-23T15:37:46.707220Z",
+          "sha256": "a73727361c98440d20c376bff69edf92fd18d01c03f81e54e3d47135df2c9f20",
+          "size": 52664545,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.25.8-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-23T15:37:50.582141Z",
+          "sha256": "d0d004cb834e8e7973378bb779411fe97bb4ed9d7e533c121d64c7fbd2ec3dea",
+          "size": 56576327,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.25.8-cp312-abi3-win_amd64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-09-23T15:37:57.827347Z",
+          "sha256": "6c21acc2bffdfd1a94c9da6d54db51ee4e2542a60165e46d5727ff06e0a57ae1",
+          "size": 33591302,
+          "yanked": false
+        }
+      ],
+      "pypi_latest_as_of_observation": false
+    },
+    "2.26.0": {
+      "files": [
+        {
+          "filename": "mistral_vibe-2.26.0-cp312-abi3-macosx_11_0_arm64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-10-06T13:18:51.554568Z",
+          "sha256": "bc8d3ec765d844be7b51ec0247296042113784b8b6925aac5e445cec69409a27",
+          "size": 36646958,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.0-cp312-abi3-macosx_11_0_x86_64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-10-06T13:18:55.550647Z",
+          "sha256": "6c61e33781ddbd54e3cacf098589e49234df45c6f2498858c3e0d3bb8181c454",
+          "size": 37782373,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.0-cp312-abi3-manylinux_2_28_aarch64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-10-06T13:18:58.928434Z",
+          "sha256": "91087d3507924f44823be8567d8d051da7669b1ad2b60e549e75e91ede282a4e",
+          "size": 61572242,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-10-06T13:19:05.340467Z",
+          "sha256": "d8230b8abd7c39a8e90d60884b1f5ee8c95ffb459c62c21f3ea0e3041117a114",
+          "size": 66340569,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.0-cp312-abi3-win_amd64.whl",
+          "packagetype": "bdist_wheel",
+          "published_at": "2026-10-06T13:19:08.742987Z",
+          "sha256": "e3807c3670f0a74357f63e82aa77648076a12ab97abc10c579d002950e082955",
+          "size": 34879932,
+          "yanked": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.0.tar.gz",
+          "packagetype": "sdist",
+          "published_at": "2026-10-06T13:19:11.511628Z",
+          "sha256": "86ee13da13f9ca6b2f023cc5ca254a81bd99eeb5d2caa7b9e791421531bb2f5c",
+          "size": 2993316,
+          "yanked": false
+        }
+      ],
+      "pypi_latest_as_of_observation": true
+    }
+  },
+  "pypi_provenance_commit_vs_github_tag": "different commit identities; complete vibe/ source tree matches the v2.26.0 tag byte-for-byte; shipped wheels and sdist are the runtime authority",
+  "pypi_sdist_to_github_tag": {
+    "2.25.4": "all 614 vibe files match except vibe/observability/sentry.py, whose shipped distribution injects the Sentry DSN; telemetry stays config-gated",
+    "2.25.5": "all 627 vibe files match except vibe/observability/sentry.py, whose shipped distribution injects the Sentry DSN; telemetry stays config-gated",
+    "2.26.0": "all 1246 vibe files match byte-for-byte"
+  },
+  "retrieved": "2026-10-08",
+  "selected_input_paths": [
+    "vibe/_experimental_harness.py",
+    "vibe/app_server/_runtime.py",
+    "vibe/app_server/events.py",
+    "vibe/app_server/models.py",
+    "vibe/app_server/session.py",
+    "vibe/cli/_rust.py",
+    "vibe/cli/cli.py",
+    "vibe/cli/entrypoint.py",
+    "vibe/cli/launcher.py",
+    "vibe/cli/programmatic.py",
+    "vibe/core/agent_loop/__init__.py",
+    "vibe/core/agent_loop/_loop.py",
+    "vibe/core/agent_loop_hooks.py",
+    "vibe/core/agents/install.py",
+    "vibe/core/agents/manager.py",
+    "vibe/core/agents/models.py",
+    "vibe/core/auth/mcp_oauth.py",
+    "vibe/core/checkpoints/checkpointer.py",
+    "vibe/core/config/__init__.py",
+    "vibe/core/config/_defaults.py",
+    "vibe/core/config/builder.py",
+    "vibe/core/config/fingerprint.py",
+    "vibe/core/config/layers/_base.py",
+    "vibe/core/config/mcp_servers.py",
+    "vibe/core/config/models.py",
+    "vibe/core/config/patch.py",
+    "vibe/core/config/vibe_schema.py",
+    "vibe/core/experiments/_constants.py",
+    "vibe/core/experiments/active.py",
+    "vibe/core/experiments/cache.py",
+    "vibe/core/experiments/session.py",
+    "vibe/core/git/repo.py",
+    "vibe/core/hooks/config.py",
+    "vibe/core/llm/utility_completion.py",
+    "vibe/core/middleware.py",
+    "vibe/core/paths/__init__.py",
+    "vibe/core/paths/_vibe_home.py",
+    "vibe/core/prompts/project_context.md",
+    "vibe/core/session/image_snapshot.py",
+    "vibe/core/session/last_session_pointer.py",
+    "vibe/core/session/resume_sessions.py",
+    "vibe/core/session/saved_sessions.py",
+    "vibe/core/session/session_index.py",
+    "vibe/core/session/session_interop.py",
+    "vibe/core/session/session_lease.py",
+    "vibe/core/session/session_logger.py",
+    "vibe/core/session/session_permissions.py",
+    "vibe/core/session/title_model.py",
+    "vibe/core/session/worktrees.py",
+    "vibe/core/skills/builtins/skill_creator.py",
+    "vibe/core/skills/builtins/vibe.py",
+    "vibe/core/skills/manager.py",
+    "vibe/core/skills/models.py",
+    "vibe/core/skills/parser.py",
+    "vibe/core/skills/registry/_store.py",
+    "vibe/core/system_prompt.py",
+    "vibe/core/telemetry/send.py",
+    "vibe/core/telemetry/session.py",
+    "vibe/core/telemetry/types.py",
+    "vibe/core/tools/arity.py",
+    "vibe/core/tools/base.py",
+    "vibe/core/tools/builtins/_shell_command_policy.py",
+    "vibe/core/tools/builtins/_shell_permission_analysis.py",
+    "vibe/core/tools/builtins/bash.py",
+    "vibe/core/tools/builtins/experimental_bash.py",
+    "vibe/core/tools/builtins/prompts/todo.md",
+    "vibe/core/tools/builtins/skill.py",
+    "vibe/core/tools/builtins/todo.py",
+    "vibe/core/tools/builtins/web_fetch.py",
+    "vibe/core/tools/builtins/windows_shell.py",
+    "vibe/core/tools/connectors/connector_registry.py",
+    "vibe/core/tools/manager.py",
+    "vibe/core/tools/mcp/registry.py",
+    "vibe/core/tools/mcp/tools.py",
+    "vibe/core/tools/permissions.py",
+    "vibe/core/tools/utils.py",
+    "vibe/core/trusted_folders.py",
+    "vibe/core/types.py"
+  ],
+  "selected_inputs_by_version": {
+    "2.25.4": [
+      {
+        "path": "vibe/_experimental_harness.py",
+        "sha256": "185394340d833f0dd2ac2be0a00875766171e6d69547e27fa6e9e6ffe04ce83b",
+        "size": 4442
+      },
+      {
+        "path": "vibe/app_server/_runtime.py",
+        "sha256": "78d0decb00df2654e5821e59b69b22939016f3e7d990179cfe2cd688257412d3",
+        "size": 105273
+      },
+      {
+        "path": "vibe/app_server/events.py",
+        "sha256": "19dd6f9ff92753eaf856017abaad1a27887a5db94e8b99e3b5a7cc002b8ae523",
+        "size": 22808
+      },
+      {
+        "path": "vibe/app_server/models.py",
+        "sha256": "ef57e328cbe9370499865da1065b172ecce447571dd3e77cc3ba584161e319aa",
+        "size": 31582
+      },
+      {
+        "path": "vibe/app_server/session.py",
+        "sha256": "fb4bcd8c947e950bde1fae8ea1e14f11e3ee0e47d3e2161ca16614e879dc4977",
+        "size": 39379
+      },
+      {
+        "path": "vibe/cli/_rust.py",
+        "sha256": null,
+        "size": null
+      },
+      {
+        "path": "vibe/cli/cli.py",
+        "sha256": "96a5895ef4ac16e2710dfe312df83efd2b5b996b94b1def4ca5734b900f9cd9f",
+        "size": 16541
+      },
+      {
+        "path": "vibe/cli/entrypoint.py",
+        "sha256": "07da7d76af4f02e09ec6509ecea4e1fa8dfbaf63448f9bbf557a9a5812c7562b",
+        "size": 18346
+      },
+      {
+        "path": "vibe/cli/launcher.py",
+        "sha256": null,
+        "size": null
+      },
+      {
+        "path": "vibe/cli/programmatic.py",
+        "sha256": "36a5008914136714a851880b3c6921f6ba196371e28422f58a45c8a728b25b34",
+        "size": 7514
+      },
+      {
+        "path": "vibe/core/agent_loop/__init__.py",
+        "sha256": "2334b412118ed7f6512bfb9fe96fc9a008dfeb9ccb83ba7088572b797405d553",
+        "size": 670
+      },
+      {
+        "path": "vibe/core/agent_loop/_loop.py",
+        "sha256": "9c7d64dfb54623705f054a324363975783227019cd5a1f1d16910f599b11f0c2",
+        "size": 156476
+      },
+      {
+        "path": "vibe/core/agent_loop_hooks.py",
+        "sha256": "a7318525b545b62ba6c1ddf14d04ae300c60d36e258cb5b8825cad63647dafac",
+        "size": 17356
+      },
+      {
+        "path": "vibe/core/agents/install.py",
+        "sha256": null,
+        "size": null
+      },
+      {
+        "path": "vibe/core/agents/manager.py",
+        "sha256": "b593a636ff7105d7a789a9c6b976e1c60dfd83afd7d4a58205897096232dd89c",
+        "size": 6525
+      },
+      {
+        "path": "vibe/core/agents/models.py",
+        "sha256": "fe36db6db7ffbe56ed13ed3ed614d8782e9ebe842e8034ac31ede408091ed559",
+        "size": 5316
+      },
+      {
+        "path": "vibe/core/auth/mcp_oauth.py",
+        "sha256": "67849049cd179e8489e768f14955abc92f152df32c05943022782c98a55bc0ad",
+        "size": 28118
+      },
+      {
+        "path": "vibe/core/checkpoints/checkpointer.py",
+        "sha256": "05e1c17717923dfe85f76ff76b90842a949b259b2722cc1e3a012b6d55456bf9",
+        "size": 10824
+      },
+      {
+        "path": "vibe/core/config/__init__.py",
+        "sha256": "feb88c0bc89a786d74a1fbfe1bebcb13b9d5b64c9f56a238121713706c7ebfa9",
+        "size": 12916
+      },
+      {
+        "path": "vibe/core/config/_defaults.py",
+        "sha256": "27a7dcd2821f402d0ecd3c56781c061ab4319379d097b904a14779edff0fac70",
+        "size": 783
+      },
+      {
+        "path": "vibe/core/config/builder.py",
+        "sha256": "1477675946e74b5730b3e770a5c832a8a23400825c3eb343741a0cc8b13ca281",
+        "size": 6124
+      },
+      {
+        "path": "vibe/core/config/fingerprint.py",
+        "sha256": "31aaa6404dff039f44029be164b74fd4ab04e12d46ff34ed83d02a361fbfe69b",
+        "size": 1301
+      },
+      {
+        "path": "vibe/core/config/layers/_base.py",
+        "sha256": "90a10b6c4101fb103dae188b25ff3ceb9ee8a64c35f3f300282c03717bfb68ea",
+        "size": 3853
+      },
+      {
+        "path": "vibe/core/config/mcp_servers.py",
+        "sha256": "d8e69fc74e0c0e83ac15108add5116ff7442cfb643ccc56961086d6418e6563c",
+        "size": 14163
+      },
+      {
+        "path": "vibe/core/config/models.py",
+        "sha256": "8cd3c7c3021078e446b9026cce5489b76b2fb3349dc8d150bb30bfecf8397512",
+        "size": 20781
+      },
+      {
+        "path": "vibe/core/config/patch.py",
+        "sha256": "a6e972ef3b684eeb800f335a1c8640364eb3be7784680220dd1243d738b2f0c4",
+        "size": 5231
+      },
+      {
+        "path": "vibe/core/config/vibe_schema.py",
+        "sha256": "92c8d33f0c2b3444379a4ca1d490c7ea45bac1d22ac361c711cb175dc2cb26c6",
+        "size": 35784
+      },
+      {
+        "path": "vibe/core/experiments/_constants.py",
+        "sha256": "a7dd4fae7df8115d95257d857a08ceb1862708e8def729ddd12875ad42976323",
+        "size": 462
+      },
+      {
+        "path": "vibe/core/experiments/active.py",
+        "sha256": "5579f0852fea6b1cbaf9178382c9587c573e4d36cf8ceed6cf6833a11cd7667a",
+        "size": 3289
+      },
+      {
+        "path": "vibe/core/experiments/cache.py",
+        "sha256": "880f5a4435d6cf41e4f960c5c937c3f4a5066a80c3127d40d9ad110d70cad503",
+        "size": 3326
+      },
+      {
+        "path": "vibe/core/experiments/session.py",
+        "sha256": "c816c3679a5017359a58f8c762607d24a1de8e1e601dd0ced47064a635a2b818",
+        "size": 10323
+      },
+      {
+        "path": "vibe/core/git/repo.py",
+        "sha256": "028de27fc2fb884d9f51a429efc99f3e11720e6a8e23599a9ba1a1d8840f0034",
+        "size": 19805
+      },
+      {
+        "path": "vibe/core/hooks/config.py",
+        "sha256": "42a501297f36a0437a01ebcdc977407440a4975d961ca6eb2db98a48bbd1196f",
+        "size": 4295
+      },
+      {
+        "path": "vibe/core/llm/utility_completion.py",
+        "sha256": "cd5551b710354f0589645cc847bc33dcfea98a223bf25ddca75b46e4aee39986",
+        "size": 5211
+      },
+      {
+        "path": "vibe/core/middleware.py",
+        "sha256": "ede809d72ced3328986a3a7c93d4793f66506467182e45f89168fd8ae8343a7a",
+        "size": 8971
+      },
+      {
+        "path": "vibe/core/paths/__init__.py",
+        "sha256": "43408cb109f8db57c527d138d035aeb743e15400369ebf1eebd8f844afa20b45",
+        "size": 1125
+      },
+      {
+        "path": "vibe/core/paths/_vibe_home.py",
+        "sha256": "7947de71c1aa22490c60e2a4460ac3ac5d1a52afd5d38ae1759aa25d1cda394b",
+        "size": 1187
+      },
+      {
+        "path": "vibe/core/prompts/project_context.md",
+        "sha256": "8bbbda30842a444b06d3cdd7223fa4203f1e19737e84f1aeb8f31d096c8f5fb2",
+        "size": 196
+      },
+      {
+        "path": "vibe/core/session/image_snapshot.py",
+        "sha256": "06e8779578d3ec4877506f3ea9b70507c5c8cd0a13fd62446f6f4148c5db26d1",
+        "size": 3293
+      },
+      {
+        "path": "vibe/core/session/last_session_pointer.py",
+        "sha256": "b624b60c206615c97ce33974b2fb503e092c4a68bcc4ad91509eb79596fd0cfa",
+        "size": 3595
+      },
+      {
+        "path": "vibe/core/session/resume_sessions.py",
+        "sha256": "b616dfca30409814a772d624641ad7e0b4cf52917495c833730217ebd1c74276",
+        "size": 2646
+      },
+      {
+        "path": "vibe/core/session/saved_sessions.py",
+        "sha256": "cb221e18b8b10a76c6bf1b099b1f062bc64991ebd0169027455eaea89521d8c1",
+        "size": 4421
+      },
+      {
+        "path": "vibe/core/session/session_index.py",
+        "sha256": "ea9c869cf7c61708f68ba9a7c2347b84a5507bc04d2fcf7089ef13432ee2f11f",
+        "size": 11035
+      },
+      {
+        "path": "vibe/core/session/session_interop.py",
+        "sha256": "43dfe9927011bb2eaec80f1d715d28eae52b5c4331094007fdf03751c701a9aa",
+        "size": 19684
+      },
+      {
+        "path": "vibe/core/session/session_lease.py",
+        "sha256": "3b81ddb3fce0b1b486155e4b97ee6f04ec3e7bd514a4c826b76cc3a75989018d",
+        "size": 4253
+      },
+      {
+        "path": "vibe/core/session/session_logger.py",
+        "sha256": "7ec756bf56425affc73a7ff2e5c23e5890814f913db872b79302e0988630692b",
+        "size": 30799
+      },
+      {
+        "path": "vibe/core/session/session_permissions.py",
+        "sha256": null,
+        "size": null
+      },
+      {
+        "path": "vibe/core/session/title_model.py",
+        "sha256": "241124f8f1ca2677f527677c2301953b69b5a1df2974f5ce0fb5e025cc0730f3",
+        "size": 3558
+      },
+      {
+        "path": "vibe/core/session/worktrees.py",
+        "sha256": "095c8f76ac62ce0ca517d0e36f7eff7893ad467fbbe09f84c0a0a05b6ebba963",
+        "size": 8756
+      },
+      {
+        "path": "vibe/core/skills/builtins/skill_creator.py",
+        "sha256": "1bc93da547f36d87c9813e51078c5497c833e0942831fd99d1f35307d33af9f3",
+        "size": 5084
+      },
+      {
+        "path": "vibe/core/skills/builtins/vibe.py",
+        "sha256": "275c5f8ba875324dab6f45acdb1e330b116ac8aea91e3da78e236cf559978b90",
+        "size": 55924
+      },
+      {
+        "path": "vibe/core/skills/manager.py",
+        "sha256": "172c1255886e07452989e5230fe99c25ffd2adfc666502cd7c5169ecdf72b0e7",
+        "size": 12367
+      },
+      {
+        "path": "vibe/core/skills/models.py",
+        "sha256": "36b1ef4b5a675bc0e4cdc91ad5f497ac23394579fd6a2c7f47714377da3e23e0",
+        "size": 4600
+      },
+      {
+        "path": "vibe/core/skills/parser.py",
+        "sha256": "70940b54a628b5e76440d3193e478a144d58b795c7e9725e1bdfb4845ce5b2a1",
+        "size": 1074
+      },
+      {
+        "path": "vibe/core/skills/registry/_store.py",
+        "sha256": "8b31856f314fee2871d0c5be9778be34851d7d58127332ae627e0755e26165b0",
+        "size": 8908
+      },
+      {
+        "path": "vibe/core/system_prompt.py",
+        "sha256": "43cafd92793d48cd4f4087f3a183d922667f84cee6295482b2c5d4ce95a4b7f2",
+        "size": 17280
+      },
+      {
+        "path": "vibe/core/telemetry/send.py",
+        "sha256": "88ad7e50f8e88a7fb7c8a908e172e3ac46cdd50c92bd8fa12e9cf4e3b55220fb",
+        "size": 21446
+      },
+      {
+        "path": "vibe/core/telemetry/session.py",
+        "sha256": "e5a47536d86a51ae2da33022f45889c3b4d4bc8be13fbe18d8f9b136d49ba30b",
+        "size": 4182
+      },
+      {
+        "path": "vibe/core/telemetry/types.py",
+        "sha256": "c1ea19a53a90288e8f74ad1e0c772e223edf750bbc8fd56f62188c12519c07a2",
+        "size": 5060
+      },
+      {
+        "path": "vibe/core/tools/arity.py",
+        "sha256": "3c96d723ace67ea113cd8988a59101dce1f414878253b24669c61a8d625655bb",
+        "size": 3000
+      },
+      {
+        "path": "vibe/core/tools/base.py",
+        "sha256": "52da6c69c6ba5dea79ee45717b4bfe2d954e2a6d39855d243d30a821fc41dc55",
+        "size": 17662
+      },
+      {
+        "path": "vibe/core/tools/builtins/_shell_command_policy.py",
+        "sha256": "28a003eaf8c6916cd618a7cce877ae5c14323963abac1deed30439b15f8fb90a",
+        "size": 8847
+      },
+      {
+        "path": "vibe/core/tools/builtins/_shell_permission_analysis.py",
+        "sha256": "e4fd8aa2cef513153c747e1355420d57747886064c15eaa1fb381b185865a65e",
+        "size": 5921
+      },
+      {
+        "path": "vibe/core/tools/builtins/bash.py",
+        "sha256": "6ca5425c27935df16eddab6facb10ca0ff99b6e4ae2846849dbd07ca5178db79",
+        "size": 20658
+      },
+      {
+        "path": "vibe/core/tools/builtins/experimental_bash.py",
+        "sha256": "8228b072e0b90672a2af52d48df76249e929a3f2754c76229803fb3968b7628c",
+        "size": 81226
+      },
+      {
+        "path": "vibe/core/tools/builtins/prompts/todo.md",
+        "sha256": "cb3e06dc151d0ad2bf7d7f3771cd72e6671561d004495369a88d7df2667eb6e5",
+        "size": 207
+      },
+      {
+        "path": "vibe/core/tools/builtins/skill.py",
+        "sha256": "c53644ff1a23d0e0d0158250c495aa29104457788509574dca20140807e05391",
+        "size": 5820
+      },
+      {
+        "path": "vibe/core/tools/builtins/todo.py",
+        "sha256": "c1b98eab6695d3b9188b554faa07ae123eb9654eff0e0460bdc96e5d79ce0e29",
+        "size": 4885
+      },
+      {
+        "path": "vibe/core/tools/builtins/web_fetch.py",
+        "sha256": "82daaac1adf0e48218790ef5ff897020c4a8a92c0be2341efd6f4faf4ebfedef",
+        "size": 9067
+      },
+      {
+        "path": "vibe/core/tools/builtins/windows_shell.py",
+        "sha256": "88595f22a5c4e0ac75928ba286557f361878b177dcfaa52fdd4cad5001da4051",
+        "size": 35196
+      },
+      {
+        "path": "vibe/core/tools/connectors/connector_registry.py",
+        "sha256": "6b560e8577a2a8a08439d97e362ec4acb1337c1a649cf3c0009c45e9583dea39",
+        "size": 30502
+      },
+      {
+        "path": "vibe/core/tools/manager.py",
+        "sha256": "3818d43817887e4341f4f64b56d8b8cf1b83d35d858761c50e1bcf95d2ec5db3",
+        "size": 29973
+      },
+      {
+        "path": "vibe/core/tools/mcp/registry.py",
+        "sha256": "8a4406d00e3f1fd100faa786ba2a68eebe5a8614d6b40194ba1585fe5c917000",
+        "size": 25903
+      },
+      {
+        "path": "vibe/core/tools/mcp/tools.py",
+        "sha256": "8495a89937d02d211489511c8b413264fc6dff41dce2dc41e33be5852feb9faa",
+        "size": 21097
+      },
+      {
+        "path": "vibe/core/tools/permissions.py",
+        "sha256": "d33e3104445dd28290a80c9423929c609bc694d2fc160baab622a8d6695ad203",
+        "size": 1595
+      },
+      {
+        "path": "vibe/core/tools/utils.py",
+        "sha256": "a7db257740ed666d53d58af2a596fd728fadf6712c2a494b806d75cc4eebab4b",
+        "size": 7597
+      },
+      {
+        "path": "vibe/core/trusted_folders.py",
+        "sha256": "255a01b96baa78ac5a2c316a2ecc341860a72d7357de99ede90ea1c90e0fc740",
+        "size": 11030
+      },
+      {
+        "path": "vibe/core/types.py",
+        "sha256": "a22805c8a86b5e999a84a4115f74fddcec52731bffdf45e55234cf10b1fb7e4f",
+        "size": 25471
+      }
+    ],
+    "2.25.5": [
+      {
+        "path": "vibe/_experimental_harness.py",
+        "sha256": "23521cfca587f5683126d51d807b767c33a1bd2159e178c7a864411badadf4e2",
+        "size": 4426
+      },
+      {
+        "path": "vibe/app_server/_runtime.py",
+        "sha256": "f756c0d0f798ed5db561df64346155550e1e2c66f63ae60ed2bf05eb2dc16a55",
+        "size": 117079
+      },
+      {
+        "path": "vibe/app_server/events.py",
+        "sha256": "7705669f68e231f92e9e999fe063b89ef3147e60562916987c1bc20a580fdfd5",
+        "size": 24017
+      },
+      {
+        "path": "vibe/app_server/models.py",
+        "sha256": "d2852c720a7491e9bf37dceab1f3ad743646d518b329ccd85f63160f2a830a3a",
+        "size": 33498
+      },
+      {
+        "path": "vibe/app_server/session.py",
+        "sha256": "8476f2f46238c742904236cc4bd4e98b90587d8e8627493ae0c7d9b3a0fefb72",
+        "size": 40095
+      },
+      {
+        "path": "vibe/cli/_rust.py",
+        "sha256": null,
+        "size": null
+      },
+      {
+        "path": "vibe/cli/cli.py",
+        "sha256": "192930dea48c51a577d318f368016b3984ec35b43d20f76ade1aeb3299895f41",
+        "size": 16206
+      },
+      {
+        "path": "vibe/cli/entrypoint.py",
+        "sha256": "7316a251e8b245a51ed62b6b6f1d952d337861894cb03bfee825267ed45baed6",
+        "size": 18612
+      },
+      {
+        "path": "vibe/cli/launcher.py",
+        "sha256": null,
+        "size": null
+      },
+      {
+        "path": "vibe/cli/programmatic.py",
+        "sha256": "36a5008914136714a851880b3c6921f6ba196371e28422f58a45c8a728b25b34",
+        "size": 7514
+      },
+      {
+        "path": "vibe/core/agent_loop/__init__.py",
+        "sha256": "a81fcde4ef4fafe27f0695e8b4ec86d0c8ba15729f347c5bae2638de1ddae131",
+        "size": 712
+      },
+      {
+        "path": "vibe/core/agent_loop/_loop.py",
+        "sha256": "e6b4c637833ee32458985bc7f38237a48a8b7975bfc03401f9d97e826fdb6644",
+        "size": 157948
+      },
+      {
+        "path": "vibe/core/agent_loop_hooks.py",
+        "sha256": "8c4764da96cacee88fbb5e59ae6824473e546019d86f2fc277be5b1492c285ce",
+        "size": 17798
+      },
+      {
+        "path": "vibe/core/agents/install.py",
+        "sha256": null,
+        "size": null
+      },
+      {
+        "path": "vibe/core/agents/manager.py",
+        "sha256": "b593a636ff7105d7a789a9c6b976e1c60dfd83afd7d4a58205897096232dd89c",
+        "size": 6525
+      },
+      {
+        "path": "vibe/core/agents/models.py",
+        "sha256": "fe36db6db7ffbe56ed13ed3ed614d8782e9ebe842e8034ac31ede408091ed559",
+        "size": 5316
+      },
+      {
+        "path": "vibe/core/auth/mcp_oauth.py",
+        "sha256": "56566fb0d0f37818243c43e8a58f91ab7c9b983a16072e13e50ef7aaf7972156",
+        "size": 29330
+      },
+      {
+        "path": "vibe/core/checkpoints/checkpointer.py",
+        "sha256": "05e1c17717923dfe85f76ff76b90842a949b259b2722cc1e3a012b6d55456bf9",
+        "size": 10824
+      },
+      {
+        "path": "vibe/core/config/__init__.py",
+        "sha256": "feb88c0bc89a786d74a1fbfe1bebcb13b9d5b64c9f56a238121713706c7ebfa9",
+        "size": 12916
+      },
+      {
+        "path": "vibe/core/config/_defaults.py",
+        "sha256": "27a7dcd2821f402d0ecd3c56781c061ab4319379d097b904a14779edff0fac70",
+        "size": 783
+      },
+      {
+        "path": "vibe/core/config/builder.py",
+        "sha256": "76293d8694ae66b68c86e93282cba4cf70c0d8e97b0e6399d73c0e4b3e541722",
+        "size": 7520
+      },
+      {
+        "path": "vibe/core/config/fingerprint.py",
+        "sha256": "403e26f0ea7210f0086b92948da3c445bb2c9980e5e37b7085a101c7fe9a67a5",
+        "size": 1603
+      },
+      {
+        "path": "vibe/core/config/layers/_base.py",
+        "sha256": "9a6d2d12c7591ac3d7d86cca75a8c423109a2b4ffcc1740b57e8e2a4b0d387df",
+        "size": 4252
+      },
+      {
+        "path": "vibe/core/config/mcp_servers.py",
+        "sha256": "89a2e6157f5f32bf796b19b72fd37351f325604e8873240c49161423f08c1c8a",
+        "size": 14683
+      },
+      {
+        "path": "vibe/core/config/models.py",
+        "sha256": "560aa458d6411fd61ee0b4fa4cb148e0ca232eb5b7b0d9306208c5b800ae6c3a",
+        "size": 21130
+      },
+      {
+        "path": "vibe/core/config/patch.py",
+        "sha256": "a6e972ef3b684eeb800f335a1c8640364eb3be7784680220dd1243d738b2f0c4",
+        "size": 5231
+      },
+      {
+        "path": "vibe/core/config/vibe_schema.py",
+        "sha256": "3b0b2d5c7c70be9abb6982ec06b0361fdae97fb6d272c9a67f3112f7ff9aa2e8",
+        "size": 36345
+      },
+      {
+        "path": "vibe/core/experiments/_constants.py",
+        "sha256": "a7dd4fae7df8115d95257d857a08ceb1862708e8def729ddd12875ad42976323",
+        "size": 462
+      },
+      {
+        "path": "vibe/core/experiments/active.py",
+        "sha256": "5579f0852fea6b1cbaf9178382c9587c573e4d36cf8ceed6cf6833a11cd7667a",
+        "size": 3289
+      },
+      {
+        "path": "vibe/core/experiments/cache.py",
+        "sha256": "880f5a4435d6cf41e4f960c5c937c3f4a5066a80c3127d40d9ad110d70cad503",
+        "size": 3326
+      },
+      {
+        "path": "vibe/core/experiments/session.py",
+        "sha256": "c816c3679a5017359a58f8c762607d24a1de8e1e601dd0ced47064a635a2b818",
+        "size": 10323
+      },
+      {
+        "path": "vibe/core/git/repo.py",
+        "sha256": "5548f923b48dbcbcb98d9794f915279ad562890b9c8e330654d9fd1f6e680c4a",
+        "size": 22485
+      },
+      {
+        "path": "vibe/core/hooks/config.py",
+        "sha256": "8f304f988412b6ef1c708ae50a772af16e9191420734f75c886891e5e99b0628",
+        "size": 3690
+      },
+      {
+        "path": "vibe/core/llm/utility_completion.py",
+        "sha256": "cd5551b710354f0589645cc847bc33dcfea98a223bf25ddca75b46e4aee39986",
+        "size": 5211
+      },
+      {
+        "path": "vibe/core/middleware.py",
+        "sha256": "ede809d72ced3328986a3a7c93d4793f66506467182e45f89168fd8ae8343a7a",
+        "size": 8971
+      },
+      {
+        "path": "vibe/core/paths/__init__.py",
+        "sha256": "d6383c4e7e60d7eebf34fcbbf5369230152b6395bef55aa9f0ba241fbd023eab",
+        "size": 1251
+      },
+      {
+        "path": "vibe/core/paths/_vibe_home.py",
+        "sha256": "b52c25dcc0818254fc4502a262b6f2537cc9eb19a47787177014b2b8d5f60ce6",
+        "size": 2810
+      },
+      {
+        "path": "vibe/core/prompts/project_context.md",
+        "sha256": "8bbbda30842a444b06d3cdd7223fa4203f1e19737e84f1aeb8f31d096c8f5fb2",
+        "size": 196
+      },
+      {
+        "path": "vibe/core/session/image_snapshot.py",
+        "sha256": "bfedb843d2dc2734aa3defa23ef061f4627abb13de51fbe326d9f04c09c9710b",
+        "size": 3405
+      },
+      {
+        "path": "vibe/core/session/last_session_pointer.py",
+        "sha256": "49b2d5b6cebabeb2dff8eb2090ed13ad59a907bcc1fc4f5bc3599067cdbc471d",
+        "size": 3795
+      },
+      {
+        "path": "vibe/core/session/resume_sessions.py",
+        "sha256": "6a9c40061be4fc6d8f080017b2d4d80cf77addcf18ad819a230d23bd53cd1f27",
+        "size": 2808
+      },
+      {
+        "path": "vibe/core/session/saved_sessions.py",
+        "sha256": "e06ec5a8d339c3a138e1a7c97ed529b7c4c2494bf7bc6fad40aa8fae035bf06f",
+        "size": 5425
+      },
+      {
+        "path": "vibe/core/session/session_index.py",
+        "sha256": "a203bd4bdcfc384b2e7bcb790100b4f413e738ea7c709ce243aaea251b17d0ae",
+        "size": 11895
+      },
+      {
+        "path": "vibe/core/session/session_interop.py",
+        "sha256": "8ff5f35462988e02da9bbb7ea66f19533877aa0fab352e9f6dca53091f64a3a5",
+        "size": 19914
+      },
+      {
+        "path": "vibe/core/session/session_lease.py",
+        "sha256": "7c67fc2f81b46d4232a59339481130891191f53419e330da97054453499262fd",
+        "size": 4531
+      },
+      {
+        "path": "vibe/core/session/session_logger.py",
+        "sha256": "4f96dae206bca7d7f4f38465bf44bba0cabb117db097d20d647247dd2ad57440",
+        "size": 32241
+      },
+      {
+        "path": "vibe/core/session/session_permissions.py",
+        "sha256": "45b5285fe7a49985f88cd8b86146e3f08d9cb3d9c0b868f917ff4b69aec7e49b",
+        "size": 4012
+      },
+      {
+        "path": "vibe/core/session/title_model.py",
+        "sha256": "241124f8f1ca2677f527677c2301953b69b5a1df2974f5ce0fb5e025cc0730f3",
+        "size": 3558
+      },
+      {
+        "path": "vibe/core/session/worktrees.py",
+        "sha256": "095c8f76ac62ce0ca517d0e36f7eff7893ad467fbbe09f84c0a0a05b6ebba963",
+        "size": 8756
+      },
+      {
+        "path": "vibe/core/skills/builtins/skill_creator.py",
+        "sha256": "cdac00dcd5d0beb70b4e94b05182e317291c9a6f7bb8a18c6e00b49c986c1257",
+        "size": 5262
+      },
+      {
+        "path": "vibe/core/skills/builtins/vibe.py",
+        "sha256": "22c673fbf502f21713eaf8e241fa8dd6d0af2f7b1fe716c4e50292a94f8ad785",
+        "size": 59112
+      },
+      {
+        "path": "vibe/core/skills/manager.py",
+        "sha256": "d9da1515a17889f152764c52c45ec3aa7c0ecddb6a7da7afa8df9411c156384e",
+        "size": 14841
+      },
+      {
+        "path": "vibe/core/skills/models.py",
+        "sha256": "67dfe46643c04e581c8a329dd47b6c02a3e5f059c1a94ad570069647b357a9c3",
+        "size": 5058
+      },
+      {
+        "path": "vibe/core/skills/parser.py",
+        "sha256": "7bab20fdaa083c699f9a1224e2043fa47cacea0746292b613d8ad3020b610982",
+        "size": 4578
+      },
+      {
+        "path": "vibe/core/skills/registry/_store.py",
+        "sha256": "15324dfcc3ca97203754e04a1b9a9e5448f2839eea0a5d386d7221eb7527adc5",
+        "size": 9630
+      },
+      {
+        "path": "vibe/core/system_prompt.py",
+        "sha256": "9b04007c7e00ed65246a57f102ec4f9026869e757722ff30c3e6a4fec8013449",
+        "size": 18030
+      },
+      {
+        "path": "vibe/core/telemetry/send.py",
+        "sha256": "25b625bee1fd0e9f0496ebdb4a3eee05e9c0340c7d4f757ee12866e92c66427b",
+        "size": 21949
+      },
+      {
+        "path": "vibe/core/telemetry/session.py",
+        "sha256": "1adc3640bcf865d092ff8406db70becdfab31ac6dfe35f6d71490af5aedda5e8",
+        "size": 4755
+      },
+      {
+        "path": "vibe/core/telemetry/types.py",
+        "sha256": "c1ea19a53a90288e8f74ad1e0c772e223edf750bbc8fd56f62188c12519c07a2",
+        "size": 5060
+      },
+      {
+        "path": "vibe/core/tools/arity.py",
+        "sha256": "97fe5736f2efd45d83095c908eaacb076cfe1a00709086c6a24a8e523d68870b",
+        "size": 3308
+      },
+      {
+        "path": "vibe/core/tools/base.py",
+        "sha256": "70d706fa373afb9cd5beba6fe50e58720b929017aae0a752949763255cc9ccc2",
+        "size": 17976
+      },
+      {
+        "path": "vibe/core/tools/builtins/_shell_command_policy.py",
+        "sha256": "7a4bf5024a8727ad91ab9235aec9d56da6fa6ecf0ef7d116631251d2baf2d46d",
+        "size": 9366
+      },
+      {
+        "path": "vibe/core/tools/builtins/_shell_permission_analysis.py",
+        "sha256": "6f789b5299db61c9201a0afca3d059521ef4ec4bb3824a4b084ff668891ee0cb",
+        "size": 13364
+      },
+      {
+        "path": "vibe/core/tools/builtins/bash.py",
+        "sha256": "6a01943f9b2542bbb44f6dc50c7ad4a6642782cb4765a888b45b9a988b04587f",
+        "size": 24035
+      },
+      {
+        "path": "vibe/core/tools/builtins/experimental_bash.py",
+        "sha256": "b2ed5d4a6ca014440c701bc6a5b8a5c0df15cbbb99704886650552afb9c4dc9c",
+        "size": 82328
+      },
+      {
+        "path": "vibe/core/tools/builtins/prompts/todo.md",
+        "sha256": "cb3e06dc151d0ad2bf7d7f3771cd72e6671561d004495369a88d7df2667eb6e5",
+        "size": 207
+      },
+      {
+        "path": "vibe/core/tools/builtins/skill.py",
+        "sha256": "42f34102979c8ee6557c916dc7ff297a102faf85c1428d3cb1d8fad49bdfe91b",
+        "size": 5994
+      },
+      {
+        "path": "vibe/core/tools/builtins/todo.py",
+        "sha256": "2d093649369487f8ef6616e417cdffdb38b84bb123653fab9360c59109ed8287",
+        "size": 4742
+      },
+      {
+        "path": "vibe/core/tools/builtins/web_fetch.py",
+        "sha256": "89323299ed8174843b9091e39ac7b2e1732e10dc5673faf1e8a19aa1466ff8d2",
+        "size": 10559
+      },
+      {
+        "path": "vibe/core/tools/builtins/windows_shell.py",
+        "sha256": "15648c1f3b73fca5b1c4da1275d983648fb2f1dd8ea4161c72dfcfc75dfb1f84",
+        "size": 35198
+      },
+      {
+        "path": "vibe/core/tools/connectors/connector_registry.py",
+        "sha256": "e9aa37f32c2554fa0c8122ff890657c133e8f2766ad8e27096dfb88000d75a46",
+        "size": 30482
+      },
+      {
+        "path": "vibe/core/tools/manager.py",
+        "sha256": "3818d43817887e4341f4f64b56d8b8cf1b83d35d858761c50e1bcf95d2ec5db3",
+        "size": 29973
+      },
+      {
+        "path": "vibe/core/tools/mcp/registry.py",
+        "sha256": "8a4406d00e3f1fd100faa786ba2a68eebe5a8614d6b40194ba1585fe5c917000",
+        "size": 25903
+      },
+      {
+        "path": "vibe/core/tools/mcp/tools.py",
+        "sha256": "c6428f30e02436603f3224a7870e42786fd76d4cff3d421710f67eb967c46611",
+        "size": 21327
+      },
+      {
+        "path": "vibe/core/tools/permissions.py",
+        "sha256": "ddf54ef6e3caa602ad87b87eeda12cf8d8d221111e443d427dd2929c02086aed",
+        "size": 1750
+      },
+      {
+        "path": "vibe/core/tools/utils.py",
+        "sha256": "a7db257740ed666d53d58af2a596fd728fadf6712c2a494b806d75cc4eebab4b",
+        "size": 7597
+      },
+      {
+        "path": "vibe/core/trusted_folders.py",
+        "sha256": "d1919453812685a8418d703ff97a48e446fd47e19fe5ea870c7fcc62349db964",
+        "size": 11224
+      },
+      {
+        "path": "vibe/core/types.py",
+        "sha256": "222162b1e6d17fca5ce58a26b7b38cd23f8519af94ce269a76755573f56e37ae",
+        "size": 25967
+      }
+    ],
+    "2.25.7": [
+      {
+        "path": "vibe/_experimental_harness.py",
+        "sha256": "23521cfca587f5683126d51d807b767c33a1bd2159e178c7a864411badadf4e2",
+        "size": 4426
+      },
+      {
+        "path": "vibe/app_server/_runtime.py",
+        "sha256": "2750324963c535bfc304525638ae94431e8911128cef080d8fb74d2b1392ec61",
+        "size": 117214
+      },
+      {
+        "path": "vibe/app_server/events.py",
+        "sha256": "7705669f68e231f92e9e999fe063b89ef3147e60562916987c1bc20a580fdfd5",
+        "size": 24017
+      },
+      {
+        "path": "vibe/app_server/models.py",
+        "sha256": "fe5fa373a9640ba861f5b9416c29ed16aa43f6fd369b18b4dc01a67582ae21cb",
+        "size": 33606
+      },
+      {
+        "path": "vibe/app_server/session.py",
+        "sha256": "8476f2f46238c742904236cc4bd4e98b90587d8e8627493ae0c7d9b3a0fefb72",
+        "size": 40095
+      },
+      {
+        "path": "vibe/cli/_rust.py",
+        "sha256": "69c03410c6bfd73a3b315430a5bdedab89013b4d86bef1cdcfd2640477b08c42",
+        "size": 2799
+      },
+      {
+        "path": "vibe/cli/cli.py",
+        "sha256": "f974eb40f5945c8f9bde2367a8a3ef5125a644115345de1fc0c84c2c4d1b6c84",
+        "size": 16250
+      },
+      {
+        "path": "vibe/cli/entrypoint.py",
+        "sha256": "7316a251e8b245a51ed62b6b6f1d952d337861894cb03bfee825267ed45baed6",
+        "size": 18612
+      },
+      {
+        "path": "vibe/cli/launcher.py",
+        "sha256": "10d90f6a0c8247d6fc2be37f8c07a5fb4b8eb6f6b2a9535eabe476526b7cf4df",
+        "size": 1043
+      },
+      {
+        "path": "vibe/cli/programmatic.py",
+        "sha256": "1dbfd951bba336721cd31aee97a672d219933144e7cde357b485d01908a0a214",
+        "size": 7459
+      },
+      {
+        "path": "vibe/core/agent_loop/__init__.py",
+        "sha256": "a81fcde4ef4fafe27f0695e8b4ec86d0c8ba15729f347c5bae2638de1ddae131",
+        "size": 712
+      },
+      {
+        "path": "vibe/core/agent_loop/_loop.py",
+        "sha256": "9784cdbc24a863352119bf31b958642c8db0cd0341974d18400dd4e016a68bf4",
+        "size": 157905
+      },
+      {
+        "path": "vibe/core/agent_loop_hooks.py",
+        "sha256": "8c4764da96cacee88fbb5e59ae6824473e546019d86f2fc277be5b1492c285ce",
+        "size": 17798
+      },
+      {
+        "path": "vibe/core/agents/install.py",
+        "sha256": null,
+        "size": null
+      },
+      {
+        "path": "vibe/core/agents/manager.py",
+        "sha256": "b593a636ff7105d7a789a9c6b976e1c60dfd83afd7d4a58205897096232dd89c",
+        "size": 6525
+      },
+      {
+        "path": "vibe/core/agents/models.py",
+        "sha256": "fe36db6db7ffbe56ed13ed3ed614d8782e9ebe842e8034ac31ede408091ed559",
+        "size": 5316
+      },
+      {
+        "path": "vibe/core/auth/mcp_oauth.py",
+        "sha256": "53607c8088754b5c909aa691dd7cd9ae2f11e46d30560626060367f2ae20a899",
+        "size": 29698
+      },
+      {
+        "path": "vibe/core/checkpoints/checkpointer.py",
+        "sha256": "05e1c17717923dfe85f76ff76b90842a949b259b2722cc1e3a012b6d55456bf9",
+        "size": 10824
+      },
+      {
+        "path": "vibe/core/config/__init__.py",
+        "sha256": "feb88c0bc89a786d74a1fbfe1bebcb13b9d5b64c9f56a238121713706c7ebfa9",
+        "size": 12916
+      },
+      {
+        "path": "vibe/core/config/_defaults.py",
+        "sha256": "27a7dcd2821f402d0ecd3c56781c061ab4319379d097b904a14779edff0fac70",
+        "size": 783
+      },
+      {
+        "path": "vibe/core/config/builder.py",
+        "sha256": "a4f1fd48c276295cf39dff0e5b2d7cf35b44534f43f1c5a07f41eb8d1b901c05",
+        "size": 9208
+      },
+      {
+        "path": "vibe/core/config/fingerprint.py",
+        "sha256": "403e26f0ea7210f0086b92948da3c445bb2c9980e5e37b7085a101c7fe9a67a5",
+        "size": 1603
+      },
+      {
+        "path": "vibe/core/config/layers/_base.py",
+        "sha256": "9a6d2d12c7591ac3d7d86cca75a8c423109a2b4ffcc1740b57e8e2a4b0d387df",
+        "size": 4252
+      },
+      {
+        "path": "vibe/core/config/mcp_servers.py",
+        "sha256": "89a2e6157f5f32bf796b19b72fd37351f325604e8873240c49161423f08c1c8a",
+        "size": 14683
+      },
+      {
+        "path": "vibe/core/config/models.py",
+        "sha256": "560aa458d6411fd61ee0b4fa4cb148e0ca232eb5b7b0d9306208c5b800ae6c3a",
+        "size": 21130
+      },
+      {
+        "path": "vibe/core/config/patch.py",
+        "sha256": "2110a8903261ac1da206218327fe9f003bc336625cc8843ae8195d37a8e09877",
+        "size": 5413
+      },
+      {
+        "path": "vibe/core/config/vibe_schema.py",
+        "sha256": "d03976051f46be5dd49fcd41390fe7a32964dc6bdcc970a0d23d017062ab2669",
+        "size": 38259
+      },
+      {
+        "path": "vibe/core/experiments/_constants.py",
+        "sha256": "a7dd4fae7df8115d95257d857a08ceb1862708e8def729ddd12875ad42976323",
+        "size": 462
+      },
+      {
+        "path": "vibe/core/experiments/active.py",
+        "sha256": "5579f0852fea6b1cbaf9178382c9587c573e4d36cf8ceed6cf6833a11cd7667a",
+        "size": 3289
+      },
+      {
+        "path": "vibe/core/experiments/cache.py",
+        "sha256": "880f5a4435d6cf41e4f960c5c937c3f4a5066a80c3127d40d9ad110d70cad503",
+        "size": 3326
+      },
+      {
+        "path": "vibe/core/experiments/session.py",
+        "sha256": "c816c3679a5017359a58f8c762607d24a1de8e1e601dd0ced47064a635a2b818",
+        "size": 10323
+      },
+      {
+        "path": "vibe/core/git/repo.py",
+        "sha256": "775638c941667b3063df3f25612da31cd0053efca3bb8fd6db5c24dab367fb1a",
+        "size": 22373
+      },
+      {
+        "path": "vibe/core/hooks/config.py",
+        "sha256": "8f304f988412b6ef1c708ae50a772af16e9191420734f75c886891e5e99b0628",
+        "size": 3690
+      },
+      {
+        "path": "vibe/core/llm/utility_completion.py",
+        "sha256": "cd5551b710354f0589645cc847bc33dcfea98a223bf25ddca75b46e4aee39986",
+        "size": 5211
+      },
+      {
+        "path": "vibe/core/middleware.py",
+        "sha256": "ede809d72ced3328986a3a7c93d4793f66506467182e45f89168fd8ae8343a7a",
+        "size": 8971
+      },
+      {
+        "path": "vibe/core/paths/__init__.py",
+        "sha256": "d6383c4e7e60d7eebf34fcbbf5369230152b6395bef55aa9f0ba241fbd023eab",
+        "size": 1251
+      },
+      {
+        "path": "vibe/core/paths/_vibe_home.py",
+        "sha256": "b52c25dcc0818254fc4502a262b6f2537cc9eb19a47787177014b2b8d5f60ce6",
+        "size": 2810
+      },
+      {
+        "path": "vibe/core/prompts/project_context.md",
+        "sha256": "de8c8bff140a0efd934957bd7ca277b7d17cd0922e9211be593879193ddc1b91",
+        "size": 209
+      },
+      {
+        "path": "vibe/core/session/image_snapshot.py",
+        "sha256": "bfedb843d2dc2734aa3defa23ef061f4627abb13de51fbe326d9f04c09c9710b",
+        "size": 3405
+      },
+      {
+        "path": "vibe/core/session/last_session_pointer.py",
+        "sha256": "49b2d5b6cebabeb2dff8eb2090ed13ad59a907bcc1fc4f5bc3599067cdbc471d",
+        "size": 3795
+      },
+      {
+        "path": "vibe/core/session/resume_sessions.py",
+        "sha256": "6a9c40061be4fc6d8f080017b2d4d80cf77addcf18ad819a230d23bd53cd1f27",
+        "size": 2808
+      },
+      {
+        "path": "vibe/core/session/saved_sessions.py",
+        "sha256": "e06ec5a8d339c3a138e1a7c97ed529b7c4c2494bf7bc6fad40aa8fae035bf06f",
+        "size": 5425
+      },
+      {
+        "path": "vibe/core/session/session_index.py",
+        "sha256": "a203bd4bdcfc384b2e7bcb790100b4f413e738ea7c709ce243aaea251b17d0ae",
+        "size": 11895
+      },
+      {
+        "path": "vibe/core/session/session_interop.py",
+        "sha256": "8ff5f35462988e02da9bbb7ea66f19533877aa0fab352e9f6dca53091f64a3a5",
+        "size": 19914
+      },
+      {
+        "path": "vibe/core/session/session_lease.py",
+        "sha256": "5bdd073a1dfa7da6fa66d1ff96af68d6651f345d6f36817b5031dd969219af12",
+        "size": 6970
+      },
+      {
+        "path": "vibe/core/session/session_logger.py",
+        "sha256": "4f96dae206bca7d7f4f38465bf44bba0cabb117db097d20d647247dd2ad57440",
+        "size": 32241
+      },
+      {
+        "path": "vibe/core/session/session_permissions.py",
+        "sha256": "45b5285fe7a49985f88cd8b86146e3f08d9cb3d9c0b868f917ff4b69aec7e49b",
+        "size": 4012
+      },
+      {
+        "path": "vibe/core/session/title_model.py",
+        "sha256": "241124f8f1ca2677f527677c2301953b69b5a1df2974f5ce0fb5e025cc0730f3",
+        "size": 3558
+      },
+      {
+        "path": "vibe/core/session/worktrees.py",
+        "sha256": "095c8f76ac62ce0ca517d0e36f7eff7893ad467fbbe09f84c0a0a05b6ebba963",
+        "size": 8756
+      },
+      {
+        "path": "vibe/core/skills/builtins/skill_creator.py",
+        "sha256": "cdac00dcd5d0beb70b4e94b05182e317291c9a6f7bb8a18c6e00b49c986c1257",
+        "size": 5262
+      },
+      {
+        "path": "vibe/core/skills/builtins/vibe.py",
+        "sha256": "74a007933a766b5130a3f5515ec69ab7be92dc7502c7970df374572a5a0a18a4",
+        "size": 60709
+      },
+      {
+        "path": "vibe/core/skills/manager.py",
+        "sha256": "d9da1515a17889f152764c52c45ec3aa7c0ecddb6a7da7afa8df9411c156384e",
+        "size": 14841
+      },
+      {
+        "path": "vibe/core/skills/models.py",
+        "sha256": "67dfe46643c04e581c8a329dd47b6c02a3e5f059c1a94ad570069647b357a9c3",
+        "size": 5058
+      },
+      {
+        "path": "vibe/core/skills/parser.py",
+        "sha256": "7bab20fdaa083c699f9a1224e2043fa47cacea0746292b613d8ad3020b610982",
+        "size": 4578
+      },
+      {
+        "path": "vibe/core/skills/registry/_store.py",
+        "sha256": "15324dfcc3ca97203754e04a1b9a9e5448f2839eea0a5d386d7221eb7527adc5",
+        "size": 9630
+      },
+      {
+        "path": "vibe/core/system_prompt.py",
+        "sha256": "4cf4affe543ff2a468ed2ed3bd9caa0326b3a2a21554d580b5323fd949dfa578",
+        "size": 17694
+      },
+      {
+        "path": "vibe/core/telemetry/send.py",
+        "sha256": "25b625bee1fd0e9f0496ebdb4a3eee05e9c0340c7d4f757ee12866e92c66427b",
+        "size": 21949
+      },
+      {
+        "path": "vibe/core/telemetry/session.py",
+        "sha256": "1adc3640bcf865d092ff8406db70becdfab31ac6dfe35f6d71490af5aedda5e8",
+        "size": 4755
+      },
+      {
+        "path": "vibe/core/telemetry/types.py",
+        "sha256": "c1ea19a53a90288e8f74ad1e0c772e223edf750bbc8fd56f62188c12519c07a2",
+        "size": 5060
+      },
+      {
+        "path": "vibe/core/tools/arity.py",
+        "sha256": "97fe5736f2efd45d83095c908eaacb076cfe1a00709086c6a24a8e523d68870b",
+        "size": 3308
+      },
+      {
+        "path": "vibe/core/tools/base.py",
+        "sha256": "70d706fa373afb9cd5beba6fe50e58720b929017aae0a752949763255cc9ccc2",
+        "size": 17976
+      },
+      {
+        "path": "vibe/core/tools/builtins/_shell_command_policy.py",
+        "sha256": "b75c5e054b0b6121b76365f32e9fc8573289b7aa4ebd47ba4808e7a0bc68a3f5",
+        "size": 29911
+      },
+      {
+        "path": "vibe/core/tools/builtins/_shell_permission_analysis.py",
+        "sha256": "6f789b5299db61c9201a0afca3d059521ef4ec4bb3824a4b084ff668891ee0cb",
+        "size": 13364
+      },
+      {
+        "path": "vibe/core/tools/builtins/bash.py",
+        "sha256": "3afe2f994f5cbe5e5308070704e75cc1962ac5d0a3882c58e47270e252c0277c",
+        "size": 27349
+      },
+      {
+        "path": "vibe/core/tools/builtins/experimental_bash.py",
+        "sha256": "3237214b1d938236de49cbbcbc2b3e990ee459ab3a57fcd574aef2017161a5a9",
+        "size": 86005
+      },
+      {
+        "path": "vibe/core/tools/builtins/prompts/todo.md",
+        "sha256": "cb3e06dc151d0ad2bf7d7f3771cd72e6671561d004495369a88d7df2667eb6e5",
+        "size": 207
+      },
+      {
+        "path": "vibe/core/tools/builtins/skill.py",
+        "sha256": "42f34102979c8ee6557c916dc7ff297a102faf85c1428d3cb1d8fad49bdfe91b",
+        "size": 5994
+      },
+      {
+        "path": "vibe/core/tools/builtins/todo.py",
+        "sha256": "2d093649369487f8ef6616e417cdffdb38b84bb123653fab9360c59109ed8287",
+        "size": 4742
+      },
+      {
+        "path": "vibe/core/tools/builtins/web_fetch.py",
+        "sha256": "89323299ed8174843b9091e39ac7b2e1732e10dc5673faf1e8a19aa1466ff8d2",
+        "size": 10559
+      },
+      {
+        "path": "vibe/core/tools/builtins/windows_shell.py",
+        "sha256": "420ea8c8232db0ebe65cd9b6278e434c4b658e0b014e16e7b6086662934f11d7",
+        "size": 36521
+      },
+      {
+        "path": "vibe/core/tools/connectors/connector_registry.py",
+        "sha256": "e9aa37f32c2554fa0c8122ff890657c133e8f2766ad8e27096dfb88000d75a46",
+        "size": 30482
+      },
+      {
+        "path": "vibe/core/tools/manager.py",
+        "sha256": "3818d43817887e4341f4f64b56d8b8cf1b83d35d858761c50e1bcf95d2ec5db3",
+        "size": 29973
+      },
+      {
+        "path": "vibe/core/tools/mcp/registry.py",
+        "sha256": "8a4406d00e3f1fd100faa786ba2a68eebe5a8614d6b40194ba1585fe5c917000",
+        "size": 25903
+      },
+      {
+        "path": "vibe/core/tools/mcp/tools.py",
+        "sha256": "c6428f30e02436603f3224a7870e42786fd76d4cff3d421710f67eb967c46611",
+        "size": 21327
+      },
+      {
+        "path": "vibe/core/tools/permissions.py",
+        "sha256": "ddf54ef6e3caa602ad87b87eeda12cf8d8d221111e443d427dd2929c02086aed",
+        "size": 1750
+      },
+      {
+        "path": "vibe/core/tools/utils.py",
+        "sha256": "a7db257740ed666d53d58af2a596fd728fadf6712c2a494b806d75cc4eebab4b",
+        "size": 7597
+      },
+      {
+        "path": "vibe/core/trusted_folders.py",
+        "sha256": "d1919453812685a8418d703ff97a48e446fd47e19fe5ea870c7fcc62349db964",
+        "size": 11224
+      },
+      {
+        "path": "vibe/core/types.py",
+        "sha256": "222162b1e6d17fca5ce58a26b7b38cd23f8519af94ce269a76755573f56e37ae",
+        "size": 25967
+      }
+    ],
+    "2.25.8": [
+      {
+        "path": "vibe/_experimental_harness.py",
+        "sha256": "23521cfca587f5683126d51d807b767c33a1bd2159e178c7a864411badadf4e2",
+        "size": 4426
+      },
+      {
+        "path": "vibe/app_server/_runtime.py",
+        "sha256": "220549d3dd0a77e72bbe8a3ddee461a65dcba1514b24015cd9ffaf69e5a1c426",
+        "size": 124929
+      },
+      {
+        "path": "vibe/app_server/events.py",
+        "sha256": "7705669f68e231f92e9e999fe063b89ef3147e60562916987c1bc20a580fdfd5",
+        "size": 24017
+      },
+      {
+        "path": "vibe/app_server/models.py",
+        "sha256": "6c77ed86d2899cbc487723efe2879aa6af0f37142517adf6586c59c826f14629",
+        "size": 33805
+      },
+      {
+        "path": "vibe/app_server/session.py",
+        "sha256": "8476f2f46238c742904236cc4bd4e98b90587d8e8627493ae0c7d9b3a0fefb72",
+        "size": 40095
+      },
+      {
+        "path": "vibe/cli/_rust.py",
+        "sha256": "69c03410c6bfd73a3b315430a5bdedab89013b4d86bef1cdcfd2640477b08c42",
+        "size": 2799
+      },
+      {
+        "path": "vibe/cli/cli.py",
+        "sha256": "e9fab5aeb523bf165bc3759151d124fb6d4acdd9fe22508c2ded7a8182c5fdcf",
+        "size": 16419
+      },
+      {
+        "path": "vibe/cli/entrypoint.py",
+        "sha256": "7316a251e8b245a51ed62b6b6f1d952d337861894cb03bfee825267ed45baed6",
+        "size": 18612
+      },
+      {
+        "path": "vibe/cli/launcher.py",
+        "sha256": "10d90f6a0c8247d6fc2be37f8c07a5fb4b8eb6f6b2a9535eabe476526b7cf4df",
+        "size": 1043
+      },
+      {
+        "path": "vibe/cli/programmatic.py",
+        "sha256": "1dbfd951bba336721cd31aee97a672d219933144e7cde357b485d01908a0a214",
+        "size": 7459
+      },
+      {
+        "path": "vibe/core/agent_loop/__init__.py",
+        "sha256": "a81fcde4ef4fafe27f0695e8b4ec86d0c8ba15729f347c5bae2638de1ddae131",
+        "size": 712
+      },
+      {
+        "path": "vibe/core/agent_loop/_loop.py",
+        "sha256": "9784cdbc24a863352119bf31b958642c8db0cd0341974d18400dd4e016a68bf4",
+        "size": 157905
+      },
+      {
+        "path": "vibe/core/agent_loop_hooks.py",
+        "sha256": "8c4764da96cacee88fbb5e59ae6824473e546019d86f2fc277be5b1492c285ce",
+        "size": 17798
+      },
+      {
+        "path": "vibe/core/agents/install.py",
+        "sha256": "211f3dcaed0f505cad566285e32c0e03233fa9d886be81dfc7a735bd172d9ef7",
+        "size": 4097
+      },
+      {
+        "path": "vibe/core/agents/manager.py",
+        "sha256": "c1a7b7064de7a8ff2e92e91ad0615783af935ab6cce971d5c5fd020bc0419444",
+        "size": 6615
+      },
+      {
+        "path": "vibe/core/agents/models.py",
+        "sha256": "28015a29ad37b759c67b89d75e1cd38985ef50b3351f546dc801184debd65b68",
+        "size": 5658
+      },
+      {
+        "path": "vibe/core/auth/mcp_oauth.py",
+        "sha256": "6403c769503d60ff1d65cfe7e17f62cb2722ca38f787620f5ae67c684d6727ae",
+        "size": 33556
+      },
+      {
+        "path": "vibe/core/checkpoints/checkpointer.py",
+        "sha256": "05e1c17717923dfe85f76ff76b90842a949b259b2722cc1e3a012b6d55456bf9",
+        "size": 10824
+      },
+      {
+        "path": "vibe/core/config/__init__.py",
+        "sha256": "feb88c0bc89a786d74a1fbfe1bebcb13b9d5b64c9f56a238121713706c7ebfa9",
+        "size": 12916
+      },
+      {
+        "path": "vibe/core/config/_defaults.py",
+        "sha256": "27a7dcd2821f402d0ecd3c56781c061ab4319379d097b904a14779edff0fac70",
+        "size": 783
+      },
+      {
+        "path": "vibe/core/config/builder.py",
+        "sha256": "a4f1fd48c276295cf39dff0e5b2d7cf35b44534f43f1c5a07f41eb8d1b901c05",
+        "size": 9208
+      },
+      {
+        "path": "vibe/core/config/fingerprint.py",
+        "sha256": "403e26f0ea7210f0086b92948da3c445bb2c9980e5e37b7085a101c7fe9a67a5",
+        "size": 1603
+      },
+      {
+        "path": "vibe/core/config/layers/_base.py",
+        "sha256": "9a6d2d12c7591ac3d7d86cca75a8c423109a2b4ffcc1740b57e8e2a4b0d387df",
+        "size": 4252
+      },
+      {
+        "path": "vibe/core/config/mcp_servers.py",
+        "sha256": "89a2e6157f5f32bf796b19b72fd37351f325604e8873240c49161423f08c1c8a",
+        "size": 14683
+      },
+      {
+        "path": "vibe/core/config/models.py",
+        "sha256": "560aa458d6411fd61ee0b4fa4cb148e0ca232eb5b7b0d9306208c5b800ae6c3a",
+        "size": 21130
+      },
+      {
+        "path": "vibe/core/config/patch.py",
+        "sha256": "2110a8903261ac1da206218327fe9f003bc336625cc8843ae8195d37a8e09877",
+        "size": 5413
+      },
+      {
+        "path": "vibe/core/config/vibe_schema.py",
+        "sha256": "8036af56388e64637e5ecb1f47f702f6c620739920d2fec32f2361a04583c7db",
+        "size": 39617
+      },
+      {
+        "path": "vibe/core/experiments/_constants.py",
+        "sha256": "a7dd4fae7df8115d95257d857a08ceb1862708e8def729ddd12875ad42976323",
+        "size": 462
+      },
+      {
+        "path": "vibe/core/experiments/active.py",
+        "sha256": "5579f0852fea6b1cbaf9178382c9587c573e4d36cf8ceed6cf6833a11cd7667a",
+        "size": 3289
+      },
+      {
+        "path": "vibe/core/experiments/cache.py",
+        "sha256": "880f5a4435d6cf41e4f960c5c937c3f4a5066a80c3127d40d9ad110d70cad503",
+        "size": 3326
+      },
+      {
+        "path": "vibe/core/experiments/session.py",
+        "sha256": "c816c3679a5017359a58f8c762607d24a1de8e1e601dd0ced47064a635a2b818",
+        "size": 10323
+      },
+      {
+        "path": "vibe/core/git/repo.py",
+        "sha256": "775638c941667b3063df3f25612da31cd0053efca3bb8fd6db5c24dab367fb1a",
+        "size": 22373
+      },
+      {
+        "path": "vibe/core/hooks/config.py",
+        "sha256": "8f304f988412b6ef1c708ae50a772af16e9191420734f75c886891e5e99b0628",
+        "size": 3690
+      },
+      {
+        "path": "vibe/core/llm/utility_completion.py",
+        "sha256": "b03791976b32630ab4d12b303c5e72a55155de6c47fa04e802e0d9539d3e5e36",
+        "size": 5210
+      },
+      {
+        "path": "vibe/core/middleware.py",
+        "sha256": "ede809d72ced3328986a3a7c93d4793f66506467182e45f89168fd8ae8343a7a",
+        "size": 8971
+      },
+      {
+        "path": "vibe/core/paths/__init__.py",
+        "sha256": "d6383c4e7e60d7eebf34fcbbf5369230152b6395bef55aa9f0ba241fbd023eab",
+        "size": 1251
+      },
+      {
+        "path": "vibe/core/paths/_vibe_home.py",
+        "sha256": "b52c25dcc0818254fc4502a262b6f2537cc9eb19a47787177014b2b8d5f60ce6",
+        "size": 2810
+      },
+      {
+        "path": "vibe/core/prompts/project_context.md",
+        "sha256": "de8c8bff140a0efd934957bd7ca277b7d17cd0922e9211be593879193ddc1b91",
+        "size": 209
+      },
+      {
+        "path": "vibe/core/session/image_snapshot.py",
+        "sha256": "bfedb843d2dc2734aa3defa23ef061f4627abb13de51fbe326d9f04c09c9710b",
+        "size": 3405
+      },
+      {
+        "path": "vibe/core/session/last_session_pointer.py",
+        "sha256": "49b2d5b6cebabeb2dff8eb2090ed13ad59a907bcc1fc4f5bc3599067cdbc471d",
+        "size": 3795
+      },
+      {
+        "path": "vibe/core/session/resume_sessions.py",
+        "sha256": "6a9c40061be4fc6d8f080017b2d4d80cf77addcf18ad819a230d23bd53cd1f27",
+        "size": 2808
+      },
+      {
+        "path": "vibe/core/session/saved_sessions.py",
+        "sha256": "e06ec5a8d339c3a138e1a7c97ed529b7c4c2494bf7bc6fad40aa8fae035bf06f",
+        "size": 5425
+      },
+      {
+        "path": "vibe/core/session/session_index.py",
+        "sha256": "a203bd4bdcfc384b2e7bcb790100b4f413e738ea7c709ce243aaea251b17d0ae",
+        "size": 11895
+      },
+      {
+        "path": "vibe/core/session/session_interop.py",
+        "sha256": "8ff5f35462988e02da9bbb7ea66f19533877aa0fab352e9f6dca53091f64a3a5",
+        "size": 19914
+      },
+      {
+        "path": "vibe/core/session/session_lease.py",
+        "sha256": "5bdd073a1dfa7da6fa66d1ff96af68d6651f345d6f36817b5031dd969219af12",
+        "size": 6970
+      },
+      {
+        "path": "vibe/core/session/session_logger.py",
+        "sha256": "4f96dae206bca7d7f4f38465bf44bba0cabb117db097d20d647247dd2ad57440",
+        "size": 32241
+      },
+      {
+        "path": "vibe/core/session/session_permissions.py",
+        "sha256": "45b5285fe7a49985f88cd8b86146e3f08d9cb3d9c0b868f917ff4b69aec7e49b",
+        "size": 4012
+      },
+      {
+        "path": "vibe/core/session/title_model.py",
+        "sha256": "241124f8f1ca2677f527677c2301953b69b5a1df2974f5ce0fb5e025cc0730f3",
+        "size": 3558
+      },
+      {
+        "path": "vibe/core/session/worktrees.py",
+        "sha256": "095c8f76ac62ce0ca517d0e36f7eff7893ad467fbbe09f84c0a0a05b6ebba963",
+        "size": 8756
+      },
+      {
+        "path": "vibe/core/skills/builtins/skill_creator.py",
+        "sha256": "cdac00dcd5d0beb70b4e94b05182e317291c9a6f7bb8a18c6e00b49c986c1257",
+        "size": 5262
+      },
+      {
+        "path": "vibe/core/skills/builtins/vibe.py",
+        "sha256": "c2ea2e30ded699808c38a29780b03bbf7a681708c27535dc7a55fb6a9bf7ea76",
+        "size": 62884
+      },
+      {
+        "path": "vibe/core/skills/manager.py",
+        "sha256": "d9da1515a17889f152764c52c45ec3aa7c0ecddb6a7da7afa8df9411c156384e",
+        "size": 14841
+      },
+      {
+        "path": "vibe/core/skills/models.py",
+        "sha256": "67dfe46643c04e581c8a329dd47b6c02a3e5f059c1a94ad570069647b357a9c3",
+        "size": 5058
+      },
+      {
+        "path": "vibe/core/skills/parser.py",
+        "sha256": "7bab20fdaa083c699f9a1224e2043fa47cacea0746292b613d8ad3020b610982",
+        "size": 4578
+      },
+      {
+        "path": "vibe/core/skills/registry/_store.py",
+        "sha256": "15324dfcc3ca97203754e04a1b9a9e5448f2839eea0a5d386d7221eb7527adc5",
+        "size": 9630
+      },
+      {
+        "path": "vibe/core/system_prompt.py",
+        "sha256": "4cf4affe543ff2a468ed2ed3bd9caa0326b3a2a21554d580b5323fd949dfa578",
+        "size": 17694
+      },
+      {
+        "path": "vibe/core/telemetry/send.py",
+        "sha256": "25b625bee1fd0e9f0496ebdb4a3eee05e9c0340c7d4f757ee12866e92c66427b",
+        "size": 21949
+      },
+      {
+        "path": "vibe/core/telemetry/session.py",
+        "sha256": "1adc3640bcf865d092ff8406db70becdfab31ac6dfe35f6d71490af5aedda5e8",
+        "size": 4755
+      },
+      {
+        "path": "vibe/core/telemetry/types.py",
+        "sha256": "c1ea19a53a90288e8f74ad1e0c772e223edf750bbc8fd56f62188c12519c07a2",
+        "size": 5060
+      },
+      {
+        "path": "vibe/core/tools/arity.py",
+        "sha256": "97fe5736f2efd45d83095c908eaacb076cfe1a00709086c6a24a8e523d68870b",
+        "size": 3308
+      },
+      {
+        "path": "vibe/core/tools/base.py",
+        "sha256": "70d706fa373afb9cd5beba6fe50e58720b929017aae0a752949763255cc9ccc2",
+        "size": 17976
+      },
+      {
+        "path": "vibe/core/tools/builtins/_shell_command_policy.py",
+        "sha256": "b75c5e054b0b6121b76365f32e9fc8573289b7aa4ebd47ba4808e7a0bc68a3f5",
+        "size": 29911
+      },
+      {
+        "path": "vibe/core/tools/builtins/_shell_permission_analysis.py",
+        "sha256": "6f789b5299db61c9201a0afca3d059521ef4ec4bb3824a4b084ff668891ee0cb",
+        "size": 13364
+      },
+      {
+        "path": "vibe/core/tools/builtins/bash.py",
+        "sha256": "2b830335092830998614dc86a3185fcb91a3e0ab7e7f2168d5fd28bba356c1ed",
+        "size": 27928
+      },
+      {
+        "path": "vibe/core/tools/builtins/experimental_bash.py",
+        "sha256": "5d8812363e4652c1263c3e503aaed4180b2e53520f9004e876e0e7429be826c0",
+        "size": 87158
+      },
+      {
+        "path": "vibe/core/tools/builtins/prompts/todo.md",
+        "sha256": "5e15410a0b4c8245063eb7950a1d76a2c7fe0525a19d8d2cc6b3fdd4446789ac",
+        "size": 472
+      },
+      {
+        "path": "vibe/core/tools/builtins/skill.py",
+        "sha256": "42f34102979c8ee6557c916dc7ff297a102faf85c1428d3cb1d8fad49bdfe91b",
+        "size": 5994
+      },
+      {
+        "path": "vibe/core/tools/builtins/todo.py",
+        "sha256": "2d093649369487f8ef6616e417cdffdb38b84bb123653fab9360c59109ed8287",
+        "size": 4742
+      },
+      {
+        "path": "vibe/core/tools/builtins/web_fetch.py",
+        "sha256": "89323299ed8174843b9091e39ac7b2e1732e10dc5673faf1e8a19aa1466ff8d2",
+        "size": 10559
+      },
+      {
+        "path": "vibe/core/tools/builtins/windows_shell.py",
+        "sha256": "bd7bbeafb5217a8a5eac3de149ff27f741b4c099d1c5b01c05b9bd6373d89f51",
+        "size": 36750
+      },
+      {
+        "path": "vibe/core/tools/connectors/connector_registry.py",
+        "sha256": "e9aa37f32c2554fa0c8122ff890657c133e8f2766ad8e27096dfb88000d75a46",
+        "size": 30482
+      },
+      {
+        "path": "vibe/core/tools/manager.py",
+        "sha256": "3818d43817887e4341f4f64b56d8b8cf1b83d35d858761c50e1bcf95d2ec5db3",
+        "size": 29973
+      },
+      {
+        "path": "vibe/core/tools/mcp/registry.py",
+        "sha256": "8a4406d00e3f1fd100faa786ba2a68eebe5a8614d6b40194ba1585fe5c917000",
+        "size": 25903
+      },
+      {
+        "path": "vibe/core/tools/mcp/tools.py",
+        "sha256": "c6428f30e02436603f3224a7870e42786fd76d4cff3d421710f67eb967c46611",
+        "size": 21327
+      },
+      {
+        "path": "vibe/core/tools/permissions.py",
+        "sha256": "add097139add377e9b68bcb35b0128c1e1eedfa714056b78b31d6183824df0e7",
+        "size": 1951
+      },
+      {
+        "path": "vibe/core/tools/utils.py",
+        "sha256": "0c755ecd5ed05c3e464feb410800b26cf85cd5581664ca1a86a4c4a0dc9a7a96",
+        "size": 8024
+      },
+      {
+        "path": "vibe/core/trusted_folders.py",
+        "sha256": "d1919453812685a8418d703ff97a48e446fd47e19fe5ea870c7fcc62349db964",
+        "size": 11224
+      },
+      {
+        "path": "vibe/core/types.py",
+        "sha256": "96365bbded4d19ad6031e9261df69e2a478e35b01dd4774a4c531845146548ed",
+        "size": 26283
+      }
+    ],
+    "2.26.0": [
+      {
+        "path": "vibe/_experimental_harness.py",
+        "sha256": "eace7ceb43ea8913fe94d37a30b88eb183e18b5901f013e12461f72c8fb7cebf",
+        "size": 5918
+      },
+      {
+        "path": "vibe/app_server/_runtime.py",
+        "sha256": "24ee9e336c1268526cf74dbd1bf86f4034356119246cde21c9bb4875f60ee884",
+        "size": 124066
+      },
+      {
+        "path": "vibe/app_server/events.py",
+        "sha256": "7705669f68e231f92e9e999fe063b89ef3147e60562916987c1bc20a580fdfd5",
+        "size": 24017
+      },
+      {
+        "path": "vibe/app_server/models.py",
+        "sha256": "d5a18de804ffcc17bba5b8428d7b5d998064535a614453e611dd16bd7afac07e",
+        "size": 36078
+      },
+      {
+        "path": "vibe/app_server/session.py",
+        "sha256": "8476f2f46238c742904236cc4bd4e98b90587d8e8627493ae0c7d9b3a0fefb72",
+        "size": 40095
+      },
+      {
+        "path": "vibe/cli/_rust.py",
+        "sha256": "db8f1d45de3a979d042aae664301d7bcd5da2300f5f20c90eef0bc3aff2ef73b",
+        "size": 5288
+      },
+      {
+        "path": "vibe/cli/cli.py",
+        "sha256": "6e186997b0e6003486f10cefd38b01e5dc8e5178b7f996b4d7064f71d740d20a",
+        "size": 18215
+      },
+      {
+        "path": "vibe/cli/entrypoint.py",
+        "sha256": "f343aaa95389528037512ae13ba57f005a60bb202d98136dfbe165ef98cc7331",
+        "size": 18817
+      },
+      {
+        "path": "vibe/cli/launcher.py",
+        "sha256": "db6a00e04258fd74c25665dbe959f84325e6cb06bbb808f18525d68aab295ccd",
+        "size": 1320
+      },
+      {
+        "path": "vibe/cli/programmatic.py",
+        "sha256": "1dbfd951bba336721cd31aee97a672d219933144e7cde357b485d01908a0a214",
+        "size": 7459
+      },
+      {
+        "path": "vibe/core/agent_loop/__init__.py",
+        "sha256": "a81fcde4ef4fafe27f0695e8b4ec86d0c8ba15729f347c5bae2638de1ddae131",
+        "size": 712
+      },
+      {
+        "path": "vibe/core/agent_loop/_loop.py",
+        "sha256": "02a2f790ff2b1f8c3bef07a3eb1bda9ed9f7b4ba7721cfb132649b963e3b1f7a",
+        "size": 159366
+      },
+      {
+        "path": "vibe/core/agent_loop_hooks.py",
+        "sha256": "8c4764da96cacee88fbb5e59ae6824473e546019d86f2fc277be5b1492c285ce",
+        "size": 17798
+      },
+      {
+        "path": "vibe/core/agents/install.py",
+        "sha256": "211f3dcaed0f505cad566285e32c0e03233fa9d886be81dfc7a735bd172d9ef7",
+        "size": 4097
+      },
+      {
+        "path": "vibe/core/agents/manager.py",
+        "sha256": "c1a7b7064de7a8ff2e92e91ad0615783af935ab6cce971d5c5fd020bc0419444",
+        "size": 6615
+      },
+      {
+        "path": "vibe/core/agents/models.py",
+        "sha256": "28015a29ad37b759c67b89d75e1cd38985ef50b3351f546dc801184debd65b68",
+        "size": 5658
+      },
+      {
+        "path": "vibe/core/auth/mcp_oauth.py",
+        "sha256": "1101fbf6b0f7f1254b4c734a6c16dbd2777c3ad8b248a826f936dae636d6190b",
+        "size": 33275
+      },
+      {
+        "path": "vibe/core/checkpoints/checkpointer.py",
+        "sha256": "87d5211d0e42c75e1ccd361dd26ae6fef694ca4153f1bb79490f33e0cef93a5c",
+        "size": 11520
+      },
+      {
+        "path": "vibe/core/config/__init__.py",
+        "sha256": "a18c9fa37985721cfe41cc7a998165214567ef103ff70d1d158a019c04fad756",
+        "size": 13166
+      },
+      {
+        "path": "vibe/core/config/_defaults.py",
+        "sha256": "58c677f8e675e78298db8655ccda9f0df91bd97ef5e0ae3ca5fbd045efd2d79a",
+        "size": 1352
+      },
+      {
+        "path": "vibe/core/config/builder.py",
+        "sha256": "a4f1fd48c276295cf39dff0e5b2d7cf35b44534f43f1c5a07f41eb8d1b901c05",
+        "size": 9208
+      },
+      {
+        "path": "vibe/core/config/fingerprint.py",
+        "sha256": "403e26f0ea7210f0086b92948da3c445bb2c9980e5e37b7085a101c7fe9a67a5",
+        "size": 1603
+      },
+      {
+        "path": "vibe/core/config/layers/_base.py",
+        "sha256": "9a6d2d12c7591ac3d7d86cca75a8c423109a2b4ffcc1740b57e8e2a4b0d387df",
+        "size": 4252
+      },
+      {
+        "path": "vibe/core/config/mcp_servers.py",
+        "sha256": "89a2e6157f5f32bf796b19b72fd37351f325604e8873240c49161423f08c1c8a",
+        "size": 14683
+      },
+      {
+        "path": "vibe/core/config/models.py",
+        "sha256": "22519eb2a6367cde022991cae7eca07e0165d45be611e722094d03908dec71b4",
+        "size": 24139
+      },
+      {
+        "path": "vibe/core/config/patch.py",
+        "sha256": "2110a8903261ac1da206218327fe9f003bc336625cc8843ae8195d37a8e09877",
+        "size": 5413
+      },
+      {
+        "path": "vibe/core/config/vibe_schema.py",
+        "sha256": "d433cef9d8f5d5a747b92f3c227f8ef46fd957e0544fbc1fe9415dd00d23652d",
+        "size": 44554
+      },
+      {
+        "path": "vibe/core/experiments/_constants.py",
+        "sha256": "4c24e4a7ea52c67359fbdfa7c1d2e6665ea9951372db8bae34b1c55b0c4f0476",
+        "size": 659
+      },
+      {
+        "path": "vibe/core/experiments/active.py",
+        "sha256": "4f31216a9e35acaf3bc368ff2dfb4e5f7063eb69aa9ed41c9e9e42435ed5c922",
+        "size": 4040
+      },
+      {
+        "path": "vibe/core/experiments/cache.py",
+        "sha256": "76d76e41cab1a42ef482da1ba0e352d52dc14337261d76251a38bd0b74310fb5",
+        "size": 3556
+      },
+      {
+        "path": "vibe/core/experiments/session.py",
+        "sha256": "47743ef55f83f5bf7fd5fe5705fac881815ad5a4bd601eb1a2daab601a35078c",
+        "size": 10567
+      },
+      {
+        "path": "vibe/core/git/repo.py",
+        "sha256": "e4b235f2ffb3c47064d92a1d88703d8756646558c008e48612a79602808d96fb",
+        "size": 26152
+      },
+      {
+        "path": "vibe/core/hooks/config.py",
+        "sha256": "8f304f988412b6ef1c708ae50a772af16e9191420734f75c886891e5e99b0628",
+        "size": 3690
+      },
+      {
+        "path": "vibe/core/llm/utility_completion.py",
+        "sha256": "6bab73ebd495e25d38a84b9dc36994f7926d6a3786bad8c7e3153d68cf530689",
+        "size": 9554
+      },
+      {
+        "path": "vibe/core/middleware.py",
+        "sha256": "10e3bf993fd2dc21e02d358b589c80d5752bb4a78d5c512896a3d4669108384e",
+        "size": 9219
+      },
+      {
+        "path": "vibe/core/paths/__init__.py",
+        "sha256": "a2175d85ec149957974e89a054003ef231e1c08fab664d97c7b0ba5cff69d4dd",
+        "size": 1313
+      },
+      {
+        "path": "vibe/core/paths/_vibe_home.py",
+        "sha256": "a8d5db21a6b12c5266e574da2b514a5fc07c8c7bfef47f8903d1823b1339b4e7",
+        "size": 2991
+      },
+      {
+        "path": "vibe/core/prompts/project_context.md",
+        "sha256": "de8c8bff140a0efd934957bd7ca277b7d17cd0922e9211be593879193ddc1b91",
+        "size": 209
+      },
+      {
+        "path": "vibe/core/session/image_snapshot.py",
+        "sha256": "bfedb843d2dc2734aa3defa23ef061f4627abb13de51fbe326d9f04c09c9710b",
+        "size": 3405
+      },
+      {
+        "path": "vibe/core/session/last_session_pointer.py",
+        "sha256": "49b2d5b6cebabeb2dff8eb2090ed13ad59a907bcc1fc4f5bc3599067cdbc471d",
+        "size": 3795
+      },
+      {
+        "path": "vibe/core/session/resume_sessions.py",
+        "sha256": "6a9c40061be4fc6d8f080017b2d4d80cf77addcf18ad819a230d23bd53cd1f27",
+        "size": 2808
+      },
+      {
+        "path": "vibe/core/session/saved_sessions.py",
+        "sha256": "e06ec5a8d339c3a138e1a7c97ed529b7c4c2494bf7bc6fad40aa8fae035bf06f",
+        "size": 5425
+      },
+      {
+        "path": "vibe/core/session/session_index.py",
+        "sha256": "a203bd4bdcfc384b2e7bcb790100b4f413e738ea7c709ce243aaea251b17d0ae",
+        "size": 11895
+      },
+      {
+        "path": "vibe/core/session/session_interop.py",
+        "sha256": "8ff5f35462988e02da9bbb7ea66f19533877aa0fab352e9f6dca53091f64a3a5",
+        "size": 19914
+      },
+      {
+        "path": "vibe/core/session/session_lease.py",
+        "sha256": "c8ec324e61931ad5f8f6038f4b45b1e298e664ead0fcfc68eea0bae2bf475a3c",
+        "size": 6976
+      },
+      {
+        "path": "vibe/core/session/session_logger.py",
+        "sha256": "4f96dae206bca7d7f4f38465bf44bba0cabb117db097d20d647247dd2ad57440",
+        "size": 32241
+      },
+      {
+        "path": "vibe/core/session/session_permissions.py",
+        "sha256": "45b5285fe7a49985f88cd8b86146e3f08d9cb3d9c0b868f917ff4b69aec7e49b",
+        "size": 4012
+      },
+      {
+        "path": "vibe/core/session/title_model.py",
+        "sha256": "064339ce021d18abeb946758ae6cbdaf5bc45a4787ac038de7e0b28b0e329ac5",
+        "size": 4220
+      },
+      {
+        "path": "vibe/core/session/worktrees.py",
+        "sha256": "97403ecea663ce39383cc9efc3101ee85595e33f667cf3a5887584057b93abb1",
+        "size": 13962
+      },
+      {
+        "path": "vibe/core/skills/builtins/skill_creator.py",
+        "sha256": "cdac00dcd5d0beb70b4e94b05182e317291c9a6f7bb8a18c6e00b49c986c1257",
+        "size": 5262
+      },
+      {
+        "path": "vibe/core/skills/builtins/vibe.py",
+        "sha256": "fb0c65a2d847c70da3b0bc9cdebc19b7b2b3f8efe94c420909b2bcf91945260c",
+        "size": 65805
+      },
+      {
+        "path": "vibe/core/skills/manager.py",
+        "sha256": "d9da1515a17889f152764c52c45ec3aa7c0ecddb6a7da7afa8df9411c156384e",
+        "size": 14841
+      },
+      {
+        "path": "vibe/core/skills/models.py",
+        "sha256": "67dfe46643c04e581c8a329dd47b6c02a3e5f059c1a94ad570069647b357a9c3",
+        "size": 5058
+      },
+      {
+        "path": "vibe/core/skills/parser.py",
+        "sha256": "7bab20fdaa083c699f9a1224e2043fa47cacea0746292b613d8ad3020b610982",
+        "size": 4578
+      },
+      {
+        "path": "vibe/core/skills/registry/_store.py",
+        "sha256": "15324dfcc3ca97203754e04a1b9a9e5448f2839eea0a5d386d7221eb7527adc5",
+        "size": 9630
+      },
+      {
+        "path": "vibe/core/system_prompt.py",
+        "sha256": "4cf4affe543ff2a468ed2ed3bd9caa0326b3a2a21554d580b5323fd949dfa578",
+        "size": 17694
+      },
+      {
+        "path": "vibe/core/telemetry/send.py",
+        "sha256": "25b625bee1fd0e9f0496ebdb4a3eee05e9c0340c7d4f757ee12866e92c66427b",
+        "size": 21949
+      },
+      {
+        "path": "vibe/core/telemetry/session.py",
+        "sha256": "bfc232ccdded5452f19287c924e9b4c6f2bced5b1055df75e00a8f597b3f8113",
+        "size": 4888
+      },
+      {
+        "path": "vibe/core/telemetry/types.py",
+        "sha256": "ea2b19e1a03d467388927c3cb484675219c0d2f399f14fb6eeb29063aac210f4",
+        "size": 5425
+      },
+      {
+        "path": "vibe/core/tools/arity.py",
+        "sha256": "97fe5736f2efd45d83095c908eaacb076cfe1a00709086c6a24a8e523d68870b",
+        "size": 3308
+      },
+      {
+        "path": "vibe/core/tools/base.py",
+        "sha256": "70d706fa373afb9cd5beba6fe50e58720b929017aae0a752949763255cc9ccc2",
+        "size": 17976
+      },
+      {
+        "path": "vibe/core/tools/builtins/_shell_command_policy.py",
+        "sha256": "b75c5e054b0b6121b76365f32e9fc8573289b7aa4ebd47ba4808e7a0bc68a3f5",
+        "size": 29911
+      },
+      {
+        "path": "vibe/core/tools/builtins/_shell_permission_analysis.py",
+        "sha256": "6f789b5299db61c9201a0afca3d059521ef4ec4bb3824a4b084ff668891ee0cb",
+        "size": 13364
+      },
+      {
+        "path": "vibe/core/tools/builtins/bash.py",
+        "sha256": "2b830335092830998614dc86a3185fcb91a3e0ab7e7f2168d5fd28bba356c1ed",
+        "size": 27928
+      },
+      {
+        "path": "vibe/core/tools/builtins/experimental_bash.py",
+        "sha256": "5d8812363e4652c1263c3e503aaed4180b2e53520f9004e876e0e7429be826c0",
+        "size": 87158
+      },
+      {
+        "path": "vibe/core/tools/builtins/prompts/todo.md",
+        "sha256": "5e15410a0b4c8245063eb7950a1d76a2c7fe0525a19d8d2cc6b3fdd4446789ac",
+        "size": 472
+      },
+      {
+        "path": "vibe/core/tools/builtins/skill.py",
+        "sha256": "42f34102979c8ee6557c916dc7ff297a102faf85c1428d3cb1d8fad49bdfe91b",
+        "size": 5994
+      },
+      {
+        "path": "vibe/core/tools/builtins/todo.py",
+        "sha256": "2d093649369487f8ef6616e417cdffdb38b84bb123653fab9360c59109ed8287",
+        "size": 4742
+      },
+      {
+        "path": "vibe/core/tools/builtins/web_fetch.py",
+        "sha256": "89323299ed8174843b9091e39ac7b2e1732e10dc5673faf1e8a19aa1466ff8d2",
+        "size": 10559
+      },
+      {
+        "path": "vibe/core/tools/builtins/windows_shell.py",
+        "sha256": "bd7bbeafb5217a8a5eac3de149ff27f741b4c099d1c5b01c05b9bd6373d89f51",
+        "size": 36750
+      },
+      {
+        "path": "vibe/core/tools/connectors/connector_registry.py",
+        "sha256": "6f6b68f64624fb953df84b1e3dd5286c8619590e2184c4fcd1053e5ddb143c05",
+        "size": 31584
+      },
+      {
+        "path": "vibe/core/tools/manager.py",
+        "sha256": "893f1f02d7141b8972af6fbe82cca9e858bee05026e5638227a531b3ffdf1b67",
+        "size": 30076
+      },
+      {
+        "path": "vibe/core/tools/mcp/registry.py",
+        "sha256": "57a6efc78fdebcd9dd310e0695c1f80d17b9f4aa7b5104bc3b1a8d6c8b8f4404",
+        "size": 25782
+      },
+      {
+        "path": "vibe/core/tools/mcp/tools.py",
+        "sha256": "c6428f30e02436603f3224a7870e42786fd76d4cff3d421710f67eb967c46611",
+        "size": 21327
+      },
+      {
+        "path": "vibe/core/tools/permissions.py",
+        "sha256": "add097139add377e9b68bcb35b0128c1e1eedfa714056b78b31d6183824df0e7",
+        "size": 1951
+      },
+      {
+        "path": "vibe/core/tools/utils.py",
+        "sha256": "0c755ecd5ed05c3e464feb410800b26cf85cd5581664ca1a86a4c4a0dc9a7a96",
+        "size": 8024
+      },
+      {
+        "path": "vibe/core/trusted_folders.py",
+        "sha256": "185f7b534414af53f3629670c17f81ab83c6dd7bea04a77f7956a82299ad895e",
+        "size": 11484
+      },
+      {
+        "path": "vibe/core/types.py",
+        "sha256": "96365bbded4d19ad6031e9261df69e2a478e35b01dd4774a4c531845146548ed",
+        "size": 26283
+      }
+    ]
+  },
+  "selected_source_python_tree_by_version": {
+    "2.25.4": {
+      "entry_count": 569,
+      "manifest_sha256": "4473d4f95fa655dc9ea6957ae564a0b7456787648babbf6dfcefe9954f512328"
+    },
+    "2.25.5": {
+      "entry_count": 581,
+      "manifest_sha256": "9bc26c74e0c03ae7d5be0e6171bcb6e41af569dc09c62e466edface12231172e"
+    },
+    "2.25.7": {
+      "entry_count": 590,
+      "manifest_sha256": "a7c71535e20dca514407c6bcba19184401d56976a950450f60594c3cb272cb11"
+    },
+    "2.25.8": {
+      "entry_count": 595,
+      "manifest_sha256": "b366b8fefdc07abc6ea6320c2238f7b9ef8449f792723ab61edbf92e5c134e65"
+    },
+    "2.26.0": {
+      "entry_count": 616,
+      "manifest_sha256": "5d7cb2b07593c2cac7f6d28068f9c9c29c7eac08e717e0c9b54a7beb7019e6df"
+    }
+  },
+  "surface_invariants": {
+    "holes": [
+      "2.25.6",
+      "2.25.9"
+    ],
+    "later_stable": "a stable first published after the identity commit remains unverified under AllowUnverified and is not silently added to the claim.",
+    "legacy_pin": "--legacy-harness remains first-precedence in resolve_harness_selection; at 2.26.0 it is also a Python-only launcher flag excluded from automatic Rust TUI rollout.",
+    "permissions": "no --auto-approve/--yolo; unsupported callback requests remain denied by the adapter.",
+    "plan_profile": "Plan remains the same read-only profile with write_file/edit permission never; the 2.25.8 agent addition is unrelated.",
+    "programmatic_stream": "vibe/cli/programmatic.py is byte-identical from 2.25.4 to 2.25.5 and only changes an unselected teleport condition at 2.25.7; it is byte-identical through 2.26.0 after that.",
+    "usage": "2.26 automatic title generation is disabled for the programmatic entrypoint; no secondary title completion is added to this selected run.",
+    "wire": "NDJSON streaming serializer and event discriminators remain unchanged; new public fields are additive/unmapped, context notice wording changes at 2.26.0 and is passed through."
+  },
+  "sentry_build_injection": {
+    "path": "vibe/observability/sentry.py",
+    "github_tag_sha256": "34c44bec66485bea4523d1d7c217156e27ec8bdb52da9d99d8a9f8580fb7a10f",
+    "github_tag_size": 7094,
+    "pypi_wheel_sha256": "c877497060e8d8b9f5c9c22e6d849a532b34d651a4924f49ae61f6628212d891",
+    "pypi_wheel_size": 7280,
+    "classification": "build-time Sentry DSN injection only; telemetry remains Vibe-config-gated and outside the selected stream"
+  }
+}

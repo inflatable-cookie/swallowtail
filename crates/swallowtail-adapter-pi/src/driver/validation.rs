@@ -21,7 +21,7 @@ pub(super) fn validate_catalogue(
     services: &HostServices,
     credential: &swallowtail_core::CredentialRef,
 ) -> Result<(), RuntimeFailure> {
-    validate_common(plan, services, credential)?;
+    let _ = validate_common(plan, services, credential)?;
     if plan.requirements().driver_role() != DriverRole::ModelCatalog
         || plan.provider_id().is_some()
         || plan.model_id().is_some()
@@ -37,8 +37,8 @@ pub(super) fn validate_open(
     request: &OpenSessionRequest,
     services: &HostServices,
     credential: &swallowtail_core::CredentialRef,
-) -> Result<(), RuntimeFailure> {
-    validate_common(plan, services, credential)?;
+) -> Result<crate::selection::PiRpcVersionFeatures, RuntimeFailure> {
+    let version_features = validate_common(plan, services, credential)?;
     if plan.requirements().driver_role() != DriverRole::InteractiveSession {
         return Err(plan_mismatch("driver role"));
     }
@@ -86,7 +86,8 @@ pub(super) fn validate_open(
         Capability::WorkingResource,
         CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
     )?;
-    validate_planned_attachment_services(plan, services)
+    validate_planned_attachment_services(plan, services)?;
+    Ok(version_features)
 }
 
 pub(super) fn validate_run(
@@ -94,8 +95,8 @@ pub(super) fn validate_run(
     request: &StructuredRunRequest,
     services: &HostServices,
     credential: &swallowtail_core::CredentialRef,
-) -> Result<(), RuntimeFailure> {
-    validate_common(plan, services, credential)?;
+) -> Result<crate::selection::PiRpcVersionFeatures, RuntimeFailure> {
+    let version_features = validate_common(plan, services, credential)?;
     if plan.requirements().execution_layer() != ExecutionLayer::HarnessInteraction
         || plan.requirements().operation_shape() != OperationShape::StructuredRun
         || plan.requirements().driver_role() != DriverRole::StructuredRun
@@ -170,7 +171,7 @@ pub(super) fn validate_run(
             "Pi RPC structured-run deadline elapsed before provider work",
         ));
     }
-    Ok(())
+    Ok(version_features)
 }
 
 include!("validation/attachments.rs");

@@ -315,6 +315,28 @@ its own mapping ruling before adaptation or claim movement. Fake-provider
 proof does not establish live permission or MCP honouring. A prerelease issue
 report does not qualify a final stable.
 
+## DeepSeek Harness Artifact/Profile Mapping Study
+
+Tom's 2026-10-08 board answer to decision
+`f3ca9685-76b4-4e89-88f3-45f82bf8b4b2` is “Approve bounded mapping study;
+decide adaptation after exact evidence”. This permits provider-free inspection
+of exact shipped wrappers, runtime artifacts and source for the existing
+structured-run route. The npm CLI `0.2.0-rc.2` and PyPI runtime-bin `0.1.5rc1`
+are independently identified artifacts; their version numbers or JSON-RPC
+labels do not establish compatible executable identity or provenance.
+
+Reuse retained evidence. Freeze exact executable selection/profile invocation
+and published runtime-bin hops from `0.1.0rc6`; map initialize, prompt, idle,
+shutdown, forced cancellation and join, plus approved host, Cordis, provider,
+model, working-resource, authentication, tool and permission boundaries.
+Return either exact evidence for a same-contract private mapping with a
+proposed behavior milestone/axis ledger, or a concrete distinct-route/axis
+contract proposal for another ruling. No runtime or public API implementation,
+claim change, artifact execution, live work, authentication, installation or
+tag authority is included. Preserve the existing exact `0.1.0rc6` point,
+released consumers and separation from the local-server route until the
+classification is independently reviewed and adaptation is authorized.
+
 ## Copilot ACP Bounded Authenticated Proof
 
 Tom's 2026-10-08 board answer to decision

@@ -241,7 +241,7 @@ OpenHands adds a package without a production route.
   Web `/api` over one host-owned loopback `dsh web` process, qualified at exact
   RC points `0.1.0-rc.6`, `0.1.0-rc.7`, `0.1.0-rc.8`, `0.1.1-rc.1`, and
   `0.1.1-rc.2`; `0.1.2-rc.1` onward remains unqualified pending browser-auth
-  and typed-stream adaptation (Research 408). The JSON-RPC route owns bounded
+  and typed-stream adaptation (Research 411). The JSON-RPC route owns bounded
   idle-folded structured runs and process-kill cancellation. The Web route
   owns bounded structured runs, catalogue/search/models, control-free history,
   native cancel/fork, and target-only archive.
@@ -691,7 +691,7 @@ Crate status:
   runtime-bin JSON-RPC structured-run route and exact selected Web `/api`
   local-server RC points `0.1.0-rc.6`, `0.1.0-rc.7`, `0.1.0-rc.8`,
   `0.1.1-rc.1`, and `0.1.1-rc.2`; `0.1.2-rc.1` onward remains unqualified
-  pending browser-auth and typed-stream adaptation (Research 408). The
+  pending browser-auth and typed-stream adaptation (Research 411). The
   JSON-RPC branch binds host-approved Cordis
   configuration, explicit provider/model, bounded stream parsing, namespaced
   unknown observations, process-kill cancellation, and joined cleanup. The

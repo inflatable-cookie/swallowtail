@@ -1,0 +1,1835 @@
+diff --git a/.config/nextest.toml b/.config/nextest.toml
+index 16885001580ca62e1fe1381a4e4f0be5eae3a87f..b74eb1dae52f61eb8ed6a5aa24223761ebf12ede 100644
+--- a/.config/nextest.toml
++++ b/.config/nextest.toml
+@@ -18,3 +18,9 @@ default-filter = "not (binary(claude_agent_sdk_sidecar_asset) | binary(claude_ag
+ [profile.ci-process]
+ inherits = "default"
+ default-filter = "binary(claude_agent_sdk_sidecar_asset) | binary(claude_agent_sdk_driver) | binary(sidecar_driver) | binary(claude_code_structured_run) | binary(local_process) | binary(watcher_service)"
++
++# Task-local deterministic released-line backport proof. A hung fixture or
++# leaked process is stopped after two bounded test-runner intervals.
++[profile.sdk-patch-backport]
++inherits = "default"
++slow-timeout = { period = "60s", terminate-after = 2 }
+diff --git a/crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs b/crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs
+index 625334fe21d36eca6908ebb9cd6bd092b4e2370a..4be19cf71ede38a7213d5037bcfd13ff1afaf51d 100644
+--- a/crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs
++++ b/crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs
+@@ -184,6 +184,39 @@ const SDK_RESULT_FIELD_NAMES = [
+   "errors",
+ ];
+ 
++function safeTokenCount(value) {
++  return Number.isSafeInteger(value) && value >= 0 ? value : undefined;
++}
++
++// SDKResultSuccess and SDKResultError carry one main-loop usage snapshot for
++// the completed turn. Keep only provider-neutral counters; modelUsage is a
++// cumulative per-model query-pipeline snapshot and is not a turn delta.
++function projectTurnUsage(value) {
++  if (!value || typeof value !== "object" || Array.isArray(value)) {
++    return null;
++  }
++  const inputTokens = safeTokenCount(value.input_tokens);
++  const outputTokens = safeTokenCount(value.output_tokens);
++  if (inputTokens === undefined || outputTokens === undefined) {
++    return null;
++  }
++  const cacheReadInputTokens = Object.prototype.hasOwnProperty.call(value, "cache_read_input_tokens")
++    ? safeTokenCount(value.cache_read_input_tokens)
++    : null;
++  const cacheCreationInputTokens = Object.prototype.hasOwnProperty.call(value, "cache_creation_input_tokens")
++    ? safeTokenCount(value.cache_creation_input_tokens)
++    : null;
++  if (cacheReadInputTokens === undefined || cacheCreationInputTokens === undefined) {
++    return null;
++  }
++  return {
++    inputTokens,
++    outputTokens,
++    cacheReadInputTokens,
++    cacheWriteInputTokens: cacheCreationInputTokens,
++  };
++}
++
+ function childEnvironment() {
+   return Object.fromEntries(
+     Object.entries(process.env).filter(
+@@ -1284,6 +1317,10 @@ function projectMessage(message) {
+       return events;
+     }
+     case "result": {
++      const usage = projectTurnUsage(message.usage);
++      if (usage === null) {
++        return "unknown";
++      }
+       const resultFieldPresence = Object.fromEntries(
+         SDK_RESULT_FIELD_NAMES.map((key) => [
+           key,
+@@ -1357,6 +1394,7 @@ function projectMessage(message) {
+           errorTextPresent,
+           errorTextType,
+           resultFieldPresence,
++          usage,
+           apiErrorStatus,
+           terminalReason,
+           rateLimitStatus: state.activeTurnRateLimitStatus,
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/connection.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/connection.rs
+index 94d9bd803b7f456b6f03bce5853d019cbcf4b7ed..765a2e8442e0585b50f3f294c74d02254e4d06c8 100644
+--- a/crates/swallowtail-adapter-claude-agent/src/sdk/connection.rs
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/connection.rs
+@@ -16,6 +16,8 @@ use serde_json::Value;
+ use std::collections::{BTreeMap, BTreeSet};
+ use std::future::Future;
+ use std::pin::Pin;
++#[cfg(test)]
++use std::sync::Barrier;
+ use std::sync::atomic::{AtomicBool, Ordering};
+ use std::sync::{Arc, Mutex};
+ use std::task::{Context, Poll, Waker};
+@@ -47,6 +49,8 @@ pub(crate) struct SdkConnection {
+     terminal_error: Mutex<Option<SafeDiagnostic>>,
+     stderr_tail: Mutex<StderrTail>,
+     exit: Mutex<Option<ProcessExit>>,
++    #[cfg(test)]
++    send_registration_gate: Mutex<Option<Arc<(Barrier, Barrier)>>>,
+ }
+ 
+ impl SdkConnection {
+@@ -61,6 +65,8 @@ impl SdkConnection {
+             terminal_error: Mutex::new(None),
+             stderr_tail: Mutex::new(StderrTail::default()),
+             exit: Mutex::new(None),
++            #[cfg(test)]
++            send_registration_gate: Mutex::new(None),
+         })
+     }
+ 
+@@ -88,6 +94,16 @@ impl SdkConnection {
+         if self.closed.load(Ordering::SeqCst) {
+             return Err(self.closed_failure());
+         }
++        #[cfg(test)]
++        if let Some(gate) = self
++            .send_registration_gate
++            .lock()
++            .expect("SDK test send gate lock poisoned")
++            .clone()
++        {
++            gate.0.wait();
++            gate.1.wait();
++        }
+         if !self
+             .used_ids
+             .lock()
+@@ -105,6 +121,12 @@ impl SdkConnection {
+                 .pending
+                 .lock()
+                 .expect("SDK sidecar pending lock poisoned");
++            // The pump can close the connection after the fast check above.
++            // Recheck under the lock used to drain pending work, so a sender
++            // cannot register after that drain and wait forever.
++            if self.closed.load(Ordering::SeqCst) {
++                return Err(self.closed_failure());
++            }
+             if pending.len() >= MAXIMUM_PENDING_COMMANDS {
+                 return Err(failure(
+                     "swallowtail.claude-agent.sdk.command_capacity_exceeded",
+@@ -210,13 +232,37 @@ impl SdkConnection {
+         *self.exit.lock().expect("SDK sidecar exit lock poisoned")
+     }
+ 
+-    /// Records the terminal transport failure before the closed flag so a
+-    /// later command observes the exact cause instead of a generic close.
+-    pub(crate) fn record_terminal_error(&self, error: &RuntimeFailure) {
+-        *self
+-            .terminal_error
++    /// Closes command admission and resolves every waiter when the pump can no
++    /// longer receive responses. The pending lock makes closure and draining
++    /// one linearized transition with command registration.
++    pub(crate) fn fail_connection(&self, error: &RuntimeFailure) {
++        let pending = {
++            let mut pending = self
++                .pending
++                .lock()
++                .expect("SDK sidecar pending lock poisoned");
++            *self
++                .terminal_error
++                .lock()
++                .expect("SDK sidecar terminal-error lock poisoned") =
++                Some(error.diagnostic().clone());
++            self.closed.store(true, Ordering::SeqCst);
++            std::mem::take(&mut *pending)
++        };
++        for (_, command) in pending {
++            command
++                .sender
++                .complete(Err(RuntimeFailure::new(error.diagnostic().clone())));
++        }
++        if let Some(turn) = self
++            .active_turn
+             .lock()
+-            .expect("SDK sidecar terminal-error lock poisoned") = Some(error.diagnostic().clone());
++            .expect("SDK sidecar active lock poisoned")
++            .take()
++            && !turn.is_finished()
++        {
++            turn.fail_connection(error.diagnostic().clone());
++        }
+     }
+ 
+     pub(crate) fn record_stderr(&self, bytes: &[u8]) {
+@@ -259,6 +305,9 @@ impl SdkConnection {
+     }
+ }
+ 
++#[cfg(test)]
++mod connection_tests;
++
+ struct PendingCommand {
+     command: ClaudeAgentSdkCommand,
+     sender: ResponseSender,
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/connection/connection_tests.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/connection/connection_tests.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..9f408dfe69714cac1eb34f3c4bf892c7c7859c5f
+--- /dev/null
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/connection/connection_tests.rs
+@@ -0,0 +1,88 @@
++use super::*;
++use std::sync::atomic::{AtomicUsize, Ordering};
++use std::thread;
++use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
++use swallowtail_runtime::{BoxFuture, ProcessExit, ProcessOutputChunk, RuntimeFailure};
++
++struct RegistrationGateProcess {
++    writes: Arc<AtomicUsize>,
++}
++
++impl ProcessHandle for RegistrationGateProcess {
++    fn write_stdin(&self, _chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
++        self.writes.fetch_add(1, Ordering::SeqCst);
++        Box::pin(async { Ok(()) })
++    }
++
++    fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
++        Box::pin(std::future::pending())
++    }
++
++    fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
++        Box::pin(std::future::pending())
++    }
++
++    fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
++        Box::pin(std::future::pending())
++    }
++
++    fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
++        Box::pin(std::future::pending())
++    }
++
++    fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
++        Box::pin(std::future::pending())
++    }
++}
++
++#[test]
++fn a_pump_failure_between_command_check_and_registration_rejects_the_command() {
++    let writes = Arc::new(AtomicUsize::new(0));
++    let process = RegistrationGateProcess {
++        writes: Arc::clone(&writes),
++    };
++    let host =
++        ExecutionHostId::new("claude-agent-sdk.connection-test").expect("fixture host id is valid");
++    let connection = SdkConnection::new(Arc::new(process), HostServices::new(host));
++    let gate = Arc::new((Barrier::new(2), Barrier::new(2)));
++    *connection
++        .send_registration_gate
++        .lock()
++        .expect("SDK test send gate lock poisoned") = Some(Arc::clone(&gate));
++
++    // Pause after send's fast closed check. This forces the exact ordering
++    // where the pump drains pending commands first. Without the locked recheck,
++    // send registers afterward and close waits on a response the stopped pump
++    // can never deliver while the fixture clock remains unadvanced.
++    let sender_connection = Arc::clone(&connection);
++    let sender = thread::spawn(move || {
++        futures_executor::block_on(sender_connection.send(
++            "close:raced".to_owned(),
++            ClaudeAgentSdkCommand::Close,
++            serde_json::json!({}),
++        ))
++        .map(|_| ())
++        .map_err(|error| error.diagnostic().code().to_owned())
++    });
++    gate.0.wait();
++
++    let error = RuntimeFailure::new(SafeDiagnostic::new(
++        "swallowtail.claude-agent.sdk.event_without_turn",
++        "Claude Agent SDK sidecar emitted a turn event outside an active turn",
++    ));
++    connection.fail_connection(&error);
++    gate.1.wait();
++
++    assert_eq!(
++        sender.join().expect("command registration worker joins"),
++        Err("swallowtail.claude-agent.sdk.event_without_turn".to_owned())
++    );
++    assert_eq!(writes.load(Ordering::SeqCst), 0);
++    assert!(
++        connection
++            .pending
++            .lock()
++            .expect("SDK sidecar pending lock poisoned")
++            .is_empty()
++    );
++}
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/connection/pump.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/connection/pump.rs
+index e418b1980c5f0837b123d00874c9c486e5923847..77db62b160ba00d9bfc358a141808ab93e54419e 100644
+--- a/crates/swallowtail-adapter-claude-agent/src/sdk/connection/pump.rs
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/connection/pump.rs
+@@ -7,7 +7,6 @@ use crate::sdk::wire::{
+ };
+ use serde_json::json;
+ use std::sync::Arc;
+-use std::sync::atomic::Ordering;
+ use swallowtail_runtime::{
+     DebugObservation, DebugObservationKind, ProcessOutputStream, RuntimeFailure,
+ };
+@@ -58,14 +57,7 @@ impl SdkConnection {
+             self.emit_protocol_debug(&error, "sdk.pump.finish");
+             transport_failure = Some(error);
+         }
+-        if transport_failure.is_some() {
+-            let _ = self.escalate().await;
+-        }
+-        // An observed exit is the only evidence of exit, and it carries the
+-        // host's own owned-tree completion evidence. A wait failure records no
+-        // exit at all, never a clean stop.
+-        let observed = self.process.wait().await.ok();
+-        *self.exit.lock().expect("SDK sidecar exit lock poisoned") = observed;
++        let needs_escalation = transport_failure.is_some();
+         let error = transport_failure.unwrap_or_else(|| {
+             failure(
+                 "swallowtail.claude-agent.sdk.connection_ended",
+@@ -73,18 +65,18 @@ impl SdkConnection {
+             )
+         });
+         let error = self.terminal_error_with_stderr(error);
+-        self.record_terminal_error(&error);
+-        self.closed.store(true, Ordering::SeqCst);
+-        if let Some(turn) = self
+-            .active_turn
+-            .lock()
+-            .expect("SDK sidecar active lock poisoned")
+-            .take()
+-            && !turn.is_finished()
+-        {
+-            turn.fail_connection(error.diagnostic().clone());
++        // No response can arrive after this pump has ended. Close command
++        // admission and resolve existing waiters before force-stop or process
++        // wait can suspend, so cleanup cannot wait on a dead reader.
++        self.fail_connection(&error);
++        if needs_escalation {
++            let _ = self.escalate().await;
+         }
+-        self.fail_pending(error);
++        // An observed exit is the only evidence of exit, and it carries the
++        // host's own owned-tree completion evidence. A wait failure records no
++        // exit at all, never a clean stop.
++        let observed = self.process.wait().await.ok();
++        *self.exit.lock().expect("SDK sidecar exit lock poisoned") = observed;
+     }
+ 
+     async fn dispatch(
+@@ -243,18 +235,4 @@ impl SdkConnection {
+                 .with_correlated_code("sdk_version_mismatch"),
+         );
+     }
+-
+-    fn fail_pending(&self, error: RuntimeFailure) {
+-        let pending = std::mem::take(
+-            &mut *self
+-                .pending
+-                .lock()
+-                .expect("SDK sidecar pending lock poisoned"),
+-        );
+-        for (_, command) in pending {
+-            command
+-                .sender
+-                .complete(Err(RuntimeFailure::new(error.diagnostic().clone())));
+-        }
+-    }
+ }
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/driver/registered.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/driver/registered.rs
+index 5f9068a5e16d27df526b2ffae0fd165e07537cc5..fce46044ed92bedbbf445710b05831b5919109d8 100644
+--- a/crates/swallowtail-adapter-claude-agent/src/sdk/driver/registered.rs
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/driver/registered.rs
+@@ -148,12 +148,13 @@ pub(in crate::sdk) async fn prepare_registered(
+             "Claude Agent SDK registered-tool open requires the session deadline",
+         )
+     })?;
+-    let prepared = binding.preparation().prepare(
++    let prepared = binding.preparation().prepare_with_lease_deadline(
+         services,
+         plan.instance_id().clone(),
+         scope,
+         turn,
+         deadline,
++        None,
+     )?;
+     let lease = prepared.open().await?;
+     let launch = host.registered_tool_proxy_launch(&lease)?;
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/driver/validation.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/driver/validation.rs
+index 822fb36eb81d0f3f843787f5bf46d9a3caeed1b6..7af866f6f43dd15b5053268f0e1ed95f9c457e91 100644
+--- a/crates/swallowtail-adapter-claude-agent/src/sdk/driver/validation.rs
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/driver/validation.rs
+@@ -116,6 +116,7 @@ pub(super) fn validate_open(
+     }
+     require_capability(plan, Capability::InteractiveSession)?;
+     require_capability(plan, Capability::StreamingEvents)?;
++    require_capability(plan, Capability::UsageReporting)?;
+     require_capability(plan, Capability::ToolCalls)?;
+     require_constraint(
+         plan,
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/prepared/build.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/prepared/build.rs
+index d00c20c95eb494af5062aafba8dbf404d1e1ef8d..4bdd85b7d5bf7493f04dac1ad2ad1245db9042e2 100644
+--- a/crates/swallowtail-adapter-claude-agent/src/sdk/prepared/build.rs
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/prepared/build.rs
+@@ -54,6 +54,7 @@ pub(super) fn prepare(
+     let mut capability_requirements = vec![
+         CapabilityRequirement::new(Capability::InteractiveSession, []),
+         CapabilityRequirement::new(Capability::StreamingEvents, []),
++        CapabilityRequirement::new(Capability::UsageReporting, []),
+         CapabilityRequirement::new(Capability::ToolCalls, []),
+         CapabilityRequirement::new(
+             Capability::Interruption,
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/registered_tool/mediation.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/registered_tool/mediation.rs
+index f49f2810f57819d828a50c98b4c494ebf058bca4..2b4747613d626748caec31b6febcbd3c57c891ef 100644
+--- a/crates/swallowtail-adapter-claude-agent/src/sdk/registered_tool/mediation.rs
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/registered_tool/mediation.rs
+@@ -358,7 +358,7 @@ impl ClaudeAgentSdkRegisteredToolMediator {
+                 call_id,
+                 tool.id().clone(),
+                 payload,
+-                self.lease.deadline(),
++                self.lease.next_call_deadline(),
+             ))
+             .await;
+         Ok(match outcome {
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/turn/events.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/turn/events.rs
+index d6423685fb4fe17de55a705875b384f33aa31387..5098598b3b9073420928de412ee10b83149acfcc 100644
+--- a/crates/swallowtail-adapter-claude-agent/src/sdk/turn/events.rs
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/turn/events.rs
+@@ -7,7 +7,10 @@ use super::{
+ use crate::sdk::failure::failure;
+ use crate::sdk::wire::ClaudeAgentSdkEvent;
+ use std::sync::atomic::Ordering;
+-use swallowtail_runtime::{ActivityStatus, RuntimeFailure, TerminalStatus};
++use swallowtail_runtime::{
++    ActivityStatus, ProviderObservation, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
++    TerminalStatus, TokenUsage,
++};
+ 
+ impl SdkActiveTurn {
+     pub(crate) fn handle_event(&self, event: ClaudeAgentSdkEvent) -> Result<(), RuntimeFailure> {
+@@ -32,6 +35,7 @@ impl SdkActiveTurn {
+                 Ok(())
+             }
+             ClaudeAgentSdkEvent::TurnEnded {
++                usage,
+                 stop_reason,
+                 failed,
+                 subtype,
+@@ -44,6 +48,17 @@ impl SdkActiveTurn {
+                 terminal_reason,
+                 rate_limit_status,
+             } => {
++                let usage_event = RuntimeEvent::new(
++                    self.next_sequence(),
++                    RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(
++                        TokenUsage::new(Some(usage.input_tokens), Some(usage.output_tokens))
++                            .with_cache_tokens(
++                                usage.cache_read_input_tokens,
++                                usage.cache_write_input_tokens,
++                            ),
++                    )),
++                );
++                self.events.send(usage_event)?;
+                 let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
+                     (TerminalStatus::TimedOut, ActivityStatus::Failed)
+                 } else if failed || stop_reason != "success" {
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/wire.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/wire.rs
+index 5b7a35b457db3e9e7ae79df603457c1494991cc2..6aa8fc612aca40edeca5e0b22d23231155591d99 100644
+--- a/crates/swallowtail-adapter-claude-agent/src/sdk/wire.rs
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/wire.rs
+@@ -116,6 +116,15 @@ pub(crate) struct ClaudeAgentSdkBashCommandView {
+     pub(crate) truncated: bool,
+ }
+ 
++/// One validated per-turn usage snapshot from the SDK result message.
++#[derive(Clone, Copy, Debug, Eq, PartialEq)]
++pub(crate) struct ClaudeAgentSdkUsage {
++    pub(crate) input_tokens: u64,
++    pub(crate) output_tokens: u64,
++    pub(crate) cache_read_input_tokens: Option<u64>,
++    pub(crate) cache_write_input_tokens: Option<u64>,
++}
++
+ pub(crate) struct ClaudeAgentSdkFailure {
+     pub(crate) code: ClaudeAgentSdkFailureCode,
+     pub(crate) original_code: Option<ClaudeAgentSdkFailureCode>,
+@@ -402,6 +411,7 @@ pub(crate) enum ClaudeAgentSdkEvent {
+         failed: bool,
+     },
+     TurnEnded {
++        usage: ClaudeAgentSdkUsage,
+         stop_reason: String,
+         failed: bool,
+         subtype: Option<String>,
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/wire/decode.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/wire/decode.rs
+index b316cf8c7312b6448427951244e96dc5d3a252a1..c255b6d416fca10fee519001085e17fae86decd6 100644
+--- a/crates/swallowtail-adapter-claude-agent/src/sdk/wire/decode.rs
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/wire/decode.rs
+@@ -3,8 +3,8 @@ use super::{
+     ClaudeAgentSdkDiagnostic, ClaudeAgentSdkDiagnosticEvidence, ClaudeAgentSdkDiagnosticLevel,
+     ClaudeAgentSdkEvent, ClaudeAgentSdkFailure, ClaudeAgentSdkFailureCode,
+     ClaudeAgentSdkIdentityEvidence, ClaudeAgentSdkModelQualificationEvidence,
+-    ClaudeAgentSdkRateLimitStatus, ClaudeAgentSdkResponse, MAXIMUM_COMMAND_ID_BYTES,
+-    MAXIMUM_FAILURE_CODE_BYTES, MAXIMUM_FAILURE_MESSAGE_BYTES,
++    ClaudeAgentSdkRateLimitStatus, ClaudeAgentSdkResponse, ClaudeAgentSdkUsage,
++    MAXIMUM_COMMAND_ID_BYTES, MAXIMUM_FAILURE_CODE_BYTES, MAXIMUM_FAILURE_MESSAGE_BYTES,
+     MAXIMUM_MODEL_QUALIFICATION_CATALOGUE_SIZE, MAXIMUM_MODEL_QUALIFICATION_ID_BYTES,
+     MAXIMUM_TERMINAL_REASON_BYTES, MAXIMUM_TEXT_BYTES, MODEL_QUALIFICATION_DIGEST,
+     MODEL_QUALIFICATION_DIGEST_HEX_BYTES, bounded_text, failure, required_bool,
+@@ -82,6 +82,7 @@ pub(super) fn decode_event(
+             failed: required_bool(value, "isError", invalid)?,
+         }),
+         Some("turn_ended") => {
++            let usage = decode_usage(value.get("usage").ok_or_else(|| failure(invalid))?, invalid)?;
+             let subtype = nullable_label(value, "subtype", invalid)?;
+             let stop_reason = bounded_label_allow_empty(value, "stopReason", invalid)?.to_owned();
+             let failed = required_bool(value, "isError", invalid)?;
+@@ -95,6 +96,7 @@ pub(super) fn decode_event(
+             let terminal_reason = nullable_terminal_reason(value, "terminalReason", invalid)?;
+             let rate_limit_status = nullable_rate_limit_status(value, "rateLimitStatus", invalid)?;
+             Ok(ClaudeAgentSdkEvent::TurnEnded {
++                usage,
+                 stop_reason,
+                 failed,
+                 subtype,
+@@ -113,6 +115,59 @@ pub(super) fn decode_event(
+     }
+ }
+ 
++fn decode_usage(
++    value: &Value,
++    kind: ClaudeAgentSdkProtocolFailureKind,
++) -> Result<ClaudeAgentSdkUsage, ClaudeAgentSdkProtocolFailure> {
++    let object = value
++        .as_object()
++        .filter(|object| object.len() == 4)
++        .ok_or_else(|| failure(kind))?;
++    const FIELDS: [&str; 4] = [
++        "inputTokens",
++        "outputTokens",
++        "cacheReadInputTokens",
++        "cacheWriteInputTokens",
++    ];
++    if object.keys().any(|field| !FIELDS.contains(&field.as_str())) {
++        return Err(failure(kind));
++    }
++    let input_tokens = safe_token_count(object.get("inputTokens"), kind)?;
++    let output_tokens = safe_token_count(object.get("outputTokens"), kind)?;
++    let cache_read_input_tokens = nullable_token_count(object.get("cacheReadInputTokens"), kind)?;
++    let cache_write_input_tokens = nullable_token_count(object.get("cacheWriteInputTokens"), kind)?;
++    Ok(ClaudeAgentSdkUsage {
++        input_tokens,
++        output_tokens,
++        cache_read_input_tokens,
++        cache_write_input_tokens,
++    })
++}
++
++fn nullable_token_count(
++    value: Option<&Value>,
++    kind: ClaudeAgentSdkProtocolFailureKind,
++) -> Result<Option<u64>, ClaudeAgentSdkProtocolFailure> {
++    let Some(value) = value else {
++        return Err(failure(kind));
++    };
++    if value.is_null() {
++        Ok(None)
++    } else {
++        safe_token_count(Some(value), kind).map(Some)
++    }
++}
++
++fn safe_token_count(
++    value: Option<&Value>,
++    kind: ClaudeAgentSdkProtocolFailureKind,
++) -> Result<u64, ClaudeAgentSdkProtocolFailure> {
++    value
++        .and_then(Value::as_u64)
++        .filter(|count| *count <= 9_007_199_254_740_991)
++        .ok_or_else(|| failure(kind))
++}
++
+ pub(super) fn decode_callback(
+     value: &Value,
+ ) -> Result<ClaudeAgentSdkCallback, ClaudeAgentSdkProtocolFailure> {
+diff --git a/crates/swallowtail-adapter-claude-agent/src/sdk/wire/wire_tests.rs b/crates/swallowtail-adapter-claude-agent/src/sdk/wire/wire_tests.rs
+index 3b784c833e0ff52bc014669897efb8b61d3e6608..3d985c07108973e975cde84e894e37c5d463eb3a 100644
+--- a/crates/swallowtail-adapter-claude-agent/src/sdk/wire/wire_tests.rs
++++ b/crates/swallowtail-adapter-claude-agent/src/sdk/wire/wire_tests.rs
+@@ -295,7 +295,7 @@ fn bash_callbacks_carry_a_bounded_truncation_flagged_command_view() {
+ }
+ 
+ #[test]
+-fn events_decode_their_qualified_payloads_and_reject_the_rest() {
++fn usage_events_decode_qualified_payloads_and_reject_unknown_usage_report() {
+     let bytes = serde_json::to_vec(
+         &json!({"type": "event", "event": "tool_ended", "toolCallId": "t-1", "isError": true}),
+     )
+@@ -340,7 +340,7 @@ fn events_decode_their_qualified_payloads_and_reject_the_rest() {
+ }
+ 
+ #[test]
+-fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
++fn usage_turn_end_decodes_every_sanitized_result_observation_without_result_text() {
+     let bytes = serde_json::to_vec(&json!({
+         "type": "event",
+         "event": "turn_ended",
+@@ -351,6 +351,7 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
+         "durationMs": 41,
+         "errorTextPresent": true,
+         "errorTextType": "string",
++        "usage": {"inputTokens": 21, "outputTokens": 5, "cacheReadInputTokens": 8, "cacheWriteInputTokens": null},
+         "resultFieldPresence": {
+             "error": true,
+             "is_error": true,
+@@ -367,6 +368,7 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
+         duration_ms,
+         error_text_present,
+         error_text_type,
++        usage,
+         result_field_presence,
+         api_error_status,
+         terminal_reason,
+@@ -382,6 +384,10 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
+     assert_eq!(duration_ms, Some(41));
+     assert!(error_text_present);
+     assert_eq!(error_text_type, "string");
++    assert_eq!(usage.input_tokens, 21);
++    assert_eq!(usage.output_tokens, 5);
++    assert_eq!(usage.cache_read_input_tokens, Some(8));
++    assert_eq!(usage.cache_write_input_tokens, None);
+     assert!(result_field_presence["error"]);
+     assert!(result_field_presence["num_turns"]);
+     assert_eq!(api_error_status, None);
+@@ -392,7 +398,7 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
+         "type": "event", "event": "turn_ended", "subtype": null,
+         "stopReason": "", "isError": false, "numTurns": null,
+         "durationMs": null, "errorTextPresent": false,
+-        "errorTextType": "absent", "resultFieldPresence": {}
++        "errorTextType": "absent", "usage": {"inputTokens": 0, "outputTokens": 0, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}, "resultFieldPresence": {}
+     }))
+     .expect("fixture serializes");
+     assert!(matches!(
+@@ -411,7 +417,7 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
+         "type": "event", "event": "turn_ended", "subtype": "provider error",
+         "stopReason": "provider error", "isError": true, "numTurns": null,
+         "durationMs": null, "errorTextPresent": true,
+-        "errorTextType": "string", "resultFieldPresence": {}
++        "errorTextType": "string", "usage": {"inputTokens": 0, "outputTokens": 0, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}, "resultFieldPresence": {}
+     });
+     let bytes = serde_json::to_vec(&invalid).expect("fixture serializes");
+     assert_eq!(
+@@ -434,6 +440,7 @@ fn turn_end_decodes_validated_structured_provider_failure_facts() {
+         "durationMs": 9,
+         "errorTextPresent": true,
+         "errorTextType": "array",
++        "usage": {"inputTokens": 21, "outputTokens": 5, "cacheReadInputTokens": 8, "cacheWriteInputTokens": 9},
+         "resultFieldPresence": {"api_error_status": true, "terminal_reason": true},
+         "apiErrorStatus": 402,
+         "terminalReason": "api_error",
+@@ -461,7 +468,7 @@ fn turn_end_decodes_validated_structured_provider_failure_facts() {
+         "type": "event", "event": "turn_ended", "subtype": null,
+         "stopReason": "", "isError": false, "numTurns": null,
+         "durationMs": null, "errorTextPresent": false,
+-        "errorTextType": "absent", "resultFieldPresence": {},
++        "errorTextType": "absent", "usage": {"inputTokens": 0, "outputTokens": 0, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}, "resultFieldPresence": {},
+         "apiErrorStatus": null, "terminalReason": null, "rateLimitStatus": null,
+     }))
+     .expect("fixture serializes");
+@@ -503,7 +510,7 @@ fn turn_end_rejects_malformed_structured_provider_failure_facts() {
+             "type": "event", "event": "turn_ended", "subtype": null,
+             "stopReason": "", "isError": false, "numTurns": null,
+             "durationMs": null, "errorTextPresent": false,
+-            "errorTextType": "absent", "resultFieldPresence": {},
++            "errorTextType": "absent", "usage": {"inputTokens": 0, "outputTokens": 0, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}, "resultFieldPresence": {},
+         });
+         for (field, value) in invalid.as_object().expect("object fixture") {
+             record[field] = value.clone();
+@@ -517,6 +524,50 @@ fn turn_end_rejects_malformed_structured_provider_failure_facts() {
+     }
+ }
+ 
++#[test]
++fn turn_end_rejects_malformed_or_missing_usage_counts() {
++    let mut base = json!({
++        "type": "event", "event": "turn_ended", "subtype": "success",
++        "stopReason": "success", "isError": false, "numTurns": 1,
++        "durationMs": 1, "errorTextPresent": false, "errorTextType": "absent",
++        "resultFieldPresence": {},
++        "usage": {
++            "inputTokens": 1,
++            "outputTokens": 2,
++            "cacheReadInputTokens": null,
++            "cacheWriteInputTokens": null
++        }
++    });
++    let invalid_usage = [
++        Value::Null,
++        json!({"inputTokens": -1, "outputTokens": 2, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}),
++        json!({"inputTokens": 1.5, "outputTokens": 2, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}),
++        json!({"inputTokens": 9_007_199_254_740_992_u64, "outputTokens": 2, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}),
++        json!({"inputTokens": 1, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}),
++        json!({"inputTokens": 1, "outputTokens": 2, "cacheReadInputTokens": "8", "cacheWriteInputTokens": null}),
++        json!({"inputTokens": 1, "outputTokens": 2, "cacheReadInputTokens": null, "cacheWriteInputTokens": null, "contextWindow": 200000}),
++    ];
++    for invalid in invalid_usage {
++        base["usage"] = invalid;
++        let bytes = serde_json::to_vec(&base).expect("fixture serializes");
++        assert_eq!(
++            decode_record(&bytes).err().map(|error| error.kind()),
++            Some(ClaudeAgentSdkProtocolFailureKind::InvalidEvent),
++            "malformed usage fails closed: {}",
++            base["usage"]
++        );
++    }
++    base.as_object_mut()
++        .expect("base event is an object")
++        .remove("usage");
++    let bytes = serde_json::to_vec(&base).expect("fixture serializes");
++    assert_eq!(
++        decode_record(&bytes).err().map(|error| error.kind()),
++        Some(ClaudeAgentSdkProtocolFailureKind::InvalidEvent),
++        "missing per-turn usage is not fabricated"
++    );
++}
++
+ #[test]
+ fn terminal_and_diagnostic_payloads_stay_bounded() {
+     let bytes = serde_json::to_vec(&json!({
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver.rs b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver.rs
+index 22dca29499302d9895332b0ccd76e7892125d178..18662bb3e96374510a3605b1a1636ef638db392e 100644
+--- a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver.rs
++++ b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver.rs
+@@ -22,6 +22,7 @@ mod claude_agent_sdk_driver {
+     pub mod resume;
+     pub mod selected_skill;
+     pub mod stalls;
++    pub mod usage;
+ }
+ 
+ use swallowtail_core::ExecutionHostId;
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/framing.rs b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/framing.rs
+index 296f5836114627f5c834a52a5be86b33aac973c1..487ad333da72516f2e9480cd19b02cf842ff6fe5 100644
+--- a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/framing.rs
++++ b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/framing.rs
+@@ -389,17 +389,53 @@ fn events_outside_an_active_turn_fail_closed() {
+     let services = fixture.services(host);
+     let services_for_cleanup = services.clone();
+     let session = block_on(prepared.open_session(services)).expect("SDK sidecar session opens");
++    // No turn exists at injection, so there is no consumer event stream that
++    // can receive this frame.
+     fixture.emit(serde_json::json!({"type": "event", "event": "output_delta", "delta": "x"}));
+     let outcome = block_on(session.close(cleanup_request(), services_for_cleanup.clone()));
+-    assert!(
+-        matches!(outcome, swallowtail_runtime::CleanupOutcome::Degraded(_)),
+-        "an unsolicited event breaks the wire, so close can only be escalated"
++    let swallowtail_runtime::CleanupOutcome::Degraded(diagnostic) = outcome else {
++        panic!("an unsolicited event breaks the wire, so close is degraded: {outcome:?}");
++    };
++    assert_eq!(
++        diagnostic.code(),
++        "swallowtail.claude-agent.sdk.close_root_only_degraded"
+     );
+     assert!(
+         fixture
+             .cleanup_events()
+             .contains(&crate::sdk_support::CleanupEvent::ProcessForceStop)
+     );
++    let cleanup = fixture.cleanup_events();
++    let positions = [
++        crate::sdk_support::CleanupEvent::ProcessForceStop,
++        crate::sdk_support::CleanupEvent::ProcessWait,
++        crate::sdk_support::CleanupEvent::ResourceRelease,
++        crate::sdk_support::CleanupEvent::CredentialRelease,
++    ]
++    .map(|event| {
++        cleanup
++            .iter()
++            .position(|candidate| *candidate == event)
++            .unwrap_or_else(|| panic!("cleanup event {event:?} is missing from {cleanup:?}"))
++    });
++    assert!(
++        positions.windows(2).all(|pair| pair[0] < pair[1]),
++        "process and lease cleanup must settle in order: {cleanup:?}"
++    );
++    assert!(
++        fixture.spawned_registered_courier().is_none(),
++        "the fixture opened no registered courier to leave behind"
++    );
++    assert!(
++        fixture
++            .inputs()
++            .iter()
++            .all(|input| input["command"] != "query"),
++        "no turn command was opened for consumer event delivery"
++    );
++    // The fixture's outer host owner joins any reservation-backed worker that
++    // legitimately outlives its public cleanup result.
++    fixture.reaper().shutdown();
+ }
+ 
+ #[test]
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/permission.rs b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/permission.rs
+index 700c28e5d05d412863f4050c12a0ffd45320a627..772f85624b907c60d483263b9f978e0ef84d3948 100644
+--- a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/permission.rs
++++ b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/permission.rs
+@@ -68,6 +68,13 @@ fn the_default_profile_prepares_the_unchanged_read_only_plan() {
+         prepared.plan().instance_policy_id().as_str(),
+         "claude-agent-sdk-ambient-read"
+     );
++    assert!(
++        prepared
++            .plan()
++            .requirements()
++            .capabilities()
++            .any(|required| required.capability() == Capability::UsageReporting)
++    );
+ }
+ 
+ #[test]
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/registered_tool_route.rs b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/registered_tool_route.rs
+index c9c71bbd1d87303d4a5eb4ba48dd4497a7153413..7d88edb3a3158b48b84feb319e13cbf72a945e40 100644
+--- a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/registered_tool_route.rs
++++ b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/registered_tool_route.rs
+@@ -166,8 +166,12 @@ impl CourierClient {
+     }
+ 
+     fn call_tool(&self, name: &str, arguments: &str) -> String {
++        self.call_tool_with_id(3, name, arguments)
++    }
++
++    fn call_tool_with_id(&self, id: u64, name: &str, arguments: &str) -> String {
+         let request = format!(
+-            "{{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{arguments}}}}}"
++            "{{\"jsonrpc\":\"2.0\",\"id\":{id},\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{arguments}}}}}"
+         );
+         self.request(request.as_bytes())
+     }
+@@ -815,6 +819,75 @@ fn open_declares_the_reserved_courier_and_round_trips_one_mediated_call() {
+     close_route(opened);
+ }
+ 
++#[test]
++fn registered_session_lease_survives_open_deadline_and_pending_permission() {
++    let host = host_id("claude-agent-sdk.fixture.registered-session-lifetime");
++    let calls = Arc::new(AtomicUsize::new(0));
++    let admission = Arc::new(ScriptedAdmissionPort::current());
++    let opened = open_route(
++        host,
++        Arc::new(CountingDispatcher {
++            calls: Arc::clone(&calls),
++        }),
++        Arc::clone(&admission),
++    );
++    opened.courier.handshake();
++
++    let validations_before = admission.validation_count();
++    admission.hold();
++    let courier = CourierClient {
++        process: Arc::clone(&opened.courier.process),
++    };
++    let tool_name = tool_id().to_string();
++    let pending_permission = std::thread::spawn(move || {
++        courier.call_tool_with_id(3, &tool_name, r#"{"path":"workspace/file"}"#)
++    });
++    let wait_deadline = Instant::now() + Duration::from_secs(5);
++    while admission.validation_count() == validations_before {
++        assert!(
++            Instant::now() < wait_deadline,
++            "registered call reaches the controlled permission wait"
++        );
++        std::thread::yield_now();
++    }
++    assert!(
++        admission.observed_phases()[validations_before..].contains(&AdmissionPhase::BeforeDispatch),
++        "host admission waits before dispatch: {:?}",
++        admission.observed_phases()
++    );
++
++    // The permission decision arrives after the opening deadline, while the
++    // call stays inside its independent 60 second maximum.
++    opened
++        .fixture
++        .advance_time_to_ticks(OPEN_DEADLINE_TICKS + 20_000_000_000);
++    admission.release();
++    let approved = pending_permission
++        .join()
++        .expect("permission waiter returns after release");
++    assert!(
++        approved.contains("from-dispatcher"),
++        "approved call: {approved}"
++    );
++    assert_eq!(calls.load(Ordering::SeqCst), 1);
++
++    // A later turn reuses the same connected courier after more virtual time.
++    opened
++        .fixture
++        .advance_time_to_ticks(OPEN_DEADLINE_TICKS + 40_000_000_000);
++    let later_turn = opened.courier.call_tool_with_id(
++        4,
++        &tool_id().to_string(),
++        r#"{"path":"workspace/second-file"}"#,
++    );
++    assert!(
++        later_turn.contains("from-dispatcher"),
++        "later-turn call: {later_turn}"
++    );
++    assert_eq!(calls.load(Ordering::SeqCst), 2);
++    close_route(opened);
++}
++
+ #[test]
+ fn a_revoked_before_dispatch_never_reaches_the_dispatcher() {
+     let host = host_id("claude-agent-sdk.fixture.registered-deny");
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/usage.rs b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/usage.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..8317bd140259ed65b9e1fa6dfa441cd1c488d4a2
+--- /dev/null
++++ b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/usage.rs
+@@ -0,0 +1,104 @@
++use crate::host_id;
++use crate::sdk_support::{
++    SdkFixtureHost, SdkScenario, cleanup_request, prepared_session, turn_request,
++};
++use futures_executor::block_on;
++use futures_util::StreamExt;
++use swallowtail_runtime::{
++    BoxEventStream, CleanupOutcome, InteractiveSessionHandle, ProviderObservation,
++    RuntimeEventKind, TerminalStatus, TokenUsage,
++};
++
++fn usage_snapshots(events: &mut BoxEventStream) -> Vec<TokenUsage> {
++    let mut usage = Vec::new();
++    while let Some(event) = block_on(events.next()) {
++        let event = event.expect("fixture event stream stays healthy");
++        if let RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(snapshot)) =
++            event.kind()
++        {
++            usage.push(*snapshot);
++        }
++    }
++    usage
++}
++
++#[test]
++fn usage_snapshots_keep_each_turn_independent_across_failure_and_reset() {
++    let host = host_id("claude-agent-sdk.fixture.usage-snapshots");
++    let fixture = SdkFixtureHost::new(SdkScenario::TurnErrorThenComplete);
++    let prepared = prepared_session(host.clone());
++    let services = fixture.services(host);
++    let cleanup_services = services.clone();
++    let mut session =
++        block_on(prepared.open_route_session(services.clone())).expect("SDK sidecar session opens");
++
++    let mut failed_turn = block_on(session.start_turn(
++        turn_request("turn-1", "first fixture turn"),
++        services.clone(),
++    ))
++    .expect("first SDK turn starts");
++    let mut failed_events = failed_turn
++        .take_events()
++        .expect("failed turn exposes events");
++    assert_eq!(
++        usage_snapshots(&mut failed_events),
++        vec![TokenUsage::new(Some(10), Some(4)).with_cache_tokens(Some(2), Some(3))]
++    );
++    let failed = block_on(
++        failed_turn
++            .take_terminal_outcome()
++            .expect("failed turn terminal outcome exists"),
++    );
++    assert!(matches!(failed.status(), TerminalStatus::ProviderFailed(_)));
++    let _ = block_on(failed_turn.close());
++
++    let mut next_turn =
++        block_on(session.start_turn(turn_request("turn-2", "second fixture turn"), services))
++            .expect("session remains usable after a failed result");
++    let mut next_events = next_turn.take_events().expect("next turn exposes events");
++    assert_eq!(
++        usage_snapshots(&mut next_events),
++        vec![TokenUsage::new(Some(20), Some(8)).with_cache_tokens(Some(4), Some(6))]
++    );
++    let completed = block_on(
++        next_turn
++            .take_terminal_outcome()
++            .expect("next turn terminal outcome exists"),
++    );
++    assert_eq!(completed.status(), &TerminalStatus::Completed);
++    let _ = block_on(next_turn.close());
++    let outcome = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
++    let CleanupOutcome::Degraded(diagnostic) = outcome else {
++        panic!("unattested fixture tree closes degraded: {outcome:?}");
++    };
++    assert_eq!(
++        diagnostic.code(),
++        "swallowtail.claude-agent.sdk.close_root_only_degraded"
++    );
++}
++
++#[test]
++fn usage_duplicate_result_after_turn_end_is_not_correlated_or_counted_twice() {
++    let host = host_id("claude-agent-sdk.fixture.usage-duplicate");
++    let fixture = SdkFixtureHost::new(SdkScenario::DuplicateTurnEnd);
++    let prepared = prepared_session(host.clone());
++    let services = fixture.services(host);
++    let cleanup_services = services.clone();
++    let mut session =
++        block_on(prepared.open_route_session(services.clone())).expect("SDK sidecar session opens");
++    let mut turn =
++        block_on(session.start_turn(turn_request("turn-1", "duplicate result fixture"), services))
++            .expect("SDK turn starts");
++    let mut events = turn.take_events().expect("turn exposes events");
++    assert_eq!(
++        usage_snapshots(&mut events),
++        vec![TokenUsage::new(Some(10), Some(4)).with_cache_tokens(Some(2), Some(3))]
++    );
++    let terminal = block_on(
++        turn.take_terminal_outcome()
++            .expect("turn terminal outcome exists"),
++    );
++    assert_eq!(terminal.status(), &TerminalStatus::Completed);
++    let _ = block_on(turn.close());
++    let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
++}
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_sidecar_asset.rs b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_sidecar_asset.rs
+index 4675f67356e7fd6a38187c92e32665dd78bb539c..36217ddad396a0583d4402720d0222860ca23c3c 100644
+--- a/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_sidecar_asset.rs
++++ b/crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_sidecar_asset.rs
+@@ -510,6 +510,69 @@ fn an_unmapped_message_stays_terminal_without_crossing_its_type_or_error_text()
+     assert!(!terminal.to_string().contains("fixture_unknown_message"));
+ }
+ 
++#[test]
++fn usage_projection_keeps_only_bounded_per_turn_counters_and_rejects_invalid_snapshots() {
++    for (scenario, expected) in [
++        (
++            "usage-valid",
++            json!({
++                "inputTokens": 21,
++                "outputTokens": 5,
++                "cacheReadInputTokens": 8,
++                "cacheWriteInputTokens": 9
++            }),
++        ),
++        (
++            "usage-cache-omitted",
++            json!({
++                "inputTokens": 21,
++                "outputTokens": 5,
++                "cacheReadInputTokens": null,
++                "cacheWriteInputTokens": null
++            }),
++        ),
++    ] {
++        let mut sidecar = SidecarProcess::start_scenario(scenario);
++        let open = sidecar.command(
++            "open-1",
++            "open",
++            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
++        );
++        assert_eq!(open["success"], true, "{scenario} opens: {open}");
++        sidecar.command("query-1", "query", json!({"text": "usage"}));
++        let ended = sidecar.wait_for_turn_end_record();
++        assert_eq!(ended["usage"], expected, "usage projection: {ended}");
++        assert_eq!(ended["resultFieldPresence"]["modelUsage"], true);
++        assert!(ended.get("modelUsage").is_none());
++        assert!(!ended.to_string().contains("777"));
++        assert!(!ended.to_string().contains("4.25"));
++        assert!(!ended.to_string().contains("contextWindow"));
++        let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
++        assert_eq!(close["success"], true);
++    }
++
++    for scenario in [
++        "usage-negative",
++        "usage-overflow",
++        "usage-fraction",
++        "usage-missing-output",
++        "usage-wrong-type",
++    ] {
++        let mut sidecar = SidecarProcess::start_scenario(scenario);
++        let open = sidecar.command(
++            "open-1",
++            "open",
++            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
++        );
++        assert_eq!(open["success"], true, "{scenario} opens: {open}");
++        let terminal = sidecar.terminal_after_query("query-1", json!({"text": "usage"}));
++        assert_eq!(
++            terminal["failure"]["code"], "unknown_message",
++            "invalid usage fails closed: {terminal}"
++        );
++    }
++}
++
+ #[test]
+ fn pinned_advisory_rate_limits_allow_reply_and_successful_result() {
+     for scenario in ["rate-allowed", "rate-allowed_warning"] {
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/scenario.rs b/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/scenario.rs
+index 33474425c3e3238a9c8d6fc14fcbec11372f5948..1a01c157bb56becc95c451f827afff09e3282ec9 100644
+--- a/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/scenario.rs
++++ b/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/scenario.rs
+@@ -119,6 +119,10 @@ pub enum SdkScenario {
+     TerminalUnknownMessage,
+     /// The sidecar reports a failed SDK result with all sanitized fields.
+     TurnEndedError,
++    /// The first query returns a failed result; later queries complete.
++    TurnErrorThenComplete,
++    /// The sidecar repeats the same turn result after its terminal boundary.
++    DuplicateTurnEnd,
+     /// A failed `turn_ended` carrying validated `402`/`api_error`/`rejected`
+     /// structured facts: the only billing-specific classification.
+     TurnEndedBilling402,
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/script.rs b/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/script.rs
+index 23109792147d81725e8a87679d76ddd4da8b438a..9b23df380d5b5a99f24c8dbb2ed590e4636bcb1c 100644
+--- a/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/script.rs
++++ b/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/script.rs
+@@ -44,14 +44,29 @@ fn mcp_status_echo(params: &Value, status: &str, failure_code: Option<&str>) ->
+     )
+ }
+ 
+-fn turn_ended_record(failed: bool) -> Value {
++fn fixture_usage(query_number: u64) -> Value {
++    json!({
++        "inputTokens": query_number * 10,
++        "outputTokens": query_number * 4,
++        "cacheReadInputTokens": query_number * 2,
++        "cacheWriteInputTokens": query_number * 3
++    })
++}
++
++fn turn_ended_record(failed: bool, query_number: u64) -> Value {
+     let mut result_field_presence = serde_json::Map::new();
+     for field in super::super::capture::SDK_RESULT_FIELD_NAMES {
+         result_field_presence.insert(
+             (*field).to_owned(),
+             json!(matches!(
+                 *field,
+-                "type" | "subtype" | "duration_ms" | "is_error" | "num_turns"
++                "type"
++                    | "subtype"
++                    | "duration_ms"
++                    | "is_error"
++                    | "num_turns"
++                    | "usage"
++                    | "modelUsage"
+             )),
+         );
+     }
+@@ -68,6 +83,7 @@ fn turn_ended_record(failed: bool) -> Value {
+         "durationMs": 7,
+         "errorTextPresent": failed,
+         "errorTextType": if failed { "string" } else { "absent" },
++        "usage": fixture_usage(query_number),
+         "resultFieldPresence": result_field_presence,
+         "apiErrorStatus": null,
+         "terminalReason": null,
+@@ -83,6 +99,7 @@ fn structured_turn_ended_record(
+     api_error_status: Value,
+     terminal_reason: Value,
+     rate_limit_status: Value,
++    query_number: u64,
+ ) -> Value {
+     let mut result_field_presence = serde_json::Map::new();
+     for field in super::super::capture::SDK_RESULT_FIELD_NAMES {
+@@ -95,6 +112,8 @@ fn structured_turn_ended_record(
+                     | "duration_ms"
+                     | "is_error"
+                     | "num_turns"
++                    | "usage"
++                    | "modelUsage"
+                     | "api_error_status"
+                     | "terminal_reason"
+             )),
+@@ -111,6 +130,7 @@ fn structured_turn_ended_record(
+         "durationMs": 7,
+         "errorTextPresent": true,
+         "errorTextType": "array",
++        "usage": fixture_usage(query_number),
+         "resultFieldPresence": result_field_presence,
+         "apiErrorStatus": api_error_status,
+         "terminalReason": terminal_reason,
+@@ -309,6 +329,12 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
+ }
+ 
+ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
++    let query_count = state
++        .input
++        .iter()
++        .filter(|input| input["command"] == "query")
++        .count();
++    let query_number = u64::try_from(query_count).expect("fixture query count fits u64");
+     if matches!(scenario, SdkScenario::QueryHold) {
+         // No response and no exit: only the caller's turn deadline ends this.
+         return;
+@@ -519,19 +545,41 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
+         }
+         SdkScenario::TurnEndedError => {
+             push_stderr(state, b"fixture failed result stderr");
+-            push(state, turn_ended_record(true));
++            push(state, turn_ended_record(true, query_number));
++        }
++        SdkScenario::TurnErrorThenComplete if query_number == 1 => {
++            push_stderr(state, b"fixture failed result stderr");
++            push(state, turn_ended_record(true, query_number));
++        }
++        SdkScenario::TurnErrorThenComplete => {
++            push(state, turn_ended_record(false, query_number));
++        }
++        SdkScenario::DuplicateTurnEnd => {
++            let result = turn_ended_record(false, query_number);
++            push(state, result.clone());
++            push(state, result);
+         }
+         SdkScenario::TurnEndedBilling402 => {
+             push_stderr(state, b"fixture billing failure stderr");
+             push(
+                 state,
+-                structured_turn_ended_record(json!(402), json!("api_error"), json!("rejected")),
++                structured_turn_ended_record(
++                    json!(402),
++                    json!("api_error"),
++                    json!("rejected"),
++                    query_number,
++                ),
+             );
+         }
+         SdkScenario::TurnEndedMixed400 => {
+             push(
+                 state,
+-                structured_turn_ended_record(json!(400), json!("api_error"), Value::Null),
++                structured_turn_ended_record(
++                    json!(400),
++                    json!("api_error"),
++                    Value::Null,
++                    query_number,
++                ),
+             );
+         }
+         SdkScenario::TurnEndedMixed429 => {
+@@ -541,24 +589,33 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
+                     json!(429),
+                     json!("api_error"),
+                     json!("allowed_warning"),
++                    query_number,
+                 ),
+             );
+         }
+         SdkScenario::TurnEndedUnknownStatus => {
+             push(
+                 state,
+-                structured_turn_ended_record(json!(503), Value::Null, Value::Null),
++                structured_turn_ended_record(json!(503), Value::Null, Value::Null, query_number),
+             );
+         }
+         SdkScenario::TurnEndedMalformedStatus => {
+-            let mut record =
+-                structured_turn_ended_record(json!(402), json!("api_error"), Value::Null);
++            let mut record = structured_turn_ended_record(
++                json!(402),
++                json!("api_error"),
++                Value::Null,
++                query_number,
++            );
+             record["apiErrorStatus"] = json!("402");
+             push(state, record);
+         }
+         SdkScenario::TurnEndedMalformedReason => {
+-            let mut record =
+-                structured_turn_ended_record(json!(402), json!("api_error"), Value::Null);
++            let mut record = structured_turn_ended_record(
++                json!(402),
++                json!("api_error"),
++                Value::Null,
++                query_number,
++            );
+             record["terminalReason"] = json!("API Error: overloaded");
+             push(state, record);
+         }
+@@ -566,7 +623,7 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
+         // already written arrives. The wire order is what a real interrupt or
+         // deadline race produces.
+         SdkScenario::AdmissionAfterResult => {
+-            push(state, turn_ended_record(false));
++            push(state, turn_ended_record(false, query_number));
+             push(
+                 state,
+                 json!({"type": "callback", "id": "cb-late", "callback": "can_use_tool",
+@@ -596,7 +653,7 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
+                        "isError": false}),
+             );
+             push_stderr(state, b"fixture native stderr tail\n");
+-            push(state, turn_ended_record(false));
++            push(state, turn_ended_record(false, query_number));
+         }
+     }
+ }
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/task_time.rs b/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/task_time.rs
+index d6f31bc1ed1c1595016f013d995bf9e2e73f0c52..2b69392b930bb93c019de0e322aaf2b806c0a7cd 100644
+--- a/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/task_time.rs
++++ b/crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/task_time.rs
+@@ -24,6 +24,24 @@ impl TimeService for SdkFixtureHost {
+ }
+ 
+ impl SdkFixtureHost {
++    /// Advances the virtual clock and wakes host tasks whose deadlines passed.
++    pub fn advance_time_to_ticks(&self, ticks: u64) {
++        let waiters = {
++            let mut time = self
++                .shared
++                .time
++                .lock()
++                .expect("SDK fixture time lock poisoned");
++            assert!(ticks >= time.now, "virtual time cannot move backwards");
++            time.now = ticks;
++            time.fire_through = Some(ticks);
++            std::mem::take(&mut time.waiters)
++        };
++        for waiter in waiters {
++            waiter.wake();
++        }
++    }
++
+     /// Fires every armed deadline without moving the clock past them.
+     ///
+     /// A caller bound then observes expiry inside its stages while the outer
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/sidecar_asset_support/fake-sdk.mjs b/crates/swallowtail-adapter-claude-agent/tests/sidecar_asset_support/fake-sdk.mjs
+index c7c80bc555118bab6be51429856bbc3515f86c30..31284525c86fa8ec7a7425f74fb4f9fea6afcc91 100644
+--- a/crates/swallowtail-adapter-claude-agent/tests/sidecar_asset_support/fake-sdk.mjs
++++ b/crates/swallowtail-adapter-claude-agent/tests/sidecar_asset_support/fake-sdk.mjs
+@@ -215,12 +215,43 @@ function initializeResponse(options) {
+ }
+ 
+ function resultMessage({ subtype = "success", isError = false, error, apiErrorStatus, terminalReason } = {}) {
++  const usage = {
++    input_tokens: 21,
++    output_tokens: 5,
++    cache_read_input_tokens: 8,
++    cache_creation_input_tokens: 9,
++  };
++  if (SCENARIO === "usage-cache-omitted") {
++    delete usage.cache_read_input_tokens;
++    delete usage.cache_creation_input_tokens;
++  } else if (SCENARIO === "usage-negative") {
++    usage.input_tokens = -1;
++  } else if (SCENARIO === "usage-overflow") {
++    usage.input_tokens = Number.MAX_SAFE_INTEGER + 1;
++  } else if (SCENARIO === "usage-fraction") {
++    usage.output_tokens = 1.5;
++  } else if (SCENARIO === "usage-missing-output") {
++    delete usage.output_tokens;
++  } else if (SCENARIO === "usage-wrong-type") {
++    usage.cache_read_input_tokens = "8";
++  }
+   const result = {
+     type: "result",
+     subtype,
+     is_error: isError,
+     num_turns: 1,
+     duration_ms: 7,
++    usage,
++    // These fields are deliberately plausible but must never cross the wire.
++    modelUsage: {
++      "claude-sonnet-5": {
++        inputTokens: 777,
++        outputTokens: 888,
++        cacheReadInputTokens: 999,
++        costUSD: 4.25,
++        contextWindow: 200000,
++      },
++    },
+   };
+   if (error !== undefined) {
+     result.error = error;
+@@ -287,6 +318,7 @@ export function query({ prompt, options }) {
+     env: options.env,
+     signal: new AbortController().signal,
+   };
++  const usageOnly = SCENARIO.startsWith("usage-");
+   const child = invokeSpawnHook(options.spawnClaudeCodeProcess, spawnOptions);
+ 
+   if (SCENARIO === "editing") {
+@@ -400,6 +432,9 @@ export function query({ prompt, options }) {
+       }
+       if (!settled) {
+         settled = true;
++        if (usageOnly) {
++          return { value: resultMessage(), done: false };
++        }
+         if (SCENARIO === "pinned-error-result") {
+           return { value: { ...resultMessage({ subtype: "error_during_execution", isError: true }), errors: ["private provider detail"] }, done: false };
+         }
+diff --git a/crates/swallowtail-adapter-claude-agent/tests/sidecar_asset_support/mod.rs b/crates/swallowtail-adapter-claude-agent/tests/sidecar_asset_support/mod.rs
+index 5ce24b6c4c02789313b11adb949b6bf5dde5b5bc..7b2dde83b4a2fa7d84cb2bbea397a00f25a669b2 100644
+--- a/crates/swallowtail-adapter-claude-agent/tests/sidecar_asset_support/mod.rs
++++ b/crates/swallowtail-adapter-claude-agent/tests/sidecar_asset_support/mod.rs
+@@ -57,6 +57,11 @@ impl SidecarProcess {
+     pub fn start_scenario(scenario: &'static str) -> Self {
+         Self::start_with(&Fixture {
+             scenario,
++            native_lifetime_ms: if scenario.starts_with("usage-") {
++                "0"
++            } else {
++                "50"
++            },
+             ..Fixture::default()
+         })
+     }
+diff --git a/crates/swallowtail-host-local/src/registered_tool/proxy.rs b/crates/swallowtail-host-local/src/registered_tool/proxy.rs
+index 0f9e887e04d77829cae33547d197882e39212636..690a9748bc9bcd84f8b8a80e543675fb220374b2 100644
+--- a/crates/swallowtail-host-local/src/registered_tool/proxy.rs
++++ b/crates/swallowtail-host-local/src/registered_tool/proxy.rs
+@@ -41,7 +41,7 @@ struct ProxyState {
+     kernel: Arc<RegisteredToolOperationKernel>,
+     selection: RegisteredToolSelection,
+     time: Arc<dyn TimeService>,
+-    deadline: Deadline,
++    open_deadline: Deadline,
+     connection_claimed: std::sync::atomic::AtomicU64,
+     rendezvous_claimed: AtomicBool,
+     rendezvous: Mutex<Option<Arc<RendezvousState>>>,
+@@ -57,7 +57,7 @@ impl RegisteredToolProxyServer {
+         kernel: Arc<RegisteredToolOperationKernel>,
+         selection: RegisteredToolSelection,
+         time: Arc<dyn TimeService>,
+-        deadline: Deadline,
++        open_deadline: Deadline,
+     ) -> Result<Self, RuntimeFailure> {
+         let endpoint = listener.endpoint();
+         let bearer = listener.bearer();
+@@ -69,7 +69,7 @@ impl RegisteredToolProxyServer {
+             kernel,
+             selection,
+             time,
+-            deadline,
++            open_deadline,
+             connection_claimed: AtomicU64::new(0),
+             rendezvous_claimed: AtomicBool::new(false),
+             rendezvous: Mutex::new(None),
+@@ -108,11 +108,11 @@ impl RegisteredToolProxyServer {
+     /// Returns whether the courier completed the MCP ready barrier.
+     ///
+     /// The wait is wall-clock, capped at `min(open remainder, 10s)` from the
+-    /// lease deadline already stored on this proxy.
++    /// opening deadline stored on this proxy.
+     pub(crate) fn wait_until_ready(&self) -> Result<(), RuntimeFailure> {
+         let remaining = Duration::from_nanos(
+             self.state
+-                .deadline
++                .open_deadline
+                 .instant()
+                 .ticks()
+                 .saturating_sub(self.state.time.now().ticks()),
+@@ -175,7 +175,7 @@ impl RegisteredToolProxyServer {
+             lease.generation().get(),
+             lease.transport_generation().get(),
+             lease.selection().protocol_version(),
+-            connect_timeout_millis(self.state.deadline, self.state.time.now()),
++            connect_timeout_millis(self.state.open_deadline, self.state.time.now()),
+         );
+         let rendezvous = RegisteredToolProxyRendezvous::create(document)?;
+         *self
+@@ -521,7 +521,7 @@ fn dispatch_tool(
+     };
+     let outcome = block_on(RegisteredToolOperationKernel::issue(
+         &state.kernel,
+-        RegisteredToolCallRequest::new(call_id, tool, arguments, state.deadline),
++        RegisteredToolCallRequest::new(call_id, tool, arguments, state.kernel.next_call_deadline()),
+     ));
+     let Ok(outcome) = outcome else {
+         return (
+diff --git a/crates/swallowtail-runtime/src/registered_tool/kernel.rs b/crates/swallowtail-runtime/src/registered_tool/kernel.rs
+index a51c3d6444eb4628b2d7209fe2c96ce21056f39b..e1db5701661866c0433db568706c8fecde5e8974 100644
+--- a/crates/swallowtail-runtime/src/registered_tool/kernel.rs
++++ b/crates/swallowtail-runtime/src/registered_tool/kernel.rs
+@@ -78,13 +78,13 @@ impl KernelState {
+     }
+ }
+ 
+-/// One operation-scoped registered-tool kernel.
++/// One scoped registered-tool kernel.
+ pub struct RegisteredToolOperationKernel {
+     binding: ValidatedRegisteredToolBinding,
+     selection: RegisteredToolSelection,
+     dispatcher: Arc<dyn RegisteredToolDispatcher>,
+     time: Arc<dyn TimeService>,
+-    operation_deadline: Deadline,
++    lease_deadline: Option<Deadline>,
+     state: Mutex<KernelState>,
+     gate: AdmissionGate,
+ }
+@@ -150,7 +150,7 @@ impl RegisteredToolOperationKernel {
+             selection: request.selection().clone(),
+             dispatcher,
+             time,
+-            operation_deadline: request.deadline(),
++            lease_deadline: request.lease_deadline(),
+             state: Mutex::new(KernelState {
+                 admission: RegisteredToolAdmissionState::Open,
+                 lifecycle: if request.selection().attachment()
+@@ -298,14 +298,34 @@ impl RegisteredToolOperationKernel {
+ 
+     /// Returns the effective expiry of one call issued at an exact instant.
+     ///
+-    /// A call expires at the earliest of the operation deadline, the caller's
+-    /// own deadline, and the declared maximum call duration.
++    /// A call expires at the earliest of the lease deadline, caller deadline,
++    /// and declared maximum call duration.
+     #[must_use]
+     pub fn effective_call_deadline(
+         &self,
+         requested: Deadline,
+         started: MonotonicInstant,
+     ) -> Deadline {
++        let bounded = self.maximum_call_deadline(started);
++        let caller_bound = requested.min(bounded);
++        self.lease_deadline
++            .map_or(caller_bound, |lease| lease.min(caller_bound))
++    }
++
++    /// Returns the deadline for a new call from the current host time.
++    ///
++    /// Carriers without a caller deadline use this value; `issue` rechecks
++    /// the lease deadline and maximum duration at its serialized admission
++    /// point.
++    #[must_use]
++    pub fn next_call_deadline(&self) -> Deadline {
++        let now = self.time.now();
++        let bounded = self.maximum_call_deadline(now);
++        self.lease_deadline
++            .map_or(bounded, |lease| lease.min(bounded))
++    }
++
++    fn maximum_call_deadline(&self, started: MonotonicInstant) -> Deadline {
+         let max_duration_ticks = u64::try_from(
+             self.binding
+                 .effective_bounds()
+@@ -316,10 +336,7 @@ impl RegisteredToolOperationKernel {
+         let bounded = Deadline::at(MonotonicInstant::from_ticks(
+             started.ticks().saturating_add(max_duration_ticks),
+         ));
+-        [self.operation_deadline, requested, bounded]
+-            .into_iter()
+-            .min()
+-            .unwrap_or(bounded)
++        bounded
+     }
+ 
+     async fn admit_progress(&self, progress: RegisteredToolProgress) -> Result<(), RuntimeFailure> {
+diff --git a/crates/swallowtail-runtime/src/registered_tool/lease.rs b/crates/swallowtail-runtime/src/registered_tool/lease.rs
+index 10662585a803d7211e3565911f7fefe3eedda4bf..505da77f5d19f8c6f371b89f6874f1433adc09d1 100644
+--- a/crates/swallowtail-runtime/src/registered_tool/lease.rs
++++ b/crates/swallowtail-runtime/src/registered_tool/lease.rs
+@@ -187,14 +187,17 @@ pub struct RegisteredToolOpenRequest {
+     selection: RegisteredToolSelection,
+     admission: ConsumerAdmissionBinding,
+     deadline: Deadline,
++    lease_deadline: Option<Deadline>,
+     effective_bounds: RegisteredToolBounds,
+ }
+ 
+ impl RegisteredToolOpenRequest {
+-    /// Binds configured and prepared identity, selection, admission, deadline.
++    /// Binds identity, selection, admission, and operation-scoped deadlines.
+     ///
+     /// The effective bounds start at the selection's bounds. A consumer
+-    /// narrowing is applied with [`Self::with_consumer_limits`].
++    /// narrowing is applied with [`Self::with_consumer_limits`]. The supplied
++    /// deadline bounds both opening and the live lease unless changed with
++    /// [`Self::with_lease_deadline`].
+     #[must_use]
+     pub fn new(
+         execution_host_id: ExecutionHostId,
+@@ -214,10 +217,22 @@ impl RegisteredToolOpenRequest {
+             selection,
+             admission,
+             deadline,
++            lease_deadline: Some(deadline),
+             effective_bounds,
+         }
+     }
+ 
++    /// Sets the optional deadline that bounds the live lease and its calls.
++    ///
++    /// The open deadline remains independently enforced while the host
++    /// acquires and readies the transport. `None` makes the lease live until
++    /// its owning session closes it.
++    #[must_use]
++    pub fn with_lease_deadline(mut self, deadline: Option<Deadline>) -> Self {
++        self.lease_deadline = deadline;
++        self
++    }
++
+     /// Narrows the effective bounds with consumer-selected limits.
+     ///
+     /// Limits only narrow: they never widen a snapshot bound or a first-tranche
+@@ -271,11 +286,17 @@ impl RegisteredToolOpenRequest {
+         &self.admission
+     }
+ 
+-    /// Returns the operation deadline.
++    /// Returns the opening deadline that bounds acquisition and readiness.
+     #[must_use]
+     pub const fn deadline(&self) -> Deadline {
+         self.deadline
+     }
++
++    /// Returns the optional deadline that bounds the live lease and its calls.
++    #[must_use]
++    pub const fn lease_deadline(&self) -> Option<Deadline> {
++        self.lease_deadline
++    }
+ }
+ 
+ /// Non-clonable scoped token for one opened registered-tool lease.
+@@ -294,6 +315,7 @@ pub struct RegisteredToolBridgeLease {
+     generation: RegisteredToolLeaseGeneration,
+     transport_generation: RegisteredToolTransportGeneration,
+     deadline: Deadline,
++    lease_deadline: Option<Deadline>,
+     kernel: Arc<RegisteredToolOperationKernel>,
+     release: Option<Box<dyn FnOnce() + Send + 'static>>,
+ }
+@@ -314,6 +336,7 @@ impl RegisteredToolBridgeLease {
+             generation,
+             transport_generation,
+             deadline: request.deadline(),
++            lease_deadline: request.lease_deadline(),
+             kernel,
+             release: None,
+         }
+@@ -394,11 +417,26 @@ impl RegisteredToolBridgeLease {
+         self.selection.transport()
+     }
+ 
+-    /// Returns the operation deadline bound at open.
++    /// Returns the opening deadline that bounded acquisition and readiness.
+     #[must_use]
+     pub const fn deadline(&self) -> Deadline {
+         self.deadline
+     }
++
++    /// Returns the optional deadline that bounds the live lease and its calls.
++    #[must_use]
++    pub const fn lease_deadline(&self) -> Option<Deadline> {
++        self.lease_deadline
++    }
++
++    /// Returns a new call deadline bounded by the lease and maximum call time.
++    ///
++    /// This is for carriers that do not receive a caller-owned deadline. The
++    /// kernel applies the same bounds again when it admits the call.
++    #[must_use]
++    pub fn next_call_deadline(&self) -> Deadline {
++        self.kernel.next_call_deadline()
++    }
+ }
+ 
+ impl Drop for RegisteredToolBridgeLease {
+diff --git a/crates/swallowtail-runtime/src/registered_tool/preparation.rs b/crates/swallowtail-runtime/src/registered_tool/preparation.rs
+index 0f215759ba6f1ad31741106b68836f8b5b9893f2..cbbdc78e18189cd400bba6a3385869b8011b8697 100644
+--- a/crates/swallowtail-runtime/src/registered_tool/preparation.rs
++++ b/crates/swallowtail-runtime/src/registered_tool/preparation.rs
+@@ -67,6 +67,8 @@ impl RegisteredToolPreparation {
+     /// Validates identity, limits, port availability, and selected topology.
+     ///
+     /// Preparation opens nothing, starts no provider, and chooses no route.
++    /// The deadline bounds both opening and the live lease, preserving the
++    /// operation-scoped behavior of this entry point.
+     pub fn prepare(
+         &self,
+         hosts: &HostServices,
+@@ -74,6 +76,30 @@ impl RegisteredToolPreparation {
+         operation_scope: ScopeId,
+         turn: RuntimeTurnId,
+         deadline: Deadline,
++    ) -> Result<PreparedRegisteredToolBinding, RuntimeFailure> {
++        self.prepare_with_lease_deadline(
++            hosts,
++            configured_identity,
++            operation_scope,
++            turn,
++            deadline,
++            Some(deadline),
++        )
++    }
++
++    /// Prepares a lease with an opening deadline and an optional lease deadline.
++    ///
++    /// The opening deadline always bounds acquisition and readiness. A lease
++    /// deadline additionally bounds every call; `None` keeps the lease live
++    /// until its owning session closes it.
++    pub fn prepare_with_lease_deadline(
++        &self,
++        hosts: &HostServices,
++        configured_identity: ConfiguredInstanceId,
++        operation_scope: ScopeId,
++        turn: RuntimeTurnId,
++        open_deadline: Deadline,
++        lease_deadline: Option<Deadline>,
+     ) -> Result<PreparedRegisteredToolBinding, RuntimeFailure> {
+         if !Arc::ptr_eq(&self.snapshot, self.selection.snapshot())
+             && self.snapshot.as_ref() != self.selection.snapshot().as_ref()
+@@ -99,7 +125,8 @@ impl RegisteredToolPreparation {
+             configured_identity,
+             operation_scope,
+             turn,
+-            deadline,
++            open_deadline,
++            lease_deadline,
+             selection: self.selection.clone(),
+             admission: self.admission.clone(),
+             effective_bounds,
+@@ -117,7 +144,8 @@ pub struct PreparedRegisteredToolBinding {
+     configured_identity: ConfiguredInstanceId,
+     operation_scope: ScopeId,
+     turn: RuntimeTurnId,
+-    deadline: Deadline,
++    open_deadline: Deadline,
++    lease_deadline: Option<Deadline>,
+     selection: RegisteredToolSelection,
+     admission: ConsumerAdmissionBinding,
+     effective_bounds: RegisteredToolBounds,
+@@ -150,10 +178,16 @@ impl PreparedRegisteredToolBinding {
+         &self.turn
+     }
+ 
+-    /// Returns the operation deadline bound at prepare.
++    /// Returns the opening deadline bound at prepare.
+     #[must_use]
+     pub const fn deadline(&self) -> Deadline {
+-        self.deadline
++        self.open_deadline
++    }
++
++    /// Returns the optional lease deadline bound at prepare.
++    #[must_use]
++    pub const fn lease_deadline(&self) -> Option<Deadline> {
++        self.lease_deadline
+     }
+ 
+     /// Returns the immutable selection bound at prepare.
+@@ -184,8 +218,9 @@ impl PreparedRegisteredToolBinding {
+                 self.turn.clone(),
+                 self.selection.clone(),
+                 self.admission.clone(),
+-                self.deadline,
++                self.open_deadline,
+             )
++            .with_lease_deadline(self.lease_deadline)
+             .with_consumer_limits(self.limits),
+         )
+     }
+@@ -199,6 +234,8 @@ impl std::fmt::Debug for PreparedRegisteredToolBinding {
+             .field("configured_identity", &self.configured_identity)
+             .field("operation_scope", &self.operation_scope)
+             .field("turn", &self.turn)
++            .field("open_deadline", &self.open_deadline)
++            .field("lease_deadline", &self.lease_deadline)
+             .field("selection", &self.selection)
+             .field("effective_bounds", &self.effective_bounds)
+             .field("readiness", &self.readiness)
+diff --git a/crates/swallowtail-runtime/src/registered_tool/tests.rs b/crates/swallowtail-runtime/src/registered_tool/tests.rs
+index fa5ecfd8abde378280ecd0b00c0e7c1825ea2a21..0df58815450c9a405ab29c39517488110eaf0be1 100644
+--- a/crates/swallowtail-runtime/src/registered_tool/tests.rs
++++ b/crates/swallowtail-runtime/src/registered_tool/tests.rs
+@@ -740,6 +740,73 @@ fn the_effective_call_deadline_takes_the_earliest_bound() {
+     );
+ }
+ 
++#[test]
++fn a_session_lease_ignores_its_elapsed_open_deadline() {
++    let hosts = ready_hosts();
++    let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
++        .require_ready()
++        .expect("proof");
++    let clock = Arc::new(FixedClock::default());
++    let (kernel, lease) = RegisteredToolOperationKernel::open(
++        open_request(selection(), Deadline::at(MonotonicInstant::from_ticks(500)))
++            .with_lease_deadline(None),
++        &proof,
++        Arc::new(EchoDispatcher),
++        Arc::clone(&clock) as Arc<dyn TimeService>,
++        RegisteredToolLeaseGeneration::initial(),
++        RegisteredToolTransportGeneration::initial(),
++    )
++    .expect("session lease opens");
++    clock.set(501);
++    let call_deadline = lease.next_call_deadline();
++    assert_eq!(
++        call_deadline.instant().ticks(),
++        501 + u64::try_from(REGISTERED_TOOL_MAX_CALL_DURATION.as_nanos()).expect("bounded"),
++        "an unbounded session lease still gives each call its maximum lifetime"
++    );
++
++    let outcome = block(lease.call(call_request("after-open-deadline")))
++        .expect("the open deadline does not expire a session-scoped lease");
++
++    assert_eq!(
++        outcome.disposition(),
++        RegisteredToolExecutionDisposition::Executed
++    );
++    assert_eq!(lease.deadline().instant().ticks(), 500);
++    assert_eq!(lease.lease_deadline(), None);
++    assert_eq!(kernel.outstanding_calls(), 0);
++}
++
++#[test]
++fn an_explicit_session_lease_deadline_rejects_late_calls() {
++    let hosts = ready_hosts();
++    let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
++        .require_ready()
++        .expect("proof");
++    let clock = Arc::new(FixedClock::default());
++    let dispatcher = Arc::new(EchoDispatcher);
++    let (kernel, lease) = RegisteredToolOperationKernel::open(
++        open_request(selection(), Deadline::at(MonotonicInstant::from_ticks(500)))
++            .with_lease_deadline(Some(Deadline::at(MonotonicInstant::from_ticks(50)))),
++        &proof,
++        dispatcher,
++        Arc::clone(&clock) as Arc<dyn TimeService>,
++        RegisteredToolLeaseGeneration::initial(),
++        RegisteredToolTransportGeneration::initial(),
++    )
++    .expect("bounded session lease opens");
++    clock.set(50);
++
++    let error = block(lease.call(call_request("after-lease-deadline")))
++        .expect_err("an explicit lease deadline remains enforced");
++
++    assert_eq!(
++        error.diagnostic().code(),
++        RegisteredToolFailureKind::DeadlineExceeded.code()
++    );
++    assert_eq!(kernel.outstanding_calls(), 0);
++}
++
+ #[test]
+ fn swallowtail_enforced_posture_never_widens() {
+     assert!(!RegisteredToolEnforcedPosture::automatic_replay_allowed());

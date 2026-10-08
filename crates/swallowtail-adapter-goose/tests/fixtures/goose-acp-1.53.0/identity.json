@@ -1,0 +1,111 @@
+{
+  "axis": "goose.release",
+  "route": "goose.acp",
+  "official_channel": "GitHub stable releases and matching stable tags for aaif-goose/goose",
+  "reprobed_at": "2026-10-08",
+  "host": {
+    "present": false,
+    "version": null,
+    "note": "goose was not installed on PATH; no host install or provider configuration was changed"
+  },
+  "official_latest": "1.53.0",
+  "previous_qualified_ceiling": "1.50.1",
+  "compared": ["1.50.1", "1.51.0", "1.52.0", "1.53.0"],
+  "published_stable_hops": ["1.51.0", "1.52.0", "1.53.0"],
+  "stable_tags_in_window": ["v1.50.1", "v1.51.0", "v1.52.0", "v1.53.0"],
+  "unpublished_interstitial_points": ["1.50.2", "1.51.1", "1.52.1"],
+  "withdrawn_stable_points": [],
+  "independently_unqualified_published_points": [],
+  "explicit_exclusions": [],
+  "points": {
+    "1.50.1": {
+      "published_at": "2026-09-14T21:00:01Z",
+      "release_url": "https://github.com/aaif-goose/goose/releases/tag/v1.50.1",
+      "source_commit": "881f96c00d618ab6fca9b2aaa3a0abf07673cc2c",
+      "root_tree": "03920943440452c82d7bcdc04e5616f8e32d23df",
+      "darwin_aarch64_asset": "goose-aarch64-apple-darwin.tar.bz2",
+      "darwin_aarch64_asset_bytes": 80675851,
+      "darwin_aarch64_asset_sha256": "951055fac48e50a2087178307a75a1285f25f6a81675b84974ffc4fe6abe0d62",
+      "source_manifest_sha256": "19e23b10a26419885d406031cd5d3a10027f1555effd3c4d488f358ccb6df546",
+      "source_file_count": 2454
+    },
+    "1.51.0": {
+      "published_at": "2026-09-17T19:15:25Z",
+      "release_url": "https://github.com/aaif-goose/goose/releases/tag/v1.51.0",
+      "source_commit": "1a4249ac9f23c6e6e2526d4b54dbbf3bb09ba204",
+      "root_tree": "99a42cedd687805e42b813158380c4c1eaa18f16",
+      "darwin_aarch64_asset": "goose-aarch64-apple-darwin.tar.bz2",
+      "darwin_aarch64_asset_bytes": 79914368,
+      "darwin_aarch64_asset_sha256": "6cbb36e1b0b9c44d05ff8b3d526d2191eb02610b3fd18f475faa4edab2514535",
+      "source_manifest_sha256": "5a69552362d88868126227b0b5b8136ae9a13709d2c66a6ba4ea3862fd3b0b11",
+      "source_file_count": 2475
+    },
+    "1.52.0": {
+      "published_at": "2026-09-23T14:59:14Z",
+      "release_url": "https://github.com/aaif-goose/goose/releases/tag/v1.52.0",
+      "source_commit": "302b60806639ea9f0ae8f053f49f8bf0e88b26f4",
+      "root_tree": "831af3b45aa01c9f4b0998b59f918a70852f6152",
+      "darwin_aarch64_asset": "goose-aarch64-apple-darwin.tar.bz2",
+      "darwin_aarch64_asset_bytes": 78217476,
+      "darwin_aarch64_asset_sha256": "10f7aca02d265750f43ec6948a63757ea372b1ef52b5c116f55b79d382769ae7",
+      "source_manifest_sha256": "2fcaec03d9aa1d17cfc67b122cd0713c5e0a9bd35e8086079dc9dab2fcac0f95",
+      "source_file_count": 2512
+    },
+    "1.53.0": {
+      "published_at": "2026-10-02T18:44:11Z",
+      "release_url": "https://github.com/aaif-goose/goose/releases/tag/v1.53.0",
+      "source_commit": "76da81cb964b21cd096db739302329b40c2998b8",
+      "root_tree": "e36a575acd258dd79ceb5fae47b5023563326d30",
+      "darwin_aarch64_asset": "goose-aarch64-apple-darwin.tar.bz2",
+      "darwin_aarch64_asset_bytes": 77706783,
+      "darwin_aarch64_asset_sha256": "49cf9cfd6195f558d0d9f39ccd691213004bccb2c626e2b40b244059ff9dbdba",
+      "source_manifest_sha256": "162b26d3c65e222b8bf654c480490e37393fce29a0340149b4af55e54d0bfe51",
+      "source_file_count": 2523
+    }
+  },
+  "tree_inventory": "dist-inventory.json",
+  "source_manifests": {
+    "canonical_row": "path<TAB>mode<TAB>Git blob SHA",
+    "canonical_digest_encoding": "UTF-8 rows sorted by path, fields separated by NUL, each row terminated by LF",
+    "files": {
+      "1.50.1": "manifest-1.50.1.tsv",
+      "1.51.0": "manifest-1.51.0.tsv",
+      "1.52.0": "manifest-1.52.0.tsv",
+      "1.53.0": "manifest-1.53.0.tsv"
+    }
+  },
+  "later_stable": {
+    "published_after_official_latest": false,
+    "synthetic_unverified_newer_fixture": "1.53.1"
+  },
+  "claim_at_observation": {
+    "baseline": "1.50.1",
+    "latest_qualified": "1.50.1",
+    "posture": "QualifiedOnly",
+    "segments": ["1.50.1"],
+    "behavior_revision": "goose.acp.stdio-v2.auth-required",
+    "claim_id_in_selection_rs": "goose.acp.release-window-1"
+  },
+  "prior_fixture_discrepancy": {
+    "file": "../goose-acp-1.50.1/currentness.json",
+    "fixture_claim_id": "goose.acp.release-window-2",
+    "selection_rs_claim_id": "goose.acp.release-window-1",
+    "action": "preserve the current production claim id and leave the earlier fixture unchanged"
+  },
+  "decision": {
+    "shape": "compatible-extension",
+    "baseline_remains": "1.50.1",
+    "qualified_published_points": ["1.50.1", "1.51.0", "1.52.0", "1.53.0"],
+    "unpublished_interstitial_versions_remain_incompatible": true,
+    "first_later_stable_is_unverified_newer": "1.53.1",
+    "behavior_revision_remains": "goose.acp.stdio-v2.auth-required",
+    "claim_id_remains": "goose.acp.release-window-1",
+    "claim_at_observation_is_not_changed_in_this_identity_record": true
+  },
+  "provider_prompt_sent": false,
+  "live_session_opened": false,
+  "host_install_changed": false,
+  "provider_configuration_changed": false,
+  "release_binary_downloaded": false,
+  "release_binary_executed": false
+}

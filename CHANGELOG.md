@@ -361,6 +361,16 @@ annotated Git tags from the canonical repository.
   `session/prompt` into the adapter diagnostic
   `swallowtail.goose.acp.auth_required`. Research 319's historical stop and
   the independently gated builtin, mode, lifecycle, and effort surfaces stand.
+- qualify `goose.acp` from its `1.50.1` ceiling through official GitHub stable
+  `1.53.0`. Research 390 freezes all three published successor hops, complete
+  source tag trees, Darwin ARM64 asset digests, and per-hop selected-source
+  classifications. Preserve baseline `1.50.1`, claim id
+  `goose.acp.release-window-1`, and behavior revision
+  `goose.acp.stdio-v2.auth-required`; maintain the four exact published
+  points while interstitial versions stay incompatible and later stables may
+  be `UnverifiedNewer`. Usage remains unmapped and HTTP MCP live honouring
+  remains unqualified. No provider prompt, live session, artifact execution,
+  credential use, installation, or host update occurred.
 - advance the Qoder `qoder.headless` claim to one exact `1.1.54`
   `QualifiedOnly` point on the new adapter-private
   `qoder.headless.stdio-stream-json-v2` behavior revision. Research 328 froze

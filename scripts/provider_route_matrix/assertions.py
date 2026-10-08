@@ -1,9 +1,9 @@
-if len(residual_feature_classifications) != 118:
-    raise SystemExit("residual feature starting inventory must contain exactly 118 cells")
+if len(residual_feature_classifications) != 117:
+    raise SystemExit("residual feature starting inventory must contain exactly 117 cells")
 if Counter(residual_feature_classifications.values()) != Counter(
     {
         "interface_axis_not_runtime_ordered": 10,
-        "exact_release_only": 15,
+        "exact_release_only": 14,
         "contract_or_corpus_required": 9,
         "operation_shape_not_applicable": 40,
         "separate_route_and_contract_required": 3,
@@ -46,7 +46,7 @@ for cell, classification in residual_feature_classifications.items():
         )
 if Counter(
     residual_feature_values[cell] for cell in residual_feature_classifications
-) != Counter({"Not applicable": 68, "No": 48, "Yes": 2}):
+) != Counter({"Not applicable": 68, "No": 47, "Yes": 2}):
     raise SystemExit("residual feature final counts changed")
 
 provider_retention_values = {
@@ -304,7 +304,7 @@ if classification_counts != Counter(
         "separate_route_and_contract_required": 5,
         "selected_surface_absence": 204,
         "non_authoritative_cost_evidence": 4,
-        "exact_release_only": 15,
+        "exact_release_only": 14,
         "missing_shared_contract_or_currentness_evidence": 10,
     }
 ):

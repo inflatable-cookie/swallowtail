@@ -11,8 +11,10 @@ use crate::failure::failure;
 pub const MISTRAL_VIBE_EXECUTABLE_NAME: &str = "vibe";
 /// Opaque GitHub-release axis for Mistral Vibe headless.
 pub const MISTRAL_VIBE_RELEASE_AXIS: &str = "mistral-vibe.release";
-/// Exact qualified Vibe CLI release used by headless.
-pub const MISTRAL_VIBE_RELEASE_VERSION: &str = "2.25.4";
+/// Latest qualified Vibe CLI release used by headless.
+pub const MISTRAL_VIBE_RELEASE_VERSION: &str = "2.26.0";
+/// First qualified Vibe CLI release retained by the headless claim.
+const MISTRAL_VIBE_RELEASE_BASELINE_VERSION: &str = "2.25.4";
 
 pub(crate) const MISTRAL_VIBE_HEADLESS_BEHAVIOR: &str = "mistral-vibe.headless.stdio-streaming-v1";
 const MAX_VERSION_BYTES: usize = 32;
@@ -29,7 +31,7 @@ impl VibePlanSelection {
     }
 }
 
-/// Parses installed `--version` stdout into the exact qualified Vibe binding.
+/// Parses installed `--version` stdout into a stable Vibe release binding.
 #[must_use]
 pub(crate) fn parse_vibe_version_output(output: &[u8]) -> Option<InterfaceVersionBinding> {
     let output = std::str::from_utf8(output).ok()?;
@@ -38,19 +40,17 @@ pub(crate) fn parse_vibe_version_output(output: &[u8]) -> Option<InterfaceVersio
     mistral_vibe_release_binding(exact)
 }
 
-/// Parses the one qualified exact Vibe release version into its interface binding.
+/// Parses one stable Vibe CLI release version into its interface binding.
 ///
-/// Returns `None` for anything other than the exact qualified release text, so
-/// observed CLI output can never panic a caller.
+/// The compatibility claim classifies the returned version as qualified,
+/// unverified newer, or incompatible.
 #[must_use]
 pub fn mistral_vibe_release_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    if value != MISTRAL_VIBE_RELEASE_VERSION
-        || value.is_empty()
-        || value.len() > MAX_VERSION_BYTES
-        || value.trim() != value
-        || value.chars().any(char::is_control)
-        || semver::Version::parse(value).is_err()
-    {
+    if value.is_empty() || value.len() > MAX_VERSION_BYTES || value.trim() != value {
+        return None;
+    }
+    let parsed = semver::Version::parse(value).ok()?;
+    if !parsed.pre.is_empty() || !parsed.build.is_empty() {
         return None;
     }
     Some(InterfaceVersionBinding::new(
@@ -59,7 +59,7 @@ pub fn mistral_vibe_release_binding(value: &str) -> Option<InterfaceVersionBindi
     ))
 }
 
-/// Returns the qualified-only exact Vibe headless protocol claim.
+/// Returns the qualified Vibe headless protocol claim.
 #[must_use]
 pub fn mistral_vibe_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
@@ -67,15 +67,20 @@ pub fn mistral_vibe_headless_claim() -> InterfaceCompatibilityClaim {
             .expect("static Vibe claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
-        InterfaceNewerVersionPosture::QualifiedOnly,
-        [InterfaceVersionSegment::exact(
+        InterfaceNewerVersionPosture::AllowUnverified,
+        [InterfaceVersionSegment::new(
+            InterfaceVersion::new(MISTRAL_VIBE_RELEASE_BASELINE_VERSION)
+                .expect("static Vibe baseline is valid"),
             InterfaceVersion::new(MISTRAL_VIBE_RELEASE_VERSION)
-                .expect("static Vibe version is valid"),
+                .expect("static Vibe latest version is valid"),
             InterfaceBehaviorRevision::new(MISTRAL_VIBE_HEADLESS_BEHAVIOR)
                 .expect("static Vibe behavior is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [],
+        [
+            InterfaceVersion::new("2.25.6").expect("static Vibe 2.25.6 gap is valid"),
+            InterfaceVersion::new("2.25.9").expect("static Vibe 2.25.9 gap is valid"),
+        ],
     )
     .expect("static Vibe claim is valid")
 }
@@ -90,7 +95,7 @@ pub(crate) fn select_mistral_vibe_headless_plan(
     let binding = bindings.next().ok_or_else(|| {
         failure(
             "swallowtail.mistral-vibe.headless.version_missing",
-            "Mistral Vibe headless plan is missing its exact release version",
+            "Mistral Vibe headless plan is missing its release version",
         )
     })?;
     if bindings.next().is_some() {
@@ -125,17 +130,22 @@ mod tests {
     use super::*;
 
     #[test]
-    fn only_the_exact_qualified_release_is_bound() {
-        assert!(mistral_vibe_release_binding(MISTRAL_VIBE_RELEASE_VERSION).is_some());
+    fn stable_release_versions_are_bound_for_claim_classification() {
+        for accepted in [
+            "2.25.4", "2.25.5", "2.25.7", "2.25.8", "2.26.0", "2.26.1", "2.24.2",
+        ] {
+            assert!(
+                mistral_vibe_release_binding(accepted).is_some(),
+                "{accepted}"
+            );
+        }
         for rejected in [
             "",
-            "2.24.2",
-            "2.25.3",
-            "2.25.5",
             "2.25",
             "2.25.4.0",
             "v2.25.4",
             "2.25.4-beta",
+            "2.25.4+build.1",
             "2.25.4\n",
             " 2.25.4",
             "2.25.4 ",
@@ -149,19 +159,27 @@ mod tests {
     }
 
     #[test]
-    fn exact_release_is_permitted_and_other_versions_are_not() {
-        let permitted =
-            InterfaceVersion::new(MISTRAL_VIBE_RELEASE_VERSION).expect("qualified version");
-        let newer = InterfaceVersion::new("2.25.5").expect("newer version");
+    fn published_hops_are_qualified_and_unpublished_holes_stay_excluded() {
         let older = InterfaceVersion::new("2.24.2").expect("prior baseline");
         let claim = mistral_vibe_headless_claim();
-        assert!(claim.assess(&permitted).is_permitted());
-        assert!(!claim.assess(&newer).is_permitted());
+        for qualified in ["2.25.4", "2.25.5", "2.25.7", "2.25.8", "2.26.0"] {
+            let version = InterfaceVersion::new(qualified).expect("qualified version");
+            assert!(claim.assess(&version).is_permitted(), "{qualified}");
+            assert!(claim.classify(&version).is_some(), "{qualified}");
+        }
+        for gap in ["2.25.6", "2.25.9"] {
+            let version = InterfaceVersion::new(gap).expect("unpublished version");
+            assert!(!claim.assess(&version).is_permitted(), "{gap}");
+            assert!(claim.classify(&version).is_none(), "{gap}");
+        }
+        let later = InterfaceVersion::new("2.26.1").expect("later stable version");
+        assert!(claim.assess(&later).is_permitted());
+        assert!(claim.classify(&later).is_none());
         assert!(!claim.assess(&older).is_permitted());
     }
 
     #[test]
-    fn version_stdout_parser_accepts_bare_or_named_exact_release() {
+    fn version_stdout_parser_accepts_bare_or_named_stable_release() {
         assert_eq!(
             parse_vibe_version_output(b"2.25.4\n")
                 .expect("exact version parses")
@@ -176,7 +194,14 @@ mod tests {
                 .as_str(),
             "2.25.4"
         );
-        assert!(parse_vibe_version_output(b"2.25.5\n").is_none());
+        assert_eq!(
+            parse_vibe_version_output(b"2.25.5\n")
+                .expect("later stable version parses")
+                .version()
+                .as_str(),
+            "2.25.5"
+        );
+        assert!(parse_vibe_version_output(b"2.25.6\n").is_some());
         assert!(parse_vibe_version_output(b"v2.25.4\n").is_none());
         assert!(parse_vibe_version_output(b"vibe  2.25.4\n").is_none());
     }

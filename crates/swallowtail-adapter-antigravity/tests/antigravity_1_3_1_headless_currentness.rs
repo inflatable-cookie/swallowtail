@@ -251,7 +251,10 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         windows_evidence["platform"],
         "windows_x64_and_windows_arm64"
     );
-    assert_eq!(windows_evidence["release_commit"], "274d81b9929aaa2b91a7266106d0d0b7f19adf52");
+    assert_eq!(
+        windows_evidence["release_commit"],
+        "274d81b9929aaa2b91a7266106d0d0b7f19adf52"
+    );
     assert_exact_keys(
         &windows_evidence["platform_artifacts"],
         &["windows_x64", "windows_arm64"],
@@ -289,12 +292,12 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         let release_archive = &platform_evidence["release_archive"];
         assert_exact_keys(release_archive, &["name", "url", "size", "sha256"]);
         assert_eq!(release_archive["name"], asset_name);
-    assert_eq!(
-        release_archive["url"],
-        format!(
-            "https://github.com/google-antigravity/antigravity-cli/releases/download/1.2.17/{asset_name}"
-        )
-    );
+        assert_eq!(
+            release_archive["url"],
+            format!(
+                "https://github.com/google-antigravity/antigravity-cli/releases/download/1.2.17/{asset_name}"
+            )
+        );
         assert_eq!(release_archive["size"], archive_size);
         assert_eq!(release_archive["sha256"], archive_digest);
         let published_asset = identity["artifacts"]["1.2.17"]["complete_published_asset_manifest"]
@@ -309,10 +312,19 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             &platform_evidence["archive_member"],
             &["path", "size", "sha256", "format"],
         );
-        assert_eq!(platform_evidence["archive_member"]["path"], "antigravity.exe");
+        assert_eq!(
+            platform_evidence["archive_member"]["path"],
+            "antigravity.exe"
+        );
         assert_eq!(platform_evidence["archive_member"]["size"], executable_size);
-        assert_eq!(platform_evidence["archive_member"]["sha256"], executable_digest);
-        assert_eq!(platform_evidence["archive_member"]["format"], executable_format);
+        assert_eq!(
+            platform_evidence["archive_member"]["sha256"],
+            executable_digest
+        );
+        assert_eq!(
+            platform_evidence["archive_member"]["format"],
+            executable_format
+        );
     }
     assert_exact_string_array(
         &windows_evidence["static_string_matches"],
@@ -345,7 +357,10 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         windows_evidence["static_evidence_limits"]["windows_sandbox_runtime_proven"],
         false
     );
-    assert_eq!(windows_evidence["static_evidence_limits"]["binary_executed"], false);
+    assert_eq!(
+        windows_evidence["static_evidence_limits"]["binary_executed"],
+        false
+    );
 
     let failure_scopes = &currentness["selected_failure_scope_evidence"];
     assert_exact_keys(
@@ -431,7 +446,10 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         failure_scopes["child_error"]["projection_when_status_is_unavailable"],
         "SubagentStatus::Unknown"
     );
-    assert_eq!(failure_scopes["child_error"]["fixture"], "headless-run-error.jsonl");
+    assert_eq!(
+        failure_scopes["child_error"]["fixture"],
+        "headless-run-error.jsonl"
+    );
     assert_eq!(failure_scopes["child_error"]["provider_capture"], false);
     assert_exact_string_array(
         &failure_scopes["child_error"]["documented_child_fields"],
@@ -463,10 +481,19 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             "provider_capture",
         ],
     );
-    assert_eq!(failure_scopes["soft_permission_denial"]["release"], "1.2.15");
-    assert_eq!(failure_scopes["soft_permission_denial"]["run_continues"], true);
+    assert_eq!(
+        failure_scopes["soft_permission_denial"]["release"],
+        "1.2.15"
+    );
+    assert_eq!(
+        failure_scopes["soft_permission_denial"]["run_continues"],
+        true
+    );
     assert_eq!(failure_scopes["soft_permission_denial"]["exit_code"], 0);
-    assert_eq!(failure_scopes["soft_permission_denial"]["notice_stream"], "stderr");
+    assert_eq!(
+        failure_scopes["soft_permission_denial"]["notice_stream"],
+        "stderr"
+    );
     assert_eq!(
         failure_scopes["soft_permission_denial"]["structured_denial_projection"],
         "unclaimed"
@@ -475,14 +502,26 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         failure_scopes["soft_permission_denial"]["run_completion_proves_all_requested_tools_executed"],
         false
     );
-    assert_eq!(failure_scopes["soft_permission_denial"]["stderr_parsed_as_denial"], false);
-    assert_eq!(failure_scopes["soft_permission_denial"]["alternate_tool_workaround"], false);
-    assert_eq!(failure_scopes["soft_permission_denial"]["permission_bypass"], false);
+    assert_eq!(
+        failure_scopes["soft_permission_denial"]["stderr_parsed_as_denial"],
+        false
+    );
+    assert_eq!(
+        failure_scopes["soft_permission_denial"]["alternate_tool_workaround"],
+        false
+    );
+    assert_eq!(
+        failure_scopes["soft_permission_denial"]["permission_bypass"],
+        false
+    );
     assert_eq!(
         failure_scopes["soft_permission_denial"]["fixture"],
         "headless-denial-1.2.15-evidence.json"
     );
-    assert_eq!(failure_scopes["soft_permission_denial"]["provider_capture"], false);
+    assert_eq!(
+        failure_scopes["soft_permission_denial"]["provider_capture"],
+        false
+    );
 
     let run_error_events = RUN_ERROR
         .lines()
@@ -501,7 +540,10 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         ],
     );
     assert_eq!(run_error_events[2]["result"]["status"], "ERROR");
-    assert_eq!(run_error_events[2]["result"]["error"], "fixture whole-run failure");
+    assert_eq!(
+        run_error_events[2]["result"]["error"],
+        "fixture whole-run failure"
+    );
 
     let denial_evidence: Value =
         serde_json::from_str(DENIAL_EVIDENCE).expect("1.2.15 denial evidence fixture");
@@ -629,9 +671,18 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         denial_evidence["accepted_route_limit"]["structured_denial_projection"],
         "unclaimed"
     );
-    assert_eq!(denial_evidence["accepted_route_limit"]["stderr_notice_parsed_as_denial"], false);
-    assert_eq!(denial_evidence["accepted_route_limit"]["alternate_tool_workaround"], false);
-    assert_eq!(denial_evidence["accepted_route_limit"]["approval_bypass"], false);
+    assert_eq!(
+        denial_evidence["accepted_route_limit"]["stderr_notice_parsed_as_denial"],
+        false
+    );
+    assert_eq!(
+        denial_evidence["accepted_route_limit"]["alternate_tool_workaround"],
+        false
+    );
+    assert_eq!(
+        denial_evidence["accepted_route_limit"]["approval_bypass"],
+        false
+    );
 
     assert_exact_keys(
         &identity["official_channel"],

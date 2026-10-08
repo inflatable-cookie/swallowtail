@@ -259,11 +259,7 @@ mod tests {
                 .as_str(),
             "3.0.55"
         );
-        for candidate in [
-            b"3.0.56\n".as_slice(),
-            b"3.0.59\n",
-            b"3.0.70\n",
-        ] {
+        for candidate in [b"3.0.56\n".as_slice(), b"3.0.59\n", b"3.0.70\n"] {
             assert!(parse_cline_version_output(candidate).is_some());
         }
         assert!(parse_cline_version_output(b"cline 3.0.55\n").is_none());

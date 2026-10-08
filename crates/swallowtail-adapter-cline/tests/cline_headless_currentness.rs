@@ -170,7 +170,10 @@ fn official_stable_points_and_headless_claim_preserve_the_only_gap() {
     assert_eq!(identity["qualified_target"], "3.0.70");
     assert_eq!(identity["unpublished_next_stable"]["version"], "3.0.71");
     assert_eq!(identity["unpublished_next_stable"]["npm_published"], false);
-    assert_eq!(identity["unpublished_next_stable"]["github_tag_exists"], false);
+    assert_eq!(
+        identity["unpublished_next_stable"]["github_tag_exists"],
+        false
+    );
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "3.0.55"
@@ -362,10 +365,13 @@ fn npm_source_and_runtime_identities_are_complete_for_every_published_hop() {
             PLATFORM_ARTIFACTS.to_vec()
         );
         assert_eq!(
-            object(&identity_point["dependency_artifacts"], "dependency artifacts")
-                .keys()
-                .map(String::as_str)
-                .collect::<Vec<_>>(),
+            object(
+                &identity_point["dependency_artifacts"],
+                "dependency artifacts"
+            )
+            .keys()
+            .map(String::as_str)
+            .collect::<Vec<_>>(),
             DEPENDENCY_ARTIFACTS.to_vec()
         );
         assert_eq!(

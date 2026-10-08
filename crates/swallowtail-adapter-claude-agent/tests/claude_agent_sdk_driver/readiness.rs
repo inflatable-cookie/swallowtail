@@ -500,7 +500,7 @@ fn a_canonical_effective_model_is_accepted_and_published() {
     assert_eq!(session.requested_model(), "claude-sonnet-5");
     assert_eq!(session.effective_model(), "claude-sonnet-5-20250929");
     assert_eq!(session.readiness_state(), "confirmed");
-    assert_eq!(session.node_version(), "22.23.2");
+    assert_eq!(session.node_version(), "22.23.3");
     assert_eq!(session.node_version_posture(), "Qualified");
     let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
 }

@@ -6,6 +6,13 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only the `claude-agent.sdk.node` runtime axis through official
+  Node 22.23.3. Research 387 freezes the single published hop after 22.23.2,
+  signed Darwin arm64 artifacts, complete distribution inventories, and all
+  Node source-path changes. Keep the existing Node claim and behavior revision,
+  preserve Node 22.23.2, and leave the SDK, native, wire, sidecar, platform,
+  registered-tool live, and HTTP MCP live evidence unchanged. No Node
+  installation, host update, provider call, or credential use occurred.
 - qualify `mistral-vibe.headless` through official PyPI and GitHub stable
   `2.26.0`. Research 384 freezes all four published hops after `2.25.4`,
   complete wheel trees, runtime/source identities, and per-hop selected-surface

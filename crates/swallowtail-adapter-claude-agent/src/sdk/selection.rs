@@ -1,14 +1,14 @@
 //! Interface-version selection for the Claude Agent SDK sidecar route.
 //!
-//! Five axes bind the exact SDK wrapper package, the exact native binary
-//! version the shipped manifest declares, the exact approved Node runtime,
-//! the private sidecar wire, and the source-tagged sidecar revision. Every
-//! claim is a qualified-only one-point segment. Research 287 admits no
-//! Codex-style range on any axis, so Card 087 does not widen these pins,
-//! mint `-window-2` ids, or enable `AllowUnverified`. None inherits the
-//! `claude-agent.acp` window or either Claude Code window: the wrapper and
-//! native axes are coupled but not equal, so a Claude Code qualification
-//! never transfers here and this route's qualification never transfers back.
+//! Five axes bind the exact SDK wrapper package, exact native binary version,
+//! qualified Node 22 runtime window, private sidecar wire, and source-tagged
+//! sidecar revision. The wrapper, native, wire, and sidecar claims remain
+//! qualified-only one-point segments; only Node extends from `22.23.2` to
+//! official stable `22.23.3` on the existing claim and behavior revision.
+//! None inherits the `claude-agent.acp` window or either Claude Code window:
+//! the wrapper and native axes are coupled but not equal, so a Claude Code
+//! qualification never transfers here and this route's qualification never
+//! transfers back.
 
 use super::{
     CLAUDE_AGENT_SDK_BEHAVIOR, CLAUDE_AGENT_SDK_NATIVE_VERSION, CLAUDE_AGENT_SDK_NODE_RUNTIME,
@@ -32,6 +32,8 @@ pub const CLAUDE_AGENT_SDK_NODE_AXIS: &str = "claude-agent.sdk.node";
 pub const CLAUDE_AGENT_SDK_WIRE_AXIS: &str = "claude-agent.sdk.wire";
 /// Opaque axis for the source-tagged sidecar revision.
 pub const CLAUDE_AGENT_SDK_SIDECAR_AXIS: &str = "claude-agent.sdk.sidecar";
+
+const CLAUDE_AGENT_SDK_NODE_BASELINE: &str = "22.23.2";
 
 /// Parses one exact SDK wrapper package semantic-version binding.
 #[must_use]
@@ -115,17 +117,28 @@ pub fn claude_agent_sdk_native_claim() -> InterfaceCompatibilityClaim {
     )
 }
 
-/// Returns the qualified-only one-point Node runtime claim.
+/// Returns the qualified-only Node runtime claim through current Node 22.
 #[must_use]
 pub fn claude_agent_sdk_node_claim() -> InterfaceCompatibilityClaim {
-    claim(
-        "claude-agent.sdk.node-window-1",
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new("claude-agent.sdk.node-window-1")
+            .expect("static SDK sidecar claim id is valid"),
         InterfaceVersionAxis::new(CLAUDE_AGENT_SDK_NODE_AXIS)
             .expect("static SDK sidecar axis is valid"),
         InterfaceVersionScheme::Semantic,
-        InterfaceVersion::new(CLAUDE_AGENT_SDK_NODE_RUNTIME)
-            .expect("static SDK sidecar version is valid"),
+        InterfaceNewerVersionPosture::QualifiedOnly,
+        [swallowtail_core::InterfaceVersionSegment::new(
+            InterfaceVersion::new(CLAUDE_AGENT_SDK_NODE_BASELINE)
+                .expect("static SDK baseline version is valid"),
+            InterfaceVersion::new(CLAUDE_AGENT_SDK_NODE_RUNTIME)
+                .expect("static SDK sidecar version is valid"),
+            InterfaceBehaviorRevision::new(CLAUDE_AGENT_SDK_BEHAVIOR)
+                .expect("static SDK sidecar behavior revision is valid"),
+            InterfaceSupportStatus::Maintained,
+        )],
+        [],
     )
+    .expect("static SDK sidecar compatibility claim is valid")
 }
 
 /// Returns the qualified-only one-point sidecar wire claim.

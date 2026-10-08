@@ -1,0 +1,74 @@
+{
+  "adapter_failure_and_lifecycle": {
+    "argv": [
+      "models"
+    ],
+    "cleanup": "existing process wait/cleanup path retained",
+    "exit": "nonzero exit fails as catalogue_exit_failed",
+    "stdin": "closed before reading output",
+    "stdout": "bounded and parsed using the existing plain-text decoder"
+  },
+  "compatible_surface_review": {
+    "account_options_unchanged": true,
+    "adapter_lifecycle_unchanged": true,
+    "command_path_unchanged": true,
+    "failure_boundary_unchanged": true,
+    "mapped_fields_unchanged": true,
+    "models_request_shape_unchanged": true,
+    "no_new_operation_or_authority": true,
+    "tip_text": "Upstream expanded parameterized-model usage guidance; the adapter ignores Tip lines.",
+    "unselected_additions": [
+      "team subcommand",
+      "local provider models branch",
+      "interactive model-picker and parameter controls",
+      "provider-internal bundle changes"
+    ]
+  },
+  "safety": {
+    "archive_executed": false,
+    "authenticated_catalogue_called": false,
+    "credentials_used": false,
+    "host_install_or_update": false,
+    "provider_prompt_sent": false
+  },
+  "selected_catalogue_fields": {
+    "default_marker": "the adapter extracts default status only from the exact rendered (current, default) suffix",
+    "display_name": "displayName || displayNameShort",
+    "empty_result": "No models available for this account.",
+    "format": "Available models header followed by id - display name rows and current/default markers",
+    "model_id": "displayModelId || modelId",
+    "provider_rendered_current_marker": "modelId equals currentModelId; no separate current field is exposed by the adapter"
+  },
+  "selected_cli_command": "models",
+  "selected_cli_command_present_at_every_hop": true,
+  "selected_cli_description": "List available models for this account",
+  "selected_request_path": {
+    "account_options": [
+      "endpoint",
+      "apiKey",
+      "authToken",
+      "insecure"
+    ],
+    "availability_request": [
+      "useModelParameters=true",
+      "doNotUseMarkdown=true",
+      "additionalModelNames from the existing enabled custom-model configuration"
+    ],
+    "catalogue_parser_mapping": "plain-text rows; model identity and visible display are mapped; default is extracted only from the exact combined (current, default) suffix; no separate current field, model invocability or parameter support is claimed",
+    "command": "models",
+    "default_and_usable_lookup": [
+      "getUsableModels({customModelIds})",
+      "getDefaultModelForCli({})",
+      "availableModels(...)"
+    ],
+    "handler": "handleModelsList"
+  },
+  "selected_route": "cursor-agent.catalogue",
+  "sibling_axes": {
+    "acp_claim_changed": false,
+    "acp_qualified_ceiling": "2026.09.18-9a7762b",
+    "evidence_transferred": false,
+    "headless_claim_changed": false,
+    "headless_qualified_ceiling": "2026.09.18-9a7762b"
+  }
+}

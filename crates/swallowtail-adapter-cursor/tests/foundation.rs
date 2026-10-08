@@ -33,7 +33,7 @@ fn exact_and_newer_cursor_releases_probe_only_the_host_approved_target() {
         ("fixture.cursor.september-10", "2026.09.10-fd3934a", true),
         ("fixture.cursor.september-15", "2026.09.15-d2fe57e", true),
         ("fixture.cursor.latest", "2026.09.18-9a7762b", true),
-        ("fixture.cursor.newer", "2026.09.19-a1b2c3d", false),
+        ("fixture.cursor.newer", "2026.10.02-a1b2c3d", false),
     ] {
         let host_id = ExecutionHostId::new(host_value).expect("valid host id");
         let host = support::FixtureHost::completed([stdout(&format!("{release}\n"))]);

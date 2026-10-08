@@ -24,7 +24,8 @@ pub const CURSOR_AGENT_JULY_23_BUILD_REVISION: &str = "e383d2b";
 pub const CURSOR_AGENT_AUGUST_04_VERSION: &str = "2026-08-04";
 /// Qualified build revision for [`CURSOR_AGENT_AUGUST_04_VERSION`].
 pub const CURSOR_AGENT_AUGUST_04_BUILD_REVISION: &str = "aaa8809";
-/// Most recent qualified Cursor Agent release date.
+/// Latest Cursor release qualified by the shared ACP and headless claims.
+/// The catalogue has a separate route-local ceiling.
 pub const CURSOR_AGENT_LATEST_QUALIFIED_VERSION: &str = "2026-09-18";
 /// Qualified build revision for [`CURSOR_AGENT_LATEST_QUALIFIED_VERSION`].
 pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "9a7762b";
@@ -32,6 +33,18 @@ pub const CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION: &str = "9a7762b";
 pub const CURSOR_AGENT_SEPTEMBER_15_VERSION: &str = "2026-09-15";
 /// Qualified build revision for [`CURSOR_AGENT_SEPTEMBER_15_VERSION`].
 pub const CURSOR_AGENT_SEPTEMBER_15_BUILD_REVISION: &str = "d2fe57e";
+/// First published Cursor Agent catalogue milestone after the shared ceiling.
+const CURSOR_CATALOGUE_SEPTEMBER_26_VERSION: &str = "2026-09-26";
+/// Qualified build revision for [`CURSOR_CATALOGUE_SEPTEMBER_26_VERSION`].
+const CURSOR_CATALOGUE_SEPTEMBER_26_BUILD_REVISION: &str = "dd393fe";
+/// Second published Cursor Agent catalogue milestone after the shared ceiling.
+const CURSOR_CATALOGUE_SEPTEMBER_28_VERSION: &str = "2026-09-28";
+/// Qualified build revision for [`CURSOR_CATALOGUE_SEPTEMBER_28_VERSION`].
+const CURSOR_CATALOGUE_SEPTEMBER_28_BUILD_REVISION: &str = "64d2043";
+/// Latest qualified Cursor Agent catalogue release date.
+const CURSOR_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "2026-10-01";
+/// Qualified build revision for [`CURSOR_CATALOGUE_LATEST_QUALIFIED_VERSION`].
+const CURSOR_CATALOGUE_LATEST_QUALIFIED_BUILD_REVISION: &str = "14929f9";
 /// Previous qualified Cursor Agent release date.
 pub const CURSOR_AGENT_SEPTEMBER_10_VERSION: &str = "2026-09-10";
 /// Qualified build revision for [`CURSOR_AGENT_SEPTEMBER_10_VERSION`].
@@ -122,7 +135,7 @@ pub fn cursor_catalogue_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::CalendarDate,
         InterfaceNewerVersionPosture::AllowUnverified,
-        exact_milestones(CURSOR_CATALOGUE_BEHAVIOR),
+        catalogue_milestones(CURSOR_CATALOGUE_BEHAVIOR),
         [],
     )
     .expect("static Cursor compatibility claim is valid")
@@ -302,7 +315,60 @@ fn axis() -> InterfaceVersionAxis {
         .expect("static Cursor release axis is valid")
 }
 
-const fn qualified_release_builds() -> [(&'static str, &'static str); 9] {
+const fn qualified_release_builds() -> [(&'static str, &'static str); 12] {
+    [
+        (
+            CURSOR_AGENT_BASELINE_VERSION,
+            CURSOR_AGENT_BASELINE_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_JULY_23_VERSION,
+            CURSOR_AGENT_JULY_23_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_AUGUST_04_VERSION,
+            CURSOR_AGENT_AUGUST_04_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_AUGUST_11_VERSION,
+            CURSOR_AGENT_AUGUST_11_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_AUGUST_31_VERSION,
+            CURSOR_AGENT_AUGUST_31_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_SEPTEMBER_02_VERSION,
+            CURSOR_AGENT_SEPTEMBER_02_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_SEPTEMBER_10_VERSION,
+            CURSOR_AGENT_SEPTEMBER_10_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_SEPTEMBER_15_VERSION,
+            CURSOR_AGENT_SEPTEMBER_15_BUILD_REVISION,
+        ),
+        (
+            CURSOR_AGENT_LATEST_QUALIFIED_VERSION,
+            CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION,
+        ),
+        (
+            CURSOR_CATALOGUE_SEPTEMBER_26_VERSION,
+            CURSOR_CATALOGUE_SEPTEMBER_26_BUILD_REVISION,
+        ),
+        (
+            CURSOR_CATALOGUE_SEPTEMBER_28_VERSION,
+            CURSOR_CATALOGUE_SEPTEMBER_28_BUILD_REVISION,
+        ),
+        (
+            CURSOR_CATALOGUE_LATEST_QUALIFIED_VERSION,
+            CURSOR_CATALOGUE_LATEST_QUALIFIED_BUILD_REVISION,
+        ),
+    ]
+}
+
+const fn shared_qualified_release_builds() -> [(&'static str, &'static str); 9] {
     [
         (
             CURSOR_AGENT_BASELINE_VERSION,
@@ -343,8 +409,18 @@ const fn qualified_release_builds() -> [(&'static str, &'static str); 9] {
     ]
 }
 
-fn exact_milestones(behavior: &str) -> [InterfaceVersionSegment; 9] {
+fn catalogue_milestones(behavior: &str) -> [InterfaceVersionSegment; 12] {
     qualified_release_builds().map(|(date, _build)| {
+        InterfaceVersionSegment::exact(
+            version(date).expect("static Cursor release version is valid"),
+            InterfaceBehaviorRevision::new(behavior).expect("static Cursor behavior is valid"),
+            InterfaceSupportStatus::Maintained,
+        )
+    })
+}
+
+fn exact_milestones(behavior: &str) -> [InterfaceVersionSegment; 9] {
+    shared_qualified_release_builds().map(|(date, _build)| {
         InterfaceVersionSegment::exact(
             version(date).expect("static Cursor release version is valid"),
             InterfaceBehaviorRevision::new(behavior).expect("static Cursor behavior is valid"),
@@ -376,6 +452,9 @@ mod tests {
         assert!(claim.supports(&version("2026-09-10")));
         assert!(claim.supports(&version("2026-09-15")));
         assert!(claim.supports(&version("2026-09-18")));
+        assert!(claim.supports(&version("2026-09-26")));
+        assert!(claim.supports(&version("2026-09-28")));
+        assert!(claim.supports(&version("2026-10-01")));
         assert!(!claim.permits(&version("2026-06-30")));
         assert!(!claim.permits(&version("2026-07-15")));
         assert!(!claim.permits(&version("2026-07-24")));
@@ -386,12 +465,37 @@ mod tests {
         assert!(!claim.permits(&version("2026-09-11")));
         assert!(!claim.permits(&version("2026-09-16")));
         assert!(!claim.permits(&version("2026-09-17")));
+        for gap in ["2026-09-19", "2026-09-27", "2026-09-29"] {
+            assert!(!claim.permits(&version(gap)), "{gap} remains a gap");
+        }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("2026-09-19"))
+            claim.assess(&version("2026-10-02"))
         else {
             panic!("later Cursor release remains visibly unverified");
         };
-        assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
+        assert_eq!(newer.latest_qualified().as_str(), "2026-10-01");
+    }
+
+    #[test]
+    fn acp_and_headless_keep_their_shared_ceiling() {
+        let catalogue = cursor_catalogue_claim();
+        for claim in [cursor_acp_claim(), cursor_headless_claim()] {
+            assert!(claim.supports(&version("2026-09-18")));
+            for later in ["2026-09-26", "2026-09-28", "2026-10-01"] {
+                assert!(claim.permits(&version(later)), "{later} stays visible");
+                let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+                    claim.assess(&version(later))
+                else {
+                    panic!("{later} stays unverified for ACP and headless");
+                };
+                assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
+            }
+            assert!(matches!(
+                claim.assess(&version("2026-10-02")),
+                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+            ));
+        }
+        assert!(catalogue.supports(&version("2026-10-01")));
     }
 
     #[test]
@@ -424,6 +528,16 @@ mod tests {
             cursor_agent_release_binding("2026.08.04-aaa8809").expect("host Cursor version parses");
         assert_eq!(host.version().as_str(), "2026-08-04");
 
+        for accepted in [
+            "2026.09.26-dd393fe",
+            "2026.09.28-64d2043",
+            "2026.10.01-14929f9",
+        ] {
+            assert!(
+                cursor_agent_release_binding(accepted).is_some(),
+                "{accepted}"
+            );
+        }
         for rejected in [
             "",
             "2026.07.01",
@@ -438,6 +552,9 @@ mod tests {
             "2026.09.10-deadbee",
             "2026.09.15-deadbee",
             "2026.09.18-deadbee",
+            "2026.09.26-deadbee",
+            "2026.09.28-deadbee",
+            "2026.10.01-deadbee",
             "2026.07.01-41b2de",
             "2026.02.30-41b2de7",
             " 2026.07.01-41b2de7",

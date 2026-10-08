@@ -7,7 +7,7 @@ annotated Git tags from the canonical repository.
 
 ### Notes
 - qualify only `codex.exec` through official stable `0.161.0` as a compatible
-  extension on `codex.exec.jsonl-v1`. Research 408 reuses the reviewed
+  extension on `codex.exec.jsonl-v1`. Research 409 reuses the reviewed
   `0.155.1`→`0.161.0` source and artifact chain from Research 370 with
   independent digest checks. Projectless startup does not restore persisted
   trust; system/macOS MDM managed-network allowlists and refresh remain

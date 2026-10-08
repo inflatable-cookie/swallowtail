@@ -1,0 +1,1851 @@
+{
+  "axis": "cline.package",
+  "claim_at_observation": {
+    "baseline": "3.0.55",
+    "behavior_revision": "cline.headless.stdio-json-v1",
+    "claim_id": "cline.headless.package-window-1",
+    "latest_qualified": "3.0.55",
+    "newer_version_posture": "QualifiedOnly"
+  },
+  "family": "cline.headless",
+  "fixture_schema": "cline-headless-currentness-identity/v1",
+  "host": {
+    "cline_on_path": false,
+    "package_installed": false
+  },
+  "identity_decision": {
+    "artifact_executed": false,
+    "credentials_used": false,
+    "exclude": "3.0.59",
+    "host_install_changed": false,
+    "live_catalogue_or_session": false,
+    "new_milestone": false,
+    "provider_prompt_sent": false,
+    "public_operations_added": false,
+    "qualify_each_published_stable_hop": true,
+    "raise_latest_qualified_to": "3.0.69",
+    "retain_baseline": "3.0.55",
+    "retain_behavior_revision": "cline.headless.stdio-json-v1",
+    "retain_claim_id": "cline.headless.package-window-1",
+    "shape": "compatible-extension"
+  },
+  "ignored_channels": [
+    "Cline editor/GitHub 4.x",
+    "npm nightly"
+  ],
+  "observed_at": "2026-10-08",
+  "previous_qualified_ceiling": "3.0.55",
+  "published_stables_after_previous_ceiling": [
+    "3.0.56",
+    "3.0.57",
+    "3.0.58",
+    "3.0.60",
+    "3.0.61",
+    "3.0.62",
+    "3.0.63",
+    "3.0.64",
+    "3.0.65",
+    "3.0.66",
+    "3.0.67",
+    "3.0.68",
+    "3.0.69"
+  ],
+  "qualified_shape": {
+    "baseline": "3.0.55",
+    "behavior_revision": "cline.headless.stdio-json-v1",
+    "excluded_points": [
+      "3.0.59"
+    ],
+    "latest_qualified": "3.0.69",
+    "newer_version_posture": "QualifiedOnly",
+    "support_status": "Maintained"
+  },
+  "qualified_target": "3.0.69",
+  "runtime_inventory_scope": "All six optional platform package tarballs are bound by exact registry SHA-512 integrity, shasum, file count and unpacked size for every published hop. A complete extracted file tree is frozen for darwin-arm64; no runtime binary was executed.",
+  "selected_channel": {
+    "name": "official npm stable dist-tag latest",
+    "observed_latest": "3.0.69",
+    "package": "cline",
+    "published_at": "2026-10-07T06:13:57.143Z",
+    "registry": "https://registry.npmjs.org/cline/latest"
+  },
+  "selected_invocation": [
+    "cline",
+    "--json",
+    "--auto-approve",
+    "false"
+  ],
+  "selected_mapped_source_paths": [
+    "apps/cli/src/main.ts",
+    "apps/cli/src/runtime/run-agent.ts",
+    "apps/cli/src/runtime/session-events.ts",
+    "apps/cli/src/runtime/tool-policies.ts",
+    "apps/cli/src/utils/events.ts",
+    "apps/cli/src/utils/helpers.ts",
+    "apps/cli/src/utils/output.ts",
+    "apps/cli/src/utils/startup-settings.ts",
+    "sdk/packages/agents/src/agent-runtime.ts",
+    "sdk/packages/shared/src/agents/types.ts"
+  ],
+  "source_identity_note": "GitHub annotated cli-v<version> tag object and peeled commit are frozen per published npm stable; ten selected source files are hashed for each tag. Full repository source archives were not used as a substitute for package identity.",
+  "unpublished_interior_gaps": [
+    {
+      "decision": "exclude; GitHub source tag is not the selected npm artifact channel",
+      "github_tag_exists": true,
+      "npm_published": false,
+      "version": "3.0.59"
+    }
+  ],
+  "versions": [
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-okn+AyxqfW9ukJEx8SERraREqLL4isptluLlRDXQilN8dM3JvkDpl2fajqf7TOp+WTVwdOpeeVscWEEecZQi5g==",
+          "shasum": "149ac467ff5209d4a94c6b673dcdc0e1917f5b55",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.75.tgz",
+          "unpackedSize": 362168,
+          "version": "0.0.75"
+        },
+        "@cline/core": {
+          "fileCount": 274,
+          "integrity": "sha512-yTMzMY4WaGFJOn4hsbxP9zq53/KVPRIQwETF6QRsjqsUV0a+BYO6JBSB+uR3ncghyNB6aUxsz60xWernr9X5PA==",
+          "shasum": "0146f6f7cb3011f45e6f5b671afd6dd9d5238933",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.75.tgz",
+          "unpackedSize": 3382684,
+          "version": "0.0.75"
+        },
+        "@cline/llms": {
+          "fileCount": 145,
+          "integrity": "sha512-R7QaKo/3Tg6HoF/0KcH8rsfig3lJH7ufdkZdFOj9moBjFHhcucR+dHgmZfut7TdskaoOxB5i4rxEk9sMhEyUnA==",
+          "shasum": "560db65b0b71168df5a54375640d73f214df70a8",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.75.tgz",
+          "unpackedSize": 8457621,
+          "version": "0.0.75"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-25J6f0B2aZ2NFy7a6bfUnKE5l9SmWEv6bcpc6/qaWEmCzWLcxF2b6iL9Z8aAgdWWvJqcAbavcDg666s0SAwj7g==",
+          "shasum": "de05c17a7e58aac1ca9d743218dfcc7f66ba9668",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.75.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.75"
+        },
+        "@cline/shared": {
+          "fileCount": 99,
+          "integrity": "sha512-7U4H+chFbx3QIumYwxoAZhDUKAlbepy4NhW9UB1lVMdbROO2V4GqVrWFkVgZSkEa8dRuPo7yO90mqFE2Csaxgw==",
+          "shasum": "a04364fdaf3a55260033d524ae44218565b72446",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.75.tgz",
+          "unpackedSize": 1421550,
+          "version": "0.0.75"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "c238103e631d492b97bf9e63b060390f1bb8a8a6",
+        "peeled_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+        "tag": "cli-v3.0.55"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.75",
+          "@cline/core": "0.0.75",
+          "@cline/llms": "0.0.75",
+          "@cline/sdk": "0.0.75",
+          "@cline/shared": "0.0.75"
+        },
+        "file_count": 6,
+        "integrity": "sha512-3JQ5vPl8/BIyTShTpn0VDX59lbzFhGxRwYqZmAVLOPcX83ETaHbgH2fc9iJYv1pB2ChIpXQEXmFHowgz8F1GgQ==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.55",
+          "@cline/cli-darwin-x64": "3.0.55",
+          "@cline/cli-linux-arm64": "3.0.55",
+          "@cline/cli-linux-x64": "3.0.55",
+          "@cline/cli-windows-arm64": "3.0.55",
+          "@cline/cli-windows-x64": "3.0.55"
+        },
+        "shasum": "88172d7b7ace564811185858da42b8f62a56751b",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.55.tgz",
+        "tarball_sha256": "7eec2ad80d8dfa27b9baaa22c7340ebe861850f6057b9e2e80a5dd9d2ef2f5ef",
+        "tree_manifest_sha256": "80774596708de8c3ebe6577e4aca630132c480efd81046552685d8e043c5466f",
+        "unpacked_size": 46371
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-9qSF6jH5hOYsWC8s3YgraNcJkOBZ8Aa+ia4uZ0iuPY8pOEzcWZEhtOITtfGzitk1aPJxNKegnTASOkQunJnHJw==",
+          "shasum": "9fa186f0ec68ec17f643d3fb8c05d1094801c532",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.55.tgz",
+          "unpackedSize": 94266143,
+          "version": "3.0.55"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-dq+bJq1Ch1OwDjs+QTzYeTjPD1DuuqUqt3AegjJtno7GEMLSz9XKgLZoRVscgksEawhsQXwd41ims7t5FfpvhA==",
+          "shasum": "3b4b2c582e8aac36767d3bd276d24a10d814e881",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.55.tgz",
+          "unpackedSize": 99279735,
+          "version": "3.0.55"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-+J/Nllva7/CsSfk6udrSY8ukGaxbv9WvEbCPGWYrmfMk1AZ/Thtc3v5rkElErbzDxBnQQ24r7K0lPRqRJk5NWg==",
+          "shasum": "46d6250550fe7e3f027a70cd37dd5c16b8ac35f8",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.55.tgz",
+          "unpackedSize": 156183226,
+          "version": "3.0.55"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-vVqqET60tC5KfIfdHwLTyYM4RummI4S4xZv+scaOwXf4aa7D9MTArI9/B0W8V+6lhhdgULRfNyDMpm/l/sEGug==",
+          "shasum": "6901bdda448275f64ff3e3484c6c6972e7ed6cdd",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.55.tgz",
+          "unpackedSize": 156211892,
+          "version": "3.0.55"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-MujCtSEGe1caajLjo4muCuwSPq85tTXJ1el1pZzfYm/ysBUd4EhkTEDrlkA83CnONt5Xi+eLShiuBTXyIvLppQ==",
+          "shasum": "41d26411d4cf05eadd79446385e6c3756287ba25",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.55.tgz",
+          "unpackedSize": 145294210,
+          "version": "3.0.55"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-sfMzs3FB8ewg7GZgCz4h2gvNvrMmZkTj8SaoHzy7vvHE0K1fT+aDyjttZANPOkAhjCRyCdNDpBT7TsXbjHyuHQ==",
+          "shasum": "dee0dbe9e2fec3b477edfe1ec166c2236fcad700",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.55.tgz",
+          "unpackedSize": 148681084,
+          "version": "3.0.55"
+        }
+      },
+      "published_at": "2026-08-14T07:55:21.353Z",
+      "version": "3.0.55"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-3UC7IUzeNRDoKv9AIBRDfC+GDF5d1+Tw+tEEViX2d/WFxPh0Lodbyfri3npAzJvloP6y5jkXWRRUjCszMMFcsQ==",
+          "shasum": "70e541228f9ba47345b61b52f6997d2c70ca8282",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.77.tgz",
+          "unpackedSize": 364715,
+          "version": "0.0.77"
+        },
+        "@cline/core": {
+          "fileCount": 288,
+          "integrity": "sha512-YyUeglARhpOHfR/JZLWeTjPsgiLjMUa30nkMAvImV4GEtx5BbyNraKUU32u1lPHKERqblw7c0dGooNGlwC1RDw==",
+          "shasum": "41141fad2444da59d1f006ee7f824ad48736b73d",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.77.tgz",
+          "unpackedSize": 3736212,
+          "version": "0.0.77"
+        },
+        "@cline/llms": {
+          "fileCount": 155,
+          "integrity": "sha512-ziPCBN9Bsxo4OvhBq45zXh3N43vqbhChIGvzCHzM3m2zB16jOq+tZHule8fIyatSmITzsKW09l3tnd/iIEdW1Q==",
+          "shasum": "9beea6c4609469d3a63dc2862fe438d8246b6aee",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.77.tgz",
+          "unpackedSize": 9979338,
+          "version": "0.0.77"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-5it0MnkasrTX5TdGCat4LGWeiGCZDUpoF3+FnlrOp3sA+fe6ey2VGLLOpDXO2kihnSIDW6yLSf/gbkXctpfRqQ==",
+          "shasum": "392252e8653af3ab090dd9b54f2953977e58b8e9",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.77.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.77"
+        },
+        "@cline/shared": {
+          "fileCount": 100,
+          "integrity": "sha512-ACfEpWdyaSKunEKdCd3aoi8pSBt0MOZgcRfPoEYXxCo0cndce7pARvm6vQx7hXXYxPCTOWgpEdFmpPqYmHlabg==",
+          "shasum": "8bd784d5ba23fedaa36008aed837ed960eed7d85",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.77.tgz",
+          "unpackedSize": 1457150,
+          "version": "0.0.77"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "14b49e8c2a717a2ec590f3daea2fd64a0f867e2d",
+        "peeled_commit": "4a128d5f760b56b4fa81d98336068b83737ce5bc",
+        "tag": "cli-v3.0.56"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.77",
+          "@cline/core": "0.0.77",
+          "@cline/llms": "0.0.77",
+          "@cline/sdk": "0.0.77",
+          "@cline/shared": "0.0.77"
+        },
+        "file_count": 6,
+        "integrity": "sha512-njiKXFoz6FnqjdrhGtC6SUB+EQeE6IxHNQijJLcLiMCE1NJtZu360ZU/te+bw5u5vCruUb2d/fi9MFYEK58jOg==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.56",
+          "@cline/cli-darwin-x64": "3.0.56",
+          "@cline/cli-linux-arm64": "3.0.56",
+          "@cline/cli-linux-x64": "3.0.56",
+          "@cline/cli-windows-arm64": "3.0.56",
+          "@cline/cli-windows-x64": "3.0.56"
+        },
+        "shasum": "ce5ff54b4891d627958341fb546989f712b43e54",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.56.tgz",
+        "tarball_sha256": "9d6eed3bfb7efe36981f9f7d39937560a1bc3a7ee38435b71ec8cc8b0210d7e5",
+        "tree_manifest_sha256": "4f3b6f2bd488c533aa291580a7269658a5da8f522b3fa3c02789a733ccf12cf1",
+        "unpacked_size": 46371
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-vhZKUvzuR2GnpcxYppohQTPnkNdweoKKot8rVcZXiLnOTR2EiFA2S+2rqy99WZWWzRox5hTwL+0JyLcr6f26CQ==",
+          "shasum": "025f076a1386f6aed736a661484c7f5dbf635f36",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.56.tgz",
+          "unpackedSize": 95360037,
+          "version": "3.0.56"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-3CxDc28Suh27r6+R5qb5xWGLrEzlVTLrblrbJhE5G/NuKhgl27WITlcII6shylaCwm83RMo08t1Qn+y8inaXEw==",
+          "shasum": "ea0d81c7734703c1d69b24221f40396d81193033",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.56.tgz",
+          "unpackedSize": 100365181,
+          "version": "3.0.56"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-MQFsBeOItSha3FX1eJh1ZLta9+JVgkTWJRlGJKoOtO4fBcR5OHVNY2Iow0Ymy8HpA476uBNPUpDeJ5KHcxrhaQ==",
+          "shasum": "c998cacfb5400a209ce36e23738620fa6076aa63",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.56.tgz",
+          "unpackedSize": 157301440,
+          "version": "3.0.56"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-M4B+SF0xZs45/M3ZLZ2LjgyapiCM6SGwkAMYtuEP9boDtzr5vUIlCJkUjz2MjnVHQMf3Q7Zxle0Tb7E2FDefcQ==",
+          "shasum": "01467efa47ee256db98ab4497f2450798cafed88",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.56.tgz",
+          "unpackedSize": 157305530,
+          "version": "3.0.56"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-0wpU2MM/Mssp34v6S5cntPwFWVcTsf25V4EtGCqCSGAzoLBlwj2H85yPgrMkVPVRxJDwjhHKRRpv231laKUGHQ==",
+          "shasum": "d0639b318399312270f9d5a51b65a1faf8e40001",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.56.tgz",
+          "unpackedSize": 146388360,
+          "version": "3.0.56"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-DG1aRTP9SH3tsyMnbsjJXKPZQbkoos838EuH63OExq6CnDcCfterLhLse55OdFvjExnajZ181qMFAVjUL4GQqg==",
+          "shasum": "ac97e9c31df993236a6686d8d0c54bc6986a84f7",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.56.tgz",
+          "unpackedSize": 149775234,
+          "version": "3.0.56"
+        }
+      },
+      "published_at": "2026-08-21T05:03:02.124Z",
+      "version": "3.0.56"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-wHVVwtkR4uSTQuAayjs68NZSvN4X+W5tquCMN+ONqDjYnCfuG6BaLlbpwil53DmlxumCm+rFuwbnN0RJ24JWxQ==",
+          "shasum": "1f9a11550f5390c6e30ae937c3541b29317d1740",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.78.tgz",
+          "unpackedSize": 364877,
+          "version": "0.0.78"
+        },
+        "@cline/core": {
+          "fileCount": 292,
+          "integrity": "sha512-LqDhwbQrNwg31z3BGeZWs/oRY6ElZkOIdHqXbutU4Kc6DAjIYo5rO1rpSxW67/DZLlGsfO3k7yRgVJRtZIqXMg==",
+          "shasum": "c53e89c7b79ddd09300e2ac71fb9e7d7165f9b74",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.78.tgz",
+          "unpackedSize": 3804493,
+          "version": "0.0.78"
+        },
+        "@cline/llms": {
+          "fileCount": 155,
+          "integrity": "sha512-Ek5+IllSNp7S7ia77Uw1j65NvXffGOOoa3mz3FHoPxZF1ztgMCtraNp5Vp2nEG2PhLWsqZgLfULU5GJkN7JbPQ==",
+          "shasum": "fae0187f571a6f986476f93d973eccc9c4496950",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.78.tgz",
+          "unpackedSize": 10038305,
+          "version": "0.0.78"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-cMBfQGz6+mP+dmGMu3ynTRTfV3NbnlIWYmIQ4D9NRCSTExCqwtdUwpA65jekQiRWNW7Qwpi25Eihu5hoFxJPNA==",
+          "shasum": "603103453d1c8bf7b3ee4ceb5ad813a9a223a017",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.78.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.78"
+        },
+        "@cline/shared": {
+          "fileCount": 100,
+          "integrity": "sha512-PDpnfHLLkIwLkLmFi4WFkTj3a+79jOQnrgH7FoiJBiy+YkMZqS+rQ7qo2NdHlPaB3Ltqy8dhczvm+t4puQXtvg==",
+          "shasum": "a4d29719d462f4edd7de459a8224c8eaa9127288",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.78.tgz",
+          "unpackedSize": 1458613,
+          "version": "0.0.78"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "c9cf6dbf86a9a6fe9546909de23b13da1916d1a4",
+        "peeled_commit": "2266fe8cf4d5b3e7f23e3083f0059c5e64c23264",
+        "tag": "cli-v3.0.57"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.78",
+          "@cline/core": "0.0.78",
+          "@cline/llms": "0.0.78",
+          "@cline/sdk": "0.0.78",
+          "@cline/shared": "0.0.78"
+        },
+        "file_count": 6,
+        "integrity": "sha512-t9iccVz24XurqWXnuUMuVujy+FB23/vp00Rmzat+yflcF+TGxXrGgIpa8gGcjFY7MWltudtC13AZFVfBfgeO0Q==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.57",
+          "@cline/cli-darwin-x64": "3.0.57",
+          "@cline/cli-linux-arm64": "3.0.57",
+          "@cline/cli-linux-x64": "3.0.57",
+          "@cline/cli-windows-arm64": "3.0.57",
+          "@cline/cli-windows-x64": "3.0.57"
+        },
+        "shasum": "51546effabda1b6c1f030a6308c68851a21eb037",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.57.tgz",
+        "tarball_sha256": "6e7d8acf72d7fdc0c052e50d1f88eda4b008aa5907e523ea97fd059aba62e3d5",
+        "tree_manifest_sha256": "7e4509645a09febb437c9a1ed870235519a668d4cf4ddc4ac8bcccfc6205e487",
+        "unpacked_size": 46371
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-SAqJFP59PLP/dFadP4vX0xBdl7AdkjbbFTl7ifk+j+j0oGKrqfOEvUi2L0xkyuZBmEH0tyyCkN60bGb4pZ4yUw==",
+          "shasum": "b6092f46deb22a2bc2dc5a16eeda58485841319e",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.57.tgz",
+          "unpackedSize": 95426111,
+          "version": "3.0.57"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-ebVuw2SD4MU+3wmzPlqI9lntfxUHiAobEf26niA/aY+3bCdDbewj28pvEgXfGJXA2vboQJhznfpTIbO0SGbsNA==",
+          "shasum": "776dd4a76e1fe1fbc5637d510c3f1b4e9128a92a",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.57.tgz",
+          "unpackedSize": 100430743,
+          "version": "3.0.57"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-BZgX7v3iuklkSjnzCwT7Fpsbo8IdVNS7AYXZDK0aijtn4PHQM6gPOxbXhbCBOCItzGB4bkyvCYhp6SFJEhU3GQ==",
+          "shasum": "2b63541d057f8461b22976ec53fe3a92195dbb2e",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.57.tgz",
+          "unpackedSize": 157367002,
+          "version": "3.0.57"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-LoTS+6ft4tmfOeebOWdpzSwahySqCSMYom37dGtf4tK//Yx8c55WFAw+NxS4hKNjzB0SEbNKHEmCr3wFI8jyfg==",
+          "shasum": "0bc4ba3576bee962c7f158a3889e42744fd39f89",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.57.tgz",
+          "unpackedSize": 157362900,
+          "version": "3.0.57"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-1N1jg64GsSqf5VgqhPof1hsr0XO8cqAix/XqV4WqeqqQ1XcoGQKMk7Ix3xnCWcYkfrPWs8gkH5clgUXkOrzUgA==",
+          "shasum": "8dc6ef16e93bdb6116f7cb966192ed8c7326b259",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.57.tgz",
+          "unpackedSize": 146446754,
+          "version": "3.0.57"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-dmN8lEJBY+PcS9JS2nVNWrYKli8Xhiyh5OETSRvxWxvUYty0IovP1KM/cNsZwBs9XpvyEVfDZ1KJ6G5Tvd//3g==",
+          "shasum": "0b0f2364482241cacdf22b5149f80403b299b31a",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.57.tgz",
+          "unpackedSize": 149833628,
+          "version": "3.0.57"
+        }
+      },
+      "published_at": "2026-08-23T00:04:10.807Z",
+      "version": "3.0.57"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-f0IC8YirMY9EIJoN8iIL5eqrRuFyKYZ6F5JpcAiC8rydJUIdTxrs0VuDWLg7jeaJ5JN+Z2CUBG1M23CdakhmnQ==",
+          "shasum": "b251bacf9eb588d8198f218d705ba9297844d72d",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.79.tgz",
+          "unpackedSize": 364877,
+          "version": "0.0.79"
+        },
+        "@cline/core": {
+          "fileCount": 292,
+          "integrity": "sha512-Uuc6jq6NOE9J3nlDLyVp57iR/H5WtpjDtll0UbIeNKVKuJF7gSY/t1whFVo8QBOCstai7RPZAHwKHYcOX48NFQ==",
+          "shasum": "eed852562c361968557c1eb06eb142f581cec744",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.79.tgz",
+          "unpackedSize": 3810678,
+          "version": "0.0.79"
+        },
+        "@cline/llms": {
+          "fileCount": 155,
+          "integrity": "sha512-YBTa4PvH24B2XDQMoU/GHDT88vhfW89/9weRd+qxdgApO4KKhqI4JpLGI5RJdfifO0aigDiYI8/Kv5f1tPzpqQ==",
+          "shasum": "7a2a24333d866e607254452d670e574af4b2ff6e",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.79.tgz",
+          "unpackedSize": 10121667,
+          "version": "0.0.79"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-nzAPXLN2vXl2P2CNOjdC7g7kO5l1+QLw5bay/oJmVOfyRSQsooSrYuQ1I7ZZ4EkW3PccoaDn9g8og0qcfZ0Ohw==",
+          "shasum": "c2ce717b7deb15992f19e07124c90ddb593c5db0",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.79.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.79"
+        },
+        "@cline/shared": {
+          "fileCount": 100,
+          "integrity": "sha512-gfP7MT3CXZJXLTkToEFMMDtMyue9k+iKZITtUdUvlCEzLt2cxvZHOBPgnUTMWyR91kfVvaYbFtT7NV8PcEiBbQ==",
+          "shasum": "fb4db55c38596ff45c87b1d3787d3c945cb9ee77",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.79.tgz",
+          "unpackedSize": 1458613,
+          "version": "0.0.79"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "058c12803f10817cf95270fa1f85285f9cc92d91",
+        "peeled_commit": "8e7a55498bdb265004427160b68d8228a62d4e4a",
+        "tag": "cli-v3.0.58"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.79",
+          "@cline/core": "0.0.79",
+          "@cline/llms": "0.0.79",
+          "@cline/sdk": "0.0.79",
+          "@cline/shared": "0.0.79"
+        },
+        "file_count": 6,
+        "integrity": "sha512-Nx5rWOkV5/qFynCp0wnneFuy/fVQbiipCdHr8J+jNrlZkbLjNxBIzTp0gtP0e5sLMAzZUvg2KBEmDFE4P5u9ew==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.58",
+          "@cline/cli-darwin-x64": "3.0.58",
+          "@cline/cli-linux-arm64": "3.0.58",
+          "@cline/cli-linux-x64": "3.0.58",
+          "@cline/cli-windows-arm64": "3.0.58",
+          "@cline/cli-windows-x64": "3.0.58"
+        },
+        "shasum": "239650098614aa0a6a0ccd4c016b660c2264dd22",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.58.tgz",
+        "tarball_sha256": "87cc216140abe3f5f664a02a0390bd29924f0dc7031b2fa3dcfd75f8527802e9",
+        "tree_manifest_sha256": "66c5d46f0060b0ac09534a80e01783bf4baea057d4abd3d657ddc76f8935c302",
+        "unpacked_size": 46371
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-elUxOT5cYB3/aXFGpCISAJkOnjLSrKEmdjAGW7Hq+n0FRY02IQcpl2+kiE4IVsHfQBtTjJykPeRYfyZT+LaxQQ==",
+          "shasum": "edf740789f71937986d21a89944b4aed00675700",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.58.tgz",
+          "unpackedSize": 95459135,
+          "version": "3.0.58"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-nWkbgeueFpFeLBPXhZMtVIrlrycDCatVXceDsLSy8AORkpjPfj1RcfmgW+12nqofjmAOv/+mGjmQq1xLr4pFFQ==",
+          "shasum": "1348f6753c154d290fe78d66aba4dc1559af667b",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.58.tgz",
+          "unpackedSize": 100463511,
+          "version": "3.0.58"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-N0crVA58dbb+rJbOIVTKF5yAeRAop3yw41NTiIPRai1V9kIty4O7cquCL42C90SMNSAg2UG/o+r2sBEsB7BRlQ==",
+          "shasum": "d667e38164abc9df8b68da564132a1ef3080338c",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.58.tgz",
+          "unpackedSize": 157367002,
+          "version": "3.0.58"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-b8teuOp73TXWZ2s48YEFZ4ESivEAa2UO88SkWL9O0YPkpb3cmI8MrHHr67ZNltfQ74+DU2Si7o6nXZaexi9irw==",
+          "shasum": "f584929ec2b67063a34614f9bd261c668a478b20",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.58.tgz",
+          "unpackedSize": 157403860,
+          "version": "3.0.58"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-+FRFK1OxBYOjTyFP4uxxkeS4LHxcv+ri6L2q2prXo9/8ejp1r64ldk051cQ/HUWBrWKLzREfBE89fT8GqjYR1A==",
+          "shasum": "2018de5ff69cd06bd13483abcc05db8f70a6b182",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.58.tgz",
+          "unpackedSize": 146484130,
+          "version": "3.0.58"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-dfLr58SU6E23RYbEeu/1kRGX2w2UVwvuPKhZtzXaNxVynl+T2anV1YtGT3qbB7ogp9v0QUqF0dP6F2oBWgXDuA==",
+          "shasum": "5093029a76104fb8f1fa2ab98f75394076581135",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.58.tgz",
+          "unpackedSize": 149871004,
+          "version": "3.0.58"
+        }
+      },
+      "published_at": "2026-08-24T23:07:49.279Z",
+      "version": "3.0.58"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-P3HZhizzEJP/wsZs3L3lFmitnH5PZ2uraQpAYJ6cVtj0XrAB+5bkuvAH5OZ3YIB/Am1+wnIUTH/MtLWdHXkUlA==",
+          "shasum": "27fcc7a8a1ef417b28c62e2d34f441e81db9d346",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.81.tgz",
+          "unpackedSize": 364877,
+          "version": "0.0.81"
+        },
+        "@cline/core": {
+          "fileCount": 293,
+          "integrity": "sha512-8lsBPSgkH4oACcIS/AQMzYsx8WfJhkHoNXYHnDKoXjJijFC9WRv2fkaPaCZqe0FPyR80ob1gVyCCLEj7pIHiRA==",
+          "shasum": "78752bea07f66b4931fc6679c3a35a8c09cd6287",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.81.tgz",
+          "unpackedSize": 3817677,
+          "version": "0.0.81"
+        },
+        "@cline/llms": {
+          "fileCount": 155,
+          "integrity": "sha512-lVIjzY8N38IiU3GUJLxPMKQ8LoI12zckAH3aNMNO5CJeNaff9MI0DSEvX/+42iYv3vE3chcwzu+i+uOEE2pIEw==",
+          "shasum": "a1dae5b2825c90ed5cd2174a073abe03307640f3",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.81.tgz",
+          "unpackedSize": 10171414,
+          "version": "0.0.81"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-ImBfofDMEY0uCbhkHCUb0HT2rtRyfuyTUGVOBn3g+/fp9CmgqR+W6l0OZHMTVknmEzUTxj2BPxPgWbp9sAJAKw==",
+          "shasum": "7cb9c85e0f416bce805c2dd41aca777a20747e6e",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.81.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.81"
+        },
+        "@cline/shared": {
+          "fileCount": 100,
+          "integrity": "sha512-o9uEEunkroo9nsu6a/xxpmn1miUL79ksjnxubcph0DnYfFO2TBfFKZqbu/v18WEMCPRZ3PiMR1TCE1o7FbhGxg==",
+          "shasum": "d0fe92704ef523fbea7659e7f4379820ea72017b",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.81.tgz",
+          "unpackedSize": 1458857,
+          "version": "0.0.81"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "08931a33cc528f1a540e50c4d6b147786930493f",
+        "peeled_commit": "c0c37a1587defec8d0e901f053312d0721bec0fe",
+        "tag": "cli-v3.0.60"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.81",
+          "@cline/core": "0.0.81",
+          "@cline/llms": "0.0.81",
+          "@cline/sdk": "0.0.81",
+          "@cline/shared": "0.0.81"
+        },
+        "file_count": 6,
+        "integrity": "sha512-4IpAv7cCtj9ciODYbuVkbQDctbvFs7LHMJoauUuTfGC7NaMeOgl4dAF53VNnAr/5E+8qmL1VU8pnkoM982Helg==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.60",
+          "@cline/cli-darwin-x64": "3.0.60",
+          "@cline/cli-linux-arm64": "3.0.60",
+          "@cline/cli-linux-x64": "3.0.60",
+          "@cline/cli-windows-arm64": "3.0.60",
+          "@cline/cli-windows-x64": "3.0.60"
+        },
+        "shasum": "5e72f6d01702f90ea8b6619a5beebf1f730a8aa4",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.60.tgz",
+        "tarball_sha256": "216b7d54344dc4fef34b7b3299140bbbdda289358ce111b67c504e5b81a71e3a",
+        "tree_manifest_sha256": "7d1a4790b19d68e8e96fb6e0baef5fda06cddc522035f088635ff713ccf3679c",
+        "unpacked_size": 46371
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-L2QnPFAEWU/eS6f7L5TnTr8X1JEY1BO5oaxtVPUgysj5b8R9Ow4czmEvunusMvyIcDPRp4SUQ5Qktv4NklY/3g==",
+          "shasum": "9b7aa5fa35d293b1c6e5bf107ed045cdb2695172",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.60.tgz",
+          "unpackedSize": 95492159,
+          "version": "3.0.60"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-JmuoB2AteuZtJfjEW29DmsRxPR470CJq27YLJTPaCi4T4MQhCp7uRdsUubBXvhNa5H4jGcFnbsu5db34wVzPrQ==",
+          "shasum": "018f971a7846c8dcfd29689b1f1c1ebc9ddf04e8",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.60.tgz",
+          "unpackedSize": 100496279,
+          "version": "3.0.60"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-jYSBgtJy2zBcWcvXEsxSS+Wt7cSH4GSJaE6iRoIp4UJ77v7M7lDW8KFayf9LTMtd0Mso7E8IY4k3GKxNzfDgwQ==",
+          "shasum": "c87a37309acc7d2488657428d6091c2db6a725ee",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.60.tgz",
+          "unpackedSize": 157432538,
+          "version": "3.0.60"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-oW1qjN6v1CJJMR5jnILYlVnA+S2z6Gd5Un5pFzWdc/w7WquRNSPLh3S3HLNIJgYSlWKJVSrNd2eiRuHX0y0jJg==",
+          "shasum": "9c19ab244bf4e508ed25951634f230f2ff3e2621",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.60.tgz",
+          "unpackedSize": 157432532,
+          "version": "3.0.60"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 148,
+          "integrity": "sha512-nPrml3SXgaIf/TKo0s5YBhVBH1ZmJ36HGOCZctCfLYchJ2E4XpIBerkT7WOzkW80ThMwou90acV6B40MxMTR9Q==",
+          "shasum": "50b09e44c5b1b45b45fff781b47d6247aa3d7682",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.60.tgz",
+          "unpackedSize": 146515874,
+          "version": "3.0.60"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 148,
+          "integrity": "sha512-bKX9+HR0L2GjH3aSffRRVZcNTa56RyRvk8pFKAdrlbfu+/rZ+/rD2oDSuhseF4/6YPsFvLJ80qygYi9j+bSsUg==",
+          "shasum": "bafc5957bffdb9f4eb57550c0493b784434597a8",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.60.tgz",
+          "unpackedSize": 149902748,
+          "version": "3.0.60"
+        }
+      },
+      "published_at": "2026-08-26T09:43:24.353Z",
+      "version": "3.0.60"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-J9MKxG2UIsWjdaqGfD9tj1NIn4kKvmjb0ap4IziORaI/RbhlliIw8/DTi62g2Xx0caWv+VEtekICVAGHaY1vSQ==",
+          "shasum": "c4a6cc65e0d6f9f7c660c54bf6a7e3d76e331c10",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.82.tgz",
+          "unpackedSize": 457532,
+          "version": "0.0.82"
+        },
+        "@cline/core": {
+          "fileCount": 304,
+          "integrity": "sha512-2aGd2Upker6cEJdrXRR/IMlRsbiMXi41n8FM4Pu3gXL4IWDiBees7aXErqKPK/6N8N4NV9lJKsb0n5YR1MZjPQ==",
+          "shasum": "b25e5ec776b8bc1e529d554df66d093e50c2387a",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.82.tgz",
+          "unpackedSize": 3969843,
+          "version": "0.0.82"
+        },
+        "@cline/llms": {
+          "fileCount": 157,
+          "integrity": "sha512-kzS0f/xIZDzXJ19f2qFu5VtzzMaCAzfSNWnGLX6LIDlwIwWnJCAxw6agz/iNxMHnxESDY5Qtcr8jHnndm1/CCg==",
+          "shasum": "52e9d4d420dc082c46dfd93e37a41c73d8754c4b",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.82.tgz",
+          "unpackedSize": 10829730,
+          "version": "0.0.82"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-RAkOGPCS4d5LsE41aedfNbcHu9tJR0O3wv5xK2pzhNB1sP28vGXb+gS4+QezlyISqzF7SHwJ0jlXIs3kuZo8zQ==",
+          "shasum": "bbbf2b51dc8e8c190d01f4898063d0823ab5c73b",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.82.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.82"
+        },
+        "@cline/shared": {
+          "fileCount": 100,
+          "integrity": "sha512-vOG9Pa7pDxjcXptnUth8H8i0TnJAa9n//yQeR3tlIpgCbdkvr4SaQ75gV3CXxIglJzYZsP7BOr7r4KYiXWjEpQ==",
+          "shasum": "c0272e57a271f48f13b1fe7e8d21657df90e02ce",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.82.tgz",
+          "unpackedSize": 1744241,
+          "version": "0.0.82"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "a0d49483d846df2c2a6658a2143a2c0c543f2bf9",
+        "peeled_commit": "595f1dbf2ea819e987afeadb4ed4dd9a0ae9a55e",
+        "tag": "cli-v3.0.61"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.82",
+          "@cline/core": "0.0.82",
+          "@cline/llms": "0.0.82",
+          "@cline/sdk": "0.0.82",
+          "@cline/shared": "0.0.82"
+        },
+        "file_count": 6,
+        "integrity": "sha512-dxO2ds7Yo97inD366+sSuKIx1f7jJ6Ab9S4txbuO2Jjn193Ky0+R4AopQKAOrCml09LDmI9onNnlM1kUFQlLAw==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.61",
+          "@cline/cli-darwin-x64": "3.0.61",
+          "@cline/cli-linux-arm64": "3.0.61",
+          "@cline/cli-linux-x64": "3.0.61",
+          "@cline/cli-windows-arm64": "3.0.61",
+          "@cline/cli-windows-x64": "3.0.61"
+        },
+        "shasum": "6724008eaf58572b8e490dcf71aae08998face40",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.61.tgz",
+        "tarball_sha256": "f86438211f2926e810f24252406faade71ce85978fc60f8514b555839e3b8fda",
+        "tree_manifest_sha256": "acd2a6de98806bfcc83268a3c548d293167ee471ca5121229a5af23954d0c32a",
+        "unpacked_size": 47364
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-9HPl04mCp1zTfUT05S2NABPh1bl+2Ia37TY/LGNrL6SZl33n1z0DscrOzIH1ZFhoPvKIkU9b6rw92AFzCbgJlw==",
+          "shasum": "4346c6219dbb62afb1c72f6b100f1aab203ef380",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.61.tgz",
+          "unpackedSize": 95978814,
+          "version": "3.0.61"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-VY0EpfniLSfwTxivfWnhBeEESLrq0vu1N+WGTjoNydOrIuzwHQoHF0RUGZwEMUAdoHY+eYGco2ST+mngWIkJeg==",
+          "shasum": "9b9373abc04f355623bb0bb0421d7324ed366aa4",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.61.tgz",
+          "unpackedSize": 100979222,
+          "version": "3.0.61"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-3dM+aNmOK4xqbIFJ75NhQ/PdepS4tCnleclXXuYsX12l5WIW4Fznqj8sntgrleI941TAe+Qi7Mr9x7RpbGGIhQ==",
+          "shasum": "81cd37e9daf06d1ba8c61964e770f25b00e4767e",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.61.tgz",
+          "unpackedSize": 157899097,
+          "version": "3.0.61"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-dsCg3/UVMl079e0GA8BUTszlZzHd9/JhZ6/23To9Zk/7JacGSThM731ygDEjJ19R3wi+JCXu1GBoLsg0HRiFBA==",
+          "shasum": "6215679111eb22a717348a2ceddace248c89b66a",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.61.tgz",
+          "unpackedSize": 157911379,
+          "version": "3.0.61"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-AsG3nFbuhlMvxcsS3YCbaMVP5Jc3RmDuDEQmz0WJwCQaDPbovERpUswmukBNaWKPGHnyoUz6qNe9aJQ9Du/xLA==",
+          "shasum": "2d961509dbe48b549794e826f0847a419f99411a",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.61.tgz",
+          "unpackedSize": 147003609,
+          "version": "3.0.61"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-fgNcwRAcjXk0YpqIg7d0+eSrX9F1QnAG6g26VsZgi0uUYkZRgZJ6JhFVnUzfyrs/XZXv3L1cY0MwlkdxERApnQ==",
+          "shasum": "e88a5735ed836bcd3b0bd4e5b233795051ac10da",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.61.tgz",
+          "unpackedSize": 150390483,
+          "version": "3.0.61"
+        }
+      },
+      "published_at": "2026-09-02T04:49:45.974Z",
+      "version": "3.0.61"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-JClaqMpn/S4XKZt2idgo8VFanDmkHMpW+lruqPbwqTuvc2wdW8wjUq9c/h0b/+AGJjt2F8ymRrL8hC7c+9qPew==",
+          "shasum": "3735d215f8dfed982c398f44d8f393ab455362e4",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.83.tgz",
+          "unpackedSize": 477984,
+          "version": "0.0.83"
+        },
+        "@cline/core": {
+          "fileCount": 316,
+          "integrity": "sha512-7EMVuox5YVXNDs1lAzaLF25K+rKEbcNOl3X65NLE+cnOVhQvLJ/EOcz4ViDStK6a5jSDoYP8oCyTY7PZoiAhww==",
+          "shasum": "02f7ff1d4a0ef47e07542099db8400a1ed45af34",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.83.tgz",
+          "unpackedSize": 3728933,
+          "version": "0.0.83"
+        },
+        "@cline/llms": {
+          "fileCount": 161,
+          "integrity": "sha512-Ab6vYvsV3ZUsWOLejHYYhOSzERFeyLOwFOAaZdPGKveXTQjWQs5AVNkoYIpFZST+KvqC9i4J4el2q2eaGqF2Iw==",
+          "shasum": "a49bb15658983cac20407df4cdd97c7074a20b6f",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.83.tgz",
+          "unpackedSize": 11469348,
+          "version": "0.0.83"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-+wCyPjlzglsQ32Us4eTzPxY2zBGZNUlhVRunfTCoWFvkhNmg79XkBRHwFs6x1BR5TQsjUwlbFYKYkCw9WYDF/A==",
+          "shasum": "56e6a8e0ff80ded1fa925690ca64cfc8ab09a258",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.83.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.83"
+        },
+        "@cline/shared": {
+          "fileCount": 102,
+          "integrity": "sha512-o/Nl04OKL6jstTfh7IgbP0V/jTaHRNK18D0IYowyumgY7ICd7z6e+v+JQPLhxPNNMSXW1XJFLcJhH4XgtrBp4A==",
+          "shasum": "15e7afa20b7dd8de08d0d863696d304c673824b9",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.83.tgz",
+          "unpackedSize": 1808072,
+          "version": "0.0.83"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "3d9632f26217c2800aac1f37e8224b5a192c8d4b",
+        "peeled_commit": "d718dd16f850c4c915a8214441a831e00cb28c75",
+        "tag": "cli-v3.0.62"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.83",
+          "@cline/core": "0.0.83",
+          "@cline/llms": "0.0.83",
+          "@cline/sdk": "0.0.83",
+          "@cline/shared": "0.0.83"
+        },
+        "file_count": 6,
+        "integrity": "sha512-9XH1bpPii9yeR2jNn4vEEnXXI7Jh3mqtQdhPAiJXScPRMEpFCb4hFKYwE4tUfN6diGemxa8LEd8keIJ6jBkMZA==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.62",
+          "@cline/cli-darwin-x64": "3.0.62",
+          "@cline/cli-linux-arm64": "3.0.62",
+          "@cline/cli-linux-x64": "3.0.62",
+          "@cline/cli-windows-arm64": "3.0.62",
+          "@cline/cli-windows-x64": "3.0.62"
+        },
+        "shasum": "4319378857f2ee248366f5b5e4ecd46192b1825d",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.62.tgz",
+        "tarball_sha256": "7a4df4ecf7613cb872c5c8916d82d247af13a69b4033bef88d41c5f13820802c",
+        "tree_manifest_sha256": "74078a378d67297f7773885991ff96b333fdc20cb11ca82fc8dd859fe93ad713",
+        "unpacked_size": 47364
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-o42s422px4GdlZblJhkTVVcaSQLo5iETTqxJlKm6HfYTbw4W7jmi8+9bMTAsROQvMqV7qWBovUGg4PSzxp8Jsg==",
+          "shasum": "53ce462000bef162de29a9070bdc8b03678c852c",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.62.tgz",
+          "unpackedSize": 96226648,
+          "version": "3.0.62"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-DPoFM0ohgBpHYsgBrWmUS64oRTEM0SzTx0BNQXHG37zR6IZAn8sfL68eQWe4awyKPTzIhH83rC996K8ldry3eQ==",
+          "shasum": "6769214f5369f7a8aa851ba22e50767b2d96e148",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.62.tgz",
+          "unpackedSize": 101225136,
+          "version": "3.0.62"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-67e42/yFRqvlGPwht/9UdP355Zdz5wETcPuSrhjNvwWofxAczqDIQ3N+PCIJQ0id5AmIN0wF355XfBOWde6Y2Q==",
+          "shasum": "512efe6a24e0356e052afe32634de371656f72e0",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.62.tgz",
+          "unpackedSize": 158161395,
+          "version": "3.0.62"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-HRj/3sFY/81tOv3yznViSuS6G5lEV7GRlELvPi1k0eAfzsglhH6kgPnFCM+jMJ7C3evwf8nVzvrcP+xipPlHiw==",
+          "shasum": "48a86680a465e7543ebde570e9afa0480d971ff0",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.62.tgz",
+          "unpackedSize": 158157293,
+          "version": "3.0.62"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-4qg25gGcNNy7q4jglRm+fwqPSG7BlxKYp4wF2w4OkfrY2Svp8PtbMOgm+wb+FDGlI1VhlOhZP8yRvF8vYdASvA==",
+          "shasum": "4ae55eb1acb5bb32c562bd5d5fcfc159fa69e99b",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.62.tgz",
+          "unpackedSize": 147253107,
+          "version": "3.0.62"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-XjO1Bj3bgD1IwwDLLHwLmg+TDKfaxtacHB89UmypWyKGgaLL7I9f2ya/Iz/d3sTMormG9qaVQPr4eE9gzzI+TQ==",
+          "shasum": "40d49aded976ca23bed76d9e0ed53321a3f12192",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.62.tgz",
+          "unpackedSize": 150639981,
+          "version": "3.0.62"
+        }
+      },
+      "published_at": "2026-09-15T06:04:37.504Z",
+      "version": "3.0.62"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-Ch8X+roXsd8klxFlsIt2vwAWxw65YlGLFb5nFbsvgAdfussaQOG3PJcwrOOpcXjHdoJW38lxtI+7luTxV2/4rw==",
+          "shasum": "b43e759131cb66a6cd9ea7e3073979be29cc7837",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.84.tgz",
+          "unpackedSize": 481120,
+          "version": "0.0.84"
+        },
+        "@cline/core": {
+          "fileCount": 319,
+          "integrity": "sha512-021GOqqCwve+lCFvwhyqWIBqOl9R92JaZ1D6eQ+C7kSx28M7cdQO0EMchPHUBcK7t+y7tElPAgKnwOQhmnYqww==",
+          "shasum": "4d982850115b90fc36e74968be6279c76984e202",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.84.tgz",
+          "unpackedSize": 3777870,
+          "version": "0.0.84"
+        },
+        "@cline/llms": {
+          "fileCount": 165,
+          "integrity": "sha512-xwqJHFaHyFmth8UGngsUiSQLwQxCBkBsKUUU1234etjl57WQZmMoWoYqhJLpw4o6O0w/SucpFoVU2QuukGGROw==",
+          "shasum": "e00240f5c9226f24c1ab66fe7edc38be736918b3",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.84.tgz",
+          "unpackedSize": 11708575,
+          "version": "0.0.84"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-Yz6vdOTNA6/Muvkq6AGg40N/Aoz8XeaQQWQdEEy+kPq7xCbFHRnWMuSPpuXsv0ExyS/5oEEKQ5U2TGCgJW5dnw==",
+          "shasum": "83fda97c524f13cdb89c4968786a968dc5cf69a3",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.84.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.84"
+        },
+        "@cline/shared": {
+          "fileCount": 104,
+          "integrity": "sha512-2YoiFM4+1Xyn9uuV7le3xQCgECklKDqDWiRR0LC5txjFrD9t/mRZnSkVtan1EebegbVd3VYmoKaGoOTn4Op2Lw==",
+          "shasum": "5131abc29a6ea84fb4fdf8e3fd0dba16f41fe9f4",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.84.tgz",
+          "unpackedSize": 1815134,
+          "version": "0.0.84"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "d416196ffb84559c6410d41132c9a0d35d79336a",
+        "peeled_commit": "f81c8d00946a1d6cae55cd19f70271b49e15fcb7",
+        "tag": "cli-v3.0.63"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.84",
+          "@cline/core": "0.0.84",
+          "@cline/llms": "0.0.84",
+          "@cline/sdk": "0.0.84",
+          "@cline/shared": "0.0.84"
+        },
+        "file_count": 6,
+        "integrity": "sha512-7H4iVy24l7m2z92vpySPpv9jcA4xoen7lsyw+nSvyFqHv2XGMjdHsWCj/4U5kq0/X85jn0/PX7oz74DKIxDbzw==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.63",
+          "@cline/cli-darwin-x64": "3.0.63",
+          "@cline/cli-linux-arm64": "3.0.63",
+          "@cline/cli-linux-x64": "3.0.63",
+          "@cline/cli-windows-arm64": "3.0.63",
+          "@cline/cli-windows-x64": "3.0.63"
+        },
+        "shasum": "6fafe6004c6f68cdd5a55ea1a298b6a04e472ef1",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.63.tgz",
+        "tarball_sha256": "ad1a0b663a4d4c0668d7eb6a74dd2cdef206c021532a38628beaaa96f572305a",
+        "tree_manifest_sha256": "3c8db819c4f41806d7cfbb690cc62322f7f945f7d0a95284cdf0f0a17a2c6517",
+        "unpacked_size": 47364
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-JAOY54AgRn9ErFpme9w5WK8As8E77PeUlzd/SHBvMdvulBley+2IrGqWD8VW7SXm/dXH7x3561wFazwNWDfGOA==",
+          "shasum": "3cd81e80a3b1cdb1a9061d5bceaa16aea8d85c60",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.63.tgz",
+          "unpackedSize": 96277214,
+          "version": "3.0.63"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-8B0hKS7oHjuBtdKvVS/vGirk2vj8huj09inKGtPqqZI9XyPWhmrNKoVKbhUuSf7OCftRLARU5KilMaLquqzrdg==",
+          "shasum": "bb08b54a37de25d594861258bb6833c8740b84c8",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.63.tgz",
+          "unpackedSize": 101274806,
+          "version": "3.0.63"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-LNSjn/DAI6XGABBM0gunH5t91qw8Xx8nsWkYPPyDCGzdaTj0IQS3hD3dZAbxSu5uIDA0xrUF/8DWabVOAXJTNw==",
+          "shasum": "6867148a18b028618c5d40cb10e009e5846282d3",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.63.tgz",
+          "unpackedSize": 158227449,
+          "version": "3.0.63"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-OcVf8OHK6culyokr6vS3J+eNaGXyjGLvHhGqIhBOHkzXUxx4HEq/RyO0tDmCep/wvZt9vQuNHfAyu6ypJiC88w==",
+          "shasum": "fcbee617bfed1b0d20a2e397a6628190a74f08f5",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.63.tgz",
+          "unpackedSize": 158219251,
+          "version": "3.0.63"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-D5TFFE3IwKKgZYZlV1SfkBgVhMfwbQGhZbRWFhD6sIlmjxcwNtWEcnvESnoB11Jik1Rtb3PLX2tpYVvbEU+aZw==",
+          "shasum": "f97ded93ace20788c7374fe1ad90779160df10de",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.63.tgz",
+          "unpackedSize": 147313529,
+          "version": "3.0.63"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-NoUxBDPNCk6lnmFpMuAtn2IivflV1US94RHW6R4QkM9P0Zvxsg1p9c0nw8xD1xFAe5bepwKxhj+XyRLMUqDi1g==",
+          "shasum": "e748f412457ec701dd9f337d4c9bc1fe5c0c830c",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.63.tgz",
+          "unpackedSize": 150700403,
+          "version": "3.0.63"
+        }
+      },
+      "published_at": "2026-09-22T03:51:15.633Z",
+      "version": "3.0.63"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-iM+E5rCKNzR8lVJEbNOccye6LBKmcs4NGaNi6IfNakcDq5C+jgW9htiZthz+J6hFwMqwVgg3NlFEiCR7YCgFag==",
+          "shasum": "0ed9eb12d82cad6445ce38bab8c531be3c8607ce",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.85.tgz",
+          "unpackedSize": 482800,
+          "version": "0.0.85"
+        },
+        "@cline/core": {
+          "fileCount": 319,
+          "integrity": "sha512-n0ddNkMSqUW3kMVsWRyiyG8cv5Y6LAKPyzBVITh4eAH1UK3dftxalEoDBPa+xI/FCZ9RaPA16S4d1onArjrttw==",
+          "shasum": "22fcc715135f10cdcad20595c343ac96b247e6dd",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.85.tgz",
+          "unpackedSize": 3777870,
+          "version": "0.0.85"
+        },
+        "@cline/llms": {
+          "fileCount": 165,
+          "integrity": "sha512-fkGlwct/2UhMtnLnEhrylvSbPlhMtSZd6GOhQl6w19MR2wkRkkNAUIMGj4kb5HF7EOrGK4lv3Ewh9TBPGPoF3g==",
+          "shasum": "ced54e06b0268f9b801bf739c2f90d22fbd7c7cb",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.85.tgz",
+          "unpackedSize": 11752637,
+          "version": "0.0.85"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-uMJ1nK2B1XKyu628RP2Z55h3D7UYpckEHjhOXnzdqu6X0JRAo53axpDti7uJtRKLIXQ2cTDyueQGCAUaCPM9kA==",
+          "shasum": "eea581ec18f41fe919a6e980071d7ce9ba76ce49",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.85.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.85"
+        },
+        "@cline/shared": {
+          "fileCount": 104,
+          "integrity": "sha512-J+XUQ4h3a1Fm/f0GCjsYs7+HhurOsZOXctGAciKgMk4fGUu5bRJdQlRq+L7sIriPUt3cTrHlzEI3i1haBM5Mfw==",
+          "shasum": "1e741ad2525bfd95d7af5ffba01946e5a201cd43",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.85.tgz",
+          "unpackedSize": 1815134,
+          "version": "0.0.85"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "6a2138f1a9d2418645f15824f8bdb4fbfb05169c",
+        "peeled_commit": "844c30d7ea3e01df3c036729d8c78a2678275aee",
+        "tag": "cli-v3.0.64"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.85",
+          "@cline/core": "0.0.85",
+          "@cline/llms": "0.0.85",
+          "@cline/sdk": "0.0.85",
+          "@cline/shared": "0.0.85"
+        },
+        "file_count": 6,
+        "integrity": "sha512-f8w7bSGkR3dsN7uPNsd1Pd+X0wgh8XSGI8ZBus8MXX4G/mRQPnfecLUxHF28uu2EzZ8GYPRIxFoqJcuVJmRbQQ==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.64",
+          "@cline/cli-darwin-x64": "3.0.64",
+          "@cline/cli-linux-arm64": "3.0.64",
+          "@cline/cli-linux-x64": "3.0.64",
+          "@cline/cli-windows-arm64": "3.0.64",
+          "@cline/cli-windows-x64": "3.0.64"
+        },
+        "shasum": "7e370172e5b0bd94c7f63ef9e5fe56f820d6659a",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.64.tgz",
+        "tarball_sha256": "97f739bb8d136fea7a74578a353a237a2f7726179863ff6a27c17df6a25feae8",
+        "tree_manifest_sha256": "b053b04125ba83e742ce153d606668587b7673c814d885ae2cf371793b0104ef",
+        "unpacked_size": 47364
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-Nrl2qVjq1lXvAKGXnUMIf6zDKJkDcjtwx90RyXY9WtXbgobf/j4KUtjyoO41VpVHLV852wwufOXEYpPuBGknZg==",
+          "shasum": "2c5b03ee9b0d44407fd60e16bf2cff8046078df8",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.64.tgz",
+          "unpackedSize": 96326750,
+          "version": "3.0.64"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-Dg/7nl+oaGEpORBwuusCrqIiJshd9ijh71ovb/PLhAGrXHYdnYBlifNAdVZsMtEUfup5rey6M5ADZ48AosHANg==",
+          "shasum": "bd6faa1479ca1071dee55fc719b017b3fa599fb4",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.64.tgz",
+          "unpackedSize": 101323958,
+          "version": "3.0.64"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-OrPRjRDaun8WrPe/awQCoQp+fotemmPWK80xVlH+JHyLEWjzAFZviujjj742fhfGiAkPESk6t2clOrOw53u2rQ==",
+          "shasum": "9c9b0d11bc32d3ab2aa939feac5beb4ff5b9f08c",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.64.tgz",
+          "unpackedSize": 158227449,
+          "version": "3.0.64"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-jyd/ELaV8OuN+0B1meq+2WhWNPAPWSApfRN8Ft93VlLDumRT1MTvJUi0Btlao4MPctFEkpNJEcpFNC/W5GrFVg==",
+          "shasum": "7e115f2b4db23fc4b2ffc0f9276020ac5ce7ac8d",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.64.tgz",
+          "unpackedSize": 158264307,
+          "version": "3.0.64"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-nBdgSUjZyzdA6cZ/WDDEQ38rpu+uSk5r89ZlMwDqFj7IgDFmulST0t+h/bcYLGOYiJXsSMqaA7ZB7vUXpvq4Rw==",
+          "shasum": "8d4e66b5e4cd9e0e7ee5188f6953d2ac98bc6c41",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.64.tgz",
+          "unpackedSize": 147358585,
+          "version": "3.0.64"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-T8soLoCEA0E0EGyE7MZmUSJXlqYSD4al4W2hxAWu90PkzkSqeKRGtfaUq3EMiPkm8WAlQOF1AtLgUpjw3e9Jog==",
+          "shasum": "c45a88dd6d9740ca23a4ea92051e7cbf8d647b12",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.64.tgz",
+          "unpackedSize": 150745459,
+          "version": "3.0.64"
+        }
+      },
+      "published_at": "2026-09-22T08:26:26.642Z",
+      "version": "3.0.64"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-s2IDcu2wWbMcXx2EBcYoWVH1HKKfQ8/cl6EX2pzIE52GkSIY1HYlhavpUYvynaiTAv9TdNNI5NVBR2NHkRSEPg==",
+          "shasum": "0fdad77292bd64219d78137e37bbab77c75e1c2f",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.86.tgz",
+          "unpackedSize": 489243,
+          "version": "0.0.86"
+        },
+        "@cline/core": {
+          "fileCount": 328,
+          "integrity": "sha512-+9xaL9ojfPXB4ywjpogR5TTG7CrjCBPw5xG68IaCy9y4teo9fvON3z9KvAdvd/FIaG6VyxPt6VCIevbZtG+WTQ==",
+          "shasum": "540f90dd62e850f89e34eb60a4426471cf69e49f",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.86.tgz",
+          "unpackedSize": 3898759,
+          "version": "0.0.86"
+        },
+        "@cline/llms": {
+          "fileCount": 167,
+          "integrity": "sha512-R5fc62py4V+YiOfZs0QwPbGn1TLNoOBAG5tzoLL7CCSL3Aopo3HMI01jWGz3UFPhv2RqRUOvYNHq+o31QOT4lg==",
+          "shasum": "ad33a41be49a1dfe5380acf776e91706ad6661b9",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.86.tgz",
+          "unpackedSize": 12007063,
+          "version": "0.0.86"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-ExpbEX0FsNV9Lcja5ej5FLw6xZLSs4g/jvlt+ww4uN6hvBOxCDW3E0Fx4ZcfonFpQdasXF2xm/7lpBU4L5Ao1g==",
+          "shasum": "c472988f4f8d395eeb6cca48002f961670d0757a",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.86.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.86"
+        },
+        "@cline/shared": {
+          "fileCount": 106,
+          "integrity": "sha512-c8O5fdsQkTn42xZMNqNdXoQ6YeHZ3N5vqzOlYsK6yhRGtLDFyLarSeikvbaUlfWdvJSVEi2sg9jhfQW/zMnsKA==",
+          "shasum": "c44180a33134a1f9302898e3ff253e2c7993bc2c",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.86.tgz",
+          "unpackedSize": 1820479,
+          "version": "0.0.86"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "8668e030c11fcce5a31ca5959c6806d75413b16a",
+        "peeled_commit": "9131e36429314ea614491bf749678adbacb3d3cb",
+        "tag": "cli-v3.0.65"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.86",
+          "@cline/core": "0.0.86",
+          "@cline/llms": "0.0.86",
+          "@cline/sdk": "0.0.86",
+          "@cline/shared": "0.0.86"
+        },
+        "file_count": 6,
+        "integrity": "sha512-6P2jgsJHp+JRUzlGR6Rp4W/zAwXPg8ihC2M9ec/VgKS4nnlGCB8Ftn17StcIjYFYtocJRkU8UGUnKF69zhv40Q==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.65",
+          "@cline/cli-darwin-x64": "3.0.65",
+          "@cline/cli-linux-arm64": "3.0.65",
+          "@cline/cli-linux-x64": "3.0.65",
+          "@cline/cli-windows-arm64": "3.0.65",
+          "@cline/cli-windows-x64": "3.0.65"
+        },
+        "shasum": "e8e305ef3c4006b2d19d0c65f8febca603c3e57f",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.65.tgz",
+        "tarball_sha256": "05a661b5a304c75fb2976b34dc65079fb5968a84ba2081375113c1050601c436",
+        "tree_manifest_sha256": "4b862fa5fcdf45eed46f5c0426006ded485ab7cbdacff740f1fd747a72f27fba",
+        "unpacked_size": 47364
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-fgHAh/XbPGjUuDJcfXL/yqjZ17ZsDGYFbWfddJnwWQhxoSe63/wdgR9gJMUDK/MBvP89+2hBj9mswIwycAGaNQ==",
+          "shasum": "a661e7ef71a6bd509dc577eed0e04050ea38404a",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.65.tgz",
+          "unpackedSize": 96475356,
+          "version": "3.0.65"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-POuoEtOPOtye6Nx/MHe3cQFkkTUf9gkv0Fmr85X+x/eg0hQfHKnAOrTBj+6/txhNjSSlX7UBAGKB8E4eR4zZpA==",
+          "shasum": "4d75457a15a12cc5771b6eebe5840082e789447d",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.65.tgz",
+          "unpackedSize": 101471412,
+          "version": "3.0.65"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-JxGPEF5ymwXXVSfVfSz4hEjMMgJEipiLYBmbG26e3VVon3p1RXyuaVObuqY2bs7Yhz8gxgh/ULQfdj8IMrm99Q==",
+          "shasum": "4fe9e1ff81558ccd14884f3cb0e5981457903b8a",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.65.tgz",
+          "unpackedSize": 158424055,
+          "version": "3.0.65"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-YRDt0eNj/XEMB7DeMeOeE92jQFf7DyKGCysStxrk+mIKdO0GVPugDG4yxsmKtBouBnaRVteW3NwYEnSq2kah8A==",
+          "shasum": "2081f5316ce173fea1bac0ba45531a251c7947db",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.65.tgz",
+          "unpackedSize": 158403569,
+          "version": "3.0.65"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-O+f5KBtUsWTCkO1rOAlrfnhj9rRYrs2D6IcbQPBt+TBOVX+YE4s6VPBDi1A56mijlm9tKJPdpT36GvIOgD3reQ==",
+          "shasum": "9776ea027f4e1a0d24765fbeae8cad4cb083f73c",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.65.tgz",
+          "unpackedSize": 147496311,
+          "version": "3.0.65"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-YcLWhECyDykLFv4qisuF/1zH6FJJjm7y3TEDVIro7X2P/VQ6txfvytZIAqeWQ6x4MREfiJ5MaZ8S0m7/6Ai2tg==",
+          "shasum": "23e914255e765ef8664a42a0a0b58c760b96f402",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.65.tgz",
+          "unpackedSize": 150883185,
+          "version": "3.0.65"
+        }
+      },
+      "published_at": "2026-09-24T05:55:56.163Z",
+      "version": "3.0.65"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-grMjXFZ5dreE4JCmLyfCPCJL9NtZCLTjwzUzf8rk6AmcXF0MfT5ASh9zicv4K6+KIuQDQGG8dOkZnnmGHH77pQ==",
+          "shasum": "6c9d383accc746f9603f74af299369dd87d15c3e",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.88.tgz",
+          "unpackedSize": 196730,
+          "version": "0.0.88"
+        },
+        "@cline/core": {
+          "fileCount": 336,
+          "integrity": "sha512-ayCW13Fmpd1zoHJ7tcNULamFptJXruA699/Qx4aHCNtv3mhLCcepcigwIxtiwYsUFX8HaqWu7mtP1EiEE6rjYA==",
+          "shasum": "6b8f41b2f02862ef206585049ae69755e8c5ba45",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.88.tgz",
+          "unpackedSize": 3930660,
+          "version": "0.0.88"
+        },
+        "@cline/llms": {
+          "fileCount": 167,
+          "integrity": "sha512-bJEYh/pbcJs2mPRS7MzTOBXwIaQmi4zCrxWF0YVvJuT8g6FgjH4MdJnKKvFLU4R8aO2xNaM61yYO65+ancLF3g==",
+          "shasum": "182335df9571d162b61c73928f9cfae13618c108",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.88.tgz",
+          "unpackedSize": 11029324,
+          "version": "0.0.88"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-wXB0BJzpFIwZHiScIYkyTdzrJW5Xs3n2j6ESBKRjfCal+p3Dvr8HJSID2tApzAtI+LyczzHpq9agzmtILbZPgg==",
+          "shasum": "dfce8dd5d9f4ddd3ff15869bd15dec914b9f9b5a",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.88.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.88"
+        },
+        "@cline/shared": {
+          "fileCount": 108,
+          "integrity": "sha512-1fd3d9G+0ElPl/qzacy3CPffyP7LEbwHHJNXNBgsX5yVlKpwrHPvDfvJfthJK3LS3yJXs/GSmjebxQP+KdwfRQ==",
+          "shasum": "6fcfb6a44b3886badad18b566b051320b0f825d0",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.88.tgz",
+          "unpackedSize": 953801,
+          "version": "0.0.88"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "93f859abe8a80a8dbdd803952e82188610dd6e7f",
+        "peeled_commit": "20d70ceed8b749f9350bc8c573a81faaa236b289",
+        "tag": "cli-v3.0.66"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.88",
+          "@cline/core": "0.0.88",
+          "@cline/llms": "0.0.88",
+          "@cline/sdk": "0.0.88",
+          "@cline/shared": "0.0.88"
+        },
+        "file_count": 6,
+        "integrity": "sha512-MJklSkCoiojuOQC0G3h1Jgd7V8IWACc4VdUW9+GUExCnhSfDNsdgad+MlUMtm6Svo554+RVTG8O630ANFTjGgg==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.66",
+          "@cline/cli-darwin-x64": "3.0.66",
+          "@cline/cli-linux-arm64": "3.0.66",
+          "@cline/cli-linux-x64": "3.0.66",
+          "@cline/cli-windows-arm64": "3.0.66",
+          "@cline/cli-windows-x64": "3.0.66"
+        },
+        "shasum": "8186f305c0fdc0a489127c6fa8c9559fe303cdb3",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.66.tgz",
+        "tarball_sha256": "ef4ea41c8d0a812001b4392f8c5d1837d69c6ca51e892a9c91a404ae4ff28d80",
+        "tree_manifest_sha256": "1e535218e67838a810f9742dfd7357f12ffd7b2c0539eb5833ce829fdd46e1f3",
+        "unpacked_size": 47364
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-KBBPwmQSdYb3FwWADrz8xnn/km2w+ILrBTcwqyFnwFQpwn0saxbmOVwMpDuTgtsNTsJtaBFdlHtedML4cc8h/g==",
+          "shasum": "74e121929e6e31173b398a2e7b1a71c5c1c619a2",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.66.tgz",
+          "unpackedSize": 94905675,
+          "version": "3.0.66"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-6eHxn4J+ZpAD+yt4eEgdUU39oTvLChHBaZAXOba5FLo1ZvXBWe3Lzi4p55eB3k6J11YajxsuSOO4cJo/OHyDgQ==",
+          "shasum": "7070000ec91a84a4bd82291a3c846919c2504259",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.66.tgz",
+          "unpackedSize": 101794787,
+          "version": "3.0.66"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-zhvfmJ3nXmfiNcqm2/Z4xjWiMAxUTMHW9jWsR+0Syp5d+H69WzlWPwbxpvt5GjqU7re0VNb/h4nNXnzWtLqXoQ==",
+          "shasum": "b95717534e5fef2e643e66836264e191be8ad038",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.66.tgz",
+          "unpackedSize": 137567230,
+          "version": "3.0.66"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-6gsHM54j01Wk2GZk89LIKyRPNb9B5F2GJviQP95HyORp3hVrsNX6JXgDpimoXOfscuYmQDS3On2A3hd0wxWk+g==",
+          "shasum": "264ff5e1dc87323bc2abfd7d31d18b34041268a7",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.66.tgz",
+          "unpackedSize": 137169072,
+          "version": "3.0.66"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-nfZbW06gof1F5No4PNqs23RYNyD2z+AazEMzOcOWCBrp6WP7wuj0wbq/tnz17yomb1sGnn9P5tEELKmlKwp+Mg==",
+          "shasum": "a767f1f785e7a5940da7fae2abb5794cd0cac17c",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.66.tgz",
+          "unpackedSize": 109867414,
+          "version": "3.0.66"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-JEIM5fHo8PipfRmU4of9Wwl8CBVoBkpEE5yjMLFk3qM7B+K07v93cyxHaLfxuBo6vb583lA/yAuOa166GYGdgQ==",
+          "shasum": "bf4bb7efa2177e3f1b492673fdbf38000a408ddf",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.66.tgz",
+          "unpackedSize": 118595984,
+          "version": "3.0.66"
+        }
+      },
+      "published_at": "2026-09-30T02:42:40.964Z",
+      "version": "3.0.66"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-6N+ZqP1EXAbK10ksvF6pALcZsSfKZpGXaFeRMXUvRI01Ylii2hqk56O9D7Xdj8SWi5Uxiy5m1KKt1sDyAkZlMw==",
+          "shasum": "ec60ae170802797d99272765a57444f7af85791f",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.89.tgz",
+          "unpackedSize": 196758,
+          "version": "0.0.89"
+        },
+        "@cline/core": {
+          "fileCount": 337,
+          "integrity": "sha512-9gArlUnqw5fCyfMnqkMXz23CnDYzvsx0v2farsxPhUQryudc97jkZV64sKucx83NTKOBeDXqIfdIlUliI3xp1g==",
+          "shasum": "42cde90ab7b9295cfaffacb74280f59e2c59afb1",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.89.tgz",
+          "unpackedSize": 3950839,
+          "version": "0.0.89"
+        },
+        "@cline/llms": {
+          "fileCount": 165,
+          "integrity": "sha512-J4jZqmsd9AFp4ilM2EpIl3oHeZPQQ0mEdt3o1gMKctHxXNSGbwpmXXIWTdFI3sbcUq82KNFykqRjEokrOdTSkA==",
+          "shasum": "609f267de5a33c2e16748503862abe56607122a2",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.89.tgz",
+          "unpackedSize": 11043578,
+          "version": "0.0.89"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-QIJ7VQi97vF5U0q5K02EU+ZMO/b3F9XX9JEgjEvuW94QK+RSSUmk0HDE/e2lG54amEnIOyDE03hK0YKQzhFcRQ==",
+          "shasum": "1f57fe9ec057c62760cddef0252daf6524d32706",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.89.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.89"
+        },
+        "@cline/shared": {
+          "fileCount": 109,
+          "integrity": "sha512-JenwOussMUDaRAFu8gyZJVyStZSoQCSVhuFaxNAatN1RcPTNDEkPuP/lS4VNFc1aCFUYwzeD0pSExSzIhGd0EQ==",
+          "shasum": "33a24a974d16e6b88099d1285bc15dd0a081528a",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.89.tgz",
+          "unpackedSize": 955465,
+          "version": "0.0.89"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "90b4b01d07b03af291aca489c2ccb217b56f5bca",
+        "peeled_commit": "9087191126d43c4123965501d5c2e1b9bb4dca90",
+        "tag": "cli-v3.0.67"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.89",
+          "@cline/core": "0.0.89",
+          "@cline/llms": "0.0.89",
+          "@cline/sdk": "0.0.89",
+          "@cline/shared": "0.0.89"
+        },
+        "file_count": 6,
+        "integrity": "sha512-4aMoB/jww42vDt/9iXqdMbmA7QiVNP5dPLDrz4mt4veKp9Y2DL041RL67PCrEH0TeWsLuAo4nIjEiwsa93TL3A==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.67",
+          "@cline/cli-darwin-x64": "3.0.67",
+          "@cline/cli-linux-arm64": "3.0.67",
+          "@cline/cli-linux-x64": "3.0.67",
+          "@cline/cli-windows-arm64": "3.0.67",
+          "@cline/cli-windows-x64": "3.0.67"
+        },
+        "shasum": "7b956610873791de3b19c2c90b8fcecc2d42dfb3",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.67.tgz",
+        "tarball_sha256": "344c62d0bb465695598a7c9ecbd92097f1215f34142d4109ad57b283a95b2b4a",
+        "tree_manifest_sha256": "f5516c61b64eb004385ed134f6b87858b1df49a33f92baad8448c5d2081cc820",
+        "unpacked_size": 47364
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-zB2T91t92J77wJY9Af5PEHG8hgHBw5LEgpXS3c6fdjL4G4jS1g9/cxwZXaXlrc1sWmUBGNBG/L0S7b7QAS6N+A==",
+          "shasum": "13a9b7dbffb8d990d4bc7724355db6d1ca11a64f",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.67.tgz",
+          "unpackedSize": 94922200,
+          "version": "3.0.67"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-i2iFTDzbF1i2TsOdas2Yj0mHsa71zqNBavCV3miIM/76DqTTklkXUX+7YJGPst9UHWR1XTFlAu/FEHMag6bw9g==",
+          "shasum": "fb8f3416ee453aa4e5ae48bbcf836b0a718b3a52",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.67.tgz",
+          "unpackedSize": 101811184,
+          "version": "3.0.67"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-XLcyRHlOLDn3i1+uXGhh3lDddxTnC2eJFoFDeAPRgK3nvBzWsbA8UNB/mxQLB83LHRAdiTLsbf0i0Vt05or7oQ==",
+          "shasum": "fcf5e2ad0b131479db6ac9aac40c74dfd4c07e7c",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.67.tgz",
+          "unpackedSize": 137632779,
+          "version": "3.0.67"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-RS177tfHpDQUn+JOBk24K6B5NBymjcXwtsb0/cMteLDmmCtYOoUqy5x1kKHeRYzAGFBuPLTCcnRP3ecVpEyRtg==",
+          "shasum": "2bda950cf53eb7893325c86d1070d276cdead8dd",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.67.tgz",
+          "unpackedSize": 137185469,
+          "version": "3.0.67"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-FJM7JtgxqWVhUDMXY7lUIaZJeY4oJLI95buzk5s2HI6UZWvyt3Pen5tfmohRDLnu2Icg6D7SkBvH8vftq9lt0g==",
+          "shasum": "5cbeabac0985d6bd7943b3cf108027f6f9cc515f",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.67.tgz",
+          "unpackedSize": 109882787,
+          "version": "3.0.67"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-8ll+3QxvSNMtouiTimM4+xjv5hpcnplb6qxFch+R+73knYw7R3YwSDCAet7OWQ9h1k9QTtEpq8VQhSgX1APxMA==",
+          "shasum": "4e4d7f8eaec32d9f3b7d72bcb1bf4f4bed795778",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.67.tgz",
+          "unpackedSize": 118611357,
+          "version": "3.0.67"
+        }
+      },
+      "published_at": "2026-09-30T23:46:09.558Z",
+      "version": "3.0.67"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-wFfihLdxoEiwK2TwbwzMHEAuZ8DDUZW+uua2yDDDAMCbMTYOZNLXVT2OpJC2uolF6rW3mfx1N/qNiHycrnnKIg==",
+          "shasum": "189272b9123e7e583a413b28b1491c65c0e5830a",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.90.tgz",
+          "unpackedSize": 196758,
+          "version": "0.0.90"
+        },
+        "@cline/core": {
+          "fileCount": 340,
+          "integrity": "sha512-0145pt+yEEeMQRYwlarEo8akAAGTrDpEEfgXQAu6fxgQoho7f1z83s+fujB5b62lOTPsK5MokgZMd/D5DvLcFA==",
+          "shasum": "9c1ff222b054a8db35f38240decf005cee669881",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.90.tgz",
+          "unpackedSize": 4002416,
+          "version": "0.0.90"
+        },
+        "@cline/llms": {
+          "fileCount": 165,
+          "integrity": "sha512-arwmkvZQzkJpY/ZXOsOSJ1PRO5HnGIWRpsq7mIjryKq0LGPGdlPxDAcJD+vXzdT97bQbr1dCpylNjd002Eu1zw==",
+          "shasum": "a71a38477c93949e36b332b15e223844161be7b6",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.90.tgz",
+          "unpackedSize": 11059260,
+          "version": "0.0.90"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-H7EmKq9d+YiK7z8MC9TfJwiVxoPyz/ZiVWKvaUwwj5z5rsYkzLtTxJaKqmBeBUQYPhO7K10Fwwrn3DVNeoYmhw==",
+          "shasum": "29e8dc48dd19020582f77a73251d74f1d813e690",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.90.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.90"
+        },
+        "@cline/shared": {
+          "fileCount": 109,
+          "integrity": "sha512-6mVOtYTTCCbufUw2Mg/aL4R1005Nu6S3L1JmXOiFCRR1KFqnbwXx4+mFdxJBPIhcQuZP0fHn7t0pYPW4EERYbA==",
+          "shasum": "7b70973905d93534df1b750638de93014c2d43b6",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.90.tgz",
+          "unpackedSize": 955465,
+          "version": "0.0.90"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "3ba3db0b2ee3a7845d4089b80929b419dac2f425",
+        "peeled_commit": "241c1884a7461ef35f6c384a027a38e8d03b3b33",
+        "tag": "cli-v3.0.68"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.90",
+          "@cline/core": "0.0.90",
+          "@cline/llms": "0.0.90",
+          "@cline/sdk": "0.0.90",
+          "@cline/shared": "0.0.90"
+        },
+        "file_count": 6,
+        "integrity": "sha512-DC5DsWqufWXYqCvGbC39KsqKQPqqybsZ6kqtFwca8kSqDSqVQ0GDDEXjp2S92qAQHio1lEyAmaGNopSxmPc6tg==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.68",
+          "@cline/cli-darwin-x64": "3.0.68",
+          "@cline/cli-linux-arm64": "3.0.68",
+          "@cline/cli-linux-x64": "3.0.68",
+          "@cline/cli-windows-arm64": "3.0.68",
+          "@cline/cli-windows-x64": "3.0.68"
+        },
+        "shasum": "8672eddf20e5ad838a2e14b71cdf59c7083e6294",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.68.tgz",
+        "tarball_sha256": "251099e174a4b7bf5b4c78df8d0210eb32c81a95fbfb8e412f03d2e6575c5254",
+        "tree_manifest_sha256": "1448ca6dcfc46d64e56fee363c0c226a60e927456ef27e57999aaf93b8fce3c1",
+        "unpacked_size": 47364
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-BlGu1e5R9KHzqJ1xdbeliZbLCjIAqCxWQDC/+iO8CQl7YnQFAP7yFCqXLUOZTGsI27iYXxteOJwAX/vU4G2sDA==",
+          "shasum": "596d339ec62216b2a20f07a04d762b4a2d04d4a0",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.68.tgz",
+          "unpackedSize": 94955224,
+          "version": "3.0.68"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-DxI5fdLCdcv65b6FTnHZABDXdwrVJWfcinDXFubuZB4lUdSvo5xgxncwn/NBiKKyy/Vx4nI/zRoDrnRsPfTgQQ==",
+          "shasum": "a07e4a4948b5c264b1c2938cc9bffdfa80d09cbe",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.68.tgz",
+          "unpackedSize": 101843952,
+          "version": "3.0.68"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-VFmpccFdBsqZY7J7wevNz3XiJgKWGuRpnFYsnzFP3aePgiZBc2yUKwlBCClJn3b9QMYur/teAIG+CyZ5lqINug==",
+          "shasum": "e2d46ab2d394d68643f1b0c888952b33944608e3",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.68.tgz",
+          "unpackedSize": 137632779,
+          "version": "3.0.68"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-CTDo+lTHsrKV/4SBl6SHVNneoEodcjuKOPvSTb8hFx8GGbi4ASsrItbUxb3bvgC+q2jglepYBborRcPoCv0YYw==",
+          "shasum": "afcd8eb97a5430bfa584906578ad86bf2eee780c",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.68.tgz",
+          "unpackedSize": 137205949,
+          "version": "3.0.68"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-Vu/rWmmV0h+6boy5/qt0c7I9zMK2aPqXXp0X51fxMflq5F6MytCqlcd0JuOiYQ+uN0VpUM3O0/VftV3QX0uZmQ==",
+          "shasum": "3076752c1555c62c9100082a06ac6750b8fa5efd",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.68.tgz",
+          "unpackedSize": 109904291,
+          "version": "3.0.68"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-kR3Luz2yVgb6KZ1bsl+mcAalaUYbJzgyffyF0+VkpuuosED9KD2sleXlTI0odgGCu17VwPKCofIJI072C3340Q==",
+          "shasum": "debd1472c422fd0c7c7e6073cee5afe4a0440772",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.68.tgz",
+          "unpackedSize": 118632861,
+          "version": "3.0.68"
+        }
+      },
+      "published_at": "2026-10-02T04:43:12.684Z",
+      "version": "3.0.68"
+    },
+    {
+      "dependency_artifacts": {
+        "@cline/agents": {
+          "fileCount": 7,
+          "integrity": "sha512-1Rzh7cVk+kIwlilECWQKcUuqeknWtSWMmJlcjavIezwI8xh2ZCw2s/8gEh559BOv5fccE4CLd6fqQPGDreByXQ==",
+          "shasum": "2e620667c24da8b90919135af4958208408cd48e",
+          "tarball": "https://registry.npmjs.org/@cline/agents/-/agents-0.0.91.tgz",
+          "unpackedSize": 197604,
+          "version": "0.0.91"
+        },
+        "@cline/core": {
+          "fileCount": 340,
+          "integrity": "sha512-QKJRmgi7EqVsuQ9B7PWHLOW3zAJ9Kn0lNoBzxV3/OxqBRsmtBMaKpz9D4NSnmNte4vCjGQFJZgjDHfpS6maqqQ==",
+          "shasum": "416265aba42981b1a69e9fe0cd107777df8db7b0",
+          "tarball": "https://registry.npmjs.org/@cline/core/-/core-0.0.91.tgz",
+          "unpackedSize": 4002981,
+          "version": "0.0.91"
+        },
+        "@cline/llms": {
+          "fileCount": 165,
+          "integrity": "sha512-8cafsi/OgjXsSzCtHJXr7IGLhNmhnUaOgJz6FisLP0IkQLV3i4jgogZD3mIZVeZ3WTzJFv8KQHw+Dk4ClHrYYQ==",
+          "shasum": "21dcdf83092e56211c97789fa5e0277a87f0ab5c",
+          "tarball": "https://registry.npmjs.org/@cline/llms/-/llms-0.0.91.tgz",
+          "unpackedSize": 11134116,
+          "version": "0.0.91"
+        },
+        "@cline/sdk": {
+          "fileCount": 4,
+          "integrity": "sha512-RvruyXERVHvKawZWztpIns3KVEJc3jL6izo6isKQt0Y1fO4FvGrCJ6aFS6b22Mc/YnHMhLc15IcOvW+X3OrF8A==",
+          "shasum": "8e0ab2265b07e6b15efca1737c9dcdc14d4b2e29",
+          "tarball": "https://registry.npmjs.org/@cline/sdk/-/sdk-0.0.91.tgz",
+          "unpackedSize": 946,
+          "version": "0.0.91"
+        },
+        "@cline/shared": {
+          "fileCount": 109,
+          "integrity": "sha512-2FB821ZCPsK63w7wgLGCpX0RV1LqokJDwBZ4MgDz0awoy8E/XVCsl1Zdnq/L4UU7Lz5ZvQb/Tl/9Dn0tFKUvMg==",
+          "shasum": "cfec64acebada5211de4f09479868184e731866c",
+          "tarball": "https://registry.npmjs.org/@cline/shared/-/shared-0.0.91.tgz",
+          "unpackedSize": 956529,
+          "version": "0.0.91"
+        }
+      },
+      "github_source": {
+        "annotated_tag_object": "c49f0e9b243511a9fe90977108d1062aa5527325",
+        "peeled_commit": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576",
+        "tag": "cli-v3.0.69"
+      },
+      "npm_wrapper": {
+        "dependencies": {
+          "@cline/agents": "0.0.91",
+          "@cline/core": "0.0.91",
+          "@cline/llms": "0.0.91",
+          "@cline/sdk": "0.0.91",
+          "@cline/shared": "0.0.91"
+        },
+        "file_count": 6,
+        "integrity": "sha512-W5WJGbtwB2raJoCo5KhjIOQiBL3nEw9+F2tUm2b+woI0jDJGx1pey2maTDYCwYwyGDY36m/SjxpRWI8z1ROQpw==",
+        "optional_dependencies": {
+          "@cline/cli-darwin-arm64": "3.0.69",
+          "@cline/cli-darwin-x64": "3.0.69",
+          "@cline/cli-linux-arm64": "3.0.69",
+          "@cline/cli-linux-x64": "3.0.69",
+          "@cline/cli-windows-arm64": "3.0.69",
+          "@cline/cli-windows-x64": "3.0.69"
+        },
+        "shasum": "6e600cf2c3841f395035c4722a048a1e25392aea",
+        "tarball": "https://registry.npmjs.org/cline/-/cline-3.0.69.tgz",
+        "tarball_sha256": "ddaf7ee830770aa8a400afbcbb2bd533418dd49d657d3fffd5f16dbd8225dd20",
+        "tree_manifest_sha256": "3911b28cf5bea1e500949fe072118c9e025b917609595e51b6fef9032c84bc3d",
+        "unpacked_size": 47364
+      },
+      "platform_artifacts": {
+        "@cline/cli-darwin-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-d3IDU2hFvCXmhZtgebs0XDhEFG9aILp9h9gNHZJH35UrsHtxYwgicHswqY0hftiWnSEZj4d7BQ8BH9ABQ74bTg==",
+          "shasum": "293b61dbaa033facb3fa9f4128a9851d1404cf08",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.69.tgz",
+          "unpackedSize": 94996272,
+          "version": "3.0.69"
+        },
+        "@cline/cli-darwin-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-CsokMggl8YQsBIKxdlFpqdFXsZUngwNyQXYk9HRHgqcDe5/LE3ners96t2+IGKU2kunnUAg7tRKqS436+ycAWw==",
+          "shasum": "c590c7e578d4d8f0e9de367e2eb0e13ea1adfffd",
+          "tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.69.tgz",
+          "unpackedSize": 101884744,
+          "version": "3.0.69"
+        },
+        "@cline/cli-linux-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-/15dtFYFhuIYJ6D03b3pEplKWaFKE7LuICKkjr6ksf/jUUIbv3wOsWK2gSpJBCprMBYhdfvAgemz6Nh64RFj3w==",
+          "shasum": "f98177ee60b0b08e5c24c63f3b2232be142f72f1",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.69.tgz",
+          "unpackedSize": 137706339,
+          "version": "3.0.69"
+        },
+        "@cline/cli-linux-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-yGfd4ISuk/46hIxhNAhI/MWvnSFjqzQfXmBnbIbHfnSqIxmEa0/ArRbPKAaIJFj31woxkrRkZdScDv2WEHGdpg==",
+          "shasum": "ad350f10e47084448c28ddb1e01526c15e70cc07",
+          "tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.69.tgz",
+          "unpackedSize": 137250837,
+          "version": "3.0.69"
+        },
+        "@cline/cli-windows-arm64": {
+          "fileCount": 142,
+          "integrity": "sha512-M63G7Omafq5OP9tlwXF53Q+5thaEqwPZfl0TzAvZ926E0itKwfSljslObJBQ8QEUbzIO2ooQ6CAw9wMXSoRHwg==",
+          "shasum": "aac874cd1efe752a1c787719c592c4ff4185ad53",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.69.tgz",
+          "unpackedSize": 109949339,
+          "version": "3.0.69"
+        },
+        "@cline/cli-windows-x64": {
+          "fileCount": 142,
+          "integrity": "sha512-WV5eoh1lQAK6mL8R27HMKoVBb12DJkT/VXO0nw9ZjmScOZz0fXwxh3JSiHySXigmTBBgUbGWdNAfkIeqnmDjgA==",
+          "shasum": "fa0a35c713435ed76c3e116959a4da96788ac51d",
+          "tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.69.tgz",
+          "unpackedSize": 118677909,
+          "version": "3.0.69"
+        }
+      },
+      "published_at": "2026-10-07T06:13:57.143Z",
+      "version": "3.0.69"
+    }
+  ]
+}

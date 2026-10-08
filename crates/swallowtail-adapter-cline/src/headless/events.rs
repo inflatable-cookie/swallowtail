@@ -398,6 +398,7 @@ mod tests {
 
     const SUCCESS: &str = include_str!("../../tests/fixtures/cline-headless-3.0.55/success.jsonl");
     const ABORT: &str = include_str!("../../tests/fixtures/cline-headless-3.0.55/abort.jsonl");
+    const MEDIA: &str = include_str!("../../tests/fixtures/cline-headless-3.0.69/media.jsonl");
 
     fn parser() -> ClineHeadlessEventParser {
         ClineHeadlessEventParser::new(ActivityOperationId::Run(
@@ -475,6 +476,19 @@ mod tests {
                 )
                 .is_err()
         );
+    }
+
+    #[test]
+    fn newer_media_content_type_fails_closed_without_projection() {
+        let mut parser = parser();
+        let error = parser
+            .push_stdout(MEDIA.as_bytes())
+            .expect_err("unmapped media content is rejected");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.cline.headless.malformed_stream"
+        );
+        assert!(!format!("{error:?}").contains("fixture-media-payload"));
     }
 
     #[test]

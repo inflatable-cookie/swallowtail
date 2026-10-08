@@ -11,8 +11,9 @@ use crate::failure::failure;
 pub const CLINE_EXECUTABLE_NAME: &str = "cline";
 /// Opaque npm package-version axis for Cline ACP.
 pub const CLINE_PACKAGE_AXIS: &str = "cline.package";
-/// Exact qualified Cline npm wrapper used by ACP and headless.
+/// Frozen qualified baseline Cline npm wrapper shared by ACP and headless.
 pub const CLINE_PACKAGE_VERSION: &str = "3.0.55";
+const CLINE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "3.0.69";
 
 pub(crate) const CLINE_ACP_BEHAVIOR: &str = "cline.acp.stdio-v1";
 pub(crate) const CLINE_HEADLESS_BEHAVIOR: &str = "cline.headless.stdio-json-v1";
@@ -29,22 +30,31 @@ impl ClinePlanSelection {
     }
 }
 
-/// Parses installed `--version` stdout into the exact qualified Cline binding.
+/// Parses installed `--version` stdout into a syntactically valid Cline binding.
+///
+/// Route-specific compatibility claims decide whether the observation is qualified.
 #[must_use]
 pub(crate) fn parse_cline_version_output(output: &[u8]) -> Option<InterfaceVersionBinding> {
     let output = std::str::from_utf8(output).ok()?;
     let exact = output.strip_suffix('\n').unwrap_or(output);
-    cline_package_binding(exact)
+    package_version_binding(exact)
 }
 
-/// Parses the one qualified exact Cline package version into its interface binding.
+/// Returns the frozen baseline Cline package binding.
 ///
-/// Returns `None` for anything other than the exact qualified release text, so
-/// observed CLI output can never panic a caller.
+/// This identity helper deliberately remains pinned to the original `3.0.55`
+/// point. Installed-version discovery parses candidates separately and applies
+/// the selected route's compatibility claim before promotion.
 #[must_use]
 pub fn cline_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    if value != CLINE_PACKAGE_VERSION
-        || value.is_empty()
+    if value != CLINE_PACKAGE_VERSION {
+        return None;
+    }
+    package_version_binding(value)
+}
+
+fn package_version_binding(value: &str) -> Option<InterfaceVersionBinding> {
+    if value.is_empty()
         || value.len() > MAX_VERSION_BYTES
         || value.trim() != value
         || value.chars().any(char::is_control)
@@ -78,7 +88,7 @@ pub fn cline_acp_claim() -> InterfaceCompatibilityClaim {
     .expect("static Cline claim is valid")
 }
 
-/// Returns the qualified-only exact Cline headless JSON protocol claim.
+/// Returns the qualified-only Cline headless JSON protocol claim.
 #[must_use]
 pub fn cline_headless_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
@@ -87,13 +97,15 @@ pub fn cline_headless_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::QualifiedOnly,
-        [InterfaceVersionSegment::exact(
-            InterfaceVersion::new(CLINE_PACKAGE_VERSION).expect("static Cline version is valid"),
+        [InterfaceVersionSegment::new(
+            InterfaceVersion::new(CLINE_PACKAGE_VERSION).expect("static Cline baseline is valid"),
+            InterfaceVersion::new(CLINE_HEADLESS_LATEST_QUALIFIED_VERSION)
+                .expect("static Cline ceiling is valid"),
             InterfaceBehaviorRevision::new(CLINE_HEADLESS_BEHAVIOR)
                 .expect("static Cline headless behavior is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [],
+        [InterfaceVersion::new("3.0.59").expect("static Cline exclusion is valid")],
     )
     .expect("static Cline headless claim is valid")
 }
@@ -181,12 +193,13 @@ mod tests {
     use super::*;
 
     #[test]
-    fn only_the_exact_qualified_release_is_bound() {
+    fn public_identity_binding_stays_on_the_frozen_baseline() {
         assert!(cline_package_binding(CLINE_PACKAGE_VERSION).is_some());
         for rejected in [
             "",
             "3.0.54",
             "3.0.56",
+            "3.0.69",
             "3.0",
             "3.0.55.0",
             "v3.0.55",
@@ -204,13 +217,33 @@ mod tests {
     }
 
     #[test]
-    fn exact_package_is_permitted_and_newer_is_not() {
-        let permitted = InterfaceVersion::new(CLINE_PACKAGE_VERSION).expect("qualified version");
-        let newer = InterfaceVersion::new("3.0.56").expect("newer version");
-        for claim in [cline_acp_claim(), cline_headless_claim()] {
-            assert!(claim.assess(&permitted).is_permitted());
-            assert!(!claim.assess(&newer).is_permitted());
+    fn headless_window_qualifies_published_hops_and_preserves_the_hole() {
+        let headless = cline_headless_claim();
+        for qualified in [
+            "3.0.55", "3.0.56", "3.0.57", "3.0.58", "3.0.60", "3.0.61", "3.0.62", "3.0.63",
+            "3.0.64", "3.0.65", "3.0.66", "3.0.67", "3.0.68", "3.0.69",
+        ] {
+            assert!(headless.permits(&InterfaceVersion::new(qualified).expect("version")));
         }
+        for rejected in ["3.0.54", "3.0.59", "3.0.70"] {
+            assert!(!headless.permits(&InterfaceVersion::new(rejected).expect("version")));
+        }
+        assert_eq!(headless.baseline().as_str(), CLINE_PACKAGE_VERSION);
+        assert_eq!(
+            headless.latest_qualified().as_str(),
+            CLINE_HEADLESS_LATEST_QUALIFIED_VERSION
+        );
+        assert_eq!(
+            headless
+                .exclusions()
+                .map(InterfaceVersion::as_str)
+                .collect::<Vec<_>>(),
+            ["3.0.59"]
+        );
+
+        let acp = cline_acp_claim();
+        assert!(acp.permits(&InterfaceVersion::new(CLINE_PACKAGE_VERSION).expect("baseline")));
+        assert!(!acp.permits(&InterfaceVersion::new("3.0.69").expect("latest")));
         assert_ne!(
             cline_acp_claim().id().as_str(),
             cline_headless_claim().id().as_str()
@@ -218,15 +251,17 @@ mod tests {
     }
 
     #[test]
-    fn version_stdout_parser_requires_the_exact_release_line() {
+    fn version_stdout_parser_parses_candidates_before_route_classification() {
         assert_eq!(
             parse_cline_version_output(b"3.0.55\n")
-                .expect("exact version parses")
+                .expect("baseline parses")
                 .version()
                 .as_str(),
             "3.0.55"
         );
-        assert!(parse_cline_version_output(b"3.0.56\n").is_none());
+        for candidate in [b"3.0.56\n".as_slice(), b"3.0.59\n", b"3.0.69\n"] {
+            assert!(parse_cline_version_output(candidate).is_some());
+        }
         assert!(parse_cline_version_output(b"cline 3.0.55\n").is_none());
     }
 }

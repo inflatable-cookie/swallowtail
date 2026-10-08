@@ -19,15 +19,16 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Preparation requires all of the following:
 
 - exact package axis `cline.package`
-- exact npm wrapper `3.0.55`
+- npm wrapper from `3.0.55` through `3.0.69`, excluding unpublished `3.0.59`
 - host-approved `cline` executable and isolated environment
 - `cline_local_account_access_profile` with no credential reference
 - working resource, plus host services for task, process, time, and
   working-resource ownership
 - a host process deadline on the print run
 
-The claim is qualified-only. Later packages do not inherit this route.
-`UnverifiedNewer` is not a Cline headless execution posture.
+The claim is qualified-only. Published points in the supported window share
+the headless JSON mapping; unpublished `3.0.59` and later packages are not
+qualified. `UnverifiedNewer` is not a Cline headless execution posture.
 
 Swallowtail does not install Cline, search `PATH`, run OAuth `authenticate`,
 read `CLINE_API_KEY`, or default auto-approve. Host-owned account state and
@@ -66,7 +67,7 @@ The driver owns one joined stdio child and performs this sequence:
    `run_aborted`)
 4. join process and task cleanup on terminal or abort
 
-Selected Plan is a fixed process argument. Exact `3.0.55` applies it to the
+Selected Plan is a fixed process argument. Qualified releases apply it to the
 one-run config, system prompt, mode-tagged user input, plan tool preset, and
 `run_commands` blacklist. That is provider Plan behavior, not filesystem,
 network, shell, process, sandbox, or descendant containment. The JSON child
@@ -88,8 +89,11 @@ See the compile-tested
 
 ## Restart, Failure, And Promotion
 
-Headless is one-prompt. It never auto-retries provider work and exposes no
-load, resume, or working-state restoration binding.
+Swallowtail submits one prompt in one CLI process and does not restart that
+process. Cline `3.0.62` and later can retry provider requests or continue
+internally after selected model outcomes. Those internal attempts and usage
+are not separately projected. Headless exposes no load, resume, or
+working-state restoration binding.
 
 Handle failures through portable classification and retain the exact
 `swallowtail.cline.headless` diagnostic for support. Do not parse stderr,
@@ -103,8 +107,8 @@ evidence, and matrix coverage. An advertised CLI flag alone is insufficient.
 ## Deterministic Validation
 
 ```sh
-effigy validate:focused swallowtail-adapter-cline
-effigy check:examples
+effigy validate:current-cline-headless
+effigy check:current-cline-headless
 ```
 
 No login, install, or authenticated prompt is part of deterministic acceptance.

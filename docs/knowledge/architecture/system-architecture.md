@@ -247,8 +247,9 @@ OpenHands adds a package without a production route.
   a required runtime-preferences reply during create, and process-kill
   cancellation. It does not qualify OpenCode HTTP, hosted GLM / Z.AI
   official, `--print`, ACP, or native `session/stop`.
-- `swallowtail-adapter-cline` implements two exact `3.0.55` routes: ACP v1
-  stdio on `cline --acp`, and envelope-NDJSON headless on
+- `swallowtail-adapter-cline` implements exact `3.0.55` ACP v1 stdio on
+  `cline --acp` and a maintained headless envelope-NDJSON window from npm
+  `3.0.55` through `3.0.69`, excluding unpublished `3.0.59`, on
   `cline --json --auto-approve false` with optional portable
   `HarnessMode::Plan` as canonical `--plan`. Credentials stay host-owned
   `LocalUnauthenticated`. `--auto-approve true`, `--id`, hub/TUI, and
@@ -679,7 +680,7 @@ Crate status:
   process-kill cancellation, and joined cleanup. The package remains an
   unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-cline` — realized for exact npm `3.0.55` ACP and
-  headless print-run routes with separate constructors, qualified-only
+  headless print-run through published `3.0.69` excluding `3.0.59`, with separate constructors, qualified-only
   claims, local-account access, and no credential lease. The package
   remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-goose` — realized for exact GitHub `1.50.1` ACP

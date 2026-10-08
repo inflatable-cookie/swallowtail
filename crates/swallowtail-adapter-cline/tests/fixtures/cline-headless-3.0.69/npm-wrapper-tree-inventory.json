@@ -1,0 +1,539 @@
+{
+  "schema": "cline-root-wrapper-tree/v1",
+  "summaries": {
+    "3.0.55": {
+      "bin_cline_sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+      "file_count": 6,
+      "tree_manifest_sha256": "80774596708de8c3ebe6577e4aca630132c480efd81046552685d8e043c5466f",
+      "unpacked_size": 46371
+    },
+    "3.0.56": {
+      "bin_cline_sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+      "file_count": 6,
+      "tree_manifest_sha256": "4f3b6f2bd488c533aa291580a7269658a5da8f522b3fa3c02789a733ccf12cf1",
+      "unpacked_size": 46371
+    },
+    "3.0.57": {
+      "bin_cline_sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+      "file_count": 6,
+      "tree_manifest_sha256": "7e4509645a09febb437c9a1ed870235519a668d4cf4ddc4ac8bcccfc6205e487",
+      "unpacked_size": 46371
+    },
+    "3.0.58": {
+      "bin_cline_sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+      "file_count": 6,
+      "tree_manifest_sha256": "66c5d46f0060b0ac09534a80e01783bf4baea057d4abd3d657ddc76f8935c302",
+      "unpacked_size": 46371
+    },
+    "3.0.60": {
+      "bin_cline_sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+      "file_count": 6,
+      "tree_manifest_sha256": "7d1a4790b19d68e8e96fb6e0baef5fda06cddc522035f088635ff713ccf3679c",
+      "unpacked_size": 46371
+    },
+    "3.0.61": {
+      "bin_cline_sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+      "file_count": 6,
+      "tree_manifest_sha256": "acd2a6de98806bfcc83268a3c548d293167ee471ca5121229a5af23954d0c32a",
+      "unpacked_size": 47364
+    },
+    "3.0.62": {
+      "bin_cline_sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+      "file_count": 6,
+      "tree_manifest_sha256": "74078a378d67297f7773885991ff96b333fdc20cb11ca82fc8dd859fe93ad713",
+      "unpacked_size": 47364
+    },
+    "3.0.63": {
+      "bin_cline_sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+      "file_count": 6,
+      "tree_manifest_sha256": "3c8db819c4f41806d7cfbb690cc62322f7f945f7d0a95284cdf0f0a17a2c6517",
+      "unpacked_size": 47364
+    },
+    "3.0.64": {
+      "bin_cline_sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+      "file_count": 6,
+      "tree_manifest_sha256": "b053b04125ba83e742ce153d606668587b7673c814d885ae2cf371793b0104ef",
+      "unpacked_size": 47364
+    },
+    "3.0.65": {
+      "bin_cline_sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+      "file_count": 6,
+      "tree_manifest_sha256": "4b862fa5fcdf45eed46f5c0426006ded485ab7cbdacff740f1fd747a72f27fba",
+      "unpacked_size": 47364
+    },
+    "3.0.66": {
+      "bin_cline_sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+      "file_count": 6,
+      "tree_manifest_sha256": "1e535218e67838a810f9742dfd7357f12ffd7b2c0539eb5833ce829fdd46e1f3",
+      "unpacked_size": 47364
+    },
+    "3.0.67": {
+      "bin_cline_sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+      "file_count": 6,
+      "tree_manifest_sha256": "f5516c61b64eb004385ed134f6b87858b1df49a33f92baad8448c5d2081cc820",
+      "unpacked_size": 47364
+    },
+    "3.0.68": {
+      "bin_cline_sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+      "file_count": 6,
+      "tree_manifest_sha256": "1448ca6dcfc46d64e56fee363c0c226a60e927456ef27e57999aaf93b8fce3c1",
+      "unpacked_size": 47364
+    },
+    "3.0.69": {
+      "bin_cline_sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+      "file_count": 6,
+      "tree_manifest_sha256": "3911b28cf5bea1e500949fe072118c9e025b917609595e51b6fef9032c84bc3d",
+      "unpacked_size": 47364
+    }
+  },
+  "versions": {
+    "3.0.55": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+        "size": 4446
+      },
+      {
+        "path": "package.json",
+        "sha256": "22055c078c18cee47e7f14ccbd7a8c4d323fec3e8226f26c9294e7056d729ce9",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.56": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+        "size": 4446
+      },
+      {
+        "path": "package.json",
+        "sha256": "aec0914057e57286a74d6a21c512e00dd7cc64082770e5169a6b1b868acd26ce",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.57": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+        "size": 4446
+      },
+      {
+        "path": "package.json",
+        "sha256": "5a7c3bece20e487571f51558247144f45980fd7ed96cf311d1475c1cc54cef3f",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.58": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+        "size": 4446
+      },
+      {
+        "path": "package.json",
+        "sha256": "04e54d81bedea00e2b7642faafe8687ce6ba64a9cc78a94782766a872e887612",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.60": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "71d1b27aeeebdaa0b91c4babddd1f635eb7f5783257c2b3324a2cb22924cf60f",
+        "size": 4446
+      },
+      {
+        "path": "package.json",
+        "sha256": "7a799a0b6ed339f436fc9acc4d2a5d9e385bc79f1718e57e86e4a3aa8b103d10",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.61": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+        "size": 5439
+      },
+      {
+        "path": "package.json",
+        "sha256": "d269a244eb3a708bad8da597e9f49f0c0b6c994f0cc5944960d9f81fda702713",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.62": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+        "size": 5439
+      },
+      {
+        "path": "package.json",
+        "sha256": "770c559068aa04ce6e3fc7cd9306fe7b7011ad7409f5b5fbb05c9133cee94b40",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.63": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+        "size": 5439
+      },
+      {
+        "path": "package.json",
+        "sha256": "22b84373059a26634b2468579a6399be0d42e68b8d093357cd36684cfc69a404",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.64": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+        "size": 5439
+      },
+      {
+        "path": "package.json",
+        "sha256": "cce6156526652d0f8103556117e42cce5cec6f9b9cb01671ce082ba7c00685f7",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.65": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+        "size": 5439
+      },
+      {
+        "path": "package.json",
+        "sha256": "8b8e04d16c11e3674add1d677ba86b77f932cde20eb209b3c5c99436dfc1114f",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.66": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+        "size": 5439
+      },
+      {
+        "path": "package.json",
+        "sha256": "9d9f60dc74e27bd96fb433230e32e5b3aabd8e6a090cfc5bfde8909c37f2f5df",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.67": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+        "size": 5439
+      },
+      {
+        "path": "package.json",
+        "sha256": "90af65e46823627bc5d93b664cd485a8798798258bf638ff9ed5aa49e4e33f8c",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.68": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+        "size": 5439
+      },
+      {
+        "path": "package.json",
+        "sha256": "7bb2bc5e8814793f5c8ad927247df1ecabd9ae075e6d491c6e8b55f9782ff727",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ],
+    "3.0.69": [
+      {
+        "path": "LICENSE",
+        "sha256": "f704446a5f1271608805598b557e4288cf8580477ea038c9c3d8b361f693f6b8",
+        "size": 11344
+      },
+      {
+        "path": "README.md",
+        "sha256": "94c3c1b240b5e8a971cc806876dde2e893c78c8cc0085efe23c961e113c197ad",
+        "size": 16412
+      },
+      {
+        "path": "bin/ca-certs.cjs",
+        "sha256": "46c23ae7f4deff43def64d3e61f8054407bf2a2ce571448880648835e7c7a4f0",
+        "size": 8751
+      },
+      {
+        "path": "bin/cline",
+        "sha256": "37848dcde533871a1a95af479221c8768292652ae73c73a8825288a67470f355",
+        "size": 5439
+      },
+      {
+        "path": "package.json",
+        "sha256": "27fe3e8cec73d46af9394f1f5a862f6cfc4f53b99283af3a8285717087d08254",
+        "size": 1231
+      },
+      {
+        "path": "postinstall.mjs",
+        "sha256": "d530c5980c8c17cd44eae229bd708fa71ff18d67db0569e0ecdedad3a7533459",
+        "size": 4187
+      }
+    ]
+  }
+}

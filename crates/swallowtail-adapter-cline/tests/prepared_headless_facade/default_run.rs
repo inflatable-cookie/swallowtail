@@ -142,3 +142,27 @@ fn prepared_run_names_cline_headless_and_package_then_drains_one_print() {
     assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
     assert!(operation.joined());
 }
+
+#[test]
+fn preparation_promotes_the_latest_qualified_headless_point() {
+    let host_id = ExecutionHostId::new("fixture.prepared.headless.current").expect("host");
+    let discovery = DiscoveryHost::new("3.0.69");
+    let prepared = block_on(prepare_cline_headless(
+        preparation_input(host_id.clone()),
+        probe(),
+        discovery.services(host_id),
+    ))
+    .expect("latest qualified Cline headless package prepares");
+
+    assert_eq!(
+        prepared.observation().version().version().as_str(),
+        "3.0.69"
+    );
+    assert_eq!(
+        discovery
+            .observed_process()
+            .expect("version probe ran")
+            .arguments,
+        ["--version"]
+    );
+}

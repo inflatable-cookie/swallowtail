@@ -373,8 +373,11 @@ OpenHands adds a package without a production route.
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process
   cleanup. Headless qualifies `0.29.0..=0.32.0` under
-  `kimi.headless.stream-json.v1` and `0.33.0..=0.43.0` under
-  `kimi.headless.stream-json.v2` with a matching `system.version` preamble.
+  `kimi.headless.stream-json.v1` and `0.33.0..=0.43.1`, `2.0.0..=2.1.1`
+  under `kimi.headless.stream-json.v2` with a matching `system.version`
+  preamble. Unpublished `0.43.2`, `1.x`, and `2.0.3` stay outside those
+  segments; exact `2.1.0` is excluded for its effective filesystem-authority
+  change.
   Public facade `kimi-headless-stream-json-v1` covers both revisions. One
   installed facade requires explicit ACP or headless selection.
   The separate local-server route owns authenticated catalogue, retained

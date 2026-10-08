@@ -1,19 +1,20 @@
-# 403 Kimi Code Headless 2.1.1 Identity and Security Stop
+# 403 Kimi Code Headless 2.1.1 Identity and Qualification
 
-Status: operator ruling required; production claim unchanged  
+Status: promoted
 Owner: version-currentness task 131  
 Date: 2026-10-08  
 Authority: Tom's 2026-10-07 approval for the remaining one-family exact-pin,
 major-line, and schema/scheme-reset scope; Contract 029; the
 [version-currentness checkpoint](../knowledge/operations/version-currentness-checkpoint.md#pre-v052-sweep-authority)
 
-## Question
+## Qualification
 
-Can the selected `kimi-code.headless` v2 `stream-json` surface extend from its
-qualified `0.43.0` ceiling through the official stable `2.1.1` major line while
-preserving the legacy v1 segment and all other family claims?
+The selected `kimi-code.headless` v2 `stream-json` surface extends from its
+qualified `0.43.0` ceiling through official stable `2.1.1`. The legacy v1
+segment, published-release holes, and all other family claims remain intact.
+Tom's 2026-10-08 ruling is: “Allow 2.1.1 with 2.1.0 left unsupported.”
 
-The published npm chain after the current ceiling is `0.43.1`, `2.0.0`,
+The published stable chain after the previous `0.43.0` ceiling is `0.43.1`, `2.0.0`,
 `2.0.1`, `2.0.2`, `2.1.0`, and `2.1.1`. The current npm `latest` and GitHub
 latest stable both resolve to `2.1.1`; npm published it at
 `2026-09-24T07:27:15.480Z` and GitHub published its release at
@@ -54,8 +55,11 @@ artifact execution occurred.
 The route remains `kimi --model <model> --prompt <content> --output-format
 stream-json`. The v2 default engine is agent-core-v2 `runV2Print`, which emits
 the `system.version` preamble. The v1 segment remains `0.29.0..=0.32.0`; the
-v2 segment currently remains `0.33.0..=0.43.0` under
-`kimi.headless.stream-json.v2`. The selected writers, output-format options,
+v2 claim now has two maintained segments: `0.33.0..=0.43.1` and
+`2.0.0..=2.1.1`, both under `kimi.headless.stream-json.v2`. Unpublished
+`0.43.2`, the unqualified `1.x` line, and unpublished `2.0.3` remain outside
+the segments. Exact `2.1.0` is excluded for its filesystem-authority change.
+The selected writers, output-format options,
 retry payload, and event-dispatch grammar match across all seven npm bundle
 points. The ten dispatched event labels and the
 `system.version`, `turn.step.retrying`, and `session.resume_hint` meta records
@@ -69,8 +73,8 @@ are frozen in `protocol.json` and `bundle-oracles.json`.
 | `0.43.1→2.0.0` | The selected CLI and stream writers stay stable. Agent-loop changes carry internal prompt metadata and cancellation reasons; subagent resume and media-upload helpers change. The added install command is outside headless. |
 | `2.0.0→2.0.1` | `run-v2-print.ts` waits for an in-flight cron-steered turn before treating the background schedule as quiescent. Event writers and dispatcher stay stable. AskUserQuestion denial text changes as provider-generated tool output data. The dangerous-command yolo change is not selected: the print runner sets `nonInteractive: true`, which omits that policy. |
 | `2.0.1→2.0.2` | Agent-core-v2 suppresses a duplicate steering event for the active message and appends a seed record to an existing session journal. These are private loop/history changes. |
-| `2.0.2→2.1.0` | **Security/authority stop.** Kimi adds `realpath-access.ts` and wires it into built-in `Read`, `Write`, `Edit`, `Glob`, `Grep`, and `ReadMediaFile` tools. The checks block symlink escapes, sensitive targets, dangling links, and writes through symlink aliases to `.kimi-code/local.toml`. The runner invokes these tools through the selected v2 agent core, so this changes the provider's effective filesystem access. |
-| `2.1.0→2.1.1` | The helper and six tool guards are removed, restoring their `2.0.2` source blobs. Static inspection of npm `dist/main.mjs` finds the realpath guard symbols only in `2.1.0`. The later reversal does not erase the authority-changing `2.1.0` hop from the published chain. |
+| `2.0.2→2.1.0` | **Unsupported security-authority gap.** Kimi adds `realpath-access.ts` and wires it into built-in `Read`, `Write`, `Edit`, `Glob`, `Grep`, and `ReadMediaFile` tools. The checks block symlink escapes, sensitive targets, dangling links, and writes through symlink aliases to `.kimi-code/local.toml`. The runner invokes these tools through the selected v2 agent core, so this changes the provider's effective filesystem access. Exact `2.1.0` remains excluded under the operator ruling. |
+| `2.1.0→2.1.1` | **Qualify `2.1.1` after the excluded hop.** The helper and six tool guards are removed, restoring their `2.0.2` source blobs. Static inspection of npm `dist/main.mjs` finds the realpath guard symbols only in `2.1.0`. The later reversal allows the exact `2.1.1` point to qualify without widening support to `2.1.0`. |
 
 The `2.1.0` change in `git-cwd-write-approve.ts` separately declines automatic
 approval for project-local config writes. That condition is preempted in the
@@ -85,18 +89,15 @@ all changed paths, selected source hashes, bundle oracles, and static policy
 marker counts are in
 [`tests/fixtures/kimi-code-2.1.1/`](../../crates/swallowtail-adapter-kimi/tests/fixtures/kimi-code-2.1.1/).
 
-## Outcome and next step
+## Outcome
 
-No production claim changed. Headless stays qualified at `0.43.0`; `2.1.1`
-remains visible as `UnverifiedNewer` under the existing `AllowUnverified`
-posture. The exact `2.1.0` filesystem-authority change needs an operator ruling
-before this family can qualify the major line. The ruling must say whether to
-keep the ceiling while an adaptation is prepared, or qualify `2.1.1` with
-`2.1.0` left as an unsupported gap. This is a currentness stop with a next
-adaptation step, not a terminal family outcome.
-
-No guide, feature matrix, ACP or local-server claim, changelog, public API,
-behavior revision, or exclusion changed in this identity-only stop.
+The headless claim keeps baseline `0.29.0`, claim id
+`kimi.headless.executable-window-2`, and both behavior revisions. Its v1
+segment remains `0.29.0..=0.32.0`; v2 is qualified at
+`0.33.0..=0.43.1` and `2.0.0..=2.1.1`, excluding exact `2.0.3` and `2.1.0`.
+The `0.43.2` and `1.x` gaps remain outside the segments. Stable points above
+`2.1.1` remain `UnverifiedNewer` under `AllowUnverified`. ACP and local-server
+claims are unchanged. No public API or behavior revision changed.
 
 ## Sources
 

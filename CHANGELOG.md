@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only `kimi-code.headless` through official npm and GitHub stable
+  `2.1.1` after every published hop from the qualified `0.43.0` ceiling.
+  Research 403 freezes the exact package/source identities, complete trees,
+  per-hop classifications, and selected bundle oracles. Preserve the legacy
+  v1 segment; qualify v2 `0.33.0..=0.43.1` and `2.0.0..=2.1.1`, while keeping
+  unpublished `0.43.2`, `1.x`, and `2.0.3` outside the claim and exact `2.1.0`
+  excluded for its effective filesystem-authority change. The operator ruling
+  qualifies `2.1.1` with `2.1.0` unsupported. No public API or behavior revision
+  changes; ACP and local-server claims remain separate. No provider prompt,
+  credentials, live session, artifact execution, host update, release, or tag.
 - qualify only `command-code.headless` through official npm `latest`
   `1.79.1`, with an exact segment for each of the 33 published stable points,
   including the existing `1.65.0` baseline. Research 402 freezes each package

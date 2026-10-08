@@ -101,9 +101,9 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
     // ACP stops at 0.38.0 for the 0.39 process-authority delta; headless
     // extends. The local-server family shares the npm package and moves on
     // its own authority evidence: Q-004 B qualifies official 2.1.1 under
-    // AmbientHost. Research 325 raised the live headless ceiling to 0.43.0.
+    // AmbientHost. Research 403 raised the live headless ceiling to 2.1.1.
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
-    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.1");
     assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "2.1.1");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
@@ -122,7 +122,7 @@ fn identity_and_claim_qualify_0_36_1_as_compatible_extension() {
                 "0.33.0", "0.34.0", "0.36.1", "0.37.2", "0.38.0", "0.39.0", "0.39.1",
             ]
             .as_slice(),
-            "0.43.1",
+            "2.1.2",
         ),
         (
             &kimi_local_server_claim(),

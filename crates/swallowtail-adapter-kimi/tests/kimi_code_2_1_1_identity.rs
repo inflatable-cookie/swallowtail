@@ -1,8 +1,7 @@
 //! Research 403: Kimi Code headless 2.1.1 identity and security-hop evidence.
 //!
-//! The evidence is frozen before changing the production claim. The 2.1.0
-//! filesystem-access change needs an operator ruling, so the claim remains at
-//! its previous 0.43.0 ceiling in this task state.
+//! Research 403 freezes the official identity and selected-path evidence for
+//! the qualified 2.1.1 claim, with the 2.1.0 authority change excluded.
 
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -188,25 +187,70 @@ fn complete_package_and_source_trees_reproduce_every_hop_delta() {
 }
 
 #[test]
-fn current_claim_stays_at_0_43_0_while_the_security_hop_needs_a_ruling() {
+fn current_claim_qualifies_2_1_1_and_excludes_the_security_hop() {
     assert_eq!(
         sha256_hex(BUNDLE_ORACLES),
         "8825a3e3711ed9912656ecbcad6f621cabfe8b37e964b65018f0eaf31020f952"
     );
     assert_eq!(
         sha256_hex(PROTOCOL),
-        "227a8227701518b79a357b4277a26eff39b22c7a6d47ec8631b9b9452d0f0c95"
+        "354dde472b9858a33a8d039d9384ea560f21fb5681fac050070f1529293c5cd2"
     );
-    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.1");
     let claim = kimi_headless_claim();
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+    let InterfaceCompatibilityAssessment::Qualified(latest) =
         claim.assess(&InterfaceVersion::new("2.1.1").expect("valid release"))
     else {
-        panic!("the frozen claim keeps 2.1.1 visible as unverified newer");
+        panic!("the approved official stable qualifies");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.43.0");
+    assert_eq!(
+        latest.behavior_revision().as_str(),
+        "kimi.headless.stream-json.v2"
+    );
+    assert_eq!(
+        latest.support_status(),
+        swallowtail_core::InterfaceSupportStatus::Maintained
+    );
+    assert_eq!(claim.latest_qualified().as_str(), "2.1.1");
+    for qualified in ["0.43.1", "2.0.0", "2.0.1", "2.0.2"] {
+        assert!(
+            matches!(
+                claim.assess(&InterfaceVersion::new(qualified).expect("valid release")),
+                InterfaceCompatibilityAssessment::Qualified(_)
+            ),
+            "{qualified} qualifies"
+        );
+    }
+    for unsupported in ["0.43.2", "1.0.0", "2.0.3", "2.1.0"] {
+        assert_eq!(
+            claim.assess(&InterfaceVersion::new(unsupported).expect("valid release")),
+            InterfaceCompatibilityAssessment::Incompatible,
+            "{unsupported} remains unsupported"
+        );
+        assert!(!claim.permits(&InterfaceVersion::new(unsupported).expect("valid release")));
+    }
+    assert!(matches!(
+        claim.assess(&InterfaceVersion::new("2.1.2").expect("valid release")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
 
     let protocol = json(PROTOCOL);
+    assert_eq!(
+        protocol["claim_shape_at_observation"]["v2_segment_before"],
+        "0.33.0..=0.43.0"
+    );
+    assert_eq!(
+        protocol["claim_shape_after_operator_ruling"]["v2_segments"],
+        serde_json::json!(["0.33.0..=0.43.1", "2.0.0..=2.1.1"])
+    );
+    assert_eq!(
+        protocol["claim_shape_after_operator_ruling"]["excluded_versions"],
+        serde_json::json!(["2.0.3", "2.1.0"])
+    );
+    assert_eq!(
+        protocol["operator_ruling"]["decision"],
+        "Qualify 2.1.1 with 2.1.0 left unsupported."
+    );
     let source_ledger = &protocol["selected_source_ledger"];
     let auto_policy = &source_ledger["packages/agent-core-v2/src/agent/permissionPolicy/policies/auto-mode-approve.ts"];
     let policy_service = &source_ledger["packages/agent-core-v2/src/agent/permissionPolicy/permissionPolicyService.ts"];
@@ -254,7 +298,11 @@ fn current_claim_stays_at_0_43_0_while_the_security_hop_needs_a_ruling() {
     );
     assert_eq!(
         protocol["hop_classification"][4]["verdict"],
-        "scope-stop-pending-operator-ruling"
+        "unsupported-security-authority-gap"
+    );
+    assert_eq!(
+        protocol["hop_classification"][5]["verdict"],
+        "qualify-after-excluded-security-hop"
     );
     assert_eq!(protocol["safety"]["downloaded_artifacts_executed"], false);
     assert_eq!(protocol["safety"]["credentials_used"], false);

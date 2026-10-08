@@ -122,10 +122,10 @@ fn identity_0_38_0_qualifies_acp_and_local_server_retracts_headless() {
     }
 
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
-    // Research 325 raised the live headless ceiling past the 0.39.1 point this
-    // corpus observed; the ACP ceiling is unchanged. Q-004 B later raised the
-    // separate local-server ceiling through official 2.1.1.
-    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
+    // Research 403 raised the live headless ceiling through official 2.1.1;
+    // the ACP ceiling is unchanged. Q-004 B separately qualified local-server
+    // 2.1.1 under AmbientHost.
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.1");
     assert_eq!(KIMI_LOCAL_SERVER_LATEST_QUALIFIED_VERSION, "2.1.1");
     let acp_claim = kimi_acp_claim();
     assert!(matches!(
@@ -162,10 +162,10 @@ fn identity_0_38_0_qualifies_acp_and_local_server_retracts_headless() {
             if matched.support_status() == InterfaceSupportStatus::Maintained
                 && matched.behavior_revision().as_str() == "kimi.headless.stream-json.v2"
     ));
-    // Research 325 extended the live headless ceiling to 0.43.0, so the first
-    // later unverified-newer point moved from the 0.39.2 this corpus observed.
+    // Research 403 extends the live headless ceiling through 2.1.1, so later
+    // official points remain unverified on the same mapped revision.
     assert!(matches!(
-        headless_claim.assess(&version("0.43.1")),
+        headless_claim.assess(&version("2.1.2")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
             if newer.behavior_revision().as_str() == "kimi.headless.stream-json.v2"
     ));

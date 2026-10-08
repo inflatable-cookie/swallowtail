@@ -16,15 +16,6 @@
     "major_reset_at": "2.0.0",
     "major_reset_scope": "headless v2 system.version selected surface only"
   },
-  "claim_shape": {
-    "claim_id": "kimi.headless.executable-window-2",
-    "baseline": "0.29.0",
-    "legacy_v1_segment": "0.29.0..=0.32.0",
-    "v2_segment_before": "0.33.0..=0.43.0",
-    "behavior_revision": "kimi.headless.stream-json.v2",
-    "posture": "AllowUnverified",
-    "preserve_acp_and_local_server_axes": true
-  },
   "mapped_stream": {
     "roles": [
       "meta",
@@ -694,14 +685,14 @@
     {
       "from": "2.0.2",
       "to": "2.1.0",
-      "verdict": "scope-stop-pending-operator-ruling",
+      "verdict": "unsupported-security-authority-gap",
       "selected_behavior": "new realpath checks in built-in Read/Write/Edit/Glob/Grep/ReadMediaFile restrict symlink escapes, sensitive paths, dangling links, and writes through aliases to .kimi-code/local.toml; this is an effective filesystem authority change in the agent-core-v2 tools used by headless; separate git-cwd config policy is preempted by auto-mode-approve; task tool outputs and duration metadata also change"
     },
     {
       "from": "2.1.0",
       "to": "2.1.1",
-      "verdict": "scope-stop-pending-operator-ruling",
-      "selected_behavior": "the 2.1.0 realpath helper and tool guards are removed; exact prior tool source restored. The npm bundle no longer carries realpath guard symbols. Qualification must resolve 2.1.0 rather than silently skip it"
+      "verdict": "qualify-after-excluded-security-hop",
+      "selected_behavior": "the 2.1.0 realpath helper and tool guards are removed; exact prior tool source is restored. The npm bundle no longer carries realpath guard symbols. Qualify 2.1.1 and retain exact 2.1.0 as an unsupported security-authority gap."
     }
   ],
   "permission_path_proof": {
@@ -1082,5 +1073,34 @@
       "PATH_SYMLINK_ESCAPE": 0,
       "AskUserQuestion is disabled while auto permission mode is active": 1
     }
+  },
+  "claim_shape_at_observation": {
+    "claim_id": "kimi.headless.executable-window-2",
+    "baseline": "0.29.0",
+    "legacy_v1_segment": "0.29.0..=0.32.0",
+    "v2_segment_before": "0.33.0..=0.43.0",
+    "behavior_revision": "kimi.headless.stream-json.v2",
+    "posture": "AllowUnverified",
+    "preserve_acp_and_local_server_axes": true
+  },
+  "claim_shape_after_operator_ruling": {
+    "claim_id": "kimi.headless.executable-window-2",
+    "baseline": "0.29.0",
+    "legacy_v1_segment": "0.29.0..=0.32.0",
+    "v2_segments": [
+      "0.33.0..=0.43.1",
+      "2.0.0..=2.1.1"
+    ],
+    "excluded_versions": [
+      "2.0.3",
+      "2.1.0"
+    ],
+    "behavior_revision": "kimi.headless.stream-json.v2",
+    "posture": "AllowUnverified",
+    "preserve_acp_and_local_server_axes": true
+  },
+  "operator_ruling": {
+    "date": "2026-10-08",
+    "decision": "Qualify 2.1.1 with 2.1.0 left unsupported."
   }
 }

@@ -46,6 +46,6 @@ pub const PI_SDK_SIDECAR_BEHAVIOR: &str = "pi.sdk-sidecar-v1";
 pub const PI_SDK_SIDECAR_SDK_PACKAGE: &str = "@earendil-works/pi-coding-agent";
 /// Exact current default SDK package version.
 pub const PI_SDK_SIDECAR_SDK_VERSION: &str = "1.1.0";
-/// Exact approved Node runtime version satisfying the upstream `>=22.19.0`
-/// requirement.
-pub const PI_SDK_SIDECAR_NODE_RUNTIME: &str = "22.23.2";
+/// Highest qualified Node runtime version satisfying the upstream `>=22.19.0`
+/// requirement. The maintained segment also retains `22.23.2`.
+pub const PI_SDK_SIDECAR_NODE_RUNTIME: &str = "22.23.3";

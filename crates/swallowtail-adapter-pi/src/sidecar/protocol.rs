@@ -206,11 +206,15 @@ mod tests {
         assert_eq!(protocol["sdk_version"], PI_SDK_SIDECAR_SDK_VERSION);
         assert_eq!(
             protocol["compatibility_claim"],
-            "qualified_only_exact_published_points"
+            "qualified_only_exact_package_points_and_maintained_node_segment"
         );
         assert_eq!(protocol["cache_warming"], "off");
         assert_eq!(protocol["sidecar_source_tag"], PI_SDK_SIDECAR_SOURCE_TAG);
         assert_eq!(protocol["node_runtime"], PI_SDK_SIDECAR_NODE_RUNTIME);
+        assert_eq!(
+            protocol["node_qualified_points"],
+            serde_json::json!(["22.23.2", "22.23.3"])
+        );
         assert_eq!(protocol["sidecar_entry_file"], PI_SDK_SIDECAR_ENTRY_FILE);
         assert!(
             PI_SDK_SIDECAR_SOURCE_TAG

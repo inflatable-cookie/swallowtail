@@ -19,14 +19,16 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 Preparation requires all of the following:
 
 - exact package axis `cline.package`
-- exact npm wrapper `3.0.55`
+- official npm wrapper `3.0.55..=3.0.70`, excluding unpublished `3.0.59`
 - host-approved `cline` executable and isolated environment
 - `cline_local_account_access_profile` with no credential reference
 - working resource, plus host services for task, process, and working-resource
   ownership
 
-The claim is qualified-only. Later packages do not inherit this route.
-`UnverifiedNewer` is not a Cline ACP execution posture.
+The ACP claim keeps its `3.0.55` baseline and behavior revision, qualifies
+published stable versions through `3.0.70`, and excludes unpublished `3.0.59`
+(Research 397). Later stable points remain visible as `UnverifiedNewer` under
+the claim.
 
 Swallowtail does not install Cline, search `PATH`, run OAuth `authenticate`,
 read `CLINE_API_KEY`, or default auto-approve. Host-owned account state and
@@ -44,16 +46,16 @@ before reusing it. The access profile is local and unauthenticated: Swallowtail
 opens no credential lease.
 
 Wrong axis (`cline.headless` is not this route), wrong audience, a credential
-reference, or an unqualified package fails before ACP work.
+reference, or a package excluded by the claim fails before ACP work.
 
 ## ACP Interactive Session
 
 Create `ClineSessionProfileInput::new` with request identity and a read-only
 working resource. Optional `with_harness_mode(HarnessMode::Plan)` selects Plan
-on exact `3.0.55`. Omission sends no mode request and claims neither selected
-Plan nor provider-default Act. There is no open deadline or model route. Call
-`prepare_session`, inspect `evidence()`, `plan()`, and `request()`, then
-`open_session`.
+on the qualified ACP versions. Omission sends no mode request and claims
+neither selected Plan nor provider-default Act. There is no open deadline or
+model route. Call `prepare_session`, inspect `evidence()`, `plan()`, and
+`request()`, then `open_session`.
 
 The driver owns one joined stdio child and performs this sequence:
 
@@ -63,7 +65,8 @@ The driver owns one joined stdio child and performs this sequence:
 4. when Plan is selected: require unique `plan` advertisement, send one
    `session/set_config_option` `{configId: mode, value: plan}`, and require
    response `mode.currentValue = plan` before readiness
-5. one bounded `session/prompt` of text blocks
+5. one bounded `session/prompt` of text blocks; image and other non-text ACP
+   output remains unsupported and fails closed
 6. observe permission requests and cancel; never select `allow_always`
 7. join connection, process, and task cleanup
 
@@ -86,9 +89,12 @@ See the compile-tested
 
 ## Restart, Failure, And Promotion
 
-ACP exposes no public load or resume binding.
-`prepare_working_state_restoration` opens a fresh context-losing session after
-process loss; it does not recover the interrupted turn or transcript.
+Upstream Cline ACP advertises and implements `session/load`; Swallowtail does
+not map that operation or expose its provider session identity. Its matrix
+disposition is pending Q-006. The route also has no resume binding.
+`prepare_working_state_restoration` opens a fresh
+context-losing session after process loss; it does not recover the interrupted
+turn or transcript.
 
 Handle failures through portable classification and retain the exact
 `swallowtail.cline.acp` diagnostic for support. Do not parse stderr, ACP data,
@@ -99,11 +105,17 @@ usage, session load, or live qualification requires a separate card, exact
 version evidence, and matrix coverage. An advertised ACP capability or CLI flag
 alone is insufficient.
 
+Research 397 freezes the published npm package hops, wrapper and Darwin ARM64
+runtime trees, platform provenance, and selected ACP source deltas through
+`3.0.70`. It does not add provider model catalogue, media output, request
+identity, usage, or session-load mappings. Q-006 owns the open disposition of
+the unmapped `load_session` feature cell.
+
 ## Deterministic Validation
 
 ```sh
-effigy validate:focused swallowtail-adapter-cline
-effigy check:examples
+effigy validate:current-cline-acp
+effigy check:current-cline-acp
 ```
 
 No login, install, or authenticated prompt is part of deterministic acceptance.

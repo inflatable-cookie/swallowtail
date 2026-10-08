@@ -415,6 +415,29 @@ another ruling. This ruling authorizes no artifact execution, credential
 access, live provider work, installation, host mutation or release/tag action.
 Contract 036 release compatibility remains separate.
 
+## Kiro ACP Isolated Owner-State Proof
+
+Tom's 2026-10-08 board answer, “Approve isolated proof and name the Linux ARM64
+environment”, answers decision `99de6453-9492-4537-a346-ce7803dbfea3`.
+It approves bounded offline proof comparing original Kiro `2.26.1` control
+with `2.27.0`, `2.27.1` and `2.28.0`. The disposable native Linux aarch64 GNU
+VM or container must be explicitly designated before vendor execution. The
+answer does not identify that environment; none is implied by this approval.
+
+Deny external egress and host mounts before execution. Use two synthetic
+unprivileged UIDs and task-owned home, working directory, temporary files and
+session state inside that environment. Access no real credentials or
+authentication store, and make no provider or tool turns. Prove containment
+against fakes and persist the execution record before running original
+artifacts. Observe only ACP initialization, session creation and owner-state
+path, symlink, access and failure effects. Stop if real authentication or
+unavailable containment prevents exact reachability.
+
+Preserve the existing `2.21.4` claim, public lifecycle and exact HTTP MCP
+guarantees. Evidence does not automatically qualify newer versions. No host
+installation or mutation, consumer repin, live work or release/tag authority
+is included. Contract 036 compatibility assessment remains separate.
+
 ## Native Sandbox Boundary
 
 Provider-native sandboxing is optional. A configured route may select

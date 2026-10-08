@@ -291,12 +291,11 @@ fn npm_source_and_runtime_identities_are_complete_for_every_published_hop() {
             wrapper["unpacked_size"].as_u64(),
             Some(wrapper_files.values().map(|(size, _)| size).sum())
         );
-        assert_eq!(
+        assert!(
             wrapper["integrity"]
                 .as_str()
                 .unwrap()
-                .starts_with("sha512-"),
-            true
+                .starts_with("sha512-")
         );
 
         let native_meta = native_versions[*version]

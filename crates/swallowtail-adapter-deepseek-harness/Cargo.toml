@@ -42,3 +42,7 @@ workspace = true
 name = "live_installed_probe"
 path = "tests/live_installed_probe.rs"
 required-features = ["live-probes"]
+
+[[test]]
+name = "deepseek_harness_web_identity_stop"
+path = "tests/deepseek_harness_web_identity_stop.rs"

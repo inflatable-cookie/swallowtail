@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only `cursor-agent.headless` through official ACP registry stable
+  `2026.10.01-14929f9`, after every published hop following
+  `2026.09.18-9a7762b`. Research 399 freezes both platform archives, complete
+  package trees, and the per-hop selected-file ledger. Preserve the headless
+  baseline, claim, behavior revision, prior points, and gaps; ACP is separately
+  qualified through `2026.10.01` by Research 395, and the catalogue claim is
+  unchanged. The selected CLI options, NDJSON event mapping, usage, failure
+  boundary, permission selection, and lifecycle remain compatible. No archive
+  execution, provider prompt, authenticated catalogue/session, credential use,
+  installation, or host update occurred.
 - keep `kiro.acp` at its existing exact `2.21.4` point; official Kiro CLI
   stable `2.28.0` and all twelve published successor hops remain unqualified
   pending exact ACP V2 owner-sweep reachability and session, path, and failure
@@ -53,8 +63,8 @@ annotated Git tags from the canonical repository.
   `2026.10.01-14929f9`, after every published hop following `2026.09.18-9a7762b`.
   Research 393 freezes exact Darwin ARM64 and Linux x64 artifacts, complete
   package trees, and per-hop selected-file classifications. Keep the baseline,
-  claim, behavior revision, prior points, and gaps; Headless remains at
-  `2026.09.18-9a7762b`; ACP is qualified separately in Research 395. The
+  claim, behavior revision, prior points, and gaps; Headless is separately
+  qualified through `2026.10.01-14929f9` by Research 399; ACP is qualified in Research 395. The
   selected `models` command, account options,
   model identity/display mapping, failure boundary, and process lifecycle are
   unchanged. No archive execution, authenticated catalogue, provider prompt,
@@ -66,8 +76,8 @@ annotated Git tags from the canonical repository.
   only the ACP claim through `2026.09.26-dd393fe`, `2026.09.28-64d2043`, and
   `2026.10.01-14929f9`; retain its baseline, claim id, behavior revision, exact
   gaps, and blocked continuation. Catalogue is separately qualified through
-  `2026.10.01-14929f9` (Research 393); Headless remains at
-  `2026.09.18-9a7762b`. The general installer build `2026.10.01-e373342`
+  `2026.10.01-14929f9` (Research 393); Headless is separately qualified
+  through `2026.10.01-14929f9` by Research 399. The general installer build `2026.10.01-e373342`
   remains a separate channel. No public operation, permission, or lifecycle
   behavior changes. No provider prompt, live session, credential use, artifact
   execution, installation, or host update occurred.

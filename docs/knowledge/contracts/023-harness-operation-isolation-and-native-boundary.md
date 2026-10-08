@@ -272,6 +272,14 @@ This is provider-free proof authority, not a live provider turn, permission
 bypass, broader platform claim, production adaptation, release or tag approval.
 The separate resource-resolution and retry control-flow gates remain.
 
+Tom identified the available environment in the same conversation as Windows
+11 ARM64 in Parallels on his machine, and said he has no x64 access currently.
+Only ARM64 execution can be proved there. Keep native x64 evidence pending;
+x64 emulation on ARM64 is a distinct deployment and cannot supply native x64
+proof. Environment preparation that changes VM configuration or provisions a
+disposable environment needs separate authority under the no-configuration-
+change boundary; availability alone does not establish isolation.
+
 ## Copilot ACP Offline Artifact Proof
 
 Tom's 2026-10-08 “Accept and approve all” answers decision

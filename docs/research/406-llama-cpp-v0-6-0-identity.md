@@ -85,4 +85,4 @@ correlated to official stable `v0.6.0`. Keep `llama-cpp.owned` independent at
 - [v0.6.0 source tag](https://github.com/ggml-org/llama.cpp/tree/v0.6.0)
 - [b11429 source tag](https://github.com/ggml-org/llama.cpp/tree/b11429)
 - [b9910 source tag](https://github.com/ggml-org/llama.cpp/tree/b9910)
-- [Frozen identity and source tree inventory](../crates/swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-v0.6.0/README.md)
+- [Frozen identity and source tree inventory](../../crates/swallowtail-adapter-llama-cpp/tests/fixtures/llama-cpp-v0.6.0/README.md)

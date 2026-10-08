@@ -27,7 +27,7 @@ annotated Git tags from the canonical repository.
   update was used.
 - keep `gemini-cli.headless` at its `0.61.0` ceiling after the
   authority-preserving adaptation to official stable `0.63.0` stops on the
-  noninteractive Plan Mode exit path. Research 415 pins the source behavior:
+  noninteractive Plan Mode exit path. Research 417 pins the source behavior:
   noninteractive policy allows `exit_plan_mode`, whose allowed transition
   selects YOLO; the selected adapter has no guard. This cannot preserve the
   no-automatic-implementation-transition contract within the approved scope.
@@ -339,7 +339,7 @@ annotated Git tags from the canonical repository.
   hops `0.62.0` and `0.63.0` plus complete npm/source trees. The selected
   `0.63.0` Plan Mode authority, noninteractive permission, and
   tool-output/context changes were assessed under the bounded adaptation
-  approved in decision de317828. Research 415 records the source-level stop
+  approved in decision de317828. Research 417 records the source-level stop
   and remaining enforcement gate. Both later points remain `UnverifiedNewer`,
   and the unpublished `0.56.1` and `0.59.1` exclusions remain in force.
 - qualify only `codex.app-server` through official npm/GitHub stable `0.161.0`;

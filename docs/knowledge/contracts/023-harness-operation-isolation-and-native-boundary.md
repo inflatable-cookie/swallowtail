@@ -278,6 +278,23 @@ consumer-visible narrowing, return the exact proposed adaptation for a
 separate ruling before moving claims. Preserve older qualified points;
 Contract 036 compatibility remains independent.
 
+Tom's subsequent 2026-10-08 board answer to decision
+`f04070a3-4a62-4214-bda8-788ccfb3b912` is “We have to work with whatever
+command code ship”. Use official shipped Command Code artifacts. Do not build
+the proposed upstream model-lane prototype, patch or fork the provider, or
+claim a hypothetical startup fix. No upstream publication or patched-runtime
+qualification is authorized.
+
+This answer does not establish a shipped mechanism preserving explicit model
+selection. The recorded `1.79.1` planning-lane precedence still conflicts with
+the earlier explicit-model guarantee. Before qualification, settle whether
+the route may document provider-configured planning-model precedence as a
+version-specific limit or must preserve the explicit-model guarantee through
+an actually shipped mechanism. Do not infer that forwarding `-m` proves the
+effective model, silently substitute a model, change permission mode to escape
+the planning lane, write persistent settings or relocate authentication/home.
+Preserve current qualified points and the separate release compatibility gate.
+
 ## Kiro ACP Explicit Environment
 
 Tom's 2026-10-08 “Accept and approve all” answers decision

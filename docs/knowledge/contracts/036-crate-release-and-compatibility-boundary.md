@@ -412,7 +412,17 @@ tag afterwards and does not hold the tag.
 No manifest version, passing gate, changelog, clean commit, or generated
 candidate grants authority to mutate external state.
 
-Current tagged identity is `v0.5.1` at
+Tom authorized exact `v0.5.2` annotated-tag creation and push on 2026-10-08:
+“Go for it” (decision `f1e95c52-063b-4362-a562-8e5e6a162b49`). Current
+tagged identity is `v0.5.2` on `release/v0.5` at
+`b83db0bdca4292e0d21775b9c0dc8b80ec05d003`, tree
+`949d9ef1199cd21c188959dcb2c9e9bc5f2086ec`, tag object
+`4d54ed92ec2dcdf44ebce019463d124996267810`. Its source-only annotation
+records SDK registered-tool lease and per-turn usage corrections while
+preserving released SDK/native/Node pins and wire-v1 compatibility.
+No registry publication or GitHub Release is included.
+
+Immutable `v0.5.1` remains at
 `e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27`, tree
 `d375b3227985e8e552ba9346d8f9b8631936db5f`, tag object
 `97a6933abe13b2e8f05441e1ab950962e0683e65`, tagged 2026-09-13. Immutable

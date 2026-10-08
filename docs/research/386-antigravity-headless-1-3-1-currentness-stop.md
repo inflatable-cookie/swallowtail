@@ -42,6 +42,17 @@ neither point is added to the claim.
 | `1.2.17→1.3.0` | Selected path and custom-agent extension review | Special-character/Windows paths and project-scoped custom-agent discovery change. The verbosity and `/diff` changes are TUI-only under explicit stream JSON. Exact selected path mapping remains unverified from the opaque artifact. |
 | `1.3.0→1.3.1` | Child-status stream evidence gate | The error note names `/agents` and the running-agent list. Official stream docs describe child identity, log, and workspace fields, but no child error/status field. This does not establish the selected stream's child outcome. API-key retry remains conditional on environment evidence. |
 
+The 2026-10-08 official headless guide distinguishes three error scopes. A
+failed tool step may carry `tool_info.error` with `type` and `message`; the
+adapter maps that field to `ActivityStatus::Failed`. A failed whole run carries
+`result.status` and `result.error`; the adapter maps it to
+`TerminalStatus::ProviderFailed`. Neither field is documented as the status of
+an individual child. The documented `subagent_info.subagents` fields are
+`type_name`, `role`, `conversation_id`, `log_uri`, and `workspace_uris`. The
+1.3.1 release note describes `Error:` only in `/agents` and the running-agent
+list. `headless-run-error.jsonl` is a synthetic fixture of the documented
+whole-run error shape; it is not child-error evidence.
+
 The machine-readable hop ledger records each tag, publication time, changed
 source path set, runtime inventory pointer, classification, and exact remaining
 proof. Tests assert its exact key and path sets against the frozen artifact
@@ -74,8 +85,14 @@ CLI SHA-256
 `UpdateSubagentSteps`, `addFromDiff`, and `handleToolConfirmation`. This ties
 the release-note change to selected headless tool/permission handling, rather
 than only to an interactive screen. It does not reveal a denial event in
-selected stdout, so it does not authorize a synthetic version-specific stream
-fixture.
+selected stdout. The official headless guide says the soft-denial notice goes
+to stderr, the run continues, and its exit code is zero. Since the adapter
+parses stdout stream JSON and does not parse stderr as events, the retained
+`headless-denial-1.2.15-evidence.json` records the exact artifact identity and
+documented/static facts while leaving the denied stdout event explicitly
+unproven. `headless-tool-error.jsonl` covers the separately documented tool
+error shape with synthetic fixture values; it is not a permission-denial
+capture. Do not represent it as one.
 
 Static inspection of the exact `1.3.1` Mac ARM64 artifact (archive SHA-256
 `ef5e385b32afda4cf1612368bb4bf155d3f8f4c55d51488649f508baefe77c86`, extracted
@@ -86,28 +103,32 @@ CLI SHA-256
 child error/status field, but this absence in disassembly does not prove a
 successful child or the complete serialized schema. No exact selected error
 stream is retained; preserve the `Completed` mapping until the contract's
-evidence/ruling gate is resolved.
+evidence/ruling gate is resolved. The documented whole-run `result.error` is
+not a child status, and the TUI release note does not establish a matching
+stream field.
 
 ## Why qualification stops
 
 The current official [headless guide](https://www.antigravity.google/docs/cli/headless/)
 states that a permission-required tool that cannot obtain approval is
 soft-denied: the run continues with exit code `0`, and a notice is printed to
-stderr. The guide separately says a failed tool event may contain
-`tool_info.error` with `type` and `message`, but it does not connect a
-soft-denial to that stdout object. Swallowtail parses stdout for stream JSON and
-ignores stderr. Without a version-specific selected-stream shape, an exact
-`1.2.15` denial fixture would invent provider output. The route can retain its
-existing no-bypass behavior, but the denial milestone cannot be claimed yet.
+stderr. The guide separately documents `tool_info.error` for a failed tool and
+`result.error` for a failed run. It does not connect the soft-denial notice to
+either stdout field. Swallowtail parses stdout for stream JSON and ignores
+stderr. The 1.2.15 evidence fixture therefore records the exact documented and
+static facts, but leaves the denial event shape unproven; it does not authorize
+an invented version-specific stream fixture or a denial mapping claim.
 
 The same guide documents `subagent_info.subagents` identity fields, not a
 child failure status. The `1.3.1` release note describes errors in TUI lists;
 static identity fields and disassembly do not prove a successful child. No
-provider-free exact error stream was found in the released documentation or
-retained corpus. Do not change the current `SubagentStatus::Completed` mapping
-on that evidence. If no usable error field can be established, request a
-separate ruling for an unknown/omitted lifecycle projection before changing
-that consumer-visible status.
+provider-free exact child-error stream was found in the released documentation
+or retained corpus. The documented `result.error` belongs to the outer run,
+not an individual subagent. Do not change the current
+`SubagentStatus::Completed` mapping on that evidence. If no usable child field
+can be established, request a separate ruling to project
+`SubagentStatus::Unknown` (or omit child lifecycle observations) before
+changing the consumer-visible `Completed` status.
 
 Two independent artifact gates remain as well. The `1.2.12`, `1.2.13`, and
 `1.3.1` notes touch API-key quota or retry behavior, while the selected
@@ -141,6 +162,7 @@ tag, or publication occurred.
 - [Official Antigravity CLI stable release `1.3.1`](https://github.com/google-antigravity/antigravity-cli/releases/tag/1.3.1)
 - [Official headless-mode stream and permission documentation](https://www.antigravity.google/docs/cli/headless/)
 - [Frozen route-specific runtime identity fixture](../../crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.3.1/headless-currentness.json)
+- [1.2.15 provider-free denial evidence fixture](../../crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.3.1/headless-denial-1.2.15-evidence.json)
 - [Complete selected Linux x64 and Mac ARM64 archive inventory](../../crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.3.1/dist-inventory.json)
 - [Complete public asset manifests and source-hop inventory](../../crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.3.1/identity.json)
 - [Research 359: exact `1.2.11` retry pin](./359-antigravity-headless-retry-pin-evidence.md)

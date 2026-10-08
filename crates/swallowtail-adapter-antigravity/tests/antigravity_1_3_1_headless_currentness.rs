@@ -1,6 +1,8 @@
 use serde_json::Value;
 
 const CURRENTNESS: &str = include_str!("fixtures/antigravity-cli-1.3.1/headless-currentness.json");
+const DENIAL_EVIDENCE: &str =
+    include_str!("fixtures/antigravity-cli-1.3.1/headless-denial-1.2.15-evidence.json");
 const IDENTITY: &str = include_str!("fixtures/antigravity-cli-1.3.1/identity.json");
 const DIST_INVENTORY: &str = include_str!("fixtures/antigravity-cli-1.3.1/dist-inventory.json");
 
@@ -75,6 +77,7 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             "retry_pin",
             "identity_sources",
             "static_mapping_evidence",
+            "selected_failure_scope_evidence",
             "unpublished_points",
             "hops",
             "result",
@@ -195,6 +198,202 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         false
     );
     assert_eq!(child_error_artifact["disassembly_proves_success"], false);
+
+    let failure_scopes = &currentness["selected_failure_scope_evidence"];
+    assert_exact_keys(failure_scopes, &["tool_error", "run_error", "child_error"]);
+    assert_exact_keys(
+        &failure_scopes["tool_error"],
+        &[
+            "documented_fields",
+            "documented_pointer",
+            "scope",
+            "projection",
+            "fixture",
+            "provider_capture",
+        ],
+    );
+    assert_eq!(
+        failure_scopes["tool_error"]["documented_pointer"],
+        "/step_update/tool_info/error"
+    );
+    assert_eq!(
+        failure_scopes["tool_error"]["projection"],
+        "ActivityStatus::Failed"
+    );
+    assert_eq!(failure_scopes["tool_error"]["provider_capture"], false);
+    assert_exact_string_array(
+        &failure_scopes["tool_error"]["documented_fields"],
+        &["type", "message"],
+    );
+    assert_exact_keys(
+        &failure_scopes["run_error"],
+        &[
+            "documented_fields",
+            "documented_pointer",
+            "scope",
+            "projection",
+            "fixture",
+            "provider_capture",
+        ],
+    );
+    assert_eq!(failure_scopes["run_error"]["documented_pointer"], "/result");
+    assert_eq!(
+        failure_scopes["run_error"]["projection"],
+        "TerminalStatus::ProviderFailed"
+    );
+    assert_eq!(failure_scopes["run_error"]["provider_capture"], false);
+    assert_exact_string_array(
+        &failure_scopes["run_error"]["documented_fields"],
+        &["status", "error"],
+    );
+    assert_exact_keys(
+        &failure_scopes["child_error"],
+        &[
+            "documented_container",
+            "documented_child_fields",
+            "status_or_error_field_documented",
+            "exact_selected_error_stream_available",
+            "release_note_surfaces",
+            "proposed_projection_if_separately_ruled",
+        ],
+    );
+    assert_eq!(
+        failure_scopes["child_error"]["documented_container"],
+        "/step_update/subagent_info/subagents"
+    );
+    assert_eq!(
+        failure_scopes["child_error"]["status_or_error_field_documented"],
+        false
+    );
+    assert_eq!(
+        failure_scopes["child_error"]["exact_selected_error_stream_available"],
+        false
+    );
+    assert_eq!(
+        failure_scopes["child_error"]["proposed_projection_if_separately_ruled"],
+        "SubagentStatus::Unknown"
+    );
+    assert_exact_string_array(
+        &failure_scopes["child_error"]["documented_child_fields"],
+        &[
+            "type_name",
+            "role",
+            "conversation_id",
+            "log_uri",
+            "workspace_uris",
+        ],
+    );
+    assert_exact_string_array(
+        &failure_scopes["child_error"]["release_note_surfaces"],
+        &["/agents", "running-agent list"],
+    );
+
+    let denial_evidence: Value =
+        serde_json::from_str(DENIAL_EVIDENCE).expect("1.2.15 denial evidence fixture");
+    assert_exact_keys(
+        &denial_evidence,
+        &[
+            "schema",
+            "fixture_kind",
+            "scope",
+            "release",
+            "platform",
+            "release_archive_sha256",
+            "extracted_cli_sha256",
+            "selected_vendor_path",
+            "denial_record_callers",
+            "official_headless_documentation",
+            "selected_adapter_path",
+            "exact_denial_stdout_event",
+        ],
+    );
+    assert_eq!(denial_evidence["release"], "1.2.15");
+    assert_eq!(denial_evidence["platform"], "mac_arm64");
+    assert_eq!(
+        denial_evidence["release_archive_sha256"],
+        inventory["versions"]["1.2.15"]["mac_arm64"]["published_digest"]
+    );
+    assert_eq!(
+        denial_evidence["extracted_cli_sha256"],
+        inventory["versions"]["1.2.15"]["mac_arm64"]["archive_members"][0]["sha256"]
+    );
+    assert_exact_string_array(
+        &denial_evidence["selected_vendor_path"],
+        &[
+            "printmode.session.runTurn",
+            "store.(*Manager).HeadlessDenials",
+            "printmode.headlessDenialNotice",
+        ],
+    );
+    assert_exact_string_array(
+        &denial_evidence["denial_record_callers"],
+        &[
+            "UpdateSubagentSteps",
+            "addFromDiff",
+            "handleToolConfirmation",
+        ],
+    );
+    assert_exact_keys(
+        &denial_evidence["official_headless_documentation"],
+        &[
+            "continues",
+            "exit_code",
+            "notice_stream",
+            "notice_names_tool",
+            "notice_includes_allow_guidance",
+            "url",
+        ],
+    );
+    assert_eq!(
+        denial_evidence["official_headless_documentation"]["continues"],
+        true
+    );
+    assert_eq!(
+        denial_evidence["official_headless_documentation"]["exit_code"],
+        0
+    );
+    assert_eq!(
+        denial_evidence["official_headless_documentation"]["notice_stream"],
+        "stderr"
+    );
+    assert_exact_keys(
+        &denial_evidence["selected_adapter_path"],
+        &[
+            "output_format",
+            "parses_stdout_events",
+            "parses_stderr_events",
+            "permission_approval_exchange",
+            "dangerously_skip_permissions_argument",
+        ],
+    );
+    assert_eq!(
+        denial_evidence["selected_adapter_path"]["output_format"],
+        "stream-json"
+    );
+    assert_eq!(
+        denial_evidence["selected_adapter_path"]["parses_stderr_events"],
+        false
+    );
+    assert_eq!(
+        denial_evidence["selected_adapter_path"]["permission_approval_exchange"],
+        false
+    );
+    assert_eq!(
+        denial_evidence["selected_adapter_path"]["dangerously_skip_permissions_argument"],
+        false
+    );
+    assert_exact_keys(
+        &denial_evidence["exact_denial_stdout_event"],
+        &["proven", "fixture", "reason"],
+    );
+    assert_eq!(
+        denial_evidence["exact_denial_stdout_event"]["proven"],
+        false
+    );
+    assert_eq!(
+        denial_evidence["exact_denial_stdout_event"]["fixture"],
+        Value::Null
+    );
 
     assert_exact_keys(
         &identity["official_channel"],

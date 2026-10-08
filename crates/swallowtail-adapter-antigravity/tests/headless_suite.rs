@@ -22,6 +22,7 @@ const STRUCTURED: &str = include_str!("fixtures/antigravity-cli-1.1.9/headless-s
 const INVALID_MODEL: &str =
     include_str!("fixtures/antigravity-cli-1.1.9/headless-invalid-model.jsonl");
 const TOOL_ERROR: &str = include_str!("fixtures/antigravity-cli-1.3.1/headless-tool-error.jsonl");
+const RUN_ERROR: &str = include_str!("fixtures/antigravity-cli-1.3.1/headless-run-error.jsonl");
 const SCHEMA: &str =
     r#"{"type":"object","properties":{"answer":{"type":"string"}},"required":["answer"]}"#;
 
@@ -247,6 +248,50 @@ fn documented_tool_error_field_projects_failed_activity_without_permission_bypas
             RuntimeEventKind::Activity(activity)
                 if activity.kind() == &ActivityKind::ProviderOwnedTool
                     && activity.status() == ActivityStatus::Failed
+        )
+    }));
+    assert!(
+        !host
+            .observed()
+            .arguments
+            .iter()
+            .any(|argument| argument == "--dangerously-skip-permissions")
+    );
+}
+
+#[test]
+fn documented_outer_run_error_does_not_classify_child_lifecycle() {
+    let host_id = local_host();
+    let host = FixtureHost::completed([stdout(RUN_ERROR)]);
+    let (events, terminal, cleanup) = completed_run(
+        plan::headless_plan(
+            host_id.clone(),
+            "antigravity.fixture.executable",
+            ResourceAccess::Read,
+            HarnessIsolation::AmbientHost,
+            None,
+            false,
+        ),
+        request(
+            "documented-outer-run-error",
+            HarnessIsolation::AmbientHost,
+            None,
+            false,
+        ),
+        host.services(host_id),
+    );
+
+    assert_status_code(
+        &terminal,
+        "swallowtail.antigravity.headless.provider_error",
+        true,
+    );
+    assert_eq!(cleanup, CleanupOutcome::Clean);
+    assert!(!events.iter().any(|event| {
+        matches!(
+            event.kind(),
+            RuntimeEventKind::Activity(activity)
+                if activity.kind() == &ActivityKind::SubagentOrCollaboration
         )
     }));
     assert!(

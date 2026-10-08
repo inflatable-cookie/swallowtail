@@ -59,6 +59,47 @@
       "disassembly_proves_success": false
     }
   },
+  "selected_failure_scope_evidence": {
+    "tool_error": {
+      "documented_fields": [
+        "type",
+        "message"
+      ],
+      "documented_pointer": "/step_update/tool_info/error",
+      "scope": "tool-step",
+      "projection": "ActivityStatus::Failed",
+      "fixture": "headless-tool-error.jsonl",
+      "provider_capture": false
+    },
+    "run_error": {
+      "documented_fields": [
+        "status",
+        "error"
+      ],
+      "documented_pointer": "/result",
+      "scope": "whole-headless-run",
+      "projection": "TerminalStatus::ProviderFailed",
+      "fixture": "headless-run-error.jsonl",
+      "provider_capture": false
+    },
+    "child_error": {
+      "documented_container": "/step_update/subagent_info/subagents",
+      "documented_child_fields": [
+        "type_name",
+        "role",
+        "conversation_id",
+        "log_uri",
+        "workspace_uris"
+      ],
+      "status_or_error_field_documented": false,
+      "exact_selected_error_stream_available": false,
+      "release_note_surfaces": [
+        "/agents",
+        "running-agent list"
+      ],
+      "proposed_projection_if_separately_ruled": "SubagentStatus::Unknown"
+    }
+  },
   "unpublished_points": [
     {
       "version": "1.2.18",

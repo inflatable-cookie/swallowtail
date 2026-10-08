@@ -43,11 +43,24 @@ annotated Git tags from the canonical repository.
   `2026.10.01-14929f9`, after every published hop following `2026.09.18-9a7762b`.
   Research 393 freezes exact Darwin ARM64 and Linux x64 artifacts, complete
   package trees, and per-hop selected-file classifications. Keep the baseline,
-  claim, behavior revision, prior points, and gaps; ACP and headless retain
-  their `2026.09.18` ceilings. The selected `models` command, account options,
+  claim, behavior revision, prior points, and gaps; Headless remains at
+  `2026.09.18-9a7762b`; ACP is qualified separately in Research 395. The
+  selected `models` command, account options,
   model identity/display mapping, failure boundary, and process lifecycle are
   unchanged. No archive execution, authenticated catalogue, provider prompt,
   credential use, installation, or host update occurred.
+- qualify only `cursor-agent.acp` through official ACP registry stable
+  `2026.10.01-14929f9`, after each published selected-channel hop following
+  `2026.09.18-9a7762b`. Research 395 freezes the exact Darwin ARM64 and Linux
+  x64 archives, complete package inventories, and selected ACP surfaces. Extend
+  only the ACP claim through `2026.09.26-dd393fe`, `2026.09.28-64d2043`, and
+  `2026.10.01-14929f9`; retain its baseline, claim id, behavior revision, exact
+  gaps, and blocked continuation. Catalogue is separately qualified through
+  `2026.10.01-14929f9` (Research 393); Headless remains at
+  `2026.09.18-9a7762b`. The general installer build `2026.10.01-e373342`
+  remains a separate channel. No public operation, permission, or lifecycle
+  behavior changes. No provider prompt, live session, credential use, artifact
+  execution, installation, or host update occurred.
 - qualify `mistral-vibe.headless` through official PyPI and GitHub stable
   `2.26.0`. Research 384 freezes all four published hops after `2.25.4`,
   complete wheel trees, runtime/source identities, and per-hop selected-surface

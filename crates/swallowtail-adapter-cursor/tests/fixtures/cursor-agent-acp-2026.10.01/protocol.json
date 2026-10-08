@@ -1,0 +1,53 @@
+{
+  "acp_command_chunk_changed_each_hop": true,
+  "acp_initialize_selected_subset_identical": true,
+  "acp_initialize_shape": {
+    "agent_info": null,
+    "auth_methods": [
+      "cursor_login"
+    ],
+    "load_session": true,
+    "mcp_capabilities": {
+      "http": true,
+      "sse": true
+    },
+    "prompt_capabilities": {
+      "audio": false,
+      "embeddedContext": false,
+      "image": true
+    },
+    "protocol_version_constant": true,
+    "session_capabilities": {
+      "list": {}
+    },
+    "subagents": "client-negotiated; default off; not requested"
+  },
+  "acp_sdk_chunk_changed_each_hop": true,
+  "authenticated_catalogue_called": false,
+  "catalogue_or_headless_transfer": false,
+  "continuation_recovery": "blocked",
+  "credentials_used": false,
+  "downloaded_artifacts_executed": false,
+  "host_version_probe_invoked": true,
+  "inspection": "static inspection of exact official package trees; downloaded archives and extracted binaries were not executed",
+  "load_session_posture": "advertised-without-proven-replay",
+  "mcp_configuration": "selected client HTTP/SSE entries; the 09.26 mcp_user_extension_stdio_unsandboxed_win32 default remains unselected",
+  "permission_mapping": "requestWebPermission continues to surface pending provider permission, one-shot allow/reject and provider cancellation/rejection state; allow-always is not promoted to a durable grant",
+  "provider_prompt_sent": false,
+  "selected_acp_command": "acp",
+  "selected_lifecycle_permission_failure_and_tool_fixtures": "existing acp_suite fixtures cover initialization, session creation, tool exchange, pending permission, cancellation, recovery failure and cleanup; run in the named Effigy selector",
+  "selected_method_paths": [
+    "initialize",
+    "session/new",
+    "session/load (advertised only; recovery remains blocked)",
+    "session/prompt",
+    "requestWebPermission",
+    "selected tool call/update/result paths"
+  ],
+  "selected_route": "cursor-agent.acp",
+  "selected_transport": "ACP v1 over stdio",
+  "session_management": "no public import, resume, archive, restore or delete operation qualified",
+  "session_new": "requires authenticated cursor_login before session creation; unchanged across all hops",
+  "tool_mapping": "selected tool call/update/result cases and literal value sets remain stable; the 09.26-to-09.28 compiler/minifier rewrite changes local syntax and an internal key without changing selected cases or emitted ACP content mapping",
+  "unselected_general_installer": "2026.10.01-e373342 is not imported into this ACP claim"
+}

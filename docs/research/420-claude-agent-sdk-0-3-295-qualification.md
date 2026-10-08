@@ -24,7 +24,7 @@ SDK `0.3.259`/native `2.1.259` on Darwin arm64.
 ## Official identity and provenance
 
 The selected channel is npm `dist-tags.latest`, re-probed immediately before
-push at `2026-10-08T23:55:42Z` against the
+push at `2026-10-08T23:56:47Z` against the
 [official npm registry metadata](https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk).
 `latest` and `next` both resolved to `0.3.295`. The exact tarball URLs,
 publish times, npm SHA-1 and integrity metadata, SHA-256, package tree digests,

@@ -158,7 +158,7 @@ for a newer Node runtime that passes the sidecar floor:
 - `claude-agent.sdk.sidecar`: the exact source-tagged sidecar revision
   (opaque)
 
-The `2026-10-08T23:55:42Z` npm re-probe found `latest` and `next` at package
+The `2026-10-08T23:56:47Z` npm re-probe found `latest` and `next` at package
 `0.3.295`,
 whose embedded manifest identifies native `2.1.295`. Research 420 records the
 exact `.294` and `.295` artifacts and classifies both adjacent selected-surface

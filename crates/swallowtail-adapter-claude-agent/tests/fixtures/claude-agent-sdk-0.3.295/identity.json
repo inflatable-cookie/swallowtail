@@ -4,7 +4,7 @@
   "official_channel": {
     "registry": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk",
     "selected": "dist-tags.latest",
-    "observed_at": "2026-10-08T23:55:42Z",
+    "observed_at": "2026-10-08T23:56:47Z",
     "latest": "0.3.295",
     "next": "0.3.295",
     "previous_latest": "0.3.293 (Research 416); 0.3.294 followed during that run and 0.3.295 followed during this run",

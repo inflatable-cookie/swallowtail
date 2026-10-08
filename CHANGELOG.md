@@ -8,7 +8,7 @@ annotated Git tags from the canonical repository.
 ### Notes
 - qualify only `pi.sdk-sidecar.package` through agreed official npm/GitHub
   stable `1.1.0`, after every published hop from the exact `0.84.2`
-  ceiling. Research 396 freezes all 18 exact package artifacts, complete
+  ceiling. Research 398 freezes all 18 exact package artifacts, complete
   package trees, per-hop file ledgers, selected SDK source classifications,
   and the corresponding `pi-ai` and `pi-agent-core` identities. Preserve
   exact unpublished gaps, claim and behavior revision, source-tag, exact Node

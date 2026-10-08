@@ -19,7 +19,7 @@ structured runs, typed UI questions, writes, permission
 exchange, or provider-session lifecycle management. Optional portable
 `ReasoningSelection` is available only for the closed Research 228 row:
 `anthropic` / `claude-opus-4-5` with `off`, `minimal`, `low`, `medium`, or
-`high` on each exact Pi SDK package point qualified in Research 396.
+`high` on each exact Pi SDK package point qualified in Research 398.
 
 Both Pi routes remain production. `pi.rpc` needs only one installed upstream
 executable and speaks an upstream-owned wire, but stays fresh-only: Research
@@ -70,7 +70,7 @@ unverified-newer point:
   `>=22.19.0` requirement)
 - `pi.sdk-sidecar.wire`: exact `swallowtail-pi-sdk-jsonl-v1` (opaque)
 - `pi.sdk-sidecar.sidecar`: the unchanged exact source tag
-  `swallowtail-pi-sdk-sidecar@0.5.1`; Research 396 freezes the shipped
+  `swallowtail-pi-sdk-sidecar@0.5.1`; Research 398 freezes the shipped
   sidecar asset's content hash
 
 Unlisted package points, including unpublished gaps and prereleases, do not

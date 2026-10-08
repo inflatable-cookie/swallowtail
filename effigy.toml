@@ -70,7 +70,7 @@ section = "Research Records"
   "cargo fmt -p swallowtail-adapter-pi -- --check",
 ]
 "check:current-pi-sdk-sidecar" = "cargo check --locked --all-targets -p swallowtail-adapter-pi"
-"validate:current-pi-sdk-sidecar" = "cargo nextest run --locked --profile ci --no-fail-fast -p swallowtail-adapter-pi --lib --test integration --test sidecar_driver -E 'binary(sidecar_driver) | test(/pi_sdk_sidecar_identity::|pi_sdk_sidecar_artifact_identity::|selection::tests::/) | test(/protocol::tests::(qualified_corpora_decode|corpus_identity_matches_the_frozen_sidecar_identity)/) | test(/wire::tests::/) | test(sdk_sidecar_keeps_its_observed_baseline_independent_of_rpc)'"
+"validate:current-pi-sdk-sidecar" = "cargo nextest run --locked --profile current-pi-sdk-sidecar --no-fail-fast -p swallowtail-adapter-pi --lib --test integration --test sidecar_driver -E 'binary(sidecar_driver) | test(/pi_sdk_sidecar_identity::|pi_sdk_sidecar_artifact_identity::|selection::tests::/) | test(/protocol::tests::(qualified_corpora_decode|corpus_identity_matches_the_frozen_sidecar_identity)/) | test(/wire::tests::/) | test(sdk_sidecar_keeps_its_observed_baseline_independent_of_rpc)'"
 "format:current-antigravity-catalogue" = [
   "cargo fmt -p swallowtail-adapter-antigravity",
   "cargo fmt -p swallowtail-adapter-antigravity -- --check",

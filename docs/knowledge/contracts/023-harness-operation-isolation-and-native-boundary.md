@@ -421,8 +421,18 @@ Tom's 2026-10-08 board answer, “Approve isolated proof and name the Linux ARM6
 environment”, answers decision `99de6453-9492-4537-a346-ce7803dbfea3`.
 It approves bounded offline proof comparing original Kiro `2.26.1` control
 with `2.27.0`, `2.27.1` and `2.28.0`. The disposable native Linux aarch64 GNU
-VM or container must be explicitly designated before vendor execution. The
-answer does not identify that environment; none is implied by this approval.
+VM or container must be explicitly designated before vendor execution.
+Tom's later 2026-10-08 chat designates a fresh Linux container through local
+Colima or Docker (decision `e49192c0-3483-4275-a34c-7f4fd56891a8`). Use a
+task-owned native Linux ARM64 GNU container named `swallowtail-kiro-owner-proof`,
+reached through the local container CLI. Verify native architecture and GNU
+runtime; emulation is not evidence. A task-owned fresh Colima profile may
+supply the backend when neither local backend is running. Starting that
+isolated backend and staging public images or artifacts is preparation, not
+permission for provider traffic. Do not alter existing profiles, install host
+software or change host settings. Verify external egress and all host mounts
+are denied before fake or vendor execution; retain the isolated environment
+for review. Return unavailable containment or required host changes separately.
 
 Deny external egress and host mounts before execution. Use two synthetic
 unprivileged UIDs and task-owned home, working directory, temporary files and

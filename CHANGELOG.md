@@ -8,7 +8,7 @@ annotated Git tags from the canonical repository.
 ### Notes
 - qualify only `kimi-code.headless` through official npm and GitHub stable
   `2.1.1` after every published hop from the qualified `0.43.0` ceiling.
-  Research 403 freezes the exact package/source identities, complete trees,
+  Research 408 freezes the exact package/source identities, complete trees,
   per-hop classifications, and selected bundle oracles. Preserve the legacy
   v1 segment; qualify v2 `0.33.0..=0.43.1` and `2.0.0..=2.1.1`, while keeping
   unpublished `0.43.2`, `1.x`, and `2.0.3` outside the claim and exact `2.1.0`

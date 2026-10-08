@@ -15,6 +15,14 @@ section = "Research Records"
 "qa:docs:research:numbers" = "python3 scripts/check-research-number-collision.py"
 "qa:docs:research:numbers:test" = "bash scripts/tests/research-number-collision.sh"
 "qa:docs:research:numbers:compile" = "python3 -c 'from pathlib import Path; files = (Path(\"scripts/check-research-number-collision.py\"), Path(\"scripts/canonical_main_authority.py\")); [compile(file.read_bytes(), str(file), \"exec\") for file in files]'"
+"check:antigravity-headless-static-boundary" = [
+  "python3 -c 'from pathlib import Path; file = Path(\"scripts/analyze-antigravity-headless-static-boundary.py\"); compile(file.read_bytes(), str(file), \"exec\")'",
+  "python3 scripts/analyze-antigravity-headless-static-boundary.py --self-test",
+]
+"validate:antigravity-headless-static-boundary" = [
+  { task = "check:antigravity-headless-static-boundary" },
+  "python3 scripts/analyze-antigravity-headless-static-boundary.py {args}",
+]
 "qa:docs:release-version:test" = "bash scripts/tests/release-version-identity.sh"
 "qa:docs:agent-defaults" = "effigy docs check forbidden AGENTS.md README.md docs/README.md --forbid '--repo .'"
 "hooks:install" = "bash scripts/install-git-hooks.sh"

@@ -35,5 +35,13 @@
     "proven": false,
     "fixture": null,
     "reason": "The official guide specifies a stderr notice but does not define the denied tool's stdout event shape."
+  },
+  "accepted_route_limit": {
+    "run_completion_proves_all_requested_tools_executed": false,
+    "structured_denial_projection": "unclaimed",
+    "stderr_notice_parsed_as_denial": false,
+    "alternate_tool_workaround": false,
+    "approval_bypass": false,
+    "ruling": "Contract 023 Antigravity Headless Denial And Child Status"
   }
 }

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "record": "docs/research/386-antigravity-headless-1-3-1-currentness-stop.md",
+  "record": "docs/research/388-antigravity-headless-1-3-1-currentness-stop.md",
   "scope": "antigravity.headless",
   "official_stable_observed_at": "2026-10-08",
   "official_stable": "1.3.1",
@@ -15,12 +15,15 @@
   },
   "identity_sources": {
     "release_manifest": "identity.json",
-    "complete_selected_platform_trees": "dist-inventory.json",
+    "linux_and_mac_complete_platform_trees": "dist-inventory.json",
     "platforms_downloaded_and_verified": [
       "linux_x64",
-      "mac_arm64"
+      "mac_arm64",
+      "windows_x64",
+      "windows_arm64"
     ],
-    "published_windows_assets_unpacked": false,
+    "published_windows_assets_unpacked": true,
+    "windows_runtime_exercised": false,
     "binaries_executed": false
   },
   "static_mapping_evidence": {
@@ -30,6 +33,7 @@
     "tool_error_field": "/tool_info/error",
     "subagent_projection": "crates/swallowtail-adapter-antigravity/src/headless_events/helpers.rs::subagents",
     "subagent_status_projection": "crates/swallowtail-adapter-antigravity/src/headless_activity.rs::subagents",
+    "1_2_17_windows_artifact_fixture": "headless-windows-1.2.17-evidence.json",
     "1_2_15_denial_artifact": {
       "platform": "mac_arm64",
       "release_archive_sha256": "66f7e9e8750a506e8a2caaedaadf479f023820f712015c9c55cfb91a2891521b",
@@ -97,7 +101,22 @@
         "/agents",
         "running-agent list"
       ],
-      "proposed_projection_if_separately_ruled": "SubagentStatus::Unknown"
+      "projection_when_status_is_unavailable": "SubagentStatus::Unknown",
+      "fixture": "headless-run-error.jsonl",
+      "provider_capture": false
+    },
+    "soft_permission_denial": {
+      "release": "1.2.15",
+      "run_continues": true,
+      "exit_code": 0,
+      "notice_stream": "stderr",
+      "structured_denial_projection": "unclaimed",
+      "run_completion_proves_all_requested_tools_executed": false,
+      "stderr_parsed_as_denial": false,
+      "alternate_tool_workaround": false,
+      "permission_bypass": false,
+      "fixture": "headless-denial-1.2.15-evidence.json",
+      "provider_capture": false
     }
   },
   "unpublished_points": [
@@ -163,9 +182,9 @@
         "CHANGELOG.md"
       ],
       "runtime_inventory_path": "dist-inventory.json#/versions/1.2.15",
-      "classification": "new-private-denial-milestone-needs-selected-stream-proof",
+      "classification": "approved-soft-denial-route-limit",
       "selected_change": "An unapproved permission request is respected and no alternate command, script, or tool workaround is attempted.",
-      "remaining_proof": "Official headless docs say a soft-denied tool continues with exit 0 and a stderr notice. They do not identify an exact denial event in selected stdout; do not synthesize a version-specific denial fixture or add an approval/bypass operation."
+      "remaining_proof": "The official guide documents exit 0 and an stderr notice when the run continues after soft denial. Document that run completion does not prove each requested tool executed; leave typed denial unclaimed and do not parse unspecified stderr."
     },
     {
       "from": "1.2.15",
@@ -176,9 +195,9 @@
         "CHANGELOG.md"
       ],
       "runtime_inventory_path": "dist-inventory.json#/versions/1.2.16",
-      "classification": "selected-lifecycle-extension-child-status-gate",
+      "classification": "selected-lifecycle-extension-identity-only-child-unknown-milestone",
       "selected_change": "Headless -p now waits for a background command that finishes after the first turn; image generation is handed to a subagent.",
-      "remaining_proof": "The adapter drains stdout through EOF and then waits for the child. The added child topology feeds the existing subagent projection, whose success status is not independently proven by identity fields."
+      "remaining_proof": "The adapter drains stdout through EOF and then waits for the process. When child identities have no child status, preserve identity with SubagentStatus::Unknown; do not infer child completion from the enclosing step or outer result."
     },
     {
       "from": "1.2.16",
@@ -191,7 +210,7 @@
       "runtime_inventory_path": "dist-inventory.json#/versions/1.2.17",
       "classification": "windows-sandbox-runtime-evidence-gate",
       "selected_change": "The Windows command sandbox no longer needs administrator rights and gains common tool support.",
-      "remaining_proof": "This changes the selected ProviderEnforced --sandbox path. Windows releases have official manifest digests but were not unpacked or exercised; do not narrow platform support."
+      "remaining_proof": "Both published Windows assets are digest-verified and their single PE members are inventoried, but static strings do not prove ProviderEnforced --sandbox runtime behavior. Do not narrow platform support."
     },
     {
       "from": "1.2.17",
@@ -215,9 +234,9 @@
         "CHANGELOG.md"
       ],
       "runtime_inventory_path": "dist-inventory.json#/versions/1.3.1",
-      "classification": "child-status-stream-evidence-gate",
+      "classification": "identity-only-child-status-unknown-milestone",
       "selected_change": "Custom-agent relative paths change; subagents that stop on error now show Error in /agents and the running-agent list; GEMINI_API_KEY turns retry dropped connections.",
-      "remaining_proof": "The error-display note names TUI surfaces. Official stream docs list child identity/log/workspace fields but no child error/status field; selected 1.3.1 stream evidence is unavailable without provider work. Do not map a child to Failed or Completed from this evidence."
+      "remaining_proof": "The error-display note names TUI surfaces. Official stream docs list child identity/log/workspace fields but no child error/status field; preserve child identities as Unknown rather than infer Failed or Completed. The API-key retry note remains conditional on approved-environment evidence."
     }
   ],
   "result": {
@@ -231,8 +250,22 @@
     ],
     "preserve_incompatible_hole": "1.1.18..=1.2.10",
     "preserve_retry_pin": "AGY_CLI_MODEL_API_MAX_RETRIES=0",
-    "proposed_future_shape": "Keep existing segments and gap; if all gates are resolved, add a private behavior milestone beginning at 1.2.15 for the changed denial semantics. Preserve current operations and the no-approval-bypass boundary.",
-    "child_status_ruling_gate": "If no usable selected-stream error field can be established, request a separate ruling for an unknown/omitted child lifecycle projection before changing Completed.",
+    "private_adapter_milestones": [
+      "preserve child identity with SubagentStatus::Unknown when selected fields contain no child status",
+      "document that 1.2.15 soft denial may end with outer success while requested tool execution is not established"
+    ],
+    "contract_036_impact": {
+      "classification": "consumer-visible child-lifecycle correction; breaking under the documented weakening-lifecycle rule",
+      "basis": "Contract 036 says weakening lifecycle behavior is breaking; replacing inferred Completed with Unknown changes the existing public activity projection",
+      "release_line": "requires a pre-1.0 minor release if shipped; this task has no version-bump or release authority"
+    },
+    "soft_denial_mapping": "unclaimed; do not parse unspecified stderr or invent a stdout event",
+    "remaining_evidence_gates": [
+      "selected 1.3.0 and 1.3.1 special-path and project-custom-agent mapping",
+      "Windows 1.2.17 ProviderEnforced --sandbox runtime behavior",
+      "AGY_CLI_MODEL_API_MAX_RETRIES=0 semantics on affected newer artifacts",
+      "approved-environment evidence for GEMINI_API_KEY absence"
+    ],
     "provider_prompt_sent": false,
     "live_provider_call": false,
     "credential_accessed": false,

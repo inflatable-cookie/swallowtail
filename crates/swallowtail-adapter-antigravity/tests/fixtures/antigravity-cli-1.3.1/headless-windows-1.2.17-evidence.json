@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "fixture_kind": "provider-free-static-artifact-evidence",
+  "scope": "antigravity.headless.windows-sandbox-and-api-key-retry",
+  "release": "1.2.17",
+  "platform": "windows_x64_and_windows_arm64",
+  "release_commit": "274d81b9929aaa2b91a7266106d0d0b7f19adf52",
+  "platform_artifacts": {
+    "windows_x64": {
+      "release_archive": {
+        "name": "agy_cli_windows_x64.zip",
+        "url": "https://github.com/google-antigravity/antigravity-cli/releases/download/1.2.17/agy_cli_windows_x64.zip",
+        "size": 57981858,
+        "sha256": "c31af7472fa87a8e6a95158eabc2b18cab236ef4e4cc53b9c7bbaae6e1747c16"
+      },
+      "archive_member": {
+        "path": "antigravity.exe",
+        "size": 189556376,
+        "sha256": "6224a54c35d31b9b85232bbfb23e3306002c418481930442519743fab585f65a",
+        "format": "PE32+ executable, x86-64, Windows console"
+      }
+    },
+    "windows_arm64": {
+      "release_archive": {
+        "name": "agy_cli_windows_arm64.zip",
+        "url": "https://github.com/google-antigravity/antigravity-cli/releases/download/1.2.17/agy_cli_windows_arm64.zip",
+        "size": 53034452,
+        "sha256": "204e469b9be795dd8ab61070db3730a6c1fb29ed66995a17344401786069c32f"
+      },
+      "archive_member": {
+        "path": "antigravity.exe",
+        "size": 178700440,
+        "sha256": "5f7ce5bccdccb72da9c5882262a3bc433b8836ae6b88f74112d5ca14b7f5e755",
+        "format": "PE32+ executable, AArch64, Windows console"
+      }
+    }
+  },
+  "release_note": "Improved the Windows command sandbox so sandboxed commands no longer need administrator rights and common tools work inside the sandbox out of the box.",
+  "static_string_matches": [
+    "AGY_CLI_MODEL_API_MAX_RETRIES",
+    "gemini_api_key",
+    "GeminiAPIKeyAuthProvider",
+    "Print mode: enabling terminal sandbox for this session",
+    "Enables terminal sandbox restrictions."
+  ],
+  "static_string_platforms": [
+    "windows_x64",
+    "windows_arm64"
+  ],
+  "static_evidence_limits": {
+    "retry_zero_semantics_proven": false,
+    "windows_sandbox_runtime_proven": false,
+    "binary_executed": false,
+    "reason": "Both exact PE artifacts and their string tables were inspected without execution. String presence does not establish the retry control flow or Windows sandbox enforcement."
+  },
+  "remaining_proof": [
+    "provider-free proof that the selected Windows --sandbox path enforces the documented boundary on the exact Windows runtime",
+    "exact AGY_CLI_MODEL_API_MAX_RETRIES=0 semantics for the affected newer artifacts",
+    "approved-environment evidence that GEMINI_API_KEY does not enter this personal-subscription child environment"
+  ]
+}

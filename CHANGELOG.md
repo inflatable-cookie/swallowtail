@@ -6,6 +6,18 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- correct Antigravity headless child status when the selected stream reports
+  identity without a child outcome: preserve the identity with
+  `SubagentStatus::Unknown`, and keep child, tool-step, and whole-run outcomes
+  distinct. Document the approved soft-denial limit: a denied tool may leave
+  the outer run successful, so completion does not prove every requested tool
+  executed. No stderr parser, approval exchange, bypass, or alternate-tool
+  workaround was added. The headless ceiling remains exact `1.2.11` with
+  `AGY_CLI_MODEL_API_MAX_RETRIES=0`; newer special-path/custom-agent mapping,
+  Windows sandbox, and approved-env retry/auth evidence gates remain. Research
+  388 records the exact hop and artifact evidence. Contract 036 classifies the
+  consumer-visible child lifecycle correction as breaking, requiring a pre-1.0
+  minor release if shipped; no package version or release was authorized here.
 - qualify `mistral-vibe.headless` through official PyPI and GitHub stable
   `2.26.0`. Research 384 freezes all four published hops after `2.25.4`,
   complete wheel trees, runtime/source identities, and per-hop selected-surface

@@ -3,6 +3,9 @@ use serde_json::Value;
 const CURRENTNESS: &str = include_str!("fixtures/antigravity-cli-1.3.1/headless-currentness.json");
 const DENIAL_EVIDENCE: &str =
     include_str!("fixtures/antigravity-cli-1.3.1/headless-denial-1.2.15-evidence.json");
+const WINDOWS_EVIDENCE: &str =
+    include_str!("fixtures/antigravity-cli-1.3.1/headless-windows-1.2.17-evidence.json");
+const RUN_ERROR: &str = include_str!("fixtures/antigravity-cli-1.3.1/headless-run-error.jsonl");
 const IDENTITY: &str = include_str!("fixtures/antigravity-cli-1.3.1/identity.json");
 const DIST_INVENTORY: &str = include_str!("fixtures/antigravity-cli-1.3.1/dist-inventory.json");
 
@@ -102,6 +105,26 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             .is_some_and(Vec::is_empty)
     );
 
+    let identity_sources = &currentness["identity_sources"];
+    assert_exact_keys(
+        identity_sources,
+        &[
+            "release_manifest",
+            "linux_and_mac_complete_platform_trees",
+            "platforms_downloaded_and_verified",
+            "published_windows_assets_unpacked",
+            "windows_runtime_exercised",
+            "binaries_executed",
+        ],
+    );
+    assert_exact_string_array(
+        &identity_sources["platforms_downloaded_and_verified"],
+        &["linux_x64", "mac_arm64", "windows_x64", "windows_arm64"],
+    );
+    assert_eq!(identity_sources["published_windows_assets_unpacked"], true);
+    assert_eq!(identity_sources["windows_runtime_exercised"], false);
+    assert_eq!(identity_sources["binaries_executed"], false);
+
     let mapping = &currentness["static_mapping_evidence"];
     assert_exact_keys(
         mapping,
@@ -112,6 +135,7 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             "tool_error_field",
             "subagent_projection",
             "subagent_status_projection",
+            "1_2_17_windows_artifact_fixture",
             "1_2_15_denial_artifact",
             "1_3_1_child_error_artifact",
         ],
@@ -125,6 +149,10 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         "crates/swallowtail-adapter-antigravity/src/headless_pump.rs::pump_with_conversation"
     );
     assert_eq!(mapping["tool_error_field"], "/tool_info/error");
+    assert_eq!(
+        mapping["1_2_17_windows_artifact_fixture"],
+        "headless-windows-1.2.17-evidence.json"
+    );
     let denial_artifact = &mapping["1_2_15_denial_artifact"];
     assert_exact_keys(
         denial_artifact,
@@ -199,8 +227,136 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
     );
     assert_eq!(child_error_artifact["disassembly_proves_success"], false);
 
+    let windows_evidence: Value =
+        serde_json::from_str(WINDOWS_EVIDENCE).expect("1.2.17 Windows artifact evidence");
+    assert_exact_keys(
+        &windows_evidence,
+        &[
+            "schema",
+            "fixture_kind",
+            "scope",
+            "release",
+            "platform",
+            "release_commit",
+            "platform_artifacts",
+            "release_note",
+            "static_string_matches",
+            "static_string_platforms",
+            "static_evidence_limits",
+            "remaining_proof",
+        ],
+    );
+    assert_eq!(windows_evidence["release"], "1.2.17");
+    assert_eq!(
+        windows_evidence["platform"],
+        "windows_x64_and_windows_arm64"
+    );
+    assert_eq!(windows_evidence["release_commit"], "274d81b9929aaa2b91a7266106d0d0b7f19adf52");
+    assert_exact_keys(
+        &windows_evidence["platform_artifacts"],
+        &["windows_x64", "windows_arm64"],
+    );
+    for (
+        platform,
+        asset_name,
+        archive_digest,
+        archive_size,
+        executable_digest,
+        executable_size,
+        executable_format,
+    ) in [
+        (
+            "windows_x64",
+            "agy_cli_windows_x64.zip",
+            "c31af7472fa87a8e6a95158eabc2b18cab236ef4e4cc53b9c7bbaae6e1747c16",
+            57_981_858,
+            "6224a54c35d31b9b85232bbfb23e3306002c418481930442519743fab585f65a",
+            189_556_376,
+            "PE32+ executable, x86-64, Windows console",
+        ),
+        (
+            "windows_arm64",
+            "agy_cli_windows_arm64.zip",
+            "204e469b9be795dd8ab61070db3730a6c1fb29ed66995a17344401786069c32f",
+            53_034_452,
+            "5f7ce5bccdccb72da9c5882262a3bc433b8836ae6b88f74112d5ca14b7f5e755",
+            178_700_440,
+            "PE32+ executable, AArch64, Windows console",
+        ),
+    ] {
+        let platform_evidence = &windows_evidence["platform_artifacts"][platform];
+        assert_exact_keys(platform_evidence, &["release_archive", "archive_member"]);
+        let release_archive = &platform_evidence["release_archive"];
+        assert_exact_keys(release_archive, &["name", "url", "size", "sha256"]);
+        assert_eq!(release_archive["name"], asset_name);
+    assert_eq!(
+        release_archive["url"],
+        format!(
+            "https://github.com/google-antigravity/antigravity-cli/releases/download/1.2.17/{asset_name}"
+        )
+    );
+        assert_eq!(release_archive["size"], archive_size);
+        assert_eq!(release_archive["sha256"], archive_digest);
+        let published_asset = identity["artifacts"]["1.2.17"]["complete_published_asset_manifest"]
+            .as_array()
+            .expect("published asset manifest")
+            .iter()
+            .find(|asset| asset["name"] == asset_name)
+            .expect("Windows asset in official manifest");
+        assert_eq!(release_archive["size"], published_asset["size"]);
+        assert_eq!(release_archive["sha256"], published_asset["sha256"]);
+        assert_exact_keys(
+            &platform_evidence["archive_member"],
+            &["path", "size", "sha256", "format"],
+        );
+        assert_eq!(platform_evidence["archive_member"]["path"], "antigravity.exe");
+        assert_eq!(platform_evidence["archive_member"]["size"], executable_size);
+        assert_eq!(platform_evidence["archive_member"]["sha256"], executable_digest);
+        assert_eq!(platform_evidence["archive_member"]["format"], executable_format);
+    }
+    assert_exact_string_array(
+        &windows_evidence["static_string_matches"],
+        &[
+            "AGY_CLI_MODEL_API_MAX_RETRIES",
+            "gemini_api_key",
+            "GeminiAPIKeyAuthProvider",
+            "Print mode: enabling terminal sandbox for this session",
+            "Enables terminal sandbox restrictions.",
+        ],
+    );
+    assert_exact_string_array(
+        &windows_evidence["static_string_platforms"],
+        &["windows_x64", "windows_arm64"],
+    );
+    assert_exact_keys(
+        &windows_evidence["static_evidence_limits"],
+        &[
+            "retry_zero_semantics_proven",
+            "windows_sandbox_runtime_proven",
+            "binary_executed",
+            "reason",
+        ],
+    );
+    assert_eq!(
+        windows_evidence["static_evidence_limits"]["retry_zero_semantics_proven"],
+        false
+    );
+    assert_eq!(
+        windows_evidence["static_evidence_limits"]["windows_sandbox_runtime_proven"],
+        false
+    );
+    assert_eq!(windows_evidence["static_evidence_limits"]["binary_executed"], false);
+
     let failure_scopes = &currentness["selected_failure_scope_evidence"];
-    assert_exact_keys(failure_scopes, &["tool_error", "run_error", "child_error"]);
+    assert_exact_keys(
+        failure_scopes,
+        &[
+            "tool_error",
+            "run_error",
+            "child_error",
+            "soft_permission_denial",
+        ],
+    );
     assert_exact_keys(
         &failure_scopes["tool_error"],
         &[
@@ -254,7 +410,9 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             "status_or_error_field_documented",
             "exact_selected_error_stream_available",
             "release_note_surfaces",
-            "proposed_projection_if_separately_ruled",
+            "projection_when_status_is_unavailable",
+            "fixture",
+            "provider_capture",
         ],
     );
     assert_eq!(
@@ -270,9 +428,11 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         false
     );
     assert_eq!(
-        failure_scopes["child_error"]["proposed_projection_if_separately_ruled"],
+        failure_scopes["child_error"]["projection_when_status_is_unavailable"],
         "SubagentStatus::Unknown"
     );
+    assert_eq!(failure_scopes["child_error"]["fixture"], "headless-run-error.jsonl");
+    assert_eq!(failure_scopes["child_error"]["provider_capture"], false);
     assert_exact_string_array(
         &failure_scopes["child_error"]["documented_child_fields"],
         &[
@@ -287,6 +447,61 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         &failure_scopes["child_error"]["release_note_surfaces"],
         &["/agents", "running-agent list"],
     );
+    assert_exact_keys(
+        &failure_scopes["soft_permission_denial"],
+        &[
+            "release",
+            "run_continues",
+            "exit_code",
+            "notice_stream",
+            "structured_denial_projection",
+            "run_completion_proves_all_requested_tools_executed",
+            "stderr_parsed_as_denial",
+            "alternate_tool_workaround",
+            "permission_bypass",
+            "fixture",
+            "provider_capture",
+        ],
+    );
+    assert_eq!(failure_scopes["soft_permission_denial"]["release"], "1.2.15");
+    assert_eq!(failure_scopes["soft_permission_denial"]["run_continues"], true);
+    assert_eq!(failure_scopes["soft_permission_denial"]["exit_code"], 0);
+    assert_eq!(failure_scopes["soft_permission_denial"]["notice_stream"], "stderr");
+    assert_eq!(
+        failure_scopes["soft_permission_denial"]["structured_denial_projection"],
+        "unclaimed"
+    );
+    assert_eq!(
+        failure_scopes["soft_permission_denial"]["run_completion_proves_all_requested_tools_executed"],
+        false
+    );
+    assert_eq!(failure_scopes["soft_permission_denial"]["stderr_parsed_as_denial"], false);
+    assert_eq!(failure_scopes["soft_permission_denial"]["alternate_tool_workaround"], false);
+    assert_eq!(failure_scopes["soft_permission_denial"]["permission_bypass"], false);
+    assert_eq!(
+        failure_scopes["soft_permission_denial"]["fixture"],
+        "headless-denial-1.2.15-evidence.json"
+    );
+    assert_eq!(failure_scopes["soft_permission_denial"]["provider_capture"], false);
+
+    let run_error_events = RUN_ERROR
+        .lines()
+        .map(|line| serde_json::from_str::<Value>(line).expect("synthetic run-error stream line"))
+        .collect::<Vec<_>>();
+    assert_eq!(run_error_events.len(), 3);
+    let child = &run_error_events[1]["step_update"]["subagent_info"]["subagents"][0];
+    assert_exact_keys(
+        child,
+        &[
+            "type_name",
+            "role",
+            "conversation_id",
+            "log_uri",
+            "workspace_uris",
+        ],
+    );
+    assert_eq!(run_error_events[2]["result"]["status"], "ERROR");
+    assert_eq!(run_error_events[2]["result"]["error"], "fixture whole-run failure");
 
     let denial_evidence: Value =
         serde_json::from_str(DENIAL_EVIDENCE).expect("1.2.15 denial evidence fixture");
@@ -305,6 +520,7 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             "official_headless_documentation",
             "selected_adapter_path",
             "exact_denial_stdout_event",
+            "accepted_route_limit",
         ],
     );
     assert_eq!(denial_evidence["release"], "1.2.15");
@@ -394,6 +610,28 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         denial_evidence["exact_denial_stdout_event"]["fixture"],
         Value::Null
     );
+    assert_exact_keys(
+        &denial_evidence["accepted_route_limit"],
+        &[
+            "run_completion_proves_all_requested_tools_executed",
+            "structured_denial_projection",
+            "stderr_notice_parsed_as_denial",
+            "alternate_tool_workaround",
+            "approval_bypass",
+            "ruling",
+        ],
+    );
+    assert_eq!(
+        denial_evidence["accepted_route_limit"]["run_completion_proves_all_requested_tools_executed"],
+        false
+    );
+    assert_eq!(
+        denial_evidence["accepted_route_limit"]["structured_denial_projection"],
+        "unclaimed"
+    );
+    assert_eq!(denial_evidence["accepted_route_limit"]["stderr_notice_parsed_as_denial"], false);
+    assert_eq!(denial_evidence["accepted_route_limit"]["alternate_tool_workaround"], false);
+    assert_eq!(denial_evidence["accepted_route_limit"]["approval_bypass"], false);
 
     assert_exact_keys(
         &identity["official_channel"],
@@ -604,8 +842,10 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             "preserve_qualified_segments",
             "preserve_incompatible_hole",
             "preserve_retry_pin",
-            "proposed_future_shape",
-            "child_status_ruling_gate",
+            "private_adapter_milestones",
+            "contract_036_impact",
+            "soft_denial_mapping",
+            "remaining_evidence_gates",
             "provider_prompt_sent",
             "live_provider_call",
             "credential_accessed",
@@ -613,10 +853,8 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             "binary_executed",
         ],
     );
-    assert_eq!(
-        currentness["identity_sources"]["published_windows_assets_unpacked"],
-        false
-    );
+    assert_eq!(identity_sources["published_windows_assets_unpacked"], true);
+    assert_eq!(identity_sources["windows_runtime_exercised"], false);
     assert_eq!(currentness["result"]["qualification"], "blocked");
     assert_eq!(currentness["result"]["claim_changed"], false);
     assert_eq!(
@@ -627,8 +865,47 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         currentness["result"]["preserve_retry_pin"],
         "AGY_CLI_MODEL_API_MAX_RETRIES=0"
     );
+    assert_exact_string_array(
+        &currentness["result"]["private_adapter_milestones"],
+        &[
+            "preserve child identity with SubagentStatus::Unknown when selected fields contain no child status",
+            "document that 1.2.15 soft denial may end with outer success while requested tool execution is not established",
+        ],
+    );
+    assert_exact_keys(
+        &currentness["result"]["contract_036_impact"],
+        &["classification", "basis", "release_line"],
+    );
+    assert_eq!(
+        currentness["result"]["contract_036_impact"]["classification"],
+        "consumer-visible child-lifecycle correction; breaking under the documented weakening-lifecycle rule"
+    );
+    assert_eq!(
+        currentness["result"]["contract_036_impact"]["basis"],
+        "Contract 036 says weakening lifecycle behavior is breaking; replacing inferred Completed with Unknown changes the existing public activity projection"
+    );
+    assert_eq!(
+        currentness["result"]["contract_036_impact"]["release_line"],
+        "requires a pre-1.0 minor release if shipped; this task has no version-bump or release authority"
+    );
+    assert_eq!(
+        currentness["result"]["soft_denial_mapping"],
+        "unclaimed; do not parse unspecified stderr or invent a stdout event"
+    );
+    assert_exact_string_array(
+        &currentness["result"]["remaining_evidence_gates"],
+        &[
+            "selected 1.3.0 and 1.3.1 special-path and project-custom-agent mapping",
+            "Windows 1.2.17 ProviderEnforced --sandbox runtime behavior",
+            "AGY_CLI_MODEL_API_MAX_RETRIES=0 semantics on affected newer artifacts",
+            "approved-environment evidence for GEMINI_API_KEY absence",
+        ],
+    );
     assert_eq!(currentness["result"]["provider_prompt_sent"], false);
     assert_eq!(currentness["result"]["live_provider_call"], false);
+    assert_eq!(currentness["result"]["credential_accessed"], false);
+    assert_eq!(currentness["result"]["host_install_or_update"], false);
+    assert_eq!(currentness["result"]["binary_executed"], false);
 }
 
 fn assert_exact_keys(value: &Value, expected: &[&str]) {

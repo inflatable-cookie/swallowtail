@@ -118,7 +118,7 @@ impl AntigravityActivityProjection {
                 let mut snapshot = SubagentSnapshot::new(
                     SubagentId::new(id).map_err(|_| activity_drift())?,
                     SubagentParent::Operation,
-                    SubagentStatus::Completed,
+                    SubagentStatus::Unknown,
                 );
                 if let Some(label) = label.and_then(|value| ActivityLabel::new(value).ok()) {
                     snapshot = snapshot.with_label(label);

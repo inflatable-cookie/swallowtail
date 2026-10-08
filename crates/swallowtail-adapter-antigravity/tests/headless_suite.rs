@@ -14,7 +14,8 @@ use swallowtail_runtime::{
     EnvironmentRef, MonotonicInstant, OperationContent, OperationPolicy, ProcessExit,
     ProcessOutputChunk, ProcessOutputStream, ProviderObservation, ProviderRetentionPolicy,
     RequestId, RuntimeEvent, RuntimeEventKind, SchemaDocument, StructuredOutputDescriptor,
-    StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TerminalStatus, WorkingResourceRef,
+    StructuredRunDriver, StructuredRunRequest, SubagentStatus, TerminalOutcome, TerminalStatus,
+    WorkingResourceRef,
 };
 
 const SUCCESS: &str = include_str!("fixtures/antigravity-cli-1.1.9/headless-success.jsonl");
@@ -104,14 +105,22 @@ fn ambient_read_run_projects_steps_subagents_and_exact_usage() {
                     && activity.label().is_some_and(|label| label.as_str() == "run_command")
         )
     }));
-    assert!(events.iter().any(|event| {
-        matches!(
-            event.kind(),
+    let child_activity = events
+        .iter()
+        .find_map(|event| match event.kind() {
             RuntimeEventKind::Activity(activity)
-                if activity.kind() == &ActivityKind::SubagentOrCollaboration
-                    && activity.subagents().len() == 1
-        )
-    }));
+                if activity.kind() == &ActivityKind::SubagentOrCollaboration =>
+            {
+                Some(activity)
+            }
+            _ => None,
+        })
+        .expect("documented child identity is retained");
+    assert_eq!(child_activity.subagents().len(), 1);
+    assert_eq!(
+        child_activity.subagents()[0].status(),
+        SubagentStatus::Unknown
+    );
     let public = format!("{events:?}{terminal:?}");
     for private in [
         "/private/workspace",
@@ -287,13 +296,22 @@ fn documented_outer_run_error_does_not_classify_child_lifecycle() {
         true,
     );
     assert_eq!(cleanup, CleanupOutcome::Clean);
-    assert!(!events.iter().any(|event| {
-        matches!(
-            event.kind(),
+    let child_activity = events
+        .iter()
+        .find_map(|event| match event.kind() {
             RuntimeEventKind::Activity(activity)
-                if activity.kind() == &ActivityKind::SubagentOrCollaboration
-        )
-    }));
+                if activity.kind() == &ActivityKind::SubagentOrCollaboration =>
+            {
+                Some(activity)
+            }
+            _ => None,
+        })
+        .expect("child identity is separate from outer-run status");
+    assert_eq!(child_activity.subagents().len(), 1);
+    assert_eq!(
+        child_activity.subagents()[0].status(),
+        SubagentStatus::Unknown
+    );
     assert!(
         !host
             .observed()

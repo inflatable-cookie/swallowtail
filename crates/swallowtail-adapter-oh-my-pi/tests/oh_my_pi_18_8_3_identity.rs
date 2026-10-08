@@ -148,14 +148,38 @@ fn official_18_8_3_identity_and_every_published_hop_are_frozen() {
         identity["source_identity"]["target_github_commit"],
         "3e3c488a58d294e3a10051da588628e2cfb9d35c"
     );
-    assert_eq!(identity["all_18x_exclusions"], json!(["18.0.2", "18.1.7", "18.4.7", "18.6.2"]));
-    assert_eq!(identity["identity_decision"]["shape"], "compatible-extension");
-    assert_eq!(identity["identity_decision"]["new_18x_range"], "18.0.0..=18.8.3");
-    assert_eq!(identity["identity_decision"]["claim_id_stays"], "oh-my-pi.rpc.package-window-2");
-    assert_eq!(identity["identity_decision"]["behavior_revision"], "oh-my-pi.rpc-v2-v18.0.0");
-    assert_eq!(identity["identity_decision"]["security_or_authority_tier_change"], false);
-    assert_eq!(identity["identity_decision"]["new_public_operation_required"], false);
-    assert_eq!(identity["identity_decision"]["qualify_all_published_intermediates"], true);
+    assert_eq!(
+        identity["all_18x_exclusions"],
+        json!(["18.0.2", "18.1.7", "18.4.7", "18.6.2"])
+    );
+    assert_eq!(
+        identity["identity_decision"]["shape"],
+        "compatible-extension"
+    );
+    assert_eq!(
+        identity["identity_decision"]["new_18x_range"],
+        "18.0.0..=18.8.3"
+    );
+    assert_eq!(
+        identity["identity_decision"]["claim_id_stays"],
+        "oh-my-pi.rpc.package-window-2"
+    );
+    assert_eq!(
+        identity["identity_decision"]["behavior_revision"],
+        "oh-my-pi.rpc-v2-v18.0.0"
+    );
+    assert_eq!(
+        identity["identity_decision"]["security_or_authority_tier_change"],
+        false
+    );
+    assert_eq!(
+        identity["identity_decision"]["new_public_operation_required"],
+        false
+    );
+    assert_eq!(
+        identity["identity_decision"]["qualify_all_published_intermediates"],
+        true
+    );
     for control in [
         "artifacts_executed",
         "credentials_used",
@@ -166,10 +190,21 @@ fn official_18_8_3_identity_and_every_published_hop_are_frozen() {
     ] {
         assert_eq!(identity["evidence_controls"][control], false, "{control}");
     }
-    assert_eq!(identity["evidence_controls"]["source_snapshots_verified"], true);
+    assert_eq!(protocol["source_verification"]["source_hash_mismatches"], 0);
+    assert_eq!(
+        protocol["source_verification"]["unmatched_changed_source_paths"],
+        0
+    );
+    assert_eq!(
+        protocol["source_verification"]["verified_version_path_pairs"],
+        473
+    );
 
     assert_eq!(protocol["version"], "18.8.3");
-    assert_eq!(protocol["selected_tools"], json!(["read", "grep", "glob", "todo", "ask"]));
+    assert_eq!(
+        protocol["selected_tools"],
+        json!(["read", "grep", "glob", "todo", "ask"])
+    );
     assert_eq!(
         protocol["selected_rpc_commands"],
         json!([
@@ -192,9 +227,21 @@ fn official_18_8_3_identity_and_every_published_hop_are_frozen() {
     assert_eq!(
         protocol["selected_argv"],
         json!([
-            "--mode", "rpc", "--no-session", "--provider", "<configured-provider>", "--model",
-            "<configured-model>", "--tools", "read,grep,glob,todo,ask", "--no-extensions",
-            "--no-skills", "--no-rules", "--no-prewalk", "--approval-mode", "always-ask"
+            "--mode",
+            "rpc",
+            "--no-session",
+            "--provider",
+            "<configured-provider>",
+            "--model",
+            "<configured-model>",
+            "--tools",
+            "read,grep,glob,todo,ask",
+            "--no-extensions",
+            "--no-skills",
+            "--no-rules",
+            "--no-prewalk",
+            "--approval-mode",
+            "always-ask"
         ])
     );
     let tool_schema = &protocol["selected_tool_schema"];
@@ -204,21 +251,60 @@ fn official_18_8_3_identity_and_every_published_hop_are_frozen() {
     assert_eq!(tool_schema["read"]["optional"], json!([]));
     assert_keys(&tool_schema["grep"], &["optional", "required"]);
     assert_eq!(tool_schema["grep"]["required"], json!(["pattern"]));
-    assert_eq!(tool_schema["grep"]["optional"], json!(["path", "case", "gitignore", "skip"]));
+    assert_eq!(
+        tool_schema["grep"]["optional"],
+        json!(["path", "case", "gitignore", "skip"])
+    );
     assert_keys(&tool_schema["glob"], &["optional", "required"]);
     assert_eq!(tool_schema["glob"]["required"], json!([]));
-    assert_eq!(tool_schema["glob"]["optional"], json!(["path", "hidden", "gitignore", "limit"]));
+    assert_eq!(
+        tool_schema["glob"]["optional"],
+        json!(["path", "hidden", "gitignore", "limit"])
+    );
     assert_keys(&tool_schema["todo"], &["op_enum", "optional", "required"]);
     assert_eq!(tool_schema["todo"]["required"], json!(["op"]));
-    assert_eq!(tool_schema["todo"]["op_enum"], json!(["init", "start", "done", "rm", "drop", "block", "unblock", "append", "view"]));
-    assert_eq!(tool_schema["todo"]["optional"], json!(["list", "task", "phase", "items", "reason"]));
-    assert_keys(&tool_schema["ask"], &["option_fields", "question_fields", "required"]);
+    assert_eq!(
+        tool_schema["todo"]["op_enum"],
+        json!([
+            "init", "start", "done", "rm", "drop", "block", "unblock", "append", "view"
+        ])
+    );
+    assert_eq!(
+        tool_schema["todo"]["optional"],
+        json!(["list", "task", "phase", "items", "reason"])
+    );
+    assert_keys(
+        &tool_schema["ask"],
+        &["option_fields", "question_fields", "required"],
+    );
     assert_eq!(tool_schema["ask"]["required"], json!(["questions"]));
-    assert_eq!(tool_schema["ask"]["question_fields"], json!(["id", "question", "header", "options", "multi", "recommended"]));
-    assert_eq!(tool_schema["ask"]["option_fields"], json!(["label", "description", "preview"]));
-    assert_eq!(protocol["selected_wire_invariants"]["negotiated_protocolVersion"], 2);
-    assert_eq!(protocol["selected_wire_invariants"]["maximum_physical_frame_bytes"], 1_048_576);
-    assert_eq!(protocol["selected_wire_invariants"]["maximum_reassembled_frame_bytes"], 67_108_864);
+    assert_eq!(
+        tool_schema["ask"]["question_fields"],
+        json!([
+            "id",
+            "question",
+            "header",
+            "options",
+            "multi",
+            "recommended"
+        ])
+    );
+    assert_eq!(
+        tool_schema["ask"]["option_fields"],
+        json!(["label", "description", "preview"])
+    );
+    assert_eq!(
+        protocol["selected_wire_invariants"]["negotiated_protocolVersion"],
+        2
+    );
+    assert_eq!(
+        protocol["selected_wire_invariants"]["maximum_physical_frame_bytes"],
+        1_048_576
+    );
+    assert_eq!(
+        protocol["selected_wire_invariants"]["maximum_reassembled_frame_bytes"],
+        67_108_864
+    );
     assert_keys(
         &protocol["selected_wire_invariants"],
         &[
@@ -255,14 +341,43 @@ fn official_18_8_3_identity_and_every_published_hop_are_frozen() {
     );
     assert_eq!(
         protocol["internal_read_resource_boundary"]["baseline_18_2_7_schemes"],
-        json!(["agent", "artifact", "history", "issue", "local", "mcp", "memory", "omp", "pr", "rule", "security", "skill", "ssh", "vault", "xd"])
+        json!([
+            "agent", "artifact", "history", "issue", "local", "mcp", "memory", "omp", "pr", "rule",
+            "security", "skill", "ssh", "vault", "xd"
+        ])
     );
     assert_eq!(
         protocol["internal_read_resource_boundary"]["target_18_8_3_schemes"],
-        json!(["agent", "artifact", "attachment", "cfg", "conflict", "history", "issue", "local", "mcp", "memory", "omp", "pr", "proc", "rule", "security", "skill", "ssh", "vault", "xd"])
+        json!([
+            "agent",
+            "artifact",
+            "attachment",
+            "cfg",
+            "conflict",
+            "history",
+            "issue",
+            "local",
+            "mcp",
+            "memory",
+            "omp",
+            "pr",
+            "proc",
+            "rule",
+            "security",
+            "skill",
+            "ssh",
+            "vault",
+            "xd"
+        ])
     );
-    assert_eq!(protocol["internal_read_resource_boundary"]["cfg_read"], "credential values are redacted");
-    assert_eq!(protocol["internal_read_resource_boundary"]["read_tier"], "read by default; ssh remains exec");
+    assert_eq!(
+        protocol["internal_read_resource_boundary"]["cfg_read"],
+        "credential values are redacted"
+    );
+    assert_eq!(
+        protocol["internal_read_resource_boundary"]["read_tier"],
+        "read by default; ssh remains exec"
+    );
     assert_eq!(
         protocol["internal_read_resource_boundary"]["selected_tool_exclusions"],
         json!(["write", "edit", "bash", "task"])
@@ -285,34 +400,37 @@ fn official_18_8_3_identity_and_every_published_hop_are_frozen() {
     ));
     assert!(!claim.permits(&version_binding("18.8.4-rc.1")));
     assert_eq!(
-        claim.assess(&version_binding("17.4.2"))
+        claim
+            .assess(&version_binding("17.4.2"))
             .behavior_revision()
             .expect("retained 17.x behavior")
             .as_str(),
         "oh-my-pi.rpc-v2-v17.2.9"
     );
     assert_eq!(
-        claim.assess(&version_binding("18.0.0"))
+        claim
+            .assess(&version_binding("18.0.0"))
             .behavior_revision()
             .expect("maintained 18.x behavior")
             .as_str(),
         "oh-my-pi.rpc-v2-v18.0.0"
     );
     for version in string_array(&identity["compared_versions"]) {
-        assert!(claim.supports(&version_binding(&version)), "published {version}");
+        assert!(
+            claim.supports(&version_binding(&version)),
+            "published {version}"
+        );
     }
 
     assert_inventory_and_hops(&identity, &protocol, &inventory, &hops);
 }
 
-fn assert_inventory_and_hops(
-    identity: &Value,
-    protocol: &Value,
-    inventory: &Value,
-    hops: &Value,
-) {
+fn assert_inventory_and_hops(identity: &Value, protocol: &Value, inventory: &Value, hops: &Value) {
     assert_eq!(inventory["schema_version"], "1.0.0");
-    assert_eq!(inventory["tree_digest_definition"], "SHA-256 over sorted UTF-8 path, NUL, lowercase file SHA-256, LF records");
+    assert_eq!(
+        inventory["tree_digest_definition"],
+        "SHA-256 over sorted UTF-8 path, NUL, lowercase file SHA-256, LF records"
+    );
     assert_eq!(hops["from"], "18.2.7");
     assert_eq!(hops["to"], "18.8.3");
     assert_eq!(hops["hop_count"], 32);
@@ -329,7 +447,11 @@ fn assert_inventory_and_hops(
         let row = &inventory["versions"][version];
         assert_keys(row, &["file_count", "files", "tree_sha256"]);
         let files = string_map(&row["files"]);
-        assert_eq!(row["file_count"].as_u64().unwrap() as usize, files.len(), "{version}");
+        assert_eq!(
+            row["file_count"].as_u64().unwrap() as usize,
+            files.len(),
+            "{version}"
+        );
         assert_eq!(row["tree_sha256"], tree_digest(&files), "{version}");
         trees.insert(version.clone(), files);
     }
@@ -375,16 +497,36 @@ fn assert_inventory_and_hops(
 
         let before = &trees[from];
         let after = &trees[to];
-        let added = after.keys().filter(|path| !before.contains_key(*path)).cloned().collect::<Vec<_>>();
-        let removed = before.keys().filter(|path| !after.contains_key(*path)).cloned().collect::<Vec<_>>();
+        let added = after
+            .keys()
+            .filter(|path| !before.contains_key(*path))
+            .cloned()
+            .collect::<Vec<_>>();
+        let removed = before
+            .keys()
+            .filter(|path| !after.contains_key(*path))
+            .cloned()
+            .collect::<Vec<_>>();
         let changed = after
             .iter()
             .filter(|(path, digest)| before.get(*path).is_some_and(|old| old != *digest))
             .map(|(path, _)| path.clone())
             .collect::<Vec<_>>();
-        assert_eq!(row["tree_delta"]["added"], json!(added), "{from} → {to} added");
-        assert_eq!(row["tree_delta"]["removed"], json!(removed), "{from} → {to} removed");
-        assert_eq!(row["tree_delta"]["changed"], json!(changed), "{from} → {to} changed");
+        assert_eq!(
+            row["tree_delta"]["added"],
+            json!(added),
+            "{from} → {to} added"
+        );
+        assert_eq!(
+            row["tree_delta"]["removed"],
+            json!(removed),
+            "{from} → {to} removed"
+        );
+        assert_eq!(
+            row["tree_delta"]["changed"],
+            json!(changed),
+            "{from} → {to} changed"
+        );
 
         let command_cases = string_array(&row["rpc_command_cases"]);
         assert_eq!(
@@ -393,17 +535,41 @@ fn assert_inventory_and_hops(
             "{to} RPC command cases"
         );
         let current_cases = command_cases.into_iter().collect::<BTreeSet<_>>();
-        let additions = current_cases.difference(&previous_command_cases).cloned().collect::<Vec<_>>();
-        let removals = previous_command_cases.difference(&current_cases).cloned().collect::<Vec<_>>();
-        assert_eq!(row["rpc_command_additions"], json!(additions), "{to} command additions");
-        assert_eq!(row["rpc_command_removals"], json!(removals), "{to} command removals");
+        let additions = current_cases
+            .difference(&previous_command_cases)
+            .cloned()
+            .collect::<Vec<_>>();
+        let removals = previous_command_cases
+            .difference(&current_cases)
+            .cloned()
+            .collect::<Vec<_>>();
+        assert_eq!(
+            row["rpc_command_additions"],
+            json!(additions),
+            "{to} command additions"
+        );
+        assert_eq!(
+            row["rpc_command_removals"],
+            json!(removals),
+            "{to} command removals"
+        );
         previous_command_cases = current_cases;
 
-        for change in row["classified_file_changes"].as_array().expect("file classifications are an array") {
+        for change in row["classified_file_changes"]
+            .as_array()
+            .expect("file classifications are an array")
+        {
             classified_change_count += 1;
             assert_keys(
                 change,
-                &["change", "classification", "from_sha256", "note", "path", "to_sha256"],
+                &[
+                    "change",
+                    "classification",
+                    "from_sha256",
+                    "note",
+                    "path",
+                    "to_sha256",
+                ],
             );
             let path = change["path"].as_str().expect("classified path is text");
             expected_source_paths.insert(path.to_owned());
@@ -427,7 +593,10 @@ fn assert_inventory_and_hops(
             }
         }
     }
-    assert_eq!(listed_published_hops, string_array(&identity["published_stable_hops"]));
+    assert_eq!(
+        listed_published_hops,
+        string_array(&identity["published_stable_hops"])
+    );
     assert_eq!(classified_change_count, 360);
     assert_eq!(expected_source_paths.len(), 89);
     assert_eq!(
@@ -445,7 +614,10 @@ fn assert_inventory_and_hops(
     assert_eq!(target_cases.len(), 67);
     assert!(selected.is_subset(&target_cases));
     assert_eq!(
-        target_cases.difference(&selected).cloned().collect::<Vec<_>>(),
+        target_cases
+            .difference(&selected)
+            .cloned()
+            .collect::<Vec<_>>(),
         string_array(&protocol["unselected_rpc_command_cases_at_target"])
     );
 }

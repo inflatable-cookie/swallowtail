@@ -142,15 +142,15 @@ sandbox.
 
 ## Version Posture
 
-Five separate axes carry qualified-only claims. The package, native, wire, and
-sidecar claims remain exact one-point claims. The Node claim now covers the
-maintained `22.23.2..=22.23.3` segment; the open path has one narrow
-observation-only exception for a newer Node runtime that passes the sidecar
-floor:
+Five separate axes carry qualified-only claims. Package, native, and Node each
+have independently maintained version segments. Wire and sidecar source remain
+exact one-point claims. The open path has one narrow observation-only exception
+for a newer Node runtime that passes the sidecar floor:
 
-- `claude-agent.sdk.package`: exact `@anthropic-ai/claude-agent-sdk@0.3.284`
-- `claude-agent.sdk.native`: exact native `2.1.284`, as the shipped
-  `manifest.json` declares it
+- `claude-agent.sdk.package`: `@anthropic-ai/claude-agent-sdk`
+  `0.3.284..=0.3.293` (Research 416)
+- `claude-agent.sdk.native`: `2.1.284..=2.1.293`, coupled point-for-point to
+  the package version by each shipped `manifest.json` (Research 416)
 - `claude-agent.sdk.node`: maintained Node `22.23.2..=22.23.3` (satisfying the
   upstream `>=18.0.0` requirement; Research 387)
 - `claude-agent.sdk.wire`: exact `swallowtail-claude-agent-sdk-jsonl-v1`
@@ -158,35 +158,73 @@ floor:
 - `claude-agent.sdk.sidecar`: the exact source-tagged sidecar revision
   (opaque)
 
+The Oct 8, 2026 npm re-probe found `latest` and `next` at package `0.3.294`,
+whose embedded manifest identifies native `2.1.294`. That hop remains
+unqualified because its changed package/runtime surfaces have not been
+classified against the selected route behavior. The claims above therefore
+stop at `0.3.293`/`2.1.293`; the new npm point does not gain support from its
+version number or artifact metadata alone. Research 416 records the in-run
+currentness stop and the required hop-classification adaptation.
+
 Two evidence limits belong to this family and must not be papered over. The
 npm tarball digest is the sole artifact identity: npm carries no `gitHead`,
 the tarball is staged from a private monorepo, and the public GitHub
 repository holds no SDK source, so a future checkpoint cannot diff tags or
 read that repository's changelog as a shipped-behavior oracle. And shipped
-declarations are not runtime evidence — the shipped `manifest.json` declares
-tested wrapper versions topping out at `0.3.282` inside the wrapper published
-as `0.3.284`. Only the runtime `capabilities` observed from the first-turn
-`system/init` may be treated as behavior.
+declarations are not runtime evidence — native `2.1.293` lists tested wrapper
+versions only through `0.3.285`. Only the runtime `capabilities` observed
+from the first-turn `system/init` may be treated as behavior.
 
 At open, the sidecar resolves the package manifest from the host-supplied SDK
-module path and reads its `name` and `version` before calling `sdk.query`. The
-open evidence reports that loaded package identity, so `sdkVersion` is never a
-sidecar constant. A readable identity that differs from the qualified package
-or version fails with typed `sdk_version_mismatch`; its bounded
+module path and the shipped native manifest from the host-supplied manifest
+path. Preparation selects an exact coupled package/native point with
+`ClaudeAgentSdkSessionPreparation::with_package_native_pair`; the finite
+`ClaudeAgentSdkPackageNativePair` choices cover `0.3.284`/`2.1.284` through
+`0.3.293`/`2.1.293`. Existing callers retain the `.293` pair by default. The
+driver takes both expected versions from the prepared plan and passes them in
+its private launch messages. Before constructing the SDK query, the sidecar
+checks that the selected pair is maintained, the loaded package metadata has
+that exact package version, and the shipped manifest has that exact native
+version. The open evidence reports the loaded package and native identities;
+neither value is inferred from an opaque launch target or sidecar constant. A
+readable identity that differs from the selected pair fails with typed
+`sdk_version_mismatch` or `native_version_mismatch`; its bounded
 `InterfaceVersion` observation carries declared and loaded package/version
 labels. A missing, malformed, or otherwise unreadable manifest fails with
-typed `sdk_identity_unverifiable`, before the SDK is constructed.
+typed `sdk_identity_unverifiable` for package metadata, or a bounded native
+manifest failure, before the SDK is constructed. Research 416 records the
+exact published artifacts; provider-free prepared-facade and shipped-sidecar
+fixtures exercise every maintained pair and reject drift before SDK query.
+
+`ClaudeAgentSdkPackageNativePair` and `with_package_native_pair` are additive
+current-source APIs. Existing preparation calls remain source-compatible and
+continue to select `.293` by default. The only temporary API-inventory update
+for this source check is
+`release-baselines/public-api-0.5.1/swallowtail-adapter-claude-agent.txt`;
+the generated semantic delta adds only the 17 approved pair-selection entries,
+with no removals, unrelated additions, or compiler-generated entries, and
+does not describe the tagged `0.5.1` source.
+Before the next minor candidate, restore all older version-labelled API
+baselines byte-for-byte from their tags before generating its baseline, as
+required by [Contract 036](../knowledge/contracts/036-crate-release-and-compatibility-boundary.md).
 
 The point moved three times already: `0.3.258` was qualified first, Research 280
 rebound both coupled axes to `0.3.259` after a full package-tree inventory,
 Research 315 rebound them to `0.3.270` across the nine published hops
 `0.3.260..=0.3.270` (gaps `0.3.262`, `0.3.264`), and Research 367 rebound them
 to `0.3.284` across the thirteen published hops `0.3.271`–`0.3.278` and
-`0.3.280`–`0.3.283` (gap `0.3.279`) with the mapped subset, lifecycle, and
-credential posture unchanged. Card 146 admits optional `McpServerStatus.source`
-as a discarded declared key. The publication cadence is roughly
-daily, so treat the qualified point as a frozen artifact identity, not as
-"current".
+`0.3.280`–`0.3.283` (gap `0.3.279`). Research 416 extends the same coupled
+axes across every published hop `0.3.285..=0.3.293`; selected wire, lifecycle,
+permission, usage, configuration, and tool behavior remains compatible. It
+preserves the `0.3.284`/`2.1.284` baselines and existing claim ids. The
+`0.3.293` point came from npm `latest` and its exact wrapper manifest, not the
+installed Claude Code host; it is no longer the current npm stable after the
+Oct 8 movement described above. Card 146 admits optional
+`McpServerStatus.source` as a
+discarded declared key. The newer SDK's `alwaysLoad` metadata can defer
+prompt-time loading by explicit server choice; required servers in this route
+still request loading and remain mediated. Research 301 registered-tool live
+acceptance remains exact to `0.3.259`/`2.1.259`.
 
 ## What Open Verifies
 
@@ -470,7 +508,7 @@ value is in that open-time list, so an unsupported model is rejected before
 `Query.setModel` is called.
 
 `set_model` reports the exact model returned by the sidecar only when the SDK
-supplies that value. The pinned `0.3.284` integration evidence exposes
+supplies that value. The qualified SDK declaration through `0.3.293` exposes
 `Query.setModel` without a returned model value, so its normal outcome is the
 typed `swallowtail.claude-agent.sdk.model_change_unconfirmed` failure. In that
 outcome the previously confirmed model remains effective. No requested value
@@ -487,7 +525,7 @@ scope.
 
 ## Resume And Session Listing
 
-The pinned `0.3.284` SDK exposes `persistSession`, `resume`, and
+The qualified SDK declaration through `0.3.293` exposes `persistSession`, `resume`, and
 `resumeSessionAt` on `Options`, plus the bounded `listSessions` function. The
 prepared profile keeps persistence disabled by default. Calling
 `with_persist_session(true)` opts into provider-owned retention, adds the
@@ -523,7 +561,7 @@ transcript content.
 
 ## Client MCP Servers
 
-The pinned `0.3.284` SDK exposes `Options.mcpServers`, `strictMcpConfig`, and
+The qualified SDK declaration through `0.3.293` exposes `Options.mcpServers`, `strictMcpConfig`, and
 `Query.mcpServerStatus()`. This route maps only consumer-declared **stdio**
 servers. SSE and HTTP configs carry URLs and optional headers; in-process
 `sdk` servers execute callbacks inside the sidecar. Neither shape is
@@ -556,8 +594,8 @@ Optional servers record `pending` or `failed` in open evidence instead.
 `needs-auth` is typed failure: OAuth-backed remote servers are out of scope.
 Status evidence carries name, kind, and a typed failure code only.
 
-The status rows themselves are the native `mcp_status` rows the pinned SDK
-passes through unchanged, and the exact 0.3.284 declaration
+The status rows themselves are the native `mcp_status` rows the qualified SDK
+passes through unchanged, and the exact 0.3.293 declaration
 (`package/sdk.d.ts:1226`) lets every row carry optional `serverInfo`,
 `error`, `config`, `scope`, `source`, and `tools` beside `name` and `status`.
 Card 146 reconciled that shape with the projection: the sidecar admits every
@@ -646,7 +684,8 @@ qualified on the exact accepted Card 318 live tuple (Research 301): SDK
 carrier `swallowtail-claude-agent-sdk-registered-tool-mcp-v1`,
 `private-loopback-http` plus `mediated-stdio-proxy`, and MCP `2025-11-25`.
 Research 315 rebound the route's wrapper/native axes to `0.3.270`/`2.1.270`,
-and Research 367 rebound them again to `0.3.284`/`2.1.284`, without extending
+and Research 367 rebound them to `0.3.284`/`2.1.284`, and Research 416 extends
+the package/native segment through `0.3.293`/`2.1.293`, without extending
 that live evidence, so the compiled tuple projects the
 unqualified truth with the reason `live_tuple_not_compiled` until a separately
 authorized live requalification runs on the new tuple. The qualification
@@ -738,7 +777,7 @@ the digest, UTF-8 text encoding, reference uniqueness, and Contract 063 byte
 and count bounds before the SDK is constructed. The provider-free Card 126
 fixture is `tests/fixtures/claude-agent-sdk-v1/selected-skill-bundle-card126.json`.
 
-The pinned `0.3.284` sidecar has no ambient skill loading: it sends
+The qualified `0.3.293` sidecar has no ambient skill loading: it sends
 `settingSources: []` and `skills: []` explicitly. When the selected bundle is
 present, the sidecar uses the frozen `Options.systemPrompt` plain-string
 surface to carry one labelled JSON envelope under
@@ -901,7 +940,7 @@ integers; absent cache dimensions remain `None`. Invalid values fail closed.
 The report is emitted once at the result boundary, including a provider-failed
 result that carries usage. Streamed deltas do not carry token usage.
 
-For SDK `0.3.284`, `SDKResultSuccess` and `SDKResultError` document `usage` as
+For SDK `0.3.293`, `SDKResultSuccess` and `SDKResultError` document `usage` as
 main-agent-loop-only and per-turn for streaming-input sessions; Task subagents,
 sidechains, and auxiliary model calls are excluded. `modelUsage` has a
 different scope: it is cumulative across turns and includes query-pipeline
@@ -911,7 +950,7 @@ subagents, sidechains, and internal calls. The sidecar records only whether
 `maxOutputTokens`. Repeated cumulative snapshots are not converted into usage
 steps. Each result's per-turn snapshot remains its own observation.
 
-The exact SDK `0.3.284` declaration also exposes
+The exact SDK `0.3.293` declaration also exposes
 `Query.getContextUsage`, which takes `{detail: 'summary' | 'full'}` and returns
 the query's selected `model`,
 `totalTokens`, `maxTokens`, `rawMaxTokens`, `percentage`, and context categories.

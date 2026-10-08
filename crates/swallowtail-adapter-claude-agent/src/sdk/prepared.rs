@@ -17,6 +17,7 @@ use super::registered_tool::{
     ClaudeAgentSdkRegisteredOnlyBinding, ClaudeAgentSdkRegisteredToolBinding,
 };
 use super::selected_skill::ClaudeAgentSdkSelectedSkillBinding;
+use super::selection::ClaudeAgentSdkPackageNativePair;
 use swallowtail_core::{
     AccessProfileId, ConfigFieldId, ConfiguredInstanceId, CredentialFieldId, CredentialRef,
     Diagnostic, ExecutionHostId, InstanceRevision, InstanceTargetRef, ModelId, ModelRouteId,
@@ -53,6 +54,7 @@ pub struct ClaudeAgentSdkSessionPreparation {
     pub(crate) mcp_servers: Vec<ClaudeAgentSdkMcpServer>,
     pub(crate) registered_tools: Option<ClaudeAgentSdkRegisteredToolBinding>,
     pub(crate) selected_skill: Option<swallowtail_runtime::ResolvedSkillBundle>,
+    pub(crate) package_native_pair: ClaudeAgentSdkPackageNativePair,
 }
 
 impl ClaudeAgentSdkSessionPreparation {
@@ -93,7 +95,17 @@ impl ClaudeAgentSdkSessionPreparation {
             mcp_servers: Vec::new(),
             registered_tools: None,
             selected_skill: None,
+            package_native_pair: ClaudeAgentSdkPackageNativePair::DEFAULT,
         }
+    }
+
+    /// Selects one exact SDK package and embedded native pair from the
+    /// maintained, artifact-qualified segment. Existing preparations keep the
+    /// current `0.3.293` / `2.1.293` pair by default.
+    #[must_use]
+    pub const fn with_package_native_pair(mut self, pair: ClaudeAgentSdkPackageNativePair) -> Self {
+        self.package_native_pair = pair;
+        self
     }
 
     /// Replaces the admitted tool set and opening permission mode.

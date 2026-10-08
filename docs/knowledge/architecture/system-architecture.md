@@ -207,12 +207,13 @@ OpenHands adds a package without a production route.
   known-bad exclusions, and a
   fail-closed provider-suppressed tool/MCP surface with no working resource or
   structured-output capability. The same crate also implements the separate
-  `claude-agent.sdk` route: Anthropic's official Claude Agent SDK at exact
-  `0.3.284`, carrying native `2.1.284`, running in a source-tagged Node
-  sidecar (maintained Node `22.23.2..=22.23.3`; Research 387) over the private
-  bounded `swallowtail-claude-agent-sdk-jsonl-v1` wire, with four
-  qualified-only one-point version axes and one maintained Node 22 patch
-  segment, an application-provisioned launch recipe and
+  `claude-agent.sdk` route: Anthropic's official Claude Agent SDK with the
+  maintained package segment `0.3.284..=0.3.293` and coupled native segment
+  `2.1.284..=2.1.293` (Research 416), running in a source-tagged Node sidecar
+  with maintained Node `22.23.2..=22.23.3` (Research 387) over the private
+  bounded `swallowtail-claude-agent-sdk-jsonl-v1` wire, with three maintained
+  version axes and exact wire and sidecar source-tag axes, an application-
+  provisioned launch recipe and
   environment, no credential custody (delegated lease plus first-party
   `oauth` readiness only), read-only tools, consumer-mediated tool admission,
   capability-gated interrupt, and caller-bounded open, turn, interrupt, and

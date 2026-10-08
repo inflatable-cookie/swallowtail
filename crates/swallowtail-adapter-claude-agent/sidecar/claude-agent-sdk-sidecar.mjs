@@ -58,8 +58,18 @@ import process from "node:process";
 const WIRE = "swallowtail-claude-agent-sdk-jsonl-v1";
 const BEHAVIOR = "claude-agent.sdk-v1";
 const SDK_PACKAGE = "@anthropic-ai/claude-agent-sdk";
-const SDK_VERSION = "0.3.284";
-const NATIVE_VERSION = "2.1.284";
+const MAINTAINED_NATIVE_BY_SDK = new Map([
+  ["0.3.284", "2.1.284"],
+  ["0.3.285", "2.1.285"],
+  ["0.3.286", "2.1.286"],
+  ["0.3.287", "2.1.287"],
+  ["0.3.288", "2.1.288"],
+  ["0.3.289", "2.1.289"],
+  ["0.3.290", "2.1.290"],
+  ["0.3.291", "2.1.291"],
+  ["0.3.292", "2.1.292"],
+  ["0.3.293", "2.1.293"],
+]);
 const NODE_FLOOR = [22, 19, 0];
 
 const MAXIMUM_RECORD_BYTES = 1024 * 1024;
@@ -348,6 +358,8 @@ const state = {
   account: null,
   loadedSdkPackage: null,
   loadedSdkVersion: null,
+  expectedSdkVersion: null,
+  expectedNativeVersion: null,
   firstTurnRejection: null,
 };
 
@@ -725,11 +737,28 @@ function projectMcpStatuses(reported, servers) {
   return projected;
 }
 
-async function importSdk() {
+function isMaintainedPackageNativePair(sdkVersion, nativeVersion) {
+  return MAINTAINED_NATIVE_BY_SDK.get(sdkVersion) === nativeVersion;
+}
+
+function expectedPackageNativePair(params) {
+  const sdkVersion = requireString(params, "expectedSdkVersion");
+  const nativeVersion = requireString(params, "expectedNativeVersion");
+  if (!isMaintainedPackageNativePair(sdkVersion, nativeVersion)) {
+    throw new SidecarFailure("sdk_version_mismatch");
+  }
+  return { sdkVersion, nativeVersion };
+}
+
+async function importSdk(expectedSdkVersion) {
   const modulePath = requireEnvironment(ENV_SDK_MODULE);
   const identity = await readSdkIdentity(modulePath);
-  if (identity.name !== SDK_PACKAGE || identity.version !== SDK_VERSION) {
-    await emitDiagnostic("error", "sdk_version_mismatch", sdkIdentityEvidence(identity));
+  if (identity.name !== SDK_PACKAGE || identity.version !== expectedSdkVersion) {
+    await emitDiagnostic(
+      "error",
+      "sdk_version_mismatch",
+      sdkIdentityEvidence(identity, expectedSdkVersion),
+    );
     throw new SidecarFailure("sdk_version_mismatch");
   }
 
@@ -750,7 +779,7 @@ async function importSdk() {
   return { module: sdk, identity };
 }
 
-async function readNativeVersion() {
+async function readNativeVersion(expectedNativeVersion) {
   let manifest;
   try {
     manifest = JSON.parse(await readFile(requireEnvironment(ENV_MANIFEST), "utf8"));
@@ -761,7 +790,7 @@ async function readNativeVersion() {
     throw new SidecarFailure("native_manifest_unavailable");
   }
   const version = manifest?.version;
-  if (typeof version !== "string" || version !== NATIVE_VERSION) {
+  if (typeof version !== "string" || version !== expectedNativeVersion) {
     throw new SidecarFailure("native_version_mismatch");
   }
   return version;
@@ -1152,10 +1181,10 @@ function sdkPackageBoundary(moduleDirectory) {
   return path.join(nodeModulesDirectory, segments[0]);
 }
 
-function sdkIdentityEvidence(identity) {
+function sdkIdentityEvidence(identity, expectedSdkVersion) {
   return {
     declaredSdkPackage: SDK_PACKAGE,
-    declaredSdkVersion: SDK_VERSION,
+    declaredSdkVersion: expectedSdkVersion,
     loadedSdkPackage: identity.name,
     loadedSdkVersion: identity.version,
   };
@@ -1199,9 +1228,9 @@ function modelQualificationEvidence(effectiveModel) {
     effectiveMembership: state.supportedModels.includes(effectiveModel),
     querySource: MODEL_QUALIFICATION_SOURCE,
     phase: MODEL_QUALIFICATION_PHASE,
-    declaredSdkVersion: SDK_VERSION,
+    declaredSdkVersion: state.expectedSdkVersion,
     loadedSdkVersion,
-    nativeVersion: NATIVE_VERSION,
+    nativeVersion: state.expectedNativeVersion,
   };
 }
 
@@ -1465,6 +1494,8 @@ async function handleOpen(params) {
   requireExactParams(params, [
     "cwd",
     "model",
+    "expectedSdkVersion",
+    "expectedNativeVersion",
     "tools",
     "permissionMode",
     "effort",
@@ -1474,6 +1505,7 @@ async function handleOpen(params) {
     "mcpServers",
     "selectedSkillBundle",
   ]);
+  const expectedPair = expectedPackageNativePair(params);
   const cwd = requireString(params, "cwd");
   const model = requireString(params, "model");
   const mcpServers = admittedMcpServers(params.mcpServers);
@@ -1503,12 +1535,14 @@ async function handleOpen(params) {
   ];
   state.tools = tools;
   state.permissionMode = permissionMode;
+  state.expectedSdkVersion = expectedPair.sdkVersion;
+  state.expectedNativeVersion = expectedPair.nativeVersion;
   if (!checkNodeFloor()) {
     throw new SidecarFailure("node_runtime_unsupported");
   }
   const nativeBinary = requireEnvironment(ENV_NATIVE_BINARY);
-  const nativeVersion = await readNativeVersion();
-  const loadedSdk = await importSdk();
+  const nativeVersion = await readNativeVersion(expectedPair.nativeVersion);
+  const loadedSdk = await importSdk(expectedPair.sdkVersion);
   const sdk = loadedSdk.module;
   state.sdk = sdk;
   state.loadedSdkPackage = loadedSdk.identity.name;
@@ -1834,7 +1868,20 @@ async function handleQuery(params) {
 /// cross this wire, and the returned cwd is the current host lease rather than
 /// metadata that could later be used as resume authority.
 async function handleListSessions(params) {
-  requireExactParams(params, ["cwd", "limit", "offset"]);
+  requireExactParams(params, [
+    "cwd",
+    "limit",
+    "offset",
+    "expectedSdkVersion",
+    "expectedNativeVersion",
+  ]);
+  const expectedPair = expectedPackageNativePair(params);
+  if (
+    (state.expectedSdkVersion !== null && state.expectedSdkVersion !== expectedPair.sdkVersion) ||
+    (state.expectedNativeVersion !== null && state.expectedNativeVersion !== expectedPair.nativeVersion)
+  ) {
+    throw new SidecarFailure("sdk_version_mismatch");
+  }
   const cwd = requireString(params, "cwd");
   const limit = params.limit;
   const offset = params.offset;
@@ -1844,7 +1891,8 @@ async function handleListSessions(params) {
   if (!Number.isSafeInteger(offset) || offset < 0 || offset > 10_000) {
     throw new SidecarFailure("listing_invalid");
   }
-  const sdk = state.sdk ?? (await importSdk()).module;
+  await readNativeVersion(expectedPair.nativeVersion);
+  const sdk = state.sdk ?? (await importSdk(expectedPair.sdkVersion)).module;
   if (typeof sdk.listSessions !== "function") {
     throw new SidecarFailure("sdk_export_missing");
   }

@@ -4,6 +4,7 @@ use crate::sdk::{
     CLAUDE_AGENT_SDK_BEHAVIOR, CLAUDE_AGENT_SDK_NATIVE_VERSION, CLAUDE_AGENT_SDK_NODE_RUNTIME,
     CLAUDE_AGENT_SDK_PACKAGE, CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE, CLAUDE_AGENT_SDK_SIDECAR_SOURCE,
     CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_WIRE,
+    ClaudeAgentSdkPackageNativePair,
 };
 
 macro_rules! fixture {
@@ -112,7 +113,35 @@ fn corpus_identity_matches_the_frozen_sidecar_identity() {
         protocol["sidecar_entry_file"],
         CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE
     );
-    assert_eq!(protocol["compatibility_claim"], "qualified_only_one_point");
+    assert_eq!(
+        protocol["compatibility_claim"],
+        "qualified_only_maintained_segment"
+    );
+    assert_eq!(protocol["package_baseline"], "0.3.284");
+    assert_eq!(protocol["native_baseline"], "2.1.284");
+    let maintained_pairs: Vec<_> = ClaudeAgentSdkPackageNativePair::MAINTAINED
+        .into_iter()
+        .map(|pair| {
+            serde_json::json!({
+                "sdk_package_version": pair.package_version(),
+                "native_version": pair.native_version(),
+            })
+        })
+        .collect();
+    assert_eq!(
+        protocol["package_native_pairs"],
+        serde_json::json!(maintained_pairs)
+    );
+    assert_eq!(
+        protocol["list_sessions_params"],
+        serde_json::json!([
+            "cwd",
+            "limit",
+            "offset",
+            "expectedSdkVersion",
+            "expectedNativeVersion"
+        ])
+    );
     assert!(
         CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG
             .starts_with(protocol["sidecar_source_tag_prefix"].as_str().unwrap())
@@ -127,6 +156,18 @@ fn corpus_identity_matches_the_frozen_sidecar_identity() {
         assert!(
             CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(expected),
             "sidecar source must carry {expected}"
+        );
+    }
+    for pair in ClaudeAgentSdkPackageNativePair::MAINTAINED {
+        assert!(
+            CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(pair.package_version()),
+            "sidecar pair map must retain {}",
+            pair.package_version()
+        );
+        assert!(
+            CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(pair.native_version()),
+            "sidecar pair map must retain {}",
+            pair.native_version()
         );
     }
 }

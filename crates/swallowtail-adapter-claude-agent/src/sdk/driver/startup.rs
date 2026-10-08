@@ -310,6 +310,7 @@ pub(crate) async fn resume(
 
 pub(crate) async fn list(
     connection: &SdkConnection,
+    plan: &PreflightPlan,
     request_id: &str,
     leased_cwd: &str,
     limit: usize,
@@ -319,7 +320,13 @@ pub(crate) async fn list(
         .command(
             format!("list-sessions:{request_id}"),
             ClaudeAgentSdkCommand::ListSessions,
-            json!({"cwd": leased_cwd, "limit": limit, "offset": offset}),
+            json!({
+                "cwd": leased_cwd,
+                "limit": limit,
+                "offset": offset,
+                "expectedSdkVersion": bound_version(plan, CLAUDE_AGENT_SDK_PACKAGE_AXIS),
+                "expectedNativeVersion": bound_version(plan, CLAUDE_AGENT_SDK_NATIVE_AXIS),
+            }),
         )
         .await?;
     if !response.success {
@@ -397,11 +404,15 @@ async fn start(
         .expect("validated sidecar model route")
         .as_str()
         .to_owned();
+    let sdk_version = bound_version(plan, CLAUDE_AGENT_SDK_PACKAGE_AXIS);
+    let native_version = bound_version(plan, CLAUDE_AGENT_SDK_NATIVE_AXIS);
     let open_servers = combine_open_servers(mcp_servers, registered_courier);
     let tools = admitted_open_tool_names(&profile, &open_servers);
     let mut params = json!({
         "cwd": leased_cwd,
         "model": model,
+        "expectedSdkVersion": sdk_version.clone(),
+        "expectedNativeVersion": native_version.clone(),
         "tools": tools,
         "permissionMode": profile.permission_mode().as_str(),
     });
@@ -455,8 +466,8 @@ async fn start(
         admitted_tools: tools,
         mcp_servers: &open_servers,
         selected_skill: selected_skill.as_ref(),
-        sdk_version: &bound_version(plan, CLAUDE_AGENT_SDK_PACKAGE_AXIS),
-        native_version: &bound_version(plan, CLAUDE_AGENT_SDK_NATIVE_AXIS),
+        sdk_version: &sdk_version,
+        native_version: &native_version,
         node_version: &bound_version(plan, CLAUDE_AGENT_SDK_NODE_AXIS),
         wire_version: &bound_version(plan, CLAUDE_AGENT_SDK_WIRE_AXIS),
         resuming: provider_session_ref.is_some(),

@@ -327,7 +327,7 @@ OpenHands adds a package without a production route.
   session, authoritative events, callbacks, bounded recovery, interruption,
   usage evidence, and ordered deletion
 - `swallowtail-adapter-bedrock` pins the provider-supported
-  `aws-sdk-bedrockruntime = 1.136.0` in-process Rust boundary and implements
+  `aws-sdk-bedrockruntime = 1.148.0` in-process Rust boundary and implements
   one exact `ConverseStream` production route; its native catalogue fixture
   boundary pins `aws-sdk-bedrock = 1.148.0`, the distinct regional control-
   plane audience, generated request, summary, lifecycle and error types, and
@@ -1692,7 +1692,7 @@ Bedrock Runtime and control-plane catalogue now expose separate prepared SDK
 surfaces. Each requires an exact region and an already-selected opaque
 credential provider through `BedrockCloudClientConfig`; neither consults the
 ambient AWS region, credential, profile, file, container, or instance-metadata
-chains. Runtime binds `aws-sdk-bedrockruntime = 1.136.0`,
+chains. Runtime binds `aws-sdk-bedrockruntime = 1.148.0`,
 `ConverseStream`, one exact model route and underlying provider, bounded text
 output, and one structured attempt. Catalogue binds
 `aws-sdk-bedrock = 1.148.0`, `ListFoundationModels`, its own access and

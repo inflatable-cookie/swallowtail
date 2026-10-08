@@ -1,0 +1,231 @@
+{
+  "axis": "cursor-agent.release-date",
+  "hops": [
+    {
+      "archive_sha256": "538827d96a779bab854a865c8e42859e8e87db34b5f69770261b90fc8cfff191",
+      "archive_url": "https://downloads.cursor.com/lab/2026.09.26-dd393fe/darwin/arm64/agent-cli-package.tar.gz",
+      "build_revision": "dd393fe",
+      "darwin_arm64_archive_sha256": "538827d96a779bab854a865c8e42859e8e87db34b5f69770261b90fc8cfff191",
+      "darwin_arm64_archive_url": "https://downloads.cursor.com/lab/2026.09.26-dd393fe/darwin/arm64/agent-cli-package.tar.gz",
+      "darwin_arm64_handler_chunk": "5492.index.js",
+      "darwin_arm64_handler_chunk_sha256": "1b5bf91c93d94eabb46d0341734e127546a87f6e5884cc22f489aa45cfb9882b",
+      "darwin_arm64_launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+      "darwin_arm64_loader_chunks": [
+        "5492.index.js"
+      ],
+      "darwin_arm64_model_service_chunk": "3732.index.js",
+      "darwin_arm64_model_service_chunk_sha256": "c93903258ca6200252b70494c84530fad492758654b6bd0bef84666471e6cd55",
+      "darwin_arm64_node_runtime_sha256": "ebd2d552c7bebde593dd0390530963ad28de56bccde6ce387cdbe55fb0b6fb8e",
+      "darwin_arm64_package_file_count": 446,
+      "darwin_arm64_package_json_sha256": "625a6b5d64e45fd989706ab6fd21a95f454d4e70cab7c0c1c151d37582d8bee2",
+      "darwin_arm64_runtime_index_sha256": "f8bd1c549f844859f8aeb9f06c01420f299bee22fe136695fe891eaf18674b12",
+      "darwin_arm64_tree_manifest_sha256": "1cc6d2ae66858469d31c4ef76247ab511dc6d01723365cb76f174df0c2d81e5e",
+      "launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+      "linux_x64_archive_sha256": "8085fd120f5c71f4eae7fea26a043718e5644e3071e4fab3220a0e58c51f9593",
+      "linux_x64_archive_url": "https://downloads.cursor.com/lab/2026.09.26-dd393fe/linux/x64/agent-cli-package.tar.gz",
+      "linux_x64_handler_chunk": "5589.index.js",
+      "linux_x64_handler_chunk_sha256": "eac73301feee16706c1820f90ee6351b3e0fe906af4d47c68fda763dbf488014",
+      "linux_x64_launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+      "linux_x64_loader_chunks": [
+        "5589.index.js"
+      ],
+      "linux_x64_model_service_chunk": "4723.index.js",
+      "linux_x64_model_service_chunk_sha256": "c4b3f38786ebb10eee9a0d106506594d4a26d699e8a1066e38c574f4d4dc261b",
+      "linux_x64_node_runtime_sha256": "e0e46d3a1c0667117303412647cafcbcefb1be7612493015ec8fd6b7440162a4",
+      "linux_x64_package_file_count": 454,
+      "linux_x64_package_json_sha256": "625a6b5d64e45fd989706ab6fd21a95f454d4e70cab7c0c1c151d37582d8bee2",
+      "linux_x64_runtime_index_sha256": "abc8b0878cc059942b6038cef0c631b755d7911dcb8eade3855166d6575cb4b7",
+      "linux_x64_tree_manifest_sha256": "6e82b78b0924c63ce5c03a8c563fb826d76bba896d94a6ffd181017053cfac62",
+      "package_file_count": 446,
+      "registry_commit": "b62398f8201ca95926c16c93d0aaf7d7e8cf9d94",
+      "registry_commit_date": "2026-09-28",
+      "registry_commit_message": "cursor: 2026.09.18 -> 2026.09.26 (#631)",
+      "release_date": "2026-09-26",
+      "runtime_index_sha256": "f8bd1c549f844859f8aeb9f06c01420f299bee22fe136695fe891eaf18674b12",
+      "source": "official-acp-registry-artifact",
+      "version": "2026.09.26-dd393fe"
+    },
+    {
+      "archive_sha256": "c0d7e9cd2e62438610b886d3439907dc1f98c2923b07b3a41416cc919aaf53c7",
+      "archive_url": "https://downloads.cursor.com/lab/2026.09.28-64d2043/darwin/arm64/agent-cli-package.tar.gz",
+      "build_revision": "64d2043",
+      "darwin_arm64_archive_sha256": "c0d7e9cd2e62438610b886d3439907dc1f98c2923b07b3a41416cc919aaf53c7",
+      "darwin_arm64_archive_url": "https://downloads.cursor.com/lab/2026.09.28-64d2043/darwin/arm64/agent-cli-package.tar.gz",
+      "darwin_arm64_handler_chunk": "9517.index.js",
+      "darwin_arm64_handler_chunk_sha256": "b268c6187c824ed80176aabab2bdf9a7755dfff764b640dd1c7157a5f9cda9d3",
+      "darwin_arm64_launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+      "darwin_arm64_loader_chunks": [
+        "9517.index.js"
+      ],
+      "darwin_arm64_model_service_chunk": "3483.index.js",
+      "darwin_arm64_model_service_chunk_sha256": "87390813bc5e40ee5f38ad80f23dabc1d786fbd018d24808eb047432c6674bf9",
+      "darwin_arm64_node_runtime_sha256": "ebd2d552c7bebde593dd0390530963ad28de56bccde6ce387cdbe55fb0b6fb8e",
+      "darwin_arm64_package_file_count": 447,
+      "darwin_arm64_package_json_sha256": "625a6b5d64e45fd989706ab6fd21a95f454d4e70cab7c0c1c151d37582d8bee2",
+      "darwin_arm64_runtime_index_sha256": "0d0c83f5478c3dcd806cb9697123cee3f548005fbcd3acafe31f102d659f5a7b",
+      "darwin_arm64_tree_manifest_sha256": "848402ca013e37a33da602ca1902d7e0953e743a115a0e6ce6dbcad6360be778",
+      "launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+      "linux_x64_archive_sha256": "6e4cd936a4866b8a77c50ff51a564460d715772fabc477a01aa0f0455d9559f0",
+      "linux_x64_archive_url": "https://downloads.cursor.com/lab/2026.09.28-64d2043/linux/x64/agent-cli-package.tar.gz",
+      "linux_x64_handler_chunk": "6436.index.js",
+      "linux_x64_handler_chunk_sha256": "592623afe824b6db6b315e0d6a62b0279b75d8d3a4e4b297c3b28a81f08f2f54",
+      "linux_x64_launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+      "linux_x64_loader_chunks": [
+        "6436.index.js"
+      ],
+      "linux_x64_model_service_chunk": "1623.index.js",
+      "linux_x64_model_service_chunk_sha256": "6e393636a7898efe8b9a52463682d7cddf211e668334aed58f6864b37eaef60d",
+      "linux_x64_node_runtime_sha256": "e0e46d3a1c0667117303412647cafcbcefb1be7612493015ec8fd6b7440162a4",
+      "linux_x64_package_file_count": 455,
+      "linux_x64_package_json_sha256": "625a6b5d64e45fd989706ab6fd21a95f454d4e70cab7c0c1c151d37582d8bee2",
+      "linux_x64_runtime_index_sha256": "45d9b1df85d0165cb2e690f96fa5fbe4b59e8a71ddd22176a301ba7e5b18a0b9",
+      "linux_x64_tree_manifest_sha256": "f71e8f6dc552b10d034d55810a6f2b1bf43c8164b35b1e0e0966e38585692116",
+      "package_file_count": 447,
+      "registry_commit": "3a6bcd28d931a154338602f966418d00f8c71229",
+      "registry_commit_date": "2026-09-30",
+      "registry_commit_message": "cursor: 2026.09.26 -> 2026.09.28 (#640)",
+      "release_date": "2026-09-28",
+      "runtime_index_sha256": "0d0c83f5478c3dcd806cb9697123cee3f548005fbcd3acafe31f102d659f5a7b",
+      "source": "official-acp-registry-artifact",
+      "version": "2026.09.28-64d2043"
+    },
+    {
+      "archive_sha256": "778d04e542adc5c8b6760fda3ebe0757f903b1764f2792c232ef9a35e6e2151b",
+      "archive_url": "https://downloads.cursor.com/lab/2026.10.01-14929f9/darwin/arm64/agent-cli-package.tar.gz",
+      "build_revision": "14929f9",
+      "darwin_arm64_archive_sha256": "778d04e542adc5c8b6760fda3ebe0757f903b1764f2792c232ef9a35e6e2151b",
+      "darwin_arm64_archive_url": "https://downloads.cursor.com/lab/2026.10.01-14929f9/darwin/arm64/agent-cli-package.tar.gz",
+      "darwin_arm64_handler_chunk": "4762.index.js",
+      "darwin_arm64_handler_chunk_sha256": "1cf7328d428f12f251b157b9f658225afa4c4d34fb2d420793d968a171b3a29b",
+      "darwin_arm64_launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+      "darwin_arm64_loader_chunks": [
+        "4762.index.js"
+      ],
+      "darwin_arm64_model_service_chunk": "5625.index.js",
+      "darwin_arm64_model_service_chunk_sha256": "417444f3fe5a9f2913ac86bf3e548056eae476103168944a4fee46b9b2676206",
+      "darwin_arm64_node_runtime_sha256": "ebd2d552c7bebde593dd0390530963ad28de56bccde6ce387cdbe55fb0b6fb8e",
+      "darwin_arm64_package_file_count": 447,
+      "darwin_arm64_package_json_sha256": "625a6b5d64e45fd989706ab6fd21a95f454d4e70cab7c0c1c151d37582d8bee2",
+      "darwin_arm64_runtime_index_sha256": "ad1d9d915946a57ff1bf0d8364a82b91870035a09f19c502ffac9bb5b95edc5d",
+      "darwin_arm64_tree_manifest_sha256": "c21440a7188f442e6e3c98207937b8f916aa68eafdc9e56870411c7c2ba5f5e6",
+      "launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+      "linux_x64_archive_sha256": "ba9a855f8f813c91b9f2707127572d2dc9ae5a62818e1c36719625d0fb8bd452",
+      "linux_x64_archive_url": "https://downloads.cursor.com/lab/2026.10.01-14929f9/linux/x64/agent-cli-package.tar.gz",
+      "linux_x64_handler_chunk": "6436.index.js",
+      "linux_x64_handler_chunk_sha256": "592623afe824b6db6b315e0d6a62b0279b75d8d3a4e4b297c3b28a81f08f2f54",
+      "linux_x64_launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+      "linux_x64_loader_chunks": [
+        "6436.index.js"
+      ],
+      "linux_x64_model_service_chunk": "1623.index.js",
+      "linux_x64_model_service_chunk_sha256": "8491b393906ab9768fdfda59122eb3448d74a8ed1cde4c559bbf035dc9c30e5e",
+      "linux_x64_node_runtime_sha256": "e0e46d3a1c0667117303412647cafcbcefb1be7612493015ec8fd6b7440162a4",
+      "linux_x64_package_file_count": 455,
+      "linux_x64_package_json_sha256": "625a6b5d64e45fd989706ab6fd21a95f454d4e70cab7c0c1c151d37582d8bee2",
+      "linux_x64_runtime_index_sha256": "7e14af745050e80afc473c8b8fa2b7bba64197ca96f0181b4b5c2d359193bee1",
+      "linux_x64_tree_manifest_sha256": "908061cf1d0d0e2d18714dfe115c1321696adf9a12bd2fdc3513ad7690852a34",
+      "package_file_count": 447,
+      "registry_commit": "310074e4c18c5ff39ec178e84d0f461f8ff73fe0",
+      "registry_commit_date": "2026-10-02",
+      "registry_commit_message": "cursor: 2026.09.28 -> 2026.10.01 (#646)",
+      "release_date": "2026-10-01",
+      "runtime_index_sha256": "ad1d9d915946a57ff1bf0d8364a82b91870035a09f19c502ffac9bb5b95edc5d",
+      "source": "official-acp-registry-artifact",
+      "version": "2026.10.01-14929f9"
+    }
+  ],
+  "host": {
+    "artifact_kind": "path-version-observation",
+    "note": "Observed installed ceiling matches the previously qualified archive. No installation or update was requested or performed.",
+    "present": true,
+    "runtime_index_sha256": "19af19274b07dcb8ad9bd86915320b7b49a62de763af10c6857ab45257c8a14b",
+    "source": "isolated cursor-agent --version probe",
+    "version": "2026.09.18-9a7762b"
+  },
+  "identity_decision": {
+    "add_exact_milestones": [
+      "2026.09.26-dd393fe",
+      "2026.09.28-64d2043",
+      "2026.10.01-14929f9"
+    ],
+    "authenticated_catalogue_called": false,
+    "claim_id": "cursor-agent.catalogue.release-window-3",
+    "consumer_visible_narrowing": false,
+    "downloaded_artifacts_executed": false,
+    "host_install_changed": false,
+    "independently_unqualified_older_published": [
+      "2026.08.25-3e8eec8",
+      "2026.09.08-6caf4ff"
+    ],
+    "infer_calendar_gap": false,
+    "keep_baseline": "2026.07.01-41b2de7",
+    "keep_existing": [
+      "2026.07.01-41b2de7",
+      "2026.07.23-e383d2b",
+      "2026.08.04-aaa8809",
+      "2026.08.11-e8db854",
+      "2026.08.31-4057e58",
+      "2026.09.02-c22c1a3",
+      "2026.09.10-fd3934a",
+      "2026.09.15-d2fe57e",
+      "2026.09.18-9a7762b"
+    ],
+    "mix_npm_cursor_agent_axis": false,
+    "new_behavior_revision": false,
+    "new_public_operation": false,
+    "preserve_acp_headless_claims_at": "2026.09.18-9a7762b",
+    "provider_prompt_sent": false,
+    "raise_latest_qualified_to": "2026.10.01-14929f9",
+    "reuse_behavior": "cursor-agent.catalogue.calendar-release-v1",
+    "route": "cursor-agent.catalogue",
+    "shape": "compatible-extension"
+  },
+  "observed_at": "2026-10-08",
+  "previous_ceiling": {
+    "build_revision": "9a7762b",
+    "darwin_arm64_archive_sha256": "4e67b9ac80cc4a56e0a91b3b437894e0ba489ef7ec37f120d8084d2bfd02095d",
+    "darwin_arm64_archive_url": "https://downloads.cursor.com/lab/2026.09.18-9a7762b/darwin/arm64/agent-cli-package.tar.gz",
+    "darwin_arm64_runtime_index_sha256": "19af19274b07dcb8ad9bd86915320b7b49a62de763af10c6857ab45257c8a14b",
+    "launcher_sha256": "2ccc9a8e167797641448b5e5c936f006ba137a2555f117f38c5eb76a5238a233",
+    "linux_x64_archive_sha256": "b1308f5a2fc05458b9d8966752986bb23a971bbcc67c842c1df94c4b8132bad9",
+    "linux_x64_archive_url": "https://downloads.cursor.com/lab/2026.09.18-9a7762b/linux/x64/agent-cli-package.tar.gz",
+    "release_date": "2026-09-18",
+    "source": "official-acp-registry-artifact",
+    "version": "2026.09.18-9a7762b"
+  },
+  "published_stables_after_ceiling": [
+    "2026.09.26-dd393fe",
+    "2026.09.28-64d2043",
+    "2026.10.01-14929f9"
+  ],
+  "qualified_route": "cursor-agent.catalogue",
+  "registry": {
+    "id": "cursor",
+    "latest_stable": "2026.10.01-14929f9",
+    "observed_repository_main": "a1c535174151467335d39083cc2167b210b7e3c1",
+    "published_hops_after_ceiling": [
+      {
+        "date": "2026-09-28",
+        "message": "cursor: 2026.09.18 -> 2026.09.26 (#631)",
+        "sha": "b62398f8201ca95926c16c93d0aaf7d7e8cf9d94",
+        "version": "2026.09.26-dd393fe"
+      },
+      {
+        "date": "2026-09-30",
+        "message": "cursor: 2026.09.26 -> 2026.09.28 (#640)",
+        "sha": "3a6bcd28d931a154338602f966418d00f8c71229",
+        "version": "2026.09.28-64d2043"
+      },
+      {
+        "date": "2026-10-02",
+        "message": "cursor: 2026.09.28 -> 2026.10.01 (#646)",
+        "sha": "310074e4c18c5ff39ec178e84d0f461f8ff73fe0",
+        "version": "2026.10.01-14929f9"
+      }
+    ],
+    "repository": "https://github.com/agentclientprotocol/registry",
+    "selected_channel": "official ACP registry Cursor entry and the archive URLs it publishes",
+    "source": "https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json",
+    "version": "2026.10.01"
+  }
+}

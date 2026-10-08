@@ -100,10 +100,7 @@ fn the_fixture_decision_is_the_shape_production_encodes() {
     );
 
     assert_eq!(decision["headless"]["verdict"], "compatible-extension");
-    assert_eq!(
-        decision["headless"]["raise_latest_qualified_to"],
-        "0.43.0"
-    );
+    assert_eq!(decision["headless"]["raise_latest_qualified_to"], "0.43.0");
     assert_eq!(decision["headless"]["raise_range_to"], "0.33.0..=0.43.0");
     assert_eq!(
         decision["headless"]["behavior_revision_stays"],

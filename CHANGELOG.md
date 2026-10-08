@@ -16,6 +16,20 @@ annotated Git tags from the canonical repository.
   boundary, permission selection, and lifecycle remain compatible. No archive
   execution, provider prompt, authenticated catalogue/session, credential use,
   installation, or host update occurred.
+- qualify only `command-code.headless` through official npm `latest`
+  `1.79.1`, with an exact segment for each of the 33 published stable points,
+  including the existing `1.65.0` baseline. Research 402 freezes each package
+  tree and every adjacent hop. Keep the existing behavior through `1.72.4`;
+  from `1.73.0`, Command Code may select configured
+  `featureModels.planning` ahead of `-m` in plan mode. A private opt-in
+  observation reports requested and CLI-selected model IDs with a 128-byte
+  bound; `model_request_start` remains private and emits no public activity.
+  The observation does not assert which remote backend served the request.
+  Published holes remain excluded and no unverified-newer execution is allowed.
+  Research 347 live proof remains exact `1.65.0`; the guarantee change is
+  assessed for a pre-1.0 minor under Contract 036, not the urgent `v0.5.2`
+  patch. No provider prompt, credential use, package execution, settings write,
+  installation, host update, release, or tag occurred.
 - qualify only `pi.sdk-sidecar.package` through agreed official npm/GitHub
   stable `1.1.0`, after every published hop from the exact `0.84.2`
   ceiling. Research 400 freezes all 18 exact package artifacts, complete

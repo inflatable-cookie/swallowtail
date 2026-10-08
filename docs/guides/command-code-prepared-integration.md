@@ -10,9 +10,13 @@ This package is additive unreleased source after `v0.3.1`. Consumers must pin
 an explicitly reviewed commit containing it. Immutable `v0.3.1` and earlier
 tags do not contain the package or route.
 
-Research 339 requalified the exact npm point to `1.65.0` from the complete
-official stable chain after `1.54.0`. The provider-free selected-surface
-evidence transfers. Research 347 accepted exact-`1.65.0` live on
+Research 402 qualifies the 33 exact published stable points from `1.65.0`
+through official npm `latest` `1.79.1`. The existing behavior revision remains
+through `1.72.4`; a private model-selection evidence milestone covers exact
+published points from `1.73.0` through `1.79.1`. Published gaps remain
+incompatible and the claim stays `QualifiedOnly`. Research 339 and Research
+347 remain historical evidence for exact `1.65.0`; no live evidence transfers
+to newer releases. Research 347 accepted exact-`1.65.0` live on
 `deepseek/deepseek-v4-flash` for structured completion, streaming events,
 usage decoding, and the two-turn private continuation. Research 330 stays the
 exact-`1.54.0` paid-model record. Research 116's authenticated
@@ -24,7 +28,8 @@ version-bound to `1.15.1`.
 
 The route selects:
 
-- exact npm release `1.65.0` on axis `command-code.npm`
+- one exact published npm stable point on axis `command-code.npm`, qualified
+  from `1.65.0` through `1.79.1` with unpublished points excluded
 - unambiguous executable basename `command-code`
 - one explicit model id
 - one read-only filesystem working resource
@@ -75,8 +80,8 @@ script alone fails closed: ambient `PATH` is cleared, so `env node` cannot run.
 Construct `CommandCodePreparationProbe` with a request ID, scope, deadline, and
 `DiscoveryCancellation`. Then call `prepare_command_code_headless`.
 
-Preparation runs only `--version`. It requires the exact line `1.65.0`, binds
-the resulting compatibility observation, and returns
+Preparation runs only `--version`. It requires an exact published qualified
+release line, binds the resulting compatibility observation, and returns
 `CommandCodePreparedIntegration`. It sends no prompt and does not test account
 credits. A wrong axis, wrong version, wrong host, unavailable discovery result,
 or mismatched access profile fails closed.
@@ -95,6 +100,17 @@ The command fixes print mode, JSON output, plan permission mode, skipped
 onboarding, `--no-session`, no auto-update, trust, no skills, a bounded turn
 cap, and explicit model. The prompt is written to stdin and stdin is closed.
 Never use `--yolo` on this route.
+
+For releases from `1.73.0`, plan mode may select configured
+`featureModels.planning` ahead of the model forwarded with `-m`, subject to
+Command Code's configuration and model-access checks. An opt-in
+`InterfaceVersion` debug observation reports the requested model from the
+prepared plan and the CLI-selected model from `model_request_start.model`,
+bounded to 128 bytes. `model_request_start` remains private and emits no public
+runtime activity. The CLI-selected value is the model sent into its SDK
+request path; it does not establish which remote backend served the request.
+Swallowtail does not change settings, substitute another model, or bypass plan
+mode.
 
 ## Interactive Continuity
 

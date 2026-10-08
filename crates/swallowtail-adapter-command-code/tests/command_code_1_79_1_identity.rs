@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 
 use serde_json::Value;
 use swallowtail_adapter_command_code::COMMAND_CODE_RELEASE_VERSION;
@@ -62,9 +62,9 @@ fn official_identity_and_claim_cover_exact_published_points() {
     assert_eq!(
         claim
             .milestones()
-            .filter(
-                |segment| segment.support() == swallowtail_core::InterfaceSupportStatus::Maintained
-            )
+            .filter(|segment| {
+                segment.support_status() == swallowtail_core::InterfaceSupportStatus::Maintained
+            })
             .count(),
         RELEASES.len()
     );
@@ -82,7 +82,7 @@ fn official_identity_and_claim_cover_exact_published_points() {
         };
         assert_eq!(segment.behavior_revision().as_str(), expected, "{release}");
         assert_eq!(
-            segment.support(),
+            segment.support_status(),
             swallowtail_core::InterfaceSupportStatus::Maintained
         );
     }
@@ -93,10 +93,10 @@ fn official_identity_and_claim_cover_exact_published_points() {
         );
     }
     assert!(!claim.permits(&InterfaceVersion::new("1.64.9").unwrap()));
-    assert!(matches!(
+    assert_eq!(
         claim.assess(&InterfaceVersion::new("1.79.2").unwrap()),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+        InterfaceCompatibilityAssessment::Incompatible
+    );
     assert!(!claim.permits(&InterfaceVersion::new("1.79.2").unwrap()));
 }
 

@@ -112,7 +112,7 @@ impl CommandCodeHeadlessDriver {
             .expect("validated process service");
         let time_service = services.time().cloned().expect("validated time service");
         let model = plan.model_id().cloned().expect("validated model route");
-        let model_selection = ModelSelectionDebugContext::new(
+        let model_selection = ModelSelectionDebugContext::for_request(
             model.clone(),
             request.request_id().clone(),
             crate::selection::model_selection_observation_enabled(&plan),

@@ -1,6 +1,10 @@
 {
   "scenario": "plan mode has a configured planning model that differs from the explicit caller model",
+  "route_id": "command-code.headless",
   "route_version": "1.79.1",
+  "permission_mode": "plan",
+  "persistent_settings_write": false,
+  "provider_artifact_executed": false,
   "invocation": [
     "-p",
     "--output-format",

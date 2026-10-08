@@ -51,21 +51,28 @@ pub fn command_code_release_binding(value: &str) -> Option<InterfaceVersionBindi
 /// Returns the exact-published-point headless protocol claim.
 pub fn command_code_headless_claim() -> InterfaceCompatibilityClaim {
     let first_model_lane = semver::Version::new(1, 73, 0);
-    let segments = QUALIFIED_COMMAND_CODE_RELEASES.iter().map(|release| {
-        let version =
-            semver::Version::parse(release).expect("static Command Code release version is valid");
-        let behavior = if version < first_model_lane {
-            COMMAND_CODE_HEADLESS_BEHAVIOR
-        } else {
-            COMMAND_CODE_HEADLESS_MODEL_SELECTION_BEHAVIOR
-        };
-        InterfaceVersionSegment::exact(
-            InterfaceVersion::new(*release).expect("static Command Code release is valid"),
-            InterfaceBehaviorRevision::new(behavior)
-                .expect("static Command Code behavior is valid"),
-            InterfaceSupportStatus::Maintained,
+    let segments = QUALIFIED_COMMAND_CODE_RELEASES
+        .iter()
+        .map(
+            |release| -> Result<InterfaceVersionSegment, swallowtail_core::ValueRequired> {
+                let version = InterfaceVersion::new(*release)?;
+                let parsed_version = semver::Version::parse(release)
+                    .expect("static Command Code release version is valid");
+                let behavior = if parsed_version < first_model_lane {
+                    COMMAND_CODE_HEADLESS_BEHAVIOR
+                } else {
+                    COMMAND_CODE_HEADLESS_MODEL_SELECTION_BEHAVIOR
+                };
+                Ok(InterfaceVersionSegment::exact(
+                    version,
+                    InterfaceBehaviorRevision::new(behavior)
+                        .expect("static Command Code behavior is valid"),
+                    InterfaceSupportStatus::Maintained,
+                ))
+            },
         )
-    });
+        .collect::<Result<Vec<_>, _>>()
+        .expect("static Command Code release versions are valid");
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("command-code.headless-window-1")
             .expect("static Command Code claim id is valid"),
@@ -189,9 +196,9 @@ mod tests {
         assert!(!claim.permits(&InterfaceVersion::new("1.66.1").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("1.64.1").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("1.65.0-rc.1").unwrap()));
-        assert!(matches!(
+        assert_eq!(
             claim.assess(&InterfaceVersion::new("1.79.2").unwrap()),
-            swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
+            swallowtail_core::InterfaceCompatibilityAssessment::Incompatible
+        );
     }
 }

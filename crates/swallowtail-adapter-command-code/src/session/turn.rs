@@ -47,9 +47,9 @@ impl CommandCodeSessionHandle {
             ));
         }
         validate_turn(self, &request)?;
-        let model_selection = ModelSelectionDebugContext::new(
+        let model_selection = ModelSelectionDebugContext::for_turn(
             self.model.clone(),
-            request.request_id().clone(),
+            request.turn_id().clone(),
             self.model_selection_observation,
         );
         let expected_session = self

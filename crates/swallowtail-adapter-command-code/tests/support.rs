@@ -4,13 +4,13 @@ use futures_executor::block_on;
 use std::collections::VecDeque;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
-use swallowtail_core::{ExecutionHostId, ResourceAccess, ResourceRepresentation};
+use swallowtail_core::{Diagnostic, ExecutionHostId, ResourceAccess, ResourceRepresentation};
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, DebugObservation, Diagnostic,
-    DiagnosticObserver, HostServices, JoinedTask, MonotonicInstant, ProcessExit, ProcessHandle,
-    ProcessInputChunk, ProcessOutputChunk, ProcessRequest, ProcessService, ResourceLease,
-    RuntimeFailure, ScopeId, ScopedTaskService, SessionCleanupRequest, TimeService,
-    WorkingResourceRef, WorkingResourceService,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, DebugObservation, DiagnosticObserver,
+    HostServices, JoinedTask, MonotonicInstant, ProcessExit, ProcessHandle, ProcessInputChunk,
+    ProcessOutputChunk, ProcessRequest, ProcessService, ResourceLease, RuntimeFailure, ScopeId,
+    ScopedTaskService, SessionCleanupRequest, TimeService, WorkingResourceRef,
+    WorkingResourceService,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]

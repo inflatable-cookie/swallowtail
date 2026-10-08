@@ -7,7 +7,7 @@ use swallowtail_core::{ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservation,
     DebugObservationKind, HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream,
-    RequestId, RuntimeEventSender, RuntimeFailure, TerminalOutcome, TerminalStatus,
+    RequestId, RuntimeEventSender, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalStatus,
 };
 
 const ROUTE: &str = "command-code.headless";
@@ -20,15 +20,37 @@ pub(crate) struct CommandCodePumpResult {
 #[derive(Clone)]
 pub(crate) struct ModelSelectionDebugContext {
     requested_model_id: ModelId,
-    request_id: RequestId,
+    correlation: ModelSelectionCorrelation,
     enabled: bool,
 }
 
+#[derive(Clone)]
+enum ModelSelectionCorrelation {
+    Request(RequestId),
+    Turn(RuntimeTurnId),
+}
+
 impl ModelSelectionDebugContext {
-    pub(crate) fn new(requested_model_id: ModelId, request_id: RequestId, enabled: bool) -> Self {
+    pub(crate) fn for_request(
+        requested_model_id: ModelId,
+        request_id: RequestId,
+        enabled: bool,
+    ) -> Self {
         Self {
             requested_model_id,
-            request_id,
+            correlation: ModelSelectionCorrelation::Request(request_id),
+            enabled,
+        }
+    }
+
+    pub(crate) fn for_turn(
+        requested_model_id: ModelId,
+        turn_id: RuntimeTurnId,
+        enabled: bool,
+    ) -> Self {
+        Self {
+            requested_model_id,
+            correlation: ModelSelectionCorrelation::Turn(turn_id),
             enabled,
         }
     }
@@ -173,7 +195,7 @@ fn emit_model_selection_debug(
     }
     for effective_model_id in effective_model_ids {
         let observation = model_selection_debug_observation(
-            &context.request_id,
+            &context.correlation,
             &context.requested_model_id,
             effective_model_id.as_deref(),
         );
@@ -182,7 +204,7 @@ fn emit_model_selection_debug(
 }
 
 fn model_selection_debug_observation(
-    request_id: &RequestId,
+    correlation: &ModelSelectionCorrelation,
     requested_model_id: &ModelId,
     effective_model_id: Option<&str>,
 ) -> DebugObservation {
@@ -195,10 +217,15 @@ fn model_selection_debug_observation(
         "effective_scope": "cli-selected-model-before-sdk-request",
     })
     .to_string();
-    DebugObservation::new(DebugObservationKind::InterfaceVersion, detail)
-        .with_request_id(request_id.clone())
+    let observation = DebugObservation::new(DebugObservationKind::InterfaceVersion, detail)
         .with_route(ROUTE)
-        .with_stage("model-selection")
+        .with_stage("model-selection");
+    match correlation {
+        ModelSelectionCorrelation::Request(request_id) => {
+            observation.with_request_id(request_id.clone())
+        }
+        ModelSelectionCorrelation::Turn(turn_id) => observation.with_turn_id(turn_id.clone()),
+    }
 }
 
 fn bounded_model_id(value: &str) -> Option<&str> {
@@ -318,7 +345,7 @@ fn process_cleanup_failed() -> CleanupOutcome {
 
 #[cfg(test)]
 mod tests {
-    use super::model_selection_debug_observation;
+    use super::{ModelSelectionCorrelation, ROUTE, model_selection_debug_observation};
     use serde_json::{Value, json};
     use swallowtail_core::ModelId;
     use swallowtail_runtime::{DebugObservationKind, RequestId};
@@ -328,7 +355,7 @@ mod tests {
         let request_id = RequestId::new("request-1").expect("request id is valid");
         let requested_model_id = ModelId::new("caller/requested-model").expect("model id");
         let observation = model_selection_debug_observation(
-            &request_id,
+            &ModelSelectionCorrelation::Request(request_id.clone()),
             &requested_model_id,
             Some("configured/planning-model"),
         );
@@ -357,7 +384,7 @@ mod tests {
         let unbounded_model_id = "x".repeat(129);
         for effective_model_id in [None, Some(unbounded_model_id.as_str())] {
             let observation = model_selection_debug_observation(
-                &request_id,
+                &ModelSelectionCorrelation::Request(request_id.clone()),
                 &requested_model_id,
                 effective_model_id,
             );
@@ -365,5 +392,18 @@ mod tests {
             assert_eq!(detail["requested_model_id"], "caller/requested-model");
             assert_eq!(detail["effective_model_id"], Value::Null);
         }
+    }
+
+    #[test]
+    fn model_selection_observation_uses_turn_correlation_for_interactive_turns() {
+        let turn_id = swallowtail_runtime::RuntimeTurnId::new("turn-1").expect("turn id");
+        let requested_model_id = ModelId::new("caller/requested-model").expect("model id");
+        let observation = model_selection_debug_observation(
+            &ModelSelectionCorrelation::Turn(turn_id.clone()),
+            &requested_model_id,
+            Some("configured/planning-model"),
+        );
+        assert_eq!(observation.turn_id(), Some(&turn_id));
+        assert_eq!(observation.request_id(), None);
     }
 }

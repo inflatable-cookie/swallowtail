@@ -180,13 +180,7 @@ fn plan_lane_model_observation_reports_requested_and_cli_selected_ids() {
         "command-code.model_request_start"
     );
     assert_eq!(detail.as_object().unwrap().len(), 4);
-    assert!(events.iter().all(|event| {
-        !matches!(
-            event.kind(),
-            RuntimeEventKind::OutputDelta(content)
-                if content.as_str().contains("configured/planning-model")
-        )
-    }));
+    assert!(!format!("{events:?}").contains("configured/planning-model"));
 }
 
 #[test]

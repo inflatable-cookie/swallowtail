@@ -6,6 +6,12 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- Keep `kimi-code.acp` at its `0.38.0` ceiling while the official npm and
+  GitHub stable `2.1.1` remains blocked by the same unmediated terminal process
+  spawn. Research 396 freezes all thirteen published hops after `0.38.0`, the
+  complete npm trees from `0.43.0` through `2.1.1`, and the selected ACP bundle
+  changes across the `2.0.0` reset. No claim, exclusion, public operation, or
+  capability changes pending a Contract 015 authority ruling.
 - keep `kiro.acp` at its existing exact `2.21.4` point; official Kiro CLI
   stable `2.28.0` and all twelve published successor hops remain unqualified
   pending exact ACP V2 owner-sweep reachability and session, path, and failure

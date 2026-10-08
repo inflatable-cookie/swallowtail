@@ -6,8 +6,10 @@ harnesses through exact, testable routes. The current source tag is `v0.5.1`
 
 What is true now:
 
-- Every production route family is qualified against its official release
-  through the Contract 029 currentness procedure.
+- Production route claims follow the Contract 029 exact-artifact procedure.
+  Currentness stops stay visible: `kimi-code.acp` remains qualified through
+  `0.38.0` while official stable `2.1.1` retains the terminal process-authority
+  gap (Research 396).
 - Contract 063 admits a consumer-supplied streamable-HTTP MCP placement.
   `opencode.acp` is live-proven honouring it. `claude-agent.acp` honours it
   on exact `0.81.2` (Research 364) after Research 352's `cleanup_failed`

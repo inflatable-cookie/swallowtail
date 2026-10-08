@@ -1,0 +1,379 @@
+{
+  "axis": "deepagents-acp.package",
+  "route": "deepagents.acp",
+  "observed_at": "2026-10-08",
+  "official_channel": {
+    "name": "npm latest",
+    "url": "https://registry.npmjs.org/deepagents-acp/latest",
+    "latest": "0.1.34",
+    "latest_observed_at": "2026-10-08"
+  },
+  "host": {
+    "present": false,
+    "executable": "deepagents-acp"
+  },
+  "official": {
+    "version": "0.1.34",
+    "published": "2026-10-05T14:30:28.049Z",
+    "integrity": "sha512-2c8wt/Na9AjiTBINRRfDXSR8sdsFEpd1ser+dJdIzZu7VvvLQdNQTLzjgTwVym7DsgDCkMjN/AEAfIJiqrr3uA==",
+    "tarball_url": "https://registry.npmjs.org/deepagents-acp/-/deepagents-acp-0.1.34.tgz",
+    "tarball_sha256": "7b5faf49d58b6afede606cb45d5da70569ee85b671bf7e336eac7e79ec60963f",
+    "package_json_sha256": "08d311c1903e2baf42558980ddec5292f6c7abcd08fb2c2e8f4bb21636c7543e",
+    "file_count": 11,
+    "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+    "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+    "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+    "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+    "index_d_cts_sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8",
+    "dependencies": {
+      "deepagents": "1.14.2",
+      "@agentclientprotocol/sdk": "^1.1.0"
+    },
+    "peerDependencies": {
+      "@langchain/core": "^1.1.40",
+      "@langchain/langgraph": "^1.4.10"
+    },
+    "gitHead": null,
+    "node_version": "24.21.0",
+    "npm_version": "11.19.0"
+  },
+  "published_stable_points_after_previous_ceiling": [
+    {
+      "version": "0.1.31",
+      "published": "2026-09-16T22:18:46.048Z",
+      "integrity": "sha512-vpLuclWPLHll3xlXVMmdB63CMcMyQXmg4rlaQ4SlQNVHm8YSZBsxgv+pnIwNmu52U7QwYOkbyYPyvK8ucrtz1w==",
+      "tarball_url": "https://registry.npmjs.org/deepagents-acp/-/deepagents-acp-0.1.31.tgz",
+      "tarball_sha256": "89010a8649e6de9b6c9e594206e44a9afb2e732f2e4027d9371cc84c01fe3bb3",
+      "package_json_sha256": "1e529af89b560268f5986a0665dd328be7989125b7d9f480033a0f0de87a3da6",
+      "file_count": 11,
+      "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+      "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+      "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+      "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+      "index_d_cts_sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8",
+      "dependencies": {
+        "deepagents": "1.13.5",
+        "@agentclientprotocol/sdk": "^1.1.0"
+      },
+      "peerDependencies": {
+        "@langchain/core": "^1.1.40",
+        "@langchain/langgraph": "^1.4.10"
+      },
+      "gitHead": null,
+      "node_version": "24.20.0",
+      "npm_version": "11.19.0"
+    },
+    {
+      "version": "0.1.32",
+      "published": "2026-09-18T15:59:34.262Z",
+      "integrity": "sha512-Kimyrw1vqVdkHAPljOQmQGOcayqX51mdFSnXiFlKFKBDAls5GWdmBrdoWiaBzP1nkT0iF4Vt7u3KlzRbctTp4g==",
+      "tarball_url": "https://registry.npmjs.org/deepagents-acp/-/deepagents-acp-0.1.32.tgz",
+      "tarball_sha256": "742d82e3306bfe283d48683bf52430abba94a2e35bb60ba045357c6a9152266a",
+      "package_json_sha256": "b43b1a3ecf50741b57cfbe1c17eed8f001f11413ec93e1d86c135fd89b321887",
+      "file_count": 11,
+      "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+      "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+      "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+      "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+      "index_d_cts_sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8",
+      "dependencies": {
+        "deepagents": "1.14.0",
+        "@agentclientprotocol/sdk": "^1.1.0"
+      },
+      "peerDependencies": {
+        "@langchain/core": "^1.1.40",
+        "@langchain/langgraph": "^1.4.10"
+      },
+      "gitHead": null,
+      "node_version": "24.20.0",
+      "npm_version": "11.19.0"
+    },
+    {
+      "version": "0.1.33",
+      "published": "2026-09-24T13:56:39.118Z",
+      "integrity": "sha512-PnZe+8ei2h/cmEGSc0i4Sm1SDwdlJ3bO53TIf2Z/KqermIm8k/cER0RC0sL47SHSfp9BlcmNGOw1VYlZy2qUOQ==",
+      "tarball_url": "https://registry.npmjs.org/deepagents-acp/-/deepagents-acp-0.1.33.tgz",
+      "tarball_sha256": "a00e7095a7ea9af9c915b85be3771afda9c3ba55e051e5d11e3a9dbb09a28529",
+      "package_json_sha256": "ce90c3da1e020d4182fadf9583edf2a7aa3c8f82a11d122b390ded7a08ffa19a",
+      "file_count": 11,
+      "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+      "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+      "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+      "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+      "index_d_cts_sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8",
+      "dependencies": {
+        "deepagents": "1.14.1",
+        "@agentclientprotocol/sdk": "^1.1.0"
+      },
+      "peerDependencies": {
+        "@langchain/core": "^1.1.40",
+        "@langchain/langgraph": "^1.4.10"
+      },
+      "gitHead": null,
+      "node_version": "24.21.0",
+      "npm_version": "11.19.0"
+    },
+    {
+      "version": "0.1.34",
+      "published": "2026-10-05T14:30:28.049Z",
+      "integrity": "sha512-2c8wt/Na9AjiTBINRRfDXSR8sdsFEpd1ser+dJdIzZu7VvvLQdNQTLzjgTwVym7DsgDCkMjN/AEAfIJiqrr3uA==",
+      "tarball_url": "https://registry.npmjs.org/deepagents-acp/-/deepagents-acp-0.1.34.tgz",
+      "tarball_sha256": "7b5faf49d58b6afede606cb45d5da70569ee85b671bf7e336eac7e79ec60963f",
+      "package_json_sha256": "08d311c1903e2baf42558980ddec5292f6c7abcd08fb2c2e8f4bb21636c7543e",
+      "file_count": 11,
+      "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+      "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+      "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+      "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+      "index_d_cts_sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8",
+      "dependencies": {
+        "deepagents": "1.14.2",
+        "@agentclientprotocol/sdk": "^1.1.0"
+      },
+      "peerDependencies": {
+        "@langchain/core": "^1.1.40",
+        "@langchain/langgraph": "^1.4.10"
+      },
+      "gitHead": null,
+      "node_version": "24.21.0",
+      "npm_version": "11.19.0"
+    }
+  ],
+  "first_unpublished_after_official": {
+    "version": "0.1.35",
+    "published": false,
+    "claim_status": "incompatible under QualifiedOnly"
+  },
+  "qualified_points_in_identity": {
+    "baseline": "0.1.30",
+    "ceiling_at_observation": "0.1.30",
+    "posture": "QualifiedOnly",
+    "claim_id": "deepagents.acp.package-window-1",
+    "behavior_revision": "deepagents.acp.stdio-v1",
+    "segments": [
+      {
+        "kind": "exact",
+        "version": "0.1.30",
+        "support_status": "Maintained"
+      }
+    ],
+    "excluded_versions": []
+  },
+  "runtime_dependency": {
+    "package": "deepagents",
+    "points": [
+      {
+        "version": "1.13.4",
+        "published": "2026-09-09T17:37:07.120Z",
+        "integrity": "sha512-eVCxAcVi2A51u68SkFHNoi0FzZlxfPx8uPNd/vMyqOX1CzsiXkSCK8YBaLQSM7rpo0couKJBYnjH1e96+M7hTQ==",
+        "tarball_url": "https://registry.npmjs.org/deepagents/-/deepagents-1.13.4.tgz",
+        "tarball_sha256": "a00d90a3041794cc4f80186b0eaf519f4fdbccea16dc8576771aeb0d8b3c800c",
+        "package_json_sha256": "03d74e6e1c03414ada4c27a942bdb9e94a769cbc699911921b8ca2e1f37c0d6f",
+        "file_count": 25,
+        "gitHead": null,
+        "node_version": "24.20.0",
+        "npm_version": "12.0.2",
+        "dependencies": {
+          "zod": "^4.3.6",
+          "yaml": "^2.8.2",
+          "fast-glob": "^3.3.3",
+          "micromatch": "^4.0.8"
+        },
+        "peerDependencies": {
+          "langchain": "^1.5.10",
+          "langsmith": ">=0.7.1 <0.10.0",
+          "@langchain/core": "^1.2.9",
+          "@langchain/langgraph": "^1.4.10",
+          "@langchain/langgraph-sdk": "^1.9.23",
+          "@langchain/langgraph-checkpoint": "^1.1.5"
+        },
+        "esm_entry_imports": [
+          "langsmith-BAO_h4J6.js",
+          "src-CcY34Ckx.js"
+        ],
+        "esm_index_sha256": "5346d0c7d809dd2d0debec30ae110bc9befc469659a2b5ad7cf7ffd3529665a5",
+        "cjs_index_sha256": "cdf6bc356f82f8160e2698bd9059f7a2e5d4a5e8a1106fa55daa331a3e8b21d1",
+        "esm_selected_chunks": {
+          "dist/langsmith-BAO_h4J6.js": "52d0b741683a27a2a08709e7aae290c35e0a7838d050f4647c158baac1672a93",
+          "dist/src-CcY34Ckx.js": "9709b83d8170cfadfd76791e1c9cb78e927e0d312786f8be967e0bc85f2ba834"
+        }
+      },
+      {
+        "version": "1.13.5",
+        "published": "2026-09-16T22:19:00.451Z",
+        "integrity": "sha512-JfvBAwiUR5TrkSOMAXiJXKp3ZhuLMr3PW1DumZ6bXuuu74nokcADmtYfzHvsf+NMe3tOkvA+oU2S/p03yxBc4Q==",
+        "tarball_url": "https://registry.npmjs.org/deepagents/-/deepagents-1.13.5.tgz",
+        "tarball_sha256": "811a6c07fe0b5e678883b66acc51672244fd7fb9c2b89e5563fc8ebc3b2f0bba",
+        "package_json_sha256": "474c1922e07c4c9089bcb8aea9fd744bf7053d0d7b75410cf29c0d825e81d411",
+        "file_count": 25,
+        "gitHead": null,
+        "node_version": "24.20.0",
+        "npm_version": "11.19.0",
+        "dependencies": {
+          "zod": "^4.3.6",
+          "yaml": "^2.8.2",
+          "fast-glob": "^3.3.3",
+          "micromatch": "^4.0.8"
+        },
+        "peerDependencies": {
+          "langchain": "^1.5.10",
+          "langsmith": ">=0.7.1 <0.10.0",
+          "@langchain/core": "^1.2.9",
+          "@langchain/langgraph": "^1.4.10",
+          "@langchain/langgraph-sdk": "^1.9.23",
+          "@langchain/langgraph-checkpoint": "^1.1.5"
+        },
+        "esm_entry_imports": [
+          "langsmith-CY7MawjU.js",
+          "src-Bos_UCsK.js"
+        ],
+        "esm_index_sha256": "d205b41bb838dbdee2f836fc993067a41eab613627dc7887e450b75a8eb70c6a",
+        "cjs_index_sha256": "33b63e586daf48317fe145343a8f5ebae77d7c5a53ff5ee65f318521c8815c9a",
+        "esm_selected_chunks": {
+          "dist/langsmith-CY7MawjU.js": "48a0e58543ac9327115ec64a94f523646ff48971ba73f037ce610dbb9df27c90",
+          "dist/src-Bos_UCsK.js": "0433facadc9a1f73d1e7b50b3a3d6339cf9d2094c87d30bbb2fee328caf136ee"
+        }
+      },
+      {
+        "version": "1.14.0",
+        "published": "2026-09-18T16:00:10.099Z",
+        "integrity": "sha512-O1cAjFVKQuXB9zelgB1T34lC7I1dI6p81HjNvxGJoCAZbWoYScc1ANgZ8HAf6JbFxDDtPp5tLI6R67cRelTaYQ==",
+        "tarball_url": "https://registry.npmjs.org/deepagents/-/deepagents-1.14.0.tgz",
+        "tarball_sha256": "34469f3b04e3ba22dcbf140d06e3ce77789394e6fc702d43d80fe3e2cb70834b",
+        "package_json_sha256": "6a1a5ea3a0bc60baf809f26dcdbc24da9e38f526678fa331e8987431d79ae144",
+        "file_count": 25,
+        "gitHead": null,
+        "node_version": "24.20.0",
+        "npm_version": "11.19.0",
+        "dependencies": {
+          "zod": "^4.3.6",
+          "yaml": "^2.8.2",
+          "fast-glob": "^3.3.3",
+          "micromatch": "^4.0.8"
+        },
+        "peerDependencies": {
+          "langchain": "^1.5.10",
+          "langsmith": ">=0.7.1 <0.10.0",
+          "@langchain/core": "^1.2.9",
+          "@langchain/langgraph": "^1.4.10",
+          "@langchain/langgraph-sdk": "^1.9.23",
+          "@langchain/langgraph-checkpoint": "^1.1.5"
+        },
+        "esm_entry_imports": [
+          "langsmith-3LzYb-m7.js",
+          "src-gIoHrhh3.js"
+        ],
+        "esm_index_sha256": "02ee53760eaeee4c0b4a32b346e0d3f0c92b230f80bd6cab2fd11099033c81f9",
+        "cjs_index_sha256": "42bf45e9fdae5185a8e568023dfb1721fdf49773b826316fd370bc89f57353cb",
+        "esm_selected_chunks": {
+          "dist/langsmith-3LzYb-m7.js": "9f74ee6953b2ffbfc35d6cf39cbb4101ef33cbd424e558d2b392210a69cfc829",
+          "dist/src-gIoHrhh3.js": "b9b18f2aaaadaa6738c2e3184ca47392cb15a8b9099cef55345b4b10c6e76b18"
+        }
+      },
+      {
+        "version": "1.14.1",
+        "published": "2026-09-24T13:57:45.266Z",
+        "integrity": "sha512-a3HXtHKZiwWzj/8zPzZaL9YdEHEdYfaGPsfebKcWLeNF38OZjTJrjoCO+4GZVy1gfDXF0t4a+MLvrW+G1YViwQ==",
+        "tarball_url": "https://registry.npmjs.org/deepagents/-/deepagents-1.14.1.tgz",
+        "tarball_sha256": "6f2fc692a6f9919a77d8f387a9143cbb0a1208d0b6ccc9aca0e1abab2eb8a7b5",
+        "package_json_sha256": "0e2b52a868c6df5f32b011b41385c0a45273fdbbc2a97210acb38564318c291c",
+        "file_count": 25,
+        "gitHead": null,
+        "node_version": "24.21.0",
+        "npm_version": "11.19.0",
+        "dependencies": {
+          "zod": "^4.3.6",
+          "yaml": "^2.8.2",
+          "fast-glob": "^3.3.3",
+          "micromatch": "^4.0.8"
+        },
+        "peerDependencies": {
+          "langchain": "^1.5.10",
+          "langsmith": ">=0.7.1 <0.10.0",
+          "@langchain/core": "^1.2.9",
+          "@langchain/langgraph": "^1.4.10",
+          "@langchain/langgraph-sdk": "^1.9.23",
+          "@langchain/langgraph-checkpoint": "^1.1.5"
+        },
+        "esm_entry_imports": [
+          "langsmith-Bgi_Ta-k.js",
+          "src-BGwHTd6z.js"
+        ],
+        "esm_index_sha256": "0901dd0941659791ff423018c2e11a11605db204a34cf956bee10f06eb0426e5",
+        "cjs_index_sha256": "ab63896462e38aae5af6ef9a3a1b9f393b094ef8a7f2015eddbd18f183edd26b",
+        "esm_selected_chunks": {
+          "dist/langsmith-Bgi_Ta-k.js": "e4e79d0d0beed1193f1f3bff3bd4d31a9aca7d3e17654c1d00b7896d3096e2c9",
+          "dist/src-BGwHTd6z.js": "f51226f47170b46b8d7abd3b82bea8f9a469f6d0a1be8a29462fac24aaed3198"
+        }
+      },
+      {
+        "version": "1.14.2",
+        "published": "2026-10-05T14:31:19.658Z",
+        "integrity": "sha512-x6HjSeRZwD/CEXxCRzXYGGAdmgKzwK+ogpG0FyBwjZ1WuVart4CrDvzo7+HXKeqc0Qz61C1SwS1WGtqaXJnFrw==",
+        "tarball_url": "https://registry.npmjs.org/deepagents/-/deepagents-1.14.2.tgz",
+        "tarball_sha256": "305b138366827025452f752af98c6f2f6cc9e5bdfa14aa1c371222c00cac71c4",
+        "package_json_sha256": "ef2801c3cdb9e7768fecbfef802477f65fcca5ec57c1ac248ad87d3ee7029447",
+        "file_count": 25,
+        "gitHead": null,
+        "node_version": "24.21.0",
+        "npm_version": "11.19.0",
+        "dependencies": {
+          "zod": "^4.3.6",
+          "yaml": "^2.8.2",
+          "fast-glob": "^3.3.3",
+          "micromatch": "^4.0.8"
+        },
+        "peerDependencies": {
+          "langchain": "^1.5.10",
+          "langsmith": ">=0.7.1 <0.10.0",
+          "@langchain/core": "^1.2.14",
+          "@langchain/langgraph": "^1.4.10",
+          "@langchain/langgraph-sdk": "^1.9.23",
+          "@langchain/langgraph-checkpoint": "^1.1.5"
+        },
+        "esm_entry_imports": [
+          "langsmith--RbtjNdQ.js",
+          "src-YqBMARBL.js"
+        ],
+        "esm_index_sha256": "6c6b52d1693402369b4b9691b72b9074ca3808e92f69c2c1ae2dffe96a2522d3",
+        "cjs_index_sha256": "5e50512b04a95e5513d862d7781fce78ef66c199189a5246db817009d52e9fa5",
+        "esm_selected_chunks": {
+          "dist/langsmith--RbtjNdQ.js": "27980518fb69302c615b3e32613b2cae6ae0308be5aaa8991ef4c29eb5e0b4b8",
+          "dist/src-YqBMARBL.js": "11cfce54017662b4410ca982477b01af8dc0385f2405f8e1953e2eb38df1413a"
+        }
+      }
+    ]
+  },
+  "declared_external_runtime": {
+    "agentclientprotocol_sdk": "^1.1.0",
+    "acp_peer_dependencies": {
+      "@langchain/core": "^1.1.40",
+      "@langchain/langgraph": "^1.4.10"
+    },
+    "exact_resolution": "host environment controlled; package artifacts contain no npm lockfile"
+  },
+  "source_identity": {
+    "repository": "https://github.com/langchain-ai/deepagentsjs",
+    "gitHead": null,
+    "authority": "exact official npm tarballs and their shipped source maps; registry metadata has no gitHead, so no source commit is claimed"
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "baseline_preserved": "0.1.30",
+    "latest_qualified_after": "0.1.34",
+    "behavior_revision_change": "none",
+    "claim_id_preserved": true,
+    "posture_preserved": "QualifiedOnly",
+    "exclusions_preserved": true,
+    "all_published_stable_hops_classified": true,
+    "wire_schema_change": false,
+    "new_operation": false,
+    "capability_or_authority_change": false,
+    "public_lifecycle_change": false,
+    "host_runtime_mutated": false,
+    "package_installed": false,
+    "downloaded_artifact_executed": false,
+    "provider_prompt_sent": false,
+    "live_acp_initialize": false
+  }
+}

@@ -1,0 +1,433 @@
+{
+  "axis": "deepagents-acp.package",
+  "route": "deepagents.acp",
+  "observed_at": "2026-10-08",
+  "selected_route": {
+    "executable": "deepagents-acp",
+    "entrypoint": [
+      "deepagents-acp"
+    ],
+    "extra_argv": [],
+    "transport": "ACP v1 stdio",
+    "interactive_operations": [
+      "initialize",
+      "session/new",
+      "session/prompt",
+      "session/cancel"
+    ],
+    "unselected_operations": [
+      "session/load",
+      "session/set_mode",
+      "session/close",
+      "slash commands"
+    ],
+    "client_mcp_servers": [],
+    "provider_registry_version": "0.1.7 discovery-only; not the npm package axis"
+  },
+  "unchanged_acp_artifacts": {
+    "versions": [
+      "0.1.30",
+      "0.1.31",
+      "0.1.32",
+      "0.1.33",
+      "0.1.34"
+    ],
+    "files": [
+      "dist/cli.js",
+      "dist/index.js",
+      "dist/index.cjs",
+      "dist/index.d.ts",
+      "dist/index.d.cts"
+    ],
+    "hashes": {
+      "0.1.30": {
+        "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+        "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+        "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+        "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+        "index_d_cts_sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8"
+      },
+      "0.1.31": {
+        "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+        "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+        "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+        "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+        "index_d_cts_sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8"
+      },
+      "0.1.32": {
+        "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+        "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+        "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+        "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+        "index_d_cts_sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8"
+      },
+      "0.1.33": {
+        "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+        "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+        "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+        "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+        "index_d_cts_sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8"
+      },
+      "0.1.34": {
+        "cli_js_sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830",
+        "index_js_sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358",
+        "index_cjs_sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe",
+        "index_d_ts_sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b",
+        "index_d_cts_sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8"
+      }
+    }
+  },
+  "mapped_invariants": {
+    "initialize": "same protocol version, agent info and capabilities; npm version is not agentInfo.version",
+    "session/new": "same cwd and empty mcpServers selection",
+    "session/prompt": "same text prompt field and ACP stream event kinds",
+    "tools": "same tool_call and tool_call_update schema/status mapping; result text is opaque provider display content",
+    "permissions": "same choices and reject/cancel behavior; no persistent allow-always selection",
+    "lifecycle": "one in-process session; cancel then join owned process/connection/task cleanup",
+    "usage": "no usage capability or usage update claim"
+  },
+  "per_hop_package_changes": {
+    "0.1.30..0.1.31": {
+      "changed_files": [
+        "package.json"
+      ],
+      "selected_changes": [
+        "package.json advances the exact deepagents dependency from 1.13.4 to 1.13.5; @agentclientprotocol/sdk remains ^1.1.0. dist/cli.js, dist/index.js, dist/index.cjs, dist/index.d.ts, and dist/index.d.cts remain byte-identical."
+      ],
+      "disposition": "compatible-extension"
+    },
+    "0.1.31..0.1.32": {
+      "changed_files": [
+        "package.json"
+      ],
+      "selected_changes": [
+        "package.json advances the exact deepagents dependency from 1.13.5 to 1.14.0; @agentclientprotocol/sdk remains ^1.1.0. dist/cli.js, dist/index.js, dist/index.cjs, dist/index.d.ts, and dist/index.d.cts remain byte-identical."
+      ],
+      "disposition": "compatible-extension"
+    },
+    "0.1.32..0.1.33": {
+      "changed_files": [
+        "package.json"
+      ],
+      "selected_changes": [
+        "package.json advances the exact deepagents dependency from 1.14.0 to 1.14.1; @agentclientprotocol/sdk remains ^1.1.0. dist/cli.js, dist/index.js, dist/index.cjs, dist/index.d.ts, and dist/index.d.cts remain byte-identical."
+      ],
+      "disposition": "compatible-extension"
+    },
+    "0.1.33..0.1.34": {
+      "changed_files": [
+        "package.json"
+      ],
+      "selected_changes": [
+        "package.json advances the exact deepagents dependency from 1.14.1 to 1.14.2; @agentclientprotocol/sdk remains ^1.1.0. dist/cli.js, dist/index.js, dist/index.cjs, dist/index.d.ts, and dist/index.d.cts remain byte-identical."
+      ],
+      "disposition": "compatible-extension"
+    }
+  },
+  "per_hop_runtime_changes": {
+    "1.13.4..1.13.5": {
+      "changed_files": [
+        "dist/browser.cjs",
+        "dist/browser.js",
+        "dist/index.cjs",
+        "dist/index.js",
+        "dist/node.cjs",
+        "dist/node.js",
+        "package.json"
+      ],
+      "added_files": [
+        "dist/langsmith-CG8px69t.cjs",
+        "dist/langsmith-CG8px69t.cjs.map",
+        "dist/langsmith-CY7MawjU.js",
+        "dist/langsmith-CY7MawjU.js.map",
+        "dist/src-Bos_UCsK.js",
+        "dist/src-Bos_UCsK.js.map",
+        "dist/src-C2ZohcHT.cjs",
+        "dist/src-C2ZohcHT.cjs.map"
+      ],
+      "removed_files": [
+        "dist/langsmith-BAO_h4J6.js",
+        "dist/langsmith-BAO_h4J6.js.map",
+        "dist/langsmith-yA3yhBRa.cjs",
+        "dist/langsmith-yA3yhBRa.cjs.map",
+        "dist/src-CcY34Ckx.js",
+        "dist/src-CcY34Ckx.js.map",
+        "dist/src-D_XxmEak.cjs",
+        "dist/src-D_XxmEak.cjs.map"
+      ],
+      "changed_sources": [
+        "src/backends/utils.ts",
+        "src/middleware/fs.ts",
+        "src/middleware/skills.ts"
+      ],
+      "source_classification": {
+        "src/backends/utils.ts": "Adds formatSourceBlock used for text read_file output.",
+        "src/middleware/fs.ts": "Changes read_file text formatting to an @@ range header plus unmodified source lines and optional negative-offset notice. The CLI forwards this as ACP tool_call_update text; the existing content slot and event shape are unchanged.",
+        "src/middleware/skills.ts": "Changes skill-state caching. The selected ACP agent default config has skills: [], so this middleware path is not selected."
+      },
+      "selected_wire_result": "tool_result_text_only",
+      "disposition": "compatible-extension"
+    },
+    "1.13.5..1.14.0": {
+      "changed_files": [
+        "dist/browser.cjs",
+        "dist/browser.d.cts",
+        "dist/browser.d.ts",
+        "dist/browser.js",
+        "dist/index.cjs",
+        "dist/index.d.cts",
+        "dist/index.d.ts",
+        "dist/index.js",
+        "dist/node.cjs",
+        "dist/node.d.cts",
+        "dist/node.d.ts",
+        "dist/node.js",
+        "package.json"
+      ],
+      "added_files": [
+        "dist/agent-CrQgOsbl.d.cts",
+        "dist/agent-DGkf2K7U.d.ts",
+        "dist/langsmith-3LzYb-m7.js",
+        "dist/langsmith-3LzYb-m7.js.map",
+        "dist/langsmith-C9zNPKIz.cjs",
+        "dist/langsmith-C9zNPKIz.cjs.map",
+        "dist/src-Nhlq1O0Y.cjs",
+        "dist/src-Nhlq1O0Y.cjs.map",
+        "dist/src-gIoHrhh3.js",
+        "dist/src-gIoHrhh3.js.map"
+      ],
+      "removed_files": [
+        "dist/agent-CVBXKZAu.d.ts",
+        "dist/agent-D7nWARfg.d.cts",
+        "dist/langsmith-CG8px69t.cjs",
+        "dist/langsmith-CG8px69t.cjs.map",
+        "dist/langsmith-CY7MawjU.js",
+        "dist/langsmith-CY7MawjU.js.map",
+        "dist/src-Bos_UCsK.js",
+        "dist/src-Bos_UCsK.js.map",
+        "dist/src-C2ZohcHT.cjs",
+        "dist/src-C2ZohcHT.cjs.map"
+      ],
+      "changed_sources": [
+        "src/agent.ts",
+        "src/middleware/skills.ts",
+        "src/middleware/subagents.ts"
+      ],
+      "source_classification": {
+        "src/agent.ts": "Generic type inference changes; no selected runtime mapping change.",
+        "src/middleware/skills.ts": "Replaces merged skills metadata reducer/state with nullable state. The selected ACP agent default config has skills: [], so the changed path is not selected.",
+        "src/middleware/subagents.ts": "Makes skill configuration readonly and documents state propagation; the selected ACP agent has no subagents."
+      },
+      "selected_wire_result": "no ACP wire schema, operation, capability, permission, usage, or lifecycle change",
+      "disposition": "compatible-extension"
+    },
+    "1.14.0..1.14.1": {
+      "changed_files": [
+        "dist/browser.cjs",
+        "dist/browser.d.cts",
+        "dist/browser.d.ts",
+        "dist/browser.js",
+        "dist/index.cjs",
+        "dist/index.d.cts",
+        "dist/index.d.ts",
+        "dist/index.js",
+        "dist/node.cjs",
+        "dist/node.d.cts",
+        "dist/node.d.ts",
+        "dist/node.js",
+        "package.json"
+      ],
+      "added_files": [
+        "dist/agent-B05mw_iK.d.cts",
+        "dist/agent-CxEdojMv.d.ts",
+        "dist/langsmith-Bgi_Ta-k.js",
+        "dist/langsmith-Bgi_Ta-k.js.map",
+        "dist/langsmith-Bhg_Q4ZO.cjs",
+        "dist/langsmith-Bhg_Q4ZO.cjs.map",
+        "dist/src-BGwHTd6z.js",
+        "dist/src-BGwHTd6z.js.map",
+        "dist/src-CB_Eac87.cjs",
+        "dist/src-CB_Eac87.cjs.map"
+      ],
+      "removed_files": [
+        "dist/agent-CrQgOsbl.d.cts",
+        "dist/agent-DGkf2K7U.d.ts",
+        "dist/langsmith-3LzYb-m7.js",
+        "dist/langsmith-3LzYb-m7.js.map",
+        "dist/langsmith-C9zNPKIz.cjs",
+        "dist/langsmith-C9zNPKIz.cjs.map",
+        "dist/src-Nhlq1O0Y.cjs",
+        "dist/src-Nhlq1O0Y.cjs.map",
+        "dist/src-gIoHrhh3.js",
+        "dist/src-gIoHrhh3.js.map"
+      ],
+      "changed_sources": [
+        "src/backends/filesystem.ts",
+        "src/middleware/fs.ts"
+      ],
+      "source_classification": {
+        "src/backends/filesystem.ts": "Adds real-path containment checks when virtualMode is true. The selected CLI constructs FilesystemBackend({rootDir}) with the default virtualMode=false, so these checks return without effect.",
+        "src/middleware/fs.ts": "Changes oversized tool-result eviction path IDs over 128 bytes and truncates long IDs in the fallback text over 32 characters. Only that size-bound fallback changes; it stays text in the same ACP tool_call_update content slot."
+      },
+      "selected_wire_result": "no ACP wire schema, operation, capability, permission, usage, or lifecycle change",
+      "disposition": "compatible-extension"
+    },
+    "1.14.1..1.14.2": {
+      "changed_files": [
+        "dist/browser.cjs",
+        "dist/browser.d.cts",
+        "dist/browser.d.ts",
+        "dist/browser.js",
+        "dist/index.cjs",
+        "dist/index.d.cts",
+        "dist/index.d.ts",
+        "dist/index.js",
+        "dist/node.cjs",
+        "dist/node.d.cts",
+        "dist/node.d.ts",
+        "dist/node.js",
+        "package.json"
+      ],
+      "added_files": [
+        "dist/agent-3XynVB9Z.d.cts",
+        "dist/agent-BKShWAoi.d.ts",
+        "dist/langsmith--RbtjNdQ.js",
+        "dist/langsmith--RbtjNdQ.js.map",
+        "dist/langsmith-CjOWZAS2.cjs",
+        "dist/langsmith-CjOWZAS2.cjs.map",
+        "dist/src-BuYhtaIW.cjs",
+        "dist/src-BuYhtaIW.cjs.map",
+        "dist/src-YqBMARBL.js",
+        "dist/src-YqBMARBL.js.map"
+      ],
+      "removed_files": [
+        "dist/agent-B05mw_iK.d.cts",
+        "dist/agent-CxEdojMv.d.ts",
+        "dist/langsmith-Bgi_Ta-k.js",
+        "dist/langsmith-Bgi_Ta-k.js.map",
+        "dist/langsmith-Bhg_Q4ZO.cjs",
+        "dist/langsmith-Bhg_Q4ZO.cjs.map",
+        "dist/src-BGwHTd6z.js",
+        "dist/src-BGwHTd6z.js.map",
+        "dist/src-CB_Eac87.cjs",
+        "dist/src-CB_Eac87.cjs.map"
+      ],
+      "changed_sources": [
+        "src/agent.ts",
+        "src/backends/composite.ts",
+        "src/backends/state.ts",
+        "src/backends/utils.ts",
+        "src/middleware/blobOffload.ts",
+        "src/middleware/fs.ts",
+        "src/middleware/subagents.ts",
+        "src/middleware/unsupportedContent.ts"
+      ],
+      "source_classification": {
+        "src/agent.ts": "Automatically adds UnsupportedContentMiddleware to the default agent. It changes only messages passed to the model; original messages and ACP updates remain unchanged.",
+        "src/backends/composite.ts": "Adds route lookup used by binary offload routing; selected offloadBinaryContent remains false.",
+        "src/backends/state.ts": "Adds StateBackend identity marking for binary offload routing; selected offloadBinaryContent remains false.",
+        "src/backends/utils.ts": "Preserves backend identity markers for binary offload routing; selected offloadBinaryContent remains false.",
+        "src/middleware/blobOffload.ts": "New content-addressed binary payload offload and hydration; inactive because offloadBinaryContent defaults false and is not selected by the ACP CLI.",
+        "src/middleware/fs.ts": "Adds disabled-by-default binary offload and an internal retry for provider HTTP 400 errors attributable to multimodal read_file content. It may alter model outcomes for such file inputs but does not alter the tool result already sent to ACP or the public ACP event/lifecycle mapping.",
+        "src/middleware/subagents.ts": "Adds unsupported-content middleware for subagents; the selected ACP agent has no subagents.",
+        "src/middleware/unsupportedContent.ts": "New model-request-only multimodal content filtering; does not rewrite stored messages or ACP events. User session/prompt input selected by this ACP route is text-only."
+      },
+      "selected_wire_result": "no ACP wire schema, operation, capability, permission, usage, or lifecycle change",
+      "disposition": "compatible-extension"
+    }
+  },
+  "selected_source_hashes": {
+    "1.13.4": {
+      "src/agent.ts": "1207db9f481c407a2fbecd8c488c93d3dd080981ca6492143083a11e1ad72667",
+      "src/backends/composite.ts": "b8b8234692e3e63800a33e00a0c087acd9e7a5332e1c7320473c6207aa99e525",
+      "src/backends/filesystem.ts": "be59371565ef1829897137b57d2dd4013d92f907214c17fd49df4a2d3414c291",
+      "src/backends/state.ts": "79b967046ac61136ee27e499bb0ddf3ea4aa5ca841997749389ac05e91cbee69",
+      "src/backends/utils.ts": "e18e1c5ed4ee000e13894e13b9ce09cc6bb049b9c7a1a39e72b21dd4e15fd7f9",
+      "src/middleware/blobOffload.ts": null,
+      "src/middleware/fs.ts": "f0a21e3774e416ea5c44e71366ae395d1065a7fc9adf41174a7c9b7c9136b1e6",
+      "src/middleware/skills.ts": "e29e1e9c32b06ac55dd6eee4e9d85578377e354fab919d9f0ce3bd3ddb471971",
+      "src/middleware/subagents.ts": "0eb29e6a02ce4fb389a9903422587b6ff8db0075f2b212787a43903a26478182",
+      "src/middleware/unsupportedContent.ts": null
+    },
+    "1.13.5": {
+      "src/agent.ts": "1207db9f481c407a2fbecd8c488c93d3dd080981ca6492143083a11e1ad72667",
+      "src/backends/composite.ts": "b8b8234692e3e63800a33e00a0c087acd9e7a5332e1c7320473c6207aa99e525",
+      "src/backends/filesystem.ts": "be59371565ef1829897137b57d2dd4013d92f907214c17fd49df4a2d3414c291",
+      "src/backends/state.ts": "79b967046ac61136ee27e499bb0ddf3ea4aa5ca841997749389ac05e91cbee69",
+      "src/backends/utils.ts": "2c09813cca84e0389bd7c2e5965fe1aa86338f6e8997796de5c76a35e67887a3",
+      "src/middleware/blobOffload.ts": null,
+      "src/middleware/fs.ts": "b3163b8b9085d7902790c63a69dce64c8a95c9a6fa5d810c9b2c2b5095d1c035",
+      "src/middleware/skills.ts": "d1e278864453f5e0767fc090743d0f34fb0a9b1f1bf4f3f792456024edbb083d",
+      "src/middleware/subagents.ts": "0eb29e6a02ce4fb389a9903422587b6ff8db0075f2b212787a43903a26478182",
+      "src/middleware/unsupportedContent.ts": null
+    },
+    "1.14.0": {
+      "src/agent.ts": "c869bfc124912c0db1a6b3b0214f35d5d57076f2262b72ebc909e721035f56c2",
+      "src/backends/composite.ts": "b8b8234692e3e63800a33e00a0c087acd9e7a5332e1c7320473c6207aa99e525",
+      "src/backends/filesystem.ts": "be59371565ef1829897137b57d2dd4013d92f907214c17fd49df4a2d3414c291",
+      "src/backends/state.ts": "79b967046ac61136ee27e499bb0ddf3ea4aa5ca841997749389ac05e91cbee69",
+      "src/backends/utils.ts": "2c09813cca84e0389bd7c2e5965fe1aa86338f6e8997796de5c76a35e67887a3",
+      "src/middleware/blobOffload.ts": null,
+      "src/middleware/fs.ts": "b3163b8b9085d7902790c63a69dce64c8a95c9a6fa5d810c9b2c2b5095d1c035",
+      "src/middleware/skills.ts": "e4c92e8a13512c4f6cfbe222eb2fb8015dcce99c8da80dd725c674c98cb06a1e",
+      "src/middleware/subagents.ts": "4408533e991a6f49c182957d58bdef46645cbf03d41838e4e3486debc387d115",
+      "src/middleware/unsupportedContent.ts": null
+    },
+    "1.14.1": {
+      "src/agent.ts": "c869bfc124912c0db1a6b3b0214f35d5d57076f2262b72ebc909e721035f56c2",
+      "src/backends/composite.ts": "b8b8234692e3e63800a33e00a0c087acd9e7a5332e1c7320473c6207aa99e525",
+      "src/backends/filesystem.ts": "c1bdbbbb9fa53139b0b44709ea0ff7de0a2ad2d0f6984cbcc2c09265b8e0ba22",
+      "src/backends/state.ts": "79b967046ac61136ee27e499bb0ddf3ea4aa5ca841997749389ac05e91cbee69",
+      "src/backends/utils.ts": "2c09813cca84e0389bd7c2e5965fe1aa86338f6e8997796de5c76a35e67887a3",
+      "src/middleware/blobOffload.ts": null,
+      "src/middleware/fs.ts": "fe31760f709bf4933f633d4e42ed174cce8cfb75b0b18a944acbf106bfcf9147",
+      "src/middleware/skills.ts": "e4c92e8a13512c4f6cfbe222eb2fb8015dcce99c8da80dd725c674c98cb06a1e",
+      "src/middleware/subagents.ts": "4408533e991a6f49c182957d58bdef46645cbf03d41838e4e3486debc387d115",
+      "src/middleware/unsupportedContent.ts": null
+    },
+    "1.14.2": {
+      "src/agent.ts": "796d6d9d6e650af7ee1bc9040e00a2bef2287f695c9f0f9dbb2ae8f0b6ecd160",
+      "src/backends/composite.ts": "f8bff4cace5864269592d7e327023dacba3eda0b4440900629917773b062eece",
+      "src/backends/filesystem.ts": "c1bdbbbb9fa53139b0b44709ea0ff7de0a2ad2d0f6984cbcc2c09265b8e0ba22",
+      "src/backends/state.ts": "deaebfe1d99a78b349221386c314fe2c8464fb1f233c1fb19924ff1e09c5aaea",
+      "src/backends/utils.ts": "50dfcf1c37793d1656b931f306f132adc1b91e6047d335f4e00578b51da56521",
+      "src/middleware/blobOffload.ts": "b4c792f7d2fa4bd5ea9f14456b7031275e8427da8173ef7e735980a8d6713d48",
+      "src/middleware/fs.ts": "69ff72f70c85c98261cab053cddb25799b7d5db5f4bf0eb30863aa44287dff92",
+      "src/middleware/skills.ts": "e4c92e8a13512c4f6cfbe222eb2fb8015dcce99c8da80dd725c674c98cb06a1e",
+      "src/middleware/subagents.ts": "32737bd4a571da32155a7e50438dbfde94f7d50d6ff54213a5cf32860f0e2776",
+      "src/middleware/unsupportedContent.ts": "83fc5f842581b0b8dc4b67899056db9ff63bbc872996de441f48bcd5e78e0b9c"
+    }
+  },
+  "selected_source_changes": {
+    "1.13.4..1.13.5": [
+      "src/backends/utils.ts",
+      "src/middleware/fs.ts",
+      "src/middleware/skills.ts"
+    ],
+    "1.13.5..1.14.0": [
+      "src/agent.ts",
+      "src/middleware/skills.ts",
+      "src/middleware/subagents.ts"
+    ],
+    "1.14.0..1.14.1": [
+      "src/backends/filesystem.ts",
+      "src/middleware/fs.ts"
+    ],
+    "1.14.1..1.14.2": [
+      "src/agent.ts",
+      "src/backends/composite.ts",
+      "src/backends/state.ts",
+      "src/backends/utils.ts",
+      "src/middleware/blobOffload.ts",
+      "src/middleware/fs.ts",
+      "src/middleware/subagents.ts",
+      "src/middleware/unsupportedContent.ts"
+    ]
+  },
+  "bounded_external_changes": {
+    "deepagents-acp flags": "all command behavior is in byte-identical dist/cli.js; unsupported --model, --workspace, --skills, --memory, --debug, and library embedding stay out of scope",
+    "deepagents extra behavior": "source-map classifications above identify changed read text, optional skills/subagents, virtual filesystem guard, optional blob offload and model-only unsupported-content/retry logic; none adds an ACP frame, operation, capability, permission choice, usage event, or lifecycle path",
+    "dependency-resolution": "ACP SDK stays declared ^1.1.0 with no npm lockfile; exact resolved SDK/peer packages remain host-controlled and are not claimed",
+    "source provenance": "the npm artifact has no registry gitHead; exact package trees and embedded source maps are the evidence authority"
+  }
+}

@@ -34,6 +34,15 @@ annotated Git tags from the canonical repository.
   and historical schema corpora, provider version ranges, and feature cells
   remain unchanged. No provider session, credential, installation, or host
   update was used.
+- qualify `deepseek-harness.web` at published RC points `0.1.0-rc.6`,
+  `0.1.0-rc.7`, `0.1.0-rc.8`, `0.1.1-rc.1`, and `0.1.1-rc.2` under the
+  existing `deepseek-harness.apiproxy-v1` facade. The adapter suppresses the
+  default browser handoff from `0.1.0-rc.8` with the published `--no-open`
+  flag. Research 411 freezes these artifacts and stops at `0.1.2-rc.1`, where
+  `/api` requires persistent DSH browser authentication. Current npm
+  `latest`/`next` `0.2.0-rc.2` remains unqualified pending a ruling and tested
+  authentication/stream adaptation. No host DSH, browser, credentials, server,
+  catalogue, or session was accessed.
 - qualify only `cursor-agent.headless` through official ACP registry stable
   `2026.10.01-14929f9`, after every published hop following
   `2026.09.18-9a7762b`. Research 399 freezes both platform archives, complete

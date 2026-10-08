@@ -1,4 +1,4 @@
-# 379 Antigravity CLI 1.3.1 Catalogue Identity
+# 380 Antigravity CLI 1.3.1 Catalogue Identity
 
 Status: proposed for review.
 

@@ -60,15 +60,13 @@ write_record "$seed" 328-goose-acp-1-50-1-failure-binding-reopen.md
 write_record "$seed" 328-qoder-headless-1-1-54-identity.md
 write_record "$seed" 337-opencode-acp-1-18-32-identity.md
 write_record "$seed" 337-opencode-acp-unavailable-cells.tsv
-write_record "$seed" 382-grok-build-acp-1-0-46-identity.md
-write_record "$seed" 382-oh-my-pi-18-8-3-identity-and-qualification.md
 git_test "$seed" add docs
 git_test "$seed" commit -q -m 'seed research records'
 git_test "$scratch" clone -q --bare "$seed" "$canonical"
 git_test "$scratch" clone -q "$canonical" "$worker"
 git_test "$scratch" clone -q "$canonical" "$updater"
 
-# Same-slug companions and the exact 328, 337, and 382 pairs remain valid.
+# Same-slug companions and the exact historical 328 and 337 pairs remain valid.
 write_record "$worker" 101-companion.md
 write_record "$worker" 101-companion.tsv
 write_record "$worker" 101-companion.csv
@@ -167,6 +165,54 @@ expect_pass "${checker[@]}" --root "$collision_worker" \
 expect_failure 'cannot refresh canonical main' \
   "${checker[@]}" --root "$collision_worker" \
   --authority "$scratch/missing-canonical.git"
+
+# Research 382's Grok/Oh My Pi collision repairs by moving Grok intact to 385.
+grok_seed=$scratch/grok-seed
+grok_canonical=$scratch/grok-canonical.git
+grok_worker=$scratch/grok-worker
+grok_deleted=$scratch/grok-deleted
+grok_changed=$scratch/grok-changed
+grok_occupied=$scratch/grok-occupied
+mkdir -p "$grok_seed/docs/research"
+git_test "$grok_seed" init -q -b main
+write_numbered_record "$grok_seed" 382-grok-build-acp-1-0-46-identity.md \
+  $'# Grok Build ACP 1.0.46 Identity\nFrozen Grok evidence.\n'
+write_numbered_record "$grok_seed" 382-oh-my-pi-18-8-3-identity-and-qualification.md \
+  $'# 382 Oh My Pi 18.8.3 Identity and RPC Qualification\nFrozen Oh My Pi evidence.\n'
+write_numbered_record "$grok_seed" 384-grok-build-acp-1-0-46-identity.tsv \
+  $'occupied same-slug companion\n'
+git_test "$grok_seed" add docs
+git_test "$grok_seed" commit -q -m 'seed Research 382 collision'
+git_test "$scratch" clone -q --bare "$grok_seed" "$grok_canonical"
+git_test "$scratch" clone -q "$grok_canonical" "$grok_worker"
+git_test "$scratch" clone -q "$grok_canonical" "$grok_deleted"
+git_test "$scratch" clone -q "$grok_canonical" "$grok_changed"
+git_test "$scratch" clone -q "$grok_canonical" "$grok_occupied"
+
+expect_failure 'working tree research number 382' \
+  "${checker[@]}" --root "$grok_worker" --local-base main
+
+rm "$grok_deleted/docs/research/382-grok-build-acp-1-0-46-identity.md"
+expect_failure 'canonical collision repair must retain' \
+  "${checker[@]}" --root "$grok_deleted" --local-base main
+
+rm "$grok_changed/docs/research/382-grok-build-acp-1-0-46-identity.md"
+write_numbered_record "$grok_changed" 385-grok-build-acp-1-0-46-identity.md \
+  $'# Grok Build ACP 1.0.46 Identity\nChanged Grok evidence.\n'
+expect_failure 'only its numbered heading and path may change' \
+  "${checker[@]}" --root "$grok_changed" --local-base main
+
+rm "$grok_occupied/docs/research/382-grok-build-acp-1-0-46-identity.md"
+write_numbered_record "$grok_occupied" 384-grok-build-acp-1-0-46-identity.md \
+  $'# Grok Build ACP 1.0.46 Identity\nFrozen Grok evidence.\n'
+expect_failure 'repair target 384 is already occupied' \
+  "${checker[@]}" --root "$grok_occupied" --local-base main
+
+mv "$grok_worker/docs/research/382-grok-build-acp-1-0-46-identity.md" \
+  "$grok_worker/docs/research/385-grok-build-acp-1-0-46-identity.md"
+expect_pass "${checker[@]}" --root "$grok_worker" --local-base main
+expect_pass "${checker[@]}" --root "$grok_worker" \
+  --authority "$grok_canonical"
 
 # Current numbered-heading records can also be moved with evidence intact.
 mkdir -p "$modern_seed/docs/research"

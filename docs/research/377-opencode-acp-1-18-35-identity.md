@@ -1,4 +1,4 @@
-# Research 376: OpenCode ACP 1.18.35 Identity and Currentness
+# Research 377: OpenCode ACP 1.18.35 Identity and Currentness
 
 Swallowtail#104; evidence checked 2026-10-08 for `opencode.acp` only.
 

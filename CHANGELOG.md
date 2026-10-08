@@ -16,7 +16,7 @@ annotated Git tags from the canonical repository.
   exact `0.21.15` reasoning and budget controls remain unchanged; no provider
   work or artifact execution occurred.
 - qualify `opencode.acp` through the official current stable `1.18.35` after
-  published hops `1.18.33`, `1.18.34`, and `1.18.35`. Research 376 freezes
+  published hops `1.18.33`, `1.18.34`, and `1.18.35`. Research 377 freezes
   exact npm and GitHub source identities, full package trees, and every source
   hop. The existing ACP v1 v2 behavior, claim, baseline, exclusions, and
   `AllowUnverified` posture stay. HTTP MCP live honouring remains exact to

@@ -305,6 +305,35 @@ native runtime versions remain separate axes. Preparation cannot infer one
 from another, convert an opaque claim into an ordered range, or silently
 refresh any prepared version binding after drift.
 
+## Claude SDK Exact-Pair Preparation Adaptation
+
+Tom's 2026-10-08 board answer to decision
+`dfa96d5c-d040-4053-84f2-62e52c5152b0` is “Approve bounded additive
+exact-pair preparation adaptation”. The existing session preparation boundary
+may gain additive typed selection of an exact SDK package/native pair,
+preserving existing callers, default behavior and every maintained pair.
+Validate the pair before plan construction; bind the package and native
+identities as independent axes in the preflight plan. Pass expected identities
+through driver-owned private launch configuration. The original shipped
+sidecar must compare the loaded SDK package metadata and shipped native
+identity before SDK construction or query. An opaque environment or target
+reference is not version evidence.
+
+Prove all ten maintained package `0.3.284`–`0.3.293` / native
+`2.1.284`–`2.1.293` coupled pairs through the actual prepared facade and real
+sidecar against fakes. Mismatched, outside-window, missing or unreadable
+identities and drift fail closed before provider effects. A sidecar-only
+relaxation, inferred version, silent fallback or replacement of an old point
+cannot satisfy this approval.
+
+Preserve the Node axis, baseline and claim identities, approved host,
+environment and target authority, operations, permission and lifecycle
+contracts. Independently review the exact public API and Contract 036 minor
+compatibility. Return any inability to preserve defaults, native provenance
+or these boundaries for a separate ruling. No live work, credentials,
+installation or tags are authorized. The released-line SDK correction patch
+is independent and does not receive this currentness adaptation.
+
 ## Lifecycle And Topology
 
 Preparation and execution use the task, cancellation, deadline, and cleanup

@@ -244,6 +244,34 @@ semantic evidence without transferring catalogue proof. New public API,
 Windows/runtime evidence, authentication/network boundaries or live-proof
 needs return separately. No Antigravity live usage is authorized.
 
+## Antigravity Windows Offline Sandbox Proof
+
+Tom's 2026-10-08 board answer to decision
+`155265da-be30-4028-92cf-0ee064d1612c` is “Authorize bounded proof - I have a
+windows VM we can use”. A separate proof may execute the exact Antigravity
+`1.2.17` x64 and ARM64 Windows PE artifacts in explicitly identified,
+operator-approved disposable Windows environments. Record the VM identity,
+Windows version, architecture, execution mode and access path before execution;
+an unspecified VM or another host does not satisfy this boundary.
+
+Prove the fixture harness and containment against fakes, then persist the
+execution plan and result record before any actual artifact attempt. Use
+only task-owned scratch and fake provider/tool fixtures. Deny outbound
+provider traffic, access no real credentials or authentication stores, and
+make no host installation, persistent configuration or elevation changes.
+Command and elevation probes stay inside the approved disposable environment.
+
+Verify the original shipped PE and its published identity. Fake or patched
+artifact behavior does not establish shipped sandbox enforcement. If the
+selected path requires real authentication, provider traffic or unavailable
+sandbox facilities, stop with the exact missing proof. Record native versus
+emulated execution and never transfer proof between architectures or deployment
+modes. An unavailable platform remains an evidence gate, not a removed claim.
+
+This is provider-free proof authority, not a live provider turn, permission
+bypass, broader platform claim, production adaptation, release or tag approval.
+The separate resource-resolution and retry control-flow gates remain.
+
 ## Copilot ACP Offline Artifact Proof
 
 Tom's 2026-10-08 “Accept and approve all” answers decision

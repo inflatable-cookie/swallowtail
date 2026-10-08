@@ -271,7 +271,8 @@ OpenHands adds a package without a production route.
   entitled set and may substitute that model's default, while this route
   selects no model. The route therefore exposes no portable
   `ReasoningSelection` and retains its exact absent-effort argv.
-- `swallowtail-adapter-mistral-vibe` implements exact GitHub/PyPI `2.25.4`
+- `swallowtail-adapter-mistral-vibe` implements maintained GitHub/PyPI
+  `2.25.4..=2.26.0`, excluding unpublished `2.25.6` and `2.25.9`
   discovery and one bounded `vibe --prompt --output streaming` structured
   run with typed caller-decreasing `MistralVibeMaxTurns` `1..=8`; omission
   keeps `--max-turns 8`, then fixed `--trust --agent plan --workdir
@@ -681,9 +682,10 @@ Crate status:
   with qualified-only claim, visible public preview, host-account access,
   and no credential lease. The package remains an unreleased additive
   candidate after `v0.3.2`.
-- `swallowtail-adapter-mistral-vibe` — realized for exact GitHub/PyPI
-  `2.25.4` headless discovery, one bounded streaming-NDJSON structured
-  run, and `prepare_mistral_vibe_headless`. The package remains an
+- `swallowtail-adapter-mistral-vibe` — realized for maintained GitHub/PyPI
+  `2.25.4..=2.26.0` headless discovery and one bounded streaming-NDJSON
+  structured run; unpublished `2.25.6` and `2.25.9` remain excluded. Use
+  `prepare_mistral_vibe_headless`. The package remains an
   unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-qoder` — realized for exact npm `1.1.54` headless
   discovery, one bounded stream-json structured run with an adapter-owned

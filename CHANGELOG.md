@@ -6,6 +6,17 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify `mistral-vibe.headless` through official PyPI and GitHub stable
+  `2.26.0`. Research 384 freezes all four published hops after `2.25.4`,
+  complete wheel trees, runtime/source identities, and per-hop selected-surface
+  classifications. Extend the maintained segment to `2.25.4..=2.26.0`, retain
+  the claim and behavior revisions, and exclude unpublished `2.25.6` and
+  `2.25.9`. The one-prompt streaming command, Plan permission profile, legacy
+  Python harness pin, and lifecycle remain unchanged; later stable versions are
+  visible as `UnverifiedNewer`. The approved environment must leave `VIBE_CLI`
+  unset or set to `python` on Vibe `2.25.7+`; Rust TUI and Unified Harness stay
+  unmapped. No artifact execution, provider prompt, credential use,
+  installation, or host update occurred.
 - qualify `pi.rpc` through official npm `latest` and GitHub latest stable
   `1.1.0` after every published hop following `0.86.1`. Research 383 freezes
   exact package and source identity, complete npm trees, runtime chunks, and

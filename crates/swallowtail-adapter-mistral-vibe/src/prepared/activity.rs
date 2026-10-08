@@ -19,7 +19,7 @@ pub(super) fn profile(
         InstalledExecutableCompatibility::Incompatible => {
             return Err(failure(
                 "swallowtail.mistral-vibe.headless.preparation.activity_version_incompatible",
-                "Mistral Vibe headless activity requires the exact permitted release",
+                "Mistral Vibe headless activity requires a permitted release-window version",
             ));
         }
     };

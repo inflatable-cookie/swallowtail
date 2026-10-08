@@ -1,0 +1,174 @@
+{
+  "axis": "mistral-vibe.release",
+  "claim_at_observation": {
+    "behavior_revision": "mistral-vibe.headless.stdio-streaming-v1",
+    "claim_id": "mistral-vibe.headless.release-window-1",
+    "point": "2.25.4",
+    "posture": "QualifiedOnly"
+  },
+  "github_repository": "https://github.com/mistralai/mistral-vibe",
+  "host": {
+    "artifact_execution": false,
+    "platform": "Darwin arm64",
+    "present": false,
+    "vibe_command_found": false
+  },
+  "identity_decision": {
+    "baseline": "2.25.4",
+    "behavior_revision_change": "none",
+    "claim_id_change": "none",
+    "downloaded_artifact_executed": false,
+    "excluded_unpublished_stables": [
+      "2.25.6",
+      "2.25.9"
+    ],
+    "explicit_vibe_cli_rust": "outside the selected headless route; the approved execution environment must leave VIBE_CLI unset or set it to python",
+    "host_install_changed": false,
+    "latest_qualified": "2.26.0",
+    "live_prompt_run": false,
+    "map_rust_tui": false,
+    "map_smart_approve": false,
+    "map_unified_harness": false,
+    "provider_prompt_sent": false,
+    "retain_legacy_harness_pin": true,
+    "selected_argv_unchanged": true,
+    "shape": "compatible-ordered-window-extension"
+  },
+  "observed_at": "2026-10-08",
+  "official": {
+    "github_release": "https://github.com/mistralai/mistral-vibe/releases/tag/v2.26.0",
+    "github_tag": "v2.26.0",
+    "github_tag_commit": "376f6a33413a3eec9b3795b0c0e004066c47b5c",
+    "prerelease": false,
+    "published_at": "2026-10-06T13:19:11.511628Z",
+    "pypi_attestation_source_commit": "7cb91894c40bb25173abcfa36e5ea2b4b81eb28c",
+    "pypi_attestation_to_tag_vibe_tree": "different commit identities; complete vibe/ source tree matches the v2.26.0 tag byte-for-byte; shipped wheels and sdist are the runtime authority",
+    "pypi_sdist_sha256": "86ee13da13f9ca6b2f023cc5ca254a81bd99eeb5d2caa7b9e791421531bb2f5c",
+    "pypi_version": "2.26.0",
+    "pypi_wheels": [
+      {
+        "filename": "mistral_vibe-2.26.0-cp312-abi3-macosx_11_0_arm64.whl",
+        "packagetype": "bdist_wheel",
+        "published_at": "2026-10-06T13:18:51.554568Z",
+        "sha256": "bc8d3ec765d844be7b51ec0247296042113784b8b6925aac5e445cec69409a27",
+        "size": 36646958,
+        "yanked": false
+      },
+      {
+        "filename": "mistral_vibe-2.26.0-cp312-abi3-macosx_11_0_x86_64.whl",
+        "packagetype": "bdist_wheel",
+        "published_at": "2026-10-06T13:18:55.550647Z",
+        "sha256": "6c61e33781ddbd54e3cacf098589e49234df45c6f2498858c3e0d3bb8181c454",
+        "size": 37782373,
+        "yanked": false
+      },
+      {
+        "filename": "mistral_vibe-2.26.0-cp312-abi3-manylinux_2_28_aarch64.whl",
+        "packagetype": "bdist_wheel",
+        "published_at": "2026-10-06T13:18:58.928434Z",
+        "sha256": "91087d3507924f44823be8567d8d051da7669b1ad2b60e549e75e91ede282a4e",
+        "size": 61572242,
+        "yanked": false
+      },
+      {
+        "filename": "mistral_vibe-2.26.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+        "packagetype": "bdist_wheel",
+        "published_at": "2026-10-06T13:19:05.340467Z",
+        "sha256": "d8230b8abd7c39a8e90d60884b1f5ee8c95ffb459c62c21f3ea0e3041117a114",
+        "size": 66340569,
+        "yanked": false
+      },
+      {
+        "filename": "mistral_vibe-2.26.0-cp312-abi3-win_amd64.whl",
+        "packagetype": "bdist_wheel",
+        "published_at": "2026-10-06T13:19:08.742987Z",
+        "sha256": "e3807c3670f0a74357f63e82aa77648076a12ab97abc10c579d002950e082955",
+        "size": 34879932,
+        "yanked": false
+      }
+    ],
+    "pypi_yanked": false,
+    "version": "2.26.0"
+  },
+  "publication_channels": {
+    "absent_from_pypi_and_github_refs": [
+      "2.25.6",
+      "2.25.9"
+    ],
+    "disposition": "published selected-channel hops are individually inventoried; absent points remain exclusions inside the qualified window",
+    "github_latest_stable_release": "v2.26.0",
+    "pypi_hops_after_2_25_4": [
+      "2.25.5",
+      "2.25.7",
+      "2.25.8",
+      "2.26.0"
+    ],
+    "pypi_latest_stable": "2.26.0"
+  },
+  "pypi_project": "mistral-vibe",
+  "route": "mistral-vibe.headless",
+  "source_tree_identity": {
+    "pypi_sdist_to_tag": {
+      "2.25.4": "all 614 vibe files match except vibe/observability/sentry.py, whose shipped distribution injects the Sentry DSN; telemetry stays config-gated",
+      "2.25.5": "all 627 vibe files match except vibe/observability/sentry.py, whose shipped distribution injects the Sentry DSN; telemetry stays config-gated",
+      "2.26.0": "all 1246 vibe files match byte-for-byte"
+    },
+    "runtime_inventory": "dist-inventory.json contains every regular file in every PyPI wheel from 2.25.4 through 2.26.0; tree manifests are sorted path, SHA-256, size tuples",
+    "selected_python_tree_by_tag": {
+      "2.25.4": {
+        "entry_count": 569,
+        "manifest_sha256": "4473d4f95fa655dc9ea6957ae564a0b7456787648babbf6dfcefe9954f512328"
+      },
+      "2.25.5": {
+        "entry_count": 581,
+        "manifest_sha256": "9bc26c74e0c03ae7d5be0e6171bcb6e41af569dc09c62e466edface12231172e"
+      },
+      "2.25.7": {
+        "entry_count": 590,
+        "manifest_sha256": "a7c71535e20dca514407c6bcba19184401d56976a950450f60594c3cb272cb11"
+      },
+      "2.25.8": {
+        "entry_count": 595,
+        "manifest_sha256": "b366b8fefdc07abc6ea6320c2238f7b9ef8449f792723ab61edbf92e5c134e65"
+      },
+      "2.26.0": {
+        "entry_count": 616,
+        "manifest_sha256": "5d7cb2b07593c2cac7f6d28068f9c9c29c7eac08e717e0c9b54a7beb7019e6df"
+      }
+    },
+    "tag_commits": {
+      "2.25.4": {
+        "commit": "19b5b74faa78d0816b8d4d4c7d7543fc3520678c",
+        "tag": "v2.25.4"
+      },
+      "2.25.5": {
+        "commit": "c069ffa1e12fb5f2487b489217c40ab97721d553",
+        "tag": "v2.25.5"
+      },
+      "2.25.7": {
+        "commit": "4a96003186b166d55b9f06895c45bb136eef61cd",
+        "tag": "v2.25.7"
+      },
+      "2.25.8": {
+        "commit": "7c19608af06f6c61d63f8f7a5c3430da73fba2ab",
+        "tag": "v2.25.8"
+      },
+      "2.26.0": {
+        "commit": "376f6a33413a3eec9b3795b0c0e004066c47b5c",
+        "tag": "v2.26.0"
+      }
+    }
+  },
+  "qualified_claim": {
+    "claim_id": "mistral-vibe.headless.release-window-1",
+    "behavior_revision": "mistral-vibe.headless.stdio-streaming-v1",
+    "baseline": "2.25.4",
+    "latest_qualified": "2.26.0",
+    "support_status": "Maintained",
+    "newer_version_posture": "AllowUnverified",
+    "excluded_unpublished_stables": [
+      "2.25.6",
+      "2.25.9"
+    ]
+  }
+}

@@ -20,16 +20,20 @@ New to the shared vocabulary? Read [Key Concepts](key-concepts.md).
 
 Preparation requires all of the following:
 
-- exact release axis `mistral-vibe.release`
-- exact GitHub/PyPI `2.25.4`
+- release axis `mistral-vibe.release`, maintained `2.25.4..=2.26.0`
+- unpublished `2.25.6` and `2.25.9` excluded; later stable releases are
+  visible as `UnverifiedNewer`
 - host-approved `vibe` executable and isolated environment
+- on Vibe `2.25.7` and later, `VIBE_CLI` unset or set to `python` so explicit
+  Rust TUI selection cannot replace the selected Python CLI path
 - `mistral_vibe_local_config_access_profile` with no credential reference
 - working resource, plus host services for task, process, time, and
   working-resource ownership
 - a host process deadline on the print run
 
-The claim is qualified-only. Later releases do not inherit this route.
-`UnverifiedNewer` is not a Vibe headless execution posture.
+The claim retains the same headless behavior revision across the maintained
+window. Unpublished holes remain incompatible; later stable releases are
+permitted only as visible `UnverifiedNewer` observations.
 
 Swallowtail does not install Vibe, search `PATH`, read provider config, or
 select a model. Host-owned local config stays outside the prepared plan. There
@@ -58,7 +62,10 @@ session harness from flags, the ambient GrowthBook rollout cache, and native
 module availability, and a GitHub-zip install of `2.25.1` or later can bundle
 the internal Unified Harness. The flag has first upstream precedence and pins
 the legacy Python harness the frozen corpus covers on every install channel.
-The Unified Harness backend and `--smart-approve` stay unmapped.
+The Unified Harness backend and `--smart-approve` stay unmapped. In Vibe
+`2.26.0`, the Rust TUI rollout excludes `--legacy-harness`, but an explicit
+`VIBE_CLI=rust` still selects it, so the approved environment must not set that
+value for this headless route.
 
 ## One Bounded Print Run
 
@@ -112,8 +119,8 @@ evidence, and matrix coverage. An advertised CLI flag alone is insufficient.
 ## Deterministic Validation
 
 ```sh
-effigy validate:focused swallowtail-adapter-mistral-vibe
-effigy check:examples
+effigy validate:current-mistral-vibe-headless
+effigy check:current-mistral-vibe-headless
 ```
 
 No login, install, or authenticated prompt is part of deterministic acceptance.

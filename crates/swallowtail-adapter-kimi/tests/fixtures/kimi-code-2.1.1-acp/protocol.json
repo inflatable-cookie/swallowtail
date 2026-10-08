@@ -6236,37 +6236,37 @@
       "from": "0.43.0",
       "to": "0.43.1",
       "class": "all 25 bundled ACP server module regions are identical; package/bundle and web assets change",
-      "research": "395"
+      "research": "398"
     },
     {
       "from": "0.43.1",
       "to": "2.0.0",
       "class": "slash.ts adds a filter for skills with explicit scopes in available-command discovery; ACP adapter suppresses AvailableCommands; runner remains identical",
-      "research": "395"
+      "research": "398"
     },
     {
       "from": "2.0.0",
       "to": "2.0.1",
       "class": "generated ACP server bundle initializer rename only; raw server.ts blob remains identical",
-      "research": "395"
+      "research": "398"
     },
     {
       "from": "2.0.1",
       "to": "2.0.2",
       "class": "generated ACP bundle initializer renames only; corresponding raw source files remain identical",
-      "research": "395"
+      "research": "398"
     },
     {
       "from": "2.0.2",
       "to": "2.1.0",
       "class": "all 25 bundled ACP server module regions are identical",
-      "research": "395"
+      "research": "398"
     },
     {
       "from": "2.1.0",
       "to": "2.1.1",
       "class": "all 25 bundled ACP server module regions are identical",
-      "research": "395"
+      "research": "398"
     }
   ],
   "github_source_blobs": [

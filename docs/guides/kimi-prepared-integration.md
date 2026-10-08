@@ -44,7 +44,7 @@ ACP terminal runner replaces two fail-closed errors with a local host-process
 spawn in the leased working resource, and this route always advertises
 `terminal: false`, so that branch always applies. Nothing in the adapter or
 the runtime contains that spawn. Research 325 confirmed the same
-`acpTerminalRunner` source blob through `0.43.0`; Research 396 reproduces it
+`acpTerminalRunner` source blob through `0.43.0`; Research 398 reproduces it
 through official stable `2.1.1`, including the `2.0.0` major reset. At
 `2.0.0`, the only changed ACP source module adds a filter to available-command
 discovery, which this adapter does not expose. Every point above `0.38.0` fails

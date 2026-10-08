@@ -1,4 +1,4 @@
-//! Research 396 freezes the current official Kimi Code ACP identity and stop.
+//! Research 398 freezes the current official Kimi Code ACP identity and stop.
 
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -75,7 +75,7 @@ fn identity_inventories_and_selected_bundle_changes_are_frozen() {
     );
     assert_sha256(
         PROTOCOL,
-        "12be227b83950aae94f6ad7841b6a0ee3ee2440550338257a3b1d7ee0f4281f3",
+        "4c9d4deffa1f1e480fd1d5c7bd403d9d1a8cf3d55759ff416efa63956a5d4422",
     );
 
     let identity = json(IDENTITY);
@@ -234,6 +234,7 @@ fn identity_inventories_and_selected_bundle_changes_are_frozen() {
         .as_array()
         .expect("all published hops are classified");
     assert_eq!(hop_notes.len(), 13);
+    assert!(hop_notes[7..].iter().all(|hop| hop["research"] == "398"));
     assert_eq!(hop_notes[8]["from"], "0.43.1");
     assert_eq!(hop_notes[8]["to"], "2.0.0");
     assert!(text(&hop_notes[8], &["class"]).contains("available-command discovery"));

@@ -16,6 +16,15 @@ annotated Git tags from the canonical repository.
   qualifies `2.1.1` with `2.1.0` unsupported. No public API or behavior revision
   changes; ACP and local-server claims remain separate. No provider prompt,
   credentials, live session, artifact execution, host update, release, or tag.
+- qualify only `codex.exec` through official stable `0.161.0` as a compatible
+  extension on `codex.exec.jsonl-v1`. Research 410 reuses the reviewed
+  `0.155.1`→`0.161.0` source and artifact chain from Research 370 with
+  independent digest checks. Projectless startup does not restore persisted
+  trust; system/macOS MDM managed-network allowlists and refresh remain
+  authoritative, and provider denial remains a bounded failure. Keep the
+  unpublished `0.155.2` gap, prior exclusions, and independent app-server
+  claim. No provider prompt, live session, credential, installation, or host
+  update was used.
 - Keep `kimi-code.acp` at its `0.38.0` ceiling while the official npm and
   GitHub stable `2.1.1` remains blocked by the same unmediated terminal process
   spawn from both the terminal-disabled branch and non-Bash fallback. Research

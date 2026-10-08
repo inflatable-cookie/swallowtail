@@ -3,6 +3,7 @@ use super::*;
 mod consumer_route_exec_projection;
 mod consumer_route_projection;
 mod exec_activity;
+mod exec_policy_adaptation;
 mod exec_verbosity;
 mod provider_session_import;
 mod session;

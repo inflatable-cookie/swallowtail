@@ -1,0 +1,4125 @@
+{
+  "adaptation": {
+    "agent_settled_aborted": {
+      "introduced": "1.1.0",
+      "mapping": "sidecar maps existing event name without projecting additive aborted property"
+    },
+    "cache_warming": {
+      "effect": "CacheWarmer can replay a provider request after agent_settled and append usage",
+      "introduced": "0.86.0",
+      "mapping": "explicit cacheWarming off in private in-memory settings; older points have no CacheWarmer",
+      "upstream_default": "streaming"
+    },
+    "model_registry_prefix": {
+      "introduced": "0.99.0",
+      "mapping": "key becomes chat:<model-id>; lookup uses unchanged model.id under provider id"
+    },
+    "read_tool_structured_output": {
+      "introduced": "1.0.4",
+      "mapping": "sidecar continues to use existing text/image blocks; wire decoder unchanged"
+    },
+    "tool_modifier_api": {
+      "introduced": "1.1.0",
+      "mapping": "modifiers are not passed; fixed read/grep/find/ls set remains literal"
+    }
+  },
+  "current_official_stable": "1.1.0",
+  "dependency_scope": {
+    "provider_internal_changes": "Provider implementation internals remain outside the Swallowtail wire claim. No live request or provider-specific semantic proof transfers.",
+    "root_package_dependencies": "Caret ranges in package.json; root 0.84.2 ships npm-shrinkwrap and later selected points do not. Runtime host supplies resolved installed dependencies; exact corresponding pi-ai and pi-agent-core artifacts are frozen separately, but the host-resolved transitive tree is not asserted.",
+    "selected_direct_dependencies": [
+      "@earendil-works/pi-ai",
+      "@earendil-works/pi-agent-core"
+    ]
+  },
+  "hops": {
+    "0.84.2->0.84.3": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "default thinking behavior; selected exact model and optional thinking selection remain fixed",
+          "path": "dist/core/defaults.js",
+          "source": "core/defaults.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "default thinking behavior; selected exact model and optional thinking selection remain fixed",
+          "path": "dist/core/defaults.js.map",
+          "source": "core/defaults.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension runtime; no extension operations or providers are activated",
+          "path": "dist/core/extensions/index.js",
+          "source": "core/extensions/index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension runtime; no extension operations or providers are activated",
+          "path": "dist/core/extensions/index.js.map",
+          "source": "core/extensions/index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js.map",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "model configuration; modelsPath is null and provider/model are caller-selected",
+          "path": "dist/core/model-config.js",
+          "source": "core/model-config.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "model configuration; modelsPath is null and provider/model are caller-selected",
+          "path": "dist/core/model-config.js.map",
+          "source": "core/model-config.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js.map",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue storage; remote refresh is disabled",
+          "path": "dist/core/models-store.js",
+          "source": "core/models-store.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue storage; remote refresh is disabled",
+          "path": "dist/core/models-store.js.map",
+          "source": "core/models-store.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "remote catalogue; model network is disabled",
+          "path": "dist/core/remote-catalog-provider.js",
+          "source": "core/remote-catalog-provider.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "remote catalogue; model network is disabled",
+          "path": "dist/core/remote-catalog-provider.js.map",
+          "source": "core/remote-catalog-provider.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "resource gating; noExtensions/noSkills/noPromptTemplates/noThemes/noContextFiles remain explicit",
+          "path": "dist/core/resource-loader.js",
+          "source": "core/resource-loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "resource gating; noExtensions/noSkills/noPromptTemplates/noThemes/noContextFiles remain explicit",
+          "path": "dist/core/resource-loader.js.map",
+          "source": "core/resource-loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js.map",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js.map",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js.map",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js.map",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "tool factory exports; sidecar allowlist remains fixed",
+          "path": "dist/core/tools/index.js",
+          "source": "core/tools/index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "tool factory exports; sidecar allowlist remains fixed",
+          "path": "dist/core/tools/index.js.map",
+          "source": "core/tools/index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js",
+          "source": "index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js.map",
+          "source": "index.ts"
+        }
+      ]
+    },
+    "0.84.3->0.84.4": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension runtime; no extension operations or providers are activated",
+          "path": "dist/core/extensions/index.js.map",
+          "source": "core/extensions/index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension event dispatch; no active extension handlers are loaded",
+          "path": "dist/core/extensions/runner.js",
+          "source": "core/extensions/runner.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension event dispatch; no active extension handlers are loaded",
+          "path": "dist/core/extensions/runner.js.map",
+          "source": "core/extensions/runner.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js.map",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js.map",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js",
+          "source": "index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js.map",
+          "source": "index.ts"
+        }
+      ]
+    },
+    "0.84.4->0.85.0": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session runtime construction and replacement lifecycle; selected create/load/resume/switch/dispose calls remain",
+          "path": "dist/core/agent-session-runtime.js",
+          "source": "core/agent-session-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session runtime construction and replacement lifecycle; selected create/load/resume/switch/dispose calls remain",
+          "path": "dist/core/agent-session-runtime.js.map",
+          "source": "core/agent-session-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js.map",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session message conversion and image attachment path; existing text/PNG projection remains",
+          "path": "dist/core/messages.js.map",
+          "source": "core/messages.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "model configuration; modelsPath is null and provider/model are caller-selected",
+          "path": "dist/core/model-config.js",
+          "source": "core/model-config.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "model configuration; modelsPath is null and provider/model are caller-selected",
+          "path": "dist/core/model-config.js.map",
+          "source": "core/model-config.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue/model lookup and provider request orchestration; model network is disabled",
+          "path": "dist/core/model-runtime.js",
+          "source": "core/model-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue/model lookup and provider request orchestration; model network is disabled",
+          "path": "dist/core/model-runtime.js.map",
+          "source": "core/model-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider request internals; no live provider proof transfers",
+          "path": "dist/core/provider-composer.js",
+          "source": "core/provider-composer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider request internals; no live provider proof transfers",
+          "path": "dist/core/provider-composer.js.map",
+          "source": "core/provider-composer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js.map",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js.map",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js.map",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only find tool and bounded result projection",
+          "path": "dist/core/tools/find.js",
+          "source": "core/tools/find.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only find tool and bounded result projection",
+          "path": "dist/core/tools/find.js.map",
+          "source": "core/tools/find.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only grep tool and bounded result projection",
+          "path": "dist/core/tools/grep.js",
+          "source": "core/tools/grep.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only grep tool and bounded result projection",
+          "path": "dist/core/tools/grep.js.map",
+          "source": "core/tools/grep.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only listing tool and bounded result projection",
+          "path": "dist/core/tools/ls.js",
+          "source": "core/tools/ls.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only listing tool and bounded result projection",
+          "path": "dist/core/tools/ls.js.map",
+          "source": "core/tools/ls.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only file and image tool; sidecar accepts bounded PNG input",
+          "path": "dist/core/tools/read.js",
+          "source": "core/tools/read.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only file and image tool; sidecar accepts bounded PNG input",
+          "path": "dist/core/tools/read.js.map",
+          "source": "core/tools/read.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js.map",
+          "source": "index.ts"
+        }
+      ]
+    },
+    "0.85.0->0.85.1": {
+      "selected_source_files": []
+    },
+    "0.85.1->0.86.0": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "added",
+          "classification": "automatic provider activity; explicit cacheWarming off disables background replay",
+          "path": "dist/core/cache-warmer.js",
+          "source": "core/cache-warmer.ts"
+        },
+        {
+          "change": "added",
+          "classification": "automatic provider activity; explicit cacheWarming off disables background replay",
+          "path": "dist/core/cache-warmer.js.map",
+          "source": "core/cache-warmer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension runtime; no extension operations or providers are activated",
+          "path": "dist/core/extensions/index.js.map",
+          "source": "core/extensions/index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js.map",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension event dispatch; no active extension handlers are loaded",
+          "path": "dist/core/extensions/runner.js",
+          "source": "core/extensions/runner.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension event dispatch; no active extension handlers are loaded",
+          "path": "dist/core/extensions/runner.js.map",
+          "source": "core/extensions/runner.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session message conversion and image attachment path; existing text/PNG projection remains",
+          "path": "dist/core/messages.js",
+          "source": "core/messages.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session message conversion and image attachment path; existing text/PNG projection remains",
+          "path": "dist/core/messages.js.map",
+          "source": "core/messages.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "model configuration; modelsPath is null and provider/model are caller-selected",
+          "path": "dist/core/model-config.js",
+          "source": "core/model-config.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "model configuration; modelsPath is null and provider/model are caller-selected",
+          "path": "dist/core/model-config.js.map",
+          "source": "core/model-config.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js.map",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue/model lookup and provider request orchestration; model network is disabled",
+          "path": "dist/core/model-runtime.js",
+          "source": "core/model-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue/model lookup and provider request orchestration; model network is disabled",
+          "path": "dist/core/model-runtime.js.map",
+          "source": "core/model-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider request internals; no live provider proof transfers",
+          "path": "dist/core/provider-composer.js",
+          "source": "core/provider-composer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider request internals; no live provider proof transfers",
+          "path": "dist/core/provider-composer.js.map",
+          "source": "core/provider-composer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js.map",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js.map",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js.map",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js.map",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only file and image tool; sidecar accepts bounded PNG input",
+          "path": "dist/core/tools/read.js",
+          "source": "core/tools/read.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only file and image tool; sidecar accepts bounded PNG input",
+          "path": "dist/core/tools/read.js.map",
+          "source": "core/tools/read.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "usage aggregation; wire continues to project four integer counters",
+          "path": "dist/core/usage-totals.js",
+          "source": "core/usage-totals.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "usage aggregation; wire continues to project four integer counters",
+          "path": "dist/core/usage-totals.js.map",
+          "source": "core/usage-totals.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js.map",
+          "source": "index.ts"
+        }
+      ]
+    },
+    "0.86.0->0.86.1": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js.map",
+          "source": "core/model-resolver.ts"
+        }
+      ]
+    },
+    "0.86.1->0.87.0": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session runtime construction and replacement lifecycle; selected create/load/resume/switch/dispose calls remain",
+          "path": "dist/core/agent-session-runtime.js",
+          "source": "core/agent-session-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session runtime construction and replacement lifecycle; selected create/load/resume/switch/dispose calls remain",
+          "path": "dist/core/agent-session-runtime.js.map",
+          "source": "core/agent-session-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "automatic provider activity; explicit cacheWarming off disables background replay",
+          "path": "dist/core/cache-warmer.js",
+          "source": "core/cache-warmer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "automatic provider activity; explicit cacheWarming off disables background replay",
+          "path": "dist/core/cache-warmer.js.map",
+          "source": "core/cache-warmer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension runtime; no extension operations or providers are activated",
+          "path": "dist/core/extensions/index.js.map",
+          "source": "core/extensions/index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension event dispatch; no active extension handlers are loaded",
+          "path": "dist/core/extensions/runner.js",
+          "source": "core/extensions/runner.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension event dispatch; no active extension handlers are loaded",
+          "path": "dist/core/extensions/runner.js.map",
+          "source": "core/extensions/runner.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "model configuration; modelsPath is null and provider/model are caller-selected",
+          "path": "dist/core/model-config.js",
+          "source": "core/model-config.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "model configuration; modelsPath is null and provider/model are caller-selected",
+          "path": "dist/core/model-config.js.map",
+          "source": "core/model-config.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider request internals; no live provider proof transfers",
+          "path": "dist/core/provider-composer.js",
+          "source": "core/provider-composer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider request internals; no live provider proof transfers",
+          "path": "dist/core/provider-composer.js.map",
+          "source": "core/provider-composer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "resource gating; noExtensions/noSkills/noPromptTemplates/noThemes/noContextFiles remain explicit",
+          "path": "dist/core/resource-loader.js",
+          "source": "core/resource-loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "resource gating; noExtensions/noSkills/noPromptTemplates/noThemes/noContextFiles remain explicit",
+          "path": "dist/core/resource-loader.js.map",
+          "source": "core/resource-loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js.map",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js.map",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only file and image tool; sidecar accepts bounded PNG input",
+          "path": "dist/core/tools/read.js",
+          "source": "core/tools/read.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only file and image tool; sidecar accepts bounded PNG input",
+          "path": "dist/core/tools/read.js.map",
+          "source": "core/tools/read.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js",
+          "source": "index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js.map",
+          "source": "index.ts"
+        }
+      ]
+    },
+    "0.87.0->0.87.1": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js.map",
+          "source": "core/model-resolver.ts"
+        }
+      ]
+    },
+    "0.87.1->0.99.0": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session runtime construction and replacement lifecycle; selected create/load/resume/switch/dispose calls remain",
+          "path": "dist/core/agent-session-runtime.js",
+          "source": "core/agent-session-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session runtime construction and replacement lifecycle; selected create/load/resume/switch/dispose calls remain",
+          "path": "dist/core/agent-session-runtime.js.map",
+          "source": "core/agent-session-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "service/session construction; resource loading is restricted by explicit no-* flags",
+          "path": "dist/core/agent-session-services.js",
+          "source": "core/agent-session-services.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "service/session construction; resource loading is restricted by explicit no-* flags",
+          "path": "dist/core/agent-session-services.js.map",
+          "source": "core/agent-session-services.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension runtime; no extension operations or providers are activated",
+          "path": "dist/core/extensions/index.js.map",
+          "source": "core/extensions/index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js.map",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension event dispatch; no active extension handlers are loaded",
+          "path": "dist/core/extensions/runner.js",
+          "source": "core/extensions/runner.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension event dispatch; no active extension handlers are loaded",
+          "path": "dist/core/extensions/runner.js.map",
+          "source": "core/extensions/runner.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js.map",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue/model lookup and provider request orchestration; model network is disabled",
+          "path": "dist/core/model-runtime.js",
+          "source": "core/model-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue/model lookup and provider request orchestration; model network is disabled",
+          "path": "dist/core/model-runtime.js.map",
+          "source": "core/model-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider request internals; no live provider proof transfers",
+          "path": "dist/core/provider-composer.js",
+          "source": "core/provider-composer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider request internals; no live provider proof transfers",
+          "path": "dist/core/provider-composer.js.map",
+          "source": "core/provider-composer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "remote catalogue; model network is disabled",
+          "path": "dist/core/remote-catalog-provider.js",
+          "source": "core/remote-catalog-provider.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "remote catalogue; model network is disabled",
+          "path": "dist/core/remote-catalog-provider.js.map",
+          "source": "core/remote-catalog-provider.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "resource gating; noExtensions/noSkills/noPromptTemplates/noThemes/noContextFiles remain explicit",
+          "path": "dist/core/resource-loader.js",
+          "source": "core/resource-loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "resource gating; noExtensions/noSkills/noPromptTemplates/noThemes/noContextFiles remain explicit",
+          "path": "dist/core/resource-loader.js.map",
+          "source": "core/resource-loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js.map",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "durable session create/load/replay/continue path",
+          "path": "dist/core/session-manager.js.map",
+          "source": "core/session-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js.map",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js.map",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "bounded tool result accumulation and private spill storage",
+          "path": "dist/core/tools/output-accumulator.js",
+          "source": "core/tools/output-accumulator.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "bounded tool result accumulation and private spill storage",
+          "path": "dist/core/tools/output-accumulator.js.map",
+          "source": "core/tools/output-accumulator.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "bounded tool result truncation",
+          "path": "dist/core/tools/truncate.js",
+          "source": "core/tools/truncate.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "bounded tool result truncation",
+          "path": "dist/core/tools/truncate.js.map",
+          "source": "core/tools/truncate.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "usage aggregation; wire continues to project four integer counters",
+          "path": "dist/core/usage-totals.js",
+          "source": "core/usage-totals.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "usage aggregation; wire continues to project four integer counters",
+          "path": "dist/core/usage-totals.js.map",
+          "source": "core/usage-totals.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js",
+          "source": "index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js.map",
+          "source": "index.ts"
+        }
+      ]
+    },
+    "0.99.0->0.99.1": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js.map",
+          "source": "core/model-resolver.ts"
+        }
+      ]
+    },
+    "0.99.1->0.99.2": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js.map",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue/model lookup and provider request orchestration; model network is disabled",
+          "path": "dist/core/model-runtime.js",
+          "source": "core/model-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue/model lookup and provider request orchestration; model network is disabled",
+          "path": "dist/core/model-runtime.js.map",
+          "source": "core/model-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "remote catalogue; model network is disabled",
+          "path": "dist/core/remote-catalog-provider.js",
+          "source": "core/remote-catalog-provider.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "remote catalogue; model network is disabled",
+          "path": "dist/core/remote-catalog-provider.js.map",
+          "source": "core/remote-catalog-provider.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js.map",
+          "source": "core/sdk.ts"
+        }
+      ]
+    },
+    "0.99.2->1.0.0": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js.map",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js.map",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js.map",
+          "source": "index.ts"
+        }
+      ]
+    },
+    "1.0.0->1.0.1": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension runtime; no extension operations or providers are activated",
+          "path": "dist/core/extensions/index.js.map",
+          "source": "core/extensions/index.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+          "path": "dist/core/extensions/loader.js.map",
+          "source": "core/extensions/loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension event dispatch; no active extension handlers are loaded",
+          "path": "dist/core/extensions/runner.js",
+          "source": "core/extensions/runner.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "extension event dispatch; no active extension handlers are loaded",
+          "path": "dist/core/extensions/runner.js.map",
+          "source": "core/extensions/runner.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js.map",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "root entrypoint export surface; sidecar checks and calls only its existing required exports",
+          "path": "dist/index.js.map",
+          "source": "index.ts"
+        }
+      ]
+    },
+    "1.0.1->1.0.2": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "model configuration; modelsPath is null and provider/model are caller-selected",
+          "path": "dist/core/model-config.js",
+          "source": "core/model-config.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "model configuration; modelsPath is null and provider/model are caller-selected",
+          "path": "dist/core/model-config.js.map",
+          "source": "core/model-config.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider request internals; no live provider proof transfers",
+          "path": "dist/core/provider-composer.js",
+          "source": "core/provider-composer.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider request internals; no live provider proof transfers",
+          "path": "dist/core/provider-composer.js.map",
+          "source": "core/provider-composer.ts"
+        }
+      ]
+    },
+    "1.0.2->1.0.3": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "provider default model table; bypassed by direct provider/id lookup",
+          "path": "dist/core/model-resolver.js.map",
+          "source": "core/model-resolver.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "bounded tool result accumulation and private spill storage",
+          "path": "dist/core/tools/output-accumulator.js",
+          "source": "core/tools/output-accumulator.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "bounded tool result accumulation and private spill storage",
+          "path": "dist/core/tools/output-accumulator.js.map",
+          "source": "core/tools/output-accumulator.ts"
+        }
+      ]
+    },
+    "1.0.3->1.0.4": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "resource gating; noExtensions/noSkills/noPromptTemplates/noThemes/noContextFiles remain explicit",
+          "path": "dist/core/resource-loader.js",
+          "source": "core/resource-loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "resource gating; noExtensions/noSkills/noPromptTemplates/noThemes/noContextFiles remain explicit",
+          "path": "dist/core/resource-loader.js.map",
+          "source": "core/resource-loader.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js.map",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "prompt assembly for the fixed read-only tool set",
+          "path": "dist/core/system-prompt.js.map",
+          "source": "core/system-prompt.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only file and image tool; sidecar accepts bounded PNG input",
+          "path": "dist/core/tools/read.js",
+          "source": "core/tools/read.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "selected read-only file and image tool; sidecar accepts bounded PNG input",
+          "path": "dist/core/tools/read.js.map",
+          "source": "core/tools/read.ts"
+        }
+      ]
+    },
+    "1.0.4->1.1.0": {
+      "selected_source_files": [
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+          "path": "dist/core/agent-session.js.map",
+          "source": "core/agent-session.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue/model lookup and provider request orchestration; model network is disabled",
+          "path": "dist/core/model-runtime.js",
+          "source": "core/model-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "catalogue/model lookup and provider request orchestration; model network is disabled",
+          "path": "dist/core/model-runtime.js.map",
+          "source": "core/model-runtime.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+          "path": "dist/core/sdk.js.map",
+          "source": "core/sdk.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js",
+          "source": "core/settings-manager.ts"
+        },
+        {
+          "change": "changed",
+          "classification": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+          "path": "dist/core/settings-manager.js.map",
+          "source": "core/settings-manager.ts"
+        }
+      ]
+    }
+  },
+  "previous_qualified_ceiling": "0.84.2",
+  "required_existing_sdk_exports": [
+    "VERSION",
+    "createAgentSessionRuntime",
+    "createAgentSessionServices",
+    "createAgentSessionFromServices",
+    "SessionManager",
+    "SettingsManager",
+    "ModelRuntime"
+  ],
+  "scope": "pi.sdk-sidecar.package only; no pi.rpc, Node runtime, private wire, or OMP axis transfer",
+  "selected_facade": {
+    "attachment_projection": "existing bounded PNG input and assistant image content behavior",
+    "behavior_revision": "pi.sdk-sidecar-v1",
+    "disabled_features": [
+      "extensions",
+      "skills",
+      "prompt_templates",
+      "themes",
+      "context_files",
+      "model_network",
+      "retry",
+      "compaction",
+      "cache_warming"
+    ],
+    "node_runtime": "22.23.2",
+    "operations": [
+      "catalogue",
+      "new_session",
+      "load_session",
+      "resume_session",
+      "prompt",
+      "steer",
+      "follow_up",
+      "abort",
+      "state",
+      "close"
+    ],
+    "tools": [
+      "read",
+      "grep",
+      "find",
+      "ls"
+    ],
+    "usage_projection": [
+      "input",
+      "output",
+      "cacheRead",
+      "cacheWrite"
+    ],
+    "wire": "swallowtail-pi-sdk-jsonl-v1"
+  },
+  "selected_source_classifications": {
+    "core/agent-session-runtime.ts": "session runtime construction and replacement lifecycle; selected create/load/resume/switch/dispose calls remain",
+    "core/agent-session-services.ts": "service/session construction; resource loading is restricted by explicit no-* flags",
+    "core/agent-session.ts": "session, turn, tool, usage and event mapping; added agent_settled.aborted is ignored by unchanged wire projection",
+    "core/cache-warmer.ts": "automatic provider activity; explicit cacheWarming off disables background replay",
+    "core/defaults.ts": "default thinking behavior; selected exact model and optional thinking selection remain fixed",
+    "core/extensions/index.ts": "extension runtime; no extension operations or providers are activated",
+    "core/extensions/loader.ts": "extension discovery; noExtensions is explicit and no CLI extension paths are supplied",
+    "core/extensions/runner.ts": "extension event dispatch; no active extension handlers are loaded",
+    "core/messages.ts": "session message conversion and image attachment path; existing text/PNG projection remains",
+    "core/model-config.ts": "model configuration; modelsPath is null and provider/model are caller-selected",
+    "core/model-resolver.ts": "provider default model table; bypassed by direct provider/id lookup",
+    "core/model-runtime.ts": "catalogue/model lookup and provider request orchestration; model network is disabled",
+    "core/models-store.ts": "catalogue storage; remote refresh is disabled",
+    "core/provider-composer.ts": "provider request internals; no live provider proof transfers",
+    "core/remote-catalog-provider.ts": "remote catalogue; model network is disabled",
+    "core/resource-loader.ts": "resource gating; noExtensions/noSkills/noPromptTemplates/noThemes/noContextFiles remain explicit",
+    "core/sdk.ts": "runtime wiring; retry=false, compaction=false, cacheWarming=off preserve the sidecar boundary",
+    "core/session-manager.ts": "durable session create/load/replay/continue path",
+    "core/settings-manager.ts": "in-memory configuration; retry and compaction off, cache warming explicitly off",
+    "core/system-prompt.ts": "prompt assembly for the fixed read-only tool set",
+    "core/tools/find.ts": "selected read-only find tool and bounded result projection",
+    "core/tools/grep.ts": "selected read-only grep tool and bounded result projection",
+    "core/tools/index.ts": "tool factory exports; sidecar allowlist remains fixed",
+    "core/tools/ls.ts": "selected read-only listing tool and bounded result projection",
+    "core/tools/output-accumulator.ts": "bounded tool result accumulation and private spill storage",
+    "core/tools/read.ts": "selected read-only file and image tool; sidecar accepts bounded PNG input",
+    "core/tools/truncate.ts": "bounded tool result truncation",
+    "core/usage-totals.ts": "usage aggregation; wire continues to project four integer counters",
+    "index.ts": "root entrypoint export surface; sidecar checks and calls only its existing required exports"
+  },
+  "selected_source_hashes": {
+    "0.84.2": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "2df7d32d9697a22d1e9b70b08480dfe45c4c8e3a2e6719fcf130d927e34edb87"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "831c56842c394969567199a9e5ccdaebb9a3df7bdde825aa677935b825afedd6"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "c83f43205f0b0ef014a383b4969f2bce112a8b4280f6e9f889eeae0d7e02ec2e"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "030018b104890188457f5f9d28b4821837f3f0fbe1d09eef58f9d794e73f7554"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "cee633378032c78eda69b3e3fa418cf0c4aea3f0925221cef95c63977e7e5d39"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "288a884244f2ebe10b1413333b242cb579e47caac04d1b931fc6b94b236fcc89"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "071a6609afa6aeffa74e485b66474076bd7d70c14503804591ce79739100756c"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "8229aedb49e0cf12ebb9ed72670e24770c23e4d3ea814fe6f4e91cabe0288745"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "dd38b1eb8570c461bd8891223b49d2f62387ae454386d7b3498337284aab612b"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "9c19094fe104c9dd7390866dada8fc7f72126867cb866bcb676f0454537f4ba8"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "57e77eee8594aab3da80052b0d2804f83cb3c3713750ec151a417ba22e89e891"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "cc858b549cd3999a2f087d1482c90ad0de9ed2baaf9f427c326b46de424db0b8"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "8a2f5d07c8749d2928512b7dbe883f27c442acec00203980aa0a0634bbbd102b"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "6b0603e675af7ae95e578e87f9f9292d045a08d007fb5c68371c50d45d329ca9"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "19a7ba16f91ef03c21785fb1583a217b63e7d533c143abcb8910c9c090e9bb91"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "48ea062da677d6e52c270f4ec767726b48208ebfd0ee61986baacfd707c76e30"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "df3135f9fe8d0681a8fe435138e221ad36fe8fcd165434c934448a5b29d86051"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "2a1a01cbbc6c04b7593611a8ae71e8d182444417ac50d31d63a86294673c2a31"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "e8b06a0f093c83fd7660a3eae331d5f8ee917702763b1e5044f5c5306e9c1d00"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "557ef716bcf3e26f7086153c4ff8fdac7ebc9f9a04026b666d05860c0592a022"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "102814acd9b220eb16e87f9f18b4e0957699a5188bd5cff80ac0af03634d7c24"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "afeb406e0f5edde143aaac51b9c928cb497bfb8216c04ac9242bfd0f9241ffe1"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "e03428bd7e7d26ee6fbbe981948e80b05a99536d35372d52aa21e2725a8aa263"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "c601ddd8e10934be6f3db30696eacba7b9544f2dd1648a5ec3c9935f0d4625c3"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "1020a1a8237ed20fae100b3d1602004ffeb7170f588f04a4dfa6ec6834a2d85b"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "104e61ea602c7f7894097b2771dad8c68de75c5a10ea6222e615c4ad144451c7"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "e15cef84e1a54aa81e9ebbaefc5c34aab342b687d0cb16db52fbe4accac8c956"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "cc7d3251a5445c428c0f279facf5add0c16bc0e3ef989e4e3173dce4c4fafe8d"
+      }
+    },
+    "0.84.3": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "2df7d32d9697a22d1e9b70b08480dfe45c4c8e3a2e6719fcf130d927e34edb87"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "831c56842c394969567199a9e5ccdaebb9a3df7bdde825aa677935b825afedd6"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "1d0a1f8a4028c34955590110d2f79246fd0a3b21419e2ce5d6190660c9443cc8"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "9603b0319cf8c725fe88dc7e4e86afc6af6e8398924db7236b09bc16787e71c2"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "1cf00caa1f17d26e38e239063f4c13bd83366734932efe8753e0504a90546116"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "071a6609afa6aeffa74e485b66474076bd7d70c14503804591ce79739100756c"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "8229aedb49e0cf12ebb9ed72670e24770c23e4d3ea814fe6f4e91cabe0288745"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "ae25ac5ae010ac554d8c686dc5993238c15b9a815a8bebbadb4fbfa3c6595f4c"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "ac879f39c3dc530f3ddc4f0b975f2ef0e4cdca0d6fac35ae4d7fd2a083cb92a8"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "57e77eee8594aab3da80052b0d2804f83cb3c3713750ec151a417ba22e89e891"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "8a2f5d07c8749d2928512b7dbe883f27c442acec00203980aa0a0634bbbd102b"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "72c74d4d41954deabc9b1b52c9274e76a95f8148b732400f9225ff529aacb915"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "1877e9535820cb8b45e5a84598ac8ae581058bb0fbee6f0c64ec672f8ab986dd"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "938f9f3d484544040e7a06e6f89a07adb72ab007ea660bcaf4a8c1846d20a021"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "85692fd4865f1d10917b12945550e4408290caaf4eb275ea9b1706d75e85e4c2"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "4d5d5c67b54e2e9a33289dbd791479811113b479592f20779232ab1c66a504c9"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "2ee9680424698c5b6128c89dd56489497453c14027ee5c5cd6d32af07493c529"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "557ef716bcf3e26f7086153c4ff8fdac7ebc9f9a04026b666d05860c0592a022"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "102814acd9b220eb16e87f9f18b4e0957699a5188bd5cff80ac0af03634d7c24"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "e03428bd7e7d26ee6fbbe981948e80b05a99536d35372d52aa21e2725a8aa263"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "c601ddd8e10934be6f3db30696eacba7b9544f2dd1648a5ec3c9935f0d4625c3"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "1020a1a8237ed20fae100b3d1602004ffeb7170f588f04a4dfa6ec6834a2d85b"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "104e61ea602c7f7894097b2771dad8c68de75c5a10ea6222e615c4ad144451c7"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "e15cef84e1a54aa81e9ebbaefc5c34aab342b687d0cb16db52fbe4accac8c956"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "ce8eec6d2ea1cd397536edfc3a3db6807ae487fde19a1213d9bb20660099c45a"
+      }
+    },
+    "0.84.4": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "2df7d32d9697a22d1e9b70b08480dfe45c4c8e3a2e6719fcf130d927e34edb87"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "831c56842c394969567199a9e5ccdaebb9a3df7bdde825aa677935b825afedd6"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "003e8377f00b2f3279c2694a025f27a04c6fe2a19a44a1528dc6f9daa7b899c3"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "3502526cb694e66e79b729a72956dd8be4be4556c8c60c3a0b534ac3bf7ad1ce"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "1cf00caa1f17d26e38e239063f4c13bd83366734932efe8753e0504a90546116"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "6d5101ab0551c2ddd904a8089cc221b3c448fcfe36c27e36da02cdacc869c084"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "8229aedb49e0cf12ebb9ed72670e24770c23e4d3ea814fe6f4e91cabe0288745"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "ae25ac5ae010ac554d8c686dc5993238c15b9a815a8bebbadb4fbfa3c6595f4c"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "ac879f39c3dc530f3ddc4f0b975f2ef0e4cdca0d6fac35ae4d7fd2a083cb92a8"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "57e77eee8594aab3da80052b0d2804f83cb3c3713750ec151a417ba22e89e891"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "8a2f5d07c8749d2928512b7dbe883f27c442acec00203980aa0a0634bbbd102b"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "72c74d4d41954deabc9b1b52c9274e76a95f8148b732400f9225ff529aacb915"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "1877e9535820cb8b45e5a84598ac8ae581058bb0fbee6f0c64ec672f8ab986dd"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "938f9f3d484544040e7a06e6f89a07adb72ab007ea660bcaf4a8c1846d20a021"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "0c56db83013972018107eda3a414a4238a645492388de65eace0994bd2691bec"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "9b48e15b3dde34553e6fa0fe95e7485a12b7db1d341e8c39a403bb4700fdfa4f"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "2ee9680424698c5b6128c89dd56489497453c14027ee5c5cd6d32af07493c529"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "557ef716bcf3e26f7086153c4ff8fdac7ebc9f9a04026b666d05860c0592a022"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "102814acd9b220eb16e87f9f18b4e0957699a5188bd5cff80ac0af03634d7c24"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "e03428bd7e7d26ee6fbbe981948e80b05a99536d35372d52aa21e2725a8aa263"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "c601ddd8e10934be6f3db30696eacba7b9544f2dd1648a5ec3c9935f0d4625c3"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "1020a1a8237ed20fae100b3d1602004ffeb7170f588f04a4dfa6ec6834a2d85b"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "104e61ea602c7f7894097b2771dad8c68de75c5a10ea6222e615c4ad144451c7"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "e15cef84e1a54aa81e9ebbaefc5c34aab342b687d0cb16db52fbe4accac8c956"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "d57993de83245f6b338252763ab42e90bf06115c5ffc4bd14a9be867ec79aa46"
+      }
+    },
+    "0.85.0": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "5b348a4db837a2564367dd93b343c67f3b0c28a2f753ff71adcb48d08b5644e7"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "831c56842c394969567199a9e5ccdaebb9a3df7bdde825aa677935b825afedd6"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "23e4acac844638fb0ae60047130f8e1050e4c729c1b8e80d37e359ac9c0eef9a"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "3502526cb694e66e79b729a72956dd8be4be4556c8c60c3a0b534ac3bf7ad1ce"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "7e0e3a70994686f592e19fdf93f07bc65e397c3671f64e0faac3ffa061ba9f63"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "6d5101ab0551c2ddd904a8089cc221b3c448fcfe36c27e36da02cdacc869c084"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "9cdcea8915dbf1bc29c4b086b3f03d0510cd7fb8b3437a2c7b539c58211ca330"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "093f40c22a66dcfbdbbe34929a883c376da691b2be5423fe3375d085eab12108"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "ac879f39c3dc530f3ddc4f0b975f2ef0e4cdca0d6fac35ae4d7fd2a083cb92a8"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "d9e5c3f1b5c1b32aafc8bb06ca64d289de4ab06ff90f264ac9fa7421e398671a"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "3f4a7d4ed926f4b458d8994601dfdf48b77c6a23614e24ca22e1415a731b330f"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "72c74d4d41954deabc9b1b52c9274e76a95f8148b732400f9225ff529aacb915"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "1877e9535820cb8b45e5a84598ac8ae581058bb0fbee6f0c64ec672f8ab986dd"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "938f9f3d484544040e7a06e6f89a07adb72ab007ea660bcaf4a8c1846d20a021"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "57bc70a751567b96c057535766240ae52d9b76d9013ea78049d74dc3b654e915"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "962d3fb1b585bac171c3553bf09113033182d0b9a6ca2e8c01e3b778048a6850"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "c660d28416c4674ba65fb0357d74462749b0741e72a2b15865573198f6b21519"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "c601ddd8e10934be6f3db30696eacba7b9544f2dd1648a5ec3c9935f0d4625c3"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "7b0812226c446baaf4dedccfea97d53cf24bd8b3bcf807722c99cf6da71856d6"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "104e61ea602c7f7894097b2771dad8c68de75c5a10ea6222e615c4ad144451c7"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "e15cef84e1a54aa81e9ebbaefc5c34aab342b687d0cb16db52fbe4accac8c956"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "6839a53be0ddf8533bc4a0b71fb9371b512a467d1c8a827787a02a33a3674b9e"
+      }
+    },
+    "0.85.1": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "5b348a4db837a2564367dd93b343c67f3b0c28a2f753ff71adcb48d08b5644e7"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "831c56842c394969567199a9e5ccdaebb9a3df7bdde825aa677935b825afedd6"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "23e4acac844638fb0ae60047130f8e1050e4c729c1b8e80d37e359ac9c0eef9a"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "3502526cb694e66e79b729a72956dd8be4be4556c8c60c3a0b534ac3bf7ad1ce"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "7e0e3a70994686f592e19fdf93f07bc65e397c3671f64e0faac3ffa061ba9f63"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "6d5101ab0551c2ddd904a8089cc221b3c448fcfe36c27e36da02cdacc869c084"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "9cdcea8915dbf1bc29c4b086b3f03d0510cd7fb8b3437a2c7b539c58211ca330"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "093f40c22a66dcfbdbbe34929a883c376da691b2be5423fe3375d085eab12108"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "ac879f39c3dc530f3ddc4f0b975f2ef0e4cdca0d6fac35ae4d7fd2a083cb92a8"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "d9e5c3f1b5c1b32aafc8bb06ca64d289de4ab06ff90f264ac9fa7421e398671a"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "3f4a7d4ed926f4b458d8994601dfdf48b77c6a23614e24ca22e1415a731b330f"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "72c74d4d41954deabc9b1b52c9274e76a95f8148b732400f9225ff529aacb915"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "1877e9535820cb8b45e5a84598ac8ae581058bb0fbee6f0c64ec672f8ab986dd"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "938f9f3d484544040e7a06e6f89a07adb72ab007ea660bcaf4a8c1846d20a021"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "57bc70a751567b96c057535766240ae52d9b76d9013ea78049d74dc3b654e915"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "962d3fb1b585bac171c3553bf09113033182d0b9a6ca2e8c01e3b778048a6850"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "c660d28416c4674ba65fb0357d74462749b0741e72a2b15865573198f6b21519"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "c601ddd8e10934be6f3db30696eacba7b9544f2dd1648a5ec3c9935f0d4625c3"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "7b0812226c446baaf4dedccfea97d53cf24bd8b3bcf807722c99cf6da71856d6"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "104e61ea602c7f7894097b2771dad8c68de75c5a10ea6222e615c4ad144451c7"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "e15cef84e1a54aa81e9ebbaefc5c34aab342b687d0cb16db52fbe4accac8c956"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "6839a53be0ddf8533bc4a0b71fb9371b512a467d1c8a827787a02a33a3674b9e"
+      }
+    },
+    "0.86.0": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "5b348a4db837a2564367dd93b343c67f3b0c28a2f753ff71adcb48d08b5644e7"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "831c56842c394969567199a9e5ccdaebb9a3df7bdde825aa677935b825afedd6"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "3ea88a751cd830db66ae9348be9f8dfbd5218a01e74b445f3aee9fb87ad3e865"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "25b9b04698e021e2e93ac3ab59e5fa46de02ccffc8148792aba5cd1e466f5c61"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "815bca01a2ff4b12bf501485aea53ef5f53009396acfa771487211ed8123bb5d"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "ba9af64db7ff81df6c94193613f3447bf110497698eb118b379f32af12cff075"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "e43a3dcc2821fd243b5a1662481ee329b4bd91cac832425da5b453ea658edbb6"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "c43fd49f7302e58b406bf69dbc370238e648cf72837f2c0d286f119aab8119e9"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "75fead81206126dbdfbf559746b91400cd5b70a5358a4b133e2cc0de04f1cc57"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "20c1dbfa1dd757a594cf0b4ab6e401fc6c6155484a3f490096bc5328e3c33c2c"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "3b731441ed9d27882404630731ad35f4e79deedc0071837875cc8f2c1dd52773"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "72c74d4d41954deabc9b1b52c9274e76a95f8148b732400f9225ff529aacb915"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "1877e9535820cb8b45e5a84598ac8ae581058bb0fbee6f0c64ec672f8ab986dd"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "d163fd2604ab124926a52146aed21f3c4aa3852ec6bbee66fe2386ef5c75d890"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "860b01d430633431591393e7d14c2cafff792c1c1c374ce18067e0a7e3f59357"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "5d1bdac20da52fdbac76d49fb9ce22d142c375e8efd5bf446bf6c047c5edac42"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "f92aef055417513395a1e7d5f4ef9cd66ccdb34d9f8fbb7bc368154ab6280939"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "c601ddd8e10934be6f3db30696eacba7b9544f2dd1648a5ec3c9935f0d4625c3"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "9198b35438927fa392f2b984fd2c3bedcf51209e4d6d5107d813067e928c5acf"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "104e61ea602c7f7894097b2771dad8c68de75c5a10ea6222e615c4ad144451c7"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "4f5e027dc03d3db8c4b702bd622b65b251b42c069a5be0534cfab9da4cebdfb9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "9061458a74e9b728bba51b34602a069919c20cf65c8692d6af5b86f08d95a730"
+      }
+    },
+    "0.86.1": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "5b348a4db837a2564367dd93b343c67f3b0c28a2f753ff71adcb48d08b5644e7"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "831c56842c394969567199a9e5ccdaebb9a3df7bdde825aa677935b825afedd6"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "3ea88a751cd830db66ae9348be9f8dfbd5218a01e74b445f3aee9fb87ad3e865"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "25b9b04698e021e2e93ac3ab59e5fa46de02ccffc8148792aba5cd1e466f5c61"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "815bca01a2ff4b12bf501485aea53ef5f53009396acfa771487211ed8123bb5d"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "ba9af64db7ff81df6c94193613f3447bf110497698eb118b379f32af12cff075"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "e43a3dcc2821fd243b5a1662481ee329b4bd91cac832425da5b453ea658edbb6"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "c43fd49f7302e58b406bf69dbc370238e648cf72837f2c0d286f119aab8119e9"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "afe357efe95ca478a600596cb93ee19938ac1ad692664fa11e27058f27ffff19"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "20c1dbfa1dd757a594cf0b4ab6e401fc6c6155484a3f490096bc5328e3c33c2c"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "3b731441ed9d27882404630731ad35f4e79deedc0071837875cc8f2c1dd52773"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "72c74d4d41954deabc9b1b52c9274e76a95f8148b732400f9225ff529aacb915"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "1877e9535820cb8b45e5a84598ac8ae581058bb0fbee6f0c64ec672f8ab986dd"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "d163fd2604ab124926a52146aed21f3c4aa3852ec6bbee66fe2386ef5c75d890"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "860b01d430633431591393e7d14c2cafff792c1c1c374ce18067e0a7e3f59357"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "5d1bdac20da52fdbac76d49fb9ce22d142c375e8efd5bf446bf6c047c5edac42"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "f92aef055417513395a1e7d5f4ef9cd66ccdb34d9f8fbb7bc368154ab6280939"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "c601ddd8e10934be6f3db30696eacba7b9544f2dd1648a5ec3c9935f0d4625c3"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "9198b35438927fa392f2b984fd2c3bedcf51209e4d6d5107d813067e928c5acf"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "104e61ea602c7f7894097b2771dad8c68de75c5a10ea6222e615c4ad144451c7"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "4f5e027dc03d3db8c4b702bd622b65b251b42c069a5be0534cfab9da4cebdfb9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "9061458a74e9b728bba51b34602a069919c20cf65c8692d6af5b86f08d95a730"
+      }
+    },
+    "0.87.0": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "ee66f90f4774ace21290fc6a0ed0fc2065376b57af4223371f1d1680b302036d"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "831c56842c394969567199a9e5ccdaebb9a3df7bdde825aa677935b825afedd6"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "e5c020bced4ada5c5e116cbd160f66e111016fc717ae30d79994a45527e7f3d7"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "73f8b18ea7e72836dc90198bb74c29045f1d14571925fb706184c5eba6c7e666"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "ba9af64db7ff81df6c94193613f3447bf110497698eb118b379f32af12cff075"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "bf68eaf27a3e54f1cfc0982554e0598c050fd9a06c8e8b7d6cd2d8e3d8d5990c"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "fda5acc6e80ed31750efd33cacb417f012f19ff22b2e24fcc1bed2d03261513c"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "afe357efe95ca478a600596cb93ee19938ac1ad692664fa11e27058f27ffff19"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "20c1dbfa1dd757a594cf0b4ab6e401fc6c6155484a3f490096bc5328e3c33c2c"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "d0088e387e7cc060e73e8e1bd11ca73c969c7433e368cab6fbb3e5a1d6676f21"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "72c74d4d41954deabc9b1b52c9274e76a95f8148b732400f9225ff529aacb915"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "60e8b49790ab7ab7997dcaa647bef5eaaabdb8273c317c72b1f9567d78e99620"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "b419cd7aa1515d5f85d68d210daa0d79360a1e8eabe456e96b97857bec0498de"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "ded5d65112f8666f0e3ae71dab39a302607c29a000745a3d06e00c2103c8f257"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "5d1bdac20da52fdbac76d49fb9ce22d142c375e8efd5bf446bf6c047c5edac42"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "f92aef055417513395a1e7d5f4ef9cd66ccdb34d9f8fbb7bc368154ab6280939"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "c601ddd8e10934be6f3db30696eacba7b9544f2dd1648a5ec3c9935f0d4625c3"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "104e61ea602c7f7894097b2771dad8c68de75c5a10ea6222e615c4ad144451c7"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "4f5e027dc03d3db8c4b702bd622b65b251b42c069a5be0534cfab9da4cebdfb9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "60472823b30980d1c482f6aed19e4cab09cfeddffaa3be570d67a6cc1d7af2a0"
+      }
+    },
+    "0.87.1": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "ee66f90f4774ace21290fc6a0ed0fc2065376b57af4223371f1d1680b302036d"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "831c56842c394969567199a9e5ccdaebb9a3df7bdde825aa677935b825afedd6"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "e5c020bced4ada5c5e116cbd160f66e111016fc717ae30d79994a45527e7f3d7"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "73f8b18ea7e72836dc90198bb74c29045f1d14571925fb706184c5eba6c7e666"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "ba9af64db7ff81df6c94193613f3447bf110497698eb118b379f32af12cff075"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "bf68eaf27a3e54f1cfc0982554e0598c050fd9a06c8e8b7d6cd2d8e3d8d5990c"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "fda5acc6e80ed31750efd33cacb417f012f19ff22b2e24fcc1bed2d03261513c"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "b0119e2e18f2b480cfd714c121dda1a0b9282bc9d8caa2ead1891b34642d4ed8"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "20c1dbfa1dd757a594cf0b4ab6e401fc6c6155484a3f490096bc5328e3c33c2c"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "d0088e387e7cc060e73e8e1bd11ca73c969c7433e368cab6fbb3e5a1d6676f21"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "72c74d4d41954deabc9b1b52c9274e76a95f8148b732400f9225ff529aacb915"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "60e8b49790ab7ab7997dcaa647bef5eaaabdb8273c317c72b1f9567d78e99620"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "b419cd7aa1515d5f85d68d210daa0d79360a1e8eabe456e96b97857bec0498de"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "ded5d65112f8666f0e3ae71dab39a302607c29a000745a3d06e00c2103c8f257"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "5d1bdac20da52fdbac76d49fb9ce22d142c375e8efd5bf446bf6c047c5edac42"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "f92aef055417513395a1e7d5f4ef9cd66ccdb34d9f8fbb7bc368154ab6280939"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "c601ddd8e10934be6f3db30696eacba7b9544f2dd1648a5ec3c9935f0d4625c3"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "104e61ea602c7f7894097b2771dad8c68de75c5a10ea6222e615c4ad144451c7"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "4f5e027dc03d3db8c4b702bd622b65b251b42c069a5be0534cfab9da4cebdfb9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "60472823b30980d1c482f6aed19e4cab09cfeddffaa3be570d67a6cc1d7af2a0"
+      }
+    },
+    "0.99.0": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "b163ce35d2b6e3ba1fc080c0674044a3f1cd9faec93cc2ed015e31b69780bf4a"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "c69826f519aa21b2dc04768eb63b0d10e88be071195beaf43bb1292dec187d01"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "26e76e13456757b0419df26b1f4d9bce9faa28c2588ad66af3e4cc3e9b179e0a"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "1625b0158e73caf011148b1c9bc9d7ce48ae3f270225acbcd8723a8b13f80fa9"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "aa903524bb2db3ee9fb7f21e863e373e7f12a56c74fd05d27c879a4a7020deb0"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "1a0d73843fba5773d415f484c46898138723b73d27bf8c3159f491fa0b6232f3"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "fda5acc6e80ed31750efd33cacb417f012f19ff22b2e24fcc1bed2d03261513c"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "1d50889c2191ad054d9641386fd159fad678b96adaa80938d5b5e29d44b0e590"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "ca71416cbfd16205771d0ad533b9685b6a3589be9dd554cefd1a18b86b8637ee"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "8e0739b7a4b1512c9d3f4380f858538099eb4515ee5b141cd89c51cc8ea58371"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "35d1c014eeb99aa828571b5466887718a4b759836661779c5ea3013a1dcdcbc3"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "45daa19ad4aa08856cf1eb9b026230b918eb25e163c7dc9ab5cf8add6825955a"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "18b9dc5572fbd6b3aae7f4761cd3e28d4086195b0d75d8d0e8eae2942b5c959c"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "d1a297ea993fd5a5843aecd251adf86d3a1b93911e522ca8a311ae008e9f14d0"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "b8e93e149542756125e66082fbe12cdfbe571d8bbdbd6dd59dc92a4eebe45db9"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "0efe8d4855f1e1e0e3980e856950b53d90a36dc70faf9d8e1a9f8d6c7ac12892"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "775b147324d9bdce8d3cc8a0eacf1d434251fc12b748f4db1ebd5bfb189b65ac"
+      }
+    },
+    "0.99.1": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "b163ce35d2b6e3ba1fc080c0674044a3f1cd9faec93cc2ed015e31b69780bf4a"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "c69826f519aa21b2dc04768eb63b0d10e88be071195beaf43bb1292dec187d01"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "26e76e13456757b0419df26b1f4d9bce9faa28c2588ad66af3e4cc3e9b179e0a"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "1625b0158e73caf011148b1c9bc9d7ce48ae3f270225acbcd8723a8b13f80fa9"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "aa903524bb2db3ee9fb7f21e863e373e7f12a56c74fd05d27c879a4a7020deb0"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "1a0d73843fba5773d415f484c46898138723b73d27bf8c3159f491fa0b6232f3"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "fda5acc6e80ed31750efd33cacb417f012f19ff22b2e24fcc1bed2d03261513c"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "6fa438617c6bf1862ae5aee53e99df845b008131f0f107662e6b96dd3224decd"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "ca71416cbfd16205771d0ad533b9685b6a3589be9dd554cefd1a18b86b8637ee"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "8e0739b7a4b1512c9d3f4380f858538099eb4515ee5b141cd89c51cc8ea58371"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "35d1c014eeb99aa828571b5466887718a4b759836661779c5ea3013a1dcdcbc3"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "45daa19ad4aa08856cf1eb9b026230b918eb25e163c7dc9ab5cf8add6825955a"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "18b9dc5572fbd6b3aae7f4761cd3e28d4086195b0d75d8d0e8eae2942b5c959c"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "d1a297ea993fd5a5843aecd251adf86d3a1b93911e522ca8a311ae008e9f14d0"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "b8e93e149542756125e66082fbe12cdfbe571d8bbdbd6dd59dc92a4eebe45db9"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "0efe8d4855f1e1e0e3980e856950b53d90a36dc70faf9d8e1a9f8d6c7ac12892"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "775b147324d9bdce8d3cc8a0eacf1d434251fc12b748f4db1ebd5bfb189b65ac"
+      }
+    },
+    "0.99.2": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "b163ce35d2b6e3ba1fc080c0674044a3f1cd9faec93cc2ed015e31b69780bf4a"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "c69826f519aa21b2dc04768eb63b0d10e88be071195beaf43bb1292dec187d01"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "1e3e55e2ed6c6f6ab7935be2d757224448debb6cf0d09f1229a1301110be4532"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "1625b0158e73caf011148b1c9bc9d7ce48ae3f270225acbcd8723a8b13f80fa9"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "bfda2e6b9a70f72a5884e1cc084fdf21f63370f69a5707ca2d7b311a4e2dd7d4"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "1a0d73843fba5773d415f484c46898138723b73d27bf8c3159f491fa0b6232f3"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "fda5acc6e80ed31750efd33cacb417f012f19ff22b2e24fcc1bed2d03261513c"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "6fa438617c6bf1862ae5aee53e99df845b008131f0f107662e6b96dd3224decd"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "de28a51492788e7f5f4d6f20a57fa8b08e32fd9e766a365211b54a3f3959a177"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "8e0739b7a4b1512c9d3f4380f858538099eb4515ee5b141cd89c51cc8ea58371"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "e494bfed7b1dff1c8cbc9a77976e00e9f639a7d48631d363e84f7532fde9db88"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "45daa19ad4aa08856cf1eb9b026230b918eb25e163c7dc9ab5cf8add6825955a"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "1fb8a84ab4dfab28344932b430c8d4abcd234a1c35ae9aebc3049269a813312d"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "d1a297ea993fd5a5843aecd251adf86d3a1b93911e522ca8a311ae008e9f14d0"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "b8e93e149542756125e66082fbe12cdfbe571d8bbdbd6dd59dc92a4eebe45db9"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "0efe8d4855f1e1e0e3980e856950b53d90a36dc70faf9d8e1a9f8d6c7ac12892"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "775b147324d9bdce8d3cc8a0eacf1d434251fc12b748f4db1ebd5bfb189b65ac"
+      }
+    },
+    "1.0.0": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "b163ce35d2b6e3ba1fc080c0674044a3f1cd9faec93cc2ed015e31b69780bf4a"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "c69826f519aa21b2dc04768eb63b0d10e88be071195beaf43bb1292dec187d01"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "11ce7b78ee9d4235f2cdc80632332c93935ad23d7e5d68fe1aa5b155e1a297c0"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "1625b0158e73caf011148b1c9bc9d7ce48ae3f270225acbcd8723a8b13f80fa9"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "bfda2e6b9a70f72a5884e1cc084fdf21f63370f69a5707ca2d7b311a4e2dd7d4"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "1a0d73843fba5773d415f484c46898138723b73d27bf8c3159f491fa0b6232f3"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "fda5acc6e80ed31750efd33cacb417f012f19ff22b2e24fcc1bed2d03261513c"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "6fa438617c6bf1862ae5aee53e99df845b008131f0f107662e6b96dd3224decd"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "de28a51492788e7f5f4d6f20a57fa8b08e32fd9e766a365211b54a3f3959a177"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "8e0739b7a4b1512c9d3f4380f858538099eb4515ee5b141cd89c51cc8ea58371"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "e494bfed7b1dff1c8cbc9a77976e00e9f639a7d48631d363e84f7532fde9db88"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "45daa19ad4aa08856cf1eb9b026230b918eb25e163c7dc9ab5cf8add6825955a"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "1fb8a84ab4dfab28344932b430c8d4abcd234a1c35ae9aebc3049269a813312d"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "535c679f41f769d9129ffec5521508241162c9dfe0a9c7782157b193eb0e5664"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "e9cf234637f792c44e71764b8daff13bc15b0e77aa5574ec9728365ac9f61807"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "0efe8d4855f1e1e0e3980e856950b53d90a36dc70faf9d8e1a9f8d6c7ac12892"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "53f1276c704d1d823d37f2c0b1cfa60daae19b1c220e78d028b863a15f304078"
+      }
+    },
+    "1.0.1": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "b163ce35d2b6e3ba1fc080c0674044a3f1cd9faec93cc2ed015e31b69780bf4a"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "c69826f519aa21b2dc04768eb63b0d10e88be071195beaf43bb1292dec187d01"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "fa1a4f2d84efd0aab8f4a74301d1106395130d3cc59bd665c558280f27dceb03"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "2db3e69402f83f1a82091a64a38394d5b6392079fde8e41962a8fe528568d4ba"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "fda5acc6e80ed31750efd33cacb417f012f19ff22b2e24fcc1bed2d03261513c"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "bbd8dcba05e9547e89d9b238f367d0e13fc1106815e7b8acce55a554ddc10396"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "de28a51492788e7f5f4d6f20a57fa8b08e32fd9e766a365211b54a3f3959a177"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "8e0739b7a4b1512c9d3f4380f858538099eb4515ee5b141cd89c51cc8ea58371"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "e494bfed7b1dff1c8cbc9a77976e00e9f639a7d48631d363e84f7532fde9db88"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "45daa19ad4aa08856cf1eb9b026230b918eb25e163c7dc9ab5cf8add6825955a"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "1fb8a84ab4dfab28344932b430c8d4abcd234a1c35ae9aebc3049269a813312d"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "535c679f41f769d9129ffec5521508241162c9dfe0a9c7782157b193eb0e5664"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "e9cf234637f792c44e71764b8daff13bc15b0e77aa5574ec9728365ac9f61807"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "0efe8d4855f1e1e0e3980e856950b53d90a36dc70faf9d8e1a9f8d6c7ac12892"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "38fafc47fa9b757c315a749ace273cb000ebc04d87350249a260835d61608ebd"
+      }
+    },
+    "1.0.2": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "b163ce35d2b6e3ba1fc080c0674044a3f1cd9faec93cc2ed015e31b69780bf4a"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "c69826f519aa21b2dc04768eb63b0d10e88be071195beaf43bb1292dec187d01"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "fa1a4f2d84efd0aab8f4a74301d1106395130d3cc59bd665c558280f27dceb03"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "2db3e69402f83f1a82091a64a38394d5b6392079fde8e41962a8fe528568d4ba"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "f1fc4f843e916908f5710e240f8d14a1df35025a1172e89115c3cf82c5c79fa4"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "bbd8dcba05e9547e89d9b238f367d0e13fc1106815e7b8acce55a554ddc10396"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "de28a51492788e7f5f4d6f20a57fa8b08e32fd9e766a365211b54a3f3959a177"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "b410756ee3cd275c5e615061657c87b28fc6595b30611cafcb67b833e80a6c3f"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "e494bfed7b1dff1c8cbc9a77976e00e9f639a7d48631d363e84f7532fde9db88"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "45daa19ad4aa08856cf1eb9b026230b918eb25e163c7dc9ab5cf8add6825955a"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "1fb8a84ab4dfab28344932b430c8d4abcd234a1c35ae9aebc3049269a813312d"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "535c679f41f769d9129ffec5521508241162c9dfe0a9c7782157b193eb0e5664"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "e9cf234637f792c44e71764b8daff13bc15b0e77aa5574ec9728365ac9f61807"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "0efe8d4855f1e1e0e3980e856950b53d90a36dc70faf9d8e1a9f8d6c7ac12892"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "38fafc47fa9b757c315a749ace273cb000ebc04d87350249a260835d61608ebd"
+      }
+    },
+    "1.0.3": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "b163ce35d2b6e3ba1fc080c0674044a3f1cd9faec93cc2ed015e31b69780bf4a"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "c69826f519aa21b2dc04768eb63b0d10e88be071195beaf43bb1292dec187d01"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "fa1a4f2d84efd0aab8f4a74301d1106395130d3cc59bd665c558280f27dceb03"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "2db3e69402f83f1a82091a64a38394d5b6392079fde8e41962a8fe528568d4ba"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "f1fc4f843e916908f5710e240f8d14a1df35025a1172e89115c3cf82c5c79fa4"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "d9c26faa20b3173b5e567b00c5635e2ba5f8501c54cb3ac126610eea4ff6d5a8"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "de28a51492788e7f5f4d6f20a57fa8b08e32fd9e766a365211b54a3f3959a177"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "b410756ee3cd275c5e615061657c87b28fc6595b30611cafcb67b833e80a6c3f"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "e494bfed7b1dff1c8cbc9a77976e00e9f639a7d48631d363e84f7532fde9db88"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "45daa19ad4aa08856cf1eb9b026230b918eb25e163c7dc9ab5cf8add6825955a"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "1fb8a84ab4dfab28344932b430c8d4abcd234a1c35ae9aebc3049269a813312d"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "535c679f41f769d9129ffec5521508241162c9dfe0a9c7782157b193eb0e5664"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "e9cf234637f792c44e71764b8daff13bc15b0e77aa5574ec9728365ac9f61807"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "255c11af6596a043f2d8225d3faba1ff18e3f43fe47052b3e018f9ef9517a9d9"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "38fafc47fa9b757c315a749ace273cb000ebc04d87350249a260835d61608ebd"
+      }
+    },
+    "1.0.4": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "b163ce35d2b6e3ba1fc080c0674044a3f1cd9faec93cc2ed015e31b69780bf4a"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "c69826f519aa21b2dc04768eb63b0d10e88be071195beaf43bb1292dec187d01"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "86bb6d4ed757c6fa4b4154c938c900aafbddf8aa067587098b6154a33f844c9a"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "2db3e69402f83f1a82091a64a38394d5b6392079fde8e41962a8fe528568d4ba"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "f1fc4f843e916908f5710e240f8d14a1df35025a1172e89115c3cf82c5c79fa4"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "d9c26faa20b3173b5e567b00c5635e2ba5f8501c54cb3ac126610eea4ff6d5a8"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "de28a51492788e7f5f4d6f20a57fa8b08e32fd9e766a365211b54a3f3959a177"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "b410756ee3cd275c5e615061657c87b28fc6595b30611cafcb67b833e80a6c3f"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "e494bfed7b1dff1c8cbc9a77976e00e9f639a7d48631d363e84f7532fde9db88"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "dbe87c11983b8dac949377904f4cf0511155771498ba88d2fefb0cd0d5dd9e28"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "cb1872d664f64a359c9efb93fd7215902a90c499d18367ede2d07da981cdfa07"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "535c679f41f769d9129ffec5521508241162c9dfe0a9c7782157b193eb0e5664"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "5e28c82634113d0cca7ff5da6fa94e27aaae80e461cd5664ced9dbcef6f89089"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "255c11af6596a043f2d8225d3faba1ff18e3f43fe47052b3e018f9ef9517a9d9"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "c3c64f7105599455d3066568074796e2ddb143cb210da4981b0eb632aa3d2811"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "38fafc47fa9b757c315a749ace273cb000ebc04d87350249a260835d61608ebd"
+      }
+    },
+    "1.1.0": {
+      "core/agent-session-runtime.ts": {
+        "artifact_base": "dist/core/agent-session-runtime.js",
+        "map_path": "dist/core/agent-session-runtime.js.map",
+        "sha256": "b163ce35d2b6e3ba1fc080c0674044a3f1cd9faec93cc2ed015e31b69780bf4a"
+      },
+      "core/agent-session-services.ts": {
+        "artifact_base": "dist/core/agent-session-services.js",
+        "map_path": "dist/core/agent-session-services.js.map",
+        "sha256": "c69826f519aa21b2dc04768eb63b0d10e88be071195beaf43bb1292dec187d01"
+      },
+      "core/agent-session.ts": {
+        "artifact_base": "dist/core/agent-session.js",
+        "map_path": "dist/core/agent-session.js.map",
+        "sha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df"
+      },
+      "core/cache-warmer.ts": {
+        "artifact_base": "dist/core/cache-warmer.js",
+        "map_path": "dist/core/cache-warmer.js.map",
+        "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+      },
+      "core/defaults.ts": {
+        "artifact_base": "dist/core/defaults.js",
+        "map_path": "dist/core/defaults.js.map",
+        "sha256": "e05e32e5613066667b52fa1d8864fec27b3564636f93af7983f53984bce02955"
+      },
+      "core/extensions/index.ts": {
+        "artifact_base": "dist/core/extensions/index.js",
+        "map_path": "dist/core/extensions/index.js.map",
+        "sha256": "2db3e69402f83f1a82091a64a38394d5b6392079fde8e41962a8fe528568d4ba"
+      },
+      "core/extensions/loader.ts": {
+        "artifact_base": "dist/core/extensions/loader.js",
+        "map_path": "dist/core/extensions/loader.js.map",
+        "sha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a"
+      },
+      "core/extensions/runner.ts": {
+        "artifact_base": "dist/core/extensions/runner.js",
+        "map_path": "dist/core/extensions/runner.js.map",
+        "sha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a"
+      },
+      "core/messages.ts": {
+        "artifact_base": "dist/core/messages.js",
+        "map_path": "dist/core/messages.js.map",
+        "sha256": "5397e3c96c9504266e4ee8b6e88d5098b3280ee7dbb0c687b74708c62a06c8d4"
+      },
+      "core/model-config.ts": {
+        "artifact_base": "dist/core/model-config.js",
+        "map_path": "dist/core/model-config.js.map",
+        "sha256": "f1fc4f843e916908f5710e240f8d14a1df35025a1172e89115c3cf82c5c79fa4"
+      },
+      "core/model-resolver.ts": {
+        "artifact_base": "dist/core/model-resolver.js",
+        "map_path": "dist/core/model-resolver.js.map",
+        "sha256": "d9c26faa20b3173b5e567b00c5635e2ba5f8501c54cb3ac126610eea4ff6d5a8"
+      },
+      "core/model-runtime.ts": {
+        "artifact_base": "dist/core/model-runtime.js",
+        "map_path": "dist/core/model-runtime.js.map",
+        "sha256": "5f07a8c675f8ec6acffebf91fd0675910bdbd6348e6e100cf35ad4993fc84b30"
+      },
+      "core/models-store.ts": {
+        "artifact_base": "dist/core/models-store.js",
+        "map_path": "dist/core/models-store.js.map",
+        "sha256": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+      },
+      "core/provider-composer.ts": {
+        "artifact_base": "dist/core/provider-composer.js",
+        "map_path": "dist/core/provider-composer.js.map",
+        "sha256": "b410756ee3cd275c5e615061657c87b28fc6595b30611cafcb67b833e80a6c3f"
+      },
+      "core/remote-catalog-provider.ts": {
+        "artifact_base": "dist/core/remote-catalog-provider.js",
+        "map_path": "dist/core/remote-catalog-provider.js.map",
+        "sha256": "e494bfed7b1dff1c8cbc9a77976e00e9f639a7d48631d363e84f7532fde9db88"
+      },
+      "core/resource-loader.ts": {
+        "artifact_base": "dist/core/resource-loader.js",
+        "map_path": "dist/core/resource-loader.js.map",
+        "sha256": "dbe87c11983b8dac949377904f4cf0511155771498ba88d2fefb0cd0d5dd9e28"
+      },
+      "core/sdk.ts": {
+        "artifact_base": "dist/core/sdk.js",
+        "map_path": "dist/core/sdk.js.map",
+        "sha256": "61f398403c7510bec849583b2c46272df11ac5aa8d2e24b4ded97a108dd55b28"
+      },
+      "core/session-manager.ts": {
+        "artifact_base": "dist/core/session-manager.js",
+        "map_path": "dist/core/session-manager.js.map",
+        "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff"
+      },
+      "core/settings-manager.ts": {
+        "artifact_base": "dist/core/settings-manager.js",
+        "map_path": "dist/core/settings-manager.js.map",
+        "sha256": "d916365ae21bce0f9a4f3ad15690e290ceca0aad958013e3280779b0cde0b074"
+      },
+      "core/system-prompt.ts": {
+        "artifact_base": "dist/core/system-prompt.js",
+        "map_path": "dist/core/system-prompt.js.map",
+        "sha256": "5e28c82634113d0cca7ff5da6fa94e27aaae80e461cd5664ced9dbcef6f89089"
+      },
+      "core/tools/find.ts": {
+        "artifact_base": "dist/core/tools/find.js",
+        "map_path": "dist/core/tools/find.js.map",
+        "sha256": "b06bcae6821a0e9fda1b63be613a7ce28eb0e66e1d01d16564e59e83f9ce10ea"
+      },
+      "core/tools/grep.ts": {
+        "artifact_base": "dist/core/tools/grep.js",
+        "map_path": "dist/core/tools/grep.js.map",
+        "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b"
+      },
+      "core/tools/index.ts": {
+        "artifact_base": "dist/core/tools/index.js",
+        "map_path": "dist/core/tools/index.js.map",
+        "sha256": "3c66ea1e03530fb85436ee639f35add8bf72718ac6e76b738a1f41be58a2b472"
+      },
+      "core/tools/ls.ts": {
+        "artifact_base": "dist/core/tools/ls.js",
+        "map_path": "dist/core/tools/ls.js.map",
+        "sha256": "3d0a5457e4f5b9e9967c44608b76b060374d047e80d6871ecec4459b612cb6a3"
+      },
+      "core/tools/output-accumulator.ts": {
+        "artifact_base": "dist/core/tools/output-accumulator.js",
+        "map_path": "dist/core/tools/output-accumulator.js.map",
+        "sha256": "255c11af6596a043f2d8225d3faba1ff18e3f43fe47052b3e018f9ef9517a9d9"
+      },
+      "core/tools/read.ts": {
+        "artifact_base": "dist/core/tools/read.js",
+        "map_path": "dist/core/tools/read.js.map",
+        "sha256": "c3c64f7105599455d3066568074796e2ddb143cb210da4981b0eb632aa3d2811"
+      },
+      "core/tools/truncate.ts": {
+        "artifact_base": "dist/core/tools/truncate.js",
+        "map_path": "dist/core/tools/truncate.js.map",
+        "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+      },
+      "core/usage-totals.ts": {
+        "artifact_base": "dist/core/usage-totals.js",
+        "map_path": "dist/core/usage-totals.js.map",
+        "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9"
+      },
+      "index.ts": {
+        "artifact_base": "dist/index.js",
+        "map_path": "dist/index.js.map",
+        "sha256": "38fafc47fa9b757c315a749ace273cb000ebc04d87350249a260835d61608ebd"
+      }
+    }
+  },
+  "source_entrypoint": "@earendil-works/pi-coding-agent/dist/index.js"
+}

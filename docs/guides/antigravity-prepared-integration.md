@@ -38,7 +38,7 @@ or acquire a credential. The access profile is provider-supported local auth
 with subscription allowance and no credential reference.
 
 Qualified catalogue versions are `1.1.9..=1.3.1` on
-`antigravity-cli.release`, excluding unpublished `1.2.18` (Research 378).
+`antigravity-cli.release`, excluding unpublished `1.2.18` (Research 379).
 The catalogue retains its existing claim and behavior revision. Qualified
 headless versions are deprecated
 `1.1.9..=1.1.17` on `antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1`

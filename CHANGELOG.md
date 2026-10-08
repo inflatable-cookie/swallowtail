@@ -6,6 +6,15 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- keep `kiro.acp` at its existing exact `2.21.4` point; official Kiro CLI
+  stable `2.28.0` and all twelve published successor hops remain unqualified
+  pending exact ACP V2 owner-sweep reachability and session, path, and failure
+  effects. Research 394 freezes the official artifact identity and complete
+  hop inventories and names the isolated no-network harness proposed for
+  separate approval. The approved `.env` and owner-only boundaries do not
+  qualify newer points; HTTP MCP live honouring remains exact `2.21.4`. No
+  artifact execution, provider work, credential use, installation, or host
+  mutation occurred.
 - qualify only `cline.headless` through official npm stable `3.0.70` after
   every published hop from `3.0.55`; preserve `3.0.55`, the existing behavior
   revision, and the unpublished `3.0.59` exclusion. Research 390 freezes all

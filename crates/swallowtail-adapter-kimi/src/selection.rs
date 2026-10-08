@@ -22,8 +22,12 @@ pub const KIMI_CODE_BASELINE_VERSION: &str = "0.28.1";
 /// run through official `0.43.0` found the same `acpTerminalRunner` source
 /// blob and the same bundled `AcpProcessService` digest at every point, so the
 /// cap does not move and no new exclusion is added. Exact `0.39.0` and
-/// `0.39.1` stay excluded as recorded evidence; `0.40.0..=0.43.0` are the
-/// posture-rejected published gap. See `ACP_EXCLUDED_AUTHORITY_VERSIONS`.
+/// `0.39.1` stay excluded as recorded evidence; every published point above
+/// `0.38.0` through official stable `2.1.1` is posture-rejected. The runner
+/// uses local spawn when terminal is disabled or the call misses its
+/// argument/environment predicate; Research 403 finds no shipped per-session
+/// control for both paths and records a host-terminal design for separate
+/// review. See `ACP_EXCLUDED_AUTHORITY_VERSIONS`.
 pub const KIMI_CODE_LATEST_QUALIFIED_VERSION: &str = "0.38.0";
 /// Oldest qualified Kimi Code headless version.
 pub const KIMI_HEADLESS_BASELINE_VERSION: &str = "0.29.0";

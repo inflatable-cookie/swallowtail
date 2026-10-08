@@ -47,6 +47,10 @@ name = "prepared_facade"
 path = "tests/acp_suite.rs"
 
 [[test]]
+name = "kimi_code_2_1_1_acp_identity"
+path = "tests/kimi_code_2_1_1_acp_identity.rs"
+
+[[test]]
 name = "headless_structured_run"
 path = "tests/headless_suite.rs"
 

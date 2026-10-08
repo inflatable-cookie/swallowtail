@@ -27,7 +27,7 @@ fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
     );
     assert_eq!(open["success"], true, "matching identity opens: {open}");
     assert_eq!(open["data"]["sdkPackage"], "@anthropic-ai/claude-agent-sdk");
-    assert_eq!(open["data"]["sdkVersion"], "0.3.284");
+    assert_eq!(open["data"]["sdkVersion"], "0.3.293");
     let node_version = open["data"]["nodeVersion"]
         .as_str()
         .expect("the sidecar reports its executing Node version");
@@ -127,7 +127,7 @@ fn mismatching_sdk_package_identity_fails_before_sdk_construction_with_bounded_e
         sidecar.next_diagnostic()["evidence"],
         json!({
             "declaredSdkPackage": "@anthropic-ai/claude-agent-sdk",
-            "declaredSdkVersion": "0.3.284",
+            "declaredSdkVersion": "0.3.293",
             "loadedSdkPackage": "@anthropic-ai/claude-agent-sdk",
             "loadedSdkVersion": "0.3.258"
         })
@@ -211,7 +211,7 @@ fn package_identity_stays_bound_to_the_nested_sdk_package_root() {
         "nested package identity opens: {open}"
     );
     assert_eq!(open["data"]["sdkPackage"], "@anthropic-ai/claude-agent-sdk");
-    assert_eq!(open["data"]["sdkVersion"], "0.3.284");
+    assert_eq!(open["data"]["sdkVersion"], "0.3.293");
     assert!(sidecar.sdk_was_constructed());
     let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
     assert_eq!(close["success"], true);
@@ -1062,9 +1062,9 @@ fn model_rejection_evidence_is_bounded_and_does_not_change_the_failure_response(
                 "effectiveMembership": effective_membership,
                 "querySource": "sdk.query",
                 "phase": "first-turn-model-qualification",
-                "declaredSdkVersion": "0.3.284",
-                "loadedSdkVersion": "0.3.284",
-                "nativeVersion": "2.1.284"
+                "declaredSdkVersion": "0.3.293",
+                "loadedSdkVersion": "0.3.293",
+                "nativeVersion": "2.1.293"
             })
         );
         let wire = diagnostic.to_string();
@@ -2035,7 +2035,7 @@ fn an_optional_mcp_server_failure_is_recorded_without_failing_open() {
     assert_eq!(options["mcpServers"]["fixture"]["alwaysLoad"], false);
 }
 
-/// The fake's faithful `0.3.284` status rows carry fixture-only marker values
+/// The fake's faithful `0.3.293` status rows carry fixture-only marker values
 /// in every declared optional field (`serverInfo`, `error`, `config`, `scope`,
 /// `tools`). None of that metadata may cross the safe projection into any
 /// sidecar response; its absence is the Card 146 non-leak oracle.
@@ -2147,7 +2147,7 @@ fn an_unknown_status_row_stays_invalid_even_with_declared_metadata() {
 
 #[test]
 fn undeclared_top_level_row_fields_stay_invalid() {
-    // `url` and `headers` are config members in 0.3.284, never top-level
+    // `url` and `headers` are config members in 0.3.293, never top-level
     // `McpServerStatus` row fields; an undeclared top-level key stays
     // fail-closed even though every declared optional field is now admitted.
     for scenario in ["mcp-undeclared-url", "mcp-undeclared-headers"] {

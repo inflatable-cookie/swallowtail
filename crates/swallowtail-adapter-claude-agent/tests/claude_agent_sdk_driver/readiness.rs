@@ -594,9 +594,9 @@ fn model_qualification_evidence_reaches_the_recording_observer() {
                     "effectiveMembership": effective_membership,
                     "querySource": "sdk.query",
                     "phase": "first-turn-model-qualification",
-                    "declaredSdkVersion": "0.3.284",
-                    "loadedSdkVersion": "0.3.284",
-                    "nativeVersion": "2.1.284"
+                    "declaredSdkVersion": "0.3.293",
+                    "loadedSdkVersion": "0.3.293",
+                    "nativeVersion": "2.1.293"
                 })
             );
             let detail_text = observation.detail();

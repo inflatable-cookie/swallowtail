@@ -127,7 +127,7 @@ impl SidecarProcess {
         );
         std::fs::write(
             directory.join("manifest.json"),
-            json!({"version": "2.1.284"}).to_string(),
+            json!({"version": "2.1.293"}).to_string(),
         )
         .expect("fake manifest is written");
 
@@ -571,7 +571,7 @@ fn write_sdk_fixture(
     let package_manifest = directory.join("package.json");
     let correct_manifest = json!({
         "name": "@anthropic-ai/claude-agent-sdk",
-        "version": "0.3.284"
+        "version": "0.3.293"
     })
     .to_string();
     let mismatch_manifest = json!({
@@ -636,7 +636,7 @@ fn write_sdk_fixture(
             };
             let mut manifest = json!({
                 "name": "@anthropic-ai/claude-agent-sdk",
-                "version": "0.3.284"
+                "version": "0.3.293"
             });
             manifest[manifest_field] = json!(identity_value.expect("identity boundary value"));
             std::fs::write(package_manifest, manifest.to_string())

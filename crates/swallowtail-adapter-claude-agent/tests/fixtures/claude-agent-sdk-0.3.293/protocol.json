@@ -1,0 +1,176 @@
+{
+  "baseline_sdk": "0.3.284",
+  "baseline_native": "2.1.284",
+  "current_sdk": "0.3.293",
+  "current_native": "2.1.293",
+  "claim_shape": "compatible-extension: maintained package/native segments preserve baseline, claim ids, behavior revision and QualifiedOnly posture; Node, wire and sidecar source axes remain exact",
+  "selected_mapped_subset": [
+    "query() from dot entry only; streaming user input stays open until Query.close()",
+    "Options: cwd, model, executable, pathToClaudeCodeExecutable, env, settingSources, skills, plugins, agents, mcpServers, strictMcpConfig, hooks, persistSession, includePartialMessages, tools, disallowedTools, permissionMode, canUseTool, spawnClaudeCodeProcess, and route-selected systemPrompt/effort/resume controls",
+    "Query.initializationResult(), supportedModels(), accountInfo(), mcpServerStatus(), interrupt(), setPermissionMode(), setModel(), close()",
+    "SDKMessage projection: assistant text/tool_use; user tool_result id/error; bounded result subtype/error/usage facts; system/stream progress; unknown message types fail closed",
+    "Per-result main-loop usage: input_tokens, output_tokens, cache_read_input_tokens, cache_creation_input_tokens; cumulative modelUsage/cost/context are not projected",
+    "Consumer MCP stdio config, status allowlist and per-call canUseTool; no HTTP/SSE/managed/in-process MCP",
+    "Exact one-shot canUseTool admission; allow returns original input unchanged; deny never dispatches; no persistent grant operation",
+    "Query.close() plus sidecar-retained native handle join; host lifecycle evidence remains independent of SDK close",
+    "Research 301 registered-tool live acceptance remains exact SDK 0.3.259/native 2.1.259; no newer tuple inherits it"
+  ],
+  "selected_declaration_invariants": {
+    "query_api": {
+      "initializationResult": "Promise<SDKControlInitializeResponse>",
+      "supportedModels": "Promise<ModelInfo[]>",
+      "accountInfo": "Promise<AccountInfo>",
+      "mcpServerStatus": "Promise<McpServerStatus[]>",
+      "interrupt": "Promise<SDKControlInterruptResponse | undefined>",
+      "setPermissionMode": "Promise<void>",
+      "setModel": "Promise<void>",
+      "close": "void"
+    },
+    "sdk_message_union": "unchanged from 0.3.284 through 0.3.293",
+    "mcp_status_declared_top_level_keys": [
+      "name",
+      "status",
+      "serverInfo",
+      "error",
+      "config",
+      "scope",
+      "source",
+      "tools"
+    ],
+    "result_usage_keys": [
+      "input_tokens",
+      "output_tokens",
+      "cache_read_input_tokens",
+      "cache_creation_input_tokens"
+    ],
+    "sidecar_explicit_permission_mode": true,
+    "sidecar_include_partial_messages": false,
+    "sidecar_setting_sources": [],
+    "sidecar_strict_mcp_config": true,
+    "sidecar_native_path_explicit": true,
+    "sidecar_agents": {},
+    "sidecar_skills": []
+  },
+  "hop_review": [
+    {
+      "from": "0.3.284",
+      "to": "0.3.285",
+      "classification": "compatible_extension",
+      "unmapped_changes": "Artifact read title and provider/settings keys are not selected; settingSources is always empty. MCP toggle/getSessionMessages/subagent lifecycle fixes are not called or admitted. SDK tool pin/unpin types are on unselected sdk-tools declarations. MCP alwaysLoad now honors explicit server metadata opting out of prompt-time loading; sidecar still sends true for required servers, keeps configured names in the available tools set, and retains canUseTool mediation. This affects discovery timing chosen by the server, not route grants or operations."
+    },
+    {
+      "from": "0.3.285",
+      "to": "0.3.286",
+      "classification": "compatible_extension",
+      "unmapped_changes": "In-process MCP initialize manifests/capabilities are unused: sidecar supplies only consumer stdio servers and no sdkMcpServerManifestsOrigin. Subagent fixes are unreachable because agents is empty and Agent/Task tools are excluded. PermissionMode omission changed upstream, but each open sends an explicit mode; absent host input becomes explicit default before query()."
+    },
+    {
+      "from": "0.3.286",
+      "to": "0.3.287",
+      "classification": "compatible_extension",
+      "unmapped_changes": "Task-output control and remote-session latency fields are unused. Large MCP structuredContent omission affects top-level SDK message metadata not forwarded by projectMessage; user tool_result maps only tool_use_id and is_error. Partial-message fixes do not apply because includePartialMessages is false. In-process MCP and WebFetch/WebSearch are outside the closed route set."
+    },
+    {
+      "from": "0.3.287",
+      "to": "0.3.288",
+      "classification": "compatible_extension",
+      "unmapped_changes": "Added provider/task configuration and auto-compaction declaration members are not supplied by the sidecar; settings sources remain empty and no related controls are called."
+    },
+    {
+      "from": "0.3.288",
+      "to": "0.3.289",
+      "classification": "compatible_extension",
+      "unmapped_changes": "No selected declaration delta; changed default-entry bytes are build output/provider-internal parity. Selected API, usage, permission, message and cleanup surfaces remain present."
+    },
+    {
+      "from": "0.3.289",
+      "to": "0.3.290",
+      "classification": "compatible_extension",
+      "unmapped_changes": "WebFetch offset, Chrome metadata and tool alias wildcard permission changes are not selected: WebFetch/WebSearch/Task are excluded, settings sources are empty, and the route has no tool-alias permission rules. User-message same-UUID replay is disabled and sidecar inputs carry no UUID. Partial-message behavior is outside scope because includePartialMessages is false. SDK tool declarations are unselected."
+    },
+    {
+      "from": "0.3.290",
+      "to": "0.3.291",
+      "classification": "compatible_extension",
+      "unmapped_changes": "No selected declaration delta; changed default-entry bytes are build output/provider-internal parity. Selected API, usage, permission, message and cleanup surfaces remain present."
+    },
+    {
+      "from": "0.3.291",
+      "to": "0.3.292",
+      "classification": "compatible_extension",
+      "unmapped_changes": "Subagent task ids/run ids, task ordering, background fields, ListAgents/SendMessage/ReadNotifications outputs and connector approval hints do not map: agents and skills are disabled, Agent/Task tools excluded, and no persistent permission-grant operation exists. Extra callback options are ignored by the sidecar; wire decisions remain one-shot allow/deny with original input on allow."
+    },
+    {
+      "from": "0.3.292",
+      "to": "0.3.293",
+      "classification": "compatible_extension",
+      "unmapped_changes": "Optional subagent_type applies only to background task rows; the route supplies no agents and admits no Agent/Task tools. New startup-failure type members remain outside sidecar projection; results cross as bounded presence/type/status and usage facts only."
+    }
+  ],
+  "mapped_behavior_changes": [],
+  "bounded_unmapped_changes": [
+    {
+      "category": "unselected package subpaths",
+      "members": [
+        "./bridge",
+        "./browser",
+        "./core"
+      ],
+      "evidence": "package exports and dot-entry import graph; the sidecar names only the dot module and identity checks forbid credential-bearing subpaths"
+    },
+    {
+      "category": "unselected tool declarations",
+      "members": [
+        "sdk-tools.d.ts",
+        "Artifact",
+        "Task/Agent",
+        "WebFetch",
+        "WebSearch",
+        "Chrome",
+        "pin/unpin"
+      ],
+      "evidence": "closed tool set; agents={}, skills=[], plugins=[], hooks={}, settingSources=[]"
+    },
+    {
+      "category": "native artifact rotations",
+      "members": [
+        "darwin-arm64",
+        "darwin-x64",
+        "linux-arm64",
+        "linux-x64",
+        "linux-arm64-musl",
+        "linux-x64-musl",
+        "win32-arm64",
+        "win32-x64"
+      ],
+      "evidence": "every wrapper manifest records exact native version/commit/build date/schema and platform SHA-256/size; current Darwin arm64 package binary matches manifest; no artifact executed"
+    },
+    {
+      "category": "non-forwarded message fields",
+      "members": [
+        "tool_use_result.structuredContent",
+        "agent_id",
+        "parent_task_id",
+        "run_id",
+        "subagent_type",
+        "startup_failure_reason",
+        "unselected result metadata"
+      ],
+      "evidence": "sidecar allowlists mapped fields and records bounded result facts; callback wire offers no persistent grant"
+    }
+  ],
+  "native_artifact_rotation": {
+    "all_eight_platform_binaries_rotated_each_published_hop": true,
+    "harness_schema_unchanged": true,
+    "sdk_compat_tested_wrappers_still_older_than_shipped_wrapper": true,
+    "current_darwin_arm64_manifest_digest_verified_against_downloaded_binary": true
+  },
+  "registered_tool_disposition": "Research 301 remains exact to 0.3.259/2.1.259, Node 22.23.2, source tag 0.4.4 and Darwin arm64; compiled 0.3.293/2.1.293 remains unqualified for registered_tools and consumer_tool_exchange. Courier, lifetime, and usage code do not transfer live provider evidence.",
+  "per_hop_file_classification": "dist-inventory.json classifies exact file sets and SHA-256s for every added, removed, changed and identical path at each adjacent published hop.",
+  "no_prompt": true,
+  "no_live_session": true,
+  "no_credentials": true,
+  "no_install": true,
+  "no_host_change": true,
+  "nothing_executed": true
+}

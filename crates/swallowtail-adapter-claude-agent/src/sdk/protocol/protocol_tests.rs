@@ -112,7 +112,12 @@ fn corpus_identity_matches_the_frozen_sidecar_identity() {
         protocol["sidecar_entry_file"],
         CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE
     );
-    assert_eq!(protocol["compatibility_claim"], "qualified_only_one_point");
+    assert_eq!(
+        protocol["compatibility_claim"],
+        "qualified_only_maintained_segment"
+    );
+    assert_eq!(protocol["package_baseline"], "0.3.284");
+    assert_eq!(protocol["native_baseline"], "2.1.284");
     assert!(
         CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG
             .starts_with(protocol["sidecar_source_tag_prefix"].as_str().unwrap())

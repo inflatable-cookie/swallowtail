@@ -80,15 +80,18 @@ pub const CLAUDE_AGENT_SDK_WIRE: &str = "swallowtail-claude-agent-sdk-jsonl-v1";
 pub const CLAUDE_AGENT_SDK_BEHAVIOR: &str = "claude-agent.sdk-v1";
 /// Exact upstream SDK package the sidecar loads through its `.` entry point.
 pub const CLAUDE_AGENT_SDK_PACKAGE: &str = "@anthropic-ai/claude-agent-sdk";
-/// Exact qualified SDK wrapper package version.
-pub const CLAUDE_AGENT_SDK_VERSION: &str = "0.3.284";
-/// Exact native binary version the shipped SDK manifest declares. The wrapper
-/// and native axes are coupled but never equal, and neither transfers a
-/// Claude Code qualification to this route.
-pub const CLAUDE_AGENT_SDK_NATIVE_VERSION: &str = "2.1.284";
-/// Current official Node 22 runtime version satisfying the upstream `>=18.0.0`
-/// requirement. The qualified Node claim also retains the prior `22.23.2`
-/// point.
+/// First qualified SDK wrapper package version in the maintained segment.
+pub(crate) const CLAUDE_AGENT_SDK_BASELINE_VERSION: &str = "0.3.284";
+/// Current qualified SDK wrapper package version.
+pub const CLAUDE_AGENT_SDK_VERSION: &str = "0.3.293";
+/// First qualified native binary version in the maintained segment.
+pub(crate) const CLAUDE_AGENT_SDK_NATIVE_BASELINE_VERSION: &str = "2.1.284";
+/// Current native version the shipped SDK manifest declares. The wrapper and
+/// native axes are coupled but never equal, and neither transfers a Claude
+/// Code qualification to this route.
+pub const CLAUDE_AGENT_SDK_NATIVE_VERSION: &str = "2.1.293";
+/// Current official Node 22 runtime satisfying the upstream `>=18.0.0`
+/// requirement. The qualified Node claim retains the earlier `22.23.2` point.
 pub const CLAUDE_AGENT_SDK_NODE_RUNTIME: &str = "22.23.3";
 
 /// Reports whether this route is supported on the running execution host

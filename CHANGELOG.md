@@ -327,21 +327,20 @@ annotated Git tags from the canonical repository.
   Existing operation-scoped callers keep their previous deadline behavior.
   A virtual-clock fake-SDK regression covers a delayed call after open expiry
   and a later call on the same connected courier.
-- rebind the Claude Agent SDK exact one-point package/native tuple to official
-  npm `@anthropic-ai/claude-agent-sdk` `0.3.284` carrying native `2.1.284`:
-  Research 367 freezes all thirteen published hops after the `0.3.270` ceiling
-  (`0.3.271`–`0.3.278`, `0.3.280`–`0.3.283`; gap `0.3.279`) with
-  wrapper/native coupling, tarball digests, native commits, platform
-  payloads, and a complete tree inventory (15 files through `0.3.281`, 19
-  from the `0.3.282` `./core` split). Mapped query, session, permission,
-  model, tool-admission, MCP-stdio, and close surfaces stay unchanged;
-  `McpServerStatus.source` is an admitted discarded Card 146 key, not a new
-  mapped surface. Keep the behavior revision, wire, Node `22.23.2`, sidecar
-  source-tag axes, claim ids, and `QualifiedOnly` posture with no
-  unverified-newer. Research 301 live registered-tool acceptance stays bound
-  to `0.3.259`/`2.1.259` and does not transfer. `next` `0.3.285` is ignored;
-  unpublished `0.3.286` stays the first later synthetic. No provider
-  operation, downloaded-artifact execution, or host mutation occurred.
+- qualify `claude-agent.sdk` through official npm latest
+  `@anthropic-ai/claude-agent-sdk` `0.3.293` carrying embedded native
+  `2.1.293`. Research 382 freezes every published hop from the retained
+  `0.3.284`/`2.1.284` baseline, exact npm integrity and native manifest
+  identities, complete package trees, and per-hop classifications. The
+  package and native claims keep their baselines, claim ids, behavior
+  revision, `QualifiedOnly` posture, and point-for-point coupling. Selected
+  query, session, permission, model, tool-admission, MCP-stdio, usage, and
+  close mappings stay compatible; the `0.3.285` server `alwaysLoad` metadata
+  remains a server-controlled discovery choice, with required servers still
+  requested and mediated. Node, wire, sidecar source, and other axes stay
+  exact. Research 301 live registered-tool acceptance remains bound to
+  `0.3.259`/`2.1.259` and does not transfer. No provider operation,
+  downloaded-artifact execution, or host mutation occurred.
 - raise the Claude Agent ACP qualified ceiling from `0.79.0` to official npm
   `@agentclientprotocol/claude-agent-acp` `0.81.2`. Compatible extension of
   `claude-agent.acp.initialize-meta-extensions-v7`: selected mapped ACP

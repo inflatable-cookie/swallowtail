@@ -1,6 +1,6 @@
 //! Contract 063 registered-tool adoption for the `claude-agent.sdk` route.
 //!
-//! The `0.3.284` surface exposes MCP server configuration, a permission
+//! The `0.3.293` surface exposes MCP server configuration, a permission
 //! callback, and bounded status. It exposes no public callback equivalent to
 //! `RegisteredToolDispatcher::dispatch(call, context)`. This route therefore
 //! adopts the registered-tool boundary through one Swallowtail-owned MCP

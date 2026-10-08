@@ -1,18 +1,18 @@
 //! Interface-version selection for the Claude Agent SDK sidecar route.
 //!
-//! Five axes bind the exact SDK wrapper package, exact native binary version,
-//! qualified Node 22 runtime window, private sidecar wire, and source-tagged
-//! sidecar revision. The wrapper, native, wire, and sidecar claims remain
-//! qualified-only one-point segments; only Node extends from `22.23.2` to
-//! official stable `22.23.3` on the existing claim and behavior revision.
-//! None inherits the `claude-agent.acp` window or either Claude Code window:
-//! the wrapper and native axes are coupled but not equal, so a Claude Code
-//! qualification never transfers here and this route's qualification never
-//! transfers back.
+//! Five axes bind the SDK wrapper, the native binary declared by its shipped
+//! manifest, the approved Node runtime, the private sidecar wire, and the
+//! source-tagged sidecar revision. The package/native axes retain their
+//! baselines and claim IDs while extending across published hops `0.3.285`–
+//! `0.3.293`; the independent Node axis is maintained through `22.23.3` (Research
+//! 387). Wire and sidecar source stay exact. Package/native versions are checked
+//! together; no Claude Code or ACP qualification transfers here.
 
 use super::{
-    CLAUDE_AGENT_SDK_BEHAVIOR, CLAUDE_AGENT_SDK_NATIVE_VERSION, CLAUDE_AGENT_SDK_NODE_RUNTIME,
-    CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_WIRE,
+    CLAUDE_AGENT_SDK_BASELINE_VERSION, CLAUDE_AGENT_SDK_BEHAVIOR,
+    CLAUDE_AGENT_SDK_NATIVE_BASELINE_VERSION, CLAUDE_AGENT_SDK_NATIVE_VERSION,
+    CLAUDE_AGENT_SDK_NODE_RUNTIME, CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION,
+    CLAUDE_AGENT_SDK_WIRE,
 };
 use crate::sdk::failure::failure;
 use swallowtail_core::{
@@ -91,27 +91,27 @@ pub fn claude_agent_sdk_sidecar_binding(value: &str) -> Option<InterfaceVersionB
     ))
 }
 
-/// Returns the qualified-only one-point SDK wrapper package claim.
+/// Returns the qualified-only maintained SDK wrapper package segment.
 #[must_use]
 pub fn claude_agent_sdk_package_claim() -> InterfaceCompatibilityClaim {
-    claim(
+    window_claim(
         "claude-agent.sdk.package-window-1",
         InterfaceVersionAxis::new(CLAUDE_AGENT_SDK_PACKAGE_AXIS)
             .expect("static SDK sidecar axis is valid"),
-        InterfaceVersionScheme::Semantic,
+        CLAUDE_AGENT_SDK_BASELINE_VERSION,
         InterfaceVersion::new(CLAUDE_AGENT_SDK_VERSION)
             .expect("static SDK sidecar version is valid"),
     )
 }
 
-/// Returns the qualified-only one-point native binary claim.
+/// Returns the qualified-only maintained native binary segment.
 #[must_use]
 pub fn claude_agent_sdk_native_claim() -> InterfaceCompatibilityClaim {
-    claim(
+    window_claim(
         "claude-agent.sdk.native-window-1",
         InterfaceVersionAxis::new(CLAUDE_AGENT_SDK_NATIVE_AXIS)
             .expect("static SDK sidecar axis is valid"),
-        InterfaceVersionScheme::Semantic,
+        CLAUDE_AGENT_SDK_NATIVE_BASELINE_VERSION,
         InterfaceVersion::new(CLAUDE_AGENT_SDK_NATIVE_VERSION)
             .expect("static SDK sidecar version is valid"),
     )
@@ -178,7 +178,29 @@ pub(crate) fn validate_claude_agent_sdk_plan_versions(
     ] {
         validate_axis(plan, &claim)?;
     }
+    let package = plan
+        .interface_versions()
+        .find(|binding| binding.axis().as_str() == CLAUDE_AGENT_SDK_PACKAGE_AXIS)
+        .expect("validated package axis is present");
+    let native = plan
+        .interface_versions()
+        .find(|binding| binding.axis().as_str() == CLAUDE_AGENT_SDK_NATIVE_AXIS)
+        .expect("validated native axis is present");
+    if !package_native_pair_matches(package.version().as_str(), native.version().as_str()) {
+        return Err(failure(
+            "swallowtail.claude-agent.sdk.version_incompatible",
+            "Claude Agent SDK wrapper and embedded native versions must be a qualified manifest pair",
+        ));
+    }
     Ok(())
+}
+
+fn package_native_pair_matches(package: &str, native: &str) -> bool {
+    package.strip_prefix("0.3.").is_some_and(|package_patch| {
+        native
+            .strip_prefix("2.1.")
+            .is_some_and(|native_patch| native_patch == package_patch)
+    })
 }
 
 fn validate_axis(
@@ -221,13 +243,39 @@ fn claim(
     scheme: InterfaceVersionScheme,
     version: InterfaceVersion,
 ) -> InterfaceCompatibilityClaim {
+    window_claim_versions(id, axis, scheme, version.clone(), version)
+}
+
+fn window_claim(
+    id: &str,
+    axis: InterfaceVersionAxis,
+    baseline: &str,
+    current: InterfaceVersion,
+) -> InterfaceCompatibilityClaim {
+    window_claim_versions(
+        id,
+        axis,
+        InterfaceVersionScheme::Semantic,
+        InterfaceVersion::new(baseline).expect("static SDK baseline is valid"),
+        current,
+    )
+}
+
+fn window_claim_versions(
+    id: &str,
+    axis: InterfaceVersionAxis,
+    scheme: InterfaceVersionScheme,
+    baseline: InterfaceVersion,
+    current: InterfaceVersion,
+) -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new(id).expect("static SDK sidecar claim id is valid"),
         axis,
         scheme,
         InterfaceNewerVersionPosture::QualifiedOnly,
-        [swallowtail_core::InterfaceVersionSegment::exact(
-            version,
+        [swallowtail_core::InterfaceVersionSegment::new(
+            baseline,
+            current,
             InterfaceBehaviorRevision::new(CLAUDE_AGENT_SDK_BEHAVIOR)
                 .expect("static SDK sidecar behavior revision is valid"),
             InterfaceSupportStatus::Maintained,

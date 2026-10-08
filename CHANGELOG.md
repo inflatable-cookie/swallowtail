@@ -153,7 +153,7 @@ annotated Git tags from the canonical repository.
   both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
   and `0.59.1` exclusions remain in force.
 - qualify only `codex.app-server` through official npm/GitHub stable `0.161.0`;
-  Research 386 freezes package and runtime identities, complete source trees,
+  Research 387 freezes package and runtime identities, complete source trees,
   all twelve selected stable hops, and the exact selected-route policy proof.
   The claim keeps its baseline, ID, prior segments, behavior revisions, and
   exclusions, with private revisions for accepted managed policies and the

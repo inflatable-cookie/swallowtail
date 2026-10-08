@@ -41,12 +41,21 @@ impl FixtureHost {
     }
 
     pub fn with_version(scenario: Scenario, version: &str) -> Self {
+        Self::with_version_and_resource_path(scenario, version, "/private/fixture/src/lib.rs")
+    }
+
+    pub fn with_version_and_resource_path(
+        scenario: Scenario,
+        version: &str,
+        resource_path: impl Into<String>,
+    ) -> Self {
         Self {
             agent: Arc::new(SharedAgent {
                 state: Mutex::new(AgentState::default()),
                 changed: Condvar::new(),
                 scenario,
                 version: version.to_owned(),
+                resource_path: resource_path.into(),
             }),
             process: Arc::new(Mutex::new(None)),
             reads: Arc::new(AtomicUsize::new(0)),

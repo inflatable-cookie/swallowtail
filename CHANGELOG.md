@@ -6,6 +6,15 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only `gemini-cli.acp` through official stable `0.63.0`. Preserve
+  `0.51.0..=0.61.0` on its existing behavior revision and the published
+  exclusions; qualify exact `0.62.0` on the pending/failed tool-update
+  milestone and exact `0.63.0` on the restricted-file milestone. Document
+  `.gemini` and shell-redirection permission stops, real-path reads, protected
+  `.env.*` exceptions, and the 64 KiB stored-tool-output cap in Research 410.
+  The headless claim remains through `0.61.0`, and HTTP MCP live honouring
+  remains exact `0.61.0`. No public API or lifecycle changed, and no provider
+  was run.
 - Keep `kimi-code.acp` at its `0.38.0` ceiling while the official npm and
   GitHub stable `2.1.1` remains blocked by the same unmediated terminal process
   spawn from both the terminal-disabled branch and non-Bash fallback. Research

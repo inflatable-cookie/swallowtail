@@ -109,13 +109,14 @@ points as `UnverifiedNewer`; those expectations were corrected. On the
 authorized continuation, the final rebased code passed the targeted selector:
 54 passed, 16 skipped. `effigy check:current-ollama-attached` also passed.
 
-The first push attempt stopped at the existing canonical Research 373 number
-collision. Repair 142 was merged before this continuation; current canonical
-main now assigns 373 to Claude Agent ACP, 374 to Claude Code headless, 375 to
-Qwen Code, and 376 to OpenCode HTTP. The refreshed
-`effigy qa:docs:research:numbers` selector passed, and this record uses the
-next free id, Research 377. Final `effigy qa:docs` passed, including links,
-research indexing, and number collision checks.
+The first push attempt stopped at a canonical Research 373 number collision.
+Repair 142 was merged before the first continuation. At that refresh, canonical
+main assigned 373 to Claude Agent ACP, 374 to Claude Code headless, 375 to
+Qwen Code, and 376 to OpenCode HTTP; the refreshed
+`effigy qa:docs:research:numbers` and `effigy qa:docs` selectors passed then.
+Canonical main subsequently allocated Research 377 to OpenCode ACP and 378 to
+Claude Code response-only. This Ollama record was renumbered to the next free
+id, Research 379, after that movement was found.
 
 Final `effigy qa:routes` passed route, lifecycle, feature, activity, and
 historical boundary checks. `effigy skill run northstar/retired-concepts`

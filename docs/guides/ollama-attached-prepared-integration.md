@@ -95,7 +95,7 @@ Its chat scheduler starts background local compatibility migration for
 supported legacy GGUF models, which can write converted blobs and
 manifest-list entries in the attached runtime's model store. Later `/api/tags`
 responses can return one row per child runner. This behavior exceeds the
-qualified lifecycle and catalogue contract; see Research 377 for the exact
+qualified lifecycle and catalogue contract; see Research 379 for the exact
 ruling and adaptation needed before extending the claim. The existing
 `AllowUnverified` posture remains in force, so the version assessment alone
 does not suppress an attempt on `0.40.0`.

@@ -13,7 +13,7 @@ pub const OLLAMA_BASELINE_VERSION: &str = "0.14.0";
 /// Exact stable points `0.35.0` and `0.35.1` retain
 /// `ollama.native-text-v1`. `0.40.0` adds an inference-triggered local
 /// compatibility migration, so it remains visibly unverified pending an
-/// adapter and authority ruling (Research 377).
+/// adapter and authority ruling (Research 379).
 pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.35.1";
 pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";

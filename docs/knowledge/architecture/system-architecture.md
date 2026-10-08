@@ -425,7 +425,7 @@ OpenHands adds a package without a production route.
   remain distinct, with optional adapter-local `options.num_ctx` dispatch on
   structured runs and interactive replay. Current official `0.40.0` is
   unverified because chat can start local compatibility migration; Research
-  377 records the adapter and authority gate. The adapter adds no installation,
+  379 records the adapter and authority gate. The adapter adds no installation,
   model acquisition, cloud access, unload, or server ownership.
 - `swallowtail-adapter-xai` implements resource-free direct inference over one
   host-approved Responses WebSocket as either one bounded response without
@@ -1714,7 +1714,7 @@ drift fail before operation effects. Maintained `0.14.0..=0.34.4` and
 unpublished gaps, and prerelease closure remain explicit. Current official
 `0.40.0` remains `UnverifiedNewer`: its chat scheduler can start background
 local model-store migration, which needs an operator ruling before this
-attached-runtime lifecycle is qualified (Research 377).
+attached-runtime lifecycle is qualified (Research 379).
 
 llama.cpp completes the local-runtime family with deliberately separate
 prepared types. `prepare_llama_cpp_attached` binds one host-approved external

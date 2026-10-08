@@ -38,7 +38,7 @@ annotated Git tags from the canonical repository.
   `UnverifiedNewer`: chat scheduling starts background local compatibility
   migration that can write converted model blobs and manifest-list entries,
   changing the attached store lifecycle and later catalogue shape. Research
-  377 freezes the release identities and complete source trees and names the
+  379 freezes the release identities and complete source trees and names the
   ruling/adaptation needed before the claim can move again. No local runtime,
   provider prompt, model download, or host mutation occurred.
 - qualify the current `claude-agent.acp` stable point through official npm

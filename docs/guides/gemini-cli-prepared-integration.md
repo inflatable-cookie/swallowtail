@@ -32,9 +32,12 @@ ACP `0.51.0..=0.61.0` excluding unpublished `0.56.1` and `0.59.1` retains
 `gemini-cli.acp.v0.62.0-tool-updates` milestone, and exact `0.63.0` uses
 `gemini-cli.acp.v0.63.0-restricted-files` ([Research 415](../research/415-gemini-cli-0-63-0-acp-policy-adaptation.md)).
 Headless remains qualified through `0.61.0` with the same unpublished
-exclusions; `0.62.0` and `0.63.0` remain `UnverifiedNewer` for headless under
-Research 371. Later stable releases may prepare as visible
-`UnverifiedNewer`; older and excluded releases do not prepare, and newer
+exclusions. `0.62.0` and `0.63.0` remain `UnverifiedNewer` for headless:
+Research 417 shows noninteractive Plan policy allows `exit_plan_mode` to
+switch approval to YOLO, and the selected adapter has no guard for that
+transition. A separate authority-preserving adaptation must settle that
+boundary before the headless claim can move. Later stable releases may prepare
+as visible `UnverifiedNewer`; older and excluded releases do not prepare, and newer
 releases gain no capability.
 
 On ACP `0.63.0`, ordinary bounded text reads and writes remain available.

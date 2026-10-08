@@ -81,3 +81,7 @@ path = "tests/gemini_cli_0_61_0_delta_ledger.rs"
 [[test]]
 name = "gemini_cli_0_63_0_delta_ledger"
 path = "tests/gemini_cli_0_63_0_delta_ledger.rs"
+
+[[test]]
+name = "gemini_cli_0_63_0_headless_authority_stop"
+path = "tests/gemini_cli_0_63_0_headless_authority_stop.rs"

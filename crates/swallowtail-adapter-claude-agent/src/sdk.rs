@@ -67,9 +67,9 @@ pub use registered_tool::ClaudeAgentSdkRegisteredOnlyBinding;
 pub use selected_skill::ClaudeAgentSdkSelectedSkillBinding;
 pub use selection::{
     CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_NODE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS,
-    CLAUDE_AGENT_SDK_SIDECAR_AXIS, CLAUDE_AGENT_SDK_WIRE_AXIS, claude_agent_sdk_native_binding,
-    claude_agent_sdk_native_claim, claude_agent_sdk_node_binding, claude_agent_sdk_node_claim,
-    claude_agent_sdk_package_binding, claude_agent_sdk_package_claim,
+    CLAUDE_AGENT_SDK_SIDECAR_AXIS, CLAUDE_AGENT_SDK_WIRE_AXIS, ClaudeAgentSdkPackageNativePair,
+    claude_agent_sdk_native_binding, claude_agent_sdk_native_claim, claude_agent_sdk_node_binding,
+    claude_agent_sdk_node_claim, claude_agent_sdk_package_binding, claude_agent_sdk_package_claim,
     claude_agent_sdk_sidecar_binding, claude_agent_sdk_sidecar_claim,
     claude_agent_sdk_wire_binding, claude_agent_sdk_wire_claim,
 };

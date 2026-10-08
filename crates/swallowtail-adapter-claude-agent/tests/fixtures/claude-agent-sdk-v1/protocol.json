@@ -9,6 +9,18 @@
  "native_baseline": "2.1.284",
  "package_latest_qualified": "0.3.293",
  "native_latest_qualified": "2.1.293",
+ "package_native_pairs": [
+  {"sdk_package_version": "0.3.284", "native_version": "2.1.284"},
+  {"sdk_package_version": "0.3.285", "native_version": "2.1.285"},
+  {"sdk_package_version": "0.3.286", "native_version": "2.1.286"},
+  {"sdk_package_version": "0.3.287", "native_version": "2.1.287"},
+  {"sdk_package_version": "0.3.288", "native_version": "2.1.288"},
+  {"sdk_package_version": "0.3.289", "native_version": "2.1.289"},
+  {"sdk_package_version": "0.3.290", "native_version": "2.1.290"},
+  {"sdk_package_version": "0.3.291", "native_version": "2.1.291"},
+  {"sdk_package_version": "0.3.292", "native_version": "2.1.292"},
+  {"sdk_package_version": "0.3.293", "native_version": "2.1.293"}
+ ],
  "sidecar_entry_file": "claude-agent-sdk-sidecar.mjs",
  "sidecar_source_tag_prefix": "swallowtail-claude-agent-sdk-sidecar@",
  "compatibility_claim": "qualified_only_maintained_segment",
@@ -23,8 +35,17 @@
  "open_params": [
   "cwd",
   "model",
+  "expectedSdkVersion",
+  "expectedNativeVersion",
   "tools",
   "permissionMode"
+ ],
+ "list_sessions_params": [
+  "cwd",
+  "limit",
+  "offset",
+  "expectedSdkVersion",
+  "expectedNativeVersion"
  ],
  "close_params": [
   "joinBoundMs"

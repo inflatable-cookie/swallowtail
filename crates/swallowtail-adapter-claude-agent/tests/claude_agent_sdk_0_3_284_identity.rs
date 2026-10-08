@@ -5,7 +5,7 @@
 //! deltas are edited without re-deriving the evidence, this fails. Nothing here
 //! executes a downloaded artifact, contacts a provider, or reads a credential.
 //! This historical ledger freezes only the prior qualified baseline.
-//! Research 396 extends the package/native segments from `0.3.284`/`2.1.284`
+//! Research 414 extends the package/native segments from `0.3.284`/`2.1.284`
 //! through `0.3.293`/`2.1.293`; Research 301 live evidence stays bound to
 //! `0.3.259`/`2.1.259`.
 //!

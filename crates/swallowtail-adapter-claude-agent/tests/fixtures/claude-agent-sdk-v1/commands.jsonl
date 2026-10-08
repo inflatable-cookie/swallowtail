@@ -1,4 +1,4 @@
-{"type":"command","id":"open-1","command":"open","params":{"cwd":"/fixture/claude-agent-sdk-workspace","model":"claude-sonnet-5","tools":["Read","Glob","Grep"],"permissionMode":"default"}}
+{"type":"command","id":"open-1","command":"open","params":{"cwd":"/fixture/claude-agent-sdk-workspace","model":"claude-sonnet-5","expectedSdkVersion":"0.3.293","expectedNativeVersion":"2.1.293","tools":["Read","Glob","Grep"],"permissionMode":"default"}}
 {"type":"command","id":"query:turn-1","command":"query","params":{"text":"read the manifest"}}
 {"type":"command","id":"interrupt:turn-1","command":"interrupt","params":{}}
 {"type":"command","id":"close:request-1","command":"close","params":{"joinBoundMs":2000}}

@@ -312,6 +312,14 @@ Tom's 2026-10-08 board answer to decision
 exact-pair preparation adaptation”. The existing session preparation boundary
 may gain additive typed selection of an exact SDK package/native pair,
 preserving existing callers, default behavior and every maintained pair.
+The implementation exposes `ClaudeAgentSdkPackageNativePair` and the
+`with_package_native_pair` builder; callers that omit it retain the existing
+`0.3.293`/`2.1.293` default. The selected values are bound independently in the
+preflight plan and copied from that plan into private open and listing messages.
+The shipped sidecar checks the selected pair against loaded package metadata
+and the package's original native manifest before SDK construction. Research
+414 retains artifact and hop identity evidence, while provider-free facade and
+sidecar fixtures exercise the preparation and launch path for all ten pairs.
 Validate the pair before plan construction; bind the package and native
 identities as independent axes in the preflight plan. Pass expected identities
 through driver-owned private launch configuration. The original shipped
@@ -325,6 +333,11 @@ sidecar against fakes. Mismatched, outside-window, missing or unreadable
 identities and drift fail closed before provider effects. A sidecar-only
 relaxation, inferred version, silent fallback or replacement of an old point
 cannot satisfy this approval.
+
+The additive enum and builder preserve the existing constructor and default
+selection, so existing callers remain source-compatible under Contract 036.
+This adaptation is part of the approved currentness minor and is not a
+released-line patch change.
 
 Preserve the Node axis, baseline and claim identities, approved host,
 environment and target authority, operations, permission and lifecycle

@@ -148,15 +148,23 @@ exact one-point claims. The open path has one narrow observation-only exception
 for a newer Node runtime that passes the sidecar floor:
 
 - `claude-agent.sdk.package`: `@anthropic-ai/claude-agent-sdk`
-  `0.3.284..=0.3.293` (Research 396)
+  `0.3.284..=0.3.293` (Research 414)
 - `claude-agent.sdk.native`: `2.1.284..=2.1.293`, coupled point-for-point to
-  the package version by each shipped `manifest.json` (Research 396)
+  the package version by each shipped `manifest.json` (Research 414)
 - `claude-agent.sdk.node`: maintained Node `22.23.2..=22.23.3` (satisfying the
   upstream `>=18.0.0` requirement; Research 387)
 - `claude-agent.sdk.wire`: exact `swallowtail-claude-agent-sdk-jsonl-v1`
   (opaque)
 - `claude-agent.sdk.sidecar`: the exact source-tagged sidecar revision
   (opaque)
+
+The Oct 8, 2026 npm re-probe found `latest` and `next` at package `0.3.294`,
+whose embedded manifest identifies native `2.1.294`. That hop remains
+unqualified because its changed package/runtime surfaces have not been
+classified against the selected route behavior. The claims above therefore
+stop at `0.3.293`/`2.1.293`; the new npm point does not gain support from its
+version number or artifact metadata alone. Research 414 records the in-run
+currentness stop and the required hop-classification adaptation.
 
 Two evidence limits belong to this family and must not be papered over. The
 npm tarball digest is the sole artifact identity: npm carries no `gitHead`,
@@ -168,25 +176,39 @@ versions only through `0.3.285`. Only the runtime `capabilities` observed
 from the first-turn `system/init` may be treated as behavior.
 
 At open, the sidecar resolves the package manifest from the host-supplied SDK
-module path and reads its `name` and `version` before calling `sdk.query`. The
-open evidence reports that loaded package identity, so `sdkVersion` is never a
-sidecar constant. A readable identity that differs from the qualified package
-or version fails with typed `sdk_version_mismatch`; its bounded
+module path and the shipped native manifest from the host-supplied manifest
+path. Preparation selects an exact coupled package/native point with
+`ClaudeAgentSdkSessionPreparation::with_package_native_pair`; the finite
+`ClaudeAgentSdkPackageNativePair` choices cover `0.3.284`/`2.1.284` through
+`0.3.293`/`2.1.293`. Existing callers retain the `.293` pair by default. The
+driver takes both expected versions from the prepared plan and passes them in
+its private launch messages. Before constructing the SDK query, the sidecar
+checks that the selected pair is maintained, the loaded package metadata has
+that exact package version, and the shipped manifest has that exact native
+version. The open evidence reports the loaded package and native identities;
+neither value is inferred from an opaque launch target or sidecar constant. A
+readable identity that differs from the selected pair fails with typed
+`sdk_version_mismatch` or `native_version_mismatch`; its bounded
 `InterfaceVersion` observation carries declared and loaded package/version
 labels. A missing, malformed, or otherwise unreadable manifest fails with
-typed `sdk_identity_unverifiable`, before the SDK is constructed.
+typed `sdk_identity_unverifiable` for package metadata, or a bounded native
+manifest failure, before the SDK is constructed. Research 414 records the
+exact published artifacts; provider-free prepared-facade and shipped-sidecar
+fixtures exercise every maintained pair and reject drift before SDK query.
 
 The point moved three times already: `0.3.258` was qualified first, Research 280
 rebound both coupled axes to `0.3.259` after a full package-tree inventory,
 Research 315 rebound them to `0.3.270` across the nine published hops
 `0.3.260..=0.3.270` (gaps `0.3.262`, `0.3.264`), and Research 367 rebound them
 to `0.3.284` across the thirteen published hops `0.3.271`–`0.3.278` and
-`0.3.280`–`0.3.283` (gap `0.3.279`). Research 396 extends the same coupled
+`0.3.280`–`0.3.283` (gap `0.3.279`). Research 414 extends the same coupled
 axes across every published hop `0.3.285..=0.3.293`; selected wire, lifecycle,
 permission, usage, configuration, and tool behavior remains compatible. It
-preserves the `0.3.284`/`2.1.284` baselines and existing claim ids. The current
-point comes from npm `latest` and its exact wrapper manifest, not the installed
-Claude Code host. Card 146 admits optional `McpServerStatus.source` as a
+preserves the `0.3.284`/`2.1.284` baselines and existing claim ids. The
+`0.3.293` point came from npm `latest` and its exact wrapper manifest, not the
+installed Claude Code host; it is no longer the current npm stable after the
+Oct 8 movement described above. Card 146 admits optional
+`McpServerStatus.source` as a
 discarded declared key. The newer SDK's `alwaysLoad` metadata can defer
 prompt-time loading by explicit server choice; required servers in this route
 still request loading and remain mediated. Research 301 registered-tool live
@@ -650,7 +672,7 @@ qualified on the exact accepted Card 318 live tuple (Research 301): SDK
 carrier `swallowtail-claude-agent-sdk-registered-tool-mcp-v1`,
 `private-loopback-http` plus `mediated-stdio-proxy`, and MCP `2025-11-25`.
 Research 315 rebound the route's wrapper/native axes to `0.3.270`/`2.1.270`,
-and Research 367 rebound them to `0.3.284`/`2.1.284`, and Research 396 extends
+and Research 367 rebound them to `0.3.284`/`2.1.284`, and Research 414 extends
 the package/native segment through `0.3.293`/`2.1.293`, without extending
 that live evidence, so the compiled tuple projects the
 unqualified truth with the reason `live_tuple_not_compiled` until a separately

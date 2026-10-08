@@ -327,9 +327,9 @@ annotated Git tags from the canonical repository.
   Existing operation-scoped callers keep their previous deadline behavior.
   A virtual-clock fake-SDK regression covers a delayed call after open expiry
   and a later call on the same connected courier.
-- qualify `claude-agent.sdk` through official npm latest
+- qualify `claude-agent.sdk` through the Oct 7 official npm latest observation
   `@anthropic-ai/claude-agent-sdk` `0.3.293` carrying embedded native
-  `2.1.293`. Research 396 freezes every published hop from the retained
+  `2.1.293`. Research 414 freezes every published hop from the retained
   `0.3.284`/`2.1.284` baseline, exact npm integrity and native manifest
   identities, complete package trees, and per-hop classifications. The
   package and native claims keep their baselines, claim ids, behavior
@@ -339,9 +339,17 @@ annotated Git tags from the canonical repository.
   remains a server-controlled discovery choice, with required servers still
   requested and mediated. The Node segment remains separately qualified
   through `22.23.3` (Research 387); wire and sidecar source stay exact.
+  Prepared callers may now choose one of the ten typed package/native pairs;
+  existing callers keep the `.293` default. The prepared plan carries that
+  pair to the shipped sidecar, which verifies both identities before SDK
+  construction. Fake package/native fixtures exercise all ten pairs without
+  extending the separate live registered-tool gate.
   Research 301 live registered-tool acceptance remains bound to
   `0.3.259`/`2.1.259` and does not transfer. No provider operation,
   downloaded-artifact execution, or host mutation occurred.
+  The Oct 8 npm re-probe found current `latest`/`next` at `0.3.294` with
+  embedded native `2.1.294`; that newly published hop remains unqualified
+  pending selected-surface classification (Research 414).
 - raise the Claude Agent ACP qualified ceiling from `0.79.0` to official npm
   `@agentclientprotocol/claude-agent-acp` `0.81.2`. Compatible extension of
   `claude-agent.acp.initialize-meta-extensions-v7`: selected mapped ACP

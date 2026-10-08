@@ -1,4 +1,4 @@
-# 396 Claude Agent SDK 0.3.293 Identity and Currentness
+# 414 Claude Agent SDK 0.3.293 Qualification and 0.3.294 Currentness Stop
 
 Date: 2026-10-08  
 Route: `claude-agent.sdk`  
@@ -21,6 +21,55 @@ Research 387; wire and sidecar source remain exact. This record does not change
 those axes. The exact live registered-tool point remains
 `0.3.259`/`2.1.259` and is not transferred.
 
+## In-run official movement
+
+The immediately-before-push re-probe on Oct 8, 2026 found npm `latest` and
+`next` moved to `0.3.294`, published at `2026-10-08T16:36:21.522Z`; the
+embedded native identity is `2.1.294`. This new point is not qualified by the
+`0.3.284..=0.3.293` claim. Its wrapper tarball was downloaded for offline
+inspection only. npm reports SHA-1
+`b21effd0e72beec3a0471c0cc24bebb8ae983d1a` and integrity
+`sha512-CSZBecJ57adb3bRoKA5O0miiegm9to59bhGiyKfj2uMoqZCdIoTlux77VFL5TNDWJmmGQOQpLyBSmSSq6SwV/Q==`;
+its tarball SHA-256 is
+`2c0a2db22531e690cfac98da0c764828d43b4cde38fca941dce7403cd49400d5`, its
+complete 19-file tree digest is
+`c36f910d8041231c3e7e2687f109b765714be9e9426ece08b86a15353c71f802`, and
+the tarball URL is
+`https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.294.tgz`.
+The wrapper's `package.json` declares SDK `0.3.294` and `claudeCodeVersion`
+`2.1.294`. The embedded native manifest (`manifest.json`) SHA-256 is
+`269e0ed1cf53f95f580d088a0d14558057648dfe418128ab669e22b0f01969a7`; it
+names native `2.1.294`, native commit
+`8f033c6ebe3d82a87f502e199307f38f5d55ccca`, mods commit
+`765f236fe1bfcc678e0ec59af9170fb7d6771a3a`, build date
+`2026-10-08T03:11:23Z`, and harness schema 1. The companion
+`manifest.zst.json` SHA-256 is
+`6b901af03f7b9b1fe8f51668027bc60d2f6f36e83bc28c0245d7f86b7bf35306`. The
+manifest binds eight platform binary checksums and sizes. No platform native
+package or binary was downloaded or executed for this new point.
+
+Compared with the frozen `0.3.293` inventory, the new wrapper adds
+`core-9fynjcde.mjs` and `core-z7m2ffy5.mjs`, removes `core-ae32wa3s.mjs` and
+`core-d0szsqzn.mjs`, and changes `bridge.mjs`, `browser-sdk.js`, `core.mjs`,
+`manifest.json`, `manifest.zst.json`, `package.json`, and `sdk.mjs`; the other
+ten paths are byte-identical. `sdk.mjs` and `core.mjs` are selected execution
+surfaces. The accepted frozen `0.3.293` evidence contains their hashes but not
+the source bytes needed for the new semantic diff, and this continuation
+forbids repeating completed artifact proof. Therefore these changed selected
+surfaces remain unclassified; package/native `0.3.294`/`2.1.294` is a
+currentness stop pending selected-hop classification and same-contract
+qualification. Do not infer compatibility from exact identity, version
+number, declarations, metadata, or changelog. No `0.3.294` claim or
+`UnverifiedNewer` posture is added.
+
+Contract 037's approved additive preparation adaptation exposes a finite exact
+package/native pair choice while preserving the existing
+`0.3.293`/`2.1.293` default. The prepared plan binds both selected axes, the
+driver carries those exact identities to the shipped sidecar, and provider-free
+fixtures exercise all ten pairs through the prepared facade and sidecar. This
+operability proof does not qualify registered-tool live acceptance or alter
+the separate Node, wire, or sidecar-source axes.
+
 ## Channel and package identity
 
 Official source: [npm package metadata](https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk),
@@ -28,11 +77,11 @@ Official source: [npm package metadata](https://registry.npmjs.org/@anthropic-ai
 and [upstream changelog](https://github.com/anthropics/claude-agent-sdk-typescript/blob/main/CHANGELOG.md).
 The public GitHub repository is useful for discovery; the npm tarball and
 embedded manifests establish shipped artifact identity. The selected package
-is `@anthropic-ai/claude-agent-sdk`. npm `latest` and `next` both resolved to
-`0.3.293`; no later stable version or published gap occurs in the selected
-segment. The old unpublished `0.3.279` is below the retained baseline; the
-first absent later stable metadata key is `0.3.294`, which is not treated as a
-published hop or qualified point.
+is `@anthropic-ai/claude-agent-sdk`. At the qualification observation npm
+`latest` and `next` both resolved to `0.3.293`; no later stable version or
+published gap occurred in that selected segment. The old unpublished
+`0.3.279` is below the retained baseline. The later `.294` publication is
+recorded separately above as an unqualified in-run movement.
 
 The previous exact point is Research 367: wrapper `0.3.284`, native `2.1.284`,
 wrapper SHA-256
@@ -135,7 +184,7 @@ authentication helper, or provider-facing artifact code was executed.
 
 ## Qualification and residual limits
 
-The SDK package/native pair is now a maintained segment from baseline
+The SDK package/native pair is qualified as a maintained segment from baseline
 `0.3.284`/`2.1.284` through `0.3.293`/`2.1.293`, with the original claim IDs
 and behavior revision. The open validator rejects nonmatching package/native
 patch pairs. It leaves exact points `0.3.283`, `0.3.294`, `2.1.283`, and

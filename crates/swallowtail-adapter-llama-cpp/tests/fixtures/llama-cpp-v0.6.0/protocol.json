@@ -1,0 +1,107 @@
+{
+  "fixture_schema": 1,
+  "route": "llama-cpp.attached",
+  "baseline_runtime_revision": "b9910-f5525f7e7",
+  "target_runtime_revision": "b11429-d81235049",
+  "source_evidence_kind": "official source and release metadata; no binary or live runtime observation",
+  "selected_requests": [
+    ["GET", "/health"],
+    ["GET", "/props"],
+    ["GET", "/v1/models"],
+    ["POST", "/v1/chat/completions"]
+  ],
+  "selected_subset": {
+    "chat_request": {
+      "role": "user",
+      "content": "plain text only",
+      "stream": true,
+      "include_usage": true,
+      "max_tokens": "positive bounded integer",
+      "temperature": 0,
+      "tools": false,
+      "response_format": false
+    },
+    "health": "HTTP 200 {status: ok}; loading remains HTTP 503 with error.type unavailable_error",
+    "properties": ["build_info", "model_alias", "chat_template", "chat_template_caps", "modalities"],
+    "catalogue": "OpenAI list with exactly one model id matching props.model_alias",
+    "chat_stream": [
+      "OpenAI chat.completion.chunk event objects",
+      "assistant role and text deltas",
+      "finish_reason stop or length",
+      "final empty choices usage chunk with prompt_tokens, completion_tokens, total_tokens",
+      "data: [DONE] terminator"
+    ],
+    "failures": "HTTP errors retain an error.type field; adapter classifies known provider types and redacts raw payloads",
+    "cancellation": "adapter closes local connection work; it does not claim remote compute interruption",
+    "attached_lifecycle": "no process start, stop, artifact lease, or endpoint ownership"
+  },
+  "selected_behavior_comparison": {
+    "segment_shape": "compatible-extension",
+    "selected_wire_and_lifecycle_changed": false,
+    "claim_id_preserved": "llama-cpp.attached-runtime-window-1",
+    "behavior_revision_preserved": "llama-cpp.attached-openai-chat-b9910",
+    "selected_changed_files": [
+      "CMakeLists.txt",
+      "common/arg.cpp",
+      "common/build-info.cpp.in",
+      "common/chat.cpp",
+      "common/chat.h",
+      "src/llama-version.h.in",
+      "tools/server/server-chat.cpp",
+      "tools/server/server-chat.h",
+      "tools/server/server-common.cpp",
+      "tools/server/server-common.h",
+      "tools/server/server-context.cpp",
+      "tools/server/server-context.h",
+      "tools/server/server-http.cpp",
+      "tools/server/server-http.h",
+      "tools/server/server-queue.cpp",
+      "tools/server/server-queue.h",
+      "tools/server/server-stream.cpp",
+      "tools/server/server-stream.h",
+      "tools/server/server-task.cpp",
+      "tools/server/server-task.h",
+      "tools/server/server.cpp",
+      "vendor/cpp-httplib/httplib.cpp",
+      "vendor/cpp-httplib/httplib.h"
+    ],
+    "source_change_classifications": {
+      "runtime_identity": ["CMakeLists.txt", "common/build-info.cpp.in", "src/llama-version.h.in"],
+      "configuration_and_permission_boundary": ["common/arg.cpp", "tools/server/server.cpp", "tools/server/server-http.cpp"],
+      "health_properties_catalogue_and_chat": ["tools/server/server-context.cpp", "tools/server/server-context.h"],
+      "chat_message_and_template_mapping": ["common/chat.cpp", "common/chat.h", "tools/server/server-chat.cpp", "tools/server/server-chat.h"],
+      "errors_and_http_stream_transport": ["tools/server/server-common.cpp", "tools/server/server-common.h", "tools/server/server-http.cpp", "tools/server/server-http.h", "tools/server/server-stream.cpp", "tools/server/server-stream.h", "vendor/cpp-httplib/httplib.cpp", "vendor/cpp-httplib/httplib.h"],
+      "completion_usage_and_terminal_lifecycle": ["tools/server/server-queue.cpp", "tools/server/server-queue.h", "tools/server/server-task.cpp", "tools/server/server-task.h"]
+    },
+    "permission_boundary": {
+      "changed_file": "tools/server/server-http.cpp",
+      "change": "GET /v1/models is no longer in the API-key-exempt endpoint set in v0.6.0.",
+      "scope": "API-key configured deployments are outside the adapter's LocalUnauthenticated access profile. /props is API-key protected at both source tags, so that profile fails before catalogue in either release when server credentials are enabled.",
+      "classification": "outside-selected-profile; no authority or credential capability change is claimed"
+    },
+    "unmapped_or_excluded": {
+      "new_or_changed_unselected_apis": [
+        "/v1/systemone",
+        "/v1/embeddings typed vision/audio/video content",
+        "server MCP endpoints"
+      ],
+      "new_or_changed_unselected_features": [
+        "tool exchange and tool response mapping",
+        "model-router and server-managed model loading",
+        "Web UI and model download flows",
+        "model architecture, backend kernels, and quality/performance behavior"
+      ],
+      "rationale": "The adapter uses one text model, sends no tools or multimodal input, calls no router/control/management endpoint, and owns no server process or model. These surfaces do not feed the selected attached OpenAI chat request/response mapping."
+    }
+  },
+  "unmapped_key_boundaries": {
+    "props_extras": ["default_generation_settings", "total_slots", "model_path", "media_marker", "endpoint_slots", "endpoint_props", "endpoint_metrics", "ui", "ui_settings", "bos_token", "eos_token", "is_sleeping", "cors_proxy_enabled"],
+    "completion_extras": ["system_fingerprint", "timings", "__verbose", "logprobs"],
+    "unselected_flags_and_endpoints": ["tools", "response_format", "MCP", "server-managed routing", "server controls", "/v1/systemone", "/v1/embeddings typed modalities"]
+  },
+  "mutation_sensitive_inventory": {
+    "path": "dist-inventory.json",
+    "exact_selected_file_list": true,
+    "exact_added_removed_changed_identical_lists": true
+  }
+}

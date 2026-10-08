@@ -1,0 +1,90 @@
+{
+  "fixture_schema": 1,
+  "checked_at": "2026-10-08",
+  "route": "llama-cpp.attached",
+  "axis": "llama.cpp.attached-runtime",
+  "identity_decision": "compatible-extension",
+  "claim_at_observation": {
+    "claim_id": "llama-cpp.attached-runtime-window-1",
+    "scheme": "Opaque",
+    "newer_version_posture": "QualifiedOnly",
+    "qualified_points": [
+      {
+        "runtime_revision": "b9910-f5525f7e7",
+        "behavior_revision": "llama-cpp.attached-openai-chat-b9910"
+      }
+    ],
+    "exclusions": []
+  },
+  "host": {
+    "observation": "Research 369: llama-server --version timed out after 8 seconds",
+    "retry_performed": false,
+    "runtime_binary_digest": null
+  },
+  "official": {
+    "channel": "GitHub latest non-prerelease release",
+    "release_tag": "v0.6.0",
+    "published_at": "2026-10-05T16:56:22Z",
+    "release_url": "https://github.com/ggml-org/llama.cpp/releases/tag/v0.6.0",
+    "rechecked_at": "2026-10-08",
+    "release_assets": [
+      {
+        "name": "nightly-tag.txt",
+        "size_bytes": 7,
+        "sha256": "5677c5a4561fad44f2a58fc14187dd9cde253874584e958b37094c723ea8e8a5",
+        "contents": "b11429"
+      }
+    ],
+    "binary_release_assets": [],
+    "source_tag_object": "69ecae922d2b60c1fa8c590279f4e2099af75111",
+    "source_tag_commit": "d81235049384534c167caea52b85a694f6103d14",
+    "source_archive": {
+      "url": "https://api.github.com/repos/ggml-org/llama.cpp/tarball/v0.6.0",
+      "size_bytes": 37876239,
+      "sha256": "a56a6273847c92c2d516b2a971343eaec05b588abe74dc361094cc28493a1fac"
+    },
+    "runtime_identity_link": {
+      "semantic_release": "v0.6.0",
+      "nightly_tag_asset": "b11429",
+      "nightly_tag_commit": "d81235049384534c167caea52b85a694f6103d14",
+      "semantic_tag_commit": "d81235049384534c167caea52b85a694f6103d14",
+      "runtime_build_info_pattern": "b11429-<hex prefix of d81235049384534c167caea52b85a694f6103d14>",
+      "build_info_source": "common/build-info.cpp.in formats b{build number}-{commit}; cmake/build-info.cmake derives the number from git rev-list --count HEAD and the commit with git rev-parse --short HEAD",
+      "runtime_identity_is_source_derived": true,
+      "runtime_binary_was_not_observed_or_executed": true
+    }
+  },
+  "baseline": {
+    "runtime_revision": "b9910-f5525f7e7",
+    "source_tag_commit": "f5525f7e7a7e7cbecd386144299493ea40499bd3",
+    "source_archive": {
+      "url": "https://api.github.com/repos/ggml-org/llama.cpp/tarball/b9910",
+      "size_bytes": 35147335,
+      "sha256": "3b055e2a705fea27392f0661e1cb88b67abda6dadef9315debc64ffbed7f84f2"
+    }
+  },
+  "published_stables_after_qualified_point": ["v0.6.0"],
+  "intermediate_stable_hops": [],
+  "nightly_b_tags_are_not_stable_points": true,
+  "synthetic_next_stable": "v0.6.1",
+  "synthetic_next_stable_is_unqualified": true,
+  "qualified_runtime_revision": "b11429-d81235049",
+  "qualified_stable_release": "v0.6.0",
+  "source_tree_inventory": {
+    "path": "dist-inventory.json",
+    "baseline_file_count": 3031,
+    "target_file_count": 3687,
+    "added_count": 819,
+    "removed_count": 163,
+    "changed_count": 1403,
+    "identical_count": 1465
+  },
+  "probe_limits": {
+    "provider_prompt_sent": false,
+    "live_catalogue_or_session_used": false,
+    "credentials_used": false,
+    "model_or_server_installed": false,
+    "host_updated_or_mutated": false,
+    "artifact_executed": false
+  }
+}

@@ -37,8 +37,8 @@ name = "cline_acp_identity"
 path = "tests/cline_acp_identity.rs"
 
 [[test]]
-name = "cline_acp_3_0_69_delta_ledger"
-path = "tests/cline_acp_3_0_69_delta_ledger.rs"
+name = "cline_acp_3_0_70_delta_ledger"
+path = "tests/cline_acp_3_0_70_delta_ledger.rs"
 
 [[test]]
 name = "cline_headless_identity"

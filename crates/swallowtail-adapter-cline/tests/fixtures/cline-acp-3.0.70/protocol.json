@@ -3,7 +3,7 @@
   "route": "cline.acp",
   "axis": "cline.package",
   "baseline": "3.0.55",
-  "qualified_through": "3.0.69",
+  "qualified_through": "3.0.70",
   "selected_command": [
     "cline",
     "--acp"
@@ -1018,6 +1018,86 @@
         "sdk/packages/shared/package.json": "workspace runtime package dependency metadata; exact source commit and Bun lock are frozen",
         "sdk/packages/shared/src/agent.ts": "private agent runtime types/events; no ACP wire type or Swallowtail usage surface"
       }
+    },
+    {
+      "from": "3.0.69",
+      "to": "3.0.70",
+      "from_source_commit": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576",
+      "to_source_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+      "added": [],
+      "removed": [],
+      "changed": [
+        "apps/cli/package.json",
+        "bun.lock",
+        "sdk/packages/agents/package.json",
+        "sdk/packages/core/package.json",
+        "sdk/packages/llms/package.json",
+        "sdk/packages/shared/package.json"
+      ],
+      "identical": [
+        "apps/cli/src/acp/acpAgent.ts",
+        "apps/cli/src/acp/auth.ts",
+        "apps/cli/src/acp/auto-approve.test.ts",
+        "apps/cli/src/acp/auto-approve.ts",
+        "apps/cli/src/acp/index.test.ts",
+        "apps/cli/src/acp/index.ts",
+        "apps/cli/src/acp/organizations.test.ts",
+        "apps/cli/src/acp/organizations.ts",
+        "apps/cli/src/acp/permissions.ts",
+        "apps/cli/src/acp/session-load.test.ts",
+        "apps/cli/src/acp/session-load.ts",
+        "apps/cli/src/acp/session-updates.test.ts",
+        "apps/cli/src/acp/session-updates.ts",
+        "apps/cli/src/acp/tool-utils.ts",
+        "apps/cli/src/runtime/prompt.ts",
+        "apps/cli/src/session/session.ts",
+        "apps/cli/src/utils/cline-client-identity.ts",
+        "apps/cli/src/utils/cline-pass-errors.ts",
+        "apps/cli/src/utils/generated-media.ts",
+        "sdk/packages/agents/src/agent-runtime.ts",
+        "sdk/packages/core/src/runtime/orchestration/runtime-event-adapter.ts",
+        "sdk/packages/core/src/runtime/orchestration/session-runtime-orchestrator.ts",
+        "sdk/packages/core/src/services/llms/cline-recommended-models.ts",
+        "sdk/packages/core/src/services/llms/handler-factory.ts",
+        "sdk/packages/core/src/services/llms/provider-defaults.ts",
+        "sdk/packages/core/src/services/providers/local-provider-service.ts",
+        "sdk/packages/llms/src/providers/ai-sdk.ts",
+        "sdk/packages/llms/src/providers/builtins.ts",
+        "sdk/packages/llms/src/providers/cline-client-headers.ts",
+        "sdk/packages/llms/src/providers/compat.ts",
+        "sdk/packages/llms/src/providers/error-classification.ts",
+        "sdk/packages/llms/src/providers/gateway.ts",
+        "sdk/packages/llms/src/providers/model-capabilities.ts",
+        "sdk/packages/llms/src/providers/model-registry.ts",
+        "sdk/packages/llms/src/providers/model-tools.ts",
+        "sdk/packages/llms/src/providers/request-headers.ts",
+        "sdk/packages/llms/src/providers/stream.ts",
+        "sdk/packages/llms/src/providers/types.ts",
+        "sdk/packages/llms/src/providers/vendors/cline.ts",
+        "sdk/packages/shared/src/agent.ts",
+        "sdk/packages/shared/src/llms/media.ts",
+        "sdk/packages/shared/src/prompt/cline.ts",
+        "sdk/packages/shared/src/runtime/cline-client-identity.ts"
+      ],
+      "selected_route_classification": "All ACP server, session startup/load, prompt, output, permission, and failure mapping files in the frozen source slice are blob-identical from 3.0.69 to 3.0.70. The CLI manifest retains @agentclientprotocol/sdk ^0.16.1 and the lock resolves 0.16.1; package and lock updates are private Cline runtime/provider dependencies, whose internals Swallowtail does not expose. Cline's 3.0.70 changelog changes CLI/hub/schedule/MCP behavior outside this ACP operation set. The advertised session/load remains unmapped under Q-006. No selected ACP operation, authority, permission, output, or public lifecycle contract changes.",
+      "file_classifications": {
+        "apps/cli/package.json": "CLI package version metadata changes to 3.0.70; its @agentclientprotocol/sdk declaration remains ^0.16.1.",
+        "bun.lock": "Bun lock updates private Cline runtime and provider dependencies; the ACP SDK still resolves to 0.16.1. Its exact changed lock tree is frozen here; these provider internals remain unmapped.",
+        "sdk/packages/agents/package.json": "Private agent runtime package version changes from 0.0.91 to 0.0.92; no selected ACP source file changes.",
+        "sdk/packages/core/package.json": "Private core runtime package version changes from 0.0.91 to 0.0.92; no selected ACP source file changes.",
+        "sdk/packages/llms/package.json": "Private provider runtime package updates AI SDK dependency ranges alongside its 0.0.92 release; no selected ACP source file changes.",
+        "sdk/packages/shared/package.json": "Private shared runtime package version changes from 0.0.91 to 0.0.92; no selected ACP source file changes."
+      },
+      "bounded_unmapped_changes": [
+        {
+          "path": "sdk/packages/core/src/extensions/mcp/client.ts",
+          "from_source_commit": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576",
+          "to_source_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+          "from_git_blob_sha1": "7f9d3c195ac910792f4e588ae8e93799850a1244",
+          "to_git_blob_sha1": "16849bb01963bc415a3de06572d308b1afd7767f",
+          "classification": "Cline private MCP stdio failure containment changes: child-stdin errors are captured, pending requests fail after the graceful-exit window, and a still-running child is disconnected. Swallowtail ACP sends mcpServers: [] and exposes no consumer MCP server registration; provider-internal MCP behavior is outside the selected public mapping."
+        }
+      ]
     }
   ],
   "excluded_holes": {

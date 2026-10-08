@@ -1,8 +1,8 @@
-# Cline ACP 3.0.69 currentness evidence
+# Cline ACP 3.0.70 currentness evidence
 
 Secret-free identity and source evidence for extending only `cline.acp` from
-its 3.0.55 ceiling through official npm `latest` 3.0.69. The published npm
-sequence includes 3.0.56–3.0.58 and 3.0.60–3.0.69; 3.0.59 is absent from the
+its 3.0.55 ceiling through official npm `latest` 3.0.70. The published npm
+sequence includes 3.0.56–3.0.58 and 3.0.60–3.0.70; 3.0.59 is absent from the
 selected channel and remains excluded.
 
 - `release-identity.json` freezes the current npm channel observation, selected

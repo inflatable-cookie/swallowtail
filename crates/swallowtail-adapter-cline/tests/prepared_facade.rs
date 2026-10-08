@@ -224,7 +224,7 @@ fn preparation_rejects_access_axis_and_package_drift_before_acp_work() {
 
 #[test]
 fn preparation_admits_qualified_and_unverified_stable_versions() {
-    for version in ["3.0.69", "3.0.70"] {
+    for version in ["3.0.70", "3.0.71"] {
         let host_id = ExecutionHostId::new(format!("fixture.prepared.{version}")).expect("host");
         let discovery = DiscoveryHost::new(version);
         let prepared = block_on(prepare_cline_acp(

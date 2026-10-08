@@ -8,15 +8,15 @@ use swallowtail_adapter_cline::{
 };
 use swallowtail_core::InterfaceCompatibilityAssessment;
 
-const IDENTITY: &str = include_str!("fixtures/cline-acp-3.0.69/release-identity.json");
-const DIST: &str = include_str!("fixtures/cline-acp-3.0.69/dist-inventory.json");
-const PROVENANCE: &str = include_str!("fixtures/cline-acp-3.0.69/provenance.json");
-const SOURCE_TREE: &str = include_str!("fixtures/cline-acp-3.0.69/source-tree-inventory.json");
-const PROTOCOL: &str = include_str!("fixtures/cline-acp-3.0.69/protocol.json");
+const IDENTITY: &str = include_str!("fixtures/cline-acp-3.0.70/release-identity.json");
+const DIST: &str = include_str!("fixtures/cline-acp-3.0.70/dist-inventory.json");
+const PROVENANCE: &str = include_str!("fixtures/cline-acp-3.0.70/provenance.json");
+const SOURCE_TREE: &str = include_str!("fixtures/cline-acp-3.0.70/source-tree-inventory.json");
+const PROTOCOL: &str = include_str!("fixtures/cline-acp-3.0.70/protocol.json");
 
 const VERSIONS: &[&str] = &[
     "3.0.55", "3.0.56", "3.0.57", "3.0.58", "3.0.60", "3.0.61", "3.0.62", "3.0.63", "3.0.64",
-    "3.0.65", "3.0.66", "3.0.67", "3.0.68", "3.0.69",
+    "3.0.65", "3.0.66", "3.0.67", "3.0.68", "3.0.69", "3.0.70",
 ];
 const PLATFORM_PACKAGES: &[&str] = &[
     "@cline/cli-linux-x64",
@@ -32,23 +32,23 @@ const DIST_PACKAGES: &[&str] = &["cline", "@cline/cli-darwin-arm64"];
 fn official_latest_extends_only_the_existing_acp_window() {
     assert_eq!(
         sha256(IDENTITY),
-        "640b83cb5c8a0f0302c1f8f29f15a61cba5e9a27044faee2d8f95bdae09de6ef"
+        "4c98e9c67c8a69e074434c823831981eee02f451acd4ad5e57b1e6fc0a91cb99"
     );
     assert_eq!(
         sha256(DIST),
-        "32243603f5b1ab46c2937313275dcd8b89c59b6792391d124e29ff4361d92599"
+        "a7015984bfbe3e6189e1d8fd3501c6dd40def345187b27fe27c47eaa9a78d272"
     );
     assert_eq!(
         sha256(PROVENANCE),
-        "ed7c34c4a601f84c07454f4d00a1dfe91eb1fc92bd6debd46cf9d2adc84e93cd"
+        "e2bb97b9a2655fe371882a0599e51ba068bdb213bee0951c4fc6143f3c9d5a84"
     );
     assert_eq!(
         sha256(SOURCE_TREE),
-        "973886c3f2a4c058cdf8db035c617268f8916d6c57285e609ec459559b749cba"
+        "a489e4571c0050a28540ca02295dce22e6366657d8a1a412542217be6a152fcb"
     );
     assert_eq!(
         sha256(PROTOCOL),
-        "16ce9d8752746270422ea7a1b78870b1c6d8c4f11db9dbddd6d5a05df59746b5"
+        "1f52da718c936c54c71e7b209f67f7d1dfc01c5d1df5e6e91ff9184ceb5798da"
     );
     let identity = json(IDENTITY);
     let channel = &identity["official_channel"];
@@ -56,7 +56,7 @@ fn official_latest_extends_only_the_existing_acp_window() {
     assert_eq!(identity["axis"], "cline.package");
     assert_eq!(channel["registry"], "https://registry.npmjs.org/cline");
     assert_eq!(channel["selection"], "dist-tags.latest");
-    assert_eq!(channel["latest"], "3.0.69");
+    assert_eq!(channel["latest"], "3.0.70");
     assert_eq!(channel["reprobed_after_source_review"], true);
     assert_exact_strings(&channel["stable_published_versions_in_scope"], VERSIONS);
     let dependency_lock = &identity["dependency_lock"];
@@ -106,7 +106,7 @@ fn official_latest_extends_only_the_existing_acp_window() {
     }
     let excluded = cline_package_binding("3.0.59").expect("unpublished stable parses");
     assert!(!claim.assess(excluded.version()).is_permitted());
-    let unverified = cline_package_binding("3.0.70").expect("next stable exact version");
+    let unverified = cline_package_binding("3.0.71").expect("next stable exact version");
     assert!(matches!(
         claim.assess(unverified.version()),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
@@ -116,7 +116,7 @@ fn official_latest_extends_only_the_existing_acp_window() {
     assert_eq!(headless.latest_qualified().as_str(), CLINE_PACKAGE_VERSION);
     assert!(
         !headless
-            .assess(cline_package_binding("3.0.69").unwrap().version())
+            .assess(cline_package_binding("3.0.70").unwrap().version())
             .is_permitted()
     );
 }
@@ -125,7 +125,7 @@ fn official_latest_extends_only_the_existing_acp_window() {
 fn every_selected_npm_tree_and_hop_set_is_reproducible() {
     let inventory = json(DIST);
     assert_eq!(inventory["registry"], "https://registry.npmjs.org/cline");
-    assert_eq!(inventory["latest"], "3.0.69");
+    assert_eq!(inventory["latest"], "3.0.70");
     assert!(
         inventory["published_stable_versions"]
             .as_array()
@@ -293,7 +293,7 @@ fn selected_source_hops_and_route_classifications_match_exact_file_sets() {
     assert_exact_object_keys(&source["files_by_version"], VERSIONS);
     assert_exact_object_keys(&source["tree_manifest_sha256"], VERSIONS);
     assert_eq!(protocol["baseline"], CLINE_PACKAGE_VERSION);
-    assert_eq!(protocol["qualified_through"], "3.0.69");
+    assert_eq!(protocol["qualified_through"], "3.0.70");
     assert_exact_strings(
         &protocol["selected_methods"],
         &[

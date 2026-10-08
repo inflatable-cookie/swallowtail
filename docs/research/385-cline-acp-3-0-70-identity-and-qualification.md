@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:docs/research/383-cline-acp-3-0-69-identity-and-qualification.md
 # Research 383: Cline ACP 3.0.69 Identity and Qualification
+========
+# Research 385: Cline ACP 3.0.70 Identity and Qualification
+>>>>>>>> be78dc6 (Extend Cline ACP qualification to 3.0.70):docs/research/385-cline-acp-3-0-70-identity-and-qualification.md
 
 Status: promoted.
 
@@ -8,14 +12,14 @@ official npm stable while keeping its selected ACP contract unchanged?
 ## Identity
 
 Re-probed the official npm `cline` package on 2026-10-08. The `latest` tag
-remains `3.0.69`, published 2026-10-07. The stable published sequence after
+is `3.0.70`, published 2026-10-08. The stable published sequence after
 the existing `3.0.55` ceiling is `3.0.56`, `3.0.57`, `3.0.58`, then
-`3.0.60` through `3.0.69`. npm has no `cline@3.0.59` artifact, so that point
+`3.0.60` through `3.0.70`. npm has no `cline@3.0.59` artifact, so that point
 remains excluded.
 
 The fixture freezes the npm wrapper and Darwin ARM64 runtime package's exact
 registry integrity, archive digest, file count, unpacked size, and complete
-per-file tree for all fourteen published points. It also freezes the SLSA
+per-file tree for all fifteen published points. It also freezes the SLSA
 publish attestations for the wrapper and all six platform runtime packages at
 each point. Registry SHA-512 values match the attestation subjects, and every
 platform artifact at each version names the same source commit as the wrapper.
@@ -31,11 +35,10 @@ reviewed adjacent support for output, failure/completion, request identity,
 session startup, provider model metadata, usage, lifecycle, and direct runtime
 provider selection. It also includes the app and shared-package manifests and
 the Bun lockfile. Source commits are bound by npm SLSA provenance. Git blob
-identities and exact hop path sets
-are in the route fixture's
-[`source-tree-inventory.json`](../../crates/swallowtail-adapter-cline/tests/fixtures/cline-acp-3.0.69/source-tree-inventory.json);
+identities and exact hop path sets are in the route fixture's
+[`source-tree-inventory.json`](../../crates/swallowtail-adapter-cline/tests/fixtures/cline-acp-3.0.70/source-tree-inventory.json);
 the full wrapper and selected runtime package inventories are in its
-[`dist-inventory.json`](../../crates/swallowtail-adapter-cline/tests/fixtures/cline-acp-3.0.69/dist-inventory.json).
+[`dist-inventory.json`](../../crates/swallowtail-adapter-cline/tests/fixtures/cline-acp-3.0.70/dist-inventory.json).
 
 No downloaded artifact was executed or installed. No host Cline binary,
 credential, account, provider model catalogue, prompt, or ACP session was
@@ -63,14 +66,24 @@ id, and the `3.0.55` baseline.
 | `3.0.66 → 3.0.67` | Provider-managed tool output may cache oversized results internally. No Swallowtail tool, callback, permission, or session operation is added. |
 | `3.0.67 → 3.0.68` | Provider request headers omit empty session identifiers and allow the metadata to be absent. No session identifier is exposed by the adapter. |
 | `3.0.68 → 3.0.69` | Unknown provider finish reasons no longer imply successful completion. Cline can make one private continuation when there was no tool activity; unresolved incomplete output uses the existing ACP prompt error path. The public ACP operations and authority remain unchanged. |
+| `3.0.69 → 3.0.70` | Every ACP server, session, output, permission, and error-mapping source file in the reviewed slice is blob-identical. The app manifest retains `@agentclientprotocol/sdk` `^0.16.1`, resolved to `0.16.1`; changed manifests and Bun lock update private Cline/provider dependencies. Upstream also improves private MCP child stdin failure handling; Swallowtail sends `mcpServers: []` and exposes no client MCP mapping. No selected ACP operation, authority, or public contract changes. |
 
 `protocol.json` classifies every added, removed, or changed file in the
 complete reviewed source slice at every hop. The ledger separately lists
 unchanged paths and preserves the `3.0.59` npm hole.
 
+The 3.0.70 source diff also changes Cline's private
+`sdk/packages/core/src/extensions/mcp/client.ts`: it handles an asynchronous
+child-stdin failure, allows the child to exit during a graceful window, then
+fails pending requests and disconnects a child that remains alive. The exact
+before and after Git blob identities are recorded as an unmapped change in
+`protocol.json`. Swallowtail sends `mcpServers: []` for Cline ACP sessions and
+exposes no consumer MCP server registration, so this provider-internal change
+does not alter a selected Swallowtail capability or contract.
+
 ## Decision
 
-Extend only the ACP package claim as Maintained `3.0.55..=3.0.69`, excluding
+Extend only the ACP package claim as Maintained `3.0.55..=3.0.70`, excluding
 `3.0.59`, with `AllowUnverified` for newer stable versions. Retain the claim
 id, `cline.acp.stdio-v1` behavior revision, baseline, and existing exclusions.
 The headless claim remains exact `3.0.55`. Provider model catalogues, generated
@@ -87,8 +100,8 @@ implement session loading.
 ## Sources
 
 - [npm package metadata](https://registry.npmjs.org/cline)
-- [Cline 3.0.69 published package](https://www.npmjs.com/package/cline/v/3.0.69)
-- [Cline source commit bound by package provenance](https://github.com/cline/cline/tree/ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576)
+- [Cline 3.0.70 published package](https://www.npmjs.com/package/cline/v/3.0.70)
+- [Cline source commit bound by package provenance](https://github.com/cline/cline/tree/0322bc5d510000a33ef5eadc3b4c84df7fcef285)
 - [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
 - [Contract 036](../knowledge/contracts/release.md)
 - [Version-currentness procedure](../knowledge/operations/version-currentness-checkpoint.md)

@@ -13,7 +13,8 @@
     "3.0.66",
     "3.0.67",
     "3.0.68",
-    "3.0.69"
+    "3.0.69",
+    "3.0.70"
   ],
   "platform_packages": [
     "@cline/cli-linux-x64",
@@ -2470,6 +2471,181 @@
           "workflow_ref": "refs/heads/main",
           "source_commit": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576",
           "invocation_id": "https://github.com/cline/cline/actions/runs/37579642872/attempts/1"
+        }
+      ],
+      "registry_sha512_matches_slsa_subject": true
+    },
+    {
+      "package": "cline",
+      "version": "3.0.70",
+      "registry_tarball": "https://registry.npmjs.org/cline/-/cline-3.0.70.tgz",
+      "registry_integrity": "sha512-ekeGJ7YdVKL9p//KF0F5nxFXMvgSuhwPxvCUkS+SaBDJJoOUt+HMeJS+J+hkF3ezPekbSvpK1wCPGraZbAEO8A==",
+      "registry_shasum": "837f68cd31378bd5fcd7a38510625bdc9c33adbb",
+      "slsa": [
+        {
+          "subject": [
+            {
+              "name": "pkg:npm/cline@3.0.70",
+              "digest": {
+                "sha512": "7a478627b61d54a2fda7ffca1741799f115732f812ba1c0fc6f094912f926810c9268394b7e1cc7894be27e8641777b33de91b4afa4ad7008f1ab6996c010ef0"
+              }
+            }
+          ],
+          "repository": "https://github.com/cline/cline",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "source_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37734418539/attempts/1"
+        }
+      ],
+      "registry_sha512_matches_slsa_subject": true
+    },
+    {
+      "package": "@cline/cli-linux-x64",
+      "version": "3.0.70",
+      "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.70.tgz",
+      "registry_integrity": "sha512-vNYoWu4UPioXggb/o1UFDr5689yaXzxrH8oka+JSM6iULLBC25hFfSYdt9oaZkcCH9tuK/c9DB0FQtNT4Ykz0A==",
+      "registry_shasum": "8d76b355b4010a49c637fe47938939d7994f6fbd",
+      "slsa": [
+        {
+          "subject": [
+            {
+              "name": "pkg:npm/%40cline/cli-linux-x64@3.0.70",
+              "digest": {
+                "sha512": "bcd6285aee143e2a178206ffa355050ebe7af3dc9a5f3c6b1fca246be25233a8942cb042db98457d261db7da1a6647021fdb6e2bf73d0c1d0542d353e18933d0"
+              }
+            }
+          ],
+          "repository": "https://github.com/cline/cline",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "source_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37734418539/attempts/1"
+        }
+      ],
+      "registry_sha512_matches_slsa_subject": true
+    },
+    {
+      "package": "@cline/cli-darwin-x64",
+      "version": "3.0.70",
+      "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.70.tgz",
+      "registry_integrity": "sha512-gM07xL3mTlRbw/qbBvunexPQYb3Ezlb1dAYW4Bv941gl6kbDJ/dP9i2J1Ad0AuuMVJkkTKddEji/sgt1GkkUmg==",
+      "registry_shasum": "184fc992f791ff811fd3da32481fd067af6c6454",
+      "slsa": [
+        {
+          "subject": [
+            {
+              "name": "pkg:npm/%40cline/cli-darwin-x64@3.0.70",
+              "digest": {
+                "sha512": "80cd3bc4bde64e545bc3fa9b06fba77b13d061bdc4ce56f5740616e01bfde35825ea46c327f74ff62d89d4077402eb8c5499244ca75d1238bfb20b751a49149a"
+              }
+            }
+          ],
+          "repository": "https://github.com/cline/cline",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "source_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37734418539/attempts/1"
+        }
+      ],
+      "registry_sha512_matches_slsa_subject": true
+    },
+    {
+      "package": "@cline/cli-linux-arm64",
+      "version": "3.0.70",
+      "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.70.tgz",
+      "registry_integrity": "sha512-eykLoKguwd1RCrckI2e+Ol5RnvIAQZUEjEUfvvc09/okyJeWVhPmW1CI/nnOlncRZ6WWbl+KqkNVfy0+sy9BGQ==",
+      "registry_shasum": "38dd3a8fd1a0633a238a3f8c0b68b839071d4346",
+      "slsa": [
+        {
+          "subject": [
+            {
+              "name": "pkg:npm/%40cline/cli-linux-arm64@3.0.70",
+              "digest": {
+                "sha512": "7b290ba0a82ec1dd510ab7242367be3a5e519ef2004195048c451fbef734f7fa24c897965613e65b5088fe79ce96771167a5966e5f8aaa43557f2d3eb32f4119"
+              }
+            }
+          ],
+          "repository": "https://github.com/cline/cline",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "source_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37734418539/attempts/1"
+        }
+      ],
+      "registry_sha512_matches_slsa_subject": true
+    },
+    {
+      "package": "@cline/cli-windows-x64",
+      "version": "3.0.70",
+      "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.70.tgz",
+      "registry_integrity": "sha512-QH6WcyEuDdItdwx8aHs/6JEa1TZ/R8mRpsLh2ED56HN+HzOcoXxzqq/pPUEdwfHnF13H9xtOnT23DnbhjjISWA==",
+      "registry_shasum": "fafad3b564024461c285623de6038a5bcf4023bd",
+      "slsa": [
+        {
+          "subject": [
+            {
+              "name": "pkg:npm/%40cline/cli-windows-x64@3.0.70",
+              "digest": {
+                "sha512": "407e9673212e0dd22d770c7c687b3fe8911ad5367f47c991a6c2e1d840f9e8737e1f339ca17c73aaafe93d411dc1f1e7175dc7f71b4e9d3db70e76e18e321258"
+              }
+            }
+          ],
+          "repository": "https://github.com/cline/cline",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "source_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37734418539/attempts/1"
+        }
+      ],
+      "registry_sha512_matches_slsa_subject": true
+    },
+    {
+      "package": "@cline/cli-darwin-arm64",
+      "version": "3.0.70",
+      "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.70.tgz",
+      "registry_integrity": "sha512-c+GHUmyL2exX4iC3BOhqQVfaToUJNMUPvuRDJGr3adILhhVL0II53XokBAWDrgpHAoyoQkiVs2nSGgzQhSXz5g==",
+      "registry_shasum": "62e671818b00dfad5e2e4c6921cfa491cb73dcb7",
+      "slsa": [
+        {
+          "subject": [
+            {
+              "name": "pkg:npm/%40cline/cli-darwin-arm64@3.0.70",
+              "digest": {
+                "sha512": "73e187526c8bd9ec57e220b704e86a4157da4e850934c50fbee443246af769d20b86154bd08239dd7a24040583ae0a47028ca8424895b369d21a0cd08525f3e6"
+              }
+            }
+          ],
+          "repository": "https://github.com/cline/cline",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "source_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37734418539/attempts/1"
+        }
+      ],
+      "registry_sha512_matches_slsa_subject": true
+    },
+    {
+      "package": "@cline/cli-windows-arm64",
+      "version": "3.0.70",
+      "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.70.tgz",
+      "registry_integrity": "sha512-M6R6yTRK5xwSWkD+XCZaTKEfpt2SwBrl5HrLNkgI5hHvJh3JsZmbXOI7MzREpKzmtzac+oyLY8ytxpSOQNmuaw==",
+      "registry_shasum": "167d76bda9df6fc5ebb3ec06a914c08cec3ec085",
+      "slsa": [
+        {
+          "subject": [
+            {
+              "name": "pkg:npm/%40cline/cli-windows-arm64@3.0.70",
+              "digest": {
+                "sha512": "33a47ac9344ae71c125a40fe5c265a4ca11fa6dd92c01ae5e47acb364808e611ef261dc9b1999b5ce23b333444a4ace6b7369cfa8c8b63ccadc6948e40d9ae6b"
+              }
+            }
+          ],
+          "repository": "https://github.com/cline/cline",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "source_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37734418539/attempts/1"
         }
       ],
       "registry_sha512_matches_slsa_subject": true

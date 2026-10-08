@@ -47,8 +47,8 @@ pub use stream::{
 
 /// AWS SDK crate used for Bedrock Runtime inference.
 pub const SDK_CRATE: &str = "aws-sdk-bedrockruntime";
-/// Exact AWS SDK version qualified for Bedrock Runtime.
-pub const SDK_VERSION: &str = "1.136.0";
+/// AWS SDK version bound to Bedrock Runtime requests.
+pub const SDK_VERSION: &str = "1.148.0";
 /// Bedrock Runtime service operation implemented by this adapter.
 pub const SERVICE_API: &str = "Amazon Bedrock Runtime ConverseStream";
 /// AWS SDK crate used for Bedrock control-plane catalogue discovery.

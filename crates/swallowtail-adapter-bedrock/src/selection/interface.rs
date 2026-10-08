@@ -33,15 +33,10 @@ pub fn bedrock_catalogue_interface_bindings() -> [InterfaceVersionBinding; 2] {
 }
 
 #[must_use]
-/// Returns qualified-only SDK and service claims for Bedrock Runtime.
+/// Returns Runtime SDK and service compatibility claims.
 pub fn bedrock_runtime_interface_claims() -> [InterfaceCompatibilityClaim; 2] {
     [
-        exact_claim(
-            "amazon-bedrock.runtime-sdk-window-1",
-            RUNTIME_SDK_AXIS,
-            crate::SDK_VERSION,
-            "amazon-bedrock.runtime-sdk-1",
-        ),
+        runtime_sdk_claim(),
         exact_claim(
             "amazon-bedrock.runtime-service-window-1",
             RUNTIME_SERVICE_AXIS,
@@ -49,6 +44,39 @@ pub fn bedrock_runtime_interface_claims() -> [InterfaceCompatibilityClaim; 2] {
             "amazon-bedrock.runtime-service-1",
         ),
     ]
+}
+
+fn runtime_sdk_claim() -> InterfaceCompatibilityClaim {
+    InterfaceCompatibilityClaim::new(
+        valid(
+            InterfaceCompatibilityClaimId::new,
+            "amazon-bedrock.runtime-sdk-window-1",
+        ),
+        valid(InterfaceVersionAxis::new, RUNTIME_SDK_AXIS),
+        InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::AllowUnverified,
+        [
+            InterfaceVersionSegment::exact(
+                valid(InterfaceVersion::new, "1.136.0"),
+                valid(
+                    InterfaceBehaviorRevision::new,
+                    "amazon-bedrock.runtime-sdk-1",
+                ),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                valid(InterfaceVersion::new, "1.139.0"),
+                valid(InterfaceVersion::new, crate::SDK_VERSION),
+                valid(
+                    InterfaceBehaviorRevision::new,
+                    "amazon-bedrock.runtime-sdk-1",
+                ),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
+        [valid(InterfaceVersion::new, "1.144.0")],
+    )
+    .expect("static Bedrock Runtime SDK compatibility claim is valid")
 }
 
 #[must_use]

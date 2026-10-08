@@ -248,7 +248,7 @@ compatibility with the solution transport beside them.
 
 | Route | Crate and driver | Role and transport | Explicit target and access | Version axis | Prepared path | Low-level escape hatch |
 | --- | --- | --- | --- | --- | --- | --- |
-| `bedrock.runtime` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.direct` | structured run; Rust SDK EventStream | approved regional Runtime target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | `amazon-bedrock.runtime-rust-sdk` plus `amazon-bedrock.runtime-service-api`; exact opaque revisions | `prepare_bedrock` → `runtime` → `prepare_inference_attempt` → `start_run` | `BedrockDirectDriver`; `StructuredRunDriver` |
+| `bedrock.runtime` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.direct` | structured run; Rust SDK EventStream | approved regional Runtime target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | semantic SDK points `1.136.0` and `1.139.0..=1.148.0` under `AllowUnverified`, excluding `1.137.0`, `1.138.0`, and yanked `1.144.0`; exact Runtime service revision | `prepare_bedrock` → `runtime` → `prepare_inference_attempt` → `start_run` | `BedrockDirectDriver`; `StructuredRunDriver` |
 | `bedrock.catalogue` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.catalogue` | model catalogue; Rust SDK control plane | approved regional control-plane target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | `amazon-bedrock.control-plane-rust-sdk` plus `amazon-bedrock.control-plane-service-api`; exact opaque revisions | `prepare_bedrock` → `catalogue` → `prepare_catalogue` → `list_models` | `BedrockCatalogueDriver`; `ModelCatalogDriver` |
 
 `prepare_bedrock` binds only the shared execution host, region, and explicit
@@ -327,7 +327,7 @@ delete.
 | `xai.responses-websocket` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `xai.responses-websocket-facade` revision; continuation is connection-local | connection and response cleanup only |
 | `openai.realtime` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `openai.realtime-facade` revision; media session is connection-scoped | response and connection cleanup only |
 | `gemini.live` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `gemini.live-facade` revision; media session is connection-scoped | provider rollover and connection cleanup only |
-| `bedrock.runtime` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact SDK and Runtime service revisions; inference attempt has no provider session | request and EventStream cleanup only |
+| `bedrock.runtime` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | semantic SDK points `1.136.0` and `1.139.0..=1.148.0` under `AllowUnverified`, excluding `1.137.0`, `1.138.0`, and yanked `1.144.0`; exact Runtime service revision; inference attempt has no provider session | request and EventStream cleanup only |
 | `bedrock.catalogue` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact SDK and control-plane service revisions; catalogue has no provider session | request cleanup only |
 | `ollama.attached` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | accepted `ollama.runtime` segments; attached inference has no provider session; current official `0.40.0` remains unverified because chat can start local model-store migration | request cleanup only; for qualified points the external runtime is preserved; the `0.40.0` migration side effect awaits a ruling |
 | `llama-cpp.attached` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque b9910/f5525f7e7 revision; attached inference has no provider session | request cleanup only; the external server is preserved |
@@ -393,24 +393,22 @@ Opaque hosted facades, SDK packages, service revisions, and exact llama.cpp
 runtime revisions are qualified only at named points. They do not infer an
 ordered range or an unverified-newer attempt.
 
-### Claim-Less Disposition (bedrock, llama-cpp)
+### Exact-Only Claims (Bedrock services, llama-cpp)
 
-Bedrock and llama-cpp deliberately carry no `InterfaceCompatibilityClaim`.
-Their version axes (`amazon-bedrock.runtime-rust-sdk`, `amazon-bedrock.
-control-plane-rust-sdk`, `llama.cpp.attached-runtime`, `llama.cpp.
-owned-runtime`) bind exact opaque revisions only, per Contract 029: an
-interface without a trustworthy ordered version observation uses an exact
-dated facade or evidence revision instead of a claim, and never infers an
-ordered window. This disposition is recorded rather than migrated:
+The Bedrock Runtime service API, Bedrock catalogue SDK and service API, and
+llama-cpp attached/owned axes use exact opaque compatibility claims. They do
+not infer ordered ranges or unverified-newer points, per Contract 029. The
+Bedrock Runtime SDK axis has a separate semantic claim backed by
+[Research 381](../research/381-bedrock-runtime-sdk-1-148-0-identity.md); it
+preserves `1.136.0`, adds `1.139.0..=1.148.0`, and permits later stable points
+as unverified.
 
-- bedrock runtime/catalogue and llama-cpp attached/owned prepare and classify
-  against their exact opaque revisions; no baseline, range, or unverified-newer
-  semantics apply
-- the route and feature matrices treat them as opaque-only, distinct from
-  every ordered claim surface
-- if trustworthy ordered version evidence appears for either surface, adding
-  an exact compatibility claim is a separate qualified change, not a
-  relabeling of these axes
+- bedrock Runtime service, catalogue SDK/service, and llama-cpp attached/owned
+  prepare and classify against their exact opaque revisions
+- the route and feature matrices keep those axes distinct from the ordered
+  Bedrock Runtime SDK claim
+- an ordered compatibility range for any of these exact-only axes requires a
+  separate evidence-backed qualification
 
 The active [installed-harness maintenance inventory](../research/074-installed-harness-and-protocol-maintenance-inventory.md)
 records evidence cutoffs, corpus and live-probe posture, shared ACP axes, and

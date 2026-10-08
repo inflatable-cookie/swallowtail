@@ -420,8 +420,10 @@ OpenHands adds a package without a production route.
   read-only filesystem resource. The mutable update launcher, model catalogue,
   sessions, callbacks, recovery, task-list snapshots, subagents, usage, shell,
   writes, and web tools remain outside the route
-- `swallowtail-adapter-command-code` implements exact npm Command Code
-  `1.65.0` as one read-only `command-code.headless` route family. Structured
+- `swallowtail-adapter-command-code` implements 33 exact published npm
+  Command Code points from `1.65.0` through `1.79.1` as one read-only
+  `command-code.headless` route family (Research 402). Behavior v1 runs through
+  `1.72.4`; private model-selection behavior v2 runs from `1.73.0`. Structured
   runs bind `--no-session` and prohibit provider retention. Interactive turns
   follow Contract 043: first turn retains a project-scoped transcript; later
   turns pass only the exact private `--resume <sessionId>` observed from the

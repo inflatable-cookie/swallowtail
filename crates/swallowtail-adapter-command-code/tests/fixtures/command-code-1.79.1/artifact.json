@@ -1,0 +1,43 @@
+{
+  "package": "command-code",
+  "axis": "command-code.npm",
+  "version": "1.79.1",
+  "registry": "https://registry.npmjs.org/command-code",
+  "published": "2026-10-07T22:09:28.916Z",
+  "tarball": "https://registry.npmjs.org/command-code/-/command-code-1.79.1.tgz",
+  "sha1": "bcf1f23e54f94dee0d285d3aa986b0ca4225896c",
+  "sha256": "55ed3d986070d8b1b749dcb8b47e2daacc877616f284ae4dde47c0d9fa20490b",
+  "integrity": "sha512-EO/15K8AEvu4K/2i6in+Oe83cFqQzvZ2qvcABtpH6A1F/eDCwtXErMolcxRtllAkiEEd0XM5LFxMvIIhIlYMzg==",
+  "file_count": 72,
+  "unpacked_size": 4357918,
+  "package_json_sha256": "d7aaa37c9e9da6bcb288971b0fcc708f174e9c82ef55af5d25380a074058554b",
+  "runtime": {
+    "package_engine": ">=22",
+    "observed_worker_runtime": {
+      "name": "Node.js",
+      "version": "22.23.2",
+      "binary_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572",
+      "scope": "static artifact inspection environment only; not transferred as consumer host evidence"
+    }
+  },
+  "source_identity": {
+    "kind": "official npm shipped package",
+    "git_commit": null,
+    "note": "The published package manifest supplies no repository or gitHead identity; the exact registry tarball and full extracted file inventory identify the shipped source artifact."
+  },
+  "bin": {
+    "cmd": "dist/index.mjs",
+    "cmdc": "dist/index.mjs",
+    "command-code": "dist/index.mjs",
+    "commandcode": "dist/index.mjs"
+  },
+  "main": "dist/cli.mjs",
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "dist",
+    "vsix",
+    "CHANGELOG.md"
+  ]
+}

@@ -239,8 +239,6 @@ fn promote(
         .ok_or_else(|| discovery_outcome_failure(&outcome))?;
     if observation.execution_host_id() != &input.execution_host_id
         || observation.version().axis() != input.target.version_axis()
-        || observation.version().version().as_str()
-            != crate::selection::COMMAND_CODE_RELEASE_VERSION
     {
         return Err(failure(
             PreparationStage::CompatibilityClassification,

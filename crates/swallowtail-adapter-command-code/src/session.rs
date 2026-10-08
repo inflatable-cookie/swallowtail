@@ -23,6 +23,7 @@ pub(super) struct CommandCodeSessionHandle {
     request_id: RequestId,
     runtime_id: RuntimeSessionId,
     pub(super) model: swallowtail_core::ModelId,
+    pub(super) model_selection_observation: bool,
     pub(super) working_resource: swallowtail_runtime::WorkingResourceRef,
     pub(super) services: HostServices,
     pub(super) state: Arc<Mutex<SessionState>>,
@@ -41,6 +42,8 @@ impl InteractiveSessionDriver for CommandCodeHeadlessDriver {
     ) -> BoxFuture<'_, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
         Box::pin(async move {
             validate_session(&plan, &request, &services)?;
+            let model_selection_observation =
+                crate::selection::model_selection_observation_enabled(&plan);
             let active = Arc::new(Mutex::new(None));
             let state = Arc::new(Mutex::new(SessionState {
                 provider_session_id: None,
@@ -68,6 +71,7 @@ impl InteractiveSessionDriver for CommandCodeHeadlessDriver {
                     .model_id()
                     .cloned()
                     .expect("validated model is present"),
+                model_selection_observation,
                 working_resource: request
                     .working_resource()
                     .cloned()

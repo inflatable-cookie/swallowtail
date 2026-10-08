@@ -1,0 +1,190 @@
+{
+  "artifact_execution_started": true,
+  "artifact_inventory_observed_at_utc": "2026-10-08T13:27:09Z",
+  "artifact_inventory_sha256_at_execution": "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f",
+  "artifact_inventory_sha256_committed": "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f",
+  "completion_recorded_at_utc": "2026-10-08T14:19:42Z",
+  "exact_permission_path_reached": false,
+  "execution_host": {
+    "architecture": "arm64",
+    "host_name_recorded": false,
+    "os": "Darwin 25.6.0"
+  },
+  "execution_started_at_utc": "2026-10-08T14:19:28Z",
+  "executions": [
+    {
+      "artifact_execution_result_recorded_at_utc": "2026-10-08T14:19:33Z",
+      "auth_method_ids": [
+        "copilot-login"
+      ],
+      "binary_sha256": "fe779da7dd2342c1d23f0744873fa27d0251eaaee4dc6637fa53093639c0f3c9",
+      "credentials": "synthetic-placeholder-only",
+      "effect_marker_present": false,
+      "exit_code": 0,
+      "forced_process_group_kill": false,
+      "initialize": "success",
+      "network": "sandbox-denied",
+      "permission_evidence_complete": false,
+      "permission_methods_observed": [],
+      "permission_reply": "none",
+      "permission_request_observed": false,
+      "recorded_before_process_start": true,
+      "reported_version_matches": true,
+      "selected_argv": [
+        "copilot",
+        "--acp",
+        "--stdio"
+      ],
+      "session_cancel_sent": false,
+      "session_new": "authentication-required",
+      "session_new_error": {
+        "code": -32000,
+        "data_omitted": false,
+        "message": "Authentication required"
+      },
+      "session_prompt": "not-reached",
+      "session_updates": 0,
+      "started_at_utc": "2026-10-08T14:19:28Z",
+      "stream_failed": false,
+      "timed_out": false,
+      "tool_call_updates": 0,
+      "unexpected_messages": 0,
+      "version": "1.0.80"
+    },
+    {
+      "artifact_execution_result_recorded_at_utc": "2026-10-08T14:19:37Z",
+      "auth_method_ids": [
+        "copilot-login"
+      ],
+      "binary_sha256": "0f2ba6429dbee9f5adcdc2ad09ded7f5a0511f5da9af10c3a0dbc6ed070f004f",
+      "credentials": "synthetic-placeholder-only",
+      "effect_marker_present": false,
+      "exit_code": 0,
+      "forced_process_group_kill": false,
+      "initialize": "success",
+      "network": "sandbox-denied",
+      "permission_evidence_complete": false,
+      "permission_methods_observed": [],
+      "permission_reply": "none",
+      "permission_request_observed": false,
+      "recorded_before_process_start": true,
+      "reported_version_matches": true,
+      "selected_argv": [
+        "copilot",
+        "--acp",
+        "--stdio"
+      ],
+      "session_cancel_sent": false,
+      "session_new": "authentication-required",
+      "session_new_error": {
+        "code": -32000,
+        "data_omitted": false,
+        "message": "Authentication required"
+      },
+      "session_prompt": "not-reached",
+      "session_updates": 0,
+      "started_at_utc": "2026-10-08T14:19:33Z",
+      "stream_failed": false,
+      "timed_out": false,
+      "tool_call_updates": 0,
+      "unexpected_messages": 0,
+      "version": "1.0.81"
+    },
+    {
+      "artifact_execution_result_recorded_at_utc": "2026-10-08T14:19:42Z",
+      "auth_method_ids": [
+        "copilot-login"
+      ],
+      "binary_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+      "credentials": "synthetic-placeholder-only",
+      "effect_marker_present": false,
+      "exit_code": 0,
+      "forced_process_group_kill": false,
+      "initialize": "success",
+      "network": "sandbox-denied",
+      "permission_evidence_complete": false,
+      "permission_methods_observed": [],
+      "permission_reply": "none",
+      "permission_request_observed": false,
+      "recorded_before_process_start": true,
+      "reported_version_matches": true,
+      "selected_argv": [
+        "copilot",
+        "--acp",
+        "--stdio"
+      ],
+      "session_cancel_sent": false,
+      "session_new": "authentication-required",
+      "session_new_error": {
+        "code": -32000,
+        "data_omitted": false,
+        "message": "Authentication required"
+      },
+      "session_prompt": "not-reached",
+      "session_updates": 0,
+      "started_at_utc": "2026-10-08T14:19:37Z",
+      "stream_failed": false,
+      "timed_out": false,
+      "tool_call_updates": 0,
+      "unexpected_messages": 0,
+      "version": "1.0.93"
+    }
+  ],
+  "harness_sha256": "65e8357d2942c8dd554b8973d35e065ed7a4e7a9596bf1c103298396338acb2d",
+  "harness_sha256_recorded_at_utc": "2026-10-08T14:19:25Z",
+  "harness_source": "scripts/copilot-acp-offline-proof.py",
+  "limitation": "All exact stable artifacts advertised copilot-login and rejected session/new with Authentication required under the synthetic placeholder. No real authentication or network access was used, so no permission request, cancellation, or tool-effect boundary is claimed.",
+  "permission_boundary_proven_for_all_targets": false,
+  "pre_execution_record_persisted": true,
+  "preflight": {
+    "fake_acp": {
+      "exit_code": 0,
+      "initialize": "success",
+      "permission_reply": "cancelled",
+      "permission_request": "observed",
+      "prompt_stop_reason": "cancelled",
+      "session_new": "success",
+      "tool_effect": "absent"
+    },
+    "filesystem_boundary": "writes allowed only inside task scratch; host home read denied",
+    "keychain_boundary": "securityd Mach lookup denied by profile",
+    "network_denial": "loopback and reserved external connect both returned EPERM/EACCES",
+    "record_before_execution": true,
+    "status": "passed"
+  },
+  "preflight_attempts": [
+    {
+      "fake_acp": {
+        "exit_code": 0,
+        "initialize": "success",
+        "permission_reply": "cancelled",
+        "permission_request": "observed",
+        "prompt_stop_reason": "cancelled",
+        "session_new": "success",
+        "tool_effect": "absent"
+      },
+      "filesystem_boundary": "writes allowed only inside task scratch; host home read denied",
+      "keychain_boundary": "securityd Mach lookup denied by profile",
+      "network_denial": "loopback and reserved external connect both returned EPERM/EACCES",
+      "record_before_execution": true,
+      "status": "passed"
+    }
+  ],
+  "recorded_at_utc": "2026-10-08T14:19:25Z",
+  "schema": "copilot-cli-acp-offline-execution-record.v1",
+  "scope": {
+    "authentication": "synthetic placeholder only",
+    "network": "denied, including loopback",
+    "route": "copilot-cli.acp",
+    "selected_argv": [
+      "copilot",
+      "--acp",
+      "--stdio"
+    ],
+    "versions": [
+      "1.0.80",
+      "1.0.81",
+      "1.0.93"
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-# 414 Claude Agent SDK 0.3.293 Qualification and 0.3.294 Currentness Stop
+# 416 Claude Agent SDK 0.3.293 Qualification and 0.3.294 Currentness Stop
 
 Date: 2026-10-08  
 Route: `claude-agent.sdk`  

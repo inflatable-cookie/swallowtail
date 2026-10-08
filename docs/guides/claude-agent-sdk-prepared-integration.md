@@ -148,9 +148,9 @@ exact one-point claims. The open path has one narrow observation-only exception
 for a newer Node runtime that passes the sidecar floor:
 
 - `claude-agent.sdk.package`: `@anthropic-ai/claude-agent-sdk`
-  `0.3.284..=0.3.293` (Research 414)
+  `0.3.284..=0.3.293` (Research 416)
 - `claude-agent.sdk.native`: `2.1.284..=2.1.293`, coupled point-for-point to
-  the package version by each shipped `manifest.json` (Research 414)
+  the package version by each shipped `manifest.json` (Research 416)
 - `claude-agent.sdk.node`: maintained Node `22.23.2..=22.23.3` (satisfying the
   upstream `>=18.0.0` requirement; Research 387)
 - `claude-agent.sdk.wire`: exact `swallowtail-claude-agent-sdk-jsonl-v1`
@@ -163,7 +163,7 @@ whose embedded manifest identifies native `2.1.294`. That hop remains
 unqualified because its changed package/runtime surfaces have not been
 classified against the selected route behavior. The claims above therefore
 stop at `0.3.293`/`2.1.293`; the new npm point does not gain support from its
-version number or artifact metadata alone. Research 414 records the in-run
+version number or artifact metadata alone. Research 416 records the in-run
 currentness stop and the required hop-classification adaptation.
 
 Two evidence limits belong to this family and must not be papered over. The
@@ -192,7 +192,7 @@ readable identity that differs from the selected pair fails with typed
 `InterfaceVersion` observation carries declared and loaded package/version
 labels. A missing, malformed, or otherwise unreadable manifest fails with
 typed `sdk_identity_unverifiable` for package metadata, or a bounded native
-manifest failure, before the SDK is constructed. Research 414 records the
+manifest failure, before the SDK is constructed. Research 416 records the
 exact published artifacts; provider-free prepared-facade and shipped-sidecar
 fixtures exercise every maintained pair and reject drift before SDK query.
 
@@ -213,7 +213,7 @@ rebound both coupled axes to `0.3.259` after a full package-tree inventory,
 Research 315 rebound them to `0.3.270` across the nine published hops
 `0.3.260..=0.3.270` (gaps `0.3.262`, `0.3.264`), and Research 367 rebound them
 to `0.3.284` across the thirteen published hops `0.3.271`–`0.3.278` and
-`0.3.280`–`0.3.283` (gap `0.3.279`). Research 414 extends the same coupled
+`0.3.280`–`0.3.283` (gap `0.3.279`). Research 416 extends the same coupled
 axes across every published hop `0.3.285..=0.3.293`; selected wire, lifecycle,
 permission, usage, configuration, and tool behavior remains compatible. It
 preserves the `0.3.284`/`2.1.284` baselines and existing claim ids. The
@@ -684,7 +684,7 @@ qualified on the exact accepted Card 318 live tuple (Research 301): SDK
 carrier `swallowtail-claude-agent-sdk-registered-tool-mcp-v1`,
 `private-loopback-http` plus `mediated-stdio-proxy`, and MCP `2025-11-25`.
 Research 315 rebound the route's wrapper/native axes to `0.3.270`/`2.1.270`,
-and Research 367 rebound them to `0.3.284`/`2.1.284`, and Research 414 extends
+and Research 367 rebound them to `0.3.284`/`2.1.284`, and Research 416 extends
 the package/native segment through `0.3.293`/`2.1.293`, without extending
 that live evidence, so the compiled tuple projects the
 unqualified truth with the reason `live_tuple_not_compiled` until a separately

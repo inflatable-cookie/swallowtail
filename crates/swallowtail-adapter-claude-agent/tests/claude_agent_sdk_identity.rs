@@ -166,7 +166,7 @@ fn the_route_binds_package_native_segments_and_exact_axes_with_node_window() {
 
 #[test]
 fn package_native_segments_preserve_baselines_claim_ids_and_qualified_only() {
-    // Research 414 qualifies only the coupled package/native surfaces while
+    // Research 416 qualifies only the coupled package/native surfaces while
     // preserving each original baseline, claim id and QualifiedOnly posture.
     let claims = [
         (

@@ -329,7 +329,7 @@ annotated Git tags from the canonical repository.
   and a later call on the same connected courier.
 - qualify `claude-agent.sdk` through the Oct 7 official npm latest observation
   `@anthropic-ai/claude-agent-sdk` `0.3.293` carrying embedded native
-  `2.1.293`. Research 414 freezes every published hop from the retained
+  `2.1.293`. Research 416 freezes every published hop from the retained
   `0.3.284`/`2.1.284` baseline, exact npm integrity and native manifest
   identities, complete package trees, and per-hop classifications. The
   package and native claims keep their baselines, claim ids, behavior
@@ -349,7 +349,7 @@ annotated Git tags from the canonical repository.
   downloaded-artifact execution, or host mutation occurred.
   The Oct 8 npm re-probe found current `latest`/`next` at `0.3.294` with
   embedded native `2.1.294`; that newly published hop remains unqualified
-  pending selected-surface classification (Research 414).
+  pending selected-surface classification (Research 416).
 - raise the Claude Agent ACP qualified ceiling from `0.79.0` to official npm
   `@agentclientprotocol/claude-agent-acp` `0.81.2`. Compatible extension of
   `claude-agent.acp.initialize-meta-extensions-v7`: selected mapped ACP

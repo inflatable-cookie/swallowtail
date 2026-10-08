@@ -14,9 +14,10 @@
     "SettingsManager",
     "ModelRuntime"
   ],
-  "node_runtime": "22.23.2",
+  "node_runtime": "22.23.3",
+  "node_qualified_points": ["22.23.2", "22.23.3"],
   "node_requirement": ">=22.19.0",
-  "compatibility_claim": "qualified_only_one_point",
+  "compatibility_claim": "qualified_only_segment",
   "record_types": [
     "command",
     "response",

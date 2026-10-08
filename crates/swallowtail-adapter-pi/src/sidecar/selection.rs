@@ -82,16 +82,26 @@ pub fn pi_sdk_sidecar_package_claim() -> InterfaceCompatibilityClaim {
     )
 }
 
-/// Returns the qualified-only one-point Node runtime claim.
+/// Returns the qualified-only Node runtime claim for the maintained segment.
 #[must_use]
 pub fn pi_sdk_sidecar_node_claim() -> InterfaceCompatibilityClaim {
-    claim(
-        "pi.sdk-sidecar.node-window-1",
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new("pi.sdk-sidecar.node-window-1")
+            .expect("static sidecar claim id is valid"),
         InterfaceVersionAxis::new(PI_SDK_SIDECAR_NODE_AXIS).expect("static sidecar axis is valid"),
         InterfaceVersionScheme::Semantic,
-        InterfaceVersion::new(PI_SDK_SIDECAR_NODE_RUNTIME)
-            .expect("static sidecar version is valid"),
+        InterfaceNewerVersionPosture::QualifiedOnly,
+        [swallowtail_core::InterfaceVersionSegment::new(
+            InterfaceVersion::new("22.23.2").expect("static sidecar version is valid"),
+            InterfaceVersion::new(PI_SDK_SIDECAR_NODE_RUNTIME)
+                .expect("static sidecar version is valid"),
+            InterfaceBehaviorRevision::new(PI_SDK_SIDECAR_BEHAVIOR)
+                .expect("static sidecar behavior revision is valid"),
+            InterfaceSupportStatus::Maintained,
+        )],
+        [],
     )
+    .expect("static sidecar compatibility claim is valid")
 }
 
 /// Returns the qualified-only one-point sidecar wire claim.
@@ -226,17 +236,25 @@ mod tests {
     }
 
     #[test]
-    fn node_claim_qualifies_only_the_exact_runtime_point() {
+    fn node_claim_retains_22_23_2_and_qualifies_22_23_3_only() {
         let claim = pi_sdk_sidecar_node_claim();
         assert_eq!(claim.axis().as_str(), PI_SDK_SIDECAR_NODE_AXIS);
-        assert!(claim.permits(&version(PI_SDK_SIDECAR_NODE_RUNTIME)));
-        for rejected in ["22.23.1", "22.23.3", "22.23.2-rc.1", "23.0.0"] {
+        for qualified in ["22.23.2", PI_SDK_SIDECAR_NODE_RUNTIME] {
+            let assessment = claim.assess(&version(qualified));
+            assert!(assessment.is_permitted(), "qualified runtime {qualified}");
+            assert_eq!(
+                assessment.behavior_revision().unwrap().as_str(),
+                PI_SDK_SIDECAR_BEHAVIOR
+            );
+        }
+        for rejected in ["22.23.1", "22.23.2-rc.1", "22.23.4", "22.24.0", "23.0.0"] {
             assert!(
                 !claim.permits(&version(rejected)),
                 "unqualified runtime {rejected} must be rejected"
             );
         }
         assert!(pi_sdk_sidecar_node_binding("22.23.2").is_some());
+        assert!(pi_sdk_sidecar_node_binding("22.23.3").is_some());
         assert!(pi_sdk_sidecar_node_binding("22.x").is_none());
     }
 

@@ -39,7 +39,7 @@ fn missing_ambiguous_or_incompatible_version_bindings_fail_before_process_work()
         (PI_SDK_SIDECAR_PACKAGE_AXIS, "0.84.3"),
         (PI_SDK_SIDECAR_PACKAGE_AXIS, "0.84.1"),
         (PI_SDK_SIDECAR_PACKAGE_AXIS, "0.84.2-rc.1"),
-        (PI_SDK_SIDECAR_NODE_AXIS, "22.23.3"),
+        (PI_SDK_SIDECAR_NODE_AXIS, "22.23.4"),
         (PI_SDK_SIDECAR_NODE_AXIS, "22.23.2-rc.1"),
         (PI_SDK_SIDECAR_WIRE_AXIS, "swallowtail-pi-sdk-jsonl-v2"),
         (

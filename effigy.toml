@@ -66,6 +66,12 @@ section = "Research Records"
   "cargo fmt -p swallowtail-adapter-pi -- --check",
 ]
 "check:current-pi-rpc" = "cargo check --locked --all-targets -p swallowtail-adapter-pi"
+"check:current-pi-sdk-sidecar-node" = "cargo check --locked --all-targets -p swallowtail-adapter-pi"
+"validate:current-pi-sdk-sidecar-node" = [
+  "cargo nextest run --locked --profile sdk-usage -p swallowtail-adapter-pi --lib -E 'test(/sidecar::selection::tests::node_claim_retains_22_23_2_and_qualifies_22_23_3_only/) | test(/sidecar::protocol::tests::(qualified_corpora_decode|corpus_identity_matches_the_frozen_sidecar_identity)/)'",
+  "cargo nextest run --locked --profile sdk-usage -p swallowtail-adapter-pi --test integration -E 'test(/pi_sdk_sidecar_identity::/)'",
+  "cargo nextest run --locked --profile sdk-usage -p swallowtail-adapter-pi --test sidecar_driver",
+]
 "validate:current-pi-rpc" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-pi --lib --test integration -E 'test(/driver::disposition::tests::|protocol::tests::(qualified_response_event_and_ui_corpora_decode|malformed_usage_components_fail_closed|settled_event_preserves_optional_abort_state_and_rejects_malformed_values)|selection::tests::claim_qualifies_exact_milestones_and_keeps_later_stable_unverified|activity::tests::exact_pi_corpus_projects_message_reasoning_tool_compaction_and_unknown/) | test(/pi_rpc_1_1_0_identity::|production_claim_keeps_the_frozen_corpus_inside_the_raised_window|identity_and_claim_qualify_0_84_3_as_compatible_extension|identity_and_claim_qualify_0_84_4_as_compatible_extension|unpublished_gaps_and_later_0_84_5_stay_classified|identity_names_compatible_extension_before_the_claim_edit|unpublished_gaps_and_later_0_85_2_stay_classified|unpublished_gaps_and_later_0_86_2_stay_classified|latest_pi_is_qualified_and_later_stable_remains_unverified|restrictive_session_relays_scheduling_ui_and_joined_cleanup|current_command_dispositions_fail_closed_and_do_not_leave_a_running_turn|handled_steering_and_follow_up_release_their_scheduling_slots|current_aborted_settlement_resolves_cancelled_and_missing_state_fails_closed|qualified_assistant_messages_expose_disjoint_usage_components/)'"
 "format:current-antigravity-catalogue" = [
   "cargo fmt -p swallowtail-adapter-antigravity",

@@ -59,12 +59,12 @@ a sandbox.
 
 ## Version Posture
 
-Four separate axes carry qualified-only one-point claims; none admits an
+Four separate axes carry qualified-only claims; none admits an
 unverified-newer point:
 
 - `pi.sdk-sidecar.package`: exact `@earendil-works/pi-coding-agent@0.84.2`
-- `pi.sdk-sidecar.node`: exact Node `22.23.2` (satisfying the upstream
-  `>=22.19.0` requirement)
+- `pi.sdk-sidecar.node`: maintained Node `22.23.2..=22.23.3` (satisfying the
+  upstream `>=22.19.0` requirement)
 - `pi.sdk-sidecar.wire`: exact `swallowtail-pi-sdk-jsonl-v1` (opaque)
 - `pi.sdk-sidecar.sidecar`: the exact source-tagged sidecar revision
   (opaque)
@@ -72,6 +72,14 @@ unverified-newer point:
 Older, newer, and prerelease points on any axis do not prepare. The claim
 does not inherit the RPC package window or its unverified-newer posture even
 though both routes qualify the same upstream package release.
+
+Node `22.23.3` carries a version-specific bundled TLS root snapshot (NSS
+3.125): the frozen comparison has 145 roots at `22.23.2` and 119 at
+`22.23.3`, with 26 prior identities removed or changed. The sidecar keeps
+Node's default certificate and hostname verification and adds no CA or TLS
+override. This qualifies the runtime's default trust boundary; it does not
+claim compatibility for a provider endpoint that depends on a removed root,
+custom CA, or system trust store. No provider endpoint was contacted.
 
 ## Execution Boundary
 

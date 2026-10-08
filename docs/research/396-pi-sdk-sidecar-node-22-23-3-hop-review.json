@@ -1,0 +1,114 @@
+{
+  "schema": "swallowtail-node22-pi-hop-review-v1",
+  "route": "pi.sdk-sidecar-node",
+  "hop": {
+    "from": "22.23.2",
+    "to": "22.23.3",
+    "platform": "darwin-arm64"
+  },
+  "distribution": {
+    "entry_counts": {
+      "22.23.2": 5865,
+      "22.23.3": 5865
+    },
+    "added_file_count": 0,
+    "removed_file_count": 0,
+    "changed_file_count": 393,
+    "identical_file_count": 5472,
+    "complete_tree_diff_sha256": "7d27b45bd8822d0ce0dfd92191a3531b43f65d4e8a0e81601f4544fb3928d776",
+    "classification_rule": "Every changed distribution path belongs to exactly one category below. The packaged Node executable is the selected runtime. Node headers and build metadata are compile inputs only; npm and Corepack are not invoked by the application-provisioned sidecar. Distribution documentation is discovery material.",
+    "categories": [
+      {"id": "node_executable", "count": 1},
+      {"id": "distribution_readme_changelog", "count": 2},
+      {"id": "native_addon_build_metadata", "count": 1},
+      {"id": "native_addon_public_headers", "count": 3},
+      {"id": "openssl_native_build_headers", "count": 172},
+      {"id": "embedded_corepack", "count": 4},
+      {"id": "embedded_npm", "count": 210}
+    ]
+  },
+  "selected_source_changes": {
+    "tls": {
+      "official_release_note": "crypto: update root certificates to NSS 3.125",
+      "bundled_openssl": "3.5.7 to 3.5.8",
+      "root_set_change": "26 prior root identities removed or changed; no target additions",
+      "source_header_sha256": {
+        "22.23.2": "b8381bf64c65982dc9e93e87489e98f25cc660cfe46bd0f53ffaf99154ac6aac",
+        "22.23.3": "0a8a329be474650b59a08c0d0bdc20965c1591ea42983e1a7204983cdb5aaba0"
+      },
+      "offline_proof": "396-pi-sdk-sidecar-node-22-23-3-tls-offline-proof.json",
+      "classification": "Version-specific provider trust boundary. No endpoint or provider compatibility is inferred. Normal certificate-chain and hostname verification remain enabled."
+    },
+    "undici": {
+      "from": "6.28.0",
+      "to": "6.28.1",
+      "http1_idle_socket": {
+        "path": "deps/undici/src/lib/dispatcher/client-h1.js",
+        "previous_blob": "a801ecb36046fc7ac4276ca2ead34b9da969094c",
+        "target_blob": "6b28f60c06df563f9baee7580731da149c10cd34",
+        "classification": "Selected default Fetch path: idle keep-alive validation moves to a refed setImmediate after poll so queued peer bytes, FIN, or RST are observed before a reused request is written. This changes transport scheduling and closes a stale-socket race; Pi request and response mapping is unchanged."
+      },
+      "retry_handler": {
+        "path": "deps/undici/src/lib/handler/retry-handler.js",
+        "previous_blob": "c62a2409f3aedcadeb51346062cb91d7716450fd",
+        "target_blob": "2e36ab31daf1192739dfd37f64b28da83e894019",
+        "classification": "Not selected: Pi does not inject an Undici RetryAgent or dispatcher; the Pi Codex HTTP path owns retries around globalThis.fetch."
+      },
+      "eventsource_parser": {
+        "path": "deps/undici/src/lib/web/eventsource/eventsource-stream.js",
+        "previous_blob": "754934568d05626224eb1fce3e015f65a9b1e831",
+        "target_blob": "af04e16322cc6af0bbb1eb92876235c739a9e6bc",
+        "classification": "Not selected: the Pi SDK sidecar does not instantiate Node EventSource. The Codex SSE response is read through Fetch."
+      },
+      "websocket_handshake": {
+        "path": "deps/undici/src/lib/web/websocket/connection.js",
+        "previous_blob": "bb87d361e4b743150506f312dd13c39beac3fa21",
+        "target_blob": "1197b9b650c273a62e84aa8d9db987ef2f6485b7",
+        "classification": "Selected for the Pi Codex auto transport: valid WebSocket sessions keep the same wire; a server protocol offered without a client protocol now fails closed rather than dereferencing a null list."
+      },
+      "websocket_compression_failure": {
+        "path": "deps/undici/src/lib/web/websocket/permessage-deflate.js",
+        "previous_blob": "6a6e43899c5a959908f11f6388850fc54f8ef2b6",
+        "target_blob": "0b3d493db8204efe9c2fc75b371240b0bf435488",
+        "classification": "Selected Codex WebSocket failure path: an over-limit compressed message destroys the inflater after removing listeners, avoiding a later unhandled error. The sidecar wire and message projection are unchanged."
+      }
+    },
+    "other_node_release_changes": {
+      "classification": "The full distribution inventory is retained. Corepack and npm contents, Node-API headers, ICU and timezone data, c-ares, V8, URL setters, ESM loading, HTTP/2, tests, and build-tool changes do not add a Pi sidecar command, input, permission, mapped event, usage field, or cleanup step. The unchanged Pi 0.84.2 source tuple selects no native-addon build path in Swallowtail. No newly added Node operation is selected."
+    }
+  },
+  "pi_source_path": {
+    "repository": "https://github.com/earendil-works/pi",
+    "tag": "v0.84.2",
+    "commit": "914cf1472e715297caa30db4b9535d534a9eb718",
+    "package": "@earendil-works/pi-coding-agent@0.84.2",
+    "package_json_sha256": "820f4adc6d61f2cefbc29ce17e9dfd9aa482248d54be5d0dfa2a868ca000c7b0",
+    "pi_ai_package_json_sha256": "9575365ce609dca8e1fd4fa72471d55006e1e0f81310c0808f93abc4bc14bbf9",
+    "selected_source_sha256": {
+      "packages/coding-agent/src/core/model-runtime.ts": "57e77eee8594aab3da80052b0d2804f83cb3c3713750ec151a417ba22e89e891",
+      "packages/coding-agent/src/core/sdk.ts": "48ea062da677d6e52c270f4ec767726b48208ebfd0ee61986baacfd707c76e30",
+      "packages/ai/src/api/openai-codex-responses.ts": "5a8a4555d79998865df54dd7b19b0ad3a122fc1e0bfdbc9965070ad6a8a57824",
+      "packages/ai/src/types.ts": "62e6982bdd44e602ff53fcdcf2c4dfd1120bd9db207695ddf27e723ed9a0f73e",
+      "packages/ai/src/api/simple-options.ts": "f7559496ffec531c3a5c71f78551d678d6345e5bda94186b6a5cc58b51dfb714"
+    },
+    "route_call_path": {
+      "catalogue": "Sidecar creates ModelRuntime with authPath, modelsPath null, and allowModelNetwork false.",
+      "session": "Sidecar creates the same ModelRuntime; the SDK Agent forwards standard stream options but no fetch, dispatcher, TLS CA, HTTPS agent, proxy, or certificate-verification override.",
+      "provider_http": "Pi provider HTTP defaults to options.fetch or globalThis.fetch; the sidecar supplies no custom fetch, so Node global Fetch uses its bundled Undici and TLS roots.",
+      "provider_websocket": "Pi Codex auto transport uses globalThis.WebSocket; Node global WebSocket uses its bundled Undici implementation.",
+      "offline_mode": "PI_OFFLINE is set to 1 when unset to suppress SDK catalogue networking; this does not disable provider TLS verification or live session work."
+    },
+    "sidecar_asset_sha256": "8ad07d388e6e974d25345c7b35afd26b76ab7b360308133de652d22ce1114b45"
+  },
+  "qualification_decision": {
+    "shape": "compatible-extension",
+    "claim_id": "pi.sdk-sidecar.node-window-1",
+    "qualified_segment": "22.23.2..=22.23.3",
+    "behavior_revision": "pi.sdk-sidecar-v1",
+    "posture": "QualifiedOnly",
+    "other_axes_changed": false,
+    "provider_endpoint_compatibility_inferred": false,
+    "custom_or_system_trust_supported": false,
+    "provider_traffic": false
+  }
+}

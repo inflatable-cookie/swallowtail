@@ -86,7 +86,7 @@ pub fn sidecar_catalogue_selection(host: ExecutionHostId) -> SidecarFixtureSelec
 pub fn sidecar_versions() -> [InterfaceVersionBinding; 4] {
     [
         version(PI_SDK_SIDECAR_PACKAGE_AXIS, "0.84.2"),
-        version(PI_SDK_SIDECAR_NODE_AXIS, "22.23.2"),
+        version(PI_SDK_SIDECAR_NODE_AXIS, "22.23.3"),
         version(PI_SDK_SIDECAR_WIRE_AXIS, "swallowtail-pi-sdk-jsonl-v1"),
         version(
             PI_SDK_SIDECAR_SIDECAR_AXIS,

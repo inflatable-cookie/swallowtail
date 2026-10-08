@@ -425,7 +425,7 @@ OpenHands adds a package without a production route.
   remain distinct, with optional adapter-local `options.num_ctx` dispatch on
   structured runs and interactive replay. Current official `0.40.0` is
   unverified because chat can start local compatibility migration; Research
-  374 records the adapter and authority gate. The adapter adds no installation,
+  377 records the adapter and authority gate. The adapter adds no installation,
   model acquisition, cloud access, unload, or server ownership.
 - `swallowtail-adapter-xai` implements resource-free direct inference over one
   host-approved Responses WebSocket as either one bounded response without

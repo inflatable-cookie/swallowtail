@@ -61,7 +61,7 @@ by `KIMI_CODE_LEGACY_FLAG` and defaults to v2, and this adapter never sets
 that flag. From `0.42.0` the legacy v1 body and that gate are deleted and the
 v2 print path is unconditional. Public facade
 `kimi-headless-stream-json-v1` covers both revisions. Unpublished `0.43.2` and
-`2.0.3`, the `1.x` line, and exact `2.1.0` remain unsupported. Research 408
+`2.0.3`, the `1.x` line, and exact `2.1.0` remain unsupported. Research 413
 records that `2.1.0` adds effective symlink-aware filesystem checks to the
 built-in tools, while `2.1.1` removes them. Later stable points above `2.1.1`
 remain visible `UnverifiedNewer`; they do not inherit ACP catalogue/import

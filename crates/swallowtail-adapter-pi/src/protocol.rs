@@ -88,6 +88,7 @@ fn decode_record(bytes: &[u8]) -> Result<PiRpcRecordKind, PiRpcProtocolFailure> 
 #[cfg(test)]
 mod tests {
     use super::{PiRpcProtocolFailureKind, PiRpcRecordKind, decode_records};
+    use crate::protocol::wire::{PiAgentEvent, PiRpcRecord, decode_record};
 
     const FIXTURES: &str = "../tests/fixtures/pi-rpc-0.80.10";
 
@@ -175,6 +176,32 @@ mod tests {
                 PiRpcProtocolFailureKind::UnknownRecord
             );
         }
+    }
+
+    #[test]
+    fn settled_event_preserves_optional_abort_state_and_rejects_malformed_values() {
+        for (bytes, expected) in [
+            (br#"{"type":"agent_settled"}"#.as_slice(), None),
+            (
+                br#"{"type":"agent_settled","aborted":false}"#.as_slice(),
+                Some(false),
+            ),
+            (
+                br#"{"type":"agent_settled","aborted":true}"#.as_slice(),
+                Some(true),
+            ),
+        ] {
+            let PiRpcRecord::AgentEvent(PiAgentEvent::Settled { aborted }) =
+                decode_record(bytes).expect("settled event decodes")
+            else {
+                panic!("record is a settled event");
+            };
+            assert_eq!(aborted, expected);
+        }
+        let Err(error) = decode_record(br#"{"type":"agent_settled","aborted":"true"}"#) else {
+            panic!("malformed aborted value fails closed");
+        };
+        assert_eq!(error.kind(), PiRpcProtocolFailureKind::UnknownRecord);
     }
 
     #[test]

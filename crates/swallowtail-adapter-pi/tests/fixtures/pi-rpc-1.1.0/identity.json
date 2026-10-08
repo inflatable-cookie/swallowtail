@@ -1,0 +1,347 @@
+{
+  "axis": "pi.package",
+  "execution_limits": {
+    "credentials_used": false,
+    "host_mutation": false,
+    "live_rpc_session": false,
+    "package_installation": false,
+    "provider_prompt_sent": false
+  },
+  "identity_decision": {
+    "approved_major_line_transition": "0.x through 1.x under ruling a641caad-d963-4277-b62c-9fa6ac0247e9",
+    "baseline": "0.80.10",
+    "claim_id": "pi.rpc.package-window-2",
+    "consumer_visible_narrowing": false,
+    "latest_qualified": "1.1.0",
+    "new_milestones": [
+      {
+        "behavior_revision": "pi.rpc.strict-lf-v0.99.0-command-disposition",
+        "mapped_change": "prompt, steer, and follow_up success response dispositions",
+        "version": "0.99.0"
+      },
+      {
+        "behavior_revision": "pi.rpc.strict-lf-v1.1.0-aborted-settled",
+        "mapped_change": "agent_settled.aborted terminal status",
+        "version": "1.1.0"
+      }
+    ],
+    "new_public_operations": false,
+    "next_unpublished_point": "1.1.1",
+    "preserve_existing_behavior_revisions": true,
+    "public_lifecycle_contract_changed": false,
+    "sdk_sidecar_or_oh_my_pi_qualification_changed": false,
+    "segments": [
+      {
+        "behavior": "pi.rpc.strict-lf-v0.80.10",
+        "status": "Deprecated",
+        "versions": "0.80.10"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v0.81.0-thinking-usage",
+        "status": "Deprecated",
+        "versions": "0.81.0"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v0.81.1-summary-retry",
+        "status": "Deprecated",
+        "versions": "0.81.1"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v0.82.0-bash-correlation",
+        "status": "Deprecated",
+        "versions": "0.82.0..=0.82.1"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v0.83.0-bash-extension-hook",
+        "status": "Deprecated",
+        "versions": "0.83.0"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v0.84.0-message-update-delta",
+        "status": "Deprecated",
+        "versions": "0.84.0..=0.84.4"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v0.84.0-message-update-delta",
+        "status": "Deprecated",
+        "versions": "0.85.0..=0.85.1"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v0.84.0-message-update-delta",
+        "status": "Deprecated",
+        "versions": "0.86.0..=0.86.1"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v0.84.0-message-update-delta",
+        "status": "Deprecated",
+        "versions": "0.87.0..=0.87.1"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v0.99.0-command-disposition",
+        "status": "Deprecated",
+        "versions": "0.99.0..=0.99.2"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v0.99.0-command-disposition",
+        "status": "Deprecated",
+        "versions": "1.0.0..=1.0.4"
+      },
+      {
+        "behavior": "pi.rpc.strict-lf-v1.1.0-aborted-settled",
+        "status": "Maintained",
+        "versions": "1.1.0"
+      }
+    ],
+    "shape": "compatible-extension-with-two-private-mapping-milestones",
+    "unpublished_or_unqualified_holes_preserved": [
+      "0.83.1",
+      "0.84.5",
+      "0.85.2",
+      "0.86.2",
+      "0.87.2 through 0.98.x",
+      "0.99.3 and later 0.99.x",
+      "1.0.5 and later 1.0.x"
+    ]
+  },
+  "latest_source_correlation": {
+    "checks": [
+      {
+        "matches_tag": "v1.1.0",
+        "sha256": "d534e0fa1484844a097963d5f4fb4df9397c5a1b5e29e42aed7575ab6f67989b",
+        "source": "packages/coding-agent/src/modes/rpc/rpc-mode.ts"
+      },
+      {
+        "matches_tag": "v1.1.0",
+        "sha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+        "source": "packages/coding-agent/src/core/agent-session.ts"
+      }
+    ],
+    "npm_git_head_is_null": true,
+    "npm_sourcemap_sources_content_matches_tagged_source": true
+  },
+  "npm_package": "@earendil-works/pi-coding-agent",
+  "observed_at": "2026-10-08T03:09:20Z",
+  "official_artifacts": [
+    {
+      "complete_tree_sha256": "38920eb7b8cf3232eae59063a4f81b1c8fd6d7a6a2600fdab6206c79e2779ce5",
+      "github_release_id": 392403966,
+      "github_release_published_at": "2026-09-20T11:19:20Z",
+      "github_tag": "v0.86.1",
+      "github_tag_commit": "13cbf77df2396303013a41646bcfa77b4271ae56",
+      "npm_files": 1100,
+      "npm_git_head": "13cbf77df2396303013a41646bcfa77b4271ae56",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-vZBuNfJnruxZyemZ3O05V0S/Ylze08ahFTIQ1Mik++gVdOevPl89gt/Uv0U97BPAJaj9cj6Vf9rcIgKtUrd0BA==",
+      "npm_published_at": "2026-09-20T11:16:39.121Z",
+      "npm_shasum": "b8e38a10c51d28e946ac2740f13c01358f886a52",
+      "npm_tarball_sha256": "8dff93e6fa03e0d498e72a78d2c7bb5f094f5e06ee268e6abd000ba2984a0b6a",
+      "version": "0.86.1"
+    },
+    {
+      "complete_tree_sha256": "3312cce2863588249ebbea6c4608d05a814fbb5ca2a39de86f7a655c5d8c7969",
+      "github_release_id": 393194755,
+      "github_release_published_at": "2026-09-21T18:29:47Z",
+      "github_tag": "v0.87.0",
+      "github_tag_commit": "16787ad5b2dc748047f314ca1bfe7708f30f54f3",
+      "npm_files": 1100,
+      "npm_git_head": "16787ad5b2dc748047f314ca1bfe7708f30f54f3",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-S9JJVGHya/h0e0M+zwPTB6RkPe7PmLLqfBUTssFYW5mxAti6oZEILn4jvaUImENRC3U9RwXAB6H4gw8xj2J0GQ==",
+      "npm_published_at": "2026-09-21T16:51:53.584Z",
+      "npm_shasum": "908417741052a4ef12d9b9a8c0acb98a51ce9d87",
+      "npm_tarball_sha256": "9a6733c0e6a31d592b53dc60df43dd0c26fa793ccf2384ed123fc17b0448866a",
+      "version": "0.87.0"
+    },
+    {
+      "complete_tree_sha256": "d6f039d6a5ba209287537c9f2ae5d71cc00acda15060c98ad496361b6fc17217",
+      "github_release_id": 394053788,
+      "github_release_published_at": "2026-09-22T19:43:43Z",
+      "github_tag": "v0.87.1",
+      "github_tag_commit": "f07218c4d4bbc12bef056a7058c3dd49dfe41abe",
+      "npm_files": 1108,
+      "npm_git_head": "f07218c4d4bbc12bef056a7058c3dd49dfe41abe",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-m8ArJUtVcQMSe1lLE/Ei7vX/JV7O39sWmWBsXV2NOU70F0qCp8GubA24pT3LnwTmM6LL2xV80/h6sQg85n69ew==",
+      "npm_published_at": "2026-09-22T19:42:48.221Z",
+      "npm_shasum": "5708b9310325177d5c1b487b5c99627ffa733324",
+      "npm_tarball_sha256": "1423ee3c61e7c96464e1cbf3c8dc24d3056cb3410995c3671a98c3ecc527540f",
+      "version": "0.87.1"
+    },
+    {
+      "complete_tree_sha256": "7ddfa796b9c5b70dcbe08d60119ede96d19ba11a9e1e7860bead859f1c00c052",
+      "github_release_id": 399359432,
+      "github_release_published_at": "2026-09-29T17:21:54Z",
+      "github_tag": "v0.99.0",
+      "github_tag_commit": "4b060d3a98618019adb9985d517516c8e99a2bbe",
+      "npm_files": 1226,
+      "npm_git_head": "4b060d3a98618019adb9985d517516c8e99a2bbe",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-rZ8lLzqhrXrlZSt9VffVmVOcPBzbnK53UilkwEpDqU/WfE1RKCRqzYfGll/Xsk5XumjpeBT8IWzKNP6CyiEtrg==",
+      "npm_published_at": "2026-09-29T17:21:27.312Z",
+      "npm_shasum": "b0e83620c580b0e09e4d519da5f71678ece233b7",
+      "npm_tarball_sha256": "19a8dbd8d697a599ea972a8ba307c109a814bb9122604b2553c62006b9617724",
+      "version": "0.99.0"
+    },
+    {
+      "complete_tree_sha256": "913bf8cdb5db68249233691f66b15cffb147c3db39487abd6bea3838c157596c",
+      "github_release_id": 399404207,
+      "github_release_published_at": "2026-09-29T18:27:00Z",
+      "github_tag": "v0.99.1",
+      "github_tag_commit": "d86654abb8862e201933517d6f1fce9f88dd117f",
+      "npm_files": 1227,
+      "npm_git_head": "d86654abb8862e201933517d6f1fce9f88dd117f",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-cWUrTOqA5M73cOYMgsh9PlhDrsBhavd+n5kVY6F7BGbGl1RjqCteVCoeVMVqhngoGACVDyw1tbLjajL8l9jrHg==",
+      "npm_published_at": "2026-09-29T18:23:26.245Z",
+      "npm_shasum": "00e7e6c668d67d0825fc8814d80097eb07ec44e0",
+      "npm_tarball_sha256": "6686592adaea19092c85c94f5d40323dbf3db141e90eb3ede9e9e87302abdd1d",
+      "version": "0.99.1"
+    },
+    {
+      "complete_tree_sha256": "4e2034d74e6d2f9ea9a49bee3b73e6b761c6dc1ce5922907eb05d79c01ef5586",
+      "github_release_id": 400361557,
+      "github_release_published_at": "2026-09-30T19:30:47Z",
+      "github_tag": "v0.99.2",
+      "github_tag_commit": "005af57d88ee23b33778f343a9595b32e67ff788",
+      "npm_files": 1228,
+      "npm_git_head": "005af57d88ee23b33778f343a9595b32e67ff788",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-6R1BZ2N77CrVcGf3eC2KovTz1Q4RYiAeydvVWQT546N2fi1nBc81aURlbOZCgruWoW9VY/UrLzDynF4YTolpoA==",
+      "npm_published_at": "2026-09-30T19:30:20.243Z",
+      "npm_shasum": "6f95461d41661aea1243f6cc2ac0ace8497d21f7",
+      "npm_tarball_sha256": "5bb197bed8e46b5352a7a940ddc868c358725b214f27f3ad4d33e77ee9832558",
+      "version": "0.99.2"
+    },
+    {
+      "complete_tree_sha256": "14313b8e739381719bc844df12dc648dcf531924252e10551cd969e019488134",
+      "github_release_id": 401260174,
+      "github_release_published_at": "2026-10-01T19:20:55Z",
+      "github_tag": "v1.0.0",
+      "github_tag_commit": "a13d35a742c6ef8462812a28fbe1d8c8b7431c32",
+      "npm_files": 1243,
+      "npm_git_head": "a13d35a742c6ef8462812a28fbe1d8c8b7431c32",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-/FtbxoSQU/mEv1QnichJjRjqteqaIaMWxmhB4G367+MwZfX7/DI5B9YAg5lqbN7nztFskBEtUSZ+FlmMBECtMw==",
+      "npm_published_at": "2026-10-01T19:15:22.967Z",
+      "npm_shasum": "ae6346e0d5e2a7e2d1fdd177965cda781aa3c514",
+      "npm_tarball_sha256": "638ed3abbe54ef70cbf8673ae4bc531e791613756aac04644cfcdcc4af0fafaf",
+      "version": "1.0.0"
+    },
+    {
+      "complete_tree_sha256": "e0a3267a0269ba4a009ff7faeb42bf00e251ed45661c768e78b6ceb424dcef03",
+      "github_release_id": 402502529,
+      "github_release_published_at": "2026-10-03T16:14:00Z",
+      "github_tag": "v1.0.1",
+      "github_tag_commit": "a7229ddc21810d6245105978033b7df645ecc2f7",
+      "npm_files": 1243,
+      "npm_git_head": "a7229ddc21810d6245105978033b7df645ecc2f7",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-B7FGYpHpBPvS+Ux16CbCuVnE9S4v6c2h6ykocPNarC4msD/4JM/eFrCrO2wbRkedJZ25myFozSWHvCOx4QnN+w==",
+      "npm_published_at": "2026-10-03T12:35:33.444Z",
+      "npm_shasum": "c43730168f5482f1c55b462ae43193cc6f7c1e13",
+      "npm_tarball_sha256": "99c2e1958ac6d4c6a36e7f1c3690ae38778bb397c63e9d611d2c09521be735c5",
+      "version": "1.0.1"
+    },
+    {
+      "complete_tree_sha256": "a31b4fbf5ee8aae33dd4ee46a0637e850f1f5ddf8114d02a667ed5e38453f662",
+      "github_release_id": 402755206,
+      "github_release_published_at": "2026-10-04T00:56:36Z",
+      "github_tag": "v1.0.2",
+      "github_tag_commit": "cd32f7725fdbddbaecdff5b1e68491563394e0ca",
+      "npm_files": 1243,
+      "npm_git_head": "cd32f7725fdbddbaecdff5b1e68491563394e0ca",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-3ZdIghMSELMGV3sKi5iASOb1Jwb696fLjmNu0aezaqDxTLLWWoRpqBYkGxJ1CgAMCbtfqXWEF0lcRrlVXmiEGQ==",
+      "npm_published_at": "2026-10-04T00:56:19.486Z",
+      "npm_shasum": "aba0009c736a1de4e045665acceb017cdb791371",
+      "npm_tarball_sha256": "eda5ae7875343bd902ffe55718fb65b2406d7b03abecc5cb89d8e4bb09ceeda2",
+      "version": "1.0.2"
+    },
+    {
+      "complete_tree_sha256": "4a47c39bc26dc237e97779c44ad2f77698c255d4b4438b7fc52a8455c857180c",
+      "github_release_id": 403509577,
+      "github_release_published_at": "2026-10-05T08:38:23Z",
+      "github_tag": "v1.0.3",
+      "github_tag_commit": "d78dc83d633229d12f8b79631384c4c2717c399f",
+      "npm_files": 1248,
+      "npm_git_head": "d78dc83d633229d12f8b79631384c4c2717c399f",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-t2lb0dw4y/jr5a2PRo6eTHGTZOPB3/YAMVyhhYFC1W3Hl5xE+462I/gMWjF4gCLuhGipNEfuNqONFmdqLFz4SQ==",
+      "npm_published_at": "2026-10-05T08:37:00.736Z",
+      "npm_shasum": "de643ce8049ed7182517bbc5620dacf2b68314c6",
+      "npm_tarball_sha256": "106eadb1f823f72f012c08f23bd36e435f9e62f6c81e98a5d8f70c8a9543dd05",
+      "version": "1.0.3"
+    },
+    {
+      "complete_tree_sha256": "3d433e7858f53a48b6a693cb0791e38abe54c5e942b8c1ca1976553581403ab8",
+      "github_release_id": 404122010,
+      "github_release_published_at": "2026-10-05T22:03:50Z",
+      "github_tag": "v1.0.4",
+      "github_tag_commit": "7c10bd4337495ee613f2224843ecdf349b80d1df",
+      "npm_files": 1248,
+      "npm_git_head": "7c10bd4337495ee613f2224843ecdf349b80d1df",
+      "npm_git_head_matches_tag": true,
+      "npm_integrity": "sha512-+956nfMFHr5lDUVY/2Q4k+YzojzBuCaBXFgj0eSlXVGr7QVliVddKdc1Pz6yVg1dOlJQmb67doOVrlMsIcIdaw==",
+      "npm_published_at": "2026-10-05T21:51:59.920Z",
+      "npm_shasum": "878235d4ecc2ad3ac6fad0adfeffcf233b8159d7",
+      "npm_tarball_sha256": "04910bdae661a6529e9d6869b04006f6aad01186398b04a16c6d9793667b96c5",
+      "version": "1.0.4"
+    },
+    {
+      "complete_tree_sha256": "62fb9de5c48a64d72f8f8fb2ad7a1f7aae15ca389dc52348b7d973cc9bdf82c8",
+      "github_release_id": 406210577,
+      "github_release_published_at": "2026-10-07T22:26:31Z",
+      "github_tag": "v1.1.0",
+      "github_tag_commit": "abe508e1b89912adde45528136c3221eb69acdd7",
+      "npm_files": 1254,
+      "npm_git_head": null,
+      "npm_git_head_matches_tag": null,
+      "npm_integrity": "sha512-SeEi/4hdcHNgA9UWlefZl7ZZpm3dzi2OoxNjDHsBJ9o298LNOtbL4DGKgitlEj6uCTccvtw6f2hlCkTPVJ2RXg==",
+      "npm_published_at": "2026-10-07T22:16:26.802Z",
+      "npm_shasum": "0ebd064bf1342f812f9676dde85b2f0b3e02b7e6",
+      "npm_tarball_sha256": "09cd8a0a43dbb1d81a67346b09400b439ce71d818caba4e963ea958846a1aed4",
+      "version": "1.1.0"
+    }
+  ],
+  "official_channels": {
+    "github_latest_commit": "abe508e1b89912adde45528136c3221eb69acdd7",
+    "github_latest_draft": false,
+    "github_latest_prerelease": false,
+    "github_latest_published_at": "2026-10-07T22:26:31Z",
+    "github_latest_tag": "v1.1.0",
+    "github_repository": "earendil-works/pi",
+    "latest_channels_agree": true,
+    "npm_latest": "1.1.0",
+    "npm_registry": "https://registry.npmjs.org/",
+    "published_stables_after_previous_ceiling": [
+      "0.87.0",
+      "0.87.1",
+      "0.99.0",
+      "0.99.1",
+      "0.99.2",
+      "1.0.0",
+      "1.0.1",
+      "1.0.2",
+      "1.0.3",
+      "1.0.4",
+      "1.1.0"
+    ]
+  },
+  "previous_qualification": {
+    "baseline": "0.80.10",
+    "behavior_revision": "pi.rpc.strict-lf-v0.84.0-message-update-delta",
+    "claim_id": "pi.rpc.package-window-2",
+    "latest_qualified": "0.86.1"
+  },
+  "runtime_identity": {
+    "host_installed_or_updated": false,
+    "host_node_binary_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572",
+    "host_node_version": "v22.23.2",
+    "host_paths_recorded": false,
+    "host_pi_binary_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+    "host_pi_version": "0.87.1",
+    "npm_engine_requirement": ">=22.19.0",
+    "official_artifact_executed": false
+  },
+  "selected_route": "pi.rpc"
+}

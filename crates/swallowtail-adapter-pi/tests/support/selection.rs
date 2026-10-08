@@ -33,6 +33,18 @@ pub fn selection(host: ExecutionHostId) -> FixtureSelection {
         InstanceTargetRef::new("pi.fixture.pinned-executable").expect("valid target"),
         WorkingResourceRef::new("pi.fixture.workspace").expect("valid resource"),
         DriverRole::InteractiveSession,
+        "0.80.10",
+    )
+}
+
+pub fn selection_at_version(host: ExecutionHostId, version: &str) -> FixtureSelection {
+    build_selection(
+        host,
+        ConfiguredInstanceId::new("pi.fixture.instance").expect("valid instance"),
+        InstanceTargetRef::new("pi.fixture.pinned-executable").expect("valid target"),
+        WorkingResourceRef::new("pi.fixture.workspace").expect("valid resource"),
+        DriverRole::InteractiveSession,
+        version,
     )
 }
 
@@ -43,6 +55,7 @@ pub fn selection_for_topology(topology: &ExecutionTopologyFixture) -> FixtureSel
         topology.instance_target().clone(),
         topology.working_resource().clone(),
         DriverRole::InteractiveSession,
+        "0.80.10",
     )
 }
 
@@ -54,6 +67,7 @@ pub fn run_selection_for_topology(topology: &ExecutionTopologyFixture) -> Fixtur
         topology.instance_target().clone(),
         topology.working_resource().clone(),
         DriverRole::StructuredRun,
+        "0.80.10",
     )
 }
 
@@ -63,6 +77,7 @@ fn build_selection(
     instance_target: InstanceTargetRef,
     resource: WorkingResourceRef,
     role: DriverRole,
+    package_version: &str,
 ) -> FixtureSelection {
     let descriptor = pi_rpc_descriptor();
     let credential = CredentialRef::new("pi.fixture.delegated-auth").expect("valid credential");
@@ -71,7 +86,7 @@ fn build_selection(
     let capabilities = CapabilityProfile::new(capability_requirements.clone());
     let version = InterfaceVersionBinding::new(
         InterfaceVersionAxis::new("pi.package").expect("valid axis"),
-        InterfaceVersion::new("0.80.10").expect("valid version"),
+        InterfaceVersion::new(package_version).expect("valid version"),
     );
     let rpc_policy = rpc_policy();
     let instance = ConfiguredInstance::new(

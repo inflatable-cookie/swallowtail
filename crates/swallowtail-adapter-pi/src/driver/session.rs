@@ -3,7 +3,9 @@ use super::handle::{PiTurnBinding, PiTurnHandle, SessionCancellation};
 use super::input::{SharedAttachmentMaterialization, prepare_attachment};
 use super::validation::validate_turn;
 use crate::connection::PiConnection;
+use crate::driver::disposition::{CommandDisposition, parse_command_disposition};
 use crate::failure::failure;
+use crate::selection::PiRpcVersionFeatures;
 use crate::turn::ActiveTurn;
 use serde_json::json;
 use std::future::{Future, poll_fn};
@@ -45,6 +47,7 @@ pub(super) struct PiSessionHandle {
     pub(super) credential: Option<CredentialLease>,
     pub(super) active: ActiveSlot,
     pub(super) completed_prompts: Arc<AtomicU32>,
+    pub(super) version_features: PiRpcVersionFeatures,
     pub(super) image_attachments: bool,
 }
 
@@ -95,6 +98,7 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 request.turn_id().clone(),
                 Arc::clone(&self.completed_prompts),
                 Arc::downgrade(&self.connection),
+                self.version_features.aborted_settled,
             )?;
             let turn_scope = ScopeId::new(format!("pi-rpc:turn:{}", request.turn_id().as_str()))
                 .map_err(|_| {
@@ -134,8 +138,30 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 }]);
             }
             let response = self.connection.command(id.clone(), "prompt", payload).await;
-            match response {
-                Ok(response) if response.success => Ok(Box::new(PiTurnHandle::new(
+            let accepted = match response {
+                Ok(response) if response.success => {
+                    match parse_command_disposition(
+                        response.data.as_ref(),
+                        "prompt",
+                        self.version_features.command_dispositions,
+                    ) {
+                        Ok(Some(CommandDisposition::Handled)) => Err(failure(
+                            "swallowtail.pi.rpc.prompt_handled",
+                            "Pi handled the prompt without starting an agent run",
+                        )),
+                        Ok(Some(CommandDisposition::Queued | CommandDisposition::Started))
+                        | Ok(None) => Ok(()),
+                        Err(error) => Err(error),
+                    }
+                }
+                Ok(_) => Err(failure(
+                    "swallowtail.pi.rpc.prompt_rejected",
+                    "Pi RPC rejected the prompt before acceptance",
+                )),
+                Err(error) => Err(error),
+            };
+            match accepted {
+                Ok(()) => Ok(Box::new(PiTurnHandle::new(
                     request.turn_id().clone(),
                     events,
                     callbacks,
@@ -145,20 +171,9 @@ impl InteractiveSessionHandle for PiSessionHandle {
                         turn,
                         active: Arc::clone(&self.active),
                         attachment: materialization,
+                        command_dispositions: self.version_features.command_dispositions,
                     },
                 )) as Box<dyn TurnHandle>),
-                Ok(_) => {
-                    turn.fail_connection(swallowtail_core::SafeDiagnostic::new(
-                        "swallowtail.pi.rpc.prompt_rejected",
-                        "Pi RPC rejected the prompt before acceptance",
-                    ));
-                    self.connection.clear_active_turn(&turn);
-                    let _ = materialization.release().await;
-                    Err(failure(
-                        "swallowtail.pi.rpc.prompt_rejected",
-                        "Pi RPC rejected the prompt before acceptance",
-                    ))
-                }
                 Err(error) => {
                     turn.fail_connection(error.diagnostic().clone());
                     self.connection.clear_active_turn(&turn);

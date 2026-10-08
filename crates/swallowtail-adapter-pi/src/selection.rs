@@ -12,7 +12,7 @@ pub const PI_PACKAGE_AXIS: &str = "pi.package";
 /// Oldest Pi package version qualified for the RPC route.
 pub const PI_PACKAGE_BASELINE_VERSION: &str = "0.80.10";
 /// Newest Pi package version behaviorally qualified for the RPC route.
-pub const PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "0.86.1";
+pub const PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "1.1.0";
 
 const BASELINE_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.80.10";
 const THINKING_USAGE_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.81.0-thinking-usage";
@@ -20,6 +20,14 @@ const SUMMARY_RETRY_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.81.1-summary-retry";
 const BASH_CORRELATION_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.82.0-bash-correlation";
 const BASH_EXTENSION_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.83.0-bash-extension-hook";
 const MESSAGE_UPDATE_DELTA_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.84.0-message-update-delta";
+const COMMAND_DISPOSITION_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.99.0-command-disposition";
+const ABORTED_SETTLED_BEHAVIOR: &str = "pi.rpc.strict-lf-v1.1.0-aborted-settled";
+
+#[derive(Clone, Copy)]
+pub(crate) struct PiRpcVersionFeatures {
+    pub(crate) command_dispositions: bool,
+    pub(crate) aborted_settled: bool,
+}
 /// Parses one exact Pi package semantic-version binding.
 #[must_use]
 pub fn pi_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
@@ -70,18 +78,42 @@ pub fn pi_rpc_claim() -> InterfaceCompatibilityClaim {
                 "0.84.0",
                 "0.84.4",
                 MESSAGE_UPDATE_DELTA_BEHAVIOR,
-                InterfaceSupportStatus::Maintained,
+                InterfaceSupportStatus::Deprecated,
             ),
             segment(
                 "0.85.0",
                 "0.85.1",
                 MESSAGE_UPDATE_DELTA_BEHAVIOR,
-                InterfaceSupportStatus::Maintained,
+                InterfaceSupportStatus::Deprecated,
             ),
             segment(
                 "0.86.0",
                 "0.86.1",
                 MESSAGE_UPDATE_DELTA_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.87.0",
+                "0.87.1",
+                MESSAGE_UPDATE_DELTA_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.99.0",
+                "0.99.2",
+                COMMAND_DISPOSITION_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "1.0.0",
+                "1.0.4",
+                COMMAND_DISPOSITION_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "1.1.0",
+                "1.1.0",
+                ABORTED_SETTLED_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
         ],
@@ -90,7 +122,9 @@ pub fn pi_rpc_claim() -> InterfaceCompatibilityClaim {
     .expect("static Pi compatibility claim is valid")
 }
 
-pub(crate) fn validate_pi_plan_version(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+pub(crate) fn validate_pi_plan_version(
+    plan: &PreflightPlan,
+) -> Result<PiRpcVersionFeatures, RuntimeFailure> {
     let claim = pi_rpc_claim();
     let mut bindings = plan
         .interface_versions()
@@ -119,6 +153,8 @@ pub(crate) fn validate_pi_plan_version(plan: &PreflightPlan) -> Result<(), Runti
                     | BASH_CORRELATION_BEHAVIOR
                     | BASH_EXTENSION_BEHAVIOR
                     | MESSAGE_UPDATE_DELTA_BEHAVIOR
+                    | COMMAND_DISPOSITION_BEHAVIOR
+                    | ABORTED_SETTLED_BEHAVIOR
             )
         })
     {
@@ -127,7 +163,16 @@ pub(crate) fn validate_pi_plan_version(plan: &PreflightPlan) -> Result<(), Runti
             "Pi RPC executable version is incompatible with this driver",
         ));
     }
-    Ok(())
+    let version = semver::Version::parse(binding.version().as_str()).map_err(|_| {
+        failure(
+            "swallowtail.pi.rpc.version_incompatible",
+            "Pi RPC executable version is incompatible with this driver",
+        )
+    })?;
+    Ok(PiRpcVersionFeatures {
+        command_dispositions: version >= semver::Version::new(0, 99, 0),
+        aborted_settled: version >= semver::Version::new(1, 1, 0),
+    })
 }
 
 fn axis() -> InterfaceVersionAxis {
@@ -162,7 +207,9 @@ mod tests {
         let claim = pi_rpc_claim();
         for candidate in [
             "0.80.10", "0.81.0", "0.81.1", "0.82.0", "0.82.1", "0.83.0", "0.84.0", "0.84.1",
-            "0.84.2", "0.84.3", "0.84.4", "0.85.0", "0.85.1", "0.86.0", "0.86.1",
+            "0.84.2", "0.84.3", "0.84.4", "0.85.0", "0.85.1", "0.86.0", "0.86.1", "0.87.0",
+            "0.87.1", "0.99.0", "0.99.1", "0.99.2", "1.0.0", "1.0.1", "1.0.2", "1.0.3", "1.0.4",
+            "1.1.0",
         ] {
             assert!(claim.supports(&version(candidate)), "missing {candidate}");
         }
@@ -181,6 +228,13 @@ mod tests {
             ("0.85.1", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
             ("0.86.0", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
             ("0.86.1", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
+            ("0.87.0", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
+            ("0.87.1", "pi.rpc.strict-lf-v0.84.0-message-update-delta"),
+            ("0.99.0", "pi.rpc.strict-lf-v0.99.0-command-disposition"),
+            ("0.99.2", "pi.rpc.strict-lf-v0.99.0-command-disposition"),
+            ("1.0.0", "pi.rpc.strict-lf-v0.99.0-command-disposition"),
+            ("1.0.4", "pi.rpc.strict-lf-v0.99.0-command-disposition"),
+            ("1.1.0", "pi.rpc.strict-lf-v1.1.0-aborted-settled"),
         ] {
             assert_eq!(
                 claim
@@ -191,19 +245,22 @@ mod tests {
                 behavior
             );
         }
-        for unsupported in ["0.80.11", "0.81.2", "0.82.2", "0.83.1", "0.84.5", "0.85.2"] {
+        for unsupported in [
+            "0.80.11", "0.81.2", "0.82.2", "0.83.1", "0.84.5", "0.85.2", "0.86.2", "0.87.2",
+            "0.98.9", "0.99.3", "1.0.5",
+        ] {
             assert!(!claim.permits(&version(unsupported)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.86.2"))
+            claim.assess(&version("1.1.1"))
         else {
             panic!("later stable Pi remains unverified");
         };
         assert_eq!(
             newer.behavior_revision().as_str(),
-            "pi.rpc.strict-lf-v0.84.0-message-update-delta"
+            "pi.rpc.strict-lf-v1.1.0-aborted-settled"
         );
-        assert!(!claim.permits(&version("0.86.2-rc.1")));
+        assert!(!claim.permits(&version("1.1.1-rc.1")));
     }
 
     #[test]
@@ -217,6 +274,7 @@ mod tests {
         assert!(pi_package_binding("0.85.1").is_some());
         assert!(pi_package_binding("0.86.0").is_some());
         assert!(pi_package_binding("0.86.1").is_some());
+        assert!(pi_package_binding("1.1.0").is_some());
         for value in ["", " 0.80.10", "pi 0.80.10", "latest"] {
             assert!(pi_package_binding(value).is_none());
         }

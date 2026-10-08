@@ -38,6 +38,12 @@ ALLOWLISTED_COLLISIONS = {
             "opencode-acp-unavailable-cells",
         }
     ),
+    "382": frozenset(
+        {
+            "grok-build-acp-1-0-46-identity",
+            "oh-my-pi-18-8-3-identity-and-qualification",
+        }
+    ),
 }
 
 
@@ -175,12 +181,15 @@ def renumbered_record_matches(
 ) -> bool:
     if original == candidate:
         return True
-    original_heading = f"# Research {original_number}:".encode()
-    if not original.startswith(original_heading):
-        return False
-    candidate_heading = f"# Research {new_number}:".encode()
-    expected = candidate_heading + original[len(original_heading) :]
-    return candidate == expected
+    heading_formats = (
+        (f"# Research {original_number}:".encode(), f"# Research {new_number}:".encode()),
+        (f"# {original_number} ".encode(), f"# {new_number} ".encode()),
+    )
+    for original_heading, candidate_heading in heading_formats:
+        if original.startswith(original_heading):
+            expected = candidate_heading + original[len(original_heading) :]
+            return candidate == expected
+    return False
 
 
 def base_record_contents(

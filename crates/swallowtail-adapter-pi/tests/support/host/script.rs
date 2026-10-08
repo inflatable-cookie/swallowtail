@@ -81,9 +81,14 @@ pub(super) fn respond(
         | "set_follow_up_mode"
         | "steer"
         | "follow_up" => {
+            let data = if matches!(scenario, Scenario::ScheduledHandled) {
+                json!({"disposition": "handled"})
+            } else {
+                json!({"disposition": "queued"})
+            };
             output(
                 state,
-                json!({"id": id, "type": "response", "command": kind, "success": true}),
+                json!({"id": id, "type": "response", "command": kind, "success": true, "data": data}),
             );
             if kind == "follow_up" {
                 output(
@@ -117,10 +122,26 @@ pub(super) fn respond(
             } else {
                 "prompt"
             };
-            output(
-                state,
-                json!({"id": id, "type": "response", "command": response_command, "success": true}),
-            );
+            let disposition = match scenario {
+                Scenario::PromptHandled => Some("handled"),
+                Scenario::PromptInvalidDisposition => Some("future"),
+                Scenario::PromptMissingDisposition => None,
+                _ => Some("started"),
+            };
+            let mut response =
+                json!({"id": id, "type": "response", "command": response_command, "success": true});
+            if let Some(disposition) = disposition {
+                response["data"] = json!({"disposition": disposition});
+            }
+            output(state, response);
+            if matches!(
+                scenario,
+                Scenario::PromptHandled
+                    | Scenario::PromptInvalidDisposition
+                    | Scenario::PromptMissingDisposition
+            ) {
+                return Ok(());
+            }
             output(state, json!({"type": "agent_start"}));
             match scenario {
                 Scenario::Complete => {
@@ -128,8 +149,11 @@ pub(super) fn respond(
                         state,
                         json!({"type": "message_update", "message": {}, "assistantMessageEvent": {"type": "text_delta", "contentIndex": 0, "delta": "fixture answer", "partial": {}}}),
                     );
-                    settled(state);
+                    settled(state, None);
                 }
+                Scenario::CurrentComplete => settled(state, Some(false)),
+                Scenario::AgentAborted => settled(state, Some(true)),
+                Scenario::SettledMissingAborted => settled(state, None),
                 Scenario::Disconnect => state.stopped = true,
                 Scenario::Malformed => state.output.push_back(ProcessOutputChunk::new(
                     ProcessOutputStream::Stdout,
@@ -157,12 +181,18 @@ pub(super) fn respond(
                     state,
                     json!({"type": "summarization_retry_attempt_start", "source": "compaction", "reason": "threshold"}),
                 ),
-                Scenario::Hold | Scenario::ResponseMismatch | Scenario::StateMismatch => {}
+                Scenario::Hold
+                | Scenario::ResponseMismatch
+                | Scenario::StateMismatch
+                | Scenario::ScheduledHandled => {}
+                Scenario::PromptHandled
+                | Scenario::PromptInvalidDisposition
+                | Scenario::PromptMissingDisposition => unreachable!(),
             }
         }
         "extension_ui_response" => {
             if command.get("cancelled").and_then(Value::as_bool) != Some(true) {
-                settled(state);
+                settled(state, None);
             }
         }
         "abort" => {
@@ -170,14 +200,14 @@ pub(super) fn respond(
                 state,
                 json!({"id": id, "type": "response", "command": "abort", "success": true}),
             );
-            settled(state);
+            settled(state, Some(false));
         }
         _ => return Err(fixture_failure()),
     }
     Ok(())
 }
 
-fn settled(state: &mut ProcessState) {
+fn settled(state: &mut ProcessState, aborted: Option<bool>) {
     output(
         state,
         json!({
@@ -238,7 +268,11 @@ fn settled(state: &mut ProcessState) {
         state,
         json!({"type": "agent_end", "messages": [], "willRetry": false}),
     );
-    output(state, json!({"type": "agent_settled"}));
+    let event = match aborted {
+        Some(aborted) => json!({"type": "agent_settled", "aborted": aborted}),
+        None => json!({"type": "agent_settled"}),
+    };
+    output(state, event);
 }
 
 fn output(state: &mut ProcessState, value: Value) {

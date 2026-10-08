@@ -1,0 +1,2226 @@
+{
+  "scope": "pi.rpc only; no Pi SDK sidecar, Oh My Pi, provider API or public operation claim",
+  "previous_qualified_ceiling": "0.86.1",
+  "current_official_stable": "1.1.0",
+  "official_channels": {
+    "github_latest_commit": "abe508e1b89912adde45528136c3221eb69acdd7",
+    "github_latest_draft": false,
+    "github_latest_prerelease": false,
+    "github_latest_published_at": "2026-10-07T22:26:31Z",
+    "github_latest_tag": "v1.1.0",
+    "github_repository": "earendil-works/pi",
+    "latest_channels_agree": true,
+    "npm_latest": "1.1.0",
+    "npm_registry": "https://registry.npmjs.org/",
+    "published_stables_after_previous_ceiling": [
+      "0.87.0",
+      "0.87.1",
+      "0.99.0",
+      "0.99.1",
+      "0.99.2",
+      "1.0.0",
+      "1.0.1",
+      "1.0.2",
+      "1.0.3",
+      "1.0.4",
+      "1.1.0"
+    ]
+  },
+  "exact_published_channel_hops": [
+    "0.87.0",
+    "0.87.1",
+    "0.99.0",
+    "0.99.1",
+    "0.99.2",
+    "1.0.0",
+    "1.0.1",
+    "1.0.2",
+    "1.0.3",
+    "1.0.4",
+    "1.1.0"
+  ],
+  "runtime_identity": {
+    "host_installed_or_updated": false,
+    "host_node_binary_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572",
+    "host_node_version": "v22.23.2",
+    "host_paths_recorded": false,
+    "host_pi_binary_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+    "host_pi_version": "0.87.1",
+    "npm_engine_requirement": ">=22.19.0",
+    "official_artifact_executed": false
+  },
+  "complete_tree_inventory": "dist-inventory.json; recursively lists every npm package file and its SHA-256 at all 12 points; per-hop added/removed/changed/identical path sets are hashed",
+  "selected_invocation": {
+    "session": [
+      "--mode",
+      "rpc",
+      "--no-session",
+      "--offline",
+      "--provider",
+      "<configured>",
+      "--model",
+      "<configured>",
+      "--tools",
+      "read,grep,find,ls",
+      "--no-extensions",
+      "--no-skills",
+      "--no-prompt-templates",
+      "--no-themes",
+      "--no-context-files"
+    ],
+    "catalogue": [
+      "--mode",
+      "rpc",
+      "--no-session",
+      "--offline",
+      "--no-tools",
+      "--no-extensions",
+      "--no-skills",
+      "--no-prompt-templates",
+      "--no-themes",
+      "--no-context-files"
+    ],
+    "extension_paths": [],
+    "selected_mode": "rpc",
+    "upstream_rpc_command_count": 33,
+    "adapter_selected_rpc_commands": [
+      "prompt",
+      "steer",
+      "follow_up",
+      "abort",
+      "get_state",
+      "get_available_models",
+      "set_auto_compaction",
+      "set_auto_retry",
+      "set_steering_mode",
+      "set_follow_up_mode"
+    ],
+    "adapter_selected_rpc_absences": [
+      "bash",
+      "switch_session",
+      "fork",
+      "clone",
+      "extensions",
+      "clear_queue",
+      "compact"
+    ],
+    "flags_stable_across_hops": [
+      "--mode",
+      "--no-session",
+      "--offline",
+      "--provider",
+      "--model",
+      "--tools",
+      "--no-extensions",
+      "--no-skills",
+      "--no-prompt-templates",
+      "--no-themes",
+      "--no-context-files"
+    ],
+    "configuration_and_mcp": {
+      "0.87.1": "--no-extensions disables extension discovery; no explicit -e path is sent",
+      "0.99.0": "upstream help and resource loader define --no-extensions to omit discovered and built-in extension paths; route passes this flag",
+      "1.0.4": "--tools allows MCP tools unless an mcp__ entry is named, and --no-mcp is available; route keeps --no-extensions and supplies no extension paths, so the built-in MCP extension is not loaded",
+      "1.1.0": "--tools modifier parsing is stricter; selected plain tool allowlist remains valid, and --no-extensions still omits extensions"
+    }
+  },
+  "mapped_behavior": {
+    "command_dispositions": {
+      "introduced": "0.99.0",
+      "prompt_success_values": [
+        "handled",
+        "queued",
+        "started"
+      ],
+      "steer_and_follow_up_success_values": [
+        "handled",
+        "queued"
+      ],
+      "handled_prompt": "No agent run starts; adapter fails the requested prompt without waiting for agent_settled",
+      "handled_steer_or_follow_up": "Input is consumed and not queued; adapter reports rejection and releases its pending slot",
+      "queued_or_started": "Continue under existing acknowledgement, event, terminal and cleanup lifecycle",
+      "mapped_files": [
+        "dist/modes/rpc/rpc-mode.js",
+        "dist/modes/rpc/rpc-client.js",
+        "dist/modes/rpc/rpc-types.d.ts",
+        "dist/core/agent-session.js"
+      ]
+    },
+    "agent_settled_aborted": {
+      "introduced": "1.1.0",
+      "shape": "agent_settled.aborted is a required boolean in the exact current type; RPC forwards the session event",
+      "false": "Existing normal completion and token usage checks remain",
+      "true": "Project existing terminal cancellation; caller cancellation and deadline retain precedence",
+      "older_points": "Field remains optional on older qualified points; current point rejects a missing value",
+      "mapped_files": [
+        "dist/core/agent-session.js",
+        "dist/core/agent-session.d.ts",
+        "dist/modes/rpc/rpc-mode.js"
+      ]
+    },
+    "unchanged": {
+      "rpc_command_names": "33 command table unchanged from 0.86.1 through 1.1.0",
+      "strict_lf_jsonl": "same selected framing; dist/modes/rpc/jsonl.js is byte-identical across the compared points",
+      "failure_and_permission": "RPC error envelope, abort behavior, UI callbacks, retry suppression and no-permission surface remain as previously qualified",
+      "usage": "Decoder continues to project input/output/cacheRead/cacheWrite from assistant message_end; nested tool-result usage is not admitted as assistant usage",
+      "public_operations": "No new or removed selected RPC command; provider session switching and durable state remain excluded"
+    }
+  },
+  "per_hop_classifications": [
+    {
+      "from": "0.86.1",
+      "to": "0.87.0",
+      "npm_published_at": "2026-09-21T16:51:53.584Z",
+      "complete_tree_counts": {
+        "added": 4,
+        "removed": 4,
+        "changed": 109,
+        "identical": 987
+      },
+      "path_set_sha256": {
+        "added": "f8b7ab7fcc800d2675a8eac19e7b0a4a427edf93f0a8c9e2eb19a2082156def0",
+        "removed": "83e670f87165e65801eeed62f2df7c4728a96d06bc8025827d237eb6525d1ad5",
+        "changed": "d1aae9b3bb8b868779e548777e7e4857c83c5a0f996d4e99794a504cae88adb7",
+        "identical": "1d48401636f5ad64bf2177cb99e24419c10c35cb7eb8e2b6c777d9376d2dad6c"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/core/agent-session.js",
+          "change": "changed",
+          "classification": "agent lifecycle, prompt dispositions, usage and settled event producer; review changed semantics against mapped RPC output"
+        },
+        {
+          "path": "dist/core/agent-session.js.map",
+          "change": "changed",
+          "classification": "source map for agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/resource-loader.js",
+          "change": "changed",
+          "classification": "extension/config source resolution; verify --no-extensions blocks discovered and built-in extensions for the selected invocation"
+        },
+        {
+          "path": "dist/core/resource-loader.js.map",
+          "change": "changed",
+          "classification": "source map for extension/config source resolution; use with adjacent JavaScript source"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "0.86.1",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "9b30cedde1105d7c54b9470632f8eba5e0d5fd65ba6f3a6ce4b6b0fae71d03bc",
+          "main_chunk": "dist/bundle/chunks/chunk-CMRUVXTE.js",
+          "main_chunk_sha256": "2d5dc2025bf5cb9632f83491472677a281f8bfa375840bf785d38a9d7f103e1b",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "0.87.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "afaec240d4a30b956abdb2540500176c2da469993c859143b8e61a0c3773ccf6",
+          "main_chunk": "dist/bundle/chunks/chunk-4DKZACXI.js",
+          "main_chunk_sha256": "2b60c86e356ef338ab1cea32b63f8f01e8d8d3bb7f14342fcc876a8d9a8b5505",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "0.87.0",
+      "to": "0.87.1",
+      "npm_published_at": "2026-09-22T19:42:48.221Z",
+      "complete_tree_counts": {
+        "added": 14,
+        "removed": 6,
+        "changed": 60,
+        "identical": 1034
+      },
+      "path_set_sha256": {
+        "added": "59d88bc4946dea8149df1490df312a0c7a98f91c15ac53dcba304831b6864609",
+        "removed": "b4b5f8eb184d5566bc84b76608bcebacd5d347e0003581aa60abb73e3eeff99d",
+        "changed": "235bff9e91ca09fd516450278d6ea7eb5db6b56cc97532f377ab810f5b201167",
+        "identical": "f36f9469fc80304311f87dae526e26f340e217b3483d2ac183c3c963c9d8d895"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/cli/args.js",
+          "change": "changed",
+          "classification": "CLI argument parser and help; compare selected invocation values and tool/config flags"
+        },
+        {
+          "path": "dist/cli/args.js.map",
+          "change": "changed",
+          "classification": "source map for CLI argument parser; use with adjacent JavaScript source"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "0.87.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "afaec240d4a30b956abdb2540500176c2da469993c859143b8e61a0c3773ccf6",
+          "main_chunk": "dist/bundle/chunks/chunk-4DKZACXI.js",
+          "main_chunk_sha256": "2b60c86e356ef338ab1cea32b63f8f01e8d8d3bb7f14342fcc876a8d9a8b5505",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "0.87.1",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "9ca136a7caa977d936aa789d7448a3dfb17851677ff5ac8c0dbcf23c31a02142",
+          "main_chunk": "dist/bundle/chunks/chunk-OJP47DM6.js",
+          "main_chunk_sha256": "81c81a21ec81e84200205f561687408ff5e3738fbbbb3c2a6c186b348d376020",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "0.87.1",
+      "to": "0.99.0",
+      "npm_published_at": "2026-09-29T17:21:27.312Z",
+      "complete_tree_counts": {
+        "added": 139,
+        "removed": 21,
+        "changed": 570,
+        "identical": 517
+      },
+      "path_set_sha256": {
+        "added": "96d14c08d4b1e4d97d047632063e57a52ef5184ef159c3d8ff45f0259e7d60cb",
+        "removed": "8fbc8b60860e8669eaf7a0f18126504b2cb23f225adea2226266aed93d3f4971",
+        "changed": "c546388a20bc4320fdc6d0d7c678f38bb4c4bbfb0dd402a3fe4cd185cf14dd28",
+        "identical": "b99fff8b56b981867a2d8c44a15a9db0a30c0137853d617f7225d9c68028d6ba"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/core/mcp-servers.js",
+          "change": "added",
+          "classification": "MCP tool-name and exposure support; unreachable when --no-extensions removes the built-in MCP extension and no -e path is passed"
+        },
+        {
+          "path": "dist/core/mcp-servers.js.map",
+          "change": "added",
+          "classification": "source map for MCP tool-name/exposure support; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.lazy.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.lazy.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.lazy.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.lazy.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/index.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/index.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/index.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/index.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/worker.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/worker.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/worker.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/worker.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.lazy.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.lazy.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.lazy.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.lazy.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/log.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/log.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/log.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/log.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.lazy.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.lazy.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.lazy.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.lazy.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/index.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/index.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/index.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/index.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.d.ts",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.d.ts.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.js",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.js.map",
+          "change": "added",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/cli/args.js",
+          "change": "changed",
+          "classification": "CLI argument parser and help; compare selected invocation values and tool/config flags"
+        },
+        {
+          "path": "dist/cli/args.js.map",
+          "change": "changed",
+          "classification": "source map for CLI argument parser; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/cli/setup.js.map",
+          "change": "changed",
+          "classification": "source map for CLI startup setup; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/agent-session.js",
+          "change": "changed",
+          "classification": "agent lifecycle, prompt dispositions, usage and settled event producer; review changed semantics against mapped RPC output"
+        },
+        {
+          "path": "dist/core/agent-session.js.map",
+          "change": "changed",
+          "classification": "source map for agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/resource-loader.js",
+          "change": "changed",
+          "classification": "extension/config source resolution; verify --no-extensions blocks discovered and built-in extensions for the selected invocation"
+        },
+        {
+          "path": "dist/core/resource-loader.js.map",
+          "change": "changed",
+          "classification": "source map for extension/config source resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/settings-manager.js",
+          "change": "changed",
+          "classification": "tool default and modifier resolution; selected invocation uses a plain explicit allowlist and no modifiers"
+        },
+        {
+          "path": "dist/core/settings-manager.js.map",
+          "change": "changed",
+          "classification": "source map for tool default/modifier resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/extensions/index.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/index.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/modes/rpc/jsonl.d.ts.map",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/jsonl.js.map",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/rpc-client.d.ts",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/rpc-client.d.ts.map",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/rpc-client.js",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/rpc-client.js.map",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/rpc-mode.d.ts.map",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/rpc-mode.js",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/rpc-mode.js.map",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/rpc-types.d.ts",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/rpc-types.d.ts.map",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        },
+        {
+          "path": "dist/modes/rpc/rpc-types.js.map",
+          "change": "changed",
+          "classification": "selected RPC wire, command response, event or generated type; compare RPC behavior and preserve exact command set"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "0.87.1",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "9ca136a7caa977d936aa789d7448a3dfb17851677ff5ac8c0dbcf23c31a02142",
+          "main_chunk": "dist/bundle/chunks/chunk-OJP47DM6.js",
+          "main_chunk_sha256": "81c81a21ec81e84200205f561687408ff5e3738fbbbb3c2a6c186b348d376020",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "0.99.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "920787eedcfe13d094cc02db3e9f4b27a3b7f225321f8629cedeeb94de4f8374",
+          "main_chunk": "dist/bundle/chunks/chunk-4CSSZFEW.js",
+          "main_chunk_sha256": "dba68f1ea740414a4bc4a1d7806bc418baf6e7fe67e54582ca5325ae21025862",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "0.99.0",
+      "to": "0.99.1",
+      "npm_published_at": "2026-09-29T18:23:26.245Z",
+      "complete_tree_counts": {
+        "added": 4,
+        "removed": 3,
+        "changed": 17,
+        "identical": 1206
+      },
+      "path_set_sha256": {
+        "added": "aeef6deec6d31eb33df97ce20406f1875c92be8ab234e50e5cef7785c2824a3e",
+        "removed": "75af06a3bded150ca56cd586ecd13e9d9a6881fc7abff3695596be0b27dd0492",
+        "changed": "105a97baf6ab64ea2a7210203d6a0bc3737a87c2b17aca7e8fda42f8b6356065",
+        "identical": "74078a5434d0a149daa58aac1a3a23a15582a999c728af5cf11f85f04a46aed8"
+      },
+      "selected_source_files": [],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "0.99.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "920787eedcfe13d094cc02db3e9f4b27a3b7f225321f8629cedeeb94de4f8374",
+          "main_chunk": "dist/bundle/chunks/chunk-4CSSZFEW.js",
+          "main_chunk_sha256": "dba68f1ea740414a4bc4a1d7806bc418baf6e7fe67e54582ca5325ae21025862",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "0.99.1",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "f007046e3311ee270a78770b357b695d070fe70f2e8df623e4f1461fa8dfb272",
+          "main_chunk": "dist/bundle/chunks/chunk-GUORCHFS.js",
+          "main_chunk_sha256": "b858ce2c4ddbfa1594142e39d7b6ebce328010e116c08db9663602cd26171425",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "0.99.1",
+      "to": "0.99.2",
+      "npm_published_at": "2026-09-30T19:30:20.243Z",
+      "complete_tree_counts": {
+        "added": 29,
+        "removed": 28,
+        "changed": 109,
+        "identical": 1090
+      },
+      "path_set_sha256": {
+        "added": "3b252ead824c4a98f3af43ba2b48a03428f7c3ee37760285c22b872533126ef2",
+        "removed": "918388bf4b32fbeef0bf1783e3fba376d12d9f045f338d77d50e79064ce4e87f",
+        "changed": "93bcb98dd31ffb28e75df79852b5ecb59dac57f9d25a91a9c223e9ddafac8998",
+        "identical": "2b9b4cb6d610151e844e23467bc2ef88bd3723f11b6b6cc25115f8aa5f567585"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/core/agent-session.js",
+          "change": "changed",
+          "classification": "agent lifecycle, prompt dispositions, usage and settled event producer; review changed semantics against mapped RPC output"
+        },
+        {
+          "path": "dist/core/agent-session.js.map",
+          "change": "changed",
+          "classification": "source map for agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/mcp-servers.js",
+          "change": "changed",
+          "classification": "MCP tool-name and exposure support; unreachable when --no-extensions removes the built-in MCP extension and no -e path is passed"
+        },
+        {
+          "path": "dist/core/mcp-servers.js.map",
+          "change": "changed",
+          "classification": "source map for MCP tool-name/exposure support; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/worker.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/worker.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/worker.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "0.99.1",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "f007046e3311ee270a78770b357b695d070fe70f2e8df623e4f1461fa8dfb272",
+          "main_chunk": "dist/bundle/chunks/chunk-GUORCHFS.js",
+          "main_chunk_sha256": "b858ce2c4ddbfa1594142e39d7b6ebce328010e116c08db9663602cd26171425",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "0.99.2",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "cbda1ede421eee45e6d38f0b976435a1e5eb1d77fe8ccb1e3d78278f51a43603",
+          "main_chunk": "dist/bundle/chunks/chunk-3YAHQSW6.js",
+          "main_chunk_sha256": "12483435ca5a250213e8860009cd6e258afcfc13003d7dcb6a2b2f63cda71e00",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "0.99.2",
+      "to": "1.0.0",
+      "npm_published_at": "2026-10-01T19:15:22.967Z",
+      "complete_tree_counts": {
+        "added": 30,
+        "removed": 15,
+        "changed": 106,
+        "identical": 1107
+      },
+      "path_set_sha256": {
+        "added": "259e2283c4a2aea1515de05409d00ed8e3dba40fc8652c1685a0bab9f60628d9",
+        "removed": "c680d0928b5d892cafa0396e6ac29c58066999a75ddfd86a9cf6a62d31c7e1d8",
+        "changed": "1221b2f99e21a7a73f41653064b846753c8405e47ace37514548a20a93266d6b",
+        "identical": "d1ac8f110bd5bf5496e8101b59751a075169c353377c4fec73ceb094184b4671"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/cli/args.js",
+          "change": "changed",
+          "classification": "CLI argument parser and help; compare selected invocation values and tool/config flags"
+        },
+        {
+          "path": "dist/cli/args.js.map",
+          "change": "changed",
+          "classification": "source map for CLI argument parser; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/agent-session.js",
+          "change": "changed",
+          "classification": "agent lifecycle, prompt dispositions, usage and settled event producer; review changed semantics against mapped RPC output"
+        },
+        {
+          "path": "dist/core/agent-session.js.map",
+          "change": "changed",
+          "classification": "source map for agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/mcp-servers.js",
+          "change": "changed",
+          "classification": "MCP tool-name and exposure support; unreachable when --no-extensions removes the built-in MCP extension and no -e path is passed"
+        },
+        {
+          "path": "dist/core/mcp-servers.js.map",
+          "change": "changed",
+          "classification": "source map for MCP tool-name/exposure support; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/settings-manager.js",
+          "change": "changed",
+          "classification": "tool default and modifier resolution; selected invocation uses a plain explicit allowlist and no modifiers"
+        },
+        {
+          "path": "dist/core/settings-manager.js.map",
+          "change": "changed",
+          "classification": "source map for tool default/modifier resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "0.99.2",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "cbda1ede421eee45e6d38f0b976435a1e5eb1d77fe8ccb1e3d78278f51a43603",
+          "main_chunk": "dist/bundle/chunks/chunk-3YAHQSW6.js",
+          "main_chunk_sha256": "12483435ca5a250213e8860009cd6e258afcfc13003d7dcb6a2b2f63cda71e00",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "1.0.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "05eb501bcdd166fdb024492d46defe34308dbdb09498d6397827443465e4bb3b",
+          "main_chunk": "dist/bundle/chunks/chunk-33XOIQ5N.js",
+          "main_chunk_sha256": "1fbf59b1126d78129049710d1c825afaf3a905333a62a680fdb2174fdb6d3aca",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "1.0.0",
+      "to": "1.0.1",
+      "npm_published_at": "2026-10-03T12:35:33.444Z",
+      "complete_tree_counts": {
+        "added": 30,
+        "removed": 30,
+        "changed": 115,
+        "identical": 1098
+      },
+      "path_set_sha256": {
+        "added": "81cfcefeef2d31335b2633445e5b13730e7466d0262861f8dee377c465d3745b",
+        "removed": "49cc6fe804ebf91bbb7d49c9d8c8c9a3a5ac28241f8e78d1ebe558bc774bf014",
+        "changed": "25a1a899ded41f13037ec0a0c4d9c1c52a6998ad467a68b1561077cd858a64d6",
+        "identical": "febfacbf760c4819707d00778da8d110902f76e592f684360d7c72f54c98f591"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/cli/args.js",
+          "change": "changed",
+          "classification": "CLI argument parser and help; compare selected invocation values and tool/config flags"
+        },
+        {
+          "path": "dist/cli/args.js.map",
+          "change": "changed",
+          "classification": "source map for CLI argument parser; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/agent-session.js",
+          "change": "changed",
+          "classification": "agent lifecycle, prompt dispositions, usage and settled event producer; review changed semantics against mapped RPC output"
+        },
+        {
+          "path": "dist/core/agent-session.js.map",
+          "change": "changed",
+          "classification": "source map for agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/mcp-servers.js",
+          "change": "changed",
+          "classification": "MCP tool-name and exposure support; unreachable when --no-extensions removes the built-in MCP extension and no -e path is passed"
+        },
+        {
+          "path": "dist/core/mcp-servers.js.map",
+          "change": "changed",
+          "classification": "source map for MCP tool-name/exposure support; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "1.0.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "05eb501bcdd166fdb024492d46defe34308dbdb09498d6397827443465e4bb3b",
+          "main_chunk": "dist/bundle/chunks/chunk-33XOIQ5N.js",
+          "main_chunk_sha256": "1fbf59b1126d78129049710d1c825afaf3a905333a62a680fdb2174fdb6d3aca",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "1.0.1",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "41bb3bef778ccafbc43c4aafd73c4fa0c5ea9e8f259adff207422d2e5a9bc563",
+          "main_chunk": "dist/bundle/chunks/chunk-5OEJBNHG.js",
+          "main_chunk_sha256": "a760f30e4768230e7ed248fbbe97840a9039123aac093178476341fafa60d741",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "1.0.1",
+      "to": "1.0.2",
+      "npm_published_at": "2026-10-04T00:56:19.486Z",
+      "complete_tree_counts": {
+        "added": 14,
+        "removed": 14,
+        "changed": 24,
+        "identical": 1205
+      },
+      "path_set_sha256": {
+        "added": "beae8c3ed688a760344f9820c5168597dfbf7dafcef1946b3777c73bb5d95933",
+        "removed": "d5494d34205f84b8488918f4452978760924b3a3c13e78533463fb4424ddcf77",
+        "changed": "638bb81a8ac7629d35f4be8e0f5ce323880324785d9328998019a4cf83c67fe9",
+        "identical": "24dd608543f4ba2f4113ed99d35c1cd21de99e665a8f96fb62b592c45044544d"
+      },
+      "selected_source_files": [],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "1.0.1",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "41bb3bef778ccafbc43c4aafd73c4fa0c5ea9e8f259adff207422d2e5a9bc563",
+          "main_chunk": "dist/bundle/chunks/chunk-5OEJBNHG.js",
+          "main_chunk_sha256": "a760f30e4768230e7ed248fbbe97840a9039123aac093178476341fafa60d741",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "1.0.2",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "ef15e4215c447f72ba053f65c1c7302bd38e499792b96a24f48c9a9b3275d6db",
+          "main_chunk": "dist/bundle/chunks/chunk-ZSBPJAJ2.js",
+          "main_chunk_sha256": "bc5a8273cca467e8f76e313c7a77016f2dc81d3629b8e7f0c9e202110c231541",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "1.0.2",
+      "to": "1.0.3",
+      "npm_published_at": "2026-10-05T08:37:00.736Z",
+      "complete_tree_counts": {
+        "added": 35,
+        "removed": 30,
+        "changed": 42,
+        "identical": 1171
+      },
+      "path_set_sha256": {
+        "added": "bdcfce0d9ef788dd6ba4397b10a156899cc0dfbefc415ffda269b42b239049c6",
+        "removed": "4c4170dbcce7df639bbefc3ad32a03dfd456cc58e3809c23bc30d98404f29758",
+        "changed": "3399fc859b7ed3c9fd85fda6a24b794923c9d37eee4a743e13c33556dfbf5e5f",
+        "identical": "ff64bafc90b09e024a79831d36b6773b5661a7686eeb6a3782408c74e4eb9c18"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/extensions/codemode/execute.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "1.0.2",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "ef15e4215c447f72ba053f65c1c7302bd38e499792b96a24f48c9a9b3275d6db",
+          "main_chunk": "dist/bundle/chunks/chunk-ZSBPJAJ2.js",
+          "main_chunk_sha256": "bc5a8273cca467e8f76e313c7a77016f2dc81d3629b8e7f0c9e202110c231541",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "1.0.3",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "71dc8ce35ba21a37b48569c41245fe3f25b58f41b878687be45f4af37f57e9ba",
+          "main_chunk": "dist/bundle/chunks/chunk-BFNE7BHG.js",
+          "main_chunk_sha256": "d8e4b8827fc70a6192967db26adf024d7c4672ca533068c09069717b0b9faad7",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "1.0.3",
+      "to": "1.0.4",
+      "npm_published_at": "2026-10-05T21:51:59.920Z",
+      "complete_tree_counts": {
+        "added": 14,
+        "removed": 14,
+        "changed": 85,
+        "identical": 1149
+      },
+      "path_set_sha256": {
+        "added": "129046b77864a68bb5d0f40c6b4cd0be52c50b6ae25bc166c0202d794c16e60c",
+        "removed": "ba807ef5485f93151e0eba800fee3f01dfc6d2f6d96f1db8143f7b5b8ef0740b",
+        "changed": "8b14ff6a9815f053d2f36206d205c4639e0ce28995c95a97c0c89e0d429e1b8e",
+        "identical": "59fae3b2457d9e72c94ce6a554f9c40863cad2a811d144c1eb7f5c27c63088de"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/cli/args.js",
+          "change": "changed",
+          "classification": "CLI argument parser and help; compare selected invocation values and tool/config flags"
+        },
+        {
+          "path": "dist/cli/args.js.map",
+          "change": "changed",
+          "classification": "source map for CLI argument parser; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/agent-session.js",
+          "change": "changed",
+          "classification": "agent lifecycle, prompt dispositions, usage and settled event producer; review changed semantics against mapped RPC output"
+        },
+        {
+          "path": "dist/core/agent-session.js.map",
+          "change": "changed",
+          "classification": "source map for agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/mcp-servers.js",
+          "change": "changed",
+          "classification": "MCP tool-name and exposure support; unreachable when --no-extensions removes the built-in MCP extension and no -e path is passed"
+        },
+        {
+          "path": "dist/core/mcp-servers.js.map",
+          "change": "changed",
+          "classification": "source map for MCP tool-name/exposure support; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/resource-loader.js",
+          "change": "changed",
+          "classification": "extension/config source resolution; verify --no-extensions blocks discovered and built-in extensions for the selected invocation"
+        },
+        {
+          "path": "dist/core/resource-loader.js.map",
+          "change": "changed",
+          "classification": "source map for extension/config source resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/index.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/index.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/index.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "1.0.3",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "71dc8ce35ba21a37b48569c41245fe3f25b58f41b878687be45f4af37f57e9ba",
+          "main_chunk": "dist/bundle/chunks/chunk-BFNE7BHG.js",
+          "main_chunk_sha256": "d8e4b8827fc70a6192967db26adf024d7c4672ca533068c09069717b0b9faad7",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": false,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "1.0.4",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "3a772f29855c0016855c0a7836b0db675c36acfdac928315f2f7002f1e9fcd83",
+          "main_chunk": "dist/bundle/chunks/chunk-H33F2TZD.js",
+          "main_chunk_sha256": "ffefe09d06cc357cade211d8123c971f0327e04f627c08f37e4e97c79da4dd11",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": true,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "1.0.4",
+      "to": "1.1.0",
+      "npm_published_at": "2026-10-07T22:16:26.802Z",
+      "complete_tree_counts": {
+        "added": 40,
+        "removed": 34,
+        "changed": 142,
+        "identical": 1072
+      },
+      "path_set_sha256": {
+        "added": "f28385da9db5eb4818612f8b4c9ecca65c1eea1f23603be506c583d6a9833951",
+        "removed": "81cd7d35096eb23dfb85747b88fa04ef6e5cc3f54066ed2ff532c569a5c38bf8",
+        "changed": "cdcacfe42624dd06d7fb13581e31444f1765a8758594de83604281cca8a037b9",
+        "identical": "d0e98fb611ef46ba2f4e51d3ac7186cf46008f68f04e5945f0768dd315c3f063"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/cli/args.js",
+          "change": "changed",
+          "classification": "CLI argument parser and help; compare selected invocation values and tool/config flags"
+        },
+        {
+          "path": "dist/cli/args.js.map",
+          "change": "changed",
+          "classification": "source map for CLI argument parser; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/agent-session.js",
+          "change": "changed",
+          "classification": "agent lifecycle, prompt dispositions, usage and settled event producer; review changed semantics against mapped RPC output"
+        },
+        {
+          "path": "dist/core/agent-session.js.map",
+          "change": "changed",
+          "classification": "source map for agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/settings-manager.js",
+          "change": "changed",
+          "classification": "tool default and modifier resolution; selected invocation uses a plain explicit allowlist and no modifiers"
+        },
+        {
+          "path": "dist/core/settings-manager.js.map",
+          "change": "changed",
+          "classification": "source map for tool default/modifier resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/oauth.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/ui.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "1.0.4",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "3a772f29855c0016855c0a7836b0db675c36acfdac928315f2f7002f1e9fcd83",
+          "main_chunk": "dist/bundle/chunks/chunk-H33F2TZD.js",
+          "main_chunk_sha256": "ffefe09d06cc357cade211d8123c971f0327e04f627c08f37e4e97c79da4dd11",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": true,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "1.1.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "c30fd8f7f1a50fdf4860b87613fc6e906d04cc1d4646360826e001abbd1f2152",
+          "main_chunk": "dist/bundle/chunks/chunk-OIM2DMFI.js",
+          "main_chunk_sha256": "463db439b55a9c580d4c153492dcdd4e215fe4709ee71a876d4edff1074cdb8f",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true
+          },
+          "mcp_option_present": true,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    }
+  ],
+  "unmapped_change_boundary": {
+    "complete_file_evidence": "All package paths and exact file digests at all selected points are retained in dist-inventory.json; release notes are discovery only.",
+    "classifications": "Provider client/model catalogues, TUI rendering, MCP/codemode implementations, package-manager helpers and other commands are provider-internal or outside the selected RPC route unless an exact selected-file row above records a mapped effect. The reviewed changes do not change a selected RPC command, add host permission, or change runtime/process policy.",
+    "no_live_proof": "No artifact execution, provider prompt, model catalogue/session, credential use, install or host update was performed."
+  }
+}

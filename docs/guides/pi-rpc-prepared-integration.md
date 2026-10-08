@@ -56,15 +56,30 @@ sandbox.
 
 ## Version Posture
 
-Pi `0.80.10` is the qualified strict-LF RPC baseline. Exact published
-`0.81.0`, `0.81.1`, `0.82.0`, `0.82.1`, `0.83.0`, `0.84.0`, `0.84.1`,
-`0.84.2`, `0.84.3`, `0.84.4`, `0.85.0`, `0.85.1`, `0.86.0`, and `0.86.1`
-are also qualified with their own behavior milestones. Unpublished
-`0.83.1`, `0.84.5`, and `0.85.2` do not prepare. Discovery records the
-exact installed version.
-A later stable release is admitted as unverified, remains visible in evidence,
-and uses the latest qualified behavior mapping. Unpublished gaps, older points,
-and prereleases do not prepare.
+Pi `0.80.10` remains the strict-LF RPC baseline and
+`pi.rpc.package-window-2` remains the claim. Earlier qualified behavior
+segments are retained as Deprecated: `0.80.10`, `0.81.0`, `0.81.1`,
+`0.82.0..=0.82.1`, `0.83.0`, `0.84.0..=0.84.4`, `0.85.0..=0.85.1`,
+`0.86.0..=0.86.1`, and `0.87.0..=0.87.1`. The command-disposition mapping is
+qualified as Deprecated on `0.99.0..=0.99.2` and `1.0.0..=1.0.4`. The
+maintained `1.1.0` point adds the `agent_settled.aborted` mapping while keeping
+the existing public operations and lifecycle contract.
+
+The exact stable hops after `0.86.1` are `0.87.0`, `0.87.1`, `0.99.0`,
+`0.99.1`, `0.99.2`, `1.0.0`, `1.0.1`, `1.0.2`, `1.0.3`, `1.0.4`, and
+`1.1.0`. Unpublished or unqualified holes remain incompatible, including
+`0.83.1`, `0.84.5`, `0.85.2`, `0.86.2`, `0.87.2` through `0.98.x`, `0.99.3`
+and later `0.99.x`, and `1.0.5` and later `1.0.x`. Stable releases after
+`1.1.0` remain visible as unverified; older points and prereleases do not
+prepare. Discovery records the exact installed version.
+
+For `0.99.0` and later qualified points, the adapter checks prompt success
+dispositions (`handled`, `queued`, or `started`) and steering/follow-up
+dispositions (`handled` or `queued`) before awaiting lifecycle events. A
+`handled` prompt starts no run; a `handled` steering or follow-up message is
+consumed without being queued. On `1.1.0`, `agent_settled.aborted` is required:
+`true` maps to the existing terminal cancellation, while `false` uses existing
+completion and usage checks. Older qualified points retain the optional field.
 
 The installed npm form may use an interpreted launcher such as
 `#!/usr/bin/env node`. Prefer `LocalExecutableLaunch::interpreted_script` (exact

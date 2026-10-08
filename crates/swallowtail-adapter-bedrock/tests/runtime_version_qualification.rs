@@ -90,18 +90,67 @@ fn runtime_sdk_claim_preserves_the_old_point_gaps_and_yanked_hole() {
 }
 
 #[test]
-fn catalogue_claims_and_historical_runtime_fixture_remain_exact() {
+fn catalogue_claim_preserves_old_point_gaps_and_yanked_hole() {
     let [catalogue_sdk, catalogue_service] = bedrock_catalogue_interface_claims();
     assert_eq!(
         catalogue_sdk.id().as_str(),
         "amazon-bedrock.catalogue-sdk-window-1"
     );
-    assert_exact_opaque_claim(
-        &catalogue_sdk,
-        "amazon-bedrock.control-plane-rust-sdk",
-        CATALOGUE_SDK_VERSION,
-        "amazon-bedrock.catalogue-sdk-1",
+    assert_eq!(
+        catalogue_sdk.axis().as_str(),
+        "amazon-bedrock.control-plane-rust-sdk"
     );
+    assert_eq!(catalogue_sdk.scheme(), InterfaceVersionScheme::Semantic);
+    assert_eq!(
+        catalogue_sdk.newer_version_posture(),
+        InterfaceNewerVersionPosture::AllowUnverified
+    );
+    assert_eq!(catalogue_sdk.baseline().as_str(), "1.148.0");
+    assert_eq!(catalogue_sdk.latest_qualified().as_str(), "1.161.0");
+    assert_eq!(
+        catalogue_sdk.latest_qualified().as_str(),
+        CATALOGUE_SDK_VERSION
+    );
+    let segments = catalogue_sdk.milestones().collect::<Vec<_>>();
+    assert_eq!(segments.len(), 3);
+    assert_eq!(segments[0].minimum().as_str(), "1.148.0");
+    assert_eq!(segments[0].maximum().as_str(), "1.148.0");
+    assert_eq!(segments[1].minimum().as_str(), "1.150.0");
+    assert_eq!(segments[1].maximum().as_str(), "1.155.0");
+    assert_eq!(segments[2].minimum().as_str(), "1.157.0");
+    assert_eq!(segments[2].maximum().as_str(), "1.161.0");
+    assert!(segments.iter().all(|segment| {
+        segment.behavior_revision().as_str() == "amazon-bedrock.catalogue-sdk-1"
+            && segment.support_status() == InterfaceSupportStatus::Maintained
+    }));
+    assert_eq!(
+        catalogue_sdk
+            .exclusions()
+            .map(InterfaceVersion::as_str)
+            .collect::<Vec<_>>(),
+        ["1.149.0", "1.156.0"]
+    );
+    for stable in [
+        "1.148.0", "1.150.0", "1.151.0", "1.152.0", "1.153.0", "1.154.0", "1.155.0", "1.157.0",
+        "1.158.0", "1.159.0", "1.160.0", "1.161.0",
+    ] {
+        assert!(matches!(
+            catalogue_sdk.assess(&version(stable)),
+            InterfaceCompatibilityAssessment::Qualified(_)
+        ));
+    }
+    for gap in ["1.149.0", "1.156.0"] {
+        assert_eq!(
+            catalogue_sdk.assess(&version(gap)),
+            InterfaceCompatibilityAssessment::Incompatible
+        );
+    }
+    assert!(matches!(
+        catalogue_sdk.assess(&version("1.162.0")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
+            if newer.latest_qualified().as_str() == "1.161.0"
+    ));
+
     assert_eq!(
         catalogue_service.id().as_str(),
         "amazon-bedrock.catalogue-service-window-1"
@@ -121,9 +170,12 @@ fn catalogue_claims_and_historical_runtime_fixture_remain_exact() {
         catalogue_bindings[1].version().as_str(),
         "bedrock-list-foundation-models"
     );
+}
 
+#[test]
+fn historical_runtime_fixture_remains_exact() {
     let historical: Value =
-        serde_json::from_str(HISTORICAL_PROTOCOL).expect("historical fixture remains valid");
+        serde_json::from_str(HISTORICAL_PROTOCOL).expect("historical runtime fixture is valid");
     assert_eq!(historical["sdk_version"], "1.136.0");
 }
 

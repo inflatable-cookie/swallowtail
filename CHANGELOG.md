@@ -29,10 +29,18 @@ annotated Git tags from the canonical repository.
   credential use, installation, or host update occurred.
 - qualify `bedrock.runtime`'s Rust SDK through official `aws-sdk-bedrockruntime`
   `1.148.0`, preserving exact `1.136.0`, the `1.137.0` and `1.138.0` gaps,
-  and the yanked `1.144.0` exclusion. The Runtime service axis and both
-  catalogue axes stay exact. Research 381 freezes every selected-channel hop
+  and the yanked `1.144.0` exclusion. The Runtime service and Bedrock
+  catalogue service axes stay exact; catalogue SDK currentness is qualified
+  separately in Research 386. Research 381 freezes every selected-channel hop
   and full package trees, plus the ConverseStream request, EventStream, usage,
   and failure boundaries; no AWS calls or host mutation occurred.
+- qualify `bedrock.catalogue`'s control-plane SDK through official
+  `aws-sdk-bedrock 1.161.0`; retain exact `1.148.0`, qualify
+  `1.150.0..=1.155.0` and `1.157.0..=1.161.0`, and preserve unqualified
+  `1.149.0` and yanked `1.156.0` gaps. Research 386 freezes all twelve stable
+  artifacts, complete source trees and every changed-file hop, plus the
+  selected request, response, error, retry, telemetry, and access boundaries;
+  no AWS calls or host mutation occurred.
 - qualify `oh-my-pi.rpc` through official npm `latest` and GitHub latest
   stable `18.8.3` on the existing `oh-my-pi.rpc-v2-v18.0.0` revision.
   Research 382 freezes all 32 published hops after `18.2.7`, exact npm

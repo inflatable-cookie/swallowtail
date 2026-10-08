@@ -1,7 +1,8 @@
 use super::{driver, make_host_id};
 use crate::support::{
-    SidecarFixtureHost, SidecarFixtureSelection, SidecarScenario, sidecar_open_request,
-    sidecar_selection, sidecar_selection_with_instance_versions, sidecar_versions,
+    SidecarFixtureHost, SidecarFixtureSelection, SidecarScenario, close_session,
+    sidecar_open_request, sidecar_selection, sidecar_selection_with_instance_versions,
+    sidecar_versions, sidecar_versions_for_sdk,
 };
 use futures_executor::block_on;
 use swallowtail_adapter_pi::{
@@ -9,7 +10,7 @@ use swallowtail_adapter_pi::{
     PI_SDK_SIDECAR_WIRE_AXIS,
 };
 use swallowtail_core::{InterfaceVersion, InterfaceVersionAxis, InterfaceVersionBinding};
-use swallowtail_runtime::{InteractiveSessionDriver, RequestId};
+use swallowtail_runtime::{CleanupOutcome, InteractiveSessionDriver, RequestId};
 
 #[test]
 fn missing_ambiguous_or_incompatible_version_bindings_fail_before_process_work() {
@@ -36,8 +37,10 @@ fn missing_ambiguous_or_incompatible_version_bindings_fail_before_process_work()
 
     // One off-point value per axis.
     for (axis, value) in [
-        (PI_SDK_SIDECAR_PACKAGE_AXIS, "0.84.3"),
+        (PI_SDK_SIDECAR_PACKAGE_AXIS, "0.84.5"),
         (PI_SDK_SIDECAR_PACKAGE_AXIS, "0.84.1"),
+        (PI_SDK_SIDECAR_PACKAGE_AXIS, "0.85.2"),
+        (PI_SDK_SIDECAR_PACKAGE_AXIS, "1.1.1"),
         (PI_SDK_SIDECAR_PACKAGE_AXIS, "0.84.2-rc.1"),
         (PI_SDK_SIDECAR_NODE_AXIS, "22.23.3"),
         (PI_SDK_SIDECAR_NODE_AXIS, "22.23.2-rc.1"),
@@ -64,6 +67,40 @@ fn missing_ambiguous_or_incompatible_version_bindings_fail_before_process_work()
             "{axis} {value} must be rejected"
         );
     }
+
+    // The released exact tuple remains supported, while the old asset tag
+    // cannot be paired with a package point it never qualified.
+    let mut previous_tuple = sidecar_versions_for_sdk("0.84.2").to_vec();
+    previous_tuple.retain(|binding| binding.axis().as_str() != PI_SDK_SIDECAR_SIDECAR_AXIS);
+    previous_tuple.push(binding(
+        PI_SDK_SIDECAR_SIDECAR_AXIS,
+        "swallowtail-pi-sdk-sidecar@0.3.3",
+    ));
+    let host_id = make_host_id("pi.fixture.sdk-sidecar.previous-tuple");
+    let fixture = SidecarFixtureHost::new(SidecarScenario::Complete).with_sdk_version("0.84.2");
+    let selected = sidecar_selection_with_instance_versions(host_id.clone(), previous_tuple);
+    let services = fixture.services(host_id);
+    let session = block_on(driver(selected.credential.clone()).open_session(
+        selected.plan,
+        sidecar_open_request("sidecar-previous-tuple", selected.resource),
+        services.clone(),
+    ))
+    .expect("released exact SDK/source tuple remains supported");
+    let cleanup = block_on(close_session(session, services));
+    assert_eq!(cleanup, CleanupOutcome::Clean);
+
+    let mut invalid_previous_tuple = sidecar_versions().to_vec();
+    invalid_previous_tuple
+        .retain(|binding| binding.axis().as_str() != PI_SDK_SIDECAR_SIDECAR_AXIS);
+    invalid_previous_tuple.push(binding(
+        PI_SDK_SIDECAR_SIDECAR_AXIS,
+        "swallowtail-pi-sdk-sidecar@0.3.3",
+    ));
+    let error = version_case(invalid_previous_tuple);
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.version_incompatible"
+    );
 }
 
 #[test]

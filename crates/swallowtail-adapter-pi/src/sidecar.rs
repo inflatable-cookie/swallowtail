@@ -44,8 +44,8 @@ pub const PI_SDK_SIDECAR_WIRE: &str = "swallowtail-pi-sdk-jsonl-v1";
 pub const PI_SDK_SIDECAR_BEHAVIOR: &str = "pi.sdk-sidecar-v1";
 /// Exact upstream SDK package the sidecar loads.
 pub const PI_SDK_SIDECAR_SDK_PACKAGE: &str = "@earendil-works/pi-coding-agent";
-/// Exact qualified SDK package version.
-pub const PI_SDK_SIDECAR_SDK_VERSION: &str = "0.84.2";
+/// Exact current default SDK package version.
+pub const PI_SDK_SIDECAR_SDK_VERSION: &str = "1.1.0";
 /// Exact approved Node runtime version satisfying the upstream `>=22.19.0`
 /// requirement.
 pub const PI_SDK_SIDECAR_NODE_RUNTIME: &str = "22.23.2";

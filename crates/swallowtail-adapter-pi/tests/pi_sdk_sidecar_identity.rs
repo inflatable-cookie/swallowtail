@@ -19,17 +19,21 @@ fn sidecar_identity_and_claims_match_the_frozen_corpus() {
     assert_eq!(protocol["wire"], "swallowtail-pi-sdk-jsonl-v1");
     assert_eq!(protocol["behavior_revision"], "pi.sdk-sidecar-v1");
     assert_eq!(protocol["sdk_package"], "@earendil-works/pi-coding-agent");
-    assert_eq!(protocol["sdk_version"], "0.84.2");
+    assert_eq!(protocol["sdk_version"], "1.1.0");
+    assert_eq!(protocol["initial_sdk_version"], "0.84.2");
     assert_eq!(protocol["node_runtime"], "22.23.2");
     assert_eq!(protocol["node_requirement"], ">=22.19.0");
-    assert_eq!(protocol["compatibility_claim"], "qualified_only_one_point");
+    assert_eq!(
+        protocol["compatibility_claim"],
+        "qualified_only_exact_published_points"
+    );
     assert_eq!(protocol["sidecar_entry_file"], "pi-sdk-sidecar.mjs");
 
     for (claim, axis, version) in [
         (
             pi_sdk_sidecar_package_claim(),
             PI_SDK_SIDECAR_PACKAGE_AXIS,
-            "0.84.2",
+            "1.1.0",
         ),
         (
             pi_sdk_sidecar_node_claim(),
@@ -56,19 +60,51 @@ fn sidecar_identity_and_claims_match_the_frozen_corpus() {
         ));
     }
 
-    // The sidecar claims inherit nothing from the RPC window: later stable
-    // points are rejected, not unverified-newer.
+    let qualified: Vec<String> = protocol["qualified_sdk_versions"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|version| version.as_str().unwrap().to_owned())
+        .collect();
+    let source_versions = SIDECAR
+        .split("const QUALIFIED_SDK_VERSIONS = new Set(")
+        .nth(1)
+        .expect("sidecar has an exact SDK version allowlist")
+        .split(");")
+        .next()
+        .expect("sidecar SDK version allowlist is closed");
+    let source_versions: Vec<String> = serde_json::from_str(source_versions.trim())
+        .expect("sidecar SDK allowlist uses a JSON array");
+    assert_eq!(qualified, source_versions);
+    assert_eq!(qualified.last().map(String::as_str), Some("1.1.0"));
+
+    // Exact points share the existing behavior revision. Gaps are rejected,
+    // not treated as unverified-newer or inferred ranges.
     let package = pi_sdk_sidecar_package_claim();
-    assert!(!matches!(
-        package.assess(&InterfaceVersion::new("0.84.3").expect("valid version")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    for point in &qualified {
+        assert!(matches!(
+            package.assess(&InterfaceVersion::new(point).expect("valid version")),
+            InterfaceCompatibilityAssessment::Qualified(_)
+        ));
+    }
+    for gap in ["0.84.5", "0.85.2", "0.86.2", "0.87.2", "0.88.0", "0.99.3", "1.0.5", "1.1.1"] {
+        let gap = InterfaceVersion::new(gap).expect("valid version");
+        assert!(!package.permits(&gap));
+        assert!(!matches!(
+            package.assess(&gap),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
+    }
+    let sidecar = pi_sdk_sidecar_sidecar_claim();
+    assert!(sidecar.permits(
+        &InterfaceVersion::new(&protocol["previous_sidecar_source_tag"].as_str().unwrap())
+            .expect("previous source tag is valid")
     ));
-    assert!(!package.permits(&InterfaceVersion::new("0.84.3").expect("valid version")));
-    assert!(!package.permits(&InterfaceVersion::new("0.84.4").expect("valid version")));
     assert!(
         swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SOURCE_TAG
             .starts_with(protocol["sidecar_source_tag_prefix"].as_str().unwrap())
     );
+    assert!(SIDECAR.contains("cacheWarming: \"off\""));
 }
 
 #[test]

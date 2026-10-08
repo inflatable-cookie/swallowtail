@@ -11,9 +11,9 @@
 // ambient discovery; `process.argv` is intentionally unused.
 //
 // Ambient behavior is suppressed by construction: in-memory settings with
-// retry and compaction disabled, resource loading restricted to explicit
-// no-* flags, no model network, no extension/skill/prompt/theme/context
-// loading, and no update checks. Unknown semantics fail closed.
+// retry, compaction, and cache warming disabled, resource loading restricted
+// to explicit no-* flags, no model network, no extension/skill/prompt/theme/
+// context loading, and no update checks. Unknown semantics fail closed.
 
 import { realpath } from "node:fs/promises";
 import { isAbsolute, join, relative, sep } from "node:path";
@@ -23,7 +23,26 @@ import process from "node:process";
 const WIRE = "swallowtail-pi-sdk-jsonl-v1";
 const BEHAVIOR = "pi.sdk-sidecar-v1";
 const SDK_PACKAGE = "@earendil-works/pi-coding-agent";
-const SDK_VERSION = "0.84.2";
+const QUALIFIED_SDK_VERSIONS = new Set([
+  "0.84.2",
+  "0.84.3",
+  "0.84.4",
+  "0.85.0",
+  "0.85.1",
+  "0.86.0",
+  "0.86.1",
+  "0.87.0",
+  "0.87.1",
+  "0.99.0",
+  "0.99.1",
+  "0.99.2",
+  "1.0.0",
+  "1.0.1",
+  "1.0.2",
+  "1.0.3",
+  "1.0.4",
+  "1.1.0",
+]);
 const NODE_FLOOR = [22, 19, 0];
 
 const MAXIMUM_RECORD_BYTES = 1024 * 1024;
@@ -380,7 +399,7 @@ async function importSdk() {
   if (!required.every((name) => sdk[name] !== undefined && sdk[name] !== null)) {
     throw new SidecarFailure("sdk_export_missing");
   }
-  if (sdk.VERSION !== SDK_VERSION) {
+  if (!QUALIFIED_SDK_VERSIONS.has(sdk.VERSION)) {
     throw new SidecarFailure("sdk_version_mismatch");
   }
   return sdk;
@@ -465,6 +484,7 @@ async function handleBootstrap(params) {
   const settingsManager = sdk.SettingsManager.inMemory({
     retry: { enabled: false },
     compaction: { enabled: false },
+    cacheWarming: "off",
   });
   const modelRuntime = await sdk.ModelRuntime.create({
     authPath: join(agentDir, "auth.json"),

@@ -1,7 +1,7 @@
 use std::num::NonZeroU32;
 use swallowtail_adapter_pi::{
     PI_SDK_SIDECAR_NODE_AXIS, PI_SDK_SIDECAR_PACKAGE_AXIS, PI_SDK_SIDECAR_SIDECAR_AXIS,
-    PI_SDK_SIDECAR_WIRE_AXIS, pi_sdk_sidecar_descriptor,
+    PI_SDK_SIDECAR_SDK_VERSION, PI_SDK_SIDECAR_WIRE_AXIS, pi_sdk_sidecar_descriptor,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability,
@@ -84,8 +84,12 @@ pub fn sidecar_catalogue_selection(host: ExecutionHostId) -> SidecarFixtureSelec
 }
 
 pub fn sidecar_versions() -> [InterfaceVersionBinding; 4] {
+    sidecar_versions_for_sdk(PI_SDK_SIDECAR_SDK_VERSION)
+}
+
+pub fn sidecar_versions_for_sdk(sdk_version: &str) -> [InterfaceVersionBinding; 4] {
     [
-        version(PI_SDK_SIDECAR_PACKAGE_AXIS, "0.84.2"),
+        version(PI_SDK_SIDECAR_PACKAGE_AXIS, sdk_version),
         version(PI_SDK_SIDECAR_NODE_AXIS, "22.23.2"),
         version(PI_SDK_SIDECAR_WIRE_AXIS, "swallowtail-pi-sdk-jsonl-v1"),
         version(

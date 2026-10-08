@@ -263,7 +263,7 @@ checksum = "0c790de23124f9ab44544d7ac05d60440adc586479ce501c1d6d7da3cd8c9cf5"
 
 [[package]]
 name = "swallowtail-adapter-claude-agent"
-version = "0.5.2"
+version = "0.5.3"
 source = "__SWALLOWTAIL_CANDIDATE_GIT_SOURCE__"
 dependencies = [
  "futures-channel",
@@ -279,7 +279,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-core"
-version = "0.5.2"
+version = "0.5.3"
 source = "__SWALLOWTAIL_CANDIDATE_GIT_SOURCE__"
 dependencies = [
  "semver",
@@ -287,7 +287,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-host-local"
-version = "0.5.2"
+version = "0.5.3"
 source = "__SWALLOWTAIL_CANDIDATE_GIT_SOURCE__"
 dependencies = [
  "futures-executor",
@@ -303,7 +303,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-idioms"
-version = "0.5.2"
+version = "0.5.3"
 source = "__SWALLOWTAIL_CANDIDATE_GIT_SOURCE__"
 dependencies = [
  "swallowtail-core",
@@ -311,7 +311,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-protocol-acp"
-version = "0.5.2"
+version = "0.5.3"
 source = "__SWALLOWTAIL_CANDIDATE_GIT_SOURCE__"
 dependencies = [
  "serde_json",
@@ -320,7 +320,7 @@ dependencies = [
 
 [[package]]
 name = "swallowtail-runtime"
-version = "0.5.2"
+version = "0.5.3"
 source = "__SWALLOWTAIL_CANDIDATE_GIT_SOURCE__"
 dependencies = [
  "futures-channel",

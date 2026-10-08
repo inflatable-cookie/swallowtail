@@ -5,6 +5,13 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-10-08
+
+### Fixed
+- keep the registered-tool courier waiting through approval up to the kernel's
+  effective call deadline, return correlated settled errors without losing the
+  connection, and retain bounded transport/frame failure behavior
+
 ## [0.5.2] - 2026-10-08
 
 ### Fixed

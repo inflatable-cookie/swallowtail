@@ -12,10 +12,10 @@ write_fixture() {
     "$fixture_root/crates/swallowtail-adapter-claude-agent/sidecar"
   cat > "$fixture_root/Cargo.toml" <<'EOF'
 [workspace.package]
-version = "0.5.2"
+version = "0.5.3"
 
 [workspace.dependencies]
-swallowtail-core = { path = "crates/swallowtail-core", version = "0.5.2" }
+swallowtail-core = { path = "crates/swallowtail-core", version = "0.5.3" }
 EOF
   cat > "$fixture_root/crates/swallowtail-adapter-claude-agent/Cargo.toml" <<'EOF'
 [package]
@@ -75,14 +75,14 @@ python3 "$identity_checker" "$identity_fixture_root/valid"
 
 write_fixture "$identity_fixture_root/wrong-version"
 replace_fixture_text "$identity_fixture_root/wrong-version/Cargo.toml" \
-  'version = "0.5.2"\n\n[workspace.dependencies]' \
-  'version = "0.5.1"\n\n[workspace.dependencies]'
-expect_refusal "$identity_fixture_root/wrong-version" 'workspace package version must be 0.5.2'
+  'version = "0.5.3"\n\n[workspace.dependencies]' \
+  'version = "0.5.2"\n\n[workspace.dependencies]'
+expect_refusal "$identity_fixture_root/wrong-version" 'workspace package version must be 0.5.3'
 
 write_fixture "$identity_fixture_root/wrong-package-version"
 replace_fixture_text \
   "$identity_fixture_root/wrong-package-version/crates/swallowtail-adapter-claude-agent/Cargo.toml" \
-  'version.workspace = true' 'version = "0.5.2"'
+  'version.workspace = true' 'version = "0.5.3"'
 expect_refusal "$identity_fixture_root/wrong-package-version" 'must inherit the workspace version'
 
 write_fixture "$identity_fixture_root/wrong-asset-path"
@@ -94,7 +94,7 @@ expect_refusal "$identity_fixture_root/wrong-asset-path" 'embedded sidecar sourc
 write_fixture "$identity_fixture_root/wrong-source-tag"
 replace_fixture_text \
   "$identity_fixture_root/wrong-source-tag/crates/swallowtail-adapter-claude-agent/src/sdk/asset.rs" \
-  'env!("CARGO_PKG_VERSION")' '"0.5.1"'
+  'env!("CARGO_PKG_VERSION")' '"0.5.2"'
 expect_refusal "$identity_fixture_root/wrong-source-tag" 'sidecar source tag must derive'
 
 write_fixture "$identity_fixture_root/wrong-sdk-point"

@@ -102,19 +102,21 @@ downloaded source archives without executing them.
 
 ## Task validation record
 
-- `effigy qa:routes`: passed before the final wording clarification for the
-  `0.35.2` status.
-- `effigy skill run northstar/retired-concepts`: passed (3 retired concepts).
-- `effigy qa:docs`: link and research-index checks passed; the research-number
-  check stopped at the pre-existing collision between the two canonical
-  Research 373 records. The remaining docs tasks did not run. Both records
-  were confirmed on canonical `main` and left unchanged; Research 374 was the
-  next unused number.
-- `effigy check:current-ollama-attached`: passed before the final test
-  expectation correction.
-- `effigy validate:current-ollama-attached`: first run exited 100 after 18
-  tests passed and two assertions failed. The failures showed that
-  `parse_version` rejects interior `0.34.5` before returning a binding and
-  `AllowUnverified` classifies `.35.2` and later points as `UnverifiedNewer`.
-  Those expectations were corrected. The selector was not repeated under the
-  one-pass task validation rule; the final edited tests need a reviewer run.
+An initial targeted run exited 100 after 18 tests passed and two assertions
+failed. The failures showed that `parse_version` rejects interior `0.34.5`
+before returning a binding and `AllowUnverified` classifies `.35.2` and later
+points as `UnverifiedNewer`; those expectations were corrected. On the
+authorized continuation, the final rebased code passed the targeted selector:
+54 passed, 16 skipped. `effigy check:current-ollama-attached` also passed.
+
+The first push attempt stopped at the existing canonical Research 373 number
+collision. Repair 142 was merged before this continuation; current canonical
+main now assigns 373 to Claude Agent ACP, 374 to Claude Code headless, 375 to
+Qwen Code, and 376 to OpenCode HTTP. The refreshed
+`effigy qa:docs:research:numbers` selector passed, and this record uses the
+next free id, Research 377. Final `effigy qa:docs` passed, including links,
+research indexing, and number collision checks.
+
+Final `effigy qa:routes` passed route, lifecycle, feature, activity, and
+historical boundary checks. `effigy skill run northstar/retired-concepts`
+passed all 3 retired concepts.

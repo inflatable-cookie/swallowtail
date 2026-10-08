@@ -30,7 +30,9 @@ fn qualified_and_unverified_newer_versions_probe_the_approved_target() {
         ("0.59.0", true),
         ("0.60.0", true),
         ("0.61.0", true),
-        ("0.61.1", false),
+        ("0.62.0", true),
+        ("0.63.0", true),
+        ("0.63.1", false),
     ] {
         let host_id = ExecutionHostId::new("fixture.host.discovery").expect("valid host");
         let host = DiscoveryHost::new(version);
@@ -61,7 +63,7 @@ fn qualified_and_unverified_newer_versions_probe_the_approved_target() {
 
 #[test]
 fn older_version_and_unpublished_gap_are_incompatible() {
-    for version in ["0.50.0", "0.56.1", "0.59.1"] {
+    for version in ["0.50.0", "0.56.1", "0.59.1", "0.61.1"] {
         let host_id = ExecutionHostId::new("fixture.host.incompatible").expect("valid host");
         let host = DiscoveryHost::new(version);
         let outcome = block_on(

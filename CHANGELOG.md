@@ -15,6 +15,15 @@ annotated Git tags from the canonical repository.
   identity drift. Preparation still issues no mutation. Research 418 records
   the qualification; Research 379 remains the historical `0.40.0` stop. No
   local runtime, provider prompt, model download, or host mutation occurred.
+- qualify only `gemini-cli.acp` through official stable `0.63.0`. Preserve
+  `0.51.0..=0.61.0` on its existing behavior revision and the published
+  exclusions; qualify exact `0.62.0` on the pending/failed tool-update
+  milestone and exact `0.63.0` on the restricted-file milestone. Document
+  `.gemini` and shell-redirection permission stops, real-path reads, protected
+  `.env.*` exceptions, and the 64 KiB stored-tool-output cap in Research 415.
+  The headless claim remains through `0.61.0`, and HTTP MCP live honouring
+  remains exact `0.61.0`. No public API or lifecycle changed, and no provider
+  was run.
 - qualify only `kimi-code.headless` through official npm and GitHub stable
   `2.1.1` after every published hop from the qualified `0.43.0` ceiling.
   Research 413 freezes the exact package/source identities, complete trees,

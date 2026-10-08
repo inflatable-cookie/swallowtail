@@ -2,11 +2,14 @@ use std::collections::BTreeSet;
 
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
+use swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SOURCE;
 
 const IDENTITY: &str = include_str!("fixtures/pi-sdk-sidecar-1.1.0/identity.json");
 const INVENTORY: &str = include_str!("fixtures/pi-sdk-sidecar-1.1.0/dist-inventory.json");
 const PROTOCOL: &str = include_str!("fixtures/pi-sdk-sidecar-1.1.0/protocol.json");
 const DEPENDENCIES: &str = include_str!("fixtures/pi-sdk-sidecar-1.1.0/dependency-surface.json");
+const SIDECAR_SOURCE_SHA256: &str =
+    "b4a87c838d8884813d90eb4dac7306f3c571aef7892ee112a4f448ebfd463415";
 
 const QUALIFIED_POINTS: [&str; 18] = [
     "0.84.2", "0.84.3", "0.84.4", "0.85.0", "0.85.1", "0.86.0", "0.86.1", "0.87.0", "0.87.1",
@@ -272,6 +275,10 @@ fn key_set(value: &Value) -> BTreeSet<&str> {
 
 #[test]
 fn exact_npm_artifact_identities_and_current_channels_are_frozen() {
+    assert_eq!(
+        sha256(PI_SDK_SIDECAR_SOURCE.as_bytes()),
+        SIDECAR_SOURCE_SHA256
+    );
     assert_eq!(
         sha256(IDENTITY.as_bytes()),
         "9f3d0599902dfb2a802c4a3062d31fa7fcb620016e1a2184526a907ef2a10768"

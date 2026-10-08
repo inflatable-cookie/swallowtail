@@ -23,8 +23,10 @@ swallowtail-protocol-acp.workspace = true
 swallowtail-runtime.workspace = true
 
 [dev-dependencies]
+base64 = "0.22"
 futures-executor = "0.3"
 futures-util = "0.3"
+sha2 = "0.10"
 swallowtail-testkit.workspace = true
 
 [lints]
@@ -33,6 +35,10 @@ workspace = true
 [[test]]
 name = "cline_acp_identity"
 path = "tests/cline_acp_identity.rs"
+
+[[test]]
+name = "cline_acp_3_0_69_delta_ledger"
+path = "tests/cline_acp_3_0_69_delta_ledger.rs"
 
 [[test]]
 name = "cline_headless_identity"

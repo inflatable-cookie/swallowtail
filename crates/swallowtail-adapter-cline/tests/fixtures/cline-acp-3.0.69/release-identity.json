@@ -1,0 +1,962 @@
+{
+  "schema": "swallowtail.cline.acp.release-identity.v1",
+  "route": "cline.acp",
+  "axis": "cline.package",
+  "observed_at": "2026-10-08T03:57:29Z",
+  "official_channel": {
+    "registry": "https://registry.npmjs.org/cline",
+    "selection": "dist-tags.latest",
+    "latest": "3.0.69",
+    "latest_published_at": "2026-10-07T06:13:57.143Z",
+    "reprobed_after_source_review": true,
+    "stable_published_versions_in_scope": [
+      "3.0.55",
+      "3.0.56",
+      "3.0.57",
+      "3.0.58",
+      "3.0.60",
+      "3.0.61",
+      "3.0.62",
+      "3.0.63",
+      "3.0.64",
+      "3.0.65",
+      "3.0.66",
+      "3.0.67",
+      "3.0.68",
+      "3.0.69"
+    ],
+    "unpublished_hole": {
+      "version": "3.0.59",
+      "registry_version_exists": false,
+      "disposition": "excluded",
+      "reason": "No cline@3.0.59 npm release exists; the named channel is the published npm package, and no npm artifact exists to qualify."
+    }
+  },
+  "selected_runtime_tree": {
+    "package": "@cline/cli-darwin-arm64",
+    "target": "Darwin ARM64",
+    "tree_inventory": "dist-inventory.json",
+    "rationale": "Exact package trees are frozen for the official wrapper and selected Darwin ARM64 runtime. All six platform runtime package identities and source commits are separately frozen in provenance.json."
+  },
+  "source_identity": {
+    "repository": "https://github.com/cline/cline",
+    "binding": "NPM SLSA provenance resolved dependency gitCommit",
+    "source_commits": {
+      "3.0.55": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+      "3.0.56": "4a128d5f760b56b4fa81d98336068b83737ce5bc",
+      "3.0.57": "4f836ae7d0ed29ece7ef4a2a478deb470fdd056e",
+      "3.0.58": "8e7a55498bdb265004427160b68d8228a62d4e4a",
+      "3.0.60": "c0c37a1587defec8d0e901f053312d0721bec0fe",
+      "3.0.61": "595f1dbf2ea819e987afeadb4ed4dd9a0ae9a55e",
+      "3.0.62": "d718dd16f850c4c915a8214441a831e00cb28c75",
+      "3.0.63": "f81c8d00946a1d6cae55cd19f70271b49e15fcb7",
+      "3.0.64": "844c30d7ea3e01df3c036729d8c78a2678275aee",
+      "3.0.65": "dcf8c3c33596e3d561a941202297c564a1cbcd49",
+      "3.0.66": "20d70ceed8b749f9350bc8c573a81faaa236b289",
+      "3.0.67": "9087191126d43c4123965501d5c2e1b9bb4dca90",
+      "3.0.68": "241c1884a7461ef35f6c384a027a38e8d03b3b33",
+      "3.0.69": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576"
+    },
+    "platform_attestations": {
+      "3.0.55": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.55.tgz",
+          "registry_integrity": "sha512-vVqqET60tC5KfIfdHwLTyYM4RummI4S4xZv+scaOwXf4aa7D9MTArI9/B0W8V+6lhhdgULRfNyDMpm/l/sEGug==",
+          "registry_shasum": "6901bdda448275f64ff3e3484c6c6972e7ed6cdd",
+          "source_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/31781478950/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.55.tgz",
+          "registry_integrity": "sha512-dq+bJq1Ch1OwDjs+QTzYeTjPD1DuuqUqt3AegjJtno7GEMLSz9XKgLZoRVscgksEawhsQXwd41ims7t5FfpvhA==",
+          "registry_shasum": "3b4b2c582e8aac36767d3bd276d24a10d814e881",
+          "source_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/31781478950/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.55.tgz",
+          "registry_integrity": "sha512-+J/Nllva7/CsSfk6udrSY8ukGaxbv9WvEbCPGWYrmfMk1AZ/Thtc3v5rkElErbzDxBnQQ24r7K0lPRqRJk5NWg==",
+          "registry_shasum": "46d6250550fe7e3f027a70cd37dd5c16b8ac35f8",
+          "source_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/31781478950/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.55.tgz",
+          "registry_integrity": "sha512-sfMzs3FB8ewg7GZgCz4h2gvNvrMmZkTj8SaoHzy7vvHE0K1fT+aDyjttZANPOkAhjCRyCdNDpBT7TsXbjHyuHQ==",
+          "registry_shasum": "dee0dbe9e2fec3b477edfe1ec166c2236fcad700",
+          "source_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/31781478950/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.55.tgz",
+          "registry_integrity": "sha512-9qSF6jH5hOYsWC8s3YgraNcJkOBZ8Aa+ia4uZ0iuPY8pOEzcWZEhtOITtfGzitk1aPJxNKegnTASOkQunJnHJw==",
+          "registry_shasum": "9fa186f0ec68ec17f643d3fb8c05d1094801c532",
+          "source_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/31781478950/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.55.tgz",
+          "registry_integrity": "sha512-MujCtSEGe1caajLjo4muCuwSPq85tTXJ1el1pZzfYm/ysBUd4EhkTEDrlkA83CnONt5Xi+eLShiuBTXyIvLppQ==",
+          "registry_shasum": "41d26411d4cf05eadd79446385e6c3756287ba25",
+          "source_commit": "ad442cbb6a81d21773ceabc1398ea5eb58170718",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/31781478950/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.56": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.56.tgz",
+          "registry_integrity": "sha512-M4B+SF0xZs45/M3ZLZ2LjgyapiCM6SGwkAMYtuEP9boDtzr5vUIlCJkUjz2MjnVHQMf3Q7Zxle0Tb7E2FDefcQ==",
+          "registry_shasum": "01467efa47ee256db98ab4497f2450798cafed88",
+          "source_commit": "4a128d5f760b56b4fa81d98336068b83737ce5bc",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32448786896/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.56.tgz",
+          "registry_integrity": "sha512-3CxDc28Suh27r6+R5qb5xWGLrEzlVTLrblrbJhE5G/NuKhgl27WITlcII6shylaCwm83RMo08t1Qn+y8inaXEw==",
+          "registry_shasum": "ea0d81c7734703c1d69b24221f40396d81193033",
+          "source_commit": "4a128d5f760b56b4fa81d98336068b83737ce5bc",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32448786896/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.56.tgz",
+          "registry_integrity": "sha512-MQFsBeOItSha3FX1eJh1ZLta9+JVgkTWJRlGJKoOtO4fBcR5OHVNY2Iow0Ymy8HpA476uBNPUpDeJ5KHcxrhaQ==",
+          "registry_shasum": "c998cacfb5400a209ce36e23738620fa6076aa63",
+          "source_commit": "4a128d5f760b56b4fa81d98336068b83737ce5bc",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32448786896/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.56.tgz",
+          "registry_integrity": "sha512-DG1aRTP9SH3tsyMnbsjJXKPZQbkoos838EuH63OExq6CnDcCfterLhLse55OdFvjExnajZ181qMFAVjUL4GQqg==",
+          "registry_shasum": "ac97e9c31df993236a6686d8d0c54bc6986a84f7",
+          "source_commit": "4a128d5f760b56b4fa81d98336068b83737ce5bc",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32448786896/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.56.tgz",
+          "registry_integrity": "sha512-vhZKUvzuR2GnpcxYppohQTPnkNdweoKKot8rVcZXiLnOTR2EiFA2S+2rqy99WZWWzRox5hTwL+0JyLcr6f26CQ==",
+          "registry_shasum": "025f076a1386f6aed736a661484c7f5dbf635f36",
+          "source_commit": "4a128d5f760b56b4fa81d98336068b83737ce5bc",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32448786896/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.56.tgz",
+          "registry_integrity": "sha512-0wpU2MM/Mssp34v6S5cntPwFWVcTsf25V4EtGCqCSGAzoLBlwj2H85yPgrMkVPVRxJDwjhHKRRpv231laKUGHQ==",
+          "registry_shasum": "d0639b318399312270f9d5a51b65a1faf8e40001",
+          "source_commit": "4a128d5f760b56b4fa81d98336068b83737ce5bc",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32448786896/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.57": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.57.tgz",
+          "registry_integrity": "sha512-LoTS+6ft4tmfOeebOWdpzSwahySqCSMYom37dGtf4tK//Yx8c55WFAw+NxS4hKNjzB0SEbNKHEmCr3wFI8jyfg==",
+          "registry_shasum": "0bc4ba3576bee962c7f158a3889e42744fd39f89",
+          "source_commit": "4f836ae7d0ed29ece7ef4a2a478deb470fdd056e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32606664351/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.57.tgz",
+          "registry_integrity": "sha512-ebVuw2SD4MU+3wmzPlqI9lntfxUHiAobEf26niA/aY+3bCdDbewj28pvEgXfGJXA2vboQJhznfpTIbO0SGbsNA==",
+          "registry_shasum": "776dd4a76e1fe1fbc5637d510c3f1b4e9128a92a",
+          "source_commit": "4f836ae7d0ed29ece7ef4a2a478deb470fdd056e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32606664351/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.57.tgz",
+          "registry_integrity": "sha512-BZgX7v3iuklkSjnzCwT7Fpsbo8IdVNS7AYXZDK0aijtn4PHQM6gPOxbXhbCBOCItzGB4bkyvCYhp6SFJEhU3GQ==",
+          "registry_shasum": "2b63541d057f8461b22976ec53fe3a92195dbb2e",
+          "source_commit": "4f836ae7d0ed29ece7ef4a2a478deb470fdd056e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32606664351/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.57.tgz",
+          "registry_integrity": "sha512-dmN8lEJBY+PcS9JS2nVNWrYKli8Xhiyh5OETSRvxWxvUYty0IovP1KM/cNsZwBs9XpvyEVfDZ1KJ6G5Tvd//3g==",
+          "registry_shasum": "0b0f2364482241cacdf22b5149f80403b299b31a",
+          "source_commit": "4f836ae7d0ed29ece7ef4a2a478deb470fdd056e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32606664351/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.57.tgz",
+          "registry_integrity": "sha512-SAqJFP59PLP/dFadP4vX0xBdl7AdkjbbFTl7ifk+j+j0oGKrqfOEvUi2L0xkyuZBmEH0tyyCkN60bGb4pZ4yUw==",
+          "registry_shasum": "b6092f46deb22a2bc2dc5a16eeda58485841319e",
+          "source_commit": "4f836ae7d0ed29ece7ef4a2a478deb470fdd056e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32606664351/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.57.tgz",
+          "registry_integrity": "sha512-1N1jg64GsSqf5VgqhPof1hsr0XO8cqAix/XqV4WqeqqQ1XcoGQKMk7Ix3xnCWcYkfrPWs8gkH5clgUXkOrzUgA==",
+          "registry_shasum": "8dc6ef16e93bdb6116f7cb966192ed8c7326b259",
+          "source_commit": "4f836ae7d0ed29ece7ef4a2a478deb470fdd056e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32606664351/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.58": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.58.tgz",
+          "registry_integrity": "sha512-b8teuOp73TXWZ2s48YEFZ4ESivEAa2UO88SkWL9O0YPkpb3cmI8MrHHr67ZNltfQ74+DU2Si7o6nXZaexi9irw==",
+          "registry_shasum": "f584929ec2b67063a34614f9bd261c668a478b20",
+          "source_commit": "8e7a55498bdb265004427160b68d8228a62d4e4a",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32787491565/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.58.tgz",
+          "registry_integrity": "sha512-nWkbgeueFpFeLBPXhZMtVIrlrycDCatVXceDsLSy8AORkpjPfj1RcfmgW+12nqofjmAOv/+mGjmQq1xLr4pFFQ==",
+          "registry_shasum": "1348f6753c154d290fe78d66aba4dc1559af667b",
+          "source_commit": "8e7a55498bdb265004427160b68d8228a62d4e4a",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32787491565/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.58.tgz",
+          "registry_integrity": "sha512-N0crVA58dbb+rJbOIVTKF5yAeRAop3yw41NTiIPRai1V9kIty4O7cquCL42C90SMNSAg2UG/o+r2sBEsB7BRlQ==",
+          "registry_shasum": "d667e38164abc9df8b68da564132a1ef3080338c",
+          "source_commit": "8e7a55498bdb265004427160b68d8228a62d4e4a",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32787491565/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.58.tgz",
+          "registry_integrity": "sha512-dfLr58SU6E23RYbEeu/1kRGX2w2UVwvuPKhZtzXaNxVynl+T2anV1YtGT3qbB7ogp9v0QUqF0dP6F2oBWgXDuA==",
+          "registry_shasum": "5093029a76104fb8f1fa2ab98f75394076581135",
+          "source_commit": "8e7a55498bdb265004427160b68d8228a62d4e4a",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32787491565/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.58.tgz",
+          "registry_integrity": "sha512-elUxOT5cYB3/aXFGpCISAJkOnjLSrKEmdjAGW7Hq+n0FRY02IQcpl2+kiE4IVsHfQBtTjJykPeRYfyZT+LaxQQ==",
+          "registry_shasum": "edf740789f71937986d21a89944b4aed00675700",
+          "source_commit": "8e7a55498bdb265004427160b68d8228a62d4e4a",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32787491565/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.58.tgz",
+          "registry_integrity": "sha512-+FRFK1OxBYOjTyFP4uxxkeS4LHxcv+ri6L2q2prXo9/8ejp1r64ldk051cQ/HUWBrWKLzREfBE89fT8GqjYR1A==",
+          "registry_shasum": "2018de5ff69cd06bd13483abcc05db8f70a6b182",
+          "source_commit": "8e7a55498bdb265004427160b68d8228a62d4e4a",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32787491565/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.60": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.60.tgz",
+          "registry_integrity": "sha512-oW1qjN6v1CJJMR5jnILYlVnA+S2z6Gd5Un5pFzWdc/w7WquRNSPLh3S3HLNIJgYSlWKJVSrNd2eiRuHX0y0jJg==",
+          "registry_shasum": "9c19ab244bf4e508ed25951634f230f2ff3e2621",
+          "source_commit": "c0c37a1587defec8d0e901f053312d0721bec0fe",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32953000252/attempts/2",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.60.tgz",
+          "registry_integrity": "sha512-JmuoB2AteuZtJfjEW29DmsRxPR470CJq27YLJTPaCi4T4MQhCp7uRdsUubBXvhNa5H4jGcFnbsu5db34wVzPrQ==",
+          "registry_shasum": "018f971a7846c8dcfd29689b1f1c1ebc9ddf04e8",
+          "source_commit": "c0c37a1587defec8d0e901f053312d0721bec0fe",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32953000252/attempts/2",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.60.tgz",
+          "registry_integrity": "sha512-jYSBgtJy2zBcWcvXEsxSS+Wt7cSH4GSJaE6iRoIp4UJ77v7M7lDW8KFayf9LTMtd0Mso7E8IY4k3GKxNzfDgwQ==",
+          "registry_shasum": "c87a37309acc7d2488657428d6091c2db6a725ee",
+          "source_commit": "c0c37a1587defec8d0e901f053312d0721bec0fe",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32953000252/attempts/2",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.60.tgz",
+          "registry_integrity": "sha512-bKX9+HR0L2GjH3aSffRRVZcNTa56RyRvk8pFKAdrlbfu+/rZ+/rD2oDSuhseF4/6YPsFvLJ80qygYi9j+bSsUg==",
+          "registry_shasum": "bafc5957bffdb9f4eb57550c0493b784434597a8",
+          "source_commit": "c0c37a1587defec8d0e901f053312d0721bec0fe",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32953000252/attempts/2",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.60.tgz",
+          "registry_integrity": "sha512-L2QnPFAEWU/eS6f7L5TnTr8X1JEY1BO5oaxtVPUgysj5b8R9Ow4czmEvunusMvyIcDPRp4SUQ5Qktv4NklY/3g==",
+          "registry_shasum": "9b7aa5fa35d293b1c6e5bf107ed045cdb2695172",
+          "source_commit": "c0c37a1587defec8d0e901f053312d0721bec0fe",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32953000252/attempts/2",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.60.tgz",
+          "registry_integrity": "sha512-nPrml3SXgaIf/TKo0s5YBhVBH1ZmJ36HGOCZctCfLYchJ2E4XpIBerkT7WOzkW80ThMwou90acV6B40MxMTR9Q==",
+          "registry_shasum": "50b09e44c5b1b45b45fff781b47d6247aa3d7682",
+          "source_commit": "c0c37a1587defec8d0e901f053312d0721bec0fe",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/32953000252/attempts/2",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.61": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.61.tgz",
+          "registry_integrity": "sha512-dsCg3/UVMl079e0GA8BUTszlZzHd9/JhZ6/23To9Zk/7JacGSThM731ygDEjJ19R3wi+JCXu1GBoLsg0HRiFBA==",
+          "registry_shasum": "6215679111eb22a717348a2ceddace248c89b66a",
+          "source_commit": "595f1dbf2ea819e987afeadb4ed4dd9a0ae9a55e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/33591931097/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.61.tgz",
+          "registry_integrity": "sha512-VY0EpfniLSfwTxivfWnhBeEESLrq0vu1N+WGTjoNydOrIuzwHQoHF0RUGZwEMUAdoHY+eYGco2ST+mngWIkJeg==",
+          "registry_shasum": "9b9373abc04f355623bb0bb0421d7324ed366aa4",
+          "source_commit": "595f1dbf2ea819e987afeadb4ed4dd9a0ae9a55e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/33591931097/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.61.tgz",
+          "registry_integrity": "sha512-3dM+aNmOK4xqbIFJ75NhQ/PdepS4tCnleclXXuYsX12l5WIW4Fznqj8sntgrleI941TAe+Qi7Mr9x7RpbGGIhQ==",
+          "registry_shasum": "81cd37e9daf06d1ba8c61964e770f25b00e4767e",
+          "source_commit": "595f1dbf2ea819e987afeadb4ed4dd9a0ae9a55e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/33591931097/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.61.tgz",
+          "registry_integrity": "sha512-fgNcwRAcjXk0YpqIg7d0+eSrX9F1QnAG6g26VsZgi0uUYkZRgZJ6JhFVnUzfyrs/XZXv3L1cY0MwlkdxERApnQ==",
+          "registry_shasum": "e88a5735ed836bcd3b0bd4e5b233795051ac10da",
+          "source_commit": "595f1dbf2ea819e987afeadb4ed4dd9a0ae9a55e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/33591931097/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.61.tgz",
+          "registry_integrity": "sha512-9HPl04mCp1zTfUT05S2NABPh1bl+2Ia37TY/LGNrL6SZl33n1z0DscrOzIH1ZFhoPvKIkU9b6rw92AFzCbgJlw==",
+          "registry_shasum": "4346c6219dbb62afb1c72f6b100f1aab203ef380",
+          "source_commit": "595f1dbf2ea819e987afeadb4ed4dd9a0ae9a55e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/33591931097/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.61.tgz",
+          "registry_integrity": "sha512-AsG3nFbuhlMvxcsS3YCbaMVP5Jc3RmDuDEQmz0WJwCQaDPbovERpUswmukBNaWKPGHnyoUz6qNe9aJQ9Du/xLA==",
+          "registry_shasum": "2d961509dbe48b549794e826f0847a419f99411a",
+          "source_commit": "595f1dbf2ea819e987afeadb4ed4dd9a0ae9a55e",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/33591931097/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.62": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.62.tgz",
+          "registry_integrity": "sha512-HRj/3sFY/81tOv3yznViSuS6G5lEV7GRlELvPi1k0eAfzsglhH6kgPnFCM+jMJ7C3evwf8nVzvrcP+xipPlHiw==",
+          "registry_shasum": "48a86680a465e7543ebde570e9afa0480d971ff0",
+          "source_commit": "d718dd16f850c4c915a8214441a831e00cb28c75",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/34934930768/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.62.tgz",
+          "registry_integrity": "sha512-DPoFM0ohgBpHYsgBrWmUS64oRTEM0SzTx0BNQXHG37zR6IZAn8sfL68eQWe4awyKPTzIhH83rC996K8ldry3eQ==",
+          "registry_shasum": "6769214f5369f7a8aa851ba22e50767b2d96e148",
+          "source_commit": "d718dd16f850c4c915a8214441a831e00cb28c75",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/34934930768/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.62.tgz",
+          "registry_integrity": "sha512-67e42/yFRqvlGPwht/9UdP355Zdz5wETcPuSrhjNvwWofxAczqDIQ3N+PCIJQ0id5AmIN0wF355XfBOWde6Y2Q==",
+          "registry_shasum": "512efe6a24e0356e052afe32634de371656f72e0",
+          "source_commit": "d718dd16f850c4c915a8214441a831e00cb28c75",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/34934930768/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.62.tgz",
+          "registry_integrity": "sha512-XjO1Bj3bgD1IwwDLLHwLmg+TDKfaxtacHB89UmypWyKGgaLL7I9f2ya/Iz/d3sTMormG9qaVQPr4eE9gzzI+TQ==",
+          "registry_shasum": "40d49aded976ca23bed76d9e0ed53321a3f12192",
+          "source_commit": "d718dd16f850c4c915a8214441a831e00cb28c75",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/34934930768/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.62.tgz",
+          "registry_integrity": "sha512-o42s422px4GdlZblJhkTVVcaSQLo5iETTqxJlKm6HfYTbw4W7jmi8+9bMTAsROQvMqV7qWBovUGg4PSzxp8Jsg==",
+          "registry_shasum": "53ce462000bef162de29a9070bdc8b03678c852c",
+          "source_commit": "d718dd16f850c4c915a8214441a831e00cb28c75",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/34934930768/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.62.tgz",
+          "registry_integrity": "sha512-4qg25gGcNNy7q4jglRm+fwqPSG7BlxKYp4wF2w4OkfrY2Svp8PtbMOgm+wb+FDGlI1VhlOhZP8yRvF8vYdASvA==",
+          "registry_shasum": "4ae55eb1acb5bb32c562bd5d5fcfc159fa69e99b",
+          "source_commit": "d718dd16f850c4c915a8214441a831e00cb28c75",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/34934930768/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.63": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.63.tgz",
+          "registry_integrity": "sha512-OcVf8OHK6culyokr6vS3J+eNaGXyjGLvHhGqIhBOHkzXUxx4HEq/RyO0tDmCep/wvZt9vQuNHfAyu6ypJiC88w==",
+          "registry_shasum": "fcbee617bfed1b0d20a2e397a6628190a74f08f5",
+          "source_commit": "f81c8d00946a1d6cae55cd19f70271b49e15fcb7",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35684241756/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.63.tgz",
+          "registry_integrity": "sha512-8B0hKS7oHjuBtdKvVS/vGirk2vj8huj09inKGtPqqZI9XyPWhmrNKoVKbhUuSf7OCftRLARU5KilMaLquqzrdg==",
+          "registry_shasum": "bb08b54a37de25d594861258bb6833c8740b84c8",
+          "source_commit": "f81c8d00946a1d6cae55cd19f70271b49e15fcb7",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35684241756/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.63.tgz",
+          "registry_integrity": "sha512-LNSjn/DAI6XGABBM0gunH5t91qw8Xx8nsWkYPPyDCGzdaTj0IQS3hD3dZAbxSu5uIDA0xrUF/8DWabVOAXJTNw==",
+          "registry_shasum": "6867148a18b028618c5d40cb10e009e5846282d3",
+          "source_commit": "f81c8d00946a1d6cae55cd19f70271b49e15fcb7",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35684241756/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.63.tgz",
+          "registry_integrity": "sha512-NoUxBDPNCk6lnmFpMuAtn2IivflV1US94RHW6R4QkM9P0Zvxsg1p9c0nw8xD1xFAe5bepwKxhj+XyRLMUqDi1g==",
+          "registry_shasum": "e748f412457ec701dd9f337d4c9bc1fe5c0c830c",
+          "source_commit": "f81c8d00946a1d6cae55cd19f70271b49e15fcb7",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35684241756/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.63.tgz",
+          "registry_integrity": "sha512-JAOY54AgRn9ErFpme9w5WK8As8E77PeUlzd/SHBvMdvulBley+2IrGqWD8VW7SXm/dXH7x3561wFazwNWDfGOA==",
+          "registry_shasum": "3cd81e80a3b1cdb1a9061d5bceaa16aea8d85c60",
+          "source_commit": "f81c8d00946a1d6cae55cd19f70271b49e15fcb7",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35684241756/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.63.tgz",
+          "registry_integrity": "sha512-D5TFFE3IwKKgZYZlV1SfkBgVhMfwbQGhZbRWFhD6sIlmjxcwNtWEcnvESnoB11Jik1Rtb3PLX2tpYVvbEU+aZw==",
+          "registry_shasum": "f97ded93ace20788c7374fe1ad90779160df10de",
+          "source_commit": "f81c8d00946a1d6cae55cd19f70271b49e15fcb7",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35684241756/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.64": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.64.tgz",
+          "registry_integrity": "sha512-jyd/ELaV8OuN+0B1meq+2WhWNPAPWSApfRN8Ft93VlLDumRT1MTvJUi0Btlao4MPctFEkpNJEcpFNC/W5GrFVg==",
+          "registry_shasum": "7e115f2b4db23fc4b2ffc0f9276020ac5ce7ac8d",
+          "source_commit": "844c30d7ea3e01df3c036729d8c78a2678275aee",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35704137752/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.64.tgz",
+          "registry_integrity": "sha512-Dg/7nl+oaGEpORBwuusCrqIiJshd9ijh71ovb/PLhAGrXHYdnYBlifNAdVZsMtEUfup5rey6M5ADZ48AosHANg==",
+          "registry_shasum": "bd6faa1479ca1071dee55fc719b017b3fa599fb4",
+          "source_commit": "844c30d7ea3e01df3c036729d8c78a2678275aee",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35704137752/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.64.tgz",
+          "registry_integrity": "sha512-OrPRjRDaun8WrPe/awQCoQp+fotemmPWK80xVlH+JHyLEWjzAFZviujjj742fhfGiAkPESk6t2clOrOw53u2rQ==",
+          "registry_shasum": "9c9b0d11bc32d3ab2aa939feac5beb4ff5b9f08c",
+          "source_commit": "844c30d7ea3e01df3c036729d8c78a2678275aee",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35704137752/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.64.tgz",
+          "registry_integrity": "sha512-T8soLoCEA0E0EGyE7MZmUSJXlqYSD4al4W2hxAWu90PkzkSqeKRGtfaUq3EMiPkm8WAlQOF1AtLgUpjw3e9Jog==",
+          "registry_shasum": "c45a88dd6d9740ca23a4ea92051e7cbf8d647b12",
+          "source_commit": "844c30d7ea3e01df3c036729d8c78a2678275aee",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35704137752/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.64.tgz",
+          "registry_integrity": "sha512-Nrl2qVjq1lXvAKGXnUMIf6zDKJkDcjtwx90RyXY9WtXbgobf/j4KUtjyoO41VpVHLV852wwufOXEYpPuBGknZg==",
+          "registry_shasum": "2c5b03ee9b0d44407fd60e16bf2cff8046078df8",
+          "source_commit": "844c30d7ea3e01df3c036729d8c78a2678275aee",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35704137752/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.64.tgz",
+          "registry_integrity": "sha512-nBdgSUjZyzdA6cZ/WDDEQ38rpu+uSk5r89ZlMwDqFj7IgDFmulST0t+h/bcYLGOYiJXsSMqaA7ZB7vUXpvq4Rw==",
+          "registry_shasum": "8d4e66b5e4cd9e0e7ee5188f6953d2ac98bc6c41",
+          "source_commit": "844c30d7ea3e01df3c036729d8c78a2678275aee",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35704137752/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.65": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.65.tgz",
+          "registry_integrity": "sha512-YRDt0eNj/XEMB7DeMeOeE92jQFf7DyKGCysStxrk+mIKdO0GVPugDG4yxsmKtBouBnaRVteW3NwYEnSq2kah8A==",
+          "registry_shasum": "2081f5316ce173fea1bac0ba45531a251c7947db",
+          "source_commit": "dcf8c3c33596e3d561a941202297c564a1cbcd49",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35961565855/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.65.tgz",
+          "registry_integrity": "sha512-POuoEtOPOtye6Nx/MHe3cQFkkTUf9gkv0Fmr85X+x/eg0hQfHKnAOrTBj+6/txhNjSSlX7UBAGKB8E4eR4zZpA==",
+          "registry_shasum": "4d75457a15a12cc5771b6eebe5840082e789447d",
+          "source_commit": "dcf8c3c33596e3d561a941202297c564a1cbcd49",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35961565855/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.65.tgz",
+          "registry_integrity": "sha512-JxGPEF5ymwXXVSfVfSz4hEjMMgJEipiLYBmbG26e3VVon3p1RXyuaVObuqY2bs7Yhz8gxgh/ULQfdj8IMrm99Q==",
+          "registry_shasum": "4fe9e1ff81558ccd14884f3cb0e5981457903b8a",
+          "source_commit": "dcf8c3c33596e3d561a941202297c564a1cbcd49",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35961565855/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.65.tgz",
+          "registry_integrity": "sha512-YcLWhECyDykLFv4qisuF/1zH6FJJjm7y3TEDVIro7X2P/VQ6txfvytZIAqeWQ6x4MREfiJ5MaZ8S0m7/6Ai2tg==",
+          "registry_shasum": "23e914255e765ef8664a42a0a0b58c760b96f402",
+          "source_commit": "dcf8c3c33596e3d561a941202297c564a1cbcd49",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35961565855/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.65.tgz",
+          "registry_integrity": "sha512-fgHAh/XbPGjUuDJcfXL/yqjZ17ZsDGYFbWfddJnwWQhxoSe63/wdgR9gJMUDK/MBvP89+2hBj9mswIwycAGaNQ==",
+          "registry_shasum": "a661e7ef71a6bd509dc577eed0e04050ea38404a",
+          "source_commit": "dcf8c3c33596e3d561a941202297c564a1cbcd49",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35961565855/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.65.tgz",
+          "registry_integrity": "sha512-O+f5KBtUsWTCkO1rOAlrfnhj9rRYrs2D6IcbQPBt+TBOVX+YE4s6VPBDi1A56mijlm9tKJPdpT36GvIOgD3reQ==",
+          "registry_shasum": "9776ea027f4e1a0d24765fbeae8cad4cb083f73c",
+          "source_commit": "dcf8c3c33596e3d561a941202297c564a1cbcd49",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/35961565855/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.66": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.66.tgz",
+          "registry_integrity": "sha512-6gsHM54j01Wk2GZk89LIKyRPNb9B5F2GJviQP95HyORp3hVrsNX6JXgDpimoXOfscuYmQDS3On2A3hd0wxWk+g==",
+          "registry_shasum": "264ff5e1dc87323bc2abfd7d31d18b34041268a7",
+          "source_commit": "20d70ceed8b749f9350bc8c573a81faaa236b289",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36660488520/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.66.tgz",
+          "registry_integrity": "sha512-6eHxn4J+ZpAD+yt4eEgdUU39oTvLChHBaZAXOba5FLo1ZvXBWe3Lzi4p55eB3k6J11YajxsuSOO4cJo/OHyDgQ==",
+          "registry_shasum": "7070000ec91a84a4bd82291a3c846919c2504259",
+          "source_commit": "20d70ceed8b749f9350bc8c573a81faaa236b289",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36660488520/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.66.tgz",
+          "registry_integrity": "sha512-zhvfmJ3nXmfiNcqm2/Z4xjWiMAxUTMHW9jWsR+0Syp5d+H69WzlWPwbxpvt5GjqU7re0VNb/h4nNXnzWtLqXoQ==",
+          "registry_shasum": "b95717534e5fef2e643e66836264e191be8ad038",
+          "source_commit": "20d70ceed8b749f9350bc8c573a81faaa236b289",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36660488520/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.66.tgz",
+          "registry_integrity": "sha512-JEIM5fHo8PipfRmU4of9Wwl8CBVoBkpEE5yjMLFk3qM7B+K07v93cyxHaLfxuBo6vb583lA/yAuOa166GYGdgQ==",
+          "registry_shasum": "bf4bb7efa2177e3f1b492673fdbf38000a408ddf",
+          "source_commit": "20d70ceed8b749f9350bc8c573a81faaa236b289",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36660488520/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.66.tgz",
+          "registry_integrity": "sha512-KBBPwmQSdYb3FwWADrz8xnn/km2w+ILrBTcwqyFnwFQpwn0saxbmOVwMpDuTgtsNTsJtaBFdlHtedML4cc8h/g==",
+          "registry_shasum": "74e121929e6e31173b398a2e7b1a71c5c1c619a2",
+          "source_commit": "20d70ceed8b749f9350bc8c573a81faaa236b289",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36660488520/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.66.tgz",
+          "registry_integrity": "sha512-nfZbW06gof1F5No4PNqs23RYNyD2z+AazEMzOcOWCBrp6WP7wuj0wbq/tnz17yomb1sGnn9P5tEELKmlKwp+Mg==",
+          "registry_shasum": "a767f1f785e7a5940da7fae2abb5794cd0cac17c",
+          "source_commit": "20d70ceed8b749f9350bc8c573a81faaa236b289",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36660488520/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.67": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.67.tgz",
+          "registry_integrity": "sha512-RS177tfHpDQUn+JOBk24K6B5NBymjcXwtsb0/cMteLDmmCtYOoUqy5x1kKHeRYzAGFBuPLTCcnRP3ecVpEyRtg==",
+          "registry_shasum": "2bda950cf53eb7893325c86d1070d276cdead8dd",
+          "source_commit": "9087191126d43c4123965501d5c2e1b9bb4dca90",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36791880309/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.67.tgz",
+          "registry_integrity": "sha512-i2iFTDzbF1i2TsOdas2Yj0mHsa71zqNBavCV3miIM/76DqTTklkXUX+7YJGPst9UHWR1XTFlAu/FEHMag6bw9g==",
+          "registry_shasum": "fb8f3416ee453aa4e5ae48bbcf836b0a718b3a52",
+          "source_commit": "9087191126d43c4123965501d5c2e1b9bb4dca90",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36791880309/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.67.tgz",
+          "registry_integrity": "sha512-XLcyRHlOLDn3i1+uXGhh3lDddxTnC2eJFoFDeAPRgK3nvBzWsbA8UNB/mxQLB83LHRAdiTLsbf0i0Vt05or7oQ==",
+          "registry_shasum": "fcf5e2ad0b131479db6ac9aac40c74dfd4c07e7c",
+          "source_commit": "9087191126d43c4123965501d5c2e1b9bb4dca90",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36791880309/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.67.tgz",
+          "registry_integrity": "sha512-8ll+3QxvSNMtouiTimM4+xjv5hpcnplb6qxFch+R+73knYw7R3YwSDCAet7OWQ9h1k9QTtEpq8VQhSgX1APxMA==",
+          "registry_shasum": "4e4d7f8eaec32d9f3b7d72bcb1bf4f4bed795778",
+          "source_commit": "9087191126d43c4123965501d5c2e1b9bb4dca90",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36791880309/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.67.tgz",
+          "registry_integrity": "sha512-zB2T91t92J77wJY9Af5PEHG8hgHBw5LEgpXS3c6fdjL4G4jS1g9/cxwZXaXlrc1sWmUBGNBG/L0S7b7QAS6N+A==",
+          "registry_shasum": "13a9b7dbffb8d990d4bc7724355db6d1ca11a64f",
+          "source_commit": "9087191126d43c4123965501d5c2e1b9bb4dca90",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36791880309/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.67.tgz",
+          "registry_integrity": "sha512-FJM7JtgxqWVhUDMXY7lUIaZJeY4oJLI95buzk5s2HI6UZWvyt3Pen5tfmohRDLnu2Icg6D7SkBvH8vftq9lt0g==",
+          "registry_shasum": "5cbeabac0985d6bd7943b3cf108027f6f9cc515f",
+          "source_commit": "9087191126d43c4123965501d5c2e1b9bb4dca90",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36791880309/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.68": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.68.tgz",
+          "registry_integrity": "sha512-CTDo+lTHsrKV/4SBl6SHVNneoEodcjuKOPvSTb8hFx8GGbi4ASsrItbUxb3bvgC+q2jglepYBborRcPoCv0YYw==",
+          "registry_shasum": "afcd8eb97a5430bfa584906578ad86bf2eee780c",
+          "source_commit": "241c1884a7461ef35f6c384a027a38e8d03b3b33",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36965270868/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.68.tgz",
+          "registry_integrity": "sha512-DxI5fdLCdcv65b6FTnHZABDXdwrVJWfcinDXFubuZB4lUdSvo5xgxncwn/NBiKKyy/Vx4nI/zRoDrnRsPfTgQQ==",
+          "registry_shasum": "a07e4a4948b5c264b1c2938cc9bffdfa80d09cbe",
+          "source_commit": "241c1884a7461ef35f6c384a027a38e8d03b3b33",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36965270868/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.68.tgz",
+          "registry_integrity": "sha512-VFmpccFdBsqZY7J7wevNz3XiJgKWGuRpnFYsnzFP3aePgiZBc2yUKwlBCClJn3b9QMYur/teAIG+CyZ5lqINug==",
+          "registry_shasum": "e2d46ab2d394d68643f1b0c888952b33944608e3",
+          "source_commit": "241c1884a7461ef35f6c384a027a38e8d03b3b33",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36965270868/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.68.tgz",
+          "registry_integrity": "sha512-kR3Luz2yVgb6KZ1bsl+mcAalaUYbJzgyffyF0+VkpuuosED9KD2sleXlTI0odgGCu17VwPKCofIJI072C3340Q==",
+          "registry_shasum": "debd1472c422fd0c7c7e6073cee5afe4a0440772",
+          "source_commit": "241c1884a7461ef35f6c384a027a38e8d03b3b33",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36965270868/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.68.tgz",
+          "registry_integrity": "sha512-BlGu1e5R9KHzqJ1xdbeliZbLCjIAqCxWQDC/+iO8CQl7YnQFAP7yFCqXLUOZTGsI27iYXxteOJwAX/vU4G2sDA==",
+          "registry_shasum": "596d339ec62216b2a20f07a04d762b4a2d04d4a0",
+          "source_commit": "241c1884a7461ef35f6c384a027a38e8d03b3b33",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36965270868/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.68.tgz",
+          "registry_integrity": "sha512-Vu/rWmmV0h+6boy5/qt0c7I9zMK2aPqXXp0X51fxMflq5F6MytCqlcd0JuOiYQ+uN0VpUM3O0/VftV3QX0uZmQ==",
+          "registry_shasum": "3076752c1555c62c9100082a06ac6750b8fa5efd",
+          "source_commit": "241c1884a7461ef35f6c384a027a38e8d03b3b33",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/36965270868/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      },
+      "3.0.69": {
+        "@cline/cli-linux-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-x64/-/cli-linux-x64-3.0.69.tgz",
+          "registry_integrity": "sha512-yGfd4ISuk/46hIxhNAhI/MWvnSFjqzQfXmBnbIbHfnSqIxmEa0/ArRbPKAaIJFj31woxkrRkZdScDv2WEHGdpg==",
+          "registry_shasum": "ad350f10e47084448c28ddb1e01526c15e70cc07",
+          "source_commit": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37579642872/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-x64/-/cli-darwin-x64-3.0.69.tgz",
+          "registry_integrity": "sha512-CsokMggl8YQsBIKxdlFpqdFXsZUngwNyQXYk9HRHgqcDe5/LE3ners96t2+IGKU2kunnUAg7tRKqS436+ycAWw==",
+          "registry_shasum": "c590c7e578d4d8f0e9de367e2eb0e13ea1adfffd",
+          "source_commit": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37579642872/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-linux-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-linux-arm64/-/cli-linux-arm64-3.0.69.tgz",
+          "registry_integrity": "sha512-/15dtFYFhuIYJ6D03b3pEplKWaFKE7LuICKkjr6ksf/jUUIbv3wOsWK2gSpJBCprMBYhdfvAgemz6Nh64RFj3w==",
+          "registry_shasum": "f98177ee60b0b08e5c24c63f3b2232be142f72f1",
+          "source_commit": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37579642872/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-x64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-x64/-/cli-windows-x64-3.0.69.tgz",
+          "registry_integrity": "sha512-WV5eoh1lQAK6mL8R27HMKoVBb12DJkT/VXO0nw9ZjmScOZz0fXwxh3JSiHySXigmTBBgUbGWdNAfkIeqnmDjgA==",
+          "registry_shasum": "fa0a35c713435ed76c3e116959a4da96788ac51d",
+          "source_commit": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37579642872/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-darwin-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-darwin-arm64/-/cli-darwin-arm64-3.0.69.tgz",
+          "registry_integrity": "sha512-d3IDU2hFvCXmhZtgebs0XDhEFG9aILp9h9gNHZJH35UrsHtxYwgicHswqY0hftiWnSEZj4d7BQ8BH9ABQ74bTg==",
+          "registry_shasum": "293b61dbaa033facb3fa9f4128a9851d1404cf08",
+          "source_commit": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37579642872/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        },
+        "@cline/cli-windows-arm64": {
+          "registry_tarball": "https://registry.npmjs.org/@cline/cli-windows-arm64/-/cli-windows-arm64-3.0.69.tgz",
+          "registry_integrity": "sha512-M63G7Omafq5OP9tlwXF53Q+5thaEqwPZfl0TzAvZ926E0itKwfSljslObJBQ8QEUbzIO2ooQ6CAw9wMXSoRHwg==",
+          "registry_shasum": "aac874cd1efe752a1c787719c592c4ff4185ad53",
+          "source_commit": "ef9430ffb4ceae9a7ab0b95d27cad8133ea7c576",
+          "workflow": ".github/workflows/cli-publish.yml",
+          "workflow_ref": "refs/heads/main",
+          "invocation_id": "https://github.com/cline/cline/actions/runs/37579642872/attempts/1",
+          "registry_sha512_matches_slsa_subject": true
+        }
+      }
+    }
+  },
+  "dependency_lock": {
+    "package_manager": "Bun",
+    "lock_file": "bun.lock",
+    "acp_sdk_package": "@agentclientprotocol/sdk",
+    "app_manifest_declaration": "^0.16.1",
+    "resolved_version_by_published_hop": {
+      "3.0.55": "0.16.1",
+      "3.0.56": "0.16.1",
+      "3.0.57": "0.16.1",
+      "3.0.58": "0.16.1",
+      "3.0.60": "0.16.1",
+      "3.0.61": "0.16.1",
+      "3.0.62": "0.16.1",
+      "3.0.63": "0.16.1",
+      "3.0.64": "0.16.1",
+      "3.0.65": "0.16.1",
+      "3.0.66": "0.16.1",
+      "3.0.67": "0.16.1",
+      "3.0.68": "0.16.1",
+      "3.0.69": "0.16.1"
+    },
+    "evidence_files": [
+      "apps/cli/package.json",
+      "bun.lock"
+    ]
+  },
+  "limitations": [
+    "No downloaded artifact was executed or installed.",
+    "No host Cline binary, credential, account, provider model catalogue, prompt, or ACP session was inspected or used.",
+    "The ACP adapter does not map upstream session/load, generated image/media output, provider model catalogues, or provider request metadata."
+  ]
+}

@@ -205,7 +205,7 @@ fn preparation_rejects_access_axis_and_package_drift_before_acp_work() {
     assert!(axis_host.observed_process().is_none());
 
     let newer_host = ExecutionHostId::new("fixture.prepared.newer").expect("host");
-    let newer = DiscoveryHost::new("3.0.56");
+    let newer = DiscoveryHost::new("3.0.59");
     let error = block_on(prepare_cline_acp(
         preparation_input(newer_host.clone()),
         probe(),
@@ -214,12 +214,34 @@ fn preparation_rejects_access_axis_and_package_drift_before_acp_work() {
     .expect_err("unqualified package fails");
     assert_eq!(
         error.stage(),
-        swallowtail_runtime::PreparationStage::VersionParse
+        swallowtail_runtime::PreparationStage::CompatibilityClassification
     );
     assert_eq!(
         newer.observed_process().expect("probe ran").arguments,
         ["--version"]
     );
+}
+
+#[test]
+fn preparation_admits_qualified_and_unverified_stable_versions() {
+    for version in ["3.0.69", "3.0.70"] {
+        let host_id = ExecutionHostId::new(format!("fixture.prepared.{version}")).expect("host");
+        let discovery = DiscoveryHost::new(version);
+        let prepared = block_on(prepare_cline_acp(
+            preparation_input(host_id.clone()),
+            probe(),
+            discovery.services(host_id),
+        ))
+        .unwrap_or_else(|error| panic!("Cline ACP {version} prepares: {error}"));
+        assert_eq!(prepared.observation().version().version().as_str(), version);
+        assert_eq!(
+            discovery
+                .observed_process()
+                .expect("version probe ran")
+                .arguments,
+            ["--version"]
+        );
+    }
 }
 
 #[test]

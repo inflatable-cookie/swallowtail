@@ -555,11 +555,10 @@ fn selected_sdk_files_facade_and_dependency_surface_are_exact() {
             }
         );
     }
-    assert_eq!(
+    assert!(
         protocol["dependency_scope"]["root_package_dependencies"]
             .as_str()
             .expect("dependency limitation is recorded")
-            .contains("host-resolved transitive tree is not asserted"),
-        true
+            .contains("host-resolved transitive tree is not asserted")
     );
 }

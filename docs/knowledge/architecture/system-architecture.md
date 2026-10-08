@@ -511,12 +511,14 @@ OpenHands adds a package without a production route.
   reports key-visible entries without inferring background or Realtime support
 - `swallowtail-adapter-qwen` implements qualified Qwen Code
   `0.19.11..=0.20.1`, `0.21.0..=0.21.14`, exact `0.21.15`, and
-  `0.22.0..=0.24.2` excluding unpublished `0.22.4` and `0.23.5` headless
+  `0.22.0..=0.25.0` excluding unpublished `0.22.4` and `0.23.5` headless
   behavior segments with
   exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
   redacted terminal classifications, host deadline and cancellation, joined
-  process cleanup, and `AmbientHost` isolation without a sandbox claim; the
+  process cleanup, a read-only working-resource lease that blocks implicit
+  Qwen SSH workspace selection, and `AmbientHost` isolation without a sandbox
+  claim; the
   production driver passes the provider-neutral one-shot profile under local
   and remote-authoritative host identities. Exact `0.21.15` additionally binds
   portable `low|medium|high|xhigh|max` reasoning for `qwen3.8-max` and

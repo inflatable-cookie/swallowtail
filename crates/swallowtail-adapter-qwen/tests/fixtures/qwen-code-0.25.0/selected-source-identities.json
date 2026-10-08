@@ -1,0 +1,401 @@
+{
+  "0.24.2": {
+    "approval_mode": {
+      "bytes": 331,
+      "path": "packages/core/src/config/approval-mode.ts",
+      "sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12"
+    },
+    "config": {
+      "bytes": 111602,
+      "path": "packages/cli/src/config/config.ts",
+      "sha256": "ee86208aceec9c4e72e0c3a236dd70749520c627fe09c5a5118c1a05f22aa08b"
+    },
+    "dashscope": {
+      "bytes": 39567,
+      "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+      "sha256": "ff88b5208b07dd3e695630d98e8e56206f9a55da2af1894caddb3814ab79acaa"
+    },
+    "exit_plan_mode": {
+      "bytes": 15813,
+      "path": "packages/core/src/tools/exitPlanMode.ts",
+      "sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e"
+    },
+    "permission_flow": {
+      "bytes": 8131,
+      "path": "packages/core/src/core/permissionFlow.ts",
+      "sha256": "8a03b52c3d3d81b57da4f72c63ee04594887bc96c4c5f2836f777f0e2a5f80a0"
+    },
+    "plan_mode_shell_policy": {
+      "bytes": 10319,
+      "path": "packages/core/src/core/plan-mode-shell-policy.ts",
+      "sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe"
+    },
+    "reasoning_effort": {
+      "bytes": 11046,
+      "path": "packages/core/src/core/reasoning-effort.ts",
+      "sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc"
+    },
+    "session": {
+      "bytes": 37287,
+      "path": "packages/cli/src/nonInteractive/session.ts",
+      "sha256": "878f18242aef80dd2a7798e40a9bd606a207a20e31f9f4ff20d32d69d4b1155d"
+    },
+    "stream_types": {
+      "bytes": 14118,
+      "path": "packages/cli/src/nonInteractive/types.ts",
+      "sha256": "aa7e3a847a986ba6e20137e08b86917aa6169444ffb2ebc40b6e792a7048e9f6"
+    },
+    "system_controller": {
+      "bytes": 20511,
+      "path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+      "sha256": "028b03a30246c8f6edf9a25cdd6fe38868564c2c576fe4a20b10b32882a4be56"
+    },
+    "top_level_options": {
+      "bytes": 16467,
+      "path": "packages/cli/src/config/top-level-options.ts",
+      "sha256": "ae4288d7776cf6d58c3e9bea0833ed1aebbd3d08895930e09629fc4005cf6889"
+    }
+  },
+  "0.24.3": {
+    "approval_mode": {
+      "bytes": 331,
+      "path": "packages/core/src/config/approval-mode.ts",
+      "sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12"
+    },
+    "config": {
+      "bytes": 113542,
+      "path": "packages/cli/src/config/config.ts",
+      "sha256": "131dbe4d06435affa8aaa564ca2d2e95b19a5ddbc2a70c6c0cd7806c135a49b3"
+    },
+    "dashscope": {
+      "bytes": 39567,
+      "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+      "sha256": "ff88b5208b07dd3e695630d98e8e56206f9a55da2af1894caddb3814ab79acaa"
+    },
+    "exit_plan_mode": {
+      "bytes": 15813,
+      "path": "packages/core/src/tools/exitPlanMode.ts",
+      "sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e"
+    },
+    "permission_flow": {
+      "bytes": 8131,
+      "path": "packages/core/src/core/permissionFlow.ts",
+      "sha256": "8a03b52c3d3d81b57da4f72c63ee04594887bc96c4c5f2836f777f0e2a5f80a0"
+    },
+    "plan_mode_shell_policy": {
+      "bytes": 10319,
+      "path": "packages/core/src/core/plan-mode-shell-policy.ts",
+      "sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe"
+    },
+    "reasoning_effort": {
+      "bytes": 11046,
+      "path": "packages/core/src/core/reasoning-effort.ts",
+      "sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc"
+    },
+    "session": {
+      "bytes": 37287,
+      "path": "packages/cli/src/nonInteractive/session.ts",
+      "sha256": "878f18242aef80dd2a7798e40a9bd606a207a20e31f9f4ff20d32d69d4b1155d"
+    },
+    "stream_types": {
+      "bytes": 14118,
+      "path": "packages/cli/src/nonInteractive/types.ts",
+      "sha256": "aa7e3a847a986ba6e20137e08b86917aa6169444ffb2ebc40b6e792a7048e9f6"
+    },
+    "system_controller": {
+      "bytes": 20511,
+      "path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+      "sha256": "028b03a30246c8f6edf9a25cdd6fe38868564c2c576fe4a20b10b32882a4be56"
+    },
+    "top_level_options": {
+      "bytes": 16467,
+      "path": "packages/cli/src/config/top-level-options.ts",
+      "sha256": "ae4288d7776cf6d58c3e9bea0833ed1aebbd3d08895930e09629fc4005cf6889"
+    }
+  },
+  "0.24.4": {
+    "approval_mode": {
+      "bytes": 331,
+      "path": "packages/core/src/config/approval-mode.ts",
+      "sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12"
+    },
+    "config": {
+      "bytes": 116405,
+      "path": "packages/cli/src/config/config.ts",
+      "sha256": "2f107e4ab20e844d1d839189e1e5a4c9e7402eb903aaed388859ab85de6f83df"
+    },
+    "dashscope": {
+      "bytes": 39567,
+      "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+      "sha256": "ff88b5208b07dd3e695630d98e8e56206f9a55da2af1894caddb3814ab79acaa"
+    },
+    "exit_plan_mode": {
+      "bytes": 15813,
+      "path": "packages/core/src/tools/exitPlanMode.ts",
+      "sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e"
+    },
+    "permission_flow": {
+      "bytes": 8131,
+      "path": "packages/core/src/core/permissionFlow.ts",
+      "sha256": "8a03b52c3d3d81b57da4f72c63ee04594887bc96c4c5f2836f777f0e2a5f80a0"
+    },
+    "plan_mode_shell_policy": {
+      "bytes": 10319,
+      "path": "packages/core/src/core/plan-mode-shell-policy.ts",
+      "sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe"
+    },
+    "reasoning_effort": {
+      "bytes": 11046,
+      "path": "packages/core/src/core/reasoning-effort.ts",
+      "sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc"
+    },
+    "session": {
+      "bytes": 37287,
+      "path": "packages/cli/src/nonInteractive/session.ts",
+      "sha256": "878f18242aef80dd2a7798e40a9bd606a207a20e31f9f4ff20d32d69d4b1155d"
+    },
+    "stream_types": {
+      "bytes": 14118,
+      "path": "packages/cli/src/nonInteractive/types.ts",
+      "sha256": "aa7e3a847a986ba6e20137e08b86917aa6169444ffb2ebc40b6e792a7048e9f6"
+    },
+    "system_controller": {
+      "bytes": 20511,
+      "path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+      "sha256": "028b03a30246c8f6edf9a25cdd6fe38868564c2c576fe4a20b10b32882a4be56"
+    },
+    "top_level_options": {
+      "bytes": 16467,
+      "path": "packages/cli/src/config/top-level-options.ts",
+      "sha256": "ae4288d7776cf6d58c3e9bea0833ed1aebbd3d08895930e09629fc4005cf6889"
+    }
+  },
+  "0.24.5": {
+    "approval_mode": {
+      "bytes": 331,
+      "path": "packages/core/src/config/approval-mode.ts",
+      "sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12"
+    },
+    "config": {
+      "bytes": 116093,
+      "path": "packages/cli/src/config/config.ts",
+      "sha256": "0307d66863e1d78029bea8d5acb61b1b3cc78e88f7e9290ad09043b284049bf7"
+    },
+    "dashscope": {
+      "bytes": 39567,
+      "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+      "sha256": "ff88b5208b07dd3e695630d98e8e56206f9a55da2af1894caddb3814ab79acaa"
+    },
+    "exit_plan_mode": {
+      "bytes": 15813,
+      "path": "packages/core/src/tools/exitPlanMode.ts",
+      "sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e"
+    },
+    "permission_flow": {
+      "bytes": 8131,
+      "path": "packages/core/src/core/permissionFlow.ts",
+      "sha256": "8a03b52c3d3d81b57da4f72c63ee04594887bc96c4c5f2836f777f0e2a5f80a0"
+    },
+    "plan_mode_shell_policy": {
+      "bytes": 10319,
+      "path": "packages/core/src/core/plan-mode-shell-policy.ts",
+      "sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe"
+    },
+    "reasoning_effort": {
+      "bytes": 11046,
+      "path": "packages/core/src/core/reasoning-effort.ts",
+      "sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc"
+    },
+    "session": {
+      "bytes": 37287,
+      "path": "packages/cli/src/nonInteractive/session.ts",
+      "sha256": "878f18242aef80dd2a7798e40a9bd606a207a20e31f9f4ff20d32d69d4b1155d"
+    },
+    "stream_types": {
+      "bytes": 14118,
+      "path": "packages/cli/src/nonInteractive/types.ts",
+      "sha256": "aa7e3a847a986ba6e20137e08b86917aa6169444ffb2ebc40b6e792a7048e9f6"
+    },
+    "system_controller": {
+      "bytes": 20511,
+      "path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+      "sha256": "028b03a30246c8f6edf9a25cdd6fe38868564c2c576fe4a20b10b32882a4be56"
+    },
+    "top_level_options": {
+      "bytes": 16467,
+      "path": "packages/cli/src/config/top-level-options.ts",
+      "sha256": "ae4288d7776cf6d58c3e9bea0833ed1aebbd3d08895930e09629fc4005cf6889"
+    }
+  },
+  "0.24.6": {
+    "approval_mode": {
+      "bytes": 331,
+      "path": "packages/core/src/config/approval-mode.ts",
+      "sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12"
+    },
+    "config": {
+      "bytes": 118732,
+      "path": "packages/cli/src/config/config.ts",
+      "sha256": "a62f00d6a23edff39ec197923e059cff824fbf35a74d19c54ae23803128399ff"
+    },
+    "dashscope": {
+      "bytes": 39584,
+      "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+      "sha256": "94a4c8ebecf24852b70e7bdc32509cc6a7dfbe23d71b4a859a109cc0be1044c0"
+    },
+    "exit_plan_mode": {
+      "bytes": 15813,
+      "path": "packages/core/src/tools/exitPlanMode.ts",
+      "sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e"
+    },
+    "permission_flow": {
+      "bytes": 8131,
+      "path": "packages/core/src/core/permissionFlow.ts",
+      "sha256": "8a03b52c3d3d81b57da4f72c63ee04594887bc96c4c5f2836f777f0e2a5f80a0"
+    },
+    "plan_mode_shell_policy": {
+      "bytes": 10319,
+      "path": "packages/core/src/core/plan-mode-shell-policy.ts",
+      "sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe"
+    },
+    "reasoning_effort": {
+      "bytes": 11046,
+      "path": "packages/core/src/core/reasoning-effort.ts",
+      "sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc"
+    },
+    "session": {
+      "bytes": 37287,
+      "path": "packages/cli/src/nonInteractive/session.ts",
+      "sha256": "878f18242aef80dd2a7798e40a9bd606a207a20e31f9f4ff20d32d69d4b1155d"
+    },
+    "stream_types": {
+      "bytes": 14118,
+      "path": "packages/cli/src/nonInteractive/types.ts",
+      "sha256": "aa7e3a847a986ba6e20137e08b86917aa6169444ffb2ebc40b6e792a7048e9f6"
+    },
+    "system_controller": {
+      "bytes": 20511,
+      "path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+      "sha256": "028b03a30246c8f6edf9a25cdd6fe38868564c2c576fe4a20b10b32882a4be56"
+    },
+    "top_level_options": {
+      "bytes": 16631,
+      "path": "packages/cli/src/config/top-level-options.ts",
+      "sha256": "83831f030ea40a994f746f71ed298eb55c5e9f023dc74bb6f098d19546921e1c"
+    }
+  },
+  "0.24.7": {
+    "approval_mode": {
+      "bytes": 331,
+      "path": "packages/core/src/config/approval-mode.ts",
+      "sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12"
+    },
+    "config": {
+      "bytes": 118346,
+      "path": "packages/cli/src/config/config.ts",
+      "sha256": "2b6712e084247265079ad907da6101f4f7ead0cf507fb628abaa921381a10315"
+    },
+    "dashscope": {
+      "bytes": 39584,
+      "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+      "sha256": "94a4c8ebecf24852b70e7bdc32509cc6a7dfbe23d71b4a859a109cc0be1044c0"
+    },
+    "exit_plan_mode": {
+      "bytes": 15813,
+      "path": "packages/core/src/tools/exitPlanMode.ts",
+      "sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e"
+    },
+    "permission_flow": {
+      "bytes": 8131,
+      "path": "packages/core/src/core/permissionFlow.ts",
+      "sha256": "8a03b52c3d3d81b57da4f72c63ee04594887bc96c4c5f2836f777f0e2a5f80a0"
+    },
+    "plan_mode_shell_policy": {
+      "bytes": 10319,
+      "path": "packages/core/src/core/plan-mode-shell-policy.ts",
+      "sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe"
+    },
+    "reasoning_effort": {
+      "bytes": 11046,
+      "path": "packages/core/src/core/reasoning-effort.ts",
+      "sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc"
+    },
+    "session": {
+      "bytes": 37287,
+      "path": "packages/cli/src/nonInteractive/session.ts",
+      "sha256": "878f18242aef80dd2a7798e40a9bd606a207a20e31f9f4ff20d32d69d4b1155d"
+    },
+    "stream_types": {
+      "bytes": 14183,
+      "path": "packages/cli/src/nonInteractive/types.ts",
+      "sha256": "4670f2ec4dbb9af8ce1133b9e7639d88736ad201e37d567e7bbee9f4a691d487"
+    },
+    "system_controller": {
+      "bytes": 20580,
+      "path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+      "sha256": "c0e6c8bf6bcdcc7951aed0562d96e7e09fe91e0a9656baafb2dfdf1ac265da87"
+    },
+    "top_level_options": {
+      "bytes": 16631,
+      "path": "packages/cli/src/config/top-level-options.ts",
+      "sha256": "83831f030ea40a994f746f71ed298eb55c5e9f023dc74bb6f098d19546921e1c"
+    }
+  },
+  "0.25.0": {
+    "approval_mode": {
+      "bytes": 331,
+      "path": "packages/core/src/config/approval-mode.ts",
+      "sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12"
+    },
+    "config": {
+      "bytes": 121944,
+      "path": "packages/cli/src/config/config.ts",
+      "sha256": "0406213ab82a46ee9f05e751bf7f1d7c88bc4b63007c26adac52e5a0aedc1fae"
+    },
+    "dashscope": {
+      "bytes": 39584,
+      "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+      "sha256": "94a4c8ebecf24852b70e7bdc32509cc6a7dfbe23d71b4a859a109cc0be1044c0"
+    },
+    "exit_plan_mode": {
+      "bytes": 15813,
+      "path": "packages/core/src/tools/exitPlanMode.ts",
+      "sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e"
+    },
+    "permission_flow": {
+      "bytes": 8131,
+      "path": "packages/core/src/core/permissionFlow.ts",
+      "sha256": "8a03b52c3d3d81b57da4f72c63ee04594887bc96c4c5f2836f777f0e2a5f80a0"
+    },
+    "plan_mode_shell_policy": {
+      "bytes": 10319,
+      "path": "packages/core/src/core/plan-mode-shell-policy.ts",
+      "sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe"
+    },
+    "reasoning_effort": {
+      "bytes": 11046,
+      "path": "packages/core/src/core/reasoning-effort.ts",
+      "sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc"
+    },
+    "session": {
+      "bytes": 37287,
+      "path": "packages/cli/src/nonInteractive/session.ts",
+      "sha256": "878f18242aef80dd2a7798e40a9bd606a207a20e31f9f4ff20d32d69d4b1155d"
+    },
+    "stream_types": {
+      "bytes": 14183,
+      "path": "packages/cli/src/nonInteractive/types.ts",
+      "sha256": "4670f2ec4dbb9af8ce1133b9e7639d88736ad201e37d567e7bbee9f4a691d487"
+    },
+    "system_controller": {
+      "bytes": 20580,
+      "path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+      "sha256": "c0e6c8bf6bcdcc7951aed0562d96e7e09fe91e0a9656baafb2dfdf1ac265da87"
+    },
+    "top_level_options": {
+      "bytes": 17123,
+      "path": "packages/cli/src/config/top-level-options.ts",
+      "sha256": "2dc7219ef7cb417b4d2093ed7aa99d36d151256ee08fdce96821367dccc3277b"
+    }
+  }
+}

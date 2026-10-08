@@ -185,7 +185,11 @@ fn validate_open(
     }
     let selection = crate::selection::validate_qwen_plan_version(plan)?;
     services.require_execution_host(plan.execution_host_id())?;
-    if services.task().is_none() || services.process().is_none() || services.time().is_none() {
+    if services.task().is_none()
+        || services.process().is_none()
+        || services.time().is_none()
+        || services.working_resource().is_none()
+    {
         return Err(failure(
             "swallowtail.qwen.headless.host_service_missing",
             "Qwen interactive session required host services are unavailable",

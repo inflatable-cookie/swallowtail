@@ -44,14 +44,14 @@ annotated Git tags from the canonical repository.
   Research 393 freezes exact Darwin ARM64 and Linux x64 artifacts, complete
   package trees, and per-hop selected-file classifications. Keep the baseline,
   claim, behavior revision, prior points, and gaps; Headless remains at
-  `2026.09.18-9a7762b`; ACP is qualified separately in Research 394. The
+  `2026.09.18-9a7762b`; ACP is qualified separately in Research 395. The
   selected `models` command, account options,
   model identity/display mapping, failure boundary, and process lifecycle are
   unchanged. No archive execution, authenticated catalogue, provider prompt,
   credential use, installation, or host update occurred.
 - qualify only `cursor-agent.acp` through official ACP registry stable
   `2026.10.01-14929f9`, after each published selected-channel hop following
-  `2026.09.18-9a7762b`. Research 394 freezes the exact Darwin ARM64 and Linux
+  `2026.09.18-9a7762b`. Research 395 freezes the exact Darwin ARM64 and Linux
   x64 archives, complete package inventories, and selected ACP surfaces. Extend
   only the ACP claim through `2026.09.26-dd393fe`, `2026.09.28-64d2043`, and
   `2026.10.01-14929f9`; retain its baseline, claim id, behavior revision, exact

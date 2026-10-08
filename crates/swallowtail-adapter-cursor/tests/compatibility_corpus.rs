@@ -65,7 +65,7 @@ fn selected_route_evidence_retains_three_behaviors_and_no_new_authority() {
 }
 
 #[test]
-fn catalogue_claim_qualifies_three_published_hops_without_advancing_siblings() {
+fn catalogue_and_acp_qualify_three_published_hops_without_advancing_headless() {
     let historical = [
         "2026-07-01",
         "2026-07-23",
@@ -101,33 +101,50 @@ fn catalogue_claim_qualifies_three_published_hops_without_advancing_siblings() {
     assert_eq!(catalogue_newer.latest_qualified().as_str(), "2026-10-01");
 
     let acp = cursor_acp_claim();
-    let headless = cursor_headless_claim();
-    for claim in [&acp, &headless] {
-        for release in historical {
-            assert!(claim.supports(&version(release)), "{release}");
-        }
-        for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
-            assert!(claim.permits(&version(release)), "{release} stays visible");
-            let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-                claim.assess(&version(release))
-            else {
-                panic!("{release} stays unverified on sibling routes");
-            };
-            assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
-        }
-        assert!(!claim.permits(&version("2026-07-15")));
-        assert!(!claim.permits(&version("2026-07-24")));
-        assert!(!claim.permits(&version("2026-08-12")));
-        assert!(!claim.permits(&version("2026-09-01")));
-        assert!(!claim.permits(&version("2026-09-11")));
-        assert!(!claim.permits(&version("2026-09-16")));
-        let InterfaceCompatibilityAssessment::UnverifiedNewer(sibling_newer) =
-            claim.assess(&version("2026-10-02"))
-        else {
-            panic!("later sibling route dates remain visibly unverified");
-        };
-        assert_eq!(sibling_newer.latest_qualified().as_str(), "2026-09-18");
+    for release in historical {
+        assert!(acp.supports(&version(release)), "{release}");
     }
+    for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
+        assert!(acp.supports(&version(release)), "{release}");
+    }
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(acp_newer) =
+        acp.assess(&version("2026-10-02"))
+    else {
+        panic!("later ACP dates remain visibly unverified");
+    };
+    assert_eq!(acp_newer.latest_qualified().as_str(), "2026-10-01");
+
+    let headless = cursor_headless_claim();
+    for release in historical {
+        assert!(headless.supports(&version(release)), "{release}");
+    }
+    for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
+        assert!(headless.permits(&version(release)), "{release} stays visible");
+        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+            headless.assess(&version(release))
+        else {
+            panic!("{release} stays unverified on Headless");
+        };
+        assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
+    }
+    for claim in [&acp, &headless] {
+        for gap in [
+            "2026-07-15",
+            "2026-07-24",
+            "2026-08-12",
+            "2026-09-01",
+            "2026-09-11",
+            "2026-09-16",
+        ] {
+            assert!(!claim.permits(&version(gap)), "{gap} remains a gap");
+        }
+    }
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(headless_newer) =
+        headless.assess(&version("2026-10-02"))
+    else {
+        panic!("later Headless dates remain visibly unverified");
+    };
+    assert_eq!(headless_newer.latest_qualified().as_str(), "2026-09-18");
 }
 
 #[test]

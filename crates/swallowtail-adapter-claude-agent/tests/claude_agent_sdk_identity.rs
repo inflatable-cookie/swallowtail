@@ -7,11 +7,10 @@
 
 use std::collections::BTreeSet;
 use swallowtail_adapter_claude_agent::sdk::{
-    CLAUDE_AGENT_SDK_ADDABLE_ROUTE_ID, CLAUDE_AGENT_SDK_BEHAVIOR,
-    CLAUDE_AGENT_SDK_NATIVE_VERSION, CLAUDE_AGENT_SDK_NODE_RUNTIME, CLAUDE_AGENT_SDK_PACKAGE,
-    CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE, CLAUDE_AGENT_SDK_SIDECAR_SOURCE,
-    CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_WIRE,
-    claude_agent_sdk_addable_route_descriptor, claude_agent_sdk_descriptor,
+    CLAUDE_AGENT_SDK_ADDABLE_ROUTE_ID, CLAUDE_AGENT_SDK_BEHAVIOR, CLAUDE_AGENT_SDK_NATIVE_VERSION,
+    CLAUDE_AGENT_SDK_NODE_RUNTIME, CLAUDE_AGENT_SDK_PACKAGE, CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE,
+    CLAUDE_AGENT_SDK_SIDECAR_SOURCE, CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION,
+    CLAUDE_AGENT_SDK_WIRE, claude_agent_sdk_addable_route_descriptor, claude_agent_sdk_descriptor,
     claude_agent_sdk_native_claim, claude_agent_sdk_node_claim, claude_agent_sdk_package_claim,
     claude_agent_sdk_sidecar_claim, claude_agent_sdk_tool_admission_namespace,
     claude_agent_sdk_wire_claim,
@@ -93,15 +92,13 @@ fn the_route_binds_package_native_segments_and_exact_axes_with_node_window() {
         if axis.as_str() == "claude-agent.sdk.package" {
             assert_eq!(
                 claim.baseline(),
-                &swallowtail_core::InterfaceVersion::new("0.3.284")
-                    .unwrap()
+                &swallowtail_core::InterfaceVersion::new("0.3.284").unwrap()
             );
             assert_eq!(claim.latest_qualified(), &point);
         } else if axis.as_str() == "claude-agent.sdk.native" {
             assert_eq!(
                 claim.baseline(),
-                &swallowtail_core::InterfaceVersion::new("2.1.284")
-                    .unwrap()
+                &swallowtail_core::InterfaceVersion::new("2.1.284").unwrap()
             );
             assert_eq!(claim.latest_qualified(), &point);
         } else {

@@ -98,7 +98,8 @@ pub fn claude_agent_sdk_package_claim() -> InterfaceCompatibilityClaim {
         "claude-agent.sdk.package-window-1",
         InterfaceVersionAxis::new(CLAUDE_AGENT_SDK_PACKAGE_AXIS)
             .expect("static SDK sidecar axis is valid"),
-        CLAUDE_AGENT_SDK_BASELINE_VERSION,
+        InterfaceVersion::new(CLAUDE_AGENT_SDK_BASELINE_VERSION)
+            .expect("static SDK baseline is valid"),
         InterfaceVersion::new(CLAUDE_AGENT_SDK_VERSION)
             .expect("static SDK sidecar version is valid"),
     )
@@ -111,7 +112,8 @@ pub fn claude_agent_sdk_native_claim() -> InterfaceCompatibilityClaim {
         "claude-agent.sdk.native-window-1",
         InterfaceVersionAxis::new(CLAUDE_AGENT_SDK_NATIVE_AXIS)
             .expect("static SDK sidecar axis is valid"),
-        CLAUDE_AGENT_SDK_NATIVE_BASELINE_VERSION,
+        InterfaceVersion::new(CLAUDE_AGENT_SDK_NATIVE_BASELINE_VERSION)
+            .expect("static SDK baseline is valid"),
         InterfaceVersion::new(CLAUDE_AGENT_SDK_NATIVE_VERSION)
             .expect("static SDK sidecar version is valid"),
     )
@@ -249,14 +251,14 @@ fn claim(
 fn window_claim(
     id: &str,
     axis: InterfaceVersionAxis,
-    baseline: &str,
+    baseline: InterfaceVersion,
     current: InterfaceVersion,
 ) -> InterfaceCompatibilityClaim {
     window_claim_versions(
         id,
         axis,
         InterfaceVersionScheme::Semantic,
-        InterfaceVersion::new(baseline).expect("static SDK baseline is valid"),
+        baseline,
         current,
     )
 }

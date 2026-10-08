@@ -57,6 +57,11 @@ impl SidecarProcess {
     pub fn start_scenario(scenario: &'static str) -> Self {
         Self::start_with(&Fixture {
             scenario,
+            native_lifetime_ms: if scenario.starts_with("usage-") {
+                "0"
+            } else {
+                "50"
+            },
             ..Fixture::default()
         })
     }

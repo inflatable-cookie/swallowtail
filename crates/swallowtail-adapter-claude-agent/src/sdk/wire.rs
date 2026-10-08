@@ -116,6 +116,15 @@ pub(crate) struct ClaudeAgentSdkBashCommandView {
     pub(crate) truncated: bool,
 }
 
+/// One validated per-turn usage snapshot from the SDK result message.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct ClaudeAgentSdkUsage {
+    pub(crate) input_tokens: u64,
+    pub(crate) output_tokens: u64,
+    pub(crate) cache_read_input_tokens: Option<u64>,
+    pub(crate) cache_write_input_tokens: Option<u64>,
+}
+
 pub(crate) struct ClaudeAgentSdkFailure {
     pub(crate) code: ClaudeAgentSdkFailureCode,
     pub(crate) original_code: Option<ClaudeAgentSdkFailureCode>,
@@ -402,6 +411,9 @@ pub(crate) enum ClaudeAgentSdkEvent {
         failed: bool,
     },
     TurnEnded {
+        /// Usage was added to the private sidecar projection after the
+        /// released SDK's wire-v1 contract. Older qualified results omit it.
+        usage: Option<ClaudeAgentSdkUsage>,
         stop_reason: String,
         failed: bool,
         subtype: Option<String>,

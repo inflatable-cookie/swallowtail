@@ -295,7 +295,7 @@ fn bash_callbacks_carry_a_bounded_truncation_flagged_command_view() {
 }
 
 #[test]
-fn events_decode_their_qualified_payloads_and_reject_the_rest() {
+fn usage_events_decode_qualified_payloads_and_reject_unknown_usage_report() {
     let bytes = serde_json::to_vec(
         &json!({"type": "event", "event": "tool_ended", "toolCallId": "t-1", "isError": true}),
     )
@@ -340,7 +340,7 @@ fn events_decode_their_qualified_payloads_and_reject_the_rest() {
 }
 
 #[test]
-fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
+fn usage_turn_end_decodes_every_sanitized_result_observation_without_result_text() {
     let bytes = serde_json::to_vec(&json!({
         "type": "event",
         "event": "turn_ended",
@@ -351,6 +351,7 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
         "durationMs": 41,
         "errorTextPresent": true,
         "errorTextType": "string",
+        "usage": {"inputTokens": 21, "outputTokens": 5, "cacheReadInputTokens": 8, "cacheWriteInputTokens": null},
         "resultFieldPresence": {
             "error": true,
             "is_error": true,
@@ -367,6 +368,7 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
         duration_ms,
         error_text_present,
         error_text_type,
+        usage,
         result_field_presence,
         api_error_status,
         terminal_reason,
@@ -382,6 +384,11 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
     assert_eq!(duration_ms, Some(41));
     assert!(error_text_present);
     assert_eq!(error_text_type, "string");
+    let usage = usage.expect("usage-bearing turn end retains its snapshot");
+    assert_eq!(usage.input_tokens, 21);
+    assert_eq!(usage.output_tokens, 5);
+    assert_eq!(usage.cache_read_input_tokens, Some(8));
+    assert_eq!(usage.cache_write_input_tokens, None);
     assert!(result_field_presence["error"]);
     assert!(result_field_presence["num_turns"]);
     assert_eq!(api_error_status, None);
@@ -392,7 +399,7 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
         "type": "event", "event": "turn_ended", "subtype": null,
         "stopReason": "", "isError": false, "numTurns": null,
         "durationMs": null, "errorTextPresent": false,
-        "errorTextType": "absent", "resultFieldPresence": {}
+        "errorTextType": "absent", "usage": {"inputTokens": 0, "outputTokens": 0, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}, "resultFieldPresence": {}
     }))
     .expect("fixture serializes");
     assert!(matches!(
@@ -411,7 +418,7 @@ fn turn_end_decodes_every_sanitized_result_observation_without_result_text() {
         "type": "event", "event": "turn_ended", "subtype": "provider error",
         "stopReason": "provider error", "isError": true, "numTurns": null,
         "durationMs": null, "errorTextPresent": true,
-        "errorTextType": "string", "resultFieldPresence": {}
+        "errorTextType": "string", "usage": {"inputTokens": 0, "outputTokens": 0, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}, "resultFieldPresence": {}
     });
     let bytes = serde_json::to_vec(&invalid).expect("fixture serializes");
     assert_eq!(
@@ -434,6 +441,7 @@ fn turn_end_decodes_validated_structured_provider_failure_facts() {
         "durationMs": 9,
         "errorTextPresent": true,
         "errorTextType": "array",
+        "usage": {"inputTokens": 21, "outputTokens": 5, "cacheReadInputTokens": 8, "cacheWriteInputTokens": 9},
         "resultFieldPresence": {"api_error_status": true, "terminal_reason": true},
         "apiErrorStatus": 402,
         "terminalReason": "api_error",
@@ -461,7 +469,7 @@ fn turn_end_decodes_validated_structured_provider_failure_facts() {
         "type": "event", "event": "turn_ended", "subtype": null,
         "stopReason": "", "isError": false, "numTurns": null,
         "durationMs": null, "errorTextPresent": false,
-        "errorTextType": "absent", "resultFieldPresence": {},
+        "errorTextType": "absent", "usage": {"inputTokens": 0, "outputTokens": 0, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}, "resultFieldPresence": {},
         "apiErrorStatus": null, "terminalReason": null, "rateLimitStatus": null,
     }))
     .expect("fixture serializes");
@@ -503,7 +511,7 @@ fn turn_end_rejects_malformed_structured_provider_failure_facts() {
             "type": "event", "event": "turn_ended", "subtype": null,
             "stopReason": "", "isError": false, "numTurns": null,
             "durationMs": null, "errorTextPresent": false,
-            "errorTextType": "absent", "resultFieldPresence": {},
+            "errorTextType": "absent", "usage": {"inputTokens": 0, "outputTokens": 0, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}, "resultFieldPresence": {},
         });
         for (field, value) in invalid.as_object().expect("object fixture") {
             record[field] = value.clone();
@@ -515,6 +523,54 @@ fn turn_end_rejects_malformed_structured_provider_failure_facts() {
             "record {record} must fail closed"
         );
     }
+}
+
+#[test]
+fn turn_end_rejects_malformed_usage_and_accepts_legacy_missing_usage() {
+    let mut base = json!({
+        "type": "event", "event": "turn_ended", "subtype": "success",
+        "stopReason": "success", "isError": false, "numTurns": 1,
+        "durationMs": 1, "errorTextPresent": false, "errorTextType": "absent",
+        "resultFieldPresence": {},
+        "usage": {
+            "inputTokens": 1,
+            "outputTokens": 2,
+            "cacheReadInputTokens": null,
+            "cacheWriteInputTokens": null
+        }
+    });
+    let invalid_usage = [
+        Value::Null,
+        json!({"inputTokens": -1, "outputTokens": 2, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}),
+        json!({"inputTokens": 1.5, "outputTokens": 2, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}),
+        json!({"inputTokens": 9_007_199_254_740_992_u64, "outputTokens": 2, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}),
+        json!({"inputTokens": 1, "cacheReadInputTokens": null, "cacheWriteInputTokens": null}),
+        json!({"inputTokens": 1, "outputTokens": 2, "cacheReadInputTokens": "8", "cacheWriteInputTokens": null}),
+        json!({"inputTokens": 1, "outputTokens": 2, "cacheReadInputTokens": null, "cacheWriteInputTokens": null, "contextWindow": 200000}),
+    ];
+    for invalid in invalid_usage {
+        base["usage"] = invalid;
+        let bytes = serde_json::to_vec(&base).expect("fixture serializes");
+        assert_eq!(
+            decode_record(&bytes).err().map(|error| error.kind()),
+            Some(ClaudeAgentSdkProtocolFailureKind::InvalidEvent),
+            "malformed usage fails closed: {}",
+            base["usage"]
+        );
+    }
+    base.as_object_mut()
+        .expect("base event is an object")
+        .remove("usage");
+    let bytes = serde_json::to_vec(&base).expect("fixture serializes");
+    assert!(
+        matches!(
+            decode_record(&bytes),
+            Ok(ClaudeAgentSdkRecord::Event(
+                ClaudeAgentSdkEvent::TurnEnded { usage: None, .. }
+            ))
+        ),
+        "legacy wire-v1 turn ends remain decodable without fabricated usage"
+    );
 }
 
 #[test]

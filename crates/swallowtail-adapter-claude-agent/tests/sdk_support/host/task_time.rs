@@ -24,6 +24,24 @@ impl TimeService for SdkFixtureHost {
 }
 
 impl SdkFixtureHost {
+    /// Advances the virtual clock and wakes host tasks whose deadlines passed.
+    pub fn advance_time_to_ticks(&self, ticks: u64) {
+        let waiters = {
+            let mut time = self
+                .shared
+                .time
+                .lock()
+                .expect("SDK fixture time lock poisoned");
+            assert!(ticks >= time.now, "virtual time cannot move backwards");
+            time.now = ticks;
+            time.fire_through = Some(ticks);
+            std::mem::take(&mut time.waiters)
+        };
+        for waiter in waiters {
+            waiter.wake();
+        }
+    }
+
     /// Fires every armed deadline without moving the clock past them.
     ///
     /// A caller bound then observes expiry inside its stages while the outer

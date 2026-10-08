@@ -50,6 +50,11 @@ root = Path(sys.argv[1])
 current_route_file = Path(sys.argv[2])
 current_version = sys.argv[3]
 previous_version = sys.argv[4]
+sys.path.insert(0, str(root / "scripts"))
+from provider_route_matrix.release_inventory import (
+    validate_behavior_ledger_snapshot,
+    validate_non_decreasing_routes,
+)
 
 
 def fail(message: str) -> None:
@@ -74,16 +79,12 @@ immutable_routes = {
 current_routes = {
     line.strip() for line in current_route_file.read_text().splitlines() if line.strip()
 }
-if not current_routes:
-    fail("current route inventory is empty")
-if not immutable_routes < current_routes:
-    fail(
-        "current source route inventory must strictly extend immutable "
-        f"v{previous_version}: post-tag additions "
-        f"{sorted(current_routes - immutable_routes)} must stay declared while "
-        f"v{previous_version} stays frozen; rewritten history "
-        f"{sorted(immutable_routes - current_routes)} collapses the split"
-    )
+try:
+    route_additions = validate_non_decreasing_routes(immutable_routes, current_routes)
+except ValueError as error:
+    fail(f"current source route inventory against immutable v{previous_version}: {error}")
+if not route_additions:
+    print(f"v{current_version} route inventory is unchanged from v{previous_version}")
 
 candidate_routes = {
     line.strip()
@@ -123,6 +124,13 @@ historical_routes = {
     if line.strip()
 }
 
+snapshot_inventories = {}
+for snapshot_file in (root / "release-baselines").glob("production-routes-*.txt"):
+    version = snapshot_file.stem.removeprefix("production-routes-")
+    snapshot_inventories[version] = {
+        line.strip() for line in snapshot_file.read_text().splitlines() if line.strip()
+    }
+
 required_fields = {
     "route",
     historical_field,
@@ -132,12 +140,6 @@ required_fields = {
 }
 if reader.fieldnames is None or not required_fields <= set(reader.fieldnames):
     fail(f"route behavior ledger lacks required fields: {sorted(required_fields)}")
-if len(rows) != len(immutable_routes):
-    fail(
-        "frozen route behavior ledger must contain exactly "
-        f"{len(immutable_routes)} historical rows: {len(rows)}"
-    )
-
 ledger_by_route: dict[str, dict[str, str]] = {}
 for row in rows:
     route = row["route"].strip().strip(chr(96))
@@ -145,16 +147,25 @@ for row in rows:
         fail(f"route behavior ledger contains duplicate route: {route}")
     ledger_by_route[route] = row
 
-if set(ledger_by_route) != immutable_routes:
-    fail(
-        "frozen route behavior ledger must cover the immutable "
-        f"v{previous_version} {len(immutable_routes)}-route set exactly: "
-        f"extra={sorted(set(ledger_by_route) - immutable_routes)}, "
-        f"missing={sorted(immutable_routes - set(ledger_by_route))}"
+try:
+    ledger_snapshot_version = validate_behavior_ledger_snapshot(
+        set(ledger_by_route),
+        historical_routes,
+        current_routes,
+        snapshot_inventories,
+        previous_version,
     )
+except ValueError as error:
+    fail(f"frozen route behavior ledger snapshot is invalid: {error}")
+if len(rows) != len(ledger_by_route):
+    fail(f"route behavior ledger row count differs from its route set: {len(rows)}")
+print(
+    f"route behavior ledger matches frozen v{ledger_snapshot_version} inventory "
+    f"({len(ledger_by_route)} routes)"
+)
 
 expected_membership = {
-    route: "yes" if route in historical_routes else "no" for route in immutable_routes
+    route: "yes" if route in historical_routes else "no" for route in ledger_by_route
 }
 actual_membership = {
     route: row[historical_field].strip()
@@ -164,10 +175,10 @@ if actual_membership != expected_membership:
     fail(
         f"route behavior ledger {historical_field} must match the immutable "
         f"{len(historical_routes)}-route set: mismatches="
-        f"{sorted(route for route in immutable_routes if actual_membership.get(route) != expected_membership[route])}"
+        f"{sorted(route for route in ledger_by_route if actual_membership.get(route) != expected_membership[route])}"
     )
 
-additions = immutable_routes - historical_routes
+additions = set(ledger_by_route) - historical_routes
 actual_no = {route for route, value in actual_membership.items() if value == "no"}
 if actual_no != additions:
     fail(
@@ -177,7 +188,7 @@ if actual_no != additions:
 
 candidate_phrase = (
     "candidate inclusion is frozen by Card051's explicit "
-    f"{len(immutable_routes)}-route boundary"
+    f"{len(ledger_by_route)}-route boundary"
 )
 for route in sorted(additions):
     row = ledger_by_route[route]

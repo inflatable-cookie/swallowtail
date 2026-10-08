@@ -3,8 +3,8 @@ use super::{
     ClaudeAgentSdkDiagnostic, ClaudeAgentSdkDiagnosticEvidence, ClaudeAgentSdkDiagnosticLevel,
     ClaudeAgentSdkEvent, ClaudeAgentSdkFailure, ClaudeAgentSdkFailureCode,
     ClaudeAgentSdkIdentityEvidence, ClaudeAgentSdkModelQualificationEvidence,
-    ClaudeAgentSdkRateLimitStatus, ClaudeAgentSdkResponse, MAXIMUM_COMMAND_ID_BYTES,
-    MAXIMUM_FAILURE_CODE_BYTES, MAXIMUM_FAILURE_MESSAGE_BYTES,
+    ClaudeAgentSdkRateLimitStatus, ClaudeAgentSdkResponse, ClaudeAgentSdkUsage,
+    MAXIMUM_COMMAND_ID_BYTES, MAXIMUM_FAILURE_CODE_BYTES, MAXIMUM_FAILURE_MESSAGE_BYTES,
     MAXIMUM_MODEL_QUALIFICATION_CATALOGUE_SIZE, MAXIMUM_MODEL_QUALIFICATION_ID_BYTES,
     MAXIMUM_TERMINAL_REASON_BYTES, MAXIMUM_TEXT_BYTES, MODEL_QUALIFICATION_DIGEST,
     MODEL_QUALIFICATION_DIGEST_HEX_BYTES, bounded_text, failure, required_bool,
@@ -82,6 +82,10 @@ pub(super) fn decode_event(
             failed: required_bool(value, "isError", invalid)?,
         }),
         Some("turn_ended") => {
+            let usage = value
+                .get("usage")
+                .map(|usage| decode_usage(usage, invalid))
+                .transpose()?;
             let subtype = nullable_label(value, "subtype", invalid)?;
             let stop_reason = bounded_label_allow_empty(value, "stopReason", invalid)?.to_owned();
             let failed = required_bool(value, "isError", invalid)?;
@@ -95,6 +99,7 @@ pub(super) fn decode_event(
             let terminal_reason = nullable_terminal_reason(value, "terminalReason", invalid)?;
             let rate_limit_status = nullable_rate_limit_status(value, "rateLimitStatus", invalid)?;
             Ok(ClaudeAgentSdkEvent::TurnEnded {
+                usage,
                 stop_reason,
                 failed,
                 subtype,
@@ -111,6 +116,59 @@ pub(super) fn decode_event(
         Some(_) => Err(failure(ClaudeAgentSdkProtocolFailureKind::UnknownRecord)),
         None => Err(failure(ClaudeAgentSdkProtocolFailureKind::MissingType)),
     }
+}
+
+fn decode_usage(
+    value: &Value,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<ClaudeAgentSdkUsage, ClaudeAgentSdkProtocolFailure> {
+    let object = value
+        .as_object()
+        .filter(|object| object.len() == 4)
+        .ok_or_else(|| failure(kind))?;
+    const FIELDS: [&str; 4] = [
+        "inputTokens",
+        "outputTokens",
+        "cacheReadInputTokens",
+        "cacheWriteInputTokens",
+    ];
+    if object.keys().any(|field| !FIELDS.contains(&field.as_str())) {
+        return Err(failure(kind));
+    }
+    let input_tokens = safe_token_count(object.get("inputTokens"), kind)?;
+    let output_tokens = safe_token_count(object.get("outputTokens"), kind)?;
+    let cache_read_input_tokens = nullable_token_count(object.get("cacheReadInputTokens"), kind)?;
+    let cache_write_input_tokens = nullable_token_count(object.get("cacheWriteInputTokens"), kind)?;
+    Ok(ClaudeAgentSdkUsage {
+        input_tokens,
+        output_tokens,
+        cache_read_input_tokens,
+        cache_write_input_tokens,
+    })
+}
+
+fn nullable_token_count(
+    value: Option<&Value>,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<Option<u64>, ClaudeAgentSdkProtocolFailure> {
+    let Some(value) = value else {
+        return Err(failure(kind));
+    };
+    if value.is_null() {
+        Ok(None)
+    } else {
+        safe_token_count(Some(value), kind).map(Some)
+    }
+}
+
+fn safe_token_count(
+    value: Option<&Value>,
+    kind: ClaudeAgentSdkProtocolFailureKind,
+) -> Result<u64, ClaudeAgentSdkProtocolFailure> {
+    value
+        .and_then(Value::as_u64)
+        .filter(|count| *count <= 9_007_199_254_740_991)
+        .ok_or_else(|| failure(kind))
 }
 
 pub(super) fn decode_callback(

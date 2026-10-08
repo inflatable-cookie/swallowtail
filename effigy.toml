@@ -95,7 +95,12 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "validate:focused" = "bash scripts/validate-focused-packages.sh {args}"
 "validate:card116-mediated-stdio" = "cargo test -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy"
 "validate:selectors:test" = "bash scripts/tests/validation-selectors.sh"
-"qa:routes" = "bash scripts/check-provider-route-matrix.sh"
+"qa:routes:transition:test" = "python3 scripts/tests/route-inventory-transition.py"
+"qa:routes:matrix" = "bash scripts/check-provider-route-matrix.sh"
+"qa:routes" = [
+  { task = "qa:routes:transition:test" },
+  { task = "qa:routes:matrix" },
+]
 "probe:gemini-installed" = "cargo test -p swallowtail-adapter-gemini --features live-probes --test live_installed_probe -- --ignored --exact gemini_cli_is_installed_when_live_probe_is_enabled"
 "probe:grok-installed" = "SWALLOWTAIL_LIVE_GROK=1 cargo test -p swallowtail-adapter-grok --features live-probes --test live_installed_probe -- --ignored --exact installed_grok_build_is_exactly_classified"
 "probe:opencode-installed" = "cargo test -p swallowtail-adapter-opencode --features live-probes --test installed_probe -- --ignored --exact installed_opencode_health_and_schema_match_the_frozen_subset"
@@ -131,6 +136,11 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "package:msrv" = "bash scripts/check-msrv.sh"
 "package:release-floor" = "bash scripts/check-release-floor.sh"
 "package:source-consumer" = "bash scripts/verify-source-consumer.sh"
+"prepare:sdk-patch-candidate-baselines" = "bash scripts/release/sdk-patch-candidate.sh prepare-baselines"
+"format:sdk-patch-candidate" = "bash scripts/release/sdk-patch-candidate.sh format"
+"lint:sdk-patch-candidate" = "bash scripts/release/sdk-patch-candidate.sh lint"
+"check:sdk-patch-candidate" = "bash scripts/release/sdk-patch-candidate.sh check"
+"validate:sdk-patch-candidate" = "bash scripts/release/sdk-patch-candidate.sh validate"
 "package:check" = [
   { task = "package:metadata" },
   { task = "package:api" },

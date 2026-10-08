@@ -184,6 +184,39 @@ const SDK_RESULT_FIELD_NAMES = [
   "errors",
 ];
 
+function safeTokenCount(value) {
+  return Number.isSafeInteger(value) && value >= 0 ? value : undefined;
+}
+
+// SDKResultSuccess and SDKResultError carry one main-loop usage snapshot for
+// the completed turn. Keep only provider-neutral counters; modelUsage is a
+// cumulative per-model query-pipeline snapshot and is not a turn delta.
+function projectTurnUsage(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  const inputTokens = safeTokenCount(value.input_tokens);
+  const outputTokens = safeTokenCount(value.output_tokens);
+  if (inputTokens === undefined || outputTokens === undefined) {
+    return null;
+  }
+  const cacheReadInputTokens = Object.prototype.hasOwnProperty.call(value, "cache_read_input_tokens")
+    ? safeTokenCount(value.cache_read_input_tokens)
+    : null;
+  const cacheCreationInputTokens = Object.prototype.hasOwnProperty.call(value, "cache_creation_input_tokens")
+    ? safeTokenCount(value.cache_creation_input_tokens)
+    : null;
+  if (cacheReadInputTokens === undefined || cacheCreationInputTokens === undefined) {
+    return null;
+  }
+  return {
+    inputTokens,
+    outputTokens,
+    cacheReadInputTokens,
+    cacheWriteInputTokens: cacheCreationInputTokens,
+  };
+}
+
 function childEnvironment() {
   return Object.fromEntries(
     Object.entries(process.env).filter(
@@ -1284,6 +1317,10 @@ function projectMessage(message) {
       return events;
     }
     case "result": {
+      const usage = projectTurnUsage(message.usage);
+      if (usage === null) {
+        return "unknown";
+      }
       const resultFieldPresence = Object.fromEntries(
         SDK_RESULT_FIELD_NAMES.map((key) => [
           key,
@@ -1357,6 +1394,7 @@ function projectMessage(message) {
           errorTextPresent,
           errorTextType,
           resultFieldPresence,
+          usage,
           apiErrorStatus,
           terminalReason,
           rateLimitStatus: state.activeTurnRateLimitStatus,

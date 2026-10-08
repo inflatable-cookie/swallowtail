@@ -78,13 +78,13 @@ impl KernelState {
     }
 }
 
-/// One operation-scoped registered-tool kernel.
+/// One scoped registered-tool kernel.
 pub struct RegisteredToolOperationKernel {
     binding: ValidatedRegisteredToolBinding,
     selection: RegisteredToolSelection,
     dispatcher: Arc<dyn RegisteredToolDispatcher>,
     time: Arc<dyn TimeService>,
-    operation_deadline: Deadline,
+    lease_deadline: Option<Deadline>,
     state: Mutex<KernelState>,
     gate: AdmissionGate,
 }
@@ -150,7 +150,7 @@ impl RegisteredToolOperationKernel {
             selection: request.selection().clone(),
             dispatcher,
             time,
-            operation_deadline: request.deadline(),
+            lease_deadline: request.lease_deadline(),
             state: Mutex::new(KernelState {
                 admission: RegisteredToolAdmissionState::Open,
                 lifecycle: if request.selection().attachment()
@@ -298,14 +298,34 @@ impl RegisteredToolOperationKernel {
 
     /// Returns the effective expiry of one call issued at an exact instant.
     ///
-    /// A call expires at the earliest of the operation deadline, the caller's
-    /// own deadline, and the declared maximum call duration.
+    /// A call expires at the earliest of the lease deadline, caller deadline,
+    /// and declared maximum call duration.
     #[must_use]
     pub fn effective_call_deadline(
         &self,
         requested: Deadline,
         started: MonotonicInstant,
     ) -> Deadline {
+        let bounded = self.maximum_call_deadline(started);
+        let caller_bound = requested.min(bounded);
+        self.lease_deadline
+            .map_or(caller_bound, |lease| lease.min(caller_bound))
+    }
+
+    /// Returns the deadline for a new call from the current host time.
+    ///
+    /// Carriers without a caller deadline use this value; `issue` rechecks
+    /// the lease deadline and maximum duration at its serialized admission
+    /// point.
+    #[must_use]
+    pub fn next_call_deadline(&self) -> Deadline {
+        let now = self.time.now();
+        let bounded = self.maximum_call_deadline(now);
+        self.lease_deadline
+            .map_or(bounded, |lease| lease.min(bounded))
+    }
+
+    fn maximum_call_deadline(&self, started: MonotonicInstant) -> Deadline {
         let max_duration_ticks = u64::try_from(
             self.binding
                 .effective_bounds()
@@ -313,13 +333,9 @@ impl RegisteredToolOperationKernel {
                 .as_nanos(),
         )
         .unwrap_or(u64::MAX);
-        let bounded = Deadline::at(MonotonicInstant::from_ticks(
+        Deadline::at(MonotonicInstant::from_ticks(
             started.ticks().saturating_add(max_duration_ticks),
-        ));
-        [self.operation_deadline, requested, bounded]
-            .into_iter()
-            .min()
-            .unwrap_or(bounded)
+        ))
     }
 
     async fn admit_progress(&self, progress: RegisteredToolProgress) -> Result<(), RuntimeFailure> {

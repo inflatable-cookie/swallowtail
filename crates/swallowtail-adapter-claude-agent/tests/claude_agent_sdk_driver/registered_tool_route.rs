@@ -166,8 +166,12 @@ impl CourierClient {
     }
 
     fn call_tool(&self, name: &str, arguments: &str) -> String {
+        self.call_tool_with_id(3, name, arguments)
+    }
+
+    fn call_tool_with_id(&self, id: u64, name: &str, arguments: &str) -> String {
         let request = format!(
-            "{{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{arguments}}}}}"
+            "{{\"jsonrpc\":\"2.0\",\"id\":{id},\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{arguments}}}}}"
         );
         self.request(request.as_bytes())
     }
@@ -812,6 +816,75 @@ fn open_declares_the_reserved_courier_and_round_trips_one_mediated_call() {
         "dispatch is kernel-admitted: {:?}",
         admission.observed_phases()
     );
+    close_route(opened);
+}
+
+#[test]
+fn registered_session_lease_survives_open_deadline_and_pending_permission() {
+    let host = host_id("claude-agent-sdk.fixture.registered-session-lifetime");
+    let calls = Arc::new(AtomicUsize::new(0));
+    let admission = Arc::new(ScriptedAdmissionPort::current());
+    let opened = open_route(
+        host,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::clone(&admission),
+    );
+    opened.courier.handshake();
+
+    let validations_before = admission.validation_count();
+    admission.hold();
+    let courier = CourierClient {
+        process: Arc::clone(&opened.courier.process),
+    };
+    let tool_name = tool_id().to_string();
+    let pending_permission = std::thread::spawn(move || {
+        courier.call_tool_with_id(3, &tool_name, r#"{"path":"workspace/file"}"#)
+    });
+    let wait_deadline = Instant::now() + Duration::from_secs(5);
+    while admission.validation_count() == validations_before {
+        assert!(
+            Instant::now() < wait_deadline,
+            "registered call reaches the controlled permission wait"
+        );
+        std::thread::yield_now();
+    }
+    assert!(
+        admission.observed_phases()[validations_before..].contains(&AdmissionPhase::BeforeDispatch),
+        "host admission waits before dispatch: {:?}",
+        admission.observed_phases()
+    );
+
+    // The permission decision arrives after the opening deadline, while the
+    // call stays inside its independent 60 second maximum.
+    opened
+        .fixture
+        .advance_time_to_ticks(OPEN_DEADLINE_TICKS + 20_000_000_000);
+    admission.release();
+    let approved = pending_permission
+        .join()
+        .expect("permission waiter returns after release");
+    assert!(
+        approved.contains("from-dispatcher"),
+        "approved call: {approved}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+
+    // A later turn reuses the same connected courier after more virtual time.
+    opened
+        .fixture
+        .advance_time_to_ticks(OPEN_DEADLINE_TICKS + 40_000_000_000);
+    let later_turn = opened.courier.call_tool_with_id(
+        4,
+        &tool_id().to_string(),
+        r#"{"path":"workspace/second-file"}"#,
+    );
+    assert!(
+        later_turn.contains("from-dispatcher"),
+        "later-turn call: {later_turn}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 2);
     close_route(opened);
 }
 

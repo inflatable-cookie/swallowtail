@@ -23,6 +23,11 @@ Normal validation scripts:
   `effigy qa:consumer-docs`. Current tag and inventories come from
   `workspace.package.version` and the matching baseline directories; prepare
   does not repoint this script.
+- `provider_route_matrix/release_inventory.py` — reject empty or shrinking
+  release route inventories while allowing a patch to keep the frozen route
+  set unchanged; the transition fixtures run inside `effigy qa:routes`.
+- `tests/route-inventory-transition.py` — equal, additive, empty, and removal
+  route-inventory cases for the release-boundary helper.
 - `check-roadmap-status-drift.py` — batch-card section, milestone annotation,
   and generation-index ready/completed/stop counts against Status frontmatter
   behind `effigy qa:docs:roadmaps:status`. Accepted Status buckets and census

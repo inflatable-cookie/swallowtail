@@ -1,0 +1,258 @@
+{
+  "schema_version": "1.0.0",
+  "family": "claude-code.response-only",
+  "selected_claim": "claude-code.response-only.window-1",
+  "selected_axis": "claude-code.response-only-stream-json",
+  "selected_public_operation": "claude-code.response-only",
+  "identity_shape": "private-milestone",
+  "behavior_segments_after_qualification": [
+    {
+      "baseline": "2.1.227",
+      "latest": "2.1.278",
+      "behavior": "claude-code.response-only.stream-json.v1",
+      "support_status": "Deprecated"
+    },
+    {
+      "baseline": "2.1.280",
+      "latest": "2.1.281",
+      "behavior": "claude-code.response-only.stream-json.v2",
+      "support_status": "Deprecated"
+    },
+    {
+      "baseline": "2.1.282",
+      "latest": "2.1.293",
+      "behavior": "claude-code.response-only.stream-json.v3",
+      "support_status": "Maintained"
+    }
+  ],
+  "denied_versions_preserved": [
+    "2.1.244",
+    "2.1.249",
+    "2.1.253",
+    "2.1.254",
+    "2.1.255",
+    "2.1.256",
+    "2.1.262",
+    "2.1.264",
+    "2.1.279"
+  ],
+  "first_unpublished_later_stable": "2.1.294",
+  "newer_stable_posture": "AllowUnverified",
+  "selected_invocation": [
+    "-p",
+    "--input-format",
+    "text",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--no-session-persistence",
+    "--model",
+    "<caller-selected-model>",
+    "[--effort <caller-selected-effort>]",
+    "--tools",
+    "",
+    "--safe-mode",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--prompt-suggestions",
+    "false",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--strict-mcp-config"
+  ],
+  "response_invariants": [
+    "init executable version equals prepared version",
+    "init tools and mcp_servers are empty",
+    "one text-only assistant message and one matching result",
+    "num_turns is 1 and structured_output is absent or null",
+    "mismatches, tools, additional turns, malformed frames and post-terminal events fail closed"
+  ],
+  "route_facing_hook_mapping": {
+    "built_in_plugin": "agents-md",
+    "hook_events": [
+      "prompt.context",
+      "session.start",
+      "tool.call"
+    ],
+    "route_facing_symbols": [
+      "fs.ancestors",
+      "instructionFiles",
+      "AGENTS_NAMES",
+      "CLAUDE_NAMES",
+      "projectDirOf"
+    ],
+    "empty_tools_block_read_tool_hook": true,
+    "prompt_context_hook_remains_selected": true,
+    "no_private_resolver_function_identified": true,
+    "static_strings_do_not_establish_resolver_conformance": true,
+    "artifacts": "builtin-hook-ledger.json"
+  },
+  "linked_instruction_read_limit": {
+    "behavior_revision": "claude-code.response-only.stream-json.v3",
+    "starts_at": "2.1.282",
+    "summary": "Some project instructions reached through repository symlinks may be omitted or require approval; do not guarantee that every linked CLAUDE.md, AGENTS.md or rules file enters prompt.context.",
+    "adapter_behavior": "The route keeps --safe-mode, empty --tools, strict empty MCP, disabled slash commands, and an adapter-owned empty Read-only launch directory when no consumer Read resource is supplied.",
+    "read_resource_effect": "An optional consumer Read working resource is only the native child project location; it does not establish filesystem containment.",
+    "does_not_restore_blocked_reads_or_expand_filesystem_authority": true,
+    "resolved_function_level_behavior_proven": false,
+    "operator_decision": "a9f8a8cd-ca40-46b1-8b3c-e197944171bd accepted the 2.1.282+ reduced linked-instruction read set as a documented version-specific limit."
+  },
+  "host_process_lifecycle": {
+    "response_only_route_cancellation": "calls ProcessHandle::force_stop and then waits/reaps; provider-free route fixture asserts force-stop and join.",
+    "host_local_unix_force_stop": "SIGKILL; crates/swallowtail-host-local/src/process_exit.rs selects SIGKILL when force=true.",
+    "2.1.288_release_change": "upstream fixed some -p / SDK sessions ignoring SIGTERM when supervisors send SIGCONT; this is not the host-local force_stop signal.",
+    "external_supervisor_behavior": "host/environment-specific and not claimed by this route qualification."
+  },
+  "hop_review": [
+    {
+      "from": "2.1.281",
+      "to": "2.1.282",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "linked project-instruction read restriction; accepted private milestone v3",
+      "evidence": "Official release note; exact Darwin arm64 and Linux x64 runtime hashes; route-facing hook markers unchanged; internal resolver is opaque."
+    },
+    {
+      "from": "2.1.282",
+      "to": "2.1.283",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "unmapped slash-command prompt-audit addition",
+      "evidence": "Route disables slash commands; no selected response or lifecycle change identified."
+    },
+    {
+      "from": "2.1.283",
+      "to": "2.1.284",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "same linked-instruction boundary",
+      "evidence": "External .claude/rules symlinks now reach an approval path; documented as part of the v3 linked-read limit; not a new route operation."
+    },
+    {
+      "from": "2.1.284",
+      "to": "2.1.285",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "unmapped Artifact, edit, and review changes",
+      "evidence": "Response-only exposes no Artifact, Edit, or review tool and disables slash commands."
+    },
+    {
+      "from": "2.1.285",
+      "to": "2.1.286",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "unmapped subagent worktree instruction change",
+      "evidence": "The route starts no subagents and exposes no tools."
+    },
+    {
+      "from": "2.1.286",
+      "to": "2.1.287",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "unmapped session and slash-skill changes",
+      "evidence": "The route disables slash commands and session persistence; no continuation or skill tool is selected."
+    },
+    {
+      "from": "2.1.287",
+      "to": "2.1.288",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "unselected supervisor SIGTERM handling and no-tool file-rule changes",
+      "evidence": "Host-local force_stop sends SIGKILL; response-only cancellation calls force_stop and waits; external SIGTERM supervisors remain outside the claim."
+    },
+    {
+      "from": "2.1.288",
+      "to": "2.1.289",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "unmapped Read deny rule change",
+      "evidence": "No Read tool is enabled; prompt.context link restrictions remain covered by v3 and no direct Read operation is selected."
+    },
+    {
+      "from": "2.1.289",
+      "to": "2.1.290",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "further linked project-instruction restriction within v3",
+      "evidence": "Symlinked CLAUDE.md, rules and AGENTS.md outside working directories are blocked under the named read policies; exact binary identity and hook markers frozen."
+    },
+    {
+      "from": "2.1.290",
+      "to": "2.1.291",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "no selected route candidate found in release notes",
+      "evidence": "No selected route stream, instruction, tool, permission, usage, or lifecycle change identified."
+    },
+    {
+      "from": "2.1.291",
+      "to": "2.1.292",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "unmapped @-mention and Bash changes",
+      "evidence": "Response-only has no Read or Bash tools, no slash commands, and no persisted/resumed session."
+    },
+    {
+      "from": "2.1.292",
+      "to": "2.1.293",
+      "changed_runtime_files": [
+        "package/claude",
+        "package/package.json"
+      ],
+      "classification": "unmapped Bash rule-loading change",
+      "evidence": "Route has no Bash tool; no added public operation or mapped stream/lifecycle change identified."
+    }
+  ],
+  "official_release_notes": {
+    "repository": "https://github.com/anthropics/claude-code/releases",
+    "per_hop_urls": {
+      "2.1.282": "https://github.com/anthropics/claude-code/releases/tag/v2.1.282",
+      "2.1.283": "https://github.com/anthropics/claude-code/releases/tag/v2.1.283",
+      "2.1.284": "https://github.com/anthropics/claude-code/releases/tag/v2.1.284",
+      "2.1.285": "https://github.com/anthropics/claude-code/releases/tag/v2.1.285",
+      "2.1.286": "https://github.com/anthropics/claude-code/releases/tag/v2.1.286",
+      "2.1.287": "https://github.com/anthropics/claude-code/releases/tag/v2.1.287",
+      "2.1.288": "https://github.com/anthropics/claude-code/releases/tag/v2.1.288",
+      "2.1.289": "https://github.com/anthropics/claude-code/releases/tag/v2.1.289",
+      "2.1.290": "https://github.com/anthropics/claude-code/releases/tag/v2.1.290",
+      "2.1.291": "https://github.com/anthropics/claude-code/releases/tag/v2.1.291",
+      "2.1.292": "https://github.com/anthropics/claude-code/releases/tag/v2.1.292",
+      "2.1.293": "https://github.com/anthropics/claude-code/releases/tag/v2.1.293"
+    },
+    "changelog_is_discovery_not_runtime_completeness_proof": true
+  },
+  "artifact_and_scope_limits": {
+    "platforms_frozen": [
+      "darwin-arm64",
+      "linux-x64"
+    ],
+    "all_published_wrapper_and_platform_trees_frozen": true,
+    "source_to_runtime_provenance": "not established by the public repository; no claim made",
+    "opaque_provider_internal_changes": "Each platform package/claude changed at every hop. Release notes, exact full tree hashes, route-facing static markers, and selected route flags bound known changes; undisclosed provider internals are not claimed unchanged.",
+    "provider_prompt_sent": false,
+    "provider_session_or_catalogue_used": false,
+    "artifact_executed": false
+  }
+}

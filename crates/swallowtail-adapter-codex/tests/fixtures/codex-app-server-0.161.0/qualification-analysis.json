@@ -1,0 +1,264 @@
+{
+  "candidate": {
+    "package": "@openai/codex",
+    "route": "codex.app-server",
+    "version": "0.161.0"
+  },
+  "official_channel": {
+    "agreement": true,
+    "alpha_ignored": "0.162.0-alpha.18",
+    "github_latest_non_prerelease": "rust-v0.161.0",
+    "github_published_at": "2026-10-07T15:58:45Z",
+    "npm_latest": "0.161.0",
+    "npm_package": "@openai/codex",
+    "npm_published_at": "2026-10-07T16:04:02.844Z",
+    "stable_hops_after_ceiling": [
+      "0.156.0",
+      "0.156.1",
+      "0.157.0",
+      "0.157.1",
+      "0.158.0",
+      "0.159.0",
+      "0.159.1",
+      "0.159.2",
+      "0.159.3",
+      "0.160.0",
+      "0.160.1",
+      "0.161.0"
+    ],
+    "final_reprobe": {
+      "observed_at": "2026-10-08",
+      "npm_latest": "0.161.0",
+      "npm_alpha_excluded": "0.162.0-alpha.20",
+      "github_latest_non_prerelease": "rust-v0.161.0",
+      "channels_agree": true
+    }
+  },
+  "inventory": {
+    "feeding_candidates": "path census for app-server, app-server-protocol, protocol, core, and config areas; candidates are not semantic classifications",
+    "hop_count": 12,
+    "manifest": "per-tag SHA256 over the sorted full path/mode/Git blob SHA inventory; per-hop exact added/removed/changed path arrays and identical-tree manifest digest",
+    "official_artifacts_file": "published-artifacts.json",
+    "official_artifacts_sha256": "900fac812f58dc651702dd15eccea0ad0b96edb2eba7fb1970acc586024ee566",
+    "source_file": "source-inventory.json",
+    "source_file_sha256": "5270b85736b65a231f3605d3c62ddc3e420f64e7165b23c67e2ad4083cf32889",
+    "tag_count": 13
+  },
+  "artifact_identity": {
+    "package": "@openai/codex",
+    "runtime_package": "@openai/codex-darwin-arm64@0.161.0",
+    "runtime_path": "bin/codex",
+    "runtime_sha256": "12ac11d2c7eee27cfae34393986d7b7c9ed0dea537cb749831cdd7033893e6de",
+    "runtime_size_bytes": 245096256,
+    "runtime_executed": false,
+    "source_tree_inventory": {
+      "fixture": "source-inventory.json",
+      "tags": 13,
+      "published_hops": 12,
+      "manifest_method": "SHA-256 over sorted full path, mode, and Git blob inventory for each peeled release tree"
+    },
+    "selected_source_review": "selected-source-review.json"
+  },
+  "qualification": {
+    "claim_id": "codex.app-server.cli-window-2",
+    "baseline": "0.155.1",
+    "qualified_ceiling": "0.161.0",
+    "codex_exec_ceiling_unchanged": "0.155.1",
+    "segments": [
+      {
+        "range": "0.80.0..=0.81.0",
+        "behavior_revision": "codex.app-server.v2.legacy-default-stdio",
+        "support": "deprecated"
+      },
+      {
+        "range": "0.84.0..=0.99.0",
+        "behavior_revision": "codex.app-server.v2.legacy-default-stdio",
+        "support": "deprecated"
+      },
+      {
+        "range": "0.100.0..=0.107.0",
+        "behavior_revision": "codex.app-server.v2.legacy-explicit-stdio",
+        "support": "deprecated"
+      },
+      {
+        "range": "0.110.0..=0.130.0",
+        "behavior_revision": "codex.app-server.v2.base",
+        "support": "deprecated"
+      },
+      {
+        "range": "0.131.0..=0.155.1",
+        "behavior_revision": "codex.app-server.v2.workspace-roots",
+        "support": "maintained"
+      },
+      {
+        "range": "0.156.0..=0.156.1",
+        "behavior_revision": "codex.app-server.v2.managed-policy-workspace-roots",
+        "support": "deprecated"
+      },
+      {
+        "range": "0.157.0..=0.157.1",
+        "behavior_revision": "codex.app-server.v2.managed-network-workspace-roots",
+        "support": "deprecated"
+      },
+      {
+        "range": "0.158.0",
+        "behavior_revision": "codex.app-server.v2.path-alias-workspace-roots",
+        "support": "deprecated"
+      },
+      {
+        "range": "0.159.0..=0.161.0",
+        "behavior_revision": "codex.app-server.v2.protected-aws-workspace-roots",
+        "support": "maintained"
+      }
+    ],
+    "unpublished_gaps": [
+      "0.82.0..=0.83.0",
+      "0.108.0..=0.109.0",
+      "0.149.2",
+      "0.150.2",
+      "0.151.1",
+      "0.152.2",
+      "0.154.1",
+      "0.155.2"
+    ],
+    "compatible_points_after_ceiling": [
+      {
+        "from": "0.159.0",
+        "through": "0.161.0",
+        "reason": "same accepted .aws boundary; running-turn counting and thread-resume history snapshot changes preserve selected surface"
+      }
+    ]
+  },
+  "accepted_policy_paths": [
+    {
+      "version": "0.156.0",
+      "path": "managed model-provider revalidation",
+      "source_files": [
+        "codex-rs/app-server/src/config_manager.rs",
+        "codex-rs/app-server/src/config_manager_provider_tests.rs",
+        "codex-rs/app-server/tests/suite/v2/model_provider_enforcement_tests.rs"
+      ],
+      "upstream_tests": [
+        "provider_requirements_ignore_system_defaults_but_reject_requirement_changes",
+        "provider_requirement_load_errors_reject_input",
+        "provider_requirement_changes_reject_inputs_to_existing_threads"
+      ],
+      "adapter_tests": [
+        "managed_model_list_refusal_is_generic_and_joins_without_retry",
+        "managed_turn_start_refusal_keeps_the_fresh_workspace_bound_and_generic",
+        "managed_turn_start_refusal_on_a_retained_thread_keeps_the_same_root"
+      ],
+      "boundary": "model/list and turn/start may be refused before provider work; refusals expose only the generic request_failed diagnostic, are not retried, and joined cleanup releases the one approved root."
+    },
+    {
+      "version": "0.156.0",
+      "path": "fail-closed permission materialization",
+      "source_files": [
+        "codex-rs/core/src/config/permission_path.rs",
+        "codex-rs/core/src/config/permission_path_tests.rs"
+      ],
+      "upstream_tests": [
+        "permission_rules_require_absolute_paths_and_descendant_subpaths",
+        "interior_dot_workspace_glob_fails_closed_for_every_path_convention"
+      ],
+      "adapter_tests": [
+        "failed_home_relative_permission_path_keeps_the_root_and_projects_a_generic_failure"
+      ],
+      "boundary": "a missing home fact or invalid deny glob never creates a write grant; the route sends no config or permission override, keeps the one approved root and networkAccess=false, projects failed turns generically, and joins cleanup."
+    },
+    {
+      "version": "0.156.0",
+      "path": "safe-to-replay bootstrap GET system-proxy fallback",
+      "source_files": [
+        "codex-rs/backend-client/src/client.rs",
+        "codex-rs/backend-client/src/client_request_tests.rs",
+        "codex-rs/core/src/config/config_tests.rs",
+        "codex-rs/http-client/src/outbound_proxy.rs"
+      ],
+      "upstream_tests": [
+        "bootstrap_gets_resolve_each_fallback_destination_and_preserve_headers",
+        "bootstrap_gets_keep_default_responses_without_proxy_retry",
+        "bootstrap_gets_honor_disabled_fallback",
+        "bootstrap_get_recovers_from_stalled_body_before_cloud_startup_timeout",
+        "system_proxy_fallback_config_matches_bootstrap",
+        "system_proxy_fallback_honors_feature_requirements"
+      ],
+      "adapter_tests": [
+        "bounded_workspace_maps_one_host_authorized_root_and_denies_network"
+      ],
+      "boundary": "only source-identified safe-to-replay bootstrap GETs use the host system proxy fallback and applicable provider-network policy; Swallowtail adds no proxy, config or network override, and networkAccess=false continues to mean tool sandbox network permission."
+    },
+    {
+      "version": "0.156.0 and 0.161.0",
+      "path": "explicit Windows MxC under managed policy",
+      "source_files": [
+        "codex-rs/config/src/config_requirements.rs",
+        "codex-rs/core/src/config/windows_sandbox_config.rs",
+        "codex-rs/core/src/config/windows_sandbox_config_tests.rs",
+        "codex-rs/core/src/tools/sandboxing_tests.rs"
+      ],
+      "upstream_tests": [
+        "configured_mode_takes_priority_without_persisting_feature_fallback",
+        "deserialize_allowed_windows_sandbox_implementations",
+        "windows_sandbox_selection_distinguishes_configured_and_executor_defaults",
+        "local_mxc_preference_preserves_configured_backend"
+      ],
+      "adapter_tests": [
+        "bounded_workspace_maps_one_host_authorized_root_and_denies_network"
+      ],
+      "boundary": "only explicit ambient selection may be inherited within managed windows.allow_mxc and approved host/resource limits; the route adds no MxC setup, no config authority and no root; frozen Windows source cannot establish runtime isolation."
+    },
+    {
+      "version": "0.157.0",
+      "path": "application.network policy for provider/API HTTP",
+      "source_files": [
+        "codex-rs/app-server/src/application_network.rs",
+        "codex-rs/app-server/src/application_network_tests.rs",
+        "codex-rs/app-server/tests/suite/v2/application_network.rs"
+      ],
+      "upstream_tests": [
+        "embedded_transports_stay_blocked_until_the_same_policy_is_published",
+        "embedded_caller_activation_uses_cloud_requirements",
+        "standalone_startup_applies_local_policy_before_fetching_stored_account_requirements",
+        "explicit_reloads_apply_local_edits_and_cancel_active_responses"
+      ],
+      "adapter_tests": [
+        "bounded_workspace_maps_one_host_authorized_root_and_denies_network"
+      ],
+      "boundary": "host-managed application.network constrains provider/API HTTP separately from turn/start sandboxPolicy.networkAccess=false; local policy is applied before cloud requirements and malformed local policy fails closed; adapter sends no policy override."
+    }
+  ],
+  "route_boundary": {
+    "thread_start": "approvalPolicy=never; sandbox=workspace-write; cwd=the preflight-approved root; runtimeWorkspaceRoots contains only that same root",
+    "thread_start_fields": [
+      "approvalPolicy=never",
+      "sandbox=workspace-write",
+      "cwd=<preflight-approved working-resource root>",
+      "runtimeWorkspaceRoots=[same root]"
+    ],
+    "turn_start": "sandboxPolicy.type=workspaceWrite; writableRoots contains only that same root; networkAccess=false; excludeSlashTmp=true; excludeTmpdirEnvVar=true",
+    "turn_sandbox_policy_keys": [
+      "excludeSlashTmp",
+      "excludeTmpdirEnvVar",
+      "networkAccess",
+      "type",
+      "writableRoots"
+    ],
+    "request_overlay": "The adapter sends no config, trust, home, permission, windows.sandbox, windows.allow_mxc, MxC setup, application.network, path-alias, linked .git, or .aws write override.",
+    "failure_projection": "The driver ignores provider-specific error details; request errors become request_failed, turn status failed becomes a generic ProviderFailed terminal, and notifications are not upgraded into success from error payloads.",
+    "no_new_operations": true,
+    "no_provider_prompt": true,
+    "no_live_session": true,
+    "no_credentials": true,
+    "no_host_update": true,
+    "no_artifact_execution": true
+  },
+  "limitations": [
+    "At 0.159.0 an existing top-level <approved-root>/.aws directory is read-only; no write exception is sent. This accepted consumer-visible narrowing still requires planner classification under Contract 036 before v0.5.2.",
+    "Source-only Windows MxC evidence qualifies only the explicit managed-policy and approved-root boundary, not runtime isolation.",
+    "Codex.app-server and codex.exec keep separate ceilings; codex.exec remains 0.155.1."
+  ],
+  "residual_gates": [
+    "Planner must classify the accepted .aws workspace-write narrowing under Contract 036 before v0.5.2."
+  ]
+}

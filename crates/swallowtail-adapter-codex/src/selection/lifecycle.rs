@@ -1,4 +1,4 @@
-use super::{CODEX_LATEST_QUALIFIED_VERSION, axis, segment};
+use super::{CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION, axis, segment};
 use swallowtail_core::{
     Capability, InterfaceCompatibilityAssessment, InterfaceCompatibilityClaim,
     InterfaceCompatibilityClaimId, InterfaceNewerVersionPosture, InterfaceSupportStatus,
@@ -167,7 +167,7 @@ pub fn codex_app_server_lifecycle_claim() -> InterfaceCompatibilityClaim {
             ),
             segment(
                 "0.140.0",
-                CODEX_LATEST_QUALIFIED_VERSION,
+                CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION,
                 HARD_DELETE_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
@@ -178,6 +178,7 @@ pub fn codex_app_server_lifecycle_claim() -> InterfaceCompatibilityClaim {
             super::version("0.151.1").expect("static Codex unpublished gap is valid"),
             super::version("0.152.2").expect("static Codex unpublished gap is valid"),
             super::version("0.154.1").expect("static Codex unpublished gap is valid"),
+            super::version("0.155.2").expect("static Codex unpublished gap is valid"),
         ],
     )
     .expect("static Codex app-server lifecycle claim is valid")

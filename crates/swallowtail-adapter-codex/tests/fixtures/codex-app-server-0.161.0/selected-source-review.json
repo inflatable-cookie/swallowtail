@@ -11,7 +11,14 @@
     "github_latest_non_prerelease": "rust-v0.161.0",
     "github_published_at": "2026-10-07T15:58:45Z",
     "alpha_excluded": "0.162.0-alpha.18",
-    "agreement": true
+    "agreement": true,
+    "final_reprobe": {
+      "observed_at": "2026-10-08",
+      "npm_latest": "0.161.0",
+      "npm_alpha_excluded": "0.162.0-alpha.20",
+      "github_latest_non_prerelease": "rust-v0.161.0",
+      "channels_agree": true
+    }
   },
   "runtime_artifact": {
     "package": "@openai/codex-darwin-arm64@0.161.0",
@@ -49,14 +56,18 @@
     "workspace_boundary": {
       "thread_start": "approvalPolicy=never; sandbox=workspace-write; cwd=the preflight-approved root; runtimeWorkspaceRoots contains only that same root",
       "turn_start": "sandboxPolicy.type=workspaceWrite; writableRoots contains only that same root; networkAccess=false; excludeSlashTmp=true; excludeTmpdirEnvVar=true",
-      "request_overlay": "No config, trust, home, path alias, linked .git, or .aws write exception is sent by the adapter.",
-      "meaning": "The route supplies one unchanged approved root and retains its read-only default; upstream version-specific rules may further restrict writes inside it."
+      "request_overlay": "The adapter sends no config, trust, home, permission, windows.sandbox, windows.allow_mxc, MxC setup, application.network, path-alias, linked .git, or .aws write override.",
+      "meaning": "The route supplies one unchanged host-approved root, keeps tool networkAccess=false and read-only defaults, and leaves Codex-managed provider, filesystem, bootstrap-proxy, Windows sandbox, and application-network policies in force; no Windows runtime-isolation claim is made."
     },
     "failure_projection": "The driver ignores provider-specific error details; request errors become request_failed, turn status failed becomes a generic ProviderFailed terminal, and notifications are not upgraded into success from error payloads.",
     "route_regressions": [
       "tests/app_server_workspace.rs::bounded_workspace_maps_one_host_authorized_root_and_denies_network",
       "tests/app_server_workspace.rs::declared_approval_and_user_input_requests_are_observed_then_stop",
+      "tests/app_server_workspace.rs::failed_home_relative_permission_path_keeps_the_root_and_projects_a_generic_failure",
       "tests/app_server_workspace.rs::failed_protected_aws_path_write_is_projected_as_provider_failed",
+      "tests/app_server_workspace.rs::managed_model_list_refusal_is_generic_and_joins_without_retry",
+      "tests/app_server_workspace.rs::managed_turn_start_refusal_keeps_the_fresh_workspace_bound_and_generic",
+      "tests/app_server_workspace.rs::managed_turn_start_refusal_on_a_retained_thread_keeps_the_same_root",
       "tests/app_server_workspace.rs::projectless_marked_and_alias_roots_do_not_expand_the_selected_sandbox",
       "tests/app_server_workspace.rs::read_only_session_request_shape_remains_unchanged"
     ]
@@ -196,16 +207,22 @@
         "codex-rs/app-server-protocol/schema/typescript/v2/index.ts"
       ],
       "classification": "The selected thread/start trust path skips automatic persisted Trusted state for projectless layer stacks; marked roots retain the existing path. Selected model/list and turn/start now revalidate managed model-provider requirements and reject a changed selection/definition or requirement load error before provider work. Permission materialization fails closed for home-relative denials without a home fact and for invalid workspace globs; the fallback can remove all write grants. Default-enabled SystemProxyFallback adds a safe-to-replay bootstrap GET retry through the host system proxy after connect/timeout failures. Explicit ambient windows.sandbox=mxc can select the new Windows MxC tool backend; the adapter sends no such config or setup RPC. Local thread-store changes add cancellation-owned startup persistence and delete local agent message-board data before hard-deleting rollouts. Selected required wire fields stay present; optional additions and unselected RPCs remain unmapped.",
-      "disposition": "STOP: decision d7dbacde-6381-47c5-8255-6729d309b147 authorizes the bounded projectless trust skip, and selected-route fixtures now preserve the exact approved-root request without trust overrides. No app-server ruling covers managed provider revalidation, fail-closed permission materialization, the new default proxy fallback, or selecting the MxC tool sandbox from ambient config. Keep the ceiling frozen; resolve these exact selected-path policy boundaries before claiming this hop.",
+      "disposition": "Qualified under Contract 023 decisions d7dbacde-6381-47c5-8255-6729d309b147 and d9a1fe6e-6481-433c-b643-ada177613e07. The route preserves the exact approved-root request and generic refusals; managed provider checks, fail-closed permissions, bootstrap proxy policy, and explicitly configured MxC remain provider-owned and are never bypassed.",
       "source_regressions": [
-        "codex-rs/config/src/loader/projectless_directory_tests.rs::unmarked_directory_is_projectless_even_with_saved_trust",
-        "codex-rs/config/src/loader/projectless_directory_tests.rs::project_markers_and_local_layers_prevent_projectless_classification",
-        "codex-rs/app-server/src/config_manager_provider_tests.rs::provider_requirements_ignore_system_defaults_but_reject_requirement_changes",
         "codex-rs/app-server/src/config_manager_provider_tests.rs::provider_requirement_load_errors_reject_input",
+        "codex-rs/app-server/src/config_manager_provider_tests.rs::provider_requirements_ignore_system_defaults_but_reject_requirement_changes",
         "codex-rs/app-server/tests/suite/v2/model_provider_enforcement_tests.rs::provider_requirement_changes_reject_inputs_to_existing_threads",
-        "codex-rs/core/src/config/permission_path_tests.rs::interior_dot_workspace_glob_fails_closed_for_every_path_convention",
+        "codex-rs/backend-client/src/client_request_tests.rs::bootstrap_get_recovers_from_stalled_body_before_cloud_startup_timeout",
+        "codex-rs/backend-client/src/client_request_tests.rs::bootstrap_gets_honor_disabled_fallback",
+        "codex-rs/backend-client/src/client_request_tests.rs::bootstrap_gets_keep_default_responses_without_proxy_retry",
+        "codex-rs/backend-client/src/client_request_tests.rs::bootstrap_gets_resolve_each_fallback_destination_and_preserve_headers",
+        "codex-rs/config/src/config_requirements.rs::deserialize_allowed_windows_sandbox_implementations",
+        "codex-rs/config/src/loader/projectless_directory_tests.rs::project_markers_and_local_layers_prevent_projectless_classification",
+        "codex-rs/config/src/loader/projectless_directory_tests.rs::unmarked_directory_is_projectless_even_with_saved_trust",
         "codex-rs/core/src/config/config_tests.rs::system_proxy_fallback_config_matches_bootstrap",
         "codex-rs/core/src/config/config_tests.rs::system_proxy_fallback_honors_feature_requirements",
+        "codex-rs/core/src/config/permission_path_tests.rs::interior_dot_workspace_glob_fails_closed_for_every_path_convention",
+        "codex-rs/core/src/config/permission_path_tests.rs::permission_rules_require_absolute_paths_and_descendant_subpaths",
         "codex-rs/core/src/config/windows_sandbox_config_tests.rs::configured_mode_takes_priority_without_persisting_feature_fallback",
         "codex-rs/core/src/tools/sandboxing_tests.rs::windows_sandbox_selection_distinguishes_configured_and_executor_defaults"
       ]
@@ -277,7 +294,7 @@
         "codex-rs/app-server-protocol/schema/typescript/v2/index.ts"
       ],
       "classification": "This hop adds system, device-management, and cloud application.network destination restrictions to Codex app-server provider/API HTTP traffic, with local policy loaded before cloud access and failed local policy loads failing closed. This is distinct from the adapter's turn/start sandboxPolicy.networkAccess=false for tool sandbox access.",
-      "disposition": "STOP: Contract 023 authorizes host-managed application-network restrictions for codex.exec only. The app-server policy governs selected provider/API traffic and has no separate ruling; preserve the policy and keep claims frozen.",
+      "disposition": "Qualified under Contract 023 decision d9a1fe6e-6481-433c-b643-ada177613e07. Host-managed application.network policy governs provider/API HTTP independently of the selected tool sandbox networkAccess=false; exact route tests retain false and send no application.network override.",
       "source_regressions": [
         "codex-rs/app-server/src/application_network_tests.rs::embedded_transports_stay_blocked_until_the_same_policy_is_published",
         "codex-rs/app-server/src/application_network_tests.rs::embedded_caller_activation_uses_cloud_requirements",
@@ -525,9 +542,10 @@
         "codex-rs/app-server-protocol/schema/typescript/v2/ThreadPredictionUpdatedNotification.ts",
         "codex-rs/app-server-protocol/schema/typescript/v2/index.ts"
       ],
-      "classification": "Selected thread/resume now pairs persisted snapshots with file revisions and reuses them only if the exact rollout revision still matches after writer acquisition; otherwise the store reloads authoritative history. History projection reads run in one blocking task and preserve the newline-terminated durable prefix. A selected resume also serializes with internal thread-goal resume work; goal mutation methods and prediction notifications remain unselected. On Windows, explicit MxC selection now passes through managed windows.sandbox constraints and the local prefer_mxc feature is gated by that policy; this continues the unresolved .156.0 sandbox-authority stop. Unknown CodexErrorInfo variants remain ignored by the adapter, and selected required thread/turn wire fields stay present.",
-      "disposition": "History snapshot revision validation and refresh are compatible changes within the existing thread/resume and thread/read surface; the frozen source test covers unchanged and subsequently edited snapshots. STOP remains for the newly introduced ambient MxC backend and its managed-policy selection because no app-server ruling authorizes that sandbox authority change.",
+      "classification": "Selected thread/resume now pairs persisted snapshots with file revisions and reuses them only if the exact rollout revision still matches after writer acquisition; otherwise the store reloads authoritative history. History projection reads run in one blocking task and preserve the newline-terminated durable prefix. A selected resume also serializes with internal thread-goal resume work; goal mutation methods and prediction notifications remain unselected. On Windows, explicit MxC selection now passes through managed windows.sandbox constraints and the local prefer_mxc feature is gated by that policy; this stays within the explicit ambient MxC boundary accepted by decision d9a1fe6e-6481-433c-b643-ada177613e07. Unknown CodexErrorInfo variants remain ignored by the adapter, and selected required thread/turn wire fields stay present.",
+      "disposition": "History snapshot revision validation and refresh remain compatible within the selected thread/resume surface. Explicit MxC remains accepted only under the approved host/resource and managed-policy limits in decision d9a1fe6e-6481-433c-b643-ada177613e07; no adapter setup, bypass, root expansion, or Windows runtime-isolation claim is made.",
       "source_regressions": [
+        "codex-rs/config/src/config_requirements.rs::deserialize_allowed_windows_sandbox_implementations",
         "codex-rs/core/src/config/config_tests.rs::local_mxc_preference_preserves_configured_backend",
         "codex-rs/thread-store/src/local/mod.rs::resume_thread_reopens_live_writer_and_appends_with_stale_sqlite_path"
       ]
@@ -701,6 +719,12 @@
       "path": "codex-rs/backend-client/src/client_request_tests.rs",
       "git_blob": "4dfe774fecef1667f247287e98dcdacf1c8bd48c",
       "sha256": "49806becad2f001c843a727648b429a1b390027b7a7644cff364d642f6ed7ee5"
+    },
+    {
+      "tag": "rust-v0.156.0",
+      "path": "codex-rs/config/src/config_requirements.rs",
+      "git_blob": "1764fa93af1c610ea2eea88b63e111f3465ce9a3",
+      "sha256": "7fb6edff5f5d71a8a5167d22d6e45c3e275cbe1cceac74b21ff6f82f28176c75"
     },
     {
       "tag": "rust-v0.156.0",
@@ -1250,6 +1274,12 @@
     },
     {
       "tag": "rust-v0.161.0",
+      "path": "codex-rs/config/src/config_requirements.rs",
+      "git_blob": "52eefeb6cc103f52ee31d9ce150c59f56339ba48",
+      "sha256": "f948a8ac4d780e84a44abc267164d6e36cc8e2c9aff3e4c63e0942ba00f2dde4"
+    },
+    {
+      "tag": "rust-v0.161.0",
       "path": "codex-rs/core/src/config/config_tests.rs",
       "git_blob": "79ab58e75c28c6f007190c7ccc1d003d154e43f2",
       "sha256": "050c4023685b23e3333ceb9f9d5149ef044499cd901292334c24c4c527dfacf0"
@@ -1352,23 +1382,30 @@
     }
   ],
   "claim_state": {
-    "movement": "frozen",
-    "codex_app_server_ceiling": "0.155.1",
+    "movement": "qualified",
+    "codex_app_server_ceiling": "0.161.0",
     "codex_exec_ceiling": "0.155.1",
-    "newly_observed_unresolved_stop": "0.156.0 managed model-provider revalidation, fail-closed permission materialization, default system-proxy fallback, and explicit MxC tool sandbox selection; 0.157.0 app-server managed application-network policy",
-    "authorized_boundaries_not_yet_qualified": [
-      "0.156.0 projectless trust skip",
-      "0.158.0 path aliases and linked .git protection",
-      "0.159.0 read-only .aws carveout"
-    ],
     "previous_segments_and_holes_preserved": true,
-    "newly_observed_unresolved_stops": [
-      "0.156.0 selected model/list and turn/start managed model-provider requirement revalidation",
-      "0.156.0 fail-closed permission materialization for unavailable home-relative denials and invalid workspace globs",
-      "0.156.0 default-enabled safe-replay bootstrap fallback through the host system proxy",
-      "0.156.0 explicit ambient windows.sandbox=mxc tool backend selection",
-      "0.157.0 app-server managed application-network policy for provider/API traffic"
+    "accepted_boundaries": [
+      "0.156.0 projectless automatic persisted-trust skip; no trust override",
+      "0.156.0 managed model-provider revalidation and fail-closed permission materialization",
+      "0.156.0 safe-to-replay bootstrap GET fallback through the host system proxy",
+      "0.156.0 explicit ambient MxC selection without setup or isolation claim",
+      "0.157.0 host-managed application.network for provider/API HTTP, independent of tool networkAccess",
+      "0.158.0 path alias normalization and linked .git read-only protection within the approved root",
+      "0.159.0 existing top-level .aws read-only carveout within the approved root"
     ],
-    "contract_036_patch_compatibility_open": "The accepted 0.159.0 .aws read-only limitation is a consumer-visible workspace-write narrowing; planner must classify it under Contract 036 before release."
+    "unpublished_gaps_preserved": [
+      "0.82.0..=0.83.0",
+      "0.108.0..=0.109.0",
+      "0.149.2",
+      "0.150.2",
+      "0.151.1",
+      "0.152.2",
+      "0.154.1",
+      "0.155.2"
+    ],
+    "newly_observed_unresolved_stops": [],
+    "contract_036_patch_compatibility_open": "The accepted 0.159.0 .aws read-only limitation is a consumer-visible workspace-write narrowing; planner must classify it under Contract 036 before v0.5.2. This qualification does not waive that release gate."
   }
 }

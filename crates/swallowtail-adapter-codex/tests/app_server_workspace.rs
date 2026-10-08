@@ -6,9 +6,9 @@ use std::collections::BTreeSet;
 use std::sync::Arc;
 use support::app_server::{AppServerMode, ScriptedAppServer};
 use support::{
-    app_server_plan, app_server_session_agreement, bounded_workspace_plan,
-    bounded_workspace_plan_for, bounded_workspace_plan_for_version, host_services,
-    host_services_for, host_services_with, host_services_with_for, working_resource,
+    app_server_plan, app_server_plan_for_version, app_server_session_agreement,
+    bounded_workspace_plan, bounded_workspace_plan_for, bounded_workspace_plan_for_version,
+    host_services, host_services_for, host_services_with, host_services_with_for, working_resource,
 };
 use swallowtail_adapter_codex::{
     CodexAppServerDriver, codex_approval_request_extension, codex_bounded_workspace_access_policy,
@@ -16,13 +16,15 @@ use swallowtail_adapter_codex::{
 };
 use swallowtail_core::{
     ConfiguredInstanceId, DriverRole, ExecutionHostId, HostServiceKind, InstanceTargetRef,
+    SessionRef,
 };
 use swallowtail_runtime::{
     BoxFuture, CallbackPayload, CallbackRequestKind, CallbackResponse, CallbackResult,
     CleanupOutcome, EnvironmentRef, HostServices, InteractiveSessionDriver,
-    MaterializedResourceRef, OpenSessionRequest, OperationContent, ProviderRequestObservation,
-    RequestId, ResourceAccess, ResourceLease, ResourceRepresentation, RuntimeFailure,
-    RuntimeTurnId, ScopeId, SessionAccessPolicy, TerminalStatus, TurnRequest, WorkingResourceRef,
+    MaterializedResourceRef, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest,
+    OperationContent, ProviderRequestObservation, RequestId, ResourceAccess, ResourceLease,
+    ResourceRepresentation, ResumeSessionRequest, RuntimeFailure, RuntimeTurnId, ScopeId,
+    SessionAccessPolicy, SessionResumeBinding, TerminalStatus, TurnRequest, WorkingResourceRef,
     WorkingResourceService,
 };
 use swallowtail_testkit::{
@@ -94,7 +96,7 @@ fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
             ExecutionHostId::new("host.local").unwrap(),
             ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
             InstanceTargetRef::new("codex-app-server-executable").unwrap(),
-            "0.131.0",
+            "0.161.0",
         ),
         OpenSessionRequest::new(
             RequestId::new("workspace-session").expect("request id is valid"),
@@ -174,6 +176,15 @@ fn bounded_workspace_maps_one_host_authorized_root_and_denies_network() {
     assert_eq!(sandbox["networkAccess"], false);
     assert_eq!(sandbox["excludeSlashTmp"], true);
     assert_eq!(sandbox["excludeTmpdirEnvVar"], true);
+    assert_eq!(
+        state.methods(),
+        ["initialize", "initialized", "thread/start", "turn/start"]
+    );
+    assert_eq!(
+        state.request().arguments,
+        ["app-server", "--listen", "stdio://"]
+    );
+    assert_eq!(state.request().environments, ["codex-saved-login"]);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
     assert_eq!(
         block_on(support::close_session(session, services)),
@@ -193,7 +204,7 @@ fn failed_protected_aws_path_write_is_projected_as_provider_failed() {
             ExecutionHostId::new("host.local").unwrap(),
             ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
             InstanceTargetRef::new("codex-app-server-executable").unwrap(),
-            "0.155.1",
+            "0.159.0",
         ),
         OpenSessionRequest::new(
             RequestId::new("workspace-failed-turn").expect("request id is valid"),
@@ -267,21 +278,366 @@ fn failed_protected_aws_path_write_is_projected_as_provider_failed() {
 }
 
 #[test]
+fn managed_model_list_refusal_is_generic_and_joins_without_retry() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::RejectModelList);
+    let failure = block_on(driver().list_models(
+        app_server_plan_for_version(
+            DriverRole::ModelCatalog,
+            ExecutionHostId::new("host.local").unwrap(),
+            ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
+            InstanceTargetRef::new("codex-app-server-executable").unwrap(),
+            "0.156.0",
+            [],
+            [],
+        ),
+        ModelCatalogRequest::new(RequestId::new("managed-model-list").unwrap()),
+        host_services(process),
+    ))
+    .expect_err("managed provider requirements can refuse model discovery");
+
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.codex.app_server.request_failed"
+    );
+    assert_eq!(
+        failure.diagnostic().message(),
+        "Codex app-server rejected a request"
+    );
+    assert_eq!(state.methods(), ["initialize", "initialized", "model/list"]);
+    assert!(state.waited());
+}
+
+#[test]
+fn managed_turn_start_refusal_keeps_the_fresh_workspace_bound_and_generic() {
+    let recording = RecordingHostServices::default();
+    let (process, state) = ScriptedAppServer::new(AppServerMode::RejectTurnStart);
+    let services = host_services_with(process, &recording, [HostServiceKind::WorkingResource]);
+    let mut session = block_on(driver().open_session(
+        bounded_workspace_plan_for_version(
+            ExecutionHostId::new("host.local").unwrap(),
+            ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
+            InstanceTargetRef::new("codex-app-server-executable").unwrap(),
+            "0.156.0",
+        ),
+        OpenSessionRequest::new(
+            RequestId::new("managed-fresh-thread").unwrap(),
+            working_resource(),
+            None,
+            app_server_session_agreement(codex_bounded_workspace_access_policy()),
+        ),
+        services.clone(),
+    ))
+    .expect("bounded app-server session opens");
+
+    let thread = message(&state.messages(), "thread/start");
+    assert_eq!(
+        thread["params"]
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>(),
+        BTreeSet::from([
+            "approvalPolicy",
+            "cwd",
+            "model",
+            "runtimeWorkspaceRoots",
+            "sandbox",
+        ])
+    );
+    assert_eq!(
+        thread["params"]["runtimeWorkspaceRoots"],
+        serde_json::json!(["/private/recording/workspace"])
+    );
+
+    let refusal = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("managed-fresh-turn").unwrap(),
+            OperationContent::new("continue within the approved root").unwrap(),
+        ),
+        services.clone(),
+    ));
+    let error = match refusal {
+        Ok(_) => panic!("managed provider requirements must refuse this turn"),
+        Err(error) => error,
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.codex.app_server.request_failed"
+    );
+    assert_eq!(
+        error.diagnostic().message(),
+        "Codex app-server rejected a request"
+    );
+
+    let turn_start = message(&state.messages(), "turn/start");
+    assert_eq!(
+        turn_start["params"]
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>(),
+        BTreeSet::from(["input", "sandboxPolicy", "threadId"])
+    );
+    assert_eq!(
+        turn_start["params"]["sandboxPolicy"]["writableRoots"],
+        serde_json::json!(["/private/recording/workspace"])
+    );
+    assert_eq!(
+        turn_start["params"]["sandboxPolicy"]["networkAccess"],
+        false
+    );
+    assert_eq!(
+        state.methods(),
+        ["initialize", "initialized", "thread/start", "turn/start"]
+    );
+    assert_eq!(
+        state.request().arguments,
+        ["app-server", "--listen", "stdio://"]
+    );
+    assert_eq!(state.request().environments, ["codex-saved-login"]);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
+    assert!(state.waited());
+    assert_eq!(recording.count(RecordedHostCall::WorkingResourceResolve), 1);
+    assert_eq!(recording.count(RecordedHostCall::WorkingResourceRelease), 1);
+}
+
+#[test]
+fn managed_turn_start_refusal_on_a_retained_thread_keeps_the_same_root() {
+    let recording = RecordingHostServices::default();
+    let (process, state) = ScriptedAppServer::new(AppServerMode::RejectTurnStart);
+    let services = host_services_with(process, &recording, [HostServiceKind::WorkingResource]);
+    let plan = bounded_workspace_plan_for_version(
+        ExecutionHostId::new("host.local").unwrap(),
+        ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
+        InstanceTargetRef::new("codex-app-server-executable").unwrap(),
+        "0.156.0",
+    );
+    let working_resource = working_resource();
+    let access = codex_bounded_workspace_access_policy();
+    let binding = SessionResumeBinding::new(
+        SessionRef::new("thread-provider-existing").unwrap(),
+        plan.instance_id().clone(),
+        plan.execution_host_id().clone(),
+        plan.model_route_id().unwrap().clone(),
+        plan.model_id().unwrap().clone(),
+        working_resource.clone(),
+        access.clone(),
+    );
+    let mut session = block_on(driver().resume_session(
+        plan,
+        ResumeSessionRequest::new(
+            RequestId::new("managed-retained-thread").unwrap(),
+            binding,
+            working_resource,
+            None,
+            app_server_session_agreement(access),
+        ),
+        services.clone(),
+    ))
+    .expect("bounded retained thread opens");
+
+    let resume = message(&state.messages(), "thread/resume");
+    assert_eq!(
+        resume["params"]
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>(),
+        BTreeSet::from([
+            "approvalPolicy",
+            "cwd",
+            "excludeTurns",
+            "model",
+            "runtimeWorkspaceRoots",
+            "sandbox",
+            "threadId",
+        ])
+    );
+    assert_eq!(resume["params"]["threadId"], "thread-provider-existing");
+    assert_eq!(
+        resume["params"]["runtimeWorkspaceRoots"],
+        serde_json::json!(["/private/recording/workspace"])
+    );
+
+    let refusal = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("managed-retained-turn").unwrap(),
+            OperationContent::new("continue the retained thread").unwrap(),
+        ),
+        services.clone(),
+    ));
+    let error = match refusal {
+        Ok(_) => panic!("managed provider requirements must refuse the retained turn"),
+        Err(error) => error,
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.codex.app_server.request_failed"
+    );
+    assert_eq!(
+        error.diagnostic().message(),
+        "Codex app-server rejected a request"
+    );
+    assert_eq!(
+        state.methods(),
+        ["initialize", "initialized", "thread/resume", "turn/start"]
+    );
+    assert_eq!(
+        state.request().arguments,
+        ["app-server", "--listen", "stdio://"]
+    );
+    assert_eq!(state.request().environments, ["codex-saved-login"]);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
+    assert!(state.waited());
+    assert_eq!(recording.count(RecordedHostCall::WorkingResourceResolve), 1);
+    assert_eq!(recording.count(RecordedHostCall::WorkingResourceRelease), 1);
+}
+
+#[test]
+fn failed_home_relative_permission_path_keeps_the_root_and_projects_a_generic_failure() {
+    let recording = RecordingHostServices::default();
+    let (process, state) = ScriptedAppServer::new(AppServerMode::FailedTurn);
+    let services = host_services_with(process, &recording, [HostServiceKind::WorkingResource]);
+    let mut session = block_on(driver().open_session(
+        bounded_workspace_plan_for_version(
+            ExecutionHostId::new("host.local").unwrap(),
+            ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
+            InstanceTargetRef::new("codex-app-server-executable").unwrap(),
+            "0.156.0",
+        ),
+        OpenSessionRequest::new(
+            RequestId::new("managed-permission-denial").unwrap(),
+            working_resource(),
+            None,
+            app_server_session_agreement(codex_bounded_workspace_access_policy()),
+        ),
+        services.clone(),
+    ))
+    .expect("bounded app-server session opens");
+
+    let thread = message(&state.messages(), "thread/start");
+    assert_eq!(
+        thread["params"]
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>(),
+        BTreeSet::from([
+            "approvalPolicy",
+            "cwd",
+            "model",
+            "runtimeWorkspaceRoots",
+            "sandbox",
+        ])
+    );
+    assert_eq!(thread["params"]["sandbox"], "workspace-write");
+    assert_eq!(thread["params"]["approvalPolicy"], "never");
+    assert_eq!(
+        thread["params"]["runtimeWorkspaceRoots"],
+        serde_json::json!(["/private/recording/workspace"])
+    );
+
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("managed-permission-denial-turn").unwrap(),
+            OperationContent::new("attempt a path covered by a home-relative deny rule").unwrap(),
+        ),
+        services.clone(),
+    ))
+    .expect("turn starts before provider policy is applied");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome exists"),
+    );
+    let TerminalStatus::ProviderFailed(diagnostic) = terminal.status() else {
+        panic!("a policy-denied write must remain a failed provider turn");
+    };
+    assert_eq!(
+        diagnostic.code(),
+        "swallowtail.codex.app_server.turn_failed"
+    );
+    assert_eq!(diagnostic.message(), "Codex app-server turn failed");
+
+    let start = message(&state.messages(), "turn/start");
+    assert_eq!(
+        start["params"]
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>(),
+        BTreeSet::from(["input", "sandboxPolicy", "threadId"])
+    );
+    assert_eq!(
+        start["params"]["sandboxPolicy"]
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>(),
+        BTreeSet::from([
+            "excludeSlashTmp",
+            "excludeTmpdirEnvVar",
+            "networkAccess",
+            "type",
+            "writableRoots",
+        ])
+    );
+    assert_eq!(
+        start["params"]["sandboxPolicy"]["writableRoots"],
+        serde_json::json!(["/private/recording/workspace"])
+    );
+    assert_eq!(start["params"]["sandboxPolicy"]["networkAccess"], false);
+    assert_eq!(
+        state.methods(),
+        ["initialize", "initialized", "thread/start", "turn/start"]
+    );
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(support::close_session(session, services)),
+        CleanupOutcome::Clean
+    );
+    assert!(state.waited());
+    assert_eq!(recording.count(RecordedHostCall::WorkingResourceResolve), 1);
+    assert_eq!(recording.count(RecordedHostCall::WorkingResourceRelease), 1);
+}
+
+#[test]
 fn projectless_marked_and_alias_roots_do_not_expand_the_selected_sandbox() {
     let scenarios = [
         (
             "projectless-with-saved-trust",
             "/private/recording/projectless-with-saved-trust",
+            "0.156.0",
         ),
-        ("marked-project", "/private/recording/marked-project"),
-        ("path-alias-root", "/private/recording/path-alias-root"),
+        (
+            "marked-project",
+            "/private/recording/marked-project",
+            "0.156.0",
+        ),
+        (
+            "path-alias-root",
+            "/private/recording/path-alias-root",
+            "0.158.0",
+        ),
         (
             "alias-with-linked-gitdir",
             "/private/recording/alias-with-linked-gitdir",
+            "0.158.0",
         ),
     ];
 
-    for (scenario, root) in scenarios {
+    for (scenario, root, version) in scenarios {
         // These synthetic roots exercise only the adapter request boundary. The frozen
         // Codex source regressions bind project-marker and filesystem-policy behavior.
         let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
@@ -292,7 +648,7 @@ fn projectless_marked_and_alias_roots_do_not_expand_the_selected_sandbox() {
                     ExecutionHostId::new("host.local").unwrap(),
                     ConfiguredInstanceId::new("codex.app-server.local").unwrap(),
                     InstanceTargetRef::new("codex-app-server-executable").unwrap(),
-                    "0.155.1",
+                    version,
                 ),
                 OpenSessionRequest::new(
                     RequestId::new(format!("workspace-{scenario}")).expect("request id is valid"),

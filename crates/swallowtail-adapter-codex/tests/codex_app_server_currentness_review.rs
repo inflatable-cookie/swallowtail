@@ -64,6 +64,25 @@ fn official_identity_and_full_source_hops_match_the_selected_review() {
         review["official_channels"]["alpha_excluded"],
         "0.162.0-alpha.18"
     );
+    let final_reprobe = &review["official_channels"]["final_reprobe"];
+    assert_exact_keys(
+        final_reprobe,
+        &[
+            "channels_agree",
+            "github_latest_non_prerelease",
+            "npm_alpha_excluded",
+            "npm_latest",
+            "observed_at",
+        ],
+    );
+    assert_eq!(final_reprobe["observed_at"], "2026-10-08");
+    assert_eq!(final_reprobe["npm_latest"], "0.161.0");
+    assert_eq!(final_reprobe["npm_alpha_excluded"], "0.162.0-alpha.20");
+    assert_eq!(
+        final_reprobe["github_latest_non_prerelease"],
+        "rust-v0.161.0"
+    );
+    assert_eq!(final_reprobe["channels_agree"], true);
     assert_eq!(
         review["runtime_artifact"]["sha256"],
         "12ac11d2c7eee27cfae34393986d7b7c9ed0dea537cb749831cdd7033893e6de"
@@ -83,7 +102,11 @@ fn official_identity_and_full_source_hops_match_the_selected_review() {
         vec![
             "tests/app_server_workspace.rs::bounded_workspace_maps_one_host_authorized_root_and_denies_network",
             "tests/app_server_workspace.rs::declared_approval_and_user_input_requests_are_observed_then_stop",
+            "tests/app_server_workspace.rs::failed_home_relative_permission_path_keeps_the_root_and_projects_a_generic_failure",
             "tests/app_server_workspace.rs::failed_protected_aws_path_write_is_projected_as_provider_failed",
+            "tests/app_server_workspace.rs::managed_model_list_refusal_is_generic_and_joins_without_retry",
+            "tests/app_server_workspace.rs::managed_turn_start_refusal_keeps_the_fresh_workspace_bound_and_generic",
+            "tests/app_server_workspace.rs::managed_turn_start_refusal_on_a_retained_thread_keeps_the_same_root",
             "tests/app_server_workspace.rs::projectless_marked_and_alias_roots_do_not_expand_the_selected_sandbox",
             "tests/app_server_workspace.rs::read_only_session_request_shape_remains_unchanged",
         ]
@@ -98,11 +121,11 @@ fn official_identity_and_full_source_hops_match_the_selected_review() {
     );
     assert_eq!(
         review["selected_route"]["workspace_boundary"]["request_overlay"],
-        "No config, trust, home, path alias, linked .git, or .aws write exception is sent by the adapter."
+        "The adapter sends no config, trust, home, permission, windows.sandbox, windows.allow_mxc, MxC setup, application.network, path-alias, linked .git, or .aws write override."
     );
     assert_eq!(
         review["selected_route"]["workspace_boundary"]["meaning"],
-        "The route supplies one unchanged approved root and retains its read-only default; upstream version-specific rules may further restrict writes inside it."
+        "The route supplies one unchanged host-approved root, keeps tool networkAccess=false and read-only defaults, and leaves Codex-managed provider, filesystem, bootstrap-proxy, Windows sandbox, and application-network policies in force; no Windows runtime-isolation claim is made."
     );
     assert_eq!(
         review["selected_route"]["failure_projection"],
@@ -454,7 +477,7 @@ fn official_identity_and_full_source_hops_match_the_selected_review() {
 }
 
 #[test]
-fn selected_source_path_sets_keep_the_network_stop_and_approved_boundaries_exact() {
+fn selected_source_path_sets_keep_approved_boundaries_exact() {
     let review = json(REVIEW);
     let hops = review["hops"].as_array().expect("per-hop ledger");
 
@@ -616,13 +639,13 @@ fn selected_source_path_sets_keep_the_network_stop_and_approved_boundaries_exact
         hops[0]["disposition"]
             .as_str()
             .unwrap()
-            .starts_with("STOP:")
+            .starts_with("Qualified under")
     );
     assert!(
         hops[2]["disposition"]
             .as_str()
             .unwrap()
-            .starts_with("STOP:")
+            .starts_with("Qualified under")
     );
     assert!(hops[0]["classification"].as_str().unwrap().contains(
         "Selected model/list and turn/start now revalidate managed model-provider requirements"
@@ -636,14 +659,20 @@ fn selected_source_path_sets_keep_the_network_stop_and_approved_boundaries_exact
     assert_eq!(
         strings(&hops[0]["source_regressions"]),
         vec![
-            "codex-rs/config/src/loader/projectless_directory_tests.rs::unmarked_directory_is_projectless_even_with_saved_trust",
-            "codex-rs/config/src/loader/projectless_directory_tests.rs::project_markers_and_local_layers_prevent_projectless_classification",
-            "codex-rs/app-server/src/config_manager_provider_tests.rs::provider_requirements_ignore_system_defaults_but_reject_requirement_changes",
             "codex-rs/app-server/src/config_manager_provider_tests.rs::provider_requirement_load_errors_reject_input",
+            "codex-rs/app-server/src/config_manager_provider_tests.rs::provider_requirements_ignore_system_defaults_but_reject_requirement_changes",
             "codex-rs/app-server/tests/suite/v2/model_provider_enforcement_tests.rs::provider_requirement_changes_reject_inputs_to_existing_threads",
-            "codex-rs/core/src/config/permission_path_tests.rs::interior_dot_workspace_glob_fails_closed_for_every_path_convention",
+            "codex-rs/backend-client/src/client_request_tests.rs::bootstrap_get_recovers_from_stalled_body_before_cloud_startup_timeout",
+            "codex-rs/backend-client/src/client_request_tests.rs::bootstrap_gets_honor_disabled_fallback",
+            "codex-rs/backend-client/src/client_request_tests.rs::bootstrap_gets_keep_default_responses_without_proxy_retry",
+            "codex-rs/backend-client/src/client_request_tests.rs::bootstrap_gets_resolve_each_fallback_destination_and_preserve_headers",
+            "codex-rs/config/src/config_requirements.rs::deserialize_allowed_windows_sandbox_implementations",
+            "codex-rs/config/src/loader/projectless_directory_tests.rs::project_markers_and_local_layers_prevent_projectless_classification",
+            "codex-rs/config/src/loader/projectless_directory_tests.rs::unmarked_directory_is_projectless_even_with_saved_trust",
             "codex-rs/core/src/config/config_tests.rs::system_proxy_fallback_config_matches_bootstrap",
             "codex-rs/core/src/config/config_tests.rs::system_proxy_fallback_honors_feature_requirements",
+            "codex-rs/core/src/config/permission_path_tests.rs::interior_dot_workspace_glob_fails_closed_for_every_path_convention",
+            "codex-rs/core/src/config/permission_path_tests.rs::permission_rules_require_absolute_paths_and_descendant_subpaths",
             "codex-rs/core/src/config/windows_sandbox_config_tests.rs::configured_mode_takes_priority_without_persisting_feature_fallback",
             "codex-rs/core/src/tools/sandboxing_tests.rs::windows_sandbox_selection_distinguishes_configured_and_executor_defaults",
         ]
@@ -682,6 +711,7 @@ fn selected_source_path_sets_keep_the_network_stop_and_approved_boundaries_exact
     assert_eq!(
         strings(&hops[11]["source_regressions"]),
         vec![
+            "codex-rs/config/src/config_requirements.rs::deserialize_allowed_windows_sandbox_implementations",
             "codex-rs/core/src/config/config_tests.rs::local_mxc_preference_preserves_configured_backend",
             "codex-rs/thread-store/src/local/mod.rs::resume_thread_reopens_live_writer_and_appends_with_stale_sqlite_path",
         ]
@@ -714,20 +744,44 @@ fn selected_source_path_sets_keep_the_network_stop_and_approved_boundaries_exact
         hops[11]["disposition"]
             .as_str()
             .unwrap()
-            .contains("MxC backend")
+            .contains("Explicit MxC remains accepted")
     );
-    assert_eq!(review["claim_state"]["movement"], "frozen");
-    assert_eq!(review["claim_state"]["codex_app_server_ceiling"], "0.155.1");
+    assert_eq!(review["claim_state"]["movement"], "qualified");
+    assert_exact_keys(
+        &review["claim_state"],
+        &[
+            "accepted_boundaries",
+            "codex_app_server_ceiling",
+            "codex_exec_ceiling",
+            "contract_036_patch_compatibility_open",
+            "movement",
+            "newly_observed_unresolved_stops",
+            "previous_segments_and_holes_preserved",
+            "unpublished_gaps_preserved",
+        ],
+    );
+    assert_eq!(review["claim_state"]["codex_app_server_ceiling"], "0.161.0");
     assert_eq!(review["claim_state"]["codex_exec_ceiling"], "0.155.1");
     assert_eq!(
-        strings(&review["claim_state"]["newly_observed_unresolved_stops"]),
+        review["claim_state"]["previous_segments_and_holes_preserved"],
+        true
+    );
+    assert_eq!(
+        strings(&review["claim_state"]["unpublished_gaps_preserved"]),
         vec![
-            "0.156.0 selected model/list and turn/start managed model-provider requirement revalidation",
-            "0.156.0 fail-closed permission materialization for unavailable home-relative denials and invalid workspace globs",
-            "0.156.0 default-enabled safe-replay bootstrap fallback through the host system proxy",
-            "0.156.0 explicit ambient windows.sandbox=mxc tool backend selection",
-            "0.157.0 app-server managed application-network policy for provider/API traffic",
+            "0.82.0..=0.83.0",
+            "0.108.0..=0.109.0",
+            "0.149.2",
+            "0.150.2",
+            "0.151.1",
+            "0.152.2",
+            "0.154.1",
+            "0.155.2",
         ]
+    );
+    assert_eq!(
+        strings(&review["claim_state"]["newly_observed_unresolved_stops"]),
+        Vec::<&str>::new()
     );
     assert!(
         review["claim_state"]["contract_036_patch_compatibility_open"]
@@ -743,7 +797,7 @@ fn critical_frozen_source_identities_are_exact() {
     let sources = review["frozen_semantic_sources"]
         .as_array()
         .expect("frozen source identities");
-    assert_eq!(sources.len(), 136);
+    assert_eq!(sources.len(), 138);
     let identities = sources
         .iter()
         .map(|source| {
@@ -758,6 +812,18 @@ fn critical_frozen_source_identities_are_exact() {
         })
         .collect::<BTreeSet<_>>();
     let expected_identities = BTreeSet::from([
+        (
+            "rust-v0.156.0",
+            "codex-rs/config/src/config_requirements.rs",
+            "1764fa93af1c610ea2eea88b63e111f3465ce9a3",
+            "7fb6edff5f5d71a8a5167d22d6e45c3e275cbe1cceac74b21ff6f82f28176c75",
+        ),
+        (
+            "rust-v0.161.0",
+            "codex-rs/config/src/config_requirements.rs",
+            "52eefeb6cc103f52ee31d9ce150c59f56339ba48",
+            "f948a8ac4d780e84a44abc267164d6e36cc8e2c9aff3e4c63e0942ba00f2dde4",
+        ),
         (
             "rust-v0.156.0",
             "codex-rs/app-server-protocol/schema/json/ClientRequest.json",

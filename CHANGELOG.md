@@ -152,17 +152,15 @@ annotated Git tags from the canonical repository.
   tool-output/context changes need an operator ruling before qualification;
   both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
   and `0.59.1` exclusions remain in force.
-- keep the `codex.app-server` qualified ceiling at `0.155.1` after re-probing
-  official npm/GitHub stable `0.161.0`. Research 374 freezes all twelve
-  published hops and identifies selected stops in `0.156.0` managed provider
-  revalidation, fail-closed permission materialization, default bootstrap
-  proxy fallback, and explicit Windows MxC sandbox selection, followed by
-  `0.157.0` app-server application-network policy. The accepted projectless
-  trust, path-alias, linked-`.git`, and `.aws` boundaries retain one approved
-  root and read-only defaults. At `0.159.0`, an existing top-level `.aws`
-  directory inside the writable root is read-only, with no write exception;
-  planner must classify this narrowing under Contract 036. No route claim
-  moves.
+- qualify only `codex.app-server` through official npm/GitHub stable `0.161.0`;
+  Research 386 freezes package and runtime identities, complete source trees,
+  all twelve selected stable hops, and the exact selected-route policy proof.
+  The claim keeps its baseline, ID, prior segments, behavior revisions, and
+  exclusions, with private revisions for accepted managed policies and the
+  existing top-level `.aws` read-only protection. `codex.exec` remains
+  independently qualified through `0.155.1`. The `.aws` workspace-write
+  narrowing still needs Contract 036 patch-compatibility classification before
+  v0.5.2.
 - project one validated `claude-agent.sdk` main-loop usage snapshot per
   completed SDK result through `ProviderObservation::Usage`, including
   input/output and cache-read/cache-write token dimensions. Required counts

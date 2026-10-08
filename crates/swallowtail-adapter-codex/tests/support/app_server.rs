@@ -12,6 +12,8 @@ use swallowtail_runtime::{
 pub enum AppServerMode {
     CompleteTurn,
     FailedTurn,
+    RejectModelList,
+    RejectTurnStart,
     HoldCatalog,
     HoldTurn,
     RequestCallback,

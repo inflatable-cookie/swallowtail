@@ -59,9 +59,10 @@ pub use registered_tools::{
     CODEX_REGISTERED_TOOL_NAME_SEPARATOR, CODEX_REGISTERED_TOOL_ROUTE, CodexRegisteredToolBinding,
 };
 pub use selection::{
-    CODEX_APP_SERVER_BASELINE_VERSION, CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION,
-    CODEX_CLI_AXIS, CODEX_EXEC_BASELINE_VERSION, CODEX_LATEST_QUALIFIED_VERSION,
-    codex_app_server_claim, codex_app_server_lifecycle_claim, codex_cli_binding, codex_exec_claim,
+    CODEX_APP_SERVER_BASELINE_VERSION, CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION,
+    CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION, CODEX_CLI_AXIS,
+    CODEX_EXEC_BASELINE_VERSION, CODEX_LATEST_QUALIFIED_VERSION, codex_app_server_claim,
+    codex_app_server_lifecycle_claim, codex_cli_binding, codex_exec_claim,
 };
 pub use session_access::{
     codex_approval_request_extension, codex_bounded_workspace_access_policy,

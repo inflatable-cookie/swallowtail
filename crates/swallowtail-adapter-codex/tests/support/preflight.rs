@@ -1,6 +1,7 @@
 use swallowtail_adapter_codex::{
-    CODEX_LATEST_QUALIFIED_VERSION, codex_app_server_descriptor,
-    codex_bounded_workspace_access_policy, codex_bounded_workspace_capability, codex_cli_binding,
+    CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION, CODEX_LATEST_QUALIFIED_VERSION,
+    codex_app_server_descriptor, codex_bounded_workspace_access_policy,
+    codex_bounded_workspace_capability, codex_cli_binding,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessRequirement, AccessStatus, Capability, CapabilityProfile,
@@ -35,7 +36,7 @@ pub fn app_server_plan_with(
         ExecutionHostId::new("host.local").expect("host id is valid"),
         ConfiguredInstanceId::new("codex.app-server.local").expect("instance id is valid"),
         InstanceTargetRef::new("codex-app-server-executable").expect("target is valid"),
-        CODEX_LATEST_QUALIFIED_VERSION,
+        CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION,
         optional_capabilities,
         optional_host_services,
     )
@@ -54,7 +55,7 @@ pub fn app_server_plan_for(
         host_id,
         instance_id,
         target,
-        CODEX_LATEST_QUALIFIED_VERSION,
+        CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION,
         optional_capabilities,
         optional_host_services,
     )
@@ -181,7 +182,12 @@ pub fn bounded_workspace_plan_for(
     instance_id: ConfiguredInstanceId,
     target: InstanceTargetRef,
 ) -> PreflightPlan {
-    bounded_workspace_plan_for_version(host_id, instance_id, target, CODEX_LATEST_QUALIFIED_VERSION)
+    bounded_workspace_plan_for_version(
+        host_id,
+        instance_id,
+        target,
+        CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION,
+    )
 }
 
 pub fn bounded_workspace_plan_for_version(

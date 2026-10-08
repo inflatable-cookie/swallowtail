@@ -1,12 +1,15 @@
 use std::collections::BTreeSet;
 
 use serde_json::Value;
-use swallowtail_adapter_codex::{codex_app_server_claim, codex_exec_claim};
+use swallowtail_adapter_codex::{
+    codex_app_server_claim, codex_app_server_lifecycle_claim, codex_exec_claim,
+};
 use swallowtail_core::{
     InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
 };
 
-const ANALYSIS: &str = include_str!("fixtures/codex-app-server-0.161.0/stop-analysis.json");
+const ANALYSIS: &str =
+    include_str!("fixtures/codex-app-server-0.161.0/qualification-analysis.json");
 const ARTIFACTS: &str = include_str!("fixtures/codex-app-server-0.161.0/published-artifacts.json");
 const SOURCE_INVENTORY: &str =
     include_str!("fixtures/codex-app-server-0.161.0/source-inventory.json");
@@ -347,147 +350,244 @@ fn official_package_and_source_chains_are_exact() {
 }
 
 #[test]
-fn authority_changes_are_frozen_and_the_existing_claim_stays_at_0_155_1() {
+fn accepted_policy_changes_and_exact_claim_milestones_are_frozen() {
     let analysis = json(ANALYSIS);
-    assert_eq!(
-        analysis["decision"],
-        "the 0.159.0 read-only .aws carveout is accepted by decision cb18500a-499a-4cbe-ae1b-8daec34d5ebe; the app-server claim remains at 0.155.1 pending rulings or scoped adaptations for the remaining selected-policy stops"
+    assert_exact_keys(
+        &analysis,
+        &[
+            "accepted_policy_paths",
+            "artifact_identity",
+            "candidate",
+            "inventory",
+            "limitations",
+            "official_channel",
+            "qualification",
+            "residual_gates",
+            "route_boundary",
+        ],
     );
-    assert_eq!(
-        analysis["prior_stop_decision"],
-        "stop at the 0.159.0 default read-only .aws carveout pending a separate operator ruling; no compatibility claim, selection, guide, matrix, changelog, or release file changed"
-    );
+    assert_eq!(analysis["candidate"]["version"], "0.161.0");
     assert_eq!(analysis["official_channel"]["npm_latest"], "0.161.0");
     assert_eq!(
         analysis["official_channel"]["github_latest_non_prerelease"],
         "rust-v0.161.0"
     );
+    let final_reprobe = &analysis["official_channel"]["final_reprobe"];
+    assert_exact_keys(
+        final_reprobe,
+        &[
+            "channels_agree",
+            "github_latest_non_prerelease",
+            "npm_alpha_excluded",
+            "npm_latest",
+            "observed_at",
+        ],
+    );
+    assert_eq!(final_reprobe["observed_at"], "2026-10-08");
+    assert_eq!(final_reprobe["npm_latest"], "0.161.0");
+    assert_eq!(final_reprobe["npm_alpha_excluded"], "0.162.0-alpha.20");
+    assert_eq!(
+        final_reprobe["github_latest_non_prerelease"],
+        "rust-v0.161.0"
+    );
+    assert_eq!(final_reprobe["channels_agree"], true);
     assert_eq!(analysis["official_channel"]["agreement"], true);
-    assert_eq!(analysis["candidate"]["version"], "0.161.0");
     assert_eq!(analysis["inventory"]["tag_count"], 13);
     assert_eq!(analysis["inventory"]["hop_count"], 12);
+    assert_eq!(analysis["artifact_identity"]["package"], "@openai/codex");
+    assert_eq!(
+        analysis["artifact_identity"]["runtime_package"],
+        "@openai/codex-darwin-arm64@0.161.0"
+    );
+    assert_eq!(
+        analysis["artifact_identity"]["runtime_sha256"],
+        "12ac11d2c7eee27cfae34393986d7b7c9ed0dea537cb749831cdd7033893e6de"
+    );
+    assert_eq!(analysis["artifact_identity"]["runtime_executed"], false);
 
-    let reasons = analysis["stop_reasons"].as_array().expect("stop reasons");
-    assert_eq!(reasons.len(), 3);
-    assert_eq!(reasons[0]["version"], "0.156.0");
-    assert_eq!(reasons[0]["category"], "project trust and authority flow");
-    assert_eq!(
-        strings(&reasons[0]["files"]),
-        vec![
-            "codex-rs/app-server/src/request_processors/thread_processor.rs",
-            "codex-rs/config/src/loader/mod.rs",
-            "codex-rs/config/src/loader/projectless_directory_tests.rs",
-        ]
-    );
-    assert!(reasons[0]["before"].as_str().is_some());
-    assert!(reasons[0]["after"].as_str().is_some());
-    assert!(
-        reasons[0]["after"]
-            .as_str()
-            .expect("after")
-            .contains("is_projectless")
-    );
-    assert_eq!(reasons[1]["version"], "0.158.0");
-    assert_eq!(reasons[1]["category"], "filesystem permission boundary");
-    assert_eq!(
-        strings(&reasons[1]["files"]),
-        vec![
-            "codex-rs/protocol/src/permissions.rs",
-            "codex-rs/protocol/src/permissions/local_aliases.rs",
-            "codex-rs/protocol/src/permissions/local_aliases_tests.rs",
-        ]
-    );
-    assert!(
-        reasons[1]["observed_effect"]
-            .as_str()
-            .expect("effect")
-            .contains("not evidence of a new read grant")
-    );
-    assert_eq!(reasons[2]["version"], "0.159.0");
-    assert_eq!(
-        reasons[2]["category"],
-        "security boundary and consumer-visible workspace-write narrowing"
-    );
+    let qualification = &analysis["qualification"];
     assert_exact_keys(
-        &reasons[2],
+        qualification,
         &[
-            "after",
-            "before",
-            "category",
-            "decision",
-            "files",
-            "observed_effect",
-            "source_sha256",
-            "source_lines",
-            "version",
+            "baseline",
+            "codex_exec_ceiling_unchanged",
+            "claim_id",
+            "compatible_points_after_ceiling",
+            "qualified_ceiling",
+            "segments",
+            "unpublished_gaps",
         ],
     );
+    assert_eq!(qualification["claim_id"], "codex.app-server.cli-window-2");
+    assert_eq!(qualification["baseline"], "0.155.1");
+    assert_eq!(qualification["qualified_ceiling"], "0.161.0");
+    assert_eq!(qualification["codex_exec_ceiling_unchanged"], "0.155.1");
+    let expected_segments = [
+        (
+            "0.80.0..=0.81.0",
+            "codex.app-server.v2.legacy-default-stdio",
+            "deprecated",
+        ),
+        (
+            "0.84.0..=0.99.0",
+            "codex.app-server.v2.legacy-default-stdio",
+            "deprecated",
+        ),
+        (
+            "0.100.0..=0.107.0",
+            "codex.app-server.v2.legacy-explicit-stdio",
+            "deprecated",
+        ),
+        (
+            "0.110.0..=0.130.0",
+            "codex.app-server.v2.base",
+            "deprecated",
+        ),
+        (
+            "0.131.0..=0.155.1",
+            "codex.app-server.v2.workspace-roots",
+            "maintained",
+        ),
+        (
+            "0.156.0..=0.156.1",
+            "codex.app-server.v2.managed-policy-workspace-roots",
+            "deprecated",
+        ),
+        (
+            "0.157.0..=0.157.1",
+            "codex.app-server.v2.managed-network-workspace-roots",
+            "deprecated",
+        ),
+        (
+            "0.158.0",
+            "codex.app-server.v2.path-alias-workspace-roots",
+            "deprecated",
+        ),
+        (
+            "0.159.0..=0.161.0",
+            "codex.app-server.v2.protected-aws-workspace-roots",
+            "maintained",
+        ),
+    ];
+    let segments = qualification["segments"]
+        .as_array()
+        .expect("claim segments");
+    assert_eq!(segments.len(), expected_segments.len());
+    for (segment, (range, behavior, support)) in segments.iter().zip(expected_segments) {
+        assert_exact_keys(segment, &["behavior_revision", "range", "support"]);
+        assert_eq!(segment["range"], range);
+        assert_eq!(segment["behavior_revision"], behavior);
+        assert_eq!(segment["support"], support);
+    }
     assert_eq!(
-        strings(&reasons[2]["files"]),
+        strings(&qualification["unpublished_gaps"]),
         vec![
-            "codex-rs/protocol/src/permissions.rs",
-            "codex-rs/protocol/src/permissions/target.rs",
+            "0.82.0..=0.83.0",
+            "0.108.0..=0.109.0",
+            "0.149.2",
+            "0.150.2",
+            "0.151.1",
+            "0.152.2",
+            "0.154.1",
+            "0.155.2"
         ]
     );
-    assert_exact_keys(
-        &reasons[2]["source_sha256"],
-        &[
-            "codex-rs/protocol/src/permissions.rs@rust-v0.155.1",
-            "codex-rs/protocol/src/permissions.rs@rust-v0.158.0",
-            "codex-rs/protocol/src/permissions.rs@rust-v0.159.0",
-            "codex-rs/protocol/src/permissions/target.rs@rust-v0.158.0",
-            "codex-rs/protocol/src/permissions/target.rs@rust-v0.159.0",
-        ],
+
+    let paths = analysis["accepted_policy_paths"]
+        .as_array()
+        .expect("accepted policy paths");
+    assert_eq!(paths.len(), 5);
+    let expected_paths = [
+        ("0.156.0", "managed model-provider revalidation"),
+        ("0.156.0", "fail-closed permission materialization"),
+        (
+            "0.156.0",
+            "safe-to-replay bootstrap GET system-proxy fallback",
+        ),
+        (
+            "0.156.0 and 0.161.0",
+            "explicit Windows MxC under managed policy",
+        ),
+        (
+            "0.157.0",
+            "application.network policy for provider/API HTTP",
+        ),
+    ];
+    for (path, (version, name)) in paths.iter().zip(expected_paths) {
+        assert_exact_keys(
+            path,
+            &[
+                "adapter_tests",
+                "boundary",
+                "path",
+                "source_files",
+                "upstream_tests",
+                "version",
+            ],
+        );
+        assert_eq!(path["version"], version);
+        assert_eq!(path["path"], name);
+        assert!(!strings(&path["source_files"]).is_empty());
+        assert!(!strings(&path["upstream_tests"]).is_empty());
+        assert!(!strings(&path["adapter_tests"]).is_empty());
+        assert!(!path["boundary"].as_str().unwrap().is_empty());
+    }
+    assert_eq!(
+        strings(&paths[0]["upstream_tests"]),
+        vec![
+            "provider_requirements_ignore_system_defaults_but_reject_requirement_changes",
+            "provider_requirement_load_errors_reject_input",
+            "provider_requirement_changes_reject_inputs_to_existing_threads",
+        ]
     );
     assert_eq!(
-        reasons[2]["source_sha256"]["codex-rs/protocol/src/permissions.rs@rust-v0.155.1"],
-        "d90725db886111ae662f3cb8477429c18b0ce25a243a5189cc6193284d01b46c"
+        strings(&paths[1]["upstream_tests"]),
+        vec![
+            "permission_rules_require_absolute_paths_and_descendant_subpaths",
+            "interior_dot_workspace_glob_fails_closed_for_every_path_convention",
+        ]
     );
     assert_eq!(
-        reasons[2]["source_sha256"]["codex-rs/protocol/src/permissions.rs@rust-v0.158.0"],
-        "9195d43702fc0442ff9ad6d3cc7653324130996f035a008ac94489a7f20bd3e7"
-    );
-    assert_eq!(
-        reasons[2]["source_sha256"]["codex-rs/protocol/src/permissions.rs@rust-v0.159.0"],
-        "78a1c80b9b5cda29c563538d90003005d26c411eea533bd00db54a185a6aed54"
-    );
-    assert_eq!(
-        reasons[2]["source_sha256"]["codex-rs/protocol/src/permissions/target.rs@rust-v0.158.0"],
-        "e7c44e9e8e15e0579ee9081ac8b7b6f8d34cc53a48ca8a5594838cd0d962efdd"
-    );
-    assert_eq!(
-        reasons[2]["source_sha256"]["codex-rs/protocol/src/permissions/target.rs@rust-v0.159.0"],
-        "df4ed6069d7d64396066dc6a2ca87f540f1f05f6589ab4c990592b5648ae4219"
+        strings(&paths[2]["upstream_tests"]),
+        vec![
+            "bootstrap_gets_resolve_each_fallback_destination_and_preserve_headers",
+            "bootstrap_gets_keep_default_responses_without_proxy_retry",
+            "bootstrap_gets_honor_disabled_fallback",
+            "bootstrap_get_recovers_from_stalled_body_before_cloud_startup_timeout",
+            "system_proxy_fallback_config_matches_bootstrap",
+            "system_proxy_fallback_honors_feature_requirements",
+        ]
     );
     assert!(
-        reasons[2]["after"]
+        paths[3]["boundary"]
             .as_str()
-            .expect("after")
-            .contains("existing top-level .aws directory")
+            .unwrap()
+            .contains("cannot establish runtime isolation")
     );
     assert!(
-        reasons[2]["observed_effect"]
+        paths[4]["boundary"]
             .as_str()
-            .expect("effect")
-            .contains("no explicit .aws write exception")
-    );
-    assert!(
-        analysis["next_ruling"][0]
-            .as_str()
-            .expect("next policy ruling")
-            .contains("0.156.0 selected managed-provider revalidation")
-    );
-    assert!(
-        reasons[2]["decision"]
-            .as_str()
-            .expect("accepted .aws ruling")
-            .contains("cb18500a-499a-4cbe-ae1b-8daec34d5ebe")
+            .unwrap()
+            .contains("provider/API HTTP separately from turn/start")
     );
 
     let boundary = &analysis["route_boundary"];
-    assert_eq!(
-        boundary["thread_start_file"],
-        "crates/swallowtail-adapter-codex/src/app_server/session_role.rs"
+    assert_exact_keys(
+        boundary,
+        &[
+            "failure_projection",
+            "no_artifact_execution",
+            "no_credentials",
+            "no_host_update",
+            "no_live_session",
+            "no_new_operations",
+            "no_provider_prompt",
+            "request_overlay",
+            "thread_start",
+            "thread_start_fields",
+            "turn_sandbox_policy_keys",
+            "turn_start",
+        ],
     );
     assert_eq!(
         strings(&boundary["thread_start_fields"]),
@@ -495,7 +595,7 @@ fn authority_changes_are_frozen_and_the_existing_claim_stays_at_0_155_1() {
             "approvalPolicy=never",
             "sandbox=workspace-write",
             "cwd=<preflight-approved working-resource root>",
-            "runtimeWorkspaceRoots=[same root]",
+            "runtimeWorkspaceRoots=[same root]"
         ]
     );
     assert_eq!(
@@ -505,34 +605,87 @@ fn authority_changes_are_frozen_and_the_existing_claim_stays_at_0_155_1() {
             "excludeTmpdirEnvVar",
             "networkAccess",
             "type",
-            "writableRoots",
+            "writableRoots"
         ]
     );
-    assert_eq!(boundary["no_aws_write_exception"], true);
-    assert_eq!(boundary["no_live_session"], true);
+    assert!(
+        boundary["request_overlay"]
+            .as_str()
+            .unwrap()
+            .contains("windows.allow_mxc")
+    );
+    assert_eq!(boundary["no_new_operations"], true);
     assert_eq!(boundary["no_provider_prompt"], true);
+    assert_eq!(boundary["no_live_session"], true);
+    assert_eq!(boundary["no_credentials"], true);
     assert_eq!(boundary["no_artifact_execution"], true);
     assert_eq!(boundary["no_host_update"], true);
+    assert_eq!(analysis["residual_gates"].as_array().unwrap().len(), 1);
+    assert!(
+        analysis["limitations"][0]
+            .as_str()
+            .unwrap()
+            .contains("Contract 036")
+    );
+    assert!(
+        analysis["limitations"][1]
+            .as_str()
+            .unwrap()
+            .contains("runtime isolation")
+    );
 
     let claim = codex_app_server_claim();
-    let InterfaceCompatibilityAssessment::Qualified(qualified) = claim.assess(&version("0.155.1"))
+    let InterfaceCompatibilityAssessment::Qualified(old) = claim.assess(&version("0.155.1")) else {
+        panic!("the previous exact point remains qualified");
+    };
+    assert_eq!(old.support_status(), InterfaceSupportStatus::Maintained);
+    assert!(!claim.assess(&version("0.155.2")).is_permitted());
+    for (point, behavior, status) in [
+        (
+            "0.156.0",
+            "codex.app-server.v2.managed-policy-workspace-roots",
+            InterfaceSupportStatus::Deprecated,
+        ),
+        (
+            "0.157.0",
+            "codex.app-server.v2.managed-network-workspace-roots",
+            InterfaceSupportStatus::Deprecated,
+        ),
+        (
+            "0.158.0",
+            "codex.app-server.v2.path-alias-workspace-roots",
+            InterfaceSupportStatus::Deprecated,
+        ),
+        (
+            "0.159.0",
+            "codex.app-server.v2.protected-aws-workspace-roots",
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.161.0",
+            "codex.app-server.v2.protected-aws-workspace-roots",
+            InterfaceSupportStatus::Maintained,
+        ),
+    ] {
+        let InterfaceCompatibilityAssessment::Qualified(qualified) = claim.assess(&version(point))
+        else {
+            panic!("{point} must be qualified");
+        };
+        assert_eq!(qualified.behavior_revision().as_str(), behavior);
+        assert_eq!(qualified.support_status(), status);
+    }
+
+    let lifecycle = codex_app_server_lifecycle_claim();
+    let InterfaceCompatibilityAssessment::Qualified(lifecycle_qualified) =
+        lifecycle.assess(&version("0.161.0"))
     else {
-        panic!("0.155.1 remains qualified");
+        panic!("app-server lifecycle behavior is qualified at the current point");
     };
     assert_eq!(
-        qualified.support_status(),
+        lifecycle_qualified.support_status(),
         InterfaceSupportStatus::Maintained
     );
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-        claim.assess(&version("0.161.0"))
-    else {
-        panic!("0.161.0 stays unverified until open policy decisions and qualification");
-    };
-    assert_eq!(unverified.latest_qualified().as_str(), "0.155.1");
-    assert_eq!(
-        unverified.behavior_revision().as_str(),
-        "codex.app-server.v2.workspace-roots"
-    );
+    assert!(!lifecycle.assess(&version("0.155.2")).is_permitted());
 
     let exec = codex_exec_claim();
     let InterfaceCompatibilityAssessment::UnverifiedNewer(exec_unverified) =

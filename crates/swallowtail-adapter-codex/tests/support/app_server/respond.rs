@@ -74,6 +74,16 @@ fn respond(&self, message: &serde_json::Value) {
                 if matches!(self.mode, AppServerMode::HoldCatalog) {
                     return;
                 }
+                if matches!(self.mode, AppServerMode::RejectModelList) {
+                    self.state.push(serde_json::json!({
+                        "id": id,
+                        "error": {
+                            "code": -32000,
+                            "message": "private managed provider requirement detail"
+                        }
+                    }));
+                    return;
+                }
                 let cursor = message
                     .get("params")
                     .and_then(|params| params.get("cursor"))
@@ -202,6 +212,16 @@ fn respond(&self, message: &serde_json::Value) {
                 }
             }
             ("turn/start", Some(id)) => {
+                if matches!(self.mode, AppServerMode::RejectTurnStart) {
+                    self.state.push(serde_json::json!({
+                        "id": id,
+                        "error": {
+                            "code": -32000,
+                            "message": "private managed provider requirement detail"
+                        }
+                    }));
+                    return;
+                }
                 let thread_id = message["params"]["threadId"]
                     .as_str()
                     .expect("turn/start carries a thread id")
@@ -233,6 +253,8 @@ fn respond(&self, message: &serde_json::Value) {
                     AppServerMode::FailedTurn => self.complete_turn("failed"),
                     AppServerMode::HoldCatalog
                     | AppServerMode::HoldTurn
+                    | AppServerMode::RejectModelList
+                    | AppServerMode::RejectTurnStart
                     | AppServerMode::MismatchedTurnSession
                     | AppServerMode::SubstituteResume
                     | AppServerMode::LifecycleSuccess

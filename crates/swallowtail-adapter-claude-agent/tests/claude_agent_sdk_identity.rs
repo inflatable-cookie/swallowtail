@@ -23,6 +23,10 @@ const CURRENT_IDENTITY: &str = include_str!("fixtures/claude-agent-sdk-0.3.293/i
 const CURRENT_PROTOCOL: &str = include_str!("fixtures/claude-agent-sdk-0.3.293/protocol.json");
 const CURRENT_INVENTORY: &str =
     include_str!("fixtures/claude-agent-sdk-0.3.293/dist-inventory.json");
+const LATEST_IDENTITY: &str = include_str!("fixtures/claude-agent-sdk-0.3.295/identity.json");
+const LATEST_PROTOCOL: &str = include_str!("fixtures/claude-agent-sdk-0.3.295/protocol.json");
+const LATEST_INVENTORY: &str =
+    include_str!("fixtures/claude-agent-sdk-0.3.295/dist-inventory.json");
 
 /// Reports whether one line names an option key, ignoring a longer key that
 /// merely contains it: `disallowedTools` is not `allowedTools`.
@@ -166,7 +170,7 @@ fn the_route_binds_package_native_segments_and_exact_axes_with_node_window() {
 
 #[test]
 fn package_native_segments_preserve_baselines_claim_ids_and_qualified_only() {
-    // Research 416 qualifies only the coupled package/native surfaces while
+    // Research 420 extends only the coupled package/native surfaces while
     // preserving each original baseline, claim id and QualifiedOnly posture.
     let claims = [
         (
@@ -235,14 +239,14 @@ fn package_native_segments_preserve_baselines_claim_ids_and_qualified_only() {
         |value: &str| swallowtail_core::InterfaceVersion::new(value).expect("valid version");
     let package = claude_agent_sdk_package_claim();
     let native = claude_agent_sdk_native_claim();
-    for patch in 284..=293 {
+    for patch in 284..=295 {
         assert!(package.permits(&version(&format!("0.3.{patch}"))));
         assert!(native.permits(&version(&format!("2.1.{patch}"))));
     }
     assert!(!package.permits(&version("0.3.283")));
-    assert!(!package.permits(&version("0.3.294")));
+    assert!(!package.permits(&version("0.3.296")));
     assert!(!native.permits(&version("2.1.283")));
-    assert!(!native.permits(&version("2.1.294")));
+    assert!(!native.permits(&version("2.1.296")));
     // Older native inventory points stay outside the selected segment.
     assert!(!package.permits(&version("0.3.260")));
     assert!(!native.permits(&version("2.1.258")));
@@ -653,7 +657,7 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
 
 #[test]
 fn the_shipped_asset_matches_the_frozen_identity() {
-    let protocol = protocol();
+    let protocol: serde_json::Value = serde_json::from_str(LATEST_PROTOCOL).unwrap();
     assert_eq!(protocol["sdk_package"], CLAUDE_AGENT_SDK_PACKAGE);
     assert_eq!(protocol["sdk_version"], CLAUDE_AGENT_SDK_VERSION);
     assert_eq!(protocol["native_version"], CLAUDE_AGENT_SDK_NATIVE_VERSION);
@@ -669,6 +673,44 @@ fn the_shipped_asset_matches_the_frozen_identity() {
     assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(CLAUDE_AGENT_SDK_WIRE));
     assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(CLAUDE_AGENT_SDK_VERSION));
     assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(CLAUDE_AGENT_SDK_NATIVE_VERSION));
+}
+
+#[test]
+fn latest_artifact_ledger_binds_the_published_hops_and_selected_pair() {
+    let identity: serde_json::Value = serde_json::from_str(LATEST_IDENTITY).unwrap();
+    let inventory: serde_json::Value = serde_json::from_str(LATEST_INVENTORY).unwrap();
+    let protocol: serde_json::Value = serde_json::from_str(LATEST_PROTOCOL).unwrap();
+    assert_eq!(identity["official_channel"]["latest"], "0.3.295");
+    assert_eq!(identity["official_channel"]["next"], "0.3.295");
+    assert_eq!(identity["published_hops"].as_array().unwrap().len(), 2);
+    assert_eq!(identity["published_hops"][0]["version"], "0.3.294");
+    assert_eq!(identity["published_hops"][0]["native_version"], "2.1.294");
+    assert_eq!(identity["published_hops"][1]["version"], "0.3.295");
+    assert_eq!(identity["published_hops"][1]["native_version"], "2.1.295");
+    assert_eq!(
+        identity["published_hops"][1]["tarball_sha256"],
+        "704b1228401f951e1cdb3a1782b97893d3caee64afe162a4f7fbda8106273c7b"
+    );
+    assert_eq!(
+        inventory["tree_sha256"]["0.3.295"],
+        "9c113fe7393277787cd4964869b4c0a932055578b2538b4944f3af64b49c6c99"
+    );
+    assert_eq!(
+        inventory["adjacent_hops"]["294->295"]["added"]
+            .as_array()
+            .unwrap()
+            .len(),
+        2
+    );
+    assert_eq!(
+        inventory["adjacent_hops"]["294->295"]["removed"]
+            .as_array()
+            .unwrap()
+            .len(),
+        2
+    );
+    assert_eq!(protocol["default_pair"], "0.3.293 / 2.1.293 (unchanged)");
+    assert_eq!(protocol["wire"], "swallowtail-claude-agent-sdk-jsonl-v1");
 }
 
 #[test]

@@ -10,7 +10,7 @@ use crate::sdk::{
     CLAUDE_AGENT_SDK_BASELINE_VERSION, CLAUDE_AGENT_SDK_BEHAVIOR,
     CLAUDE_AGENT_SDK_NATIVE_BASELINE_VERSION, CLAUDE_AGENT_SDK_NATIVE_VERSION,
     CLAUDE_AGENT_SDK_NODE_RUNTIME, CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION,
-    CLAUDE_AGENT_SDK_WIRE,
+    CLAUDE_AGENT_SDK_WIRE, ClaudeAgentSdkPackageNativePair,
 };
 use swallowtail_core::InterfaceVersion;
 
@@ -28,7 +28,7 @@ fn package_claim_qualifies_each_published_sdk_hop_in_the_maintained_segment() {
     );
     assert_eq!(claim.latest_qualified(), &version(CLAUDE_AGENT_SDK_VERSION));
     assert_eq!(claim.milestones().len(), 1);
-    for patch in 284..=293 {
+    for patch in 284..=295 {
         let point = version(&format!("0.3.{patch}"));
         let assessment = claim.assess(&point);
         assert!(assessment.is_permitted(), "published package patch {patch}");
@@ -37,7 +37,7 @@ fn package_claim_qualifies_each_published_sdk_hop_in_the_maintained_segment() {
             CLAUDE_AGENT_SDK_BEHAVIOR
         );
     }
-    for rejected in ["0.3.283", "0.3.294", "0.3.259-rc.1"] {
+    for rejected in ["0.3.283", "0.3.296", "0.3.259-rc.1"] {
         assert!(
             !claim.permits(&version(rejected)),
             "unqualified point {rejected} must be rejected"
@@ -62,12 +62,12 @@ fn native_and_node_axes_stay_separate_from_the_wrapper_axis() {
         &version(CLAUDE_AGENT_SDK_NATIVE_VERSION)
     );
     assert_eq!(native.milestones().len(), 1);
-    for patch in 284..=293 {
+    for patch in 284..=295 {
         assert!(native.permits(&version(&format!("2.1.{patch}"))));
     }
     // The Claude Code routes sit on the same native version family. Their
     // qualification never transfers here and this one never transfers back.
-    for rejected in ["2.1.283", "2.1.294", "0.3.293"] {
+    for rejected in ["2.1.283", "2.1.296", "0.3.293"] {
         assert!(!native.permits(&version(rejected)));
     }
     assert!(claude_agent_sdk_native_binding(CLAUDE_AGENT_SDK_NATIVE_VERSION).is_some());
@@ -108,13 +108,33 @@ fn native_and_node_axes_stay_separate_from_the_wrapper_axis() {
 
 #[test]
 fn package_and_native_points_keep_the_published_coupling() {
-    for patch in 284..=293 {
+    for patch in 284..=295 {
         let package = format!("0.3.{patch}");
         let native = format!("2.1.{patch}");
         assert!(super::package_native_pair_matches(&package, &native));
     }
     assert!(!super::package_native_pair_matches("0.3.292", "2.1.293"));
     assert!(!super::package_native_pair_matches("0.3.293", "2.1.292"));
+    assert!(!super::package_native_pair_matches("0.3.294", "2.1.295"));
+}
+
+#[test]
+fn default_pair_and_previous_ten_pairs_remain_unchanged() {
+    assert_eq!(
+        ClaudeAgentSdkPackageNativePair::DEFAULT.package_version(),
+        "0.3.293"
+    );
+    assert_eq!(
+        ClaudeAgentSdkPackageNativePair::DEFAULT.native_version(),
+        "2.1.293"
+    );
+    for (patch, pair) in ClaudeAgentSdkPackageNativePair::MAINTAINED[..10]
+        .iter()
+        .enumerate()
+    {
+        assert_eq!(pair.package_version(), format!("0.3.{}", 284 + patch));
+        assert_eq!(pair.native_version(), format!("2.1.{}", 284 + patch));
+    }
 }
 
 #[test]

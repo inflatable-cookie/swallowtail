@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-19
+Updated: 2026-10-09
 
 ## Purpose
 
@@ -333,6 +333,14 @@ sidecar against fakes. Mismatched, outside-window, missing or unreadable
 identities and drift fail closed before provider effects. A sidecar-only
 relaxation, inferred version, silent fallback or replacement of an old point
 cannot satisfy this approval.
+
+The 2026-10-09 Claude Agent SDK currentness continuation qualifies the two
+newly published coupled pairs `0.3.294`/`2.1.294` and
+`0.3.295`/`2.1.295` through this same selection boundary, after adjacent
+artifact and selected-surface review in Research 420. It preserves the
+`0.3.293`/`2.1.293` default and the original ten points. The provider-free
+prepared-facade and shipped-sidecar proof covers only the two added pairs;
+the previously accepted ten-pair proof remains in Research 416.
 
 The additive enum and builder preserve the existing constructor and default
 selection, so existing callers remain source-compatible under Contract 036.

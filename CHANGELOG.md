@@ -6,6 +6,17 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify `claude-agent.sdk` through npm `latest`/`next` `0.3.295` and its
+  exact embedded native `2.1.295`, extending the retained `0.3.284`/`2.1.284`
+  baselines and current claims after every published hop through `.295`.
+  Research 420 pins the `.294` and `.295` wrapper and native identities and
+  classifies each adjacent selected-surface change. SDK `.295` changes named
+  CLI option serialization to `--flag=value`; the selected option names,
+  values, sidecar configuration, permission mediation, message projection,
+  usage bounds and lifecycle remain within the existing route contract. Keep
+  the independent Node, wire and sidecar axes, the `.293` default pair, and
+  Research 301 registered-tool live evidence at `.259`/`2.1.259`. No provider
+  session, credential, artifact execution, host update, release or tag.
 - qualify only `ollama.attached` from preserved `0.35.1` through official
   GitHub stable `0.40.1`. Add maintained `0.40.0..=0.40.1` on adapter-private
   milestone `ollama.native-text-v1.manifest-list-runner`. Retain prior

@@ -27,9 +27,10 @@ const CARD126_SELECTED_SKILL: &str =
 
 #[test]
 fn all_maintained_pairs_flow_from_prepared_plan_into_the_shipped_sidecar() {
-    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 10);
-    for (index, pair) in ClaudeAgentSdkPackageNativePair::MAINTAINED
-        .into_iter()
+    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 12);
+    for (index, pair) in ClaudeAgentSdkPackageNativePair::MAINTAINED[..10]
+        .iter()
+        .copied()
         .enumerate()
     {
         let host_id = swallowtail_core::ExecutionHostId::new(format!(
@@ -134,6 +135,97 @@ fn all_maintained_pairs_flow_from_prepared_plan_into_the_shipped_sidecar() {
 }
 
 #[test]
+fn new_qualified_pairs_bind_through_the_prepared_facade_and_sidecar() {
+    for pair in [
+        ClaudeAgentSdkPackageNativePair::V0_3_294Native2_1_294,
+        ClaudeAgentSdkPackageNativePair::V0_3_295Native2_1_295,
+    ] {
+        let host_id = swallowtail_core::ExecutionHostId::new(format!(
+            "claude-agent-sdk.fixture.new-pair-{}",
+            pair.package_version()
+        ))
+        .expect("fixture host id is valid");
+        let prepared = prepare_claude_agent_sdk_session(
+            preparation(host_id.clone()).with_package_native_pair(pair),
+            swallowtail_runtime::SessionOptions::default(),
+        )
+        .expect("new exact pair prepares");
+        let versions: Vec<_> = prepared
+            .plan()
+            .interface_versions()
+            .map(|binding| (binding.axis().as_str(), binding.version().as_str()))
+            .collect();
+        assert!(versions.contains(&(CLAUDE_AGENT_SDK_PACKAGE_AXIS, pair.package_version())));
+        assert!(versions.contains(&(CLAUDE_AGENT_SDK_NATIVE_AXIS, pair.native_version())));
+
+        let listing_host = SdkFixtureHost::new(SdkScenario::SessionListing);
+        let listing = block_on(prepared.list_sessions(listing_host.services(host_id.clone())))
+            .expect("new pair reaches the prepared listing facade");
+        assert_eq!(listing.len(), 1);
+        let list = listing_host
+            .inputs()
+            .into_iter()
+            .find(|record| record["command"] == "list_sessions")
+            .expect("driver emitted its listing launch record");
+        assert_eq!(list["params"]["expectedSdkVersion"], pair.package_version());
+        assert_eq!(
+            list["params"]["expectedNativeVersion"],
+            pair.native_version()
+        );
+
+        let fixture_host = SdkFixtureHost::new(SdkScenario::Complete);
+        let services = fixture_host.services(host_id);
+        let session = block_on(prepared.open_route_session(services.clone()))
+            .expect("prepared facade opens new exact pair");
+        let open = fixture_host
+            .inputs()
+            .into_iter()
+            .find(|record| record["command"] == "open")
+            .expect("driver emitted its open launch record");
+        assert_eq!(open["params"]["expectedSdkVersion"], pair.package_version());
+        assert_eq!(
+            open["params"]["expectedNativeVersion"],
+            pair.native_version()
+        );
+        let cleanup = block_on(Box::new(session).close(cleanup_request(), services));
+        assert!(matches!(
+            cleanup,
+            swallowtail_runtime::CleanupOutcome::Clean
+                | swallowtail_runtime::CleanupOutcome::Degraded(_)
+        ));
+
+        let mut sidecar = SidecarProcess::start_package_native_pair(
+            pair.package_version(),
+            pair.native_version(),
+        );
+        let opened = sidecar.command("open-1", "open", open["params"].clone());
+        assert_eq!(opened["success"], true, "new pair opens: {opened}");
+        assert_eq!(opened["data"]["sdkVersion"], pair.package_version());
+        assert_eq!(opened["data"]["nativeVersion"], pair.native_version());
+        assert!(sidecar.sdk_was_constructed());
+        let listed = sidecar.command(
+            "list-sessions-1",
+            "list_sessions",
+            json!({
+                "cwd": sidecar.cwd(),
+                "limit": 1000,
+                "offset": 0,
+                "expectedSdkVersion": pair.package_version(),
+                "expectedNativeVersion": pair.native_version(),
+            }),
+        );
+        assert_eq!(
+            listed["success"], true,
+            "new pair listing succeeds: {listed}"
+        );
+        assert_eq!(
+            sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}))["success"],
+            true
+        );
+    }
+}
+
+#[test]
 fn wrong_unsupported_and_unreadable_package_native_identities_fail_before_sdk_construction() {
     let cases = [
         (
@@ -144,11 +236,32 @@ fn wrong_unsupported_and_unreadable_package_native_identities_fail_before_sdk_co
             "sdk_version_mismatch",
         ),
         (
+            "0.3.293",
+            "2.1.293",
             "0.3.294",
             "2.1.294",
+            "native_version_mismatch",
+        ),
+        (
+            "0.3.296",
+            "2.1.296",
+            "0.3.296",
+            "2.1.296",
+            "sdk_version_mismatch",
+        ),
+        (
             "0.3.294",
+            "2.1.294",
+            "0.3.295",
             "2.1.294",
             "sdk_version_mismatch",
+        ),
+        (
+            "0.3.295",
+            "2.1.295",
+            "0.3.295",
+            "2.1.294",
+            "native_version_mismatch",
         ),
         (
             "0.3.284",

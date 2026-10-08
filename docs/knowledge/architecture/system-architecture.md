@@ -208,8 +208,8 @@ OpenHands adds a package without a production route.
   fail-closed provider-suppressed tool/MCP surface with no working resource or
   structured-output capability. The same crate also implements the separate
   `claude-agent.sdk` route: Anthropic's official Claude Agent SDK with the
-  maintained package segment `0.3.284..=0.3.293` and coupled native segment
-  `2.1.284..=2.1.293` (Research 416), running in a source-tagged Node sidecar
+  maintained package segment `0.3.284..=0.3.295` and coupled native segment
+  `2.1.284..=2.1.295` (Research 420), running in a source-tagged Node sidecar
   with maintained Node `22.23.2..=22.23.3` (Research 387) over the private
   bounded `swallowtail-claude-agent-sdk-jsonl-v1` wire, with three maintained
   version axes and exact wire and sidecar source-tag axes, an application-

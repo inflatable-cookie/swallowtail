@@ -338,15 +338,22 @@ fn production_claim_qualifies_current_acp_hops_without_transferring_siblings() {
     assert!(cursor_agent_release_binding("2026.10.01-e373342").is_none());
     let catalogue = cursor_catalogue_claim();
     let headless = cursor_headless_claim();
-    for sibling in [catalogue, headless] {
-        for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
-            let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-                sibling.assess(&version(release))
-            else {
-                panic!("ACP qualification must not transfer to sibling {release}");
-            };
-            assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
-        }
+    for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
+        assert!(
+            matches!(
+                catalogue.assess(&version(release)),
+                InterfaceCompatibilityAssessment::Qualified(matched)
+                    if matched.behavior_revision().as_str()
+                        == "cursor-agent.catalogue.calendar-release-v1"
+            ),
+            "catalogue has its independent qualification for {release}"
+        );
+        let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+            headless.assess(&version(release))
+        else {
+            panic!("ACP qualification must not transfer to headless {release}");
+        };
+        assert_eq!(newer.latest_qualified().as_str(), "2026-09-18");
     }
 
     for gap in [

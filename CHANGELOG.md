@@ -44,7 +44,8 @@ annotated Git tags from the canonical repository.
   Research 393 freezes exact Darwin ARM64 and Linux x64 artifacts, complete
   package trees, and per-hop selected-file classifications. Keep the baseline,
   claim, behavior revision, prior points, and gaps; Headless remains at
-  `2026.09.18-9a7762b`; ACP is qualified separately in Research 394. The selected `models` command, account options,
+  `2026.09.18-9a7762b`; ACP is qualified separately in Research 394. The
+  selected `models` command, account options,
   model identity/display mapping, failure boundary, and process lifecycle are
   unchanged. No archive execution, authenticated catalogue, provider prompt,
   credential use, installation, or host update occurred.

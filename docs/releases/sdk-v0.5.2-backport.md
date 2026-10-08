@@ -61,8 +61,9 @@ allowed patch inventory; the runner rejects any other resulting file set.
 
 The released adapter pins Claude Agent SDK `0.3.259`, native binary `2.1.259`,
 Node `22.23.2`, wire `swallowtail-claude-agent-sdk-jsonl-v1`, and sidecar source
-tag `swallowtail-claude-agent-sdk-sidecar@0.4.4`. The patch leaves those points
-unchanged.
+tag `swallowtail-claude-agent-sdk-sidecar@0.5.1`. The runner freezes this tag
+against the released adapter package version and its source-tag expression.
+The patch leaves those points unchanged.
 
 The exact published SDK artifact is
 [`@anthropic-ai/claude-agent-sdk@0.3.259`](https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk/v/0.3.259),

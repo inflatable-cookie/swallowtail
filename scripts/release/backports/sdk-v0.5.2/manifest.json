@@ -4,6 +4,7 @@
   "base_tag_object": "97a6933abe13b2e8f05441e1ab950962e0683e65",
   "base_commit": "e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27",
   "base_tree": "d375b3227985e8e552ba9346d8f9b8631936db5f",
+  "sidecar_source_tag": "swallowtail-claude-agent-sdk-sidecar@0.5.1",
   "expected_tree": "35252ecf3dcb4254f66a9ed16caf813d2397f5f7",
   "patch_sha256": "e1a55692d10514e31c28848116a921274fdbbfac19aaf73fc9f601a37e2d8281",
   "consumer_fixture": {

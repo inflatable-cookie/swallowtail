@@ -26,6 +26,7 @@ PY
 base_commit=$(manifest_value base_commit)
 base_tree=$(manifest_value base_tree)
 base_tag_object=$(manifest_value base_tag_object)
+sidecar_source_tag=$(manifest_value sidecar_source_tag)
 expected_tree=$(manifest_value expected_tree)
 api_tool_version=$(manifest_value toolchain.cargo_public_api)
 api_toolchain=$(manifest_value toolchain.rust)
@@ -126,11 +127,13 @@ apply_to_source() {
   [[ $actual_files == "$expected_files" ]] ||
     die "changed-file inventory differs from manifest"
   git -C "$source" diff --quiet || die "patch unexpectedly left unstaged changes"
-  python3 - "$source" <<'PY'
+  python3 - "$source" "$sidecar_source_tag" <<'PY'
 from pathlib import Path
+import re
 import sys
 
-sdk = Path(sys.argv[1], "crates/swallowtail-adapter-claude-agent/src/sdk.rs")
+source = Path(sys.argv[1])
+sdk = source / "crates/swallowtail-adapter-claude-agent/src/sdk.rs"
 contents = sdk.read_text(encoding="utf-8")
 for expected in (
     'CLAUDE_AGENT_SDK_VERSION: &str = "0.3.259"',
@@ -139,6 +142,45 @@ for expected in (
 ):
     if expected not in contents:
         raise SystemExit(f"released SDK identity changed or disappeared: {expected}")
+expected_sidecar_tag = "swallowtail-claude-agent-sdk-sidecar@0.5.1"
+if sys.argv[2] != expected_sidecar_tag:
+    raise SystemExit(
+        f"manifest sidecar source tag mismatch: expected {expected_sidecar_tag}, found {sys.argv[2]}"
+    )
+workspace_manifest = (source / "Cargo.toml").read_text(encoding="utf-8")
+adapter_manifest = (source / "crates/swallowtail-adapter-claude-agent/Cargo.toml").read_text(encoding="utf-8")
+
+def toml_section(contents, name):
+    header = re.search(rf"(?m)^\[{re.escape(name)}\]\s*$", contents)
+    if header is None:
+        return ""
+    remainder = contents[header.end():]
+    next_header = re.search(r"(?m)^\[", remainder)
+    return remainder if next_header is None else remainder[:next_header.start()]
+
+workspace_package = toml_section(workspace_manifest, "workspace.package")
+version = re.search(r'(?m)^\s*version\s*=\s*"([^"]+)"\s*$', workspace_package)
+adapter_package = toml_section(adapter_manifest, "package")
+if not re.search(r"(?m)^\s*version\.workspace\s*=\s*true\s*$", adapter_package):
+    raise SystemExit("released adapter no longer inherits the workspace package version")
+if version is None:
+    raise SystemExit("released workspace package version is missing")
+package_version = version.group(1)
+if package_version != "0.5.1":
+    raise SystemExit(f"released workspace package version changed: expected 0.5.1, found {package_version}")
+asset = (source / "crates/swallowtail-adapter-claude-agent/src/sdk/asset.rs").read_text(encoding="utf-8")
+source_tag_expression = re.compile(
+    r'pub const CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG:\s*&str\s*=\s*concat!\(\s*'
+    r'"swallowtail-claude-agent-sdk-sidecar@",\s*env!\("CARGO_PKG_VERSION"\)\s*\)',
+    re.DOTALL,
+)
+if not source_tag_expression.search(asset):
+    raise SystemExit("released sidecar source tag expression changed or disappeared")
+actual_sidecar_tag = f"swallowtail-claude-agent-sdk-sidecar@{package_version}"
+if actual_sidecar_tag != expected_sidecar_tag:
+    raise SystemExit(
+        f"released sidecar source tag changed: expected {expected_sidecar_tag}, found {actual_sidecar_tag}"
+    )
 PY
   printf 'applied patch to %s; resulting tree %s\n' "$source" "$actual_tree"
 }

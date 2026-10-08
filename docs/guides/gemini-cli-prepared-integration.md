@@ -31,7 +31,7 @@ ACP `0.51.0..=0.61.0` excluding unpublished `0.56.1` and `0.59.1` is
 qualified. Headless `0.51.0..=0.61.0` excluding unpublished `0.56.1` and
 `0.59.1` is qualified. Official npm `latest` and GitHub's latest stable agree
 on `0.63.0`. Points `0.62.0` and `0.63.0` remain visible `UnverifiedNewer`.
-Research 410 confirms that noninteractive Plan Mode can allow
+Research 415 confirms that noninteractive Plan Mode can allow
 `exit_plan_mode`, which changes approval mode to YOLO. The selected adapter has
 no guard for that transition, so the current stable remains unqualified until
 a separate enforcement design preserves the no-implementation-authority

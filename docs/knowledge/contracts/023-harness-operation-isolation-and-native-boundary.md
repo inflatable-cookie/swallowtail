@@ -244,6 +244,42 @@ semantic evidence without transferring catalogue proof. New public API,
 Windows/runtime evidence, authentication/network boundaries or live-proof
 needs return separately. No Antigravity live usage is authorized.
 
+## Antigravity Windows Offline Sandbox Proof
+
+Tom's 2026-10-08 board answer to decision
+`155265da-be30-4028-92cf-0ee064d1612c` is “Authorize bounded proof - I have a
+windows VM we can use”. A separate proof may execute the exact Antigravity
+`1.2.17` x64 and ARM64 Windows PE artifacts in explicitly identified,
+operator-approved disposable Windows environments. Record the VM identity,
+Windows version, architecture, execution mode and access path before execution;
+an unspecified VM or another host does not satisfy this boundary.
+
+Prove the fixture harness and containment against fakes, then persist the
+execution plan and result record before any actual artifact attempt. Use
+only task-owned scratch and fake provider/tool fixtures. Deny outbound
+provider traffic, access no real credentials or authentication stores, and
+make no host installation, persistent configuration or elevation changes.
+Command and elevation probes stay inside the approved disposable environment.
+
+Verify the original shipped PE and its published identity. Fake or patched
+artifact behavior does not establish shipped sandbox enforcement. If the
+selected path requires real authentication, provider traffic or unavailable
+sandbox facilities, stop with the exact missing proof. Record native versus
+emulated execution and never transfer proof between architectures or deployment
+modes. An unavailable platform remains an evidence gate, not a removed claim.
+
+This is provider-free proof authority, not a live provider turn, permission
+bypass, broader platform claim, production adaptation, release or tag approval.
+The separate resource-resolution and retry control-flow gates remain.
+
+Tom identified the available environment in the same conversation as Windows
+11 ARM64 in Parallels on his machine, and said he has no x64 access currently.
+Only ARM64 execution can be proved there. Keep native x64 evidence pending;
+x64 emulation on ARM64 is a distinct deployment and cannot supply native x64
+proof. Environment preparation that changes VM configuration or provisions a
+disposable environment needs separate authority under the no-configuration-
+change boundary; availability alone does not establish isolation.
+
 ## Copilot ACP Offline Artifact Proof
 
 Tom's 2026-10-08 “Accept and approve all” answers decision
@@ -278,6 +314,23 @@ consumer-visible narrowing, return the exact proposed adaptation for a
 separate ruling before moving claims. Preserve older qualified points;
 Contract 036 compatibility remains independent.
 
+Tom's subsequent 2026-10-08 board answer to decision
+`f04070a3-4a62-4214-bda8-788ccfb3b912` is “We have to work with whatever
+command code ship”. Use official shipped Command Code artifacts. Do not build
+the proposed upstream model-lane prototype, patch or fork the provider, or
+claim a hypothetical startup fix. No upstream publication or patched-runtime
+qualification is authorized.
+
+This answer does not establish a shipped mechanism preserving explicit model
+selection. The recorded `1.79.1` planning-lane precedence still conflicts with
+the earlier explicit-model guarantee. Before qualification, settle whether
+the route may document provider-configured planning-model precedence as a
+version-specific limit or must preserve the explicit-model guarantee through
+an actually shipped mechanism. Do not infer that forwarding `-m` proves the
+effective model, silently substitute a model, change permission mode to escape
+the planning lane, write persistent settings or relocate authentication/home.
+Preserve current qualified points and the separate release compatibility gate.
+
 ## Kiro ACP Explicit Environment
 
 Tom's 2026-10-08 “Accept and approve all” answers decision
@@ -292,6 +345,32 @@ separate adaptation defining their admission into the approved environment.
 Further authority, public API/lifecycle or live-proof needs return for a
 separate ruling. Frozen identity and provider-free route proof must precede
 qualification; Contract 036 patch compatibility remains separate.
+
+## Kiro ACP Owner-Only State
+
+Tom's 2026-10-08 board ruling, “Accept owner-only boundary; require exact ACP
+proof”, answers decision `73ff6b53-f8be-4d7f-9031-c8b0a81e3ff1`.
+Qualification may accept Kiro `2.27.0` and later owner-only home and prior-session
+state as a documented provider boundary. Preserve the approved execution
+principal and delegated environment, local-account authentication,
+`session/new.cwd`, read-only working resource and reject-and-cancel policy.
+Preserve all older qualified points.
+
+Qualification still requires exact selected ACP entrypoint reachability,
+affected paths, symlink and ownership treatment, failure behavior and
+session-access effects. Vendor documentation and filename strings alone do
+not establish those effects. Provider-free static control-flow proof may
+establish only the behavior it actually maps. If it cannot establish the ACP
+effects, retain the existing `2.21.4` claim and record the finite missing proof
+with a concrete isolated provider-free runtime harness for separate approval.
+Do not infer compatibility, weaken ownership permissions or repeat an
+unchanged strings-only inspection.
+
+Cross-user access, a change of principal, authentication or home, mutation
+outside approved working resources, and a public API or lifecycle change need
+another ruling. This ruling authorizes no artifact execution, credential
+access, live provider work, installation, host mutation or release/tag action.
+Contract 036 release compatibility remains separate.
 
 ## Native Sandbox Boundary
 

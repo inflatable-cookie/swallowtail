@@ -235,7 +235,9 @@ fn promote(
         .ok_or_else(|| discovery_outcome_failure(&outcome))?;
     if observation.execution_host_id() != &input.execution_host_id
         || observation.version().axis() != input.target.version_axis()
-        || observation.version().version().as_str() != crate::DEEPAGENTS_ACP_PACKAGE_VERSION
+        || !crate::deepagents_acp_claim()
+            .assess(observation.version().version())
+            .is_permitted()
     {
         return Err(failure(
             PreparationStage::CompatibilityClassification,

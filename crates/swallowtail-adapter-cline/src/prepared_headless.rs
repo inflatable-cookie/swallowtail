@@ -235,12 +235,12 @@ fn promote(
         .ok_or_else(|| discovery_outcome_failure(&outcome))?;
     if observation.execution_host_id() != &input.execution_host_id
         || observation.version().axis() != input.target.version_axis()
-        || observation.version().version().as_str() != crate::CLINE_PACKAGE_VERSION
+        || !crate::cline_headless_claim().permits(observation.version().version())
     {
         return Err(failure(
             PreparationStage::CompatibilityClassification,
             "swallowtail.cline.headless.preparation.observation_mismatch",
-            "Cline discovery observation does not match the prepared host and package",
+            "Cline discovery observation does not match the prepared host and supported package",
         ));
     }
     let instance = configured_instance(&input, &observation)?;

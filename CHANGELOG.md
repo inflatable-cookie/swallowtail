@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify only `cline.headless` through official npm stable `3.0.70` after
+  every published hop from `3.0.55`; preserve `3.0.55`, the existing behavior
+  revision, and the unpublished `3.0.59` exclusion. Research 390 freezes all
+  wrapper and selected Darwin ARM64 runtime file trees, all six platform
+  package identities, twelve tagged source paths, and the per-hop change
+  ledger. Headless keeps its JSON envelope and fail-closed media handling;
+  Cline may retry or continue provider work internally from `3.0.62`, while
+  Swallowtail still launches one bounded process and exposes no attempt or
+  usage records. ACP remains exact `3.0.55`. No artifact ran and no provider
+  prompt, credentials, install, or host update occurred.
 - extend the Qoder `qoder.headless` claim from `1.1.54` through maintained
   stable `1.1.65`, retaining `QualifiedOnly`, the baseline, claim id and
   `qoder.headless.stdio-stream-json-v2` behavior revision. Research 389 freezes
@@ -31,6 +41,16 @@ annotated Git tags from the canonical repository.
   unset or set to `python` on Vibe `2.25.7+`; Rust TUI and Unified Harness stay
   unmapped. No artifact execution, provider prompt, credential use,
   installation, or host update occurred.
+- qualify `deepagents.acp` from the existing `0.1.30` ceiling through
+  official npm `latest` `0.1.34`. Research 391 freezes all four package hops,
+  the exact `deepagents` runtime chain through `1.14.2`, complete package
+  trees, and selected-source classifications. Keep baseline `0.1.30`, claim
+  id `deepagents.acp.package-window-1`, behavior revision
+  `deepagents.acp.stdio-v1`, `QualifiedOnly`, and no exclusions. The ACP CLI
+  and entrypoints remain byte-identical; runtime changes stay in opaque tool
+  result text, inactive defaults, or model-internal handling. The `0.1.35`
+  point remains unqualified. No artifact was executed and no provider
+  operation, installation, credential use, or host update occurred.
 - qualify `pi.rpc` through official npm `latest` and GitHub latest stable
   `1.1.0` after every published hop following `0.86.1`. Research 383 freezes
   exact package and source identity, complete npm trees, runtime chunks, and
@@ -768,13 +788,14 @@ annotated Git tags from the canonical repository.
   stopped at the ruling, downloaded binaries were never executed, and no
   provider, prompt, login, credential, installation, or host-mutation
   operation occurred. Research 323, g05.075.
-- advance the Deep Agents ACP exact point from `0.1.25` to official npm
-  `0.1.30`: Research 322 freezes all five published stable successors and
+- Research 322 records the original Deep Agents ACP exact-point qualification
+  from `0.1.25` to official npm `0.1.30`. It froze all five published stable
+  successors and
   the exact-pinned `deepagents` runtime dependency chain `1.12.4..=1.13.4`
   as registry-verified tarballs (both baselines reproduce earlier
   research), keeps the ACP registry's discovery-only `0.1.7` entry and the
   CLI constructor-default `agentInfo.version` `0.0.1` outside the claim,
-  and finds the selected no-extra-argv stdio wire byte-stable across the
+  and found the selected no-extra-argv stdio wire byte-stable across the
   whole window: initialize shape, `session/new` cwd authority, the `prompt`
   field, stop reasons, cancel, permission options with the unchanged
   catch-returns-allow fallback, slash-command interception, and joined
@@ -789,9 +810,10 @@ annotated Git tags from the canonical repository.
   the Swallowtail bounded-write disposition), `write_file` `content`
   becoming required, and `read_file` pagination footer text inside opaque
   tool-result content; the subagent fork/isolated machinery stays
-  unselected. Keep the `deepagents.acp.package-window-1` claim,
-  `deepagents.acp.stdio-v1` behavior revision, empty selected argv, exact
-  one-point `QualifiedOnly` posture, and no unverified-newer execution.
+  unselected. At that point, it kept the
+  `deepagents.acp.package-window-1` claim, `deepagents.acp.stdio-v1` behavior
+  revision, empty selected argv, exact one-point `QualifiedOnly` posture, and
+  no unverified-newer execution.
   No provider operation, host mutation, or downloaded-artifact execution
   occurred.
 - advance the Mistral Vibe headless exact point from `2.24.2` to official

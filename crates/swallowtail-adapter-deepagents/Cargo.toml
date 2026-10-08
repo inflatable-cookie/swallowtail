@@ -39,6 +39,10 @@ name = "deepagents_acp_0_1_30_delta_ledger"
 path = "tests/deepagents_acp_0_1_30_delta_ledger.rs"
 
 [[test]]
+name = "deepagents_acp_0_1_34_delta_ledger"
+path = "tests/deepagents_acp_0_1_34_delta_ledger.rs"
+
+[[test]]
 name = "activity_corpus"
 path = "tests/activity_corpus.rs"
 

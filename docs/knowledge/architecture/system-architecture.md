@@ -247,8 +247,9 @@ OpenHands adds a package without a production route.
   a required runtime-preferences reply during create, and process-kill
   cancellation. It does not qualify OpenCode HTTP, hosted GLM / Z.AI
   official, `--print`, ACP, or native `session/stop`.
-- `swallowtail-adapter-cline` implements two exact `3.0.55` routes: ACP v1
-  stdio on `cline --acp`, and envelope-NDJSON headless on
+- `swallowtail-adapter-cline` implements exact `3.0.55` ACP v1 stdio on
+  `cline --acp` and a maintained headless envelope-NDJSON window from npm
+  `3.0.55` through `3.0.70`, excluding unpublished `3.0.59`, on
   `cline --json --auto-approve false` with optional portable
   `HarnessMode::Plan` as canonical `--plan`. Credentials stay host-owned
   `LocalUnauthenticated`. `--auto-approve true`, `--id`, hub/TUI, and
@@ -304,8 +305,9 @@ OpenHands adds a package without a production route.
   on `kiro-cli acp` through `prepare_kiro_acp`. Credentials stay host-owned
   local account. `--cloud`, `--agent`, `kiro-cli chat --no-interactive`,
   `session/load`, and docs `session/prompt` field `content` stay out.
-- `swallowtail-adapter-deepagents` implements exact npm `0.1.30` ACP on
-  host-approved `deepagents-acp` with no extra argv through
+- `swallowtail-adapter-deepagents` implements `deepagents.acp` for the
+  maintained npm package window `0.1.30..=0.1.34` on host-approved
+  `deepagents-acp` with no extra argv through
   `prepare_deepagents_acp`. Working resource is the child cwd. CLI
   `agentInfo.version` `0.0.1` is not the package axis. `npx`,
   `--workspace` / `--model`, `session/load`, and field `content` stay
@@ -680,7 +682,7 @@ Crate status:
   process-kill cancellation, and joined cleanup. The package remains an
   unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-cline` — realized for exact npm `3.0.55` ACP and
-  headless print-run routes with separate constructors, qualified-only
+  headless print-run through published `3.0.70` excluding `3.0.59`, with separate constructors, qualified-only
   claims, local-account access, and no credential lease. The package
   remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-goose` — realized for GitHub ACP exact points `1.50.1`,
@@ -712,9 +714,10 @@ Crate status:
   credential lease, and `prepare_kiro_acp`. `kiro.acp` is a production
   route. The package remains an unreleased additive candidate after
   `v0.3.2`.
-- `swallowtail-adapter-deepagents` — realized for exact npm `0.1.30` ACP
-  discovery and stdio driver with qualified-only claim, host-owned
-  provider API keys, no credential lease, empty extra argv, and
+- `swallowtail-adapter-deepagents` — realized for maintained npm package
+  window `0.1.30..=0.1.34` ACP discovery and stdio driver with a
+  qualified-only claim, host-owned provider API keys, no credential lease,
+  empty extra argv, and
   `prepare_deepagents_acp`. `deepagents.acp` is a production route.
   The package remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-opencode` — realized for attached model catalogue and

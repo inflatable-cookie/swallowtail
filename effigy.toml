@@ -44,7 +44,19 @@ section = "Research Records"
 "qa:docs:front-door" = "effigy docs check contains docs/README.md --require 'knowledge/README.md' --require 'Queue'"
 
 "format:check" = "cargo fmt --all -- --check"
+"format:copilot-acp-offline-proof" = [
+  "cargo fmt -p swallowtail-adapter-copilot-cli",
+  "cargo fmt -p swallowtail-adapter-copilot-cli -- --check",
+]
 "check:rust" = "cargo check --workspace --all-targets"
+"check:copilot-acp-offline-proof" = [
+  "python3 -c 'from pathlib import Path; files = (Path(\"scripts/copilot-acp-offline-proof.py\"), Path(\"scripts/stage-copilot-acp-offline-artifacts.py\")); [compile(file.read_bytes(), str(file), \"exec\") for file in files]'",
+  "cargo check --locked -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof",
+]
+"validate:copilot-acp-offline-proof" = [
+  "python3 scripts/copilot-acp-offline-proof.py --self-test",
+  "cargo nextest run --locked --profile ci -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof --test acp_suite -E 'binary(copilot_acp_offline_proof) | test(/(permission_observes_without_selecting_allow_always|active_turn_cancellation_waits_for_cancelled_prompt_result|unexpected_write_callback_is_rejected_before_host_mutation)/)'",
+]
 "check:sdk-usage-projection" = "cargo check --locked -p swallowtail-adapter-claude-agent --all-targets"
 "format:current-claude-agent-acp" = [
   "cargo fmt -p swallowtail-adapter-claude-agent",

@@ -167,6 +167,15 @@ annotated Git tags from the canonical repository.
   tool-output/context changes need an operator ruling before qualification;
   both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
   and `0.59.1` exclusions remain in force.
+- qualify only `codex.app-server` through official npm/GitHub stable `0.161.0`;
+  Research 388 freezes package and runtime identities, complete source trees,
+  all twelve selected stable hops, and the exact selected-route policy proof.
+  The claim keeps its baseline, ID, prior segments, behavior revisions, and
+  exclusions, with private revisions for accepted managed policies and the
+  existing top-level `.aws` read-only protection. `codex.exec` remains
+  independently qualified through `0.155.1`. The `.aws` workspace-write
+  narrowing still needs Contract 036 patch-compatibility classification before
+  v0.5.2.
 - project one validated `claude-agent.sdk` main-loop usage snapshot per
   completed SDK result through `ProviderObservation::Usage`, including
   input/output and cache-read/cache-write token dimensions. Required counts

@@ -66,11 +66,15 @@ Swallowtail does not install Codex, search `PATH`, log in, choose a model,
 select billing, read an auth store, or infer a writable workspace. Exec admits
 `0.80.0..=0.81.0`, `0.84.0..=0.107.0`, and `0.110.0..=0.155.1`; support is
 deprecated through `0.121.0` and maintained from `0.122.0`. App-server admits
-`0.80.0..=0.81.0`, `0.84.0..=0.107.0`, and `0.110.0..=0.155.1`; support is
-maintained from `0.110.0`. Exact feature milestones remain narrower.
-Unpublished `0.149.2`, `0.150.2`, `0.151.1`, `0.152.2`, and `0.154.1` stay
-incompatible. Later stable versions may remain visible `UnverifiedNewer`
-without gaining capabilities.
+`0.80.0..=0.81.0`, `0.84.0..=0.107.0`, `0.110.0..=0.130.0`,
+`0.131.0..=0.155.1`, `0.156.0..=0.156.1`, `0.157.0..=0.157.1`, `0.158.0`,
+and `0.159.0..=0.161.0`; `0.131.0..=0.155.1` retains its maintained status,
+`0.156.0..=0.158.0` is deprecated, and `0.159.0..=0.161.0` is maintained.
+Earlier supported statuses remain unchanged. Exact feature milestones remain
+narrower.
+Unpublished `0.149.2`, `0.150.2`, `0.151.1`, `0.152.2`, `0.154.1`, and
+`0.155.2` stay incompatible. Later stable versions may remain visible
+`UnverifiedNewer` without gaining capabilities.
 
 The exec ceiling remains `0.155.1` after the 2026-10-07 sweep. The first
 unqualified stable `0.156.0` changes projectless `thread/start` trust
@@ -79,6 +83,28 @@ regular exec. Both need provider-free adaptation and a ruling before a ceiling
 increase. Current official stable `0.161.0` remains `UnverifiedNewer`; see
 [Research 370](../research/370-codex-exec-currentness-stop.md). The app-server
 claim is independent and was not changed by this exec review.
+
+The app-server claim now qualifies official stable `0.161.0`; its independent
+`codex.app-server.cli-window-2` bound does not change `codex.exec`, which
+remains qualified through `0.155.1` and leaves `0.156.0..=0.161.0`
+`UnverifiedNewer` (Research 370). Research 388 freezes all twelve selected
+stable hops, package and runtime identities, complete tagged-source inventories,
+and exact selected-source classifications. It preserves the app-server claim
+ID and its older behavior revisions, feature bounds, and exclusions.
+
+The app-server sends one host-approved writable root, keeps read-only defaults,
+and sends no trust, config, permission, proxy, Windows sandbox, or
+application-network override. Codex-managed policy remains authoritative:
+projectless starts skip automatic persisted trust; path aliases and linked
+`.git` data stay within the approved root with linked `.git` read-only; an
+existing top-level `.aws` directory is read-only from `0.159.0`; managed
+provider checks, fail-closed permission materialization, safe bootstrap GET
+proxy fallback, explicit ambient MxC, and `application.network` remain subject
+to the exact selected policy semantics frozen in Research 388. MxC qualification
+makes no Windows runtime-isolation claim. `networkAccess=false` continues to
+bound tool traffic independently from `application.network` provider/API
+traffic. The `.aws` read-only limitation narrows workspace writes and remains
+a separate Contract 036 patch-compatibility gate for v0.5.2.
 
 ## Normal Flow
 

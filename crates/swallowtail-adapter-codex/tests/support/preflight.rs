@@ -15,6 +15,9 @@ use swallowtail_core::{
 
 mod exec;
 mod unqualified;
+
+const CODEX_APP_SERVER_TEST_QUALIFIED_VERSION: &str = "0.161.0";
+
 pub use exec::{
     bind_current_exec_policy, current_exec_policy, exec_policy_for_version, plan, plan_with,
     plan_with_version, unqualified_exec_plan,
@@ -35,7 +38,7 @@ pub fn app_server_plan_with(
         ExecutionHostId::new("host.local").expect("host id is valid"),
         ConfiguredInstanceId::new("codex.app-server.local").expect("instance id is valid"),
         InstanceTargetRef::new("codex-app-server-executable").expect("target is valid"),
-        CODEX_LATEST_QUALIFIED_VERSION,
+        CODEX_APP_SERVER_TEST_QUALIFIED_VERSION,
         optional_capabilities,
         optional_host_services,
     )
@@ -54,7 +57,7 @@ pub fn app_server_plan_for(
         host_id,
         instance_id,
         target,
-        CODEX_LATEST_QUALIFIED_VERSION,
+        CODEX_APP_SERVER_TEST_QUALIFIED_VERSION,
         optional_capabilities,
         optional_host_services,
     )
@@ -181,7 +184,12 @@ pub fn bounded_workspace_plan_for(
     instance_id: ConfiguredInstanceId,
     target: InstanceTargetRef,
 ) -> PreflightPlan {
-    bounded_workspace_plan_for_version(host_id, instance_id, target, CODEX_LATEST_QUALIFIED_VERSION)
+    bounded_workspace_plan_for_version(
+        host_id,
+        instance_id,
+        target,
+        CODEX_APP_SERVER_TEST_QUALIFIED_VERSION,
+    )
 }
 
 pub fn bounded_workspace_plan_for_version(

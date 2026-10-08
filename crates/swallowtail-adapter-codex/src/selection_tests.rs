@@ -100,6 +100,41 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
             CODEX_APP_SERVER_WORKSPACE_BEHAVIOR
         );
     }
+    for version in ["0.156.0", "0.156.1"] {
+        let matched = claim.classify(binding(version).version()).unwrap();
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            CODEX_APP_SERVER_MANAGED_POLICY_BEHAVIOR
+        );
+        assert_eq!(matched.support_status(), InterfaceSupportStatus::Deprecated);
+    }
+    for version in ["0.157.0", "0.157.1"] {
+        let matched = claim.classify(binding(version).version()).unwrap();
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            CODEX_APP_SERVER_MANAGED_NETWORK_BEHAVIOR
+        );
+        assert_eq!(matched.support_status(), InterfaceSupportStatus::Deprecated);
+    }
+    let path_alias = claim.classify(binding("0.158.0").version()).unwrap();
+    assert_eq!(
+        path_alias.behavior_revision().as_str(),
+        CODEX_APP_SERVER_PATH_ALIAS_BEHAVIOR
+    );
+    assert_eq!(
+        path_alias.support_status(),
+        InterfaceSupportStatus::Deprecated
+    );
+    for version in [
+        "0.159.0", "0.159.1", "0.159.2", "0.159.3", "0.160.0", "0.160.1", "0.161.0",
+    ] {
+        let matched = claim.classify(binding(version).version()).unwrap();
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            CODEX_APP_SERVER_PROTECTED_AWS_BEHAVIOR
+        );
+        assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
+    }
     for version in [
         "0.79.0",
         "0.82.0",
@@ -112,15 +147,20 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
         "0.151.1",
         "0.152.2",
         "0.154.1",
+        "0.155.2",
     ] {
         assert!(!claim.supports(binding(version).version()));
     }
-    let unverified = claim.assess(binding("0.155.2").version());
-    assert!(
-        unverified.is_permitted(),
-        "first unpublished stable above ceiling should be unverified-newer"
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
+        claim.assess(binding("0.161.1").version())
+    else {
+        panic!("first newer stable above ceiling should be unverified-newer");
+    };
+    assert_eq!(unverified.latest_qualified().as_str(), "0.161.0");
+    assert_eq!(
+        unverified.behavior_revision().as_str(),
+        CODEX_APP_SERVER_PROTECTED_AWS_BEHAVIOR
     );
-    assert!(unverified.behavior_revision().is_some());
 }
 
 #[test]
@@ -252,6 +292,11 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
             HARD_DELETE_BEHAVIOR,
             InterfaceSupportStatus::Maintained,
         ),
+        (
+            "0.161.0",
+            HARD_DELETE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
     ];
 
     for (version, behavior, status) in cases {
@@ -264,7 +309,7 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
 
     for version in [
         "0.82.0", "0.83.0", "0.108.0", "0.109.0", "0.149.2", "0.150.2", "0.151.1", "0.152.2",
-        "0.154.1",
+        "0.154.1", "0.155.2",
     ] {
         assert!(
             codex_app_server_claim().supports(binding(version).version())
@@ -273,10 +318,14 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
         assert!(!claim.supports(binding(version).version()));
     }
 
-    let unverified = claim.assess(binding("0.155.2").version());
-    assert!(unverified.is_permitted());
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
+        claim.assess(binding("0.161.1").version())
+    else {
+        panic!("newer lifecycle version remains visible");
+    };
+    assert_eq!(unverified.latest_qualified().as_str(), "0.161.0");
     assert_eq!(
-        unverified.behavior_revision().unwrap().as_str(),
+        unverified.behavior_revision().as_str(),
         HARD_DELETE_BEHAVIOR
     );
 }

@@ -17,7 +17,9 @@ fn exact_version_codec_separates_qualified_unverified_and_incompatible_points() 
     assert!(matches!(
         crate::selection::ollama_runtime_claim().assess(newer.version()),
         swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == swallowtail_core::InterfaceSupportStatus::Maintained
+            if matched.support_status() == swallowtail_core::InterfaceSupportStatus::Deprecated
+                && matched.behavior_revision().as_str()
+                    == crate::selection::OLLAMA_NATIVE_TEXT_BEHAVIOR
     ));
     let gap = parse_version(&response(200, br#"{"version":"0.34.5"}"#))
         .expect_err("the interior version gap is incompatible");
@@ -25,8 +27,17 @@ fn exact_version_codec_separates_qualified_unverified_and_incompatible_points() 
         gap.diagnostic().code(),
         "swallowtail.ollama.version_unsupported"
     );
-    let above = parse_version(&response(200, br#"{"version":"0.40.0"}"#))
-        .expect("current official stable is preserved for an unverified attempt");
+    let current = parse_version(&response(200, br#"{"version":"0.40.1"}"#))
+        .expect("current official stable is qualified");
+    assert!(matches!(
+        crate::selection::ollama_runtime_claim().assess(current.version()),
+        swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.support_status() == swallowtail_core::InterfaceSupportStatus::Maintained
+                && matched.behavior_revision().as_str()
+                    == crate::selection::OLLAMA_NATIVE_TEXT_MANIFEST_LIST_RUNNER_BEHAVIOR
+    ));
+    let above = parse_version(&response(200, br#"{"version":"0.41.0"}"#))
+        .expect("the next unpublished stable is preserved for an unverified attempt");
     assert!(matches!(
         crate::selection::ollama_runtime_claim().assess(above.version()),
         swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)

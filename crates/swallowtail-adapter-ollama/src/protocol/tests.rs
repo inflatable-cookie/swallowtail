@@ -18,6 +18,16 @@ macro_rules! fixture_bytes {
     };
 }
 
+macro_rules! fixture_bytes_0401 {
+    ($name:literal) => {
+        include_bytes!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/tests/fixtures/ollama-0.40.1/",
+            $name
+        ))
+    };
+}
+
 use super::*;
 use serde_json::Value;
 use swallowtail_core::{
@@ -241,6 +251,7 @@ fn context_window_encodes_beside_num_predict_without_changing_absent_chat() {
             Some(value),
             None,
             None,
+            None,
         )
         .expect("context window encodes");
         let body: Value =
@@ -259,6 +270,7 @@ fn context_window_encodes_beside_num_predict_without_changing_absent_chat() {
         "Fixture prompt",
         8,
         Some(8192),
+        None,
         None,
         None,
     )
@@ -288,6 +300,7 @@ fn context_window_generation_controls_remain_distinct() {
         Some(8192),
         Some(&reasoning),
         Some(&schema),
+        None,
     )
     .expect("generation controls encode");
     let body: Value =
@@ -309,12 +322,125 @@ fn zero_context_window_fails_before_request_encoding() {
         Some(0),
         None,
         None,
+        None,
     )
     .expect_err("zero context window is rejected");
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.ollama.context_window_invalid"
     );
+}
+
+#[test]
+fn manifest_list_binds_tag_and_digest_and_skips_unmapped_siblings() {
+    let binding = observation_binding();
+    let parse = parse_inventory_rows(
+        &response(200, fixture_bytes_0401!("tags-manifest-list.json")),
+        AttachedModelObservationScope::InstalledInventory,
+        &binding,
+    )
+    .expect("manifest list parses");
+    assert_eq!(parse.mapped.len(), 2);
+    let selected =
+        bind_selected_inventory(&parse, &model_tag(), &digest()).expect("selected ggml row binds");
+    assert_eq!(selected.runner, Some(OllamaNativeRunner::Ggml));
+    assert_eq!(
+        selected.observation.manifest_digest().unwrap().as_str(),
+        digest().as_str()
+    );
+
+    let drift = parse_inventory_rows(
+        &response(200, fixture_bytes_0401!("tags-identity-drift.json")),
+        AttachedModelObservationScope::InstalledInventory,
+        &binding,
+    )
+    .expect("drift inventory parses");
+    let error = bind_selected_inventory(&drift, &model_tag(), &digest())
+        .expect_err("converted sibling is not the selected identity");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.ollama.selected_identity_drift"
+    );
+
+    let unmapped = parse_inventory_rows(
+        &response(200, fixture_bytes_0401!("tags-unmapped-sibling.json")),
+        AttachedModelObservationScope::InstalledInventory,
+        &binding,
+    )
+    .expect("unmapped sibling is skipped");
+    assert_eq!(unmapped.mapped.len(), 1);
+    let selected = bind_selected_inventory(&unmapped, &model_tag(), &digest())
+        .expect("mapped ggml row remains selectable");
+    assert_eq!(selected.runner, Some(OllamaNativeRunner::Ggml));
+
+    let empty_family = parse_inventory_rows(
+        &response(200, fixture_bytes_0401!("tags-unrelated-empty-family.json")),
+        AttachedModelObservationScope::InstalledInventory,
+        &binding,
+    )
+    .expect("unrelated empty-family GGUF row is skipped");
+    assert_eq!(empty_family.mapped.len(), 1);
+    let selected = bind_selected_inventory(&empty_family, &model_tag(), &digest())
+        .expect("selected ggml row remains selectable");
+    assert_eq!(selected.runner, Some(OllamaNativeRunner::Ggml));
+    let other_tag = AttachedModelTag::new("other-model:7b").expect("other tag is valid");
+    let other_digest = ModelManifestDigest::new(
+        "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    )
+    .expect("other digest is valid");
+    let skipped = bind_selected_inventory(&empty_family, &other_tag, &other_digest)
+        .expect_err("unrelated empty-family row is unmapped");
+    assert_eq!(
+        skipped.diagnostic().code(),
+        "swallowtail.ollama.semantics_unsupported"
+    );
+
+    let selected_empty = parse_inventory_rows(
+        &response(
+            200,
+            br#"{"models":[{"name":"fixture-model:8b","model":"fixture-model:8b","digest":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","details":{"format":"gguf","family":""}}]}"#,
+        ),
+        AttachedModelObservationScope::InstalledInventory,
+        &binding,
+    )
+    .expect("selected empty-family row is retained as unmapped identity");
+    let error = bind_selected_inventory(&selected_empty, &model_tag(), &digest())
+        .expect_err("empty family fails only for the selected tag and digest");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.ollama.semantics_unsupported"
+    );
+}
+
+#[test]
+fn runner_pin_is_omitted_unless_the_matching_catalogue_row_has_one() {
+    assert_json_eq(
+        Request::show("fixture-model:8b").unwrap().body.unwrap(),
+        fixture_text!("show-request.json"),
+    );
+    assert_json_eq(
+        Request::show_with_runner("fixture-model:8b", Some(OllamaNativeRunner::Ggml))
+            .unwrap()
+            .body
+            .unwrap(),
+        include_str!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/tests/fixtures/ollama-0.40.1/show-request-with-runner.json"
+        )),
+    );
+    let chat = Request::chat_with_context_window(
+        "fixture-model:8b",
+        "Fixture prompt",
+        8,
+        None,
+        None,
+        None,
+        Some(OllamaNativeRunner::LlamaCpp),
+    )
+    .expect("chat encodes");
+    let body: Value = serde_json::from_slice(&chat.body.unwrap()).expect("chat JSON parses");
+    assert_eq!(body["runner"], "llamacpp");
+    assert_eq!(body["model"], "fixture-model:8b");
 }
 
 fn decode(bytes: &[u8]) -> Result<Vec<NativeEvent>, swallowtail_runtime::RuntimeFailure> {

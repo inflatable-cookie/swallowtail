@@ -3,6 +3,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use serde_json::{Value, json};
+use sha2::{Digest, Sha256};
 use swallowtail_adapter_gemini::gemini_cli_acp_claim;
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
@@ -50,6 +51,43 @@ fn hashes(value: &Value, name: &str) -> BTreeMap<String, String> {
 }
 
 #[test]
+fn frozen_research_fixture_files_match_their_exact_digests() {
+    for (name, body, expected) in [
+        (
+            "identity",
+            IDENTITY,
+            "e9a3f26ebdf4e5936e966b3807a2e24416842dfc66f01b7effe02c96595d5fc1",
+        ),
+        (
+            "surface ledger",
+            SURFACE,
+            "8085a4e0a34e3a2c4f204ed48c2a82d79766ebcb8857b3c34e719ed02cd95f5c",
+        ),
+        (
+            "npm inventory",
+            NPM,
+            "e4558baecff14077a430c13bbebaf8f9d0ca8482b5210946753e2e2ee4a09297",
+        ),
+        (
+            "protocol",
+            PROTOCOL,
+            "8888cbb260169470d4f170a8931592ed66d30c3dde677d7c3d98e67473bf13de",
+        ),
+        (
+            "prior identity",
+            PRIOR,
+            "c5fae058ed6f05a9d0fa457256e03db68df2bac44cc178a05b136b7291ce3f3b",
+        ),
+    ] {
+        assert_eq!(
+            format!("{:x}", Sha256::digest(body.as_bytes())),
+            expected,
+            "{name}"
+        );
+    }
+}
+
+#[test]
 fn official_identity_and_complete_npm_inventory_are_frozen() {
     let identity = fixture(IDENTITY, "identity");
     let prior = fixture(PRIOR, "prior identity");
@@ -71,6 +109,38 @@ fn official_identity_and_complete_npm_inventory_are_frozen() {
         .as_array()
         .expect("official points are a list");
     assert_eq!(points.len(), VERSIONS.len());
+    let exact_identity = [
+        (
+            "0.61.0",
+            "bb523741c7429a44d03e964bc124c7c92df59d5f",
+            "c4226f654bb0b35109c4f5ce34535c5addecda47",
+            "bc4efa5c925c4430105b552820ed3164bbeffa9dc227990fc922f954733bcd7d",
+            "0b6e283ae88682b0e27e8ef85a608ab74807a1513dc0c053e5aa80d5b80b29ab",
+            "917e0ac08eb3ef2048910ecc84d4da672ad0c58d82bb2eaa1d6f9e18af80241d",
+            "2a01f6f000a7ac060ff0c8e945c650c94cd05ddae52ad19ee0ada05a9bdba3ea",
+            "829738c00cab5a73b3ed01ce874c7ba79064fbe5869ad821517cba24f778dce2",
+        ),
+        (
+            "0.62.0",
+            "b460678f3db508407554afd604cc9d6635becb2a",
+            "65ae43a5a0bf3670294be027ffe40eb5b0c5f18c",
+            "2276032b1c33d2b828b1cf197e52f48e74b0a395326763ff01a80d97d0fbc0c3",
+            "ef1d1bd9ee5aaae37ebcfb601b56659e3b16c5b258b21c138109c541e487ade7",
+            "18d3955d07457723e5f9b24ff2d7622081b855ea8591d00a977b89a2089626f0",
+            "68c199ca0c352ee3107e33d121faea24486f4416534224994357b567576e431c",
+            "050d9e3a53e6fc9cc2c00cd7d6771d72077b8fa2c0d1ec925ce3c353ee94b55b",
+        ),
+        (
+            "0.63.0",
+            "573846625af9e93b3b968e0e0b86bb093a4c9b16",
+            "a6a023123538ba75eb8412528b9942d0de8917e3",
+            "97a6edfc10645463b517f0518d46a8c72efbdc12558a9a948607f726284a0420",
+            "5aee9ecb65b0b821e36a12f6e9e837301636de1a849a5a8bcc9c2b2620bbd72e",
+            "75903470f15719bc061df6c2792cc55274494f7c25efdb7a864c50f5913bf917",
+            "c9d66e50a0fe098a32486360308e558c472809da276caf2aac2769d8f10571c2",
+            "61babb895286b69a6112d7eab3f61aa0e2370ad6c1693a08badae8f64d9dd287",
+        ),
+    ];
     for (point, version) in points.iter().zip(VERSIONS) {
         assert_eq!(point["version"], version);
         assert_eq!(point["npm_latest_at_observation"], version == "0.63.0");
@@ -88,6 +158,17 @@ fn official_identity_and_complete_npm_inventory_are_frozen() {
         ] {
             assert!(point[field].as_str().is_some(), "{version}.{field}");
         }
+    }
+    for (point, expected) in points.iter().zip(exact_identity) {
+        let (version, commit, tree, npm, runtime, source, bundle, darwin) = expected;
+        assert_eq!(point["version"], version);
+        assert_eq!(point["npm_tarball_sha256"], npm);
+        assert_eq!(point["npm_bin_entry_sha256"], runtime);
+        assert_eq!(point["github_commit"], commit);
+        assert_eq!(point["github_tree"], tree);
+        assert_eq!(point["github_source_archive_sha256"], source);
+        assert_eq!(point["gemini_cli_bundle_zip_sha256"], bundle);
+        assert_eq!(point["darwin_arm64_unsigned_zip_sha256"], darwin);
     }
     assert_eq!(
         points[0]["npm_tarball_sha256"],
@@ -382,10 +463,55 @@ fn complete_source_trees_and_changed_behavior_files_are_classified() {
         surface["selected_acp_sources"]["packages/cli/src/acp/acpSessionManager.ts"]["0.63.0"],
         "a78d6a5ba38dcbe1f6939507936d5de2ac3ac4501b8191818ea6db22646aad4f"
     );
+    for (path, before, after) in [
+        (
+            "packages/cli/src/acp/acpSessionManager.ts",
+            "63e38dfcfe035a317acc9e2943810b765e7403ecb6383597633394e8ff214f1e",
+            "a78d6a5ba38dcbe1f6939507936d5de2ac3ac4501b8191818ea6db22646aad4f",
+        ),
+        (
+            "packages/core/src/policy/policy-engine.ts",
+            "3483535ed1d106e75cf1953da7255815f336003ad91a8e841db5df516592cfb1",
+            "3b7118ceadaa36589f64def7669a503d64bd805fbff696077f5f7929361dfad2",
+        ),
+        (
+            "packages/core/src/safety/built-in.ts",
+            "e59fb30b90906aac439fe6e790dd0613c26b21ef6ec7e29af1c86f01815a206d",
+            "a3d88b1b5a9289194edf7cdcb59964e4ba99c8eb4a4b100eca7bb64c6f61657e",
+        ),
+        (
+            "packages/core/src/tools/read-file.ts",
+            "51c2a2e2c78519e09af956485bdd2c14b3e261f9bcd2cdcbdc53d0db84ac17c8",
+            "5377927463fa737d276852097ad63a20357b19b51f3458c4252028b6019033de",
+        ),
+        (
+            "packages/core/src/utils/paths.ts",
+            "d86215a13c63445b0186b82c346ceca3810907268394b9072b5d110f005cb987",
+            "4676b4a937bf61a8b87c6f3f6f4123fbe23da20837c8f7d67b41f8847b333571",
+        ),
+        (
+            "packages/core/src/tools/shell.ts",
+            "d1aea4b1e3fb3724ad637985aebf0f8a2d2fcfeb13cfa11932b8681ed617e139",
+            "981d96965fbc84fab420f30f1b265cee15c7b4b0486fdde42324021a95f22be4",
+        ),
+        (
+            "packages/core/src/scheduler/tool-executor.ts",
+            "a70086b7ecda8edb1701ce1918410d5471f78bd84d1cee5017af808652fec593",
+            "5879f47abe2b64fc6ea1ca361b4502f39a7e597bdcfa0e20450b4226d6031f58",
+        ),
+        (
+            "packages/core/src/utils/tool-utils.ts",
+            "d28e32c72c3afd677795c81e5d1bfabc804eeba7872db5832871b5aa84b76403",
+            "fb7fb4e70c7b05bed4fe65636cb9e36153aa3e90c5d24fa74d489179a8884c0b",
+        ),
+    ] {
+        assert_eq!(surface["source_tree_sha256"]["0.62.0"][path], before);
+        assert_eq!(surface["source_tree_sha256"]["0.63.0"][path], after);
+    }
 }
 
 #[test]
-fn permission_stop_keeps_current_claim_and_live_mcp_point_exact() {
+fn historical_stop_is_resolved_only_for_acp_and_live_mcp_stays_exact() {
     let protocol = fixture(PROTOCOL, "protocol");
     assert_eq!(protocol["official_version"], "0.63.0");
     assert_eq!(protocol["acp_sdk"], "@agentclientprotocol/sdk@0.16.1");
@@ -406,15 +532,17 @@ fn permission_stop_keeps_current_claim_and_live_mcp_point_exact() {
     assert_eq!(protocol["downloaded_artifacts_executed"], false);
 
     let claim = gemini_cli_acp_claim();
-    let ceiling = InterfaceVersion::new("0.61.0").expect("qualified version");
-    assert!(claim.supports(&ceiling));
-    for value in ["0.62.0", "0.63.0"] {
+    let baseline = InterfaceVersion::new("0.61.0").expect("qualified version");
+    assert!(claim.supports(&baseline));
+    for (value, revision) in [
+        ("0.62.0", "gemini-cli.acp.v0.62.0-tool-updates"),
+        ("0.63.0", "gemini-cli.acp.v0.63.0-restricted-files"),
+    ] {
         let version = InterfaceVersion::new(value).expect("stable version");
-        assert!(matches!(
-            claim.assess(&version),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
-                if newer.latest_qualified() == &ceiling
-        ));
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version) else {
+            panic!("{value} has a qualified ACP behavior segment");
+        };
+        assert_eq!(matched.behavior_revision().as_str(), revision);
     }
     for value in ["0.56.1", "0.59.1"] {
         let version = InterfaceVersion::new(value).expect("excluded version");

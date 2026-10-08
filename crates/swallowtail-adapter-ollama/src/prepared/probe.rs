@@ -64,7 +64,7 @@ async fn observe_endpoint(
         runtime_version: version.clone(),
         observed_at,
     };
-    let installed = installed_inventory(
+    let (installed, selected_runner) = installed_inventory(
         input,
         probe,
         services,
@@ -83,16 +83,21 @@ async fn observe_endpoint(
         Arc::clone(&cancelled),
     )
     .await?;
-    let running = parse_inventory(
+    let running = parse_inventory_rows(
         &running_response,
         AttachedModelObservationScope::RunningInventory,
         &binding,
     )
-    .map_err(catalogue_failure)?;
+    .map_err(catalogue_failure)?
+    .mapped
+    .into_iter()
+    .map(|row| row.observation)
+    .collect::<Vec<_>>();
     validate_running_inventory(&installed, &running)?;
     let detail_response = request(
         &transport,
-        Request::show(input.selected_model_tag.as_str()).map_err(catalogue_failure)?,
+        Request::show_with_runner(input.selected_model_tag.as_str(), selected_runner)
+            .map_err(catalogue_failure)?,
         &endpoint,
         probe,
         services,
@@ -119,7 +124,13 @@ async fn installed_inventory(
     endpoint: &str,
     binding: &ObservationBinding,
     cancelled: Arc<AtomicBool>,
-) -> Result<Vec<swallowtail_core::AttachedModelObservation>, PreparationFailure> {
+) -> Result<
+    (
+        Vec<swallowtail_core::AttachedModelObservation>,
+        Option<crate::protocol::OllamaNativeRunner>,
+    ),
+    PreparationFailure,
+> {
     let response = request(
         transport,
         Request::installed_models(),
@@ -129,28 +140,23 @@ async fn installed_inventory(
         cancelled,
     )
     .await?;
-    let installed = parse_inventory(
+    let parse = parse_inventory_rows(
         &response,
         AttachedModelObservationScope::InstalledInventory,
         binding,
     )
     .map_err(catalogue_failure)?;
-    let selected = installed
-        .iter()
-        .find(|item| item.model_tag() == &input.selected_model_tag)
-        .ok_or_else(|| {
-            failure(
-                PreparationStage::BoundedOutput,
-                "swallowtail.ollama.preparation.model_not_installed",
-                "The selected Ollama model was not in installed inventory",
-            )
-        })?;
-    if selected.manifest_digest() != Some(&input.selected_manifest_digest) {
-        return Err(failure(
-            PreparationStage::BoundedOutput,
-            "swallowtail.ollama.preparation.manifest_mismatch",
-            "The selected Ollama model manifest did not match preparation input",
-        ));
-    }
-    Ok(installed)
+    let selected = bind_selected_inventory(
+        &parse,
+        &input.selected_model_tag,
+        &input.selected_manifest_digest,
+    )
+    .map_err(catalogue_failure)?;
+    let selected_runner = selected.runner;
+    let installed = parse
+        .mapped
+        .into_iter()
+        .map(|row| row.observation)
+        .collect();
+    Ok((installed, selected_runner))
 }

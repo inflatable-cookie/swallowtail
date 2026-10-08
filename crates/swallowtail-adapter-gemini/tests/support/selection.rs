@@ -12,6 +12,14 @@ pub fn selection_with_access(
     host: ExecutionHostId,
     resource_access: ResourceAccess,
 ) -> FixtureSelection {
+    selection_with_version(host, resource_access, "0.51.0")
+}
+
+pub fn selection_with_version(
+    host: ExecutionHostId,
+    resource_access: ResourceAccess,
+    version: &str,
+) -> FixtureSelection {
     let descriptor = swallowtail_adapter_gemini::gemini_acp_descriptor();
     let credential = CredentialRef::new("gemini.fixture.credential").expect("valid credential");
     let access_id = AccessProfileId::new("gemini.fixture.api-key").expect("valid access id");
@@ -33,7 +41,7 @@ pub fn selection_with_access(
             ],
         ),
     ]);
-    let version_binding = swallowtail_adapter_gemini::gemini_cli_acp_binding("0.51.0")
+    let version_binding = swallowtail_adapter_gemini::gemini_cli_acp_binding(version)
         .expect("fixture version is valid");
     let instance = ConfiguredInstance::new(
         instance_id.clone(),

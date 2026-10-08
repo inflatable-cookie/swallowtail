@@ -25,6 +25,15 @@ annotated Git tags from the canonical repository.
   unpublished `0.155.2` gap, prior exclusions, and independent app-server
   claim. No provider prompt, live session, credential, installation, or host
   update was used.
+- keep `gemini-cli.headless` at its `0.61.0` ceiling after the
+  authority-preserving adaptation to official stable `0.63.0` stops on the
+  noninteractive Plan Mode exit path. Research 410 pins the source behavior:
+  noninteractive policy allows `exit_plan_mode`, whose allowed transition
+  selects YOLO; the selected adapter has no guard. This cannot preserve the
+  no-automatic-implementation-transition contract within the approved scope.
+  Keep `0.62.0` and `0.63.0` `UnverifiedNewer`, preserve the unpublished
+  `0.56.1` and `0.59.1` exclusions, and leave ACP independent. Any new
+  enforcement design or authority/lifecycle change needs a separate ruling.
 - Keep `kimi-code.acp` at its `0.38.0` ceiling while the official npm and
   GitHub stable `2.1.1` remains blocked by the same unmediated terminal process
   spawn from both the terminal-disabled branch and non-Bash fallback. Research
@@ -329,9 +338,10 @@ annotated Git tags from the canonical repository.
   advancing the existing `0.61.0` ceiling: Research 371 freezes published
   hops `0.62.0` and `0.63.0` plus complete npm/source trees. The selected
   `0.63.0` Plan Mode authority, noninteractive permission, and
-  tool-output/context changes need an operator ruling before qualification;
-  both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
-  and `0.59.1` exclusions remain in force.
+  tool-output/context changes were assessed under the bounded adaptation
+  approved in decision de317828. Research 410 records the source-level stop
+  and remaining enforcement gate. Both later points remain `UnverifiedNewer`,
+  and the unpublished `0.56.1` and `0.59.1` exclusions remain in force.
 - qualify only `codex.app-server` through official npm/GitHub stable `0.161.0`;
   Research 388 freezes package and runtime identities, complete source trees,
   all twelve selected stable hops, and the exact selected-route policy proof.

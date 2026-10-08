@@ -318,7 +318,7 @@ The implementation exposes `ClaudeAgentSdkPackageNativePair` and the
 preflight plan and copied from that plan into private open and listing messages.
 The shipped sidecar checks the selected pair against loaded package metadata
 and the package's original native manifest before SDK construction. Research
-414 retains artifact and hop identity evidence, while provider-free facade and
+416 retains artifact and hop identity evidence, while provider-free facade and
 sidecar fixtures exercise the preparation and launch path for all ten pairs.
 Validate the pair before plan construction; bind the package and native
 identities as independent axes in the preflight plan. Pass expected identities

@@ -4,8 +4,11 @@ Status: finite runtime evidence stop; no compatibility claim changed.
 Date: 2026-10-08.
 Route: `kiro.acp` on `kiro-cli.release`.
 Task: swallowtail#150.
-Authority: decisions `73ff6b53-f8be-4d7f-9031-c8b0a81e3ff1` and
-`8079018e-2ec0-45fd-aaf3-0351c1e3ff1f`; Contracts 023 and 029; Research 394.
+Authority: decisions `73ff6b53-f8be-4d7f-9031-c8b0a81e3ff1` (owner-only
+boundary), `8079018e-2ec0-45fd-aaf3-0351cc57716f` (explicit environment),
+`99de6453-9492-4537-a346-ce7803dbfea3` (isolated ARM64 proof), and
+`e49192c0-3483-4275-a34c-7f4fd56891a8` (fresh Linux container designation);
+Contracts 023 and 029; Research 394.
 
 ## Outcome
 
@@ -76,6 +79,17 @@ The fsynced execution plan SHA-256 was
 `ccd429ed8b805f884dd85102d7d4c9f47e06aa69e809d7c0baa1224c937e490c`; the
 bound start record SHA-256 was
 `b31c72531d23cf0b86b13f2db65f1f089d5883f0ade112c6d79c9cb070f2bf18`.
+The original plan's authority list had a metadata error: it contained a mistyped
+`8079018e` decision ID and omitted the isolated-proof and container-designation
+decisions. The original plan and its bound start record remain unchanged. A
+separately fsynced post-run copy,
+`plans/2.26.1-owned-session-session-new-21001.authority-corrected.json`, records
+all four correct authority decisions and marks itself as a post-run correction;
+its SHA-256 is
+`e2282975936afd547dd02cdd73442b8ce7808d2d0bf8c12e9e7a4387d1ea0eb7`. This copy
+does not replace the execution-bound plan or imply that its corrected metadata
+was present before the attempt. The harness now emits the corrected IDs in
+future plans.
 The exact selected command was `kiro-cli acp`, running as UID 21001 with fresh
 `HOME`, `KIRO_HOME`, `TMPDIR`, and `cwd`. The only RPC sent was the adapter's
 V2 `initialize` request (protocol version 1, filesystem and terminal
@@ -147,5 +161,6 @@ state-path analysis SHA-256 is
 `523435dd82120c6ffdd6b7c6292599ce75e37489d90adc507659efad6ef4b057`; the
 container result and raw-trace archive SHA-256 is
 `00ac0bd6a837007b6e45f2e296a729b0a90b24248064b48310fb8243b9e34efb`. No
-session contents or raw stderr were retained. No live authentication,
-provider call, host mutation, or compatibility claim change occurred.
+session contents or raw stderr were retained. The authority-corrected plan copy
+is also retained in that local evidence tree. No live authentication, provider
+call, host mutation, or compatibility claim change occurred.

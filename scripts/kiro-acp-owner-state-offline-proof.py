@@ -41,6 +41,12 @@ OTHER_UID = 21002
 SCRIPT_IN_CONTAINER = "/scratch/kiro-owner-proof.py"
 MAX_RPC_WAIT_SECONDS = 5.0
 MAX_PROCESS_SECONDS = 18.0
+AUTHORITY_DECISIONS = (
+    "73ff6b53-f8be-4d7f-9031-c8b0a81e3ff1 (owner-only boundary; exact ACP proof required)",
+    "8079018e-2ec0-45fd-aaf3-0351cc57716f (explicit process environment boundary)",
+    "99de6453-9492-4537-a346-ce7803dbfea3 (approve isolated provider-free ARM64 runtime proof)",
+    "e49192c0-3483-4275-a34c-7f4fd56891a8 (designate fresh Linux ARM64 GNU container)",
+)
 
 
 def utc_now() -> str:
@@ -568,12 +574,7 @@ def run_attempt(
             "task_id": "21376339-8146-4426-ab46-69d920b8442d",
             "run_id": "f698dedf-08ae-472f-89cf-5a1f4b321580",
             "brief_sha256": "63481658eb0c78949ac10a1955c4768be36f9a860380551c1a527e36678d5ef4",
-            "authority_decisions": [
-                "73ff6b53-f8be-4d7f-9031-c8b0a81e3ff1",
-                "8079018e-2ec0-45fd-aaf3-0351c1e3ff1f",
-                "Tom approved provider-free offline evidence, not qualification",
-                "Tom designated a fresh native Linux ARM64 GNU environment",
-            ],
+            "authority_decisions": list(AUTHORITY_DECISIONS),
         },
         "containment": env_summary,
         "identity": {

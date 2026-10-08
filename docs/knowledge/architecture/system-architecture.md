@@ -238,10 +238,13 @@ OpenHands adds a package without a production route.
   credential-last cleanup; dispatch does not claim effective reasoning depth
 - `swallowtail-adapter-deepseek-harness` implements two distinct exact routes:
   `0.1.0rc6` JSON-RPC over one host-owned NDJSON stdio process, and
-  `0.1.0-rc.6` Web `/api` over one host-owned loopback `dsh web` process. The
-  JSON-RPC route owns bounded idle-folded structured runs and process-kill
-  cancellation. The Web route owns bounded structured runs, catalogue/search/
-  models, control-free history, native cancel/fork, and target-only archive.
+  Web `/api` over one host-owned loopback `dsh web` process, qualified at exact
+  RC points `0.1.0-rc.6`, `0.1.0-rc.7`, `0.1.0-rc.8`, `0.1.1-rc.1`, and
+  `0.1.1-rc.2`; `0.1.2-rc.1` onward remains unqualified pending browser-auth
+  and typed-stream adaptation (Research 411). The JSON-RPC route owns bounded
+  idle-folded structured runs and process-kill cancellation. The Web route
+  owns bounded structured runs, catalogue/search/models, control-free history,
+  native cancel/fork, and target-only archive.
   Neither route qualifies ACP, browser UI, interactive continuity, or
   DeepSeek-official SSE behavior.
 - `swallowtail-adapter-zcode` implements one exact `0.16.3` app-server route
@@ -685,8 +688,11 @@ Crate status:
   finals, private continuation, cache usage, consumer-authorized attempts,
   failure, cancellation, disconnect, drift, and both host topologies
 - `swallowtail-adapter-deepseek-harness` — realized for the exact `0.1.0rc6`
-  runtime-bin JSON-RPC structured-run route and exact `0.1.0-rc.6` Web `/api`
-  local-server route. The JSON-RPC branch binds host-approved Cordis
+  runtime-bin JSON-RPC structured-run route and exact selected Web `/api`
+  local-server RC points `0.1.0-rc.6`, `0.1.0-rc.7`, `0.1.0-rc.8`,
+  `0.1.1-rc.1`, and `0.1.1-rc.2`; `0.1.2-rc.1` onward remains unqualified
+  pending browser-auth and typed-stream adaptation (Research 411). The
+  JSON-RPC branch binds host-approved Cordis
   configuration, explicit provider/model, bounded stream parsing, namespaced
   unknown observations, process-kill cancellation, and joined cleanup. The
   Web branch binds loopback HTTP/WebSocket, the frozen method allowlist,

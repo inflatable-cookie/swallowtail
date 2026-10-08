@@ -6,10 +6,11 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{ExecutionHostId, ResourceAccess, ResourceRepresentation};
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices, JoinedTask,
-    MonotonicInstant, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
-    ProcessRequest, ProcessService, ResourceLease, RuntimeFailure, ScopeId, ScopedTaskService,
-    SessionCleanupRequest, TimeService, WorkingResourceRef, WorkingResourceService,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, DebugObservation, Diagnostic,
+    DiagnosticObserver, HostServices, JoinedTask, MonotonicInstant, ProcessExit, ProcessHandle,
+    ProcessInputChunk, ProcessOutputChunk, ProcessRequest, ProcessService, ResourceLease,
+    RuntimeFailure, ScopeId, ScopedTaskService, SessionCleanupRequest, TimeService,
+    WorkingResourceRef, WorkingResourceService,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -76,6 +77,18 @@ impl FixtureHost {
         self.services_with_time(host_id, Arc::new(PendingTime))
     }
 
+    pub fn services_with_debug_observer(
+        &self,
+        host_id: ExecutionHostId,
+    ) -> (HostServices, Arc<Mutex<Vec<DebugObservation>>>) {
+        let observations = Arc::new(Mutex::new(Vec::new()));
+        let observer = Arc::new(RecordingDebugObserver(Arc::clone(&observations)));
+        (
+            self.services(host_id).with_diagnostic_observer(observer),
+            observations,
+        )
+    }
+
     pub fn cleanup_request(&self) -> SessionCleanupRequest {
         SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(1_000)))
     }
@@ -135,6 +148,19 @@ impl FixtureHost {
 
     pub fn force_stopped(&self) -> bool {
         self.process_state.force_stopped.load(Ordering::SeqCst)
+    }
+}
+
+struct RecordingDebugObserver(Arc<Mutex<Vec<DebugObservation>>>);
+
+impl DiagnosticObserver for RecordingDebugObserver {
+    fn observe(&self, _diagnostic: &Diagnostic) {}
+
+    fn observe_debug(&self, observation: &DebugObservation) {
+        self.0
+            .lock()
+            .expect("fixture debug observation lock is available")
+            .push(observation.clone());
     }
 }
 

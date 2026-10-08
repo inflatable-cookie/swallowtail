@@ -4,7 +4,7 @@ use crate::command::{interactive_arguments, resumed_arguments};
 use crate::driver::write_prompt;
 use crate::failure::{failure, unsupported};
 use crate::handle::CommandCodeCancellation;
-use crate::pump::{cleanup_failed_start, pump_with_session};
+use crate::pump::{ModelSelectionDebugContext, cleanup_failed_start, pump_with_session};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::{CancellationScope, TurnRef};
@@ -47,6 +47,11 @@ impl CommandCodeSessionHandle {
             ));
         }
         validate_turn(self, &request)?;
+        let model_selection = ModelSelectionDebugContext::new(
+            self.model.clone(),
+            request.request_id().clone(),
+            self.model_selection_observation,
+        );
         let expected_session = self
             .state
             .lock()
@@ -113,6 +118,7 @@ impl CommandCodeSessionHandle {
         let task_process = Arc::clone(&process);
         let task_expected = expected_session;
         let task_turn_id = request.turn_id().clone();
+        let task_model_selection = model_selection;
         let task_services = self.services.clone();
         let task = self.services.task().expect("validated task service").spawn(
             scope,
@@ -124,6 +130,7 @@ impl CommandCodeSessionHandle {
                     deadline,
                     task_expected,
                     ActivityOperationId::Turn(task_turn_id),
+                    task_model_selection,
                     task_services,
                 )
                 .await;

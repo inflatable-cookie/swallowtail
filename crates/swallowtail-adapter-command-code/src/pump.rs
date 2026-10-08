@@ -3,11 +3,11 @@ use crate::handle::CommandCodeCancellation;
 use std::future::poll_fn;
 use std::sync::Arc;
 use std::task::Poll;
-use swallowtail_core::SafeDiagnostic;
+use swallowtail_core::{ModelId, SafeDiagnostic};
 use swallowtail_runtime::{
-    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind,
-    HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
-    RuntimeFailure, TerminalOutcome, TerminalStatus,
+    ActivityOperationId, BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservation,
+    DebugObservationKind, HostServices, ProcessHandle, ProcessOutputChunk, ProcessOutputStream,
+    RequestId, RuntimeEventSender, RuntimeFailure, TerminalOutcome, TerminalStatus,
 };
 
 const ROUTE: &str = "command-code.headless";
@@ -17,12 +17,30 @@ pub(crate) struct CommandCodePumpResult {
     pub(crate) session_id: Option<String>,
 }
 
+#[derive(Clone)]
+pub(crate) struct ModelSelectionDebugContext {
+    requested_model_id: ModelId,
+    request_id: RequestId,
+    enabled: bool,
+}
+
+impl ModelSelectionDebugContext {
+    pub(crate) fn new(requested_model_id: ModelId, request_id: RequestId, enabled: bool) -> Self {
+        Self {
+            requested_model_id,
+            request_id,
+            enabled,
+        }
+    }
+}
+
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
     events: RuntimeEventSender,
     cancellation: Arc<CommandCodeCancellation>,
     deadline: BoxFuture<'static, DeadlineObservation>,
     operation_id: ActivityOperationId,
+    model_selection: ModelSelectionDebugContext,
     services: HostServices,
 ) -> TerminalOutcome {
     pump_with_session(
@@ -32,6 +50,7 @@ pub(crate) async fn pump(
         deadline,
         None,
         operation_id,
+        model_selection,
         services,
     )
     .await
@@ -45,10 +64,14 @@ pub(crate) async fn pump_with_session(
     deadline: BoxFuture<'static, DeadlineObservation>,
     expected_session_id: Option<String>,
     operation_id: ActivityOperationId,
+    model_selection: ModelSelectionDebugContext,
     services: HostServices,
 ) -> CommandCodePumpResult {
-    let mut parser =
-        CommandCodeHeadlessEventParser::with_expected_session(operation_id, expected_session_id);
+    let mut parser = CommandCodeHeadlessEventParser::with_expected_session(
+        operation_id,
+        expected_session_id,
+        model_selection.enabled,
+    );
     let mut deadline = Some(deadline);
     loop {
         match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {
@@ -61,6 +84,11 @@ pub(crate) async fn pump_with_session(
             {
                 match parser.push(chunk.bytes()) {
                     Ok(parsed) => {
+                        emit_model_selection_debug(
+                            &services,
+                            &model_selection,
+                            parser.take_model_request_models(),
+                        );
                         if send_all(&events, parsed).is_err() {
                             let cleanup = force_cleanup(process.as_ref()).await;
                             return result(event_delivery_failed(cleanup));
@@ -97,7 +125,8 @@ pub(crate) async fn pump_with_session(
         ));
     }
     match (parser.finish(), exit) {
-        (Ok((trailing, parsed, session_id)), Ok(exit)) => {
+        (Ok((trailing, parsed, session_id, model_request_models)), Ok(exit)) => {
+            emit_model_selection_debug(&services, &model_selection, model_request_models);
             if send_all(&events, trailing).is_err() {
                 result(event_delivery_failed(CleanupOutcome::Clean))
             } else {
@@ -131,6 +160,56 @@ pub(crate) async fn pump_with_session(
                 process_cleanup_failed(),
             ))
         }
+    }
+}
+
+fn emit_model_selection_debug(
+    services: &HostServices,
+    context: &ModelSelectionDebugContext,
+    effective_model_ids: impl IntoIterator<Item = Option<String>>,
+) {
+    if !context.enabled {
+        return;
+    }
+    for effective_model_id in effective_model_ids {
+        let observation = model_selection_debug_observation(
+            &context.request_id,
+            &context.requested_model_id,
+            effective_model_id.as_deref(),
+        );
+        services.emit_debug_observation(&observation);
+    }
+}
+
+fn model_selection_debug_observation(
+    request_id: &RequestId,
+    requested_model_id: &ModelId,
+    effective_model_id: Option<&str>,
+) -> DebugObservation {
+    let requested_model_id = bounded_model_id(requested_model_id.as_str());
+    let effective_model_id = effective_model_id.and_then(bounded_model_id);
+    let detail = serde_json::json!({
+        "requested_model_id": requested_model_id,
+        "effective_model_id": effective_model_id,
+        "effective_source": "command-code.model_request_start",
+        "effective_scope": "cli-selected-model-before-sdk-request",
+    })
+    .to_string();
+    DebugObservation::new(DebugObservationKind::InterfaceVersion, detail)
+        .with_request_id(request_id.clone())
+        .with_route(ROUTE)
+        .with_stage("model-selection")
+}
+
+fn bounded_model_id(value: &str) -> Option<&str> {
+    if value.is_empty()
+        || value.len() > 128
+        || value.trim() != value
+        || value.chars().any(char::is_control)
+    {
+        None
+    } else {
+        Some(value)
     }
 }
 
@@ -235,4 +314,56 @@ fn process_cleanup_failed() -> CleanupOutcome {
         "swallowtail.command_code.headless.process_cleanup_failed",
         "Command Code process cleanup failed",
     ))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::model_selection_debug_observation;
+    use serde_json::{Value, json};
+    use swallowtail_core::ModelId;
+    use swallowtail_runtime::{DebugObservationKind, RequestId};
+
+    #[test]
+    fn model_selection_observation_contains_only_bounded_requested_and_cli_selected_ids() {
+        let request_id = RequestId::new("request-1").expect("request id is valid");
+        let requested_model_id = ModelId::new("caller/requested-model").expect("model id");
+        let observation = model_selection_debug_observation(
+            &request_id,
+            &requested_model_id,
+            Some("configured/planning-model"),
+        );
+
+        assert_eq!(observation.kind(), DebugObservationKind::InterfaceVersion);
+        assert_eq!(observation.route(), Some(ROUTE));
+        assert_eq!(observation.stage(), Some("model-selection"));
+        assert_eq!(observation.request_id(), Some(&request_id));
+        let detail: Value = serde_json::from_str(observation.detail()).expect("JSON detail");
+        assert_eq!(
+            detail,
+            json!({
+                "requested_model_id": "caller/requested-model",
+                "effective_model_id": "configured/planning-model",
+                "effective_source": "command-code.model_request_start",
+                "effective_scope": "cli-selected-model-before-sdk-request",
+            })
+        );
+        assert_eq!(detail.as_object().unwrap().len(), 4);
+    }
+
+    #[test]
+    fn missing_or_unbounded_cli_model_id_is_not_inferred_from_the_request() {
+        let request_id = RequestId::new("request-1").expect("request id is valid");
+        let requested_model_id = ModelId::new("caller/requested-model").expect("model id");
+        let unbounded_model_id = "x".repeat(129);
+        for effective_model_id in [None, Some(unbounded_model_id.as_str())] {
+            let observation = model_selection_debug_observation(
+                &request_id,
+                &requested_model_id,
+                effective_model_id,
+            );
+            let detail: Value = serde_json::from_str(observation.detail()).expect("JSON detail");
+            assert_eq!(detail["requested_model_id"], "caller/requested-model");
+            assert_eq!(detail["effective_model_id"], Value::Null);
+        }
+    }
 }

@@ -1,10 +1,11 @@
 use super::common::{
     CREDIT_FAILURE, NO_TOOL_SUCCESS, TOOL_SUCCESS, UNKNOWN_EVENT, host_id, model, prepare,
-    run_input,
+    prepare_current, run_input,
 };
 use super::support;
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use serde_json::Value;
 use swallowtail_adapter_command_code::COMMAND_CODE_LOCAL_ACCOUNT_AUDIENCE;
 use swallowtail_core::{
     Capability, CapabilityConstraint, DriverRole, FailureKind, HarnessIsolation,
@@ -119,6 +120,71 @@ fn prepared_run_uses_local_account_ambient_host_and_exact_read_only_cli_binding(
             event.kind(),
             RuntimeEventKind::Activity(activity)
                 if activity.kind() == &ActivityKind::AssistantMessage
+        )
+    }));
+}
+
+#[test]
+fn plan_lane_model_observation_reports_requested_and_cli_selected_ids() {
+    let fixture: Value = serde_json::from_str(include_str!(
+        "../fixtures/command-code-1.79.1/plan-model-selection.json"
+    ))
+    .expect("conflicting model configuration fixture");
+    let host_id = host_id();
+    let prepared = prepare_current(host_id.clone());
+    let run = prepared
+        .prepare_run(run_input(model(), "model-selection"))
+        .expect("run prepares");
+    let stdout = fixture["stdout_ndjson"]
+        .as_array()
+        .expect("captured output records")
+        .iter()
+        .map(Value::to_string)
+        .collect::<Vec<_>>()
+        .join("\n")
+        + "\n";
+    let host = support::FixtureHost::completed([support::stdout_chunk(stdout.into_bytes())]);
+    let (services, observations) = host.services_with_debug_observer(host_id);
+    let mut handle = block_on(run.start_run(services)).expect("run starts");
+    let events = block_on(handle.take_events().expect("events").collect::<Vec<_>>())
+        .into_iter()
+        .collect::<Result<Vec<_>, _>>()
+        .expect("events parse");
+    let terminal = block_on(handle.take_terminal_outcome().expect("terminal"));
+    assert_eq!(terminal.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+
+    let observations = observations
+        .lock()
+        .expect("debug observations lock is available");
+    assert_eq!(observations.len(), 1);
+    let observation = &observations[0];
+    assert_eq!(
+        observation.kind(),
+        swallowtail_runtime::DebugObservationKind::InterfaceVersion
+    );
+    assert_eq!(observation.route(), Some("command-code.headless"));
+    assert_eq!(observation.stage(), Some("model-selection"));
+    assert_eq!(
+        observation.request_id().map(|request| request.as_str()),
+        Some("command-code.fixture.run.model-selection")
+    );
+    let detail: Value = serde_json::from_str(observation.detail()).expect("bounded JSON detail");
+    assert_eq!(detail["requested_model_id"], fixture["requested_model_id"]);
+    assert_eq!(
+        detail["effective_model_id"],
+        fixture["configured_feature_models"]["planning"]
+    );
+    assert_eq!(
+        detail["effective_source"],
+        "command-code.model_request_start"
+    );
+    assert_eq!(detail.as_object().unwrap().len(), 4);
+    assert!(events.iter().all(|event| {
+        !matches!(
+            event.kind(),
+            RuntimeEventKind::OutputDelta(content)
+                if content.as_str().contains("configured/planning-model")
         )
     }));
 }

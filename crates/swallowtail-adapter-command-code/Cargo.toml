@@ -37,6 +37,10 @@ name = "corpus"
 path = "tests/corpus.rs"
 
 [[test]]
+name = "command_code_1_79_1_identity"
+path = "tests/command_code_1_79_1_identity.rs"
+
+[[test]]
 name = "consumer_route_projection"
 path = "tests/consumer_route_projection.rs"
 

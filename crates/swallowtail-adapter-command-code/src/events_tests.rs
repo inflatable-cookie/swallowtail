@@ -1,4 +1,5 @@
 use super::*;
+use serde_json::Value;
 use swallowtail_runtime::RuntimeRunId;
 
 fn operation() -> ActivityOperationId {
@@ -6,12 +7,14 @@ fn operation() -> ActivityOperationId {
 }
 
 fn run_all(lines: &[&str]) -> Result<(Vec<RuntimeEvent>, ParsedTerminal), RuntimeFailure> {
-    let mut parser = CommandCodeHeadlessEventParser::with_expected_session(operation(), None);
+    let mut parser =
+        CommandCodeHeadlessEventParser::with_expected_session(operation(), None, false);
     let mut events = Vec::new();
     for line in lines {
         events.extend(parser.push(format!("{line}\n").as_bytes())?);
     }
-    let (trailing, terminal, _session_id) = parser.finish()?;
+    let (trailing, terminal, _session_id, model_request_models) = parser.finish()?;
+    assert!(model_request_models.is_empty());
     events.extend(trailing);
     Ok((events, terminal))
 }
@@ -137,12 +140,72 @@ fn negative_cases_are_all_rejected() {
         r#"{"type":"result","subtype":"success"}"#,
     ];
     for case in cases {
-        let mut parser = CommandCodeHeadlessEventParser::with_expected_session(operation(), None);
+        let mut parser =
+            CommandCodeHeadlessEventParser::with_expected_session(operation(), None, false);
         let result = parser
             .push(format!("{case}\n").as_bytes())
             .and_then(|_| parser.finish());
         assert!(result.is_err(), "{case} should be rejected");
     }
+}
+
+#[test]
+fn model_request_start_captures_only_the_cli_selected_model_id_for_the_new_milestone() {
+    let fixture: Value = serde_json::from_str(include_str!(
+        "../tests/fixtures/command-code-1.79.1/plan-model-selection.json"
+    ))
+    .expect("conflicting plan-model fixture");
+    assert_eq!(fixture["requested_model_id"], "fixture-model");
+    assert_eq!(
+        fixture["configured_feature_models"]["planning"],
+        "configured/planning-model"
+    );
+    let model_request = fixture["stdout_ndjson"]
+        .as_array()
+        .expect("captured event records")
+        .iter()
+        .find(|record| record["event"]["type"] == "model_request_start")
+        .expect("model request start record");
+    let mut parser = CommandCodeHeadlessEventParser::with_expected_session(operation(), None, true);
+    let line = format!("{model_request}\n");
+    let projected = parser
+        .push(line.as_bytes())
+        .expect("model request event parses");
+    assert_eq!(projected.len(), 1);
+    assert!(matches!(
+        projected[0].kind(),
+        RuntimeEventKind::Activity(activity)
+            if matches!(
+                activity.kind(),
+                swallowtail_runtime::ActivityKind::Unknown(namespace)
+                    if namespace.as_str() == "command-code.headless.event.model_request_start"
+            )
+    ));
+
+    let (_, _, _, effective_models) = parser.finish().expect("stream finishes");
+    assert_eq!(
+        effective_models,
+        [Some(
+            fixture["configured_feature_models"]["planning"]
+                .as_str()
+                .unwrap()
+                .to_owned()
+        )]
+    );
+}
+
+#[test]
+fn model_request_start_keeps_unreported_or_unbounded_ids_unknown() {
+    let mut parser = CommandCodeHeadlessEventParser::with_expected_session(operation(), None, true);
+    let unbounded_model_id = "x".repeat(129);
+    let records = format!(
+        "{{\"type\":\"event\",\"event\":{{\"type\":\"model_request_start\"}}}}\n{{\"type\":\"event\",\"event\":{{\"type\":\"model_request_start\",\"model\":\"{unbounded_model_id}\"}}}}\n"
+    );
+    parser
+        .push(records.as_bytes())
+        .expect("unknown model detail does not change stream acceptance");
+    let (_, _, _, effective_models) = parser.finish().expect("stream finishes");
+    assert_eq!(effective_models, [None, None]);
 }
 
 #[test]

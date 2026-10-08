@@ -19,7 +19,7 @@ const OH_MY_PI_PACKAGE_17X_LATEST_QUALIFIED_VERSION: &str = "17.4.2";
 /// Oldest `18.x` Oh My Pi package version, opening the private major segment.
 const OH_MY_PI_PACKAGE_18_BASELINE_VERSION: &str = "18.0.0";
 /// Newest Oh My Pi package version behaviorally qualified for RPC v2.
-pub const OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "18.2.7";
+pub const OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "18.8.3";
 
 /// Behavior revision for the retained `17.2.9..=17.4.2` segment.
 ///
@@ -34,17 +34,17 @@ const RETAINED_17X_BEHAVIOR: &str = "oh-my-pi.rpc-v2-v17.2.9";
 ///
 /// The selected `--mode rpc` flags, commands, framing, response shape,
 /// lifecycle, usage, terminal, failure, retention, cancellation, and cleanup
-/// behavior are unchanged through `18.2.7`, but the `17` to `18` boundary is
+/// behavior are unchanged through `18.8.3`, but the `17` to `18` boundary is
 /// a major-line reset. Contract 029 and the g05.079 task require a distinct
 /// adapter-private behavior revision and segment rather than silent
-/// inheritance of the prior major window. The later `18.2.0..=18.2.7` hops
-/// are a compatible extension of this same revision.
+/// inheritance of the prior major window. The later published `18.x` hops
+/// through `18.8.3` are compatible extensions of this same revision.
 const MAJOR_18X_BEHAVIOR: &str = "oh-my-pi.rpc-v2-v18.0.0";
 /// npm-unpublished stable points inside the admitted `18.x` segment.
 ///
-/// `18.0.2` and `18.1.7` exist as GitHub tags only. They stay explicitly
+/// These stable points exist as GitHub tags only. They stay explicitly
 /// excluded so an unpublished point can never be inferred compatible.
-const UNPUBLISHED_18X_GAPS: [&str; 2] = ["18.0.2", "18.1.7"];
+const UNPUBLISHED_18X_GAPS: [&str; 4] = ["18.0.2", "18.1.7", "18.4.7", "18.6.2"];
 
 /// Parses one exact Oh My Pi package semantic-version binding.
 #[must_use]
@@ -161,13 +161,17 @@ mod tests {
         }
         for candidate in [
             "18.0.0", "18.0.1", "18.0.3", "18.0.11", "18.1.0", "18.1.16", "18.1.21", "18.1.22",
-            "18.2.0", "18.2.1", "18.2.6", "18.2.7",
+            "18.2.0", "18.2.1", "18.2.6", "18.2.7", "18.2.8", "18.2.9", "18.2.10", "18.2.11",
+            "18.3.0", "18.3.1", "18.3.2", "18.3.3", "18.3.4", "18.3.5", "18.4.0", "18.4.1",
+            "18.4.2", "18.4.3", "18.4.4", "18.4.5", "18.4.6", "18.4.8", "18.4.9", "18.4.10",
+            "18.4.11", "18.4.12", "18.5.0", "18.5.1", "18.6.0", "18.6.1", "18.6.3", "18.7.0",
+            "18.8.0", "18.8.1", "18.8.2", "18.8.3",
         ] {
             assert!(claim.supports(&version(candidate)), "missing {candidate}");
         }
 
         assert_eq!(OH_MY_PI_PACKAGE_18_BASELINE_VERSION, "18.0.0");
-        assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.2.7");
+        assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.8.3");
 
         // The 17.x segment is retained but deprecated by the newest revision.
         for candidate in ["17.2.9", "17.4.0", "17.4.2"] {
@@ -199,7 +203,7 @@ mod tests {
                 "{stopped} stays incompatible"
             );
         }
-        for gap in ["18.0.2", "18.1.7"] {
+        for gap in ["18.0.2", "18.1.7", "18.4.7", "18.6.2"] {
             assert!(
                 matches!(
                     claim.assess(&version(gap)),
@@ -210,19 +214,19 @@ mod tests {
         }
 
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("18.2.8"))
+            claim.assess(&version("18.8.4"))
         else {
             panic!("later stable OhMyPi remains unverified");
         };
         assert_eq!(newer.behavior_revision().as_str(), MAJOR_18X_BEHAVIOR);
-        assert!(!claim.permits(&version("18.2.8-rc.1")));
+        assert!(!claim.permits(&version("18.8.4-rc.1")));
     }
 
     #[test]
     fn binding_accepts_only_one_bare_semver() {
         assert!(oh_my_pi_package_binding("17.2.9").is_some());
         assert!(oh_my_pi_package_binding("18.1.22").is_some());
-        assert!(oh_my_pi_package_binding("18.2.7").is_some());
+        assert!(oh_my_pi_package_binding("18.8.3").is_some());
         for value in ["", " 17.2.9", "omp 17.2.9", "latest"] {
             assert!(oh_my_pi_package_binding(value).is_none());
         }

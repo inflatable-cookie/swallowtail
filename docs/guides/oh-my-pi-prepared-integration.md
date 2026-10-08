@@ -39,12 +39,18 @@ optional attachment services. They use no credential service. Provider-
 suppressed tools and ambient execution are not host sandboxing.
 
 Package `17.2.9..=17.4.2` is qualified and retained on the
-`oh-my-pi.rpc-v2-v17.2.9` behavior revision, and `18.0.0..=18.2.7` is
+`oh-my-pi.rpc-v2-v17.2.9` behavior revision, and `18.0.0..=18.8.3` is
 qualified on the distinct `oh-my-pi.rpc-v2-v18.0.0` behavior revision. The
 `17.x` segment reports `Deprecated` while remaining executable; `18.x` is
-maintained. Unpublished `18.0.2` and `18.1.7` are excluded, the
-npm-unpublished GitHub tags `17.4.3` and `17.4.4` are incompatible, and later
-stable versions remain visible unverified newer.
+maintained. GitHub-only stable tags `18.0.2`, `18.1.7`, `18.4.7`, and
+`18.6.2` are excluded. The `17.4.3` and `17.4.4` tags remain incompatible,
+and later stable versions remain visible unverified newer. A final
+re-probe found official stable `18.8.4` after the identity freeze; it remains
+`UnverifiedNewer` pending a separate currentness qualification. Research 382
+freezes the exact `18.8.3` npm artifact, all 32 published hops, and the
+complete tree ledger. The provider adds `proc://`, `cfg://`, `attachment://`, and
+`conflict://` resources inside its existing ambient `read` tool; `cfg://`
+redacts credentials, while writes remain outside the selected tool set.
 
 ## Prepare The Installation
 

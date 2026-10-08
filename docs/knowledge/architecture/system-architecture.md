@@ -388,14 +388,15 @@ OpenHands adds a package without a production route.
   persistent new, load-with-replay, and replay-free resume gated on the exact
   host-leased cwd
 - `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.4.2`
-  (retained, deprecated) and `18.0.0..=18.2.7` (maintained) package segments
+  (retained, deprecated) and `18.0.0..=18.8.3` (maintained) package segments
   and `omp` executable over negotiated RPC v2 JSONL stdio. The two segments
   carry separate adapter-private behavior revisions. It uses OMP local
   auth without a Swallowtail credential lease, binds exact provider, model,
   and optional reasoning selection, and owns bounded physical/logical frame
   decoding. Its first catalogue, run, and session subset omits write tools,
   permission exchange, session switching, host-tool injection, and subagent
-  authority
+  authority. Official stable `18.8.4` appeared after identity freeze and
+  remains `UnverifiedNewer` without widening the `18.x` claim (Research 382).
 - `swallowtail-adapter-muse` implements exact signed Muse Code payload
   `0.2.1-R1215.1` as one read-only `muse-code.headless` structured-run route.
   Its prepared facade binds provider-owned local Meta account state without a

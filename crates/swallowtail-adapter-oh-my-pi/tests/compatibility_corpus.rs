@@ -28,7 +28,7 @@ fn exact_package_identity_and_release_evidence_are_frozen() {
 
 #[test]
 fn production_claim_permits_the_qualified_window() {
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.2.7");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.8.3");
     let claim = oh_my_pi_rpc_claim();
     assert!(claim.supports(&version("17.2.9")));
     assert!(claim.supports(&version("17.3.7")));
@@ -39,18 +39,19 @@ fn production_claim_permits_the_qualified_window() {
     assert!(claim.supports(&version("18.1.22")));
     assert!(claim.supports(&version("18.2.0")));
     assert!(claim.supports(&version("18.2.7")));
+    assert!(claim.supports(&version("18.8.3")));
     assert!(!claim.permits(&version("17.2.8")));
-    for incompatible in ["17.4.3", "17.4.4", "18.0.2", "18.1.7"] {
+    for incompatible in ["17.4.3", "17.4.4", "18.0.2", "18.1.7", "18.4.7", "18.6.2"] {
         assert!(
             !claim.permits(&version(incompatible)),
             "{incompatible} stays incompatible"
         );
     }
     assert!(matches!(
-        claim.assess(&version("18.2.8")),
+        claim.assess(&version("18.8.4")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
-    assert!(!claim.permits(&version("18.2.8-rc.1")));
+    assert!(!claim.permits(&version("18.8.4-rc.1")));
 }
 
 #[test]

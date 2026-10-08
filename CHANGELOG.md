@@ -12,6 +12,19 @@ annotated Git tags from the canonical repository.
   catalogue axes stay exact. Research 381 freezes every selected-channel hop
   and full package trees, plus the ConverseStream request, EventStream, usage,
   and failure boundaries; no AWS calls or host mutation occurred.
+- qualify `oh-my-pi.rpc` through official npm `latest` and GitHub latest
+  stable `18.8.3` on the existing `oh-my-pi.rpc-v2-v18.0.0` revision.
+  Research 382 freezes all 32 published hops after `18.2.7`, exact npm
+  artifact and runtime identity, complete package trees, and selected
+  source classifications. Extend maintained `18.0.0..=18.8.3`; retain
+  deprecated `17.2.9..=17.4.2`, claim id, decoder corpus, and exclusions
+  `18.0.2`, `18.1.7`, `18.4.7`, and `18.6.2`. The selected commands,
+  tools, frame bounds, lifecycle/failure/usage mapping, and permission
+  tier stay fixed. Provider-internal URI resources remain within Oh My Pi's
+  existing ambient `read` tool; new RPC commands stay unselected. No provider
+  work, artifact execution, install, or host update occurred. A final channel
+  recheck found official `18.8.4` published after the identity commit; it stays
+  `UnverifiedNewer` pending a separate currentness qualification.
 - qualify only `antigravity.catalogue` through official Antigravity CLI `1.3.1`
   after published stable hops `1.2.12`–`1.2.17`, `1.3.0`, and `1.3.1`.
   Research 380 freezes source commits, complete release asset manifests, and

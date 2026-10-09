@@ -111,6 +111,35 @@ returns for a separate ruling. This includes no live providers, credentials,
 installation, host/workflow mutation, or release/tag action. It does not
 approve the distinct ACP restrictions in Research 372.
 
+## Gemini Headless Plan Transition Enforcement Design
+
+Tom's 2026-10-09 board answer to decision
+`df2315cd-fb6c-44e7-8d4e-868249400205` is “Approve offline enforcement
+design; implementation returns separately”. This authorizes a bounded offline
+enforcement design for Research 417's selected Plan-to-YOLO transition, reusing
+completed source, identity and fake evidence.
+
+Investigate exact shipped process-scoped mechanisms that block
+`exit_plan_mode` before tool effects while retaining bounded Plan reads,
+approved working resources, environment/authentication binding and
+reject/cancel/no-bypass. Prove proposed control precedence from the selected
+source and invocation, including overlays, defaults and alternative
+transitions. Stream observation or cancellation after effects is not
+prevention. Do not mutate persistent settings, relocate home/authentication,
+fork the vendor, silently drop selected behavior or disable provider safety.
+
+If no private shipped mechanism preserves those promises, return a concrete
+host/tool-interposition or contract/API design with explicit consumer,
+preflight, permission/lifecycle, serialization and Contract 036 minor-release
+limits. Return staged fake-first negative proof and implementation scopes for
+a separate ruling before coding.
+
+This is documentation and offline source analysis only: no runtime/API
+implementation, artifact execution, live/provider work, credentials, install
+or configuration/host mutation, qualification or tag authority. Preserve the
+current `0.61.0` ceiling, older qualified points and exclusions. Gemini ACP is
+independent; its evidence and authority do not settle headless enforcement.
+
 ## Gemini ACP Permission And Filesystem Restrictions
 
 Tom, operator board, 2026-10-07: "Accept documented restrictions and bounded

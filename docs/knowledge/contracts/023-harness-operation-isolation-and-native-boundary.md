@@ -261,6 +261,14 @@ needs return separately. No Antigravity live usage is authorized.
 
 ## Antigravity Windows Offline Sandbox Proof
 
+The later 2026-10-09 Windows scheduling ruling in
+[Contract 036](036-crate-release-and-compatibility-boundary.md#windows-compatibility-qualification)
+defers this provider-specific proof to the whole-codebase Windows sweep at a
+time Tom chooses. The authority below records the original bounded scope; it
+is not a current dispatch instruction. No original VM shutdown, clone setup or
+artifact execution follows from the scheduling ruling. Reuse retained evidence
+when the future sweep is explicitly scoped.
+
 Tom's 2026-10-08 board answer to decision
 `155265da-be30-4028-92cf-0ee064d1612c` is “Authorize bounded proof - I have a
 windows VM we can use”. A separate proof may execute the exact Antigravity

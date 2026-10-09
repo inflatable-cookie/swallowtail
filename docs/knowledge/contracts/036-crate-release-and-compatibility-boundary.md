@@ -117,6 +117,29 @@ source inventory and semantic API evidence before their first tag. Historical
 tag package, dependency, API, route, and release-note inventories remain
 immutable.
 
+## Windows Compatibility Qualification
+
+Tom ruled on 2026-10-09: “We ultimately haven't claimed _any_ windows
+compatibility at all yet.. rather than letting Antigravity dictate it, I would
+rather choose a time to do a full sweep across the whole codebase and do it
+properly!” (decision `bf37c540-9f41-4e8c-bbd7-b19f0b6db096`).
+
+There is no general Windows compatibility guarantee for the source release.
+Windows qualification is a separate whole-codebase effort, scheduled by Tom.
+An individual provider's Windows artifacts, upstream support or static evidence
+do not establish Swallowtail support. The sweep must assess core/runtime, host
+process ownership and cleanup, transports, adapters, paths and environment,
+packaging and consumer preparation, with architecture-specific evidence and
+explicitly documented route limits before any Windows claim.
+
+The Antigravity Windows proof and newer headless qualification are deferred
+from the currentness minor release gate into that later effort. Preserve existing
+exact qualified points, exclusions, retry settings and retained evidence; this
+ruling adds no Windows claim and waives no qualification proof. Missing resource,
+retry, authentication and native x64 evidence remain unresolved. Future scoped
+briefs require the approved environments and execution authority before work;
+this scheduling ruling grants no VM action or provider execution.
+
 ## Dependency Topology
 
 Normal internal dependencies remain acyclic across three layers:

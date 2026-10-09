@@ -133,19 +133,19 @@ tree. Their hashes are from that inventory.
 
 | Control | Frozen source | Result |
 | --- | --- | --- |
-| Invocation and overlays | [`packages/cli/src/config/config.ts` arguments](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L321-L343), `bdb490bbf0ea1803d74e8bc1748432096eff7063abec0447e5e7aa467e4187b8`; [`--allowed-tools` option](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L379-L386); [argument-to-settings mapping](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L791-L826) | The CLI exposes `--approval-mode`, `--policy`, `--admin-policy`, and deprecated `--allowed-tools`; it has no mapped `--exclude-tools` option. `--allowed-tools` feeds `tools.allowed` (with settings fallback), so an allow such as `write_file` overrides Plan's default catch-all deny. `--policy` replaces the default user-policy directory when supplied. `--admin-policy` replaces the settings path list, and Gemini ignores supplemental admin paths when its system policy directory contains TOML files. |
-| Policy tiering | [`packages/core/src/policy/config.ts` tiers](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/config.ts#L61-L75), `522fa65371cf269bea9bce5fe558de9757db698c542f5da84b98869ce8423ee9`; [priority order and Plan defaults](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/config.ts#L348-L379); [settings allow generation](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/config.ts#L483-L493); [`toml-loader.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/toml-loader.ts#L35-L65), `605e9e5031daa0f1b57a18f72e01edbf6cff6e2395e499a724805ca11ef8fda6` | Default → extension → workspace → user → admin. TOML priorities are `0..999` within each tier. Settings `tools.allowed` creates a user-tier allow at `4.3`, above Plan's default catch-all deny at `1.040`; `tools.exclude` creates a user-tier deny at `4.4`. A user policy can reach `4.999`, and an admin allow is higher, so a settings or policy-file exclusion is not a non-overridable guard. |
-| Plan defaults | [`plan.toml`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policies/plan.toml#L30-L76), `cbc98437f7a0c3df44465e853863c1016d66d725da2b9a223946e802ffd2b777`; [`read-only.toml`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policies/read-only.toml#L28-L55), `4899746262c3beedce94ca90fdcbb50028e52232747288e5bff73c523db05bfb` | In noninteractive Plan mode, the default policy explicitly allows `exit_plan_mode` at priority 70. Plan's catch-all deny is priority 40 and its read-only list is priority 50. That built-in list also names topic, task, and tracker tools, so its label alone is not a filesystem read allowlist. |
-| Decision and transition | [`policy-engine.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policy-engine.ts#L921-L923), `3b7118ceadaa36589f64def7669a503d64bd805fbff696077f5f7929361dfad2`; [`exit-plan-mode.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/tools/exit-plan-mode.ts#L261-L264), `1e1589584223a824c817a24be784cf84922fc67785c544ec99e10dfe1e889435` | Policy rules are evaluated by [priority](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/config.ts#L348-L361). Noninteractive mode converts `ASK_USER` to `DENY` but leaves an explicit `ALLOW` intact. An allowed noninteractive exit selects YOLO through `getAllowApprovalMode()` and updates the active mode. |
+| Invocation and overlays | [`--approval-mode` argument](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L321-L343), `bdb490bbf0ea1803d74e8bc1748432096eff7063abec0447e5e7aa467e4187b8`; [`--policy` and `--admin-policy` arguments](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L347-L362); [`--allowed-tools` option](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L379-L386); [argument-to-settings mapping](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L791-L826) | The CLI exposes `--approval-mode`, `--policy`, `--admin-policy`, and deprecated `--allowed-tools`; it has no mapped `--exclude-tools` option. `--allowed-tools` feeds `tools.allowed` (with settings fallback), so an allow such as `write_file` overrides Plan's default catch-all deny. `--policy` replaces the default user-policy directory when supplied. `--admin-policy` replaces the settings path list, and Gemini ignores supplemental admin paths when its system policy directory contains TOML files. |
+| Policy tiering | [`packages/core/src/policy/config.ts` tiers](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/config.ts#L61-L75), `522fa65371cf269bea9bce5fe558de9757db698c542f5da84b98869ce8423ee9`; [settings exclusion and allow priorities](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/config.ts#L76-L78); [`tools.allowed` rule generation](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/config.ts#L519-L523); [`toml-loader.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/toml-loader.ts#L35-L65), `605e9e5031daa0f1b57a18f72e01edbf6cff6e2395e499a724805ca11ef8fda6` | Default → extension → workspace → user → admin. TOML priorities are `0..999` within each tier. `tools.allowed` creates a user-tier allow at `4.3`, which outranks Plan's default `1.040` catch-all deny and can allow `write_file`; `tools.exclude` creates a user-tier deny at `4.4`. User TOML can reach `4.999`, and admin rules use a higher tier, so none of these policy exclusions is a non-overridable guard. |
+| Plan defaults | [`plan.toml` transition and catch-all](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policies/plan.toml#L30-L76), `cbc98437f7a0c3df44465e853863c1016d66d725da2b9a223946e802ffd2b777`; [default `.md` plan-file writes](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policies/plan.toml#L118-L195); [`read-only.toml`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policies/read-only.toml#L28-L55), `4899746262c3beedce94ca90fdcbb50028e52232747288e5bff73c523db05bfb` | In noninteractive Plan mode, the default policy allows `exit_plan_mode` and `write_file`/`replace` at effective priority `1.070`; the latter apply only to its bounded `.md` plan-file path patterns, including designated `.gemini/tmp/.../plans` and clean relative `plan.md` or `plans/...` forms. The catch-all deny is `1.040` and the read-only list is `1.050`. That list also names topic, task, and tracker tools, so its label alone is not a filesystem read allowlist. |
+| Decision and transition | [`policy-engine.ts` sorted first-match evaluation](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policy-engine.ts#L662-L686), `3b7118ceadaa36589f64def7669a503d64bd805fbff696077f5f7929361dfad2`; [dynamic rule re-sort](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policy-engine.ts#L937-L940); [noninteractive ASK_USER conversion](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policy-engine.ts#L921-L923); [`exit-plan-mode.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/tools/exit-plan-mode.ts#L261-L264), `1e1589584223a824c817a24be784cf84922fc67785c544ec99e10dfe1e889435` | The engine sorts rules by priority and uses the first matching rule. Noninteractive mode converts `ASK_USER` to `DENY` but leaves an explicit `ALLOW` intact. An allowed noninteractive exit selects YOLO through `getAllowApprovalMode()` and updates the active mode. |
 | Pre-effect hook | [`scheduler.ts` hook check](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/scheduler/scheduler.ts#L590-L653), `79d3ceaceac098d96bae070c97fbd48e566d5c425cfadec5e1c9bc294ee3c629`; [later executor phase](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/scheduler/scheduler.ts#L710-L735); [`hook-utils.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/scheduler/hook-utils.ts#L25-L65), `51fcfdf0e891bd2372e993e5792011a7781a3d51de7c546cd5fdaa148d81c9dc` | The scheduler evaluates `BeforeTool` and returns its policy-violation result before policy, confirmation, or tool execution. The hook aggregator gives any `block` or `deny` decision precedence over `ask` or `allow`; see [`hookAggregator.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/hooks/hookAggregator.ts#L104-L141), `c5c16d0c17243e70a0e79f2b917cab70a399142ed77fe549a989b0cbe47713d7`. |
 
-The selected route's [`--approval-mode plan` can fall back to `default`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L681-L729)
-when Plan is disabled in settings or the folder is not trusted. Its selected
-[`--skip-trust` option](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L290-L294)
-addresses the latter path, but the future adapter still must fail before the
-prompt unless its effective mode and tool registry match the prepared Plan
-profile. Stream-json emits `tool_use` before the scheduler; observing that
-event or cancelling the process is not a pre-effect control.
+The selected route's [`--approval-mode plan` falls back to `default` when Plan is disabled](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L681-L729).
+Gemini also [forces `default` for an untrusted folder](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L758-L764);
+the selected [`--skip-trust` option](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L308-L312)
+addresses that fallback. The future adapter must still fail before the prompt
+unless effective mode and tool registry match the prepared Plan profile.
+Stream-json emits `tool_use` before the scheduler; observing that event or
+cancelling the process is not a pre-effect control.
 
 ### Enforcement design
 
@@ -169,14 +169,16 @@ policy, so they are not acceptable substitutes.
 The candidate enforcement contract is a provider-supported, process-local
 pre-tool guard that registers an adapter-owned runtime hook in the actual
 Gemini scheduler before initialization. Its prepared policy binds to the
-selected Plan tool registry: always block `exit_plan_mode`; permit only the
-exact pre-transition tools and resource rules already approved by the prepared
-profile; block every other or unknown tool before effect. This covers a direct
-write tool allowed by an overlay as well as the named transition. Keep
-provider path checks, `.gemini` write safety, output bounds, selected cwd,
-environment and authentication binding. Do not use the hook to change
-settings, home, provider flags outside the prepared profile, or process
-containment claims.
+selected Plan tool registry: always block `exit_plan_mode`; permit the exact
+pre-transition tools and resource rules already approved by the prepared
+profile; block every other or unknown tool before effect. Preserve Gemini's
+default `write_file` and `replace` allowances only for the frozen bounded
+`.md` plan-file argument patterns described above; the guard must validate
+arguments as well as tool names. A user/admin allow for `write_file` cannot
+expand that set. Keep provider path checks, `.gemini` write safety, output
+bounds, selected cwd, environment and authentication binding. Do not use the
+hook to change settings, home, provider flags outside the prepared profile,
+or process containment claims.
 
 No shipped CLI interface currently connects the external-process adapter to
 that internal hook. The precise unavailable edge is process-local hook
@@ -200,13 +202,19 @@ host boundary; it is not a mechanism the current CLI accepts.
 - A prepared Plan read within the selected approved resources continues
   through Gemini's defensive real-path checks and existing bounded-output
   behavior.
+- Gemini's built-in `write_file` and `replace` allowances for the frozen
+  bounded `.md` plan-file patterns remain in the prepared allow-set. They
+  include designated `.gemini/tmp/.../plans` paths and the documented clean
+  relative `plan.md` and `plans/...` forms; these rules do not authorize other
+  writes.
 - A model request for `exit_plan_mode` is blocked before confirmation and
   tool execution. Approval mode stays Plan; no `ASK_USER` callback, fallback
   allow, YOLO transition, or policy persistence occurs.
-- A direct write, shell, edit, unknown tool, or alternative transition that
-  is not in the prepared Plan allow-set is blocked before execution, including
-  when a user or admin policy would otherwise allow it. An unrecognized
-  effective tool set is a preflight failure, not a silent tool removal.
+- Any `write_file` or `replace` call outside those exact `.md` argument
+  patterns, any shell or other edit tool, an unknown tool, or an alternative
+  transition is blocked before execution, even when a user or admin policy
+  would otherwise allow it. An unrecognized effective tool set is a
+  preflight failure, not a silent tool removal.
 - Missing, disabled, malformed, or mismatched guard state fails before the
   model prompt. Cancellation and denial must leave the fake effect log empty,
   then join process and stream cleanup. Do not infer prevention from a
@@ -216,20 +224,22 @@ host boundary; it is not a mechanism the current CLI accepts.
   adds no approval callback or stream field. Prove exact stream and terminal
   outcomes with fakes before any claim changes.
 
-The proposed launch serialization must be versioned and strict, carry only the
-prepared tool names and authority mode, and contain no prompt, path, credential,
-or environment value. Unknown schema versions and fields fail before the
-prompt. The guard remains in process memory and is not written to provider
-settings. No integration or API is approved by this design.
+The proposed launch serialization must be versioned and strict, carry the
+prepared tool names, authority mode, and named argument constraints for the
+approved `.md` plan-file forms, and contain no prompt, concrete path,
+credential, or environment value. Unknown schema versions and fields fail
+before the prompt. The guard remains in process memory and is not written to
+provider settings. No integration or API is approved by this design.
 
 ### Proof and release boundary
 
 The separate implementation brief should prove, with fake-first tests:
 
 1. baseline and user/workspace/admin allow overlays cannot run
-   `exit_plan_mode` or any non-allowlisted tool;
-2. default bounded Plan reads still work and preserve defensive paths and
-   truthful truncation/collapse semantics;
+   `exit_plan_mode`, arbitrary writes, or any other non-allowlisted tool;
+2. default bounded Plan reads and the frozen `.md` plan-file writes still
+   work, while other `write_file`/`replace` arguments are denied; defensive
+   paths and truthful truncation/collapse semantics are preserved;
 3. deny, cancellation, malformed guard, failed startup, and unknown tool
    cases produce no fake tool effects, no `ASK_USER` bypass, no mode change,
    and joined cleanup;

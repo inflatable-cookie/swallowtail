@@ -83,6 +83,13 @@ section = "Research Records"
 "check:copilot-acp-permission-fake" = "python3 scripts/copilot-acp-offline-proof.py --compile-permission-fake"
 "check:copilot-acp-stage-launcher" = "python3 scripts/copilot-acp-offline-proof.py --compile-stage-launcher"
 "validate:copilot-acp-stage-launcher" = "python3 scripts/copilot-acp-offline-proof.py --stage-launcher-smoke"
+"prepare:copilot-acp-no-child-diagnostic" = "python3 scripts/copilot-acp-no-child-diagnostic.py --prepare-record"
+"check:copilot-acp-no-child-diagnostic" = [
+  "python3 -c 'from pathlib import Path; files = (Path(\"scripts/copilot-acp-no-child-diagnostic.py\"),); [compile(file.read_bytes(), str(file), \"exec\") for file in files]'",
+  "python3 scripts/copilot-acp-no-child-diagnostic.py --compile-fake-only",
+  "python3 scripts/copilot-acp-no-child-diagnostic.py --validate-record",
+]
+"validate:copilot-acp-no-child-diagnostic" = "python3 scripts/copilot-acp-no-child-diagnostic.py --self-test"
 "validate:copilot-acp-authenticated-proof" = [
   "python3 scripts/copilot-acp-offline-proof.py --self-test",
   "cargo nextest run --locked --profile ci --no-fail-fast -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof --test acp_suite -E 'binary(copilot_acp_offline_proof) | test(/(permission_observes_without_selecting_allow_always|active_turn_cancellation_waits_for_cancelled_prompt_result|unexpected_write_callback_is_rejected_before_host_mutation)/)'",

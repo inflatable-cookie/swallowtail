@@ -131,6 +131,16 @@ has no permission change. See the
 [Contract 023 offline-startup continuation](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md#fake-only-diagnostic-and-cleanup-continuation)
 for the evidence boundary.
 
+The credential-free no-child preparation has a separate fake-only result in
+[`preparation-record.json`](../../crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-no-child-diagnostic/preparation-record.json).
+On its recorded macOS build, the imported runtime profile and exact shim/target
+exec grants did not permit fork, vfork or posix_spawn after the launcher
+transition. The candidate request is data-only: `--acp --stdio`, at most one
+initialize, a 60-second ceiling, and synthetic state with host, repository,
+auth-service and network access denied. Its `execution_authorized` value is
+false. Fake success does not prove Copilot startup, host-login or Auto-model
+compatibility; an original attempt needs separate exact authority and review.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

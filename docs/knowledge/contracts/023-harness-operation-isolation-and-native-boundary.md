@@ -1199,12 +1199,44 @@ exec transition. A deny-rule string or cooperative fake-child join is not
 proof. Bind the current OS and imported-profile closure, replayable synthetic
 layout, bounded diagnostics, one-shot records and owned-root stop/join.
 
+[Research 432](../../research/432-copilot-acp-no-child-initialize-diagnostic.md)
+records the fake-only result and its exact identities in the
+[preparation record](../../../crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-no-child-diagnostic/preparation-record.json).
+On macOS 26.6.2 build `25G83` arm64, the imported runtime-profile closure is
+the single `dyld-support.sb` file recorded by role, size and digest. The
+replayable profile denies `process-fork` after the import, grants `process-exec`
+only to the owned stage launcher and exact target, denies Mach lookup and
+network access, limits writes to the action root, and denies the current host
+home, repository and record roots. Synthetic auth-config, keychain and
+repository sentinels exercise those file denials; service probes cover
+`com.apple.securityd` and `com.apple.SecurityServer`; a reserved fake address
+and local bind exercise network denial.
+
+The fake returns one ACP `initialize` response. Eight child-creation attempts
+cover fork, vfork and posix_spawn with self-exec, system-helper, launcher and
+session-escape cases; all return denied before an effect marker. A self-exec
+replacement keeps the same root PID, an unlisted system helper exec is denied,
+and an at-exit spawn is denied. The record also binds the timeout, cancel,
+stop, direct-PID wait, stderr-reader join, unknown EOF and fsync-before-start
+crash/replay controls. Its secret-bearing stderr control persists only fixed
+marker facets and byte counts, with no raw text, hash, path or secret.
+
 The proposed later diagnostic uses `--acp --stdio`, at most one initialize
 request and a 60-second ceiling, with all external network and real
 home/config/keychain/auth access denied. It does not use the host login or
 Auto model policy and cannot establish their permission-proof compatibility.
 If the no-child boundary cannot be enforced, return a concrete isolated
 environment requirement; do not substitute process-group cleanup.
+
+The record contains a data-only request with the candidate profile template,
+the frozen Darwin ARM64 `1.0.93` archive and executable identities, synthetic
+environment roles and a three-second cleanup bound. It sets
+`execution_authorized: false`; the original executable was neither staged nor
+run. Fake success establishes only the recorded profile boundary and fake
+protocol behavior on that OS build. It does not show that Copilot reaches
+initialize, needs no child, or works without host login, Auto model policy,
+auth services or provider access. A later original attempt needs separate
+exact authority and independent review after resolving those limits.
 
 This ruling authorizes preparation and fake proof only. No original Copilot
 invocation, additional credential/service access, qualification or release is

@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "fixture_kind": "provider-free-static-and-documentation-evidence",
+  "scope": "antigravity.headless.permission-denial",
+  "release": "1.2.15",
+  "platform": "mac_arm64",
+  "release_archive_sha256": "66f7e9e8750a506e8a2caaedaadf479f023820f712015c9c55cfb91a2891521b",
+  "extracted_cli_sha256": "d15693410c904242c1c3423a579f60a81e018444bb51fbccc6505f988b62a91d",
+  "selected_vendor_path": [
+    "printmode.session.runTurn",
+    "store.(*Manager).HeadlessDenials",
+    "printmode.headlessDenialNotice"
+  ],
+  "denial_record_callers": [
+    "UpdateSubagentSteps",
+    "addFromDiff",
+    "handleToolConfirmation"
+  ],
+  "official_headless_documentation": {
+    "continues": true,
+    "exit_code": 0,
+    "notice_stream": "stderr",
+    "notice_names_tool": true,
+    "notice_includes_allow_guidance": true,
+    "url": "https://www.antigravity.google/docs/cli/headless/"
+  },
+  "selected_adapter_path": {
+    "output_format": "stream-json",
+    "parses_stdout_events": true,
+    "parses_stderr_events": false,
+    "permission_approval_exchange": false,
+    "dangerously_skip_permissions_argument": false
+  },
+  "exact_denial_stdout_event": {
+    "proven": false,
+    "fixture": null,
+    "reason": "The official guide specifies a stderr notice but does not define the denied tool's stdout event shape."
+  },
+  "accepted_route_limit": {
+    "run_completion_proves_all_requested_tools_executed": false,
+    "structured_denial_projection": "unclaimed",
+    "stderr_notice_parsed_as_denial": false,
+    "alternate_tool_workaround": false,
+    "approval_bypass": false,
+    "ruling": "Contract 023 Antigravity Headless Denial And Child Status"
+  }
+}

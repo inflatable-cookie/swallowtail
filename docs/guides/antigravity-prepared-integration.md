@@ -55,8 +55,12 @@ retryable class, and invalid values warn and keep the default. The exact
 in its approved environment; provider-managed retry is disabled there, so
 no Contract 023 exception applies. `1.1.18..=1.2.10` stay unqualified for
 headless runs and turn continuation until per-point pin evidence lands.
-Later stable versions remain visible as unverified newer. `1.1.8` is not
-silently accepted from the shared documentation tag.
+Research 401 maps newer Mac ARM64 selected paths but leaves resource/permission
+value flow, retry-budget, and approved-environment auth edges open; it does not
+extend this claim. Official stable `1.3.2` was published after that frozen
+identity and remains `UnverifiedNewer` for headless (Research 424). The
+`1.1.18..=1.2.10` hole remains. `1.1.8` is not silently accepted from the
+shared documentation tag.
 
 ## Prepare The Installation
 
@@ -112,6 +116,12 @@ The stream projects assistant output, provider-disclosed reasoning, correlated
 tools, child-agent activity, terminal usage, and the result. Display payloads,
 stderr, and raw tool data are not stable diagnostics.
 
+The selected stream documents child identity and workspace fields, but no child
+status. Swallowtail preserves a reported child with `Unknown` status in that
+case; it does not infer completion from the enclosing step or outer run. A
+documented tool-step error maps to failed tool activity, while a whole-run
+error maps to the terminal outcome.
+
 ## Exact-ID Continuation
 
 On the `Continuation` variant, build
@@ -146,6 +156,12 @@ Cancellation is scoped to the active run or turn. Consumers still drain the
 terminal outcome and call `close`; cleanup truth remains separate. Handle
 ordinary failures through the portable classification, retaining the exact
 Antigravity diagnostic code for support.
+
+An approval-required tool may be soft-denied while a headless run continues
+with exit code `0` and an explanatory stderr notice. The adapter does not turn
+human-readable stderr into a denial event or retry the action through another
+tool. Run completion therefore does not prove that every requested tool
+executed. The route has no permission-approval exchange or bypass operation.
 
 ## Unsupported
 

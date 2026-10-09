@@ -1284,16 +1284,19 @@ reviewed synthetic environment on macOS 26.6.2 build `25G83` arm64. Stage
 exec-boundary EOF was observed; ACP `initialize` was not reached;
 `vendor_startup_status` is `unknown`; `failure_class` is `sandbox-denial`.
 Stderr stored the `sandbox-denial` category, 997 bounded bytes, and the
-`sandbox-marker-present` facet only. Cleanup joined. The executed bytes are
-the retained `1.0.93` executable
-`df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1`; the
-inventory `1.0.93` archive is
-`f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb`. Research
-432's immutable archive field remains
-`98640ca0de6576807f369c533c839b5742b038f105a970bdd7cb0d7efc8a7a71`. Fail-closed
-no-child policy may prevent vendor startup and is not a route narrowing. The
-attempt is consumed. Parent 119 stays blocked. Further original, isolation,
-auth, or permission work needs separate exact authority.
+`sandbox-marker-present` facet only. Cleanup joined.
+
+The brief named archive
+`98640ca0de6576807f369c533c839b5742b038f105a970bdd7cb0d7efc8a7a71`. The
+executed bytes matched executable
+`df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1` and archive
+`f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb`. The run
+proceeded without an operator ruling on that difference. Whether the consumed
+attempt stands under decision `e05b517f-e4fc-46c4-9d52-435b2422b5cf` is open
+for Tom's ruling: [Q-007](../questions.md#q-007). Parent 119 stays blocked.
+Fail-closed no-child policy may prevent vendor startup and is not a route
+narrowing. Frozen records are not edited. Further original, isolation, auth,
+or permission work needs separate exact authority.
 
 ## Command Code Explicit Model Precedence
 

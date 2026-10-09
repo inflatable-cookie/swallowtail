@@ -25,13 +25,27 @@ consumed attempt binds rendered-profile SHA-256
 The retained original is Darwin ARM64 Copilot `1.0.93` executable SHA-256
 `df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1`. The
 inventory `1.0.93` native archive SHA-256 is
-`f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb`. Research
-432's immutable data-only request still names archive
-`98640ca0de6576807f369c533c839b5742b038f105a970bdd7cb0d7efc8a7a71`, which is
-the Darwin ARM64 `1.0.80` native archive identity. This diagnostic copied the
-retained `1.0.93` executable as data into private task scratch and did not
-download, install, or replace artifacts. The executed bytes are the `1.0.93`
-executable.
+`f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb`. This
+diagnostic copied the retained `1.0.93` executable as data into private task
+scratch and did not download, install, or replace artifacts. The executed
+bytes are that executable.
+
+### Archive-identity gate exception
+
+The brief named archive
+`98640ca0de6576807f369c533c839b5742b038f105a970bdd7cb0d7efc8a7a71`.
+[Research 404](./404-copilot-cli-acp-offline-authentication-stop.md) records
+that digest as the Darwin ARM64 `1.0.80` native archive; the `1.0.93` archive
+is `f254651a…`. Research 432's immutable `frozen_original_target` labels
+`98640ca0…` as the `1.0.93` archive. The original diagnostic hard-codes
+`f254651a…`. The executed pairing is executable `df347f…` with archive
+`f254651a…`. The brief's stop rule (“any drift refuses originals”; stop
+before original if identity differs) would have refused this original. The
+run proceeded without an operator ruling on that difference. Authority,
+attempt, and execution records have no exception field. Whether the consumed
+attempt stands under decision `e05b517f-e4fc-46c4-9d52-435b2422b5cf` is open
+for Tom's ruling: [Q-007](../knowledge/questions.md#q-007). Parent 119 stays
+blocked. Frozen records and the diagnostic script are not edited.
 
 Harness and launcher identities match the reviewed 432 inputs:
 
@@ -144,4 +158,6 @@ are unchanged. The attempt is consumed. No retry, resend, older artifact,
 profile widening, or reviewer original execution is authorized.
 
 Any broader isolation, authentication, state, or permission proof returns
-separately. Parent 119 does not continue from this diagnostic.
+separately. Parent 119 does not continue from this diagnostic. The
+archive-identity mismatch is an unratified gate exception; Q-007 owns Tom's
+ruling on whether this consumed attempt stands.

@@ -85,3 +85,11 @@ Current documentation does not prove that this exact binary needs the file;
 if a future run requires another path or wider authority, stop and obtain
 version-specific accepted evidence and separate authority before changing the
 profile. The consumed record and invocation allowance cannot be reused.
+
+## Correction note — Research 431
+
+[Research 431](./431-copilot-acp-offline-startup-trace-stop.md) shows that
+Research 430's `sandbox-denial` result is text-marker presence, not a diagnosed
+operation or cause. Existing fake startup evidence applies only to the fake;
+group disappearance does not prove escaped-descendant cleanup. This note does
+not alter Research 429's records, identities, or results.

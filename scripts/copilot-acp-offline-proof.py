@@ -67,6 +67,9 @@ PRIOR_PERMISSION_PROOF_HARNESS_SHA256 = (
 )
 RENEWAL_DECISION = "411be8ce-77a0-4a50-930f-d6aeacdffce9"
 RENEWAL_VERSION = "1.0.93"
+RENEWAL_HISTORICAL_HARNESS_SHA256 = (
+    "f11f44d43e8baf432ed3627cd75c9630d65f0fd8fb95535cc1437fd1dbc40418"
+)
 RENEWAL_BINARY_SHA256 = (
     "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1"
 )
@@ -149,6 +152,18 @@ STDERR_CATEGORIES = frozenset(
         "unknown",
     }
 )
+ORIGINAL_PROCESS_CONTAINMENT_PROVEN = False
+ORIGINAL_PROCESS_CONTAINMENT_STOP = (
+    "escaping descendants cannot be race-safely enumerated and joined by this harness"
+)
+
+
+def require_original_process_containment() -> None:
+    if not ORIGINAL_PROCESS_CONTAINMENT_PROVEN:
+        raise RuntimeError(
+            "Copilot original-artifact admission is blocked: "
+            f"{ORIGINAL_PROCESS_CONTAINMENT_STOP}"
+        )
 
 
 def utc_now() -> str:
@@ -2203,6 +2218,8 @@ def run_permission_attempt(
     proxy_fake_only: bool = False,
     expected_probe_proxy: dict[str, int] | None = None,
 ) -> dict[str, Any]:
+    if not proxy_fake_only:
+        require_original_process_containment()
     host_home = (host_home or Path(os.environ["HOME"])).resolve(strict=True)
     scratch.mkdir(parents=True, exist_ok=False)
     (scratch / "tmp").mkdir()
@@ -3918,6 +3935,15 @@ def renewal_fake_controls(proof: dict[str, Any]) -> dict[str, Any]:
         write_json_durable(paths.authority, authority)
         refused: list[str] = []
 
+        try:
+            require_original_process_containment()
+        except RuntimeError as error:
+            if ORIGINAL_PROCESS_CONTAINMENT_STOP not in str(error):
+                raise
+            refused.append("original-containment-not-proven")
+        else:
+            raise RuntimeError("original admission opened without descendant containment proof")
+
         def expect_refusal(label: str, action: Callable[[], Any], needle: str) -> None:
             try:
                 action()
@@ -4321,6 +4347,7 @@ def run_permission_proof(
     require_macos_sandbox()
     plan = validate_permission_proof_plan()
     enforce_permission_invocation_budget(plan)
+    require_original_process_containment()
     correction_plan = validate_permission_correction_plan(plan)
     inventory = verify_inventory()
     record_path, preflight_path, artifact_root, task_root = validate_original_task_paths(
@@ -4548,7 +4575,7 @@ def validate_committed_renewal_authority() -> dict[str, Any]:
     authority = load_json(RENEWAL_AUTHORITY_PATH)
     validate_renewal_authority(
         authority,
-        expected_harness_sha256=harness_sha256(),
+        expected_harness_sha256=RENEWAL_HISTORICAL_HARNESS_SHA256,
         expected_binary_sha256=RENEWAL_BINARY_SHA256,
     )
     return authority
@@ -4725,6 +4752,7 @@ def run_renewed_permission_proof(
 ) -> None:
     require_macos_sandbox()
     admission = admit_renewal_invocation()
+    require_original_process_containment()
     record_path, preflight_path, artifact_root, task_root = validate_original_task_paths(
         record_path, artifact_root, preflight_path
     )
@@ -4769,15 +4797,15 @@ def validate_renewal_execution_record(record_path: Path) -> dict[str, Any]:
     authority = json.loads(authority_bytes)
     validate_renewal_authority(
         authority,
-        expected_harness_sha256=harness_sha256(),
+        expected_harness_sha256=RENEWAL_HISTORICAL_HARNESS_SHA256,
         expected_binary_sha256=RENEWAL_BINARY_SHA256,
     )
     if record.get("authority_sha256") != hashlib.sha256(authority_bytes).hexdigest():
         raise ValueError("renewal record does not bind the committed authority")
     if record.get("operation_id") != authority["operation_id"]:
         raise ValueError("renewal record operation ID differs from the granted operation")
-    if record.get("harness_sha256") != harness_sha256():
-        raise ValueError("renewal record was produced by a different harness revision")
+    if record.get("harness_sha256") != RENEWAL_HISTORICAL_HARNESS_SHA256:
+        raise ValueError("renewal record was produced by a different historical harness revision")
     if record.get("plan_sha256") != authority["permission_plan_sha256"]:
         raise ValueError("renewal record does not match the approved permission plan")
     if record.get("correction_plan_sha256") != authority["correction_plan_sha256"]:
@@ -5048,6 +5076,7 @@ def execute_artifacts(record_path: Path, artifact_root: Path) -> None:
     require_macos_sandbox()
     plan = validate_permission_proof_plan()
     enforce_permission_invocation_budget(plan)
+    require_original_process_containment()
     inventory = verify_inventory()
     record = load_json(record_path)
     if record.get("pre_execution_record_persisted") is not True:

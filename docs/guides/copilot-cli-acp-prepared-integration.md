@@ -104,6 +104,16 @@ exited before ACP `initialize` with a `sandbox-denial` stderr category. No
 prompt or permission evidence was produced. The denied operation is unobserved,
 the older artifacts were not started, and no route claim changes.
 
+[Research 431](../research/431-copilot-acp-offline-startup-trace-stop.md)
+confirms the same executable digest initialized in Research 404 under a
+different argv, environment, home-path, and sandbox tuple. The failure cause
+is unknown. `sandbox-denial` means a stderr marker was present; it does not name
+an operation or path. On the current audit host, the `com.apple.securityd`
+launch-daemon label advertises `com.apple.SecurityServer` as a Mach service;
+no access grant follows from that correction. Exact SEA startup remains
+unrecovered, and original-artifact admission is blocked until fake-only
+descendant containment and diagnostic gates are reviewed.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

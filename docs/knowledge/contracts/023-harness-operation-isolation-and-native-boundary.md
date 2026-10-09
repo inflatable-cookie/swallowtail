@@ -1116,10 +1116,13 @@ alone does not prove successful exec, and process-group disappearance does
 not prove descendant cleanup.
 
 The historical `sandbox-denial` category establishes text-marker presence,
-not a diagnosed sandbox operation. The profile names the securityd job
-label rather than the demonstrated Security-framework Mach service. Its
-shipped credential mechanism and the cause of the startup failure remain
-unproved. Correcting these evidence claims does not grant service access.
+not a diagnosed sandbox operation. On the Research 431 audit host, the
+`com.apple.securityd` launch-daemon label advertises Mach service
+`com.apple.SecurityServer`; Research 430's profile allows the label string,
+not that advertised service. Research 430 does not retain its OS build, so
+this current declaration does not bind the historical run. The shipped
+credential mechanism and startup cause remain unproved. Correcting the service
+name does not grant access.
 
 No original execution, artifact download, real home/config/keychain or
 credential access, auth/provider traffic, additional home/service/network
@@ -1129,6 +1132,22 @@ unchanged. The study returns exact startup requirements or explicit unknowns;
 future vendor-state treatment, service grants and any original invocation
 need separate authority after review. Completion does not resume or qualify
 the retained parent, whose exact `1.0.80` claim remains unchanged.
+
+[Research 431](../../research/431-copilot-acp-offline-startup-trace-stop.md)
+reconfirms that Research 404 and 430 used the same `1.0.93` executable under
+different argv, environment, home-path, and sandbox tuples. The 404 record
+observes ACP `initialize`; 430 does not. The tuple changes do not isolate a
+failure cause. The 430 record binds profile digest
+`c00ccaadfae0c55fceffa1455952f40583a5ece13eddde64571e389828b3611a` but omits
+the rendered profile and historical repository root, so its bytes cannot be
+reproduced from retained inputs. The host build is also absent from the 430
+record. The retained SEA payload does not expose the exact ACP startup path.
+
+The permission harness blocks original-artifact entrypoints while
+escaped-descendant containment is unproved. Process-group disappearance is
+not full cleanup evidence. Both consumed attempt records and replay guards
+remain unchanged. Any future original attempt needs a separate reviewed brief
+and exact authority.
 
 ## Command Code Explicit Model Precedence
 

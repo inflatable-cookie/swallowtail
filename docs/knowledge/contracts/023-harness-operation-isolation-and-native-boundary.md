@@ -818,6 +818,55 @@ start. The frozen artifacts' exact Keychain item, endpoint set, and prompt-free
 model catalogue remain unproved; no authenticated observation or claim change
 follows.
 
+## Copilot ACP Host-Login And Auto Proof Boundary
+
+Tom's 2026-10-09 board answer to decision
+`8b098b85-fb9e-4543-b5f1-1fbfe8bc5301` is “Approve explicit host-login/Auto
+proof limits”. This revises the execution prerequisites for the bounded
+original-artifact permission proof only. Research 425 and 426 establish fake
+preparation and the pre-start discovery stop, not original permission evidence.
+
+Use `betterthanclay`'s existing host-owned CLI login and Auto as the requested
+selection policy. Trust only the hash-verified original vendor CLI to read its
+normal existing authentication state. macOS `securityd` access is not an
+item-level Keychain filter; do not claim per-item mediation or a credential
+broker the original does not support. The agent and harness must never
+extract, copy or log tokens, invoke token-extraction commands, log in, switch
+accounts, export authentication state, relocate home or change settings.
+
+A reviewed official-destination allowlist defines network authority, rather
+than asserting that every frozen-version endpoint is known in advance.
+Enforce default-deny outside it and require original egress through the proven
+gate. Unlisted destinations fail the attempt; they never broaden the policy.
+Deny unrelated repository/home reads, writes outside task scratch and
+subprocess escape. If those boundaries cannot be enforced with the original,
+stop rather than claim containment or substitute patched vendor code.
+
+Auto is a dynamic selection policy, not a fixed underlying model. Record the
+actual model if exposed and otherwise report it unobserved; this proves no
+model compatibility. For this proof, accept vendor-managed selection/retries
+within one ACP prompt and an enforced 60-second process/network ceiling.
+Internal provider request counts are not claimed known or limited to one.
+This supersedes the earlier proof's pre-start fixed-model identity and
+zero-fallback/internal-retry prerequisites; harness retries/resends remain
+forbidden. Unsupported Auto binding stops that version before a prompt.
+
+Use the same unused allowance: at most one original invocation and one ACP
+prompt for each exact `1.0.80`, `1.0.81` and `1.0.93`, three total across all
+proof tasks. Start with `1.0.93`; unsafe containment, authentication or
+selection stops older attempts. Fakes must prove the selected containment,
+permission and cleanup path first, with an fsynced execution record before
+each original. Reject/cancel the benign scratch action, never approve it,
+and verify no effects and bounded joined cleanup. Missing permission,
+ambiguous cancellation, effects or surviving descendants fail the proof.
+No additional reviewer live attempt is allowed.
+
+No token extraction, new login, settings/home mutation, installation, consumer
+change, automatic qualification or tag is authorized. Preserve the exact
+`1.0.80` claim until original permission/cancel/no-effect evidence is reviewed
+and any changed mapping boundary is separately ruled. Account quota or
+entitlement failure is a finite stop, not permission to change account or plan.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

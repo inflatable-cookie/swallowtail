@@ -39,6 +39,15 @@ INVENTORY_PATH = FIXTURE_DIR / "artifact-inventory.json"
 AUTHENTICATED_PLAN_PATH = FIXTURE_DIR / "authenticated-proof-plan.json"
 AUTHENTICATED_SCHEMA_PATH = FIXTURE_DIR / "authenticated-proof-plan.schema.json"
 PERMISSION_PROOF_PLAN_PATH = FIXTURE_DIR / "permission-proof-plan.json"
+COMMITTED_PERMISSION_RECORD_PATH = (
+    FIXTURE_DIR / "permission-proof-execution-record.json"
+)
+COMMITTED_PERMISSION_RECORD_SHA256 = (
+    "ed9c866a90c96374422bd5aad3a900a4a4ca11517159aa14f4e29eec2cd2e049"
+)
+PRIOR_PERMISSION_PROOF_HARNESS_SHA256 = (
+    "fb99eb2f1d2c60260829160fbfa6f103ad279a797417a9281872bb5dcfe20ba3"
+)
 VERSIONS = ("1.0.80", "1.0.81", "1.0.93")
 MAX_FRAME_BYTES = 256 * 1024
 READ_TIMEOUT_SECONDS = 20.0
@@ -422,6 +431,49 @@ def validate_permission_proof_plan() -> dict[str, Any]:
         if forbidden in serialized:
             raise ValueError(f"original permission plan contains forbidden marker {forbidden!r}")
     return plan
+
+
+def consumed_permission_versions(
+    record_path: Path = COMMITTED_PERMISSION_RECORD_PATH,
+    expected_sha256: str = COMMITTED_PERMISSION_RECORD_SHA256,
+) -> set[str]:
+    if record_path.is_symlink() or not record_path.is_file():
+        raise RuntimeError(
+            "committed original permission record is missing or unsafe; refusing original starts"
+        )
+    record_bytes = record_path.read_bytes()
+    if hashlib.sha256(record_bytes).hexdigest() != expected_sha256:
+        raise RuntimeError(
+            "committed original permission record changed; refusing original starts"
+        )
+    validate_permission_execution_record(record_path)
+    if hashlib.sha256(record_path.read_bytes()).hexdigest() != expected_sha256:
+        raise RuntimeError(
+            "committed original permission record changed during validation; refusing original starts"
+        )
+    record = json.loads(record_bytes)
+    return {
+        item["version"]
+        for item in record["invocations"]
+        if item.get("invocation_consumed") is True
+    }
+
+
+def refuse_consumed_permission_versions(
+    plan: dict[str, Any], consumed_versions: set[str]
+) -> None:
+    for version in plan["start_order"]:
+        if version in consumed_versions:
+            raise RuntimeError(
+                f"refusing original {version}: committed permission record shows "
+                "its invocation is consumed; separate authority is required"
+            )
+
+
+def enforce_permission_invocation_budget(plan: dict[str, Any]) -> set[str]:
+    consumed_versions = consumed_permission_versions()
+    refuse_consumed_permission_versions(plan, consumed_versions)
+    return consumed_versions
 
 
 def host_allowed(host: str, exact_hosts: set[str], allowed_subdomains: tuple[str, ...]) -> bool:
@@ -3222,6 +3274,42 @@ def self_test() -> dict[str, Any]:
         permission_boundary_result = run_permission_boundary_fake(
             scratch, host_home, repository_root
         )
+        consumed_versions = consumed_permission_versions()
+        if "1.0.93" not in consumed_versions:
+            raise RuntimeError(
+                "cross-run budget fake did not load the consumed 1.0.93 invocation"
+            )
+        try:
+            enforce_permission_invocation_budget(permission_plan)
+        except RuntimeError as error:
+            if (
+                "1.0.93" not in str(error)
+                or "separate authority is required" not in str(error)
+            ):
+                raise
+        else:
+            raise RuntimeError(
+                "cross-run budget fake did not refuse the consumed 1.0.93 invocation"
+            )
+        altered_record_path = task_root / "altered-committed-permission-record.json"
+        altered_record_path.write_bytes(
+            COMMITTED_PERMISSION_RECORD_PATH.read_bytes() + b"\n"
+        )
+        try:
+            consumed_permission_versions(altered_record_path)
+        except RuntimeError as error:
+            if "changed" not in str(error):
+                raise
+        else:
+            raise RuntimeError("cross-run budget fake accepted an altered record")
+        missing_record_path = task_root / "missing-committed-permission-record.json"
+        try:
+            consumed_permission_versions(missing_record_path)
+        except RuntimeError as error:
+            if "missing or unsafe" not in str(error):
+                raise
+        else:
+            raise RuntimeError("cross-run budget fake accepted a missing record")
         return {
             "status": "passed",
             "network_denial": "loopback and reserved external connect both returned EPERM/EACCES",
@@ -3256,6 +3344,12 @@ def self_test() -> dict[str, Any]:
                 "attempts": permission_plan["budgets"]["max_total_invocations"],
             },
             "host_login_permission_fake": permission_boundary_result,
+            "cross_run_invocation_budget": {
+                "committed_record_sha256": COMMITTED_PERMISSION_RECORD_SHA256,
+                "consumed_versions": sorted(consumed_versions),
+                "consumed_1_0_93_refused": True,
+                "missing_or_changed_record_fails_closed": True,
+            },
         }
 
 
@@ -3357,6 +3451,7 @@ def run_permission_proof(
 ) -> None:
     require_macos_sandbox()
     plan = validate_permission_proof_plan()
+    enforce_permission_invocation_budget(plan)
     inventory = verify_inventory()
     requested_record_path = record_path
     requested_preflight_path = preflight_path
@@ -3525,7 +3620,11 @@ def validate_permission_execution_record(record_path: Path) -> dict[str, Any]:
         INVENTORY_PATH.read_bytes()
     ).hexdigest():
         raise ValueError("original execution record does not match the frozen inventory")
-    if record.get("harness_sha256") != hashlib.sha256(Path(__file__).read_bytes()).hexdigest():
+    accepted_harness_digests = {
+        PRIOR_PERMISSION_PROOF_HARNESS_SHA256,
+        hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+    }
+    if record.get("harness_sha256") not in accepted_harness_digests:
         raise ValueError("original execution record does not match this harness revision")
     invocations = record.get("invocations")
     if not isinstance(invocations, list) or not 0 < len(invocations) <= 3:

@@ -83,7 +83,13 @@ second `1.0.93` invocation or change its one-invocation cap. No original
 permission, cancellation or no-effect behavior was observed. The attempt is a
 finite evidence stop, not a positive permission proof, compatibility result,
 or qualification change. Any renewed `1.0.93` invocation requires separate
-authority.
+authority. The harness now reads and validates the committed execution record
+before artifact staging or any original start. It compares the record against
+its pinned SHA-256 and refuses all versions marked consumed; a missing or
+changed record also stops execution. Since this record marks `1.0.93` consumed,
+the current harness cannot repeat that attempt. Separate authority and a
+reviewed update to the guard and record identity are required for renewed
+execution.
 
 ## Result
 

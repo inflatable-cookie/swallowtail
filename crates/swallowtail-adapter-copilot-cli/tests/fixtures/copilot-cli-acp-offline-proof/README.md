@@ -61,3 +61,9 @@ discarded, so the cause is unknown. The one invocation was consumed, and the
 harness stopped without starting `1.0.81` or `1.0.80`. This is not permission
 evidence or a qualification change. Any new `1.0.93` invocation requires
 separate authority.
+
+Before staging artifacts or starting an original, the harness validates this
+committed record against its pinned SHA-256 and refuses every version whose
+invocation is marked consumed. Missing, changed or unsafe record paths fail
+closed. The fake self-test covers refusal of consumed `1.0.93` and the missing
+and changed-record stops; it does not launch an original.

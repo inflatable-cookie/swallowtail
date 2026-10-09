@@ -1013,7 +1013,11 @@ denied all host-home reads, and no fake admitted a vendor-owned authentication
 metadata read. This stricter denial could have blocked startup; the cause is
 unknown because stderr was discarded and vendor-binary startup was not
 observed. Permission behavior remains unproved and no route claim changes. A
-renewed `1.0.93` attempt requires separate authority.
+renewed `1.0.93` attempt requires separate authority. The proof harness now
+checks the SHA-256-pinned committed execution record before staging artifacts
+or starting any original, refuses every version recorded as consumed, and
+fails closed if that record is missing or changed. Renewed execution therefore
+also requires a reviewed guard and record update under that separate authority.
 
 ## Command Code Explicit Model Precedence
 

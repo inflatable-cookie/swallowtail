@@ -1244,6 +1244,38 @@ included. A later original needs separate exact authority after independent
 review. Both consumed attempt records, existing replay guards and the exact
 `1.0.80` claim remain unchanged; original admission stays fail-closed.
 
+### One Isolated Original Initialize Attempt
+
+Tom answered “Approve one isolated initialize attempt” to decision
+`e05b517f-e4fc-46c4-9d52-435b2422b5cf` on 2026-10-09, approving lead
+`646215a7-9eb1-4218-af35-23fba229b31a`.
+
+Exactly one retained Darwin ARM64 Copilot `1.0.93` invocation is authorized,
+binding executable SHA-256
+`df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1`
+and the reviewed Research 432 preparation identities. Require macOS build
+`25G83`, arm64, and the same imported-profile closure. Use only its synthetic
+state environment, `--acp --stdio`, task action cwd and reviewed no-child
+profile. All network, Mach lookup, real home/config/keychain/auth access and
+child creation remain denied. No host login or Auto selection is included.
+
+Fake-prove any faithful launch delta first and fsync a separate exclusive
+consumed attempt record before original start. Bind exact harness, launcher,
+profile, import closure, environment and artifact identities in that record.
+Allow at most one initialize request, zero sessions or prompts, a 60-second
+ceiling and three-second joined cleanup. No retry, resend, older artifact,
+profile widening or reviewer original execution is authorized. A crash,
+early failure or unsupported startup consumes the attempt. Existing records
+and guards are not reset; the separate three-prompt allowance is unchanged.
+
+Persist only bounded reviewed diagnostic fields; raw protocol/diagnostic
+text, secret-bearing paths and raw or normalized stderr hashes stay excluded.
+Stop on identity or containment drift, unsupported services/processes/auth,
+or failed cleanup. The result is startup evidence for this isolated tuple,
+not host-login/Auto permission evidence, qualification or authority to resume
+the retained parent. The exact `1.0.80` claim and release identities remain
+unchanged; any broader original or permission proof returns separately.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

@@ -35,14 +35,16 @@ operator-owned server.
    dimension.
 5. `observe_authenticated_subject` is `Absent`.
 6. `observe_instance_update` reuses `llama_cpp_attached_runtime_claim`.
-   Contract 032 stays unobserved unless an executable is supplied. Exact
-   opaque b9910/f5525f7e7 binding stays prepare-time. No unverified-newer.
+   Contract 032 stays unobserved unless an executable is supplied. The
+   released b9910/f5525f7e7 binding stays prepare-time; the claim also admits
+   exact b11429/d81235049. No unverified-newer.
 7. llama.cpp catalogue rows omit `provider_id`. Overlay keys instance plus
    model. Do not invent a catalogue provider id.
 8. Build `LlamaCppAttachedPreparationInput::from_admitted` from the admitted
    record, then call `prepare_llama_cpp_attached`. The constructor selects the
    stored `endpoint` ref; the host resolves it for preparation. Exact opaque
-   b9910/f5525f7e7 binding stays prepare-time.
+   b9910/f5525f7e7 binding stays prepare-time; the claim also admits exact
+   b11429/d81235049.
 
 The compile-tested
 [`connection_lifecycle` example](../../crates/swallowtail-adapter-llama-cpp/examples/connection_lifecycle.rs)
@@ -58,9 +60,12 @@ endpoint and supplies network, task, and time services for health, catalogue,
 streaming, deadline, and cleanup work. Preparation makes no inference and
 never starts or configures the external server.
 
-The route binds exact opaque b9910/f5525f7e7 behavior on
-`llama.cpp.attached-runtime`; another build does not receive unverified-newer
-admission.
+The `llama.cpp.attached-runtime` claim permits exactly
+`b9910-f5525f7e7` and `b11429-d81235049`, both with the same attached
+text-chat behavior. The released binding remains `b9910-f5525f7e7` for
+consumer compatibility. The claim is opaque and `QualifiedOnly`: other build
+identities, including text between the two points, are incompatible. The
+semantic source tag `v0.6.0` is evidence for `b11429`, not a runtime version.
 
 The prepared integration exposes two typed operations:
 

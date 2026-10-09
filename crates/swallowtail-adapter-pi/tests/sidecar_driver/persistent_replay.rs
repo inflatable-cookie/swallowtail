@@ -13,8 +13,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, EnvironmentRef, InteractiveSessionDriver, LoadSessionRequest,
-    MonotonicInstant, RequestId, ResumeSessionRequest, SessionOptions, SessionPlanAgreement,
-    SessionResumeBinding, WorkingResourceRef,
+    MonotonicInstant, ProcessTreeCompletion, RequestId, ResumeSessionRequest, SessionOptions,
+    SessionPlanAgreement, SessionResumeBinding, WorkingResourceRef,
 };
 
 fn preparation(host: ExecutionHostId, request_id: &str) -> PiSdkSidecarSessionPreparation {
@@ -123,14 +123,7 @@ fn load_transports_bounded_ordered_replay_before_readiness() {
         block_on(close_session(session, services)),
         CleanupOutcome::Clean
     );
-    assert_eq!(
-        fixture.cleanup_events(),
-        [
-            CleanupEvent::ProcessWait,
-            CleanupEvent::ResourceRelease,
-            CleanupEvent::CredentialRelease,
-        ]
-    );
+    assert_joined_cleanup(&fixture);
     let inputs = fixture.inputs();
     let commands: Vec<&str> = inputs
         .iter()
@@ -185,14 +178,7 @@ fn resume_attaches_without_any_replay_phase() {
         .filter_map(|value| value["command"].as_str())
         .collect();
     assert_eq!(commands, ["bootstrap", "session_switch", "state", "close"]);
-    assert_eq!(
-        fixture.cleanup_events(),
-        [
-            CleanupEvent::ProcessWait,
-            CleanupEvent::ResourceRelease,
-            CleanupEvent::CredentialRelease,
-        ]
-    );
+    assert_joined_cleanup(&fixture);
 }
 
 #[test]
@@ -246,14 +232,7 @@ fn load_and_resume_reject_switch_drift_before_readiness() {
         .expect("load drift fails");
         assert_eq!(error.diagnostic().code(), code, "{scenario:?}");
         assert!(!format!("{error:?}").contains(FIXTURE_SESSION_REF));
-        assert_eq!(
-            fixture.cleanup_events(),
-            [
-                CleanupEvent::ProcessWait,
-                CleanupEvent::ResourceRelease,
-                CleanupEvent::CredentialRelease,
-            ]
-        );
+        assert_joined_cleanup(&fixture);
     }
 }
 
@@ -344,14 +323,7 @@ fn resume_fails_closed_on_replay_evidence() {
         error.diagnostic().code(),
         "swallowtail.pi.sdk-sidecar.replay_unexpected"
     );
-    assert_eq!(
-        fixture.cleanup_events(),
-        [
-            CleanupEvent::ProcessWait,
-            CleanupEvent::ResourceRelease,
-            CleanupEvent::CredentialRelease,
-        ]
-    );
+    assert_joined_cleanup(&fixture);
 }
 
 #[test]
@@ -380,14 +352,7 @@ fn deadline_during_replay_stops_the_load_without_a_handle() {
     fixture.advance_time(500);
     let code = worker.join().expect("load thread joins");
     assert_eq!(code, "swallowtail.pi.sdk-sidecar.attach_timed_out");
-    assert_eq!(
-        fixture.cleanup_events(),
-        [
-            CleanupEvent::ProcessWait,
-            CleanupEvent::ResourceRelease,
-            CleanupEvent::CredentialRelease,
-        ]
-    );
+    assert_joined_cleanup(&fixture);
 }
 
 fn load_late_replay(scenario: SidecarScenario, label: &str) -> (String, SidecarFixtureHost) {
@@ -412,6 +377,22 @@ fn load_late_replay(scenario: SidecarScenario, label: &str) -> (String, SidecarF
 }
 
 fn assert_joined_cleanup(fixture: &SidecarFixtureHost) {
+    assert!(
+        fixture.owned_tree_was_occupied(),
+        "joined cleanup requires the fake host to have occupied an owned tree"
+    );
+    assert!(
+        fixture.owned_tree_members().is_empty(),
+        "joined cleanup must leave the owned tree empty, remaining {:?}",
+        fixture.owned_tree_members()
+    );
+    assert_eq!(
+        fixture
+            .observed_process_exit()
+            .expect("joined cleanup observes process wait")
+            .tree_completion(),
+        ProcessTreeCompletion::OwnedTreeEmpty
+    );
     assert_eq!(
         fixture.cleanup_events(),
         [

@@ -633,7 +633,10 @@ Pump shutdown and command registration share the pending lock, so a later
 `state` command cannot register after that drain and wait for a pump that
 will never answer. Fake-child controls force both orderings without a sleep
 race. Load returns no handle; process, resource, and credential cleanup still
-join.
+join. The fake host occupies its exact owned tree on start; wait reaps that
+tree and attests `OwnedTreeEmpty`. Proofs assert that empty tree and
+attestation, not only wait/resource/credential order. Host-local remains
+`RootOnly`; real-host cleanup classification is unchanged.
 
 Raising CI timeouts, skipping the failing test, weakening assertions or
 waiting for lower machine load does not establish correctness. Keep provider

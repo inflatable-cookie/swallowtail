@@ -180,5 +180,9 @@ effigy validate:pi-replay-cleanup
 effigy check:pi-replay-cleanup
 ```
 
+The `pi-replay-cleanup` proofs occupy an owned tree on the fake host, reap
+it on wait, and assert `OwnedTreeEmpty` plus wait/resource/credential order.
+Host-local stays `RootOnly`.
+
 No Node install, package resolution, configured provider call, credential
 use, prompt, or account mutation is required.

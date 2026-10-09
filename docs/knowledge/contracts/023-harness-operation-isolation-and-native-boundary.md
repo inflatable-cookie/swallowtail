@@ -619,3 +619,20 @@ This contract does not standardize provider tool names, approval modes, budget
 vocabulary, sandbox implementations, configuration files, transcript formats,
 or credential stores. It does not authorize repository writes, provider
 fallback, or consumer routing policy.
+
+## Pi Sidecar Replay Failure And Cleanup Repair
+
+Tom answered “Approve” on 2026-10-09 to decision
+`21daeebe-1d60-4dfe-8f5b-7bac5c6ab685`, authorizing a bounded repair of the
+recurring late-replay load failure and cleanup hang. Diagnose collector/pump
+ordering and fixture synchronization against the actual prepared load path.
+Preserve failure before readiness, no returned session handle, no replay or
+tool-effect leakage, and joined process, resource and credential cleanup.
+
+Prove relevant response/collector ordering deterministically with fake-child
+controls and a bounded completion observation. Raising CI timeouts, skipping
+the failing test, weakening assertions or waiting for lower machine load does
+not establish correctness. Keep provider versions, compatibility claims, public
+API, permissions and lifecycle promises unchanged. Any required change to those
+boundaries returns for a separate ruling. No vendor execution, live provider
+work, credentials, installation, host mutation or release authority is included.

@@ -68,3 +68,29 @@ invocation is marked consumed. Missing, changed or unsafe record paths fail
 closed. Both `--permission-proof` and legacy `--execute` use this guard. The
 fake self-test covers refusal of consumed `1.0.93` before legacy staging and
 the missing and changed-record stops; it does not launch an original.
+
+## Startup-diagnostic correction
+
+`permission-proof-correction-plan.json` binds a fake-only correction to the
+approved permission plan. The original and the task-owned native fake use the
+same sandbox-profile generator. It allows one read-only literal path,
+`.copilot/config.json`, selected from current official CLI documentation as
+managed configuration that can contain authentication. That source is not
+specific to frozen `1.0.93` and does not prove the vendor binary requires the
+file. Tests use a synthetic sentinel at the same path; they do not read the
+real home or keychain. Adjacent home and repository reads, home and repository
+writes, shell execution, and direct or unlisted egress remain denied. The fake
+adds no Python or other runtime root.
+
+The new v2 preflight schema binds the permission and correction plans, harness,
+native fake source and compiled fake. The v2 future execution schema records
+launcher status separately from vendor startup. Existing v1 execution and
+preflight records remain frozen historical evidence. Stderr is drained by a
+concurrent reader, only the first 4096 bytes are retained in memory, and the
+reported total-byte count caps at 65536. Records contain only an allowlisted
+category, bounded counts, truncation and reader status. Raw stderr is never
+persisted or displayed. No ACP initialize response
+means original vendor startup remains `unknown`; fake startup does not prove
+original startup. This correction neither renews the consumed `1.0.93`
+invocation nor changes qualification. A future original run needs new exact
+authority.

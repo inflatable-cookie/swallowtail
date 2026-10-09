@@ -1,0 +1,40 @@
+{
+  "schema": "copilot-cli-acp-permission-proof-correction-plan.v1",
+  "status": "fake-only-correction-no-attempt-renewal",
+  "operator_decision": "8b098b85-fb9e-4543-b5f1-1fbfe8bc5301",
+  "source_permission_plan_sha256": "6db73561b9607743a43fec5607a641a2fdb297cb289a4eb36c161d4f9d62da66",
+  "auth_metadata_read_paths": [
+    {
+      "relative_path": ".copilot/config.json",
+      "source": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference",
+      "purpose": "official CLI configuration directory reference identifies config.json as automatically managed application state including authentication",
+      "version_scope": "current official documentation; not frozen-artifact-specific"
+    }
+  ],
+  "sandbox_delta": {
+    "home_read_exception": "the single declared auth metadata file, read-only",
+    "home_writes": "denied",
+    "repository_reads": "denied",
+    "task_scratch_writes": "allowed",
+    "fake_runtime_roots": [],
+    "executable_rule": "exact executable path only",
+    "system_runtime_map_roots": ["/System/Library", "/usr/lib"],
+    "securityd": "existing vendor trust boundary; item-level mediation unavailable",
+    "network": "original permission plan local CONNECT proxy allowlist"
+  },
+  "stderr_policy": {
+    "max_captured_bytes": 4096,
+    "max_reported_total_bytes": 65536,
+    "drain": "concurrent in-memory reader until EOF",
+    "raw_persisted": false,
+    "raw_displayed": false,
+    "categories": [
+      "empty",
+      "sandbox-denial",
+      "access-denied",
+      "dynamic-loader-failure",
+      "launcher-failure",
+      "unknown"
+    ]
+  }
+}

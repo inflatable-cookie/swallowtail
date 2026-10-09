@@ -15,6 +15,7 @@ import os
 import platform
 import re
 import select
+import shutil
 import socket
 import socketserver
 import ssl
@@ -39,11 +40,25 @@ INVENTORY_PATH = FIXTURE_DIR / "artifact-inventory.json"
 AUTHENTICATED_PLAN_PATH = FIXTURE_DIR / "authenticated-proof-plan.json"
 AUTHENTICATED_SCHEMA_PATH = FIXTURE_DIR / "authenticated-proof-plan.schema.json"
 PERMISSION_PROOF_PLAN_PATH = FIXTURE_DIR / "permission-proof-plan.json"
+PERMISSION_CORRECTION_PLAN_PATH = FIXTURE_DIR / "permission-proof-correction-plan.json"
+PERMISSION_CORRECTION_SCHEMA_PATH = (
+    FIXTURE_DIR / "permission-proof-correction-plan.schema.json"
+)
+PERMISSION_PREFLIGHT_SCHEMA_PATH = (
+    FIXTURE_DIR / "permission-proof-preflight-record.schema.json"
+)
+PERMISSION_EXECUTION_V2_SCHEMA_PATH = (
+    FIXTURE_DIR / "permission-proof-execution-record-v2.schema.json"
+)
+PERMISSION_FAKE_SOURCE_PATH = ROOT / "scripts/copilot-acp-permission-fake.c"
 COMMITTED_PERMISSION_RECORD_PATH = (
     FIXTURE_DIR / "permission-proof-execution-record.json"
 )
 COMMITTED_PERMISSION_RECORD_SHA256 = (
     "ed9c866a90c96374422bd5aad3a900a4a4ca11517159aa14f4e29eec2cd2e049"
+)
+HISTORICAL_PERMISSION_PREFLIGHT_SHA256 = (
+    "1e7552f20e34dbf797f56bc1a00cd4cf2dd11d3f41105192acfc0e5f53f59a0f"
 )
 PRIOR_PERMISSION_PROOF_HARNESS_SHA256 = (
     "fb99eb2f1d2c60260829160fbfa6f103ad279a797417a9281872bb5dcfe20ba3"
@@ -76,6 +91,18 @@ OFFICIAL_COPILOT_HOSTS = frozenset(
 OFFICIAL_COPILOT_SUFFIXES = ("githubcopilot.com",)
 LIVE_PERMISSION_SECONDS = 60.0
 LIVE_CLEANUP_SECONDS = 3.0
+MAX_STDERR_CAPTURE_BYTES = 4096
+MAX_STDERR_COUNTED_BYTES = 65536
+STDERR_CATEGORIES = frozenset(
+    {
+        "empty",
+        "sandbox-denial",
+        "access-denied",
+        "dynamic-loader-failure",
+        "launcher-failure",
+        "unknown",
+    }
+)
 
 
 def utc_now() -> str:
@@ -108,11 +135,136 @@ def write_json_durable(path: Path, value: Any) -> None:
         os.close(directory_fd)
 
 
+class BoundedStderrCollector:
+    """Drain stderr concurrently while retaining only a small in-memory prefix."""
+
+    def __init__(self, stream: Any, limit: int = MAX_STDERR_CAPTURE_BYTES) -> None:
+        self._stream = stream
+        self._limit = limit
+        self._captured = bytearray()
+        self._total_bytes = 0
+        self._total_bytes_capped = False
+        self._read_failed = False
+        self._thread = threading.Thread(target=self._drain, daemon=True)
+        self._thread.start()
+
+    def _drain(self) -> None:
+        try:
+            while True:
+                chunk = os.read(self._stream.fileno(), 16384)
+                if not chunk:
+                    return
+                counted = min(
+                    len(chunk), MAX_STDERR_COUNTED_BYTES - self._total_bytes
+                )
+                self._total_bytes += counted
+                if counted < len(chunk):
+                    self._total_bytes_capped = True
+                available = self._limit - len(self._captured)
+                if available > 0:
+                    self._captured.extend(chunk[:available])
+        except OSError:
+            self._read_failed = True
+
+    def join(self, timeout: float) -> bool:
+        self._thread.join(max(0.0, timeout))
+        return not self._thread.is_alive()
+
+    def summary(self, *, reader_joined: bool) -> dict[str, Any]:
+        content = bytes(self._captured).lower()
+        if not content:
+            category = "empty"
+        elif b"operation not permitted" in content or b"sandbox" in content:
+            category = "sandbox-denial"
+        elif b"permission denied" in content or b"access denied" in content:
+            category = "access-denied"
+        elif any(
+            marker in content
+            for marker in (b"dyld", b"library not loaded", b"image not found")
+        ):
+            category = "dynamic-loader-failure"
+        elif any(
+            marker in content
+            for marker in (b"exec format error", b"no such file or directory")
+        ):
+            category = "launcher-failure"
+        else:
+            category = "unknown"
+        if category not in STDERR_CATEGORIES:
+            category = "unknown"
+        return {
+            "classification": category,
+            "captured_bytes": len(self._captured),
+            "total_bytes": self._total_bytes,
+            "total_bytes_capped": self._total_bytes_capped,
+            "total_byte_count_limit": MAX_STDERR_COUNTED_BYTES,
+            "capture_limit_bytes": self._limit,
+            "truncated": self._total_bytes_capped
+            or self._total_bytes > len(self._captured),
+            "reader_joined": reader_joined,
+            "reader_error": self._read_failed,
+            "raw_persisted": False,
+            "raw_displayed": False,
+        }
+
+
 def load_json(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text())
     if not isinstance(value, dict):
         raise ValueError(f"expected an object in {path.name}")
     return value
+
+
+def compile_permission_fake(output_path: Path) -> dict[str, str]:
+    output_path = output_path.resolve(strict=False)
+    temp_root = Path(tempfile.gettempdir()).resolve()
+    if not output_path.parent.resolve(strict=True).is_relative_to(temp_root):
+        raise RuntimeError("native permission fake must compile inside fresh task temp scratch")
+    compiler = shutil.which("cc")
+    if compiler is None:
+        raise RuntimeError("native permission fake compiler is unavailable")
+    environment = os.environ.copy()
+    environment["HOME"] = str(output_path.parent)
+    environment["TMPDIR"] = str(output_path.parent)
+    try:
+        result = subprocess.run(
+            [
+                compiler,
+                "-std=c11",
+                "-Wall",
+                "-Wextra",
+                "-Werror",
+                "-O2",
+                str(PERMISSION_FAKE_SOURCE_PATH),
+                "-o",
+                str(output_path),
+            ],
+            cwd=ROOT,
+            env=environment,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        raise RuntimeError("native permission fake compilation exceeded 30 seconds") from None
+    if result.returncode != 0 or not output_path.is_file():
+        compiler_messages = result.stderr.decode("utf-8", errors="replace").splitlines()
+        safe_messages = [
+            line.split(": error: ", 1)[1][:160]
+            for line in compiler_messages
+            if ": error: " in line
+        ][:4]
+        detail = "; ".join(safe_messages) if safe_messages else "compiler rejected the source"
+        raise RuntimeError(
+            f"native permission fake compilation failed (exit={result.returncode}; {detail})"
+        )
+    output_path.chmod(0o700)
+    return {
+        "source_sha256": hashlib.sha256(PERMISSION_FAKE_SOURCE_PATH.read_bytes()).hexdigest(),
+        "binary_sha256": hashlib.sha256(output_path.read_bytes()).hexdigest(),
+    }
 
 
 def validate_schema_value(value: Any, schema: dict[str, Any], label: str = "$") -> None:
@@ -269,6 +421,12 @@ def quote_profile_path(path: Path) -> str:
     return json.dumps(str(path.resolve()))
 
 
+def quote_literal_policy_path(path: Path) -> str:
+    # Keep a declared exception lexical so resolving it cannot follow a real
+    # auth-file symlink during fake-only preparation.
+    return json.dumps(os.path.normpath(os.path.abspath(str(path))))
+
+
 def sandbox_profile(
     scratch: Path, host_home: Path, repository_root: Path = ROOT
 ) -> str:
@@ -301,13 +459,28 @@ def permission_sandbox_profile(
     repository_root: Path,
     executable: Path,
     proxy_port: int,
-    mapped_code_roots: tuple[Path, ...] = (),
+    permission_plan: dict[str, Any],
+    correction_plan: dict[str, Any],
 ) -> str:
+    if correction_plan.get("source_permission_plan_sha256") != hashlib.sha256(
+        PERMISSION_PROOF_PLAN_PATH.read_bytes()
+    ).hexdigest():
+        raise ValueError("permission sandbox correction is not bound to the approved plan")
+    if permission_plan.get("network_policy", {}).get("allowed_hosts") is None:
+        raise ValueError("permission sandbox lacks the approved network plan")
+    if proxy_port <= 0 or proxy_port > 65535:
+        raise ValueError("permission sandbox proxy port is invalid")
+    metadata_paths = correction_plan.get("auth_metadata_read_paths", [])
+    if [item.get("relative_path") for item in metadata_paths] != [
+        ".copilot/config.json"
+    ]:
+        raise ValueError("permission sandbox auth metadata exceptions differ from the correction plan")
     scratch = scratch.resolve()
     record_dir = record_dir.resolve()
     host_home = host_home.resolve()
     repository_root = repository_root.resolve()
     executable = executable.resolve(strict=True)
+    auth_metadata_path = host_home / metadata_paths[0]["relative_path"]
     return " ".join(
         (
             "(version 1)",
@@ -318,16 +491,14 @@ def permission_sandbox_profile(
             f"(allow file-map-executable (literal {quote_profile_path(executable)}))",
             '(allow file-map-executable (subpath "/System/Library"))',
             '(allow file-map-executable (subpath "/usr/lib"))',
-            *(
-                f"(allow file-map-executable (subpath {quote_profile_path(root)}))"
-                for root in mapped_code_roots
-            ),
             "(allow sysctl-read)",
             '(allow mach-lookup (global-name "com.apple.securityd"))',
             "(allow file-read*)",
-            f"(deny file-read* (subpath {quote_profile_path(host_home)}))",
+            f"(deny file-read* (require-all (subpath {quote_profile_path(host_home)}) (require-not (literal {quote_literal_policy_path(auth_metadata_path)}))))",
             f"(deny file-read* (subpath {quote_profile_path(repository_root)}))",
             f"(deny file-read* (subpath {quote_profile_path(record_dir)}))",
+            f"(deny file-write* (subpath {quote_profile_path(host_home)}))",
+            f"(deny file-write* (subpath {quote_profile_path(repository_root)}))",
             f"(allow file-write* (subpath {quote_profile_path(scratch)}))",
             "(deny network-inbound)",
             "(deny network-bind)",
@@ -431,6 +602,37 @@ def validate_permission_proof_plan() -> dict[str, Any]:
         if forbidden in serialized:
             raise ValueError(f"original permission plan contains forbidden marker {forbidden!r}")
     return plan
+
+
+def validate_permission_correction_plan(
+    permission_plan: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    approved_plan = permission_plan or validate_permission_proof_plan()
+    correction = load_json(PERMISSION_CORRECTION_PLAN_PATH)
+    schema = load_json(PERMISSION_CORRECTION_SCHEMA_PATH)
+    validate_schema_value(correction, schema, "permission_proof_correction")
+    if correction.get("source_permission_plan_sha256") != hashlib.sha256(
+        PERMISSION_PROOF_PLAN_PATH.read_bytes()
+    ).hexdigest():
+        raise ValueError("permission correction plan does not bind the approved original plan")
+    if correction.get("operator_decision") != approved_plan.get("operator_decision"):
+        raise ValueError("permission correction plan changed the approved operator ruling")
+    if correction.get("auth_metadata_read_paths") != [
+        {
+            "relative_path": ".copilot/config.json",
+            "source": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference",
+            "purpose": "official CLI configuration directory reference identifies config.json as automatically managed application state including authentication",
+            "version_scope": "current official documentation; not frozen-artifact-specific",
+        }
+    ]:
+        raise ValueError("permission correction auth metadata path differs from official-source evidence")
+    if correction.get("sandbox_delta", {}).get("fake_runtime_roots") != []:
+        raise ValueError("permission correction must not add fake-only runtime roots")
+    serialized = json.dumps(correction, sort_keys=True)
+    for forbidden in ("/Users/", "/home/", "github_pat_", "gho_", "Bearer "):
+        if forbidden in serialized:
+            raise ValueError("permission correction plan contains a forbidden path or secret marker")
+    return correction
 
 
 def consumed_permission_versions(
@@ -994,25 +1196,6 @@ def auth_method_ids(result: dict[str, Any]) -> list[str]:
     return sorted(ids)
 
 
-def stop_process(process: subprocess.Popen[bytes], grace_seconds: float = 1.0) -> tuple[int | None, bool]:
-    if process.stdin is not None:
-        try:
-            process.stdin.close()
-        except OSError:
-            pass
-    forced = False
-    try:
-        code = process.wait(timeout=grace_seconds)
-    except subprocess.TimeoutExpired:
-        forced = True
-        try:
-            os.killpg(process.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        code = process.wait(timeout=2.0)
-    return code, forced
-
-
 def launch_command(profile: str, command: list[str], child_environment: dict[str, str]) -> list[str]:
     helper = ROOT / "scripts/run-with-isolated-home.sh"
     return [
@@ -1128,8 +1311,9 @@ def read_line(timeout):
     return json.loads(line) if line else None
 
 def report(**values):
-    sys.stderr.write(json.dumps(values, sort_keys=True) + "\n")
-    sys.stderr.flush()
+    report_path = os.environ["SWALLOWTAIL_FAKE_AGENT_REPORT"]
+    with open(report_path, "a", encoding="utf-8") as output:
+        output.write(json.dumps(values, sort_keys=True) + "\n")
 
 initialize = read_line(1.0)
 if not initialize or initialize.get("method") != "initialize":
@@ -1210,166 +1394,6 @@ if read_line(1.0) is not None:
     raise SystemExit(97)
 '''
 
-
-FAKE_PERMISSION_AGENT_SOURCE = r'''import errno, json, os, sys, time
-
-def write_diagnostic(error):
-    try:
-        with open(os.environ["SWALLOWTAIL_FAKE_DIAGNOSTIC"], "w", encoding="utf-8") as output:
-            json.dump({"type": type(error).__name__, "errno": getattr(error, "errno", None)}, output)
-    except BaseException:
-        pass
-
-def mark(stage):
-    with open(os.environ["SWALLOWTAIL_FAKE_DIAGNOSTIC"], "w", encoding="utf-8") as output:
-        json.dump({"stage": stage}, output)
-
-def report_exception(kind, error, trace):
-    mark("uncaught-exception")
-    write_diagnostic(error)
-
-sys.excepthook = report_exception
-mark("python-started")
-
-import select, signal, socket, subprocess
-
-if sys.argv[1:] != ["--model", "auto", "--acp", "--stdio"]:
-    raise SystemExit(101)
-if any(name in os.environ for name in ("COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN")):
-    raise SystemExit(102)
-if os.environ.get("HOME") != os.environ["SWALLOWTAIL_BLOCKED_HOST_HOME"]:
-    raise SystemExit(103)
-if os.environ.get("COPILOT_MODEL") is not None or os.environ.get("COPILOT_HOME") is not None:
-    raise SystemExit(104)
-marker = os.environ["SWALLOWTAIL_EFFECT_MARKER"]
-
-def denied(operation):
-    try:
-        operation()
-    except OSError as error:
-        if error.errno in (errno.EPERM, errno.EACCES):
-            return
-        raise
-    raise SystemExit(105)
-
-def read_file(path):
-    with open(path, "rb") as source:
-        source.read(1)
-
-def write_file(path):
-    with open(path, "wb") as output:
-        output.write(b"must-not-write")
-
-host_home = os.environ["SWALLOWTAIL_BLOCKED_HOST_HOME"]
-repository = os.environ["SWALLOWTAIL_BLOCKED_REPOSITORY"]
-denied(lambda: read_file(os.path.join(host_home, ".copilot", "config.json")))
-denied(lambda: read_file(os.path.join(host_home, ".copilot", "settings.json")))
-denied(lambda: read_file(os.path.join(repository, "README.md")))
-denied(lambda: write_file(os.path.join(host_home, ".copilot", "settings.json")))
-denied(lambda: write_file(os.path.join(repository, ".swallowtail-proof-write")))
-mark("host-and-repository-denials-passed")
-denied(lambda: socket.create_connection(("127.0.0.1", int(os.environ["SWALLOWTAIL_PROXY_PORT"]) + 1), 0.2))
-denied(lambda: socket.create_connection(("203.0.113.1", 443), 0.2))
-mark("network-denials-passed")
-try:
-    subprocess.run(["/bin/sh", "-c", "exit 0"], check=True, timeout=1)
-except OSError as error:
-    if error.errno not in (errno.EPERM, errno.EACCES):
-        raise
-else:
-    raise SystemExit(106)
-mark("shell-exec-denied")
-
-def proxy_request(target, server_name=None):
-    proxy_port = int(os.environ["SWALLOWTAIL_PROXY_PORT"])
-    connection = socket.create_connection(("127.0.0.1", proxy_port), 1)
-    connection.sendall(("CONNECT " + target + " HTTP/1.1\r\nHost: " + target + "\r\n\r\n").encode())
-    response = bytearray()
-    while b"\r\n\r\n" not in response:
-        response.extend(connection.recv(1024))
-    status = bytes(response).split(b"\r\n", 1)[0]
-    if status.startswith(b"HTTP/1.1 200"):
-        name = (server_name or target.split(":", 1)[0]).encode("ascii")
-        server_name_entry = b"\x00" + len(name).to_bytes(2, "big") + name
-        server_names = len(server_name_entry).to_bytes(2, "big") + server_name_entry
-        sni_extension = b"\x00\x00" + len(server_names).to_bytes(2, "big") + server_names
-        ciphers = b"\x00\x02\x13\x01"
-        compression = b"\x01\x00"
-        extensions = len(sni_extension).to_bytes(2, "big") + sni_extension
-        hello = b"\x03\x03" + (b"R" * 32) + b"\x00" + ciphers + compression + extensions
-        handshake = b"\x01" + len(hello).to_bytes(3, "big") + hello
-        connection.sendall(b"\x16\x03\x01" + len(handshake).to_bytes(2, "big") + handshake)
-        connection.close()
-    else:
-        connection.close()
-    return status
-
-if not proxy_request("api.github.com:443").startswith(b"HTTP/1.1 200"):
-    raise SystemExit(107)
-mark("allowlisted-proxy-passed")
-if not proxy_request("api.github.com:443", "unlisted.example").startswith(b"HTTP/1.1 200"):
-    raise SystemExit(108)
-if not proxy_request("unlisted.example:443").startswith(b"HTTP/1.1 403"):
-    raise SystemExit(109)
-mark("proxy-negative-controls-passed")
-
-def send(value):
-    sys.stdout.write(json.dumps(value, separators=(",", ":")) + "\n")
-    sys.stdout.flush()
-
-def read_line(timeout):
-    deadline = time.monotonic() + timeout
-    while True:
-        newline = pending_input.find(b"\n")
-        if newline >= 0:
-            line = bytes(pending_input[:newline])
-            del pending_input[: newline + 1]
-            return json.loads(line)
-        remaining = deadline - time.monotonic()
-        if remaining <= 0:
-            return None
-        ready, _, _ = select.select([sys.stdin.fileno()], [], [], remaining)
-        if not ready:
-            return None
-        chunk = os.read(sys.stdin.fileno(), 4096)
-        if not chunk:
-            return None
-        pending_input.extend(chunk)
-
-pending_input = bytearray()
-initialize = read_line(1.0)
-mark("initialize-request-received")
-if not initialize or initialize.get("method") != "initialize":
-    raise SystemExit(110)
-send({"jsonrpc":"2.0","id":1,"result":{"protocolVersion":1,"agentCapabilities":{},"authMethods":[{"id":"copilot-login","name":"Existing host login"}],"agentInfo":{"name":"fake-copilot","version":"1.0.93"}}})
-session_new = read_line(1.0)
-if not session_new or session_new.get("method") != "session/new":
-    raise SystemExit(111)
-send({"jsonrpc":"2.0","id":2,"result":{"sessionId":"fake-session","models":{"currentModelId":"fake-underlying-model"}}})
-prompt = read_line(1.0)
-if not prompt or prompt.get("method") != "session/prompt":
-    raise SystemExit(112)
-if os.path.exists(marker):
-    raise SystemExit(113)
-send({"jsonrpc":"2.0","id":99,"method":"session/request_permission","params":{"sessionId":"fake-session","toolCall":{"toolCallId":"fake-tool","status":"pending"},"options":[{"optionId":"allow_once","name":"Allow once","kind":"allow_once"},{"optionId":"reject_once","name":"Reject once","kind":"reject_once"}]}})
-permission = read_line(1.0)
-if not permission or permission.get("id") != 99:
-    raise SystemExit(114)
-if permission.get("result", {}).get("outcome") != {"outcome":"cancelled"}:
-    raise SystemExit(115)
-if os.path.exists(marker):
-    raise SystemExit(116)
-cancel = read_line(1.0)
-mark("cancel-received:" + (str(cancel.get("method")) if isinstance(cancel, dict) else type(cancel).__name__))
-if not cancel or cancel.get("method") != "session/cancel":
-    raise SystemExit(117)
-signal.signal(signal.SIGTERM, signal.SIG_IGN)
-send({"jsonrpc":"2.0","id":3,"result":{"stopReason":"cancelled"}})
-if os.path.exists(marker):
-    raise SystemExit(118)
-while True:
-    time.sleep(1)
-'''
 
 
 def fake_delegated_credential(context: dict[str, Any]) -> bytes | None:
@@ -1615,6 +1639,9 @@ def launch_acp(
         pass_fds = (auth_read_fd,)
         env["SWALLOWTAIL_AUTH_FD"] = str(auth_read_fd)
         env["SWALLOWTAIL_AUTH_TRANSPORT"] = "one-use-inherited-pipe"
+        env["SWALLOWTAIL_FAKE_AGENT_REPORT"] = str(
+            (scratch / "fake-agent-report.jsonl").resolve()
+        )
     env.update(
         {
             "SWALLOWTAIL_BLOCKED_HOST_HOME": str(host_home.resolve()),
@@ -1638,7 +1665,7 @@ def launch_acp(
             },
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE if exact_version is None else subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
             bufsize=0,
             start_new_session=True,
             pass_fds=pass_fds,
@@ -1646,6 +1673,7 @@ def launch_acp(
     finally:
         if auth_read_fd is not None:
             os.close(auth_read_fd)
+    stderr_collector = BoundedStderrCollector(process.stderr)
     client = StdioClient(process)
     evidence: dict[str, Any] = {
         "started_at_utc": started,
@@ -1840,22 +1868,29 @@ def launch_acp(
         return evidence
     finally:
         client.close()
-        code, forced = stop_process(process)
+        code, forced, process_group_joined = stop_owned_process_group(process)
+        stderr_reader_joined = stderr_collector.join(LIVE_CLEANUP_SECONDS)
+        stderr_summary = stderr_collector.summary(reader_joined=stderr_reader_joined)
+        if process.stderr is not None:
+            process.stderr.close()
         evidence["exit_code"] = code
+        evidence["launcher_exit_status"] = code
+        evidence["vendor_startup_status"] = (
+            "acp-initialize-response-observed"
+            if exact_version is not None
+            and evidence.get("initialize") not in {"not-reached", "no-result"}
+            else "unknown"
+            if exact_version is not None
+            else "fake-acp-initialize-response-observed"
+            if evidence.get("initialize") == "success"
+            else "unknown"
+        )
         evidence["forced_process_group_kill"] = forced
         evidence["process_joined"] = process.returncode is not None
+        evidence["process_group_joined"] = process_group_joined
+        evidence["stderr_drain_joined"] = stderr_reader_joined
+        evidence["stderr"] = stderr_summary
         evidence["effect_marker_present"] = marker.exists()
-        if exact_version is None and process.stderr is not None:
-            diagnostic = process.stderr.read(4096).decode("utf-8", errors="replace")
-            evidence["fake_diagnostic"] = (
-                diagnostic.replace(str(host_home), "<host-home>")
-                .replace(str(scratch), "<task-scratch>")
-                .replace(FAKE_TOKEN, "<fake-token>")
-                .replace(
-                    FAKE_DELEGATED_CREDENTIAL.decode(),
-                    "<fake-delegated-credential>",
-                )[:500]
-            )
 
 
 def safe_model_id(value: Any) -> str | None:
@@ -1973,6 +2008,7 @@ def safe_rpc_error(response: dict[str, Any]) -> dict[str, Any] | None:
 
 def permission_evidence_is_complete(evidence: dict[str, Any]) -> bool:
     proxy = evidence.get("proxy", {})
+    stderr = evidence.get("stderr", {})
     return bool(
         evidence.get("initialize") == "success"
         and evidence.get("reported_version_matches") is True
@@ -1990,6 +2026,10 @@ def permission_evidence_is_complete(evidence: dict[str, Any]) -> bool:
         and not evidence.get("effect_marker_present")
         and evidence.get("process_joined") is True
         and evidence.get("process_group_joined") is True
+        and evidence.get("stderr_drain_joined") is True
+        and stderr.get("reader_error") is False
+        and stderr.get("raw_persisted") is False
+        and stderr.get("raw_displayed") is False
         and evidence.get("proxy_threads_joined") is True
         and evidence.get("elapsed_seconds", LIVE_PERMISSION_SECONDS + 1)
         <= LIVE_PERMISSION_SECONDS
@@ -2103,6 +2143,7 @@ def run_permission_attempt(
     record: dict[str, Any],
     repository_root: Path,
     plan: dict[str, Any],
+    correction_plan: dict[str, Any],
 ) -> dict[str, Any]:
     host_home = Path(os.environ["HOME"]).resolve(strict=True)
     scratch.mkdir(parents=True, exist_ok=False)
@@ -2117,7 +2158,14 @@ def run_permission_attempt(
     executable = binary.resolve(strict=True)
     command = [str(executable), "--model", "auto", "--acp", "--stdio"]
     profile = permission_sandbox_profile(
-        scratch, record_dir, host_home, repository_root, executable, proxy_port
+        scratch,
+        record_dir,
+        host_home,
+        repository_root,
+        executable,
+        proxy_port,
+        plan,
+        correction_plan,
     )
     environment = original_child_environment(host_home, scratch, proxy_port)
     profile_digest = hashlib.sha256(profile.encode()).hexdigest()
@@ -2135,6 +2183,12 @@ def run_permission_attempt(
         "original_start_issued": False,
         "pre_execution_record": {
             "requires_fsync_before_original_start": True,
+            "permission_plan_sha256": hashlib.sha256(
+                PERMISSION_PROOF_PLAN_PATH.read_bytes()
+            ).hexdigest(),
+            "correction_plan_sha256": hashlib.sha256(
+                PERMISSION_CORRECTION_PLAN_PATH.read_bytes()
+            ).hexdigest(),
             "identity": {
                 "package": "@github/copilot-darwin-arm64",
                 "version": version,
@@ -2171,7 +2225,12 @@ def run_permission_attempt(
             },
             "containment": {
                 "profile_sha256": profile_digest,
-                "host_home_reads": "denied",
+                "host_home_reads": {
+                    "default": "denied",
+                    "read_only_exception": ".copilot/config.json",
+                    "exception_basis": "current official CLI configuration directory docs; not frozen-artifact-specific",
+                    "original_read_observed": False,
+                },
                 "repository_reads": "denied",
                 "writes": "task scratch only",
         "subprocess_escape": "forks inherit this sandbox; process exec limited to this exact artifact; shell exec denied",
@@ -2243,9 +2302,14 @@ def run_permission_attempt(
         ),
         "proxy_threads_joined": False,
         "process_group_joined": False,
+        "stderr_drain_joined": False,
+        "stderr": None,
+        "launcher_exit_status": None,
+        "vendor_startup_status": "unknown",
     }
     process: subprocess.Popen[bytes] | None = None
     client: StdioClient | None = None
+    stderr_collector: BoundedStderrCollector | None = None
     try:
         process = subprocess.Popen(
             ["/usr/bin/sandbox-exec", "-p", profile, *command],
@@ -2253,10 +2317,11 @@ def run_permission_attempt(
             env=environment,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
             bufsize=0,
             start_new_session=True,
         )
+        stderr_collector = BoundedStderrCollector(process.stderr)
         invocation["original_start_issued"] = True
         record["artifact_execution_started"] = True
         write_json_durable(record_path, record)
@@ -2371,7 +2436,38 @@ def run_permission_attempt(
             process_exit_code, forced_stop, process_group_joined = stop_owned_process_group(
                 process, LIVE_CLEANUP_SECONDS
             )
+        stderr_reader_joined = (
+            stderr_collector.join(LIVE_CLEANUP_SECONDS)
+            if stderr_collector is not None
+            else True
+        )
+        evidence["stderr_drain_joined"] = stderr_reader_joined
+        evidence["stderr"] = (
+            stderr_collector.summary(reader_joined=stderr_reader_joined)
+            if stderr_collector is not None
+            else {
+                "classification": "empty",
+                "captured_bytes": 0,
+                "total_bytes": 0,
+                "total_bytes_capped": False,
+                "total_byte_count_limit": MAX_STDERR_COUNTED_BYTES,
+                "capture_limit_bytes": MAX_STDERR_CAPTURE_BYTES,
+                "truncated": False,
+                "reader_joined": True,
+                "reader_error": False,
+                "raw_persisted": False,
+                "raw_displayed": False,
+            }
+        )
+        if process is not None and process.stderr is not None:
+            process.stderr.close()
         evidence["process_exit_code"] = process_exit_code
+        evidence["launcher_exit_status"] = process_exit_code
+        evidence["vendor_startup_status"] = (
+            "acp-initialize-response-observed"
+            if evidence["initialize"] != "not-reached"
+            else "unknown"
+        )
         evidence["forced_process_group_stop"] = forced_stop
         evidence["process_joined"] = process is not None and process.returncode is not None
         evidence["process_group_joined"] = process_group_joined
@@ -2563,11 +2659,17 @@ def authenticated_fake_run(
         repository_root=repository_root,
     )
     elapsed = time.monotonic() - started
-    diagnostics = [
-        json.loads(line)
-        for line in outcome.get("fake_diagnostic", "").splitlines()
-        if line.strip()
-    ]
+    report_path = auth_scratch / "fake-agent-report.jsonl"
+    if not report_path.is_file() or report_path.stat().st_size > 16384:
+        raise RuntimeError("authenticated fake did not write its bounded structured report")
+    try:
+        diagnostics = [
+            json.loads(line)
+            for line in report_path.read_text().splitlines()
+            if line.strip()
+        ]
+    except (OSError, json.JSONDecodeError):
+        raise RuntimeError("authenticated fake structured report is malformed") from None
     final_agent_report = diagnostics[-1] if diagnostics else {}
     if marker.exists():
         raise RuntimeError("authenticated fake left an action marker after cancellation")
@@ -2651,449 +2753,6 @@ def authenticated_fake_run(
         scratch, host_home, repository_root, credential
     )
     return preflight, persisted["result"], discovery_result
-
-
-def validate_fake_discovery_record(record: dict[str, Any]) -> None:
-    if (
-        record.get("schema") != "copilot-cli-acp-authenticated-invocation.v1"
-        or record.get("execution_kind") != "fake_control"
-        or record.get("original_artifact_started") is not False
-        or record.get("pre_execution_fsynced") is not True
-    ):
-        raise ValueError("discovery fake record is not a durable fake-only control")
-    pre_execution = record.get("pre_execution_record")
-    result = record.get("result")
-    if not isinstance(pre_execution, dict) or not isinstance(result, dict):
-        raise ValueError("discovery fake record is missing its plan or result")
-    expected = json_digest(pre_execution)
-    if record.get("pre_execution_sha256") != expected:
-        raise ValueError("discovery fake result is not bound to its pre-execution plan")
-    if result.get("pre_execution_record_sha256") != expected:
-        raise ValueError("discovery fake result is not correlated to its plan")
-    if result.get("outbound_methods") != ["initialize", "authenticate", "session/new"]:
-        raise ValueError("discovery fake used an unapproved ACP operation")
-    if result.get("prompt_requests") != 0:
-        raise ValueError("discovery fake sent a prompt")
-    if result.get("permission_callbacks") != 0 or result.get("tool_callbacks") != 0:
-        raise ValueError("discovery fake observed a permission or tool callback")
-    if result.get("effect_marker_absent_after_close") is not True:
-        raise ValueError("discovery fake produced an action effect")
-    serialized = json.dumps(record, sort_keys=True)
-    for forbidden in (
-        "/Users/",
-        "/home/",
-        "test-only-delegated-capability",
-        "github_pat_",
-        "ghp_",
-        "gho_",
-        "ghs_",
-        "xoxb-",
-        "Bearer ",
-    ):
-        if forbidden in serialized:
-            raise ValueError(f"discovery fake record contains forbidden marker {forbidden!r}")
-
-
-def original_child_environment(
-    host_home: Path, scratch: Path, proxy_port: int
-) -> dict[str, str]:
-    proxy_url = f"http://127.0.0.1:{proxy_port}"
-    environment = {
-        "HOME": str(host_home.resolve()),
-        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
-        "TMPDIR": str((scratch / "tmp").resolve()),
-        "TERM": "dumb",
-        "COPILOT_AUTO_UPDATE": "false",
-        "HTTP_PROXY": proxy_url,
-        "HTTPS_PROXY": proxy_url,
-        "ALL_PROXY": proxy_url,
-        "http_proxy": proxy_url,
-        "https_proxy": proxy_url,
-        "all_proxy": proxy_url,
-    }
-    for name in ("COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN", "COPILOT_HOME"):
-        if name in environment:
-            raise RuntimeError(f"original environment unexpectedly contains {name}")
-    return environment
-
-
-def process_group_exists(process_group_id: int) -> bool:
-    try:
-        os.killpg(process_group_id, 0)
-        return True
-    except ProcessLookupError:
-        return False
-    except PermissionError:
-        return True
-
-
-def stop_owned_process_group(
-    process: subprocess.Popen[bytes], timeout: float = LIVE_CLEANUP_SECONDS
-) -> tuple[int | None, bool, bool]:
-    if process.stdin is not None:
-        try:
-            process.stdin.close()
-        except OSError:
-            pass
-    process_group_id = process.pid
-    deadline = time.monotonic() + timeout
-    forced = False
-    if process_group_exists(process_group_id):
-        try:
-            os.killpg(process_group_id, signal.SIGTERM)
-        except ProcessLookupError:
-            pass
-        except PermissionError:
-            # The exact Popen child is ours even when the host refuses group
-            # signalling. Its sandbox denies process-fork, so signal that PID
-            # directly and still require the process group to be empty below.
-            try:
-                process.send_signal(signal.SIGTERM)
-            except ProcessLookupError:
-                pass
-    try:
-        process.wait(timeout=min(0.8, max(0.0, deadline - time.monotonic())))
-    except subprocess.TimeoutExpired:
-        forced = True
-    if process_group_exists(process_group_id):
-        forced = True
-        try:
-            os.killpg(process_group_id, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        except PermissionError:
-            try:
-                process.kill()
-            except ProcessLookupError:
-                pass
-    try:
-        process.wait(timeout=max(0.0, deadline - time.monotonic()))
-    except subprocess.TimeoutExpired:
-        pass
-    while process_group_exists(process_group_id) and time.monotonic() < deadline:
-        time.sleep(min(0.05, deadline - time.monotonic()))
-    return process.poll(), forced, not process_group_exists(process_group_id)
-
-
-def run_permission_boundary_fake(
-    scratch: Path, host_home: Path, repository_root: Path
-) -> dict[str, Any]:
-    proof_scratch = scratch / "host-login-permission-fake"
-    record_dir = proof_scratch / "records"
-    action_scratch = proof_scratch / "action"
-    (action_scratch / "tmp").mkdir(parents=True)
-    record_dir.mkdir()
-    marker = action_scratch / "permission-effect-marker"
-    diagnostic_path = action_scratch / "fake-child-diagnostic.json"
-    proxy = CopilotEgressProxy(
-        set(OFFICIAL_COPILOT_HOSTS),
-        OFFICIAL_COPILOT_SUFFIXES,
-        time.monotonic() + 10.0,
-        fake_only=True,
-    )
-    try:
-        proxy_port = proxy.start()
-    except OSError as error:
-        raise RuntimeError(
-            f"host-login fake could not bind its local proxy (errno={error.errno})"
-        ) from None
-    python_app_executable = (
-        Path(sys.prefix).resolve(strict=True)
-        / "Resources/Python.app/Contents/MacOS/Python"
-    )
-    executable = (
-        python_app_executable.resolve(strict=True)
-        if python_app_executable.is_file()
-        else Path(sys.executable).resolve(strict=True)
-    )
-    profile = permission_sandbox_profile(
-        action_scratch,
-        record_dir,
-        host_home,
-        repository_root,
-        executable,
-        proxy_port,
-        (Path(sys.prefix).resolve(strict=True),),
-    )
-    if '(allow mach-lookup (global-name "com.apple.securityd"))' not in profile:
-        raise RuntimeError("host-login sandbox omitted the approved securityd lookup")
-    if "(allow process*)" in profile or "(allow network*)" in profile:
-        raise RuntimeError("host-login sandbox grants broad process or network access")
-    if "(deny network-inbound)" not in profile or "(deny network-bind)" not in profile:
-        raise RuntimeError("host-login sandbox does not deny inbound or bound sockets")
-    if f'(allow network-outbound (remote ip "localhost:{proxy_port}"))' not in profile:
-        raise RuntimeError("host-login sandbox does not bind outbound traffic to the tested proxy")
-    pre_execution = {
-        "target": "fake-acp-agent; no original artifact",
-        "model_policy": "--model auto",
-        "credential_boundary": "no token environment or file; securityd exception only",
-        "network_allowlist": sorted(OFFICIAL_COPILOT_HOSTS),
-        "network_subdomains": list(OFFICIAL_COPILOT_SUFFIXES),
-        "network_default": "deny",
-        "profile_sha256": hashlib.sha256(profile.encode()).hexdigest(),
-        "action": "cancel one permission request before marker creation",
-        "budgets": {"prompts": 1, "seconds": 3, "effects": 0},
-    }
-    fake_record_path = record_dir / "invocation.json"
-    fake_record = {
-        "schema": "copilot-cli-acp-permission-proof-preflight-invocation.v1",
-        "execution_kind": "fake_control",
-        "original_artifact_started": False,
-        "pre_execution_fsynced": True,
-        "pre_execution_sha256": json_digest(pre_execution),
-        "pre_execution_record": pre_execution,
-        "result": None,
-    }
-    secret_free_serialization(fake_record)
-    write_json_durable(fake_record_path, fake_record)
-    if load_json(fake_record_path) != fake_record:
-        raise RuntimeError("host-login fake pre-execution record did not persist before child start")
-    environment = original_child_environment(host_home, action_scratch, proxy_port)
-    environment.update(
-        {
-            "SWALLOWTAIL_BLOCKED_HOST_HOME": str(host_home.resolve()),
-            "SWALLOWTAIL_BLOCKED_REPOSITORY": str(repository_root.resolve()),
-            "SWALLOWTAIL_EFFECT_MARKER": str(marker),
-            "SWALLOWTAIL_PROXY_PORT": str(proxy_port),
-            "SWALLOWTAIL_FAKE_DIAGNOSTIC": str(diagnostic_path),
-        }
-    )
-    command = [
-        str(executable),
-        "-c",
-        FAKE_PERMISSION_AGENT_SOURCE,
-        "--model",
-        "auto",
-        "--acp",
-        "--stdio",
-    ]
-    try:
-        process = subprocess.Popen(
-            ["/usr/bin/sandbox-exec", "-p", profile, *command],
-            cwd=action_scratch,
-            env=environment,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            bufsize=0,
-            start_new_session=True,
-        )
-    except OSError as error:
-        proxy.stop_and_join(LIVE_CLEANUP_SECONDS)
-        raise RuntimeError(
-            f"host-login fake could not start in its sandbox (errno={error.errno})"
-        ) from None
-    client = StdioClient(process)
-    permission_count = 0
-    pending_wait_abandoned = False
-    late_permission_response_accepted = False
-    session_cancel_sent = False
-    prompt_result: dict[str, Any] | None = None
-    child_closed_stdout = False
-    try:
-        client.send(
-            {
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "initialize",
-                "params": {"protocolVersion": 1, "clientCapabilities": {}},
-            }
-        )
-        initialize = client.receive(3.0)
-        if initialize.get("id") != 1 or initialize.get("result", {}).get("agentInfo", {}).get("version") != "1.0.93":
-            raise RuntimeError("host-login fake did not initialize as its pinned control")
-        client.send(
-            {
-                "jsonrpc": "2.0",
-                "id": 2,
-                "method": "session/new",
-                "params": {"cwd": str(action_scratch), "mcpServers": []},
-            }
-        )
-        session = client.receive(3.0)
-        if session.get("id") != 2 or not isinstance(session.get("result", {}).get("sessionId"), str):
-            raise RuntimeError("host-login fake did not create its authenticated session")
-        client.send(
-            {
-                "jsonrpc": "2.0",
-                "id": 3,
-                "method": "session/prompt",
-                "params": {
-                    "sessionId": session["result"]["sessionId"],
-                    "prompt": [{"type": "text", "text": f"Create the empty marker at {marker}"}],
-                },
-            }
-        )
-        deadline = time.monotonic() + 3.0
-        while time.monotonic() < deadline:
-            message = client.receive(deadline - time.monotonic())
-            if message.get("method") == "session/request_permission":
-                permission_count += 1
-                wait = PendingPermissionWait()
-                wait.abandon()
-                pending_wait_abandoned = wait.state == "abandoned"
-                late_permission_response_accepted = wait.resolve("allow_once")
-                client.send(
-                    {
-                        "jsonrpc": "2.0",
-                        "id": message["id"],
-                        "result": {"outcome": {"outcome": "cancelled"}},
-                    }
-                )
-                client.send(
-                    {
-                        "jsonrpc": "2.0",
-                        "method": "session/cancel",
-                        "params": {"sessionId": session["result"]["sessionId"]},
-                    }
-                )
-                session_cancel_sent = True
-                continue
-            if message.get("id") == 3:
-                prompt_result = message
-                break
-        if prompt_result is None:
-            raise RuntimeError("host-login fake did not finish its cancelled prompt")
-        if prompt_result.get("result", {}).get("stopReason") != "cancelled":
-            raise RuntimeError("host-login fake prompt did not report cancellation")
-    except EOFError:
-        child_closed_stdout = True
-    finally:
-        client.close()
-        exit_code, forced, process_group_joined = stop_owned_process_group(process)
-        proxy_joined = proxy.stop_and_join(LIVE_CLEANUP_SECONDS)
-
-    if child_closed_stdout:
-        stderr = process.stderr.read(4096) if process.stderr is not None else b""
-        child_diagnostic = (
-            load_json(diagnostic_path) if diagnostic_path.is_file() else {}
-        )
-        diagnostic = ""
-        match = re.search(rb"([A-Za-z][A-Za-z0-9]+): \[Errno ([0-9]+)\]", stderr)
-        if match:
-            diagnostic = f"; child_error={match.group(1).decode()}(errno={match.group(2).decode()})"
-        elif b"operation not permitted" in stderr.lower():
-            diagnostic = "; child_error=operation-not-permitted"
-        elif b"sandbox" in stderr.lower():
-            safe_stderr = stderr.decode("utf-8", errors="replace").strip()
-            for path, label in (
-                (str(action_scratch.resolve()), "<action-scratch>"),
-                (str(record_dir.resolve()), "<record-dir>"),
-                (str(host_home.resolve()), "<host-home>"),
-                (str(repository_root.resolve()), "<repository>"),
-            ):
-                safe_stderr = safe_stderr.replace(path, label)
-            diagnostic = f"; child_stderr={safe_stderr[-240:]!r}"
-        elif stderr:
-            safe_stderr = stderr.decode("utf-8", errors="replace").strip()
-            for path, label in (
-                (str(action_scratch.resolve()), "<action-scratch>"),
-                (str(record_dir.resolve()), "<record-dir>"),
-                (str(host_home.resolve()), "<host-home>"),
-                (str(repository_root.resolve()), "<repository>"),
-            ):
-                safe_stderr = safe_stderr.replace(path, label)
-            diagnostic = f"; child_stderr={safe_stderr[-240:]!r}"
-        elif exit_code is not None:
-            diagnostic = f"; child_exit={exit_code}"
-        if child_diagnostic:
-            error_type = child_diagnostic.get("type")
-            error_number = child_diagnostic.get("errno")
-            stage = child_diagnostic.get("stage")
-            diagnostic += f"; child_stage={stage}; child_exception={error_type}(errno={error_number})"
-        raise RuntimeError(f"host-login fake closed stdout before ACP initialize{diagnostic}")
-
-    snapshot = proxy.snapshot()
-    if permission_count != 1 or not pending_wait_abandoned or late_permission_response_accepted:
-        raise RuntimeError("host-login fake did not enforce one cancelled permission request")
-    if not session_cancel_sent or marker.exists():
-        raise RuntimeError("host-login fake cancellation caused an effect or missed session/cancel")
-    if exit_code != -signal.SIGKILL or not forced or not process_group_joined or not proxy_joined:
-        raise RuntimeError("host-login fake did not exercise bounded forced cleanup and join")
-    if snapshot != {
-        "allowed_destination_hosts": ["api.github.com"],
-        "unlisted_destination_count": 1,
-        "sni_mismatch_count": 1,
-        "connection_failure_count": 0,
-    }:
-        raise RuntimeError(f"host-login fake egress controls differ: {snapshot}")
-    valid_evidence = {
-        "initialize": "success",
-        "reported_version_matches": True,
-        "session_new": "success",
-        "auto_session_created": True,
-        "pre_prompt_permission_request": False,
-        "prompt_requests_sent": 1,
-        "credential_environment_variables_absent": True,
-        "permission_request_count": permission_count,
-        "permission_reply": "cancelled",
-        "permission_callback_ambiguous": False,
-        "late_permission_response_accepted": late_permission_response_accepted,
-        "session_cancel_sent": session_cancel_sent,
-        "session_prompt": "cancelled",
-        "effect_marker_present": marker.exists(),
-        "process_joined": process.returncode is not None,
-        "process_group_joined": process_group_joined,
-        "proxy_threads_joined": proxy_joined,
-        "elapsed_seconds": 1.0,
-        "proxy": {
-            "allowed_destination_hosts": ["api.github.com"],
-            "unlisted_destination_count": 0,
-            "sni_mismatch_count": 0,
-            "connection_failure_count": 0,
-        },
-    }
-    negative_controls = {
-        "missing_permission_rejected": not permission_evidence_is_complete(
-            {**valid_evidence, "permission_request_count": 0}
-        ),
-        "late_approval_rejected": not permission_evidence_is_complete(
-            {**valid_evidence, "late_permission_response_accepted": True}
-        ),
-        "effect_marker_rejected": not permission_evidence_is_complete(
-            {**valid_evidence, "effect_marker_present": True}
-        ),
-        "unlisted_egress_rejected": not permission_evidence_is_complete(
-            {**valid_evidence, "proxy": {**snapshot, "unlisted_destination_count": 1}}
-        ),
-        "sni_mismatch_rejected": not permission_evidence_is_complete(
-            {**valid_evidence, "proxy": {**valid_evidence["proxy"], "sni_mismatch_count": 1}}
-        ),
-    }
-    if not permission_evidence_is_complete(valid_evidence) or not all(negative_controls.values()):
-        raise RuntimeError("host-login fake permission acceptance controls failed")
-    fake_record["result"] = {
-        "prompt_requests": 1,
-        "permission_requests": permission_count,
-        "permission_reply": "cancelled",
-        "session_cancel_sent": session_cancel_sent,
-        "effect_marker_absent": not marker.exists(),
-        "egress": snapshot,
-        "process_group_joined": process_group_joined,
-        "forced_cleanup_verified": forced,
-        "proxy_threads_joined": proxy_joined,
-        "negative_controls": negative_controls,
-    }
-    write_json_durable(fake_record_path, fake_record)
-    secret_free_serialization(load_json(fake_record_path))
-    return {
-        "pre_execution_record_fsynced_before_child": True,
-        "pre_execution_record_sha256": fake_record["pre_execution_sha256"],
-        "sandbox_profile": "securityd-only Mach lookup; host home/repository reads denied; scratch-only writes; forks inherit the sandbox and shell exec is denied",
-        "network": snapshot,
-        "model_policy": "--model auto applied to original command shape",
-        "permission_requests": permission_count,
-        "permission_reply": "cancelled",
-        "pending_wait_abandoned": pending_wait_abandoned,
-        "late_approval_accepted": late_permission_response_accepted,
-        "session_cancel_sent": session_cancel_sent,
-        "effect_marker_absent": not marker.exists(),
-        "child_exit_code": exit_code,
-        "forced_cleanup_verified": forced,
-        "process_group_joined": process_group_joined,
-        "proxy_threads_joined": proxy_joined,
-        "negative_controls": negative_controls,
-    }
 
 
 def discovery_fake_run(
@@ -3195,22 +2854,686 @@ def discovery_fake_run(
     return record["result"]
 
 
+def validate_fake_discovery_record(record: dict[str, Any]) -> None:
+    if (
+        record.get("schema") != "copilot-cli-acp-authenticated-invocation.v1"
+        or record.get("execution_kind") != "fake_control"
+        or record.get("original_artifact_started") is not False
+        or record.get("pre_execution_fsynced") is not True
+    ):
+        raise ValueError("discovery fake record is not a durable fake-only control")
+    pre_execution = record.get("pre_execution_record")
+    result = record.get("result")
+    if not isinstance(pre_execution, dict) or not isinstance(result, dict):
+        raise ValueError("discovery fake record is missing its plan or result")
+    expected = json_digest(pre_execution)
+    if record.get("pre_execution_sha256") != expected:
+        raise ValueError("discovery fake result is not bound to its pre-execution plan")
+    if result.get("pre_execution_record_sha256") != expected:
+        raise ValueError("discovery fake result is not correlated to its plan")
+    if result.get("outbound_methods") != ["initialize", "authenticate", "session/new"]:
+        raise ValueError("discovery fake used an unapproved ACP operation")
+    if result.get("prompt_requests") != 0:
+        raise ValueError("discovery fake sent a prompt")
+    if result.get("permission_callbacks") != 0 or result.get("tool_callbacks") != 0:
+        raise ValueError("discovery fake observed a permission or tool callback")
+    if result.get("effect_marker_absent_after_close") is not True:
+        raise ValueError("discovery fake produced an action effect")
+    serialized = json.dumps(record, sort_keys=True)
+    for forbidden in (
+        "/Users/",
+        "/home/",
+        "test-only-delegated-capability",
+        "github_pat_",
+        "ghp_",
+        "gho_",
+        "ghs_",
+        "xoxb-",
+        "Bearer ",
+    ):
+        if forbidden in serialized:
+            raise ValueError(f"discovery fake record contains forbidden marker {forbidden!r}")
+
+
+def original_child_environment(
+    host_home: Path, scratch: Path, proxy_port: int
+) -> dict[str, str]:
+    proxy_url = f"http://127.0.0.1:{proxy_port}"
+    environment = {
+        "HOME": str(host_home.resolve()),
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "TMPDIR": str((scratch / "tmp").resolve()),
+        "TERM": "dumb",
+        "COPILOT_AUTO_UPDATE": "false",
+        "HTTP_PROXY": proxy_url,
+        "HTTPS_PROXY": proxy_url,
+        "ALL_PROXY": proxy_url,
+        "http_proxy": proxy_url,
+        "https_proxy": proxy_url,
+        "all_proxy": proxy_url,
+    }
+    for name in ("COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN", "COPILOT_HOME"):
+        if name in environment:
+            raise RuntimeError(f"original environment unexpectedly contains {name}")
+    return environment
+
+
+def process_group_exists(process_group_id: int) -> bool:
+    try:
+        os.killpg(process_group_id, 0)
+        return True
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+
+
+def stop_owned_process_group(
+    process: subprocess.Popen[bytes], timeout: float = LIVE_CLEANUP_SECONDS
+) -> tuple[int | None, bool, bool]:
+    if process.stdin is not None:
+        try:
+            process.stdin.close()
+        except OSError:
+            pass
+    process_group_id = process.pid
+    deadline = time.monotonic() + timeout
+    forced = False
+    try:
+        process.wait(timeout=min(0.1, max(0.0, deadline - time.monotonic())))
+    except subprocess.TimeoutExpired:
+        pass
+    if process_group_exists(process_group_id):
+        try:
+            os.killpg(process_group_id, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        except PermissionError:
+            # The exact Popen child is ours even when the host refuses group
+            # signalling. Its sandbox denies process-fork, so signal that PID
+            # directly and still require the process group to be empty below.
+            try:
+                process.send_signal(signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+    try:
+        process.wait(timeout=min(0.8, max(0.0, deadline - time.monotonic())))
+    except subprocess.TimeoutExpired:
+        forced = True
+    if process_group_exists(process_group_id):
+        forced = True
+        try:
+            os.killpg(process_group_id, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        except PermissionError:
+            try:
+                process.kill()
+            except ProcessLookupError:
+                pass
+    try:
+        process.wait(timeout=max(0.0, deadline - time.monotonic()))
+    except subprocess.TimeoutExpired:
+        pass
+    while process_group_exists(process_group_id) and time.monotonic() < deadline:
+        time.sleep(min(0.05, deadline - time.monotonic()))
+    return process.poll(), forced, not process_group_exists(process_group_id)
+
+
+def run_native_stderr_control(
+    executable: Path,
+    mode: str,
+    profile: str,
+    environment: dict[str, str],
+    cwd: Path,
+) -> dict[str, Any]:
+    process = subprocess.Popen(
+        ["/usr/bin/sandbox-exec", "-p", profile, str(executable), mode],
+        cwd=cwd,
+        env=environment,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        bufsize=0,
+        start_new_session=True,
+    )
+    collector = BoundedStderrCollector(process.stderr)
+    forced = False
+    process_group_joined = True
+    try:
+        if mode == "--hang":
+            time.sleep(0.1)
+            exit_code, forced, process_group_joined = stop_owned_process_group(
+                process, LIVE_CLEANUP_SECONDS
+            )
+        else:
+            try:
+                exit_code = process.wait(timeout=3.0)
+            except subprocess.TimeoutExpired:
+                exit_code, forced, process_group_joined = stop_owned_process_group(
+                    process, 1.0
+                )
+    finally:
+        if process.poll() is None:
+            _, forced_stop, joined = stop_owned_process_group(process, 1.0)
+            forced = forced or forced_stop
+            process_group_joined = process_group_joined and joined
+    stdout_marker = process.stdout.read(128) if process.stdout is not None else b""
+    if process.stdout is not None:
+        process.stdout.close()
+    reader_joined = collector.join(LIVE_CLEANUP_SECONDS)
+    stderr_summary = collector.summary(reader_joined=reader_joined)
+    if process.stderr is not None:
+        process.stderr.close()
+    return {
+        "mode": mode,
+        "fake_process_startup": (
+            "observed" if stdout_marker == f"FAKE_NATIVE_STARTED:{mode}\n".encode() else "unknown"
+        ),
+        "launcher_exit_status": exit_code,
+        "hard_deadline_forced_stop": forced,
+        "process_group_joined": process_group_joined,
+        "stderr": stderr_summary,
+    }
+
+
+def run_permission_boundary_fake(
+    scratch: Path,
+    host_home: Path,
+    repository_root: Path,
+    permission_plan: dict[str, Any],
+    correction_plan: dict[str, Any],
+) -> dict[str, Any]:
+    proof_scratch = scratch / "host-login-permission-fake"
+    record_dir = proof_scratch / "records"
+    action_scratch = proof_scratch / "action"
+    action_scratch.mkdir(parents=True)
+    (action_scratch / "tmp").mkdir()
+    record_dir.mkdir(parents=True)
+    marker = action_scratch / "permission-effect-marker"
+    diagnostic_path = action_scratch / "fake-child-diagnostic.json"
+    executable = action_scratch / "copilot-permission-fake"
+    executable_identity = compile_permission_fake(executable)
+    proxy = CopilotEgressProxy(
+        set(permission_plan["network_policy"]["allowed_hosts"]),
+        tuple(permission_plan["network_policy"]["allowed_subdomains"]),
+        time.monotonic() + 10.0,
+        fake_only=True,
+    )
+    try:
+        proxy_port = int(proxy.server_address[1])
+    except OSError as error:
+        raise RuntimeError(
+            f"host-login fake could not bind its local proxy (errno={error.errno})"
+        ) from None
+
+    profile = permission_sandbox_profile(
+        action_scratch,
+        record_dir,
+        host_home,
+        repository_root,
+        executable,
+        proxy_port,
+        permission_plan,
+        correction_plan,
+    )
+    if '(allow mach-lookup (global-name "com.apple.securityd"))' not in profile:
+        raise RuntimeError("host-login sandbox omitted the approved securityd lookup")
+    if "(allow process*)" in profile or "(allow network*)" in profile:
+        raise RuntimeError("host-login sandbox grants broad process or network access")
+    if '(allow file-map-executable (subpath "/System/Library"))' not in profile:
+        raise RuntimeError("host-login sandbox omitted the system runtime root")
+    if '(allow file-map-executable (subpath "/usr/lib"))' not in profile:
+        raise RuntimeError("host-login sandbox omitted the system runtime root")
+    if correction_plan["sandbox_delta"]["fake_runtime_roots"] != []:
+        raise RuntimeError("host-login sandbox correction contains fake-only runtime roots")
+    if "(deny network-inbound)" not in profile or "(deny network-bind)" not in profile:
+        raise RuntimeError("host-login sandbox does not deny inbound or bound sockets")
+    if f'(allow network-outbound (remote ip "localhost:{proxy_port}"))' not in profile:
+        raise RuntimeError("host-login sandbox does not bind outbound traffic to the tested proxy")
+    approved_path = host_home / correction_plan["auth_metadata_read_paths"][0]["relative_path"]
+    expected_exception = (
+        f"(deny file-read* (require-all (subpath {quote_profile_path(host_home)}) "
+        f"(require-not (literal {quote_literal_policy_path(approved_path)}))))"
+    )
+    if expected_exception not in profile:
+        raise RuntimeError("host-login sandbox metadata exception differs from the correction plan")
+    if "(deny file-write* (subpath " + quote_profile_path(host_home) + "))" not in profile:
+        raise RuntimeError("host-login sandbox does not deny host-home writes")
+
+    environment = original_child_environment(host_home, action_scratch, proxy_port)
+    environment.update(
+        {
+            "SWALLOWTAIL_BLOCKED_REPOSITORY": str(repository_root.resolve()),
+            "SWALLOWTAIL_EFFECT_MARKER": str(marker),
+            "SWALLOWTAIL_PROXY_PORT": str(proxy_port),
+            "SWALLOWTAIL_FAKE_DIAGNOSTIC": str(diagnostic_path),
+        }
+    )
+    early_exit_control = run_native_stderr_control(
+        executable, "--early-exit", profile, environment, action_scratch
+    )
+    if (
+        early_exit_control["fake_process_startup"] != "observed"
+        or early_exit_control["launcher_exit_status"] != 41
+    ):
+        summary = early_exit_control["stderr"]
+        raise RuntimeError(
+            "native fake could not start under the shared profile "
+            f"(exit={early_exit_control['launcher_exit_status']}, "
+            f"stderr={summary['classification']}, bytes={summary['total_bytes']})"
+        )
+
+    plan_digest = hashlib.sha256(PERMISSION_PROOF_PLAN_PATH.read_bytes()).hexdigest()
+    correction_digest = hashlib.sha256(PERMISSION_CORRECTION_PLAN_PATH.read_bytes()).hexdigest()
+    profile_digest = hashlib.sha256(profile.encode()).hexdigest()
+    pre_execution = {
+        "target": "task-owned-native-fake; no original artifact",
+        "fake_source": "scripts/copilot-acp-permission-fake.c",
+        "fake_source_sha256": executable_identity["source_sha256"],
+        "fake_binary_sha256": executable_identity["binary_sha256"],
+        "permission_plan_sha256": plan_digest,
+        "correction_plan_sha256": correction_digest,
+        "model_policy": "--model auto fake argument only",
+        "credential_boundary": "synthetic metadata sentinel only; no token environment or real auth-store read",
+        "auth_metadata_read_exception": ".copilot/config.json; read-only; current official docs, not frozen-artifact-specific",
+        "network_allowlist": sorted(permission_plan["network_policy"]["allowed_hosts"]),
+        "network_subdomains": list(permission_plan["network_policy"]["allowed_subdomains"]),
+        "network_default": "deny except local tested CONNECT proxy",
+        "profile_sha256": profile_digest,
+        "fake_runtime_roots": correction_plan["sandbox_delta"]["fake_runtime_roots"],
+        "action": "cancel one permission request before marker creation",
+        "budgets": {"prompts": 1, "seconds": 3, "effects": 0},
+    }
+    fake_record_path = record_dir / "invocation.json"
+    fake_record = {
+        "schema": "copilot-cli-acp-permission-proof-preflight-invocation.v2",
+        "execution_kind": "fake_control",
+        "original_artifact_started": False,
+        "pre_execution_fsynced": True,
+        "pre_execution_sha256": json_digest(pre_execution),
+        "pre_execution_record": pre_execution,
+        "result": None,
+    }
+    secret_free_serialization(fake_record)
+    write_json_durable(fake_record_path, fake_record)
+    if load_json(fake_record_path) != fake_record:
+        proxy.stop_and_join(LIVE_CLEANUP_SECONDS)
+        raise RuntimeError("host-login fake pre-execution record did not persist before child start")
+
+    started = time.monotonic()
+    try:
+        proxy.start()
+    except OSError as error:
+        proxy.server_close()
+        raise RuntimeError(
+            f"host-login fake could not start its local proxy (errno={error.errno})"
+        ) from None
+    command = [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        profile,
+        str(executable),
+        "--model",
+        "auto",
+        "--acp",
+        "--stdio",
+    ]
+    try:
+        process = subprocess.Popen(
+            command,
+            cwd=action_scratch,
+            env=environment,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=0,
+            start_new_session=True,
+        )
+    except OSError as error:
+        proxy.stop_and_join(LIVE_CLEANUP_SECONDS)
+        raise RuntimeError(
+            f"host-login native fake could not start in its sandbox (errno={error.errno})"
+        ) from None
+    collector = BoundedStderrCollector(process.stderr)
+    client = StdioClient(process)
+    permission_count = 0
+    pending_wait_abandoned = False
+    late_permission_response_accepted = False
+    session_cancel_sent = False
+    prompt_result: dict[str, Any] | None = None
+    fake_startup_observed = False
+    try:
+        try:
+            startup_marker = client.receive(3.0)
+            if startup_marker.get("method") != "swallowtail/native-fake-started":
+                raise RuntimeError("native fake startup marker did not match its test protocol")
+            fake_startup_observed = True
+            client.send(
+                {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "method": "initialize",
+                    "params": {"protocolVersion": 1, "clientCapabilities": {}},
+                }
+            )
+            initialize = client.receive(3.0)
+        except EOFError:
+            try:
+                diagnostic = load_json(diagnostic_path)
+            except (OSError, ValueError, json.JSONDecodeError):
+                diagnostic = {}
+            failed_controls = [
+                name
+                for name in (
+                    "auth_metadata_read",
+                    "auth_metadata_write_denied",
+                    "adjacent_home_reads_denied",
+                    "keychain_file_read_denied",
+                    "repository_read_denied",
+                    "repository_write_denied",
+                    "direct_network_denied",
+                    "inbound_bind_denied",
+                    "shell_exec_denied",
+                    "proxy_allowlist_exercised",
+                    "proxy_sni_mismatch_exercised",
+                    "proxy_unlisted_denied",
+                    "effect_marker_absent",
+                )
+                if diagnostic.get(name) is not True
+            ]
+            stderr_reader_joined = collector.join(0.1)
+            stderr_summary = collector.summary(reader_joined=stderr_reader_joined)
+            raise RuntimeError(
+                "native fake exited before ACP initialize "
+                f"(exit={process.poll()}, stage={diagnostic.get('stage', 'unknown')}, "
+                f"failed_controls={','.join(failed_controls) or 'unclassified'}, "
+                f"stderr={stderr_summary['classification']}, bytes={stderr_summary['total_bytes']})"
+            ) from None
+        if initialize.get("id") != 1 or initialize.get("result", {}).get("agentInfo", {}).get("version") != "1.0.93":
+            raise RuntimeError("host-login native fake did not initialize as its pinned control")
+        client.send(
+            {
+                "jsonrpc": "2.0",
+                "id": 2,
+                "method": "session/new",
+                "params": {"cwd": str(action_scratch), "mcpServers": []},
+            }
+        )
+        session = client.receive(3.0)
+        if session.get("id") != 2 or not isinstance(session.get("result", {}).get("sessionId"), str):
+            raise RuntimeError("host-login native fake did not create its synthetic session")
+        client.send(
+            {
+                "jsonrpc": "2.0",
+                "id": 3,
+                "method": "session/prompt",
+                "params": {
+                    "sessionId": session["result"]["sessionId"],
+                    "prompt": [{"type": "text", "text": "Create the empty marker in task scratch"}],
+                },
+            }
+        )
+        deadline = time.monotonic() + 3.0
+        while time.monotonic() < deadline:
+            message = client.receive(deadline - time.monotonic())
+            if message.get("method") == "session/request_permission":
+                permission_count += 1
+                permission_id = message.get("id")
+                if permission_count != 1 or not isinstance(permission_id, int):
+                    raise RuntimeError("host-login native fake produced an ambiguous permission callback")
+                wait = PendingPermissionWait()
+                wait.abandon()
+                pending_wait_abandoned = wait.state == "abandoned"
+                late_permission_response_accepted = wait.resolve("allow_once")
+                client.send(
+                    {
+                        "jsonrpc": "2.0",
+                        "id": permission_id,
+                        "result": {"outcome": {"outcome": "cancelled"}},
+                    }
+                )
+                client.send(
+                    {
+                        "jsonrpc": "2.0",
+                        "method": "session/cancel",
+                        "params": {"sessionId": session["result"]["sessionId"]},
+                    }
+                )
+                session_cancel_sent = True
+                continue
+            if message.get("id") == 3:
+                prompt_result = message
+                break
+        if prompt_result is None:
+            raise RuntimeError("host-login native fake did not finish its cancelled prompt")
+        if prompt_result.get("result", {}).get("stopReason") != "cancelled":
+            raise RuntimeError("host-login native fake prompt did not report cancellation")
+    finally:
+        client.close()
+        exit_code, forced, process_group_joined = stop_owned_process_group(process)
+        stderr_reader_joined = collector.join(LIVE_CLEANUP_SECONDS)
+        stderr_summary = collector.summary(reader_joined=stderr_reader_joined)
+        if process.stderr is not None:
+            process.stderr.close()
+        proxy_joined = proxy.stop_and_join(LIVE_CLEANUP_SECONDS)
+
+    child_diagnostic = load_json(diagnostic_path) if diagnostic_path.is_file() else {}
+    if child_diagnostic.get("stage") != "policy-probes-passed":
+        raise RuntimeError(
+            "host-login native fake policy probes failed "
+            f"(startup={fake_startup_observed}, stderr={stderr_summary['classification']}, "
+            f"bytes={stderr_summary['total_bytes']})"
+        )
+    snapshot = proxy.snapshot()
+    if permission_count != 1 or not pending_wait_abandoned or late_permission_response_accepted:
+        raise RuntimeError("host-login native fake did not enforce one cancelled permission request")
+    if not session_cancel_sent or marker.exists():
+        raise RuntimeError("host-login native fake cancellation caused an effect or missed session/cancel")
+    if exit_code != -signal.SIGKILL or not forced or not process_group_joined or not proxy_joined:
+        raise RuntimeError("host-login native fake did not exercise bounded forced cleanup and join")
+    if not stderr_reader_joined or stderr_summary["reader_error"]:
+        raise RuntimeError("host-login native fake stderr reader did not join cleanly")
+    if snapshot != {
+        "allowed_destination_hosts": ["api.github.com"],
+        "unlisted_destination_count": 1,
+        "sni_mismatch_count": 1,
+        "connection_failure_count": 0,
+    }:
+        raise RuntimeError("host-login native fake egress controls differ")
+
+    stderr_controls = {
+        mode: run_native_stderr_control(executable, mode, profile, environment, action_scratch)
+        for mode in ("--stderr-fullpipe", "--stderr-secret", "--hang")
+    }
+    stderr_controls["--early-exit"] = early_exit_control
+    fullpipe = stderr_controls["--stderr-fullpipe"]
+    secret = stderr_controls["--stderr-secret"]
+    early_exit = stderr_controls["--early-exit"]
+    hang = stderr_controls["--hang"]
+    if (
+        not fullpipe["stderr"]["total_bytes_capped"]
+        or fullpipe["stderr"]["total_bytes"] != MAX_STDERR_COUNTED_BYTES
+        or not fullpipe["stderr"]["truncated"]
+    ):
+        raise RuntimeError("native fake stderr full-pipe control did not exceed its bounded capture")
+    if secret["stderr"]["classification"] != "unknown":
+        raise RuntimeError("native fake secret-bearing stderr did not fail closed to unknown")
+    if early_exit["fake_process_startup"] != "observed" or early_exit["launcher_exit_status"] != 41:
+        raise RuntimeError("native fake early-exit control lost its fake startup evidence")
+    if hang["fake_process_startup"] != "observed" or not hang["hard_deadline_forced_stop"]:
+        raise RuntimeError("native fake timeout control did not force a bounded stop")
+    if not all(
+        control["process_group_joined"] and control["stderr"]["reader_joined"]
+        for control in stderr_controls.values()
+    ):
+        modes = [
+            mode
+            for mode, control in stderr_controls.items()
+            if not control["process_group_joined"] or not control["stderr"]["reader_joined"]
+        ]
+        raise RuntimeError(
+            "native fake stderr controls left a process or reader unjoined "
+            f"(modes={','.join(modes)})"
+        )
+    if any(control["stderr"]["reader_error"] for control in stderr_controls.values()):
+        raise RuntimeError("native fake stderr control reader reported a failure")
+
+    sandbox_policy = {
+        "auth_metadata_read": child_diagnostic.get("auth_metadata_read") is True,
+        "auth_metadata_write_denied": child_diagnostic.get("auth_metadata_write_denied") is True,
+        "adjacent_home_reads_denied": child_diagnostic.get("adjacent_home_reads_denied") is True,
+        "keychain_file_read_denied": child_diagnostic.get("keychain_file_read_denied") is True,
+        "repository_reads_denied": child_diagnostic.get("repository_read_denied") is True,
+        "repository_writes_denied": child_diagnostic.get("repository_write_denied") is True,
+        "direct_egress_denied": child_diagnostic.get("direct_network_denied") is True,
+        "inbound_bind_denied": child_diagnostic.get("inbound_bind_denied") is True,
+        "shell_exec_denied": child_diagnostic.get("shell_exec_denied") is True,
+        "fake_runtime_roots": correction_plan["sandbox_delta"]["fake_runtime_roots"],
+        "securityd_trust_boundary": "permitted service lookup; no item-level mediation or read performed",
+    }
+    valid_evidence = {
+        "initialize": "success",
+        "reported_version_matches": True,
+        "session_new": "success",
+        "auto_session_created": True,
+        "pre_prompt_permission_request": False,
+        "prompt_requests_sent": 1,
+        "credential_environment_variables_absent": not any(
+            name in environment
+            for name in ("COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN")
+        ),
+        "permission_request_count": permission_count,
+        "permission_reply": "cancelled",
+        "permission_callback_ambiguous": False,
+        "late_permission_response_accepted": late_permission_response_accepted,
+        "session_cancel_sent": session_cancel_sent,
+        "session_prompt": "cancelled",
+        "effect_marker_present": marker.exists(),
+        "process_joined": process.returncode is not None,
+        "process_group_joined": process_group_joined,
+        "stderr_drain_joined": stderr_reader_joined,
+        "stderr": stderr_summary,
+        "proxy_threads_joined": proxy_joined,
+        "elapsed_seconds": 1.0,
+        "proxy": {
+            "allowed_destination_hosts": ["api.github.com"],
+            "unlisted_destination_count": 0,
+            "sni_mismatch_count": 0,
+            "connection_failure_count": 0,
+        },
+    }
+    negative_controls = {
+        "missing_permission_rejected": not permission_evidence_is_complete(
+            {**valid_evidence, "permission_request_count": 0}
+        ),
+        "late_approval_rejected": not permission_evidence_is_complete(
+            {**valid_evidence, "late_permission_response_accepted": True}
+        ),
+        "effect_marker_rejected": not permission_evidence_is_complete(
+            {**valid_evidence, "effect_marker_present": True}
+        ),
+        "unlisted_egress_rejected": not permission_evidence_is_complete(
+            {
+                **valid_evidence,
+                "proxy": {
+                    **valid_evidence["proxy"],
+                    "unlisted_destination_count": 1,
+                },
+            }
+        ),
+        "sni_mismatch_rejected": not permission_evidence_is_complete(
+            {
+                **valid_evidence,
+                "proxy": {
+                    **valid_evidence["proxy"],
+                    "sni_mismatch_count": 1,
+                },
+            }
+        ),
+        "unjoined_stderr_rejected": not permission_evidence_is_complete(
+            {**valid_evidence, "stderr_drain_joined": False}
+        ),
+    }
+    if not permission_evidence_is_complete(valid_evidence) or not all(negative_controls.values()):
+        raise RuntimeError("host-login native fake permission acceptance controls failed")
+
+    fake_record["result"] = {
+        "fake_process_startup": "observed" if fake_startup_observed else "unknown",
+        "sandbox_profile_sha256": profile_digest,
+        "sandbox_policy": sandbox_policy,
+        "stderr": stderr_summary,
+        "stderr_controls": stderr_controls,
+        "prompt_requests": 1,
+        "permission_requests": permission_count,
+        "permission_reply": "cancelled",
+        "pending_wait_abandoned": pending_wait_abandoned,
+        "late_approval_accepted": late_permission_response_accepted,
+        "session_cancel_sent": session_cancel_sent,
+        "effect_marker_absent": not marker.exists(),
+        "egress": snapshot,
+        "process_group_joined": process_group_joined,
+        "forced_cleanup_verified": forced,
+        "stderr_reader_joined": stderr_reader_joined,
+        "proxy_threads_joined": proxy_joined,
+        "negative_controls": negative_controls,
+    }
+    write_json_durable(fake_record_path, fake_record)
+    secret_free_serialization(load_json(fake_record_path))
+    result = {
+        "pre_execution_record_fsynced_before_child": True,
+        "pre_execution_record_sha256": fake_record["pre_execution_sha256"],
+        "permission_plan_sha256": plan_digest,
+        "correction_plan_sha256": correction_digest,
+        "fake_source_sha256": executable_identity["source_sha256"],
+        "fake_binary_sha256": executable_identity["binary_sha256"],
+        "fake_process_startup": fake_record["result"]["fake_process_startup"],
+        "sandbox_profile_sha256": profile_digest,
+        "sandbox_profile": "exact fake executable; system runtime roots only; one read-only auth metadata literal; scratch-only writes; local reviewed proxy; securityd lookup trust boundary",
+        "sandbox_policy": sandbox_policy,
+        "network": snapshot,
+        "permission_requests": permission_count,
+        "permission_reply": "cancelled",
+        "pending_wait_abandoned": pending_wait_abandoned,
+        "late_approval_accepted": late_permission_response_accepted,
+        "session_cancel_sent": session_cancel_sent,
+        "effect_marker_absent": not marker.exists(),
+        "child_exit_code": exit_code,
+        "forced_cleanup_verified": forced,
+        "process_group_joined": process_group_joined,
+        "stderr": stderr_summary,
+        "stderr_controls": stderr_controls,
+        "stderr_reader_joined": stderr_reader_joined,
+        "proxy_threads_joined": proxy_joined,
+        "negative_controls": negative_controls,
+        "elapsed_seconds": round(time.monotonic() - started, 3) if "started" in locals() else 1.0,
+    }
+    return result
+
+
 def self_test() -> dict[str, Any]:
     fake_shell = require_macos_sandbox()
     plan = validate_authenticated_plan()
     permission_plan = validate_permission_proof_plan()
+    correction_plan = validate_permission_correction_plan(permission_plan)
     with tempfile.TemporaryDirectory(prefix="copilot-acp-offline-proof-") as temp_root:
         task_root = Path(temp_root).resolve()
         scratch = task_root / "task-scratch"
         scratch.mkdir()
         host_home = task_root / "fake-host-home"
         (host_home / ".copilot").mkdir(parents=True)
+        (host_home / ".ssh").mkdir()
         (host_home / "Library" / "Keychains").mkdir(parents=True)
         repository_root = task_root / "fake-repository"
         repository_root.mkdir()
         for path, contents in (
-            (host_home / ".copilot" / "config.json", b"fake config\n"),
+            (
+                host_home / ".copilot" / "config.json",
+                b"synthetic-auth-metadata="
+                + b"SWALLOWTAIL_FAKE_AUTH_METADATA_SENTINEL\n",
+            ),
             (host_home / ".copilot" / "settings.json", b"fake settings\n"),
+            (host_home / ".ssh" / "id_ed25519", b"synthetic unrelated home file\n"),
             (host_home / "Library" / "Keychains" / "login.keychain-db", b"fake keychain\n"),
             (host_home / "Library" / "Keychains" / "copilot-cli.fake", b"fake item\n"),
             (repository_root / "README.md", b"fake repository\n"),
@@ -3267,12 +3590,26 @@ def self_test() -> dict[str, Any]:
             or outcome.get("forced_process_group_kill")
             or not outcome.get("process_joined")
         ):
-            raise RuntimeError("fake ACP agent did not exit cleanly")
+            raise RuntimeError(
+                "fake ACP agent did not exit cleanly "
+                f"(exit={outcome.get('exit_code')}, "
+                f"forced={outcome.get('forced_process_group_kill')}, "
+                f"joined={outcome.get('process_joined')}, "
+                f"initialize={outcome.get('initialize')}, "
+                f"session_new={outcome.get('session_new')}, "
+                f"prompt={outcome.get('session_prompt')}, "
+                f"permission={outcome.get('permission_reply')}, "
+                f"cancel_sent={outcome.get('session_cancel_sent')})"
+            )
         auth_preflight, auth_result, discovery_result = authenticated_fake_run(
             scratch, host_home, repository_root
         )
         permission_boundary_result = run_permission_boundary_fake(
-            scratch, host_home, repository_root
+            scratch,
+            host_home,
+            repository_root,
+            permission_plan,
+            correction_plan,
         )
         consumed_versions = consumed_permission_versions()
         if "1.0.93" not in consumed_versions:
@@ -3309,6 +3646,63 @@ def self_test() -> dict[str, Any]:
             raise RuntimeError(
                 "legacy execute path changed record or artifact state before refusal"
             )
+        if hashlib.sha256(COMMITTED_PERMISSION_RECORD_PATH.read_bytes()).hexdigest() != COMMITTED_PERMISSION_RECORD_SHA256:
+            raise RuntimeError("historical original invocation record identity changed")
+        if hashlib.sha256(
+            (FIXTURE_DIR / "permission-proof-preflight-record.json").read_bytes()
+        ).hexdigest() != HISTORICAL_PERMISSION_PREFLIGHT_SHA256:
+            raise RuntimeError("historical permission preflight record identity changed")
+        for option in ("--execute", "--permission-proof"):
+            entrypoint_record = task_root / f"entrypoint-{option[2:]}-record.json"
+            entrypoint_artifacts = task_root / f"entrypoint-{option[2:]}-artifacts"
+            arguments = [
+                sys.executable,
+                str(Path(__file__).resolve()),
+                option,
+                "--record",
+                str(entrypoint_record),
+                "--artifact-root",
+                str(entrypoint_artifacts),
+            ]
+            if option == "--permission-proof":
+                arguments.extend(["--preflight-record", str(task_root / "unused-preflight.json")])
+            try:
+                refused = subprocess.run(
+                    arguments,
+                    cwd=ROOT,
+                    env={
+                        "HOME": str(host_home),
+                        "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+                        "TMPDIR": str(scratch),
+                        "TERM": "dumb",
+                    },
+                    stdin=subprocess.DEVNULL,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    timeout=10,
+                    check=False,
+                )
+            except subprocess.TimeoutExpired:
+                raise RuntimeError(f"{option} consumed-record guard exceeded 10 seconds") from None
+            refused_output = (refused.stdout + refused.stderr).decode("utf-8", errors="replace")
+            if (
+                refused.returncode == 0
+                or "1.0.93" not in refused_output
+                or "separate authority is required" not in refused_output
+                or entrypoint_record.exists()
+                or entrypoint_artifacts.exists()
+            ):
+                raise RuntimeError(f"{option} did not refuse before staging or original start")
+            if any(
+                marker in refused_output
+                for marker in (
+                    "SWALLOWTAIL_SENTINEL_TOKEN",
+                    "SWALLOWTAIL_SENTINEL_COOKIE",
+                    "SWALLOWTAIL_SENTINEL_URL",
+                    str(host_home),
+                )
+            ):
+                raise RuntimeError(f"{option} exposed a private diagnostic marker")
         altered_record_path = task_root / "altered-committed-permission-record.json"
         altered_record_path.write_bytes(
             COMMITTED_PERMISSION_RECORD_PATH.read_bytes() + b"\n"
@@ -3328,11 +3722,11 @@ def self_test() -> dict[str, Any]:
                 raise
         else:
             raise RuntimeError("cross-run budget fake accepted a missing record")
-        return {
+        proof = {
             "status": "passed",
             "network_denial": "loopback and reserved external connect both returned EPERM/EACCES",
-            "filesystem_boundary": "writes allowed only inside task scratch; fake host home and repository reads denied",
-            "keychain_boundary": "securityd Mach lookup denied by profile",
+            "filesystem_boundary": "native permission fake read only the declared synthetic auth metadata file; adjacent home/repository reads and home/repository writes were denied",
+            "keychain_boundary": "securityd service lookup remains the trusted vendor boundary; the fake performed no keychain item read",
             "record_before_execution": True,
             "authenticated_plan": {
                 "schema": plan["schema"],
@@ -3362,14 +3756,49 @@ def self_test() -> dict[str, Any]:
                 "attempts": permission_plan["budgets"]["max_total_invocations"],
             },
             "host_login_permission_fake": permission_boundary_result,
+            "correction_plan": {
+                "schema": correction_plan["schema"],
+                "source_permission_plan_sha256": correction_plan[
+                    "source_permission_plan_sha256"
+                ],
+                "auth_metadata_read_paths": [
+                    item["relative_path"]
+                    for item in correction_plan["auth_metadata_read_paths"]
+                ],
+                "version_scope": "official documentation path; not frozen-artifact-specific",
+            },
             "cross_run_invocation_budget": {
                 "committed_record_sha256": COMMITTED_PERMISSION_RECORD_SHA256,
                 "consumed_versions": sorted(consumed_versions),
                 "consumed_1_0_93_refused": True,
                 "legacy_execute_refused_before_staging": True,
+                "permission_proof_refused_before_staging": True,
                 "missing_or_changed_record_fails_closed": True,
             },
         }
+        preflight_path = scratch / "permission-proof-preflight-v2.json"
+        preflight = make_permission_preflight_record(proof)
+        write_json_durable(preflight_path, preflight)
+        validate_preflight_record(preflight_path, permission_plan)
+        if str(host_home) in json.dumps(preflight, sort_keys=True):
+            raise RuntimeError("permission preflight record exposed a synthetic home path")
+        return proof
+
+
+def make_permission_preflight_record(result: dict[str, Any]) -> dict[str, Any]:
+    fake = result.get("host_login_permission_fake", {})
+    return {
+        "schema": "copilot-cli-acp-permission-proof-preflight.v2",
+        "recorded_at_utc": utc_now(),
+        "plan_sha256": hashlib.sha256(PERMISSION_PROOF_PLAN_PATH.read_bytes()).hexdigest(),
+        "correction_plan_sha256": hashlib.sha256(
+            PERMISSION_CORRECTION_PLAN_PATH.read_bytes()
+        ).hexdigest(),
+        "harness_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "native_fake_source_sha256": fake.get("fake_source_sha256"),
+        "native_fake_binary_sha256": fake.get("fake_binary_sha256"),
+        "result": result,
+    }
 
 
 def prepare_record(record_path: Path) -> None:
@@ -3423,26 +3852,110 @@ def prepare_record(record_path: Path) -> None:
 
 def validate_preflight_record(path: Path, plan: dict[str, Any]) -> dict[str, Any]:
     preflight = load_json(path)
-    if preflight.get("schema") != "copilot-cli-acp-permission-proof-preflight.v1":
-        raise ValueError("permission proof requires the validated fake preflight record")
+    validate_schema_value(
+        preflight,
+        load_json(PERMISSION_PREFLIGHT_SCHEMA_PATH),
+        "permission_proof_preflight",
+    )
     if preflight.get("harness_sha256") != hashlib.sha256(Path(__file__).read_bytes()).hexdigest():
         raise ValueError("fake preflight was produced by a different harness revision")
     if preflight.get("plan_sha256") != hashlib.sha256(
         PERMISSION_PROOF_PLAN_PATH.read_bytes()
     ).hexdigest():
         raise ValueError("fake preflight was produced for a different permission plan")
+    if preflight.get("correction_plan_sha256") != hashlib.sha256(
+        PERMISSION_CORRECTION_PLAN_PATH.read_bytes()
+    ).hexdigest():
+        raise ValueError("fake preflight was produced for a different correction plan")
+    if preflight.get("native_fake_source_sha256") != hashlib.sha256(
+        PERMISSION_FAKE_SOURCE_PATH.read_bytes()
+    ).hexdigest():
+        raise ValueError("fake preflight was produced by a different native fake source")
     result = preflight.get("result", {})
     fake = result.get("host_login_permission_fake", {})
+    if preflight.get("native_fake_binary_sha256") != fake.get("fake_binary_sha256"):
+        raise ValueError("fake preflight is not bound to its compiled native fake")
     if result.get("status") != "passed" or fake.get("permission_reply") != "cancelled":
         raise ValueError("permission proof requires a passing host-login cancellation fake")
+    if fake.get("fake_process_startup") != "observed":
+        raise ValueError("permission proof fake did not establish its native process startup")
     if fake.get("effect_marker_absent") is not True:
         raise ValueError("host-login cancellation fake did not prove absence of the effect")
     if fake.get("process_group_joined") is not True or fake.get("proxy_threads_joined") is not True:
         raise ValueError("host-login cancellation fake did not prove bounded joined cleanup")
+    if fake.get("stderr_reader_joined") is not True:
+        raise ValueError("host-login cancellation fake did not join its stderr reader")
+    policy = fake.get("sandbox_policy", {})
+    if any(
+        policy.get(field) is not True
+        for field in (
+            "auth_metadata_read",
+            "auth_metadata_write_denied",
+            "adjacent_home_reads_denied",
+            "keychain_file_read_denied",
+            "repository_reads_denied",
+            "repository_writes_denied",
+            "direct_egress_denied",
+            "inbound_bind_denied",
+            "shell_exec_denied",
+        )
+    ) or policy.get("fake_runtime_roots") != []:
+        raise ValueError("host-login fake did not prove the corrected original profile boundary")
     if fake.get("network", {}).get("allowed_destination_hosts") != ["api.github.com"]:
         raise ValueError("host-login fake did not exercise the selected proxy path")
-    if not plan["network_policy"]["allowed_hosts"] or fake.get("network", {}).get("unlisted_destination_count") != 1:
+    if fake.get("network") != {
+        "allowed_destination_hosts": ["api.github.com"],
+        "unlisted_destination_count": 1,
+        "sni_mismatch_count": 1,
+        "connection_failure_count": 0,
+    } or not plan["network_policy"]["allowed_hosts"]:
         raise ValueError("host-login fake did not prove default-deny destinations")
+    controls = fake.get("stderr_controls", {})
+    if set(controls) != {"--stderr-fullpipe", "--stderr-secret", "--early-exit", "--hang"}:
+        raise ValueError("host-login fake omitted a required stderr control")
+    if not controls["--stderr-fullpipe"].get("stderr", {}).get("truncated"):
+        raise ValueError("host-login fake did not bound full-pipe stderr")
+    if controls["--stderr-secret"].get("stderr", {}).get("classification") != "unknown":
+        raise ValueError("host-login fake did not fail closed on secret-bearing stderr")
+    summaries = [fake.get("stderr", {}), *(control.get("stderr", {}) for control in controls.values())]
+    for summary in summaries:
+        if (
+            summary.get("classification") not in STDERR_CATEGORIES
+            or summary.get("captured_bytes", MAX_STDERR_CAPTURE_BYTES + 1)
+            > MAX_STDERR_CAPTURE_BYTES
+            or summary.get("total_bytes", MAX_STDERR_COUNTED_BYTES + 1)
+            > MAX_STDERR_COUNTED_BYTES
+            or summary.get("total_byte_count_limit") != MAX_STDERR_COUNTED_BYTES
+            or not isinstance(summary.get("total_bytes_capped"), bool)
+            or summary.get("total_bytes", -1) < summary.get("captured_bytes", 0)
+            or summary.get("truncated")
+            != (
+                summary.get("total_bytes_capped")
+                or summary.get("total_bytes") > summary.get("captured_bytes")
+            )
+            or (
+                summary.get("total_bytes_capped")
+                and summary.get("total_bytes") != MAX_STDERR_COUNTED_BYTES
+            )
+            or summary.get("raw_persisted") is not False
+            or summary.get("raw_displayed") is not False
+            or not summary.get("reader_joined")
+            or summary.get("reader_error")
+        ):
+            raise ValueError("host-login fake stderr record is not bounded and redacted")
+    for control in controls.values():
+        if not control.get("stderr", {}).get("reader_joined") or not control.get("process_group_joined"):
+            modes = [
+                mode
+                for mode, item in controls.items()
+                if not item.get("stderr", {}).get("reader_joined")
+                or not item.get("process_group_joined")
+            ]
+            raise ValueError(
+                "host-login fake stderr control left its reader or process unjoined "
+                f"(modes={','.join(modes)})"
+            )
+    secret_free_serialization(preflight)
     return preflight
 
 
@@ -3458,6 +3971,12 @@ def secret_free_serialization(value: Any) -> None:
         "xoxb-",
         "Bearer ",
         "test-only-delegated-capability",
+        "SWALLOWTAIL_FAKE_AUTH_METADATA_SENTINEL",
+        "SWALLOWTAIL_SENTINEL_TOKEN",
+        "SWALLOWTAIL_SENTINEL_COOKIE",
+        "SWALLOWTAIL_SENTINEL_URL",
+        "session-private",
+        "arbitrary vendor error text",
     ):
         if forbidden in serialized:
             raise ValueError(f"permission proof record contains forbidden marker {forbidden!r}")
@@ -3471,6 +3990,7 @@ def run_permission_proof(
     require_macos_sandbox()
     plan = validate_permission_proof_plan()
     enforce_permission_invocation_budget(plan)
+    correction_plan = validate_permission_correction_plan(plan)
     inventory = verify_inventory()
     requested_record_path = record_path
     requested_preflight_path = preflight_path
@@ -3515,8 +4035,11 @@ def run_permission_proof(
         staged[version] = (binary, digest)
 
     record: dict[str, Any] = {
-        "schema": "copilot-cli-acp-permission-proof-execution.v1",
+        "schema": "copilot-cli-acp-permission-proof-execution.v2",
         "plan_sha256": hashlib.sha256(PERMISSION_PROOF_PLAN_PATH.read_bytes()).hexdigest(),
+        "correction_plan_sha256": hashlib.sha256(
+            PERMISSION_CORRECTION_PLAN_PATH.read_bytes()
+        ).hexdigest(),
         "artifact_inventory_sha256": hashlib.sha256(INVENTORY_PATH.read_bytes()).hexdigest(),
         "harness_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "account_access_ref": "github-account:betterthanclay",
@@ -3563,6 +4086,7 @@ def run_permission_proof(
             record,
             ROOT,
             plan,
+            correction_plan,
         )
         secret_free_serialization(record)
         print(json.dumps({"version": version, "result": result}, sort_keys=True))
@@ -3629,8 +4153,22 @@ def run_permission_proof(
 def validate_permission_execution_record(record_path: Path) -> dict[str, Any]:
     plan = validate_permission_proof_plan()
     record = load_json(record_path)
-    if record.get("schema") != "copilot-cli-acp-permission-proof-execution.v1":
+    record_schema = record.get("schema")
+    if record_schema not in {
+        "copilot-cli-acp-permission-proof-execution.v1",
+        "copilot-cli-acp-permission-proof-execution.v2",
+    }:
         raise ValueError("unexpected original permission execution record schema")
+    if record_schema == "copilot-cli-acp-permission-proof-execution.v2":
+        validate_schema_value(
+            record,
+            load_json(PERMISSION_EXECUTION_V2_SCHEMA_PATH),
+            "permission_proof_execution_v2",
+        )
+        if record.get("correction_plan_sha256") != hashlib.sha256(
+            PERMISSION_CORRECTION_PLAN_PATH.read_bytes()
+        ).hexdigest():
+            raise ValueError("original execution record does not match the correction plan")
     if record.get("plan_sha256") != hashlib.sha256(
         PERMISSION_PROOF_PLAN_PATH.read_bytes()
     ).hexdigest():
@@ -3683,9 +4221,50 @@ def validate_permission_execution_record(record_path: Path) -> dict[str, Any]:
             != "never extracted, copied, logged, or persisted"
         ):
             raise ValueError(f"invalid or unbound pre-execution record for {version}")
+        if record_schema == "copilot-cli-acp-permission-proof-execution.v2" and (
+            pre_execution.get("permission_plan_sha256") != record.get("plan_sha256")
+            or pre_execution.get("correction_plan_sha256")
+            != record.get("correction_plan_sha256")
+        ):
+            raise ValueError(f"corrected profile for {version} is not bound to both plans")
         result = item.get("result")
         if not isinstance(result, dict):
             raise ValueError(f"original invocation {version} has no result")
+        if record_schema == "copilot-cli-acp-permission-proof-execution.v2":
+            stderr = result.get("stderr", {})
+            captured = stderr.get("captured_bytes")
+            total = stderr.get("total_bytes")
+            if (
+                result.get("vendor_startup_status")
+                not in {"unknown", "acp-initialize-response-observed"}
+                or result.get("launcher_exit_status") != result.get("process_exit_code")
+                or stderr.get("classification") not in STDERR_CATEGORIES
+                or not isinstance(captured, int)
+                or not isinstance(total, int)
+                or captured < 0
+                or captured > MAX_STDERR_CAPTURE_BYTES
+                or total > MAX_STDERR_COUNTED_BYTES
+                or stderr.get("total_byte_count_limit") != MAX_STDERR_COUNTED_BYTES
+                or not isinstance(stderr.get("total_bytes_capped"), bool)
+                or total < captured
+                or stderr.get("truncated")
+                != (stderr.get("total_bytes_capped") or total > captured)
+                or (
+                    stderr.get("total_bytes_capped")
+                    and total != MAX_STDERR_COUNTED_BYTES
+                )
+                or stderr.get("capture_limit_bytes") != MAX_STDERR_CAPTURE_BYTES
+                or stderr.get("reader_joined") is not True
+                or stderr.get("reader_error") is not False
+                or stderr.get("raw_persisted") is not False
+                or stderr.get("raw_displayed") is not False
+            ):
+                raise ValueError(f"original invocation {version} has unsafe stderr diagnostics")
+            if (
+                result.get("initialize") == "not-reached"
+                and result.get("vendor_startup_status") != "unknown"
+            ):
+                raise ValueError(f"original startup for {version} is overstated")
         if result.get("prompt_requests_sent", 0) not in (0, 1):
             raise ValueError(f"original invocation {version} exceeded its prompt budget")
         if result.get("permission_reply") not in {"none", "cancelled"}:
@@ -3837,6 +4416,7 @@ def execute_artifacts(record_path: Path, artifact_root: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--compile-permission-fake", action="store_true")
     parser.add_argument("--validate-plan", action="store_true")
     parser.add_argument("--validate-permission-plan", action="store_true")
     parser.add_argument("--validate-permission-record", action="store_true")
@@ -3864,6 +4444,7 @@ def main() -> int:
             )
         elif args.validate_permission_plan:
             plan = validate_permission_proof_plan()
+            correction = validate_permission_correction_plan(plan)
             print(
                 json.dumps(
                     {
@@ -3873,12 +4454,52 @@ def main() -> int:
                         "start_order": plan["start_order"],
                         "allowed_hosts": len(plan["network_policy"]["allowed_hosts"]),
                         "maximum_prompts": plan["budgets"]["max_total_invocations"],
+                        "correction_plan_sha256": hashlib.sha256(
+                            PERMISSION_CORRECTION_PLAN_PATH.read_bytes()
+                        ).hexdigest(),
+                        "auth_metadata_read_paths": [
+                            item["relative_path"]
+                            for item in correction["auth_metadata_read_paths"]
+                        ],
                     },
                     sort_keys=True,
                 )
             )
         elif args.validate_permission_record and args.record:
             print(json.dumps(validate_permission_execution_record(args.record), sort_keys=True))
+        elif args.compile_permission_fake:
+            with tempfile.TemporaryDirectory(prefix="copilot-acp-native-fake-compile.") as temp_root:
+                temp_path = Path(temp_root)
+                executable = temp_path / "copilot-permission-fake"
+                identity = compile_permission_fake(executable)
+                environment = {
+                    "HOME": str(temp_path),
+                    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+                    "TMPDIR": str(temp_path),
+                    "SWALLOWTAIL_FAKE_DIAGNOSTIC": str(temp_path / "diagnostic.json"),
+                }
+                try:
+                    smoke = subprocess.run(
+                        [str(executable), "--early-exit"],
+                        cwd=temp_path,
+                        env=environment,
+                        stdin=subprocess.DEVNULL,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        timeout=5,
+                        check=False,
+                    )
+                except subprocess.TimeoutExpired:
+                    raise RuntimeError("native permission fake early-exit smoke exceeded 5 seconds") from None
+                if (
+                    smoke.returncode != 41
+                    or smoke.stdout != b"FAKE_NATIVE_STARTED:--early-exit\n"
+                    or smoke.stderr
+                ):
+                    raise RuntimeError(
+                        "native permission fake early-exit smoke did not match its safe control"
+                    )
+            print(json.dumps({"status": "compiled-and-smoke-passed", **identity}, sort_keys=True))
         elif args.self_test:
             verify_inventory()
             proof = self_test()
@@ -3890,18 +4511,11 @@ def main() -> int:
                 temp_root = Path(tempfile.gettempdir()).resolve()
                 if not target.parent.resolve(strict=True).is_relative_to(temp_root):
                     raise RuntimeError("fake preflight records must stay in task temp scratch")
-                preflight = {
-                    "schema": "copilot-cli-acp-permission-proof-preflight.v1",
-                    "recorded_at_utc": utc_now(),
-                    "plan_sha256": hashlib.sha256(
-                        PERMISSION_PROOF_PLAN_PATH.read_bytes()
-                    ).hexdigest(),
-                    "harness_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-                    "result": proof,
-                }
+                preflight = make_permission_preflight_record(proof)
                 write_json_durable(target, preflight)
                 if load_json(target) != preflight:
                     raise RuntimeError("fake preflight record did not persist")
+                validate_preflight_record(target, validate_permission_proof_plan())
             print(json.dumps(proof, indent=2))
         elif args.prepare and args.record:
             prepare_record(args.record)

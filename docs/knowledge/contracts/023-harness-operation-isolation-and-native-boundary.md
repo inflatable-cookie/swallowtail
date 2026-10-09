@@ -1022,6 +1022,37 @@ verifies that legacy execution refuses before staging. Renewed execution
 therefore requires a reviewed guard and record update under that separate
 authority.
 
+## Copilot Permission-Proof Startup Diagnostics
+
+Research 429 repairs only the fake controls and future proof harness for
+Copilot ACP. The original `1.0.93` launcher result from Research 428 remains
+unknown: stderr was discarded, and launcher exit does not establish whether
+the vendor binary reached initialization. The invocation remains consumed.
+
+The fake and any future original use the same verified sandbox-profile
+generator and correction-plan binding. The profile denies repository access,
+home writes, and all home reads except the single read-only
+`.copilot/config.json` path listed in the correction plan. Current GitHub CLI
+documentation identifies that file as managed configuration including
+authentication, but does not establish that frozen `1.0.93` reads it. No real
+configuration file or keychain item was read. The fake substitutes a synthetic
+file at that exact path and separately proves adjacent reads and writes are
+denied. It adds no fake-only runtime root. Exact executable access,
+`/System/Library` and `/usr/lib` mappings, and the existing `securityd`
+service-lookup trust boundary remain explicit; keychain item mediation is not
+claimed.
+
+Proof harnesses that collect child stderr drain it concurrently, retain at
+most 4096 bytes in memory, cap the reported total-byte count at 65536, and emit
+only an allowlisted category, byte counts, truncation state, and reader status.
+Raw stderr is never persisted or shown.
+The launcher exit code and vendor startup status are separate: without an ACP
+initialize response, original startup remains `unknown`. Fake process startup
+evidence applies only to the fake. Neither this correction nor its fake
+preflight renews an invocation, resets the consumed budget, or changes route
+qualification. A future original attempt requires new exact authority and
+must retain the bounded profile and diagnostic contract.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

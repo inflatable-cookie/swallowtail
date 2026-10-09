@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "operator_decision",
+    "source_permission_plan_sha256",
+    "auth_metadata_read_paths",
+    "sandbox_delta",
+    "stderr_policy"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "copilot-cli-acp-permission-proof-correction-plan.v1" },
+    "status": { "const": "fake-only-correction-no-attempt-renewal" },
+    "operator_decision": { "const": "8b098b85-fb9e-4543-b5f1-1fbfe8bc5301" },
+    "source_permission_plan_sha256": {
+      "const": "6db73561b9607743a43fec5607a641a2fdb297cb289a4eb36c161d4f9d62da66"
+    },
+    "auth_metadata_read_paths": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["relative_path", "source", "purpose", "version_scope"],
+        "additionalProperties": false,
+        "properties": {
+          "relative_path": { "const": ".copilot/config.json" },
+          "source": {
+            "const": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference"
+          },
+          "purpose": {
+            "const": "official CLI configuration directory reference identifies config.json as automatically managed application state including authentication"
+          },
+          "version_scope": {
+            "const": "current official documentation; not frozen-artifact-specific"
+          }
+        }
+      }
+    },
+    "sandbox_delta": {
+      "type": "object",
+      "required": [
+        "home_read_exception",
+        "home_writes",
+        "repository_reads",
+        "task_scratch_writes",
+        "fake_runtime_roots",
+        "executable_rule",
+        "system_runtime_map_roots",
+        "securityd",
+        "network"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "home_read_exception": { "const": "the single declared auth metadata file, read-only" },
+        "home_writes": { "const": "denied" },
+        "repository_reads": { "const": "denied" },
+        "task_scratch_writes": { "const": "allowed" },
+        "fake_runtime_roots": { "type": "array", "maxItems": 0 },
+        "executable_rule": { "const": "exact executable path only" },
+        "system_runtime_map_roots": {
+          "const": ["/System/Library", "/usr/lib"]
+        },
+        "securityd": { "const": "existing vendor trust boundary; item-level mediation unavailable" },
+        "network": { "const": "original permission plan local CONNECT proxy allowlist" }
+      }
+    },
+    "stderr_policy": {
+      "type": "object",
+      "required": ["max_captured_bytes", "max_reported_total_bytes", "drain", "raw_persisted", "raw_displayed", "categories"],
+      "additionalProperties": false,
+      "properties": {
+        "max_captured_bytes": { "const": 4096 },
+        "max_reported_total_bytes": { "const": 65536 },
+        "drain": { "const": "concurrent in-memory reader until EOF" },
+        "raw_persisted": { "const": false },
+        "raw_displayed": { "const": false },
+        "categories": {
+          "const": [
+            "empty",
+            "sandbox-denial",
+            "access-denied",
+            "dynamic-loader-failure",
+            "launcher-failure",
+            "unknown"
+          ]
+        }
+      }
+    }
+  }
+}

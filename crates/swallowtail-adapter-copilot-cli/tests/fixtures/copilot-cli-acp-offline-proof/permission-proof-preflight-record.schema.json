@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema", "recorded_at_utc", "plan_sha256", "correction_plan_sha256", "harness_sha256", "native_fake_source_sha256", "native_fake_binary_sha256", "result"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "copilot-cli-acp-permission-proof-preflight.v2" },
+    "recorded_at_utc": { "type": "string", "minLength": 1 },
+    "plan_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
+    "correction_plan_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
+    "harness_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
+    "native_fake_source_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
+    "native_fake_binary_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
+    "result": {
+      "type": "object",
+      "required": ["status", "host_login_permission_fake"],
+      "additionalProperties": true,
+      "properties": {
+        "status": { "const": "passed" },
+        "host_login_permission_fake": {
+          "type": "object",
+          "required": ["permission_reply", "effect_marker_absent", "process_group_joined", "proxy_threads_joined", "stderr_reader_joined", "stderr", "stderr_controls", "sandbox_policy"],
+          "additionalProperties": true,
+          "properties": {
+            "permission_reply": { "const": "cancelled" },
+            "effect_marker_absent": { "const": true },
+            "process_group_joined": { "const": true },
+            "proxy_threads_joined": { "const": true },
+            "stderr_reader_joined": { "const": true },
+            "stderr": {
+              "type": "object",
+              "required": ["classification", "captured_bytes", "total_bytes", "total_bytes_capped", "total_byte_count_limit", "capture_limit_bytes", "truncated", "reader_joined", "reader_error", "raw_persisted", "raw_displayed"],
+              "additionalProperties": true,
+              "properties": {
+                "classification": { "type": "string" },
+                "captured_bytes": { "type": "integer" },
+                "total_bytes": { "type": "integer" },
+                "total_bytes_capped": { "type": "boolean" },
+                "total_byte_count_limit": { "const": 65536 },
+                "capture_limit_bytes": { "const": 4096 },
+                "truncated": { "type": "boolean" },
+                "reader_joined": { "const": true },
+                "reader_error": { "const": false },
+                "raw_persisted": { "const": false },
+                "raw_displayed": { "const": false }
+              }
+            },
+            "stderr_controls": { "type": "object" },
+            "sandbox_policy": {
+              "type": "object",
+              "required": ["auth_metadata_read", "auth_metadata_write_denied", "adjacent_home_reads_denied", "repository_reads_denied", "fake_runtime_roots"],
+              "additionalProperties": true,
+              "properties": {
+                "auth_metadata_read": { "const": true },
+                "auth_metadata_write_denied": { "const": true },
+                "adjacent_home_reads_denied": { "const": true },
+                "repository_reads_denied": { "const": true },
+                "fake_runtime_roots": { "const": [] }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
